@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -81,7 +83,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildInfoRow('Name', connector.deviceDisplayName),
             _buildInfoRow('ID', connector.deviceIdLabel),
             _buildInfoRow('Status', connector.isConnected ? 'Connected' : 'Disconnected'),
-            _buildBatteryInfoRow(connector),
+            if (!Platform.isMacOS) _buildBatteryInfoRow(connector),
             if (connector.selfName != null)
               _buildInfoRow('Node Name', connector.selfName!),
             if (connector.selfPublicKey != null)

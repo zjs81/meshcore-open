@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -211,6 +213,11 @@ class _DeviceScreenState extends State<DeviceScreen>
     MeshCoreConnector connector,
     BuildContext context,
   ) {
+    // Hide battery indicator on macOS as it shows incorrect values
+    if (Platform.isMacOS) {
+      return const SizedBox.shrink();
+    }
+
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final percent = connector.batteryPercent;

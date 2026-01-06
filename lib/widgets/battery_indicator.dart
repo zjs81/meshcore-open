@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../connector/meshcore_connector.dart';
@@ -43,6 +45,11 @@ class _BatteryIndicatorState extends State<BatteryIndicator> {
 
   @override
   Widget build(BuildContext context) {
+    // Hide battery indicator on macOS as it shows incorrect values
+    if (Platform.isMacOS) {
+      return const SizedBox.shrink();
+    }
+
     final percent = widget.connector.batteryPercent;
     final millivolts = widget.connector.batteryMillivolts;
 
