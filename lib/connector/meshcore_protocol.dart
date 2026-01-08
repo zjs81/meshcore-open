@@ -1,4 +1,6 @@
+import 'dart:collection';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:typed_data';
 
 // Command codes (to device)
@@ -29,6 +31,8 @@ const int cmdGetContactByKey = 30;
 const int cmdGetChannel = 31;
 const int cmdSetChannel = 32;
 const int cmdGetRadioSettings = 57;
+const int cmdGetTelemetryReq = 39;
+const int cmdSendBinaryReq = 50;
 
 // Text message types
 const int txtTypePlain = 0;
@@ -73,6 +77,9 @@ const int pushCodeLoginFail = 0x86;
 const int pushCodeStatusResponse = 0x87;
 const int pushCodeLogRxData = 0x88;
 const int pushCodeNewAdvert = 0x8A;
+const int pushCodeTelemetryResponse = 0x8B;
+const int pushCodeBinaryResponse = 0x8C;
+
 
 // Contact/advertisement types
 const int advTypeChat = 1;
@@ -612,5 +619,25 @@ Uint8List buildSendCliCommandFrame(
 
   frame.setRange(offset, offset + textBytes.length, textBytes);
   frame[frame.length - 1] = 0; // null terminator
+  return frame;
+}
+
+//Build a telemetry request frame
+//Format: [cmd][pub_key x32][req_type][payload]
+Uint8List buildSendBinaryReq(
+  Uint8List repeaterPubKey,
+  {
+    int attempt = 0,
+    int? timestampSeconds,
+    Uint8List? payload,
+  }) {
+  int offset = 0;
+  final frame = Uint8List(1 + 32 + 1 + (payload?.length ?? 0));
+  frame[offset++] = cmdSendBinaryReq;
+  frame.setRange(offset, offset + 32, repeaterPubKey);
+  if (payload != null && payload.isNotEmpty) {
+    offset += 32;
+    frame.setRange(offset, offset + payload.length, payload);
+  }
   return frame;
 }

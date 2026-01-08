@@ -3,6 +3,7 @@ import '../models/contact.dart';
 import 'repeater_status_screen.dart';
 import 'repeater_cli_screen.dart';
 import 'repeater_settings_screen.dart';
+import 'telemetry_screen.dart';
 
 class RepeaterHubScreen extends StatelessWidget {
   final Contact repeater;
@@ -93,6 +94,26 @@ class RepeaterHubScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => RepeaterStatusScreen(
+                        repeater: repeater,
+                        password: password,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              // Status button
+              _buildManagementCard(
+                context,
+                icon: Icons.bar_chart_sharp,
+                title: 'Telemetry',
+                subtitle: 'View telemetry of sensors and system stats',
+                color: Colors.teal,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TelemetryScreen(
                         repeater: repeater,
                         password: password,
                       ),
