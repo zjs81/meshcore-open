@@ -17,6 +17,9 @@ import '../widgets/quick_switch_bar.dart';
 import 'channels_screen.dart';
 import 'chat_screen.dart';
 import 'contacts_screen.dart';
+//import 'repeater_hub_screen.dart';
+import '../widgets/repeater_login_dialog.dart';
+import 'repeater_hub_screen.dart';
 import 'settings_screen.dart';
 
 class MapScreen extends StatefulWidget {
@@ -549,6 +552,27 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  void _showRepeaterLogin(BuildContext context, Contact repeater) {
+    showDialog(
+      context: context,
+      builder: (context) => RepeaterLoginDialog(
+        repeater: repeater,
+        onLogin: (password) {
+          // Navigate to repeater hub screen after successful login
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RepeaterHubScreen(
+                repeater: repeater,
+                password: password,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   void _showNodeInfo(BuildContext context, Contact contact) {
     showDialog(
       context: context,
@@ -592,6 +616,13 @@ class _MapScreenState extends State<MapScreen> {
                 );
               },
               child: const Text('Open Chat'),
+            ),
+            if(contact.type == advTypeRepeater)
+            TextButton(
+              onPressed: () {
+                _showRepeaterLogin(context, contact);
+              },
+              child: const Text('Manage Repeater'),
             ),
         ],
       ),
