@@ -209,13 +209,13 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
         final message = messages[index];
         final contact = _resolveContactFrom4Bytes(
           connector,
-          Uint8List.fromList(message.text.substring(0, 4.clamp(0, message.text.length)).codeUnits),
+          message.fourByteRoomContactKey.isEmpty ? Uint8List.fromList([0, 0, 0, 0]) : message.fourByteRoomContactKey,
         );
-        
+        final fourByteHex = message.fourByteRoomContactKey.map((b) => b.toRadixString(16).padLeft(2, '0')).join().toUpperCase();
         return _MessageBubble(
           message: message,
-          senderName: contact.name,
-          onTap: () => _openMessagePath(message),
+          senderName: "${contact.name} [$fourByteHex]",
+          onTap: () => _openMessagePath(message, contact),
           onLongPress: () => _showMessageActions(message),
         );
       },
@@ -747,10 +747,11 @@ class _RoomChatScreenState extends State<RoomChatScreen> {
   }
 
 
-  void _openMessagePath(Message message) {
+  void _openMessagePath(Message message, Contact contact) {
     final connector = context.read<MeshCoreConnector>();
+    final fourByteHex = message.fourByteRoomContactKey.map((b) => b.toRadixString(16).padLeft(2, '0')).join().toUpperCase();
     final senderName =
-        message.isOutgoing ? (connector.selfName ?? 'Me') : widget.contact.name;
+        message.isOutgoing ? (connector.selfName ?? 'Me') : "${contact.name} [$fourByteHex]";
     final pathMessage = ChannelMessage(
       senderKey: null,
       senderName: senderName,
@@ -899,8 +900,6 @@ class _MessageBubble extends StatelessWidget {
         ? colorScheme.onErrorContainer
         : (isOutgoing ? colorScheme.onPrimary : colorScheme.onSurface);
     final metaColor = textColor.withValues(alpha: 0.7);
-    final bytes4 = Uint8List.fromList(message.text.substring(0, 4.clamp(0, message.text.length)).codeUnits);
-    final hexString = bytes4.map((b) => b.toRadixString(16).padLeft(2, '0')).join().toUpperCase();
     final messageText = message.text.substring(4.clamp(0, message.text.length));
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -954,7 +953,7 @@ class _MessageBubble extends StatelessWidget {
                       if(!isOutgoing)
                         
                         Text(
-                          "[$hexString] $messageText",
+                          messageText,
                           style: TextStyle(
                             color: textColor,
                           ),
