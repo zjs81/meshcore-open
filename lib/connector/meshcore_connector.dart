@@ -1996,12 +1996,21 @@ class MeshCoreConnector extends ChangeNotifier {
         final settings = _appSettingsService!.settings;
         if (settings.notificationsEnabled && settings.notifyOnNewMessage) {
           // Find the contact name
-          _notificationService.showMessageNotification(
-            contactName: contact?.name ?? 'Unknown',
-            message: message.text,
-            contactId: message.senderKeyHex,
-            badgeCount: getTotalUnreadCount(),
-          );
+          if(contact?.type == advTypeChat) { 
+            _notificationService.showMessageNotification(
+              contactName: contact?.name ?? 'Unknown',
+              message: message.text,
+              contactId: message.senderKeyHex,
+              badgeCount: getTotalUnreadCount(),
+            );
+          }else if(contact?.type == advTypeRoom) {
+            _notificationService.showMessageNotification(
+              contactName: contact?.name ?? 'Unknown Room',
+              message: message.text.substring(4),
+              contactId: message.senderKeyHex,
+              badgeCount: getTotalUnreadCount(),
+            );
+          }
         }
       }
       _handleQueuedMessageReceived();
@@ -2027,7 +2036,7 @@ class MeshCoreConnector extends ChangeNotifier {
     final baseTextOffset = timestampOffset + 4;
 
     if (frame.length <= baseTextOffset) return null;
-
+    final fourBytePubMSG = frame.sublist(baseTextOffset, baseTextOffset + 4);
     final senderPrefix = frame.sublist(prefixOffset, prefixOffset + prefixLen);
     final flags = frame[txtTypeOffset];
     final shiftedType = flags >> 2;
@@ -2065,6 +2074,7 @@ class MeshCoreConnector extends ChangeNotifier {
       status: MessageStatus.delivered,
       pathLength: pathLenByte == 0xFF ? 0 : pathLenByte,
       pathBytes: Uint8List(0),
+      fourByteRoomContactKey: fourBytePubMSG
     );
   }
 

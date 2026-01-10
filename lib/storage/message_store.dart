@@ -52,6 +52,7 @@ class MessageStore {
       'pathLength': msg.pathLength,
       'pathBytes': msg.pathBytes.isNotEmpty ? base64Encode(msg.pathBytes) : null,
       'reactions': msg.reactions,
+      'fourByteRoomContactKey': base64Encode(msg.fourByteRoomContactKey),
     };
   }
 
@@ -86,6 +87,7 @@ class MessageStore {
       reactions: (json['reactions'] as Map<String, dynamic>?)?.map(
         (key, value) => MapEntry(key, value as int),
       ) ?? {},
+      fourByteRoomContactKey: Uint8List.fromList(base64Decode(json['fourByteRoomContactKey'] as String)),
     );
   }
 }

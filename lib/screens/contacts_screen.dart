@@ -18,6 +18,7 @@ import '../widgets/list_filter_widget.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/quick_switch_bar.dart';
 import '../widgets/repeater_login_dialog.dart';
+import '../widgets/room_login_dialog.dart';
 import '../widgets/unread_badge.dart';
 import 'channels_screen.dart';
 import 'chat_screen.dart';
@@ -384,6 +385,8 @@ class _ContactsScreenState extends State<ContactsScreen>
     // Check if this is a repeater
     if (contact.type == advTypeRepeater) {
       _showRepeaterLogin(context, contact);
+    } else if (contact.type == advTypeRoom) {
+      _showRoomLogin(context, contact);
     } else {
       context.read<MeshCoreConnector>().markContactRead(contact.publicKeyHex);
       Navigator.push(
@@ -429,6 +432,25 @@ class _ContactsScreenState extends State<ContactsScreen>
                 repeater: repeater,
                 password: password,
               ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showRoomLogin(BuildContext context, Contact room) {
+    showDialog(
+      context: context,
+      builder: (context) => RoomLoginDialog(
+        room: room,
+        onLogin: (password) {
+          // Navigate to chat screen after successful login
+          context.read<MeshCoreConnector>().markContactRead(room.publicKeyHex);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatScreen(contact: room),
             ),
           );
         },
@@ -642,6 +664,7 @@ class _ContactsScreenState extends State<ContactsScreen>
     Contact contact,
   ) {
     final isRepeater = contact.type == advTypeRepeater;
+    final isRoom = contact.type == advTypeRoom;
 
     showModalBottomSheet(
       context: context,
@@ -656,6 +679,15 @@ class _ContactsScreenState extends State<ContactsScreen>
                 onTap: () {
                   Navigator.pop(context);
                   _showRepeaterLogin(context, contact);
+                },
+              )
+            else if(isRoom)
+              ListTile(
+                leading: const Icon(Icons.room, color: Colors.blue),
+                title: const Text('Room Login'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showRoomLogin(context, contact);
                 },
               )
             else

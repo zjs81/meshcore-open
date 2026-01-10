@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -162,13 +163,12 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Consumer<MeshCoreConnector>(
         builder: (context, connector, child) {
           final messages = connector.getMessages(widget.contact);
-
           return Column(
             children: [
               Expanded(
                 child: messages.isEmpty
                     ? _buildEmptyState()
-                    : _buildMessageList(messages),
+                    : _buildMessageList(messages, connector),
               ),
               _buildInputBar(connector),
             ],
@@ -199,18 +199,29 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _buildMessageList(List<Message> messages) {
+  Widget _buildMessageList(List<Message> messages, MeshCoreConnector connector) {
     return ListView.builder(
       controller: _scrollController,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       itemCount: messages.length,
       itemBuilder: (context, index) {
+        Contact contact = widget.contact;
         final message = messages[index];
+        String fourByteHex = '';
+        if(widget.contact.type == advTypeRoom) {
+          contact = _resolveContactFrom4Bytes(
+            connector,
+            message.fourByteRoomContactKey.isEmpty ? Uint8List.fromList([0, 0, 0, 0]) : message.fourByteRoomContactKey,
+          );
+          fourByteHex = message.fourByteRoomContactKey.map((b) => b.toRadixString(16).padLeft(2, '0')).join().toUpperCase();
+        }
+
         return _MessageBubble(
           message: message,
-          senderName: widget.contact.name,
-          onTap: () => _openMessagePath(message),
-          onLongPress: () => _showMessageActions(message),
+          senderName: widget.contact.type == advTypeRoom ? "${contact.name} [$fourByteHex]" : contact.name,
+          isRoomServer: widget.contact.type == advTypeRoom,
+          onTap: () => _openMessagePath(message, contact),
+          onLongPress: () => _showMessageActions(message, contact),
         );
       },
     );
@@ -579,6 +590,13 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  Contact _resolveContactFrom4Bytes(MeshCoreConnector connector, Uint8List key4Bytes) {
+    return connector.contacts.firstWhere(
+      (c) => listEquals(c.publicKey.sublist(0, 4), key4Bytes.sublist(0, 4)),
+      orElse: () => widget.contact,
+    );
+  }
+
   String _currentPathLabel(Contact contact) {
     // Check if user has set a path override
     if (contact.pathOverride != null) {
@@ -684,6 +702,15 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  void _openChat(BuildContext context, Contact contact) {
+    // Check if this is a repeater
+    context.read<MeshCoreConnector>().markContactRead(contact.publicKeyHex);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ChatScreen(contact: contact)),
+    );
+  }
+
   Future<void> _showCustomPathDialog(BuildContext context) async {
     final connector = Provider.of<MeshCoreConnector>(context, listen: false);
 
@@ -734,10 +761,11 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
 
-  void _openMessagePath(Message message) {
+  void _openMessagePath(Message message, Contact contact) {
     final connector = context.read<MeshCoreConnector>();
+    final fourByteHex = message.fourByteRoomContactKey.map((b) => b.toRadixString(16).padLeft(2, '0')).join().toUpperCase();
     final senderName =
-        message.isOutgoing ? (connector.selfName ?? 'Me') : widget.contact.name;
+        message.isOutgoing ? (connector.selfName ?? 'Me') : widget.contact.type == advTypeRoom ? "${contact.name} [$fourByteHex]" : widget.contact.name;
     final pathMessage = ChannelMessage(
       senderKey: null,
       senderName: senderName,
@@ -757,7 +785,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  void _showMessageActions(Message message) {
+  void _showMessageActions(Message message, Contact contact) {
     showModalBottomSheet(
       context: context,
       builder: (sheetContext) => SafeArea(
@@ -796,6 +824,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 onTap: () {
                   Navigator.pop(sheetContext);
                   _retryMessage(message);
+                },
+              ),
+            if(widget.contact.type == advTypeRoom)
+              ListTile(
+                leading: const Icon(Icons.chat),
+                title: const Text('Open Chat'),
+                onTap: () {
+                  _openChat(context, contact);
                 },
               ),
             ListTile(
@@ -862,12 +898,14 @@ class _ChatScreenState extends State<ChatScreen> {
 class _MessageBubble extends StatelessWidget {
   final Message message;
   final String senderName;
+  final bool isRoomServer;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
 
   const _MessageBubble({
     required this.message,
     required this.senderName,
+    required this.isRoomServer,
     this.onTap,
     this.onLongPress,
   });
@@ -886,7 +924,10 @@ class _MessageBubble extends StatelessWidget {
         ? colorScheme.onErrorContainer
         : (isOutgoing ? colorScheme.onPrimary : colorScheme.onSurface);
     final metaColor = textColor.withValues(alpha: 0.7);
-
+    String messageText = message.text;
+    if (isRoomServer && !isOutgoing) {
+      messageText = message.text.substring(4.clamp(0, message.text.length));
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Column(
@@ -936,12 +977,20 @@ class _MessageBubble extends StatelessWidget {
                         fallbackTextColor: textColor.withValues(alpha: 0.7),
                       )
                     else
-                      Text(
-                        message.text,
-                        style: TextStyle(
-                          color: textColor,
+                      if(!isOutgoing)
+                        Text(
+                          messageText,
+                          style: TextStyle(
+                            color: textColor,
+                          ),
                         ),
-                      ),
+                      if(isOutgoing)
+                        Text(
+                          message.text,
+                          style: TextStyle(
+                            color: textColor,
+                          ),
+                        ),
                     if (isOutgoing && message.retryCount > 0) ...[
                       const SizedBox(height: 4),
                       Text(
