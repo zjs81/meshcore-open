@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart' as crypto;
-import 'package:meshcore_open/models/discovery_contact.dart';
 import 'package:pointycastle/export.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -120,7 +119,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
   final List<ScanResult> _scanResults = [];
   final List<Contact> _contacts = [];
-  final List<DiscoveryContact> _discoveredContacts = [];
+  final List<Contact> _discoveredContacts = [];
   final List<Channel> _channels = [];
   final Map<String, List<Message>> _conversations = {};
   final Map<int, List<ChannelMessage>> _channelMessages = {};
@@ -281,7 +280,7 @@ class MeshCoreConnector extends ChangeNotifier {
     );
   }
 
-  List<DiscoveryContact> get discoveredContacts {
+  List<Contact> get discoveredContacts {
     return List.unmodifiable(_discoveredContacts);
   }
 
@@ -1920,7 +1919,7 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> removeDiscoveredContact(DiscoveryContact contact) async {
+  Future<void> removeDiscoveredContact(Contact contact) async {
     if (!isConnected) return;
     _discoveredContacts.removeWhere(
       (c) => c.publicKeyHex == contact.publicKeyHex,
@@ -1929,7 +1928,7 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> importDiscoveredContact(DiscoveryContact contact) async {
+  Future<void> importDiscoveredContact(Contact contact) async {
     if (!isConnected) return;
 
     await sendFrame(
@@ -1969,6 +1968,8 @@ class MeshCoreConnector extends ChangeNotifier {
       final existing = _contacts[existingIndex];
       // Use copyWith to preserve pathOverride and pathOverrideBytes
       _contacts[existingIndex] = existing.copyWith(
+        pathOverride: null,
+        pathOverrideBytes: null,
         pathLength: -1,
         path: Uint8List(0),
       );
@@ -4406,7 +4407,7 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     importDiscoveredContact(
-      DiscoveryContact(
+      Contact(
         rawPacket: frame,
         publicKey: publicKey,
         name: name,
@@ -4628,7 +4629,7 @@ class MeshCoreConnector extends ChangeNotifier {
       return;
     }
 
-    final disContact = DiscoveryContact(
+    final disContact = Contact(
       rawPacket: rawPacket,
       publicKey: contact.publicKey,
       name: contact.name,
@@ -4638,6 +4639,8 @@ class MeshCoreConnector extends ChangeNotifier {
       latitude: contact.latitude,
       longitude: contact.longitude,
       lastSeen: contact.lastSeen,
+      lastMessageAt: contact.lastMessageAt,
+      isActive: false,
     );
     _discoveredContacts.add(disContact);
 

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -126,7 +127,20 @@ class _MapScreenState extends State<MapScreen> {
       builder: (context, connector, settingsService, pathHistory, child) {
         final tileCache = context.read<MapTileCacheService>();
         final settings = settingsService.settings;
-        final contacts = connector.contacts;
+        final contacts = <Contact>[
+          ...connector.contacts,
+          if (settings.mapShowDiscoveryContacts)
+            ...connector.discoveredContacts
+                .map(
+                  (Contact c) =>
+                      connector.knownContactKeys.contains(c.publicKeyHex)
+                      ? null
+                      : c,
+                )
+                .where((notNull) => notNull != null)
+                .cast<Contact>(),
+        ];
+
         final highlightPosition = widget.highlightPosition;
         final sharedMarkers = settings.mapShowMarkers
             ? _collectSharedMarkers(connector)
@@ -1203,6 +1217,7 @@ class _MapScreenState extends State<MapScreen> {
     Contact contact, {
     LatLng? guessedPosition,
   }) {
+    final connector = context.read<MeshCoreConnector>();
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -1248,6 +1263,9 @@ class _MapScreenState extends State<MapScreen> {
               advTypeChat) // Only show chat button for chat nodes
             TextButton(
               onPressed: () {
+                if (!contact.isActive) {
+                  connector.importDiscoveredContact(contact);
+                }
                 Navigator.pop(dialogContext);
                 Navigator.push(
                   context,
@@ -1261,6 +1279,9 @@ class _MapScreenState extends State<MapScreen> {
           if (contact.type == advTypeRepeater)
             TextButton(
               onPressed: () {
+                if (!contact.isActive) {
+                  connector.importDiscoveredContact(contact);
+                }
                 Navigator.pop(dialogContext);
                 _showRepeaterLogin(context, contact);
               },
@@ -1269,6 +1290,9 @@ class _MapScreenState extends State<MapScreen> {
           if (contact.type == advTypeRoom)
             TextButton(
               onPressed: () {
+                if (!contact.isActive) {
+                  connector.importDiscoveredContact(contact);
+                }
                 Navigator.pop(dialogContext);
                 _showRoomLogin(context, contact);
               },
@@ -1742,6 +1766,14 @@ class _MapScreenState extends State<MapScreen> {
                     value: settings.mapShowGuessedLocations,
                     onChanged: (value) {
                       service.setMapShowGuessedLocations(value ?? true);
+                    },
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  CheckboxListTile(
+                    title: Text("Show Discovery Contacts"),
+                    value: settings.mapShowDiscoveryContacts,
+                    onChanged: (value) {
+                      service.setMapShowDiscoveryContacts(value ?? true);
                     },
                     contentPadding: EdgeInsets.zero,
                   ),

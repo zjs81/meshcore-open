@@ -39,6 +39,7 @@ class AppSettings {
   final Map<String, String> batteryChemistryByRepeaterId;
   final UnitSystem unitSystem;
   final Set<String> mutedChannels;
+  final bool mapShowDiscoveryContacts;
 
   AppSettings({
     this.clearPathOnMaxRetry = false,
@@ -66,6 +67,7 @@ class AppSettings {
     Map<String, String>? batteryChemistryByRepeaterId,
     this.unitSystem = UnitSystem.metric,
     Set<String>? mutedChannels,
+    this.mapShowDiscoveryContacts = true,
   }) : batteryChemistryByDeviceId = batteryChemistryByDeviceId ?? {},
        batteryChemistryByRepeaterId = batteryChemistryByRepeaterId ?? {},
        mutedChannels = mutedChannels ?? {};
@@ -97,6 +99,7 @@ class AppSettings {
       'battery_chemistry_by_repeater_id': batteryChemistryByRepeaterId,
       'unit_system': unitSystem.value,
       'muted_channels': mutedChannels.toList(),
+      'map_show_discovery_contacts': mapShowDiscoveryContacts,
     };
   }
 
@@ -152,6 +155,8 @@ class AppSettings {
               ?.map((e) => e.toString())
               .toSet()) ??
           {},
+      mapShowDiscoveryContacts:
+          json['map_show_discovery_contacts'] as bool? ?? true,
     );
   }
 
@@ -181,6 +186,7 @@ class AppSettings {
     Map<String, String>? batteryChemistryByRepeaterId,
     UnitSystem? unitSystem,
     Set<String>? mutedChannels,
+    bool? mapShowDiscoveryContacts,
   }) {
     return AppSettings(
       clearPathOnMaxRetry: clearPathOnMaxRetry ?? this.clearPathOnMaxRetry,
@@ -217,6 +223,8 @@ class AppSettings {
           batteryChemistryByRepeaterId ?? this.batteryChemistryByRepeaterId,
       unitSystem: unitSystem ?? this.unitSystem,
       mutedChannels: mutedChannels ?? this.mutedChannels,
+      mapShowDiscoveryContacts:
+          mapShowDiscoveryContacts ?? this.mapShowDiscoveryContacts,
     );
   }
 }

@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../l10n/l10n.dart';
-import '../models/discovery_contact.dart';
+import '../models/contact.dart';
 import '../utils/contact_search.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/list_filter_widget.dart';
@@ -129,7 +129,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
   }
 
   Future<void> _showContactContextMenu(
-    DiscoveryContact contact,
+    Contact contact,
     MeshCoreConnector connector,
   ) async {
     final action = await showModalBottomSheet<String>(
@@ -169,7 +169,8 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
         connector.importDiscoveredContact(contact);
         break;
       case 'copy_contact':
-        final hexString = pubKeyToHex(contact.rawPacket);
+        if (contact.rawPacket == null) return;
+        final hexString = pubKeyToHex(contact.rawPacket!);
         Clipboard.setData(ClipboardData(text: "meshcore://$hexString"));
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -207,7 +208,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
   }
 
   Widget _buildFilters(
-    List<DiscoveryContact> filteredAndSorted,
+    List<Contact> filteredAndSorted,
     MeshCoreConnector connector,
   ) {
     String hintText = "";
@@ -309,8 +310,8 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
     );
   }
 
-  List<DiscoveryContact> _filterAndSortContacts(
-    List<DiscoveryContact> contacts,
+  List<Contact> _filterAndSortContacts(
+    List<Contact> contacts,
     MeshCoreConnector connector,
   ) {
     var filtered = contacts.where((contact) {
@@ -350,7 +351,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
     return filtered;
   }
 
-  bool _matchesTypeFilter(DiscoveryContact contact) {
+  bool _matchesTypeFilter(Contact contact) {
     switch (typeFilter) {
       case ContactTypeFilter.all:
         return true;

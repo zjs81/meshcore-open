@@ -134,6 +134,10 @@ class AppSettingsService extends ChangeNotifier {
     appLogger.setEnabled(value);
   }
 
+  Future<void> setMapShowDiscoveryContacts(bool value) async {
+    await updateSettings(_settings.copyWith(mapShowDiscoveryContacts: value));
+  }
+
   Future<void> setBatteryChemistryForDevice(
     String deviceId,
     String chemistry,

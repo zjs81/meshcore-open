@@ -17,6 +17,8 @@ class Contact {
   final double? longitude;
   final DateTime lastSeen;
   final DateTime lastMessageAt;
+  final bool isActive;
+  final Uint8List? rawPacket;
 
   Contact({
     required this.publicKey,
@@ -31,6 +33,8 @@ class Contact {
     this.longitude,
     required this.lastSeen,
     DateTime? lastMessageAt,
+    this.isActive = true,
+    this.rawPacket,
   }) : lastMessageAt = lastMessageAt ?? lastSeen;
 
   String get publicKeyHex => pubKeyToHex(publicKey);
@@ -78,6 +82,8 @@ class Contact {
     double? longitude,
     DateTime? lastSeen,
     DateTime? lastMessageAt,
+    bool? isActive,
+    Uint8List? rawPacket,
   }) {
     return Contact(
       publicKey: publicKey ?? this.publicKey,
@@ -96,6 +102,8 @@ class Contact {
       longitude: longitude ?? this.longitude,
       lastSeen: lastSeen ?? this.lastSeen,
       lastMessageAt: lastMessageAt ?? this.lastMessageAt,
+      isActive: isActive ?? this.isActive,
+      rawPacket: rawPacket ?? this.rawPacket,
     );
   }
 
@@ -204,6 +212,8 @@ class Contact {
         latitude: lat,
         longitude: lon,
         lastSeen: DateTime.fromMillisecondsSinceEpoch(lastMod * 1000),
+        isActive: true,
+        rawPacket: null,
       );
     } catch (e) {
       appLogger.error('Failed to parse contact frame: $e');
