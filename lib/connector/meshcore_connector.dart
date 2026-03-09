@@ -1939,6 +1939,9 @@ class MeshCoreConnector extends ChangeNotifier {
         type: contact.type,
         flags: 0,
         name: contact.name,
+        lat: contact.latitude,
+        lon: contact.longitude,
+        lastModified: contact.lastSeen,
       ),
     );
 

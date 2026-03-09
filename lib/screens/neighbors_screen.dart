@@ -124,12 +124,14 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
 
   void _handleNeighborsResponse(MeshCoreConnector connector, Uint8List frame) {
     final buffer = BufferReader(frame);
+    final contacts = <Contact>[
+      ...connector.contacts,
+      ...connector.discoveredContacts,
+    ];
     try {
       final neighborCount = buffer.readUInt16LE();
       final parsedNeighbors = parseNeighborsData(buffer, buffer.readUInt16LE());
-      connector.contacts.where((c) => c.type == advTypeRepeater).forEach((
-        repeater,
-      ) {
+      contacts.where((c) => c.type == advTypeRepeater).forEach((repeater) {
         for (var neighborData in parsedNeighbors) {
           final publicKey = neighborData['publicKey'];
           if (listEquals(

@@ -148,6 +148,19 @@ class BufferWriter {
   void writeHex(String hex) {
     writeBytes(hex2Uint8List(hex));
   }
+
+  void writeBytesPadded(Uint8List bytes, int totalLength) {
+    // Path data (64 bytes, zero-padded)
+    final bytesPadded = Uint8List(totalLength);
+    final len = bytes.length < totalLength ? bytes.length : totalLength;
+    if (bytes.isNotEmpty && len > 0) {
+      final copyLen = bytes.length < totalLength ? bytes.length : totalLength;
+      for (int i = 0; i < copyLen; i++) {
+        bytesPadded[i] = bytes[i];
+      }
+    }
+    writeBytes(bytesPadded);
+  }
 }
 
 Uint8List hex2Uint8List(String hex) {
@@ -679,11 +692,14 @@ Uint8List buildResetPathFrame(Uint8List pubKey) {
 // Format: [cmd][pub_key x32][type][flags][path_len][path x64][name x32][timestamp x4]
 Uint8List buildUpdateContactPathFrame(
   Uint8List pubKey,
-  Uint8List customPath,
+  Uint8List path,
   int pathLen, {
   int type = 1, // ADV_TYPE_CHAT
   int flags = 0,
   String name = '',
+  double? lat,
+  double? lon,
+  DateTime? lastModified,
 }) {
   final writer = BufferWriter();
   writer.writeByte(cmdAddUpdateContact);
@@ -692,17 +708,7 @@ Uint8List buildUpdateContactPathFrame(
   writer.writeByte(flags);
   writer.writeByte(pathLen);
 
-  // Path data (64 bytes, zero-padded)
-  final pathPadded = Uint8List(maxPathSize);
-  if (customPath.isNotEmpty && pathLen > 0) {
-    final copyLen = customPath.length < maxPathSize
-        ? customPath.length
-        : maxPathSize;
-    for (int i = 0; i < copyLen; i++) {
-      pathPadded[i] = customPath[i];
-    }
-  }
-  writer.writeBytes(pathPadded);
+  writer.writeBytesPadded(path, maxPathSize);
 
   // Name (32 bytes, null-padded)
   writer.writeCString(name, maxNameSize);
@@ -710,6 +716,27 @@ Uint8List buildUpdateContactPathFrame(
   // Timestamp
   final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   writer.writeUInt32LE(timestamp);
+
+  if ((lat == null || lon == null) && lastModified != null) {
+    // If lat/lon not provided, write zeros
+    writer.writeInt32LE(0);
+    writer.writeInt32LE(0);
+  } else {
+    // Latitude and Longitude are expected in degrees, convert to int by multiplying by 1e6
+    // Latitude
+    final latitude = lat ?? 0.0;
+    writer.writeInt32LE((latitude * 1e6).round());
+
+    // Longitude
+    final longitude = lon ?? 0.0;
+    writer.writeInt32LE((longitude * 1e6).round());
+  }
+
+  if (lastModified != null) {
+    // Last modified
+    final lastModifiedTimestamp = lastModified.millisecondsSinceEpoch ~/ 1000;
+    writer.writeUInt32LE(lastModifiedTimestamp);
+  }
 
   return writer.toBytes();
 }

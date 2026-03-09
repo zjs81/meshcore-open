@@ -127,19 +127,22 @@ class _MapScreenState extends State<MapScreen> {
       builder: (context, connector, settingsService, pathHistory, child) {
         final tileCache = context.read<MapTileCacheService>();
         final settings = settingsService.settings;
-        final contacts = <Contact>[
+        final allContacts = <Contact>[
           ...connector.contacts,
-          if (settings.mapShowDiscoveryContacts)
-            ...connector.discoveredContacts
-                .map(
-                  (Contact c) =>
-                      connector.knownContactKeys.contains(c.publicKeyHex)
-                      ? null
-                      : c,
-                )
-                .where((notNull) => notNull != null)
-                .cast<Contact>(),
+          ...connector.discoveredContacts
+              .map(
+                (Contact c) =>
+                    connector.knownContactKeys.contains(c.publicKeyHex)
+                    ? null
+                    : c,
+              )
+              .where((notNull) => notNull != null)
+              .cast<Contact>(),
         ];
+
+        final contacts = settings.mapShowDiscoveryContacts
+            ? allContacts
+            : allContacts.where((c) => c.isActive).toList();
 
         final highlightPosition = widget.highlightPosition;
         final sharedMarkers = settings.mapShowMarkers
@@ -174,7 +177,12 @@ class _MapScreenState extends State<MapScreen> {
 
         // Filter by location
         final contactsWithLocation = filteredByKeyPrefix
-            .where((c) => c.hasLocation)
+            .where(
+              (c) =>
+                  c.hasLocation &&
+                  c.latitude!.abs() > 1 &&
+                  c.longitude!.abs() > 1,
+            )
             .toList();
 
         // All contacts with a known location — used as anchors regardless of
@@ -644,6 +652,9 @@ class _MapScreenState extends State<MapScreen> {
           anchors[0].latitude + offsetDeg * cos(angle),
           anchors[0].longitude + offsetDeg * sin(angle),
         );
+        if (position.latitude.abs() <= 1 || position.longitude.abs() <= 1) {
+          continue; // discard implausible guesses near (0, 0
+        }
       } else {
         double lat = 0, lon = 0;
         for (final a in anchors) {
@@ -651,6 +662,9 @@ class _MapScreenState extends State<MapScreen> {
           lon += a.longitude;
         }
         position = LatLng(lat / anchors.length, lon / anchors.length);
+        if (position.latitude.abs() <= 1 || position.longitude.abs() <= 1) {
+          continue; // discard implausible guesses near (0, 0
+        }
       }
       result.add(
         _GuessedLocation(

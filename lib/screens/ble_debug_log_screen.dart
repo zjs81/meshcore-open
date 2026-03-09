@@ -118,6 +118,19 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
                                       : Icons.download,
                                   size: 18,
                                 ),
+                                onLongPress: () async {
+                                  await Clipboard.setData(
+                                    ClipboardData(
+                                      text: entry.payload
+                                          .map(
+                                            (b) => b
+                                                .toRadixString(16)
+                                                .padLeft(2, '0'),
+                                          )
+                                          .join(''),
+                                    ),
+                                  );
+                                },
                               );
                             }
 
