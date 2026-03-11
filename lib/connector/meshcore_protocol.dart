@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:crypto/crypto.dart' as crypto;
+
 // Buffer Reader - sequential binary data reader with pointer tracking
 class BufferReader {
   int _pointer = 0;
@@ -618,19 +620,30 @@ Uint8List buildGetChannelFrame(int channelIndex) {
 }
 
 // Build CMD_SET_CHANNEL frame
-// Format: [cmd][idx][name x32][psk x16]
+// Format: [cmd][idx][name x32][secret x32]
 Uint8List buildSetChannelFrame(int channelIndex, String name, Uint8List psk) {
   final writer = BufferWriter();
   writer.writeByte(cmdSetChannel);
   writer.writeByte(channelIndex);
   writer.writeCString(name, 32);
-  // Write PSK (16 bytes, zero-padded)
-  final pskPadded = Uint8List(16);
-  for (int i = 0; i < 16 && i < psk.length; i++) {
-    pskPadded[i] = psk[i];
-  }
-  writer.writeBytes(pskPadded);
+  writer.writeBytes(_expandChannelSecretForDevice(psk));
   return writer.toBytes();
+}
+
+Uint8List _expandChannelSecretForDevice(Uint8List psk) {
+  if (psk.length >= 32) {
+    return Uint8List.fromList(psk.sublist(0, 32));
+  }
+
+  final padded = Uint8List(16);
+  final copyLength = psk.length < 16 ? psk.length : 16;
+  padded.setRange(0, copyLength, psk);
+  if (padded.every((byte) => byte == 0)) {
+    return Uint8List(32);
+  }
+
+  final digest = crypto.sha512.convert(padded).bytes;
+  return Uint8List.fromList(digest.sublist(0, 32));
 }
 
 // Build CMD_SET_RADIO_PARAMS frame

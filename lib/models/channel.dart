@@ -29,13 +29,20 @@ class Channel {
     // [0] = RESP_CODE_CHANNEL_INFO (18)
     // [1] = channel_idx
     // [2-33] = name (32 bytes, null-terminated)
-    // [34-49] = psk (16 bytes)
-    if (data.length < 50) return null;
+    // [34-65] = secret (32 bytes, may be omitted or truncated by device)
+    if (data.length < 34) return null;
     if (data[0] != respCodeChannelInfo) return null;
 
     final index = data[1];
     final name = readCString(data, 2, 32);
-    final psk = Uint8List.fromList(data.sublist(34, 50));
+    final psk = Uint8List(16);
+    if (data.length > 34) {
+      final availableSecretBytes = data.length - 34;
+      final secretCopyLength = availableSecretBytes < 16
+          ? availableSecretBytes
+          : 16;
+      psk.setRange(0, secretCopyLength, data.sublist(34, 34 + secretCopyLength));
+    }
 
     return Channel(index: index, name: name, psk: psk);
   }
