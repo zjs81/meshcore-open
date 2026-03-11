@@ -527,17 +527,15 @@ Uint8List buildRemoveContactFrame(Uint8List pubKey) {
 }
 
 // Build CMD_APP_START frame
-// Format: [cmd][app_ver][reserved x6][app_name...]
+// Format: [cmd][app_ver][app_name x9]
 Uint8List buildAppStartFrame({
-  String appName = 'MeshCoreOpen',
-  int appVersion = 1,
+  String appName = 'mccli',
+  int appVersion = appProtocolVersion,
 }) {
   final writer = BufferWriter();
   writer.writeByte(cmdAppStart);
   writer.writeByte(appVersion);
-  writer.writeBytes(Uint8List(6)); // reserved bytes
-  writer.writeString(appName);
-  writer.writeByte(0);
+  writer.writeCString(appName, 9);
   return writer.toBytes();
 }
 
