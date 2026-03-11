@@ -106,7 +106,9 @@ class _ChannelsScreenState extends State<ChannelsScreen>
   @override
   Widget build(BuildContext context) {
     final connector = context.watch<MeshCoreConnector>();
+
     final channelMessageStore = ChannelMessageStore();
+    channelMessageStore.setPublicKeyHex = connector.selfPublicKeyHex;
 
     // Auto-navigate back to scanner if disconnected
     if (!checkConnectionAndNavigate(connector)) {

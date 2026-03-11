@@ -2,14 +2,24 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '../models/channel.dart';
+import '../utils/app_logger.dart';
 import 'prefs_manager.dart';
 
 class ChannelStore {
-  static const String _key = 'channels';
+  static const String _keyPrefix = 'channels';
+  String publicKeyHex = '';
+  set setPublicKeyHex(String value) =>
+      publicKeyHex = value.length > 10 ? value.substring(0, 10) : '';
+
+  String get keyFor => '$_keyPrefix$publicKeyHex';
 
   Future<List<Channel>> loadChannels() async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot load channels.');
+      return [];
+    }
     final prefs = PrefsManager.instance;
-    final jsonStr = prefs.getString(_key);
+    final jsonStr = prefs.getString(keyFor);
     if (jsonStr == null) return [];
 
     try {
@@ -23,9 +33,13 @@ class ChannelStore {
   }
 
   Future<void> saveChannels(List<Channel> channels) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot save channels.');
+      return;
+    }
     final prefs = PrefsManager.instance;
     final jsonList = channels.map(_toJson).toList();
-    await prefs.setString(_key, jsonEncode(jsonList));
+    await prefs.setString(keyFor, jsonEncode(jsonList));
   }
 
   Map<String, dynamic> _toJson(Channel channel) {

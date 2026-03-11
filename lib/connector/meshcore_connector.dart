@@ -291,6 +291,7 @@ class MeshCoreConnector extends ChangeNotifier {
   bool get isLoadingChannels => _isLoadingChannels;
   Stream<Uint8List> get receivedFrames => _receivedFramesController.stream;
   Uint8List? get selfPublicKey => _selfPublicKey;
+  String get selfPublicKeyHex => pubKeyToHex(_selfPublicKey ?? Uint8List(0));
   String? get selfName => _selfName;
   double? get selfLatitude => _selfLatitude;
   double? get selfLongitude => _selfLongitude;
@@ -1193,7 +1194,6 @@ class MeshCoreConnector extends ChangeNotifier {
 
     await _requestDeviceInfo();
     _startBatteryPolling();
-    unawaited(loadDiscoveredContactCache());
 
     final gotSelfInfo = await _waitForSelfInfo(
       timeout: const Duration(seconds: 3),
@@ -2489,6 +2489,28 @@ class MeshCoreConnector extends ChangeNotifier {
         selfName.isNotEmpty) {
       _usbManager.updateConnectedLabel(selfName);
     }
+
+    //set all the stores' public key so they can load the correct data
+    _channelMessageStore.setPublicKeyHex = selfPublicKeyHex;
+    _messageStore.setPublicKeyHex = selfPublicKeyHex;
+    _channelOrderStore.setPublicKeyHex = selfPublicKeyHex;
+    _channelSettingsStore.setPublicKeyHex = selfPublicKeyHex;
+    _contactSettingsStore.setPublicKeyHex = selfPublicKeyHex;
+    _contactStore.setPublicKeyHex = selfPublicKeyHex;
+    _discoveryContactStore.setPublicKeyHex = selfPublicKeyHex;
+    _channelStore.setPublicKeyHex = selfPublicKeyHex;
+    _unreadStore.setPublicKeyHex = selfPublicKeyHex;
+
+    // Now that we have self info, we can load all the persisted data for this node
+    _loadChannelOrder();
+    loadContactCache();
+    loadChannelSettings();
+    loadCachedChannels();
+
+    // Load persisted channel messages
+    loadAllChannelMessages();
+    loadUnreadState();
+
     _awaitingSelfInfo = false;
     _selfInfoRetryTimer?.cancel();
     _selfInfoRetryTimer = null;

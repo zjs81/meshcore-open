@@ -2,24 +2,39 @@ import 'dart:convert';
 import 'dart:typed_data';
 import '../models/message.dart';
 import '../helpers/smaz.dart';
+import '../utils/app_logger.dart';
 import 'prefs_manager.dart';
 
 class MessageStore {
   static const String _keyPrefix = 'messages_';
 
+  String publicKeyHex = '';
+  set setPublicKeyHex(String value) =>
+      publicKeyHex = value.length > 10 ? value.substring(0, 10) : '';
+
+  String get keyFor => '$_keyPrefix$publicKeyHex';
+
   Future<void> saveMessages(
     String contactKeyHex,
     List<Message> messages,
   ) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot save messages.');
+      return;
+    }
     final prefs = PrefsManager.instance;
-    final key = '$_keyPrefix$contactKeyHex';
+    final key = '$keyFor$contactKeyHex';
     final jsonList = messages.map(_messageToJson).toList();
     await prefs.setString(key, jsonEncode(jsonList));
   }
 
   Future<List<Message>> loadMessages(String contactKeyHex) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot load messages.');
+      return [];
+    }
     final prefs = PrefsManager.instance;
-    final key = '$_keyPrefix$contactKeyHex';
+    final key = '$keyFor$contactKeyHex';
     final jsonString = prefs.getString(key);
     if (jsonString == null) return [];
 
