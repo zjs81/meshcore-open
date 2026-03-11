@@ -114,14 +114,37 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen> {
     super.dispose();
   }
 
-  Uint8List addReturnPath(Uint8List pathBytes) {
-    Uint8List? traceBytes;
-    final len = (pathBytes.length + pathBytes.length - 1);
-    traceBytes = Uint8List(len);
-    for (int i = 0; i < pathBytes.length; i++) {
-      traceBytes[i] = pathBytes[i];
-      if (i < pathBytes.length - 1) {
-        traceBytes[len - 1 - i] = pathBytes[i];
+  Uint8List buildPath(Uint8List pathBytes) {
+    Uint8List traceBytes;
+
+    if (pathBytes.isEmpty) {
+      traceBytes = Uint8List(1);
+      traceBytes[0] = widget.targetContact?.publicKey[0] ?? 0;
+      return traceBytes;
+    }
+
+    if (widget.targetContact?.type == advTypeRepeater ||
+        widget.targetContact?.type == advTypeRoom) {
+      final len = (pathBytes.length + pathBytes.length + 1);
+      traceBytes = Uint8List(len);
+      traceBytes[pathBytes.length] = widget.targetContact?.publicKey[0] ?? 0;
+      for (int i = 0; i < pathBytes.length; i++) {
+        traceBytes[i] = pathBytes[i];
+        if (i < pathBytes.length) {
+          traceBytes[len - 1 - i] = pathBytes[i];
+        }
+      }
+    } else {
+      if (pathBytes.length < 2) {
+        return pathBytes[0] == 0 ? Uint8List(0) : pathBytes;
+      }
+      final len = (pathBytes.length + pathBytes.length - 1);
+      traceBytes = Uint8List(len);
+      for (int i = 0; i < pathBytes.length; i++) {
+        traceBytes[i] = pathBytes[i];
+        if (i < pathBytes.length - 1) {
+          traceBytes[len - 1 - i] = pathBytes[i];
+        }
       }
     }
     return traceBytes;
@@ -142,10 +165,15 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen> {
         : widget.path;
 
     if (widget.flipPathRound) {
-      path = addReturnPath(pathTmp);
+      path = buildPath(pathTmp);
     } else {
       path = pathTmp;
     }
+
+    appLogger.info(
+      'Initiating path trace with path: ${_formatPathPrefixes(path)}',
+      tag: 'PathTraceMapScreen',
+    );
 
     final connector = Provider.of<MeshCoreConnector>(context, listen: false);
     final frame = buildTraceReq(
