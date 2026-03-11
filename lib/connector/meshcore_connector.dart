@@ -3275,15 +3275,10 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   void _handleMessageSent(Uint8List frame) {
-    // Frame format from C++:
-    // [0] = RESP_CODE_SENT
-    // [1] = is_flood (1 or 0)
-    // [2-5] = expected_ack_hash (uint32)
-    // [6-9] = estimated_timeout_ms (uint32)
-
-    if (frame.length >= 10) {
-      final ackHash = Uint8List.fromList(frame.sublist(2, 6));
-      final timeoutMs = readUint32LE(frame, 6);
+    final packet = parseMessageSentPacket(frame);
+    if (packet != null) {
+      final ackHash = packet.expectedAck;
+      final timeoutMs = packet.suggestedTimeoutMs;
 
       // Check if this is a CLI command ACK - if so, ignore it
       if (_lastSentWasCliCommand) {
@@ -3390,14 +3385,12 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   void _handleSendConfirmed(Uint8List frame) {
-    // Frame format from C++:
-    // [0] = PUSH_CODE_SEND_CONFIRMED
-    // [1-4] = ack_hash (uint32)
-    // [5-8] = trip_time_ms (uint32)
-
-    if (frame.length >= 9) {
-      final ackHash = Uint8List.fromList(frame.sublist(1, 5));
-      final tripTimeMs = readUint32LE(frame, 5);
+    final packet = parseAckPacket(frame);
+    if (packet != null) {
+      final ackHash = packet.ackCode.length >= 4
+          ? Uint8List.fromList(packet.ackCode.sublist(0, 4))
+          : packet.ackCode;
+      final tripTimeMs = packet.tripTimeMs ?? 0;
 
       // CLI command ACKs are already filtered in _handleMessageSent, so this should only see real messages
 

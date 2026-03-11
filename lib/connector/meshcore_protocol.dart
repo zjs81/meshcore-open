@@ -361,6 +361,56 @@ class ParsedContactText {
   const ParsedContactText({required this.senderPrefix, required this.text});
 }
 
+class MessageSentPacket {
+  final int messageType;
+  final Uint8List expectedAck;
+  final int suggestedTimeoutMs;
+
+  const MessageSentPacket({
+    required this.messageType,
+    required this.expectedAck,
+    required this.suggestedTimeoutMs,
+  });
+}
+
+MessageSentPacket? parseMessageSentPacket(Uint8List frame) {
+  if (frame.length < 10 || frame[0] != respCodeSent) {
+    return null;
+  }
+
+  return MessageSentPacket(
+    messageType: frame[1],
+    expectedAck: Uint8List.fromList(frame.sublist(2, 6)),
+    suggestedTimeoutMs: readUint32LE(frame, 6) * 1000,
+  );
+}
+
+class AckPacket {
+  final Uint8List ackCode;
+  final int? tripTimeMs;
+
+  const AckPacket({required this.ackCode, this.tripTimeMs});
+}
+
+AckPacket? parseAckPacket(Uint8List frame) {
+  if (frame.length < 5 || frame[0] != pushCodeSendConfirmed) {
+    return null;
+  }
+
+  if (frame.length >= 9) {
+    return AckPacket(
+      ackCode: Uint8List.fromList(frame.sublist(1, 5)),
+      tripTimeMs: readUint32LE(frame, 5),
+    );
+  }
+
+  if (frame.length >= 7) {
+    return AckPacket(ackCode: Uint8List.fromList(frame.sublist(1, 7)));
+  }
+
+  return null;
+}
+
 ParsedContactText? parseContactMessageText(Uint8List frame) {
   if (frame.isEmpty) return null;
   final code = frame[0];
