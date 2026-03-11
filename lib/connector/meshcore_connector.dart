@@ -2068,12 +2068,8 @@ class MeshCoreConnector extends ChangeNotifier {
 
   Future<void> sendCliCommand(String command) async {
     if (!isConnected) return;
-
-    // CLI commands are sent as UTF-8 text with a special prefix
-    final commandBytes = utf8.encode(command);
-    final bytes = Uint8List.fromList([0x01, ...commandBytes, 0x00]);
     _lastSentWasCliCommand = true;
-    await sendFrame(bytes);
+    await sendFrame(buildLocalCliCommandFrame(command));
   }
 
   Future<void> setNodeName(String name) async {
@@ -2101,7 +2097,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
   Future<void> rebootDevice() async {
     if (!isConnected) return;
-    await sendFrame(buildRebootFrame());
+    await sendCliCommand('reboot');
   }
 
   Future<void> setPrivacyMode(bool enabled) async {
