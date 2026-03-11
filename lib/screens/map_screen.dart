@@ -177,12 +177,16 @@ class _MapScreenState extends State<MapScreen> {
 
         // Filter by location
         final contactsWithLocation = filteredByKeyPrefix
-            .where(
-              (c) =>
-                  c.hasLocation &&
-                  c.latitude!.abs() > 1 &&
-                  c.longitude!.abs() > 1,
-            )
+            .where((c) {
+              if (!c.hasLocation) {
+                return false;
+              }
+              const double epsilon = 1e-6;
+              final double lat = c.latitude!;
+              final double lon = c.longitude!;
+              // Exclude only coordinates that are effectively at (0,0)
+              return lat.abs() > epsilon || lon.abs() > epsilon;
+            })
             .toList();
 
         // All contacts with a known location — used as anchors regardless of
