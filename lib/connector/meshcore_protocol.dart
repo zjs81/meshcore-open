@@ -361,6 +361,32 @@ class ParsedContactText {
   const ParsedContactText({required this.senderPrefix, required this.text});
 }
 
+class BatteryStatusPacket {
+  final int levelPercent;
+  final int? usedStorageKb;
+  final int? totalStorageKb;
+
+  const BatteryStatusPacket({
+    required this.levelPercent,
+    this.usedStorageKb,
+    this.totalStorageKb,
+  });
+}
+
+BatteryStatusPacket? parseBatteryStatusPacket(Uint8List frame) {
+  if (frame.length < 3 || frame[0] != respCodeBattAndStorage) {
+    return null;
+  }
+
+  final levelPercent = readUint16LE(frame, 1);
+  final hasStorage = frame.length >= 11;
+  return BatteryStatusPacket(
+    levelPercent: levelPercent,
+    usedStorageKb: hasStorage ? readUint32LE(frame, 3) : null,
+    totalStorageKb: hasStorage ? readUint32LE(frame, 7) : null,
+  );
+}
+
 ParsedContactText? parseContactMessageText(Uint8List frame) {
   if (frame.isEmpty) return null;
   final code = frame[0];

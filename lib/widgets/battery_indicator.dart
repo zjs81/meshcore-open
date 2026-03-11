@@ -43,12 +43,12 @@ class _BatteryIndicatorState extends State<BatteryIndicator> {
     final percent = widget.connector.batteryPercent;
     final millivolts = widget.connector.batteryMillivolts;
 
-    if (millivolts == null) {
+    if (percent == null && millivolts == null) {
       return const SizedBox.shrink();
     }
 
     final String displayText;
-    if (_showBatteryVoltage) {
+    if (_showBatteryVoltage && millivolts != null) {
       displayText = '${(millivolts / 1000.0).toStringAsFixed(2)}V';
     } else {
       displayText = percent != null ? '$percent%' : '—';
@@ -57,11 +57,13 @@ class _BatteryIndicatorState extends State<BatteryIndicator> {
     final batteryUi = batteryUiForPercent(percent);
 
     return InkWell(
-      onTap: () {
-        setState(() {
-          _showBatteryVoltage = !_showBatteryVoltage;
-        });
-      },
+      onTap: millivolts == null
+          ? null
+          : () {
+              setState(() {
+                _showBatteryVoltage = !_showBatteryVoltage;
+              });
+            },
       borderRadius: BorderRadius.circular(8),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),

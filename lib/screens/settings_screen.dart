@@ -174,16 +174,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     // figure out display value
     final String displayValue;
-    if (millivolts == null) {
+    if (percent != null && !_showBatteryVoltage) {
+      displayValue = l10n.common_percentValue(percent);
+    } else if (millivolts == null) {
       displayValue = l10n.common_notAvailable;
     } else if (_showBatteryVoltage) {
       displayValue = l10n.common_voltageValue(
         (millivolts / 1000.0).toStringAsFixed(2),
       );
     } else {
-      displayValue = percent != null
-          ? l10n.common_percentValue(percent)
-          : l10n.common_notAvailable;
+      displayValue = l10n.common_notAvailable;
     }
 
     final IconData icon;

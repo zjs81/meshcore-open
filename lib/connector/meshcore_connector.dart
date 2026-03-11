@@ -159,6 +159,7 @@ class MeshCoreConnector extends ChangeNotifier {
   bool? _clientRepeat;
   int? _firmwareVerCode;
   int? _batteryMillivolts;
+  int? _batteryPercentValue;
   double? _selfLatitude;
   double? _selfLongitude;
   final List<DirectRepeater> _directRepeaters = List.empty(growable: true);
@@ -310,6 +311,7 @@ class MeshCoreConnector extends ChangeNotifier {
   int? get firmwareVerCode => _firmwareVerCode;
   Map<String, String>? get currentCustomVars => _currentCustomVars;
   int? get batteryMillivolts => _batteryMillivolts;
+  bool get hasBatteryVoltage => _batteryMillivolts != null;
   int get maxContacts => _maxContacts;
   int get maxChannels => _maxChannels;
   Set<String> get knownContactKeys => Set.unmodifiable(_knownContactKeys);
@@ -319,12 +321,12 @@ class MeshCoreConnector extends ChangeNotifier {
       _isSyncingChannels && _totalChannelsToRequest > 0
       ? ((_nextChannelIndexToRequest / _totalChannelsToRequest) * 100).round()
       : 0;
-  int? get batteryPercent => _batteryMillivolts == null
+  int? get batteryPercent => _batteryPercentValue ?? (_batteryMillivolts == null
       ? null
       : estimateBatteryPercentFromMillivolts(
           _batteryMillivolts!,
           _batteryChemistryForDevice(),
-        );
+        ));
   RepeaterBatterySnapshot? getRepeaterBatterySnapshot(String contactKeyHex) =>
       _repeaterBatterySnapshots[contactKeyHex];
   int? getRepeaterBatteryMillivolts(String contactKeyHex) =>
@@ -1336,6 +1338,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _clientRepeat = null;
     _firmwareVerCode = null;
     _batteryMillivolts = null;
+    _batteryPercentValue = null;
     _repeaterBatterySnapshots.clear();
     _batteryRequested = false;
     _awaitingSelfInfo = false;
@@ -2588,20 +2591,16 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   void _handleBatteryAndStorage(Uint8List frame) {
-    // Frame format from C++:
-    // [0] = RESP_CODE_BATT_AND_STORAGE
-    // [1-2] = battery_mv (uint16 LE)
-    // [3-6] = storage_used_kb (uint32 LE)
-    // [7-10] = storage_total_kb (uint32 LE)
-    if (frame.length >= 3) {
-      _batteryMillivolts = readUint16LE(frame, 1);
-      final volts = (_batteryMillivolts! / 1000.0).toStringAsFixed(2);
-      _appDebugLogService?.info(
-        'Pulled battery: $volts V ($_batteryMillivolts mV)',
-        tag: 'Battery',
-      );
-      notifyListeners();
-    }
+    final packet = parseBatteryStatusPacket(frame);
+    if (packet == null) return;
+
+    _batteryPercentValue = packet.levelPercent.clamp(0, 100);
+    _batteryMillivolts = null;
+    _appDebugLogService?.info(
+      'Pulled battery level: ${_batteryPercentValue!}%',
+      tag: 'Battery',
+    );
+    notifyListeners();
   }
 
   void _checkManualAddContacts() async {
