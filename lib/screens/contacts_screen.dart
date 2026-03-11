@@ -24,6 +24,7 @@ import '../widgets/quick_switch_bar.dart';
 import '../widgets/repeater_login_dialog.dart';
 import '../widgets/room_login_dialog.dart';
 import '../widgets/unread_badge.dart';
+import '../services/room_sync_service.dart';
 import 'channels_screen.dart';
 import 'chat_screen.dart';
 import 'discovery_screen.dart';
@@ -727,6 +728,7 @@ class _ContactsScreenState extends State<ContactsScreen>
     if (contact.type == advTypeRepeater) {
       _showRepeaterLogin(context, contact);
     } else if (contact.type == advTypeRoom) {
+      context.read<MeshCoreConnector>().markContactRead(contact.publicKeyHex);
       _showRoomLogin(context, contact, RoomLoginDestination.chat);
     } else {
       context.read<MeshCoreConnector>().markContactRead(contact.publicKeyHex);
@@ -779,12 +781,24 @@ class _ContactsScreenState extends State<ContactsScreen>
     Contact room,
     RoomLoginDestination destination,
   ) {
+    // For chat, skip the login dialog if the room already has an active session.
+    // Management always needs the dialog to obtain the password for admin commands.
+    if (destination == RoomLoginDestination.chat) {
+      final roomSync = context.read<RoomSyncService>();
+      if (roomSync.isRoomSessionActive(room.publicKeyHex)) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChatScreen(contact: room)),
+        );
+        return;
+      }
+    }
+
     showDialog(
       context: context,
       builder: (context) => RoomLoginDialog(
         room: room,
         onLogin: (password) {
-          context.read<MeshCoreConnector>().markContactRead(room.publicKeyHex);
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -1045,6 +1059,7 @@ class _ContactsScreenState extends State<ContactsScreen>
   ) {
     final isRepeater = contact.type == advTypeRepeater;
     final isRoom = contact.type == advTypeRoom;
+    final roomSyncService = context.read<RoomSyncService>();
     final isFavorite = contact.isFavorite;
 
     showModalBottomSheet(
@@ -1107,6 +1122,22 @@ class _ContactsScreenState extends State<ContactsScreen>
                 onTap: () {
                   Navigator.pop(sheetContext);
                   _showRoomLogin(context, contact, RoomLoginDestination.chat);
+                },
+              ),
+              SwitchListTile(
+                secondary: const Icon(Icons.sync),
+                title: const Text('Auto-sync this room'),
+                subtitle: const Text(
+                  'Enable automatic login and background catch-up sync for this room.',
+                ),
+                value: roomSyncService.isRoomAutoSyncEnabled(
+                  contact.publicKeyHex,
+                ),
+                onChanged: (enabled) async {
+                  await roomSyncService.setRoomAutoSyncEnabled(
+                    contact.publicKeyHex,
+                    enabled,
+                  );
                 },
               ),
               ListTile(
@@ -1251,6 +1282,22 @@ class _ContactTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final roomSync = context.watch<RoomSyncService>();
+    final roomStatus = contact.type == advTypeRoom
+        ? roomSync.roomStatusLabel(contact.publicKeyHex)
+        : null;
+    final roomStatusColor = contact.type != advTypeRoom
+        ? Colors.grey[600]
+        : switch (roomSync.roomStatusKind(contact.publicKeyHex)) {
+            RoomSyncStatusKind.connectedSynced => Colors.green[700]!,
+            RoomSyncStatusKind.syncing => Colors.blue[700]!,
+            RoomSyncStatusKind.connectedWaitingSync ||
+            RoomSyncStatusKind.connectedStale => Colors.orange[700]!,
+            RoomSyncStatusKind.syncDisabled ||
+            RoomSyncStatusKind.notLoggedIn ||
+            RoomSyncStatusKind.syncOff => Colors.grey[700]!,
+          };
+
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: _getTypeColor(contact.type),
@@ -1261,6 +1308,13 @@ class _ContactTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(contact.pathLabel, maxLines: 1, overflow: TextOverflow.ellipsis),
+          if (roomStatus != null)
+            Text(
+              roomStatus,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 12, color: roomStatusColor),
+            ),
           Text(
             contact.shortPubKeyHex,
             maxLines: 1,

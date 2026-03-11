@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
+import '../services/room_sync_service.dart';
 import '../services/storage_service.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
@@ -81,6 +82,7 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
 
     try {
       final password = _passwordController.text;
+      final roomSyncService = context.read<RoomSyncService>();
       final room = _resolveRepeater(_connector);
       appLogger.info(
         'Login started for ${room.name} (${room.publicKeyHex})',
@@ -152,6 +154,8 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
         // Remove saved password if user unchecked the box
         await _storage.removeRepeaterPassword(widget.room.publicKeyHex);
       }
+
+      await roomSyncService.registerManualRoomLogin(widget.room.publicKeyHex);
 
       if (mounted) {
         Navigator.pop(context, password);

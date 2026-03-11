@@ -32,6 +32,8 @@ class AppSettingsScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildMessagingCard(context, settingsService),
                 const SizedBox(height: 16),
+                _buildRoomSyncCard(context, settingsService),
+                const SizedBox(height: 16),
                 _buildBatteryCard(context, settingsService, connector),
                 const SizedBox(height: 16),
                 _buildMapSettingsCard(context, settingsService),
@@ -410,6 +412,120 @@ class AppSettingsScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildRoomSyncCard(
+    BuildContext context,
+    AppSettingsService settingsService,
+  ) {
+    final settings = settingsService.settings;
+    return Card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text(
+              'Room Sync',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.sync),
+            title: const Text('Enable room auto-sync'),
+            subtitle: const Text(
+              'Automatically keep room-server backlog synced while connected.',
+            ),
+            value: settings.roomSyncEnabled,
+            onChanged: (value) => settingsService.setRoomSyncEnabled(value),
+          ),
+          const Divider(height: 1),
+          SwitchListTile(
+            secondary: const Icon(Icons.login),
+            title: const Text('Auto-login saved room sessions'),
+            subtitle: const Text(
+              'On reconnect, login to room servers with saved passwords.',
+            ),
+            value: settings.roomSyncAutoLoginEnabled,
+            onChanged: settings.roomSyncEnabled
+                ? (value) => settingsService.setRoomSyncAutoLoginEnabled(value)
+                : null,
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: const Icon(Icons.timer_outlined),
+            title: const Text('Base sync interval'),
+            subtitle: Text('${settings.roomSyncIntervalSeconds}s'),
+            trailing: const Icon(Icons.chevron_right),
+            enabled: settings.roomSyncEnabled,
+            onTap: settings.roomSyncEnabled
+                ? () => _editIntegerSetting(
+                    context: context,
+                    title: 'Base sync interval (seconds)',
+                    initialValue: settings.roomSyncIntervalSeconds,
+                    min: 15,
+                    max: 3600,
+                    onSave: settingsService.setRoomSyncIntervalSeconds,
+                  )
+                : null,
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: const Icon(Icons.schedule),
+            title: const Text('Max backoff interval'),
+            subtitle: Text('${settings.roomSyncMaxIntervalSeconds}s'),
+            trailing: const Icon(Icons.chevron_right),
+            enabled: settings.roomSyncEnabled,
+            onTap: settings.roomSyncEnabled
+                ? () => _editIntegerSetting(
+                    context: context,
+                    title: 'Max backoff interval (seconds)',
+                    initialValue: settings.roomSyncMaxIntervalSeconds,
+                    min: 30,
+                    max: 7200,
+                    onSave: settingsService.setRoomSyncMaxIntervalSeconds,
+                  )
+                : null,
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: const Icon(Icons.hourglass_bottom),
+            title: const Text('Sync timeout'),
+            subtitle: Text('${settings.roomSyncTimeoutSeconds}s'),
+            trailing: const Icon(Icons.chevron_right),
+            enabled: settings.roomSyncEnabled,
+            onTap: settings.roomSyncEnabled
+                ? () => _editIntegerSetting(
+                    context: context,
+                    title: 'Sync timeout (seconds)',
+                    initialValue: settings.roomSyncTimeoutSeconds,
+                    min: 5,
+                    max: 120,
+                    onSave: settingsService.setRoomSyncTimeoutSeconds,
+                  )
+                : null,
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: const Icon(Icons.warning_amber_outlined),
+            title: const Text('Mark room stale after'),
+            subtitle: Text('${settings.roomSyncStaleMinutes} min'),
+            trailing: const Icon(Icons.chevron_right),
+            enabled: settings.roomSyncEnabled,
+            onTap: settings.roomSyncEnabled
+                ? () => _editIntegerSetting(
+                    context: context,
+                    title: 'Stale threshold (minutes)',
+                    initialValue: settings.roomSyncStaleMinutes,
+                    min: 1,
+                    max: 240,
+                    onSave: settingsService.setRoomSyncStaleMinutes,
+                  )
+                : null,
+          ),
+        ],
+      ),
+    );
+  }
+
   // Fixed rendering issues
   Widget _buildBatteryCard(
     BuildContext context,
@@ -726,6 +842,54 @@ class AppSettingsScreen extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(context.l10n.common_close),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _editIntegerSetting({
+    required BuildContext context,
+    required String title,
+    required int initialValue,
+    required int min,
+    required int max,
+    required Future<void> Function(int) onSave,
+  }) {
+    final controller = TextEditingController(text: initialValue.toString());
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            helperText: 'Allowed range: $min - $max',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(context.l10n.common_cancel),
+          ),
+          TextButton(
+            onPressed: () async {
+              final parsed = int.tryParse(controller.text.trim());
+              if (parsed == null || parsed < min || parsed > max) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Value must be between $min and $max'),
+                  ),
+                );
+                return;
+              }
+              await onSave(parsed);
+              if (!context.mounted) return;
+              Navigator.pop(context);
+            },
+            child: Text(context.l10n.common_save),
           ),
         ],
       ),

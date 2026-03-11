@@ -63,6 +63,13 @@ MeshCore Open is a cross-platform mobile application for communicating with Mesh
 - **Statistics Dashboard**: View repeater traffic, connected clients, and system health
 - **Remote Management**: Administer repeaters from anywhere on the mesh network
 
+### Room Server Catch-Up
+
+- **Auto Login + Catch-Up Sync**: Optional automatic login with push-priority backlog sync and periodic fallback for room servers with saved credentials
+- **Per-Room Sync Control**: Auto-sync is opt-in per room server from the room options sheet
+- **Sync Health Indicators**: Room status in contacts/chat (`synced`, `syncing`, `stale`, `not logged in`, `sync disabled`)
+- **Tunable Sync Parameters**: Configure base interval, max backoff, timeout, and stale threshold in app settings (conservative defaults)
+
 ## Technical Details
 
 ### Architecture
@@ -161,11 +168,13 @@ lib/
 │   ├── notification_service.dart      # Push notifications
 │   ├── message_retry_service.dart     # Automatic message retry
 │   ├── background_service.dart        # Background BLE connection
-│   └── map_tile_cache_service.dart    # Offline map storage
+│   ├── map_tile_cache_service.dart    # Offline map storage
+│   └── room_sync_service.dart         # Room server auto-login and catch-up orchestration
 └── storage/
     ├── message_store.dart       # Message persistence
     ├── contact_store.dart       # Contact database
-    └── unread_store.dart        # Unread message tracking
+    ├── unread_store.dart        # Unread message tracking
+    └── room_sync_store.dart     # Persistent room sync state
 ```
 
 ## BLE Protocol
@@ -192,6 +201,11 @@ Messages are transmitted as binary frames using a custom protocol optimized for 
 - **Notifications**: Configurable for messages, channels, and node advertisements
 - **Battery Chemistry**: Support for NMC, LiFePO4, and LiPo battery types
 - **Message Retry**: Automatic retry with configurable path clearing
+- **Room Sync**: Global enable or disable, auto-login toggle, per-room opt-in, interval/backoff/timeout/stale thresholds
+
+### Room Sync Guide
+
+Detailed room sync behavior and validation steps are documented in `docs/ROOM_SYNC.md`.
 
 ### Device Settings
 
@@ -211,6 +225,7 @@ This is an open-source project. Contributions are welcome!
 - Use Material 3 design components
 - Write clear commit messages
 - Test on both Android and iOS before submitting PRs
+- For room sync changes, run the checklist in `docs/ROOM_SYNC.md`
 
 ### Code Style
 

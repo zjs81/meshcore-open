@@ -147,6 +147,32 @@ class AppSettingsService extends ChangeNotifier {
     );
   }
 
+  Future<void> setRoomSyncEnabled(bool value) async {
+    await updateSettings(_settings.copyWith(roomSyncEnabled: value));
+  }
+
+  Future<void> setRoomSyncAutoLoginEnabled(bool value) async {
+    await updateSettings(_settings.copyWith(roomSyncAutoLoginEnabled: value));
+  }
+
+  Future<void> setRoomSyncIntervalSeconds(int seconds) async {
+    await updateSettings(_settings.copyWith(roomSyncIntervalSeconds: seconds));
+  }
+
+  Future<void> setRoomSyncMaxIntervalSeconds(int seconds) async {
+    await updateSettings(
+      _settings.copyWith(roomSyncMaxIntervalSeconds: seconds),
+    );
+  }
+
+  Future<void> setRoomSyncTimeoutSeconds(int seconds) async {
+    await updateSettings(_settings.copyWith(roomSyncTimeoutSeconds: seconds));
+  }
+
+  Future<void> setRoomSyncStaleMinutes(int minutes) async {
+    await updateSettings(_settings.copyWith(roomSyncStaleMinutes: minutes));
+  }
+
   Future<void> setBatteryChemistryForRepeater(
     String repeaterPubKeyHex,
     String chemistry,

@@ -38,6 +38,12 @@ class AppSettings {
   final Map<String, String> batteryChemistryByDeviceId;
   final Map<String, String> batteryChemistryByRepeaterId;
   final UnitSystem unitSystem;
+  final bool roomSyncEnabled;
+  final bool roomSyncAutoLoginEnabled;
+  final int roomSyncIntervalSeconds;
+  final int roomSyncMaxIntervalSeconds;
+  final int roomSyncTimeoutSeconds;
+  final int roomSyncStaleMinutes;
   final Set<String> mutedChannels;
 
   AppSettings({
@@ -65,6 +71,12 @@ class AppSettings {
     Map<String, String>? batteryChemistryByDeviceId,
     Map<String, String>? batteryChemistryByRepeaterId,
     this.unitSystem = UnitSystem.metric,
+    this.roomSyncEnabled = true,
+    this.roomSyncAutoLoginEnabled = true,
+    this.roomSyncIntervalSeconds = 300,
+    this.roomSyncMaxIntervalSeconds = 3600,
+    this.roomSyncTimeoutSeconds = 20,
+    this.roomSyncStaleMinutes = 45,
     Set<String>? mutedChannels,
   }) : batteryChemistryByDeviceId = batteryChemistryByDeviceId ?? {},
        batteryChemistryByRepeaterId = batteryChemistryByRepeaterId ?? {},
@@ -96,6 +108,12 @@ class AppSettings {
       'battery_chemistry_by_device_id': batteryChemistryByDeviceId,
       'battery_chemistry_by_repeater_id': batteryChemistryByRepeaterId,
       'unit_system': unitSystem.value,
+      'room_sync_enabled': roomSyncEnabled,
+      'room_sync_auto_login_enabled': roomSyncAutoLoginEnabled,
+      'room_sync_interval_seconds': roomSyncIntervalSeconds,
+      'room_sync_max_interval_seconds': roomSyncMaxIntervalSeconds,
+      'room_sync_timeout_seconds': roomSyncTimeoutSeconds,
+      'room_sync_stale_minutes': roomSyncStaleMinutes,
       'muted_channels': mutedChannels.toList(),
     };
   }
@@ -147,6 +165,15 @@ class AppSettings {
           ) ??
           {},
       unitSystem: parseUnitSystem(json['unit_system']),
+      roomSyncEnabled: json['room_sync_enabled'] as bool? ?? true,
+      roomSyncAutoLoginEnabled:
+          json['room_sync_auto_login_enabled'] as bool? ?? true,
+      roomSyncIntervalSeconds:
+          json['room_sync_interval_seconds'] as int? ?? 300,
+      roomSyncMaxIntervalSeconds:
+          json['room_sync_max_interval_seconds'] as int? ?? 3600,
+      roomSyncTimeoutSeconds: json['room_sync_timeout_seconds'] as int? ?? 20,
+      roomSyncStaleMinutes: json['room_sync_stale_minutes'] as int? ?? 45,
       mutedChannels:
           ((json['muted_channels'] as List?)
               ?.map((e) => e.toString())
@@ -180,6 +207,12 @@ class AppSettings {
     Map<String, String>? batteryChemistryByDeviceId,
     Map<String, String>? batteryChemistryByRepeaterId,
     UnitSystem? unitSystem,
+    bool? roomSyncEnabled,
+    bool? roomSyncAutoLoginEnabled,
+    int? roomSyncIntervalSeconds,
+    int? roomSyncMaxIntervalSeconds,
+    int? roomSyncTimeoutSeconds,
+    int? roomSyncStaleMinutes,
     Set<String>? mutedChannels,
   }) {
     return AppSettings(
@@ -216,6 +249,16 @@ class AppSettings {
       batteryChemistryByRepeaterId:
           batteryChemistryByRepeaterId ?? this.batteryChemistryByRepeaterId,
       unitSystem: unitSystem ?? this.unitSystem,
+      roomSyncEnabled: roomSyncEnabled ?? this.roomSyncEnabled,
+      roomSyncAutoLoginEnabled:
+          roomSyncAutoLoginEnabled ?? this.roomSyncAutoLoginEnabled,
+      roomSyncIntervalSeconds:
+          roomSyncIntervalSeconds ?? this.roomSyncIntervalSeconds,
+      roomSyncMaxIntervalSeconds:
+          roomSyncMaxIntervalSeconds ?? this.roomSyncMaxIntervalSeconds,
+      roomSyncTimeoutSeconds:
+          roomSyncTimeoutSeconds ?? this.roomSyncTimeoutSeconds,
+      roomSyncStaleMinutes: roomSyncStaleMinutes ?? this.roomSyncStaleMinutes,
       mutedChannels: mutedChannels ?? this.mutedChannels,
     );
   }
