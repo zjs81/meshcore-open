@@ -138,15 +138,18 @@ class MeshCoreConnector extends ChangeNotifier {
   StreamSubscription<BluetoothConnectionState>? _connectionSubscription;
   StreamSubscription<List<int>>? _notifySubscription;
   Timer? _notifyListenersTimer;
+  Timer? _bleFrameFlushTimer;
   Timer? _selfInfoRetryTimer;
   Timer? _reconnectTimer;
   Timer? _batteryPollTimer;
   int _reconnectAttempts = 0;
   bool _notifyListenersDirty = false;
   static const Duration _notifyListenersDebounce = Duration(milliseconds: 50);
+  static const Duration _bleFrameFlushDelay = Duration(milliseconds: 20);
 
   final StreamController<Uint8List> _receivedFramesController =
       StreamController<Uint8List>.broadcast();
+  final MeshCoreFrameBuffer _bleFrameBuffer = MeshCoreFrameBuffer();
 
   Uint8List? _selfPublicKey;
   String? _selfName;
@@ -920,7 +923,7 @@ class MeshCoreConnector extends ChangeNotifier {
       }
       await Future<void>.delayed(const Duration(milliseconds: 200));
       _usbFrameSubscription = _usbManager.frameStream.listen(
-        _handleFrame,
+        _dispatchFrame,
         onError: (error, stackTrace) {
           _appDebugLogService?.error('USB transport error: $error', tag: 'USB');
           unawaited(disconnect(manual: false));
@@ -1138,7 +1141,7 @@ class MeshCoreConnector extends ChangeNotifier {
         }
       }
       _notifySubscription = _txCharacteristic!.onValueReceived.listen(
-        _handleFrame,
+        _handleBleNotification,
       );
 
       _setState(MeshCoreConnectionState.connected);
@@ -1308,6 +1311,9 @@ class MeshCoreConnector extends ChangeNotifier {
     _connectionSubscription = null;
     _selfInfoRetryTimer?.cancel();
     _selfInfoRetryTimer = null;
+    _bleFrameFlushTimer?.cancel();
+    _bleFrameFlushTimer = null;
+    _bleFrameBuffer.clear();
     _queueSyncTimeout?.cancel();
     _queueSyncTimeout = null;
     _queueSyncRetries = 0;
@@ -2280,10 +2286,26 @@ class MeshCoreConnector extends ChangeNotifier {
     await getChannels(force: true);
   }
 
-  void _handleFrame(List<int> data) {
+  void _handleBleNotification(List<int> data) {
     if (data.isEmpty) return;
 
-    final frame = Uint8List.fromList(data);
+    final frames = _bleFrameBuffer.addChunk(Uint8List.fromList(data));
+    for (final frame in frames) {
+      _dispatchFrame(frame);
+    }
+
+    _bleFrameFlushTimer?.cancel();
+    if (_bleFrameBuffer.hasBufferedData) {
+      _bleFrameFlushTimer = Timer(_bleFrameFlushDelay, () {
+        final flushed = _bleFrameBuffer.flush();
+        if (flushed != null) {
+          _dispatchFrame(flushed);
+        }
+      });
+    }
+  }
+
+  void _dispatchFrame(Uint8List frame) {
     _receivedFramesController.add(frame);
     _bleDebugLogService?.logFrame(frame, outgoing: false);
 
@@ -4138,6 +4160,9 @@ class MeshCoreConnector extends ChangeNotifier {
     _notifySubscription = null;
     _connectionSubscription?.cancel();
     _connectionSubscription = null;
+    _bleFrameFlushTimer?.cancel();
+    _bleFrameFlushTimer = null;
+    _bleFrameBuffer.clear();
 
     _device = null;
     _rxCharacteristic = null;
@@ -4264,6 +4289,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _usbFrameSubscription?.cancel();
     _notifySubscription?.cancel();
     _notifyListenersTimer?.cancel();
+    _bleFrameFlushTimer?.cancel();
     _reconnectTimer?.cancel();
     _batteryPollTimer?.cancel();
     _receivedFramesController.close();

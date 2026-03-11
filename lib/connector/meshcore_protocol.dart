@@ -438,6 +438,90 @@ AckPacket? parseAckPacket(Uint8List frame) {
 
   return null;
 }
+
+class MeshCoreFrameBuffer {
+  final BytesBuilder _buffer = BytesBuilder(copy: false);
+
+  bool get hasBufferedData => _buffer.length > 0;
+
+  List<Uint8List> addChunk(Uint8List chunk) {
+    if (chunk.isNotEmpty) {
+      _buffer.add(chunk);
+    }
+    return _drainCompleteFrames();
+  }
+
+  Uint8List? flush() {
+    if (!hasBufferedData) {
+      return null;
+    }
+    final data = _buffer.toBytes();
+    clear();
+    return data;
+  }
+
+  void clear() {
+    _buffer.clear();
+  }
+
+  List<Uint8List> _drainCompleteFrames() {
+    final frames = <Uint8List>[];
+
+    while (true) {
+      final buffered = _buffer.toBytes();
+      if (buffered.isEmpty) {
+        break;
+      }
+
+      final frameLength = _expectedFrameLength(buffered);
+      if (frameLength == null || buffered.length < frameLength) {
+        break;
+      }
+
+      frames.add(Uint8List.fromList(buffered.sublist(0, frameLength)));
+      _replaceBuffer(buffered.sublist(frameLength));
+    }
+
+    return frames;
+  }
+
+  void _replaceBuffer(List<int> bytes) {
+    _buffer.clear();
+    if (bytes.isNotEmpty) {
+      _buffer.add(bytes);
+    }
+  }
+
+  int? _expectedFrameLength(Uint8List data) {
+    if (data.isEmpty) return null;
+
+    switch (data[0]) {
+      case respCodeContactsStart:
+      case respCodeEndOfContacts:
+      case respCodeNoMoreMessages:
+      case pushCodeMsgWaiting:
+      case pushCodeLoginSuccess:
+      case pushCodeLoginFail:
+        return 1;
+      case respCodeCurrTime:
+        return 5;
+      case respCodeSent:
+        return 10;
+      case respCodeContact:
+      case pushCodeNewAdvert:
+        return contactFrameSize;
+      case pushCodePathUpdated:
+        return 33;
+      case respCodeAutoAddConfig:
+        return 2;
+      case pushCodeSendConfirmed:
+        if (data.length >= 9) return 9;
+        return null;
+      default:
+        return null;
+    }
+  }
+}
 ParsedContactText? parseContactMessageText(Uint8List frame) {
   if (frame.isEmpty) return null;
   final code = frame[0];
