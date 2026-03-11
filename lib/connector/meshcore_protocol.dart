@@ -601,10 +601,10 @@ Uint8List buildSetCustomVarFrame(String value) {
   return writer.toBytes();
 }
 
-// Build CMD_REBOOT frame
-// Format: [cmd]["reboot"]
-Uint8List buildRebootFrame() {
-  return Uint8List.fromList([cmdReboot, ...utf8.encode('reboot')]);
+// Build local CLI command frame
+// Format: [cmdAppStart][command...]\0
+Uint8List buildLocalCliCommandFrame(String command) {
+  return Uint8List.fromList([cmdAppStart, ...utf8.encode(command), 0]);
 }
 
 // Build CMD_SYNC_NEXT_MESSAGE frame
