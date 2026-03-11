@@ -1418,6 +1418,70 @@ class MeshCoreConnector extends ChangeNotifier {
     await sendFrame(buildGetBattAndStorageFrame());
   }
 
+  Future<bool> _sendFrameAndWaitForExpectedResponse(
+    Uint8List command, {
+    Duration timeout = const Duration(seconds: 5),
+  }) async {
+    final commandCode = command.isNotEmpty ? command[0] : -1;
+    final expectedCodes = expectedResponseCodesForCommand(commandCode);
+    if (expectedCodes.isEmpty) {
+      await sendFrame(command);
+      return true;
+    }
+
+    final completer = Completer<bool>();
+    late final StreamSubscription<Uint8List> subscription;
+    subscription = receivedFrames.listen((frame) {
+      if (frameMatchesCommandResponse(commandCode, frame) &&
+          !completer.isCompleted) {
+        completer.complete(true);
+      }
+    });
+
+    try {
+      await sendFrame(command);
+      final matched = await completer.future.timeout(
+        timeout,
+        onTimeout: () => false,
+      );
+      if (!matched) {
+        _appDebugLogService?.warn(
+          'Timed out waiting for response to command $commandCode',
+          tag: 'Protocol',
+        );
+      }
+      return matched;
+    } finally {
+      await subscription.cancel();
+    }
+  }
+
+  Future<void> _runStartupCommandSequence({required bool forceBattery}) async {
+    final commands = <Uint8List>[
+      buildDeviceQueryFrame(),
+      buildAppStartFrame(),
+      buildGetCustomVarsFrame(),
+      buildGetBattAndStorageFrame(),
+      buildGetAutoAddFlagsFrame(),
+    ];
+
+    for (final command in commands) {
+      if (!isConnected) {
+        return;
+      }
+      if (command.isNotEmpty &&
+          command[0] == cmdGetBattAndStorage &&
+          !forceBattery &&
+          _batteryRequested) {
+        continue;
+      }
+      await _sendFrameAndWaitForExpectedResponse(command);
+      if (command.isNotEmpty && command[0] == cmdGetBattAndStorage) {
+        _batteryRequested = true;
+      }
+    }
+  }
+
   void _startBatteryPolling() {
     _batteryPollTimer?.cancel();
     _batteryPollTimer = Timer.periodic(_batteryPollInterval, (timer) {
@@ -1448,11 +1512,7 @@ class MeshCoreConnector extends ChangeNotifier {
         _selfPublicKey == null) {
       _webInitialHandshakeRequestSent = true;
     }
-    await sendFrame(buildDeviceQueryFrame());
-    await sendFrame(buildAppStartFrame());
-    await requestBatteryStatus(force: true);
-    await sendFrame(buildGetCustomVarsFrame());
-    await sendFrame(buildGetAutoAddFlagsFrame());
+    await _runStartupCommandSequence(forceBattery: true);
 
     _scheduleSelfInfoRetry();
   }
@@ -1471,11 +1531,7 @@ class MeshCoreConnector extends ChangeNotifier {
         _selfPublicKey == null) {
       _webInitialHandshakeRequestSent = true;
     }
-    await sendFrame(buildDeviceQueryFrame());
-    await sendFrame(buildAppStartFrame());
-    await sendFrame(buildGetCustomVarsFrame());
-    await requestBatteryStatus();
-    await sendFrame(buildGetAutoAddFlagsFrame());
+    await _runStartupCommandSequence(forceBattery: false);
     _scheduleSelfInfoRetry();
   }
 

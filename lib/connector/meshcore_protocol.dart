@@ -255,6 +255,23 @@ const int pushCodeNewAdvert = 0x8A;
 const int pushCodeTelemetryResponse = 0x8B;
 const int pushCodeBinaryResponse = 0x8C;
 
+const Map<int, Set<int>> _commandResponseCodes = <int, Set<int>>{
+  cmdDeviceQuery: <int>{respCodeDeviceInfo},
+  cmdAppStart: <int>{respCodeSelfInfo},
+  cmdGetBattAndStorage: <int>{respCodeBattAndStorage},
+  cmdGetCustomVar: <int>{respCodeCustomVars},
+  cmdGetAutoAddConfig: <int>{respCodeAutoAddConfig},
+};
+
+Set<int> expectedResponseCodesForCommand(int commandCode) {
+  return _commandResponseCodes[commandCode] ?? const <int>{};
+}
+
+bool frameMatchesCommandResponse(int commandCode, Uint8List frame) {
+  if (frame.isEmpty) return false;
+  return expectedResponseCodesForCommand(commandCode).contains(frame[0]);
+}
+
 // Contact/advertisement types
 const int advTypeChat = 1;
 const int advTypeRepeater = 2;
