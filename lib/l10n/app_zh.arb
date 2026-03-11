@@ -1864,5 +1864,6 @@
   "usbStatus_connecting": "连接USB设备...",
   "usbStatus_notConnected": "选择一个 USB 设备",
   "usbConnectionFailed": "USB 连接失败：{error}",
-  "usbErrorConnectTimedOut": "连接超时。请确保设备已安装 USB 伴侣固件。"
+  "usbErrorConnectTimedOut": "连接超时。请确保设备已安装 USB 伴侣固件。",
+  "map_showDiscoveryContacts": "显示发现联系人"
 }

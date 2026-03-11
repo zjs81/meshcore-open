@@ -1515,6 +1515,9 @@ class AppLocalizationsSv extends AppLocalizations {
       'Visa upp de antagna nodernas placeringar';
 
   @override
+  String get map_showDiscoveryContacts => 'Visa Discovery-kontakter';
+
+  @override
   String get map_guessedLocation => 'Gissad plats';
 
   @override

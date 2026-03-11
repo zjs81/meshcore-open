@@ -2788,6 +2788,12 @@ abstract class AppLocalizations {
   /// **'Show guessed node locations'**
   String get map_showGuessedLocations;
 
+  /// No description provided for @map_showDiscoveryContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Discovery Contacts'**
+  String get map_showDiscoveryContacts;
+
   /// No description provided for @map_guessedLocation.
   ///
   /// In en, this message translates to:

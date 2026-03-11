@@ -1522,6 +1522,9 @@ class AppLocalizationsNl extends AppLocalizations {
       'Toon de voorspelde locaties van de knopen';
 
   @override
+  String get map_showDiscoveryContacts => 'Ontdek contacten weergeven';
+
+  @override
   String get map_guessedLocation => 'Geroerde locatie';
 
   @override

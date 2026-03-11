@@ -1859,5 +1859,6 @@
   "usbStatus_notConnected": "Selecione um dispositivo USB",
   "usbConnectionFailed": "Falha na conexão USB: {error}",
   "usbStatus_connecting": "Conectando ao dispositivo USB...",
-  "usbErrorConnectTimedOut": "A conexão expirou. Verifique se o dispositivo possui o firmware USB Companion."
+  "usbErrorConnectTimedOut": "A conexão expirou. Verifique se o dispositivo possui o firmware USB Companion.",
+  "map_showDiscoveryContacts": "Mostrar Contatos de Descoberta"
 }

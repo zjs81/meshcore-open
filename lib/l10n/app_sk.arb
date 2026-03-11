@@ -1859,5 +1859,6 @@
   "usbConnectionFailed": "Neúspešné pripojenie cez USB: {error}",
   "usbStatus_notConnected": "Vyberte USB zariadenie",
   "usbStatus_connecting": "Pripojenie k USB zariadeniu...",
-  "usbErrorConnectTimedOut": "Pripojenie nebolo úspešné. Uistite sa, že zariadenie má nainštalovaný firmware USB Companion."
+  "usbErrorConnectTimedOut": "Pripojenie nebolo úspešné. Uistite sa, že zariadenie má nainštalovaný firmware USB Companion.",
+  "map_showDiscoveryContacts": "Zobraziť kontakty objavov"
 }

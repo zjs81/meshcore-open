@@ -1537,6 +1537,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'Afficher les emplacements des nœuds estimés';
 
   @override
+  String get map_showDiscoveryContacts => 'Afficher les contacts de découverte';
+
+  @override
   String get map_guessedLocation => 'Lieu deviné';
 
   @override

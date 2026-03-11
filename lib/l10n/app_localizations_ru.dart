@@ -1533,6 +1533,9 @@ class AppLocalizationsRu extends AppLocalizations {
       'Отобразить предполагаемые места расположения узлов';
 
   @override
+  String get map_showDiscoveryContacts => 'Показать контакты Discovery';
+
+  @override
   String get map_guessedLocation => 'Угаданное место';
 
   @override

@@ -1532,6 +1532,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Zeige die vermuteten Knotenpositionen';
 
   @override
+  String get map_showDiscoveryContacts => 'Entdeckungs-Kontakte anzeigen';
+
+  @override
   String get map_guessedLocation => 'Geschätzter Ort';
 
   @override

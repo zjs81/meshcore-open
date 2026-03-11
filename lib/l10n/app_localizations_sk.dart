@@ -1525,6 +1525,9 @@ class AppLocalizationsSk extends AppLocalizations {
       'Zobraziť umiestnenia odhadnutých uzlov';
 
   @override
+  String get map_showDiscoveryContacts => 'Zobraziť kontakty objavov';
+
+  @override
   String get map_guessedLocation => 'Odhadnutá lokalita';
 
   @override

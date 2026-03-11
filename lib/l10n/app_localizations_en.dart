@@ -1507,6 +1507,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get map_showGuessedLocations => 'Show guessed node locations';
 
   @override
+  String get map_showDiscoveryContacts => 'Show Discovery Contacts';
+
+  @override
   String get map_guessedLocation => 'Guessed location';
 
   @override

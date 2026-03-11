@@ -1887,5 +1887,6 @@
   "usbStatus_searching": "Buscando dispositivos USB...",
   "usbStatus_notConnected": "Seleccione un dispositivo USB",
   "usbConnectionFailed": "Error al conectar mediante USB: {error}",
-  "usbErrorConnectTimedOut": "La conexión ha caducado. Asegúrese de que el dispositivo tenga el firmware USB Companion."
+  "usbErrorConnectTimedOut": "La conexión ha caducado. Asegúrese de que el dispositivo tenga el firmware USB Companion.",
+  "map_showDiscoveryContacts": "Mostrar Contactos de Descubrimiento"
 }

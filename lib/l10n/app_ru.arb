@@ -1099,5 +1099,6 @@
   "usbStatus_connecting": "Подключение к USB-устройству...",
   "usbConnectionFailed": "Не удалось установить соединение через USB: {error}",
   "usbStatus_notConnected": "Выберите USB-устройство",
-  "usbErrorConnectTimedOut": "Соединение не установлено. Убедитесь, что устройство имеет установленное программное обеспечение USB Companion."
+  "usbErrorConnectTimedOut": "Соединение не установлено. Убедитесь, что устройство имеет установленное программное обеспечение USB Companion.",
+  "map_showDiscoveryContacts": "Показать контакты Discovery"
 }

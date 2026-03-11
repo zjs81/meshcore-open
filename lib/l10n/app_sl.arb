@@ -1859,5 +1859,6 @@
   "usbStatus_connecting": "Povezava z USB napravo...",
   "usbStatus_searching": "Iskanje USB naprav...",
   "usbConnectionFailed": "Napaka pri povezavi preko USB: {error}",
-  "usbErrorConnectTimedOut": "Vzpostavitve ni bilo mogo. Prosimo, da se prepričate, da ima naprave trenutno nameštan firmware USB Companion."
+  "usbErrorConnectTimedOut": "Vzpostavitve ni bilo mogo. Prosimo, da se prepričate, da ima naprave trenutno nameštan firmware USB Companion.",
+  "map_showDiscoveryContacts": "Prikaži odkritja kontaktov"
 }

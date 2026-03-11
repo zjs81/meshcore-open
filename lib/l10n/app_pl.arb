@@ -1859,5 +1859,6 @@
   "usbStatus_connecting": "Połączenie z urządzeniem USB...",
   "usbStatus_notConnected": "Wybierz urządzenie USB",
   "usbConnectionFailed": "Błąd połączenia USB: {error}",
-  "usbErrorConnectTimedOut": "Połączenie nie zostało nawiązane. Upewnij się, że urządzenie posiada oprogramowanie \"USB Companion\"."
+  "usbErrorConnectTimedOut": "Połączenie nie zostało nawiązane. Upewnij się, że urządzenie posiada oprogramowanie \"USB Companion\".",
+  "map_showDiscoveryContacts": "Pokaż kontakty odkrywania"
 }

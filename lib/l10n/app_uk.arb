@@ -1859,5 +1859,6 @@
   "usbStatus_notConnected": "Виберіть пристрій USB",
   "usbConnectionFailed": "Не вдалося встановити з'єднання через USB: {error}",
   "usbStatus_connecting": "Підключення до USB-пристрою...",
-  "usbErrorConnectTimedOut": "З'єднання не вдалося встановити. Переконайтеся, що пристрій має встановлене програмне забезпечення USB Companion."
+  "usbErrorConnectTimedOut": "З'єднання не вдалося встановити. Переконайтеся, що пристрій має встановлене програмне забезпечення USB Companion.",
+  "map_showDiscoveryContacts": "Показати контакти Відкриття"
 }

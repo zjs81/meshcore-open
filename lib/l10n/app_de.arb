@@ -1887,5 +1887,6 @@
   "usbStatus_notConnected": "Wählen Sie ein USB-Gerät aus",
   "usbStatus_connecting": "Verbindung zum USB-Gerät...",
   "usbConnectionFailed": "Fehler beim USB-Verbindungsaufbau: {error}",
-  "usbErrorConnectTimedOut": "Verbindung konnte nicht hergestellt werden. Stellen Sie sicher, dass das Gerät die entsprechende USB-Firmware enthält."
+  "usbErrorConnectTimedOut": "Verbindung konnte nicht hergestellt werden. Stellen Sie sicher, dass das Gerät die entsprechende USB-Firmware enthält.",
+  "map_showDiscoveryContacts": "Entdeckungs-Kontakte anzeigen"
 }

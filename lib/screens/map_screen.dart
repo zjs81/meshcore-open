@@ -92,6 +92,11 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
+  bool _checkLocationPlausibility(double lat, double lon) {
+    const double epsilon = 1e-6;
+    return lat.abs() > epsilon || lon.abs() > epsilon;
+  }
+
   double _standardDeviation(List<double> values) {
     if (values.length <= 1) {
       return 0.0;
@@ -176,18 +181,12 @@ class _MapScreenState extends State<MapScreen> {
             : filteredByTime;
 
         // Filter by location
-        final contactsWithLocation = filteredByKeyPrefix
-            .where((c) {
-              if (!c.hasLocation) {
-                return false;
-              }
-              const double epsilon = 1e-6;
-              final double lat = c.latitude!;
-              final double lon = c.longitude!;
-              // Exclude only coordinates that are effectively at (0,0)
-              return lat.abs() > epsilon || lon.abs() > epsilon;
-            })
-            .toList();
+        final contactsWithLocation = filteredByKeyPrefix.where((c) {
+          if (!c.hasLocation) {
+            return false;
+          }
+          return _checkLocationPlausibility(c.latitude!, c.longitude!);
+        }).toList();
 
         // All contacts with a known location — used as anchors regardless of
         // time/key-prefix filters so that repeaters are always available.
@@ -656,7 +655,11 @@ class _MapScreenState extends State<MapScreen> {
           anchors[0].latitude + offsetDeg * cos(angle),
           anchors[0].longitude + offsetDeg * sin(angle),
         );
-        if (position.latitude.abs() <= 1 || position.longitude.abs() <= 1) {
+
+        if (!_checkLocationPlausibility(
+          position.latitude,
+          position.longitude,
+        )) {
           continue; // discard implausible guesses near (0, 0
         }
       } else {
@@ -666,7 +669,10 @@ class _MapScreenState extends State<MapScreen> {
           lon += a.longitude;
         }
         position = LatLng(lat / anchors.length, lon / anchors.length);
-        if (position.latitude.abs() <= 1 || position.longitude.abs() <= 1) {
+        if (!_checkLocationPlausibility(
+          position.latitude,
+          position.longitude,
+        )) {
           continue; // discard implausible guesses near (0, 0
         }
       }
@@ -1788,7 +1794,7 @@ class _MapScreenState extends State<MapScreen> {
                     contentPadding: EdgeInsets.zero,
                   ),
                   CheckboxListTile(
-                    title: Text("Show Discovery Contacts"),
+                    title: Text(context.l10n.map_showDiscoveryContacts),
                     value: settings.mapShowDiscoveryContacts,
                     onChanged: (value) {
                       service.setMapShowDiscoveryContacts(value ?? true);

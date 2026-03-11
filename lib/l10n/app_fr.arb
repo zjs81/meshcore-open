@@ -1859,5 +1859,6 @@
   "usbConnectionFailed": "Échec de la connexion USB : {error}",
   "usbStatus_connecting": "Connexion au périphérique USB...",
   "usbStatus_searching": "Recherche de périphériques USB...",
-  "usbErrorConnectTimedOut": "La connexion a expiré. Assurez-vous que l'appareil dispose du firmware USB Companion."
+  "usbErrorConnectTimedOut": "La connexion a expiré. Assurez-vous que l'appareil dispose du firmware USB Companion.",
+  "map_showDiscoveryContacts": "Afficher les contacts de découverte"
 }

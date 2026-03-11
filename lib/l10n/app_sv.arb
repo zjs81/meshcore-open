@@ -1859,5 +1859,6 @@
   "usbStatus_notConnected": "Välj en USB-enhet",
   "usbConnectionFailed": "Fel vid USB-anslutning: {error}",
   "usbStatus_searching": "Söker efter USB-enheter...",
-  "usbErrorConnectTimedOut": "Anslutningen har tidsutgått. Se till att enheten har rätt USB-firmware."
+  "usbErrorConnectTimedOut": "Anslutningen har tidsutgått. Se till att enheten har rätt USB-firmware.",
+  "map_showDiscoveryContacts": "Visa Discovery-kontakter"
 }

@@ -1859,5 +1859,6 @@
   "usbConnectionFailed": "Неуспешно свързване през USB: {error}",
   "usbStatus_notConnected": "Изберете USB устройство",
   "usbStatus_searching": "Търсене на USB устройства...",
-  "usbErrorConnectTimedOut": "Връзката прекъсна. Уверете се, че устройството има софтуер за USB връзка."
+  "usbErrorConnectTimedOut": "Връзката прекъсна. Уверете се, че устройството има софтуер за USB връзка.",
+  "map_showDiscoveryContacts": "Покажи контакти за откриване"
 }

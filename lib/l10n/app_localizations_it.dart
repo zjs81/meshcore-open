@@ -1529,6 +1529,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get map_showGuessedLocations => 'Mostra le posizioni stimate dei nodi';
 
   @override
+  String get map_showDiscoveryContacts => 'Mostra Contatti di Discovery';
+
+  @override
   String get map_guessedLocation => 'Località indovinata';
 
   @override

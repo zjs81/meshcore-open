@@ -1518,6 +1518,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get map_showGuessedLocations => 'Pokaži lokacije domnevnih not.';
 
   @override
+  String get map_showDiscoveryContacts => 'Prikaži odkritja kontaktov';
+
+  @override
   String get map_guessedLocation => 'Predpostavljena lokacija';
 
   @override
