@@ -11,6 +11,7 @@ import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../utils/app_logger.dart';
 import '../utils/login_error_formatter.dart';
+import '../utils/login_response_parser.dart';
 import 'path_management_dialog.dart';
 
 class RepeaterLoginDialog extends StatefulWidget {
@@ -234,15 +235,14 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
 
     subscription = _connector.receivedFrames.listen((frame) {
       if (frame.isEmpty) return;
-      final code = frame[0];
-      if (code == respCodeErr) {
+      if (frame[0] == respCodeErr) {
         debugPrint('[RepeaterLogin] Received RESP_CODE_ERR during login');
-        completer.complete(false);
-        subscription?.cancel();
-        timer?.cancel();
         return;
       }
-      final outcome = parseLoginOutcome(frame, targetPrefix: targetPrefix);
+      final outcome = parseTerminalLoginResponse(
+        frame,
+        targetPrefix: targetPrefix,
+      );
       if (outcome == null) return;
 
       debugPrint('[RepeaterLogin] Received login outcome: $outcome');

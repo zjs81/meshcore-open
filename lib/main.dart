@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -21,9 +22,16 @@ import 'services/map_tile_cache_service.dart';
 import 'services/chat_text_scale_service.dart';
 import 'storage/prefs_manager.dart';
 import 'utils/app_logger.dart';
+import 'utils/bluetooth_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  if (supportsBluetoothPlatformOptions()) {
+    await FlutterBluePlus.setOptions(
+      restoreState: shouldRestoreBluetoothState(),
+    );
+  }
 
   // Initialize SharedPreferences cache
   await PrefsManager.initialize();
