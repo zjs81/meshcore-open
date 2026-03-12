@@ -61,6 +61,17 @@ PendingCommandAck? takeFirstPendingChannelGenericAck(
   return queue.removeAt(0);
 }
 
+@visibleForTesting
+bool shouldIgnoreCliSentAck({
+  required Uint8List ackHash,
+  required int pendingCliSentAckCount,
+}) {
+  if (pendingCliSentAckCount <= 0) {
+    return false;
+  }
+  return ackHash.every((byte) => byte == 0);
+}
+
 class MeshCoreUuids {
   static const String service = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
   static const String rxCharacteristic = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
@@ -256,8 +267,7 @@ class MeshCoreConnector extends ChangeNotifier {
   final UnreadStore _unreadStore = UnreadStore();
   List<Channel> _cachedChannels = [];
   final Map<int, bool> _channelSmazEnabled = {};
-  bool _lastSentWasCliCommand =
-      false; // Track if last sent message was a CLI command
+  int _pendingCliSentAckCount = 0;
   final List<int> _pendingCommandContextQueue = <int>[];
   final Map<String, bool> _contactSmazEnabled = {};
   final Set<String> _knownContactKeys = {};
@@ -1389,6 +1399,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _hasLoadedChannels = false;
     _pendingChannelSentQueue.clear();
     _pendingGenericAckQueue.clear();
+    _pendingCliSentAckCount = 0;
     _reactionSendQueueSequence = 0;
 
     _activeTransport = MeshCoreTransportType.bluetooth;
@@ -1418,7 +1429,7 @@ class MeshCoreConnector extends ChangeNotifier {
       if (data.length > 1 &&
           data[0] == cmdSendTxtMsg &&
           data[1] == txtTypeCliData) {
-        _lastSentWasCliCommand = true;
+        _pendingCliSentAckCount++;
       }
       _appDebugLogService?.info(
         'Sending ${describeProtocolCode(data[0], outgoing: true)} '
@@ -2316,7 +2327,6 @@ class MeshCoreConnector extends ChangeNotifier {
 
   Future<void> sendCliCommand(String command) async {
     if (!isConnected) return;
-    _lastSentWasCliCommand = true;
     await sendFrame(buildLocalCliCommandFrame(command));
   }
 
@@ -3585,13 +3595,16 @@ class MeshCoreConnector extends ChangeNotifier {
     final packet = parseMessageSentPacket(frame);
     if (packet != null) {
       // Check if this is a CLI command ACK - if so, ignore it
-      if (_lastSentWasCliCommand) {
+      if (shouldIgnoreCliSentAck(
+        ackHash: packet.expectedAck,
+        pendingCliSentAckCount: _pendingCliSentAckCount,
+      )) {
         final ackHash = packet.expectedAck;
         final ackHashHex = ackHash
             .map((b) => b.toRadixString(16).padLeft(2, '0'))
             .join();
         debugPrint('Ignoring CLI command ACK (sent): $ackHashHex');
-        _lastSentWasCliCommand = false;
+        _pendingCliSentAckCount--;
         return;
       }
 
@@ -4487,6 +4500,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _channelSyncInFlight = false;
     _pendingChannelSentQueue.clear();
     _pendingGenericAckQueue.clear();
+    _pendingCliSentAckCount = 0;
     _reactionSendQueueSequence = 0;
 
     _setState(MeshCoreConnectionState.disconnected);
