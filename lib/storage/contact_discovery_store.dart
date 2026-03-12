@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '../models/discovery_contact.dart';
-import '../utils/app_logger.dart';
 import 'prefs_manager.dart';
 
 class ContactDiscoveryStore {
