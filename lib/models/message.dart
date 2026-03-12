@@ -88,20 +88,19 @@ class Message {
   static Message? fromFrame(Uint8List data, Uint8List selfPubKey) {
     if (data.length < msgTextOffset + 1) return null;
 
-    final code = data[0];
+    final reader = BufferReader(data);
+    final code = reader.readUInt8();
     if (code != respCodeContactMsgRecv && code != respCodeContactMsgRecvV3) {
       return null;
     }
 
-    final senderKey = Uint8List.fromList(
-      data.sublist(msgPubKeyOffset, msgPubKeyOffset + pubKeySize),
-    );
-    final timestampRaw = readUint32LE(data, msgTimestampOffset);
-    final flags = data[msgFlagsOffset];
+    final senderKey = reader.readBytes(pubKeySize);
+    final timestampRaw = reader.readUInt32LE();
+    final flags = reader.readUInt8();
     if ((flags >> 2) != txtTypePlain) {
       return null;
     }
-    final text = readCString(data, msgTextOffset, data.length - msgTextOffset);
+    final text = reader.readCStringGreedy(reader.remaining);
 
     return Message(
       senderKey: senderKey,

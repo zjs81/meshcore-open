@@ -113,51 +113,31 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
 
   void _handleStatusResponse(Uint8List frame) {
     if (frame.length < 8) return;
-    final prefix = frame.sublist(2, 8);
+    final reader = BufferReader(frame);
+    reader.readUInt8(); // push code
+    reader.readUInt8(); // reserved / flags
+    final prefix = reader.readBytes(6);
     if (!_matchesRepeaterPrefix(prefix)) return;
 
     if (frame.length < _statusResponseBytes) return;
 
-    final data = ByteData.sublistView(
-      frame,
-      _statusPayloadOffset,
-      _statusResponseBytes,
-    );
-    int offset = 0;
-
-    final batteryMv = data.getUint16(offset, Endian.little);
-    offset += 2;
-    final queueLen = data.getUint16(offset, Endian.little);
-    offset += 2;
-    final noiseFloor = data.getInt16(offset, Endian.little);
-    offset += 2;
-    final lastRssi = data.getInt16(offset, Endian.little);
-    offset += 2;
-    final packetsRecv = data.getUint32(offset, Endian.little);
-    offset += 4;
-    final packetsSent = data.getUint32(offset, Endian.little);
-    offset += 4;
-    final txAirSecs = data.getUint32(offset, Endian.little);
-    offset += 4;
-    final uptimeSecs = data.getUint32(offset, Endian.little);
-    offset += 4;
-    final floodTx = data.getUint32(offset, Endian.little);
-    offset += 4;
-    final directTx = data.getUint32(offset, Endian.little);
-    offset += 4;
-    final floodRx = data.getUint32(offset, Endian.little);
-    offset += 4;
-    final directRx = data.getUint32(offset, Endian.little);
-    offset += 4;
-    final errEvents = data.getUint16(offset, Endian.little);
-    offset += 2;
-    final lastSnrRaw = data.getInt16(offset, Endian.little);
-    offset += 2;
-    final directDups = data.getUint16(offset, Endian.little);
-    offset += 2;
-    final floodDups = data.getUint16(offset, Endian.little);
-    offset += 2;
-    final rxAirSecs = data.getUint32(offset, Endian.little);
+    final batteryMv = reader.readUInt16LE();
+    final queueLen = reader.readUInt16LE();
+    final noiseFloor = reader.readInt16LE();
+    final lastRssi = reader.readInt16LE();
+    final packetsRecv = reader.readUInt32LE();
+    final packetsSent = reader.readUInt32LE();
+    final txAirSecs = reader.readUInt32LE();
+    final uptimeSecs = reader.readUInt32LE();
+    final floodTx = reader.readUInt32LE();
+    final directTx = reader.readUInt32LE();
+    final floodRx = reader.readUInt32LE();
+    final directRx = reader.readUInt32LE();
+    final errEvents = reader.readUInt16LE();
+    final lastSnrRaw = reader.readInt16LE();
+    final directDups = reader.readUInt16LE();
+    final floodDups = reader.readUInt16LE();
+    final rxAirSecs = reader.readUInt32LE();
 
     _statusTimeout?.cancel();
     if (!mounted) return;

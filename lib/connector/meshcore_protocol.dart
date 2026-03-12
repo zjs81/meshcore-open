@@ -13,6 +13,17 @@ class BufferReader {
 
   int get remaining => _buffer.length - _pointer;
 
+  bool canRead(int count) => _pointer + count <= _buffer.length;
+
+  int peekByte() {
+    if (!canRead(1)) {
+      throw RangeError(
+        'Attempted to peek at offset $_pointer, but no bytes remain in buffer of length ${_buffer.length}',
+      );
+    }
+    return _buffer[_pointer];
+  }
+
   int readByte() => readBytes(1)[0];
 
   Uint8List readBytes(int count) {
@@ -83,6 +94,18 @@ class BufferReader {
       return utf8.decode(Uint8List.fromList(value), allowMalformed: true);
     } catch (e) {
       return String.fromCharCodes(value); // Latin-1 fallback
+    }
+  }
+
+  String readPaddedCString(int fieldLength) {
+    final bytes = readBytes(fieldLength);
+    final nulIndex = bytes.indexOf(0);
+    final end = nulIndex >= 0 ? nulIndex : bytes.length;
+    final slice = bytes.sublist(0, end);
+    try {
+      return utf8.decode(Uint8List.fromList(slice), allowMalformed: true);
+    } catch (e) {
+      return String.fromCharCodes(slice);
     }
   }
 
@@ -547,17 +570,29 @@ BatteryStatusPacket? parseBatteryStatusPacket(Uint8List frame) {
   if (frame.length != 3 && frame.length != 11) {
     return null;
   }
+  final reader = BufferReader(frame);
+  try {
+    reader.readByte(); // response code
+    final levelPercent = reader.readUInt16LE();
+    if (levelPercent > 100) {
+      return null;
+    }
+    if (reader.remaining == 0) {
+      return BatteryStatusPacket(levelPercent: levelPercent);
+    }
 
-  final levelPercent = readUint16LE(frame, 1);
-  if (levelPercent > 100) {
+    if (reader.remaining != 8) {
+      return null;
+    }
+
+    return BatteryStatusPacket(
+      levelPercent: levelPercent,
+      usedStorageKb: reader.readUInt32LE(),
+      totalStorageKb: reader.readUInt32LE(),
+    );
+  } on RangeError {
     return null;
   }
-  final hasStorage = frame.length >= 11;
-  return BatteryStatusPacket(
-    levelPercent: levelPercent,
-    usedStorageKb: hasStorage ? readUint32LE(frame, 3) : null,
-    totalStorageKb: hasStorage ? readUint32LE(frame, 7) : null,
-  );
 }
 
 class MessageSentPacket {
@@ -576,12 +611,17 @@ MessageSentPacket? parseMessageSentPacket(Uint8List frame) {
   if (frame.length != 10 || frame[0] != respCodeSent) {
     return null;
   }
-
-  return MessageSentPacket(
-    messageType: frame[1],
-    expectedAck: Uint8List.fromList(frame.sublist(2, 6)),
-    suggestedTimeoutMs: readUint32LE(frame, 6) * 1000,
-  );
+  final reader = BufferReader(frame);
+  try {
+    reader.readByte(); // response code
+    return MessageSentPacket(
+      messageType: reader.readByte(),
+      expectedAck: reader.readBytes(4),
+      suggestedTimeoutMs: reader.readUInt32LE() * 1000,
+    );
+  } on RangeError {
+    return null;
+  }
 }
 
 class AckPacket {
@@ -595,19 +635,24 @@ AckPacket? parseAckPacket(Uint8List frame) {
   if (frame.length < 5 || frame[0] != pushCodeSendConfirmed) {
     return null;
   }
+  final reader = BufferReader(frame);
+  try {
+    reader.readByte(); // push code
+    if (frame.length == 9) {
+      return AckPacket(
+        ackCode: reader.readBytes(4),
+        tripTimeMs: reader.readUInt32LE(),
+      );
+    }
 
-  if (frame.length == 9) {
-    return AckPacket(
-      ackCode: Uint8List.fromList(frame.sublist(1, 5)),
-      tripTimeMs: readUint32LE(frame, 5),
-    );
+    if (frame.length == 7) {
+      return AckPacket(ackCode: reader.readBytes(6));
+    }
+
+    return null;
+  } on RangeError {
+    return null;
   }
-
-  if (frame.length == 7) {
-    return AckPacket(ackCode: Uint8List.fromList(frame.sublist(1, 7)));
-  }
-
-  return null;
 }
 
 bool? parseLoginOutcome(
@@ -615,8 +660,8 @@ bool? parseLoginOutcome(
   Uint8List? targetPrefix,
 }) {
   if (frame.isEmpty) return null;
-
-  final code = frame[0];
+  final reader = BufferReader(frame);
+  final code = reader.readByte();
   if (code != pushCodeLoginSuccess && code != pushCodeLoginFail) {
     return null;
   }
@@ -626,15 +671,16 @@ bool? parseLoginOutcome(
   }
 
   if (targetPrefix != null && targetPrefix.isNotEmpty) {
-    final prefixOffset = 2;
-    final prefixEnd = prefixOffset + targetPrefix.length;
-    if (frame.length < prefixEnd) {
-      return null;
-    }
-    for (var i = 0; i < targetPrefix.length; i++) {
-      if (frame[prefixOffset + i] != targetPrefix[i]) {
-        return null;
+    try {
+      reader.skipBytes(1); // reserved/status byte
+      final actualPrefix = reader.readBytes(targetPrefix.length);
+      for (var i = 0; i < targetPrefix.length; i++) {
+        if (actualPrefix[i] != targetPrefix[i]) {
+          return null;
+        }
       }
+    } on RangeError {
+      return null;
     }
   }
 
@@ -657,12 +703,17 @@ BinaryResponsePacket? parseBinaryResponsePacket(Uint8List frame) {
   if (frame.length < 6 || frame[0] != pushCodeBinaryResponse) {
     return null;
   }
-
-  return BinaryResponsePacket(
-    status: frame[1],
-    tag: Uint8List.fromList(frame.sublist(2, 6)),
-    payload: Uint8List.fromList(frame.sublist(6)),
-  );
+  final reader = BufferReader(frame);
+  try {
+    reader.readByte(); // push code
+    return BinaryResponsePacket(
+      status: reader.readByte(),
+      tag: reader.readBytes(4),
+      payload: reader.readRemainingBytes(),
+    );
+  } on RangeError {
+    return null;
+  }
 }
 
 class MeshCoreFrameBuffer {
@@ -837,46 +888,45 @@ class MeshCoreFrameBuffer {
 }
 ParsedContactText? parseContactMessageText(Uint8List frame) {
   if (frame.isEmpty) return null;
-  final code = frame[0];
+  final reader = BufferReader(frame);
+  final code = reader.readByte();
   if (code != respCodeContactMsgRecv && code != respCodeContactMsgRecvV3) {
     return null;
   }
 
-  // Companion radio layout:
-  // [code][snr?][res?][res?][prefix x6][path_len][txt_type][timestamp x4][extra?][text...]
-  final isV3 = code == respCodeContactMsgRecvV3;
-  final prefixOffset = isV3 ? 4 : 1;
-  const prefixLen = 6;
-  final txtTypeOffset = prefixOffset + prefixLen + 1;
-  final timestampOffset = txtTypeOffset + 1;
-  final baseTextOffset = timestampOffset + 4;
-  if (frame.length <= baseTextOffset) return null;
+  try {
+    if (code == respCodeContactMsgRecvV3) {
+      reader.skipBytes(3); // snr + reserved bytes
+    }
+    final senderPrefix = reader.readBytes(6);
+    reader.skipBytes(1); // path length
+    final flags = reader.readByte();
+    reader.readUInt32LE(); // timestamp
 
-  final flags = frame[txtTypeOffset];
-  final shiftedType = flags >> 2;
-  final rawType = flags;
-  final isPlain = shiftedType == txtTypePlain || rawType == txtTypePlain;
-  final isCli = shiftedType == txtTypeCliData || rawType == txtTypeCliData;
-  if (!isPlain && !isCli) {
+    final shiftedType = flags >> 2;
+    final rawType = flags;
+    final isPlain = shiftedType == txtTypePlain || rawType == txtTypePlain;
+    final isCli = shiftedType == txtTypeCliData || rawType == txtTypeCliData;
+    if (!isPlain && !isCli) {
+      return null;
+    }
+
+    var text = reader.readCStringGreedy(reader.remaining);
+    if (text.isEmpty) {
+      final fallbackReader = BufferReader(frame);
+      fallbackReader.readByte();
+      if (code == respCodeContactMsgRecvV3) {
+        fallbackReader.skipBytes(3);
+      }
+      fallbackReader.skipBytes(6 + 1 + 1 + 4 + 4);
+      text = fallbackReader.readCStringGreedy(fallbackReader.remaining);
+    }
+    if (text.isEmpty) return null;
+
+    return ParsedContactText(senderPrefix: senderPrefix, text: text);
+  } on RangeError {
     return null;
   }
-
-  var text = readCString(
-    frame,
-    baseTextOffset,
-    frame.length - baseTextOffset,
-  );
-  if (text.isEmpty && frame.length > baseTextOffset + 4) {
-    text = readCString(
-      frame,
-      baseTextOffset + 4,
-      frame.length - (baseTextOffset + 4),
-    );
-  }
-  if (text.isEmpty) return null;
-
-  final senderPrefix = frame.sublist(prefixOffset, prefixOffset + prefixLen);
-  return ParsedContactText(senderPrefix: senderPrefix, text: text);
 }
 
 // Helper to read uint32 little-endian

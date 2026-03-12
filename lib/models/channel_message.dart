@@ -116,47 +116,45 @@ class ChannelMessage {
       return null;
     }
 
-    int timestampOffset, textOffset, pathLenOffset, txtTypeOffset;
+    final reader = BufferReader(data);
+    reader.readUInt8(); // frame code
     Uint8List pathBytes = Uint8List(0);
     int channelIdx;
+    int txtType;
+    int timestampRaw;
+    int pathLen;
 
     if (code == respCodeChannelMsgRecvV3) {
-      channelIdx = data[4];
-      pathLenOffset = 5;
-      final pathLen = data[pathLenOffset].toSigned(8);
-      var cursor = 6;
-      final hasPathBytesFlag = (data[2] & 0x01) != 0;
-      final canFitPath = pathLen > 0 && data.length >= cursor + pathLen + 5;
+      reader.readUInt8(); // snr
+      final reserved1 = reader.readUInt8();
+      reader.readUInt8(); // reserved2
+      channelIdx = reader.readUInt8();
+      pathLen = reader.readInt8();
+      final hasPathBytesFlag = (reserved1 & 0x01) != 0;
+      final canFitPath = pathLen > 0 && reader.remaining >= pathLen + 5;
       final hasValidTxtType =
-          cursor < data.length &&
-          (data[cursor] == txtTypePlain || data[cursor] == txtTypeCliData);
+          reader.remaining > 0 &&
+          (reader.peekByte() == txtTypePlain ||
+              reader.peekByte() == txtTypeCliData);
       if ((hasPathBytesFlag || (canFitPath && !hasValidTxtType)) &&
           canFitPath) {
-        pathBytes = Uint8List.fromList(data.sublist(cursor, cursor + pathLen));
-        cursor += pathLen;
+        pathBytes = reader.readBytes(pathLen);
       }
-      txtTypeOffset = cursor;
-      cursor += 1; // txt_type
-      timestampOffset = cursor;
-      textOffset = cursor + 4;
+      txtType = reader.readUInt8();
+      timestampRaw = reader.readUInt32LE();
     } else {
-      channelIdx = data[1];
-      pathLenOffset = 2;
-      txtTypeOffset = 3;
-      timestampOffset = 4;
-      textOffset = 8;
+      channelIdx = reader.readUInt8();
+      pathLen = reader.readInt8();
+      txtType = reader.readUInt8();
+      timestampRaw = reader.readUInt32LE();
     }
 
-    if (data.length < textOffset + 1) return null;
-
-    final txtType = data[txtTypeOffset];
+    if (reader.remaining < 1) return null;
     if (txtType != txtTypePlain) {
       return null;
     }
 
-    final pathLen = data[pathLenOffset].toSigned(8);
-    final timestampRaw = readUint32LE(data, timestampOffset);
-    final text = readCString(data, textOffset, data.length - textOffset);
+    final text = reader.readCStringGreedy(reader.remaining);
 
     // Extract sender name and actual message from "name: msg" format
     String senderName = 'Unknown';

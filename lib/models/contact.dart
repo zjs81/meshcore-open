@@ -169,29 +169,27 @@ class Contact {
   static Contact? fromFrame(Uint8List data) {
     if (data.length < contactFrameSize) return null;
     try {
-      final respCode = data[0];
+      final reader = BufferReader(data);
+      final respCode = reader.readUInt8();
       if (respCode != respCodeContact && respCode != pushCodeNewAdvert) {
         return null;
       }
 
-      final pubKey = Uint8List.fromList(
-        data.sublist(contactPubKeyOffset, contactPubKeyOffset + pubKeySize),
-      );
-      final type = data[contactTypeOffset];
-      final flags = data[contactFlagsOffset];
-      final pathLen = data[contactPathLenOffset];
+      final pubKey = reader.readBytes(pubKeySize);
+      final type = reader.readUInt8();
+      final flags = reader.readUInt8();
+      final pathLen = reader.readUInt8();
       final safePathLen = pathLen > 0
           ? (pathLen > maxPathSize ? maxPathSize : pathLen)
           : 0;
-      final pathBytes = Uint8List.fromList(
-        data.sublist(contactPathOffset, contactPathOffset + safePathLen),
-      );
-      final name = readCString(data, contactNameOffset, maxNameSize);
-      final timestampRaw = readUint32LE(data, contactTimestampOffset);
-      final latRaw = readInt32LE(data, contactLatOffset);
-      final lonRaw = readInt32LE(data, contactLonOffset);
-      final lastModRaw = readUint32LE(data, contactLastModOffset);
-      final trailingBytes = data.length - contactFrameSize;
+      final pathField = reader.readBytes(maxPathSize);
+      final pathBytes = Uint8List.fromList(pathField.sublist(0, safePathLen));
+      final name = reader.readPaddedCString(maxNameSize);
+      final timestampRaw = reader.readUInt32LE();
+      final latRaw = reader.readInt32LE();
+      final lonRaw = reader.readInt32LE();
+      final lastModRaw = reader.readUInt32LE();
+      final trailingBytes = reader.remaining;
       if (trailingBytes > 0) {
         appLogger.warn(
           'Contact frame had $trailingBytes trailing bytes after expected '

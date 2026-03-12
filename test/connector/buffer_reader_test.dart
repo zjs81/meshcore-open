@@ -62,4 +62,29 @@ void main() {
       expect(nextByte, 0x43);
     });
   });
+
+  group('BufferReader.readPaddedCString', () {
+    test('consumes the full fixed-width field and trims trailing nulls', () {
+      final reader = BufferReader(
+        Uint8List.fromList(<int>[0x41, 0x42, 0x00, 0x00, 0x43]),
+      );
+
+      final text = reader.readPaddedCString(4);
+      final nextByte = reader.readByte();
+
+      expect(text, 'AB');
+      expect(nextByte, 0x43);
+    });
+
+    test('returns the full field when no null terminator is present', () {
+      final reader = BufferReader(
+        Uint8List.fromList(<int>[0x41, 0x42, 0x43, 0x44]),
+      );
+
+      final text = reader.readPaddedCString(4);
+
+      expect(text, 'ABCD');
+      expect(reader.remaining, 0);
+    });
+  });
 }

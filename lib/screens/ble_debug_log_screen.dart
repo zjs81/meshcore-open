@@ -172,47 +172,46 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
       );
     }
 
-    var index = 0;
-    final header = raw[index++];
+    final reader = BufferReader(raw);
+    final header = reader.readUInt8();
     final routeType = header & 0x03;
     final payloadType = (header >> 2) & 0x0F;
     final payloadVer = (header >> 6) & 0x03;
     final hasTransport = routeType == 0 || routeType == 3;
     if (hasTransport) {
-      if (raw.length < index + 4) {
+      if (!reader.canRead(4)) {
         return _RawPacketInfo(
           title: 'RX RAW_LOG_RX_DATA • ${_payloadTypeLabel(payloadType)}',
           summary: 'Missing transport codes',
           rawHex: _bytesToHex(raw),
         );
       }
-      index += 4;
+      reader.skipBytes(4);
     }
-    if (raw.length <= index) {
+    if (!reader.canRead(1)) {
       return _RawPacketInfo(
         title: 'RX RAW_LOG_RX_DATA • ${_payloadTypeLabel(payloadType)}',
         summary: 'Missing path length',
         rawHex: _bytesToHex(raw),
       );
     }
-    final pathLen = raw[index++];
-    if (raw.length < index + pathLen) {
+    final pathLen = reader.readUInt8();
+    if (!reader.canRead(pathLen)) {
       return _RawPacketInfo(
         title: 'RX RAW_LOG_RX_DATA • ${_payloadTypeLabel(payloadType)}',
         summary: 'Truncated path',
         rawHex: _bytesToHex(raw),
       );
     }
-    final pathBytes = raw.sublist(index, index + pathLen);
-    index += pathLen;
-    if (raw.length <= index) {
+    final pathBytes = reader.readBytes(pathLen);
+    if (reader.remaining < 1) {
       return _RawPacketInfo(
         title: 'RX RAW_LOG_RX_DATA • ${_payloadTypeLabel(payloadType)}',
         summary: 'Missing payload',
         rawHex: _bytesToHex(raw),
       );
     }
-    final payload = raw.sublist(index);
+    final payload = reader.readRemainingBytes();
 
     final title =
         'RX ${_payloadTypeLabel(payloadType)} • ${_routeLabel(routeType)} • v$payloadVer';
@@ -270,16 +269,11 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
     if (payload.length < 101) {
       return 'ADVERT (short)';
     }
-    var offset = 0;
-    final pubKey = _bytesToHex(
-      payload.sublist(offset, offset + 32),
-      spaced: false,
-    );
-    offset += 32;
-    final timestamp = readUint32LE(payload, offset);
-    offset += 4;
-    offset += 64; // signature
-    final flags = payload[offset++];
+    final reader = BufferReader(payload);
+    final pubKey = _bytesToHex(reader.readBytes(32), spaced: false);
+    final timestamp = reader.readUInt32LE();
+    reader.skipBytes(64); // signature
+    final flags = reader.readUInt8();
     final role = _deviceRoleLabel(flags & 0x0F);
     final hasLocation = (flags & 0x10) != 0;
     final hasFeature1 = (flags & 0x20) != 0;
@@ -288,18 +282,14 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
     String? name;
     double? lat;
     double? lon;
-    if (hasLocation && payload.length >= offset + 8) {
-      lat = readInt32LE(payload, offset) / 1000000.0;
-      lon = readInt32LE(payload, offset + 4) / 1000000.0;
-      offset += 8;
+    if (hasLocation && reader.canRead(8)) {
+      lat = reader.readInt32LE() / 1000000.0;
+      lon = reader.readInt32LE() / 1000000.0;
     }
-    if (hasFeature1) offset += 2;
-    if (hasFeature2) offset += 2;
-    if (hasName && payload.length > offset) {
-      final rawName = String.fromCharCodes(payload.sublist(offset));
-      final nul = rawName.indexOf('\u0000');
-      name = nul >= 0 ? rawName.substring(0, nul) : rawName;
-      name = name.trim();
+    if (hasFeature1 && reader.canRead(2)) reader.skipBytes(2);
+    if (hasFeature2 && reader.canRead(2)) reader.skipBytes(2);
+    if (hasName && reader.remaining > 0) {
+      name = reader.readString().split('\u0000').first.trim();
     }
     final namePart = (name != null && name.isNotEmpty) ? ' name="$name"' : '';
     final locPart = (lat != null && lon != null)
@@ -310,23 +300,24 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
 
   String _decodeControlSummary(Uint8List payload) {
     if (payload.isEmpty) return 'CONTROL (empty)';
-    final flags = payload[0];
+    final reader = BufferReader(payload);
+    final flags = reader.readUInt8();
     final subType = flags & 0xF0;
     if (subType == 0x80) {
-      if (payload.length < 6) return 'CONTROL DISCOVER_REQ (short)';
-      final typeFilter = payload[1];
-      final tag = readUint32LE(payload, 2);
-      final since = payload.length >= 10 ? readUint32LE(payload, 6) : 0;
+      if (!reader.canRead(5)) return 'CONTROL DISCOVER_REQ (short)';
+      final typeFilter = reader.readUInt8();
+      final tag = reader.readUInt32LE();
+      final since = reader.canRead(4) ? reader.readUInt32LE() : 0;
       return 'CONTROL DISCOVER_REQ filter=0x${typeFilter.toRadixString(16).padLeft(2, '0')} tag=$tag since=$since';
     }
     if (subType == 0x90) {
-      if (payload.length < 14) return 'CONTROL DISCOVER_RESP (short)';
+      if (!reader.canRead(5)) return 'CONTROL DISCOVER_RESP (short)';
       final nodeType = flags & 0x0F;
-      final snrRaw = payload[1];
+      final snrRaw = reader.readUInt8();
       final snrSigned = snrRaw > 127 ? snrRaw - 256 : snrRaw;
       final snr = snrSigned / 4.0;
-      final tag = readUint32LE(payload, 2);
-      final keyLen = payload.length - 6;
+      final tag = reader.readUInt32LE();
+      final keyLen = reader.remaining;
       return 'CONTROL DISCOVER_RESP node=${_deviceRoleLabel(nodeType)} snr=${snr.toStringAsFixed(2)} tag=$tag key=$keyLen';
     }
     return 'CONTROL subtype=0x${subType.toRadixString(16).padLeft(2, '0')}';
