@@ -2353,7 +2353,7 @@ class MeshCoreConnector extends ChangeNotifier {
         debugPrint('Got END_OF_CONTACTS');
         _isLoadingContacts = false;
         _preserveContactsOnRefresh = false;
-        updateKnownDiscovered();
+        unawaited(updateKnownDiscovered());
         notifyListeners();
         unawaited(_persistContacts());
         if (PlatformInfo.isWeb &&
