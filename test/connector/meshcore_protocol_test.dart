@@ -221,4 +221,37 @@ void main() {
       );
     });
   });
+
+  group('unsigned timestamp validation', () {
+    test('rejects negative contact sync since timestamps', () {
+      expect(
+        () => buildGetContactsFrame(since: -1),
+        throwsA(isA<RangeError>()),
+      );
+    });
+
+    test('rejects negative device timestamps', () {
+      expect(
+        () => buildSetDeviceTimeFrame(-1),
+        throwsA(isA<RangeError>()),
+      );
+    });
+  });
+
+  group('buildSetOtherParamsFrame', () {
+    test('forces manual-add disabled in the payload', () {
+      final frame = buildSetOtherParamsFrame(0x12, 0x34, 0x56);
+
+      expect(
+        frame,
+        orderedEquals(<int>[
+          cmdSetOtherParams,
+          0x01,
+          0x12,
+          0x34,
+          0x56,
+        ]),
+      );
+    });
+  });
 }

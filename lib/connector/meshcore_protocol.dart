@@ -52,7 +52,8 @@ class BufferReader {
   String readCStringGreedy(int maxLength) {
     _lastPointer = _pointer;
     final value = <int>[];
-    final bytes = readBytes(maxLength);
+    final bytesToRead = (_buffer.length - _pointer).clamp(0, maxLength);
+    final bytes = readBytes(bytesToRead);
     for (final byte in bytes) {
       if (byte == 0) break;
       value.add(byte);
@@ -68,7 +69,7 @@ class BufferReader {
     final backupPointer = _pointer;
     final value = <int>[];
     int counter = 0;
-    while (counter < maxLength) {
+    while (counter < maxLength && _pointer < _buffer.length) {
       final byte = readByte();
       if (byte == 0) break;
       value.add(byte);
@@ -925,6 +926,7 @@ Uint8List buildGetContactsFrame({int? since}) {
   final writer = BufferWriter();
   writer.writeByte(cmdGetContacts);
   if (since != null) {
+    _requireUInt32(since, context: 'contact sync timestamp');
     writer.writeUInt32LE(since);
   }
   return writer.toBytes();
@@ -1027,6 +1029,7 @@ Uint8List buildGetBattAndStorageFrame() {
 
 // Build CMD_SET_DEVICE_TIME frame
 Uint8List buildSetDeviceTimeFrame(int timestamp) {
+  _requireUInt32(timestamp, context: 'device timestamp');
   final writer = BufferWriter();
   writer.writeByte(cmdSetDeviceTime);
   writer.writeUInt32LE(timestamp);
@@ -1323,6 +1326,12 @@ void _requirePublicKeyPrefix(Uint8List pubKey, {required String context}) {
 void _requireFullPublicKey(Uint8List pubKey, {required String context}) {
   if (pubKey.length != pubKeySize) {
     throw ArgumentError('$context requires a $pubKeySize-byte public key');
+  }
+}
+
+void _requireUInt32(int value, {required String context}) {
+  if (value < 0 || value > 0xFFFFFFFF) {
+    throw RangeError('$context must fit in an unsigned 32-bit integer');
   }
 }
 
