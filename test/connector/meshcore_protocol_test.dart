@@ -170,4 +170,55 @@ void main() {
       expect(frame.first, cmdSendTracePath);
     });
   });
+
+  group('outbound recipient validation', () {
+    test('rejects contact text messages with a short recipient key', () {
+      expect(
+        () => buildSendTextMsgFrame(Uint8List(5), 'hello'),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects cli command messages with a short recipient key', () {
+      expect(
+        () => buildSendCliCommandFrame(Uint8List(5), 'status'),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects binary requests with a short recipient key', () {
+      expect(
+        () => buildSendBinaryReq(Uint8List(31)),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects login requests with a short recipient key', () {
+      expect(
+        () => buildSendLoginFrame(Uint8List(31), 'secret'),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects status requests with a short recipient key', () {
+      expect(
+        () => buildSendStatusRequestFrame(Uint8List(31)),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects contact-by-key lookups with a short public key', () {
+      expect(
+        () => buildGetContactByKeyFrame(Uint8List(31)),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects contact removal with a short public key', () {
+      expect(
+        () => buildRemoveContactFrame(Uint8List(31)),
+        throwsArgumentError,
+      );
+    });
+  });
 }

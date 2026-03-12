@@ -82,7 +82,8 @@ class Channel {
   /// The hashtag is normalized to include '#' prefix.
   /// Returns first 16 bytes of SHA256 hash as PSK.
   static Uint8List derivePskFromHashtag(String hashtag) {
-    final name = hashtag.startsWith('#') ? hashtag : '#$hashtag';
+    final trimmed = hashtag.trim();
+    final name = trimmed.startsWith('#') ? trimmed : '#$trimmed';
     final hash = crypto.sha256.convert(utf8.encode(name)).bytes;
     return Uint8List.fromList(hash.sublist(0, 16));
   }

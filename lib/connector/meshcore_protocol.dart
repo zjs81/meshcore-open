@@ -891,6 +891,9 @@ int readInt32LE(Uint8List data, int offset) {
 
 // Helper to read null-terminated UTF-8 string
 String readCString(Uint8List data, int offset, int maxLen) {
+  if (offset < 0 || maxLen <= 0 || offset >= data.length) {
+    return '';
+  }
   int end = offset;
   while (end < offset + maxLen && end < data.length && data[end] != 0) {
     end++;
@@ -930,6 +933,7 @@ Uint8List buildGetContactsFrame({int? since}) {
 // Build CMD_SEND_LOGIN frame
 // Format: [cmd][pub_key x32][password...]\0
 Uint8List buildSendLoginFrame(Uint8List recipientPubKey, String password) {
+  _requireFullPublicKey(recipientPubKey, context: 'login request');
   final writer = BufferWriter();
   writer.writeByte(cmdSendLogin);
   writer.writeBytes(recipientPubKey);
@@ -941,6 +945,7 @@ Uint8List buildSendLoginFrame(Uint8List recipientPubKey, String password) {
 // Build CMD_SEND_STATUS_REQ frame
 // Format: [cmd][pub_key x32]
 Uint8List buildSendStatusRequestFrame(Uint8List recipientPubKey) {
+  _requireFullPublicKey(recipientPubKey, context: 'status request');
   final writer = BufferWriter();
   writer.writeByte(cmdSendStatusReq);
   writer.writeBytes(recipientPubKey);
@@ -955,6 +960,7 @@ Uint8List buildSendTextMsgFrame(
   int attempt = 0,
   int? timestampSeconds,
 }) {
+  _requirePublicKeyPrefix(recipientPubKey, context: 'contact text message');
   final timestamp =
       timestampSeconds ?? (DateTime.now().millisecondsSinceEpoch ~/ 1000);
   final writer = BufferWriter();
@@ -984,6 +990,7 @@ Uint8List buildSendChannelTextMsgFrame(int channelIndex, String text) {
 
 // Build CMD_REMOVE_CONTACT frame
 Uint8List buildRemoveContactFrame(Uint8List pubKey) {
+  _requireFullPublicKey(pubKey, context: 'contact removal');
   final writer = BufferWriter();
   writer.writeByte(cmdRemoveContact);
   writer.writeBytes(pubKey);
@@ -1190,6 +1197,7 @@ Uint8List buildUpdateContactPathFrame(
 // Build CMD_GET_CONTACT_BY_KEY frame
 // Format: [cmd][pub_key x32]
 Uint8List buildGetContactByKeyFrame(Uint8List pubKey) {
+  _requireFullPublicKey(pubKey, context: 'contact lookup');
   final writer = BufferWriter();
   writer.writeByte(cmdGetContactByKey);
   writer.writeBytes(pubKey);
@@ -1279,6 +1287,7 @@ Uint8List buildSendCliCommandFrame(
   int attempt = 0,
   int? timestampSeconds,
 }) {
+  _requirePublicKeyPrefix(repeaterPubKey, context: 'CLI command');
   final timestamp =
       timestampSeconds ?? (DateTime.now().millisecondsSinceEpoch ~/ 1000);
   final writer = BufferWriter();
@@ -1295,6 +1304,7 @@ Uint8List buildSendCliCommandFrame(
 // Build a telemetry request frame
 // Format: [cmd][pub_key x32][payload]
 Uint8List buildSendBinaryReq(Uint8List repeaterPubKey, {Uint8List? payload}) {
+  _requireFullPublicKey(repeaterPubKey, context: 'binary request');
   final writer = BufferWriter();
   writer.writeByte(cmdSendBinaryReq);
   writer.writeBytes(repeaterPubKey);
@@ -1302,6 +1312,18 @@ Uint8List buildSendBinaryReq(Uint8List repeaterPubKey, {Uint8List? payload}) {
     writer.writeBytes(payload);
   }
   return writer.toBytes();
+}
+
+void _requirePublicKeyPrefix(Uint8List pubKey, {required String context}) {
+  if (pubKey.length < 6) {
+    throw ArgumentError('$context requires at least a 6-byte public key prefix');
+  }
+}
+
+void _requireFullPublicKey(Uint8List pubKey, {required String context}) {
+  if (pubKey.length != pubKeySize) {
+    throw ArgumentError('$context requires a $pubKeySize-byte public key');
+  }
 }
 
 //Build a trace request frame
