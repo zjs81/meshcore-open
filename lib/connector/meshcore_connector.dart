@@ -1549,6 +1549,13 @@ class MeshCoreConnector extends ChangeNotifier {
     return _pendingCommandContextQueue.removeAt(index);
   }
 
+  void _clearPendingCommandContexts(Set<int> matchingCommands) {
+    if (_pendingCommandContextQueue.isEmpty || matchingCommands.isEmpty) {
+      return;
+    }
+    _pendingCommandContextQueue.removeWhere(matchingCommands.contains);
+  }
+
   int? _consumePendingCommandForFrame(int code) {
     switch (code) {
       case respCodeOk:
@@ -1583,9 +1590,11 @@ class MeshCoreConnector extends ChangeNotifier {
         );
       case pushCodeLoginSuccess:
       case pushCodeLoginFail:
-        return _consumePendingCommandContext(
+        final commandCode = _consumePendingCommandContext(
           matchingCommands: <int>{cmdSendLogin},
         );
+        _clearPendingCommandContexts(<int>{cmdSendLogin});
+        return commandCode;
       case pushCodeStatusResponse:
         return _consumePendingCommandContext(
           matchingCommands: <int>{cmdSendStatusReq},
