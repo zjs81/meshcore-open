@@ -50,14 +50,16 @@ class BufferReader {
   }
 
   String readCStringGreedy(int maxLength) {
-    _lastPointer = _pointer;
+    final backupPointer = _pointer;
     final value = <int>[];
-    final bytesToRead = (_buffer.length - _pointer).clamp(0, maxLength);
-    final bytes = readBytes(bytesToRead);
-    for (final byte in bytes) {
+    int counter = 0;
+    while (counter < maxLength && _pointer < _buffer.length) {
+      final byte = readByte();
       if (byte == 0) break;
       value.add(byte);
+      counter++;
     }
+    _lastPointer = backupPointer;
     try {
       return utf8.decode(Uint8List.fromList(value), allowMalformed: true);
     } catch (e) {
@@ -75,6 +77,7 @@ class BufferReader {
       value.add(byte);
       counter++;
     }
+    _pointer = backupPointer;
     _lastPointer = backupPointer;
     try {
       return utf8.decode(Uint8List.fromList(value), allowMalformed: true);
@@ -914,6 +917,9 @@ String pubKeyToHex(Uint8List pubKey) {
 
 // Helper to convert hex string to public key
 Uint8List hexToPubKey(String hex) {
+  if (hex.length.isOdd) {
+    throw FormatException('Public key hex must have an even number of digits');
+  }
   final result = Uint8List(pubKeySize);
   for (int i = 0; i < pubKeySize && i * 2 + 1 < hex.length; i++) {
     result[i] = int.parse(hex.substring(i * 2, i * 2 + 2), radix: 16);
@@ -941,7 +947,7 @@ Uint8List buildSendLoginFrame(Uint8List recipientPubKey, String password) {
   writer.writeBytes(recipientPubKey);
   writer.writeString(password);
   writer.writeByte(0);
-  return writer.toBytes();
+  return _finalizeFrame(writer, context: 'login request');
 }
 
 // Build CMD_SEND_STATUS_REQ frame
@@ -965,6 +971,7 @@ Uint8List buildSendTextMsgFrame(
   _requirePublicKeyPrefix(recipientPubKey, context: 'contact text message');
   final timestamp =
       timestampSeconds ?? (DateTime.now().millisecondsSinceEpoch ~/ 1000);
+  _requireUInt32(timestamp, context: 'contact text timestamp');
   final writer = BufferWriter();
   writer.writeByte(cmdSendTxtMsg);
   writer.writeByte(txtTypePlain);
@@ -973,7 +980,7 @@ Uint8List buildSendTextMsgFrame(
   writer.writeBytes(recipientPubKey.sublist(0, 6));
   writer.writeString(text);
   writer.writeByte(0);
-  return writer.toBytes();
+  return _finalizeFrame(writer, context: 'contact text message');
 }
 
 // Build CMD_SEND_CHANNEL_TXT_MSG frame
@@ -987,7 +994,7 @@ Uint8List buildSendChannelTextMsgFrame(int channelIndex, String text) {
   writer.writeUInt32LE(timestamp);
   writer.writeString(text);
   writer.writeByte(0);
-  return writer.toBytes();
+  return _finalizeFrame(writer, context: 'channel text message');
 }
 
 // Build CMD_REMOVE_CONTACT frame
@@ -1058,11 +1065,17 @@ Uint8List buildSetAdvertNameFrame(String name) {
 // Build CMD_SET_ADVERT_LATLON frame
 // Format: [cmd][lat x4][lon x4]
 Uint8List buildSetAdvertLatLonFrame(double lat, double lon) {
+  if (!lat.isFinite || lat < -90 || lat > 90) {
+    throw RangeError('latitude must be finite and between -90 and 90');
+  }
+  if (!lon.isFinite || lon < -180 || lon > 180) {
+    throw RangeError('longitude must be finite and between -180 and 180');
+  }
   final writer = BufferWriter();
   writer.writeByte(cmdSetAdvertLatLon);
   writer.writeInt32LE((lat * 1000000).round());
   writer.writeInt32LE((lon * 1000000).round());
-  return writer.toBytes();
+  return _finalizeFrame(writer, context: 'advert location update');
 }
 
 Uint8List buildSetCustomVarFrame(String value) {
@@ -1070,13 +1083,16 @@ Uint8List buildSetCustomVarFrame(String value) {
   writer.writeByte(cmdSetCustomVar);
   writer.writeString(value);
   writer.writeByte(0);
-  return writer.toBytes();
+  return _finalizeFrame(writer, context: 'custom variable update');
 }
 
 // Build local CLI command frame
 // Format: [cmdAppStart][command...]\0
 Uint8List buildLocalCliCommandFrame(String command) {
-  return Uint8List.fromList([cmdAppStart, ...utf8.encode(command), 0]);
+  return _finalizeRawFrame(
+    Uint8List.fromList([cmdAppStart, ...utf8.encode(command), 0]),
+    context: 'local CLI command',
+  );
 }
 
 // Build CMD_SYNC_NEXT_MESSAGE frame
@@ -1131,6 +1147,20 @@ Uint8List buildSetRadioParamsFrame(
   int cr, {
   bool? clientRepeat,
 }) {
+  _requireRange(
+    freqHz,
+    min: 300000,
+    max: 2500000,
+    context: 'radio frequency',
+  );
+  _requireRange(
+    bwHz,
+    min: 7000,
+    max: 500000,
+    context: 'radio bandwidth',
+  );
+  _requireRange(sf, min: 5, max: 12, context: 'spreading factor');
+  _requireRange(cr, min: 5, max: 8, context: 'coding rate');
   final writer = BufferWriter();
   writer.writeByte(cmdSetRadioParams);
   writer.writeUInt32LE(freqHz);
@@ -1140,7 +1170,7 @@ Uint8List buildSetRadioParamsFrame(
   if (clientRepeat != null) {
     writer.writeByte(clientRepeat ? 1 : 0);
   }
-  return writer.toBytes();
+  return _finalizeFrame(writer, context: 'radio parameter update');
 }
 
 // Build CMD_SET_RADIO_TX_POWER frame
@@ -1152,10 +1182,11 @@ Uint8List buildSetRadioTxPowerFrame(int powerDbm) {
 // Build CMD_RESET_PATH frame
 // Format: [cmd][pub_key x32]
 Uint8List buildResetPathFrame(Uint8List pubKey) {
+  _requireFullPublicKey(pubKey, context: 'path reset');
   final writer = BufferWriter();
   writer.writeByte(cmdResetPath);
   writer.writeBytes(pubKey);
-  return writer.toBytes();
+  return _finalizeFrame(writer, context: 'path reset');
 }
 
 // Build CMD_ADD_UPDATE_CONTACT frame to set custom path
@@ -1168,6 +1199,16 @@ Uint8List buildUpdateContactPathFrame(
   int flags = 0,
   String name = '',
 }) {
+  _requireFullPublicKey(pubKey, context: 'contact path update');
+  if (pathLen < 0 || pathLen > maxPathSize) {
+    throw RangeError('path length must be between 0 and $maxPathSize bytes');
+  }
+  if (customPath.length < pathLen) {
+    throw ArgumentError(
+      'custom path must include at least $pathLen bytes, '
+      'but only ${customPath.length} were provided',
+    );
+  }
   final writer = BufferWriter();
   writer.writeByte(cmdAddUpdateContact);
   writer.writeBytes(pubKey);
@@ -1194,7 +1235,7 @@ Uint8List buildUpdateContactPathFrame(
   final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   writer.writeUInt32LE(timestamp);
 
-  return writer.toBytes();
+  return _finalizeFrame(writer, context: 'contact path update');
 }
 
 // Build CMD_GET_CONTACT_BY_KEY frame
@@ -1293,6 +1334,7 @@ Uint8List buildSendCliCommandFrame(
   _requirePublicKeyPrefix(repeaterPubKey, context: 'CLI command');
   final timestamp =
       timestampSeconds ?? (DateTime.now().millisecondsSinceEpoch ~/ 1000);
+  _requireUInt32(timestamp, context: 'CLI command timestamp');
   final writer = BufferWriter();
   writer.writeByte(cmdSendTxtMsg);
   writer.writeByte(txtTypeCliData);
@@ -1301,7 +1343,7 @@ Uint8List buildSendCliCommandFrame(
   writer.writeBytes(repeaterPubKey.sublist(0, 6));
   writer.writeString(command);
   writer.writeByte(0);
-  return writer.toBytes();
+  return _finalizeFrame(writer, context: 'CLI command');
 }
 
 // Build a telemetry request frame
@@ -1314,7 +1356,7 @@ Uint8List buildSendBinaryReq(Uint8List repeaterPubKey, {Uint8List? payload}) {
   if (payload != null && payload.isNotEmpty) {
     writer.writeBytes(payload);
   }
-  return writer.toBytes();
+  return _finalizeFrame(writer, context: 'binary request');
 }
 
 void _requirePublicKeyPrefix(Uint8List pubKey, {required String context}) {
@@ -1335,9 +1377,36 @@ void _requireUInt32(int value, {required String context}) {
   }
 }
 
+void _requireRange(
+  int value, {
+  required int min,
+  required int max,
+  required String context,
+}) {
+  if (value < min || value > max) {
+    throw RangeError('$context must be between $min and $max');
+  }
+}
+
+Uint8List _finalizeFrame(BufferWriter writer, {required String context}) {
+  return _finalizeRawFrame(writer.toBytes(), context: context);
+}
+
+Uint8List _finalizeRawFrame(Uint8List frame, {required String context}) {
+  if (frame.length > maxFrameSize) {
+    throw ArgumentError(
+      '$context exceeds max frame size of $maxFrameSize bytes '
+      '(got ${frame.length})',
+    );
+  }
+  return frame;
+}
+
 //Build a trace request frame
 //[cmd][tag x4][auth x4][flag][payload]
 Uint8List buildTraceReq(int tag, int auth, int flag, {Uint8List? payload}) {
+  _requireUInt32(tag, context: 'trace tag');
+  _requireUInt32(auth, context: 'trace auth');
   final pathBytes = payload ?? Uint8List(0);
   final pathSizeShift = flag & 0x03;
   final pathStride = 1 << pathSizeShift;
@@ -1381,10 +1450,11 @@ Uint8List buildImportContactFrame(Uint8List contactFrame) {
 // Build a export contact frame
 // [cmd][pub_key x32]
 Uint8List buildZeroHopContact(Uint8List pubKey) {
+  _requireFullPublicKey(pubKey, context: 'contact export');
   final writer = BufferWriter();
   writer.writeByte(cmdShareContact);
   writer.writeBytes(pubKey);
-  return writer.toBytes();
+  return _finalizeFrame(writer, context: 'contact export');
 }
 
 // Build CMD_SET_OTHER_PARAMS frame

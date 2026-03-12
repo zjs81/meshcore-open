@@ -79,6 +79,30 @@ void main() {
       expect(frames[1], orderedEquals(<int>[respCodeNoMoreMessages]));
     });
 
+    test('splits buffered contacts-start from trailing ok in a later chunk', () {
+      final buffer = MeshCoreFrameBuffer();
+      final head = Uint8List.fromList(<int>[
+        respCodeContactsStart,
+        0x02,
+      ]);
+      final tail = Uint8List.fromList(<int>[
+        0x00,
+        0x00,
+        0x00,
+        respCodeOk,
+      ]);
+
+      expect(buffer.addChunk(head), isEmpty);
+
+      final frames = buffer.addChunk(tail);
+      expect(frames, hasLength(2));
+      expect(
+        frames[0],
+        orderedEquals(<int>[respCodeContactsStart, 0x02, 0x00, 0x00, 0x00]),
+      );
+      expect(frames[1], orderedEquals(<int>[respCodeOk]));
+    });
+
     test('splits leading ok frame from following payload bytes', () {
       final buffer = MeshCoreFrameBuffer();
       final payload = Uint8List.fromList(<int>[

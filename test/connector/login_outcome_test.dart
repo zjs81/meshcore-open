@@ -43,5 +43,18 @@ void main() {
 
       expect(parseLoginOutcome(frame, targetPrefix: prefix), isNull);
     });
+
+    test('ignores undersized prefixed login frame for target matching', () {
+      final prefix = Uint8List.fromList(<int>[1, 2, 3, 4, 5, 6]);
+      final frame = Uint8List.fromList(<int>[
+        pushCodeLoginSuccess,
+        0,
+        1,
+        2,
+        3,
+      ]);
+
+      expect(parseLoginOutcome(frame, targetPrefix: prefix), isNull);
+    });
   });
 }

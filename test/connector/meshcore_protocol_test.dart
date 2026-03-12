@@ -169,6 +169,20 @@ void main() {
       expect(frame.length, 1 + 4 + 4 + 1 + maxPathSize);
       expect(frame.first, cmdSendTracePath);
     });
+
+    test('rejects negative trace tags', () {
+      expect(
+        () => buildTraceReq(-1, 0, 0, payload: Uint8List(1)),
+        throwsA(isA<RangeError>()),
+      );
+    });
+
+    test('rejects negative trace auth values', () {
+      expect(
+        () => buildTraceReq(1, -1, 0, payload: Uint8List(1)),
+        throwsA(isA<RangeError>()),
+      );
+    });
   });
 
   group('outbound recipient validation', () {
@@ -220,6 +234,56 @@ void main() {
         throwsArgumentError,
       );
     });
+
+    test('rejects path reset with a short public key', () {
+      expect(
+        () => buildResetPathFrame(Uint8List(31)),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects contact export with a short public key', () {
+      expect(
+        () => buildZeroHopContact(Uint8List(31)),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects contact path updates with a short public key', () {
+      expect(
+        () => buildUpdateContactPathFrame(Uint8List(31), Uint8List(1), 1),
+        throwsArgumentError,
+      );
+    });
+  });
+
+  group('buildUpdateContactPathFrame', () {
+    final pubKey = Uint8List.fromList(List<int>.generate(32, (i) => i));
+
+    test('rejects negative path lengths', () {
+      expect(
+        () => buildUpdateContactPathFrame(pubKey, Uint8List(0), -1),
+        throwsA(isA<RangeError>()),
+      );
+    });
+
+    test('rejects path lengths larger than the firmware capacity', () {
+      expect(
+        () => buildUpdateContactPathFrame(
+          pubKey,
+          Uint8List(maxPathSize + 1),
+          maxPathSize + 1,
+        ),
+        throwsA(isA<RangeError>()),
+      );
+    });
+
+    test('rejects truncated custom paths', () {
+      expect(
+        () => buildUpdateContactPathFrame(pubKey, Uint8List(2), 3),
+        throwsArgumentError,
+      );
+    });
   });
 
   group('unsigned timestamp validation', () {
@@ -233,6 +297,28 @@ void main() {
     test('rejects negative device timestamps', () {
       expect(
         () => buildSetDeviceTimeFrame(-1),
+        throwsA(isA<RangeError>()),
+      );
+    });
+
+    test('rejects negative contact text timestamps', () {
+      expect(
+        () => buildSendTextMsgFrame(
+          Uint8List.fromList(List<int>.generate(32, (i) => i)),
+          'hello',
+          timestampSeconds: -1,
+        ),
+        throwsA(isA<RangeError>()),
+      );
+    });
+
+    test('rejects negative cli timestamps', () {
+      expect(
+        () => buildSendCliCommandFrame(
+          Uint8List.fromList(List<int>.generate(32, (i) => i)),
+          'status',
+          timestampSeconds: -1,
+        ),
         throwsA(isA<RangeError>()),
       );
     });
@@ -252,6 +338,170 @@ void main() {
           0x56,
         ]),
       );
+    });
+  });
+
+  group('buildSetAdvertLatLonFrame', () {
+    test('rejects non-finite latitude values', () {
+      expect(
+        () => buildSetAdvertLatLonFrame(double.nan, -87.6298),
+        throwsA(isA<RangeError>()),
+      );
+    });
+
+    test('rejects latitude values above 90 degrees', () {
+      expect(
+        () => buildSetAdvertLatLonFrame(90.000001, -87.6298),
+        throwsA(isA<RangeError>()),
+      );
+    });
+
+    test('rejects longitude values below -180 degrees', () {
+      expect(
+        () => buildSetAdvertLatLonFrame(41.8781, -180.000001),
+        throwsA(isA<RangeError>()),
+      );
+    });
+  });
+
+  group('buildSetAutoAddConfigFrame', () {
+    test('packs the documented bit flags', () {
+      final frame = buildSetAutoAddConfigFrame(
+        autoAddChat: true,
+        autoAddRepeater: false,
+        autoAddRoomServer: true,
+        autoAddSensor: true,
+        overwriteOldest: true,
+      );
+
+      expect(
+        frame,
+        orderedEquals(<int>[
+          cmdSetAutoAddConfig,
+          autoAddOverwriteOldestFlag |
+              autoAddChatFlag |
+              autoAddRoomServerFlag |
+              autoAddSensorFlag,
+        ]),
+      );
+    });
+  });
+
+  group('frame size validation', () {
+    final pubKey = Uint8List.fromList(List<int>.generate(32, (i) => i));
+
+    test('rejects contact text messages that exceed the max frame size', () {
+      expect(
+        () => buildSendTextMsgFrame(pubKey, 'x' * maxFrameSize),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects channel text messages that exceed the max frame size', () {
+      expect(
+        () => buildSendChannelTextMsgFrame(0, 'x' * maxFrameSize),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects cli command messages that exceed the max frame size', () {
+      expect(
+        () => buildSendCliCommandFrame(pubKey, 'x' * maxFrameSize),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects binary requests that exceed the max frame size', () {
+      expect(
+        () => buildSendBinaryReq(pubKey, payload: Uint8List(maxFrameSize)),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects login requests that exceed the max frame size', () {
+      expect(
+        () => buildSendLoginFrame(pubKey, 'x' * maxFrameSize),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects custom variable writes that exceed the max frame size', () {
+      expect(
+        () => buildSetCustomVarFrame('x' * maxFrameSize),
+        throwsArgumentError,
+      );
+    });
+
+    test('rejects local cli commands that exceed the max frame size', () {
+      expect(
+        () => buildLocalCliCommandFrame('x' * maxFrameSize),
+        throwsArgumentError,
+      );
+    });
+
+    test('accepts the largest valid contact text payload', () {
+      final frame = buildSendTextMsgFrame(
+        pubKey,
+        'x' * maxContactMessageBytes(),
+      );
+
+      expect(frame.length, lessThanOrEqualTo(maxFrameSize));
+    });
+
+    test('accepts the largest valid local cli command payload', () {
+      final frame = buildLocalCliCommandFrame('x' * (maxFrameSize - 2));
+
+      expect(frame.length, maxFrameSize);
+    });
+  });
+
+  group('buildSetRadioParamsFrame', () {
+    test('rejects frequencies below the supported range', () {
+      expect(
+        () => buildSetRadioParamsFrame(299999, 125000, 7, 5),
+        throwsA(isA<RangeError>()),
+      );
+    });
+
+    test('rejects bandwidths above the supported range', () {
+      expect(
+        () => buildSetRadioParamsFrame(915000, 500001, 7, 5),
+        throwsA(isA<RangeError>()),
+      );
+    });
+
+    test('rejects spreading factors below the supported range', () {
+      expect(
+        () => buildSetRadioParamsFrame(915000, 125000, 4, 5),
+        throwsA(isA<RangeError>()),
+      );
+    });
+
+    test('rejects coding rates above the supported range', () {
+      expect(
+        () => buildSetRadioParamsFrame(915000, 125000, 7, 9),
+        throwsA(isA<RangeError>()),
+      );
+    });
+  });
+
+  group('attempt clamping', () {
+    final pubKey = Uint8List.fromList(List<int>.generate(32, (i) => i));
+
+    test('clamps contact text attempts into the firmware range', () {
+      final low = buildSendTextMsgFrame(pubKey, 'hi', attempt: -10);
+      final high = buildSendTextMsgFrame(pubKey, 'hi', attempt: 10);
+
+      expect(low[2], 0);
+      expect(high[2], 3);
+    });
+
+    test('clamps cli command attempts into the firmware range', () {
+      final low = buildSendCliCommandFrame(pubKey, 'status', attempt: -10);
+      final high = buildSendCliCommandFrame(pubKey, 'status', attempt: 10);
+
+      expect(low[2], 0);
+      expect(high[2], 3);
     });
   });
 }

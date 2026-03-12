@@ -37,5 +37,23 @@ void main() {
 
       expect(parseBinaryResponsePacket(frame), isNull);
     });
+
+    test('accepts the minimum frame with an empty payload', () {
+      final frame = Uint8List.fromList(<int>[
+        pushCodeBinaryResponse,
+        0x7F,
+        0xAA,
+        0xBB,
+        0xCC,
+        0xDD,
+      ]);
+
+      final packet = parseBinaryResponsePacket(frame);
+
+      expect(packet, isNotNull);
+      expect(packet!.status, 0x7F);
+      expect(packet.tag, orderedEquals(<int>[0xAA, 0xBB, 0xCC, 0xDD]));
+      expect(packet.payload, isEmpty);
+    });
   });
 }
