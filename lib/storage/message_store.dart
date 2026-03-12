@@ -47,8 +47,12 @@ class MessageStore {
   }
 
   Future<void> clearMessages(String contactKeyHex) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot clear messages.');
+      return;
+    }
     final prefs = PrefsManager.instance;
-    final key = '$_keyPrefix$contactKeyHex';
+    final key = '$keyFor$contactKeyHex';
     await prefs.remove(key);
   }
 
