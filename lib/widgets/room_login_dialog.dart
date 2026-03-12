@@ -10,6 +10,7 @@ import '../services/storage_service.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../utils/app_logger.dart';
+import '../utils/login_error_formatter.dart';
 import 'path_management_dialog.dart';
 
 class RoomLoginDialog extends StatefulWidget {
@@ -83,12 +84,20 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
     try {
       final password = _passwordController.text;
       final room = _resolveRepeater(_connector);
+      debugPrint(
+        '[RoomLogin] Starting login for ${room.name} (${room.publicKeyHex})',
+      );
       appLogger.info(
         'Login started for ${room.name} (${room.publicKeyHex})',
         tag: 'RoomLogin',
       );
       final selection = await _connector.preparePathForContactSend(room);
+      debugPrint(
+        '[RoomLogin] Prepared route: '
+        '${selection.useFlood ? 'flood' : '${selection.hopCount} hops'}',
+      );
       final loginFrame = buildSendLoginFrame(room.publicKey, password);
+      debugPrint('[RoomLogin] Built login frame len=${loginFrame.length}');
       final pathLengthValue = selection.useFlood ? -1 : selection.hopCount;
       final responseBytes = loginFrame.length > maxFrameSize
           ? loginFrame.length
@@ -118,20 +127,29 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
           'Sending login attempt ${attempt + 1}/$_maxAttempts',
           tag: 'RoomLogin',
         );
+        debugPrint(
+          '[RoomLogin] Sending login attempt ${attempt + 1}/$_maxAttempts',
+        );
         await _connector.sendFrame(loginFrame);
 
         loginResult = await _awaitLoginResponse(timeout);
         if (loginResult == true) {
+          debugPrint('[RoomLogin] Login succeeded');
           appLogger.info('Login succeeded for ${room.name}', tag: 'RoomLogin');
           break;
         }
         if (loginResult == false) {
+          debugPrint('[RoomLogin] Login failed');
           appLogger.warn('Login failed for ${room.name}', tag: 'RoomLogin');
           throw Exception('Wrong password or node is unreachable');
         }
         appLogger.warn(
           'Login attempt ${attempt + 1} timed out after ${timeoutSeconds}s',
           tag: 'RoomLogin',
+        );
+        debugPrint(
+          '[RoomLogin] Login attempt ${attempt + 1} timed out '
+          'after ${timeout.inSeconds}s',
         );
       }
 
@@ -164,6 +182,7 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
       }
     } catch (e) {
       final room = _resolveRepeater(_connector);
+      debugPrint('[RoomLogin] Login error: $e');
       appLogger.warn('Login error for ${room.name}: $e', tag: 'RoomLogin');
       if (mounted) {
         setState(() {
@@ -171,7 +190,14 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(context.l10n.login_failed(e.toString())),
+            content: Text(
+              context.l10n.login_failed(
+                formatLoginError(
+                  e,
+                  fallbackMessage: context.l10n.login_failedMessage,
+                ),
+              ),
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -189,6 +215,7 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
       if (frame.isEmpty) return;
       final code = frame[0];
       if (code == respCodeErr) {
+        debugPrint('[RoomLogin] Received RESP_CODE_ERR during login');
         completer.complete(false);
         subscription?.cancel();
         timer?.cancel();
@@ -197,6 +224,7 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
       final outcome = parseLoginOutcome(frame, targetPrefix: targetPrefix);
       if (outcome == null) return;
 
+      debugPrint('[RoomLogin] Received login outcome: $outcome');
       completer.complete(outcome);
       subscription?.cancel();
       timer?.cancel();

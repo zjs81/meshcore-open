@@ -2702,6 +2702,7 @@ class MeshCoreConnector extends ChangeNotifier {
       case pushCodeLoginFail:
       case pushCodeStatusResponse:
       case pushCodeBinaryResponse:
+      case pushCodeTraceData:
         break;
       case pushCodeLogRxData:
         _handleRxData(frame);

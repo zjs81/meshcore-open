@@ -10,6 +10,7 @@ import '../services/storage_service.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../utils/app_logger.dart';
+import '../utils/login_error_formatter.dart';
 import 'path_management_dialog.dart';
 
 class RepeaterLoginDialog extends StatefulWidget {
@@ -89,12 +90,23 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
     try {
       final password = _passwordController.text;
       final repeater = _resolveRepeater(_connector);
+      debugPrint(
+        '[RepeaterLogin] Starting login for ${repeater.name} '
+        '(${repeater.publicKeyHex})',
+      );
       appLogger.info(
         'Login started for ${repeater.name} (${repeater.publicKeyHex})',
         tag: 'RepeaterLogin',
       );
       final selection = await _connector.preparePathForContactSend(repeater);
+      debugPrint(
+        '[RepeaterLogin] Prepared route: '
+        '${selection.useFlood ? 'flood' : '${selection.hopCount} hops'}',
+      );
       final loginFrame = buildSendLoginFrame(repeater.publicKey, password);
+      debugPrint(
+        '[RepeaterLogin] Built login frame len=${loginFrame.length}',
+      );
       final pathLengthValue = selection.useFlood ? -1 : selection.hopCount;
       final responseBytes = loginFrame.length > maxFrameSize
           ? loginFrame.length
@@ -124,10 +136,14 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
           'Sending login attempt ${attempt + 1}/$_maxAttempts',
           tag: 'RepeaterLogin',
         );
+        debugPrint(
+          '[RepeaterLogin] Sending login attempt ${attempt + 1}/$_maxAttempts',
+        );
         await _connector.sendFrame(loginFrame);
 
         loginResult = await _awaitLoginResponse(timeout);
         if (loginResult == true) {
+          debugPrint('[RepeaterLogin] Login succeeded');
           appLogger.info(
             'Login succeeded for ${repeater.name}',
             tag: 'RepeaterLogin',
@@ -135,6 +151,7 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
           break;
         }
         if (loginResult == false) {
+          debugPrint('[RepeaterLogin] Login failed');
           appLogger.warn(
             'Login failed for ${repeater.name}',
             tag: 'RepeaterLogin',
@@ -144,6 +161,10 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
         appLogger.warn(
           'Login attempt ${attempt + 1} timed out after ${timeoutSeconds}s',
           tag: 'RepeaterLogin',
+        );
+        debugPrint(
+          '[RepeaterLogin] Login attempt ${attempt + 1} timed out '
+          'after ${timeout.inSeconds}s',
         );
       }
 
@@ -188,6 +209,7 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
       }
     } catch (e) {
       final repeater = _resolveRepeater(_connector);
+      debugPrint('[RepeaterLogin] Login error: $e');
       appLogger.warn(
         'Login error for ${repeater.name}: $e',
         tag: 'RepeaterLogin',
@@ -195,7 +217,10 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
       if (mounted) {
         setState(() {
           _isLoggingIn = false;
-          _loginError = context.l10n.login_failedMessage;
+          _loginError = formatLoginError(
+            e,
+            fallbackMessage: context.l10n.login_failedMessage,
+          );
         });
       }
     }
@@ -211,6 +236,7 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
       if (frame.isEmpty) return;
       final code = frame[0];
       if (code == respCodeErr) {
+        debugPrint('[RepeaterLogin] Received RESP_CODE_ERR during login');
         completer.complete(false);
         subscription?.cancel();
         timer?.cancel();
@@ -219,6 +245,7 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
       final outcome = parseLoginOutcome(frame, targetPrefix: targetPrefix);
       if (outcome == null) return;
 
+      debugPrint('[RepeaterLogin] Received login outcome: $outcome');
       completer.complete(outcome);
       subscription?.cancel();
       timer?.cancel();
