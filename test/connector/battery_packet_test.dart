@@ -30,6 +30,21 @@ void main() {
       expect(packet.usedStorageKb, 0x1234);
       expect(packet.totalStorageKb, 0x5678);
     });
+
+    test('parses the minimal battery frame without storage fields', () {
+      final frame = Uint8List.fromList(<int>[
+        respCodeBattAndStorage,
+        50,
+        0,
+      ]);
+
+      final packet = parseBatteryStatusPacket(frame);
+
+      expect(packet, isNotNull);
+      expect(packet!.levelPercent, 50);
+      expect(packet.usedStorageKb, isNull);
+      expect(packet.totalStorageKb, isNull);
+    });
   });
 
   testWidgets('BatteryIndicator renders percentage when voltage is unavailable', (

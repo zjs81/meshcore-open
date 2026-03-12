@@ -120,6 +120,17 @@ class MessageRetryService extends ChangeNotifier {
     return Uint8List.fromList(hash.bytes.sublist(0, 4));
   }
 
+  @visibleForTesting
+  static int resolveAttemptForSend({
+    required int retryCount,
+    required int? pathLength,
+  }) {
+    if (pathLength != null && pathLength < 0) {
+      return 3;
+    }
+    return retryCount.clamp(0, 3);
+  }
+
   Future<void> sendMessageWithRetry({
     required Contact contact,
     required String text,
@@ -192,7 +203,10 @@ class MessageRetryService extends ChangeNotifier {
       }
     }
 
-    final attempt = message.retryCount.clamp(0, 3);
+    final attempt = resolveAttemptForSend(
+      retryCount: message.retryCount,
+      pathLength: message.pathLength,
+    );
     final timestampSeconds = message.timestamp.millisecondsSinceEpoch ~/ 1000;
 
     // Compute expected ACK hash that device will return in RESP_CODE_SENT

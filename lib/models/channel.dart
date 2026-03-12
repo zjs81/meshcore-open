@@ -113,7 +113,8 @@ class Channel {
   /// Normalize a hashtag name for consistent community PSK derivation.
   /// Strips leading #, converts to lowercase, trims whitespace.
   static String _normalizeCommunityHashtag(String hashtag) {
-    return hashtag.replaceFirst(RegExp(r'^#'), '').toLowerCase().trim();
+    final trimmed = hashtag.trim();
+    return trimmed.replaceFirst(RegExp(r'^#'), '').toLowerCase();
   }
 
   static String formatPskHex(Uint8List psk) {

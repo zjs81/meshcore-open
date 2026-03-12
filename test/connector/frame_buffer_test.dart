@@ -107,6 +107,28 @@ void main() {
       expect(frames[1], orderedEquals(<int>[respCodeOk]));
     });
 
+    test('splits buffered device-info from trailing ok in a later chunk', () {
+      final buffer = MeshCoreFrameBuffer();
+      final head = Uint8List.fromList(<int>[
+        respCodeDeviceInfo,
+        ...List<int>.filled(40, 0),
+      ]);
+      final tail = Uint8List.fromList(<int>[
+        ...List<int>.filled(40, 0),
+        respCodeOk,
+      ]);
+
+      expect(buffer.addChunk(head), isEmpty);
+
+      final frames = buffer.addChunk(tail);
+      expect(frames, hasLength(2));
+      expect(frames[0], orderedEquals(<int>[
+        respCodeDeviceInfo,
+        ...List<int>.filled(80, 0),
+      ]));
+      expect(frames[1], orderedEquals(<int>[respCodeOk]));
+    });
+
     test('passes variable-length notifications through immediately', () {
       final buffer = MeshCoreFrameBuffer();
       final frame = Uint8List.fromList(<int>[
