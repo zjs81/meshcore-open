@@ -95,7 +95,11 @@ class _MapScreenState extends State<MapScreen> {
 
   bool _checkLocationPlausibility(double lat, double lon) {
     const double epsilon = 1e-6;
-    return lat.abs() > epsilon || lon.abs() > epsilon;
+    return (lat.abs() > epsilon || lon.abs() > epsilon) &&
+        lat >= -90.0 &&
+        lat <= 90.0 &&
+        lon >= -180.0 &&
+        lon <= 180.0;
   }
 
   double _standardDeviation(List<double> values) {
