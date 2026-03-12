@@ -51,7 +51,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
   // Cache of PSK hex -> Community for quick lookup
   final Map<String, Community> _pskToCommunity = {};
 
-  get channelMessageStore => ChannelMessageStore();
+  ChannelMessageStore get _channelMessageStore => ChannelMessageStore();
 
   @override
   void initState() {
@@ -1343,7 +1343,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                           dialogContext.l10n.channels_createPrivateChannelDesc,
                     ),
                     if (selectedOption == 0)
-                      buildExpandedContent(channelMessageStore)!,
+                      buildExpandedContent(_channelMessageStore)!,
                     const Divider(height: 1),
                     buildOptionTile(
                       optionIndex: 1,
@@ -1353,7 +1353,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                           dialogContext.l10n.channels_joinPrivateChannelDesc,
                     ),
                     if (selectedOption == 1)
-                      buildExpandedContent(channelMessageStore)!,
+                      buildExpandedContent(_channelMessageStore)!,
                     if (!hasPublicChannel) ...[
                       const Divider(height: 1),
                       buildOptionTile(
@@ -1364,7 +1364,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                             dialogContext.l10n.channels_joinPublicChannelDesc,
                       ),
                       if (selectedOption == 2)
-                        buildExpandedContent(channelMessageStore)!,
+                        buildExpandedContent(_channelMessageStore)!,
                     ],
                     const Divider(height: 1),
                     buildOptionTile(
@@ -1375,7 +1375,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                           dialogContext.l10n.channels_joinHashtagChannelDesc,
                     ),
                     if (selectedOption == 3)
-                      buildExpandedContent(channelMessageStore)!,
+                      buildExpandedContent(_channelMessageStore)!,
                     const Divider(height: 1),
                     buildOptionTile(
                       optionIndex: 4,
@@ -1384,7 +1384,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                       subtitle: dialogContext.l10n.community_join,
                     ),
                     if (selectedOption == 4)
-                      buildExpandedContent(channelMessageStore)!,
+                      buildExpandedContent(_channelMessageStore)!,
                     const Divider(height: 1),
                     buildOptionTile(
                       optionIndex: 5,
@@ -1393,7 +1393,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                       subtitle: dialogContext.l10n.community_createDesc,
                     ),
                     if (selectedOption == 5)
-                      buildExpandedContent(channelMessageStore)!,
+                      buildExpandedContent(_channelMessageStore)!,
                   ],
                 ),
               ),

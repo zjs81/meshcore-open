@@ -51,8 +51,8 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  static const double _labelZoomThreshold =
-      12.0; // zoom level at which node labels start to appear
+  // Zoom level at which node labels start to appear
+  static const double _labelZoomThreshold = 12.0;
 
   final MapController _mapController = MapController();
   final MapMarkerService _markerService = MapMarkerService();
