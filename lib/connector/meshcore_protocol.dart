@@ -748,7 +748,9 @@ class MeshCoreFrameBuffer {
     if (remainder.isEmpty) {
       return remainder;
     }
-    if (frameCode != respCodeContact && frameCode != pushCodeNewAdvert) {
+    if (frameCode != respCodeContact &&
+        frameCode != pushCodeNewAdvert &&
+        frameCode != respCodeDeviceInfo) {
       return remainder;
     }
     if (_isKnownIncomingCode(remainder[0])) {

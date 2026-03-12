@@ -93,6 +93,20 @@ void main() {
       expect(frames[1], orderedEquals(payload.sublist(1)));
     });
 
+    test('splits trailing ok from device-info payload bytes', () {
+      final buffer = MeshCoreFrameBuffer();
+      final payload = Uint8List.fromList(<int>[
+        respCodeDeviceInfo,
+        ...List<int>.filled(80, 0),
+        respCodeOk,
+      ]);
+
+      final frames = buffer.addChunk(payload);
+      expect(frames, hasLength(2));
+      expect(frames[0], orderedEquals(payload.sublist(0, 81)));
+      expect(frames[1], orderedEquals(<int>[respCodeOk]));
+    });
+
     test('passes variable-length notifications through immediately', () {
       final buffer = MeshCoreFrameBuffer();
       final frame = Uint8List.fromList(<int>[
