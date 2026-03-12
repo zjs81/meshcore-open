@@ -55,6 +55,10 @@
 	<string>This app uses Bluetooth to communicate with MeshCore devices.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app uses the camera to scan QR codes for joining communities.</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.pravera.flutter_foreground_task.refresh</string>
+	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>http</string>

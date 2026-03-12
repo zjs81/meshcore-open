@@ -80,6 +80,14 @@ bool shouldReplaceContactsSnapshot({
   return snapshotStarted && !preserveExisting;
 }
 
+@visibleForTesting
+bool shouldAutoSyncTimeOnConnect(int? firmwareVerCode) {
+  if (firmwareVerCode == null) {
+    return true;
+  }
+  return firmwareVerCode < 10;
+}
+
 class MeshCoreUuids {
   static const String service = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
   static const String rxCharacteristic = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
@@ -999,8 +1007,16 @@ class MeshCoreConnector extends ChangeNotifier {
         throw StateError('Timed out waiting for SELF_INFO during connect');
       }
 
-      _appDebugLogService?.info('connectUsb: syncing time…', tag: 'USB');
-      await syncTime();
+      if (shouldAutoSyncTimeOnConnect(_firmwareVerCode)) {
+        _appDebugLogService?.info('connectUsb: syncing time…', tag: 'USB');
+        await syncTime();
+      } else {
+        _appDebugLogService?.info(
+          'connectUsb: skipping automatic time sync for firmware '
+          '${_firmwareVerCode ?? -1}',
+          tag: 'USB',
+        );
+      }
       _appDebugLogService?.info('connectUsb: complete', tag: 'USB');
     } catch (error) {
       _appDebugLogService?.error('USB connection error: $error', tag: 'USB');
@@ -1248,7 +1264,15 @@ class MeshCoreConnector extends ChangeNotifier {
       await _waitForSelfInfo(timeout: const Duration(seconds: 3));
     }
 
-    await syncTime();
+    if (shouldAutoSyncTimeOnConnect(_firmwareVerCode)) {
+      await syncTime();
+    } else {
+      _appDebugLogService?.info(
+        'Startup skipping automatic time sync for firmware '
+        '${_firmwareVerCode ?? -1}',
+        tag: 'Startup',
+      );
+    }
     _pendingDeferredChannelSyncAfterContacts = true;
     if (!_isLoadingContacts) {
       unawaited(getChannels());
