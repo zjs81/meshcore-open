@@ -145,7 +145,7 @@ class MeshCoreConnector extends ChangeNotifier {
   int _reconnectAttempts = 0;
   bool _notifyListenersDirty = false;
   static const Duration _notifyListenersDebounce = Duration(milliseconds: 50);
-  static const Duration _bleFrameFlushDelay = Duration(milliseconds: 20);
+  static const Duration _bleFrameFlushDelay = Duration(milliseconds: 75);
 
   final StreamController<Uint8List> _receivedFramesController =
       StreamController<Uint8List>.broadcast();
@@ -163,6 +163,8 @@ class MeshCoreConnector extends ChangeNotifier {
   int? _firmwareVerCode;
   int? _batteryMillivolts;
   int? _batteryPercentValue;
+  int? _lastOutgoingCommandCode;
+  bool _supportsGetContactByKey = true;
   double? _selfLatitude;
   double? _selfLongitude;
   final List<DirectRepeater> _directRepeaters = List.empty(growable: true);
@@ -183,12 +185,6 @@ class MeshCoreConnector extends ChangeNotifier {
   bool _autoAddRoomServers = false;
   bool _autoAddSensors = false;
   bool _overwriteOldest = false;
-  bool _manualAddContacts = false;
-  int _telemetryModeBase = 0;
-  int _telemetryModeLoc = 0;
-  int _telemetryModeEnv = 0;
-  int _advertLocPolicy = 0;
-  int _multiAcks = 0;
 
   static const int _defaultMaxContacts = 32;
   static const int _defaultMaxChannels = 8;
@@ -237,6 +233,7 @@ class MeshCoreConnector extends ChangeNotifier {
   final Map<int, bool> _channelSmazEnabled = {};
   bool _lastSentWasCliCommand =
       false; // Track if last sent message was a CLI command
+  final List<int> _pendingCommandContextQueue = <int>[];
   final Map<String, bool> _contactSmazEnabled = {};
   final Set<String> _knownContactKeys = {};
   final Map<String, int> _contactUnreadCount = {};
@@ -1209,7 +1206,10 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     await syncTime();
-    unawaited(getChannels());
+    _pendingDeferredChannelSyncAfterContacts = true;
+    if (!_isLoadingContacts) {
+      unawaited(getChannels());
+    }
   }
 
   void _resetConnectionHandshakeState() {
@@ -1345,6 +1345,8 @@ class MeshCoreConnector extends ChangeNotifier {
     _firmwareVerCode = null;
     _batteryMillivolts = null;
     _batteryPercentValue = null;
+    _lastOutgoingCommandCode = null;
+    _supportsGetContactByKey = true;
     _repeaterBatterySnapshots.clear();
     _batteryRequested = false;
     _awaitingSelfInfo = false;
@@ -1385,6 +1387,22 @@ class MeshCoreConnector extends ChangeNotifier {
       throw Exception("Not connected to a MeshCore device");
     }
     _bleDebugLogService?.logFrame(data, outgoing: true);
+    if (data.isNotEmpty) {
+      _lastOutgoingCommandCode = data[0];
+      _trackPendingCommandContext(data[0]);
+      if (data.length > 1 &&
+          data[0] == cmdSendTxtMsg &&
+          data[1] == txtTypeCliData) {
+        _lastSentWasCliCommand = true;
+      }
+      _appDebugLogService?.info(
+        'Sending ${describeProtocolCode(data[0], outgoing: true)} '
+        'len=${data.length}'
+        '${expectsGenericAck ? ' expectsGenericAck=true' : ''}'
+        '${channelSendQueueId != null ? ' queueId=$channelSendQueueId' : ''}',
+        tag: 'Protocol',
+      );
+    }
 
     if (_activeTransport == MeshCoreTransportType.usb) {
       await _usbManager.write(data);
@@ -1411,6 +1429,98 @@ class MeshCoreConnector extends ChangeNotifier {
     );
   }
 
+  void _trackPendingCommandContext(int commandCode) {
+    switch (commandCode) {
+      case cmdDeviceQuery:
+      case cmdAppStart:
+      case cmdGetContacts:
+      case cmdGetBattAndStorage:
+      case cmdSendLogin:
+      case cmdSendStatusReq:
+      case cmdGetContactByKey:
+      case cmdGetChannel:
+      case cmdGetCustomVar:
+      case cmdSendBinaryReq:
+      case cmdGetAutoAddConfig:
+      case cmdAddUpdateContact:
+        _pendingCommandContextQueue.add(commandCode);
+        return;
+      default:
+        return;
+    }
+  }
+
+  int? _consumePendingCommandContext({Set<int>? matchingCommands}) {
+    if (_pendingCommandContextQueue.isEmpty) {
+      return null;
+    }
+    if (matchingCommands == null || matchingCommands.isEmpty) {
+      return _pendingCommandContextQueue.removeAt(0);
+    }
+
+    final index = _pendingCommandContextQueue.indexWhere(
+      matchingCommands.contains,
+    );
+    if (index == -1) {
+      return null;
+    }
+    return _pendingCommandContextQueue.removeAt(index);
+  }
+
+  int? _consumePendingCommandForFrame(int code) {
+    switch (code) {
+      case respCodeOk:
+        return _consumePendingCommandContext();
+      case respCodeDeviceInfo:
+        return _consumePendingCommandContext(
+          matchingCommands: <int>{cmdDeviceQuery},
+        );
+      case respCodeSelfInfo:
+        return _consumePendingCommandContext(
+          matchingCommands: <int>{cmdAppStart},
+        );
+      case respCodeContactsStart:
+        return _consumePendingCommandContext(
+          matchingCommands: <int>{cmdGetContacts},
+        );
+      case respCodeBattAndStorage:
+        return _consumePendingCommandContext(
+          matchingCommands: <int>{cmdGetBattAndStorage},
+        );
+      case respCodeChannelInfo:
+        return _consumePendingCommandContext(
+          matchingCommands: <int>{cmdGetChannel},
+        );
+      case respCodeCustomVars:
+        return _consumePendingCommandContext(
+          matchingCommands: <int>{cmdGetCustomVar},
+        );
+      case respCodeAutoAddConfig:
+        return _consumePendingCommandContext(
+          matchingCommands: <int>{cmdGetAutoAddConfig},
+        );
+      case pushCodeLoginSuccess:
+      case pushCodeLoginFail:
+        return _consumePendingCommandContext(
+          matchingCommands: <int>{cmdSendLogin},
+        );
+      case pushCodeStatusResponse:
+        return _consumePendingCommandContext(
+          matchingCommands: <int>{cmdSendStatusReq},
+        );
+      case pushCodeBinaryResponse:
+        return _consumePendingCommandContext(
+          matchingCommands: <int>{cmdSendBinaryReq},
+        );
+      default:
+        return null;
+    }
+  }
+
+  bool _shouldTrackMessageSentAckForCommand(int? commandCode) {
+    return commandCode == cmdSendTxtMsg || commandCode == cmdSendChannelTxtMsg;
+  }
+
   Future<void> requestBatteryStatus({bool force = false}) async {
     if (!isConnected) return;
     if (_batteryRequested && !force) return;
@@ -1425,15 +1535,34 @@ class MeshCoreConnector extends ChangeNotifier {
     final commandCode = command.isNotEmpty ? command[0] : -1;
     final expectedCodes = expectedResponseCodesForCommand(commandCode);
     if (expectedCodes.isEmpty) {
+      _appDebugLogService?.info(
+        'No mapped response for ${describeProtocolCode(commandCode, outgoing: true)}',
+        tag: 'Protocol',
+      );
       await sendFrame(command);
       return true;
     }
+
+    final expectedLabels = expectedCodes
+        .map((code) => describeProtocolCode(code, outgoing: false))
+        .join(', ');
+    _appDebugLogService?.info(
+      'Awaiting $expectedLabels after '
+      '${describeProtocolCode(commandCode, outgoing: true)} '
+      'timeout=${timeout.inMilliseconds}ms',
+      tag: 'Protocol',
+    );
 
     final completer = Completer<bool>();
     late final StreamSubscription<Uint8List> subscription;
     subscription = receivedFrames.listen((frame) {
       if (frameMatchesCommandResponse(commandCode, frame) &&
           !completer.isCompleted) {
+        _appDebugLogService?.info(
+          'Matched ${describeProtocolCode(frame[0], outgoing: false)} '
+          'to ${describeProtocolCode(commandCode, outgoing: true)}',
+          tag: 'Protocol',
+        );
         completer.complete(true);
       }
     });
@@ -1446,7 +1575,8 @@ class MeshCoreConnector extends ChangeNotifier {
       );
       if (!matched) {
         _appDebugLogService?.warn(
-          'Timed out waiting for response to command $commandCode',
+          'Timed out waiting for $expectedLabels after '
+          '${describeProtocolCode(commandCode, outgoing: true)}',
           tag: 'Protocol',
         );
       }
@@ -1457,28 +1587,41 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   Future<void> _runStartupCommandSequence({required bool forceBattery}) async {
-    final commands = <Uint8List>[
+    _appDebugLogService?.info(
+      'Startup sequence begin forceBattery=$forceBattery',
+      tag: 'Startup',
+    );
+    final awaitedCommands = <Uint8List>[
       buildDeviceQueryFrame(),
       buildAppStartFrame(),
-      buildGetCustomVarsFrame(),
-      buildGetBattAndStorageFrame(),
-      buildGetAutoAddFlagsFrame(),
     ];
 
-    for (final command in commands) {
+    for (final command in awaitedCommands) {
       if (!isConnected) {
         return;
       }
-      if (command.isNotEmpty &&
-          command[0] == cmdGetBattAndStorage &&
-          !forceBattery &&
-          _batteryRequested) {
-        continue;
-      }
       await _sendFrameAndWaitForExpectedResponse(command);
-      if (command.isNotEmpty && command[0] == cmdGetBattAndStorage) {
+    }
+
+    if (isConnected) {
+      if (forceBattery || !_batteryRequested) {
         _batteryRequested = true;
+        _appDebugLogService?.info(
+          'Startup sending battery request (best-effort)',
+          tag: 'Startup',
+        );
+        await sendFrame(buildGetBattAndStorageFrame());
       }
+      _appDebugLogService?.info(
+        'Startup sending auto-add config request (best-effort)',
+        tag: 'Startup',
+      );
+      await sendFrame(buildGetAutoAddFlagsFrame());
+      _appDebugLogService?.info(
+        'Startup sending custom vars request (best-effort)',
+        tag: 'Startup',
+      );
+      await sendFrame(buildGetCustomVarsFrame());
     }
   }
 
@@ -1577,6 +1720,12 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> getContacts({int? since, bool preserveExisting = false}) async {
     if (!isConnected) return;
 
+    _appDebugLogService?.info(
+      'Requesting contacts preserveExisting=$preserveExisting'
+      '${since != null ? ' since=$since' : ''}',
+      tag: 'Contacts',
+    );
+
     _isLoadingContacts = true;
     _preserveContactsOnRefresh = preserveExisting;
     if (!preserveExisting) {
@@ -1597,6 +1746,10 @@ class MeshCoreConnector extends ChangeNotifier {
 
   Future<void> getContactByKey(Uint8List pubKey) async {
     if (!isConnected) return;
+    if (!_supportsGetContactByKey) {
+      await refreshContactsSinceLastmod();
+      return;
+    }
     await sendFrame(buildGetContactByKeyFrame(pubKey));
   }
 
@@ -2073,6 +2226,11 @@ class MeshCoreConnector extends ChangeNotifier {
     if (!force && _isSyncingQueuedMessages) return;
     if (_awaitingSelfInfo || _isLoadingContacts) {
       _pendingQueueSync = true;
+      _appDebugLogService?.info(
+        'Deferring queue sync awaitingSelfInfo=$_awaitingSelfInfo '
+        'loadingContacts=$_isLoadingContacts',
+        tag: 'QueueSync',
+      );
       return;
     }
     _isSyncingQueuedMessages = true;
@@ -2171,6 +2329,15 @@ class MeshCoreConnector extends ChangeNotifier {
 
   Future<void> getChannels({int? maxChannels, bool force = false}) async {
     if (!isConnected) return;
+    if (_awaitingSelfInfo || _isLoadingContacts) {
+      _pendingDeferredChannelSyncAfterContacts = true;
+      _appDebugLogService?.info(
+        'Deferring channel sync awaitingSelfInfo=$_awaitingSelfInfo '
+        'loadingContacts=$_isLoadingContacts force=$force',
+        tag: 'ChannelSync',
+      );
+      return;
+    }
     if (_isSyncingChannels) {
       debugPrint('[ChannelSync] Already syncing channels, ignoring request');
       return;
@@ -2353,9 +2520,19 @@ class MeshCoreConnector extends ChangeNotifier {
     _bleFrameFlushTimer?.cancel();
     if (_bleFrameBuffer.hasBufferedData) {
       _bleFrameFlushTimer = Timer(_bleFrameFlushDelay, () {
-        final flushed = _bleFrameBuffer.flush();
-        if (flushed != null) {
-          _dispatchFrame(flushed);
+        final expectedLength = _bleFrameBuffer.expectedLength;
+        final discarded = _bleFrameBuffer.discardIncompleteFrame();
+        if (discarded != null) {
+          final preview = discarded
+              .take(8)
+              .map((b) => b.toRadixString(16).padLeft(2, '0'))
+              .join(' ');
+          _appDebugLogService?.warn(
+            'Dropping incomplete BLE frame len=${discarded.length}'
+            '${expectedLength != null ? ' expected=$expectedLength' : ''}'
+            '${preview.isNotEmpty ? ' bytes=$preview' : ''}',
+            tag: 'Protocol',
+          );
         }
       });
     }
@@ -2364,8 +2541,19 @@ class MeshCoreConnector extends ChangeNotifier {
   void _dispatchFrame(Uint8List frame) {
     _receivedFramesController.add(frame);
     _bleDebugLogService?.logFrame(frame, outgoing: false);
+    if (frame.isNotEmpty) {
+      _appDebugLogService?.info(
+        'Dispatching ${describeProtocolCode(frame[0], outgoing: false)} len=${frame.length}',
+        tag: 'Protocol',
+      );
+    }
 
     final code = frame[0];
+    final resolvedCommandCode = _consumePendingCommandForFrame(code);
+    if (resolvedCommandCode != null &&
+        resolvedCommandCode == _lastOutgoingCommandCode) {
+      _lastOutgoingCommandCode = null;
+    }
     debugPrint('RX frame: code=$code len=${frame.length}');
 
     switch (code) {
@@ -2447,6 +2635,7 @@ class MeshCoreConnector extends ChangeNotifier {
       case pushCodeLoginSuccess:
       case pushCodeLoginFail:
       case pushCodeStatusResponse:
+      case pushCodeBinaryResponse:
         break;
       case pushCodeLogRxData:
         _handleRxData(frame);
@@ -2457,7 +2646,6 @@ class MeshCoreConnector extends ChangeNotifier {
         break;
       case respCodeAutoAddConfig:
         _handleAutoAddConfig(frame);
-        _checkManualAddContacts();
         break;
       case respCodeBattAndStorage:
         _handleBatteryAndStorage(frame);
@@ -2470,14 +2658,30 @@ class MeshCoreConnector extends ChangeNotifier {
         _handleErrorFrame(frame);
         break;
       default:
-        debugPrint('Unknown frame code: $code');
+        final preview = frame
+            .take(8)
+            .map((b) => b.toRadixString(16).padLeft(2, '0'))
+            .join(' ');
+        _appDebugLogService?.warn(
+          'Unknown frame ${describeProtocolCode(code, outgoing: false)} len=${frame.length}'
+          '${preview.isNotEmpty ? ' bytes=$preview' : ''}',
+          tag: 'Protocol',
+        );
     }
   }
 
   void _handleErrorFrame(Uint8List frame) {
     final errCode = frame.length > 1 ? frame[1] : -1;
+    final commandCode = _pendingCommandContextQueue.isNotEmpty
+        ? _pendingCommandContextQueue.removeAt(0)
+        : _lastOutgoingCommandCode;
+    if (commandCode == cmdGetContactByKey) {
+      _supportsGetContactByKey = false;
+    }
     _appDebugLogService?.warn(
-      'Firmware responded with error code: $errCode',
+      'Firmware responded with error code: $errCode'
+      '${commandCode != null ? ' after ${describeProtocolCode(commandCode, outgoing: true)}' : ''}'
+      ' frameLen=${frame.length}',
       tag: 'Protocol',
     );
 
@@ -2503,11 +2707,16 @@ class MeshCoreConnector extends ChangeNotifier {
       );
 
       if (contact != null) {
+        _appDebugLogService?.info(
+          'Path updated for ${contact.name} '
+          'pubKey=${contact.publicKeyHex.substring(0, 8)}',
+          tag: 'Contacts',
+        );
         _pathHistoryService!.handlePathUpdated(contact);
         // Refresh just this specific contact instead of all contacts.
         // This avoids race conditions with _preserveContactsOnRefresh flag
         // that can occur when using refreshContactsSinceLastmod().
-        getContactByKey(pubKey);
+        unawaited(refreshContactsSinceLastmod());
       }
     }
   }
@@ -2539,14 +2748,10 @@ class MeshCoreConnector extends ChangeNotifier {
       _selfPublicKey = reader.readBytes(pubKeySize);
       _selfLatitude = reader.readInt32LE() / 1000000.0;
       _selfLongitude = reader.readInt32LE() / 1000000.0;
-      _multiAcks = reader.readByte();
-      _advertLocPolicy = reader.readByte();
-      final telemetryFlag = reader.readByte();
-      _telemetryModeBase = telemetryFlag & 0x03;
-      _telemetryModeEnv = telemetryFlag >> 2 & 0x03;
-      _telemetryModeLoc = telemetryFlag >> 4 & 0x03;
-
-      _manualAddContacts = reader.readByte() & 0x01 == 0x00;
+      reader.readByte(); // multi_acks
+      reader.readByte(); // advert_loc_policy
+      reader.readByte(); // telemetry modes
+      reader.readByte(); // manual_add_contacts
 
       _currentFreqHz = reader.readUInt32LE();
       _currentBwHz = reader.readUInt32LE();
@@ -2554,6 +2759,12 @@ class MeshCoreConnector extends ChangeNotifier {
       _currentCr = reader.readByte();
 
       _selfName = reader.readString();
+      if (reader.remaining > 0) {
+        _appDebugLogService?.warn(
+          'SELF_INFO parser left ${reader.remaining} unread bytes',
+          tag: 'Protocol',
+        );
+      }
     } catch (e) {
       _appDebugLogService?.error(
         'Error parsing SELF_INFO frame: $e',
@@ -2582,8 +2793,16 @@ class MeshCoreConnector extends ChangeNotifier {
     if (PlatformInfo.isWeb &&
         _activeTransport == MeshCoreTransportType.bluetooth) {
       _pendingInitialContactsSync = true;
+      _appDebugLogService?.info(
+        'Deferring initial contacts until channel 0 on web BLE',
+        tag: 'Startup',
+      );
     } else if (_activeTransport == MeshCoreTransportType.usb) {
       _pendingDeferredChannelSyncAfterContacts = true;
+      _appDebugLogService?.info(
+        'Deferring initial channel sync until contacts complete on USB',
+        tag: 'Startup',
+      );
       getContacts();
     } else {
       getContacts();
@@ -2630,6 +2849,12 @@ class MeshCoreConnector extends ChangeNotifier {
       }
     }
     notifyListeners();
+    _appDebugLogService?.info(
+      'Device info parsed firmware=${_firmwareVerCode ?? -1} '
+      'maxContacts=$_maxContacts maxChannels=$_maxChannels '
+      'clientRepeat=${_clientRepeat ?? false}',
+      tag: 'Startup',
+    );
     if (_shouldGateInitialChannelSync) {
       _maybeStartInitialChannelSync();
     }
@@ -2640,10 +2865,19 @@ class MeshCoreConnector extends ChangeNotifier {
       return;
     }
     if (_selfPublicKey == null || !_hasReceivedDeviceInfo) {
+      _appDebugLogService?.info(
+        'Initial channel sync gated hasSelfInfo=${_selfPublicKey != null} '
+        'hasDeviceInfo=$_hasReceivedDeviceInfo',
+        tag: 'ChannelSync',
+      );
       return;
     }
 
     _pendingInitialChannelSync = false;
+    _appDebugLogService?.info(
+      'Starting gated initial channel sync',
+      tag: 'ChannelSync',
+    );
     unawaited(getChannels(maxChannels: _maxChannels));
   }
 
@@ -2675,32 +2909,6 @@ class MeshCoreConnector extends ChangeNotifier {
       tag: 'Battery',
     );
     notifyListeners();
-  }
-
-  void _checkManualAddContacts() async {
-    // If manual add contacts is enabled, set auto add config and other params.
-    // and disable it after
-    if (_manualAddContacts) {
-      await sendFrame(
-        buildSetAutoAddConfigFrame(
-          autoAddChat: true,
-          autoAddRepeater: true,
-          autoAddRoomServer: true,
-          autoAddSensor: true,
-          overwriteOldest: _overwriteOldest,
-        ),
-      );
-      await sendFrame(
-        buildSetOtherParamsFrame(
-          (_telemetryModeEnv << 4) |
-              (_telemetryModeLoc << 2) |
-              (_telemetryModeBase),
-          _advertLocPolicy,
-          _multiAcks,
-        ),
-      );
-      _manualAddContacts = false;
-    }
   }
 
   /// Calculate timeout for a message based on radio settings and path length
@@ -3350,11 +3558,9 @@ class MeshCoreConnector extends ChangeNotifier {
   void _handleMessageSent(Uint8List frame) {
     final packet = parseMessageSentPacket(frame);
     if (packet != null) {
-      final ackHash = packet.expectedAck;
-      final timeoutMs = packet.suggestedTimeoutMs;
-
       // Check if this is a CLI command ACK - if so, ignore it
       if (_lastSentWasCliCommand) {
+        final ackHash = packet.expectedAck;
         final ackHashHex = ackHash
             .map((b) => b.toRadixString(16).padLeft(2, '0'))
             .join();
@@ -3363,11 +3569,22 @@ class MeshCoreConnector extends ChangeNotifier {
         return;
       }
 
+      if (!_shouldTrackMessageSentAckForCommand(_lastOutgoingCommandCode)) {
+        return;
+      }
+
+      final ackHash = packet.expectedAck;
+      final timeoutMs = packet.suggestedTimeoutMs;
+
       if (_handleRepeaterCommandSent(ackHash, timeoutMs)) {
         return;
       }
 
       final retryService = _retryService;
+      final hasPendingRetryMessage =
+          retryService != null &&
+          (retryService.hasPendingMessages ||
+              retryService.hasExpectedAckHash(ackHash));
       if (retryService != null &&
           retryService.updateMessageFromSent(
             ackHash,
@@ -3381,7 +3598,7 @@ class MeshCoreConnector extends ChangeNotifier {
         return;
       }
 
-      if (retryService != null) {
+      if (retryService != null && hasPendingRetryMessage) {
         retryService.updateMessageFromSent(ackHash, timeoutMs);
       }
     } else {
@@ -3472,7 +3689,9 @@ class MeshCoreConnector extends ChangeNotifier {
       }
 
       // Handle ACK in retry service
-      if (_retryService != null) {
+      if (_retryService != null &&
+          (_retryService!.hasPendingMessages ||
+              _retryService!.hasExpectedAckHash(ackHash))) {
         _retryService!.handleAckReceived(ackHash, tripTimeMs);
       }
     } else {
@@ -3528,6 +3747,11 @@ class MeshCoreConnector extends ChangeNotifier {
 
     debugPrint(
       '[ChannelSync] Received channel ${channel.index}: ${channel.isEmpty ? "empty" : channel.name}',
+    );
+    _appDebugLogService?.info(
+      'Channel ${channel.index} received '
+      'empty=${channel.isEmpty} name="${channel.name}" frameLen=${frame.length}',
+      tag: 'ChannelSync',
     );
 
     // Preserve unread count from cached channel

@@ -1,8 +1,8 @@
 import 'dart:async';
+import 'dart:typed_data';
 import '../utils/platform_info.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
@@ -68,6 +68,7 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
   }
 
   bool _isLoggingIn = false;
+  static const Duration _minLoginResponseTimeout = Duration(seconds: 8);
 
   Contact _resolveRepeater(MeshCoreConnector connector) {
     return connector.contacts.firstWhere(
@@ -102,8 +103,12 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
         pathLength: pathLengthValue,
         messageBytes: responseBytes,
       );
-      final timeoutSeconds = (timeoutMs / 1000).ceil();
-      final timeout = Duration(milliseconds: timeoutMs);
+      final timeout = Duration(
+        milliseconds: timeoutMs,
+      ) < _minLoginResponseTimeout
+          ? _minLoginResponseTimeout
+          : Duration(milliseconds: timeoutMs);
+      final timeoutSeconds = timeout.inSeconds;
       final selectionLabel = selection.useFlood
           ? 'flood'
           : '${selection.hopCount} hops';
@@ -205,12 +210,16 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
     subscription = _connector.receivedFrames.listen((frame) {
       if (frame.isEmpty) return;
       final code = frame[0];
-      if (code != pushCodeLoginSuccess && code != pushCodeLoginFail) return;
-      if (frame.length < 8) return;
-      final prefix = frame.sublist(2, 8);
-      if (!listEquals(prefix, targetPrefix)) return;
+      if (code == respCodeErr) {
+        completer.complete(false);
+        subscription?.cancel();
+        timer?.cancel();
+        return;
+      }
+      final outcome = parseLoginOutcome(frame, targetPrefix: targetPrefix);
+      if (outcome == null) return;
 
-      completer.complete(code == pushCodeLoginSuccess);
+      completer.complete(outcome);
       subscription?.cancel();
       timer?.cancel();
     });

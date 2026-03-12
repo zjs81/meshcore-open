@@ -65,10 +65,9 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
         _tagData = frame.sublist(2, 6);
       }
 
-      // Check if it's a binary response
-      if (frame[0] == pushCodeBinaryResponse &&
-          listEquals(frame.sublist(2, 6), _tagData)) {
-        _handleNeighborsResponse(connector, frame.sublist(6));
+      final response = parseBinaryResponsePacket(frame);
+      if (response != null && listEquals(response.tag, _tagData)) {
+        _handleNeighborsResponse(connector, response.payload);
       }
     });
   }

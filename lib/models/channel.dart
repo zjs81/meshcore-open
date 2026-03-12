@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart' as crypto;
 
 import '../connector/meshcore_protocol.dart';
+import '../utils/app_logger.dart';
 
 class Channel {
   final int index;
@@ -42,6 +43,14 @@ class Channel {
           ? availableSecretBytes
           : 16;
       psk.setRange(0, secretCopyLength, data.sublist(34, 34 + secretCopyLength));
+      final trailingSecretBytes = availableSecretBytes - secretCopyLength;
+      if (trailingSecretBytes > 0) {
+        appLogger.info(
+          'Channel frame index=$index included $availableSecretBytes secret bytes; '
+          'stored first $secretCopyLength bytes and ignored $trailingSecretBytes trailing bytes',
+          tag: 'Channel',
+        );
+      }
     }
 
     return Channel(index: index, name: name, psk: psk);

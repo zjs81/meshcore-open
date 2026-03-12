@@ -263,6 +263,150 @@ const Map<int, Set<int>> _commandResponseCodes = <int, Set<int>>{
   cmdGetAutoAddConfig: <int>{respCodeAutoAddConfig},
 };
 
+String describeProtocolCode(int code, {required bool outgoing}) {
+  if (outgoing) {
+    switch (code) {
+      case cmdAppStart:
+        return 'CMD_APP_START';
+      case cmdSendTxtMsg:
+        return 'CMD_SEND_TXT_MSG';
+      case cmdSendChannelTxtMsg:
+        return 'CMD_SEND_CHANNEL_TXT_MSG';
+      case cmdGetContacts:
+        return 'CMD_GET_CONTACTS';
+      case cmdGetDeviceTime:
+        return 'CMD_GET_DEVICE_TIME';
+      case cmdSetDeviceTime:
+        return 'CMD_SET_DEVICE_TIME';
+      case cmdSendSelfAdvert:
+        return 'CMD_SEND_SELF_ADVERT';
+      case cmdSetAdvertName:
+        return 'CMD_SET_ADVERT_NAME';
+      case cmdAddUpdateContact:
+        return 'CMD_ADD_UPDATE_CONTACT';
+      case cmdSyncNextMessage:
+        return 'CMD_SYNC_NEXT_MESSAGE';
+      case cmdSetRadioParams:
+        return 'CMD_SET_RADIO_PARAMS';
+      case cmdSetRadioTxPower:
+        return 'CMD_SET_RADIO_TX_POWER';
+      case cmdResetPath:
+        return 'CMD_RESET_PATH';
+      case cmdSetAdvertLatLon:
+        return 'CMD_SET_ADVERT_LATLON';
+      case cmdRemoveContact:
+        return 'CMD_REMOVE_CONTACT';
+      case cmdShareContact:
+        return 'CMD_SHARE_CONTACT';
+      case cmdExportContact:
+        return 'CMD_EXPORT_CONTACT';
+      case cmdImportContact:
+        return 'CMD_IMPORT_CONTACT';
+      case cmdReboot:
+        return 'CMD_REBOOT';
+      case cmdGetBattAndStorage:
+        return 'CMD_GET_BATT_AND_STORAGE';
+      case cmdDeviceQuery:
+        return 'CMD_DEVICE_QUERY';
+      case cmdSendLogin:
+        return 'CMD_SEND_LOGIN';
+      case cmdSendStatusReq:
+        return 'CMD_SEND_STATUS_REQ';
+      case cmdGetContactByKey:
+        return 'CMD_GET_CONTACT_BY_KEY';
+      case cmdGetChannel:
+        return 'CMD_GET_CHANNEL';
+      case cmdSetChannel:
+        return 'CMD_SET_CHANNEL';
+      case cmdSendTracePath:
+        return 'CMD_SEND_TRACE_PATH';
+      case cmdSetOtherParams:
+        return 'CMD_SET_OTHER_PARAMS';
+      case cmdGetTelemetryReq:
+        return 'CMD_GET_TELEMETRY_REQ';
+      case cmdGetCustomVar:
+        return 'CMD_GET_CUSTOM_VARS';
+      case cmdSetCustomVar:
+        return 'CMD_SET_CUSTOM_VAR';
+      case cmdSendBinaryReq:
+        return 'CMD_SEND_BINARY_REQ';
+      case cmdSetAutoAddConfig:
+        return 'CMD_SET_AUTO_ADD_CONFIG';
+      case cmdGetAutoAddConfig:
+        return 'CMD_GET_AUTO_ADD_CONFIG';
+      default:
+        return 'CMD_$code';
+    }
+  }
+
+  switch (code) {
+    case respCodeOk:
+      return 'RESP_CODE_OK';
+    case respCodeErr:
+      return 'RESP_CODE_ERR';
+    case respCodeContactsStart:
+      return 'RESP_CODE_CONTACTS_START';
+    case respCodeContact:
+      return 'RESP_CODE_CONTACT';
+    case respCodeEndOfContacts:
+      return 'RESP_CODE_END_OF_CONTACTS';
+    case respCodeSelfInfo:
+      return 'RESP_CODE_SELF_INFO';
+    case respCodeSent:
+      return 'RESP_CODE_SENT';
+    case respCodeContactMsgRecv:
+      return 'RESP_CODE_CONTACT_MSG_RECV';
+    case respCodeChannelMsgRecv:
+      return 'RESP_CODE_CHANNEL_MSG_RECV';
+    case respCodeCurrTime:
+      return 'RESP_CODE_CURR_TIME';
+    case respCodeNoMoreMessages:
+      return 'RESP_CODE_NO_MORE_MESSAGES';
+    case respCodeExportContact:
+      return 'RESP_CODE_EXPORT_CONTACT';
+    case respCodeBattAndStorage:
+      return 'RESP_CODE_BATT_AND_STORAGE';
+    case respCodeDeviceInfo:
+      return 'RESP_CODE_DEVICE_INFO';
+    case respCodeContactMsgRecvV3:
+      return 'RESP_CODE_CONTACT_MSG_RECV_V3';
+    case respCodeChannelMsgRecvV3:
+      return 'RESP_CODE_CHANNEL_MSG_RECV_V3';
+    case respCodeChannelInfo:
+      return 'RESP_CODE_CHANNEL_INFO';
+    case respCodeCustomVars:
+      return 'RESP_CODE_CUSTOM_VARS';
+    case respCodeAutoAddConfig:
+      return 'RESP_CODE_AUTO_ADD_CONFIG';
+    case pushCodeAdvert:
+      return 'PUSH_CODE_ADVERT';
+    case pushCodePathUpdated:
+      return 'PUSH_CODE_PATH_UPDATED';
+    case pushCodeSendConfirmed:
+      return 'PUSH_CODE_SEND_CONFIRMED';
+    case pushCodeMsgWaiting:
+      return 'PUSH_CODE_MSG_WAITING';
+    case pushCodeLoginSuccess:
+      return 'PUSH_CODE_LOGIN_SUCCESS';
+    case pushCodeLoginFail:
+      return 'PUSH_CODE_LOGIN_FAIL';
+    case pushCodeStatusResponse:
+      return 'PUSH_CODE_STATUS_RESPONSE';
+    case pushCodeLogRxData:
+      return 'PUSH_CODE_LOG_RX_DATA';
+    case pushCodeTraceData:
+      return 'PUSH_CODE_TRACE_DATA';
+    case pushCodeNewAdvert:
+      return 'PUSH_CODE_NEW_ADVERT';
+    case pushCodeTelemetryResponse:
+      return 'PUSH_CODE_TELEMETRY_RESPONSE';
+    case pushCodeBinaryResponse:
+      return 'PUSH_CODE_BINARY_RESPONSE';
+    default:
+      return 'CODE_$code';
+  }
+}
+
 Set<int> expectedResponseCodesForCommand(int commandCode) {
   return _commandResponseCodes[commandCode] ?? const <int>{};
 }
@@ -456,19 +600,115 @@ AckPacket? parseAckPacket(Uint8List frame) {
   return null;
 }
 
-class MeshCoreFrameBuffer {
-  final BytesBuilder _buffer = BytesBuilder(copy: false);
+bool? parseLoginOutcome(
+  Uint8List frame, {
+  Uint8List? targetPrefix,
+}) {
+  if (frame.isEmpty) return null;
 
-  bool get hasBufferedData => _buffer.length > 0;
-
-  List<Uint8List> addChunk(Uint8List chunk) {
-    if (chunk.isNotEmpty) {
-      _buffer.add(chunk);
-    }
-    return _drainCompleteFrames();
+  final code = frame[0];
+  if (code != pushCodeLoginSuccess && code != pushCodeLoginFail) {
+    return null;
   }
 
-  Uint8List? flush() {
+  if (frame.length == 1) {
+    return code == pushCodeLoginSuccess;
+  }
+
+  if (targetPrefix != null && targetPrefix.isNotEmpty) {
+    final prefixOffset = 2;
+    final prefixEnd = prefixOffset + targetPrefix.length;
+    if (frame.length < prefixEnd) {
+      return null;
+    }
+    for (var i = 0; i < targetPrefix.length; i++) {
+      if (frame[prefixOffset + i] != targetPrefix[i]) {
+        return null;
+      }
+    }
+  }
+
+  return code == pushCodeLoginSuccess;
+}
+
+class BinaryResponsePacket {
+  final int status;
+  final Uint8List tag;
+  final Uint8List payload;
+
+  const BinaryResponsePacket({
+    required this.status,
+    required this.tag,
+    required this.payload,
+  });
+}
+
+BinaryResponsePacket? parseBinaryResponsePacket(Uint8List frame) {
+  if (frame.length < 6 || frame[0] != pushCodeBinaryResponse) {
+    return null;
+  }
+
+  return BinaryResponsePacket(
+    status: frame[1],
+    tag: Uint8List.fromList(frame.sublist(2, 6)),
+    payload: Uint8List.fromList(frame.sublist(6)),
+  );
+}
+
+class MeshCoreFrameBuffer {
+  final BytesBuilder _buffer = BytesBuilder(copy: false);
+  int? _expectedLength;
+  int? _bufferedFixedCode;
+
+  bool get hasBufferedData => _buffer.length > 0;
+  int get bufferedLength => _buffer.length;
+  int? get expectedLength => _expectedLength;
+
+  List<Uint8List> addChunk(Uint8List chunk) {
+    if (chunk.isEmpty) {
+      return const <Uint8List>[];
+    }
+
+    if (_expectedLength != null) {
+      _buffer.add(chunk);
+      return _drainBufferedFixedFrame();
+    }
+
+    final code = chunk[0];
+    final frameLength = _fixedFrameLength(code);
+    if (frameLength == null) {
+      return <Uint8List>[Uint8List.fromList(chunk)];
+    }
+
+    if (chunk.length < frameLength) {
+      _buffer.add(chunk);
+      _expectedLength = frameLength;
+      _bufferedFixedCode = code;
+      return const <Uint8List>[];
+    }
+
+    if (chunk.length == frameLength) {
+      return <Uint8List>[Uint8List.fromList(chunk)];
+    }
+
+    final firstFrame = Uint8List.fromList(chunk.sublist(0, frameLength));
+    final remainder = _normalizeTrailingRemainder(
+      frameCode: code,
+      remainder: Uint8List.fromList(chunk.sublist(frameLength)),
+    );
+    if (remainder.isEmpty) {
+      return <Uint8List>[firstFrame];
+    }
+    return <Uint8List>[firstFrame, ...addChunk(remainder)];
+  }
+
+  void clear() {
+    _buffer.clear();
+    _expectedLength = null;
+    _bufferedFixedCode = null;
+  }
+
+  Uint8List? discardIncompleteFrame() {
     if (!hasBufferedData) {
       return null;
     }
@@ -477,51 +717,96 @@ class MeshCoreFrameBuffer {
     return data;
   }
 
-  void clear() {
-    _buffer.clear();
-  }
-
-  List<Uint8List> _drainCompleteFrames() {
-    final frames = <Uint8List>[];
-
-    while (true) {
-      final buffered = _buffer.toBytes();
-      if (buffered.isEmpty) {
-        break;
-      }
-
-      final frameLength = _expectedFrameLength(buffered);
-      if (frameLength == null || buffered.length < frameLength) {
-        break;
-      }
-
-      frames.add(Uint8List.fromList(buffered.sublist(0, frameLength)));
-      _replaceBuffer(buffered.sublist(frameLength));
+  List<Uint8List> _drainBufferedFixedFrame() {
+    final buffered = _buffer.toBytes();
+    final frameLength = _expectedLength;
+    final bufferedCode = _bufferedFixedCode;
+    if (frameLength == null || buffered.length < frameLength) {
+      return const <Uint8List>[];
     }
 
-    return frames;
-  }
-
-  void _replaceBuffer(List<int> bytes) {
-    _buffer.clear();
-    if (bytes.isNotEmpty) {
-      _buffer.add(bytes);
+    clear();
+    final firstFrame = Uint8List.fromList(buffered.sublist(0, frameLength));
+    if (buffered.length == frameLength) {
+      return <Uint8List>[firstFrame];
     }
+
+    final remainder = _normalizeTrailingRemainder(
+      frameCode: bufferedCode,
+      remainder: Uint8List.fromList(buffered.sublist(frameLength)),
+    );
+    if (remainder.isEmpty) {
+      return <Uint8List>[firstFrame];
+    }
+    return <Uint8List>[firstFrame, ...addChunk(remainder)];
   }
 
-  int? _expectedFrameLength(Uint8List data) {
-    if (data.isEmpty) return null;
+  Uint8List _normalizeTrailingRemainder({
+    required int? frameCode,
+    required Uint8List remainder,
+  }) {
+    if (remainder.isEmpty) {
+      return remainder;
+    }
+    if (frameCode != respCodeContact && frameCode != pushCodeNewAdvert) {
+      return remainder;
+    }
+    if (_isKnownIncomingCode(remainder[0])) {
+      return remainder;
+    }
 
-    switch (data[0]) {
-      case respCodeContactsStart:
-      case respCodeEndOfContacts:
+    final recoveredOffset = _findEmbeddedIncomingCodeOffset(remainder);
+    if (recoveredOffset == null) {
+      return remainder;
+    }
+
+    return Uint8List.fromList(remainder.sublist(recoveredOffset));
+  }
+
+  int? _findEmbeddedIncomingCodeOffset(Uint8List data) {
+    final maxScan = data.length < 15 ? data.length : 15;
+    for (var i = 1; i < maxScan; i++) {
+      if (_isKnownIncomingCode(data[i])) {
+        return i;
+      }
+    }
+    return null;
+  }
+
+  bool _isKnownIncomingCode(int code) {
+    return _fixedFrameLength(code) != null ||
+        code == respCodeErr ||
+        code == respCodeContactMsgRecv ||
+        code == respCodeChannelMsgRecv ||
+        code == respCodeExportContact ||
+        code == respCodeContactMsgRecvV3 ||
+        code == respCodeChannelMsgRecvV3 ||
+        code == respCodeChannelInfo ||
+        code == respCodeCustomVars ||
+        code == pushCodeAdvert ||
+        code == pushCodeStatusResponse ||
+        code == pushCodeLogRxData ||
+        code == pushCodeTraceData ||
+        code == pushCodeTelemetryResponse ||
+        code == pushCodeBinaryResponse;
+  }
+
+  int? _fixedFrameLength(int code) {
+    switch (code) {
+      case respCodeOk:
       case respCodeNoMoreMessages:
       case pushCodeMsgWaiting:
       case pushCodeLoginSuccess:
       case pushCodeLoginFail:
         return 1;
+      case respCodeContactsStart:
+      case respCodeEndOfContacts:
       case respCodeCurrTime:
         return 5;
+      case respCodeBattAndStorage:
+        return 11;
+      case respCodeDeviceInfo:
+        return 81;
       case respCodeSent:
         return 10;
       case respCodeContact:
@@ -532,8 +817,7 @@ class MeshCoreFrameBuffer {
       case respCodeAutoAddConfig:
         return 2;
       case pushCodeSendConfirmed:
-        if (data.length >= 9) return 9;
-        return null;
+        return 9;
       default:
         return null;
     }
@@ -1021,14 +1305,25 @@ Uint8List buildSendBinaryReq(Uint8List repeaterPubKey, {Uint8List? payload}) {
 //Build a trace request frame
 //[cmd][tag x4][auth x4][flag][payload]
 Uint8List buildTraceReq(int tag, int auth, int flag, {Uint8List? payload}) {
+  final pathBytes = payload ?? Uint8List(0);
+  final pathSizeShift = flag & 0x03;
+  final pathStride = 1 << pathSizeShift;
+  final maxPayloadBytes = maxPathSize * pathStride;
+  if (pathBytes.isEmpty ||
+      pathBytes.length > maxPayloadBytes ||
+      pathBytes.length % pathStride != 0) {
+    throw ArgumentError(
+      'Invalid trace payload length ${pathBytes.length} for flag=$flag '
+      '(max=$maxPayloadBytes stride=$pathStride)',
+    );
+  }
+
   final writer = BufferWriter();
   writer.writeByte(cmdSendTracePath);
   writer.writeUInt32LE(tag);
   writer.writeUInt32LE(auth);
   writer.writeByte(flag);
-  if (payload != null && payload.isNotEmpty) {
-    writer.writeBytes(payload);
-  }
+  writer.writeBytes(pathBytes);
   return writer.toBytes();
 }
 

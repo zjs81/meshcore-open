@@ -147,14 +147,23 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen> {
       path = pathTmp;
     }
 
-    final connector = Provider.of<MeshCoreConnector>(context, listen: false);
-    final frame = buildTraceReq(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      0, //flags
-      0, //auth
-      payload: path,
-    );
-    connector.sendFrame(frame);
+    try {
+      final connector = Provider.of<MeshCoreConnector>(context, listen: false);
+      final frame = buildTraceReq(
+        DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        0, // auth
+        0, // flags
+        payload: path,
+      );
+      connector.sendFrame(frame);
+    } catch (error) {
+      appLogger.warn('Rejected invalid trace request: $error', tag: 'PathTrace');
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _failed2Loaded = true;
+      });
+    }
   }
 
   void _setupFrameListener() {

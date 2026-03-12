@@ -167,43 +167,60 @@ class Contact {
   }
 
   static Contact? fromFrame(Uint8List data) {
-    if (data.isEmpty) return null;
-    final reader = BufferReader(data);
+    if (data.length < contactFrameSize) return null;
     try {
-      final respCode = reader.readByte();
+      final respCode = data[0];
       if (respCode != respCodeContact && respCode != pushCodeNewAdvert) {
         return null;
       }
-      final pubKey = reader.readBytes(pubKeySize);
-      final type = reader.readByte();
-      final flags = reader.readByte();
-      final pathLen = reader.readByte();
+
+      final pubKey = Uint8List.fromList(
+        data.sublist(contactPubKeyOffset, contactPubKeyOffset + pubKeySize),
+      );
+      final type = data[contactTypeOffset];
+      final flags = data[contactFlagsOffset];
+      final pathLen = data[contactPathLenOffset];
       final safePathLen = pathLen > 0
           ? (pathLen > maxPathSize ? maxPathSize : pathLen)
           : 0;
-      final pathBytes = reader.readBytes(maxPathSize).sublist(0, safePathLen);
-      final name = reader.readCStringGreedy(maxNameSize);
+      final pathBytes = Uint8List.fromList(
+        data.sublist(contactPathOffset, contactPathOffset + safePathLen),
+      );
+      final name = readCString(data, contactNameOffset, maxNameSize);
+      final timestampRaw = readUint32LE(data, contactTimestampOffset);
+      final latRaw = readInt32LE(data, contactLatOffset);
+      final lonRaw = readInt32LE(data, contactLonOffset);
+      final lastModRaw = readUint32LE(data, contactLastModOffset);
+      final trailingBytes = data.length - contactFrameSize;
+      if (trailingBytes > 0) {
+        appLogger.warn(
+          'Contact frame had $trailingBytes trailing bytes after expected '
+          '$contactFrameSize-byte layout',
+          tag: 'Contact',
+        );
+      }
 
-      final lastMod = reader.readUInt32LE();
-
-      double? lat, lon;
-      final latRaw = reader.readInt32LE();
-      final lonRaw = reader.readInt32LE();
+      double? lat;
+      double? lon;
       if (latRaw != 0 || lonRaw != 0) {
         lat = latRaw / 1e6;
         lon = lonRaw / 1e6;
       }
+
+      final contactTimeRaw = lastModRaw != 0 ? lastModRaw : timestampRaw;
 
       return Contact(
         publicKey: pubKey,
         name: name.isEmpty ? 'Unknown' : name,
         type: type,
         flags: flags,
-        pathLength: pathLen > 0 ? (pathLen > maxPathSize ? -1 : pathLen) : -1,
+        pathLength: pathLen == 0
+            ? 0
+            : (pathLen > maxPathSize ? -1 : pathLen),
         path: pathBytes,
         latitude: lat,
         longitude: lon,
-        lastSeen: DateTime.fromMillisecondsSinceEpoch(lastMod * 1000),
+        lastSeen: DateTime.fromMillisecondsSinceEpoch(contactTimeRaw * 1000),
       );
     } catch (e) {
       appLogger.error('Failed to parse contact frame: $e');

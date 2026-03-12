@@ -398,6 +398,14 @@ class MessageRetryService extends ChangeNotifier {
 
   bool get hasPendingMessages => _pendingMessages.isNotEmpty;
 
+  bool hasExpectedAckHash(Uint8List ackHash) {
+    final ackHashHex = ackHash
+        .map((b) => b.toRadixString(16).padLeft(2, '0'))
+        .join();
+    return _expectedHashToMessageId.containsKey(ackHashHex) ||
+        _ackHashToMessageId.containsKey(ackHashHex);
+  }
+
   void _startTimeoutTimer(String messageId, int timeoutMs) {
     _timeoutTimers[messageId]?.cancel();
     _timeoutTimers[messageId] = Timer(Duration(milliseconds: timeoutMs), () {
