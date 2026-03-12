@@ -144,8 +144,8 @@ class BufferWriter {
 
   void writeCString(String string, int maxLength) {
     final bytes = Uint8List(maxLength);
-    final encoded = utf8.encode(string);
-    for (var i = 0; i < maxLength - 1 && i < encoded.length; i++) {
+    final encoded = _truncateUtf8Bytes(string, maxLength - 1);
+    for (var i = 0; i < encoded.length; i++) {
       bytes[i] = encoded[i];
     }
     writeBytes(bytes);
@@ -544,6 +544,9 @@ BatteryStatusPacket? parseBatteryStatusPacket(Uint8List frame) {
   if (frame.length < 3 || frame[0] != respCodeBattAndStorage) {
     return null;
   }
+  if (frame.length > 3 && frame.length < 11) {
+    return null;
+  }
 
   final levelPercent = readUint16LE(frame, 1);
   final hasStorage = frame.length >= 11;
@@ -598,6 +601,9 @@ AckPacket? parseAckPacket(Uint8List frame) {
   }
 
   if (frame.length >= 7) {
+    if (frame.length != 7) {
+      return null;
+    }
     return AckPacket(ackCode: Uint8List.fromList(frame.sublist(1, 7)));
   }
 
@@ -920,6 +926,11 @@ Uint8List hexToPubKey(String hex) {
   if (hex.length.isOdd) {
     throw FormatException('Public key hex must have an even number of digits');
   }
+  if (hex.length > pubKeySize * 2) {
+    throw FormatException(
+      'Public key hex must not exceed ${pubKeySize * 2} digits',
+    );
+  }
   final result = Uint8List(pubKeySize);
   for (int i = 0; i < pubKeySize && i * 2 + 1 < hex.length; i++) {
     result[i] = int.parse(hex.substring(i * 2, i * 2 + 2), radix: 16);
@@ -1052,13 +1063,9 @@ Uint8List buildSendSelfAdvertFrame({bool flood = false}) {
 // Build CMD_SET_ADVERT_NAME frame
 // Format: [cmd][name...]
 Uint8List buildSetAdvertNameFrame(String name) {
-  final nameBytes = utf8.encode(name);
-  final nameLen = nameBytes.length < maxNameSize
-      ? nameBytes.length
-      : maxNameSize - 1;
   final writer = BufferWriter();
   writer.writeByte(cmdSetAdvertName);
-  writer.writeBytes(Uint8List.fromList(nameBytes.sublist(0, nameLen)));
+  writer.writeBytes(Uint8List.fromList(_truncateUtf8Bytes(name, maxNameSize - 1)));
   return writer.toBytes();
 }
 
@@ -1269,6 +1276,23 @@ int calculateLoRaAirtime({
   bool lowDataRateOptimize = false,
   bool explicitHeader = true,
 }) {
+  _requireRange(payloadBytes, min: 0, max: maxFrameSize, context: 'LoRa payload bytes');
+  _requireRange(
+    spreadingFactor,
+    min: 5,
+    max: 12,
+    context: 'LoRa spreading factor',
+  );
+  _requireRange(
+    bandwidthHz,
+    min: 7000,
+    max: 500000,
+    context: 'LoRa bandwidth',
+  );
+  _requireRange(codingRate, min: 5, max: 8, context: 'LoRa coding rate');
+  if (preambleSymbols < 0) {
+    throw RangeError('LoRa preamble symbols must be non-negative');
+  }
   // Symbol duration (Ts) in milliseconds
   final symbolDuration = (1 << spreadingFactor) / (bandwidthHz / 1000.0);
 
@@ -1305,6 +1329,23 @@ int calculateMessageTimeout({
   required int pathLength,
   int messageBytes = 100, // Average message size
 }) {
+  _requireRange(
+    freqHz,
+    min: 300000,
+    max: 2500000,
+    context: 'timeout radio frequency',
+  );
+  _requireRange(
+    bwHz,
+    min: 7000,
+    max: 500000,
+    context: 'timeout radio bandwidth',
+  );
+  _requireRange(sf, min: 5, max: 12, context: 'timeout spreading factor');
+  _requireRange(cr, min: 5, max: 8, context: 'timeout coding rate');
+  if (messageBytes < 0) {
+    throw RangeError('timeout message bytes must be non-negative');
+  }
   // Calculate airtime for one packet
   final airtime = calculateLoRaAirtime(
     payloadBytes: messageBytes,
@@ -1390,6 +1431,24 @@ void _requireRange(
 
 Uint8List _finalizeFrame(BufferWriter writer, {required String context}) {
   return _finalizeRawFrame(writer.toBytes(), context: context);
+}
+
+List<int> _truncateUtf8Bytes(String value, int maxBytes) {
+  if (maxBytes <= 0 || value.isEmpty) {
+    return const <int>[];
+  }
+
+  final builder = BytesBuilder(copy: false);
+  var usedBytes = 0;
+  for (final rune in value.runes) {
+    final encodedRune = utf8.encode(String.fromCharCode(rune));
+    if (usedBytes + encodedRune.length > maxBytes) {
+      break;
+    }
+    builder.add(encodedRune);
+    usedBytes += encodedRune.length;
+  }
+  return builder.toBytes();
 }
 
 Uint8List _finalizeRawFrame(Uint8List frame, {required String context}) {

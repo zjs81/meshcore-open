@@ -24,5 +24,12 @@ void main() {
         throwsA(isA<FormatException>()),
       );
     });
+
+    test('rejects public key hex longer than 32 bytes', () {
+      expect(
+        () => hexToPubKey('aa' * 33),
+        throwsA(isA<FormatException>()),
+      );
+    });
   });
 }
