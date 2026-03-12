@@ -72,6 +72,14 @@ bool shouldIgnoreCliSentAck({
   return ackHash.every((byte) => byte == 0);
 }
 
+@visibleForTesting
+bool shouldReplaceContactsSnapshot({
+  required bool preserveExisting,
+  required bool snapshotStarted,
+}) {
+  return snapshotStarted && !preserveExisting;
+}
+
 class MeshCoreUuids {
   static const String service = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
   static const String rxCharacteristic = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
@@ -1764,10 +1772,6 @@ class MeshCoreConnector extends ChangeNotifier {
 
     _isLoadingContacts = true;
     _preserveContactsOnRefresh = preserveExisting;
-    if (!preserveExisting) {
-      _contacts.clear();
-      notifyListeners();
-    }
 
     await sendFrame(buildGetContactsFrame(since: since));
   }
@@ -2604,7 +2608,10 @@ class MeshCoreConnector extends ChangeNotifier {
         break;
       case respCodeContactsStart:
         debugPrint('Got CONTACTS_START');
-        if (!_preserveContactsOnRefresh) {
+        if (shouldReplaceContactsSnapshot(
+          preserveExisting: _preserveContactsOnRefresh,
+          snapshotStarted: true,
+        )) {
           _contacts.clear();
         }
         _isLoadingContacts = true;
