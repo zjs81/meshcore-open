@@ -36,6 +36,31 @@ import '../utils/battery_utils.dart';
 import '../utils/platform_info.dart';
 import 'meshcore_protocol.dart';
 
+@visibleForTesting
+class PendingCommandAck {
+  final int commandCode;
+  final String? channelSendQueueId;
+
+  const PendingCommandAck({required this.commandCode, this.channelSendQueueId});
+}
+
+@visibleForTesting
+PendingCommandAck? takeFirstPendingChannelGenericAck(
+  List<PendingCommandAck> queue,
+) {
+  if (queue.isEmpty) {
+    return null;
+  }
+
+  final pendingAck = queue.first;
+  if (pendingAck.commandCode != cmdSendChannelTxtMsg ||
+      pendingAck.channelSendQueueId == null) {
+    return null;
+  }
+
+  return queue.removeAt(0);
+}
+
 class MeshCoreUuids {
   static const String service = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
   static const String rxCharacteristic = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
@@ -125,7 +150,7 @@ class MeshCoreConnector extends ChangeNotifier {
   final Map<String, List<Message>> _conversations = {};
   final Map<int, List<ChannelMessage>> _channelMessages = {};
   final List<String> _pendingChannelSentQueue = [];
-  final List<_PendingCommandAck> _pendingGenericAckQueue = [];
+  final List<PendingCommandAck> _pendingGenericAckQueue = [];
   static const String _reactionSendQueuePrefix = '__reaction_send__';
   int _reactionSendQueueSequence = 0;
   final Set<String> _loadedConversationKeys = {};
@@ -2689,9 +2714,10 @@ class MeshCoreConnector extends ChangeNotifier {
       return;
     }
 
-    final failedAck = _pendingGenericAckQueue.removeAt(0);
-    if (failedAck.commandCode != cmdSendChannelTxtMsg ||
-        failedAck.channelSendQueueId == null) {
+    final failedAck = takeFirstPendingChannelGenericAck(
+      _pendingGenericAckQueue,
+    );
+    if (failedAck == null) {
       return;
     }
     _pendingChannelSentQueue.remove(failedAck.channelSendQueueId);
@@ -3660,9 +3686,10 @@ class MeshCoreConnector extends ChangeNotifier {
       return;
     }
 
-    final pendingAck = _pendingGenericAckQueue.removeAt(0);
-    if (pendingAck.commandCode != cmdSendChannelTxtMsg ||
-        pendingAck.channelSendQueueId == null) {
+    final pendingAck = takeFirstPendingChannelGenericAck(
+      _pendingGenericAckQueue,
+    );
+    if (pendingAck == null) {
       return;
     }
 
@@ -4473,7 +4500,7 @@ class MeshCoreConnector extends ChangeNotifier {
   }) {
     if (!expectsGenericAck || data.isEmpty) return;
     _pendingGenericAckQueue.add(
-      _PendingCommandAck(
+      PendingCommandAck(
         commandCode: data[0],
         channelSendQueueId: channelSendQueueId,
       ),
@@ -4989,11 +5016,4 @@ class _RepeaterAckContext {
     required this.pathLength,
     required this.messageBytes,
   });
-}
-
-class _PendingCommandAck {
-  final int commandCode;
-  final String? channelSendQueueId;
-
-  _PendingCommandAck({required this.commandCode, this.channelSendQueueId});
 }
