@@ -15,6 +15,35 @@ void main() {
 
       expect(parseBatteryStatusPacket(frame), isNull);
     });
+
+    test('rejects battery percentages above 100', () {
+      final frame = Uint8List.fromList(<int>[
+        respCodeBattAndStorage,
+        0x65,
+        0x00,
+      ]);
+
+      expect(parseBatteryStatusPacket(frame), isNull);
+    });
+
+    test('rejects oversized battery frames', () {
+      final frame = Uint8List.fromList(<int>[
+        respCodeBattAndStorage,
+        0x64,
+        0x00,
+        0x01,
+        0x02,
+        0x03,
+        0x04,
+        0x05,
+        0x06,
+        0x07,
+        0x08,
+        0x09,
+      ]);
+
+      expect(parseBatteryStatusPacket(frame), isNull);
+    });
   });
 
   group('parseMessageSentPacket', () {
@@ -38,6 +67,24 @@ void main() {
       expect(packet!.messageType, 0x02);
       expect(packet.expectedAck, orderedEquals(<int>[0xAA, 0xBB, 0xCC, 0xDD]));
       expect(packet.suggestedTimeoutMs, 2000);
+    });
+
+    test('rejects oversized sent frames', () {
+      final frame = Uint8List.fromList(<int>[
+        respCodeSent,
+        0x02,
+        0xAA,
+        0xBB,
+        0xCC,
+        0xDD,
+        0x02,
+        0x00,
+        0x00,
+        0x00,
+        0x99,
+      ]);
+
+      expect(parseMessageSentPacket(frame), isNull);
     });
   });
 
@@ -90,6 +137,23 @@ void main() {
         5,
         6,
         7,
+      ]);
+
+      expect(parseAckPacket(frame), isNull);
+    });
+
+    test('rejects oversized extended ack frames', () {
+      final frame = Uint8List.fromList(<int>[
+        pushCodeSendConfirmed,
+        1,
+        2,
+        3,
+        4,
+        0x10,
+        0x00,
+        0x00,
+        0x00,
+        0x99,
       ]);
 
       expect(parseAckPacket(frame), isNull);

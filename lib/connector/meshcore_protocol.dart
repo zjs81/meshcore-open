@@ -544,11 +544,14 @@ BatteryStatusPacket? parseBatteryStatusPacket(Uint8List frame) {
   if (frame.length < 3 || frame[0] != respCodeBattAndStorage) {
     return null;
   }
-  if (frame.length > 3 && frame.length < 11) {
+  if (frame.length != 3 && frame.length != 11) {
     return null;
   }
 
   final levelPercent = readUint16LE(frame, 1);
+  if (levelPercent > 100) {
+    return null;
+  }
   final hasStorage = frame.length >= 11;
   return BatteryStatusPacket(
     levelPercent: levelPercent,
@@ -570,7 +573,7 @@ class MessageSentPacket {
 }
 
 MessageSentPacket? parseMessageSentPacket(Uint8List frame) {
-  if (frame.length < 10 || frame[0] != respCodeSent) {
+  if (frame.length != 10 || frame[0] != respCodeSent) {
     return null;
   }
 
@@ -593,17 +596,14 @@ AckPacket? parseAckPacket(Uint8List frame) {
     return null;
   }
 
-  if (frame.length >= 9) {
+  if (frame.length == 9) {
     return AckPacket(
       ackCode: Uint8List.fromList(frame.sublist(1, 5)),
       tripTimeMs: readUint32LE(frame, 5),
     );
   }
 
-  if (frame.length >= 7) {
-    if (frame.length != 7) {
-      return null;
-    }
+  if (frame.length == 7) {
     return AckPacket(ackCode: Uint8List.fromList(frame.sublist(1, 7)));
   }
 
@@ -865,13 +865,13 @@ ParsedContactText? parseContactMessageText(Uint8List frame) {
     frame,
     baseTextOffset,
     frame.length - baseTextOffset,
-  ).trim();
+  );
   if (text.isEmpty && frame.length > baseTextOffset + 4) {
     text = readCString(
       frame,
       baseTextOffset + 4,
       frame.length - (baseTextOffset + 4),
-    ).trim();
+    );
   }
   if (text.isEmpty) return null;
 
@@ -1345,6 +1345,9 @@ int calculateMessageTimeout({
   _requireRange(cr, min: 5, max: 8, context: 'timeout coding rate');
   if (messageBytes < 0) {
     throw RangeError('timeout message bytes must be non-negative');
+  }
+  if (pathLength < -1) {
+    throw RangeError('path length must be -1 for flood or >= 0 for routed sends');
   }
   // Calculate airtime for one packet
   final airtime = calculateLoRaAirtime(

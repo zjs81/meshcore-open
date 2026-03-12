@@ -31,5 +31,14 @@ void main() {
         throwsA(isA<FormatException>()),
       );
     });
+
+    test('zero-pads shorter public key hex inputs', () {
+      final pubKey = hexToPubKey('aabb');
+
+      expect(pubKey.length, 32);
+      expect(pubKey[0], 0xAA);
+      expect(pubKey[1], 0xBB);
+      expect(pubKey.skip(2), everyElement(0));
+    });
   });
 }

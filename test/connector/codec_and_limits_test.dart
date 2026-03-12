@@ -9,6 +9,10 @@ void main() {
       expect(hex2Uint8List('A0FF'), orderedEquals(<int>[0xA0, 0xFF]));
     });
 
+    test('decodes lowercase hex', () {
+      expect(hex2Uint8List('a0ff'), orderedEquals(<int>[0xA0, 0xFF]));
+    });
+
     test('rejects empty hex strings', () {
       expect(
         () => hex2Uint8List(''),
@@ -63,6 +67,14 @@ void main() {
       final withShortName = maxChannelMessageBytes('ab');
 
       expect(withNull, lessThanOrEqualTo(withShortName));
+    });
+
+    test('maxChannelMessageBytes handles long multibyte names conservatively', () {
+      final withAscii = maxChannelMessageBytes('abcdef');
+      final withEmoji = maxChannelMessageBytes('😀' * 40);
+
+      expect(withEmoji, lessThanOrEqualTo(withAscii));
+      expect(withEmoji, inInclusiveRange(0, maxTextPayloadBytes));
     });
   });
 }

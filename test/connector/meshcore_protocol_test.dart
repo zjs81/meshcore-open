@@ -362,6 +362,13 @@ void main() {
         throwsA(isA<RangeError>()),
       );
     });
+
+    test('accepts exact coordinate boundaries', () {
+      expect(
+        () => buildSetAdvertLatLonFrame(-90, 180),
+        returnsNormally,
+      );
+    });
   });
 
   group('buildSetAutoAddConfigFrame', () {
@@ -481,6 +488,17 @@ void main() {
       expect(
         () => buildSetRadioParamsFrame(915000, 125000, 7, 9),
         throwsA(isA<RangeError>()),
+      );
+    });
+
+    test('accepts exact documented boundary values', () {
+      expect(
+        () => buildSetRadioParamsFrame(300000, 7000, 5, 5),
+        returnsNormally,
+      );
+      expect(
+        () => buildSetRadioParamsFrame(2500000, 500000, 12, 8),
+        returnsNormally,
       );
     });
   });

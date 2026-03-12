@@ -36,5 +36,12 @@ void main() {
 
       expect(() => utf8.decode(nameBytes, allowMalformed: false), returnsNormally);
     });
+
+    test('buildSetAdvertNameFrame keeps exact-fit multibyte names intact', () {
+      final name = 'a' * 27 + '😀';
+      final frame = buildSetAdvertNameFrame(name);
+
+      expect(utf8.decode(frame.sublist(1), allowMalformed: false), name);
+    });
   });
 }

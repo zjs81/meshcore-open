@@ -104,6 +104,19 @@ void main() {
       );
     });
 
+    test('rejects path lengths below the flood sentinel', () {
+      expect(
+        () => calculateMessageTimeout(
+          freqHz: 915000,
+          bwHz: 125000,
+          sf: 7,
+          cr: 5,
+          pathLength: -2,
+        ),
+        throwsA(isA<RangeError>()),
+      );
+    });
+
     test('uses longer timeout for flood mode than direct mode', () {
       final direct = calculateMessageTimeout(
         freqHz: 915000,
@@ -121,6 +134,25 @@ void main() {
       );
 
       expect(flood, greaterThan(direct));
+    });
+
+    test('increases routed timeout as path length grows', () {
+      final oneHop = calculateMessageTimeout(
+        freqHz: 915000,
+        bwHz: 125000,
+        sf: 7,
+        cr: 5,
+        pathLength: 0,
+      );
+      final threeHop = calculateMessageTimeout(
+        freqHz: 915000,
+        bwHz: 125000,
+        sf: 7,
+        cr: 5,
+        pathLength: 2,
+      );
+
+      expect(threeHop, greaterThan(oneHop));
     });
   });
 }
