@@ -20,6 +20,12 @@ class ChannelMessageStore {
     int channelIndex,
     List<ChannelMessage> messages,
   ) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn(
+        'Public key hex is not set. Cannot save channel messages.',
+      );
+      return;
+    }
     final prefs = PrefsManager.instance;
     final key = '$keyFor$channelIndex';
 
