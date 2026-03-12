@@ -88,6 +88,20 @@ bool shouldAutoSyncTimeOnConnect(int? firmwareVerCode) {
   return firmwareVerCode < 10;
 }
 
+@visibleForTesting
+int? normalizeTimeoutCodingRate(int? rawCodingRate) {
+  if (rawCodingRate == null) {
+    return null;
+  }
+  if (rawCodingRate >= 5 && rawCodingRate <= 8) {
+    return rawCodingRate;
+  }
+  if (rawCodingRate >= 1 && rawCodingRate <= 4) {
+    return rawCodingRate + 4;
+  }
+  return null;
+}
+
 class MeshCoreUuids {
   static const String service = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
   static const String rxCharacteristic = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
@@ -2983,19 +2997,27 @@ class MeshCoreConnector extends ChangeNotifier {
   /// Returns timeout in milliseconds, considering number of hops
   int calculateTimeout({required int pathLength, int messageBytes = 100}) {
     // If we have radio settings, use them for accurate calculation
-    if (_currentFreqHz != null &&
-        _currentBwHz != null &&
-        _currentSf != null &&
-        _currentCr != null) {
-      final cr = _currentCr! <= 4 ? _currentCr! : _currentCr! - 4;
-      return calculateMessageTimeout(
-        freqHz: _currentFreqHz!,
-        bwHz: _currentBwHz!,
-        sf: _currentSf!,
-        cr: cr,
-        pathLength: pathLength,
-        messageBytes: messageBytes,
-      );
+    final freqHz = _currentFreqHz;
+    final bwHz = _currentBwHz;
+    final sf = _currentSf;
+    final cr = normalizeTimeoutCodingRate(_currentCr);
+    if (freqHz != null && bwHz != null && sf != null && cr != null) {
+      try {
+        return calculateMessageTimeout(
+          freqHz: freqHz,
+          bwHz: bwHz,
+          sf: sf,
+          cr: cr,
+          pathLength: pathLength,
+          messageBytes: messageBytes,
+        );
+      } on RangeError catch (error) {
+        _appDebugLogService?.warn(
+          'Falling back to conservative timeout because radio settings are '
+          'out of range: $error',
+          tag: 'Protocol',
+        );
+      }
     }
 
     // Fallback: Conservative estimates based on typical settings
