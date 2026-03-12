@@ -27,7 +27,7 @@ class ContactStore {
       prefs.remove(_keyPrefix);
       if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
         appLogger.info(
-          'Migrating channel messages from legacy key $_keyPrefix to scoped key $keyFor',
+          'Migrating contacts from legacy key $_keyPrefix to scoped key $keyFor',
         );
         await prefs.setString(keyFor, legacyJsonString);
         jsonString = legacyJsonString;
