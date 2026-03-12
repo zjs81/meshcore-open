@@ -24,6 +24,7 @@ class ContactSettingsStore {
     if (enabled == null) {
       // Attempt migration from legacy unscoped key on first load
       enabled = prefs.getBool(oldKey);
+      prefs.remove(oldKey);
       if (enabled != null) {
         appLogger.info(
           'Migrating contact settings from legacy key $oldKey to scoped key $key',

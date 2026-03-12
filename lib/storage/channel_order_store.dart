@@ -30,6 +30,7 @@ class ChannelOrderStore {
     if (jsonString == null || jsonString.isEmpty) {
       // Attempt migration from legacy unscoped key on first load
       final legacyJsonString = prefs.getString(_keyPrefix);
+      prefs.remove(_keyPrefix);
       if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
         appLogger.info(
           'Migrating channel order from legacy key $_keyPrefix to scoped key $keyFor',

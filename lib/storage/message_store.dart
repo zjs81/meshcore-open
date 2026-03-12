@@ -40,6 +40,7 @@ class MessageStore {
     if (jsonString == null || jsonString.isEmpty) {
       // Attempt migration from legacy unscoped key on first load
       final legacyJsonString = prefs.getString(oldKey);
+      prefs.remove(oldKey);
       if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
         appLogger.info(
           'Migrating messages from legacy key $oldKey to scoped key $key',

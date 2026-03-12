@@ -32,11 +32,25 @@ class UnreadStore {
       return {};
     }
     final prefs = PrefsManager.instance;
-    final jsonStr = prefs.getString(keyFor);
-    if (jsonStr == null) return {};
+    String? jsonString = prefs.getString(_keyPrefix);
+    if (jsonString == null || jsonString.isEmpty) {
+      // Attempt migration from legacy unscoped key on first load
+      final legacyJsonString = prefs.getString(_keyPrefix);
+      prefs.remove(_keyPrefix);
+      if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
+        appLogger.info(
+          'Migrating channel messages from legacy key $_keyPrefix to scoped key $keyFor',
+        );
+        await prefs.setString(keyFor, legacyJsonString);
+        jsonString = legacyJsonString;
+      }
+    }
+    if (jsonString == null || jsonString.isEmpty) {
+      return {};
+    }
 
     try {
-      final json = jsonDecode(jsonStr) as Map<String, dynamic>;
+      final json = jsonDecode(jsonString) as Map<String, dynamic>;
       return json.map((key, value) => MapEntry(key, value as int));
     } catch (_) {
       return {};
