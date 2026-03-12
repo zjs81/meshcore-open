@@ -664,6 +664,7 @@ class MeshCoreConnector extends ChangeNotifier {
     // Initialize notification service
     _notificationService.initialize();
     _loadChannelOrder();
+    _loadDiscoveredContactCache();
 
     // Initialize retry service callbacks
     _retryService?.initialize(
@@ -692,7 +693,7 @@ class MeshCoreConnector extends ChangeNotifier {
     }
   }
 
-  Future<void> loadDiscoveredContactCache() async {
+  Future<void> _loadDiscoveredContactCache() async {
     final cached = await _discoveryContactStore.loadContacts();
     _discoveredContacts
       ..clear()
@@ -2497,7 +2498,6 @@ class MeshCoreConnector extends ChangeNotifier {
     _channelSettingsStore.setPublicKeyHex = selfPublicKeyHex;
     _contactSettingsStore.setPublicKeyHex = selfPublicKeyHex;
     _contactStore.setPublicKeyHex = selfPublicKeyHex;
-    _discoveryContactStore.setPublicKeyHex = selfPublicKeyHex;
     _channelStore.setPublicKeyHex = selfPublicKeyHex;
     _unreadStore.setPublicKeyHex = selfPublicKeyHex;
 

@@ -8,21 +8,9 @@ import 'prefs_manager.dart';
 class ContactDiscoveryStore {
   static const String _keyPrefix = 'discovered_contacts';
 
-  String publicKeyHex = '';
-  set setPublicKeyHex(String value) =>
-      publicKeyHex = value.length > 10 ? value.substring(0, 10) : '';
-
-  String get keyFor => _keyPrefix;
-
   Future<List<DiscoveryContact>> loadContacts() async {
-    if (publicKeyHex.isEmpty) {
-      appLogger.warn(
-        'Public key hex is not set. Cannot load discovered contacts.',
-      );
-      return [];
-    }
     final prefs = PrefsManager.instance;
-    final jsonStr = prefs.getString(keyFor);
+    final jsonStr = prefs.getString(_keyPrefix);
     if (jsonStr == null) return [];
 
     try {
@@ -38,7 +26,7 @@ class ContactDiscoveryStore {
   Future<void> saveContacts(List<DiscoveryContact> contacts) async {
     final prefs = PrefsManager.instance;
     final jsonList = contacts.map(_toJson).toList();
-    await prefs.setString(keyFor, jsonEncode(jsonList));
+    await prefs.setString(_keyPrefix, jsonEncode(jsonList));
   }
 
   Map<String, dynamic> _toJson(DiscoveryContact contact) {
