@@ -25,7 +25,18 @@ class CommunityStore {
       return [];
     }
     final prefs = PrefsManager.instance;
-    final jsonString = prefs.getString(keyFor);
+    String? jsonString = prefs.getString(_keyPrefix);
+    if (jsonString == null || jsonString.isEmpty) {
+      // Attempt migration from legacy unscoped key on first load
+      final legacyJsonString = prefs.getString(_keyPrefix);
+      if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
+        appLogger.info(
+          'Migrating communities from legacy key $_keyPrefix to scoped key $keyFor',
+        );
+        await prefs.setString(keyFor, legacyJsonString);
+        jsonString = legacyJsonString;
+      }
+    }
     if (jsonString == null || jsonString.isEmpty) {
       return [];
     }

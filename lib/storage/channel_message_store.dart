@@ -47,8 +47,21 @@ class ChannelMessageStore {
     final prefs = PrefsManager.instance;
     final key = '$keyFor$channelIndex';
 
-    final jsonString = prefs.getString(key);
-    if (jsonString == null) return [];
+    String? jsonString = prefs.getString(_keyPrefix);
+    if (jsonString == null || jsonString.isEmpty) {
+      // Attempt migration from legacy unscoped key on first load
+      final legacyJsonString = prefs.getString(_keyPrefix);
+      if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
+        appLogger.info(
+          'Migrating channel messages from legacy key $_keyPrefix to scoped key $key',
+        );
+        await prefs.setString(key, legacyJsonString);
+        jsonString = legacyJsonString;
+      }
+    }
+    if (jsonString == null || jsonString.isEmpty) {
+      return [];
+    }
 
     try {
       final jsonList = jsonDecode(jsonString) as List<dynamic>;

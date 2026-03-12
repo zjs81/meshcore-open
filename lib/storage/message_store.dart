@@ -35,8 +35,22 @@ class MessageStore {
     }
     final prefs = PrefsManager.instance;
     final key = '$keyFor$contactKeyHex';
-    final jsonString = prefs.getString(key);
-    if (jsonString == null) return [];
+    final oldKey = '$_keyPrefix$contactKeyHex';
+    String? jsonString = prefs.getString(key);
+    if (jsonString == null || jsonString.isEmpty) {
+      // Attempt migration from legacy unscoped key on first load
+      final legacyJsonString = prefs.getString(oldKey);
+      if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
+        appLogger.info(
+          'Migrating messages from legacy key $oldKey to scoped key $key',
+        );
+        await prefs.setString(key, legacyJsonString);
+        jsonString = legacyJsonString;
+      }
+    }
+    if (jsonString == null || jsonString.isEmpty) {
+      return [];
+    }
 
     try {
       final jsonList = jsonDecode(jsonString) as List<dynamic>;

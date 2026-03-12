@@ -19,6 +19,18 @@ class ChannelSettingsStore {
     }
     final prefs = PrefsManager.instance;
     final key = '$keyFor$channelIndex';
+    final oldKey = '$_keyPrefix$channelIndex';
+    bool? enabled = prefs.getBool(key);
+    if (enabled == null) {
+      // Attempt migration from legacy unscoped key on first load
+      enabled = prefs.getBool(oldKey);
+      if (enabled != null) {
+        appLogger.info(
+          'Migrating channel settings from legacy key $oldKey to scoped key $key',
+        );
+        await prefs.setBool(key, enabled);
+      }
+    }
     return prefs.getBool(key) ?? false;
   }
 

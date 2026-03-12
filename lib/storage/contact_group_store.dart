@@ -18,11 +18,24 @@ class ContactGroupStore {
       return [];
     }
     final prefs = PrefsManager.instance;
-    final raw = prefs.getString(keyFor);
-    if (raw == null || raw.isEmpty) return [];
+    String? jsonString = prefs.getString(_keyPrefix);
+    if (jsonString == null || jsonString.isEmpty) {
+      // Attempt migration from legacy unscoped key on first load
+      final legacyJsonString = prefs.getString(_keyPrefix);
+      if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
+        appLogger.info(
+          'Migrating channel messages from legacy key $_keyPrefix to scoped key $keyFor',
+        );
+        await prefs.setString(keyFor, legacyJsonString);
+        jsonString = legacyJsonString;
+      }
+    }
+    if (jsonString == null || jsonString.isEmpty) {
+      return [];
+    }
 
     try {
-      final decoded = jsonDecode(raw);
+      final decoded = jsonDecode(jsonString);
       if (decoded is List) {
         return decoded
             .whereType<Map<String, dynamic>>()

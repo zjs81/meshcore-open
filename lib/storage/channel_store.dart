@@ -9,7 +9,7 @@ class ChannelStore {
   static const String _keyPrefix = 'channels';
   String publicKeyHex = '';
   set setPublicKeyHex(String value) =>
-      publicKeyHex = value.length > 10 ? value.substring(0, 10) : '';
+      publicKeyHex = value.length >= 10 ? value.substring(0, 10) : '';
 
   String get keyFor => '$_keyPrefix$publicKeyHex';
 
