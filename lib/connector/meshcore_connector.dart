@@ -692,6 +692,17 @@ class MeshCoreConnector extends ChangeNotifier {
     }
   }
 
+  Future<void> updateKnownDiscovered() async {
+    for (int i = 0; i < _discoveredContacts.length; i++) {
+      final discovered = _discoveredContacts[i];
+      final isKnown = _knownContactKeys.contains(discovered.publicKeyHex);
+      if (discovered.isActive != isKnown) {
+        _discoveredContacts[i] = discovered.copyWith(isActive: isKnown);
+      }
+    }
+    notifyListeners();
+  }
+
   Future<void> _loadDiscoveredContactCache() async {
     final cached = await _discoveryContactStore.loadContacts();
     _discoveredContacts
@@ -1903,7 +1914,11 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> removeContact(Contact contact) async {
     if (!isConnected) return;
 
-    _handleDiscovery(contact, Uint8List(0), noNotify: true);
+    _handleDiscovery(
+      contact,
+      contact.rawPacket ?? Uint8List(0),
+      noNotify: true,
+    );
 
     await sendFrame(buildRemoveContactFrame(contact.publicKey));
     _contacts.removeWhere((c) => c.publicKeyHex == contact.publicKeyHex);
@@ -1937,13 +1952,22 @@ class MeshCoreConnector extends ChangeNotifier {
         contact.path,
         contact.pathLength,
         type: contact.type,
-        flags: 0,
+        flags: contact.flags,
         name: contact.name,
         lat: contact.latitude,
         lon: contact.longitude,
         lastModified: contact.lastSeen,
       ),
     );
+
+    // Update the discovered contact to mark it as active (imported)
+    final discoveredIndex = _discoveredContacts.indexWhere(
+      (c) => c.publicKeyHex == contact.publicKeyHex,
+    );
+    if (discoveredIndex >= 0) {
+      _discoveredContacts[discoveredIndex] =
+          _discoveredContacts[discoveredIndex].copyWith(isActive: true);
+    }
 
     _handleContactAdvert(
       Contact(
@@ -1955,6 +1979,7 @@ class MeshCoreConnector extends ChangeNotifier {
         latitude: contact.latitude,
         longitude: contact.longitude,
         lastSeen: DateTime.now(),
+        flags: contact.flags,
       ),
     );
     notifyListeners();
@@ -2328,6 +2353,7 @@ class MeshCoreConnector extends ChangeNotifier {
         debugPrint('Got END_OF_CONTACTS');
         _isLoadingContacts = false;
         _preserveContactsOnRefresh = false;
+        updateKnownDiscovered();
         notifyListeners();
         unawaited(_persistContacts());
         if (PlatformInfo.isWeb &&
@@ -4481,6 +4507,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
     if (isNewContact) {
       final newContact = Contact(
+        rawPacket: rawPacket,
         publicKey: publicKey,
         name: name,
         type: type,
@@ -4626,6 +4653,8 @@ class MeshCoreConnector extends ChangeNotifier {
             latitude: contact.latitude,
             longitude: contact.longitude,
             lastSeen: contact.lastSeen,
+            flags: 0,
+            isActive: false,
           );
       notifyListeners();
       unawaited(_persistDiscoveredContacts());
@@ -4644,6 +4673,7 @@ class MeshCoreConnector extends ChangeNotifier {
       lastSeen: contact.lastSeen,
       lastMessageAt: contact.lastMessageAt,
       isActive: false,
+      flags: 0,
     );
     _discoveredContacts.add(disContact);
 
