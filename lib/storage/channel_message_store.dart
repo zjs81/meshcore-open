@@ -64,7 +64,6 @@ class ChannelMessageStore {
     if (jsonString == null || jsonString.isEmpty) {
       return [];
     }
-
     try {
       final jsonList = jsonDecode(jsonString) as List<dynamic>;
       return jsonList.map((json) => _messageFromJson(json)).toList();

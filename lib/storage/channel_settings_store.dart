@@ -20,7 +20,7 @@ class ChannelSettingsStore {
     final prefs = PrefsManager.instance;
     final key = '$keyFor$channelIndex';
     final oldKey = '$_keyPrefix$channelIndex';
-    bool? enabled = prefs.getBool(key);
+    bool? enabled = prefs.getBool(oldKey);
     if (enabled == null) {
       // Attempt migration from legacy unscoped key on first load
       enabled = prefs.getBool(oldKey);
