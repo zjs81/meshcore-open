@@ -689,7 +689,7 @@ Uint8List buildResetPathFrame(Uint8List pubKey) {
 }
 
 // Build CMD_ADD_UPDATE_CONTACT frame to set custom path
-// Format: [cmd][pub_key x32][type][flags][path_len][path x64][name x32][timestamp x4]
+// Format: [cmd][pub_key x32][type][flags][path_len][path x64][name x32][Lat? x4, Lon? x4][timestamp? x4]
 Uint8List buildUpdateContactPathFrame(
   Uint8List pubKey,
   Uint8List path,
