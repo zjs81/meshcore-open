@@ -32,7 +32,7 @@ class ChannelSettingsStore {
         await prefs.setBool(key, enabled);
       }
     }
-    return prefs.getBool(key) ?? false;
+    return enabled ?? false;
   }
 
   Future<void> saveSmazEnabled(int channelIndex, bool enabled) async {

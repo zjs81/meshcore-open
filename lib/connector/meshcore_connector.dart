@@ -663,7 +663,6 @@ class MeshCoreConnector extends ChangeNotifier {
     // Initialize notification service
     _notificationService.initialize();
     _loadChannelOrder();
-    _loadDiscoveredContactCache();
 
     // Initialize retry service callbacks
     _retryService?.initialize(
@@ -690,17 +689,6 @@ class MeshCoreConnector extends ChangeNotifier {
     for (final contact in cached) {
       _ensureContactSmazSettingLoaded(contact.publicKeyHex);
     }
-  }
-
-  Future<void> updateKnownDiscovered() async {
-    for (int i = 0; i < _discoveredContacts.length; i++) {
-      final discovered = _discoveredContacts[i];
-      final isKnown = _knownContactKeys.contains(discovered.publicKeyHex);
-      if (discovered.isActive != isKnown) {
-        _discoveredContacts[i] = discovered.copyWith(isActive: isKnown);
-      }
-    }
-    notifyListeners();
   }
 
   Future<void> _loadDiscoveredContactCache() async {
@@ -1934,6 +1922,17 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateKnownDiscovered() async {
+    if (!isConnected) return;
+    for (final contact in _discoveredContacts) {
+      contact.copyWith(
+        isActive: !_knownContactKeys.contains(contact.publicKeyHex),
+      );
+    }
+    unawaited(_persistDiscoveredContacts());
+    notifyListeners();
+  }
+
   Future<void> removeDiscoveredContact(Contact contact) async {
     if (!isConnected) return;
     _discoveredContacts.removeWhere(
@@ -2540,6 +2539,7 @@ class MeshCoreConnector extends ChangeNotifier {
     // Load persisted channel messages
     loadAllChannelMessages();
     loadUnreadState();
+    _loadDiscoveredContactCache();
 
     _awaitingSelfInfo = false;
     _selfInfoRetryTimer?.cancel();
