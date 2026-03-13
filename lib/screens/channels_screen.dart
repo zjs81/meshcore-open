@@ -56,8 +56,6 @@ class _ChannelsScreenState extends State<ChannelsScreen>
   @override
   void initState() {
     super.initState();
-    final connector = context.read<MeshCoreConnector>();
-    _communityStore.setPublicKeyHex = connector.selfPublicKeyHex;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MeshCoreConnector>().getChannels();
       _loadCommunities();
@@ -65,6 +63,8 @@ class _ChannelsScreenState extends State<ChannelsScreen>
   }
 
   Future<void> _loadCommunities() async {
+    final connector = context.read<MeshCoreConnector>();
+    _communityStore.setPublicKeyHex = connector.selfPublicKeyHex;
     final communities = await _communityStore.loadCommunities();
     if (mounted) {
       setState(() {
@@ -717,6 +717,8 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     bool addPublicChannel = true;
     bool isRegularHashtag = true;
     Community? selectedCommunity;
+
+    _communityStore.setPublicKeyHex = connector.selfPublicKeyHex;
 
     showDialog(
       context: context,
@@ -1770,6 +1772,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     }
 
     final channelCount = communityChannels.length;
+    _communityStore.setPublicKeyHex = connector.selfPublicKeyHex;
 
     showDialog(
       context: context,

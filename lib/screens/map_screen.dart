@@ -188,7 +188,11 @@ class _MapScreenState extends State<MapScreen> {
         // All contacts with a known location — used as anchors regardless of
         // time/key-prefix filters so that repeaters are always available.
         final allContactsWithLocation = allContacts
-            .where((c) => c.hasLocation)
+            .where(
+              (c) =>
+                  c.hasLocation &&
+                  _checkLocationPlausibility(c.latitude!, c.longitude!),
+            )
             .toList();
 
         // Compute guessed locations with caching
@@ -660,7 +664,7 @@ class _MapScreenState extends State<MapScreen> {
           position.latitude,
           position.longitude,
         )) {
-          continue; // discard implausible guesses near (0, 0
+          continue; // discard implausible guesses near (0, 0)
         }
       } else {
         double lat = 0, lon = 0;

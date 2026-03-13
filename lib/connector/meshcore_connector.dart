@@ -1924,9 +1924,11 @@ class MeshCoreConnector extends ChangeNotifier {
 
   Future<void> updateKnownDiscovered() async {
     if (!isConnected) return;
-    for (final contact in _discoveredContacts) {
-      contact.copyWith(
-        isActive: !_knownContactKeys.contains(contact.publicKeyHex),
+    for (int i = 0; i < _discoveredContacts.length; i++) {
+      _discoveredContacts[i] = _discoveredContacts[i].copyWith(
+        isActive: _knownContactKeys.contains(
+          _discoveredContacts[i].publicKeyHex,
+        ),
       );
     }
     unawaited(_persistDiscoveredContacts());
