@@ -1872,38 +1872,38 @@ class AppLocalizationsIt extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
-  String get repeater_advancedSettings => 'Advanced Settings';
+  String get repeater_advancedSettings => 'Impostazioni avanzate';
 
   @override
-  String get repeater_interferenceThreshold => 'Interference Threshold';
+  String get repeater_interferenceThreshold => 'Soglia di interferenza';
 
   @override
   String get repeater_interferenceThresholdHelper =>
-      'dB threshold (default 14). Set 0 to disable channel interference detection.';
+      'Soglia in dB (predefinita 14). Imposta 0 per disattivare il rilevamento delle interferenze del canale.';
 
   @override
-  String get repeater_agcResetInterval => 'AGC Reset Interval';
+  String get repeater_agcResetInterval => 'Intervallo di reset AGC';
 
   @override
   String get repeater_agcResetIntervalHelper =>
-      'Seconds between AGC resets. Set 0 to disable.';
+      'Secondi tra i reset dell\'AGC. Imposta 0 per disattivare.';
 
   @override
-  String get repeater_floodMaxHops => 'Flood Max Hops';
+  String get repeater_floodMaxHops => 'Numero massimo di hop flood';
 
   @override
   String get repeater_floodMaxHopsHelper =>
-      'Maximum hops for forwarding inbound flood packets.';
+      'Numero massimo di hop per inoltrare i pacchetti flood in ingresso.';
 
   @override
-  String get repeater_multiAcks => 'Multi ACKs';
+  String get repeater_multiAcks => 'ACK multipli';
 
   @override
   String get repeater_multiAcksHelper =>
-      'Enable double ACK behavior (0 or 1 in firmware).';
+      'Abilita il comportamento di doppio ACK (0 o 1 nel firmware).';
 
   @override
-  String get repeater_hopsShort => 'hops';
+  String get repeater_hopsShort => 'hop';
 
   @override
   String get repeater_bandwidth => 'Larghezza di banda';
@@ -2046,20 +2046,23 @@ class AppLocalizationsIt extends AppLocalizations {
   String get repeater_refreshRadioSettings => 'Aggiorna le Impostazioni Radio';
 
   @override
-  String get repeater_refreshAdvancedSettings => 'Refresh Advanced Settings';
+  String get repeater_refreshAdvancedSettings =>
+      'Aggiorna impostazioni avanzate';
 
   @override
   String get repeater_refreshInterferenceThreshold =>
-      'Refresh interference threshold';
+      'Aggiorna soglia di interferenza';
 
   @override
-  String get repeater_refreshAgcResetInterval => 'Refresh AGC reset interval';
+  String get repeater_refreshAgcResetInterval =>
+      'Aggiorna intervallo di reset AGC';
 
   @override
-  String get repeater_refreshFloodMaxHops => 'Refresh flood max hops';
+  String get repeater_refreshFloodMaxHops =>
+      'Aggiorna numero massimo di hop flood';
 
   @override
-  String get repeater_refreshMultiAcks => 'Refresh multi ACKs';
+  String get repeater_refreshMultiAcks => 'Aggiorna ACK multipli';
 
   @override
   String get repeater_refreshTxPower => 'Aggiorna TX potenza';

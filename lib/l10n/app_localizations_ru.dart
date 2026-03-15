@@ -1874,38 +1874,38 @@ class AppLocalizationsRu extends AppLocalizations {
   String get repeater_txPowerHelper => '1–30 дБм';
 
   @override
-  String get repeater_advancedSettings => 'Advanced Settings';
+  String get repeater_advancedSettings => 'Расширенные настройки';
 
   @override
-  String get repeater_interferenceThreshold => 'Interference Threshold';
+  String get repeater_interferenceThreshold => 'Порог помех';
 
   @override
   String get repeater_interferenceThresholdHelper =>
-      'dB threshold (default 14). Set 0 to disable channel interference detection.';
+      'Порог в дБ (по умолчанию 14). Установите 0, чтобы отключить обнаружение помех канала.';
 
   @override
-  String get repeater_agcResetInterval => 'AGC Reset Interval';
+  String get repeater_agcResetInterval => 'Интервал сброса AGC';
 
   @override
   String get repeater_agcResetIntervalHelper =>
-      'Seconds between AGC resets. Set 0 to disable.';
+      'Секунды между сбросами AGC. Установите 0, чтобы отключить.';
 
   @override
-  String get repeater_floodMaxHops => 'Flood Max Hops';
+  String get repeater_floodMaxHops => 'Максимум flood-прыжков';
 
   @override
   String get repeater_floodMaxHopsHelper =>
-      'Maximum hops for forwarding inbound flood packets.';
+      'Максимальное число переходов для пересылки входящих flood-пакетов.';
 
   @override
-  String get repeater_multiAcks => 'Multi ACKs';
+  String get repeater_multiAcks => 'Множественные ACK';
 
   @override
   String get repeater_multiAcksHelper =>
-      'Enable double ACK behavior (0 or 1 in firmware).';
+      'Включает поведение двойного ACK (0 или 1 в прошивке).';
 
   @override
-  String get repeater_hopsShort => 'hops';
+  String get repeater_hopsShort => 'прыж.';
 
   @override
   String get repeater_bandwidth => 'Полоса пропускания';
@@ -2049,20 +2049,20 @@ class AppLocalizationsRu extends AppLocalizations {
   String get repeater_refreshRadioSettings => 'Обновить настройки радио';
 
   @override
-  String get repeater_refreshAdvancedSettings => 'Refresh Advanced Settings';
+  String get repeater_refreshAdvancedSettings =>
+      'Обновить расширенные настройки';
 
   @override
-  String get repeater_refreshInterferenceThreshold =>
-      'Refresh interference threshold';
+  String get repeater_refreshInterferenceThreshold => 'Обновить порог помех';
 
   @override
-  String get repeater_refreshAgcResetInterval => 'Refresh AGC reset interval';
+  String get repeater_refreshAgcResetInterval => 'Обновить интервал сброса AGC';
 
   @override
-  String get repeater_refreshFloodMaxHops => 'Refresh flood max hops';
+  String get repeater_refreshFloodMaxHops => 'Обновить максимум flood-прыжков';
 
   @override
-  String get repeater_refreshMultiAcks => 'Refresh multi ACKs';
+  String get repeater_refreshMultiAcks => 'Обновить множественные ACK';
 
   @override
   String get repeater_refreshTxPower => 'Обновить мощность передачи';

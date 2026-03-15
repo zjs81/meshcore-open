@@ -1771,38 +1771,35 @@ class AppLocalizationsZh extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
-  String get repeater_advancedSettings => 'Advanced Settings';
+  String get repeater_advancedSettings => '高级设置';
 
   @override
-  String get repeater_interferenceThreshold => 'Interference Threshold';
+  String get repeater_interferenceThreshold => '干扰阈值';
 
   @override
   String get repeater_interferenceThresholdHelper =>
-      'dB threshold (default 14). Set 0 to disable channel interference detection.';
+      'dB 阈值（默认 14）。设置为 0 可禁用信道干扰检测。';
 
   @override
-  String get repeater_agcResetInterval => 'AGC Reset Interval';
+  String get repeater_agcResetInterval => 'AGC 重置间隔';
 
   @override
-  String get repeater_agcResetIntervalHelper =>
-      'Seconds between AGC resets. Set 0 to disable.';
+  String get repeater_agcResetIntervalHelper => '两次 AGC 重置之间的秒数。设置为 0 可禁用。';
 
   @override
-  String get repeater_floodMaxHops => 'Flood Max Hops';
+  String get repeater_floodMaxHops => 'Flood 最大跳数';
 
   @override
-  String get repeater_floodMaxHopsHelper =>
-      'Maximum hops for forwarding inbound flood packets.';
+  String get repeater_floodMaxHopsHelper => '转发传入 flood 数据包的最大跳数。';
 
   @override
-  String get repeater_multiAcks => 'Multi ACKs';
+  String get repeater_multiAcks => '多重 ACK';
 
   @override
-  String get repeater_multiAcksHelper =>
-      'Enable double ACK behavior (0 or 1 in firmware).';
+  String get repeater_multiAcksHelper => '启用双 ACK 行为（在固件中为 0 或 1）。';
 
   @override
-  String get repeater_hopsShort => 'hops';
+  String get repeater_hopsShort => '跳';
 
   @override
   String get repeater_bandwidth => '带宽';
@@ -1932,20 +1929,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get repeater_refreshRadioSettings => '刷新无线电设置';
 
   @override
-  String get repeater_refreshAdvancedSettings => 'Refresh Advanced Settings';
+  String get repeater_refreshAdvancedSettings => '刷新高级设置';
 
   @override
-  String get repeater_refreshInterferenceThreshold =>
-      'Refresh interference threshold';
+  String get repeater_refreshInterferenceThreshold => '刷新干扰阈值';
 
   @override
-  String get repeater_refreshAgcResetInterval => 'Refresh AGC reset interval';
+  String get repeater_refreshAgcResetInterval => '刷新 AGC 重置间隔';
 
   @override
-  String get repeater_refreshFloodMaxHops => 'Refresh flood max hops';
+  String get repeater_refreshFloodMaxHops => '刷新 Flood 最大跳数';
 
   @override
-  String get repeater_refreshMultiAcks => 'Refresh multi ACKs';
+  String get repeater_refreshMultiAcks => '刷新多重 ACK';
 
   @override
   String get repeater_refreshTxPower => '刷新 TX 功率';

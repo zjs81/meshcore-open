@@ -1864,38 +1864,38 @@ class AppLocalizationsSl extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
-  String get repeater_advancedSettings => 'Advanced Settings';
+  String get repeater_advancedSettings => 'Napredne nastavitve';
 
   @override
-  String get repeater_interferenceThreshold => 'Interference Threshold';
+  String get repeater_interferenceThreshold => 'Prag motenj';
 
   @override
   String get repeater_interferenceThresholdHelper =>
-      'dB threshold (default 14). Set 0 to disable channel interference detection.';
+      'Prag v dB (privzeto 14). Nastavite 0 za izklop zaznavanja motenj kanala.';
 
   @override
-  String get repeater_agcResetInterval => 'AGC Reset Interval';
+  String get repeater_agcResetInterval => 'Interval ponastavitve AGC';
 
   @override
   String get repeater_agcResetIntervalHelper =>
-      'Seconds between AGC resets. Set 0 to disable.';
+      'Sekunde med ponastavitvami AGC. Nastavite 0 za izklop.';
 
   @override
-  String get repeater_floodMaxHops => 'Flood Max Hops';
+  String get repeater_floodMaxHops => 'Največje število flood hopov';
 
   @override
   String get repeater_floodMaxHopsHelper =>
-      'Maximum hops for forwarding inbound flood packets.';
+      'Največje število hopov za posredovanje dohodnih flood paketov.';
 
   @override
-  String get repeater_multiAcks => 'Multi ACKs';
+  String get repeater_multiAcks => 'Več ACK-jev';
 
   @override
   String get repeater_multiAcksHelper =>
-      'Enable double ACK behavior (0 or 1 in firmware).';
+      'Omogoči vedenje dvojnega ACK (0 ali 1 v vdelani programski opremi).';
 
   @override
-  String get repeater_hopsShort => 'hops';
+  String get repeater_hopsShort => 'skoki';
 
   @override
   String get repeater_bandwidth => 'Pasovna širina';
@@ -2036,20 +2036,21 @@ class AppLocalizationsSl extends AppLocalizations {
   String get repeater_refreshRadioSettings => 'Ponovno Nastavitve Radija';
 
   @override
-  String get repeater_refreshAdvancedSettings => 'Refresh Advanced Settings';
+  String get repeater_refreshAdvancedSettings => 'Osveži napredne nastavitve';
 
   @override
-  String get repeater_refreshInterferenceThreshold =>
-      'Refresh interference threshold';
+  String get repeater_refreshInterferenceThreshold => 'Osveži prag motenj';
 
   @override
-  String get repeater_refreshAgcResetInterval => 'Refresh AGC reset interval';
+  String get repeater_refreshAgcResetInterval =>
+      'Osveži interval ponastavitve AGC';
 
   @override
-  String get repeater_refreshFloodMaxHops => 'Refresh flood max hops';
+  String get repeater_refreshFloodMaxHops =>
+      'Osveži največje število flood hopov';
 
   @override
-  String get repeater_refreshMultiAcks => 'Refresh multi ACKs';
+  String get repeater_refreshMultiAcks => 'Osveži več ACK-jev';
 
   @override
   String get repeater_refreshTxPower => 'Ponovno nastavi TX moč';

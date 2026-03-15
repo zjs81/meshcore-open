@@ -1865,38 +1865,38 @@ class AppLocalizationsSk extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
-  String get repeater_advancedSettings => 'Advanced Settings';
+  String get repeater_advancedSettings => 'Rozšírené nastavenia';
 
   @override
-  String get repeater_interferenceThreshold => 'Interference Threshold';
+  String get repeater_interferenceThreshold => 'Prah rušenia';
 
   @override
   String get repeater_interferenceThresholdHelper =>
-      'dB threshold (default 14). Set 0 to disable channel interference detection.';
+      'Prah v dB (predvolene 14). Nastavte 0 na vypnutie detekcie rušenia kanála.';
 
   @override
-  String get repeater_agcResetInterval => 'AGC Reset Interval';
+  String get repeater_agcResetInterval => 'Interval resetu AGC';
 
   @override
   String get repeater_agcResetIntervalHelper =>
-      'Seconds between AGC resets. Set 0 to disable.';
+      'Sekundy medzi resetmi AGC. Nastavte 0 na vypnutie.';
 
   @override
-  String get repeater_floodMaxHops => 'Flood Max Hops';
+  String get repeater_floodMaxHops => 'Maximálny počet flood hopov';
 
   @override
   String get repeater_floodMaxHopsHelper =>
-      'Maximum hops for forwarding inbound flood packets.';
+      'Maximálny počet hopov pre preposielanie prichádzajúcich flood paketov.';
 
   @override
-  String get repeater_multiAcks => 'Multi ACKs';
+  String get repeater_multiAcks => 'Viacnásobné ACK';
 
   @override
   String get repeater_multiAcksHelper =>
-      'Enable double ACK behavior (0 or 1 in firmware).';
+      'Povolí správanie dvojitého ACK (0 alebo 1 vo firmvéri).';
 
   @override
-  String get repeater_hopsShort => 'hops';
+  String get repeater_hopsShort => 'hopov';
 
   @override
   String get repeater_bandwidth => 'Šírka pásma';
@@ -2035,20 +2035,20 @@ class AppLocalizationsSk extends AppLocalizations {
   String get repeater_refreshRadioSettings => 'Obnoviť Nastavenia Rádií';
 
   @override
-  String get repeater_refreshAdvancedSettings => 'Refresh Advanced Settings';
+  String get repeater_refreshAdvancedSettings => 'Obnoviť rozšírené nastavenia';
 
   @override
-  String get repeater_refreshInterferenceThreshold =>
-      'Refresh interference threshold';
+  String get repeater_refreshInterferenceThreshold => 'Obnoviť prah rušenia';
 
   @override
-  String get repeater_refreshAgcResetInterval => 'Refresh AGC reset interval';
+  String get repeater_refreshAgcResetInterval => 'Obnoviť interval resetu AGC';
 
   @override
-  String get repeater_refreshFloodMaxHops => 'Refresh flood max hops';
+  String get repeater_refreshFloodMaxHops =>
+      'Obnoviť maximálny počet flood hopov';
 
   @override
-  String get repeater_refreshMultiAcks => 'Refresh multi ACKs';
+  String get repeater_refreshMultiAcks => 'Obnoviť viacnásobné ACK';
 
   @override
   String get repeater_refreshTxPower => 'Obnoviť TX napájanie';

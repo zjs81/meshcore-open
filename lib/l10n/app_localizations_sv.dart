@@ -1854,38 +1854,38 @@ class AppLocalizationsSv extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
-  String get repeater_advancedSettings => 'Advanced Settings';
+  String get repeater_advancedSettings => 'Avancerade inställningar';
 
   @override
-  String get repeater_interferenceThreshold => 'Interference Threshold';
+  String get repeater_interferenceThreshold => 'Störningströskel';
 
   @override
   String get repeater_interferenceThresholdHelper =>
-      'dB threshold (default 14). Set 0 to disable channel interference detection.';
+      'dB-tröskel (standard 14). Sätt 0 för att inaktivera kanalens störningsdetektering.';
 
   @override
-  String get repeater_agcResetInterval => 'AGC Reset Interval';
+  String get repeater_agcResetInterval => 'AGC-återställningsintervall';
 
   @override
   String get repeater_agcResetIntervalHelper =>
-      'Seconds between AGC resets. Set 0 to disable.';
+      'Sekunder mellan AGC-återställningar. Sätt 0 för att inaktivera.';
 
   @override
-  String get repeater_floodMaxHops => 'Flood Max Hops';
+  String get repeater_floodMaxHops => 'Maximalt antal flood-hopp';
 
   @override
   String get repeater_floodMaxHopsHelper =>
-      'Maximum hops for forwarding inbound flood packets.';
+      'Maximalt antal hopp för att vidarebefordra inkommande flood-paket.';
 
   @override
-  String get repeater_multiAcks => 'Multi ACKs';
+  String get repeater_multiAcks => 'Flera ACK';
 
   @override
   String get repeater_multiAcksHelper =>
-      'Enable double ACK behavior (0 or 1 in firmware).';
+      'Aktiverar dubbla ACK-beteenden (0 eller 1 i firmwaren).';
 
   @override
-  String get repeater_hopsShort => 'hops';
+  String get repeater_hopsShort => 'hopp';
 
   @override
   String get repeater_bandwidth => 'Bandbredd';
@@ -2026,20 +2026,23 @@ class AppLocalizationsSv extends AppLocalizations {
   String get repeater_refreshRadioSettings => 'Återställ Radiosinställningar';
 
   @override
-  String get repeater_refreshAdvancedSettings => 'Refresh Advanced Settings';
+  String get repeater_refreshAdvancedSettings =>
+      'Uppdatera avancerade inställningar';
 
   @override
   String get repeater_refreshInterferenceThreshold =>
-      'Refresh interference threshold';
+      'Uppdatera störningströskel';
 
   @override
-  String get repeater_refreshAgcResetInterval => 'Refresh AGC reset interval';
+  String get repeater_refreshAgcResetInterval =>
+      'Uppdatera AGC-återställningsintervall';
 
   @override
-  String get repeater_refreshFloodMaxHops => 'Refresh flood max hops';
+  String get repeater_refreshFloodMaxHops =>
+      'Uppdatera maximalt antal flood-hopp';
 
   @override
-  String get repeater_refreshMultiAcks => 'Refresh multi ACKs';
+  String get repeater_refreshMultiAcks => 'Uppdatera flera ACK';
 
   @override
   String get repeater_refreshTxPower => 'Återställ TX-effekt';
