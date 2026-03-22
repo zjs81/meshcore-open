@@ -2110,6 +2110,40 @@ class AppLocalizationsDe extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
+  String get repeater_advancedSettings => 'Erweiterte Einstellungen';
+
+  @override
+  String get repeater_interferenceThreshold => 'Störschwelle';
+
+  @override
+  String get repeater_interferenceThresholdHelper =>
+      'dB-Schwelle (Standard 14). Auf 0 setzen, um die Kanalerkennung von Störungen zu deaktivieren.';
+
+  @override
+  String get repeater_agcResetInterval => 'AGC-Rücksetzintervall';
+
+  @override
+  String get repeater_agcResetIntervalHelper =>
+      'Sekunden zwischen AGC-Rücksetzungen. Auf 0 setzen, um zu deaktivieren.';
+
+  @override
+  String get repeater_floodMaxHops => 'Maximale Flood-Hops';
+
+  @override
+  String get repeater_floodMaxHopsHelper =>
+      'Maximale Hops zum Weiterleiten eingehender Flood-Pakete.';
+
+  @override
+  String get repeater_multiAcks => 'Mehrfach-ACKs';
+
+  @override
+  String get repeater_multiAcksHelper =>
+      'Doppeltes ACK-Verhalten aktivieren (0 oder 1 in der Firmware).';
+
+  @override
+  String get repeater_hopsShort => 'Hops';
+
+  @override
   String get repeater_bandwidth => 'Bandbreite';
 
   @override
@@ -2250,6 +2284,25 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get repeater_refreshRadioSettings =>
       'Radio-Einstellungen aktualisieren';
+
+  @override
+  String get repeater_refreshAdvancedSettings =>
+      'Erweiterte Einstellungen aktualisieren';
+
+  @override
+  String get repeater_refreshInterferenceThreshold =>
+      'Störschwelle aktualisieren';
+
+  @override
+  String get repeater_refreshAgcResetInterval =>
+      'AGC-Rücksetzintervall aktualisieren';
+
+  @override
+  String get repeater_refreshFloodMaxHops =>
+      'Maximale Flood-Hops aktualisieren';
+
+  @override
+  String get repeater_refreshMultiAcks => 'Mehrfach-ACKs aktualisieren';
 
   @override
   String get repeater_refreshTxPower => 'Sendeleistung aktualisieren';

@@ -2118,6 +2118,40 @@ class AppLocalizationsFr extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
+  String get repeater_advancedSettings => 'Paramètres avancés';
+
+  @override
+  String get repeater_interferenceThreshold => 'Seuil d\'interférence';
+
+  @override
+  String get repeater_interferenceThresholdHelper =>
+      'Seuil en dB (14 par défaut). Définissez 0 pour désactiver la détection d\'interférences du canal.';
+
+  @override
+  String get repeater_agcResetInterval => 'Intervalle de réinitialisation AGC';
+
+  @override
+  String get repeater_agcResetIntervalHelper =>
+      'Secondes entre les réinitialisations AGC. Définissez 0 pour désactiver.';
+
+  @override
+  String get repeater_floodMaxHops => 'Nombre max. de sauts flood';
+
+  @override
+  String get repeater_floodMaxHopsHelper =>
+      'Nombre maximal de sauts pour transférer les paquets flood entrants.';
+
+  @override
+  String get repeater_multiAcks => 'ACK multiples';
+
+  @override
+  String get repeater_multiAcksHelper =>
+      'Active le comportement de double ACK (0 ou 1 dans le firmware).';
+
+  @override
+  String get repeater_hopsShort => 'sauts';
+
+  @override
   String get repeater_bandwidth => 'Bande passante';
 
   @override
@@ -2260,6 +2294,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get repeater_refreshRadioSettings => 'Rafraîchir les paramètres Radio';
+
+  @override
+  String get repeater_refreshAdvancedSettings =>
+      'Actualiser les paramètres avancés';
+
+  @override
+  String get repeater_refreshInterferenceThreshold =>
+      'Actualiser le seuil d\'interférence';
+
+  @override
+  String get repeater_refreshAgcResetInterval =>
+      'Actualiser l\'intervalle de réinitialisation AGC';
+
+  @override
+  String get repeater_refreshFloodMaxHops =>
+      'Actualiser le nombre max. de sauts flood';
+
+  @override
+  String get repeater_refreshMultiAcks => 'Actualiser les ACK multiples';
 
   @override
   String get repeater_refreshTxPower => 'Rafraîchir la tension TX';

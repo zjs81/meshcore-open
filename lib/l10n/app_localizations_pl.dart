@@ -2109,6 +2109,40 @@ class AppLocalizationsPl extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
+  String get repeater_advancedSettings => 'Zaawansowane ustawienia';
+
+  @override
+  String get repeater_interferenceThreshold => 'Próg zakłóceń';
+
+  @override
+  String get repeater_interferenceThresholdHelper =>
+      'Próg w dB (domyślnie 14). Ustaw 0, aby wyłączyć wykrywanie zakłóceń kanału.';
+
+  @override
+  String get repeater_agcResetInterval => 'Interwał resetu AGC';
+
+  @override
+  String get repeater_agcResetIntervalHelper =>
+      'Liczba sekund między resetami AGC. Ustaw 0, aby wyłączyć.';
+
+  @override
+  String get repeater_floodMaxHops => 'Maksymalna liczba przeskoków flood';
+
+  @override
+  String get repeater_floodMaxHopsHelper =>
+      'Maksymalna liczba przeskoków przy przekazywaniu przychodzących pakietów flood.';
+
+  @override
+  String get repeater_multiAcks => 'Wielokrotne ACK';
+
+  @override
+  String get repeater_multiAcksHelper =>
+      'Włącza zachowanie podwójnego ACK (0 lub 1 w firmware).';
+
+  @override
+  String get repeater_hopsShort => 'skoki';
+
+  @override
   String get repeater_bandwidth => 'Przepustowość';
 
   @override
@@ -2245,6 +2279,23 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get repeater_refreshRadioSettings => 'Odśwież Ustawienia Radio';
+
+  @override
+  String get repeater_refreshAdvancedSettings =>
+      'Odśwież zaawansowane ustawienia';
+
+  @override
+  String get repeater_refreshInterferenceThreshold => 'Odśwież próg zakłóceń';
+
+  @override
+  String get repeater_refreshAgcResetInterval => 'Odśwież interwał resetu AGC';
+
+  @override
+  String get repeater_refreshFloodMaxHops =>
+      'Odśwież maksymalną liczbę przeskoków flood';
+
+  @override
+  String get repeater_refreshMultiAcks => 'Odśwież wielokrotne ACK';
 
   @override
   String get repeater_refreshTxPower => 'Odśwież TX power';

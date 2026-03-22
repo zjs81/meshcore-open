@@ -2112,6 +2112,40 @@ class AppLocalizationsBg extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
+  String get repeater_advancedSettings => 'Разширени настройки';
+
+  @override
+  String get repeater_interferenceThreshold => 'Праг на смущения';
+
+  @override
+  String get repeater_interferenceThresholdHelper =>
+      'Праг в dB (по подразбиране 14). Задайте 0, за да изключите откриването на смущения по канала.';
+
+  @override
+  String get repeater_agcResetInterval => 'Интервал за нулиране на AGC';
+
+  @override
+  String get repeater_agcResetIntervalHelper =>
+      'Секунди между нулиранията на AGC. Задайте 0, за да изключите.';
+
+  @override
+  String get repeater_floodMaxHops => 'Максимален брой flood скокове';
+
+  @override
+  String get repeater_floodMaxHopsHelper =>
+      'Максимален брой скокове за препращане на входящи flood пакети.';
+
+  @override
+  String get repeater_multiAcks => 'Множество ACK';
+
+  @override
+  String get repeater_multiAcksHelper =>
+      'Активира поведение с двоен ACK (0 или 1 във фърмуера).';
+
+  @override
+  String get repeater_hopsShort => 'скока';
+
+  @override
   String get repeater_bandwidth => 'Ширина на честотния спектър';
 
   @override
@@ -2250,6 +2284,24 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get repeater_refreshRadioSettings =>
       'Обнови настройките на радиопредавателите';
+
+  @override
+  String get repeater_refreshAdvancedSettings => 'Обнови разширените настройки';
+
+  @override
+  String get repeater_refreshInterferenceThreshold =>
+      'Обнови прага на смущения';
+
+  @override
+  String get repeater_refreshAgcResetInterval =>
+      'Обнови интервала за нулиране на AGC';
+
+  @override
+  String get repeater_refreshFloodMaxHops =>
+      'Обнови максималния брой flood скокове';
+
+  @override
+  String get repeater_refreshMultiAcks => 'Обнови множество ACK';
 
   @override
   String get repeater_refreshTxPower => 'Обнови TX захранване';

@@ -2106,6 +2106,40 @@ class AppLocalizationsEs extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
+  String get repeater_advancedSettings => 'Configuración avanzada';
+
+  @override
+  String get repeater_interferenceThreshold => 'Umbral de interferencia';
+
+  @override
+  String get repeater_interferenceThresholdHelper =>
+      'Umbral en dB (predeterminado 14). Establece 0 para desactivar la detección de interferencia del canal.';
+
+  @override
+  String get repeater_agcResetInterval => 'Intervalo de reinicio del AGC';
+
+  @override
+  String get repeater_agcResetIntervalHelper =>
+      'Segundos entre reinicios del AGC. Establece 0 para desactivar.';
+
+  @override
+  String get repeater_floodMaxHops => 'Saltos máximos de flood';
+
+  @override
+  String get repeater_floodMaxHopsHelper =>
+      'Número máximo de saltos para reenviar paquetes flood entrantes.';
+
+  @override
+  String get repeater_multiAcks => 'ACK múltiples';
+
+  @override
+  String get repeater_multiAcksHelper =>
+      'Activa el comportamiento de doble ACK (0 o 1 en el firmware).';
+
+  @override
+  String get repeater_hopsShort => 'saltos';
+
+  @override
   String get repeater_bandwidth => 'Ancho de banda';
 
   @override
@@ -2244,6 +2278,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_refreshRadioSettings => 'Actualizar Ajustes de Radio';
+
+  @override
+  String get repeater_refreshAdvancedSettings =>
+      'Actualizar configuración avanzada';
+
+  @override
+  String get repeater_refreshInterferenceThreshold =>
+      'Actualizar umbral de interferencia';
+
+  @override
+  String get repeater_refreshAgcResetInterval =>
+      'Actualizar intervalo de reinicio del AGC';
+
+  @override
+  String get repeater_refreshFloodMaxHops =>
+      'Actualizar saltos máximos de flood';
+
+  @override
+  String get repeater_refreshMultiAcks => 'Actualizar ACK múltiples';
 
   @override
   String get repeater_refreshTxPower => 'Actualizar TX de energía';

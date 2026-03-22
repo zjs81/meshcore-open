@@ -2110,6 +2110,40 @@ class AppLocalizationsRu extends AppLocalizations {
   String get repeater_txPowerHelper => '1–30 дБм';
 
   @override
+  String get repeater_advancedSettings => 'Расширенные настройки';
+
+  @override
+  String get repeater_interferenceThreshold => 'Порог помех';
+
+  @override
+  String get repeater_interferenceThresholdHelper =>
+      'Порог в дБ (по умолчанию 14). Установите 0, чтобы отключить обнаружение помех канала.';
+
+  @override
+  String get repeater_agcResetInterval => 'Интервал сброса AGC';
+
+  @override
+  String get repeater_agcResetIntervalHelper =>
+      'Секунды между сбросами AGC. Установите 0, чтобы отключить.';
+
+  @override
+  String get repeater_floodMaxHops => 'Максимум flood-прыжков';
+
+  @override
+  String get repeater_floodMaxHopsHelper =>
+      'Максимальное число переходов для пересылки входящих flood-пакетов.';
+
+  @override
+  String get repeater_multiAcks => 'Множественные ACK';
+
+  @override
+  String get repeater_multiAcksHelper =>
+      'Включает поведение двойного ACK (0 или 1 в прошивке).';
+
+  @override
+  String get repeater_hopsShort => 'прыж.';
+
+  @override
   String get repeater_bandwidth => 'Полоса пропускания';
 
   @override
@@ -2249,6 +2283,22 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get repeater_refreshRadioSettings => 'Обновить настройки радио';
+
+  @override
+  String get repeater_refreshAdvancedSettings =>
+      'Обновить расширенные настройки';
+
+  @override
+  String get repeater_refreshInterferenceThreshold => 'Обновить порог помех';
+
+  @override
+  String get repeater_refreshAgcResetInterval => 'Обновить интервал сброса AGC';
+
+  @override
+  String get repeater_refreshFloodMaxHops => 'Обновить максимум flood-прыжков';
+
+  @override
+  String get repeater_refreshMultiAcks => 'Обновить множественные ACK';
 
   @override
   String get repeater_refreshTxPower => 'Обновить мощность передачи';

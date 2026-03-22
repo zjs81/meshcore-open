@@ -3764,6 +3764,66 @@ abstract class AppLocalizations {
   /// **'1-30 dBm'**
   String get repeater_txPowerHelper;
 
+  /// No description provided for @repeater_advancedSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Settings'**
+  String get repeater_advancedSettings;
+
+  /// No description provided for @repeater_interferenceThreshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Interference Threshold'**
+  String get repeater_interferenceThreshold;
+
+  /// No description provided for @repeater_interferenceThresholdHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'dB threshold (default 14). Set 0 to disable channel interference detection.'**
+  String get repeater_interferenceThresholdHelper;
+
+  /// No description provided for @repeater_agcResetInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'AGC Reset Interval'**
+  String get repeater_agcResetInterval;
+
+  /// No description provided for @repeater_agcResetIntervalHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Seconds between AGC resets. Set 0 to disable.'**
+  String get repeater_agcResetIntervalHelper;
+
+  /// No description provided for @repeater_floodMaxHops.
+  ///
+  /// In en, this message translates to:
+  /// **'Flood Max Hops'**
+  String get repeater_floodMaxHops;
+
+  /// No description provided for @repeater_floodMaxHopsHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum hops for forwarding inbound flood packets.'**
+  String get repeater_floodMaxHopsHelper;
+
+  /// No description provided for @repeater_multiAcks.
+  ///
+  /// In en, this message translates to:
+  /// **'Multi ACKs'**
+  String get repeater_multiAcks;
+
+  /// No description provided for @repeater_multiAcksHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable double ACK behavior (0 or 1 in firmware).'**
+  String get repeater_multiAcksHelper;
+
+  /// No description provided for @repeater_hopsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'hops'**
+  String get repeater_hopsShort;
+
   /// No description provided for @repeater_bandwidth.
   ///
   /// In en, this message translates to:
@@ -3997,6 +4057,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Refresh Radio Settings'**
   String get repeater_refreshRadioSettings;
+
+  /// No description provided for @repeater_refreshAdvancedSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Advanced Settings'**
+  String get repeater_refreshAdvancedSettings;
+
+  /// No description provided for @repeater_refreshInterferenceThreshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh interference threshold'**
+  String get repeater_refreshInterferenceThreshold;
+
+  /// No description provided for @repeater_refreshAgcResetInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh AGC reset interval'**
+  String get repeater_refreshAgcResetInterval;
+
+  /// No description provided for @repeater_refreshFloodMaxHops.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh flood max hops'**
+  String get repeater_refreshFloodMaxHops;
+
+  /// No description provided for @repeater_refreshMultiAcks.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh multi ACKs'**
+  String get repeater_refreshMultiAcks;
 
   /// No description provided for @repeater_refreshTxPower.
   ///

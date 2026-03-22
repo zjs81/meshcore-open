@@ -2094,6 +2094,40 @@ class AppLocalizationsSl extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
+  String get repeater_advancedSettings => 'Napredne nastavitve';
+
+  @override
+  String get repeater_interferenceThreshold => 'Prag motenj';
+
+  @override
+  String get repeater_interferenceThresholdHelper =>
+      'Prag v dB (privzeto 14). Nastavite 0 za izklop zaznavanja motenj kanala.';
+
+  @override
+  String get repeater_agcResetInterval => 'Interval ponastavitve AGC';
+
+  @override
+  String get repeater_agcResetIntervalHelper =>
+      'Sekunde med ponastavitvami AGC. Nastavite 0 za izklop.';
+
+  @override
+  String get repeater_floodMaxHops => 'Največje število flood hopov';
+
+  @override
+  String get repeater_floodMaxHopsHelper =>
+      'Največje število hopov za posredovanje dohodnih flood paketov.';
+
+  @override
+  String get repeater_multiAcks => 'Več ACK-jev';
+
+  @override
+  String get repeater_multiAcksHelper =>
+      'Omogoči vedenje dvojnega ACK (0 ali 1 v vdelani programski opremi).';
+
+  @override
+  String get repeater_hopsShort => 'skoki';
+
+  @override
   String get repeater_bandwidth => 'Pasovna širina';
 
   @override
@@ -2230,6 +2264,23 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get repeater_refreshRadioSettings => 'Ponovno Nastavitve Radija';
+
+  @override
+  String get repeater_refreshAdvancedSettings => 'Osveži napredne nastavitve';
+
+  @override
+  String get repeater_refreshInterferenceThreshold => 'Osveži prag motenj';
+
+  @override
+  String get repeater_refreshAgcResetInterval =>
+      'Osveži interval ponastavitve AGC';
+
+  @override
+  String get repeater_refreshFloodMaxHops =>
+      'Osveži največje število flood hopov';
+
+  @override
+  String get repeater_refreshMultiAcks => 'Osveži več ACK-jev';
 
   @override
   String get repeater_refreshTxPower => 'Ponovno nastavi TX moč';

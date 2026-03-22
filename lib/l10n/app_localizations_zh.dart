@@ -1984,6 +1984,37 @@ class AppLocalizationsZh extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
+  String get repeater_advancedSettings => '高级设置';
+
+  @override
+  String get repeater_interferenceThreshold => '干扰阈值';
+
+  @override
+  String get repeater_interferenceThresholdHelper =>
+      'dB 阈值（默认 14）。设置为 0 可禁用信道干扰检测。';
+
+  @override
+  String get repeater_agcResetInterval => 'AGC 重置间隔';
+
+  @override
+  String get repeater_agcResetIntervalHelper => '两次 AGC 重置之间的秒数。设置为 0 可禁用。';
+
+  @override
+  String get repeater_floodMaxHops => 'Flood 最大跳数';
+
+  @override
+  String get repeater_floodMaxHopsHelper => '转发传入 flood 数据包的最大跳数。';
+
+  @override
+  String get repeater_multiAcks => '多重 ACK';
+
+  @override
+  String get repeater_multiAcksHelper => '启用双 ACK 行为（在固件中为 0 或 1）。';
+
+  @override
+  String get repeater_hopsShort => '跳';
+
+  @override
   String get repeater_bandwidth => '带宽';
 
   @override
@@ -2109,6 +2140,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get repeater_refreshRadioSettings => '刷新无线电设置';
+
+  @override
+  String get repeater_refreshAdvancedSettings => '刷新高级设置';
+
+  @override
+  String get repeater_refreshInterferenceThreshold => '刷新干扰阈值';
+
+  @override
+  String get repeater_refreshAgcResetInterval => '刷新 AGC 重置间隔';
+
+  @override
+  String get repeater_refreshFloodMaxHops => '刷新 Flood 最大跳数';
+
+  @override
+  String get repeater_refreshMultiAcks => '刷新多重 ACK';
 
   @override
   String get repeater_refreshTxPower => '刷新 TX 功率';

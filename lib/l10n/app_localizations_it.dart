@@ -2107,6 +2107,40 @@ class AppLocalizationsIt extends AppLocalizations {
   String get repeater_txPowerHelper => '1-30 dBm';
 
   @override
+  String get repeater_advancedSettings => 'Impostazioni avanzate';
+
+  @override
+  String get repeater_interferenceThreshold => 'Soglia di interferenza';
+
+  @override
+  String get repeater_interferenceThresholdHelper =>
+      'Soglia in dB (predefinita 14). Imposta 0 per disattivare il rilevamento delle interferenze del canale.';
+
+  @override
+  String get repeater_agcResetInterval => 'Intervallo di reset AGC';
+
+  @override
+  String get repeater_agcResetIntervalHelper =>
+      'Secondi tra i reset dell\'AGC. Imposta 0 per disattivare.';
+
+  @override
+  String get repeater_floodMaxHops => 'Numero massimo di hop flood';
+
+  @override
+  String get repeater_floodMaxHopsHelper =>
+      'Numero massimo di hop per inoltrare i pacchetti flood in ingresso.';
+
+  @override
+  String get repeater_multiAcks => 'ACK multipli';
+
+  @override
+  String get repeater_multiAcksHelper =>
+      'Abilita il comportamento di doppio ACK (0 o 1 nel firmware).';
+
+  @override
+  String get repeater_hopsShort => 'hop';
+
+  @override
   String get repeater_bandwidth => 'Larghezza di banda';
 
   @override
@@ -2245,6 +2279,25 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get repeater_refreshRadioSettings => 'Aggiorna le Impostazioni Radio';
+
+  @override
+  String get repeater_refreshAdvancedSettings =>
+      'Aggiorna impostazioni avanzate';
+
+  @override
+  String get repeater_refreshInterferenceThreshold =>
+      'Aggiorna soglia di interferenza';
+
+  @override
+  String get repeater_refreshAgcResetInterval =>
+      'Aggiorna intervallo di reset AGC';
+
+  @override
+  String get repeater_refreshFloodMaxHops =>
+      'Aggiorna numero massimo di hop flood';
+
+  @override
+  String get repeater_refreshMultiAcks => 'Aggiorna ACK multipli';
 
   @override
   String get repeater_refreshTxPower => 'Aggiorna TX potenza';
