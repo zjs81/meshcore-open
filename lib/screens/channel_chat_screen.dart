@@ -936,8 +936,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final maxLabelBytes =
         maxBytes - utf8.encode(prefix).length - utf8.encode(suffix).length;
 
-    final defaultLabel =
-        '${connector.deviceDisplayName} ${DateTime.now().toUtc().toIso8601String()}';
+    final defaultLabel = connector.deviceDisplayName;
     final controller = TextEditingController(
       text: truncateToUtf8Bytes(defaultLabel, maxLabelBytes),
     );

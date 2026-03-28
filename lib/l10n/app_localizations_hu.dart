@@ -1296,6 +1296,15 @@ class AppLocalizationsHu extends AppLocalizations {
   String get chat_sendGif => 'Küldj GIF-ot';
 
   @override
+  String get chat_insertEmoji => 'Insert emoji';
+
+  @override
+  String get chat_shareLocation => 'Share location';
+
+  @override
+  String get chat_locationUnavailable => 'Location not available';
+
+  @override
   String get chat_reply => 'Válasz';
 
   @override
@@ -1731,6 +1740,9 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get map_sharedPin => 'Gemeinsames PIN-kód';
+
+  @override
+  String get map_sharedAt => 'Shared';
 
   @override
   String get map_joinRoom => 'Csatlakozás a szobához';
