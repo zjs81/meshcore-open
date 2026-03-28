@@ -158,9 +158,9 @@ class ContactsFilterMenu extends StatelessWidget {
               checked: typeFilter == ContactTypeFilter.all,
             ),
             SortFilterMenuOption(
-              value: _TypeFilterAction(ContactTypeFilter.chat),
+              value: _TypeFilterAction(ContactTypeFilter.activeChat),
               label: l10n.listFilter_activeChat,
-              checked: typeFilter == ContactTypeFilter.chat,
+              checked: typeFilter == ContactTypeFilter.activeChat,
             ),
             SortFilterMenuOption(
               value: _TypeFilterAction(ContactTypeFilter.favorites),

@@ -672,7 +672,7 @@ class _ContactsScreenState extends State<ContactsScreen>
               : "",
         );
         break;
-      case ContactTypeFilter.chat:
+      case ContactTypeFilter.activeChat:
         hintText = context.l10n.contacts_searchContacts(
           filteredAndSorted.length,
           viewState.contactsShowUnreadOnly
@@ -694,10 +694,7 @@ class _ContactsScreenState extends State<ContactsScreen>
       97.0,
       double.infinity,
     ); // allow expansion up to 72% of screen width, but not less than the collapsed width
-    final searchCollapsedWidth = (screenWidth * 0.22).clamp(
-      97.0,
-      97.0,
-    ); //two 48px icon buttons + 1px divider
+    final searchCollapsedWidth = 97.0; //two 48px icon buttons + 1px divider
 
     return Column(
       children: [
@@ -928,7 +925,7 @@ class _ContactsScreenState extends State<ContactsScreen>
         return contact.type == advTypeRepeater;
       case ContactTypeFilter.rooms:
         return contact.type == advTypeRoom;
-      case ContactTypeFilter.chat:
+      case ContactTypeFilter.activeChat:
         return connector.getMessages(contact).isNotEmpty;
     }
   }

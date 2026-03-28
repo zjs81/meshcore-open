@@ -306,7 +306,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
           showUnreadOnly ? " ${context.l10n.contacts_unread}" : "",
         );
         break;
-      case ContactTypeFilter.chat:
+      case ContactTypeFilter.activeChat:
         hintText = context.l10n.contacts_searchContacts(
           filteredAndSorted.length,
           showUnreadOnly ? " ${context.l10n.contacts_unread}" : "",
@@ -430,7 +430,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
         return contact.type == advTypeRepeater;
       case ContactTypeFilter.rooms:
         return contact.type == advTypeRoom;
-      case ContactTypeFilter.chat:
+      case ContactTypeFilter.activeChat:
         return false;
       default:
         return false;

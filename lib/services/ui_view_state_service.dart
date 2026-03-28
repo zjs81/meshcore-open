@@ -57,8 +57,9 @@ class UiViewStateService extends ChangeNotifier {
 
     final typeStr = prefs.getString(_keyContactsTypeFilter);
     if (typeStr != null) {
+      final normalizedTypeStr = typeStr == 'chat' ? 'activeChat' : typeStr;
       _contactsTypeFilter = ContactTypeFilter.values.firstWhere(
-        (e) => e.name == typeStr,
+        (e) => e.name == normalizedTypeStr,
         orElse: () => ContactTypeFilter.all,
       );
     }
