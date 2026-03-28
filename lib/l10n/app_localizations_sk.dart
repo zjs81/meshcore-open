@@ -821,6 +821,20 @@ class AppLocalizationsSk extends AppLocalizations {
       'Zobraziť ostatné typy uzlov na mape';
 
   @override
+  String get appSettings_showGuessedLocations => 'Zobraziť odhadnuté polohy';
+
+  @override
+  String get appSettings_showGuessedLocationsSubtitle =>
+      'Zobraziť predpokladané pozície kontaktov bez GPS (vypnutie zlepší výkon pri veľkom počte kontaktov)';
+
+  @override
+  String get appSettings_showOverlaps => 'Zvýrazniť prekrývajúce sa opakovače';
+
+  @override
+  String get appSettings_showOverlapsSubtitle =>
+      'Zvýrazní opakovače so zhodným prefixom kľúča (vypnutie zlepší výkon)';
+
+  @override
   String get appSettings_timeFilter => 'Filtrovacie Časové Obdoby';
 
   @override

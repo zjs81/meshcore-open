@@ -832,6 +832,21 @@ class AppLocalizationsPt extends AppLocalizations {
       'Exibir outros tipos de nó no mapa';
 
   @override
+  String get appSettings_showGuessedLocations =>
+      'Mostrar localizações estimadas';
+
+  @override
+  String get appSettings_showGuessedLocationsSubtitle =>
+      'Exibir posições previstas para contatos sem GPS (desativar melhora o desempenho com muitos contatos)';
+
+  @override
+  String get appSettings_showOverlaps => 'Destacar repetidores sobrepostos';
+
+  @override
+  String get appSettings_showOverlapsSubtitle =>
+      'Destaca repetidores com o mesmo prefixo de chave (desativar melhora o desempenho)';
+
+  @override
   String get appSettings_timeFilter => 'Filtro de Tempo';
 
   @override

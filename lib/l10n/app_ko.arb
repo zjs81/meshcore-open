@@ -311,6 +311,10 @@
   "appSettings_showChatNodesSubtitle": "지도에 채팅 노드를 표시",
   "appSettings_showOtherNodes": "다른 노드 표시",
   "appSettings_showOtherNodesSubtitle": "지도에서 다른 노드 유형을 표시",
+  "appSettings_showGuessedLocations": "추정 위치 표시",
+  "appSettings_showGuessedLocationsSubtitle": "GPS가 없는 연락처의 예상 위치를 표시합니다 (연락처가 많을 때 비활성화하면 성능이 향상됨)",
+  "appSettings_showOverlaps": "겹치는 중계기 강조",
+  "appSettings_showOverlapsSubtitle": "동일한 키 접두사를 공유하는 중계기를 강조합니다 (비활성화하면 성능이 향상됨)",
   "appSettings_timeFilter": "시간 필터",
   "appSettings_timeFilterShowAll": "모든 노드 표시",
   "appSettings_timeFilterShowLast": "지난 {hours} 시간 동안의 노드 표시",
@@ -1949,6 +1953,41 @@
   "discoveredContacts_deleteContact": "발견된 연락처 삭제",
   "discoveredContacts_deleteContactAll": "발견된 모든 연락처 삭제",
   "discoveredContacts_deleteContactAllContent": "정말로 모든 검색된 연락처를 삭제하시겠습니까?",
+  "discoveredContacts_export": "발견된 연락처 내보내기",
+  "discoveredContacts_import": "발견된 연락처 가져오기",
+  "discoveredContacts_exported": "발견된 연락처를 {path}(으)로 내보냈습니다.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "발견된 연락처 내보내기에 실패했습니다: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "발견된 연락처 {count}개를 가져왔습니다.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "가져오기 파일에서 연락처를 찾을 수 없습니다.",
+  "discoveredContacts_importFailed": "발견된 연락처 가져오기에 실패했습니다: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "chat_sendCooldown": "다시 보내기 전에 잠시 기다려 주시기 바랍니다.",
   "appSettings_jumpToOldestUnread": "가장 오래된, 아직 읽지 않은 항목으로 이동",
   "appSettings_jumpToOldestUnreadSubtitle": "새로운 메시지가 없는 채팅을 열 때, 최신 메시지가 아닌 첫 번째 읽지 않은 메시지로 스크롤하세요.",

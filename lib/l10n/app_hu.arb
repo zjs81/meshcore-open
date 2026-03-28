@@ -311,6 +311,10 @@
   "appSettings_showChatNodesSubtitle": "A chat-szobákat megjelenítsük a térképen",
   "appSettings_showOtherNodes": "Mutasson további csomópontokat",
   "appSettings_showOtherNodesSubtitle": "Mutassa meg a többi hálózati elemet a térképen",
+  "appSettings_showGuessedLocations": "Becsült helyek megjelenítése",
+  "appSettings_showGuessedLocationsSubtitle": "GPS nélküli kapcsolatok becsült pozícióinak megjelenítése (kikapcsolása sok kapcsolat esetén javítja a teljesítményt)",
+  "appSettings_showOverlaps": "Átfedő átjátszók kiemelése",
+  "appSettings_showOverlapsSubtitle": "Kiemeli az azonos kulcselőtagot használó átjátszókat (kikapcsolása javítja a teljesítményt)",
   "appSettings_timeFilter": "Időbeli szűrés",
   "appSettings_timeFilterShowAll": "Mutassa meg az összes csomópontot",
   "appSettings_timeFilterShowLast": "Mutasson az utolsó {hours} órából származó adatokat.",
@@ -1949,6 +1953,41 @@
   "discoveredContacts_deleteContact": "Törölj a feltalált kapcsolatot",
   "discoveredContacts_deleteContactAll": "Törölj minden megtalált kapcsolatot",
   "discoveredContacts_deleteContactAllContent": "Biztos, hogy szeretné törölni az összes eddig megtalált kapcsolatot?",
+  "discoveredContacts_export": "Felfedezett kapcsolatok exportálása",
+  "discoveredContacts_import": "Felfedezett kapcsolatok importálása",
+  "discoveredContacts_exported": "A felfedezett kapcsolatok exportálva ide: {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "A felfedezett kapcsolatok exportálása nem sikerült: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "{count} felfedezett kapcsolat importálva.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "Az importfájlban nem találhatók kapcsolatok.",
+  "discoveredContacts_importFailed": "A felfedezett kapcsolatok importálása nem sikerült: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "chat_sendCooldown": "Kérjük, várjon egy pillanatot, mielőtt újra elküldené.",
   "appSettings_jumpToOldestUnread": "Jelentkezzen az legörebb, olvasatlan üzenetre",
   "appSettings_jumpToOldestUnreadSubtitle": "Amikor egy új csevet indítunk, amelyben vannak olvashatatlan üzenetek, görgessük a listát, hogy a legelső, olvashatatlan üzenet megjelenjen, nem pedig az utolsó.",

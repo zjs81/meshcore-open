@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:meshcore_open/screens/path_trace_map.dart';
 import 'package:meshcore_open/widgets/app_bar.dart';
 import 'package:provider/provider.dart';
@@ -185,6 +184,15 @@ class _MapScreenState extends State<MapScreen> {
         final allContactsWithLocation = allContacts
             .where((c) => c.hasLocation)
             .toList();
+
+        // Pre-build overlap map for O(n) lookup instead of O(n²) search
+        final overlapsByKeyPrefix = <int, List<Contact>>{};
+        for (final contact in contacts) {
+          if (contact.type == advTypeRepeater || contact.type == advTypeRoom) {
+            final keyByte = contact.publicKey[0];
+            overlapsByKeyPrefix.putIfAbsent(keyByte, () => []).add(contact);
+          }
+        }
 
         // Compute guessed locations with caching
         final maxRangeKm = _estimateLoRaRangeKm(connector);
@@ -840,7 +848,8 @@ class _MapScreenState extends State<MapScreen> {
 
   List<Contact> _filterContactsBySettings(
     List<Contact> contacts,
-    dynamic settings, {
+    dynamic settings,
+    Map<int, List<Contact>> overlapsByKeyPrefix, {
     bool noLocations = false,
   }) {
     List<Contact> filtered = [];
@@ -870,20 +879,15 @@ class _MapScreenState extends State<MapScreen> {
         addContact = true;
       }
 
-      final hasOverlap = contacts
-          .where(
-            (c) =>
-                c.publicKeyHex != contact.publicKeyHex &&
-                c.publicKey.first == contact.publicKey.first &&
-                (c.type == advTypeRepeater || c.type == advTypeRoom) &&
-                (contact.type == advTypeRepeater ||
-                    contact.type == advTypeRoom),
-          )
-          .firstOrNull;
+      // Check for overlaps using pre-built map (O(1) instead of O(n))
+      bool hasOverlap = false;
+      if (contact.type == advTypeRepeater || contact.type == advTypeRoom) {
+        final keyByte = contact.publicKey[0];
+        final overlaps = overlapsByKeyPrefix[keyByte] ?? [];
+        hasOverlap = overlaps.length > 1;
+      }
 
-      if (hasOverlap == null &&
-          settings.mapShowOverlaps &&
-          !_isBuildingPathTrace) {
+      if (!hasOverlap && settings.mapShowOverlaps && !_isBuildingPathTrace) {
         addContact = false;
       }
 
@@ -900,7 +904,18 @@ class _MapScreenState extends State<MapScreen> {
     required bool showLabels,
   }) {
     final markers = <Marker>[];
-    final filteredContacts = _filterContactsBySettings(contacts, settings);
+    final overlapsByKeyPrefix = <int, List<Contact>>{};
+    for (final contact in contacts) {
+      if (contact.type == advTypeRepeater || contact.type == advTypeRoom) {
+        final keyByte = contact.publicKey[0];
+        overlapsByKeyPrefix.putIfAbsent(keyByte, () => []).add(contact);
+      }
+    }
+    final filteredContacts = _filterContactsBySettings(
+      contacts,
+      settings,
+      overlapsByKeyPrefix,
+    );
     for (final contact in filteredContacts) {
       final marker = Marker(
         point: LatLng(contact.latitude!, contact.longitude!),
@@ -1029,14 +1044,23 @@ class _MapScreenState extends State<MapScreen> {
     int markerCount,
     int guessedCount,
   ) {
+    final overlapsByKeyPrefix = <int, List<Contact>>{};
+    for (final contact in contacts) {
+      if (contact.type == advTypeRepeater || contact.type == advTypeRoom) {
+        final keyByte = contact.publicKey[0];
+        overlapsByKeyPrefix.putIfAbsent(keyByte, () => []).add(contact);
+      }
+    }
     final filteredContacts = _filterContactsBySettings(
       contacts,
       settings,
+      overlapsByKeyPrefix,
       noLocations: false,
     );
     final filteredContactsAll = _filterContactsBySettings(
       contacts,
       settings,
+      overlapsByKeyPrefix,
       noLocations: true,
     );
 

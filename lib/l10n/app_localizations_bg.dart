@@ -835,6 +835,22 @@ class AppLocalizationsBg extends AppLocalizations {
       'Покажи други типове възли на картата';
 
   @override
+  String get appSettings_showGuessedLocations =>
+      'Показване на предполагаеми местоположения';
+
+  @override
+  String get appSettings_showGuessedLocationsSubtitle =>
+      'Показва прогнозни позиции за контакти без GPS (изключването подобрява производителността при много контакти)';
+
+  @override
+  String get appSettings_showOverlaps =>
+      'Подчертаване на припокриващи се ретранслатори';
+
+  @override
+  String get appSettings_showOverlapsSubtitle =>
+      'Подчертава ретранслатори със същия префикс на ключа (изключването подобрява производителността)';
+
+  @override
   String get appSettings_timeFilter => 'Филтриране по време';
 
   @override

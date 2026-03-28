@@ -815,6 +815,20 @@ class AppLocalizationsSv extends AppLocalizations {
       'Visa andra nodtyper på kartan';
 
   @override
+  String get appSettings_showGuessedLocations => 'Visa uppskattade platser';
+
+  @override
+  String get appSettings_showGuessedLocationsSubtitle =>
+      'Visa förutsagda positioner för kontakter utan GPS (att inaktivera förbättrar prestanda med många kontakter)';
+
+  @override
+  String get appSettings_showOverlaps => 'Markera överlappande repeatrar';
+
+  @override
+  String get appSettings_showOverlapsSubtitle =>
+      'Markerar repeatrar med samma nyckelprefix (att inaktivera förbättrar prestanda)';
+
+  @override
   String get appSettings_timeFilter => 'Tidsfilter';
 
   @override

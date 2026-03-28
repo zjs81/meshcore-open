@@ -784,6 +784,20 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_showOtherNodesSubtitle => '지도에서 다른 노드 유형을 표시';
 
   @override
+  String get appSettings_showGuessedLocations => '추정 위치 표시';
+
+  @override
+  String get appSettings_showGuessedLocationsSubtitle =>
+      'GPS가 없는 연락처의 예상 위치를 표시합니다 (연락처가 많을 때 비활성화하면 성능이 향상됨)';
+
+  @override
+  String get appSettings_showOverlaps => '겹치는 중계기 강조';
+
+  @override
+  String get appSettings_showOverlapsSubtitle =>
+      '동일한 키 접두사를 공유하는 중계기를 강조합니다 (비활성화하면 성능이 향상됨)';
+
+  @override
   String get appSettings_timeFilter => '시간 필터';
 
   @override
@@ -3137,7 +3151,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String discoveredContacts_exportFailed(String error) {
-    return '발견된 연락처를 내보내지 못했습니다: $error';
+    return '발견된 연락처 내보내기에 실패했습니다: $error';
   }
 
   @override
@@ -3150,7 +3164,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String discoveredContacts_importFailed(String error) {
-    return '발견된 연락처를 가져오지 못했습니다: $error';
+    return '발견된 연락처 가져오기에 실패했습니다: $error';
   }
 
   @override

@@ -1594,6 +1594,30 @@ abstract class AppLocalizations {
   /// **'Display other node types on the map'**
   String get appSettings_showOtherNodesSubtitle;
 
+  /// No description provided for @appSettings_showGuessedLocations.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Guessed Locations'**
+  String get appSettings_showGuessedLocations;
+
+  /// No description provided for @appSettings_showGuessedLocationsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Display predicted positions for contacts without GPS (disabling improves performance with many contacts)'**
+  String get appSettings_showGuessedLocationsSubtitle;
+
+  /// No description provided for @appSettings_showOverlaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlight Overlapping Repeaters'**
+  String get appSettings_showOverlaps;
+
+  /// No description provided for @appSettings_showOverlapsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlight repeaters sharing the same key prefix (disabling improves performance)'**
+  String get appSettings_showOverlapsSubtitle;
+
   /// No description provided for @appSettings_timeFilter.
   ///
   /// In en, this message translates to:

@@ -831,6 +831,20 @@ class AppLocalizationsDe extends AppLocalizations {
       'Andere Knotentypen auf der Karte anzeigen';
 
   @override
+  String get appSettings_showGuessedLocations => 'Show Guessed Locations';
+
+  @override
+  String get appSettings_showGuessedLocationsSubtitle =>
+      'Display predicted positions for contacts without GPS (disabling improves performance with many contacts)';
+
+  @override
+  String get appSettings_showOverlaps => 'Highlight Overlapping Repeaters';
+
+  @override
+  String get appSettings_showOverlapsSubtitle =>
+      'Highlight repeaters sharing the same key prefix (disabling improves performance)';
+
+  @override
   String get appSettings_timeFilter => 'Zeitfilter';
 
   @override

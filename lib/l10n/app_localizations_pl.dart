@@ -835,6 +835,21 @@ class AppLocalizationsPl extends AppLocalizations {
       'Wyświetl inne typy węzłów na mapie';
 
   @override
+  String get appSettings_showGuessedLocations =>
+      'Pokaż przewidywane lokalizacje';
+
+  @override
+  String get appSettings_showGuessedLocationsSubtitle =>
+      'Wyświetl przewidywane pozycje kontaktów bez GPS (wyłączenie poprawia wydajność przy wielu kontaktach)';
+
+  @override
+  String get appSettings_showOverlaps => 'Wyróżnij nakładające się przekaźniki';
+
+  @override
+  String get appSettings_showOverlapsSubtitle =>
+      'Wyróżnia przekaźniki ze wspólnym prefiksem klucza (wyłączenie poprawia wydajność)';
+
+  @override
   String get appSettings_timeFilter => 'Filtrowanie Czasu';
 
   @override

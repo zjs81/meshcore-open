@@ -771,6 +771,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_showOtherNodesSubtitle => '在地图上显示其他节点类型';
 
   @override
+  String get appSettings_showGuessedLocations => 'Show Guessed Locations';
+
+  @override
+  String get appSettings_showGuessedLocationsSubtitle =>
+      'Display predicted positions for contacts without GPS (disabling improves performance with many contacts)';
+
+  @override
+  String get appSettings_showOverlaps => 'Highlight Overlapping Repeaters';
+
+  @override
+  String get appSettings_showOverlapsSubtitle =>
+      'Highlight repeaters sharing the same key prefix (disabling improves performance)';
+
+  @override
   String get appSettings_timeFilter => '时间过滤器';
 
   @override

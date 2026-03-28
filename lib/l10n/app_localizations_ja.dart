@@ -786,6 +786,20 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_showOtherNodesSubtitle => '地図上に、他のノードの種類を表示する';
 
   @override
+  String get appSettings_showGuessedLocations => 'Show Guessed Locations';
+
+  @override
+  String get appSettings_showGuessedLocationsSubtitle =>
+      'Display predicted positions for contacts without GPS (disabling improves performance with many contacts)';
+
+  @override
+  String get appSettings_showOverlaps => 'Highlight Overlapping Repeaters';
+
+  @override
+  String get appSettings_showOverlapsSubtitle =>
+      'Highlight repeaters sharing the same key prefix (disabling improves performance)';
+
+  @override
   String get appSettings_timeFilter => '時間フィルター';
 
   @override
@@ -3125,24 +3139,24 @@ class AppLocalizationsJa extends AppLocalizations {
   String get contacts_contactImportFailed => '連絡先のインポートに失敗しました。';
 
   @override
-  String get discoveredContacts_export => '検出済み連絡先をエクスポート';
+  String get discoveredContacts_export => '発見済みの連絡先をエクスポート';
 
   @override
-  String get discoveredContacts_import => '検出済み連絡先をインポート';
+  String get discoveredContacts_import => '発見済みの連絡先をインポート';
 
   @override
   String discoveredContacts_exported(String path) {
-    return '検出済み連絡先を $path にエクスポートしました。';
+    return '発見済みの連絡先を $path にエクスポートしました。';
   }
 
   @override
   String discoveredContacts_exportFailed(String error) {
-    return '検出済み連絡先のエクスポートに失敗しました: $error';
+    return '発見済みの連絡先のエクスポートに失敗しました: $error';
   }
 
   @override
   String discoveredContacts_imported(int count) {
-    return '$count 件の検出済み連絡先をインポートしました。';
+    return '$count 件の発見済み連絡先をインポートしました。';
   }
 
   @override
@@ -3150,7 +3164,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String discoveredContacts_importFailed(String error) {
-    return '検出済み連絡先のインポートに失敗しました: $error';
+    return '発見済みの連絡先のインポートに失敗しました: $error';
   }
 
   @override

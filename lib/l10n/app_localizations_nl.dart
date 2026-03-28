@@ -825,6 +825,20 @@ class AppLocalizationsNl extends AppLocalizations {
       'Toon andere nodetypes op de kaart';
 
   @override
+  String get appSettings_showGuessedLocations => 'Toon geschatte locaties';
+
+  @override
+  String get appSettings_showGuessedLocationsSubtitle =>
+      'Toon voorspelde posities voor contacten zonder GPS (uitschakelen verbetert prestaties bij veel contacten)';
+
+  @override
+  String get appSettings_showOverlaps => 'Markeer overlappende repeaters';
+
+  @override
+  String get appSettings_showOverlapsSubtitle =>
+      'Markeer repeaters met dezelfde sleutelprefix (uitschakelen verbetert prestaties)';
+
+  @override
   String get appSettings_timeFilter => 'Filter op tijd';
 
   @override

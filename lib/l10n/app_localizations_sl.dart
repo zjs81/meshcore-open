@@ -822,6 +822,20 @@ class AppLocalizationsSl extends AppLocalizations {
       'Pokaži druge vrste naprav na zemljevidu.';
 
   @override
+  String get appSettings_showGuessedLocations => 'Prikaži predvidene lokacije';
+
+  @override
+  String get appSettings_showGuessedLocationsSubtitle =>
+      'Prikaži predvidene položaje stikov brez GPS-a (izklop izboljša delovanje pri veliko stikih)';
+
+  @override
+  String get appSettings_showOverlaps => 'Poudari prekrivajoče se repetitorje';
+
+  @override
+  String get appSettings_showOverlapsSubtitle =>
+      'Poudari repetitorje z enakim predponom ključa (izklop izboljša delovanje)';
+
+  @override
   String get appSettings_timeFilter => 'Filter po času';
 
   @override

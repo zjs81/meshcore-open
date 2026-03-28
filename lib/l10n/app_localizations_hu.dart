@@ -835,6 +835,20 @@ class AppLocalizationsHu extends AppLocalizations {
       'Mutassa meg a többi hálózati elemet a térképen';
 
   @override
+  String get appSettings_showGuessedLocations => 'Becsült helyek megjelenítése';
+
+  @override
+  String get appSettings_showGuessedLocationsSubtitle =>
+      'GPS nélküli kapcsolatok becsült pozícióinak megjelenítése (kikapcsolása sok kapcsolat esetén javítja a teljesítményt)';
+
+  @override
+  String get appSettings_showOverlaps => 'Átfedő átjátszók kiemelése';
+
+  @override
+  String get appSettings_showOverlapsSubtitle =>
+      'Kiemeli az azonos kulcselőtagot használó átjátszókat (kikapcsolása javítja a teljesítményt)';
+
+  @override
   String get appSettings_timeFilter => 'Időbeli szűrés';
 
   @override
@@ -3285,33 +3299,33 @@ class AppLocalizationsHu extends AppLocalizations {
       'Nem sikerült a kapcsolatot importálni.';
 
   @override
-  String get discoveredContacts_export => 'Felfedezett névjegyek exportálása';
+  String get discoveredContacts_export => 'Felfedezett kapcsolatok exportálása';
 
   @override
-  String get discoveredContacts_import => 'Felfedezett névjegyek importálása';
+  String get discoveredContacts_import => 'Felfedezett kapcsolatok importálása';
 
   @override
   String discoveredContacts_exported(String path) {
-    return 'A felfedezett névjegyek exportálva ide: $path.';
+    return 'A felfedezett kapcsolatok exportálva ide: $path.';
   }
 
   @override
   String discoveredContacts_exportFailed(String error) {
-    return 'A felfedezett névjegyek exportálása sikertelen: $error';
+    return 'A felfedezett kapcsolatok exportálása nem sikerült: $error';
   }
 
   @override
   String discoveredContacts_imported(int count) {
-    return '$count felfedezett névjegy importálva.';
+    return '$count felfedezett kapcsolat importálva.';
   }
 
   @override
   String get discoveredContacts_importNoContacts =>
-      'Az importfájlban nem található névjegy.';
+      'Az importfájlban nem találhatók kapcsolatok.';
 
   @override
   String discoveredContacts_importFailed(String error) {
-    return 'A felfedezett névjegyek importálása sikertelen: $error';
+    return 'A felfedezett kapcsolatok importálása nem sikerült: $error';
   }
 
   @override

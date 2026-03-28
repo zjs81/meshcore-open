@@ -480,6 +480,28 @@ class AppSettingsScreen extends StatelessWidget {
             },
           ),
           const Divider(height: 1),
+          SwitchListTile(
+            secondary: const Icon(Icons.location_searching),
+            title: Text(context.l10n.appSettings_showGuessedLocations),
+            subtitle: Text(
+              context.l10n.appSettings_showGuessedLocationsSubtitle,
+            ),
+            value: settingsService.settings.mapShowGuessedLocations,
+            onChanged: (value) {
+              settingsService.setMapShowGuessedLocations(value);
+            },
+          ),
+          const Divider(height: 1),
+          SwitchListTile(
+            secondary: const Icon(Icons.router_outlined),
+            title: Text(context.l10n.appSettings_showOverlaps),
+            subtitle: Text(context.l10n.appSettings_showOverlapsSubtitle),
+            value: settingsService.settings.mapShowOverlaps,
+            onChanged: (value) {
+              settingsService.setMapShowOverlaps(value);
+            },
+          ),
+          const Divider(height: 1),
           ListTile(
             leading: const Icon(Icons.timer_outlined),
             title: Text(context.l10n.appSettings_timeFilter),
