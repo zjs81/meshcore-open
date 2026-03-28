@@ -672,6 +672,14 @@ class _ContactsScreenState extends State<ContactsScreen>
               : "",
         );
         break;
+      case ContactTypeFilter.chat:
+        hintText = context.l10n.contacts_searchContacts(
+          filteredAndSorted.length,
+          viewState.contactsShowUnreadOnly
+              ? " ${context.l10n.contacts_unread}"
+              : "",
+        );
+        break;
     }
 
     final groupsByName = <String, ContactGroup>{};
@@ -682,13 +690,13 @@ class _ContactsScreenState extends State<ContactsScreen>
       ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
     final screenWidth = MediaQuery.sizeOf(context).width;
-    final searchExpandedWidth = (screenWidth * 0.52).clamp(
+    final searchExpandedWidth = (screenWidth * 0.72).clamp(
       97.0,
       double.infinity,
-    ); // allow expansion up to 52% of screen width, but not less than the collapsed width
+    ); // allow expansion up to 72% of screen width, but not less than the collapsed width
     final searchCollapsedWidth = (screenWidth * 0.22).clamp(
       97.0,
-      120.0,
+      97.0,
     ); //two 48px icon buttons + 1px divider
 
     return Column(
@@ -860,8 +868,11 @@ class _ContactsScreenState extends State<ContactsScreen>
     if (viewState.contactsTypeFilter != ContactTypeFilter.all) {
       filtered = filtered
           .where(
-            (contact) =>
-                _matchesTypeFilter(contact, viewState.contactsTypeFilter),
+            (contact) => _matchesTypeFilter(
+              contact,
+              viewState.contactsTypeFilter,
+              connector,
+            ),
           )
           .toList();
     }
@@ -901,7 +912,11 @@ class _ContactsScreenState extends State<ContactsScreen>
     return filtered;
   }
 
-  bool _matchesTypeFilter(Contact contact, ContactTypeFilter typeFilter) {
+  bool _matchesTypeFilter(
+    Contact contact,
+    ContactTypeFilter typeFilter,
+    MeshCoreConnector connector,
+  ) {
     switch (typeFilter) {
       case ContactTypeFilter.all:
         return true;
@@ -913,6 +928,8 @@ class _ContactsScreenState extends State<ContactsScreen>
         return contact.type == advTypeRepeater;
       case ContactTypeFilter.rooms:
         return contact.type == advTypeRoom;
+      case ContactTypeFilter.chat:
+        return connector.getMessages(contact).isNotEmpty;
     }
   }
 
