@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/foundation.dart';
 
+import '../helpers/reaction_helper.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/platform_info.dart';
 
@@ -145,6 +146,19 @@ class NotificationService {
     return true;
   }
 
+  /// Format special message types for human-readable notifications.
+  static String formatNotificationText(String text) {
+    final trimmed = text.trim();
+    final reaction = ReactionHelper.parseReaction(trimmed);
+    if (reaction != null) {
+      return 'Reacted ${reaction.emoji}';
+    }
+    if (RegExp(r'^g:[A-Za-z0-9_-]+$').hasMatch(trimmed)) {
+      return 'Sent a GIF';
+    }
+    return text;
+  }
+
   Future<void> _showMessageNotificationImpl({
     required String contactName,
     required String message,
@@ -187,7 +201,7 @@ class NotificationService {
       await _notifications.show(
         id: contactId?.hashCode ?? 0,
         title: contactName,
-        body: message,
+        body: formatNotificationText(message),
         notificationDetails: notificationDetails,
         payload: 'message:$contactId',
       );
@@ -283,7 +297,7 @@ class NotificationService {
       macOS: macDetails,
     );
 
-    final preview = message.trim();
+    final preview = formatNotificationText(message.trim());
     final body = preview.isEmpty
         ? _l10n.notification_receivedNewMessage
         : preview;
@@ -430,6 +444,7 @@ class NotificationService {
 
   Future<void> showChannelMessageNotification({
     required String channelName,
+    required String senderName,
     required String message,
     int? channelIndex,
     int? badgeCount,
@@ -440,7 +455,7 @@ class NotificationService {
       _PendingNotification(
         type: _NotificationType.channelMessage,
         title: channelName,
-        body: message,
+        body: '$senderName: $message',
         id: channelIndex?.toString(),
         badgeCount: badgeCount,
       ),

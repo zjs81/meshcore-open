@@ -64,6 +64,10 @@ class AppSettingsService extends ChangeNotifier {
     await updateSettings(_settings.copyWith(mapShowOtherNodes: value));
   }
 
+  Future<void> setMapShowOverlaps(bool value) async {
+    await updateSettings(_settings.copyWith(mapShowOverlaps: value));
+  }
+
   Future<void> setMapTimeFilterHours(double value) async {
     await updateSettings(_settings.copyWith(mapTimeFilterHours: value));
   }
@@ -118,6 +122,30 @@ class AppSettingsService extends ChangeNotifier {
 
   Future<void> setAutoRouteRotationEnabled(bool value) async {
     await updateSettings(_settings.copyWith(autoRouteRotationEnabled: value));
+  }
+
+  Future<void> setMaxRouteWeight(double value) async {
+    await updateSettings(_settings.copyWith(maxRouteWeight: value));
+  }
+
+  Future<void> setInitialRouteWeight(double value) async {
+    await updateSettings(_settings.copyWith(initialRouteWeight: value));
+  }
+
+  Future<void> setRouteWeightSuccessIncrement(double value) async {
+    await updateSettings(
+      _settings.copyWith(routeWeightSuccessIncrement: value),
+    );
+  }
+
+  Future<void> setRouteWeightFailureDecrement(double value) async {
+    await updateSettings(
+      _settings.copyWith(routeWeightFailureDecrement: value),
+    );
+  }
+
+  Future<void> setMaxMessageRetries(int value) async {
+    await updateSettings(_settings.copyWith(maxMessageRetries: value));
   }
 
   Future<void> setThemeMode(String value) async {
@@ -189,5 +217,9 @@ class AppSettingsService extends ChangeNotifier {
 
   Future<void> setTcpServerPort(int value) async {
     await updateSettings(_settings.copyWith(tcpServerPort: value));
+  }
+
+  Future<void> setJumpToOldestUnread(bool value) async {
+    await updateSettings(_settings.copyWith(jumpToOldestUnread: value));
   }
 }

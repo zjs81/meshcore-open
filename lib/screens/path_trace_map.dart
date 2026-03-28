@@ -55,6 +55,7 @@ class PathTraceMapScreen extends StatefulWidget {
   final bool flipPathAround;
   final bool reversePathAround;
   final Contact? targetContact;
+  final int pathHashByteWidth;
 
   const PathTraceMapScreen({
     super.key,
@@ -64,6 +65,7 @@ class PathTraceMapScreen extends StatefulWidget {
     this.flipPathAround = false,
     this.reversePathAround = false,
     this.targetContact,
+    this.pathHashByteWidth = pathHashSize,
   });
 
   @override
@@ -119,8 +121,13 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen> {
     Uint8List traceBytes;
 
     if (pathBytes.isEmpty) {
+      final pk = widget.targetContact?.publicKey;
+      final n = widget.pathHashByteWidth.clamp(1, pubKeySize);
+      if (pk != null && pk.length >= n) {
+        return Uint8List.fromList(pk.sublist(0, n));
+      }
       traceBytes = Uint8List(1);
-      traceBytes[0] = widget.targetContact?.publicKey[0] ?? 0;
+      traceBytes[0] = pk?[0] ?? 0;
       return traceBytes;
     }
 

@@ -85,9 +85,7 @@ class MessageStore {
       'messageId': msg.messageId,
       'retryCount': msg.retryCount,
       'estimatedTimeoutMs': msg.estimatedTimeoutMs,
-      'expectedAckHash': msg.expectedAckHash != null
-          ? base64Encode(msg.expectedAckHash!)
-          : null,
+      'expectedAckHash': msg.expectedAckHash,
       'sentAt': msg.sentAt?.millisecondsSinceEpoch,
       'deliveredAt': msg.deliveredAt?.millisecondsSinceEpoch,
       'tripTimeMs': msg.tripTimeMs,
@@ -96,6 +94,9 @@ class MessageStore {
           ? base64Encode(msg.pathBytes)
           : null,
       'reactions': msg.reactions,
+      'reactionStatuses': msg.reactionStatuses.map(
+        (key, value) => MapEntry(key, value.index),
+      ),
       'fourByteRoomContactKey': base64Encode(msg.fourByteRoomContactKey),
     };
   }
@@ -116,9 +117,7 @@ class MessageStore {
       messageId: json['messageId'] as String?,
       retryCount: json['retryCount'] as int? ?? 0,
       estimatedTimeoutMs: json['estimatedTimeoutMs'] as int?,
-      expectedAckHash: json['expectedAckHash'] != null
-          ? Uint8List.fromList(base64Decode(json['expectedAckHash'] as String))
-          : null,
+      expectedAckHash: json['expectedAckHash'] as int? ?? 0,
       sentAt: json['sentAt'] != null
           ? DateTime.fromMillisecondsSinceEpoch(json['sentAt'] as int)
           : null,
@@ -133,6 +132,11 @@ class MessageStore {
       reactions:
           (json['reactions'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(key, value as int),
+          ) ??
+          {},
+      reactionStatuses:
+          (json['reactionStatuses'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, MessageStatus.values[value as int]),
           ) ??
           {},
       fourByteRoomContactKey: json['fourByteRoomContactKey'] != null

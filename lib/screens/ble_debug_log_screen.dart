@@ -283,66 +283,66 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
     if (payload.length < 101) {
       return 'ADVERT (short)';
     }
-    var offset = 0;
-    final pubKey = _bytesToHex(
-      payload.sublist(offset, offset + 32),
-      spaced: false,
-    );
-    offset += 32;
-    final timestamp = readUint32LE(payload, offset);
-    offset += 4;
-    offset += 64; // signature
-    final flags = payload[offset++];
-    final role = _deviceRoleLabel(flags & 0x0F);
-    final hasLocation = (flags & 0x10) != 0;
-    final hasFeature1 = (flags & 0x20) != 0;
-    final hasFeature2 = (flags & 0x40) != 0;
-    final hasName = (flags & 0x80) != 0;
-    String? name;
-    double? lat;
-    double? lon;
-    if (hasLocation && payload.length >= offset + 8) {
-      lat = readInt32LE(payload, offset) / 1000000.0;
-      lon = readInt32LE(payload, offset + 4) / 1000000.0;
-      offset += 8;
+    final reader = BufferReader(payload);
+    try {
+      final pubKey = _bytesToHex(reader.readBytes(pubKeySize), spaced: false);
+
+      final timestamp = reader.readUInt32LE();
+      reader.skipBytes(signatureSize);
+      final flags = reader.readByte();
+      final role = _deviceRoleLabel(flags & 0x0F);
+      final hasLocation = (flags & 0x10) != 0;
+      final hasFeature1 = (flags & 0x20) != 0;
+      final hasFeature2 = (flags & 0x40) != 0;
+      final hasName = (flags & 0x80) != 0;
+      String? name;
+      double? lat;
+      double? lon;
+      if (hasLocation) {
+        lat = reader.readInt32LE() / 1000000.0;
+        lon = reader.readInt32LE() / 1000000.0;
+      }
+      if (hasFeature1) reader.skipBytes(2);
+      if (hasFeature2) reader.skipBytes(2);
+      if (hasName) {
+        name = reader.readCStringGreedy(maxNameSize);
+      }
+      final namePart = (name != null && name.isNotEmpty) ? ' name="$name"' : '';
+      final locPart = (lat != null && lon != null)
+          ? ' loc=${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}'
+          : '';
+      return 'ADVERT role=$role ts=$timestamp$namePart$locPart key=${pubKey.substring(0, 12)}…';
+    } catch (e) {
+      return 'ADVERT (invalid)';
     }
-    if (hasFeature1) offset += 2;
-    if (hasFeature2) offset += 2;
-    if (hasName && payload.length > offset) {
-      final rawName = String.fromCharCodes(payload.sublist(offset));
-      final nul = rawName.indexOf('\u0000');
-      name = nul >= 0 ? rawName.substring(0, nul) : rawName;
-      name = name.trim();
-    }
-    final namePart = (name != null && name.isNotEmpty) ? ' name="$name"' : '';
-    final locPart = (lat != null && lon != null)
-        ? ' loc=${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}'
-        : '';
-    return 'ADVERT role=$role ts=$timestamp$namePart$locPart key=${pubKey.substring(0, 12)}…';
   }
 
   String _decodeControlSummary(Uint8List payload) {
-    if (payload.isEmpty) return 'CONTROL (empty)';
-    final flags = payload[0];
-    final subType = flags & 0xF0;
-    if (subType == 0x80) {
-      if (payload.length < 6) return 'CONTROL DISCOVER_REQ (short)';
-      final typeFilter = payload[1];
-      final tag = readUint32LE(payload, 2);
-      final since = payload.length >= 10 ? readUint32LE(payload, 6) : 0;
-      return 'CONTROL DISCOVER_REQ filter=0x${typeFilter.toRadixString(16).padLeft(2, '0')} tag=$tag since=$since';
+    final reader = BufferReader(payload);
+    try {
+      final flags = reader.readByte();
+      final subType = flags & 0xF0;
+      if (subType == 0x80) {
+        if (payload.length < 6) return 'CONTROL DISCOVER_REQ (short)';
+        final typeFilter = reader.readByte();
+        final tag = reader.readInt32LE();
+        final since = payload.length >= 10 ? reader.readInt32LE() : 0;
+        return 'CONTROL DISCOVER_REQ filter=0x${typeFilter.toRadixString(16).padLeft(2, '0')} tag=$tag since=$since';
+      }
+      if (subType == 0x90) {
+        if (payload.length < 14) return 'CONTROL DISCOVER_RESP (short)';
+        final nodeType = flags & 0x0F;
+        final snrRaw = payload[1];
+        final snrSigned = snrRaw > 127 ? snrRaw - 256 : snrRaw;
+        final snr = snrSigned / 4.0;
+        final tag = reader.readInt32LE();
+        final keyLen = payload.length - 6;
+        return 'CONTROL DISCOVER_RESP node=${_deviceRoleLabel(nodeType)} snr=${snr.toStringAsFixed(2)} tag=$tag key=$keyLen';
+      }
+      return 'CONTROL subtype=0x${subType.toRadixString(16).padLeft(2, '0')}';
+    } catch (e) {
+      return 'CONTROL (invalid)';
     }
-    if (subType == 0x90) {
-      if (payload.length < 14) return 'CONTROL DISCOVER_RESP (short)';
-      final nodeType = flags & 0x0F;
-      final snrRaw = payload[1];
-      final snrSigned = snrRaw > 127 ? snrRaw - 256 : snrRaw;
-      final snr = snrSigned / 4.0;
-      final tag = readUint32LE(payload, 2);
-      final keyLen = payload.length - 6;
-      return 'CONTROL DISCOVER_RESP node=${_deviceRoleLabel(nodeType)} snr=${snr.toStringAsFixed(2)} tag=$tag key=$keyLen';
-    }
-    return 'CONTROL subtype=0x${subType.toRadixString(16).padLeft(2, '0')}';
   }
 
   String _payloadTypeLabel(int payloadType) {

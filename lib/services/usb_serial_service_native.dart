@@ -273,7 +273,7 @@ class UsbSerialService {
       throw StateError('USB serial port is not open');
     }
     final packet = wrapUsbSerialTxFrame(data);
-    _logFrameSummary('USB TX frame', data);
+    // _logFrameSummary('USB TX frame', data);
     if (_useAndroidUsbHost) {
       try {
         await _androidMethodChannel.invokeMethod<void>('write', {
@@ -447,16 +447,16 @@ class UsbSerialService {
     await _frameController.close();
   }
 
-  void _logFrameSummary(String prefix, Uint8List bytes) {
-    if (bytes.isEmpty) {
-      _debugLogService?.info('$prefix len=0', tag: 'USB Serial');
-      return;
-    }
-    _debugLogService?.info(
-      '$prefix code=${bytes[0]} len=${bytes.length}',
-      tag: 'USB Serial',
-    );
-  }
+  // void _logFrameSummary(String prefix, Uint8List bytes) {
+  //   if (bytes.isEmpty) {
+  //     _debugLogService?.info('$prefix len=0', tag: 'USB Serial');
+  //     return;
+  //   }
+  //   _debugLogService?.info(
+  //     '$prefix code=${bytes[0]} len=${bytes.length}',
+  //     tag: 'USB Serial',
+  //   );
+  // }
 
   /// Returns an ordered list of port paths to try for [portName].
   ///

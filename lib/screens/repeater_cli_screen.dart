@@ -77,11 +77,22 @@ class _RepeaterCliScreenState extends State<RepeaterCliScreen> {
     });
   }
 
+  int _resolveRepeaterIndex = -1;
+
   Contact _resolveRepeater(MeshCoreConnector connector) {
-    return connector.contacts.firstWhere(
+    if (_resolveRepeaterIndex >= 0 &&
+        _resolveRepeaterIndex < connector.contacts.length &&
+        connector.contacts[_resolveRepeaterIndex].publicKeyHex ==
+            widget.repeater.publicKeyHex) {
+      return connector.contacts[_resolveRepeaterIndex];
+    }
+    _resolveRepeaterIndex = connector.contacts.indexWhere(
       (c) => c.publicKeyHex == widget.repeater.publicKeyHex,
-      orElse: () => widget.repeater,
     );
+    if (_resolveRepeaterIndex == -1) {
+      return widget.repeater;
+    }
+    return connector.contacts[_resolveRepeaterIndex];
   }
 
   void _handleTextMessageResponse(Uint8List frame) {

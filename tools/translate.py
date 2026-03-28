@@ -14,6 +14,10 @@ Usage:
 
   # Translate all locales (missing strings only):
   python translate.py --in lib/l10n/app_en.arb --l10n-dir lib/l10n --missing-only
+
+  # New locales copied from app_en.arb still match English → --missing-only skips them.
+  # Translate every key that still equals the template (e.g. hu, ja, ko):
+  python translate.py --in lib/l10n/app_en.arb --l10n-dir lib/l10n --copy-of-template --only-locales hu,ja,ko
 """
 
 import argparse
@@ -68,6 +72,7 @@ LOCALE_MAP = {
     "sk": ("Slovak", "sk"),
     "sl": ("Slovenian", "sl"),
     "bg": ("Bulgarian", "bg"),
+    "hu": ("Hungarian", "hu"),
     "el": ("Greek", "el"),
     "he": ("Hebrew", "he"),
     "th": ("Thai", "th"),
@@ -261,6 +266,25 @@ def find_missing_keys(source_data: Dict[str, Any], target_data: Dict[str, Any]) 
     return missing
 
 
+def find_keys_still_template_copy(source_data: Dict[str, Any], target_data: Dict[str, Any]) -> List[str]:
+    """Keys whose value is still exactly the same as the template (typical after cp app_en.arb → app_xx.arb)."""
+    out: List[str] = []
+    for key in source_data:
+        if key == "@@locale" or key.startswith("@"):
+            continue
+        src = source_data.get(key)
+        if not is_translatable_entry(key, src):
+            continue
+        if not isinstance(src, str):
+            continue
+        tgt = target_data.get(key)
+        if not isinstance(tgt, str) or tgt.strip() == "":
+            out.append(key)
+        elif tgt == src:
+            out.append(key)
+    return out
+
+
 def get_all_locale_files(l10n_dir: str, template_file: str) -> List[Tuple[str, str]]:
     """Find all locale .arb files excluding template. Returns [(locale_code, file_path)]."""
     locales = []
@@ -434,6 +458,15 @@ def main() -> int:
     ap.add_argument("--to-locale", help="Target locale code (es, fr, de, etc.)")
     ap.add_argument("--l10n-dir", help="Directory with locale files (translates all locales)")
     ap.add_argument("--missing-only", action="store_true", help="Only translate missing keys")
+    ap.add_argument(
+        "--copy-of-template",
+        action="store_true",
+        help="Only translate keys whose target text still equals app_en (use for new locales copied from English)",
+    )
+    ap.add_argument(
+        "--only-locales",
+        help="Comma-separated locale codes to process with --l10n-dir (e.g. hu,ja,ko)",
+    )
     ap.add_argument("--model", default="translategemma:latest", help="Ollama model (translategemma:latest or specific versions)")
     ap.add_argument("--fallback-model", help="Fallback model for failed translations (e.g., translategemma:27b)")
     ap.add_argument("--host", default="http://localhost:11434", help="Ollama host")
@@ -458,12 +491,26 @@ def main() -> int:
         print("Input JSON must be an object at top-level.", file=sys.stderr)
         return 2
 
+    if args.missing_only and args.copy_of_template:
+        print("Use only one of --missing-only or --copy-of-template", file=sys.stderr)
+        return 2
+
+    only_locales: Optional[set] = None
+    if args.only_locales:
+        only_locales = {x.strip() for x in args.only_locales.split(",") if x.strip()}
+
     # Process all locales if --l10n-dir is provided
     if args.l10n_dir:
         locales = get_all_locale_files(args.l10n_dir, args.in_path)
         if not locales:
             print(f"No locale files found in {args.l10n_dir}", file=sys.stderr)
             return 1
+
+        if only_locales is not None:
+            locales = [(c, p) for c, p in locales if c in only_locales]
+            missing = only_locales - {c for c, _ in locales}
+            if missing:
+                print(f"Warning: no app_*.arb for locale code(s): {', '.join(sorted(missing))}", file=sys.stderr)
 
         print(f"Found {len(locales)} locale file(s) to process")
 
@@ -478,7 +525,14 @@ def main() -> int:
                 print(f"  [{locale_code}] Failed to read {locale_path}: {e}")
                 continue
 
-            if args.missing_only:
+            missing_keys: Optional[List[str]]
+            if args.copy_of_template:
+                missing_keys = find_keys_still_template_copy(source_data, target_data)
+                if not missing_keys:
+                    print(f"  [{locale_code}] No keys still matching template")
+                    continue
+                print(f"  [{locale_code}] {len(missing_keys)} key(s) still same as template")
+            elif args.missing_only:
                 missing_keys = find_missing_keys(source_data, target_data)
                 if not missing_keys:
                     print(f"  [{locale_code}] No missing keys")
@@ -509,18 +563,23 @@ def main() -> int:
 
     lang_name, lang_code = LOCALE_MAP.get(args.to_locale, (args.to_locale, args.to_locale))
 
-    # Read existing target file if --missing-only
+    # Read existing target file if --missing-only or --copy-of-template
     target_data: Dict[str, Any] = {}
     missing_keys: Optional[List[str]] = None
-    if args.missing_only and os.path.exists(args.out_path):
+    if (args.missing_only or args.copy_of_template) and os.path.exists(args.out_path):
         try:
             with open(args.out_path, "r", encoding="utf-8") as f:
                 target_data = json.load(f)
-            missing_keys = find_missing_keys(source_data, target_data)
+            if args.copy_of_template:
+                missing_keys = find_keys_still_template_copy(source_data, target_data)
+                label = "still matching template"
+            else:
+                missing_keys = find_missing_keys(source_data, target_data)
+                label = "missing"
             if not missing_keys:
-                print(f"No missing keys in {args.out_path}")
+                print(f"No {label} keys in {args.out_path}")
                 return 0
-            print(f"Found {len(missing_keys)} missing key(s) to translate")
+            print(f"Found {len(missing_keys)} {label} key(s) to translate")
         except Exception as e:
             print(f"Failed to read target file: {e}", file=sys.stderr)
             return 2

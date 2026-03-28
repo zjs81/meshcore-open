@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../l10n/l10n.dart';
+import '../services/linux_ble_error_classifier.dart';
 import '../utils/app_logger.dart';
 import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/device_tile.dart';
@@ -288,12 +289,33 @@ class _ScannerScreenState extends State<ScannerScreen> {
     MeshCoreConnector connector,
     ScanResult result,
   ) async {
+    final name = result.device.platformName.isNotEmpty
+        ? result.device.platformName
+        : result.advertisementData.advName;
     try {
-      final name = result.device.platformName.isNotEmpty
-          ? result.device.platformName
-          : result.advertisementData.advName;
-      await connector.connect(result.device, displayName: name);
+      await connector.connect(
+        result.device,
+        displayName: name,
+        linuxPairingPinProvider: PlatformInfo.isLinux
+            ? () async {
+                if (!context.mounted) return null;
+                return _promptLinuxPairingPin(context, name);
+              }
+            : null,
+      );
     } catch (e) {
+      final errorText = e.toString();
+      final suppressTransientLinuxConnectError =
+          PlatformInfo.isLinux &&
+          connector.isAutoReconnectScheduled &&
+          isLinuxBleConnectFailureText(errorText);
+      if (suppressTransientLinuxConnectError) {
+        appLogger.info(
+          'Suppressing transient Linux connect error while auto-reconnect is active: $e',
+          tag: 'ScannerScreen',
+        );
+        return;
+      }
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -303,6 +325,92 @@ class _ScannerScreenState extends State<ScannerScreen> {
         );
       }
     }
+  }
+
+  Future<String?> _promptLinuxPairingPin(
+    BuildContext context,
+    String deviceName,
+  ) async {
+    final l10n = context.l10n;
+    var pinValue = '';
+    var obscure = true;
+    appLogger.info(
+      'Showing Linux BLE pairing PIN prompt for $deviceName',
+      tag: 'ScannerScreen',
+    );
+    final pin = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (dialogContext, setDialogState) {
+            return AlertDialog(
+              title: Text(l10n.scanner_linuxPairingPinTitle),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.scanner_linuxPairingPinPrompt(deviceName)),
+                    const SizedBox(height: 12),
+                    TextField(
+                      autofocus: true,
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.done,
+                      obscureText: obscure,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      onChanged: (value) {
+                        pinValue = value.trim();
+                      },
+                      onSubmitted: (value) {
+                        Navigator.of(dialogContext).pop(value.trim());
+                      },
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setDialogState(() {
+                              obscure = !obscure;
+                            });
+                          },
+                          icon: Icon(
+                            obscure ? Icons.visibility : Icons.visibility_off,
+                          ),
+                          tooltip: obscure
+                              ? l10n.scanner_linuxPairingShowPin
+                              : l10n.scanner_linuxPairingHidePin,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(null),
+                  child: Text(l10n.common_cancel),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(pinValue),
+                  child: Text(l10n.common_connect),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+    if (pin == null) {
+      appLogger.info(
+        'Linux BLE pairing PIN prompt cancelled for $deviceName',
+        tag: 'ScannerScreen',
+      );
+      return null;
+    }
+    appLogger.info(
+      'Linux BLE pairing PIN prompt completed for $deviceName',
+      tag: 'ScannerScreen',
+    );
+    return pin;
   }
 
   Widget _bluetoothOffWarning(BuildContext context) {

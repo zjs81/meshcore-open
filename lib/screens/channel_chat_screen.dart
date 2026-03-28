@@ -4,11 +4,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
+import '../utils/platform_info.dart';
 import '../helpers/chat_scroll_controller.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/link_handler.dart';
@@ -26,6 +26,7 @@ import '../widgets/gif_message.dart';
 import '../widgets/jump_to_bottom_button.dart';
 import '../widgets/gif_picker.dart';
 import '../widgets/message_status_icon.dart';
+import '../widgets/radio_stats_entry.dart';
 import 'channel_message_path_screen.dart';
 import 'map_screen.dart';
 
@@ -47,6 +48,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   bool _isLoadingOlder = false;
 
   MeshCoreConnector? _connector;
+  DateTime? _lastChannelSendAt;
+  bool _channelSkipNextBottomSnap = false;
 
   @override
   void initState() {
@@ -55,9 +58,43 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     _scrollController.onScrollNearTop = _loadOlderMessages;
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _connector = context.read<MeshCoreConnector>();
-      _connector?.setActiveChannel(widget.channel.index);
+      final connector = context.read<MeshCoreConnector>();
+      final settings = context.read<AppSettingsService>().settings;
+      final idx = widget.channel.index;
+      final unread = connector.getUnreadCountForChannelIndex(idx);
+      ChannelMessage? anchor;
+      if (settings.jumpToOldestUnread && unread > 0) {
+        anchor = _findOldestUnreadChannelAnchor(
+          connector.getChannelMessages(widget.channel),
+          unread,
+        );
+      }
+      connector.setActiveChannel(idx);
+      _connector = connector;
+      if (anchor != null) {
+        _channelSkipNextBottomSnap = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          _scrollToMessage(anchor!.messageId);
+        });
+      }
     });
+  }
+
+  ChannelMessage? _findOldestUnreadChannelAnchor(
+    List<ChannelMessage> messages,
+    int unreadCount,
+  ) {
+    if (unreadCount <= 0 || messages.isEmpty) return null;
+    var n = 0;
+    ChannelMessage? oldest;
+    for (final m in messages.reversed) {
+      if (m.isOutgoing) continue;
+      n++;
+      oldest = m;
+      if (n >= unreadCount) break;
+    }
+    return oldest;
   }
 
   void _onTextFieldFocusChange() {
@@ -166,6 +203,34 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
           ],
         ),
         centerTitle: false,
+        actions: [
+          const RadioStatsIconButton(),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              if (value == 'clearChat') {
+                context.read<MeshCoreConnector>().clearMessagesForChannel(
+                  widget.channel.index,
+                );
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'clearChat',
+                child: Row(
+                  children: [
+                    const Icon(Icons.delete, size: 20, color: Colors.red),
+                    const SizedBox(width: 12),
+                    Text(
+                      context.l10n.contact_clearChat,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
       body: SafeArea(
         top: false,
@@ -216,6 +281,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
                   // Auto-scroll to bottom if user is already at bottom
                   WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (_channelSkipNextBottomSnap) {
+                      _channelSkipNextBottomSnap = false;
+                      return;
+                    }
                     _scrollController.scrollToBottomIfAtBottom();
                   });
 
@@ -311,8 +380,13 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
             ],
             Flexible(
               child: GestureDetector(
-                onTap: () => _showMessagePathInfo(message),
+                onTap: PlatformInfo.isDesktop
+                    ? null
+                    : () => _showMessagePathInfo(message),
                 onLongPress: () => _showMessageActions(message),
+                onSecondaryTapUp: PlatformInfo.isDesktop
+                    ? (_) => _showMessageActions(message)
+                    : null,
                 child: Container(
                   padding: gifId != null
                       ? const EdgeInsets.all(4)
@@ -430,24 +504,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Flexible(
-                              child: Linkify(
+                              child: LinkHandler.buildLinkifyText(
+                                context: context,
                                 text: message.text,
                                 style: TextStyle(
                                   fontSize: bodyFontSize * textScale,
-                                ),
-                                linkStyle: TextStyle(
-                                  fontSize: bodyFontSize * textScale,
-                                  color: Colors.green,
-                                  decoration: TextDecoration.underline,
-                                ),
-                                options: const LinkifyOptions(
-                                  humanize: false,
-                                  defaultToHttps: false,
-                                ),
-                                linkifiers: const [UrlLinkifier()],
-                                onOpen: (link) => LinkHandler.handleLinkTap(
-                                  context,
-                                  link.url,
                                 ),
                               ),
                             ),
@@ -557,7 +618,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       ],
     );
 
-    if (!isOutgoing) {
+    if (!isOutgoing && !PlatformInfo.isDesktop) {
       return _SwipeReplyBubble(
         maxSwipeOffset: maxSwipeOffset,
         replySwipeThreshold: replySwipeThreshold,
@@ -1055,6 +1116,16 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final text = _textController.text.trim();
     if (text.isEmpty) return;
 
+    final now = DateTime.now();
+    if (_lastChannelSendAt != null &&
+        now.difference(_lastChannelSendAt!) < const Duration(seconds: 1)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.chat_sendCooldown)));
+      return;
+    }
+    _lastChannelSendAt = now;
+
     final connector = context.read<MeshCoreConnector>();
 
     String messageText = text;
@@ -1112,6 +1183,15 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                 _setReplyingTo(message);
               },
             ),
+            if (PlatformInfo.isDesktop)
+              ListTile(
+                leading: const Icon(Icons.route),
+                title: Text(context.l10n.chat_path),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  _showMessagePathInfo(message);
+                },
+              ),
             // Can't react to your own messages
             if (!message.isOutgoing)
               ListTile(

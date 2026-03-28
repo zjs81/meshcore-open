@@ -1,0 +1,2059 @@
+{
+  "@@locale": "ja",
+  "appTitle": "MeshCore Open",
+  "nav_contacts": "連絡先",
+  "nav_channels": "チャンネル",
+  "nav_map": "地図",
+  "common_cancel": "キャンセル",
+  "common_ok": "了解",
+  "common_connect": "接続する",
+  "common_unknownDevice": "不明なデバイス",
+  "common_save": "保存",
+  "common_delete": "削除",
+  "common_deleteAll": "すべて削除",
+  "common_close": "閉じる",
+  "common_edit": "編集",
+  "common_add": "追加",
+  "common_settings": "設定",
+  "common_disconnect": "切断する",
+  "common_connected": "接続されている",
+  "common_disconnected": "切断",
+  "common_create": "作成する",
+  "common_continue": "続き",
+  "common_share": "共有する",
+  "common_copy": "コピー",
+  "common_retry": "再試",
+  "common_hide": "隠す",
+  "common_remove": "削除",
+  "common_enable": "有効化する",
+  "common_disable": "無効化する",
+  "common_reboot": "再起動",
+  "common_loading": "読み込み中...",
+  "common_notAvailable": "—",
+  "common_voltageValue": "{volts} V",
+  "@common_voltageValue": {
+    "placeholders": {
+      "volts": {
+        "type": "String"
+      }
+    }
+  },
+  "common_percentValue": "{percent}%",
+  "@common_percentValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "scanner_title": "MeshCore オープン",
+  "connectionChoiceUsbLabel": "USB",
+  "connectionChoiceBluetoothLabel": "ブルートゥース",
+  "connectionChoiceTcpLabel": "TCP",
+  "tcpScreenTitle": "TCP を使用して接続",
+  "tcpHostLabel": "IPアドレス",
+  "tcpHostHint": "192.168.40.10",
+  "tcpPortLabel": "港",
+  "tcpPortHint": "5000",
+  "tcpStatus_notConnected": "エンドポイントを入力し、接続する",
+  "tcpStatus_connectingTo": "{endpoint} への接続中...",
+  "@tcpStatus_connectingTo": {
+    "placeholders": {
+      "endpoint": {
+        "type": "String"
+      }
+    }
+  },
+  "tcpErrorHostRequired": "IPアドレスが必要です。",
+  "tcpErrorPortInvalid": "ポート番号は1から65535の範囲で指定してください。",
+  "tcpErrorUnsupported": "このプラットフォームでは、TCP 転送はサポートされていません。",
+  "tcpErrorTimedOut": "TCP 接続がタイムアウトしました。",
+  "tcpConnectionFailed": "TCP接続に失敗しました：{error}",
+  "@tcpConnectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "usbScreenTitle": "USB経由で接続",
+  "usbScreenSubtitle": "検出されたシリアルデバイスを選択し、MeshCoreノードに直接接続してください。",
+  "usbScreenStatus": "USBデバイスを選択する",
+  "usbScreenNote": "USBシリアルポートは、サポートされているAndroidデバイスおよびデスクトッププラットフォームで利用可能です。",
+  "usbScreenEmptyState": "USBデバイスが見つかりませんでした。「別のUSBデバイスを接続して、再度確認してください。」",
+  "usbErrorPermissionDenied": "USBへのアクセス許可が拒否されました。",
+  "usbErrorDeviceMissing": "選択されたUSBデバイスは、もう利用できません。",
+  "usbErrorInvalidPort": "有効なUSBデバイスを選択してください。",
+  "usbErrorBusy": "別のUSB接続の要求がすでに処理中です。",
+  "usbErrorNotConnected": "USBデバイスは接続されていません。",
+  "usbErrorOpenFailed": "選択したUSBデバイスを開くことができません。",
+  "usbErrorConnectFailed": "選択したUSBデバイスへの接続に失敗しました。",
+  "usbErrorUnsupported": "このプラットフォームでは、USBシリアル通信はサポートされていません。",
+  "usbErrorAlreadyActive": "USB接続はすでに確立されています。",
+  "usbErrorNoDeviceSelected": "USBデバイスは選択されていません。",
+  "usbErrorPortClosed": "USB接続は確立されていません。",
+  "usbErrorConnectTimedOut": "接続がタイムアウトしました。デバイスにUSBコンパニオンファームウェアがインストールされていることを確認してください。",
+  "usbFallbackDeviceName": "ウェブシリアルデバイス",
+  "usbStatus_notConnected": "USBデバイスを選択する",
+  "usbStatus_connecting": "USBデバイスへの接続中...",
+  "usbStatus_searching": "USBデバイスを検索中...",
+  "usbConnectionFailed": "USB接続に失敗しました：{error}",
+  "@usbConnectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_scanning": "デバイスをスキャン中...",
+  "scanner_connecting": "接続中...",
+  "scanner_disconnecting": "切断...",
+  "scanner_notConnected": "接続されていない",
+  "scanner_connectedTo": "{deviceName} に接続",
+  "@scanner_connectedTo": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_searchingDevices": "MeshCoreデバイスの検索",
+  "scanner_tapToScan": "MeshCore デバイスを検索するには、「スキャン」ボタンをタップしてください。",
+  "scanner_connectionFailed": "接続に失敗しました：{error}",
+  "@scanner_connectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_stop": "停止",
+  "scanner_scan": "スキャン",
+  "scanner_bluetoothOff": "Bluetooth はオフになっています",
+  "scanner_bluetoothOffMessage": "Bluetoothを有効にして、デバイスを検索してください。",
+  "scanner_chromeRequired": "Chrome ブラウザが必須です",
+  "scanner_chromeRequiredMessage": "このWebアプリケーションは、Bluetooth機能を利用するために、Google ChromeまたはChromiumベースのブラウザが必要です。",
+  "scanner_enableBluetooth": "Bluetoothを有効にする",
+  "device_quickSwitch": "素早い切り替え",
+  "device_meshcore": "メッシュコア",
+  "settings_title": "設定",
+  "settings_deviceInfo": "デバイス情報",
+  "settings_appSettings": "アプリ設定",
+  "settings_appSettingsSubtitle": "通知、メッセージング、および地図の表示設定",
+  "settings_nodeSettings": "ノード設定",
+  "settings_nodeName": "ノード名",
+  "settings_nodeNameNotSet": "設定されていない",
+  "settings_nodeNameHint": "ノード名を入力してください",
+  "settings_nodeNameUpdated": "氏名変更",
+  "settings_radioSettings": "ラジオ設定",
+  "settings_radioSettingsSubtitle": "周波数、電力、スプレッドファクター",
+  "settings_radioSettingsUpdated": "ラジオの設定が更新されました",
+  "settings_location": "場所",
+  "settings_locationSubtitle": "GPS 座標",
+  "settings_locationUpdated": "場所とGPS設定が更新されました",
+  "settings_locationBothRequired": "緯度と経度をそれぞれ入力してください。",
+  "settings_locationInvalid": "無効な緯度または経度。",
+  "settings_locationGPSEnable": "GPS機能有効",
+  "settings_locationGPSEnableSubtitle": "GPSが自動的に位置情報を更新できるようにする。",
+  "settings_locationIntervalSec": "GPS データの取得間隔（秒）",
+  "settings_locationIntervalInvalid": "間隔は少なくとも60秒で、86400秒未満でなければなりません。",
+  "settings_latitude": "緯度",
+  "settings_longitude": "経度",
+  "settings_contactSettings": "連絡設定",
+  "settings_contactSettingsSubtitle": "連絡先を追加する設定",
+  "settings_privacyMode": "プライバシーモード",
+  "settings_privacyModeSubtitle": "広告に名前/場所を記載しない",
+  "settings_privacyModeToggle": "プライバシーモードをオンにして、広告に表示される名前や場所を非表示にします。",
+  "settings_privacyModeEnabled": "プライバシーモードが有効になっています",
+  "settings_privacyModeDisabled": "プライバシーモードは無効化されています",
+  "settings_actions": "行動",
+  "settings_sendAdvertisement": "広告を送信する",
+  "settings_sendAdvertisementSubtitle": "現在、放送での活動",
+  "settings_advertisementSent": "広告が送信されました",
+  "settings_syncTime": "同期時間",
+  "settings_syncTimeSubtitle": "デバイスの時刻を、携帯電話の時刻に合わせる",
+  "settings_timeSynchronized": "時間同期",
+  "settings_refreshContacts": "連絡先を更新する",
+  "settings_refreshContactsSubtitle": "デバイスから連絡先リストを再読み込みする",
+  "settings_rebootDevice": "デバイスを再起動する",
+  "settings_rebootDeviceSubtitle": "MeshCore デバイスを再起動する",
+  "settings_rebootDeviceConfirm": "本当にデバイスを再起動したいですか？ その場合、接続が切断されます。",
+  "settings_debug": "デバッグ",
+  "settings_bleDebugLog": "BLE デバッグログ",
+  "settings_bleDebugLogSubtitle": "BLEコマンド、応答、および生のデータ",
+  "settings_appDebugLog": "アプリケーションのデバッグログ",
+  "settings_appDebugLogSubtitle": "アプリケーションのデバッグメッセージ",
+  "settings_about": "概要",
+  "settings_aboutVersion": "MeshCore Open {version}版",
+  "@settings_aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_aboutLegalese": "2026年のMeshCoreオープンソースプロジェクト",
+  "settings_aboutDescription": "MeshCore LoRaメッシュネットワークデバイス用の、オープンソースのFlutterクライアント。",
+  "settings_aboutOpenMeteoAttribution": "LOS 標高データ：Open-Meteo (CC BY 4.0)",
+  "settings_infoName": "名前",
+  "settings_infoId": "ID",
+  "settings_infoStatus": "ステータス",
+  "settings_infoBattery": "バッテリー",
+  "settings_infoPublicKey": "公開鍵",
+  "settings_infoContactsCount": "連絡先数",
+  "settings_infoChannelCount": "チャンネル数",
+  "settings_presets": "プリセット",
+  "settings_frequency": "周波数 (MHz)",
+  "settings_frequencyHelper": "300.0 - 2500.0",
+  "settings_frequencyInvalid": "無効な周波数 (300-2500 MHz)",
+  "settings_bandwidth": "帯域幅",
+  "settings_spreadingFactor": "伝播係数",
+  "settings_codingRate": "コーディング速度",
+  "settings_txPower": "TX 信号電力 (dBm)",
+  "settings_txPowerHelper": "0 - 22",
+  "settings_txPowerInvalid": "無効な送信電力 (0-22 dBm)",
+  "settings_clientRepeat": "オフグリッド（電力網から孤立した状態）の繰り返し",
+  "settings_clientRepeatSubtitle": "このデバイスが、他のデバイスに対してメッシュパケットを繰り返し送信できるようにする。",
+  "settings_clientRepeatFreqWarning": "オフグリッドでの再送には、433MHz、869MHz、または918MHzの周波数が必要です。",
+  "settings_error": "エラー：{message}",
+  "@settings_error": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_title": "アプリ設定",
+  "appSettings_appearance": "外観",
+  "appSettings_theme": "テーマ",
+  "appSettings_themeSystem": "システムデフォルト",
+  "appSettings_themeLight": "光",
+  "appSettings_themeDark": "暗い",
+  "appSettings_language": "言語",
+  "appSettings_languageSystem": "システムデフォルト",
+  "appSettings_languageEn": "英語",
+  "appSettings_languageFr": "フランス語",
+  "appSettings_languageEs": "スペイン語",
+  "appSettings_languageDe": "ドイツ語",
+  "appSettings_languagePl": "ポーランド語",
+  "appSettings_languageSl": "スロベニア語",
+  "appSettings_languagePt": "ポルトガル語",
+  "appSettings_languageIt": "イタリア語",
+  "appSettings_languageZh": "中国語",
+  "appSettings_languageSv": "スウェーデン語",
+  "appSettings_languageNl": "オランダ語",
+  "appSettings_languageSk": "スロベニア語",
+  "appSettings_languageBg": "ブルガリア語",
+  "appSettings_languageRu": "ロシア語",
+  "appSettings_languageUk": "ウクライナ語",
+  "appSettings_enableMessageTracing": "メッセージ追跡機能を有効にする",
+  "appSettings_enableMessageTracingSubtitle": "メッセージに関する詳細な経路およびタイミングに関するメタデータを表示する",
+  "appSettings_notifications": "通知",
+  "appSettings_enableNotifications": "通知を有効にする",
+  "appSettings_enableNotificationsSubtitle": "メッセージや広告に関する通知を受け取る",
+  "appSettings_notificationPermissionDenied": "通知の許可が拒否されました",
+  "appSettings_notificationsEnabled": "通知機能が有効になっています",
+  "appSettings_notificationsDisabled": "通知が無効化されています",
+  "appSettings_messageNotifications": "メッセージ通知",
+  "appSettings_messageNotificationsSubtitle": "新しいメッセージを受信した際に、通知を表示する",
+  "appSettings_channelMessageNotifications": "チャネルメッセージの通知",
+  "appSettings_channelMessageNotificationsSubtitle": "チャンネルからのメッセージを受信した際に、通知を表示する",
+  "appSettings_advertisementNotifications": "広告通知",
+  "appSettings_advertisementNotificationsSubtitle": "新しいノードが発見された場合に通知を表示する",
+  "appSettings_messaging": "メッセージング",
+  "appSettings_clearPathOnMaxRetry": "マックスリトライでの明確な手順",
+  "appSettings_clearPathOnMaxRetrySubtitle": "5回送信に失敗した場合、連絡経路をリセットする",
+  "appSettings_pathsWillBeCleared": "5回失敗した後、経路が再開されます。",
+  "appSettings_pathsWillNotBeCleared": "パスは自動で削除されません。",
+  "appSettings_autoRouteRotation": "自動ルートの切り替え",
+  "appSettings_autoRouteRotationSubtitle": "最適なルートと、洪水モードを切り替える",
+  "appSettings_autoRouteRotationEnabled": "自動ルートの切り替え機能が有効になっています",
+  "appSettings_autoRouteRotationDisabled": "自動ルートの変更機能が無効になっています。",
+  "appSettings_maxRouteWeight": "最大ルート重量",
+  "appSettings_maxRouteWeightSubtitle": "ある経路が、成功裏に配送された場合に、積み上げられる最大重量",
+  "appSettings_initialRouteWeight": "初期ルートの重み",
+  "appSettings_initialRouteWeightSubtitle": "新たに発見された経路の初期重量",
+  "appSettings_routeWeightSuccessIncrement": "成功時の重み増加",
+  "appSettings_routeWeightSuccessIncrementSubtitle": "配送が成功した場合に、経路に追加される重量",
+  "appSettings_routeWeightFailureDecrement": "失敗時の重み減少",
+  "appSettings_routeWeightFailureDecrementSubtitle": "配送に失敗した際に、経路から取り除かれた重量",
+  "appSettings_maxMessageRetries": "最大メッセージ再試行回数",
+  "appSettings_maxMessageRetriesSubtitle": "メッセージを「失敗」とマークするまでの、再試行回数",
+  "path_routeWeight": "{weight}/{max}",
+  "@path_routeWeight": {
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_battery": "バッテリー",
+  "appSettings_batteryChemistry": "電池の化学",
+  "appSettings_batteryChemistryPerDevice": "{deviceName} 単位",
+  "@appSettings_batteryChemistryPerDevice": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_batteryChemistryConnectFirst": "デバイスを選択するために接続する",
+  "appSettings_batteryNmc": "18650型 NMC (3.0-4.2V)",
+  "appSettings_batteryLifepo4": "LiFePO4 (2.6-3.65V)",
+  "appSettings_batteryLipo": "LiPo (3.0-4.2V)",
+  "appSettings_mapDisplay": "地図の表示",
+  "appSettings_showRepeaters": "繰り返し再生機能",
+  "appSettings_showRepeatersSubtitle": "地図上にリピーターノードを表示する",
+  "appSettings_showChatNodes": "チャットノードの表示",
+  "appSettings_showChatNodesSubtitle": "地図上にチャットノードを表示する",
+  "appSettings_showOtherNodes": "他のノードを表示する",
+  "appSettings_showOtherNodesSubtitle": "地図上に、他のノードの種類を表示する",
+  "appSettings_timeFilter": "時間フィルター",
+  "appSettings_timeFilterShowAll": "すべてのノードを表示する",
+  "appSettings_timeFilterShowLast": "過去 {hours} 時間のノードを表示する",
+  "@appSettings_timeFilterShowLast": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_mapTimeFilter": "地図の表示期間を絞り込む",
+  "appSettings_showNodesDiscoveredWithin": "以下の範囲内で発見されたノードを表示する：",
+  "appSettings_allTime": "すべての期間",
+  "appSettings_lastHour": "直前の",
+  "appSettings_last6Hours": "過去6時間",
+  "appSettings_last24Hours": "過去24時間",
+  "appSettings_lastWeek": "先週",
+  "appSettings_offlineMapCache": "オフライン用地図キャッシュ",
+  "appSettings_unitsTitle": "単位",
+  "appSettings_unitsMetric": "メートル (m) / キロメートル (km)",
+  "appSettings_unitsImperial": "帝国 (フィート / マイル)",
+  "appSettings_noAreaSelected": "選択されたエリアはありません",
+  "appSettings_areaSelectedZoom": "選択された範囲（ズームレベル：{minZoom}～{maxZoom}）",
+  "@appSettings_areaSelectedZoom": {
+    "placeholders": {
+      "minZoom": {
+        "type": "int"
+      },
+      "maxZoom": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_debugCard": "デバッグ",
+  "appSettings_appDebugLogging": "アプリケーションのデバッグ用ログ",
+  "appSettings_appDebugLoggingSubtitle": "ログアプリのデバッグメッセージ（トラブルシューティング用）",
+  "appSettings_appDebugLoggingEnabled": "アプリケーションのデバッグ用ログ機能が有効になっています。",
+  "appSettings_appDebugLoggingDisabled": "アプリケーションのデバッグログが無効化されています。",
+  "contacts_title": "連絡先",
+  "contacts_noContacts": "現時点では、連絡先はまだありません。",
+  "contacts_contactsWillAppear": "デバイスが広告を行う際に、連絡先が表示されます。",
+  "contacts_unread": "未読",
+  "contacts_searchContactsNoNumber": "連絡先を検索...",
+  "contacts_searchContacts": "{number}件の{str}に関する連絡先を検索...",
+  "@contacts_searchContacts": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "str": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_searchFavorites": "{number}件の{str}を検索...",
+  "@contacts_searchFavorites": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "str": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_searchUsers": "{number}件の{str}に関するユーザーを検索する...",
+  "@contacts_searchUsers": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "str": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_searchRepeaters": "{number} {str} までの検索...",
+  "@contacts_searchRepeaters": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "str": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_searchRoomServers": "{number} {str} 部屋のサーバーを検索する...",
+  "@contacts_searchRoomServers": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "str": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_noUnreadContacts": "未読の連絡先はありません",
+  "contacts_noContactsFound": "連絡先またはグループは見つかりませんでした。",
+  "contacts_deleteContact": "連絡先を削除",
+  "contacts_removeConfirm": "{contactName} を連絡先から削除しますか？",
+  "@contacts_removeConfirm": {
+    "placeholders": {
+      "contactName": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_manageRepeater": "リピーターの管理",
+  "contacts_manageRoom": "ルームサーバーの管理",
+  "contacts_roomLogin": "ルームサーバーへのログイン",
+  "contacts_openChat": "自由な会話",
+  "contacts_editGroup": "編集グループ",
+  "contacts_deleteGroup": "グループを削除",
+  "contacts_deleteGroupConfirm": "{groupName} を削除しますか？",
+  "@contacts_deleteGroupConfirm": {
+    "placeholders": {
+      "groupName": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_newGroup": "新しいグループ",
+  "contacts_groupName": "グループ名",
+  "contacts_groupNameRequired": "グループ名が必須です",
+  "contacts_groupNameReserved": "このグループ名はすでに使用されています。",
+  "contacts_groupAlreadyExists": "グループ「{name}」はすでに存在しています",
+  "@contacts_groupAlreadyExists": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_filterContacts": "連絡先をフィルタリングする…",
+  "contacts_noContactsMatchFilter": "指定された条件に合致する連絡先は見つかりませんでした。",
+  "contacts_noMembers": "メンバーはいない",
+  "contacts_lastSeenNow": "最近",
+  "contacts_lastSeenMinsAgo": "～{minutes} 分",
+  "@contacts_lastSeenMinsAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_lastSeenHourAgo": "約1時間",
+  "contacts_lastSeenHoursAgo": "～ {hours} 時間",
+  "@contacts_lastSeenHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_lastSeenDayAgo": "～1日",
+  "contacts_lastSeenDaysAgo": "～{days}日間",
+  "@contacts_lastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "channels_title": "チャンネル",
+  "channels_noChannelsConfigured": "設定されたチャンネルがありません",
+  "channels_addPublicChannel": "パブリックチャンネルを追加する",
+  "channels_searchChannels": "検索オプション...",
+  "channels_noChannelsFound": "チャンネルが見つかりませんでした",
+  "channels_channelIndex": "チャンネル {index}",
+  "@channels_channelIndex": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "channels_hashtagChannel": "ハッシュタグチャンネル",
+  "channels_public": "一般の人々",
+  "channels_private": "個人の",
+  "channels_publicChannel": "一般チャンネル",
+  "channels_privateChannel": "プライベートチャンネル",
+  "channels_editChannel": "チャンネルを編集する",
+  "channels_muteChannel": "ミュート機能",
+  "channels_unmuteChannel": "ミュートを解除する",
+  "channels_deleteChannel": "チャンネルを削除する",
+  "channels_deleteChannelConfirm": "{name} を削除しますか？ これは取り消すことができません。",
+  "@channels_deleteChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_channelDeleteFailed": "チャンネル「{name}」の削除に失敗しました。",
+  "@channels_channelDeleteFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_channelDeleted": "チャンネル「{name}」が削除されました",
+  "@channels_channelDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_addChannel": "チャンネルを追加",
+  "channels_channelIndexLabel": "チャンネルインデックス",
+  "channels_channelName": "チャンネル名",
+  "channels_usePublicChannel": "パブリックチャンネルを使用する",
+  "channels_standardPublicPsk": "標準的な公用 PSK",
+  "channels_pskHex": "PSK (ヘックス)",
+  "channels_generateRandomPsk": "ランダムなPSK（正交符号分割変調）を生成する",
+  "channels_enterChannelName": "チャンネル名を入力してください",
+  "channels_pskMustBe32Hex": "PSKは32桁の16進数で構成されている必要があります。",
+  "channels_channelAdded": "チャンネル「{name}」を追加",
+  "@channels_channelAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_editChannelTitle": "チャンネル {index} の編集",
+  "@channels_editChannelTitle": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "channels_smazCompression": "SMAZ 圧縮",
+  "channels_channelUpdated": "チャンネル「{name}」が更新されました",
+  "@channels_channelUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_publicChannelAdded": "パブリックチャンネルが追加されました",
+  "channels_sortBy": "並び替え",
+  "channels_sortManual": "マニュアル",
+  "channels_sortAZ": "AからZ",
+  "channels_sortLatestMessages": "最新のメッセージ",
+  "channels_sortUnread": "未読",
+  "channels_createPrivateChannel": "プライベートチャンネルを作成する",
+  "channels_createPrivateChannelDesc": "秘密鍵を使用して保護されています。",
+  "channels_joinPrivateChannel": "プライベートチャンネルに参加する",
+  "channels_joinPrivateChannelDesc": "手動で秘密のキーを入力する。",
+  "channels_joinPublicChannel": "公開チャンネルに参加する",
+  "channels_joinPublicChannelDesc": "このチャンネルには、誰でも参加できます。",
+  "channels_joinHashtagChannel": "ハッシュタグチャンネルに参加する",
+  "channels_joinHashtagChannelDesc": "誰でもハッシュタグチャンネルに参加できます。",
+  "channels_scanQrCode": "QRコードをスキャンする",
+  "channels_scanQrCodeComingSoon": "近日公開",
+  "channels_enterHashtag": "ハッシュタグを入力してください",
+  "channels_hashtagHint": "例：#チーム",
+  "chat_noMessages": "まだメッセージは届いていません",
+  "chat_sendMessageToStart": "開始するためにメッセージを送信してください",
+  "chat_originalMessageNotFound": "元のメッセージが見つかりませんでした",
+  "chat_replyingTo": "{name} への返信",
+  "@chat_replyingTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_replyTo": "{name}への返信",
+  "@chat_replyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_location": "場所",
+  "chat_sendMessageTo": "{contactName} へのメッセージを送信する",
+  "@chat_sendMessageTo": {
+    "placeholders": {
+      "contactName": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_typeMessage": "メッセージを入力してください…",
+  "chat_messageTooLong": "メッセージが長すぎる（{maxBytes} バイトを超える）。",
+  "@chat_messageTooLong": {
+    "placeholders": {
+      "maxBytes": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_messageCopied": "メッセージがコピーされました",
+  "chat_messageDeleted": "メッセージは削除されました",
+  "chat_retryingMessage": "再試行メッセージ",
+  "chat_retryCount": "{current} / {max} 回目",
+  "@chat_retryCount": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_sendGif": "GIFを送信する",
+  "chat_reply": "返信",
+  "chat_addReaction": "反応を追加",
+  "chat_me": "私",
+  "emojiCategorySmileys": "笑顔の絵文字",
+  "emojiCategoryGestures": "身振り、動作",
+  "emojiCategoryHearts": "心",
+  "emojiCategoryObjects": "対象物",
+  "gifPicker_title": "GIF を選択してください",
+  "gifPicker_searchHint": "GIFの検索...",
+  "gifPicker_poweredBy": "GIPHYによる提供",
+  "gifPicker_noGifsFound": "GIF形式のファイルは見つかりませんでした",
+  "gifPicker_failedLoad": "GIFファイルの読み込みに失敗しました",
+  "gifPicker_failedSearch": "GIFファイルの検索に失敗しました",
+  "gifPicker_noInternet": "インターネット接続なし",
+  "debugLog_appTitle": "アプリケーションのデバッグログ",
+  "debugLog_bleTitle": "BLE デバッグログ",
+  "debugLog_copyLog": "記録",
+  "debugLog_clearLog": "詳細なログ",
+  "debugLog_copied": "デバッグログをコピー",
+  "debugLog_bleCopied": "BLEログのコピー",
+  "debugLog_noEntries": "デバッグログはまだ生成されていません",
+  "debugLog_enableInSettings": "アプリのデバッグログを有効にするには、設定から操作してください。",
+  "debugLog_frames": "フレーム",
+  "debugLog_rawLogRx": "生のログ-RX",
+  "debugLog_noBleActivity": "現時点では、BLE関連の活動は行われていません。",
+  "debugFrame_length": "フレーム長: {count} バイト",
+  "@debugFrame_length": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "debugFrame_command": "コマンド: 0x{value}",
+  "@debugFrame_command": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "debugFrame_textMessageHeader": "テキストメッセージ用フレーム：",
+  "debugFrame_destinationPubKey": "- 宛先公開鍵: {pubKey}",
+  "@debugFrame_destinationPubKey": {
+    "placeholders": {
+      "pubKey": {
+        "type": "String"
+      }
+    }
+  },
+  "debugFrame_timestamp": "- タイムスタンプ: {timestamp}",
+  "@debugFrame_timestamp": {
+    "placeholders": {
+      "timestamp": {
+        "type": "int"
+      }
+    }
+  },
+  "debugFrame_flags": "- フラグ: 0x{value}",
+  "@debugFrame_flags": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "debugFrame_textType": "- テキストの種類: {type} ({label})",
+  "@debugFrame_textType": {
+    "placeholders": {
+      "type": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "debugFrame_textTypeCli": "CLI（コマンドラインインターフェース）",
+  "debugFrame_textTypePlain": "シンプルな",
+  "debugFrame_text": "- テキスト：「{text}」",
+  "@debugFrame_text": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "debugFrame_hexDump": "ヘックスダンプ：",
+  "chat_pathManagement": "経路管理",
+  "chat_ShowAllPaths": "すべての経路を表示",
+  "chat_routingMode": "ルーティングモード",
+  "chat_autoUseSavedPath": "自動 (保存されたパスを使用)",
+  "chat_forceFloodMode": "強制的に洪水モードを起動",
+  "chat_recentAckPaths": "最近使用したACKパス（タップして使用）：",
+  "chat_pathHistoryFull": "パスの履歴は完全です。エントリを削除して、新しいものを追加できます。",
+  "chat_hopSingular": "ジャンプ",
+  "chat_hopPlural": "ホップ",
+  "chat_hopsCount": "{count} {count, plural, =1{ホップ} other{ホップ}}",
+  "@chat_hopsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_successes": "成功事例",
+  "chat_removePath": "パスを削除する",
+  "chat_noPathHistoryYet": "まだ履歴はありません。\nパスを特定するためにメッセージを送信してください。",
+  "chat_pathActions": "パスの操作：",
+  "chat_setCustomPath": "カスタムパスを設定",
+  "chat_setCustomPathSubtitle": "手動で経路を指定する",
+  "chat_clearPath": "明確な道",
+  "chat_clearPathSubtitle": "次回送信時に、以前の情報を再取得する",
+  "chat_pathCleared": "経路が確保されました。次のメッセージでルートを再確認します。",
+  "chat_floodModeSubtitle": "アプリのバーにあるルーティング切り替え機能を使用する",
+  "chat_floodModeEnabled": "洪水モードが有効になっています。アプリのメニューバーにあるルートアイコンを使用して、モードを切り替えることができます。",
+  "chat_fullPath": "フルパス",
+  "chat_pathDetailsNotAvailable": "経路の詳細については、まだ情報がありません。「リフレッシュ」ボタンを押して、再度お試しください。",
+  "chat_pathSetHops": "Path set: {hopCount} {hopCount, plural, =1{hop} other{hops}} - {status}",
+  "@chat_pathSetHops": {
+    "placeholders": {
+      "hopCount": {
+        "type": "int"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_pathSavedLocally": "ローカルで保存。同期のために接続する。",
+  "chat_pathDeviceConfirmed": "デバイスの確認済み。",
+  "chat_pathDeviceNotConfirmed": "デバイスの確認はまだできていません。",
+  "chat_type": "種類",
+  "chat_path": "道",
+  "chat_publicKey": "公開鍵",
+  "chat_compressOutgoingMessages": "送信されるメッセージを圧縮する",
+  "chat_floodForced": "洪水（強制的な）",
+  "chat_directForced": "直接的な（強制的な）",
+  "chat_hopsForced": "{count} 本のホップ（強制的に採取）",
+  "@chat_hopsForced": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_floodAuto": "洪水 (自動)",
+  "chat_direct": "直接",
+  "chat_poiShared": "共有されたPOI",
+  "chat_unread": "未読: {count}",
+  "@chat_unread": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_openLink": "リンクを開く？",
+  "chat_openLinkConfirmation": "このリンクをブラウザで開くことはご希望ですか？",
+  "chat_open": "開く",
+  "chat_couldNotOpenLink": "リンクを開けられませんでした: {url}",
+  "@chat_couldNotOpenLink": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_invalidLink": "無効なリンク形式",
+  "map_title": "ノードマップ",
+  "map_lineOfSight": "視界",
+  "map_losScreenTitle": "視界",
+  "map_noNodesWithLocation": "位置情報データを持つノードは存在しません",
+  "map_nodesNeedGps": "ノードは、地図上に表示されるために、GPS座標を共有する必要があります。",
+  "map_nodesCount": "ノード：{count}",
+  "@map_nodesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "map_pinsCount": "ピン：{count}個",
+  "@map_pinsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "map_chat": "チャット",
+  "map_repeater": "繰り返し送信装置",
+  "map_room": "部屋",
+  "map_sensor": "センサー",
+  "map_pinDm": "ピン（DM）",
+  "map_pinPrivate": "プライベート（非公開）",
+  "map_pinPublic": "公開 (一般公開)",
+  "map_lastSeen": "最後に確認された場所",
+  "map_disconnectConfirm": "本当にこのデバイスとの接続を解除したいですか？",
+  "map_from": "～から",
+  "map_source": "出典",
+  "map_flags": "旗",
+  "map_shareMarkerHere": "この場所でシェア",
+  "map_setAsMyLocation": "現在地として設定",
+  "map_pinLabel": "ピンラベル",
+  "map_label": "ラベル",
+  "map_pointOfInterest": "注目すべき点",
+  "map_sendToContact": "連絡先へ送信",
+  "map_sendToChannel": "特定のチャンネルに送信する",
+  "map_noChannelsAvailable": "利用可能なチャンネルはありません",
+  "map_publicLocationShare": "公共スペースの共有",
+  "map_publicLocationShareConfirm": "現在、{channelLabel} で位置情報を共有する準備をしています。このチャンネルは公開されており、PSK を持つ誰でも閲覧できます。",
+  "@map_publicLocationShareConfirm": {
+    "placeholders": {
+      "channelLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "map_connectToShareMarkers": "他のデバイスと接続して、マーカーを共有する",
+  "map_filterNodes": "フィルタノード",
+  "map_nodeTypes": "ノードの種類",
+  "map_chatNodes": "チャットノード",
+  "map_repeaters": "繰り返し送信装置",
+  "map_otherNodes": "その他のノード",
+  "map_keyPrefix": "主要なプレフィックス",
+  "map_filterByKeyPrefix": "主要なプレフィックスでフィルタリングする",
+  "map_publicKeyPrefix": "公開鍵のプレフィックス",
+  "map_markers": "マーカー",
+  "map_showSharedMarkers": "共有のマーカーを表示する",
+  "map_showGuessedLocations": "推測されたノードの位置を表示する",
+  "map_showDiscoveryContacts": "Discovery社の連絡先を表示する",
+  "map_guessedLocation": "推測された場所",
+  "map_lastSeenTime": "最後に確認された時間",
+  "map_sharedPin": "共有パスワード",
+  "map_joinRoom": "部屋に参加する",
+  "map_manageRepeater": "リピーターの管理",
+  "map_tapToAdd": "ノードをクリックして、パスに追加します。",
+  "map_runTrace": "パスの追跡を実行",
+  "map_removeLast": "最後のものを削除",
+  "map_pathTraceCancelled": "パスの追跡は中止。",
+  "mapCache_title": "オフライン用地図キャッシュ",
+  "mapCache_selectAreaFirst": "最初にキャッシュする領域を選択してください",
+  "mapCache_noTilesToDownload": "この地域にはダウンロードできるタイルは存在しません。",
+  "mapCache_downloadTilesTitle": "タイルをダウンロードする",
+  "mapCache_downloadTilesPrompt": "オフラインでの使用のために、{count}個のタイルをダウンロードしますか？",
+  "@mapCache_downloadTilesPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_downloadAction": "ダウンロード",
+  "mapCache_cachedTiles": "{count} 個のタイルをキャッシュ",
+  "@mapCache_cachedTiles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_cachedTilesWithFailed": "Cached {downloaded} tiles ({failed} failed)",
+  "@mapCache_cachedTilesWithFailed": {
+    "placeholders": {
+      "downloaded": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_clearOfflineCacheTitle": "オフラインキャッシュをクリアする",
+  "mapCache_clearOfflineCachePrompt": "キャッシュされた地図のタイルをすべて削除しますか？",
+  "mapCache_offlineCacheCleared": "オフラインキャッシュをクリア",
+  "mapCache_noAreaSelected": "選択されたエリアはありません",
+  "mapCache_cacheArea": "キャッシュエリア",
+  "mapCache_useCurrentView": "現在表示されている内容を保持する",
+  "mapCache_zoomRange": "ズーム範囲",
+  "mapCache_estimatedTiles": "推定されるタイル数: {count}",
+  "@mapCache_estimatedTiles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_downloadedTiles": "Downloaded {completed} / {total}",
+  "@mapCache_downloadedTiles": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_downloadTilesButton": "タイルをダウンロードする",
+  "mapCache_clearCacheButton": "キャッシュをクリアする",
+  "mapCache_failedDownloads": "失敗したダウンロード: {count}",
+  "@mapCache_failedDownloads": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_boundsLabel": "N {north}, S {south}, E {east}, W {west}",
+  "@mapCache_boundsLabel": {
+    "placeholders": {
+      "north": {
+        "type": "String"
+      },
+      "south": {
+        "type": "String"
+      },
+      "east": {
+        "type": "String"
+      },
+      "west": {
+        "type": "String"
+      }
+    }
+  },
+  "time_justNow": "まさに今",
+  "time_minutesAgo": "{minutes}分前",
+  "@time_minutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "time_hoursAgo": "{hours}時間前",
+  "@time_hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "time_daysAgo": "{days}日前",
+  "@time_daysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "time_hour": "1時間",
+  "time_hours": "時間",
+  "time_day": "一日",
+  "time_days": "日",
+  "time_week": "1週間",
+  "time_weeks": "週",
+  "time_month": "月",
+  "time_months": "月",
+  "time_minutes": "分",
+  "time_allTime": "全期間",
+  "dialog_disconnect": "切断する",
+  "dialog_disconnectConfirm": "本当にこのデバイスとの接続を解除したいですか？",
+  "login_repeaterLogin": "再ログイン",
+  "login_roomLogin": "ルームサーバーへのログイン",
+  "login_password": "パスワード",
+  "login_enterPassword": "パスワードを入力してください",
+  "login_savePassword": "パスワードを保存する",
+  "login_savePasswordSubtitle": "パスワードは、このデバイスに安全に保存されます。",
+  "login_repeaterDescription": "設定やステータスにアクセスするために、リピーターのパスワードを入力してください。",
+  "login_roomDescription": "設定やステータスへのアクセスには、部屋のパスワードを入力してください。",
+  "login_routing": "経路設定",
+  "login_routingMode": "ルーティングモード",
+  "login_autoUseSavedPath": "自動 (保存されたパスを使用)",
+  "login_forceFloodMode": "強制的に洪水モードを起動",
+  "login_managePaths": "パスの管理",
+  "login_login": "ログイン",
+  "login_attempt": "試行回数：{current}/{max}",
+  "@login_attempt": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "login_failed": "ログインに失敗しました：{error}",
+  "@login_failed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "login_failedMessage": "ログインに失敗しました。パスワードが間違っているか、または接続が確立されていません。",
+  "common_reload": "再読み込み",
+  "common_clear": "明確",
+  "path_currentPath": "現在のパス: {path}",
+  "@path_currentPath": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "path_usingHopsPath": "{count} {count, plural, =1{ホップ} other{ホップ}}のパスを使用",
+  "@path_usingHopsPath": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "path_enterCustomPath": "カスタムパスを入力",
+  "path_currentPathLabel": "現在の経路",
+  "path_hexPrefixInstructions": "各ホップに対して、2文字の16進数プレフィックスをカンマで区切って入力してください。",
+  "path_hexPrefixExample": "例：A1, F2, 3C (各ノードは、自身の公開鍵の最初のバイトを使用)",
+  "path_labelHexPrefixes": "パス (ヘックスプレフィックス)",
+  "path_helperMaxHops": "最大64個のホップ。各プレフィックスは2つの16進数文字（1バイト）で構成されています。",
+  "path_selectFromContacts": "または、連絡先リストから選択してください：",
+  "path_noRepeatersFound": "繰り返し機能やルームサーバーは見つかりませんでした。",
+  "path_customPathsRequire": "カスタムパスには、メッセージを中継できる中間地点が必要です。",
+  "path_invalidHexPrefixes": "無効な16進数プレフィックス: {prefixes}",
+  "@path_invalidHexPrefixes": {
+    "placeholders": {
+      "prefixes": {
+        "type": "String"
+      }
+    }
+  },
+  "path_tooLong": "経路が長すぎる。最大64回のジャンプのみ許可。",
+  "path_setPath": "パスを設定",
+  "repeater_management": "リピーター管理",
+  "room_management": "ルームサーバーの管理",
+  "repeater_managementTools": "管理ツール",
+  "repeater_status": "ステータス",
+  "repeater_statusSubtitle": "リピーターの状態、統計情報、および隣接するネットワークの情報を表示する",
+  "repeater_telemetry": "テレメトリー",
+  "repeater_telemetrySubtitle": "センサーおよびシステムの状態に関するテレメトリの表示",
+  "repeater_cli": "CLI（コマンドラインインターフェース）",
+  "repeater_cliSubtitle": "リピーターへのコマンドを送信する",
+  "repeater_neighbors": "近隣住民",
+  "repeater_neighborsSubtitle": "ゼロホップの隣接ノードを表示する。",
+  "repeater_settings": "設定",
+  "repeater_settingsSubtitle": "リピーターのパラメータを設定する",
+  "repeater_statusTitle": "再送ステータス",
+  "repeater_routingMode": "ルーティングモード",
+  "repeater_autoUseSavedPath": "自動 (保存されたパスを使用)",
+  "repeater_forceFloodMode": "強制的に洪水モードを起動",
+  "repeater_pathManagement": "経路管理",
+  "repeater_refresh": "リフレッシュ",
+  "repeater_statusRequestTimeout": "ステータス情報の取得に失敗しました。",
+  "repeater_errorLoadingStatus": "ステータス読み込みエラー: {error}",
+  "@repeater_errorLoadingStatus": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_systemInformation": "システム情報",
+  "repeater_battery": "バッテリー",
+  "repeater_clockAtLogin": "ログイン時の時刻表示",
+  "repeater_uptime": "稼働率",
+  "repeater_queueLength": "待ち行列の長さ",
+  "repeater_debugFlags": "デバッグフラグ",
+  "repeater_radioStatistics": "ラジオに関する統計",
+  "repeater_lastRssi": "最後のRSSI",
+  "repeater_lastSnr": "最後のSNR",
+  "repeater_noiseFloor": "ノイズレベル",
+  "repeater_txAirtime": "TXの放送時間",
+  "repeater_rxAirtime": "RX 空き時間",
+  "repeater_packetStatistics": "パケット統計",
+  "repeater_sent": "送信",
+  "repeater_received": "受領",
+  "repeater_duplicates": "重複",
+  "repeater_daysHoursMinsSecs": "{days}日 {hours}時間 {minutes}分 {seconds}秒",
+  "@repeater_daysHoursMinsSecs": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_packetTxTotal": "合計: {total}, 洪水: {flood}, 直接: {direct}",
+  "@repeater_packetTxTotal": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      },
+      "flood": {
+        "type": "String"
+      },
+      "direct": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_packetRxTotal": "合計: {total}, 洪水: {flood}, 直接: {direct}",
+  "@repeater_packetRxTotal": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      },
+      "flood": {
+        "type": "String"
+      },
+      "direct": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_duplicatesFloodDirect": "{flood}: {flood}, 直接: {direct}",
+  "@repeater_duplicatesFloodDirect": {
+    "placeholders": {
+      "flood": {
+        "type": "String"
+      },
+      "direct": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_duplicatesTotal": "合計: {total}",
+  "@repeater_duplicatesTotal": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_settingsTitle": "リピーター設定",
+  "repeater_basicSettings": "基本設定",
+  "repeater_repeaterName": "送信装置名",
+  "repeater_repeaterNameHelper": "このリピーターの名前",
+  "repeater_adminPassword": "管理者パスワード",
+  "repeater_adminPasswordHelper": "完全アクセス権のパスワード",
+  "repeater_guestPassword": "ゲスト用のパスワード",
+  "repeater_guestPasswordHelper": "読み取り専用アクセス用のパスワード",
+  "repeater_radioSettings": "ラジオ設定",
+  "repeater_frequencyMhz": "周波数 (MHz)",
+  "repeater_frequencyHelper": "300～2500 MHz",
+  "repeater_txPower": "TXパワー",
+  "repeater_txPowerHelper": "-30～-10 dBm",
+  "repeater_bandwidth": "帯域幅",
+  "repeater_spreadingFactor": "伝播係数",
+  "repeater_codingRate": "コーディング速度",
+  "repeater_locationSettings": "場所設定",
+  "repeater_latitude": "緯度",
+  "repeater_latitudeHelper": "度分表記（例：37.7749）",
+  "repeater_longitude": "経度",
+  "repeater_longitudeHelper": "度分表記（例：-122.4194）",
+  "repeater_features": "特徴",
+  "repeater_packetForwarding": "パケット転送",
+  "repeater_packetForwardingSubtitle": "リピーターがパケットを転送できるように設定する",
+  "repeater_guestAccess": "ゲストへのアクセス",
+  "repeater_guestAccessSubtitle": "ゲストへの読み取り専用アクセスを許可する",
+  "repeater_privacyMode": "プライバシーモード",
+  "repeater_privacyModeSubtitle": "広告に名前/場所を記載しない",
+  "repeater_advertisementSettings": "広告設定",
+  "repeater_localAdvertInterval": "地域広告掲載期間",
+  "repeater_localAdvertIntervalMinutes": "{minutes} 分",
+  "@repeater_localAdvertIntervalMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_floodAdvertInterval": "洪水に関する広告の表示間隔",
+  "repeater_floodAdvertIntervalHours": "{hours} 時間",
+  "@repeater_floodAdvertIntervalHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_encryptedAdvertInterval": "暗号化された広告表示間",
+  "repeater_dangerZone": "危険区域",
+  "repeater_rebootRepeater": "リピーターを再起動する",
+  "repeater_rebootRepeaterSubtitle": "リピーターデバイスを再起動する",
+  "repeater_rebootRepeaterConfirm": "本当にこのリピーターを再起動したいですか？",
+  "repeater_regenerateIdentityKey": "IDキーの再生成",
+  "repeater_regenerateIdentityKeySubtitle": "新しい公開鍵/秘密鍵のペアを生成する",
+  "repeater_regenerateIdentityKeyConfirm": "これにより、リピーターには新しい識別情報が割り当てられます。続行しますか？",
+  "repeater_eraseFileSystem": "ファイルシステムを削除する",
+  "repeater_eraseFileSystemSubtitle": "リピーターファイルシステムをフォーマットする",
+  "repeater_eraseFileSystemConfirm": "警告：この操作により、リピーター内のすべてのデータが消去されます。この操作は元に戻すことができません！",
+  "repeater_eraseSerialOnly": "Erase機能は、シリアルコンソール経由でのみ利用可能です。",
+  "repeater_commandSent": "送信されたコマンド: {command}",
+  "@repeater_commandSent": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_errorSendingCommand": "コマンド送信エラー：{error}",
+  "@repeater_errorSendingCommand": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_confirm": "確認",
+  "repeater_settingsSaved": "設定が正常に保存されました",
+  "repeater_errorSavingSettings": "設定の保存に失敗しました：{error}",
+  "@repeater_errorSavingSettings": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_refreshBasicSettings": "基本設定をリセットする",
+  "repeater_refreshRadioSettings": "ラジオ設定をリセットする",
+  "repeater_refreshTxPower": "TX の電力レベルをリセットする",
+  "repeater_refreshLocationSettings": "場所設定をリセットする",
+  "repeater_refreshPacketForwarding": "パケット転送の刷新",
+  "repeater_refreshGuestAccess": "ゲストへのアクセスをリフレッシュする",
+  "repeater_refreshPrivacyMode": "プライバシーモードをリセットする",
+  "repeater_refreshAdvertisementSettings": "広告設定のリセット",
+  "repeater_refreshed": "{label} が更新されました",
+  "@repeater_refreshed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_errorRefreshing": "{label} の更新に失敗しました",
+  "@repeater_errorRefreshing": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_cliTitle": "リピーターのコマンドラインインターフェース",
+  "repeater_debugNextCommand": "次のコマンドのデバッグ",
+  "repeater_commandHelp": "コマンドヘルプ",
+  "repeater_clearHistory": "明確な歴史",
+  "repeater_noCommandsSent": "まだコマンドは送信されていません",
+  "repeater_typeCommandOrUseQuick": "以下のコマンドを入力するか、クイックコマンドを使用してください。",
+  "repeater_enterCommandHint": "コマンドを入力してください...",
+  "repeater_previousCommand": "直前の指示",
+  "repeater_nextCommand": "次の指示",
+  "repeater_enterCommandFirst": "まず、コマンドを入力してください。",
+  "repeater_cliCommandFrameTitle": "CLI コマンドフレーム",
+  "repeater_cliCommandError": "エラー：{error}",
+  "@repeater_cliCommandError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_cliQuickGetName": "名前を取得する",
+  "repeater_cliQuickGetRadio": "ラジオを聴く",
+  "repeater_cliQuickGetTx": "TXを入手する",
+  "repeater_cliQuickNeighbors": "近隣住民",
+  "repeater_cliQuickVersion": "バージョン",
+  "repeater_cliQuickAdvertise": "広告",
+  "repeater_cliQuickClock": "時計",
+  "repeater_cliHelpAdvert": "広告用資料を送る",
+  "repeater_cliHelpReboot": "デバイスを再起動します。(注：通常は「タイムアウト」が表示されますが、これは正常です)",
+  "repeater_cliHelpClock": "各デバイスの時計で現在の時刻を表示します。",
+  "repeater_cliHelpPassword": "デバイス用の新しい管理者パスワードを設定します。",
+  "repeater_cliHelpVersion": "デバイスのバージョンとファームウェアのビルド日を表示します。",
+  "repeater_cliHelpClearStats": "さまざまな統計カウンターをゼロにリセットする。",
+  "repeater_cliHelpSetAf": "空き時間係数を設定します。",
+  "repeater_cliHelpSetTx": "LoRaの送信電力をdBmで設定します。（設定変更後、再起動が必要です）",
+  "repeater_cliHelpSetRepeat": "このノードに対するリピーターの役割を有効化または無効化します。",
+  "repeater_cliHelpSetAllowReadOnly": "（ルームサーバー設定）「オン」に設定した場合、空白のパスワードでのログインは可能ですが、ルームへの投稿はできません。（閲覧のみ）",
+  "repeater_cliHelpSetFloodMax": "インバウンドフラッパケットの最大ホップ数を設定します（最大値を超えた場合、パケットは転送されません）。",
+  "repeater_cliHelpSetIntThresh": "干渉閾値を設定します（dB単位）。デフォルト値は14です。0に設定すると、チャンネル間の干渉を検出する機能を無効にします。",
+  "repeater_cliHelpSetAgcResetInterval": "オートゲインコントローラーのリセット間隔を設定します。 0 に設定すると無効化されます。",
+  "repeater_cliHelpSetMultiAcks": "「ダブルACK」機能の有効化または無効化を可能にします。",
+  "repeater_cliHelpSetAdvertInterval": "ローカル（ホップなし）の広告パケットを送信する間隔を分単位で設定します。 0 に設定すると、機能を無効にします。",
+  "repeater_cliHelpSetFloodAdvertInterval": "洪水広告の送信間隔を時間単位で設定します。0に設定すると、送信を停止します。",
+  "repeater_cliHelpSetGuestPassword": "ゲストのパスワードを設定/更新します。（繰り返し利用の場合、ゲストのログインは「統計情報を取得」のリクエストを送信できます）",
+  "repeater_cliHelpSetName": "広告の名前を設定します。",
+  "repeater_cliHelpSetLat": "広告表示の地図の緯度を設定します。（度分秒表記）",
+  "repeater_cliHelpSetLon": "広告表示の地図の経度を設定します。（度数、分）",
+  "repeater_cliHelpSetRadio": "完全に新しいラジオパラメータを設定し、設定として保存します。適用するには、「再起動」コマンドが必要です。",
+  "repeater_cliHelpSetRxDelay": "（実験用）遅延時間を設定するためのベース（1以上の値に設定する必要）\n受信パケットに対して、信号強度/スコアに基づいてわずかな遅延を適用します。 0に設定すると無効化されます。",
+  "repeater_cliHelpSetTxDelay": "時間経過に応じた「フラッシュモード」パケットの送信遅延を設定します。この遅延は、ランダムなスロットシステムと組み合わせて使用され、パケットの衝突を減らすことを目的としています。",
+  "repeater_cliHelpSetDirectTxDelay": "txdelayと同様ですが、ダイレクトモードのパケット転送にランダムな遅延を適用する場合に使用します。",
+  "repeater_cliHelpSetBridgeEnabled": "ブリッジを有効化/無効化",
+  "repeater_cliHelpSetBridgeDelay": "パケットを再送信する前に、遅延を設定する。",
+  "repeater_cliHelpSetBridgeSource": "橋が受信したパケットを再送信するか、送信したパケットを再送信するかどうかを選択してください。",
+  "repeater_cliHelpSetBridgeBaud": "RS232 橋渡しに使用するシリアルリンクのボーレートを設定する。",
+  "repeater_cliHelpSetBridgeSecret": "ESPNow 橋の秘密設定",
+  "repeater_cliHelpSetAdcMultiplier": "特定のボードでのみサポートされている、報告されるバッテリー電圧を調整するためのカスタムファクタを設定できます。",
+  "repeater_cliHelpTempRadio": "指定された時間（分単位）に対して、一時的にラジオパラメータを設定し、その後元のラジオパラメータに戻します。（設定を保存しません）。",
+  "repeater_cliHelpSetPerm": "ACL を変更します。「permissions」が 0 の場合、対応するエントリ（pubkey のプレフィックスで識別）を削除します。pubkey-hex が有効な長さで、かつ ACL に現在存在しない場合に、新しいエントリを追加します。pubkey のプレフィックスと一致するエントリを更新します。権限ビットはファームウェアの役割によって異なり、下位 2 ビットは以下のとおりです：0 (ゲスト)、1 (読み取り専用)、2 (読み書き)、3 (管理者)",
+  "repeater_cliHelpGetBridgeType": "ブリッジ機能なし、RS232、ESPNow",
+  "repeater_cliHelpLogStart": "パケットのログ記録を開始し、ファイルシステムに保存する。",
+  "repeater_cliHelpLogStop": "ファイルシステムへのパケットログの記録を停止する。",
+  "repeater_cliHelpLogErase": "ファイルシステムからパケットログを削除する。",
+  "repeater_cliHelpNeighbors": "ゼロホップ広告を通じて受信した他のリピーターノードの一覧を表示します。各行は、IDプレフィックス（16進数）、タイムスタンプ、SNR（シグナル強度）の情報を4つ含みます。",
+  "repeater_cliHelpNeighborRemove": "隣接リストから、最初に一致するエントリ（pubkeyプレフィックス（16進数）で特定）を削除します。",
+  "repeater_cliHelpRegion": "（特定のシリーズのみ）定義されたすべての地域と、現在の洪水許可状況を一覧表示します。",
+  "repeater_cliHelpRegionLoad": "注：これは特殊な複数コマンドの呼び出しです。その後の各コマンドは、地域名であり（スペースを使用して親階層を示し、少なくとも1つのスペースが必要です）、空行/コマンドで終了します。",
+  "repeater_cliHelpRegionGet": "指定された名前のプレフィックスを持つ地域を検索します（または、グローバルな範囲の場合は「*」）。結果として、「region-name (parent-name) 'F'」と返答します。",
+  "repeater_cliHelpRegionPut": "指定された名前で、領域の定義を追加または更新します。",
+  "repeater_cliHelpRegionRemove": "指定された名前を持つ領域の定義を削除します。(正確に一致している必要があり、子領域は存在してはなりません)",
+  "repeater_cliHelpRegionAllowf": "指定された領域に対して、「洪水」アクセス許可を設定します。 (グローバル/従来のスコープには「*」を使用)",
+  "repeater_cliHelpRegionDenyf": "指定された領域における「FLOOD」権限を削除します。（注：現時点では、グローバル/従来の範囲での使用は推奨されません！）",
+  "repeater_cliHelpRegionHome": "現在の「ホーム」地域に返信します。（まだ適用されていない、将来利用を予定）",
+  "repeater_cliHelpRegionHomeSet": "「ホーム」地域を設定します。",
+  "repeater_cliHelpRegionSave": "領域リスト/マップをストレージに保存する。",
+  "repeater_cliHelpGps": "GPSの状態を表示します。GPSがオフの場合、「オフ」と表示します。オンの場合、「オン」、「ステータス」、「位置情報」、「衛星数」と表示します。",
+  "repeater_cliHelpGpsOnOff": "GPS の電源状態を切り替えます。",
+  "repeater_cliHelpGpsSync": "ノードの時刻をGPSクロックと同期する。",
+  "repeater_cliHelpGpsSetLoc": "ノードの位置をGPS座標に設定し、設定を保存する。",
+  "repeater_cliHelpGpsAdvert": "ノードの広告設定における場所情報の指定:\n- none: 広告に場所情報を含まない\n- share: GPS位置情報を共有 (SensorManagerから取得)\n- prefs: プリファレンスに保存された場所情報を広告",
+  "repeater_cliHelpGpsAdvertSet": "場所に関する広告設定を行います。",
+  "repeater_commandsListTitle": "コマンド一覧",
+  "repeater_commandsListNote": "注：さまざまな「set ...」コマンドには、「get ...」コマンドも存在します。",
+  "repeater_general": "一般的な",
+  "repeater_settingsCategory": "設定",
+  "repeater_bridge": "橋",
+  "repeater_logging": "ログ記録",
+  "repeater_neighborsRepeaterOnly": "近隣住民（リピーターのみ）",
+  "repeater_regionManagementRepeaterOnly": "地域管理（ブロードキャスト用のみ）",
+  "repeater_regionNote": "地域レベルでの管理のため、地域定義と権限の管理を行うための機能が導入されました。",
+  "repeater_gpsManagement": "GPS管理",
+  "repeater_gpsNote": "GPSコマンドは、位置情報に関連するタスクを管理するために導入されました。",
+  "telemetry_receivedData": "受信したテレメトリーデータ",
+  "telemetry_requestTimeout": "テレメトリの要求タイムアウトしました。",
+  "telemetry_errorLoading": "テレメトリの読み込みに失敗しました: {error}",
+  "@telemetry_errorLoading": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_noData": "テレメトリデータは利用できません。",
+  "telemetry_channelTitle": "チャンネル {channel}",
+  "@telemetry_channelTitle": {
+    "placeholders": {
+      "channel": {
+        "type": "int"
+      }
+    }
+  },
+  "telemetry_batteryLabel": "バッテリー",
+  "telemetry_voltageLabel": "電圧",
+  "telemetry_mcuTemperatureLabel": "MCU の温度",
+  "telemetry_temperatureLabel": "温度",
+  "telemetry_currentLabel": "現在",
+  "telemetry_batteryValue": "{percent}% / {volts}V",
+  "@telemetry_batteryValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "volts": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_voltageValue": "{volts}V",
+  "@telemetry_voltageValue": {
+    "placeholders": {
+      "volts": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_currentValue": "{amps}A",
+  "@telemetry_currentValue": {
+    "placeholders": {
+      "amps": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_temperatureValue": "{celsius}℃ / {fahrenheit}°F",
+  "@telemetry_temperatureValue": {
+    "placeholders": {
+      "celsius": {
+        "type": "String"
+      },
+      "fahrenheit": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_receivedData": "近隣住民のデータを受信",
+  "neighbors_requestTimedOut": "近隣住民からの要望：時間制限を設けてください。",
+  "neighbors_errorLoading": "近隣情報の読み込みに失敗: {error}",
+  "@neighbors_errorLoading": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_repeatersNeighbors": "繰り返し送信する、近隣",
+  "neighbors_noData": "近隣のデータは利用できません。",
+  "neighbors_unknownContact": "不明な {pubkey}",
+  "@neighbors_unknownContact": {
+    "placeholders": {
+      "pubkey": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_heardAgo": "聞いたのは、{time} くらい前です",
+  "@neighbors_heardAgo": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "channelPath_title": "パケットパス",
+  "channelPath_viewMap": "地図を表示する",
+  "channelPath_otherObservedPaths": "観察されたその他の経路",
+  "channelPath_repeaterHops": "ホップの繰り返し",
+  "channelPath_noHopDetails": "このパッケージに関する詳細な情報は提供されていません。",
+  "channelPath_messageDetails": "メッセージの詳細",
+  "channelPath_senderLabel": "送信者",
+  "channelPath_timeLabel": "時間",
+  "channelPath_repeatsLabel": "繰り返し",
+  "channelPath_pathLabel": "{index} 番目の経路",
+  "channelPath_observedLabel": "観察",
+  "channelPath_observedPathTitle": "観察された経路 {index} • {hops}",
+  "@channelPath_observedPathTitle": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "hops": {
+        "type": "String"
+      }
+    }
+  },
+  "channelPath_noLocationData": "場所に関するデータはありません",
+  "channelPath_timeWithDate": "{day}/{month} {time}",
+  "@channelPath_timeWithDate": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "channelPath_timeOnly": "{time}",
+  "@channelPath_timeOnly": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "channelPath_unknownPath": "不明",
+  "channelPath_floodPath": "洪水",
+  "channelPath_directPath": "直接",
+  "channelPath_observedZeroOf": "{total}個のホップ",
+  "@channelPath_observedZeroOf": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "channelPath_observedSomeOf": "{observed} of {total} hops",
+  "@channelPath_observedSomeOf": {
+    "placeholders": {
+      "observed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "channelPath_mapTitle": "経路図",
+  "channelPath_noRepeaterLocations": "この経路には、中継装置の設置場所がありません。",
+  "channelPath_primaryPath": "{index}番目の経路（主要経路）",
+  "@channelPath_primaryPath": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "@channelPath_pathLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "channelPath_pathLabelTitle": "道",
+  "channelPath_observedPathHeader": "観察された経路",
+  "channelPath_selectedPathLabel": "{label} • {prefixes}",
+  "@channelPath_selectedPathLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "prefixes": {
+        "type": "String"
+      }
+    }
+  },
+  "channelPath_noHopDetailsAvailable": "このパッケージに関する詳細な配送情報は利用できません。",
+  "channelPath_unknownRepeater": "不明な増幅機",
+  "community_title": "地域",
+  "community_create": "コミュニティを構築する",
+  "community_createDesc": "新しいコミュニティを作成し、QRコードで共有する。",
+  "community_join": "参加する",
+  "community_joinTitle": "コミュニティに参加する",
+  "community_joinConfirmation": "{name}さんのようなコミュニティに参加したいですか？",
+  "@community_joinConfirmation": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_scanQr": "コミュニティのQRコードをスキャン",
+  "community_scanInstructions": "カメラを、地域のQRコードを向けて",
+  "community_showQr": "QRコードを表示する",
+  "community_publicChannel": "地域住民向け",
+  "community_hashtagChannel": "コミュニティ用ハッシュタグ",
+  "community_name": "コミュニティ名",
+  "community_enterName": "コミュニティ名を入力してください",
+  "community_created": "コミュニティ「{name}」が作成されました",
+  "@community_created": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_joined": "{name} のコミュニティに参加",
+  "@community_joined": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_qrTitle": "コミュニティ共有",
+  "community_qrInstructions": "このQRコードをスキャンして、{name}に参加してください。",
+  "@community_qrInstructions": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_hashtagPrivacyHint": "コミュニティハッシュタグのチャンネルは、コミュニティのメンバーのみが参加できます。",
+  "community_invalidQrCode": "無効なコミュニティQRコード",
+  "community_alreadyMember": "すでに会員である",
+  "community_alreadyMemberMessage": "あなたはすでに {name} の会員です。",
+  "@community_alreadyMemberMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_addPublicChannel": "コミュニティ用の公開チャンネルを追加",
+  "community_addPublicChannelHint": "このコミュニティの公開チャンネルを自動的に追加する",
+  "community_noCommunities": "まだコミュニティは形成されていません。",
+  "community_scanOrCreate": "QRコードをスキャンするか、コミュニティを作成して開始してください。",
+  "community_manageCommunities": "コミュニティの管理",
+  "community_delete": "コミュニティからの離脱",
+  "community_deleteConfirm": "{name}を辞める？",
+  "@community_deleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_deleteChannelsWarning": "これにより、{count} のチャンネルとそのメッセージも削除されます。",
+  "@community_deleteChannelsWarning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "community_deleted": "コミュニティ「{name}」を離れる",
+  "@community_deleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_regenerateSecret": "秘密の復元",
+  "community_regenerateSecretConfirm": "{name} の秘密鍵を再生成しますか？ 継続的に通信するため、すべてのメンバーは新しいQRコードをスキャンする必要があります。",
+  "@community_regenerateSecretConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_regenerate": "再生",
+  "community_secretRegenerated": "{name} への秘密が再設定されました",
+  "@community_secretRegenerated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_updateSecret": "秘密情報の更新",
+  "community_secretUpdated": "{name} 向けの秘密設定を更新",
+  "@community_secretUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_scanToUpdateSecret": "新しいQRコードをスキャンして、{name}の秘密情報を更新してください。",
+  "@community_scanToUpdateSecret": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_addHashtagChannel": "コミュニティのハッシュタグを追加",
+  "community_addHashtagChannelDesc": "このコミュニティ用のハッシュタグチャンネルを追加する",
+  "community_selectCommunity": "コミュニティを選択",
+  "community_regularHashtag": "定期的なハッシュタグ",
+  "community_regularHashtagDesc": "一般のハッシュタグ（誰でも参加可能）",
+  "community_communityHashtag": "コミュニティ用ハッシュタグ",
+  "community_communityHashtagDesc": "コミュニティメンバーのみへの限定",
+  "community_forCommunity": "{name} 様",
+  "@community_forCommunity": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "listFilter_tooltip": "フィルタリングと並べ替え",
+  "listFilter_sortBy": "並び替え",
+  "listFilter_latestMessages": "最新のメッセージ",
+  "listFilter_heardRecently": "最近、聞いた",
+  "listFilter_az": "AからZ",
+  "listFilter_filters": "フィルター",
+  "listFilter_all": "すべて",
+  "listFilter_favorites": "お気に入り",
+  "listFilter_addToFavorites": "お気に入りに追加",
+  "listFilter_removeFromFavorites": "お気に入りから削除",
+  "listFilter_users": "利用者",
+  "listFilter_repeaters": "繰り返し送信装置",
+  "listFilter_roomServers": "ルーム用サーバー",
+  "listFilter_unreadOnly": "未読のみ",
+  "listFilter_newGroup": "新しいグループ",
+  "pathTrace_you": "あなた",
+  "pathTrace_failed": "パスの追跡に失敗しました。",
+  "pathTrace_notAvailable": "パスの追跡機能は利用できません。",
+  "pathTrace_refreshTooltip": "パスの追跡をリフレッシュする。",
+  "pathTrace_someHopsNoLocation": "ホップの1つまたは複数について、場所が特定されていません。",
+  "pathTrace_clearTooltip": "明確な道筋。",
+  "losSelectStartEnd": "LOS の開始ノードと終了ノードを選択してください。",
+  "losRunFailed": "視界確認に失敗: {error}",
+  "@losRunFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "losClearAllPoints": "すべての項目をクリア",
+  "losRunToViewElevationProfile": "LOS（レーザー測距）を使用して、標高プロファイルを表示する",
+  "losMenuTitle": "LOS メニュー",
+  "losMenuSubtitle": "特定の場所をタップするか、地図を長押ししてカスタムポイントを作成する。",
+  "losShowDisplayNodes": "表示ノードを表示する",
+  "losCustomPoints": "カスタマイズ可能なポイント",
+  "losCustomPointLabel": "カスタマイズ {index}",
+  "@losCustomPointLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "losPointA": "ポイントA",
+  "losPointB": "ポイントB",
+  "losAntennaA": "アンテナ A: {value} {unit}",
+  "@losAntennaA": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "losAntennaB": "アンテナ B: {value} {unit}",
+  "@losAntennaB": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "losRun": "LOS（レーティングシステム）を使用する",
+  "losNoElevationData": "標高データは含まれていません",
+  "losProfileClear": "{distance} {distanceUnit}, clear LOS, min clearance {clearance} {heightUnit}",
+  "@losProfileClear": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "distanceUnit": {
+        "type": "String"
+      },
+      "clearance": {
+        "type": "String"
+      },
+      "heightUnit": {
+        "type": "String"
+      }
+    }
+  },
+  "losProfileBlocked": "{distance} {distanceUnit}, blocked by {obstruction} {heightUnit}",
+  "@losProfileBlocked": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "distanceUnit": {
+        "type": "String"
+      },
+      "obstruction": {
+        "type": "String"
+      },
+      "heightUnit": {
+        "type": "String"
+      }
+    }
+  },
+  "losStatusChecking": "LOS：確認中…",
+  "losStatusNoData": "LOS: データの欠如",
+  "losStatusSummary": "LOS: {clear}/{total} clear, {blocked} blocked, {unknown} unknown",
+  "@losStatusSummary": {
+    "placeholders": {
+      "clear": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "blocked": {
+        "type": "int"
+      },
+      "unknown": {
+        "type": "int"
+      }
+    }
+  },
+  "losErrorElevationUnavailable": "あるサンプルまたは複数のサンプルについて、標高データが利用できません。",
+  "losErrorInvalidInput": "LOS（レーダー）計算に必要な、無効な点/標高データ。",
+  "losRenameCustomPoint": "カスタムポイントの名前を変更する",
+  "losPointName": "項目名",
+  "losShowPanelTooltip": "LOSパネルを表示する",
+  "losHidePanelTooltip": "LOSパネルを隠す",
+  "losElevationAttribution": "標高データ：Open-Meteo (CC BY 4.0)",
+  "losLegendRadioHorizon": "ラジオ・ホライゾン",
+  "losLegendLosBeam": "LOS ビーミング",
+  "losLegendTerrain": "地形",
+  "losFrequencyLabel": "周波数",
+  "losFrequencyInfoTooltip": "計算の詳細を見る",
+  "losFrequencyDialogTitle": "ラジオによる水平線計算",
+  "losFrequencyDialogDescription": "k={baselineK} ( {baselineFreq} MHz) から開始し、現在の {frequencyMHz} MHz の帯域に対して k の値を調整します。これにより、曲面状の無線通信範囲の限界が定義されます。",
+  "@losFrequencyDialogDescription": {
+    "description": "Explain how the calculation uses the baseline frequency and derived k-factor.",
+    "placeholders": {
+      "baselineK": {
+        "type": "double"
+      },
+      "baselineFreq": {
+        "type": "double"
+      },
+      "frequencyMHz": {
+        "type": "double"
+      },
+      "kFactor": {
+        "type": "double"
+      }
+    }
+  },
+  "contacts_pathTrace": "経路追跡",
+  "contacts_ping": "パング",
+  "contacts_repeaterPathTrace": "リピーターまでの経路を追跡する",
+  "contacts_repeaterPing": "PING 繰り返し",
+  "contacts_roomPathTrace": "部屋のサーバーへの経路を追跡する",
+  "contacts_roomPing": "ピンルーム用サーバー",
+  "contacts_chatTraceRoute": "経路の追跡ルート",
+  "contacts_pathTraceTo": "{name} への経路を追跡する",
+  "@contacts_pathTraceTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_clipboardEmpty": "クリップボードは空です。",
+  "contacts_invalidAdvertFormat": "無効な連絡先情報",
+  "contacts_contactImported": "連絡先が登録されました。",
+  "contacts_contactImportFailed": "連絡先のインポートに失敗しました。",
+  "contacts_zeroHopAdvert": "ゼロホップ広告",
+  "contacts_floodAdvert": "洪水に関する広告",
+  "contacts_copyAdvertToClipboard": "広告をクリップボードにコピー",
+  "contacts_addContactFromClipboard": "クリップボードから連絡先を追加する",
+  "contacts_ShareContact": "連絡先をクリップボードにコピー",
+  "contacts_ShareContactZeroHop": "広告を通じて連絡先を共有する",
+  "contacts_zeroHopContactAdvertSent": "広告を通じて連絡先を得た。",
+  "contacts_zeroHopContactAdvertFailed": "連絡を送信できませんでした。",
+  "contacts_contactAdvertCopied": "広告がクリップボードにコピーされました。",
+  "contacts_contactAdvertCopyFailed": "広告のコピーがクリップボードにコピーできませんでした。",
+  "notification_activityTitle": "メッシュコアの活動",
+  "notification_messagesCount": "{count} {count, plural, =1{message} other{messages}}",
+  "@notification_messagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_channelMessagesCount": "{count} {count, plural, =1{チャンネルメッセージ} other{チャンネルメッセージ}}",
+  "@notification_channelMessagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_newNodesCount": "{count} {count, plural, =1{新しいノード} other{新しいノード}}",
+  "@notification_newNodesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_newTypeDiscovered": "新たに {contactType} が発見されました",
+  "@notification_newTypeDiscovered": {
+    "placeholders": {
+      "contactType": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_receivedNewMessage": "新しいメッセージを受信",
+  "settings_gpxExportRepeaters": "GPX へのエクスポート用リピーター/ルームサーバー",
+  "settings_gpxExportRepeatersSubtitle": "GPXファイルに場所情報を付加した、レピーター/ルームサーバーのエクスポート",
+  "settings_gpxExportContacts": "GPX 形式へのエクスポート",
+  "settings_gpxExportContactsSubtitle": "GPXファイルに位置情報を保存して、他の人と共有する。",
+  "settings_gpxExportAll": "すべての連絡先をGPX形式でエクスポートする",
+  "settings_gpxExportAllSubtitle": "すべての連絡先を、場所情報付きのGPXファイルにエクスポートする。",
+  "settings_gpxExportSuccess": "GPXファイルの正常なエクスポートが完了しました。",
+  "settings_gpxExportNoContacts": "エクスポートする連絡先は存在しません。",
+  "settings_gpxExportNotAvailable": "このデバイス/OSではサポートされていません",
+  "settings_gpxExportError": "エクスポート時にエラーが発生しました。",
+  "settings_gpxExportRepeatersRoom": "中継装置およびルームサーバーの設置場所",
+  "settings_gpxExportChat": "関連施設",
+  "settings_gpxExportAllContacts": "すべての連絡先場所",
+  "settings_gpxExportShareText": "meshcore-openからエクスポートされた地図データ",
+  "settings_gpxExportShareSubject": "meshcore-open GPX形式の地図データのエクスポート",
+  "snrIndicator_nearByRepeaters": "近くの電波中継局",
+  "snrIndicator_lastSeen": "最後に確認された場所",
+  "contactsSettings_title": "連絡先設定",
+  "contactsSettings_autoAddTitle": "自動検出",
+  "contactsSettings_otherTitle": "その他の連絡に関する設定",
+  "contactsSettings_autoAddUsersTitle": "自動でユーザーを追加する",
+  "contactsSettings_autoAddUsersSubtitle": "利用者が自動的に発見したユーザーを追加できるようにする。",
+  "contactsSettings_autoAddRepeatersTitle": "自動で繰り返し設定",
+  "contactsSettings_autoAddRepeatersSubtitle": "発見した中継局を、自動的に追加できるようにする。",
+  "contactsSettings_autoAddRoomServersTitle": "自動でルームサーバーを追加",
+  "contactsSettings_autoAddRoomServersSubtitle": "利用者が、発見した部屋のサーバーを自動的に追加できるようにする。",
+  "contactsSettings_autoAddSensorsTitle": "自動でセンサーを追加",
+  "contactsSettings_autoAddSensorsSubtitle": "利用者が、発見したセンサーを自動的に追加できるようにする。",
+  "contactsSettings_overwriteOldestTitle": "最も古いものを上書きする",
+  "contactsSettings_overwriteOldestSubtitle": "連絡先リストが満杯になった場合、最も古いかつ「お気に入り」ではない連絡先が削除されます。",
+  "discoveredContacts_Title": "連絡先が見つかった",
+  "discoveredContacts_noMatching": "一致する連絡先が見つかりませんでした",
+  "discoveredContacts_searchHint": "発見された連絡先を検索する",
+  "discoveredContacts_contactAdded": "連絡先を追加",
+  "discoveredContacts_addContact": "連絡先を追加",
+  "discoveredContacts_copyContact": "連絡先をクリップボードにコピー",
+  "discoveredContacts_deleteContact": "発見された連絡先を削除",
+  "discoveredContacts_deleteContactAll": "発見されたすべての連絡先を削除",
+  "discoveredContacts_deleteContactAllContent": "本当に、見つけたすべての連絡先を削除してもよろしいですか？",
+  "chat_sendCooldown": "再度送信する前に、しばらくお待ちください。",
+  "appSettings_jumpToOldestUnread": "最も古い未読のメッセージへ移動",
+  "appSettings_jumpToOldestUnreadSubtitle": "未読メッセージがあるチャットを開く際、「最新のメッセージ」ではなく、最初に未読のメッセージまでスクロールしてください。",
+  "appSettings_languageHu": "ハンガリー語",
+  "appSettings_languageJa": "日本語",
+  "appSettings_languageKo": "韓国語",
+  "radioStats_tooltip": "ラジオおよびメッシュに関する統計",
+  "radioStats_screenTitle": "ラジオの統計",
+  "radioStats_notConnected": "ラジオの統計情報を表示するために、デバイスに接続してください。",
+  "radioStats_firmwareTooOld": "ラジオの統計機能を使用するには、v8またはそれ以降のファームウェアが必要です。",
+  "radioStats_waiting": "データ待ち…",
+  "radioStats_noiseFloor": "ノイズレベル: {noiseDbm} dBm",
+  "@radioStats_noiseFloor": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_lastRssi": "最後のRSSI: {rssiDbm} dBm",
+  "@radioStats_lastRssi": {
+    "placeholders": {
+      "rssiDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_lastSnr": "最終SNR: {snr} dB",
+  "@radioStats_lastSnr": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "radioStats_txAir": "TX 放送時間（合計）：{seconds} 秒",
+  "@radioStats_txAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_rxAir": "RX 放送時間（合計）：{seconds} 秒",
+  "@radioStats_rxAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_chartCaption": "最近のサンプルのノイズレベル（dBm）。",
+  "radioStats_stripNoise": "ノイズレベル: {noiseDbm} dBm",
+  "@radioStats_stripNoise": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_stripWaiting": "ラジオの統計情報を取得中…",
+  "radioStats_settingsTile": "ラジオの統計",
+  "radioStats_settingsSubtitle": "ノイズレベル、RSSI、SNR、および通信時間",
+  "@settings_multiAck": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_privacy": "プライバシー設定",
+  "settings_privacySubtitle": "共有する情報の内容を管理する。",
+  "settings_denyAll": "すべてを否定",
+  "settings_privacySettingsDescription": "自分のデバイスが他の人に共有する情報を選択してください。",
+  "settings_allowByContact": "連絡先を明示するオプション",
+  "settings_allowAll": "すべて許可",
+  "settings_telemetryBaseMode": "テレメトリ基本モード",
+  "settings_telemetryLocationMode": "テレメトリ位置特定モード",
+  "settings_telemetryEnvironmentMode": "テレメトリ環境モード",
+  "settings_advertLocation": "広告掲載場所",
+  "settings_advertLocationSubtitle": "広告に場所を記載してください。",
+  "settings_multiAck": "複数のACK：{value}",
+  "settings_telemetryModeUpdated": "テレメトリモードが更新されました",
+  "contact_info": "連絡先",
+  "contact_settings": "連絡設定",
+  "contact_telemetry": "テレメトリー",
+  "contact_lastSeen": "最後に確認された場所",
+  "contact_clearChat": "チャットのクリア",
+  "contact_teleBase": "テレメトリ基地",
+  "contact_teleBaseSubtitle": "バッテリー残量と基本的なテレメトリーの共有を許可する",
+  "contact_teleLoc": "テレメトリの場所",
+  "contact_teleLocSubtitle": "位置情報共有を許可する",
+  "contact_teleEnv": "テレメトリ環境",
+  "contact_teleEnvSubtitle": "環境センサーのデータを共有することを許可する",
+  "map_showOverlaps": "リピーターキーの重複",
+  "map_runTraceWithReturnPath": "元の経路に戻る。",
+  "@scanner_linuxPairingPinPrompt": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_linuxPairingShowPin": "PINを表示",
+  "scanner_linuxPairingHidePin": "PINを非表示",
+  "scanner_linuxPairingPinTitle": "Bluetooth ペアリング PIN",
+  "scanner_linuxPairingPinPrompt": "{deviceName}のPINを入力してください（なしの場合は空欄のまま）。"
+}

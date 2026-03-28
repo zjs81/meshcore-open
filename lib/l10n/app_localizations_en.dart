@@ -393,6 +393,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_privacyModeDisabled => 'Privacy mode disabled';
 
   @override
+  String get settings_privacy => 'Privacy Settings';
+
+  @override
+  String get settings_privacySubtitle => 'Control what information is shared.';
+
+  @override
+  String get settings_privacySettingsDescription =>
+      'Choose what information your device shares with others.';
+
+  @override
+  String get settings_denyAll => 'Deny all';
+
+  @override
+  String get settings_allowByContact => 'Allow by contact flags';
+
+  @override
+  String get settings_allowAll => 'Allow all';
+
+  @override
+  String get settings_telemetryBaseMode => 'Telemetry Base Mode';
+
+  @override
+  String get settings_telemetryLocationMode => 'Telemetry Location Mode';
+
+  @override
+  String get settings_telemetryEnvironmentMode => 'Telemetry Environment Mode';
+
+  @override
+  String get settings_advertLocation => 'Advert Location';
+
+  @override
+  String get settings_advertLocationSubtitle => 'Include location in advert.';
+
+  @override
+  String settings_multiAck(String value) {
+    return 'Multi-ACKs: $value';
+  }
+
+  @override
+  String get settings_telemetryModeUpdated => 'Telemetry mode updated';
+
+  @override
   String get settings_actions => 'Actions';
 
   @override
@@ -685,6 +727,48 @@ class AppLocalizationsEn extends AppLocalizations {
       'Auto route rotation disabled';
 
   @override
+  String get appSettings_maxRouteWeight => 'Max Route Weight';
+
+  @override
+  String get appSettings_maxRouteWeightSubtitle =>
+      'Maximum weight a path can accumulate from successful deliveries';
+
+  @override
+  String get appSettings_initialRouteWeight => 'Initial Route Weight';
+
+  @override
+  String get appSettings_initialRouteWeightSubtitle =>
+      'Starting weight for newly discovered paths';
+
+  @override
+  String get appSettings_routeWeightSuccessIncrement =>
+      'Success Weight Increment';
+
+  @override
+  String get appSettings_routeWeightSuccessIncrementSubtitle =>
+      'Weight added to a path after successful delivery';
+
+  @override
+  String get appSettings_routeWeightFailureDecrement =>
+      'Failure Weight Decrement';
+
+  @override
+  String get appSettings_routeWeightFailureDecrementSubtitle =>
+      'Weight removed from a path after failed delivery';
+
+  @override
+  String get appSettings_maxMessageRetries => 'Max Message Retries';
+
+  @override
+  String get appSettings_maxMessageRetriesSubtitle =>
+      'Number of retry attempts before marking a message as failed';
+
+  @override
+  String path_routeWeight(String weight, String max) {
+    return '$weight/$max';
+  }
+
+  @override
   String get appSettings_battery => 'Battery';
 
   @override
@@ -929,6 +1013,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String contacts_lastSeenDaysAgo(int days) {
     return '~ $days days';
   }
+
+  @override
+  String get contact_info => 'Contact Info';
+
+  @override
+  String get contact_settings => 'Contact Settings';
+
+  @override
+  String get contact_telemetry => 'Telemetry';
+
+  @override
+  String get contact_lastSeen => 'Last seen';
+
+  @override
+  String get contact_clearChat => 'Clear Chat';
+
+  @override
+  String get contact_teleBase => 'Telemetry Base';
+
+  @override
+  String get contact_teleBaseSubtitle =>
+      'Allow sharing battery level and basic telemetry';
+
+  @override
+  String get contact_teleLoc => 'Telemetry Location';
+
+  @override
+  String get contact_teleLocSubtitle => 'Allow sharing location data';
+
+  @override
+  String get contact_teleEnv => 'Telemetry Environment';
+
+  @override
+  String get contact_teleEnvSubtitle => 'Allow sharing environment sensor data';
 
   @override
   String get channels_title => 'Channels';
@@ -1539,6 +1657,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get map_otherNodes => 'Other Nodes';
 
   @override
+  String get map_showOverlaps => 'Repeater Key Overlaps';
+
+  @override
   String get map_keyPrefix => 'Key Prefix';
 
   @override
@@ -1578,7 +1699,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get map_tapToAdd => 'Tap on nodes to add them to the path.';
 
   @override
-  String get map_runTrace => 'Run Path Trace';
+  String get map_runTrace => 'Run path trace';
+
+  @override
+  String get map_runTraceWithReturnPath => 'Return back on the same path.';
 
   @override
   String get map_removeLast => 'Remove Last';
@@ -3327,4 +3451,98 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get discoveredContacts_deleteContactAllContent =>
       'Are you sure you want to delete all discovered contacts?';
+
+  @override
+  String get chat_sendCooldown => 'Please wait a moment before sending again.';
+
+  @override
+  String get appSettings_jumpToOldestUnread => 'Jump to oldest unread';
+
+  @override
+  String get appSettings_jumpToOldestUnreadSubtitle =>
+      'When opening a chat with unread messages, scroll to the first unread instead of the latest.';
+
+  @override
+  String get appSettings_languageHu => 'Hungarian';
+
+  @override
+  String get appSettings_languageJa => 'Japanese';
+
+  @override
+  String get appSettings_languageKo => 'Korean';
+
+  @override
+  String get radioStats_tooltip => 'Radio & mesh stats';
+
+  @override
+  String get radioStats_screenTitle => 'Radio stats';
+
+  @override
+  String get radioStats_notConnected =>
+      'Connect to a device to view radio statistics.';
+
+  @override
+  String get radioStats_firmwareTooOld =>
+      'Radio statistics require companion firmware v8 or newer.';
+
+  @override
+  String get radioStats_waiting => 'Waiting for data…';
+
+  @override
+  String radioStats_noiseFloor(int noiseDbm) {
+    return 'Noise floor: $noiseDbm dBm';
+  }
+
+  @override
+  String radioStats_lastRssi(int rssiDbm) {
+    return 'Last RSSI: $rssiDbm dBm';
+  }
+
+  @override
+  String radioStats_lastSnr(String snr) {
+    return 'Last SNR: $snr dB';
+  }
+
+  @override
+  String radioStats_txAir(int seconds) {
+    return 'TX airtime (total): $seconds s';
+  }
+
+  @override
+  String radioStats_rxAir(int seconds) {
+    return 'RX airtime (total): $seconds s';
+  }
+
+  @override
+  String get radioStats_chartCaption =>
+      'Noise floor (dBm) over recent samples.';
+
+  @override
+  String radioStats_stripNoise(int noiseDbm) {
+    return 'Noise floor: $noiseDbm dBm';
+  }
+
+  @override
+  String get radioStats_stripWaiting => 'Fetching radio stats…';
+
+  @override
+  String get radioStats_settingsTile => 'Radio stats';
+
+  @override
+  String get radioStats_settingsSubtitle =>
+      'Noise floor, RSSI, SNR, and airtime';
+
+  @override
+  String get scanner_linuxPairingShowPin => 'Show PIN';
+
+  @override
+  String get scanner_linuxPairingHidePin => 'Hide PIN';
+
+  @override
+  String get scanner_linuxPairingPinTitle => 'Bluetooth Pairing PIN';
+
+  @override
+  String scanner_linuxPairingPinPrompt(String deviceName) {
+    return 'Enter PIN for $deviceName (leave blank if none).';
+  }
 }

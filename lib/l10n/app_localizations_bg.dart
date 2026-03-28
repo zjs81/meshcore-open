@@ -399,6 +399,52 @@ class AppLocalizationsBg extends AppLocalizations {
       'Режим на поверителност е деактивиран';
 
   @override
+  String get settings_privacy => 'Настройки на поверителността';
+
+  @override
+  String get settings_privacySubtitle =>
+      'Контролирайте каква информация се споделя.';
+
+  @override
+  String get settings_privacySettingsDescription =>
+      'Изберете каква информация устройството ви споделя с другите.';
+
+  @override
+  String get settings_denyAll => 'Откажи всичко';
+
+  @override
+  String get settings_allowByContact => 'Позволи по флагове за контакт';
+
+  @override
+  String get settings_allowAll => 'Позволи всичко';
+
+  @override
+  String get settings_telemetryBaseMode => 'Базов режим на телеметрия';
+
+  @override
+  String get settings_telemetryLocationMode =>
+      'Режим на местоположение на телеметрията';
+
+  @override
+  String get settings_telemetryEnvironmentMode =>
+      'Режим на средата на телеметрията';
+
+  @override
+  String get settings_advertLocation => 'Място на обявата';
+
+  @override
+  String get settings_advertLocationSubtitle =>
+      'Включи местоположение в обявата';
+
+  @override
+  String settings_multiAck(String value) {
+    return 'Мулти-потвърди: $value';
+  }
+
+  @override
+  String get settings_telemetryModeUpdated => 'Режим на телеметрията е обновен';
+
+  @override
   String get settings_actions => 'Действия';
 
   @override
@@ -696,6 +742,51 @@ class AppLocalizationsBg extends AppLocalizations {
       'Автоматично маршрутизирането е деактивирано';
 
   @override
+  String get appSettings_maxRouteWeight =>
+      'Максимално допустимо тегло на маршрута';
+
+  @override
+  String get appSettings_maxRouteWeightSubtitle =>
+      'Максималното тегло, което един маршрут може да събере от успешни доставки.';
+
+  @override
+  String get appSettings_initialRouteWeight =>
+      'Първоначална тежест на маршрута';
+
+  @override
+  String get appSettings_initialRouteWeightSubtitle =>
+      'Начално тегло за новооткрити маршрути';
+
+  @override
+  String get appSettings_routeWeightSuccessIncrement =>
+      'Увеличение на теглото за успех';
+
+  @override
+  String get appSettings_routeWeightSuccessIncrementSubtitle =>
+      'Тегло, добавено към път след успешно доставяне.';
+
+  @override
+  String get appSettings_routeWeightFailureDecrement =>
+      'Намаляване на теглото, свързано с неуспех';
+
+  @override
+  String get appSettings_routeWeightFailureDecrementSubtitle =>
+      'Тегло, което е било премахнато от пътя след неуспешен опит за доставка.';
+
+  @override
+  String get appSettings_maxMessageRetries =>
+      'Максимален брой опити за изпращане на съобщение';
+
+  @override
+  String get appSettings_maxMessageRetriesSubtitle =>
+      'Брой опити за повторно изпращане, преди съобщението да бъде маркирано като неуспешно.';
+
+  @override
+  String path_routeWeight(String weight, String max) {
+    return '$weight/$max';
+  }
+
+  @override
   String get appSettings_battery => 'Батерия';
 
   @override
@@ -943,6 +1034,42 @@ class AppLocalizationsBg extends AppLocalizations {
   String contacts_lastSeenDaysAgo(int days) {
     return 'Последно видян $days дни преди.';
   }
+
+  @override
+  String get contact_info => 'Контактна информация';
+
+  @override
+  String get contact_settings => 'Настройки за контакти';
+
+  @override
+  String get contact_telemetry => 'Телеметрия';
+
+  @override
+  String get contact_lastSeen => 'Последно видян';
+
+  @override
+  String get contact_clearChat => 'Изчисти чата';
+
+  @override
+  String get contact_teleBase => 'Базата данни за телеметрия';
+
+  @override
+  String get contact_teleBaseSubtitle =>
+      'Позволи споделяне на ниво на батерията и основна телеметрия';
+
+  @override
+  String get contact_teleLoc => 'Местоположение на телеметрията';
+
+  @override
+  String get contact_teleLocSubtitle =>
+      'Позволи споделяне на данни за местоположение';
+
+  @override
+  String get contact_teleEnv => 'Среда на телеметрия';
+
+  @override
+  String get contact_teleEnvSubtitle =>
+      'Позволи споделяне на данни от средносферните датчици';
 
   @override
   String get channels_title => 'Канали';
@@ -1563,6 +1690,9 @@ class AppLocalizationsBg extends AppLocalizations {
   String get map_otherNodes => 'Други възли';
 
   @override
+  String get map_showOverlaps => 'Покриване на ключа на повтаряча';
+
+  @override
   String get map_keyPrefix => 'Префикс на ключа';
 
   @override
@@ -1605,6 +1735,9 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get map_runTrace => 'Изпълни Път на Следване';
+
+  @override
+  String get map_runTraceWithReturnPath => 'Върни се по същия път.';
 
   @override
   String get map_removeLast => 'Премахни Последно';
@@ -3381,4 +3514,102 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get discoveredContacts_deleteContactAllContent =>
       'Сигурни ли сте, че искате да изтриете всички открити контакти?';
+
+  @override
+  String get chat_sendCooldown =>
+      'Моля, изчакайте малко, преди да изпратите отново.';
+
+  @override
+  String get appSettings_jumpToOldestUnread =>
+      'Преминете към най-старата непочетена статия';
+
+  @override
+  String get appSettings_jumpToOldestUnreadSubtitle =>
+      'Когато отворите чат с непрочетени съобщения, плъзнете надолу, за да видите първото непрочетено съобщение, вместо най-новото.';
+
+  @override
+  String get appSettings_languageHu => 'Унгарски';
+
+  @override
+  String get appSettings_languageJa => 'Японски';
+
+  @override
+  String get appSettings_languageKo => 'Корейски';
+
+  @override
+  String get radioStats_tooltip => 'Статистика за радио и мрежа';
+
+  @override
+  String get radioStats_screenTitle =>
+      'Статистически данни за радиопредаванията';
+
+  @override
+  String get radioStats_notConnected =>
+      'Свържете се с устройство, за да видите статистически данни за радиопредаване.';
+
+  @override
+  String get radioStats_firmwareTooOld =>
+      'Статистиката на радиостанцията изисква съвместимо софтуерно решение версия 8 или по-нова.';
+
+  @override
+  String get radioStats_waiting => 'Изчакване на данни…';
+
+  @override
+  String radioStats_noiseFloor(int noiseDbm) {
+    return 'Ниво на шума: $noiseDbm dBm';
+  }
+
+  @override
+  String radioStats_lastRssi(int rssiDbm) {
+    return 'Последен RSSI: $rssiDbm dBm';
+  }
+
+  @override
+  String radioStats_lastSnr(String snr) {
+    return 'Последна стойност на SNR: $snr dB';
+  }
+
+  @override
+  String radioStats_txAir(int seconds) {
+    return 'Време на въздух (общо): $seconds секунди';
+  }
+
+  @override
+  String radioStats_rxAir(int seconds) {
+    return 'Общо време на използване на RX (в секунди): $seconds с';
+  }
+
+  @override
+  String get radioStats_chartCaption =>
+      'Ниво на шума (dBm) за последните измервания.';
+
+  @override
+  String radioStats_stripNoise(int noiseDbm) {
+    return 'Ниво на шума: $noiseDbm dBm';
+  }
+
+  @override
+  String get radioStats_stripWaiting => 'Извличане на данни за радиото…';
+
+  @override
+  String get radioStats_settingsTile => 'Статистически данни за радиостанции';
+
+  @override
+  String get radioStats_settingsSubtitle =>
+      'Ниво на шума, RSSI, SNR и време на пренос';
+
+  @override
+  String get scanner_linuxPairingShowPin => 'Покажи PIN';
+
+  @override
+  String get scanner_linuxPairingHidePin => 'Скрий ПИН';
+
+  @override
+  String get scanner_linuxPairingPinTitle =>
+      'PIN код за сдвояване на Bluetooth';
+
+  @override
+  String scanner_linuxPairingPinPrompt(String deviceName) {
+    return 'Въведете ПИН за $deviceName (оставете празно, ако няма).';
+  }
 }

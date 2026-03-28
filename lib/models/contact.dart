@@ -18,6 +18,7 @@ class Contact {
   final DateTime lastSeen;
   final DateTime lastMessageAt;
   final bool isActive;
+  final bool wasPulled;
   final Uint8List? rawPacket;
 
   Contact({
@@ -34,6 +35,7 @@ class Contact {
     required this.lastSeen,
     DateTime? lastMessageAt,
     this.isActive = true,
+    this.wasPulled = false,
     this.rawPacket,
   }) : lastMessageAt = lastMessageAt ?? lastSeen;
 
@@ -117,15 +119,14 @@ class Contact {
     );
   }
 
-  String get pathIdList {
+  /// Formats path bytes into comma-separated hex groups of [hashByteWidth] bytes.
+  String pathFormattedIdList(int hashByteWidth) {
     final pathBytes = pathBytesForDisplay;
     if (pathBytes.isEmpty) return '';
+    final w = hashByteWidth.clamp(1, 8);
     final parts = <String>[];
-    final groupSize = pathHashSize;
-    for (int i = 0; i < pathBytes.length; i += groupSize) {
-      final end = (i + groupSize) <= pathBytes.length
-          ? (i + groupSize)
-          : pathBytes.length;
+    for (int i = 0; i < pathBytes.length; i += w) {
+      final end = (i + w) <= pathBytes.length ? (i + w) : pathBytes.length;
       final chunk = pathBytes.sublist(i, end);
       parts.add(
         chunk
@@ -135,6 +136,9 @@ class Contact {
     }
     return parts.join(',');
   }
+
+  /// Default grouping uses legacy single-byte hop hash width.
+  String get pathIdList => pathFormattedIdList(pathHashSize);
 
   String get shortPubKeyHex {
     return "<${publicKeyHex.substring(0, 8)}...${publicKeyHex.substring(publicKeyHex.length - 8)}>";
@@ -157,6 +161,12 @@ class Contact {
         return null;
       }
       final pubKey = reader.readBytes(pubKeySize);
+
+      // Guard: reject contacts with zeroed or mostly-zeroed public keys
+      // (indicates corrupt flash storage on the firmware side)
+      final zeroCount = pubKey.where((b) => b == 0).length;
+      if (zeroCount > pubKeySize ~/ 2) return null;
+
       final type = reader.readByte();
       final flags = reader.readByte();
       final pathLen = reader.readByte();
@@ -166,15 +176,22 @@ class Contact {
       final pathBytes = reader.readBytes(maxPathSize).sublist(0, safePathLen);
       final name = reader.readCStringGreedy(maxNameSize);
 
+      // Guard: reject contacts with non-printable names (corrupt flash data)
+      if (name.isNotEmpty &&
+          name.codeUnits.every((c) => c < 0x20 || c == 0xFFFD)) {
+        return null;
+      }
+
       final lastMod = reader.readUInt32LE();
 
       double? lat, lon;
-      final latRaw = reader.readInt32LE();
-      final lonRaw = reader.readInt32LE();
-
-      if (latRaw != 0 || lonRaw != 0) {
-        lat = latRaw / 1e6;
-        lon = lonRaw / 1e6;
+      if (reader.remaining >= 8) {
+        final latRaw = reader.readInt32LE();
+        final lonRaw = reader.readInt32LE();
+        if (latRaw != 0 || lonRaw != 0) {
+          lat = latRaw / 1e6;
+          lon = lonRaw / 1e6;
+        }
       }
 
       return Contact(
@@ -182,7 +199,7 @@ class Contact {
         name: name.isEmpty ? 'Unknown' : name,
         type: type,
         flags: flags,
-        pathLength: pathLen > 0 ? (pathLen > maxPathSize ? -1 : pathLen) : -1,
+        pathLength: (pathLen == 0xFF || pathLen > maxPathSize) ? -1 : pathLen,
         path: pathBytes,
         latitude: lat,
         longitude: lon,
@@ -202,4 +219,7 @@ class Contact {
 
   @override
   int get hashCode => publicKeyHex.hashCode;
+  bool get teleBaseEnabled => (flags & contactFlagTeleBase) != 0;
+  bool get teleLocEnabled => (flags & contactFlagTeleLoc) != 0;
+  bool get teleEnvEnabled => (flags & contactFlagTeleEnv) != 0;
 }

@@ -1164,5 +1164,133 @@
   "tcpErrorTimedOut": "Соединение TCP не удалось установить.",
   "tcpConnectionFailed": "Не удалось установить соединение TCP: {error}",
   "map_showDiscoveryContacts": "Показать контакты Discovery",
-  "map_setAsMyLocation": "Установить мое местоположение"
+  "map_setAsMyLocation": "Установить мое местоположение",
+  "@path_routeWeight": {
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_privacy": "Настройки конфиденциальности",
+  "settings_privacySubtitle": "Контролируйте, какую информацию делиться.",
+  "settings_telemetryLocationMode": "Режим местоположения телеметрии",
+  "settings_telemetryEnvironmentMode": "Режим среды телеметрии",
+  "settings_advertLocation": "Местоположение рекламы",
+  "settings_advertLocationSubtitle": "Включить местоположение в объявление",
+  "settings_allowAll": "Разрешить все",
+  "settings_privacySettingsDescription": "Выберите, какую информацию ваше устройство будет делиться с другими.",
+  "settings_denyAll": "Отклонить все",
+  "settings_allowByContact": "Разрешить по флагам контактов",
+  "contact_info": "Контактная информация",
+  "settings_telemetryBaseMode": "Базовый режим телеметрии",
+  "contact_teleBase": "База телеметрии",
+  "contact_teleLoc": "Местоположение телеметрии",
+  "contact_teleLocSubtitle": "Разрешить обмен данными о местоположении",
+  "contact_teleEnv": "Среда телеметрии",
+  "contact_teleEnvSubtitle": "Разрешить обмен данными датчиков окружающей среды",
+  "contact_settings": "Настройки контактов",
+  "contact_telemetry": "Телеметрия",
+  "contact_clearChat": "Очистить чат",
+  "contact_lastSeen": "Последний раз видели",
+  "contact_teleBaseSubtitle": "Разрешить обмен уровнем заряда батареи и базовой телеметрией",
+  "@settings_multiAck": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_maxRouteWeight": "Максимальный допустимый вес маршрута",
+  "appSettings_maxRouteWeightSubtitle": "Максимальный вес, который может быть перевезён по определённому маршруту при успешных доставках.",
+  "appSettings_initialRouteWeightSubtitle": "Начальный вес для новых, только что открытых маршрутов",
+  "appSettings_initialRouteWeight": "Начальный вес маршрута",
+  "appSettings_routeWeightSuccessIncrement": "Увеличение веса успеха",
+  "appSettings_routeWeightSuccessIncrementSubtitle": "Вес, добавленный к маршруту после успешной доставки.",
+  "appSettings_routeWeightFailureDecrement": "Уменьшение веса неудачи",
+  "appSettings_routeWeightFailureDecrementSubtitle": "Вес, который был удален с пути после неудачной доставки.",
+  "appSettings_maxMessageRetries": "Максимальное количество повторных попыток отправки сообщения",
+  "appSettings_maxMessageRetriesSubtitle": "Количество попыток повторной отправки сообщения перед тем, как пометить его как неудачное.",
+  "path_routeWeight": "{weight}/{max}",
+  "settings_telemetryModeUpdated": "Режим телеметрии обновлен",
+  "settings_multiAck": "Мульти-ACK: {value}",
+  "map_showOverlaps": "Перекрытия ключа повтора",
+  "map_runTraceWithReturnPath": "Вернуться обратно по тому же пути",
+  "@radioStats_noiseFloor": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastRssi": {
+    "placeholders": {
+      "rssiDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastSnr": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "@radioStats_txAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_rxAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_stripNoise": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_sendCooldown": "Пожалуйста, подождите немного, прежде чем отправлять сообщение снова.",
+  "appSettings_jumpToOldestUnread": "Перейти к самому старому непрочитанному сообщению",
+  "appSettings_languageHu": "Венгерский",
+  "appSettings_jumpToOldestUnreadSubtitle": "При открытии чата с непрочитанными сообщениями, прокрутите страницу, чтобы увидеть первое непрочитанное сообщение, а не последнее.",
+  "appSettings_languageJa": "Японский",
+  "appSettings_languageKo": "Корейский",
+  "radioStats_tooltip": "Статистика радио и беспроводной сети",
+  "radioStats_screenTitle": "Статистика радиовещания",
+  "radioStats_notConnected": "Подключитесь к устройству, чтобы просмотреть статистику радио.",
+  "radioStats_firmwareTooOld": "Для работы радиостатистики требуется установленная версия прошивки v8 или более новая.",
+  "radioStats_waiting": "Ожидаем данных…",
+  "radioStats_noiseFloor": "Уровень шума: {noiseDbm} дБм",
+  "radioStats_lastRssi": "Последнее значение RSSI: {rssiDbm} дБм",
+  "radioStats_lastSnr": "Последнее значение SNR: {snr} дБ",
+  "radioStats_txAir": "Время эфира на телеканале TX (общее): {seconds} секунд",
+  "radioStats_rxAir": "Общее время использования RX (в секундах): {seconds} с",
+  "radioStats_chartCaption": "Уровень шума (дБм) на основе последних измерений.",
+  "radioStats_stripNoise": "Уровень шума: {noiseDbm} дБм",
+  "radioStats_stripWaiting": "Получение данных о радио…",
+  "radioStats_settingsTile": "Статистика радиовещания",
+  "radioStats_settingsSubtitle": "Уровень шума, RSSI, SNR и время передачи",
+  "@scanner_linuxPairingPinPrompt": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_linuxPairingShowPin": "Показать PIN",
+  "scanner_linuxPairingPinPrompt": "Введите PIN‑код для {deviceName} (оставьте пустым, если нет).",
+  "scanner_linuxPairingHidePin": "Скрыть PIN",
+  "scanner_linuxPairingPinTitle": "PIN‑код сопряжения Bluetooth"
 }

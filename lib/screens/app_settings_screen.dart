@@ -292,6 +292,14 @@ class AppSettingsScreen extends StatelessWidget {
           ),
           const Divider(height: 1),
           SwitchListTile(
+            secondary: const Icon(Icons.vertical_align_top),
+            title: Text(context.l10n.appSettings_jumpToOldestUnread),
+            subtitle: Text(context.l10n.appSettings_jumpToOldestUnreadSubtitle),
+            value: settingsService.settings.jumpToOldestUnread,
+            onChanged: settingsService.setJumpToOldestUnread,
+          ),
+          const Divider(height: 1),
+          SwitchListTile(
             secondary: const Icon(Icons.alt_route),
             title: Text(context.l10n.appSettings_autoRouteRotation),
             subtitle: Text(context.l10n.appSettings_autoRouteRotationSubtitle),
@@ -310,6 +318,118 @@ class AppSettingsScreen extends StatelessWidget {
               );
             },
           ),
+          if (settingsService.settings.autoRouteRotationEnabled) ...[
+            const Divider(height: 1),
+            ListTile(
+              title: Text(context.l10n.appSettings_maxRouteWeight),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(context.l10n.appSettings_maxRouteWeightSubtitle),
+                  Slider(
+                    value: settingsService.settings.maxRouteWeight,
+                    min: 1,
+                    max: 10,
+                    divisions: 9,
+                    label: settingsService.settings.maxRouteWeight
+                        .round()
+                        .toString(),
+                    onChanged: (value) =>
+                        settingsService.setMaxRouteWeight(value),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              title: Text(context.l10n.appSettings_initialRouteWeight),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(context.l10n.appSettings_initialRouteWeightSubtitle),
+                  Slider(
+                    value: settingsService.settings.initialRouteWeight,
+                    min: 0.5,
+                    max: 5.0,
+                    divisions: 9,
+                    label: settingsService.settings.initialRouteWeight
+                        .toStringAsFixed(1),
+                    onChanged: (value) =>
+                        settingsService.setInitialRouteWeight(value),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              title: Text(context.l10n.appSettings_routeWeightSuccessIncrement),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context
+                        .l10n
+                        .appSettings_routeWeightSuccessIncrementSubtitle,
+                  ),
+                  Slider(
+                    value: settingsService.settings.routeWeightSuccessIncrement,
+                    min: 0.1,
+                    max: 2.0,
+                    divisions: 19,
+                    label: settingsService.settings.routeWeightSuccessIncrement
+                        .toStringAsFixed(1),
+                    onChanged: (value) =>
+                        settingsService.setRouteWeightSuccessIncrement(value),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              title: Text(context.l10n.appSettings_routeWeightFailureDecrement),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context
+                        .l10n
+                        .appSettings_routeWeightFailureDecrementSubtitle,
+                  ),
+                  Slider(
+                    value: settingsService.settings.routeWeightFailureDecrement,
+                    min: 0.1,
+                    max: 2.0,
+                    divisions: 19,
+                    label: settingsService.settings.routeWeightFailureDecrement
+                        .toStringAsFixed(1),
+                    onChanged: (value) =>
+                        settingsService.setRouteWeightFailureDecrement(value),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              title: Text(context.l10n.appSettings_maxMessageRetries),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(context.l10n.appSettings_maxMessageRetriesSubtitle),
+                  Slider(
+                    value: settingsService.settings.maxMessageRetries
+                        .toDouble(),
+                    min: 2,
+                    max: 10,
+                    divisions: 8,
+                    label: settingsService.settings.maxMessageRetries
+                        .toString(),
+                    onChanged: (value) =>
+                        settingsService.setMaxMessageRetries(value.toInt()),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -577,6 +697,12 @@ class AppSettingsScreen extends StatelessWidget {
         return context.l10n.appSettings_languageRu;
       case 'uk':
         return context.l10n.appSettings_languageUk;
+      case 'hu':
+        return context.l10n.appSettings_languageHu;
+      case 'ja':
+        return context.l10n.appSettings_languageJa;
+      case 'ko':
+        return context.l10n.appSettings_languageKo;
       default:
         return context.l10n.appSettings_languageSystem;
     }
@@ -663,6 +789,18 @@ class AppSettingsScreen extends StatelessWidget {
                 RadioListTile<String?>(
                   title: Text(context.l10n.appSettings_languageUk),
                   value: 'uk',
+                ),
+                RadioListTile<String?>(
+                  title: Text(context.l10n.appSettings_languageHu),
+                  value: 'hu',
+                ),
+                RadioListTile<String?>(
+                  title: Text(context.l10n.appSettings_languageJa),
+                  value: 'ja',
+                ),
+                RadioListTile<String?>(
+                  title: Text(context.l10n.appSettings_languageKo),
+                  value: 'ko',
                 ),
               ],
             ),

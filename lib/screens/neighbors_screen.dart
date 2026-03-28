@@ -44,6 +44,24 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
   PathSelection? _pendingStatusSelection;
   List<Map<String, dynamic>>? _parsedNeighbors;
 
+  int _resolveRepeaterIndex = -1;
+
+  Contact _resolveRepeater(MeshCoreConnector connector) {
+    if (_resolveRepeaterIndex >= 0 &&
+        _resolveRepeaterIndex < connector.contacts.length &&
+        connector.contacts[_resolveRepeaterIndex].publicKeyHex ==
+            widget.repeater.publicKeyHex) {
+      return connector.contacts[_resolveRepeaterIndex];
+    }
+    _resolveRepeaterIndex = connector.contacts.indexWhere(
+      (c) => c.publicKeyHex == widget.repeater.publicKeyHex,
+    );
+    if (_resolveRepeaterIndex == -1) {
+      return widget.repeater;
+    }
+    return connector.contacts[_resolveRepeaterIndex];
+  }
+
   @override
   void initState() {
     super.initState();
@@ -161,13 +179,6 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
     } catch (e) {
       appLogger.error('Error handling neighbors response: $e');
     }
-  }
-
-  Contact _resolveRepeater(MeshCoreConnector connector) {
-    return connector.contacts.firstWhere(
-      (c) => c.publicKeyHex == widget.repeater.publicKeyHex,
-      orElse: () => widget.repeater,
-    );
   }
 
   Future<void> _loadNeighbors() async {

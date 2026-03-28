@@ -1924,5 +1924,133 @@
   "tcpErrorTimedOut": "З'єднання TCP завершилося через закінчення часу очікування.",
   "tcpConnectionFailed": "Не вдалося встановити з'єднання TCP: {error}",
   "map_showDiscoveryContacts": "Показати контакти Відкриття",
-  "map_setAsMyLocation": "Встановити моє місцезнаходження"
+  "map_setAsMyLocation": "Встановити моє місцезнаходження",
+  "@path_routeWeight": {
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_privacySubtitle": "Керуйте інформацією, яку буде спільно використовуватися",
+  "settings_privacy": "Налаштування приватності",
+  "settings_telemetryBaseMode": "Режим базової телеметрії",
+  "settings_telemetryLocationMode": "Режим місця телеметрії",
+  "settings_advertLocation": "Розміщення реклами",
+  "settings_advertLocationSubtitle": "Включити місце розташування в оголошення",
+  "settings_privacySettingsDescription": "Виберіть, яку інформацію ваш пристрій буде передавати іншим.",
+  "settings_allowAll": "Дозволити все",
+  "settings_denyAll": "Відхилити все",
+  "settings_allowByContact": "Дозволити за контактними прапорцями",
+  "settings_telemetryEnvironmentMode": "Режим середовища телеметрії",
+  "contact_info": "Контактна інформація",
+  "contact_teleBaseSubtitle": "Дозволити спільний доступ до рівня заряду батареї та базової телеметрії",
+  "contact_teleLoc": "Розташування телеметрії",
+  "contact_teleBase": "Базовий телебачення",
+  "contact_teleLocSubtitle": "Дозволити спільне використання даних про місцеположення",
+  "contact_settings": "Налаштування контактів",
+  "contact_telemetry": "Телеметрія",
+  "contact_clearChat": "Очистити чат",
+  "contact_lastSeen": "Останній раз бачили",
+  "contact_teleEnv": "Середовище телеметрії",
+  "contact_teleEnvSubtitle": "Дозволити спільний доступ до даних датчиків середовища",
+  "@settings_multiAck": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_initialRouteWeight": "Початкова вартість маршруту",
+  "appSettings_initialRouteWeightSubtitle": "Початкова вага для нових відкритих шляхів",
+  "appSettings_maxRouteWeight": "Максимальна вага маршруту",
+  "appSettings_maxRouteWeightSubtitle": "Максимальна вага, яку може накопичити маршрут завдяки успішним доставкам.",
+  "appSettings_routeWeightSuccessIncrement": "Збільшення ваги успіху",
+  "appSettings_routeWeightSuccessIncrementSubtitle": "Вага, додана до маршруту після успішної доставки",
+  "appSettings_routeWeightFailureDecrement": "Зменшення ваги помилки",
+  "appSettings_routeWeightFailureDecrementSubtitle": "Вага, яка була знята з маршруту після невдалої доставки",
+  "appSettings_maxMessageRetries": "Максимальна кількість повторних спроб надсилання повідомлення",
+  "appSettings_maxMessageRetriesSubtitle": "Кількість спроб повторного відправлення повідомлення перед тим, як позначити його як невдале",
+  "path_routeWeight": "{weight}/{max}",
+  "settings_telemetryModeUpdated": "Режим телеметрії оновлено",
+  "settings_multiAck": "Багатократне підтвердження: {value}",
+  "map_showOverlaps": "Перекриття ключа повторювача",
+  "map_runTraceWithReturnPath": "Повернутися назад тим же шляхом",
+  "@radioStats_noiseFloor": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastRssi": {
+    "placeholders": {
+      "rssiDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastSnr": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "@radioStats_txAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_rxAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_stripNoise": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_sendCooldown": "Будь ласка, зачекайте трохи, перш ніж відправляти знову.",
+  "appSettings_languageHu": "Угорський",
+  "appSettings_jumpToOldestUnreadSubtitle": "При відкритті чату з не прочитаними повідомленнями, прокрутіть до першого не прочитаного повідомлення, а не до останнього.",
+  "appSettings_jumpToOldestUnread": "Перейти до найстарішого непрочитаного повідомлення",
+  "appSettings_languageJa": "Японська",
+  "appSettings_languageKo": "Кореєська",
+  "radioStats_tooltip": "Статистика радіо та мережі",
+  "radioStats_screenTitle": "Дані про радіостанції",
+  "radioStats_notConnected": "Підключіться до пристрою, щоб переглядати статистику радіопередач.",
+  "radioStats_firmwareTooOld": "Статистика радіо приймача вимагає супутнього програмного забезпечення версії 8 або новішої.",
+  "radioStats_waiting": "Очікую на отримання даних…",
+  "radioStats_noiseFloor": "Рівень шуму: {noiseDbm} дБм",
+  "radioStats_lastRssi": "Останній показник RSSI: {rssiDbm} дБм",
+  "radioStats_lastSnr": "Останній показник SNR: {snr} дБ",
+  "radioStats_txAir": "Час трансляції на телеканалі TX (загальний): {seconds} секунд",
+  "radioStats_rxAir": "Загальний час використання RX: {seconds} секунд",
+  "radioStats_chartCaption": "Рівень шуму (дБм) на основі останніх вимірювань.",
+  "radioStats_stripNoise": "Рівень шуму: {noiseDbm} дБм",
+  "radioStats_stripWaiting": "Отримано статистику радіо…",
+  "radioStats_settingsTile": "Дані про радіостанції",
+  "radioStats_settingsSubtitle": "Рівень шуму, RSSI, SNR та час, протягом якого пристрій використовує радіоканал.",
+  "@scanner_linuxPairingPinPrompt": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_linuxPairingPinTitle": "PIN‑код спарювання Bluetooth",
+  "scanner_linuxPairingShowPin": "Показати PIN",
+  "scanner_linuxPairingPinPrompt": "Введіть PIN для {deviceName} (залиште порожнім, якщо його немає).",
+  "scanner_linuxPairingHidePin": "Приховати PIN"
 }

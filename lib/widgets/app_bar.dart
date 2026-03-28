@@ -3,6 +3,7 @@ import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/widgets/battery_indicator.dart';
 import 'package:provider/provider.dart';
 
+import 'radio_stats_entry.dart';
 import 'snr_indicator.dart';
 
 class AppBarTitle extends StatelessWidget {
@@ -10,12 +11,14 @@ class AppBarTitle extends StatelessWidget {
   final Widget? leading;
   final Widget? trailing;
   final bool indicators;
+  final bool showBatteryIndicator;
   final bool subtitle;
   const AppBarTitle(
     this.title, {
     this.leading,
     this.trailing,
     this.indicators = true,
+    this.showBatteryIndicator = true,
     this.subtitle = true,
     super.key,
   });
@@ -33,7 +36,7 @@ class AppBarTitle extends StatelessWidget {
         final compact = availableWidth < 170;
         final showSubtitle =
             !compact && connector.isConnected && selfName != null && subtitle;
-        final showBattery = availableWidth >= 60;
+        final showBattery = showBatteryIndicator && availableWidth >= 60;
         final showSnr = availableWidth >= 110;
         final showIndicators = (showBattery || showSnr) && indicators;
 
@@ -60,11 +63,13 @@ class AppBarTitle extends StatelessWidget {
             if (showIndicators) const SizedBox(width: 6),
             if (showIndicators)
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (showBattery) BatteryIndicator(connector: connector),
                   if (showSnr) SNRIndicator(connector: connector),
+                  if (connector.supportsCompanionRadioStats)
+                    const RadioStatsIconButton(compact: true),
                 ],
               ),
             trailing ?? const SizedBox.shrink(),

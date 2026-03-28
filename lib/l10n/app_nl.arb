@@ -1924,5 +1924,133 @@
   "tcpErrorTimedOut": "De TCP-verbinding is verlopen.",
   "tcpConnectionFailed": "Verbinding met TCP mislukt: {error}",
   "map_showDiscoveryContacts": "Ontdek contacten weergeven",
-  "map_setAsMyLocation": "Stel dit in als mijn locatie"
+  "map_setAsMyLocation": "Stel dit in als mijn locatie",
+  "@path_routeWeight": {
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_privacy": "Privacyinstellingen",
+  "settings_privacySubtitle": "Beheer welke informatie wordt gedeeld",
+  "settings_telemetryLocationMode": "Telemetrie-locatiemodus",
+  "settings_telemetryEnvironmentMode": "Telemetrie-omgevingsmodus",
+  "settings_advertLocation": "Advertentielocatie",
+  "settings_advertLocationSubtitle": "Locatie opnemen in advertentie",
+  "settings_privacySettingsDescription": "Kies welke informatie uw apparaat deelt met anderen",
+  "settings_allowByContact": "Toestaan op basis van contactvlaggen",
+  "settings_allowAll": "Alles toestaan",
+  "settings_denyAll": "Weiger alles",
+  "contact_info": "Contactinformatie",
+  "settings_telemetryBaseMode": "Telemetrie-basismodus",
+  "contact_teleBase": "Telemetrie_basis",
+  "contact_teleLoc": "Telemetrielocatie",
+  "contact_teleLocSubtitle": "Locatiegegevens delen toestaan",
+  "contact_teleEnv": "Telemetrieomgeving",
+  "contact_teleEnvSubtitle": "Delen van omgevingsensordata toestaan",
+  "contact_settings": "Contactinstellingen",
+  "contact_telemetry": "Telemetrie",
+  "contact_lastSeen": "Laatst gezien",
+  "contact_clearChat": "Chat leegmaken",
+  "contact_teleBaseSubtitle": "Sta delen van batterij niveau en basis telemetrie toe",
+  "@settings_multiAck": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_maxRouteWeightSubtitle": "Het maximale gewicht dat een route kan bereiken door succesvolle leveringen.",
+  "appSettings_initialRouteWeight": "เริ่มต้น gewicht van de route",
+  "appSettings_maxRouteWeight": "Maximale gewicht voor de route",
+  "appSettings_initialRouteWeightSubtitle": "Startgewicht voor nieuwe, ontdekte routes",
+  "appSettings_routeWeightSuccessIncrement": "Toename in het gewicht van het succes",
+  "appSettings_routeWeightSuccessIncrementSubtitle": "Gewicht wordt toegevoegd aan een route na een succesvolle levering.",
+  "appSettings_routeWeightFailureDecrement": "Vermindering van het gewicht van fouten",
+  "appSettings_routeWeightFailureDecrementSubtitle": "Gewicht verwijderd van een pad na een mislukte levering",
+  "appSettings_maxMessageRetries": "Aantal pogingen om berichten te versturen",
+  "appSettings_maxMessageRetriesSubtitle": "Aantal pogingen om een bericht opnieuw te versturen voordat het als mislukt wordt gemarkeerd",
+  "path_routeWeight": "{weight}/{max}",
+  "settings_telemetryModeUpdated": "Telemetrie-modus bijgewerkt",
+  "settings_multiAck": "Multi-ACKs: {value}",
+  "map_showOverlaps": "Herhalingssleutel overlapt",
+  "map_runTraceWithReturnPath": "Terugkeren op hetzelfde pad.",
+  "@radioStats_noiseFloor": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastRssi": {
+    "placeholders": {
+      "rssiDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastSnr": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "@radioStats_txAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_rxAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_stripNoise": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_jumpToOldestUnread": "Ga naar het oudste ongelezen bericht",
+  "appSettings_jumpToOldestUnreadSubtitle": "Bij het openen van een chat met ongelezen berichten, scroll dan naar het eerste ongelezen bericht, in plaats van naar het meest recente.",
+  "chat_sendCooldown": "Gelieve even te wachten voordat u opnieuw verzendt.",
+  "appSettings_languageHu": "Hongaars",
+  "appSettings_languageJa": "Japanisch",
+  "appSettings_languageKo": "Koreaans",
+  "radioStats_tooltip": "Statistieken voor radio en mesh-netwerken",
+  "radioStats_screenTitle": "Statistieken over radio",
+  "radioStats_notConnected": "Verbind met een apparaat om radio-statistieken te bekijken.",
+  "radioStats_firmwareTooOld": "Om de statistieken via radio te kunnen gebruiken, is firmware versie 8 of een nieuwere vereist.",
+  "radioStats_waiting": "Wacht op gegevens…",
+  "radioStats_noiseFloor": "Ruisfrequentie: {noiseDbm} dBm",
+  "radioStats_lastRssi": "Laatste RSSI-waarde: {rssiDbm} dBm",
+  "radioStats_lastSnr": "Laatste SNR: {snr} dB",
+  "radioStats_txAir": "TX-tijd (totaal): {seconds} s",
+  "radioStats_rxAir": "Tijd besteed met RX (totaal): {seconds} s",
+  "radioStats_chartCaption": "Ruisfrequentie (dBm) over recente metingen.",
+  "radioStats_stripNoise": "Ruisfrequentie: {noiseDbm} dBm",
+  "radioStats_stripWaiting": "Radio-statistieken ophalen…",
+  "radioStats_settingsTile": "Statistieken over radio",
+  "radioStats_settingsSubtitle": "Ruimtelijke ruis, RSSI, SNR en beschikbare tijd",
+  "@scanner_linuxPairingPinPrompt": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_linuxPairingShowPin": "Toon PIN",
+  "scanner_linuxPairingHidePin": "PIN verbergen",
+  "scanner_linuxPairingPinPrompt": "Voer PIN in voor {deviceName} (laat leeg als er geen is).",
+  "scanner_linuxPairingPinTitle": "Bluetooth‑koppelings‑PIN"
 }

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:meshcore_open/screens/path_trace_map.dart';
 import 'package:meshcore_open/services/notification_service.dart';
 import 'package:meshcore_open/utils/app_logger.dart';
+import 'package:meshcore_open/utils/platform_info.dart';
 import 'package:meshcore_open/widgets/app_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -1243,6 +1244,9 @@ class _ContactsScreenState extends State<ContactsScreen>
                     ? Text(context.l10n.contacts_pathTrace)
                     : Text(context.l10n.contacts_ping),
                 onTap: () {
+                  final hw = context
+                      .read<MeshCoreConnector>()
+                      .pathHashByteWidth;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -1253,6 +1257,7 @@ class _ContactsScreenState extends State<ContactsScreen>
                         path: contact.pathBytesForDisplay,
                         flipPathAround: true,
                         targetContact: contact,
+                        pathHashByteWidth: hw,
                       ),
                     ),
                   );
@@ -1273,6 +1278,9 @@ class _ContactsScreenState extends State<ContactsScreen>
                     ? Text(context.l10n.contacts_pathTrace)
                     : Text(context.l10n.contacts_ping),
                 onTap: () {
+                  final hw = context
+                      .read<MeshCoreConnector>()
+                      .pathHashByteWidth;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -1283,6 +1291,7 @@ class _ContactsScreenState extends State<ContactsScreen>
                         path: contact.pathBytesForDisplay,
                         flipPathAround: contact.pathBytesForDisplay.isNotEmpty,
                         targetContact: contact,
+                        pathHashByteWidth: hw,
                       ),
                     ),
                   );
@@ -1317,6 +1326,9 @@ class _ContactsScreenState extends State<ContactsScreen>
                   leading: const Icon(Icons.radar, color: Colors.green),
                   title: Text(context.l10n.contacts_chatTraceRoute),
                   onTap: () {
+                    final hw = context
+                        .read<MeshCoreConnector>()
+                        .pathHashByteWidth;
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -1327,6 +1339,7 @@ class _ContactsScreenState extends State<ContactsScreen>
                           path: contact.pathBytesForDisplay,
                           flipPathAround: true,
                           targetContact: contact,
+                          pathHashByteWidth: hw,
                         ),
                       ),
                     );
@@ -1353,7 +1366,10 @@ class _ContactsScreenState extends State<ContactsScreen>
               ),
               onTap: () async {
                 Navigator.pop(sheetContext);
-                await connector.setContactFavorite(contact, !isFavorite);
+                await connector.setContactFlags(
+                  contact,
+                  isFavorite: !isFavorite,
+                );
               },
             ),
             ListTile(
@@ -1439,66 +1455,77 @@ class _ContactTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: _getTypeColor(contact.type),
-        child: _buildContactAvatar(contact),
-      ),
-      title: Text(contact.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(contact.pathLabel, maxLines: 1, overflow: TextOverflow.ellipsis),
-          Text(
-            contact.shortPubKeyHex,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 12),
-          ),
-        ],
-      ),
-      // Clamp text scaling in trailing section to prevent overflow while
-      // maintaining accessibility. Primary content (title/subtitle) scales normally.
-      trailing: MediaQuery(
-        data: MediaQuery.of(context).copyWith(
-          textScaler: TextScaler.linear(
-            MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.3),
-          ),
+    return GestureDetector(
+      onSecondaryTapUp: PlatformInfo.isDesktop ? (_) => onLongPress() : null,
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: _getTypeColor(contact.type),
+          child: _buildContactAvatar(contact),
         ),
-        child: SizedBox(
-          width: 120,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              if (unreadCount > 0) ...[
-                UnreadBadge(count: unreadCount),
-                const SizedBox(height: 4),
-              ],
-              Text(
-                _formatLastSeen(context, lastSeen),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.right,
-                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (isFavorite)
-                    Icon(Icons.star, size: 14, color: Colors.amber[700]),
-                  if (isFavorite && contact.hasLocation)
-                    const SizedBox(width: 2),
-                  if (contact.hasLocation)
-                    Icon(Icons.location_on, size: 14, color: Colors.grey[400]),
+        title: Text(contact.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              contact.pathLabel,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              contact.shortPubKeyHex,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ],
+        ),
+        // Clamp text scaling in trailing section to prevent overflow while
+        // maintaining accessibility. Primary content (title/subtitle) scales normally.
+        trailing: MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: TextScaler.linear(
+              MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.3),
+            ),
+          ),
+          child: SizedBox(
+            width: 120,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (unreadCount > 0) ...[
+                  UnreadBadge(count: unreadCount),
+                  const SizedBox(height: 4),
                 ],
-              ),
-            ],
+                Text(
+                  _formatLastSeen(context, lastSeen),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (isFavorite)
+                      Icon(Icons.star, size: 14, color: Colors.amber[700]),
+                    if (isFavorite && contact.hasLocation)
+                      const SizedBox(width: 2),
+                    if (contact.hasLocation)
+                      Icon(
+                        Icons.location_on,
+                        size: 14,
+                        color: Colors.grey[400],
+                      ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
+        onTap: onTap,
+        onLongPress: onLongPress,
       ),
-      onTap: onTap,
-      onLongPress: onLongPress,
     );
   }
 

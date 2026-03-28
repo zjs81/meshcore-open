@@ -58,6 +58,7 @@ secrets.dart
 .DS_Store
 .AppleDouble
 .LSOverride
+macos/Flutter/GeneratedPluginRegistrant.swift
 
 # iOS
 **/ios/Pods/

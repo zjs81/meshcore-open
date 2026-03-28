@@ -396,6 +396,50 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settings_privacyModeDisabled => 'Privacy modus is uitgeschakeld';
 
   @override
+  String get settings_privacy => 'Privacyinstellingen';
+
+  @override
+  String get settings_privacySubtitle =>
+      'Beheer welke informatie wordt gedeeld';
+
+  @override
+  String get settings_privacySettingsDescription =>
+      'Kies welke informatie uw apparaat deelt met anderen';
+
+  @override
+  String get settings_denyAll => 'Weiger alles';
+
+  @override
+  String get settings_allowByContact => 'Toestaan op basis van contactvlaggen';
+
+  @override
+  String get settings_allowAll => 'Alles toestaan';
+
+  @override
+  String get settings_telemetryBaseMode => 'Telemetrie-basismodus';
+
+  @override
+  String get settings_telemetryLocationMode => 'Telemetrie-locatiemodus';
+
+  @override
+  String get settings_telemetryEnvironmentMode => 'Telemetrie-omgevingsmodus';
+
+  @override
+  String get settings_advertLocation => 'Advertentielocatie';
+
+  @override
+  String get settings_advertLocationSubtitle =>
+      'Locatie opnemen in advertentie';
+
+  @override
+  String settings_multiAck(String value) {
+    return 'Multi-ACKs: $value';
+  }
+
+  @override
+  String get settings_telemetryModeUpdated => 'Telemetrie-modus bijgewerkt';
+
+  @override
   String get settings_actions => 'Acties';
 
   @override
@@ -690,6 +734,49 @@ class AppLocalizationsNl extends AppLocalizations {
       'Automatische route rotatie is uitgeschakeld';
 
   @override
+  String get appSettings_maxRouteWeight => 'Maximale gewicht voor de route';
+
+  @override
+  String get appSettings_maxRouteWeightSubtitle =>
+      'Het maximale gewicht dat een route kan bereiken door succesvolle leveringen.';
+
+  @override
+  String get appSettings_initialRouteWeight => 'เริ่มต้น gewicht van de route';
+
+  @override
+  String get appSettings_initialRouteWeightSubtitle =>
+      'Startgewicht voor nieuwe, ontdekte routes';
+
+  @override
+  String get appSettings_routeWeightSuccessIncrement =>
+      'Toename in het gewicht van het succes';
+
+  @override
+  String get appSettings_routeWeightSuccessIncrementSubtitle =>
+      'Gewicht wordt toegevoegd aan een route na een succesvolle levering.';
+
+  @override
+  String get appSettings_routeWeightFailureDecrement =>
+      'Vermindering van het gewicht van fouten';
+
+  @override
+  String get appSettings_routeWeightFailureDecrementSubtitle =>
+      'Gewicht verwijderd van een pad na een mislukte levering';
+
+  @override
+  String get appSettings_maxMessageRetries =>
+      'Aantal pogingen om berichten te versturen';
+
+  @override
+  String get appSettings_maxMessageRetriesSubtitle =>
+      'Aantal pogingen om een bericht opnieuw te versturen voordat het als mislukt wordt gemarkeerd';
+
+  @override
+  String path_routeWeight(String weight, String max) {
+    return '$weight/$max';
+  }
+
+  @override
   String get appSettings_battery => 'Batterij';
 
   @override
@@ -936,6 +1023,40 @@ class AppLocalizationsNl extends AppLocalizations {
   String contacts_lastSeenDaysAgo(int days) {
     return 'Laast gezien $days dagen geleden';
   }
+
+  @override
+  String get contact_info => 'Contactinformatie';
+
+  @override
+  String get contact_settings => 'Contactinstellingen';
+
+  @override
+  String get contact_telemetry => 'Telemetrie';
+
+  @override
+  String get contact_lastSeen => 'Laatst gezien';
+
+  @override
+  String get contact_clearChat => 'Chat leegmaken';
+
+  @override
+  String get contact_teleBase => 'Telemetrie_basis';
+
+  @override
+  String get contact_teleBaseSubtitle =>
+      'Sta delen van batterij niveau en basis telemetrie toe';
+
+  @override
+  String get contact_teleLoc => 'Telemetrielocatie';
+
+  @override
+  String get contact_teleLocSubtitle => 'Locatiegegevens delen toestaan';
+
+  @override
+  String get contact_teleEnv => 'Telemetrieomgeving';
+
+  @override
+  String get contact_teleEnvSubtitle => 'Delen van omgevingsensordata toestaan';
 
   @override
   String get channels_title => 'Kanaal';
@@ -1554,6 +1675,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get map_otherNodes => 'Andere Nodes';
 
   @override
+  String get map_showOverlaps => 'Herhalingssleutel overlapt';
+
+  @override
   String get map_keyPrefix => 'Prefix sleutel';
 
   @override
@@ -1596,6 +1720,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get map_runTrace => 'Padeshulp traceren';
+
+  @override
+  String get map_runTraceWithReturnPath => 'Terugkeren op hetzelfde pad.';
 
   @override
   String get map_removeLast => 'Verwijder Laatste';
@@ -3372,4 +3499,100 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get discoveredContacts_deleteContactAllContent =>
       'Weet u zeker dat u alle ontdekte contacten wilt verwijderen?';
+
+  @override
+  String get chat_sendCooldown =>
+      'Gelieve even te wachten voordat u opnieuw verzendt.';
+
+  @override
+  String get appSettings_jumpToOldestUnread =>
+      'Ga naar het oudste ongelezen bericht';
+
+  @override
+  String get appSettings_jumpToOldestUnreadSubtitle =>
+      'Bij het openen van een chat met ongelezen berichten, scroll dan naar het eerste ongelezen bericht, in plaats van naar het meest recente.';
+
+  @override
+  String get appSettings_languageHu => 'Hongaars';
+
+  @override
+  String get appSettings_languageJa => 'Japanisch';
+
+  @override
+  String get appSettings_languageKo => 'Koreaans';
+
+  @override
+  String get radioStats_tooltip => 'Statistieken voor radio en mesh-netwerken';
+
+  @override
+  String get radioStats_screenTitle => 'Statistieken over radio';
+
+  @override
+  String get radioStats_notConnected =>
+      'Verbind met een apparaat om radio-statistieken te bekijken.';
+
+  @override
+  String get radioStats_firmwareTooOld =>
+      'Om de statistieken via radio te kunnen gebruiken, is firmware versie 8 of een nieuwere vereist.';
+
+  @override
+  String get radioStats_waiting => 'Wacht op gegevens…';
+
+  @override
+  String radioStats_noiseFloor(int noiseDbm) {
+    return 'Ruisfrequentie: $noiseDbm dBm';
+  }
+
+  @override
+  String radioStats_lastRssi(int rssiDbm) {
+    return 'Laatste RSSI-waarde: $rssiDbm dBm';
+  }
+
+  @override
+  String radioStats_lastSnr(String snr) {
+    return 'Laatste SNR: $snr dB';
+  }
+
+  @override
+  String radioStats_txAir(int seconds) {
+    return 'TX-tijd (totaal): $seconds s';
+  }
+
+  @override
+  String radioStats_rxAir(int seconds) {
+    return 'Tijd besteed met RX (totaal): $seconds s';
+  }
+
+  @override
+  String get radioStats_chartCaption =>
+      'Ruisfrequentie (dBm) over recente metingen.';
+
+  @override
+  String radioStats_stripNoise(int noiseDbm) {
+    return 'Ruisfrequentie: $noiseDbm dBm';
+  }
+
+  @override
+  String get radioStats_stripWaiting => 'Radio-statistieken ophalen…';
+
+  @override
+  String get radioStats_settingsTile => 'Statistieken over radio';
+
+  @override
+  String get radioStats_settingsSubtitle =>
+      'Ruimtelijke ruis, RSSI, SNR en beschikbare tijd';
+
+  @override
+  String get scanner_linuxPairingShowPin => 'Toon PIN';
+
+  @override
+  String get scanner_linuxPairingHidePin => 'PIN verbergen';
+
+  @override
+  String get scanner_linuxPairingPinTitle => 'Bluetooth‑koppelings‑PIN';
+
+  @override
+  String scanner_linuxPairingPinPrompt(String deviceName) {
+    return 'Voer PIN in voor $deviceName (laat leeg als er geen is).';
+  }
 }

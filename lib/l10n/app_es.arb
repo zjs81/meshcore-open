@@ -1952,5 +1952,133 @@
   "tcpErrorTimedOut": "La conexión TCP ha caducado.",
   "tcpConnectionFailed": "Error en la conexión TCP: {error}",
   "map_showDiscoveryContacts": "Mostrar Contactos de Descubrimiento",
-  "map_setAsMyLocation": "Establecer mi ubicación"
+  "map_setAsMyLocation": "Establecer mi ubicación",
+  "@path_routeWeight": {
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_privacySubtitle": "Controlar qué información se comparte.",
+  "settings_allowByContact": "Permitir por banderas de contacto",
+  "settings_denyAll": "Denegar todo",
+  "settings_telemetryBaseMode": "Modo base de telemetría",
+  "settings_telemetryEnvironmentMode": "Modo de entorno de telemetría",
+  "settings_advertLocationSubtitle": "Incluir ubicación en anuncio",
+  "contact_info": "Información de contacto",
+  "settings_privacySettingsDescription": "Elige qué información comparte tu dispositivo con otros.",
+  "settings_allowAll": "Permitir todo",
+  "settings_privacy": "Configuración de privacidad",
+  "contact_settings": "Configuración de contacto",
+  "settings_telemetryLocationMode": "Modo de ubicación de telemetría",
+  "contact_teleBase": "Base de Telemetría",
+  "contact_teleLoc": "Ubicación de telemetría",
+  "settings_advertLocation": "Ubicación de anuncio",
+  "contact_teleLocSubtitle": "Permitir el intercambio de datos de ubicación",
+  "contact_clearChat": "Borrar chat",
+  "contact_telemetry": "Telemetría",
+  "contact_lastSeen": "Visto por última vez",
+  "contact_teleBaseSubtitle": "Permitir el intercambio de nivel de batería y telemetría básica",
+  "contact_teleEnv": "Entorno de Telemetría",
+  "contact_teleEnvSubtitle": "Permitir el intercambio de datos de sensores de entorno",
+  "@settings_multiAck": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_initialRouteWeight": "Peso inicial de la ruta",
+  "appSettings_maxRouteWeight": "Peso máximo permitido para la ruta",
+  "appSettings_initialRouteWeightSubtitle": "Peso inicial para rutas recién descubiertas",
+  "appSettings_maxRouteWeightSubtitle": "Peso máximo que una ruta puede acumular gracias a entregas exitosas.",
+  "appSettings_routeWeightSuccessIncrement": "Incremento de peso para el éxito",
+  "appSettings_routeWeightSuccessIncrementSubtitle": "Peso añadido a una ruta después de una entrega exitosa.",
+  "appSettings_routeWeightFailureDecrement": "Reducción del peso asociado al fallo",
+  "appSettings_routeWeightFailureDecrementSubtitle": "Peso retirado de un camino después de un intento de entrega fallido.",
+  "appSettings_maxMessageRetries": "Número máximo de reintentos de envío de mensajes",
+  "appSettings_maxMessageRetriesSubtitle": "Número de intentos de reintento antes de marcar un mensaje como fallido.",
+  "path_routeWeight": "{weight}/{max}",
+  "settings_telemetryModeUpdated": "Modo de telemetría actualizado",
+  "settings_multiAck": "Multi-ACKs: {value}",
+  "map_showOverlaps": "Superposiciones de tecla repetidora",
+  "map_runTraceWithReturnPath": "Volver atrás por el mismo camino.",
+  "@radioStats_noiseFloor": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastRssi": {
+    "placeholders": {
+      "rssiDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastSnr": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "@radioStats_txAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_rxAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_stripNoise": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_jumpToOldestUnread": "Salta a los mensajes más antiguos sin leer",
+  "chat_sendCooldown": "Por favor, espere un momento antes de reenviar.",
+  "appSettings_languageHu": "Húngaro",
+  "appSettings_jumpToOldestUnreadSubtitle": "Cuando abras una conversación con mensajes sin leer, desplázate hacia el primer mensaje sin leer en lugar del más reciente.",
+  "appSettings_languageJa": "Japonés",
+  "appSettings_languageKo": "Coreano",
+  "radioStats_tooltip": "Estadísticas de radio y malla",
+  "radioStats_screenTitle": "Estadísticas de radio",
+  "radioStats_notConnected": "Conéctese a un dispositivo para visualizar estadísticas de radio.",
+  "radioStats_firmwareTooOld": "Las estadísticas de radio requieren un firmware compatible v8 o posterior.",
+  "radioStats_waiting": "Esperando datos…",
+  "radioStats_noiseFloor": "Nivel de ruido: {noiseDbm} dBm",
+  "radioStats_lastRssi": "Último RSSI: {rssiDbm} dBm",
+  "radioStats_lastSnr": "Último SNR: {snr} dB",
+  "radioStats_txAir": "Tiempo de emisión en Texas (total): {seconds} s",
+  "radioStats_rxAir": "Tiempo de transmisión de RX (total): {seconds} s",
+  "radioStats_chartCaption": "Nivel de ruido (dBm) en muestras recientes.",
+  "radioStats_stripNoise": "Nivel de ruido: {noiseDbm} dBm",
+  "radioStats_stripWaiting": "Obteniendo estadísticas de la radio…",
+  "radioStats_settingsTile": "Estadísticas de radio",
+  "radioStats_settingsSubtitle": "Nivel de ruido, RSSI, SNR y tiempo de transmisión",
+  "@scanner_linuxPairingPinPrompt": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_linuxPairingShowPin": "Mostrar PIN",
+  "scanner_linuxPairingPinTitle": "PIN de emparejamiento Bluetooth",
+  "scanner_linuxPairingHidePin": "Ocultar PIN",
+  "scanner_linuxPairingPinPrompt": "Introduzca el PIN para {deviceName} (déjelo en blanco si no hay ninguno)."
 }

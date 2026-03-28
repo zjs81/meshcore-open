@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:meshcore_open/storage/channel_message_store.dart';
+import 'package:meshcore_open/utils/platform_info.dart';
 import 'package:meshcore_open/widgets/app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -126,7 +127,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
       canPop: allowBack,
       child: Scaffold(
         appBar: AppBar(
-          title: AppBarTitle(context.l10n.channels_title),
+          title: AppBarTitle(context.l10n.channels_title, indicators: false),
           centerTitle: true,
           automaticallyImplyLeading: false,
           actions: [
@@ -417,78 +418,96 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     return Card(
       key: ValueKey('channel_${channel.index}'),
       margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        dense: true,
-        minVerticalPadding: 0,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-        visualDensity: const VisualDensity(vertical: -2),
-        leading: Stack(
-          children: [
-            CircleAvatar(
-              backgroundColor: bgColor,
-              child: Icon(icon, color: iconColor),
-            ),
-            if (isCommunityChannel)
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  width: 14,
-                  height: 14,
-                  decoration: BoxDecoration(
-                    color: Colors.purple,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Theme.of(context).cardColor,
-                      width: 2,
+      child: GestureDetector(
+        onSecondaryTapUp: PlatformInfo.isDesktop
+            ? (_) => _showChannelActions(
+                context,
+                connector,
+                channelMessageStore,
+                channel,
+              )
+            : null,
+        child: ListTile(
+          dense: true,
+          minVerticalPadding: 0,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+          visualDensity: const VisualDensity(vertical: -2),
+          leading: Stack(
+            children: [
+              CircleAvatar(
+                backgroundColor: bgColor,
+                child: Icon(icon, color: iconColor),
+              ),
+              if (isCommunityChannel)
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: 14,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: Colors.purple,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Theme.of(context).cardColor,
+                        width: 2,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.people,
+                      size: 8,
+                      color: Colors.white,
                     ),
                   ),
-                  child: const Icon(Icons.people, size: 8, color: Colors.white),
                 ),
-              ),
-          ],
-        ),
-        title: Text(
-          channel.name.isEmpty
-              ? context.l10n.channels_channelIndex(channel.index)
-              : channel.name,
-          style: const TextStyle(fontWeight: FontWeight.w500),
-        ),
-        subtitle: Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (unreadCount > 0) ...[
-              UnreadBadge(count: unreadCount),
-              const SizedBox(width: 4),
             ],
-            if (showDragHandle && dragIndex != null)
-              ReorderableDelayedDragStartListener(
-                index: dragIndex,
-                child: Icon(
-                  Icons.drag_handle,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          title: Text(
+            channel.name.isEmpty
+                ? context.l10n.channels_channelIndex(channel.index)
+                : channel.name,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
+          subtitle: Text(
+            subtitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (unreadCount > 0) ...[
+                UnreadBadge(count: unreadCount),
+                const SizedBox(width: 4),
+              ],
+              if (showDragHandle && dragIndex != null)
+                ReorderableDelayedDragStartListener(
+                  index: dragIndex,
+                  child: Icon(
+                    Icons.drag_handle,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
-              ),
-          ],
-        ),
-        onTap: () async {
-          connector.markChannelRead(channel.index);
-          await Future.delayed(const Duration(milliseconds: 50));
-          if (context.mounted) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChannelChatScreen(channel: channel),
-              ),
-            );
-          }
-        },
-        onLongPress: () => _showChannelActions(
-          context,
-          connector,
-          channelMessageStore,
-          channel,
+            ],
+          ),
+          onTap: () async {
+            connector.markChannelRead(channel.index);
+            await Future.delayed(const Duration(milliseconds: 50));
+            if (context.mounted) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChannelChatScreen(channel: channel),
+                ),
+              );
+            }
+          },
+          onLongPress: () => _showChannelActions(
+            context,
+            connector,
+            channelMessageStore,
+            channel,
+          ),
         ),
       ),
     );

@@ -10,7 +10,10 @@ import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
 import 'app_localizations_fr.dart';
+import 'app_localizations_hu.dart';
 import 'app_localizations_it.dart';
+import 'app_localizations_ja.dart';
+import 'app_localizations_ko.dart';
 import 'app_localizations_nl.dart';
 import 'app_localizations_pl.dart';
 import 'app_localizations_pt.dart';
@@ -112,7 +115,10 @@ abstract class AppLocalizations {
     Locale('en'),
     Locale('es'),
     Locale('fr'),
+    Locale('hu'),
     Locale('it'),
+    Locale('ja'),
+    Locale('ko'),
     Locale('nl'),
     Locale('pl'),
     Locale('pt'),
@@ -826,6 +832,84 @@ abstract class AppLocalizations {
   /// **'Privacy mode disabled'**
   String get settings_privacyModeDisabled;
 
+  /// No description provided for @settings_privacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Settings'**
+  String get settings_privacy;
+
+  /// No description provided for @settings_privacySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Control what information is shared.'**
+  String get settings_privacySubtitle;
+
+  /// No description provided for @settings_privacySettingsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what information your device shares with others.'**
+  String get settings_privacySettingsDescription;
+
+  /// No description provided for @settings_denyAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny all'**
+  String get settings_denyAll;
+
+  /// No description provided for @settings_allowByContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow by contact flags'**
+  String get settings_allowByContact;
+
+  /// No description provided for @settings_allowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow all'**
+  String get settings_allowAll;
+
+  /// No description provided for @settings_telemetryBaseMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Telemetry Base Mode'**
+  String get settings_telemetryBaseMode;
+
+  /// No description provided for @settings_telemetryLocationMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Telemetry Location Mode'**
+  String get settings_telemetryLocationMode;
+
+  /// No description provided for @settings_telemetryEnvironmentMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Telemetry Environment Mode'**
+  String get settings_telemetryEnvironmentMode;
+
+  /// No description provided for @settings_advertLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Advert Location'**
+  String get settings_advertLocation;
+
+  /// No description provided for @settings_advertLocationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Include location in advert.'**
+  String get settings_advertLocationSubtitle;
+
+  /// No description provided for @settings_multiAck.
+  ///
+  /// In en, this message translates to:
+  /// **'Multi-ACKs: {value}'**
+  String settings_multiAck(String value);
+
+  /// No description provided for @settings_telemetryModeUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Telemetry mode updated'**
+  String get settings_telemetryModeUpdated;
+
   /// No description provided for @settings_actions.
   ///
   /// In en, this message translates to:
@@ -1360,6 +1444,72 @@ abstract class AppLocalizations {
   /// **'Auto route rotation disabled'**
   String get appSettings_autoRouteRotationDisabled;
 
+  /// No description provided for @appSettings_maxRouteWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Route Weight'**
+  String get appSettings_maxRouteWeight;
+
+  /// No description provided for @appSettings_maxRouteWeightSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum weight a path can accumulate from successful deliveries'**
+  String get appSettings_maxRouteWeightSubtitle;
+
+  /// No description provided for @appSettings_initialRouteWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial Route Weight'**
+  String get appSettings_initialRouteWeight;
+
+  /// No description provided for @appSettings_initialRouteWeightSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting weight for newly discovered paths'**
+  String get appSettings_initialRouteWeightSubtitle;
+
+  /// No description provided for @appSettings_routeWeightSuccessIncrement.
+  ///
+  /// In en, this message translates to:
+  /// **'Success Weight Increment'**
+  String get appSettings_routeWeightSuccessIncrement;
+
+  /// No description provided for @appSettings_routeWeightSuccessIncrementSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight added to a path after successful delivery'**
+  String get appSettings_routeWeightSuccessIncrementSubtitle;
+
+  /// No description provided for @appSettings_routeWeightFailureDecrement.
+  ///
+  /// In en, this message translates to:
+  /// **'Failure Weight Decrement'**
+  String get appSettings_routeWeightFailureDecrement;
+
+  /// No description provided for @appSettings_routeWeightFailureDecrementSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight removed from a path after failed delivery'**
+  String get appSettings_routeWeightFailureDecrementSubtitle;
+
+  /// No description provided for @appSettings_maxMessageRetries.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Message Retries'**
+  String get appSettings_maxMessageRetries;
+
+  /// No description provided for @appSettings_maxMessageRetriesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of retry attempts before marking a message as failed'**
+  String get appSettings_maxMessageRetriesSubtitle;
+
+  /// No description provided for @path_routeWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'{weight}/{max}'**
+  String path_routeWeight(String weight, String max);
+
   /// No description provided for @appSettings_battery.
   ///
   /// In en, this message translates to:
@@ -1779,6 +1929,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'~ {days} days'**
   String contacts_lastSeenDaysAgo(int days);
+
+  /// No description provided for @contact_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Info'**
+  String get contact_info;
+
+  /// No description provided for @contact_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Settings'**
+  String get contact_settings;
+
+  /// No description provided for @contact_telemetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Telemetry'**
+  String get contact_telemetry;
+
+  /// No description provided for @contact_lastSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen'**
+  String get contact_lastSeen;
+
+  /// No description provided for @contact_clearChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Chat'**
+  String get contact_clearChat;
+
+  /// No description provided for @contact_teleBase.
+  ///
+  /// In en, this message translates to:
+  /// **'Telemetry Base'**
+  String get contact_teleBase;
+
+  /// No description provided for @contact_teleBaseSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow sharing battery level and basic telemetry'**
+  String get contact_teleBaseSubtitle;
+
+  /// No description provided for @contact_teleLoc.
+  ///
+  /// In en, this message translates to:
+  /// **'Telemetry Location'**
+  String get contact_teleLoc;
+
+  /// No description provided for @contact_teleLocSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow sharing location data'**
+  String get contact_teleLocSubtitle;
+
+  /// No description provided for @contact_teleEnv.
+  ///
+  /// In en, this message translates to:
+  /// **'Telemetry Environment'**
+  String get contact_teleEnv;
+
+  /// No description provided for @contact_teleEnvSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow sharing environment sensor data'**
+  String get contact_teleEnvSubtitle;
 
   /// No description provided for @channels_title.
   ///
@@ -2842,6 +3058,12 @@ abstract class AppLocalizations {
   /// **'Other Nodes'**
   String get map_otherNodes;
 
+  /// No description provided for @map_showOverlaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeater Key Overlaps'**
+  String get map_showOverlaps;
+
   /// No description provided for @map_keyPrefix.
   ///
   /// In en, this message translates to:
@@ -2923,8 +3145,14 @@ abstract class AppLocalizations {
   /// No description provided for @map_runTrace.
   ///
   /// In en, this message translates to:
-  /// **'Run Path Trace'**
+  /// **'Run path trace'**
   String get map_runTrace;
+
+  /// No description provided for @map_runTraceWithReturnPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Return back on the same path.'**
+  String get map_runTraceWithReturnPath;
 
   /// No description provided for @map_removeLast.
   ///
@@ -5836,6 +6064,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to delete all discovered contacts?'**
   String get discoveredContacts_deleteContactAllContent;
+
+  /// No description provided for @chat_sendCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait a moment before sending again.'**
+  String get chat_sendCooldown;
+
+  /// No description provided for @appSettings_jumpToOldestUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'Jump to oldest unread'**
+  String get appSettings_jumpToOldestUnread;
+
+  /// No description provided for @appSettings_jumpToOldestUnreadSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When opening a chat with unread messages, scroll to the first unread instead of the latest.'**
+  String get appSettings_jumpToOldestUnreadSubtitle;
+
+  /// No description provided for @appSettings_languageHu.
+  ///
+  /// In en, this message translates to:
+  /// **'Hungarian'**
+  String get appSettings_languageHu;
+
+  /// No description provided for @appSettings_languageJa.
+  ///
+  /// In en, this message translates to:
+  /// **'Japanese'**
+  String get appSettings_languageJa;
+
+  /// No description provided for @appSettings_languageKo.
+  ///
+  /// In en, this message translates to:
+  /// **'Korean'**
+  String get appSettings_languageKo;
+
+  /// No description provided for @radioStats_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio & mesh stats'**
+  String get radioStats_tooltip;
+
+  /// No description provided for @radioStats_screenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio stats'**
+  String get radioStats_screenTitle;
+
+  /// No description provided for @radioStats_notConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to a device to view radio statistics.'**
+  String get radioStats_notConnected;
+
+  /// No description provided for @radioStats_firmwareTooOld.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio statistics require companion firmware v8 or newer.'**
+  String get radioStats_firmwareTooOld;
+
+  /// No description provided for @radioStats_waiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for data…'**
+  String get radioStats_waiting;
+
+  /// No description provided for @radioStats_noiseFloor.
+  ///
+  /// In en, this message translates to:
+  /// **'Noise floor: {noiseDbm} dBm'**
+  String radioStats_noiseFloor(int noiseDbm);
+
+  /// No description provided for @radioStats_lastRssi.
+  ///
+  /// In en, this message translates to:
+  /// **'Last RSSI: {rssiDbm} dBm'**
+  String radioStats_lastRssi(int rssiDbm);
+
+  /// No description provided for @radioStats_lastSnr.
+  ///
+  /// In en, this message translates to:
+  /// **'Last SNR: {snr} dB'**
+  String radioStats_lastSnr(String snr);
+
+  /// No description provided for @radioStats_txAir.
+  ///
+  /// In en, this message translates to:
+  /// **'TX airtime (total): {seconds} s'**
+  String radioStats_txAir(int seconds);
+
+  /// No description provided for @radioStats_rxAir.
+  ///
+  /// In en, this message translates to:
+  /// **'RX airtime (total): {seconds} s'**
+  String radioStats_rxAir(int seconds);
+
+  /// No description provided for @radioStats_chartCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Noise floor (dBm) over recent samples.'**
+  String get radioStats_chartCaption;
+
+  /// No description provided for @radioStats_stripNoise.
+  ///
+  /// In en, this message translates to:
+  /// **'Noise floor: {noiseDbm} dBm'**
+  String radioStats_stripNoise(int noiseDbm);
+
+  /// No description provided for @radioStats_stripWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching radio stats…'**
+  String get radioStats_stripWaiting;
+
+  /// No description provided for @radioStats_settingsTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio stats'**
+  String get radioStats_settingsTile;
+
+  /// No description provided for @radioStats_settingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Noise floor, RSSI, SNR, and airtime'**
+  String get radioStats_settingsSubtitle;
+
+  /// No description provided for @scanner_linuxPairingShowPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Show PIN'**
+  String get scanner_linuxPairingShowPin;
+
+  /// No description provided for @scanner_linuxPairingHidePin.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide PIN'**
+  String get scanner_linuxPairingHidePin;
+
+  /// No description provided for @scanner_linuxPairingPinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth Pairing PIN'**
+  String get scanner_linuxPairingPinTitle;
+
+  /// No description provided for @scanner_linuxPairingPinPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter PIN for {deviceName} (leave blank if none).'**
+  String scanner_linuxPairingPinPrompt(String deviceName);
 }
 
 class _AppLocalizationsDelegate
@@ -5854,7 +6232,10 @@ class _AppLocalizationsDelegate
     'en',
     'es',
     'fr',
+    'hu',
     'it',
+    'ja',
+    'ko',
     'nl',
     'pl',
     'pt',
@@ -5883,8 +6264,14 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsEs();
     case 'fr':
       return AppLocalizationsFr();
+    case 'hu':
+      return AppLocalizationsHu();
     case 'it':
       return AppLocalizationsIt();
+    case 'ja':
+      return AppLocalizationsJa();
+    case 'ko':
+      return AppLocalizationsKo();
     case 'nl':
       return AppLocalizationsNl();
     case 'pl':

@@ -6,6 +6,7 @@ import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
 import 'package:meshcore_open/screens/scanner_screen.dart';
 import 'package:meshcore_open/screens/tcp_screen.dart';
+import 'package:meshcore_open/services/app_settings_service.dart';
 
 class _FakeMeshCoreConnector extends MeshCoreConnector {
   _FakeMeshCoreConnector();
@@ -44,8 +45,13 @@ Widget _buildTestApp({
   required Widget child,
   Locale? locale,
 }) {
-  return ChangeNotifierProvider<MeshCoreConnector>.value(
-    value: connector,
+  return MultiProvider(
+    providers: [
+      ChangeNotifierProvider<MeshCoreConnector>.value(value: connector),
+      ChangeNotifierProvider<AppSettingsService>(
+        create: (_) => AppSettingsService(),
+      ),
+    ],
     child: MaterialApp(
       locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
