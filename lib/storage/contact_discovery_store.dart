@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '../models/contact.dart';
+import '../utils/app_logger.dart';
 import 'prefs_manager.dart';
 
 class ContactDiscoveryImportResult {
@@ -19,7 +20,7 @@ class ContactDiscoveryStore {
 
   String publicKeyHex = '';
   set setPublicKeyHex(String value) =>
-      publicKeyHex = value.length > 10 ? value.substring(0, 10) : '';
+      publicKeyHex = value.length >= 10 ? value.substring(0, 10) : '';
 
   String get keyFor => '$_keyPrefix$publicKeyHex';
 
@@ -35,6 +36,10 @@ class ContactDiscoveryStore {
   }
 
   Future<List<Contact>> loadContacts() async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot load contacts.');
+      return [];
+    }
     final prefs = PrefsManager.instance;
     var jsonStr = prefs.getString(keyFor);
     if ((jsonStr == null || jsonStr.isEmpty) && publicKeyHex.isNotEmpty) {
@@ -56,6 +61,10 @@ class ContactDiscoveryStore {
   }
 
   Future<void> saveContacts(List<Contact> contacts) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot save contacts.');
+      return;
+    }
     final prefs = PrefsManager.instance;
     await prefs.setString(keyFor, encodeContacts(contacts));
   }

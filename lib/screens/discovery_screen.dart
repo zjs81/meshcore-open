@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -66,10 +68,10 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
             onSelected: (value) {
               switch (value) {
                 case 'export':
-                  _exportDiscoveredContacts(context, connector);
+                  unawaited(_exportDiscoveredContacts(context, connector));
                   break;
                 case 'import':
-                  _importDiscoveredContacts(context, connector);
+                  unawaited(_importDiscoveredContacts(context, connector));
                   break;
                 case 'delete_all':
                   _deleteContacts(context, connector);
@@ -265,21 +267,19 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
       final bytes = Uint8List.fromList(utf8.encode(json));
 
       if (PlatformInfo.isDesktop) {
+        final location = await getSaveLocation(
+          suggestedName: filename,
+          acceptedTypeGroups: [
+            const XTypeGroup(label: 'JSON', extensions: ['json']),
+          ],
+        );
+        if (!mounted) return;
+        if (location == null) return;
         final exportFile = XFile.fromData(
           bytes,
           mimeType: 'application/json',
           name: filename,
         );
-        final location = await getSaveLocation(
-          suggestedName: filename,
-          acceptedTypeGroups: const [
-            XTypeGroup(label: 'JSON', extensions: ['json']),
-          ],
-        );
-        if (location == null) {
-          return;
-        }
-
         await exportFile.saveTo(location.path);
         if (!mounted) return;
         messenger.showSnackBar(
@@ -290,21 +290,26 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
         return;
       }
 
-      final exportFile = XFile.fromData(
-        bytes,
-        mimeType: 'application/json',
-        name: filename,
-      );
+      final tempDir = await getTemporaryDirectory();
+      final exportPath = '${tempDir.path}/$filename';
+      final exportFile = File(exportPath);
+      await exportFile.writeAsBytes(bytes, flush: true);
 
-      final result = await SharePlus.instance.share(
-        ShareParams(subject: filename, files: [exportFile]),
-      );
-
-      if (!mounted) return;
-      if (result.status == ShareResultStatus.success) {
-        messenger.showSnackBar(
-          SnackBar(content: Text(l10n.discoveredContacts_exported(filename))),
+      try {
+        final result = await SharePlus.instance.share(
+          ShareParams(subject: filename, files: [XFile(exportPath)]),
         );
+
+        if (!mounted) return;
+        if (result.status == ShareResultStatus.success) {
+          messenger.showSnackBar(
+            SnackBar(content: Text(l10n.discoveredContacts_exported(filename))),
+          );
+        }
+      } finally {
+        if (await exportFile.exists()) {
+          await exportFile.delete();
+        }
       }
     } catch (e) {
       if (!mounted) return;
@@ -323,22 +328,25 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     try {
-      final file = await openFile(
-        acceptedTypeGroups: const [
-          XTypeGroup(label: 'JSON', extensions: ['json']),
-        ],
-      );
-      if (file == null) {
+      final json = await _resolveImportJson(context);
+      if (json == null) {
+        // User cancelled the file picker — nothing to do.
+        return;
+      }
+      final foundCount = _countContactsInImportJson(json);
+      if (foundCount == 0) {
+        if (!mounted) return;
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.discoveredContacts_importNoContacts)),
+        );
         return;
       }
 
-      final bytes = await file.readAsBytes();
-      final json = _decodeImportedJson(bytes);
       final importedCount = await connector.importDiscoveredContactsJson(json);
       if (importedCount == 0) {
         if (!mounted) return;
         messenger.showSnackBar(
-          SnackBar(content: Text(l10n.discoveredContacts_importNoContacts)),
+          SnackBar(content: Text(l10n.discoveredContacts_imported(0))),
         );
         return;
       }
@@ -391,6 +399,29 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
       growable: false,
     );
     return String.fromCharCodes(codeUnits);
+  }
+
+  int _countContactsInImportJson(String json) {
+    try {
+      final decoded = jsonDecode(json);
+      if (decoded is List) {
+        return decoded.length;
+      }
+      return 0;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  Future<String?> _resolveImportJson(BuildContext context) async {
+    final file = await openFile(
+      acceptedTypeGroups: [
+        const XTypeGroup(label: 'JSON', extensions: ['json']),
+      ],
+    );
+    if (file == null) return null;
+    final bytes = await file.readAsBytes();
+    return _decodeImportedJson(bytes);
   }
 
   Widget _buildFilters(

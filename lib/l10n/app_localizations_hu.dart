@@ -3285,6 +3285,36 @@ class AppLocalizationsHu extends AppLocalizations {
       'Nem sikerült a kapcsolatot importálni.';
 
   @override
+  String get discoveredContacts_export => 'Felfedezett névjegyek exportálása';
+
+  @override
+  String get discoveredContacts_import => 'Felfedezett névjegyek importálása';
+
+  @override
+  String discoveredContacts_exported(String path) {
+    return 'A felfedezett névjegyek exportálva ide: $path.';
+  }
+
+  @override
+  String discoveredContacts_exportFailed(String error) {
+    return 'A felfedezett névjegyek exportálása sikertelen: $error';
+  }
+
+  @override
+  String discoveredContacts_imported(int count) {
+    return '$count felfedezett névjegy importálva.';
+  }
+
+  @override
+  String get discoveredContacts_importNoContacts =>
+      'Az importfájlban nem található névjegy.';
+
+  @override
+  String discoveredContacts_importFailed(String error) {
+    return 'A felfedezett névjegyek importálása sikertelen: $error';
+  }
+
+  @override
   String get contacts_zeroHopAdvert => 'Zero Hop reklám';
 
   @override
