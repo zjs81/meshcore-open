@@ -1706,6 +1706,7 @@
   "listFilter_users": "사용자",
   "listFilter_repeaters": "다시 보내는 장치",
   "listFilter_roomServers": "방 내 서버",
+  "listFilter_activeChat": "활성 채팅",
   "listFilter_unreadOnly": "읽지 않은 항목만",
   "listFilter_newGroup": "새로운 그룹",
   "pathTrace_you": "당신",

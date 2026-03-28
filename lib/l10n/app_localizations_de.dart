@@ -3099,6 +3099,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get listFilter_roomServers => 'Raumserver';
 
   @override
+  String get listFilter_activeChat => 'Aktiver Chat';
+
+  @override
   String get listFilter_unreadOnly => 'Nicht gelesen';
 
   @override

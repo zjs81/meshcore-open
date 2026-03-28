@@ -3074,6 +3074,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get listFilter_roomServers => 'Smeti za prostore';
 
   @override
+  String get listFilter_activeChat => 'Aktivni klepet';
+
+  @override
   String get listFilter_unreadOnly => 'Nezbrani samo';
 
   @override

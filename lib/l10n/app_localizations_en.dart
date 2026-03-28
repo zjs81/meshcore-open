@@ -3040,6 +3040,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listFilter_roomServers => 'Room servers';
 
   @override
+  String get listFilter_activeChat => 'Active chat';
+
+  @override
   String get listFilter_unreadOnly => 'Unread only';
 
   @override

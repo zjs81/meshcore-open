@@ -3106,6 +3106,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get listFilter_roomServers => 'Szoba-szolgálatok';
 
   @override
+  String get listFilter_activeChat => 'Aktív chat';
+
+  @override
   String get listFilter_unreadOnly => 'Csak olvasatlan';
 
   @override

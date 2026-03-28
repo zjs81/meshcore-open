@@ -5402,6 +5402,12 @@ abstract class AppLocalizations {
   /// **'Room servers'**
   String get listFilter_roomServers;
 
+  /// No description provided for @listFilter_activeChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Active chat'**
+  String get listFilter_activeChat;
+
   /// No description provided for @listFilter_unreadOnly.
   ///
   /// In en, this message translates to:

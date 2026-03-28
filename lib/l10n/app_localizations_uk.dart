@@ -3100,6 +3100,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get listFilter_roomServers => 'Сервери кімнат';
 
   @override
+  String get listFilter_activeChat => 'Активний чат';
+
+  @override
   String get listFilter_unreadOnly => 'Тільки непрочитані повідомлення';
 
   @override

@@ -1706,6 +1706,7 @@
   "listFilter_users": "利用者",
   "listFilter_repeaters": "繰り返し送信装置",
   "listFilter_roomServers": "ルーム用サーバー",
+  "listFilter_activeChat": "アクティブチャット",
   "listFilter_unreadOnly": "未読のみ",
   "listFilter_newGroup": "新しいグループ",
   "pathTrace_you": "あなた",

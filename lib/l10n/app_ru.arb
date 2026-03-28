@@ -759,6 +759,7 @@
   "listFilter_users": "Пользователи",
   "listFilter_repeaters": "Репитеры",
   "listFilter_roomServers": "Серверы комнат",
+  "listFilter_activeChat": "Активный чат",
   "listFilter_unreadOnly": "Только непрочитанные",
   "listFilter_newGroup": "Новая группа",
   "@chat_couldNotOpenLink": {

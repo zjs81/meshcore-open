@@ -1762,6 +1762,7 @@
   "listFilter_users": "Users",
   "listFilter_repeaters": "Repeaters",
   "listFilter_roomServers": "Room servers",
+  "listFilter_activeChat": "Active chat",
   "listFilter_unreadOnly": "Unread only",
   "listFilter_newGroup": "New group",
   "pathTrace_you": "You",

@@ -3104,6 +3104,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get listFilter_roomServers => 'Serwery pokoju';
 
   @override
+  String get listFilter_activeChat => 'Aktywny czat';
+
+  @override
   String get listFilter_unreadOnly => 'Tylko nieprzeczytane';
 
   @override

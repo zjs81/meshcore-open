@@ -1354,6 +1354,7 @@
   "listFilter_users": "Користувачі",
   "listFilter_repeaters": "Ретранслятори",
   "listFilter_roomServers": "Сервери кімнат",
+  "listFilter_activeChat": "Активний чат",
   "listFilter_unreadOnly": "Тільки непрочитані повідомлення",
   "listFilter_newGroup": "Нова група",
   "@neighbors_errorLoading": {

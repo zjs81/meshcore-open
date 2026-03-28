@@ -2879,6 +2879,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get listFilter_roomServers => '房间服务器';
 
   @override
+  String get listFilter_activeChat => '活跃聊天';
+
+  @override
   String get listFilter_unreadOnly => '仅显示未读';
 
   @override

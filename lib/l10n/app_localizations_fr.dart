@@ -3111,6 +3111,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get listFilter_roomServers => 'Room servers';
 
   @override
+  String get listFilter_activeChat => 'Chat actif';
+
+  @override
   String get listFilter_unreadOnly => 'Messages non lus seulement';
 
   @override

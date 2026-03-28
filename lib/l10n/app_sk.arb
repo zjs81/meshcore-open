@@ -1353,6 +1353,7 @@
   "listFilter_users": "Používatelia",
   "listFilter_repeaters": "Opakovadlá",
   "listFilter_roomServers": "Servéry miestnosti",
+  "listFilter_activeChat": "Aktívny chat",
   "listFilter_unreadOnly": "Nezaregistrované len",
   "listFilter_newGroup": "Nová skupina",
   "@neighbors_errorLoading": {

@@ -2954,6 +2954,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get listFilter_roomServers => '방 내 서버';
 
   @override
+  String get listFilter_activeChat => '활성 채팅';
+
+  @override
   String get listFilter_unreadOnly => '읽지 않은 항목만';
 
   @override

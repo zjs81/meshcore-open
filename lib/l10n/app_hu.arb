@@ -1706,6 +1706,7 @@
   "listFilter_users": "Felhasználók",
   "listFilter_repeaters": "Újraküldők",
   "listFilter_roomServers": "Szoba-szolgálatok",
+  "listFilter_activeChat": "Aktív chat",
   "listFilter_unreadOnly": "Csak olvasatlan",
   "listFilter_newGroup": "Új csoport",
   "pathTrace_you": "Te",

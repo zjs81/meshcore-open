@@ -158,6 +158,11 @@ class ContactsFilterMenu extends StatelessWidget {
               checked: typeFilter == ContactTypeFilter.all,
             ),
             SortFilterMenuOption(
+              value: _TypeFilterAction(ContactTypeFilter.chat),
+              label: l10n.listFilter_activeChat,
+              checked: typeFilter == ContactTypeFilter.chat,
+            ),
+            SortFilterMenuOption(
               value: _TypeFilterAction(ContactTypeFilter.favorites),
               label: l10n.listFilter_favorites,
               checked: typeFilter == ContactTypeFilter.favorites,
@@ -176,11 +181,6 @@ class ContactsFilterMenu extends StatelessWidget {
               value: _TypeFilterAction(ContactTypeFilter.rooms),
               label: l10n.listFilter_roomServers,
               checked: typeFilter == ContactTypeFilter.rooms,
-            ),
-            SortFilterMenuOption(
-              value: _TypeFilterAction(ContactTypeFilter.chat),
-              label: l10n.map_chat,
-              checked: typeFilter == ContactTypeFilter.chat,
             ),
             SortFilterMenuOption(
               value: const _ToggleUnreadAction(),

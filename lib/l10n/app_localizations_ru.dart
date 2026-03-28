@@ -3098,6 +3098,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get listFilter_roomServers => 'Серверы комнат';
 
   @override
+  String get listFilter_activeChat => 'Активный чат';
+
+  @override
   String get listFilter_unreadOnly => 'Только непрочитанные';
 
   @override

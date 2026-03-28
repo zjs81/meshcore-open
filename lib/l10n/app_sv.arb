@@ -1353,6 +1353,7 @@
   "listFilter_users": "Användare",
   "listFilter_repeaters": "Upprepare",
   "listFilter_roomServers": "Rumservrar",
+  "listFilter_activeChat": "Aktiv chatt",
   "listFilter_unreadOnly": "Endast oinlästa",
   "listFilter_newGroup": "Ny grupp",
   "@neighbors_errorLoading": {

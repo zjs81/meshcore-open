@@ -2954,6 +2954,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get listFilter_roomServers => 'ルーム用サーバー';
 
   @override
+  String get listFilter_activeChat => 'アクティブチャット';
+
+  @override
   String get listFilter_unreadOnly => '未読のみ';
 
   @override

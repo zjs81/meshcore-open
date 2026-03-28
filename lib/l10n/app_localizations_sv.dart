@@ -3058,6 +3058,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get listFilter_roomServers => 'Rumservrar';
 
   @override
+  String get listFilter_activeChat => 'Aktiv chatt';
+
+  @override
   String get listFilter_unreadOnly => 'Endast oinlästa';
 
   @override

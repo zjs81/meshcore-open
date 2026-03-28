@@ -3073,6 +3073,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get listFilter_roomServers => 'Servéry miestnosti';
 
   @override
+  String get listFilter_activeChat => 'Aktívny chat';
+
+  @override
   String get listFilter_unreadOnly => 'Nezaregistrované len';
 
   @override

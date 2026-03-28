@@ -1353,6 +1353,7 @@
   "listFilter_users": "Utilisateurs",
   "listFilter_repeaters": "Répéteurs",
   "listFilter_roomServers": "Room servers",
+  "listFilter_activeChat": "Chat actif",
   "listFilter_unreadOnly": "Messages non lus seulement",
   "listFilter_newGroup": "Nouveau groupe",
   "@neighbors_errorLoading": {

@@ -1363,6 +1363,7 @@
   "listFilter_users": "Użytkownicy",
   "listFilter_repeaters": "Przekaźniki",
   "listFilter_roomServers": "Serwery pokoju",
+  "listFilter_activeChat": "Aktywny czat",
   "listFilter_unreadOnly": "Tylko nieprzeczytane",
   "listFilter_newGroup": "Nowa grupa",
   "@neighbors_errorLoading": {

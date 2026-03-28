@@ -1353,6 +1353,7 @@
   "listFilter_users": "Потребители",
   "listFilter_repeaters": "Повторители",
   "listFilter_roomServers": "Сървъри на стая",
+  "listFilter_activeChat": "Активен чат",
   "listFilter_unreadOnly": "Само непрочетените",
   "listFilter_newGroup": "Нова група",
   "@neighbors_errorLoading": {

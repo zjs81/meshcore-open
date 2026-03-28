@@ -3092,6 +3092,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get listFilter_roomServers => 'Servidores de la sala';
 
   @override
+  String get listFilter_activeChat => 'Chat activo';
+
+  @override
   String get listFilter_unreadOnly => 'Solo sin leer';
 
   @override
