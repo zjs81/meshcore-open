@@ -1229,13 +1229,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chat_sendGif => 'GIFを送信する';
 
   @override
-  String get chat_insertEmoji => 'Insert emoji';
+  String get chat_insertEmoji => '絵文字を挿入';
 
   @override
-  String get chat_shareLocation => 'Share location';
+  String get chat_shareLocation => '位置を共有する';
 
   @override
-  String get chat_locationUnavailable => 'Location not available';
+  String get chat_locationUnavailable => '位置情報が利用できません';
 
   @override
   String get chat_reply => '返信';
@@ -1657,7 +1657,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get map_sharedPin => '共有パスワード';
 
   @override
-  String get map_sharedAt => 'Shared';
+  String get map_sharedAt => '共有済み';
 
   @override
   String get map_joinRoom => '部屋に参加する';

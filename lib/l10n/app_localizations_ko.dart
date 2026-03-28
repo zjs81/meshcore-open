@@ -1224,13 +1224,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chat_sendGif => 'GIF 보내기';
 
   @override
-  String get chat_insertEmoji => 'Insert emoji';
+  String get chat_insertEmoji => '이모지 삽입';
 
   @override
-  String get chat_shareLocation => 'Share location';
+  String get chat_shareLocation => '위치 공유';
 
   @override
-  String get chat_locationUnavailable => 'Location not available';
+  String get chat_locationUnavailable => '위치를 사용할 수 없습니다';
 
   @override
   String get chat_reply => '답변';
@@ -1653,7 +1653,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get map_sharedPin => '공유 비밀번호';
 
   @override
-  String get map_sharedAt => 'Shared';
+  String get map_sharedAt => '공유됨';
 
   @override
   String get map_joinRoom => '방에 참여';
