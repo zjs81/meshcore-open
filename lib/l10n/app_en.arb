@@ -49,6 +49,33 @@
   "scanner_title": "MeshCore Open",
   "connectionChoiceUsbLabel": "USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
+  "connectionChoiceTcpLabel": "TCP",
+  "tcpScreenTitle": "Connect over TCP",
+  "tcpHostLabel": "IP Address",
+  "tcpHostHint": "192.168.40.10",
+  "tcpPortLabel": "Port",
+  "tcpPortHint": "5000",
+  "tcpStatus_notConnected": "Enter endpoint and connect",
+  "tcpStatus_connectingTo": "Connecting to {endpoint}...",
+  "@tcpStatus_connectingTo": {
+    "placeholders": {
+      "endpoint": {
+        "type": "String"
+      }
+    }
+  },
+  "tcpErrorHostRequired": "IP address is required.",
+  "tcpErrorPortInvalid": "Port must be between 1 and 65535.",
+  "tcpErrorUnsupported": "TCP transport is not supported on this platform.",
+  "tcpErrorTimedOut": "TCP connection timed out.",
+  "tcpConnectionFailed": "TCP connection failed: {error}",
+  "@tcpConnectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "usbScreenTitle": "Connect over USB",
   "usbScreenSubtitle": "Choose a detected serial device and connect directly to your MeshCore node.",
   "usbScreenStatus": "Select a USB device",
@@ -100,6 +127,7 @@
       }
     }
   },
+  
   "scanner_stop": "Stop",
   "scanner_scan": "Scan",
   "scanner_bluetoothOff": "Bluetooth is off",
@@ -139,6 +167,26 @@
   "settings_privacyModeToggle": "Toggle privacy mode to hide your name and location in advertisements.",
   "settings_privacyModeEnabled": "Privacy mode enabled",
   "settings_privacyModeDisabled": "Privacy mode disabled",
+  "settings_privacy": "Privacy Settings",
+  "settings_privacySubtitle": "Control what information is shared.",
+  "settings_privacySettingsDescription": "Choose what information your device shares with others.",
+  "settings_denyAll": "Deny all",
+  "settings_allowByContact": "Allow by contact flags",
+  "settings_allowAll": "Allow all",
+  "settings_telemetryBaseMode": "Telemetry Base Mode",
+  "settings_telemetryLocationMode": "Telemetry Location Mode",
+  "settings_telemetryEnvironmentMode": "Telemetry Environment Mode",
+  "settings_advertLocation": "Advert Location",
+  "settings_advertLocationSubtitle": "Include location in advert.",
+  "settings_multiAck": "Multi-ACKs: {value}",
+  "@settings_multiAck": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_telemetryModeUpdated": "Telemetry mode updated",
   "settings_actions": "Actions",
   "settings_sendAdvertisement": "Send Advertisement",
   "settings_sendAdvertisementSubtitle": "Broadcast presence now",
@@ -242,6 +290,23 @@
   "appSettings_autoRouteRotationSubtitle": "Cycle between best paths and flood mode",
   "appSettings_autoRouteRotationEnabled": "Auto route rotation enabled",
   "appSettings_autoRouteRotationDisabled": "Auto route rotation disabled",
+  "appSettings_maxRouteWeight": "Max Route Weight",
+  "appSettings_maxRouteWeightSubtitle": "Maximum weight a path can accumulate from successful deliveries",
+  "appSettings_initialRouteWeight": "Initial Route Weight",
+  "appSettings_initialRouteWeightSubtitle": "Starting weight for newly discovered paths",
+  "appSettings_routeWeightSuccessIncrement": "Success Weight Increment",
+  "appSettings_routeWeightSuccessIncrementSubtitle": "Weight added to a path after successful delivery",
+  "appSettings_routeWeightFailureDecrement": "Failure Weight Decrement",
+  "appSettings_routeWeightFailureDecrementSubtitle": "Weight removed from a path after failed delivery",
+  "appSettings_maxMessageRetries": "Max Message Retries",
+  "appSettings_maxMessageRetriesSubtitle": "Number of retry attempts before marking a message as failed",
+  "path_routeWeight": "{weight}/{max}",
+  "@path_routeWeight": {
+    "placeholders": {
+      "weight": { "type": "String" },
+      "max": { "type": "String" }
+    }
+  },
   "appSettings_battery": "Battery",
   "appSettings_batteryChemistry": "Battery Chemistry",
   "appSettings_batteryChemistryPerDevice": "Set per device ({deviceName})",
@@ -389,6 +454,7 @@
   "contacts_newGroup": "New Group",
   "contacts_groupName": "Group name",
   "contacts_groupNameRequired": "Group name is required",
+  "contacts_groupNameReserved": "This group name is reserved",
   "contacts_groupAlreadyExists": "Group \"{name}\" already exists",
   "@contacts_groupAlreadyExists": {
     "placeholders": {
@@ -427,6 +493,17 @@
       }
     }
   },
+  "contact_info": "Contact Info",
+  "contact_settings": "Contact Settings",
+  "contact_telemetry": "Telemetry",
+  "contact_lastSeen": "Last seen",
+  "contact_clearChat": "Clear Chat",
+  "contact_teleBase": "Telemetry Base",
+  "contact_teleBaseSubtitle": "Allow sharing battery level and basic telemetry",
+  "contact_teleLoc": "Telemetry Location",
+  "contact_teleLocSubtitle": "Allow sharing location data",
+  "contact_teleEnv": "Telemetry Environment",
+  "contact_teleEnvSubtitle": "Allow sharing environment sensor data",
   "channels_title": "Channels",
   "channels_noChannelsConfigured": "No channels configured",
   "channels_addPublicChannel": "Add Public Channel",
@@ -783,6 +860,7 @@
   "map_source": "Source",
   "map_flags": "Flags",
   "map_shareMarkerHere": "Share marker here",
+  "map_setAsMyLocation": "Set as my location",
   "map_pinLabel": "Pin label",
   "map_label": "Label",
   "map_pointOfInterest": "Point of interest",
@@ -804,12 +882,14 @@
   "map_chatNodes": "Chat Nodes",
   "map_repeaters": "Repeaters",
   "map_otherNodes": "Other Nodes",
+  "map_showOverlaps": "Repeater Key Overlaps",
   "map_keyPrefix": "Key Prefix",
   "map_filterByKeyPrefix": "Filter by key prefix",
   "map_publicKeyPrefix": "Public key prefix",
   "map_markers": "Markers",
   "map_showSharedMarkers": "Show shared markers",
   "map_showGuessedLocations": "Show guessed node locations",
+  "map_showDiscoveryContacts": "Show Discovery Contacts",
   "map_guessedLocation": "Guessed location",
   "map_lastSeenTime": "Last Seen Time",
   "map_sharedPin": "Shared pin",
@@ -817,7 +897,8 @@
   "map_joinRoom": "Join Room",
   "map_manageRepeater": "Manage Repeater",
   "map_tapToAdd": "Tap on nodes to add them to the path.",
-  "map_runTrace": "Run Path Trace",
+  "map_runTrace": "Run path trace",
+  "map_runTraceWithReturnPath": "Return back on the same path.",
   "map_removeLast": "Remove Last",
   "map_pathTraceCancelled": "Path trace cancelled.",
   "mapCache_title": "Offline Map Cache",
@@ -1901,5 +1982,79 @@
   "discoveredContacts_copyContact": "Copy Contact to clipboard",
   "discoveredContacts_deleteContact": "Delete Discovered Contact",
   "discoveredContacts_deleteContactAll": "Delete All Discovered Contacts",
-  "discoveredContacts_deleteContactAllContent": "Are you sure you want to delete all discovered contacts?"
+  "discoveredContacts_deleteContactAllContent": "Are you sure you want to delete all discovered contacts?",
+  "chat_sendCooldown": "Please wait a moment before sending again.",
+  "appSettings_jumpToOldestUnread": "Jump to oldest unread",
+  "appSettings_jumpToOldestUnreadSubtitle": "When opening a chat with unread messages, scroll to the first unread instead of the latest.",
+  "appSettings_languageHu": "Hungarian",
+  "appSettings_languageJa": "Japanese",
+  "appSettings_languageKo": "Korean",
+  "radioStats_tooltip": "Radio & mesh stats",
+  "radioStats_screenTitle": "Radio stats",
+  "radioStats_notConnected": "Connect to a device to view radio statistics.",
+  "radioStats_firmwareTooOld": "Radio statistics require companion firmware v8 or newer.",
+  "radioStats_waiting": "Waiting for data…",
+  "radioStats_noiseFloor": "Noise floor: {noiseDbm} dBm",
+  "@radioStats_noiseFloor": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_lastRssi": "Last RSSI: {rssiDbm} dBm",
+  "@radioStats_lastRssi": {
+    "placeholders": {
+      "rssiDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_lastSnr": "Last SNR: {snr} dB",
+  "@radioStats_lastSnr": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "radioStats_txAir": "TX airtime (total): {seconds} s",
+  "@radioStats_txAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_rxAir": "RX airtime (total): {seconds} s",
+  "@radioStats_rxAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_chartCaption": "Noise floor (dBm) over recent samples.",
+  "radioStats_stripNoise": "Noise floor: {noiseDbm} dBm",
+  "@radioStats_stripNoise": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_stripWaiting": "Fetching radio stats…",
+  "radioStats_settingsTile": "Radio stats",
+  "radioStats_settingsSubtitle": "Noise floor, RSSI, SNR, and airtime",
+  "scanner_linuxPairingShowPin": "Show PIN",
+  "scanner_linuxPairingHidePin": "Hide PIN",
+  "scanner_linuxPairingPinTitle": "Bluetooth Pairing PIN",
+  "scanner_linuxPairingPinPrompt": "Enter PIN for {deviceName} (leave blank if none).",
+  "@scanner_linuxPairingPinPrompt": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -127,6 +127,17 @@ class UsbSerialService {
     }
   }
 
+  Future<void> writeRaw(Uint8List data) async {
+    if (!isConnected || _writer == null) {
+      throw StateError('USB serial port is not open');
+    }
+    final promise = _writer!.callMethod<JSPromise<JSAny?>>(
+      'write'.toJS,
+      data.toJS,
+    );
+    await promise.toDart;
+  }
+
   Future<void> write(Uint8List data) async {
     if (!isConnected || _writer == null) {
       throw StateError('USB serial port is not open');

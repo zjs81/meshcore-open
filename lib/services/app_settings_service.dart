@@ -64,6 +64,10 @@ class AppSettingsService extends ChangeNotifier {
     await updateSettings(_settings.copyWith(mapShowOtherNodes: value));
   }
 
+  Future<void> setMapShowOverlaps(bool value) async {
+    await updateSettings(_settings.copyWith(mapShowOverlaps: value));
+  }
+
   Future<void> setMapTimeFilterHours(double value) async {
     await updateSettings(_settings.copyWith(mapTimeFilterHours: value));
   }
@@ -120,6 +124,30 @@ class AppSettingsService extends ChangeNotifier {
     await updateSettings(_settings.copyWith(autoRouteRotationEnabled: value));
   }
 
+  Future<void> setMaxRouteWeight(double value) async {
+    await updateSettings(_settings.copyWith(maxRouteWeight: value));
+  }
+
+  Future<void> setInitialRouteWeight(double value) async {
+    await updateSettings(_settings.copyWith(initialRouteWeight: value));
+  }
+
+  Future<void> setRouteWeightSuccessIncrement(double value) async {
+    await updateSettings(
+      _settings.copyWith(routeWeightSuccessIncrement: value),
+    );
+  }
+
+  Future<void> setRouteWeightFailureDecrement(double value) async {
+    await updateSettings(
+      _settings.copyWith(routeWeightFailureDecrement: value),
+    );
+  }
+
+  Future<void> setMaxMessageRetries(int value) async {
+    await updateSettings(_settings.copyWith(maxMessageRetries: value));
+  }
+
   Future<void> setThemeMode(String value) async {
     await updateSettings(_settings.copyWith(themeMode: value));
   }
@@ -132,6 +160,10 @@ class AppSettingsService extends ChangeNotifier {
     await updateSettings(_settings.copyWith(appDebugLogEnabled: value));
     // Update the global logger
     appLogger.setEnabled(value);
+  }
+
+  Future<void> setMapShowDiscoveryContacts(bool value) async {
+    await updateSettings(_settings.copyWith(mapShowDiscoveryContacts: value));
   }
 
   Future<void> setBatteryChemistryForDevice(
@@ -177,5 +209,17 @@ class AppSettingsService extends ChangeNotifier {
     final updated = Set<String>.from(_settings.mutedChannels)
       ..remove(channelName);
     await updateSettings(_settings.copyWith(mutedChannels: updated));
+  }
+
+  Future<void> setTcpServerAddress(String value) async {
+    await updateSettings(_settings.copyWith(tcpServerAddress: value));
+  }
+
+  Future<void> setTcpServerPort(int value) async {
+    await updateSettings(_settings.copyWith(tcpServerPort: value));
+  }
+
+  Future<void> setJumpToOldestUnread(bool value) async {
+    await updateSettings(_settings.copyWith(jumpToOldestUnread: value));
   }
 }

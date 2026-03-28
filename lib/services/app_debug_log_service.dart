@@ -51,6 +51,7 @@ class AppDebugLogService extends ChangeNotifier {
     String message, {
     String tag = 'App',
     AppDebugLogLevel level = AppDebugLogLevel.info,
+    bool noNotify = false,
   }) {
     if (!_enabled && !kDebugMode) return;
     if (!_enabled) {
@@ -72,22 +73,24 @@ class AppDebugLogService extends ChangeNotifier {
       _entries.removeRange(0, _entries.length - maxEntries);
     }
 
-    notifyListeners();
+    if (!noNotify) {
+      notifyListeners();
+    }
 
     // Also print to console for development
     debugPrint('[$tag] $message');
   }
 
-  void info(String message, {String tag = 'App'}) {
-    log(message, tag: tag, level: AppDebugLogLevel.info);
+  void info(String message, {String tag = 'App', bool noNotify = false}) {
+    log(message, tag: tag, level: AppDebugLogLevel.info, noNotify: noNotify);
   }
 
-  void warn(String message, {String tag = 'App'}) {
-    log(message, tag: tag, level: AppDebugLogLevel.warning);
+  void warn(String message, {String tag = 'App', bool noNotify = false}) {
+    log(message, tag: tag, level: AppDebugLogLevel.warning, noNotify: noNotify);
   }
 
-  void error(String message, {String tag = 'App'}) {
-    log(message, tag: tag, level: AppDebugLogLevel.error);
+  void error(String message, {String tag = 'App', bool noNotify = false}) {
+    log(message, tag: tag, level: AppDebugLogLevel.error, noNotify: noNotify);
   }
 
   void clear() {

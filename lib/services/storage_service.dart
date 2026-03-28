@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../models/delivery_observation.dart';
 import '../models/path_history.dart';
 import '../storage/prefs_manager.dart';
 
@@ -6,6 +7,7 @@ class StorageService {
   static const String _pathHistoryPrefix = 'path_history_';
   static const String _pendingMessagesKey = 'pending_messages';
   static const String _repeaterPasswordsKey = 'repeater_passwords';
+  static const String _deliveryObservationsKey = 'delivery_observations';
 
   Future<void> savePathHistory(
     String contactPubKeyHex,
@@ -121,5 +123,34 @@ class StorageService {
   Future<void> clearAllRepeaterPasswords() async {
     final prefs = PrefsManager.instance;
     await prefs.remove(_repeaterPasswordsKey);
+  }
+
+  Future<void> saveDeliveryObservations(
+    List<DeliveryObservation> observations,
+  ) async {
+    final prefs = PrefsManager.instance;
+    final jsonStr = jsonEncode(observations.map((o) => o.toJson()).toList());
+    await prefs.setString(_deliveryObservationsKey, jsonStr);
+  }
+
+  Future<List<DeliveryObservation>> loadDeliveryObservations() async {
+    final prefs = PrefsManager.instance;
+    final jsonStr = prefs.getString(_deliveryObservationsKey);
+
+    if (jsonStr == null) return [];
+
+    try {
+      final list = jsonDecode(jsonStr) as List;
+      return list
+          .map((e) => DeliveryObservation.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<void> clearDeliveryObservations() async {
+    final prefs = PrefsManager.instance;
+    await prefs.remove(_deliveryObservationsKey);
   }
 }

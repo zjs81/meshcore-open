@@ -51,6 +51,9 @@ class _CommunityQrScannerScreenState extends State<CommunityQrScannerScreen> {
       _isProcessing = true;
     });
 
+    final connector = context.read<MeshCoreConnector>();
+    _communityStore.setPublicKeyHex = connector.selfPublicKeyHex;
+
     try {
       // Parse the community data
       final community = Community.fromQrData(const Uuid().v4(), data);
@@ -209,6 +212,8 @@ class _CommunityQrScannerScreenState extends State<CommunityQrScannerScreen> {
     bool addPublicChannel,
   ) async {
     // Save community to local storage
+    final connector = context.read<MeshCoreConnector>();
+    _communityStore.setPublicKeyHex = connector.selfPublicKeyHex;
     await _communityStore.addCommunity(community);
 
     // Optionally add the community public channel to the device

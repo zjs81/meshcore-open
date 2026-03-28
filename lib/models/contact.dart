@@ -17,6 +17,9 @@ class Contact {
   final double? longitude;
   final DateTime lastSeen;
   final DateTime lastMessageAt;
+  final bool isActive;
+  final bool wasPulled;
+  final Uint8List? rawPacket;
 
   Contact({
     required this.publicKey,
@@ -31,6 +34,9 @@ class Contact {
     this.longitude,
     required this.lastSeen,
     DateTime? lastMessageAt,
+    this.isActive = true,
+    this.wasPulled = false,
+    this.rawPacket,
   }) : lastMessageAt = lastMessageAt ?? lastSeen;
 
   String get publicKeyHex => pubKeyToHex(publicKey);
@@ -61,7 +67,17 @@ class Contact {
     return '$pathLength hops';
   }
 
-  bool get hasLocation => latitude != null && longitude != null;
+  bool get hasLocation {
+    const double epsilon = 1e-6;
+    final lat = latitude ?? 0.0;
+    final lon = longitude ?? 0.0;
+    return (lat.abs() > epsilon || lon.abs() > epsilon) &&
+        lat >= -90.0 &&
+        lat <= 90.0 &&
+        lon >= -180.0 &&
+        lon <= 180.0;
+  }
+
   bool get isFavorite => (flags & contactFlagFavorite) != 0;
 
   Contact copyWith({
@@ -78,6 +94,8 @@ class Contact {
     double? longitude,
     DateTime? lastSeen,
     DateTime? lastMessageAt,
+    bool? isActive,
+    Uint8List? rawPacket,
   }) {
     return Contact(
       publicKey: publicKey ?? this.publicKey,
@@ -96,18 +114,19 @@ class Contact {
       longitude: longitude ?? this.longitude,
       lastSeen: lastSeen ?? this.lastSeen,
       lastMessageAt: lastMessageAt ?? this.lastMessageAt,
+      isActive: isActive ?? this.isActive,
+      rawPacket: rawPacket ?? this.rawPacket,
     );
   }
 
-  String get pathIdList {
-    final pathBytes = _pathBytesForDisplay;
+  /// Formats path bytes into comma-separated hex groups of [hashByteWidth] bytes.
+  String pathFormattedIdList(int hashByteWidth) {
+    final pathBytes = pathBytesForDisplay;
     if (pathBytes.isEmpty) return '';
+    final w = hashByteWidth.clamp(1, 8);
     final parts = <String>[];
-    final groupSize = pathHashSize;
-    for (int i = 0; i < pathBytes.length; i += groupSize) {
-      final end = (i + groupSize) <= pathBytes.length
-          ? (i + groupSize)
-          : pathBytes.length;
+    for (int i = 0; i < pathBytes.length; i += w) {
+      final end = (i + w) <= pathBytes.length ? (i + w) : pathBytes.length;
       final chunk = pathBytes.sublist(i, end);
       parts.add(
         chunk
@@ -118,47 +137,14 @@ class Contact {
     return parts.join(',');
   }
 
+  /// Default grouping uses legacy single-byte hop hash width.
+  String get pathIdList => pathFormattedIdList(pathHashSize);
+
   String get shortPubKeyHex {
     return "<${publicKeyHex.substring(0, 8)}...${publicKeyHex.substring(publicKeyHex.length - 8)}>";
   }
 
-  Uint8List? get traceRouteBytes {
-    final pathBytes = _pathBytesForDisplay;
-    Uint8List? traceBytes;
-
-    if (pathBytes.isEmpty) {
-      traceBytes = Uint8List(1);
-      traceBytes[0] = publicKey[0];
-      return traceBytes;
-    }
-
-    if (type == advTypeRepeater || type == advTypeRoom) {
-      final len = (pathBytes.length + pathBytes.length + 1);
-      traceBytes = Uint8List(len);
-      traceBytes[pathBytes.length] = publicKey[0];
-      for (int i = 0; i < pathBytes.length; i++) {
-        traceBytes[i] = pathBytes[i];
-        if (i < pathBytes.length) {
-          traceBytes[len - 1 - i] = pathBytes[i];
-        }
-      }
-    } else {
-      if (pathBytes.length < 2) {
-        return pathBytes[0] == 0 ? null : pathBytes;
-      }
-      final len = (pathBytes.length + pathBytes.length - 1);
-      traceBytes = Uint8List(len);
-      for (int i = 0; i < pathBytes.length; i++) {
-        traceBytes[i] = pathBytes[i];
-        if (i < pathBytes.length - 1) {
-          traceBytes[len - 1 - i] = pathBytes[i];
-        }
-      }
-    }
-    return traceBytes;
-  }
-
-  Uint8List get _pathBytesForDisplay {
+  Uint8List get pathBytesForDisplay {
     if (pathOverride != null) {
       if (pathOverride! < 0) return Uint8List(0);
       return pathOverrideBytes ?? Uint8List(0);
@@ -175,6 +161,12 @@ class Contact {
         return null;
       }
       final pubKey = reader.readBytes(pubKeySize);
+
+      // Guard: reject contacts with zeroed or mostly-zeroed public keys
+      // (indicates corrupt flash storage on the firmware side)
+      final zeroCount = pubKey.where((b) => b == 0).length;
+      if (zeroCount > pubKeySize ~/ 2) return null;
+
       final type = reader.readByte();
       final flags = reader.readByte();
       final pathLen = reader.readByte();
@@ -184,14 +176,22 @@ class Contact {
       final pathBytes = reader.readBytes(maxPathSize).sublist(0, safePathLen);
       final name = reader.readCStringGreedy(maxNameSize);
 
+      // Guard: reject contacts with non-printable names (corrupt flash data)
+      if (name.isNotEmpty &&
+          name.codeUnits.every((c) => c < 0x20 || c == 0xFFFD)) {
+        return null;
+      }
+
       final lastMod = reader.readUInt32LE();
 
       double? lat, lon;
-      final latRaw = reader.readInt32LE();
-      final lonRaw = reader.readInt32LE();
-      if (latRaw != 0 || lonRaw != 0) {
-        lat = latRaw / 1e6;
-        lon = lonRaw / 1e6;
+      if (reader.remaining >= 8) {
+        final latRaw = reader.readInt32LE();
+        final lonRaw = reader.readInt32LE();
+        if (latRaw != 0 || lonRaw != 0) {
+          lat = latRaw / 1e6;
+          lon = lonRaw / 1e6;
+        }
       }
 
       return Contact(
@@ -199,11 +199,13 @@ class Contact {
         name: name.isEmpty ? 'Unknown' : name,
         type: type,
         flags: flags,
-        pathLength: pathLen > 0 ? (pathLen > maxPathSize ? -1 : pathLen) : -1,
+        pathLength: (pathLen == 0xFF || pathLen > maxPathSize) ? -1 : pathLen,
         path: pathBytes,
         latitude: lat,
         longitude: lon,
         lastSeen: DateTime.fromMillisecondsSinceEpoch(lastMod * 1000),
+        isActive: true,
+        rawPacket: null,
       );
     } catch (e) {
       appLogger.error('Failed to parse contact frame: $e');
@@ -217,4 +219,7 @@ class Contact {
 
   @override
   int get hashCode => publicKeyHex.hashCode;
+  bool get teleBaseEnabled => (flags & contactFlagTeleBase) != 0;
+  bool get teleLocEnabled => (flags & contactFlagTeleLoc) != 0;
+  bool get teleEnvEnabled => (flags & contactFlagTeleEnv) != 0;
 }

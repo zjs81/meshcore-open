@@ -285,6 +285,7 @@
   "contacts_newGroup": "Nuovo Gruppo",
   "contacts_groupName": "Nome gruppo",
   "contacts_groupNameRequired": "Il nome del gruppo è obbligatorio.",
+  "contacts_groupNameReserved": "Questo nome del gruppo è riservato",
   "contacts_groupAlreadyExists": "Il gruppo \"{name}\" esiste già.",
   "@contacts_groupAlreadyExists": {
     "placeholders": {
@@ -1863,5 +1864,162 @@
   "usbConnectionFailed": "Errore nella connessione USB: {error}",
   "usbStatus_notConnected": "Seleziona un dispositivo USB",
   "usbStatus_connecting": "Connessione al dispositivo USB...",
-  "usbErrorConnectTimedOut": "La connessione è scaduta. Assicurarsi che il dispositivo abbia il firmware USB Companion."
+  "usbErrorConnectTimedOut": "La connessione è scaduta. Assicurarsi che il dispositivo abbia il firmware USB Companion.",
+  "@tcpStatus_connectingTo": {
+    "placeholders": {
+      "endpoint": {
+        "type": "String"
+      }
+    }
+  },
+  "@tcpConnectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tcpHostLabel": "Indirizzo IP",
+  "tcpHostHint": "192.168.40.10",
+  "connectionChoiceTcpLabel": "TCP",
+  "tcpScreenTitle": "Stabilire una connessione tramite TCP",
+  "tcpPortLabel": "Porta",
+  "tcpPortHint": "5000",
+  "tcpStatus_notConnected": "Inserisci l'endpoint e connettiti.",
+  "tcpStatus_connectingTo": "Connessione a {endpoint}...",
+  "tcpErrorHostRequired": "È necessario fornire un indirizzo IP.",
+  "tcpErrorPortInvalid": "La dimensione della porta deve essere compresa tra 1 e 65535.",
+  "tcpErrorUnsupported": "Il protocollo TCP non è supportato su questa piattaforma.",
+  "tcpErrorTimedOut": "La connessione TCP è scaduta.",
+  "tcpConnectionFailed": "Impossibile stabilire la connessione TCP: {error}",
+  "map_showDiscoveryContacts": "Mostra Contatti di Discovery",
+  "map_setAsMyLocation": "Imposta come la mia posizione",
+  "@path_routeWeight": {
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_privacySettingsDescription": "Scegli le informazioni che il tuo dispositivo condivide con gli altri.",
+  "settings_allowByContact": "Consenti in base ai flag di contatto",
+  "settings_telemetryLocationMode": "Modalità di posizionamento telemetrico",
+  "settings_telemetryEnvironmentMode": "Modalità di ambiente di telemetria",
+  "settings_advertLocation": "Posizione dell'annuncio",
+  "settings_advertLocationSubtitle": "Includi la posizione nell'annuncio",
+  "settings_privacy": "Impostazioni sulla privacy",
+  "settings_denyAll": "Negare tutto",
+  "settings_privacySubtitle": "Controlla le informazioni che vengono condivise.",
+  "settings_allowAll": "Consenti tutto",
+  "contact_info": "Informazioni di Contatto",
+  "settings_telemetryBaseMode": "Modalità di base di telemetria",
+  "contact_teleBase": "Base di telemetria",
+  "contact_teleLoc": "Posizione telemetria",
+  "contact_teleLocSubtitle": "Consenti la condivisione dei dati di posizione",
+  "contact_clearChat": "Cancella chat",
+  "contact_telemetry": "Telemetria",
+  "contact_settings": "Impostazioni di contatto",
+  "contact_lastSeen": "Ultimo accesso",
+  "contact_teleBaseSubtitle": "Consenti la condivisione del livello della batteria e della telemetria di base",
+  "contact_teleEnvSubtitle": "Consenti la condivisione dei dati del sensore ambientale",
+  "contact_teleEnv": "Ambiente di telemetria",
+  "@settings_multiAck": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_initialRouteWeight": "Peso iniziale del percorso",
+  "appSettings_initialRouteWeightSubtitle": "Peso di partenza per nuovi percorsi",
+  "appSettings_maxRouteWeightSubtitle": "Il peso massimo che un percorso può accumulare grazie a consegne di successo.",
+  "appSettings_maxRouteWeight": "Massimo peso consentito per il percorso",
+  "appSettings_routeWeightSuccessIncrement": "Aumento del peso del successo",
+  "appSettings_routeWeightSuccessIncrementSubtitle": "Peso aggiunto a un percorso dopo una consegna riuscita.",
+  "appSettings_routeWeightFailureDecrement": "Riduzione del peso associato al fallimento",
+  "appSettings_routeWeightFailureDecrementSubtitle": "Peso rimosso da un percorso dopo un tentativo di consegna fallito.",
+  "appSettings_maxMessageRetries": "Numero massimo di tentativi di invio del messaggio",
+  "appSettings_maxMessageRetriesSubtitle": "Numero di tentativi di riprova prima di considerare un messaggio come fallito.",
+  "path_routeWeight": "{weight}/{max}",
+  "settings_telemetryModeUpdated": "Modalità telemetria aggiornata",
+  "settings_multiAck": "Multi-ACKs: {value}",
+  "map_showOverlaps": "Sovrapposizioni della chiave ripetitore",
+  "map_runTraceWithReturnPath": "Tornare indietro sullo stesso percorso",
+  "@radioStats_noiseFloor": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastRssi": {
+    "placeholders": {
+      "rssiDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastSnr": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "@radioStats_txAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_rxAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_stripNoise": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_jumpToOldestUnreadSubtitle": "Quando si apre una chat con messaggi non letti, scorrete verso l'alto fino al primo messaggio non letto, invece che al più recente.",
+  "chat_sendCooldown": "Si prega di attendere un momento prima di inviare nuovamente.",
+  "appSettings_jumpToOldestUnread": "Vai al messaggio più vecchio non letto",
+  "appSettings_languageHu": "Ungherese",
+  "appSettings_languageJa": "Giapponese",
+  "appSettings_languageKo": "Coreano",
+  "radioStats_tooltip": "Statistiche per radio e reti",
+  "radioStats_screenTitle": "Statistiche radio",
+  "radioStats_notConnected": "Connettiti a un dispositivo per visualizzare le statistiche radio.",
+  "radioStats_firmwareTooOld": "Le statistiche radio richiedono il firmware versione 8 o successiva.",
+  "radioStats_noiseFloor": "Livello di rumore: {noiseDbm} dBm",
+  "radioStats_waiting": "In attesa dei dati…",
+  "radioStats_lastRssi": "Ultimo valore RSSI: {rssiDbm} dBm",
+  "radioStats_lastSnr": "Ultimo SNR: {snr} dB",
+  "radioStats_txAir": "Tempo di trasmissione in diretta (totale): {seconds} s",
+  "radioStats_rxAir": "Tempo di trasmissione RX (totale): {seconds} s",
+  "radioStats_chartCaption": "Livello di rumore (dBm) misurato su campioni recenti.",
+  "radioStats_stripNoise": "Livello di rumore: {noiseDbm} dBm",
+  "radioStats_stripWaiting": "Recupero delle statistiche radio…",
+  "radioStats_settingsTile": "Statistiche radio",
+  "radioStats_settingsSubtitle": "Livello di rumore, RSSI, rapporto segnale/rumore (SNR) e tempo di trasmissione",
+  "@scanner_linuxPairingPinPrompt": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_linuxPairingShowPin": "Mostra PIN",
+  "scanner_linuxPairingHidePin": "Nascondi PIN",
+  "scanner_linuxPairingPinTitle": "PIN di associazione Bluetooth",
+  "scanner_linuxPairingPinPrompt": "Inserisci il PIN per {deviceName} (lascia vuoto se non ce n'è)."
 }

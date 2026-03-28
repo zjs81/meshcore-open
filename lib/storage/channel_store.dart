@@ -2,18 +2,46 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '../models/channel.dart';
+import '../utils/app_logger.dart';
 import 'prefs_manager.dart';
 
 class ChannelStore {
-  static const String _key = 'channels';
+  static const String _keyPrefix = 'channels';
+  String publicKeyHex = '';
+  set setPublicKeyHex(String value) =>
+      publicKeyHex = value.length >= 10 ? value.substring(0, 10) : '';
+
+  String get keyFor => '$_keyPrefix$publicKeyHex';
 
   Future<List<Channel>> loadChannels() async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot load channels.');
+      return [];
+    }
     final prefs = PrefsManager.instance;
-    final jsonStr = prefs.getString(_key);
-    if (jsonStr == null) return [];
+    String? jsonString = prefs.getString(keyFor);
+    if (jsonString == null || jsonString.isEmpty) {
+      // Attempt migration from legacy unscoped key on first load
+      final legacyJsonString = prefs.getString(_keyPrefix);
+      prefs.remove(_keyPrefix);
+      if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
+        appLogger.info(
+          'Migrating channel messages from legacy key $_keyPrefix to scoped key $keyFor',
+        );
+        await prefs.setString(keyFor, legacyJsonString);
+        jsonString = legacyJsonString;
+      }
+    }
+
+    if (jsonString == null || jsonString.isEmpty) {
+      jsonString = prefs.getString(keyFor);
+    }
+    if (jsonString == null || jsonString.isEmpty) {
+      return [];
+    }
 
     try {
-      final jsonList = jsonDecode(jsonStr) as List<dynamic>;
+      final jsonList = jsonDecode(jsonString) as List<dynamic>;
       return jsonList
           .map((entry) => _fromJson(entry as Map<String, dynamic>))
           .toList();
@@ -23,9 +51,13 @@ class ChannelStore {
   }
 
   Future<void> saveChannels(List<Channel> channels) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot save channels.');
+      return;
+    }
     final prefs = PrefsManager.instance;
     final jsonList = channels.map(_toJson).toList();
-    await prefs.setString(_key, jsonEncode(jsonList));
+    await prefs.setString(keyFor, jsonEncode(jsonList));
   }
 
   Map<String, dynamic> _toJson(Channel channel) {

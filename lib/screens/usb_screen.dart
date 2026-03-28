@@ -12,6 +12,7 @@ import '../utils/usb_port_labels.dart';
 import '../widgets/adaptive_app_bar_title.dart';
 import 'contacts_screen.dart';
 import 'scanner_screen.dart';
+import 'tcp_screen.dart';
 
 class UsbScreen extends StatefulWidget {
   const UsbScreen({super.key});
@@ -107,45 +108,69 @@ class _UsbScreenState extends State<UsbScreen> {
       bottomNavigationBar: Consumer<MeshCoreConnector>(
         builder: (context, connector, child) {
           final isLoading = _isLoadingPorts;
-          final showBle =
-              PlatformInfo.isWeb ||
-              PlatformInfo.isAndroid ||
-              PlatformInfo.isIOS;
+          final showBle = true;
+          final showTcp = !PlatformInfo.isWeb;
 
           return SafeArea(
             top: false,
             minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (showBle)
-                  FloatingActionButton.extended(
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => const ScannerScreen(),
-                        ),
-                      );
-                    },
-                    heroTag: 'usb_ble_action',
-                    icon: const Icon(Icons.bluetooth),
-                    label: Text(context.l10n.connectionChoiceBluetoothLabel),
-                  ),
-                if (showBle) const SizedBox(width: 12),
-                if (!_supportsHotPlug)
-                  FloatingActionButton.extended(
-                    onPressed: isLoading ? null : _loadPorts,
-                    heroTag: 'usb_refresh_action',
-                    icon: isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.refresh),
-                    label: Text(context.l10n.repeater_refresh),
-                  ),
-              ],
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerRight,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (showTcp)
+                    FloatingActionButton.extended(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (_) => const TcpScreen()),
+                        );
+                      },
+                      heroTag: 'usb_tcp_action',
+                      extendedPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      icon: const Icon(Icons.lan),
+                      label: Text(context.l10n.connectionChoiceTcpLabel),
+                    ),
+                  if (showTcp && showBle) const SizedBox(width: 12),
+                  if (showBle)
+                    FloatingActionButton.extended(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => const ScannerScreen(),
+                          ),
+                        );
+                      },
+                      heroTag: 'usb_ble_action',
+                      extendedPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      icon: const Icon(Icons.bluetooth),
+                      label: Text(context.l10n.connectionChoiceBluetoothLabel),
+                    ),
+                  if ((showTcp || showBle) && !_supportsHotPlug)
+                    const SizedBox(width: 12),
+                  if (!_supportsHotPlug)
+                    FloatingActionButton.extended(
+                      onPressed: isLoading ? null : _loadPorts,
+                      heroTag: 'usb_refresh_action',
+                      extendedPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      icon: isLoading
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.usb),
+                      label: Text(context.l10n.scanner_scan),
+                    ),
+                ],
+              ),
             ),
           );
         },
@@ -192,9 +217,18 @@ class _UsbScreenState extends State<UsbScreen> {
         children: [
           Icon(Icons.circle, size: 12, color: statusColor),
           const SizedBox(width: 8),
-          Text(
-            statusText,
-            style: TextStyle(color: statusColor, fontWeight: FontWeight.w500),
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                statusText,
+                style: TextStyle(
+                  color: statusColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
           ),
         ],
       ),

@@ -300,6 +300,7 @@
   "contacts_newGroup": "新建群聊",
   "contacts_groupName": "群聊名称",
   "contacts_groupNameRequired": "请输入群聊名称",
+  "contacts_groupNameReserved": "该群组名称已被保留",
   "contacts_groupAlreadyExists": "名为 \"{name}\" 的群聊已存在",
   "@contacts_groupAlreadyExists": {
     "placeholders": {
@@ -1868,5 +1869,162 @@
   "usbStatus_connecting": "连接USB设备...",
   "usbStatus_notConnected": "选择一个 USB 设备",
   "usbConnectionFailed": "USB 连接失败：{error}",
-  "usbErrorConnectTimedOut": "连接超时。请确保设备已安装 USB 伴侣固件。"
+  "usbErrorConnectTimedOut": "连接超时。请确保设备已安装 USB 伴侣固件。",
+  "@tcpStatus_connectingTo": {
+    "placeholders": {
+      "endpoint": {
+        "type": "String"
+      }
+    }
+  },
+  "@tcpConnectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tcpHostLabel": "IP地址",
+  "tcpHostHint": "192.168.40.10",
+  "tcpScreenTitle": "通过 TCP 连接",
+  "connectionChoiceTcpLabel": "TCP",
+  "tcpPortLabel": "端口",
+  "tcpPortHint": "5000",
+  "tcpStatus_notConnected": "输入目标地址，然后连接",
+  "tcpStatus_connectingTo": "连接到 {endpoint}...",
+  "tcpErrorHostRequired": "需要提供IP地址。",
+  "tcpErrorPortInvalid": "端口号必须在 1 到 65535 之间。",
+  "tcpErrorUnsupported": "此平台不支持 TCP 传输。",
+  "tcpErrorTimedOut": "TCP 连接超时。",
+  "tcpConnectionFailed": "TCP 连接失败：{error}",
+  "map_showDiscoveryContacts": "显示发现联系人",
+  "map_setAsMyLocation": "设置为我的位置",
+  "@path_routeWeight": {
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_privacySubtitle": "控制要共享的信息。",
+  "settings_privacySettingsDescription": "选择您的设备与他人共享的信息。",
+  "settings_telemetryBaseMode": "遥测基础模式",
+  "settings_telemetryLocationMode": "遥测位置模式",
+  "settings_advertLocation": "广告位置",
+  "settings_advertLocationSubtitle": "在广告中包含位置",
+  "settings_allowByContact": "按联系人标志允许",
+  "settings_denyAll": "拒绝所有",
+  "settings_privacy": "隐私设置",
+  "settings_allowAll": "允许全部",
+  "contact_info": "联系信息",
+  "contact_teleBase": "遥测基站",
+  "contact_teleBaseSubtitle": "允许共享电池电量和基本遥测数据",
+  "settings_telemetryEnvironmentMode": "遥测环境模式",
+  "contact_teleLoc": "遥测位置",
+  "contact_teleEnv": "遥测环境",
+  "contact_teleEnvSubtitle": "允许共享环境传感器数据",
+  "contact_clearChat": "清除聊天记录",
+  "contact_lastSeen": "最近出现",
+  "contact_settings": "联系人设置",
+  "contact_teleLocSubtitle": "允许共享位置数据",
+  "contact_telemetry": "遥测数据",
+  "@settings_multiAck": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_maxRouteWeight": "最大路径重量",
+  "appSettings_initialRouteWeightSubtitle": "新发现路径的初始重量",
+  "appSettings_initialRouteWeight": "初始路线权重",
+  "appSettings_maxRouteWeightSubtitle": "一条路径可以累积的最大重量，取决于成功交付的数量。",
+  "appSettings_routeWeightSuccessIncrement": "成功权重增加",
+  "appSettings_routeWeightSuccessIncrementSubtitle": "在成功交付后，将重量添加到路径中",
+  "appSettings_routeWeightFailureDecrement": "失败权重降低",
+  "appSettings_routeWeightFailureDecrementSubtitle": "从一条路径上移除的货物，由于无法成功交付而移除。",
+  "appSettings_maxMessageRetries": "最大消息重试次数",
+  "appSettings_maxMessageRetriesSubtitle": "在将消息标记为失败之前，允许尝试的次数",
+  "path_routeWeight": "{weight}/{max}",
+  "settings_multiAck": "多重ACK：{value}",
+  "settings_telemetryModeUpdated": "遥测模式已更新",
+  "map_showOverlaps": "重复键重叠",
+  "map_runTraceWithReturnPath": "沿着相同的路径返回",
+  "@radioStats_noiseFloor": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastRssi": {
+    "placeholders": {
+      "rssiDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastSnr": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "@radioStats_txAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_rxAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_stripNoise": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_sendCooldown": "请稍等片刻后再尝试发送。",
+  "appSettings_jumpToOldestUnreadSubtitle": "在打开包含未读消息的聊天时，请滚动到第一个未读消息，而不是最新的消息。",
+  "appSettings_jumpToOldestUnread": "跳转到最旧、未读的文章",
+  "appSettings_languageHu": "匈牙利",
+  "appSettings_languageJa": "日语",
+  "appSettings_languageKo": "韩语",
+  "radioStats_tooltip": "无线电和网状结构统计数据",
+  "radioStats_screenTitle": "广播统计数据",
+  "radioStats_notConnected": "连接到设备以查看收音机统计信息。",
+  "radioStats_firmwareTooOld": "使用无线电统计功能需要配合使用 v8 或更高版本的固件。",
+  "radioStats_waiting": "正在等待数据…",
+  "radioStats_noiseFloor": "噪声水平：{noiseDbm} dBm",
+  "radioStats_lastRssi": "上次 RSSI 值：{rssiDbm} dBm",
+  "radioStats_lastSnr": "上次 SNR：{snr} dB",
+  "radioStats_txAir": "TX 频道播出时间（总时长）：{seconds} 秒",
+  "radioStats_rxAir": "RX 使用时长（总时长）：{seconds} 秒",
+  "radioStats_chartCaption": "近期的噪声水平（dBm）。",
+  "radioStats_stripNoise": "噪声水平：{noiseDbm} dBm",
+  "radioStats_stripWaiting": "正在获取收音机数据…",
+  "radioStats_settingsTile": "广播统计数据",
+  "radioStats_settingsSubtitle": "噪声水平、RSSI、信噪比和空中时间",
+  "@scanner_linuxPairingPinPrompt": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_linuxPairingShowPin": "显示 PIN码",
+  "scanner_linuxPairingPinPrompt": "输入 {deviceName} 的 PIN（如果没有，请留空）。",
+  "scanner_linuxPairingPinTitle": "蓝牙配对 PIN",
+  "scanner_linuxPairingHidePin": "隐藏 PIN"
 }

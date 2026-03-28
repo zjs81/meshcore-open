@@ -23,23 +23,23 @@ class AppLogger {
   bool get isEnabled => _enabled;
 
   /// Log an info message
-  void info(String message, {String tag = 'App'}) {
+  void info(String message, {String tag = 'App', bool noNotify = false}) {
     if (_enabled && _service != null) {
-      _service!.info(message, tag: tag);
+      _service!.info(message, tag: tag, noNotify: noNotify);
     }
   }
 
   /// Log a warning message
-  void warn(String message, {String tag = 'App'}) {
+  void warn(String message, {String tag = 'App', bool noNotify = false}) {
     if (_enabled && _service != null) {
-      _service!.warn(message, tag: tag);
+      _service!.warn(message, tag: tag, noNotify: noNotify);
     }
   }
 
   /// Log an error message
-  void error(String message, {String tag = 'App'}) {
+  void error(String message, {String tag = 'App', bool noNotify = false}) {
     if (_enabled && _service != null) {
-      _service!.error(message, tag: tag);
+      _service!.error(message, tag: tag, noNotify: noNotify);
     }
   }
 
@@ -48,9 +48,10 @@ class AppLogger {
     String message, {
     String tag = 'App',
     AppDebugLogLevel level = AppDebugLogLevel.info,
+    bool noNotify = false,
   }) {
     if (_enabled && _service != null) {
-      _service!.log(message, tag: tag, level: level);
+      _service!.log(message, tag: tag, level: level, noNotify: noNotify);
     }
   }
 }

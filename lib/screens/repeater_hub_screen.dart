@@ -205,8 +205,7 @@ class RepeaterHubScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        TelemetryScreen(repeater: repeater, password: password),
+                    builder: (context) => TelemetryScreen(contact: repeater),
                   ),
                 );
               },

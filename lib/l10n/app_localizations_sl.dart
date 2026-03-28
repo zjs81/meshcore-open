@@ -118,6 +118,50 @@ class AppLocalizationsSl extends AppLocalizations {
   String get connectionChoiceBluetoothLabel => 'Bluetooth';
 
   @override
+  String get connectionChoiceTcpLabel => 'TCP';
+
+  @override
+  String get tcpScreenTitle => 'Komunicirajte preko protokola TCP';
+
+  @override
+  String get tcpHostLabel => 'IP naslov';
+
+  @override
+  String get tcpHostHint => '192.168.40.10';
+
+  @override
+  String get tcpPortLabel => 'Vrata';
+
+  @override
+  String get tcpPortHint => '5000';
+
+  @override
+  String get tcpStatus_notConnected => 'Vnesite končni naslov in se povežite';
+
+  @override
+  String tcpStatus_connectingTo(String endpoint) {
+    return 'Povezava z $endpoint...';
+  }
+
+  @override
+  String get tcpErrorHostRequired => 'Potrebna je IP-naslov.';
+
+  @override
+  String get tcpErrorPortInvalid => 'Port mora biti med 1 in 65535.';
+
+  @override
+  String get tcpErrorUnsupported =>
+      'Transport preko protokola TCP ni podprt na tej platformi.';
+
+  @override
+  String get tcpErrorTimedOut => 'Povezava TCP je presegla časovno obdobje.';
+
+  @override
+  String tcpConnectionFailed(String error) {
+    return 'Napaka pri povezavi TCP: $error';
+  }
+
+  @override
   String get usbScreenTitle => 'Povežite preko USB';
 
   @override
@@ -348,6 +392,50 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get settings_privacyModeDisabled => 'Privatni način je onemogočen.';
+
+  @override
+  String get settings_privacy => 'Nastavitve zasebnosti';
+
+  @override
+  String get settings_privacySubtitle =>
+      'Kontrolirajte, katere informacije so deljene.';
+
+  @override
+  String get settings_privacySettingsDescription =>
+      'Izberite, katere informacije vaš naprava deli z drugimi.';
+
+  @override
+  String get settings_denyAll => 'Zavrniti vse';
+
+  @override
+  String get settings_allowByContact => 'Dovoli po kontaktnih zastavah';
+
+  @override
+  String get settings_allowAll => 'Dovoli vse';
+
+  @override
+  String get settings_telemetryBaseMode => 'Osnovni način telemetrije';
+
+  @override
+  String get settings_telemetryLocationMode => 'Način delovanja telemetrije';
+
+  @override
+  String get settings_telemetryEnvironmentMode =>
+      'Način delovanja okolja telemetrije';
+
+  @override
+  String get settings_advertLocation => 'Lokacija oglasa';
+
+  @override
+  String get settings_advertLocationSubtitle => 'Vključi lokacijo v oglas.';
+
+  @override
+  String settings_multiAck(String value) {
+    return 'Večkratni potrditvi: $value';
+  }
+
+  @override
+  String get settings_telemetryModeUpdated => 'Način telemetrije posodobljen';
 
   @override
   String get settings_actions => 'Akcije';
@@ -644,6 +732,49 @@ class AppLocalizationsSl extends AppLocalizations {
       'Samodejno krmilno rotiranje je onemogočeno';
 
   @override
+  String get appSettings_maxRouteWeight => 'Največja dovoljena teža poti';
+
+  @override
+  String get appSettings_maxRouteWeightSubtitle =>
+      'Največja teža, ki jo lahko pot doseže s uspešnimi dostavnami.';
+
+  @override
+  String get appSettings_initialRouteWeight => 'Izvirna teža poti';
+
+  @override
+  String get appSettings_initialRouteWeightSubtitle =>
+      'Izguba teže za nove, odkriti poti';
+
+  @override
+  String get appSettings_routeWeightSuccessIncrement =>
+      'Učinkovitost: povečanje';
+
+  @override
+  String get appSettings_routeWeightSuccessIncrementSubtitle =>
+      'Težava, dodana poti po uspešni dostavi';
+
+  @override
+  String get appSettings_routeWeightFailureDecrement =>
+      'Zmanjšanje teže, ki je povezana s pomanjkanjem';
+
+  @override
+  String get appSettings_routeWeightFailureDecrementSubtitle =>
+      'Težo, ki ni bila uspešno dostavljena, odstranili s poti.';
+
+  @override
+  String get appSettings_maxMessageRetries =>
+      'Najve število poskusov pošiljanja sporočil';
+
+  @override
+  String get appSettings_maxMessageRetriesSubtitle =>
+      'Število poskusov ponovnega poslanja, preden se sporočilo označuje kot neuspešno';
+
+  @override
+  String path_routeWeight(String weight, String max) {
+    return '$weight/$max';
+  }
+
+  @override
   String get appSettings_battery => 'Baterija';
 
   @override
@@ -849,6 +980,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get contacts_groupNameRequired => 'Ime skupine je obvezno.';
 
   @override
+  String get contacts_groupNameReserved => 'To ime skupine je rezervirano';
+
+  @override
   String contacts_groupAlreadyExists(String name) {
     return 'Skupina \"$name\" že obstaja';
   }
@@ -886,6 +1020,41 @@ class AppLocalizationsSl extends AppLocalizations {
   String contacts_lastSeenDaysAgo(int days) {
     return 'Zadnjič viden pred $days dnem';
   }
+
+  @override
+  String get contact_info => 'Kontaktni podatki';
+
+  @override
+  String get contact_settings => 'Nastavitve stika';
+
+  @override
+  String get contact_telemetry => 'Telemetrija';
+
+  @override
+  String get contact_lastSeen => 'Zadnjič videno';
+
+  @override
+  String get contact_clearChat => 'Počisti klepet';
+
+  @override
+  String get contact_teleBase => 'Baza telemetrije';
+
+  @override
+  String get contact_teleBaseSubtitle =>
+      'Dovoli deljenje stanja baterije in osnovne telemetrije';
+
+  @override
+  String get contact_teleLoc => 'Lokacija telemetrije';
+
+  @override
+  String get contact_teleLocSubtitle => 'Dovoli deljenje podatkov o lokaciji';
+
+  @override
+  String get contact_teleEnv => 'Okolje telemetrije';
+
+  @override
+  String get contact_teleEnvSubtitle =>
+      'Dovoli deljenje podatkov okoljskih senzorjev';
 
   @override
   String get channels_title => 'Kanali';
@@ -1464,6 +1633,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get map_shareMarkerHere => 'Delite točke tukaj.';
 
   @override
+  String get map_setAsMyLocation => 'Nastavite to kot mojo lokacijo';
+
+  @override
   String get map_pinLabel => 'Oznaka za pritrditev';
 
   @override
@@ -1509,6 +1681,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get map_otherNodes => 'Druge vozlišča';
 
   @override
+  String get map_showOverlaps => 'Prekrivanje ključa ponovnega predvajanja';
+
+  @override
   String get map_keyPrefix => 'Predpona ključa';
 
   @override
@@ -1525,6 +1700,9 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get map_showGuessedLocations => 'Pokaži lokacije domnevnih not.';
+
+  @override
+  String get map_showDiscoveryContacts => 'Prikaži odkritja kontaktov';
 
   @override
   String get map_guessedLocation => 'Predpostavljena lokacija';
@@ -1549,6 +1727,9 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get map_runTrace => 'Zaženi sledenje poti';
+
+  @override
+  String get map_runTraceWithReturnPath => 'Vrni se nazaj po isti poti.';
 
   @override
   String get map_removeLast => 'Odstrani Zadnji';
@@ -3298,4 +3479,100 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get discoveredContacts_deleteContactAllContent =>
       'Ste prepričani, da želite izbrisati vse odkrite kontakte?';
+
+  @override
+  String get chat_sendCooldown =>
+      'Prosimo, počakajte trenutek, preden pošljete ponovno.';
+
+  @override
+  String get appSettings_jumpToOldestUnread =>
+      'Pritisnite za najstarejše nepročitano sporočilo';
+
+  @override
+  String get appSettings_jumpToOldestUnreadSubtitle =>
+      'Ko odpirate klepet z neprebranimi sporočili, se premaknite na prvo neprebrano sporočilo, namesto najnovejšega.';
+
+  @override
+  String get appSettings_languageHu => 'Madžarski';
+
+  @override
+  String get appSettings_languageJa => 'Japonski';
+
+  @override
+  String get appSettings_languageKo => 'Korejski';
+
+  @override
+  String get radioStats_tooltip => 'Statistike za radio in mrežo';
+
+  @override
+  String get radioStats_screenTitle => 'Radijske statistike';
+
+  @override
+  String get radioStats_notConnected =>
+      'Povežite se z napravo, da si ogledate statistiko o radiju.';
+
+  @override
+  String get radioStats_firmwareTooOld =>
+      'Statistika za radio zahteva združljivo programsko opremo v8 ali kasnejše.';
+
+  @override
+  String get radioStats_waiting => 'Čakam na podatke…';
+
+  @override
+  String radioStats_noiseFloor(int noiseDbm) {
+    return 'Število šuma: $noiseDbm dBm';
+  }
+
+  @override
+  String radioStats_lastRssi(int rssiDbm) {
+    return 'Najkasnejše vrednost RSSI: $rssiDbm dBm';
+  }
+
+  @override
+  String radioStats_lastSnr(String snr) {
+    return 'Najkasnejše vrednost SNR: $snr dB';
+  }
+
+  @override
+  String radioStats_txAir(int seconds) {
+    return 'Čas na TX (skupno): $seconds s';
+  }
+
+  @override
+  String radioStats_rxAir(int seconds) {
+    return 'Čas, namenjen RX-ju (skupno): $seconds s';
+  }
+
+  @override
+  String get radioStats_chartCaption =>
+      'Ravnovredna raven šuma (dBm) za nedavne vzorce.';
+
+  @override
+  String radioStats_stripNoise(int noiseDbm) {
+    return 'Število šuma: $noiseDbm dBm';
+  }
+
+  @override
+  String get radioStats_stripWaiting => 'Prejemanje statistike o radiju…';
+
+  @override
+  String get radioStats_settingsTile => 'Radijske statistike';
+
+  @override
+  String get radioStats_settingsSubtitle =>
+      'Število šumov, RSSI, SNR in čas, ki ga je napolnila oprema';
+
+  @override
+  String get scanner_linuxPairingShowPin => 'Prikaži PIN';
+
+  @override
+  String get scanner_linuxPairingHidePin => 'Skrij PIN';
+
+  @override
+  String get scanner_linuxPairingPinTitle => 'Bluetooth PIN za seznanjanje';
+
+  @override
+  String scanner_linuxPairingPinPrompt(String deviceName) {
+    return 'Vnesite PIN za $deviceName (pustite prazno, če ga ni).';
+  }
 }

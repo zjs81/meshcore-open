@@ -285,6 +285,7 @@
   "contacts_newGroup": "Nová skupina",
   "contacts_groupName": "Názov skupiny",
   "contacts_groupNameRequired": "Skupina musí mať názov.",
+  "contacts_groupNameReserved": "Tento názov skupiny je rezervovaný",
   "contacts_groupAlreadyExists": "Skupina \"{name}\" už existuje",
   "@contacts_groupAlreadyExists": {
     "placeholders": {
@@ -1863,5 +1864,162 @@
   "usbConnectionFailed": "Neúspešné pripojenie cez USB: {error}",
   "usbStatus_notConnected": "Vyberte USB zariadenie",
   "usbStatus_connecting": "Pripojenie k USB zariadeniu...",
-  "usbErrorConnectTimedOut": "Pripojenie nebolo úspešné. Uistite sa, že zariadenie má nainštalovaný firmware USB Companion."
+  "usbErrorConnectTimedOut": "Pripojenie nebolo úspešné. Uistite sa, že zariadenie má nainštalovaný firmware USB Companion.",
+  "@tcpStatus_connectingTo": {
+    "placeholders": {
+      "endpoint": {
+        "type": "String"
+      }
+    }
+  },
+  "@tcpConnectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tcpHostHint": "192.168.40.10",
+  "tcpHostLabel": "IP adresa",
+  "tcpScreenTitle": "Spojte sa pomocou protokolu TCP",
+  "connectionChoiceTcpLabel": "TCP",
+  "tcpPortLabel": "Port",
+  "tcpPortHint": "5000",
+  "tcpStatus_notConnected": "Zadajte cieľovú adresu a pripojte sa.",
+  "tcpStatus_connectingTo": "Pripojenie k {endpoint}...",
+  "tcpErrorHostRequired": "Je potrebné zadať IP adresu.",
+  "tcpErrorPortInvalid": "Číslo portu musí byť medzi 1 a 65535.",
+  "tcpErrorUnsupported": "Prevoz prostredníctvom protokolu TCP nie je na tejto platforme podporovaný.",
+  "tcpErrorTimedOut": "Pripojenie TCP vypršalo.",
+  "tcpConnectionFailed": "Neúspešné vytvorenie TCP spojenia: {error}",
+  "map_showDiscoveryContacts": "Zobraziť kontakty objavov",
+  "map_setAsMyLocation": "Nastavte ako moju polohu",
+  "@path_routeWeight": {
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_privacy": "Nastavenia súkromia",
+  "settings_privacySubtitle": "Ovládni, aké informácie sa zdieľajú.",
+  "settings_telemetryLocationMode": "Režim umiestnenia telemetrie",
+  "settings_telemetryBaseMode": "Základný režim telemetrie",
+  "settings_advertLocation": "Umiestnenie inzerátu",
+  "settings_telemetryEnvironmentMode": "Režim prostredia telemetrie",
+  "settings_advertLocationSubtitle": "Zahrnúť polohu do inzerátu",
+  "settings_allowAll": "Povoliť všetko",
+  "settings_privacySettingsDescription": "Vyberte, ktoré informácie váš zariadenie zdieľa s ostatnými.",
+  "settings_denyAll": "Zamietnuť všetko",
+  "settings_allowByContact": "Povoliť podľa kontaktových vlajok",
+  "contact_info": "Kontaktné informácie",
+  "contact_settings": "Nastavenia kontaktov",
+  "contact_teleBaseSubtitle": "Povoliť zdieľanie úrovne batérie a základnej telemetrie",
+  "contact_teleLoc": "Lokácia telemetrie",
+  "contact_teleLocSubtitle": "Povoliť zdieľanie údajov o lokalite",
+  "contact_teleEnv": "Prostredie telemetrie",
+  "contact_telemetry": "Telemetria",
+  "contact_clearChat": "Vymazať chat",
+  "contact_lastSeen": "Naposledy videný",
+  "contact_teleBase": "Báza telemetrie",
+  "contact_teleEnvSubtitle": "Povoliť zdieľanie údajov senzorov prostredia",
+  "@settings_multiAck": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_maxRouteWeightSubtitle": "Maximálna hmotnosť, ktorú môže trás prenášať vďaka úspešným zásielkam.",
+  "appSettings_initialRouteWeightSubtitle": "Počiatočná váha pre nové, objavené cesty",
+  "appSettings_initialRouteWeight": "Počiatočná váha trasy",
+  "appSettings_maxRouteWeight": "Maximálna hmotnosť trasy",
+  "appSettings_routeWeightSuccessIncrement": "Zvyšenie váhy úspechu",
+  "appSettings_routeWeightSuccessIncrementSubtitle": "Hmotnosť pridaná k trase po úspešnej doručení",
+  "appSettings_routeWeightFailureDecrement": "Sníženie váhy, ktorá sa používa na odhad rizika.",
+  "appSettings_routeWeightFailureDecrementSubtitle": "Hmotnosť odstránená z cesty po neúspešnej doručenie",
+  "appSettings_maxMessageRetries": "Maximalný počet pokusov o doručenie správ",
+  "appSettings_maxMessageRetriesSubtitle": "Počet pokusov o odošleť pred označením správy ako neúspešnej",
+  "path_routeWeight": "{weight}/{max}",
+  "settings_telemetryModeUpdated": "Režim telemetrie bol aktualizovaný",
+  "settings_multiAck": "Viaceré ACK: {value}",
+  "map_showOverlaps": "Prekrývanie opakovača kľúča",
+  "map_runTraceWithReturnPath": "Vráťte sa späť po tej istej ceste.",
+  "@radioStats_noiseFloor": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastRssi": {
+    "placeholders": {
+      "rssiDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastSnr": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "@radioStats_txAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_rxAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_stripNoise": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_sendCooldown": "Prosím, počkajte chvíľu, než zašlete znova.",
+  "appSettings_jumpToOldestUnread": "Presk oceň",
+  "appSettings_jumpToOldestUnreadSubtitle": "Pri otvorení chatu s neprečítanými správami, prejdite do prvého neprečítaného, namiesto poslednej.",
+  "appSettings_languageHu": "Maďarský",
+  "appSettings_languageJa": "Japonský",
+  "appSettings_languageKo": "Kórejský",
+  "radioStats_tooltip": "Statistiky rádiových a sieťových kanálov",
+  "radioStats_screenTitle": "Štatistiky rádiových vysielaní",
+  "radioStats_notConnected": "Pripojte sa k zariadeniu, aby ste mohli sledovať štatistiky rádiového vysielania.",
+  "radioStats_firmwareTooOld": "Statistické údaje z rádia vyžadujú sprievodný softvér verzie v8 alebo novšej.",
+  "radioStats_waiting": "Čakám na údaje…",
+  "radioStats_noiseFloor": "Úroveň hluku: {noiseDbm} dBm",
+  "radioStats_lastRssi": "Posledný údaj RSSI: {rssiDbm} dBm",
+  "radioStats_lastSnr": "Posledná hodnota SNR: {snr} dB",
+  "radioStats_txAir": "Čas vysielania na TX (celkový): {seconds} s",
+  "radioStats_rxAir": "Čas RX (celkový): {seconds} s",
+  "radioStats_chartCaption": "Úroveň šumu (dBm) pre posledné vzorky.",
+  "radioStats_stripNoise": "Úroveň hluku: {noiseDbm} dBm",
+  "radioStats_stripWaiting": "Získavanie údajov o rádiu…",
+  "radioStats_settingsTile": "Štatistiky rádiových vysielaní",
+  "radioStats_settingsSubtitle": "Úroveň hluku, RSSI, SNR a časové rozloženie",
+  "@scanner_linuxPairingPinPrompt": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_linuxPairingPinPrompt": "Zadajte PIN pre {deviceName} (ak nie je, nechajte prázdne).",
+  "scanner_linuxPairingShowPin": "Zobraziť PIN",
+  "scanner_linuxPairingHidePin": "Skryť PIN",
+  "scanner_linuxPairingPinTitle": "Bluetooth párovací PIN"
 }

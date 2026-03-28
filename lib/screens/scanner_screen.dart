@@ -6,10 +6,12 @@ import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../l10n/l10n.dart';
+import '../services/linux_ble_error_classifier.dart';
 import '../utils/app_logger.dart';
 import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/device_tile.dart';
 import 'contacts_screen.dart';
+import 'tcp_screen.dart';
 import 'usb_screen.dart';
 
 /// Screen for scanning and connecting to MeshCore devices
@@ -125,61 +127,78 @@ class _ScannerScreenState extends State<ScannerScreen> {
               connector.state == MeshCoreConnectionState.scanning;
           final isBluetoothOff = _bluetoothState == BluetoothAdapterState.off;
           final usbSupported = PlatformInfo.supportsUsbSerial;
+          final tcpSupported = !PlatformInfo.isWeb;
 
           return SafeArea(
             top: false,
             minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (usbSupported)
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerRight,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (usbSupported)
+                    FloatingActionButton.extended(
+                      onPressed: () {
+                        appLogger.info(
+                          'USB selected, opening UsbScreen',
+                          tag: 'ScannerScreen',
+                        );
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const UsbScreen()),
+                        );
+                      },
+                      heroTag: 'scanner_usb_action',
+                      icon: const Icon(Icons.usb),
+                      label: Text(context.l10n.connectionChoiceUsbLabel),
+                    ),
+                  if (usbSupported) const SizedBox(width: 12),
+                  if (tcpSupported)
+                    FloatingActionButton.extended(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const TcpScreen()),
+                        );
+                      },
+                      heroTag: 'scanner_tcp_action',
+                      icon: const Icon(Icons.lan),
+                      label: Text(context.l10n.connectionChoiceTcpLabel),
+                    ),
+                  if (tcpSupported) const SizedBox(width: 12),
                   FloatingActionButton.extended(
-                    onPressed: () {
-                      appLogger.info(
-                        'USB selected, opening UsbScreen',
-                        tag: 'ScannerScreen',
-                      );
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const UsbScreen()),
-                      );
-                    },
-                    heroTag: 'scanner_usb_action',
-                    icon: const Icon(Icons.usb),
-                    label: Text(context.l10n.connectionChoiceUsbLabel),
+                    heroTag: 'scanner_ble_action',
+                    onPressed: isBluetoothOff
+                        ? null
+                        : () {
+                            if (isScanning) {
+                              connector.stopScan();
+                            } else {
+                              unawaited(
+                                connector.startScan().catchError((e) {
+                                  appLogger.warn(
+                                    'startScan error: $e',
+                                    tag: 'ScannerScreen',
+                                  );
+                                }),
+                              );
+                            }
+                          },
+                    icon: isScanning
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.bluetooth_searching),
+                    label: Text(
+                      isScanning
+                          ? context.l10n.scanner_stop
+                          : context.l10n.scanner_scan,
+                    ),
                   ),
-                if (usbSupported) const SizedBox(width: 12),
-                FloatingActionButton.extended(
-                  heroTag: 'scanner_ble_action',
-                  onPressed: isBluetoothOff
-                      ? null
-                      : () {
-                          if (isScanning) {
-                            connector.stopScan();
-                          } else {
-                            unawaited(
-                              connector.startScan().catchError((e) {
-                                appLogger.warn(
-                                  'startScan error: $e',
-                                  tag: 'ScannerScreen',
-                                );
-                              }),
-                            );
-                          }
-                        },
-                  icon: isScanning
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.bluetooth_searching),
-                  label: Text(
-                    isScanning
-                        ? context.l10n.scanner_stop
-                        : context.l10n.scanner_scan,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
@@ -270,12 +289,33 @@ class _ScannerScreenState extends State<ScannerScreen> {
     MeshCoreConnector connector,
     ScanResult result,
   ) async {
+    final name = result.device.platformName.isNotEmpty
+        ? result.device.platformName
+        : result.advertisementData.advName;
     try {
-      final name = result.device.platformName.isNotEmpty
-          ? result.device.platformName
-          : result.advertisementData.advName;
-      await connector.connect(result.device, displayName: name);
+      await connector.connect(
+        result.device,
+        displayName: name,
+        linuxPairingPinProvider: PlatformInfo.isLinux
+            ? () async {
+                if (!context.mounted) return null;
+                return _promptLinuxPairingPin(context, name);
+              }
+            : null,
+      );
     } catch (e) {
+      final errorText = e.toString();
+      final suppressTransientLinuxConnectError =
+          PlatformInfo.isLinux &&
+          connector.isAutoReconnectScheduled &&
+          isLinuxBleConnectFailureText(errorText);
+      if (suppressTransientLinuxConnectError) {
+        appLogger.info(
+          'Suppressing transient Linux connect error while auto-reconnect is active: $e',
+          tag: 'ScannerScreen',
+        );
+        return;
+      }
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -285,6 +325,92 @@ class _ScannerScreenState extends State<ScannerScreen> {
         );
       }
     }
+  }
+
+  Future<String?> _promptLinuxPairingPin(
+    BuildContext context,
+    String deviceName,
+  ) async {
+    final l10n = context.l10n;
+    var pinValue = '';
+    var obscure = true;
+    appLogger.info(
+      'Showing Linux BLE pairing PIN prompt for $deviceName',
+      tag: 'ScannerScreen',
+    );
+    final pin = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (dialogContext, setDialogState) {
+            return AlertDialog(
+              title: Text(l10n.scanner_linuxPairingPinTitle),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.scanner_linuxPairingPinPrompt(deviceName)),
+                    const SizedBox(height: 12),
+                    TextField(
+                      autofocus: true,
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.done,
+                      obscureText: obscure,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      onChanged: (value) {
+                        pinValue = value.trim();
+                      },
+                      onSubmitted: (value) {
+                        Navigator.of(dialogContext).pop(value.trim());
+                      },
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setDialogState(() {
+                              obscure = !obscure;
+                            });
+                          },
+                          icon: Icon(
+                            obscure ? Icons.visibility : Icons.visibility_off,
+                          ),
+                          tooltip: obscure
+                              ? l10n.scanner_linuxPairingShowPin
+                              : l10n.scanner_linuxPairingHidePin,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(null),
+                  child: Text(l10n.common_cancel),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(pinValue),
+                  child: Text(l10n.common_connect),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+    if (pin == null) {
+      appLogger.info(
+        'Linux BLE pairing PIN prompt cancelled for $deviceName',
+        tag: 'ScannerScreen',
+      );
+      return null;
+    }
+    appLogger.info(
+      'Linux BLE pairing PIN prompt completed for $deviceName',
+      tag: 'ScannerScreen',
+    );
+    return pin;
   }
 
   Widget _bluetoothOffWarning(BuildContext context) {

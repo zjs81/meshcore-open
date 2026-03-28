@@ -285,6 +285,7 @@
   "contacts_newGroup": "Ny grupp",
   "contacts_groupName": "Gruppnamn",
   "contacts_groupNameRequired": "Gruppnamnet är obligatoriskt",
+  "contacts_groupNameReserved": "Detta gruppnamn är reserverat",
   "contacts_groupAlreadyExists": "Gruppen \"{name}\" finns redan.",
   "@contacts_groupAlreadyExists": {
     "placeholders": {
@@ -1863,5 +1864,162 @@
   "usbStatus_notConnected": "Välj en USB-enhet",
   "usbConnectionFailed": "Fel vid USB-anslutning: {error}",
   "usbStatus_searching": "Söker efter USB-enheter...",
-  "usbErrorConnectTimedOut": "Anslutningen har tidsutgått. Se till att enheten har rätt USB-firmware."
+  "usbErrorConnectTimedOut": "Anslutningen har tidsutgått. Se till att enheten har rätt USB-firmware.",
+  "@tcpStatus_connectingTo": {
+    "placeholders": {
+      "endpoint": {
+        "type": "String"
+      }
+    }
+  },
+  "@tcpConnectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tcpHostHint": "192.168.40.10",
+  "tcpHostLabel": "IP-adress",
+  "tcpScreenTitle": "Anslut via TCP",
+  "connectionChoiceTcpLabel": "TCP",
+  "tcpPortLabel": "Port",
+  "tcpPortHint": "5000",
+  "tcpStatus_notConnected": "Ange slutpunkt och anslut",
+  "tcpStatus_connectingTo": "Anslutning till {endpoint}...",
+  "tcpErrorHostRequired": "IP-adress krävs.",
+  "tcpErrorPortInvalid": "Porten måste vara mellan 1 och 65535.",
+  "tcpErrorUnsupported": "TCP-transport fungerar inte på denna plattform.",
+  "tcpErrorTimedOut": "TCP-anslutningen har tidsut gått.",
+  "tcpConnectionFailed": "Fel vid TCP-anslutning: {error}",
+  "map_showDiscoveryContacts": "Visa Discovery-kontakter",
+  "map_setAsMyLocation": "Ange som min plats",
+  "@path_routeWeight": {
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_privacy": "Inställningar för sekretess",
+  "settings_allowAll": "Tillåt alla",
+  "settings_privacySubtitle": "Kontrollera vilken information som delas.",
+  "settings_telemetryEnvironmentMode": "Telemetri miljöläge",
+  "settings_telemetryBaseMode": "Telemetribasläge",
+  "settings_telemetryLocationMode": "Telemetritillstånd för plats",
+  "settings_advertLocation": "Annonsplacering",
+  "contact_info": "Kontaktinformation",
+  "contact_settings": "Kontaktinställningar",
+  "contact_telemetry": "Telemetri",
+  "settings_denyAll": "Neka alla",
+  "settings_allowByContact": "Tillåt via kontaktflaggor",
+  "settings_privacySettingsDescription": "Välj vilken information din enhet delar med andra.",
+  "contact_lastSeen": "Senast sedd",
+  "contact_clearChat": "Rensa Chatt",
+  "contact_teleEnv": "Telemetri Miljö",
+  "settings_advertLocationSubtitle": "Inkludera plats i annonsen",
+  "contact_teleEnvSubtitle": "Tillåt delning av miljösensordata",
+  "contact_teleBase": "Telemetribas",
+  "contact_teleBaseSubtitle": "Tillåt delning av batterinivå och grundläggande telemetri",
+  "contact_teleLoc": "Telemetridata plats",
+  "contact_teleLocSubtitle": "Tillåt delning av platsdata",
+  "@settings_multiAck": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_initialRouteWeightSubtitle": "Initial vikt för nyligen upptäckta vägar",
+  "appSettings_maxRouteWeight": "Maximalt tillåtet vikt för rutten",
+  "appSettings_maxRouteWeightSubtitle": "Maximal vikt som en leveransväg kan ackumulera från framgångsrika leveranser.",
+  "appSettings_initialRouteWeight": "Initial vikt för rutt",
+  "appSettings_routeWeightSuccessIncrement": "Ökning av vikt för framgång",
+  "appSettings_routeWeightSuccessIncrementSubtitle": "Vikt läggs till en väg efter en lyckad leverans.",
+  "appSettings_routeWeightFailureDecrement": "Minskning av vikten för misslyckande",
+  "appSettings_routeWeightFailureDecrementSubtitle": "Vikt som tagits bort från en väg efter ett misslyckat leveransförsök",
+  "appSettings_maxMessageRetries": "Maximalt antal försök",
+  "appSettings_maxMessageRetriesSubtitle": "Antal försök att skicka om ett meddelande innan det markeras som misslyckat.",
+  "path_routeWeight": "{weight}/{max}",
+  "settings_telemetryModeUpdated": "Telemetri-läge uppdaterat",
+  "settings_multiAck": "Multi-ACKs: {value}",
+  "map_showOverlaps": "Repeater-nyckelöverlappningar",
+  "map_runTraceWithReturnPath": "Gå tillbaka på samma väg",
+  "@radioStats_noiseFloor": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastRssi": {
+    "placeholders": {
+      "rssiDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_lastSnr": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "@radioStats_txAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_rxAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@radioStats_stripNoise": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_jumpToOldestUnreadSubtitle": "När du öppnar en chatt med oinlästa meddelanden, scrolla till det första oinlästa meddelandet istället för det senaste.",
+  "chat_sendCooldown": "Vänligen vänta en stund innan du skickar igen.",
+  "appSettings_jumpToOldestUnread": "Gå direkt till det äldsta, obesvarade meddelandet",
+  "appSettings_languageHu": "Ungerskt",
+  "appSettings_languageJa": "Japanska",
+  "appSettings_languageKo": "Koreanska",
+  "radioStats_tooltip": "Radio- och mesh-statistik",
+  "radioStats_screenTitle": "Radiostation",
+  "radioStats_notConnected": "Anslut till en enhet för att visa radiostatistik.",
+  "radioStats_firmwareTooOld": "Radio statistik kräver kompatibel firmware version 8 eller senare.",
+  "radioStats_waiting": "Väntar på data…",
+  "radioStats_noiseFloor": "Bakgrundsnivå: {noiseDbm} dBm",
+  "radioStats_lastRssi": "Senaste RSSI-värde: {rssiDbm} dBm",
+  "radioStats_lastSnr": "Senaste SNR: {snr} dB",
+  "radioStats_txAir": "TX-tid (total): {seconds} sekunder",
+  "radioStats_rxAir": "RX-tid (total): {seconds} s",
+  "radioStats_chartCaption": "Ljudnivå (dBm) baserat på de senaste mätningarna.",
+  "radioStats_stripNoise": "Bakgrundsnivå: {noiseDbm} dBm",
+  "radioStats_stripWaiting": "Hämtar radiostatistik…",
+  "radioStats_settingsTile": "Radiostation",
+  "radioStats_settingsSubtitle": "Bakgrundsnivå, RSSI, SNR och tillgänglig tid",
+  "@scanner_linuxPairingPinPrompt": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_linuxPairingShowPin": "Visa PIN",
+  "scanner_linuxPairingPinTitle": "Bluetooth‑parnings‑PIN",
+  "scanner_linuxPairingPinPrompt": "Ange PIN för {deviceName} (lämna tomt om ingen).",
+  "scanner_linuxPairingHidePin": "Dölj PIN"
 }

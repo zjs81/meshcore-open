@@ -116,12 +116,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(
-        find.ancestor(
-          of: find.text('Connect'),
-          matching: find.bySubtype<ElevatedButton>(),
-        ),
-      );
+      await tester.tap(find.byType(ListTile).first);
       await tester.pump();
 
       expect(connector.connectUsbCalls, 0);
@@ -145,12 +140,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.ancestor(
-        of: find.text('Connect'),
-        matching: find.bySubtype<ElevatedButton>(),
-      ),
-    );
+    await tester.tap(find.byType(ListTile).first);
     await tester.pump();
 
     expect(connector.connectUsbCalls, 1);
@@ -175,6 +165,68 @@ void main() {
 
     // ScannerScreen.dispose() schedules disconnect work that debounces notify.
     // Drain that debounce timer before test teardown.
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(milliseconds: 60));
+  });
+
+  testWidgets('ScannerScreen narrow width keeps actions without overflow', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(320, 700));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final connector = _FakeMeshCoreConnector();
+
+    await tester.pumpWidget(
+      _buildTestApp(connector: connector, child: const ScannerScreen()),
+    );
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+
+    final context = tester.element(find.byType(ScannerScreen));
+    final l10n = AppLocalizations.of(context);
+    expect(find.text(l10n.scanner_scan), findsOneWidget);
+
+    if (PlatformInfo.supportsUsbSerial) {
+      expect(find.text(l10n.connectionChoiceUsbLabel), findsOneWidget);
+    }
+    if (!PlatformInfo.isWeb) {
+      expect(find.text(l10n.connectionChoiceTcpLabel), findsOneWidget);
+    }
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(milliseconds: 60));
+  });
+
+  testWidgets('UsbScreen narrow width long status text does not overflow', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(320, 700));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final connector =
+        _FakeMeshCoreConnector(initialState: MeshCoreConnectionState.connected)
+          ..fakeUsbTransportConnected = true
+          ..fakeActiveUsbPortDisplayLabel =
+              '/dev/bus/usb/001/002 - KD3CGK mesh-utility.org very long label';
+
+    await tester.pumpWidget(
+      _buildTestApp(connector: connector, child: const UsbScreen()),
+    );
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+
+    final context = tester.element(find.byType(UsbScreen));
+    final l10n = AppLocalizations.of(context);
+    expect(
+      find.text(
+        l10n.scanner_connectedTo(connector.fakeActiveUsbPortDisplayLabel!),
+      ),
+      findsOneWidget,
+    );
+
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(milliseconds: 60));
   });
@@ -212,12 +264,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(
-        find.ancestor(
-          of: find.text('Connect'),
-          matching: find.bySubtype<ElevatedButton>(),
-        ),
-      );
+      await tester.tap(find.byType(ListTile).first);
       await tester.pumpAndSettle();
 
       expect(connectAttempted, isTrue);

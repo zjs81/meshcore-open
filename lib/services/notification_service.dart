@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/foundation.dart';
 
+import '../helpers/reaction_helper.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/platform_info.dart';
 
@@ -145,6 +146,19 @@ class NotificationService {
     return true;
   }
 
+  /// Format special message types for human-readable notifications.
+  static String formatNotificationText(String text) {
+    final trimmed = text.trim();
+    final reaction = ReactionHelper.parseReaction(trimmed);
+    if (reaction != null) {
+      return 'Reacted ${reaction.emoji}';
+    }
+    if (RegExp(r'^g:[A-Za-z0-9_-]+$').hasMatch(trimmed)) {
+      return 'Sent a GIF';
+    }
+    return text;
+  }
+
   Future<void> _showMessageNotificationImpl({
     required String contactName,
     required String message,
@@ -187,7 +201,7 @@ class NotificationService {
       await _notifications.show(
         id: contactId?.hashCode ?? 0,
         title: contactName,
-        body: message,
+        body: formatNotificationText(message),
         notificationDetails: notificationDetails,
         payload: 'message:$contactId',
       );
@@ -232,7 +246,9 @@ class NotificationService {
 
     try {
       await _notifications.show(
-        id: contactId?.hashCode ?? DateTime.now().millisecondsSinceEpoch,
+        id: contactId != null
+            ? 'advert:$contactId'.hashCode
+            : DateTime.now().millisecondsSinceEpoch,
         title: _l10n.notification_newTypeDiscovered(contactType),
         body: contactName,
         notificationDetails: notificationDetails,
@@ -281,7 +297,7 @@ class NotificationService {
       macOS: macDetails,
     );
 
-    final preview = message.trim();
+    final preview = formatNotificationText(message.trim());
     final body = preview.isEmpty
         ? _l10n.notification_receivedNewMessage
         : preview;
@@ -331,6 +347,61 @@ class NotificationService {
     await _notifications.cancel(id: id);
   }
 
+  /// Cancel the notification for a specific contact and update the app badge.
+  Future<void> clearContactNotification(
+    String contactId,
+    int totalUnreadCount,
+  ) async {
+    if (!await _ensureInitialized()) return;
+    await _notifications.cancel(id: contactId.hashCode);
+    await _updateBadge(totalUnreadCount);
+  }
+
+  /// Cancel the notification for a specific channel and update the app badge.
+  Future<void> clearChannelNotification(
+    int channelIndex,
+    int totalUnreadCount,
+  ) async {
+    if (!await _ensureInitialized()) return;
+    await _notifications.cancel(id: channelIndex.hashCode);
+    await _updateBadge(totalUnreadCount);
+  }
+
+  /// Cancel advert notifications for the given contact public key hexes.
+  Future<void> clearAdvertNotifications(List<String> contactIds) async {
+    if (!await _ensureInitialized()) return;
+    for (final id in contactIds) {
+      await _notifications.cancel(id: 'advert:$id'.hashCode);
+    }
+  }
+
+  Future<void> _updateBadge(int count) async {
+    if (PlatformInfo.isIOS || PlatformInfo.isMacOS) {
+      // On Apple platforms, set the badge number directly via a silent update.
+      final darwinDetails = DarwinNotificationDetails(
+        presentAlert: false,
+        presentSound: false,
+        presentBadge: true,
+        badgeNumber: count,
+      );
+      final details = NotificationDetails(
+        iOS: darwinDetails,
+        macOS: darwinDetails,
+      );
+      // Use a fixed ID so each update replaces the previous one.
+      await _notifications.show(
+        id: 'badge_update'.hashCode,
+        title: null,
+        body: null,
+        notificationDetails: details,
+      );
+      // Immediately cancel the silent notification so it doesn't appear in tray.
+      await _notifications.cancel(id: 'badge_update'.hashCode);
+    }
+    // On Android, badge count is derived from active notifications,
+    // so cancelling the specific notification above is sufficient.
+  }
+
   // ─────────────────────────────────────────────────────────────────
   // Public notification methods (rate limiting is enforced automatically)
   // ─────────────────────────────────────────────────────────────────
@@ -373,6 +444,7 @@ class NotificationService {
 
   Future<void> showChannelMessageNotification({
     required String channelName,
+    required String senderName,
     required String message,
     int? channelIndex,
     int? badgeCount,
@@ -383,7 +455,7 @@ class NotificationService {
       _PendingNotification(
         type: _NotificationType.channelMessage,
         title: channelName,
-        body: message,
+        body: '$senderName: $message',
         id: channelIndex?.toString(),
         badgeCount: badgeCount,
       ),

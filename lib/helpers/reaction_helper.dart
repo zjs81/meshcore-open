@@ -8,6 +8,50 @@ class ReactionInfo {
 }
 
 class ReactionHelper {
+  /// Apply a reaction to a list of messages by matching the reaction hash.
+  ///
+  /// [messages] - the message list to search
+  /// [reactionInfo] - the parsed reaction
+  /// [getTimestampSecs] - extract timestamp seconds from a message
+  /// [getSenderName] - extract sender name for hash (null for 1:1 implicit)
+  /// [getMessageText] - extract message text
+  /// [getReactions] - extract current reactions map
+  /// [shouldSkip] - filter function to skip messages (e.g., skip outgoing for incoming reactions)
+  /// [updateMessage] - callback to update the message at index with new reactions
+  ///
+  /// Returns whether a match was found.
+  static bool applyReaction<T>({
+    required List<T> messages,
+    required ReactionInfo reactionInfo,
+    required int Function(T) getTimestampSecs,
+    required String? Function(T) getSenderName,
+    required String Function(T) getMessageText,
+    required Map<String, int> Function(T) getReactions,
+    required bool Function(T) shouldSkip,
+    required void Function(int index, Map<String, int> newReactions)
+    updateMessage,
+  }) {
+    final targetHash = reactionInfo.targetHash;
+    for (int i = messages.length - 1; i >= 0; i--) {
+      final msg = messages[i];
+      if (shouldSkip(msg)) continue;
+
+      final msgHash = computeReactionHash(
+        getTimestampSecs(msg),
+        getSenderName(msg),
+        getMessageText(msg),
+      );
+      if (msgHash == targetHash) {
+        final currentReactions = Map<String, int>.from(getReactions(msg));
+        currentReactions[reactionInfo.emoji] =
+            (currentReactions[reactionInfo.emoji] ?? 0) + 1;
+        updateMessage(i, currentReactions);
+        return true;
+      }
+    }
+    return false;
+  }
+
   static List<String>? _cachedEmojis;
 
   /// Combined list of all reaction emojis in fixed order.

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import '../l10n/l10n.dart';
+import '../utils/contact_search.dart';
 
-enum ContactSortOption { lastSeen, recentMessages, name }
-
-enum ContactTypeFilter { all, favorites, users, repeaters, rooms }
-
-class SortFilterMenuOption {
-  final int value;
+class SortFilterMenuOption<T> {
+  final T value;
   final String label;
   final bool? checked;
 
@@ -17,16 +14,16 @@ class SortFilterMenuOption {
   });
 }
 
-class SortFilterMenuSection {
+class SortFilterMenuSection<T> {
   final String title;
-  final List<SortFilterMenuOption> options;
+  final List<SortFilterMenuOption<T>> options;
 
   const SortFilterMenuSection({required this.title, required this.options});
 }
 
-class SortFilterMenu extends StatelessWidget {
-  final List<SortFilterMenuSection> sections;
-  final ValueChanged<int> onSelected;
+class SortFilterMenu<T> extends StatelessWidget {
+  final List<SortFilterMenuSection<T>> sections;
+  final ValueChanged<T> onSelected;
   final String tooltip;
   final Widget icon;
 
@@ -40,7 +37,7 @@ class SortFilterMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<int>(
+    return PopupMenuButton<T>(
       icon: icon,
       tooltip: tooltip,
       onSelected: onSelected,
@@ -53,11 +50,11 @@ class SortFilterMenu extends StatelessWidget {
         final visibleSections = sections
             .where((section) => section.options.isNotEmpty)
             .toList();
-        final entries = <PopupMenuEntry<int>>[];
+        final entries = <PopupMenuEntry<T>>[];
         for (int i = 0; i < visibleSections.length; i++) {
           final section = visibleSections[i];
           entries.add(
-            PopupMenuItem<int>(
+            PopupMenuItem<T>(
               enabled: false,
               child: Text(section.title, style: labelStyle),
             ),
@@ -65,14 +62,14 @@ class SortFilterMenu extends StatelessWidget {
           for (final option in section.options) {
             if (option.checked == null) {
               entries.add(
-                PopupMenuItem<int>(
+                PopupMenuItem<T>(
                   value: option.value,
                   child: Text(option.label),
                 ),
               );
             } else {
               entries.add(
-                CheckedPopupMenuItem<int>(
+                CheckedPopupMenuItem<T>(
                   value: option.value,
                   checked: option.checked ?? false,
                   child: Text(option.label),
@@ -90,16 +87,23 @@ class SortFilterMenu extends StatelessWidget {
   }
 }
 
-const int _actionSortRecentMessages = 1;
-const int _actionSortName = 2;
-const int _actionSortLastSeen = 3;
-const int _actionFilterAll = 4;
-const int _actionFilterFavorites = 5;
-const int _actionFilterUsers = 6;
-const int _actionFilterRepeaters = 7;
-const int _actionFilterRooms = 8;
-const int _actionToggleUnreadOnly = 9;
-const int _actionNewGroup = 10;
+sealed class _ContactsFilterAction {
+  const _ContactsFilterAction();
+}
+
+class _SortAction extends _ContactsFilterAction {
+  final ContactSortOption option;
+  const _SortAction(this.option);
+}
+
+class _TypeFilterAction extends _ContactsFilterAction {
+  final ContactTypeFilter filter;
+  const _TypeFilterAction(this.filter);
+}
+
+class _ToggleUnreadAction extends _ContactsFilterAction {
+  const _ToggleUnreadAction();
+}
 
 class ContactsFilterMenu extends StatelessWidget {
   final ContactSortOption sortOption;
@@ -108,7 +112,6 @@ class ContactsFilterMenu extends StatelessWidget {
   final ValueChanged<ContactSortOption> onSortChanged;
   final ValueChanged<ContactTypeFilter> onTypeFilterChanged;
   final ValueChanged<bool> onUnreadOnlyChanged;
-  final VoidCallback onNewGroup;
 
   const ContactsFilterMenu({
     super.key,
@@ -118,30 +121,29 @@ class ContactsFilterMenu extends StatelessWidget {
     required this.onSortChanged,
     required this.onTypeFilterChanged,
     required this.onUnreadOnlyChanged,
-    required this.onNewGroup,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return SortFilterMenu(
+    return SortFilterMenu<_ContactsFilterAction>(
       tooltip: l10n.listFilter_tooltip,
       sections: [
         SortFilterMenuSection(
           title: l10n.listFilter_sortBy,
           options: [
             SortFilterMenuOption(
-              value: _actionSortRecentMessages,
+              value: _SortAction(ContactSortOption.recentMessages),
               label: l10n.listFilter_latestMessages,
               checked: sortOption == ContactSortOption.recentMessages,
             ),
             SortFilterMenuOption(
-              value: _actionSortLastSeen,
+              value: _SortAction(ContactSortOption.lastSeen),
               label: l10n.listFilter_heardRecently,
               checked: sortOption == ContactSortOption.lastSeen,
             ),
             SortFilterMenuOption(
-              value: _actionSortName,
+              value: _SortAction(ContactSortOption.name),
               label: l10n.listFilter_az,
               checked: sortOption == ContactSortOption.name,
             ),
@@ -151,78 +153,64 @@ class ContactsFilterMenu extends StatelessWidget {
           title: l10n.listFilter_filters,
           options: [
             SortFilterMenuOption(
-              value: _actionFilterAll,
+              value: _TypeFilterAction(ContactTypeFilter.all),
               label: l10n.listFilter_all,
               checked: typeFilter == ContactTypeFilter.all,
             ),
             SortFilterMenuOption(
-              value: _actionFilterFavorites,
+              value: _TypeFilterAction(ContactTypeFilter.favorites),
               label: l10n.listFilter_favorites,
               checked: typeFilter == ContactTypeFilter.favorites,
             ),
             SortFilterMenuOption(
-              value: _actionFilterUsers,
+              value: _TypeFilterAction(ContactTypeFilter.users),
               label: l10n.listFilter_users,
               checked: typeFilter == ContactTypeFilter.users,
             ),
             SortFilterMenuOption(
-              value: _actionFilterRepeaters,
+              value: _TypeFilterAction(ContactTypeFilter.repeaters),
               label: l10n.listFilter_repeaters,
               checked: typeFilter == ContactTypeFilter.repeaters,
             ),
             SortFilterMenuOption(
-              value: _actionFilterRooms,
+              value: _TypeFilterAction(ContactTypeFilter.rooms),
               label: l10n.listFilter_roomServers,
               checked: typeFilter == ContactTypeFilter.rooms,
             ),
             SortFilterMenuOption(
-              value: _actionToggleUnreadOnly,
+              value: const _ToggleUnreadAction(),
               label: l10n.listFilter_unreadOnly,
               checked: showUnreadOnly,
-            ),
-            SortFilterMenuOption(
-              value: _actionNewGroup,
-              label: l10n.listFilter_newGroup,
             ),
           ],
         ),
       ],
       onSelected: (action) {
         switch (action) {
-          case _actionSortRecentMessages:
-            onSortChanged(ContactSortOption.recentMessages);
-            break;
-          case _actionSortName:
-            onSortChanged(ContactSortOption.name);
-            break;
-          case _actionSortLastSeen:
-            onSortChanged(ContactSortOption.lastSeen);
-            break;
-          case _actionFilterAll:
-            onTypeFilterChanged(ContactTypeFilter.all);
-            break;
-          case _actionFilterUsers:
-            onTypeFilterChanged(ContactTypeFilter.users);
-            break;
-          case _actionFilterFavorites:
-            onTypeFilterChanged(ContactTypeFilter.favorites);
-            break;
-          case _actionFilterRepeaters:
-            onTypeFilterChanged(ContactTypeFilter.repeaters);
-            break;
-          case _actionFilterRooms:
-            onTypeFilterChanged(ContactTypeFilter.rooms);
-            break;
-          case _actionToggleUnreadOnly:
+          case _SortAction(:final option):
+            onSortChanged(option);
+          case _TypeFilterAction(:final filter):
+            onTypeFilterChanged(filter);
+          case _ToggleUnreadAction():
             onUnreadOnlyChanged(!showUnreadOnly);
-            break;
-          case _actionNewGroup:
-            onNewGroup();
-            break;
         }
       },
     );
   }
+}
+
+sealed class _DiscoveryFilterAction {
+  const _DiscoveryFilterAction();
+}
+
+class _DiscoverySortAction extends _DiscoveryFilterAction {
+  final ContactSortOption option;
+  const _DiscoverySortAction(this.option);
+}
+
+class _DiscoveryTypeFilterAction extends _DiscoveryFilterAction {
+  final ContactTypeFilter filter;
+  const _DiscoveryTypeFilterAction(this.filter);
 }
 
 class DiscoveryContactsFilterMenu extends StatelessWidget {
@@ -242,19 +230,19 @@ class DiscoveryContactsFilterMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return SortFilterMenu(
+    return SortFilterMenu<_DiscoveryFilterAction>(
       tooltip: l10n.listFilter_tooltip,
       sections: [
         SortFilterMenuSection(
           title: l10n.listFilter_sortBy,
           options: [
             SortFilterMenuOption(
-              value: _actionSortLastSeen,
+              value: _DiscoverySortAction(ContactSortOption.lastSeen),
               label: l10n.listFilter_heardRecently,
               checked: sortOption == ContactSortOption.lastSeen,
             ),
             SortFilterMenuOption(
-              value: _actionSortName,
+              value: _DiscoverySortAction(ContactSortOption.name),
               label: l10n.listFilter_az,
               checked: sortOption == ContactSortOption.name,
             ),
@@ -264,22 +252,22 @@ class DiscoveryContactsFilterMenu extends StatelessWidget {
           title: l10n.listFilter_filters,
           options: [
             SortFilterMenuOption(
-              value: _actionFilterAll,
+              value: _DiscoveryTypeFilterAction(ContactTypeFilter.all),
               label: l10n.listFilter_all,
               checked: typeFilter == ContactTypeFilter.all,
             ),
             SortFilterMenuOption(
-              value: _actionFilterUsers,
+              value: _DiscoveryTypeFilterAction(ContactTypeFilter.users),
               label: l10n.listFilter_users,
               checked: typeFilter == ContactTypeFilter.users,
             ),
             SortFilterMenuOption(
-              value: _actionFilterRepeaters,
+              value: _DiscoveryTypeFilterAction(ContactTypeFilter.repeaters),
               label: l10n.listFilter_repeaters,
               checked: typeFilter == ContactTypeFilter.repeaters,
             ),
             SortFilterMenuOption(
-              value: _actionFilterRooms,
+              value: _DiscoveryTypeFilterAction(ContactTypeFilter.rooms),
               label: l10n.listFilter_roomServers,
               checked: typeFilter == ContactTypeFilter.rooms,
             ),
@@ -288,27 +276,10 @@ class DiscoveryContactsFilterMenu extends StatelessWidget {
       ],
       onSelected: (action) {
         switch (action) {
-          case _actionSortName:
-            onSortChanged(ContactSortOption.name);
-            break;
-          case _actionSortLastSeen:
-            onSortChanged(ContactSortOption.lastSeen);
-            break;
-          case _actionFilterAll:
-            onTypeFilterChanged(ContactTypeFilter.all);
-            break;
-          case _actionFilterUsers:
-            onTypeFilterChanged(ContactTypeFilter.users);
-            break;
-          case _actionFilterFavorites:
-            onTypeFilterChanged(ContactTypeFilter.favorites);
-            break;
-          case _actionFilterRepeaters:
-            onTypeFilterChanged(ContactTypeFilter.repeaters);
-            break;
-          case _actionFilterRooms:
-            onTypeFilterChanged(ContactTypeFilter.rooms);
-            break;
+          case _DiscoverySortAction(:final option):
+            onSortChanged(option);
+          case _DiscoveryTypeFilterAction(:final filter):
+            onTypeFilterChanged(filter);
         }
       },
     );

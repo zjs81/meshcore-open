@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:crypto/crypto.dart' as crypto;
-import 'package:meshcore_open/models/discovery_contact.dart';
 import 'package:pointycastle/export.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_blue_plus_platform_interface/flutter_blue_plus_platform_interface.dart';
 
 import '../models/channel.dart';
 import '../models/channel_message.dart';
+import '../models/companion_radio_stats.dart';
 import '../models/contact.dart';
 import '../models/message.dart';
 import '../models/path_selection.dart';
@@ -16,12 +18,17 @@ import '../helpers/reaction_helper.dart';
 import '../helpers/smaz.dart';
 import '../services/app_debug_log_service.dart';
 import '../services/ble_debug_log_service.dart';
+import '../services/linux_ble_error_classifier.dart';
+import '../services/linux_ble_pairing_service_stub.dart'
+    if (dart.library.io) '../services/linux_ble_pairing_service.dart';
 import '../services/message_retry_service.dart';
 import '../services/path_history_service.dart';
 import '../services/app_settings_service.dart';
 import '../services/background_service.dart';
+import '../services/timeout_prediction_service.dart';
 import '../services/notification_service.dart';
 import 'meshcore_connector_usb.dart';
+import 'meshcore_connector_tcp.dart';
 import '../storage/channel_message_store.dart';
 import '../storage/channel_order_store.dart';
 import '../storage/channel_settings_store.dart';
@@ -34,13 +41,8 @@ import '../storage/unread_store.dart';
 import '../utils/app_logger.dart';
 import '../utils/battery_utils.dart';
 import '../utils/platform_info.dart';
+import 'meshcore_uuids.dart';
 import 'meshcore_protocol.dart';
-
-class MeshCoreUuids {
-  static const String service = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
-  static const String rxCharacteristic = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
-  static const String txCharacteristic = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
-}
 
 class DirectRepeater {
   static const int maxAgeMinutes = 30; // Max age for direct repeater info
@@ -86,7 +88,7 @@ enum MeshCoreConnectionState {
   disconnecting,
 }
 
-enum MeshCoreTransportType { bluetooth, usb }
+enum MeshCoreTransportType { bluetooth, usb, tcp }
 
 class RepeaterBatterySnapshot {
   final int millivolts;
@@ -115,12 +117,16 @@ class MeshCoreConnector extends ChangeNotifier {
   String? _lastDeviceDisplayName;
   bool _manualDisconnect = false;
   final MeshCoreUsbManager _usbManager = MeshCoreUsbManager();
+  final LinuxBlePairingService _linuxBlePairingService =
+      LinuxBlePairingService();
   StreamSubscription<Uint8List>? _usbFrameSubscription;
+  final MeshCoreTcpConnector _tcpConnector = MeshCoreTcpConnector();
   MeshCoreTransportType _activeTransport = MeshCoreTransportType.bluetooth;
 
   final List<ScanResult> _scanResults = [];
+  final List<ScanResult> _linuxSystemScanResults = [];
   final List<Contact> _contacts = [];
-  final List<DiscoveryContact> _discoveredContacts = [];
+  final List<Contact> _discoveredContacts = [];
   final List<Channel> _channels = [];
   final Map<String, List<Message>> _conversations = {};
   final Map<int, List<ChannelMessage>> _channelMessages = {};
@@ -141,6 +147,10 @@ class MeshCoreConnector extends ChangeNotifier {
   Timer? _selfInfoRetryTimer;
   Timer? _reconnectTimer;
   Timer? _batteryPollTimer;
+  Timer? _radioStatsPollTimer;
+  int _radioStatsPollRefCount = 0;
+  final ValueNotifier<CompanionRadioStats?> radioStatsNotifier =
+      ValueNotifier<CompanionRadioStats?>(null);
   int _reconnectAttempts = 0;
   bool _notifyListenersDirty = false;
   static const Duration _notifyListenersDebounce = Duration(milliseconds: 50);
@@ -158,6 +168,10 @@ class MeshCoreConnector extends ChangeNotifier {
   int? _currentCr;
   bool? _clientRepeat;
   int? _firmwareVerCode;
+  int _pathHashByteWidth = 1;
+  CompanionRadioStats? _latestRadioStats;
+  Stopwatch? _airtimeBumpStopwatch;
+  int _prevTotalAirSecs = 0;
   int? _batteryMillivolts;
   double? _selfLatitude;
   double? _selfLongitude;
@@ -165,6 +179,20 @@ class MeshCoreConnector extends ChangeNotifier {
   bool _isLoadingContacts = false;
   bool _isLoadingChannels = false;
   bool _hasLoadedChannels = false;
+  TimeoutPredictionService? _timeoutPredictionService;
+  // Intentionally global (not per-contact): tracks overall network activity.
+  // Frequent RX from any source indicates a busy network with more collisions.
+  DateTime _lastRxTime = DateTime.now();
+  DateTime _lastRadioRxTime = DateTime.fromMillisecondsSinceEpoch(0);
+  DateTime _lastContactMsgRxTime = DateTime.fromMillisecondsSinceEpoch(0);
+  DateTime _lastChannelMsgRxTime = DateTime.fromMillisecondsSinceEpoch(0);
+  static const int _radioQuietMs = 3000;
+  static const int _radioQuietMaxWaitMs = 3000;
+
+  /// When companion radio stats are unavailable, keep the legacy fixed backoff.
+  static const int _contactMsgBackoffFallbackMs = 5000;
+  static const int _contactMsgBackoffMinMs = 500;
+  static const int _contactMsgBackoffMaxMs = 15000;
   bool _batteryRequested = false;
   bool _awaitingSelfInfo = false;
   bool _hasReceivedDeviceInfo = false;
@@ -198,6 +226,9 @@ class MeshCoreConnector extends ChangeNotifier {
   int _queueSyncRetries = 0;
   static const int _maxQueueSyncRetries = 3;
   static const int _queueSyncTimeoutMs = 5000; // 5 second timeout
+  // Serializes path operations (setContactPath/clearContactPath) to prevent
+  // interleaved async calls from leaving in-memory state inconsistent with device.
+  Future<void> _pathOpLock = Future.value();
   Map<String, String>? _currentCustomVars;
 
   // Channel syncing state (sequential pattern)
@@ -243,6 +274,9 @@ class MeshCoreConnector extends ChangeNotifier {
   int? _activeChannelIndex;
   List<int> _channelOrder = [];
 
+  int _storageUsedKb = -1;
+  int _storageTotalKb = -1;
+
   // Getters
   MeshCoreConnectionState get state => _state;
   BluetoothDevice? get device => _device;
@@ -255,6 +289,12 @@ class MeshCoreConnector extends ChangeNotifier {
   bool get isUsbTransportConnected =>
       _state == MeshCoreConnectionState.connected &&
       _activeTransport == MeshCoreTransportType.usb;
+  bool get isAutoReconnectScheduled =>
+      _shouldAutoReconnect && (_reconnectTimer?.isActive ?? false);
+  String? get activeTcpEndpoint => _tcpConnector.activeEndpoint;
+  bool get isTcpTransportConnected =>
+      _state == MeshCoreConnectionState.connected &&
+      _activeTransport == MeshCoreTransportType.tcp;
 
   String get deviceDisplayName {
     if (_selfName != null && _selfName!.isNotEmpty) {
@@ -281,7 +321,11 @@ class MeshCoreConnector extends ChangeNotifier {
     );
   }
 
-  List<DiscoveryContact> get discoveredContacts {
+  List<Contact> get allContacts => List.unmodifiable([
+    ..._contacts,
+    ..._discoveredContacts.where((c) => !c.isActive),
+  ]);
+  List<Contact> get discoveredContacts {
     return List.unmodifiable(_discoveredContacts);
   }
 
@@ -291,12 +335,26 @@ class MeshCoreConnector extends ChangeNotifier {
   bool get isLoadingChannels => _isLoadingChannels;
   Stream<Uint8List> get receivedFrames => _receivedFramesController.stream;
   Uint8List? get selfPublicKey => _selfPublicKey;
+  String get selfPublicKeyHex => pubKeyToHex(_selfPublicKey ?? Uint8List(0));
   String? get selfName => _selfName;
   double? get selfLatitude => _selfLatitude;
   double? get selfLongitude => _selfLongitude;
   List<DirectRepeater> get directRepeaters => _directRepeaters;
   int? get currentTxPower => _currentTxPower;
   int? get maxTxPower => _maxTxPower;
+
+  int get pathHashByteWidth => _pathHashByteWidth;
+
+  CompanionRadioStats? get latestRadioStats => _latestRadioStats;
+
+  bool get supportsCompanionRadioStats => (_firmwareVerCode ?? 0) >= 8;
+
+  bool get radioStatsAirActivityPulse {
+    final sw = _airtimeBumpStopwatch;
+    if (sw == null || !sw.isRunning) return false;
+    return sw.elapsed < const Duration(seconds: 2);
+  }
+
   int? get currentFreqHz => _currentFreqHz;
   int? get currentBwHz => _currentBwHz;
   int? get currentSf => _currentSf;
@@ -306,10 +364,17 @@ class MeshCoreConnector extends ChangeNotifier {
   bool? get autoAddRoomServers => _autoAddRoomServers;
   bool? get autoAddSensors => _autoAddSensors;
   bool? get autoAddOverwriteOldest => _overwriteOldest;
+  int get telemetryModeBase => _telemetryModeBase;
+  int get telemetryModeLoc => _telemetryModeLoc;
+  int get telemetryModeEnv => _telemetryModeEnv;
+  int get advertLocationPolicy => _advertLocPolicy;
+  int get multiAcks => _multiAcks;
   bool? get clientRepeat => _clientRepeat;
   int? get firmwareVerCode => _firmwareVerCode;
   Map<String, String>? get currentCustomVars => _currentCustomVars;
   int? get batteryMillivolts => _batteryMillivolts;
+  int? get storageUsedKb => _storageUsedKb;
+  int? get storageTotalKb => _storageTotalKb;
   int get maxContacts => _maxContacts;
   int get maxChannels => _maxChannels;
   Set<String> get knownContactKeys => Set.unmodifiable(_knownContactKeys);
@@ -552,6 +617,10 @@ class MeshCoreConnector extends ChangeNotifier {
       _unreadStore.saveContactUnreadCount(
         Map<String, int>.from(_contactUnreadCount),
       );
+      _notificationService.clearContactNotification(
+        contactKeyHex,
+        getTotalUnreadCount(),
+      );
       notifyListeners();
     }
   }
@@ -569,6 +638,10 @@ class MeshCoreConnector extends ChangeNotifier {
         _channelStore.saveChannels(
           _channels.isNotEmpty ? _channels : _cachedChannels,
         ),
+      );
+      _notificationService.clearChannelNotification(
+        channelIndex,
+        getTotalUnreadCount(),
       );
       notifyListeners();
     }
@@ -651,6 +724,7 @@ class MeshCoreConnector extends ChangeNotifier {
     BleDebugLogService? bleDebugLogService,
     AppDebugLogService? appDebugLogService,
     BackgroundService? backgroundService,
+    TimeoutPredictionService? timeoutPredictionService,
   }) {
     _retryService = retryService;
     _pathHistoryService = pathHistoryService;
@@ -658,7 +732,9 @@ class MeshCoreConnector extends ChangeNotifier {
     _bleDebugLogService = bleDebugLogService;
     _appDebugLogService = appDebugLogService;
     _backgroundService = backgroundService;
+    _timeoutPredictionService = timeoutPredictionService;
     _usbManager.setDebugLogService(_appDebugLogService);
+    _tcpConnector.setDebugLogService(_appDebugLogService);
 
     // Initialize notification service
     _notificationService.initialize();
@@ -666,19 +742,45 @@ class MeshCoreConnector extends ChangeNotifier {
 
     // Initialize retry service callbacks
     _retryService?.initialize(
-      sendMessageCallback: _sendMessageDirect,
-      addMessageCallback: _addMessage,
-      updateMessageCallback: _updateMessage,
-      clearContactPathCallback: clearContactPath,
-      setContactPathCallback: setContactPath,
-      calculateTimeoutCallback: (pathLength, messageBytes) =>
-          calculateTimeout(pathLength: pathLength, messageBytes: messageBytes),
-      getSelfPublicKeyCallback: () => _selfPublicKey,
-      prepareContactOutboundTextCallback: prepareContactOutboundText,
-      appSettingsService: appSettingsService,
-      debugLogService: _appDebugLogService,
-      recordPathResultCallback: _recordPathResult,
+      RetryServiceConfig(
+        sendMessage: _sendMessageDirect,
+        addMessage: _addMessage,
+        updateMessage: _updateMessage,
+        clearContactPath: clearContactPath,
+        setContactPath: setContactPath,
+        calculateTimeout: (pathLength, messageBytes, {String? contactKey}) =>
+            calculateTimeout(
+              pathLength: pathLength,
+              messageBytes: messageBytes,
+              contactKey: contactKey,
+            ),
+        getSelfPublicKey: () => _selfPublicKey,
+        prepareContactOutboundText: prepareContactOutboundText,
+        appSettingsService: appSettingsService,
+        debugLogService: _appDebugLogService,
+        recordPathResult: _recordPathResult,
+        selectRetryPath:
+            (contactKey, attemptIndex, maxRetries, recentSelections) =>
+                _selectAutoPathForAttempt(
+                  contactKey,
+                  attemptIndex: attemptIndex,
+                  maxRetries: maxRetries,
+                  recentSelections: recentSelections,
+                ),
+        onDeliveryObserved: (contactKey, pathLength, messageBytes, tripTimeMs) {
+          final secSinceRx = DateTime.now().difference(_lastRxTime).inSeconds;
+          _timeoutPredictionService?.recordObservation(
+            contactKey: contactKey,
+            pathLength: pathLength,
+            messageBytes: messageBytes,
+            tripTimeMs: tripTimeMs,
+            secondsSinceLastRx: secSinceRx,
+          );
+        },
+      ),
     );
+    final maxRetries = _appSettingsService?.settings.maxMessageRetries ?? 5;
+    _retryService?.setMaxRetries(maxRetries);
   }
 
   Future<void> loadContactCache() async {
@@ -686,12 +788,15 @@ class MeshCoreConnector extends ChangeNotifier {
     _knownContactKeys
       ..clear()
       ..addAll(cached.map((c) => c.publicKeyHex));
+    _contacts
+      ..clear()
+      ..addAll(cached);
     for (final contact in cached) {
       _ensureContactSmazSettingLoaded(contact.publicKeyHex);
     }
   }
 
-  Future<void> loadDiscoveredContactCache() async {
+  Future<void> _loadDiscoveredContactCache() async {
     final cached = await _discoveryContactStore.loadContacts();
     _discoveredContacts
       ..clear()
@@ -706,22 +811,116 @@ class MeshCoreConnector extends ChangeNotifier {
     }
   }
 
-  void _sendMessageDirect(
+  /// After an incoming DM or channel message, wait before TX so we do not
+  /// collide with mesh propagation. With companion stats, scale wait by RF
+  /// conditions (up to [_contactMsgBackoffMaxMs]); otherwise use
+  /// [_contactMsgBackoffFallbackMs].
+  int _contactMessageBackoffTargetMs() {
+    if (!supportsCompanionRadioStats || _latestRadioStats == null) {
+      return _contactMsgBackoffFallbackMs;
+    }
+    final stats = _latestRadioStats!;
+    final nf = stats.noiseFloorDbm.toDouble();
+    // Quieter (more negative) → lower score; noisier → higher.
+    const noiseQuietDbm = -118.0;
+    const noiseNoisyDbm = -88.0;
+    final noiseT = ((nf - noiseQuietDbm) / (noiseNoisyDbm - noiseQuietDbm))
+        .clamp(0.0, 1.0);
+
+    final snr = stats.lastSnrDb;
+    const snrGood = 12.0;
+    const snrBad = -2.0;
+    final snrT = (1.0 - ((snr - snrBad) / (snrGood - snrBad))).clamp(0.0, 1.0);
+
+    final airBusy = _recentAirtimeBusyFraction();
+    final severity = (math.max(noiseT, snrT) * 0.82 + airBusy * 0.18).clamp(
+      0.0,
+      1.0,
+    );
+
+    return (_contactMsgBackoffMinMs +
+            severity * (_contactMsgBackoffMaxMs - _contactMsgBackoffMinMs))
+        .round();
+  }
+
+  /// 1.0 shortly after TX/RX airtime counters increase, decaying to 0 over ~8s.
+  double _recentAirtimeBusyFraction() {
+    final sw = _airtimeBumpStopwatch;
+    if (sw == null || !sw.isRunning) return 0;
+    final ms = sw.elapsedMilliseconds;
+    const windowMs = 8000;
+    if (ms >= windowMs) return 0;
+    return 1.0 - (ms / windowMs);
+  }
+
+  /// Start of the post-inbound cool-down: the later of BLE message RX time and
+  /// companion airtime bump ([_airtimeBumpStopwatch], same as the activity dot).
+  DateTime _postTxBackoffAnchor(DateTime lastInboundRxTime) {
+    if (!supportsCompanionRadioStats) return lastInboundRxTime;
+    final sw = _airtimeBumpStopwatch;
+    if (sw == null || !sw.isRunning) return lastInboundRxTime;
+    final bumpAt = DateTime.now().subtract(sw.elapsed);
+    return bumpAt.isAfter(lastInboundRxTime) ? bumpAt : lastInboundRxTime;
+  }
+
+  Future<void> _waitForRadioQuiet({required DateTime lastInboundRxTime}) async {
+    // Wait for backoff after inbound traffic / RF airtime (avoid collision with
+    // mesh propagation). Elapsed time uses the dot's airtime bump when newer.
+    final backoffTargetMs = _contactMessageBackoffTargetMs();
+    final anchor = _postTxBackoffAnchor(lastInboundRxTime);
+    final msSinceAnchor = DateTime.now().difference(anchor).inMilliseconds;
+    if (msSinceAnchor < backoffTargetMs) {
+      final waitMs = backoffTargetMs - msSinceAnchor;
+      debugPrint(
+        'Post-inbound backoff: waiting ${waitMs}ms '
+        '(target=${backoffTargetMs}ms, anchorAge=${msSinceAnchor}ms)',
+      );
+      await Future<void>.delayed(Duration(milliseconds: waitMs));
+    }
+
+    // Then wait for radio silence (no RF activity for 3s)
+    final msSinceRx = DateTime.now()
+        .difference(_lastRadioRxTime)
+        .inMilliseconds;
+    if (msSinceRx >= _radioQuietMs) return;
+
+    final deadline = DateTime.now().add(
+      const Duration(milliseconds: _radioQuietMaxWaitMs),
+    );
+    while (DateTime.now().isBefore(deadline)) {
+      final quiet = DateTime.now().difference(_lastRadioRxTime).inMilliseconds;
+      if (quiet >= _radioQuietMs) {
+        debugPrint('Radio quiet for ${quiet}ms, proceeding with send');
+        return;
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+    }
+    debugPrint(
+      'Radio quiet wait exceeded ${_radioQuietMaxWaitMs}ms, sending anyway',
+    );
+  }
+
+  Future<void> _sendMessageDirect(
     Contact contact,
     String text,
     int attempt,
     int timestampSeconds,
   ) async {
     if (!isConnected || text.isEmpty) return;
-    final outboundText = prepareContactOutboundText(contact, text);
-    await sendFrame(
-      buildSendTextMsgFrame(
-        contact.publicKey,
-        outboundText,
-        attempt: attempt,
-        timestampSeconds: timestampSeconds,
-      ),
-    );
+    try {
+      await _waitForRadioQuiet(lastInboundRxTime: _lastContactMsgRxTime);
+      final outboundText = prepareContactOutboundText(contact, text);
+      await sendFrame(
+        buildSendTextMsgFrame(
+          contact.publicKey,
+          outboundText,
+          attempt: attempt,
+          timestampSeconds: timestampSeconds,
+        ),
+      );
+    } catch (e) {
+      appLogger.error('Failed to send message: $e', tag: 'Connector');
+    }
   }
 
   void _updateMessage(Message message) {
@@ -737,6 +936,20 @@ class MeshCoreConnector extends ChangeNotifier {
         notifyListeners();
       }
     }
+
+    // If this is a reaction message, update the target message's reaction status
+    final reactionInfo = ReactionHelper.parseReaction(message.text);
+    if (reactionInfo != null &&
+        (message.status == MessageStatus.delivered ||
+            message.status == MessageStatus.failed)) {
+      final contactKey2 = pubKeyToHex(message.senderKey);
+      _setReactionStatus(contactKey2, reactionInfo, message.status);
+      _messageStore.saveMessages(
+        contactKey2,
+        _conversations[contactKey2] ?? [],
+      );
+      notifyListeners();
+    }
   }
 
   void _recordPathResult(
@@ -746,35 +959,69 @@ class MeshCoreConnector extends ChangeNotifier {
     int? tripTimeMs,
   ) {
     if (_pathHistoryService == null) return;
+    final settings = _appSettingsService?.settings;
     _pathHistoryService!.recordPathResult(
       contactPubKeyHex,
       selection,
       success: success,
       tripTimeMs: tripTimeMs,
+      successIncrement: settings?.routeWeightSuccessIncrement ?? 0.2,
+      failureDecrement: settings?.routeWeightFailureDecrement ?? 0.2,
+      maxWeight: settings?.maxRouteWeight ?? 5.0,
     );
+
+    // Flood path attribution: when a flood delivery succeeds, credit the
+    // contact's current device path so the route the ACK traveled back
+    // through gets a weight boost in the path history.
+    if (selection.useFlood && success) {
+      final contact = _contacts.cast<Contact?>().firstWhere(
+        (c) => c?.publicKeyHex == contactPubKeyHex,
+        orElse: () => null,
+      );
+      if (contact != null &&
+          contact.pathLength >= 0 &&
+          contact.path.isNotEmpty) {
+        _pathHistoryService!.recordFloodPathAttribution(
+          contactPubKeyHex: contactPubKeyHex,
+          pathBytes: contact.path,
+          hopCount: contact.pathLength,
+          tripTimeMs: tripTimeMs,
+          successIncrement: settings?.routeWeightSuccessIncrement ?? 0.2,
+          maxWeight: settings?.maxRouteWeight ?? 5.0,
+        );
+      }
+
+      // Request a fresh contact from the device so the next flood
+      // attribution uses the most up-to-date path.
+      if (contact != null) {
+        unawaited(getContactByKey(contact.publicKey));
+      }
+    }
   }
 
-  Contact _applyAutoSelection(Contact contact, PathSelection? selection) {
-    if (selection == null ||
-        selection.useFlood ||
-        selection.pathBytes.isEmpty) {
-      return contact;
+  PathSelection? _selectAutoPathForAttempt(
+    String contactPubKeyHex, {
+    required int attemptIndex,
+    required int maxRetries,
+    List<PathSelection> recentSelections = const [],
+  }) {
+    final hasKnownPaths =
+        _pathHistoryService?.getRecentPaths(contactPubKeyHex).isNotEmpty ??
+        false;
+    if (!hasKnownPaths) {
+      return null;
     }
 
-    return Contact(
-      publicKey: contact.publicKey,
-      name: contact.name,
-      type: contact.type,
-      flags: contact.flags,
-      pathLength: selection.hopCount >= 0
-          ? selection.hopCount
-          : contact.pathLength,
-      path: Uint8List.fromList(selection.pathBytes),
-      latitude: contact.latitude,
-      longitude: contact.longitude,
-      lastSeen: contact.lastSeen,
-      lastMessageAt: contact.lastMessageAt,
+    final selection = _pathHistoryService?.selectPathForAttempt(
+      contactPubKeyHex,
+      attemptIndex: attemptIndex,
+      maxRetries: maxRetries,
+      recentSelections: recentSelections,
     );
+    if (selection != null) {
+      _pathHistoryService?.recordPathAttempt(contactPubKeyHex, selection);
+    }
+    return selection;
   }
 
   Future<void> startScan({
@@ -783,6 +1030,7 @@ class MeshCoreConnector extends ChangeNotifier {
     if (_state == MeshCoreConnectionState.scanning) return;
 
     _scanResults.clear();
+    _linuxSystemScanResults.clear();
     _setState(MeshCoreConnectionState.scanning);
 
     // Ensure any previous scan is fully stopped. Guard with isScanningNow to
@@ -821,15 +1069,21 @@ class MeshCoreConnector extends ChangeNotifier {
       await Future.delayed(const Duration(milliseconds: 300));
     }
 
+    if (PlatformInfo.isLinux) {
+      await _loadLinuxSystemDevicesForScan();
+    }
+
     _scanSubscription = FlutterBluePlus.scanResults.listen((results) {
-      _scanResults.clear();
-      _scanResults.addAll(results);
+      _scanResults
+        ..clear()
+        ..addAll(results);
+      _mergeLinuxSystemScanResults();
       notifyListeners();
     });
 
     try {
       await FlutterBluePlus.startScan(
-        withKeywords: ["MeshCore-", "Whisper-"],
+        withKeywords: MeshCoreUuids.deviceNamePrefixes,
         webOptionalServices: [Guid(MeshCoreUuids.service)],
         timeout: timeout,
         androidScanMode: AndroidScanMode.lowLatency,
@@ -842,6 +1096,62 @@ class MeshCoreConnector extends ChangeNotifier {
 
     await Future.delayed(timeout);
     await stopScan();
+  }
+
+  Future<void> _loadLinuxSystemDevicesForScan() async {
+    try {
+      final systemDevices = await FlutterBluePlus.systemDevices([
+        Guid(MeshCoreUuids.service),
+      ]);
+      _linuxSystemScanResults
+        ..clear()
+        ..addAll(
+          systemDevices
+              .where(
+                (device) => MeshCoreUuids.deviceNamePrefixes.any(
+                  device.platformName.startsWith,
+                ),
+              )
+              .map(
+                (device) => ScanResult(
+                  device: device,
+                  advertisementData: AdvertisementData(
+                    advName: device.platformName,
+                    txPowerLevel: null,
+                    appearance: null,
+                    connectable: true,
+                    manufacturerData: const <int, List<int>>{},
+                    serviceData: const <Guid, List<int>>{},
+                    serviceUuids: <Guid>[Guid(MeshCoreUuids.service)],
+                  ),
+                  rssi: 0,
+                  timeStamp: DateTime.now(),
+                ),
+              ),
+        );
+      _mergeLinuxSystemScanResults();
+      notifyListeners();
+    } catch (error) {
+      _appDebugLogService?.warn(
+        'Failed loading Linux paired/system BLE devices: $error',
+        tag: 'BLE Scan',
+      );
+    }
+  }
+
+  void _mergeLinuxSystemScanResults() {
+    if (!PlatformInfo.isLinux || _linuxSystemScanResults.isEmpty) {
+      return;
+    }
+    final existingIds = _scanResults
+        .map((result) => result.device.remoteId.str)
+        .toSet();
+    for (final result in _linuxSystemScanResults) {
+      if (existingIds.contains(result.device.remoteId.str)) {
+        continue;
+      }
+      _scanResults.add(result);
+    }
   }
 
   Future<void> stopScan() async {
@@ -937,6 +1247,7 @@ class MeshCoreConnector extends ChangeNotifier {
       );
       await _requestDeviceInfo();
       _startBatteryPolling();
+      if (_radioStatsPollRefCount > 0) _startRadioStatsPolling();
       var gotSelfInfo = await _waitForSelfInfo(
         timeout: const Duration(seconds: 3),
       );
@@ -964,7 +1275,148 @@ class MeshCoreConnector extends ChangeNotifier {
     }
   }
 
-  Future<void> connect(BluetoothDevice device, {String? displayName}) async {
+  Future<void> connectTcp({required String host, required int port}) async {
+    if (_state == MeshCoreConnectionState.connecting ||
+        _state == MeshCoreConnectionState.connected) {
+      _appDebugLogService?.warn(
+        'connectTcp ignored: already $_state',
+        tag: 'TCP',
+      );
+      return;
+    }
+
+    _appDebugLogService?.info('connectTcp: endpoint=$host:$port', tag: 'TCP');
+
+    await stopScan();
+    _cancelReconnectTimer();
+    _manualDisconnect = false;
+    _resetConnectionHandshakeState();
+    _activeTransport = MeshCoreTransportType.tcp;
+    _setState(MeshCoreConnectionState.connecting);
+
+    try {
+      Future<void> handleTcpConnectAbort({required String message}) async {
+        _appDebugLogService?.warn(message, tag: 'TCP');
+        final shouldResetState = shouldResetStateAfterTcpConnectAbort(
+          state: _state,
+          activeTransport: _activeTransport,
+        );
+        if (shouldResetState) {
+          await disconnect(manual: false);
+          return;
+        }
+        if (_tcpConnector.isConnected) {
+          await _tcpConnector.disconnect();
+        }
+      }
+
+      await _tcpConnector.cancelFrameSubscription();
+      await _tcpConnector.connect(host: host, port: port);
+      final isTcpConnectCancelled =
+          _activeTransport != MeshCoreTransportType.tcp ||
+          _state != MeshCoreConnectionState.connecting ||
+          !_tcpConnector.isConnected;
+      if (isTcpConnectCancelled) {
+        await handleTcpConnectAbort(
+          message:
+              'connectTcp aborted before handshake: state=$_state transport=$_activeTransport connected=${_tcpConnector.isConnected}',
+        );
+        return;
+      }
+      notifyListeners();
+
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      final isTcpConnectCancelledAfterDelay =
+          _activeTransport != MeshCoreTransportType.tcp ||
+          _state != MeshCoreConnectionState.connecting ||
+          !_tcpConnector.isConnected;
+      if (isTcpConnectCancelledAfterDelay) {
+        await handleTcpConnectAbort(
+          message:
+              'connectTcp aborted after connect delay: state=$_state transport=$_activeTransport connected=${_tcpConnector.isConnected}',
+        );
+        return;
+      }
+      _tcpConnector.listenFrames(
+        onFrame: _handleFrame,
+        onError: (error, stackTrace) {
+          _appDebugLogService?.error('TCP transport error: $error', tag: 'TCP');
+          unawaited(disconnect(manual: false));
+        },
+        onDone: () {
+          _appDebugLogService?.warn('TCP frame stream ended', tag: 'TCP');
+          unawaited(disconnect(manual: false));
+        },
+      );
+
+      _setState(MeshCoreConnectionState.connected);
+      _pendingInitialChannelSync = true;
+      await _requestDeviceInfo();
+      _startBatteryPolling();
+      if (_radioStatsPollRefCount > 0) _startRadioStatsPolling();
+
+      var gotSelfInfo = await _waitForSelfInfo(
+        timeout: const Duration(seconds: 3),
+      );
+      if (!gotSelfInfo) {
+        await refreshDeviceInfo();
+        gotSelfInfo = await _waitForSelfInfo(
+          timeout: const Duration(seconds: 3),
+        );
+      }
+      if (!gotSelfInfo) {
+        throw StateError('Timed out waiting for SELF_INFO during TCP connect');
+      }
+
+      await syncTime();
+    } catch (error) {
+      _appDebugLogService?.error('TCP connection error: $error', tag: 'TCP');
+      final tcpConnectCancelledBeforeHandshake =
+          shouldIgnoreLateTcpConnectError(
+            manualDisconnect: _manualDisconnect,
+            state: _state,
+            activeTransport: _activeTransport,
+            tcpManagerConnected: _tcpConnector.isConnected,
+          );
+      if (tcpConnectCancelledBeforeHandshake) {
+        _appDebugLogService?.info(
+          'Ignoring late TCP connect error after cancellation/switch: state=$_state transport=$_activeTransport',
+          tag: 'TCP',
+        );
+        return;
+      }
+      await disconnect(manual: false);
+      rethrow;
+    }
+  }
+
+  @visibleForTesting
+  static bool shouldIgnoreLateTcpConnectError({
+    required bool manualDisconnect,
+    required MeshCoreConnectionState state,
+    required MeshCoreTransportType activeTransport,
+    required bool tcpManagerConnected,
+  }) {
+    return manualDisconnect &&
+        (state == MeshCoreConnectionState.disconnected ||
+            state == MeshCoreConnectionState.disconnecting) &&
+        (activeTransport != MeshCoreTransportType.tcp || !tcpManagerConnected);
+  }
+
+  @visibleForTesting
+  static bool shouldResetStateAfterTcpConnectAbort({
+    required MeshCoreConnectionState state,
+    required MeshCoreTransportType activeTransport,
+  }) {
+    return state == MeshCoreConnectionState.connecting &&
+        activeTransport == MeshCoreTransportType.tcp;
+  }
+
+  Future<void> connect(
+    BluetoothDevice device, {
+    String? displayName,
+    Future<String?> Function()? linuxPairingPinProvider,
+  }) async {
     if (_state == MeshCoreConnectionState.connecting ||
         _state == MeshCoreConnectionState.connected) {
       return;
@@ -1009,22 +1461,149 @@ class MeshCoreConnector extends ChangeNotifier {
         }
       });
 
-      try {
-        await device.connect(
-          timeout: const Duration(seconds: 15),
-          mtu: null,
-          license: License.free,
-        );
-      } catch (error) {
-        _appDebugLogService?.error(
-          'device.connect() failure: $error',
+      if (PlatformInfo.isLinux) {
+        final remoteId = device.remoteId.str;
+        _appDebugLogService?.info(
+          'Linux pre-connect BlueZ disconnect for $remoteId',
           tag: 'BLE Connect',
         );
-        rethrow;
+        await _linuxBlePairingService.disconnectDevice(
+          remoteId,
+          onLog: (message) {
+            _appDebugLogService?.info(message, tag: 'BLE Pair');
+          },
+        );
       }
 
-      // Request larger MTU only on native platforms; web does not support it.
-      if (!PlatformInfo.isWeb) {
+      final connectTimeout = PlatformInfo.isLinux
+          ? const Duration(seconds: 6)
+          : const Duration(seconds: 15);
+      _appDebugLogService?.info(
+        'device.connect timeout set to ${connectTimeout.inSeconds}s',
+        tag: 'BLE Connect',
+      );
+      if (PlatformInfo.isLinux) {
+        Future<void> attemptConnect() {
+          return device
+              .connect(
+                timeout: connectTimeout,
+                mtu: null,
+                license: License.free,
+              )
+              .timeout(
+                connectTimeout + const Duration(seconds: 2),
+                onTimeout: () {
+                  throw TimeoutException(
+                    'Linux connect hard-timeout after ${connectTimeout.inSeconds + 2}s',
+                  );
+                },
+              );
+        }
+
+        try {
+          await attemptConnect();
+        } catch (error) {
+          _appDebugLogService?.error(
+            'device.connect() failure: $error',
+            tag: 'BLE Connect',
+          );
+          final remoteId = device.remoteId.str;
+          _appDebugLogService?.warn(
+            'Linux immediate retry: forcing BlueZ disconnect before second connect attempt',
+            tag: 'BLE Connect',
+          );
+          await _linuxBlePairingService.disconnectDevice(
+            remoteId,
+            onLog: (message) {
+              _appDebugLogService?.info(message, tag: 'BLE Pair');
+            },
+          );
+          await Future<void>.delayed(const Duration(milliseconds: 700));
+          try {
+            await attemptConnect();
+            _appDebugLogService?.info(
+              'Linux immediate retry connect succeeded',
+              tag: 'BLE Connect',
+            );
+          } catch (retryError, retryStackTrace) {
+            Object finalConnectError = retryError;
+            StackTrace finalConnectStackTrace = retryStackTrace;
+            final retryErrorText = retryError.toString().toLowerCase();
+            final isAbortByLocal = retryErrorText.contains(
+              'le-connection-abort-by-local',
+            );
+            var recoveredOnThirdAttempt = false;
+            if (isAbortByLocal) {
+              _appDebugLogService?.warn(
+                'Linux immediate retry aborted by local stack; waiting and retrying once more',
+                tag: 'BLE Connect',
+              );
+              await Future<void>.delayed(const Duration(milliseconds: 1200));
+              try {
+                await attemptConnect();
+                _appDebugLogService?.info(
+                  'Linux third-attempt connect succeeded after local abort',
+                  tag: 'BLE Connect',
+                );
+                recoveredOnThirdAttempt = true;
+              } catch (thirdError, thirdStackTrace) {
+                finalConnectError = thirdError;
+                finalConnectStackTrace = thirdStackTrace;
+                _appDebugLogService?.error(
+                  'device.connect() third-attempt failure: $thirdError',
+                  tag: 'BLE Connect',
+                );
+              }
+            }
+            if (!recoveredOnThirdAttempt) {
+              final recoveredByPairing = await _recoverLinuxConnectFailure(
+                device,
+                attemptConnect: attemptConnect,
+                onRequestPin: linuxPairingPinProvider,
+              );
+              if (recoveredByPairing) {
+                _appDebugLogService?.info(
+                  'Linux connect succeeded after pairing/trust recovery',
+                  tag: 'BLE Connect',
+                );
+              } else {
+                _appDebugLogService?.error(
+                  'device.connect() retry failure: $finalConnectError',
+                  tag: 'BLE Connect',
+                );
+                Error.throwWithStackTrace(
+                  _wrapLinuxConnectStageError(finalConnectError),
+                  finalConnectStackTrace,
+                );
+              }
+            }
+          }
+        }
+      } else {
+        try {
+          await device.connect(
+            timeout: connectTimeout,
+            mtu: null,
+            license: License.free,
+          );
+        } catch (error) {
+          _appDebugLogService?.error(
+            'device.connect() failure: $error',
+            tag: 'BLE Connect',
+          );
+          rethrow;
+        }
+      }
+
+      if (PlatformInfo.isLinux) {
+        await _ensureLinuxBleBond(
+          device,
+          onRequestPin: linuxPairingPinProvider,
+        );
+      }
+
+      // Request larger MTU only where the platform path supports it.
+      if (!PlatformInfo.isWeb && !PlatformInfo.isLinux) {
         try {
           final mtu = await device.requestMtu(185);
           _appDebugLogService?.info('MTU set to: $mtu', tag: 'BLE Connect');
@@ -1034,6 +1613,11 @@ class MeshCoreConnector extends ChangeNotifier {
             tag: 'BLE Connect',
           );
         }
+      } else if (PlatformInfo.isLinux) {
+        _appDebugLogService?.info(
+          'Skipping MTU request on Linux; flutter_blue_plus only supports requestMtu on Android',
+          tag: 'BLE Connect',
+        );
       }
 
       late final List<BluetoothService> services;
@@ -1147,8 +1731,219 @@ class MeshCoreConnector extends ChangeNotifier {
       await _startBleInitialSync();
     } catch (e) {
       _appDebugLogService?.error('Connection error: $e', tag: 'BLE Connect');
-      await disconnect(manual: false);
+      final errorText = e.toString();
+      final lowerErrorText = errorText.toLowerCase();
+      final isLinuxPairingFailure =
+          PlatformInfo.isLinux && isLinuxBlePairingFailureText(errorText);
+      final isLikelyPairingTimeout = isLikelyLinuxBlePairingTimeoutText(
+        errorText,
+      );
+      final isConnectFailure = isLinuxBleConnectFailureText(errorText);
+      final isConnectTimeoutFailure =
+          isConnectFailure && lowerErrorText.contains('timed out');
+      final isLinuxConnectFailure = PlatformInfo.isLinux && isConnectFailure;
+      // Linux pairing failures should not enter auto-reconnect loops; user
+      // needs to retry manually so they can re-enter PIN / resolve pairing.
+      if (isLinuxPairingFailure) {
+        _appDebugLogService?.warn(
+          isLikelyPairingTimeout
+              ? 'Linux pairing timed out: stopping reconnect until user retries manually'
+              : 'Linux pairing failure: stopping reconnect until user retries manually',
+          tag: 'BLE Connect',
+        );
+        await disconnect(manual: true);
+      } else if (isLinuxConnectFailure) {
+        _appDebugLogService?.warn(
+          isConnectTimeoutFailure
+              ? 'Linux connect timeout: issuing BlueZ disconnect before reconnect'
+              : 'Linux connect failure: issuing BlueZ disconnect before reconnect',
+          tag: 'BLE Connect',
+        );
+        final remoteId = _device?.remoteId.str;
+        if (remoteId != null) {
+          await _linuxBlePairingService.disconnectDevice(
+            remoteId,
+            onLog: (message) {
+              _appDebugLogService?.info(message, tag: 'BLE Pair');
+            },
+          );
+        }
+        await disconnect(manual: false, skipBleDeviceDisconnect: true);
+      } else {
+        await disconnect(manual: false);
+      }
       rethrow;
+    }
+  }
+
+  Future<bool> _recoverLinuxConnectFailure(
+    BluetoothDevice device, {
+    required Future<void> Function() attemptConnect,
+    Future<String?> Function()? onRequestPin,
+  }) async {
+    if (!PlatformInfo.isLinux ||
+        !await _linuxBlePairingService.isBluetoothctlAvailable()) {
+      return false;
+    }
+    final remoteId = device.remoteId.str;
+    final pluginBondState = await _getLinuxPluginBondState(device);
+    final trustedByBluez = await _linuxBlePairingService.isPairedAndTrusted(
+      remoteId,
+    );
+    final needsBondRecovery =
+        (pluginBondState != null &&
+            pluginBondState != BmBondStateEnum.bonded) ||
+        !trustedByBluez;
+    if (!needsBondRecovery) {
+      return false;
+    }
+    _appDebugLogService?.warn(
+      pluginBondState == BmBondStateEnum.bonded
+          ? 'Linux connect failed with an untrusted bond; attempting trust/pair recovery'
+          : 'Linux connect failed before bond completed; attempting pairing fallback',
+      tag: 'BLE Connect',
+    );
+    await _ensureLinuxBleBond(device, onRequestPin: onRequestPin);
+    _appDebugLogService?.info(
+      'Resetting BlueZ connection after Linux pairing/trust recovery',
+      tag: 'BLE Connect',
+    );
+    await _linuxBlePairingService.disconnectDevice(
+      remoteId,
+      onLog: (message) {
+        _appDebugLogService?.info(message, tag: 'BLE Pair');
+      },
+    );
+    await Future<void>.delayed(const Duration(milliseconds: 700));
+    try {
+      await attemptConnect();
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(_wrapLinuxConnectStageError(error), stackTrace);
+    }
+    return true;
+  }
+
+  Object _wrapLinuxConnectStageError(Object error) {
+    final errorText = error.toString();
+    if (errorText.toLowerCase().contains(linuxConnectStageFailureMarker)) {
+      return error;
+    }
+    return StateError('Linux connect stage failure: $error');
+  }
+
+  Future<BmBondStateEnum?> _getLinuxPluginBondState(
+    BluetoothDevice device,
+  ) async {
+    try {
+      final response = await FlutterBluePlusPlatform.instance.getBondState(
+        BmBondStateRequest(remoteId: device.remoteId),
+      );
+      return response.bondState;
+    } catch (error) {
+      _appDebugLogService?.warn(
+        'Linux getBondState unavailable for ${device.remoteId.str}: $error',
+        tag: 'BLE Connect',
+      );
+      return null;
+    }
+  }
+
+  Future<void> _ensureLinuxBleBond(
+    BluetoothDevice device, {
+    Future<String?> Function()? onRequestPin,
+  }) async {
+    final remoteId = device.remoteId.str;
+    final bluetoothctlAvailable = await _linuxBlePairingService
+        .isBluetoothctlAvailable();
+    final beforeBondState = await _getLinuxPluginBondState(device);
+    if (!bluetoothctlAvailable) {
+      if (beforeBondState == BmBondStateEnum.bonded) {
+        _appDebugLogService?.warn(
+          'bluetoothctl unavailable; continuing with plugin bonded state',
+          tag: 'BLE Connect',
+        );
+      } else if (beforeBondState == null) {
+        _appDebugLogService?.warn(
+          'bluetoothctl unavailable and plugin bond state is unknown; skipping Linux pairing fallback',
+          tag: 'BLE Connect',
+        );
+      } else {
+        _appDebugLogService?.warn(
+          'bluetoothctl unavailable and device is not bonded; skipping Linux pairing fallback',
+          tag: 'BLE Connect',
+        );
+      }
+      return;
+    }
+
+    final trustedByBluez = await _linuxBlePairingService.isPairedAndTrusted(
+      remoteId,
+    );
+    if (trustedByBluez) {
+      _appDebugLogService?.info(
+        'Linux BLE device already paired/trusted, skipping pairing flow',
+        tag: 'BLE Connect',
+      );
+      return;
+    }
+
+    if (beforeBondState == BmBondStateEnum.bonded && !trustedByBluez) {
+      _appDebugLogService?.warn(
+        'Linux BLE device is bonded but not trusted in BlueZ; repairing trust',
+        tag: 'BLE Connect',
+      );
+      final trustRepaired = await _linuxBlePairingService.trustDevice(
+        remoteId,
+        onLog: (message) {
+          _appDebugLogService?.info(message, tag: 'BLE Pair');
+        },
+      );
+      if (trustRepaired) {
+        _appDebugLogService?.info(
+          'Linux BLE trust repair succeeded without re-pairing',
+          tag: 'BLE Connect',
+        );
+        return;
+      }
+      _appDebugLogService?.warn(
+        'Linux BLE trust repair did not stick; retrying pairing flow',
+        tag: 'BLE Connect',
+      );
+    }
+
+    _appDebugLogService?.info(
+      beforeBondState == BmBondStateEnum.bonded
+          ? 'Linux BLE device still untrusted after repair; requesting pair'
+          : beforeBondState == null
+          ? 'Linux BLE device bond state unknown; requesting pair'
+          : 'Linux BLE device not bonded, requesting pair',
+      tag: 'BLE Connect',
+    );
+    final paired = await _linuxBlePairingService.pairAndTrust(
+      remoteId: remoteId,
+      onLog: (message) {
+        _appDebugLogService?.info(message, tag: 'BLE Pair');
+      },
+      onRequestPin: onRequestPin,
+    );
+    if (!paired) {
+      throw StateError('Linux pairing fallback failed');
+    }
+
+    final afterBondState = await _getLinuxPluginBondState(device);
+    if (afterBondState != null && afterBondState != BmBondStateEnum.bonded) {
+      throw StateError('Linux BLE pairing did not complete');
+    } else if (afterBondState == null) {
+      _appDebugLogService?.warn(
+        'Linux plugin bond state unavailable after pairing; relying on BlueZ trust verification',
+        tag: 'BLE Connect',
+      );
+    }
+    final trustedAfter = await _linuxBlePairingService.isPairedAndTrusted(
+      remoteId,
+    );
+    if (!trustedAfter) {
+      throw StateError('Linux BLE trust repair did not complete');
     }
   }
 
@@ -1193,7 +1988,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
     await _requestDeviceInfo();
     _startBatteryPolling();
-    unawaited(loadDiscoveredContactCache());
+    if (_radioStatsPollRefCount > 0) _startRadioStatsPolling();
 
     final gotSelfInfo = await _waitForSelfInfo(
       timeout: const Duration(seconds: 3),
@@ -1221,6 +2016,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _pendingInitialContactsSync = false;
     _bleInitialSyncStarted = false;
     _pendingDeferredChannelSyncAfterContacts = false;
+    _pathHashByteWidth = 1;
   }
 
   bool get _shouldAutoReconnect =>
@@ -1230,6 +2026,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
   bool get _shouldGateInitialChannelSync =>
       _activeTransport == MeshCoreTransportType.usb ||
+      _activeTransport == MeshCoreTransportType.tcp ||
       (_activeTransport == MeshCoreTransportType.bluetooth &&
           PlatformInfo.isWeb);
 
@@ -1273,12 +2070,17 @@ class MeshCoreConnector extends ChangeNotifier {
     });
   }
 
-  Future<void> disconnect({bool manual = true}) async {
+  Future<void> disconnect({
+    bool manual = true,
+    bool skipBleDeviceDisconnect = false,
+  }) async {
     if (_state == MeshCoreConnectionState.disconnecting) return;
     final transportAtDisconnect = _activeTransport;
-    final transportLabel = transportAtDisconnect == MeshCoreTransportType.usb
-        ? 'USB'
-        : 'BLE';
+    final transportLabel = switch (transportAtDisconnect) {
+      MeshCoreTransportType.bluetooth => 'BLE',
+      MeshCoreTransportType.usb => 'USB',
+      MeshCoreTransportType.tcp => 'TCP',
+    };
 
     _appDebugLogService?.info(
       'Starting disconnect transport=$transportLabel manual=$manual',
@@ -1294,10 +2096,12 @@ class MeshCoreConnector extends ChangeNotifier {
     }
     _setState(MeshCoreConnectionState.disconnecting);
     _stopBatteryPolling();
+    _stopRadioStatsPolling();
 
     await _usbFrameSubscription?.cancel();
     _usbFrameSubscription = null;
     await _usbManager.disconnect();
+    await _tcpConnector.disconnect();
 
     await _notifySubscription?.cancel();
     _notifySubscription = null;
@@ -1313,11 +2117,18 @@ class MeshCoreConnector extends ChangeNotifier {
     _channelSyncTimeout = null;
     _channelSyncRetries = 0;
 
-    try {
-      // Skip queued BLE operations so disconnect doesn't get stuck behind them.
-      await _device?.disconnect(queue: false);
-    } catch (e) {
-      _appDebugLogService?.warn('Disconnect error: $e', tag: 'BLE Connect');
+    if (!skipBleDeviceDisconnect) {
+      try {
+        // Skip queued BLE operations so disconnect doesn't get stuck behind them.
+        await _device?.disconnect(queue: false);
+      } catch (e) {
+        _appDebugLogService?.warn('Disconnect error: $e', tag: 'BLE Connect');
+      }
+    } else {
+      _appDebugLogService?.info(
+        'Skipping plugin BLE disconnect and continuing cleanup',
+        tag: 'BLE Connect',
+      );
     }
 
     _device = null;
@@ -1379,6 +2190,12 @@ class MeshCoreConnector extends ChangeNotifier {
 
     if (_activeTransport == MeshCoreTransportType.usb) {
       await _usbManager.write(data);
+      // Brief pause so the device firmware can process each frame before the
+      // next arrives. Without this, rapid-fire frames over USB can cause the
+      // device to miss responses (especially on reconnect).
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+    } else if (_activeTransport == MeshCoreTransportType.tcp) {
+      await _tcpConnector.write(data);
     } else {
       if (_rxCharacteristic == null) {
         throw Exception("MeshCore RX characteristic not available");
@@ -1423,6 +2240,49 @@ class MeshCoreConnector extends ChangeNotifier {
   void _stopBatteryPolling() {
     _batteryPollTimer?.cancel();
     _batteryPollTimer = null;
+  }
+
+  void _startRadioStatsPolling() {
+    _radioStatsPollTimer?.cancel();
+    _radioStatsPollTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!isConnected) {
+        _stopRadioStatsPolling();
+        return;
+      }
+      unawaited(requestRadioStats());
+    });
+  }
+
+  void _stopRadioStatsPolling() {
+    _radioStatsPollTimer?.cancel();
+    _radioStatsPollTimer = null;
+  }
+
+  void acquireRadioStatsPolling() {
+    _radioStatsPollRefCount++;
+    if (_radioStatsPollRefCount == 1 && isConnected) {
+      _startRadioStatsPolling();
+    }
+  }
+
+  void releaseRadioStatsPolling() {
+    _radioStatsPollRefCount = (_radioStatsPollRefCount - 1).clamp(0, 999);
+    if (_radioStatsPollRefCount == 0) {
+      _stopRadioStatsPolling();
+    }
+  }
+
+  Future<void> requestRadioStats() async {
+    if (!isConnected) return;
+    if (!supportsCompanionRadioStats) return;
+    try {
+      await sendFrame(buildGetStatsFrame(statsTypeRadio));
+    } catch (_) {}
+  }
+
+  Future<void> setPathHashMode(int mode) async {
+    if (!isConnected) return;
+    await sendFrame(buildSetPathHashModeFrame(mode.clamp(0, 2)));
   }
 
   Future<void> refreshDeviceInfo() async {
@@ -1538,47 +2398,43 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> sendMessage(Contact contact, String text) async {
     if (!isConnected || text.isEmpty) return;
 
-    // Handle auto-rotation if enabled
-    PathSelection? autoSelection;
-    if (_appSettingsService?.settings.autoRouteRotationEnabled == true) {
-      autoSelection = _pathHistoryService?.getNextAutoPathSelection(
+    // Check if this is a reaction - apply locally with pending status and route through retry service
+    final reactionInfo = ReactionHelper.parseReaction(text);
+    if (reactionInfo != null) {
+      _conversations.putIfAbsent(contact.publicKeyHex, () => []);
+      final messages = _conversations[contact.publicKeyHex]!;
+
+      // Apply reaction locally with pending status
+      _processOutgoingContactReaction(messages, reactionInfo, contact);
+      _setReactionStatus(
         contact.publicKeyHex,
+        reactionInfo,
+        MessageStatus.pending,
       );
-      if (autoSelection != null) {
-        _pathHistoryService?.recordPathAttempt(
-          contact.publicKeyHex,
-          autoSelection,
-        );
-        if (!autoSelection.useFlood && autoSelection.pathBytes.isNotEmpty) {
-          await setContactPath(
-            contact,
-            Uint8List.fromList(autoSelection.pathBytes),
-            autoSelection.pathBytes.length,
-          );
-        }
+      _messageStore.saveMessages(contact.publicKeyHex, messages);
+      notifyListeners();
+
+      // Route through retry service (same as normal messages)
+      // Don't use auto-rotation for reactions — just send directly
+      if (_retryService != null) {
+        _retryService!.sendMessageWithRetry(contact: contact, text: text);
+      } else {
+        final outboundText = prepareContactOutboundText(contact, text);
+        await sendFrame(buildSendTextMsgFrame(contact.publicKey, outboundText));
       }
+      return;
     }
 
     if (_retryService != null) {
-      final pathBytes = _resolveOutgoingPathBytes(contact, autoSelection);
-      final pathLength = _resolveOutgoingPathLength(contact, autoSelection);
-      final selectedContact = _applyAutoSelection(contact, autoSelection);
-      await _retryService!.sendMessageWithRetry(
-        contact: selectedContact,
-        text: text,
-        pathSelection: autoSelection,
-        pathBytes: pathBytes,
-        pathLength: pathLength,
-      );
+      await _retryService!.sendMessageWithRetry(contact: contact, text: text);
     } else {
       // Fallback to old behavior if retry service not initialized
-      final pathBytes = _resolveOutgoingPathBytes(contact, autoSelection);
-      final pathLength = _resolveOutgoingPathLength(contact, autoSelection);
+      final resolved = resolvePathSelection(contact);
       final message = Message.outgoing(
         contact.publicKey,
         text,
-        pathLength: pathLength,
-        pathBytes: pathBytes,
+        pathLength: resolved.useFlood ? -1 : resolved.hopCount,
+        pathBytes: Uint8List.fromList(resolved.pathBytes),
       );
       _addMessage(contact.publicKeyHex, message);
       notifyListeners();
@@ -1592,27 +2448,75 @@ class MeshCoreConnector extends ChangeNotifier {
     Uint8List customPath,
     int pathLen,
   ) async {
-    if (!isConnected) return;
+    // Serialize path operations to prevent interleaved async calls from
+    // leaving in-memory state inconsistent with the device.
+    final prev = _pathOpLock;
+    final completer = Completer<void>();
+    _pathOpLock = completer.future;
+    await prev;
+    try {
+      if (!isConnected) return;
 
-    await sendFrame(
-      buildUpdateContactPathFrame(
-        contact.publicKey,
-        customPath,
-        pathLen,
-        type: contact.type,
-        flags: contact.flags,
-        name: contact.name,
-      ),
-    );
+      await sendFrame(
+        buildUpdateContactPathFrame(
+          contact.publicKey,
+          customPath,
+          pathLen,
+          type: contact.type,
+          flags: contact.flags,
+          name: contact.name,
+        ),
+      );
+      // USB writes return instantly (no BLE flow control), so give the firmware
+      // time to persist the path change before subsequent commands.
+      if (_activeTransport == MeshCoreTransportType.usb) {
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+      }
+      final idx = _contacts.indexWhere(
+        (c) => c.publicKeyHex == contact.publicKeyHex,
+      );
+      if (idx != -1) {
+        _contacts[idx] = _contacts[idx].copyWith(
+          pathLength: customPath.length,
+          path: customPath,
+        );
+        notifyListeners();
+      }
+    } finally {
+      completer.complete();
+    }
   }
 
-  Future<void> setContactFavorite(Contact contact, bool isFavorite) async {
+  Future<void> setContactFlags(
+    Contact contact, {
+    bool? isFavorite,
+    bool? teleBase,
+    bool? teleLoc,
+    bool? teleEnv,
+  }) async {
     if (!isConnected) return;
     final latestContact =
         await _fetchContactSnapshotFromDevice(contact.publicKey) ?? contact;
-    final updatedFlags = isFavorite
-        ? (latestContact.flags | contactFlagFavorite)
-        : (latestContact.flags & ~contactFlagFavorite);
+    int updatedFlags = isFavorite != null
+        ? (isFavorite
+              ? (latestContact.flags | contactFlagFavorite)
+              : (latestContact.flags & ~contactFlagFavorite))
+        : latestContact.flags;
+    updatedFlags = teleBase != null
+        ? (teleBase
+              ? (updatedFlags | contactFlagTeleBase)
+              : (updatedFlags & ~contactFlagTeleBase))
+        : updatedFlags;
+    updatedFlags = teleLoc != null
+        ? (teleLoc
+              ? (updatedFlags | contactFlagTeleLoc)
+              : (updatedFlags & ~contactFlagTeleLoc))
+        : updatedFlags;
+    updatedFlags = teleEnv != null
+        ? (teleEnv
+              ? (updatedFlags | contactFlagTeleEnv)
+              : (updatedFlags & ~contactFlagTeleEnv))
+        : updatedFlags;
 
     await sendFrame(
       buildUpdateContactPathFrame(
@@ -1717,6 +2621,9 @@ class MeshCoreConnector extends ChangeNotifier {
     await _contactStore.saveContacts(_contacts);
     appLogger.info('Saved contacts to storage', tag: 'Connector');
 
+    // Update any in-flight retries so they use the new path override
+    _retryService?.updatePendingContact(_contacts[index]);
+
     // If setting a specific path (not flood, not auto), also sync with device
     if (pathLen != null && pathLen >= 0 && pathBytes != null) {
       appLogger.info('Sending path to device...', tag: 'Connector');
@@ -1735,27 +2642,27 @@ class MeshCoreConnector extends ChangeNotifier {
     final autoRotationEnabled =
         _appSettingsService?.settings.autoRouteRotationEnabled == true;
     if (autoRotationEnabled && contact.pathOverride == null) {
-      autoSelection = _pathHistoryService?.getNextAutoPathSelection(
+      final maxRetries = _appSettingsService?.settings.maxMessageRetries ?? 5;
+      autoSelection = _selectAutoPathForAttempt(
         contact.publicKeyHex,
+        attemptIndex: 0,
+        maxRetries: maxRetries,
       );
-      if (autoSelection != null) {
-        _pathHistoryService?.recordPathAttempt(
-          contact.publicKeyHex,
-          autoSelection,
-        );
-      }
     }
 
-    final pathBytes = _resolveOutgoingPathBytes(contact, autoSelection);
-    final pathLength = _resolveOutgoingPathLength(contact, autoSelection) ?? -1;
+    final resolved = resolvePathSelection(contact, selection: autoSelection);
 
-    if (pathLength < 0) {
+    if (resolved.useFlood) {
       await clearContactPath(contact);
     } else {
-      await setContactPath(contact, pathBytes, pathLength);
+      await setContactPath(
+        contact,
+        Uint8List.fromList(resolved.pathBytes),
+        resolved.hopCount,
+      );
     }
 
-    return _selectionFromPath(pathLength, pathBytes);
+    return resolved;
   }
 
   void trackRepeaterAck({
@@ -1775,9 +2682,7 @@ class MeshCoreConnector extends ChangeNotifier {
       outboundText,
       selfKey,
     );
-    final ackHashHex = ackHash
-        .map((b) => b.toRadixString(16).padLeft(2, '0'))
-        .join();
+    final ackHashHex = ackHashToHex(ackHash);
     final messageBytes = utf8.encode(outboundText).length;
     _pendingRepeaterAcks[ackHashHex]?.timeout?.cancel();
     _pendingRepeaterAcks[ackHashHex] = _RepeaterAckContext(
@@ -1869,6 +2774,7 @@ class MeshCoreConnector extends ChangeNotifier {
       // Send the reaction to the device (don't add as a visible message)
       final reactionQueueId = _nextReactionSendQueueId();
       _pendingChannelSentQueue.add(reactionQueueId);
+      await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
       await sendFrame(
         buildSendChannelTextMsgFrame(channel.index, text),
         channelSendQueueId: reactionQueueId,
@@ -1887,6 +2793,7 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
 
     final outboundText = prepareChannelOutboundText(channel.index, text);
+    await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
     await sendFrame(
       buildSendChannelTextMsgFrame(channel.index, outboundText),
       channelSendQueueId: message.messageId,
@@ -1897,7 +2804,11 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> removeContact(Contact contact) async {
     if (!isConnected) return;
 
-    _handleDiscovery(contact, Uint8List(0), noNotify: true);
+    _handleDiscovery(
+      contact,
+      contact.rawPacket ?? Uint8List(0),
+      noNotify: true,
+    );
 
     await sendFrame(buildRemoveContactFrame(contact.publicKey));
     _contacts.removeWhere((c) => c.publicKeyHex == contact.publicKeyHex);
@@ -1913,7 +2824,20 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> removeDiscoveredContact(DiscoveryContact contact) async {
+  Future<void> updateKnownDiscovered() async {
+    if (!isConnected) return;
+    for (int i = 0; i < _discoveredContacts.length; i++) {
+      _discoveredContacts[i] = _discoveredContacts[i].copyWith(
+        isActive: _knownContactKeys.contains(
+          _discoveredContacts[i].publicKeyHex,
+        ),
+      );
+    }
+    unawaited(_persistDiscoveredContacts());
+    notifyListeners();
+  }
+
+  Future<void> removeDiscoveredContact(Contact contact) async {
     if (!isConnected) return;
     _discoveredContacts.removeWhere(
       (c) => c.publicKeyHex == contact.publicKeyHex,
@@ -1922,7 +2846,7 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> importDiscoveredContact(DiscoveryContact contact) async {
+  Future<void> importDiscoveredContact(Contact contact) async {
     if (!isConnected) return;
 
     await sendFrame(
@@ -1931,10 +2855,22 @@ class MeshCoreConnector extends ChangeNotifier {
         contact.path,
         contact.pathLength,
         type: contact.type,
-        flags: 0,
+        flags: contact.flags,
         name: contact.name,
+        lat: contact.latitude,
+        lon: contact.longitude,
+        lastModified: contact.lastSeen,
       ),
     );
+
+    // Update the discovered contact to mark it as active (imported)
+    final discoveredIndex = _discoveredContacts.indexWhere(
+      (c) => c.publicKeyHex == contact.publicKeyHex,
+    );
+    if (discoveredIndex >= 0) {
+      _discoveredContacts[discoveredIndex] =
+          _discoveredContacts[discoveredIndex].copyWith(isActive: true);
+    }
 
     _handleContactAdvert(
       Contact(
@@ -1946,29 +2882,41 @@ class MeshCoreConnector extends ChangeNotifier {
         latitude: contact.latitude,
         longitude: contact.longitude,
         lastSeen: DateTime.now(),
+        flags: contact.flags,
       ),
     );
     notifyListeners();
   }
 
   Future<void> clearContactPath(Contact contact) async {
-    if (!isConnected) return;
+    // Serialize path operations to prevent interleaved async calls.
+    final prev = _pathOpLock;
+    final completer = Completer<void>();
+    _pathOpLock = completer.future;
+    await prev;
+    try {
+      if (!isConnected) return;
 
-    await sendFrame(buildResetPathFrame(contact.publicKey));
-    final existingIndex = _contacts.indexWhere(
-      (c) => c.publicKeyHex == contact.publicKeyHex,
-    );
-    if (existingIndex >= 0) {
-      final existing = _contacts[existingIndex];
-      // Use copyWith to preserve pathOverride and pathOverrideBytes
-      _contacts[existingIndex] = existing.copyWith(
-        pathLength: -1,
-        path: Uint8List(0),
+      await sendFrame(buildResetPathFrame(contact.publicKey));
+      if (_activeTransport == MeshCoreTransportType.usb) {
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+      }
+      final existingIndex = _contacts.indexWhere(
+        (c) => c.publicKeyHex == contact.publicKeyHex,
       );
-      notifyListeners();
-      unawaited(_persistContacts());
+      if (existingIndex >= 0) {
+        final existing = _contacts[existingIndex];
+        // Preserve pathOverride and pathOverrideBytes — only reset device path
+        _contacts[existingIndex] = existing.copyWith(
+          pathLength: -1,
+          path: Uint8List(0),
+        );
+        notifyListeners();
+        unawaited(_persistContacts());
+      }
+    } finally {
+      completer.complete();
     }
-    // The device will send updated contact info with path_len = -1
   }
 
   void updateContactInMemory(
@@ -2100,6 +3048,31 @@ class MeshCoreConnector extends ChangeNotifier {
 
   Future<void> setPrivacyMode(bool enabled) async {
     await sendCliCommand('set privacy ${enabled ? 'on' : 'off'}');
+  }
+
+  Future<void> setTelemetryModeBase(
+    int base,
+    int location,
+    int env,
+    int advert,
+    int multiAcks,
+  ) async {
+    if (!isConnected) return;
+    _telemetryModeBase = base.clamp(teleModeDeny, teleModeAllowAll).toInt();
+    _telemetryModeLoc = location.clamp(teleModeDeny, teleModeAllowAll).toInt();
+    _telemetryModeEnv = env.clamp(teleModeDeny, teleModeAllowAll).toInt();
+    _advertLocPolicy = advert.clamp(0, 1).toInt();
+    _multiAcks = multiAcks.clamp(0, 2).toInt();
+    await sendFrame(
+      buildSetOtherParamsFrame(
+        (_telemetryModeEnv << 4) |
+            (_telemetryModeLoc << 2) |
+            _telemetryModeBase,
+        _advertLocPolicy,
+        _multiAcks,
+      ),
+    );
+    notifyListeners();
   }
 
   Future<void> getChannels({int? maxChannels, bool force = false}) async {
@@ -2277,13 +3250,14 @@ class MeshCoreConnector extends ChangeNotifier {
 
   void _handleFrame(List<int> data) {
     if (data.isEmpty) return;
+    _lastRxTime = DateTime.now();
 
     final frame = Uint8List.fromList(data);
     _receivedFramesController.add(frame);
     _bleDebugLogService?.logFrame(frame, outgoing: false);
 
     final code = frame[0];
-    debugPrint('RX frame: code=$code len=${frame.length}');
+    // debugPrint('RX frame: code=$code len=${frame.length}');
 
     switch (code) {
       case respCodeOk:
@@ -2304,6 +3278,9 @@ class MeshCoreConnector extends ChangeNotifier {
         _isLoadingContacts = true;
         notifyListeners();
         break;
+      case pushCodeAdvert:
+        // Known contact was seen again - just a pub key, no action needed
+        break;
       case pushCodeNewAdvert:
         debugPrint('Got New CONTACT');
         // It's the same format as respCodeContact, so we can reuse the handler
@@ -2317,6 +3294,7 @@ class MeshCoreConnector extends ChangeNotifier {
         debugPrint('Got END_OF_CONTACTS');
         _isLoadingContacts = false;
         _preserveContactsOnRefresh = false;
+        unawaited(updateKnownDiscovered());
         notifyListeners();
         unawaited(_persistContacts());
         if (PlatformInfo.isWeb &&
@@ -2332,7 +3310,8 @@ class MeshCoreConnector extends ChangeNotifier {
         }
         if (_pendingDeferredChannelSyncAfterContacts &&
             (_activeTransport == MeshCoreTransportType.bluetooth ||
-                _activeTransport == MeshCoreTransportType.usb)) {
+                _activeTransport == MeshCoreTransportType.usb ||
+                _activeTransport == MeshCoreTransportType.tcp)) {
           _pendingDeferredChannelSyncAfterContacts = false;
           _pendingInitialChannelSync = false;
           unawaited(getChannels());
@@ -2366,6 +3345,7 @@ class MeshCoreConnector extends ChangeNotifier {
       case pushCodeStatusResponse:
         break;
       case pushCodeLogRxData:
+        _lastRadioRxTime = DateTime.now();
         _handleRxData(frame);
         _handleLogRxData(frame);
         break;
@@ -2378,6 +3358,9 @@ class MeshCoreConnector extends ChangeNotifier {
         break;
       case respCodeBattAndStorage:
         _handleBatteryAndStorage(frame);
+        break;
+      case respCodeStats:
+        _handleStatsFrame(frame);
         break;
       case respCodeCustomVars:
         _handleCustomVars(frame);
@@ -2451,8 +3434,8 @@ class MeshCoreConnector extends ChangeNotifier {
     final reader = BufferReader(frame);
     try {
       reader.skipBytes(2);
-      _currentTxPower = reader.readByte();
-      _maxTxPower = reader.readByte();
+      _currentTxPower = reader.readInt8();
+      _maxTxPower = reader.readInt8();
       _selfPublicKey = reader.readBytes(pubKeySize);
       _selfLatitude = reader.readInt32LE() / 1000000.0;
       _selfLongitude = reader.readInt32LE() / 1000000.0;
@@ -2470,7 +3453,7 @@ class MeshCoreConnector extends ChangeNotifier {
       _currentSf = reader.readByte();
       _currentCr = reader.readByte();
 
-      _selfName = reader.readString();
+      _selfName = reader.readCString();
     } catch (e) {
       _appDebugLogService?.error(
         'Error parsing SELF_INFO frame: $e',
@@ -2483,6 +3466,28 @@ class MeshCoreConnector extends ChangeNotifier {
         selfName.isNotEmpty) {
       _usbManager.updateConnectedLabel(selfName);
     }
+
+    //set all the stores' public key so they can load the correct data
+    _channelMessageStore.setPublicKeyHex = selfPublicKeyHex;
+    _messageStore.setPublicKeyHex = selfPublicKeyHex;
+    _channelOrderStore.setPublicKeyHex = selfPublicKeyHex;
+    _channelSettingsStore.setPublicKeyHex = selfPublicKeyHex;
+    _contactSettingsStore.setPublicKeyHex = selfPublicKeyHex;
+    _contactStore.setPublicKeyHex = selfPublicKeyHex;
+    _channelStore.setPublicKeyHex = selfPublicKeyHex;
+    _unreadStore.setPublicKeyHex = selfPublicKeyHex;
+
+    // Now that we have self info, we can load all the persisted data for this node
+    _loadChannelOrder();
+    loadContactCache();
+    loadChannelSettings();
+    loadCachedChannels();
+
+    // Load persisted channel messages
+    loadAllChannelMessages();
+    loadUnreadState();
+    _loadDiscoveredContactCache();
+
     _awaitingSelfInfo = false;
     _selfInfoRetryTimer?.cancel();
     _selfInfoRetryTimer = null;
@@ -2499,14 +3504,16 @@ class MeshCoreConnector extends ChangeNotifier {
     if (PlatformInfo.isWeb &&
         _activeTransport == MeshCoreTransportType.bluetooth) {
       _pendingInitialContactsSync = true;
-    } else if (_activeTransport == MeshCoreTransportType.usb) {
+    } else if (_activeTransport == MeshCoreTransportType.usb ||
+        _activeTransport == MeshCoreTransportType.tcp) {
       _pendingDeferredChannelSyncAfterContacts = true;
       getContacts();
     } else {
       getContacts();
     }
     if (_shouldGateInitialChannelSync &&
-        _activeTransport != MeshCoreTransportType.usb) {
+        _activeTransport != MeshCoreTransportType.usb &&
+        _activeTransport != MeshCoreTransportType.tcp) {
       _maybeStartInitialChannelSync();
     }
   }
@@ -2521,6 +3528,13 @@ class MeshCoreConnector extends ChangeNotifier {
     // Parse client_repeat from firmware v9+ (byte 80)
     if (frame.length >= 81) {
       _clientRepeat = frame[80] != 0;
+    }
+    // Path hash mode v10+ (byte 81): width = mode + 1 byte(s) per hop
+    if (frame.length >= 82) {
+      final mode = (frame[81] & 0xFF).clamp(0, 2);
+      _pathHashByteWidth = mode + 1;
+    } else {
+      _pathHashByteWidth = 1;
     }
 
     // Firmware reports MAX_CONTACTS / 2 for v3+ device info.
@@ -2581,20 +3595,42 @@ class MeshCoreConnector extends ChangeNotifier {
     unawaited(_requestNextQueuedMessage());
   }
 
+  void _handleStatsFrame(Uint8List frame) {
+    final stats = CompanionRadioStats.tryParse(frame);
+    if (stats == null) return;
+    final total = stats.txAirSecs + stats.rxAirSecs;
+    if (total > _prevTotalAirSecs) {
+      (_airtimeBumpStopwatch ??= Stopwatch()).reset();
+      _airtimeBumpStopwatch!.start();
+    }
+    _prevTotalAirSecs = total;
+    _latestRadioStats = stats;
+    radioStatsNotifier.value = stats;
+  }
+
   void _handleBatteryAndStorage(Uint8List frame) {
     // Frame format from C++:
     // [0] = RESP_CODE_BATT_AND_STORAGE
     // [1-2] = battery_mv (uint16 LE)
     // [3-6] = storage_used_kb (uint32 LE)
     // [7-10] = storage_total_kb (uint32 LE)
-    if (frame.length >= 3) {
-      _batteryMillivolts = readUint16LE(frame, 1);
+    try {
+      final reader = BufferReader(frame);
+      reader.skipBytes(1);
+      _batteryMillivolts = reader.readUInt16LE();
+      _storageUsedKb = reader.readUInt32LE();
+      _storageTotalKb = reader.readUInt32LE();
       final volts = (_batteryMillivolts! / 1000.0).toStringAsFixed(2);
       _appDebugLogService?.info(
         'Pulled battery: $volts V ($_batteryMillivolts mV)',
         tag: 'Battery',
       );
       notifyListeners();
+    } catch (e) {
+      _appDebugLogService?.error(
+        'Error parsing battery and storage frame: $e',
+        tag: 'Connector',
+      );
     }
   }
 
@@ -2624,41 +3660,79 @@ class MeshCoreConnector extends ChangeNotifier {
     }
   }
 
-  /// Calculate timeout for a message based on radio settings and path length
-  /// Returns timeout in milliseconds, considering number of hops
-  int calculateTimeout({required int pathLength, int messageBytes = 100}) {
-    // If we have radio settings, use them for accurate calculation
+  /// Estimate single-packet airtime in ms from radio settings, or a fallback.
+  int _estimateAirtimeMs(int messageBytes) {
     if (_currentFreqHz != null &&
         _currentBwHz != null &&
         _currentSf != null &&
         _currentCr != null) {
       final cr = _currentCr! <= 4 ? _currentCr! : _currentCr! - 4;
-      return calculateMessageTimeout(
-        freqHz: _currentFreqHz!,
-        bwHz: _currentBwHz!,
-        sf: _currentSf!,
-        cr: cr,
-        pathLength: pathLength,
-        messageBytes: messageBytes,
+      return calculateLoRaAirtime(
+        payloadBytes: messageBytes,
+        spreadingFactor: _currentSf!,
+        bandwidthHz: _currentBwHz!,
+        codingRate: cr,
+        lowDataRateOptimize: _currentSf! >= 11,
       );
     }
+    return 50; // fallback: ~SF7/BW125 for 100 bytes
+  }
 
-    // Fallback: Conservative estimates based on typical settings
-    // Assume SF7, BW125, which gives ~50ms airtime for 100 bytes
-    const estimatedAirtime = 50;
-
+  /// Physics-based worst-case timeout (ceiling).
+  int _physicsMaxTimeout(int pathLength, int airtime) {
     if (pathLength < 0) {
-      // Flood mode: Base delay + 16× airtime
-      return 500 + (16 * estimatedAirtime);
+      // Match firmware: SEND_TIMEOUT_BASE_MILLIS + (FLOOD_SEND_TIMEOUT_FACTOR * airtime)
+      return 500 + (16 * airtime);
     } else {
-      // Direct path: Base delay + ((airtime×6 + 250ms)×(hops+1))
-      return 500 + ((estimatedAirtime * 6 + 250) * (pathLength + 1));
+      return 500 + ((airtime * 6 + 250) * (pathLength + 1));
     }
+  }
+
+  int _physicsMinTimeout(int pathLength, int airtime) {
+    if (pathLength < 0) {
+      // Same as max for flood — firmware uses a single formula
+      return 500 + (16 * airtime);
+    } else {
+      return airtime * (pathLength + 1);
+    }
+  }
+
+  /// Calculate timeout for a message based on radio settings and path length.
+  /// Returns timeout in milliseconds, considering number of hops.
+  int calculateTimeout({
+    required int pathLength,
+    int messageBytes = 100,
+    String? contactKey,
+  }) {
+    final airtime = _estimateAirtimeMs(messageBytes);
+    final physicsMin = _physicsMinTimeout(pathLength, airtime);
+    final physicsMax = _physicsMaxTimeout(pathLength, airtime);
+
+    // Try ML-based prediction
+    final secSinceRx = DateTime.now().difference(_lastRxTime).inSeconds;
+    final mlTimeout = _timeoutPredictionService?.predictTimeout(
+      contactKey: contactKey,
+      pathLength: pathLength,
+      messageBytes: messageBytes,
+      secondsSinceLastRx: secSinceRx,
+    );
+    if (mlTimeout != null) {
+      if (pathLength < 0) {
+        // Flood: trust ML, only enforce firmware formula as floor
+        return mlTimeout.clamp(physicsMin, mlTimeout);
+      }
+      return mlTimeout.clamp(physicsMin, physicsMax);
+    }
+
+    // No ML data — use firmware formula
+    return physicsMax;
   }
 
   void _handleContact(Uint8List frame, {bool isContact = true}) {
     final contact = Contact.fromFrame(frame);
     if (contact != null) {
+      _handleDiscovery(contact, frame, noNotify: true, addActive: true);
+
       if (contact.type == advTypeRepeater) {
         _contactUnreadCount.remove(contact.publicKeyHex);
         _unreadStore.saveContactUnreadCount(
@@ -2902,9 +3976,10 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   bool _pathMatchesContact(Uint8List pathBytes, Uint8List publicKey) {
-    if (pathBytes.isEmpty || publicKey.length < pathHashSize) return false;
-    for (int i = 0; i + pathHashSize <= pathBytes.length; i += pathHashSize) {
-      final prefix = pathBytes.sublist(i, i + pathHashSize);
+    final w = _pathHashByteWidth;
+    if (pathBytes.isEmpty || publicKey.length < w) return false;
+    for (int i = 0; i + w <= pathBytes.length; i += w) {
+      final prefix = pathBytes.sublist(i, i + w);
       if (_matchesPrefix(publicKey, prefix)) {
         return true;
       }
@@ -2939,6 +4014,9 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     if (message != null) {
+      if (!message.isOutgoing) {
+        _lastContactMsgRxTime = DateTime.now();
+      }
       // Ignore messages from self (device hearing its own broadcast)
       // BUT allow repeated messages (pathLength indicates it went through repeater)
       if (_selfPublicKey != null &&
@@ -2986,7 +4064,6 @@ class MeshCoreConnector extends ChangeNotifier {
           _appSettingsService != null) {
         final settings = _appSettingsService!.settings;
         if (settings.notificationsEnabled && settings.notifyOnNewMessage) {
-          // Find the contact name
           if (contact?.type == advTypeChat) {
             _notificationService.showMessageNotification(
               contactName: contact?.name ?? 'Unknown',
@@ -2997,7 +4074,9 @@ class MeshCoreConnector extends ChangeNotifier {
           } else if (contact?.type == advTypeRoom) {
             _notificationService.showMessageNotification(
               contactName: contact?.name ?? 'Unknown Room',
-              message: message.text.substring(4),
+              message: message.text.length > 4
+                  ? message.text.substring(4)
+                  : message.text,
               contactId: message.senderKeyHex,
               badgeCount: getTotalUnreadCount(),
             );
@@ -3048,7 +4127,7 @@ class MeshCoreConnector extends ChangeNotifier {
         reader.skipBytes(4); // Skip extra 4 bytes for signed/plain variants
       }
 
-      final msgText = reader.readString();
+      final msgText = reader.readCString();
 
       final flags = txtType;
       final shiftedType = flags >> 2;
@@ -3182,6 +4261,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
     _notificationService.showChannelMessageNotification(
       channelName: label,
+      senderName: message.senderName,
       message: message.text,
       channelIndex: channelIndex,
       badgeCount: getTotalUnreadCount(),
@@ -3189,14 +4269,18 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   void _handleIncomingChannelMessage(Uint8List frame) {
-    final message = ChannelMessage.fromFrame(frame);
-    if (message != null && message.channelIndex != null) {
-      if (_shouldDropSelfChannelMessage(
-        message.senderName,
-        message.pathBytes,
-      )) {
+    final parsed = ChannelMessage.fromFrame(frame);
+    if (parsed != null && parsed.channelIndex != null) {
+      if (_shouldDropSelfChannelMessage(parsed.senderName, parsed.pathBytes)) {
         return;
       }
+      _lastChannelMsgRxTime = DateTime.now();
+      final contentHash = _computeContentHash(
+        parsed.channelIndex!,
+        parsed.timestamp.millisecondsSinceEpoch ~/ 1000,
+        '${parsed.senderName}: ${parsed.text}',
+      );
+      final message = parsed.copyWith(packetHash: contentHash);
       _updateContactLastMessageAtByName(
         message.senderName,
         message.timestamp,
@@ -3216,65 +4300,87 @@ class MeshCoreConnector extends ChangeNotifier {
 
   void _handleLogRxData(Uint8List frame) {
     if (frame.length < 4) return;
-    final raw = Uint8List.fromList(frame.sublist(3));
-    final packet = _parseRawPacket(raw);
-    if (packet == null || packet.payloadType != _payloadTypeGroupText) return;
+    try {
+      final reader = BufferReader(frame);
+      reader.skipBytes(3); // Skip header
 
-    final payload = packet.payload;
-    if (payload.length <= _cipherMacSize) return;
-    final channelHash = payload[0];
-    final encrypted = Uint8List.fromList(payload.sublist(1));
+      final raw = reader.readRemainingBytes();
+      final packet = _parseRawPacket(raw);
+      if (packet == null || packet.payloadType != _payloadTypeGroupText) return;
 
-    // Use cached channels as fallback if live channels not yet loaded
-    final channelsToSearch = _channels.isNotEmpty ? _channels : _cachedChannels;
-    for (final channel in channelsToSearch) {
-      if (channel.isEmpty) continue;
-      final hash = _computeChannelHash(channel.psk);
-      if (hash != channelHash) continue;
+      final payload = BufferReader(packet.payload);
+      final channelHash = payload.readByte();
+      final encrypted = Uint8List.fromList(payload.readRemainingBytes());
 
-      final decrypted = _decryptPayload(channel.psk, encrypted);
-      if (decrypted == null || decrypted.length < 6) return;
+      // Use cached channels as fallback if live channels not yet loaded
+      final channelsToSearch = _channels.isNotEmpty
+          ? _channels
+          : _cachedChannels;
+      for (final channel in channelsToSearch) {
+        if (channel.isEmpty) continue;
+        final hash = _computeChannelHash(channel.psk);
+        if (hash != channelHash) continue;
+        try {
+          final decryptedBytes = _decryptPayload(channel.psk, encrypted);
+          if (decryptedBytes == null || decryptedBytes.length < 6) return;
+          final decrypted = BufferReader(decryptedBytes);
 
-      final txtType = decrypted[4];
-      if ((txtType >> 2) != 0) {
-        return;
+          final timestampRaw = decrypted.readUInt32LE();
+          final txtType = decrypted.readByte();
+          if ((txtType >> 2) != 0) {
+            return;
+          }
+
+          final text = decrypted.readCString();
+          final parsed = _splitSenderText(text);
+          final decodedText =
+              Smaz.tryDecodePrefixed(parsed.text) ?? parsed.text;
+          if (_shouldDropSelfChannelMessage(
+            parsed.senderName,
+            packet.pathBytes,
+          )) {
+            return;
+          }
+
+          final pktHash = _computePacketHash(
+            packet.payloadType,
+            packet.payload,
+          );
+
+          final message = ChannelMessage(
+            senderKey: null,
+            senderName: parsed.senderName,
+            text: decodedText,
+            timestamp: DateTime.fromMillisecondsSinceEpoch(timestampRaw * 1000),
+            isOutgoing: false,
+            status: ChannelMessageStatus.sent,
+            pathLength: packet.isFlood ? packet.hopCount : 0,
+            pathBytes: packet.pathBytes,
+            channelIndex: channel.index,
+            packetHash: pktHash,
+          );
+
+          _updateContactLastMessageAtByName(
+            parsed.senderName,
+            message.timestamp,
+            pathBytes: message.pathBytes,
+          );
+          final isNew = _addChannelMessage(channel.index, message);
+          _maybeIncrementChannelUnread(message, isNew: isNew);
+          notifyListeners();
+          if (isNew) {
+            final label = channel.name.isEmpty
+                ? 'Channel ${channel.index}'
+                : channel.name;
+            _maybeNotifyChannelMessage(message, channelName: label);
+          }
+          return;
+        } catch (e) {
+          appLogger.warn('Decryption failed for channel ${channel.index}: $e');
+        }
       }
-
-      final timestampRaw = readUint32LE(decrypted, 0);
-      final text = readCString(decrypted, 5, decrypted.length - 5);
-      final parsed = _splitSenderText(text);
-      final decodedText = Smaz.tryDecodePrefixed(parsed.text) ?? parsed.text;
-      if (_shouldDropSelfChannelMessage(parsed.senderName, packet.pathBytes)) {
-        return;
-      }
-
-      final message = ChannelMessage(
-        senderKey: null,
-        senderName: parsed.senderName,
-        text: decodedText,
-        timestamp: DateTime.fromMillisecondsSinceEpoch(timestampRaw * 1000),
-        isOutgoing: false,
-        status: ChannelMessageStatus.sent,
-        pathLength: packet.isFlood ? packet.pathBytes.length : 0,
-        pathBytes: packet.pathBytes,
-        channelIndex: channel.index,
-      );
-
-      _updateContactLastMessageAtByName(
-        parsed.senderName,
-        message.timestamp,
-        pathBytes: message.pathBytes,
-      );
-      final isNew = _addChannelMessage(channel.index, message);
-      _maybeIncrementChannelUnread(message, isNew: isNew);
-      notifyListeners();
-      if (isNew) {
-        final label = channel.name.isEmpty
-            ? 'Channel ${channel.index}'
-            : channel.name;
-        _maybeNotifyChannelMessage(message, channelName: label);
-      }
-      return;
+    } catch (e) {
+      appLogger.warn('Error handling log RX data frame: $e');
     }
   }
 
@@ -3285,15 +4391,15 @@ class MeshCoreConnector extends ChangeNotifier {
     // [2-5] = expected_ack_hash (uint32)
     // [6-9] = estimated_timeout_ms (uint32)
 
-    if (frame.length >= 10) {
-      final ackHash = Uint8List.fromList(frame.sublist(2, 6));
-      final timeoutMs = readUint32LE(frame, 6);
+    try {
+      final reader = BufferReader(frame);
+      reader.skipBytes(2); //Skip code and is_flood
+      final ackHash = reader.readUInt32LE();
+      final timeoutMs = reader.readUInt32LE();
 
       // Check if this is a CLI command ACK - if so, ignore it
       if (_lastSentWasCliCommand) {
-        final ackHashHex = ackHash
-            .map((b) => b.toRadixString(16).padLeft(2, '0'))
-            .join();
+        final ackHashHex = ackHashToHex(ackHash);
         debugPrint('Ignoring CLI command ACK (sent): $ackHashHex');
         _lastSentWasCliCommand = false;
         return;
@@ -3305,22 +4411,15 @@ class MeshCoreConnector extends ChangeNotifier {
 
       final retryService = _retryService;
       if (retryService != null &&
-          retryService.updateMessageFromSent(
-            ackHash,
-            timeoutMs,
-            allowQueueFallback: false,
-          )) {
+          retryService.updateMessageFromSent(ackHash, timeoutMs)) {
         return;
       }
 
       if (_markNextPendingChannelMessageSent()) {
         return;
       }
-
-      if (retryService != null) {
-        retryService.updateMessageFromSent(ackHash, timeoutMs);
-      }
-    } else {
+    } catch (e) {
+      appLogger.warn('Error handling message sent frame: $e');
       // Fallback to old behavior
       for (var messages in _conversations.values) {
         for (int i = messages.length - 1; i >= 0; i--) {
@@ -3399,9 +4498,11 @@ class MeshCoreConnector extends ChangeNotifier {
     // [1-4] = ack_hash (uint32)
     // [5-8] = trip_time_ms (uint32)
 
-    if (frame.length >= 9) {
-      final ackHash = Uint8List.fromList(frame.sublist(1, 5));
-      final tripTimeMs = readUint32LE(frame, 5);
+    try {
+      final reader = BufferReader(frame);
+      reader.skipBytes(1); // Skip code
+      final ackHash = reader.readUInt32LE();
+      final tripTimeMs = reader.readUInt32LE();
 
       // CLI command ACKs are already filtered in _handleMessageSent, so this should only see real messages
 
@@ -3413,7 +4514,8 @@ class MeshCoreConnector extends ChangeNotifier {
       if (_retryService != null) {
         _retryService!.handleAckReceived(ackHash, tripTimeMs);
       }
-    } else {
+    } catch (e) {
+      appLogger.warn('Error handling send confirmed frame: $e');
       // Fallback to old behavior
       for (var messages in _conversations.values) {
         for (int i = messages.length - 1; i >= 0; i--) {
@@ -3428,10 +4530,8 @@ class MeshCoreConnector extends ChangeNotifier {
     }
   }
 
-  bool _handleRepeaterCommandSent(Uint8List ackHash, int timeoutMs) {
-    final ackHashHex = ackHash
-        .map((b) => b.toRadixString(16).padLeft(2, '0'))
-        .join();
+  bool _handleRepeaterCommandSent(int ackHash, int timeoutMs) {
+    final ackHashHex = ackHashToHex(ackHash);
     final entry = _pendingRepeaterAcks[ackHashHex];
     if (entry == null) return false;
 
@@ -3449,10 +4549,8 @@ class MeshCoreConnector extends ChangeNotifier {
     return true;
   }
 
-  bool _handleRepeaterCommandAck(Uint8List ackHash, int tripTimeMs) {
-    final ackHashHex = ackHash
-        .map((b) => b.toRadixString(16).padLeft(2, '0'))
-        .join();
+  bool _handleRepeaterCommandAck(int ackHash, int tripTimeMs) {
+    final ackHashHex = ackHashToHex(ackHash);
     final entry = _pendingRepeaterAcks.remove(ackHashHex);
     if (entry == null) return false;
     entry.timeout?.cancel();
@@ -3710,87 +4808,164 @@ class MeshCoreConnector extends ChangeNotifier {
     ReactionInfo reactionInfo,
     String contactPubKeyHex,
   ) {
-    // Find target message by computing hash and comparing
-    final targetHash = reactionInfo.targetHash;
     final contact = _contacts.cast<Contact?>().firstWhere(
       (c) => c?.publicKeyHex == contactPubKeyHex,
       orElse: () => null,
     );
     final isRoomServer = contact?.type == advTypeRoom;
 
+    ReactionHelper.applyReaction<Message>(
+      messages: messages,
+      reactionInfo: reactionInfo,
+      // Incoming reactions in 1:1: match against outgoing messages only
+      shouldSkip: (msg) => isRoomServer != true && !msg.isOutgoing,
+      getTimestampSecs: (msg) => msg.timestamp.millisecondsSinceEpoch ~/ 1000,
+      getSenderName: (msg) =>
+          _resolveContactSenderName(msg, contact, isRoomServer == true),
+      getMessageText: (msg) => msg.text,
+      getReactions: (msg) => msg.reactions,
+      updateMessage: (i, reactions) {
+        messages[i] = messages[i].copyWith(reactions: reactions);
+      },
+    );
+  }
+
+  void _processOutgoingContactReaction(
+    List<Message> messages,
+    ReactionInfo reactionInfo,
+    Contact contact,
+  ) {
+    final isRoomServer = contact.type == advTypeRoom;
+
+    ReactionHelper.applyReaction<Message>(
+      messages: messages,
+      reactionInfo: reactionInfo,
+      // Outgoing reactions in 1:1: match against incoming messages
+      shouldSkip: (msg) => !isRoomServer && msg.isOutgoing,
+      getTimestampSecs: (msg) => msg.timestamp.millisecondsSinceEpoch ~/ 1000,
+      getSenderName: (msg) =>
+          _resolveContactSenderName(msg, contact, isRoomServer),
+      getMessageText: (msg) => msg.text,
+      getReactions: (msg) => msg.reactions,
+      updateMessage: (i, reactions) {
+        messages[i] = messages[i].copyWith(reactions: reactions);
+      },
+    );
+  }
+
+  void _setReactionStatus(
+    String pubKeyHex,
+    ReactionInfo reactionInfo,
+    MessageStatus status,
+  ) {
+    final messages = _conversations[pubKeyHex];
+    if (messages == null) return;
+    final contact = _contacts.cast<Contact?>().firstWhere(
+      (c) => c?.publicKeyHex == pubKeyHex,
+      orElse: () => null,
+    );
+    final isRoomServer = contact?.type == advTypeRoom;
     for (int i = messages.length - 1; i >= 0; i--) {
       final msg = messages[i];
-
-      // For 1:1 chats: contact reacts to my outgoing messages only
-      // For room servers: any message can be reacted to (multi-user)
-      if (!isRoomServer && !msg.isOutgoing) continue;
-
       final timestampSecs = msg.timestamp.millisecondsSinceEpoch ~/ 1000;
-
-      // For room servers, include sender name (resolve from fourByteRoomContactKey)
-      // For 1:1 chats, sender is implicit (null)
-      String? senderName;
-      if (isRoomServer && !msg.isOutgoing) {
-        final senderContact = _contacts.cast<Contact?>().firstWhere(
-          (c) =>
-              c != null &&
-              _matchesPrefix(c.publicKey, msg.fourByteRoomContactKey),
-          orElse: () => null,
-        );
-        senderName = senderContact?.name;
-      } else if (isRoomServer && msg.isOutgoing) {
-        senderName = selfName;
-      }
-      // For 1:1, senderName stays null
-
       final msgHash = ReactionHelper.computeReactionHash(
         timestampSecs,
-        senderName,
+        _resolveContactSenderName(msg, contact, isRoomServer == true),
         msg.text,
       );
-      if (msgHash == targetHash) {
-        final currentReactions = Map<String, int>.from(msg.reactions);
-        currentReactions[reactionInfo.emoji] =
-            (currentReactions[reactionInfo.emoji] ?? 0) + 1;
-
-        messages[i] = msg.copyWith(reactions: currentReactions);
+      if (msgHash == reactionInfo.targetHash) {
+        final statuses = Map<String, MessageStatus>.from(msg.reactionStatuses);
+        statuses[reactionInfo.emoji] = status;
+        messages[i] = msg.copyWith(reactionStatuses: statuses);
         break;
       }
     }
   }
 
-  _RawPacket? _parseRawPacket(Uint8List raw) {
-    if (raw.length < 3) return null;
-    var index = 0;
-    final header = raw[index++];
-    final routeType = header & _phRouteMask;
-    final hasTransport =
-        routeType == _routeTransportFlood || routeType == _routeTransportDirect;
-    if (hasTransport) {
-      if (raw.length < index + 4) return null;
-      index += 4;
+  String? _resolveContactSenderName(
+    Message msg,
+    Contact? contact,
+    bool isRoomServer,
+  ) {
+    if (!isRoomServer) return null;
+    if (!msg.isOutgoing) {
+      final senderContact = _contacts.cast<Contact?>().firstWhere(
+        (c) =>
+            c != null &&
+            _matchesPrefix(c.publicKey, msg.fourByteRoomContactKey),
+        orElse: () => null,
+      );
+      return senderContact?.name;
     }
-    if (raw.length <= index) return null;
-    final pathLen = raw[index++];
-    if (raw.length < index + pathLen) return null;
-    final pathBytes = Uint8List.fromList(raw.sublist(index, index + pathLen));
-    index += pathLen;
-    if (raw.length <= index) return null;
-    final payload = Uint8List.fromList(raw.sublist(index));
+    return selfName;
+  }
 
-    return _RawPacket(
-      header: header,
-      routeType: routeType,
-      payloadType: (header >> _phTypeShift) & _phTypeMask,
-      payloadVer: (header >> _phVerShift) & _phVerMask,
-      pathBytes: pathBytes,
-      payload: payload,
-    );
+  _RawPacket? _parseRawPacket(Uint8List raw) {
+    try {
+      final reader = BufferReader(raw);
+      final header = reader.readByte();
+      final routeType = header & _phRouteMask;
+      final hasTransport =
+          routeType == _routeTransportFlood ||
+          routeType == _routeTransportDirect;
+      if (hasTransport) {
+        // Skip reserved bytes in transport header made up of two u16 fields
+        reader.skipBytes(4);
+      }
+      final pathLenRaw = reader.readByte();
+      final pathByteLen = _decodePathByteLen(pathLenRaw);
+      final pathBytes = reader.readBytes(pathByteLen);
+      final payload = reader.readBytes(reader.remaining);
+
+      return _RawPacket(
+        header: header,
+        routeType: routeType,
+        payloadType: (header >> _phTypeShift) & _phTypeMask,
+        payloadVer: (header >> _phVerShift) & _phVerMask,
+        pathLenRaw: pathLenRaw,
+        pathBytes: pathBytes,
+        payload: payload,
+      );
+    } catch (e) {
+      appLogger.warn('Error parsing raw packet: $e');
+      return null;
+    }
   }
 
   int _computeChannelHash(Uint8List psk) {
     final digest = crypto.sha256.convert(psk).bytes;
     return digest[0];
+  }
+
+  /// Firmware-compatible packet hash: SHA256(payloadType + payload) -> first 8 bytes as hex.
+  String _computePacketHash(int payloadType, Uint8List payload) {
+    final input = Uint8List(1 + payload.length);
+    input[0] = payloadType;
+    input.setRange(1, input.length, payload);
+    final digest = crypto.sha256.convert(input).bytes;
+    return digest
+        .sublist(0, 8)
+        .map((b) => b.toRadixString(16).padLeft(2, '0'))
+        .join();
+  }
+
+  /// Content-based dedup hash for sync queue messages (no raw payload available).
+  /// Prefixed with 'c:' to avoid collisions with packet hashes.
+  String _computeContentHash(
+    int channelIdx,
+    int timestampSecs,
+    String fullText,
+  ) {
+    final textBytes = utf8.encode(fullText);
+    final input = Uint8List(5 + textBytes.length);
+    input[0] = channelIdx;
+    input[1] = timestampSecs & 0xFF;
+    input[2] = (timestampSecs >> 8) & 0xFF;
+    input[3] = (timestampSecs >> 16) & 0xFF;
+    input[4] = (timestampSecs >> 24) & 0xFF;
+    input.setRange(5, 5 + textBytes.length, textBytes);
+    final digest = crypto.sha256.convert(input).bytes;
+    return 'c:${digest.sublist(0, 8).map((b) => b.toRadixString(16).padLeft(2, '0')).join()}';
   }
 
   Uint8List? _decryptPayload(Uint8List psk, Uint8List encrypted) {
@@ -3838,63 +5013,6 @@ class MeshCoreConnector extends ChangeNotifier {
       );
     }
     return _ParsedText(senderName: 'Unknown', text: text);
-  }
-
-  Uint8List _resolveOutgoingPathBytes(
-    Contact contact,
-    PathSelection? selection,
-  ) {
-    // Priority 1: Check user's path override
-    if (contact.pathOverride != null) {
-      if (contact.pathOverride! < 0) {
-        return Uint8List(0); // Force flood
-      }
-      return contact.pathOverrideBytes ?? Uint8List(0);
-    }
-
-    // Priority 2: Check device flood mode or PathSelection flood
-    if (contact.pathLength < 0 || selection?.useFlood == true) {
-      return Uint8List(0);
-    }
-
-    // Priority 3: Check PathSelection (auto-rotation)
-    if (selection != null && selection.pathBytes.isNotEmpty) {
-      return Uint8List.fromList(selection.pathBytes);
-    }
-
-    // Priority 4: Use device's discovered path
-    return contact.path;
-  }
-
-  int? _resolveOutgoingPathLength(Contact contact, PathSelection? selection) {
-    // Priority 1: Check user's path override
-    if (contact.pathOverride != null) {
-      return contact.pathOverride;
-    }
-
-    // Priority 2: Check device flood mode or PathSelection flood
-    if (contact.pathLength < 0 || selection?.useFlood == true) {
-      return -1;
-    }
-
-    // Priority 3: Check PathSelection (auto-rotation)
-    if (selection != null && selection.pathBytes.isNotEmpty) {
-      return selection.hopCount;
-    }
-
-    // Priority 4: Use device's discovered path
-    return contact.pathLength;
-  }
-
-  PathSelection _selectionFromPath(int pathLength, Uint8List pathBytes) {
-    if (pathLength < 0) {
-      return const PathSelection(pathBytes: [], hopCount: -1, useFlood: true);
-    }
-    return PathSelection(
-      pathBytes: pathBytes,
-      hopCount: pathLength,
-      useFlood: false,
-    );
   }
 
   bool _addChannelMessage(int channelIndex, ChannelMessage message) {
@@ -3986,6 +5104,7 @@ class MeshCoreConnector extends ChangeNotifier {
         pathLength: mergedPathLength,
         pathBytes: mergedPathBytes,
         pathVariants: mergedPathVariants,
+        packetHash: existing.packetHash ?? processedMessage.packetHash,
         // Mark as sent when first repeat is heard
         status: promotedFromPending
             ? ChannelMessageStatus.sent
@@ -4020,35 +5139,38 @@ class MeshCoreConnector extends ChangeNotifier {
     List<ChannelMessage> messages,
     ReactionInfo reactionInfo,
   ) {
-    // Find target message by computing hash and comparing
-    final targetHash = reactionInfo.targetHash;
-    for (int i = messages.length - 1; i >= 0; i--) {
-      final msg = messages[i];
-      final timestampSecs = msg.timestamp.millisecondsSinceEpoch ~/ 1000;
-      final msgHash = ReactionHelper.computeReactionHash(
-        timestampSecs,
-        msg.senderName,
-        msg.text,
-      );
-      if (msgHash == targetHash) {
-        final currentReactions = Map<String, int>.from(msg.reactions);
-        currentReactions[reactionInfo.emoji] =
-            (currentReactions[reactionInfo.emoji] ?? 0) + 1;
-
-        messages[i] = msg.copyWith(reactions: currentReactions);
+    ReactionHelper.applyReaction<ChannelMessage>(
+      messages: messages,
+      reactionInfo: reactionInfo,
+      shouldSkip: (_) => false,
+      getTimestampSecs: (msg) => msg.timestamp.millisecondsSinceEpoch ~/ 1000,
+      getSenderName: (msg) => msg.senderName,
+      getMessageText: (msg) => msg.text,
+      getReactions: (msg) => msg.reactions,
+      updateMessage: (i, reactions) {
+        messages[i] = messages[i].copyWith(reactions: reactions);
         notifyListeners();
-        break;
-      }
-    }
+      },
+    );
   }
 
   int _findChannelRepeatIndex(
     List<ChannelMessage> messages,
     ChannelMessage incoming,
   ) {
+    // First pass: match by packet hash (exact dedup)
+    final incomingHash = incoming.packetHash;
+    if (incomingHash != null) {
+      for (int i = messages.length - 1; i >= 0; i--) {
+        final existingHash = messages[i].packetHash;
+        if (existingHash != null && existingHash == incomingHash) {
+          return i;
+        }
+      }
+    }
+    // Second pass: heuristic fallback (outgoing echo, old messages without hash)
     for (int i = messages.length - 1; i >= 0; i--) {
-      final existing = messages[i];
-      if (_isChannelRepeat(existing, incoming)) {
+      if (_isChannelRepeat(messages[i], incoming)) {
         return i;
       }
     }
@@ -4062,7 +5184,7 @@ class MeshCoreConnector extends ChangeNotifier {
         (existing.timestamp.millisecondsSinceEpoch -
                 incoming.timestamp.millisecondsSinceEpoch)
             .abs();
-    if (diffMs > 5000) return false;
+    if (diffMs > 30000) return false;
 
     if (existing.senderName == incoming.senderName) return true;
 
@@ -4144,6 +5266,12 @@ class MeshCoreConnector extends ChangeNotifier {
 
   void _handleDisconnection() {
     _stopBatteryPolling();
+    _stopRadioStatsPolling();
+    _latestRadioStats = null;
+    radioStatsNotifier.value = null;
+    _prevTotalAirSecs = 0;
+    _airtimeBumpStopwatch?.stop();
+    _airtimeBumpStopwatch = null;
 
     for (final entry in _pendingRepeaterAcks.values) {
       entry.timeout?.cancel();
@@ -4226,7 +5354,7 @@ class MeshCoreConnector extends ChangeNotifier {
   void _handleCustomVars(Uint8List frame) {
     final buf = BufferReader(frame.sublist(1));
     try {
-      _currentCustomVars = _parseKeyValueString(buf.readString());
+      _currentCustomVars = _parseKeyValueString(buf.readCString());
     } catch (e) {
       appLogger.warn('Malformed custom vars frame: $e', tag: 'Connector');
     }
@@ -4282,8 +5410,11 @@ class MeshCoreConnector extends ChangeNotifier {
     _notifyListenersTimer?.cancel();
     _reconnectTimer?.cancel();
     _batteryPollTimer?.cancel();
+    _radioStatsPollTimer?.cancel();
+    radioStatsNotifier.dispose();
     _receivedFramesController.close();
     _usbManager.dispose();
+    _tcpConnector.dispose();
 
     // Flush pending unread writes before disposal
     _unreadStore.flush();
@@ -4306,8 +5437,9 @@ class MeshCoreConnector extends ChangeNotifier {
         packet.skipBytes(4); // Skip transport-specific bytes
       }
       //final payloadVer = (header >> 6) & 0x03;
-      final pathLen = packet.readByte();
-      final pathBytes = packet.readBytes(pathLen);
+      final pathLenRaw = packet.readByte();
+      final pathByteLen = _decodePathByteLen(pathLenRaw);
+      final pathBytes = packet.readBytes(pathByteLen);
       final payload = packet.readBytes(packet.remaining);
 
       final rawPacket = frame.sublist(3);
@@ -4345,8 +5477,9 @@ class MeshCoreConnector extends ChangeNotifier {
         packet.skipBytes(4); // Skip transport-specific bytes
       }
       //final payloadVer = (header >> 6) & 0x03;
-      final pathLen = packet.readByte();
-      pathBytes = packet.readBytes(pathLen);
+      final pathLenRaw = packet.readByte();
+      final pathByteLen = _decodePathByteLen(pathLenRaw);
+      pathBytes = packet.readBytes(pathByteLen);
     } catch (e) {
       appLogger.warn('Malformed RX frame: $e', tag: 'Connector');
       return;
@@ -4380,7 +5513,7 @@ class MeshCoreConnector extends ChangeNotifier {
         longitude = packet.readInt32LE() / 1e6;
       }
       if (hasName && packet.remaining > 0) {
-        name = packet.readString();
+        name = packet.readCString();
       }
     } catch (e) {
       appLogger.warn('Malformed advert frame: $e', tag: 'Connector');
@@ -4388,7 +5521,7 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     importDiscoveredContact(
-      DiscoveryContact(
+      Contact(
         rawPacket: frame,
         publicKey: publicKey,
         name: name,
@@ -4402,6 +5535,17 @@ class MeshCoreConnector extends ChangeNotifier {
         lastSeen: DateTime.fromMillisecondsSinceEpoch(timestamp * 1000),
       ),
     );
+  }
+
+  bool hasValidLocation(double? latitude, double? longitude) {
+    const double epsilon = 1e-6;
+    final lat = latitude ?? 0.0;
+    final lon = longitude ?? 0.0;
+    return (lat.abs() > epsilon || lon.abs() > epsilon) &&
+        lat >= -90.0 &&
+        lat <= 90.0 &&
+        lon >= -180.0 &&
+        lon <= 180.0;
   }
 
   void _handlePayloadAdvertReceived(
@@ -4441,8 +5585,11 @@ class MeshCoreConnector extends ChangeNotifier {
         latitude = advert.readInt32LE() / 1e6;
         longitude = advert.readInt32LE() / 1e6;
       }
+      // Validate location values if present
+      hasLocation = hasValidLocation(latitude, longitude);
+
       if (hasName && advert.remaining > 0) {
-        name = advert.readString();
+        name = advert.readCString();
       }
     } catch (e) {
       appLogger.warn('Malformed advert frame: $e', tag: 'Connector');
@@ -4459,6 +5606,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
     if (isNewContact) {
       final newContact = Contact(
+        rawPacket: rawPacket,
         publicKey: publicKey,
         name: name,
         type: type,
@@ -4475,6 +5623,12 @@ class MeshCoreConnector extends ChangeNotifier {
           (_autoAddRoomServers && type == advTypeRoom) ||
           (_autoAddSensors && type == advTypeSensor)) {
         _handleContactAdvert(newContact);
+        _handleDiscovery(
+          newContact,
+          rawPacket,
+          noNotify: true,
+          addActive: true,
+        );
       } else {
         _handleDiscovery(newContact, rawPacket);
       }
@@ -4571,11 +5725,11 @@ class MeshCoreConnector extends ChangeNotifier {
     try {
       reader.skipBytes(1); // Skip the response code byte
       final flags = reader.readByte();
-      _autoAddUsers = flags & autoAddChatFlag != 0;
-      _autoAddRepeaters = flags & autoAddRepeaterFlag != 0;
-      _autoAddRoomServers = flags & autoAddRoomServerFlag != 0;
-      _autoAddSensors = flags & autoAddSensorFlag != 0;
-      _overwriteOldest = flags & autoAddOverwriteOldestFlag != 0;
+      _autoAddUsers = (flags & autoAddChatFlag) != 0;
+      _autoAddRepeaters = (flags & autoAddRepeaterFlag) != 0;
+      _autoAddRoomServers = (flags & autoAddRoomServerFlag) != 0;
+      _autoAddSensors = (flags & autoAddSensorFlag) != 0;
+      _overwriteOldest = (flags & autoAddOverwriteOldestFlag) != 0;
     } catch (e) {
       appLogger.error('Failed to parse auto-add config: $e', tag: 'Connector');
     }
@@ -4585,6 +5739,7 @@ class MeshCoreConnector extends ChangeNotifier {
     Contact contact,
     Uint8List rawPacket, {
     bool noNotify = false,
+    bool addActive = false,
   }) {
     appLogger.info('Discovered new contact: ${contact.name}', tag: 'Connector');
 
@@ -4604,13 +5759,15 @@ class MeshCoreConnector extends ChangeNotifier {
             latitude: contact.latitude,
             longitude: contact.longitude,
             lastSeen: contact.lastSeen,
+            flags: 0,
+            isActive: addActive,
           );
       notifyListeners();
       unawaited(_persistDiscoveredContacts());
       return;
     }
 
-    final disContact = DiscoveryContact(
+    final disContact = Contact(
       rawPacket: rawPacket,
       publicKey: contact.publicKey,
       name: contact.name,
@@ -4620,6 +5777,9 @@ class MeshCoreConnector extends ChangeNotifier {
       latitude: contact.latitude,
       longitude: contact.longitude,
       lastSeen: contact.lastSeen,
+      lastMessageAt: contact.lastMessageAt,
+      isActive: addActive,
+      flags: 0,
     );
     _discoveredContacts.add(disContact);
 
@@ -4643,6 +5803,29 @@ class MeshCoreConnector extends ChangeNotifier {
     unawaited(_persistDiscoveredContacts());
     notifyListeners();
   }
+
+  void clearMessagesForContact(Contact contact) {
+    final contactKeyHex = contact.publicKeyHex;
+    final messages = _conversations[contactKeyHex];
+    if (messages == null) return;
+    messages.clear();
+    unawaited(_messageStore.saveMessages(contactKeyHex, messages));
+    markContactRead(contactKeyHex);
+    notifyListeners();
+  }
+
+  void clearMessagesForChannel(int channelIndex) {
+    final messages = _channelMessages[channelIndex];
+    if (messages == null) return;
+    messages.clear();
+    unawaited(_channelMessageStore.saveChannelMessages(channelIndex, messages));
+    markChannelRead(channelIndex);
+    notifyListeners();
+  }
+
+  void deleteAllPaths() {
+    _pathHistoryService?.clearAllHistories();
+  }
 }
 
 const int _phRouteMask = 0x03;
@@ -4658,11 +5841,20 @@ const int _routeTransportDirect = 0x03;
 const int _payloadTypeGroupText = 0x05;
 const int _cipherMacSize = 2;
 
+/// Decodes the firmware's encoded path_len byte into actual byte length.
+/// Bits 0-5: hash count (0-63), Bits 6-7: hash size code (0=1byte, 1=2bytes, 2=3bytes).
+int _decodePathByteLen(int pathLenRaw) {
+  final hashCount = pathLenRaw & 63;
+  final hashSize = ((pathLenRaw >> 6) & 0x03) + 1;
+  return hashCount * hashSize;
+}
+
 class _RawPacket {
   final int header;
   final int routeType;
   final int payloadType;
   final int payloadVer;
+  final int pathLenRaw;
   final Uint8List pathBytes;
   final Uint8List payload;
 
@@ -4671,12 +5863,15 @@ class _RawPacket {
     required this.routeType,
     required this.payloadType,
     required this.payloadVer,
+    required this.pathLenRaw,
     required this.pathBytes,
     required this.payload,
   });
 
   bool get isFlood =>
       routeType == _routeFlood || routeType == _routeTransportFlood;
+
+  int get hopCount => pathLenRaw & 63;
 }
 
 class _ParsedText {

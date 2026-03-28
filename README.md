@@ -51,7 +51,7 @@ MeshCore Open is a cross-platform mobile application for communicating with Mesh
 
 ### Device Management
 
-- **BLE Connection**: Scan and connect to MeshCore devices via Bluetooth
+- **BLE, USB, TCP Connection**: Scan and connect to MeshCore devices via Bluetooth, USB or TCP
 - **Device Settings**: Configure radio parameters, power settings, and network options
 - **Battery Monitoring**: Real-time battery status with chemistry-specific voltage curves
 - **Firmware Updates**: Over-the-air firmware updates via BLE (coming soon)
@@ -75,10 +75,16 @@ MeshCore Open is a cross-platform mobile application for communicating with Mesh
 
 ### Platform Support
 
-- ✅ **Android**: Full support (API 21+)
-- ✅ **iOS**: Full support (iOS 12+)
-- 🚧 **Desktop**: Limited support (macOS/Linux/Windows)
-- 🚧 **Web**: Under construction (Chrome)
+| Feature            | Android (API 21+) | iOS (12+) | Linux | Windows | macOS |                Web                |
+|--------------------|:-----------------:|:---------:|:-----:|:-------:|:-----:|:---------------------------------:|
+| BLE companion      | ✅                | ✅        | ✅   | ✅      | ✅    | ✅                                |
+| USB companion      | ✅                | 🚧        | ✅   | ✅      | ✅    | ✅                                |
+| TCP companion      | ✅                | 🚧        | ✅   | ✅      | ✅    | ❌<br>(requires websocket bridge) |
+| Core Functionality | ✅                | ✅        | ✅   | ✅      | ✅    | ✅                                |
+| Mesh Network       | ✅                | ✅        | ✅   | ✅      | ✅    | ✅                                |
+| Map & Location     | ✅                | ✅        | ✅   | ✅      | ✅    | ✅                                |
+| Device Management  | ✅                | ✅        | ✅   | ✅      | ✅    | ✅                                |
+| Repeater Hub       | ✅                | ✅        | ✅   | ✅      | ✅    | ✅                                |
 
 ### Dependencies
 
@@ -189,6 +195,7 @@ Messages are transmitted as binary frames using a custom protocol optimized for 
 ### App Settings
 
 - **Theme**: System default, light, or dark mode
+- **Language**: Use one of 15 languages (English, Chinese, French, Spanish, Portuguese, German, Dutch, Polish, Swedish, Italian, Slovak, Slovene, Bulgarian, Russian, Ukrainian)
 - **Notifications**: Configurable for messages, channels, and node advertisements
 - **Battery Chemistry**: Support for NMC, LiFePO4, and LiPo battery types
 - **Message Retry**: Automatic retry with configurable path clearing

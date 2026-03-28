@@ -24,20 +24,23 @@ class Channel {
 
   bool get isPublicChannel => pskHex == publicChannelPsk;
 
-  static Channel? fromFrame(Uint8List data) {
+  static Channel? fromFrame(Uint8List frame) {
     // CHANNEL_INFO format:
     // [0] = RESP_CODE_CHANNEL_INFO (18)
     // [1] = channel_idx
     // [2-33] = name (32 bytes, null-terminated)
     // [34-49] = psk (16 bytes)
-    if (data.length < 50) return null;
-    if (data[0] != respCodeChannelInfo) return null;
-
-    final index = data[1];
-    final name = readCString(data, 2, 32);
-    final psk = Uint8List.fromList(data.sublist(34, 50));
-
-    return Channel(index: index, name: name, psk: psk);
+    if (frame.length < 50) return null;
+    final reader = BufferReader(frame);
+    try {
+      if (reader.readByte() != respCodeChannelInfo) return null;
+      final index = reader.readByte();
+      final name = reader.readCStringGreedy(32);
+      final psk = reader.readBytes(16);
+      return Channel(index: index, name: name, psk: psk);
+    } catch (e) {
+      return null;
+    }
   }
 
   static Channel empty(int index) {

@@ -64,11 +64,22 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
 
   bool _isLoggingIn = false;
 
+  int _resolveRepeaterIndex = -1;
+
   Contact _resolveRepeater(MeshCoreConnector connector) {
-    return connector.contacts.firstWhere(
+    if (_resolveRepeaterIndex >= 0 &&
+        _resolveRepeaterIndex < connector.contacts.length &&
+        connector.contacts[_resolveRepeaterIndex].publicKeyHex ==
+            widget.room.publicKeyHex) {
+      return connector.contacts[_resolveRepeaterIndex];
+    }
+    _resolveRepeaterIndex = connector.contacts.indexWhere(
       (c) => c.publicKeyHex == widget.room.publicKeyHex,
-      orElse: () => widget.room,
     );
+    if (_resolveRepeaterIndex == -1) {
+      return widget.room;
+    }
+    return connector.contacts[_resolveRepeaterIndex];
   }
 
   Future<void> _handleLogin() async {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../models/community.dart';
+import '../utils/app_logger.dart';
 import 'prefs_manager.dart';
 
 /// Persists communities to local storage using SharedPreferences.
@@ -9,12 +10,37 @@ import 'prefs_manager.dart';
 /// Each community contains its secret K, so this data should
 /// be considered sensitive (though device encryption handles security).
 class CommunityStore {
-  static const String _communitiesKey = 'communities_v1';
+  static const String _keyPrefix = 'communities_v1';
+
+  String publicKeyHex = '';
+  set setPublicKeyHex(String value) =>
+      publicKeyHex = value.length > 10 ? value.substring(0, 10) : '';
+
+  String get keyFor => '$_keyPrefix$publicKeyHex';
 
   /// Load all communities from storage
   Future<List<Community>> loadCommunities() async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot load communities.');
+      return [];
+    }
     final prefs = PrefsManager.instance;
-    final jsonString = prefs.getString(_communitiesKey);
+    String? jsonString = prefs.getString(keyFor);
+    if (jsonString == null || jsonString.isEmpty) {
+      // Attempt migration from legacy unscoped key on first load
+      final legacyJsonString = prefs.getString(_keyPrefix);
+      prefs.remove(_keyPrefix);
+      if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
+        appLogger.info(
+          'Migrating communities from legacy key $_keyPrefix to scoped key $keyFor',
+        );
+        await prefs.setString(keyFor, legacyJsonString);
+        jsonString = legacyJsonString;
+      }
+    }
+    if (jsonString == null || jsonString.isEmpty) {
+      jsonString = prefs.getString(keyFor);
+    }
     if (jsonString == null || jsonString.isEmpty) {
       return [];
     }
@@ -32,9 +58,13 @@ class CommunityStore {
 
   /// Save all communities to storage
   Future<void> saveCommunities(List<Community> communities) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot save communities.');
+      return;
+    }
     final prefs = PrefsManager.instance;
     final jsonList = communities.map((c) => c.toJson()).toList();
-    await prefs.setString(_communitiesKey, jsonEncode(jsonList));
+    await prefs.setString(keyFor, jsonEncode(jsonList));
   }
 
   /// Add a new community

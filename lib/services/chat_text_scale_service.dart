@@ -65,7 +65,7 @@ class ChatTextScaleService extends ChangeNotifier {
 
   void _commitScale() {
     _saveTimer?.cancel();
-    PrefsManager.instance.setDouble(_prefKey, _scale);
+    unawaited(PrefsManager.instance.setDouble(_prefKey, _scale));
   }
 
   double _clamp(double value) => value.clamp(_minScale, _maxScale).toDouble();

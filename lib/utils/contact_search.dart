@@ -1,6 +1,6 @@
-import 'package:meshcore_open/models/discovery_contact.dart';
-
 import '../models/contact.dart';
+
+export 'contact_filter_types.dart';
 
 bool matchesContactQuery(Contact contact, String query) {
   final normalizedQuery = query.trim().toLowerCase();
@@ -16,7 +16,7 @@ bool matchesContactQuery(Contact contact, String query) {
   return contact.publicKeyHex.toLowerCase().startsWith(hexPrefix);
 }
 
-bool matchesDiscoveryContactQuery(DiscoveryContact contact, String query) {
+bool matchesDiscoveryContactQuery(Contact contact, String query) {
   final normalizedQuery = query.trim().toLowerCase();
   if (normalizedQuery.isEmpty) return true;
 

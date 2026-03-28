@@ -157,8 +157,8 @@ class _SNRIndicatorState extends State<SNRIndicator> {
                   repeater.snr,
                   widget.connector.currentSf,
                 );
-
-                final name = widget.connector.contacts
+                final allContacts = widget.connector.allContacts;
+                final name = allContacts
                     .where((c) => c.publicKey.first == repeater.pubkeyFirstByte)
                     .map((c) => c.name)
                     .firstOrNull;

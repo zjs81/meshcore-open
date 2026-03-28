@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:meshcore_open/connector/meshcore_protocol.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
 
@@ -65,7 +66,7 @@ class _PathSelectionDialogState extends State<PathSelectionDialog> {
 
   void _filterValidContacts() {
     _validContacts = widget.availableContacts
-        .where((c) => c.type == 2 || c.type == 3)
+        .where((c) => c.type == advTypeRepeater || c.type == advTypeRoom)
         .toList();
   }
 

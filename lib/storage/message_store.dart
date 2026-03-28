@@ -2,26 +2,59 @@ import 'dart:convert';
 import 'dart:typed_data';
 import '../models/message.dart';
 import '../helpers/smaz.dart';
+import '../utils/app_logger.dart';
 import 'prefs_manager.dart';
 
 class MessageStore {
   static const String _keyPrefix = 'messages_';
 
+  String publicKeyHex = '';
+  set setPublicKeyHex(String value) =>
+      publicKeyHex = value.length > 10 ? value.substring(0, 10) : '';
+
+  String get keyFor => '$_keyPrefix$publicKeyHex';
+
   Future<void> saveMessages(
     String contactKeyHex,
     List<Message> messages,
   ) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot save messages.');
+      return;
+    }
     final prefs = PrefsManager.instance;
-    final key = '$_keyPrefix$contactKeyHex';
+    final key = '$keyFor$contactKeyHex';
     final jsonList = messages.map(_messageToJson).toList();
     await prefs.setString(key, jsonEncode(jsonList));
   }
 
   Future<List<Message>> loadMessages(String contactKeyHex) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot load messages.');
+      return [];
+    }
     final prefs = PrefsManager.instance;
-    final key = '$_keyPrefix$contactKeyHex';
-    final jsonString = prefs.getString(key);
-    if (jsonString == null) return [];
+    final key = '$keyFor$contactKeyHex';
+    final oldKey = '$_keyPrefix$contactKeyHex';
+    String? jsonString = prefs.getString(key);
+    if (jsonString == null || jsonString.isEmpty) {
+      // Attempt migration from legacy unscoped key on first load
+      final legacyJsonString = prefs.getString(oldKey);
+      prefs.remove(oldKey);
+      if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
+        appLogger.info(
+          'Migrating messages from legacy key $oldKey to scoped key $key',
+        );
+        await prefs.setString(key, legacyJsonString);
+        jsonString = legacyJsonString;
+      }
+    }
+    if (jsonString == null || jsonString.isEmpty) {
+      jsonString = prefs.getString(keyFor);
+    }
+    if (jsonString == null || jsonString.isEmpty) {
+      return [];
+    }
 
     try {
       final jsonList = jsonDecode(jsonString) as List<dynamic>;
@@ -32,8 +65,12 @@ class MessageStore {
   }
 
   Future<void> clearMessages(String contactKeyHex) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn('Public key hex is not set. Cannot clear messages.');
+      return;
+    }
     final prefs = PrefsManager.instance;
-    final key = '$_keyPrefix$contactKeyHex';
+    final key = '$keyFor$contactKeyHex';
     await prefs.remove(key);
   }
 
@@ -48,9 +85,7 @@ class MessageStore {
       'messageId': msg.messageId,
       'retryCount': msg.retryCount,
       'estimatedTimeoutMs': msg.estimatedTimeoutMs,
-      'expectedAckHash': msg.expectedAckHash != null
-          ? base64Encode(msg.expectedAckHash!)
-          : null,
+      'expectedAckHash': msg.expectedAckHash,
       'sentAt': msg.sentAt?.millisecondsSinceEpoch,
       'deliveredAt': msg.deliveredAt?.millisecondsSinceEpoch,
       'tripTimeMs': msg.tripTimeMs,
@@ -59,6 +94,9 @@ class MessageStore {
           ? base64Encode(msg.pathBytes)
           : null,
       'reactions': msg.reactions,
+      'reactionStatuses': msg.reactionStatuses.map(
+        (key, value) => MapEntry(key, value.index),
+      ),
       'fourByteRoomContactKey': base64Encode(msg.fourByteRoomContactKey),
     };
   }
@@ -79,9 +117,7 @@ class MessageStore {
       messageId: json['messageId'] as String?,
       retryCount: json['retryCount'] as int? ?? 0,
       estimatedTimeoutMs: json['estimatedTimeoutMs'] as int?,
-      expectedAckHash: json['expectedAckHash'] != null
-          ? Uint8List.fromList(base64Decode(json['expectedAckHash'] as String))
-          : null,
+      expectedAckHash: json['expectedAckHash'] as int? ?? 0,
       sentAt: json['sentAt'] != null
           ? DateTime.fromMillisecondsSinceEpoch(json['sentAt'] as int)
           : null,
@@ -96,6 +132,11 @@ class MessageStore {
       reactions:
           (json['reactions'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(key, value as int),
+          ) ??
+          {},
+      reactionStatuses:
+          (json['reactionStatuses'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, MessageStatus.values[value as int]),
           ) ??
           {},
       fourByteRoomContactKey: json['fourByteRoomContactKey'] != null

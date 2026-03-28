@@ -1,11 +1,12 @@
 class PathRecord {
   final int hopCount;
   final int tripTimeMs;
-  final DateTime timestamp;
+  final DateTime? timestamp;
   final bool wasFloodDiscovery;
   final List<int> pathBytes;
   final int successCount;
   final int failureCount;
+  final double routeWeight;
 
   PathRecord({
     required this.hopCount,
@@ -15,6 +16,7 @@ class PathRecord {
     required this.pathBytes,
     required this.successCount,
     required this.failureCount,
+    this.routeWeight = 1.0,
   });
 
   String get displayText =>
@@ -24,11 +26,12 @@ class PathRecord {
     return {
       'hop_count': hopCount,
       'trip_time_ms': tripTimeMs,
-      'timestamp': timestamp.toIso8601String(),
+      'timestamp': timestamp?.toIso8601String(),
       'was_flood': wasFloodDiscovery,
       'path_bytes': pathBytes,
       'success_count': successCount,
       'failure_count': failureCount,
+      'route_weight': routeWeight,
     };
   }
 
@@ -36,12 +39,15 @@ class PathRecord {
     return PathRecord(
       hopCount: json['hop_count'] as int,
       tripTimeMs: json['trip_time_ms'] as int,
-      timestamp: DateTime.parse(json['timestamp'] as String),
+      timestamp: json['timestamp'] != null
+          ? DateTime.parse(json['timestamp'] as String)
+          : null,
       wasFloodDiscovery: json['was_flood'] as bool,
       pathBytes:
           (json['path_bytes'] as List?)?.map((b) => b as int).toList() ?? [],
       successCount: json['success_count'] as int? ?? 0,
       failureCount: json['failure_count'] as int? ?? 0,
+      routeWeight: (json['route_weight'] as num?)?.toDouble() ?? 1.0,
     );
   }
 }

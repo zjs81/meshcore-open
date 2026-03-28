@@ -118,6 +118,50 @@ class AppLocalizationsEs extends AppLocalizations {
   String get connectionChoiceBluetoothLabel => 'Bluetooth';
 
   @override
+  String get connectionChoiceTcpLabel => 'TCP';
+
+  @override
+  String get tcpScreenTitle => 'Establecer conexión a través de TCP';
+
+  @override
+  String get tcpHostLabel => 'Dirección IP';
+
+  @override
+  String get tcpHostHint => '192.168.40.10';
+
+  @override
+  String get tcpPortLabel => 'Puerto';
+
+  @override
+  String get tcpPortHint => '5000';
+
+  @override
+  String get tcpStatus_notConnected => 'Ingrese la dirección final y conecte.';
+
+  @override
+  String tcpStatus_connectingTo(String endpoint) {
+    return 'Conectándose a $endpoint...';
+  }
+
+  @override
+  String get tcpErrorHostRequired => 'Se requiere la dirección IP.';
+
+  @override
+  String get tcpErrorPortInvalid => 'El puerto debe estar entre 1 y 65535.';
+
+  @override
+  String get tcpErrorUnsupported =>
+      'El protocolo de transporte TCP no está soportado en esta plataforma.';
+
+  @override
+  String get tcpErrorTimedOut => 'La conexión TCP ha caducado.';
+
+  @override
+  String tcpConnectionFailed(String error) {
+    return 'Error en la conexión TCP: $error';
+  }
+
+  @override
   String get usbScreenTitle => 'Conecte mediante USB';
 
   @override
@@ -351,6 +395,51 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settings_privacyModeDisabled => 'Modo de privacidad desactivado';
+
+  @override
+  String get settings_privacy => 'Configuración de privacidad';
+
+  @override
+  String get settings_privacySubtitle =>
+      'Controlar qué información se comparte.';
+
+  @override
+  String get settings_privacySettingsDescription =>
+      'Elige qué información comparte tu dispositivo con otros.';
+
+  @override
+  String get settings_denyAll => 'Denegar todo';
+
+  @override
+  String get settings_allowByContact => 'Permitir por banderas de contacto';
+
+  @override
+  String get settings_allowAll => 'Permitir todo';
+
+  @override
+  String get settings_telemetryBaseMode => 'Modo base de telemetría';
+
+  @override
+  String get settings_telemetryLocationMode =>
+      'Modo de ubicación de telemetría';
+
+  @override
+  String get settings_telemetryEnvironmentMode =>
+      'Modo de entorno de telemetría';
+
+  @override
+  String get settings_advertLocation => 'Ubicación de anuncio';
+
+  @override
+  String get settings_advertLocationSubtitle => 'Incluir ubicación en anuncio';
+
+  @override
+  String settings_multiAck(String value) {
+    return 'Multi-ACKs: $value';
+  }
+
+  @override
+  String get settings_telemetryModeUpdated => 'Modo de telemetría actualizado';
 
   @override
   String get settings_actions => 'Acciones';
@@ -651,6 +740,49 @@ class AppLocalizationsEs extends AppLocalizations {
       'Rotación de ruta automática desactivada';
 
   @override
+  String get appSettings_maxRouteWeight => 'Peso máximo permitido para la ruta';
+
+  @override
+  String get appSettings_maxRouteWeightSubtitle =>
+      'Peso máximo que una ruta puede acumular gracias a entregas exitosas.';
+
+  @override
+  String get appSettings_initialRouteWeight => 'Peso inicial de la ruta';
+
+  @override
+  String get appSettings_initialRouteWeightSubtitle =>
+      'Peso inicial para rutas recién descubiertas';
+
+  @override
+  String get appSettings_routeWeightSuccessIncrement =>
+      'Incremento de peso para el éxito';
+
+  @override
+  String get appSettings_routeWeightSuccessIncrementSubtitle =>
+      'Peso añadido a una ruta después de una entrega exitosa.';
+
+  @override
+  String get appSettings_routeWeightFailureDecrement =>
+      'Reducción del peso asociado al fallo';
+
+  @override
+  String get appSettings_routeWeightFailureDecrementSubtitle =>
+      'Peso retirado de un camino después de un intento de entrega fallido.';
+
+  @override
+  String get appSettings_maxMessageRetries =>
+      'Número máximo de reintentos de envío de mensajes';
+
+  @override
+  String get appSettings_maxMessageRetriesSubtitle =>
+      'Número de intentos de reintento antes de marcar un mensaje como fallido.';
+
+  @override
+  String path_routeWeight(String weight, String max) {
+    return '$weight/$max';
+  }
+
+  @override
   String get appSettings_battery => 'Batería';
 
   @override
@@ -858,6 +990,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get contacts_groupNameRequired => 'El nombre del grupo es obligatorio';
 
   @override
+  String get contacts_groupNameReserved =>
+      'Este nombre de grupo está reservado';
+
+  @override
   String contacts_groupAlreadyExists(String name) {
     return 'El grupo \"$name\" ya existe';
   }
@@ -895,6 +1031,42 @@ class AppLocalizationsEs extends AppLocalizations {
   String contacts_lastSeenDaysAgo(int days) {
     return '~ $days días';
   }
+
+  @override
+  String get contact_info => 'Información de contacto';
+
+  @override
+  String get contact_settings => 'Configuración de contacto';
+
+  @override
+  String get contact_telemetry => 'Telemetría';
+
+  @override
+  String get contact_lastSeen => 'Visto por última vez';
+
+  @override
+  String get contact_clearChat => 'Borrar chat';
+
+  @override
+  String get contact_teleBase => 'Base de Telemetría';
+
+  @override
+  String get contact_teleBaseSubtitle =>
+      'Permitir el intercambio de nivel de batería y telemetría básica';
+
+  @override
+  String get contact_teleLoc => 'Ubicación de telemetría';
+
+  @override
+  String get contact_teleLocSubtitle =>
+      'Permitir el intercambio de datos de ubicación';
+
+  @override
+  String get contact_teleEnv => 'Entorno de Telemetría';
+
+  @override
+  String get contact_teleEnvSubtitle =>
+      'Permitir el intercambio de datos de sensores de entorno';
 
   @override
   String get channels_title => 'Canales';
@@ -1475,6 +1647,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get map_shareMarkerHere => 'Compartir marcador aquí';
 
   @override
+  String get map_setAsMyLocation => 'Establecer mi ubicación';
+
+  @override
   String get map_pinLabel => 'Etiqueta de marcador';
 
   @override
@@ -1520,6 +1695,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get map_otherNodes => 'Otros Nodos';
 
   @override
+  String get map_showOverlaps => 'Superposiciones de tecla repetidora';
+
+  @override
   String get map_keyPrefix => 'Prefijo de clave';
 
   @override
@@ -1537,6 +1715,9 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get map_showGuessedLocations =>
       'Mostrar las ubicaciones estimadas de los nodos.';
+
+  @override
+  String get map_showDiscoveryContacts => 'Mostrar Contactos de Descubrimiento';
 
   @override
   String get map_guessedLocation => 'Ubicación estimada';
@@ -1561,6 +1742,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get map_runTrace => 'Ejecutar Rastreo de Ruta';
+
+  @override
+  String get map_runTraceWithReturnPath => 'Volver atrás por el mismo camino.';
 
   @override
   String get map_removeLast => 'Eliminar último';
@@ -3315,4 +3499,100 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get discoveredContacts_deleteContactAllContent =>
       '¿Está seguro de que desea eliminar todos los contactos descubiertos!';
+
+  @override
+  String get chat_sendCooldown =>
+      'Por favor, espere un momento antes de reenviar.';
+
+  @override
+  String get appSettings_jumpToOldestUnread =>
+      'Salta a los mensajes más antiguos sin leer';
+
+  @override
+  String get appSettings_jumpToOldestUnreadSubtitle =>
+      'Cuando abras una conversación con mensajes sin leer, desplázate hacia el primer mensaje sin leer en lugar del más reciente.';
+
+  @override
+  String get appSettings_languageHu => 'Húngaro';
+
+  @override
+  String get appSettings_languageJa => 'Japonés';
+
+  @override
+  String get appSettings_languageKo => 'Coreano';
+
+  @override
+  String get radioStats_tooltip => 'Estadísticas de radio y malla';
+
+  @override
+  String get radioStats_screenTitle => 'Estadísticas de radio';
+
+  @override
+  String get radioStats_notConnected =>
+      'Conéctese a un dispositivo para visualizar estadísticas de radio.';
+
+  @override
+  String get radioStats_firmwareTooOld =>
+      'Las estadísticas de radio requieren un firmware compatible v8 o posterior.';
+
+  @override
+  String get radioStats_waiting => 'Esperando datos…';
+
+  @override
+  String radioStats_noiseFloor(int noiseDbm) {
+    return 'Nivel de ruido: $noiseDbm dBm';
+  }
+
+  @override
+  String radioStats_lastRssi(int rssiDbm) {
+    return 'Último RSSI: $rssiDbm dBm';
+  }
+
+  @override
+  String radioStats_lastSnr(String snr) {
+    return 'Último SNR: $snr dB';
+  }
+
+  @override
+  String radioStats_txAir(int seconds) {
+    return 'Tiempo de emisión en Texas (total): $seconds s';
+  }
+
+  @override
+  String radioStats_rxAir(int seconds) {
+    return 'Tiempo de transmisión de RX (total): $seconds s';
+  }
+
+  @override
+  String get radioStats_chartCaption =>
+      'Nivel de ruido (dBm) en muestras recientes.';
+
+  @override
+  String radioStats_stripNoise(int noiseDbm) {
+    return 'Nivel de ruido: $noiseDbm dBm';
+  }
+
+  @override
+  String get radioStats_stripWaiting => 'Obteniendo estadísticas de la radio…';
+
+  @override
+  String get radioStats_settingsTile => 'Estadísticas de radio';
+
+  @override
+  String get radioStats_settingsSubtitle =>
+      'Nivel de ruido, RSSI, SNR y tiempo de transmisión';
+
+  @override
+  String get scanner_linuxPairingShowPin => 'Mostrar PIN';
+
+  @override
+  String get scanner_linuxPairingHidePin => 'Ocultar PIN';
+
+  @override
+  String get scanner_linuxPairingPinTitle => 'PIN de emparejamiento Bluetooth';
+
+  @override
+  String scanner_linuxPairingPinPrompt(String deviceName) {
+    return 'Introduzca el PIN para $deviceName (déjelo en blanco si no hay ninguno).';
+  }
 }

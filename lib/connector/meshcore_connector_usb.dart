@@ -53,6 +53,9 @@ class MeshCoreUsbManager {
   }
 
   Future<void> disconnect() async {
+    if (!_service.isConnected && _activePortKey == null) {
+      return;
+    }
     _debugLog?.info('UsbManager.disconnect', tag: 'USB');
     await _service.disconnect();
     _activePortKey = null;
@@ -60,6 +63,8 @@ class MeshCoreUsbManager {
   }
 
   Future<void> write(Uint8List data) => _service.write(data);
+
+  Future<void> writeRaw(Uint8List data) => _service.writeRaw(data);
 
   // --- Label management ---
   void updateConnectedLabel(String selfName) {
