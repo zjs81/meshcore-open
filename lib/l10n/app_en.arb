@@ -2046,6 +2046,35 @@
   "radioStats_stripWaiting": "Fetching radio stats…",
   "radioStats_settingsTile": "Radio stats",
   "radioStats_settingsSubtitle": "Noise floor, RSSI, SNR, and airtime",
+
+  "translation_title": "Translation",
+  "translation_enableTitle": "Enable translation",
+  "translation_enableSubtitle": "Translate incoming messages and allow pre-send translation.",
+  "translation_composerTitle": "Translate before sending",
+  "translation_composerSubtitle": "Controls the default state of the composer translation icon.",
+  "translation_targetLanguage": "Target language",
+  "translation_useAppLanguage": "Use app language",
+  "translation_downloadedModelLabel": "Downloaded model",
+  "translation_presetModelLabel": "Preset Hugging Face model",
+  "translation_manualUrlLabel": "Manual model URL",
+  "translation_downloadModel": "Download model",
+  "translation_downloading": "Downloading...",
+  "translation_working": "Working...",
+  "translation_stop": "Stop",
+  "translation_mergingChunks": "Merging downloaded chunks into final file...",
+  "translation_downloadedModels": "Downloaded models",
+  "translation_deleteModel": "Delete model",
+  "translation_modelDownloaded": "Translation model downloaded.",
+  "translation_downloadStopped": "Download stopped.",
+  "translation_downloadFailed": "Download failed: {error}",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_enterUrlFirst": "Enter a model URL first.",
   "scanner_linuxPairingShowPin": "Show PIN",
   "scanner_linuxPairingHidePin": "Hide PIN",
   "scanner_linuxPairingPinTitle": "Bluetooth Pairing PIN",
@@ -2056,5 +2085,19 @@
         "type": "String"
       }
     }
-  }
+  },
+  "translation_messageTranslation": "Message translation",
+  "translation_translateBeforeSending": "Translate before sending",
+  "translation_composerEnabledHint": "Messages will be translated before send.",
+  "translation_composerDisabledHint": "Send messages in the original typed language.",
+  "translation_translateTo": "Translate to {language}",
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_translationOptions": "Translation options",
+  "translation_systemLanguage": "System language"
 }

@@ -2049,6 +2049,34 @@
   "contact_teleEnvSubtitle": "Engedje meg az érzékelő adatok megosztását",
   "map_showOverlaps": "Az ismétlő kulcsok ütköznek",
   "map_runTraceWithReturnPath": "Visszaforduljon az eredeti úton.",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_title": "Fordítás",
+  "translation_enableTitle": "Engedje meg a fordítást",
+  "translation_enableSubtitle": "Fordítsa az érkező üzeneteket, és lehetővé tegye a küldés előtti fordítást.",
+  "translation_composerTitle": "Fordítsa el, mielőtt elküldi",
+  "translation_composerSubtitle": "Ellenőrzi a zeneszerző fordítási ikon alapértékét.",
+  "translation_targetLanguage": "Célnyelv",
+  "translation_useAppLanguage": "Használja az alkalmazás nyelvének beállítását.",
+  "translation_downloadedModelLabel": "Letöltött modell",
+  "translation_presetModelLabel": "Előre definiált Hugging Face-modell",
+  "translation_manualUrlLabel": "Manuális modell URL",
+  "translation_downloadModel": "Letöltés",
+  "translation_downloading": "Letöltés...",
+  "translation_working": "Munkában vagyok...",
+  "translation_stop": "Halt",
+  "translation_mergingChunks": "A letöltött részek összeállítása a végleges fájlba...",
+  "translation_downloadedModels": "Letöltött modelok",
+  "translation_deleteModel": "Törölje a modellt",
+  "translation_modelDownloaded": "Fordítási modell letöltve.",
+  "translation_downloadStopped": "A letöltés leállt.",
+  "translation_downloadFailed": "Letöltés sikertelen: {error}",
+  "translation_enterUrlFirst": "Addon először egy modell URL-t.",
   "@scanner_linuxPairingPinPrompt": {
     "placeholders": {
       "deviceName": {
@@ -2056,8 +2084,22 @@
       }
     }
   },
-  "scanner_linuxPairingHidePin": "PIN elrejtése",
-  "scanner_linuxPairingShowPin": "PIN megjelenítése",
+  "scanner_linuxPairingShowPin": "Megjelenítse a PIN-kódot",
+  "scanner_linuxPairingPinPrompt": "Adja meg a PIN kódot a {deviceName} számára (hagyja üresen, ha nincs).",
+  "scanner_linuxPairingHidePin": "Rejtse el a PIN-kódot",
   "scanner_linuxPairingPinTitle": "Bluetooth párosítási PIN",
-  "scanner_linuxPairingPinPrompt": "Adja meg a(z) {deviceName} PIN-kódját (hagyja üresen, ha nincs)."
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_translateBeforeSending": "Fordítsa el, mielőtt elküldi",
+  "translation_composerEnabledHint": "A üzenetek fordítását a küldés előtt elvégezzük.",
+  "translation_messageTranslation": "Üzenet fordítása",
+  "translation_composerDisabledHint": "Küldj üzeneteket az eredeti, nyomtatott nyelven.",
+  "translation_translateTo": "Fordítás {language}-ra",
+  "translation_translationOptions": "Fordítási lehetőségek",
+  "translation_systemLanguage": "Rendszer nyelvé"
 }

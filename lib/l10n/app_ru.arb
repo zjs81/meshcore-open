@@ -1251,6 +1251,34 @@
   "radioStats_stripWaiting": "Получение данных о радио…",
   "radioStats_settingsTile": "Статистика радиовещания",
   "radioStats_settingsSubtitle": "Уровень шума, RSSI, SNR и время передачи",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_enableSubtitle": "Переводить входящие сообщения и позволять предварительный перевод перед отправкой.",
+  "translation_composerTitle": "Переводить перед отправкой",
+  "translation_title": "Перевод",
+  "translation_enableTitle": "Включить перевод",
+  "translation_composerSubtitle": "Управляет исходным состоянием значка перевода, предоставляемого редактором.",
+  "translation_targetLanguage": "Целевой язык",
+  "translation_useAppLanguage": "Используйте язык приложения",
+  "translation_downloadedModelLabel": "Загруженная модель",
+  "translation_presetModelLabel": "Предопределенная модель от Hugging Face",
+  "translation_manualUrlLabel": "Ссылка на руководство",
+  "translation_downloadModel": "Скачать модель",
+  "translation_downloading": "Загрузка...",
+  "translation_stop": "Прекратите",
+  "translation_working": "Работа...",
+  "translation_mergingChunks": "Объединение скачанных фрагментов в один финальный файл...",
+  "translation_downloadedModels": "Загруженные модели",
+  "translation_deleteModel": "Удалить модель",
+  "translation_modelDownloaded": "Модель перевода загружена.",
+  "translation_downloadStopped": "Процесс загрузки был прерван.",
+  "translation_downloadFailed": "Не удалось скачать: {error}",
+  "translation_enterUrlFirst": "Сначала введите URL модели.",
   "@scanner_linuxPairingPinPrompt": {
     "placeholders": {
       "deviceName": {
@@ -1258,8 +1286,22 @@
       }
     }
   },
-  "scanner_linuxPairingShowPin": "Показать PIN",
-  "scanner_linuxPairingPinPrompt": "Введите PIN‑код для {deviceName} (оставьте пустым, если нет).",
-  "scanner_linuxPairingHidePin": "Скрыть PIN",
-  "scanner_linuxPairingPinTitle": "PIN‑код сопряжения Bluetooth"
+  "scanner_linuxPairingPinPrompt": "Введите PIN-код для {deviceName} (оставьте поле пустым, если PIN-код отсутствует).",
+  "scanner_linuxPairingHidePin": "Скрыть PIN-код",
+  "scanner_linuxPairingPinTitle": "PIN для сопряжения устройств по Bluetooth",
+  "scanner_linuxPairingShowPin": "Показать PIN-код",
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_translateBeforeSending": "Перевести перед отправкой",
+  "translation_composerEnabledHint": "Сообщения будут переведены перед отправкой.",
+  "translation_messageTranslation": "Перевод сообщения",
+  "translation_composerDisabledHint": "Отправляйте сообщения на языке, в котором они были изначально набраны.",
+  "translation_translateTo": "Перевести на {language}",
+  "translation_translationOptions": "Варианты перевода",
+  "translation_systemLanguage": "Язык системы"
 }

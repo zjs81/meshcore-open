@@ -2011,6 +2011,34 @@
   "radioStats_stripWaiting": "Извличане на данни за радиото…",
   "radioStats_settingsTile": "Статистически данни за радиостанции",
   "radioStats_settingsSubtitle": "Ниво на шума, RSSI, SNR и време на пренос",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_enableTitle": "Активирайте превода",
+  "translation_title": "Превод",
+  "translation_composerTitle": "Преведете преди да изпратите",
+  "translation_enableSubtitle": "Превеждайте входящите съобщения и позволявайте предварително превеждане преди изпращане.",
+  "translation_composerSubtitle": "Контролира началния статус на иконата за превод, създадена от композитора.",
+  "translation_targetLanguage": "Целеви език",
+  "translation_useAppLanguage": "Използвайте езика на приложението",
+  "translation_downloadedModelLabel": "Изтегнат модел",
+  "translation_presetModelLabel": "Предварително конфигуриран модел от Hugging Face",
+  "translation_manualUrlLabel": "URL на ръководството",
+  "translation_downloadModel": "Изтеглете модела",
+  "translation_downloading": "Изтегляне...",
+  "translation_working": "Работа...",
+  "translation_stop": "Спрете",
+  "translation_mergingChunks": "Съединяване на изтеглените части в един файл...",
+  "translation_downloadedModels": "Изтеглени модели",
+  "translation_deleteModel": "Изтриване на модела",
+  "translation_modelDownloaded": "Моделът за превод е изтеглен.",
+  "translation_downloadStopped": "Изтеглянето беше прекъснато.",
+  "translation_downloadFailed": "Не успях да изтегля: {error}",
+  "translation_enterUrlFirst": "Въведете първо URL адрес на модела.",
   "@scanner_linuxPairingPinPrompt": {
     "placeholders": {
       "deviceName": {
@@ -2018,8 +2046,22 @@
       }
     }
   },
-  "scanner_linuxPairingHidePin": "Скрий ПИН",
+  "scanner_linuxPairingPinTitle": "PIN за съвпадение чрез Bluetooth",
+  "scanner_linuxPairingPinPrompt": "Въведете PIN кода за {deviceName} (оставете празно, ако няма такъв).",
+  "scanner_linuxPairingHidePin": "Скриване на PIN кода",
   "scanner_linuxPairingShowPin": "Покажи PIN",
-  "scanner_linuxPairingPinTitle": "PIN код за сдвояване на Bluetooth",
-  "scanner_linuxPairingPinPrompt": "Въведете ПИН за {deviceName} (оставете празно, ако няма)."
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_composerDisabledHint": "Изпращайте съобщения на оригиналния въведен език.",
+  "translation_translateBeforeSending": "Преведете преди да изпратите",
+  "translation_messageTranslation": "Превод на съобщението",
+  "translation_composerEnabledHint": "Съобщенията ще бъдат преведени, преди да бъдат изпратени.",
+  "translation_translateTo": "Превеждане на {language}",
+  "translation_translationOptions": "Опции за превод",
+  "translation_systemLanguage": "Език на системата"
 }

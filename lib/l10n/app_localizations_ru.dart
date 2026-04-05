@@ -3594,16 +3594,111 @@ class AppLocalizationsRu extends AppLocalizations {
       'Уровень шума, RSSI, SNR и время передачи';
 
   @override
-  String get scanner_linuxPairingShowPin => 'Показать PIN';
+  String get translation_title => 'Перевод';
 
   @override
-  String get scanner_linuxPairingHidePin => 'Скрыть PIN';
+  String get translation_enableTitle => 'Включить перевод';
 
   @override
-  String get scanner_linuxPairingPinTitle => 'PIN‑код сопряжения Bluetooth';
+  String get translation_enableSubtitle =>
+      'Переводить входящие сообщения и позволять предварительный перевод перед отправкой.';
+
+  @override
+  String get translation_composerTitle => 'Переводить перед отправкой';
+
+  @override
+  String get translation_composerSubtitle =>
+      'Управляет исходным состоянием значка перевода, предоставляемого редактором.';
+
+  @override
+  String get translation_targetLanguage => 'Целевой язык';
+
+  @override
+  String get translation_useAppLanguage => 'Используйте язык приложения';
+
+  @override
+  String get translation_downloadedModelLabel => 'Загруженная модель';
+
+  @override
+  String get translation_presetModelLabel =>
+      'Предопределенная модель от Hugging Face';
+
+  @override
+  String get translation_manualUrlLabel => 'Ссылка на руководство';
+
+  @override
+  String get translation_downloadModel => 'Скачать модель';
+
+  @override
+  String get translation_downloading => 'Загрузка...';
+
+  @override
+  String get translation_working => 'Работа...';
+
+  @override
+  String get translation_stop => 'Прекратите';
+
+  @override
+  String get translation_mergingChunks =>
+      'Объединение скачанных фрагментов в один финальный файл...';
+
+  @override
+  String get translation_downloadedModels => 'Загруженные модели';
+
+  @override
+  String get translation_deleteModel => 'Удалить модель';
+
+  @override
+  String get translation_modelDownloaded => 'Модель перевода загружена.';
+
+  @override
+  String get translation_downloadStopped => 'Процесс загрузки был прерван.';
+
+  @override
+  String translation_downloadFailed(String error) {
+    return 'Не удалось скачать: $error';
+  }
+
+  @override
+  String get translation_enterUrlFirst => 'Сначала введите URL модели.';
+
+  @override
+  String get scanner_linuxPairingShowPin => 'Показать PIN-код';
+
+  @override
+  String get scanner_linuxPairingHidePin => 'Скрыть PIN-код';
+
+  @override
+  String get scanner_linuxPairingPinTitle =>
+      'PIN для сопряжения устройств по Bluetooth';
 
   @override
   String scanner_linuxPairingPinPrompt(String deviceName) {
-    return 'Введите PIN‑код для $deviceName (оставьте пустым, если нет).';
+    return 'Введите PIN-код для $deviceName (оставьте поле пустым, если PIN-код отсутствует).';
   }
+
+  @override
+  String get translation_messageTranslation => 'Перевод сообщения';
+
+  @override
+  String get translation_translateBeforeSending => 'Перевести перед отправкой';
+
+  @override
+  String get translation_composerEnabledHint =>
+      'Сообщения будут переведены перед отправкой.';
+
+  @override
+  String get translation_composerDisabledHint =>
+      'Отправляйте сообщения на языке, в котором они были изначально набраны.';
+
+  @override
+  String translation_translateTo(String language) {
+    return 'Перевести на $language';
+  }
+
+  @override
+  String get translation_translationOptions => 'Варианты перевода';
+
+  @override
+  String get translation_systemLanguage => 'Язык системы';
 }

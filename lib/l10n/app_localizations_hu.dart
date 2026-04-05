@@ -3600,16 +3600,112 @@ class AppLocalizationsHu extends AppLocalizations {
       'Háttérzaj, RSSI, zaj-sűrűség, és a használat időtartama';
 
   @override
-  String get scanner_linuxPairingShowPin => 'PIN megjelenítése';
+  String get translation_title => 'Fordítás';
 
   @override
-  String get scanner_linuxPairingHidePin => 'PIN elrejtése';
+  String get translation_enableTitle => 'Engedje meg a fordítást';
+
+  @override
+  String get translation_enableSubtitle =>
+      'Fordítsa az érkező üzeneteket, és lehetővé tegye a küldés előtti fordítást.';
+
+  @override
+  String get translation_composerTitle => 'Fordítsa el, mielőtt elküldi';
+
+  @override
+  String get translation_composerSubtitle =>
+      'Ellenőrzi a zeneszerző fordítási ikon alapértékét.';
+
+  @override
+  String get translation_targetLanguage => 'Célnyelv';
+
+  @override
+  String get translation_useAppLanguage =>
+      'Használja az alkalmazás nyelvének beállítását.';
+
+  @override
+  String get translation_downloadedModelLabel => 'Letöltött modell';
+
+  @override
+  String get translation_presetModelLabel =>
+      'Előre definiált Hugging Face-modell';
+
+  @override
+  String get translation_manualUrlLabel => 'Manuális modell URL';
+
+  @override
+  String get translation_downloadModel => 'Letöltés';
+
+  @override
+  String get translation_downloading => 'Letöltés...';
+
+  @override
+  String get translation_working => 'Munkában vagyok...';
+
+  @override
+  String get translation_stop => 'Halt';
+
+  @override
+  String get translation_mergingChunks =>
+      'A letöltött részek összeállítása a végleges fájlba...';
+
+  @override
+  String get translation_downloadedModels => 'Letöltött modelok';
+
+  @override
+  String get translation_deleteModel => 'Törölje a modellt';
+
+  @override
+  String get translation_modelDownloaded => 'Fordítási modell letöltve.';
+
+  @override
+  String get translation_downloadStopped => 'A letöltés leállt.';
+
+  @override
+  String translation_downloadFailed(String error) {
+    return 'Letöltés sikertelen: $error';
+  }
+
+  @override
+  String get translation_enterUrlFirst => 'Addon először egy modell URL-t.';
+
+  @override
+  String get scanner_linuxPairingShowPin => 'Megjelenítse a PIN-kódot';
+
+  @override
+  String get scanner_linuxPairingHidePin => 'Rejtse el a PIN-kódot';
 
   @override
   String get scanner_linuxPairingPinTitle => 'Bluetooth párosítási PIN';
 
   @override
   String scanner_linuxPairingPinPrompt(String deviceName) {
-    return 'Adja meg a(z) $deviceName PIN-kódját (hagyja üresen, ha nincs).';
+    return 'Adja meg a PIN kódot a $deviceName számára (hagyja üresen, ha nincs).';
   }
+
+  @override
+  String get translation_messageTranslation => 'Üzenet fordítása';
+
+  @override
+  String get translation_translateBeforeSending =>
+      'Fordítsa el, mielőtt elküldi';
+
+  @override
+  String get translation_composerEnabledHint =>
+      'A üzenetek fordítását a küldés előtt elvégezzük.';
+
+  @override
+  String get translation_composerDisabledHint =>
+      'Küldj üzeneteket az eredeti, nyomtatott nyelven.';
+
+  @override
+  String translation_translateTo(String language) {
+    return 'Fordítás $language-ra';
+  }
+
+  @override
+  String get translation_translationOptions => 'Fordítási lehetőségek';
+
+  @override
+  String get translation_systemLanguage => 'Rendszer nyelvé';
 }

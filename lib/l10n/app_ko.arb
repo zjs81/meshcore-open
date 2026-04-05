@@ -2049,6 +2049,34 @@
   "contact_teleEnvSubtitle": "환경 센서 데이터를 공유하도록 허용",
   "map_showOverlaps": "반복 키 중복",
   "map_runTraceWithReturnPath": "원래 경로로 돌아가세요.",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_enableSubtitle": "입력 메시지를 번역하고, 미리 번역 기능을 제공합니다.",
+  "translation_title": "번역",
+  "translation_enableTitle": "번역 기능 활성화",
+  "translation_composerTitle": "보내기 전에 번역",
+  "translation_composerSubtitle": "컴포저 번역 아이콘의 기본 상태를 제어합니다.",
+  "translation_targetLanguage": "목표 언어",
+  "translation_useAppLanguage": "앱 언어 사용",
+  "translation_downloadedModelLabel": "다운로드한 모델",
+  "translation_presetModelLabel": "사전에 설정된 Hugging Face 모델",
+  "translation_manualUrlLabel": "수동 모델 URL",
+  "translation_downloadModel": "모델 다운로드",
+  "translation_downloading": "다운로드 중...",
+  "translation_working": "업무 중...",
+  "translation_stop": "멈춰",
+  "translation_mergingChunks": "다운로드한 파일 조각들을 최종 파일로 병합 중...",
+  "translation_downloadedModels": "다운로드한 모델",
+  "translation_deleteModel": "모델 삭제",
+  "translation_modelDownloaded": "번역 모델이 다운로드되었습니다.",
+  "translation_downloadStopped": "다운로드 중단됨.",
+  "translation_downloadFailed": "다운로드 실패: {error}",
+  "translation_enterUrlFirst": "먼저 모델 URL을 입력하세요.",
   "@scanner_linuxPairingPinPrompt": {
     "placeholders": {
       "deviceName": {
@@ -2056,8 +2084,22 @@
       }
     }
   },
-  "scanner_linuxPairingShowPin": "PIN 표시",
   "scanner_linuxPairingPinTitle": "블루투스 페어링 PIN",
   "scanner_linuxPairingHidePin": "PIN 숨기기",
-  "scanner_linuxPairingPinPrompt": "{deviceName}에 대한 PIN을 입력하세요 (없으면 비워두세요)."
+  "scanner_linuxPairingShowPin": "PIN 보기",
+  "scanner_linuxPairingPinPrompt": "{deviceName}의 PIN을 입력하세요 (해당하는 경우에만 입력).",
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_composerEnabledHint": "메시지는 전송하기 전에 번역될 것입니다.",
+  "translation_translateBeforeSending": "보내기 전에 번역",
+  "translation_messageTranslation": "메시지 번역",
+  "translation_composerDisabledHint": "원래 작성된 언어로 메시지를 보내세요.",
+  "translation_translateTo": "{language} 번역",
+  "translation_translationOptions": "번역 옵션",
+  "translation_systemLanguage": "시스템 언어"
 }

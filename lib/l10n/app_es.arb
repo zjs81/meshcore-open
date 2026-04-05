@@ -2039,6 +2039,34 @@
   "radioStats_stripWaiting": "Obteniendo estadísticas de la radio…",
   "radioStats_settingsTile": "Estadísticas de radio",
   "radioStats_settingsSubtitle": "Nivel de ruido, RSSI, SNR y tiempo de transmisión",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_title": "Traducción",
+  "translation_enableSubtitle": "Traducir los mensajes entrantes y permitir la traducción previa al envío.",
+  "translation_enableTitle": "Habilitar la traducción",
+  "translation_composerTitle": "Traducir antes de enviar",
+  "translation_composerSubtitle": "Controla el estado predeterminado del icono de traducción del compositor.",
+  "translation_targetLanguage": "Idioma de destino",
+  "translation_useAppLanguage": "Utilizar el idioma de la aplicación",
+  "translation_downloadedModelLabel": "Modelo descargado",
+  "translation_presetModelLabel": "Modelo predefinido de Hugging Face",
+  "translation_manualUrlLabel": "URL del modelo manual",
+  "translation_downloadModel": "Descargar el modelo",
+  "translation_downloading": "Descargando...",
+  "translation_working": "Trabajando...",
+  "translation_stop": "¡Detente!",
+  "translation_mergingChunks": "Combinando los fragmentos descargados en el archivo final...",
+  "translation_downloadedModels": "Modelos descargados",
+  "translation_deleteModel": "Eliminar modelo",
+  "translation_modelDownloaded": "Modelo de traducción descargado.",
+  "translation_downloadStopped": "La descarga se ha detenido.",
+  "translation_downloadFailed": "No se pudo descargar: {error}",
+  "translation_enterUrlFirst": "Primero, introduzca la URL del modelo.",
   "@scanner_linuxPairingPinPrompt": {
     "placeholders": {
       "deviceName": {
@@ -2046,8 +2074,22 @@
       }
     }
   },
-  "scanner_linuxPairingShowPin": "Mostrar PIN",
-  "scanner_linuxPairingPinTitle": "PIN de emparejamiento Bluetooth",
+  "scanner_linuxPairingPinPrompt": "Introduzca el código PIN para {deviceName} (deje en blanco si no hay ninguno).",
+  "scanner_linuxPairingShowPin": "Mostrar código PIN",
+  "scanner_linuxPairingPinTitle": "PIN para emparejar dispositivos Bluetooth",
   "scanner_linuxPairingHidePin": "Ocultar PIN",
-  "scanner_linuxPairingPinPrompt": "Introduzca el PIN para {deviceName} (déjelo en blanco si no hay ninguno)."
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_composerDisabledHint": "Envía mensajes utilizando el lenguaje escrito original.",
+  "translation_composerEnabledHint": "Los mensajes serán traducidos antes de ser enviados.",
+  "translation_messageTranslation": "Traducción del mensaje",
+  "translation_translateBeforeSending": "Traducir antes de enviar",
+  "translation_translateTo": "Traducir a {language}",
+  "translation_translationOptions": "Opciones de traducción",
+  "translation_systemLanguage": "Idioma del sistema"
 }

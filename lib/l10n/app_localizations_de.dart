@@ -3590,16 +3590,113 @@ class AppLocalizationsDe extends AppLocalizations {
       'Rauschpegel, RSSI, Signal-Rausch-Verhältnis (SNR) und Nutzzeit';
 
   @override
+  String get translation_title => 'Übersetzung';
+
+  @override
+  String get translation_enableTitle => 'Aktivieren Sie die Übersetzung';
+
+  @override
+  String get translation_enableSubtitle =>
+      'Nachrichten empfangen und übersetzen sowie die Möglichkeit bieten, Nachrichten vor dem Versenden zu übersetzen.';
+
+  @override
+  String get translation_composerTitle => 'Übersetzen Sie vor dem Versenden';
+
+  @override
+  String get translation_composerSubtitle =>
+      'Steuert den Standardzustand des Icons für die Übersetzung des Komponisten.';
+
+  @override
+  String get translation_targetLanguage => 'Zielsprache';
+
+  @override
+  String get translation_useAppLanguage => 'Verwenden Sie die App-Sprache';
+
+  @override
+  String get translation_downloadedModelLabel => 'Heruntergeladenes Modell';
+
+  @override
+  String get translation_presetModelLabel =>
+      'Vordefinierter Hugging Face-Modell';
+
+  @override
+  String get translation_manualUrlLabel => 'URL für das manuelle Modell';
+
+  @override
+  String get translation_downloadModel => 'Modell herunterladen';
+
+  @override
+  String get translation_downloading => 'Herunterladen...';
+
+  @override
+  String get translation_working => 'Arbeiten...';
+
+  @override
+  String get translation_stop => 'Stopp';
+
+  @override
+  String get translation_mergingChunks =>
+      'Zusammenführen der heruntergeladenen Teile in die finale Datei...';
+
+  @override
+  String get translation_downloadedModels => 'Heruntergeladene Modelle';
+
+  @override
+  String get translation_deleteModel => 'Modell löschen';
+
+  @override
+  String get translation_modelDownloaded =>
+      'Übersetzungsmotor heruntergeladen.';
+
+  @override
+  String get translation_downloadStopped => 'Herunterladen abgebrochen.';
+
+  @override
+  String translation_downloadFailed(String error) {
+    return 'Download fehlgeschlagen: $error';
+  }
+
+  @override
+  String get translation_enterUrlFirst =>
+      'Geben Sie zunächst die URL eines Modells ein.';
+
+  @override
   String get scanner_linuxPairingShowPin => 'PIN anzeigen';
 
   @override
-  String get scanner_linuxPairingHidePin => 'PIN ausblenden';
+  String get scanner_linuxPairingHidePin => 'PIN verbergen';
 
   @override
-  String get scanner_linuxPairingPinTitle => 'Bluetooth-Paarungs-PIN';
+  String get scanner_linuxPairingPinTitle => 'PIN für die Bluetooth-Verbindung';
 
   @override
   String scanner_linuxPairingPinPrompt(String deviceName) {
-    return 'Geben Sie die PIN für $deviceName ein (leer lassen, falls keine).';
+    return 'Geben Sie den PIN-Code für $deviceName ein (lassen Sie das Feld leer, falls kein PIN-Code vorhanden ist).';
   }
+
+  @override
+  String get translation_messageTranslation => 'Nachricht übersetzen';
+
+  @override
+  String get translation_translateBeforeSending =>
+      'Übersetzen Sie vor dem Versenden';
+
+  @override
+  String get translation_composerEnabledHint =>
+      'Die Nachrichten werden vor dem Versenden übersetzt.';
+
+  @override
+  String get translation_composerDisabledHint =>
+      'Nachrichten in der ursprünglichen, getippten Sprache senden.';
+
+  @override
+  String translation_translateTo(String language) {
+    return 'Übersetzen Sie auf $language';
+  }
+
+  @override
+  String get translation_translationOptions => 'Übersetzungsmöglichkeiten';
+
+  @override
+  String get translation_systemLanguage => 'Sprache des Systems';
 }

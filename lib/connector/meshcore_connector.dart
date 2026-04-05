@@ -14,6 +14,7 @@ import '../models/companion_radio_stats.dart';
 import '../models/contact.dart';
 import '../models/message.dart';
 import '../models/path_selection.dart';
+import '../models/translation_support.dart';
 import '../helpers/reaction_helper.dart';
 import '../helpers/smaz.dart';
 import '../services/app_debug_log_service.dart';
@@ -26,6 +27,7 @@ import '../services/path_history_service.dart';
 import '../services/app_settings_service.dart';
 import '../services/background_service.dart';
 import '../services/timeout_prediction_service.dart';
+import '../services/translation_service.dart';
 import '../services/notification_service.dart';
 import 'meshcore_connector_usb.dart';
 import 'meshcore_connector_tcp.dart';
@@ -180,6 +182,7 @@ class MeshCoreConnector extends ChangeNotifier {
   bool _isLoadingChannels = false;
   bool _hasLoadedChannels = false;
   TimeoutPredictionService? _timeoutPredictionService;
+  TranslationService? _translationService;
   // Intentionally global (not per-contact): tracks overall network activity.
   // Frequent RX from any source indicates a busy network with more collisions.
   DateTime _lastRxTime = DateTime.now();
@@ -482,7 +485,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
   String _messageMergeKey(Message message) {
     final messageId = message.messageId;
-    if (messageId != null && messageId.isNotEmpty) {
+    if (messageId.isNotEmpty) {
       return 'id:$messageId';
     }
     return 'fallback:${message.senderKeyHex}:${message.isOutgoing}:${message.isCli}:${message.timestamp.millisecondsSinceEpoch}:${message.text}';
@@ -721,6 +724,7 @@ class MeshCoreConnector extends ChangeNotifier {
     required MessageRetryService retryService,
     required PathHistoryService pathHistoryService,
     AppSettingsService? appSettingsService,
+    TranslationService? translationService,
     BleDebugLogService? bleDebugLogService,
     AppDebugLogService? appDebugLogService,
     BackgroundService? backgroundService,
@@ -729,6 +733,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _retryService = retryService;
     _pathHistoryService = pathHistoryService;
     _appSettingsService = appSettingsService;
+    _translationService = translationService;
     _bleDebugLogService = bleDebugLogService;
     _appDebugLogService = appDebugLogService;
     _backgroundService = backgroundService;
@@ -950,6 +955,126 @@ class MeshCoreConnector extends ChangeNotifier {
       );
       notifyListeners();
     }
+  }
+
+  Future<void> _translateIncomingContactMessage(
+    String contactKeyHex,
+    Message message,
+  ) async {
+    try {
+      final service = _translationService;
+      if (service == null ||
+          !service.shouldTranslateIncoming(
+            text: message.text,
+            isCli: message.isCli,
+            isOutgoing: message.isOutgoing,
+          )) {
+        return;
+      }
+      final targetLanguageCode = service.resolvedIncomingLanguageCode(
+        _appSettingsService?.settings.languageOverride,
+      );
+      final result = await service.translateIncomingText(
+        text: message.text,
+        targetLanguageCode: targetLanguageCode,
+      );
+      if (result == null) {
+        return;
+      }
+      final translated = result.status == MessageTranslationStatus.completed
+          ? result.translatedText
+          : null;
+      _updateStoredContactMessage(
+        contactKeyHex,
+        message.messageId,
+        (current) => current.copyWith(
+          translatedText: translated,
+          translatedLanguageCode: result.detectedLanguageCode,
+          translationStatus: result.status,
+          translationModelId: result.modelId,
+        ),
+      );
+    } catch (error) {
+      appLogger.warn('Translation failed for contact message: $error');
+    }
+  }
+
+  Future<void> _translateIncomingChannelMessage(
+    int channelIndex,
+    ChannelMessage message,
+  ) async {
+    try {
+      final service = _translationService;
+      if (service == null ||
+          !service.shouldTranslateIncoming(
+            text: message.text,
+            isCli: false,
+            isOutgoing: message.isOutgoing,
+          )) {
+        return;
+      }
+      final targetLanguageCode = service.resolvedIncomingLanguageCode(
+        _appSettingsService?.settings.languageOverride,
+      );
+      final result = await service.translateIncomingText(
+        text: message.text,
+        targetLanguageCode: targetLanguageCode,
+      );
+      if (result == null) {
+        return;
+      }
+      final translated = result.status == MessageTranslationStatus.completed
+          ? result.translatedText
+          : null;
+      _updateStoredChannelMessage(
+        channelIndex,
+        message.messageId,
+        (current) => current.copyWith(
+          translatedText: translated,
+          translatedLanguageCode: result.detectedLanguageCode,
+          translationStatus: result.status,
+          translationModelId: result.modelId,
+        ),
+      );
+    } catch (error) {
+      appLogger.warn('Translation failed for channel message: $error');
+    }
+  }
+
+  void _updateStoredContactMessage(
+    String contactKeyHex,
+    String messageId,
+    Message Function(Message current) update,
+  ) {
+    final messages = _conversations[contactKeyHex];
+    if (messages == null) {
+      return;
+    }
+    final index = messages.indexWhere((entry) => entry.messageId == messageId);
+    if (index < 0) {
+      return;
+    }
+    messages[index] = update(messages[index]);
+    _messageStore.saveMessages(contactKeyHex, messages);
+    notifyListeners();
+  }
+
+  void _updateStoredChannelMessage(
+    int channelIndex,
+    String messageId,
+    ChannelMessage Function(ChannelMessage current) update,
+  ) {
+    final messages = _channelMessages[channelIndex];
+    if (messages == null) {
+      return;
+    }
+    final index = messages.indexWhere((entry) => entry.messageId == messageId);
+    if (index < 0) {
+      return;
+    }
+    messages[index] = update(messages[index]);
+    _channelMessageStore.saveChannelMessages(channelIndex, messages);
+    notifyListeners();
   }
 
   void _recordPathResult(
@@ -2116,6 +2241,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _channelSyncTimeout?.cancel();
     _channelSyncTimeout = null;
     _channelSyncRetries = 0;
+    await _translationService?.releaseModel();
 
     if (!skipBleDeviceDisconnect) {
       try {
@@ -2395,7 +2521,13 @@ class MeshCoreConnector extends ChangeNotifier {
     await sendFrame(buildGetContactByKeyFrame(pubKey));
   }
 
-  Future<void> sendMessage(Contact contact, String text) async {
+  Future<void> sendMessage(
+    Contact contact,
+    String text, {
+    String? originalText,
+    String? translatedLanguageCode,
+    String? translationModelId,
+  }) async {
     if (!isConnected || text.isEmpty) return;
 
     // Check if this is a reaction - apply locally with pending status and route through retry service
@@ -2426,7 +2558,13 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     if (_retryService != null) {
-      await _retryService!.sendMessageWithRetry(contact: contact, text: text);
+      await _retryService!.sendMessageWithRetry(
+        contact: contact,
+        text: text,
+        originalText: originalText,
+        translatedLanguageCode: translatedLanguageCode,
+        translationModelId: translationModelId,
+      );
     } else {
       // Fallback to old behavior if retry service not initialized
       final resolved = resolvePathSelection(contact);
@@ -2435,6 +2573,9 @@ class MeshCoreConnector extends ChangeNotifier {
         text,
         pathLength: resolved.useFlood ? -1 : resolved.hopCount,
         pathBytes: Uint8List.fromList(resolved.pathBytes),
+        originalText: originalText,
+        translatedLanguageCode: translatedLanguageCode,
+        translationModelId: translationModelId,
       );
       _addMessage(contact.publicKeyHex, message);
       notifyListeners();
@@ -2740,7 +2881,13 @@ class MeshCoreConnector extends ChangeNotifier {
     }
   }
 
-  Future<void> sendChannelMessage(Channel channel, String text) async {
+  Future<void> sendChannelMessage(
+    Channel channel,
+    String text, {
+    String? originalText,
+    String? translatedLanguageCode,
+    String? translationModelId,
+  }) async {
     if (!isConnected || text.isEmpty) return;
 
     // Check if this is a reaction - if so, process it immediately instead of adding as a message
@@ -2787,6 +2934,9 @@ class MeshCoreConnector extends ChangeNotifier {
       text,
       _selfName ?? 'Me',
       channel.index,
+      originalText: originalText,
+      translatedLanguageCode: translatedLanguageCode,
+      translationModelId: translationModelId,
     );
     _addChannelMessage(channel.index, message);
     _pendingChannelSentQueue.add(message.messageId);
@@ -4055,6 +4205,11 @@ class MeshCoreConnector extends ChangeNotifier {
         }
       }
       _addMessage(message.senderKeyHex, message);
+      if (!message.isOutgoing) {
+        unawaited(
+          _translateIncomingContactMessage(message.senderKeyHex, message),
+        );
+      }
       _maybeIncrementContactUnread(message);
       notifyListeners();
 
@@ -4287,6 +4442,11 @@ class MeshCoreConnector extends ChangeNotifier {
         pathBytes: message.pathBytes,
       );
       final isNew = _addChannelMessage(message.channelIndex!, message);
+      if (isNew && !message.isOutgoing) {
+        unawaited(
+          _translateIncomingChannelMessage(message.channelIndex!, message),
+        );
+      }
       _maybeIncrementChannelUnread(message, isNew: isNew);
       notifyListeners();
       if (isNew) {
@@ -4366,6 +4526,9 @@ class MeshCoreConnector extends ChangeNotifier {
             pathBytes: message.pathBytes,
           );
           final isNew = _addChannelMessage(channel.index, message);
+          if (isNew && !message.isOutgoing) {
+            unawaited(_translateIncomingChannelMessage(channel.index, message));
+          }
           _maybeIncrementChannelUnread(message, isNew: isNew);
           notifyListeners();
           if (isNew) {
@@ -5060,6 +5223,11 @@ class MeshCoreConnector extends ChangeNotifier {
           senderKey: message.senderKey,
           senderName: message.senderName,
           text: replyInfo.actualMessage,
+          originalText: message.originalText,
+          translatedText: message.translatedText,
+          translatedLanguageCode: message.translatedLanguageCode,
+          translationStatus: message.translationStatus,
+          translationModelId: message.translationModelId,
           timestamp: message.timestamp,
           isOutgoing: message.isOutgoing,
           status: message.status,

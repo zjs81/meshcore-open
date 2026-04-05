@@ -2016,6 +2016,34 @@
   "radioStats_stripWaiting": "正在获取收音机数据…",
   "radioStats_settingsTile": "广播统计数据",
   "radioStats_settingsSubtitle": "噪声水平、RSSI、信噪比和空中时间",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_title": "翻译",
+  "translation_enableSubtitle": "翻译收到的消息，并允许在发送前进行翻译。",
+  "translation_composerTitle": "在发送之前进行翻译",
+  "translation_enableTitle": "启用翻译功能",
+  "translation_composerSubtitle": "控制作曲家翻译图标的默认状态。",
+  "translation_targetLanguage": "目标语言",
+  "translation_useAppLanguage": "使用应用程序语言",
+  "translation_downloadedModelLabel": "下载的模型",
+  "translation_presetModelLabel": "预设的 Hugging Face 模型",
+  "translation_downloadModel": "下载模型",
+  "translation_manualUrlLabel": "手动模型网址",
+  "translation_downloading": "正在下载...",
+  "translation_working": "工作中...",
+  "translation_stop": "停止",
+  "translation_mergingChunks": "将下载的片段合并成最终文件...",
+  "translation_downloadedModels": "下载的模型",
+  "translation_deleteModel": "删除模型",
+  "translation_modelDownloaded": "翻译模型已下载。",
+  "translation_downloadStopped": "下载已停止。",
+  "translation_downloadFailed": "下载失败：{error}",
+  "translation_enterUrlFirst": "首先，请输入模型的 URL。",
   "@scanner_linuxPairingPinPrompt": {
     "placeholders": {
       "deviceName": {
@@ -2023,8 +2051,22 @@
       }
     }
   },
-  "scanner_linuxPairingShowPin": "显示 PIN码",
-  "scanner_linuxPairingPinPrompt": "输入 {deviceName} 的 PIN（如果没有，请留空）。",
   "scanner_linuxPairingPinTitle": "蓝牙配对 PIN",
-  "scanner_linuxPairingHidePin": "隐藏 PIN"
+  "scanner_linuxPairingPinPrompt": "输入 {deviceName} 的 PIN 码（如果为空，则留空）。",
+  "scanner_linuxPairingHidePin": "隐藏 PIN",
+  "scanner_linuxPairingShowPin": "显示PIN码",
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_composerDisabledHint": "使用原始的打字方式发送消息。",
+  "translation_messageTranslation": "消息翻译",
+  "translation_composerEnabledHint": "消息将在发送前进行翻译。",
+  "translation_translateBeforeSending": "在发送前进行翻译",
+  "translation_translateTo": "翻译成 {language}",
+  "translation_translationOptions": "翻译选项",
+  "translation_systemLanguage": "系统语言"
 }

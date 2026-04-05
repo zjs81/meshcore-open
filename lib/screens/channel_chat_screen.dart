@@ -11,23 +11,26 @@ import '../connector/meshcore_connector.dart';
 import '../utils/platform_info.dart';
 import '../helpers/chat_scroll_controller.dart';
 import '../connector/meshcore_protocol.dart';
-import '../helpers/link_handler.dart';
 import '../helpers/reaction_helper.dart';
 import '../helpers/utf8_length_limiter.dart';
 import '../helpers/smaz.dart';
 import '../l10n/l10n.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
+import '../models/translation_support.dart';
 import '../services/app_settings_service.dart';
 import '../services/chat_text_scale_service.dart';
+import '../services/translation_service.dart';
 import '../utils/emoji_utils.dart';
 import '../widgets/chat_zoom_wrapper.dart';
 import '../widgets/emoji_picker.dart';
 import '../widgets/gif_message.dart';
 import '../widgets/jump_to_bottom_button.dart';
 import '../widgets/gif_picker.dart';
+import '../widgets/message_translation_button.dart';
 import '../widgets/message_status_icon.dart';
 import '../widgets/radio_stats_entry.dart';
+import '../widgets/translated_message_content.dart';
 import 'channel_message_path_screen.dart';
 import 'map_screen.dart';
 
@@ -357,6 +360,14 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final isOutgoing = message.isOutgoing;
     final gifId = _parseGifId(message.text);
     final poi = _parsePoiMessage(message.text);
+    final translatedDisplayText =
+        message.translatedText != null &&
+            message.translatedText!.trim().isNotEmpty
+        ? message.translatedText!.trim()
+        : message.text;
+    final originalDisplayText = message.isOutgoing
+        ? message.originalText
+        : (translatedDisplayText != message.text ? message.text : null);
     final displayPath = message.pathBytes.isNotEmpty
         ? message.pathBytes
         : (message.pathVariants.isNotEmpty
@@ -507,11 +518,17 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Flexible(
-                              child: LinkHandler.buildLinkifyText(
-                                context: context,
-                                text: message.text,
+                              child: TranslatedMessageContent(
+                                displayText: translatedDisplayText,
+                                originalText: originalDisplayText,
                                 style: TextStyle(
                                   fontSize: bodyFontSize * textScale,
+                                ),
+                                originalStyle: TextStyle(
+                                  fontSize: bodyFontSize * textScale,
+                                  fontStyle: FontStyle.italic,
+                                  color: Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.72),
                                 ),
                               ),
                             ),
@@ -1129,6 +1146,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final smazEncoder = connector.isChannelSmazEnabled(widget.channel.index)
         ? Smaz.encodeIfSmaller
         : null;
+    final settings = context.watch<AppSettingsService>().settings;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1203,6 +1221,12 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                   ),
                 ],
               ),
+              if (settings.translationEnabled)
+                MessageTranslationButton(
+                  enabled: settings.composerTranslationEnabled,
+                  languageCode: settings.translationTargetLanguageCode,
+                  onPressed: _showTranslationOptions,
+                ),
               Expanded(
                 child: ValueListenableBuilder<TextEditingValue>(
                   valueListenable: _textController,
@@ -1293,7 +1317,19 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     );
   }
 
-  void _sendMessage() {
+  Future<void> _showTranslationOptions() async {
+    final settingsService = context.read<AppSettingsService>();
+    final settings = settingsService.settings;
+    await showMessageTranslationSheet(
+      context: context,
+      enabled: settings.composerTranslationEnabled,
+      selectedLanguageCode: settings.translationTargetLanguageCode,
+      onEnabledChanged: settingsService.setComposerTranslationEnabled,
+      onLanguageSelected: settingsService.setTranslationTargetLanguageCode,
+    );
+  }
+
+  Future<void> _sendMessage() async {
     final text = _textController.text.trim();
     if (text.isEmpty) return;
 
@@ -1308,10 +1344,38 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     _lastChannelSendAt = now;
 
     final connector = context.read<MeshCoreConnector>();
+    final settings = context.read<AppSettingsService>().settings;
+    final translationService = context.read<TranslationService>();
 
     String messageText = text;
+    String? originalText;
+    String? translatedLanguageCode;
+    String? translationModelId;
+    if (settings.translationEnabled) {
+      final targetLanguageCode = translationService.resolvedTargetLanguageCode(
+        Localizations.localeOf(context).languageCode,
+      );
+      if (translationService.shouldTranslateOutgoing(
+        text: text,
+        targetLanguageCode: targetLanguageCode,
+      )) {
+        final result = await translationService.translateOutgoingText(
+          text: text,
+          targetLanguageCode: targetLanguageCode,
+        );
+        if (!mounted) return;
+        if (result != null &&
+            result.status == MessageTranslationStatus.completed &&
+            result.translatedText.isNotEmpty) {
+          messageText = result.translatedText;
+          originalText = text;
+          translatedLanguageCode = result.targetLanguageCode;
+          translationModelId = result.modelId;
+        }
+      }
+    }
     if (_replyingToMessage != null) {
-      messageText = '@[${_replyingToMessage!.senderName}] $text';
+      messageText = '@[${_replyingToMessage!.senderName}] $messageText';
     }
 
     final maxBytes = maxChannelMessageBytes(connector.selfName);
@@ -1326,10 +1390,16 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       return;
     }
 
-    connector.sendChannelMessage(widget.channel, messageText);
     _textController.clear();
     _cancelReply();
     _textFieldFocusNode.requestFocus();
+    connector.sendChannelMessage(
+      widget.channel,
+      messageText,
+      originalText: originalText,
+      translatedLanguageCode: translatedLanguageCode,
+      translationModelId: translationModelId,
+    );
   }
 
   String _formatTime(DateTime time) {

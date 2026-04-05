@@ -71,6 +71,17 @@ dependencies:
   flutter_blue_plus_platform_interface: ^8.2.1
   ml_algo: ^16.0.0
   ml_dataframe: ^1.0.0
+  llamadart: '>=0.6.8 <0.7.0'
+
+hooks:
+  user_defines:
+    llamadart:
+      llamadart_native_backends:
+        platforms:
+          android-arm64:
+            backends: [cpu]
+          android-x64:
+            backends: [cpu]
 
 dev_dependencies:
   flutter_test:

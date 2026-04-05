@@ -2049,6 +2049,34 @@
   "contact_teleEnvSubtitle": "環境センサーのデータを共有することを許可する",
   "map_showOverlaps": "リピーターキーの重複",
   "map_runTraceWithReturnPath": "元の経路に戻る。",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_enableSubtitle": "受信メッセージを翻訳し、送信前に翻訳を適用できるようにする。",
+  "translation_title": "翻訳",
+  "translation_composerTitle": "送信する前に翻訳する",
+  "translation_enableTitle": "翻訳機能を有効にする",
+  "translation_composerSubtitle": "作曲家翻訳アイコンのデフォルト状態を制御する。",
+  "translation_targetLanguage": "翻訳対象言語",
+  "translation_useAppLanguage": "アプリの言語設定",
+  "translation_downloadedModelLabel": "ダウンロードしたモデル",
+  "translation_presetModelLabel": "あらかじめ設定されたHugging Faceモデル",
+  "translation_manualUrlLabel": "マニュアルモデルのURL",
+  "translation_downloadModel": "モデルのダウンロード",
+  "translation_downloading": "ダウンロード中...",
+  "translation_working": "業務中…",
+  "translation_stop": "停止",
+  "translation_mergingChunks": "ダウンロードしたファイルを最終ファイルに結合中...",
+  "translation_downloadedModels": "ダウンロードされたモデル",
+  "translation_deleteModel": "モデルを削除",
+  "translation_modelDownloaded": "翻訳モデルのダウンロードが完了しました。",
+  "translation_downloadStopped": "ダウンロードが中断されました。",
+  "translation_downloadFailed": "ダウンロードに失敗しました：{error}",
+  "translation_enterUrlFirst": "まず、モデルのURLを入力してください。",
   "@scanner_linuxPairingPinPrompt": {
     "placeholders": {
       "deviceName": {
@@ -2056,8 +2084,22 @@
       }
     }
   },
-  "scanner_linuxPairingShowPin": "PINを表示",
-  "scanner_linuxPairingHidePin": "PINを非表示",
-  "scanner_linuxPairingPinTitle": "Bluetooth ペアリング PIN",
-  "scanner_linuxPairingPinPrompt": "{deviceName}のPINを入力してください（なしの場合は空欄のまま）。"
+  "scanner_linuxPairingShowPin": "PINを表示する",
+  "scanner_linuxPairingHidePin": "PINを非表示にする",
+  "scanner_linuxPairingPinPrompt": "{deviceName} の PIN を入力してください（該当しない場合は空白で入力）。",
+  "scanner_linuxPairingPinTitle": "Bluetooth 接続のためのPIN",
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_translateBeforeSending": "送信する前に翻訳する",
+  "translation_composerEnabledHint": "メッセージは送信前に翻訳されます。",
+  "translation_messageTranslation": "メッセージの翻訳",
+  "translation_composerDisabledHint": "元のタイプされた言語でメッセージを送信してください。",
+  "translation_translateTo": "{language} への翻訳",
+  "translation_translationOptions": "翻訳の選択肢",
+  "translation_systemLanguage": "システム言語"
 }

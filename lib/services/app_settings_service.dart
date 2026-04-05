@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import '../models/app_settings.dart';
+import '../models/translation_support.dart';
 import '../storage/prefs_manager.dart';
 import '../utils/app_logger.dart';
 
@@ -221,5 +222,35 @@ class AppSettingsService extends ChangeNotifier {
 
   Future<void> setJumpToOldestUnread(bool value) async {
     await updateSettings(_settings.copyWith(jumpToOldestUnread: value));
+  }
+
+  Future<void> setTranslationEnabled(bool value) async {
+    await updateSettings(_settings.copyWith(translationEnabled: value));
+  }
+
+  Future<void> setTranslationTargetLanguageCode(String? value) async {
+    await updateSettings(
+      _settings.copyWith(translationTargetLanguageCode: value),
+    );
+  }
+
+  Future<void> setComposerTranslationEnabled(bool value) async {
+    await updateSettings(_settings.copyWith(composerTranslationEnabled: value));
+  }
+
+  Future<void> setTranslationModelSourceUrl(String? value) async {
+    await updateSettings(_settings.copyWith(translationModelSourceUrl: value));
+  }
+
+  Future<void> setTranslationSelectedModelId(String? value) async {
+    await updateSettings(_settings.copyWith(translationSelectedModelId: value));
+  }
+
+  Future<void> setTranslationDownloadedModels(
+    List<TranslationModelRecord> value,
+  ) async {
+    await updateSettings(
+      _settings.copyWith(translationDownloadedModels: value),
+    );
   }
 }

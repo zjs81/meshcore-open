@@ -2011,6 +2011,34 @@
   "radioStats_stripWaiting": "Отримано статистику радіо…",
   "radioStats_settingsTile": "Дані про радіостанції",
   "radioStats_settingsSubtitle": "Рівень шуму, RSSI, SNR та час, протягом якого пристрій використовує радіоканал.",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_composerTitle": "Перекладіть перед відправкою",
+  "translation_title": "Переклад",
+  "translation_enableTitle": "Увімкнути переклад",
+  "translation_enableSubtitle": "Перекладати отримані повідомлення та дозволяти попередній переклад перед відправкою.",
+  "translation_composerSubtitle": "Контролює стан ікон перекладу, який використовується за замовчуванням.",
+  "translation_targetLanguage": "Цільова мова",
+  "translation_useAppLanguage": "Використовуйте мову додатку",
+  "translation_downloadedModelLabel": "Завантажений шаблон",
+  "translation_presetModelLabel": "Заздалегідь налаштований модель від Hugging Face",
+  "translation_manualUrlLabel": "Посилання на веб-сторінку з інструкцією",
+  "translation_downloadModel": "Завантажити модель",
+  "translation_downloading": "Завантаження...",
+  "translation_working": "Працюю...",
+  "translation_stop": "Припинити",
+  "translation_mergingChunks": "Об'єднання завантажених фрагментів у кінцевий файл...",
+  "translation_downloadedModels": "Завантажені моделі",
+  "translation_deleteModel": "Видалити модель",
+  "translation_modelDownloaded": "Модель перекладу завантажена.",
+  "translation_downloadStopped": "Завантаження призупинено.",
+  "translation_downloadFailed": "Не вдалося завантажити: {error}",
+  "translation_enterUrlFirst": "Спочатку введіть URL моделі.",
   "@scanner_linuxPairingPinPrompt": {
     "placeholders": {
       "deviceName": {
@@ -2018,8 +2046,22 @@
       }
     }
   },
-  "scanner_linuxPairingPinTitle": "PIN‑код спарювання Bluetooth",
-  "scanner_linuxPairingShowPin": "Показати PIN",
-  "scanner_linuxPairingPinPrompt": "Введіть PIN для {deviceName} (залиште порожнім, якщо його немає).",
-  "scanner_linuxPairingHidePin": "Приховати PIN"
+  "scanner_linuxPairingPinTitle": "PIN для з'єднання через Bluetooth",
+  "scanner_linuxPairingShowPin": "Показати PIN-код",
+  "scanner_linuxPairingPinPrompt": "Введіть PIN-код для {deviceName} (залиште поле порожнім, якщо немає).",
+  "scanner_linuxPairingHidePin": "Приховати PIN-код",
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_composerEnabledHint": "Повідомлення будуть перекладені перед відправленням.",
+  "translation_messageTranslation": "Переклад повідомлення",
+  "translation_composerDisabledHint": "Надсилайте повідомлення, використовуючи оригінальний текстовий формат.",
+  "translation_translateBeforeSending": "Перекладіть перед відправкою",
+  "translation_translateTo": "Перекласти на {language}",
+  "translation_translationOptions": "Варіанти перекладу",
+  "translation_systemLanguage": "Мова системи"
 }

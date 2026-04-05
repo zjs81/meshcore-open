@@ -2011,6 +2011,34 @@
   "radioStats_stripWaiting": "Získavanie údajov o rádiu…",
   "radioStats_settingsTile": "Štatistiky rádiových vysielaní",
   "radioStats_settingsSubtitle": "Úroveň hluku, RSSI, SNR a časové rozloženie",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_enableSubtitle": "Prekladajte prichádzajúce správy a umožnite ich preklad pred odoslaním.",
+  "translation_enableTitle": "Aktivovať preklad",
+  "translation_composerTitle": "Preložte pred odeslaním",
+  "translation_title": "Preklad",
+  "translation_composerSubtitle": "Riadi výchoce stav ikony pre preklad, ktorú používa program.",
+  "translation_targetLanguage": "Cieľový jazyk",
+  "translation_useAppLanguage": "Použite jazyk aplikácie",
+  "translation_downloadedModelLabel": "Stiahnutý model",
+  "translation_presetModelLabel": "Prednastavený model od Hugging Face",
+  "translation_manualUrlLabel": "Odkaz na manuál (v elektronickej forme)",
+  "translation_downloadModel": "Stiahnuť model",
+  "translation_downloading": "Stiahnutie...",
+  "translation_working": "Práca...",
+  "translation_stop": "Zastavte",
+  "translation_mergingChunks": "Sliečenie stiahnutých častí do konečného súboru...",
+  "translation_downloadedModels": "Stiahnuté modely",
+  "translation_deleteModel": "Odstrániť model",
+  "translation_modelDownloaded": "Model pre preklad bol stiahnutý.",
+  "translation_downloadStopped": "Stiahnutie bolo prerušené.",
+  "translation_downloadFailed": "Neúspešné stiahnutie: {error}",
+  "translation_enterUrlFirst": "Najprv zadajte URL pre konkrétny model.",
   "@scanner_linuxPairingPinPrompt": {
     "placeholders": {
       "deviceName": {
@@ -2018,8 +2046,22 @@
       }
     }
   },
-  "scanner_linuxPairingPinPrompt": "Zadajte PIN pre {deviceName} (ak nie je, nechajte prázdne).",
-  "scanner_linuxPairingShowPin": "Zobraziť PIN",
   "scanner_linuxPairingHidePin": "Skryť PIN",
-  "scanner_linuxPairingPinTitle": "Bluetooth párovací PIN"
+  "scanner_linuxPairingShowPin": "Zobraziť PIN",
+  "scanner_linuxPairingPinTitle": "PIN pre párovanie cez Bluetooth",
+  "scanner_linuxPairingPinPrompt": "Zadajte PIN pre {deviceName} (ak neexistuje, nechajte prázdne).",
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_composerDisabledHint": "Posielajte správy v pôvodnej písanom jazyku.",
+  "translation_composerEnabledHint": "Správy budú preložené, než budú odoslané.",
+  "translation_translateBeforeSending": "Preložte pred odeslaním",
+  "translation_messageTranslation": "Preklad textu",
+  "translation_translateTo": "Preložte do {language}",
+  "translation_translationOptions": "Možnosti prekladania",
+  "translation_systemLanguage": "Jazyk systému"
 }

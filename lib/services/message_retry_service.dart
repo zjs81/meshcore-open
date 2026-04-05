@@ -138,6 +138,9 @@ class MessageRetryService extends ChangeNotifier {
   Future<void> sendMessageWithRetry({
     required Contact contact,
     required String text,
+    String? originalText,
+    String? translatedLanguageCode,
+    String? translationModelId,
     Uint8List? pathBytes,
     int? pathLength,
   }) async {
@@ -150,6 +153,9 @@ class MessageRetryService extends ChangeNotifier {
     final message = Message(
       senderKey: contact.publicKey,
       text: text,
+      originalText: originalText,
+      translatedLanguageCode: translatedLanguageCode,
+      translationModelId: translationModelId,
       timestamp: DateTime.now(),
       isOutgoing: true,
       status: MessageStatus.pending,

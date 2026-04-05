@@ -3563,16 +3563,113 @@ class AppLocalizationsSl extends AppLocalizations {
       'Število šumov, RSSI, SNR in čas, ki ga je napolnila oprema';
 
   @override
+  String get translation_title => 'Prevod';
+
+  @override
+  String get translation_enableTitle => 'Omogočite prevod';
+
+  @override
+  String get translation_enableSubtitle =>
+      'Prevedite vstopne sporočila in omogočite predhodno prevajanje.';
+
+  @override
+  String get translation_composerTitle => 'Preprištejte, preden pošljete';
+
+  @override
+  String get translation_composerSubtitle =>
+      'Ureja privzeto stanje ikone za prevod, ki jo uporablja avtor.';
+
+  @override
+  String get translation_targetLanguage => 'Ciljna jezika';
+
+  @override
+  String get translation_useAppLanguage => 'Uporabite jezik aplikacije';
+
+  @override
+  String get translation_downloadedModelLabel => 'Naložen model';
+
+  @override
+  String get translation_presetModelLabel =>
+      'Prednastavljeni model Hugging Face';
+
+  @override
+  String get translation_manualUrlLabel => 'URL za ročni model';
+
+  @override
+  String get translation_downloadModel => 'Prenesite model';
+
+  @override
+  String get translation_downloading => 'Izvajanje...';
+
+  @override
+  String get translation_working => 'Delo...';
+
+  @override
+  String get translation_stop => 'Prekliji';
+
+  @override
+  String get translation_mergingChunks =>
+      'Sklapljanje prenesenih delov v končni datoteko...';
+
+  @override
+  String get translation_downloadedModels => 'Naloženi modeli';
+
+  @override
+  String get translation_deleteModel => 'Izbrisati model';
+
+  @override
+  String get translation_modelDownloaded =>
+      'Model za prevajanje je bil naložen.';
+
+  @override
+  String get translation_downloadStopped => 'Prenos je bil prekinjen.';
+
+  @override
+  String translation_downloadFailed(String error) {
+    return 'Izgovoritev ni bila uspešna: $error';
+  }
+
+  @override
+  String get translation_enterUrlFirst => 'Najprej vnesite URL model.';
+
+  @override
   String get scanner_linuxPairingShowPin => 'Prikaži PIN';
 
   @override
-  String get scanner_linuxPairingHidePin => 'Skrij PIN';
+  String get scanner_linuxPairingHidePin => 'Skrijte PIN';
 
   @override
-  String get scanner_linuxPairingPinTitle => 'Bluetooth PIN za seznanjanje';
+  String get scanner_linuxPairingPinTitle =>
+      'PIN za združevanje preko Bluetootha';
 
   @override
   String scanner_linuxPairingPinPrompt(String deviceName) {
-    return 'Vnesite PIN za $deviceName (pustite prazno, če ga ni).';
+    return 'Vnesite PIN kodo za $deviceName (ostavite prazno, če nimate kode).';
   }
+
+  @override
+  String get translation_messageTranslation => 'Prevod sporočila';
+
+  @override
+  String get translation_translateBeforeSending =>
+      'Preprištejte, preden pošljete';
+
+  @override
+  String get translation_composerEnabledHint =>
+      'Vsebina sporočil bo prevedena, preden jih pošljemo.';
+
+  @override
+  String get translation_composerDisabledHint =>
+      'Pošljite sporočila v originalnem tipkanem jeziku.';
+
+  @override
+  String translation_translateTo(String language) {
+    return 'Prevesti v $language';
+  }
+
+  @override
+  String get translation_translationOptions => 'Možnosti prevoda';
+
+  @override
+  String get translation_systemLanguage => 'Jezik sistema';
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import '../models/message.dart';
+import '../models/translation_support.dart';
 import '../helpers/smaz.dart';
 import '../utils/app_logger.dart';
 import 'prefs_manager.dart';
@@ -83,6 +84,11 @@ class MessageStore {
       'isCli': msg.isCli,
       'status': msg.status.index,
       'messageId': msg.messageId,
+      'originalText': msg.originalText,
+      'translatedText': msg.translatedText,
+      'translatedLanguageCode': msg.translatedLanguageCode,
+      'translationStatus': msg.translationStatus.value,
+      'translationModelId': msg.translationModelId,
       'retryCount': msg.retryCount,
       'estimatedTimeoutMs': msg.estimatedTimeoutMs,
       'expectedAckHash': msg.expectedAckHash,
@@ -115,6 +121,13 @@ class MessageStore {
       isCli: isCli,
       status: MessageStatus.values[json['status'] as int],
       messageId: json['messageId'] as String?,
+      originalText: json['originalText'] as String?,
+      translatedText: json['translatedText'] as String?,
+      translatedLanguageCode: json['translatedLanguageCode'] as String?,
+      translationStatus: parseMessageTranslationStatus(
+        json['translationStatus'],
+      ),
+      translationModelId: json['translationModelId'] as String?,
       retryCount: json['retryCount'] as int? ?? 0,
       estimatedTimeoutMs: json['estimatedTimeoutMs'] as int?,
       expectedAckHash: json['expectedAckHash'] as int? ?? 0,

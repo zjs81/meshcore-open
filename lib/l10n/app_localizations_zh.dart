@@ -3312,7 +3312,72 @@ class AppLocalizationsZh extends AppLocalizations {
   String get radioStats_settingsSubtitle => '噪声水平、RSSI、信噪比和空中时间';
 
   @override
-  String get scanner_linuxPairingShowPin => '显示 PIN码';
+  String get translation_title => '翻译';
+
+  @override
+  String get translation_enableTitle => '启用翻译功能';
+
+  @override
+  String get translation_enableSubtitle => '翻译收到的消息，并允许在发送前进行翻译。';
+
+  @override
+  String get translation_composerTitle => '在发送之前进行翻译';
+
+  @override
+  String get translation_composerSubtitle => '控制作曲家翻译图标的默认状态。';
+
+  @override
+  String get translation_targetLanguage => '目标语言';
+
+  @override
+  String get translation_useAppLanguage => '使用应用程序语言';
+
+  @override
+  String get translation_downloadedModelLabel => '下载的模型';
+
+  @override
+  String get translation_presetModelLabel => '预设的 Hugging Face 模型';
+
+  @override
+  String get translation_manualUrlLabel => '手动模型网址';
+
+  @override
+  String get translation_downloadModel => '下载模型';
+
+  @override
+  String get translation_downloading => '正在下载...';
+
+  @override
+  String get translation_working => '工作中...';
+
+  @override
+  String get translation_stop => '停止';
+
+  @override
+  String get translation_mergingChunks => '将下载的片段合并成最终文件...';
+
+  @override
+  String get translation_downloadedModels => '下载的模型';
+
+  @override
+  String get translation_deleteModel => '删除模型';
+
+  @override
+  String get translation_modelDownloaded => '翻译模型已下载。';
+
+  @override
+  String get translation_downloadStopped => '下载已停止。';
+
+  @override
+  String translation_downloadFailed(String error) {
+    return '下载失败：$error';
+  }
+
+  @override
+  String get translation_enterUrlFirst => '首先，请输入模型的 URL。';
+
+  @override
+  String get scanner_linuxPairingShowPin => '显示PIN码';
 
   @override
   String get scanner_linuxPairingHidePin => '隐藏 PIN';
@@ -3322,6 +3387,29 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String scanner_linuxPairingPinPrompt(String deviceName) {
-    return '输入 $deviceName 的 PIN（如果没有，请留空）。';
+    return '输入 $deviceName 的 PIN 码（如果为空，则留空）。';
   }
+
+  @override
+  String get translation_messageTranslation => '消息翻译';
+
+  @override
+  String get translation_translateBeforeSending => '在发送前进行翻译';
+
+  @override
+  String get translation_composerEnabledHint => '消息将在发送前进行翻译。';
+
+  @override
+  String get translation_composerDisabledHint => '使用原始的打字方式发送消息。';
+
+  @override
+  String translation_translateTo(String language) {
+    return '翻译成 $language';
+  }
+
+  @override
+  String get translation_translationOptions => '翻译选项';
+
+  @override
+  String get translation_systemLanguage => '系统语言';
 }

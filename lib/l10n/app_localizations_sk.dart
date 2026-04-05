@@ -3558,16 +3558,112 @@ class AppLocalizationsSk extends AppLocalizations {
       'Úroveň hluku, RSSI, SNR a časové rozloženie';
 
   @override
+  String get translation_title => 'Preklad';
+
+  @override
+  String get translation_enableTitle => 'Aktivovať preklad';
+
+  @override
+  String get translation_enableSubtitle =>
+      'Prekladajte prichádzajúce správy a umožnite ich preklad pred odoslaním.';
+
+  @override
+  String get translation_composerTitle => 'Preložte pred odeslaním';
+
+  @override
+  String get translation_composerSubtitle =>
+      'Riadi výchoce stav ikony pre preklad, ktorú používa program.';
+
+  @override
+  String get translation_targetLanguage => 'Cieľový jazyk';
+
+  @override
+  String get translation_useAppLanguage => 'Použite jazyk aplikácie';
+
+  @override
+  String get translation_downloadedModelLabel => 'Stiahnutý model';
+
+  @override
+  String get translation_presetModelLabel =>
+      'Prednastavený model od Hugging Face';
+
+  @override
+  String get translation_manualUrlLabel =>
+      'Odkaz na manuál (v elektronickej forme)';
+
+  @override
+  String get translation_downloadModel => 'Stiahnuť model';
+
+  @override
+  String get translation_downloading => 'Stiahnutie...';
+
+  @override
+  String get translation_working => 'Práca...';
+
+  @override
+  String get translation_stop => 'Zastavte';
+
+  @override
+  String get translation_mergingChunks =>
+      'Sliečenie stiahnutých častí do konečného súboru...';
+
+  @override
+  String get translation_downloadedModels => 'Stiahnuté modely';
+
+  @override
+  String get translation_deleteModel => 'Odstrániť model';
+
+  @override
+  String get translation_modelDownloaded => 'Model pre preklad bol stiahnutý.';
+
+  @override
+  String get translation_downloadStopped => 'Stiahnutie bolo prerušené.';
+
+  @override
+  String translation_downloadFailed(String error) {
+    return 'Neúspešné stiahnutie: $error';
+  }
+
+  @override
+  String get translation_enterUrlFirst =>
+      'Najprv zadajte URL pre konkrétny model.';
+
+  @override
   String get scanner_linuxPairingShowPin => 'Zobraziť PIN';
 
   @override
   String get scanner_linuxPairingHidePin => 'Skryť PIN';
 
   @override
-  String get scanner_linuxPairingPinTitle => 'Bluetooth párovací PIN';
+  String get scanner_linuxPairingPinTitle => 'PIN pre párovanie cez Bluetooth';
 
   @override
   String scanner_linuxPairingPinPrompt(String deviceName) {
-    return 'Zadajte PIN pre $deviceName (ak nie je, nechajte prázdne).';
+    return 'Zadajte PIN pre $deviceName (ak neexistuje, nechajte prázdne).';
   }
+
+  @override
+  String get translation_messageTranslation => 'Preklad textu';
+
+  @override
+  String get translation_translateBeforeSending => 'Preložte pred odeslaním';
+
+  @override
+  String get translation_composerEnabledHint =>
+      'Správy budú preložené, než budú odoslané.';
+
+  @override
+  String get translation_composerDisabledHint =>
+      'Posielajte správy v pôvodnej písanom jazyku.';
+
+  @override
+  String translation_translateTo(String language) {
+    return 'Preložte do $language';
+  }
+
+  @override
+  String get translation_translationOptions => 'Možnosti prekladania';
+
+  @override
+  String get translation_systemLanguage => 'Jazyk systému';
 }

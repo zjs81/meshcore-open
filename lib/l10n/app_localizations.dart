@@ -6173,6 +6173,132 @@ abstract class AppLocalizations {
   /// **'Noise floor, RSSI, SNR, and airtime'**
   String get radioStats_settingsSubtitle;
 
+  /// No description provided for @translation_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Translation'**
+  String get translation_title;
+
+  /// No description provided for @translation_enableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable translation'**
+  String get translation_enableTitle;
+
+  /// No description provided for @translation_enableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Translate incoming messages and allow pre-send translation.'**
+  String get translation_enableSubtitle;
+
+  /// No description provided for @translation_composerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Translate before sending'**
+  String get translation_composerTitle;
+
+  /// No description provided for @translation_composerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Controls the default state of the composer translation icon.'**
+  String get translation_composerSubtitle;
+
+  /// No description provided for @translation_targetLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Target language'**
+  String get translation_targetLanguage;
+
+  /// No description provided for @translation_useAppLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Use app language'**
+  String get translation_useAppLanguage;
+
+  /// No description provided for @translation_downloadedModelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded model'**
+  String get translation_downloadedModelLabel;
+
+  /// No description provided for @translation_presetModelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset Hugging Face model'**
+  String get translation_presetModelLabel;
+
+  /// No description provided for @translation_manualUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual model URL'**
+  String get translation_manualUrlLabel;
+
+  /// No description provided for @translation_downloadModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Download model'**
+  String get translation_downloadModel;
+
+  /// No description provided for @translation_downloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading...'**
+  String get translation_downloading;
+
+  /// No description provided for @translation_working.
+  ///
+  /// In en, this message translates to:
+  /// **'Working...'**
+  String get translation_working;
+
+  /// No description provided for @translation_stop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get translation_stop;
+
+  /// No description provided for @translation_mergingChunks.
+  ///
+  /// In en, this message translates to:
+  /// **'Merging downloaded chunks into final file...'**
+  String get translation_mergingChunks;
+
+  /// No description provided for @translation_downloadedModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded models'**
+  String get translation_downloadedModels;
+
+  /// No description provided for @translation_deleteModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete model'**
+  String get translation_deleteModel;
+
+  /// No description provided for @translation_modelDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Translation model downloaded.'**
+  String get translation_modelDownloaded;
+
+  /// No description provided for @translation_downloadStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Download stopped.'**
+  String get translation_downloadStopped;
+
+  /// No description provided for @translation_downloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Download failed: {error}'**
+  String translation_downloadFailed(String error);
+
+  /// No description provided for @translation_enterUrlFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a model URL first.'**
+  String get translation_enterUrlFirst;
+
   /// No description provided for @scanner_linuxPairingShowPin.
   ///
   /// In en, this message translates to:
@@ -6196,6 +6322,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter PIN for {deviceName} (leave blank if none).'**
   String scanner_linuxPairingPinPrompt(String deviceName);
+
+  /// No description provided for @translation_messageTranslation.
+  ///
+  /// In en, this message translates to:
+  /// **'Message translation'**
+  String get translation_messageTranslation;
+
+  /// No description provided for @translation_translateBeforeSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Translate before sending'**
+  String get translation_translateBeforeSending;
+
+  /// No description provided for @translation_composerEnabledHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages will be translated before send.'**
+  String get translation_composerEnabledHint;
+
+  /// No description provided for @translation_composerDisabledHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Send messages in the original typed language.'**
+  String get translation_composerDisabledHint;
+
+  /// No description provided for @translation_translateTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Translate to {language}'**
+  String translation_translateTo(String language);
+
+  /// No description provided for @translation_translationOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Translation options'**
+  String get translation_translationOptions;
+
+  /// No description provided for @translation_systemLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'System language'**
+  String get translation_systemLanguage;
 }
 
 class _AppLocalizationsDelegate

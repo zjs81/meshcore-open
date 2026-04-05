@@ -3515,6 +3515,74 @@ class AppLocalizationsEn extends AppLocalizations {
       'Noise floor, RSSI, SNR, and airtime';
 
   @override
+  String get translation_title => 'Translation';
+
+  @override
+  String get translation_enableTitle => 'Enable translation';
+
+  @override
+  String get translation_enableSubtitle =>
+      'Translate incoming messages and allow pre-send translation.';
+
+  @override
+  String get translation_composerTitle => 'Translate before sending';
+
+  @override
+  String get translation_composerSubtitle =>
+      'Controls the default state of the composer translation icon.';
+
+  @override
+  String get translation_targetLanguage => 'Target language';
+
+  @override
+  String get translation_useAppLanguage => 'Use app language';
+
+  @override
+  String get translation_downloadedModelLabel => 'Downloaded model';
+
+  @override
+  String get translation_presetModelLabel => 'Preset Hugging Face model';
+
+  @override
+  String get translation_manualUrlLabel => 'Manual model URL';
+
+  @override
+  String get translation_downloadModel => 'Download model';
+
+  @override
+  String get translation_downloading => 'Downloading...';
+
+  @override
+  String get translation_working => 'Working...';
+
+  @override
+  String get translation_stop => 'Stop';
+
+  @override
+  String get translation_mergingChunks =>
+      'Merging downloaded chunks into final file...';
+
+  @override
+  String get translation_downloadedModels => 'Downloaded models';
+
+  @override
+  String get translation_deleteModel => 'Delete model';
+
+  @override
+  String get translation_modelDownloaded => 'Translation model downloaded.';
+
+  @override
+  String get translation_downloadStopped => 'Download stopped.';
+
+  @override
+  String translation_downloadFailed(String error) {
+    return 'Download failed: $error';
+  }
+
+  @override
+  String get translation_enterUrlFirst => 'Enter a model URL first.';
+
+  @override
   String get scanner_linuxPairingShowPin => 'Show PIN';
 
   @override
@@ -3527,4 +3595,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String scanner_linuxPairingPinPrompt(String deviceName) {
     return 'Enter PIN for $deviceName (leave blank if none).';
   }
+
+  @override
+  String get translation_messageTranslation => 'Message translation';
+
+  @override
+  String get translation_translateBeforeSending => 'Translate before sending';
+
+  @override
+  String get translation_composerEnabledHint =>
+      'Messages will be translated before send.';
+
+  @override
+  String get translation_composerDisabledHint =>
+      'Send messages in the original typed language.';
+
+  @override
+  String translation_translateTo(String language) {
+    return 'Translate to $language';
+  }
+
+  @override
+  String get translation_translationOptions => 'Translation options';
+
+  @override
+  String get translation_systemLanguage => 'System language';
 }

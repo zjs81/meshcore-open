@@ -3415,16 +3415,104 @@ class AppLocalizationsJa extends AppLocalizations {
   String get radioStats_settingsSubtitle => 'ノイズレベル、RSSI、SNR、および通信時間';
 
   @override
-  String get scanner_linuxPairingShowPin => 'PINを表示';
+  String get translation_title => '翻訳';
 
   @override
-  String get scanner_linuxPairingHidePin => 'PINを非表示';
+  String get translation_enableTitle => '翻訳機能を有効にする';
 
   @override
-  String get scanner_linuxPairingPinTitle => 'Bluetooth ペアリング PIN';
+  String get translation_enableSubtitle => '受信メッセージを翻訳し、送信前に翻訳を適用できるようにする。';
+
+  @override
+  String get translation_composerTitle => '送信する前に翻訳する';
+
+  @override
+  String get translation_composerSubtitle => '作曲家翻訳アイコンのデフォルト状態を制御する。';
+
+  @override
+  String get translation_targetLanguage => '翻訳対象言語';
+
+  @override
+  String get translation_useAppLanguage => 'アプリの言語設定';
+
+  @override
+  String get translation_downloadedModelLabel => 'ダウンロードしたモデル';
+
+  @override
+  String get translation_presetModelLabel => 'あらかじめ設定されたHugging Faceモデル';
+
+  @override
+  String get translation_manualUrlLabel => 'マニュアルモデルのURL';
+
+  @override
+  String get translation_downloadModel => 'モデルのダウンロード';
+
+  @override
+  String get translation_downloading => 'ダウンロード中...';
+
+  @override
+  String get translation_working => '業務中…';
+
+  @override
+  String get translation_stop => '停止';
+
+  @override
+  String get translation_mergingChunks => 'ダウンロードしたファイルを最終ファイルに結合中...';
+
+  @override
+  String get translation_downloadedModels => 'ダウンロードされたモデル';
+
+  @override
+  String get translation_deleteModel => 'モデルを削除';
+
+  @override
+  String get translation_modelDownloaded => '翻訳モデルのダウンロードが完了しました。';
+
+  @override
+  String get translation_downloadStopped => 'ダウンロードが中断されました。';
+
+  @override
+  String translation_downloadFailed(String error) {
+    return 'ダウンロードに失敗しました：$error';
+  }
+
+  @override
+  String get translation_enterUrlFirst => 'まず、モデルのURLを入力してください。';
+
+  @override
+  String get scanner_linuxPairingShowPin => 'PINを表示する';
+
+  @override
+  String get scanner_linuxPairingHidePin => 'PINを非表示にする';
+
+  @override
+  String get scanner_linuxPairingPinTitle => 'Bluetooth 接続のためのPIN';
 
   @override
   String scanner_linuxPairingPinPrompt(String deviceName) {
-    return '$deviceNameのPINを入力してください（なしの場合は空欄のまま）。';
+    return '$deviceName の PIN を入力してください（該当しない場合は空白で入力）。';
   }
+
+  @override
+  String get translation_messageTranslation => 'メッセージの翻訳';
+
+  @override
+  String get translation_translateBeforeSending => '送信する前に翻訳する';
+
+  @override
+  String get translation_composerEnabledHint => 'メッセージは送信前に翻訳されます。';
+
+  @override
+  String get translation_composerDisabledHint => '元のタイプされた言語でメッセージを送信してください。';
+
+  @override
+  String translation_translateTo(String language) {
+    return '$language への翻訳';
+  }
+
+  @override
+  String get translation_translationOptions => '翻訳の選択肢';
+
+  @override
+  String get translation_systemLanguage => 'システム言語';
 }

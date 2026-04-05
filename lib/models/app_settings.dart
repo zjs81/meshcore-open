@@ -1,3 +1,5 @@
+import 'translation_support.dart';
+
 enum UnitSystem { metric, imperial }
 
 extension UnitSystemValue on UnitSystem {
@@ -49,6 +51,12 @@ class AppSettings {
   final String tcpServerAddress;
   final int tcpServerPort;
   final bool jumpToOldestUnread;
+  final bool translationEnabled;
+  final String? translationTargetLanguageCode;
+  final bool composerTranslationEnabled;
+  final String? translationModelSourceUrl;
+  final String? translationSelectedModelId;
+  final List<TranslationModelRecord> translationDownloadedModels;
 
   AppSettings({
     this.clearPathOnMaxRetry = false,
@@ -86,9 +94,16 @@ class AppSettings {
     this.tcpServerAddress = '',
     this.tcpServerPort = 0,
     this.jumpToOldestUnread = false,
+    this.translationEnabled = false,
+    this.translationTargetLanguageCode,
+    this.composerTranslationEnabled = false,
+    this.translationModelSourceUrl,
+    this.translationSelectedModelId,
+    List<TranslationModelRecord>? translationDownloadedModels,
   }) : batteryChemistryByDeviceId = batteryChemistryByDeviceId ?? {},
        batteryChemistryByRepeaterId = batteryChemistryByRepeaterId ?? {},
-       mutedChannels = mutedChannels ?? {};
+       mutedChannels = mutedChannels ?? {},
+       translationDownloadedModels = translationDownloadedModels ?? const [];
 
   Map<String, dynamic> toJson() {
     return {
@@ -127,6 +142,14 @@ class AppSettings {
       'tcp_server_address': tcpServerAddress,
       'tcp_server_port': tcpServerPort,
       'jump_to_oldest_unread': jumpToOldestUnread,
+      'translation_enabled': translationEnabled,
+      'translation_target_language_code': translationTargetLanguageCode,
+      'composer_translation_enabled': composerTranslationEnabled,
+      'translation_model_source_url': translationModelSourceUrl,
+      'translation_selected_model_id': translationSelectedModelId,
+      'translation_downloaded_models': translationDownloadedModels
+          .map((model) => model.toJson())
+          .toList(),
     };
   }
 
@@ -196,6 +219,24 @@ class AppSettings {
       tcpServerAddress: json['tcp_server_address'] as String? ?? '',
       tcpServerPort: json['tcp_server_port'] as int? ?? 0,
       jumpToOldestUnread: json['jump_to_oldest_unread'] as bool? ?? false,
+      translationEnabled: json['translation_enabled'] as bool? ?? false,
+      translationTargetLanguageCode:
+          json['translation_target_language_code'] as String?,
+      composerTranslationEnabled:
+          json['composer_translation_enabled'] as bool? ?? false,
+      translationModelSourceUrl:
+          json['translation_model_source_url'] as String?,
+      translationSelectedModelId:
+          json['translation_selected_model_id'] as String?,
+      translationDownloadedModels:
+          (json['translation_downloaded_models'] as List<dynamic>?)
+              ?.map(
+                (entry) => TranslationModelRecord.fromJson(
+                  Map<String, dynamic>.from(entry as Map),
+                ),
+              )
+              .toList() ??
+          const [],
     );
   }
 
@@ -235,6 +276,12 @@ class AppSettings {
     String? tcpServerAddress,
     int? tcpServerPort,
     bool? jumpToOldestUnread,
+    bool? translationEnabled,
+    Object? translationTargetLanguageCode = _unset,
+    bool? composerTranslationEnabled,
+    Object? translationModelSourceUrl = _unset,
+    Object? translationSelectedModelId = _unset,
+    List<TranslationModelRecord>? translationDownloadedModels,
   }) {
     return AppSettings(
       clearPathOnMaxRetry: clearPathOnMaxRetry ?? this.clearPathOnMaxRetry,
@@ -284,6 +331,20 @@ class AppSettings {
       tcpServerAddress: tcpServerAddress ?? this.tcpServerAddress,
       tcpServerPort: tcpServerPort ?? this.tcpServerPort,
       jumpToOldestUnread: jumpToOldestUnread ?? this.jumpToOldestUnread,
+      translationEnabled: translationEnabled ?? this.translationEnabled,
+      translationTargetLanguageCode: translationTargetLanguageCode == _unset
+          ? this.translationTargetLanguageCode
+          : translationTargetLanguageCode as String?,
+      composerTranslationEnabled:
+          composerTranslationEnabled ?? this.composerTranslationEnabled,
+      translationModelSourceUrl: translationModelSourceUrl == _unset
+          ? this.translationModelSourceUrl
+          : translationModelSourceUrl as String?,
+      translationSelectedModelId: translationSelectedModelId == _unset
+          ? this.translationSelectedModelId
+          : translationSelectedModelId as String?,
+      translationDownloadedModels:
+          translationDownloadedModels ?? this.translationDownloadedModels,
     );
   }
 }

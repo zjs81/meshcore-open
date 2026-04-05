@@ -2011,6 +2011,34 @@
   "radioStats_stripWaiting": "Prejemanje statistike o radiju…",
   "radioStats_settingsTile": "Radijske statistike",
   "radioStats_settingsSubtitle": "Število šumov, RSSI, SNR in čas, ki ga je napolnila oprema",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_composerTitle": "Preprištejte, preden pošljete",
+  "translation_title": "Prevod",
+  "translation_enableSubtitle": "Prevedite vstopne sporočila in omogočite predhodno prevajanje.",
+  "translation_enableTitle": "Omogočite prevod",
+  "translation_composerSubtitle": "Ureja privzeto stanje ikone za prevod, ki jo uporablja avtor.",
+  "translation_targetLanguage": "Ciljna jezika",
+  "translation_useAppLanguage": "Uporabite jezik aplikacije",
+  "translation_downloadedModelLabel": "Naložen model",
+  "translation_presetModelLabel": "Prednastavljeni model Hugging Face",
+  "translation_manualUrlLabel": "URL za ročni model",
+  "translation_downloadModel": "Prenesite model",
+  "translation_downloading": "Izvajanje...",
+  "translation_working": "Delo...",
+  "translation_stop": "Prekliji",
+  "translation_mergingChunks": "Sklapljanje prenesenih delov v končni datoteko...",
+  "translation_downloadedModels": "Naloženi modeli",
+  "translation_deleteModel": "Izbrisati model",
+  "translation_modelDownloaded": "Model za prevajanje je bil naložen.",
+  "translation_downloadStopped": "Prenos je bil prekinjen.",
+  "translation_downloadFailed": "Izgovoritev ni bila uspešna: {error}",
+  "translation_enterUrlFirst": "Najprej vnesite URL model.",
   "@scanner_linuxPairingPinPrompt": {
     "placeholders": {
       "deviceName": {
@@ -2018,8 +2046,22 @@
       }
     }
   },
+  "scanner_linuxPairingHidePin": "Skrijte PIN",
   "scanner_linuxPairingShowPin": "Prikaži PIN",
-  "scanner_linuxPairingHidePin": "Skrij PIN",
-  "scanner_linuxPairingPinPrompt": "Vnesite PIN za {deviceName} (pustite prazno, če ga ni).",
-  "scanner_linuxPairingPinTitle": "Bluetooth PIN za seznanjanje"
+  "scanner_linuxPairingPinPrompt": "Vnesite PIN kodo za {deviceName} (ostavite prazno, če nimate kode).",
+  "scanner_linuxPairingPinTitle": "PIN za združevanje preko Bluetootha",
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_translateBeforeSending": "Preprištejte, preden pošljete",
+  "translation_composerDisabledHint": "Pošljite sporočila v originalnem tipkanem jeziku.",
+  "translation_composerEnabledHint": "Vsebina sporočil bo prevedena, preden jih pošljemo.",
+  "translation_messageTranslation": "Prevod sporočila",
+  "translation_translateTo": "Prevesti v {language}",
+  "translation_translationOptions": "Možnosti prevoda",
+  "translation_systemLanguage": "Jezik sistema"
 }

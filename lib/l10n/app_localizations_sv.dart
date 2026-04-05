@@ -3540,16 +3540,112 @@ class AppLocalizationsSv extends AppLocalizations {
       'Bakgrundsnivå, RSSI, SNR och tillgänglig tid';
 
   @override
-  String get scanner_linuxPairingShowPin => 'Visa PIN';
+  String get translation_title => 'Översättning';
 
   @override
-  String get scanner_linuxPairingHidePin => 'Dölj PIN';
+  String get translation_enableTitle => 'Aktivera översättning';
 
   @override
-  String get scanner_linuxPairingPinTitle => 'Bluetooth‑parnings‑PIN';
+  String get translation_enableSubtitle =>
+      'Översätt inkommande meddelanden och möjliggör översättning före avsändning.';
+
+  @override
+  String get translation_composerTitle => 'Översätt innan du skickar';
+
+  @override
+  String get translation_composerSubtitle =>
+      'Styr standardtillståndet för kompositorns översättningsikon.';
+
+  @override
+  String get translation_targetLanguage => 'Målmedvetet språk';
+
+  @override
+  String get translation_useAppLanguage => 'Använd appens språk';
+
+  @override
+  String get translation_downloadedModelLabel => 'Nedladdad modell';
+
+  @override
+  String get translation_presetModelLabel =>
+      'Fördefinierat Hugging Face-modell';
+
+  @override
+  String get translation_manualUrlLabel => 'Manualens URL';
+
+  @override
+  String get translation_downloadModel => 'Ladda ner modellen';
+
+  @override
+  String get translation_downloading => 'Nedladdning...';
+
+  @override
+  String get translation_working => 'Arbeta...';
+
+  @override
+  String get translation_stop => 'Stopp';
+
+  @override
+  String get translation_mergingChunks =>
+      'Slå samman de nedladdade delarna till en slutlig fil...';
+
+  @override
+  String get translation_downloadedModels => 'Nedladdade modeller';
+
+  @override
+  String get translation_deleteModel => 'Ta bort modell';
+
+  @override
+  String get translation_modelDownloaded =>
+      'Översättningsmodellen har laddats ner.';
+
+  @override
+  String get translation_downloadStopped => 'Nedladdningen avbruten.';
+
+  @override
+  String translation_downloadFailed(String error) {
+    return 'Nedladdning misslyckades: $error';
+  }
+
+  @override
+  String get translation_enterUrlFirst =>
+      'Ange först en URL för en specifik modell.';
+
+  @override
+  String get scanner_linuxPairingShowPin => 'Visa PIN-kod';
+
+  @override
+  String get scanner_linuxPairingHidePin => 'Dölj PIN-kod';
+
+  @override
+  String get scanner_linuxPairingPinTitle => 'PIN-kod för Bluetooth-anslutning';
 
   @override
   String scanner_linuxPairingPinPrompt(String deviceName) {
-    return 'Ange PIN för $deviceName (lämna tomt om ingen).';
+    return 'Ange PIN-kod för $deviceName (lämna tomt om ingen finns).';
   }
+
+  @override
+  String get translation_messageTranslation => 'Meddelandets översättning';
+
+  @override
+  String get translation_translateBeforeSending => 'Översätt innan du skickar';
+
+  @override
+  String get translation_composerEnabledHint =>
+      'Meddelandena kommer att översättas innan de skickas.';
+
+  @override
+  String get translation_composerDisabledHint =>
+      'Skicka meddelanden på det ursprungliga, stavade språket.';
+
+  @override
+  String translation_translateTo(String language) {
+    return 'Översätt till $language';
+  }
+
+  @override
+  String get translation_translationOptions => 'Översättningsalternativ';
+
+  @override
+  String get translation_systemLanguage => 'Språk för systemet';
 }

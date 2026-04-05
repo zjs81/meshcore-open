@@ -3414,7 +3414,72 @@ class AppLocalizationsKo extends AppLocalizations {
   String get radioStats_settingsSubtitle => '잡음 수준, RSSI, 신호 대 잡음비, 통신 시간';
 
   @override
-  String get scanner_linuxPairingShowPin => 'PIN 표시';
+  String get translation_title => '번역';
+
+  @override
+  String get translation_enableTitle => '번역 기능 활성화';
+
+  @override
+  String get translation_enableSubtitle => '입력 메시지를 번역하고, 미리 번역 기능을 제공합니다.';
+
+  @override
+  String get translation_composerTitle => '보내기 전에 번역';
+
+  @override
+  String get translation_composerSubtitle => '컴포저 번역 아이콘의 기본 상태를 제어합니다.';
+
+  @override
+  String get translation_targetLanguage => '목표 언어';
+
+  @override
+  String get translation_useAppLanguage => '앱 언어 사용';
+
+  @override
+  String get translation_downloadedModelLabel => '다운로드한 모델';
+
+  @override
+  String get translation_presetModelLabel => '사전에 설정된 Hugging Face 모델';
+
+  @override
+  String get translation_manualUrlLabel => '수동 모델 URL';
+
+  @override
+  String get translation_downloadModel => '모델 다운로드';
+
+  @override
+  String get translation_downloading => '다운로드 중...';
+
+  @override
+  String get translation_working => '업무 중...';
+
+  @override
+  String get translation_stop => '멈춰';
+
+  @override
+  String get translation_mergingChunks => '다운로드한 파일 조각들을 최종 파일로 병합 중...';
+
+  @override
+  String get translation_downloadedModels => '다운로드한 모델';
+
+  @override
+  String get translation_deleteModel => '모델 삭제';
+
+  @override
+  String get translation_modelDownloaded => '번역 모델이 다운로드되었습니다.';
+
+  @override
+  String get translation_downloadStopped => '다운로드 중단됨.';
+
+  @override
+  String translation_downloadFailed(String error) {
+    return '다운로드 실패: $error';
+  }
+
+  @override
+  String get translation_enterUrlFirst => '먼저 모델 URL을 입력하세요.';
+
+  @override
+  String get scanner_linuxPairingShowPin => 'PIN 보기';
 
   @override
   String get scanner_linuxPairingHidePin => 'PIN 숨기기';
@@ -3424,6 +3489,29 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String scanner_linuxPairingPinPrompt(String deviceName) {
-    return '$deviceName에 대한 PIN을 입력하세요 (없으면 비워두세요).';
+    return '$deviceName의 PIN을 입력하세요 (해당하는 경우에만 입력).';
   }
+
+  @override
+  String get translation_messageTranslation => '메시지 번역';
+
+  @override
+  String get translation_translateBeforeSending => '보내기 전에 번역';
+
+  @override
+  String get translation_composerEnabledHint => '메시지는 전송하기 전에 번역될 것입니다.';
+
+  @override
+  String get translation_composerDisabledHint => '원래 작성된 언어로 메시지를 보내세요.';
+
+  @override
+  String translation_translateTo(String language) {
+    return '$language 번역';
+  }
+
+  @override
+  String get translation_translationOptions => '번역 옵션';
+
+  @override
+  String get translation_systemLanguage => '시스템 언어';
 }

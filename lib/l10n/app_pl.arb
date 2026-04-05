@@ -163,7 +163,7 @@
   "appSettings_themeLight": "Jasne",
   "appSettings_themeDark": "Ciemny",
   "appSettings_language": "Język",
-  "appSettings_languageSystem": "Domyślny systemu",
+  "appSettings_languageSystem": "Domyślny systemowy",
   "appSettings_languageEn": "English",
   "appSettings_languageFr": "Français",
   "appSettings_languageEs": "Español",
@@ -1377,7 +1377,7 @@
     }
   },
   "repeater_neighbors": "Sąsiedzi",
-  "repeater_neighborsSubtitle": "Wyświetl sąsiedztwo zerowych hopów.",
+  "repeater_neighborsSubtitle": "Wyświetl sąsiadów zero-hop.",
   "neighbors_receivedData": "Otrzymano dane sąsiedztwa",
   "neighbors_requestTimedOut": "Sąsiedzi proszą o wyłączenie timingu.",
   "neighbors_errorLoading": "Błąd podczas ładowania sąsiadów: {error}",
@@ -1626,12 +1626,12 @@
   },
   "notification_receivedNewMessage": "Otrzymano nową wiadomość",
   "settings_gpxExportContacts": "Eksportuj towarzyszy do GPX",
-  "settings_gpxExportRepeaters": "Eksportuj przekaźniki / serwer pokojowy do GPX",
-  "settings_gpxExportRepeatersSubtitle": "Eksportuje przekaźniki / roomserver z lokalizacją do pliku GPX.",
+  "settings_gpxExportRepeaters": "Eksportuj przekaźniki / roomservery do GPX",
+  "settings_gpxExportRepeatersSubtitle": "Eksportuje przekaźniki / roomservery z lokalizacją do pliku GPX.",
   "settings_gpxExportSuccess": "Pomyślnie wyeksportowano plik GPX.",
   "settings_gpxExportNotAvailable": "Nie obsługiwane na Twoim urządzeniu/systemie operacyjnym",
   "settings_gpxExportError": "Wystąpił błąd podczas eksportowania.",
-  "settings_gpxExportRepeatersRoom": "Lokalizacje przekaźników i serwerów pokojowych",
+  "settings_gpxExportRepeatersRoom": "Lokalizacje przekaźników i roomserverów",
   "settings_gpxExportContactsSubtitle": "Eksportuje towarzyszy z lokalizacją do pliku GPX.",
   "settings_gpxExportAll": "Eksportuj wszystkie kontakty do GPX",
   "settings_gpxExportAllSubtitle": "Eksportuje wszystkie kontakty z lokalizacją do pliku GPX.",
@@ -1652,7 +1652,7 @@
   "scanner_bluetoothOff": "Bluetooth jest wyłączony",
   "scanner_enableBluetooth": "Włącz Bluetooth",
   "snrIndicator_lastSeen": "Ostatnio widziany",
-  "snrIndicator_nearByRepeaters": "Nadajniki w pobliżu",
+  "snrIndicator_nearByRepeaters": "Pobliskie przekaźniki",
   "chat_ShowAllPaths": "Pokaż wszystkie ścieżki",
   "settings_clientRepeatSubtitle": "Pozwól temu urządzeniu powtarzać pakiety danych dla innych urządzeń.",
   "settings_clientRepeat": "Powtórzenie: Niezależne od sieci",
@@ -1850,12 +1850,12 @@
   "contactsSettings_autoAddUsersSubtitle": "Pozwól towarzyszowi automatycznie dodawać znalezione użytkowników.",
   "contactsSettings_autoAddRepeatersTitle": "Automatyczne dodawanie przekaźników",
   "contactsSettings_autoAddRepeatersSubtitle": "Zezwól towarzyszowi na automatyczne dodawanie odkrytych przekaźników.",
-  "contactsSettings_autoAddRoomServersTitle": "Automatycznie dodaj serwery pokojowe",
+  "contactsSettings_autoAddRoomServersTitle": "Automatycznie dodaj roomservery",
   "contactsSettings_autoAddUsersTitle": "Automatycznie dodaj użytkowników",
   "settings_contactSettings": "Ustawienia kontaktów",
   "contactsSettings_otherTitle": "Inne ustawienia związane z kontaktami",
   "contactsSettings_autoAddTitle": "Automatyczne odnajdywanie",
-  "contactsSettings_autoAddRoomServersSubtitle": "Zezwól towarzyszowi na automatyczne dodawanie znalezionych serwerów pokojowych.",
+  "contactsSettings_autoAddRoomServersSubtitle": "Zezwól towarzyszowi na automatyczne dodawanie znalezionych roomserverów.",
   "contactsSettings_autoAddSensorsTitle": "Automatycznie dodaj czujniki",
   "discoveredContacts_searchHint": "Wyszukaj odkryte kontakty",
   "discoveredContacts_contactAdded": "Kontakt dodany",
@@ -1983,9 +1983,9 @@
   "appSettings_maxMessageRetriesSubtitle": "Liczba prób ponownego wysłania wiadomości przed oznaczaniem jej jako nieudanej",
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Tryb telemetryczny zaktualizowany",
-  "settings_multiAck": "Wiele potwierdzeń: {value}",
-  "map_showOverlaps": "Nakładające się klucze powtarzalne",
-  "map_runTraceWithReturnPath": "Wróć z powrotem tą samą ścieżką",
+  "settings_multiAck": "Wielokrotne ACK: {value}",
+  "map_showOverlaps": "Nakładające się klucze przekaźników",
+  "map_runTraceWithReturnPath": "Wróć tą samą ścieżką",
   "@radioStats_noiseFloor": {
     "placeholders": {
       "noiseDbm": {
@@ -2049,6 +2049,34 @@
   "radioStats_stripWaiting": "Pobieranie danych dotyczących radia…",
   "radioStats_settingsTile": "Statystyki radiowe",
   "radioStats_settingsSubtitle": "Szum tła, RSSI, SNR oraz czas dostępny",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_composerTitle": "Przekład przed wysłaniem",
+  "translation_title": "Tłumaczenie",
+  "translation_enableTitle": "Włącz tłumaczenie",
+  "translation_enableSubtitle": "Tłumaczenie otrzymywanych wiadomości oraz umożliwienie tłumaczenia przed wysłaniem.",
+  "translation_composerSubtitle": "Kontroluje domyślny stan ikony tłumaczenia w edytorze.",
+  "translation_targetLanguage": "Język docelowy",
+  "translation_useAppLanguage": "Użyj języka aplikacji",
+  "translation_downloadedModelLabel": "Pobudowany model",
+  "translation_presetModelLabel": "Wspólny model Hugging Face",
+  "translation_manualUrlLabel": "Adres URL do wersji manualnej",
+  "translation_downloadModel": "Pobierz model",
+  "translation_downloading": "Pobieranie...",
+  "translation_working": "Praca...",
+  "translation_stop": "Zatrzymaj się",
+  "translation_mergingChunks": "Scalanie pobranych fragmentów w jeden plik końcowy...",
+  "translation_downloadedModels": "Pobrane modele",
+  "translation_deleteModel": "Usuń model",
+  "translation_modelDownloaded": "Model tłumaczenia został pobrany.",
+  "translation_downloadStopped": "Pobieranie zakończone.",
+  "translation_downloadFailed": "Nie udało się pobrać: {error}",
+  "translation_enterUrlFirst": "Najpierw wprowadź adres URL modelu.",
   "@scanner_linuxPairingPinPrompt": {
     "placeholders": {
       "deviceName": {
@@ -2056,8 +2084,22 @@
       }
     }
   },
-  "scanner_linuxPairingShowPin": "Pokaż PIN",
-  "scanner_linuxPairingHidePin": "Ukryj PIN",
-  "scanner_linuxPairingPinPrompt": "Wprowadź kod PIN dla {deviceName} (pozostaw puste, jeśli brak).",
-  "scanner_linuxPairingPinTitle": "Kod PIN parowania Bluetooth"
+  "scanner_linuxPairingShowPin": "Wyświetl kod PIN",
+  "scanner_linuxPairingPinPrompt": "Wprowadź kod PIN dla {deviceName} (pust, jeśli nie jest wymagany).",
+  "scanner_linuxPairingHidePin": "Ukryj kod PIN",
+  "scanner_linuxPairingPinTitle": "PIN do sparowania przez Bluetooth",
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_composerEnabledHint": "Komunikaty zostaną przetłumaczone przed wysłaniem.",
+  "translation_translateBeforeSending": "Przekład przed wysłaniem",
+  "translation_composerDisabledHint": "Wysyłaj wiadomości w oryginalnym, wpisanym formacie.",
+  "translation_messageTranslation": "Tłumaczenie wiadomości",
+  "translation_translationOptions": "Opcje tłumaczenia",
+  "translation_systemLanguage": "Język systemu",
+  "translation_translateTo": "Tłumacz na {language}"
 }

@@ -2011,6 +2011,34 @@
   "radioStats_stripWaiting": "Hämtar radiostatistik…",
   "radioStats_settingsTile": "Radiostation",
   "radioStats_settingsSubtitle": "Bakgrundsnivå, RSSI, SNR och tillgänglig tid",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_enableSubtitle": "Översätt inkommande meddelanden och möjliggör översättning före avsändning.",
+  "translation_enableTitle": "Aktivera översättning",
+  "translation_title": "Översättning",
+  "translation_composerTitle": "Översätt innan du skickar",
+  "translation_composerSubtitle": "Styr standardtillståndet för kompositorns översättningsikon.",
+  "translation_targetLanguage": "Målmedvetet språk",
+  "translation_useAppLanguage": "Använd appens språk",
+  "translation_downloadedModelLabel": "Nedladdad modell",
+  "translation_presetModelLabel": "Fördefinierat Hugging Face-modell",
+  "translation_manualUrlLabel": "Manualens URL",
+  "translation_downloadModel": "Ladda ner modellen",
+  "translation_downloading": "Nedladdning...",
+  "translation_working": "Arbeta...",
+  "translation_stop": "Stopp",
+  "translation_mergingChunks": "Slå samman de nedladdade delarna till en slutlig fil...",
+  "translation_downloadedModels": "Nedladdade modeller",
+  "translation_deleteModel": "Ta bort modell",
+  "translation_modelDownloaded": "Översättningsmodellen har laddats ner.",
+  "translation_downloadStopped": "Nedladdningen avbruten.",
+  "translation_downloadFailed": "Nedladdning misslyckades: {error}",
+  "translation_enterUrlFirst": "Ange först en URL för en specifik modell.",
   "@scanner_linuxPairingPinPrompt": {
     "placeholders": {
       "deviceName": {
@@ -2018,8 +2046,22 @@
       }
     }
   },
-  "scanner_linuxPairingShowPin": "Visa PIN",
-  "scanner_linuxPairingPinTitle": "Bluetooth‑parnings‑PIN",
-  "scanner_linuxPairingPinPrompt": "Ange PIN för {deviceName} (lämna tomt om ingen).",
-  "scanner_linuxPairingHidePin": "Dölj PIN"
+  "scanner_linuxPairingPinPrompt": "Ange PIN-kod för {deviceName} (lämna tomt om ingen finns).",
+  "scanner_linuxPairingPinTitle": "PIN-kod för Bluetooth-anslutning",
+  "scanner_linuxPairingShowPin": "Visa PIN-kod",
+  "scanner_linuxPairingHidePin": "Dölj PIN-kod",
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_composerDisabledHint": "Skicka meddelanden på det ursprungliga, stavade språket.",
+  "translation_translateBeforeSending": "Översätt innan du skickar",
+  "translation_composerEnabledHint": "Meddelandena kommer att översättas innan de skickas.",
+  "translation_messageTranslation": "Meddelandets översättning",
+  "translation_translateTo": "Översätt till {language}",
+  "translation_translationOptions": "Översättningsalternativ",
+  "translation_systemLanguage": "Språk för systemet"
 }

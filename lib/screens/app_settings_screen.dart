@@ -1,11 +1,14 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../l10n/l10n.dart';
 import '../models/app_settings.dart';
+import '../models/translation_support.dart';
 import '../services/app_settings_service.dart';
 import '../services/notification_service.dart';
+import '../services/translation_service.dart';
 import '../widgets/adaptive_app_bar_title.dart';
 import 'map_cache_screen.dart';
 
@@ -21,26 +24,46 @@ class AppSettingsScreen extends StatelessWidget {
       ),
       body: SafeArea(
         top: false,
-        child: Consumer2<AppSettingsService, MeshCoreConnector>(
-          builder: (context, settingsService, connector, child) {
-            return ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                _buildAppearanceCard(context, settingsService),
-                const SizedBox(height: 16),
-                _buildNotificationsCard(context, settingsService),
-                const SizedBox(height: 16),
-                _buildMessagingCard(context, settingsService),
-                const SizedBox(height: 16),
-                _buildBatteryCard(context, settingsService, connector),
-                const SizedBox(height: 16),
-                _buildMapSettingsCard(context, settingsService),
-                const SizedBox(height: 16),
-                _buildDebugCard(context, settingsService),
-              ],
-            );
-          },
-        ),
+        child:
+            Consumer3<
+              AppSettingsService,
+              MeshCoreConnector,
+              TranslationService
+            >(
+              builder:
+                  (
+                    context,
+                    settingsService,
+                    connector,
+                    translationService,
+                    child,
+                  ) {
+                    return ListView(
+                      padding: const EdgeInsets.all(16),
+                      children: [
+                        _buildAppearanceCard(context, settingsService),
+                        const SizedBox(height: 16),
+                        _buildNotificationsCard(context, settingsService),
+                        const SizedBox(height: 16),
+                        _buildMessagingCard(context, settingsService),
+                        const SizedBox(height: 16),
+                        if (!kIsWeb) ...[
+                          _buildTranslationCard(
+                            context,
+                            settingsService,
+                            translationService,
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                        _buildBatteryCard(context, settingsService, connector),
+                        const SizedBox(height: 16),
+                        _buildMapSettingsCard(context, settingsService),
+                        const SizedBox(height: 16),
+                        _buildDebugCard(context, settingsService),
+                      ],
+                    );
+                  },
+            ),
       ),
     );
   }
@@ -530,6 +553,211 @@ class AppSettingsScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildTranslationCard(
+    BuildContext context,
+    AppSettingsService settingsService,
+    TranslationService translationService,
+  ) {
+    final settings = settingsService.settings;
+    return Card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text(
+              context.l10n.translation_title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.translate),
+            title: Text(context.l10n.translation_enableTitle),
+            subtitle: Text(context.l10n.translation_enableSubtitle),
+            value: settings.translationEnabled,
+            onChanged: settingsService.setTranslationEnabled,
+          ),
+          const Divider(height: 1),
+          SwitchListTile(
+            secondary: const Icon(Icons.outgoing_mail),
+            title: Text(context.l10n.translation_composerTitle),
+            subtitle: Text(context.l10n.translation_composerSubtitle),
+            value: settings.composerTranslationEnabled,
+            onChanged: settingsService.setComposerTranslationEnabled,
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: const Icon(Icons.language),
+            title: Text(context.l10n.translation_targetLanguage),
+            subtitle: Text(
+              _translationLanguageLabel(
+                context,
+                settings.translationTargetLanguageCode,
+              ),
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () =>
+                _showTranslationLanguageDialog(context, settingsService),
+          ),
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: DropdownButtonFormField<String>(
+              initialValue: settings.translationSelectedModelId,
+              isExpanded: true,
+              decoration: InputDecoration(
+                labelText: context.l10n.translation_downloadedModelLabel,
+                border: const OutlineInputBorder(),
+              ),
+              items: [
+                for (final model in settings.translationDownloadedModels)
+                  DropdownMenuItem(
+                    value: model.id,
+                    child: Text(translationModelFriendlyName(model)),
+                  ),
+              ],
+              onChanged: settings.translationDownloadedModels.isEmpty
+                  ? null
+                  : (value) {
+                      settingsService.setTranslationSelectedModelId(value);
+                    },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: DropdownButtonFormField<String>(
+              initialValue: null,
+              isExpanded: true,
+              decoration: InputDecoration(
+                labelText: context.l10n.translation_presetModelLabel,
+                border: const OutlineInputBorder(),
+              ),
+              items: [
+                for (final preset in translationPresetModels)
+                  DropdownMenuItem(
+                    value: preset.sourceUrl,
+                    child: Text(translationModelFriendlyName(preset)),
+                  ),
+              ],
+              onChanged: translationService.isBusy
+                  ? null
+                  : (value) async {
+                      if (value == null) return;
+                      final preset = translationPresetModels.firstWhere(
+                        (entry) => entry.sourceUrl == value,
+                      );
+                      await _downloadTranslationModel(
+                        context,
+                        translationService,
+                        settingsService,
+                        sourceUrl: preset.sourceUrl,
+                        fileName: preset.name,
+                        id: preset.id,
+                      );
+                    },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            child: Column(
+              children: [
+                _TranslationUrlField(
+                  initialValue: settings.translationModelSourceUrl ?? '',
+                  onChanged: settingsService.setTranslationModelSourceUrl,
+                  onDownload: translationService.isBusy
+                      ? null
+                      : (url) => _downloadTranslationModel(
+                          context,
+                          translationService,
+                          settingsService,
+                          sourceUrl: url,
+                        ),
+                  downloadLabel: translationService.isDownloading
+                      ? context.l10n.translation_downloading
+                      : translationService.isBusy
+                      ? context.l10n.translation_working
+                      : context.l10n.translation_downloadModel,
+                  isDownloading: translationService.isDownloading,
+                  onCancel: translationService.cancelDownload,
+                  labelText: context.l10n.translation_manualUrlLabel,
+                  stopLabel: context.l10n.translation_stop,
+                ),
+                if (translationService.isDownloading) ...[
+                  const SizedBox(height: 12),
+                  LinearProgressIndicator(
+                    value:
+                        translationService.downloadFileName ==
+                            'Merging chunks...'
+                        ? null
+                        : translationService.downloadProgress,
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _downloadProgressLabel(context, translationService),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+                if (settings.translationDownloadedModels.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      context.l10n.translation_downloadedModels,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  for (final model in settings.translationDownloadedModels)
+                    Card.outlined(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
+                        leading: Icon(
+                          model.id == settings.translationSelectedModelId
+                              ? Icons.check_circle
+                              : Icons.memory_outlined,
+                        ),
+                        title: Text(translationModelFriendlyName(model)),
+                        subtitle: Text(_downloadedModelLabel(model)),
+                        trailing: IconButton(
+                          tooltip: context.l10n.translation_deleteModel,
+                          onPressed: translationService.isBusy
+                              ? null
+                              : () => _deleteTranslationModel(
+                                  context,
+                                  translationService,
+                                  model,
+                                ),
+                          icon: const Icon(Icons.delete_outline),
+                        ),
+                        onTap: () => settingsService
+                            .setTranslationSelectedModelId(model.id),
+                      ),
+                    ),
+                ],
+                if (translationService.lastError != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    translationService.lastError!,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   // Fixed rendering issues
   Widget _buildBatteryCard(
     BuildContext context,
@@ -910,6 +1138,124 @@ class AppSettingsScreen extends StatelessWidget {
     );
   }
 
+  void _showTranslationLanguageDialog(
+    BuildContext context,
+    AppSettingsService settingsService,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => _TranslationLanguageDialogContent(
+        currentLanguageCode:
+            settingsService.settings.translationTargetLanguageCode,
+        onLanguageSelected: (value) {
+          settingsService.setTranslationTargetLanguageCode(value);
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
+  Future<void> _downloadTranslationModel(
+    BuildContext context,
+    TranslationService translationService,
+    AppSettingsService settingsService, {
+    required String sourceUrl,
+    String? fileName,
+    String? id,
+  }) async {
+    if (sourceUrl.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.translation_enterUrlFirst)),
+      );
+      return;
+    }
+    try {
+      await translationService.downloadModel(
+        sourceUrl: sourceUrl,
+        fileName: fileName,
+        id: id,
+      );
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.translation_modelDownloaded)),
+      );
+      await settingsService.setTranslationEnabled(true);
+    } on TranslationDownloadCancelled {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.translation_downloadStopped)),
+      );
+    } catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            context.l10n.translation_downloadFailed(error.toString()),
+          ),
+        ),
+      );
+    }
+  }
+
+  String _translationLanguageLabel(BuildContext context, String? languageCode) {
+    if (languageCode == null || languageCode.isEmpty) {
+      return context.l10n.translation_useAppLanguage;
+    }
+    for (final option in supportedTranslationLanguages) {
+      if (option.code == languageCode) {
+        return option.label;
+      }
+    }
+    return languageCode.toUpperCase();
+  }
+
+  String _downloadProgressLabel(
+    BuildContext context,
+    TranslationService translationService,
+  ) {
+    final fileName = translationService.downloadFileName ?? 'Model';
+    if (fileName == 'Merging chunks...') {
+      return context.l10n.translation_mergingChunks;
+    }
+    final currentMb = translationService.downloadedBytes / (1024 * 1024);
+    final totalBytes = translationService.downloadTotalBytes;
+    if (totalBytes == null || totalBytes <= 0) {
+      return '$fileName: ${currentMb.toStringAsFixed(1)} MB';
+    }
+    final totalMb = totalBytes / (1024 * 1024);
+    final percent = ((translationService.downloadProgress ?? 0) * 100)
+        .toStringAsFixed(0);
+    return '$fileName: ${currentMb.toStringAsFixed(1)} / ${totalMb.toStringAsFixed(1)} MB ($percent%)';
+  }
+
+  Future<void> _deleteTranslationModel(
+    BuildContext context,
+    TranslationService translationService,
+    TranslationModelRecord model,
+  ) async {
+    try {
+      await translationService.removeModel(model);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          // TODO: l10n
+          content: Text('Deleted ${translationModelFriendlyName(model)}.'),
+        ),
+      );
+    } catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Delete failed: $error')),
+      ); // TODO: l10n
+    }
+  }
+
+  String _downloadedModelLabel(TranslationModelRecord model) {
+    final sizeMb = model.fileSizeBytes / (1024 * 1024);
+    final source = model.sourceUrl.isEmpty ? model.name : model.sourceUrl;
+    return '${sizeMb.toStringAsFixed(1)} MB • $source';
+  }
+
   Widget _buildDebugCard(
     BuildContext context,
     AppSettingsService settingsService,
@@ -947,6 +1293,182 @@ class AppSettingsScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Owns the [TextEditingController] for the manual model URL field so it
+/// survives rebuilds of the parent [Consumer3].
+class _TranslationUrlField extends StatefulWidget {
+  const _TranslationUrlField({
+    required this.initialValue,
+    required this.onChanged,
+    required this.onDownload,
+    required this.downloadLabel,
+    required this.isDownloading,
+    required this.onCancel,
+    required this.labelText,
+    required this.stopLabel,
+  });
+
+  final String initialValue;
+  final ValueChanged<String> onChanged;
+  final void Function(String url)? onDownload;
+  final String downloadLabel;
+  final bool isDownloading;
+  final VoidCallback onCancel;
+  final String labelText;
+  final String stopLabel;
+
+  @override
+  State<_TranslationUrlField> createState() => _TranslationUrlFieldState();
+}
+
+class _TranslationUrlFieldState extends State<_TranslationUrlField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            labelText: widget.labelText,
+            border: const OutlineInputBorder(),
+          ),
+          onChanged: widget.onChanged,
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: FilledButton.icon(
+                onPressed: widget.onDownload == null
+                    ? null
+                    : () => widget.onDownload!(_controller.text.trim()),
+                icon: const Icon(Icons.download),
+                label: Text(widget.downloadLabel),
+              ),
+            ),
+            if (widget.isDownloading) ...[
+              const SizedBox(width: 8),
+              OutlinedButton.icon(
+                onPressed: widget.onCancel,
+                icon: const Icon(Icons.stop_circle_outlined),
+                label: Text(widget.stopLabel),
+              ),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Dialog content for choosing the translation target language.
+/// Owns the search [TextEditingController] so it is properly disposed.
+class _TranslationLanguageDialogContent extends StatefulWidget {
+  const _TranslationLanguageDialogContent({
+    required this.currentLanguageCode,
+    required this.onLanguageSelected,
+  });
+
+  final String? currentLanguageCode;
+  final ValueChanged<String?> onLanguageSelected;
+
+  @override
+  State<_TranslationLanguageDialogContent> createState() =>
+      _TranslationLanguageDialogContentState();
+}
+
+class _TranslationLanguageDialogContentState
+    extends State<_TranslationLanguageDialogContent> {
+  late final TextEditingController _searchController;
+  List<TranslationLanguageOption> _filtered = supportedTranslationLanguages;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(context.l10n.translation_targetLanguage),
+      content: SizedBox(
+        width: 360,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _searchController,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                final normalized = value.trim().toLowerCase();
+                setState(() {
+                  _filtered = supportedTranslationLanguages.where((option) {
+                    return option.label.toLowerCase().contains(normalized) ||
+                        option.code.toLowerCase().contains(normalized);
+                  }).toList();
+                });
+              },
+            ),
+            const SizedBox(height: 12),
+            Flexible(
+              child: RadioGroup<String?>(
+                groupValue: widget.currentLanguageCode,
+                onChanged: (value) {
+                  widget.onLanguageSelected(value);
+                },
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    RadioListTile<String?>(
+                      value: null,
+                      title: Text(context.l10n.translation_useAppLanguage),
+                    ),
+                    for (final option in _filtered)
+                      RadioListTile<String?>(
+                        value: option.code,
+                        title: Text(option.label),
+                        subtitle: Text(option.code.toUpperCase()),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(context.l10n.common_close),
+        ),
+      ],
     );
   }
 }
