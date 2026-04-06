@@ -33,6 +33,6 @@ class GifHelper {
   
   /// Encode a GIF in a format that parseGif() can parse.
   static String encodeGif(String gifId) {
-    return 'g:$gifId';
+    return 'https://giphy.com/gifs/$gifId';
   }
 }
