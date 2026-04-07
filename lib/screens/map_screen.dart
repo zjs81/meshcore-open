@@ -1310,7 +1310,7 @@ class _MapScreenState extends State<MapScreen> {
     final flags = parts.length > 2 ? parts[2].trim() : '';
     return _MarkerPayload(
       position: LatLng(lat, lon),
-      label: label.isEmpty ? context.l10n.map_sharedPin : label,
+      label: label,
       flags: flags,
     );
   }
@@ -1539,7 +1539,9 @@ class _MapScreenState extends State<MapScreen> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(marker.label),
+        title: Text(
+          marker.label.isEmpty ? context.l10n.map_sharedPin : marker.label,
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

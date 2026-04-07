@@ -2407,8 +2407,9 @@ class MeshCoreConnector extends ChangeNotifier {
     _locationSharingContactKey = contactKey;
     _locationSharingChannelIndex = channelIndex;
     _lastSharedLocationPositionKey = null;
-    final gpsInterval =
+    final rawGpsInterval =
         int.tryParse(_currentCustomVars?['gps_interval'] ?? '') ?? 900;
+    final gpsInterval = rawGpsInterval > 0 ? rawGpsInterval : 900;
     _sendLocationOnce(contactKey, channelIndex);
     _locationSharingTimer = Timer.periodic(Duration(seconds: gpsInterval), (_) {
       if (!isConnected || DateTime.now().isAfter(_locationSharingEnd!)) {
@@ -5547,6 +5548,10 @@ class MeshCoreConnector extends ChangeNotifier {
     _stopRadioStatsPolling();
     _locationSharingTimer?.cancel();
     _locationSharingTimer = null;
+    _locationSharingEnd = null;
+    _locationSharingContactKey = null;
+    _locationSharingChannelIndex = null;
+    _lastSharedLocationPositionKey = null;
     _latestRadioStats = null;
     radioStatsNotifier.value = null;
     _prevTotalAirSecs = 0;

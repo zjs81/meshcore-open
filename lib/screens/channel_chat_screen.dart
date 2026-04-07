@@ -974,9 +974,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
         maxBytes - utf8.encode(prefix).length - utf8.encode(suffix).length;
 
     if (allowsTimedLocationSharing) {
-      final gpsInterval =
+      final rawGpsInterval =
           int.tryParse(connector.currentCustomVars?['gps_interval'] ?? '') ??
           900;
+      final gpsInterval = rawGpsInterval > 0 ? rawGpsInterval : 900;
       final minIntervals = (300.0 / gpsInterval).ceil().clamp(2, 9999);
       final sliderMax = ((86400 / gpsInterval).floor() - minIntervals + 1)
           .clamp(1, 99999);

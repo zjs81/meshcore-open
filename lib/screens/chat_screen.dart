@@ -508,6 +508,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ? Smaz.encodeIfSmaller
         : null;
     final gpsEnabled = connector.currentCustomVars?['gps'] == '1';
+    final isRoomChat = _resolveContact(connector).type == advTypeRoom;
     final sharingHere =
         connector.locationSharingContactKey == widget.contact.publicKeyHex;
     return Column(
@@ -565,7 +566,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemBuilder: (context) => [
                     PopupMenuItem(
                       value: _ChatInputAction.shareLocation,
-                      enabled: gpsEnabled,
+                      enabled: gpsEnabled && !isRoomChat,
                       child: Row(
                         children: [
                           const Icon(Icons.my_location, size: 20),
@@ -606,7 +607,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: ValueListenableBuilder<TextEditingValue>(
                     valueListenable: _textController,
                     builder: (context, value, child) {
-                      final gifId = _parseGifId(value.text);
+                      final gifId = GifHelper.parseGif(value.text);
                       if (gifId != null) {
                         return Focus(
                           autofocus: true,
@@ -686,12 +687,6 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  String? _parseGifId(String text) {
-    final trimmed = text.trim();
-    final match = RegExp(r'^g:([A-Za-z0-9_-]+)$').firstMatch(trimmed);
-    return match?.group(1);
-  }
-
   void _insertTextAtCursor(String text) {
     final currentValue = _textController.value;
     final selection = currentValue.selection;
@@ -723,6 +718,10 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _shareLocation(MeshCoreConnector connector) async {
+    if (_resolveContact(connector).type == advTypeRoom) {
+      return;
+    }
+
     final lat = connector.selfLatitude;
     final lon = connector.selfLongitude;
     if (lat == null || lon == null) {
@@ -757,8 +756,9 @@ class _ChatScreenState extends State<ChatScreen> {
     const suffix = '|loc';
     final maxLabelBytes =
         maxBytes - utf8.encode(prefix).length - utf8.encode(suffix).length;
-    final gpsInterval =
+    final rawGpsInterval =
         int.tryParse(connector.currentCustomVars?['gps_interval'] ?? '') ?? 900;
+    final gpsInterval = rawGpsInterval > 0 ? rawGpsInterval : 900;
     final minIntervals = (300.0 / gpsInterval).ceil().clamp(2, 9999);
     final sliderMax = ((86400 / gpsInterval).floor() - minIntervals + 1).clamp(
       1,
