@@ -499,6 +499,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildInputBar(MeshCoreConnector connector) {
+    final isGpsEnabled = connector.currentCustomVars?['gps'] == '1';
     final maxBytes = maxContactMessageBytes();
     final colorScheme = Theme.of(context).colorScheme;
     final smazEncoder =
@@ -527,12 +528,21 @@ class _ChatScreenState extends State<ChatScreen> {
                 } else if (action == _ChatInputAction.insertEmoji) {
                   _showEmojiPicker(context);
                 } else if (action == _ChatInputAction.shareLocation) {
+                  if (!isGpsEnabled) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(context.l10n.chat_locationUnavailable),
+                      ),
+                    );
+                    return;
+                  }
                   _shareLocation(context.read<MeshCoreConnector>());
                 }
               },
               itemBuilder: (context) => [
                 PopupMenuItem(
                   value: _ChatInputAction.shareLocation,
+                  enabled: isGpsEnabled,
                   child: Row(
                     children: [
                       const Icon(Icons.my_location, size: 20),
@@ -688,6 +698,14 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _shareLocation(MeshCoreConnector connector) async {
+    final isGpsEnabled = connector.currentCustomVars?['gps'] == '1';
+    if (!isGpsEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.chat_locationUnavailable)),
+      );
+      return;
+    }
+
     final lat = connector.selfLatitude;
     final lon = connector.selfLongitude;
     if (lat == null || lon == null) {

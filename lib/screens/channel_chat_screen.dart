@@ -938,6 +938,14 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
   Future<void> _shareLocation() async {
     final connector = context.read<MeshCoreConnector>();
+    final isGpsEnabled = connector.currentCustomVars?['gps'] == '1';
+    if (!isGpsEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.chat_locationUnavailable)),
+      );
+      return;
+    }
+
     final lat = connector.selfLatitude;
     final lon = connector.selfLongitude;
     if (lat == null || lon == null) {
@@ -1142,6 +1150,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
   Widget _buildMessageComposer() {
     final connector = context.watch<MeshCoreConnector>();
+    final isGpsEnabled = connector.currentCustomVars?['gps'] == '1';
     final maxBytes = maxChannelMessageBytes(connector.selfName);
     final smazEncoder = connector.isChannelSmazEnabled(widget.channel.index)
         ? Smaz.encodeIfSmaller
@@ -1185,12 +1194,21 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                   } else if (action == _ChannelChatInputAction.insertEmoji) {
                     _showEmojiPickerForComposer(context);
                   } else if (action == _ChannelChatInputAction.shareLocation) {
+                    if (!isGpsEnabled) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(context.l10n.chat_locationUnavailable),
+                        ),
+                      );
+                      return;
+                    }
                     _shareLocation();
                   }
                 },
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     value: _ChannelChatInputAction.shareLocation,
+                    enabled: isGpsEnabled,
                     child: Row(
                       children: [
                         const Icon(Icons.location_on, size: 20),
