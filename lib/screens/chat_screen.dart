@@ -767,7 +767,7 @@ class _ChatScreenState extends State<ChatScreen> {
       );
       return;
     }
-    connector.sendMessage(widget.contact, markerText);
+    connector.sendMessage(_resolveContact(connector), markerText);
   }
 
   void _showGifPicker(BuildContext context) {
