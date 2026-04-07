@@ -1298,6 +1298,22 @@ class AppLocalizationsPl extends AppLocalizations {
   String get chat_sendGif => 'Wyślij GIF';
 
   @override
+  String get chat_insertEmoji => 'Wstaw emoji';
+
+  @override
+  String get chat_shareLocation => 'Udostępnij lokalizację';
+
+  @override
+  String get chat_stopSharingLocationConfirm =>
+      'Zatrzymać udostępnianie lokalizacji?';
+
+  @override
+  String get chat_once => 'Raz';
+
+  @override
+  String get chat_locationUnavailable => 'Lokalizacja niedostępna';
+
+  @override
   String get chat_reply => 'Odpowiedz';
 
   @override
@@ -1731,6 +1747,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get map_sharedPin => 'Udostępniona pinezka';
+
+  @override
+  String get map_sharedAt => 'Udostępnione';
 
   @override
   String get map_joinRoom => 'Dołącz do pokoju';

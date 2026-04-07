@@ -109,7 +109,7 @@ class ReactionHelper {
 
     return ReactionInfo(targetHash: match.group(1)!, emoji: emoji);
   }
-  
+
   /// Encode a reaction message that parseReaction() can parse.
   static String encodeReaction(String hash, String emojiIndex) {
     return 'r:$hash:$emojiIndex';

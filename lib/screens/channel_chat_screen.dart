@@ -14,6 +14,7 @@ import '../connector/meshcore_protocol.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../helpers/utf8_length_limiter.dart';
+import '../helpers/smaz.dart';
 import '../l10n/l10n.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
@@ -42,6 +43,8 @@ class ChannelChatScreen extends StatefulWidget {
   @override
   State<ChannelChatScreen> createState() => _ChannelChatScreenState();
 }
+
+enum _ChannelChatInputAction { sendGif, insertEmoji, shareLocation }
 
 class _ChannelChatScreenState extends State<ChannelChatScreen> {
   final TextEditingController _textController = TextEditingController();
@@ -898,6 +901,251 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     );
   }
 
+  void _insertTextAtCursor(String text) {
+    final currentValue = _textController.value;
+    final selection = currentValue.selection;
+    final newText = selection.isValid
+        ? currentValue.text.replaceRange(selection.start, selection.end, text)
+        : currentValue.text + text;
+    final caret =
+        (selection.isValid ? selection.start : currentValue.text.length) +
+        text.length;
+
+    _textController.value = currentValue.copyWith(
+      text: newText,
+      selection: TextSelection.collapsed(offset: caret),
+    );
+  }
+
+  void _showEmojiPickerForComposer(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => EmojiPicker(
+        title: context.l10n.chat_insertEmoji,
+        onEmojiSelected: (emoji) {
+          _insertTextAtCursor(emoji);
+          _textFieldFocusNode.requestFocus();
+        },
+      ),
+    );
+  }
+
+  Future<void> _shareLocation() async {
+    final connector = context.read<MeshCoreConnector>();
+    final lat = connector.selfLatitude;
+    final lon = connector.selfLongitude;
+    final allowsTimedLocationSharing =
+        !widget.channel.isPublicChannel && !widget.channel.name.startsWith('#');
+    if (lat == null || lon == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.chat_locationUnavailable)),
+      );
+      return;
+    }
+
+    if (allowsTimedLocationSharing &&
+        connector.locationSharingChannelIndex == widget.channel.index) {
+      final stop = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: Text(context.l10n.chat_shareLocation),
+          content: Text(context.l10n.chat_stopSharingLocationConfirm),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text(context.l10n.common_cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: Text(context.l10n.common_ok),
+            ),
+          ],
+        ),
+      );
+      if (stop == true) connector.stopLocationSharing();
+      return;
+    }
+
+    final maxBytes = maxChannelMessageBytes(connector.selfName);
+    final prefix = 'm:${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}|';
+    const suffix = '|loc';
+    final maxLabelBytes =
+        maxBytes - utf8.encode(prefix).length - utf8.encode(suffix).length;
+
+    if (allowsTimedLocationSharing) {
+      final gpsInterval =
+          int.tryParse(connector.currentCustomVars?['gps_interval'] ?? '') ??
+          900;
+      final minIntervals = (300.0 / gpsInterval).ceil().clamp(2, 9999);
+      final sliderMax = ((86400 / gpsInterval).floor() - minIntervals + 1)
+          .clamp(1, 99999);
+      final labelCtrl = TextEditingController(
+        text: truncateToUtf8Bytes(connector.deviceDisplayName, maxLabelBytes),
+      );
+      int sliderVal = 0;
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => StatefulBuilder(
+          builder: (dialogContext, setDialogState) {
+            final actual = sliderVal == 0 ? 0 : sliderVal + minIntervals - 1;
+            final duration = Duration(seconds: actual * gpsInterval);
+            final durationLabel = sliderVal == 0
+                ? context.l10n.chat_once
+                : (duration.inHours > 0
+                      ? '${duration.inHours}h ${duration.inMinutes.remainder(60)}m'
+                      : '${duration.inMinutes}m');
+            return AlertDialog(
+              title: Text(context.l10n.chat_shareLocation),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(durationLabel),
+                  Slider(
+                    min: 0,
+                    max: sliderMax.toDouble(),
+                    divisions: sliderMax,
+                    value: sliderVal.toDouble(),
+                    onChanged: (value) =>
+                        setDialogState(() => sliderVal = value.round()),
+                  ),
+                  if (sliderVal == 0)
+                    TextField(
+                      controller: labelCtrl,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.chat_location,
+                      ),
+                      autofocus: true,
+                      inputFormatters: [
+                        Utf8LengthLimitingTextInputFormatter(maxLabelBytes),
+                      ],
+                    ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, false),
+                  child: Text(context.l10n.common_cancel),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, true),
+                  child: Text(context.l10n.common_ok),
+                ),
+              ],
+            );
+          },
+        ),
+      );
+
+      if (confirmed != true || !mounted) return;
+
+      if (sliderVal == 0) {
+        var label = labelCtrl.text.trim().replaceAll('|', '/');
+        if (label.isEmpty) return;
+
+        final markerText =
+            'm:${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}|$label|loc';
+        if (utf8.encode(markerText).length > maxBytes) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.chat_messageTooLong(maxBytes))),
+          );
+          return;
+        }
+
+        connector.sendChannelMessage(widget.channel, markerText);
+      } else {
+        connector.startLocationSharing(
+          channelIndex: widget.channel.index,
+          duration: Duration(
+            seconds: (sliderVal + minIntervals - 1) * gpsInterval,
+          ),
+        );
+      }
+      return;
+    }
+
+    final defaultLabel = connector.deviceDisplayName;
+    final controller = TextEditingController(
+      text: truncateToUtf8Bytes(defaultLabel, maxLabelBytes),
+    );
+    controller.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: controller.text.length,
+    );
+
+    var label = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.l10n.chat_shareLocation),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(labelText: context.l10n.chat_location),
+          autofocus: true,
+          inputFormatters: [
+            Utf8LengthLimitingTextInputFormatter(maxLabelBytes),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(context.l10n.common_cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, controller.text.trim()),
+            child: Text(context.l10n.common_save),
+          ),
+        ],
+      ),
+    );
+
+    if (label == null || label.isEmpty) return;
+    label = label.replaceAll('|', '/');
+
+    if (!mounted) return;
+
+    final markerText =
+        'm:${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}|$label|loc';
+    if (utf8.encode(markerText).length > maxBytes) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.chat_messageTooLong(maxBytes))),
+      );
+      return;
+    }
+
+    if (widget.channel.isPublicChannel) {
+      final channelLabel = widget.channel.name.isEmpty
+          ? context.l10n.channels_channelIndex(widget.channel.index)
+          : widget.channel.name;
+      final canShare = await _confirmPublicShare(channelLabel);
+      if (!mounted || !canShare) return;
+    }
+
+    connector.sendChannelMessage(widget.channel, markerText);
+  }
+
+  Future<bool> _confirmPublicShare(String channelLabel) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(context.l10n.map_publicLocationShare),
+        content: Text(
+          context.l10n.map_publicLocationShareConfirm(channelLabel),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(context.l10n.common_cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(context.l10n.common_share),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
+  }
+
   Widget _buildAvatar(String senderName) {
     final initial = _getFirstCharacterOrEmoji(senderName);
     final color = _getColorForName(senderName);
@@ -1007,6 +1255,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final connector = context.watch<MeshCoreConnector>();
     final maxBytes = maxChannelMessageBytes(connector.selfName);
     final settings = context.watch<AppSettingsService>().settings;
+    final smazEncoder = connector.isChannelSmazEnabled(widget.channel.index)
+        ? Smaz.encodeIfSmaller
+        : null;
+    final gpsEnabled = connector.currentCustomVars?['gps'] == '1';
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1018,6 +1270,29 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               );
               return _buildReplyBanner(textScale);
             },
+          ),
+        if (connector.locationSharingChannelIndex == widget.channel.index)
+          Container(
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            padding: const EdgeInsets.fromLTRB(12, 4, 4, 4),
+            child: Row(
+              children: [
+                const Icon(Icons.my_location, size: 16),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    context.l10n.chat_shareLocation,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 18),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: connector.stopLocationSharing,
+                ),
+              ],
+            ),
           ),
         Container(
           padding: const EdgeInsets.all(8),
@@ -1033,10 +1308,54 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
           ),
           child: Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.gif_box),
-                onPressed: () => _showGifPicker(context),
-                tooltip: context.l10n.chat_sendGif,
+              PopupMenuButton<_ChannelChatInputAction>(
+                icon: const Icon(Icons.add_circle_outline),
+                tooltip: context.l10n.common_add,
+                requestFocus: false,
+                position: PopupMenuPosition.over,
+                offset: const Offset(0, -180),
+                onSelected: (action) {
+                  if (action == _ChannelChatInputAction.sendGif) {
+                    _showGifPicker(context);
+                  } else if (action == _ChannelChatInputAction.insertEmoji) {
+                    _showEmojiPickerForComposer(context);
+                  } else if (action == _ChannelChatInputAction.shareLocation) {
+                    _shareLocation();
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: _ChannelChatInputAction.shareLocation,
+                    enabled: gpsEnabled,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.location_on, size: 20),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.chat_shareLocation),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: _ChannelChatInputAction.sendGif,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.gif_box, size: 20),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.chat_sendGif),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: _ChannelChatInputAction.insertEmoji,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.emoji_emotions, size: 20),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.chat_insertEmoji),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               if (settings.translationEnabled)
                 MessageTranslationButton(
@@ -1098,7 +1417,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                       controller: _textController,
                       focusNode: _textFieldFocusNode,
                       inputFormatters: [
-                        Utf8LengthLimitingTextInputFormatter(maxBytes),
+                        Utf8LengthLimitingTextInputFormatter(
+                          maxBytes,
+                          encoder: smazEncoder,
+                        ),
                       ],
                       textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
@@ -1193,7 +1515,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     }
 
     final maxBytes = maxChannelMessageBytes(connector.selfName);
-    if (utf8.encode(messageText).length > maxBytes) {
+    final outboundText = connector.prepareChannelOutboundText(
+      widget.channel.index,
+      messageText,
+    );
+    if (utf8.encode(outboundText).length > maxBytes) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.chat_messageTooLong(maxBytes))),
       );
@@ -1299,6 +1625,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       context: context,
       isScrollControlled: true,
       builder: (context) => EmojiPicker(
+        title: context.l10n.chat_addReaction,
         onEmojiSelected: (emoji) {
           _sendReaction(message, emoji);
         },

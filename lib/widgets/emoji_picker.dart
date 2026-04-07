@@ -4,8 +4,9 @@ import '../l10n/l10n.dart';
 
 class EmojiPicker extends StatelessWidget {
   final Function(String) onEmojiSelected;
+  final String? title;
 
-  const EmojiPicker({super.key, required this.onEmojiSelected});
+  const EmojiPicker({super.key, required this.onEmojiSelected, this.title});
 
   static const List<String> quickEmojis = ['👍', '❤️', '😂', '🎉', '👏', '🔥'];
 
@@ -223,7 +224,7 @@ class EmojiPicker extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  l10n.chat_addReaction,
+                  title ?? l10n.chat_addReaction,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

@@ -1293,6 +1293,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get chat_sendGif => 'Envoyer GIF';
 
   @override
+  String get chat_insertEmoji => 'Insérer un emoji';
+
+  @override
+  String get chat_shareLocation => 'Partager la localisation';
+
+  @override
+  String get chat_stopSharingLocationConfirm =>
+      'Arrêter le partage de position ?';
+
+  @override
+  String get chat_once => 'Une fois';
+
+  @override
+  String get chat_locationUnavailable => 'Localisation non disponible';
+
+  @override
   String get chat_reply => 'Répondre';
 
   @override
@@ -1728,6 +1744,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get map_sharedPin => 'Clé partagée';
+
+  @override
+  String get map_sharedAt => 'Partagé';
 
   @override
   String get map_joinRoom => 'Rejoindre le room server';

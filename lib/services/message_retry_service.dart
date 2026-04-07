@@ -88,6 +88,7 @@ class MessageRetryService extends ChangeNotifier {
   final Set<String> _activeMessages = {};
   final Set<String> _resolvedMessages = {};
   final Map<String, String> _expectedHashToMessageId = {};
+  final Set<String> _forceClearPathOnMaxRetry = {};
 
   RetryServiceConfig? _config;
 
@@ -143,6 +144,7 @@ class MessageRetryService extends ChangeNotifier {
     String? translationModelId,
     Uint8List? pathBytes,
     int? pathLength,
+    bool forceClearPathOnMaxRetry = false,
   }) async {
     final messageId = const Uuid().v4();
     final resolved = resolvePathSelection(contact);
@@ -167,6 +169,9 @@ class MessageRetryService extends ChangeNotifier {
 
     _pendingMessages[messageId] = message;
     _pendingContacts[messageId] = contact;
+    if (forceClearPathOnMaxRetry) {
+      _forceClearPathOnMaxRetry.add(messageId);
+    }
 
     _config?.addMessage(contact.publicKeyHex, message);
 
@@ -458,6 +463,7 @@ class MessageRetryService extends ChangeNotifier {
     _pendingMessages.remove(messageId);
     _pendingContacts.remove(messageId);
     _attemptPathHistory.remove(messageId);
+    _forceClearPathOnMaxRetry.remove(messageId);
     _timeoutTimers.remove(messageId);
     _resolvedMessages.remove(messageId);
   }
@@ -519,8 +525,10 @@ class MessageRetryService extends ChangeNotifier {
       final failedMessage = message.copyWith(status: MessageStatus.failed);
       _pendingMessages[messageId] = failedMessage;
 
-      if (config?.appSettingsService?.settings.clearPathOnMaxRetry == true &&
-          config?.clearContactPath != null) {
+      final shouldClearPathOnMaxRetry =
+          _forceClearPathOnMaxRetry.contains(messageId) ||
+          config?.appSettingsService?.settings.clearPathOnMaxRetry == true;
+      if (shouldClearPathOnMaxRetry && config?.clearContactPath != null) {
         config!.clearContactPath!(contact);
       }
 
@@ -756,6 +764,7 @@ class MessageRetryService extends ChangeNotifier {
     _sendQueue.clear();
     _activeMessages.clear();
     _resolvedMessages.clear();
+    _forceClearPathOnMaxRetry.clear();
     super.dispose();
   }
 }

@@ -1281,6 +1281,22 @@ class AppLocalizationsUk extends AppLocalizations {
   String get chat_sendGif => 'Надіслати GIF';
 
   @override
+  String get chat_insertEmoji => 'Вставити емодзі';
+
+  @override
+  String get chat_shareLocation => 'Поділитися місцезнаходженням';
+
+  @override
+  String get chat_stopSharingLocationConfirm =>
+      'Зупинити поширення місцезнаходження?';
+
+  @override
+  String get chat_once => 'Один раз';
+
+  @override
+  String get chat_locationUnavailable => 'Місцезнаходження недоступне';
+
+  @override
   String get chat_reply => 'Відповісти';
 
   @override
@@ -1717,6 +1733,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get map_sharedPin => 'Спільний пін';
+
+  @override
+  String get map_sharedAt => 'Поділено';
 
   @override
   String get map_joinRoom => 'Приєднатися до кімнати';

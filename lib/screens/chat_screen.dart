@@ -19,6 +19,7 @@ import '../helpers/chat_scroll_controller.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/path_helper.dart';
 import '../helpers/utf8_length_limiter.dart';
+import '../helpers/smaz.dart';
 import '../models/channel_message.dart';
 import '../models/contact.dart';
 import '../models/message.dart';
@@ -44,6 +45,8 @@ import '../widgets/translated_message_content.dart';
 import '../utils/app_logger.dart';
 import '../l10n/l10n.dart';
 import 'telemetry_screen.dart';
+
+enum _ChatInputAction { sendGif, insertEmoji, shareLocation }
 
 class ChatScreen extends StatefulWidget {
   final Contact contact;
@@ -500,103 +503,343 @@ class _ChatScreenState extends State<ChatScreen> {
     final maxBytes = maxContactMessageBytes();
     final colorScheme = Theme.of(context).colorScheme;
     final settings = context.watch<AppSettingsService>().settings;
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        border: Border(top: BorderSide(color: Theme.of(context).dividerColor)),
-      ),
-      child: SafeArea(
-        child: Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.gif_box),
-              onPressed: () => _showGifPicker(context),
-              tooltip: context.l10n.chat_sendGif,
+    final smazEncoder =
+        connector.isContactSmazEnabled(widget.contact.publicKeyHex)
+        ? Smaz.encodeIfSmaller
+        : null;
+    final gpsEnabled = connector.currentCustomVars?['gps'] == '1';
+    final sharingHere =
+        connector.locationSharingContactKey == widget.contact.publicKeyHex;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (sharingHere)
+          Container(
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            padding: const EdgeInsets.fromLTRB(12, 4, 4, 4),
+            child: Row(
+              children: [
+                const Icon(Icons.my_location, size: 16),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    context.l10n.chat_shareLocation,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 18),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: connector.stopLocationSharing,
+                ),
+              ],
             ),
-            if (settings.translationEnabled)
-              MessageTranslationButton(
-                enabled: settings.composerTranslationEnabled,
-                languageCode: settings.translationTargetLanguageCode,
-                onPressed: _showTranslationOptions,
-              ),
-            Expanded(
-              child: ValueListenableBuilder<TextEditingValue>(
-                valueListenable: _textController,
-                builder: (context, value, child) {
-                  final gifId = GifHelper.parseGif(value.text);
-                  if (gifId != null) {
-                    return Focus(
-                      autofocus: true,
-                      onKeyEvent: (node, event) {
-                        if (event is KeyDownEvent &&
-                            (event.logicalKey == LogicalKeyboardKey.enter ||
-                                event.logicalKey ==
-                                    LogicalKeyboardKey.numpadEnter)) {
-                          _sendMessage(connector);
-                          return KeyEventResult.handled;
-                        }
-                        return KeyEventResult.ignored;
-                      },
+          ),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            border: Border(
+              top: BorderSide(color: Theme.of(context).dividerColor),
+            ),
+          ),
+          child: SafeArea(
+            child: Row(
+              children: [
+                PopupMenuButton<_ChatInputAction>(
+                  icon: const Icon(Icons.add_circle_outline),
+                  tooltip: context.l10n.common_add,
+                  requestFocus: false,
+                  position: PopupMenuPosition.over,
+                  offset: const Offset(0, -180),
+                  onSelected: (action) {
+                    if (action == _ChatInputAction.sendGif) {
+                      _showGifPicker(context);
+                    } else if (action == _ChatInputAction.insertEmoji) {
+                      _showEmojiPicker(context);
+                    } else if (action == _ChatInputAction.shareLocation) {
+                      _shareLocation(context.read<MeshCoreConnector>());
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: _ChatInputAction.shareLocation,
+                      enabled: gpsEnabled,
                       child: Row(
                         children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: GifMessage(
-                                url:
-                                    'https://media.giphy.com/media/$gifId/giphy.gif',
-                                backgroundColor:
-                                    colorScheme.surfaceContainerHighest,
-                                fallbackTextColor: colorScheme.onSurface
-                                    .withValues(alpha: 0.6),
-                                maxSize: 160,
-                              ),
-                            ),
-                          ),
+                          const Icon(Icons.my_location, size: 20),
                           const SizedBox(width: 8),
-                          IconButton(
-                            icon: const Icon(Icons.close),
-                            onPressed: () {
-                              _textController.clear();
-                              _textFieldFocusNode.requestFocus();
-                            },
-                          ),
+                          Text(context.l10n.chat_shareLocation),
                         ],
                       ),
-                    );
-                  }
-
-                  return TextField(
-                    controller: _textController,
-                    focusNode: _textFieldFocusNode,
-                    inputFormatters: [
-                      Utf8LengthLimitingTextInputFormatter(maxBytes),
-                    ],
-                    textCapitalization: TextCapitalization.sentences,
-                    decoration: InputDecoration(
-                      hintText: context.l10n.chat_typeMessage,
-                      border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+                    ),
+                    PopupMenuItem(
+                      value: _ChatInputAction.sendGif,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.gif_box, size: 20),
+                          const SizedBox(width: 8),
+                          Text(context.l10n.chat_sendGif),
+                        ],
                       ),
                     ),
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (_) => _sendMessage(connector),
-                  );
-                },
-              ),
+                    PopupMenuItem(
+                      value: _ChatInputAction.insertEmoji,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.emoji_emotions, size: 20),
+                          const SizedBox(width: 8),
+                          Text(context.l10n.chat_insertEmoji),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (settings.translationEnabled)
+                  MessageTranslationButton(
+                    enabled: settings.composerTranslationEnabled,
+                    languageCode: settings.translationTargetLanguageCode,
+                    onPressed: _showTranslationOptions,
+                  ),
+                Expanded(
+                  child: ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _textController,
+                    builder: (context, value, child) {
+                      final gifId = _parseGifId(value.text);
+                      if (gifId != null) {
+                        return Focus(
+                          autofocus: true,
+                          onKeyEvent: (node, event) {
+                            if (event is KeyDownEvent &&
+                                (event.logicalKey == LogicalKeyboardKey.enter ||
+                                    event.logicalKey ==
+                                        LogicalKeyboardKey.numpadEnter)) {
+                              _sendMessage(connector);
+                              return KeyEventResult.handled;
+                            }
+                            return KeyEventResult.ignored;
+                          },
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: GifMessage(
+                                    url:
+                                        'https://media.giphy.com/media/$gifId/giphy.gif',
+                                    backgroundColor:
+                                        colorScheme.surfaceContainerHighest,
+                                    fallbackTextColor: colorScheme.onSurface
+                                        .withValues(alpha: 0.6),
+                                    maxSize: 160,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              IconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: () {
+                                  _textController.clear();
+                                  _textFieldFocusNode.requestFocus();
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      return TextField(
+                        controller: _textController,
+                        focusNode: _textFieldFocusNode,
+                        inputFormatters: [
+                          Utf8LengthLimitingTextInputFormatter(
+                            maxBytes,
+                            encoder: smazEncoder,
+                          ),
+                        ],
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: InputDecoration(
+                          hintText: context.l10n.chat_typeMessage,
+                          border: const OutlineInputBorder(),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                        ),
+                        textInputAction: TextInputAction.send,
+                        onSubmitted: (_) => _sendMessage(connector),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton.filled(
+                  icon: const Icon(Icons.send),
+                  onPressed: () => _sendMessage(connector),
+                ),
+              ],
             ),
-            const SizedBox(width: 8),
-            IconButton.filled(
-              icon: const Icon(Icons.send),
-              onPressed: () => _sendMessage(connector),
+          ),
+        ),
+      ],
+    );
+  }
+
+  String? _parseGifId(String text) {
+    final trimmed = text.trim();
+    final match = RegExp(r'^g:([A-Za-z0-9_-]+)$').firstMatch(trimmed);
+    return match?.group(1);
+  }
+
+  void _insertTextAtCursor(String text) {
+    final currentValue = _textController.value;
+    final selection = currentValue.selection;
+    final newText = selection.isValid
+        ? currentValue.text.replaceRange(selection.start, selection.end, text)
+        : currentValue.text + text;
+    final caret =
+        (selection.isValid ? selection.start : currentValue.text.length) +
+        text.length;
+
+    _textController.value = currentValue.copyWith(
+      text: newText,
+      selection: TextSelection.collapsed(offset: caret),
+    );
+  }
+
+  void _showEmojiPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => EmojiPicker(
+        title: context.l10n.chat_insertEmoji,
+        onEmojiSelected: (emoji) {
+          _insertTextAtCursor(emoji);
+          _textFieldFocusNode.requestFocus();
+        },
+      ),
+    );
+  }
+
+  Future<void> _shareLocation(MeshCoreConnector connector) async {
+    final lat = connector.selfLatitude;
+    final lon = connector.selfLongitude;
+    if (lat == null || lon == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.chat_locationUnavailable)),
+      );
+      return;
+    }
+    if (connector.locationSharingContactKey == widget.contact.publicKeyHex) {
+      final stop = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(context.l10n.chat_shareLocation),
+          content: Text(context.l10n.chat_stopSharingLocationConfirm),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(context.l10n.common_cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(context.l10n.common_ok),
             ),
           ],
         ),
+      );
+      if (stop == true) connector.stopLocationSharing();
+      return;
+    }
+    final maxBytes = maxContactMessageBytes();
+    final prefix = 'm:${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}|';
+    const suffix = '|loc';
+    final maxLabelBytes =
+        maxBytes - utf8.encode(prefix).length - utf8.encode(suffix).length;
+    final gpsInterval =
+        int.tryParse(connector.currentCustomVars?['gps_interval'] ?? '') ?? 900;
+    final minIntervals = (300.0 / gpsInterval).ceil().clamp(2, 9999);
+    final sliderMax = ((86400 / gpsInterval).floor() - minIntervals + 1).clamp(
+      1,
+      99999,
+    );
+    final labelCtrl = TextEditingController(
+      text: truncateToUtf8Bytes(connector.deviceDisplayName, maxLabelBytes),
+    );
+    int sliderVal = 0;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx2, setS) {
+          final actual = sliderVal == 0 ? 0 : sliderVal + minIntervals - 1;
+          final dur = Duration(seconds: actual * gpsInterval);
+          final dLabel = sliderVal == 0
+              ? context.l10n.chat_once
+              : (dur.inHours > 0
+                    ? '${dur.inHours}h ${dur.inMinutes.remainder(60)}m'
+                    : '${dur.inMinutes}m');
+          return AlertDialog(
+            title: Text(context.l10n.chat_shareLocation),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(dLabel),
+                Slider(
+                  min: 0,
+                  max: sliderMax.toDouble(),
+                  divisions: sliderMax,
+                  value: sliderVal.toDouble(),
+                  onChanged: (v) => setS(() => sliderVal = v.round()),
+                ),
+                if (sliderVal == 0)
+                  TextField(
+                    controller: labelCtrl,
+                    decoration: InputDecoration(
+                      labelText: context.l10n.chat_location,
+                    ),
+                    autofocus: true,
+                    inputFormatters: [
+                      Utf8LengthLimitingTextInputFormatter(maxLabelBytes),
+                    ],
+                  ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(context.l10n.common_cancel),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(context.l10n.common_ok),
+              ),
+            ],
+          );
+        },
       ),
     );
+    if (confirmed != true || !mounted) return;
+    if (sliderVal == 0) {
+      var label = labelCtrl.text.trim().replaceAll('|', '/');
+      if (label.isEmpty) return;
+      final markerText =
+          'm:${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}|$label|loc';
+      if (utf8.encode(markerText).length > maxBytes) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.chat_messageTooLong(maxBytes))),
+        );
+        return;
+      }
+      connector.sendMessage(_resolveContact(connector), markerText);
+    } else {
+      connector.startLocationSharing(
+        contactKey: widget.contact.publicKeyHex,
+        duration: Duration(
+          seconds: (sliderVal + minIntervals - 1) * gpsInterval,
+        ),
+      );
+    }
   }
 
   void _showGifPicker(BuildContext context) {
@@ -667,7 +910,11 @@ class _ChatScreenState extends State<ChatScreen> {
       }
     }
     final maxBytes = maxContactMessageBytes();
-    if (utf8.encode(outgoingText).length > maxBytes) {
+    final outboundText = connector.prepareContactOutboundText(
+      widget.contact,
+      outgoingText,
+    );
+    if (utf8.encode(outboundText).length > maxBytes) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.chat_messageTooLong(maxBytes))),
       );
@@ -1427,7 +1674,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 title: Text(context.l10n.chat_addReaction),
                 onTap: () {
                   Navigator.pop(sheetContext);
-                  _showEmojiPicker(message, contact);
+                  _showReactionEmojiPicker(message, contact);
                 },
               ),
             if (PlatformInfo.isDesktop)
@@ -1509,11 +1756,12 @@ class _ChatScreenState extends State<ChatScreen> {
     ).showSnackBar(SnackBar(content: Text(context.l10n.chat_retryingMessage)));
   }
 
-  void _showEmojiPicker(Message message, Contact senderContact) {
+  void _showReactionEmojiPicker(Message message, Contact senderContact) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) => EmojiPicker(
+        title: context.l10n.chat_addReaction,
         onEmojiSelected: (emoji) {
           _sendReaction(message, senderContact, emoji);
         },

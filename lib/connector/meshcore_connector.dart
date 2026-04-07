@@ -151,6 +151,11 @@ class MeshCoreConnector extends ChangeNotifier {
   Timer? _batteryPollTimer;
   Timer? _radioStatsPollTimer;
   int _radioStatsPollRefCount = 0;
+  Timer? _locationSharingTimer;
+  DateTime? _locationSharingEnd;
+  String? _locationSharingContactKey;
+  int? _locationSharingChannelIndex;
+  String? _lastSharedLocationPositionKey;
   final ValueNotifier<CompanionRadioStats?> radioStatsNotifier =
       ValueNotifier<CompanionRadioStats?>(null);
   int _reconnectAttempts = 0;
@@ -375,6 +380,8 @@ class MeshCoreConnector extends ChangeNotifier {
   bool? get clientRepeat => _clientRepeat;
   int? get firmwareVerCode => _firmwareVerCode;
   Map<String, String>? get currentCustomVars => _currentCustomVars;
+  String? get locationSharingContactKey => _locationSharingContactKey;
+  int? get locationSharingChannelIndex => _locationSharingChannelIndex;
   int? get batteryMillivolts => _batteryMillivolts;
   int? get storageUsedKb => _storageUsedKb;
   int? get storageTotalKb => _storageTotalKb;
@@ -2222,6 +2229,12 @@ class MeshCoreConnector extends ChangeNotifier {
     _setState(MeshCoreConnectionState.disconnecting);
     _stopBatteryPolling();
     _stopRadioStatsPolling();
+    _locationSharingTimer?.cancel();
+    _locationSharingTimer = null;
+    _locationSharingEnd = null;
+    _locationSharingContactKey = null;
+    _locationSharingChannelIndex = null;
+    _lastSharedLocationPositionKey = null;
 
     await _usbFrameSubscription?.cancel();
     _usbFrameSubscription = null;
@@ -2382,6 +2395,100 @@ class MeshCoreConnector extends ChangeNotifier {
   void _stopRadioStatsPolling() {
     _radioStatsPollTimer?.cancel();
     _radioStatsPollTimer = null;
+  }
+
+  void startLocationSharing({
+    String? contactKey,
+    int? channelIndex,
+    required Duration duration,
+  }) {
+    _locationSharingTimer?.cancel();
+    _locationSharingEnd = DateTime.now().add(duration);
+    _locationSharingContactKey = contactKey;
+    _locationSharingChannelIndex = channelIndex;
+    _lastSharedLocationPositionKey = null;
+    final gpsInterval =
+        int.tryParse(_currentCustomVars?['gps_interval'] ?? '') ?? 900;
+    _sendLocationOnce(contactKey, channelIndex);
+    _locationSharingTimer = Timer.periodic(Duration(seconds: gpsInterval), (_) {
+      if (!isConnected || DateTime.now().isAfter(_locationSharingEnd!)) {
+        stopLocationSharing();
+        return;
+      }
+      _sendLocationOnce(contactKey, channelIndex);
+    });
+    notifyListeners();
+  }
+
+  void stopLocationSharing() {
+    if (_locationSharingTimer == null &&
+        _locationSharingEnd == null &&
+        _locationSharingContactKey == null &&
+        _locationSharingChannelIndex == null &&
+        _lastSharedLocationPositionKey == null) {
+      return;
+    }
+    _locationSharingTimer?.cancel();
+    _locationSharingTimer = null;
+    _locationSharingEnd = null;
+    _locationSharingContactKey = null;
+    _locationSharingChannelIndex = null;
+    _lastSharedLocationPositionKey = null;
+    notifyListeners();
+  }
+
+  @visibleForTesting
+  static String sharedLocationPositionKey(double lat, double lon) {
+    return '${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}';
+  }
+
+  void _sendLocationOnce(String? contactKey, int? channelIndex) {
+    final lat = _selfLatitude;
+    final lon = _selfLongitude;
+    if (lat == null || lon == null) return;
+    final positionKey = sharedLocationPositionKey(lat, lon);
+    final label = deviceDisplayName.replaceAll('|', '/');
+    final text = 'm:$positionKey|$label|loc';
+    if (contactKey != null) {
+      final idx = _contacts.indexWhere((c) => c.publicKeyHex == contactKey);
+      if (idx < 0) return;
+      final contact = _contacts[idx];
+      final resolved = resolvePathSelection(contact);
+      // For timed direct sharing in flood mode, only send when location changes.
+      if (resolved.useFlood && _lastSharedLocationPositionKey == positionKey) {
+        return;
+      }
+      if (_retryService != null) {
+        // Timed direct shares should participate in ACK/timeout handling.
+        unawaited(
+          _retryService!.sendMessageWithRetry(
+            contact: contact,
+            text: text,
+            forceClearPathOnMaxRetry: true,
+          ),
+        );
+      } else {
+        final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+        unawaited(_sendMessageDirect(contact, text, 1, now));
+      }
+      if (resolved.useFlood) {
+        _lastSharedLocationPositionKey = positionKey;
+      }
+    } else if (channelIndex != null) {
+      // Keep channel traffic low by suppressing repeated unchanged location packets.
+      if (_lastSharedLocationPositionKey == positionKey) {
+        return;
+      }
+      _lastSharedLocationPositionKey = positionKey;
+      unawaited(
+        sendFrame(
+          buildSendChannelTextMsgFrame(
+            channelIndex,
+            prepareChannelOutboundText(channelIndex, text),
+          ),
+        ),
+      );
+    }
   }
 
   void acquireRadioStatsPolling() {
@@ -2942,13 +3049,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _pendingChannelSentQueue.add(message.messageId);
     notifyListeners();
 
-    final trimmed = text.trim();
-    final isStructuredPayload =
-        trimmed.startsWith('g:') || trimmed.startsWith('m:');
-    final outboundText =
-        (isChannelSmazEnabled(channel.index) && !isStructuredPayload)
-        ? Smaz.encodeIfSmaller(text)
-        : text;
+    final outboundText = prepareChannelOutboundText(channel.index, text);
     await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
     await sendFrame(
       buildSendChannelTextMsgFrame(channel.index, outboundText),
@@ -4389,6 +4490,16 @@ class MeshCoreConnector extends ChangeNotifier {
     return text;
   }
 
+  String prepareChannelOutboundText(int channelIndex, String text) {
+    final trimmed = text.trim();
+    final isStructuredPayload =
+        trimmed.startsWith('g:') || trimmed.startsWith('m:');
+    if (!isStructuredPayload && isChannelSmazEnabled(channelIndex)) {
+      return Smaz.encodeIfSmaller(text);
+    }
+    return text;
+  }
+
   String _channelDisplayName(int channelIndex) {
     for (final channel in _channels) {
       if (channel.index != channelIndex) continue;
@@ -5434,6 +5545,8 @@ class MeshCoreConnector extends ChangeNotifier {
   void _handleDisconnection() {
     _stopBatteryPolling();
     _stopRadioStatsPolling();
+    _locationSharingTimer?.cancel();
+    _locationSharingTimer = null;
     _latestRadioStats = null;
     radioStatsNotifier.value = null;
     _prevTotalAirSecs = 0;

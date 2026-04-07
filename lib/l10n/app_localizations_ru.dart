@@ -1288,6 +1288,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chat_sendGif => 'Отправить GIF';
 
   @override
+  String get chat_insertEmoji => 'Вставить эмодзи';
+
+  @override
+  String get chat_shareLocation => 'Поделиться местоположением';
+
+  @override
+  String get chat_stopSharingLocationConfirm =>
+      'Остановить передачу местоположения?';
+
+  @override
+  String get chat_once => 'Один раз';
+
+  @override
+  String get chat_locationUnavailable => 'Местоположение недоступно';
+
+  @override
   String get chat_reply => 'Ответить';
 
   @override
@@ -1722,6 +1738,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get map_sharedPin => 'Общая метка';
+
+  @override
+  String get map_sharedAt => 'Поделено';
 
   @override
   String get map_joinRoom => 'Присоединиться к комнате';

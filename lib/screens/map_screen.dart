@@ -1222,7 +1222,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   List<_SharedMarker> _collectSharedMarkers(MeshCoreConnector connector) {
-    final markers = <_SharedMarker>[];
+    final markersByKey = <String, _SharedMarker>{};
     final selfName = connector.selfName ?? 'Me';
 
     for (final contact in connector.contacts) {
@@ -1231,23 +1231,28 @@ class _MapScreenState extends State<MapScreen> {
         final payload = _parseMarkerText(message.text);
         if (payload == null) continue;
         final fromName = message.isOutgoing ? selfName : contact.name;
-        final id = _buildMarkerId(
+        final key = _buildSharedMarkerKey(
           sourceId: contact.publicKeyHex,
+          label: payload.label,
+          fromName: fromName,
+          flags: payload.flags,
+          isChannel: false,
+        );
+        final marker = _SharedMarker(
+          id: key,
+          position: payload.position,
+          label: payload.label,
+          flags: payload.flags,
+          fromName: fromName,
+          sourceLabel: contact.name,
           timestamp: message.timestamp,
-          text: message.text,
+          isChannel: false,
+          isPublicChannel: false,
         );
-        markers.add(
-          _SharedMarker(
-            id: id,
-            position: payload.position,
-            label: payload.label,
-            flags: payload.flags,
-            fromName: fromName,
-            sourceLabel: contact.name,
-            isChannel: false,
-            isPublicChannel: false,
-          ),
-        );
+        final existing = markersByKey[key];
+        if (existing == null || marker.timestamp.isAfter(existing.timestamp)) {
+          markersByKey[key] = marker;
+        }
       }
     }
 
@@ -1257,28 +1262,35 @@ class _MapScreenState extends State<MapScreen> {
       for (final message in messages) {
         final payload = _parseMarkerText(message.text);
         if (payload == null) continue;
-        final id = _buildMarkerId(
+        final key = _buildSharedMarkerKey(
           sourceId: 'channel:${channel.index}',
+          label: payload.label,
+          fromName: message.senderName,
+          flags: payload.flags,
+          isChannel: true,
+        );
+        final marker = _SharedMarker(
+          id: key,
+          position: payload.position,
+          label: payload.label,
+          flags: payload.flags,
+          fromName: message.senderName,
+          sourceLabel: channel.name.isEmpty
+              ? 'Channel ${channel.index}'
+              : channel.name,
           timestamp: message.timestamp,
-          text: message.text,
+          isChannel: true,
+          isPublicChannel: isPublic,
         );
-        markers.add(
-          _SharedMarker(
-            id: id,
-            position: payload.position,
-            label: payload.label,
-            flags: payload.flags,
-            fromName: message.senderName,
-            sourceLabel: channel.name.isEmpty
-                ? 'Channel ${channel.index}'
-                : channel.name,
-            isChannel: true,
-            isPublicChannel: isPublic,
-          ),
-        );
+        final existing = markersByKey[key];
+        if (existing == null || marker.timestamp.isAfter(existing.timestamp)) {
+          markersByKey[key] = marker;
+        }
       }
     }
 
+    final markers = markersByKey.values.toList()
+      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
     return markers;
   }
 
@@ -1303,12 +1315,18 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  String _buildMarkerId({
+  String _buildSharedMarkerKey({
     required String sourceId,
-    required DateTime timestamp,
-    required String text,
+    required String label,
+    required String fromName,
+    required String flags,
+    required bool isChannel,
   }) {
-    return '$sourceId|${timestamp.millisecondsSinceEpoch}|$text';
+    final normalizedLabel = label.trim().toLowerCase();
+    final normalizedFrom = fromName.trim().toLowerCase();
+    final normalizedFlags = flags.trim().toLowerCase();
+    final scope = isChannel ? 'ch' : 'dm';
+    return '$scope|$sourceId|$normalizedFrom|$normalizedLabel|$normalizedFlags';
   }
 
   Marker _buildSharedMarker(_SharedMarker marker) {
@@ -1529,6 +1547,10 @@ class _MapScreenState extends State<MapScreen> {
             _buildInfoRow(context.l10n.map_from, marker.fromName),
             _buildInfoRow(context.l10n.map_source, marker.sourceLabel),
             _buildInfoRow(
+              context.l10n.map_sharedAt,
+              _formatLastSeen(marker.timestamp),
+            ),
+            _buildInfoRow(
               'Location',
               '${marker.position.latitude.toStringAsFixed(6)}, ${marker.position.longitude.toStringAsFixed(6)}',
             ),
@@ -1690,6 +1712,10 @@ class _MapScreenState extends State<MapScreen> {
     String defaultLabel,
   ) async {
     final controller = TextEditingController(text: defaultLabel);
+    controller.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: controller.text.length,
+    );
     return showDialog<String>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -2294,6 +2320,7 @@ class _SharedMarker {
   final String flags;
   final String fromName;
   final String sourceLabel;
+  final DateTime timestamp;
   final bool isChannel;
   final bool isPublicChannel;
 
@@ -2304,6 +2331,7 @@ class _SharedMarker {
     required this.flags,
     required this.fromName,
     required this.sourceLabel,
+    required this.timestamp,
     required this.isChannel,
     required this.isPublicChannel,
   });

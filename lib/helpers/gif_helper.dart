@@ -30,7 +30,7 @@ class GifHelper {
     ).firstMatch(trimmed);
     return pageMatch?.group(1);
   }
-  
+
   /// Encode a GIF in a format that parseGif() can parse.
   static String encodeGif(String gifId) {
     return 'g:$gifId';
