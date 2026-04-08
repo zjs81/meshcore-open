@@ -33,6 +33,9 @@ migrate_working_dir/
 pubspec.lock
 /build/
 /coverage/
+# fvm project files
+.fvm/
+.fvmrc
 
 # Symbolication related
 app.*.symbols
