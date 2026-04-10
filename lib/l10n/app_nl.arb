@@ -1942,7 +1942,6 @@
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Telemetrie-modus bijgewerkt",
   "settings_multiAck": "Multi-ACKs: {value}",
-  "map_showOverlaps": "Herhalingssleutel overlapt",
   "map_runTraceWithReturnPath": "Terugkeren op hetzelfde pad.",
   "@radioStats_noiseFloor": {
     "placeholders": {

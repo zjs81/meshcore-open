@@ -1668,9 +1668,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String get map_otherNodes => 'Andra noder';
 
   @override
-  String get map_showOverlaps => 'Repeater-nyckelöverlappningar';
-
-  @override
   String get map_keyPrefix => 'Nyckelprefix';
 
   @override

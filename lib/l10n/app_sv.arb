@@ -1942,7 +1942,6 @@
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Telemetri-läge uppdaterat",
   "settings_multiAck": "Multi-ACKs: {value}",
-  "map_showOverlaps": "Repeater-nyckelöverlappningar",
   "map_runTraceWithReturnPath": "Gå tillbaka på samma väg",
   "@radioStats_noiseFloor": {
     "placeholders": {

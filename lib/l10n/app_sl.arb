@@ -1942,7 +1942,6 @@
   "path_routeWeight": "{weight}/{max}",
   "settings_multiAck": "Večkratni potrditvi: {value}",
   "settings_telemetryModeUpdated": "Način telemetrije posodobljen",
-  "map_showOverlaps": "Prekrivanje ključa ponovnega predvajanja",
   "map_runTraceWithReturnPath": "Vrni se nazaj po isti poti.",
   "@radioStats_noiseFloor": {
     "placeholders": {

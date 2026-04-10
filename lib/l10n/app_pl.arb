@@ -1980,7 +1980,6 @@
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Tryb telemetryczny zaktualizowany",
   "settings_multiAck": "Wielokrotne ACK: {value}",
-  "map_showOverlaps": "Nakładające się klucze przekaźników",
   "map_runTraceWithReturnPath": "Wróć tą samą ścieżką",
   "@radioStats_noiseFloor": {
     "placeholders": {

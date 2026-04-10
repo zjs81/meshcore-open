@@ -1690,9 +1690,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get map_otherNodes => 'Andere Knoten';
 
   @override
-  String get map_showOverlaps => 'Überlappungen der Repeater-Taste';
-
-  @override
   String get map_keyPrefix => 'Schlüsselpräfix';
 
   @override

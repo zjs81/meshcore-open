@@ -1614,9 +1614,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get map_otherNodes => '다른 노드';
 
   @override
-  String get map_showOverlaps => '반복 키 중복';
-
-  @override
   String get map_keyPrefix => '핵심 접두사';
 
   @override

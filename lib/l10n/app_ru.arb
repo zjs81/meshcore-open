@@ -1182,7 +1182,6 @@
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Режим телеметрии обновлен",
   "settings_multiAck": "Мульти-ACK: {value}",
-  "map_showOverlaps": "Перекрытия ключа повтора",
   "map_runTraceWithReturnPath": "Вернуться обратно по тому же пути",
   "@radioStats_noiseFloor": {
     "placeholders": {

@@ -1942,7 +1942,6 @@
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Modo de telemetria atualizado",
   "settings_multiAck": "Multi-ACKs: {value}",
-  "map_showOverlaps": "Sobreposições da Chave Repeater",
   "map_runTraceWithReturnPath": "Retornar ao mesmo caminho.",
   "@radioStats_noiseFloor": {
     "placeholders": {

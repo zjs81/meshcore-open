@@ -1942,7 +1942,6 @@
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Режим телеметрії оновлено",
   "settings_multiAck": "Багатократне підтвердження: {value}",
-  "map_showOverlaps": "Перекриття ключа повторювача",
   "map_runTraceWithReturnPath": "Повернутися назад тим же шляхом",
   "@radioStats_noiseFloor": {
     "placeholders": {

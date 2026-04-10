@@ -2043,7 +2043,6 @@
   "contact_teleLocSubtitle": "Engedje meg a helyadatok megosztását",
   "contact_teleEnv": "Adatkapcsolati környezet",
   "contact_teleEnvSubtitle": "Engedje meg az érzékelő adatok megosztását",
-  "map_showOverlaps": "Az ismétlő kulcsok ütköznek",
   "map_runTraceWithReturnPath": "Visszaforduljon az eredeti úton.",
   "@translation_downloadFailed": {
     "placeholders": {

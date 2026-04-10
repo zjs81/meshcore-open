@@ -1701,9 +1701,6 @@ class AppLocalizationsHu extends AppLocalizations {
   String get map_otherNodes => 'Egyéb csomópontok';
 
   @override
-  String get map_showOverlaps => 'Az ismétlő kulcsok ütköznek';
-
-  @override
   String get map_keyPrefix => 'Kulcsfontosságú előtag';
 
   @override

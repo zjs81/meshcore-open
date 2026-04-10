@@ -3064,12 +3064,6 @@ abstract class AppLocalizations {
   /// **'Other Nodes'**
   String get map_otherNodes;
 
-  /// No description provided for @map_showOverlaps.
-  ///
-  /// In en, this message translates to:
-  /// **'Repeater Key Overlaps'**
-  String get map_showOverlaps;
-
   /// No description provided for @map_keyPrefix.
   ///
   /// In en, this message translates to:

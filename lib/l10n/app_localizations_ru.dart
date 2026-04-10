@@ -1693,9 +1693,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get map_otherNodes => 'Другие ноды';
 
   @override
-  String get map_showOverlaps => 'Перекрытия ключа повтора';
-
-  @override
   String get map_keyPrefix => 'Префикс ключа';
 
   @override

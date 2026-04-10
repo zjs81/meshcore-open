@@ -1970,7 +1970,6 @@
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Telemetriemodus aktualisiert",
   "settings_multiAck": "Mehrfach-Bestätigungen: {value}",
-  "map_showOverlaps": "Überlappungen der Repeater-Taste",
   "map_runTraceWithReturnPath": "Auf dem gleichen Pfad zurückkehren.",
   "@radioStats_noiseFloor": {
     "placeholders": {

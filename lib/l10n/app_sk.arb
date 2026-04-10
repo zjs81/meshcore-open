@@ -1942,7 +1942,6 @@
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Režim telemetrie bol aktualizovaný",
   "settings_multiAck": "Viaceré ACK: {value}",
-  "map_showOverlaps": "Prekrývanie opakovača kľúča",
   "map_runTraceWithReturnPath": "Vráťte sa späť po tej istej ceste.",
   "@radioStats_noiseFloor": {
     "placeholders": {

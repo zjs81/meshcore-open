@@ -1947,7 +1947,6 @@
   "path_routeWeight": "{weight}/{max}",
   "settings_multiAck": "多重ACK：{value}",
   "settings_telemetryModeUpdated": "遥测模式已更新",
-  "map_showOverlaps": "重复键重叠",
   "map_runTraceWithReturnPath": "沿着相同的路径返回",
   "@radioStats_noiseFloor": {
     "placeholders": {

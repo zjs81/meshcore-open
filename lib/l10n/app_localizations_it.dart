@@ -1691,9 +1691,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get map_otherNodes => 'Altri Nodi';
 
   @override
-  String get map_showOverlaps => 'Sovrapposizioni della chiave ripetitore';
-
-  @override
   String get map_keyPrefix => 'Prefisso Chiave';
 
   @override

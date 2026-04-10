@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -489,11 +488,10 @@ class _MapScreenState extends State<MapScreen> {
                               ),
                             ),
                           ),
-                        if (!settings.mapShowOverlaps)
-                          ..._buildGuessedMarker(
-                            guessedLocations,
-                            showLabels: _showNodeLabels,
-                          ),
+                        ..._buildGuessedMarker(
+                          guessedLocations,
+                          showLabels: _showNodeLabels,
+                        ),
                         ..._buildMarkers(
                           contactsWithLocation,
                           settings,
@@ -863,9 +861,7 @@ class _MapScreenState extends State<MapScreen> {
 
       // Apply node type filters
       if (contact.type == advTypeRepeater &&
-          (settings.mapShowRepeaters ||
-              _isBuildingPathTrace ||
-              settings.mapShowOverlaps)) {
+          (settings.mapShowRepeaters || _isBuildingPathTrace)) {
         addContact = true;
       }
       if (contact.type == advTypeChat &&
@@ -874,33 +870,12 @@ class _MapScreenState extends State<MapScreen> {
       }
       if (contact.type != advTypeChat &&
           contact.type != advTypeRepeater &&
-          (settings.mapShowOtherNodes ||
-              _isBuildingPathTrace ||
-              settings.mapShowOverlaps)) {
+          (settings.mapShowOtherNodes || _isBuildingPathTrace)) {
         addContact = true;
       }
 
       if (contact.type == advTypeChat && _isBuildingPathTrace) {
         addContact = false;
-      }
-
-      if (settings.mapShowOverlaps) {
-        final hasOverlap = contacts
-            .where(
-              (c) =>
-                  c.publicKeyHex != contact.publicKeyHex &&
-                  c.publicKey.first == contact.publicKey.first &&
-                  (c.type == advTypeRepeater || c.type == advTypeRoom) &&
-                  (contact.type == advTypeRepeater ||
-                      contact.type == advTypeRoom),
-            )
-            .firstOrNull;
-
-        if (hasOverlap == null &&
-            settings.mapShowOverlaps &&
-            !_isBuildingPathTrace) {
-          addContact = false;
-        }
       }
 
       if (addContact) {
@@ -933,9 +908,7 @@ class _MapScreenState extends State<MapScreen> {
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: settings.mapShowOverlaps && !_isBuildingPathTrace
-                      ? Colors.red
-                      : _getNodeColor(contact.type),
+                  color: _getNodeColor(contact.type),
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),
                   boxShadow: [
@@ -962,9 +935,7 @@ class _MapScreenState extends State<MapScreen> {
         markers.add(
           _buildNodeLabelMarker(
             point: LatLng(contact.latitude!, contact.longitude!),
-            label: settings.mapShowOverlaps && !_isBuildingPathTrace
-                ? "${contact.publicKeyHex.substring(0, 2)}:${contact.name}"
-                : contact.name,
+            label: contact.name,
           ),
         );
       }
@@ -1976,14 +1947,6 @@ class _MapScreenState extends State<MapScreen> {
                     value: settings.mapShowDiscoveryContacts,
                     onChanged: (value) {
                       service.setMapShowDiscoveryContacts(value ?? true);
-                    },
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                  CheckboxListTile(
-                    title: Text(context.l10n.map_showOverlaps),
-                    value: settings.mapShowOverlaps,
-                    onChanged: (value) {
-                      service.setMapShowOverlaps(value ?? true);
                     },
                     contentPadding: EdgeInsets.zero,
                   ),

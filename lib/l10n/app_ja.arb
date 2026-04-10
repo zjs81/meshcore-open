@@ -2043,7 +2043,6 @@
   "contact_teleLocSubtitle": "位置情報共有を許可する",
   "contact_teleEnv": "テレメトリ環境",
   "contact_teleEnvSubtitle": "環境センサーのデータを共有することを許可する",
-  "map_showOverlaps": "リピーターキーの重複",
   "map_runTraceWithReturnPath": "元の経路に戻る。",
   "@translation_downloadFailed": {
     "placeholders": {
