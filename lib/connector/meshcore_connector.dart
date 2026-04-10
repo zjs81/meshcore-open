@@ -356,6 +356,26 @@ class MeshCoreConnector extends ChangeNotifier {
     return List.unmodifiable(_discoveredContacts);
   }
 
+  String exportDiscoveredContactsJson() {
+    return _discoveryContactStore.exportContactsJson(_discoveredContacts);
+  }
+
+  Future<int> importDiscoveredContactsJson(String json) async {
+    final newCount = _discoveryContactStore.importContactsJson(
+      json: json,
+      existingContacts: _discoveredContacts,
+      knownContactKeys: _knownContactKeys,
+    );
+
+    if (newCount == 0 && _discoveredContacts.isEmpty) {
+      return 0;
+    }
+
+    await _persistDiscoveredContacts();
+    notifyListeners();
+    return newCount;
+  }
+
   List<Channel> get channels => List.unmodifiable(_channels);
   bool get isConnected => _state == MeshCoreConnectionState.connected;
   bool get isLoadingContacts => _isLoadingContacts;

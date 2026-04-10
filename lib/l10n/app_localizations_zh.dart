@@ -3074,6 +3074,35 @@ class AppLocalizationsZh extends AppLocalizations {
   String get contacts_contactImportFailed => '导入联系人失败。';
 
   @override
+  String get discoveredContacts_export => '导出已发现的联系人';
+
+  @override
+  String get discoveredContacts_import => '导入已发现的联系人';
+
+  @override
+  String discoveredContacts_exported(String path) {
+    return '已将已发现的联系人导出到$path。';
+  }
+
+  @override
+  String discoveredContacts_exportFailed(String error) {
+    return '导出已发现的联系人失败：$error';
+  }
+
+  @override
+  String discoveredContacts_imported(int count) {
+    return '已导入$count个已发现的联系人。';
+  }
+
+  @override
+  String get discoveredContacts_importNoContacts => '在导入文件中未找到联系人。';
+
+  @override
+  String discoveredContacts_importFailed(String error) {
+    return '导入已发现的联系人失败：$error';
+  }
+
+  @override
   String get contacts_zeroHopAdvert => '发送零跳广播';
 
   @override

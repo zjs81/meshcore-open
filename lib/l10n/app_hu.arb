@@ -1949,6 +1949,41 @@
   "discoveredContacts_deleteContact": "Törölj a feltalált kapcsolatot",
   "discoveredContacts_deleteContactAll": "Törölj minden megtalált kapcsolatot",
   "discoveredContacts_deleteContactAllContent": "Biztos, hogy szeretné törölni az összes eddig megtalált kapcsolatot?",
+  "discoveredContacts_export": "Felfedezett kapcsolatok exportálása",
+  "discoveredContacts_import": "Felfedezett kapcsolatok importálása",
+  "discoveredContacts_exported": "A felfedezett kapcsolatok exportálva ide: {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "A felfedezett kapcsolatok exportálása nem sikerült: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "{count} felfedezett kapcsolat importálva.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "Az importfájlban nem találhatók kapcsolatok.",
+  "discoveredContacts_importFailed": "A felfedezett kapcsolatok importálása nem sikerült: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "chat_sendCooldown": "Kérjük, várjon egy pillanatot, mielőtt újra elküldené.",
   "appSettings_jumpToOldestUnread": "Jelentkezzen az legörebb, olvasatlan üzenetre",
   "appSettings_jumpToOldestUnreadSubtitle": "Amikor egy új csevet indítunk, amelyben vannak olvashatatlan üzenetek, görgessük a listát, hogy a legelső, olvashatatlan üzenet megjelenjen, nem pedig az utolsó.",

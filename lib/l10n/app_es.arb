@@ -1856,6 +1856,41 @@
   "common_deleteAll": "Eliminar todo",
   "discoveredContacts_deleteContactAll": "Eliminar Todos los Contactos Descubiertos",
   "discoveredContacts_deleteContactAllContent": "¿Está seguro de que desea eliminar todos los contactos descubiertos!",
+  "discoveredContacts_export": "Exportar contactos descubiertos",
+  "discoveredContacts_import": "Importar contactos descubiertos",
+  "discoveredContacts_exported": "Contactos descubiertos exportados a {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "Error al exportar contactos descubiertos: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "{count} contactos descubiertos importados.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "No se encontraron contactos en el archivo de importación.",
+  "discoveredContacts_importFailed": "Error al importar contactos descubiertos: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "map_guessedLocation": "Ubicación estimada",
   "map_showGuessedLocations": "Mostrar las ubicaciones estimadas de los nodos.",
   "usbScreenTitle": "Conecte mediante USB",

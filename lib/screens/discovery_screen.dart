@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
@@ -66,9 +71,44 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
         ),
         centerTitle: true,
         actions: [
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              switch (value) {
+                case 'export':
+                  unawaited(_exportDiscoveredContacts(context, connector));
+                  break;
+                case 'import':
+                  unawaited(_importDiscoveredContacts(context, connector));
+                  break;
+                case 'delete_all':
+                  _deleteContacts(context, connector);
+                  break;
+              }
+            },
+            itemBuilder: (context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'export',
+                child: Row(
+                  children: [
+                    const Icon(Icons.upload_file),
+                    const SizedBox(width: 8),
+                    Text(l10n.discoveredContacts_export),
+                  ],
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'import',
+                child: Row(
+                  children: [
+                    const Icon(Icons.download),
+                    const SizedBox(width: 8),
+                    Text(l10n.discoveredContacts_import),
+                  ],
+                ),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem<String>(
+                value: 'delete_all',
                 child: Row(
                   children: [
                     const Icon(Icons.delete, color: Colors.red),
@@ -76,9 +116,6 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                     Text(context.l10n.discoveredContacts_deleteContactAll),
                   ],
                 ),
-                onTap: () {
-                  _deleteContacts(context, connector);
-                },
               ),
             ],
             icon: const Icon(Icons.more_vert),
@@ -268,6 +305,144 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _exportDiscoveredContacts(
+    BuildContext context,
+    MeshCoreConnector connector,
+  ) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final json = connector.exportDiscoveredContactsJson();
+
+    try {
+      const filename = 'meshcore_discovered_contacts.json';
+      final bytes = Uint8List.fromList(utf8.encode(json));
+
+      if (PlatformInfo.isDesktop) {
+        final location = await getSaveLocation(
+          suggestedName: filename,
+          acceptedTypeGroups: [
+            const XTypeGroup(label: 'JSON', extensions: ['json']),
+          ],
+        );
+        if (!mounted) return;
+        if (location == null) return;
+        final exportFile = XFile.fromData(
+          bytes,
+          mimeType: 'application/json',
+          name: filename,
+        );
+        await exportFile.saveTo(location.path);
+        if (!mounted) return;
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(l10n.discoveredContacts_exported(location.path)),
+          ),
+        );
+        return;
+      }
+
+      final tempDir = await getTemporaryDirectory();
+      final exportPath = '${tempDir.path}/$filename';
+      final exportFile = File(exportPath);
+      await exportFile.writeAsBytes(bytes, flush: true);
+
+      try {
+        final result = await SharePlus.instance.share(
+          ShareParams(subject: filename, files: [XFile(exportPath)]),
+        );
+
+        if (!mounted) return;
+        if (result.status == ShareResultStatus.success) {
+          messenger.showSnackBar(
+            SnackBar(content: Text(l10n.discoveredContacts_exported(filename))),
+          );
+        }
+      } finally {
+        if (await exportFile.exists()) {
+          await exportFile.delete();
+        }
+      }
+    } catch (e) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.discoveredContacts_exportFailed(e.toString())),
+        ),
+      );
+    }
+  }
+
+  Future<void> _importDiscoveredContacts(
+    BuildContext context,
+    MeshCoreConnector connector,
+  ) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final json = await _resolveImportJson(context);
+      if (json == null) {
+        // User cancelled the file picker — nothing to do.
+        return;
+      }
+      final foundCount = _countContactsInImportJson(json);
+      if (foundCount == 0) {
+        if (!mounted) return;
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.discoveredContacts_importNoContacts)),
+        );
+        return;
+      }
+
+      final importedCount = await connector.importDiscoveredContactsJson(json);
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.discoveredContacts_imported(importedCount)),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.discoveredContacts_importFailed(e.toString())),
+        ),
+      );
+    }
+  }
+
+  Future<String?> _resolveImportJson(BuildContext context) async {
+    final file = await openFile(
+      acceptedTypeGroups: [
+        const XTypeGroup(label: 'JSON', extensions: ['json']),
+      ],
+    );
+    if (file == null) return null;
+    final bytes = await file.readAsBytes();
+
+    if (bytes.isEmpty) return '';
+
+    // Try UTF-8 first (handles BOM automatically)
+    try {
+      final text = utf8.decode(bytes, allowMalformed: true);
+      // Remove BOM if present
+      return text.startsWith('\ufeff') ? text.substring(1) : text;
+    } catch (_) {
+      return '';
+    }
+  }
+
+  int _countContactsInImportJson(String json) {
+    try {
+      final decoded = jsonDecode(json);
+      if (decoded is List) {
+        return decoded.length;
+      }
+      return 0;
+    } catch (_) {
+      return 0;
+    }
   }
 
   Widget _buildFilters(

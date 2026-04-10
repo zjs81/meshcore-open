@@ -1824,6 +1824,41 @@
   "discoveredContacts_Title": "Objavené kontakty",
   "contactsSettings_overwriteOldestTitle": "Prepísať najstaršie",
   "discoveredContacts_addContact": "Pridať kontakt",
+  "discoveredContacts_export": "Exportovať objavené kontakty",
+  "discoveredContacts_import": "Importovať objavené kontakty",
+  "discoveredContacts_exported": "Objavené kontakty boli exportované do {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "Export objavených kontaktov zlyhal: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "Bolo importovaných {count} objavených kontaktov.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "V importovanom súbore sa nenašli žiadne kontakty.",
+  "discoveredContacts_importFailed": "Import objavených kontaktov zlyhal: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "contactsSettings_overwriteOldestSubtitle": "Keď je zoznam kontaktov plný, bude nahradený najstarší neoznačený kontakt.",
   "discoveredContacts_deleteContactAll": "Zmazať všetky objavené kontakty",
   "common_deleteAll": "Zmazať všetko",

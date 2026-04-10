@@ -3150,6 +3150,35 @@ class AppLocalizationsJa extends AppLocalizations {
   String get contacts_contactImportFailed => '連絡先のインポートに失敗しました。';
 
   @override
+  String get discoveredContacts_export => '発見済みの連絡先をエクスポート';
+
+  @override
+  String get discoveredContacts_import => '発見済みの連絡先をインポート';
+
+  @override
+  String discoveredContacts_exported(String path) {
+    return '発見済みの連絡先を $path にエクスポートしました。';
+  }
+
+  @override
+  String discoveredContacts_exportFailed(String error) {
+    return '発見済みの連絡先のエクスポートに失敗しました: $error';
+  }
+
+  @override
+  String discoveredContacts_imported(int count) {
+    return '$count 件の発見済み連絡先をインポートしました。';
+  }
+
+  @override
+  String get discoveredContacts_importNoContacts => 'インポートファイルに連絡先が見つかりませんでした。';
+
+  @override
+  String discoveredContacts_importFailed(String error) {
+    return '発見済みの連絡先のインポートに失敗しました: $error';
+  }
+
+  @override
   String get contacts_zeroHopAdvert => 'ゼロホップ広告';
 
   @override

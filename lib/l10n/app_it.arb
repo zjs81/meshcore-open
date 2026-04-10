@@ -1824,6 +1824,41 @@
   "discoveredContacts_contactAdded": "Contatto aggiunto",
   "discoveredContacts_deleteContact": "Elimina Contatto",
   "discoveredContacts_copyContact": "Copia contatto negli appunti",
+  "discoveredContacts_export": "Esporta contatti scoperti",
+  "discoveredContacts_import": "Importa contatti scoperti",
+  "discoveredContacts_exported": "Contatti scoperti esportati in {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "Esportazione dei contatti scoperti non riuscita: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "Importati {count} contatti scoperti.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "Nessun contatto trovato nel file di importazione.",
+  "discoveredContacts_importFailed": "Importazione dei contatti scoperti non riuscita: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "contactsSettings_overwriteOldestSubtitle": "Quando l'elenco dei contatti è pieno, il contatto più vecchio non tra i preferiti verrà sostituito.",
   "common_deleteAll": "Elimina tutto",
   "discoveredContacts_deleteContactAllContent": "Sei sicuro di voler eliminare tutti i contatti scoperti?",

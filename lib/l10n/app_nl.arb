@@ -1824,6 +1824,41 @@
   "discoveredContacts_Title": "Ontdekte contacten",
   "discoveredContacts_contactAdded": "Contact toegevoegd",
   "discoveredContacts_searchHint": "Ontdekte contacten zoeken",
+  "discoveredContacts_export": "Ontdekte contacten exporteren",
+  "discoveredContacts_import": "Ontdekte contacten importeren",
+  "discoveredContacts_exported": "Ontdekte contacten geëxporteerd naar {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "Exporteren van ontdekte contacten mislukt: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "{count} ontdekte contacten geïmporteerd.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "Geen contacten gevonden in het importbestand.",
+  "discoveredContacts_importFailed": "Importeren van ontdekte contacten mislukt: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "contactsSettings_overwriteOldestSubtitle": "Wanneer de contactenlijst vol is, wordt de oudste niet-favoriete contactpersoon vervangen.",
   "common_deleteAll": "Alles verwijderen",
   "discoveredContacts_deleteContactAll": "Verwijder alle ontdekte contacten",

@@ -1829,6 +1829,41 @@
   "discoveredContacts_noMatching": "没有匹配的联系人",
   "discoveredContacts_Title": "已发现的联系人",
   "discoveredContacts_copyContact": "复制联系人到剪贴板",
+  "discoveredContacts_export": "导出已发现的联系人",
+  "discoveredContacts_import": "导入已发现的联系人",
+  "discoveredContacts_exported": "已将已发现的联系人导出到{path}。",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "导出已发现的联系人失败：{error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "已导入{count}个已发现的联系人。",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "在导入文件中未找到联系人。",
+  "discoveredContacts_importFailed": "导入已发现的联系人失败：{error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "contactsSettings_overwriteOldestSubtitle": "当联系人列表已满时，将替换最老的非收藏联系人。",
   "common_deleteAll": "删除全部",
   "discoveredContacts_deleteContactAllContent": "您确定要删除所有发现的联系人吗？",

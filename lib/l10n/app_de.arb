@@ -1856,6 +1856,41 @@
   "common_deleteAll": "Alles löschen",
   "discoveredContacts_deleteContactAllContent": "Sind Sie sicher, dass Sie alle gefundenen Kontakte löschen möchten?",
   "discoveredContacts_deleteContactAll": "Alle entdeckten Kontakte löschen",
+  "discoveredContacts_export": "Entdeckte Kontakte exportieren",
+  "discoveredContacts_import": "Entdeckte Kontakte importieren",
+  "discoveredContacts_exported": "Entdeckte Kontakte exportiert nach {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "Export von entdeckten Kontakten fehlgeschlagen: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "{count} entdeckte Kontakte importiert.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "Keine Kontakte in Importdatei gefunden.",
+  "discoveredContacts_importFailed": "Import von entdeckten Kontakten fehlgeschlagen: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "map_showGuessedLocations": "Zeige die vermuteten Knotenpositionen",
   "map_guessedLocation": "Geschätzter Ort",
   "usbScreenSubtitle": "Wählen Sie ein erkannten serielles Gerät aus und verbinden Sie es direkt mit Ihrem MeshCore-Knoten.",

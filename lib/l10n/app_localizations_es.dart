@@ -3297,6 +3297,36 @@ class AppLocalizationsEs extends AppLocalizations {
       'Contacto no se importó correctamente.';
 
   @override
+  String get discoveredContacts_export => 'Exportar contactos descubiertos';
+
+  @override
+  String get discoveredContacts_import => 'Importar contactos descubiertos';
+
+  @override
+  String discoveredContacts_exported(String path) {
+    return 'Contactos descubiertos exportados a $path.';
+  }
+
+  @override
+  String discoveredContacts_exportFailed(String error) {
+    return 'Error al exportar contactos descubiertos: $error';
+  }
+
+  @override
+  String discoveredContacts_imported(int count) {
+    return '$count contactos descubiertos importados.';
+  }
+
+  @override
+  String get discoveredContacts_importNoContacts =>
+      'No se encontraron contactos en el archivo de importación.';
+
+  @override
+  String discoveredContacts_importFailed(String error) {
+    return 'Error al importar contactos descubiertos: $error';
+  }
+
+  @override
   String get contacts_zeroHopAdvert => 'Anuncio de Zero Hop';
 
   @override
