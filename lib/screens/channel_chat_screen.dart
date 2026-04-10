@@ -13,7 +13,6 @@ import '../helpers/chat_scroll_controller.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/reaction_helper.dart';
-import '../helpers/utf8_length_limiter.dart';
 import '../l10n/l10n.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
@@ -22,6 +21,7 @@ import '../services/app_settings_service.dart';
 import '../services/chat_text_scale_service.dart';
 import '../services/translation_service.dart';
 import '../utils/emoji_utils.dart';
+import '../widgets/byte_count_input.dart';
 import '../widgets/chat_zoom_wrapper.dart';
 import '../widgets/emoji_picker.dart';
 import '../widgets/gif_message.dart';
@@ -1093,27 +1093,26 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                         ),
                       );
                     }
-
-                    return TextField(
+                    return ByteCountedTextField(
+                      maxBytes: maxBytes,
                       controller: _textController,
                       focusNode: _textFieldFocusNode,
-                      inputFormatters: [
-                        Utf8LengthLimitingTextInputFormatter(maxBytes),
-                      ],
-                      textCapitalization: TextCapitalization.sentences,
+                      hintText: context.l10n.chat_typeMessage,
+                      onSubmitted: (_) => _sendMessage(),
                       decoration: InputDecoration(
                         hintText: context.l10n.chat_typeMessage,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),
+                        filled: true,
+                        fillColor: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerLow,
                         contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                          horizontal: 20,
+                          vertical: 14,
                         ),
                       ),
-                      maxLines: null,
-                      textInputAction: TextInputAction.send,
-                      onSubmitted: (_) => _sendMessage(),
                     );
                   },
                 ),

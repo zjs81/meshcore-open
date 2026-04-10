@@ -18,7 +18,6 @@ import '../widgets/message_status_icon.dart';
 import '../helpers/chat_scroll_controller.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/path_helper.dart';
-import '../helpers/utf8_length_limiter.dart';
 import '../models/channel_message.dart';
 import '../models/contact.dart';
 import '../models/message.dart';
@@ -30,6 +29,7 @@ import '../services/path_history_service.dart';
 import '../services/translation_service.dart';
 import '../widgets/chat_zoom_wrapper.dart';
 import '../widgets/elements_ui.dart';
+import '../widgets/byte_count_input.dart';
 import 'channel_message_path_screen.dart';
 import 'map_screen.dart';
 import '../utils/emoji_utils.dart';
@@ -566,24 +566,27 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                     );
                   }
-
-                  return TextField(
+                  return ByteCountedTextField(
+                    maxBytes: maxBytes,
                     controller: _textController,
                     focusNode: _textFieldFocusNode,
-                    inputFormatters: [
-                      Utf8LengthLimitingTextInputFormatter(maxBytes),
-                    ],
-                    textCapitalization: TextCapitalization.sentences,
+                    hintText: context.l10n.chat_typeMessage,
+                    onSubmitted: (_) => _sendMessage(connector),
                     decoration: InputDecoration(
                       hintText: context.l10n.chat_typeMessage,
-                      border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
                       ),
+                      filled: true,
+                      fillColor: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerLow,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 14,
+                      ),
+                      prefixIcon: const Icon(Icons.message_outlined),
                     ),
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (_) => _sendMessage(connector),
                   );
                 },
               ),
