@@ -14,6 +14,7 @@ import 'package:latlong2/latlong.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/reaction_helper.dart';
+import '../helpers/smaz.dart';
 import '../widgets/message_status_icon.dart';
 import '../helpers/chat_scroll_controller.dart';
 import '../helpers/gif_helper.dart';
@@ -572,6 +573,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     focusNode: _textFieldFocusNode,
                     hintText: context.l10n.chat_typeMessage,
                     onSubmitted: (_) => _sendMessage(connector),
+                    encoder:
+                        connector.isContactSmazEnabled(
+                          widget.contact.publicKeyHex,
+                        )
+                        ? Smaz.encodeIfSmaller
+                        : null,
                     decoration: InputDecoration(
                       hintText: context.l10n.chat_typeMessage,
                       border: OutlineInputBorder(
@@ -673,7 +680,11 @@ class _ChatScreenState extends State<ChatScreen> {
       }
     }
     final maxBytes = maxContactMessageBytes();
-    if (utf8.encode(outgoingText).length > maxBytes) {
+    final outboundText = connector.prepareContactOutboundText(
+      _resolveContact(connector),
+      outgoingText,
+    );
+    if (utf8.encode(outboundText).length > maxBytes) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.chat_messageTooLong(maxBytes))),
       );

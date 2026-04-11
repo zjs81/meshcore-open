@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../connector/meshcore_connector.dart';
 import '../utils/platform_info.dart';
 import '../helpers/chat_scroll_controller.dart';
+import '../helpers/smaz.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/reaction_helper.dart';
@@ -1099,6 +1100,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                       focusNode: _textFieldFocusNode,
                       hintText: context.l10n.chat_typeMessage,
                       onSubmitted: (_) => _sendMessage(),
+                      encoder:
+                          connector.isChannelSmazEnabled(widget.channel.index)
+                          ? Smaz.encodeIfSmaller
+                          : null,
                       decoration: InputDecoration(
                         hintText: context.l10n.chat_typeMessage,
                         border: OutlineInputBorder(
@@ -1193,7 +1198,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     }
 
     final maxBytes = maxChannelMessageBytes(connector.selfName);
-    if (utf8.encode(messageText).length > maxBytes) {
+    final outboundText = connector.prepareChannelOutboundText(
+      widget.channel.index,
+      messageText,
+    );
+    if (utf8.encode(outboundText).length > maxBytes) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.chat_messageTooLong(maxBytes))),
       );
