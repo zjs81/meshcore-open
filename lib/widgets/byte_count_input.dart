@@ -50,6 +50,10 @@ class ByteCountedTextField extends StatelessWidget {
   /// Whether to hide the counter when the field is empty (default `true`).
   final bool hideCounterWhenEmpty;
 
+  /// Optional encoder function to transform text before byte counting/limiting.
+  /// If provided, byte limits and counters will use the encoded text length.
+  final String Function(String)? encoder;
+
   const ByteCountedTextField({
     super.key,
     required this.maxBytes,
@@ -64,6 +68,7 @@ class ByteCountedTextField extends StatelessWidget {
     this.warningThreshold = 0.7,
     this.errorThreshold = 0.9,
     this.hideCounterWhenEmpty = true,
+    this.encoder,
   });
 
   @override
@@ -71,7 +76,10 @@ class ByteCountedTextField extends StatelessWidget {
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: controller,
       builder: (context, value, _) {
-        final usedBytes = utf8.encode(value.text).length;
+        final effectiveText = encoder != null
+            ? encoder!(value.text)
+            : value.text;
+        final usedBytes = utf8.encode(effectiveText).length;
         final ratio = maxBytes > 0 ? usedBytes / maxBytes : 0.0;
         final showCounter = !(hideCounterWhenEmpty && value.text.isEmpty);
 
@@ -90,7 +98,10 @@ class ByteCountedTextField extends StatelessWidget {
               focusNode: focusNode,
               inputFormatters: [
                 ...extraFormatters,
-                Utf8LengthLimitingTextInputFormatter(maxBytes),
+                Utf8LengthLimitingTextInputFormatter(
+                  maxBytes,
+                  encoder: encoder,
+                ),
               ],
               textCapitalization: textCapitalization,
               decoration:

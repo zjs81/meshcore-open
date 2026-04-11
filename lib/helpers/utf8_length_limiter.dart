@@ -4,8 +4,14 @@ import 'package:flutter/services.dart';
 
 class Utf8LengthLimitingTextInputFormatter extends TextInputFormatter {
   final int maxBytes;
+  final String Function(String)? encoder;
 
-  const Utf8LengthLimitingTextInputFormatter(this.maxBytes);
+  const Utf8LengthLimitingTextInputFormatter(this.maxBytes, {this.encoder});
+
+  int _effectiveByteLength(String text) {
+    final effective = encoder != null ? encoder!(text) : text;
+    return utf8.encode(effective).length;
+  }
 
   @override
   TextEditingValue formatEditUpdate(
@@ -13,8 +19,7 @@ class Utf8LengthLimitingTextInputFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     if (maxBytes <= 0) return oldValue;
-    final bytes = utf8.encode(newValue.text);
-    if (bytes.length <= maxBytes) return newValue;
+    if (_effectiveByteLength(newValue.text) <= maxBytes) return newValue;
 
     final truncated = _truncateToMaxBytes(newValue.text, maxBytes);
     return TextEditingValue(
@@ -25,6 +30,14 @@ class Utf8LengthLimitingTextInputFormatter extends TextInputFormatter {
   }
 
   String _truncateToMaxBytes(String text, int limit) {
+    if (encoder != null) {
+      final runes = text.runes.toList();
+      while (runes.isNotEmpty &&
+          _effectiveByteLength(String.fromCharCodes(runes)) > maxBytes) {
+        runes.removeLast();
+      }
+      return String.fromCharCodes(runes);
+    }
     final buffer = StringBuffer();
     var used = 0;
     for (final rune in text.runes) {
