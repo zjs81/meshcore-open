@@ -1795,6 +1795,47 @@ class AppLocalizationsKo extends AppLocalizations {
   String get time_allTime => '모든 시간';
 
   @override
+  String get month_jan => '1월';
+
+  @override
+  String get month_feb => '2월';
+
+  @override
+  String get month_mar => '3월';
+
+  @override
+  String get month_apr => '4월';
+
+  @override
+  String get month_may => '5월';
+
+  @override
+  String get month_jun => '6월';
+
+  @override
+  String get month_jul => '7월';
+
+  @override
+  String get month_aug => '8월';
+
+  @override
+  String get month_sep => '9월';
+
+  @override
+  String get month_oct => '10월';
+
+  @override
+  String get month_nov => '11월';
+
+  @override
+  String get month_dec => '12월';
+
+  @override
+  String message_timestampWithDate(int day, String month, String time) {
+    return '$month $day일, $time';
+  }
+
+  @override
   String get dialog_disconnect => '연결 해제';
 
   @override

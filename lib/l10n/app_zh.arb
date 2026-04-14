@@ -831,6 +831,26 @@
   "time_months": "月",
   "time_minutes": "分钟",
   "time_allTime": "所有时间",
+  "month_jan": "1月",
+  "month_feb": "2月",
+  "month_mar": "3月",
+  "month_apr": "4月",
+  "month_may": "5月",
+  "month_jun": "6月",
+  "month_jul": "7月",
+  "month_aug": "8月",
+  "month_sep": "9月",
+  "month_oct": "10月",
+  "month_nov": "11月",
+  "month_dec": "12月",
+  "message_timestampWithDate": "{month}{day}日 {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
   "dialog_disconnect": "断开",
   "dialog_disconnectConfirm": "确定要断开与此设备的连接吗？",
   "login_repeaterLogin": "转发节点登录",

@@ -804,6 +804,26 @@
   "time_months": "mesi",
   "time_minutes": "minuti",
   "time_allTime": "Tutto il Tempo",
+  "month_jan": "gen",
+  "month_feb": "feb",
+  "month_mar": "mar",
+  "month_apr": "apr",
+  "month_may": "mag",
+  "month_jun": "giu",
+  "month_jul": "lug",
+  "month_aug": "ago",
+  "month_sep": "set",
+  "month_oct": "ott",
+  "month_nov": "nov",
+  "month_dec": "dic",
+  "message_timestampWithDate": "{day} {month}, {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
   "dialog_disconnect": "Disconnetti",
   "dialog_disconnectConfirm": "Sei sicuro di voler disconnetterti da questo dispositivo?",
   "login_repeaterLogin": "Login Ripetitore",

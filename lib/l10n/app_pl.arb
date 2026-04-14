@@ -814,6 +814,26 @@
   "time_months": "miesiące",
   "time_minutes": "minuty",
   "time_allTime": "Cały czas",
+  "month_jan": "sty",
+  "month_feb": "lut",
+  "month_mar": "mar",
+  "month_apr": "kwi",
+  "month_may": "maj",
+  "month_jun": "cze",
+  "month_jul": "lip",
+  "month_aug": "sie",
+  "month_sep": "wrz",
+  "month_oct": "paź",
+  "month_nov": "lis",
+  "month_dec": "gru",
+  "message_timestampWithDate": "{day} {month}, {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
   "dialog_disconnect": "Odłącz",
   "dialog_disconnectConfirm": "Czy na pewno chcesz się odłączyć od tego urządzenia?",
   "login_repeaterLogin": "Logowanie do przekaźnika",

@@ -804,6 +804,26 @@
   "time_months": "mois",
   "time_minutes": "minutes",
   "time_allTime": "Tout le temps",
+  "month_jan": "janv.",
+  "month_feb": "févr.",
+  "month_mar": "mars",
+  "month_apr": "avr.",
+  "month_may": "mai",
+  "month_jun": "juin",
+  "month_jul": "juil.",
+  "month_aug": "août",
+  "month_sep": "sept.",
+  "month_oct": "oct.",
+  "month_nov": "nov.",
+  "month_dec": "déc.",
+  "message_timestampWithDate": "{day} {month}, {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
   "dialog_disconnect": "Déconnecter",
   "dialog_disconnectConfirm": "Êtes-vous sûr de vouloir vous déconnecter de cet appareil ?",
   "login_repeaterLogin": "Connexion au répéteur",

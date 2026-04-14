@@ -1017,6 +1017,32 @@
   "time_months": "months",
   "time_minutes": "minutes",
   "time_allTime": "All Time",
+  "month_jan": "Jan",
+  "month_feb": "Feb",
+  "month_mar": "Mar",
+  "month_apr": "Apr",
+  "month_may": "May",
+  "month_jun": "Jun",
+  "month_jul": "Jul",
+  "month_aug": "Aug",
+  "month_sep": "Sep",
+  "month_oct": "Oct",
+  "month_nov": "Nov",
+  "month_dec": "Dec",
+  "message_timestampWithDate": "{day} {month}, {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "dialog_disconnect": "Disconnect",
   "dialog_disconnectConfirm": "Are you sure you want to disconnect from this device?",
   "login_repeaterLogin": "Repeater Login",

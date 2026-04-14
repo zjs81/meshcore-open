@@ -434,6 +434,26 @@
   "time_months": "месяцев",
   "time_minutes": "минут",
   "time_allTime": "Всё время",
+  "month_jan": "янв",
+  "month_feb": "фев",
+  "month_mar": "мар",
+  "month_apr": "апр",
+  "month_may": "мая",
+  "month_jun": "июн",
+  "month_jul": "июл",
+  "month_aug": "авг",
+  "month_sep": "сен",
+  "month_oct": "окт",
+  "month_nov": "ноя",
+  "month_dec": "дек",
+  "message_timestampWithDate": "{day} {month}, {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
   "dialog_disconnect": "Отключиться",
   "dialog_disconnectConfirm": "Вы уверены, что хотите отключиться от этого устройства?",
   "login_repeaterLogin": "Вход в репитер",

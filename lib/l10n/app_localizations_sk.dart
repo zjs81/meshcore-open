@@ -1863,6 +1863,47 @@ class AppLocalizationsSk extends AppLocalizations {
   String get time_allTime => 'Všetko Časom';
 
   @override
+  String get month_jan => 'jan';
+
+  @override
+  String get month_feb => 'feb';
+
+  @override
+  String get month_mar => 'mar';
+
+  @override
+  String get month_apr => 'apr';
+
+  @override
+  String get month_may => 'máj';
+
+  @override
+  String get month_jun => 'jún';
+
+  @override
+  String get month_jul => 'júl';
+
+  @override
+  String get month_aug => 'aug';
+
+  @override
+  String get month_sep => 'sep';
+
+  @override
+  String get month_oct => 'okt';
+
+  @override
+  String get month_nov => 'nov';
+
+  @override
+  String get month_dec => 'dec';
+
+  @override
+  String message_timestampWithDate(int day, String month, String time) {
+    return '$day. $month, $time';
+  }
+
+  @override
   String get dialog_disconnect => 'Odpojiť';
 
   @override

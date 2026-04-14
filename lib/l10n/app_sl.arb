@@ -804,6 +804,26 @@
   "time_months": "mesi",
   "time_minutes": "minute",
   "time_allTime": "Vse časovno obdobje",
+  "month_jan": "jan",
+  "month_feb": "feb",
+  "month_mar": "mar",
+  "month_apr": "apr",
+  "month_may": "maj",
+  "month_jun": "jun",
+  "month_jul": "jul",
+  "month_aug": "avg",
+  "month_sep": "sep",
+  "month_oct": "okt",
+  "month_nov": "nov",
+  "month_dec": "dec",
+  "message_timestampWithDate": "{day}. {month}, {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
   "dialog_disconnect": "Odklopiti",
   "dialog_disconnectConfirm": "Ste prepričani, da želite se odklopiti s tega naprave?",
   "login_repeaterLogin": "Ponovni vnos",

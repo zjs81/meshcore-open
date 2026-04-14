@@ -3381,6 +3381,84 @@ abstract class AppLocalizations {
   /// **'All Time'**
   String get time_allTime;
 
+  /// No description provided for @month_jan.
+  ///
+  /// In en, this message translates to:
+  /// **'Jan'**
+  String get month_jan;
+
+  /// No description provided for @month_feb.
+  ///
+  /// In en, this message translates to:
+  /// **'Feb'**
+  String get month_feb;
+
+  /// No description provided for @month_mar.
+  ///
+  /// In en, this message translates to:
+  /// **'Mar'**
+  String get month_mar;
+
+  /// No description provided for @month_apr.
+  ///
+  /// In en, this message translates to:
+  /// **'Apr'**
+  String get month_apr;
+
+  /// No description provided for @month_may.
+  ///
+  /// In en, this message translates to:
+  /// **'May'**
+  String get month_may;
+
+  /// No description provided for @month_jun.
+  ///
+  /// In en, this message translates to:
+  /// **'Jun'**
+  String get month_jun;
+
+  /// No description provided for @month_jul.
+  ///
+  /// In en, this message translates to:
+  /// **'Jul'**
+  String get month_jul;
+
+  /// No description provided for @month_aug.
+  ///
+  /// In en, this message translates to:
+  /// **'Aug'**
+  String get month_aug;
+
+  /// No description provided for @month_sep.
+  ///
+  /// In en, this message translates to:
+  /// **'Sep'**
+  String get month_sep;
+
+  /// No description provided for @month_oct.
+  ///
+  /// In en, this message translates to:
+  /// **'Oct'**
+  String get month_oct;
+
+  /// No description provided for @month_nov.
+  ///
+  /// In en, this message translates to:
+  /// **'Nov'**
+  String get month_nov;
+
+  /// No description provided for @month_dec.
+  ///
+  /// In en, this message translates to:
+  /// **'Dec'**
+  String get month_dec;
+
+  /// No description provided for @message_timestampWithDate.
+  ///
+  /// In en, this message translates to:
+  /// **'{day} {month}, {time}'**
+  String message_timestampWithDate(int day, String month, String time);
+
   /// No description provided for @dialog_disconnect.
   ///
   /// In en, this message translates to:

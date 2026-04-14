@@ -804,6 +804,26 @@
   "time_months": "месеци",
   "time_minutes": "минути",
   "time_allTime": "Всичко време",
+  "month_jan": "яну",
+  "month_feb": "фев",
+  "month_mar": "мар",
+  "month_apr": "апр",
+  "month_may": "май",
+  "month_jun": "юни",
+  "month_jul": "юли",
+  "month_aug": "авг",
+  "month_sep": "сеп",
+  "month_oct": "окт",
+  "month_nov": "ное",
+  "month_dec": "дек",
+  "message_timestampWithDate": "{day} {month}, {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
   "dialog_disconnect": "Прекъсни",
   "dialog_disconnectConfirm": "Сигурни ли сте, че искате да се откъснете от това устройство?",
   "login_repeaterLogin": "Повторител Вход",

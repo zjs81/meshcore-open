@@ -1875,6 +1875,47 @@ class AppLocalizationsEs extends AppLocalizations {
   String get time_allTime => 'Todas las veces';
 
   @override
+  String get month_jan => 'ene';
+
+  @override
+  String get month_feb => 'feb';
+
+  @override
+  String get month_mar => 'mar';
+
+  @override
+  String get month_apr => 'abr';
+
+  @override
+  String get month_may => 'may';
+
+  @override
+  String get month_jun => 'jun';
+
+  @override
+  String get month_jul => 'jul';
+
+  @override
+  String get month_aug => 'ago';
+
+  @override
+  String get month_sep => 'sep';
+
+  @override
+  String get month_oct => 'oct';
+
+  @override
+  String get month_nov => 'nov';
+
+  @override
+  String get month_dec => 'dic';
+
+  @override
+  String message_timestampWithDate(int day, String month, String time) {
+    return '$day $month, $time';
+  }
+
+  @override
   String get dialog_disconnect => 'Desconectar';
 
   @override

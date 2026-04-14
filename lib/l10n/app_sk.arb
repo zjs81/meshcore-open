@@ -804,6 +804,26 @@
   "time_months": "mesiace",
   "time_minutes": "minúty",
   "time_allTime": "Všetko Časom",
+  "month_jan": "jan",
+  "month_feb": "feb",
+  "month_mar": "mar",
+  "month_apr": "apr",
+  "month_may": "máj",
+  "month_jun": "jún",
+  "month_jul": "júl",
+  "month_aug": "aug",
+  "month_sep": "sep",
+  "month_oct": "okt",
+  "month_nov": "nov",
+  "month_dec": "dec",
+  "message_timestampWithDate": "{day}. {month}, {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
   "dialog_disconnect": "Odpojiť",
   "dialog_disconnectConfirm": "Ste si istý/á, že chcete odpojiť od tohto zariadenia?",
   "login_repeaterLogin": "Opätovné prihlásenie",

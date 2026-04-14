@@ -1878,6 +1878,47 @@ class AppLocalizationsRu extends AppLocalizations {
   String get time_allTime => 'Всё время';
 
   @override
+  String get month_jan => 'янв';
+
+  @override
+  String get month_feb => 'фев';
+
+  @override
+  String get month_mar => 'мар';
+
+  @override
+  String get month_apr => 'апр';
+
+  @override
+  String get month_may => 'мая';
+
+  @override
+  String get month_jun => 'июн';
+
+  @override
+  String get month_jul => 'июл';
+
+  @override
+  String get month_aug => 'авг';
+
+  @override
+  String get month_sep => 'сен';
+
+  @override
+  String get month_oct => 'окт';
+
+  @override
+  String get month_nov => 'ноя';
+
+  @override
+  String get month_dec => 'дек';
+
+  @override
+  String message_timestampWithDate(int day, String month, String time) {
+    return '$day $month, $time';
+  }
+
+  @override
   String get dialog_disconnect => 'Отключиться';
 
   @override

@@ -1767,6 +1767,47 @@ class AppLocalizationsZh extends AppLocalizations {
   String get time_allTime => '所有时间';
 
   @override
+  String get month_jan => '1月';
+
+  @override
+  String get month_feb => '2月';
+
+  @override
+  String get month_mar => '3月';
+
+  @override
+  String get month_apr => '4月';
+
+  @override
+  String get month_may => '5月';
+
+  @override
+  String get month_jun => '6月';
+
+  @override
+  String get month_jul => '7月';
+
+  @override
+  String get month_aug => '8月';
+
+  @override
+  String get month_sep => '9月';
+
+  @override
+  String get month_oct => '10月';
+
+  @override
+  String get month_nov => '11月';
+
+  @override
+  String get month_dec => '12月';
+
+  @override
+  String message_timestampWithDate(int day, String month, String time) {
+    return '$month$day日 $time';
+  }
+
+  @override
   String get dialog_disconnect => '断开';
 
   @override

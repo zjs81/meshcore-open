@@ -987,6 +987,26 @@
   "time_months": "hónapok",
   "time_minutes": "percek",
   "time_allTime": "Bármely időpont",
+  "month_jan": "jan",
+  "month_feb": "feb",
+  "month_mar": "márc",
+  "month_apr": "ápr",
+  "month_may": "máj",
+  "month_jun": "jún",
+  "month_jul": "júl",
+  "month_aug": "aug",
+  "month_sep": "szept",
+  "month_oct": "okt",
+  "month_nov": "nov",
+  "month_dec": "dec",
+  "message_timestampWithDate": "{month} {day}. {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
   "dialog_disconnect": "Csatlakozást megszakasztani",
   "dialog_disconnectConfirm": "Biztosan szeretné kiírni ezt a készüléket?",
   "login_repeaterLogin": "Ismételt bejelentkezés",

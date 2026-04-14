@@ -987,6 +987,26 @@
   "time_months": "月",
   "time_minutes": "分",
   "time_allTime": "全期間",
+  "month_jan": "1月",
+  "month_feb": "2月",
+  "month_mar": "3月",
+  "month_apr": "4月",
+  "month_may": "5月",
+  "month_jun": "6月",
+  "month_jul": "7月",
+  "month_aug": "8月",
+  "month_sep": "9月",
+  "month_oct": "10月",
+  "month_nov": "11月",
+  "month_dec": "12月",
+  "message_timestampWithDate": "{month}{day}日 {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
   "dialog_disconnect": "切断する",
   "dialog_disconnectConfirm": "本当にこのデバイスとの接続を解除したいですか？",
   "login_repeaterLogin": "再ログイン",

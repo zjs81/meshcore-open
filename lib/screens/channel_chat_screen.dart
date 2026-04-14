@@ -547,6 +547,19 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                             ],
                           ],
                         ),
+                      if (gifId == null) ...[
+                        const SizedBox(height: 4),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            _formatTimestamp(message.timestamp),
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey[400],
+                            ),
+                          ),
+                        ),
+                      ],
                       if (enableTracing) ...[
                         if (displayPath.isNotEmpty) ...[
                           const SizedBox(height: 4),
@@ -1221,6 +1234,35 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     } else {
       return '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
     }
+  }
+
+  String _formatTimestamp(DateTime time) {
+    final l10n = context.l10n;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final messageDate = DateTime(time.year, time.month, time.day);
+    final timeStr = '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
+
+    if (messageDate == today) {
+      return timeStr;
+    }
+
+    final monthNames = [
+      l10n.month_jan,
+      l10n.month_feb,
+      l10n.month_mar,
+      l10n.month_apr,
+      l10n.month_may,
+      l10n.month_jun,
+      l10n.month_jul,
+      l10n.month_aug,
+      l10n.month_sep,
+      l10n.month_oct,
+      l10n.month_nov,
+      l10n.month_dec,
+    ];
+    final monthName = monthNames[time.month - 1];
+    return l10n.message_timestampWithDate(time.day, monthName, timeStr);
   }
 
   void _showMessagePathInfo(ChannelMessage message) {

@@ -987,6 +987,26 @@
   "time_months": "개월",
   "time_minutes": "분",
   "time_allTime": "모든 시간",
+  "month_jan": "1월",
+  "month_feb": "2월",
+  "month_mar": "3월",
+  "month_apr": "4월",
+  "month_may": "5월",
+  "month_jun": "6월",
+  "month_jul": "7월",
+  "month_aug": "8월",
+  "month_sep": "9월",
+  "month_oct": "10월",
+  "month_nov": "11월",
+  "month_dec": "12월",
+  "message_timestampWithDate": "{month} {day}일, {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
   "dialog_disconnect": "연결 해제",
   "dialog_disconnectConfirm": "이 장치와의 연결을 해제하시겠습니까?",
   "login_repeaterLogin": "다시 로그인",

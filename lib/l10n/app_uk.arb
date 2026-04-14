@@ -805,6 +805,26 @@
   "time_months": "місяців",
   "time_minutes": "хвилин",
   "time_allTime": "Весь час",
+  "month_jan": "січ",
+  "month_feb": "лют",
+  "month_mar": "бер",
+  "month_apr": "квіт",
+  "month_may": "трав",
+  "month_jun": "черв",
+  "month_jul": "лип",
+  "month_aug": "серп",
+  "month_sep": "вер",
+  "month_oct": "жовт",
+  "month_nov": "лист",
+  "month_dec": "груд",
+  "message_timestampWithDate": "{day} {month}, {time}",
+  "@message_timestampWithDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
   "dialog_disconnect": "Відключити",
   "dialog_disconnectConfirm": "Ви впевнені, що хочете відключитися від цього пристрою?",
   "login_repeaterLogin": "Вхід у ретранслятор",

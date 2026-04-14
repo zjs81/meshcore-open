@@ -1877,6 +1877,47 @@ class AppLocalizationsDe extends AppLocalizations {
   String get time_allTime => 'Ganzer Zeitraum';
 
   @override
+  String get month_jan => 'Jan';
+
+  @override
+  String get month_feb => 'Feb';
+
+  @override
+  String get month_mar => 'Mär';
+
+  @override
+  String get month_apr => 'Apr';
+
+  @override
+  String get month_may => 'Mai';
+
+  @override
+  String get month_jun => 'Jun';
+
+  @override
+  String get month_jul => 'Jul';
+
+  @override
+  String get month_aug => 'Aug';
+
+  @override
+  String get month_sep => 'Sep';
+
+  @override
+  String get month_oct => 'Okt';
+
+  @override
+  String get month_nov => 'Nov';
+
+  @override
+  String get month_dec => 'Dez';
+
+  @override
+  String message_timestampWithDate(int day, String month, String time) {
+    return '$day. $month, $time';
+  }
+
+  @override
   String get dialog_disconnect => 'Trennen';
 
   @override
