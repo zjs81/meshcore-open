@@ -1240,7 +1240,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get chat_noMessages => 'Няма съобщения.';
 
   @override
-  String get chat_sendMessage => 'Send message';
+  String get chat_sendMessage => 'Изпратете съобщение';
 
   @override
   String chat_sendMessageTo(String contactName) {
@@ -2020,7 +2020,16 @@ class AppLocalizationsBg extends AppLocalizations {
   String get room_management => 'Управление на сървъра за стая';
 
   @override
+  String get repeater_guest => 'Информация за ретранслаторите';
+
+  @override
+  String get room_guest => 'Информация за сървъра на стаята';
+
+  @override
   String get repeater_managementTools => 'Инструменти за управление';
+
+  @override
+  String get repeater_guestTools => 'Инструменти за гости';
 
   @override
   String get repeater_status => 'Статус';

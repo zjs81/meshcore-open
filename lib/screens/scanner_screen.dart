@@ -10,6 +10,7 @@ import '../services/linux_ble_error_classifier.dart';
 import '../utils/app_logger.dart';
 import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/device_tile.dart';
+import '../helpers/snack_bar_builder.dart';
 import 'contacts_screen.dart';
 import 'tcp_screen.dart';
 import 'usb_screen.dart';
@@ -317,11 +318,10 @@ class _ScannerScreenState extends State<ScannerScreen> {
         return;
       }
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.scanner_connectionFailed(e.toString())),
-            backgroundColor: Colors.red,
-          ),
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.scanner_connectionFailed(e.toString())),
+          backgroundColor: Colors.red,
         );
       }
     }

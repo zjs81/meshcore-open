@@ -1180,7 +1180,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chat_noMessages => 'まだメッセージは届いていません';
 
   @override
-  String get chat_sendMessage => 'Send message';
+  String get chat_sendMessage => 'メッセージを送信する';
 
   @override
   String chat_sendMessageTo(String contactName) {
@@ -1933,7 +1933,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get room_management => 'ルームサーバーの管理';
 
   @override
+  String get repeater_guest => '繰り返し送信に関する情報';
+
+  @override
+  String get room_guest => 'ルームサーバーに関する情報';
+
+  @override
   String get repeater_managementTools => '管理ツール';
+
+  @override
+  String get repeater_guestTools => 'ゲスト向けツール';
 
   @override
   String get repeater_status => 'ステータス';

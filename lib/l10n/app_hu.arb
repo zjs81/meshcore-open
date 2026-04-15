@@ -2107,5 +2107,9 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLoginSubtitle": "Automatikusan küldje el a \"óra szinkronizálás\" üzenetet a sikeres bejelentkezés után.",
-  "repeater_clockSyncAfterLogin": "Óra szinkronizálás bejelentkezés után"
+  "repeater_clockSyncAfterLogin": "Óra szinkronizálás bejelentkezés után",
+  "repeater_guestTools": "Vendégek számára elérhető eszközök",
+  "room_guest": "Szoba szerver információk",
+  "chat_sendMessage": "Üzenet küldése",
+  "repeater_guest": "Adatok a repeaterről"
 }

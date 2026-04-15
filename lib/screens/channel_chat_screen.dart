@@ -14,6 +14,8 @@ import '../helpers/smaz.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/reaction_helper.dart';
+import '../helpers/utf8_length_limiter.dart';
+import '../helpers/snack_bar_builder.dart';
 import '../l10n/l10n.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
@@ -145,11 +147,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   Future<void> _scrollToMessage(String messageId) async {
     final key = _messageKeys[messageId];
     if (key == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.chat_originalMessageNotFound),
-          duration: const Duration(seconds: 2),
-        ),
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.chat_originalMessageNotFound),
+        duration: const Duration(seconds: 2),
       );
       return;
     }
@@ -1155,9 +1156,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final now = DateTime.now();
     if (_lastChannelSendAt != null &&
         now.difference(_lastChannelSendAt!) < const Duration(seconds: 1)) {
-      ScaffoldMessenger.of(
+      showDismissibleSnackBar(
         context,
-      ).showSnackBar(SnackBar(content: Text(context.l10n.chat_sendCooldown)));
+        content: Text(context.l10n.chat_sendCooldown),
+      );
       return;
     }
     _lastChannelSendAt = now;
@@ -1202,9 +1204,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       widget.channel.index,
       messageText,
     );
-    if (utf8.encode(outboundText).length > maxBytes) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.chat_messageTooLong(maxBytes))),
+    if (utf8.encode(messageText).length > maxBytes) {
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.chat_messageTooLong(maxBytes)),
       );
       return;
     }
@@ -1331,17 +1334,19 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
   void _copyMessageText(String text) {
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(
+    showDismissibleSnackBar(
       context,
-    ).showSnackBar(SnackBar(content: Text(context.l10n.chat_messageCopied)));
+      content: Text(context.l10n.chat_messageCopied),
+    );
   }
 
   Future<void> _deleteMessage(ChannelMessage message) async {
     await context.read<MeshCoreConnector>().deleteChannelMessage(message);
     if (!mounted) return;
-    ScaffoldMessenger.of(
+    showDismissibleSnackBar(
       context,
-    ).showSnackBar(SnackBar(content: Text(context.l10n.chat_messageDeleted)));
+      content: Text(context.l10n.chat_messageDeleted),
+    );
   }
 
   String _formatPathPrefixes(Uint8List pathBytes) {

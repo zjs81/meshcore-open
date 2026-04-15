@@ -1248,7 +1248,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get chat_noMessages => 'Brak jeszcze wiadomości';
 
   @override
-  String get chat_sendMessage => 'Send message';
+  String get chat_sendMessage => 'Wyślij wiadomość';
 
   @override
   String chat_sendMessageTo(String contactName) {
@@ -2032,7 +2032,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String get room_management => 'Zarządzanie Serwerem Pokoju';
 
   @override
+  String get repeater_guest => 'Informacje dotyczące urządzenia powtarzającego';
+
+  @override
+  String get room_guest => 'Informacje o serwerze';
+
+  @override
   String get repeater_managementTools => 'Narzędzia Zarządzania';
+
+  @override
+  String get repeater_guestTools => 'Narzędzia dla gości';
 
   @override
   String get repeater_status => 'Status';

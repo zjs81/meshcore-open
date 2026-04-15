@@ -1247,7 +1247,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get chat_noMessages => 'Még nincs üzenet.';
 
   @override
-  String get chat_sendMessage => 'Send message';
+  String get chat_sendMessage => 'Üzenet küldése';
 
   @override
   String chat_sendMessageTo(String contactName) {
@@ -2031,7 +2031,16 @@ class AppLocalizationsHu extends AppLocalizations {
   String get room_management => 'Szoba-szerver kezelés';
 
   @override
+  String get repeater_guest => 'Adatok a repeaterről';
+
+  @override
+  String get room_guest => 'Szoba szerver információk';
+
+  @override
   String get repeater_managementTools => 'Menedzsmentes eszközök';
+
+  @override
+  String get repeater_guestTools => 'Vendégek számára elérhető eszközök';
 
   @override
   String get repeater_status => 'Állapot';

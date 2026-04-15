@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:meshcore_open/connector/meshcore_protocol.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
+import '../helpers/snack_bar_builder.dart';
 
 class PathSelectionDialog extends StatefulWidget {
   final List<Contact> availableContacts;
@@ -138,26 +139,22 @@ class _PathSelectionDialogState extends State<PathSelectionDialog> {
 
     // Show error for invalid prefixes
     if (invalidPrefixes.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            l10n.path_invalidHexPrefixes(invalidPrefixes.join(", ")),
-          ),
-          duration: const Duration(seconds: 3),
-          backgroundColor: Colors.red,
-        ),
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.path_invalidHexPrefixes(invalidPrefixes.join(", "))),
+        duration: const Duration(seconds: 3),
+        backgroundColor: Colors.red,
       );
       return;
     }
 
     // Check max path length (64 hops)
     if (pathBytesList.length > 64) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.path_tooLong),
-          duration: const Duration(seconds: 3),
-          backgroundColor: Colors.red,
-        ),
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.path_tooLong),
+        duration: const Duration(seconds: 3),
+        backgroundColor: Colors.red,
       );
       return;
     }

@@ -2107,5 +2107,9 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLogin": "로그인 후 시계 동기화",
-  "repeater_clockSyncAfterLoginSubtitle": "성공적인 로그인 후, 자동으로 \"시간 동기화\"를 전송합니다."
+  "repeater_clockSyncAfterLoginSubtitle": "성공적인 로그인 후, 자동으로 \"시간 동기화\"를 전송합니다.",
+  "repeater_guestTools": "손님용 도구",
+  "chat_sendMessage": "메시지를 보내기",
+  "repeater_guest": "반복 장비 정보",
+  "room_guest": "서버 정보"
 }

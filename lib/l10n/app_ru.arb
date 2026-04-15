@@ -1309,5 +1309,9 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLogin": "Синхронизация часов после входа в систему",
-  "repeater_clockSyncAfterLoginSubtitle": "Автоматически отправлять сообщение \"синхронизация времени\" после успешной авторизации."
+  "repeater_clockSyncAfterLoginSubtitle": "Автоматически отправлять сообщение \"синхронизация времени\" после успешной авторизации.",
+  "chat_sendMessage": "Отправить сообщение",
+  "repeater_guest": "Информация о ретрансляторе",
+  "room_guest": "Информация о сервере",
+  "repeater_guestTools": "Инструменты для гостей"
 }

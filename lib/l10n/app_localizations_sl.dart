@@ -1225,7 +1225,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get chat_noMessages => 'Še ni sporočil.';
 
   @override
-  String get chat_sendMessage => 'Send message';
+  String get chat_sendMessage => 'Pošlji sporočilo';
 
   @override
   String chat_sendMessageTo(String contactName) {
@@ -2002,7 +2002,16 @@ class AppLocalizationsSl extends AppLocalizations {
   String get room_management => 'Upravljanje stremlišča';
 
   @override
+  String get repeater_guest => 'Informacije o ponovljalniku';
+
+  @override
+  String get room_guest => 'Informacije o strežniku';
+
+  @override
   String get repeater_managementTools => 'Upravne orodje';
+
+  @override
+  String get repeater_guestTools => 'Naložila za goste';
 
   @override
   String get repeater_status => 'Status';

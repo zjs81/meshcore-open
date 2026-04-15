@@ -12,6 +12,7 @@ import '../utils/contact_search.dart';
 import '../utils/platform_info.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/list_filter_widget.dart';
+import '../helpers/snack_bar_builder.dart';
 
 enum DiscoverySortOption { lastSeen, name, type }
 
@@ -234,8 +235,9 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
         final hexString = pubKeyToHex(contact.rawPacket!);
         Clipboard.setData(ClipboardData(text: "meshcore://$hexString"));
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.contacts_contactAdvertCopied)),
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.contacts_contactAdvertCopied),
         );
         break;
       case 'delete_contact':

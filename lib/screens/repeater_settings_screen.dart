@@ -10,6 +10,7 @@ import '../services/app_debug_log_service.dart';
 import '../services/repeater_command_service.dart';
 import '../services/storage_service.dart';
 import '../widgets/path_management_dialog.dart';
+import '../helpers/snack_bar_builder.dart';
 
 class RepeaterSettingsScreen extends StatefulWidget {
   final Contact repeater;
@@ -468,18 +469,16 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
 
     if (mounted) {
       if (successCount > 0) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.repeater_refreshed(label)),
-            backgroundColor: Colors.green,
-          ),
+        showDismissibleSnackBar(
+          context,
+          content: Text(l10n.repeater_refreshed(label)),
+          backgroundColor: Colors.green,
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.repeater_errorRefreshing(label)),
-            backgroundColor: Colors.red,
-          ),
+        showDismissibleSnackBar(
+          context,
+          content: Text(l10n.repeater_errorRefreshing(label)),
+          backgroundColor: Colors.red,
         );
       }
 
@@ -666,11 +665,10 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.repeater_settingsSaved),
-            backgroundColor: Colors.green,
-          ),
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.repeater_settingsSaved),
+          backgroundColor: Colors.green,
         );
       }
     } catch (e) {
@@ -679,13 +677,12 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              context.l10n.repeater_errorSavingSettings(e.toString()),
-            ),
-            backgroundColor: Colors.red,
+        showDismissibleSnackBar(
+          context,
+          content: Text(
+            context.l10n.repeater_errorSavingSettings(e.toString()),
           ),
+          backgroundColor: Colors.red,
         );
       }
     }
@@ -1429,9 +1426,10 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
 
     if (command == 'erase') {
       if (mounted) {
-        ScaffoldMessenger.of(
+        showDismissibleSnackBar(
           context,
-        ).showSnackBar(SnackBar(content: Text(l10n.repeater_eraseSerialOnly)));
+          content: Text(l10n.repeater_eraseSerialOnly),
+        );
       }
       return;
     }
@@ -1453,17 +1451,17 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
       await connector.sendFrame(frame);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.repeater_commandSent(command))),
+        showDismissibleSnackBar(
+          context,
+          content: Text(l10n.repeater_commandSent(command)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.repeater_errorSendingCommand(e.toString())),
-            backgroundColor: Colors.red,
-          ),
+        showDismissibleSnackBar(
+          context,
+          content: Text(l10n.repeater_errorSendingCommand(e.toString())),
+          backgroundColor: Colors.red,
         );
       }
     }

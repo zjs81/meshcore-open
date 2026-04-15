@@ -2069,5 +2069,9 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLoginSubtitle": "Automatisch een \"klok synchroniseren\" bericht versturen na een succesvolle inlog.",
-  "repeater_clockSyncAfterLogin": "Na het inloggen, klok synchroniseren"
+  "repeater_clockSyncAfterLogin": "Na het inloggen, klok synchroniseren",
+  "repeater_guestTools": "Gastenfuncties",
+  "room_guest": "Informatie over de server",
+  "chat_sendMessage": "Verzend bericht",
+  "repeater_guest": "Informatie over herhalingsapparatuur"
 }

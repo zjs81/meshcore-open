@@ -2097,5 +2097,9 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLogin": "Uhrzeit-Synchronisation nach dem Anmelden",
-  "repeater_clockSyncAfterLoginSubtitle": "Automatisch \"Uhrzeit-Synchronisierung\" nach erfolgreicher Anmeldung senden."
+  "repeater_clockSyncAfterLoginSubtitle": "Automatisch \"Uhrzeit-Synchronisierung\" nach erfolgreicher Anmeldung senden.",
+  "repeater_guest": "Informationen zu Repeatern",
+  "repeater_guestTools": "Gastwerkzeuge",
+  "chat_sendMessage": "Nachricht senden",
+  "room_guest": "Informationen zum Room Server"
 }

@@ -12,6 +12,7 @@ import '../services/app_settings_service.dart';
 import '../services/repeater_command_service.dart';
 import '../utils/battery_utils.dart';
 import '../widgets/path_management_dialog.dart';
+import '../helpers/snack_bar_builder.dart';
 
 class RepeaterStatusScreen extends StatefulWidget {
   final Contact repeater;
@@ -309,11 +310,10 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
         setState(() {
           _isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.repeater_statusRequestTimeout),
-            backgroundColor: Colors.red,
-          ),
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.repeater_statusRequestTimeout),
+          backgroundColor: Colors.red,
         );
         _recordStatusResult(false);
       });
@@ -323,13 +323,10 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
           _isLoading = false;
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              context.l10n.repeater_errorLoadingStatus(e.toString()),
-            ),
-            backgroundColor: Colors.red,
-          ),
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.repeater_errorLoadingStatus(e.toString())),
+          backgroundColor: Colors.red,
         );
       }
       _recordStatusResult(false);

@@ -8,6 +8,7 @@ import '../l10n/l10n.dart';
 import '../services/app_settings_service.dart';
 import '../services/map_tile_cache_service.dart';
 import '../widgets/adaptive_app_bar_title.dart';
+import '../helpers/snack_bar_builder.dart';
 
 class MapCacheScreen extends StatefulWidget {
   const MapCacheScreen({super.key});
@@ -112,15 +113,17 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
   Future<void> _startDownload() async {
     final bounds = _selectedBounds;
     if (bounds == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.mapCache_selectAreaFirst)),
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.mapCache_selectAreaFirst),
       );
       return;
     }
 
     if (_estimatedTiles == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.mapCache_noTilesToDownload)),
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.mapCache_noTilesToDownload),
       );
       return;
     }
@@ -182,9 +185,7 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
             result.failed,
           )
         : context.l10n.mapCache_cachedTiles(result.downloaded);
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    showDismissibleSnackBar(context, content: Text(message));
   }
 
   Future<void> _clearCache() async {
@@ -210,8 +211,9 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
     final cacheService = context.read<MapTileCacheService>();
     await cacheService.clearCache();
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.mapCache_offlineCacheCleared)),
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.mapCache_offlineCacheCleared),
     );
   }
 

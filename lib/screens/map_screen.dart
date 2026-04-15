@@ -29,6 +29,7 @@ import 'chat_screen.dart';
 import 'contacts_screen.dart';
 import '../widgets/repeater_login_dialog.dart';
 import '../widgets/room_login_dialog.dart';
+import '../helpers/snack_bar_builder.dart';
 import 'repeater_hub_screen.dart';
 import 'settings_screen.dart';
 import 'line_of_sight_map_screen.dart';
@@ -1366,13 +1367,16 @@ class _MapScreenState extends State<MapScreen> {
       context: context,
       builder: (context) => RepeaterLoginDialog(
         repeater: repeater,
-        onLogin: (password) {
+        onLogin: (password, isAdmin) {
           // Navigate to repeater hub screen after successful login
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  RepeaterHubScreen(repeater: repeater, password: password),
+              builder: (context) => RepeaterHubScreen(
+                repeater: repeater,
+                password: password,
+                isAdmin: isAdmin,
+              ),
             ),
           );
         },
@@ -1385,7 +1389,8 @@ class _MapScreenState extends State<MapScreen> {
       context: context,
       builder: (context) => RoomLoginDialog(
         room: room,
-        onLogin: (password) {
+        // onLogin(password, isAdmin) isAdmin not used for room caht screen
+        onLogin: (password, _) {
           // Navigate to chat screen after successful login
           context.read<MeshCoreConnector>().markContactRead(room.publicKeyHex);
           Navigator.push(
@@ -1659,7 +1664,10 @@ class _MapScreenState extends State<MapScreen> {
                 );
                 await connector.refreshDeviceInfo();
                 if (!mounted) return;
-                messenger.showSnackBar(SnackBar(content: Text(successMsg)));
+                showDismissibleSnackBar(
+                  messenger.context,
+                  content: Text(successMsg),
+                );
               },
             ),
             ListTile(
@@ -1681,8 +1689,9 @@ class _MapScreenState extends State<MapScreen> {
     required String flags,
   }) async {
     if (!connector.isConnected) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.map_connectToShareMarkers)),
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.map_connectToShareMarkers),
       );
       return;
     }
@@ -2271,8 +2280,9 @@ class _MapScreenState extends State<MapScreen> {
                           _points.clear();
                           _polylines.clear();
                         });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(l10n.map_pathTraceCancelled)),
+                        showDismissibleSnackBar(
+                          context,
+                          content: Text(l10n.map_pathTraceCancelled),
                         );
                       },
                       tooltip: l10n.common_cancel,

@@ -5,6 +5,7 @@ import '../l10n/l10n.dart';
 import '../services/ble_debug_log_service.dart';
 import '../connector/meshcore_protocol.dart';
 import '../widgets/adaptive_app_bar_title.dart';
+import '../helpers/snack_bar_builder.dart';
 
 enum _BleLogView { frames, rawLogRx }
 
@@ -52,10 +53,9 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
                                   .join('\n');
                         await Clipboard.setData(ClipboardData(text: text));
                         if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(context.l10n.debugLog_bleCopied),
-                          ),
+                        showDismissibleSnackBar(
+                          context,
+                          content: Text(context.l10n.debugLog_bleCopied),
                         );
                       }
                     : null,

@@ -1239,7 +1239,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chat_noMessages => 'Сообщений пока нет';
 
   @override
-  String get chat_sendMessage => 'Send message';
+  String get chat_sendMessage => 'Отправить сообщение';
 
   @override
   String chat_sendMessageTo(String contactName) {
@@ -2020,7 +2020,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get room_management => 'Управление сервером комнат';
 
   @override
+  String get repeater_guest => 'Информация о ретрансляторе';
+
+  @override
+  String get room_guest => 'Информация о сервере';
+
+  @override
   String get repeater_managementTools => 'Инструменты управления';
+
+  @override
+  String get repeater_guestTools => 'Инструменты для гостей';
 
   @override
   String get repeater_status => 'Статус';

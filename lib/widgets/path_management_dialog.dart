@@ -11,6 +11,7 @@ import '../l10n/l10n.dart';
 import '../models/contact.dart';
 import '../helpers/path_helper.dart';
 import '../services/path_history_service.dart';
+import '../helpers/snack_bar_builder.dart';
 import 'path_selection_dialog.dart';
 
 class PathManagementDialog {
@@ -65,11 +66,10 @@ class _PathManagementDialogState extends State<_PathManagementDialog> {
   void _showFullPathDialog(BuildContext context, List<int> pathBytes) {
     final l10n = context.l10n;
     if (pathBytes.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.chat_pathDetailsNotAvailable),
-          duration: const Duration(seconds: 2),
-        ),
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.chat_pathDetailsNotAvailable),
+        duration: const Duration(seconds: 2),
       );
       return;
     }
@@ -159,11 +159,10 @@ class _PathManagementDialogState extends State<_PathManagementDialog> {
       );
 
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.chat_hopsCount(result.length)),
-          duration: const Duration(seconds: 2),
-        ),
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.chat_hopsCount(result.length)),
+        duration: const Duration(seconds: 2),
       );
     }
   }
@@ -337,13 +336,12 @@ class _PathManagementDialogState extends State<_PathManagementDialog> {
                               _showFullPathDialog(context, path.pathBytes),
                           onTap: () async {
                             if (path.pathBytes.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    l10n.chat_pathDetailsNotAvailable,
-                                  ),
-                                  duration: const Duration(seconds: 2),
+                              showDismissibleSnackBar(
+                                context,
+                                content: Text(
+                                  l10n.chat_pathDetailsNotAvailable,
                                 ),
+                                duration: const Duration(seconds: 2),
                               );
                               return;
                             }
@@ -361,13 +359,12 @@ class _PathManagementDialogState extends State<_PathManagementDialog> {
 
                             if (!context.mounted) return;
                             Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  l10n.path_usingHopsPath(path.hopCount),
-                                ),
-                                duration: const Duration(seconds: 2),
+                            showDismissibleSnackBar(
+                              context,
+                              content: Text(
+                                l10n.path_usingHopsPath(path.hopCount),
                               ),
+                              duration: const Duration(seconds: 2),
                             );
                           },
                         ),
@@ -459,11 +456,10 @@ class _PathManagementDialogState extends State<_PathManagementDialog> {
                   onTap: () async {
                     await connector.clearContactPath(currentContact);
                     if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.chat_pathCleared),
-                        duration: const Duration(seconds: 2),
-                      ),
+                    showDismissibleSnackBar(
+                      context,
+                      content: Text(l10n.chat_pathCleared),
+                      duration: const Duration(seconds: 2),
                     );
                     Navigator.pop(context);
                   },
@@ -489,11 +485,10 @@ class _PathManagementDialogState extends State<_PathManagementDialog> {
                       pathLen: -1,
                     );
                     if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.chat_floodModeEnabled),
-                        duration: const Duration(seconds: 2),
-                      ),
+                    showDismissibleSnackBar(
+                      context,
+                      content: Text(l10n.chat_floodModeEnabled),
+                      duration: const Duration(seconds: 2),
                     );
                     Navigator.pop(context);
                   },

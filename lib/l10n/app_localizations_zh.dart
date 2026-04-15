@@ -1162,7 +1162,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chat_noMessages => '暂无消息';
 
   @override
-  String get chat_sendMessage => 'Send message';
+  String get chat_sendMessage => '发送消息';
 
   @override
   String chat_sendMessageTo(String contactName) {
@@ -1891,7 +1891,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get room_management => '房间服务器管理';
 
   @override
+  String get repeater_guest => '重复器信息';
+
+  @override
+  String get room_guest => '服务器信息';
+
+  @override
   String get repeater_managementTools => '管理工具';
+
+  @override
+  String get repeater_guestTools => '访客工具';
 
   @override
   String get repeater_status => '状态';

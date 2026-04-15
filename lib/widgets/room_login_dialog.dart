@@ -10,11 +10,12 @@ import '../services/storage_service.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../utils/app_logger.dart';
+import '../helpers/snack_bar_builder.dart';
 import 'path_management_dialog.dart';
 
 class RoomLoginDialog extends StatefulWidget {
   final Contact room;
-  final Function(String password) onLogin;
+  final Function(String password, bool isAdmin) onLogin;
 
   const RoomLoginDialog({super.key, required this.room, required this.onLogin});
 
@@ -114,6 +115,7 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
           : '${selection.hopCount} hops';
       appLogger.info('Login routing: $selectionLabel', tag: 'RoomLogin');
       bool? loginResult;
+      bool isAdmin = false;
       for (int attempt = 0; attempt < _maxAttempts; attempt++) {
         if (!mounted) return;
         setState(() {
@@ -126,7 +128,7 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
         );
         await _connector.sendFrame(loginFrame);
 
-        loginResult = await _awaitLoginResponse(timeout);
+        (loginResult, isAdmin) = await _awaitLoginResponse(timeout);
         if (loginResult == true) {
           appLogger.info('Login succeeded for ${room.name}', tag: 'RoomLogin');
           break;
@@ -166,7 +168,7 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
 
       if (mounted) {
         Navigator.pop(context, password);
-        Future.microtask(() => widget.onLogin(password));
+        Future.microtask(() => widget.onLogin(password, isAdmin));
       }
     } catch (e) {
       final room = _resolveRepeater(_connector);
@@ -175,26 +177,29 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
         setState(() {
           _isLoggingIn = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.login_failed(e.toString())),
-            backgroundColor: Colors.red,
-          ),
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.login_failed(e.toString())),
+          backgroundColor: Colors.red,
         );
       }
     }
   }
 
-  Future<bool?> _awaitLoginResponse(Duration timeout) async {
+  Future<(bool?, bool)> _awaitLoginResponse(Duration timeout) async {
     final completer = Completer<bool?>();
     Timer? timer;
     StreamSubscription<Uint8List>? subscription;
     final targetPrefix = widget.room.publicKey.sublist(0, 6);
+    bool isAdmin = false;
 
     subscription = _connector.receivedFrames.listen((frame) {
       if (frame.isEmpty) return;
       final code = frame[0];
       if (code != pushCodeLoginSuccess && code != pushCodeLoginFail) return;
+      // NOTE: a bug in the repeater firmware only ever sends 1 or 0 back, not the
+      // expected client permissions
+      isAdmin = (frame[1] == 1);
       if (frame.length < 8) return;
       final prefix = frame.sublist(2, 8);
       if (!listEquals(prefix, targetPrefix)) return;
@@ -214,7 +219,7 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
     final result = await completer.future;
     timer.cancel();
     await subscription.cancel();
-    return result;
+    return (result, isAdmin);
   }
 
   @override

@@ -11,6 +11,7 @@ import '../connector/meshcore_protocol.dart';
 import '../services/repeater_command_service.dart';
 import '../widgets/path_management_dialog.dart';
 import '../widgets/snr_indicator.dart';
+import '../helpers/snack_bar_builder.dart';
 
 class NeighborsScreen extends StatefulWidget {
   final Contact repeater;
@@ -163,11 +164,10 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
         _neighborCount = neighborCount;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.neighbors_receivedData),
-          backgroundColor: Colors.green,
-        ),
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.neighbors_receivedData),
+        backgroundColor: Colors.green,
       );
       _statusTimeout?.cancel();
       if (!mounted) return;
@@ -224,11 +224,10 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
           _isLoading = false;
           _isLoaded = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.neighbors_requestTimedOut),
-            backgroundColor: Colors.red,
-          ),
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.neighbors_requestTimedOut),
+          backgroundColor: Colors.red,
         );
         _recordStatusResult(false);
       });
@@ -239,11 +238,10 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
           _isLoaded = false;
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.neighbors_errorLoading(e.toString())),
-            backgroundColor: Colors.red,
-          ),
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.neighbors_errorLoading(e.toString())),
+          backgroundColor: Colors.red,
         );
       }
     }

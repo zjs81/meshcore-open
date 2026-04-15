@@ -1218,7 +1218,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get chat_noMessages => 'Inga meddelanden ännu';
 
   @override
-  String get chat_sendMessage => 'Send message';
+  String get chat_sendMessage => 'Skicka meddelande';
 
   @override
   String chat_sendMessageTo(String contactName) {
@@ -1991,7 +1991,16 @@ class AppLocalizationsSv extends AppLocalizations {
   String get room_management => 'Rumserverhantering';
 
   @override
+  String get repeater_guest => 'Information om repetorer';
+
+  @override
+  String get room_guest => 'Information om servern';
+
+  @override
   String get repeater_managementTools => 'Administrationsverktyg';
+
+  @override
+  String get repeater_guestTools => 'Gästverktyg';
 
   @override
   String get repeater_status => 'Status';

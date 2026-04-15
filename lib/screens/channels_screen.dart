@@ -24,6 +24,7 @@ import '../widgets/empty_state.dart';
 import '../widgets/qr_code_display.dart';
 import '../widgets/quick_switch_bar.dart';
 import '../widgets/unread_badge.dart';
+import '../helpers/snack_bar_builder.dart';
 import 'channel_chat_screen.dart';
 import 'community_qr_scanner_screen.dart';
 import 'contacts_screen.dart';
@@ -809,15 +810,12 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                               onPressed: () async {
                                 final name = nameController.text.trim();
                                 if (name.isEmpty) {
-                                  ScaffoldMessenger.of(
-                                    dialogContext,
-                                  ).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        dialogContext
-                                            .l10n
-                                            .channels_enterChannelName,
-                                      ),
+                                  showDismissibleSnackBar(
+                                    context,
+                                    content: Text(
+                                      dialogContext
+                                          .l10n
+                                          .channels_enterChannelName,
                                     ),
                                   );
                                   return;
@@ -837,13 +835,10 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                                   nextIndex,
                                 );
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        context.l10n.channels_channelAdded(
-                                          name,
-                                        ),
-                                      ),
+                                  showDismissibleSnackBar(
+                                    context,
+                                    content: Text(
+                                      context.l10n.channels_channelAdded(name),
                                     ),
                                   );
                                 }
@@ -897,15 +892,12 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                                 final name = nameController.text.trim();
                                 final pskHex = pskController.text.trim();
                                 if (name.isEmpty) {
-                                  ScaffoldMessenger.of(
-                                    dialogContext,
-                                  ).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        dialogContext
-                                            .l10n
-                                            .channels_enterChannelName,
-                                      ),
+                                  showDismissibleSnackBar(
+                                    context,
+                                    content: Text(
+                                      dialogContext
+                                          .l10n
+                                          .channels_enterChannelName,
                                     ),
                                   );
                                   return;
@@ -914,15 +906,12 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                                 try {
                                   psk = Channel.parsePskHex(pskHex);
                                 } on FormatException {
-                                  ScaffoldMessenger.of(
-                                    dialogContext,
-                                  ).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        dialogContext
-                                            .l10n
-                                            .channels_pskMustBe32Hex,
-                                      ),
+                                  showDismissibleSnackBar(
+                                    context,
+                                    content: Text(
+                                      dialogContext
+                                          .l10n
+                                          .channels_pskMustBe32Hex,
                                     ),
                                   );
                                   return;
@@ -930,13 +919,10 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                                 Navigator.pop(dialogContext);
                                 connector.setChannel(nextIndex, name, psk);
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        context.l10n.channels_channelAdded(
-                                          name,
-                                        ),
-                                      ),
+                                  showDismissibleSnackBar(
+                                    context,
+                                    content: Text(
+                                      context.l10n.channels_channelAdded(name),
                                     ),
                                   );
                                 }
@@ -967,11 +953,10 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                             Navigator.pop(dialogContext);
                             connector.setChannel(nextIndex, 'Public', psk);
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    context.l10n.channels_publicChannelAdded,
-                                  ),
+                              showDismissibleSnackBar(
+                                context,
+                                content: Text(
+                                  context.l10n.channels_publicChannelAdded,
                                 ),
                               );
                             }
@@ -1097,15 +1082,12 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                               onPressed: () async {
                                 var hashtag = hashtagController.text.trim();
                                 if (hashtag.isEmpty) {
-                                  ScaffoldMessenger.of(
-                                    dialogContext,
-                                  ).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        dialogContext
-                                            .l10n
-                                            .channels_enterChannelName,
-                                      ),
+                                  showDismissibleSnackBar(
+                                    context,
+                                    content: Text(
+                                      dialogContext
+                                          .l10n
+                                          .channels_enterChannelName,
                                     ),
                                   );
                                   return;
@@ -1125,15 +1107,12 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                                 } else {
                                   // Community hashtag - HMAC derivation from community secret
                                   if (selectedCommunity == null) {
-                                    ScaffoldMessenger.of(
+                                    showDismissibleSnackBar(
                                       dialogContext,
-                                    ).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          dialogContext
-                                              .l10n
-                                              .community_selectCommunity,
-                                        ),
+                                      content: Text(
+                                        dialogContext
+                                            .l10n
+                                            .community_selectCommunity,
                                       ),
                                     );
                                     return;
@@ -1159,12 +1138,11 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                                   psk,
                                 );
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        context.l10n.channels_channelAdded(
-                                          channelName,
-                                        ),
+                                  showDismissibleSnackBar(
+                                    context,
+                                    content: Text(
+                                      context.l10n.channels_channelAdded(
+                                        channelName,
                                       ),
                                     ),
                                   );
@@ -1259,13 +1237,10 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                               onPressed: () async {
                                 final name = nameController.text.trim();
                                 if (name.isEmpty) {
-                                  ScaffoldMessenger.of(
-                                    dialogContext,
-                                  ).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        dialogContext.l10n.community_enterName,
-                                      ),
+                                  showDismissibleSnackBar(
+                                    context,
+                                    content: Text(
+                                      dialogContext.l10n.community_enterName,
                                     ),
                                   );
                                   return;
@@ -1301,11 +1276,10 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                                 _loadCommunities();
 
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        context.l10n.community_created(name),
-                                      ),
+                                  showDismissibleSnackBar(
+                                    context,
+                                    content: Text(
+                                      context.l10n.community_created(name),
                                     ),
                                   );
 
@@ -1494,10 +1468,9 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                 try {
                   psk = Channel.parsePskHex(pskHex);
                 } on FormatException {
-                  ScaffoldMessenger.of(dialogContext).showSnackBar(
-                    SnackBar(
-                      content: Text(dialogContext.l10n.channels_pskMustBe32Hex),
-                    ),
+                  showDismissibleSnackBar(
+                    dialogContext,
+                    content: Text(dialogContext.l10n.channels_pskMustBe32Hex),
                   );
                   return;
                 }
@@ -1510,16 +1483,16 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                     smazEnabled,
                   );
                   if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(context.l10n.channels_channelUpdated(name)),
-                    ),
+                  showDismissibleSnackBar(
+                    context,
+                    content: Text(context.l10n.channels_channelUpdated(name)),
                   );
                 } catch (e, st) {
                   debugPrint(st.toString());
                   if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Failed to update channel: $e')),
+                  showDismissibleSnackBar(
+                    context,
+                    content: Text('Failed to update channel: $e'),
                   );
                 }
               },
@@ -1559,21 +1532,19 @@ class _ChannelsScreenState extends State<ChannelsScreen>
 
                 if (!context.mounted) return;
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      context.l10n.channels_channelDeleted(channel.name),
-                    ),
+                showDismissibleSnackBar(
+                  context,
+                  content: Text(
+                    context.l10n.channels_channelDeleted(channel.name),
                   ),
                 );
               } catch (e, st) {
                 if (!context.mounted) return;
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      context.l10n.channels_channelDeleteFailed(channel.name),
-                    ),
+                showDismissibleSnackBar(
+                  context,
+                  content: Text(
+                    context.l10n.channels_channelDeleteFailed(channel.name),
                   ),
                 );
 
@@ -1594,8 +1565,9 @@ class _ChannelsScreenState extends State<ChannelsScreen>
   void _addPublicChannel(BuildContext context, MeshCoreConnector connector) {
     final psk = Channel.parsePskHex(Channel.publicChannelPsk);
     connector.setChannel(0, 'Public', psk);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.channels_publicChannelAdded)),
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.channels_publicChannelAdded),
     );
   }
 
@@ -1810,12 +1782,9 @@ class _ChannelsScreenState extends State<ChannelsScreen>
               _loadCommunities();
 
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      context.l10n.community_deleted(community.name),
-                    ),
-                  ),
+                showDismissibleSnackBar(
+                  context,
+                  content: Text(context.l10n.community_deleted(community.name)),
                 );
               }
             },

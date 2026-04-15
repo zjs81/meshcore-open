@@ -1175,7 +1175,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chat_noMessages => '아직 메시지가 없습니다.';
 
   @override
-  String get chat_sendMessage => 'Send message';
+  String get chat_sendMessage => '메시지를 보내기';
 
   @override
   String chat_sendMessageTo(String contactName) {
@@ -1930,7 +1930,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get room_management => '방 서버 관리';
 
   @override
+  String get repeater_guest => '반복 장비 정보';
+
+  @override
+  String get room_guest => '서버 정보';
+
+  @override
   String get repeater_managementTools => '관리 도구';
+
+  @override
+  String get repeater_guestTools => '손님용 도구';
 
   @override
   String get repeater_status => '상태';

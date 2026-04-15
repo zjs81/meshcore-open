@@ -2069,5 +2069,9 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLoginSubtitle": "Envoyer automatiquement une notification \"synchronisation de l'heure\" après une connexion réussie.",
-  "repeater_clockSyncAfterLogin": "Synchronisation de l'horloge après la connexion"
+  "repeater_clockSyncAfterLogin": "Synchronisation de l'horloge après la connexion",
+  "repeater_guestTools": "Outils pour les invités",
+  "chat_sendMessage": "Envoyer un message",
+  "room_guest": "Informations sur le serveur",
+  "repeater_guest": "Informations sur les répéteurs"
 }

@@ -2069,5 +2069,9 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLogin": "Synchronizácia hodiniek po prihlávení",
-  "repeater_clockSyncAfterLoginSubtitle": "Automaticky posielajte notifikáciu \"synchronizácia času\" po úspešnom prihládení."
+  "repeater_clockSyncAfterLoginSubtitle": "Automaticky posielajte notifikáciu \"synchronizácia času\" po úspešnom prihládení.",
+  "chat_sendMessage": "Odoslať správu",
+  "repeater_guest": "Informácie o opakovači",
+  "room_guest": "Informácie o serveri",
+  "repeater_guestTools": "Nástroje pre hostí"
 }

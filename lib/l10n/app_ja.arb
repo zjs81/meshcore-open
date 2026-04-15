@@ -2107,5 +2107,9 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLogin": "ログイン後、時計の時刻を同期する",
-  "repeater_clockSyncAfterLoginSubtitle": "ログインが成功した場合、自動的に「時刻同期」を送信する。"
+  "repeater_clockSyncAfterLoginSubtitle": "ログインが成功した場合、自動的に「時刻同期」を送信する。",
+  "room_guest": "ルームサーバーに関する情報",
+  "chat_sendMessage": "メッセージを送信する",
+  "repeater_guest": "繰り返し送信に関する情報",
+  "repeater_guestTools": "ゲスト向けツール"
 }

@@ -14,6 +14,7 @@ import '../utils/app_logger.dart';
 import '../widgets/path_management_dialog.dart';
 import '../helpers/cayenne_lpp.dart';
 import '../utils/battery_utils.dart';
+import '../helpers/snack_bar_builder.dart';
 
 class TelemetryScreen extends StatefulWidget {
   final Contact contact;
@@ -86,11 +87,10 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
               _isLoading = false;
               _isLoaded = false;
             });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.telemetry_requestTimeout),
-                backgroundColor: Colors.red,
-              ),
+            showDismissibleSnackBar(
+              context,
+              content: Text(context.l10n.telemetry_requestTimeout),
+              backgroundColor: Colors.red,
             );
             _recordTelemetryResult(false);
           });
@@ -137,11 +137,10 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
       _parsedTelemetry = parsedTelemetry;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(context.l10n.telemetry_receivedData),
-        backgroundColor: Colors.green,
-      ),
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.telemetry_receivedData),
+      backgroundColor: Colors.green,
     );
     _statusTimeout?.cancel();
     if (!mounted) return;
@@ -182,11 +181,10 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
           _isLoaded = false;
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.telemetry_errorLoading(e.toString())),
-            backgroundColor: Colors.red,
-          ),
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.telemetry_errorLoading(e.toString())),
+          backgroundColor: Colors.red,
         );
       }
     }

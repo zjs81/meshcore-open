@@ -2069,5 +2069,9 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLoginSubtitle": "Automatiskt skicka \"klocksynkronisering\" efter en lyckad inloggning.",
-  "repeater_clockSyncAfterLogin": "Synkronisera klockan efter inloggning"
+  "repeater_clockSyncAfterLogin": "Synkronisera klockan efter inloggning",
+  "repeater_guest": "Information om repetorer",
+  "chat_sendMessage": "Skicka meddelande",
+  "repeater_guestTools": "Gästverktyg",
+  "room_guest": "Information om servern"
 }

@@ -2069,5 +2069,9 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLoginSubtitle": "Samodejno po uspešnem vstopu pošljite obvestilo o sinhronizaciji časa.",
-  "repeater_clockSyncAfterLogin": "Sinhronizacija ure po prijavi"
+  "repeater_clockSyncAfterLogin": "Sinhronizacija ure po prijavi",
+  "repeater_guest": "Informacije o ponovljalniku",
+  "chat_sendMessage": "Pošlji sporočilo",
+  "room_guest": "Informacije o strežniku",
+  "repeater_guestTools": "Naložila za goste"
 }

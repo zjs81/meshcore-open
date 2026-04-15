@@ -1871,11 +1871,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get login_repeaterDescription =>
-      'Enter the repeater password to access settings and status.';
+      'Enter the repeater password for guest or admin access.';
 
   @override
   String get login_roomDescription =>
-      'Enter the room password to access settings and status.';
+      'Enter the room password for guest or admin access.';
 
   @override
   String get login_routing => 'Routing';
@@ -1980,7 +1980,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get room_management => 'Room Server Management';
 
   @override
+  String get repeater_guest => 'Repeater Information';
+
+  @override
+  String get room_guest => 'Room Server Information';
+
+  @override
   String get repeater_managementTools => 'Management Tools';
+
+  @override
+  String get repeater_guestTools => 'Guest Tools';
 
   @override
   String get repeater_status => 'Status';

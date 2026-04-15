@@ -1239,7 +1239,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get chat_noMessages => 'Noch keine Nachrichten.';
 
   @override
-  String get chat_sendMessage => 'Send message';
+  String get chat_sendMessage => 'Nachricht senden';
 
   @override
   String chat_sendMessageTo(String contactName) {
@@ -2018,7 +2018,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get room_management => 'Raum-Server-Verwaltung';
 
   @override
+  String get repeater_guest => 'Informationen zu Repeatern';
+
+  @override
+  String get room_guest => 'Informationen zum Room Server';
+
+  @override
   String get repeater_managementTools => 'Verwaltungs-Tools';
+
+  @override
+  String get repeater_guestTools => 'Gastwerkzeuge';
 
   @override
   String get repeater_status => 'Status';

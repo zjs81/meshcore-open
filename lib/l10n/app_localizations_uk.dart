@@ -1231,7 +1231,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get chat_noMessages => 'Поки немає повідомлень.';
 
   @override
-  String get chat_sendMessage => 'Send message';
+  String get chat_sendMessage => 'Надіслати повідомлення';
 
   @override
   String chat_sendMessageTo(String contactName) {
@@ -2015,7 +2015,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get room_management => 'Адміністрування сервера кімнати';
 
   @override
+  String get repeater_guest => 'Інформація про ретранслятор';
+
+  @override
+  String get room_guest => 'Інформація про сервер кімнати';
+
+  @override
   String get repeater_managementTools => 'Інструменти керування';
+
+  @override
+  String get repeater_guestTools => 'Інструменти для гостей';
 
   @override
   String get repeater_status => 'Статус';

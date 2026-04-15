@@ -8,6 +8,7 @@ import '../l10n/l10n.dart';
 import '../services/app_settings_service.dart';
 import '../utils/platform_info.dart';
 import '../widgets/adaptive_app_bar_title.dart';
+import '../helpers/snack_bar_builder.dart';
 import 'contacts_screen.dart';
 import 'usb_screen.dart';
 
@@ -270,8 +271,10 @@ class _TcpScreenState extends State<TcpScreen> {
 
   void _showError(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    showDismissibleSnackBar(
+      context,
+      content: Text(message),
+      backgroundColor: Colors.red,
     );
   }
 

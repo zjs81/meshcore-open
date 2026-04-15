@@ -13,11 +13,13 @@ import 'neighbors_screen.dart';
 class RepeaterHubScreen extends StatelessWidget {
   final Contact repeater;
   final String password;
+  final bool isAdmin;
 
   const RepeaterHubScreen({
     super.key,
     required this.repeater,
     required this.password,
+    required this.isAdmin,
   });
 
   @override
@@ -33,11 +35,18 @@ class RepeaterHubScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              repeater.type == advTypeRepeater
-                  ? l10n.repeater_management
-                  : l10n.room_management,
-            ),
+            if (isAdmin)
+              Text(
+                repeater.type == advTypeRepeater
+                    ? l10n.repeater_management
+                    : l10n.room_management,
+              ),
+            if (!isAdmin)
+              Text(
+                repeater.type == advTypeRepeater
+                    ? l10n.repeater_guest
+                    : l10n.room_guest,
+              ),
             Text(
               repeater.name,
               style: const TextStyle(
@@ -113,64 +122,67 @@ class RepeaterHubScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.battery_full),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            l10n.appSettings_batteryChemistry,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+            if (isAdmin)
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.battery_full),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              l10n.appSettings_batteryChemistry,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    DropdownButtonFormField<String>(
-                      initialValue: chemistry,
-                      isExpanded: true,
-                      decoration: const InputDecoration(
-                        border: UnderlineInputBorder(),
-                        isDense: true,
+                        ],
                       ),
-                      onChanged: (value) {
-                        if (value == null) return;
-                        settingsService.setBatteryChemistryForRepeater(
-                          repeater.publicKeyHex,
-                          value,
-                        );
-                      },
-                      items: [
-                        DropdownMenuItem(
-                          value: 'nmc',
-                          child: Text(l10n.appSettings_batteryNmc),
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<String>(
+                        initialValue: chemistry,
+                        isExpanded: true,
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          isDense: true,
                         ),
-                        DropdownMenuItem(
-                          value: 'lifepo4',
-                          child: Text(l10n.appSettings_batteryLifepo4),
-                        ),
-                        DropdownMenuItem(
-                          value: 'lipo',
-                          child: Text(l10n.appSettings_batteryLipo),
-                        ),
-                      ],
-                    ),
-                  ],
+                        onChanged: (value) {
+                          if (value == null) return;
+                          settingsService.setBatteryChemistryForRepeater(
+                            repeater.publicKeyHex,
+                            value,
+                          );
+                        },
+                        items: [
+                          DropdownMenuItem(
+                            value: 'nmc',
+                            child: Text(l10n.appSettings_batteryNmc),
+                          ),
+                          DropdownMenuItem(
+                            value: 'lifepo4',
+                            child: Text(l10n.appSettings_batteryLifepo4),
+                          ),
+                          DropdownMenuItem(
+                            value: 'lipo',
+                            child: Text(l10n.appSettings_batteryLipo),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
             const SizedBox(height: 24),
             Text(
-              l10n.repeater_managementTools,
+              isAdmin
+                  ? l10n.repeater_managementTools
+                  : l10n.repeater_guestTools,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -210,26 +222,27 @@ class RepeaterHubScreen extends StatelessWidget {
                 );
               },
             ),
-            const SizedBox(height: 12),
+            if (isAdmin) const SizedBox(height: 12),
             // CLI button
-            _buildManagementCard(
-              context,
-              icon: Icons.terminal,
-              title: l10n.repeater_cli,
-              subtitle: l10n.repeater_cliSubtitle,
-              color: Colors.green,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RepeaterCliScreen(
-                      repeater: repeater,
-                      password: password,
+            if (isAdmin)
+              _buildManagementCard(
+                context,
+                icon: Icons.terminal,
+                title: l10n.repeater_cli,
+                subtitle: l10n.repeater_cliSubtitle,
+                color: Colors.green,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RepeaterCliScreen(
+                        repeater: repeater,
+                        password: password,
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
+                  );
+                },
+              ),
             const SizedBox(height: 12),
             // Neighbors button
             _buildManagementCard(
@@ -248,26 +261,27 @@ class RepeaterHubScreen extends StatelessWidget {
                 );
               },
             ),
-            const SizedBox(height: 12),
+            if (isAdmin) const SizedBox(height: 12),
             // Settings button
-            _buildManagementCard(
-              context,
-              icon: Icons.settings,
-              title: l10n.repeater_settings,
-              subtitle: l10n.repeater_settingsSubtitle,
-              color: Colors.deepOrange,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RepeaterSettingsScreen(
-                      repeater: repeater,
-                      password: password,
+            if (isAdmin)
+              _buildManagementCard(
+                context,
+                icon: Icons.settings,
+                title: l10n.repeater_settings,
+                subtitle: l10n.repeater_settingsSubtitle,
+                color: Colors.deepOrange,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RepeaterSettingsScreen(
+                        repeater: repeater,
+                        password: password,
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
+                  );
+                },
+              ),
           ],
         ),
       ),

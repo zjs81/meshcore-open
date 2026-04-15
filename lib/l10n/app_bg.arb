@@ -2069,5 +2069,9 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLoginSubtitle": "Автоматично изпращайте съобщение \"синхронизиране на часовника\" след успешно влизане.",
-  "repeater_clockSyncAfterLogin": "Синхронизиране на часовника след влизане"
+  "repeater_clockSyncAfterLogin": "Синхронизиране на часовника след влизане",
+  "chat_sendMessage": "Изпратете съобщение",
+  "room_guest": "Информация за сървъра на стаята",
+  "repeater_guest": "Информация за ретранслаторите",
+  "repeater_guestTools": "Инструменти за гости"
 }

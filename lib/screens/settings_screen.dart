@@ -11,6 +11,7 @@ import '../l10n/l10n.dart';
 import '../models/radio_settings.dart';
 import '../services/app_debug_log_service.dart';
 import '../widgets/app_bar.dart';
+import '../helpers/snack_bar_builder.dart';
 import 'app_settings_screen.dart';
 import 'app_debug_log_screen.dart';
 import 'ble_debug_log_screen.dart';
@@ -513,8 +514,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               await connector.setNodeName(controller.text);
               await connector.refreshDeviceInfo();
               if (!context.mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.settings_nodeNameUpdated)),
+              showDismissibleSnackBar(
+                context,
+                content: Text(l10n.settings_nodeNameUpdated),
               );
             },
             child: Text(l10n.common_save),
@@ -628,10 +630,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   final interval = int.tryParse(intervalText);
                   if (interval == null || interval < 60 || interval >= 86400) {
                     if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.settings_locationIntervalInvalid),
-                      ),
+                    showDismissibleSnackBar(
+                      context,
+                      content: Text(l10n.settings_locationIntervalInvalid),
                     );
                     return;
                   }
@@ -639,8 +640,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   await connector.setCustomVar("gps_interval:$interval");
                   await connector.refreshDeviceInfo();
                   if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.settings_locationUpdated)),
+                  showDismissibleSnackBar(
+                    context,
+                    content: Text(l10n.settings_locationUpdated),
                   );
                 }
 
@@ -660,15 +662,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     : currentLon;
                 if (lat == null || lon == null) {
                   if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.settings_locationBothRequired)),
+                  showDismissibleSnackBar(
+                    context,
+                    content: Text(l10n.settings_locationBothRequired),
                   );
                   return;
                 }
                 if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
                   if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.settings_locationInvalid)),
+                  showDismissibleSnackBar(
+                    context,
+                    content: Text(l10n.settings_locationInvalid),
                   );
                   return;
                 }
@@ -676,8 +680,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 await connector.setNodeLocation(lat: lat, lon: lon);
                 await connector.refreshDeviceInfo();
                 if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.settings_locationUpdated)),
+                showDismissibleSnackBar(
+                  context,
+                  content: Text(l10n.settings_locationUpdated),
                 );
               },
               child: Text(l10n.common_save),
@@ -691,9 +696,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _syncTime(BuildContext context, MeshCoreConnector connector) {
     final l10n = context.l10n;
     connector.syncTime();
-    ScaffoldMessenger.of(
+    showDismissibleSnackBar(
       context,
-    ).showSnackBar(SnackBar(content: Text(l10n.settings_timeSynchronized)));
+      content: Text(l10n.settings_timeSynchronized),
+    );
   }
 
   void _confirmReboot(BuildContext context, MeshCoreConnector connector) {
@@ -758,23 +764,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (!mounted) return;
     switch (result) {
       case gpxExportSuccess:
-        ScaffoldMessenger.of(
+        showDismissibleSnackBar(
           context,
-        ).showSnackBar(SnackBar(content: Text(l10n.settings_gpxExportSuccess)));
+          content: Text(l10n.settings_gpxExportSuccess),
+        );
       case gpxExportNoContacts:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.settings_gpxExportNoContacts)),
+        showDismissibleSnackBar(
+          context,
+          content: Text(l10n.settings_gpxExportNoContacts),
         );
         break;
       case gpxExportNotAvailable:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.settings_gpxExportNotAvailable)),
+        showDismissibleSnackBar(
+          context,
+          content: Text(l10n.settings_gpxExportNotAvailable),
         );
         break;
       case gpxExportFailed:
-        ScaffoldMessenger.of(
+        showDismissibleSnackBar(
           context,
-        ).showSnackBar(SnackBar(content: Text(l10n.settings_gpxExportError)));
+          content: Text(l10n.settings_gpxExportError),
+        );
         break;
     }
   }
@@ -1077,8 +1087,9 @@ void _privacySettings(BuildContext context, MeshCoreConnector connector) {
               );
               await connector.refreshDeviceInfo();
               if (!context.mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.settings_telemetryModeUpdated)),
+              showDismissibleSnackBar(
+                context,
+                content: Text(l10n.settings_telemetryModeUpdated),
               );
             },
             child: Text(l10n.common_save),
@@ -1410,18 +1421,18 @@ class _RadioSettingsDialogState extends State<_RadioSettingsDialog> {
     final txPower = int.tryParse(_txPowerController.text);
 
     if (freqMHz == null || freqMHz < 300 || freqMHz > 2500) {
-      ScaffoldMessenger.of(
+      showDismissibleSnackBar(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.settings_frequencyInvalid)));
+        content: Text(l10n.settings_frequencyInvalid),
+      );
       return;
     }
 
     final maxTxPower = widget.connector.maxTxPower ?? 22;
     if (txPower == null || txPower < 0 || txPower > maxTxPower) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${l10n.settings_txPowerInvalid} (0-$maxTxPower dBm)'),
-        ),
+      showDismissibleSnackBar(
+        context,
+        content: Text('${l10n.settings_txPowerInvalid} (0-$maxTxPower dBm)'),
       );
       return;
     }
@@ -1441,8 +1452,9 @@ class _RadioSettingsDialogState extends State<_RadioSettingsDialog> {
     if (knownRepeat) {
       const validRepeatFreqsKHz = {433000, 869000, 918000};
       if (_clientRepeat && !validRepeatFreqsKHz.contains(freqHz)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.settings_clientRepeatFreqWarning)),
+        showDismissibleSnackBar(
+          context,
+          content: Text(l10n.settings_clientRepeatFreqWarning),
         );
         return;
       }
@@ -1472,14 +1484,16 @@ class _RadioSettingsDialogState extends State<_RadioSettingsDialog> {
 
       if (!mounted) return;
       _logRadioSettingsState('Radio settings saved successfully');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.settings_radioSettingsUpdated)),
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.settings_radioSettingsUpdated),
       );
     } catch (e) {
       _appLog.warn('Radio settings save failed: $e', tag: 'RadioSettings');
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.settings_error(e.toString()))),
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.settings_error(e.toString())),
       );
     }
     Navigator.pop(context);

@@ -2074,5 +2074,9 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLogin": "登录后，自动同步时钟",
-  "repeater_clockSyncAfterLoginSubtitle": "在成功登录后，自动发送“时钟同步”指令。"
+  "repeater_clockSyncAfterLoginSubtitle": "在成功登录后，自动发送“时钟同步”指令。",
+  "repeater_guestTools": "访客工具",
+  "repeater_guest": "重复器信息",
+  "chat_sendMessage": "发送消息",
+  "room_guest": "服务器信息"
 }

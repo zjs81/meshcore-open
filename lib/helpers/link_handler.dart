@@ -3,6 +3,7 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../l10n/l10n.dart';
 import '../utils/platform_info.dart';
+import '../helpers/snack_bar_builder.dart';
 
 class LinkHandler {
   static TextStyle defaultLinkStyle(BuildContext context, TextStyle base) {
@@ -93,21 +94,19 @@ class LinkHandler {
       final uri = Uri.parse(url);
       if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(context.l10n.chat_couldNotOpenLink(url)),
-              backgroundColor: Colors.red,
-            ),
+          showDismissibleSnackBar(
+            context,
+            content: Text(context.l10n.chat_couldNotOpenLink(url)),
+            backgroundColor: Colors.red,
           );
         }
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.chat_invalidLink),
-            backgroundColor: Colors.red,
-          ),
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.chat_invalidLink),
+          backgroundColor: Colors.red,
         );
       }
     }

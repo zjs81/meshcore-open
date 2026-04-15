@@ -9,6 +9,7 @@ import '../connector/meshcore_protocol.dart';
 import '../widgets/debug_frame_viewer.dart';
 import '../services/repeater_command_service.dart';
 import '../widgets/path_management_dialog.dart';
+import '../helpers/snack_bar_builder.dart';
 
 class RepeaterCliScreen extends StatefulWidget {
   final Contact repeater;
@@ -336,8 +337,9 @@ class _RepeaterCliScreenState extends State<RepeaterCliScreen> {
               if (_commandController.text.trim().isNotEmpty) {
                 _sendCommand(showDebug: true);
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.repeater_enterCommandFirst)),
+                showDismissibleSnackBar(
+                  context,
+                  content: Text(l10n.repeater_enterCommandFirst),
                 );
               }
             },

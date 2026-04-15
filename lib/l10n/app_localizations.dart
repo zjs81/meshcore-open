@@ -3438,13 +3438,13 @@ abstract class AppLocalizations {
   /// No description provided for @login_repeaterDescription.
   ///
   /// In en, this message translates to:
-  /// **'Enter the repeater password to access settings and status.'**
+  /// **'Enter the repeater password for guest or admin access.'**
   String get login_repeaterDescription;
 
   /// No description provided for @login_roomDescription.
   ///
   /// In en, this message translates to:
-  /// **'Enter the room password to access settings and status.'**
+  /// **'Enter the room password for guest or admin access.'**
   String get login_roomDescription;
 
   /// No description provided for @login_routing.
@@ -3609,11 +3609,29 @@ abstract class AppLocalizations {
   /// **'Room Server Management'**
   String get room_management;
 
+  /// No description provided for @repeater_guest.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeater Information'**
+  String get repeater_guest;
+
+  /// No description provided for @room_guest.
+  ///
+  /// In en, this message translates to:
+  /// **'Room Server Information'**
+  String get room_guest;
+
   /// No description provided for @repeater_managementTools.
   ///
   /// In en, this message translates to:
   /// **'Management Tools'**
   String get repeater_managementTools;
+
+  /// No description provided for @repeater_guestTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest Tools'**
+  String get repeater_guestTools;
 
   /// No description provided for @repeater_status.
   ///

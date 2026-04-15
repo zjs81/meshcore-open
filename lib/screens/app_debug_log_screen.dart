@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../l10n/l10n.dart';
 import '../services/app_debug_log_service.dart';
 import '../widgets/adaptive_app_bar_title.dart';
+import '../helpers/snack_bar_builder.dart';
 
 class AppDebugLogScreen extends StatelessWidget {
   const AppDebugLogScreen({super.key});
@@ -34,8 +35,9 @@ class AppDebugLogScreen extends StatelessWidget {
                             .join('\n');
                         await Clipboard.setData(ClipboardData(text: text));
                         if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(context.l10n.debugLog_copied)),
+                        showDismissibleSnackBar(
+                          context,
+                          content: Text(context.l10n.debugLog_copied),
                         );
                       }
                     : null,
