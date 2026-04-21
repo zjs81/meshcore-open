@@ -20,6 +20,7 @@ import 'services/background_service.dart';
 import 'services/map_tile_cache_service.dart';
 import 'services/chat_text_scale_service.dart';
 import 'services/translation_service.dart';
+import 'services/contact_discovery_service.dart';
 import 'services/ui_view_state_service.dart';
 import 'services/timeout_prediction_service.dart';
 import 'storage/prefs_manager.dart';
@@ -43,6 +44,7 @@ void main() async {
   final mapTileCacheService = MapTileCacheService();
   final chatTextScaleService = ChatTextScaleService();
   final translationService = TranslationService(appSettingsService);
+  final contactDiscoveryService = ContactDiscoveryService();
   final uiViewStateService = UiViewStateService();
   final timeoutPredictionService = TimeoutPredictionService(storage);
 
@@ -70,6 +72,7 @@ void main() async {
   connector.initialize(
     retryService: retryService,
     pathHistoryService: pathHistoryService,
+    discoveryService: contactDiscoveryService,
     appSettingsService: appSettingsService,
     translationService: translationService,
     bleDebugLogService: bleDebugLogService,
@@ -91,6 +94,7 @@ void main() async {
       connector: connector,
       retryService: retryService,
       pathHistoryService: pathHistoryService,
+      contactDiscoveryService: contactDiscoveryService,
       storage: storage,
       appSettingsService: appSettingsService,
       bleDebugLogService: bleDebugLogService,
@@ -129,6 +133,7 @@ class MeshCoreApp extends StatelessWidget {
   final MeshCoreConnector connector;
   final MessageRetryService retryService;
   final PathHistoryService pathHistoryService;
+  final ContactDiscoveryService contactDiscoveryService;
   final StorageService storage;
   final AppSettingsService appSettingsService;
   final BleDebugLogService bleDebugLogService;
@@ -144,6 +149,7 @@ class MeshCoreApp extends StatelessWidget {
     required this.connector,
     required this.retryService,
     required this.pathHistoryService,
+    required this.contactDiscoveryService,
     required this.storage,
     required this.appSettingsService,
     required this.bleDebugLogService,
@@ -162,6 +168,7 @@ class MeshCoreApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: connector),
         ChangeNotifierProvider.value(value: retryService),
         ChangeNotifierProvider.value(value: pathHistoryService),
+        ChangeNotifierProvider.value(value: contactDiscoveryService),
         ChangeNotifierProvider.value(value: appSettingsService),
         ChangeNotifierProvider.value(value: bleDebugLogService),
         ChangeNotifierProvider.value(value: appDebugLogService),

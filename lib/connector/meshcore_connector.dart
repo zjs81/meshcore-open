@@ -31,11 +31,11 @@ import '../services/translation_service.dart';
 import '../services/notification_service.dart';
 import 'meshcore_connector_usb.dart';
 import 'meshcore_connector_tcp.dart';
+import '../services/contact_discovery_service.dart';
 import '../storage/channel_message_store.dart';
 import '../storage/channel_order_store.dart';
 import '../storage/channel_settings_store.dart';
 import '../storage/channel_store.dart';
-import '../storage/contact_discovery_store.dart';
 import '../storage/contact_settings_store.dart';
 import '../storage/contact_store.dart';
 import '../storage/message_store.dart';
@@ -144,7 +144,6 @@ class MeshCoreConnector extends ChangeNotifier {
   final List<ScanResult> _scanResults = [];
   final List<ScanResult> _linuxSystemScanResults = [];
   final List<Contact> _contacts = [];
-  final List<Contact> _discoveredContacts = [];
   final List<Channel> _channels = [];
   final Map<String, List<Message>> _conversations = {};
   final Map<int, List<ChannelMessage>> _channelMessages = {};
@@ -278,7 +277,7 @@ class MeshCoreConnector extends ChangeNotifier {
   final ChannelSettingsStore _channelSettingsStore = ChannelSettingsStore();
   final ContactSettingsStore _contactSettingsStore = ContactSettingsStore();
   final ContactStore _contactStore = ContactStore();
-  final ContactDiscoveryStore _discoveryContactStore = ContactDiscoveryStore();
+  late ContactDiscoveryService _discoveryService;
   final ChannelStore _channelStore = ChannelStore();
   final UnreadStore _unreadStore = UnreadStore();
   List<Channel> _cachedChannels = [];
@@ -344,37 +343,13 @@ class MeshCoreConnector extends ChangeNotifier {
 
   List<Contact> get allContacts => List.unmodifiable([
     ..._contacts,
-    ..._discoveredContacts.where(
+    ..._discoveryService.contacts.where(
       (c) => !c.isActive && c.publicKeyHex != selfPublicKeyHex,
     ),
   ]);
 
   List<Contact> get allContactsUnfiltered =>
-      List.unmodifiable([..._contacts, ..._discoveredContacts]);
-
-  List<Contact> get discoveredContacts {
-    return List.unmodifiable(_discoveredContacts);
-  }
-
-  String exportDiscoveredContactsJson() {
-    return _discoveryContactStore.exportContactsJson(_discoveredContacts);
-  }
-
-  Future<int> importDiscoveredContactsJson(String json) async {
-    final newCount = _discoveryContactStore.importContactsJson(
-      json: json,
-      existingContacts: _discoveredContacts,
-      knownContactKeys: _knownContactKeys,
-    );
-
-    if (newCount == 0 && _discoveredContacts.isEmpty) {
-      return 0;
-    }
-
-    await _persistDiscoveredContacts();
-    notifyListeners();
-    return newCount;
-  }
+      List.unmodifiable([..._contacts, ..._discoveryService.contacts]);
 
   List<Channel> get channels => List.unmodifiable(_channels);
   bool get isConnected => _state == MeshCoreConnectionState.connected;
@@ -773,6 +748,7 @@ class MeshCoreConnector extends ChangeNotifier {
   void initialize({
     required MessageRetryService retryService,
     required PathHistoryService pathHistoryService,
+    required ContactDiscoveryService discoveryService,
     AppSettingsService? appSettingsService,
     TranslationService? translationService,
     BleDebugLogService? bleDebugLogService,
@@ -780,6 +756,7 @@ class MeshCoreConnector extends ChangeNotifier {
     BackgroundService? backgroundService,
     TimeoutPredictionService? timeoutPredictionService,
   }) {
+    _discoveryService = discoveryService;
     _retryService = retryService;
     _pathHistoryService = pathHistoryService;
     _appSettingsService = appSettingsService;
@@ -849,13 +826,6 @@ class MeshCoreConnector extends ChangeNotifier {
     for (final contact in cached) {
       _ensureContactSmazSettingLoaded(contact.publicKeyHex);
     }
-  }
-
-  Future<void> _loadDiscoveredContactCache() async {
-    final cached = await _discoveryContactStore.loadContacts();
-    _discoveredContacts
-      ..clear()
-      ..addAll(cached);
   }
 
   Future<void> loadChannelSettings({int? maxChannels}) async {
@@ -2313,7 +2283,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _deviceDisplayName = null;
     _deviceId = null;
     _contacts.clear();
-    _discoveredContacts.clear();
+    _discoveryService.clear();
     _conversations.clear();
     _loadedConversationKeys.clear();
     _selfPublicKey = null;
@@ -2556,7 +2526,7 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   Contact getFromDiscovered(Contact contact) {
-    final tmp = _discoveredContacts.firstWhere(
+    final tmp = _discoveryService.contacts.firstWhere(
       (c) => c.publicKeyHex == contact.publicKeyHex,
       orElse: () => contact,
     );
@@ -3052,28 +3022,6 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateKnownDiscovered() async {
-    if (!isConnected) return;
-    for (int i = 0; i < _discoveredContacts.length; i++) {
-      _discoveredContacts[i] = _discoveredContacts[i].copyWith(
-        isActive: _knownContactKeys.contains(
-          _discoveredContacts[i].publicKeyHex,
-        ),
-      );
-    }
-    unawaited(_persistDiscoveredContacts());
-    notifyListeners();
-  }
-
-  Future<void> removeDiscoveredContact(Contact contact) async {
-    if (!isConnected) return;
-    _discoveredContacts.removeWhere(
-      (c) => c.publicKeyHex == contact.publicKeyHex,
-    );
-    unawaited(_persistDiscoveredContacts());
-    notifyListeners();
-  }
-
   Future<void> importDiscoveredContact(Contact contact) async {
     if (!isConnected) return;
 
@@ -3091,14 +3039,8 @@ class MeshCoreConnector extends ChangeNotifier {
       ),
     );
 
-    // Update the discovered contact to mark it as active (imported)
-    final discoveredIndex = _discoveredContacts.indexWhere(
-      (c) => c.publicKeyHex == contact.publicKeyHex,
-    );
-    if (discoveredIndex >= 0) {
-      _discoveredContacts[discoveredIndex] =
-          _discoveredContacts[discoveredIndex].copyWith(isActive: true);
-    }
+    // Mark the entry as active in the discovery service
+    _discoveryService.markActive(contact.publicKeyHex);
 
     _handleContactAdvert(
       Contact(
@@ -3522,7 +3464,7 @@ class MeshCoreConnector extends ChangeNotifier {
         debugPrint('Got END_OF_CONTACTS');
         _isLoadingContacts = false;
         _preserveContactsOnRefresh = false;
-        unawaited(updateKnownDiscovered());
+        _discoveryService.syncActiveFlags(_knownContactKeys);
         notifyListeners();
         unawaited(_persistContacts());
         if (PlatformInfo.isWeb &&
@@ -3714,7 +3656,7 @@ class MeshCoreConnector extends ChangeNotifier {
     // Load persisted channel messages
     loadAllChannelMessages();
     loadUnreadState();
-    _loadDiscoveredContactCache();
+    unawaited(_discoveryService.load());
 
     _awaitingSelfInfo = false;
     _selfInfoRetryTimer?.cancel();
@@ -4133,10 +4075,6 @@ class MeshCoreConnector extends ChangeNotifier {
 
   Future<void> _persistContacts() async {
     await _contactStore.saveContacts(_contacts);
-  }
-
-  Future<void> _persistDiscoveredContacts() async {
-    await _discoveryContactStore.saveContacts(_discoveredContacts);
   }
 
   int _latestContactLastmod() {
@@ -5993,47 +5931,22 @@ class MeshCoreConnector extends ChangeNotifier {
   }) {
     appLogger.info('Discovered new contact: ${contact.name}', tag: 'Connector');
 
-    final existingIndex = _discoveredContacts.indexWhere(
-      (c) => c.publicKeyHex == contact.publicKeyHex,
+    _discoveryService.upsertFromAdvert(
+      Contact(
+        rawPacket: rawPacket,
+        publicKey: contact.publicKey,
+        name: contact.name,
+        type: contact.type,
+        pathLength: contact.pathLength,
+        path: contact.path,
+        latitude: contact.latitude,
+        longitude: contact.longitude,
+        lastSeen: contact.lastSeen,
+        lastMessageAt: contact.lastMessageAt,
+        isActive: addActive,
+        flags: 0,
+      ),
     );
-
-    // Update existing contact
-    if (existingIndex >= 0) {
-      _discoveredContacts[existingIndex] = _discoveredContacts[existingIndex]
-          .copyWith(
-            rawPacket: rawPacket,
-            name: contact.name,
-            type: contact.type,
-            pathLength: contact.pathLength,
-            path: contact.path,
-            latitude: contact.latitude,
-            longitude: contact.longitude,
-            lastSeen: contact.lastSeen,
-            flags: 0,
-            isActive: addActive,
-          );
-      notifyListeners();
-      unawaited(_persistDiscoveredContacts());
-      return;
-    }
-
-    final disContact = Contact(
-      rawPacket: rawPacket,
-      publicKey: contact.publicKey,
-      name: contact.name,
-      type: contact.type,
-      pathLength: contact.pathLength,
-      path: contact.path,
-      latitude: contact.latitude,
-      longitude: contact.longitude,
-      lastSeen: contact.lastSeen,
-      lastMessageAt: contact.lastMessageAt,
-      isActive: addActive,
-      flags: 0,
-    );
-    _discoveredContacts.add(disContact);
-
-    unawaited(_persistDiscoveredContacts());
 
     // Show notification for new contact (advertisement)
     if (_appSettingsService != null && !noNotify) {
@@ -6046,12 +5959,6 @@ class MeshCoreConnector extends ChangeNotifier {
         );
       }
     }
-  }
-
-  void removeAllDiscoveredContacts() {
-    _discoveredContacts.clear();
-    unawaited(_persistDiscoveredContacts());
-    notifyListeners();
   }
 
   void clearMessagesForContact(Contact contact) {

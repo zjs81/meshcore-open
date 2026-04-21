@@ -11,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
+import '../services/contact_discovery_service.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
 import '../utils/contact_search.dart';
@@ -55,8 +56,9 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final connector = context.watch<MeshCoreConnector>();
+    final discoveryService = context.watch<ContactDiscoveryService>();
 
-    final discoveredContacts = connector.discoveredContacts;
+    final discoveredContacts = discoveryService.contacts;
     final filteredAndSorted = _filterAndSortContacts(
       discoveredContacts,
       connector,
@@ -75,13 +77,21 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
             onSelected: (value) {
               switch (value) {
                 case 'export':
-                  unawaited(_exportDiscoveredContacts(context, connector));
+                  unawaited(
+                    _exportDiscoveredContacts(context, discoveryService),
+                  );
                   break;
                 case 'import':
-                  unawaited(_importDiscoveredContacts(context, connector));
+                  unawaited(
+                    _importDiscoveredContacts(
+                      context,
+                      connector,
+                      discoveryService,
+                    ),
+                  );
                   break;
                 case 'delete_all':
-                  _deleteContacts(context, connector);
+                  _deleteContacts(context, discoveryService);
                   break;
               }
             },
@@ -208,13 +218,19 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                         onTap: () {
                           connector.importDiscoveredContact(contact);
                         },
-                        onLongPress: () =>
-                            _showContactContextMenu(contact, connector),
+                        onLongPress: () => _showContactContextMenu(
+                          contact,
+                          connector,
+                          discoveryService,
+                        ),
                       );
                       if (PlatformInfo.isDesktop) {
                         return GestureDetector(
-                          onSecondaryTapUp: (_) =>
-                              _showContactContextMenu(contact, connector),
+                          onSecondaryTapUp: (_) => _showContactContextMenu(
+                            contact,
+                            connector,
+                            discoveryService,
+                          ),
                           child: tile,
                         );
                       }
@@ -230,6 +246,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
   Future<void> _showContactContextMenu(
     Contact contact,
     MeshCoreConnector connector,
+    ContactDiscoveryService discoveryService,
   ) async {
     final action = await showModalBottomSheet<String>(
       context: context,
@@ -278,12 +295,15 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
         );
         break;
       case 'delete_contact':
-        connector.removeDiscoveredContact(contact);
+        discoveryService.remove(contact);
         break;
     }
   }
 
-  void _deleteContacts(BuildContext context, MeshCoreConnector connector) {
+  void _deleteContacts(
+    BuildContext context,
+    ContactDiscoveryService discoveryService,
+  ) {
     final l10n = context.l10n;
     showDialog(
       context: context,
@@ -296,9 +316,9 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
             child: Text(l10n.common_cancel),
           ),
           TextButton(
-            onPressed: () async {
+            onPressed: () {
               Navigator.pop(context);
-              connector.removeAllDiscoveredContacts();
+              discoveryService.removeAll();
             },
             child: Text(l10n.common_deleteAll),
           ),
@@ -309,11 +329,11 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
 
   Future<void> _exportDiscoveredContacts(
     BuildContext context,
-    MeshCoreConnector connector,
+    ContactDiscoveryService discoveryService,
   ) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
-    final json = connector.exportDiscoveredContactsJson();
+    final json = discoveryService.exportJson();
 
     try {
       const filename = 'meshcore_discovered_contacts.json';
@@ -377,6 +397,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
   Future<void> _importDiscoveredContacts(
     BuildContext context,
     MeshCoreConnector connector,
+    ContactDiscoveryService discoveryService,
   ) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
@@ -395,7 +416,10 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
         return;
       }
 
-      final importedCount = await connector.importDiscoveredContactsJson(json);
+      final importedCount = await discoveryService.importJson(
+        json,
+        connector.knownContactKeys,
+      );
       if (!mounted) return;
       messenger.showSnackBar(
         SnackBar(
@@ -505,7 +529,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                         });
                       },
                     ),
-                  _buildFilterButton(context, connector),
+                  _buildFilterButton(context),
                 ],
               ),
               border: OutlineInputBorder(
@@ -531,7 +555,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
     );
   }
 
-  Widget _buildFilterButton(BuildContext context, MeshCoreConnector connector) {
+  Widget _buildFilterButton(BuildContext context) {
     return DiscoveryContactsFilterMenu(
       sortOption: sortOption,
       typeFilter: typeFilter,
