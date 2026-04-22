@@ -432,9 +432,13 @@ class AppLocalizationsNl extends AppLocalizations {
       'Locatie opnemen in advertentie';
 
   @override
-  String settings_multiAck(String value) {
-    return 'Multi-ACKs: $value';
-  }
+  String get settings_multiAck => 'Multi-ACKs: null';
+
+  @override
+  String get settings_multiAckSubtitleOne => 'Send one message ack.';
+
+  @override
+  String get settings_multiAckSubtitleTwo => 'Send two message acks.';
 
   @override
   String get settings_telemetryModeUpdated => 'Telemetrie-modus bijgewerkt';

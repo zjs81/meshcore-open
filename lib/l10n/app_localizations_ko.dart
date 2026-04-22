@@ -414,9 +414,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_advertLocationSubtitle => '광고에 위치 정보를 포함하세요.';
 
   @override
-  String settings_multiAck(String value) {
-    return '다중 ACK: $value';
-  }
+  String get settings_multiAck => '다중 ACK: null';
+
+  @override
+  String get settings_multiAckSubtitleOne => 'Send one message ack.';
+
+  @override
+  String get settings_multiAckSubtitleTwo => 'Send two message acks.';
 
   @override
   String get settings_telemetryModeUpdated => '텔레메트리 모드 업데이트 완료';

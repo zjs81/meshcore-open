@@ -435,9 +435,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Ort in der Anzeige einbeziehen';
 
   @override
-  String settings_multiAck(String value) {
-    return 'Mehrfach-Bestätigungen: $value';
-  }
+  String get settings_multiAck => 'Mehrfach-Bestätigungen: null';
+
+  @override
+  String get settings_multiAckSubtitleOne => 'Send one message ack.';
+
+  @override
+  String get settings_multiAckSubtitleTwo => 'Send two message acks.';
 
   @override
   String get settings_telemetryModeUpdated => 'Telemetriemodus aktualisiert';

@@ -1,1 +1,86 @@
-{}
+{
+  "bg": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "de": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "es": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "fr": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "hu": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "it": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "ja": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "ko": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "nl": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "pl": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "pt": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "ru": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "sk": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "sl": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "sv": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "uk": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ],
+
+  "zh": [
+    "settings_multiAckSubtitleOne",
+    "settings_multiAckSubtitleTwo"
+  ]
+}

@@ -414,9 +414,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_advertLocationSubtitle => '広告に場所を記載してください。';
 
   @override
-  String settings_multiAck(String value) {
-    return '複数のACK：$value';
-  }
+  String get settings_multiAck => '複数のACK：null';
+
+  @override
+  String get settings_multiAckSubtitleOne => 'Send one message ack.';
+
+  @override
+  String get settings_multiAckSubtitleTwo => 'Send two message acks.';
 
   @override
   String get settings_telemetryModeUpdated => 'テレメトリモードが更新されました';

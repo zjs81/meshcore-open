@@ -408,9 +408,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_advertLocationSubtitle => '在广告中包含位置';
 
   @override
-  String settings_multiAck(String value) {
-    return '多重ACK：$value';
-  }
+  String get settings_multiAck => '多重ACK：null';
+
+  @override
+  String get settings_multiAckSubtitleOne => 'Send one message ack.';
+
+  @override
+  String get settings_multiAckSubtitleTwo => 'Send two message acks.';
 
   @override
   String get settings_telemetryModeUpdated => '遥测模式已更新';

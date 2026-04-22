@@ -436,9 +436,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Включить местоположение в объявление';
 
   @override
-  String settings_multiAck(String value) {
-    return 'Мульти-ACK: $value';
-  }
+  String get settings_multiAck => 'Мульти-ACK: null';
+
+  @override
+  String get settings_multiAckSubtitleOne => 'Send one message ack.';
+
+  @override
+  String get settings_multiAckSubtitleTwo => 'Send two message acks.';
 
   @override
   String get settings_telemetryModeUpdated => 'Режим телеметрии обновлен';

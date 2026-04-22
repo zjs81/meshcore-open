@@ -178,14 +178,9 @@
   "settings_telemetryEnvironmentMode": "Telemetry Environment Mode",
   "settings_advertLocation": "Advert Location",
   "settings_advertLocationSubtitle": "Include location in advert.",
-  "settings_multiAck": "Multi-ACKs: {value}",
-  "@settings_multiAck": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
+  "settings_multiAck": "Multi-ACKs",
+  "settings_multiAckSubtitleOne": "Send one message ack.",
+  "settings_multiAckSubtitleTwo": "Send two message acks.",
   "settings_telemetryModeUpdated": "Telemetry mode updated",
   "settings_actions": "Actions",
   "settings_sendAdvertisement": "Send Advertisement",

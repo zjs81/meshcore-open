@@ -901,8 +901,20 @@ abstract class AppLocalizations {
   /// No description provided for @settings_multiAck.
   ///
   /// In en, this message translates to:
-  /// **'Multi-ACKs: {value}'**
-  String settings_multiAck(String value);
+  /// **'Multi-ACKs'**
+  String get settings_multiAck;
+
+  /// No description provided for @settings_multiAckSubtitleOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Send one message ack.'**
+  String get settings_multiAckSubtitleOne;
+
+  /// No description provided for @settings_multiAckSubtitleTwo.
+  ///
+  /// In en, this message translates to:
+  /// **'Send two message acks.'**
+  String get settings_multiAckSubtitleTwo;
 
   /// No description provided for @settings_telemetryModeUpdated.
   ///

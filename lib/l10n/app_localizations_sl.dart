@@ -430,9 +430,13 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_advertLocationSubtitle => 'Vključi lokacijo v oglas.';
 
   @override
-  String settings_multiAck(String value) {
-    return 'Večkratni potrditvi: $value';
-  }
+  String get settings_multiAck => 'Večkratni potrditvi: null';
+
+  @override
+  String get settings_multiAckSubtitleOne => 'Send one message ack.';
+
+  @override
+  String get settings_multiAckSubtitleTwo => 'Send two message acks.';
 
   @override
   String get settings_telemetryModeUpdated => 'Način telemetrije posodobljen';

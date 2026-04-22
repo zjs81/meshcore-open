@@ -430,9 +430,13 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_advertLocationSubtitle => 'Zahrnúť polohu do inzerátu';
 
   @override
-  String settings_multiAck(String value) {
-    return 'Viaceré ACK: $value';
-  }
+  String get settings_multiAck => 'Viaceré ACK: null';
+
+  @override
+  String get settings_multiAckSubtitleOne => 'Send one message ack.';
+
+  @override
+  String get settings_multiAckSubtitleTwo => 'Send two message acks.';
 
   @override
   String get settings_telemetryModeUpdated =>

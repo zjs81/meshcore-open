@@ -1053,18 +1053,14 @@ void _privacySettings(BuildContext context, MeshCoreConnector connector) {
                 },
               ),
               const SizedBox(height: 16),
-              Text(
-                l10n.settings_multiAck(multiAcks.toString()),
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Slider(
-                value: multiAcks.toDouble(),
-                min: 0,
-                max: 2,
-                divisions: 2,
-                label: multiAcks.toString(),
+              FeatureToggleRow(
+                title: l10n.settings_multiAck,
+                subtitle: (multiAcks == 1)
+                    ? l10n.settings_multiAckSubtitleTwo
+                    : l10n.settings_multiAckSubtitleOne,
+                value: multiAcks == 1,
                 onChanged: (value) {
-                  setDialogState(() => multiAcks = value.round());
+                  setDialogState(() => value ? multiAcks = 1 : multiAcks = 0);
                 },
               ),
             ],
