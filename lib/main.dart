@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import 'screens/channel_chat_screen.dart';
+import 'screens/chat_screen.dart';
 import 'screens/chrome_required_screen.dart';
+import 'screens/discovery_screen.dart';
 import 'utils/platform_info.dart';
 
 import 'connector/meshcore_connector.dart';
@@ -125,7 +131,7 @@ https://creativecommons.org/licenses/by/4.0/
   });
 }
 
-class MeshCoreApp extends StatelessWidget {
+class MeshCoreApp extends StatefulWidget {
   final MeshCoreConnector connector;
   final MessageRetryService retryService;
   final PathHistoryService pathHistoryService;
@@ -156,66 +162,135 @@ class MeshCoreApp extends StatelessWidget {
   });
 
   @override
+  State<MeshCoreApp> createState() => _MeshCoreAppState();
+}
+
+class _MeshCoreAppState extends State<MeshCoreApp> {
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  StreamSubscription<NotificationTapEvent>? _notificationTapSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _notificationTapSubscription = NotificationService().onNotificationTapped
+        .listen(_handleNotificationTap);
+  }
+
+  @override
+  void dispose() {
+    _notificationTapSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _handleNotificationTap(NotificationTapEvent event) {
+    final navigator = _navigatorKey.currentState;
+    if (navigator == null) return;
+
+    switch (event.type) {
+      case NotificationTapEventType.message:
+        if (event.id == null) return;
+        final contact = widget.connector.findContactByKeyHex(event.id!);
+        if (contact == null) return;
+        widget.connector.markContactRead(contact.publicKeyHex);
+        navigator.push(
+          MaterialPageRoute(builder: (_) => ChatScreen(contact: contact)),
+        );
+        break;
+      case NotificationTapEventType.channel:
+        if (event.id == null) return;
+        final channelIndex = int.tryParse(event.id!);
+        if (channelIndex == null) return;
+        final channel = widget.connector.findChannelByIndex(channelIndex);
+        if (channel == null) return;
+        widget.connector.markChannelRead(channelIndex);
+        navigator.push(
+          MaterialPageRoute(
+            builder: (_) => ChannelChatScreen(channel: channel),
+          ),
+        );
+        break;
+      case NotificationTapEventType.advert:
+        // Clear every advert notification — the discovery
+        // list the user is about to see contains them all.
+        NotificationService().clearAllAdvertNotifications();
+        final ids = widget.connector.allContacts
+            .map((c) => c.publicKeyHex)
+            .toList();
+        NotificationService().clearAdvertNotifications(ids);
+        navigator.push(
+          MaterialPageRoute(builder: (_) => const DiscoveryScreen()),
+        );
+        break;
+      case NotificationTapEventType.batch:
+        // Batch summaries have no single target; no-op.
+        break;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: connector),
-        ChangeNotifierProvider.value(value: retryService),
-        ChangeNotifierProvider.value(value: pathHistoryService),
-        ChangeNotifierProvider.value(value: appSettingsService),
-        ChangeNotifierProvider.value(value: bleDebugLogService),
-        ChangeNotifierProvider.value(value: appDebugLogService),
-        ChangeNotifierProvider.value(value: chatTextScaleService),
-        ChangeNotifierProvider.value(value: translationService),
-        ChangeNotifierProvider.value(value: uiViewStateService),
-        Provider.value(value: storage),
-        Provider.value(value: mapTileCacheService),
-        ChangeNotifierProvider.value(value: timeoutPredictionService),
+        ChangeNotifierProvider.value(value: widget.connector),
+        ChangeNotifierProvider.value(value: widget.retryService),
+        ChangeNotifierProvider.value(value: widget.pathHistoryService),
+        ChangeNotifierProvider.value(value: widget.appSettingsService),
+        ChangeNotifierProvider.value(value: widget.bleDebugLogService),
+        ChangeNotifierProvider.value(value: widget.appDebugLogService),
+        ChangeNotifierProvider.value(value: widget.chatTextScaleService),
+        ChangeNotifierProvider.value(value: widget.translationService),
+        ChangeNotifierProvider.value(value: widget.uiViewStateService),
+        Provider.value(value: widget.storage),
+        Provider.value(value: widget.mapTileCacheService),
+        ChangeNotifierProvider.value(value: widget.timeoutPredictionService),
       ],
       child: Consumer<AppSettingsService>(
         builder: (context, settingsService, child) {
-          return MaterialApp(
-            title: 'MeshCore Open',
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: _localeFromSetting(
-              settingsService.settings.languageOverride,
-            ),
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-              useMaterial3: true,
-              snackBarTheme: const SnackBarThemeData(
-                behavior: SnackBarBehavior.floating,
+          return WithForegroundTask(
+            child: MaterialApp(
+              navigatorKey: _navigatorKey,
+              title: 'MeshCore Open',
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: _localeFromSetting(
+                settingsService.settings.languageOverride,
               ),
-            ),
-            darkTheme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.blue,
-                brightness: Brightness.dark,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+                useMaterial3: true,
+                snackBarTheme: const SnackBarThemeData(
+                  behavior: SnackBarBehavior.floating,
+                ),
               ),
-              useMaterial3: true,
-              snackBarTheme: const SnackBarThemeData(
-                behavior: SnackBarBehavior.floating,
+              darkTheme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: Colors.blue,
+                  brightness: Brightness.dark,
+                ),
+                useMaterial3: true,
+                snackBarTheme: const SnackBarThemeData(
+                  behavior: SnackBarBehavior.floating,
+                ),
               ),
+              themeMode: _themeModeFromSetting(
+                settingsService.settings.themeMode,
+              ),
+              builder: (context, child) {
+                // Update notification service with resolved locale
+                final locale = Localizations.localeOf(context);
+                NotificationService().setLocale(locale);
+                return child ?? const SizedBox.shrink();
+              },
+              home: (PlatformInfo.isWeb && !PlatformInfo.isChrome)
+                  ? const ChromeRequiredScreen()
+                  : const ScannerScreen(),
             ),
-            themeMode: _themeModeFromSetting(
-              settingsService.settings.themeMode,
-            ),
-            builder: (context, child) {
-              // Update notification service with resolved locale
-              final locale = Localizations.localeOf(context);
-              NotificationService().setLocale(locale);
-              return child ?? const SizedBox.shrink();
-            },
-            home: (PlatformInfo.isWeb && !PlatformInfo.isChrome)
-                ? const ChromeRequiredScreen()
-                : const ScannerScreen(),
           );
         },
       ),

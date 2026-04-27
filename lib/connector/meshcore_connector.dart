@@ -40,6 +40,7 @@ import '../storage/contact_settings_store.dart';
 import '../storage/contact_store.dart';
 import '../storage/message_store.dart';
 import '../storage/unread_store.dart';
+import '../storage/last_device_store.dart';
 import '../utils/app_logger.dart';
 import '../utils/battery_utils.dart';
 import '../utils/platform_info.dart';
@@ -281,6 +282,7 @@ class MeshCoreConnector extends ChangeNotifier {
   final ContactDiscoveryStore _discoveryContactStore = ContactDiscoveryStore();
   final ChannelStore _channelStore = ChannelStore();
   final UnreadStore _unreadStore = UnreadStore();
+  final LastDeviceStore _lastDeviceStore = LastDeviceStore();
   List<Channel> _cachedChannels = [];
   final Map<int, bool> _channelSmazEnabled = {};
   bool _lastSentWasCliCommand =
@@ -768,6 +770,10 @@ class MeshCoreConnector extends ChangeNotifier {
     _appDebugLogService = appDebugLogService;
     _backgroundService = backgroundService;
     _timeoutPredictionService = timeoutPredictionService;
+
+    // When the app resumes from background, check if we need to reconnect.
+    _backgroundService?.onResume = _onAppResumed;
+
     _usbManager.setDebugLogService(_appDebugLogService);
     _tcpConnector.setDebugLogService(_appDebugLogService);
 
@@ -1879,6 +1885,7 @@ class MeshCoreConnector extends ChangeNotifier {
       );
 
       _setState(MeshCoreConnectionState.connected);
+      _lastDeviceStore.persistLastDevice(_deviceId!, _deviceDisplayName!);
       if (_shouldGateInitialChannelSync) {
         _hasReceivedDeviceInfo = false;
         _pendingInitialChannelSync = true;
@@ -2225,6 +2232,56 @@ class MeshCoreConnector extends ChangeNotifier {
     });
   }
 
+  /// Called by [BackgroundService] when the app returns to the foreground.
+  /// If the BLE connection was lost while backgrounded, this kicks off an
+  /// immediate reconnect attempt instead of waiting for the next timer tick.
+  void _onAppResumed() {
+    if (_shouldAutoReconnect &&
+        _state != MeshCoreConnectionState.connected &&
+        _state != MeshCoreConnectionState.connecting) {
+      _appDebugLogService?.info(
+        'App resumed – triggering reconnect check',
+        tag: 'Lifecycle',
+      );
+      _cancelReconnectTimer();
+      _scheduleReconnect();
+    } else if (_state == MeshCoreConnectionState.disconnected &&
+        _lastDeviceId == null) {
+      // App was fully restarted (swiped away).  Try to restore from prefs.
+      tryAutoReconnect();
+    }
+  }
+
+  /// Attempt to reconnect to the last persisted BLE device.
+  ///
+  /// Called on fresh app start (after a swipe-away kill) so the user is
+  /// brought straight back to the connected state instead of the scan screen.
+  Future<bool> tryAutoReconnect() async {
+    if (_state == MeshCoreConnectionState.connecting ||
+        _state == MeshCoreConnectionState.connected) {
+      return false;
+    }
+    final deviceId = _lastDeviceStore.getPersistedDeviceId();
+    if (deviceId!.isEmpty) {
+      return false;
+    }
+
+    final displayName = _lastDeviceStore.getPersistedDeviceName();
+    _appDebugLogService?.info(
+      'Auto-reconnecting to $deviceId ($displayName)',
+      tag: 'Lifecycle',
+    );
+
+    try {
+      final device = BluetoothDevice.fromId(deviceId);
+      await connect(device, displayName: displayName);
+      return true;
+    } catch (e) {
+      _appDebugLogService?.error('Auto-reconnect failed: $e', tag: 'Lifecycle');
+      return false;
+    }
+  }
+
   Future<void> disconnect({
     bool manual = true,
     bool skipBleDeviceDisconnect = false,
@@ -2245,6 +2302,8 @@ class MeshCoreConnector extends ChangeNotifier {
     if (manual) {
       _manualDisconnect = true;
       _cancelReconnectTimer();
+      _lastDeviceStore.clearPersistedDevice();
+      _notificationService.cancelAll();
       unawaited(_backgroundService?.stop());
     } else {
       _manualDisconnect = false;
@@ -4912,6 +4971,17 @@ class MeshCoreConnector extends ChangeNotifier {
           (c) => c?.index == index,
           orElse: () => null,
         );
+  }
+
+  /// Public accessor to find a channel by its index.
+  Channel? findChannelByIndex(int index) => _findChannelByIndex(index);
+
+  /// Find a contact by its public key hex string.
+  Contact? findContactByKeyHex(String keyHex) {
+    return _contacts.cast<Contact?>().firstWhere(
+      (c) => c?.publicKeyHex == keyHex,
+      orElse: () => null,
+    );
   }
 
   void _maybeIncrementChannelUnread(

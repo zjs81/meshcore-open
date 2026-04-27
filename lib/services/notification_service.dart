@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io' show Platform, File;
 import 'dart:ui';
 
@@ -8,6 +9,21 @@ import '../helpers/reaction_helper.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/platform_info.dart';
 
+enum NotificationTapEventType { message, channel, advert, batch }
+
+/// Payload emitted when the user taps a notification.
+class NotificationTapEvent {
+  // The type of notification tap event [NotificationTapEventType]
+  final NotificationTapEventType type;
+
+  /// For messages: the contact public key hex.
+  /// For channels: the channel index as a string.
+  /// For adverts: the contact public key hex.
+  final String? id;
+
+  const NotificationTapEvent({required this.type, this.id});
+}
+
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
@@ -16,6 +32,15 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
   bool _isInitialized = false;
+
+  /// Stream of notification tap events for navigation handling.
+  final StreamController<NotificationTapEvent> _tapController =
+      StreamController<NotificationTapEvent>.broadcast();
+
+  /// Listen to this stream to handle navigation when a notification
+  /// is tapped.
+  Stream<NotificationTapEvent> get onNotificationTapped =>
+      _tapController.stream;
 
   // Locale for localized notification strings
   Locale _locale = const Locale('en');
@@ -167,6 +192,10 @@ class NotificationService {
   }) async {
     if (!await _ensureInitialized()) return;
 
+    // Group per contact so each conversation is collapsible
+    // independently in the notification shade.
+    final groupKey = contactId != null ? 'msg_$contactId' : 'meshcore_messages';
+
     final androidDetails = AndroidNotificationDetails(
       'messages',
       'Messages',
@@ -175,6 +204,7 @@ class NotificationService {
       priority: Priority.high,
       icon: '@mipmap/ic_launcher',
       number: badgeCount,
+      groupKey: groupKey,
     );
 
     final iosDetails = DarwinNotificationDetails(
@@ -205,6 +235,13 @@ class NotificationService {
         notificationDetails: notificationDetails,
         payload: 'message:$contactId',
       );
+      await _postGroupSummary(
+        groupKey: groupKey,
+        channelId: 'messages',
+        channelName: 'Messages',
+        title: contactName,
+        payload: 'message:$contactId',
+      );
     } catch (e) {
       debugPrint('Failed to show message notification: $e');
     }
@@ -217,6 +254,8 @@ class NotificationService {
   }) async {
     if (!await _ensureInitialized()) return;
 
+    const groupKey = 'meshcore_adverts';
+
     const androidDetails = AndroidNotificationDetails(
       'adverts',
       'Advertisements',
@@ -224,6 +263,7 @@ class NotificationService {
       importance: Importance.defaultImportance,
       priority: Priority.defaultPriority,
       icon: '@mipmap/ic_launcher',
+      groupKey: groupKey,
     );
 
     const iosDetails = DarwinNotificationDetails(
@@ -254,6 +294,15 @@ class NotificationService {
         notificationDetails: notificationDetails,
         payload: 'advert:$contactId',
       );
+      await _postGroupSummary(
+        groupKey: groupKey,
+        channelId: 'adverts',
+        channelName: 'Advertisements',
+        title: _l10n.notification_activityTitle,
+        payload: 'advert:',
+        importance: Importance.defaultImportance,
+        priority: Priority.defaultPriority,
+      );
     } catch (e) {
       debugPrint('Failed to show advert notification: $e');
     }
@@ -267,6 +316,12 @@ class NotificationService {
   }) async {
     if (!await _ensureInitialized()) return;
 
+    // Group per channel so each channel is collapsible
+    // independently in the notification shade.
+    final groupKey = channelIndex != null
+        ? 'ch_$channelIndex'
+        : 'meshcore_channels';
+
     final androidDetails = AndroidNotificationDetails(
       'channel_messages',
       'Channel Messages',
@@ -275,6 +330,7 @@ class NotificationService {
       priority: Priority.high,
       icon: '@mipmap/ic_launcher',
       number: badgeCount,
+      groupKey: groupKey,
     );
 
     final iosDetails = DarwinNotificationDetails(
@@ -310,8 +366,67 @@ class NotificationService {
         notificationDetails: notificationDetails,
         payload: 'channel:$channelIndex',
       );
+      await _postGroupSummary(
+        groupKey: groupKey,
+        channelId: 'channel_messages',
+        channelName: 'Channel Messages',
+        title: channelName,
+        payload: 'channel:$channelIndex',
+      );
     } catch (e) {
       debugPrint('Failed to show channel notification: $e');
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // Android group summary helper
+  // ---------------------------------------------------------------
+  // Android requires a notification with setAsGroupSummary for
+  // each groupKey.  This is what the user sees (and taps) when
+  // the OS collapses individual notifications in a group.
+  // ---------------------------------------------------------------
+
+  /// Post (or replace) the group summary notification for
+  /// [groupKey].  The summary's [payload] controls where tapping
+  /// the collapsed group navigates.
+  Future<void> _postGroupSummary({
+    required String groupKey,
+    required String channelId,
+    required String channelName,
+    required String title,
+    required String payload,
+    Importance importance = Importance.high,
+    Priority priority = Priority.high,
+  }) async {
+    if (!PlatformInfo.isAndroid) return;
+
+    final details = AndroidNotificationDetails(
+      channelId,
+      channelName,
+      importance: importance,
+      priority: priority,
+      icon: '@mipmap/ic_launcher',
+      groupKey: groupKey,
+      setAsGroupSummary: true,
+    );
+
+    // Use a stable ID derived from the groupKey so each
+    // group's summary replaces itself, never duplicates.
+    final summaryId = 'summary:$groupKey'.hashCode;
+
+    try {
+      await _notifications.show(
+        id: summaryId,
+        title: title,
+        body: null,
+        notificationDetails: NotificationDetails(android: details),
+        payload: payload,
+      );
+    } catch (e) {
+      debugPrint(
+        'Failed to post group summary '
+        '($groupKey): $e',
+      );
     }
   }
 
@@ -332,14 +447,42 @@ class NotificationService {
 
   void _onNotificationTapped(NotificationResponse response) {
     final payload = response.payload;
-    if (payload != null) {
-      debugPrint('Notification tapped: $payload');
-      // Handle navigation based on payload
-      // This can be extended to navigate to specific screens
+    if (payload == null) return;
+    debugPrint('Notification tapped: $payload');
+
+    if (payload.startsWith('message:')) {
+      final contactId = payload.substring('message:'.length);
+      _tapController.add(
+        NotificationTapEvent(
+          type: NotificationTapEventType.message,
+          id: contactId,
+        ),
+      );
+    } else if (payload.startsWith('channel:')) {
+      final channelIndex = payload.substring('channel:'.length);
+      _tapController.add(
+        NotificationTapEvent(
+          type: NotificationTapEventType.channel,
+          id: channelIndex,
+        ),
+      );
+    } else if (payload.startsWith('advert:')) {
+      final contactId = payload.substring('advert:'.length);
+      _tapController.add(
+        NotificationTapEvent(
+          type: NotificationTapEventType.advert,
+          id: contactId,
+        ),
+      );
+    } else if (payload == 'batch') {
+      _tapController.add(
+        const NotificationTapEvent(type: NotificationTapEventType.batch),
+      );
     }
   }
 
   Future<void> cancelAll() async {
+    _pendingNotifications.clear();
     await _notifications.cancelAll();
   }
 
@@ -352,6 +495,11 @@ class NotificationService {
     String contactId,
     int totalUnreadCount,
   ) async {
+    // Purge any queued notifications for this contact so the batch timer
+    // doesn't re-post a notification the user has already seen.
+    _pendingNotifications.removeWhere(
+      (n) => n.type == _NotificationType.message && n.id == contactId,
+    );
     if (!await _ensureInitialized()) return;
     await _notifications.cancel(id: contactId.hashCode);
     await _updateBadge(totalUnreadCount);
@@ -362,6 +510,13 @@ class NotificationService {
     int channelIndex,
     int totalUnreadCount,
   ) async {
+    // Purge any queued notifications for this channel so the batch timer
+    // doesn't re-post a notification the user has already seen.
+    _pendingNotifications.removeWhere(
+      (n) =>
+          n.type == _NotificationType.channelMessage &&
+          n.id == channelIndex.toString(),
+    );
     if (!await _ensureInitialized()) return;
     await _notifications.cancel(id: channelIndex.hashCode);
     await _updateBadge(totalUnreadCount);
@@ -373,6 +528,21 @@ class NotificationService {
     for (final id in contactIds) {
       await _notifications.cancel(id: 'advert:$id'.hashCode);
     }
+  }
+
+  /// Cancel every advert notification including the group
+  /// summary.  Called when the user opens the discovery list
+  /// (which shows all discovered nodes anyway).
+  Future<void> clearAllAdvertNotifications() async {
+    if (!await _ensureInitialized()) return;
+    // Cancel the group summary.
+    final summaryId = 'summary:meshcore_adverts'.hashCode;
+    await _notifications.cancel(id: summaryId);
+    // Individual adverts are cancelled by the OS when their
+    // group summary is removed, but on some OEMs we need to
+    // cancel them explicitly.  We don't track IDs, so the
+    // caller should also pass known IDs through
+    // clearAdvertNotifications() when available.
   }
 
   Future<void> _updateBadge(int count) async {
@@ -545,7 +715,13 @@ class NotificationService {
   Future<void> _showBatchSummary(List<_PendingNotification> batch) async {
     if (!await _ensureInitialized()) return;
 
-    // Group by type
+    // Show each notification individually — the Android
+    // groupKey on each type will cluster them automatically.
+    for (final notification in batch) {
+      await _showNotificationImmediately(notification);
+    }
+
+    // Debug logging
     final messages = batch
         .where((n) => n.type == _NotificationType.message)
         .toList();
@@ -556,48 +732,20 @@ class NotificationService {
         .where((n) => n.type == _NotificationType.channelMessage)
         .toList();
 
-    // Build summary text using localized plurals
     final parts = <String>[];
     if (messages.isNotEmpty) {
-      parts.add(_l10n.notification_messagesCount(messages.length));
+      parts.add('${messages.length} messages');
     }
     if (channelMsgs.isNotEmpty) {
-      parts.add(_l10n.notification_channelMessagesCount(channelMsgs.length));
+      parts.add('${channelMsgs.length} channel msgs');
     }
     if (adverts.isNotEmpty) {
-      parts.add(_l10n.notification_newNodesCount(adverts.length));
+      parts.add('${adverts.length} adverts');
     }
-
-    if (parts.isEmpty) return;
-
-    // Show first few device names in batch summary for debugging (only if adverts exist)
-    final deviceInfo = adverts.isNotEmpty
-        ? ' (${adverts.take(5).map((n) => n.body).join(', ')}${adverts.length > 5 ? ', ...' : ''})'
-        : '';
-    debugPrint('[Notification] batch summary: ${parts.join(", ")}$deviceInfo');
-
-    const androidDetails = AndroidNotificationDetails(
-      'batch_summary',
-      'Activity Summary',
-      channelDescription: 'Batched notification summaries',
-      importance: Importance.defaultImportance,
-      priority: Priority.defaultPriority,
-      icon: '@mipmap/ic_launcher',
+    debugPrint(
+      '[Notification] batch dispatched: '
+      '${parts.join(", ")}',
     );
-
-    const notificationDetails = NotificationDetails(android: androidDetails);
-
-    try {
-      await _notifications.show(
-        id: 'batch_summary'.hashCode,
-        title: _l10n.notification_activityTitle,
-        body: parts.join(', '),
-        notificationDetails: notificationDetails,
-        payload: 'batch',
-      );
-    } catch (e) {
-      debugPrint('Failed to show batch summary notification: $e');
-    }
   }
 }
 

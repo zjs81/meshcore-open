@@ -8,6 +8,7 @@ import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
+import '../services/notification_service.dart';
 import '../utils/contact_search.dart';
 import '../utils/platform_info.dart';
 import '../widgets/app_bar.dart';
@@ -31,6 +32,20 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
   ContactTypeFilter typeFilter = ContactTypeFilter.all;
   DiscoverySortOption discoverySortOption = DiscoverySortOption.lastSeen;
   Timer? _searchDebounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _clearAdvertNotifications();
+  }
+
+  void _clearAdvertNotifications() {
+    final connector = context.read<MeshCoreConnector>();
+    final ids = connector.allContacts.map((c) => c.publicKeyHex).toList();
+    final ns = NotificationService();
+    ns.clearAllAdvertNotifications();
+    ns.clearAdvertNotifications(ids);
+  }
 
   @override
   void dispose() {
