@@ -1336,6 +1336,18 @@ abstract class AppLocalizations {
   /// **'Show detailed routing and timing metadata for messages'**
   String get appSettings_enableMessageTracingSubtitle;
 
+  /// No description provided for @appSettings_enableFavoritesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Separate Favorites Section'**
+  String get appSettings_enableFavoritesSection;
+
+  /// No description provided for @appSettings_enableFavoritesSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show separate favorites section at top of contacts'**
+  String get appSettings_enableFavoritesSectionSubtitle;
+
   /// No description provided for @appSettings_notifications.
   ///
   /// In en, this message translates to:
@@ -6687,6 +6699,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copying advert to Clipboard failed.'**
   String get contacts_contactAdvertCopyFailed;
+
+  /// No description provided for @contacts_sectionFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get contacts_sectionFavorites;
+
+  /// No description provided for @contacts_sectionAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All Contacts'**
+  String get contacts_sectionAll;
 
   /// No description provided for @notification_activityTitle.
   ///

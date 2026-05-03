@@ -670,6 +670,13 @@ class AppLocalizationsUk extends AppLocalizations {
       'Показувати детальні метадані про маршрутизацію та час для повідомлень';
 
   @override
+  String get appSettings_enableFavoritesSection => 'Separate Favorites Section';
+
+  @override
+  String get appSettings_enableFavoritesSectionSubtitle =>
+      'Show separate favorites section at top of contacts';
+
+  @override
   String get appSettings_notifications => 'Сповіщення';
 
   @override
@@ -3887,6 +3894,12 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get contacts_contactAdvertCopyFailed =>
       'Копіювання оголошення в буфер обміну завершилось невдало';
+
+  @override
+  String get contacts_sectionFavorites => 'Favorites';
+
+  @override
+  String get contacts_sectionAll => 'All Contacts';
 
   @override
   String get notification_activityTitle => 'Активність MeshCore';

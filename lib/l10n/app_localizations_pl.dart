@@ -675,6 +675,13 @@ class AppLocalizationsPl extends AppLocalizations {
       'Pokaż szczegółowe metadane trasowania i czasu dla wiadomości';
 
   @override
+  String get appSettings_enableFavoritesSection => 'Separate Favorites Section';
+
+  @override
+  String get appSettings_enableFavoritesSectionSubtitle =>
+      'Show separate favorites section at top of contacts';
+
+  @override
   String get appSettings_notifications => 'Powiadomienia';
 
   @override
@@ -3896,6 +3903,12 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get contacts_contactAdvertCopyFailed =>
       'Kopiowanie rozgłoszenia do schowka nie powiodło się.';
+
+  @override
+  String get contacts_sectionFavorites => 'Favorites';
+
+  @override
+  String get contacts_sectionAll => 'All Contacts';
 
   @override
   String get notification_activityTitle => 'Aktywność MeshCore';

@@ -264,6 +264,8 @@
   "appSettings_languageUk": "Українська",
   "appSettings_enableMessageTracing": "Enable Message Tracing",
   "appSettings_enableMessageTracingSubtitle": "Show detailed routing and timing metadata for messages",
+  "appSettings_enableFavoritesSection": "Separate Favorites Section",
+  "appSettings_enableFavoritesSectionSubtitle": "Show separate favorites section at top of contacts",
   "appSettings_notifications": "Notifications",
   "appSettings_enableNotifications": "Enable Notifications",
   "appSettings_enableNotificationsSubtitle": "Receive notifications for messages and adverts",
@@ -2147,6 +2149,8 @@
   "contacts_zeroHopContactAdvertFailed": "Failed to send contact.",
   "contacts_contactAdvertCopied": "Advert copied to Clipboard.",
   "contacts_contactAdvertCopyFailed": "Copying advert to Clipboard failed.",
+  "contacts_sectionFavorites": "Favorites",
+  "contacts_sectionAll": "All Contacts",
   "notification_activityTitle": "MeshCore Activity",
   "notification_messagesCount": "{count} {count, plural, =1{message} other{messages}}",
   "@notification_messagesCount": {

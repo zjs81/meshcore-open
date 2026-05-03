@@ -675,6 +675,13 @@ class AppLocalizationsHu extends AppLocalizations {
       'Adja meg a üzenetek részletes útvonal- és időzítési adatokat.';
 
   @override
+  String get appSettings_enableFavoritesSection => 'Separate Favorites Section';
+
+  @override
+  String get appSettings_enableFavoritesSectionSubtitle =>
+      'Show separate favorites section at top of contacts';
+
+  @override
   String get appSettings_notifications => 'Értesítések';
 
   @override
@@ -3896,6 +3903,12 @@ class AppLocalizationsHu extends AppLocalizations {
   @override
   String get contacts_contactAdvertCopyFailed =>
       'Az hirdetés másolása a vágólapra sikertelen.';
+
+  @override
+  String get contacts_sectionFavorites => 'Favorites';
+
+  @override
+  String get contacts_sectionAll => 'All Contacts';
 
   @override
   String get notification_activityTitle => 'MeshCore tevékenységek';

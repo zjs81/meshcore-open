@@ -675,6 +675,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Afficher les métadonnées détaillées de routage et de synchronisation des messages';
 
   @override
+  String get appSettings_enableFavoritesSection => 'Separate Favorites Section';
+
+  @override
+  String get appSettings_enableFavoritesSectionSubtitle =>
+      'Show separate favorites section at top of contacts';
+
+  @override
   String get appSettings_notifications => 'Notifications';
 
   @override
@@ -3904,6 +3911,12 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get contacts_contactAdvertCopyFailed =>
       'La copie de l\'annonce vers le presse-papiers a échoué.';
+
+  @override
+  String get contacts_sectionFavorites => 'Favorites';
+
+  @override
+  String get contacts_sectionAll => 'All Contacts';
 
   @override
   String get notification_activityTitle => 'Activité MeshCore';

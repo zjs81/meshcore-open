@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meshcore_open/screens/path_trace_map.dart';
+import 'package:meshcore_open/services/app_settings_service.dart';
 import 'package:meshcore_open/services/notification_service.dart';
 import 'package:meshcore_open/utils/app_logger.dart';
 import 'package:meshcore_open/utils/platform_info.dart';
@@ -602,6 +603,7 @@ class _ContactsScreenState extends State<ContactsScreen>
   }
 
   Widget _buildContactsBody(BuildContext context, MeshCoreConnector connector) {
+    final settings = context.watch<AppSettingsService>().settings;
     final viewState = context.watch<UiViewStateService>();
     final contacts = connector.contacts;
     final shouldShowStartupSpinner =
@@ -806,21 +808,62 @@ class _ContactsScreenState extends State<ContactsScreen>
                 )
               : RefreshIndicator(
                   onRefresh: () => connector.getContacts(),
-                  child: ListView.builder(
-                    itemCount: filteredAndSorted.length,
-                    itemBuilder: (context, index) {
-                      final contact = filteredAndSorted[index];
-                      final unreadCount = connector.getUnreadCountForContact(
-                        contact,
-                      );
-                      return _ContactTile(
-                        contact: contact,
-                        lastSeen: _resolveLastSeen(contact),
-                        unreadCount: unreadCount,
-                        isFavorite: contact.isFavorite,
-                        onTap: () => _openChat(context, contact),
-                        onLongPress: () =>
-                            _showContactOptions(context, connector, contact),
+                  child: Builder(
+                    builder: (context) {
+                      final List<Contact> favorites;
+                      final List<Contact> others;
+                      if (settings.enableFavoritesSection) {
+                        favorites = filteredAndSorted
+                            .where((n) => n.isFavorite)
+                            .toList();
+                        others = filteredAndSorted
+                            .where((n) => !n.isFavorite)
+                            .toList();
+                      } else {
+                        favorites = [];
+                        others = filteredAndSorted;
+                      }
+                      final hasFavorites = favorites.isNotEmpty;
+                      final showOthersHeader =
+                          hasFavorites && others.isNotEmpty;
+                      // Total rows = favorites header? + favorites + others header? + others
+                      final itemCount =
+                          (hasFavorites ? 1 : 0) +
+                          favorites.length +
+                          (showOthersHeader ? 1 : 0) +
+                          others.length;
+                      return ListView.builder(
+                        itemCount: itemCount,
+                        itemBuilder: (context, index) {
+                          var i = index;
+                          if (hasFavorites) {
+                            if (i == 0) {
+                              return _sectionHeader(
+                                context,
+                                context.l10n.contacts_sectionFavorites,
+                              );
+                            }
+                            i -= 1;
+                          }
+                          // Favorite contacts
+                          if (i < favorites.length) {
+                            return _buildTile(context, connector, favorites[i]);
+                          }
+                          i -= favorites.length;
+
+                          // Others header
+                          if (showOthersHeader) {
+                            if (i == 0) {
+                              return _sectionHeader(
+                                context,
+                                context.l10n.contacts_sectionAll,
+                              );
+                            }
+                            i -= 1;
+                          }
+                          // Other contacts
+                          return _buildTile(context, connector, others[i]);
+                        },
                       );
                     },
                   ),
@@ -1443,6 +1486,34 @@ class _ContactsScreenState extends State<ContactsScreen>
           ),
         ],
       ),
+    );
+  }
+
+  Widget _sectionHeader(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      child: Text(
+        title,
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTile(
+    BuildContext context,
+    MeshCoreConnector connector,
+    Contact contact,
+  ) {
+    return _ContactTile(
+      contact: contact,
+      lastSeen: _resolveLastSeen(contact),
+      unreadCount: connector.getUnreadCountForContact(contact),
+      isFavorite: contact.isFavorite,
+      onTap: () => _openChat(context, contact),
+      onLongPress: () => _showContactOptions(context, connector, contact),
     );
   }
 }

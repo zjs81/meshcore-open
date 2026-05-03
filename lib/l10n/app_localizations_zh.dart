@@ -635,6 +635,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_enableMessageTracingSubtitle => '显示消息的详细路由和时间元数据';
 
   @override
+  String get appSettings_enableFavoritesSection => 'Separate Favorites Section';
+
+  @override
+  String get appSettings_enableFavoritesSectionSubtitle =>
+      'Show separate favorites section at top of contacts';
+
+  @override
   String get appSettings_notifications => '通知';
 
   @override
@@ -3580,6 +3587,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get contacts_contactAdvertCopyFailed => '复制广播到剪贴板失败。';
+
+  @override
+  String get contacts_sectionFavorites => 'Favorites';
+
+  @override
+  String get contacts_sectionAll => 'All Contacts';
 
   @override
   String get notification_activityTitle => 'MeshCore 活动';
