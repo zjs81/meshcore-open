@@ -460,77 +460,81 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     return ChatZoomWrapper(
-      child: ListView.builder(
-        reverse: true, // List grows from bottom up
-        controller: _scrollController,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-        itemCount: itemCount,
-        itemBuilder: (context, index) {
-          // Loading indicator now appears at end (bottom) of reversed list
-          if (_isLoadingOlder && index == itemCount - 1) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Center(
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: ListView.builder(
+          reverse: true, // List grows from bottom up
+          controller: _scrollController,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          itemCount: itemCount,
+          itemBuilder: (context, index) {
+            // Loading indicator now appears at end (bottom) of reversed list
+            if (_isLoadingOlder && index == itemCount - 1) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Center(
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
                 ),
-              ),
-            );
-          }
-          final messageIndex = index;
-          Contact contact = _resolveContact(connector);
-          final message = reversedMessages[messageIndex];
-          String fourByteHex = '';
-          if (contact.type == advTypeRoom) {
-            contact = _resolveContactFrom4Bytes(
-              connector,
-              message.fourByteRoomContactKey.isEmpty
-                  ? Uint8List.fromList([0, 0, 0, 0])
-                  : message.fourByteRoomContactKey,
-            );
-            fourByteHex = message.fourByteRoomContactKey
-                .map((b) => b.toRadixString(16).padLeft(2, '0'))
-                .join()
-                .toUpperCase();
-          }
+              );
+            }
+            final messageIndex = index;
+            Contact contact = _resolveContact(connector);
+            final message = reversedMessages[messageIndex];
+            String fourByteHex = '';
+            if (contact.type == advTypeRoom) {
+              contact = _resolveContactFrom4Bytes(
+                connector,
+                message.fourByteRoomContactKey.isEmpty
+                    ? Uint8List.fromList([0, 0, 0, 0])
+                    : message.fourByteRoomContactKey,
+              );
+              fourByteHex = message.fourByteRoomContactKey
+                  .map((b) => b.toRadixString(16).padLeft(2, '0'))
+                  .join()
+                  .toUpperCase();
+            }
 
-          return Builder(
-            builder: (context) {
-              final textScale = context.select<ChatTextScaleService, double>(
-                (service) => service.scale,
-              );
-              final resolvedContact = _resolveContact(connector);
-              final bubble = _MessageBubble(
-                message: message,
-                senderName: resolvedContact.type == advTypeRoom
-                    ? "${contact.name} [$fourByteHex]"
-                    : contact.name,
-                sourceId: widget.contact.publicKeyHex,
-                isRoomServer: resolvedContact.type == advTypeRoom,
-                textScale: textScale,
-                onTap: () => _openMessagePath(message, contact),
-                onLongPress: () => _showMessageActions(message, contact),
-                onRetryReaction: (msg, emoji) =>
-                    _sendReaction(msg, contact, emoji),
-              );
-              final isUnreadAnchor =
-                  _unreadDividerMessageId != null &&
-                  message.messageId == _unreadDividerMessageId;
-              final child = isUnreadAnchor
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [const UnreadDivider(), bubble],
-                    )
-                  : bubble;
-              if (identical(message, _pendingUnreadScrollTarget)) {
-                return KeyedSubtree(key: _unreadScrollKey, child: child);
-              }
-              return child;
-            },
-          );
-        },
+            return Builder(
+              builder: (context) {
+                final textScale = context.select<ChatTextScaleService, double>(
+                  (service) => service.scale,
+                );
+                final resolvedContact = _resolveContact(connector);
+                final bubble = _MessageBubble(
+                  message: message,
+                  senderName: resolvedContact.type == advTypeRoom
+                      ? "${contact.name} [$fourByteHex]"
+                      : contact.name,
+                  sourceId: widget.contact.publicKeyHex,
+                  isRoomServer: resolvedContact.type == advTypeRoom,
+                  textScale: textScale,
+                  onTap: () => _openMessagePath(message, contact),
+                  onLongPress: () => _showMessageActions(message, contact),
+                  onRetryReaction: (msg, emoji) =>
+                      _sendReaction(msg, contact, emoji),
+                );
+                final isUnreadAnchor =
+                    _unreadDividerMessageId != null &&
+                    message.messageId == _unreadDividerMessageId;
+                final child = isUnreadAnchor
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [const UnreadDivider(), bubble],
+                      )
+                    : bubble;
+                if (identical(message, _pendingUnreadScrollTarget)) {
+                  return KeyedSubtree(key: _unreadScrollKey, child: child);
+                }
+                return child;
+              },
+            );
+          },
+        ),
       ),
     );
   }

@@ -323,58 +323,67 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                   return Stack(
                     children: [
                       ChatZoomWrapper(
-                        child: ListView.builder(
-                          reverse: true, // List grows from bottom up
-                          controller: _scrollController,
-                          padding: const EdgeInsets.all(8),
-                          itemCount: itemCount,
-                          itemBuilder: (context, index) {
-                            // Loading indicator now appears at end (bottom) of reversed list
-                            if (_isLoadingOlder && index == itemCount - 1) {
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () => FocusScope.of(context).unfocus(),
+                          child: ListView.builder(
+                            reverse: true, // List grows from bottom up
+                            controller: _scrollController,
+                            padding: const EdgeInsets.all(8),
+                            itemCount: itemCount,
+                            itemBuilder: (context, index) {
+                              // Loading indicator now appears at end (bottom) of reversed list
+                              if (_isLoadingOlder && index == itemCount - 1) {
+                                return const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
                                     ),
                                   ),
+                                );
+                              }
+                              final messageIndex = index;
+                              final message = reversedMessages[messageIndex];
+                              if (!_messageKeys.containsKey(
+                                message.messageId,
+                              )) {
+                                _messageKeys[message.messageId] = GlobalKey();
+                              }
+                              final isUnreadAnchor =
+                                  _unreadDividerMessageId != null &&
+                                  message.messageId == _unreadDividerMessageId;
+                              return Container(
+                                key: _messageKeys[message.messageId]!,
+                                child: Builder(
+                                  builder: (context) {
+                                    final textScale = context
+                                        .select<ChatTextScaleService, double>(
+                                          (service) => service.scale,
+                                        );
+                                    final bubble = _buildMessageBubble(
+                                      message,
+                                      textScale,
+                                    );
+                                    if (isUnreadAnchor) {
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const UnreadDivider(),
+                                          bubble,
+                                        ],
+                                      );
+                                    }
+                                    return bubble;
+                                  },
                                 ),
                               );
-                            }
-                            final messageIndex = index;
-                            final message = reversedMessages[messageIndex];
-                            if (!_messageKeys.containsKey(message.messageId)) {
-                              _messageKeys[message.messageId] = GlobalKey();
-                            }
-                            final isUnreadAnchor =
-                                _unreadDividerMessageId != null &&
-                                message.messageId == _unreadDividerMessageId;
-                            return Container(
-                              key: _messageKeys[message.messageId]!,
-                              child: Builder(
-                                builder: (context) {
-                                  final textScale = context
-                                      .select<ChatTextScaleService, double>(
-                                        (service) => service.scale,
-                                      );
-                                  final bubble = _buildMessageBubble(
-                                    message,
-                                    textScale,
-                                  );
-                                  if (isUnreadAnchor) {
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [const UnreadDivider(), bubble],
-                                    );
-                                  }
-                                  return bubble;
-                                },
-                              ),
-                            );
-                          },
+                            },
+                          ),
                         ),
                       ),
                       JumpToBottomButton(scrollController: _scrollController),
