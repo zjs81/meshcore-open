@@ -2311,5 +2311,6 @@
   "chat_newMessages": "Nieuwe berichten",
   "chat_markAsUnread": "Markeer als ongelezen",
   "settings_companionDebugLogSubtitle": "BLE/TCP/USB commando's, antwoorden en ruwe data",
-  "repeater_chanUtil": "Gebruik van het kanaal"
+  "repeater_chanUtil": "Gebruik van het kanaal",
+  "contact_connectCompanion": "Maak verbinding met een companion om repeater- en kamerserverfuncties te gebruiken."
 }

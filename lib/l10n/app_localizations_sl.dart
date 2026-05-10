@@ -4267,4 +4267,8 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion =>
+      'Povežite se s spremljevalnikom za dostop do funkcij ponavljalnika in strežnika sob.';
 }

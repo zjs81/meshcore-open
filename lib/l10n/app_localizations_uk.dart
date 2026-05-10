@@ -4304,4 +4304,8 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Невідомо';
+
+  @override
+  String get contact_connectCompanion =>
+      'Підключіться до супутнього пристрою, щоб отримати доступ до функцій ретранслятора та сервера кімнат.';
 }

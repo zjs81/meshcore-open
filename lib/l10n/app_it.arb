@@ -2311,5 +2311,6 @@
   "settings_companionDebugLog": "Registro di debug per il supporto",
   "chat_newMessages": "Nuovi messaggi",
   "chat_markAsUnread": "Segna come non letto",
-  "repeater_chanUtil": "Utilizzo del canale"
+  "repeater_chanUtil": "Utilizzo del canale",
+  "contact_connectCompanion": "Connettiti a un dispositivo companion per accedere alle funzionalità di ripetitore e server stanza."
 }

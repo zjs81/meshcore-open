@@ -2366,5 +2366,6 @@
   "contact_typeRepeater": "Repeater",
   "contact_typeRoom": "Room",
   "contact_typeSensor": "Sensor",
-  "contact_typeUnknown": "Unknown"
+  "contact_typeUnknown": "Unknown",
+  "contact_connectCompanion": "Connect to a companion to access repeater and room server features."
 }

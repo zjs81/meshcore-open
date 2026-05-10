@@ -2349,5 +2349,6 @@
   "chat_newMessages": "Új üzenetek",
   "settings_companionDebugLog": "Párhuzamos hibakeresési napló",
   "settings_companionDebugLogSubtitle": "BLE/TCP/USB parancsok, válaszok és alapvető adatok",
-  "repeater_chanUtil": "Csatorna-használat"
+  "repeater_chanUtil": "Csatorna-használat",
+  "contact_connectCompanion": "Csatlakozzon egy kísérőhöz a ismétlő és szobaszerver funkciók eléréséhez."
 }

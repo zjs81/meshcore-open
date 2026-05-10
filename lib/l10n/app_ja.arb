@@ -2349,5 +2349,6 @@
   "settings_companionDebugLog": "同伴デバッグログ",
   "chat_newMessages": "新しいメッセージ",
   "chat_markAsUnread": "未読としてマークする",
-  "repeater_chanUtil": "チャンネルの利用状況"
+  "repeater_chanUtil": "チャンネルの利用状況",
+  "contact_connectCompanion": "コネクトしてリピーターとルームサーバー機能にアクセス"
 }

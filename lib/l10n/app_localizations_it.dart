@@ -4297,4 +4297,8 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion =>
+      'Connettiti a un dispositivo companion per accedere alle funzionalità di ripetitore e server stanza.';
 }

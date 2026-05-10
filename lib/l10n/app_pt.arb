@@ -2311,5 +2311,6 @@
   "settings_companionDebugLogSubtitle": "Comandos, respostas e dados brutos para protocolos BLE/TCP/USB",
   "chat_markAsUnread": "Marcar como não lido",
   "chat_newMessages": "Novas mensagens",
-  "repeater_chanUtil": "Utilização do canal"
+  "repeater_chanUtil": "Utilização do canal",
+  "contact_connectCompanion": "Conecte-se a um dispositivo companion para acessar as funcionalidades de repetidor e servidor de salas."
 }

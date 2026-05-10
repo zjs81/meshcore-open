@@ -4063,4 +4063,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion => 'コネクトしてリピーターとルームサーバー機能にアクセス';
 }

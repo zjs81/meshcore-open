@@ -19,7 +19,6 @@ import '../services/ui_view_state_service.dart';
 import '../utils/contact_search.dart';
 import '../storage/contact_group_store.dart';
 import '../utils/dialog_utils.dart';
-import '../utils/disconnect_navigation_mixin.dart';
 import '../utils/emoji_utils.dart';
 import '../utils/route_transitions.dart';
 import '../widgets/list_filter_widget.dart';
@@ -34,6 +33,7 @@ import 'chat_screen.dart';
 import 'discovery_screen.dart';
 import 'map_screen.dart';
 import 'repeater_hub_screen.dart';
+import 'scanner_screen.dart';
 import 'settings_screen.dart';
 
 enum RoomLoginDestination { chat, management }
@@ -50,7 +50,7 @@ class ContactsScreen extends StatefulWidget {
 }
 
 class _ContactsScreenState extends State<ContactsScreen>
-    with DisconnectNavigationMixin {
+{
   final TextEditingController _searchController = TextEditingController();
   final ContactGroupStore _groupStore = ContactGroupStore();
   MeshCoreConnector? _scopeSyncConnector;
@@ -306,11 +306,6 @@ class _ContactsScreenState extends State<ContactsScreen>
   Widget build(BuildContext context) {
     final connector = context.watch<MeshCoreConnector>();
 
-    // Auto-navigate back to scanner if disconnected
-    if (!checkConnectionAndNavigate(connector)) {
-      return const SizedBox.shrink();
-    }
-
     final allowBack = !connector.isConnected;
     return PopScope(
       canPop: allowBack,
@@ -378,16 +373,33 @@ class _ContactsScreenState extends State<ContactsScreen>
             ),
             PopupMenuButton(
               itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: Row(
-                    children: [
-                      const Icon(Icons.logout, color: Colors.red),
-                      const SizedBox(width: 8),
-                      Text(context.l10n.common_disconnect),
-                    ],
+                if (connector.isConnected)
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        const Icon(Icons.logout, color: Colors.red),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.common_disconnect),
+                      ],
+                    ),
+                    onTap: () => _disconnect(context, connector),
+                  )
+                else
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        const Icon(Icons.bluetooth_searching),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.common_connect),
+                      ],
+                    ),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ScannerScreen(),
+                      ),
+                    ),
                   ),
-                  onTap: () => _disconnect(context, connector),
-                ),
                 PopupMenuItem(
                   child: Row(
                     children: [
@@ -965,6 +977,11 @@ class _ContactsScreenState extends State<ContactsScreen>
   }
 
   void _showRepeaterLogin(BuildContext context, Contact repeater) {
+    final connector = context.read<MeshCoreConnector>();
+    if (!connector.isConnected) {
+      _showCompanionRequiredDialog(context);
+      return;
+    }
     showDialog(
       context: context,
       builder: (context) => RepeaterLoginDialog(
@@ -991,6 +1008,11 @@ class _ContactsScreenState extends State<ContactsScreen>
     Contact room,
     RoomLoginDestination destination,
   ) {
+    final connector = context.read<MeshCoreConnector>();
+    if (!connector.isConnected) {
+      _showCompanionRequiredDialog(context);
+      return;
+    }
     showDialog(
       context: context,
       builder: (context) => RoomLoginDialog(
@@ -1015,6 +1037,22 @@ class _ContactsScreenState extends State<ContactsScreen>
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _showCompanionRequiredDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(context.l10n.scanner_notConnected),
+        content: Text(context.l10n.contact_connectCompanion),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(context.l10n.common_ok),
+          ),
+        ],
       ),
     );
   }

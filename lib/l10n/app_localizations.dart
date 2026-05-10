@@ -7335,6 +7335,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unknown'**
   String get contact_typeUnknown;
+
+  /// No description provided for @contact_connectCompanion.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to a companion to access repeater and room server features.'**
+  String get contact_connectCompanion;
 }
 
 class _AppLocalizationsDelegate

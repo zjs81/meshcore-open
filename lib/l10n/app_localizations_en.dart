@@ -4210,4 +4210,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion =>
+      'Connect to a companion to access repeater and room server features.';
 }

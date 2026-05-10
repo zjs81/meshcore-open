@@ -2339,5 +2339,6 @@
   "chat_newMessages": "Nuevos mensajes",
   "settings_companionDebugLogSubtitle": "Comandos, respuestas y datos brutos para protocolos BLE/TCP/USB",
   "chat_markAsUnread": "Marcar como no leído",
-  "repeater_chanUtil": "Utilización del canal"
+  "repeater_chanUtil": "Utilización del canal",
+  "contact_connectCompanion": "Conéctate a un compañero para acceder a las funciones de repetidor y servidor de sala."
 }

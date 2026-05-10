@@ -3,6 +3,7 @@ class PathRecord {
   final int tripTimeMs;
   final DateTime? timestamp;
   final bool wasFloodDiscovery;
+  final int byteCount;
   final List<int> pathBytes;
   final int successCount;
   final int failureCount;
@@ -17,6 +18,7 @@ class PathRecord {
     required this.successCount,
     required this.failureCount,
     this.routeWeight = 1.0,
+    this.byteCount = 0,
   });
 
   String get displayText =>

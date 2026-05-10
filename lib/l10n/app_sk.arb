@@ -2311,5 +2311,6 @@
   "settings_companionDebugLogSubtitle": "Príkazy, odpovede a surové dáta pre protokoly BLE/TCP/USB",
   "settings_companionDebugLog": "Logovanie pre ladenie (sprievodný log)",
   "chat_newMessages": "Nové správy",
-  "repeater_chanUtil": "Využitie kanálu"
+  "repeater_chanUtil": "Využitie kanálu",
+  "contact_connectCompanion": "Pripojte sa k sprievodcovi a získajte prístup k funkciám opakovača a serveru miestností."
 }

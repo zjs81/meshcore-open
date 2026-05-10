@@ -4269,4 +4269,8 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion =>
+      'Pripojte sa k sprievodcovi a získajte prístup k funkciám opakovača a serveru miestností.';
 }

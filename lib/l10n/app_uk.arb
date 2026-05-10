@@ -2291,5 +2291,6 @@
   "settings_companionDebugLogSubtitle": "Команди, відповіді та необроблена інформація для протоколів BLE/TCP/USB",
   "chat_newMessages": "Нові повідомлення",
   "chat_markAsUnread": "Позначити як непрочитане",
-  "repeater_chanUtil": "Використання каналу"
+  "repeater_chanUtil": "Використання каналу",
+  "contact_connectCompanion": "Підключіться до супутнього пристрою, щоб отримати доступ до функцій ретранслятора та сервера кімнат."
 }

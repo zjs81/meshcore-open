@@ -4303,4 +4303,8 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Неизвестно';
+
+  @override
+  String get contact_connectCompanion =>
+      'Подключитесь к компаньону, чтобы получить доступ к функциям ретранслятора и сервера комнат.';
 }

@@ -3938,4 +3938,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion => '连接伴机以访问中继器和房间服务器功能。';
 }

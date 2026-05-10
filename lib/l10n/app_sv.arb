@@ -2311,5 +2311,6 @@
   "settings_companionDebugLog": "Följande felsökningslogg",
   "chat_newMessages": "Nya meddelanden",
   "settings_companionDebugLogSubtitle": "BLE/TCP/USB-kommandon, svar och rådata",
-  "repeater_chanUtil": "Användning av kanal"
+  "repeater_chanUtil": "Användning av kanal",
+  "contact_connectCompanion": "Anslut till en sällskapstjänst för att komma åt upprepning och rumsserverfunktioner."
 }

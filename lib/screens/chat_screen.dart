@@ -414,7 +414,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ],
                 ),
               ),
-              _buildInputBar(connector),
+              if (connector.isConnected) _buildInputBar(connector),
             ],
           );
         },
@@ -693,6 +693,9 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _sendMessage(MeshCoreConnector connector) async {
+    if (!connector.isConnected) {
+      return;
+    }
     final text = _textController.text.trim();
     if (text.isEmpty) return;
 

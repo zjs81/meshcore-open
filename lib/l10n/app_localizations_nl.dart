@@ -4273,4 +4273,8 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion =>
+      'Maak verbinding met een companion om repeater- en kamerserverfuncties te gebruiken.';
 }

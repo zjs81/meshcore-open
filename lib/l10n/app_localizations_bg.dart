@@ -4288,4 +4288,8 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion =>
+      'Свържете се с придружител, за да получите достъп до функциите на ретранслатора и сървъра за стаи.';
 }

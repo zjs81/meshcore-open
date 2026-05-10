@@ -4292,4 +4292,8 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion =>
+      'Conéctate a un compañero para acceder a las funciones de repetidor y servidor de sala.';
 }

@@ -2349,5 +2349,6 @@
   "settings_companionDebugLogSubtitle": "Polecenia, odpowiedzi i surowe dane związane z protokołami BLE/TCP/USB",
   "chat_markAsUnread": "Oznacz jako nieprzeczytane",
   "settings_companionDebugLog": "Log debugowania (dla pomocy w rozwiązywaniu problemów)",
-  "repeater_chanUtil": "Wykorzystanie kanału"
+  "repeater_chanUtil": "Wykorzystanie kanału",
+  "contact_connectCompanion": "Połącz się z towarzyszem, aby uzyskać dostęp do funkcji powtarzacza i serwera pokoi."
 }

@@ -4309,4 +4309,8 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion =>
+      'Połącz się z towarzyszem, aby uzyskać dostęp do funkcji powtarzacza i serwera pokoi.';
 }

@@ -31,6 +31,7 @@ import '../widgets/repeater_login_dialog.dart';
 import '../widgets/room_login_dialog.dart';
 import '../helpers/snack_bar_builder.dart';
 import 'repeater_hub_screen.dart';
+import 'scanner_screen.dart';
 import 'settings_screen.dart';
 import 'line_of_sight_map_screen.dart';
 
@@ -466,16 +467,33 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 PopupMenuButton(
                   itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: Row(
-                        children: [
-                          const Icon(Icons.logout, color: Colors.red),
-                          const SizedBox(width: 8),
-                          Text(context.l10n.common_disconnect),
-                        ],
+                    if (connector.isConnected)
+                      PopupMenuItem(
+                        child: Row(
+                          children: [
+                            const Icon(Icons.logout, color: Colors.red),
+                            const SizedBox(width: 8),
+                            Text(context.l10n.common_disconnect),
+                          ],
+                        ),
+                        onTap: () => _disconnect(context, connector),
+                      )
+                    else
+                      PopupMenuItem(
+                        child: Row(
+                          children: [
+                            const Icon(Icons.bluetooth_searching),
+                            const SizedBox(width: 8),
+                            Text(context.l10n.common_connect),
+                          ],
+                        ),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ScannerScreen(),
+                          ),
+                        ),
                       ),
-                      onTap: () => _disconnect(context, connector),
-                    ),
                     PopupMenuItem(
                       child: Row(
                         children: [

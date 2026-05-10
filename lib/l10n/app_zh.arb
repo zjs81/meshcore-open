@@ -2316,5 +2316,6 @@
   "settings_companionDebugLog": "调试日志",
   "chat_newMessages": "新的消息",
   "settings_companionDebugLogSubtitle": "BLE/TCP/USB 协议、响应和原始数据",
-  "repeater_chanUtil": "频道利用率"
+  "repeater_chanUtil": "频道利用率",
+  "contact_connectCompanion": "连接伴机以访问中继器和房间服务器功能。"
 }

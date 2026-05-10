@@ -4309,4 +4309,8 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion =>
+      'Csatlakozzon egy kísérőhöz a ismétlő és szobaszerver funkciók eléréséhez.';
 }

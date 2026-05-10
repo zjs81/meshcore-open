@@ -4241,4 +4241,8 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion =>
+      'Anslut till en sällskapstjänst för att komma åt upprepning och rumsserverfunktioner.';
 }

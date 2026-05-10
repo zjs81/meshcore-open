@@ -2349,5 +2349,6 @@
   "chat_newMessages": "새로운 메시지",
   "settings_companionDebugLogSubtitle": "BLE/TCP/USB 명령어, 응답 및 원시 데이터",
   "chat_markAsUnread": "미리 읽지 않음으로 표시",
-  "repeater_chanUtil": "채널 활용도"
+  "repeater_chanUtil": "채널 활용도",
+  "contact_connectCompanion": "리피터 및 룸 서버 기능에 액세스하려면 컴패니언에 연결하세요."
 }

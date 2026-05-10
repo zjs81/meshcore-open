@@ -4064,4 +4064,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion => '리피터 및 룸 서버 기능에 액세스하려면 컴패니언에 연결하세요.';
 }

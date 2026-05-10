@@ -5,10 +5,10 @@ import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/chrome_required_screen.dart';
+import 'screens/contacts_screen.dart';
 import 'utils/platform_info.dart';
 
 import 'connector/meshcore_connector.dart';
-import 'screens/scanner_screen.dart';
 import 'services/storage_service.dart';
 import 'services/message_retry_service.dart';
 import 'services/path_history_service.dart';
@@ -81,13 +81,8 @@ void main() async {
     timeoutPredictionService: timeoutPredictionService,
   );
 
-  await connector.loadContactCache();
-  await connector.loadChannelSettings();
-  await connector.loadCachedChannels();
-
-  // Load persisted channel messages
-  await connector.loadAllChannelMessages();
-  await connector.loadUnreadState();
+  await connector.restoreLastCompanionScope();
+  await connector.loadAllCachedDataForCurrentCompanion();
 
   runApp(
     MeshCoreApp(
@@ -218,7 +213,7 @@ class MeshCoreApp extends StatelessWidget {
             },
             home: (PlatformInfo.isWeb && !PlatformInfo.isChrome)
                 ? const ChromeRequiredScreen()
-                : const ScannerScreen(),
+                : const ContactsScreen(),
           );
         },
       ),

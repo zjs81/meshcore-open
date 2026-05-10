@@ -17,7 +17,6 @@ import '../models/channel.dart';
 import '../models/community.dart';
 import '../storage/community_store.dart';
 import '../utils/dialog_utils.dart';
-import '../utils/disconnect_navigation_mixin.dart';
 import '../utils/route_transitions.dart';
 import '../widgets/list_filter_widget.dart';
 import '../widgets/empty_state.dart';
@@ -29,6 +28,7 @@ import 'channel_chat_screen.dart';
 import 'community_qr_scanner_screen.dart';
 import 'contacts_screen.dart';
 import 'map_screen.dart';
+import 'scanner_screen.dart';
 import 'settings_screen.dart';
 
 class ChannelsScreen extends StatefulWidget {
@@ -41,7 +41,7 @@ class ChannelsScreen extends StatefulWidget {
 }
 
 class _ChannelsScreenState extends State<ChannelsScreen>
-    with DisconnectNavigationMixin {
+{
   final TextEditingController _searchController = TextEditingController();
   final CommunityStore _communityStore = CommunityStore();
   Timer? _searchDebounce;
@@ -117,11 +117,6 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     final channelMessageStore = ChannelMessageStore();
     channelMessageStore.setPublicKeyHex = connector.selfPublicKeyHex;
 
-    // Auto-navigate back to scanner if disconnected
-    if (!checkConnectionAndNavigate(connector)) {
-      return const SizedBox.shrink();
-    }
-
     final allowBack = !connector.isConnected;
 
     return PopScope(
@@ -134,16 +129,33 @@ class _ChannelsScreenState extends State<ChannelsScreen>
           actions: [
             PopupMenuButton(
               itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: Row(
-                    children: [
-                      const Icon(Icons.logout, color: Colors.red),
-                      const SizedBox(width: 8),
-                      Text(context.l10n.common_disconnect),
-                    ],
+                if (connector.isConnected)
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        const Icon(Icons.logout, color: Colors.red),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.common_disconnect),
+                      ],
+                    ),
+                    onTap: () => _disconnect(context),
+                  )
+                else
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        const Icon(Icons.bluetooth_searching),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.common_connect),
+                      ],
+                    ),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ScannerScreen(),
+                      ),
+                    ),
                   ),
-                  onTap: () => _disconnect(context),
-                ),
                 if (_communities.isNotEmpty)
                   PopupMenuItem(
                     child: Row(

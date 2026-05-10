@@ -2339,5 +2339,6 @@
   "chat_newMessages": "Neue Nachrichten",
   "settings_companionDebugLog": "Debug-Protokoll für die Begleitsoftware",
   "settings_companionDebugLogSubtitle": "BLE/TCP/USB-Befehle, Antworten und Rohdaten",
-  "repeater_chanUtil": "Nutzung des Kanals"
+  "repeater_chanUtil": "Nutzung des Kanals",
+  "contact_connectCompanion": "Verbinden Sie sich mit einem Companion, um auf die Funktionen des Repeaters und des Raumservers zuzugreifen."
 }

@@ -4305,4 +4305,8 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get contact_typeUnknown => 'Unknown';
+
+  @override
+  String get contact_connectCompanion =>
+      'Verbinden Sie sich mit einem Companion, um auf die Funktionen des Repeaters und des Raumservers zuzugreifen.';
 }
