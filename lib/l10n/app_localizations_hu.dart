@@ -1212,6 +1212,19 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
+  String get channels_changeWidgetColor => 'Widget színe';
+
+  @override
+  String get channels_changeWidgetTextColor => 'A widget szövegének színe';
+
+  @override
+  String get channels_changeGroupEmpty => 'Itt egyelőre üres';
+
+  @override
+  String get channels_allowOrderingInGroup =>
+      'Csatornák rendezésének engedélyezése a csoporton belül';
+
+  @override
   String get settings_cyr2latProfileAdd => 'Cyr2Lat-profil hozzáadása';
 
   @override

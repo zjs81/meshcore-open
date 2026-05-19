@@ -1469,6 +1469,10 @@
   "channels_scanQrCodeComingSoon": "Arriverà presto",
   "channels_enterHashtag": "Inserisci hashtag",
   "channels_hashtagHint": "es. #team",
+  "channels_changeWidgetColor": "Colore del widget",
+  "channels_changeWidgetTextColor": "Colore del testo del widget",
+  "channels_changeGroupEmpty": "Qui per ora è vuoto",
+  "channels_allowOrderingInGroup": "Consenti l'ordinamento dei canali nel gruppo",
   "@neighbors_unknownContact": {
     "placeholders": {
       "pubkey": {

@@ -4,6 +4,8 @@ import 'prefs_manager.dart';
 class ChannelSettingsStore {
   static const String _keyPrefix = 'channel_smaz_';
   static const String _cyr2latKeyPrefix = 'channel_cyr2lat_';
+  static const String _widgetColorKeyPrefix = 'channel_widget_color_';
+  static const String _widgetTextColorKeyPrefix = 'channel_widget_text_color_';
 
   String publicKeyHex = '';
   set setPublicKeyHex(String value) =>
@@ -11,6 +13,8 @@ class ChannelSettingsStore {
 
   String get keyFor => '$_keyPrefix$publicKeyHex';
   String get keyForCyr2Lat => '$_cyr2latKeyPrefix$publicKeyHex';
+  String get keyForWidgetColor => '$_widgetColorKeyPrefix$publicKeyHex';
+  String get keyForWidgetTextColor => '$_widgetTextColorKeyPrefix$publicKeyHex';
 
   Future<bool> loadSmazEnabled(int channelIndex) async {
     if (publicKeyHex.isEmpty) {
@@ -98,6 +102,60 @@ class ChannelSettingsStore {
       await prefs.remove(key);
     } else {
       await prefs.setString(key, profileId);
+    }
+  }
+
+  Future<int?> loadWidgetColor(int channelIndex) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn(
+        'Public key hex is not set. Cannot load channel widget color.',
+      );
+      return null;
+    }
+    final prefs = PrefsManager.instance;
+    return prefs.getInt('$keyForWidgetColor$channelIndex');
+  }
+
+  Future<void> saveWidgetColor(int channelIndex, int? colorValue) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn(
+        'Public key hex is not set. Cannot save channel widget color.',
+      );
+      return;
+    }
+    final prefs = PrefsManager.instance;
+    final key = '$keyForWidgetColor$channelIndex';
+    if (colorValue == null) {
+      await prefs.remove(key);
+    } else {
+      await prefs.setInt(key, colorValue);
+    }
+  }
+
+  Future<int?> loadWidgetTextColor(int channelIndex) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn(
+        'Public key hex is not set. Cannot load channel widget text color.',
+      );
+      return null;
+    }
+    final prefs = PrefsManager.instance;
+    return prefs.getInt('$keyForWidgetTextColor$channelIndex');
+  }
+
+  Future<void> saveWidgetTextColor(int channelIndex, int? colorValue) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn(
+        'Public key hex is not set. Cannot save channel widget text color.',
+      );
+      return;
+    }
+    final prefs = PrefsManager.instance;
+    final key = '$keyForWidgetTextColor$channelIndex';
+    if (colorValue == null) {
+      await prefs.remove(key);
+    } else {
+      await prefs.setInt(key, colorValue);
     }
   }
 }

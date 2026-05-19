@@ -1480,6 +1480,10 @@
   "channels_scanQrCodeComingSoon": "Скоро буде",
   "channels_enterHashtag": "Введіть хештег",
   "channels_hashtagHint": "напр. #команда",
+  "channels_changeWidgetColor": "Колір віджета",
+  "channels_changeWidgetTextColor": "Колір тексту віджета",
+  "channels_changeGroupEmpty": "Тут поки порожньо",
+  "channels_allowOrderingInGroup": "Дозволити впорядкування каналів у групі",
   "@neighbors_unknownContact": {
     "placeholders": {
       "pubkey": {

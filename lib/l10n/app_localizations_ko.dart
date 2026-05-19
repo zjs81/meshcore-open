@@ -1146,6 +1146,18 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get channels_changeWidgetColor => '위젯 색상';
+
+  @override
+  String get channels_changeWidgetTextColor => '위젯 텍스트 색상';
+
+  @override
+  String get channels_changeGroupEmpty => '아직 여기는 비어 있습니다';
+
+  @override
+  String get channels_allowOrderingInGroup => '그룹 내 채널 정렬 허용';
+
+  @override
   String get settings_cyr2latProfileAdd => 'Cyr2Lat 프로필 추가';
 
   @override

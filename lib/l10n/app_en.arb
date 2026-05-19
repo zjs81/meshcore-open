@@ -600,6 +600,10 @@
       }
     }
   },
+  "channels_changeWidgetColor": "Widget's color",
+  "channels_changeWidgetTextColor": "Widget's text color",
+  "channels_changeGroupEmpty": "It's empty here for now",
+  "channels_allowOrderingInGroup": "Allow channels ordering inside of group",
   "settings_cyr2latProfileAdd": "Add Cyr2Lat Profile",
   "settings_cyr2latProfileName": "Profile Name",
   "settings_cyr2latProfileNameEmpty": "Profile name cannot be empty",

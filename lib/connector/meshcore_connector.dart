@@ -293,6 +293,8 @@ class MeshCoreConnector extends ChangeNotifier {
   final Map<int, bool> _channelSmazEnabled = {};
   final Map<int, bool> _channelCyr2LatEnabled = {};
   final Map<int, String?> _channelCyr2LatProfileId = {};
+  final Map<int, int?> _channelWidgetColor = {};
+  final Map<int, int?> _channelWidgetTextColor = {};
   bool _lastSentWasCliCommand =
       false; // Track if last sent message was a CLI command
   final Map<String, bool> _contactSmazEnabled = {};
@@ -957,11 +959,16 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> loadChannelSettings({int? maxChannels}) async {
     _channelSmazEnabled.clear();
     _channelCyr2LatEnabled.clear();
+    _channelWidgetColor.clear();
+    _channelWidgetTextColor.clear();
     final channelCount = maxChannels ?? _maxChannels;
     for (int i = 0; i < channelCount; i++) {
       _channelSmazEnabled[i] = await _channelSettingsStore.loadSmazEnabled(i);
       _channelCyr2LatEnabled[i] = await _channelSettingsStore
           .loadCyr2LatEnabled(i);
+      _channelWidgetColor[i] = await _channelSettingsStore.loadWidgetColor(i);
+      _channelWidgetTextColor[i] = await _channelSettingsStore
+          .loadWidgetTextColor(i);
     }
   }
 
@@ -4639,9 +4646,43 @@ class MeshCoreConnector extends ChangeNotifier {
     });
   }
 
+  void _ensureChannelWidgetColorLoaded(int channelIndex) {
+    if (_channelWidgetColor.containsKey(channelIndex)) return;
+    _channelSettingsStore.loadWidgetColor(channelIndex).then((colorValue) {
+      if (_channelWidgetColor.containsKey(channelIndex) &&
+          _channelWidgetColor[channelIndex] == colorValue) {
+        return;
+      }
+      _channelWidgetColor[channelIndex] = colorValue;
+      notifyListeners();
+    });
+  }
+
+  void _ensureChannelWidgetTextColorLoaded(int channelIndex) {
+    if (_channelWidgetTextColor.containsKey(channelIndex)) return;
+    _channelSettingsStore.loadWidgetTextColor(channelIndex).then((colorValue) {
+      if (_channelWidgetTextColor.containsKey(channelIndex) &&
+          _channelWidgetTextColor[channelIndex] == colorValue) {
+        return;
+      }
+      _channelWidgetTextColor[channelIndex] = colorValue;
+      notifyListeners();
+    });
+  }
+
   String? getChannelCyr2LatProfileId(int channelIndex) {
     _ensureChannelCyr2LatProfileLoaded(channelIndex);
     return _channelCyr2LatProfileId[channelIndex];
+  }
+
+  int? getChannelWidgetColor(int channelIndex) {
+    _ensureChannelWidgetColorLoaded(channelIndex);
+    return _channelWidgetColor[channelIndex];
+  }
+
+  int? getChannelWidgetTextColor(int channelIndex) {
+    _ensureChannelWidgetTextColorLoaded(channelIndex);
+    return _channelWidgetTextColor[channelIndex];
   }
 
   Future<void> setChannelCyr2LatProfileId(
@@ -4651,6 +4692,29 @@ class MeshCoreConnector extends ChangeNotifier {
     if (_channelCyr2LatProfileId[channelIndex] == profileId) return;
     _channelCyr2LatProfileId[channelIndex] = profileId;
     await _channelSettingsStore.saveCyr2LatProfileId(channelIndex, profileId);
+    notifyListeners();
+  }
+
+  Future<void> setChannelWidgetColor(int channelIndex, int? colorValue) async {
+    if (_channelWidgetColor.containsKey(channelIndex) &&
+        _channelWidgetColor[channelIndex] == colorValue) {
+      return;
+    }
+    _channelWidgetColor[channelIndex] = colorValue;
+    await _channelSettingsStore.saveWidgetColor(channelIndex, colorValue);
+    notifyListeners();
+  }
+
+  Future<void> setChannelWidgetTextColor(
+    int channelIndex,
+    int? colorValue,
+  ) async {
+    if (_channelWidgetTextColor.containsKey(channelIndex) &&
+        _channelWidgetTextColor[channelIndex] == colorValue) {
+      return;
+    }
+    _channelWidgetTextColor[channelIndex] = colorValue;
+    await _channelSettingsStore.saveWidgetTextColor(channelIndex, colorValue);
     notifyListeners();
   }
 

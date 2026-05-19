@@ -1210,6 +1210,19 @@ class AppLocalizationsBg extends AppLocalizations {
   }
 
   @override
+  String get channels_changeWidgetColor => 'Цвят на виджета';
+
+  @override
+  String get channels_changeWidgetTextColor => 'Цвят на текста на виджета';
+
+  @override
+  String get channels_changeGroupEmpty => 'Тук засега е празно';
+
+  @override
+  String get channels_allowOrderingInGroup =>
+      'Разрешаване на подреждането на каналите в групата';
+
+  @override
   String get settings_cyr2latProfileAdd => 'Добавяне на профил Cyr2Lat';
 
   @override

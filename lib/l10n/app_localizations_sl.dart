@@ -1194,6 +1194,19 @@ class AppLocalizationsSl extends AppLocalizations {
   }
 
   @override
+  String get channels_changeWidgetColor => 'Barva gradnika';
+
+  @override
+  String get channels_changeWidgetTextColor => 'Barva besedila gradnika';
+
+  @override
+  String get channels_changeGroupEmpty => 'Tukaj je za zdaj prazno';
+
+  @override
+  String get channels_allowOrderingInGroup =>
+      'Dovoli razvrščanje kanalov v skupini';
+
+  @override
   String get settings_cyr2latProfileAdd => 'Dodaj profil Cyr2Lat';
 
   @override

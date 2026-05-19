@@ -1151,6 +1151,18 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get channels_changeWidgetColor => 'ウィジェットの色';
+
+  @override
+  String get channels_changeWidgetTextColor => 'ウィジェットの文字色';
+
+  @override
+  String get channels_changeGroupEmpty => 'ここはまだ空です';
+
+  @override
+  String get channels_allowOrderingInGroup => 'グループ内のチャンネルの並び替えを許可';
+
+  @override
   String get settings_cyr2latProfileAdd => 'Cyr2Latプロファイルの追加';
 
   @override

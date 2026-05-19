@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -214,7 +215,10 @@ class MeshCoreApp extends StatelessWidget {
               // Update notification service with resolved locale
               final locale = Localizations.localeOf(context);
               NotificationService().setLocale(locale);
-              return child ?? const SizedBox.shrink();
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: _systemUiOverlayStyle(context),
+                child: child ?? const SizedBox.shrink(),
+              );
             },
             home: (PlatformInfo.isWeb && !PlatformInfo.isChrome)
                 ? const ChromeRequiredScreen()
@@ -234,6 +238,24 @@ class MeshCoreApp extends StatelessWidget {
       default:
         return ThemeMode.system;
     }
+  }
+
+  SystemUiOverlayStyle _systemUiOverlayStyle(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final iconBrightness = isDark ? Brightness.light : Brightness.dark;
+
+    // Keep Android system bars aligned with the resolved Flutter theme.
+    return SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: iconBrightness,
+      statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+      systemNavigationBarColor: colorScheme.surface,
+      systemNavigationBarIconBrightness: iconBrightness,
+      systemNavigationBarDividerColor: colorScheme.surface,
+      systemNavigationBarContrastEnforced: false,
+    );
   }
 
   Locale? _localeFromSetting(String? languageCode) {

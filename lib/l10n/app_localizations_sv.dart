@@ -1187,6 +1187,19 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
+  String get channels_changeWidgetColor => 'Widgetens färg';
+
+  @override
+  String get channels_changeWidgetTextColor => 'Widgetens textfärg';
+
+  @override
+  String get channels_changeGroupEmpty => 'Det är tomt här än så länge';
+
+  @override
+  String get channels_allowOrderingInGroup =>
+      'Tillåt sortering av kanaler i gruppen';
+
+  @override
   String get settings_cyr2latProfileAdd => 'Lägg till Cyr2Lat-profil';
 
   @override
