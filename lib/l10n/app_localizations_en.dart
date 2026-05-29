@@ -659,6 +659,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Show detailed routing and timing metadata for messages';
 
   @override
+  String get appSettings_enableFavoritesSection => 'Separate Favorites Section';
+
+  @override
+  String get appSettings_enableFavoritesSectionSubtitle =>
+      'Show separate favorites section at top of contacts';
+
+  @override
   String get appSettings_notifications => 'Notifications';
 
   @override
@@ -3810,6 +3817,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get contacts_contactAdvertCopyFailed =>
       'Copying advert to Clipboard failed.';
+
+  @override
+  String get contacts_sectionFavorites => 'Favorites';
+
+  @override
+  String get contacts_sectionAll => 'All Contacts';
 
   @override
   String get notification_activityTitle => 'MeshCore Activity';

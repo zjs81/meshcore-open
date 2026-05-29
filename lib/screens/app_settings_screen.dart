@@ -123,6 +123,18 @@ class AppSettingsScreen extends StatelessWidget {
               settingsService.setEnableMessageTracing(value);
             },
           ),
+          const Divider(height: 1),
+          SwitchListTile(
+            secondary: const Icon(Icons.star_rounded),
+            title: Text(context.l10n.appSettings_enableFavoritesSection),
+            subtitle: Text(
+              context.l10n.appSettings_enableFavoritesSectionSubtitle,
+            ),
+            value: settingsService.settings.enableFavoritesSection,
+            onChanged: (value) {
+              settingsService.setEnableFavoritesSection(value);
+            },
+          ),
         ],
       ),
     );

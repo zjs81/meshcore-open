@@ -1,1 +1,120 @@
-{}
+{
+  "bg": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "de": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "es": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "fr": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "hu": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "it": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "ja": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "ko": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "nl": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "pl": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "pt": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "ru": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "sk": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "sl": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "sv": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "uk": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ],
+
+  "zh": [
+    "appSettings_enableFavoritesSection",
+    "appSettings_enableFavoritesSectionSubtitle",
+    "contacts_sectionFavorites",
+    "contacts_sectionAll"
+  ]
+}

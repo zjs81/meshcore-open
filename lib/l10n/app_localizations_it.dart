@@ -673,6 +673,13 @@ class AppLocalizationsIt extends AppLocalizations {
       'Mostra metadati dettagliati su instradamento e tempi per i messaggi';
 
   @override
+  String get appSettings_enableFavoritesSection => 'Separate Favorites Section';
+
+  @override
+  String get appSettings_enableFavoritesSectionSubtitle =>
+      'Show separate favorites section at top of contacts';
+
+  @override
   String get appSettings_notifications => 'Notifiche';
 
   @override
@@ -3885,6 +3892,12 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get contacts_contactAdvertCopyFailed =>
       'Copia dell\'annuncio nella Clipboard non riuscita.';
+
+  @override
+  String get contacts_sectionFavorites => 'Favorites';
+
+  @override
+  String get contacts_sectionAll => 'All Contacts';
 
   @override
   String get notification_activityTitle => 'Attività MeshCore';

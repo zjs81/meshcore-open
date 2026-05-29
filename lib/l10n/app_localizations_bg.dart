@@ -675,6 +675,13 @@ class AppLocalizationsBg extends AppLocalizations {
       'Показване на подробни метаданни за маршрутизация и синхронизация за съобщения';
 
   @override
+  String get appSettings_enableFavoritesSection => 'Separate Favorites Section';
+
+  @override
+  String get appSettings_enableFavoritesSectionSubtitle =>
+      'Show separate favorites section at top of contacts';
+
+  @override
   String get appSettings_notifications => 'Уведомления';
 
   @override
@@ -3878,6 +3885,12 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get contacts_contactAdvertCopyFailed =>
       'Копирането на обявата в клипборда не успя.';
+
+  @override
+  String get contacts_sectionFavorites => 'Favorites';
+
+  @override
+  String get contacts_sectionAll => 'All Contacts';
 
   @override
   String get notification_activityTitle => 'Активност на MeshCore';

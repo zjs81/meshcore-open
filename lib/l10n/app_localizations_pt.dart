@@ -673,6 +673,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Mostrar metadados detalhados de roteamento e tempo para as mensagens';
 
   @override
+  String get appSettings_enableFavoritesSection => 'Separate Favorites Section';
+
+  @override
+  String get appSettings_enableFavoritesSectionSubtitle =>
+      'Show separate favorites section at top of contacts';
+
+  @override
   String get appSettings_notifications => 'Notificações';
 
   @override
@@ -3876,6 +3883,12 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get contacts_contactAdvertCopyFailed =>
       'Cópia do anúncio para a Área de Transferência falhou.';
+
+  @override
+  String get contacts_sectionFavorites => 'Favorites';
+
+  @override
+  String get contacts_sectionAll => 'All Contacts';
 
   @override
   String get notification_activityTitle => 'Atividade MeshCore';

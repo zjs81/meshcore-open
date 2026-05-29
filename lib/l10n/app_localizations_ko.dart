@@ -645,6 +645,13 @@ class AppLocalizationsKo extends AppLocalizations {
       '메시지에 대한 상세한 경로 및 시간 정보를 표시';
 
   @override
+  String get appSettings_enableFavoritesSection => 'Separate Favorites Section';
+
+  @override
+  String get appSettings_enableFavoritesSectionSubtitle =>
+      'Show separate favorites section at top of contacts';
+
+  @override
   String get appSettings_notifications => '알림';
 
   @override
@@ -3679,6 +3686,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get contacts_contactAdvertCopyFailed => '광고를 클립보드에 복사하는 데 실패했습니다.';
+
+  @override
+  String get contacts_sectionFavorites => 'Favorites';
+
+  @override
+  String get contacts_sectionAll => 'All Contacts';
 
   @override
   String get notification_activityTitle => '메쉬코어 활동';
