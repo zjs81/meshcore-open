@@ -1979,6 +1979,17 @@ class AppLocalizationsUk extends AppLocalizations {
       'Ви впевнені, що хочете відключитись від цього пристрою?';
 
   @override
+  String get dialog_disconnectedTitle => 'Від’єднано';
+
+  @override
+  String get dialog_disconnectedMessage =>
+      'Вас від’єднано від вашого супутника.';
+
+  @override
+  String get dialog_connectCompanion =>
+      'Підключіться до супутнього пристрою, щоб отримати доступ до функцій ретранслятора та сервера кімнат.';
+
+  @override
   String get login_repeaterLogin => 'Вхід у ретранслятор';
 
   @override

@@ -31,6 +31,21 @@ Future<bool> showDisconnectDialog(
   if (confirmed == true) {
     appLogger.info('Disconnect confirmed from popup', tag: 'Connection');
     await connector.disconnect();
+    if (context.mounted) {
+      await showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(context.l10n.dialog_disconnectedTitle),
+          content: Text(context.l10n.dialog_disconnectedMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(context.l10n.common_ok),
+            ),
+          ],
+        ),
+      );
+    }
     return true;
   }
   return false;

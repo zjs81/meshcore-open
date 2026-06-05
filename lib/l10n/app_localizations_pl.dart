@@ -1997,6 +1997,17 @@ class AppLocalizationsPl extends AppLocalizations {
       'Czy na pewno chcesz się odłączyć od tego urządzenia?';
 
   @override
+  String get dialog_disconnectedTitle => 'Rozłączono';
+
+  @override
+  String get dialog_disconnectedMessage =>
+      'Zostałeś rozłączony ze swoim towarzyszem.';
+
+  @override
+  String get dialog_connectCompanion =>
+      'Połącz się z towarzyszem, aby uzyskać dostęp do funkcji powtarzacza i serwera pokoi.';
+
+  @override
   String get login_repeaterLogin => 'Logowanie do przekaźnika';
 
   @override

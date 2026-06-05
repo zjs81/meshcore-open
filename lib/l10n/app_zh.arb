@@ -2358,5 +2358,9 @@
   "settings_companionDebugLog": "调试日志",
   "chat_newMessages": "新的消息",
   "settings_companionDebugLogSubtitle": "BLE/TCP/USB 协议、响应和原始数据",
-  "repeater_chanUtil": "频道利用率"
+  "repeater_chanUtil": "频道利用率",
+  "dialog_connectCompanion": "连接伴机以访问中继器和房间服务器功能。",
+  "dialog_disconnectedTitle": "已断开连接",
+  "dialog_disconnectedMessage": "你已与你的伙伴断开连接。",
+  "contact_connectCompanion": "连接至伴侣设备以访问中继器和房间服务器功能。"
 }

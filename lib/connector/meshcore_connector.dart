@@ -40,6 +40,7 @@ import '../storage/contact_discovery_store.dart';
 import '../storage/contact_settings_store.dart';
 import '../storage/contact_store.dart';
 import '../storage/message_store.dart';
+import '../storage/prefs_manager.dart';
 import '../storage/unread_store.dart';
 import '../utils/app_logger.dart';
 import '../utils/battery_utils.dart';
@@ -124,6 +125,8 @@ class MeshCoreRadioStateSnapshot {
 class MeshCoreConnector extends ChangeNotifier {
   // Message windowing to limit memory usage
   static const int _messageWindowSize = 200;
+  static const String _lastCompanionPublicKeyPref =
+      'last_companion_public_key_hex';
 
   MeshCoreConnectionState _state = MeshCoreConnectionState.disconnected;
   BluetoothDevice? _device;
@@ -498,6 +501,9 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   List<Message> getMessages(Contact contact) {
+    if (!_loadedConversationKeys.contains(contact.publicKeyHex)) {
+      unawaited(_loadMessagesForContact(contact.publicKeyHex));
+    }
     return _conversations[contact.publicKeyHex] ?? [];
   }
 
@@ -702,8 +708,14 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   Future<void> loadCachedChannels() async {
-    _cachedChannels = await _channelStore.loadChannels();
-    _recalculateCachedChannelsUnreadTotal();
+    final loaded = await _channelStore.loadChannels();
+    _cachedChannels = loaded;
+    if (_channels.isEmpty && loaded.isNotEmpty) {
+      _channels
+        ..clear()
+        ..addAll(loaded);
+      notifyListeners();
+    }
   }
 
   void setActiveContact(String? contactKeyHex) {
@@ -965,6 +977,79 @@ class MeshCoreConnector extends ChangeNotifier {
       _ensureContactSmazSettingLoaded(contact.publicKeyHex);
       _ensureContactCyr2LatSettingLoaded(contact.publicKeyHex);
     }
+  }
+
+  Future<void> loadAllCachedDataForCurrentCompanion() async {
+    await loadContactCache();
+    await _loadDiscoveredContactCache();
+    await loadChannelSettings();
+    await loadCachedChannels();
+    await loadAllChannelMessages();
+    await loadUnreadState();
+  }
+
+  Future<void> restoreLastCompanionScope() async {
+    final prefs = PrefsManager.instance;
+    final lastCompanionPublicKeyHex = prefs.getString(
+      _lastCompanionPublicKeyPref,
+    );
+    try {
+      if (lastCompanionPublicKeyHex == null ||
+          lastCompanionPublicKeyHex.trim().isEmpty) {
+        return;
+      }
+      _selfPublicKey = hexToPubKey(lastCompanionPublicKeyHex);
+      _setScopedStorePublicKey(lastCompanionPublicKeyHex);
+    } catch (e) {
+      _appDebugLogService?.error(
+        'Failed to restore last companion scope with public key hex: $lastCompanionPublicKeyHex, error: $e',
+      );
+    }
+  }
+
+  Future<void> loadDiscoveredContactCache() => _loadDiscoveredContactCache();
+
+  void _setScopedStorePublicKey(String publicKeyHex) {
+    _channelMessageStore.setPublicKeyHex = publicKeyHex;
+    _messageStore.setPublicKeyHex = publicKeyHex;
+    _channelOrderStore.setPublicKeyHex = publicKeyHex;
+    _channelSettingsStore.setPublicKeyHex = publicKeyHex;
+    _contactSettingsStore.setPublicKeyHex = publicKeyHex;
+    _contactStore.setPublicKeyHex = publicKeyHex;
+    _channelStore.setPublicKeyHex = publicKeyHex;
+    _unreadStore.setPublicKeyHex = publicKeyHex;
+  }
+
+  void _clearCachedCompanionData() {
+    _contacts.clear();
+    _discoveredContacts.clear();
+    _conversations.clear();
+    _loadedConversationKeys.clear();
+    _channelMessages.clear();
+    _channels.clear();
+    _cachedChannels.clear();
+    _previousChannelsCache.clear();
+    _knownContactKeys.clear();
+    _contactUnreadCount.clear();
+    _unreadStateLoaded = false;
+    notifyListeners();
+  }
+
+  Future<void> _persistLastCompanionScope() async {
+    final keyHex = selfPublicKeyHex;
+    if (keyHex.isEmpty) return;
+    final prefs = PrefsManager.instance;
+    await prefs.setString(_lastCompanionPublicKeyPref, keyHex);
+  }
+
+  Future<void> _reloadOfflineCachesForLastCompanion() async {
+    if (_state != MeshCoreConnectionState.disconnected) {
+      return;
+    }
+    await restoreLastCompanionScope();
+    await loadContactCache();
+    await _loadDiscoveredContactCache();
+    notifyListeners();
   }
 
   Future<void> _loadDiscoveredContactCache() async {
@@ -1537,6 +1622,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _cancelReconnectTimer();
     _manualDisconnect = false;
     _resetConnectionHandshakeState();
+    _clearCachedCompanionData();
     _activeTransport = MeshCoreTransportType.usb;
     _setState(MeshCoreConnectionState.connecting);
 
@@ -1620,6 +1706,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _cancelReconnectTimer();
     _manualDisconnect = false;
     _resetConnectionHandshakeState();
+    _clearCachedCompanionData();
     _activeTransport = MeshCoreTransportType.tcp;
     _setState(MeshCoreConnectionState.connecting);
 
@@ -1756,6 +1843,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _activeTransport = MeshCoreTransportType.bluetooth;
 
     await stopScan();
+    _clearCachedCompanionData();
     _setState(MeshCoreConnectionState.connecting);
     _device = device;
     _deviceId = device.remoteId.toString();
@@ -2529,6 +2617,7 @@ class MeshCoreConnector extends ChangeNotifier {
       'Disconnect complete transport=$transportLabel manual=$manual',
       tag: 'Connection',
     );
+    unawaited(_reloadOfflineCachesForLastCompanion());
     if (!manual && transportAtDisconnect == MeshCoreTransportType.bluetooth) {
       _scheduleReconnect();
     }
@@ -3961,26 +4050,12 @@ class MeshCoreConnector extends ChangeNotifier {
       return;
     }
 
-    //set all the stores' public key so they can load the correct data
-    _channelMessageStore.setPublicKeyHex = selfPublicKeyHex;
-    _messageStore.setPublicKeyHex = selfPublicKeyHex;
-    _channelOrderStore.setPublicKeyHex = selfPublicKeyHex;
-    _channelSettingsStore.setPublicKeyHex = selfPublicKeyHex;
-    _contactSettingsStore.setPublicKeyHex = selfPublicKeyHex;
-    _contactStore.setPublicKeyHex = selfPublicKeyHex;
-    _channelStore.setPublicKeyHex = selfPublicKeyHex;
-    _unreadStore.setPublicKeyHex = selfPublicKeyHex;
+    // Set scoped stores to this companion and remember it for next launch.
+    _setScopedStorePublicKey(selfPublicKeyHex);
+    unawaited(_persistLastCompanionScope());
 
-    // Now that we have self info, we can load all the persisted data for this node
-    _loadChannelOrder();
-    loadContactCache();
-    loadChannelSettings();
-    loadCachedChannels();
-
-    // Load persisted channel messages
-    loadAllChannelMessages();
-    loadUnreadState();
-    _loadDiscoveredContactCache();
+    // Now that we have self info, we can load all the persisted data for this node.
+    unawaited(loadAllCachedDataForCurrentCompanion());
 
     _awaitingSelfInfo = false;
     _selfInfoRetryTimer?.cancel();
@@ -5311,7 +5386,8 @@ class MeshCoreConnector extends ChangeNotifier {
         _channelSyncRetries = 0; // Reset retry counter on success
 
         // Only add non-empty channels
-        if (!channel.isEmpty) {
+        if (!channel.isEmpty &&
+            !_channels.any((c) => c.pskHex == channel.pskHex)) {
           _channels.add(channel);
         }
 

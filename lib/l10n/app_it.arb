@@ -2353,5 +2353,9 @@
   "settings_companionDebugLog": "Registro di debug per il supporto",
   "chat_newMessages": "Nuovi messaggi",
   "chat_markAsUnread": "Segna come non letto",
-  "repeater_chanUtil": "Utilizzo del canale"
+  "repeater_chanUtil": "Utilizzo del canale",
+  "dialog_connectCompanion": "Connettiti a un dispositivo companion per accedere alle funzionalità di ripetitore e server stanza.",
+  "dialog_disconnectedTitle": "Disconnesso",
+  "dialog_disconnectedMessage": "Sei stato disconnesso dal tuo compagno.",
+  "contact_connectCompanion": "Connettiti a un companion per accedere alle funzioni del repeater e del server di stanza."
 }

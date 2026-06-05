@@ -2353,5 +2353,9 @@
   "settings_companionDebugLogSubtitle": "Príkazy, odpovede a surové dáta pre protokoly BLE/TCP/USB",
   "settings_companionDebugLog": "Logovanie pre ladenie (sprievodný log)",
   "chat_newMessages": "Nové správy",
-  "repeater_chanUtil": "Využitie kanálu"
+  "repeater_chanUtil": "Využitie kanálu",
+  "dialog_connectCompanion": "Pripojte sa k sprievodcovi a získajte prístup k funkciám opakovača a serveru miestností.",
+  "dialog_disconnectedTitle": "Odpojené",
+  "dialog_disconnectedMessage": "Od vášho spoločníka ste boli odpojený.",
+  "contact_connectCompanion": "Pripojte sa k spoločníkovi pre prístup k funkciám opakovača a miestneho servera."
 }

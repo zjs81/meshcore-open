@@ -73,6 +73,12 @@ class _FakeMeshCoreConnector extends MeshCoreConnector {
   void setUsbFallbackDeviceName(String label) {
     fallbackDeviceName = label;
   }
+
+  @override
+  Future<void> disconnect({
+    bool manual = true,
+    bool skipBleDeviceDisconnect = false,
+  }) async {}
 }
 
 Widget _buildTestApp({

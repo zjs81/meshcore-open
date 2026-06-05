@@ -2333,5 +2333,9 @@
   "settings_companionDebugLogSubtitle": "Команди, відповіді та необроблена інформація для протоколів BLE/TCP/USB",
   "chat_newMessages": "Нові повідомлення",
   "chat_markAsUnread": "Позначити як непрочитане",
-  "repeater_chanUtil": "Використання каналу"
+  "repeater_chanUtil": "Використання каналу",
+  "dialog_connectCompanion": "Підключіться до супутнього пристрою, щоб отримати доступ до функцій ретранслятора та сервера кімнат.",
+  "dialog_disconnectedTitle": "Від’єднано",
+  "dialog_disconnectedMessage": "Вас від’єднано від вашого супутника.",
+  "contact_connectCompanion": "Підключіться до супутника, щоб отримати доступ до функцій репітера та серверів кімнат."
 }

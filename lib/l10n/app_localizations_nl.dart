@@ -1970,6 +1970,17 @@ class AppLocalizationsNl extends AppLocalizations {
       'Ben je er zeker van dat je verbinding met dit apparaat wilt verbreken?';
 
   @override
+  String get dialog_disconnectedTitle => 'Verbroken';
+
+  @override
+  String get dialog_disconnectedMessage =>
+      'Je bent losgekoppeld van je companion.';
+
+  @override
+  String get dialog_connectCompanion =>
+      'Maak verbinding met een companion om repeater- en kamerserverfuncties te gebruiken.';
+
+  @override
   String get login_repeaterLogin => 'Inloggen Repeater';
 
   @override

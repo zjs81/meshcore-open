@@ -1992,6 +1992,17 @@ class AppLocalizationsFr extends AppLocalizations {
       'Êtes-vous sûr de vouloir vous déconnecter de cet appareil ?';
 
   @override
+  String get dialog_disconnectedTitle => 'Déconnecté';
+
+  @override
+  String get dialog_disconnectedMessage =>
+      'Vous avez été déconnecté de votre compagnon.';
+
+  @override
+  String get dialog_connectCompanion =>
+      'Connectez-vous à un compagnon pour accéder aux fonctionnalités de répéteur et de serveur de salle.';
+
+  @override
   String get login_repeaterLogin => 'Connexion au répéteur';
 
   @override

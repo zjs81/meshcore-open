@@ -2381,5 +2381,9 @@
   "chat_newMessages": "Neue Nachrichten",
   "settings_companionDebugLog": "Debug-Protokoll für die Begleitsoftware",
   "settings_companionDebugLogSubtitle": "BLE/TCP/USB-Befehle, Antworten und Rohdaten",
-  "repeater_chanUtil": "Nutzung des Kanals"
+  "repeater_chanUtil": "Nutzung des Kanals",
+  "dialog_connectCompanion": "Verbinden Sie sich mit einem Companion, um auf die Funktionen des Repeaters und des Raumservers zuzugreifen.",
+  "dialog_disconnectedTitle": "Getrennt",
+  "dialog_disconnectedMessage": "Du wurdest von deinem Begleiter getrennt.",
+  "contact_connectCompanion": "Mit einem Companion verbinden, um auf Repeater- und Raumserver-Funktionen zuzugreifen."
 }

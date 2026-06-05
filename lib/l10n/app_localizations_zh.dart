@@ -1868,6 +1868,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dialog_disconnectConfirm => '确定要断开与此设备的连接吗？';
 
   @override
+  String get dialog_disconnectedTitle => '已断开连接';
+
+  @override
+  String get dialog_disconnectedMessage => '你已与你的伙伴断开连接。';
+
+  @override
+  String get dialog_connectCompanion => '连接伴机以访问中继器和房间服务器功能。';
+
+  @override
   String get login_repeaterLogin => '转发节点登录';
 
   @override

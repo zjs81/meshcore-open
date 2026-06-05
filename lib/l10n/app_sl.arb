@@ -2353,5 +2353,9 @@
   "chat_markAsUnread": "Označiti kot neneobdelano",
   "chat_newMessages": "Nove novice",
   "settings_companionDebugLogSubtitle": "Navodila, odgovori in surova podatka za BLE/TCP/USB.",
-  "repeater_chanUtil": "Uporaba kanala"
+  "repeater_chanUtil": "Uporaba kanala",
+  "dialog_connectCompanion": "Povežite se s spremljevalnikom za dostop do funkcij ponavljalnika in strežnika sob.",
+  "dialog_disconnectedTitle": "Prekinjeno",
+  "dialog_disconnectedMessage": "Prekinjena povezava s vašim spre伴ovalcem.",
+  "contact_connectCompanion": "Povežite se s ponсоbnikom za dostop do funkcij pon 반복nika in strežnika prostorov."
 }

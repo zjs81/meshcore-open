@@ -1970,6 +1970,17 @@ class AppLocalizationsSk extends AppLocalizations {
       'Ste si istý/á, že chcete odpojiť od tohto zariadenia?';
 
   @override
+  String get dialog_disconnectedTitle => 'Odpojené';
+
+  @override
+  String get dialog_disconnectedMessage =>
+      'Od vášho spoločníka ste boli odpojený.';
+
+  @override
+  String get dialog_connectCompanion =>
+      'Pripojte sa k sprievodcovi a získajte prístup k funkciám opakovača a serveru miestností.';
+
+  @override
   String get login_repeaterLogin => 'Opätovné prihlásenie';
 
   @override

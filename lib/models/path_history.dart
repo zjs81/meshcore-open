@@ -3,6 +3,7 @@ class PathRecord {
   final int tripTimeMs;
   final DateTime? timestamp;
   final bool wasFloodDiscovery;
+  final int byteCount;
   final List<int> pathBytes;
   final int successCount;
   final int failureCount;
@@ -17,6 +18,7 @@ class PathRecord {
     required this.successCount,
     required this.failureCount,
     this.routeWeight = 1.0,
+    this.byteCount = 0,
   });
 
   String get displayText =>
@@ -48,6 +50,7 @@ class PathRecord {
       successCount: json['success_count'] as int? ?? 0,
       failureCount: json['failure_count'] as int? ?? 0,
       routeWeight: (json['route_weight'] as num?)?.toDouble() ?? 1.0,
+      byteCount: json['byte_count'] as int? ?? 0,
     );
   }
 }

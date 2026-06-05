@@ -1957,6 +1957,17 @@ class AppLocalizationsSv extends AppLocalizations {
       'Är du säker på att du vill koppla från enheten?';
 
   @override
+  String get dialog_disconnectedTitle => 'Ansluten ej';
+
+  @override
+  String get dialog_disconnectedMessage =>
+      'Du har kopplats från din companion.';
+
+  @override
+  String get dialog_connectCompanion =>
+      'Anslut till en sällskapstjänst för att komma åt upprepning och rumsserverfunktioner.';
+
+  @override
   String get login_repeaterLogin => 'Återuppta Inloggning';
 
   @override

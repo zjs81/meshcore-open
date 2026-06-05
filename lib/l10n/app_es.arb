@@ -2381,5 +2381,9 @@
   "chat_newMessages": "Nuevos mensajes",
   "settings_companionDebugLogSubtitle": "Comandos, respuestas y datos brutos para protocolos BLE/TCP/USB",
   "chat_markAsUnread": "Marcar como no leído",
-  "repeater_chanUtil": "Utilización del canal"
+  "repeater_chanUtil": "Utilización del canal",
+  "dialog_connectCompanion": "Conéctate a un compañero para acceder a las funciones de repetidor y servidor de sala.",
+  "dialog_disconnectedTitle": "Desconectado",
+  "dialog_disconnectedMessage": "Te has desconectado de tu compañero.",
+  "contact_connectCompanion": "Conéctate a un compañero para acceder a las funciones del repetidor y del servidor de la sala."
 }

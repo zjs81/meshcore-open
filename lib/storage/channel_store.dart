@@ -42,9 +42,18 @@ class ChannelStore {
 
     try {
       final jsonList = jsonDecode(jsonString) as List<dynamic>;
-      return jsonList
+      final channels = jsonList
           .map((entry) => _fromJson(entry as Map<String, dynamic>))
           .toList();
+      // Deduplicate: keep the last entry per channel index
+      final seen = <int>{};
+      final deduped = <Channel>[];
+      for (final channel in channels.reversed) {
+        if (seen.add(channel.index)) {
+          deduped.add(channel);
+        }
+      }
+      return deduped.reversed.toList();
     } catch (_) {
       return [];
     }

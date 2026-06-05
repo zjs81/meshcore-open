@@ -1984,6 +1984,17 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вы уверены, что хотите отключиться от этого устройства?';
 
   @override
+  String get dialog_disconnectedTitle => 'Отключено';
+
+  @override
+  String get dialog_disconnectedMessage =>
+      'Вы были отключены от вашего компаньона.';
+
+  @override
+  String get dialog_connectCompanion =>
+      'Подключитесь к компаньону, чтобы получить доступ к функциям ретранслятора и сервера комнат.';
+
+  @override
   String get login_repeaterLogin => 'Вход в репитер';
 
   @override

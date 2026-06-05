@@ -1983,6 +1983,17 @@ class AppLocalizationsIt extends AppLocalizations {
       'Sei sicuro di voler disconnetterti da questo dispositivo?';
 
   @override
+  String get dialog_disconnectedTitle => 'Disconnesso';
+
+  @override
+  String get dialog_disconnectedMessage =>
+      'Sei stato disconnesso dal tuo compagno.';
+
+  @override
+  String get dialog_connectCompanion =>
+      'Connettiti a un dispositivo companion per accedere alle funzionalità di ripetitore e server stanza.';
+
+  @override
   String get login_repeaterLogin => 'Login Ripetitore';
 
   @override

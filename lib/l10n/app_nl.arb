@@ -2353,5 +2353,9 @@
   "chat_newMessages": "Nieuwe berichten",
   "chat_markAsUnread": "Markeer als ongelezen",
   "settings_companionDebugLogSubtitle": "BLE/TCP/USB commando's, antwoorden en ruwe data",
-  "repeater_chanUtil": "Gebruik van het kanaal"
+  "repeater_chanUtil": "Gebruik van het kanaal",
+  "dialog_connectCompanion": "Maak verbinding met een companion om repeater- en kamerserverfuncties te gebruiken.",
+  "dialog_disconnectedTitle": "Verbroken",
+  "dialog_disconnectedMessage": "Je bent losgekoppeld van je companion.",
+  "contact_connectCompanion": "Maak verbinding met een companion om toegang te krijgen tot repeater- en roomserverfuncties."
 }

@@ -2353,5 +2353,9 @@
   "settings_companionDebugLogSubtitle": "Команди, отговори и сурови данни за протоколите BLE/TCP/USB",
   "chat_newMessages": "Нови съобщения",
   "settings_companionDebugLog": "Лог за отстраняване на грешки (за съпътстваща програма)",
-  "repeater_chanUtil": "Използване на канала"
+  "repeater_chanUtil": "Използване на канала",
+  "dialog_connectCompanion": "Свържете се с придружител, за да получите достъп до функциите на ретранслатора и сървъра за стаи.",
+  "dialog_disconnectedTitle": "Прекъснато",
+  "dialog_disconnectedMessage": "Свързването ви с вашия спътник е прекъснато.",
+  "contact_connectCompanion": "Свържете се с спътник, за да получите достъп до функциите на repeater и room server."
 }

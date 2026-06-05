@@ -380,6 +380,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                   final reversedMessages = messages.reversed.toList();
                   final itemCount =
                       reversedMessages.length + (_isLoadingOlder ? 1 : 0);
+                  final keyedMessageIds = <String>{};
 
                   // Auto-scroll to bottom if user is already at bottom
                   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -416,14 +417,20 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                             }
                             final messageIndex = index;
                             final message = reversedMessages[messageIndex];
-                            if (!_messageKeys.containsKey(message.messageId)) {
+                            final shouldAttachMessageKey = keyedMessageIds.add(
+                              message.messageId,
+                            );
+                            if (shouldAttachMessageKey &&
+                                !_messageKeys.containsKey(message.messageId)) {
                               _messageKeys[message.messageId] = GlobalKey();
                             }
                             final isUnreadAnchor =
                                 _unreadDividerMessageId != null &&
                                 message.messageId == _unreadDividerMessageId;
                             return Container(
-                              key: _messageKeys[message.messageId]!,
+                              key: shouldAttachMessageKey
+                                  ? _messageKeys[message.messageId]
+                                  : null,
                               child: Builder(
                                 builder: (context) {
                                   final textScale = context
@@ -1126,6 +1133,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
   Widget _buildMessageComposer() {
     final connector = context.watch<MeshCoreConnector>();
+    if (!connector.isConnected) {
+      return const SizedBox.shrink();
+    }
     final maxBytes = maxChannelMessageBytes(connector.selfName);
     final settings = context.watch<AppSettingsService>().settings;
     return Column(
@@ -1277,6 +1287,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   }
 
   Future<void> _sendMessage() async {
+    final connector = context.read<MeshCoreConnector>();
+    if (!connector.isConnected) return;
+
     final text = _textController.text.trim();
     if (text.isEmpty) return;
 
@@ -1291,7 +1304,6 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     }
     _lastChannelSendAt = now;
 
-    final connector = context.read<MeshCoreConnector>();
     final settings = context.read<AppSettingsService>().settings;
     final translationService = context.read<TranslationService>();
 

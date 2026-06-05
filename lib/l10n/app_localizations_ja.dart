@@ -1901,6 +1901,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dialog_disconnectConfirm => '本当にこのデバイスとの接続を解除したいですか？';
 
   @override
+  String get dialog_disconnectedTitle => '切断済み';
+
+  @override
+  String get dialog_disconnectedMessage => 'コンパニオンとの接続が切れました。';
+
+  @override
+  String get dialog_connectCompanion => 'コネクトしてリピーターとルームサーバー機能にアクセス';
+
+  @override
   String get login_repeaterLogin => '再ログイン';
 
   @override

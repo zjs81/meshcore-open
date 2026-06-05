@@ -69,7 +69,8 @@ class AppBarTitle extends StatelessWidget {
                   if (showBattery) BatteryIndicator(connector: connector),
                   if (showSnr) SNRIndicator(connector: connector),
                   if (connector.supportsCompanionRadioStats)
-                    const RadioStatsIconButton(compact: true),
+                    if (connector.isConnected)
+                      const RadioStatsIconButton(compact: true),
                 ],
               ),
             trailing ?? const SizedBox.shrink(),

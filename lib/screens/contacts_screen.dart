@@ -19,7 +19,6 @@ import '../services/ui_view_state_service.dart';
 import '../utils/contact_search.dart';
 import '../storage/contact_group_store.dart';
 import '../utils/dialog_utils.dart';
-import '../utils/disconnect_navigation_mixin.dart';
 import '../utils/emoji_utils.dart';
 import '../utils/route_transitions.dart';
 import '../widgets/list_filter_widget.dart';
@@ -35,6 +34,7 @@ import 'chat_screen.dart';
 import 'discovery_screen.dart';
 import 'map_screen.dart';
 import 'repeater_hub_screen.dart';
+import 'scanner_screen.dart';
 import 'settings_screen.dart';
 
 enum RoomLoginDestination { chat, management }
@@ -50,8 +50,7 @@ class ContactsScreen extends StatefulWidget {
   State<ContactsScreen> createState() => _ContactsScreenState();
 }
 
-class _ContactsScreenState extends State<ContactsScreen>
-    with DisconnectNavigationMixin {
+class _ContactsScreenState extends State<ContactsScreen> {
   final TextEditingController _searchController = TextEditingController();
   final ContactGroupStore _groupStore = ContactGroupStore();
   MeshCoreConnector? _scopeSyncConnector;
@@ -307,11 +306,6 @@ class _ContactsScreenState extends State<ContactsScreen>
   Widget build(BuildContext context) {
     final connector = context.watch<MeshCoreConnector>();
 
-    // Auto-navigate back to scanner if disconnected
-    if (!checkConnectionAndNavigate(connector)) {
-      return const SizedBox.shrink();
-    }
-
     final allowBack = !connector.isConnected;
     return PopScope(
       canPop: allowBack,
@@ -321,75 +315,93 @@ class _ContactsScreenState extends State<ContactsScreen>
           automaticallyImplyLeading: false,
           bottom: const SyncProgressAppBarBottom(),
           actions: [
+            if (connector.isConnected)
+              PopupMenuButton(
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        const Icon(Icons.connect_without_contact),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.contacts_zeroHopAdvert),
+                      ],
+                    ),
+                    onTap: () async {
+                      await connector.sendSelfAdvert(flood: false);
+                      showDismissibleSnackBar(
+                        context,
+                        content: Text(context.l10n.settings_advertisementSent),
+                      );
+                    },
+                  ),
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        const Icon(Icons.cell_tower),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.contacts_floodAdvert),
+                      ],
+                    ),
+                    onTap: () async {
+                      await connector.sendSelfAdvert(flood: true);
+                      showDismissibleSnackBar(
+                        context,
+                        content: Text(context.l10n.settings_advertisementSent),
+                      );
+                    },
+                  ),
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        const Icon(Icons.copy),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.contacts_copyAdvertToClipboard),
+                      ],
+                    ),
+                    onTap: () => _contactExport(Uint8List.fromList([])),
+                  ),
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        const Icon(Icons.paste),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.contacts_addContactFromClipboard),
+                      ],
+                    ),
+                    onTap: () => _contactImport(),
+                  ),
+                ],
+                icon: const Icon(Icons.connect_without_contact),
+              ),
             PopupMenuButton(
               itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: Row(
-                    children: [
-                      const Icon(Icons.connect_without_contact),
-                      const SizedBox(width: 8),
-                      Text(context.l10n.contacts_zeroHopAdvert),
-                    ],
-                  ),
-                  onTap: () => {
-                    connector.sendSelfAdvert(flood: false),
-                    showDismissibleSnackBar(
-                      context,
-                      content: Text(context.l10n.settings_advertisementSent),
+                if (connector.isConnected)
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        const Icon(Icons.logout, color: Colors.red),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.common_disconnect),
+                      ],
                     ),
-                  },
-                ),
-                PopupMenuItem(
-                  child: Row(
-                    children: [
-                      const Icon(Icons.cell_tower),
-                      const SizedBox(width: 8),
-                      Text(context.l10n.contacts_floodAdvert),
-                    ],
-                  ),
-                  onTap: () => {
-                    connector.sendSelfAdvert(flood: true),
-                    showDismissibleSnackBar(
-                      context,
-                      content: Text(context.l10n.settings_advertisementSent),
+                    onTap: () => _disconnect(context, connector),
+                  )
+                else
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        const Icon(Icons.bluetooth_searching),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.common_connect),
+                      ],
                     ),
-                  },
-                ),
-                PopupMenuItem(
-                  child: Row(
-                    children: [
-                      const Icon(Icons.copy),
-                      const SizedBox(width: 8),
-                      Text(context.l10n.contacts_copyAdvertToClipboard),
-                    ],
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ScannerScreen(),
+                      ),
+                    ),
                   ),
-                  onTap: () => _contactExport(Uint8List.fromList([])),
-                ),
-                PopupMenuItem(
-                  child: Row(
-                    children: [
-                      const Icon(Icons.paste),
-                      const SizedBox(width: 8),
-                      Text(context.l10n.contacts_addContactFromClipboard),
-                    ],
-                  ),
-                  onTap: () => _contactImport(),
-                ),
-              ],
-              icon: const Icon(Icons.connect_without_contact),
-            ),
-            PopupMenuButton(
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: Row(
-                    children: [
-                      const Icon(Icons.logout, color: Colors.red),
-                      const SizedBox(width: 8),
-                      Text(context.l10n.common_disconnect),
-                    ],
-                  ),
-                  onTap: () => _disconnect(context, connector),
-                ),
                 PopupMenuItem(
                   child: Row(
                     children: [
@@ -817,6 +829,7 @@ class _ContactsScreenState extends State<ContactsScreen>
                         contact,
                       );
                       return _ContactTile(
+                        key: ValueKey(contact.publicKeyHex),
                         contact: contact,
                         lastSeen: _resolveLastSeen(contact),
                         unreadCount: unreadCount,
@@ -968,6 +981,11 @@ class _ContactsScreenState extends State<ContactsScreen>
   }
 
   void _showRepeaterLogin(BuildContext context, Contact repeater) {
+    final connector = context.read<MeshCoreConnector>();
+    if (!connector.isConnected) {
+      _showCompanionRequiredDialog(context);
+      return;
+    }
     showDialog(
       context: context,
       builder: (context) => RepeaterLoginDialog(
@@ -994,6 +1012,11 @@ class _ContactsScreenState extends State<ContactsScreen>
     Contact room,
     RoomLoginDestination destination,
   ) {
+    final connector = context.read<MeshCoreConnector>();
+    if (!connector.isConnected) {
+      _showCompanionRequiredDialog(context);
+      return;
+    }
     showDialog(
       context: context,
       builder: (context) => RoomLoginDialog(
@@ -1018,6 +1041,22 @@ class _ContactsScreenState extends State<ContactsScreen>
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _showCompanionRequiredDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(context.l10n.scanner_notConnected),
+        content: Text(context.l10n.dialog_connectCompanion),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(context.l10n.common_ok),
+          ),
+        ],
       ),
     );
   }
@@ -1459,6 +1498,7 @@ class _ContactTile extends StatelessWidget {
   final VoidCallback onLongPress;
 
   const _ContactTile({
+    super.key,
     required this.contact,
     required this.lastSeen,
     required this.unreadCount,

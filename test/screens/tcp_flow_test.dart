@@ -38,6 +38,12 @@ class _FakeMeshCoreConnector extends MeshCoreConnector {
     lastHost = host;
     lastPort = port;
   }
+
+  @override
+  Future<void> disconnect({
+    bool manual = true,
+    bool skipBleDeviceDisconnect = false,
+  }) async {}
 }
 
 Widget _buildTestApp({
