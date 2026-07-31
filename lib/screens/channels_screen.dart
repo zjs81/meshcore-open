@@ -412,7 +412,8 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     final messages = connector.getChannelMessages(channel);
     final lastMessage = messages.isNotEmpty ? messages.last : null;
     final lastMessageText = lastMessage?.text ?? '';
-    final lastPreview = lastMessageText.isNotEmpty &&
+    final lastPreview =
+        lastMessageText.isNotEmpty &&
             GifHelper.parseGif(lastMessageText) != null
         ? context.l10n.chat_receivedGif
         : lastMessageText;

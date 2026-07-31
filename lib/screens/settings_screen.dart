@@ -1288,6 +1288,9 @@ void _privacySettings(BuildContext context, MeshCoreConnector connector) {
   int multiAcks = connector.multiAcks;
   bool autoZeroHopAdvertOnGpsUpdate =
       settingsService.settings.autoSendZeroHopAdvertOnGpsUpdate;
+  bool autoSelfAdvertAsFlood =
+      settingsService.settings.autoSendSelfAdvertAsFlood;
+  final isClientRepeatMode = connector.clientRepeat == true;
 
   final telemModeBase = [
     DropdownMenuItem(value: teleModeDeny, child: Text(l10n.settings_denyAll)),
@@ -1335,6 +1338,20 @@ void _privacySettings(BuildContext context, MeshCoreConnector connector) {
                       }
                     : null,
               ),
+              if (isClientRepeatMode) ...[
+                const SizedBox(height: 8),
+                FeatureToggleRow(
+                  title: l10n.settings_autoSelfAdvertAsFlood,
+                  subtitle: l10n.settings_autoSelfAdvertAsFloodSubtitle,
+                  value: autoSelfAdvertAsFlood,
+                  enabled: advertLocPolicy && autoZeroHopAdvertOnGpsUpdate,
+                  onChanged: advertLocPolicy && autoZeroHopAdvertOnGpsUpdate
+                      ? (value) {
+                          setDialogState(() => autoSelfAdvertAsFlood = value);
+                        }
+                      : null,
+                ),
+              ],
               const SizedBox(height: 8),
               SwitchListTile(
                 title: Text(l10n.settings_multiAck),
@@ -1406,6 +1423,9 @@ void _privacySettings(BuildContext context, MeshCoreConnector connector) {
               );
               await settingsService.setAutoSendZeroHopAdvertOnGpsUpdate(
                 autoZeroHopAdvertOnGpsUpdate,
+              );
+              await settingsService.setAutoSendSelfAdvertAsFlood(
+                autoSelfAdvertAsFlood,
               );
               await connector.refreshDeviceInfo();
               if (!context.mounted) return;

@@ -492,6 +492,13 @@ class AppLocalizationsKo extends AppLocalizations {
       'GPS 위치가 변경되면 제로 홉 광고를 전송합니다(광고에 위치 포함 필요).';
 
   @override
+  String get settings_autoSelfAdvertAsFlood => '자동 자체 광고를 flood로 전송';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      '활성화되면 자동 자체 광고가 zero-hop 대신 flood로 전송됩니다.';
+
+  @override
   String get settings_multiAck => '다중 ACK';
 
   @override

@@ -161,6 +161,10 @@ class AppSettingsService extends ChangeNotifier {
     );
   }
 
+  Future<void> setAutoSendSelfAdvertAsFlood(bool value) async {
+    await updateSettings(_settings.copyWith(autoSendSelfAdvertAsFlood: value));
+  }
+
   Future<void> setGpsIntervalSeconds(
     int value, {
     Future<void> Function(int value)? writeToDevice,

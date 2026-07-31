@@ -511,6 +511,14 @@ class AppLocalizationsHu extends AppLocalizations {
       'Ha a GPS-helyzet megváltozik, küldjön zero-hop hirdetést (a hirdetésben helymegadás szükséges).';
 
   @override
+  String get settings_autoSelfAdvertAsFlood =>
+      'Automatikus saját hirdetés küldése floodként';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      'Ha engedélyezve van, az automatikus saját hirdetések floodként kerülnek küldésre zero-hop helyett.';
+
+  @override
   String get settings_multiAck => 'Multi-ACK';
 
   @override

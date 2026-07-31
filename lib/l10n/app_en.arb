@@ -208,6 +208,8 @@
   "settings_advertLocationSubtitle": "Include location in advert.",
   "settings_autoZeroHopAdvertOnGpsUpdate": "Auto Zero-Hop Advert On GPS Update",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "When GPS location changes, send a zero-hop advert (requires Advert Location).",
+  "settings_autoSelfAdvertAsFlood": "Send Auto Self Advert As Flood",
+  "settings_autoSelfAdvertAsFloodSubtitle": "When enabled, automated self adverts are sent as flood instead of zero-hop.",
   "settings_multiAck": "Multi-ACKs",
   "settings_telemetryModeUpdated": "Telemetry mode updated",
   "settings_actions": "Actions",

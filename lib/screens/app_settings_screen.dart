@@ -1153,9 +1153,7 @@ class AppSettingsScreen extends StatelessWidget {
   ) {
     final currentApiKey = settingsService.settings.mapTileApiKey?.trim() ?? '';
     final maskedApiKey = _maskApiKey(
-      currentApiKey.isEmpty
-          ? AppSettings.stadiaDemo
-          : currentApiKey,
+      currentApiKey.isEmpty ? AppSettings.stadiaDemo : currentApiKey,
     );
     final controller = TextEditingController(text: maskedApiKey);
     showDialog(

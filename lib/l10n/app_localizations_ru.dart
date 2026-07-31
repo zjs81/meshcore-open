@@ -514,6 +514,14 @@ class AppLocalizationsRu extends AppLocalizations {
       'Когда GPS-местоположение меняется, отправлять объявление без хопов (требуется геопозиция в объявлении).';
 
   @override
+  String get settings_autoSelfAdvertAsFlood =>
+      'Отправлять автоматические self-advert как flood';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      'Если включено, автоматические self-advert отправляются как flood вместо zero-hop.';
+
+  @override
   String get settings_multiAck => 'Несколько подтверждений';
 
   @override
