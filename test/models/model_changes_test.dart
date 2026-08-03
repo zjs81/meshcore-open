@@ -385,6 +385,7 @@ void main() {
       expect(settings.routeWeightSuccessIncrement, equals(0.5));
       expect(settings.routeWeightFailureDecrement, equals(0.2));
       expect(settings.maxMessageRetries, equals(5));
+      expect(settings.evictDiscoveredContactsEnabled, isFalse);
     });
 
     test('toJson includes all new fields', () {
@@ -395,11 +396,13 @@ void main() {
       expect(json.containsKey('route_weight_success_increment'), isTrue);
       expect(json.containsKey('route_weight_failure_decrement'), isTrue);
       expect(json.containsKey('max_message_retries'), isTrue);
+      expect(json.containsKey('evict_discovered_contacts_enabled'), isFalse);
       expect(json['max_route_weight'], equals(5.0));
       expect(json['initial_route_weight'], equals(3.0));
       expect(json['route_weight_success_increment'], equals(0.5));
       expect(json['route_weight_failure_decrement'], equals(0.2));
       expect(json['max_message_retries'], equals(5));
+      expect(json['evict_discovered_contacts_enabled'], isFalse);
     });
 
     test('fromJson reads all new fields', () {
@@ -409,6 +412,7 @@ void main() {
         'route_weight_success_increment': 1.0,
         'route_weight_failure_decrement': 1.5,
         'max_message_retries': 8,
+        'evict_discovered_contacts_enabled': false,
       };
       final settings = AppSettings.fromJson(json);
       expect(settings.maxRouteWeight, equals(10.0));
@@ -416,6 +420,7 @@ void main() {
       expect(settings.routeWeightSuccessIncrement, equals(1.0));
       expect(settings.routeWeightFailureDecrement, equals(1.5));
       expect(settings.maxMessageRetries, equals(8));
+      expect(settings.evictDiscoveredContactsEnabled, isFalse);
     });
 
     test(

@@ -7564,6 +7564,18 @@ abstract class AppLocalizations {
   /// **'When the contact list is full, the oldest non-favorited contact will be replaced.'**
   String get contactsSettings_overwriteOldestSubtitle;
 
+  /// No description provided for @contactsSettings_evictDiscoveredContactsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Evict discovered contacts'**
+  String get contactsSettings_evictDiscoveredContactsTitle;
+
+  /// No description provided for @contactsSettings_evictDiscoveredContactsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When enabled, the app removes the oldest discovered contacts once the discovery list reaches its limit of 500 entries.'**
+  String get contactsSettings_evictDiscoveredContactsSubtitle;
+
   /// No description provided for @discoveredContacts_Title.
   ///
   /// In en, this message translates to:

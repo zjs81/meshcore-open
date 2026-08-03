@@ -30,7 +30,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "de": [
@@ -85,7 +87,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "fr": [
@@ -119,7 +123,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "hu": [
@@ -153,7 +159,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "it": [
@@ -187,7 +195,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "ja": [
@@ -221,7 +231,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "ko": [
@@ -255,7 +267,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "nl": [
@@ -289,7 +303,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "pl": [
@@ -323,7 +339,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "pt": [
@@ -357,7 +375,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "ru": [
@@ -391,7 +411,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "sk": [
@@ -425,7 +447,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "sl": [
@@ -459,7 +483,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "sv": [
@@ -493,7 +519,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "uk": [
@@ -527,7 +555,9 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ],
 
   "zh": [
@@ -561,6 +591,8 @@
     "repeater_pubKey",
     "repeater_pubKeyHelper",
     "repeater_pubKeyPrefix",
-    "repeater_pubKeyPrefixHelper"
+    "repeater_pubKeyPrefixHelper",
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
   ]
 }

@@ -1168,6 +1168,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     bool autoAddRoomServer = false;
     bool autoAddSensor = false;
     bool overwriteOldest = false;
+    final appSettingsService = context.read<AppSettingsService>();
+    bool evictDiscoveredContactsEnabled =
+        appSettingsService.settings.evictDiscoveredContactsEnabled;
 
     final connector = context.read<MeshCoreConnector>();
     autoAddChat = connector.autoAddUsers ?? false;
@@ -1229,6 +1232,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     setDialogState(() => overwriteOldest = value);
                   },
                 ),
+                const Divider(height: 4),
+                FeatureToggleRow(
+                  title: l10n.contactsSettings_evictDiscoveredContactsTitle,
+                  subtitle: l10n.contactsSettings_evictDiscoveredContactsSubtitle,
+                  value: evictDiscoveredContactsEnabled,
+                  onChanged: (value) {
+                    setDialogState(() => evictDiscoveredContactsEnabled = value);
+                  },
+                ),
               ],
             ),
           ),
@@ -1238,7 +1250,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Text(l10n.common_cancel),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                await appSettingsService.setEvictDiscoveredContactsEnabled(
+                  evictDiscoveredContactsEnabled,
+                );
                 _sendSettings(
                   connector,
                   autoAddChat,
@@ -1247,6 +1262,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   autoAddSensor,
                   overwriteOldest,
                 );
+                if (!mounted) return;
                 Navigator.pop(context);
               },
               child: Text(l10n.common_save),

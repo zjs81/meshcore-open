@@ -700,9 +700,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                   child: Text(
                                     context.l10n.channels_via(
                                       _formatPathPrefixes(
-                                      displayPath,
-                                      displayPathHashWidth,
-                                    ),
+                                        displayPath,
+                                        displayPathHashWidth,
+                                      ),
                                     ),
                                     style: MeshTheme.mono(
                                       fontSize: 9.5 * textScale,
@@ -1214,25 +1214,19 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                           decoration: InputDecoration(
                             hintText: context.l10n.chat_typeMessage,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                MeshRadii.md,
-                              ),
+                              borderRadius: BorderRadius.circular(MeshRadii.md),
                               borderSide: BorderSide(
                                 color: scheme.outlineVariant,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                MeshRadii.md,
-                              ),
+                              borderRadius: BorderRadius.circular(MeshRadii.md),
                               borderSide: BorderSide(
                                 color: scheme.outlineVariant,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                MeshRadii.md,
-                              ),
+                              borderRadius: BorderRadius.circular(MeshRadii.md),
                               borderSide: BorderSide(
                                 color: scheme.primary,
                                 width: 1.5,
