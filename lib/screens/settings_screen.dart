@@ -1265,7 +1265,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   autoAddSensor,
                   overwriteOldest,
                 );
-                if (!mounted) return;
+                if (!context.mounted) return;
                 Navigator.pop(context);
               },
               child: Text(l10n.common_save),
