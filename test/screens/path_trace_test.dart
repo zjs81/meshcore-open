@@ -22,7 +22,8 @@ class _FakeStorageService extends StorageService {
     ContactPathHistory history,
   ) async {}
   @override
-  Future<ContactPathHistory?> loadPathHistory(String contactPubKeyHex) async => null;
+  Future<ContactPathHistory?> loadPathHistory(String contactPubKeyHex) async =>
+      null;
   @override
   Future<void> clearPathHistory(String contactPubKeyHex) async {}
 }
@@ -71,13 +72,18 @@ Widget _buildTestApp({
   required MeshCoreConnector connector,
   required Widget child,
 }) {
+  final appSettingsService = AppSettingsService();
+
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<MeshCoreConnector>.value(value: connector),
-      ChangeNotifierProvider<AppSettingsService>(
-        create: (_) => AppSettingsService(),
+      ChangeNotifierProvider<AppSettingsService>.value(
+        value: appSettingsService,
       ),
-      Provider<MapTileCacheService>(create: (_) => MapTileCacheService()),
+      ChangeNotifierProvider<MapTileCacheService>(
+        create: (_) =>
+            MapTileCacheService(appSettingsService: appSettingsService),
+      ),
       ChangeNotifierProvider<PathHistoryService>(
         create: (_) => PathHistoryService(_FakeStorageService()),
       ),
