@@ -396,7 +396,7 @@ void main() {
       expect(json.containsKey('route_weight_success_increment'), isTrue);
       expect(json.containsKey('route_weight_failure_decrement'), isTrue);
       expect(json.containsKey('max_message_retries'), isTrue);
-      expect(json.containsKey('evict_discovered_contacts_enabled'), isFalse);
+      expect(json.containsKey('evict_discovered_contacts_enabled'), isTrue);
       expect(json['max_route_weight'], equals(5.0));
       expect(json['initial_route_weight'], equals(3.0));
       expect(json['route_weight_success_increment'], equals(0.5));
