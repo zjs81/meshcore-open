@@ -1235,10 +1235,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const Divider(height: 4),
                 FeatureToggleRow(
                   title: l10n.contactsSettings_evictDiscoveredContactsTitle,
-                  subtitle: l10n.contactsSettings_evictDiscoveredContactsSubtitle,
+                  subtitle:
+                      l10n.contactsSettings_evictDiscoveredContactsSubtitle,
                   value: evictDiscoveredContactsEnabled,
                   onChanged: (value) {
-                    setDialogState(() => evictDiscoveredContactsEnabled = value);
+                    setDialogState(
+                      () => evictDiscoveredContactsEnabled = value,
+                    );
                   },
                 ),
               ],
