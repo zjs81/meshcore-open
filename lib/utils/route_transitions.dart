@@ -6,20 +6,15 @@ Route<T> buildQuickSwitchRoute<T>(Widget page) {
     transitionDuration: const Duration(milliseconds: 220),
     reverseTransitionDuration: const Duration(milliseconds: 200),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      final curved = CurvedAnimation(
-        parent: animation,
-        curve: Curves.easeOutCubic,
-        reverseCurve: Curves.easeInCubic,
-      );
+      // Pure crossfade — no positional slide, so the shared top chrome
+      // (app bar + Contacts/Channels toggle) stays rock-steady while switching.
       return FadeTransition(
-        opacity: curved,
-        child: SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0.02, 0),
-            end: Offset.zero,
-          ).animate(curved),
-          child: child,
+        opacity: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOut,
+          reverseCurve: Curves.easeIn,
         ),
+        child: child,
       );
     },
   );

@@ -27,6 +27,10 @@ class Channel {
 
   bool get isPublicChannel => pskHex == publicChannelPsk;
 
+  bool get isHashtagChannel => name.startsWith('#');
+
+  bool get isPrivateChannel => !isPublicChannel && !isHashtagChannel;
+
   static Channel? fromFrame(Uint8List frame) {
     // CHANNEL_INFO format:
     // [0] = RESP_CODE_CHANNEL_INFO (18)

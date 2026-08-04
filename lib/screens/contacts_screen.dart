@@ -915,6 +915,7 @@ class _ContactsScreenState extends State<ContactsScreen>
                       return _ContactTileEntrance(
                         index: index,
                         contact: contact,
+                        pathHashByteWidth: connector.pathHashByteWidth,
                         lastSeen: _resolveLastSeen(contact),
                         unreadCount: unreadCount,
                         isFavorite: contact.isFavorite,
@@ -1371,7 +1372,10 @@ class _ContactsScreenState extends State<ContactsScreen>
                     MaterialPageRoute(
                       builder: (context) => PathTraceMapScreen(
                         title: context.l10n.contacts_repeaterPing,
-                        path: Uint8List.fromList([contact.publicKey.first]),
+                        path: contact.pathBytesForDisplay.isNotEmpty
+                            ? contact.pathBytesForDisplay
+                            : _contactPathPrefix(contact, hw),
+                        flipPathAround: true,
                         targetContact: contact,
                         pathHashByteWidth: hw,
                       ),
@@ -1405,8 +1409,8 @@ class _ContactsScreenState extends State<ContactsScreen>
                             : context.l10n.contacts_roomPing,
                         path: contact.pathBytesForDisplay.isNotEmpty
                             ? contact.pathBytesForDisplay
-                            : Uint8List.fromList([contact.publicKey.first]),
-                        flipPathAround: contact.pathBytesForDisplay.isNotEmpty,
+                            : _contactPathPrefix(contact, hw),
+                        flipPathAround: true,
                         targetContact: contact,
                         pathHashByteWidth: hw,
                       ),
@@ -1516,6 +1520,16 @@ class _ContactsScreenState extends State<ContactsScreen>
     );
   }
 
+  Uint8List _contactPathPrefix(Contact contact, int hashByteWidth) {
+    if (contact.publicKey.isEmpty) return Uint8List(0);
+    final width = hashByteWidth
+        .clamp(1, pubKeySize)
+        .toInt()
+        .clamp(1, contact.publicKey.length)
+        .toInt();
+    return Uint8List.fromList(contact.publicKey.sublist(0, width));
+  }
+
   void _confirmDelete(
     BuildContext context,
     MeshCoreConnector connector,
@@ -1549,6 +1563,7 @@ class _ContactsScreenState extends State<ContactsScreen>
 
 class _ContactTile extends StatelessWidget {
   final Contact contact;
+  final int pathHashByteWidth;
   final DateTime lastSeen;
   final int unreadCount;
   final bool isFavorite;
@@ -1557,6 +1572,7 @@ class _ContactTile extends StatelessWidget {
 
   const _ContactTile({
     required this.contact,
+    required this.pathHashByteWidth,
     required this.lastSeen,
     required this.unreadCount,
     required this.isFavorite,
@@ -1676,7 +1692,10 @@ class _ContactTile extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          contact.pathLabel(context.l10n),
+                          contact.pathLabel(
+                            context.l10n,
+                            pathHashByteWidth: pathHashByteWidth,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -1763,6 +1782,7 @@ class _ContactTile extends StatelessWidget {
 class _ContactTileEntrance extends StatelessWidget {
   final int index;
   final Contact contact;
+  final int pathHashByteWidth;
   final DateTime lastSeen;
   final int unreadCount;
   final bool isFavorite;
@@ -1772,6 +1792,7 @@ class _ContactTileEntrance extends StatelessWidget {
   const _ContactTileEntrance({
     required this.index,
     required this.contact,
+    required this.pathHashByteWidth,
     required this.lastSeen,
     required this.unreadCount,
     required this.isFavorite,
@@ -1785,6 +1806,7 @@ class _ContactTileEntrance extends StatelessWidget {
       index: index,
       child: _ContactTile(
         contact: contact,
+        pathHashByteWidth: pathHashByteWidth,
         lastSeen: lastSeen,
         unreadCount: unreadCount,
         isFavorite: isFavorite,

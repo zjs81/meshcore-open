@@ -82,6 +82,16 @@ class RadioSettings {
       ),
     ),
     (
+      'Australia (Mid)',
+      RadioSettings(
+        frequencyMHz: 915.075,
+        bandwidth: LoRaBandwidth.bw125,
+        spreadingFactor: LoRaSpreadingFactor.sf9,
+        codingRate: LoRaCodingRate.cr4_5,
+        txPowerDbm: 20,
+      ),
+    ),
+    (
       'Australia SA, WA, QLD',
       RadioSettings(
         frequencyMHz: 923.125,

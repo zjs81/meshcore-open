@@ -784,6 +784,78 @@ abstract class AppLocalizations {
   /// **'Radio settings updated'**
   String get settings_radioSettingsUpdated;
 
+  /// No description provided for @settings_regionSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Regions'**
+  String get settings_regionSettings;
+
+  /// No description provided for @settings_regionSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage stored regions'**
+  String get settings_regionSettingsSubtitle;
+
+  /// No description provided for @settings_regionManagement_screenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Region Management'**
+  String get settings_regionManagement_screenTitle;
+
+  /// No description provided for @settings_regionNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter region name'**
+  String get settings_regionNameHint;
+
+  /// No description provided for @settings_regionAddRegion.
+  ///
+  /// In en, this message translates to:
+  /// **'Add region'**
+  String get settings_regionAddRegion;
+
+  /// No description provided for @settings_regionFetchRegions.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetch regions from repeaters'**
+  String get settings_regionFetchRegions;
+
+  /// No description provided for @settings_regionFetchRegionsFail.
+  ///
+  /// In en, this message translates to:
+  /// **'No regions were found'**
+  String get settings_regionFetchRegionsFail;
+
+  /// No description provided for @settings_regionFetchRegionsAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'This region has already been added'**
+  String get settings_regionFetchRegionsAlreadyExists;
+
+  /// No description provided for @settings_regionName.
+  ///
+  /// In en, this message translates to:
+  /// **'Region Name'**
+  String get settings_regionName;
+
+  /// No description provided for @settings_regionDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Region deleted'**
+  String get settings_regionDeleted;
+
+  /// No description provided for @settings_deleteRegion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Region'**
+  String get settings_deleteRegion;
+
+  /// No description provided for @settings_deleteRegionConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove \"{region}\" from region list?'**
+  String settings_deleteRegionConfirm(String region);
+
   /// No description provided for @settings_location.
   ///
   /// In en, this message translates to:
@@ -957,6 +1029,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Include location in advert.'**
   String get settings_advertLocationSubtitle;
+
+  /// No description provided for @settings_autoZeroHopAdvertOnGpsUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto Zero-Hop Advert On GPS Update'**
+  String get settings_autoZeroHopAdvertOnGpsUpdate;
+
+  /// No description provided for @settings_autoZeroHopAdvertOnGpsUpdateSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When GPS location changes, send a zero-hop advert (requires Advert Location).'**
+  String get settings_autoZeroHopAdvertOnGpsUpdateSubtitle;
 
   /// No description provided for @settings_multiAck.
   ///
@@ -1378,6 +1462,30 @@ abstract class AppLocalizations {
   /// **'Українська'**
   String get appSettings_languageUk;
 
+  /// No description provided for @repeater_pathHashModeOption0.
+  ///
+  /// In en, this message translates to:
+  /// **'0 - 1 byte'**
+  String get repeater_pathHashModeOption0;
+
+  /// No description provided for @repeater_pathHashModeOption1.
+  ///
+  /// In en, this message translates to:
+  /// **'1 - 2 bytes'**
+  String get repeater_pathHashModeOption1;
+
+  /// No description provided for @repeater_pathHashModeOption2.
+  ///
+  /// In en, this message translates to:
+  /// **'2 - 3 bytes'**
+  String get repeater_pathHashModeOption2;
+
+  /// No description provided for @repeater_pathHashModeOption3.
+  ///
+  /// In en, this message translates to:
+  /// **'3 - 4 bytes'**
+  String get repeater_pathHashModeOption3;
+
   /// No description provided for @appSettings_enableMessageTracing.
   ///
   /// In en, this message translates to:
@@ -1719,6 +1827,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last week'**
   String get appSettings_lastWeek;
+
+  /// No description provided for @appSettings_rasterTileSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Raster Tile Source'**
+  String get appSettings_rasterTileSource;
+
+  /// No description provided for @appSettings_stadiaEndpoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Stadia Endpoint'**
+  String get appSettings_stadiaEndpoint;
+
+  /// No description provided for @appSettings_stadiaApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Stadia API Key'**
+  String get appSettings_stadiaApiKey;
+
+  /// No description provided for @appSettings_stadiaApiKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Required for Stadia Maps usage'**
+  String get appSettings_stadiaApiKeyRequired;
+
+  /// No description provided for @appSettings_stadiaApiKeyConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Configured: {maskedKey}'**
+  String appSettings_stadiaApiKeyConfigured(String maskedKey);
+
+  /// No description provided for @appSettings_stadiaApiKeyDialogDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your Stadia Maps API key. This app uses it for raster tile requests.'**
+  String get appSettings_stadiaApiKeyDialogDescription;
 
   /// No description provided for @appSettings_offlineMapCache.
   ///
@@ -2458,6 +2602,30 @@ abstract class AppLocalizations {
   /// **'e.g. #team'**
   String get channels_hashtagHint;
 
+  /// No description provided for @channels_regionSetTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Region: {region}'**
+  String channels_regionSetTo(String region);
+
+  /// No description provided for @channels_regionNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Region: none'**
+  String get channels_regionNotSet;
+
+  /// No description provided for @channels_regionSelect_Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a region'**
+  String get channels_regionSelect_Title;
+
+  /// No description provided for @channels_clearRegion.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear region'**
+  String get channels_clearRegion;
+
   /// No description provided for @chat_noMessages.
   ///
   /// In en, this message translates to:
@@ -2547,6 +2715,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send GIF'**
   String get chat_sendGif;
+
+  /// No description provided for @chat_receivedGif.
+  ///
+  /// In en, this message translates to:
+  /// **'Received a GIF'**
+  String get chat_receivedGif;
 
   /// No description provided for @chat_reply.
   ///
@@ -3700,6 +3874,54 @@ abstract class AppLocalizations {
   /// **'Failed downloads: {count}'**
   String mapCache_failedDownloads(int count);
 
+  /// No description provided for @mapCache_cachedTilesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cached tiles'**
+  String get mapCache_cachedTilesLabel;
+
+  /// No description provided for @mapCache_cachedTileSummaryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cached tile summary'**
+  String get mapCache_cachedTileSummaryLabel;
+
+  /// No description provided for @mapCache_bulkDownloadDisabledForSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline bulk downloads are disabled for {source}.'**
+  String mapCache_bulkDownloadDisabledForSource(String source);
+
+  /// No description provided for @mapCache_bulkDownloadDisabledInConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline bulk downloads are disabled for {source} in this app configuration.'**
+  String mapCache_bulkDownloadDisabledInConfig(String source);
+
+  /// No description provided for @mapCache_summarySource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source: {source}'**
+  String mapCache_summarySource(String source);
+
+  /// No description provided for @mapCache_summaryCachedTilesForSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Cached tiles for source: {count}'**
+  String mapCache_summaryCachedTilesForSource(int count);
+
+  /// No description provided for @mapCache_summaryCachedInSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Cached in selected area/zoom: {count}'**
+  String mapCache_summaryCachedInSelection(int count);
+
+  /// No description provided for @mapCache_summaryApproxCacheSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Approx cache size: {size}'**
+  String mapCache_summaryApproxCacheSize(String size);
+
   /// No description provided for @mapCache_boundsLabel.
   ///
   /// In en, this message translates to:
@@ -4649,8 +4871,68 @@ abstract class AppLocalizations {
   /// No description provided for @repeater_pathHashModeHelper.
   ///
   /// In en, this message translates to:
-  /// **'Bytes used to encode this repeater\'s ID in flood path/loop-detect tags. 0=1 byte (256 IDs, up to 64 hops), 1=2 bytes (65K IDs, up to 32 hops), 2=3 bytes (16M IDs, up to 21 hops). v1.13 and older firmware drops multi-byte paths — only raise once your network is on v1.14+.'**
+  /// **'Bytes used to encode this repeater\'s ID in flood path/loop-detect tags. 0=1 byte (256 IDs, up to 64 hops), 1=2 bytes (65K IDs, up to 32 hops), 2=3 bytes (16M IDs, up to 21 hops). Firmware before v1.14 always used 1-byte paths; v1.14 and newer can be configured for 2- or 3-byte paths.'**
   String get repeater_pathHashModeHelper;
+
+  /// No description provided for @repeater_keySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Identity Keys'**
+  String get repeater_keySettings;
+
+  /// No description provided for @repeater_keySettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the public/private keypair'**
+  String get repeater_keySettingsSubtitle;
+
+  /// No description provided for @repeater_prvKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Private key'**
+  String get repeater_prvKey;
+
+  /// No description provided for @repeater_prvKeyHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'A new private key for the repeater, a 128-character hex string.'**
+  String get repeater_prvKeyHelper;
+
+  /// No description provided for @repeater_generatePrvKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate a random keypair'**
+  String get repeater_generatePrvKey;
+
+  /// No description provided for @repeater_stopGeneratingPrvKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Interrupt search for keypair'**
+  String get repeater_stopGeneratingPrvKey;
+
+  /// No description provided for @repeater_pubKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key'**
+  String get repeater_pubKey;
+
+  /// No description provided for @repeater_pubKeyHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the public key that goes with the generated private key. You can\'t set this directly.'**
+  String get repeater_pubKeyHelper;
+
+  /// No description provided for @repeater_pubKeyPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Desired prefix'**
+  String get repeater_pubKeyPrefix;
+
+  /// No description provided for @repeater_pubKeyPrefixHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a public key that starts with these hex digits. Expected tries needed: {tries}.'**
+  String repeater_pubKeyPrefixHelper(int tries);
 
   /// No description provided for @repeater_txDelay.
   ///
@@ -5423,7 +5705,7 @@ abstract class AppLocalizations {
   /// No description provided for @repeater_cliHelpSetPrvKey.
   ///
   /// In en, this message translates to:
-  /// **'(Serial only) Replaces the device identity private key. Reboot required to apply. Generates a new public key.'**
+  /// **'Replaces the device identity private key. Reboot required to apply. Generates a new public key.'**
   String get repeater_cliHelpSetPrvKey;
 
   /// No description provided for @repeater_cliHelpSetRadioRxGain.

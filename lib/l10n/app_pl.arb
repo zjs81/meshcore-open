@@ -100,6 +100,8 @@
   "settings_locationInvalid": "Nieprawidłowa szerokość geograficzna lub długość geograficzna.",
   "settings_latitude": "Szerokość",
   "settings_longitude": "Długość",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Automatyczne ogłoszenie zero-hop przy aktualizacji GPS",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Gdy lokalizacja GPS się zmieni, wyślij ogłoszenie zero-hop (wymaga lokalizacji w ogłoszeniu).",
   "settings_privacyMode": "Tryb prywatności",
   "settings_privacyModeSubtitle": "Ukryj imię/lokalizację w rozgłoszeniach",
   "settings_privacyModeToggle": "Włącz tryb prywatności, aby ukryć swoje imię i lokalizację w rozgłoszeniach.",
@@ -240,6 +242,19 @@
   "appSettings_last6Hours": "Ostatnie 6 godzin",
   "appSettings_last24Hours": "Ostatnie 24 godziny",
   "appSettings_lastWeek": "Ostatni tydzień",
+  "appSettings_rasterTileSource": "Źródło kafelków rastrowych",
+  "appSettings_stadiaEndpoint": "Punkt końcowy Stadia",
+  "appSettings_stadiaApiKey": "Klucz API Stadia",
+  "appSettings_stadiaApiKeyRequired": "Wymagane do korzystania ze Stadia Maps",
+  "appSettings_stadiaApiKeyConfigured": "Skonfigurowano: {maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "Wprowadź swój klucz API Stadia Maps. Aplikacja używa go do żądań kafelków rastrowych.",
   "appSettings_offlineMapCache": "Pamięć podręczna map offline",
   "appSettings_noAreaSelected": "Nie wybrano żadnego obszaru.",
   "appSettings_areaSelectedZoom": "Wybrany obszar (skala {minZoom}-{maxZoom})",
@@ -779,6 +794,56 @@
       }
     }
   },
+  "mapCache_cachedTilesLabel": "Cached tiles",
+  "mapCache_cachedTileSummaryLabel": "Cached tile summary",
+  "mapCache_bulkDownloadDisabledForSource": "Offline bulk downloads are disabled for {source}.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Offline bulk downloads are disabled for {source} in this app configuration.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Source: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Cached tiles for source: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Cached in selected area/zoom: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Approx cache size: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "mapCache_boundsLabel": "N {north}, S {south}, E {east}, W {west}",
   "@mapCache_boundsLabel": {
     "placeholders": {
@@ -1117,7 +1182,7 @@
   "repeater_advancedSettings": "Zaawansowany",
   "repeater_advancedSettingsSubtitle": "Regulowane pokrętła dla doświadczonych operatorów",
   "repeater_pathHashMode": "Tryb haszujący ścieżkę",
-  "repeater_pathHashModeHelper": "Bity wykorzystywane do kodowania identyfikatora tego urządzenia w tagach ścieżek/detekcji pętli. 0=1 bity (256 identyfikatorów, do 64 skoków), 1=2 bity (65 000 identyfikatorów, do 32 skoków), 2=3 bity (1 600 000 identyfikatorów, do 21 skoków). Wersje 1.13 i wcześniejsze nie obsługują ścieżek wielobitowych – wykrywają tylko jedną, gdy sieć jest w wersji 1.14 lub nowszej.",
+  "repeater_pathHashModeHelper": "Bajty używane do kodowania identyfikatora tego repeatera w tagach ścieżki flood/wykrywania pętli. 0=1 bajt (256 identyfikatorów, do 64 skoków), 1=2 bajty (65 000 identyfikatorów, do 32 skoków), 2=3 bajty (16 milionów identyfikatorów, do 21 skoków). Firmware sprzed v1.14 zawsze używał ścieżek 1-bajtowych; v1.14 i nowsze można skonfigurować na ścieżki 2- lub 3-bajtowe.",
   "repeater_txDelay": "Opóźnienie w Flood, TX",
   "repeater_txDelayHelper": "Ustawienie odstępu dla ruchu związanego z powodzią, jako mnożnik czasu przesyłania pakietu (0-2, domyślnie 0,5). Wyższe wartości oznaczają mniejszą liczbę kolizji, ale wolniejszą prędkość przesyłania.",
   "repeater_directTxDelay": "Bezpośrednie opóźnienie sygnału TX",

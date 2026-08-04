@@ -161,6 +161,8 @@
   "settings_locationIntervalInvalid": "Az intervallumnak legalább 60 másodpercnek kell lennie, és kevesebbnek kell lennie 86 400 másodpercnél.",
   "settings_latitude": "Szélesség",
   "settings_longitude": "Hosszúság",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Automatikus zero-hop hirdetés GPS-frissítéskor",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Ha a GPS-helyzet megváltozik, küldjön zero-hop hirdetést (a hirdetésben helymegadás szükséges).",
   "settings_contactSettings": "Kapcsolati beállítások",
   "settings_contactSettingsSubtitle": "A névjegyek hozzáadásának beállításai.",
   "settings_privacyMode": "Adatvédelmi mód",
@@ -332,6 +334,19 @@
   "appSettings_last6Hours": "Utolsó 6 óra",
   "appSettings_last24Hours": "Az elmúlt 24 óra",
   "appSettings_lastWeek": "Múlt héten",
+  "appSettings_rasterTileSource": "Raszteres csempeforrás",
+  "appSettings_stadiaEndpoint": "Stadia végpont",
+  "appSettings_stadiaApiKey": "Stadia API-kulcs",
+  "appSettings_stadiaApiKeyRequired": "A Stadia Maps használatához kötelező",
+  "appSettings_stadiaApiKeyConfigured": "Konfigurálva: {maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "Adja meg a Stadia Maps API-kulcsát. Az alkalmazás ezt használja raszteres csempekérésekhez.",
   "appSettings_offlineMapCache": "Offline térképgyorsítótár",
   "appSettings_unitsTitle": "Egységek",
   "appSettings_unitsMetric": "Metrikus (m/km)",
@@ -949,6 +964,56 @@
     "placeholders": {
       "count": {
         "type": "int"
+      }
+    }
+  },
+  "mapCache_cachedTilesLabel": "Cached tiles",
+  "mapCache_cachedTileSummaryLabel": "Cached tile summary",
+  "mapCache_bulkDownloadDisabledForSource": "Offline bulk downloads are disabled for {source}.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Offline bulk downloads are disabled for {source} in this app configuration.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Source: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Cached tiles for source: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Cached in selected area/zoom: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Approx cache size: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
       }
     }
   },

@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:latlong2/latlong.dart';
@@ -13,8 +14,8 @@ class DisplayPath {
   final Color color;
   final bool isPrimary;
 
-  /// Outbound hop bytes, including hops that could not be placed on the map.
-  final List<int> hopBytes;
+  /// Outbound hop prefixes, including hops that could not be placed on the map.
+  final List<Uint8List> hopBytes;
 
   /// Resolved map points: self, each locatable hop, then the target when its
   /// position is known. Hops with no position are skipped here but still

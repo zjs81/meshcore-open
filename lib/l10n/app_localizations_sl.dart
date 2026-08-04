@@ -367,6 +367,45 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_radioSettingsUpdated => 'Radio nastavitve posodobljene';
 
   @override
+  String get settings_regionSettings => 'Regions';
+
+  @override
+  String get settings_regionSettingsSubtitle => 'Manage stored regions';
+
+  @override
+  String get settings_regionManagement_screenTitle => 'Region Management';
+
+  @override
+  String get settings_regionNameHint => 'Enter region name';
+
+  @override
+  String get settings_regionAddRegion => 'Add region';
+
+  @override
+  String get settings_regionFetchRegions => 'Fetch regions from repeaters';
+
+  @override
+  String get settings_regionFetchRegionsFail => 'No regions were found';
+
+  @override
+  String get settings_regionFetchRegionsAlreadyExists =>
+      'This region has already been added';
+
+  @override
+  String get settings_regionName => 'Region Name';
+
+  @override
+  String get settings_regionDeleted => 'Region deleted';
+
+  @override
+  String get settings_deleteRegion => 'Delete Region';
+
+  @override
+  String settings_deleteRegionConfirm(String region) {
+    return 'Remove \"$region\" from region list?';
+  }
+
+  @override
   String get settings_location => 'Lokacija';
 
   @override
@@ -460,6 +499,14 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get settings_advertLocationSubtitle => 'Vključi lokacijo v oglas.';
+
+  @override
+  String get settings_autoZeroHopAdvertOnGpsUpdate =>
+      'Samodejni zero-hop oglas ob posodobitvi GPS';
+
+  @override
+  String get settings_autoZeroHopAdvertOnGpsUpdateSubtitle =>
+      'Ko se GPS lokacija spremeni, pošlji zero-hop oglas (zahteva lokacijo v oglasu).';
 
   @override
   String get settings_multiAck => 'Več potrdil';
@@ -685,6 +732,18 @@ class AppLocalizationsSl extends AppLocalizations {
   String get appSettings_languageUk => 'Ukrajinsko';
 
   @override
+  String get repeater_pathHashModeOption0 => '0 - 1 byte';
+
+  @override
+  String get repeater_pathHashModeOption1 => '1 - 2 bytes';
+
+  @override
+  String get repeater_pathHashModeOption2 => '2 - 3 bytes';
+
+  @override
+  String get repeater_pathHashModeOption3 => '3 - 4 bytes';
+
+  @override
   String get appSettings_enableMessageTracing => 'Omogoči sledenje sporočilom';
 
   @override
@@ -885,6 +944,28 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get appSettings_lastWeek => 'Prejšnji teden';
+
+  @override
+  String get appSettings_rasterTileSource => 'Vir rastrskih ploščic';
+
+  @override
+  String get appSettings_stadiaEndpoint => 'Končna točka Stadia';
+
+  @override
+  String get appSettings_stadiaApiKey => 'Ključ API Stadia';
+
+  @override
+  String get appSettings_stadiaApiKeyRequired =>
+      'Obvezno za uporabo Stadia Maps';
+
+  @override
+  String appSettings_stadiaApiKeyConfigured(String maskedKey) {
+    return 'Nastavljeno: $maskedKey';
+  }
+
+  @override
+  String get appSettings_stadiaApiKeyDialogDescription =>
+      'Vnesite svoj ključ API za Stadia Maps. Aplikacija ga uporablja za zahteve rastrskih ploščic.';
 
   @override
   String get appSettings_offlineMapCache => 'Shramba zemljevidov brez povezave';
@@ -1315,6 +1396,20 @@ class AppLocalizationsSl extends AppLocalizations {
   String get channels_hashtagHint => 'npr. #ekipa';
 
   @override
+  String channels_regionSetTo(String region) {
+    return 'Region: $region';
+  }
+
+  @override
+  String get channels_regionNotSet => 'Region: none';
+
+  @override
+  String get channels_regionSelect_Title => 'Select a region';
+
+  @override
+  String get channels_clearRegion => 'Clear region';
+
+  @override
   String get chat_noMessages => 'Še ni sporočil.';
 
   @override
@@ -1369,6 +1464,9 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get chat_sendGif => 'Pošlji GIF';
+
+  @override
+  String get chat_receivedGif => 'Received a GIF';
 
   @override
   String get chat_reply => 'Odgovori';
@@ -2022,6 +2120,42 @@ class AppLocalizationsSl extends AppLocalizations {
   }
 
   @override
+  String get mapCache_cachedTilesLabel => 'Cached tiles';
+
+  @override
+  String get mapCache_cachedTileSummaryLabel => 'Cached tile summary';
+
+  @override
+  String mapCache_bulkDownloadDisabledForSource(String source) {
+    return 'Offline bulk downloads are disabled for $source.';
+  }
+
+  @override
+  String mapCache_bulkDownloadDisabledInConfig(String source) {
+    return 'Offline bulk downloads are disabled for $source in this app configuration.';
+  }
+
+  @override
+  String mapCache_summarySource(String source) {
+    return 'Source: $source';
+  }
+
+  @override
+  String mapCache_summaryCachedTilesForSource(int count) {
+    return 'Cached tiles for source: $count';
+  }
+
+  @override
+  String mapCache_summaryCachedInSelection(int count) {
+    return 'Cached in selected area/zoom: $count';
+  }
+
+  @override
+  String mapCache_summaryApproxCacheSize(String size) {
+    return 'Approx cache size: $size';
+  }
+
+  @override
   String mapCache_boundsLabel(
     String north,
     String south,
@@ -2562,7 +2696,42 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get repeater_pathHashModeHelper =>
-      'Biti, ki so bila uporabljena za kodiranje ID-ja tega releja v oznakah za zaznavanje pot/kroga, imajo naslednje velikosti: 0=1 bit (256 ID-jev, do 64 skokov), 1=2 biti (65.000 ID-jev, do 32 skokov), 2=3 biti (16 milijonov ID-jev, do 21 skokov). V različicah 1.13 in starejših se ustvarjajo večbitne poti – vendar se to zgodi šele, ko je omrežje vklopljeno v različicah 1.14 in kasnejših.';
+      'Bajti, uporabljeni za kodiranje ID-ja tega repetitorja v oznakah flood poti/zaznavanja zank. 0=1 bajt (256 ID-jev, do 64 skokov), 1=2 bajta (65.000 ID-jev, do 32 skokov), 2=3 bajti (16 milijonov ID-jev, do 21 skokov). Vdelana programska oprema pred v1.14 je vedno uporabljala 1-bajtne poti; v1.14 in novejše je mogoče nastaviti na 2- ali 3-bajtne poti.';
+
+  @override
+  String get repeater_keySettings => 'Change Identity Keys';
+
+  @override
+  String get repeater_keySettingsSubtitle =>
+      'Change the public/private keypair';
+
+  @override
+  String get repeater_prvKey => 'Private key';
+
+  @override
+  String get repeater_prvKeyHelper =>
+      'A new private key for the repeater, a 128-character hex string.';
+
+  @override
+  String get repeater_generatePrvKey => 'Generate a random keypair';
+
+  @override
+  String get repeater_stopGeneratingPrvKey => 'Interrupt search for keypair';
+
+  @override
+  String get repeater_pubKey => 'Public key';
+
+  @override
+  String get repeater_pubKeyHelper =>
+      'This is the public key that goes with the generated private key. You can\'t set this directly.';
+
+  @override
+  String get repeater_pubKeyPrefix => 'Desired prefix';
+
+  @override
+  String repeater_pubKeyPrefixHelper(int tries) {
+    return 'Find a public key that starts with these hex digits. Expected tries needed: $tries.';
+  }
 
   @override
   String get repeater_txDelay => 'Zatemnitevanje zaradi poplav v Texasu';

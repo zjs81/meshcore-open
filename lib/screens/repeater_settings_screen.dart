@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:typed_data';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
@@ -11,6 +12,7 @@ import '../services/storage_service.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/routing_sheet.dart';
+import '../utils/keys.dart';
 import '../helpers/snack_bar_builder.dart';
 
 class RepeaterSettingsScreen extends StatefulWidget {
@@ -44,6 +46,7 @@ enum _SettingField {
   advertInterval,
   floodAdvertInterval,
   pathHashMode,
+  prvKey,
   txDelay,
   directTxDelay,
   intThresh,
@@ -109,6 +112,8 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
   bool _refreshingIntThresh = false;
   bool _refreshingAgcResetInterval = false;
   bool _runningAction = false;
+  bool _searchingForKeyPair = false;
+  bool _stopSearchingForKeyPair = false;
   StreamSubscription<Uint8List>? _frameSubscription;
   RepeaterCommandService? _commandService;
 
@@ -154,6 +159,11 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
 
   // Advanced
   int _pathHashMode = 0; // 0-2
+  final TextEditingController _prvKeyController = TextEditingController();
+  final TextEditingController _pubKeyController = TextEditingController();
+  final TextEditingController _prvKeyPrefixController = TextEditingController();
+  final KeyPairSearcher _keyPairSearcher = KeyPairSearcher();
+  final int _searchChunkTime = 30; // time in ms to search before yielding
   final TextEditingController _txDelayController = TextEditingController();
   final TextEditingController _directTxDelayController =
       TextEditingController();
@@ -206,6 +216,10 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     _txDelayController.dispose();
     _directTxDelayController.dispose();
     _intThreshController.dispose();
+    _prvKeyController.dispose();
+    _pubKeyController.dispose();
+    _prvKeyPrefixController.dispose();
+    _stopSearchingForKeyPair = true;
     super.dispose();
   }
 
@@ -860,6 +874,12 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
           command: 'set path.hash.mode $_pathHashMode',
         ));
       }
+      if (_dirtyFields.contains(_SettingField.prvKey)) {
+        final v = _prvKeyController.text.trim();
+        if (v != "") {
+          pending.add((field: _SettingField.prvKey, command: 'set prv.key $v'));
+        }
+      }
       if (_dirtyFields.contains(_SettingField.txDelay) &&
           _txDelayController.text.isNotEmpty) {
         final v = double.tryParse(_txDelayController.text.trim());
@@ -1005,6 +1025,36 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     }
   }
 
+  void _startSearchingForKeyPair() async {
+    if (_searchingForKeyPair) return;
+    setState(() {
+      _searchingForKeyPair = true;
+      _stopSearchingForKeyPair = false;
+    });
+    _searchForKeyPair();
+  }
+
+  void _searchForKeyPair() async {
+    if (_stopSearchingForKeyPair) {
+      if (mounted) setState(() => _searchingForKeyPair = false);
+      return;
+    }
+    final String prefix = _prvKeyPrefixController.text.trim();
+    MCKeyPair? keys = await _keyPairSearcher.findMatchingKeyPair(
+      prefix,
+      _searchChunkTime,
+    );
+    if (keys == null) {
+      // Ran out of time; schedule another attempt.
+      Timer.run(_searchForKeyPair);
+    } else {
+      setState(() => _searchingForKeyPair = false);
+      _prvKeyController.text = pubKeyToHex(keys.private);
+      _pubKeyController.text = pubKeyToHex(keys.public);
+      _markChanged(_SettingField.prvKey);
+    }
+  }
+
   Widget _buildInlineRefreshButton({
     required bool isRefreshing,
     required VoidCallback onRefresh,
@@ -1069,6 +1119,7 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
                   _buildOwnerInfoCard(),
                   _buildActionsCard(),
                   _buildAdvancedCard(),
+                  _buildKeysCard(),
                   const SizedBox(height: 16),
                   _buildDangerZoneCard(),
                 ],
@@ -1978,6 +2029,127 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
               });
               _markChanged(_SettingField.agcResetInterval);
             },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildKeysCard() {
+    final l10n = context.l10n;
+    return MeshCard(
+      child: ExpansionTile(
+        leading: const Icon(Icons.vpn_key),
+        title: Text(
+          l10n.repeater_keySettings,
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(l10n.repeater_keySettingsSubtitle),
+        childrenPadding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _prvKeyController,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp("[0-9a-fA-F]")),
+                  ],
+                  decoration: InputDecoration(
+                    labelText: l10n.repeater_prvKey,
+                    helperText: l10n.repeater_prvKeyHelper,
+                    helperMaxLines: 3,
+                    border: const OutlineInputBorder(),
+                  ),
+                  onChanged: (_) {
+                    _pubKeyController.text = "";
+                    if (_prvKeyController.text.isNotEmpty) {
+                      _markChanged(_SettingField.prvKey);
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: _searchingForKeyPair
+                    ? IconButton(
+                        icon: const Icon(Icons.cancel, size: 24),
+                        onPressed: (() => _stopSearchingForKeyPair = true),
+                        tooltip: l10n.repeater_stopGeneratingPrvKey,
+                        visualDensity: VisualDensity.compact,
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.casino_rounded, size: 24),
+                        onPressed: () {
+                          _startSearchingForKeyPair();
+                        },
+                        tooltip: l10n.repeater_generatePrvKey,
+                        visualDensity: VisualDensity.compact,
+                      ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: TextField(
+                  readOnly: true,
+                  controller: _pubKeyController,
+                  style: TextStyle(
+                    color: Theme.of(
+                      context,
+                    ).textTheme.headlineSmall?.color?.withValues(alpha: 0.6),
+                  ),
+                  decoration: InputDecoration(
+                    labelText: l10n.repeater_pubKey,
+                    helperText: l10n.repeater_pubKeyHelper,
+                    helperMaxLines: 3,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: _searchingForKeyPair
+                      ? CircularProgressIndicator(strokeWidth: 2)
+                      : null,
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _prvKeyPrefixController,
+                  maxLength: 4,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp("[0-9a-fA-F]")),
+                  ],
+                  onChanged: (_) => setState(() => {}), // updates helper text
+                  decoration: InputDecoration(
+                    labelText: l10n.repeater_pubKeyPrefix,
+                    helperText: l10n.repeater_pubKeyPrefixHelper(
+                      pow(16, _prvKeyPrefixController.text.length).toInt(),
+                    ),
+                    helperMaxLines: 3,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 48),
+            ],
           ),
         ],
       ),

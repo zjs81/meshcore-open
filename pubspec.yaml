@@ -74,6 +74,9 @@ dependencies:
   ml_dataframe: ^1.0.0
   llamadart: ^0.8.0
   flutter_langdetect: ^0.0.1
+  cryptography: ^2.9.0
+  cryptography_flutter: ^2.3.4
+  convert: ^3.1.2
 
 hooks:
   user_defines:
@@ -112,12 +115,25 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/fonts/
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter.ttf
+        - asset: assets/fonts/InterItalic.ttf
+          style: italic
+    - family: JetBrains Mono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono.ttf
 
 flutter_launcher_icons:
   android: true
   ios: true
   image_path: "mesh-icon.png"
   remove_alpha_ios: true
+  adaptive_icon_background: "#9F9D95"
+  adaptive_icon_foreground: "assets/icons/ic_foreground.png"
 
   # To add assets to your application, add an assets section, like this:
   # assets:

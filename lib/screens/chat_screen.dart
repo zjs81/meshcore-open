@@ -12,6 +12,7 @@ import '../utils/platform_info.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/cyr2lat.dart';
+import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../widgets/message_status_icon.dart';
 import '../widgets/empty_state.dart';
@@ -546,15 +547,15 @@ class _ChatScreenState extends State<ChatScreen> {
                       decoration: InputDecoration(
                         hintText: context.l10n.chat_typeMessage,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(MeshRadii.pill),
+                          borderRadius: BorderRadius.circular(MeshRadii.md),
                           borderSide: BorderSide(color: scheme.outlineVariant),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(MeshRadii.pill),
+                          borderRadius: BorderRadius.circular(MeshRadii.md),
                           borderSide: BorderSide(color: scheme.outlineVariant),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(MeshRadii.pill),
+                          borderRadius: BorderRadius.circular(MeshRadii.md),
                           borderSide: BorderSide(
                             color: scheme.primary,
                             width: 1.5,
@@ -776,17 +777,35 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   String _currentPathLabel(Contact contact) {
+    final connector = context.read<MeshCoreConnector>();
+
     // Check if user has set a path override
     if (contact.pathOverride != null) {
       if (contact.pathOverride! < 0) return context.l10n.chat_floodForced;
       if (contact.pathOverride == 0) return context.l10n.chat_directForced;
-      return context.l10n.chat_hopsForced(contact.pathOverride!);
+      final bytes = contact.pathOverrideBytes ?? Uint8List(0);
+      final hopCount = _displayHopCount(
+        bytes,
+        contact.pathOverride!,
+        connector.pathHashByteWidth,
+      );
+      return context.l10n.chat_hopsForced(hopCount);
     }
 
     // Use device's path
     if (contact.pathLength < 0) return context.l10n.chat_floodAuto;
     if (contact.pathLength == 0) return context.l10n.chat_direct;
-    return context.l10n.chat_hopsCount(contact.pathLength);
+    final hopCount = _displayHopCount(
+      contact.path,
+      contact.pathLength,
+      connector.pathHashByteWidth,
+    );
+    return context.l10n.chat_hopsCount(hopCount);
+  }
+
+  int _displayHopCount(List<int> pathBytes, int storedHopCount, int hashWidth) {
+    if (pathBytes.isEmpty) return storedHopCount;
+    return PathHelper.splitPathBytes(pathBytes, hashWidth).length;
   }
 
   void _showContactInfo(BuildContext context) {
@@ -807,7 +826,10 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               _buildInfoRow(
                 context.l10n.chat_path,
-                contact.pathLabel(context.l10n),
+                contact.pathLabel(
+                  context.l10n,
+                  pathHashByteWidth: connector.pathHashByteWidth,
+                ),
               ),
               _buildInfoRow(
                 context.l10n.contact_lastSeen,
@@ -1435,6 +1457,9 @@ class _MessageBubble extends StatelessWidget {
                                       color: textColor.withValues(alpha: 0.72),
                                       fontSize: bodyFontSize * textScale,
                                     ),
+                                    onSecondaryTap: PlatformInfo.isDesktop
+                                        ? onLongPress
+                                        : null,
                                   ),
                                 ),
                               ],

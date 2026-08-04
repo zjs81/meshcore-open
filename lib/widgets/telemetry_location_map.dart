@@ -11,7 +11,6 @@ import '../models/app_settings.dart';
 import '../models/contact.dart';
 import '../services/app_settings_service.dart';
 import '../services/map_tile_cache_service.dart';
-import 'themed_map_tile_layer.dart';
 
 class TelemetryLocationMap extends StatefulWidget {
   final double latitude;
@@ -115,7 +114,7 @@ class _TelemetryLocationMapState extends State<TelemetryLocationMap> {
                       ),
                     ),
                     children: [
-                      ThemedMapTileLayer(tileCache: tileCache),
+                      tileCache.buildTileLayer(context),
                       MarkerLayer(
                         markers: [
                           ...contacts.map(_buildContactMarker),

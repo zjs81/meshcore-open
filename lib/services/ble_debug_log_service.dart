@@ -176,6 +176,8 @@ class BleDebugLogService extends ChangeNotifier {
         return 'CMD_SET_CUSTOM_VAR';
       case cmdSendTracePath:
         return 'CMD_SEND_TRACE_PATH';
+      case cmdSetFloodScope:
+        return 'CMD_SET_FLOOD_SCOPE';
       default:
         return null;
     }

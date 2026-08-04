@@ -100,6 +100,8 @@
   "settings_locationInvalid": "Neveljavna zemeljska širina ali dolžina.",
   "settings_latitude": "Širina",
   "settings_longitude": "Dolžina",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Samodejni zero-hop oglas ob posodobitvi GPS",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Ko se GPS lokacija spremeni, pošlji zero-hop oglas (zahteva lokacijo v oglasu).",
   "settings_privacyMode": "Zasebnost",
   "settings_privacyModeSubtitle": "Skrita imena/lokacije v oglasih",
   "settings_privacyModeToggle": "Omogoči način zasebnosti, da skrijemo tvoje ime in lokacijo v oglasih.",
@@ -240,6 +242,19 @@
   "appSettings_last6Hours": "Zadnjih 6 ur",
   "appSettings_last24Hours": "Zadnjih 24 ur",
   "appSettings_lastWeek": "Prejšnji teden",
+  "appSettings_rasterTileSource": "Vir rastrskih ploščic",
+  "appSettings_stadiaEndpoint": "Končna točka Stadia",
+  "appSettings_stadiaApiKey": "Ključ API Stadia",
+  "appSettings_stadiaApiKeyRequired": "Obvezno za uporabo Stadia Maps",
+  "appSettings_stadiaApiKeyConfigured": "Nastavljeno: {maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "Vnesite svoj ključ API za Stadia Maps. Aplikacija ga uporablja za zahteve rastrskih ploščic.",
   "appSettings_offlineMapCache": "Shramba zemljevidov brez povezave",
   "appSettings_noAreaSelected": "Območje ni izbrano",
   "appSettings_areaSelectedZoom": "Izbrano območje (povečava {minZoom}-{maxZoom})",
@@ -769,6 +784,56 @@
       }
     }
   },
+  "mapCache_cachedTilesLabel": "Cached tiles",
+  "mapCache_cachedTileSummaryLabel": "Cached tile summary",
+  "mapCache_bulkDownloadDisabledForSource": "Offline bulk downloads are disabled for {source}.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Offline bulk downloads are disabled for {source} in this app configuration.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Source: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Cached tiles for source: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Cached in selected area/zoom: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Approx cache size: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "mapCache_boundsLabel": "N {north}, S {south}, E {east}, W {west}",
   "@mapCache_boundsLabel": {
     "placeholders": {
@@ -1107,7 +1172,7 @@
   "repeater_advancedSettings": "Napredno",
   "repeater_advancedSettingsSubtitle": "Gumbi za nastavljanje za izkušene uporabnike",
   "repeater_pathHashMode": "Način ustvarjanja hash-a poti",
-  "repeater_pathHashModeHelper": "Biti, ki so bila uporabljena za kodiranje ID-ja tega releja v oznakah za zaznavanje pot/kroga, imajo naslednje velikosti: 0=1 bit (256 ID-jev, do 64 skokov), 1=2 biti (65.000 ID-jev, do 32 skokov), 2=3 biti (16 milijonov ID-jev, do 21 skokov). V različicah 1.13 in starejših se ustvarjajo večbitne poti – vendar se to zgodi šele, ko je omrežje vklopljeno v različicah 1.14 in kasnejših.",
+  "repeater_pathHashModeHelper": "Bajti, uporabljeni za kodiranje ID-ja tega repetitorja v oznakah flood poti/zaznavanja zank. 0=1 bajt (256 ID-jev, do 64 skokov), 1=2 bajta (65.000 ID-jev, do 32 skokov), 2=3 bajti (16 milijonov ID-jev, do 21 skokov). Vdelana programska oprema pred v1.14 je vedno uporabljala 1-bajtne poti; v1.14 in novejše je mogoče nastaviti na 2- ali 3-bajtne poti.",
   "repeater_txDelay": "Zatemnitevanje zaradi poplav v Texasu",
   "repeater_txDelayHelper": "Uporaba intervalov za ponovno pošiljanje v primeru prometa zaradi poplav, kot pomnožnik časovne trajanje paketa (0-2, privzeto 0,5). Veje vrednost = manjše kolizije, vendar počasnejše dostavo.",
   "repeater_directTxDelay": "Neposredni časovno odlašanje",

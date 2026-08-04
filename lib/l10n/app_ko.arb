@@ -161,6 +161,8 @@
   "settings_locationIntervalInvalid": "간격은 최소 60초 이상, 86400초 미만이어야 합니다.",
   "settings_latitude": "위도",
   "settings_longitude": "경도",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "GPS 업데이트 시 제로 홉 광고 자동 전송",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "GPS 위치가 변경되면 제로 홉 광고를 전송합니다(광고에 위치 포함 필요).",
   "settings_contactSettings": "연락처 설정",
   "settings_contactSettingsSubtitle": "연락처 추가 방식 설정",
   "settings_privacyMode": "개인 정보 보호 모드",
@@ -332,6 +334,19 @@
   "appSettings_last6Hours": "지난 6시간",
   "appSettings_last24Hours": "지난 24시간",
   "appSettings_lastWeek": "지난 주",
+  "appSettings_rasterTileSource": "래스터 타일 소스",
+  "appSettings_stadiaEndpoint": "Stadia 엔드포인트",
+  "appSettings_stadiaApiKey": "Stadia API 키",
+  "appSettings_stadiaApiKeyRequired": "Stadia Maps를 사용하려면 필요합니다",
+  "appSettings_stadiaApiKeyConfigured": "설정됨: {maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "Stadia Maps API 키를 입력하세요. 이 앱은 래스터 타일 요청에 이 키를 사용합니다.",
   "appSettings_offlineMapCache": "오프라인 지도 캐시",
   "appSettings_unitsTitle": "단위",
   "appSettings_unitsMetric": "미터법 (m / km)",
@@ -952,6 +967,56 @@
       }
     }
   },
+  "mapCache_cachedTilesLabel": "Cached tiles",
+  "mapCache_cachedTileSummaryLabel": "Cached tile summary",
+  "mapCache_bulkDownloadDisabledForSource": "Offline bulk downloads are disabled for {source}.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Offline bulk downloads are disabled for {source} in this app configuration.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Source: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Cached tiles for source: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Cached in selected area/zoom: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Approx cache size: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "mapCache_boundsLabel": "N {north}, S {south}, E {east}, W {west}",
   "@mapCache_boundsLabel": {
     "placeholders": {
@@ -1293,7 +1358,7 @@
   "repeater_advancedSettings": "고급",
   "repeater_advancedSettingsSubtitle": "숙련된 운영자를 위한 조절 노브",
   "repeater_pathHashMode": "패스 해시 모드",
-  "repeater_pathHashModeHelper": "이 리피터의 ID를 플러드 경로/루프 감지 태그에 인코딩하는 데 사용되는 바이트 수: 0=1 바이트 (256개의 ID, 최대 64개의 홉), 1=2 바이트 (65,000개의 ID, 최대 32개의 홉), 2=3 바이트 (16백만 개의 ID, 최대 21개의 홉). v1.13 및 이전 버전의 펌웨어는 다중 바이트 경로를 지원하지 않으며, 네트워크가 v1.14 이상으로 업그레이드되면 한 번만 감지합니다.",
+  "repeater_pathHashModeHelper": "이 리피터의 ID를 플러드 경로/루프 감지 태그에 인코딩하는 데 사용되는 바이트 수입니다. 0=1바이트(256개 ID, 최대 64홉), 1=2바이트(65,000개 ID, 최대 32홉), 2=3바이트(1,600만 개 ID, 최대 21홉). v1.14 이전 펌웨어는 항상 1바이트 경로를 사용했으며, v1.14 이상은 2바이트 또는 3바이트 경로로 설정할 수 있습니다.",
   "repeater_txDelay": "플러드 TX 지연",
   "repeater_txDelayHelper": "홍수 시 교통량에 맞춰 재전송 간격을 설정합니다. 이는 패킷의 전송 시간을 곱한 값 (0-2, 기본값 0.5)으로 설정합니다. 값이 클수록 충돌이 줄어들지만 전송 속도가 느려집니다.",
   "repeater_directTxDelay": "직접적인 TX 지연",

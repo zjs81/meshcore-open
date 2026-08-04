@@ -12,7 +12,6 @@ import '../widgets/adaptive_app_bar_title.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/mesh_ui.dart';
-import '../widgets/themed_map_tile_layer.dart';
 
 class MapCacheScreen extends StatefulWidget {
   const MapCacheScreen({super.key});
@@ -34,6 +33,11 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
   bool _isDownloading = false;
   int _completedTiles = 0;
   int _failedTiles = 0;
+  List<CachedTileInfo> _cachedTiles = const [];
+  int _cachedTileBytes = 0;
+  bool _isLoadingCachedTiles = false;
+  double _overlayZoom = 2.0;
+  LatLngBounds? _visibleBounds;
 
   @override
   void initState() {
@@ -123,8 +127,10 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
       _minZoom = safeMin;
       _maxZoom = safeMax;
       _selectedBounds = bounds;
+      _visibleBounds = bounds;
     });
     _updateEstimate();
+    _refreshCachedTiles();
     if (bounds != null) {
       _mapController.fitCamera(
         CameraFit.bounds(bounds: bounds, padding: const EdgeInsets.all(48)),
@@ -181,6 +187,7 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
 
   Future<void> _startDownload() async {
     final bounds = _selectedBounds;
+    final cacheService = context.read<MapTileCacheService>();
     if (bounds == null) {
       showDismissibleSnackBar(
         context,
@@ -193,6 +200,18 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
       showDismissibleSnackBar(
         context,
         content: Text(context.l10n.mapCache_noTilesToDownload),
+      );
+      return;
+    }
+
+    if (!cacheService.source.allowsBulkDownload) {
+      showDismissibleSnackBar(
+        context,
+        content: Text(
+          context.l10n.mapCache_bulkDownloadDisabledInConfig(
+            cacheService.source.label,
+          ),
+        ),
       );
       return;
     }
@@ -218,8 +237,6 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
     );
 
     if (confirmed != true || !mounted) return;
-
-    final cacheService = context.read<MapTileCacheService>();
 
     setState(() {
       _isDownloading = true;
@@ -254,6 +271,8 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
             result.failed,
           )
         : context.l10n.mapCache_cachedTiles(result.downloaded);
+    await _refreshCachedTiles();
+    if (!mounted) return;
     showDismissibleSnackBar(context, content: Text(message));
   }
 
@@ -280,16 +299,61 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
     final cacheService = context.read<MapTileCacheService>();
     await cacheService.clearCache();
     if (!mounted) return;
+    await _refreshCachedTiles();
+    if (!mounted) return;
     showDismissibleSnackBar(
       context,
       content: Text(context.l10n.mapCache_offlineCacheCleared),
     );
   }
 
+  Future<void> _refreshCachedTiles() async {
+    if (!mounted) return;
+    setState(() {
+      _isLoadingCachedTiles = true;
+    });
+    final cacheService = context.read<MapTileCacheService>();
+    final inventory = await cacheService.getCachedTileInventory();
+    if (!mounted) return;
+    setState(() {
+      _cachedTiles = inventory.tiles;
+      _cachedTileBytes = inventory.totalBytes;
+      _isLoadingCachedTiles = false;
+    });
+  }
+
+  String _formatBytes(int bytes) {
+    if (bytes < 1024) return '$bytes B';
+    if (bytes < 1024 * 1024) {
+      return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    }
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+  }
+
   @override
   Widget build(BuildContext context) {
-    final tileCache = context.read<MapTileCacheService>();
+    final tileCache = context.watch<MapTileCacheService>();
+    final source = tileCache.source;
     final selectedBounds = _selectedBounds;
+    final activeCachedTiles = tileCache.filterTilesForActiveSource(
+      _cachedTiles,
+    );
+    final cachedInSelection = tileCache.countTilesForBounds(
+      activeCachedTiles,
+      bounds: selectedBounds,
+      minZoom: _minZoom,
+      maxZoom: _maxZoom,
+    );
+    final overlayPolygons = tileCache.buildCachedTilePolygons(
+      activeCachedTiles,
+      zoom: _overlayZoom.round().clamp(0, 19).toInt(),
+      visibleBounds: _visibleBounds,
+    );
+    final cacheSummary =
+        '${context.l10n.mapCache_summarySource(source.label)}\n'
+        '${context.l10n.mapCache_summaryCachedTilesForSource(activeCachedTiles.length)}\n'
+        '${context.l10n.mapCache_summaryCachedInSelection(cachedInSelection)}\n'
+        '${context.l10n.mapCache_summaryApproxCacheSize(_formatBytes(_cachedTileBytes))}';
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
     final isDesktop = _isDesktopPlatform(defaultTargetPlatform);
@@ -327,9 +391,23 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
                             )
                           : const KeyboardOptions.disabled(),
                     ),
+                    onPositionChanged: (camera, hasGesture) {
+                      final nextZoom = camera.zoom;
+                      final nextBounds = camera.visibleBounds;
+                      if (_overlayZoom != nextZoom ||
+                          _visibleBounds?.north != nextBounds.north ||
+                          _visibleBounds?.south != nextBounds.south ||
+                          _visibleBounds?.east != nextBounds.east ||
+                          _visibleBounds?.west != nextBounds.west) {
+                        setState(() {
+                          _overlayZoom = nextZoom;
+                          _visibleBounds = nextBounds;
+                        });
+                      }
+                    },
                   ),
                   children: [
-                    ThemedMapTileLayer(tileCache: tileCache),
+                    tileCache.buildTileLayer(context),
                     if (selectedBounds != null)
                       PolygonLayer(
                         polygons: [
@@ -341,9 +419,24 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
                           ),
                         ],
                       ),
+                    if (overlayPolygons.isNotEmpty)
+                      PolygonLayer(polygons: overlayPolygons),
                   ],
                 ),
                 if (isDesktop) _buildDesktopMapControls(),
+                Positioned(
+                  top: 12,
+                  left: isDesktop ? 84 : 12,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        'Z: ${_overlayZoom.round()}:',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ),
+                ),
                 Positioned(
                   top: 12,
                   right: 12,
@@ -445,6 +538,34 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
                         color: scheme.onSurfaceVariant,
                       ),
                     ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      key: ValueKey(
+                        '$cacheSummary|${activeCachedTiles.length}|$cachedInSelection|$_cachedTileBytes',
+                      ),
+                      initialValue: cacheSummary,
+                      readOnly: true,
+                      minLines: 4,
+                      maxLines: 4,
+                      decoration: InputDecoration(
+                        labelText: _isLoadingCachedTiles
+                            ? l10n.mapCache_cachedTilesLabel
+                            : l10n.mapCache_cachedTileSummaryLabel,
+                        border: const OutlineInputBorder(),
+                      ),
+                    ),
+                    if (!source.allowsBulkDownload) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.mapCache_bulkDownloadDisabledForSource(
+                          source.label,
+                        ),
+                        style: MeshTheme.mono(
+                          fontSize: 12,
+                          color: MeshPalette.alert,
+                        ),
+                      ),
+                    ],
                     if (_isDownloading) ...[
                       const SizedBox(height: 8),
                       LinearProgressIndicator(
@@ -471,7 +592,10 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
                           child: ElevatedButton.icon(
                             icon: const Icon(Icons.download),
                             label: Text(l10n.mapCache_downloadTilesButton),
-                            onPressed: _isDownloading || selectedBounds == null
+                            onPressed:
+                                _isDownloading ||
+                                    selectedBounds == null ||
+                                    !source.allowsBulkDownload
                                 ? null
                                 : _startDownload,
                           ),

@@ -22,7 +22,7 @@
     <uses-feature android:name="android.hardware.usb.host" android:required="false"/>
 
     <application
-        android:label="meshcore_open"
+        android:label="MeshCore Open"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <service

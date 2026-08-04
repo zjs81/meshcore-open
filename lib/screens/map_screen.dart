@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:meshcore_open/helpers/path_helper.dart';
 import 'package:meshcore_open/screens/path_trace_map.dart';
 import 'package:meshcore_open/widgets/app_bar.dart';
 import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
-import '../l10n/l10n.dart';
 import '../connector/meshcore_protocol.dart';
+import '../l10n/l10n.dart';
 import '../models/app_settings.dart';
 import '../models/channel.dart';
 import '../models/contact.dart';
@@ -25,7 +26,6 @@ import '../utils/battery_utils.dart';
 import '../utils/route_transitions.dart';
 import '../widgets/quick_switch_bar.dart';
 import '../widgets/sync_progress_overlay.dart';
-import '../widgets/themed_map_tile_layer.dart';
 import '../icons/los_icon.dart';
 import 'channels_screen.dart';
 import 'chat_screen.dart';
@@ -79,6 +79,7 @@ class _MapScreenState extends State<MapScreen> {
   bool _hasInitializedMap = false;
   bool _removedMarkersLoaded = false;
   final List<int> _pathTrace = [];
+  final List<int> _pathTraceHopWidths = [];
   final List<Contact> _pathTraceContacts = [];
   final List<LatLng> _points = [];
   final List<Polyline> _polylines = [];
@@ -106,6 +107,31 @@ class _MapScreenState extends State<MapScreen> {
     _mapController.dispose();
     super.dispose();
   }
+
+  ColorScheme get _overlayScheme => Theme.of(context).colorScheme;
+
+  bool get _useDarkOverlay => Theme.of(context).brightness == Brightness.dark;
+
+  Color get _overlayPanelColor => _useDarkOverlay
+      ? MapPalette.panelDark
+      : _overlayScheme.surfaceContainerLow.withValues(alpha: 0.96);
+
+  Color get _overlayPrimaryTextColor =>
+      _useDarkOverlay ? MapPalette.textPrimary : _overlayScheme.onSurface;
+
+  Color get _overlaySecondaryTextColor => _useDarkOverlay
+      ? MapPalette.textSecondary
+      : _overlayScheme.onSurfaceVariant;
+
+  Color get _overlayMutedTextColor =>
+      _useDarkOverlay ? MapPalette.textMuted : _overlayScheme.onSurfaceVariant;
+
+  Color get _overlayBorderColor =>
+      _useDarkOverlay ? MapPalette.border : _overlayScheme.outlineVariant;
+
+  Color get _overlayShadowColor => _useDarkOverlay
+      ? MapPalette.markerShadow
+      : Colors.black.withValues(alpha: 0.18);
 
   _NodeAge _ageOf(Contact contact) {
     final d = DateTime.now().difference(contact.lastSeen);
@@ -233,12 +259,12 @@ class _MapScreenState extends State<MapScreen> {
       bottom: 96,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: MapPalette.panelDark,
+          color: _overlayPanelColor,
           borderRadius: BorderRadius.circular(MeshRadii.md),
-          border: Border.all(color: MapPalette.border),
-          boxShadow: const [
+          border: Border.all(color: _overlayBorderColor),
+          boxShadow: [
             BoxShadow(
-              color: MapPalette.markerShadow,
+              color: _overlayShadowColor,
               blurRadius: 8,
               offset: Offset(0, 3),
             ),
@@ -250,20 +276,20 @@ class _MapScreenState extends State<MapScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                color: MapPalette.textPrimary,
+                color: _overlayPrimaryTextColor,
                 icon: const Icon(Icons.add),
                 visualDensity: VisualDensity.standard,
                 tooltip: context.l10n.map_zoomIn,
                 onPressed: () => _zoomMapBy(1),
               ),
               IconButton(
-                color: MapPalette.textPrimary,
+                color: _overlayPrimaryTextColor,
                 icon: const Icon(Icons.remove),
                 tooltip: context.l10n.map_zoomOut,
                 onPressed: () => _zoomMapBy(-1),
               ),
               IconButton(
-                color: MapPalette.textPrimary,
+                color: _overlayPrimaryTextColor,
                 icon: const Icon(Icons.crop_free),
                 tooltip: context.l10n.map_centerMap,
                 onPressed: () => _mapController.move(center, zoom),
@@ -285,6 +311,31 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  void _handleMapContextPress(
+    BuildContext context,
+    MeshCoreConnector connector,
+    LatLng latLng,
+  ) {
+    if (_isSelectingPoi) {
+      setState(() {
+        _isSelectingPoi = false;
+      });
+      _shareMarker(
+        context: context,
+        connector: connector,
+        position: latLng,
+        defaultLabel: context.l10n.map_pointOfInterest,
+        flags: 'poi',
+      );
+      return;
+    }
+    _showShareMarkerAtPositionSheet(
+      context: context,
+      connector: connector,
+      position: latLng,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Builder(
@@ -303,6 +354,7 @@ class _MapScreenState extends State<MapScreen> {
         final settingsService = context.read<AppSettingsService>();
         final pathHistory = context.read<PathHistoryService>();
         final tileCache = context.read<MapTileCacheService>();
+        final scheme = Theme.of(context).colorScheme;
         final isDesktop = _isDesktopPlatform(defaultTargetPlatform);
         final allContacts = connector.allContacts;
 
@@ -376,17 +428,20 @@ class _MapScreenState extends State<MapScreen> {
 
         // Compute guessed locations with caching
         final maxRangeKm = _estimateLoRaRangeKm(connector);
+        final pathHashByteWidth = connector.pathHashByteWidth
+            .clamp(1, 4)
+            .toInt();
         final filteredKeys = guessCandidates
             .map((c) => '${c.publicKeyHex}:${c.path.join("-")}')
             .join(',');
         final anchorKeys = allContactsWithLocation
             .map(
               (c) =>
-                  '${c.publicKeyHex}:${c.latitude}:${c.longitude}:${c.path.isNotEmpty ? c.path.last : ""}',
+                  '${c.publicKeyHex}:${c.latitude}:${c.longitude}:${PathHelper.formatHopHex(c.path.isNotEmpty ? c.path.sublist(max(0, c.path.length - pathHashByteWidth)) : const [])}',
             )
             .join(',');
         final cacheKey =
-            '$filteredKeys|$anchorKeys|$pathHistoryVersion:${connector.currentFreqHz}:${connector.currentSf}:${connector.currentBwHz}:${connector.currentTxPower}:${settings.mapShowGuessedLocations}';
+            '$filteredKeys|$anchorKeys|$pathHistoryVersion:$pathHashByteWidth:${connector.currentFreqHz}:${connector.currentSf}:${connector.currentBwHz}:${connector.currentTxPower}:${settings.mapShowGuessedLocations}';
         if (cacheKey != _guessedLocationsCacheKey) {
           _guessedLocationsCacheKey = cacheKey;
           _cachedGuessedLocations = settings.mapShowGuessedLocations
@@ -395,6 +450,7 @@ class _MapScreenState extends State<MapScreen> {
                   allContactsWithLocation,
                   pathHistory,
                   maxRangeKm,
+                  pathHashByteWidth,
                 )
               : [];
         }
@@ -554,8 +610,8 @@ class _MapScreenState extends State<MapScreen> {
           canPop: allowBack,
           child: Scaffold(
             appBar: AppBar(
-              backgroundColor: MapPalette.panelDark,
-              foregroundColor: MapPalette.textPrimary,
+              backgroundColor: scheme.surface,
+              foregroundColor: scheme.onSurface,
               title: AppBarTitle(context.l10n.map_title),
               centerTitle: true,
               automaticallyImplyLeading: false,
@@ -708,24 +764,10 @@ class _MapScreenState extends State<MapScreen> {
                       }
                     },
                     onLongPress: (_, latLng) {
-                      if (_isSelectingPoi) {
-                        setState(() {
-                          _isSelectingPoi = false;
-                        });
-                        _shareMarker(
-                          context: context,
-                          connector: connector,
-                          position: latLng,
-                          defaultLabel: context.l10n.map_pointOfInterest,
-                          flags: 'poi',
-                        );
-                        return;
-                      }
-                      _showShareMarkerAtPositionSheet(
-                        context: context,
-                        connector: connector,
-                        position: latLng,
-                      );
+                      _handleMapContextPress(context, connector, latLng);
+                    },
+                    onSecondaryTap: (_, latLng) {
+                      _handleMapContextPress(context, connector, latLng);
                     },
                     onPositionChanged: (camera, hasGesture) {
                       // Track zoom in half-step buckets so cluster/marker
@@ -742,7 +784,7 @@ class _MapScreenState extends State<MapScreen> {
                     },
                   ),
                   children: [
-                    ThemedMapTileLayer(tileCache: tileCache),
+                    tileCache.buildTileLayer(context),
                     if (_polylines.isNotEmpty && _isBuildingPathTrace)
                       PolylineLayer(polylines: _polylines),
                     if (sharedMarkerPolylines.isNotEmpty)
@@ -895,7 +937,7 @@ class _MapScreenState extends State<MapScreen> {
                     _handleQuickSwitch(index, context),
                 contactsUnreadCount: connector.getTotalContactsUnreadCount(),
                 channelsUnreadCount: connector.getTotalChannelsUnreadCount(),
-                highContrast: true,
+                highContrast: _useDarkOverlay,
               ),
             ),
             floatingActionButton:
@@ -970,23 +1012,19 @@ class _MapScreenState extends State<MapScreen> {
     List<Contact> withLocation,
     PathHistoryService pathHistory,
     double? maxRangeKm,
+    int pathHashByteWidth,
   ) {
-    // Index known-location repeaters by their 1-byte hash.
-    // null value = two repeaters share the same hash byte (ambiguous collision).
-    final repeaterByHash = <int, Contact?>{};
-
-    for (final c in withLocation) {
-      if (c.type == advTypeRepeater) {
-        if (repeaterByHash.containsKey(c.publicKey[0])) {
-          repeaterByHash[c.publicKey[0]] =
-              null; // collision: can't disambiguate
-        } else {
-          repeaterByHash[c.publicKey[0]] = c;
-        }
-      }
-    }
-
     final result = <_GuessedLocation>[];
+    final hopWidth = pathHashByteWidth.clamp(1, 4).toInt();
+    final anchorsByPrefix = <String, List<Contact>>{};
+    for (final repeater in withLocation) {
+      if (repeater.type != advTypeRepeater) continue;
+      if (repeater.publicKey.length < hopWidth) continue;
+      final prefix = PathHelper.formatHopHex(
+        repeater.publicKey.sublist(0, hopWidth),
+      );
+      anchorsByPrefix.putIfAbsent(prefix, () => []).add(repeater);
+    }
 
     for (final contact in allContacts) {
       if (contact.hasLocation) continue;
@@ -1000,21 +1038,23 @@ class _MapScreenState extends State<MapScreen> {
 
       // Collect the contact-side (last-hop) repeater from every known path.
       // path = [device-side hop, ..., contact-side hop]
-      // Only path.last is actually within radio range of the contact — using
-      // earlier bytes would anchor against our own side of the network.
+      // Only the last hop chunk is actually within radio range of the contact.
       final pathSets = <List<int>>[
         contact.path.toList(),
         ...pathHistory
             .getRecentPaths(contact.publicKeyHex)
             .map((r) => r.pathBytes),
       ];
-      final lastHopBytes = <int>{};
       for (final pathBytes in pathSets) {
         if (pathBytes.isEmpty) continue;
-        final lastHop = pathBytes.last;
-        lastHopBytes.add(lastHop);
-        final r = repeaterByHash[lastHop];
-        if (r != null) anchorSet.add(LatLng(r.latitude!, r.longitude!));
+        final lastHop = pathBytes.sublist(max(0, pathBytes.length - hopWidth));
+        if (lastHop.isEmpty) continue;
+
+        final repeaters = anchorsByPrefix[PathHelper.formatHopHex(lastHop)];
+        if (repeaters != null && repeaters.isNotEmpty) {
+          final repeater = repeaters.first;
+          anchorSet.add(LatLng(repeater.latitude!, repeater.longitude!));
+        }
       }
 
       // Filter anchors that are geometrically inconsistent with radio range.
@@ -1181,9 +1221,12 @@ class _MapScreenState extends State<MapScreen> {
         width: 48,
         height: 48,
         child: GestureDetector(
-          onLongPress: () => _isBuildingPathTrace
-              ? _showNodeInfo(context, guess.contact)
-              : null,
+          onLongPress: () {
+            if (_isBuildingPathTrace) _showNodeInfo(context, guess.contact);
+          },
+          onSecondaryTap: () {
+            if (_isBuildingPathTrace) _showNodeInfo(context, guess.contact);
+          },
           onTap: () => _isBuildingPathTrace
               ? _addToPath(context, guess.contact, position: guess.position)
               : _selectNode(guess.contact, guessedPosition: guess.position),
@@ -1193,14 +1236,14 @@ class _MapScreenState extends State<MapScreen> {
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: MapPalette.panelDark,
+                color: _overlayPanelColor,
                 border: Border.all(
-                  color: guess.highConfidence ? color : MapPalette.textMuted,
+                  color: guess.highConfidence ? color : _overlayMutedTextColor,
                   width: guess.highConfidence ? 2.5 : 2,
                 ),
-                boxShadow: const [
+                boxShadow: [
                   BoxShadow(
-                    color: MapPalette.markerShadow,
+                    color: _overlayShadowColor,
                     blurRadius: 7,
                     offset: Offset(0, 2),
                   ),
@@ -1209,7 +1252,7 @@ class _MapScreenState extends State<MapScreen> {
               alignment: Alignment.center,
               child: Icon(
                 Icons.not_listed_location,
-                color: MapPalette.textPrimary,
+                color: _overlayPrimaryTextColor,
                 size: 19,
               ),
             ),
@@ -1286,12 +1329,20 @@ class _MapScreenState extends State<MapScreen> {
 
     // Key-prefix overlaps are a visual highlight only: flag the repeaters/rooms
     // whose first key byte collides with another repeater/room on the map.
-    final overlapPrefixes = <int>{};
+    final overlapPrefixes = <String>{};
     if (overlapsMode) {
-      final counts = <int, int>{};
+      final hopWidth = context
+          .read<MeshCoreConnector>()
+          .pathHashByteWidth
+          .clamp(1, pubKeySize)
+          .toInt();
+      final counts = <String, int>{};
       for (final contact in contacts) {
-        if (contact.type == advTypeRepeater || contact.type == advTypeRoom) {
-          final prefix = contact.publicKey.first;
+        if ((contact.type == advTypeRepeater || contact.type == advTypeRoom) &&
+            contact.publicKey.length >= hopWidth) {
+          final prefix = PathHelper.formatHopHex(
+            contact.publicKey.sublist(0, hopWidth),
+          );
           counts[prefix] = (counts[prefix] ?? 0) + 1;
         }
       }
@@ -1299,10 +1350,20 @@ class _MapScreenState extends State<MapScreen> {
         if (count > 1) overlapPrefixes.add(prefix);
       });
     }
+    final overlapHopWidth = context
+        .read<MeshCoreConnector>()
+        .pathHashByteWidth
+        .clamp(1, pubKeySize)
+        .toInt();
     bool isOverlap(Contact contact) =>
         overlapsMode &&
         (contact.type == advTypeRepeater || contact.type == advTypeRoom) &&
-        overlapPrefixes.contains(contact.publicKey.first);
+        contact.publicKey.length >= overlapHopWidth &&
+        overlapPrefixes.contains(
+          PathHelper.formatHopHex(
+            contact.publicKey.sublist(0, overlapHopWidth),
+          ),
+        );
 
     void addNode(Contact contact, {bool dot = false}) {
       final overlap = isOverlap(contact);
@@ -1383,8 +1444,12 @@ class _MapScreenState extends State<MapScreen> {
       height: size,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onLongPress: () =>
-            _isBuildingPathTrace ? _showNodeInfo(context, contact) : null,
+        onLongPress: () {
+          if (_isBuildingPathTrace) _showNodeInfo(context, contact);
+        },
+        onSecondaryTap: () {
+          if (_isBuildingPathTrace) _showNodeInfo(context, contact);
+        },
         onTap: () => _isBuildingPathTrace
             ? _addToPath(context, contact)
             : _selectNode(contact),
@@ -1523,12 +1588,12 @@ class _MapScreenState extends State<MapScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: MapPalette.panelDark,
+                color: _overlayPanelColor,
                 borderRadius: BorderRadius.circular(MeshRadii.xs),
-                border: Border.all(color: MapPalette.border),
-                boxShadow: const [
+                border: Border.all(color: _overlayBorderColor),
+                boxShadow: [
                   BoxShadow(
-                    color: MapPalette.markerShadow,
+                    color: _overlayShadowColor,
                     blurRadius: 4,
                     offset: Offset(0, 1),
                   ),
@@ -1542,7 +1607,7 @@ class _MapScreenState extends State<MapScreen> {
                 style: MeshTheme.mono(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
-                  color: MapPalette.textPrimary,
+                  color: _overlayPrimaryTextColor,
                 ),
               ),
             ),
@@ -1663,7 +1728,7 @@ class _MapScreenState extends State<MapScreen> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: statusColor,
-              border: Border.all(color: MapPalette.panelDark, width: 2),
+              border: Border.all(color: _overlayPanelColor, width: 2),
             ),
             alignment: Alignment.center,
             child: batteryLow
@@ -1686,10 +1751,10 @@ class _MapScreenState extends State<MapScreen> {
           Expanded(
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: MapPalette.textSecondary,
+                color: _overlaySecondaryTextColor,
               ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -1747,9 +1812,9 @@ class _MapScreenState extends State<MapScreen> {
             children: [
               Expanded(
                 child: Material(
-                  color: MapPalette.panelDark,
+                  color: _overlayPanelColor,
                   shape: StadiumBorder(
-                    side: const BorderSide(color: MapPalette.border),
+                    side: BorderSide(color: _overlayBorderColor),
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: TextField(
@@ -1757,17 +1822,15 @@ class _MapScreenState extends State<MapScreen> {
                     focusNode: _searchFocus,
                     decoration: InputDecoration(
                       hintText: context.l10n.map_searchHint,
-                      hintStyle: const TextStyle(
-                        color: MapPalette.textSecondary,
-                      ),
-                      prefixIcon: const Icon(
+                      hintStyle: TextStyle(color: _overlaySecondaryTextColor),
+                      prefixIcon: Icon(
                         Icons.search,
                         size: 20,
-                        color: MapPalette.textPrimary,
+                        color: _overlayPrimaryTextColor,
                       ),
                       suffixIcon: hasQuery
                           ? IconButton(
-                              color: MapPalette.textPrimary,
+                              color: _overlayPrimaryTextColor,
                               icon: const Icon(Icons.close, size: 18),
                               onPressed: () {
                                 setState(() {
@@ -1787,9 +1850,9 @@ class _MapScreenState extends State<MapScreen> {
                         vertical: 12,
                       ),
                     ),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: MapPalette.textPrimary,
+                      color: _overlayPrimaryTextColor,
                       fontWeight: FontWeight.w600,
                     ),
                     cursorColor: MapPalette.selected,
@@ -1801,9 +1864,9 @@ class _MapScreenState extends State<MapScreen> {
               ),
               const SizedBox(width: 8),
               Material(
-                color: MapPalette.panelDark,
+                color: _overlayPanelColor,
                 shape: StadiumBorder(
-                  side: const BorderSide(color: MapPalette.border),
+                  side: BorderSide(color: _overlayBorderColor),
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
@@ -1827,17 +1890,17 @@ class _MapScreenState extends State<MapScreen> {
                           style: MeshTheme.mono(
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
-                            color: MapPalette.textPrimary,
+                            color: _overlayPrimaryTextColor,
                           ),
                         ),
                         const SizedBox(width: 2),
                         AnimatedRotation(
                           turns: _statsExpanded ? 0.5 : 0,
                           duration: const Duration(milliseconds: 200),
-                          child: const Icon(
+                          child: Icon(
                             Icons.expand_more,
                             size: 16,
-                            color: MapPalette.textPrimary,
+                            color: _overlayPrimaryTextColor,
                           ),
                         ),
                       ],
@@ -1936,12 +1999,12 @@ class _MapScreenState extends State<MapScreen> {
         color: selected
             ? Color.alphaBlend(
                 accent.withValues(alpha: 0.34),
-                MapPalette.panelDark,
+                _overlayPanelColor,
               )
-            : MapPalette.panelDark,
+            : _overlayPanelColor,
         shape: StadiumBorder(
           side: BorderSide(
-            color: selected ? accent : MapPalette.border,
+            color: selected ? accent : _overlayBorderColor,
             width: selected ? 1.5 : 1,
           ),
         ),
@@ -1957,11 +2020,7 @@ class _MapScreenState extends State<MapScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (selected) ...[
-                  const Icon(
-                    Icons.check,
-                    size: 13,
-                    color: MapPalette.textPrimary,
-                  ),
+                  Icon(Icons.check, size: 13, color: _overlayPrimaryTextColor),
                   const SizedBox(width: 4),
                 ],
                 Text(
@@ -1970,8 +2029,8 @@ class _MapScreenState extends State<MapScreen> {
                     fontSize: 12.5,
                     fontWeight: FontWeight.w600,
                     color: selected
-                        ? MapPalette.textPrimary
-                        : MapPalette.textSecondary,
+                        ? _overlayPrimaryTextColor
+                        : _overlaySecondaryTextColor,
                   ),
                 ),
               ],
@@ -2001,14 +2060,14 @@ class _MapScreenState extends State<MapScreen> {
       margin: const EdgeInsets.only(top: 6),
       constraints: const BoxConstraints(maxHeight: 300),
       decoration: BoxDecoration(
-        color: MapPalette.panelDark,
+        color: _overlayPanelColor,
         borderRadius: BorderRadius.circular(MeshRadii.md),
-        border: Border.all(color: MapPalette.border),
-        boxShadow: const [
+        border: Border.all(color: _overlayBorderColor),
+        boxShadow: [
           BoxShadow(
-            color: MapPalette.markerShadow,
+            color: _overlayShadowColor,
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -2017,8 +2076,8 @@ class _MapScreenState extends State<MapScreen> {
               padding: const EdgeInsets.all(16),
               child: Text(
                 context.l10n.map_noResults,
-                style: const TextStyle(
-                  color: MapPalette.textSecondary,
+                style: TextStyle(
+                  color: _overlaySecondaryTextColor,
                   fontSize: 13,
                 ),
               ),
@@ -2028,7 +2087,7 @@ class _MapScreenState extends State<MapScreen> {
               padding: const EdgeInsets.symmetric(vertical: 4),
               itemCount: results.length,
               separatorBuilder: (_, _) =>
-                  const Divider(height: 1, color: MapPalette.border),
+                  Divider(height: 1, color: _overlayBorderColor),
               itemBuilder: (context, index) {
                 final c = results[index];
                 final color = _getNodeColor(c.type);
@@ -2049,10 +2108,10 @@ class _MapScreenState extends State<MapScreen> {
                             children: [
                               Text(
                                 c.name,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 13.5,
                                   fontWeight: FontWeight.w600,
-                                  color: MapPalette.textPrimary,
+                                  color: _overlayPrimaryTextColor,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -2060,7 +2119,7 @@ class _MapScreenState extends State<MapScreen> {
                                 c.publicKeyHex.substring(0, 12),
                                 style: MeshTheme.mono(
                                   fontSize: 10.5,
-                                  color: MapPalette.textSecondary,
+                                  color: _overlaySecondaryTextColor,
                                 ),
                               ),
                             ],
@@ -2070,13 +2129,13 @@ class _MapScreenState extends State<MapScreen> {
                           Icon(
                             Icons.chevron_right,
                             size: 18,
-                            color: MapPalette.textSecondary,
+                            color: _overlaySecondaryTextColor,
                           )
                         else
                           Text(
                             context.l10n.map_noGps.toUpperCase(),
                             style: MeshTheme.accentLabel(
-                              color: MapPalette.textMuted,
+                              color: _overlayMutedTextColor,
                               fontSize: 8.5,
                             ),
                           ),
@@ -2136,14 +2195,14 @@ class _MapScreenState extends State<MapScreen> {
       width: 230,
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
       decoration: BoxDecoration(
-        color: MapPalette.panelDark,
+        color: _overlayPanelColor,
         borderRadius: BorderRadius.circular(MeshRadii.md),
-        border: Border.all(color: MapPalette.border),
-        boxShadow: const [
+        border: Border.all(color: _overlayBorderColor),
+        boxShadow: [
           BoxShadow(
-            color: MapPalette.markerShadow,
+            color: _overlayShadowColor,
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -2160,7 +2219,7 @@ class _MapScreenState extends State<MapScreen> {
           ),
           _statRow(context.l10n.map_hidden, hiddenCount, MapPalette.offline),
           _statRow(context.l10n.map_markers, pinCount, MapPalette.shared),
-          const Divider(height: 16, color: MapPalette.border),
+          Divider(height: 16, color: _overlayBorderColor),
           _buildLegendItem(
             Icons.person,
             context.l10n.map_chat,
@@ -2190,7 +2249,7 @@ class _MapScreenState extends State<MapScreen> {
             _buildLegendItem(
               Icons.not_listed_location,
               context.l10n.map_guessedLocation,
-              MapPalette.textMuted,
+              _overlayMutedTextColor,
             ),
         ],
       ),
@@ -2211,7 +2270,10 @@ class _MapScreenState extends State<MapScreen> {
           Expanded(
             child: Text(
               label,
-              style: TextStyle(fontSize: 12.5, color: MapPalette.textSecondary),
+              style: TextStyle(
+                fontSize: 12.5,
+                color: _overlaySecondaryTextColor,
+              ),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -2220,7 +2282,7 @@ class _MapScreenState extends State<MapScreen> {
             style: MeshTheme.mono(
               fontSize: 13,
               fontWeight: FontWeight.w700,
-              color: MapPalette.textPrimary,
+              color: _overlayPrimaryTextColor,
             ),
           ),
         ],
@@ -2253,8 +2315,8 @@ class _MapScreenState extends State<MapScreen> {
         child: MeshCard(
           margin: EdgeInsets.zero,
           padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
-          color: MapPalette.panelDark,
-          borderColor: MapPalette.border,
+          color: _overlayPanelColor,
+          borderColor: _overlayBorderColor,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2277,10 +2339,10 @@ class _MapScreenState extends State<MapScreen> {
                             Flexible(
                               child: Text(
                                 contact.name,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
-                                  color: MapPalette.textPrimary,
+                                  color: _overlayPrimaryTextColor,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -2308,9 +2370,9 @@ class _MapScreenState extends State<MapScreen> {
                             Flexible(
                               child: Text(
                                 contact.typeLabel(context.l10n),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 11.5,
-                                  color: MapPalette.textSecondary,
+                                  color: _overlaySecondaryTextColor,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -2322,13 +2384,13 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   if (pos != null)
                     IconButton(
-                      color: MapPalette.textPrimary,
+                      color: _overlayPrimaryTextColor,
                       icon: const Icon(Icons.center_focus_strong, size: 20),
                       tooltip: context.l10n.map_centerOnNode,
                       onPressed: () => _mapController.move(pos, max(_zoom, 15)),
                     ),
                   IconButton(
-                    color: MapPalette.textPrimary,
+                    color: _overlayPrimaryTextColor,
                     icon: const Icon(Icons.close, size: 20),
                     onPressed: _clearSelection,
                   ),
@@ -2345,7 +2407,10 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   _miniMeta(
                     context.l10n.map_path,
-                    contact.pathLabel(context.l10n),
+                    contact.pathLabel(
+                      context.l10n,
+                      pathHashByteWidth: connector.pathHashByteWidth,
+                    ),
                   ),
                   _miniMeta('ID', contact.publicKeyHex.substring(0, 12)),
                   if (pos != null)
@@ -2389,14 +2454,17 @@ class _MapScreenState extends State<MapScreen> {
         Text(
           label.toUpperCase(),
           style: MeshTheme.accentLabel(
-            color: MapPalette.textMuted,
+            color: _overlayMutedTextColor,
             fontSize: 8,
           ),
         ),
         const SizedBox(height: 1),
         Text(
           value,
-          style: MeshTheme.mono(fontSize: 11.5, color: MapPalette.textPrimary),
+          style: MeshTheme.mono(
+            fontSize: 11.5,
+            color: _overlayPrimaryTextColor,
+          ),
         ),
       ],
     );
@@ -2746,7 +2814,10 @@ class _MapScreenState extends State<MapScreen> {
                     children: [
                       _buildInfoRow(
                         context.l10n.map_path,
-                        contact.pathLabel(context.l10n),
+                        contact.pathLabel(
+                          context.l10n,
+                          pathHashByteWidth: connector.pathHashByteWidth,
+                        ),
                       ),
                       if (contact.hasLocation)
                         _buildInfoRow(
@@ -3492,10 +3563,23 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _addToPath(BuildContext context, Contact contact, {LatLng? position}) {
+    final connector = context.read<MeshCoreConnector>();
+    final hopWidth = min(
+      connector.pathHashByteWidth.clamp(1, pubKeySize),
+      contact.publicKey.length,
+    ).toInt();
+    final hopPrefix = contact.publicKey.sublist(0, hopWidth);
+    for (final existingHop in PathHelper.splitPathBytes(
+      _pathTrace,
+      connector.pathHashByteWidth,
+    )) {
+      if (listEquals(existingHop, hopPrefix)) {
+        return;
+      }
+    }
     setState(() {
-      _pathTrace.add(
-        contact.publicKey[0],
-      ); // Add first 16 bytes of public key to path trace
+      _pathTrace.addAll(hopPrefix); // Add the hop-width pubkey prefix.
+      _pathTraceHopWidths.add(hopWidth);
       _pathTraceContacts.add(
         contact.copyWith(
           latitude: position?.latitude ?? contact.latitude,
@@ -3510,6 +3594,7 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       _isBuildingPathTrace = true;
       _pathTrace.clear();
+      _pathTraceHopWidths.clear();
       _pathTraceContacts.clear();
       _points.clear();
       _polylines.clear();
@@ -3519,8 +3604,19 @@ class _MapScreenState extends State<MapScreen> {
 
   void _removePath() {
     setState(() {
+      final recordedHopWidth = _pathTraceHopWidths.isNotEmpty
+          ? _pathTraceHopWidths.removeLast()
+          : context.read<MeshCoreConnector>().pathHashByteWidth.clamp(
+              1,
+              pubKeySize,
+            );
+      final hopByteCount = min(recordedHopWidth, _pathTrace.length).toInt();
       _pathTraceContacts.removeLast();
-      _pathTrace.removeLast(); // Remove last node from path trace
+      // A path trace hop can be wider than one byte; remove the full hash prefix.
+      _pathTrace.removeRange(
+        _pathTrace.length - hopByteCount,
+        _pathTrace.length,
+      );
       _points.removeLast(); // Remove last point from points list
       _polylines.clear(); // Clear polylines
     });
@@ -3537,14 +3633,14 @@ class _MapScreenState extends State<MapScreen> {
       right: 16,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: MapPalette.panelDark,
+          color: _overlayPanelColor,
           borderRadius: BorderRadius.circular(MeshRadii.md),
-          border: Border.all(color: MapPalette.border),
-          boxShadow: const [
+          border: Border.all(color: _overlayBorderColor),
+          boxShadow: [
             BoxShadow(
-              color: MapPalette.markerShadow,
+              color: _overlayShadowColor,
               blurRadius: 10,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -3557,24 +3653,34 @@ class _MapScreenState extends State<MapScreen> {
               children: [
                 Text(
                   l10n.contacts_pathTrace,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: _overlayPrimaryTextColor,
+                  ),
                 ),
                 if (_pathTrace.isEmpty) const SizedBox(height: 8),
                 if (_pathTrace.isEmpty)
-                  Text(l10n.map_tapToAdd, style: TextStyle(fontSize: 12)),
+                  Text(
+                    l10n.map_tapToAdd,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: _overlaySecondaryTextColor,
+                    ),
+                  ),
                 const SizedBox(height: 6),
                 if (_pathTrace.isNotEmpty)
                   Text(
                     "${l10n.path_currentPathLabel} ${formatDistance(getPathDistanceMeters(_points), isImperial: isImperial)}",
                     style: MeshTheme.mono(
                       fontSize: 12,
-                      color: MapPalette.textSecondary,
+                      color: _overlaySecondaryTextColor,
                     ),
                   ),
                 SelectableText(
-                  _pathTrace
-                      .map((b) => b.toRadixString(16).padLeft(2, '0'))
-                      .join(','),
+                  PathHelper.splitPathBytes(
+                    _pathTrace,
+                    context.read<MeshCoreConnector>().pathHashByteWidth,
+                  ).map(PathHelper.formatHopHex).join(','),
                   style: MeshTheme.mono(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -3599,6 +3705,7 @@ class _MapScreenState extends State<MapScreen> {
                               builder: (context) => PathTraceMapScreen(
                                 title: l10n.contacts_pathTrace,
                                 path: Uint8List.fromList(_pathTrace),
+                                flipPathAround: false,
                                 pathHashByteWidth: hashW,
                                 pathContacts: _pathTraceContacts,
                               ),
@@ -3621,6 +3728,10 @@ class _MapScreenState extends State<MapScreen> {
                                 title: l10n.contacts_pathTrace,
                                 path: Uint8List.fromList(_pathTrace),
                                 flipPathAround: true,
+                                pathHashByteWidth: context
+                                    .read<MeshCoreConnector>()
+                                    .pathHashByteWidth,
+                                pathContacts: _pathTraceContacts,
                               ),
                             ),
                           );
@@ -3643,6 +3754,7 @@ class _MapScreenState extends State<MapScreen> {
                           setState(() {
                             _isBuildingPathTrace = false;
                             _pathTrace.clear();
+                            _pathTraceHopWidths.clear();
                             _points.clear();
                             _polylines.clear();
                           });

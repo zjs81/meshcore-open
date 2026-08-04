@@ -113,6 +113,35 @@ class MessageStore {
     final decodedText = isCli
         ? rawText
         : (Smaz.tryDecodePrefixed(rawText) ?? rawText);
+
+    final rawPathLength = json['pathLength'] as int?;
+    final rawPathBytes = json['pathBytes'] != null
+        ? Uint8List.fromList(base64Decode(json['pathBytes'] as String))
+        : Uint8List(0);
+
+    int? decodedPathLength = rawPathLength;
+    Uint8List decodedPathBytes = rawPathBytes;
+
+    if (rawPathLength != null) {
+      if (rawPathLength == 0xFF || rawPathLength < 0) {
+        decodedPathLength = -1;
+        decodedPathBytes = Uint8List(0);
+      } else if (rawPathLength >= 64) {
+        final mode = (rawPathLength & 0xC0) >> 6;
+        final hopCount = rawPathLength & 0x3F;
+        final width = mode + 1;
+        final byteLen = hopCount * width;
+        decodedPathLength = hopCount;
+        if (byteLen <= rawPathBytes.length) {
+          decodedPathBytes = rawPathBytes.sublist(0, byteLen);
+        } else {
+          decodedPathBytes = Uint8List(0);
+        }
+      } else if (rawPathLength == 0) {
+        decodedPathBytes = Uint8List(0);
+      }
+    }
+
     return Message(
       senderKey: Uint8List.fromList(base64Decode(json['senderKey'] as String)),
       text: decodedText,
@@ -138,10 +167,8 @@ class MessageStore {
           ? DateTime.fromMillisecondsSinceEpoch(json['deliveredAt'] as int)
           : null,
       tripTimeMs: json['tripTimeMs'] as int?,
-      pathLength: json['pathLength'] as int?,
-      pathBytes: json['pathBytes'] != null
-          ? Uint8List.fromList(base64Decode(json['pathBytes'] as String))
-          : Uint8List(0),
+      pathLength: decodedPathLength,
+      pathBytes: decodedPathBytes,
       reactions:
           (json['reactions'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(key, value as int),

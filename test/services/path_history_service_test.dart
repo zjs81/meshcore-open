@@ -549,12 +549,15 @@ void main() {
       final pubKey = _hex('w004');
       await _seed(svc, pubKey, pathBytes: [0x01], hopCount: 1, weight: 0.3);
 
-      svc.recordPathResult(
-        pubKey,
-        const PathSelection(pathBytes: [0x01], hopCount: 1, useFlood: false),
-        success: false,
-        failureDecrement: 0.5, // 0.3 - 0.5 = -0.2 → remove
-      );
+      // The service requires failureCount >= 3 to remove a path
+      for (int i = 0; i < 3; i++) {
+        svc.recordPathResult(
+          pubKey,
+          const PathSelection(pathBytes: [0x01], hopCount: 1, useFlood: false),
+          success: false,
+          failureDecrement: 0.5, // 0.3 - 0.5 = -0.2 → remove
+        );
+      }
       await _flush();
 
       final paths = svc.getRecentPaths(pubKey);

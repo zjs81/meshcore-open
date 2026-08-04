@@ -370,6 +370,45 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settings_radioSettingsUpdated => 'Paramètres radio mis à jour';
 
   @override
+  String get settings_regionSettings => 'Regions';
+
+  @override
+  String get settings_regionSettingsSubtitle => 'Manage stored regions';
+
+  @override
+  String get settings_regionManagement_screenTitle => 'Region Management';
+
+  @override
+  String get settings_regionNameHint => 'Enter region name';
+
+  @override
+  String get settings_regionAddRegion => 'Add region';
+
+  @override
+  String get settings_regionFetchRegions => 'Fetch regions from repeaters';
+
+  @override
+  String get settings_regionFetchRegionsFail => 'No regions were found';
+
+  @override
+  String get settings_regionFetchRegionsAlreadyExists =>
+      'This region has already been added';
+
+  @override
+  String get settings_regionName => 'Region Name';
+
+  @override
+  String get settings_regionDeleted => 'Region deleted';
+
+  @override
+  String get settings_deleteRegion => 'Delete Region';
+
+  @override
+  String settings_deleteRegionConfirm(String region) {
+    return 'Remove \"$region\" from region list?';
+  }
+
+  @override
   String get settings_location => 'Emplacement';
 
   @override
@@ -467,6 +506,14 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get settings_advertLocationSubtitle =>
       'Inclure la localisation dans l\'annonce';
+
+  @override
+  String get settings_autoZeroHopAdvertOnGpsUpdate =>
+      'Annonce zéro saut automatique lors de la mise à jour GPS';
+
+  @override
+  String get settings_autoZeroHopAdvertOnGpsUpdateSubtitle =>
+      'Lorsque la position GPS change, envoyer une annonce zéro saut (nécessite la position dans l\'annonce).';
 
   @override
   String get settings_multiAck => 'Plusieurs accusés de réception';
@@ -695,6 +742,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appSettings_languageUk => 'Ukrainien';
 
   @override
+  String get repeater_pathHashModeOption0 => '0 - 1 byte';
+
+  @override
+  String get repeater_pathHashModeOption1 => '1 - 2 bytes';
+
+  @override
+  String get repeater_pathHashModeOption2 => '2 - 3 bytes';
+
+  @override
+  String get repeater_pathHashModeOption3 => '3 - 4 bytes';
+
+  @override
   String get appSettings_enableMessageTracing =>
       'Activer le traçage des messages';
 
@@ -897,6 +956,28 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get appSettings_lastWeek => 'La semaine dernière';
+
+  @override
+  String get appSettings_rasterTileSource => 'Source de tuiles raster';
+
+  @override
+  String get appSettings_stadiaEndpoint => 'Point de terminaison Stadia';
+
+  @override
+  String get appSettings_stadiaApiKey => 'Clé API Stadia';
+
+  @override
+  String get appSettings_stadiaApiKeyRequired =>
+      'Requis pour l’utilisation de Stadia Maps';
+
+  @override
+  String appSettings_stadiaApiKeyConfigured(String maskedKey) {
+    return 'Configuré : $maskedKey';
+  }
+
+  @override
+  String get appSettings_stadiaApiKeyDialogDescription =>
+      'Entrez votre clé API Stadia Maps. Cette application l’utilise pour les requêtes de tuiles raster.';
 
   @override
   String get appSettings_offlineMapCache => 'Cache de carte hors ligne';
@@ -1330,6 +1411,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String get channels_hashtagHint => 'ex. #equipe';
 
   @override
+  String channels_regionSetTo(String region) {
+    return 'Region: $region';
+  }
+
+  @override
+  String get channels_regionNotSet => 'Region: none';
+
+  @override
+  String get channels_regionSelect_Title => 'Select a region';
+
+  @override
+  String get channels_clearRegion => 'Clear region';
+
+  @override
   String get chat_noMessages => 'Aucun message pour le moment';
 
   @override
@@ -1383,6 +1478,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get chat_sendGif => 'Envoyer un GIF';
+
+  @override
+  String get chat_receivedGif => 'Received a GIF';
 
   @override
   String get chat_reply => 'Répondre';
@@ -2039,6 +2137,42 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get mapCache_cachedTilesLabel => 'Cached tiles';
+
+  @override
+  String get mapCache_cachedTileSummaryLabel => 'Cached tile summary';
+
+  @override
+  String mapCache_bulkDownloadDisabledForSource(String source) {
+    return 'Offline bulk downloads are disabled for $source.';
+  }
+
+  @override
+  String mapCache_bulkDownloadDisabledInConfig(String source) {
+    return 'Offline bulk downloads are disabled for $source in this app configuration.';
+  }
+
+  @override
+  String mapCache_summarySource(String source) {
+    return 'Source: $source';
+  }
+
+  @override
+  String mapCache_summaryCachedTilesForSource(int count) {
+    return 'Cached tiles for source: $count';
+  }
+
+  @override
+  String mapCache_summaryCachedInSelection(int count) {
+    return 'Cached in selected area/zoom: $count';
+  }
+
+  @override
+  String mapCache_summaryApproxCacheSize(String size) {
+    return 'Approx cache size: $size';
+  }
+
+  @override
   String mapCache_boundsLabel(
     String north,
     String south,
@@ -2591,6 +2725,41 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get repeater_pathHashModeHelper =>
       'Octets utilisés pour encoder l\'ID de ce routeur dans les balises de détection de flux/boucles. 0 = 1 octet (256 ID, jusqu\'à 64 sauts), 1 = 2 octets (65 000 ID, jusqu\'à 32 sauts), 2 = 3 octets (16 millions d\'ID, jusqu\'à 21 sauts). Les versions 1.13 et antérieures utilisent des chemins multi-octets ; à partir de la version 1.14, cela n\'est plus nécessaire.';
+
+  @override
+  String get repeater_keySettings => 'Change Identity Keys';
+
+  @override
+  String get repeater_keySettingsSubtitle =>
+      'Change the public/private keypair';
+
+  @override
+  String get repeater_prvKey => 'Private key';
+
+  @override
+  String get repeater_prvKeyHelper =>
+      'A new private key for the repeater, a 128-character hex string.';
+
+  @override
+  String get repeater_generatePrvKey => 'Generate a random keypair';
+
+  @override
+  String get repeater_stopGeneratingPrvKey => 'Interrupt search for keypair';
+
+  @override
+  String get repeater_pubKey => 'Public key';
+
+  @override
+  String get repeater_pubKeyHelper =>
+      'This is the public key that goes with the generated private key. You can\'t set this directly.';
+
+  @override
+  String get repeater_pubKeyPrefix => 'Desired prefix';
+
+  @override
+  String repeater_pubKeyPrefixHelper(int tries) {
+    return 'Find a public key that starts with these hex digits. Expected tries needed: $tries.';
+  }
 
   @override
   String get repeater_txDelay => 'Délai de transmission en flood';

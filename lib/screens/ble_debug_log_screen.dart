@@ -10,6 +10,13 @@ import '../helpers/snack_bar_builder.dart';
 
 enum _BleLogView { frames, rawLogRx }
 
+int _decodeRawPathByteLen(int pathLenRaw) {
+  if (pathLenRaw == 0xFF || pathLenRaw == 0) return 0;
+  final hashCount = pathLenRaw & 0x3F;
+  final hashWidth = ((pathLenRaw >> 6) & 0x03) + 1;
+  return hashCount * hashWidth;
+}
+
 class BleDebugLogScreen extends StatefulWidget {
   const BleDebugLogScreen({super.key});
 
@@ -110,20 +117,32 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
                               final entry = entries[index];
                               final time =
                                   '${entry.timestamp.hour.toString().padLeft(2, '0')}:${entry.timestamp.minute.toString().padLeft(2, '0')}:${entry.timestamp.second.toString().padLeft(2, '0')}';
-                              return GestureDetector(
-                                onLongPress: () async {
-                                  await Clipboard.setData(
-                                    ClipboardData(
-                                      text: entry.payload
-                                          .map(
-                                            (b) => b
-                                                .toRadixString(16)
-                                                .padLeft(2, '0'),
-                                          )
-                                          .join(''),
+                              Future<void> copyHex() async {
+                                await Clipboard.setData(
+                                  ClipboardData(
+                                    text: entry.payload
+                                        .map(
+                                          (b) => b
+                                              .toRadixString(16)
+                                              .padLeft(2, '0'),
+                                        )
+                                        .join(''),
+                                  ),
+                                );
+                                if (context.mounted) {
+                                  showDismissibleSnackBar(
+                                    context,
+                                    content: Text(
+                                      context.l10n.debugLog_bleCopied,
                                     ),
                                   );
-                                },
+                                }
+                              }
+
+                              return GestureDetector(
+                                onTap: copyHex,
+                                onLongPress: copyHex,
+                                onSecondaryTap: copyHex,
                                 child: Container(
                                   color: MeshPalette.bg,
                                   padding: const EdgeInsets.symmetric(
@@ -302,16 +321,17 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
         rawHex: _bytesToHex(raw),
       );
     }
-    final pathLen = raw[index++];
-    if (raw.length < index + pathLen) {
+    final pathLenRaw = raw[index++];
+    final pathByteLen = _decodeRawPathByteLen(pathLenRaw);
+    if (raw.length < index + pathByteLen) {
       return _RawPacketInfo(
         title: 'RX RAW_LOG_RX_DATA • ${_payloadTypeLabel(payloadType)}',
         summary: 'Truncated path',
         rawHex: _bytesToHex(raw),
       );
     }
-    final pathBytes = raw.sublist(index, index + pathLen);
-    index += pathLen;
+    final pathBytes = raw.sublist(index, index + pathByteLen);
+    index += pathByteLen;
     if (raw.length <= index) {
       return _RawPacketInfo(
         title: 'RX RAW_LOG_RX_DATA • ${_payloadTypeLabel(payloadType)}',
@@ -324,7 +344,7 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
     final title =
         'RX ${_payloadTypeLabel(payloadType)} • ${_routeLabel(routeType)} • v$payloadVer';
     final summary = _decodePayloadSummary(payloadType, payload);
-    final pathSummary = pathLen > 0
+    final pathSummary = pathByteLen > 0
         ? 'Path=${_bytesToHex(pathBytes)}'
         : 'Path=none';
     final detail = '$summary • $pathSummary • len=${raw.length}';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meshcore_open/connector/meshcore_protocol.dart';
+import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:provider/provider.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
@@ -31,6 +32,7 @@ class RepeaterHubScreen extends StatelessWidget {
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
     final settingsService = context.watch<AppSettingsService>();
+    final connector = context.watch<MeshCoreConnector>();
     final chemistry = settingsService.batteryChemistryForRepeater(
       repeater.publicKeyHex,
     );
@@ -85,7 +87,10 @@ class RepeaterHubScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            repeater.pathLabel(l10n),
+                            repeater.pathLabel(
+                              l10n,
+                              pathHashByteWidth: connector.pathHashByteWidth,
+                            ),
                             style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(color: scheme.onSurfaceVariant),
                           ),

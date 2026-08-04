@@ -366,6 +366,45 @@ class AppLocalizationsSv extends AppLocalizations {
       'Radioinställningarna har uppdaterats';
 
   @override
+  String get settings_regionSettings => 'Regions';
+
+  @override
+  String get settings_regionSettingsSubtitle => 'Manage stored regions';
+
+  @override
+  String get settings_regionManagement_screenTitle => 'Region Management';
+
+  @override
+  String get settings_regionNameHint => 'Enter region name';
+
+  @override
+  String get settings_regionAddRegion => 'Add region';
+
+  @override
+  String get settings_regionFetchRegions => 'Fetch regions from repeaters';
+
+  @override
+  String get settings_regionFetchRegionsFail => 'No regions were found';
+
+  @override
+  String get settings_regionFetchRegionsAlreadyExists =>
+      'This region has already been added';
+
+  @override
+  String get settings_regionName => 'Region Name';
+
+  @override
+  String get settings_regionDeleted => 'Region deleted';
+
+  @override
+  String get settings_deleteRegion => 'Delete Region';
+
+  @override
+  String settings_deleteRegionConfirm(String region) {
+    return 'Remove \"$region\" from region list?';
+  }
+
+  @override
   String get settings_location => 'Plats';
 
   @override
@@ -457,6 +496,14 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get settings_advertLocationSubtitle => 'Inkludera plats i annonsen';
+
+  @override
+  String get settings_autoZeroHopAdvertOnGpsUpdate =>
+      'Automatisk zero-hop-annons vid GPS-uppdatering';
+
+  @override
+  String get settings_autoZeroHopAdvertOnGpsUpdateSubtitle =>
+      'När GPS-positionen ändras, skicka en zero-hop-annons (kräver plats i annonsen).';
 
   @override
   String get settings_multiAck => 'Flera bekräftelser';
@@ -682,6 +729,18 @@ class AppLocalizationsSv extends AppLocalizations {
   String get appSettings_languageUk => 'Ukrainska';
 
   @override
+  String get repeater_pathHashModeOption0 => '0 - 1 byte';
+
+  @override
+  String get repeater_pathHashModeOption1 => '1 - 2 bytes';
+
+  @override
+  String get repeater_pathHashModeOption2 => '2 - 3 bytes';
+
+  @override
+  String get repeater_pathHashModeOption3 => '3 - 4 bytes';
+
+  @override
   String get appSettings_enableMessageTracing => 'Aktivera meddelandespårning';
 
   @override
@@ -878,6 +937,28 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get appSettings_lastWeek => 'Förra veckan';
+
+  @override
+  String get appSettings_rasterTileSource => 'Källa för rasterplattor';
+
+  @override
+  String get appSettings_stadiaEndpoint => 'Stadia-slutpunkt';
+
+  @override
+  String get appSettings_stadiaApiKey => 'Stadia API-nyckel';
+
+  @override
+  String get appSettings_stadiaApiKeyRequired =>
+      'Krävs för att använda Stadia Maps';
+
+  @override
+  String appSettings_stadiaApiKeyConfigured(String maskedKey) {
+    return 'Konfigurerad: $maskedKey';
+  }
+
+  @override
+  String get appSettings_stadiaApiKeyDialogDescription =>
+      'Ange din Stadia Maps API-nyckel. Appen använder den för förfrågningar om rasterplattor.';
 
   @override
   String get appSettings_offlineMapCache => 'Offline Kartcache';
@@ -1307,6 +1388,20 @@ class AppLocalizationsSv extends AppLocalizations {
   String get channels_hashtagHint => 't.ex. #team';
 
   @override
+  String channels_regionSetTo(String region) {
+    return 'Region: $region';
+  }
+
+  @override
+  String get channels_regionNotSet => 'Region: none';
+
+  @override
+  String get channels_regionSelect_Title => 'Select a region';
+
+  @override
+  String get channels_clearRegion => 'Clear region';
+
+  @override
   String get chat_noMessages => 'Inga meddelanden ännu';
 
   @override
@@ -1362,6 +1457,9 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get chat_sendGif => 'Skicka GIF';
+
+  @override
+  String get chat_receivedGif => 'Received a GIF';
 
   @override
   String get chat_reply => 'Svara';
@@ -2010,6 +2108,42 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
+  String get mapCache_cachedTilesLabel => 'Cached tiles';
+
+  @override
+  String get mapCache_cachedTileSummaryLabel => 'Cached tile summary';
+
+  @override
+  String mapCache_bulkDownloadDisabledForSource(String source) {
+    return 'Offline bulk downloads are disabled for $source.';
+  }
+
+  @override
+  String mapCache_bulkDownloadDisabledInConfig(String source) {
+    return 'Offline bulk downloads are disabled for $source in this app configuration.';
+  }
+
+  @override
+  String mapCache_summarySource(String source) {
+    return 'Source: $source';
+  }
+
+  @override
+  String mapCache_summaryCachedTilesForSource(int count) {
+    return 'Cached tiles for source: $count';
+  }
+
+  @override
+  String mapCache_summaryCachedInSelection(int count) {
+    return 'Cached in selected area/zoom: $count';
+  }
+
+  @override
+  String mapCache_summaryApproxCacheSize(String size) {
+    return 'Approx cache size: $size';
+  }
+
+  @override
   String mapCache_boundsLabel(
     String north,
     String south,
@@ -2550,7 +2684,42 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get repeater_pathHashModeHelper =>
-      'Byte används för att koda denna repeaters ID i taggar för att upptäcka loopar/flödesvägar. 0=1 byte (256 ID:n, upp till 64 hopp), 1=2 byte (65 000 ID:n, upp till 32 hopp), 2=3 byte (16 miljoner ID:n, upp till 21 hopp). Versioner 1.13 och äldre har stöd för multi-byte-vägar – endast en gång när nätverket är aktiverat (från och med version 1.14).';
+      'Byte som används för att koda denna repeaters ID i taggar för flood-väg/loopdetektering. 0=1 byte (256 ID:n, upp till 64 hopp), 1=2 byte (65 000 ID:n, upp till 32 hopp), 2=3 byte (16 miljoner ID:n, upp till 21 hopp). Firmware före v1.14 använde alltid 1-byte-vägar; v1.14 och nyare kan konfigureras för 2- eller 3-byte-vägar.';
+
+  @override
+  String get repeater_keySettings => 'Change Identity Keys';
+
+  @override
+  String get repeater_keySettingsSubtitle =>
+      'Change the public/private keypair';
+
+  @override
+  String get repeater_prvKey => 'Private key';
+
+  @override
+  String get repeater_prvKeyHelper =>
+      'A new private key for the repeater, a 128-character hex string.';
+
+  @override
+  String get repeater_generatePrvKey => 'Generate a random keypair';
+
+  @override
+  String get repeater_stopGeneratingPrvKey => 'Interrupt search for keypair';
+
+  @override
+  String get repeater_pubKey => 'Public key';
+
+  @override
+  String get repeater_pubKeyHelper =>
+      'This is the public key that goes with the generated private key. You can\'t set this directly.';
+
+  @override
+  String get repeater_pubKeyPrefix => 'Desired prefix';
+
+  @override
+  String repeater_pubKeyPrefixHelper(int tries) {
+    return 'Find a public key that starts with these hex digits. Expected tries needed: $tries.';
+  }
 
   @override
   String get repeater_txDelay => 'Försening i Flood TX';

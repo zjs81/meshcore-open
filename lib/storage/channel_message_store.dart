@@ -110,6 +110,7 @@ class ChannelMessageStore {
       'channelIndex': msg.channelIndex,
       'repeatCount': msg.repeatCount,
       'pathLength': msg.pathLength,
+      'pathHashWidth': msg.pathHashWidth,
       'pathBytes': base64Encode(msg.pathBytes),
       'pathVariants': msg.pathVariants.map(base64Encode).toList(),
       'repeats': msg.repeats.map(_repeatToJson).toList(),
@@ -126,6 +127,38 @@ class ChannelMessageStore {
   ChannelMessage _messageFromJson(Map<String, dynamic> json) {
     final rawText = json['text'] as String;
     final decodedText = Smaz.tryDecodePrefixed(rawText) ?? rawText;
+
+    final rawPathLength = json['pathLength'] as int?;
+    final rawPathBytes = json['pathBytes'] != null
+        ? Uint8List.fromList(base64Decode(json['pathBytes'] as String))
+        : Uint8List(0);
+    final rawPathHashWidth = json['pathHashWidth'] as int?;
+
+    int? decodedPathLength = rawPathLength;
+    Uint8List decodedPathBytes = rawPathBytes;
+    int? decodedPathHashWidth = rawPathHashWidth;
+
+    if (rawPathLength != null) {
+      if (rawPathLength == 0xFF || rawPathLength < 0) {
+        decodedPathLength = -1;
+        decodedPathBytes = Uint8List(0);
+      } else if (rawPathLength >= 64) {
+        final mode = (rawPathLength & 0xC0) >> 6;
+        final hopCount = rawPathLength & 0x3F;
+        final width = mode + 1;
+        final byteLen = hopCount * width;
+        decodedPathLength = hopCount;
+        decodedPathHashWidth = width;
+        if (byteLen <= rawPathBytes.length) {
+          decodedPathBytes = rawPathBytes.sublist(0, byteLen);
+        } else {
+          decodedPathBytes = Uint8List(0);
+        }
+      } else if (rawPathLength == 0) {
+        decodedPathBytes = Uint8List(0);
+      }
+    }
+
     return ChannelMessage(
       senderKey: json['senderKey'] != null
           ? Uint8List.fromList(base64Decode(json['senderKey']))
@@ -143,10 +176,9 @@ class ChannelMessageStore {
       isOutgoing: json['isOutgoing'] as bool,
       status: ChannelMessageStatus.values[json['status'] as int],
       repeatCount: (json['repeatCount'] as int?) ?? 0,
-      pathLength: json['pathLength'] as int?,
-      pathBytes: json['pathBytes'] != null
-          ? Uint8List.fromList(base64Decode(json['pathBytes'] as String))
-          : Uint8List(0),
+      pathLength: decodedPathLength,
+      pathHashWidth: decodedPathHashWidth,
+      pathBytes: decodedPathBytes,
       pathVariants: (json['pathVariants'] as List<dynamic>?)
           ?.map((entry) => Uint8List.fromList(base64Decode(entry as String)))
           .toList(),

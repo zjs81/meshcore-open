@@ -11,18 +11,19 @@ class UnreadBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final display = count > 9999 ? '9999+' : count.toString();
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      constraints: const BoxConstraints(minWidth: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: MeshPalette.blue.withValues(alpha: 0.18),
+        color: MeshPalette.alert,
         borderRadius: BorderRadius.circular(MeshRadii.pill),
-        border: Border.all(color: MeshPalette.blue.withValues(alpha: 0.45)),
       ),
       child: Text(
         display,
         style: MeshTheme.mono(
           fontSize: 11,
           fontWeight: FontWeight.w700,
-          color: MeshPalette.blue,
+          color: Colors.white,
         ),
       ),
     );

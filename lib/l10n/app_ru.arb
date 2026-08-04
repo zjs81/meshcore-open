@@ -77,6 +77,8 @@
   "settings_locationIntervalInvalid": "Интервал должен составлять не менее 60 секунд и не более 86400 секунд.",
   "settings_latitude": "Широта",
   "settings_longitude": "Долгота",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Авто-объявление без хопов при обновлении GPS",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Когда GPS-местоположение меняется, отправлять объявление без хопов (требуется геопозиция в объявлении).",
   "settings_privacyMode": "Режим конфиденциальности",
   "settings_privacyModeSubtitle": "Скрыть имя/позицию в анонсировании",
   "settings_privacyModeToggle": "Включите режим конфиденциальности, чтобы скрыть свое имя и местоположение в анонсировании.",
@@ -190,6 +192,19 @@
   "appSettings_last6Hours": "Последние 6 часов",
   "appSettings_last24Hours": "Последние 24 часа",
   "appSettings_lastWeek": "Последнюю неделю",
+  "appSettings_rasterTileSource": "Источник растровых тайлов",
+  "appSettings_stadiaEndpoint": "Конечная точка Stadia",
+  "appSettings_stadiaApiKey": "Ключ API Stadia",
+  "appSettings_stadiaApiKeyRequired": "Требуется для использования Stadia Maps",
+  "appSettings_stadiaApiKeyConfigured": "Настроено: {maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "Введите свой ключ API Stadia Maps. Приложение использует его для запросов растровых тайлов.",
   "appSettings_offlineMapCache": "Кэш офлайн-карты",
   "appSettings_noAreaSelected": "Область не выбрана",
   "appSettings_areaSelectedZoom": "Область выбрана (масштаб {minZoom}–{maxZoom})",
@@ -438,6 +453,56 @@
   "mapCache_downloadTilesButton": "Загрузить плитки",
   "mapCache_clearCacheButton": "Очистить кэш",
   "mapCache_failedDownloads": "Неудачных загрузок: {count}",
+  "mapCache_cachedTilesLabel": "Cached tiles",
+  "mapCache_cachedTileSummaryLabel": "Cached tile summary",
+  "mapCache_bulkDownloadDisabledForSource": "Offline bulk downloads are disabled for {source}.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Offline bulk downloads are disabled for {source} in this app configuration.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Source: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Cached tiles for source: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Cached in selected area/zoom: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Approx cache size: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "mapCache_boundsLabel": "С {north}, Ю {south}, В {east}, З {west}",
   "time_justNow": "Только что",
   "time_minutesAgo": "{minutes} мин назад",
@@ -1507,7 +1572,7 @@
   "repeater_advancedSettings": "Продвинутый",
   "repeater_advancedSettingsSubtitle": "Регуляторы для опытных операторов",
   "repeater_pathHashMode": "Режим хеширования пути",
-  "repeater_pathHashModeHelper": "Байты, используемые для кодирования идентификатора этого ретранслятора в тегах для обнаружения потоков/циклов. 0 = 1 байт (256 идентификаторов, до 64 переходов), 1 = 2 байта (65 000 идентификаторов, до 32 переходов), 2 = 3 байта (1 600 000 идентификаторов, до 21 перехода). Версии прошивки v1.13 и более ранние версии не поддерживают многобайтовые пути — они поднимаются только после того, как ваша сеть будет обновлена до версии v1.14 и выше.",
+  "repeater_pathHashModeHelper": "Байты, используемые для кодирования идентификатора этого ретранслятора в тегах flood-маршрута/обнаружения циклов. 0 = 1 байт (256 идентификаторов, до 64 переходов), 1 = 2 байта (65 000 идентификаторов, до 32 переходов), 2 = 3 байта (16 миллионов идентификаторов, до 21 перехода). Прошивки до v1.14 всегда использовали 1-байтовые маршруты; v1.14 и новее можно настроить на 2- или 3-байтовые маршруты.",
   "repeater_txDelay": "Задержка в работе системы Flood TX",
   "repeater_txDelayHelper": "Передача с увеличенным интервалом для трафика во время наводнения, в качестве коэффициента, умножающего время передачи пакета (от 0 до 2, по умолчанию 0,5). Более высокое значение означает меньшее количество столкновений, но более медленную передачу.",
   "repeater_directTxDelay": "Прямая задержка сигнала TX",

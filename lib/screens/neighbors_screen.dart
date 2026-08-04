@@ -276,7 +276,7 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
@@ -296,7 +296,7 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
             ),
           ],
         ),
-        centerTitle: false,
+        centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(isFloodMode ? Icons.waves : Icons.route),

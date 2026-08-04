@@ -334,7 +334,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
@@ -350,7 +350,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
             ),
           ],
         ),
-        centerTitle: false,
+        centerTitle: true,
         bottom: const SyncProgressAppBarBottom(),
         actions: [
           IconButton(

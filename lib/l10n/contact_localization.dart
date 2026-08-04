@@ -1,4 +1,5 @@
 import '../connector/meshcore_protocol.dart';
+import '../helpers/path_helper.dart';
 import '../models/contact.dart';
 import 'app_localizations.dart';
 
@@ -23,14 +24,30 @@ extension ContactLocalization on Contact {
     }
   }
 
-  String pathLabel(AppLocalizations l10n) {
+  String pathLabel(
+    AppLocalizations l10n, {
+    int pathHashByteWidth = pathHashSize,
+  }) {
     if (pathOverride != null) {
       if (pathOverride! < 0) return l10n.chat_floodForced;
       if (pathOverride == 0) return l10n.chat_directForced;
-      return l10n.chat_hopsForced(pathOverride!);
+      return l10n.chat_hopsForced(
+        _displayHopCount(pathOverrideBytes, pathOverride!, pathHashByteWidth),
+      );
     }
     if (pathLength < 0) return l10n.channelPath_floodPath;
     if (pathLength == 0) return l10n.chat_direct;
-    return l10n.chat_hopsCount(pathLength);
+    return l10n.chat_hopsCount(
+      _displayHopCount(path, pathLength, pathHashByteWidth),
+    );
+  }
+
+  int _displayHopCount(
+    List<int>? pathBytes,
+    int storedHopCount,
+    int hashWidth,
+  ) {
+    if (pathBytes == null || pathBytes.isEmpty) return storedHopCount;
+    return PathHelper.splitPathBytes(pathBytes, hashWidth).length;
   }
 }

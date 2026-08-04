@@ -100,6 +100,8 @@
   "settings_locationInvalid": "Ongeldige breedtegraad of lengtegraad.",
   "settings_latitude": "Breedtegraad",
   "settings_longitude": "Lengtegraad",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Automatische zero-hop-advertentie bij GPS-update",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Wanneer de GPS-locatie verandert, een zero-hop-advertentie verzenden (vereist locatie in advertentie).",
   "settings_privacyMode": "Privacy-modus",
   "settings_privacyModeSubtitle": "Naam/locatie verbergen in advertenties",
   "settings_privacyModeToggle": "Schakel privacy modus in om je naam en locatie in advertenties te verbergen.",
@@ -240,6 +242,19 @@
   "appSettings_last6Hours": "Afgelopen 6 uur",
   "appSettings_last24Hours": "Afgelopen 24 uur",
   "appSettings_lastWeek": "Afgelopen week",
+  "appSettings_rasterTileSource": "Rastertegelbron",
+  "appSettings_stadiaEndpoint": "Stadia-eindpunt",
+  "appSettings_stadiaApiKey": "Stadia API-sleutel",
+  "appSettings_stadiaApiKeyRequired": "Vereist voor gebruik van Stadia Maps",
+  "appSettings_stadiaApiKeyConfigured": "Geconfigureerd: {maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "Voer je Stadia Maps API-sleutel in. De app gebruikt die voor rastertegelverzoeken.",
   "appSettings_offlineMapCache": "Offline Kaartcache",
   "appSettings_noAreaSelected": "Geen gebied geselecteerd",
   "appSettings_areaSelectedZoom": "Geselecteerd gebied (zoom {minZoom}-{maxZoom})",
@@ -769,6 +784,56 @@
       }
     }
   },
+  "mapCache_cachedTilesLabel": "Cached tiles",
+  "mapCache_cachedTileSummaryLabel": "Cached tile summary",
+  "mapCache_bulkDownloadDisabledForSource": "Offline bulk downloads are disabled for {source}.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Offline bulk downloads are disabled for {source} in this app configuration.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Source: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Cached tiles for source: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Cached in selected area/zoom: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Approx cache size: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "mapCache_boundsLabel": "N {north}, S {south}, E {east}, W {west}",
   "@mapCache_boundsLabel": {
     "placeholders": {
@@ -1107,7 +1172,7 @@
   "repeater_advancedSettings": "Geavanceerd",
   "repeater_advancedSettingsSubtitle": "Regelhendels voor ervaren gebruikers",
   "repeater_pathHashMode": "Hash-modus voor paden",
-  "repeater_pathHashModeHelper": "Bytes die gebruikt worden om de ID van deze repeater te coderen in flood-pad/lusdetectietags. 0=1 byte (256 ID's, tot 64 hops), 1=2 bytes (65.000 ID's, tot 32 hops), 2=3 bytes (16 miljoen ID's, tot 21 hops). Versies 1.13 en ouder gebruiken multi-byte paden – alleen na het activeren van het netwerk.",
+  "repeater_pathHashModeHelper": "Bytes die gebruikt worden om de ID van deze repeater te coderen in flood-pad/lusdetectietags. 0=1 byte (256 ID's, tot 64 hops), 1=2 bytes (65.000 ID's, tot 32 hops), 2=3 bytes (16 miljoen ID's, tot 21 hops). Firmware vóór v1.14 gebruikte altijd 1-byte paden; v1.14 en nieuwer kunnen worden ingesteld op 2- of 3-byte paden.",
   "repeater_txDelay": "Vertraging bij Flood TX",
   "repeater_txDelayHelper": "Herzendinterval voor verkeer tijdens overstromingen, als een veelvoud van de tijd die het pakket nodig heeft (0-2, standaard 0.5). Een hoger getal betekent minder botsingen, maar ook een langere leveringstijd.",
   "repeater_directTxDelay": "Directe vertraging",

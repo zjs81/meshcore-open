@@ -101,6 +101,8 @@
   "settings_locationInvalid": "Некоректна широта або довгота.",
   "settings_latitude": "Широта",
   "settings_longitude": "Довгота",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Автооголошення без хопів при оновленні GPS",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Коли GPS-локація змінюється, надсилати оголошення без хопів (потрібна геопозиція в оголошенні).",
   "settings_privacyMode": "Режим приватності",
   "settings_privacyModeSubtitle": "Приховати ім'я/геопозицію в оголошеннях",
   "settings_privacyModeToggle": "Увімкніть режим приватності, щоб приховати своє ім'я та геопозицію в оголошеннях.",
@@ -242,6 +244,19 @@
   "appSettings_last6Hours": "Останні 6 годин",
   "appSettings_last24Hours": "Останні 24 години",
   "appSettings_lastWeek": "Минулий тиждень",
+  "appSettings_rasterTileSource": "Джерело растрових тайлів",
+  "appSettings_stadiaEndpoint": "Кінцева точка Stadia",
+  "appSettings_stadiaApiKey": "Ключ API Stadia",
+  "appSettings_stadiaApiKeyRequired": "Потрібно для використання Stadia Maps",
+  "appSettings_stadiaApiKeyConfigured": "Налаштовано: {maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "Введіть свій ключ API Stadia Maps. Програма використовує його для запитів растрових тайлів.",
   "appSettings_offlineMapCache": "Офлайн-кеш карти",
   "appSettings_noAreaSelected": "Область не вибрано",
   "appSettings_areaSelectedZoom": "Вибрана область (зум {minZoom}-{maxZoom})",
@@ -779,6 +794,56 @@
       }
     }
   },
+  "mapCache_cachedTilesLabel": "Cached tiles",
+  "mapCache_cachedTileSummaryLabel": "Cached tile summary",
+  "mapCache_bulkDownloadDisabledForSource": "Offline bulk downloads are disabled for {source}.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Offline bulk downloads are disabled for {source} in this app configuration.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Source: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Cached tiles for source: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Cached in selected area/zoom: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Approx cache size: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "mapCache_boundsLabel": "Пн {north}, Пд {south}, Сх {east}, Зх {west}",
   "@mapCache_boundsLabel": {
     "placeholders": {
@@ -1117,7 +1182,7 @@
   "repeater_advancedSettings": "Просунутий",
   "repeater_advancedSettingsSubtitle": "Регулювальні ручки для досвідчених операторів",
   "repeater_pathHashMode": "Режим хешування шляху",
-  "repeater_pathHashModeHelper": "Байти, що використовуються для кодування ідентифікатора цього ретранслятора в тегах для виявлення потоків/петлі. 0=1 байт (256 ідентифікаторів, до 64 перехідів), 1=2 байти (65 000 ідентифікаторів, до 32 перехідів), 2=3 байти (16 мільйонів ідентифікаторів, до 21 переходу). Версії 1.13 та старіші не підтримують багатобайтні шляхи — вони активуються лише після того, як мережа буде оновлена до версії 1.14+.",
+  "repeater_pathHashModeHelper": "Байти, що використовуються для кодування ідентифікатора цього ретранслятора в тегах flood-шляху/виявлення петель. 0=1 байт (256 ідентифікаторів, до 64 переходів), 1=2 байти (65 000 ідентифікаторів, до 32 переходів), 2=3 байти (16 мільйонів ідентифікаторів, до 21 переходу). Прошивки до v1.14 завжди використовували 1-байтові шляхи; v1.14 і новіші можна налаштувати на 2- або 3-байтові шляхи.",
   "repeater_txDelay": "Затримка у Flood, штат Техас",
   "repeater_txDelayHelper": "Повторне надсилання з урахуванням навантаження від потоків транспорту, як множник від часу передачі пакета (0-2, за замовчуванням 0,5). Чим вище значення, тим менше конфліктів, але повільніше передавання.",
   "repeater_directTxDelay": "Пряме затримка TX",

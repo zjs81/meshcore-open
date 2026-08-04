@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:crypto/crypto.dart' as crypto;
 import 'package:flutter/widgets.dart';
 
 // Buffer Reader - sequential binary data reader with pointer tracking
@@ -206,6 +207,8 @@ const int cmdSendTelemetryReq = 39;
 const int cmdGetCustomVar = 40;
 const int cmdSetCustomVar = 41;
 const int cmdSendBinaryReq = 50;
+const int cmdSetFloodScope = 54;
+const int cmdSendControlData = 55;
 const int cmdGetStats = 56;
 const int cmdSendAnonReq = 57;
 const int cmdSetAutoAddConfig = 58;
@@ -229,6 +232,12 @@ Uint8List buildTelemetryBinaryPayload() {
   // Zero means "request every telemetry field allowed for this contact".
   return Uint8List.fromList([reqTypeGetTelemetry, 0x00, 0x00, 0x00, 0x00]);
 }
+
+const int anonReqTypeRegions = 0x01;
+
+// Control data sub-types used by MeshCore discovery packets.
+const int controlSubtypeDiscoverReq = 0x08;
+const int controlSubtypeDiscoverResp = 0x09;
 
 // Repeater response codes
 const int respServerLoginOk = 0;
@@ -272,6 +281,7 @@ const int pushCodeTraceData = 0x89;
 const int pushCodeNewAdvert = 0x8A;
 const int pushCodeTelemetryResponse = 0x8B;
 const int pushCodeBinaryResponse = 0x8C;
+const int pushCodeControlData = 0x8E;
 
 // Contact/advertisement types
 const int advTypeChat = 1;
@@ -577,9 +587,9 @@ Uint8List buildGetStatsFrame(int statsType) {
   return Uint8List.fromList([cmdGetStats, statsType & 0xFF]);
 }
 
-/// Path hash width on air: [61][0][mode], mode 0..2 → (mode+1) bytes per hop hash.
+/// Path hash width on air: [61][0][mode], mode 0..3 → (mode+1) bytes per hop hash.
 Uint8List buildSetPathHashModeFrame(int mode) {
-  final m = mode.clamp(0, 2);
+  final m = mode.clamp(0, 3).toInt();
   return Uint8List.fromList([cmdSetPathHashMode, 0, m]);
 }
 
@@ -866,6 +876,67 @@ Uint8List buildSendBinaryReq(Uint8List repeaterPubKey, {Uint8List? payload}) {
   return writer.toBytes();
 }
 
+Uint8List buildSendControlDataFrame(Uint8List payload) {
+  final writer = BufferWriter();
+  writer.writeByte(cmdSendControlData);
+  writer.writeBytes(payload);
+  return writer.toBytes();
+}
+
+Uint8List buildDiscoveryRequestPayload(
+  int tag, {
+  bool prefixOnly = false,
+  int typeMask = 1 << advTypeRepeater,
+}) {
+  final writer = BufferWriter();
+  // The high bit must be set for CMD_SEND_CONTROL_DATA; DISCOVER_REQ uses
+  // subtype 0x8, with the low bit selecting short/full public keys in replies.
+  writer.writeByte(
+    (controlSubtypeDiscoverReq << 4) | (prefixOnly ? 0x01 : 0x00),
+  );
+  writer.writeByte(typeMask);
+  writer.writeUInt32LE(tag);
+  writer.writeUInt32LE(0); // since=0 asks nearby nodes for any recent advert.
+  return writer.toBytes();
+}
+
+Uint8List _reversePathByHop(Uint8List path, int pathHashWidth) {
+  if (path.isEmpty) return Uint8List(0);
+  final width = pathHashWidth.clamp(1, 4).toInt();
+  if (path.length % width != 0) {
+    return Uint8List.fromList(path.reversed.toList());
+  }
+
+  final reversed = Uint8List(path.length);
+  final hops = path.length ~/ width;
+  for (var i = 0; i < hops; i++) {
+    final from = (hops - 1 - i) * width;
+    reversed.setRange(i * width, (i + 1) * width, path, from);
+  }
+  return reversed;
+}
+
+// Build CMD_SEND_ANON_REQ frame.
+// Payload format for regions: [anon_req_type][reply_path_len][reply_path...].
+Uint8List buildSendAnonReqFrame(
+  Uint8List repeaterPubKey, {
+  required int requestType,
+  Uint8List? replyPath,
+  int replyHopCount = 0,
+  int pathHashWidth = pathHashSize,
+}) {
+  final width = pathHashWidth.clamp(1, 4).toInt();
+  final path = replyPath ?? Uint8List(0);
+  final encodedPathLen = ((width - 1) << 6) | (replyHopCount & 0x3F);
+  final writer = BufferWriter();
+  writer.writeByte(cmdSendAnonReq);
+  writer.writeBytes(repeaterPubKey);
+  writer.writeByte(requestType);
+  writer.writeByte(encodedPathLen);
+  writer.writeBytes(_reversePathByHop(path, width));
+  return writer.toBytes();
+}
+
 //Build a trace request frame
 //[cmd][tag x4][auth x4][flag][payload]
 Uint8List buildTraceReq(int tag, int auth, int flag, {Uint8List? payload}) {
@@ -959,4 +1030,19 @@ Uint8List buildSendTelemetryReq(Uint8List? pubKey) {
     writer.writeBytes(Uint8List(3)); // reserved bytes
   }
   return writer.toBytes();
+}
+
+//Build CMD_SET_FLOOD_SCOPE
+// Format: [cmd][scope]
+Uint8List buildSetFloodScopeFrame(String region) {
+  if (region == '') {
+    // reset scope
+    return Uint8List.fromList([cmdSetFloodScope, 0]);
+  }
+
+  final name = region.startsWith('#') ? region : '#$region';
+  final hash = crypto.sha256.convert(utf8.encode(name)).bytes;
+  final scope = Uint8List.fromList(hash.sublist(0, 16));
+
+  return Uint8List.fromList([cmdSetFloodScope, 0, ...scope]);
 }

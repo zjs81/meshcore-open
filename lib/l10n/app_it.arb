@@ -240,6 +240,19 @@
   "appSettings_last6Hours": "Ultimi 6 ore",
   "appSettings_last24Hours": "Ultime 24 ore",
   "appSettings_lastWeek": "La settimana scorsa",
+  "appSettings_rasterTileSource": "Sorgente tile raster",
+  "appSettings_stadiaEndpoint": "Endpoint Stadia",
+  "appSettings_stadiaApiKey": "Chiave API Stadia",
+  "appSettings_stadiaApiKeyRequired": "Obbligatoria per usare Stadia Maps",
+  "appSettings_stadiaApiKeyConfigured": "Configurata: {maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "Inserisci la chiave API di Stadia Maps. Questa app la usa per le richieste di tile raster.",
   "appSettings_offlineMapCache": "Cache Mappa Offline",
   "appSettings_noAreaSelected": "Nessun'area selezionata",
   "appSettings_areaSelectedZoom": "Area selezionata (zoom {minZoom}-{maxZoom})",
@@ -837,6 +850,56 @@
       }
     }
   },
+  "mapCache_cachedTilesLabel": "Cached tiles",
+  "mapCache_cachedTileSummaryLabel": "Cached tile summary",
+  "mapCache_bulkDownloadDisabledForSource": "Offline bulk downloads are disabled for {source}.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Offline bulk downloads are disabled for {source} in this app configuration.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Source: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Cached tiles for source: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Cached in selected area/zoom: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Approx cache size: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "mapCache_boundsLabel": "N {north}, S {south}, E {east}, W {west}",
   "@mapCache_boundsLabel": {
     "placeholders": {
@@ -1175,7 +1238,7 @@
   "repeater_advancedSettings": "Avanzato",
   "repeater_advancedSettingsSubtitle": "Manopole di regolazione per operatori esperti",
   "repeater_pathHashMode": "Modalità di hashing del percorso",
-  "repeater_pathHashModeHelper": "Byte utilizzati per codificare l'ID di questo ripetitore nei tag per il rilevamento del percorso/loop. 0=1 byte (256 ID, fino a 64 salti), 1=2 byte (65.000 ID, fino a 32 salti), 2=3 byte (16 milioni di ID, fino a 21 salti). Le versioni 1.13 e precedenti utilizzano percorsi multi-byte: è necessario attivare la rete prima di utilizzare questa funzionalità (a partire dalla versione 1.14).",
+  "repeater_pathHashModeHelper": "Byte utilizzati per codificare l'ID di questo ripetitore nei tag di percorso flood/rilevamento loop. 0=1 byte (256 ID, fino a 64 salti), 1=2 byte (65.000 ID, fino a 32 salti), 2=3 byte (16 milioni di ID, fino a 21 salti). Il firmware precedente alla v1.14 usava sempre percorsi a 1 byte; v1.14 e versioni successive possono essere configurate per percorsi a 2 o 3 byte.",
   "repeater_txDelay": "Ritardo a Flood, TX",
   "repeater_txDelayHelper": "Riassegnare lo spazio tra i pacchetti per gestire il traffico intenso, come un moltiplicatore del tempo di trasmissione (da 0 a 2, valore predefinito 0,5). Un valore più alto significa meno collisioni, ma una trasmissione più lenta.",
   "repeater_directTxDelay": "Ritardo diretto TX",
@@ -2242,6 +2305,8 @@
   "settings_telemetryEnvironmentMode": "Modalità di ambiente di telemetria",
   "settings_advertLocation": "Posizione dell'annuncio",
   "settings_advertLocationSubtitle": "Includi la posizione nell'annuncio",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Annuncio zero-hop automatico all'aggiornamento GPS",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Quando la posizione GPS cambia, invia un annuncio zero-hop (richiede la posizione nell'annuncio).",
   "settings_privacy": "Impostazioni sulla privacy",
   "settings_denyAll": "Negare tutto",
   "settings_privacySubtitle": "Controlla le informazioni che vengono condivise.",

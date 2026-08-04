@@ -1,6 +1,7 @@
 import 'package:latlong2/latlong.dart';
 
 import '../connector/meshcore_protocol.dart';
+import 'path_helper.dart';
 import '../models/contact.dart';
 
 class PathHopResolver {
@@ -11,30 +12,35 @@ class PathHopResolver {
     required List<Contact> contacts,
     LatLng? endpoint,
     bool resolveFromEnd = false,
+    int pathHashByteWidth = 1,
   }) {
-    final candidatesByPrefix = <int, List<Contact>>{};
+    final width = pathHashByteWidth.clamp(1, 4).toInt();
+    final candidatesByPrefix = <String, List<Contact>>{};
     for (final contact in contacts) {
-      if (contact.publicKey.isEmpty) continue;
+      if (contact.publicKey.length < width) continue;
       if (contact.type != advTypeRepeater && contact.type != advTypeRoom) {
         continue;
       }
-      candidatesByPrefix
-          .putIfAbsent(contact.publicKey.first, () => <Contact>[])
-          .add(contact);
+      final prefix = PathHelper.formatHopHex(
+        contact.publicKey.sublist(0, width),
+      );
+      candidatesByPrefix.putIfAbsent(prefix, () => <Contact>[]).add(contact);
     }
     for (final candidates in candidatesByPrefix.values) {
       candidates.sort((a, b) => b.lastSeen.compareTo(a.lastSeen));
     }
 
-    final resolved = List<Contact?>.filled(pathBytes.length, null);
+    final hops = PathHelper.splitPathBytes(pathBytes, width);
+    final resolved = List<Contact?>.filled(hops.length, null);
     final indexes = resolveFromEnd
-        ? List<int>.generate(pathBytes.length, (i) => pathBytes.length - 1 - i)
-        : List<int>.generate(pathBytes.length, (i) => i);
+        ? List<int>.generate(hops.length, (i) => hops.length - 1 - i)
+        : List<int>.generate(hops.length, (i) => i);
     final distance = Distance();
     var previousPosition = endpoint;
 
     for (final index in indexes) {
-      final candidates = candidatesByPrefix[pathBytes[index]];
+      final candidates =
+          candidatesByPrefix[PathHelper.formatHopHex(hops[index])];
       if (candidates == null || candidates.isEmpty) continue;
 
       var bestIndex = 0;

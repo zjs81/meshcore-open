@@ -105,6 +105,8 @@
   "settings_locationIntervalInvalid": "间隔时间必须至少为 60 秒，但不超过 86400 秒。",
   "settings_latitude": "纬度",
   "settings_longitude": "经度",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "GPS 更新时自动发送零跳广告",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "当 GPS 位置变化时，发送零跳广告（需要在广告中包含位置）。",
   "settings_privacyMode": "隐私模式",
   "settings_privacyModeSubtitle": "在广告中隐藏姓名/位置",
   "settings_privacyModeToggle": "切换隐私模式以在广告中隐藏姓名和位置，保护个人信息。",
@@ -254,6 +256,19 @@
   "appSettings_last6Hours": "过去6小时",
   "appSettings_last24Hours": "过去24小时",
   "appSettings_lastWeek": "上周",
+  "appSettings_rasterTileSource": "栅格瓦片源",
+  "appSettings_stadiaEndpoint": "Stadia 端点",
+  "appSettings_stadiaApiKey": "Stadia API 密钥",
+  "appSettings_stadiaApiKeyRequired": "使用 Stadia Maps 时必需",
+  "appSettings_stadiaApiKeyConfigured": "已配置：{maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "请输入你的 Stadia Maps API 密钥。该应用会使用它来请求栅格瓦片。",
   "appSettings_offlineMapCache": "离线地图缓存",
   "appSettings_noAreaSelected": "未选择任何区域",
   "appSettings_areaSelectedZoom": "已选择区域（缩放 {minZoom} - {maxZoom}）",
@@ -796,6 +811,56 @@
       }
     }
   },
+  "mapCache_cachedTilesLabel": "Cached tiles",
+  "mapCache_cachedTileSummaryLabel": "Cached tile summary",
+  "mapCache_bulkDownloadDisabledForSource": "Offline bulk downloads are disabled for {source}.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Offline bulk downloads are disabled for {source} in this app configuration.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Source: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Cached tiles for source: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Cached in selected area/zoom: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Approx cache size: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "mapCache_boundsLabel": "北 {north}, 南 {south}, 东 {east}, 西 {west}",
   "@mapCache_boundsLabel": {
     "placeholders": {
@@ -1137,7 +1202,7 @@
   "repeater_advancedSettings": "高级",
   "repeater_advancedSettingsSubtitle": "高级操作员使用的调节旋钮",
   "repeater_pathHashMode": "路径哈希模式",
-  "repeater_pathHashModeHelper": "用于编码此复用器的 ID 的字节数，在“洪流路径/环检测”标签中使用。 0=1 字节（256 个 ID，最多 64 个跳跃），1=2 字节（65K 个 ID，最多 32 个跳跃），2=3 字节（16M 个 ID，最多 21 个跳跃）。 v1.13 及更早版本的固件会使用多字节路径——只有在您的网络升级到 v1.14 或更高版本后才会生效。",
+  "repeater_pathHashModeHelper": "用于在洪泛路径/环路检测标签中编码此中继器 ID 的字节数。0=1 字节（256 个 ID，最多 64 跳），1=2 字节（65K 个 ID，最多 32 跳），2=3 字节（16M 个 ID，最多 21 跳）。v1.14 之前的固件始终使用 1 字节路径；v1.14 及更新版本可配置为 2 或 3 字节路径。",
   "repeater_txDelay": "洪水（德克萨斯州）延误",
   "repeater_txDelayHelper": "对于洪水流量，重新传输间隔应设置为包的传输时间（0-2，默认值为0.5）的倍数。 较高的值意味着更少的冲突，但传输速度会变慢。",
   "repeater_directTxDelay": "直接的 TX 延迟",

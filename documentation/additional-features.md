@@ -183,7 +183,7 @@ An ML-based service that predicts expected delivery timeouts:
 - Applies a **1.5x safety margin** to raw predictions (the actual timeout issued is 1.5× the model's predicted delivery time)
 - Features with zero variance are automatically excluded from training
 - Blends per-contact statistics with ML predictions
-- Falls back to `3000 + 3000 × pathLength` ms when insufficient data
+- Falls back to `3000 + 3000 × pathLength` ms when insufficient data. Note: `pathLength` here refers to the stored hop count in the app's model/storage (number of hops), not the on-air encoded byte length.
 - Observations are persisted to storage via a 2-second debounced timer (observations within 2s of app termination may be lost)
 
 ---

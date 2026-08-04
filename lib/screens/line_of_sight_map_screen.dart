@@ -20,7 +20,6 @@ import '../widgets/app_bar.dart';
 import '../widgets/quick_switch_bar.dart';
 import '../icons/los_icon.dart';
 import '../theme/mesh_theme.dart';
-import '../widgets/themed_map_tile_layer.dart';
 
 class LineOfSightEndpoint {
   final String label;
@@ -357,7 +356,7 @@ class _LineOfSightMapScreenState extends State<LineOfSightMapScreen> {
   Widget build(BuildContext context) {
     final settings = context.watch<AppSettingsService>().settings;
     final isImperial = settings.unitSystem == UnitSystem.imperial;
-    final tileCache = context.read<MapTileCacheService>();
+    final tileCache = context.watch<MapTileCacheService>();
     final endpoints = _visibleEndpoints();
     final mapPoints = [
       if (_start != null) _start!.point,
@@ -430,6 +429,7 @@ class _LineOfSightMapScreenState extends State<LineOfSightMapScreen> {
               minZoom: _mapMinZoom,
               maxZoom: _mapMaxZoom,
               onLongPress: (_, point) => _addCustomPoint(point),
+              onSecondaryTap: (_, point) => _addCustomPoint(point),
               onPositionChanged: (camera, hasGesture) {
                 final shouldShow = camera.zoom >= _labelZoomThreshold;
                 if (!_didReceivePositionUpdate ||
@@ -442,8 +442,8 @@ class _LineOfSightMapScreenState extends State<LineOfSightMapScreen> {
               },
             ),
             children: [
-              ThemedMapTileLayer(
-                tileCache: tileCache,
+              tileCache.buildTileLayer(
+                context,
                 opacity: _showTerrainLayer ? 1 : 0.72,
               ),
               if (_result != null && _result!.segments.isNotEmpty)

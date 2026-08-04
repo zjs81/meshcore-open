@@ -11,16 +11,16 @@ class MeshPalette {
   static const bg3 = Color(0xFF1E293B);
   static const bg4 = Color(0xFF334155);
 
-  // Lines
-  static const line = Color(0xFF1E293B);
-  static const line2 = Color(0xFF334155);
-  static const line3 = Color(0xFF475569);
+  // Lines — lifted for clearer element separation on the near-black surface
+  static const line = Color(0xFF2A3850);
+  static const line2 = Color(0xFF3B4A61);
+  static const line3 = Color(0xFF546376);
 
-  // Ink
+  // Ink — muted tones brightened for readable secondary/tertiary text in dark
   static const ink = Color(0xFFF8FAFC);
-  static const ink2 = Color(0xFFCBD5E1);
-  static const ink3 = Color(0xFF94A3B8);
-  static const ink4 = Color(0xFF64748B);
+  static const ink2 = Color(0xFFD5DEE9);
+  static const ink3 = Color(0xFFAAB6C6);
+  static const ink4 = Color(0xFF828FA3);
 
   // Signal-quality green (used only for SNR coloring, not UI chrome)
   static const signal = Color(0xFF22C55E);
@@ -394,9 +394,9 @@ class MeshTheme {
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
           return TextStyle(
-            fontFamily: MeshFonts.mono,
-            fontFamilyFallback: MeshFonts.monoFallback,
-            fontSize: 10,
+            fontFamily: MeshFonts.sans,
+            fontFamilyFallback: MeshFonts.sansFallback,
+            fontSize: 11.5,
             fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
             letterSpacing: 0.1,
             color: selected ? scheme.onPrimary : scheme.onSurfaceVariant,
@@ -582,14 +582,15 @@ class MeshTheme {
     );
   }
 
-  /// Small-caps mono label — used for section accents and chip labels.
+  /// Section-accent / chip label — sans for legibility, with light tracking
+  /// to keep the "label" feel that section headers rely on.
   static TextStyle accentLabel({Color? color, double? fontSize}) {
     return TextStyle(
-      fontFamily: MeshFonts.mono,
-      fontFamilyFallback: MeshFonts.monoFallback,
-      fontSize: fontSize ?? 9.5,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 1.8,
+      fontFamily: MeshFonts.sans,
+      fontFamilyFallback: MeshFonts.sansFallback,
+      fontSize: fontSize ?? 11,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0.6,
       color: color,
     );
   }

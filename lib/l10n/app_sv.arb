@@ -100,6 +100,8 @@
   "settings_locationInvalid": "Ogiltig latitud eller longitud.",
   "settings_latitude": "Latitud",
   "settings_longitude": "Längdgrad",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Automatisk zero-hop-annons vid GPS-uppdatering",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "När GPS-positionen ändras, skicka en zero-hop-annons (kräver plats i annonsen).",
   "settings_privacyMode": "Privatläge",
   "settings_privacyModeSubtitle": "Dölj namn/plats i annonser",
   "settings_privacyModeToggle": "Aktivera privatläge för att dölja ditt namn och din plats i annonser.",
@@ -240,6 +242,19 @@
   "appSettings_last6Hours": "De senaste 6 timmarna",
   "appSettings_last24Hours": "De senaste 24 timmarna",
   "appSettings_lastWeek": "Förra veckan",
+  "appSettings_rasterTileSource": "Källa för rasterplattor",
+  "appSettings_stadiaEndpoint": "Stadia-slutpunkt",
+  "appSettings_stadiaApiKey": "Stadia API-nyckel",
+  "appSettings_stadiaApiKeyRequired": "Krävs för att använda Stadia Maps",
+  "appSettings_stadiaApiKeyConfigured": "Konfigurerad: {maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "Ange din Stadia Maps API-nyckel. Appen använder den för förfrågningar om rasterplattor.",
   "appSettings_offlineMapCache": "Offline Kartcache",
   "appSettings_noAreaSelected": "Ingen area markerad",
   "appSettings_areaSelectedZoom": "Område markerat (zoom {minZoom}-{maxZoom})",
@@ -769,6 +784,56 @@
       }
     }
   },
+  "mapCache_cachedTilesLabel": "Cached tiles",
+  "mapCache_cachedTileSummaryLabel": "Cached tile summary",
+  "mapCache_bulkDownloadDisabledForSource": "Offline bulk downloads are disabled for {source}.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Offline bulk downloads are disabled for {source} in this app configuration.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Source: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Cached tiles for source: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Cached in selected area/zoom: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Approx cache size: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "mapCache_boundsLabel": "N {north}, S {south}, E {east}, W {west}",
   "@mapCache_boundsLabel": {
     "placeholders": {
@@ -1107,7 +1172,7 @@
   "repeater_advancedSettings": "Avancerad",
   "repeater_advancedSettingsSubtitle": "Ställjusteringsknappar för erfarna användare",
   "repeater_pathHashMode": "Hash-läge för sökväg",
-  "repeater_pathHashModeHelper": "Byte används för att koda denna repeaters ID i taggar för att upptäcka loopar/flödesvägar. 0=1 byte (256 ID:n, upp till 64 hopp), 1=2 byte (65 000 ID:n, upp till 32 hopp), 2=3 byte (16 miljoner ID:n, upp till 21 hopp). Versioner 1.13 och äldre har stöd för multi-byte-vägar – endast en gång när nätverket är aktiverat (från och med version 1.14).",
+  "repeater_pathHashModeHelper": "Byte som används för att koda denna repeaters ID i taggar för flood-väg/loopdetektering. 0=1 byte (256 ID:n, upp till 64 hopp), 1=2 byte (65 000 ID:n, upp till 32 hopp), 2=3 byte (16 miljoner ID:n, upp till 21 hopp). Firmware före v1.14 använde alltid 1-byte-vägar; v1.14 och nyare kan konfigureras för 2- eller 3-byte-vägar.",
   "repeater_txDelay": "Försening i Flood TX",
   "repeater_txDelayHelper": "Återöverföringsintervall för trafik under perioder med hög belastning, som en multiplikator av paketets överföringstid (0-2, standard 0,5). Högre värde = färre kollisioner, men långsammare leverans.",
   "repeater_directTxDelay": "Direkt TX-fördröjning",

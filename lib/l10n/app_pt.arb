@@ -100,6 +100,8 @@
   "settings_locationInvalid": "Latitude ou longitude inválidos.",
   "settings_latitude": "Latitude",
   "settings_longitude": "Longitude",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Anúncio zero-hop automático na atualização do GPS",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Quando a localização GPS mudar, enviar um anúncio zero-hop (requer localização no anúncio).",
   "settings_privacyMode": "Modo de Privacidade",
   "settings_privacyModeSubtitle": "Esconder nome/localização em anúncios",
   "settings_privacyModeToggle": "Ative o modo de privacidade para ocultar seu nome e localização em anúncios.",
@@ -240,6 +242,19 @@
   "appSettings_last6Hours": "Últimos 6 horas",
   "appSettings_last24Hours": "Últimas 24 horas",
   "appSettings_lastWeek": "Da última semana",
+  "appSettings_rasterTileSource": "Fonte de blocos raster",
+  "appSettings_stadiaEndpoint": "Endpoint da Stadia",
+  "appSettings_stadiaApiKey": "Chave da API Stadia",
+  "appSettings_stadiaApiKeyRequired": "Obrigatório para usar o Stadia Maps",
+  "appSettings_stadiaApiKeyConfigured": "Configurado: {maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "Insira sua chave da API Stadia Maps. O aplicativo a usa para solicitações de blocos raster.",
   "appSettings_offlineMapCache": "Cache de Mapa Offline",
   "appSettings_noAreaSelected": "Nenhuma área selecionada",
   "appSettings_areaSelectedZoom": "Área selecionada (zoom {minZoom}-{maxZoom})",
@@ -769,6 +784,56 @@
       }
     }
   },
+  "mapCache_cachedTilesLabel": "Cached tiles",
+  "mapCache_cachedTileSummaryLabel": "Cached tile summary",
+  "mapCache_bulkDownloadDisabledForSource": "Offline bulk downloads are disabled for {source}.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Offline bulk downloads are disabled for {source} in this app configuration.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Source: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Cached tiles for source: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Cached in selected area/zoom: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Approx cache size: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "mapCache_boundsLabel": "N {north}, S {south}, E {east}, W {west}",
   "@mapCache_boundsLabel": {
     "placeholders": {
@@ -1107,7 +1172,7 @@
   "repeater_advancedSettings": "Avançado",
   "repeater_advancedSettingsSubtitle": "Controles de ajuste para operadores experientes",
   "repeater_pathHashMode": "Modo de hash de caminho",
-  "repeater_pathHashModeHelper": "Bytes utilizados para codificar o ID deste repetidor nas tags de caminho/detecção de loop. 0=1 byte (256 IDs, até 64 saltos), 1=2 bytes (65.000 IDs, até 32 saltos), 2=3 bytes (16 milhões de IDs, até 21 saltos). As versões 1.13 e anteriores do firmware não suportam caminhos multi-byte — apenas funcionam uma vez após a ativação da rede (a partir da versão 1.14+).",
+  "repeater_pathHashModeHelper": "Bytes usados para codificar o ID deste repetidor nas tags de caminho flood/detecção de loop. 0=1 byte (256 IDs, até 64 saltos), 1=2 bytes (65.000 IDs, até 32 saltos), 2=3 bytes (16 milhões de IDs, até 21 saltos). O firmware anterior à v1.14 sempre usava caminhos de 1 byte; v1.14 e versões mais recentes podem ser configuradas para caminhos de 2 ou 3 bytes.",
   "repeater_txDelay": "Atraso na entrega em Flood, TX",
   "repeater_txDelayHelper": "Ajuste de espaçamento para tráfego de inundações, como um multiplicador do tempo de transmissão (0-2, padrão 0,5). Quanto maior, menos colisões, mas uma entrega mais lenta.",
   "repeater_directTxDelay": "Atraso direto no sinal TX",

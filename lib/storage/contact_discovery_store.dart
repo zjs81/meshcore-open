@@ -105,15 +105,40 @@ class ContactDiscoveryStore {
     final lastSeenMs = json['lastSeen'] as int? ?? 0;
     final lastMessageMs = json['lastMessageAt'] as int?;
     final lastModifiedMs = json['lastModified'] as int?;
+
+    final rawPathLength = json['pathLength'] as int? ?? -1;
+    final rawPath = json['path'] != null
+        ? Uint8List.fromList(base64Decode(json['path'] as String))
+        : Uint8List(0);
+
+    int decodedPathLength = rawPathLength;
+    Uint8List decodedPath = rawPath;
+
+    if (rawPathLength == 0xFF || rawPathLength < 0) {
+      decodedPathLength = -1;
+      decodedPath = Uint8List(0);
+    } else if (rawPathLength >= 64) {
+      final mode = (rawPathLength & 0xC0) >> 6;
+      final hopCount = rawPathLength & 0x3F;
+      final width = mode + 1;
+      final byteLen = hopCount * width;
+      decodedPathLength = hopCount;
+      if (byteLen <= rawPath.length) {
+        decodedPath = rawPath.sublist(0, byteLen);
+      } else {
+        decodedPath = Uint8List(0);
+      }
+    } else if (rawPathLength == 0) {
+      decodedPath = Uint8List(0);
+    }
+
     return Contact(
       publicKey: Uint8List.fromList(base64Decode(json['publicKey'] as String)),
       name: json['name'] as String? ?? 'Unknown',
       type: json['type'] as int? ?? 0,
       flags: json['flags'] as int? ?? 0,
-      pathLength: json['pathLength'] as int? ?? -1,
-      path: json['path'] != null
-          ? Uint8List.fromList(base64Decode(json['path'] as String))
-          : Uint8List(0),
+      pathLength: decodedPathLength,
+      path: decodedPath,
       pathOverride: json['pathOverride'] as int?,
       pathOverrideBytes: json['pathOverrideBytes'] != null
           ? Uint8List.fromList(

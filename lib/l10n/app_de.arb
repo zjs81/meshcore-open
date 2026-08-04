@@ -100,6 +100,8 @@
   "settings_locationInvalid": "Ungültiger Breiten- oder Längengrad.",
   "settings_latitude": "Breitengrad",
   "settings_longitude": "Längengrad",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Automatische Zero-Hop-Ankündigung bei GPS-Update",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Wenn sich der GPS-Standort ändert, eine Zero-Hop-Ankündigung senden (erfordert Standort in der Ankündigung).",
   "settings_privacyMode": "Privatsphärenmodus",
   "settings_privacyModeSubtitle": "Name und Standort in Ankündigungen verbergen",
   "settings_privacyModeToggle": "Privatsphärenmodus aktivieren, um Namen und Standort in Ankündigungen zu verbergen.",
@@ -240,6 +242,19 @@
   "appSettings_last6Hours": "Letzte 6 Stunden",
   "appSettings_last24Hours": "Letzte 24 Stunden",
   "appSettings_lastWeek": "Letzte Woche",
+  "appSettings_rasterTileSource": "Quelle für Rasterkacheln",
+  "appSettings_stadiaEndpoint": "Stadia-Endpunkt",
+  "appSettings_stadiaApiKey": "Stadia-API-Schlüssel",
+  "appSettings_stadiaApiKeyRequired": "Für die Nutzung von Stadia Maps erforderlich",
+  "appSettings_stadiaApiKeyConfigured": "Konfiguriert: {maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "Geben Sie Ihren Stadia-Maps-API-Schlüssel ein. Die App verwendet ihn für Rasterkachel-Anfragen.",
   "appSettings_offlineMapCache": "Offline-Karten-Cache",
   "appSettings_noAreaSelected": "Kein Bereich ausgewählt",
   "appSettings_areaSelectedZoom": "Bereich ausgewählt (Zoom {minZoom}-{maxZoom})",
@@ -788,6 +803,56 @@
     "placeholders": {
       "count": {
         "type": "int"
+      }
+    }
+  },
+  "mapCache_cachedTilesLabel": "Cached tiles",
+  "mapCache_cachedTileSummaryLabel": "Cached tile summary",
+  "mapCache_bulkDownloadDisabledForSource": "Offline bulk downloads are disabled for {source}.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Offline bulk downloads are disabled for {source} in this app configuration.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Source: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Cached tiles for source: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Cached in selected area/zoom: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Approx cache size: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
       }
     }
   },
@@ -2523,6 +2588,13 @@
   "settings_companionDebugLog": "Debug-Protokoll für die Begleitsoftware",
   "settings_companionDebugLogSubtitle": "BLE/TCP/USB-Befehle, Antworten und Rohdaten",
   "repeater_chanUtil": "Nutzung des Kanals",
+  "@settings_deleteRegionConfirm": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
   "@routing_lastWorked": {
     "placeholders": {
       "when": {
@@ -2530,6 +2602,27 @@
       }
     }
   },
+  "@channels_regionSetTo": {
+    "placeholders": {
+      "region": {
+        "type": "String",
+        "example": "de-mitte"
+      }
+    }
+  },
+  "settings_regionSettings": "Regionen",
+  "settings_regionSettingsSubtitle": "Gespeicherte Regionen verwalten",
+  "settings_regionManagement_screenTitle": "Regions-Verwaltung",
+  "settings_regionNameHint": "Regions-Namen eingeben",
+  "settings_regionAddRegion": "Region hinzufügen",
+  "settings_regionDeleted": "Region entfernt",
+  "settings_regionName": "Regions-Name",
+  "settings_deleteRegion": "Region entfernen",
+  "settings_deleteRegionConfirm": "Region \"{region}\" aus der Liste entfernen?",
+  "channels_regionNotSet": "Region: keine",
+  "channels_regionSetTo": "Region: {region}",
+  "channels_regionSelect_Title": "Region auswählen",
+  "channels_clearRegion": "Region zurücksetzen",
   "@routing_deliveryCounts": {
     "placeholders": {
       "successes": {

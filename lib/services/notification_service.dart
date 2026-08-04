@@ -27,6 +27,11 @@ class NotificationService {
 
   AppLocalizations get _l10n => lookupAppLocalizations(_locale);
 
+  String _logSafe(String value) {
+    final sanitized = value.replaceAll(RegExp(r'[\x00-\x1F\x7F]'), ' ');
+    return Uri.encodeComponent(sanitized);
+  }
+
   // Rate limiting to prevent notification storms
   // (Added after getting notification-flooded while evaluating RF flood management. The irony.)
   static const _minNotificationInterval = Duration(seconds: 3);
@@ -356,11 +361,11 @@ class NotificationService {
   String _getNotificationIdentifier(_PendingNotification n) {
     switch (n.type) {
       case _NotificationType.advert:
-        return n.body;
+        return _logSafe(n.body);
       case _NotificationType.message:
-        return 'from: ${n.title}';
+        return 'from: ${_logSafe(n.title)}';
       case _NotificationType.channelMessage:
-        return 'in: ${n.title}';
+        return 'in: ${_logSafe(n.title)}';
     }
   }
 
@@ -606,7 +611,7 @@ class NotificationService {
 
     // Show first few device names in batch summary for debugging (only if adverts exist)
     final deviceInfo = adverts.isNotEmpty
-        ? ' (${adverts.take(5).map((n) => n.body).join(', ')}${adverts.length > 5 ? ', ...' : ''})'
+        ? ' (${adverts.take(5).map((n) => _logSafe(n.body)).join(', ')}${adverts.length > 5 ? ', ...' : ''})'
         : '';
     debugPrint('[Notification] batch summary: ${parts.join(", ")}$deviceInfo');
 
