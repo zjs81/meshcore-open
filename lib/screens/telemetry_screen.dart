@@ -24,8 +24,9 @@ import '../widgets/mesh_ui.dart';
 
 class TelemetryScreen extends StatefulWidget {
   final Contact contact;
+  final bool isSelf;
 
-  const TelemetryScreen({super.key, required this.contact});
+  const TelemetryScreen({super.key, required this.contact, this.isSelf = false});
 
   @override
   State<TelemetryScreen> createState() => _TelemetryScreenState();
@@ -158,7 +159,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
   void _handleTelemetryResponse(Uint8List frame) {
     final parsedTelemetry = CayenneLpp.parseByChannel(frame);
     final batteryMv = _extractTelemetryBatteryMillivolts(parsedTelemetry);
-    if (batteryMv != null) {
+    if (batteryMv != null && !widget.isSelf) {
       final connector = Provider.of<MeshCoreConnector>(context, listen: false);
       connector.updateRepeaterBatterySnapshot(
         widget.contact.publicKeyHex,
@@ -204,18 +205,47 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
     });
     try {
       final connector = Provider.of<MeshCoreConnector>(context, listen: false);
-      final selection = await connector.preparePathForContactSend(
-        _resolveContact(connector),
-      );
-      _pendingStatusSelection = selection;
       Uint8List frame;
-      if (widget.contact.type != advTypeChat) {
-        frame = buildSendBinaryReq(
-          widget.contact.publicKey,
-          payload: buildTelemetryBinaryPayload(),
-        );
+      if (widget.isSelf) {
+        // ask the connected node for its own telemetry, no mesh path involved
+        frame = buildSendTelemetryReq(null);
+        final isAutoRefreshRequest = _activeTelemetryRequestIsAutoRefresh;
+        _statusTimeout?.cancel();
+        _statusTimeout = Timer(const Duration(seconds: 5), () {
+          if (!mounted) return;
+          setState(() {
+            _isLoading = false;
+            _isLoaded = false;
+            if (isAutoRefreshRequest && _isAutoRefreshEnabled) {
+              _autoRefreshLastAttemptFailed = true;
+            }
+            _activeTelemetryRequestIsAutoRefresh = false;
+          });
+          if (!isAutoRefreshRequest) {
+            showDismissibleSnackBar(
+              context,
+              content: Text(context.l10n.telemetry_requestTimeout),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            );
+          }
+          if (isAutoRefreshRequest && _isAutoRefreshEnabled) {
+            _scheduleNextAutoRefreshAttempt();
+          }
+          _recordTelemetryResult(false);
+        });
       } else {
-        frame = buildSendTelemetryReq(widget.contact.publicKey);
+        final selection = await connector.preparePathForContactSend(
+          _resolveContact(connector),
+        );
+        _pendingStatusSelection = selection;
+        if (widget.contact.type != advTypeChat) {
+          frame = buildSendBinaryReq(
+            widget.contact.publicKey,
+            payload: buildTelemetryBinaryPayload(),
+          );
+        } else {
+          frame = buildSendTelemetryReq(widget.contact.publicKey);
+        }
       }
       await connector.sendFrame(frame);
     } catch (e) {
@@ -353,12 +383,13 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
         centerTitle: true,
         bottom: const SyncProgressAppBarBottom(),
         actions: [
-          IconButton(
-            icon: Icon(isFloodMode ? Icons.waves : Icons.route),
-            tooltip: l10n.repeater_routingMode,
-            onPressed: () =>
-                ContactRoutingSheet.show(context, contact: widget.contact),
-          ),
+          if (!widget.isSelf)
+            IconButton(
+              icon: Icon(isFloodMode ? Icons.waves : Icons.route),
+              tooltip: l10n.repeater_routingMode,
+              onPressed: () =>
+                  ContactRoutingSheet.show(context, contact: widget.contact),
+            ),
           IconButton(
             icon: _isLoading
                 ? const SizedBox(

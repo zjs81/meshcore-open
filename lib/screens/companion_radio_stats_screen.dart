@@ -1,6 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:meshcore_open/connector/meshcore_connector.dart';
+import 'package:meshcore_open/connector/meshcore_protocol.dart';
 import 'package:meshcore_open/models/companion_radio_stats.dart';
+import 'package:meshcore_open/models/contact.dart';
+import 'package:meshcore_open/screens/telemetry_screen.dart';
 import 'package:meshcore_open/l10n/l10n.dart';
 import 'package:meshcore_open/theme/mesh_theme.dart';
 import 'package:meshcore_open/widgets/mesh_ui.dart';
@@ -77,6 +82,35 @@ class _CompanionRadioStatsScreenState extends State<CompanionRadioStatsScreen> {
       appBar: AppBar(
         title: Text(l10n.radioStats_screenTitle),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.thermostat),
+            tooltip: l10n.contact_telemetry,
+            onPressed: () {
+              final connector = Provider.of<MeshCoreConnector>(
+                context,
+                listen: false,
+              );
+              final selfKey = connector.selfPublicKey;
+              if (selfKey == null || selfKey.isEmpty) return;
+              final selfContact = Contact(
+                publicKey: selfKey,
+                name: connector.selfName ?? '',
+                type: advTypeChat,
+                pathLength: 0,
+                path: Uint8List(0),
+                lastSeen: DateTime.now(),
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      TelemetryScreen(contact: selfContact, isSelf: true),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Selector<MeshCoreConnector, ({bool connected, bool supported})>(
         selector: (_, c) => (
