@@ -19,6 +19,7 @@ import 'app_settings_screen.dart';
 import 'app_debug_log_screen.dart';
 import 'ble_debug_log_screen.dart';
 import '../widgets/radio_stats_entry.dart';
+import 'telemetry_screen.dart';
 import '../widgets/sync_progress_overlay.dart';
 import 'region_management_screen.dart';
 
@@ -466,6 +467,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           subtitle: l10n.radioStats_settingsSubtitle,
           onTap: connector.isConnected && connector.supportsCompanionRadioStats
               ? () => pushCompanionRadioStatsScreen(context)
+              : null,
+        ),
+        const Divider(height: 1, indent: 16),
+        _tappableTile(
+          context,
+          icon: Icons.thermostat_outlined,
+          title: l10n.contact_telemetry,
+          subtitle: l10n.repeater_telemetrySubtitle,
+          onTap: connector.isConnected
+              ? () => pushSelfTelemetryScreen(context)
               : null,
         ),
         const Divider(height: 1, indent: 16),

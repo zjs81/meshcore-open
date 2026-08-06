@@ -22,11 +22,36 @@ import '../widgets/telemetry_location_map.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/mesh_ui.dart';
 
+/// Opens the telemetry screen for the locally connected node.
+void pushSelfTelemetryScreen(BuildContext context) {
+  final connector = Provider.of<MeshCoreConnector>(context, listen: false);
+  final selfKey = connector.selfPublicKey;
+  if (selfKey == null || selfKey.isEmpty) return;
+  final selfContact = Contact(
+    publicKey: selfKey,
+    name: connector.selfName ?? '',
+    type: advTypeChat,
+    pathLength: 0,
+    path: Uint8List(0),
+    lastSeen: DateTime.now(),
+  );
+  Navigator.push(
+    context,
+    MaterialPageRoute<void>(
+      builder: (context) => TelemetryScreen(contact: selfContact, isSelf: true),
+    ),
+  );
+}
+
 class TelemetryScreen extends StatefulWidget {
   final Contact contact;
   final bool isSelf;
 
-  const TelemetryScreen({super.key, required this.contact, this.isSelf = false});
+  const TelemetryScreen({
+    super.key,
+    required this.contact,
+    this.isSelf = false,
+  });
 
   @override
   State<TelemetryScreen> createState() => _TelemetryScreenState();
@@ -526,7 +551,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
           _temperatureText(value, isImperialUnits),
         );
       case 'humidity':
-        return _TelemetryFieldDisplay(l10n.telemetry_humidityLabel, text);
+        return _TelemetryFieldDisplay(l10n.telemetry_humidityLabel, '$text%');
       case 'accelerometer':
         return _TelemetryFieldDisplay(
           l10n.telemetry_accelerometerLabel,
