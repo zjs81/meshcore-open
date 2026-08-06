@@ -643,7 +643,6 @@ void main() {
         expect(contacts.first.path, equals(Uint8List.fromList([0x11, 0x22])));
       },
     );
-
   });
 
   group('AppSettingsService — gps interval fallback', () {
