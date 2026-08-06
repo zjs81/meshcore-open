@@ -1007,6 +1007,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get contacts_noContactsFound => '連絡先またはグループは見つかりませんでした。';
 
   @override
+  String get contacts_storageFull =>
+      'Contact storage on the node is full. New nodes cannot be added until contacts are removed.';
+
+  @override
   String get contacts_deleteContact => '連絡先を削除';
 
   @override

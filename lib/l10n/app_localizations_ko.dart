@@ -1010,6 +1010,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get contacts_noContactsFound => '연락처 또는 그룹이 검색되지 않았습니다.';
 
   @override
+  String get contacts_storageFull =>
+      'Contact storage on the node is full. New nodes cannot be added until contacts are removed.';
+
+  @override
   String get contacts_deleteContact => '연락처 삭제';
 
   @override

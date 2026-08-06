@@ -1074,6 +1074,10 @@ class AppLocalizationsPl extends AppLocalizations {
       'Brak znalezionych kontaktów ani grup.';
 
   @override
+  String get contacts_storageFull =>
+      'Contact storage on the node is full. New nodes cannot be added until contacts are removed.';
+
+  @override
   String get contacts_deleteContact => 'Usuń Kontakt';
 
   @override
