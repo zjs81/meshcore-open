@@ -16,6 +16,7 @@ import '../helpers/chat_scroll_controller.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/cyr2lat.dart';
 import '../helpers/gif_helper.dart';
+import '../helpers/message_image_helper.dart';
 import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../helpers/snack_bar_builder.dart';
@@ -657,29 +658,77 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                             ],
                           )
                         else
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Flexible(
-                                child: TranslatedMessageContent(
-                                  displayText: translatedDisplayText,
-                                  originalText: originalDisplayText,
-                                  style: TextStyle(
-                                    color: textColor,
-                                    fontSize: bodyFontSize * textScale,
+                          FutureBuilder<String?>(
+                            future: MessageImageHelper.parseVerified(
+                              message.text,
+                            ),
+                            builder: (context, snapshot) {
+                              final imageAttachment = snapshot.data;
+
+                              if (imageAttachment != null) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 4,
+                                      ),
+                                      child: MessageImagePreview(
+                                        imageUrl: imageAttachment,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8),
+                                      child: TranslatedMessageContent(
+                                        displayText: translatedDisplayText,
+                                        originalText: originalDisplayText,
+                                        style: TextStyle(
+                                          color: textColor,
+                                          fontSize: bodyFontSize * textScale,
+                                        ),
+                                        originalStyle: TextStyle(
+                                          fontSize: bodyFontSize * textScale,
+                                          fontStyle: FontStyle.italic,
+                                          color: textColor.withValues(
+                                            alpha: 0.72,
+                                          ),
+                                        ),
+                                        onSecondaryTap: PlatformInfo.isDesktop
+                                            ? () => _showMessageActions(message)
+                                            : null,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+
+                              return Row(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Flexible(
+                                    child: TranslatedMessageContent(
+                                      displayText: translatedDisplayText,
+                                      originalText: originalDisplayText,
+                                      style: TextStyle(
+                                        color: textColor,
+                                        fontSize: bodyFontSize * textScale,
+                                      ),
+                                      originalStyle: TextStyle(
+                                        fontSize: bodyFontSize * textScale,
+                                        fontStyle: FontStyle.italic,
+                                        color: textColor.withValues(
+                                          alpha: 0.72,
+                                        ),
+                                      ),
+                                      onSecondaryTap: PlatformInfo.isDesktop
+                                          ? () => _showMessageActions(message)
+                                          : null,
+                                    ),
                                   ),
-                                  originalStyle: TextStyle(
-                                    fontSize: bodyFontSize * textScale,
-                                    fontStyle: FontStyle.italic,
-                                    color: textColor.withValues(alpha: 0.72),
-                                  ),
-                                  onSecondaryTap: PlatformInfo.isDesktop
-                                      ? () => _showMessageActions(message)
-                                      : null,
-                                ),
-                              ),
-                            ],
+                                ],
+                              );
+                            },
                           ),
                         if (enableTracing && displayPath.isNotEmpty) ...[
                           const SizedBox(height: 3),
@@ -700,9 +749,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                   child: Text(
                                     context.l10n.channels_via(
                                       _formatPathPrefixes(
-                                      displayPath,
-                                      displayPathHashWidth,
-                                    ),
+                                        displayPath,
+                                        displayPathHashWidth,
+                                      ),
                                     ),
                                     style: MeshTheme.mono(
                                       fontSize: 9.5 * textScale,
@@ -1214,25 +1263,19 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                           decoration: InputDecoration(
                             hintText: context.l10n.chat_typeMessage,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                MeshRadii.md,
-                              ),
+                              borderRadius: BorderRadius.circular(MeshRadii.md),
                               borderSide: BorderSide(
                                 color: scheme.outlineVariant,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                MeshRadii.md,
-                              ),
+                              borderRadius: BorderRadius.circular(MeshRadii.md),
                               borderSide: BorderSide(
                                 color: scheme.outlineVariant,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                MeshRadii.md,
-                              ),
+                              borderRadius: BorderRadius.circular(MeshRadii.md),
                               borderSide: BorderSide(
                                 color: scheme.primary,
                                 width: 1.5,

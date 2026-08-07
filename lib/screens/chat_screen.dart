@@ -12,6 +12,7 @@ import '../utils/platform_info.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/cyr2lat.dart';
+import '../helpers/message_image_helper.dart';
 import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../widgets/message_status_icon.dart';
@@ -1441,28 +1442,76 @@ class _MessageBubble extends StatelessWidget {
                               ],
                             )
                           else
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Flexible(
-                                  child: TranslatedMessageContent(
-                                    displayText: translatedDisplayText,
-                                    originalText: originalDisplayText,
-                                    style: TextStyle(
-                                      color: textColor,
-                                      fontSize: bodyFontSize * textScale,
+                            FutureBuilder<String?>(
+                              future: MessageImageHelper.parseVerified(
+                                message.text,
+                              ),
+                              builder: (context, snapshot) {
+                                final imageAttachment = snapshot.data;
+
+                                if (imageAttachment != null) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                        ),
+                                        child: MessageImagePreview(
+                                          imageUrl: imageAttachment,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8),
+                                        child: TranslatedMessageContent(
+                                          displayText: translatedDisplayText,
+                                          originalText: originalDisplayText,
+                                          style: TextStyle(
+                                            color: textColor,
+                                            fontSize: bodyFontSize * textScale,
+                                          ),
+                                          originalStyle: TextStyle(
+                                            color: textColor.withValues(
+                                              alpha: 0.72,
+                                            ),
+                                            fontSize: bodyFontSize * textScale,
+                                          ),
+                                          onSecondaryTap: PlatformInfo.isDesktop
+                                              ? onLongPress
+                                              : null,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+
+                                return Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Flexible(
+                                      child: TranslatedMessageContent(
+                                        displayText: translatedDisplayText,
+                                        originalText: originalDisplayText,
+                                        style: TextStyle(
+                                          color: textColor,
+                                          fontSize: bodyFontSize * textScale,
+                                        ),
+                                        originalStyle: TextStyle(
+                                          color: textColor.withValues(
+                                            alpha: 0.72,
+                                          ),
+                                          fontSize: bodyFontSize * textScale,
+                                        ),
+                                        onSecondaryTap: PlatformInfo.isDesktop
+                                            ? onLongPress
+                                            : null,
+                                      ),
                                     ),
-                                    originalStyle: TextStyle(
-                                      color: textColor.withValues(alpha: 0.72),
-                                      fontSize: bodyFontSize * textScale,
-                                    ),
-                                    onSecondaryTap: PlatformInfo.isDesktop
-                                        ? onLongPress
-                                        : null,
-                                  ),
-                                ),
-                              ],
+                                  ],
+                                );
+                              },
                             ),
                           if (enableTracing &&
                               isOutgoing &&

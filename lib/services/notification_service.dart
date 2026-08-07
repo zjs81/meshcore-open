@@ -3,7 +3,9 @@ import 'dart:ui';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
+import '../helpers/message_image_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/platform_info.dart';
@@ -196,6 +198,21 @@ class NotificationService {
     return text;
   }
 
+  Future<String?> _resolveNotificationImagePath(String text) async {
+    final imageUrl = await MessageImageHelper.parseVerified(text);
+    if (imageUrl == null) return null;
+
+    try {
+      // Cache the image so notification platforms can read it from disk.
+      final imageFile = await DefaultCacheManager().getSingleFile(imageUrl);
+      if (!imageFile.existsSync()) return null;
+      return imageFile.path;
+    } catch (e) {
+      debugPrint('Failed to resolve notification image: $e');
+      return null;
+    }
+  }
+
   Future<void> _showMessageNotificationImpl({
     required String contactName,
     required String message,
@@ -203,6 +220,8 @@ class NotificationService {
     int? badgeCount,
   }) async {
     if (!await _ensureCanNotify()) return;
+
+    final imagePath = await _resolveNotificationImagePath(message);
 
     final androidDetails = AndroidNotificationDetails(
       'messages',
@@ -212,6 +231,12 @@ class NotificationService {
       priority: Priority.high,
       icon: '@mipmap/ic_launcher',
       number: badgeCount,
+      styleInformation: imagePath != null
+          ? BigPictureStyleInformation(
+              FilePathAndroidBitmap(imagePath),
+              summaryText: formatNotificationText(message),
+            )
+          : null,
     );
 
     final iosDetails = DarwinNotificationDetails(
@@ -219,6 +244,11 @@ class NotificationService {
       presentBadge: true,
       presentSound: true,
       badgeNumber: badgeCount,
+      attachments: imagePath != null
+          ? <DarwinNotificationAttachment>[
+              DarwinNotificationAttachment(imagePath),
+            ]
+          : null,
     );
 
     final macDetails = DarwinNotificationDetails(
@@ -226,6 +256,11 @@ class NotificationService {
       presentBadge: true,
       presentSound: true,
       badgeNumber: badgeCount,
+      attachments: imagePath != null
+          ? <DarwinNotificationAttachment>[
+              DarwinNotificationAttachment(imagePath),
+            ]
+          : null,
     );
 
     final notificationDetails = NotificationDetails(
@@ -304,6 +339,8 @@ class NotificationService {
   }) async {
     if (!await _ensureCanNotify()) return;
 
+    final imagePath = await _resolveNotificationImagePath(message);
+
     final androidDetails = AndroidNotificationDetails(
       'channel_messages',
       'Channel Messages',
@@ -312,6 +349,12 @@ class NotificationService {
       priority: Priority.high,
       icon: '@mipmap/ic_launcher',
       number: badgeCount,
+      styleInformation: imagePath != null
+          ? BigPictureStyleInformation(
+              FilePathAndroidBitmap(imagePath),
+              summaryText: formatNotificationText(message),
+            )
+          : null,
     );
 
     final iosDetails = DarwinNotificationDetails(
@@ -319,6 +362,11 @@ class NotificationService {
       presentBadge: true,
       presentSound: true,
       badgeNumber: badgeCount,
+      attachments: imagePath != null
+          ? <DarwinNotificationAttachment>[
+              DarwinNotificationAttachment(imagePath),
+            ]
+          : null,
     );
 
     final macDetails = DarwinNotificationDetails(
@@ -326,6 +374,11 @@ class NotificationService {
       presentBadge: true,
       presentSound: true,
       badgeNumber: badgeCount,
+      attachments: imagePath != null
+          ? <DarwinNotificationAttachment>[
+              DarwinNotificationAttachment(imagePath),
+            ]
+          : null,
     );
 
     final notificationDetails = NotificationDetails(
