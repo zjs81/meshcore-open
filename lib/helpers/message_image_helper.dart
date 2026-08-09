@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:http/http.dart' as http;
 
 class MessageImageHelper {
   static final Map<String, Future<bool>> _verifiedImageCache =
@@ -22,47 +23,86 @@ class MessageImageHelper {
     caseSensitive: false,
   );
 
+  static final RegExp _ibbSharePattern = RegExp(
+    r'''https?://(?:www\.)?ibb\.co/[^\s<>'"`/?#]+(?:[/?#][^\s<>'"`]*)?''',
+    caseSensitive: false,
+  );
+
   static final RegExp _imagePattern = RegExp(
     r'''https?://[^\s<>'"`]+?\.(?:png|jpe?g|webp)(?:\?[^\s<>'"`]+)?(?:#[^\s<>'"`]+)?''',
     caseSensitive: false,
   );
 
-  static String? parse(String text) {
+  static Future<String?> parse(String text) async {
     final trimmed = text.trim();
     if (trimmed.isEmpty) return null;
-    String? imageUrl;
 
     final pyxMatch = _pyxPattern.firstMatch(trimmed);
     if (pyxMatch != null) {
-      final id = _trimBoundary(pyxMatch.group(1)!);
-      imageUrl = 'https://pyx.li/i/$id.jpg';
+      return _extractFromUrl(
+        _trimBoundary(pyxMatch.group(0)!),
+        RegExp(r'''<img[^>]+src=["']([^"']+)["']''', caseSensitive: false),
+      );
     }
 
     final ipfsUrlMatch = _ipfsUrlPattern.firstMatch(trimmed);
     if (ipfsUrlMatch != null) {
-      imageUrl = _trimBoundary(ipfsUrlMatch.group(0)!);
+      return _trimBoundary(ipfsUrlMatch.group(0)!);
     }
 
     final ipfsCidMatch = _ipfsCidPattern.firstMatch(trimmed);
     if (ipfsCidMatch != null) {
       final cid = _trimBoundary(ipfsCidMatch.group(1)!);
-      imageUrl = 'https://ipfs.io/ipfs/$cid';
+      return 'https://ipfs.io/ipfs/$cid';
+    }
+
+    final ibbMatch = _ibbSharePattern.firstMatch(trimmed);
+    if (ibbMatch != null) {
+      return _extractFromUrl(
+        _trimBoundary(ibbMatch.group(0)!),
+        RegExp(
+          r'''<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']''',
+          caseSensitive: false,
+        ),
+      );
     }
 
     final imageMatch = _imagePattern.firstMatch(trimmed);
     if (imageMatch != null) {
-      imageUrl = _trimBoundary(imageMatch.group(0)!);
+      return _trimBoundary(imageMatch.group(0)!);
     }
 
-    return imageUrl;
+    return null;
   }
 
   static Future<String?> parseVerified(String text) async {
-    final imageUrl = parse(text);
+    final imageUrl = await parse(text);
     if (imageUrl == null) return null;
 
     final verified = await _verifyImageUrl(imageUrl);
     return verified ? imageUrl : null;
+  }
+
+  static Future<String?> _extractFromUrl(String pageUrl, RegExp pattern) async {
+    try {
+      final response = await http
+          .get(Uri.parse(pageUrl))
+          .timeout(const Duration(seconds: 8));
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        return null;
+      }
+      final value = pattern.firstMatch(response.body)?.group(1);
+      if (value == null || value.isEmpty) return null;
+
+      final imageUrl = Uri.parse(
+        pageUrl,
+      ).resolve(value.replaceAll('&amp;', '&'));
+      return imageUrl.scheme == 'http' || imageUrl.scheme == 'https'
+          ? imageUrl.toString()
+          : null;
+    } catch (_) {
+      return null;
+    }
   }
 
   static String _trimBoundary(String value) {
