@@ -271,6 +271,7 @@ class MeshCoreConnector extends ChangeNotifier {
   bool _batteryRequested = false;
   bool _awaitingSelfInfo = false;
   bool _hasReceivedDeviceInfo = false;
+  bool _contactsFull = false;
   // Initial sync is serialized for predictable progress. Firmware exposes one
   // FIFO queued-message stream, so direct/room frames are buffered until after
   // contacts are known.
@@ -459,6 +460,7 @@ class MeshCoreConnector extends ChangeNotifier {
   Uint8List? get selfPublicKey => _selfPublicKey;
   String get selfPublicKeyHex => pubKeyToHex(_selfPublicKey ?? Uint8List(0));
   String? get selfName => _selfName;
+  bool get contactsFull => _contactsFull;
   double? get selfLatitude => _selfLatitude;
   double? get selfLongitude => _selfLongitude;
   List<DirectRepeater> get directRepeaters => _directRepeaters;
@@ -2290,6 +2292,7 @@ class MeshCoreConnector extends ChangeNotifier {
       _setState(MeshCoreConnectionState.connected);
       if (_shouldGateInitialChannelSync) {
         _hasReceivedDeviceInfo = false;
+        _contactsFull = false;
         _pendingInitialChannelSync = true;
       }
       await _startBleInitialSync();
@@ -2581,6 +2584,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _selfInfoRetryTimer?.cancel();
     _selfInfoRetryTimer = null;
     _hasReceivedDeviceInfo = false;
+    _contactsFull = false;
     _resetSyncProgressState();
     _bleInitialSyncStarted = false;
     _pathHashByteWidth = 1;
@@ -2752,6 +2756,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _batteryRequested = false;
     _awaitingSelfInfo = false;
     _hasReceivedDeviceInfo = false;
+    _contactsFull = false;
     _maxContacts = _defaultMaxContacts;
     _maxChannels = _defaultMaxChannels;
     _resetSyncProgressState();
@@ -4183,6 +4188,11 @@ class MeshCoreConnector extends ChangeNotifier {
       case pushCodeAdvert:
         // Known contact was seen again - just a pub key, no action needed
         break;
+      case pushCodeContactsFull:
+        debugPrint('Got CONTACTS_FULL');
+        _contactsFull = true;
+        notifyListeners();
+        break;
       case pushCodeNewAdvert:
         debugPrint('Got New CONTACT');
         // It's the same format as respCodeContact, so we can reuse the handler
@@ -4195,6 +4205,9 @@ class MeshCoreConnector extends ChangeNotifier {
       case respCodeEndOfContacts:
         debugPrint('Got END_OF_CONTACTS');
         _isLoadingContacts = false;
+        if (_contactsFull && _contacts.length < _maxContacts) {
+          _contactsFull = false; // capacity freed up since the warning
+        }
         _hasLoadedContacts = true;
         _preserveContactsOnRefresh = false;
         _contactSyncUsesSinceFilter = false;
@@ -6559,6 +6572,7 @@ class MeshCoreConnector extends ChangeNotifier {
     // Preserve deviceId and displayName for UI display during reconnection
     // They're only cleared on manual disconnect via disconnect() method
     _hasReceivedDeviceInfo = false;
+    _contactsFull = false;
     _maxContacts = _defaultMaxContacts;
     _maxChannels = _defaultMaxChannels;
     _resetSyncProgressState();

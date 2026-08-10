@@ -464,6 +464,7 @@
   },
   "contacts_noUnreadContacts": "No unread contacts",
   "contacts_noContactsFound": "No contacts or groups found",
+  "contacts_storageFull": "Contact storage on the node is full. New nodes cannot be added until contacts are removed.",
   "contacts_deleteContact": "Delete Contact",
   "contacts_removeConfirm": "Remove {contactName} from contacts?",
   "@contacts_removeConfirm": {

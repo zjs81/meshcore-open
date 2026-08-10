@@ -2008,6 +2008,12 @@ abstract class AppLocalizations {
   /// **'No contacts or groups found'**
   String get contacts_noContactsFound;
 
+  /// No description provided for @contacts_storageFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact storage on the node is full. New nodes cannot be added until contacts are removed.'**
+  String get contacts_storageFull;
+
   /// No description provided for @contacts_deleteContact.
   ///
   /// In en, this message translates to:

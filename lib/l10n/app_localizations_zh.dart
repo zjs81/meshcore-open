@@ -996,6 +996,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get contacts_noContactsFound => '未找到任何联系人或群聊';
 
   @override
+  String get contacts_storageFull =>
+      'Contact storage on the node is full. New nodes cannot be added until contacts are removed.';
+
+  @override
   String get contacts_deleteContact => '删除联系人';
 
   @override

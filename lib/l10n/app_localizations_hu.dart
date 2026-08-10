@@ -1061,6 +1061,10 @@ class AppLocalizationsHu extends AppLocalizations {
   String get contacts_noContactsFound => 'Nem található névjegy vagy csoport';
 
   @override
+  String get contacts_storageFull =>
+      'Contact storage on the node is full. New nodes cannot be added until contacts are removed.';
+
+  @override
   String get contacts_deleteContact => 'Névjegy törlése';
 
   @override

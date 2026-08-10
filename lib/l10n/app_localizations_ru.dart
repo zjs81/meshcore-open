@@ -1068,6 +1068,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get contacts_noContactsFound => 'Контакты или группы не найдены';
 
   @override
+  String get contacts_storageFull =>
+      'Contact storage on the node is full. New nodes cannot be added until contacts are removed.';
+
+  @override
   String get contacts_deleteContact => 'Удалить контакт';
 
   @override
