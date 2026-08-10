@@ -111,6 +111,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get messageStatus_repeated => '반복 수신됨';
 
   @override
+  String get messageImage_enable => 'Enable Images';
+
+  @override
+  String get messageImage_possible => 'Possible Image, enable in Settings.';
+
+  @override
   String get common_reboot => '재부팅';
 
   @override

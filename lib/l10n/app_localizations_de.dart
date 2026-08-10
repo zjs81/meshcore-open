@@ -111,6 +111,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get messageStatus_repeated => 'Mehrfach gehört';
 
   @override
+  String get messageImage_enable => 'Erlaube Bilder';
+
+  @override
+  String get messageImage_possible =>
+      'Mögliches Bild, erlaube in Einstellungen.';
+
+  @override
   String get common_reboot => 'Neustart';
 
   @override

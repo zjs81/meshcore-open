@@ -393,6 +393,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
                   // Reverse messages so newest appear at bottom with reverse: true
                   final reversedMessages = messages.reversed.toList();
+                  final imagesEnabled = connector.isChannelImagesEnabled(
+                    widget.channel.index,
+                  );
                   final itemCount =
                       reversedMessages.length + (_isLoadingOlder ? 1 : 0);
 
@@ -473,6 +476,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                   final bubble = _buildMessageBubble(
                                     message,
                                     textScale,
+                                    imagesEnabled,
                                   );
                                   if (isUnreadAnchor) {
                                     return Column(
@@ -512,7 +516,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     connector.setChannelUnreadCount(widget.channel.index, count);
   }
 
-  Widget _buildMessageBubble(ChannelMessage message, double textScale) {
+  Widget _buildMessageBubble(
+    ChannelMessage message,
+    double textScale,
+    bool imagesEnabled,
+  ) {
     final settingsService = context.watch<AppSettingsService>();
     final enableTracing = settingsService.settings.enableMessageTracing;
     final isOutgoing = message.isOutgoing;
@@ -551,6 +559,33 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final textColor = isOutgoing ? MeshPalette.meInk : scheme.onSurface;
     final metaColor = textColor.withValues(alpha: 0.65);
     const bodyFontSize = 14.0;
+
+    Widget buildTextContent() {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Flexible(
+            child: TranslatedMessageContent(
+              displayText: translatedDisplayText,
+              originalText: originalDisplayText,
+              style: TextStyle(
+                color: textColor,
+                fontSize: bodyFontSize * textScale,
+              ),
+              originalStyle: TextStyle(
+                fontSize: bodyFontSize * textScale,
+                fontStyle: FontStyle.italic,
+                color: textColor.withValues(alpha: 0.72),
+              ),
+              onSecondaryTap: PlatformInfo.isDesktop
+                  ? () => _showMessageActions(message)
+                  : null,
+            ),
+          ),
+        ],
+      );
+    }
 
     // Asymmetric radius matching chat_screen bubbles.
     final borderRadius = isOutgoing
@@ -657,7 +692,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                               ),
                             ],
                           )
-                        else
+                        else if (imagesEnabled)
                           FutureBuilder<String?>(
                             future: MessageImageHelper.parseVerified(
                               message.text,
@@ -702,33 +737,28 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                 );
                               }
 
-                              return Row(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Flexible(
-                                    child: TranslatedMessageContent(
-                                      displayText: translatedDisplayText,
-                                      originalText: originalDisplayText,
-                                      style: TextStyle(
-                                        color: textColor,
-                                        fontSize: bodyFontSize * textScale,
-                                      ),
-                                      originalStyle: TextStyle(
-                                        fontSize: bodyFontSize * textScale,
-                                        fontStyle: FontStyle.italic,
-                                        color: textColor.withValues(
-                                          alpha: 0.72,
-                                        ),
-                                      ),
-                                      onSecondaryTap: PlatformInfo.isDesktop
-                                          ? () => _showMessageActions(message)
-                                          : null,
+                              return buildTextContent();
+                            },
+                          )
+                        else
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (MessageImageHelper.hasPotentialImageUrl(
+                                message.text,
+                              ))
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 4),
+                                  child: Text(
+                                    context.l10n.messageImage_possible,
+                                    style: TextStyle(
+                                      color: metaColor,
+                                      fontSize: 11 * textScale,
                                     ),
                                   ),
-                                ],
-                              );
-                            },
+                                ),
+                              buildTextContent(),
+                            ],
                           ),
                         if (enableTracing && displayPath.isNotEmpty) ...[
                           const SizedBox(height: 3),

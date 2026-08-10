@@ -1,5 +1,7 @@
 {
   "bg": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -55,6 +57,8 @@
   ],
 
   "es": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -89,6 +93,8 @@
   ],
 
   "fr": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -123,6 +129,8 @@
   ],
 
   "hu": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -157,6 +165,8 @@
   ],
 
   "it": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -191,6 +201,8 @@
   ],
 
   "ja": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -225,6 +237,8 @@
   ],
 
   "ko": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -259,6 +273,8 @@
   ],
 
   "nl": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -293,6 +309,8 @@
   ],
 
   "pl": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -327,6 +345,8 @@
   ],
 
   "pt": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -361,6 +381,8 @@
   ],
 
   "ru": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -395,6 +417,8 @@
   ],
 
   "sk": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -429,6 +453,8 @@
   ],
 
   "sl": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -463,6 +489,8 @@
   ],
 
   "sv": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -497,6 +525,8 @@
   ],
 
   "uk": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",
@@ -531,6 +561,8 @@
   ],
 
   "zh": [
+    "messageImage_enable",
+    "messageImage_possible",
     "settings_regionSettings",
     "settings_regionSettingsSubtitle",
     "settings_regionManagement_screenTitle",

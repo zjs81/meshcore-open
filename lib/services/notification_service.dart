@@ -198,7 +198,12 @@ class NotificationService {
     return text;
   }
 
-  Future<String?> _resolveNotificationImagePath(String text) async {
+  Future<String?> _resolveNotificationImagePath(
+    String text, {
+    required bool imagesEnabled,
+  }) async {
+    if (!imagesEnabled) return null;
+
     final imageUrl = await MessageImageHelper.parseVerified(text);
     if (imageUrl == null) return null;
 
@@ -216,12 +221,16 @@ class NotificationService {
   Future<void> _showMessageNotificationImpl({
     required String contactName,
     required String message,
+    required bool imagesEnabled,
     String? contactId,
     int? badgeCount,
   }) async {
     if (!await _ensureCanNotify()) return;
 
-    final imagePath = await _resolveNotificationImagePath(message);
+    final imagePath = await _resolveNotificationImagePath(
+      message,
+      imagesEnabled: imagesEnabled,
+    );
 
     final androidDetails = AndroidNotificationDetails(
       'messages',
@@ -334,12 +343,16 @@ class NotificationService {
   Future<void> _showChannelMessageNotificationImpl({
     required String channelName,
     required String message,
+    required bool imagesEnabled,
     int? channelIndex,
     int? badgeCount,
   }) async {
     if (!await _ensureCanNotify()) return;
 
-    final imagePath = await _resolveNotificationImagePath(message);
+    final imagePath = await _resolveNotificationImagePath(
+      message,
+      imagesEnabled: imagesEnabled,
+    );
 
     final androidDetails = AndroidNotificationDetails(
       'channel_messages',
@@ -501,6 +514,7 @@ class NotificationService {
   Future<void> showMessageNotification({
     required String contactName,
     required String message,
+    required bool imagesEnabled,
     String? contactId,
     int? badgeCount,
   }) async {
@@ -511,6 +525,7 @@ class NotificationService {
         type: _NotificationType.message,
         title: contactName,
         body: message,
+        imagesEnabled: imagesEnabled,
         id: contactId,
         badgeCount: badgeCount,
       ),
@@ -538,6 +553,7 @@ class NotificationService {
     required String channelName,
     required String senderName,
     required String message,
+    required bool imagesEnabled,
     int? channelIndex,
     int? badgeCount,
   }) async {
@@ -548,6 +564,7 @@ class NotificationService {
         type: _NotificationType.channelMessage,
         title: channelName,
         body: '$senderName: $message',
+        imagesEnabled: imagesEnabled,
         id: channelIndex?.toString(),
         badgeCount: badgeCount,
       ),
@@ -609,6 +626,7 @@ class NotificationService {
           await _showMessageNotificationImpl(
             contactName: notification.title,
             message: notification.body,
+            imagesEnabled: notification.imagesEnabled,
             contactId: notification.id,
             badgeCount: notification.badgeCount,
           );
@@ -624,6 +642,7 @@ class NotificationService {
           await _showChannelMessageNotificationImpl(
             channelName: notification.title,
             message: notification.body,
+            imagesEnabled: notification.imagesEnabled,
             channelIndex: int.tryParse(notification.id ?? ''),
             badgeCount: notification.badgeCount,
           );
@@ -700,6 +719,7 @@ class _PendingNotification {
   final _NotificationType type;
   final String title;
   final String body;
+  final bool imagesEnabled;
   final String? id;
   final int? badgeCount;
 
@@ -707,6 +727,7 @@ class _PendingNotification {
     required this.type,
     required this.title,
     required this.body,
+    this.imagesEnabled = false,
     this.id,
     this.badgeCount,
   });

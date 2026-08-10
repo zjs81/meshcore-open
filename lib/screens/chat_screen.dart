@@ -868,6 +868,7 @@ class _ChatScreenState extends State<ChatScreen> {
     bool cyr2latEnabled = connector.isContactCyr2LatEnabled(
       contact.publicKeyHex,
     );
+    bool imagesEnabled = connector.isContactImagesEnabled(contact.publicKeyHex);
     String? selectedCyr2LatProfileId = connector.getContactCyr2LatProfileId(
       contact.publicKeyHex,
     );
@@ -966,6 +967,19 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                 ],
+                const Divider(height: 8),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(context.l10n.messageImage_enable),
+                  value: imagesEnabled,
+                  onChanged: (value) {
+                    connector.setContactImagesEnabled(
+                      contact.publicKeyHex,
+                      value,
+                    );
+                    setDialogState(() => imagesEnabled = value);
+                  },
+                ),
                 const Divider(height: 8),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
@@ -1307,6 +1321,9 @@ class _MessageBubble extends StatelessWidget {
     final gifId = GifHelper.parseGif(message.text);
     final poi = parseMarkerText(message.text);
     final isFailed = message.status == MessageStatus.failed;
+    final imagesEnabled = context.select<MeshCoreConnector, bool>(
+      (connector) => connector.isContactImagesEnabled(sourceId),
+    );
 
     // Bubble colors — outgoing uses MeshPalette.me / meBorder / meInk.
     final bubbleColor = isFailed
@@ -1353,6 +1370,30 @@ class _MessageBubble extends StatelessWidget {
     final originalDisplayText = isOutgoing
         ? message.originalText
         : (translatedDisplayText != messageText ? messageText : null);
+
+    Widget buildTextContent() {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Flexible(
+            child: TranslatedMessageContent(
+              displayText: translatedDisplayText,
+              originalText: originalDisplayText,
+              style: TextStyle(
+                color: textColor,
+                fontSize: bodyFontSize * textScale,
+              ),
+              originalStyle: TextStyle(
+                color: textColor.withValues(alpha: 0.72),
+                fontSize: bodyFontSize * textScale,
+              ),
+              onSecondaryTap: PlatformInfo.isDesktop ? onLongPress : null,
+            ),
+          ),
+        ],
+      );
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
@@ -1441,7 +1482,7 @@ class _MessageBubble extends StatelessWidget {
                                 ),
                               ],
                             )
-                          else
+                          else if (imagesEnabled)
                             FutureBuilder<String?>(
                               future: MessageImageHelper.parseVerified(
                                 message.text,
@@ -1486,32 +1527,28 @@ class _MessageBubble extends StatelessWidget {
                                   );
                                 }
 
-                                return Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Flexible(
-                                      child: TranslatedMessageContent(
-                                        displayText: translatedDisplayText,
-                                        originalText: originalDisplayText,
-                                        style: TextStyle(
-                                          color: textColor,
-                                          fontSize: bodyFontSize * textScale,
-                                        ),
-                                        originalStyle: TextStyle(
-                                          color: textColor.withValues(
-                                            alpha: 0.72,
-                                          ),
-                                          fontSize: bodyFontSize * textScale,
-                                        ),
-                                        onSecondaryTap: PlatformInfo.isDesktop
-                                            ? onLongPress
-                                            : null,
+                                return buildTextContent();
+                              },
+                            )
+                          else
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (MessageImageHelper.hasPotentialImageUrl(
+                                  message.text,
+                                ))
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: Text(
+                                      context.l10n.messageImage_possible,
+                                      style: TextStyle(
+                                        color: metaColor,
+                                        fontSize: 11 * textScale,
                                       ),
                                     ),
-                                  ],
-                                );
-                              },
+                                  ),
+                                buildTextContent(),
+                              ],
                             ),
                           if (enableTracing &&
                               isOutgoing &&

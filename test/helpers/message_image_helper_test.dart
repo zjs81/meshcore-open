@@ -58,7 +58,15 @@ void main() {
       expect(await MessageImageHelper.parse('hello world'), isNull);
     });
 
-    test('returns null for non-image ipfs gateway url', () async {
+    test('detects supported image URLs without resolving them', () {
+      expect(
+        MessageImageHelper.hasPotentialImageUrl('https://pyx.li/?i=RzmdkTsE'),
+        isTrue,
+      );
+      expect(MessageImageHelper.hasPotentialImageUrl('hello world'), isFalse);
+    });
+
+    test('returns null for non-image ipfs gateway URL', () async {
       final attachment = await MessageImageHelper.parseVerified(
         'https://lime-famous-rat-748.mypinata.cloud/ipfs/bafybeih3jqv36rsxqx7yw3k3ixhganrevrk7xmcxgkr2zuzjegxdytb3nq',
       );

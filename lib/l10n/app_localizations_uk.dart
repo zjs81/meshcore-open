@@ -111,6 +111,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get messageStatus_repeated => 'Почув неодноразово';
 
   @override
+  String get messageImage_enable => 'Enable Images';
+
+  @override
+  String get messageImage_possible => 'Possible Image, enable in Settings.';
+
+  @override
   String get common_reboot => 'Перезавантажити';
 
   @override

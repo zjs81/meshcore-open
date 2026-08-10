@@ -33,6 +33,16 @@ class MessageImageHelper {
     caseSensitive: false,
   );
 
+  /// Checks locally whether [text] contains a URL format this helper supports.
+  /// This deliberately does not resolve sharing pages or fetch image data.
+  static bool hasPotentialImageUrl(String text) {
+    return _pyxPattern.hasMatch(text) ||
+        _ipfsUrlPattern.hasMatch(text) ||
+        _ipfsCidPattern.hasMatch(text) ||
+        _ibbSharePattern.hasMatch(text) ||
+        _imagePattern.hasMatch(text);
+  }
+
   static Future<String?> parse(String text) async {
     final trimmed = text.trim();
     if (trimmed.isEmpty) return null;

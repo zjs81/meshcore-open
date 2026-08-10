@@ -34,6 +34,8 @@
   "messageStatus_pending": "Sending",
   "messageStatus_failed": "Failed to send",
   "messageStatus_repeated": "Heard repeated",
+  "messageImage_enable": "Enable Images",
+  "messageImage_possible": "Possible Image, enable in Settings.",
   "common_reboot": "Reboot",
   "common_loading": "Loading...",
   "common_notAvailable": "—",

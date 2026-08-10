@@ -111,6 +111,12 @@ class AppLocalizationsNl extends AppLocalizations {
   String get messageStatus_repeated => 'Hearsay, herhaald';
 
   @override
+  String get messageImage_enable => 'Enable Images';
+
+  @override
+  String get messageImage_possible => 'Possible Image, enable in Settings.';
+
+  @override
   String get common_reboot => 'Herstarten';
 
   @override

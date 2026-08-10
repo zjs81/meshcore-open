@@ -1533,6 +1533,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     final pskController = TextEditingController(text: channel.pskHex);
     bool smazEnabled = connector.isChannelSmazEnabled(channel.index);
     bool cyr2latEnabled = connector.isChannelCyr2LatEnabled(channel.index);
+    bool imagesEnabled = connector.isChannelImagesEnabled(channel.index);
     String? selectedCyr2LatProfileId = connector.getChannelCyr2LatProfileId(
       channel.index,
     );
@@ -1635,6 +1636,13 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                         ),
                       ),
                     ],
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(sheetContext.l10n.messageImage_enable),
+                      value: imagesEnabled,
+                      onChanged: (value) =>
+                          setSheetState(() => imagesEnabled = value),
+                    ),
                     const SizedBox(height: 24),
                   ],
                 ),
@@ -1683,6 +1691,10 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                             await connector.setChannelCyr2LatEnabled(
                               channel.index,
                               cyr2latEnabled,
+                            );
+                            await connector.setChannelImagesEnabled(
+                              channel.index,
+                              imagesEnabled,
                             );
                             await connector.setChannelCyr2LatProfileId(
                               channel.index,

@@ -356,12 +356,14 @@ class MeshCoreConnector extends ChangeNotifier {
   List<Channel> _cachedChannels = [];
   final Map<int, bool> _channelSmazEnabled = {};
   final Map<int, bool> _channelCyr2LatEnabled = {};
+  final Map<int, bool> _channelImagesEnabled = {};
   final Map<int, String?> _channelCyr2LatProfileId = {};
   final Map<int, Region> _channelRegions = {};
   bool _lastSentWasCliCommand =
       false; // Track if last sent message was a CLI command
   final Map<String, bool> _contactSmazEnabled = {};
   final Map<String, bool> _contactCyr2LatEnabled = {};
+  final Map<String, bool> _contactImagesEnabled = {};
   final Map<String, String?> _contactCyr2LatProfileId = {};
   final Set<String> _knownContactKeys = {};
   final Map<String, int> _contactUnreadCount = {};
@@ -756,6 +758,15 @@ class MeshCoreConnector extends ChangeNotifier {
     return _contactSmazEnabled[contactKeyHex] ?? false;
   }
 
+  bool isChannelImagesEnabled(int channelIndex) {
+    return _channelImagesEnabled[channelIndex] ?? false;
+  }
+
+  bool isContactImagesEnabled(String contactKeyHex) {
+    _ensureContactImagesSettingLoaded(contactKeyHex);
+    return _contactImagesEnabled[contactKeyHex] ?? false;
+  }
+
   bool hasChannelRegion(int channelIndex) {
     return (_channelRegions[channelIndex] ?? '').isNotEmpty;
   }
@@ -895,6 +906,21 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> setContactSmazEnabled(String contactKeyHex, bool enabled) async {
     _contactSmazEnabled[contactKeyHex] = enabled;
     await _contactSettingsStore.saveSmazEnabled(contactKeyHex, enabled);
+    notifyListeners();
+  }
+
+  Future<void> setChannelImagesEnabled(int channelIndex, bool enabled) async {
+    _channelImagesEnabled[channelIndex] = enabled;
+    await _channelSettingsStore.saveImagesEnabled(channelIndex, enabled);
+    notifyListeners();
+  }
+
+  Future<void> setContactImagesEnabled(
+    String contactKeyHex,
+    bool enabled,
+  ) async {
+    _contactImagesEnabled[contactKeyHex] = enabled;
+    await _contactSettingsStore.saveImagesEnabled(contactKeyHex, enabled);
     notifyListeners();
   }
 
@@ -1070,6 +1096,7 @@ class MeshCoreConnector extends ChangeNotifier {
     for (final contact in cached) {
       _ensureContactSmazSettingLoaded(contact.publicKeyHex);
       _ensureContactCyr2LatSettingLoaded(contact.publicKeyHex);
+      _ensureContactImagesSettingLoaded(contact.publicKeyHex);
     }
   }
 
@@ -1090,12 +1117,16 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> loadChannelSettings({int? maxChannels}) async {
     _channelSmazEnabled.clear();
     _channelCyr2LatEnabled.clear();
+    _channelImagesEnabled.clear();
     _channelRegions.clear();
     final channelCount = maxChannels ?? _maxChannels;
     for (int i = 0; i < channelCount; i++) {
       _channelSmazEnabled[i] = await _channelSettingsStore.loadSmazEnabled(i);
       _channelCyr2LatEnabled[i] = await _channelSettingsStore
           .loadCyr2LatEnabled(i);
+      _channelImagesEnabled[i] = await _channelSettingsStore.loadImagesEnabled(
+        i,
+      );
       _channelRegions[i] = await _channelRegionStore.loadRegion(i);
     }
   }
@@ -5151,6 +5182,8 @@ class MeshCoreConnector extends ChangeNotifier {
               await _notificationService.showMessageNotification(
                 contactName: c?.name ?? 'Unknown',
                 message: resolvedText,
+                imagesEnabled:
+                    c != null && isContactImagesEnabled(c.publicKeyHex),
                 contactId: msg.senderKeyHex,
                 badgeCount: getTotalUnreadCount(),
               );
@@ -5165,6 +5198,8 @@ class MeshCoreConnector extends ChangeNotifier {
               await _notificationService.showMessageNotification(
                 contactName: c?.name ?? 'Unknown Room',
                 message: resolvedText,
+                imagesEnabled:
+                    c != null && isContactImagesEnabled(c.publicKeyHex),
                 contactId: msg.senderKeyHex,
                 badgeCount: getTotalUnreadCount(),
               );
@@ -5311,6 +5346,15 @@ class MeshCoreConnector extends ChangeNotifier {
     _contactSettingsStore.loadCyr2LatEnabled(contactKeyHex).then((enabled) {
       if (_contactCyr2LatEnabled[contactKeyHex] == enabled) return;
       _contactCyr2LatEnabled[contactKeyHex] = enabled;
+      notifyListeners();
+    });
+  }
+
+  void _ensureContactImagesSettingLoaded(String contactKeyHex) {
+    if (_contactImagesEnabled.containsKey(contactKeyHex)) return;
+    _contactSettingsStore.loadImagesEnabled(contactKeyHex).then((enabled) {
+      if (_contactImagesEnabled[contactKeyHex] == enabled) return;
+      _contactImagesEnabled[contactKeyHex] = enabled;
       notifyListeners();
     });
   }
@@ -5469,6 +5513,7 @@ class MeshCoreConnector extends ChangeNotifier {
         channelName: label,
         senderName: message.senderName,
         message: resolvedText,
+        imagesEnabled: isChannelImagesEnabled(channelIndex),
         channelIndex: message.channelIndex,
         badgeCount: getTotalUnreadCount(),
       );
