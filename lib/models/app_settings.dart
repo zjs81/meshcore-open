@@ -1,3 +1,4 @@
+import 'image_codec_support.dart';
 import 'translation_support.dart';
 
 enum UnitSystem { metric, imperial }
@@ -119,6 +120,29 @@ class AppSettings {
   final String tcpServerAddress;
   final int tcpServerPort;
   final bool jumpToOldestUnread;
+  final bool imageMessagesEnabled;
+
+  /// Whether a received image is decoded as soon as it is reassembled.
+  ///
+  /// Off by default and deliberately so: a decode peaks around 2.16 GiB
+  /// resident and takes about a second, so an unattended chat must not be able
+  /// to trigger one per arriving image. When false, `ReceivedImageStore` parks
+  /// the arrival as a "Tap to process" placeholder instead of queueing it.
+  final bool imageProcessAutomatically;
+
+  // ---- neural image codec (AEIC-SE) ---------------------------------------
+  // Structural twins of the translation block above; the JSON keys match
+  // ImageCodecPreferences.toJson so ImageCodecService reads them unchanged.
+  final bool imageCodecEnabled;
+  final String? imageCodecSelectedModelId;
+  final String? imageCodecModelSourceUrl;
+
+  /// [AeicRatePoint.wireValue] of the composer's default rate point.
+  /// 4 == ft32, the only rate point this build ships.
+  final int imageCodecRatePoint;
+
+  final List<ImageCodecModelRecord> imageCodecDownloadedModels;
+
   final bool translationEnabled;
   final bool autoTranslateIncomingMessages;
   final String? translationTargetLanguageCode;
@@ -128,6 +152,16 @@ class AppSettings {
   final List<TranslationModelRecord> translationDownloadedModels;
   final List<Cyr2LatProfile> cyr2latProfiles;
   final String selectedCyr2latProfileId;
+
+  /// The five `imageCodec*` fields as the value object `ImageCodecService`
+  /// consumes. Assembled rather than stored so the settings blob stays flat.
+  ImageCodecPreferences get imageCodec => ImageCodecPreferences(
+    enabled: imageCodecEnabled,
+    selectedModelId: imageCodecSelectedModelId,
+    modelSourceUrl: imageCodecModelSourceUrl,
+    ratePoint: imageCodecRatePoint,
+    downloadedModels: imageCodecDownloadedModels,
+  );
 
   String get effectiveMapTileApiKey {
     final apiKey = mapTileApiKey?.trim();
@@ -189,6 +223,13 @@ class AppSettings {
     this.tcpServerAddress = '',
     this.tcpServerPort = 0,
     this.jumpToOldestUnread = false,
+    this.imageMessagesEnabled = false,
+    this.imageProcessAutomatically = false,
+    this.imageCodecEnabled = false,
+    this.imageCodecSelectedModelId,
+    this.imageCodecModelSourceUrl,
+    this.imageCodecRatePoint = 4,
+    List<ImageCodecModelRecord>? imageCodecDownloadedModels,
     this.translationEnabled = false,
     this.autoTranslateIncomingMessages = true,
     this.translationTargetLanguageCode,
@@ -201,6 +242,7 @@ class AppSettings {
   }) : batteryChemistryByDeviceId = batteryChemistryByDeviceId ?? {},
        batteryChemistryByRepeaterId = batteryChemistryByRepeaterId ?? {},
        mutedChannels = mutedChannels ?? {},
+       imageCodecDownloadedModels = imageCodecDownloadedModels ?? const [],
        translationDownloadedModels = translationDownloadedModels ?? const [],
        cyr2latProfiles =
            cyr2latProfiles ??
@@ -257,6 +299,15 @@ class AppSettings {
       'tcp_server_address': tcpServerAddress,
       'tcp_server_port': tcpServerPort,
       'jump_to_oldest_unread': jumpToOldestUnread,
+      'image_messages_enabled': imageMessagesEnabled,
+      'image_process_automatically': imageProcessAutomatically,
+      'image_codec_enabled': imageCodecEnabled,
+      'image_codec_selected_model_id': imageCodecSelectedModelId,
+      'image_codec_model_source_url': imageCodecModelSourceUrl,
+      'image_codec_rate_point': imageCodecRatePoint,
+      'image_codec_downloaded_models': imageCodecDownloadedModels
+          .map((model) => model.toJson())
+          .toList(),
       'translation_enabled': translationEnabled,
       'auto_translate_incoming_messages': autoTranslateIncomingMessages,
       'translation_target_language_code': translationTargetLanguageCode,
@@ -348,6 +399,23 @@ class AppSettings {
       tcpServerAddress: json['tcp_server_address'] as String? ?? '',
       tcpServerPort: json['tcp_server_port'] as int? ?? 0,
       jumpToOldestUnread: json['jump_to_oldest_unread'] as bool? ?? false,
+      imageMessagesEnabled: json['image_messages_enabled'] as bool? ?? false,
+      imageProcessAutomatically:
+          json['image_process_automatically'] as bool? ?? false,
+      imageCodecEnabled: json['image_codec_enabled'] as bool? ?? false,
+      imageCodecSelectedModelId:
+          json['image_codec_selected_model_id'] as String?,
+      imageCodecModelSourceUrl: json['image_codec_model_source_url'] as String?,
+      imageCodecRatePoint: json['image_codec_rate_point'] as int? ?? 4,
+      imageCodecDownloadedModels:
+          (json['image_codec_downloaded_models'] as List<dynamic>?)
+              ?.map(
+                (entry) => ImageCodecModelRecord.fromJson(
+                  Map<String, dynamic>.from(entry as Map),
+                ),
+              )
+              .toList() ??
+          const [],
       translationEnabled: json['translation_enabled'] as bool? ?? false,
       autoTranslateIncomingMessages:
           json['auto_translate_incoming_messages'] as bool? ?? true,
@@ -445,6 +513,13 @@ class AppSettings {
     String? tcpServerAddress,
     int? tcpServerPort,
     bool? jumpToOldestUnread,
+    bool? imageMessagesEnabled,
+    bool? imageProcessAutomatically,
+    bool? imageCodecEnabled,
+    Object? imageCodecSelectedModelId = _unset,
+    Object? imageCodecModelSourceUrl = _unset,
+    int? imageCodecRatePoint,
+    List<ImageCodecModelRecord>? imageCodecDownloadedModels,
     bool? translationEnabled,
     bool? autoTranslateIncomingMessages,
     Object? translationTargetLanguageCode = _unset,
@@ -514,6 +589,19 @@ class AppSettings {
       tcpServerAddress: tcpServerAddress ?? this.tcpServerAddress,
       tcpServerPort: tcpServerPort ?? this.tcpServerPort,
       jumpToOldestUnread: jumpToOldestUnread ?? this.jumpToOldestUnread,
+      imageMessagesEnabled: imageMessagesEnabled ?? this.imageMessagesEnabled,
+      imageProcessAutomatically:
+          imageProcessAutomatically ?? this.imageProcessAutomatically,
+      imageCodecEnabled: imageCodecEnabled ?? this.imageCodecEnabled,
+      imageCodecSelectedModelId: imageCodecSelectedModelId == _unset
+          ? this.imageCodecSelectedModelId
+          : imageCodecSelectedModelId as String?,
+      imageCodecModelSourceUrl: imageCodecModelSourceUrl == _unset
+          ? this.imageCodecModelSourceUrl
+          : imageCodecModelSourceUrl as String?,
+      imageCodecRatePoint: imageCodecRatePoint ?? this.imageCodecRatePoint,
+      imageCodecDownloadedModels:
+          imageCodecDownloadedModels ?? this.imageCodecDownloadedModels,
       translationEnabled: translationEnabled ?? this.translationEnabled,
       autoTranslateIncomingMessages:
           autoTranslateIncomingMessages ?? this.autoTranslateIncomingMessages,

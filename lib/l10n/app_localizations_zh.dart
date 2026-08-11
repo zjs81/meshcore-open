@@ -351,42 +351,41 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_radioSettingsUpdated => '无线电设置已更新';
 
   @override
-  String get settings_regionSettings => 'Regions';
+  String get settings_regionSettings => '地区';
 
   @override
-  String get settings_regionSettingsSubtitle => 'Manage stored regions';
+  String get settings_regionSettingsSubtitle => '管理已存储的区域';
 
   @override
-  String get settings_regionManagement_screenTitle => 'Region Management';
+  String get settings_regionManagement_screenTitle => '区域管理';
 
   @override
-  String get settings_regionNameHint => 'Enter region name';
+  String get settings_regionNameHint => '区域名称';
 
   @override
-  String get settings_regionAddRegion => 'Add region';
+  String get settings_regionAddRegion => '增加地区';
 
   @override
-  String get settings_regionFetchRegions => 'Fetch regions from repeaters';
+  String get settings_regionFetchRegions => '从中继器获取区域';
 
   @override
-  String get settings_regionFetchRegionsFail => 'No regions were found';
+  String get settings_regionFetchRegionsFail => '未发现任何地区';
 
   @override
-  String get settings_regionFetchRegionsAlreadyExists =>
-      'This region has already been added';
+  String get settings_regionFetchRegionsAlreadyExists => '该地区已被添加';
 
   @override
-  String get settings_regionName => 'Region Name';
+  String get settings_regionName => '地区名称';
 
   @override
-  String get settings_regionDeleted => 'Region deleted';
+  String get settings_regionDeleted => '区域已删除';
 
   @override
-  String get settings_deleteRegion => 'Delete Region';
+  String get settings_deleteRegion => '删除区域';
 
   @override
   String settings_deleteRegionConfirm(String region) {
-    return 'Remove \"$region\" from region list?';
+    return '从 $region 列表中删除？';
   }
 
   @override
@@ -595,6 +594,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_infoChannelCount => '频道数量';
 
   @override
+  String get settings_infoHardware => '硬件';
+
+  @override
+  String get settings_infoFirmware => '固件';
+
+  @override
   String get settings_presets => '预设';
 
   @override
@@ -709,16 +714,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_languageUk => '乌克兰语';
 
   @override
-  String get repeater_pathHashModeOption0 => '0 - 1 byte';
+  String get repeater_pathHashModeOption0 => '0 - 1 字节';
 
   @override
-  String get repeater_pathHashModeOption1 => '1 - 2 bytes';
+  String get repeater_pathHashModeOption1 => '1 - 2 字节';
 
   @override
-  String get repeater_pathHashModeOption2 => '2 - 3 bytes';
+  String get repeater_pathHashModeOption2 => '2 - 3 字节';
 
   @override
-  String get repeater_pathHashModeOption3 => '3 - 4 bytes';
+  String get repeater_pathHashModeOption3 => '3 - 4 字节';
 
   @override
   String get appSettings_enableMessageTracing => '启用消息追踪';
@@ -843,6 +848,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appSettings_batteryLipo => '锂聚合物电池 (3.0-4.2V)';
+
+  @override
+  String get appSettings_batteryLipoHv => '锂多压电源（3.0-4.35伏）';
 
   @override
   String get appSettings_mapDisplay => '地图显示';
@@ -1333,17 +1341,17 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String channels_regionSetTo(String region) {
-    return 'Region: $region';
+    return '地区：$region';
   }
 
   @override
-  String get channels_regionNotSet => 'Region: none';
+  String get channels_regionNotSet => '地区：无';
 
   @override
-  String get channels_regionSelect_Title => 'Select a region';
+  String get channels_regionSelect_Title => '选择一个地区';
 
   @override
-  String get channels_clearRegion => 'Clear region';
+  String get channels_clearRegion => '无碍区域';
 
   @override
   String get chat_noMessages => '暂无消息';
@@ -1401,7 +1409,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chat_sendGif => '发送 GIF';
 
   @override
-  String get chat_receivedGif => 'Received a GIF';
+  String get chat_sendImage => '发送图片';
+
+  @override
+  String get chat_imagePickFailed => '无法打开该图片';
+
+  @override
+  String get chat_receivedGif => '收到一个GIF';
 
   @override
   String get chat_reply => '回复';
@@ -2581,38 +2595,35 @@ class AppLocalizationsZh extends AppLocalizations {
       '用于在洪泛路径/环路检测标签中编码此中继器 ID 的字节数。0=1 字节（256 个 ID，最多 64 跳），1=2 字节（65K 个 ID，最多 32 跳），2=3 字节（16M 个 ID，最多 21 跳）。v1.14 之前的固件始终使用 1 字节路径；v1.14 及更新版本可配置为 2 或 3 字节路径。';
 
   @override
-  String get repeater_keySettings => 'Change Identity Keys';
+  String get repeater_keySettings => '更改身份密钥';
 
   @override
-  String get repeater_keySettingsSubtitle =>
-      'Change the public/private keypair';
+  String get repeater_keySettingsSubtitle => '更换公钥/私钥对';
 
   @override
-  String get repeater_prvKey => 'Private key';
+  String get repeater_prvKey => '私钥';
 
   @override
-  String get repeater_prvKeyHelper =>
-      'A new private key for the repeater, a 128-character hex string.';
+  String get repeater_prvKeyHelper => '中继器的新私钥，为一个128位的十六进制字符串。';
 
   @override
-  String get repeater_generatePrvKey => 'Generate a random keypair';
+  String get repeater_generatePrvKey => '生成一个随机的密钥对';
 
   @override
-  String get repeater_stopGeneratingPrvKey => 'Interrupt search for keypair';
+  String get repeater_stopGeneratingPrvKey => '中断密钥对搜索';
 
   @override
-  String get repeater_pubKey => 'Public key';
+  String get repeater_pubKey => '公钥';
 
   @override
-  String get repeater_pubKeyHelper =>
-      'This is the public key that goes with the generated private key. You can\'t set this directly.';
+  String get repeater_pubKeyHelper => '这是与生成的私钥配对的公钥。您不能直接设置此内容。';
 
   @override
-  String get repeater_pubKeyPrefix => 'Desired prefix';
+  String get repeater_pubKeyPrefix => '期望的前缀';
 
   @override
   String repeater_pubKeyPrefixHelper(int tries) {
-    return 'Find a public key that starts with these hex digits. Expected tries needed: $tries.';
+    return '找到一组以这些十六进制数字开头的公钥。预计尝试次数：$tries';
   }
 
   @override
@@ -4189,6 +4200,40 @@ class AppLocalizationsZh extends AppLocalizations {
   String get translation_title => '翻译';
 
   @override
+  String get imageMessages_enableTitle => '启用图片消息';
+
+  @override
+  String get imageMessages_enableSubtitle => '通过网格发送图像。需要一次性下载图像模型。';
+
+  @override
+  String get imageMessages_modelSectionTitle => '图像模型';
+
+  @override
+  String get imageMessages_downloadModel => '下载';
+
+  @override
+  String get imageMessages_cancelDownload => '取消';
+
+  @override
+  String get imageMessages_removeModel => '移除模型';
+
+  @override
+  String get imageMessages_modelReady => '准备就绪';
+
+  @override
+  String get imageMessages_modelNotPublished => '尚未发布——此版本无法下载该内容。';
+
+  @override
+  String get imageMessages_downloadFailed => '图像模型无法下载。';
+
+  @override
+  String get imageMessages_autoProcessTitle => '自动处理图像';
+
+  @override
+  String get imageMessages_autoProcessSubtitle =>
+      '每次图像到达后立即重建，每次需要约2GB的内存；若想关闭重建功能，可通过点击取消开启。';
+
+  @override
   String get translation_enableTitle => '启用翻译功能';
 
   @override
@@ -4462,4 +4507,193 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pathMap_unfollowPacket => '解锁视图跟随';
+
+  @override
+  String get imageSend_title => '发送图片';
+
+  @override
+  String get imageSend_cropNote => '调整大小至512 × 512 · 宽高比未保留';
+
+  @override
+  String get imageSend_originalSize => '原文';
+
+  @override
+  String get imageSend_onAirSize => '直播中';
+
+  @override
+  String get imageSend_quality => '质量';
+
+  @override
+  String get imageSend_qualityStandard => '标准';
+
+  @override
+  String get imageSend_qualityHigh => '高';
+
+  @override
+  String get imageSend_packetsLabel => '数据包';
+
+  @override
+  String get imageSend_airtimeLabel => '播出时间';
+
+  @override
+  String get imageSend_sizeLabel => '有效载荷';
+
+  @override
+  String imageSend_packetsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '个数据包',
+      one: '个数据包',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String imageSend_range(String min, String max) {
+    return '$min–$max';
+  }
+
+  @override
+  String get imageSend_unknownValue => '—';
+
+  @override
+  String get imageSend_radioUnknownTitle => '无线电设置未知';
+
+  @override
+  String get imageSend_radioUnknownBody => '连接设备以计算播出时间。';
+
+  @override
+  String get imageSend_longSendTitle => '长距离传输';
+
+  @override
+  String imageSend_longSendBody(String duration) {
+    return '这将维持频道大约 $duration 时间。';
+  }
+
+  @override
+  String get imageSend_floodNote => '洪水路由：每个中继站都会转发每个数据包，因此信道比这段时间更长地处于繁忙状态。';
+
+  @override
+  String get imageSend_parityTitle => '恢复包';
+
+  @override
+  String get imageSend_paritySubtitle =>
+      '多一个数据包。群发消息不被确认，因此如果某个数据包丢失，接收方可以重新构建图像。';
+
+  @override
+  String get imageSend_send => '发送';
+
+  @override
+  String get imageSend_cancel => '取消';
+
+  @override
+  String get imageSend_encodeFailed => '此图像无法编码。';
+
+  @override
+  String get imageSend_codecDownloading => '图像模型仍在下载中。';
+
+  @override
+  String get imageSend_codecUnavailable => '此设备无法发送图片。';
+
+  @override
+  String get imageSend_codecDisabled => '图片消息在设置中已关闭。';
+
+  @override
+  String get imageSend_deviceUnsupported =>
+      '此无线电无法发送图像数据包。请连接运行伴侣固件13或更高版本的设备。';
+
+  @override
+  String get imageSend_directMessagesUnsupported =>
+      '图片作为群组数据传输，因此只能发送到频道，而不能直接发送给个人。';
+
+  @override
+  String get imageSend_tooLarge => '该图像编码的数据包数量超过了网格格式所允许的范围。';
+
+  @override
+  String imageSend_sentConfirmation(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '个数据包',
+      one: '个数据包',
+    );
+    return '图像已作为 $count $_temp0 发送。';
+  }
+
+  @override
+  String imageSend_sendFailed(String error) {
+    return '无法发送图片：$error';
+  }
+
+  @override
+  String imageSend_sendingProgress(int sent, int total) {
+    return '发送图像 — 已发送 $sent 包含 $total';
+  }
+
+  @override
+  String receivedImage_senderPrefix(String prefix) {
+    return '节点 $prefix';
+  }
+
+  @override
+  String receivedImage_incoming(int received, int total) {
+    return '已收到的 $received 个包含在 $total 个包裹中';
+  }
+
+  @override
+  String get receivedImage_queued => '等待解码';
+
+  @override
+  String get receivedImage_tapToDecode => '点击解锁';
+
+  @override
+  String get receivedImage_decoding => '重建……大约1秒';
+
+  @override
+  String receivedImage_incomplete(int received, int total) {
+    return '图片不完整 — $received 已收到 $total 个数据包';
+  }
+
+  @override
+  String get receivedImage_corrupt => '图像无法重建';
+
+  @override
+  String get receivedImage_decoderMissing => '收到图片 — 图像解码失败';
+
+  @override
+  String get receivedImage_evicted => '图片已不再存储';
+
+  @override
+  String get receivedImage_retry => '再试一次';
+
+  @override
+  String get receivedImage_decodeAgain => '重新解码';
+
+  @override
+  String get receivedImage_openSettings => '建立';
+
+  @override
+  String get receivedImage_tapToProcess => '点击处理';
+
+  @override
+  String receivedImage_awaiting(int bytes, int packets) {
+    String _temp0 = intl.Intl.pluralLogic(
+      packets,
+      locale: localeName,
+      other: '个数据包',
+      one: '个数据包',
+    );
+    return '$bytes 字节 · $packets $_temp0';
+  }
+
+  @override
+  String imageSend_secondsValue(String seconds) {
+    return '$seconds 秒';
+  }
+
+  @override
+  String imageSend_minutesSecondsValue(String minutes, String seconds) {
+    return '$minutes 分 $seconds 秒';
+  }
 }

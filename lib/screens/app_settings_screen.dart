@@ -6,8 +6,10 @@ import 'package:provider/provider.dart';
 import '../connector/meshcore_connector.dart';
 import '../l10n/l10n.dart';
 import '../models/app_settings.dart';
+import '../models/image_codec_support.dart';
 import '../models/translation_support.dart';
 import '../services/app_settings_service.dart';
+import '../services/image_codec_service.dart';
 import '../services/map_tile_cache_service.dart';
 import '../services/notification_service.dart';
 import '../services/translation_service.dart';
@@ -19,7 +21,16 @@ import '../helpers/snack_bar_builder.dart';
 import 'map_cache_screen.dart';
 
 class AppSettingsScreen extends StatelessWidget {
-  const AppSettingsScreen({super.key});
+  /// Scrolls the image-message settings into view once, on first build.
+  ///
+  /// This is how the received-image placeholder's "no model installed" tap
+  /// lands somewhere useful: the image block sits below appearance,
+  /// notifications, messaging, battery, map and translation, so pushing the
+  /// plain settings screen would drop the user at the top with no hint that
+  /// the thing they tapped for is several screens down.
+  final bool focusImageMessages;
+
+  const AppSettingsScreen({super.key, this.focusImageMessages = false});
 
   @override
   Widget build(BuildContext context) {
@@ -598,8 +609,204 @@ class AppSettingsScreen extends StatelessWidget {
             settingsService.setEnableMessageTracing(value);
           },
         ),
+        const Divider(height: 1, indent: 16),
+        _ScrollIntoViewOnce(
+          enabled: focusImageMessages,
+          child: SwitchListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 4,
+            ),
+            secondary: const Icon(Icons.image_outlined, size: 20),
+            title: Text(context.l10n.imageMessages_enableTitle),
+            subtitle: Text(context.l10n.imageMessages_enableSubtitle),
+            value: settingsService.settings.imageMessagesEnabled,
+            onChanged: (value) async {
+              // ImageCodecService.availability requires BOTH the app-level
+              // toggle and its own `enabled` preference; one switch drives both
+              // so the user is never left with a silently half-on feature.
+              final codec = _imageCodecService(context);
+              await settingsService.setImageMessagesEnabled(value);
+              await codec?.setEnabled(value);
+            },
+          ),
+        ),
+        if (settingsService.settings.imageMessagesEnabled) ...[
+          const Divider(height: 1, indent: 16),
+          SwitchListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 4,
+            ),
+            secondary: const Icon(Icons.auto_awesome_outlined, size: 20),
+            title: Text(context.l10n.imageMessages_autoProcessTitle),
+            subtitle: Text(context.l10n.imageMessages_autoProcessSubtitle),
+            value: settingsService.settings.imageProcessAutomatically,
+            onChanged: (value) =>
+                settingsService.setImageProcessAutomatically(value),
+          ),
+          _buildImageCodecModels(context),
+        ],
       ],
     );
+  }
+
+  /// The image codec, or null when it is not registered (screen tests).
+  ImageCodecService? _imageCodecService(BuildContext context) {
+    try {
+      return Provider.of<ImageCodecService>(context, listen: false);
+    } on ProviderNotFoundException {
+      return null;
+    }
+  }
+
+  /// Model registry for image messages: the download entry point, the
+  /// downloaded weights, and — when the build simply cannot run the codec —
+  /// [ImageCodecService.unavailableReason] instead of a dead download button.
+  Widget _buildImageCodecModels(BuildContext context) {
+    final ImageCodecService codec;
+    try {
+      codec = context.watch<ImageCodecService>();
+    } on ProviderNotFoundException {
+      return const SizedBox.shrink();
+    }
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final reason = codec.unavailableReason;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.l10n.imageMessages_modelSectionTitle,
+            style: textTheme.titleSmall,
+          ),
+          const SizedBox(height: 6),
+          if (reason != null)
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(MeshRadii.md),
+              ),
+              child: Text(
+                reason,
+                style: textTheme.bodySmall?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          for (final spec in imageCodecPresetModels)
+            _buildImageCodecPreset(context, codec, spec),
+          for (final model in codec.availableModels)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+              leading: const Icon(Icons.check_circle_outline, size: 20),
+              title: Text(model.name.isEmpty ? model.id : model.name),
+              subtitle: Text(_formatModelBytes(model.fileSizeBytes)),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete_outline, size: 20),
+                tooltip: context.l10n.imageMessages_removeModel,
+                onPressed: codec.isBusy || codec.isDownloading
+                    ? null
+                    : () => codec.removeModel(model),
+              ),
+            ),
+          if (codec.lastError != null) ...[
+            const SizedBox(height: 6),
+            Text(
+              codec.lastError!,
+              style: textTheme.bodySmall?.copyWith(color: scheme.error),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImageCodecPreset(
+    BuildContext context,
+    ImageCodecService codec,
+    ImageCodecModelSpec spec,
+  ) {
+    final textTheme = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    final alreadyHave = codec.availableModels.any((m) => m.id == spec.id);
+    // downloadPresetModel throws StateError on a placeholder URL, deliberately,
+    // so the button must not be offerable until the weights are published.
+    final blocked = spec.urlsArePlaceholders;
+    final busy = codec.isDownloading;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            leading: const Icon(Icons.download_outlined, size: 20),
+            title: Text(spec.label),
+            subtitle: Text(
+              blocked
+                  ? context.l10n.imageMessages_modelNotPublished
+                  : _formatModelBytes(spec.totalSizeBytes),
+            ),
+            trailing: alreadyHave
+                ? Text(
+                    context.l10n.imageMessages_modelReady,
+                    style: textTheme.labelMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  )
+                : busy
+                ? TextButton(
+                    onPressed: codec.cancelDownload,
+                    child: Text(context.l10n.imageMessages_cancelDownload),
+                  )
+                : TextButton(
+                    onPressed: blocked
+                        ? null
+                        : () => _downloadImageCodecModel(context, codec, spec),
+                    child: Text(context.l10n.imageMessages_downloadModel),
+                  ),
+          ),
+          if (busy)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: LinearProgressIndicator(value: codec.downloadProgress),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _downloadImageCodecModel(
+    BuildContext context,
+    ImageCodecService codec,
+    ImageCodecModelSpec spec,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final failed = context.l10n.imageMessages_downloadFailed;
+    try {
+      await codec.downloadPresetModel(spec);
+    } on Exception catch (error) {
+      messenger.showSnackBar(SnackBar(content: Text('$failed $error')));
+    }
+  }
+
+  String _formatModelBytes(int bytes) {
+    if (bytes >= 1024 * 1024 * 1024) {
+      return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
+    }
+    if (bytes >= 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(0)} MB';
+    }
+    if (bytes >= 1024) return '${(bytes / 1024).toStringAsFixed(0)} kB';
+    return '$bytes B';
   }
 
   Widget _buildBatteryContent(
@@ -687,6 +894,10 @@ class AppSettingsScreen extends StatelessWidget {
             DropdownMenuItem(
               value: 'lipo',
               child: Text(context.l10n.appSettings_batteryLipo),
+            ),
+            DropdownMenuItem(
+              value: 'lipo_hv',
+              child: Text(context.l10n.appSettings_batteryLipoHv),
             ),
           ],
         ),
@@ -2504,4 +2715,46 @@ class _TranslationLanguageDialogContentState
       ],
     );
   }
+}
+
+/// Scrolls [child] into view exactly once, after the first frame.
+///
+/// A `StatefulWidget` rather than a post-frame callback in `build` because the
+/// settings screen rebuilds on every `AppSettingsService` notification: a
+/// callback in `build` would yank the list back to the image block every time
+/// the user touched an unrelated switch.
+///
+/// Silently does nothing when there is no enclosing [Scrollable] (screen tests
+/// that render a section in isolation) or when the element is gone by the time
+/// the frame lands.
+class _ScrollIntoViewOnce extends StatefulWidget {
+  final bool enabled;
+  final Widget child;
+
+  const _ScrollIntoViewOnce({required this.enabled, required this.child});
+
+  @override
+  State<_ScrollIntoViewOnce> createState() => _ScrollIntoViewOnceState();
+}
+
+class _ScrollIntoViewOnceState extends State<_ScrollIntoViewOnce> {
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.enabled) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final scrollable = Scrollable.maybeOf(context);
+      if (scrollable == null) return;
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+        alignment: 0.1,
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

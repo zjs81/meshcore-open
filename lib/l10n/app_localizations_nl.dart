@@ -366,42 +366,44 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settings_radioSettingsUpdated => 'Radio instellingen bijgewerkt';
 
   @override
-  String get settings_regionSettings => 'Regions';
+  String get settings_regionSettings => 'Regio\'s';
 
   @override
-  String get settings_regionSettingsSubtitle => 'Manage stored regions';
+  String get settings_regionSettingsSubtitle =>
+      'Beheer van opgeslagen regio\'s';
 
   @override
-  String get settings_regionManagement_screenTitle => 'Region Management';
+  String get settings_regionManagement_screenTitle => 'Regionale Bestuur';
 
   @override
-  String get settings_regionNameHint => 'Enter region name';
+  String get settings_regionNameHint => 'Regio naam invoeren';
 
   @override
-  String get settings_regionAddRegion => 'Add region';
+  String get settings_regionAddRegion => 'Regio toevoegen';
 
   @override
-  String get settings_regionFetchRegions => 'Fetch regions from repeaters';
+  String get settings_regionFetchRegions => 'Haal regio\'s uit herhalers';
 
   @override
-  String get settings_regionFetchRegionsFail => 'No regions were found';
+  String get settings_regionFetchRegionsFail =>
+      'Er zijn geen regio\'s gevonden';
 
   @override
   String get settings_regionFetchRegionsAlreadyExists =>
-      'This region has already been added';
+      'Deze regio is al toegevoegd.';
 
   @override
-  String get settings_regionName => 'Region Name';
+  String get settings_regionName => 'Regio Naam';
 
   @override
-  String get settings_regionDeleted => 'Region deleted';
+  String get settings_regionDeleted => 'Regio verwijderd';
 
   @override
-  String get settings_deleteRegion => 'Delete Region';
+  String get settings_deleteRegion => 'Regio verwijden';
 
   @override
   String settings_deleteRegionConfirm(String region) {
-    return 'Remove \"$region\" from region list?';
+    return 'Verwijder \"$region\" uit de regio-lijst?';
   }
 
   @override
@@ -625,6 +627,12 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settings_infoChannelCount => 'Aantal Kanalen';
+
+  @override
+  String get settings_infoHardware => 'Hardware';
+
+  @override
+  String get settings_infoFirmware => 'Firmware';
 
   @override
   String get settings_presets => 'Voorgeprogrammeerde instellingen';
@@ -898,6 +906,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get appSettings_batteryLipo => 'LiPo (3,0-4,2V)';
+
+  @override
+  String get appSettings_batteryLipoHv => 'LiPo HV (3,0-4,35 V)';
 
   @override
   String get appSettings_mapDisplay => 'Kaartweergave';
@@ -1407,17 +1418,17 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String channels_regionSetTo(String region) {
-    return 'Region: $region';
+    return 'Regio: $region';
   }
 
   @override
-  String get channels_regionNotSet => 'Region: none';
+  String get channels_regionNotSet => 'Regio: geen';
 
   @override
-  String get channels_regionSelect_Title => 'Select a region';
+  String get channels_regionSelect_Title => 'Kies een regio';
 
   @override
-  String get channels_clearRegion => 'Clear region';
+  String get channels_clearRegion => 'Duidelijke regio';
 
   @override
   String get chat_noMessages => 'Nog geen berichten.';
@@ -1475,7 +1486,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get chat_sendGif => 'GIF verzenden';
 
   @override
-  String get chat_receivedGif => 'Received a GIF';
+  String get chat_sendImage => 'Beeld verzenden';
+
+  @override
+  String get chat_imagePickFailed => 'Kunde die afbeelding niet openen';
+
+  @override
+  String get chat_receivedGif => 'Ontvangen van een GIF';
 
   @override
   String get chat_reply => 'Reageren';
@@ -2707,38 +2724,38 @@ class AppLocalizationsNl extends AppLocalizations {
       'Bytes die gebruikt worden om de ID van deze repeater te coderen in flood-pad/lusdetectietags. 0=1 byte (256 ID\'s, tot 64 hops), 1=2 bytes (65.000 ID\'s, tot 32 hops), 2=3 bytes (16 miljoen ID\'s, tot 21 hops). Firmware vóór v1.14 gebruikte altijd 1-byte paden; v1.14 en nieuwer kunnen worden ingesteld op 2- of 3-byte paden.';
 
   @override
-  String get repeater_keySettings => 'Change Identity Keys';
+  String get repeater_keySettings => 'Verander de Identiteitskies';
 
   @override
   String get repeater_keySettingsSubtitle =>
-      'Change the public/private keypair';
+      'Wijzig de openbare/private sleutelpaar';
 
   @override
-  String get repeater_prvKey => 'Private key';
+  String get repeater_prvKey => 'Geheime sleutel';
 
   @override
   String get repeater_prvKeyHelper =>
-      'A new private key for the repeater, a 128-character hex string.';
+      'Een nieuwe private sleutel voor de repeater, een 128-karakter lange hexadecimale string.';
 
   @override
-  String get repeater_generatePrvKey => 'Generate a random keypair';
+  String get repeater_generatePrvKey => 'Stel een willekeurige sleutelpaar op';
 
   @override
-  String get repeater_stopGeneratingPrvKey => 'Interrupt search for keypair';
+  String get repeater_stopGeneratingPrvKey => 'Stop zoek naar sleutelpaar';
 
   @override
-  String get repeater_pubKey => 'Public key';
+  String get repeater_pubKey => 'Openbaar sleutel';
 
   @override
   String get repeater_pubKeyHelper =>
-      'This is the public key that goes with the generated private key. You can\'t set this directly.';
+      'Dit is de openbare sleutel die past bij de gegenereerde privésleutel. U kunt dit niet direct instellen.';
 
   @override
-  String get repeater_pubKeyPrefix => 'Desired prefix';
+  String get repeater_pubKeyPrefix => 'Verlangde voorvoegsel';
 
   @override
   String repeater_pubKeyPrefixHelper(int tries) {
-    return 'Find a public key that starts with these hex digits. Expected tries needed: $tries.';
+    return 'Zoek een openbare sleutel die begint met deze hexadecimale cijfers. Verwacht aantal pogingen: $tries.';
   }
 
   @override
@@ -4503,6 +4520,43 @@ class AppLocalizationsNl extends AppLocalizations {
   String get translation_title => 'Vertaling';
 
   @override
+  String get imageMessages_enableTitle => 'Bijbehorende afbeeldingen activeren';
+
+  @override
+  String get imageMessages_enableSubtitle =>
+      'Beeldjes verzenden via het netwerk. Vereist eenmalig afdaling van een beeldmodel.';
+
+  @override
+  String get imageMessages_modelSectionTitle => 'Beeldmodel';
+
+  @override
+  String get imageMessages_downloadModel => 'Download';
+
+  @override
+  String get imageMessages_cancelDownload => 'Annuleren';
+
+  @override
+  String get imageMessages_removeModel => 'Model verwijderen';
+
+  @override
+  String get imageMessages_modelReady => 'Klaar';
+
+  @override
+  String get imageMessages_modelNotPublished =>
+      'Nog niet gepubliceerd — deze versie kan dit niet downloaden.';
+
+  @override
+  String get imageMessages_downloadFailed =>
+      'Het beeldmodel kon niet worden gedownload.';
+
+  @override
+  String get imageMessages_autoProcessTitle => 'Beeldverwerking automatisch';
+
+  @override
+  String get imageMessages_autoProcessSubtitle =>
+      'Reconstrueer elk beeld direct nadat het binnenkomt. Het gebruikt ongeveer 2 GB geheugen voor elke keer; schakel het reconstrueren uit met een tik als je het niet nodig hebt.';
+
+  @override
   String get translation_enableTitle => 'Activeer vertaling';
 
   @override
@@ -4785,4 +4839,202 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get pathMap_unfollowPacket => 'Weergave ontgrendelen van pakket';
+
+  @override
+  String get imageSend_title => 'Beeld verzenden';
+
+  @override
+  String get imageSend_cropNote =>
+      'Aangepast aan 512 × 512 · het aspectverhouding is niet behouden';
+
+  @override
+  String get imageSend_originalSize => 'Oorspronkelijk';
+
+  @override
+  String get imageSend_onAirSize => 'Op de lucht';
+
+  @override
+  String get imageSend_quality => 'Kwaliteit';
+
+  @override
+  String get imageSend_qualityStandard => 'Standaard';
+
+  @override
+  String get imageSend_qualityHigh => 'Hoog';
+
+  @override
+  String get imageSend_packetsLabel => 'Pakketten';
+
+  @override
+  String get imageSend_airtimeLabel => 'Tijd op de lucht';
+
+  @override
+  String get imageSend_sizeLabel => 'Belasting';
+
+  @override
+  String imageSend_packetsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'pakketten',
+      one: 'pakket',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String imageSend_range(String min, String max) {
+    return '$min–$max';
+  }
+
+  @override
+  String get imageSend_unknownValue => '—';
+
+  @override
+  String get imageSend_radioUnknownTitle => 'Radio-instellingen onbekend';
+
+  @override
+  String get imageSend_radioUnknownBody =>
+      'Verbinding maken met een apparaat zodat de uitzendtijd kan worden berekend.';
+
+  @override
+  String get imageSend_longSendTitle => 'Lange transmissie';
+
+  @override
+  String imageSend_longSendBody(String duration) {
+    return 'Dit houdt de kanaal ongeveer voor $duration stand.';
+  }
+
+  @override
+  String get imageSend_floodNote =>
+      'Overstromingsrouting: elke repeater binnen bereik herzendsends elk pakket opnieuw, waardoor het kanaal langer bezig blijft dan dit.';
+
+  @override
+  String get imageSend_parityTitle => 'Herstelpakket';
+
+  @override
+  String get imageSend_paritySubtitle =>
+      'Een extra pakje. Groepsberichten worden niet bevestigd, waardoor de ontvanger het beeld kan herstellen als een enkel pakket verloren gaat.';
+
+  @override
+  String get imageSend_send => 'Stuur';
+
+  @override
+  String get imageSend_cancel => 'Annuleren';
+
+  @override
+  String get imageSend_encodeFailed => 'Dit beeld kon niet worden gecodeerd.';
+
+  @override
+  String get imageSend_codecDownloading =>
+      'Het beeldmodel wordt nog steeds gedownload.';
+
+  @override
+  String get imageSend_codecUnavailable =>
+      'Het verzenden van een afbeelding is niet mogelijk op dit apparaat.';
+
+  @override
+  String get imageSend_codecDisabled =>
+      'Boodschappen met afbeeldingen zijn uitgeschakeld in de instellingen.';
+
+  @override
+  String get imageSend_deviceUnsupported =>
+      'Dit radio kan geen beeldpakketten verzenden. Verbind een apparaat met de bijbehorende firmware versie 13 of nieuwer.';
+
+  @override
+  String get imageSend_directMessagesUnsupported =>
+      'Afbeeldingen worden verzonden als groepsgegevens, dus ze kunnen alleen naar een kanaal worden gestuurd — niet via een directe boodschap.';
+
+  @override
+  String get imageSend_tooLarge =>
+      'Die afbeelding werd gecodeerd in meer pakketten dan het mesh-formaat toelaat.';
+
+  @override
+  String imageSend_sentConfirmation(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'pakketten',
+      one: 'pakket',
+    );
+    return 'Afbeelding verzonden als $count $_temp0.';
+  }
+
+  @override
+  String imageSend_sendFailed(String error) {
+    return 'Het beeld kon niet worden verzonden: $error';
+  }
+
+  @override
+  String imageSend_sendingProgress(int sent, int total) {
+    return 'Beeld verzenden — pakket $sent van $total';
+  }
+
+  @override
+  String receivedImage_senderPrefix(String prefix) {
+    return 'Knipper $prefix';
+  }
+
+  @override
+  String receivedImage_incoming(int received, int total) {
+    return '$received van de $total pakketten';
+  }
+
+  @override
+  String get receivedImage_queued => 'Wachten op het ontcijferen';
+
+  @override
+  String get receivedImage_tapToDecode => 'Tik om te decoderen';
+
+  @override
+  String get receivedImage_decoding => 'Herstellen… ongeveer 1 seconde';
+
+  @override
+  String receivedImage_incomplete(int received, int total) {
+    return 'Afbeelding onvolledig — $received van $total pakketten ontvangen';
+  }
+
+  @override
+  String get receivedImage_corrupt =>
+      'Afbeelding kon niet worden gereconstrueerd';
+
+  @override
+  String get receivedImage_decoderMissing =>
+      'Beeld ontvangen — beeldontcipheringsapparatuur is uitgeschakeld';
+
+  @override
+  String get receivedImage_evicted => 'Afbeelding niet langer opgeslagen';
+
+  @override
+  String get receivedImage_retry => 'Probeer het opnieuw';
+
+  @override
+  String get receivedImage_decodeAgain => 'Decode opnieuw';
+
+  @override
+  String get receivedImage_openSettings => 'Inricht';
+
+  @override
+  String get receivedImage_tapToProcess => 'Tik om te verwerken';
+
+  @override
+  String receivedImage_awaiting(int bytes, int packets) {
+    String _temp0 = intl.Intl.pluralLogic(
+      packets,
+      locale: localeName,
+      other: 'pakketten',
+      one: 'pakket',
+    );
+    return '$bytes bytes · $packets $_temp0';
+  }
+
+  @override
+  String imageSend_secondsValue(String seconds) {
+    return '$seconds seconden';
+  }
+
+  @override
+  String imageSend_minutesSecondsValue(String minutes, String seconds) {
+    return '$minutes m $seconds s';
+  }
 }

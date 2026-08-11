@@ -43,9 +43,22 @@ android {
         //         arguments += listOf("-DANDROID_STL=c++_shared")
         //     }
         // }
-        // ndk {
-        //     abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64")
-        // }
+        // arm64-v8a only, deliberately.
+        //
+        //  * ONNX Runtime (flutter_onnxruntime, used by the AEIC-SE image codec)
+        //    ships a per-ABI .so. arm64-v8a alone costs ~18 MB of APK; a
+        //    universal APK carrying armeabi-v7a and x86_64 as well costs ~56 MB.
+        //  * llamadart only declares android-arm64 and android-x64 backends in
+        //    pubspec.yaml's `hooks.user_defines`, so an armeabi-v7a build already
+        //    has no translation backend at all.
+        //  * The image codec needs ~2.7 GiB peak resident, which no 32-bit
+        //    address space can provide regardless of ABI.
+        //
+        // Consequence: this APK will not install on 32-bit-only ARM devices or on
+        // x86_64 emulators. For emulator work, temporarily add "x86_64" here.
+        ndk {
+            abiFilters += listOf("arm64-v8a")
+        }
     }
 
     signingConfigs {
@@ -67,6 +80,13 @@ android {
             } else {
                 signingConfigs.getByName("debug")
             }
+            // ONNX Runtime resolves its Java classes from native code by name.
+            // Without these rules R8 renames them and the process SIGABRTs with
+            // "java_class == null" the instant the codec runs a model.
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 

@@ -100,10 +100,10 @@
   "settings_locationInvalid": "Невалидна ширина или дължина.",
   "settings_latitude": "Широчина",
   "settings_longitude": "Дължина",
-    "settings_autoZeroHopAdvertOnGpsUpdate": "Автоматична zero-hop обява при GPS обновяване",
-    "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Когато GPS местоположението се промени, изпрати zero-hop обява (изисква местоположение в обявата).",
-    "settings_autoSelfAdvertAsFlood": "Изпращане на автоматична самореклама като flood",
-    "settings_autoSelfAdvertAsFloodSubtitle": "Когато е активирано, автоматичните самореклами се изпращат като flood вместо zero-hop.",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Автоматична zero-hop обява при GPS обновяване",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Когато GPS местоположението се промени, изпрати zero-hop обява (изисква местоположение в обявата).",
+  "settings_autoSelfAdvertAsFlood": "Изпращане на автоматична самореклама като flood",
+  "settings_autoSelfAdvertAsFloodSubtitle": "Когато е активирано, автоматичните самореклами се изпращат като flood вместо zero-hop.",
   "settings_privacyMode": "Режим на поверителност",
   "settings_privacyModeSubtitle": "Скриване на име/местоположение в рекламите",
   "settings_privacyModeToggle": "Активирайте режим на поверителност, за да скриете името и местоположението си в рекламите.",
@@ -2607,5 +2607,227 @@
   "pathMap_noLocation": "Без посочено местоположение",
   "pathMap_followPacket": "Проследи пакета",
   "pathMap_unfollowPacket": "Спри проследяването на пакета",
-  "pathMap_gpsCount": "{confirmed}/{total} GPS"
+  "pathMap_gpsCount": "{confirmed}/{total} GPS",
+  "@settings_deleteRegionConfirm": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "@channels_regionSetTo": {
+    "placeholders": {
+      "region": {
+        "type": "String",
+        "example": "de-mitte"
+      }
+    }
+  },
+  "@chat_imagePickFailed": {
+    "description": "Shown when picking or reading a photo to send fails"
+  },
+  "@repeater_pubKeyPrefixHelper": {
+    "placeholders": {
+      "tries": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_packetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_range": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_longSendBody": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sentConfirmation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_sendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_senderPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "@receivedImage_incoming": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_incomplete": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_awaiting": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "packets": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_secondsValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_minutesSecondsValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_regionSettings": "Региони",
+  "settings_regionSettingsSubtitle": "Управляне на хранилищни региони",
+  "settings_regionManagement_screenTitle": "Регионално управление",
+  "settings_regionNameHint": "Възразна название на региона",
+  "settings_regionAddRegion": "Добавете регион",
+  "settings_regionFetchRegions": "Извън рептерите от региони",
+  "settings_regionFetchRegionsFail": "Не бъде открити никако региони",
+  "settings_regionFetchRegionsAlreadyExists": "Тата регион е уже добавена",
+  "settings_regionName": "Регионноименоване",
+  "settings_regionDeleted": "Регион отстранен",
+  "settings_deleteRegion": "Удаляне на регион",
+  "settings_deleteRegionConfirm": "Състрясна: отпиште \"{region}\" от списка региони?",
+  "settings_infoHardware": "Оборудование",
+  "settings_infoFirmware": "Програмно-оборонни системни программи (фirmware)",
+  "repeater_pathHashModeOption0": "0 - 1 байт",
+  "repeater_pathHashModeOption1": "1 - 2 байта",
+  "repeater_pathHashModeOption2": "2 - 3 байта",
+  "repeater_pathHashModeOption3": "3 - 4 байта",
+  "appSettings_batteryLipoHv": "LiPo ВЗГ (3,0-4,35 В)",
+  "channels_regionSetTo": "Регион: {region}",
+  "channels_regionNotSet": "Регион: ние",
+  "channels_regionSelect_Title": "Выберете регион",
+  "channels_clearRegion": "Чиста зона",
+  "chat_sendImage": "Изпрати изображение",
+  "chat_imagePickFailed": "Не мог да откривам та изображин",
+  "chat_receivedGif": "Получил GIF",
+  "repeater_keySettings": "Изменяне на идентичности ключа",
+  "repeater_keySettingsSubtitle": "Замени ключовият пар от публични/частни",
+  "repeater_prvKey": "Частни ключ",
+  "repeater_prvKeyHelper": "Нова приватна ключ на повторчето, 128-символовна шестнадатерична строка.",
+  "repeater_generatePrvKey": "Генериране на случайна ключи",
+  "repeater_stopGeneratingPrvKey": "Прервана поискна на ключова парта",
+  "repeater_pubKey": "Публична ключ",
+  "repeater_pubKeyHelper": "Та е публичната ключ, която се свързува с генериранта приватна ключ. Трябва да не настройте тоа напрямо.",
+  "repeater_pubKeyPrefix": "Желата префикс",
+  "repeater_pubKeyPrefixHelper": "Наискате публична ключ, който почева с този шестнадатницил. Ожидавани проби: {tries}.",
+  "imageMessages_enableTitle": "Абilitiraм изображените сообщения",
+  "imageMessages_enableSubtitle": "Изправате изображения чрез сетката. Треба е одноразовна загрузка модел на изображение.",
+  "imageMessages_modelSectionTitle": "Изображени модель",
+  "imageMessages_downloadModel": "Скачане",
+  "imageMessages_cancelDownload": "Отмена",
+  "imageMessages_removeModel": "Удалете модель",
+  "imageMessages_modelReady": "Готов",
+  "imageMessages_modelNotPublished": "Еще не опубликовано — тази версия не може да скане.",
+  "imageMessages_downloadFailed": "Модел за изображение не може да бъде скачан.",
+  "imageMessages_autoProcessTitle": "Автоматически обрабатвате изображения",
+  "imageMessages_autoProcessSubtitle": "Катализиране на всята изображение сразу по пришествие. Използване на около 2 ГБ на втора пъти; откажете от реконструкцията чаке при натискане.",
+  "imageSend_title": "Изпрати изображение",
+  "imageSend_cropNote": "Масштабиран до 512 × 512 · соотношение сторон не съхранясе",
+  "imageSend_originalSize": "Късно на използване на език:",
+  "imageSend_onAirSize": "В ефир",
+  "imageSend_quality": "Качество",
+  "imageSend_qualityStandard": "Стандарт",
+  "imageSend_qualityHigh": "Высок",
+  "imageSend_packetsLabel": "Пакети",
+  "imageSend_airtimeLabel": "Времето на изкъсване",
+  "imageSend_sizeLabel": "Баланса",
+  "imageSend_packetsCount": "{count} {count, plural, =1{пакет} other{пакета}}",
+  "imageSend_range": "{min}–{max}",
+  "imageSend_unknownValue": "—",
+  "imageSend_radioUnknownTitle": "Настройки на радио неизвестни",
+  "imageSend_radioUnknownBody": "Усредете се с устройство, за да се отработа часът на изстъпане.",
+  "imageSend_longSendTitle": "Долга пресилка",
+  "imageSend_longSendBody": "Тази буде поддержива открит отряд на около {duration}.",
+  "imageSend_floodNote": "Руйжинг на превъште: всички ретранслятори в диапазонта превратят всички пакети, тъйа каналят оставря дълше, от този час.",
+  "imageSend_parityTitle": "Возобновителен пакет",
+  "imageSend_paritySubtitle": "Едно дополително пакет. Групни извещания не принимаются, след това разбирателят едно пакетто, какщо е пропущен един пакет.",
+  "imageSend_send": "Отправляй",
+  "imageSend_cancel": "Отмена",
+  "imageSend_encodeFailed": "Тази изображение не може да бъде кодирано.",
+  "imageSend_codecDownloading": "Модел на изображение еще разгрузира.",
+  "imageSend_codecUnavailable": "Изглед отправа не е доступен на този устройство.",
+  "imageSend_codecDisabled": "Изображенията на извещенията е отключена в настройките.",
+  "imageSend_deviceUnsupported": "Та радиота не може да пресылава изображени пакети. Подключите устройство, който работи с компанионски прошивка 13 или новия.",
+  "imageSend_directMessagesUnsupported": "Изображенията се превозводя се как групова информация, следато да се отправят единствено на канал — не в лична вестка.",
+  "imageSend_tooLarge": "Таата изображение е кодирано в по-числа пакети, отгоре както формат на сетта разрешава.",
+  "imageSend_sentConfirmation": "Изображението е изпратено като {count} {count, plural, =1{пакет} other{пакета}}.",
+  "imageSend_sendFailed": "Изображение не може да бъде отправено: {error}",
+  "imageSend_sendingProgress": "Отправка наизображение — пакет {sent} от {total}",
+  "receivedImage_senderPrefix": "Узъдето {prefix}",
+  "receivedImage_incoming": "{received} от {total} пакета",
+  "receivedImage_queued": "Ожидането за декодиране",
+  "receivedImage_tapToDecode": "Натискнете за декодиране",
+  "receivedImage_decoding": "Повторно… за приблизително 1 секунда",
+  "receivedImage_incomplete": "Изображение неполно — {received} от {total} пакети отправили",
+  "receivedImage_corrupt": "Изображение не може да бъде воссоздано",
+  "receivedImage_decoderMissing": "Получена изображение — разгадка на изображение е вреjan",
+  "receivedImage_evicted": "Изображение не е хранитено",
+  "receivedImage_retry": "Повтори",
+  "receivedImage_decodeAgain": "Правилейте заново",
+  "receivedImage_openSettings": "Настройте",
+  "receivedImage_tapToProcess": "Натискнете за обработка",
+  "receivedImage_awaiting": "{bytes} байта · {packets} {packets, plural, =1{пакет} other{пакета}}",
+  "imageSend_secondsValue": "{seconds} секунди",
+  "imageSend_minutesSecondsValue": "{minutes} мин {seconds} сек"
 }

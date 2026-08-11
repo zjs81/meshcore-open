@@ -250,6 +250,8 @@
   "settings_infoPublicKey": "Public Key",
   "settings_infoContactsCount": "Contacts Count",
   "settings_infoChannelCount": "Channel Count",
+  "settings_infoHardware": "Hardware",
+  "settings_infoFirmware": "Firmware",
   "settings_presets": "Presets",
   "settings_frequency": "Frequency (MHz)",
   "settings_frequencyHelper": "300.0 - 2500.0",
@@ -345,6 +347,7 @@
   "appSettings_batteryNmc": "18650 NMC (3.0-4.2V)",
   "appSettings_batteryLifepo4": "LiFePO4 (2.6-3.65V)",
   "appSettings_batteryLipo": "LiPo (3.0-4.2V)",
+  "appSettings_batteryLipoHv": "LiPo HV (3.0-4.35V)",
   "appSettings_mapDisplay": "Map Display",
   "appSettings_showRepeaters": "Show Repeaters",
   "appSettings_showRepeatersSubtitle": "Display repeater nodes on the map",
@@ -740,6 +743,11 @@
     }
   },
   "chat_sendGif": "Send GIF",
+  "chat_sendImage": "Send image",
+  "chat_imagePickFailed": "Couldn't open that image",
+  "@chat_imagePickFailed": {
+    "description": "Shown when picking or reading a photo to send fails"
+  },
   "chat_receivedGif": "Received a GIF",
   "chat_reply": "Reply",
   "chat_addReaction": "Add Reaction",
@@ -2534,6 +2542,17 @@
   "radioStats_settingsTile": "Radio stats",
   "radioStats_settingsSubtitle": "Noise floor, RSSI, SNR, and airtime",
   "translation_title": "Translation",
+  "imageMessages_enableTitle": "Enable image messages",
+  "imageMessages_enableSubtitle": "Send images over the mesh. Requires a one-time image model download.",
+  "imageMessages_modelSectionTitle": "Image model",
+  "imageMessages_downloadModel": "Download",
+  "imageMessages_cancelDownload": "Cancel",
+  "imageMessages_removeModel": "Remove model",
+  "imageMessages_modelReady": "Ready",
+  "imageMessages_modelNotPublished": "Not published yet — this build cannot download it.",
+  "imageMessages_downloadFailed": "The image model could not be downloaded.",
+  "imageMessages_autoProcessTitle": "Process images automatically",
+  "imageMessages_autoProcessSubtitle": "Reconstruct every image as soon as it arrives. Uses about 2 GB of memory for a second each time; leave off to reconstruct with a tap instead.",
   "translation_enableTitle": "Enable translation",
   "translation_enableSubtitle": "Translate incoming messages and allow pre-send translation.",
   "translation_composerTitle": "Translate before sending",
@@ -2715,5 +2734,155 @@
   "pathMap_expandPanel": "Expand panel",
   "pathMap_noLocation": "No location",
   "pathMap_followPacket": "Lock view to packet",
-  "pathMap_unfollowPacket": "Unlock view from packet"
+  "pathMap_unfollowPacket": "Unlock view from packet",
+  "imageSend_title": "Send image",
+  "imageSend_cropNote": "Resized to 512 × 512 · aspect ratio not preserved",
+  "imageSend_originalSize": "Original",
+  "imageSend_onAirSize": "On air",
+  "imageSend_quality": "Quality",
+  "imageSend_qualityStandard": "Standard",
+  "imageSend_qualityHigh": "High",
+  "imageSend_packetsLabel": "Packets",
+  "imageSend_airtimeLabel": "Time on air",
+  "imageSend_sizeLabel": "Payload",
+  "imageSend_packetsCount": "{count} {count, plural, =1{packet} other{packets}}",
+  "@imageSend_packetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSend_range": "{min}–{max}",
+  "@imageSend_range": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "imageSend_unknownValue": "—",
+  "imageSend_radioUnknownTitle": "Radio settings unknown",
+  "imageSend_radioUnknownBody": "Connect to a device so the time on air can be calculated.",
+  "imageSend_longSendTitle": "Long transmission",
+  "imageSend_longSendBody": "This will hold the channel for about {duration}.",
+  "@imageSend_longSendBody": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "imageSend_floodNote": "Flood routing: every repeater in range retransmits each packet, so the channel stays busy longer than this.",
+  "imageSend_parityTitle": "Add recovery packet",
+  "imageSend_paritySubtitle": "One extra packet. Group messages are not acknowledged, so this lets the receiver rebuild the image if a single packet is lost.",
+  "imageSend_send": "Send",
+  "imageSend_cancel": "Cancel",
+  "imageSend_encodeFailed": "This image could not be encoded.",
+  "imageSend_codecDownloading": "The image model is still downloading.",
+  "imageSend_codecUnavailable": "Image sending is not available on this device.",
+  "imageSend_codecDisabled": "Image messages are turned off in settings.",
+  "imageSend_deviceUnsupported": "This radio cannot send image packets. Connect a device running companion firmware 13 or newer.",
+  "imageSend_directMessagesUnsupported": "Images travel as group data, so they can only be sent to a channel — not in a direct message.",
+  "imageSend_tooLarge": "That image encoded to more packets than the mesh format allows.",
+  "imageSend_sentConfirmation": "Image sent as {count} {count, plural, =1{packet} other{packets}}.",
+  "@imageSend_sentConfirmation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSend_sendFailed": "The image could not be sent: {error}",
+  "@imageSend_sendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "imageSend_sendingProgress": "Sending image — packet {sent} of {total}",
+  "@imageSend_sendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "receivedImage_senderPrefix": "Node {prefix}",
+  "@receivedImage_senderPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "receivedImage_incoming": "{received} of {total} packets",
+  "@receivedImage_incoming": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "receivedImage_queued": "Waiting to decode",
+  "receivedImage_tapToDecode": "Tap to decode",
+  "receivedImage_decoding": "Reconstructing… about 1 s",
+  "receivedImage_incomplete": "Image incomplete — {received} of {total} packets arrived",
+  "@receivedImage_incomplete": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "receivedImage_corrupt": "Image could not be reconstructed",
+  "receivedImage_decoderMissing": "Image received — image decoding is off",
+  "receivedImage_evicted": "Image no longer stored",
+  "receivedImage_retry": "Try again",
+  "receivedImage_decodeAgain": "Decode again",
+  "receivedImage_openSettings": "Set up",
+  "receivedImage_tapToProcess": "Tap to process",
+  "receivedImage_awaiting": "{bytes} bytes · {packets} {packets, plural, =1{packet} other{packets}}",
+  "@receivedImage_awaiting": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "packets": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSend_secondsValue": "{seconds} s",
+  "@imageSend_secondsValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "imageSend_minutesSecondsValue": "{minutes} m {seconds} s",
+  "@imageSend_minutesSecondsValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  }
 }
