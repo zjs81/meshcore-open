@@ -47,6 +47,14 @@ import '../theme/mesh_theme.dart';
 import '../widgets/mesh_ui.dart';
 import 'telemetry_screen.dart';
 
+// Image messages are deliberately absent from this screen, and there is no
+// flag to flip: the AEIC wire format is `CMD_SEND_CHANNEL_DATA` (62) /
+// GRP_DATA 0x06, which addresses a channel index rather than a contact key,
+// and the companion protocol has no direct-message equivalent (there is no
+// CMD_SEND_DATA — see `meshcore_protocol.dart`). Sending a private photo on
+// channel 0 to reach one contact would broadcast it to everyone on that
+// channel. Channel chats keep the feature; see `channel_chat_screen.dart`.
+
 class ChatScreen extends StatefulWidget {
   final Contact contact;
   final int initialUnreadCount;
@@ -480,6 +488,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   languageCode: settings.translationTargetLanguageCode,
                   onPressed: _showTranslationOptions,
                 ),
+              // No image button here: the image wire format is GRP_DATA, a
+              // channel primitive with no DM equivalent (see the note at the
+              // top of this file).
               Expanded(
                 child: ValueListenableBuilder<TextEditingValue>(
                   valueListenable: _textController,

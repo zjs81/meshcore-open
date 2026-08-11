@@ -370,42 +370,45 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settings_radioSettingsUpdated => 'Impostazioni radio aggiornate';
 
   @override
-  String get settings_regionSettings => 'Regions';
+  String get settings_regionSettings => 'Regioni';
 
   @override
-  String get settings_regionSettingsSubtitle => 'Manage stored regions';
+  String get settings_regionSettingsSubtitle =>
+      'Gestione delle regioni salvate';
 
   @override
-  String get settings_regionManagement_screenTitle => 'Region Management';
+  String get settings_regionManagement_screenTitle => 'Gestione Regionale';
 
   @override
-  String get settings_regionNameHint => 'Enter region name';
+  String get settings_regionNameHint => 'Inserisci il nome della regione';
 
   @override
-  String get settings_regionAddRegion => 'Add region';
+  String get settings_regionAddRegion => 'Aggiungi regione';
 
   @override
-  String get settings_regionFetchRegions => 'Fetch regions from repeaters';
+  String get settings_regionFetchRegions =>
+      'Recupera le regioni dai ripetitori';
 
   @override
-  String get settings_regionFetchRegionsFail => 'No regions were found';
+  String get settings_regionFetchRegionsFail =>
+      'Non sono state trovate regioni';
 
   @override
   String get settings_regionFetchRegionsAlreadyExists =>
-      'This region has already been added';
+      'Questa regione è già stata aggiunta';
 
   @override
-  String get settings_regionName => 'Region Name';
+  String get settings_regionName => 'Nome della Regione';
 
   @override
-  String get settings_regionDeleted => 'Region deleted';
+  String get settings_regionDeleted => 'Regione cancellata';
 
   @override
-  String get settings_deleteRegion => 'Delete Region';
+  String get settings_deleteRegion => 'Elimina Regione';
 
   @override
   String settings_deleteRegionConfirm(String region) {
-    return 'Remove \"$region\" from region list?';
+    return 'Rimuovere \"$region\" dalla lista delle regioni?';
   }
 
   @override
@@ -625,6 +628,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settings_infoChannelCount => 'Numero di canali';
 
   @override
+  String get settings_infoHardware => 'Hardware';
+
+  @override
+  String get settings_infoFirmware => 'Firmware';
+
+  @override
   String get settings_presets => 'Preset';
 
   @override
@@ -743,13 +752,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get repeater_pathHashModeOption0 => '0 - 1 byte';
 
   @override
-  String get repeater_pathHashModeOption1 => '1 - 2 bytes';
+  String get repeater_pathHashModeOption1 => '1 - 2 byte';
 
   @override
-  String get repeater_pathHashModeOption2 => '2 - 3 bytes';
+  String get repeater_pathHashModeOption2 => '2 - 3 byte';
 
   @override
-  String get repeater_pathHashModeOption3 => '3 - 4 bytes';
+  String get repeater_pathHashModeOption3 => '3 - 4 byte';
 
   @override
   String get appSettings_enableMessageTracing =>
@@ -898,6 +907,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get appSettings_batteryLipo => 'LiPo (3,0-4,2V)';
+
+  @override
+  String get appSettings_batteryLipoHv => 'LiPo HV (3,0-4,35 V)';
 
   @override
   String get appSettings_mapDisplay => 'Visualizzazione Mappa';
@@ -1411,17 +1423,17 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String channels_regionSetTo(String region) {
-    return 'Region: $region';
+    return 'Regione: $region';
   }
 
   @override
-  String get channels_regionNotSet => 'Region: none';
+  String get channels_regionNotSet => 'Regione: nessuna';
 
   @override
-  String get channels_regionSelect_Title => 'Select a region';
+  String get channels_regionSelect_Title => 'Scegli una regione';
 
   @override
-  String get channels_clearRegion => 'Clear region';
+  String get channels_clearRegion => 'Zona chiara';
 
   @override
   String get chat_noMessages => 'Nessun messaggio ancora';
@@ -1479,7 +1491,14 @@ class AppLocalizationsIt extends AppLocalizations {
   String get chat_sendGif => 'Invia GIF';
 
   @override
-  String get chat_receivedGif => 'Received a GIF';
+  String get chat_sendImage => 'Invia immagine';
+
+  @override
+  String get chat_imagePickFailed =>
+      'Non sono riuscito ad aprire quell\'immagine';
+
+  @override
+  String get chat_receivedGif => 'Ricevuto un GIF';
 
   @override
   String get chat_reply => 'Rispondi';
@@ -2718,38 +2737,39 @@ class AppLocalizationsIt extends AppLocalizations {
       'Byte utilizzati per codificare l\'ID di questo ripetitore nei tag di percorso flood/rilevamento loop. 0=1 byte (256 ID, fino a 64 salti), 1=2 byte (65.000 ID, fino a 32 salti), 2=3 byte (16 milioni di ID, fino a 21 salti). Il firmware precedente alla v1.14 usava sempre percorsi a 1 byte; v1.14 e versioni successive possono essere configurate per percorsi a 2 o 3 byte.';
 
   @override
-  String get repeater_keySettings => 'Change Identity Keys';
+  String get repeater_keySettings => 'Cambia le Chiavi di Identità';
 
   @override
   String get repeater_keySettingsSubtitle =>
-      'Change the public/private keypair';
+      'Cambia la coppia di chiavi pubblica/privata';
 
   @override
-  String get repeater_prvKey => 'Private key';
+  String get repeater_prvKey => 'Chiave privata';
 
   @override
   String get repeater_prvKeyHelper =>
-      'A new private key for the repeater, a 128-character hex string.';
+      'Una nuova chiave privata per il ripetitore, una stringa esadecimale di 128 caratteri.';
 
   @override
-  String get repeater_generatePrvKey => 'Generate a random keypair';
+  String get repeater_generatePrvKey => 'Genera una coppia di chiavi casuale';
 
   @override
-  String get repeater_stopGeneratingPrvKey => 'Interrupt search for keypair';
+  String get repeater_stopGeneratingPrvKey =>
+      'Interrompi la ricerca della coppia di chiavi';
 
   @override
-  String get repeater_pubKey => 'Public key';
+  String get repeater_pubKey => 'Chiave pubblica';
 
   @override
   String get repeater_pubKeyHelper =>
-      'This is the public key that goes with the generated private key. You can\'t set this directly.';
+      'Questa è la chiave pubblica che accompagna la chiave privata generata. Non è possibile impostarla direttamente.';
 
   @override
-  String get repeater_pubKeyPrefix => 'Desired prefix';
+  String get repeater_pubKeyPrefix => 'Prefisso desiderato';
 
   @override
   String repeater_pubKeyPrefixHelper(int tries) {
-    return 'Find a public key that starts with these hex digits. Expected tries needed: $tries.';
+    return 'Trova una chiave pubblica che inizia con queste cifre esadecimali. Tentativi necessari previsti: $tries.';
   }
 
   @override
@@ -4525,6 +4545,44 @@ class AppLocalizationsIt extends AppLocalizations {
   String get translation_title => 'Traduzione';
 
   @override
+  String get imageMessages_enableTitle => 'Messaggi con immagini';
+
+  @override
+  String get imageMessages_enableSubtitle =>
+      'Invia le immagini tramite la mesh. È necessario scaricare il modello dell\'immagine una tantum.';
+
+  @override
+  String get imageMessages_modelSectionTitle => 'Modello di immagine';
+
+  @override
+  String get imageMessages_downloadModel => 'Scarica';
+
+  @override
+  String get imageMessages_cancelDownload => 'Annullare';
+
+  @override
+  String get imageMessages_removeModel => 'Rimuovi il modello';
+
+  @override
+  String get imageMessages_modelReady => 'Pronto';
+
+  @override
+  String get imageMessages_modelNotPublished =>
+      'Non pubblicato ancora — questa versione non può scaricarlo.';
+
+  @override
+  String get imageMessages_downloadFailed =>
+      'Il modello di immagine non può essere scaricato.';
+
+  @override
+  String get imageMessages_autoProcessTitle =>
+      'Elabora automaticamente le immagini';
+
+  @override
+  String get imageMessages_autoProcessSubtitle =>
+      'Ricostruisci ogni immagine non appena arriva. Utilizza circa 2 GB di memoria per un secondo ogni volta; disattiva la ricostruzione con un semplice tocco.';
+
+  @override
   String get translation_enableTitle => 'Abilitare la traduzione';
 
   @override
@@ -4810,4 +4868,204 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get pathMap_unfollowPacket => 'Sblocca la vista dal pacchetto';
+
+  @override
+  String get imageSend_title => 'Invia immagine';
+
+  @override
+  String get imageSend_cropNote =>
+      'Ridimensionato a 512 × 512 · rapporto d\'aspetto non conservato';
+
+  @override
+  String get imageSend_originalSize =>
+      'Traduzione:\n\nOriginal text:\n\nPlease translate the following English text into Italian:\n\nOriginal text:\n\n(No original English text provided)';
+
+  @override
+  String get imageSend_onAirSize => 'In onda';
+
+  @override
+  String get imageSend_quality => 'Qualità';
+
+  @override
+  String get imageSend_qualityStandard => 'Standard';
+
+  @override
+  String get imageSend_qualityHigh => 'Alto';
+
+  @override
+  String get imageSend_packetsLabel => 'Pacchetti';
+
+  @override
+  String get imageSend_airtimeLabel => 'Tempo in onda';
+
+  @override
+  String get imageSend_sizeLabel => 'Carico utile';
+
+  @override
+  String imageSend_packetsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'pacchetti',
+      one: 'pacchetto',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String imageSend_range(String min, String max) {
+    return '$min–$max';
+  }
+
+  @override
+  String get imageSend_unknownValue => '—';
+
+  @override
+  String get imageSend_radioUnknownTitle => 'Impostazioni radio sconosciute';
+
+  @override
+  String get imageSend_radioUnknownBody =>
+      'Collegati a un dispositivo in modo che si possa calcolare l\'orario di trasmissione.';
+
+  @override
+  String get imageSend_longSendTitle => 'Lunga trasmissione';
+
+  @override
+  String imageSend_longSendBody(String duration) {
+    return 'Questo manterrà il canale per circa $duration.';
+  }
+
+  @override
+  String get imageSend_floodNote =>
+      'Instradamento delle inondazioni: ogni ripetitore nel raggio ritrasmette ogni pacchetto, quindi il canale rimane occupato più a lungo.';
+
+  @override
+  String get imageSend_parityTitle => 'Pacchetto di recupero';
+
+  @override
+  String get imageSend_paritySubtitle =>
+      'Un pacchetto aggiuntivo. I messaggi di gruppo non vengono riconosciuti, quindi questo permette al destinatario di ricostruire l\'immagine se un singolo pacchetto viene perso.';
+
+  @override
+  String get imageSend_send => 'Invia';
+
+  @override
+  String get imageSend_cancel => 'Annullare';
+
+  @override
+  String get imageSend_encodeFailed =>
+      'Questa immagine non può essere codificata.';
+
+  @override
+  String get imageSend_codecDownloading =>
+      'Il modello di immagine sta ancora scaricando.';
+
+  @override
+  String get imageSend_codecUnavailable =>
+      'L\'invio di immagini non è disponibile su questo dispositivo.';
+
+  @override
+  String get imageSend_codecDisabled =>
+      'I messaggi immagine sono disattivati nelle impostazioni.';
+
+  @override
+  String get imageSend_deviceUnsupported =>
+      'Questa radio non può inviare pacchetti di immagini. Collegare un dispositivo con firmware companion versione 13 o successiva.';
+
+  @override
+  String get imageSend_directMessagesUnsupported =>
+      'Le immagini viaggiano come dati di gruppo, quindi possono essere inviate solo a un canale — non tramite messaggio diretto.';
+
+  @override
+  String get imageSend_tooLarge =>
+      'Quella immagine è stata codificata in un numero di pacchetti superiore a quello consentito dal formato mesh.';
+
+  @override
+  String imageSend_sentConfirmation(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'pacchetti',
+      one: 'pacchetto',
+    );
+    return 'Immagine inviata come $count $_temp0.';
+  }
+
+  @override
+  String imageSend_sendFailed(String error) {
+    return 'L\'immagine non può essere inviata: $error';
+  }
+
+  @override
+  String imageSend_sendingProgress(int sent, int total) {
+    return 'Invio immagine — pacchetto $sent di $total';
+  }
+
+  @override
+  String receivedImage_senderPrefix(String prefix) {
+    return 'Nodo $prefix';
+  }
+
+  @override
+  String receivedImage_incoming(int received, int total) {
+    return '$received di $total pacchetti';
+  }
+
+  @override
+  String get receivedImage_queued => 'In attesa di decodificare';
+
+  @override
+  String get receivedImage_tapToDecode => 'Tocca per decodificare';
+
+  @override
+  String get receivedImage_decoding => 'Ricostruire… circa 1 s';
+
+  @override
+  String receivedImage_incomplete(int received, int total) {
+    return 'Immagine incompleta — $received su $total pacchetti ricevuti';
+  }
+
+  @override
+  String get receivedImage_corrupt =>
+      'L\'immagine non potrebbe essere ricostruita';
+
+  @override
+  String get receivedImage_decoderMissing =>
+      'Immagine ricevuta — decodifica dell\'immagine non funzionante';
+
+  @override
+  String get receivedImage_evicted => 'Immagine non più memorizzata';
+
+  @override
+  String get receivedImage_retry => 'Prova ancora';
+
+  @override
+  String get receivedImage_decodeAgain => 'Decodifica di nuovo';
+
+  @override
+  String get receivedImage_openSettings => 'Imposta';
+
+  @override
+  String get receivedImage_tapToProcess => 'Premi per elaborare';
+
+  @override
+  String receivedImage_awaiting(int bytes, int packets) {
+    String _temp0 = intl.Intl.pluralLogic(
+      packets,
+      locale: localeName,
+      other: 'pacchetti',
+      one: 'pacchetto',
+    );
+    return '$bytes byte · $packets $_temp0';
+  }
+
+  @override
+  String imageSend_secondsValue(String seconds) {
+    return '$seconds secondi';
+  }
+
+  @override
+  String imageSend_minutesSecondsValue(String minutes, String seconds) {
+    return '$minutes min $seconds s';
+  }
 }

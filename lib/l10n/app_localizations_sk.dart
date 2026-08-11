@@ -368,42 +368,42 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_radioSettingsUpdated => 'Nastavenia rádia aktualizované';
 
   @override
-  String get settings_regionSettings => 'Regions';
+  String get settings_regionSettings => 'Regiony';
 
   @override
-  String get settings_regionSettingsSubtitle => 'Manage stored regions';
+  String get settings_regionSettingsSubtitle => 'Zohľať uložené regiony';
 
   @override
-  String get settings_regionManagement_screenTitle => 'Region Management';
+  String get settings_regionManagement_screenTitle => 'Regiónne vedenie';
 
   @override
-  String get settings_regionNameHint => 'Enter region name';
+  String get settings_regionNameHint => 'Vstuptejte název regionu';
 
   @override
-  String get settings_regionAddRegion => 'Add region';
+  String get settings_regionAddRegion => 'Dodajte region';
 
   @override
-  String get settings_regionFetchRegions => 'Fetch regions from repeaters';
+  String get settings_regionFetchRegions => 'Odberanie regionov z repeaterov';
 
   @override
-  String get settings_regionFetchRegionsFail => 'No regions were found';
+  String get settings_regionFetchRegionsFail => 'Nebylo našli žiadné regiony';
 
   @override
   String get settings_regionFetchRegionsAlreadyExists =>
-      'This region has already been added';
+      'Tento oblast je už dodán';
 
   @override
-  String get settings_regionName => 'Region Name';
+  String get settings_regionName => 'Regionné název';
 
   @override
-  String get settings_regionDeleted => 'Region deleted';
+  String get settings_regionDeleted => 'Regionu zníteno';
 
   @override
-  String get settings_deleteRegion => 'Delete Region';
+  String get settings_deleteRegion => 'Vyniknúcia regionu';
 
   @override
   String settings_deleteRegionConfirm(String region) {
-    return 'Remove \"$region\" from region list?';
+    return 'Odstraniť $region z listy regionov?';
   }
 
   @override
@@ -619,6 +619,12 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_infoChannelCount => 'Počet kanálov';
 
   @override
+  String get settings_infoHardware => 'Hardware';
+
+  @override
+  String get settings_infoFirmware => 'Firmware';
+
+  @override
   String get settings_presets => 'Prednastavenia';
 
   @override
@@ -734,16 +740,16 @@ class AppLocalizationsSk extends AppLocalizations {
   String get appSettings_languageUk => 'Ukrajinská';
 
   @override
-  String get repeater_pathHashModeOption0 => '0 - 1 byte';
+  String get repeater_pathHashModeOption0 => '0 - 1 byt';
 
   @override
-  String get repeater_pathHashModeOption1 => '1 - 2 bytes';
+  String get repeater_pathHashModeOption1 => '1 - 2 bity';
 
   @override
-  String get repeater_pathHashModeOption2 => '2 - 3 bytes';
+  String get repeater_pathHashModeOption2 => '2 - 3 bity';
 
   @override
-  String get repeater_pathHashModeOption3 => '3 - 4 bytes';
+  String get repeater_pathHashModeOption3 => '3 - 4 bity';
 
   @override
   String get appSettings_enableMessageTracing => 'Povoliť sledovanie správ';
@@ -886,6 +892,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get appSettings_batteryLipo => 'LiPo (3,0-4,2V)';
+
+  @override
+  String get appSettings_batteryLipoHv => 'LiPo HV (3.0-4.35V)';
 
   @override
   String get appSettings_mapDisplay => 'Zobrazenie mapy';
@@ -1403,13 +1412,13 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
-  String get channels_regionNotSet => 'Region: none';
+  String get channels_regionNotSet => 'Region: žiadné';
 
   @override
-  String get channels_regionSelect_Title => 'Select a region';
+  String get channels_regionSelect_Title => 'Vyberte region';
 
   @override
-  String get channels_clearRegion => 'Clear region';
+  String get channels_clearRegion => 'Jasný údajný oblasť';
 
   @override
   String get chat_noMessages => 'Zatiaľ žiadne správy.';
@@ -1467,7 +1476,13 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chat_sendGif => 'Odoslať GIF';
 
   @override
-  String get chat_receivedGif => 'Received a GIF';
+  String get chat_sendImage => 'Vyslat obraz';
+
+  @override
+  String get chat_imagePickFailed => 'Nesmiela jsem otvoriť tento obrázok';
+
+  @override
+  String get chat_receivedGif => 'Odeslaný GIF';
 
   @override
   String get chat_reply => 'Odpovedať';
@@ -2703,38 +2718,39 @@ class AppLocalizationsSk extends AppLocalizations {
       'Bajty použité na zakódovanie ID tohto opakovača v tagoch flood trasy/detekcie slučky. 0=1 bajt (256 ID, až 64 skokov), 1=2 bajty (65 000 ID, až 32 skokov), 2=3 bajty (16 miliónov ID, až 21 skokov). Firmvér pred v1.14 vždy používal 1-bajtové trasy; v1.14 a novšie možno nakonfigurovať na 2- alebo 3-bajtové trasy.';
 
   @override
-  String get repeater_keySettings => 'Change Identity Keys';
+  String get repeater_keySettings => 'Zmena identititačných klíčov';
 
   @override
   String get repeater_keySettingsSubtitle =>
-      'Change the public/private keypair';
+      'Zmena prehľadného/osobného klíčového zbraň';
 
   @override
-  String get repeater_prvKey => 'Private key';
+  String get repeater_prvKey => 'Prívatná klíč';
 
   @override
   String get repeater_prvKeyHelper =>
-      'A new private key for the repeater, a 128-character hex string.';
+      'Nová prívna klíčová číslo pre repeater, 128-znáčlový šestnáctorýč.';
 
   @override
-  String get repeater_generatePrvKey => 'Generate a random keypair';
+  String get repeater_generatePrvKey => 'Vytvorenie príma kľúčového paru';
 
   @override
-  String get repeater_stopGeneratingPrvKey => 'Interrupt search for keypair';
+  String get repeater_stopGeneratingPrvKey =>
+      'Prerušenie hľadania klíčového paru';
 
   @override
   String get repeater_pubKey => 'Public key';
 
   @override
   String get repeater_pubKeyHelper =>
-      'This is the public key that goes with the generated private key. You can\'t set this directly.';
+      'Táto je veľká klíč, ktorý sa vztahuje s generovaným manéčným klíčom. Nemožné je to ustanovit priateľne.';
 
   @override
-  String get repeater_pubKeyPrefix => 'Desired prefix';
+  String get repeater_pubKeyPrefix => 'Požadovaný prefiks';
 
   @override
   String repeater_pubKeyPrefixHelper(int tries) {
-    return 'Find a public key that starts with these hex digits. Expected tries needed: $tries.';
+    return 'Zahľadnite sa veľkú publicenu klíču, ktorá začíná tými šestícih štiastkami. Očekivané potrebné pokusy: $tries.';
   }
 
   @override
@@ -4501,6 +4517,43 @@ class AppLocalizationsSk extends AppLocalizations {
   String get translation_title => 'Preklad';
 
   @override
+  String get imageMessages_enableTitle => 'Zabezpečte zobrazi';
+
+  @override
+  String get imageMessages_enableSubtitle =>
+      'Odeslanie obrazov pre mšťanie. Potrebujete jednorazové stáhnutie modelu obrazov.';
+
+  @override
+  String get imageMessages_modelSectionTitle => 'Model v kínajme';
+
+  @override
+  String get imageMessages_downloadModel => 'Stáhnie';
+
+  @override
+  String get imageMessages_cancelDownload => 'Zastavenie';
+
+  @override
+  String get imageMessages_removeModel => 'Vyhniť model';
+
+  @override
+  String get imageMessages_modelReady => 'Čiačný';
+
+  @override
+  String get imageMessages_modelNotPublished =>
+      'Nesprávne vypisáné — tento prechovka nie môže jej stáhnuť.';
+
+  @override
+  String get imageMessages_downloadFailed =>
+      'Model s obrázkom nemôžno sťažovať.';
+
+  @override
+  String get imageMessages_autoProcessTitle => 'Automaticky prepojiť slučaje.';
+
+  @override
+  String get imageMessages_autoProcessSubtitle =>
+      'Rekonstruujte každý obraz tak, ako pridá. Používajete okolo 2 GB pamäti pre drugú hodinu; odložte rekonstrukciu tým kliknutím.';
+
+  @override
   String get translation_enableTitle => 'Aktivovať preklad';
 
   @override
@@ -4785,4 +4838,202 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get pathMap_unfollowPacket => 'Odomknúť pohľad od paketu';
+
+  @override
+  String get imageSend_title => 'Vyslat obraz';
+
+  @override
+  String get imageSend_cropNote =>
+      'Zmeneno na 512 × 512 · vzorýst nie byl zachovan';
+
+  @override
+  String get imageSend_originalSize =>
+      'Výborný text:\n\n\"Language is the road map of a culture. It tells us where to go as a society and helps us understand the world around us. Learning a new language opens up new perspectives and opportunities, allowing us to connect with people from different backgrounds and build bridges between cultures.\"\n\nSlovenská preklada:\n\n\"Jazyk je cesta pre zručnosti a odráža kultúru. Dá nám uvedomi, dokádať, kúdy sa pohladneme a pomáha našej společnosti poradiť sa v rôznych okolnosti a porozumieť o svetu kolem nás. Nauka nového jazyka otviera nové perspektívy a možnosti, čo pohybuje našu schopnosť sa spoluprávať s ľudmi z rôznych okolnosti a budovať mosty medzi kultúry.\"';
+
+  @override
+  String get imageSend_onAirSize => 'V prúce';
+
+  @override
+  String get imageSend_quality => 'Kvalita';
+
+  @override
+  String get imageSend_qualityStandard => 'Stándard';
+
+  @override
+  String get imageSend_qualityHigh => 'Vysoká';
+
+  @override
+  String get imageSend_packetsLabel => 'Pakety';
+
+  @override
+  String get imageSend_airtimeLabel => 'Čas na anteni';
+
+  @override
+  String get imageSend_sizeLabel => 'Základ';
+
+  @override
+  String imageSend_packetsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'paketov',
+      one: 'paket',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String imageSend_range(String min, String max) {
+    return '$min–$max';
+  }
+
+  @override
+  String get imageSend_unknownValue => '—';
+
+  @override
+  String get imageSend_radioUnknownTitle => 'Nastavenia radio nezná';
+
+  @override
+  String get imageSend_radioUnknownBody =>
+      'Zkonečte s určým prijemcem, aby sa mohlo výpočet času, ktorý je v prúbežu.';
+
+  @override
+  String get imageSend_longSendTitle => 'Dlouhá transmisia';
+
+  @override
+  String imageSend_longSendBody(String duration) {
+    return 'Tento dôvod udrží kanál priamo na $duration.';
+  }
+
+  @override
+  String get imageSend_floodNote =>
+      'Povodný routing: každý repeater v rozsahu zrňa každý paket, takže kanál zostá zajetší dlouше, než tu.';
+
+  @override
+  String get imageSend_parityTitle => 'Poučný paket pre očudenie';
+
+  @override
+  String get imageSend_paritySubtitle =>
+      'Jedný dodatný paket. Skúsené súhlasy nie sa uznávaú, takže to umožňuje prechovávaču opraviť obraz, pokiaľ sa jedný paket niebyl ztrácený.';
+
+  @override
+  String get imageSend_send => 'Odeslať';
+
+  @override
+  String get imageSend_cancel => 'Zastavenie';
+
+  @override
+  String get imageSend_encodeFailed => 'Tento obráz nie byla byla schována.';
+
+  @override
+  String get imageSend_codecDownloading =>
+      'Model prehľadovania prebeža stále stále stále prechádza.';
+
+  @override
+  String get imageSend_codecUnavailable =>
+      'Zobrazenie nie je dostupný na tomto zariadení.';
+
+  @override
+  String get imageSend_codecDisabled =>
+      'Zobrazy s prešteľkami sú v nastavení vypnené.';
+
+  @override
+  String get imageSend_deviceUnsupported =>
+      'Tento radiok nie môže odeslať obrazové pakety. Podeďte správne určité zařízení s oprogramovaním spolupráce 13 alebo novším.';
+
+  @override
+  String get imageSend_directMessagesUnsupported =>
+      'Obrazy sa prechádzajú jako skupinové údaje, preto sa ich môžu odeslať len na kanál — nie v príbeh sa.';
+
+  @override
+  String get imageSend_tooLarge =>
+      'Tento obraz byl skodyrovany do viac paketov, ako umožňuje si sítka format.';
+
+  @override
+  String imageSend_sentConfirmation(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'paketov',
+      one: 'paket',
+    );
+    return 'Obrázok odoslaný ako $count $_temp0.';
+  }
+
+  @override
+  String imageSend_sendFailed(String error) {
+    return 'Obraz nemôžlo odeslať: $error';
+  }
+
+  @override
+  String imageSend_sendingProgress(int sent, int total) {
+    return 'Vysyťanie obrazu — pakét $sent z $total';
+  }
+
+  @override
+  String receivedImage_senderPrefix(String prefix) {
+    return 'Vęzlo $prefix';
+  }
+
+  @override
+  String receivedImage_incoming(int received, int total) {
+    return 'Otrzymané $received z $total pakotí';
+  }
+
+  @override
+  String get receivedImage_queued => 'Čekanie na dekódovanie';
+
+  @override
+  String get receivedImage_tapToDecode => 'Kliknite, aby dekódovať';
+
+  @override
+  String get receivedImage_decoding => 'Rekonstrukcia… o čoľve 1 s';
+
+  @override
+  String receivedImage_incomplete(int received, int total) {
+    return 'Obraz nieješťajný — $received z $total paciek príšlo';
+  }
+
+  @override
+  String get receivedImage_corrupt => 'Obraz nemôžu byť prepojený';
+
+  @override
+  String get receivedImage_decoderMissing =>
+      'Otrzymaná slúba — dekódovanie slúby je vypadejce';
+
+  @override
+  String get receivedImage_evicted => 'Obraz nemá uložený';
+
+  @override
+  String get receivedImage_retry => 'Zkôr to opítajte';
+
+  @override
+  String get receivedImage_decodeAgain => 'Zdeľte sa znovu';
+
+  @override
+  String get receivedImage_openSettings => 'Založte';
+
+  @override
+  String get receivedImage_tapToProcess => 'Ukliknite, aby sa príjomili';
+
+  @override
+  String receivedImage_awaiting(int bytes, int packets) {
+    String _temp0 = intl.Intl.pluralLogic(
+      packets,
+      locale: localeName,
+      other: 'paketov',
+      one: 'paket',
+    );
+    return '$bytes bajtov · $packets $_temp0';
+  }
+
+  @override
+  String imageSend_secondsValue(String seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String imageSend_minutesSecondsValue(String minutes, String seconds) {
+    return '$minutes min $seconds s';
+  }
 }

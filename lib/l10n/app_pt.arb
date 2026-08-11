@@ -2605,5 +2605,227 @@
   "pathMap_noLocation": "Sem localização",
   "pathMap_followPacket": "Fixar vista no pacote",
   "pathMap_unfollowPacket": "Liberar vista do pacote",
-  "pathMap_gpsCount": "{confirmed}/{total} GPS"
+  "pathMap_gpsCount": "{confirmed}/{total} GPS",
+  "@settings_deleteRegionConfirm": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "@channels_regionSetTo": {
+    "placeholders": {
+      "region": {
+        "type": "String",
+        "example": "de-mitte"
+      }
+    }
+  },
+  "@chat_imagePickFailed": {
+    "description": "Shown when picking or reading a photo to send fails"
+  },
+  "@repeater_pubKeyPrefixHelper": {
+    "placeholders": {
+      "tries": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_packetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_range": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_longSendBody": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sentConfirmation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_sendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_senderPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "@receivedImage_incoming": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_incomplete": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_awaiting": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "packets": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_secondsValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_minutesSecondsValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_regionSettings": "Regiões",
+  "settings_regionSettingsSubtitle": "Gerenciar regiões armazenadas",
+  "settings_regionManagement_screenTitle": "Gestão de Região",
+  "settings_regionNameHint": "Nome da região",
+  "settings_regionAddRegion": "Adicionar região",
+  "settings_regionFetchRegions": "Regiões de obtenção a partir de repetidores",
+  "settings_regionFetchRegionsFail": "Nenhuma região foi encontrada",
+  "settings_regionFetchRegionsAlreadyExists": "Esta região já foi adicionada",
+  "settings_regionName": "Nome da Região",
+  "settings_regionDeleted": "Região excluída",
+  "settings_deleteRegion": "Excluir Região",
+  "settings_deleteRegionConfirm": "Remover \"{region}\" da lista de regiões?",
+  "settings_infoHardware": "Hardware",
+  "settings_infoFirmware": "Firmware",
+  "repeater_pathHashModeOption0": "0 - 1 byte",
+  "repeater_pathHashModeOption1": "1 - 2 bytes",
+  "repeater_pathHashModeOption2": "2 - 3 bytes",
+  "repeater_pathHashModeOption3": "3 - 4 bytes",
+  "appSettings_batteryLipoHv": "LiPo HV (3,0-4,35V)",
+  "channels_regionSetTo": "Região: {region}",
+  "channels_regionNotSet": "Região: nenhuma",
+  "channels_regionSelect_Title": "Escolha uma região",
+  "channels_clearRegion": "Região desimpedida",
+  "chat_sendImage": "Enviar imagem",
+  "chat_imagePickFailed": "Não consegui abrir essa imagem",
+  "chat_receivedGif": "Recebi um GIF",
+  "repeater_keySettings": "Alterar Chaves de Identidade",
+  "repeater_keySettingsSubtitle": "Altere a chave pública/chave privada",
+  "repeater_prvKey": "Chave privada",
+  "repeater_prvKeyHelper": "Uma nova chave privada para o repetidor, uma string hexadecimal de 128 caracteres.",
+  "repeater_generatePrvKey": "Gere um par de chaves aleatório",
+  "repeater_stopGeneratingPrvKey": "Interrompa a busca por par de chaves",
+  "repeater_pubKey": "Chave pública",
+  "repeater_pubKeyHelper": "Esta é a chave pública que acompanha a chave privada gerada. Você não pode definir isso diretamente.",
+  "repeater_pubKeyPrefix": "Prefixo desejado",
+  "repeater_pubKeyPrefixHelper": "Encontre uma chave pública que comece com esses dígitos hexadecimais. Número esperado de tentativas: {tries}.",
+  "imageMessages_enableTitle": "Mensagens de imagem",
+  "imageMessages_enableSubtitle": "Envie as imagens pela malha. Requer o download de um modelo de imagem único.",
+  "imageMessages_modelSectionTitle": "Modelo de imagem",
+  "imageMessages_downloadModel": "Download",
+  "imageMessages_cancelDownload": "Cancelar",
+  "imageMessages_removeModel": "Remover modelo",
+  "imageMessages_modelReady": "Pronto",
+  "imageMessages_modelNotPublished": "Ainda não publicado — esta versão não pode baixá-lo.",
+  "imageMessages_downloadFailed": "O modelo de imagem não pôde ser baixado.",
+  "imageMessages_autoProcessTitle": "Processar imagens automaticamente",
+  "imageMessages_autoProcessSubtitle": "Reconstrua cada imagem assim que ela chegar. Utiliza cerca de 2 GB de memória por segundo; dispense a reconstrução com um toque.",
+  "imageSend_title": "Enviar imagem",
+  "imageSend_cropNote": "Redimensionado para 512 × 512 · a proporção de aspecto não foi preservada",
+  "imageSend_originalSize": "Texto Original",
+  "imageSend_onAirSize": "Ao ar",
+  "imageSend_quality": "Qualidade",
+  "imageSend_qualityStandard": "Padrão",
+  "imageSend_qualityHigh": "Alto",
+  "imageSend_packetsLabel": "Pacotes",
+  "imageSend_airtimeLabel": "Tempo em transmissão",
+  "imageSend_sizeLabel": "Carga útil",
+  "imageSend_packetsCount": "{count} {count, plural, =1{pacote} other{pacotes}}",
+  "imageSend_range": "{min}–{max}",
+  "imageSend_unknownValue": "—",
+  "imageSend_radioUnknownTitle": "Configurações de rádio desconhecidas",
+  "imageSend_radioUnknownBody": "Conecte-se a um dispositivo para que o horário de transmissão possa ser calculado.",
+  "imageSend_longSendTitle": "Transmissão longa",
+  "imageSend_longSendBody": "Isso manterá o canal por cerca de {duration}.",
+  "imageSend_floodNote": "Roteamento de inundação: cada repetidor na faixa retransmite cada pacote, fazendo com que o canal permaneça ocupado por mais tempo do que isso.",
+  "imageSend_parityTitle": "Pacote de recuperação",
+  "imageSend_paritySubtitle": "Um pacote extra. As mensagens em grupo não são reconhecidas, assim permitindo que o destinatário reconstrua a imagem caso um pacote seja perdido.",
+  "imageSend_send": "Enviar",
+  "imageSend_cancel": "Cancelar",
+  "imageSend_encodeFailed": "Esta imagem não pode ser codificada.",
+  "imageSend_codecDownloading": "O modelo de imagem ainda está baixando.",
+  "imageSend_codecUnavailable": "O envio de imagem não está disponível neste dispositivo.",
+  "imageSend_codecDisabled": "As mensagens de imagem estão desativadas nas configurações.",
+  "imageSend_deviceUnsupported": "Este rádio não pode enviar pacotes de imagem. Conecte um dispositivo com firmware companheiro versão 13 ou superior.",
+  "imageSend_directMessagesUnsupported": "As imagens viajam como dados em grupo, portanto, só podem ser enviadas para um canal — não em mensagem direta.",
+  "imageSend_tooLarge": "Essa imagem foi codificada em mais pacotes do que o formato de malha permite.",
+  "imageSend_sentConfirmation": "Imagem enviada como {count} {count, plural, =1{pacote} other{pacotes}}.",
+  "imageSend_sendFailed": "A imagem não pôde ser enviada: {error}",
+  "imageSend_sendingProgress": "Envio da imagem — pacote {sent} de {total}",
+  "receivedImage_senderPrefix": "Nó {prefix}",
+  "receivedImage_incoming": "{received} de {total} pacotes",
+  "receivedImage_queued": "Aguardando para decodificar",
+  "receivedImage_tapToDecode": "Toque para decodificar",
+  "receivedImage_decoding": "Reconstruindo… cerca de 1 segundo",
+  "receivedImage_incomplete": "Imagem incompleta — {received} de {total} pacotes chegaram",
+  "receivedImage_corrupt": "A imagem não pôde ser reconstruída",
+  "receivedImage_decoderMissing": "Imagem recebida — decodificação de imagem incorreta",
+  "receivedImage_evicted": "Imagem não armazenada",
+  "receivedImage_retry": "Tente novamente",
+  "receivedImage_decodeAgain": "Decodifique novamente",
+  "receivedImage_openSettings": "Configurar",
+  "receivedImage_tapToProcess": "Toque para processar",
+  "receivedImage_awaiting": "{bytes} bytes · {packets} {packets, plural, =1{pacote} other{pacotes}}",
+  "imageSend_secondsValue": "{seconds} segundos",
+  "imageSend_minutesSecondsValue": "{minutes} min {seconds} s"
 }

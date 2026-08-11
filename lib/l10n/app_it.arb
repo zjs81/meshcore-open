@@ -1736,7 +1736,6 @@
   "settings_locationGPSEnableSubtitle": "Abilita l'aggiornamento automatico della posizione tramite GPS.",
   "settings_locationIntervalSec": "Intervallo GPS (Secondi)",
   "settings_locationIntervalInvalid": "L'intervallo deve essere di almeno 60 secondi e inferiore a 86400 secondi.",
-  "contacts_manageRoom": "Gestisci server stanza",
   "room_management": "Gestione del Server di Camera",
   "@community_joinConfirmation": {
     "placeholders": {
@@ -1946,7 +1945,6 @@
     }
   },
   "notification_receivedNewMessage": "Nuovo messaggio ricevuto",
-  "notification_receivedNewMessage": "Nuovo messaggio ricevuto",
   "settings_gpxExportRepeaters": "Esporta ripetitori / server di stanza in GPX",
   "settings_gpxExportContacts": "Esporta compagni in GPX",
   "settings_gpxExportSuccess": "Esportazione del file GPX completata con successo.",
@@ -2121,52 +2119,7 @@
   "listFilter_addToFavorites": "Aggiungi ai preferiti",
   "listFilter_removeFromFavorites": "Rimuovi dai preferiti",
   "listFilter_favorites": "Preferiti",
-  "@contacts_searchFavorites": {
-    "placeholders": {
-      "number": {
-        "type": "int"
-      },
-      "str": {
-        "type": "String"
-      }
-    }
-  },
-  "@contacts_searchUsers": {
-    "placeholders": {
-      "number": {
-        "type": "int"
-      },
-      "str": {
-        "type": "String"
-      }
-    }
-  },
-  "@contacts_searchRepeaters": {
-    "placeholders": {
-      "number": {
-        "type": "int"
-      },
-      "str": {
-        "type": "String"
-      }
-    }
-  },
-  "@contacts_searchRoomServers": {
-    "placeholders": {
-      "number": {
-        "type": "int"
-      },
-      "str": {
-        "type": "String"
-      }
-    }
-  },
-  "contacts_searchUsers": "Cerca {number}{str} utenti...",
-  "contacts_searchContactsNoNumber": "Cerca contatti...",
-  "contacts_searchFavorites": "Cerca {number}{str} preferiti...",
   "contacts_unread": "Non letti",
-  "contacts_searchRepeaters": "Cerca {number}{str} ripetitori...",
-  "contacts_searchRoomServers": "Cerca {number}{str} server stanza...",
   "contactsSettings_title": "Impostazioni dei contatti",
   "settings_contactSettings": "Impostazioni di contatto",
   "contactsSettings_otherTitle": "Altre impostazioni relative ai contatti",
@@ -2786,5 +2739,227 @@
   "pathMap_noLocation": "Nessuna posizione",
   "pathMap_followPacket": "Blocca la vista sul pacchetto",
   "pathMap_unfollowPacket": "Sblocca la vista dal pacchetto",
-  "pathMap_gpsCount": "{confirmed}/{total} GPS"
+  "pathMap_gpsCount": "{confirmed}/{total} GPS",
+  "@settings_deleteRegionConfirm": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "@channels_regionSetTo": {
+    "placeholders": {
+      "region": {
+        "type": "String",
+        "example": "de-mitte"
+      }
+    }
+  },
+  "@chat_imagePickFailed": {
+    "description": "Shown when picking or reading a photo to send fails"
+  },
+  "@repeater_pubKeyPrefixHelper": {
+    "placeholders": {
+      "tries": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_packetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_range": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_longSendBody": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sentConfirmation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_sendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_senderPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "@receivedImage_incoming": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_incomplete": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_awaiting": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "packets": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_secondsValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_minutesSecondsValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_regionSettings": "Regioni",
+  "settings_regionSettingsSubtitle": "Gestione delle regioni salvate",
+  "settings_regionManagement_screenTitle": "Gestione Regionale",
+  "settings_regionNameHint": "Inserisci il nome della regione",
+  "settings_regionAddRegion": "Aggiungi regione",
+  "settings_regionFetchRegions": "Recupera le regioni dai ripetitori",
+  "settings_regionFetchRegionsFail": "Non sono state trovate regioni",
+  "settings_regionFetchRegionsAlreadyExists": "Questa regione è già stata aggiunta",
+  "settings_regionName": "Nome della Regione",
+  "settings_regionDeleted": "Regione cancellata",
+  "settings_deleteRegion": "Elimina Regione",
+  "settings_deleteRegionConfirm": "Rimuovere \"{region}\" dalla lista delle regioni?",
+  "settings_infoHardware": "Hardware",
+  "settings_infoFirmware": "Firmware",
+  "repeater_pathHashModeOption0": "0 - 1 byte",
+  "repeater_pathHashModeOption1": "1 - 2 byte",
+  "repeater_pathHashModeOption2": "2 - 3 byte",
+  "repeater_pathHashModeOption3": "3 - 4 byte",
+  "appSettings_batteryLipoHv": "LiPo HV (3,0-4,35 V)",
+  "channels_regionSetTo": "Regione: {region}",
+  "channels_regionNotSet": "Regione: nessuna",
+  "channels_regionSelect_Title": "Scegli una regione",
+  "channels_clearRegion": "Zona chiara",
+  "chat_sendImage": "Invia immagine",
+  "chat_imagePickFailed": "Non sono riuscito ad aprire quell'immagine",
+  "chat_receivedGif": "Ricevuto un GIF",
+  "repeater_keySettings": "Cambia le Chiavi di Identità",
+  "repeater_keySettingsSubtitle": "Cambia la coppia di chiavi pubblica/privata",
+  "repeater_prvKey": "Chiave privata",
+  "repeater_prvKeyHelper": "Una nuova chiave privata per il ripetitore, una stringa esadecimale di 128 caratteri.",
+  "repeater_generatePrvKey": "Genera una coppia di chiavi casuale",
+  "repeater_stopGeneratingPrvKey": "Interrompi la ricerca della coppia di chiavi",
+  "repeater_pubKey": "Chiave pubblica",
+  "repeater_pubKeyHelper": "Questa è la chiave pubblica che accompagna la chiave privata generata. Non è possibile impostarla direttamente.",
+  "repeater_pubKeyPrefix": "Prefisso desiderato",
+  "repeater_pubKeyPrefixHelper": "Trova una chiave pubblica che inizia con queste cifre esadecimali. Tentativi necessari previsti: {tries}.",
+  "imageMessages_enableTitle": "Messaggi con immagini",
+  "imageMessages_enableSubtitle": "Invia le immagini tramite la mesh. È necessario scaricare il modello dell'immagine una tantum.",
+  "imageMessages_modelSectionTitle": "Modello di immagine",
+  "imageMessages_downloadModel": "Scarica",
+  "imageMessages_cancelDownload": "Annullare",
+  "imageMessages_removeModel": "Rimuovi il modello",
+  "imageMessages_modelReady": "Pronto",
+  "imageMessages_modelNotPublished": "Non pubblicato ancora — questa versione non può scaricarlo.",
+  "imageMessages_downloadFailed": "Il modello di immagine non può essere scaricato.",
+  "imageMessages_autoProcessTitle": "Elabora automaticamente le immagini",
+  "imageMessages_autoProcessSubtitle": "Ricostruisci ogni immagine non appena arriva. Utilizza circa 2 GB di memoria per un secondo ogni volta; disattiva la ricostruzione con un semplice tocco.",
+  "imageSend_title": "Invia immagine",
+  "imageSend_cropNote": "Ridimensionato a 512 × 512 · rapporto d'aspetto non conservato",
+  "imageSend_originalSize": "Traduzione:\n\nOriginal text:\n\nPlease translate the following English text into Italian:\n\nOriginal text:\n\n(No original English text provided)",
+  "imageSend_onAirSize": "In onda",
+  "imageSend_quality": "Qualità",
+  "imageSend_qualityStandard": "Standard",
+  "imageSend_qualityHigh": "Alto",
+  "imageSend_packetsLabel": "Pacchetti",
+  "imageSend_airtimeLabel": "Tempo in onda",
+  "imageSend_sizeLabel": "Carico utile",
+  "imageSend_packetsCount": "{count} {count, plural, =1{pacchetto} other{pacchetti}}",
+  "imageSend_range": "{min}–{max}",
+  "imageSend_unknownValue": "—",
+  "imageSend_radioUnknownTitle": "Impostazioni radio sconosciute",
+  "imageSend_radioUnknownBody": "Collegati a un dispositivo in modo che si possa calcolare l'orario di trasmissione.",
+  "imageSend_longSendTitle": "Lunga trasmissione",
+  "imageSend_longSendBody": "Questo manterrà il canale per circa {duration}.",
+  "imageSend_floodNote": "Instradamento delle inondazioni: ogni ripetitore nel raggio ritrasmette ogni pacchetto, quindi il canale rimane occupato più a lungo.",
+  "imageSend_parityTitle": "Pacchetto di recupero",
+  "imageSend_paritySubtitle": "Un pacchetto aggiuntivo. I messaggi di gruppo non vengono riconosciuti, quindi questo permette al destinatario di ricostruire l'immagine se un singolo pacchetto viene perso.",
+  "imageSend_send": "Invia",
+  "imageSend_cancel": "Annullare",
+  "imageSend_encodeFailed": "Questa immagine non può essere codificata.",
+  "imageSend_codecDownloading": "Il modello di immagine sta ancora scaricando.",
+  "imageSend_codecUnavailable": "L'invio di immagini non è disponibile su questo dispositivo.",
+  "imageSend_codecDisabled": "I messaggi immagine sono disattivati nelle impostazioni.",
+  "imageSend_deviceUnsupported": "Questa radio non può inviare pacchetti di immagini. Collegare un dispositivo con firmware companion versione 13 o successiva.",
+  "imageSend_directMessagesUnsupported": "Le immagini viaggiano come dati di gruppo, quindi possono essere inviate solo a un canale — non tramite messaggio diretto.",
+  "imageSend_tooLarge": "Quella immagine è stata codificata in un numero di pacchetti superiore a quello consentito dal formato mesh.",
+  "imageSend_sentConfirmation": "Immagine inviata come {count} {count, plural, =1{pacchetto} other{pacchetti}}.",
+  "imageSend_sendFailed": "L'immagine non può essere inviata: {error}",
+  "imageSend_sendingProgress": "Invio immagine — pacchetto {sent} di {total}",
+  "receivedImage_senderPrefix": "Nodo {prefix}",
+  "receivedImage_incoming": "{received} di {total} pacchetti",
+  "receivedImage_queued": "In attesa di decodificare",
+  "receivedImage_tapToDecode": "Tocca per decodificare",
+  "receivedImage_decoding": "Ricostruire… circa 1 s",
+  "receivedImage_incomplete": "Immagine incompleta — {received} su {total} pacchetti ricevuti",
+  "receivedImage_corrupt": "L'immagine non potrebbe essere ricostruita",
+  "receivedImage_decoderMissing": "Immagine ricevuta — decodifica dell'immagine non funzionante",
+  "receivedImage_evicted": "Immagine non più memorizzata",
+  "receivedImage_retry": "Prova ancora",
+  "receivedImage_decodeAgain": "Decodifica di nuovo",
+  "receivedImage_openSettings": "Imposta",
+  "receivedImage_tapToProcess": "Premi per elaborare",
+  "receivedImage_awaiting": "{bytes} byte · {packets} {packets, plural, =1{pacchetto} other{pacchetti}}",
+  "imageSend_secondsValue": "{seconds} secondi",
+  "imageSend_minutesSecondsValue": "{minutes} min {seconds} s"
 }

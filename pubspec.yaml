@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 9.5.0+13
+version: 9.5.0+16
 
 environment:
   sdk: ^3.9.2
@@ -58,6 +58,7 @@ dependencies:
   characters: ^1.4.0
   package_info_plus: ^10.1.0
   mobile_scanner: ^7.1.4  # QR/barcode scanning
+  image_picker: ^1.1.2    # Pick photos to send as compressed mesh images
   qr_flutter: ^4.1.0      # QR code generation
   url_launcher: ^6.3.0    # Launch URLs in system browser
   flutter_linkify: ^6.0.0 # Auto-detect and linkify URLs in text
@@ -76,6 +77,11 @@ dependencies:
   cryptography: ^2.9.0
   cryptography_flutter: ^2.3.4
   convert: ^3.1.2
+  # ONNX Runtime 1.23.0 via platform channels. Powers the AEIC-SE image codec
+  # decoder (lib/services/image_codec_backend.dart). arm64-only on Android — see
+  # the abiFilters note in android/app/build.gradle.kts; a universal APK pays
+  # ~56 MB for ORT instead of ~18 MB.
+  flutter_onnxruntime: ^1.8.3
 
 hooks:
   user_defines:
