@@ -1,0 +1,33 @@
+{
+ "format": "aeic-entropy-e2e-recording",
+ "version": 1,
+ "checkpoint": "AEIC_SE_ft32.pkl",
+ "size": 512,
+ "files": [
+  {
+   "file": "kodim01.aeicrec",
+   "bytes": 7378887,
+   "sha256": "dd4278523e2a51d031e11b3d71e90f9ffe863d1244bf3de3896525ff0da9c049"
+  },
+  {
+   "file": "kodim02.aeicrec",
+   "bytes": 7378887,
+   "sha256": "8cc3043664c7c6d993baf6fd37db04f0e22954af114c1463b2000a5e230c2e20"
+  },
+  {
+   "file": "kodim05.aeicrec",
+   "bytes": 7378927,
+   "sha256": "535eef3213b0fdb0238bebad7e3baa041fe62aae1623fd9ec2deebd06c11ce1c"
+  },
+  {
+   "file": "image2.aeicrec",
+   "bytes": 7378902,
+   "sha256": "2779478763c22955bc0e61c22fb555dd0f016f3a5d3629a2272a66d1000d485e"
+  },
+  {
+   "file": "images.aeicrec",
+   "bytes": 7378878,
+   "sha256": "d7153bfd8bb9a1f7bd764eb7fcb43b1932205ac1b43be5b2c6ef6c8a5c57edb1"
+  }
+ ]
+}

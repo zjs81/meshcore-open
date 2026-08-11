@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_windows
   flutter_blue_plus_winrt
+  flutter_onnxruntime
   share_plus
   url_launcher_windows
 )

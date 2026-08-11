@@ -2640,5 +2640,227 @@
   "pathMap_noLocation": "Geen locatie",
   "pathMap_followPacket": "Weergave vergrendelen op pakket",
   "pathMap_unfollowPacket": "Weergave ontgrendelen van pakket",
-  "pathMap_gpsCount": "{confirmed}/{total} GPS"
+  "pathMap_gpsCount": "{confirmed}/{total} GPS",
+  "@settings_deleteRegionConfirm": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "@channels_regionSetTo": {
+    "placeholders": {
+      "region": {
+        "type": "String",
+        "example": "de-mitte"
+      }
+    }
+  },
+  "@chat_imagePickFailed": {
+    "description": "Shown when picking or reading a photo to send fails"
+  },
+  "@repeater_pubKeyPrefixHelper": {
+    "placeholders": {
+      "tries": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_packetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_range": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_longSendBody": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sentConfirmation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_sendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_senderPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "@receivedImage_incoming": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_incomplete": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_awaiting": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "packets": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_secondsValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_minutesSecondsValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_regionSettings": "Regio's",
+  "settings_regionSettingsSubtitle": "Beheer van opgeslagen regio's",
+  "settings_regionManagement_screenTitle": "Regionale Bestuur",
+  "settings_regionNameHint": "Regio naam invoeren",
+  "settings_regionAddRegion": "Regio toevoegen",
+  "settings_regionFetchRegions": "Haal regio's uit herhalers",
+  "settings_regionFetchRegionsFail": "Er zijn geen regio's gevonden",
+  "settings_regionFetchRegionsAlreadyExists": "Deze regio is al toegevoegd.",
+  "settings_regionName": "Regio Naam",
+  "settings_regionDeleted": "Regio verwijderd",
+  "settings_deleteRegion": "Regio verwijden",
+  "settings_deleteRegionConfirm": "Verwijder \"{region}\" uit de regio-lijst?",
+  "settings_infoHardware": "Hardware",
+  "settings_infoFirmware": "Firmware",
+  "repeater_pathHashModeOption0": "0 - 1 byte",
+  "repeater_pathHashModeOption1": "1 - 2 bytes",
+  "repeater_pathHashModeOption2": "2 - 3 bytes",
+  "repeater_pathHashModeOption3": "3 - 4 bytes",
+  "appSettings_batteryLipoHv": "LiPo HV (3,0-4,35 V)",
+  "channels_regionSetTo": "Regio: {region}",
+  "channels_regionNotSet": "Regio: geen",
+  "channels_regionSelect_Title": "Kies een regio",
+  "channels_clearRegion": "Duidelijke regio",
+  "chat_sendImage": "Beeld verzenden",
+  "chat_imagePickFailed": "Kunde die afbeelding niet openen",
+  "chat_receivedGif": "Ontvangen van een GIF",
+  "repeater_keySettings": "Verander de Identiteitskies",
+  "repeater_keySettingsSubtitle": "Wijzig de openbare/private sleutelpaar",
+  "repeater_prvKey": "Geheime sleutel",
+  "repeater_prvKeyHelper": "Een nieuwe private sleutel voor de repeater, een 128-karakter lange hexadecimale string.",
+  "repeater_generatePrvKey": "Stel een willekeurige sleutelpaar op",
+  "repeater_stopGeneratingPrvKey": "Stop zoek naar sleutelpaar",
+  "repeater_pubKey": "Openbaar sleutel",
+  "repeater_pubKeyHelper": "Dit is de openbare sleutel die past bij de gegenereerde privésleutel. U kunt dit niet direct instellen.",
+  "repeater_pubKeyPrefix": "Verlangde voorvoegsel",
+  "repeater_pubKeyPrefixHelper": "Zoek een openbare sleutel die begint met deze hexadecimale cijfers. Verwacht aantal pogingen: {tries}.",
+  "imageMessages_enableTitle": "Bijbehorende afbeeldingen activeren",
+  "imageMessages_enableSubtitle": "Beeldjes verzenden via het netwerk. Vereist eenmalig afdaling van een beeldmodel.",
+  "imageMessages_modelSectionTitle": "Beeldmodel",
+  "imageMessages_downloadModel": "Download",
+  "imageMessages_cancelDownload": "Annuleren",
+  "imageMessages_removeModel": "Model verwijderen",
+  "imageMessages_modelReady": "Klaar",
+  "imageMessages_modelNotPublished": "Nog niet gepubliceerd — deze versie kan dit niet downloaden.",
+  "imageMessages_downloadFailed": "Het beeldmodel kon niet worden gedownload.",
+  "imageMessages_autoProcessTitle": "Beeldverwerking automatisch",
+  "imageMessages_autoProcessSubtitle": "Reconstrueer elk beeld direct nadat het binnenkomt. Het gebruikt ongeveer 2 GB geheugen voor elke keer; schakel het reconstrueren uit met een tik als je het niet nodig hebt.",
+  "imageSend_title": "Beeld verzenden",
+  "imageSend_cropNote": "Aangepast aan 512 × 512 · het aspectverhouding is niet behouden",
+  "imageSend_originalSize": "Oorspronkelijk",
+  "imageSend_onAirSize": "Op de lucht",
+  "imageSend_quality": "Kwaliteit",
+  "imageSend_qualityStandard": "Standaard",
+  "imageSend_qualityHigh": "Hoog",
+  "imageSend_packetsLabel": "Pakketten",
+  "imageSend_airtimeLabel": "Tijd op de lucht",
+  "imageSend_sizeLabel": "Belasting",
+  "imageSend_packetsCount": "{count} {count, plural, =1{pakket} other{pakketten}}",
+  "imageSend_range": "{min}–{max}",
+  "imageSend_unknownValue": "—",
+  "imageSend_radioUnknownTitle": "Radio-instellingen onbekend",
+  "imageSend_radioUnknownBody": "Verbinding maken met een apparaat zodat de uitzendtijd kan worden berekend.",
+  "imageSend_longSendTitle": "Lange transmissie",
+  "imageSend_longSendBody": "Dit houdt de kanaal ongeveer voor {duration} stand.",
+  "imageSend_floodNote": "Overstromingsrouting: elke repeater binnen bereik herzendsends elk pakket opnieuw, waardoor het kanaal langer bezig blijft dan dit.",
+  "imageSend_parityTitle": "Herstelpakket",
+  "imageSend_paritySubtitle": "Een extra pakje. Groepsberichten worden niet bevestigd, waardoor de ontvanger het beeld kan herstellen als een enkel pakket verloren gaat.",
+  "imageSend_send": "Stuur",
+  "imageSend_cancel": "Annuleren",
+  "imageSend_encodeFailed": "Dit beeld kon niet worden gecodeerd.",
+  "imageSend_codecDownloading": "Het beeldmodel wordt nog steeds gedownload.",
+  "imageSend_codecUnavailable": "Het verzenden van een afbeelding is niet mogelijk op dit apparaat.",
+  "imageSend_codecDisabled": "Boodschappen met afbeeldingen zijn uitgeschakeld in de instellingen.",
+  "imageSend_deviceUnsupported": "Dit radio kan geen beeldpakketten verzenden. Verbind een apparaat met de bijbehorende firmware versie 13 of nieuwer.",
+  "imageSend_directMessagesUnsupported": "Afbeeldingen worden verzonden als groepsgegevens, dus ze kunnen alleen naar een kanaal worden gestuurd — niet via een directe boodschap.",
+  "imageSend_tooLarge": "Die afbeelding werd gecodeerd in meer pakketten dan het mesh-formaat toelaat.",
+  "imageSend_sentConfirmation": "Afbeelding verzonden als {count} {count, plural, =1{pakket} other{pakketten}}.",
+  "imageSend_sendFailed": "Het beeld kon niet worden verzonden: {error}",
+  "imageSend_sendingProgress": "Beeld verzenden — pakket {sent} van {total}",
+  "receivedImage_senderPrefix": "Knipper {prefix}",
+  "receivedImage_incoming": "{received} van de {total} pakketten",
+  "receivedImage_queued": "Wachten op het ontcijferen",
+  "receivedImage_tapToDecode": "Tik om te decoderen",
+  "receivedImage_decoding": "Herstellen… ongeveer 1 seconde",
+  "receivedImage_incomplete": "Afbeelding onvolledig — {received} van {total} pakketten ontvangen",
+  "receivedImage_corrupt": "Afbeelding kon niet worden gereconstrueerd",
+  "receivedImage_decoderMissing": "Beeld ontvangen — beeldontcipheringsapparatuur is uitgeschakeld",
+  "receivedImage_evicted": "Afbeelding niet langer opgeslagen",
+  "receivedImage_retry": "Probeer het opnieuw",
+  "receivedImage_decodeAgain": "Decode opnieuw",
+  "receivedImage_openSettings": "Inricht",
+  "receivedImage_tapToProcess": "Tik om te verwerken",
+  "receivedImage_awaiting": "{bytes} bytes · {packets} {packets, plural, =1{pakket} other{pakketten}}",
+  "imageSend_secondsValue": "{seconds} seconden",
+  "imageSend_minutesSecondsValue": "{minutes} m {seconds} s"
 }

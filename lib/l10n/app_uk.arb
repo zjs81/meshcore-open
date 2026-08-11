@@ -2620,5 +2620,227 @@
   "pathMap_noLocation": "Без геопозиції",
   "pathMap_followPacket": "Прив'язати вигляд до пакету",
   "pathMap_unfollowPacket": "Відв'язати вигляд від пакету",
-  "pathMap_gpsCount": "{confirmed}/{total} GPS"
+  "pathMap_gpsCount": "{confirmed}/{total} GPS",
+  "@settings_deleteRegionConfirm": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "@channels_regionSetTo": {
+    "placeholders": {
+      "region": {
+        "type": "String",
+        "example": "de-mitte"
+      }
+    }
+  },
+  "@chat_imagePickFailed": {
+    "description": "Shown when picking or reading a photo to send fails"
+  },
+  "@repeater_pubKeyPrefixHelper": {
+    "placeholders": {
+      "tries": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_packetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_range": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_longSendBody": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sentConfirmation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_sendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_senderPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "@receivedImage_incoming": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_incomplete": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_awaiting": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "packets": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_secondsValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_minutesSecondsValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_regionSettings": "Ріси",
+  "settings_regionSettingsSubtitle": "Управляти збережених регіонів",
+  "settings_regionManagement_screenTitle": "Рégіональний управління",
+  "settings_regionNameHint": "Назва регіону",
+  "settings_regionAddRegion": "Добачить регіон",
+  "settings_regionFetchRegions": "Збираємо регіони з репітерів",
+  "settings_regionFetchRegionsFail": "Ні відкриті регіони",
+  "settings_regionFetchRegionsAlreadyExists": "Цей регіон вже було доданий",
+  "settings_regionName": "Ріонна назва",
+  "settings_regionDeleted": "Ріон витертений",
+  "settings_deleteRegion": "Видалення регіону",
+  "settings_deleteRegionConfirm": "Вирішіть \"{region}\" з списку регіонів?",
+  "settings_infoHardware": "Оборудовання",
+  "settings_infoFirmware": "Програмне вміст (фirmware)",
+  "repeater_pathHashModeOption0": "0 - 1 байт",
+  "repeater_pathHashModeOption1": "1 - 2 байти",
+  "repeater_pathHashModeOption2": "2 - 3 байти",
+  "repeater_pathHashModeOption3": "3 - 4 байта",
+  "appSettings_batteryLipoHv": "ЛиPo HV (3,0-4,35 В)",
+  "channels_regionSetTo": "Ріон: {region}",
+  "channels_regionNotSet": "Ріон: нема",
+  "channels_regionSelect_Title": "Вybірте регіон",
+  "channels_clearRegion": "Чистя зона",
+  "chat_sendImage": "Нашкоду зовні\n\n(or more naturally, depending on context)\n\nПошукуєте изображення",
+  "chat_imagePickFailed": "Неможливо відкрити це изображення",
+  "chat_receivedGif": "Підймовано GIF",
+  "repeater_keySettings": "Зміна ключів ідентифікації",
+  "repeater_keySettingsSubtitle": "Замініть публічний/приватний ключ",
+  "repeater_prvKey": "Приватний ключ",
+  "repeater_prvKeyHelper": "Нова приватна ключ для репітера, 128-символова штучна штука в шестнадцатеричному форматі.",
+  "repeater_generatePrvKey": "Синхронізujте ключовий пару",
+  "repeater_stopGeneratingPrvKey": "Прервити шук ключового пару",
+  "repeater_pubKey": "Публічна ключ",
+  "repeater_pubKeyHelper": "Це публична ключ, який пов'язано з створеною приватною ключом. Ви не можете встановлювати його напрямую.",
+  "repeater_pubKeyPrefix": "Високорейтингове прикінання",
+  "repeater_pubKeyPrefixHelper": "Найдіть відповідний открытий ключ, який починається ціми шестнадцатыми цифрами. Ожидається кількість потрібних попыток: {tries}.",
+  "imageMessages_enableTitle": "Підтримка зображень для посилання",
+  "imageMessages_enableSubtitle": "Пошукуєте изображення через сеть. Вимagaєте однократне скачання моделю изображення.",
+  "imageMessages_modelSectionTitle": "Модель для зображень",
+  "imageMessages_downloadModel": "Скачання",
+  "imageMessages_cancelDownload": "Завершити",
+  "imageMessages_removeModel": "Видалим модель",
+  "imageMessages_modelReady": "Готово",
+  "imageMessages_modelNotPublished": "Щоб не було опубліковано — це версія не дозволяє зробити скачання.",
+  "imageMessages_downloadFailed": "Модель для зображень не можна сказати.",
+  "imageMessages_autoProcessTitle": "Автоматично оброблювати obraзи",
+  "imageMessages_autoProcessSubtitle": "Кожна картинка повинні бути відтворена на мій момент прибуття. Використовує приблизно 2 ГБ пам'яті на кожен раз; відключіть від відтворення за допомогою кlikу.",
+  "imageSend_title": "Нашкоду зовні\n\n(or more naturally, depending on context)\n\nПошукуєте изображення",
+  "imageSend_cropNote": "Манітовано до 512 × 512 · соотношення варість не зберігається",
+  "imageSend_originalSize": "Оригінал",
+  "imageSend_onAirSize": "На ері",
+  "imageSend_quality": "Качество",
+  "imageSend_qualityStandard": "Стандарт",
+  "imageSend_qualityHigh": "Висок",
+  "imageSend_packetsLabel": "Пакети",
+  "imageSend_airtimeLabel": "Час на ері",
+  "imageSend_sizeLabel": "Підлог",
+  "imageSend_packetsCount": "{count} {count, plural, one{пакет} few{пакети} many{пакетів} other{пакета}}",
+  "imageSend_range": "{min}–{max}",
+  "imageSend_unknownValue": "—",
+  "imageSend_radioUnknownTitle": "Настройки радио неизвестні",
+  "imageSend_radioUnknownBody": "Залучіться до пристрою, щоб можна було розрахунювати час в етері.",
+  "imageSend_longSendTitle": "Длуга передача",
+  "imageSend_longSendBody": "Це забезпечить канал на approximativno {duration} хвилин.",
+  "imageSend_floodNote": "Рухування потоків: кожен ретрансатор у діапазоні відправлює кожен пакет, тому канал залишається занятшим довше, ніж це.",
+  "imageSend_parityTitle": "Пакет відновлення",
+  "imageSend_paritySubtitle": "Один дополний пакет. Групові посилання не відповідають, тому це дозволяє відвідувачу відтворити зображення, якщо один пакет втрачений.",
+  "imageSend_send": "Пошутить",
+  "imageSend_cancel": "Завершити",
+  "imageSend_encodeFailed": "Це изображення не може бути кодировано.",
+  "imageSend_codecDownloading": "Модель для відтворення изображень ще збирається.",
+  "imageSend_codecUnavailable": "Постій для відправлення изображень на цьому пристрої не доступний.",
+  "imageSend_codecDisabled": "Пictesovani posyly wyключені в настройках.",
+  "imageSend_deviceUnsupported": "Цей радіопередач не може отправляти пакети зображень. Зконнете пристрої, що працює з обладнанням керемонітом компаньєр 13 або новшим.",
+  "imageSend_directMessagesUnsupported": "Фотографії передаються як дані групою, тому їх можна відправляти лише на канал — не в прямому посилання.",
+  "imageSend_tooLarge": "Це изображення кодує більше пакітів, ніж дозволяє формат сети.",
+  "imageSend_sentConfirmation": "Зображення надіслано як {count} {count, plural, =1{пакет} other{пакетів}}.",
+  "imageSend_sendFailed": "Изображення не можна відправити: {error}",
+  "imageSend_sendingProgress": "Пошускаємо изображення — пакет {sent} з {total}",
+  "receivedImage_senderPrefix": "Нод {prefix}",
+  "receivedImage_incoming": "Підходяче: {received} з {total} пакітів",
+  "receivedImage_queued": "Очікування розслівання коду",
+  "receivedImage_tapToDecode": "Кliknite для декодування",
+  "receivedImage_decoding": "Повноювання… за прибуття 1 с.",
+  "receivedImage_incomplete": "Образок не повний — {received} з {total} пакітів прибавлено",
+  "receivedImage_corrupt": "Obraz не можна відтворити",
+  "receivedImage_decoderMissing": "Під час приємки — розшифровка зображення не вдалося.",
+  "receivedImage_evicted": "Изображення не зберігається",
+  "receivedImage_retry": "Попробуй ще раз",
+  "receivedImage_decodeAgain": "Декодуй ще раз",
+  "receivedImage_openSettings": "Заведіть",
+  "receivedImage_tapToProcess": "Кликніть для обробки",
+  "receivedImage_awaiting": "{bytes} байтів · {packets} {packets, plural, =1{пакет} other{пакетів}}",
+  "imageSend_secondsValue": "{seconds} секунди",
+  "imageSend_minutesSecondsValue": "{minutes} хв {seconds} с"
 }

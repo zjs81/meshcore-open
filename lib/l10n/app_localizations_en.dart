@@ -612,6 +612,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_infoChannelCount => 'Channel Count';
 
   @override
+  String get settings_infoHardware => 'Hardware';
+
+  @override
+  String get settings_infoFirmware => 'Firmware';
+
+  @override
   String get settings_presets => 'Presets';
 
   @override
@@ -881,6 +887,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appSettings_batteryLipo => 'LiPo (3.0-4.2V)';
+
+  @override
+  String get appSettings_batteryLipoHv => 'LiPo HV (3.0-4.35V)';
 
   @override
   String get appSettings_mapDisplay => 'Map Display';
@@ -1449,6 +1458,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chat_sendGif => 'Send GIF';
+
+  @override
+  String get chat_sendImage => 'Send image';
+
+  @override
+  String get chat_imagePickFailed => 'Couldn\'t open that image';
 
   @override
   String get chat_receivedGif => 'Received a GIF';
@@ -4468,6 +4483,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get translation_title => 'Translation';
 
   @override
+  String get imageMessages_enableTitle => 'Enable image messages';
+
+  @override
+  String get imageMessages_enableSubtitle =>
+      'Send images over the mesh. Requires a one-time image model download.';
+
+  @override
+  String get imageMessages_modelSectionTitle => 'Image model';
+
+  @override
+  String get imageMessages_downloadModel => 'Download';
+
+  @override
+  String get imageMessages_cancelDownload => 'Cancel';
+
+  @override
+  String get imageMessages_removeModel => 'Remove model';
+
+  @override
+  String get imageMessages_modelReady => 'Ready';
+
+  @override
+  String get imageMessages_modelNotPublished =>
+      'Not published yet — this build cannot download it.';
+
+  @override
+  String get imageMessages_downloadFailed =>
+      'The image model could not be downloaded.';
+
+  @override
+  String get imageMessages_autoProcessTitle => 'Process images automatically';
+
+  @override
+  String get imageMessages_autoProcessSubtitle =>
+      'Reconstruct every image as soon as it arrives. Uses about 2 GB of memory for a second each time; leave off to reconstruct with a tap instead.';
+
+  @override
   String get translation_enableTitle => 'Enable translation';
 
   @override
@@ -4748,4 +4800,201 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pathMap_unfollowPacket => 'Unlock view from packet';
+
+  @override
+  String get imageSend_title => 'Send image';
+
+  @override
+  String get imageSend_cropNote =>
+      'Resized to 512 × 512 · aspect ratio not preserved';
+
+  @override
+  String get imageSend_originalSize => 'Original';
+
+  @override
+  String get imageSend_onAirSize => 'On air';
+
+  @override
+  String get imageSend_quality => 'Quality';
+
+  @override
+  String get imageSend_qualityStandard => 'Standard';
+
+  @override
+  String get imageSend_qualityHigh => 'High';
+
+  @override
+  String get imageSend_packetsLabel => 'Packets';
+
+  @override
+  String get imageSend_airtimeLabel => 'Time on air';
+
+  @override
+  String get imageSend_sizeLabel => 'Payload';
+
+  @override
+  String imageSend_packetsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'packets',
+      one: 'packet',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String imageSend_range(String min, String max) {
+    return '$min–$max';
+  }
+
+  @override
+  String get imageSend_unknownValue => '—';
+
+  @override
+  String get imageSend_radioUnknownTitle => 'Radio settings unknown';
+
+  @override
+  String get imageSend_radioUnknownBody =>
+      'Connect to a device so the time on air can be calculated.';
+
+  @override
+  String get imageSend_longSendTitle => 'Long transmission';
+
+  @override
+  String imageSend_longSendBody(String duration) {
+    return 'This will hold the channel for about $duration.';
+  }
+
+  @override
+  String get imageSend_floodNote =>
+      'Flood routing: every repeater in range retransmits each packet, so the channel stays busy longer than this.';
+
+  @override
+  String get imageSend_parityTitle => 'Add recovery packet';
+
+  @override
+  String get imageSend_paritySubtitle =>
+      'One extra packet. Group messages are not acknowledged, so this lets the receiver rebuild the image if a single packet is lost.';
+
+  @override
+  String get imageSend_send => 'Send';
+
+  @override
+  String get imageSend_cancel => 'Cancel';
+
+  @override
+  String get imageSend_encodeFailed => 'This image could not be encoded.';
+
+  @override
+  String get imageSend_codecDownloading =>
+      'The image model is still downloading.';
+
+  @override
+  String get imageSend_codecUnavailable =>
+      'Image sending is not available on this device.';
+
+  @override
+  String get imageSend_codecDisabled =>
+      'Image messages are turned off in settings.';
+
+  @override
+  String get imageSend_deviceUnsupported =>
+      'This radio cannot send image packets. Connect a device running companion firmware 13 or newer.';
+
+  @override
+  String get imageSend_directMessagesUnsupported =>
+      'Images travel as group data, so they can only be sent to a channel — not in a direct message.';
+
+  @override
+  String get imageSend_tooLarge =>
+      'That image encoded to more packets than the mesh format allows.';
+
+  @override
+  String imageSend_sentConfirmation(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'packets',
+      one: 'packet',
+    );
+    return 'Image sent as $count $_temp0.';
+  }
+
+  @override
+  String imageSend_sendFailed(String error) {
+    return 'The image could not be sent: $error';
+  }
+
+  @override
+  String imageSend_sendingProgress(int sent, int total) {
+    return 'Sending image — packet $sent of $total';
+  }
+
+  @override
+  String receivedImage_senderPrefix(String prefix) {
+    return 'Node $prefix';
+  }
+
+  @override
+  String receivedImage_incoming(int received, int total) {
+    return '$received of $total packets';
+  }
+
+  @override
+  String get receivedImage_queued => 'Waiting to decode';
+
+  @override
+  String get receivedImage_tapToDecode => 'Tap to decode';
+
+  @override
+  String get receivedImage_decoding => 'Reconstructing… about 1 s';
+
+  @override
+  String receivedImage_incomplete(int received, int total) {
+    return 'Image incomplete — $received of $total packets arrived';
+  }
+
+  @override
+  String get receivedImage_corrupt => 'Image could not be reconstructed';
+
+  @override
+  String get receivedImage_decoderMissing =>
+      'Image received — image decoding is off';
+
+  @override
+  String get receivedImage_evicted => 'Image no longer stored';
+
+  @override
+  String get receivedImage_retry => 'Try again';
+
+  @override
+  String get receivedImage_decodeAgain => 'Decode again';
+
+  @override
+  String get receivedImage_openSettings => 'Set up';
+
+  @override
+  String get receivedImage_tapToProcess => 'Tap to process';
+
+  @override
+  String receivedImage_awaiting(int bytes, int packets) {
+    String _temp0 = intl.Intl.pluralLogic(
+      packets,
+      locale: localeName,
+      other: 'packets',
+      one: 'packet',
+    );
+    return '$bytes bytes · $packets $_temp0';
+  }
+
+  @override
+  String imageSend_secondsValue(String seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String imageSend_minutesSecondsValue(String minutes, String seconds) {
+    return '$minutes m $seconds s';
+  }
 }

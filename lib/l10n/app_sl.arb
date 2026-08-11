@@ -2640,5 +2640,227 @@
   "pathMap_noLocation": "Brez lokacije",
   "pathMap_followPacket": "Zakleni pogled na paket",
   "pathMap_unfollowPacket": "Odkleni pogled od paketa",
-  "pathMap_gpsCount": "{confirmed}/{total} GPS"
+  "pathMap_gpsCount": "{confirmed}/{total} GPS",
+  "@settings_deleteRegionConfirm": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "@channels_regionSetTo": {
+    "placeholders": {
+      "region": {
+        "type": "String",
+        "example": "de-mitte"
+      }
+    }
+  },
+  "@chat_imagePickFailed": {
+    "description": "Shown when picking or reading a photo to send fails"
+  },
+  "@repeater_pubKeyPrefixHelper": {
+    "placeholders": {
+      "tries": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_packetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_range": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_longSendBody": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sentConfirmation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_sendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_senderPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "@receivedImage_incoming": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_incomplete": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_awaiting": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "packets": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_secondsValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_minutesSecondsValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_regionSettings": "Regioni",
+  "settings_regionSettingsSubtitle": "Upravljanje opisanih regionov",
+  "settings_regionManagement_screenTitle": "Regijonsko upravljanje",
+  "settings_regionNameHint": "Naslov občine",
+  "settings_regionAddRegion": "Dodaj region",
+  "settings_regionFetchRegions": "Pobražujte izvajne področja iz ponavljalnikov",
+  "settings_regionFetchRegionsFail": "Nižnih občin ni izkrali",
+  "settings_regionFetchRegionsAlreadyExists": "Taj oblasi je več pomanjkan.",
+  "settings_regionName": "Naziv Regiona",
+  "settings_regionDeleted": "Oblikačena regija",
+  "settings_deleteRegion": "Prihoda Region",
+  "settings_deleteRegionConfirm": "Ostani {region} iz listy regionov?",
+  "settings_infoHardware": "Hardver",
+  "settings_infoFirmware": "Pravilnik",
+  "repeater_pathHashModeOption0": "0 - 1 bajt",
+  "repeater_pathHashModeOption1": "1 - 2 bite",
+  "repeater_pathHashModeOption2": "2 - 3 bite",
+  "repeater_pathHashModeOption3": "3 - 4 bite",
+  "appSettings_batteryLipoHv": "LiPo HV (3,0–4,35 V)",
+  "channels_regionSetTo": "Osebno: {region}",
+  "channels_regionNotSet": "Region: brak",
+  "channels_regionSelect_Title": "Vablajte region",
+  "channels_clearRegion": "Jasna regija",
+  "chat_sendImage": "Sločaji slik",
+  "chat_imagePickFailed": "Nispeval sem tega ta slik",
+  "chat_receivedGif": "Otrvljen GIF",
+  "repeater_keySettings": "Zmeničke ključe identitete",
+  "repeater_keySettingsSubtitle": "Zamenjajte publican ali privatni ključni par",
+  "repeater_prvKey": "Privarna ključa",
+  "repeater_prvKeyHelper": "Nova privatna ključa za prekaznik, 128- znakovni šestnastik.",
+  "repeater_generatePrvKey": "Sporočna ključna para",
+  "repeater_stopGeneratingPrvKey": "Prekajanje odkrivanja ključne paro",
+  "repeater_pubKey": "Public key (publična ključa)",
+  "repeater_pubKeyHelper": "Taj je publicna ključ, ki pomeni pripovedno privatno ključ. Ne možeš to vrediti direktno.",
+  "repeater_pubKeyPrefix": "Poželana prefiks",
+  "repeater_pubKeyPrefixHelper": "Najdi publicen ključ, ki začne s tih hexnih čitov. Očekivani pokusi: {tries}.",
+  "imageMessages_enableTitle": "Pozivni izkričile slike",
+  "imageMessages_enableSubtitle": "Prešli vzorce pre mrežo. Potrebno je jednokratno stworiti model vzorca.",
+  "imageMessages_modelSectionTitle": "Obrazni model",
+  "imageMessages_downloadModel": "Storba",
+  "imageMessages_cancelDownload": "Odločite",
+  "imageMessages_removeModel": "Ubrani model",
+  "imageMessages_modelReady": "Gotov",
+  "imageMessages_modelNotPublished": "Jo še niso izdana — ta izdelka te ne može prebaviti.",
+  "imageMessages_downloadFailed": "Obrazni model ne može biti preuzet.",
+  "imageMessages_autoProcessTitle": "Avtomatizirane slike",
+  "imageMessages_autoProcessSubtitle": "Katero je oblikovanje svega oblikov, ko se pošteva. Za drugo okolo časa se koristi ok. 2 GB pamične prostore; odločite se za oblikovanje s tukom.",
+  "imageSend_title": "Sločaji slik",
+  "imageSend_cropNote": "Zadovoljno izmenjeno na 512 × 512 · vzorovni odnos ne ohranjen",
+  "imageSend_originalSize": "Original text:\n\nThe early bird catches the worm.\n\nTranslation:\n\nPojdi prvi, zlati v kroku.",
+  "imageSend_onAirSize": "Na vodi",
+  "imageSend_quality": "Kakovost",
+  "imageSend_qualityStandard": "Standard",
+  "imageSend_qualityHigh": "Vysoko",
+  "imageSend_packetsLabel": "Pakete",
+  "imageSend_airtimeLabel": "Čas v eteru",
+  "imageSend_sizeLabel": "Napravo",
+  "imageSend_packetsCount": "{count} {count, plural, =1{paket} other{paketov}}",
+  "imageSend_range": "{min}–{max}",
+  "imageSend_unknownValue": "—",
+  "imageSend_radioUnknownTitle": "Naslušniki radio neznane",
+  "imageSend_radioUnknownBody": "Poučajte se na stroj, da se lahko izračunuje čas v prikazu.",
+  "imageSend_longSendTitle": "Dluga preposlana",
+  "imageSend_longSendBody": "Ovo bo ohranilo kanal prihodno za obliko {duration}.",
+  "imageSend_floodNote": "Povlatni potok: sve repeaterje v območju pretrasirajo svak paket, pa kanál ostane zanudnejši od tega.",
+  "imageSend_parityTitle": "Pobavni paket zdržbe",
+  "imageSend_paritySubtitle": "Jedna dodatna paczka. Grupni izjasi ne izvajajo potvarnosti, pa ta izdelka omogoča preuzimanju ponovno izgleda, če je zgubjen pojedni paket.",
+  "imageSend_send": "Posyłaj",
+  "imageSend_cancel": "Odločite",
+  "imageSend_encodeFailed": "Ovo slikovo ne more biti zakodirano.",
+  "imageSend_codecDownloading": "Obrazni model še pospeva preborjanje.",
+  "imageSend_codecUnavailable": "Poslanje slike nema na tem zelo naročnem naročnem.",
+  "imageSend_codecDisabled": "Obrazi s pomanjkanjem so v nastavnih.",
+  "imageSend_deviceUnsupported": "Taj radio ne može posredovati slike pakuete. Prepoštijo izbirni napravnik s kompanijskimi programi na čevem 13 ali novšejšim.",
+  "imageSend_directMessagesUnsupported": "Obrazy se pojavijo kot skupnih podatkov, pa lahko ih poslujejo samo na kanal — ne v prilogih.",
+  "imageSend_tooLarge": "Taj slik je zakodiran v viših pakotnih od športne formate, ki omogoča mrežni format.",
+  "imageSend_sentConfirmation": "Slika poslana kot {count} {count, plural, =1{paket} other{paketov}}.",
+  "imageSend_sendFailed": "Obraz ne može biti poslany: {error}",
+  "imageSend_sendingProgress": "Prekazivanje izkaza — paket {sent} od {total}",
+  "receivedImage_senderPrefix": "Vrtitev {prefix}",
+  "receivedImage_incoming": "Otrteno od {received} na {total} poslovanih potokov",
+  "receivedImage_queued": "Čekanje, da se dekodira",
+  "receivedImage_tapToDecode": "Kliknite, da razkrivete",
+  "receivedImage_decoding": "Ostvarjanje… o prihodnosti za okolo 1 s",
+  "receivedImage_incomplete": "Obraz nije kompletan — {received} od {total} poslaničev je prishodil",
+  "receivedImage_corrupt": "Obraz ne more lahko rekonstruirati",
+  "receivedImage_decoderMissing": "Otrgena slika — dekodirana slika je izključena",
+  "receivedImage_evicted": "Obraz ni več niso zakajiren",
+  "receivedImage_retry": "Pokušajte znova",
+  "receivedImage_decodeAgain": "Dekodiraj ponovno",
+  "receivedImage_openSettings": "Nastavite",
+  "receivedImage_tapToProcess": "Kliknij za obravnavanje",
+  "receivedImage_awaiting": "{bytes} bajtov · {packets} {packets, plural, =1{paket} other{paketov}}",
+  "imageSend_secondsValue": "{seconds} s",
+  "imageSend_minutesSecondsValue": "{minutes} m {seconds} s"
 }

@@ -32,5 +32,7 @@
 	<string>MeshCore needs Bluetooth to communicate with LoRa mesh devices</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app uses the camera to scan QR codes for joining communities.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app lets you pick a photo to compress and send over the mesh.</string>
 </dict>
 </plist>

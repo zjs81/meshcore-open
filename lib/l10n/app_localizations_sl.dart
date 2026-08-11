@@ -367,42 +367,43 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_radioSettingsUpdated => 'Radio nastavitve posodobljene';
 
   @override
-  String get settings_regionSettings => 'Regions';
+  String get settings_regionSettings => 'Regioni';
 
   @override
-  String get settings_regionSettingsSubtitle => 'Manage stored regions';
+  String get settings_regionSettingsSubtitle => 'Upravljanje opisanih regionov';
 
   @override
-  String get settings_regionManagement_screenTitle => 'Region Management';
+  String get settings_regionManagement_screenTitle => 'Regijonsko upravljanje';
 
   @override
-  String get settings_regionNameHint => 'Enter region name';
+  String get settings_regionNameHint => 'Naslov občine';
 
   @override
-  String get settings_regionAddRegion => 'Add region';
+  String get settings_regionAddRegion => 'Dodaj region';
 
   @override
-  String get settings_regionFetchRegions => 'Fetch regions from repeaters';
+  String get settings_regionFetchRegions =>
+      'Pobražujte izvajne področja iz ponavljalnikov';
 
   @override
-  String get settings_regionFetchRegionsFail => 'No regions were found';
+  String get settings_regionFetchRegionsFail => 'Nižnih občin ni izkrali';
 
   @override
   String get settings_regionFetchRegionsAlreadyExists =>
-      'This region has already been added';
+      'Taj oblasi je več pomanjkan.';
 
   @override
-  String get settings_regionName => 'Region Name';
+  String get settings_regionName => 'Naziv Regiona';
 
   @override
-  String get settings_regionDeleted => 'Region deleted';
+  String get settings_regionDeleted => 'Oblikačena regija';
 
   @override
-  String get settings_deleteRegion => 'Delete Region';
+  String get settings_deleteRegion => 'Prihoda Region';
 
   @override
   String settings_deleteRegionConfirm(String region) {
-    return 'Remove \"$region\" from region list?';
+    return 'Ostani $region iz listy regionov?';
   }
 
   @override
@@ -617,6 +618,12 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_infoChannelCount => 'Število kanalov';
 
   @override
+  String get settings_infoHardware => 'Hardver';
+
+  @override
+  String get settings_infoFirmware => 'Pravilnik';
+
+  @override
   String get settings_presets => 'Prednastavitve';
 
   @override
@@ -732,16 +739,16 @@ class AppLocalizationsSl extends AppLocalizations {
   String get appSettings_languageUk => 'Ukrajinsko';
 
   @override
-  String get repeater_pathHashModeOption0 => '0 - 1 byte';
+  String get repeater_pathHashModeOption0 => '0 - 1 bajt';
 
   @override
-  String get repeater_pathHashModeOption1 => '1 - 2 bytes';
+  String get repeater_pathHashModeOption1 => '1 - 2 bite';
 
   @override
-  String get repeater_pathHashModeOption2 => '2 - 3 bytes';
+  String get repeater_pathHashModeOption2 => '2 - 3 bite';
 
   @override
-  String get repeater_pathHashModeOption3 => '3 - 4 bytes';
+  String get repeater_pathHashModeOption3 => '3 - 4 bite';
 
   @override
   String get appSettings_enableMessageTracing => 'Omogoči sledenje sporočilom';
@@ -888,6 +895,9 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get appSettings_batteryLipo => 'LiPo (3,0-4,2V)';
+
+  @override
+  String get appSettings_batteryLipoHv => 'LiPo HV (3,0–4,35 V)';
 
   @override
   String get appSettings_mapDisplay => 'Prikaz zemljevida';
@@ -1397,17 +1407,17 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String channels_regionSetTo(String region) {
-    return 'Region: $region';
+    return 'Osebno: $region';
   }
 
   @override
-  String get channels_regionNotSet => 'Region: none';
+  String get channels_regionNotSet => 'Region: brak';
 
   @override
-  String get channels_regionSelect_Title => 'Select a region';
+  String get channels_regionSelect_Title => 'Vablajte region';
 
   @override
-  String get channels_clearRegion => 'Clear region';
+  String get channels_clearRegion => 'Jasna regija';
 
   @override
   String get chat_noMessages => 'Še ni sporočil.';
@@ -1466,7 +1476,13 @@ class AppLocalizationsSl extends AppLocalizations {
   String get chat_sendGif => 'Pošlji GIF';
 
   @override
-  String get chat_receivedGif => 'Received a GIF';
+  String get chat_sendImage => 'Sločaji slik';
+
+  @override
+  String get chat_imagePickFailed => 'Nispeval sem tega ta slik';
+
+  @override
+  String get chat_receivedGif => 'Otrvljen GIF';
 
   @override
   String get chat_reply => 'Odgovori';
@@ -2699,38 +2715,39 @@ class AppLocalizationsSl extends AppLocalizations {
       'Bajti, uporabljeni za kodiranje ID-ja tega repetitorja v oznakah flood poti/zaznavanja zank. 0=1 bajt (256 ID-jev, do 64 skokov), 1=2 bajta (65.000 ID-jev, do 32 skokov), 2=3 bajti (16 milijonov ID-jev, do 21 skokov). Vdelana programska oprema pred v1.14 je vedno uporabljala 1-bajtne poti; v1.14 in novejše je mogoče nastaviti na 2- ali 3-bajtne poti.';
 
   @override
-  String get repeater_keySettings => 'Change Identity Keys';
+  String get repeater_keySettings => 'Zmeničke ključe identitete';
 
   @override
   String get repeater_keySettingsSubtitle =>
-      'Change the public/private keypair';
+      'Zamenjajte publican ali privatni ključni par';
 
   @override
-  String get repeater_prvKey => 'Private key';
+  String get repeater_prvKey => 'Privarna ključa';
 
   @override
   String get repeater_prvKeyHelper =>
-      'A new private key for the repeater, a 128-character hex string.';
+      'Nova privatna ključa za prekaznik, 128- znakovni šestnastik.';
 
   @override
-  String get repeater_generatePrvKey => 'Generate a random keypair';
+  String get repeater_generatePrvKey => 'Sporočna ključna para';
 
   @override
-  String get repeater_stopGeneratingPrvKey => 'Interrupt search for keypair';
+  String get repeater_stopGeneratingPrvKey =>
+      'Prekajanje odkrivanja ključne paro';
 
   @override
-  String get repeater_pubKey => 'Public key';
+  String get repeater_pubKey => 'Public key (publična ključa)';
 
   @override
   String get repeater_pubKeyHelper =>
-      'This is the public key that goes with the generated private key. You can\'t set this directly.';
+      'Taj je publicna ključ, ki pomeni pripovedno privatno ključ. Ne možeš to vrediti direktno.';
 
   @override
-  String get repeater_pubKeyPrefix => 'Desired prefix';
+  String get repeater_pubKeyPrefix => 'Poželana prefiks';
 
   @override
   String repeater_pubKeyPrefixHelper(int tries) {
-    return 'Find a public key that starts with these hex digits. Expected tries needed: $tries.';
+    return 'Najdi publicen ključ, ki začne s tih hexnih čitov. Očekivani pokusi: $tries.';
   }
 
   @override
@@ -4522,6 +4539,43 @@ class AppLocalizationsSl extends AppLocalizations {
   String get translation_title => 'Prevod';
 
   @override
+  String get imageMessages_enableTitle => 'Pozivni izkričile slike';
+
+  @override
+  String get imageMessages_enableSubtitle =>
+      'Prešli vzorce pre mrežo. Potrebno je jednokratno stworiti model vzorca.';
+
+  @override
+  String get imageMessages_modelSectionTitle => 'Obrazni model';
+
+  @override
+  String get imageMessages_downloadModel => 'Storba';
+
+  @override
+  String get imageMessages_cancelDownload => 'Odločite';
+
+  @override
+  String get imageMessages_removeModel => 'Ubrani model';
+
+  @override
+  String get imageMessages_modelReady => 'Gotov';
+
+  @override
+  String get imageMessages_modelNotPublished =>
+      'Jo še niso izdana — ta izdelka te ne može prebaviti.';
+
+  @override
+  String get imageMessages_downloadFailed =>
+      'Obrazni model ne može biti preuzet.';
+
+  @override
+  String get imageMessages_autoProcessTitle => 'Avtomatizirane slike';
+
+  @override
+  String get imageMessages_autoProcessSubtitle =>
+      'Katero je oblikovanje svega oblikov, ko se pošteva. Za drugo okolo časa se koristi ok. 2 GB pamične prostore; odločite se za oblikovanje s tukom.';
+
+  @override
   String get translation_enableTitle => 'Omogočite prevod';
 
   @override
@@ -4808,4 +4862,202 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get pathMap_unfollowPacket => 'Odkleni pogled od paketa';
+
+  @override
+  String get imageSend_title => 'Sločaji slik';
+
+  @override
+  String get imageSend_cropNote =>
+      'Zadovoljno izmenjeno na 512 × 512 · vzorovni odnos ne ohranjen';
+
+  @override
+  String get imageSend_originalSize =>
+      'Original text:\n\nThe early bird catches the worm.\n\nTranslation:\n\nPojdi prvi, zlati v kroku.';
+
+  @override
+  String get imageSend_onAirSize => 'Na vodi';
+
+  @override
+  String get imageSend_quality => 'Kakovost';
+
+  @override
+  String get imageSend_qualityStandard => 'Standard';
+
+  @override
+  String get imageSend_qualityHigh => 'Vysoko';
+
+  @override
+  String get imageSend_packetsLabel => 'Pakete';
+
+  @override
+  String get imageSend_airtimeLabel => 'Čas v eteru';
+
+  @override
+  String get imageSend_sizeLabel => 'Napravo';
+
+  @override
+  String imageSend_packetsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'paketov',
+      one: 'paket',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String imageSend_range(String min, String max) {
+    return '$min–$max';
+  }
+
+  @override
+  String get imageSend_unknownValue => '—';
+
+  @override
+  String get imageSend_radioUnknownTitle => 'Naslušniki radio neznane';
+
+  @override
+  String get imageSend_radioUnknownBody =>
+      'Poučajte se na stroj, da se lahko izračunuje čas v prikazu.';
+
+  @override
+  String get imageSend_longSendTitle => 'Dluga preposlana';
+
+  @override
+  String imageSend_longSendBody(String duration) {
+    return 'Ovo bo ohranilo kanal prihodno za obliko $duration.';
+  }
+
+  @override
+  String get imageSend_floodNote =>
+      'Povlatni potok: sve repeaterje v območju pretrasirajo svak paket, pa kanál ostane zanudnejši od tega.';
+
+  @override
+  String get imageSend_parityTitle => 'Pobavni paket zdržbe';
+
+  @override
+  String get imageSend_paritySubtitle =>
+      'Jedna dodatna paczka. Grupni izjasi ne izvajajo potvarnosti, pa ta izdelka omogoča preuzimanju ponovno izgleda, če je zgubjen pojedni paket.';
+
+  @override
+  String get imageSend_send => 'Posyłaj';
+
+  @override
+  String get imageSend_cancel => 'Odločite';
+
+  @override
+  String get imageSend_encodeFailed => 'Ovo slikovo ne more biti zakodirano.';
+
+  @override
+  String get imageSend_codecDownloading =>
+      'Obrazni model še pospeva preborjanje.';
+
+  @override
+  String get imageSend_codecUnavailable =>
+      'Poslanje slike nema na tem zelo naročnem naročnem.';
+
+  @override
+  String get imageSend_codecDisabled => 'Obrazi s pomanjkanjem so v nastavnih.';
+
+  @override
+  String get imageSend_deviceUnsupported =>
+      'Taj radio ne može posredovati slike pakuete. Prepoštijo izbirni napravnik s kompanijskimi programi na čevem 13 ali novšejšim.';
+
+  @override
+  String get imageSend_directMessagesUnsupported =>
+      'Obrazy se pojavijo kot skupnih podatkov, pa lahko ih poslujejo samo na kanal — ne v prilogih.';
+
+  @override
+  String get imageSend_tooLarge =>
+      'Taj slik je zakodiran v viših pakotnih od športne formate, ki omogoča mrežni format.';
+
+  @override
+  String imageSend_sentConfirmation(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'paketov',
+      one: 'paket',
+    );
+    return 'Slika poslana kot $count $_temp0.';
+  }
+
+  @override
+  String imageSend_sendFailed(String error) {
+    return 'Obraz ne može biti poslany: $error';
+  }
+
+  @override
+  String imageSend_sendingProgress(int sent, int total) {
+    return 'Prekazivanje izkaza — paket $sent od $total';
+  }
+
+  @override
+  String receivedImage_senderPrefix(String prefix) {
+    return 'Vrtitev $prefix';
+  }
+
+  @override
+  String receivedImage_incoming(int received, int total) {
+    return 'Otrteno od $received na $total poslovanih potokov';
+  }
+
+  @override
+  String get receivedImage_queued => 'Čekanje, da se dekodira';
+
+  @override
+  String get receivedImage_tapToDecode => 'Kliknite, da razkrivete';
+
+  @override
+  String get receivedImage_decoding =>
+      'Ostvarjanje… o prihodnosti za okolo 1 s';
+
+  @override
+  String receivedImage_incomplete(int received, int total) {
+    return 'Obraz nije kompletan — $received od $total poslaničev je prishodil';
+  }
+
+  @override
+  String get receivedImage_corrupt => 'Obraz ne more lahko rekonstruirati';
+
+  @override
+  String get receivedImage_decoderMissing =>
+      'Otrgena slika — dekodirana slika je izključena';
+
+  @override
+  String get receivedImage_evicted => 'Obraz ni več niso zakajiren';
+
+  @override
+  String get receivedImage_retry => 'Pokušajte znova';
+
+  @override
+  String get receivedImage_decodeAgain => 'Dekodiraj ponovno';
+
+  @override
+  String get receivedImage_openSettings => 'Nastavite';
+
+  @override
+  String get receivedImage_tapToProcess => 'Kliknij za obravnavanje';
+
+  @override
+  String receivedImage_awaiting(int bytes, int packets) {
+    String _temp0 = intl.Intl.pluralLogic(
+      packets,
+      locale: localeName,
+      other: 'paketov',
+      one: 'paket',
+    );
+    return '$bytes bajtov · $packets $_temp0';
+  }
+
+  @override
+  String imageSend_secondsValue(String seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String imageSend_minutesSecondsValue(String minutes, String seconds) {
+    return '$minutes m $seconds s';
+  }
 }

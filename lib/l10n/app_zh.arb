@@ -2645,5 +2645,227 @@
   "pathMap_followPacket": "锁定视图跟随数据包",
   "pathMap_unfollowPacket": "解锁视图跟随",
   "pathMap_gpsCount": "{confirmed}/{total} GPS",
-  "pathMap_partialAnimation": "{count, plural, =1{1 跳无位置信息 — 显示的路径不完整} other{{count} 跳无位置信息 — 显示的路径不完整}}"
+  "pathMap_partialAnimation": "{count, plural, =1{1 跳无位置信息 — 显示的路径不完整} other{{count} 跳无位置信息 — 显示的路径不完整}}",
+  "@settings_deleteRegionConfirm": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "@channels_regionSetTo": {
+    "placeholders": {
+      "region": {
+        "type": "String",
+        "example": "de-mitte"
+      }
+    }
+  },
+  "@chat_imagePickFailed": {
+    "description": "Shown when picking or reading a photo to send fails"
+  },
+  "@repeater_pubKeyPrefixHelper": {
+    "placeholders": {
+      "tries": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_packetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_range": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_longSendBody": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sentConfirmation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_sendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_senderPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "@receivedImage_incoming": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_incomplete": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_awaiting": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "packets": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_secondsValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_minutesSecondsValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_regionSettings": "地区",
+  "settings_regionSettingsSubtitle": "管理已存储的区域",
+  "settings_regionManagement_screenTitle": "区域管理",
+  "settings_regionNameHint": "区域名称",
+  "settings_regionAddRegion": "增加地区",
+  "settings_regionFetchRegions": "从中继器获取区域",
+  "settings_regionFetchRegionsFail": "未发现任何地区",
+  "settings_regionFetchRegionsAlreadyExists": "该地区已被添加",
+  "settings_regionName": "地区名称",
+  "settings_regionDeleted": "区域已删除",
+  "settings_deleteRegion": "删除区域",
+  "settings_deleteRegionConfirm": "从 {region} 列表中删除？",
+  "settings_infoHardware": "硬件",
+  "settings_infoFirmware": "固件",
+  "repeater_pathHashModeOption0": "0 - 1 字节",
+  "repeater_pathHashModeOption1": "1 - 2 字节",
+  "repeater_pathHashModeOption2": "2 - 3 字节",
+  "repeater_pathHashModeOption3": "3 - 4 字节",
+  "appSettings_batteryLipoHv": "锂多压电源（3.0-4.35伏）",
+  "channels_regionSetTo": "地区：{region}",
+  "channels_regionNotSet": "地区：无",
+  "channels_regionSelect_Title": "选择一个地区",
+  "channels_clearRegion": "无碍区域",
+  "chat_sendImage": "发送图片",
+  "chat_imagePickFailed": "无法打开该图片",
+  "chat_receivedGif": "收到一个GIF",
+  "repeater_keySettings": "更改身份密钥",
+  "repeater_keySettingsSubtitle": "更换公钥/私钥对",
+  "repeater_prvKey": "私钥",
+  "repeater_prvKeyHelper": "中继器的新私钥，为一个128位的十六进制字符串。",
+  "repeater_generatePrvKey": "生成一个随机的密钥对",
+  "repeater_stopGeneratingPrvKey": "中断密钥对搜索",
+  "repeater_pubKey": "公钥",
+  "repeater_pubKeyHelper": "这是与生成的私钥配对的公钥。您不能直接设置此内容。",
+  "repeater_pubKeyPrefix": "期望的前缀",
+  "repeater_pubKeyPrefixHelper": "找到一组以这些十六进制数字开头的公钥。预计尝试次数：{tries}",
+  "imageMessages_enableTitle": "启用图片消息",
+  "imageMessages_enableSubtitle": "通过网格发送图像。需要一次性下载图像模型。",
+  "imageMessages_modelSectionTitle": "图像模型",
+  "imageMessages_downloadModel": "下载",
+  "imageMessages_cancelDownload": "取消",
+  "imageMessages_removeModel": "移除模型",
+  "imageMessages_modelReady": "准备就绪",
+  "imageMessages_modelNotPublished": "尚未发布——此版本无法下载该内容。",
+  "imageMessages_downloadFailed": "图像模型无法下载。",
+  "imageMessages_autoProcessTitle": "自动处理图像",
+  "imageMessages_autoProcessSubtitle": "每次图像到达后立即重建，每次需要约2GB的内存；若想关闭重建功能，可通过点击取消开启。",
+  "imageSend_title": "发送图片",
+  "imageSend_cropNote": "调整大小至512 × 512 · 宽高比未保留",
+  "imageSend_originalSize": "原文",
+  "imageSend_onAirSize": "直播中",
+  "imageSend_quality": "质量",
+  "imageSend_qualityStandard": "标准",
+  "imageSend_qualityHigh": "高",
+  "imageSend_packetsLabel": "数据包",
+  "imageSend_airtimeLabel": "播出时间",
+  "imageSend_sizeLabel": "有效载荷",
+  "imageSend_packetsCount": "{count} {count, plural, =1{个数据包} other{个数据包}}",
+  "imageSend_range": "{min}–{max}",
+  "imageSend_unknownValue": "—",
+  "imageSend_radioUnknownTitle": "无线电设置未知",
+  "imageSend_radioUnknownBody": "连接设备以计算播出时间。",
+  "imageSend_longSendTitle": "长距离传输",
+  "imageSend_longSendBody": "这将维持频道大约 {duration} 时间。",
+  "imageSend_floodNote": "洪水路由：每个中继站都会转发每个数据包，因此信道比这段时间更长地处于繁忙状态。",
+  "imageSend_parityTitle": "恢复包",
+  "imageSend_paritySubtitle": "多一个数据包。群发消息不被确认，因此如果某个数据包丢失，接收方可以重新构建图像。",
+  "imageSend_send": "发送",
+  "imageSend_cancel": "取消",
+  "imageSend_encodeFailed": "此图像无法编码。",
+  "imageSend_codecDownloading": "图像模型仍在下载中。",
+  "imageSend_codecUnavailable": "此设备无法发送图片。",
+  "imageSend_codecDisabled": "图片消息在设置中已关闭。",
+  "imageSend_deviceUnsupported": "此无线电无法发送图像数据包。请连接运行伴侣固件13或更高版本的设备。",
+  "imageSend_directMessagesUnsupported": "图片作为群组数据传输，因此只能发送到频道，而不能直接发送给个人。",
+  "imageSend_tooLarge": "该图像编码的数据包数量超过了网格格式所允许的范围。",
+  "imageSend_sentConfirmation": "图像已作为 {count} {count, plural, =1{个数据包} other{个数据包}} 发送。",
+  "imageSend_sendFailed": "无法发送图片：{error}",
+  "imageSend_sendingProgress": "发送图像 — 已发送 {sent} 包含 {total}",
+  "receivedImage_senderPrefix": "节点 {prefix}",
+  "receivedImage_incoming": "已收到的 {received} 个包含在 {total} 个包裹中",
+  "receivedImage_queued": "等待解码",
+  "receivedImage_tapToDecode": "点击解锁",
+  "receivedImage_decoding": "重建……大约1秒",
+  "receivedImage_incomplete": "图片不完整 — {received} 已收到 {total} 个数据包",
+  "receivedImage_corrupt": "图像无法重建",
+  "receivedImage_decoderMissing": "收到图片 — 图像解码失败",
+  "receivedImage_evicted": "图片已不再存储",
+  "receivedImage_retry": "再试一次",
+  "receivedImage_decodeAgain": "重新解码",
+  "receivedImage_openSettings": "建立",
+  "receivedImage_tapToProcess": "点击处理",
+  "receivedImage_awaiting": "{bytes} 字节 · {packets} {packets, plural, =1{个数据包} other{个数据包}}",
+  "imageSend_secondsValue": "{seconds} 秒",
+  "imageSend_minutesSecondsValue": "{minutes} 分 {seconds} 秒"
 }

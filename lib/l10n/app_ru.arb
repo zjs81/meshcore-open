@@ -1937,5 +1937,227 @@
   "pathMap_noLocation": "Нет координат",
   "pathMap_followPacket": "Следить за пакетом",
   "pathMap_unfollowPacket": "Не следить за пакетом",
-  "pathMap_gpsCount": "{confirmed}/{total} GPS"
+  "pathMap_gpsCount": "{confirmed}/{total} GPS",
+  "@settings_deleteRegionConfirm": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "@channels_regionSetTo": {
+    "placeholders": {
+      "region": {
+        "type": "String",
+        "example": "de-mitte"
+      }
+    }
+  },
+  "@chat_imagePickFailed": {
+    "description": "Shown when picking or reading a photo to send fails"
+  },
+  "@repeater_pubKeyPrefixHelper": {
+    "placeholders": {
+      "tries": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_packetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_range": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_longSendBody": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sentConfirmation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_sendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_senderPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "@receivedImage_incoming": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_incomplete": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_awaiting": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "packets": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_secondsValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_minutesSecondsValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_regionSettings": "Регионы",
+  "settings_regionSettingsSubtitle": "Управление сохранёнными регионами",
+  "settings_regionManagement_screenTitle": "Управление регионами",
+  "settings_regionNameHint": "Введите название региона",
+  "settings_regionAddRegion": "Добавить регион",
+  "settings_regionFetchRegions": "Извлекать регионы с ретрансляторов",
+  "settings_regionFetchRegionsFail": "Не были найдены никакие регионы",
+  "settings_regionFetchRegionsAlreadyExists": "Этот регион уже был добавлен",
+  "settings_regionName": "Название региона",
+  "settings_regionDeleted": "Регион удалён",
+  "settings_deleteRegion": "Удалить регион",
+  "settings_deleteRegionConfirm": "Удалить \"{region}\" из списка регионов?",
+  "settings_infoHardware": "Оборудование",
+  "settings_infoFirmware": "Производственное программное обеспечение",
+  "repeater_pathHashModeOption0": "0 - 1 байт",
+  "repeater_pathHashModeOption1": "1 - 2 байта",
+  "repeater_pathHashModeOption2": "2 - 3 байта",
+  "repeater_pathHashModeOption3": "3 - 4 байта",
+  "appSettings_batteryLipoHv": "LiPo HV (3,0–4,35 В)",
+  "channels_regionSetTo": "РЕГИОН: {region}",
+  "channels_regionNotSet": "Регион: отсутствует",
+  "channels_regionSelect_Title": "Выберите регион",
+  "channels_clearRegion": "Чистый регион",
+  "chat_sendImage": "Отправьте изображение",
+  "chat_imagePickFailed": "Не удалось открыть это изображение",
+  "chat_receivedGif": "Получен GIF",
+  "repeater_keySettings": "Изменить ключи идентичности",
+  "repeater_keySettingsSubtitle": "Измените пару публичных/частных ключей",
+  "repeater_prvKey": "Личный ключ",
+  "repeater_prvKeyHelper": "Для повторителя генерируется новый приватный ключ — шестнадцатеричная строка из 128 символов.",
+  "repeater_generatePrvKey": "Сгенерируйте случайный ключ-пару",
+  "repeater_stopGeneratingPrvKey": "Прервать поиск ключной пары",
+  "repeater_pubKey": "Публичный ключ",
+  "repeater_pubKeyHelper": "Это публичный ключ, который соответствует сгенерированному приватному ключу. Вы не можете установить его напрямую.",
+  "repeater_pubKeyPrefix": "Желаемый префикс",
+  "repeater_pubKeyPrefixHelper": "Найдите публичный ключ, начинающийся этими шестнадцатеричными цифрами. Ожидаемое количество попыток: {tries}.",
+  "imageMessages_enableTitle": "Включить изображения в сообщения",
+  "imageMessages_enableSubtitle": "Отправьте изображения через сеть. Требуется однократная загрузка шаблона изображения.",
+  "imageMessages_modelSectionTitle": "Модель изображения",
+  "imageMessages_downloadModel": "Скачать",
+  "imageMessages_cancelDownload": "Отмена",
+  "imageMessages_removeModel": "Удалить модель",
+  "imageMessages_modelReady": "Готов",
+  "imageMessages_modelNotPublished": "Пока не опубликовано — эта сборка не может скачать это.",
+  "imageMessages_downloadFailed": "Модель изображения не удалось скачать.",
+  "imageMessages_autoProcessTitle": "Автоматически обрабатывать изображения",
+  "imageMessages_autoProcessSubtitle": "Примерно каждое изображение реконструируйте сразу после его поступления. Для этого на каждый раз используется около 2 ГБ памяти; отключите реконструкцию касанием.",
+  "imageSend_title": "Отправьте изображение",
+  "imageSend_cropNote": "Меняется размер на 512 × 512 · соотношение сторон не сохраняется",
+  "imageSend_originalSize": "Оригинал",
+  "imageSend_onAirSize": "В эфире",
+  "imageSend_quality": "Качество",
+  "imageSend_qualityStandard": "Стандарт",
+  "imageSend_qualityHigh": "Высота",
+  "imageSend_packetsLabel": "Пакеты",
+  "imageSend_airtimeLabel": "Время на эфире",
+  "imageSend_sizeLabel": "Пакет",
+  "imageSend_packetsCount": "{count} {count, plural, one{пакет} few{пакета} many{пакетов} other{пакета}}",
+  "imageSend_range": "{min}–{max}",
+  "imageSend_unknownValue": "—",
+  "imageSend_radioUnknownTitle": "Настройки радио неизвестны",
+  "imageSend_radioUnknownBody": "Подключитесь к устройству, чтобы можно было рассчитать время эфирного времени.",
+  "imageSend_longSendTitle": "Долгая передача",
+  "imageSend_longSendBody": "Это будет поддерживать канал примерно {duration}.",
+  "imageSend_floodNote": "Руководство по маршрутизации потоков: каждый ретрансатор в зоне перераспределяет каждый пакет, поэтому канал остаётся занятным дольше, чем это.",
+  "imageSend_parityTitle": "Пакет восстановления",
+  "imageSend_paritySubtitle": "Один дополнительный пакет. Групповые сообщения не подтверждаются, поэтому это позволяет получателю восстановить изображение, если один пакет потерян.",
+  "imageSend_send": "Отправить",
+  "imageSend_cancel": "Отмена",
+  "imageSend_encodeFailed": "Это изображение не может быть закодировано.",
+  "imageSend_codecDownloading": "Модель изображения всё ещё загружается.",
+  "imageSend_codecUnavailable": "Отправка изображения на этом устройстве недоступна.",
+  "imageSend_codecDisabled": "В настройках отключены сообщения с изображениями.",
+  "imageSend_deviceUnsupported": "Это радио не может отправлять пакеты изображений. Подключите устройство, работающее на прошивке-компаньоне версии 13 или выше.",
+  "imageSend_directMessagesUnsupported": "Изображения передаются как групповые данные, поэтому их можно отправлять только в канал, а не в личное сообщение.",
+  "imageSend_tooLarge": "Изображение было закодировано в больше пакетов, чем позволяет формат сетки.",
+  "imageSend_sentConfirmation": "Изображение отправлено как {count} {count, plural, =1{пакет} other{пакетов}}.",
+  "imageSend_sendFailed": "Изображение не может быть отправлено: {error}",
+  "imageSend_sendingProgress": "Отправка изображения — пакет {sent} из {total}",
+  "receivedImage_senderPrefix": "Узел {prefix}",
+  "receivedImage_incoming": "{received} из {total} пакетов",
+  "receivedImage_queued": "Ожидание расшифровки",
+  "receivedImage_tapToDecode": "Нажмите для декодирования",
+  "receivedImage_decoding": "Реконструкция… примерно за 1 секунду",
+  "receivedImage_incomplete": "Отсутствует изображение — {received} из {total} пакетов пришло",
+  "receivedImage_corrupt": "Изображение не может быть восстановлено",
+  "receivedImage_decoderMissing": "Получен изображение — декодирование изображения неправильное",
+  "receivedImage_evicted": "Изображение больше не сохраняется",
+  "receivedImage_retry": "Попробуйте снова",
+  "receivedImage_decodeAgain": "Декодируйте снова",
+  "receivedImage_openSettings": "Настройте",
+  "receivedImage_tapToProcess": "Нажмите для обработки",
+  "receivedImage_awaiting": "{bytes} байт · {packets} {packets, plural, =1{пакет} other{пакетов}}",
+  "imageSend_secondsValue": "{seconds} секунд",
+  "imageSend_minutesSecondsValue": "{minutes} м {seconds} с"
 }
