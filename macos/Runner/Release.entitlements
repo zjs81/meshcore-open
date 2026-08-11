@@ -18,5 +18,8 @@
 	</array>
 	<key>com.apple.security.device.camera</key>
 	<true/>
+	<!-- image_picker: read photos the user explicitly chooses -->
+	<key>com.apple.security.files.user-selected.read-only</key>
+	<true/>
 </dict>
 </plist>

@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:provider/provider.dart';
 
@@ -16,17 +18,23 @@ import '../helpers/chat_scroll_controller.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/cyr2lat.dart';
 import '../helpers/gif_helper.dart';
-import '../helpers/message_image_helper.dart';
+import '../helpers/message_url_image_helper.dart';
 import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../l10n/l10n.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
+import '../models/image_codec_support.dart' show aeicRatePointForUi;
 import '../models/translation_support.dart';
 import '../services/app_settings_service.dart';
 import '../services/chat_text_scale_service.dart';
+import '../services/image_chunk_transport.dart';
+import '../services/image_codec_service.dart';
+import '../services/received_image_store.dart';
 import '../services/translation_service.dart';
+import '../utils/lora_airtime.dart';
+import '../widgets/received_image_message.dart';
 import '../widgets/byte_count_input.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/chat_zoom_wrapper.dart';
@@ -34,6 +42,9 @@ import '../widgets/emoji_picker.dart';
 import '../widgets/gif_message.dart';
 import '../widgets/jump_to_bottom_button.dart';
 import '../widgets/gif_picker.dart';
+import '../widgets/image_send_button.dart';
+import '../widgets/image_send_codec_binding.dart';
+import '../widgets/image_send_preview_sheet.dart';
 import '../widgets/message_translation_button.dart';
 import '../widgets/message_status_icon.dart';
 import '../widgets/radio_stats_entry.dart';
@@ -42,6 +53,7 @@ import '../widgets/translated_message_content.dart';
 import '../widgets/unread_divider.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/mesh_ui.dart';
+import 'app_settings_screen.dart';
 import 'channel_message_path_screen.dart';
 import 'map_screen.dart';
 import 'region_management_screen.dart';
@@ -71,6 +83,16 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   final Map<String, GlobalKey> _messageKeys = {};
   bool _isLoadingOlder = false;
   bool _communitiesLoaded = false;
+
+  /// Per-screen image-id allocator. The id is 8 bits and the reassembly key also
+  /// carries the sender prefix and channel, so a per-screen allocator is enough
+  /// to keep two images in the same channel apart.
+  final ImageIdAllocator _imageIds = ImageIdAllocator();
+
+  /// Chunks acked so far / total, while an image send is in flight. Both 0 when
+  /// nothing is being sent.
+  int _imageSendSent = 0;
+  int _imageSendTotal = 0;
 
   MeshCoreConnector? _connector;
   DateTime? _lastChannelSendAt;
@@ -374,8 +396,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               child: Consumer<MeshCoreConnector>(
                 builder: (context, connector, child) {
                   final messages = connector.getChannelMessages(widget.channel);
+                  final imageRows = _receivedImageRows(context);
 
-                  if (messages.isEmpty) {
+                  if (messages.isEmpty && imageRows.isEmpty) {
                     return EmptyState(
                       icon: widget.channel.isPublicChannel
                           ? Icons.public
@@ -391,19 +414,27 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                     );
                   }
 
-                  // Reverse messages so newest appear at bottom with reverse: true
-                  final reversedMessages = messages.reversed.toList();
-                  final imagesEnabled = connector.isChannelImagesEnabled(
+                  final urlImagesEnabled = connector.isChannelUrlImagesEnabled(
                     widget.channel.index,
                   );
+                  // Images are not ChannelMessages: they arrive as GRP_DATA
+                  // chunks and are owned by ReceivedImageStore, so the two
+                  // sources are merged here in timestamp order and the list
+                  // below indexes rows, not messages.
+                  final rows = <_ChannelChatRow>[
+                    for (final message in messages)
+                      _ChannelChatRow(message: message),
+                    ...imageRows,
+                  ]..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+                  // Reverse rows so newest appear at bottom with reverse: true
+                  final reversedRows = rows.reversed.toList();
                   final itemCount =
-                      reversedMessages.length + (_isLoadingOlder ? 1 : 0);
+                      reversedRows.length + (_isLoadingOlder ? 1 : 0);
 
                   // Prune stale keys (deleted/cleared messages) to avoid
                   // unbounded growth.
-                  final liveIds = reversedMessages
-                      .map((m) => m.messageId)
-                      .toSet();
+                  final liveIds = reversedRows.map((r) => r.id).toSet();
                   _messageKeys.removeWhere((id, _) => !liveIds.contains(id));
 
                   // Two messages can collide on messageId (same ms + name/text
@@ -412,8 +443,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                   // no two widgets share one GlobalKey.
                   final seenIds = <String>{};
                   final keyedIndices = <int>{};
-                  for (var i = 0; i < reversedMessages.length; i++) {
-                    if (seenIds.add(reversedMessages[i].messageId)) {
+                  for (var i = 0; i < reversedRows.length; i++) {
+                    if (seenIds.add(reversedRows[i].id)) {
                       keyedIndices.add(i);
                     }
                   }
@@ -451,12 +482,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                 ),
                               );
                             }
-                            final messageIndex = index;
-                            final message = reversedMessages[messageIndex];
+                            final row = reversedRows[index];
                             final GlobalKey messageKey;
-                            if (keyedIndices.contains(messageIndex)) {
+                            if (keyedIndices.contains(index)) {
                               messageKey = _messageKeys.putIfAbsent(
-                                message.messageId,
+                                row.id,
                                 GlobalKey.new,
                               );
                             } else {
@@ -464,7 +494,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                             }
                             final isUnreadAnchor =
                                 _unreadDividerMessageId != null &&
-                                message.messageId == _unreadDividerMessageId;
+                                row.id == _unreadDividerMessageId;
                             return Container(
                               key: messageKey,
                               child: Builder(
@@ -473,11 +503,17 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                       .select<ChatTextScaleService, double>(
                                         (service) => service.scale,
                                       );
-                                  final bubble = _buildMessageBubble(
-                                    message,
-                                    textScale,
-                                    imagesEnabled,
-                                  );
+                                  final message = row.message;
+                                  final bubble = message != null
+                                      ? _buildMessageBubble(
+                                          message,
+                                          textScale,
+                                          urlImagesEnabled,
+                                        )
+                                      : _buildImageBubble(
+                                          row.image!,
+                                          textScale,
+                                        );
                                   if (isUnreadAnchor) {
                                     return Column(
                                       mainAxisSize: MainAxisSize.min,
@@ -519,7 +555,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   Widget _buildMessageBubble(
     ChannelMessage message,
     double textScale,
-    bool imagesEnabled,
+    bool urlImagesEnabled,
   ) {
     final settingsService = context.watch<AppSettingsService>();
     final enableTracing = settingsService.settings.enableMessageTracing;
@@ -692,9 +728,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                               ),
                             ],
                           )
-                        else if (imagesEnabled)
+                        else if (urlImagesEnabled)
                           FutureBuilder<String?>(
-                            future: MessageImageHelper.parseVerified(
+                            future: MessageUrlImageHelper.parseVerified(
                               message.text,
                             ),
                             builder: (context, snapshot) {
@@ -708,8 +744,13 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                       padding: const EdgeInsets.symmetric(
                                         vertical: 4,
                                       ),
-                                      child: MessageImagePreview(
-                                        imageUrl: imageAttachment,
+                                      child: Align(
+                                        alignment: isOutgoing
+                                            ? Alignment.centerRight
+                                            : Alignment.centerLeft,
+                                        child: MessageUrlImagePreview(
+                                          imageUrl: imageAttachment,
+                                        ),
                                       ),
                                     ),
                                     Padding(
@@ -744,13 +785,13 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (MessageImageHelper.hasPotentialImageUrl(
+                              if (MessageUrlImageHelper.hasPotentialImageUrl(
                                 message.text,
                               ))
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 4),
                                   child: Text(
-                                    context.l10n.messageImage_possible,
+                                    context.l10n.urlImage_possible,
                                     style: TextStyle(
                                       color: metaColor,
                                       fontSize: 11 * textScale,
@@ -1114,6 +1155,440 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     );
   }
 
+  /// The image codec, or null when it is not registered (screen tests).
+  ImageCodecService? get _imageCodec {
+    try {
+      return context.read<ImageCodecService>();
+    } on ProviderNotFoundException {
+      return null;
+    }
+  }
+
+  /// Whether the image codec model is currently downloading.
+  ///
+  /// The image button must stay hidden while the model downloads: an encode
+  /// cannot start until the weights are on disk, and the preview sheet would
+  /// have nothing to show but a spinner.
+  bool get _imageCodecDownloading {
+    try {
+      return context.watch<ImageCodecService>().isDownloading;
+    } on ProviderNotFoundException {
+      return false;
+    }
+  }
+
+  /// Takes no [BuildContext]: it uses the [State]'s own, so the `mounted`
+  /// checks around each `await` are the ones that actually govern it.
+  Future<void> _showImageSendPreview() async {
+    final codec = _imageCodec;
+    if (codec == null) return;
+    final connector = context.read<MeshCoreConnector>();
+
+    // The picked bytes are kept past the preview on purpose: the sender's own
+    // bubble renders from them (see [_registerOutgoingImage]). The bitstream
+    // cannot serve — turning it back into pixels is a ~2.16 GiB, ~1 s decode
+    // of an image the sender is already holding.
+    final XFile? picked;
+    try {
+      picked = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        // The codec centre-crops to 512x512 anyway, so there is nothing to
+        // gain from decoding a 12 MP original — but stay well above 512 so the
+        // crop still has detail to work with.
+        maxWidth: 2048,
+        maxHeight: 2048,
+      );
+    } on Exception catch (e) {
+      debugPrint('image pick failed: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.chat_imagePickFailed)),
+      );
+      return;
+    }
+    if (picked == null) return; // cancelled at the picker
+
+    final Uint8List sourceBytes;
+    final int originalFileBytes;
+    try {
+      sourceBytes = await picked.readAsBytes();
+      // XFile.length() is the on-disk size — what the sheet shows against the
+      // transmitted size — and unlike dart:io it also works on web.
+      originalFileBytes = await picked.length();
+    } on Exception catch (e) {
+      debugPrint('image read failed: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.chat_imagePickFailed)),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+    final result = await showImageSendPreviewSheet(
+      context: context,
+      imageBytes: sourceBytes,
+      originalFileBytes: originalFileBytes,
+      codec: codec,
+    );
+    if (result == null) return; // cancelled at the preview
+    if (!mounted) return;
+    await _sendImage(connector, result, sourceBytes: sourceBytes);
+  }
+
+  /// Chunks [result] and puts it on the channel as GRP_DATA packets.
+  ///
+  /// Chunk geometry, CRC and parity all come from [buildImageChunks] \u2014 the
+  /// single source of truth for the wire format \u2014 and the blobs go out through
+  /// [MeshCoreConnector.sendImageChunks] as one list, so the connector owns the
+  /// inter-chunk pacing and the whole image sits inside one scoped send.
+  ///
+  /// [sourceBytes] is the original picked file. It is only ever used to draw
+  /// the sender's own bubble; nothing about the transmission depends on it.
+  Future<void> _sendImage(
+    MeshCoreConnector connector,
+    ImageSendPreviewResult result, {
+    required Uint8List sourceBytes,
+  }) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
+
+    if (!connector.supportsChannelData) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.imageSend_deviceUnsupported)),
+      );
+      return;
+    }
+    final senderPrefix = connector.imageSenderPrefix;
+    if (senderPrefix == null) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.imageSend_deviceUnsupported)),
+      );
+      return;
+    }
+
+    final ImageChunkSet chunkSet;
+    try {
+      chunkSet = buildImageChunks(
+        payload: result.payload,
+        metadata: ImageStreamMetadata(
+          rate: result.rate,
+          squareSize: kImageCodecSquareSize,
+          // The codec stretched the whole frame into a square, which the
+          // receiver cannot undo from pixels alone. Naming the source shape
+          // here costs no extra bytes -- it rides in spare bits of the metadata
+          // byte -- and lets the receiver letterbox back.
+          aspectCode: await _aspectCodeOf(sourceBytes),
+        ),
+        senderPrefix: senderPrefix,
+        imgId: _imageIds.next(),
+        parity: result.includeParity,
+      );
+    } on ArgumentError {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.imageSend_tooLarge)));
+      return;
+    }
+
+    // Pace on the measured per-packet airtime when the radio parameters are
+    // known; fall back to the base gap when they are not, rather than
+    // hammering the channel back-to-back.
+    final total = result.airtime;
+    final perPacket = total == null
+        ? Duration.zero
+        : Duration(
+            microseconds:
+                total.inMicroseconds ~/
+                (result.packetCount == 0 ? 1 : result.packetCount),
+          );
+
+    setState(() {
+      _imageSendTotal = chunkSet.blobs.length;
+      _imageSendSent = 0;
+    });
+    try {
+      final sent = await connector.sendImageChunks(
+        chunkSet.blobs,
+        channelIndex: widget.channel.index,
+        interChunkDelay: imageSendChunkGap(perPacket),
+        onProgress: (sentChunks, totalChunks) {
+          if (!mounted) return;
+          setState(() => _imageSendSent = sentChunks);
+        },
+      );
+      // Register before the snack bar, so the bubble is on screen by the time
+      // the confirmation appears rather than a frame behind it.
+      if (sent) {
+        await _registerOutgoingImage(
+          result: result,
+          chunkSet: chunkSet,
+          senderPrefix: senderPrefix,
+          sourceBytes: sourceBytes,
+        );
+      }
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            sent
+                ? l10n.imageSend_sentConfirmation(chunkSet.blobs.length)
+                : l10n.imageSend_deviceUnsupported,
+          ),
+        ),
+      );
+    } on Exception catch (error) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.imageSend_sendFailed('$error'))),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _imageSendTotal = 0;
+          _imageSendSent = 0;
+        });
+      }
+    }
+  }
+
+  /// Puts the image the user just sent into [ReceivedImageStore] so it appears
+  /// in their own transcript.
+  ///
+  /// GRP_DATA is not echoed back to the sender and an image is not a
+  /// [ChannelMessage], so without this the sender sees a "sent" snack bar and
+  /// an otherwise empty conversation. The entry lands in `decoded` directly —
+  /// an outgoing image is never queued for inference, so showing your own
+  /// photo costs no model memory.
+  ///
+  /// Best effort throughout: a failure here has already been preceded by a
+  /// successful transmission, so it must not turn into an error the user sees.
+  Future<void> _registerOutgoingImage({
+    required ImageSendPreviewResult result,
+    required ImageChunkSet chunkSet,
+    required int senderPrefix,
+    required Uint8List sourceBytes,
+  }) async {
+    final ReceivedImageStore store;
+    try {
+      store = context.read<ReceivedImageStore>();
+    } on ProviderNotFoundException {
+      return; // screen test without the store
+    }
+    final previewPng = await _squarePreviewPng(sourceBytes);
+    if (previewPng == null) return;
+    try {
+      await store.registerOutgoing(
+        channelIndex: widget.channel.index,
+        // The same 16 bits the chunk header carries, so the entry keys the
+        // same way an inbound one would.
+        senderPrefix: senderPrefix,
+        imgId: chunkSet.imgId,
+        previewPng: previewPng,
+        rate: aeicRatePointForUi(result.rate),
+        chunkCount: chunkSet.dataChunkCount,
+      );
+    } on Exception catch (error) {
+      debugPrint('outgoing image registration failed: $error');
+    }
+  }
+
+  /// The [kImageAspectCodes] entry matching [imageBytes]'s shape.
+  ///
+  /// Decodes only to read the dimensions. Falls back to "unknown" (rendered
+  /// square) rather than guessing, because asserting the wrong shape would
+  /// letterbox the receiver's copy incorrectly and look like a codec bug.
+  static Future<int> _aspectCodeOf(Uint8List imageBytes) async {
+    ui.Image? image;
+    try {
+      final codec = await ui.instantiateImageCodec(imageBytes);
+      image = (await codec.getNextFrame()).image;
+      return imageAspectCodeFor(image.width, image.height);
+    } on Exception catch (error) {
+      debugPrint('aspect probe failed: $error');
+      return kImageAspectUnknown;
+    } finally {
+      image?.dispose();
+    }
+  }
+
+  /// [imageBytes] stretched to 512x512, as PNG.
+  ///
+  /// This is what the preview sheet showed (`BoxFit.fill` on a 1:1 box is
+  /// exactly the stretch the codec applies) and what the codec actually
+  /// encoded, so the sender's bubble matches both. Deliberately not a decode of the
+  /// bitstream: that would cost ~2.16 GiB and ~1 s to reproduce, less well, an
+  /// image this device is already holding in memory.
+  ///
+  /// Returns null rather than throwing on an undecodable source — the send has
+  /// already happened by the time this runs.
+  static Future<Uint8List?> _squarePreviewPng(Uint8List imageBytes) async {
+    ui.Image? source;
+    ui.Image? square;
+    try {
+      final codec = await ui.instantiateImageCodec(imageBytes);
+      source = (await codec.getNextFrame()).image;
+      final dst = kImageCodecSquareSize.toDouble();
+      final recorder = ui.PictureRecorder();
+      ui.Canvas(recorder).drawImageRect(
+        source,
+        // Whole frame, matching _toSquareRgb in image_codec_service.dart. If
+        // one of these two is a crop and the other a stretch, the sender's
+        // bubble silently stops matching what the receiver sees.
+        ui.Rect.fromLTWH(
+          0,
+          0,
+          source.width.toDouble(),
+          source.height.toDouble(),
+        ),
+        ui.Rect.fromLTWH(0, 0, dst, dst),
+        ui.Paint()..filterQuality = ui.FilterQuality.medium,
+      );
+      square = await recorder.endRecording().toImage(
+        kImageCodecSquareSize,
+        kImageCodecSquareSize,
+      );
+      final data = await square.toByteData(format: ui.ImageByteFormat.png);
+      return data?.buffer.asUint8List();
+    } on Exception catch (error) {
+      debugPrint('outgoing image preview render failed: $error');
+      return null;
+    } finally {
+      source?.dispose();
+      square?.dispose();
+    }
+  }
+
+  /// Received/sent AEIC images for this channel, as transcript rows.
+  ///
+  /// Returns nothing when [ReceivedImageStore] is not registered, so a screen
+  /// test without the provider still renders.
+  /// [context] must be the context of the element currently building (the
+  /// `Consumer` builder's, not the `State`'s) — `watch` asserts on that.
+  List<_ChannelChatRow> _receivedImageRows(BuildContext context) {
+    final ReceivedImageStore store;
+    try {
+      store = context.watch<ReceivedImageStore>();
+    } on ProviderNotFoundException {
+      return const <_ChannelChatRow>[];
+    }
+    return <_ChannelChatRow>[
+      for (final entry in store.entries)
+        if (entry.channelIndex == widget.channel.index)
+          _ChannelChatRow(image: entry),
+    ];
+  }
+
+  /// Bubble for one AEIC image, following the GIF-message precedent: minimal
+  /// chrome, the renderer owns every state (receiving / decoding / failed) and
+  /// the mandatory AI-reconstruction label.
+  Widget _buildImageBubble(ReceivedImageEntry entry, double textScale) {
+    final scheme = Theme.of(context).colorScheme;
+    final isOutgoing = entry.isOutgoing;
+    final textColor = isOutgoing ? MeshPalette.meInk : scheme.onSurface;
+    final metaColor = textColor.withValues(alpha: 0.65);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        mainAxisAlignment: isOutgoing
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (!isOutgoing) ...[
+            _buildAvatar(_imageSenderLabel(entry), textScale),
+            const SizedBox(width: 6),
+          ],
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: isOutgoing ? MeshPalette.me : scheme.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(MeshRadii.lg),
+                border: Border.all(
+                  color: isOutgoing
+                      ? MeshPalette.meBorder
+                      : scheme.outlineVariant,
+                  width: 1,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!isOutgoing)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 8,
+                        top: 4,
+                        bottom: 4,
+                      ),
+                      child: Text(
+                        _imageSenderLabel(entry),
+                        style: TextStyle(
+                          fontSize: 13 * textScale,
+                          fontWeight: FontWeight.w700,
+                          color: textColor,
+                        ),
+                      ),
+                    ),
+                  ReceivedImageMessage(
+                    streamId: entry.streamId,
+                    isOutgoing: isOutgoing,
+                    fallbackTextColor: textColor,
+                    strings: _receivedImageStrings(context),
+                    // The placeholder's "no model installed" tap lands here.
+                    // `focusImageMessages` scrolls straight to the image block
+                    // — it sits below six other sections, so the plain screen
+                    // would open at the top with no sign of what was tapped for.
+                    onOpenCodecSettings: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) =>
+                            const AppSettingsScreen(focusImageMessages: true),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 8,
+                      right: 8,
+                      bottom: 4,
+                    ),
+                    child: Text(
+                      _formatTime(context, entry.firstSeen),
+                      style: MeshTheme.mono(
+                        fontSize: 10 * textScale,
+                        color: metaColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// GRP_DATA carries no sender name — only the 2-byte public-key prefix the
+  /// chunk header stamps — so resolve that against the contact list and fall
+  /// back to the raw prefix only when nobody matches.
+  ///
+  /// Two bytes is 65,536 values, so a collision between two known contacts is
+  /// possible. When it happens the sender is genuinely ambiguous and naming
+  /// either one would be a guess, so the prefix is shown instead.
+  String _imageSenderLabel(ReceivedImageEntry entry) {
+    final hex = entry.senderPrefix.toRadixString(16).padLeft(4, '0');
+    final connector = context.read<MeshCoreConnector>();
+    if (entry.isOutgoing) {
+      return connector.selfName ?? context.l10n.receivedImage_senderPrefix(hex);
+    }
+    final matches = connector.contacts
+        .where((c) => c.publicKeyHex.toLowerCase().startsWith(hex))
+        .toList();
+    if (matches.length == 1) return matches.single.name;
+    return context.l10n.receivedImage_senderPrefix(hex);
+  }
+
   void _showGifPicker(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -1184,6 +1659,37 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     );
   }
 
+  /// "Sending image — packet 2 of 3", above the composer.
+  ///
+  /// A per-chunk figure rather than a spinner because an image occupies the
+  /// channel for seconds and the user needs to see it advancing.
+  Widget _buildImageSendProgress(ColorScheme scheme) {
+    final total = _imageSendTotal;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHigh,
+        border: Border(
+          bottom: BorderSide(color: scheme.outlineVariant, width: 1),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.l10n.imageSend_sendingProgress(_imageSendSent, total),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 6),
+          LinearProgressIndicator(
+            value: total == 0 ? null : _imageSendSent / total,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMessageComposer() {
     final connector = context.watch<MeshCoreConnector>();
     final maxBytes = maxChannelMessageBytes(connector.selfName);
@@ -1201,6 +1707,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               return _buildReplyBanner(textScale);
             },
           ),
+        if (_imageSendTotal > 0) _buildImageSendProgress(scheme),
         Container(
           decoration: BoxDecoration(
             color: scheme.surface,
@@ -1224,6 +1731,17 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                       enabled: settings.composerTranslationEnabled,
                       languageCode: settings.translationTargetLanguageCode,
                       onPressed: _showTranslationOptions,
+                    ),
+                  if (settings.imageMessagesEnabled && !_imageCodecDownloading)
+                    ImageSendButton(
+                      // Gated on the codec, not just the setting. The preview
+                      // sheet explains why a send is impossible, but a fully
+                      // live button in a build that cannot encode invites the
+                      // tap that produces that explanation.
+                      enabled:
+                          _imageCodec?.availability ==
+                          ImageCodecAvailability.ready,
+                      onPressed: () => _showImageSendPreview(),
                     ),
                   Expanded(
                     child: ValueListenableBuilder<TextEditingValue>(
@@ -1951,4 +2469,48 @@ class _SwipeReplyBubbleState extends State<_SwipeReplyBubble> {
       ),
     );
   }
+}
+
+/// One row of the channel transcript.
+///
+/// Exactly one of [message] / [image] is non-null. Images cannot be
+/// `ChannelMessage`s: they arrive as GRP_DATA chunks with no text frame behind
+/// them, are keyed on (sender prefix, img id, channel) rather than a message id,
+/// and are persisted by [ReceivedImageStore] instead of the channel message
+/// store.
+@immutable
+class _ChannelChatRow {
+  final ChannelMessage? message;
+  final ReceivedImageEntry? image;
+
+  const _ChannelChatRow({this.message, this.image});
+
+  DateTime get timestamp => message?.timestamp ?? image!.firstSeen;
+
+  /// Stable identity for the scroll-to-message [GlobalKey] map. The `aeic:`
+  /// prefix keeps a stream id from ever colliding with a message id.
+  String get id => message?.messageId ?? 'aeic:${image!.streamId}';
+}
+
+/// [ReceivedImageStrings] built from the app's localizations.
+///
+/// The R6 badge and caption are deliberately absent from this class — they are
+/// private consts in `received_image_message.dart` and must stay mandatory.
+ReceivedImageStrings _receivedImageStrings(BuildContext context) {
+  final l10n = context.l10n;
+  return ReceivedImageStrings(
+    incoming: l10n.receivedImage_incoming,
+    queued: l10n.receivedImage_queued,
+    tapToDecode: l10n.receivedImage_tapToDecode,
+    awaiting: l10n.receivedImage_awaiting,
+    tapToProcess: l10n.receivedImage_tapToProcess,
+    decoding: l10n.receivedImage_decoding,
+    incomplete: l10n.receivedImage_incomplete,
+    corrupt: l10n.receivedImage_corrupt,
+    decoderMissing: l10n.receivedImage_decoderMissing,
+    evicted: l10n.receivedImage_evicted,
+    retry: l10n.receivedImage_retry,
+    decodeAgain: l10n.receivedImage_decodeAgain,
+    openSettings: l10n.receivedImage_openSettings,
+  );
 }

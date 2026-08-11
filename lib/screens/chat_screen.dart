@@ -12,7 +12,7 @@ import '../utils/platform_info.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/cyr2lat.dart';
-import '../helpers/message_image_helper.dart';
+import '../helpers/message_url_image_helper.dart';
 import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../widgets/message_status_icon.dart';
@@ -47,6 +47,14 @@ import '../widgets/unread_divider.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/mesh_ui.dart';
 import 'telemetry_screen.dart';
+
+// Image messages are deliberately absent from this screen, and there is no
+// flag to flip: the AEIC wire format is `CMD_SEND_CHANNEL_DATA` (62) /
+// GRP_DATA 0x06, which addresses a channel index rather than a contact key,
+// and the companion protocol has no direct-message equivalent (there is no
+// CMD_SEND_DATA — see `meshcore_protocol.dart`). Sending a private photo on
+// channel 0 to reach one contact would broadcast it to everyone on that
+// channel. Channel chats keep the feature; see `channel_chat_screen.dart`.
 
 class ChatScreen extends StatefulWidget {
   final Contact contact;
@@ -481,6 +489,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   languageCode: settings.translationTargetLanguageCode,
                   onPressed: _showTranslationOptions,
                 ),
+              // No image button here: the image wire format is GRP_DATA, a
+              // channel primitive with no DM equivalent (see the note at the
+              // top of this file).
               Expanded(
                 child: ValueListenableBuilder<TextEditingValue>(
                   valueListenable: _textController,
@@ -868,7 +879,9 @@ class _ChatScreenState extends State<ChatScreen> {
     bool cyr2latEnabled = connector.isContactCyr2LatEnabled(
       contact.publicKeyHex,
     );
-    bool imagesEnabled = connector.isContactImagesEnabled(contact.publicKeyHex);
+    bool urlImagesEnabled = connector.isContactUrlImagesEnabled(
+      contact.publicKeyHex,
+    );
     String? selectedCyr2LatProfileId = connector.getContactCyr2LatProfileId(
       contact.publicKeyHex,
     );
@@ -970,14 +983,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 const Divider(height: 8),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(context.l10n.messageImage_enable),
-                  value: imagesEnabled,
+                  title: Text(context.l10n.urlImage_enable),
+                  value: urlImagesEnabled,
                   onChanged: (value) {
-                    connector.setContactImagesEnabled(
+                    connector.setContactUrlImagesEnabled(
                       contact.publicKeyHex,
                       value,
                     );
-                    setDialogState(() => imagesEnabled = value);
+                    setDialogState(() => urlImagesEnabled = value);
                   },
                 ),
                 const Divider(height: 8),
@@ -1321,8 +1334,8 @@ class _MessageBubble extends StatelessWidget {
     final gifId = GifHelper.parseGif(message.text);
     final poi = parseMarkerText(message.text);
     final isFailed = message.status == MessageStatus.failed;
-    final imagesEnabled = context.select<MeshCoreConnector, bool>(
-      (connector) => connector.isContactImagesEnabled(sourceId),
+    final urlImagesEnabled = context.select<MeshCoreConnector, bool>(
+      (connector) => connector.isContactUrlImagesEnabled(sourceId),
     );
 
     // Bubble colors — outgoing uses MeshPalette.me / meBorder / meInk.
@@ -1482,9 +1495,9 @@ class _MessageBubble extends StatelessWidget {
                                 ),
                               ],
                             )
-                          else if (imagesEnabled)
+                          else if (urlImagesEnabled)
                             FutureBuilder<String?>(
-                              future: MessageImageHelper.parseVerified(
+                              future: MessageUrlImageHelper.parseVerified(
                                 message.text,
                               ),
                               builder: (context, snapshot) {
@@ -1499,8 +1512,13 @@ class _MessageBubble extends StatelessWidget {
                                         padding: const EdgeInsets.symmetric(
                                           vertical: 4,
                                         ),
-                                        child: MessageImagePreview(
-                                          imageUrl: imageAttachment,
+                                        child: Align(
+                                          alignment: isOutgoing
+                                              ? Alignment.centerRight
+                                              : Alignment.centerLeft,
+                                          child: MessageUrlImagePreview(
+                                            imageUrl: imageAttachment,
+                                          ),
                                         ),
                                       ),
                                       Padding(
@@ -1534,13 +1552,13 @@ class _MessageBubble extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (MessageImageHelper.hasPotentialImageUrl(
+                                if (MessageUrlImageHelper.hasPotentialImageUrl(
                                   message.text,
                                 ))
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 4),
                                     child: Text(
-                                      context.l10n.messageImage_possible,
+                                      context.l10n.urlImage_possible,
                                       style: TextStyle(
                                         color: metaColor,
                                         fontSize: 11 * textScale,

@@ -2605,5 +2605,227 @@
   "pathMap_noLocation": "Ingen position",
   "pathMap_unfollowPacket": "Lås upp vy från paket",
   "pathMap_followPacket": "Lås vy till paket",
-  "pathMap_gpsCount": "{confirmed}/{total} GPS"
+  "pathMap_gpsCount": "{confirmed}/{total} GPS",
+  "@settings_deleteRegionConfirm": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "@channels_regionSetTo": {
+    "placeholders": {
+      "region": {
+        "type": "String",
+        "example": "de-mitte"
+      }
+    }
+  },
+  "@chat_imagePickFailed": {
+    "description": "Shown when picking or reading a photo to send fails"
+  },
+  "@repeater_pubKeyPrefixHelper": {
+    "placeholders": {
+      "tries": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_packetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_range": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_longSendBody": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sentConfirmation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_sendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_sendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_senderPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "@receivedImage_incoming": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_incomplete": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@receivedImage_awaiting": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "packets": {
+        "type": "int"
+      }
+    }
+  },
+  "@imageSend_secondsValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageSend_minutesSecondsValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_regionSettings": "Regioner",
+  "settings_regionSettingsSubtitle": "Hämtade regioner",
+  "settings_regionManagement_screenTitle": "Regionförvaltning",
+  "settings_regionNameHint": "Enter regionnamn",
+  "settings_regionAddRegion": "Lag till region",
+  "settings_regionFetchRegions": "Hämtar regioner från repeater",
+  "settings_regionFetchRegionsFail": "Ingen region hittades",
+  "settings_regionFetchRegionsAlreadyExists": "Denna region har redan lagt till",
+  "settings_regionName": "Regionnavn",
+  "settings_regionDeleted": "Regionens kallt offentlig",
+  "settings_deleteRegion": "Förhålla regio",
+  "settings_deleteRegionConfirm": "Fjärna \"{region}\" ur regionlistan?",
+  "settings_infoHardware": "Hardware",
+  "settings_infoFirmware": "Föredata",
+  "repeater_pathHashModeOption0": "0 - 1 byte",
+  "repeater_pathHashModeOption1": "1 - 2 byte",
+  "repeater_pathHashModeOption2": "2 - 3 byte",
+  "repeater_pathHashModeOption3": "3 - 4 byte",
+  "appSettings_batteryLipoHv": "LiPo HV (3,0-4,35 V)",
+  "channels_regionSetTo": "Region: {region}",
+  "channels_regionNotSet": "Region: ingen",
+  "channels_regionSelect_Title": "Välj en region",
+  "channels_clearRegion": "klar region",
+  "chat_sendImage": "Send vagnbild",
+  "chat_imagePickFailed": "Kunde inte öppna det bildet",
+  "chat_receivedGif": "Mottagit en GIF",
+  "repeater_keySettings": "Ändra identitetsnyckel",
+  "repeater_keySettingsSubtitle": "Vänd nya offentliga/privata nyckelpar",
+  "repeater_prvKey": "Privat nyckel",
+  "repeater_prvKeyHelper": "En ny privat nyckel för repeatern, en hexsträng med 128 tecken.",
+  "repeater_generatePrvKey": "Generera en kära nyckelpaar",
+  "repeater_stopGeneratingPrvKey": "Avbröka sökande efter nyckelpa",
+  "repeater_pubKey": "Öffentlig nyckel",
+  "repeater_pubKeyHelper": "Detta är den offentliga nyckeln som tillhör genererad privaten nyckel. Du kan inte setta den direkt.",
+  "repeater_pubKeyPrefix": "Önskad prefix",
+  "repeater_pubKeyPrefixHelper": "Hitta en offentlig nyckel som börjar med dessa hexadecimala siffror. Förväntad antal försök: {tries}.",
+  "imageMessages_enableTitle": "Bildermeddelanden",
+  "imageMessages_enableSubtitle": "Send bilder över mönstret. Det kräver en enkelt bildmodellhämtning.",
+  "imageMessages_modelSectionTitle": "Bildmodell",
+  "imageMessages_downloadModel": "Download",
+  "imageMessages_cancelDownload": "Avbud",
+  "imageMessages_removeModel": "Förhåll dig från modellen",
+  "imageMessages_modelReady": "Färdig",
+  "imageMessages_modelNotPublished": "Ingen publikerad än — denna byggnads kan inte laddas ner av det.",
+  "imageMessages_downloadFailed": "Bildmodellen kunde inte laddas ner.",
+  "imageMessages_autoProcessTitle": "Automatiska bilder automatiserar",
+  "imageMessages_autoProcessSubtitle": "Rekonstruera varje bild så snart den ankommer. Använder cirka 2 GB minne varje gång; låt det omför att rekonstruera genom ett tap.",
+  "imageSend_title": "Send vagnbild",
+  "imageSend_cropNote": "Reserverat till 512 × 512 · förhållandet mellan storlek inte bevarat",
+  "imageSend_originalSize": "Ovanstående text (engelska)\n\nTranslation (svenskt):",
+  "imageSend_onAirSize": "Underför hjärnan",
+  "imageSend_quality": "Kvalitet",
+  "imageSend_qualityStandard": "Standard",
+  "imageSend_qualityHigh": "Hög",
+  "imageSend_packetsLabel": "Paket",
+  "imageSend_airtimeLabel": "Tid i övrighet",
+  "imageSend_sizeLabel": "Ladning",
+  "imageSend_packetsCount": "{count} {count, plural, =1{paket} other{paket}}",
+  "imageSend_range": "{min}–{max}",
+  "imageSend_unknownValue": "—",
+  "imageSend_radioUnknownTitle": "Radioindikatorer inte kända",
+  "imageSend_radioUnknownBody": "Förkoppna till ett enhet så kan tiden på air beräknas.",
+  "imageSend_longSendTitle": "Långförsending",
+  "imageSend_longSendBody": "Detta kommer att bevara kanalen roughly {duration}.",
+  "imageSend_floodNote": "Flodledning: varje repeater i ramen retransmitterar varje paket, så kan kanalen vara på arbete långare än den här tiden.",
+  "imageSend_parityTitle": "Omedlningspaket",
+  "imageSend_paritySubtitle": "En ytterligare paket. Gruppmeddelanden inte akceras, så den här tar hänsyn till att mottar kan återuppbygga bilden om ett enkelt paket förlorats.",
+  "imageSend_send": "Sänd",
+  "imageSend_cancel": "Avbud",
+  "imageSend_encodeFailed": "Denna bild kan inte kodas.",
+  "imageSend_codecDownloading": "Bildmodellen downloads fortfarande.",
+  "imageSend_codecUnavailable": "Bildsendning är inte tillgänglig på detta enhet.",
+  "imageSend_codecDisabled": "Bildmeddelanden är offna i inställningarna.",
+  "imageSend_deviceUnsupported": "Denna radi kan inte senda bildpaket. Använd ett äventyrsgerät med companionsystemfirmware 13 eller nyare.",
+  "imageSend_directMessagesUnsupported": "Bilder senders som gruppod, så de kan endast skickas till ett kanal – inte i en direkt meddelning.",
+  "imageSend_tooLarge": "Bilden kodades till mer paket än meshformaten tillåter.",
+  "imageSend_sentConfirmation": "Bilden skickades som {count} {count, plural, =1{paket} other{paket}}.",
+  "imageSend_sendFailed": "Bilden kunde inte skickas: {error}",
+  "imageSend_sendingProgress": "Bild sendning — paket {sent} av {total}",
+  "receivedImage_senderPrefix": "Nod {prefix}",
+  "receivedImage_incoming": "VANTA {received} av {total} paket",
+  "receivedImage_queued": "Att väta att decodera",
+  "receivedImage_tapToDecode": "Tap för att decodera",
+  "receivedImage_decoding": "Rekonstruktion… om 1 sekund",
+  "receivedImage_incomplete": "Bilden är okomplett — {received} av {total} paket har ankomit",
+  "receivedImage_corrupt": "Bilden kunde inte rekonstrueras",
+  "receivedImage_decoderMissing": "Bild mottagen — bilddekoderingen är avbrott",
+  "receivedImage_evicted": "Bild inte lagrad längre",
+  "receivedImage_retry": "Omförs igen",
+  "receivedImage_decodeAgain": "Kodera igen",
+  "receivedImage_openSettings": "Skapa en uppställning",
+  "receivedImage_tapToProcess": "Tap för att behandla",
+  "receivedImage_awaiting": "{bytes} byte · {packets} {packets, plural, =1{paket} other{paket}}",
+  "imageSend_secondsValue": "{seconds} sekunder",
+  "imageSend_minutesSecondsValue": "{minutes} min {seconds} s"
 }

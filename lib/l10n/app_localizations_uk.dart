@@ -111,10 +111,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get messageStatus_repeated => 'Почув неодноразово';
 
   @override
-  String get messageImage_enable => 'Enable Images';
+  String get urlImage_enable => 'Enable URL images';
 
   @override
-  String get messageImage_possible => 'Possible Image, enable in Settings.';
+  String get urlImage_possible => 'Possible URL image; enable it in Settings.';
 
   @override
   String get common_reboot => 'Перезавантажити';
@@ -374,42 +374,42 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settings_radioSettingsUpdated => 'Налаштування радіо оновлено';
 
   @override
-  String get settings_regionSettings => 'Regions';
+  String get settings_regionSettings => 'Ріси';
 
   @override
-  String get settings_regionSettingsSubtitle => 'Manage stored regions';
+  String get settings_regionSettingsSubtitle => 'Управляти збережених регіонів';
 
   @override
-  String get settings_regionManagement_screenTitle => 'Region Management';
+  String get settings_regionManagement_screenTitle => 'Рégіональний управління';
 
   @override
-  String get settings_regionNameHint => 'Enter region name';
+  String get settings_regionNameHint => 'Назва регіону';
 
   @override
-  String get settings_regionAddRegion => 'Add region';
+  String get settings_regionAddRegion => 'Добачить регіон';
 
   @override
-  String get settings_regionFetchRegions => 'Fetch regions from repeaters';
+  String get settings_regionFetchRegions => 'Збираємо регіони з репітерів';
 
   @override
-  String get settings_regionFetchRegionsFail => 'No regions were found';
+  String get settings_regionFetchRegionsFail => 'Ні відкриті регіони';
 
   @override
   String get settings_regionFetchRegionsAlreadyExists =>
-      'This region has already been added';
+      'Цей регіон вже було доданий';
 
   @override
-  String get settings_regionName => 'Region Name';
+  String get settings_regionName => 'Ріонна назва';
 
   @override
-  String get settings_regionDeleted => 'Region deleted';
+  String get settings_regionDeleted => 'Ріон витертений';
 
   @override
-  String get settings_deleteRegion => 'Delete Region';
+  String get settings_deleteRegion => 'Видалення регіону';
 
   @override
   String settings_deleteRegionConfirm(String region) {
-    return 'Remove \"$region\" from region list?';
+    return 'Вирішіть \"$region\" з списку регіонів?';
   }
 
   @override
@@ -628,6 +628,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settings_infoChannelCount => 'Кількість каналів';
 
   @override
+  String get settings_infoHardware => 'Оборудовання';
+
+  @override
+  String get settings_infoFirmware => 'Програмне вміст (фirmware)';
+
+  @override
   String get settings_presets => 'Попередні налаштування';
 
   @override
@@ -743,16 +749,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get appSettings_languageUk => 'Українська';
 
   @override
-  String get repeater_pathHashModeOption0 => '0 - 1 byte';
+  String get repeater_pathHashModeOption0 => '0 - 1 байт';
 
   @override
-  String get repeater_pathHashModeOption1 => '1 - 2 bytes';
+  String get repeater_pathHashModeOption1 => '1 - 2 байти';
 
   @override
-  String get repeater_pathHashModeOption2 => '2 - 3 bytes';
+  String get repeater_pathHashModeOption2 => '2 - 3 байти';
 
   @override
-  String get repeater_pathHashModeOption3 => '3 - 4 bytes';
+  String get repeater_pathHashModeOption3 => '3 - 4 байта';
 
   @override
   String get appSettings_enableMessageTracing =>
@@ -899,6 +905,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get appSettings_batteryLipo => 'LiPo (3.0-4.2В)';
+
+  @override
+  String get appSettings_batteryLipoHv => 'ЛиPo HV (3,0-4,35 В)';
 
   @override
   String get appSettings_mapDisplay => 'Відображення карти';
@@ -1409,17 +1418,17 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String channels_regionSetTo(String region) {
-    return 'Region: $region';
+    return 'Ріон: $region';
   }
 
   @override
-  String get channels_regionNotSet => 'Region: none';
+  String get channels_regionNotSet => 'Ріон: нема';
 
   @override
-  String get channels_regionSelect_Title => 'Select a region';
+  String get channels_regionSelect_Title => 'Вybірте регіон';
 
   @override
-  String get channels_clearRegion => 'Clear region';
+  String get channels_clearRegion => 'Чистя зона';
 
   @override
   String get chat_noMessages => 'Поки немає повідомлень.';
@@ -1478,7 +1487,14 @@ class AppLocalizationsUk extends AppLocalizations {
   String get chat_sendGif => 'Надіслати GIF';
 
   @override
-  String get chat_receivedGif => 'Received a GIF';
+  String get chat_sendImage =>
+      'Нашкоду зовні\n\n(or more naturally, depending on context)\n\nПошукуєте изображення';
+
+  @override
+  String get chat_imagePickFailed => 'Неможливо відкрити це изображення';
+
+  @override
+  String get chat_receivedGif => 'Підймовано GIF';
 
   @override
   String get chat_reply => 'Відповісти';
@@ -2725,38 +2741,38 @@ class AppLocalizationsUk extends AppLocalizations {
       'Байти, що використовуються для кодування ідентифікатора цього ретранслятора в тегах flood-шляху/виявлення петель. 0=1 байт (256 ідентифікаторів, до 64 переходів), 1=2 байти (65 000 ідентифікаторів, до 32 переходів), 2=3 байти (16 мільйонів ідентифікаторів, до 21 переходу). Прошивки до v1.14 завжди використовували 1-байтові шляхи; v1.14 і новіші можна налаштувати на 2- або 3-байтові шляхи.';
 
   @override
-  String get repeater_keySettings => 'Change Identity Keys';
+  String get repeater_keySettings => 'Зміна ключів ідентифікації';
 
   @override
   String get repeater_keySettingsSubtitle =>
-      'Change the public/private keypair';
+      'Замініть публічний/приватний ключ';
 
   @override
-  String get repeater_prvKey => 'Private key';
+  String get repeater_prvKey => 'Приватний ключ';
 
   @override
   String get repeater_prvKeyHelper =>
-      'A new private key for the repeater, a 128-character hex string.';
+      'Нова приватна ключ для репітера, 128-символова штучна штука в шестнадцатеричному форматі.';
 
   @override
-  String get repeater_generatePrvKey => 'Generate a random keypair';
+  String get repeater_generatePrvKey => 'Синхронізujте ключовий пару';
 
   @override
-  String get repeater_stopGeneratingPrvKey => 'Interrupt search for keypair';
+  String get repeater_stopGeneratingPrvKey => 'Прервити шук ключового пару';
 
   @override
-  String get repeater_pubKey => 'Public key';
+  String get repeater_pubKey => 'Публічна ключ';
 
   @override
   String get repeater_pubKeyHelper =>
-      'This is the public key that goes with the generated private key. You can\'t set this directly.';
+      'Це публична ключ, який пов\'язано з створеною приватною ключом. Ви не можете встановлювати його напрямую.';
 
   @override
-  String get repeater_pubKeyPrefix => 'Desired prefix';
+  String get repeater_pubKeyPrefix => 'Високорейтингове прикінання';
 
   @override
   String repeater_pubKeyPrefixHelper(int tries) {
-    return 'Find a public key that starts with these hex digits. Expected tries needed: $tries.';
+    return 'Найдіть відповідний открытий ключ, який починається ціми шестнадцатыми цифрами. Ожидається кількість потрібних попыток: $tries.';
   }
 
   @override
@@ -4531,6 +4547,43 @@ class AppLocalizationsUk extends AppLocalizations {
   String get translation_title => 'Переклад';
 
   @override
+  String get imageMessages_enableTitle => 'Підтримка зображень для посилання';
+
+  @override
+  String get imageMessages_enableSubtitle =>
+      'Пошукуєте изображення через сеть. Вимagaєте однократне скачання моделю изображення.';
+
+  @override
+  String get imageMessages_modelSectionTitle => 'Модель для зображень';
+
+  @override
+  String get imageMessages_downloadModel => 'Скачання';
+
+  @override
+  String get imageMessages_cancelDownload => 'Завершити';
+
+  @override
+  String get imageMessages_removeModel => 'Видалим модель';
+
+  @override
+  String get imageMessages_modelReady => 'Готово';
+
+  @override
+  String get imageMessages_modelNotPublished =>
+      'Щоб не було опубліковано — це версія не дозволяє зробити скачання.';
+
+  @override
+  String get imageMessages_downloadFailed =>
+      'Модель для зображень не можна сказати.';
+
+  @override
+  String get imageMessages_autoProcessTitle => 'Автоматично оброблювати obraзи';
+
+  @override
+  String get imageMessages_autoProcessSubtitle =>
+      'Кожна картинка повинні бути відтворена на мій момент прибуття. Використовує приблизно 2 ГБ пам\'яті на кожен раз; відключіть від відтворення за допомогою кlikу.';
+
+  @override
   String get translation_enableTitle => 'Увімкнути переклад';
 
   @override
@@ -4819,4 +4872,205 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get pathMap_unfollowPacket => 'Відв\'язати вигляд від пакету';
+
+  @override
+  String get imageSend_title =>
+      'Нашкоду зовні\n\n(or more naturally, depending on context)\n\nПошукуєте изображення';
+
+  @override
+  String get imageSend_cropNote =>
+      'Манітовано до 512 × 512 · соотношення варість не зберігається';
+
+  @override
+  String get imageSend_originalSize => 'Оригінал';
+
+  @override
+  String get imageSend_onAirSize => 'На ері';
+
+  @override
+  String get imageSend_quality => 'Качество';
+
+  @override
+  String get imageSend_qualityStandard => 'Стандарт';
+
+  @override
+  String get imageSend_qualityHigh => 'Висок';
+
+  @override
+  String get imageSend_packetsLabel => 'Пакети';
+
+  @override
+  String get imageSend_airtimeLabel => 'Час на ері';
+
+  @override
+  String get imageSend_sizeLabel => 'Підлог';
+
+  @override
+  String imageSend_packetsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'пакета',
+      many: 'пакетів',
+      few: 'пакети',
+      one: 'пакет',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String imageSend_range(String min, String max) {
+    return '$min–$max';
+  }
+
+  @override
+  String get imageSend_unknownValue => '—';
+
+  @override
+  String get imageSend_radioUnknownTitle => 'Настройки радио неизвестні';
+
+  @override
+  String get imageSend_radioUnknownBody =>
+      'Залучіться до пристрою, щоб можна було розрахунювати час в етері.';
+
+  @override
+  String get imageSend_longSendTitle => 'Длуга передача';
+
+  @override
+  String imageSend_longSendBody(String duration) {
+    return 'Це забезпечить канал на approximativno $duration хвилин.';
+  }
+
+  @override
+  String get imageSend_floodNote =>
+      'Рухування потоків: кожен ретрансатор у діапазоні відправлює кожен пакет, тому канал залишається занятшим довше, ніж це.';
+
+  @override
+  String get imageSend_parityTitle => 'Пакет відновлення';
+
+  @override
+  String get imageSend_paritySubtitle =>
+      'Один дополний пакет. Групові посилання не відповідають, тому це дозволяє відвідувачу відтворити зображення, якщо один пакет втрачений.';
+
+  @override
+  String get imageSend_send => 'Пошутить';
+
+  @override
+  String get imageSend_cancel => 'Завершити';
+
+  @override
+  String get imageSend_encodeFailed =>
+      'Це изображення не може бути кодировано.';
+
+  @override
+  String get imageSend_codecDownloading =>
+      'Модель для відтворення изображень ще збирається.';
+
+  @override
+  String get imageSend_codecUnavailable =>
+      'Постій для відправлення изображень на цьому пристрої не доступний.';
+
+  @override
+  String get imageSend_codecDisabled =>
+      'Пictesovani posyly wyключені в настройках.';
+
+  @override
+  String get imageSend_deviceUnsupported =>
+      'Цей радіопередач не може отправляти пакети зображень. Зконнете пристрої, що працює з обладнанням керемонітом компаньєр 13 або новшим.';
+
+  @override
+  String get imageSend_directMessagesUnsupported =>
+      'Фотографії передаються як дані групою, тому їх можна відправляти лише на канал — не в прямому посилання.';
+
+  @override
+  String get imageSend_tooLarge =>
+      'Це изображення кодує більше пакітів, ніж дозволяє формат сети.';
+
+  @override
+  String imageSend_sentConfirmation(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'пакетів',
+      one: 'пакет',
+    );
+    return 'Зображення надіслано як $count $_temp0.';
+  }
+
+  @override
+  String imageSend_sendFailed(String error) {
+    return 'Изображення не можна відправити: $error';
+  }
+
+  @override
+  String imageSend_sendingProgress(int sent, int total) {
+    return 'Пошускаємо изображення — пакет $sent з $total';
+  }
+
+  @override
+  String receivedImage_senderPrefix(String prefix) {
+    return 'Нод $prefix';
+  }
+
+  @override
+  String receivedImage_incoming(int received, int total) {
+    return 'Підходяче: $received з $total пакітів';
+  }
+
+  @override
+  String get receivedImage_queued => 'Очікування розслівання коду';
+
+  @override
+  String get receivedImage_tapToDecode => 'Кliknite для декодування';
+
+  @override
+  String get receivedImage_decoding => 'Повноювання… за прибуття 1 с.';
+
+  @override
+  String receivedImage_incomplete(int received, int total) {
+    return 'Образок не повний — $received з $total пакітів прибавлено';
+  }
+
+  @override
+  String get receivedImage_corrupt => 'Obraz не можна відтворити';
+
+  @override
+  String get receivedImage_decoderMissing =>
+      'Під час приємки — розшифровка зображення не вдалося.';
+
+  @override
+  String get receivedImage_evicted => 'Изображення не зберігається';
+
+  @override
+  String get receivedImage_retry => 'Попробуй ще раз';
+
+  @override
+  String get receivedImage_decodeAgain => 'Декодуй ще раз';
+
+  @override
+  String get receivedImage_openSettings => 'Заведіть';
+
+  @override
+  String get receivedImage_tapToProcess => 'Кликніть для обробки';
+
+  @override
+  String receivedImage_awaiting(int bytes, int packets) {
+    String _temp0 = intl.Intl.pluralLogic(
+      packets,
+      locale: localeName,
+      other: 'пакетів',
+      one: 'пакет',
+    );
+    return '$bytes байтів · $packets $_temp0';
+  }
+
+  @override
+  String imageSend_secondsValue(String seconds) {
+    return '$seconds секунди';
+  }
+
+  @override
+  String imageSend_minutesSecondsValue(String minutes, String seconds) {
+    return '$minutes хв $seconds с';
+  }
 }

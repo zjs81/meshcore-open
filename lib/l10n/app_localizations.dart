@@ -334,17 +334,17 @@ abstract class AppLocalizations {
   /// **'Heard repeated'**
   String get messageStatus_repeated;
 
-  /// No description provided for @messageImage_enable.
+  /// No description provided for @urlImage_enable.
   ///
   /// In en, this message translates to:
-  /// **'Enable Images'**
-  String get messageImage_enable;
+  /// **'Enable URL images'**
+  String get urlImage_enable;
 
-  /// No description provided for @messageImage_possible.
+  /// No description provided for @urlImage_possible.
   ///
   /// In en, this message translates to:
-  /// **'Possible Image, enable in Settings.'**
-  String get messageImage_possible;
+  /// **'Possible URL image; enable it in Settings.'**
+  String get urlImage_possible;
 
   /// No description provided for @common_reboot.
   ///
@@ -1252,6 +1252,18 @@ abstract class AppLocalizations {
   /// **'Channel Count'**
   String get settings_infoChannelCount;
 
+  /// No description provided for @settings_infoHardware.
+  ///
+  /// In en, this message translates to:
+  /// **'Hardware'**
+  String get settings_infoHardware;
+
+  /// No description provided for @settings_infoFirmware.
+  ///
+  /// In en, this message translates to:
+  /// **'Firmware'**
+  String get settings_infoFirmware;
+
   /// No description provided for @settings_presets.
   ///
   /// In en, this message translates to:
@@ -1737,6 +1749,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'LiPo (3.0-4.2V)'**
   String get appSettings_batteryLipo;
+
+  /// No description provided for @appSettings_batteryLipoHv.
+  ///
+  /// In en, this message translates to:
+  /// **'LiPo HV (3.0-4.35V)'**
+  String get appSettings_batteryLipoHv;
 
   /// No description provided for @appSettings_mapDisplay.
   ///
@@ -2727,6 +2745,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send GIF'**
   String get chat_sendGif;
+
+  /// No description provided for @chat_sendImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Send image'**
+  String get chat_sendImage;
+
+  /// Shown when picking or reading a photo to send fails
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open that image'**
+  String get chat_imagePickFailed;
 
   /// No description provided for @chat_receivedGif.
   ///
@@ -7762,6 +7792,72 @@ abstract class AppLocalizations {
   /// **'Translation'**
   String get translation_title;
 
+  /// No description provided for @imageMessages_enableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable image messages'**
+  String get imageMessages_enableTitle;
+
+  /// No description provided for @imageMessages_enableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send images over the mesh. Requires a one-time image model download.'**
+  String get imageMessages_enableSubtitle;
+
+  /// No description provided for @imageMessages_modelSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Image model'**
+  String get imageMessages_modelSectionTitle;
+
+  /// No description provided for @imageMessages_downloadModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get imageMessages_downloadModel;
+
+  /// No description provided for @imageMessages_cancelDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get imageMessages_cancelDownload;
+
+  /// No description provided for @imageMessages_removeModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove model'**
+  String get imageMessages_removeModel;
+
+  /// No description provided for @imageMessages_modelReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get imageMessages_modelReady;
+
+  /// No description provided for @imageMessages_modelNotPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Not published yet — this build cannot download it.'**
+  String get imageMessages_modelNotPublished;
+
+  /// No description provided for @imageMessages_downloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The image model could not be downloaded.'**
+  String get imageMessages_downloadFailed;
+
+  /// No description provided for @imageMessages_autoProcessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Process images automatically'**
+  String get imageMessages_autoProcessTitle;
+
+  /// No description provided for @imageMessages_autoProcessSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconstruct every image as soon as it arrives. Uses about 2 GB of memory for a second each time; leave off to reconstruct with a tap instead.'**
+  String get imageMessages_autoProcessSubtitle;
+
   /// No description provided for @translation_enableTitle.
   ///
   /// In en, this message translates to:
@@ -8229,6 +8325,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unlock view from packet'**
   String get pathMap_unfollowPacket;
+
+  /// No description provided for @imageSend_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Send image'**
+  String get imageSend_title;
+
+  /// No description provided for @imageSend_cropNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Resized to 512 × 512 · aspect ratio not preserved'**
+  String get imageSend_cropNote;
+
+  /// No description provided for @imageSend_originalSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Original'**
+  String get imageSend_originalSize;
+
+  /// No description provided for @imageSend_onAirSize.
+  ///
+  /// In en, this message translates to:
+  /// **'On air'**
+  String get imageSend_onAirSize;
+
+  /// No description provided for @imageSend_quality.
+  ///
+  /// In en, this message translates to:
+  /// **'Quality'**
+  String get imageSend_quality;
+
+  /// No description provided for @imageSend_qualityStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get imageSend_qualityStandard;
+
+  /// No description provided for @imageSend_qualityHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get imageSend_qualityHigh;
+
+  /// No description provided for @imageSend_packetsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Packets'**
+  String get imageSend_packetsLabel;
+
+  /// No description provided for @imageSend_airtimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Time on air'**
+  String get imageSend_airtimeLabel;
+
+  /// No description provided for @imageSend_sizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Payload'**
+  String get imageSend_sizeLabel;
+
+  /// No description provided for @imageSend_packetsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} {count, plural, =1{packet} other{packets}}'**
+  String imageSend_packetsCount(int count);
+
+  /// No description provided for @imageSend_range.
+  ///
+  /// In en, this message translates to:
+  /// **'{min}–{max}'**
+  String imageSend_range(String min, String max);
+
+  /// No description provided for @imageSend_unknownValue.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get imageSend_unknownValue;
+
+  /// No description provided for @imageSend_radioUnknownTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio settings unknown'**
+  String get imageSend_radioUnknownTitle;
+
+  /// No description provided for @imageSend_radioUnknownBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to a device so the time on air can be calculated.'**
+  String get imageSend_radioUnknownBody;
+
+  /// No description provided for @imageSend_longSendTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Long transmission'**
+  String get imageSend_longSendTitle;
+
+  /// No description provided for @imageSend_longSendBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This will hold the channel for about {duration}.'**
+  String imageSend_longSendBody(String duration);
+
+  /// No description provided for @imageSend_floodNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Flood routing: every repeater in range retransmits each packet, so the channel stays busy longer than this.'**
+  String get imageSend_floodNote;
+
+  /// No description provided for @imageSend_parityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add recovery packet'**
+  String get imageSend_parityTitle;
+
+  /// No description provided for @imageSend_paritySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One extra packet. Group messages are not acknowledged, so this lets the receiver rebuild the image if a single packet is lost.'**
+  String get imageSend_paritySubtitle;
+
+  /// No description provided for @imageSend_send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get imageSend_send;
+
+  /// No description provided for @imageSend_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get imageSend_cancel;
+
+  /// No description provided for @imageSend_encodeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'This image could not be encoded.'**
+  String get imageSend_encodeFailed;
+
+  /// No description provided for @imageSend_codecDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'The image model is still downloading.'**
+  String get imageSend_codecDownloading;
+
+  /// No description provided for @imageSend_codecUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Image sending is not available on this device.'**
+  String get imageSend_codecUnavailable;
+
+  /// No description provided for @imageSend_codecDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Image messages are turned off in settings.'**
+  String get imageSend_codecDisabled;
+
+  /// No description provided for @imageSend_deviceUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This radio cannot send image packets. Connect a device running companion firmware 13 or newer.'**
+  String get imageSend_deviceUnsupported;
+
+  /// No description provided for @imageSend_directMessagesUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Images travel as group data, so they can only be sent to a channel — not in a direct message.'**
+  String get imageSend_directMessagesUnsupported;
+
+  /// No description provided for @imageSend_tooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'That image encoded to more packets than the mesh format allows.'**
+  String get imageSend_tooLarge;
+
+  /// No description provided for @imageSend_sentConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Image sent as {count} {count, plural, =1{packet} other{packets}}.'**
+  String imageSend_sentConfirmation(int count);
+
+  /// No description provided for @imageSend_sendFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The image could not be sent: {error}'**
+  String imageSend_sendFailed(String error);
+
+  /// No description provided for @imageSend_sendingProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending image — packet {sent} of {total}'**
+  String imageSend_sendingProgress(int sent, int total);
+
+  /// No description provided for @receivedImage_senderPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Node {prefix}'**
+  String receivedImage_senderPrefix(String prefix);
+
+  /// No description provided for @receivedImage_incoming.
+  ///
+  /// In en, this message translates to:
+  /// **'{received} of {total} packets'**
+  String receivedImage_incoming(int received, int total);
+
+  /// No description provided for @receivedImage_queued.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting to decode'**
+  String get receivedImage_queued;
+
+  /// No description provided for @receivedImage_tapToDecode.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to decode'**
+  String get receivedImage_tapToDecode;
+
+  /// No description provided for @receivedImage_decoding.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconstructing… about 1 s'**
+  String get receivedImage_decoding;
+
+  /// No description provided for @receivedImage_incomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Image incomplete — {received} of {total} packets arrived'**
+  String receivedImage_incomplete(int received, int total);
+
+  /// No description provided for @receivedImage_corrupt.
+  ///
+  /// In en, this message translates to:
+  /// **'Image could not be reconstructed'**
+  String get receivedImage_corrupt;
+
+  /// No description provided for @receivedImage_decoderMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Image received — image decoding is off'**
+  String get receivedImage_decoderMissing;
+
+  /// No description provided for @receivedImage_evicted.
+  ///
+  /// In en, this message translates to:
+  /// **'Image no longer stored'**
+  String get receivedImage_evicted;
+
+  /// No description provided for @receivedImage_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get receivedImage_retry;
+
+  /// No description provided for @receivedImage_decodeAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Decode again'**
+  String get receivedImage_decodeAgain;
+
+  /// No description provided for @receivedImage_openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up'**
+  String get receivedImage_openSettings;
+
+  /// No description provided for @receivedImage_tapToProcess.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to process'**
+  String get receivedImage_tapToProcess;
+
+  /// No description provided for @receivedImage_awaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'{bytes} bytes · {packets} {packets, plural, =1{packet} other{packets}}'**
+  String receivedImage_awaiting(int bytes, int packets);
+
+  /// No description provided for @imageSend_secondsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} s'**
+  String imageSend_secondsValue(String seconds);
+
+  /// No description provided for @imageSend_minutesSecondsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} m {seconds} s'**
+  String imageSend_minutesSecondsValue(String minutes, String seconds);
 }
 
 class _AppLocalizationsDelegate

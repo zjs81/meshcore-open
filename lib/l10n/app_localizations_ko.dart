@@ -111,10 +111,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get messageStatus_repeated => '반복 수신됨';
 
   @override
-  String get messageImage_enable => 'Enable Images';
+  String get urlImage_enable => 'Enable URL images';
 
   @override
-  String get messageImage_possible => 'Possible Image, enable in Settings.';
+  String get urlImage_possible => 'Possible URL image; enable it in Settings.';
 
   @override
   String get common_reboot => '재부팅';
@@ -360,42 +360,41 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_radioSettingsUpdated => '라디오 설정이 업데이트되었습니다.';
 
   @override
-  String get settings_regionSettings => 'Regions';
+  String get settings_regionSettings => '지역';
 
   @override
-  String get settings_regionSettingsSubtitle => 'Manage stored regions';
+  String get settings_regionSettingsSubtitle => '저장된 지역 관리';
 
   @override
-  String get settings_regionManagement_screenTitle => 'Region Management';
+  String get settings_regionManagement_screenTitle => '지역 관리';
 
   @override
-  String get settings_regionNameHint => 'Enter region name';
+  String get settings_regionNameHint => '지역 이름 입력';
 
   @override
-  String get settings_regionAddRegion => 'Add region';
+  String get settings_regionAddRegion => '지역 추가';
 
   @override
-  String get settings_regionFetchRegions => 'Fetch regions from repeaters';
+  String get settings_regionFetchRegions => '리피터에서 지역을 가져옵니다.';
 
   @override
-  String get settings_regionFetchRegionsFail => 'No regions were found';
+  String get settings_regionFetchRegionsFail => '어떤 지역도 발견되지 않았습니다.';
 
   @override
-  String get settings_regionFetchRegionsAlreadyExists =>
-      'This region has already been added';
+  String get settings_regionFetchRegionsAlreadyExists => '이 지역은 이미 추가되었습니다.';
 
   @override
-  String get settings_regionName => 'Region Name';
+  String get settings_regionName => '지역 이름';
 
   @override
-  String get settings_regionDeleted => 'Region deleted';
+  String get settings_regionDeleted => '지역 삭제';
 
   @override
-  String get settings_deleteRegion => 'Delete Region';
+  String get settings_deleteRegion => '지역 삭제';
 
   @override
   String settings_deleteRegionConfirm(String region) {
-    return 'Remove \"$region\" from region list?';
+    return '\"$region\"을(를) 지역 목록에서 삭제하시겠습니까?';
   }
 
   @override
@@ -602,6 +601,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_infoChannelCount => '채널 수';
 
   @override
+  String get settings_infoHardware => '하드웨어';
+
+  @override
+  String get settings_infoFirmware => '펌웨어';
+
+  @override
   String get settings_presets => '프리셋';
 
   @override
@@ -717,16 +722,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_languageUk => '우크라이나어';
 
   @override
-  String get repeater_pathHashModeOption0 => '0 - 1 byte';
+  String get repeater_pathHashModeOption0 => '0 - 1 바이트';
 
   @override
-  String get repeater_pathHashModeOption1 => '1 - 2 bytes';
+  String get repeater_pathHashModeOption1 => '1~2 바이트';
 
   @override
-  String get repeater_pathHashModeOption2 => '2 - 3 bytes';
+  String get repeater_pathHashModeOption2 => '2 - 3 바이트';
 
   @override
-  String get repeater_pathHashModeOption3 => '3 - 4 bytes';
+  String get repeater_pathHashModeOption3 => '3 - 4 바이트';
 
   @override
   String get appSettings_enableMessageTracing => '메시지 추적 기능 활성화';
@@ -858,6 +863,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appSettings_batteryLipo => '리튬 폴리머 (3.0-4.2V)';
+
+  @override
+  String get appSettings_batteryLipoHv => '리포 HV (3.0-4.35V)';
 
   @override
   String get appSettings_mapDisplay => '지도 표시';
@@ -1349,17 +1357,17 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String channels_regionSetTo(String region) {
-    return 'Region: $region';
+    return '지역: $region';
   }
 
   @override
-  String get channels_regionNotSet => 'Region: none';
+  String get channels_regionNotSet => '지역: 없음';
 
   @override
-  String get channels_regionSelect_Title => 'Select a region';
+  String get channels_regionSelect_Title => '지역을 선택하세요';
 
   @override
-  String get channels_clearRegion => 'Clear region';
+  String get channels_clearRegion => '명확한 지역';
 
   @override
   String get chat_noMessages => '아직 메시지가 없습니다.';
@@ -1417,7 +1425,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chat_sendGif => 'GIF 보내기';
 
   @override
-  String get chat_receivedGif => 'Received a GIF';
+  String get chat_sendImage => '이미지를 보내세요';
+
+  @override
+  String get chat_imagePickFailed => '그 이미지를 열 수 없었어요.';
+
+  @override
+  String get chat_receivedGif => 'GIF를 받았습니다';
 
   @override
   String get chat_reply => '답변';
@@ -2611,38 +2625,36 @@ class AppLocalizationsKo extends AppLocalizations {
       '이 리피터의 ID를 플러드 경로/루프 감지 태그에 인코딩하는 데 사용되는 바이트 수입니다. 0=1바이트(256개 ID, 최대 64홉), 1=2바이트(65,000개 ID, 최대 32홉), 2=3바이트(1,600만 개 ID, 최대 21홉). v1.14 이전 펌웨어는 항상 1바이트 경로를 사용했으며, v1.14 이상은 2바이트 또는 3바이트 경로로 설정할 수 있습니다.';
 
   @override
-  String get repeater_keySettings => 'Change Identity Keys';
+  String get repeater_keySettings => '신원 키 변경';
 
   @override
-  String get repeater_keySettingsSubtitle =>
-      'Change the public/private keypair';
+  String get repeater_keySettingsSubtitle => '공개/비공개 키 쌍을 변경하세요';
 
   @override
-  String get repeater_prvKey => 'Private key';
+  String get repeater_prvKey => '개인 키';
 
   @override
-  String get repeater_prvKeyHelper =>
-      'A new private key for the repeater, a 128-character hex string.';
+  String get repeater_prvKeyHelper => '리피터의 새로운 개인 키로, 128자리의 16진수 문자열입니다.';
 
   @override
-  String get repeater_generatePrvKey => 'Generate a random keypair';
+  String get repeater_generatePrvKey => '임의의 키 쌍을 생성하세요.';
 
   @override
-  String get repeater_stopGeneratingPrvKey => 'Interrupt search for keypair';
+  String get repeater_stopGeneratingPrvKey => '키페어 검색 중단';
 
   @override
-  String get repeater_pubKey => 'Public key';
+  String get repeater_pubKey => '공개 키';
 
   @override
   String get repeater_pubKeyHelper =>
-      'This is the public key that goes with the generated private key. You can\'t set this directly.';
+      '이것은 생성된 개인 키와 함께 사용되는 공개 키입니다. 직접 설정할 수 없습니다.';
 
   @override
-  String get repeater_pubKeyPrefix => 'Desired prefix';
+  String get repeater_pubKeyPrefix => '원하는 접두사';
 
   @override
   String repeater_pubKeyPrefixHelper(int tries) {
-    return 'Find a public key that starts with these hex digits. Expected tries needed: $tries.';
+    return '이러한 16진수로 시작하는 공개 키를 찾으세요. 필요한 시도 횟수: $tries.';
   }
 
   @override
@@ -4300,6 +4312,42 @@ class AppLocalizationsKo extends AppLocalizations {
   String get translation_title => '번역';
 
   @override
+  String get imageMessages_enableTitle => '이미지 메시지 활성화';
+
+  @override
+  String get imageMessages_enableSubtitle =>
+      '메시를 통해 이미지를 전송하세요. 일회성 이미지 모델 다운로드가 필요합니다.';
+
+  @override
+  String get imageMessages_modelSectionTitle => '이미지 모델';
+
+  @override
+  String get imageMessages_downloadModel => '다운로드';
+
+  @override
+  String get imageMessages_cancelDownload => '취소';
+
+  @override
+  String get imageMessages_removeModel => '모델 제거';
+
+  @override
+  String get imageMessages_modelReady => '준비 완료';
+
+  @override
+  String get imageMessages_modelNotPublished =>
+      '아직 출판되지 않았습니다 — 이 빌드로는 다운로드할 수 없습니다.';
+
+  @override
+  String get imageMessages_downloadFailed => '이미지 모델을 다운로드할 수 없었습니다.';
+
+  @override
+  String get imageMessages_autoProcessTitle => '자동으로 프로세스 이미지를 처리합니다.';
+
+  @override
+  String get imageMessages_autoProcessSubtitle =>
+      '이미지가 도착하는 즉시 재구성하세요. 매번 2GB의 메모리를 사용하며, 탭으로 재구성을 원할 경우 해제하세요.';
+
+  @override
   String get translation_enableTitle => '번역 기능 활성화';
 
   @override
@@ -4574,4 +4622,194 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get pathMap_unfollowPacket => '패킷 고정 해제';
+
+  @override
+  String get imageSend_title => '이미지를 보내세요';
+
+  @override
+  String get imageSend_cropNote => '512 × 512로 크기가 조정되었으며, 종횡비는 유지되지 않았습니다.';
+
+  @override
+  String get imageSend_originalSize => '원문 없음';
+
+  @override
+  String get imageSend_onAirSize => '방송 중';
+
+  @override
+  String get imageSend_quality => '품질';
+
+  @override
+  String get imageSend_qualityStandard => '표준';
+
+  @override
+  String get imageSend_qualityHigh => '높다';
+
+  @override
+  String get imageSend_packetsLabel => '패킷';
+
+  @override
+  String get imageSend_airtimeLabel => '방송 시간';
+
+  @override
+  String get imageSend_sizeLabel => '페이로드';
+
+  @override
+  String imageSend_packetsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '패킷',
+      one: '패킷',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String imageSend_range(String min, String max) {
+    return '$min~$max';
+  }
+
+  @override
+  String get imageSend_unknownValue => '—';
+
+  @override
+  String get imageSend_radioUnknownTitle => '라디오 설정 정보 없음';
+
+  @override
+  String get imageSend_radioUnknownBody => '방송 시간을 계산할 수 있도록 기기와 연결하세요.';
+
+  @override
+  String get imageSend_longSendTitle => '장거리 송신';
+
+  @override
+  String imageSend_longSendBody(String duration) {
+    return '이것은 약 $duration 동안 채널을 유지할 것입니다.';
+  }
+
+  @override
+  String get imageSend_floodNote =>
+      '홍수 라우팅: 범위 내의 모든 리피터가 각 패킷을 재전송하므로, 채널이 이보다 더 오래 점유 상태를 유지합니다.';
+
+  @override
+  String get imageSend_parityTitle => '회복 패킷';
+
+  @override
+  String get imageSend_paritySubtitle =>
+      '추가 한 개의 패킷입니다. 그룹 메시지는 확인되지 않으므로, 하나의 패킷이 손실되었을 경우 수신자가 이미지를 다시 구성할 수 있습니다.';
+
+  @override
+  String get imageSend_send => '보내다';
+
+  @override
+  String get imageSend_cancel => '취소';
+
+  @override
+  String get imageSend_encodeFailed => '이 이미지는 인코딩할 수 없습니다.';
+
+  @override
+  String get imageSend_codecDownloading => '이미지 모델이 아직 다운로드 중입니다.';
+
+  @override
+  String get imageSend_codecUnavailable => '이 기기에서는 이미지 전송이 불가능합니다.';
+
+  @override
+  String get imageSend_codecDisabled => '설정에서 이미지 메시지가 꺼져 있습니다.';
+
+  @override
+  String get imageSend_deviceUnsupported =>
+      '이 라디오는 이미지 패킷을 전송할 수 없습니다. 컴패니언 펌웨어 13 이상을 실행하는 장치를 연결해 주세요.';
+
+  @override
+  String get imageSend_directMessagesUnsupported =>
+      '이미지는 그룹 데이터로 전송되므로, 직접 메시지가 아닌 채널로만 보낼 수 있습니다.';
+
+  @override
+  String get imageSend_tooLarge => '그 이미지는 메시 형식이 허용하는 것보다 더 많은 패킷으로 인코딩되었습니다.';
+
+  @override
+  String imageSend_sentConfirmation(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '패킷',
+      one: '패킷',
+    );
+    return '이미지가 $count $_temp0로 전송되었습니다.';
+  }
+
+  @override
+  String imageSend_sendFailed(String error) {
+    return '이미지를 보낼 수 없습니다: $error';
+  }
+
+  @override
+  String imageSend_sendingProgress(int sent, int total) {
+    return '이미지 전송 — $sent개의 $total 패킷';
+  }
+
+  @override
+  String receivedImage_senderPrefix(String prefix) {
+    return '노드 $prefix';
+  }
+
+  @override
+  String receivedImage_incoming(int received, int total) {
+    return '$total개 패킷 중 $received개';
+  }
+
+  @override
+  String get receivedImage_queued => '해독을 기다리는 중입니다.';
+
+  @override
+  String get receivedImage_tapToDecode => '해독하려면 탭을 누르세요.';
+
+  @override
+  String get receivedImage_decoding => '재구성하는… 약 1초 정도';
+
+  @override
+  String receivedImage_incomplete(int received, int total) {
+    return '이미지 불완전 — $total개 중 $received개 패킷 수신됨';
+  }
+
+  @override
+  String get receivedImage_corrupt => '이미지는 재구성될 수 없습니다.';
+
+  @override
+  String get receivedImage_decoderMissing => '수신된 이미지 — 이미지 해독이 되지 않았습니다';
+
+  @override
+  String get receivedImage_evicted => '이미지는 더 이상 저장되지 않았습니다.';
+
+  @override
+  String get receivedImage_retry => '다시 시도해 보세요';
+
+  @override
+  String get receivedImage_decodeAgain => '다시 해독하다';
+
+  @override
+  String get receivedImage_openSettings => '설정하다';
+
+  @override
+  String get receivedImage_tapToProcess => '처리하려면 탭을 누르세요.';
+
+  @override
+  String receivedImage_awaiting(int bytes, int packets) {
+    String _temp0 = intl.Intl.pluralLogic(
+      packets,
+      locale: localeName,
+      other: '패킷',
+      one: '패킷',
+    );
+    return '$bytes 바이트 · $packets $_temp0';
+  }
+
+  @override
+  String imageSend_secondsValue(String seconds) {
+    return '$seconds 초';
+  }
+
+  @override
+  String imageSend_minutesSecondsValue(String minutes, String seconds) {
+    return '$minutes분 $seconds초';
+  }
 }

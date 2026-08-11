@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
 
-class MessageImageHelper {
+/// Finds and renders image URLs embedded in ordinary text messages.
+///
+/// This is deliberately separate from MeshCore's transmitted channel-image
+/// protocol, which is handled by [ReceivedImageStore].
+class MessageUrlImageHelper {
   static final Map<String, Future<bool>> _verifiedImageCache =
       <String, Future<bool>>{};
 
@@ -156,8 +160,8 @@ class MessageImageHelper {
   }
 }
 
-class MessageImagePreview extends StatelessWidget {
-  const MessageImagePreview({super.key, required this.imageUrl});
+class MessageUrlImagePreview extends StatelessWidget {
+  const MessageUrlImagePreview({super.key, required this.imageUrl});
 
   final String imageUrl;
 
@@ -216,14 +220,13 @@ class MessageImagePreview extends StatelessWidget {
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 240, maxHeight: 240),
+        child: SizedBox(
+          width: 240,
+          height: 240,
           child: CachedNetworkImage(
             imageUrl: imageUrl,
             fit: BoxFit.contain,
-            placeholder: (context, url) => Container(
-              width: 200,
-              height: 140,
+            placeholder: (context, url) => ColoredBox(
               color: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: const Center(
                 child: CircularProgressIndicator(strokeWidth: 2),

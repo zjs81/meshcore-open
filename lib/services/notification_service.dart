@@ -5,7 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-import '../helpers/message_image_helper.dart';
+import '../helpers/message_url_image_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/platform_info.dart';
@@ -200,11 +200,11 @@ class NotificationService {
 
   Future<String?> _resolveNotificationImagePath(
     String text, {
-    required bool imagesEnabled,
+    required bool urlImagesEnabled,
   }) async {
-    if (!imagesEnabled) return null;
+    if (!urlImagesEnabled) return null;
 
-    final imageUrl = await MessageImageHelper.parseVerified(text);
+    final imageUrl = await MessageUrlImageHelper.parseVerified(text);
     if (imageUrl == null) return null;
 
     try {
@@ -221,7 +221,7 @@ class NotificationService {
   Future<void> _showMessageNotificationImpl({
     required String contactName,
     required String message,
-    required bool imagesEnabled,
+    required bool urlImagesEnabled,
     String? contactId,
     int? badgeCount,
   }) async {
@@ -229,7 +229,7 @@ class NotificationService {
 
     final imagePath = await _resolveNotificationImagePath(
       message,
-      imagesEnabled: imagesEnabled,
+      urlImagesEnabled: urlImagesEnabled,
     );
 
     final androidDetails = AndroidNotificationDetails(
@@ -343,7 +343,7 @@ class NotificationService {
   Future<void> _showChannelMessageNotificationImpl({
     required String channelName,
     required String message,
-    required bool imagesEnabled,
+    required bool urlImagesEnabled,
     int? channelIndex,
     int? badgeCount,
   }) async {
@@ -351,7 +351,7 @@ class NotificationService {
 
     final imagePath = await _resolveNotificationImagePath(
       message,
-      imagesEnabled: imagesEnabled,
+      urlImagesEnabled: urlImagesEnabled,
     );
 
     final androidDetails = AndroidNotificationDetails(
@@ -514,7 +514,7 @@ class NotificationService {
   Future<void> showMessageNotification({
     required String contactName,
     required String message,
-    required bool imagesEnabled,
+    required bool urlImagesEnabled,
     String? contactId,
     int? badgeCount,
   }) async {
@@ -525,7 +525,7 @@ class NotificationService {
         type: _NotificationType.message,
         title: contactName,
         body: message,
-        imagesEnabled: imagesEnabled,
+        urlImagesEnabled: urlImagesEnabled,
         id: contactId,
         badgeCount: badgeCount,
       ),
@@ -553,7 +553,7 @@ class NotificationService {
     required String channelName,
     required String senderName,
     required String message,
-    required bool imagesEnabled,
+    required bool urlImagesEnabled,
     int? channelIndex,
     int? badgeCount,
   }) async {
@@ -564,7 +564,7 @@ class NotificationService {
         type: _NotificationType.channelMessage,
         title: channelName,
         body: '$senderName: $message',
-        imagesEnabled: imagesEnabled,
+        urlImagesEnabled: urlImagesEnabled,
         id: channelIndex?.toString(),
         badgeCount: badgeCount,
       ),
@@ -626,7 +626,7 @@ class NotificationService {
           await _showMessageNotificationImpl(
             contactName: notification.title,
             message: notification.body,
-            imagesEnabled: notification.imagesEnabled,
+            urlImagesEnabled: notification.urlImagesEnabled,
             contactId: notification.id,
             badgeCount: notification.badgeCount,
           );
@@ -642,7 +642,7 @@ class NotificationService {
           await _showChannelMessageNotificationImpl(
             channelName: notification.title,
             message: notification.body,
-            imagesEnabled: notification.imagesEnabled,
+            urlImagesEnabled: notification.urlImagesEnabled,
             channelIndex: int.tryParse(notification.id ?? ''),
             badgeCount: notification.badgeCount,
           );
@@ -719,7 +719,7 @@ class _PendingNotification {
   final _NotificationType type;
   final String title;
   final String body;
-  final bool imagesEnabled;
+  final bool urlImagesEnabled;
   final String? id;
   final int? badgeCount;
 
@@ -727,7 +727,7 @@ class _PendingNotification {
     required this.type,
     required this.title,
     required this.body,
-    this.imagesEnabled = false,
+    this.urlImagesEnabled = false,
     this.id,
     this.badgeCount,
   });

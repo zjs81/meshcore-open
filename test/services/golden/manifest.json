@@ -1,0 +1,486 @@
+{
+ "checkpoint": "AEIC_SE_ft32.pkl",
+ "size": 512,
+ "precision": 16,
+ "bypass_precision": 2,
+ "stream_parts": 2,
+ "table_file": "aeic_cdf_ft32.bin",
+ "table_bytes": 813648,
+ "table_sha256": "4089fde2af16c340642a5c857be42f6d0f21caf71dd5b4f32d62efcd41c77bd5",
+ "table_groups": [
+  {
+   "group": "z",
+   "rows": 128,
+   "width": 19,
+   "cdf_length_min": 19,
+   "cdf_length_max": 19,
+   "offset_min": -8,
+   "offset_max": -8,
+   "cdf_max": 65536
+  },
+  {
+   "group": "y",
+   "rows": 64,
+   "width": 3133,
+   "cdf_length_min": 5,
+   "cdf_length_max": 3133,
+   "offset_min": -1565,
+   "offset_max": -1,
+   "cdf_max": 65536
+  }
+ ],
+ "z_cdf_group_index": 0,
+ "y_cdf_group_index": 1,
+ "images": [
+  {
+   "image": "kodim01.png",
+   "stem": "kodim01",
+   "bitstream_file": "kodim01.bin",
+   "bitstream_bytes_stat": 136,
+   "bitstream_sha256": "771be01642e69c277e6dd6a1b5fe926d45990883e0a2d56a2fca67f5e29b385d",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    81,
+    52
+   ],
+   "substream_sha256": [
+    "7803b0726155984d86876d260c72c7376fd1e24b49fa31e279e6c88b0b0b3e73",
+    "8b7e01993f42cd08cb08f3f75d2f94e186ea03e772d47a09a58796bf7db33b0b"
+   ],
+   "vector_file": "kodim01.gv",
+   "vector_bytes_stat": 270592,
+   "n_z_symbols": 2048,
+   "n_y_symbols_each": 16384,
+   "z_q_min": -1,
+   "z_q_max": 1,
+   "y_q_min": -1,
+   "y_q_max": 1,
+   "y_index_min": 0,
+   "y_index_max": 13,
+   "n_skipped_y_indexes": 0,
+   "roundtrip_bitexact": true
+  },
+  {
+   "image": "kodim02.png",
+   "stem": "kodim02",
+   "bitstream_file": "kodim02.bin",
+   "bitstream_bytes_stat": 135,
+   "bitstream_sha256": "6d158062f4e940a09098fdae516eba541cf1c6c3c4aee39d95031add3bf33d7a",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    90,
+    42
+   ],
+   "substream_sha256": [
+    "a9ab7f345e0733c799da943ac065a21bd407a00e946fab48ec1e1dd8b7bee468",
+    "7f765eebbaf5dfde47e1d1f70eb8a1407d55f59e0edf5839b378b9c3d7a39dd3"
+   ],
+   "vector_file": "kodim02.gv",
+   "vector_bytes_stat": 270592,
+   "n_z_symbols": 2048,
+   "n_y_symbols_each": 16384,
+   "z_q_min": -1,
+   "z_q_max": 1,
+   "y_q_min": -1,
+   "y_q_max": 1,
+   "y_index_min": 0,
+   "y_index_max": 13,
+   "n_skipped_y_indexes": 0,
+   "roundtrip_bitexact": true
+  },
+  {
+   "image": "kodim05.png",
+   "stem": "kodim05",
+   "bitstream_file": "kodim05.bin",
+   "bitstream_bytes_stat": 173,
+   "bitstream_sha256": "65ba06f964e1f726f7a72f2c4e634282d60ed16232747bb4a84c1d73ed8411bc",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    119,
+    51
+   ],
+   "substream_sha256": [
+    "12a97d8cd41b03930fa735d867f31756ba499e2d7220ea10f9b5ea96d1f15de3",
+    "c30c0be1d858848fcd6833a66bc6c3fae8b3dedcac463a598621794cef4ff894"
+   ],
+   "vector_file": "kodim05.gv",
+   "vector_bytes_stat": 270592,
+   "n_z_symbols": 2048,
+   "n_y_symbols_each": 16384,
+   "z_q_min": -1,
+   "z_q_max": 1,
+   "y_q_min": -1,
+   "y_q_max": 1,
+   "y_index_min": 0,
+   "y_index_max": 14,
+   "n_skipped_y_indexes": 0,
+   "roundtrip_bitexact": true
+  },
+  {
+   "image": "kodim08.png",
+   "stem": "kodim08",
+   "bitstream_file": "kodim08.bin",
+   "bitstream_bytes_stat": 209,
+   "bitstream_sha256": "9e1747db3ec84a993e28b52923140948afbf93df483b4f20be93a0f79206ebc4",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    136,
+    70
+   ],
+   "substream_sha256": [
+    "965f5fd268c6f367b998c827f95f090ba2d945d7e4ebe4003fb604c48711cd03",
+    "19fd4a704675ad1cd3f97aaf2670e7818d465d3fc800a03621dd11e167a77a9f"
+   ],
+   "vector_file": "kodim08.gv",
+   "vector_bytes_stat": 270592,
+   "n_z_symbols": 2048,
+   "n_y_symbols_each": 16384,
+   "z_q_min": -1,
+   "z_q_max": 1,
+   "y_q_min": -1,
+   "y_q_max": 1,
+   "y_index_min": 0,
+   "y_index_max": 14,
+   "n_skipped_y_indexes": 0,
+   "roundtrip_bitexact": true
+  },
+  {
+   "image": "kodim13.png",
+   "stem": "kodim13",
+   "bitstream_file": "kodim13.bin",
+   "bitstream_bytes_stat": 118,
+   "bitstream_sha256": "75e13bfca9c13400c62aaab08648fa408a4e4cdb13d02ce3e64767f08728cc64",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    64,
+    51
+   ],
+   "substream_sha256": [
+    "5b1b045e0c850df548bfdc3cf5777bcc1050d226365a5a3ab3dc1cdfd76cd077",
+    "81b80624237a8796034d94281be0aa3088eebf8124218d7f4a02257473d2fbcb"
+   ],
+   "vector_file": "kodim13.gv",
+   "vector_bytes_stat": 270592,
+   "n_z_symbols": 2048,
+   "n_y_symbols_each": 16384,
+   "z_q_min": -1,
+   "z_q_max": 1,
+   "y_q_min": -1,
+   "y_q_max": 1,
+   "y_index_min": 0,
+   "y_index_max": 14,
+   "n_skipped_y_indexes": 0,
+   "roundtrip_bitexact": true
+  },
+  {
+   "image": "kodim19.png",
+   "stem": "kodim19",
+   "bitstream_file": "kodim19.bin",
+   "bitstream_bytes_stat": 170,
+   "bitstream_sha256": "0ac1e2f5981c7afb8c3efd5cc2c14acf4b53d949e4dd2f2701cf377068d62e0e",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    104,
+    63
+   ],
+   "substream_sha256": [
+    "d9f566fbde8f3da32f738004a7e88764cf52d8df04c7905f53c0018057899e6f",
+    "790c717eb572cb07ac17c4324424293559a127de8299ffd4eaeb02f2d2e4f200"
+   ],
+   "vector_file": "kodim19.gv",
+   "vector_bytes_stat": 270592,
+   "n_z_symbols": 2048,
+   "n_y_symbols_each": 16384,
+   "z_q_min": -1,
+   "z_q_max": 1,
+   "y_q_min": -1,
+   "y_q_max": 1,
+   "y_index_min": 0,
+   "y_index_max": 13,
+   "n_skipped_y_indexes": 0,
+   "roundtrip_bitexact": true
+  },
+  {
+   "image": "kodim23.png",
+   "stem": "kodim23",
+   "bitstream_file": "kodim23.bin",
+   "bitstream_bytes_stat": 206,
+   "bitstream_sha256": "1728c415e5a35f9fd501a35369166db8435e3fcfa2fabe99dcd38f21782f6ed7",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    135,
+    68
+   ],
+   "substream_sha256": [
+    "b169be22ee0554ce83b47118534a25066c4dbb21b3c11e16e69c36eb905d485c",
+    "c3dd848ad555641febdbad1d5cfe7516965362e735eb36172fed096c1f8fa69e"
+   ],
+   "vector_file": "kodim23.gv",
+   "vector_bytes_stat": 270592,
+   "n_z_symbols": 2048,
+   "n_y_symbols_each": 16384,
+   "z_q_min": -2,
+   "z_q_max": 1,
+   "y_q_min": -2,
+   "y_q_max": 2,
+   "y_index_min": -1,
+   "y_index_max": 14,
+   "n_skipped_y_indexes": 1,
+   "roundtrip_bitexact": true
+  },
+  {
+   "image": "kodim24.png",
+   "stem": "kodim24",
+   "bitstream_file": "kodim24.bin",
+   "bitstream_bytes_stat": 154,
+   "bitstream_sha256": "9c397ca0212cc6aeaea687c2fc8dc3b88a95a6c153108a056e4fc7254a21b371",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    91,
+    60
+   ],
+   "substream_sha256": [
+    "4d83ea0c3d9f58795068962f02a9eea9d7ad91afaebe0e330c20e95f695e22c1",
+    "65c7cdc5f581934b21ea8a16aff1a67dd36118c58933997fc776b99c7f317525"
+   ],
+   "vector_file": "kodim24.gv",
+   "vector_bytes_stat": 270592,
+   "n_z_symbols": 2048,
+   "n_y_symbols_each": 16384,
+   "z_q_min": -1,
+   "z_q_max": 1,
+   "y_q_min": -1,
+   "y_q_max": 2,
+   "y_index_min": 0,
+   "y_index_max": 14,
+   "n_skipped_y_indexes": 0,
+   "roundtrip_bitexact": true
+  },
+  {
+   "image": "image2.webp",
+   "stem": "image2",
+   "bitstream_file": "image2.bin",
+   "bitstream_bytes_stat": 147,
+   "bitstream_sha256": "258fe68ff7bb9ad41e1b3c7f885c56d051b3d55d313e5e5cc04b4faaf3b181e0",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    88,
+    56
+   ],
+   "substream_sha256": [
+    "60c3ec394f474c060bfe51f4a086ab40d6f409ab4694ff8b02b68f15029116be",
+    "d874295cab097586ca1da2026a89a694051baf832fe3e4cd52f03fafbdf896c8"
+   ],
+   "vector_file": "image2.gv",
+   "vector_bytes_stat": 270592,
+   "n_z_symbols": 2048,
+   "n_y_symbols_each": 16384,
+   "z_q_min": -3,
+   "z_q_max": 2,
+   "y_q_min": -1,
+   "y_q_max": 1,
+   "y_index_min": -1,
+   "y_index_max": 16,
+   "n_skipped_y_indexes": 1,
+   "roundtrip_bitexact": true
+  },
+  {
+   "image": "images.jpeg",
+   "stem": "images",
+   "bitstream_file": "images.bin",
+   "bitstream_bytes_stat": 128,
+   "bitstream_sha256": "2ad2224c85c25c394daf0c6e35d0c8fba194b689863f42ebe85a0d67dd632869",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    75,
+    50
+   ],
+   "substream_sha256": [
+    "706a74709539f2d63f0b9b58d78920c9dfe995a804a4af19ded31b0c51f9adde",
+    "d35ab3320032adaad85343918c5e118fcb3aea20168024e433b608acc6d918ab"
+   ],
+   "vector_file": "images.gv",
+   "vector_bytes_stat": 270592,
+   "n_z_symbols": 2048,
+   "n_y_symbols_each": 16384,
+   "z_q_min": -1,
+   "z_q_max": 1,
+   "y_q_min": -1,
+   "y_q_max": 1,
+   "y_index_min": 0,
+   "y_index_max": 13,
+   "n_skipped_y_indexes": 0,
+   "roundtrip_bitexact": true
+  }
+ ],
+ "synthetic": [
+  {
+   "name": "z_escape_exact",
+   "cdf_group": 0,
+   "n": 640,
+   "n_filler_each_end": 256,
+   "bitstream_file": "synth_z_escape_exact.bin",
+   "bitstream_bytes_stat": 307,
+   "bitstream_sha256": "43918b9fc2cd685ce619632b83cb00d99b763e7476e2ea08367e1a88d1040c44",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    152,
+    152
+   ],
+   "vector_file": "synth_z_escape_exact.gv",
+   "vector_bytes_stat": 2624,
+   "expected_decode_sha256": "230e5130f0690bc31122a475f2d04495244ea1c2dcc663c74e9d4182425d9255",
+   "sym_min": 0,
+   "sym_max": 9,
+   "n_skipped": 0,
+   "roundtrip_exact": true
+  },
+  {
+   "name": "z_escape_mixed",
+   "cdf_group": 0,
+   "n": 256,
+   "n_filler_each_end": 64,
+   "bitstream_file": "synth_z_escape_mixed.bin",
+   "bitstream_bytes_stat": 443,
+   "bitstream_sha256": "fc3088f9608c0c8e56876d0034d1c8ab45ec34c83dd6491c26981836b4f8075f",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    211,
+    229
+   ],
+   "vector_file": "synth_z_escape_mixed.gv",
+   "vector_bytes_stat": 1088,
+   "expected_decode_sha256": "a428f456dc7f31ecae1c1fc5fed8517bcd585783f03f3e3423fbf3649745501a",
+   "sym_min": -72,
+   "sym_max": 138,
+   "n_skipped": 0,
+   "roundtrip_exact": true
+  },
+  {
+   "name": "z_dense_normal",
+   "cdf_group": 0,
+   "n": 10240,
+   "n_filler_each_end": 4096,
+   "bitstream_file": "synth_z_dense_normal.bin",
+   "bitstream_bytes_stat": 3841,
+   "bitstream_sha256": "0d2c604369c89081df11ac39a2c3218f3e4bcfe208b32fb9a716ea2ea292be8a",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    1891,
+    1947
+   ],
+   "vector_file": "synth_z_dense_normal.gv",
+   "vector_bytes_stat": 41024,
+   "expected_decode_sha256": "a293328cba494459297083a0e7c465af5f8ee339c701e5d84bef749ace2d9786",
+   "sym_min": -8,
+   "sym_max": 7,
+   "n_skipped": 0,
+   "roundtrip_exact": true
+  },
+  {
+   "name": "y_bypass_long",
+   "cdf_group": 1,
+   "n": 640,
+   "n_filler_each_end": 64,
+   "bitstream_file": "synth_y_bypass_long.bin",
+   "bitstream_bytes_stat": 2251,
+   "bitstream_sha256": "faa8b40f9ce682dc10c1cbb6471c684182ed4fa32023ce915513598147f24c99",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    1163,
+    1085
+   ],
+   "vector_file": "synth_y_bypass_long.gv",
+   "vector_bytes_stat": 2624,
+   "expected_decode_sha256": "f842f136f187644884733ffd83db78647ead2faeec29d2be3d53322159e2589c",
+   "sym_min": -32000,
+   "sym_max": 32000,
+   "n_skipped": 0,
+   "roundtrip_exact": true
+  },
+  {
+   "name": "y_skip_indexes",
+   "cdf_group": 1,
+   "n": 384,
+   "n_filler_each_end": 128,
+   "bitstream_file": "synth_y_skip_indexes.bin",
+   "bitstream_bytes_stat": 160,
+   "bitstream_sha256": "4144dd2271f54d7ceab9001dbb43601839a08176d576cad15a3fe02502361be7",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    78,
+    79
+   ],
+   "vector_file": "synth_y_skip_indexes.gv",
+   "vector_bytes_stat": 1600,
+   "expected_decode_sha256": "8e17e97e31d0e687efec4ae1f6bd3d7ddd80d73f6a3bbf1bcf72072062069ae3",
+   "sym_min": -1564,
+   "sym_max": 12345,
+   "n_skipped": 43,
+   "roundtrip_exact": true
+  },
+  {
+   "name": "y_edges_normal",
+   "cdf_group": 1,
+   "n": 1280,
+   "n_filler_each_end": 512,
+   "bitstream_file": "synth_y_edges_normal.bin",
+   "bitstream_bytes_stat": 470,
+   "bitstream_sha256": "ae336f2000c2f6548e897078cf429e85fa1efd6df7973a6257b6495072e5f8ec",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    207,
+    260
+   ],
+   "vector_file": "synth_y_edges_normal.gv",
+   "vector_bytes_stat": 5184,
+   "expected_decode_sha256": "ff25d3624640925c557155e83d02fd2fec0b25de8f4b3320fcc6c1db2590c6ac",
+   "sym_min": -1565,
+   "sym_max": 1564,
+   "n_skipped": 0,
+   "roundtrip_exact": true
+  },
+  {
+   "name": "y_tiny",
+   "cdf_group": 1,
+   "n": 130,
+   "n_filler_each_end": 64,
+   "bitstream_file": "synth_y_tiny.bin",
+   "bitstream_bytes_stat": 13,
+   "bitstream_sha256": "b5df63c5644dc0b7c599a2009de025721c3ff439eed06b427deee1439dc5a84c",
+   "container_flag": 17,
+   "container_header_bytes": 2,
+   "substream_sizes": [
+    6,
+    4
+   ],
+   "vector_file": "synth_y_tiny.gv",
+   "vector_bytes_stat": 584,
+   "expected_decode_sha256": "e851be60ef0e9dc7488caaf7ba6e35ecccb933ce6775829d0fbd9dc3010d1d49",
+   "sym_min": -1,
+   "sym_max": 0,
+   "n_skipped": 0,
+   "roundtrip_exact": true
+  }
+ ],
+ "reference_port_selfcheck": {
+  "ok": 17,
+  "total": 17
+ }
+}

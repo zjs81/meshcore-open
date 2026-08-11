@@ -6,6 +6,8 @@ BatteryVoltageRange batteryVoltageRange(String chemistry) {
       return (minMv: 2600, maxMv: 3650);
     case 'lipo':
       return (minMv: 3000, maxMv: 4200);
+    case 'lipo_hv':
+      return (minMv: 3000, maxMv: 4350);
     case 'nmc':
     default:
       return (minMv: 3000, maxMv: 4200);

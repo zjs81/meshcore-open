@@ -4,7 +4,7 @@ import 'prefs_manager.dart';
 class ChannelSettingsStore {
   static const String _keyPrefix = 'channel_smaz_';
   static const String _cyr2latKeyPrefix = 'channel_cyr2lat_';
-  static const String _imagesKeyPrefix = 'channel_images_';
+  static const String _urlImagesKeyPrefix = 'channel_url_images_';
 
   String publicKeyHex = '';
   set setPublicKeyHex(String value) =>
@@ -12,7 +12,7 @@ class ChannelSettingsStore {
 
   String get keyFor => '$_keyPrefix$publicKeyHex';
   String get keyForCyr2Lat => '$_cyr2latKeyPrefix$publicKeyHex';
-  String get keyForImages => '$_imagesKeyPrefix$publicKeyHex';
+  String get keyForUrlImages => '$_urlImagesKeyPrefix$publicKeyHex';
 
   Future<bool> loadSmazEnabled(int channelIndex) async {
     if (publicKeyHex.isEmpty) {
@@ -75,24 +75,29 @@ class ChannelSettingsStore {
     await prefs.setBool(key, enabled);
   }
 
-  Future<bool> loadImagesEnabled(int channelIndex) async {
+  Future<bool> loadUrlImagesEnabled(int channelIndex) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
-        'Public key hex is not set. Cannot load channel image settings.',
+        'Public key hex is not set. Cannot load channel URL image settings.',
       );
       return false;
     }
-    return PrefsManager.instance.getBool('$keyForImages$channelIndex') ?? false;
+    final prefs = PrefsManager.instance;
+    final key = '$keyForUrlImages$channelIndex';
+    return prefs.getBool(key) ?? false;
   }
 
-  Future<void> saveImagesEnabled(int channelIndex, bool enabled) async {
+  Future<void> saveUrlImagesEnabled(int channelIndex, bool enabled) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
-        'Public key hex is not set. Cannot save channel image settings.',
+        'Public key hex is not set. Cannot save channel URL image settings.',
       );
       return;
     }
-    await PrefsManager.instance.setBool('$keyForImages$channelIndex', enabled);
+    await PrefsManager.instance.setBool(
+      '$keyForUrlImages$channelIndex',
+      enabled,
+    );
   }
 
   Future<String?> loadCyr2LatProfileId(int channelIndex) async {
