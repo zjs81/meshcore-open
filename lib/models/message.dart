@@ -8,7 +8,7 @@ enum MessageStatus { pending, sent, delivered, failed }
 class Message {
   static const Object _unset = Object();
 
-  final Uint8List senderKey;
+  final Uint8List senderKey; // For outgoing msgs, gets used as recipientKey
   final String text;
   final DateTime timestamp;
   final bool isOutgoing;
@@ -30,7 +30,7 @@ class Message {
   final int? tripTimeMs;
   final int? pathLength;
   final Uint8List pathBytes;
-  final Map<String, int> reactions;
+  final Map<String, List<String?>> reactions;
   final Map<String, MessageStatus> reactionStatuses;
   final Uint8List fourByteRoomContactKey;
 
@@ -56,7 +56,7 @@ class Message {
     this.pathLength,
     Uint8List? pathBytes,
     Uint8List? fourByteRoomContactKey,
-    Map<String, int>? reactions,
+    Map<String, List<String?>>? reactions,
     Map<String, MessageStatus>? reactionStatuses,
   }) : messageId =
            messageId ??
@@ -84,7 +84,7 @@ class Message {
     Object? translatedLanguageCode = _unset,
     MessageTranslationStatus? translationStatus,
     Object? translationModelId = _unset,
-    Map<String, int>? reactions,
+    Map<String, List<String?>>? reactions,
     Map<String, MessageStatus>? reactionStatuses,
     Uint8List? fourByteRoomContactKey,
   }) {

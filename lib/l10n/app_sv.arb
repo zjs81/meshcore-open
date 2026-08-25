@@ -485,6 +485,7 @@
       }
     }
   },
+  "chat_selectSendAction": "Välj sändningsåtgärd",
   "chat_sendGif": "Skicka GIF",
   "chat_reply": "Svara",
   "chat_addReaction": "Lägg till reaktion",
@@ -2756,7 +2757,7 @@
   "channels_regionNotSet": "Region: ingen",
   "channels_regionSelect_Title": "Välj en region",
   "channels_clearRegion": "klar region",
-  "chat_sendImage": "Send vagnbild",
+  "chat_sendImageLora": "Skicka bild via MeshCore",
   "chat_imagePickFailed": "Kunde inte öppna det bildet",
   "chat_receivedGif": "Mottagit en GIF",
   "repeater_keySettings": "Ändra identitetsnyckel",

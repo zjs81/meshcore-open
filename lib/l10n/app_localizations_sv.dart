@@ -1471,10 +1471,13 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
+  String get chat_selectSendAction => 'Välj sändningsåtgärd';
+
+  @override
   String get chat_sendGif => 'Skicka GIF';
 
   @override
-  String get chat_sendImage => 'Send vagnbild';
+  String get chat_sendImageLora => 'Skicka bild via MeshCore';
 
   @override
   String get chat_imagePickFailed => 'Kunde inte öppna det bildet';
@@ -1490,6 +1493,9 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get chat_me => 'Mig';
+
+  @override
+  String get reaction_report => 'Emoji Reactions';
 
   @override
   String get emojiCategorySmileys => 'Emojis';

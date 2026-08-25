@@ -1494,10 +1494,13 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get chat_selectSendAction => 'Seleziona azione di invio';
+
+  @override
   String get chat_sendGif => 'Invia GIF';
 
   @override
-  String get chat_sendImage => 'Invia immagine';
+  String get chat_sendImageLora => 'Invia immagine tramite MeshCore';
 
   @override
   String get chat_imagePickFailed =>
@@ -1514,6 +1517,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get chat_me => 'Io';
+
+  @override
+  String get reaction_report => 'Emoji Reactions';
 
   @override
   String get emojiCategorySmileys => 'Emoji';

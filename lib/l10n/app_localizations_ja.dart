@@ -1419,10 +1419,13 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get chat_selectSendAction => '送信アクションを選択';
+
+  @override
   String get chat_sendGif => 'GIF を送信';
 
   @override
-  String get chat_sendImage => '画像を送信';
+  String get chat_sendImageLora => 'MeshCore経由で画像を送信';
 
   @override
   String get chat_imagePickFailed => 'その画像を開けませんでした';
@@ -1438,6 +1441,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get chat_me => '私';
+
+  @override
+  String get reaction_report => 'Emoji Reactions';
 
   @override
   String get emojiCategorySmileys => '顔文字';

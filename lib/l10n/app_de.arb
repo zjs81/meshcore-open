@@ -507,6 +507,7 @@
       }
     }
   },
+  "chat_selectSendAction": "Sendeaktion auswählen",
   "chat_sendGif": "GIF senden",
   "chat_reply": "Antworten",
   "chat_addReaction": "Reaktion hinzufügen",
@@ -2892,7 +2893,7 @@
   "repeater_pathHashModeOption2": "2 - 3 Bytes",
   "repeater_pathHashModeOption3": "3 - 4 Bytes",
   "appSettings_batteryLipoHv": "LiPo HV (3,0–4,35 V)",
-  "chat_sendImage": "Bild senden",
+  "chat_sendImageLora": "Bild über MeshCore senden",
   "chat_imagePickFailed": "Konnte dieses Bild nicht öffnen.",
   "chat_receivedGif": "Erhalten eines GIF",
   "repeater_keySettings": "Identitätsschlüssel ändern",

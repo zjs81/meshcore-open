@@ -50,7 +50,7 @@ class ChannelMessage {
   final String? replyToMessageId;
   final String? replyToSenderName;
   final String? replyToText;
-  final Map<String, int> reactions;
+  final Map<String, List<String?>> reactions;
 
   ChannelMessage({
     this.senderKey,
@@ -76,7 +76,7 @@ class ChannelMessage {
     this.replyToMessageId,
     this.replyToSenderName,
     this.replyToText,
-    Map<String, int>? reactions,
+    Map<String, List<String?>>? reactions,
   }) : messageId =
            messageId ??
            '${timestamp.millisecondsSinceEpoch}_${senderName.hashCode}_${text.hashCode}',
@@ -107,7 +107,7 @@ class ChannelMessage {
     Object? translatedLanguageCode = _unset,
     MessageTranslationStatus? translationStatus,
     Object? translationModelId = _unset,
-    Map<String, int>? reactions,
+    Map<String, List<String?>>? reactions,
   }) {
     return ChannelMessage(
       senderKey: senderKey,
@@ -297,8 +297,32 @@ class ChannelMessage {
     );
   }
 
-  static ReactionInfo? parseReaction(String text) {
-    return ReactionHelper.parseReaction(text);
+  ReactionInfo? parseReaction() {
+    final reactionInfo = ReactionHelper.parseReaction(text);
+    reactionInfo?.senderName = senderName;
+    return reactionInfo;
+  }
+
+  String computeReactionHash() {
+    return ReactionHelper.computeReactionHash(
+      timestamp.millisecondsSinceEpoch ~/ 1000,
+      senderName,
+      text,
+    );
+  }
+
+  List<ReactionInfo> reactionList() {
+    final String hash = computeReactionHash();
+    List<ReactionInfo> reactionList = [];
+    for (final entry in reactions.entries) {
+      final emoji = entry.key;
+      for (final senderName in entry.value) {
+        reactionList.add(
+          ReactionInfo(targetHash: hash, emoji: emoji, senderName: senderName),
+        );
+      }
+    }
+    return reactionList;
   }
 }
 

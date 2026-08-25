@@ -456,6 +456,13 @@ class MeshCoreConnector extends ChangeNotifier {
     );
   }
 
+  Contact? getContactByPubKeyHex(String contactPubKeyHex) {
+    return _contacts.cast<Contact?>().firstWhere(
+      (c) => c?.publicKeyHex == contactPubKeyHex,
+      orElse: () => null,
+    );
+  }
+
   List<Contact> get allContacts => List.unmodifiable([
     ..._contacts,
     ..._discoveredContacts.where(
@@ -3183,8 +3190,14 @@ class MeshCoreConnector extends ChangeNotifier {
     // Check if this is a reaction - apply locally with pending status and route through retry service
     final reactionInfo = ReactionHelper.parseReaction(text);
     if (reactionInfo != null) {
+      appLogger.info('Sending reaction: ${reactionInfo.identifier()}');
       _conversations.putIfAbsent(contact.publicKeyHex, () => []);
       final messages = _conversations[contact.publicKeyHex]!;
+
+      // No check for duplicates. If you want to do it again to resend, you can.
+      final String reactionID = reactionInfo.identifier();
+      _processedContactReactions.putIfAbsent(contact.publicKeyHex, () => {});
+      _processedContactReactions[contact.publicKeyHex]!.add(reactionID);
 
       // Apply reaction locally with pending status
       _processOutgoingContactReaction(messages, reactionInfo, contact);
@@ -3227,7 +3240,7 @@ class MeshCoreConnector extends ChangeNotifier {
         translatedLanguageCode: translatedLanguageCode,
         translationModelId: translationModelId,
       );
-      _addMessage(contact.publicKeyHex, message);
+      _addMessage(contact.publicKeyHex, message); // recipient as "sender"
       notifyListeners();
       final outboundText = prepareContactOutboundText(contact, text);
       await sendFrame(buildSendTextMsgFrame(contact.publicKey, outboundText));
@@ -3564,11 +3577,12 @@ class MeshCoreConnector extends ChangeNotifier {
     // Check if this is a reaction - if so, process it immediately instead of adding as a message
     final reactionInfo = ReactionHelper.parseReaction(text);
     if (reactionInfo != null) {
+      reactionInfo.senderName = selfName;
       // Check if we've already processed this reaction
       _processedChannelReactions.putIfAbsent(channel.index, () => {});
-      final reactionIdentifier =
-          '${reactionInfo.targetHash}_${reactionInfo.emoji}';
+      final reactionIdentifier = reactionInfo.identifier();
 
+      // Maybe we should allow resending. Recipients can drop duplicates.
       if (_processedChannelReactions[channel.index]!.contains(
         reactionIdentifier,
       )) {
@@ -3581,6 +3595,7 @@ class MeshCoreConnector extends ChangeNotifier {
       final messages = _channelMessages[channel.index]!;
 
       // Process reaction locally to update the UI immediately
+      appLogger.info('Adding sent channel reaction, id: $reactionIdentifier');
       _processReaction(messages, reactionInfo);
       await _channelMessageStore.saveChannelMessages(channel.index, messages);
 
@@ -6254,15 +6269,23 @@ class MeshCoreConnector extends ChangeNotifier {
     if (reactionInfo != null) {
       // Check if we've already processed this exact reaction
       _processedContactReactions.putIfAbsent(pubKeyHex, () => {});
-      final reactionIdentifier =
-          '${reactionInfo.targetHash}_${reactionInfo.emoji}';
-
+      reactionInfo.senderName = _resolveContactSenderName(message, null, false);
+      final reactionIdentifier = reactionInfo.identifier();
       final isDuplicate = _processedContactReactions[pubKeyHex]!.contains(
         reactionIdentifier,
       );
 
       if (!isDuplicate) {
         // New reaction - process it
+        appLogger.info('Adding reaction, id: $reactionIdentifier');
+        // For hashing and dup checking, we use null for sender names in
+        // normal 1:1 chats. This way if we and they have different ideas
+        // about what their name is, reactions still work. But for reaction
+        // reports, we want to know who sent what, rather than infer it later,
+        // so we'll add it to the reactionInfo before storing it.
+        reactionInfo.senderName ??= message.isOutgoing
+            ? selfName
+            : getContactByPubKeyHex(pubKeyHex)?.name ?? '???';
         _processContactReaction(messages, reactionInfo, pubKeyHex);
         _messageStore.saveMessages(pubKeyHex, messages);
 
@@ -6287,10 +6310,7 @@ class MeshCoreConnector extends ChangeNotifier {
     ReactionInfo reactionInfo,
     String contactPubKeyHex,
   ) {
-    final contact = _contacts.cast<Contact?>().firstWhere(
-      (c) => c?.publicKeyHex == contactPubKeyHex,
-      orElse: () => null,
-    );
+    final contact = getContactByPubKeyHex(contactPubKeyHex);
     final isRoomServer = contact?.type == advTypeRoom;
 
     ReactionHelper.applyReaction<Message>(
@@ -6339,10 +6359,7 @@ class MeshCoreConnector extends ChangeNotifier {
   ) {
     final messages = _conversations[pubKeyHex];
     if (messages == null) return;
-    final contact = _contacts.cast<Contact?>().firstWhere(
-      (c) => c?.publicKeyHex == pubKeyHex,
-      orElse: () => null,
-    );
+    final contact = getContactByPubKeyHex(pubKeyHex);
     final isRoomServer = contact?.type == advTypeRoom;
     for (int i = messages.length - 1; i >= 0; i--) {
       final msg = messages[i];
@@ -6501,12 +6518,11 @@ class MeshCoreConnector extends ChangeNotifier {
     final messages = _channelMessages[channelIndex]!;
 
     // Parse reaction info
-    final reactionInfo = ChannelMessage.parseReaction(message.text);
+    final reactionInfo = message.parseReaction();
     if (reactionInfo != null) {
       // Check if we've already processed this exact reaction
       _processedChannelReactions.putIfAbsent(channelIndex, () => {});
-      final reactionIdentifier =
-          '${reactionInfo.targetHash}_${reactionInfo.emoji}';
+      final reactionIdentifier = reactionInfo.identifier();
 
       final isDuplicate = _processedChannelReactions[channelIndex]!.contains(
         reactionIdentifier,
@@ -6514,6 +6530,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
       if (!isDuplicate) {
         // New reaction - process it
+        appLogger.info('Adding channel reaction, id: $reactionIdentifier');
         _processReaction(messages, reactionInfo);
         // Save updated messages
         _channelMessageStore.saveChannelMessages(channelIndex, messages);

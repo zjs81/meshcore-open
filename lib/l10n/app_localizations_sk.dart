@@ -1479,10 +1479,13 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
+  String get chat_selectSendAction => 'Vybrať akciu odoslania';
+
+  @override
   String get chat_sendGif => 'Odoslať GIF';
 
   @override
-  String get chat_sendImage => 'Vyslat obraz';
+  String get chat_sendImageLora => 'Odoslať obrázok cez MeshCore';
 
   @override
   String get chat_imagePickFailed => 'Nesmiela jsem otvoriť tento obrázok';
@@ -1498,6 +1501,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get chat_me => 'Mne';
+
+  @override
+  String get reaction_report => 'Emoji Reactions';
 
   @override
   String get emojiCategorySmileys => 'Emoji';

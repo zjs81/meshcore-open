@@ -675,6 +675,7 @@
       }
     }
   },
+  "chat_selectSendAction": "送信アクションを選択",
   "chat_sendGif": "GIF を送信",
   "chat_reply": "返信",
   "chat_addReaction": "リアクションを追加",
@@ -2890,7 +2891,7 @@
   "channels_regionNotSet": "地域：なし",
   "channels_regionSelect_Title": "地域を選択する",
   "channels_clearRegion": "クリアな地域",
-  "chat_sendImage": "画像を送信",
+  "chat_sendImageLora": "MeshCore経由で画像を送信",
   "chat_imagePickFailed": "その画像を開けませんでした",
   "chat_receivedGif": "GIFを受け取りました",
   "repeater_keySettings": "アイデンティティキーの変更",

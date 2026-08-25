@@ -512,6 +512,7 @@
       }
     }
   },
+  "chat_selectSendAction": "选择发送操作",
   "chat_sendGif": "发送 GIF",
   "chat_reply": "回复",
   "chat_addReaction": "添加表情",
@@ -2761,7 +2762,7 @@
   "channels_regionNotSet": "地区：无",
   "channels_regionSelect_Title": "选择一个地区",
   "channels_clearRegion": "无碍区域",
-  "chat_sendImage": "发送图片",
+  "chat_sendImageLora": "通过 MeshCore 发送图片",
   "chat_imagePickFailed": "无法打开该图片",
   "chat_receivedGif": "收到一个GIF",
   "repeater_keySettings": "更改身份密钥",

@@ -488,6 +488,7 @@
       }
     }
   },
+  "chat_selectSendAction": "Виберіть дію надсилання",
   "chat_sendGif": "Надіслати GIF",
   "chat_reply": "Відповісти",
   "chat_addReaction": "Додати реакцію",
@@ -2736,7 +2737,7 @@
   "channels_regionNotSet": "Ріон: нема",
   "channels_regionSelect_Title": "Вybірте регіон",
   "channels_clearRegion": "Чистя зона",
-  "chat_sendImage": "Нашкоду зовні\n\n(or more naturally, depending on context)\n\nПошукуєте изображення",
+  "chat_sendImageLora": "Надіслати зображення через MeshCore",
   "chat_imagePickFailed": "Неможливо відкрити це изображення",
   "chat_receivedGif": "Підймовано GIF",
   "repeater_keySettings": "Зміна ключів ідентифікації",

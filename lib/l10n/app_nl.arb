@@ -485,6 +485,7 @@
       }
     }
   },
+  "chat_selectSendAction": "Verzendactie selecteren",
   "chat_sendGif": "GIF verzenden",
   "chat_reply": "Reageren",
   "chat_addReaction": "Reactie toevoegen",
@@ -2756,7 +2757,7 @@
   "channels_regionNotSet": "Regio: geen",
   "channels_regionSelect_Title": "Kies een regio",
   "channels_clearRegion": "Duidelijke regio",
-  "chat_sendImage": "Beeld verzenden",
+  "chat_sendImageLora": "Afbeelding verzenden via MeshCore",
   "chat_imagePickFailed": "Kunde die afbeelding niet openen",
   "chat_receivedGif": "Ontvangen van een GIF",
   "repeater_keySettings": "Verander de Identiteitskies",

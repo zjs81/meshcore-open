@@ -1504,10 +1504,13 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get chat_selectSendAction => 'Wybierz czynność wysyłania';
+
+  @override
   String get chat_sendGif => 'Wyślij GIF';
 
   @override
-  String get chat_sendImage => 'Wyślij obraz';
+  String get chat_sendImageLora => 'Wyślij obraz przez MeshCore';
 
   @override
   String get chat_imagePickFailed => 'Nie mogłem otworzyć tego obrazu';
@@ -1523,6 +1526,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get chat_me => 'Ja';
+
+  @override
+  String get reaction_report => 'Emoji Reactions';
 
   @override
   String get emojiCategorySmileys => 'Emoji';

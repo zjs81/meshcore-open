@@ -551,6 +551,7 @@
       }
     }
   },
+  "chat_selectSendAction": "Seleziona azione di invio",
   "chat_sendGif": "Invia GIF",
   "chat_reply": "Rispondi",
   "chat_addReaction": "Aggiungi Reazione",
@@ -2890,7 +2891,7 @@
   "channels_regionNotSet": "Regione: nessuna",
   "channels_regionSelect_Title": "Scegli una regione",
   "channels_clearRegion": "Zona chiara",
-  "chat_sendImage": "Invia immagine",
+  "chat_sendImageLora": "Invia immagine tramite MeshCore",
   "chat_imagePickFailed": "Non sono riuscito ad aprire quell'immagine",
   "chat_receivedGif": "Ricevuto un GIF",
   "repeater_keySettings": "Cambia le Chiavi di Identità",

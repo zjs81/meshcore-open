@@ -171,7 +171,12 @@ class MessageStore {
       pathBytes: decodedPathBytes,
       reactions:
           (json['reactions'] as Map<String, dynamic>?)?.map(
-            (key, value) => MapEntry(key, value as int),
+            (key, value) => MapEntry(
+              key,
+              (value is int)
+                  ? List<String?>.filled(value, null)
+                  : List<String?>.from(value),
+            ),
           ) ??
           {},
       reactionStatuses:

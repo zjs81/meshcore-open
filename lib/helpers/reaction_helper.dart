@@ -3,8 +3,17 @@ import '../widgets/emoji_picker.dart';
 class ReactionInfo {
   final String targetHash;
   final String emoji;
+  String? senderName;
 
-  ReactionInfo({required this.targetHash, required this.emoji});
+  ReactionInfo({
+    required this.targetHash,
+    required this.emoji,
+    this.senderName,
+  });
+
+  String identifier() {
+    return '$targetHash:$emoji:${senderName ?? ""}';
+  }
 }
 
 class ReactionHelper {
@@ -26,9 +35,8 @@ class ReactionHelper {
     required int Function(T) getTimestampSecs,
     required String? Function(T) getSenderName,
     required String Function(T) getMessageText,
-    required Map<String, int> Function(T) getReactions,
+    required Map<String, List<String?>> Function(T) getReactions,
     required bool Function(T) shouldSkip,
-    required void Function(int index, Map<String, int> newReactions)
     updateMessage,
   }) {
     final targetHash = reactionInfo.targetHash;
@@ -42,9 +50,12 @@ class ReactionHelper {
         getMessageText(msg),
       );
       if (msgHash == targetHash) {
-        final currentReactions = Map<String, int>.from(getReactions(msg));
-        currentReactions[reactionInfo.emoji] =
-            (currentReactions[reactionInfo.emoji] ?? 0) + 1;
+        final currentReactions = Map<String, List<String?>>.from(
+          getReactions(msg),
+        );
+        (currentReactions[reactionInfo.emoji] ??= []).add(
+          reactionInfo.senderName,
+        );
         updateMessage(i, currentReactions);
         return true;
       }

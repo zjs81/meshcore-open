@@ -742,8 +742,9 @@
       }
     }
   },
+  "chat_selectSendAction": "Select send action",
   "chat_sendGif": "Send GIF",
-  "chat_sendImage": "Send image",
+  "chat_sendImageLora": "Send image via meshcore",
   "chat_imagePickFailed": "Couldn't open that image",
   "@chat_imagePickFailed": {
     "description": "Shown when picking or reading a photo to send fails"
@@ -752,6 +753,7 @@
   "chat_reply": "Reply",
   "chat_addReaction": "Add Reaction",
   "chat_me": "Me",
+  "reaction_report": "Emoji Reactions",
   "emojiCategorySmileys": "Smileys",
   "emojiCategoryGestures": "Gestures",
   "emojiCategoryHearts": "Hearts",

@@ -2740,17 +2740,23 @@ abstract class AppLocalizations {
   /// **'Retry {current}/{max}'**
   String chat_retryCount(int current, int max);
 
+  /// No description provided for @chat_selectSendAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Select send action'**
+  String get chat_selectSendAction;
+
   /// No description provided for @chat_sendGif.
   ///
   /// In en, this message translates to:
   /// **'Send GIF'**
   String get chat_sendGif;
 
-  /// No description provided for @chat_sendImage.
+  /// No description provided for @chat_sendImageLora.
   ///
   /// In en, this message translates to:
-  /// **'Send image'**
-  String get chat_sendImage;
+  /// **'Send image via meshcore'**
+  String get chat_sendImageLora;
 
   /// Shown when picking or reading a photo to send fails
   ///
@@ -2781,6 +2787,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Me'**
   String get chat_me;
+
+  /// No description provided for @reaction_report.
+  ///
+  /// In en, this message translates to:
+  /// **'Emoji Reactions'**
+  String get reaction_report;
 
   /// No description provided for @emojiCategorySmileys.
   ///

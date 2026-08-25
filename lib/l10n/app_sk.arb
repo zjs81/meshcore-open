@@ -485,6 +485,7 @@
       }
     }
   },
+  "chat_selectSendAction": "Vybrať akciu odoslania",
   "chat_sendGif": "Odoslať GIF",
   "chat_reply": "Odpovedať",
   "chat_addReaction": "Pridať Reakciu",
@@ -2756,7 +2757,7 @@
   "channels_regionNotSet": "Region: žiadné",
   "channels_regionSelect_Title": "Vyberte region",
   "channels_clearRegion": "Jasný údajný oblasť",
-  "chat_sendImage": "Vyslat obraz",
+  "chat_sendImageLora": "Odoslať obrázok cez MeshCore",
   "chat_imagePickFailed": "Nesmiela jsem otvoriť tento obrázok",
   "chat_receivedGif": "Odeslaný GIF",
   "repeater_keySettings": "Zmena identititačných klíčov",

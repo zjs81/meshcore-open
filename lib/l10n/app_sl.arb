@@ -485,6 +485,7 @@
       }
     }
   },
+  "chat_selectSendAction": "Izberite dejanje pošiljanja",
   "chat_sendGif": "Pošlji GIF",
   "chat_reply": "Odgovori",
   "chat_addReaction": "Dodaj reakcijo",
@@ -2756,7 +2757,7 @@
   "channels_regionNotSet": "Region: brak",
   "channels_regionSelect_Title": "Vablajte region",
   "channels_clearRegion": "Jasna regija",
-  "chat_sendImage": "Sločaji slik",
+  "chat_sendImageLora": "Pošlji sliko prek MeshCore",
   "chat_imagePickFailed": "Nispeval sem tega ta slik",
   "chat_receivedGif": "Otrvljen GIF",
   "repeater_keySettings": "Zmeničke ključe identitete",

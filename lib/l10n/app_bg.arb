@@ -485,6 +485,7 @@
       }
     }
   },
+  "chat_selectSendAction": "Изберете действие за изпращане",
   "chat_sendGif": "Изпрати GIF",
   "chat_reply": "Отговори",
   "chat_addReaction": "Добави Реакция",
@@ -2756,7 +2757,7 @@
   "channels_regionNotSet": "Регион: ние",
   "channels_regionSelect_Title": "Выберете регион",
   "channels_clearRegion": "Чиста зона",
-  "chat_sendImage": "Изпрати изображение",
+  "chat_sendImageLora": "Изпращане на изображение чрез MeshCore",
   "chat_imagePickFailed": "Не мог да откривам та изображин",
   "chat_receivedGif": "Получил GIF",
   "repeater_keySettings": "Изменяне на идентичности ключа",

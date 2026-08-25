@@ -1486,10 +1486,13 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
+  String get chat_selectSendAction => 'Küldési művelet kiválasztása';
+
+  @override
   String get chat_sendGif => 'GIF küldése';
 
   @override
-  String get chat_sendImage => 'Felhasználj az image';
+  String get chat_sendImageLora => 'Kép küldése MeshCore-on keresztül';
 
   @override
   String get chat_imagePickFailed => 'Nem tudtam ezt a fenti fényre kapni';
@@ -1505,6 +1508,9 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get chat_me => 'Nekem';
+
+  @override
+  String get reaction_report => 'Emoji Reactions';
 
   @override
   String get emojiCategorySmileys => 'Hangulatjelek';

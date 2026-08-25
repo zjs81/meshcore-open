@@ -657,6 +657,7 @@
       }
     }
   },
+  "chat_selectSendAction": "전송 작업 선택",
   "chat_sendGif": "GIF 보내기",
   "chat_reply": "답변",
   "chat_addReaction": "댓글 추가",
@@ -2890,7 +2891,7 @@
   "channels_regionNotSet": "지역: 없음",
   "channels_regionSelect_Title": "지역을 선택하세요",
   "channels_clearRegion": "명확한 지역",
-  "chat_sendImage": "이미지를 보내세요",
+  "chat_sendImageLora": "MeshCore를 통해 이미지 보내기",
   "chat_imagePickFailed": "그 이미지를 열 수 없었어요.",
   "chat_receivedGif": "GIF를 받았습니다",
   "repeater_keySettings": "신원 키 변경",

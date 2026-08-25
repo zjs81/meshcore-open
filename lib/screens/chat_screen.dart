@@ -7,6 +7,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../utils/app_logger.dart';
 import '../utils/platform_info.dart';
 
 import '../connector/meshcore_connector.dart';
@@ -478,10 +479,26 @@ class _ChatScreenState extends State<ChatScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconButton(
-                icon: const Icon(Icons.gif_box),
-                onPressed: () => _showGifPicker(context),
-                tooltip: context.l10n.chat_sendGif,
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.add_circle_outline),
+                position: PopupMenuPosition.over,
+                offset: const Offset(0, -64),
+                tooltip: context.l10n.chat_selectSendAction,
+                onSelected: (action) {
+                  if (action == 'gif') _showGifPicker(context);
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'gif',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.gif_box),
+                        const SizedBox(width: 12),
+                        Text(context.l10n.chat_sendGif),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               if (settings.translationEnabled)
                 MessageTranslationButton(
@@ -1298,6 +1315,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final senderName = liveContact.type == advTypeRoom
         ? senderContact.name
         : null;
+    appLogger.info('Sending reaction using senderName: $senderName');
     final hash = ReactionHelper.computeReactionHash(
       timestampSecs,
       senderName,
@@ -1747,7 +1765,7 @@ class _MessageBubble extends StatelessWidget {
       runSpacing: 6,
       children: message.reactions.entries.map((entry) {
         final emoji = entry.key;
-        final count = entry.value;
+        final count = entry.value.length;
         final status = message.reactionStatuses[emoji];
         final isPending =
             status == MessageStatus.pending || status == MessageStatus.sent;
