@@ -4087,6 +4087,14 @@ class AppLocalizationsZh extends AppLocalizations {
       '当联系人列表已满时，将替换最老的非收藏联系人。';
 
   @override
+  String get contactsSettings_evictDiscoveredContactsTitle =>
+      'Evict discovered contacts';
+
+  @override
+  String get contactsSettings_evictDiscoveredContactsSubtitle =>
+      'When enabled, the app removes the oldest discovered contacts once the discovery list reaches its limit of 500 entries.';
+
+  @override
   String get discoveredContacts_Title => '已发现的联系人';
 
   @override

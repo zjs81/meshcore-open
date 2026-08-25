@@ -224,6 +224,12 @@ class AppSettingsService extends ChangeNotifier {
     await updateSettings(_settings.copyWith(mapShowDiscoveryContacts: value));
   }
 
+  Future<void> setEvictDiscoveredContactsEnabled(bool value) async {
+    await updateSettings(
+      _settings.copyWith(evictDiscoveredContactsEnabled: value),
+    );
+  }
+
   Future<void> setBatteryChemistryForDevice(
     String deviceId,
     String chemistry,

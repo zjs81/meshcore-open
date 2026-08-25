@@ -4366,6 +4366,14 @@ class AppLocalizationsSv extends AppLocalizations {
       'När kontaktlistan är full ersätts den äldsta icke-favoriterade kontakten.';
 
   @override
+  String get contactsSettings_evictDiscoveredContactsTitle =>
+      'Evict discovered contacts';
+
+  @override
+  String get contactsSettings_evictDiscoveredContactsSubtitle =>
+      'When enabled, the app removes the oldest discovered contacts once the discovery list reaches its limit of 500 entries.';
+
+  @override
   String get discoveredContacts_Title => 'Upptäckta kontakter';
 
   @override

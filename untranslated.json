@@ -1,1 +1,81 @@
-{}
+{
+  "bg": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "es": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "fr": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "hu": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "it": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "ja": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "ko": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "nl": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "pl": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "pt": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "ru": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "sk": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "sl": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "sv": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "uk": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ],
+
+  "zh": [
+    "contactsSettings_evictDiscoveredContactsTitle",
+    "contactsSettings_evictDiscoveredContactsSubtitle"
+  ]
+}

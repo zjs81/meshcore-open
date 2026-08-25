@@ -1492,8 +1492,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   String _imageSenderLabel(ReceivedImageEntry entry) {
     final hex = entry.senderPrefix.toRadixString(16).padLeft(4, '0');
     final connector = context.read<MeshCoreConnector>();
-    if (entry.isOutgoing)
+    if (entry.isOutgoing) {
       return connector.selfName ?? context.l10n.receivedImage_senderPrefix(hex);
+    }
     final matches = connector.contacts
         .where((c) => c.publicKeyHex.toLowerCase().startsWith(hex))
         .toList();

@@ -4409,6 +4409,14 @@ class AppLocalizationsHu extends AppLocalizations {
       'Amikor a névjegylista megtelik, a legrégebbi, nem kedvenc névjegy lecserélődik.';
 
   @override
+  String get contactsSettings_evictDiscoveredContactsTitle =>
+      'Evict discovered contacts';
+
+  @override
+  String get contactsSettings_evictDiscoveredContactsSubtitle =>
+      'When enabled, the app removes the oldest discovered contacts once the discovery list reaches its limit of 500 entries.';
+
+  @override
   String get discoveredContacts_Title => 'Felfedezett kapcsolatok';
 
   @override

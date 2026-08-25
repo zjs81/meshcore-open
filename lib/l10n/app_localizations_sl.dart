@@ -4395,6 +4395,14 @@ class AppLocalizationsSl extends AppLocalizations {
       'Ko je seznam stikov poln, bo najstarejši nestarševski stik zamenjan.';
 
   @override
+  String get contactsSettings_evictDiscoveredContactsTitle =>
+      'Evict discovered contacts';
+
+  @override
+  String get contactsSettings_evictDiscoveredContactsSubtitle =>
+      'When enabled, the app removes the oldest discovered contacts once the discovery list reaches its limit of 500 entries.';
+
+  @override
   String get discoveredContacts_Title => 'Odkriti stiki';
 
   @override
