@@ -45,6 +45,17 @@ void main() {
       );
     });
 
+    test('parses direct ipfs cid urls without double slashes', () async {
+      final attachment = await MessageUrlImageHelper.parse(
+        'my picture: ipfs:bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly text',
+      );
+
+      expect(
+        attachment,
+        'https://ipfs.io/ipfs/bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly',
+      );
+    });
+
     test('parses http image urls', () async {
       final attachment = await MessageUrlImageHelper.parse(
         'see this image https://example.com/picture.png?size=large additional text',

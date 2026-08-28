@@ -27,7 +27,7 @@ class MessageUrlImageHelper {
   );
 
   static final RegExp _ipfsCidPattern = RegExp(
-    r'''ipfs://([^\s<>'"`]+)''',
+    r'''ipfs:(?://)?([^\s<>'"`]+)''',
     caseSensitive: false,
   );
 
