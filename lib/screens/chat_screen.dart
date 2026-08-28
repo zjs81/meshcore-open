@@ -1514,10 +1514,9 @@ class _MessageBubble extends StatelessWidget {
                               ],
                             )
                           else if (urlImagesEnabled)
-                            FutureBuilder<String?>(
-                              future: MessageUrlImageHelper.parseVerified(
-                                message.text,
-                              ),
+                            MessageUrlImageFutureBuilder(
+                              messageId: message.messageId,
+                              text: message.text,
                               builder: (context, snapshot) {
                                 final imageAttachment = snapshot.data;
 

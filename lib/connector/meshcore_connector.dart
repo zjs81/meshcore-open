@@ -1130,6 +1130,7 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   Future<void> loadContactCache() async {
+    _contactUrlImagesEnabled.clear();
     final cached = await _contactStore.loadContacts();
     _knownContactKeys
       ..clear()

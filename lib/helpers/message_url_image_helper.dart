@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -11,6 +12,9 @@ import 'package:http/http.dart' as http;
 class MessageUrlImageHelper {
   static final Map<String, Future<bool>> _verifiedImageCache =
       <String, Future<bool>>{};
+  static const int _maxMessageImageCacheEntries = 200;
+  static final LinkedHashMap<String, Future<String?>> _messageImageCache =
+      LinkedHashMap<String, Future<String?>>();
 
   static final RegExp _pyxPattern = RegExp(
     r'''https?://pyx\.li/\?i=([^\s<>'"`]+)''',
@@ -97,6 +101,35 @@ class MessageUrlImageHelper {
     return verified ? imageUrl : null;
   }
 
+  /// Caches successful URL-image parsing by stable message identity.
+  ///
+  /// Null results are evicted so temporary connectivity or host failures can
+  /// be retried when a message is shown again.
+  static Future<String?> parseVerifiedForMessage(
+    String messageId,
+    String text,
+  ) {
+    final cached = _messageImageCache.remove(messageId);
+    if (cached != null) {
+      _messageImageCache[messageId] = cached;
+      return cached;
+    }
+
+    final parsing = parseVerified(text);
+    _messageImageCache[messageId] = parsing;
+    parsing.then((imageUrl) {
+      if (imageUrl == null &&
+          identical(_messageImageCache[messageId], parsing)) {
+        _messageImageCache.remove(messageId);
+      } else if (imageUrl != null) {
+        while (_messageImageCache.length > _maxMessageImageCacheEntries) {
+          _messageImageCache.remove(_messageImageCache.keys.first);
+        }
+      }
+    });
+    return parsing;
+  }
+
   static Future<String?> _extractFromUrl(String pageUrl, RegExp pattern) async {
     try {
       final response = await http
@@ -124,10 +157,17 @@ class MessageUrlImageHelper {
   }
 
   static Future<bool> _verifyImageUrl(String imageUrl) {
-    return _verifiedImageCache.putIfAbsent(
-      imageUrl,
-      () => _tryLoadImage(imageUrl),
-    );
+    final cached = _verifiedImageCache[imageUrl];
+    if (cached != null) return cached;
+
+    final verification = _tryLoadImage(imageUrl);
+    _verifiedImageCache[imageUrl] = verification;
+    verification.then((verified) {
+      if (!verified && identical(_verifiedImageCache[imageUrl], verification)) {
+        _verifiedImageCache.remove(imageUrl);
+      }
+    });
+    return verification;
   }
 
   static Future<bool> _tryLoadImage(String imageUrl) async {
@@ -156,6 +196,56 @@ class MessageUrlImageHelper {
         stream.removeListener(listener);
         return false;
       },
+    );
+  }
+}
+
+class MessageUrlImageFutureBuilder extends StatefulWidget {
+  const MessageUrlImageFutureBuilder({
+    super.key,
+    required this.messageId,
+    required this.text,
+    required this.builder,
+  });
+
+  final String messageId;
+  final String text;
+  final AsyncWidgetBuilder<String?> builder;
+
+  @override
+  State<MessageUrlImageFutureBuilder> createState() =>
+      _MessageUrlImageFutureBuilderState();
+}
+
+class _MessageUrlImageFutureBuilderState
+    extends State<MessageUrlImageFutureBuilder> {
+  late Future<String?> _imageFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _imageFuture = MessageUrlImageHelper.parseVerifiedForMessage(
+      widget.messageId,
+      widget.text,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant MessageUrlImageFutureBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.messageId != widget.messageId) {
+      _imageFuture = MessageUrlImageHelper.parseVerifiedForMessage(
+        widget.messageId,
+        widget.text,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String?>(
+      future: _imageFuture,
+      builder: widget.builder,
     );
   }
 }

@@ -1,1 +1,101 @@
-{}
+{
+  "bg": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "de": [
+    "reaction_report"
+  ],
+
+  "es": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "fr": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "hu": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "it": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "ja": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "ko": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "nl": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "pl": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "pt": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "ru": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "sk": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "sl": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "sv": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "uk": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ],
+
+  "zh": [
+    "urlImage_enable",
+    "urlImage_possible",
+    "reaction_report"
+  ]
+}
