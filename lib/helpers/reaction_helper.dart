@@ -1,13 +1,22 @@
+import 'dart:typed_data';
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+import 'package:base32/base32.dart';
+import 'package:base32/encodings.dart';
 import '../widgets/emoji_picker.dart';
+
+enum HashType { ours, mc1 }
 
 class ReactionInfo {
   final String targetHash;
   final String emoji;
-  String? senderName;
+  HashType hashType;
+  String? senderName; // Who sent the reaction
 
   ReactionInfo({
     required this.targetHash,
     required this.emoji,
+    required this.hashType,
     this.senderName,
   });
 
@@ -40,11 +49,18 @@ class ReactionHelper {
     updateMessage,
   }) {
     final targetHash = reactionInfo.targetHash;
+    final hashFunc = switch (reactionInfo.hashType) {
+      HashType.ours => computeReactionHash,
+      HashType.mc1 => ((ts, senderName, text) => _concatenateHashAndSender(
+        computeReactionHashMC1(ts, senderName, text),
+        senderName,
+      )),
+    };
     for (int i = messages.length - 1; i >= 0; i--) {
       final msg = messages[i];
       if (shouldSkip(msg)) continue;
 
-      final msgHash = computeReactionHash(
+      final msgHash = hashFunc(
         getTimestampSecs(msg),
         getSenderName(msg),
         getMessageText(msg),
@@ -108,17 +124,72 @@ class ReactionHelper {
     return hash.toRadixString(16).padLeft(4, '0');
   }
 
+  // Compute the type of reaction hash used by MeshCoreOne.
+  static String computeReactionHashMC1(
+    int timestampSeconds,
+    String? senderName,
+    String messageText,
+  ) {
+    // TODO: unit tests
+    // raw hash is first 5 bytes of SHA-256(UTF-8 text + uint32-LE sender timestamp)
+    Uint8List messageBytes = utf8.encode(messageText);
+    ByteData timestampBytes = ByteData(4)
+      ..setUint32(0, timestampSeconds, Endian.little);
+    final hash = sha256
+        .convert(messageBytes + timestampBytes.buffer.asUint8List())
+        .bytes
+        .sublist(0, 5);
+
+    // encode as 8 chars of Crockford base32
+    return base32
+        .encode(Uint8List.fromList(hash), encoding: Encoding.crockford)
+        .toLowerCase();
+  }
+
+  // MeshCoreOne-style reaction hashes don't depend on the sender name,
+  // and we're expected to check the hash and sender name separately.
+  // Our own reaction hashes include it. Rather than store the sender
+  // Name in ReactionInfo and complicate the logic in applyReaction(),
+  // we just tack the senderName onto the end of the "hash".
+  static String _concatenateHashAndSender(String hash, String? senderName) {
+    return "$hash:${senderName ?? ''}";
+  }
+
+  static ReactionInfo? parseReaction(String text) {
+    return parseReactionOurs(text) ?? parseReactionMC1(text);
+  }
+
+  static ReactionInfo? parseReactionMC1(String text) {
+    // See https://github.com/Avi0n/MeshCoreOne/blob/main/docs/Reactions.md
+    // This regex matches both the channel format, which includes the sender name,
+    // and the chat (DM) format, which omits it.
+    final regex = RegExp(r'^(.{1,4})(?:@\[(.*)])?\n([a-zA-Z0-9]{8})$');
+    final match = regex.firstMatch(text);
+    if (match == null) return null;
+
+    final hash = match.group(3)?.toLowerCase();
+    final senderName = match.group(2);
+    return ReactionInfo(
+      targetHash: _concatenateHashAndSender(hash!, senderName),
+      emoji: match.group(1)!,
+      hashType: HashType.mc1,
+    );
+  }
+
   /// Parse reaction format: r:HASH:INDEX (where INDEX is 2-char hex emoji index)
   /// Returns null if text is not a valid reaction format
-  static ReactionInfo? parseReaction(String text) {
+  static ReactionInfo? parseReactionOurs(String text) {
     final regex = RegExp(r'^r:([0-9a-f]{4}):([0-9a-f]{2})$');
     final match = regex.firstMatch(text);
     if (match == null) return null;
 
     final emoji = indexToEmoji(match.group(2)!);
     if (emoji == null) return null;
-
-    return ReactionInfo(targetHash: match.group(1)!, emoji: emoji);
+    return ReactionInfo(
+      targetHash: match.group(1)!,
+      emoji: emoji,
+      hashType: HashType.ours,
+    );
   }
 
   /// Encode a reaction message that parseReaction() can parse.
