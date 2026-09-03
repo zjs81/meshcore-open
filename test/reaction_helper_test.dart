@@ -340,6 +340,64 @@ void main() {
       });
     });
 
+    group('MeshCoreOne Reactions', () {
+      test('regex for matching emoji char', () {
+        // This is more a test of expectations than of app code, but it was
+        // a good place to get this sorted out cleanly, and I leave it for
+        // anyone interested in understanding the regex in the parsing.
+        final regex = RegExp(r'^(.{1,4})$');
+        expect(regex.firstMatch('🥳'), isNotNull);
+        expect(regex.firstMatch('😀'), isNotNull);
+        expect(regex.firstMatch('\u{1F642}'), isNotNull);
+        expect(regex.firstMatch('\u{1f44c}\u{1f3ff}'), isNotNull);
+      });
+
+      test('parse MeshCoreOne reaction', () {
+        final emoji = '🥳';
+        final senderName = 'entropy 📓';
+        final hash = 'b3je6qf7';
+        final info = ReactionHelper.parseReactionMC1(
+          '$emoji@[$senderName]\n$hash',
+        );
+        expect(info, isNotNull);
+        expect(info!.targetHash, equals('$hash:$senderName'));
+        expect(info.emoji, equals(emoji));
+      });
+
+      test('parse MeshCoreOne reaction - main entry', () {
+        final emoji = '🥳';
+        final senderName = 'entropy 📓';
+        final hash = 'b3je6qf7';
+        final info = ReactionHelper.parseReaction(
+          '$emoji@[$senderName]\n$hash',
+        );
+        expect(info, isNotNull);
+        expect(info!.targetHash, equals('$hash:$senderName'));
+        expect(info.emoji, equals(emoji));
+      });
+
+      test('parse MeshCoreOne reaction for DM chats', () {
+        final emoji = '🥳';
+        final hash = 'b3je6qf7';
+        final info = ReactionHelper.parseReaction('$emoji\n$hash');
+        expect(info, isNotNull);
+        expect(info!.targetHash, equals('$hash:'));
+        expect(info.emoji, equals(emoji));
+      });
+
+      test('compute MeshCoreOne reaction hash', () {
+        const timestamp = 1234567890;
+        const senderName = 'Alice';
+        const messageText = 'Hello world!';
+        final hash = ReactionHelper.computeReactionHashMC1(
+          timestamp,
+          senderName,
+          messageText,
+        );
+        expect(hash, equals('tyvbkb33'));
+      });
+    });
+
     group('full reaction flow', () {
       test('should encode and decode reaction correctly', () {
         // Simulate sending a reaction
