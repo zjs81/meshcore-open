@@ -1,0 +1,12 @@
+Add "NRF52" as a device name prefix
+Unread badges for tabs
+Main
+Use correct channel icons in channel chat screen
+Add Russian regional presets
+Room-server: fixed first message letters trim
+Translate Notifications
+Onstart syncronization progressbar
+Telemetry screen: now included map with received gps mark and autoupdate feature
+fix(l10n): correct ja repeater terminology
+Add shared UI components and refactor MeshCoreConnector
+Merge Dev into main
