@@ -489,6 +489,13 @@ class AppLocalizationsZh extends AppLocalizations {
       '当 GPS 位置变化时，发送零跳广告（需要在广告中包含位置）。';
 
   @override
+  String get settings_autoSelfAdvertAsFlood => '将自动自我广告作为 flood 发送';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      '启用后，自动自我广告将以 flood 而不是 zero-hop 发送。';
+
+  @override
   String get settings_multiAck => '多重ACK';
 
   @override

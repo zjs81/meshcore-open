@@ -4602,7 +4602,10 @@ class MeshCoreConnector extends ChangeNotifier {
         effectiveGpsIntervalSeconds > 0 &&
         timeSinceLastZeroHopAdvert.inSeconds >= effectiveGpsIntervalSeconds;
     if (shouldAutoSendZeroHopAdvert) {
-      unawaited(sendSelfAdvert(flood: false));
+      final autoSelfAdvertAsFlood =
+          (_clientRepeat ?? false) &&
+          (_appSettingsService?.settings.autoSendSelfAdvertAsFlood ?? false);
+      unawaited(sendSelfAdvert(flood: autoSelfAdvertAsFlood));
     }
 
     final selfName = _selfName?.trim();

@@ -519,6 +519,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cuando cambie la ubicación GPS, enviar un anuncio de cero saltos (requiere ubicación en anuncio).';
 
   @override
+  String get settings_autoSelfAdvertAsFlood =>
+      'Enviar anuncio propio automático como flood';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      'Cuando está activado, los anuncios propios automatizados se envían como flood en lugar de zero-hop.';
+
+  @override
   String get settings_multiAck => 'Múltiples respuestas de confirmación';
 
   @override

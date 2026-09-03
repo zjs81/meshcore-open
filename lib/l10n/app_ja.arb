@@ -169,6 +169,8 @@
   "settings_longitude": "経度",
   "settings_autoZeroHopAdvertOnGpsUpdate": "GPS更新時にゼロホップ広告を自動送信",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "GPS位置が変化したときにゼロホップ広告を送信します（広告への位置情報の含有が必要）。",
+  "settings_autoSelfAdvertAsFlood": "自動自己広告をフラッドとして送信",
+  "settings_autoSelfAdvertAsFloodSubtitle": "有効な場合、自動の自己広告はゼロホップではなくフラッドとして送信されます。",
   "settings_contactSettings": "連絡先設定",
   "settings_contactSettingsSubtitle": "連絡先の追加方法に関する設定",
   "settings_privacyMode": "プライバシーモード",

@@ -102,6 +102,8 @@
   "settings_longitude": "Dĺžka",
   "settings_autoZeroHopAdvertOnGpsUpdate": "Automatický zero-hop inzerát pri aktualizácii GPS",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Keď sa GPS poloha zmení, odoslať zero-hop inzerát (vyžaduje polohu v inzeráte).",
+  "settings_autoSelfAdvertAsFlood": "Posielať automatické vlastné reklamy ako flood",
+  "settings_autoSelfAdvertAsFloodSubtitle": "Ak je povolené, automatické vlastné reklamy sa odosielajú ako flood namiesto zero-hop.",
   "settings_privacyMode": "Režim ochrany súkromia",
   "settings_privacyModeSubtitle": "Skryť meno/poloha v reklamách",
   "settings_privacyModeToggle": "Prepínač súkromného režimu skryje vaše meno a polohu v reklamách.",
