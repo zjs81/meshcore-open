@@ -482,6 +482,16 @@ class RadioSettings {
       ),
     ),
     (
+      'USA Philly',
+      RadioSettings(
+        frequencyMHz: 902.250,
+        bandwidth: LoRaBandwidth.bw500,
+        spreadingFactor: LoRaSpreadingFactor.sf11,
+        codingRate: LoRaCodingRate.cr4_5,
+        txPowerDbm: 20,
+      ),
+    ),
+    (
       'USA/Canada',
       RadioSettings(
         frequencyMHz: 910.525,
