@@ -111,6 +111,12 @@ class AppLocalizationsBg extends AppLocalizations {
   String get messageStatus_repeated => 'Повторно чуто';
 
   @override
+  String get urlImage_enable => 'Enable URL images';
+
+  @override
+  String get urlImage_possible => 'Possible URL image; enable it in Settings.';
+
+  @override
   String get common_reboot => 'Рестартирай';
 
   @override

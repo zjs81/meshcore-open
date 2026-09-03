@@ -111,6 +111,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get messageStatus_repeated => 'Mehrfach gehört';
 
   @override
+  String get urlImage_enable => 'URL-Bilder anzeigen';
+
+  @override
+  String get urlImage_possible =>
+      'Mögliches URL-Bild; in den Einstellungen aktivieren.';
+
+  @override
   String get common_reboot => 'Neustart';
 
   @override

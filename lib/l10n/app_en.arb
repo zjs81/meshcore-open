@@ -34,6 +34,8 @@
   "messageStatus_pending": "Sending",
   "messageStatus_failed": "Failed to send",
   "messageStatus_repeated": "Heard repeated",
+  "urlImage_enable": "Enable URL images",
+  "urlImage_possible": "Possible URL image; enable it in Settings.",
   "common_reboot": "Reboot",
   "common_loading": "Loading...",
   "common_notAvailable": "—",

@@ -18,6 +18,7 @@ import '../helpers/chat_scroll_controller.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/cyr2lat.dart';
 import '../helpers/gif_helper.dart';
+import '../helpers/message_url_image_helper.dart';
 import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../helpers/snack_bar_builder.dart';
@@ -412,6 +413,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                     );
                   }
 
+                  final urlImagesEnabled = connector.isChannelUrlImagesEnabled(
+                    widget.channel.index,
+                  );
                   // Images are not ChannelMessages: they arrive as GRP_DATA
                   // chunks and are owned by ReceivedImageStore, so the two
                   // sources are merged here in timestamp order and the list
@@ -500,7 +504,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                       );
                                   final message = row.message;
                                   final bubble = message != null
-                                      ? _buildMessageBubble(message, textScale)
+                                      ? _buildMessageBubble(
+                                          message,
+                                          textScale,
+                                          urlImagesEnabled,
+                                        )
                                       : _buildImageBubble(
                                           row.image!,
                                           textScale,
@@ -543,7 +551,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     connector.setChannelUnreadCount(widget.channel.index, count);
   }
 
-  Widget _buildMessageBubble(ChannelMessage message, double textScale) {
+  Widget _buildMessageBubble(
+    ChannelMessage message,
+    double textScale,
+    bool urlImagesEnabled,
+  ) {
     final settingsService = context.watch<AppSettingsService>();
     final enableTracing = settingsService.settings.enableMessageTracing;
     final isOutgoing = message.isOutgoing;
@@ -582,6 +594,33 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final textColor = isOutgoing ? MeshPalette.meInk : scheme.onSurface;
     final metaColor = textColor.withValues(alpha: 0.65);
     const bodyFontSize = 14.0;
+
+    Widget buildTextContent() {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Flexible(
+            child: TranslatedMessageContent(
+              displayText: translatedDisplayText,
+              originalText: originalDisplayText,
+              style: TextStyle(
+                color: textColor,
+                fontSize: bodyFontSize * textScale,
+              ),
+              originalStyle: TextStyle(
+                fontSize: bodyFontSize * textScale,
+                fontStyle: FontStyle.italic,
+                color: textColor.withValues(alpha: 0.72),
+              ),
+              onSecondaryTap: PlatformInfo.isDesktop
+                  ? () => _showMessageActions(message)
+                  : null,
+            ),
+          ),
+        ],
+      );
+    }
 
     // Asymmetric radius matching chat_screen bubbles.
     final borderRadius = isOutgoing
@@ -688,29 +727,76 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                               ),
                             ],
                           )
+                        else if (urlImagesEnabled)
+                          MessageUrlImageFutureBuilder(
+                            messageId: message.messageId,
+                            text: message.text,
+                            builder: (context, snapshot) {
+                              final imageAttachment = snapshot.data;
+
+                              if (imageAttachment != null) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 4,
+                                      ),
+                                      child: Align(
+                                        alignment: isOutgoing
+                                            ? Alignment.centerRight
+                                            : Alignment.centerLeft,
+                                        child: MessageUrlImagePreview(
+                                          imageUrl: imageAttachment,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8),
+                                      child: TranslatedMessageContent(
+                                        displayText: translatedDisplayText,
+                                        originalText: originalDisplayText,
+                                        style: TextStyle(
+                                          color: textColor,
+                                          fontSize: bodyFontSize * textScale,
+                                        ),
+                                        originalStyle: TextStyle(
+                                          fontSize: bodyFontSize * textScale,
+                                          fontStyle: FontStyle.italic,
+                                          color: textColor.withValues(
+                                            alpha: 0.72,
+                                          ),
+                                        ),
+                                        onSecondaryTap: PlatformInfo.isDesktop
+                                            ? () => _showMessageActions(message)
+                                            : null,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+
+                              return buildTextContent();
+                            },
+                          )
                         else
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Flexible(
-                                child: TranslatedMessageContent(
-                                  displayText: translatedDisplayText,
-                                  originalText: originalDisplayText,
-                                  style: TextStyle(
-                                    color: textColor,
-                                    fontSize: bodyFontSize * textScale,
+                              if (MessageUrlImageHelper.hasPotentialImageUrl(
+                                message.text,
+                              ))
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 4),
+                                  child: Text(
+                                    context.l10n.urlImage_possible,
+                                    style: TextStyle(
+                                      color: metaColor,
+                                      fontSize: 11 * textScale,
+                                    ),
                                   ),
-                                  originalStyle: TextStyle(
-                                    fontSize: bodyFontSize * textScale,
-                                    fontStyle: FontStyle.italic,
-                                    color: textColor.withValues(alpha: 0.72),
-                                  ),
-                                  onSecondaryTap: PlatformInfo.isDesktop
-                                      ? () => _showMessageActions(message)
-                                      : null,
                                 ),
-                              ),
+                              buildTextContent(),
                             ],
                           ),
                         if (enableTracing && displayPath.isNotEmpty) ...[

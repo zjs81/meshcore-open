@@ -334,6 +334,18 @@ abstract class AppLocalizations {
   /// **'Heard repeated'**
   String get messageStatus_repeated;
 
+  /// No description provided for @urlImage_enable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable URL images'**
+  String get urlImage_enable;
+
+  /// No description provided for @urlImage_possible.
+  ///
+  /// In en, this message translates to:
+  /// **'Possible URL image; enable it in Settings.'**
+  String get urlImage_possible;
+
   /// No description provided for @common_reboot.
   ///
   /// In en, this message translates to:

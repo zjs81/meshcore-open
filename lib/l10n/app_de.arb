@@ -2626,6 +2626,8 @@
   "messageStatus_pending": "Wird gesendet",
   "messageStatus_failed": "Senden fehlgeschlagen",
   "messageStatus_repeated": "Mehrfach gehört",
+  "urlImage_enable": "URL-Bilder anzeigen",
+  "urlImage_possible": "Mögliches URL-Bild; in den Einstellungen aktivieren.",
   "contacts_moreOptions": "Weitere Optionen",
   "contacts_searchOpen": "Suche öffnen",
   "contacts_searchClose": "Suche schließen",

@@ -111,6 +111,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get messageStatus_repeated => '何度も聞いた';
 
   @override
+  String get urlImage_enable => 'Enable URL images';
+
+  @override
+  String get urlImage_possible => 'Possible URL image; enable it in Settings.';
+
+  @override
   String get common_reboot => '再起動';
 
   @override

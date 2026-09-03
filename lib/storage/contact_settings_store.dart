@@ -4,6 +4,7 @@ import 'prefs_manager.dart';
 class ContactSettingsStore {
   static const String _keyPrefix = 'contact_smaz_';
   static const String _cyr2latKeyPrefix = 'contact_cyr2lat_';
+  static const String _urlImagesKeyPrefix = 'contact_url_images_';
 
   String publicKeyHex = '';
   set setPublicKeyHex(String value) =>
@@ -11,6 +12,7 @@ class ContactSettingsStore {
 
   String get keyFor => '$_keyPrefix$publicKeyHex';
   String get keyForCyr2Lat => '$_cyr2latKeyPrefix$publicKeyHex';
+  String get keyForUrlImages => '$_urlImagesKeyPrefix$publicKeyHex';
 
   Future<bool> loadSmazEnabled(String contactKeyHex) async {
     if (publicKeyHex.isEmpty) {
@@ -71,6 +73,31 @@ class ContactSettingsStore {
     final prefs = PrefsManager.instance;
     final key = '$keyForCyr2Lat$contactKeyHex';
     await prefs.setBool(key, enabled);
+  }
+
+  Future<bool> loadUrlImagesEnabled(String contactKeyHex) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn(
+        'Public key hex is not set. Cannot load contact URL image settings.',
+      );
+      return false;
+    }
+    final prefs = PrefsManager.instance;
+    final key = '$keyForUrlImages$contactKeyHex';
+    return prefs.getBool(key) ?? false;
+  }
+
+  Future<void> saveUrlImagesEnabled(String contactKeyHex, bool enabled) async {
+    if (publicKeyHex.isEmpty) {
+      appLogger.warn(
+        'Public key hex is not set. Cannot save contact URL image settings.',
+      );
+      return;
+    }
+    await PrefsManager.instance.setBool(
+      '$keyForUrlImages$contactKeyHex',
+      enabled,
+    );
   }
 
   Future<String?> loadCyr2LatProfileId(String contactKeyHex) async {

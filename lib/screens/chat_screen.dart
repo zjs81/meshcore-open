@@ -13,6 +13,7 @@ import '../utils/platform_info.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/cyr2lat.dart';
+import '../helpers/message_url_image_helper.dart';
 import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../widgets/message_status_icon.dart';
@@ -895,6 +896,9 @@ class _ChatScreenState extends State<ChatScreen> {
     bool cyr2latEnabled = connector.isContactCyr2LatEnabled(
       contact.publicKeyHex,
     );
+    bool urlImagesEnabled = connector.isContactUrlImagesEnabled(
+      contact.publicKeyHex,
+    );
     String? selectedCyr2LatProfileId = connector.getContactCyr2LatProfileId(
       contact.publicKeyHex,
     );
@@ -993,6 +997,19 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                 ],
+                const Divider(height: 8),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(context.l10n.urlImage_enable),
+                  value: urlImagesEnabled,
+                  onChanged: (value) {
+                    connector.setContactUrlImagesEnabled(
+                      contact.publicKeyHex,
+                      value,
+                    );
+                    setDialogState(() => urlImagesEnabled = value);
+                  },
+                ),
                 const Divider(height: 8),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
@@ -1335,6 +1352,9 @@ class _MessageBubble extends StatelessWidget {
     final gifId = GifHelper.parseGif(message.text);
     final poi = parseMarkerText(message.text);
     final isFailed = message.status == MessageStatus.failed;
+    final urlImagesEnabled = context.select<MeshCoreConnector, bool>(
+      (connector) => connector.isContactUrlImagesEnabled(sourceId),
+    );
 
     // Bubble colors — outgoing uses MeshPalette.me / meBorder / meInk.
     final bubbleColor = isFailed
@@ -1381,6 +1401,30 @@ class _MessageBubble extends StatelessWidget {
     final originalDisplayText = isOutgoing
         ? message.originalText
         : (translatedDisplayText != messageText ? messageText : null);
+
+    Widget buildTextContent() {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Flexible(
+            child: TranslatedMessageContent(
+              displayText: translatedDisplayText,
+              originalText: originalDisplayText,
+              style: TextStyle(
+                color: textColor,
+                fontSize: bodyFontSize * textScale,
+              ),
+              originalStyle: TextStyle(
+                color: textColor.withValues(alpha: 0.72),
+                fontSize: bodyFontSize * textScale,
+              ),
+              onSecondaryTap: PlatformInfo.isDesktop ? onLongPress : null,
+            ),
+          ),
+        ],
+      );
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
@@ -1469,28 +1513,76 @@ class _MessageBubble extends StatelessWidget {
                                 ),
                               ],
                             )
+                          else if (urlImagesEnabled)
+                            MessageUrlImageFutureBuilder(
+                              messageId: message.messageId,
+                              text: message.text,
+                              builder: (context, snapshot) {
+                                final imageAttachment = snapshot.data;
+
+                                if (imageAttachment != null) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                        ),
+                                        child: Align(
+                                          alignment: isOutgoing
+                                              ? Alignment.centerRight
+                                              : Alignment.centerLeft,
+                                          child: MessageUrlImagePreview(
+                                            imageUrl: imageAttachment,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8),
+                                        child: TranslatedMessageContent(
+                                          displayText: translatedDisplayText,
+                                          originalText: originalDisplayText,
+                                          style: TextStyle(
+                                            color: textColor,
+                                            fontSize: bodyFontSize * textScale,
+                                          ),
+                                          originalStyle: TextStyle(
+                                            color: textColor.withValues(
+                                              alpha: 0.72,
+                                            ),
+                                            fontSize: bodyFontSize * textScale,
+                                          ),
+                                          onSecondaryTap: PlatformInfo.isDesktop
+                                              ? onLongPress
+                                              : null,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+
+                                return buildTextContent();
+                              },
+                            )
                           else
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Flexible(
-                                  child: TranslatedMessageContent(
-                                    displayText: translatedDisplayText,
-                                    originalText: originalDisplayText,
-                                    style: TextStyle(
-                                      color: textColor,
-                                      fontSize: bodyFontSize * textScale,
+                                if (MessageUrlImageHelper.hasPotentialImageUrl(
+                                  message.text,
+                                ))
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: Text(
+                                      context.l10n.urlImage_possible,
+                                      style: TextStyle(
+                                        color: metaColor,
+                                        fontSize: 11 * textScale,
+                                      ),
                                     ),
-                                    originalStyle: TextStyle(
-                                      color: textColor.withValues(alpha: 0.72),
-                                      fontSize: bodyFontSize * textScale,
-                                    ),
-                                    onSecondaryTap: PlatformInfo.isDesktop
-                                        ? onLongPress
-                                        : null,
                                   ),
-                                ),
+                                buildTextContent(),
                               ],
                             ),
                           if (enableTracing &&
