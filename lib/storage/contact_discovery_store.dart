@@ -28,6 +28,55 @@ class ContactDiscoveryStore {
     await prefs.setString(_keyPrefix, jsonEncode(jsonList));
   }
 
+  String exportContactsJson(List<Contact> contacts) {
+    final jsonList = contacts.map(_toJson).toList();
+    return jsonEncode(jsonList);
+  }
+
+  int importContactsJson({
+    required String json,
+    required List<Contact> existingContacts,
+    required Set<String> knownContactKeys,
+  }) {
+    try {
+      final jsonList = jsonDecode(json) as List<dynamic>;
+      final importedContacts = jsonList
+          .map((entry) => _fromJson(entry as Map<String, dynamic>))
+          .toList();
+
+      int newCount = 0;
+
+      // Create a set of existing discovered contact keys for deduplication
+      final existingKeySet = <String>{};
+      for (final contact in existingContacts) {
+        existingKeySet.add(contact.publicKeyHex);
+      }
+
+      // Process imported contacts
+      for (final imported in importedContacts) {
+        final keyHex = imported.publicKeyHex;
+
+        // Skip if already in device's contact list
+        if (knownContactKeys.contains(keyHex)) {
+          continue;
+        }
+
+        // Skip if already in discovered contacts (existing is always fresher)
+        if (existingKeySet.contains(keyHex)) {
+          continue;
+        }
+
+        // Add as new discovered contact
+        existingContacts.add(imported);
+        newCount++;
+      }
+
+      return newCount;
+    } catch (_) {
+      return 0;
+    }
+  }
+
   Map<String, dynamic> _toJson(Contact contact) {
     return {
       'publicKey': base64Encode(contact.publicKey),
@@ -45,6 +94,7 @@ class ContactDiscoveryStore {
       'lastSeen': contact.lastSeen.millisecondsSinceEpoch,
       'lastModified': contact.lastModified?.millisecondsSinceEpoch,
       'lastMessageAt': contact.lastMessageAt.millisecondsSinceEpoch,
+      'isActive': contact.isActive,
       'rawPacket': contact.rawPacket != null
           ? base64Encode(contact.rawPacket!)
           : null,

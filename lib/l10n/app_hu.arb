@@ -2142,6 +2142,41 @@
   "discoveredContacts_deleteContact": "A felfedezett névjegy törlése",
   "discoveredContacts_deleteContactAll": "Törölje az összes felfedezett névjegyet",
   "discoveredContacts_deleteContactAllContent": "Biztosan törli az összes felfedezett névjegyet?",
+  "discoveredContacts_export": "Felfedezett kapcsolatok exportálása",
+  "discoveredContacts_import": "Felfedezett kapcsolatok importálása",
+  "discoveredContacts_exported": "A felfedezett kapcsolatok exportálva ide: {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "A felfedezett kapcsolatok exportálása nem sikerült: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "{count} felfedezett kapcsolat importálva.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "Az importfájlban nem találhatók kapcsolatok.",
+  "discoveredContacts_importFailed": "A felfedezett kapcsolatok importálása nem sikerült: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "chat_sendCooldown": "Kérjük, várjon egy pillanatot, mielőtt újra elküldi.",
   "appSettings_jumpToOldestUnread": "Ugrás a legrégebbi olvasatlanra",
   "appSettings_jumpToOldestUnreadSubtitle": "Ha olvasatlan üzeneteket tartalmazó csevegést nyit meg, görgessen az első olvasatlanra a legutóbbi helyett.",

@@ -65,6 +65,7 @@ dependencies:
   gpx: ^2.3.0
   path_provider: ^2.1.5
   share_plus: ^13.1.0
+  file_selector: ^1.0.3
   build_pipe: ^0.3.1
   material_symbols_icons: ^4.2928.1
   web: ^1.1.1

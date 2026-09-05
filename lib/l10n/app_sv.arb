@@ -2017,6 +2017,41 @@
   "discoveredContacts_contactAdded": "Kontakt tillagd",
   "discoveredContacts_addContact": "Lägg till kontakt",
   "discoveredContacts_copyContact": "Kopiera kontakt till urklipp",
+  "discoveredContacts_export": "Exportera upptäckta kontakter",
+  "discoveredContacts_import": "Importera upptäckta kontakter",
+  "discoveredContacts_exported": "Upptäckta kontakter exporterades till {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "Det gick inte att exportera upptäckta kontakter: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "Importerade {count} upptäckta kontakter.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "Inga kontakter hittades i importfilen.",
+  "discoveredContacts_importFailed": "Det gick inte att importera upptäckta kontakter: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "contactsSettings_overwriteOldestSubtitle": "När kontaktlistan är full ersätts den äldsta icke-favoriterade kontakten.",
   "common_deleteAll": "Ta bort alla",
   "discoveredContacts_deleteContactAllContent": "Är du säker på att du vill ta bort alla upptäckta kontakter?",
@@ -2251,12 +2286,6 @@
   "scanner_linuxPairingHidePin": "Dölj PIN",
   "repeater_cliQuickDiscovery": "Upptäck grannar",
   "repeater_cliQuickClockSync": "Synkronisera klocka",
-  "@repeater_clockSyncAfterLogin": {
-    "description": "Repeater setting: auto sync device clock after successful login"
-  },
-  "@repeater_clockSyncAfterLoginSubtitle": {
-    "description": "Repeater setting subtitle: describes the clock sync after login behavior"
-  },
   "repeater_clockSyncAfterLoginSubtitle": "Automatiskt skicka \"klocksynkronisering\" efter en lyckad inloggning.",
   "repeater_clockSyncAfterLogin": "Synkronisera klockan efter inloggning",
   "repeater_guest": "Information om repetorer",
