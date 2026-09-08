@@ -102,6 +102,8 @@
   "settings_longitude": "Дължина",
   "settings_autoZeroHopAdvertOnGpsUpdate": "Автоматична zero-hop обява при GPS обновяване",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Когато GPS местоположението се промени, изпрати zero-hop обява (изисква местоположение в обявата).",
+  "settings_autoSelfAdvertAsFlood": "Изпращане на автоматична самореклама като flood",
+  "settings_autoSelfAdvertAsFloodSubtitle": "Когато е активирано, автоматичните самореклами се изпращат като flood вместо zero-hop.",
   "settings_privacyMode": "Режим на поверителност",
   "settings_privacyModeSubtitle": "Скриване на име/местоположение в рекламите",
   "settings_privacyModeToggle": "Активирайте режим на поверителност, за да скриете името и местоположението си в рекламите.",

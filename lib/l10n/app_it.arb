@@ -2226,6 +2226,8 @@
   "settings_advertLocationSubtitle": "Includi la posizione nell'annuncio",
   "settings_autoZeroHopAdvertOnGpsUpdate": "Annuncio zero-hop automatico all'aggiornamento GPS",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Quando la posizione GPS cambia, invia un annuncio zero-hop (richiede la posizione nell'annuncio).",
+  "settings_autoSelfAdvertAsFlood": "Invia auto-annuncio personale come flood",
+  "settings_autoSelfAdvertAsFloodSubtitle": "Se abilitato, gli auto-annunci automatizzati vengono inviati come flood invece che zero-hop.",
   "settings_privacy": "Impostazioni sulla privacy",
   "settings_denyAll": "Negare tutto",
   "settings_privacySubtitle": "Controlla le informazioni che vengono condivise.",

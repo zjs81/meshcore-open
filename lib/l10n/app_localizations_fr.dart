@@ -524,6 +524,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Lorsque la position GPS change, envoyer une annonce zéro saut (nécessite la position dans l\'annonce).';
 
   @override
+  String get settings_autoSelfAdvertAsFlood =>
+      'Envoyer l\'auto-annonce personnelle en flood';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      'Si activé, les auto-annonces automatiques sont envoyées en mode flood au lieu de zero-hop.';
+
+  @override
   String get settings_multiAck => 'Plusieurs accusés de réception';
 
   @override

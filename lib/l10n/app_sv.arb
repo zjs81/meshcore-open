@@ -102,6 +102,8 @@
   "settings_longitude": "Längdgrad",
   "settings_autoZeroHopAdvertOnGpsUpdate": "Automatisk zero-hop-annons vid GPS-uppdatering",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "När GPS-positionen ändras, skicka en zero-hop-annons (kräver plats i annonsen).",
+  "settings_autoSelfAdvertAsFlood": "Skicka automatisk egenannons som flood",
+  "settings_autoSelfAdvertAsFloodSubtitle": "När den är aktiverad skickas automatiska egenannonser som flood istället för zero-hop.",
   "settings_privacyMode": "Privatläge",
   "settings_privacyModeSubtitle": "Dölj namn/plats i annonser",
   "settings_privacyModeToggle": "Aktivera privatläge för att dölja ditt namn och din plats i annonser.",

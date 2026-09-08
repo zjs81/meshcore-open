@@ -523,6 +523,14 @@ class AppLocalizationsBg extends AppLocalizations {
       'Когато GPS местоположението се промени, изпрати zero-hop обява (изисква местоположение в обявата).';
 
   @override
+  String get settings_autoSelfAdvertAsFlood =>
+      'Изпращане на автоматична самореклама като flood';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      'Когато е активирано, автоматичните самореклами се изпращат като flood вместо zero-hop.';
+
+  @override
   String get settings_multiAck => 'Множество ACK';
 
   @override

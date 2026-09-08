@@ -107,6 +107,8 @@
   "settings_longitude": "经度",
   "settings_autoZeroHopAdvertOnGpsUpdate": "GPS 更新时自动发送零跳广告",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "当 GPS 位置变化时，发送零跳广告（需要在广告中包含位置）。",
+  "settings_autoSelfAdvertAsFlood": "将自动自我广告作为 flood 发送",
+  "settings_autoSelfAdvertAsFloodSubtitle": "启用后，自动自我广告将以 flood 而不是 zero-hop 发送。",
   "settings_privacyMode": "隐私模式",
   "settings_privacyModeSubtitle": "在广告中隐藏姓名/位置",
   "settings_privacyModeToggle": "切换隐私模式以在广告中隐藏姓名和位置，保护个人信息。",
