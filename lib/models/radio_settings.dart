@@ -492,7 +492,7 @@ class RadioSettings {
       ),
     ),
     (
-      'USA/Canada (recommended)',
+      'USA/Canada (compliant)',
       RadioSettings(
         frequencyMHz: 910.100,
         bandwidth: LoRaBandwidth.bw500,
