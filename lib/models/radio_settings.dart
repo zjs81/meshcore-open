@@ -492,7 +492,16 @@ class RadioSettings {
       ),
     ),
     (
-      'USA/Canada',
+      'USA/Canada (recommended)',
+      RadioSettings(
+        frequencyMHz: 910.100,
+        bandwidth: LoRaBandwidth.bw500,
+        spreadingFactor: LoRaSpreadingFactor.sf10,
+        codingRate: LoRaCodingRate.cr4_5,
+        txPowerDbm: 22,
+      ),
+    (
+      'USA/Canada (legacy)',
       RadioSettings(
         frequencyMHz: 910.525,
         bandwidth: LoRaBandwidth.bw62_5,
@@ -500,6 +509,7 @@ class RadioSettings {
         codingRate: LoRaCodingRate.cr4_5,
         txPowerDbm: 22,
       ),
+
     ),
     (
       'Vietnam',
