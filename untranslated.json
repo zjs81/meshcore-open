@@ -3,33 +3,58 @@
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "de": [
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "es": [
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "fr": [
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "hu": [
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "it": [
@@ -42,75 +67,130 @@
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "ko": [
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "nl": [
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "pl": [
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "pt": [
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "ru": [
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "sk": [
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "sl": [
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "sv": [
     "urlImage_enable",
     "urlImage_possible",
-    "settings_publicKeyCopied"
+    "settings_publicKeyCopied",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "uk": [
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ],
 
   "zh": [
     "urlImage_enable",
     "urlImage_possible",
     "settings_publicKeyCopied",
-    "reaction_report"
+    "reaction_report",
+    "contacts_scanQrCode",
+    "contacts_scanQrInstructions",
+    "contacts_qrFromGallery",
+    "contacts_noQrCodeFound",
+    "contacts_qrGalleryFailed"
   ]
 }

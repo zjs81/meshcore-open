@@ -4261,6 +4261,23 @@ class AppLocalizationsIt extends AppLocalizations {
       'Aggiungere contatto dalla clipboard';
 
   @override
+  String get contacts_scanQrCode => 'Scansiona codice QR';
+
+  @override
+  String get contacts_scanQrInstructions =>
+      'Inquadra un codice QR di un contatto MeshCore';
+
+  @override
+  String get contacts_qrFromGallery => 'Scansiona QR dalla galleria';
+
+  @override
+  String get contacts_noQrCodeFound =>
+      'Nessun codice QR trovato nell\'immagine selezionata.';
+
+  @override
+  String get contacts_qrGalleryFailed => 'Impossibile aprire la galleria.';
+
+  @override
   String get contacts_ShareContact => 'Copia contatto negli Appunti';
 
   @override

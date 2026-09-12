@@ -7372,6 +7372,36 @@ abstract class AppLocalizations {
   /// **'Add Contact from Clipboard'**
   String get contacts_addContactFromClipboard;
 
+  /// No description provided for @contacts_scanQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR Code'**
+  String get contacts_scanQrCode;
+
+  /// No description provided for @contacts_scanQrInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Point the camera at a MeshCore contact QR code'**
+  String get contacts_scanQrInstructions;
+
+  /// No description provided for @contacts_qrFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR from Gallery'**
+  String get contacts_qrFromGallery;
+
+  /// No description provided for @contacts_noQrCodeFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No QR code found in the selected image.'**
+  String get contacts_noQrCodeFound;
+
+  /// No description provided for @contacts_qrGalleryFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the gallery.'**
+  String get contacts_qrGalleryFailed;
+
   /// No description provided for @contacts_ShareContact.
   ///
   /// In en, this message translates to:

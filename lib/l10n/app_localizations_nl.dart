@@ -4239,6 +4239,23 @@ class AppLocalizationsNl extends AppLocalizations {
       'Contact uit klembord toevoegen';
 
   @override
+  String get contacts_scanQrCode => 'Scan QR Code';
+
+  @override
+  String get contacts_scanQrInstructions =>
+      'Point the camera at a MeshCore contact QR code';
+
+  @override
+  String get contacts_qrFromGallery => 'Scan QR from Gallery';
+
+  @override
+  String get contacts_noQrCodeFound =>
+      'No QR code found in the selected image.';
+
+  @override
+  String get contacts_qrGalleryFailed => 'Could not open the gallery.';
+
+  @override
   String get contacts_ShareContact => 'Contact naar Klembord kopiëren';
 
   @override
