@@ -7,6 +7,7 @@ import 'dart:io';
 import '../utils/platform_info.dart';
 
 import 'package:share_plus/share_plus.dart';
+import 'package:file_selector/file_selector.dart';
 
 class ContactExport {
   final String name;
@@ -161,7 +162,6 @@ class GpxExport {
       final xml = GpxWriter().asString(gpx, pretty: true);
 
       // 2. Save to file
-      final dir = await getApplicationDocumentsDirectory();
       final timestamp = DateTime.now()
           .toUtc()
           .toIso8601String()
@@ -169,8 +169,29 @@ class GpxExport {
           .replaceAll('.', '-')
           .split('T')
           .join('_');
+      final suggestedName = '$filename$timestamp.gpx';
 
-      final path = '${dir.path}/$filename$timestamp.gpx';
+      // share_plus cannot share files on desktop: Linux throws outright
+      // ("Sharing files not supported on Linux") and Windows only supports it
+      // from build 10.0.17763 up. Desktops have a real file system and a save
+      // dialog, so write the file where the user asks instead of sharing it.
+      if (PlatformInfo.isDesktop) {
+        final location = await getSaveLocation(
+          suggestedName: suggestedName,
+          acceptedTypeGroups: const [
+            XTypeGroup(label: 'GPX', extensions: ['gpx']),
+          ],
+        );
+        if (location == null) {
+          debugPrint('Save dialog was dismissed / cancelled by user.');
+          return gpxExportCancelled;
+        }
+        await File(location.path).writeAsString(xml);
+        return gpxExportSuccess;
+      }
+
+      final dir = await getApplicationDocumentsDirectory();
+      final path = '${dir.path}/$suggestedName';
 
       final file = File(path);
       await file.writeAsString(xml);
@@ -180,6 +201,7 @@ class GpxExport {
       );
 
       await file.delete();
+
 
       switch (result.status) {
         case ShareResultStatus.success:
