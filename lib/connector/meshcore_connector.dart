@@ -3597,27 +3597,31 @@ class MeshCoreConnector extends ChangeNotifier {
 
       // Process reaction locally to update the UI immediately
       appLogger.info('Adding sent channel reaction, id: $reactionIdentifier');
-      _processReaction(messages, reactionInfo);
-      await _channelMessageStore.saveChannelMessages(channel.index, messages);
+      final reactionApplied = _processReaction(messages, reactionInfo);
+      if (reactionApplied) {
+        await _channelMessageStore.saveChannelMessages(channel.index, messages);
 
-      // Mark this reaction as processed
-      _processedChannelReactions[channel.index]!.add(reactionIdentifier);
+        // Mark this reaction as processed
+        _processedChannelReactions[channel.index]!.add(reactionIdentifier);
 
-      notifyListeners();
+        notifyListeners();
 
-      // Send the reaction to the device (don't add as a visible message)
-      final reactionQueueId = _nextReactionSendQueueId();
-      _pendingChannelSentQueue.add(reactionQueueId);
-      await _runScopedChannelSend(() async {
-        await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
-        await _sendFrameAndWaitForCommandAck(
-          buildSendChannelTextMsgFrame(channel.index, text),
-          channelSendQueueId: reactionQueueId,
-          expectsGenericAck: true,
-          successCode: respCodeSent,
-        );
-      }, region: getChannelRegion(channel.index));
-      return;
+        // Send the reaction to the device (don't add as a visible message)
+        final reactionQueueId = _nextReactionSendQueueId();
+        _pendingChannelSentQueue.add(reactionQueueId);
+        await _runScopedChannelSend(() async {
+          await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
+          await _sendFrameAndWaitForCommandAck(
+            buildSendChannelTextMsgFrame(channel.index, text),
+            channelSendQueueId: reactionQueueId,
+            expectsGenericAck: true,
+            successCode: respCodeSent,
+          );
+        }, region: getChannelRegion(channel.index));
+        return;
+      }
+      // It looks like a reaction, but we did not find its target, so
+      // we continue to process it normally.
     }
 
     final message = ChannelMessage.outgoing(
@@ -6275,27 +6279,39 @@ class MeshCoreConnector extends ChangeNotifier {
       final isDuplicate = _processedContactReactions[pubKeyHex]!.contains(
         reactionIdentifier,
       );
+      if (isDuplicate) return;
 
-      if (!isDuplicate) {
-        // New reaction - process it
+      // New reaction - process it
+      // For hashing and dup checking, we use null for sender names in
+      // normal 1:1 chats. This way if we and they have different ideas
+      // about what their name is, reactions still work. But for reaction
+      // reports, we want to know who sent what, rather than infer it later,
+      // so we'll add it to the reactionInfo before storing it.
+      reactionInfo.senderName ??= message.isOutgoing
+          ? selfName
+          : getContactByPubKeyHex(pubKeyHex)?.name ?? '???';
+      final reactionApplied = _processContactReaction(
+        messages,
+        reactionInfo,
+        pubKeyHex,
+      );
+      if (reactionApplied) {
         appLogger.info('Adding reaction, id: $reactionIdentifier');
-        // For hashing and dup checking, we use null for sender names in
-        // normal 1:1 chats. This way if we and they have different ideas
-        // about what their name is, reactions still work. But for reaction
-        // reports, we want to know who sent what, rather than infer it later,
-        // so we'll add it to the reactionInfo before storing it.
-        reactionInfo.senderName ??= message.isOutgoing
-            ? selfName
-            : getContactByPubKeyHex(pubKeyHex)?.name ?? '???';
-        _processContactReaction(messages, reactionInfo, pubKeyHex);
         _messageStore.saveMessages(pubKeyHex, messages);
 
         // Mark as processed
         _processedContactReactions[pubKeyHex]!.add(reactionIdentifier);
 
         notifyListeners();
+        return; // Don't add reaction as a visible message
       }
-      return; // Don't add reaction as a visible message
+
+      // Looks like a reaction, but didn't match any message we have.
+      // for reactions matching our own format, because those are not very
+      // informative on their own, but the MC1 format is useful even if
+      // in raw form, so we'll let those through.
+      appLogger.info('No match for reaction, id: $reactionIdentifier');
+      if (reactionInfo.hashType == HashType.ours) return;
     }
 
     messages.add(message);
@@ -6306,7 +6322,7 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _processContactReaction(
+  bool _processContactReaction(
     List<Message> messages,
     ReactionInfo reactionInfo,
     String contactPubKeyHex,
@@ -6314,7 +6330,7 @@ class MeshCoreConnector extends ChangeNotifier {
     final contact = getContactByPubKeyHex(contactPubKeyHex);
     final isRoomServer = contact?.type == advTypeRoom;
 
-    ReactionHelper.applyReaction<Message>(
+    return ReactionHelper.applyReaction<Message>(
       messages: messages,
       reactionInfo: reactionInfo,
       // Incoming reactions in 1:1: match against outgoing messages only
@@ -6529,17 +6545,26 @@ class MeshCoreConnector extends ChangeNotifier {
         reactionIdentifier,
       );
 
-      if (!isDuplicate) {
-        // New reaction - process it
+      if (isDuplicate) return false;
+
+      // New reaction - process it
+      final reactionApplied = _processReaction(messages, reactionInfo);
+      if (reactionApplied) {
         appLogger.info('Adding channel reaction, id: $reactionIdentifier');
-        _processReaction(messages, reactionInfo);
         // Save updated messages
         _channelMessageStore.saveChannelMessages(channelIndex, messages);
 
         // Mark as processed
         _processedChannelReactions[channelIndex]!.add(reactionIdentifier);
+        return false; // Don't add reaction as a visible message
       }
-      return false; // Don't add reaction as a visible message
+      // Looks like a reaction, but didn't match any message we have.
+      // Old behavior is to silently drop these. We'll continue doing that
+      // for reactions matching our own format, because those are not very
+      // informative on their own, but the MC1 format is useful even if
+      // in raw form, so we'll let those through.
+      appLogger.info('No match for reaction, id: $reactionIdentifier');
+      if (reactionInfo.hashType == HashType.ours) return false;
     }
 
     // Parse reply info from message text
@@ -6641,11 +6666,11 @@ class MeshCoreConnector extends ChangeNotifier {
     return null;
   }
 
-  void _processReaction(
+  bool _processReaction(
     List<ChannelMessage> messages,
     ReactionInfo reactionInfo,
   ) {
-    ReactionHelper.applyReaction<ChannelMessage>(
+    return ReactionHelper.applyReaction<ChannelMessage>(
       messages: messages,
       reactionInfo: reactionInfo,
       shouldSkip: (_) => false,

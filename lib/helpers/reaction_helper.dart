@@ -1,18 +1,28 @@
+import 'dart:typed_data';
+import 'dart:convert';
+import 'package:characters/characters.dart';
+import 'package:crypto/crypto.dart';
+import 'package:base32/base32.dart';
+import 'package:base32/encodings.dart';
 import '../widgets/emoji_picker.dart';
+
+enum HashType { ours, mc1 }
 
 class ReactionInfo {
   final String targetHash;
   final String emoji;
-  String? senderName;
+  HashType hashType;
+  String? senderName; // Who sent the reaction
 
   ReactionInfo({
     required this.targetHash,
     required this.emoji,
+    required this.hashType,
     this.senderName,
   });
 
   String identifier() {
-    return '$targetHash:$emoji:${senderName ?? ""}';
+    return '$targetHash:$emoji:$hashType:${senderName ?? ""}';
   }
 }
 
@@ -40,11 +50,18 @@ class ReactionHelper {
     updateMessage,
   }) {
     final targetHash = reactionInfo.targetHash;
+    final hashFunc = switch (reactionInfo.hashType) {
+      HashType.ours => computeReactionHash,
+      HashType.mc1 => ((ts, senderName, text) => _concatenateHashAndSender(
+        computeReactionHashMC1(ts, senderName, text),
+        senderName,
+      )),
+    };
     for (int i = messages.length - 1; i >= 0; i--) {
       final msg = messages[i];
       if (shouldSkip(msg)) continue;
 
-      final msgHash = computeReactionHash(
+      final msgHash = hashFunc(
         getTimestampSecs(msg),
         getSenderName(msg),
         getMessageText(msg),
@@ -108,17 +125,122 @@ class ReactionHelper {
     return hash.toRadixString(16).padLeft(4, '0');
   }
 
+  // Compute the type of reaction hash used by MeshCoreOne.
+  static String computeReactionHashMC1(
+    int timestampSeconds,
+    String? senderName,
+    String messageText,
+  ) {
+    // raw hash is first 5 bytes of SHA-256(UTF-8 text + uint32-LE sender timestamp)
+    Uint8List messageBytes = utf8.encode(messageText);
+    ByteData timestampBytes = ByteData(4)
+      ..setUint32(0, timestampSeconds, Endian.little);
+    final hash = sha256
+        .convert(messageBytes + timestampBytes.buffer.asUint8List())
+        .bytes
+        .sublist(0, 5);
+
+    // encode as 8 chars of Crockford base32
+    return base32
+        .encode(Uint8List.fromList(hash), encoding: Encoding.crockford)
+        .toLowerCase();
+    // Note: Crockford32 defines permissive decoding and allows some
+    // substitutions (e.g. I, i, l -> 1) but we never decode the hashes, we
+    // just compare them. If someone sends a miscoded hash that should be
+    // equivalent, we won't match it and it won't work. But it's not worth
+    // accommodating, because no one is going to be hand copying hashes.
+  }
+
+  // MeshCoreOne-style reaction hashes don't depend on the sender name,
+  // and we're expected to check the hash and sender name separately.
+  // Our own reaction hashes include it. Rather than store the sender
+  // Name in ReactionInfo and complicate the logic in applyReaction(),
+  // we just tack the senderName onto the end of the "hash".
+  static String _concatenateHashAndSender(String hash, String? senderName) {
+    return "$hash:${senderName ?? ''}";
+  }
+
+  static ReactionInfo? parseReaction(String text) {
+    return parseReactionOurs(text) ??
+        parseReactionMC1(text) ??
+        parseReactionMC1Legacy(text);
+  }
+
+  static bool _looksLikeEmoji(String emoji) {
+    // Make sure it's a single grapheme.
+    if (Characters(emoji).length > 1) return false;
+
+    // Below are some emoji-validating tests, copied from MeshTrax.
+    // https://github.com/venamartin/meshtrax/
+    // It's nice to avoid false positives just to save us some processing,
+    // but it's not crucial, as we will either apply a reaction or show it
+    // as a message. Text that is not actually a hash is unlikely to match
+    // a message.
+    if (emoji.isEmpty) return false;
+    // Emoji, not prose: nearly all emoji start at U+2000 or above; the
+    // exceptions (keycaps, ©/®) carry a variation selector U+FE0F or a
+    // combining keycap U+20E3. Ordinary ASCII text fails both tests.
+    if (!(emoji.runes.first >= 0x2000 ||
+        emoji.runes.any((r) => r == 0xFE0F || r == 0x20E3))) {
+      return false;
+    }
+    return true;
+  }
+
+  static ReactionInfo? parseReactionMC1(String text) {
+    // See https://github.com/Avi0n/MeshCoreOne/blob/main/docs/Reactions.md
+    // This regex matches both the channel format, which includes the sender name,
+    // and the chat (DM) format, which omits it.
+    final regex = RegExp(r'^(?:@\[(.*)])?(.+?)\n([a-tv-zA-TV-Z0-9]{8})$');
+    final match = regex.firstMatch(text);
+    if (match == null) return null;
+
+    final senderName = match.group(1);
+    final emoji = match.group(2)!;
+    final hash = match.group(3)?.toLowerCase();
+    if (!_looksLikeEmoji(emoji)) return null;
+
+    return ReactionInfo(
+      targetHash: _concatenateHashAndSender(hash!, senderName),
+      emoji: emoji,
+      hashType: HashType.mc1,
+    );
+  }
+
+  static ReactionInfo? parseReactionMC1Legacy(String text) {
+    // See https://github.com/Avi0n/MeshCoreOne/blob/main/docs/Reactions.md
+    // This regex matches both the channel format, which includes the sender name,
+    // and the chat (DM) format, which omits it.
+    final regex = RegExp(r'^(.+?)(?:@\[(.*)])?\n([a-tv-zA-TV-Z0-9]{8})$');
+    final match = regex.firstMatch(text);
+    if (match == null) return null;
+
+    final hash = match.group(3)?.toLowerCase();
+    final senderName = match.group(2);
+    final emoji = match.group(1)!;
+    if (!_looksLikeEmoji(emoji)) return null;
+
+    return ReactionInfo(
+      targetHash: _concatenateHashAndSender(hash!, senderName),
+      emoji: emoji,
+      hashType: HashType.mc1,
+    );
+  }
+
   /// Parse reaction format: r:HASH:INDEX (where INDEX is 2-char hex emoji index)
   /// Returns null if text is not a valid reaction format
-  static ReactionInfo? parseReaction(String text) {
+  static ReactionInfo? parseReactionOurs(String text) {
     final regex = RegExp(r'^r:([0-9a-f]{4}):([0-9a-f]{2})$');
     final match = regex.firstMatch(text);
     if (match == null) return null;
 
     final emoji = indexToEmoji(match.group(2)!);
     if (emoji == null) return null;
-
-    return ReactionInfo(targetHash: match.group(1)!, emoji: emoji);
+    return ReactionInfo(
+      targetHash: match.group(1)!,
+      emoji: emoji,
+      hashType: HashType.ours,
+    );
   }
 
   /// Encode a reaction message that parseReaction() can parse.

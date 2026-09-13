@@ -318,7 +318,12 @@ class ChannelMessage {
       final emoji = entry.key;
       for (final senderName in entry.value) {
         reactionList.add(
-          ReactionInfo(targetHash: hash, emoji: emoji, senderName: senderName),
+          ReactionInfo(
+            targetHash: hash, // won't be used for anything
+            emoji: emoji,
+            senderName: senderName,
+            hashType: HashType.ours, // also not used for anything
+          ),
         );
       }
     }
