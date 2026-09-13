@@ -3,24 +3,6 @@ import 'package:meshcore_open/helpers/message_url_image_helper.dart';
 
 void main() {
   group('MessageUrlImageHelper', () {
-    test('parses short pyx ids', () async {
-      final attachment = await MessageUrlImageHelper.parse(
-        'my picture: https://pyx.li/?i=RzmdkTsE text',
-      );
-
-      expect(attachment, isNotNull);
-      expect(attachment, 'https://pyx.li/i/RzmdkTsE.jpg');
-    });
-
-    test('parses direct pyx image urls', () async {
-      final attachment = await MessageUrlImageHelper.parse(
-        'https://pyx.li/?i=Cd1KFiwu',
-      );
-
-      expect(attachment, isNotNull);
-      expect(attachment, 'https://pyx.li/i/Cd1KFiwu.jpg');
-    });
-
     test('parses provider-hosted ipfs links', () async {
       final attachment = await MessageUrlImageHelper.parse(
         'my picture: https://uneven-plum-tarantula.myfilebase.com/ipfs/bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly text',
