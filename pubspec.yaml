@@ -42,7 +42,7 @@ dependencies:
   flserial:
     git:
       url: https://github.com/MeshEnvy/flserial.git
-      ref: 48216310061efc8d5d217cc18014fc2cb501646e
+      ref: e1864de9b65cda9656dba804329bdd2890dd5a92
   provider: ^6.1.5+1
   shared_preferences: ^2.2.2
   uuid: ^4.3.3
