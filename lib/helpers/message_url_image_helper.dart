@@ -16,6 +16,12 @@ class MessageUrlImageHelper {
   static final LinkedHashMap<String, Future<String?>> _messageImageCache =
       LinkedHashMap<String, Future<String?>>();
 
+  /// HTTP client used to resolve sharing pages.
+  ///
+  /// Tests override this because `flutter_test` blocks real network requests.
+  @visibleForTesting
+  static http.Client? httpClient;
+
   static final RegExp _pyxPattern = RegExp(
     r'''https?://pyx\.li/\?i=([^\s<>'"`]+)''',
     caseSensitive: false,
@@ -132,8 +138,9 @@ class MessageUrlImageHelper {
 
   static Future<String?> _extractFromUrl(String pageUrl, RegExp pattern) async {
     try {
-      final response = await http
-          .get(Uri.parse(pageUrl))
+      final uri = Uri.parse(pageUrl);
+      final client = httpClient;
+      final response = await (client == null ? http.get(uri) : client.get(uri))
           .timeout(const Duration(seconds: 8));
       if (response.statusCode < 200 || response.statusCode >= 300) {
         return null;
@@ -141,9 +148,7 @@ class MessageUrlImageHelper {
       final value = pattern.firstMatch(response.body)?.group(1);
       if (value == null || value.isEmpty) return null;
 
-      final imageUrl = Uri.parse(
-        pageUrl,
-      ).resolve(value.replaceAll('&amp;', '&'));
+      final imageUrl = uri.resolve(value.replaceAll('&amp;', '&'));
       return imageUrl.scheme == 'http' || imageUrl.scheme == 'https'
           ? imageUrl.toString()
           : null;

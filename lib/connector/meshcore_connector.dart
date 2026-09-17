@@ -188,6 +188,18 @@ class MeshCoreConnector extends ChangeNotifier {
   String? _lastDeviceId;
   String? _lastDeviceDisplayName;
   bool _manualDisconnect = false;
+
+  /// Non-null while [disconnect] is tearing the transport down. Connect paths
+  /// join it so a teardown cannot finish after a new connection and reset the
+  /// state to `disconnected`. USB made this reachable: its native close now
+  /// waits out the kernel's closing_wait off the UI isolate, so the teardown
+  /// can outlive the tap that starts the next connection.
+  Future<void>? _activeDisconnect;
+
+  /// Set by [dispose]. A teardown started before disposal can still be running
+  /// (the USB native close waits out the kernel's closing_wait off the UI
+  /// isolate), so state publication is suppressed once the connector is gone.
+  bool _disposed = false;
   final MeshCoreUsbManager _usbManager = MeshCoreUsbManager();
   final LinuxBlePairingService _linuxBlePairingService =
       LinuxBlePairingService();
@@ -1763,6 +1775,18 @@ class MeshCoreConnector extends ChangeNotifier {
       tag: 'USB',
     );
 
+    await _awaitActiveDisconnect();
+    // The await is a suspension point: another connect may have claimed the
+    // connector while this one was waiting for the teardown.
+    if (_state == MeshCoreConnectionState.connecting ||
+        _state == MeshCoreConnectionState.connected) {
+      _appDebugLogService?.warn(
+        'connectUsb ignored: already $_state after disconnect wait',
+        tag: 'USB',
+      );
+      return;
+    }
+
     await stopScan();
     _cancelReconnectTimer();
     _manualDisconnect = false;
@@ -1859,6 +1883,18 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     _appDebugLogService?.info('connectTcp: endpoint=$host:$port', tag: 'TCP');
+
+    await _awaitActiveDisconnect();
+    // The await is a suspension point: another connect may have claimed the
+    // connector while this one was waiting for the teardown.
+    if (_state == MeshCoreConnectionState.connecting ||
+        _state == MeshCoreConnectionState.connected) {
+      _appDebugLogService?.warn(
+        'connectTcp ignored: already $_state after disconnect wait',
+        tag: 'TCP',
+      );
+      return;
+    }
 
     await stopScan();
     _cancelReconnectTimer();
@@ -2003,6 +2039,14 @@ class MeshCoreConnector extends ChangeNotifier {
     String? displayName,
     Future<String?> Function()? linuxPairingPinProvider,
   }) async {
+    if (_state == MeshCoreConnectionState.connecting ||
+        _state == MeshCoreConnectionState.connected) {
+      return;
+    }
+
+    await _awaitActiveDisconnect();
+    // The await is a suspension point: another connect may have claimed the
+    // connector while this one was waiting for the teardown.
     if (_state == MeshCoreConnectionState.connecting ||
         _state == MeshCoreConnectionState.connected) {
       return;
@@ -2694,6 +2738,7 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   bool get _shouldAutoReconnect =>
+      !_disposed &&
       !_manualDisconnect &&
       _lastDeviceId != null &&
       _activeTransport == MeshCoreTransportType.bluetooth;
@@ -2747,8 +2792,51 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> disconnect({
     bool manual = true,
     bool skipBleDeviceDisconnect = false,
+  }) {
+    final inFlight = _activeDisconnect;
+    if (inFlight != null) {
+      if (manual) {
+        // A teardown started as automatic must still honour a later manual
+        // request, otherwise _manualDisconnect stays false and its tail
+        // schedules an auto-reconnect the user did not ask for.
+        _manualDisconnect = true;
+        _cancelReconnectTimer();
+        unawaited(_backgroundService?.stop());
+      }
+      return inFlight;
+    }
+    final teardown = _disconnectInternal(
+      manual: manual,
+      skipBleDeviceDisconnect: skipBleDeviceDisconnect,
+    );
+    _activeDisconnect = teardown;
+    return teardown.whenComplete(() {
+      if (identical(_activeDisconnect, teardown)) {
+        _activeDisconnect = null;
+      }
+    });
+  }
+
+  /// Joins an in-flight [disconnect] so a new connection cannot be started
+  /// while the previous teardown is still running.
+  Future<void> _awaitActiveDisconnect() async {
+    final pending = _activeDisconnect;
+    if (pending == null) return;
+    _appDebugLogService?.info(
+      'Waiting for the in-flight disconnect to finish before connecting',
+      tag: 'Connection',
+    );
+    try {
+      await pending;
+    } catch (_) {
+      // Teardown failures are logged by the disconnect path.
+    }
+  }
+
+  Future<void> _disconnectInternal({
+    required bool manual,
+    required bool skipBleDeviceDisconnect,
   }) async {
-    if (_state == MeshCoreConnectionState.disconnecting) return;
     final transportAtDisconnect = _activeTransport;
     final transportLabel = switch (transportAtDisconnect) {
       MeshCoreTransportType.bluetooth => 'BLE',
@@ -6899,6 +6987,7 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   void _setState(MeshCoreConnectionState newState) {
+    if (_disposed) return;
     if (_state != newState) {
       _state = newState;
       notifyListeners();
@@ -6906,6 +6995,7 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   void markNotifyDirty() {
+    if (_disposed) return;
     if (_notifyListenersDirty && _notifyListenersTimer != null) {
       return;
     }
@@ -6936,11 +7026,13 @@ class MeshCoreConnector extends ChangeNotifier {
 
   @override
   void notifyListeners() {
+    if (_disposed) return;
     markNotifyDirty();
   }
 
   @override
   void dispose() {
+    _disposed = true;
     _scanSubscription?.cancel();
     _isScanningSubscription?.cancel();
     _connectionSubscription?.cancel();

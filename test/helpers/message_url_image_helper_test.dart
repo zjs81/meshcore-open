@@ -1,23 +1,38 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:meshcore_open/helpers/message_url_image_helper.dart';
 
 void main() {
   group('MessageUrlImageHelper', () {
+    tearDown(() => MessageUrlImageHelper.httpClient = null);
+
+    void mockPyxPage(String id) {
+      MessageUrlImageHelper.httpClient = MockClient((request) async {
+        expect(request.url.toString(), 'https://pyx.li/?i=$id');
+        return http.Response(
+          '<html><body><img src="/i/$id.jpg"></body></html>',
+          200,
+          headers: {'content-type': 'text/html; charset=utf-8'},
+        );
+      });
+    }
+
     test('parses short pyx ids', () async {
+      mockPyxPage('RzmdkTsE');
       final attachment = await MessageUrlImageHelper.parse(
         'my picture: https://pyx.li/?i=RzmdkTsE text',
       );
 
-      expect(attachment, isNotNull);
       expect(attachment, 'https://pyx.li/i/RzmdkTsE.jpg');
     });
 
     test('parses direct pyx image urls', () async {
+      mockPyxPage('Cd1KFiwu');
       final attachment = await MessageUrlImageHelper.parse(
         'https://pyx.li/?i=Cd1KFiwu',
       );
 
-      expect(attachment, isNotNull);
       expect(attachment, 'https://pyx.li/i/Cd1KFiwu.jpg');
     });
 
