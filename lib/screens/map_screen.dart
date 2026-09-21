@@ -3801,7 +3801,6 @@ int _mapContactSignature(Contact contact) {
     contact.lastSeen.millisecondsSinceEpoch,
     contact.lastMessageAt.millisecondsSinceEpoch,
     contact.isActive,
-    contact.wasPulled,
   );
 }
 

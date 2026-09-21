@@ -19,7 +19,10 @@ void main() {
     });
 
     test('passes other commands through unchanged', () {
-      expect(normalizeRepeaterClockSyncCommand('clock', nowSeconds: 1), 'clock');
+      expect(
+        normalizeRepeaterClockSyncCommand('clock', nowSeconds: 1),
+        'clock',
+      );
       expect(
         normalizeRepeaterClockSyncCommand('get radio', nowSeconds: 1),
         'get radio',
