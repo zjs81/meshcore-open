@@ -34,6 +34,7 @@ import '../widgets/unread_badge.dart';
 import '../helpers/snack_bar_builder.dart';
 import 'channels_screen.dart';
 import 'chat_screen.dart';
+import 'contact_qr_scanner_screen.dart';
 import 'discovery_screen.dart';
 import 'map_screen.dart';
 import 'repeater_hub_screen.dart';
@@ -376,6 +377,21 @@ class _ContactsScreenState extends State<ContactsScreen>
                   ),
                   onTap: () => _contactImport(),
                 ),
+                PopupMenuItem(
+                  child: Row(
+                    children: [
+                      const Icon(Icons.qr_code_scanner),
+                      const SizedBox(width: 8),
+                      Text(context.l10n.contacts_scanQrCode),
+                    ],
+                  ),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ContactQrScannerScreen(),
+                    ),
+                  ),
+                ),
                 const PopupMenuDivider(),
                 PopupMenuItem(
                   child: Row(
@@ -486,6 +502,19 @@ class _ContactsScreenState extends State<ContactsScreen>
               onTap: () {
                 Navigator.pop(sheetContext);
                 _contactImport();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.qr_code_scanner),
+              title: Text(context.l10n.contacts_scanQrCode),
+              onTap: () {
+                Navigator.pop(sheetContext);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ContactQrScannerScreen(),
+                  ),
+                );
               },
             ),
             ListTile(
