@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:crypto/crypto.dart' as crypto;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meshcore_open/connector/meshcore_protocol.dart';
 import 'package:meshcore_open/models/channel_message.dart';
@@ -146,6 +147,25 @@ void main() {
       final message = ChannelMessage.fromFrame(frame);
       expect(message, isNull);
     });
+  });
+
+  test('flood transport code uses the scope key HMAC', () {
+    final scopeKey = floodScopeKeyForRegion('Europe');
+    final payload = Uint8List.fromList([0xA1, 0xB2, 0xC3]);
+
+    expect(
+      floodTransportCode(
+        scopeKey: scopeKey,
+        payloadType: 0x05,
+        payload: payload,
+      ),
+      orderedEquals(
+        crypto.Hmac(
+          crypto.sha256,
+          scopeKey,
+        ).convert([0x05, ...payload]).bytes.sublist(0, 2),
+      ),
+    );
   });
 
   group('Contact.fromFrame — pathLen mapping', () {

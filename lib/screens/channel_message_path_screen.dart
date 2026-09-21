@@ -211,6 +211,13 @@ class ChannelMessagePathScreen extends StatelessWidget {
               observedLabel,
               scheme: scheme,
             ),
+          if (message.region?.isNotEmpty ?? false)
+            _buildDetailRow(
+              context,
+              l10n.settings_regionName,
+              message.region!,
+              scheme: scheme,
+            ),
         ],
       ),
     );

@@ -45,6 +45,7 @@ class ChannelMessage {
   final Uint8List pathBytes;
   final List<Uint8List> pathVariants;
   final int? channelIndex;
+  final String? region;
   final String messageId;
   final String? packetHash;
   final String? replyToMessageId;
@@ -71,6 +72,7 @@ class ChannelMessage {
     Uint8List? pathBytes,
     List<Uint8List>? pathVariants,
     this.channelIndex,
+    this.region,
     String? messageId,
     this.packetHash,
     this.replyToMessageId,
@@ -98,6 +100,7 @@ class ChannelMessage {
     int? pathHashWidth,
     Uint8List? pathBytes,
     List<Uint8List>? pathVariants,
+    Object? region = _unset,
     String? packetHash,
     String? replyToMessageId,
     String? replyToSenderName,
@@ -136,6 +139,7 @@ class ChannelMessage {
       pathBytes: pathBytes ?? this.pathBytes,
       pathVariants: pathVariants ?? this.pathVariants,
       channelIndex: channelIndex,
+      region: region == _unset ? this.region : region as String?,
       messageId: messageId,
       packetHash: packetHash ?? this.packetHash,
       replyToMessageId: replyToMessageId ?? this.replyToMessageId,
@@ -238,6 +242,7 @@ class ChannelMessage {
     String? originalText,
     String? translatedLanguageCode,
     String? translationModelId,
+    String? region,
   }) {
     return ChannelMessage(
       senderKey: null,
@@ -253,6 +258,7 @@ class ChannelMessage {
       pathBytes: Uint8List(0),
       pathVariants: const [],
       channelIndex: channelIndex,
+      region: region,
     );
   }
 

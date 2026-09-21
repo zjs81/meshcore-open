@@ -3572,8 +3572,10 @@ class MeshCoreConnector extends ChangeNotifier {
     String? originalText,
     String? translatedLanguageCode,
     String? translationModelId,
+    String? region,
   }) async {
     if (!isConnected || text.isEmpty) return;
+    final sendRegion = region ?? getChannelRegion(channel.index);
 
     // Check if this is a reaction - if so, process it immediately instead of adding as a message
     final reactionInfo = ReactionHelper.parseReaction(text);
@@ -3631,6 +3633,7 @@ class MeshCoreConnector extends ChangeNotifier {
       originalText: originalText,
       translatedLanguageCode: translatedLanguageCode,
       translationModelId: translationModelId,
+      region: sendRegion,
     );
     _addChannelMessage(channel.index, message);
     _pendingChannelSentQueue.add(message.messageId);
@@ -3645,7 +3648,7 @@ class MeshCoreConnector extends ChangeNotifier {
         expectsGenericAck: true,
         successCode: respCodeSent,
       );
-    }, region: getChannelRegion(channel.index));
+    }, region: sendRegion);
   }
 
   /// Minimum companion firmware version code that implements
@@ -5821,6 +5824,7 @@ class MeshCoreConnector extends ChangeNotifier {
             pathHashWidth: packet.pathHashWidth,
             pathBytes: packet.pathBytes,
             channelIndex: channel.index,
+            region: _resolveTransportRegion(packet),
             packetHash: pktHash,
           );
 
@@ -6423,10 +6427,7 @@ class MeshCoreConnector extends ChangeNotifier {
       final hasTransport =
           routeType == _routeTransportFlood ||
           routeType == _routeTransportDirect;
-      if (hasTransport) {
-        // Skip reserved bytes in transport header made up of two u16 fields
-        reader.skipBytes(4);
-      }
+      final transportCodes = hasTransport ? reader.readBytes(4) : null;
       final pathLenRaw = reader.readByte();
       final pathByteLen = _decodePathByteLen(pathLenRaw);
       final pathBytes = reader.readBytes(pathByteLen);
@@ -6438,6 +6439,7 @@ class MeshCoreConnector extends ChangeNotifier {
         payloadType: (header >> _phTypeShift) & _phTypeMask,
         payloadVer: (header >> _phVerShift) & _phVerMask,
         pathLenRaw: pathLenRaw,
+        transportCodes: transportCodes,
         pathBytes: pathBytes,
         payload: payload,
       );
@@ -6450,6 +6452,30 @@ class MeshCoreConnector extends ChangeNotifier {
   int _computeChannelHash(Uint8List psk) {
     final digest = crypto.sha256.convert(psk).bytes;
     return digest[0];
+  }
+
+  String? _resolveTransportRegion(_RawPacket packet) {
+    if (packet.routeType != _routeTransportFlood ||
+        packet.transportCodes == null) {
+      return null;
+    }
+
+    final candidates = <String>{
+      ...RegionStore().loadRegions(),
+      ..._channelRegions.values,
+    }.where((region) => region.trim().isNotEmpty).toList()..sort();
+    String? match;
+    for (final region in candidates) {
+      final code = floodTransportCode(
+        scopeKey: floodScopeKeyForRegion(region),
+        payloadType: packet.payloadType,
+        payload: packet.payload,
+      );
+      if (!_pathsEqual(code, packet.transportCodes!.sublist(0, 2))) continue;
+      if (match != null) return null;
+      match = region;
+    }
+    return match;
   }
 
   /// Firmware-compatible packet hash: SHA256(payloadType + payload) -> first 8 bytes as hex.
@@ -6599,6 +6625,7 @@ class MeshCoreConnector extends ChangeNotifier {
           pathBytes: message.pathBytes,
           pathVariants: message.pathVariants,
           channelIndex: message.channelIndex,
+          region: message.region,
           messageId: message.messageId,
           replyToMessageId: originalMessage.messageId,
           replyToSenderName: originalMessage.senderName,
@@ -6635,6 +6662,7 @@ class MeshCoreConnector extends ChangeNotifier {
         pathHashWidth: existing.pathHashWidth ?? processedMessage.pathHashWidth,
         pathBytes: mergedPathBytes,
         pathVariants: mergedPathVariants,
+        region: existing.region ?? processedMessage.region,
         packetHash: existing.packetHash ?? processedMessage.packetHash,
         // Mark as sent when first repeat is heard
         status: promotedFromPending
@@ -7586,6 +7614,7 @@ class _RawPacket {
   final int payloadType;
   final int payloadVer;
   final int pathLenRaw;
+  final Uint8List? transportCodes;
   final Uint8List pathBytes;
   final Uint8List payload;
 
@@ -7595,6 +7624,7 @@ class _RawPacket {
     required this.payloadType,
     required this.payloadVer,
     required this.pathLenRaw,
+    required this.transportCodes,
     required this.pathBytes,
     required this.payload,
   });

@@ -11,9 +11,7 @@ import '../connector/meshcore_protocol.dart';
 /// do the same so the repeater always gets the phone's time.
 String normalizeRepeaterClockSyncCommand(String command, {int? nowSeconds}) {
   final epoch = nowSeconds ?? DateTime.now().millisecondsSinceEpoch ~/ 1000;
-  return command.trim().toLowerCase() == 'clock sync'
-      ? 'time $epoch'
-      : command;
+  return command.trim().toLowerCase() == 'clock sync' ? 'time $epoch' : command;
 }
 
 class RepeaterCommandService {

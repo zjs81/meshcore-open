@@ -77,6 +77,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   final ChatScrollController _scrollController = ChatScrollController();
   final FocusNode _textFieldFocusNode = FocusNode();
   ChannelMessage? _replyingToMessage;
+  bool _useReplyRegion = false;
   final CommunityStore _communityStore = CommunityStore();
   final CommunityPskIndex _communityIndex = CommunityPskIndex();
   final Map<String, GlobalKey> _messageKeys = {};
@@ -210,12 +211,14 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   void _setReplyingTo(ChannelMessage message) {
     setState(() {
       _replyingToMessage = message;
+      _useReplyRegion = message.region?.isNotEmpty ?? false;
     });
   }
 
   void _cancelReply() {
     setState(() {
       _replyingToMessage = null;
+      _useReplyRegion = false;
     });
   }
 
@@ -809,9 +812,41 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                RouteChip(
-                                  isDirect: (message.pathLength ?? -1) >= 0,
-                                  hops: displayHopCount,
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    RouteChip(
+                                      isDirect: (message.pathLength ?? -1) >= 0,
+                                      hops: displayHopCount,
+                                    ),
+                                    if (message.region?.isNotEmpty ?? false)
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 2),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 6,
+                                            vertical: 2,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: scheme.surfaceContainerHigh,
+                                            borderRadius: BorderRadius.circular(
+                                              MeshRadii.xs,
+                                            ),
+                                            border: Border.all(
+                                              color: scheme.outlineVariant,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            _displayRegion(message.region!),
+                                            style: MeshTheme.mono(
+                                              fontSize: 8.5 * textScale,
+                                              color: metaColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
                                 ),
                                 const SizedBox(width: 4),
                                 Flexible(
@@ -1670,6 +1705,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   Widget _buildReplyBanner(double textScale) {
     final message = _replyingToMessage!;
     final scheme = Theme.of(context).colorScheme;
+    final replyRegion = message.region;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -1707,6 +1743,40 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               ],
             ),
           ),
+          if (replyRegion?.isNotEmpty ?? false)
+            InkWell(
+              borderRadius: BorderRadius.circular(MeshRadii.xs),
+              onTap: () => setState(() => _useReplyRegion = !_useReplyRegion),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                decoration: BoxDecoration(
+                  color: _useReplyRegion
+                      ? scheme.primaryContainer
+                      : scheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(MeshRadii.xs),
+                  border: Border.all(
+                    color: _useReplyRegion
+                        ? scheme.primary
+                        : scheme.outlineVariant,
+                  ),
+                ),
+                child: Text(
+                  context.l10n.channels_regionSetTo(replyRegion!),
+                  style:
+                      MeshTheme.mono(
+                        fontSize: 10 * textScale,
+                        color: _useReplyRegion
+                            ? scheme.onPrimaryContainer
+                            : scheme.onSurfaceVariant,
+                      ).copyWith(
+                        decoration: _useReplyRegion
+                            ? null
+                            : TextDecoration.lineThrough,
+                      ),
+                ),
+              ),
+            ),
+          const SizedBox(width: 4),
           IconButton(
             icon: const Icon(Icons.close, size: 18),
             onPressed: _cancelReply,
@@ -2032,6 +2102,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     if (_replyingToMessage != null) {
       messageText = '@[${_replyingToMessage!.senderName}] $messageText';
     }
+    final replyRegion = _useReplyRegion ? _replyingToMessage?.region : null;
 
     final maxBytes = maxChannelMessageBytes(connector.selfName);
     final outboundText = connector.prepareChannelOutboundText(
@@ -2064,6 +2135,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       originalText: originalText,
       translatedLanguageCode: translatedLanguageCode,
       translationModelId: translationModelId,
+      region: replyRegion,
     );
   }
 
@@ -2280,6 +2352,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     if ((fallbackPathLength ?? -1) < 0) return null;
     if (pathBytes.isEmpty) return fallbackPathLength;
     return PathHelper.splitPathBytes(pathBytes, pathHashByteWidth).length;
+  }
+
+  String _displayRegion(String region) {
+    return region.startsWith('#') ? region.substring(1) : region;
   }
 
   Future<void> openRegionSelectDialog(Channel channel) async {
