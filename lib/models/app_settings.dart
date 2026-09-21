@@ -116,6 +116,7 @@ class AppSettings {
   final UnitSystem unitSystem;
   final Set<String> mutedChannels;
   final bool mapShowDiscoveryContacts;
+  final bool evictDiscoveredContactsEnabled;
   final String tcpServerAddress;
   final int tcpServerPort;
   final bool jumpToOldestUnread;
@@ -218,6 +219,7 @@ class AppSettings {
     this.unitSystem = UnitSystem.metric,
     Set<String>? mutedChannels,
     this.mapShowDiscoveryContacts = true,
+    this.evictDiscoveredContactsEnabled = false,
     this.tcpServerAddress = '',
     this.tcpServerPort = 0,
     this.jumpToOldestUnread = false,
@@ -293,6 +295,7 @@ class AppSettings {
       'unit_system': unitSystem.value,
       'muted_channels': mutedChannels.toList(),
       'map_show_discovery_contacts': mapShowDiscoveryContacts,
+      'evict_discovered_contacts_enabled': evictDiscoveredContactsEnabled,
       'tcp_server_address': tcpServerAddress,
       'tcp_server_port': tcpServerPort,
       'jump_to_oldest_unread': jumpToOldestUnread,
@@ -391,6 +394,8 @@ class AppSettings {
           {},
       mapShowDiscoveryContacts:
           json['map_show_discovery_contacts'] as bool? ?? true,
+      evictDiscoveredContactsEnabled:
+          json['evict_discovered_contacts_enabled'] as bool? ?? false,
       tcpServerAddress: json['tcp_server_address'] as String? ?? '',
       tcpServerPort: json['tcp_server_port'] as int? ?? 0,
       jumpToOldestUnread: json['jump_to_oldest_unread'] as bool? ?? false,
@@ -504,6 +509,7 @@ class AppSettings {
     UnitSystem? unitSystem,
     Set<String>? mutedChannels,
     bool? mapShowDiscoveryContacts,
+    bool? evictDiscoveredContactsEnabled,
     String? tcpServerAddress,
     int? tcpServerPort,
     bool? jumpToOldestUnread,
@@ -578,6 +584,8 @@ class AppSettings {
       mutedChannels: mutedChannels ?? this.mutedChannels,
       mapShowDiscoveryContacts:
           mapShowDiscoveryContacts ?? this.mapShowDiscoveryContacts,
+      evictDiscoveredContactsEnabled:
+          evictDiscoveredContactsEnabled ?? this.evictDiscoveredContactsEnabled,
       tcpServerAddress: tcpServerAddress ?? this.tcpServerAddress,
       tcpServerPort: tcpServerPort ?? this.tcpServerPort,
       jumpToOldestUnread: jumpToOldestUnread ?? this.jumpToOldestUnread,
