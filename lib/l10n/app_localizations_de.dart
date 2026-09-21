@@ -523,6 +523,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wenn sich der GPS-Standort ändert, eine Zero-Hop-Ankündigung senden (erfordert Standort in der Ankündigung).';
 
   @override
+  String get settings_autoSelfAdvertAsFlood =>
+      'Automatische Ankündigung als Flood senden';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      'Wenn aktiviert, werden automatisierte Ankündigungen als Flood statt als Zero-Hop gesendet.';
+
+  @override
   String get settings_multiAck => 'Mehrfach-ACKs';
 
   @override

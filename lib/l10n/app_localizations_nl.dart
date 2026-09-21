@@ -518,6 +518,14 @@ class AppLocalizationsNl extends AppLocalizations {
       'Wanneer de GPS-locatie verandert, een zero-hop-advertentie verzenden (vereist locatie in advertentie).';
 
   @override
+  String get settings_autoSelfAdvertAsFlood =>
+      'Automatische zelfadvertentie als flood verzenden';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      'Indien ingeschakeld, worden geautomatiseerde zelfadvertenties als flood verzonden in plaats van zero-hop.';
+
+  @override
   String get settings_multiAck => 'Meerdere bevestigingen';
 
   @override

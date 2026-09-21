@@ -163,6 +163,8 @@
   "settings_longitude": "Hosszúság",
   "settings_autoZeroHopAdvertOnGpsUpdate": "Automatikus zero-hop hirdetés GPS-frissítéskor",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Ha a GPS-helyzet megváltozik, küldjön zero-hop hirdetést (a hirdetésben helymegadás szükséges).",
+  "settings_autoSelfAdvertAsFlood": "Automatikus saját hirdetés küldése floodként",
+  "settings_autoSelfAdvertAsFloodSubtitle": "Ha engedélyezve van, az automatikus saját hirdetések floodként kerülnek küldésre zero-hop helyett.",
   "settings_contactSettings": "Kapcsolati beállítások",
   "settings_contactSettingsSubtitle": "A névjegyek hozzáadásának beállításai.",
   "settings_privacyMode": "Adatvédelmi mód",

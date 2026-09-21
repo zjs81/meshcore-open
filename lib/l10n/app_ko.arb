@@ -163,6 +163,8 @@
   "settings_longitude": "경도",
   "settings_autoZeroHopAdvertOnGpsUpdate": "GPS 업데이트 시 제로 홉 광고 자동 전송",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "GPS 위치가 변경되면 제로 홉 광고를 전송합니다(광고에 위치 포함 필요).",
+  "settings_autoSelfAdvertAsFlood": "자동 자체 광고를 flood로 전송",
+  "settings_autoSelfAdvertAsFloodSubtitle": "활성화되면 자동 자체 광고가 zero-hop 대신 flood로 전송됩니다.",
   "settings_contactSettings": "연락처 설정",
   "settings_contactSettingsSubtitle": "연락처 추가 방식 설정",
   "settings_privacyMode": "개인 정보 보호 모드",
