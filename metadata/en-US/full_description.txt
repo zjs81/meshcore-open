@@ -1,0 +1,40 @@
+MeshCore Open is a cross-platform mobile application for communicating with MeshCore LoRa mesh network devices via Bluetooth Low Energy (BLE). The app enables long-range, off-grid communication through peer-to-peer messaging, public channels, and mesh networking capabilities.
+
+<big>Core Functionality</big>
+
+<li><b>Direct Messaging</b>: Private encrypted conversations with individual contacts</li>
+<li><b>Public Channels</b>: Broadcast messages to channel subscribers on the mesh network</li>
+<li><b>Contact Management</b>: Organize contacts, track last seen times, and manage conversation history</li>
+<li><b>Contact Groups</b>: Create custom groups to organize your mesh network contacts</li>
+<li><b>Message Reactions</b>: React to messages with emoji responses</li>
+<li><b>Message Replies</b>: Thread conversations with inline reply functionality</li>
+
+<big>Mesh Network</big>
+
+<li><b>Path Visualization</b>: View routing paths and signal quality for each contact</li>
+<li><b>Route Management</b>: Manual path overriding and automatic route rotation</li>
+<li><b>Signal Metrics</b>: Real-time SNR (Signal-to-Noise Ratio) tracking</li>
+<li><b>Node Discovery</b>: Automatic detection of nearby mesh nodes</li>
+<li><b>Repeater Support</b>: Connect to and manage repeater nodes for extended range</li>
+
+<big>Map & Location</big>
+
+<li><b>Live Map View</b>: Real-time visualization of mesh network nodes on an interactive map</li>
+<li><b>Node Filtering</b>: Filter by node type (chat, repeater, sensor) and time range</li>
+<li><b>Location Sharing</b>: Share GPS coordinates and custom markers with contacts</li>
+<li><b>Offline Maps</b>: Download map tiles for offline use in remote areas</li>
+<li><b>MGRS Coordinates</b>: Support for Military Grid Reference System coordinate format</li>
+
+<big>Device Management</big>
+
+<li><b>BLE, USB, TCP Connection</b>: Scan and connect to MeshCore devices via Bluetooth, USB or TCP</li>
+<li><b>Device Settings</b>: Configure radio parameters, power settings, and network options</li>
+<li><b>Battery Monitoring</b>: Real-time battery status with chemistry-specific voltage curves</li>
+<li><b>Firmware Updates</b>: Over-the-air firmware updates via BLE (coming soon)</li>
+
+<big>Repeater Hub</big>
+
+<li><b>CLI Access</b>: Full command-line interface to repeater nodes</li>
+<li><b>Settings Management</b>: Configure repeater behavior, power limits, and network settings</li>
+<li><b>Statistics Dashboard</b>: View repeater traffic, connected clients, and system health</li>
+<li><b>Remote Management</b>: Administer repeaters from anywhere on the mesh network</li>
