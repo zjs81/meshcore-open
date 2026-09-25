@@ -232,6 +232,7 @@ class EmojiPicker extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.close),
+                  tooltip: l10n.common_close,
                   onPressed: () => Navigator.pop(context),
                 ),
               ],

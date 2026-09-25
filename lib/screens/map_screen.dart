@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -16,11 +17,13 @@ import '../l10n/l10n.dart';
 import '../models/app_settings.dart';
 import '../models/channel.dart';
 import '../models/contact.dart';
+import '../models/path_history.dart';
 import '../l10n/contact_localization.dart';
 import '../services/app_settings_service.dart';
 import '../services/path_history_service.dart';
 import '../services/map_marker_service.dart';
 import '../services/map_tile_cache_service.dart';
+import '../storage/prefs_manager.dart';
 import '../utils/contact_search.dart';
 import '../utils/disconnect_navigation_mixin.dart';
 import '../utils/battery_utils.dart';
@@ -35,6 +38,7 @@ import '../theme/mesh_theme.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/repeater_login_dialog.dart';
 import '../widgets/room_login_dialog.dart';
+import '../helpers/guessed_location_estimator.dart';
 import '../helpers/snack_bar_builder.dart';
 import 'repeater_hub_screen.dart';
 import 'settings_screen.dart';
@@ -60,8 +64,7 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen>
-    with DisconnectNavigationMixin {
+class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
   // Zoom level at which node labels start to appear
   static const double _labelZoomThreshold = 14.0;
   // Below this zoom, nearby nodes collapse into clusters.
@@ -95,15 +98,51 @@ class _MapScreenState extends State<MapScreen>
   final FocusNode _searchFocus = FocusNode();
   String _searchQuery = '';
   List<_GuessedLocation> _cachedGuessedLocations = [];
-  String _guessedLocationsCacheKey = '';
+  int? _guessedLocationsCacheKey;
+  static const Duration _guessMaxAge = Duration(days: 7);
+  ({LatLng center, double zoom})? _cachedFallbackCamera;
+  bool _guessInFlight = false;
+  VoidCallback? _guessRerun;
+  // Saved paths for contacts outside the path-history cache, read once.
+  final Map<String, List<PathRecord>> _storedPaths = {};
   int? _sharedMarkersCacheSignature;
   Locale? _sharedMarkersCacheLocale;
   List<_SharedMarker> _cachedSharedMarkers = const [];
   _NodeMarkersCacheKey? _nodeMarkersCacheKey;
   List<Marker> _cachedNodeMarkers = const [];
 
+  static const String _lastCameraKey = 'map_last_camera';
+
+  ({LatLng center, double zoom}) _fallbackCamera(MeshCoreConnector connector) {
+    final lat = connector.selfLatitude;
+    final lon = connector.selfLongitude;
+    if (lat != null && lon != null && isPlausibleLocation(lat, lon)) {
+      return (center: LatLng(lat, lon), zoom: 12.0);
+    }
+    final saved = PrefsManager.instance.getStringList(_lastCameraKey);
+    if (saved != null && saved.length == 3) {
+      final values = saved.map(double.tryParse).toList();
+      if (!values.contains(null)) {
+        return (center: LatLng(values[0]!, values[1]!), zoom: values[2]!);
+      }
+    }
+    return (center: const LatLng(20, 0), zoom: _mapMinZoom);
+  }
+
+  void _saveLastCamera() {
+    try {
+      final camera = _mapController.camera;
+      PrefsManager.instance.setStringList(_lastCameraKey, [
+        camera.center.latitude.toString(),
+        camera.center.longitude.toString(),
+        camera.zoom.toString(),
+      ]);
+    } catch (_) {}
+  }
+
   @override
   void dispose() {
+    _saveLastCamera();
     _searchController.dispose();
     _searchFocus.dispose();
     _mapController.dispose();
@@ -194,15 +233,6 @@ class _MapScreenState extends State<MapScreen>
       });
       await _markerService.saveRemovedIds(updated);
     }
-  }
-
-  bool _checkLocationPlausibility(double lat, double lon) {
-    const double epsilon = 1e-6;
-    return (lat.abs() > epsilon || lon.abs() > epsilon) &&
-        lat >= -90.0 &&
-        lat <= 90.0 &&
-        lon >= -180.0 &&
-        lon <= 180.0;
   }
 
   double _standardDeviation(List<double> values) {
@@ -300,7 +330,7 @@ class _MapScreenState extends State<MapScreen>
                 IconButton(
                   color: MapPalette.selected,
                   icon: const Icon(Icons.my_location),
-                  tooltip: context.l10n.map_setAsMyLocation,
+                  tooltip: context.l10n.map_centerOnMe,
                   onPressed: () => _mapController.move(
                     LatLng(connector.selfLatitude!, connector.selfLongitude!),
                     max(_zoom, 14),
@@ -431,29 +461,42 @@ class _MapScreenState extends State<MapScreen>
           noLocations: true,
         );
 
-        // Compute guessed locations with caching
+        // Guessed locations are computed in a background isolate; the last
+        // result stays on screen until the new one arrives.
         final maxRangeKm = _estimateLoRaRangeKm(connector);
-        final filteredKeys = guessCandidates
-            .map((c) => '${c.publicKeyHex}:${c.path.join("-")}')
-            .join(',');
-        final anchorKeys = allContactsWithLocation
-            .map(
+        final cacheKey = Object.hash(
+          Object.hashAll(
+            guessCandidates.map(
+              (c) => Object.hash(c.publicKeyHex, _bytesSignature(c.path)),
+            ),
+          ),
+          Object.hashAll(
+            allContactsWithLocation.map(
               (c) =>
-                  '${c.publicKeyHex}:${c.latitude}:${c.longitude}:${PathHelper.formatHopHex(c.path.isNotEmpty ? c.path.sublist(max(0, c.path.length - c.pathHashWidth)) : const [])}',
-            )
-            .join(',');
-        final cacheKey =
-            '$filteredKeys|$anchorKeys|$pathHistoryVersion:${connector.currentFreqHz}:${connector.currentSf}:${connector.currentBwHz}:${connector.currentTxPower}:${settings.mapShowGuessedLocations}';
+                  Object.hash(c.publicKeyHex, c.latitude, c.longitude, c.type),
+            ),
+          ),
+          pathHistoryVersion,
+          maxRangeKm,
+          connector.selfLatitude,
+          connector.selfLongitude,
+          settings.mapShowGuessedLocations,
+        );
         if (cacheKey != _guessedLocationsCacheKey) {
           _guessedLocationsCacheKey = cacheKey;
-          _cachedGuessedLocations = settings.mapShowGuessedLocations
-              ? _computeGuessedLocations(
-                  guessCandidates,
-                  allContactsWithLocation,
-                  pathHistory,
-                  maxRangeKm,
-                )
-              : [];
+          if (settings.mapShowGuessedLocations) {
+            unawaited(
+              _startGuessedLocations(
+                cacheKey,
+                guessCandidates,
+                allContactsWithLocation,
+                pathHistory,
+                maxRangeKm,
+              ),
+            );
+          } else {
+            _cachedGuessedLocations = [];
+          }
         }
         final guessedLocations = settings.mapShowGuessedLocations
             ? _cachedGuessedLocations
@@ -492,14 +535,13 @@ class _MapScreenState extends State<MapScreen>
           }
         }
 
-        // Calculate center and zoom of all nodes, or default to (0, 0)
-        LatLng center = const LatLng(0, 0);
-        double initialZoom = 10.0;
-        final hasMapContent =
-            contactsWithLocation.isNotEmpty ||
-            sharedMarkers.isNotEmpty ||
-            _isSelectingPoi ||
-            highlightPosition != null;
+        // Only the first frame's camera matters; afterwards reuse it instead
+        // of re-reading prefs on every rebuild.
+        final (center: fallbackCenter, zoom: fallbackZoom) = _hasInitializedMap
+            ? (_cachedFallbackCamera ??= _fallbackCamera(connector))
+            : _fallbackCamera(connector);
+        LatLng center = fallbackCenter;
+        double initialZoom = fallbackZoom;
         if (contactsWithLocation.isNotEmpty || sharedMarkers.isNotEmpty) {
           final allPoints = [
             ...contactsWithLocation.map(
@@ -574,13 +616,11 @@ class _MapScreenState extends State<MapScreen>
           _hasInitializedMap = true;
           _showNodeLabels = initialZoom >= _labelZoomThreshold;
           _zoom = initialZoom;
-          if (hasMapContent) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                _mapController.move(center, initialZoom);
-              }
-            });
-          }
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              _mapController.move(center, initialZoom);
+            }
+          });
         }
 
         final allowBack = !connector.isConnected;
@@ -770,6 +810,12 @@ class _MapScreenState extends State<MapScreen>
                     onSecondaryTap: (_, latLng) {
                       _handleMapContextPress(context, connector, latLng);
                     },
+                    onMapEvent: (event) {
+                      if (event is MapEventMoveEnd ||
+                          event is MapEventFlingAnimationEnd) {
+                        _saveLastCamera();
+                      }
+                    },
                     onPositionChanged: (camera, hasGesture) {
                       // Track zoom in half-step buckets so cluster/marker
                       // detail levels update without rebuilding every frame.
@@ -926,6 +972,20 @@ class _MapScreenState extends State<MapScreen>
                     pinCount: sharedMarkers.length,
                   ),
                 if (_isBuildingPathTrace) _buildPathTraceOverlay(),
+                if (contactsWithLocation.isEmpty &&
+                    selectedContact == null &&
+                    !_isBuildingPathTrace)
+                  Positioned(
+                    left: 16,
+                    right: 88,
+                    bottom: 16,
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(context.l10n.map_noNodesLocationHint),
+                      ),
+                    ),
+                  ),
                 if (selectedContact != null && !_isBuildingPathTrace)
                   _buildSelectedNodeCard(context, selectedContact, connector),
               ],
@@ -993,6 +1053,7 @@ class _MapScreenState extends State<MapScreen>
       showChatNodes: settings.mapShowChatNodes,
       showOtherNodes: settings.mapShowOtherNodes,
       isBuildingPathTrace: _isBuildingPathTrace,
+      clusterNodes: settings.mapClusterNodes,
     );
     if (key != _nodeMarkersCacheKey) {
       _nodeMarkersCacheKey = key;
@@ -1008,141 +1069,100 @@ class _MapScreenState extends State<MapScreen>
     return _cachedNodeMarkers;
   }
 
-  List<_GuessedLocation> _computeGuessedLocations(
-    List<Contact> allContacts,
+  Future<void> _startGuessedLocations(
+    int cacheKey,
+    List<Contact> candidates,
     List<Contact> withLocation,
     PathHistoryService pathHistory,
     double? maxRangeKm,
-  ) {
-    final result = <_GuessedLocation>[];
-    // Paths keep the width they were learned with, so index every width.
-    final anchorsByPrefix = <String, List<Contact>>{};
-    for (final repeater in withLocation) {
-      if (repeater.type != advTypeRepeater) continue;
-      for (var width = 1; width <= 3; width++) {
-        if (repeater.publicKey.length < width) continue;
-        final prefix = PathHelper.formatHopHex(
-          repeater.publicKey.sublist(0, width),
-        );
-        anchorsByPrefix.putIfAbsent(prefix, () => []).add(repeater);
-      }
-    }
-
-    for (final contact in allContacts) {
-      if (contact.hasLocation) continue;
-      if (contact.lastSeen.isBefore(
-        DateTime.now().subtract(const Duration(hours: 24)),
-      )) {
-        continue; // skip stale contacts
-      }
-
-      final anchorSet = <LatLng>{};
-
-      // Collect the contact-side (last-hop) repeater from every known path.
-      // path = [device-side hop, ..., contact-side hop]
-      // Only the last hop chunk is actually within radio range of the contact.
-      final pathSets = <(List<int>, int)>[
-        (contact.path.toList(), contact.pathHashWidth),
-        ...pathHistory
-            .getRecentPaths(contact.publicKeyHex)
-            .map(
-              (r) => (
-                r.pathBytes,
-                Contact.inferPathHashWidth(r.hopCount, r.pathBytes.length),
-              ),
-            ),
-      ];
-      for (final (pathBytes, hopWidth) in pathSets) {
-        if (pathBytes.isEmpty) continue;
-        final lastHop = pathBytes.sublist(max(0, pathBytes.length - hopWidth));
-        if (lastHop.isEmpty) continue;
-
-        final repeaters = anchorsByPrefix[PathHelper.formatHopHex(lastHop)];
-        if (repeaters != null && repeaters.isNotEmpty) {
-          final repeater = repeaters.first;
-          anchorSet.add(LatLng(repeater.latitude!, repeater.longitude!));
-        }
-      }
-
-      // Filter anchors that are geometrically inconsistent with radio range.
-      // Two anchors more than 2 * maxRange apart cannot both be in direct radio
-      // range of the same node, so isolated outliers are removed.
-      final anchors = maxRangeKm != null && anchorSet.length > 1
-          ? _filterConsistentAnchors(anchorSet.toList(), maxRangeKm)
-          : anchorSet.toList();
-
-      if (anchors.isEmpty) continue;
-
-      final LatLng position;
-      if (anchors.length == 1) {
-        // Spread single-anchor guesses around the anchor so they remain visible.
-        position = _offsetGuessedPosition(
-          anchors[0],
-          contact,
-          radiusMeters: 330,
-        );
-        if (!_checkLocationPlausibility(
-          position.latitude,
-          position.longitude,
-        )) {
-          continue; // discard implausible guesses near (0, 0)
-        }
-      } else {
-        double lat = 0, lon = 0, weight = 1.0, totalWeight = 0;
-        for (final a in anchors) {
-          lat += a.latitude * weight;
-          lon += a.longitude * weight;
-          totalWeight += weight;
-          // weight subsequent anchors less to create a bias towards the first (if more than 2)
-          weight = weight / 2;
-        }
-        position = _offsetGuessedPosition(
-          LatLng(lat / totalWeight, lon / totalWeight),
-          contact,
-          radiusMeters: anchors.length >= 3 ? 80 : 120,
-        );
-        if (!_checkLocationPlausibility(
-          position.latitude,
-          position.longitude,
-        )) {
-          continue; // discard implausible guesses near (0, 0
-        }
-      }
-      result.add(
-        _GuessedLocation(
-          contact: contact,
-          position: position,
-          highConfidence: anchors.length >= 2,
-        ),
+  ) async {
+    if (_guessInFlight) {
+      _guessRerun = () => _startGuessedLocations(
+        cacheKey,
+        candidates,
+        withLocation,
+        pathHistory,
+        maxRangeKm,
       );
+      return;
     }
-
-    return result;
-  }
-
-  LatLng _offsetGuessedPosition(
-    LatLng anchor,
-    Contact contact, {
-    required double radiusMeters,
-  }) {
-    final seed = _guessSeed(contact.publicKey);
-    final angle = ((seed & 0xFFFF) / 0x10000) * 2 * pi;
-    final latOffsetDeg = (radiusMeters / 111320.0) * cos(angle);
-    final lonScale = max(cos(anchor.latitude * pi / 180.0).abs(), 0.2);
-    final lonOffsetDeg = (radiusMeters / (111320.0 * lonScale)) * sin(angle);
-    return LatLng(
-      anchor.latitude + latOffsetDeg,
-      anchor.longitude + lonOffsetDeg,
+    _guessInFlight = true;
+    final connector = context.read<MeshCoreConnector>();
+    final selfLat = connector.selfLatitude;
+    final selfLon = connector.selfLongitude;
+    // Old paths say little about where a node is now.
+    final cutoff = DateTime.now().subtract(_guessMaxAge);
+    final eligible = candidates
+        .where((c) => !c.hasLocation && c.lastSeen.isAfter(cutoff))
+        .toList();
+    for (final c in eligible) {
+      final key = c.publicKeyHex;
+      if (pathHistory.isCached(key) || _storedPaths.containsKey(key)) continue;
+      _storedPaths[key] = await pathHistory.readStoredPaths(key);
+    }
+    if (!mounted) {
+      _guessInFlight = false;
+      return;
+    }
+    List<PathRecord> pathsFor(String key) => pathHistory.isCached(key)
+        ? pathHistory.peekRecentPaths(key)
+        : _storedPaths[key] ?? const [];
+    final input = (
+      candidates: [
+        for (final c in eligible)
+          (
+            publicKey: c.publicKey,
+            paths: [
+              (c.path.toList(), c.pathHashWidth),
+              for (final r in pathsFor(c.publicKeyHex))
+                (
+                  r.pathBytes,
+                  Contact.inferPathHashWidth(r.hopCount, r.pathBytes.length),
+                ),
+            ],
+          ),
+      ],
+      anchors: [
+        for (final r in withLocation)
+          if (r.type == advTypeRepeater || r.type == advTypeRoom)
+            (r.publicKey, r.latitude!, r.longitude!),
+      ],
+      selfPosition:
+          selfLat != null &&
+              selfLon != null &&
+              isPlausibleLocation(selfLat, selfLon)
+          ? (selfLat, selfLon)
+          : null,
+      maxRangeKm: maxRangeKm,
     );
-  }
-
-  int _guessSeed(Uint8List publicKey) {
-    var seed = 0x811C9DC5;
-    for (final byte in publicKey) {
-      seed ^= byte;
-      seed = (seed * 0x01000193) & 0x7FFFFFFF;
+    List<(int, double, double, bool)> placed;
+    try {
+      placed = await compute(estimateGuessedLocations, input);
+    } catch (e) {
+      debugPrint('Guessed location estimate failed: $e');
+      placed = const [];
+    } finally {
+      _guessInFlight = false;
     }
-    return seed;
+    final rerun = _guessRerun;
+    _guessRerun = null;
+    if (!mounted) return;
+    if (!context.read<AppSettingsService>().settings.mapShowGuessedLocations) {
+      return;
+    }
+    // Show this result even if inputs moved on; it is newer than what is on
+    // screen, and the queued rerun replaces it shortly.
+    rerun?.call();
+    setState(() {
+      _cachedGuessedLocations = [
+        for (final (index, lat, lon, highConfidence) in placed)
+          _GuessedLocation(
+            contact: eligible[index],
+            position: LatLng(lat, lon),
+            highConfidence: highConfidence,
+          ),
+      ];
+    });
   }
 
   /// Estimates the free-space maximum LoRa range in km from the connected
@@ -1189,20 +1209,6 @@ class _MapScreenState extends State<MapScreen>
       default:
         return -10.0;
     }
-  }
-
-  /// Removes anchors that have no neighbour within 2 * maxRangeKm.
-  /// A node cannot be simultaneously in radio range of two points farther apart
-  /// than twice the expected maximum range.
-  List<LatLng> _filterConsistentAnchors(
-    List<LatLng> anchors,
-    double maxRangeKm,
-  ) {
-    const distance = Distance();
-    final maxDistM = maxRangeKm * 2000;
-    return anchors
-        .where((a) => anchors.any((b) => b != a && distance(a, b) <= maxDistM))
-        .toList();
   }
 
   List<Marker> _buildGuessedMarker(
@@ -1381,7 +1387,10 @@ class _MapScreenState extends State<MapScreen>
       }
     }
 
-    if (_zoom >= _clusterOffZoom || overlapsMode || _isBuildingPathTrace) {
+    if (!settings.mapClusterNodes ||
+        _zoom >= _clusterOffZoom ||
+        overlapsMode ||
+        _isBuildingPathTrace) {
       for (final contact in items) {
         addNode(contact);
       }
@@ -1833,6 +1842,7 @@ class _MapScreenState extends State<MapScreen>
                           ? IconButton(
                               color: _overlayPrimaryTextColor,
                               icon: const Icon(Icons.close, size: 18),
+                              tooltip: context.l10n.common_clearSearch,
                               onPressed: () {
                                 setState(() {
                                   _searchQuery = '';
@@ -1954,6 +1964,14 @@ class _MapScreenState extends State<MapScreen>
                     !settings.mapShowChatNodes,
                   ),
                 ),
+                _mapChip(
+                  label: context.l10n.map_groupChip,
+                  selected: settings.mapClusterNodes,
+                  color: MapPalette.cluster,
+                  onTap: () => settingsService.setMapClusterNodes(
+                    !settings.mapClusterNodes,
+                  ),
+                ),
               ];
 
               if (constraints.maxWidth < 600) {
@@ -1996,45 +2014,53 @@ class _MapScreenState extends State<MapScreen>
     final accent = color ?? MapPalette.selected;
     return Padding(
       padding: const EdgeInsets.only(right: 6),
-      child: Material(
-        color: selected
-            ? Color.alphaBlend(
-                accent.withValues(alpha: 0.34),
-                _overlayPanelColor,
-              )
-            : _overlayPanelColor,
-        shape: StadiumBorder(
-          side: BorderSide(
-            color: selected ? accent : _overlayBorderColor,
-            width: selected ? 1.5 : 1,
+      child: Semantics(
+        button: true,
+        selected: selected,
+        child: Material(
+          color: selected
+              ? Color.alphaBlend(
+                  accent.withValues(alpha: 0.34),
+                  _overlayPanelColor,
+                )
+              : _overlayPanelColor,
+          shape: StadiumBorder(
+            side: BorderSide(
+              color: selected ? accent : _overlayBorderColor,
+              width: selected ? 1.5 : 1,
+            ),
           ),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () {
-            HapticFeedback.selectionClick();
-            onTap();
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (selected) ...[
-                  Icon(Icons.check, size: 13, color: _overlayPrimaryTextColor),
-                  const SizedBox(width: 4),
-                ],
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w600,
-                    color: selected
-                        ? _overlayPrimaryTextColor
-                        : _overlaySecondaryTextColor,
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: () {
+              HapticFeedback.selectionClick();
+              onTap();
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (selected) ...[
+                    Icon(
+                      Icons.check,
+                      size: 13,
+                      color: _overlayPrimaryTextColor,
+                    ),
+                    const SizedBox(width: 4),
+                  ],
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w600,
+                      color: selected
+                          ? _overlayPrimaryTextColor
+                          : _overlaySecondaryTextColor,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -2393,6 +2419,7 @@ class _MapScreenState extends State<MapScreen>
                   IconButton(
                     color: _overlayPrimaryTextColor,
                     icon: const Icon(Icons.close, size: 20),
+                    tooltip: context.l10n.common_close,
                     onPressed: _clearSelection,
                   ),
                 ],
@@ -2526,6 +2553,12 @@ class _MapScreenState extends State<MapScreen>
               connector.importDiscoveredContact(contact);
             }
             _showRoomLogin(context, contact);
+          }),
+          action(context.l10n.map_manageServer, Icons.room_preferences, () {
+            if (!contact.isActive) {
+              connector.importDiscoveredContact(contact);
+            }
+            _showRoomLogin(context, contact, manage: true);
           }),
         ];
       default:
@@ -2706,13 +2739,16 @@ class _MapScreenState extends State<MapScreen>
     );
   }
 
-  void _showRoomLogin(BuildContext context, Contact room) {
+  void _showRoomLogin(
+    BuildContext context,
+    Contact room, {
+    bool manage = false,
+  }) {
     showDialog(
       context: context,
       builder: (context) => RoomLoginDialog(
         room: room,
-        // onLogin(password, isAdmin) isAdmin not used for room caht screen
-        onLogin: (password, _) {
+        onLogin: (password, isAdmin) {
           final connector = context.read<MeshCoreConnector>();
           final unread = connector.getUnreadCountForContactKey(
             room.publicKeyHex,
@@ -2721,8 +2757,13 @@ class _MapScreenState extends State<MapScreen>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  ChatScreen(contact: room, initialUnreadCount: unread),
+              builder: (context) => manage
+                  ? RepeaterHubScreen(
+                      repeater: room,
+                      password: password,
+                      isAdmin: isAdmin,
+                    )
+                  : ChatScreen(contact: room, initialUnreadCount: unread),
             ),
           );
         },
@@ -2790,6 +2831,18 @@ class _MapScreenState extends State<MapScreen>
                 _showRoomLogin(context, contact);
               },
               child: Text(context.l10n.map_joinRoom),
+            ),
+          );
+          actions.add(
+            FilledButton(
+              onPressed: () {
+                if (!contact.isActive) {
+                  connector.importDiscoveredContact(contact);
+                }
+                Navigator.pop(sheetContext);
+                _showRoomLogin(context, contact, manage: true);
+              },
+              child: Text(context.l10n.map_manageServer),
             ),
           );
         }
@@ -3439,6 +3492,16 @@ class _MapScreenState extends State<MapScreen>
                               service.setMapShowMarkers(value),
                         ),
                         SwitchListTile(
+                          title: Text(sheetContext.l10n.map_clusterNodes),
+                          subtitle: Text(
+                            sheetContext.l10n.map_clusterNodesSubtitle,
+                          ),
+                          value: settings.mapClusterNodes,
+                          dense: true,
+                          onChanged: (value) =>
+                              service.setMapClusterNodes(value),
+                        ),
+                        SwitchListTile(
                           title: Text(
                             sheetContext.l10n.map_showGuessedLocations,
                           ),
@@ -3838,42 +3901,32 @@ class _MapConnectorSnapshot {
           ),
     );
 
+    // Only detect that a conversation changed; _collectSharedMarkers does the
+    // per-message scan when this signature moves.
     final markerParts = <Object?>[connector.selfName];
     for (final contact in connector.contacts) {
-      markerParts.add(contact.publicKeyHex);
-      markerParts.add(contact.name);
-      for (final message in connector.getMessages(contact)) {
-        if (!message.text.trimLeft().startsWith('m:')) continue;
-        markerParts.add(
-          Object.hash(
-            message.messageId,
-            message.text,
-            message.timestamp.millisecondsSinceEpoch,
-            message.isOutgoing,
-          ),
-        );
-      }
+      final messages = connector.getMessages(contact);
+      markerParts.add(
+        Object.hash(
+          contact.publicKeyHex,
+          contact.name,
+          messages.length,
+          messages.isEmpty ? null : messages.last.messageId,
+        ),
+      );
     }
     for (final channel in connector.channels) {
+      final messages = connector.getChannelMessages(channel);
       markerParts.add(
         Object.hash(
           channel.index,
           channel.name,
           channel.isPublicChannel,
           channel.isEmpty,
+          messages.length,
+          messages.isEmpty ? null : messages.last.messageId,
         ),
       );
-      for (final message in connector.getChannelMessages(channel)) {
-        if (!message.text.trimLeft().startsWith('m:')) continue;
-        markerParts.add(
-          Object.hash(
-            message.messageId,
-            message.text,
-            message.senderName,
-            message.timestamp.millisecondsSinceEpoch,
-          ),
-        );
-      }
     }
 
     return _MapConnectorSnapshot(
@@ -3931,6 +3984,7 @@ class _NodeMarkersCacheKey {
   final bool showChatNodes;
   final bool showOtherNodes;
   final bool isBuildingPathTrace;
+  final bool clusterNodes;
 
   const _NodeMarkersCacheKey({
     required this.contactsSignature,
@@ -3950,6 +4004,7 @@ class _NodeMarkersCacheKey {
     required this.showChatNodes,
     required this.showOtherNodes,
     required this.isBuildingPathTrace,
+    required this.clusterNodes,
   });
 
   @override
@@ -3971,7 +4026,8 @@ class _NodeMarkersCacheKey {
         showRepeaters == other.showRepeaters &&
         showChatNodes == other.showChatNodes &&
         showOtherNodes == other.showOtherNodes &&
-        isBuildingPathTrace == other.isBuildingPathTrace;
+        isBuildingPathTrace == other.isBuildingPathTrace &&
+        clusterNodes == other.clusterNodes;
   }
 
   @override
@@ -3993,6 +4049,7 @@ class _NodeMarkersCacheKey {
     showChatNodes,
     showOtherNodes,
     isBuildingPathTrace,
+    clusterNodes,
   );
 }
 

@@ -58,7 +58,7 @@ void showDismissibleSnackBar(
       showCloseIcon: showCloseIcon,
       closeIconColor: closeIconColor,
       duration: duration ?? const Duration(seconds: 4),
-      persist: persist,
+      persist: persist ?? false,
       animation: animation,
       onVisible: onVisible,
       dismissDirection: dismissDirection ?? DismissDirection.down,

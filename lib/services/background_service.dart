@@ -70,6 +70,11 @@ class BackgroundService {
     return AppLocalizations.delegate.load(match);
   }
 
+  static Future<void> openBatteryOptimizationSettings() async {
+    if (!PlatformInfo.isAndroid) return;
+    await FlutterForegroundTask.openIgnoreBatteryOptimizationSettings();
+  }
+
   Future<void> stop() async {
     if (!PlatformInfo.isAndroid) return;
     final running = await FlutterForegroundTask.isRunningService;

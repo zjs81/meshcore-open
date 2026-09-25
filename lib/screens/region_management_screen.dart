@@ -78,13 +78,82 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 88),
-        itemCount: _regions.length,
-        itemBuilder: (context, index) {
-          final region = _regions[index];
-          return _buildRegionTile(context, region);
-        },
+      body: _regions.isEmpty
+          ? _buildEmptyState(context)
+          : ListView.builder(
+              padding: const EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 8,
+                bottom: 88,
+              ),
+              itemCount: _regions.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) return _buildDefaultRegionTile(context);
+                return _buildRegionTile(context, _regions[index - 1]);
+              },
+            ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    final l10n = context.l10n;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.landscape, size: 48, color: MeshPalette.blue),
+            const SizedBox(height: 16),
+            Text(
+              l10n.settings_regionEmptyExplanation,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 24),
+            FilledButton.icon(
+              icon: const Icon(Icons.travel_explore),
+              label: Text(l10n.settings_regionFetchFromRepeaters),
+              onPressed: _isFetchingRegions ? null : _showFetchRegionsDialog,
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.add),
+              label: Text(l10n.settings_regionAddRegion),
+              onPressed: () => _showAddRegionDialog(context),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDefaultRegionTile(BuildContext context) {
+    final l10n = context.l10n;
+    final connector = context.watch<MeshCoreConnector>();
+    final current = _regions.contains(connector.defaultRegion)
+        ? connector.defaultRegion
+        : '';
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: DropdownButtonFormField<Region>(
+        key: ValueKey(current),
+        initialValue: current,
+        decoration: InputDecoration(
+          labelText: l10n.settings_regionDefault,
+          helperText: l10n.settings_regionDefaultSubtitle,
+          border: const OutlineInputBorder(),
+        ),
+        items: [
+          DropdownMenuItem(
+            value: '',
+            child: Text(l10n.settings_regionDefaultNone),
+          ),
+          for (final region in _regions)
+            DropdownMenuItem(value: region, child: Text(region)),
+        ],
+        onChanged: (value) => connector.setDefaultRegion(value ?? ''),
       ),
     );
   }

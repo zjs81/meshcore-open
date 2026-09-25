@@ -614,23 +614,33 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
   }
 
   Widget _buildStatGrid(List<_StatItem> items) {
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
-      childAspectRatio: 2.2,
-      children: items
-          .map(
-            (item) => StatTile(
+    final textScaler = MediaQuery.textScalerOf(context);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final columns = constraints.maxWidth / textScaler.scale(1) < 320
+            ? 1
+            : 2;
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: items.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            mainAxisExtent: textScaler.scale(52) + 28,
+          ),
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return StatTile(
               icon: item.icon,
               label: item.label,
               value: item.value,
               color: item.color,
-            ),
-          )
-          .toList(),
+            );
+          },
+        );
+      },
     );
   }
 }

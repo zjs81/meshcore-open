@@ -8,7 +8,19 @@ class MessageStatusIcon extends StatefulWidget {
   final bool isAcked;
   final bool isFailed;
   final bool isPending;
-  final bool isRepeated;
+
+  /// Channel messages have no delivery ACK. Instead of a delivered tick they
+  /// show how many times the mesh was heard repeating the message.
+  final bool isChannel;
+  final int repeatCount;
+
+  /// While the app is resending a channel message to reach more repeaters:
+  /// how many resends so far and the limit.
+  final ({int resends, int maxResends})? resendProgress;
+
+  /// Set when resending gave up before the message was heard through the
+  /// required number of repeaters.
+  final ({int hops, int required})? hopShortfall;
   final double size;
 
   /// Base tint for the sent/sending state. On a colored (outgoing) bubble a
@@ -21,8 +33,11 @@ class MessageStatusIcon extends StatefulWidget {
     required this.isAcked,
     this.isFailed = false,
     this.isPending = false,
-    this.isRepeated = false,
-    this.size = 14,
+    this.isChannel = false,
+    this.repeatCount = 0,
+    this.resendProgress,
+    this.hopShortfall,
+    this.size = 16,
     this.onColor,
   });
 
@@ -68,46 +83,91 @@ class _MessageStatusIconState extends State<MessageStatusIcon>
     final colorScheme = Theme.of(context).colorScheme;
     final double size = widget.size;
     final Color baseColor = widget.onColor ?? colorScheme.onSurfaceVariant;
+    final Color confirmedColor = MeshPalette.signal.withValues(alpha: 0.9);
 
+    final String label;
+    final Widget icon;
     if (widget.isFailed) {
-      return Semantics(
-        label: l10n.messageStatus_failed,
-        child: Icon(Icons.cancel, size: size, color: colorScheme.error),
+      label = widget.isChannel
+          ? l10n.messageStatus_failedChannel
+          : l10n.messageStatus_failed;
+      icon = Icon(Icons.cancel, size: size, color: colorScheme.error);
+    } else if (widget.isPending) {
+      label = l10n.messageStatus_pending;
+      icon = _SendingDots(
+        controller: _controller,
+        color: baseColor,
+        size: size,
       );
+    } else if (widget.isChannel && widget.hopShortfall != null) {
+      final shortfall = widget.hopShortfall!;
+      label = l10n.messageStatus_hopsNotReached(
+        shortfall.hops,
+        shortfall.required,
+      );
+      icon = Icon(
+        Icons.warning_amber_rounded,
+        size: size,
+        color: MeshPalette.warn,
+      );
+    } else if (widget.isChannel && (widget.resendProgress?.resends ?? 0) > 0) {
+      final progress = widget.resendProgress!;
+      label = l10n.messageStatus_resending(
+        progress.resends,
+        progress.maxResends,
+      );
+      icon = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.autorenew, size: size, color: MeshPalette.warn),
+          const SizedBox(width: 2),
+          Text(
+            '${progress.resends}/${progress.maxResends}',
+            style: MeshTheme.mono(
+              fontSize: size * 0.8,
+              fontWeight: FontWeight.w600,
+              color: MeshPalette.warn,
+            ),
+          ),
+        ],
+      );
+    } else if (widget.isChannel && widget.repeatCount > 0) {
+      label = l10n.messageStatus_heardRepeatedCount(widget.repeatCount);
+      icon = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.repeat, size: size, color: confirmedColor),
+          const SizedBox(width: 2),
+          Text(
+            '${widget.repeatCount}',
+            style: MeshTheme.mono(
+              fontSize: size * 0.8,
+              fontWeight: FontWeight.w600,
+              color: confirmedColor,
+            ),
+          ),
+        ],
+      );
+    } else if (widget.isChannel) {
+      label = l10n.messageStatus_sentChannel;
+      icon = Icon(Icons.done, size: size, color: baseColor);
+    } else if (widget.isAcked) {
+      label = l10n.messageStatus_delivered;
+      icon = SvgPicture.asset(
+        'assets/icons/done_all.svg',
+        width: size,
+        height: size,
+        colorFilter: ColorFilter.mode(confirmedColor, BlendMode.srcIn),
+      );
+    } else {
+      label = l10n.messageStatus_sentDirect;
+      icon = Icon(Icons.done, size: size, color: baseColor);
     }
 
-    if (widget.isPending) {
-      return Semantics(
-        label: l10n.messageStatus_pending,
-        child: _SendingDots(
-          controller: _controller,
-          color: baseColor,
-          size: size,
-        ),
-      );
-    }
-
-    final bool delivered = widget.isAcked || widget.isRepeated;
-    final String label = widget.isRepeated
-        ? l10n.messageStatus_repeated
-        : widget.isAcked
-        ? l10n.messageStatus_delivered
-        : l10n.messageStatus_sent;
-    // Use palette colors: tertiary (warn/amber) for acked/repeated, base for sent.
-    final Color color = delivered
-        ? MeshPalette.signal.withValues(alpha: 0.9)
-        : baseColor;
-
-    return Semantics(
-      label: label,
-      child: delivered
-          ? SvgPicture.asset(
-              'assets/icons/done_all.svg',
-              width: size,
-              height: size,
-              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-            )
-          : Icon(Icons.done, size: size, color: color),
+    return Tooltip(
+      message: label,
+      triggerMode: TooltipTriggerMode.tap,
+      child: icon,
     );
   }
 }

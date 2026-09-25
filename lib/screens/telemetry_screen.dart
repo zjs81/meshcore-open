@@ -917,10 +917,12 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
             ),
           ),
           const SizedBox(width: 8),
-          Text(
-            value,
-            style: MeshTheme.mono(fontSize: 13, color: scheme.onSurface),
-            textAlign: TextAlign.end,
+          Flexible(
+            child: Text(
+              value,
+              style: MeshTheme.mono(fontSize: 13, color: scheme.onSurface),
+              textAlign: TextAlign.end,
+            ),
           ),
         ],
       ),

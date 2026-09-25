@@ -281,6 +281,9 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
     final repeater = _resolveRepeater(connector);
     final isFloodMode = repeater.pathOverride == -1;
     return AlertDialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      titlePadding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+      contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       title: Row(
         children: [
           AvatarCircle(
@@ -366,6 +369,9 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
                               ? Icons.visibility
                               : Icons.visibility_off,
                         ),
+                        tooltip: _obscurePassword
+                            ? l10n.login_showPassword
+                            : l10n.login_hidePassword,
                         onPressed: () {
                           setState(() {
                             _obscurePassword = !_obscurePassword;
@@ -402,100 +408,115 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
                     controlAffinity: ListTileControlAffinity.leading,
                     contentPadding: EdgeInsets.zero,
                   ),
-                  const Divider(),
-                  Row(
+                  ExpansionTile(
+                    title: Text(l10n.login_advanced),
+                    tilePadding: EdgeInsets.zero,
+                    childrenPadding: EdgeInsets.zero,
+                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                    shape: const Border(),
+                    collapsedShape: const Border(),
                     children: [
-                      Text(
-                        l10n.login_routing,
-                        style: MeshTheme.accentLabel(
-                          color: scheme.onSurfaceVariant,
-                          fontSize: 11,
-                        ),
-                      ),
-                      const Spacer(),
-                      PopupMenuButton<String>(
-                        icon: Icon(isFloodMode ? Icons.waves : Icons.route),
-                        tooltip: l10n.login_routingMode,
-                        onSelected: (mode) async {
-                          if (mode == 'flood') {
-                            await connector.setPathOverride(
-                              repeater,
-                              pathLen: -1,
-                            );
-                          } else {
-                            await connector.setPathOverride(
-                              repeater,
-                              pathLen: null,
-                            );
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: 'auto',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.auto_mode,
-                                  size: 20,
-                                  color: !isFloodMode ? scheme.primary : null,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  l10n.login_autoUseSavedPath,
-                                  style: TextStyle(
-                                    fontWeight: !isFloodMode
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                  ),
-                                ),
-                              ],
+                      Row(
+                        children: [
+                          Text(
+                            l10n.login_routing,
+                            style: MeshTheme.accentLabel(
+                              color: scheme.onSurfaceVariant,
+                              fontSize: 11,
                             ),
                           ),
-                          PopupMenuItem(
-                            value: 'flood',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.waves,
-                                  size: 20,
-                                  color: isFloodMode ? scheme.primary : null,
+                          const Spacer(),
+                          PopupMenuButton<String>(
+                            icon: Icon(isFloodMode ? Icons.waves : Icons.route),
+                            tooltip: l10n.login_routingMode,
+                            onSelected: (mode) async {
+                              if (mode == 'flood') {
+                                await connector.setPathOverride(
+                                  repeater,
+                                  pathLen: -1,
+                                );
+                              } else {
+                                await connector.setPathOverride(
+                                  repeater,
+                                  pathLen: null,
+                                );
+                              }
+                            },
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 'auto',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.auto_mode,
+                                      size: 20,
+                                      color: !isFloodMode
+                                          ? scheme.primary
+                                          : null,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      l10n.login_autoUseSavedPath,
+                                      style: TextStyle(
+                                        fontWeight: !isFloodMode
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  l10n.login_forceFloodMode,
-                                  style: TextStyle(
-                                    fontWeight: isFloodMode
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                  ),
+                              ),
+                              PopupMenuItem(
+                                value: 'flood',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.waves,
+                                      size: 20,
+                                      color: isFloodMode
+                                          ? scheme.primary
+                                          : null,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      l10n.login_forceFloodMode,
+                                      style: TextStyle(
+                                        fontWeight: isFloodMode
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
+                      const SizedBox(height: 4),
+                      Text(
+                        repeater.pathLabel(
+                          context.l10n,
+                          pathHashByteWidth: connector.pathHashByteWidth,
+                        ),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton.icon(
+                          onPressed: () => ContactRoutingSheet.show(
+                            context,
+                            contact: repeater,
+                          ),
+                          icon: const Icon(Icons.timeline, size: 18),
+                          label: Text(l10n.login_managePaths),
+                        ),
+                      ),
                     ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    repeater.pathLabel(
-                      context.l10n,
-                      pathHashByteWidth: connector.pathHashByteWidth,
-                    ),
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: scheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton.icon(
-                      onPressed: () =>
-                          ContactRoutingSheet.show(context, contact: repeater),
-                      icon: const Icon(Icons.timeline, size: 18),
-                      label: Text(l10n.login_managePaths),
-                    ),
                   ),
                 ],
               ),
