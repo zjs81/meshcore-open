@@ -121,6 +121,10 @@ abstract class ImageSendCodec {
   /// Implementations are expected to centre-crop to
   /// [kImageCodecSquareSize] square first.
   Future<Uint8List> encode(Uint8List imageBytes, ImageCodecRatePoint rate);
+
+  /// Decodes [payload] to PNG exactly as a recipient would, or null when this
+  /// device cannot decode.
+  Future<Uint8List?> decodePreview(Uint8List payload);
 }
 
 /// A deterministic stand-in used for widget previews and tests.
@@ -157,4 +161,7 @@ class FakeImageSendCodec implements ImageSendCodec {
       List<int>.generate(size, (i) => (i * 31 + rate.index) & 0xFF),
     );
   }
+
+  @override
+  Future<Uint8List?> decodePreview(Uint8List payload) async => null;
 }

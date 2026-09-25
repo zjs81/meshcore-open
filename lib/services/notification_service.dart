@@ -8,6 +8,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import '../helpers/message_url_image_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../l10n/app_localizations.dart';
+import '../storage/prefs_manager.dart';
 import '../utils/platform_info.dart';
 
 class NotificationService {
@@ -123,9 +124,11 @@ class NotificationService {
 
   // Cached "are we allowed to post notifications" result. Null = not yet
   // determined. Avoids calling _notifications.show() when it would only throw
-  // "You must request notifications permissions first" (every web build, and
-  // Android 13+ before the user grants the permission).
+  // "You must request notifications permissions first" (every web build).
+  // Android denials are never cached so a later grant in system settings is
+  // picked up without restarting the app.
   bool? _canNotify;
+  static const _permissionRequestedKey = 'notification_permission_requested';
 
   Future<bool> _ensureCanNotify() async {
     if (!await _ensureInitialized()) return false;
@@ -143,8 +146,9 @@ class NotificationService {
           AndroidFlutterLocalNotificationsPlugin
         >();
     if (androidPlugin != null) {
-      final enabled = await androidPlugin.areNotificationsEnabled();
-      return _canNotify = enabled ?? false;
+      final enabled = await androidPlugin.areNotificationsEnabled() ?? false;
+      if (enabled) _canNotify = true;
+      return enabled;
     }
 
     // iOS/macOS request permission during initialize(); desktop has no gate.
@@ -163,8 +167,8 @@ class NotificationService {
         >();
     if (androidPlugin != null) {
       final granted = await androidPlugin.requestNotificationsPermission();
-      _canNotify = granted ?? false;
-      return _canNotify!;
+      if (granted == true) _canNotify = true;
+      return granted ?? false;
     }
 
     // iOS permissions are requested during initialization
@@ -178,11 +182,23 @@ class NotificationService {
         badge: true,
         sound: true,
       );
-      _canNotify = granted ?? false;
-      return _canNotify!;
+      if (granted == true) _canNotify = true;
+      return granted ?? false;
     }
 
     return true;
+  }
+
+  /// Asks for the Android 13+ notification permission the first time it is
+  /// needed. Never re-prompts after the user has answered once; iOS/macOS
+  /// already prompt during [initialize].
+  Future<void> requestPermissionsOnce() async {
+    if (!PlatformInfo.isAndroid || !await _ensureInitialized()) return;
+    final prefs = PrefsManager.instance;
+    if (prefs.getBool(_permissionRequestedKey) ?? false) return;
+    if (await _ensureCanNotify()) return;
+    await prefs.setBool(_permissionRequestedKey, true);
+    await requestPermissions();
   }
 
   /// Format special message types for human-readable notifications.

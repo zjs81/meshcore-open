@@ -366,6 +366,24 @@ class PathHistoryService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Whether this contact's history is in the in-memory cache.
+  bool isCached(String contactPubKeyHex) =>
+      _cache.containsKey(contactPubKeyHex);
+
+  /// Paths already in memory, without loading from storage or changing the
+  /// cache order. For bulk readers that must not churn the 50-contact cache.
+  List<PathRecord> peekRecentPaths(String contactPubKeyHex) =>
+      _cache[contactPubKeyHex]?.recentPaths ?? const [];
+
+  /// Reads saved paths straight from storage without adding them to the
+  /// cache, evicting anything, or notifying listeners.
+  Future<List<PathRecord>> readStoredPaths(String contactPubKeyHex) async {
+    final cached = _cache[contactPubKeyHex];
+    if (cached != null) return cached.recentPaths;
+    final stored = await _loadHistoryFromStorage(contactPubKeyHex);
+    return stored?.recentPaths ?? const [];
+  }
+
   List<PathRecord> getRecentPaths(String contactPubKeyHex) {
     final history = _cache[contactPubKeyHex];
     if (history != null) {

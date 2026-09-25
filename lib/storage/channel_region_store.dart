@@ -10,6 +10,18 @@ class ChannelRegionStore {
 
   String get keyFor => '$_keyPrefix$publicKeyHex';
 
+  String get _defaultKey => 'default_region_$publicKeyHex';
+
+  String loadDefaultRegion() {
+    if (publicKeyHex.isEmpty) return '';
+    return PrefsManager.instance.getString(_defaultKey) ?? '';
+  }
+
+  Future<void> saveDefaultRegion(String region) async {
+    if (publicKeyHex.isEmpty) return;
+    await PrefsManager.instance.setString(_defaultKey, region);
+  }
+
   Future<String> loadRegion(int channelIndex) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(

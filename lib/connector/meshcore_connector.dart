@@ -391,6 +391,7 @@ class MeshCoreConnector extends ChangeNotifier {
   final Map<int, bool> _channelUrlImagesEnabled = {};
   final Map<int, String?> _channelCyr2LatProfileId = {};
   final Map<int, Region> _channelRegions = {};
+  Region _defaultRegion = '';
   bool _lastSentWasCliCommand =
       false; // Track if last sent message was a CLI command
   final Map<String, bool> _contactSmazEnabled = {};
@@ -843,6 +844,19 @@ class MeshCoreConnector extends ChangeNotifier {
     return _channelRegions[channelIndex] ?? '';
   }
 
+  Region get defaultRegion => _defaultRegion;
+
+  Region getEffectiveChannelRegion(int channelIndex) {
+    final region = getChannelRegion(channelIndex);
+    return region.isNotEmpty ? region : _defaultRegion;
+  }
+
+  Future<void> setDefaultRegion(Region region) async {
+    _defaultRegion = region;
+    notifyListeners();
+    await _channelRegionStore.saveDefaultRegion(region);
+  }
+
   void ensureContactSmazSettingLoaded(String contactKeyHex) {
     _ensureContactSmazSettingLoaded(contactKeyHex);
   }
@@ -1199,6 +1213,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _channelCyr2LatEnabled.clear();
     _channelUrlImagesEnabled.clear();
     _channelRegions.clear();
+    _defaultRegion = _channelRegionStore.loadDefaultRegion();
     final channelCount = maxChannels ?? _maxChannels;
     for (int i = 0; i < channelCount; i++) {
       _channelSmazEnabled[i] = await _channelSettingsStore.loadSmazEnabled(i);
@@ -1853,6 +1868,7 @@ class MeshCoreConnector extends ChangeNotifier {
       );
 
       _setState(MeshCoreConnectionState.connected);
+      unawaited(_backgroundService?.start());
       _pendingInitialChannelSync = true;
       _pendingInitialQueuedMessageSync = true;
       _pendingInitialContactsSync = true;
@@ -1965,6 +1981,7 @@ class MeshCoreConnector extends ChangeNotifier {
       );
 
       _setState(MeshCoreConnectionState.connected);
+      unawaited(_backgroundService?.start());
       _pendingInitialChannelSync = true;
       _pendingInitialQueuedMessageSync = true;
       _pendingInitialContactsSync = true;
@@ -2815,6 +2832,10 @@ class MeshCoreConnector extends ChangeNotifier {
       unawaited(_backgroundService?.stop());
     } else {
       _manualDisconnect = false;
+      // Only BLE reconnects on its own; nothing keeps TCP/USB alive.
+      if (transportAtDisconnect != MeshCoreTransportType.bluetooth) {
+        unawaited(_backgroundService?.stop());
+      }
     }
     _setState(MeshCoreConnectionState.disconnecting);
     _retryService?.failAllPending();
@@ -3735,6 +3756,7 @@ class MeshCoreConnector extends ChangeNotifier {
     String? originalText,
     String? translatedLanguageCode,
     String? translationModelId,
+    ChannelMessage? replyTo,
   }) async {
     if (!isConnected || text.isEmpty) return;
 
@@ -3778,7 +3800,7 @@ class MeshCoreConnector extends ChangeNotifier {
             buildSendChannelTextMsgFrame(channel.index, text),
             channelSendQueueId: reactionQueueId,
           );
-        }, region: getChannelRegion(channel.index));
+        }, region: getEffectiveChannelRegion(channel.index));
         return;
       }
       // It looks like a reaction, but we did not find its target, so
@@ -3792,19 +3814,117 @@ class MeshCoreConnector extends ChangeNotifier {
       originalText: originalText,
       translatedLanguageCode: translatedLanguageCode,
       translationModelId: translationModelId,
+      replyTo: replyTo,
     );
     _addChannelMessage(channel.index, message);
     _pendingChannelSentQueue.add(message.messageId);
     notifyListeners();
 
     final outboundText = prepareChannelOutboundText(channel.index, text);
-    await _runScopedChannelSend(() async {
-      await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
-      await _sendFrameAndWaitForCommandAck(
-        buildSendChannelTextMsgFrame(channel.index, outboundText),
-        channelSendQueueId: message.messageId,
+    // Resends reuse the timestamp, so they are the same packet: repeaters
+    // that already forwarded it drop the copy and recipients see it once.
+    Future<void> transmit({bool isResend = false}) =>
+        _runScopedChannelSend(() async {
+          await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
+          await _sendFrameAndWaitForCommandAck(
+            buildSendChannelTextMsgFrame(
+              channel.index,
+              outboundText,
+              timestamp: message.timestamp.millisecondsSinceEpoch ~/ 1000,
+            ),
+            channelSendQueueId: isResend ? null : message.messageId,
+          );
+        }, region: getEffectiveChannelRegion(channel.index));
+    await transmit();
+
+    final settings = _appSettingsService?.settings;
+    if (settings != null && settings.channelMinHopsEnabled) {
+      unawaited(
+        _resendUntilMinHops(
+          message.messageId,
+          () => transmit(isResend: true),
+          minHops: settings.channelMinHops,
+          maxResends: settings.channelMinHopsRetries,
+        ),
       );
-    }, region: getChannelRegion(channel.index));
+    }
+  }
+
+  /// How long to listen for a channel message to come back through the mesh
+  /// before resending it.
+  static const Duration _channelHopCheckDelay = Duration(seconds: 30);
+
+  /// Resends a channel message until one of its echoes has travelled through
+  /// at least [minHops] repeaters, then gives up and marks it failed.
+  Future<void> _resendUntilMinHops(
+    String messageId,
+    Future<void> Function() resend, {
+    required int minHops,
+    required int maxResends,
+  }) async {
+    _channelHopChecks[messageId] = (resends: 0, maxResends: maxResends);
+    notifyListeners();
+    var hops = 0;
+    try {
+      for (var attempt = 0; ; attempt++) {
+        await Future<void>.delayed(_channelHopCheckDelay);
+        final message = _findChannelMessageById(messageId);
+        if (message == null) return;
+        if (message.status == ChannelMessageStatus.failed) return;
+        hops = message.pathLength ?? 0;
+        if (hops >= minHops) {
+          _appDebugLogService?.info(
+            'Channel message reached $hops hops after $attempt resends',
+            tag: 'Channel resend',
+          );
+          return;
+        }
+        if (attempt >= maxResends || !isConnected) break;
+        _appDebugLogService?.info(
+          'Heard at $hops of $minHops hops; resending '
+          '(${attempt + 1} of $maxResends)',
+          tag: 'Channel resend',
+        );
+        _channelHopChecks[messageId] = (
+          resends: attempt + 1,
+          maxResends: maxResends,
+        );
+        notifyListeners();
+        await resend();
+      }
+      _appDebugLogService?.warn(
+        'Channel message only heard at $hops of $minHops hops; giving up',
+        tag: 'Channel resend',
+      );
+      // It was sent and may well have travelled further than we can hear, so
+      // this is a warning, not a failure.
+      _channelHopShortfalls[messageId] = (hops: hops, required: minHops);
+    } finally {
+      _channelHopChecks.remove(messageId);
+      notifyListeners();
+    }
+  }
+
+  final Map<String, ({int resends, int maxResends})> _channelHopChecks = {};
+  final Map<String, ({int hops, int required})> _channelHopShortfalls = {};
+
+  /// Set when resending gave up before hearing the message through enough
+  /// repeaters. Kept for this session only.
+  ({int hops, int required})? channelHopShortfall(String messageId) =>
+      _channelHopShortfalls[messageId];
+
+  /// Resend progress for a channel message still waiting to travel far
+  /// enough, or null when it is not being watched.
+  ({int resends, int maxResends})? channelResendProgress(String messageId) =>
+      _channelHopChecks[messageId];
+
+  ChannelMessage? _findChannelMessageById(String messageId) {
+    for (final messages in _channelMessages.values) {
+      for (int i = messages.length - 1; i >= 0; i--) {
+        if (messages[i].messageId == messageId) return messages[i];
+      }
+    }
+    return null;
   }
 
   /// Minimum companion firmware version code whose CMD_SEND_CHANNEL_DATA (62)
@@ -3870,7 +3990,7 @@ class MeshCoreConnector extends ChangeNotifier {
         );
         onProgress?.call(i + 1, blobs.length);
       }
-    }, region: getChannelRegion(channelIndex));
+    }, region: getEffectiveChannelRegion(channelIndex));
     return sentAll;
   }
 
@@ -3925,7 +4045,10 @@ class MeshCoreConnector extends ChangeNotifier {
     );
   }
 
-  Future<void> removeContact(Contact contact) async {
+  Future<void> removeContact(
+    Contact contact, {
+    bool keepMessages = false,
+  }) async {
     if (!isConnected) return;
 
     _handleDiscovery(
@@ -3949,7 +4072,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _unreadStore.saveContactUnreadCount(
       Map<String, int>.from(_contactUnreadCount),
     );
-    _messageStore.clearMessages(contact.publicKeyHex);
+    if (!keepMessages) _messageStore.clearMessages(contact.publicKeyHex);
     notifyListeners();
   }
 
@@ -6728,13 +6851,15 @@ class MeshCoreConnector extends ChangeNotifier {
     ChannelMessage processedMessage = message;
 
     if (replyInfo != null) {
-      // Find original message by sender name (most recent match)
-      final originalMessage = _findMessageBySender(
-        messages,
-        replyInfo.mentionedNode,
-      );
+      // Outgoing replies already carry the selected target. The wire format
+      // only names the sender, so incoming replies fall back to that
+      // sender's most recent message.
+      final hasReplyTarget = message.replyToMessageId != null;
+      final originalMessage = hasReplyTarget
+          ? null
+          : _findMessageBySender(messages, replyInfo.mentionedNode);
 
-      if (originalMessage != null) {
+      if (hasReplyTarget || originalMessage != null) {
         // Create new message with reply metadata
         processedMessage = ChannelMessage(
           senderKey: message.senderKey,
@@ -6756,9 +6881,11 @@ class MeshCoreConnector extends ChangeNotifier {
           pathVariants: message.pathVariants,
           channelIndex: message.channelIndex,
           messageId: message.messageId,
-          replyToMessageId: originalMessage.messageId,
-          replyToSenderName: originalMessage.senderName,
-          replyToText: originalMessage.text,
+          replyToMessageId:
+              message.replyToMessageId ?? originalMessage!.messageId,
+          replyToSenderName:
+              message.replyToSenderName ?? originalMessage!.senderName,
+          replyToText: message.replyToText ?? originalMessage!.text,
         );
       }
     }
@@ -6776,10 +6903,14 @@ class MeshCoreConnector extends ChangeNotifier {
         existing.pathVariants,
         processedMessage.pathVariants,
       );
+      final hashWidth =
+          (existing.pathHashWidth ?? processedMessage.pathHashWidth ?? 1)
+              .clamp(1, 3)
+              .toInt();
       final mergedPathLength = _mergePathLength(
         existing.pathLength,
         processedMessage.pathLength,
-        mergedPathBytes.length,
+        mergedPathBytes.length ~/ hashWidth,
       );
       final newRepeatCount = existing.repeatCount + 1;
       final promotedFromPending =
@@ -6865,28 +6996,25 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   bool _isChannelRepeat(ChannelMessage existing, ChannelMessage incoming) {
-    if (existing.text != incoming.text) return false;
+    // A message we are sending is always new, even if its text matches an
+    // earlier one.
+    if (incoming.isOutgoing) return false;
 
-    // Self-echo: an outgoing message coming back via a repeater. The send is
-    // delayed by _waitForRadioQuiet (often 10s+) and propagation can add more,
-    // so the timestamp gap can easily exceed the cross-peer window.
-    final selfName = _selfName ?? 'Me';
-    final isSelfEcho =
-        existing.isOutgoing &&
-        !incoming.isOutgoing &&
-        (incoming.senderName == selfName || existing.senderName == selfName);
+    // Every copy of one packet carries the sender's timestamp, and for our own
+    // messages that timestamp is the one we put in the send frame. Separate
+    // sends of the same text therefore differ here, while true repeats match.
+    final sameSecond =
+        existing.timestamp.millisecondsSinceEpoch ~/ 1000 ==
+        incoming.timestamp.millisecondsSinceEpoch ~/ 1000;
+    if (!sameSecond) return false;
 
-    final windowMs = isSelfEcho ? 10 * 60 * 1000 : 30000;
-    final diffMs =
-        (existing.timestamp.millisecondsSinceEpoch -
-                incoming.timestamp.millisecondsSinceEpoch)
-            .abs();
-    if (diffMs > windowMs) return false;
-
-    if (existing.senderName == incoming.senderName) return true;
-    if (isSelfEcho) return true;
-
-    return false;
+    // Our own echo can read differently from what we stored (a reply keeps its
+    // @[name] prefix, cyr2lat transliterates), so the timestamp decides.
+    if (existing.isOutgoing) {
+      return incoming.senderName == (_selfName ?? 'Me');
+    }
+    return existing.senderName == incoming.senderName &&
+        existing.text == incoming.text;
   }
 
   bool _shouldDropSelfChannelMessage(String senderName, Uint8List pathBytes) {
@@ -7066,6 +7194,11 @@ class MeshCoreConnector extends ChangeNotifier {
   void _setState(MeshCoreConnectionState newState) {
     if (_state != newState) {
       _state = newState;
+      if (newState == MeshCoreConnectionState.connected) {
+        if (_appSettingsService?.settings.notificationsEnabled ?? false) {
+          unawaited(_notificationService.requestPermissionsOnce());
+        }
+      }
       notifyListeners();
     }
   }

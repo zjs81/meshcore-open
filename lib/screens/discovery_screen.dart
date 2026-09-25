@@ -34,9 +34,17 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
   ContactTypeFilter typeFilter = ContactTypeFilter.all;
   DiscoverySortOption discoverySortOption = DiscoverySortOption.lastSeen;
   Timer? _searchDebounce;
+  ScaffoldMessengerState? _messenger;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _messenger = ScaffoldMessenger.maybeOf(context);
+  }
 
   @override
   void dispose() {
+    _messenger?.hideCurrentSnackBar();
     _searchController.dispose();
     _searchDebounce?.cancel();
     super.dispose();
@@ -169,33 +177,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
     return ListEntrance(
       index: index,
       child: MeshCard(
-        onTap: () async {
-          try {
-            final imported = await connector.importDiscoveredContact(contact);
-            if (!context.mounted) return;
-            if (!imported) {
-              showDismissibleSnackBar(
-                context,
-                content: Text(context.l10n.contacts_contactImportFailed),
-              );
-              return;
-            }
-            showDismissibleSnackBar(
-              context,
-              content: Text(context.l10n.discoveredContacts_contactAdded),
-              action: SnackBarAction(
-                label: context.l10n.common_undo,
-                onPressed: () => connector.removeContact(contact),
-              ),
-            );
-          } catch (_) {
-            if (!context.mounted) return;
-            showDismissibleSnackBar(
-              context,
-              content: Text(context.l10n.contacts_contactImportFailed),
-            );
-          }
-        },
+        onTap: () => _addContact(context, contact, connector),
         onLongPress: () => _showContactContextMenu(contact, connector),
         onSecondaryTap: PlatformInfo.isDesktop
             ? () => _showContactContextMenu(contact, connector)
@@ -296,10 +278,47 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                 ),
               ),
             ),
+            IconButton(
+              tooltip: context.l10n.discoveredContacts_addContact,
+              icon: const Icon(Icons.person_add_alt_1),
+              onPressed: () => _addContact(context, contact, connector),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _addContact(
+    BuildContext context,
+    Contact contact,
+    MeshCoreConnector connector,
+  ) async {
+    try {
+      final imported = await connector.importDiscoveredContact(contact);
+      if (!context.mounted) return;
+      if (!imported) {
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.contacts_contactImportFailed),
+        );
+        return;
+      }
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.discoveredContacts_contactAdded),
+        action: SnackBarAction(
+          label: context.l10n.common_undo,
+          onPressed: () => connector.removeContact(contact),
+        ),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.contacts_contactImportFailed),
+      );
+    }
   }
 
   Future<void> _showContactContextMenu(
@@ -431,6 +450,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                   if (searchQuery.isNotEmpty)
                     IconButton(
                       icon: const Icon(Icons.clear),
+                      tooltip: context.l10n.common_clearSearch,
                       onPressed: () {
                         _searchController.clear();
                         setState(() {

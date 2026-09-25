@@ -242,6 +242,7 @@ class ChannelMessage {
     String? originalText,
     String? translatedLanguageCode,
     String? translationModelId,
+    ChannelMessage? replyTo,
   }) {
     return ChannelMessage(
       senderKey: null,
@@ -250,6 +251,9 @@ class ChannelMessage {
       originalText: originalText,
       translatedLanguageCode: translatedLanguageCode,
       translationModelId: translationModelId,
+      replyToMessageId: replyTo?.messageId,
+      replyToSenderName: replyTo?.senderName,
+      replyToText: replyTo?.text,
       timestamp: DateTime.now(),
       isOutgoing: true,
       status: ChannelMessageStatus.pending,

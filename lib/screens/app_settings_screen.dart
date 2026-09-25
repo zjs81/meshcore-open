@@ -9,11 +9,13 @@ import '../models/app_settings.dart';
 import '../models/image_codec_support.dart';
 import '../models/translation_support.dart';
 import '../services/app_settings_service.dart';
+import '../services/background_service.dart';
 import '../services/image_codec_service.dart';
 import '../services/map_tile_cache_service.dart';
 import '../services/notification_service.dart';
 import '../services/translation_service.dart';
 import '../theme/mesh_theme.dart';
+import '../utils/platform_info.dart';
 import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/sync_progress_overlay.dart';
@@ -320,6 +322,22 @@ class AppSettingsScreen extends StatelessWidget {
               ? (value) => settingsService.setNotifyOnNewMessage(value)
               : null,
         ),
+        if (PlatformInfo.isAndroid) ...[
+          const Divider(height: 1, indent: 16),
+          ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 4,
+            ),
+            leading: const Icon(Icons.battery_saver_outlined, size: 20),
+            title: Text(context.l10n.appSettings_batteryOptimization),
+            subtitle: Text(
+              context.l10n.appSettings_batteryOptimizationSubtitle,
+            ),
+            trailing: const Icon(Icons.open_in_new, size: 18),
+            onTap: BackgroundService.openBatteryOptimizationSettings,
+          ),
+        ],
         const Divider(height: 1, indent: 16),
         SwitchListTile(
           contentPadding: const EdgeInsets.symmetric(
@@ -609,6 +627,52 @@ class AppSettingsScreen extends StatelessWidget {
             settingsService.setEnableMessageTracing(value);
           },
         ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.cell_tower, size: 20),
+          title: Text(context.l10n.appSettings_channelMinHops),
+          subtitle: Text(context.l10n.appSettings_channelMinHopsSubtitle),
+          value: settingsService.settings.channelMinHopsEnabled,
+          onChanged: settingsService.setChannelMinHopsEnabled,
+        ),
+        if (settingsService.settings.channelMinHopsEnabled) ...[
+          ListTile(
+            title: Text(
+              context.l10n.appSettings_channelMinHopsCount(
+                settingsService.settings.channelMinHops,
+              ),
+            ),
+            subtitle: Slider(
+              value: settingsService.settings.channelMinHops.toDouble(),
+              min: 1,
+              max: 8,
+              divisions: 7,
+              label: settingsService.settings.channelMinHops.toString(),
+              onChanged: (value) =>
+                  settingsService.setChannelMinHops(value.toInt()),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              context.l10n.appSettings_channelMinHopsRetries(
+                settingsService.settings.channelMinHopsRetries,
+              ),
+            ),
+            subtitle: Slider(
+              value: settingsService.settings.channelMinHopsRetries.toDouble(),
+              min: 1,
+              max: 5,
+              divisions: 4,
+              label: settingsService.settings.channelMinHopsRetries.toString(),
+              onChanged: (value) =>
+                  settingsService.setChannelMinHopsRetries(value.toInt()),
+            ),
+          ),
+        ],
         const Divider(height: 1, indent: 16),
         _ScrollIntoViewOnce(
           enabled: focusImageMessages,
@@ -1557,7 +1621,11 @@ class AppSettingsScreen extends StatelessWidget {
               for (final model in settings.translationDownloadedModels)
                 DropdownMenuItem(
                   value: model.id,
-                  child: Text(translationModelFriendlyName(model)),
+                  child: Text(
+                    translationModelFriendlyName(model),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
             ],
             onChanged: settings.translationDownloadedModels.isEmpty
@@ -1580,7 +1648,11 @@ class AppSettingsScreen extends StatelessWidget {
               for (final preset in translationPresetModels)
                 DropdownMenuItem(
                   value: preset.sourceUrl,
-                  child: Text(translationModelFriendlyName(preset)),
+                  child: Text(
+                    translationModelFriendlyName(preset),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
             ],
             onChanged: translationService.isBusy
@@ -1741,6 +1813,7 @@ class AppSettingsScreen extends StatelessWidget {
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
           initialValue: settingsService.settings.selectedCyr2latProfileId,
+          isExpanded: true,
           decoration: InputDecoration(
             labelText: context.l10n.channels_cyr2latSettingsSubheading,
             border: const OutlineInputBorder(),
@@ -1748,7 +1821,11 @@ class AppSettingsScreen extends StatelessWidget {
           items: settingsService.settings.cyr2latProfiles.map((profile) {
             return DropdownMenuItem(
               value: profile.id,
-              child: Text(profile.name),
+              child: Text(
+                profile.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             );
           }).toList(),
           onChanged: (value) {

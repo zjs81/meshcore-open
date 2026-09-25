@@ -1,10 +1,12 @@
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../l10n/l10n.dart';
+import '../services/image_chunk_transport.dart';
 import '../utils/lora_airtime.dart';
 import 'image_send_codec_binding.dart';
 
@@ -151,13 +153,74 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
   /// does not have to touch an InheritedWidget after an await.
   ImageSendRadio? _radio;
 
+  /// Source `width / height`. Recipients un-stretch the 512x512 square back to
+  /// this shape, so both preview views use it.
+  double _aspect = 1;
+  // The shape recipients restore: the nearest supported ratio, or square.
+  double _recipientAspect = 1;
+
+  bool _showReconstruction = false;
+  Uint8List? _reconstruction;
+  bool _reconstructing = false;
+  bool _reconstructionUnavailable = false;
+
   @override
   void initState() {
     super.initState();
     _parity = widget.initialParity;
+    _probeAspect();
     if (widget.codec.availability == ImageCodecAvailability.ready) {
       _encode();
     }
+  }
+
+  Future<void> _probeAspect() async {
+    try {
+      final buffer = await ui.ImmutableBuffer.fromUint8List(widget.imageBytes);
+      final descriptor = await ui.ImageDescriptor.encoded(buffer);
+      final ratio = descriptor.width / descriptor.height;
+      final code =
+          kImageAspectCodes[imageAspectCodeFor(
+            descriptor.width,
+            descriptor.height,
+          )];
+      final recipientRatio = code[0] / code[1];
+      descriptor.dispose();
+      buffer.dispose();
+      if (mounted && ratio.isFinite && ratio > 0) {
+        setState(() {
+          _aspect = ratio;
+          _recipientAspect = recipientRatio;
+        });
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _selectView(bool reconstruction) async {
+    setState(() => _showReconstruction = reconstruction);
+    final payload = _encoded;
+    if (!reconstruction ||
+        payload == null ||
+        _reconstruction != null ||
+        _reconstructing) {
+      return;
+    }
+    setState(() => _reconstructing = true);
+    Uint8List? png;
+    try {
+      png = await widget.codec.decodePreview(payload);
+    } catch (_) {
+      png = null;
+    }
+    if (!mounted) return;
+    setState(() {
+      _reconstructing = false;
+      _reconstruction = png;
+      if (png == null) {
+        _reconstructionUnavailable = true;
+        _showReconstruction = false;
+      }
+    });
   }
 
   Future<Uint8List?> _encode() async {
@@ -297,7 +360,7 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
                 controller: scrollController,
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 children: [
-                  _preview(theme, colors),
+                  _preview(theme, colors, selected, ready),
                   const SizedBox(height: 16),
                   if (!ready) _unavailableBanner(theme, colors),
                   if (ready) ...[
@@ -344,44 +407,85 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
     ),
   );
 
-  /// The square render. [BoxFit.fill] on a 1:1 box is exactly the 512x512
-  /// centre crop the codec will take, so what is shown is what is sent.
-  ///
   /// The preview is deliberately capped in height: the packet count and airtime
   /// below it are the reason this screen exists and must not be pushed off the
   /// first screenful by a full-width square.
-  Widget _preview(ThemeData theme, ColorScheme colors) {
+  Widget _preview(
+    ThemeData theme,
+    ColorScheme colors,
+    _RateEstimate estimate,
+    bool ready,
+  ) {
+    final l10n = context.l10n;
     final maxSide = MediaQuery.sizeOf(context).height * 0.28;
+    final reconstruction = _showReconstruction ? _reconstruction : null;
     return Column(
       children: [
+        if (ready) ...[
+          SegmentedButton<bool>(
+            segments: [
+              ButtonSegment(
+                value: false,
+                label: Text(l10n.imageSend_viewOriginal),
+              ),
+              ButtonSegment(
+                value: true,
+                label: Text(l10n.imageSend_viewReconstruction),
+                enabled: _encoded != null && !_reconstructionUnavailable,
+              ),
+            ],
+            selected: {_showReconstruction},
+            onSelectionChanged: (s) => _selectView(s.first),
+          ),
+          const SizedBox(height: 12),
+        ],
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: maxSide, maxWidth: maxSide),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: AspectRatio(
-              aspectRatio: 1,
+              aspectRatio: reconstruction != null ? _recipientAspect : _aspect,
               child: Container(
                 color: colors.surfaceContainerHighest,
-                child: Image.memory(
-                  widget.imageBytes,
-                  fit: BoxFit.fill,
-                  alignment: Alignment.center,
-                  gaplessPlayback: true,
-                  errorBuilder: (context, error, stack) => Center(
-                    child: Icon(
-                      Icons.broken_image_outlined,
-                      size: 48,
-                      color: colors.onSurfaceVariant,
-                    ),
-                  ),
-                ),
+                child: _showReconstruction && _reconstructing
+                    ? const Center(child: CircularProgressIndicator())
+                    : Image.memory(
+                        reconstruction ?? widget.imageBytes,
+                        // The reconstruction is the stretched square; fill
+                        // undoes the stretch into the recipient's shape.
+                        fit: reconstruction != null
+                            ? BoxFit.fill
+                            : BoxFit.contain,
+                        alignment: Alignment.center,
+                        gaplessPlayback: true,
+                        errorBuilder: (context, error, stack) => Center(
+                          child: Icon(
+                            Icons.broken_image_outlined,
+                            size: 48,
+                            color: colors.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
               ),
             ),
           ),
         ),
+        if (_reconstructionUnavailable) ...[
+          const SizedBox(height: 8),
+          Text(
+            l10n.imageSend_reconstructionUnavailable,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: colors.onSurfaceVariant,
+            ),
+          ),
+        ],
         const SizedBox(height: 8),
         Text(
-          context.l10n.imageSend_cropNote,
+          l10n.imageSend_lossyNote(
+            estimate.payloadBytes ??
+                ImageCodecRateStats.forRate(kImageSendRatePoint).meanBytes,
+          ),
           textAlign: TextAlign.center,
           style: theme.textTheme.bodySmall?.copyWith(
             color: colors.onSurfaceVariant,

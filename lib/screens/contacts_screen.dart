@@ -712,7 +712,7 @@ class _ContactsScreenState extends State<ContactsScreen>
       return EmptyState(
         icon: Icons.people_outline,
         title: context.l10n.contacts_noContacts,
-        subtitle: context.l10n.contacts_contactsWillAppear,
+        subtitle: context.l10n.contacts_noContactsDiscoveredHint,
         action: FilledButton.icon(
           onPressed: () => Navigator.push(
             context,
@@ -890,6 +890,20 @@ class _ContactsScreenState extends State<ContactsScreen>
             ],
           ),
         ),
+        ListTile(
+          dense: true,
+          leading: const Icon(Icons.person_add_rounded),
+          title: Text(
+            context.l10n.contacts_discoveredNearby(
+              connector.discoveredContacts.where((c) => !c.isActive).length,
+            ),
+          ),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DiscoveryScreen()),
+          ),
+        ),
         Expanded(
           child: RefreshIndicator(
             onRefresh: () => connector.getContacts(),
@@ -930,6 +944,7 @@ class _ContactsScreenState extends State<ContactsScreen>
                         onTap: () => _openChat(context, contact),
                         onLongPress: () =>
                             _showContactOptions(context, connector, contact),
+                        onManage: _manageAction(context, contact),
                       );
                     },
                   ),
@@ -1053,6 +1068,17 @@ class _ContactsScreenState extends State<ContactsScreen>
         ),
       );
     }
+  }
+
+  VoidCallback? _manageAction(BuildContext context, Contact contact) {
+    if (contact.type == advTypeRepeater) {
+      return () => _showRepeaterLogin(context, contact);
+    }
+    if (contact.type == advTypeRoom) {
+      return () =>
+          _showRoomLogin(context, contact, RoomLoginDestination.management);
+    }
+    return null;
   }
 
   void _handleQuickSwitch(int index, BuildContext context) {
@@ -1513,7 +1539,7 @@ class _ContactsScreenState extends State<ContactsScreen>
                 color: Theme.of(context).colorScheme.error,
               ),
               title: Text(
-                context.l10n.contacts_deleteContact,
+                context.l10n.contacts_removeFromContacts,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
               onTap: () {
@@ -1543,27 +1569,46 @@ class _ContactsScreenState extends State<ContactsScreen>
     MeshCoreConnector connector,
     Contact contact,
   ) {
+    var keepHistory = false;
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(context.l10n.contacts_deleteContact),
-        content: Text(context.l10n.contacts_removeConfirm(contact.name)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(context.l10n.common_cancel),
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
+          title: Text(context.l10n.contacts_removeFromContacts),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                context.l10n.contacts_removeFromContactsConfirm(contact.name),
+              ),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                controlAffinity: ListTileControlAffinity.leading,
+                value: keepHistory,
+                title: Text(context.l10n.contacts_keepChatHistory),
+                onChanged: (value) =>
+                    setDialogState(() => keepHistory = value ?? false),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              connector.removeContact(contact);
-            },
-            child: Text(
-              context.l10n.common_delete,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(context.l10n.common_cancel),
             ),
-          ),
-        ],
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                connector.removeContact(contact, keepMessages: keepHistory);
+              },
+              child: Text(
+                context.l10n.contacts_remove,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1577,6 +1622,7 @@ class _ContactTile extends StatelessWidget {
   final bool isFavorite;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
+  final VoidCallback? onManage;
 
   const _ContactTile({
     required this.contact,
@@ -1586,6 +1632,7 @@ class _ContactTile extends StatelessWidget {
     required this.isFavorite,
     required this.onTap,
     required this.onLongPress,
+    this.onManage,
   });
 
   /// Node-type avatar color per design language.
@@ -1622,9 +1669,6 @@ class _ContactTile extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final emoji = firstEmoji(contact.name);
     final isChat = contact.type == advTypeChat;
-    final pathLen = contact.pathBytesForDisplay.length;
-    final isDirect = contact.pathLength >= 0;
-    final hasPath = pathLen > 0 || contact.pathLength == 0;
 
     return GestureDetector(
       onSecondaryTapUp: PlatformInfo.isDesktop ? (_) => onLongPress() : null,
@@ -1712,13 +1756,6 @@ class _ContactTile extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (hasPath) ...[
-                        const SizedBox(width: 6),
-                        RouteChip(
-                          isDirect: isDirect,
-                          hops: isDirect ? contact.pathLength : null,
-                        ),
-                      ],
                     ],
                   ),
                 ],
@@ -1757,6 +1794,15 @@ class _ContactTile extends StatelessWidget {
                 ],
               ),
             ),
+            if (onManage != null)
+              IconButton(
+                icon: const Icon(Icons.admin_panel_settings_outlined),
+                tooltip: contact.type == advTypeRoom
+                    ? context.l10n.room_management
+                    : context.l10n.contacts_manageRepeater,
+                visualDensity: VisualDensity.compact,
+                onPressed: onManage,
+              ),
           ],
         ),
       ),
@@ -1796,6 +1842,7 @@ class _ContactTileEntrance extends StatelessWidget {
   final bool isFavorite;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
+  final VoidCallback? onManage;
 
   const _ContactTileEntrance({
     required this.index,
@@ -1806,6 +1853,7 @@ class _ContactTileEntrance extends StatelessWidget {
     required this.isFavorite,
     required this.onTap,
     required this.onLongPress,
+    this.onManage,
   });
 
   @override
@@ -1820,6 +1868,7 @@ class _ContactTileEntrance extends StatelessWidget {
         isFavorite: isFavorite,
         onTap: onTap,
         onLongPress: onLongPress,
+        onManage: onManage,
       ),
     );
   }

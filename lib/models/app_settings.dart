@@ -89,6 +89,7 @@ class AppSettings {
   final String mapKeyPrefix;
   final bool mapShowMarkers;
   final bool mapShowGuessedLocations;
+  final bool mapClusterNodes;
   final bool enableMessageTracing;
   final Map<String, double>? mapCacheBounds;
   final int mapCacheMinZoom;
@@ -108,6 +109,9 @@ class AppSettings {
   final double routeWeightSuccessIncrement;
   final double routeWeightFailureDecrement;
   final int maxMessageRetries;
+  final bool channelMinHopsEnabled;
+  final int channelMinHops;
+  final int channelMinHopsRetries;
   final String themeMode;
   final String? languageOverride; // null = system default
   final bool appDebugLogEnabled;
@@ -186,12 +190,13 @@ class AppSettings {
     this.mapShowChatNodes = true,
     this.mapShowOtherNodes = true,
     this.mapShowOverlaps = false,
-    this.mapTimeFilterHours = 0, // Default to all time
+    this.mapTimeFilterHours = 168,
     this.mapKeyPrefixEnabled = false,
     this.mapKeyPrefix = '',
     this.mapShowMarkers = true,
     this.mapShowGuessedLocations = true,
-    this.enableMessageTracing = true,
+    this.mapClusterNodes = true,
+    this.enableMessageTracing = false,
     this.mapCacheBounds,
     this.mapCacheMinZoom = 10,
     this.mapCacheMaxZoom = 15,
@@ -210,6 +215,9 @@ class AppSettings {
     this.routeWeightSuccessIncrement = 0.5,
     this.routeWeightFailureDecrement = 0.2,
     this.maxMessageRetries = 5,
+    this.channelMinHopsEnabled = false,
+    this.channelMinHops = 2,
+    this.channelMinHopsRetries = 1,
     this.themeMode = 'system',
     this.languageOverride,
     this.appDebugLogEnabled = false,
@@ -265,6 +273,7 @@ class AppSettings {
       'map_key_prefix': mapKeyPrefix,
       'map_show_markers': mapShowMarkers,
       'map_show_guessed_locations': mapShowGuessedLocations,
+      'map_cluster_nodes': mapClusterNodes,
       'enable_message_tracing': enableMessageTracing,
       'map_cache_bounds': mapCacheBounds,
       'map_cache_min_zoom': mapCacheMinZoom,
@@ -285,6 +294,9 @@ class AppSettings {
       'route_weight_success_increment': routeWeightSuccessIncrement,
       'route_weight_failure_decrement': routeWeightFailureDecrement,
       'max_message_retries': maxMessageRetries,
+      'channel_min_hops_enabled': channelMinHopsEnabled,
+      'channel_min_hops': channelMinHops,
+      'channel_min_hops_retries': channelMinHopsRetries,
       'theme_mode': themeMode,
       'language_override': languageOverride,
       'app_debug_log_enabled': appDebugLogEnabled,
@@ -336,13 +348,14 @@ class AppSettings {
       mapShowOtherNodes: json['map_show_other_nodes'] as bool? ?? true,
       mapShowOverlaps: json['map_show_overlaps'] as bool? ?? false,
       mapTimeFilterHours:
-          (json['map_time_filter_hours'] as num?)?.toDouble() ?? 0,
+          (json['map_time_filter_hours'] as num?)?.toDouble() ?? 168,
       mapKeyPrefixEnabled: json['map_key_prefix_enabled'] as bool? ?? false,
       mapKeyPrefix: json['map_key_prefix'] as String? ?? '',
       mapShowMarkers: json['map_show_markers'] as bool? ?? true,
       mapShowGuessedLocations:
           json['map_show_guessed_locations'] as bool? ?? true,
-      enableMessageTracing: json['enable_message_tracing'] as bool? ?? true,
+      mapClusterNodes: json['map_cluster_nodes'] as bool? ?? true,
+      enableMessageTracing: json['enable_message_tracing'] as bool? ?? false,
       mapCacheBounds: (json['map_cache_bounds'] as Map?)?.map(
         (key, value) => MapEntry(key.toString(), (value as num).toDouble()),
       ),
@@ -370,6 +383,9 @@ class AppSettings {
       routeWeightFailureDecrement:
           (json['route_weight_failure_decrement'] as num?)?.toDouble() ?? 0.2,
       maxMessageRetries: json['max_message_retries'] as int? ?? 5,
+      channelMinHopsEnabled: json['channel_min_hops_enabled'] as bool? ?? false,
+      channelMinHops: json['channel_min_hops'] as int? ?? 2,
+      channelMinHopsRetries: json['channel_min_hops_retries'] as int? ?? 1,
       themeMode: json['theme_mode'] as String? ?? 'system',
       languageOverride: json['language_override'] as String?,
       appDebugLogEnabled: json['app_debug_log_enabled'] as bool? ?? false,
@@ -477,6 +493,7 @@ class AppSettings {
     String? mapKeyPrefix,
     bool? mapShowMarkers,
     bool? mapShowGuessedLocations,
+    bool? mapClusterNodes,
     bool? enableMessageTracing,
     Object? mapCacheBounds = _unset,
     int? mapCacheMinZoom,
@@ -496,6 +513,9 @@ class AppSettings {
     double? routeWeightSuccessIncrement,
     double? routeWeightFailureDecrement,
     int? maxMessageRetries,
+    bool? channelMinHopsEnabled,
+    int? channelMinHops,
+    int? channelMinHopsRetries,
     String? themeMode,
     Object? languageOverride = _unset,
     bool? appDebugLogEnabled,
@@ -536,6 +556,7 @@ class AppSettings {
       mapShowMarkers: mapShowMarkers ?? this.mapShowMarkers,
       mapShowGuessedLocations:
           mapShowGuessedLocations ?? this.mapShowGuessedLocations,
+      mapClusterNodes: mapClusterNodes ?? this.mapClusterNodes,
       enableMessageTracing: enableMessageTracing ?? this.enableMessageTracing,
       mapCacheBounds: mapCacheBounds == _unset
           ? this.mapCacheBounds
@@ -565,6 +586,11 @@ class AppSettings {
       routeWeightFailureDecrement:
           routeWeightFailureDecrement ?? this.routeWeightFailureDecrement,
       maxMessageRetries: maxMessageRetries ?? this.maxMessageRetries,
+      channelMinHopsEnabled:
+          channelMinHopsEnabled ?? this.channelMinHopsEnabled,
+      channelMinHops: channelMinHops ?? this.channelMinHops,
+      channelMinHopsRetries:
+          channelMinHopsRetries ?? this.channelMinHopsRetries,
       themeMode: themeMode ?? this.themeMode,
       languageOverride: languageOverride == _unset
           ? this.languageOverride

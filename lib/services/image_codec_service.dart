@@ -984,6 +984,17 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
     return bitstream;
   }
 
+  @override
+  Future<Uint8List?> decodePreview(Uint8List payload) async {
+    if (!canDecode) return null;
+    final result = await decodeBitstream(
+      bitstream: payload,
+      ratePoint: aeicRatePointForUi(kImageSendRatePoint),
+      resolution: kImageCodecSquareSize,
+    );
+    return result?.pngBytes;
+  }
+
   /// Encodes an already-decoded RGB image.
   ///
   /// [rgbBytes] must be exactly `512 * 512 * 3` packed 8-bit RGB. Anything else

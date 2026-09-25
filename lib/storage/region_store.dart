@@ -47,6 +47,9 @@ class RegionStore {
         await channelRegionStore.saveRegion(channel.index, '');
       }
     }
+    if (channelRegionStore.loadDefaultRegion() == region) {
+      await channelRegionStore.saveDefaultRegion('');
+    }
     regions.remove(region);
     saveRegions(regions);
   }
