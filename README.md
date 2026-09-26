@@ -12,6 +12,8 @@ MeshCore Open is a cross-platform mobile application for communicating with Mesh
         <img src="assets/badges/badge_obtainium.png" height="80" align="center" alt="Get it on Obtainium"/>
 </a>
 
+The [web client](https://meshcoreopen.org/install/web/) runs in Chromium (Chrome, Edge, Brave) over Web Bluetooth or Web Serial. Firefox and Safari do not support those APIs. TCP on the web needs a websocket bridge.
+
 ## Screenshots
 
 <table>
@@ -130,6 +132,16 @@ MeshCore Open is a cross-platform mobile application for communicating with Mesh
    ```bash
    flutter run
    ```
+
+### Web (self-host)
+
+Use a Chromium browser. Device APIs are origin-gated, so serve the build over HTTPS.
+
+```bash
+flutter build web --release
+```
+
+Then serve `build/web/` from your own host. See [install/web](https://meshcoreopen.org/install/web/) for browser support and caveats.
 
 ### Building for Release
 
