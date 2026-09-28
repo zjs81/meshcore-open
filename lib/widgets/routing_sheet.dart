@@ -577,8 +577,7 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onSecondaryTapUp: PlatformInfo.isDesktop && hasBytes
-          ? (_) =>
-                _showPathDetail(context, connector, contact, record)
+          ? (_) => _showPathDetail(context, connector, contact, record)
           : null,
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 4),

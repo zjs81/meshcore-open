@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4520,6 +4521,36 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get contacts_contactImportFailed =>
       'Contact kon niet geïmporteerd worden.';
+
+  @override
+  String get discoveredContacts_export => 'Ontdekte contacten exporteren';
+
+  @override
+  String get discoveredContacts_import => 'Ontdekte contacten importeren';
+
+  @override
+  String discoveredContacts_exported(String path) {
+    return 'Ontdekte contacten geëxporteerd naar $path.';
+  }
+
+  @override
+  String discoveredContacts_exportFailed(String error) {
+    return 'Exporteren van ontdekte contacten mislukt: $error';
+  }
+
+  @override
+  String discoveredContacts_imported(int count) {
+    return '$count ontdekte contacten geïmporteerd.';
+  }
+
+  @override
+  String get discoveredContacts_importNoContacts =>
+      'Geen contacten gevonden in het importbestand.';
+
+  @override
+  String discoveredContacts_importFailed(String error) {
+    return 'Importeren van ontdekte contacten mislukt: $error';
+  }
 
   @override
   String get contacts_zeroHopAdvert => 'Zero-hop-advert';

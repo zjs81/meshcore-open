@@ -2027,6 +2027,41 @@
   "discoveredContacts_deleteContact": "Видалити контакт",
   "discoveredContacts_copyContact": "Копіювати контакт у буфер обміну",
   "discoveredContacts_addContact": "Додати контакт",
+  "discoveredContacts_export": "Експортувати виявлені контакти",
+  "discoveredContacts_import": "Імпортувати виявлені контакти",
+  "discoveredContacts_exported": "Виявлені контакти експортовано до {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "Не вдалося експортувати виявлені контакти: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "Імпортовано {count} виявлених контактів.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "У файлі імпорту не знайдено контактів.",
+  "discoveredContacts_importFailed": "Не вдалося імпортувати виявлені контакти: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "contactsSettings_overwriteOldestSubtitle": "Коли список контактів заповнений, найстарший контакт без позначки улюбленого буде замінений.",
   "common_deleteAll": "Видалити все",
   "discoveredContacts_deleteContactAll": "Видалити всі виявлені контакти",

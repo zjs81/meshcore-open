@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4527,6 +4528,36 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get contacts_contactImportFailed =>
       'Kontakt sa nepodarilo importovať.';
+
+  @override
+  String get discoveredContacts_export => 'Exportovať objavené kontakty';
+
+  @override
+  String get discoveredContacts_import => 'Importovať objavené kontakty';
+
+  @override
+  String discoveredContacts_exported(String path) {
+    return 'Objavené kontakty boli exportované do $path.';
+  }
+
+  @override
+  String discoveredContacts_exportFailed(String error) {
+    return 'Export objavených kontaktov zlyhal: $error';
+  }
+
+  @override
+  String discoveredContacts_imported(int count) {
+    return 'Bolo importovaných $count objavených kontaktov.';
+  }
+
+  @override
+  String get discoveredContacts_importNoContacts =>
+      'V importovanom súbore sa nenašli žiadne kontakty.';
+
+  @override
+  String discoveredContacts_importFailed(String error) {
+    return 'Import objavených kontaktov zlyhal: $error';
+  }
 
   @override
   String get contacts_zeroHopAdvert => 'Inzerát Zero Hop';
