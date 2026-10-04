@@ -7924,6 +7924,18 @@ abstract class AppLocalizations {
   /// **'MeshCore Activity'**
   String get notification_activityTitle;
 
+  /// Title of the low battery notification
+  ///
+  /// In en, this message translates to:
+  /// **'Low battery'**
+  String get notification_lowBatteryTitle;
+
+  /// Body of the low battery notification
+  ///
+  /// In en, this message translates to:
+  /// **'Device battery is at {percent}%'**
+  String notification_lowBatteryBody(int percent);
+
   /// No description provided for @notification_messagesCount.
   ///
   /// In en, this message translates to:

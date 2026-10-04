@@ -597,6 +597,51 @@ class NotificationService {
     }
   }
 
+  /// Posts a low-battery alert for the connected device.
+  ///
+  /// Uses a per-threshold notification id so each alert level updates its own
+  /// notification instead of stacking. Bypasses the rate-limit queue, which
+  /// only handles message and advert notifications.
+  Future<void> showLowBatteryNotification({
+    required int batteryPercent,
+    required int threshold,
+  }) async {
+    if (!await _ensureCanNotify()) return;
+
+    const androidDetails = AndroidNotificationDetails(
+      'low_battery',
+      'Low Battery',
+      channelDescription: 'Low battery alerts for the connected device',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
+    );
+
+    const darwinDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: false,
+      presentSound: true,
+    );
+
+    const notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: darwinDetails,
+      macOS: darwinDetails,
+    );
+
+    try {
+      await _notifications.show(
+        id: 'low_battery:$threshold'.hashCode,
+        title: _l10n.notification_lowBatteryTitle,
+        body: _l10n.notification_lowBatteryBody(batteryPercent),
+        notificationDetails: notificationDetails,
+        payload: 'low_battery',
+      );
+    } catch (e) {
+      debugPrint('Failed to show low battery notification: $e');
+    }
+  }
+
   /// Returns a privacy-safe identifier for debug logging.
   /// - advert: shows device name (body contains contactName)
   /// - message: shows "from: sender" (avoids logging message content)

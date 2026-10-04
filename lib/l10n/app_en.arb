@@ -2573,6 +2573,19 @@
   "contacts_contactAdvertCopied": "Advert copied to Clipboard.",
   "contacts_contactAdvertCopyFailed": "Copying advert to Clipboard failed.",
   "notification_activityTitle": "MeshCore Activity",
+  "notification_lowBatteryTitle": "Low battery",
+  "@notification_lowBatteryTitle": {
+    "description": "Title of the low battery notification"
+  },
+  "notification_lowBatteryBody": "Device battery is at {percent}%",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "notification_messagesCount": "{count} {count, plural, =1{message} other{messages}}",
   "@notification_messagesCount": {
     "placeholders": {

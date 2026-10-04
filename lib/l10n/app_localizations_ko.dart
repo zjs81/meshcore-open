@@ -4385,6 +4385,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get notification_activityTitle => '메쉬코어 활동';
 
   @override
+  String get notification_lowBatteryTitle => 'Low battery';
+
+  @override
+  String notification_lowBatteryBody(int percent) {
+    return 'Device battery is at $percent%';
+  }
+
+  @override
   String notification_messagesCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

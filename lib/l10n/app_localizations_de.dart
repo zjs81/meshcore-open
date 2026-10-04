@@ -4609,6 +4609,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get notification_activityTitle => 'MeshCore Aktivität';
 
   @override
+  String get notification_lowBatteryTitle => 'Low battery';
+
+  @override
+  String notification_lowBatteryBody(int percent) {
+    return 'Device battery is at $percent%';
+  }
+
+  @override
   String notification_messagesCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
