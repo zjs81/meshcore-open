@@ -2187,6 +2187,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get map_label => 'Rótulo';
 
   @override
+  String get map_labelUpdateHint =>
+      'Using the same label as before will update the marker for MeshCore Open recipients.';
+
+  @override
   String get map_pointOfInterest => 'Ponto de interesse';
 
   @override

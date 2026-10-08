@@ -2192,6 +2192,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get map_label => 'Подпись';
 
   @override
+  String get map_labelUpdateHint =>
+      'Using the same label as before will update the marker for MeshCore Open recipients.';
+
+  @override
   String get map_pointOfInterest => 'Точка интереса';
 
   @override

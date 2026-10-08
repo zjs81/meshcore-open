@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,7 @@ import 'chat_screen.dart';
 import 'contacts_screen.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/byte_count_input.dart';
 import '../widgets/repeater_login_dialog.dart';
 import '../widgets/room_login_dialog.dart';
 import '../helpers/guessed_location_estimator.dart';
@@ -3119,7 +3121,11 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
       return;
     }
 
-    final label = await _promptForLabel(context, defaultLabel);
+    final initialLabel =
+        connector.selfName == null || connector.selfName!.isEmpty
+        ? defaultLabel
+        : connector.selfName!;
+    final label = await _promptForLabel(context, position, initialLabel, flags);
     if (label == null || !mounted) return;
 
     final markerText = _formatMarkerMessage(position, label, flags);
@@ -3135,42 +3141,114 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
 
   Future<String?> _promptForLabel(
     BuildContext context,
+    LatLng position,
     String defaultLabel,
+    String flags,
   ) async {
     final controller = TextEditingController(text: defaultLabel);
     controller.selection = TextSelection(
       baseOffset: 0,
       extentOffset: controller.text.length,
     );
-    return showDialog<String>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(context.l10n.map_pinLabel),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: context.l10n.map_label,
-            border: const OutlineInputBorder(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(context.l10n.common_cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              final label = controller.text.trim().replaceAll('|', '/');
-              Navigator.pop(
-                dialogContext,
-                label.isEmpty ? defaultLabel : label,
+    final focusNode = FocusNode();
+    // Compute available bytes for the label taking marker overhead into
+    // account. Use a conservative limit based on both contact and channel
+    // message maxima.
+    final lat = position.latitude.toStringAsFixed(6);
+    final lon = position.longitude.toStringAsFixed(6);
+    final prefix = 'm:$lat,$lon|';
+    final suffix = '|$flags';
+    final overheadBytes = utf8.encode(prefix + suffix).length;
+    final maxForContact = maxContactMessageBytes();
+    final maxForChannel = maxChannelMessageBytes(null);
+    final maxPayload = maxForContact < maxForChannel
+        ? maxForContact
+        : maxForChannel;
+    final allowedLabelBytes = (maxPayload - overheadBytes) > 0
+        ? (maxPayload - overheadBytes)
+        : 0;
+
+    try {
+      final result = await showDialog<String>(
+        context: context,
+        builder: (dialogContext) {
+          final scheme = Theme.of(dialogContext).colorScheme;
+          // Request focus and ensure selection after the frame so the
+          // keyboard appears and text is selected for replacement.
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (dialogContext.mounted) {
+              focusNode.requestFocus();
+              controller.selection = TextSelection(
+                baseOffset: 0,
+                extentOffset: controller.text.length,
               );
-            },
-            child: Text(context.l10n.common_continue),
-          ),
-        ],
-      ),
-    );
+            }
+          });
+          return AlertDialog(
+            title: Text(dialogContext.l10n.map_pinLabel),
+            content: ByteCountedTextField(
+              focusNode: focusNode,
+              maxBytes: allowedLabelBytes,
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: dialogContext.l10n.map_label,
+                helperText: dialogContext.l10n.map_labelUpdateHint,
+                helperMaxLines: 3,
+                helperStyle: TextStyle(
+                  color: _overlaySecondaryTextColor,
+                  fontSize: 12,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(MeshRadii.md),
+                  borderSide: BorderSide(color: scheme.outlineVariant),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(MeshRadii.md),
+                  borderSide: BorderSide(color: scheme.outlineVariant),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(MeshRadii.md),
+                  borderSide: BorderSide(color: scheme.primary, width: 1.5),
+                ),
+                filled: true,
+                fillColor: scheme.surfaceContainerLow,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 12,
+                ),
+              ),
+              onSubmitted: (_) {
+                final label = controller.text.trim().replaceAll('|', '/');
+                Navigator.pop(
+                  dialogContext,
+                  label.isEmpty ? defaultLabel : label,
+                );
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: Text(dialogContext.l10n.common_cancel),
+              ),
+              TextButton(
+                onPressed: () {
+                  final label = controller.text.trim().replaceAll('|', '/');
+                  Navigator.pop(
+                    dialogContext,
+                    label.isEmpty ? defaultLabel : label,
+                  );
+                },
+                child: Text(dialogContext.l10n.common_continue),
+              ),
+            ],
+          );
+        },
+      );
+      return result;
+    } finally {
+      focusNode.dispose();
+      controller.dispose();
+    }
   }
 
   String _formatMarkerMessage(LatLng position, String label, String flags) {

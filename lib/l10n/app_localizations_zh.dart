@@ -2066,6 +2066,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get map_label => '标签';
 
   @override
+  String get map_labelUpdateHint =>
+      'Using the same label as before will update the marker for MeshCore Open recipients.';
+
+  @override
   String get map_pointOfInterest => '兴趣点';
 
   @override

@@ -711,6 +711,7 @@
   "map_shareMarkerHere": "Marker hier teilen",
   "map_pinLabel": "Pin-Beschriftung",
   "map_label": "Beschriftung",
+  "map_labelUpdateHint": "Wenn Sie denselben Namen verwenden wie zuvor, wird die Markierung bei MeshCore Open-Empfängern aktualisiert.",
   "map_pointOfInterest": "Punkt von Interesse",
   "map_sendToContact": "An Kontakt senden",
   "map_sendToChannel": "An Kanal senden",

@@ -2188,6 +2188,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get map_label => 'Beschriftung';
 
   @override
+  String get map_labelUpdateHint =>
+      'Wenn Sie denselben Namen verwenden wie zuvor, wird die Markierung bei MeshCore Open-Empfängern aktualisiert.';
+
+  @override
   String get map_pointOfInterest => 'Punkt von Interesse';
 
   @override

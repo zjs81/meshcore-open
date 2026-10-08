@@ -3916,6 +3916,12 @@ abstract class AppLocalizations {
   /// **'Label'**
   String get map_label;
 
+  /// No description provided for @map_labelUpdateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Using the same label as before will update the marker for MeshCore Open recipients.'**
+  String get map_labelUpdateHint;
+
   /// No description provided for @map_pointOfInterest.
   ///
   /// In en, this message translates to:

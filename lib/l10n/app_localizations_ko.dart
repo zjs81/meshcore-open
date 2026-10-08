@@ -2098,6 +2098,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get map_label => '레이블';
 
   @override
+  String get map_labelUpdateHint =>
+      'Using the same label as before will update the marker for MeshCore Open recipients.';
+
+  @override
   String get map_pointOfInterest => '관심 지점';
 
   @override

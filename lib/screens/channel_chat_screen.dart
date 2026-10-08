@@ -38,6 +38,7 @@ import '../widgets/received_image_message.dart';
 import '../widgets/byte_count_input.dart';
 import '../widgets/chat_day_separator.dart';
 import '../widgets/empty_state.dart';
+
 import '../widgets/chat_zoom_wrapper.dart';
 import '../widgets/emoji_picker.dart';
 import '../widgets/gif_message.dart';
@@ -2011,6 +2012,79 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   }
 
   Widget _buildInputBar() {
+    Future<String?> promptForMarkerLabel(
+      BuildContext context, {
+      required double lat,
+      required double lon,
+      required String defaultLabel,
+      required String flags,
+    }) async {
+      final controller = TextEditingController(text: defaultLabel);
+      controller.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: controller.text.length,
+      );
+      final focusNode = FocusNode();
+
+      final latStr = lat.toStringAsFixed(6);
+      final lonStr = lon.toStringAsFixed(6);
+      final prefix = 'm:$latStr,$lonStr|';
+      final suffix = '|$flags';
+      final overheadBytes = utf8.encode(prefix + suffix).length;
+      final maxForContact = maxContactMessageBytes();
+      final maxForChannel = maxChannelMessageBytes(null);
+      final maxPayload = maxForContact < maxForChannel
+          ? maxForContact
+          : maxForChannel;
+      final allowedLabelBytes = (maxPayload - overheadBytes) > 0
+          ? (maxPayload - overheadBytes)
+          : 0;
+
+      try {
+        final result = await showDialog<String>(
+          context: context,
+          builder: (dialogContext) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (dialogContext.mounted) {
+                focusNode.requestFocus();
+                controller.selection = TextSelection(
+                  baseOffset: 0,
+                  extentOffset: controller.text.length,
+                );
+              }
+            });
+            return AlertDialog(
+              title: Text(dialogContext.l10n.map_pinLabel),
+              content: ByteCountedTextField(
+                focusNode: focusNode,
+                maxBytes: allowedLabelBytes,
+                controller: controller,
+                decoration: InputDecoration(
+                  helperText: dialogContext.l10n.map_labelUpdateHint,
+                  helperMaxLines: 3,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, null),
+                  child: Text(dialogContext.l10n.common_cancel),
+                ),
+                FilledButton(
+                  onPressed: () =>
+                      Navigator.pop(dialogContext, controller.text.trim()),
+                  child: Text(dialogContext.l10n.common_share),
+                ),
+              ],
+            );
+          },
+        );
+        return result;
+      } finally {
+        focusNode.dispose();
+        controller.dispose();
+      }
+    }
+
     final connector = context.watch<MeshCoreConnector>();
     final maxBytes = maxChannelMessageBytes(connector.selfName);
     final settings = context.watch<AppSettingsService>().settings;
@@ -2041,44 +2115,135 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  PopupMenuButton<String>(
-                    icon: const Icon(Icons.add_circle_outline),
-                    position: PopupMenuPosition.over,
-                    offset: Offset(0, showImageAction ? -112 : -64),
-                    tooltip: context.l10n.chat_selectSendAction,
-                    onSelected: (action) {
-                      switch (action) {
-                        case 'gif':
-                          _showGifPicker(context);
-                          break;
-                        case 'meshcore-image':
-                          _showImageSendPreview();
-                          break;
-                      }
+                  Builder(
+                    builder: (menuContext) {
+                      return IconButton(
+                        icon: const Icon(Icons.add_circle_outline),
+                        tooltip: context.l10n.chat_selectSendAction,
+                        onPressed: () async {
+                          final RenderBox button =
+                              menuContext.findRenderObject() as RenderBox;
+                          final RenderBox overlay =
+                              Overlay.of(menuContext).context.findRenderObject()
+                                  as RenderBox;
+                          final Offset buttonOffset = button.localToGlobal(
+                            Offset.zero,
+                            ancestor: overlay,
+                          );
+                          final items = <PopupMenuEntry<String>>[
+                            PopupMenuItem(
+                              value: 'gif',
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.gif_box),
+                                  const SizedBox(width: 12),
+                                  Text(context.l10n.chat_sendGif),
+                                ],
+                              ),
+                            ),
+                          ];
+                          if (showImageAction) {
+                            items.add(
+                              PopupMenuItem(
+                                value: 'meshcore-image',
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.image_outlined),
+                                    const SizedBox(width: 12),
+                                    Text(context.l10n.chat_sendImageLora),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                          if (context.read<MeshCoreConnector>().selfLatitude !=
+                                  null &&
+                              context.read<MeshCoreConnector>().selfLongitude !=
+                                  null) {
+                            items.add(
+                              PopupMenuItem(
+                                value: 'send-my-location',
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.my_location),
+                                    const SizedBox(width: 12),
+                                    Text(context.l10n.map_shareMarkerHere),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+
+                          final menuHeight =
+                              items.length * kMinInteractiveDimension + 16;
+                          final menuTop = (buttonOffset.dy - menuHeight).clamp(
+                            8.0,
+                            overlay.size.height,
+                          );
+                          final position = RelativeRect.fromLTRB(
+                            buttonOffset.dx,
+                            menuTop,
+                            overlay.size.width -
+                                buttonOffset.dx -
+                                button.size.width,
+                            overlay.size.height - buttonOffset.dy,
+                          );
+
+                          final selected = await showMenu<String>(
+                            context: menuContext,
+                            position: position,
+                            items: items,
+                          );
+                          if (!mounted || !menuContext.mounted) return;
+                          if (selected == null) return;
+                          switch (selected) {
+                            case 'gif':
+                              _showGifPicker(context);
+                              break;
+                            case 'meshcore-image':
+                              _showImageSendPreview();
+                              break;
+                            case 'send-my-location':
+                              final connector = context
+                                  .read<MeshCoreConnector>();
+                              if (connector.selfLatitude == null ||
+                                  connector.selfLongitude == null) {
+                                showDismissibleSnackBar(
+                                  context,
+                                  content: Text(
+                                    context.l10n.map_connectToShareMarkers,
+                                  ),
+                                );
+                                break;
+                              }
+                              final lat = connector.selfLatitude!;
+                              final lon = connector.selfLongitude!;
+                              final initialLabel =
+                                  connector.selfName?.isNotEmpty == true
+                                  ? connector.selfName!
+                                  : context.l10n.map_sharedPin;
+                              final label = await promptForMarkerLabel(
+                                context,
+                                lat: lat,
+                                lon: lon,
+                                defaultLabel: initialLabel,
+                                flags: 'poi',
+                              );
+                              if (label == null || label.trim().isEmpty) break;
+                              if (!mounted || !menuContext.mounted) break;
+                              final connector2 = context
+                                  .read<MeshCoreConnector>();
+                              final markerText =
+                                  'm:${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}|${label.trim()}|poi';
+                              connector2.sendChannelMessage(
+                                widget.channel,
+                                markerText,
+                              );
+                              break;
+                          }
+                        },
+                      );
                     },
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: 'gif',
-                        child: Row(
-                          children: [
-                            const Icon(Icons.gif_box),
-                            const SizedBox(width: 12),
-                            Text(context.l10n.chat_sendGif),
-                          ],
-                        ),
-                      ),
-                      if (showImageAction)
-                        PopupMenuItem(
-                          value: 'meshcore-image',
-                          child: Row(
-                            children: [
-                              const Icon(Icons.image_outlined),
-                              const SizedBox(width: 12),
-                              Text(context.l10n.chat_sendImageLora),
-                            ],
-                          ),
-                        ),
-                    ],
                   ),
                   if (settings.translationEnabled)
                     MessageTranslationButton(
