@@ -559,71 +559,106 @@ class _ChatScreenState extends State<ChatScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.add_circle_outline),
-                position: PopupMenuPosition.over,
-                offset: const Offset(0, -160),
-                tooltip: context.l10n.chat_selectSendAction,
-                onSelected: (action) async {
-                  switch (action) {
-                    case 'gif':
-                      _showGifPicker(context);
-                      break;
-                    case 'send-my-location':
-                      final connector = context.read<MeshCoreConnector>();
-                      if (connector.selfLatitude == null ||
-                          connector.selfLongitude == null) {
-                        showDismissibleSnackBar(
-                          context,
-                          content: Text(context.l10n.map_connectToShareMarkers),
-                        );
-                        break;
+              Builder(
+                builder: (menuContext) {
+                  return IconButton(
+                    icon: const Icon(Icons.add_circle_outline),
+                    tooltip: context.l10n.chat_selectSendAction,
+                    onPressed: () async {
+                      final RenderBox button =
+                          menuContext.findRenderObject() as RenderBox;
+                      final RenderBox overlay =
+                          Overlay.of(menuContext).context.findRenderObject()
+                              as RenderBox;
+                      final Offset buttonOffset = button.localToGlobal(
+                        Offset.zero,
+                        ancestor: overlay,
+                      );
+                      const menuHeight = 2 * kMinInteractiveDimension + 16;
+                      final menuTop = (buttonOffset.dy - menuHeight).clamp(
+                        8.0,
+                        overlay.size.height,
+                      );
+                      final position = RelativeRect.fromLTRB(
+                        buttonOffset.dx,
+                        menuTop,
+                        overlay.size.width -
+                            buttonOffset.dx -
+                            button.size.width,
+                        overlay.size.height - buttonOffset.dy,
+                      );
+
+                      final selected = await showMenu<String>(
+                        context: menuContext,
+                        position: position,
+                        items: [
+                          PopupMenuItem(
+                            value: 'gif',
+                            child: Row(
+                              children: [
+                                const Icon(Icons.gif_box),
+                                const SizedBox(width: 12),
+                                Text(context.l10n.chat_sendGif),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'send-my-location',
+                            child: Row(
+                              children: [
+                                const Icon(Icons.my_location),
+                                const SizedBox(width: 12),
+                                Text(context.l10n.map_shareMarkerHere),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                      if (!mounted || !menuContext.mounted) return;
+                      if (selected == null) return;
+                      switch (selected) {
+                        case 'gif':
+                          _showGifPicker(context);
+                          break;
+                        case 'send-my-location':
+                          final connector = context.read<MeshCoreConnector>();
+                          if (connector.selfLatitude == null ||
+                              connector.selfLongitude == null) {
+                            showDismissibleSnackBar(
+                              context,
+                              content: Text(
+                                context.l10n.map_connectToShareMarkers,
+                              ),
+                            );
+                            break;
+                          }
+                          final lat = connector.selfLatitude!;
+                          final lon = connector.selfLongitude!;
+                          final initialLabel =
+                              connector.selfName?.isNotEmpty == true
+                              ? connector.selfName!
+                              : context.l10n.map_sharedPin;
+                          final label = await promptForMarkerLabel(
+                            context,
+                            lat: lat,
+                            lon: lon,
+                            defaultLabel: initialLabel,
+                            flags: 'poi',
+                          );
+                          if (label == null || label.trim().isEmpty) break;
+                          if (!mounted || !menuContext.mounted) break;
+                          final connector2 = context.read<MeshCoreConnector>();
+                          final markerText =
+                              'm:${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}|${label.trim()}|poi';
+                          connector2.sendMessage(
+                            _resolveContact(connector2),
+                            markerText,
+                          );
+                          break;
                       }
-                      final lat = connector.selfLatitude!;
-                      final lon = connector.selfLongitude!;
-                      final initialLabel =
-                          connector.selfName?.isNotEmpty == true
-                          ? connector.selfName!
-                          : context.l10n.map_sharedPin;
-                      final label = await promptForMarkerLabel(
-                        context,
-                        lat: lat,
-                        lon: lon,
-                        defaultLabel: initialLabel,
-                        flags: 'poi',
-                      );
-                      if (label == null || label.trim().isEmpty) break;
-                      final markerText =
-                          'm:${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}|${label.trim()}|poi';
-                      connector.sendMessage(
-                        _resolveContact(connector),
-                        markerText,
-                      );
-                      break;
-                  }
+                    },
+                  );
                 },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'gif',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.gif_box),
-                        const SizedBox(width: 12),
-                        Text(context.l10n.chat_sendGif),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'send-my-location',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.my_location),
-                        const SizedBox(width: 12),
-                        Text(context.l10n.map_shareMarkerHere),
-                      ],
-                    ),
-                  ),
-                ],
               ),
               if (settings.translationEnabled)
                 MessageTranslationButton(
