@@ -549,6 +549,13 @@ class AppLocalizationsJa extends AppLocalizations {
       'GPS位置が変化したときにゼロホップアドバートを送信します（アドバートへの位置情報の含有が必要）。';
 
   @override
+  String get settings_autoSelfAdvertAsFlood => '自動自己広告をフラッドとして送信';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      '有効な場合、自動の自己広告はゼロホップではなくフラッドとして送信されます。';
+
+  @override
   String get settings_multiAck => 'マルチ ACK';
 
   @override

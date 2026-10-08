@@ -1132,6 +1132,18 @@ abstract class AppLocalizations {
   /// **'App setting: when your GPS position changes, automatically advertise your new location to nearby nodes only (requires Advert Location).'**
   String get settings_autoZeroHopAdvertOnGpsUpdateSubtitle;
 
+  /// No description provided for @settings_autoSelfAdvertAsFlood.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Auto Self Advert As Flood'**
+  String get settings_autoSelfAdvertAsFlood;
+
+  /// No description provided for @settings_autoSelfAdvertAsFloodSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When enabled, automated self adverts are sent as flood instead of zero-hop.'**
+  String get settings_autoSelfAdvertAsFloodSubtitle;
+
   /// No description provided for @settings_multiAck.
   ///
   /// In en, this message translates to:

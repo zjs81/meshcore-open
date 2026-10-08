@@ -102,6 +102,8 @@
   "settings_longitude": "Longitud",
   "settings_autoZeroHopAdvertOnGpsUpdate": "Anuncio de cero saltos automático al actualizar GPS",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Cuando cambie la ubicación GPS, enviar un anuncio de cero saltos (requiere ubicación en anuncio).",
+  "settings_autoSelfAdvertAsFlood": "Enviar anuncio propio automático como flood",
+  "settings_autoSelfAdvertAsFloodSubtitle": "Cuando está activado, los anuncios propios automatizados se envían como flood en lugar de zero-hop.",
   "settings_privacyMode": "Modo de privacidad",
   "settings_privacyModeSubtitle": "Ocultar nombre/ubicación en anuncios",
   "settings_privacyModeToggle": "Activar el modo de privacidad para ocultar tu nombre y ubicación en los anuncios.",

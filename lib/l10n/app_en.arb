@@ -250,6 +250,8 @@
   "settings_advertLocationSubtitle": "Include location in advert.",
   "settings_autoZeroHopAdvertOnGpsUpdate": "Auto Zero-Hop Advert On GPS Update",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "App setting: when your GPS position changes, automatically advertise your new location to nearby nodes only (requires Advert Location).",
+  "settings_autoSelfAdvertAsFlood": "Send Auto Self Advert As Flood",
+  "settings_autoSelfAdvertAsFloodSubtitle": "When enabled, automated self adverts are sent as flood instead of zero-hop.",
   "settings_multiAck": "Multi-ACKs",
   "settings_multiAckSubtitle": "Send extra ACKs for better delivery; uses more airtime",
   "settings_telemetryModeUpdated": "Telemetry mode updated",

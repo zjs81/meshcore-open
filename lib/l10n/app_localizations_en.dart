@@ -571,6 +571,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'App setting: when your GPS position changes, automatically advertise your new location to nearby nodes only (requires Advert Location).';
 
   @override
+  String get settings_autoSelfAdvertAsFlood => 'Send Auto Self Advert As Flood';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      'When enabled, automated self adverts are sent as flood instead of zero-hop.';
+
+  @override
   String get settings_multiAck => 'Multi-ACKs';
 
   @override
