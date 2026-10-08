@@ -1565,10 +1565,14 @@ class _RadioSettingsDialogState extends State<_RadioSettingsDialog> {
   LoRaCodingRate _codingRate = LoRaCodingRate.cr4_5;
   final _txPowerController = TextEditingController(text: '20');
   bool _clientRepeat = false;
+  int _pathHashByteWidth = 1;
   int? _selectedPresetIndex;
   _RadioSettingsSnapshot? _lastNonRepeatSnapshot;
   String? _frequencyError;
   String? _txPowerError;
+  bool get _supportsPathHashMode =>
+      (widget.connector.firmwareVerCode ?? 0) >=
+      _minFirmwareVerCodeForPathHashMode;
 
   AppDebugLogService get _appLog =>
       Provider.of<AppDebugLogService>(context, listen: false);
@@ -1622,6 +1626,7 @@ class _RadioSettingsDialogState extends State<_RadioSettingsDialog> {
       _txPowerController.text = widget.connector.currentTxPower.toString();
     }
 
+    _pathHashByteWidth = widget.connector.pathHashByteWidth;
     _clientRepeat = widget.connector.clientRepeat ?? false;
     _selectedPresetIndex = _findMatchingPresetIndex();
     if (_clientRepeat) {
@@ -1791,6 +1796,7 @@ class _RadioSettingsDialogState extends State<_RadioSettingsDialog> {
     _spreadingFactor = preset.spreadingFactor;
     _codingRate = preset.codingRate;
     _txPowerController.text = preset.txPowerDbm.toString();
+    _pathHashByteWidth = preset.pathHashByteWidth;
     _selectedPresetIndex = index;
     _lastNonRepeatSnapshot = baseSnapshot;
   }
@@ -1950,6 +1956,10 @@ class _RadioSettingsDialogState extends State<_RadioSettingsDialog> {
         return;
       }
       await widget.connector.sendFrame(buildSetRadioTxPowerFrame(txPower));
+      if (_supportsPathHashMode &&
+          _pathHashByteWidth != widget.connector.pathHashByteWidth) {
+        await widget.connector.setPathHashMode(_pathHashByteWidth - 1);
+      }
       final selfInfo = widget.connector.receivedFrames
           .firstWhere((f) => f.isNotEmpty && f[0] == respCodeSelfInfo)
           .timeout(const Duration(seconds: 5));
@@ -2183,6 +2193,34 @@ class _RadioSettingsDialogState extends State<_RadioSettingsDialog> {
               },
             ),
             const SizedBox(height: 16),
+            if (_supportsPathHashMode) ...[
+              DropdownButtonFormField<int>(
+                initialValue: _pathHashByteWidth,
+                decoration: InputDecoration(
+                  labelText: l10n.repeater_pathHashMode,
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  DropdownMenuItem(
+                    value: 1,
+                    child: Text(l10n.repeater_pathHashModeOption0),
+                  ),
+                  DropdownMenuItem(
+                    value: 2,
+                    child: Text(l10n.repeater_pathHashModeOption1),
+                  ),
+                  DropdownMenuItem(
+                    value: 3,
+                    child: Text(l10n.repeater_pathHashModeOption2),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() => _pathHashByteWidth = value);
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
             TextField(
               controller: _txPowerController,
               onChanged: (_) => _handleManualSettingsChanged('tx power'),

@@ -50,6 +50,7 @@ class RadioSettings {
   final LoRaSpreadingFactor spreadingFactor;
   final LoRaCodingRate codingRate;
   final int txPowerDbm;
+  final int pathHashByteWidth;
 
   RadioSettings({
     required this.frequencyMHz,
@@ -57,6 +58,7 @@ class RadioSettings {
     required this.spreadingFactor,
     required this.codingRate,
     required this.txPowerDbm,
+    this.pathHashByteWidth = 1, // app default; presets override if needed
   });
 
   // Regional preset configurations
