@@ -472,6 +472,79 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildInputBar(MeshCoreConnector connector) {
+    Future<String?> promptForMarkerLabel(
+      BuildContext context, {
+      required double lat,
+      required double lon,
+      required String defaultLabel,
+      required String flags,
+    }) async {
+      final controller = TextEditingController(text: defaultLabel);
+      controller.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: controller.text.length,
+      );
+      final focusNode = FocusNode();
+
+      final latStr = lat.toStringAsFixed(6);
+      final lonStr = lon.toStringAsFixed(6);
+      final prefix = 'm:$latStr,$lonStr|';
+      final suffix = '|$flags';
+      final overheadBytes = utf8.encode(prefix + suffix).length;
+      final maxForContact = maxContactMessageBytes();
+      final maxForChannel = maxChannelMessageBytes(null);
+      final maxPayload = maxForContact < maxForChannel
+          ? maxForContact
+          : maxForChannel;
+      final allowedLabelBytes = (maxPayload - overheadBytes) > 0
+          ? (maxPayload - overheadBytes)
+          : 0;
+
+      try {
+        final result = await showDialog<String>(
+          context: context,
+          builder: (dialogContext) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (dialogContext.mounted) {
+                focusNode.requestFocus();
+                controller.selection = TextSelection(
+                  baseOffset: 0,
+                  extentOffset: controller.text.length,
+                );
+              }
+            });
+            return AlertDialog(
+              title: Text(dialogContext.l10n.map_pinLabel),
+              content: ByteCountedTextField(
+                focusNode: focusNode,
+                maxBytes: allowedLabelBytes,
+                controller: controller,
+                decoration: InputDecoration(
+                  helperText: dialogContext.l10n.map_labelUpdateHint,
+                  helperMaxLines: 3,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, null),
+                  child: Text(dialogContext.l10n.common_cancel),
+                ),
+                FilledButton(
+                  onPressed: () =>
+                      Navigator.pop(dialogContext, controller.text.trim()),
+                  child: Text(dialogContext.l10n.common_share),
+                ),
+              ],
+            );
+          },
+        );
+        return result;
+      } finally {
+        focusNode.dispose();
+        controller.dispose();
+      }
+    }
+
     final maxBytes = maxContactMessageBytes();
     final scheme = Theme.of(context).colorScheme;
     final settings = context.watch<AppSettingsService>().settings;
@@ -486,10 +559,71 @@ class _ChatScreenState extends State<ChatScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconButton(
-                icon: const Icon(Icons.gif_box_outlined),
-                tooltip: context.l10n.chat_sendGif,
-                onPressed: () => _showGifPicker(context),
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.add_circle_outline),
+                position: PopupMenuPosition.over,
+                offset: const Offset(0, -160),
+                tooltip: context.l10n.chat_selectSendAction,
+                onSelected: (action) async {
+                  switch (action) {
+                    case 'gif':
+                      _showGifPicker(context);
+                      break;
+                    case 'send-my-location':
+                      final connector = context.read<MeshCoreConnector>();
+                      if (connector.selfLatitude == null ||
+                          connector.selfLongitude == null) {
+                        showDismissibleSnackBar(
+                          context,
+                          content: Text(context.l10n.map_connectToShareMarkers),
+                        );
+                        break;
+                      }
+                      final lat = connector.selfLatitude!;
+                      final lon = connector.selfLongitude!;
+                      final initialLabel =
+                          connector.selfName?.isNotEmpty == true
+                          ? connector.selfName!
+                          : context.l10n.map_sharedPin;
+                      final label = await promptForMarkerLabel(
+                        context,
+                        lat: lat,
+                        lon: lon,
+                        defaultLabel: initialLabel,
+                        flags: 'poi',
+                      );
+                      if (label == null || label.trim().isEmpty) break;
+                      final markerText =
+                          'm:${lat.toStringAsFixed(6)},${lon.toStringAsFixed(6)}|${label.trim()}|poi';
+                      connector.sendMessage(
+                        _resolveContact(connector),
+                        markerText,
+                      );
+                      break;
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'gif',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.gif_box),
+                        const SizedBox(width: 12),
+                        Text(context.l10n.chat_sendGif),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'send-my-location',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.my_location),
+                        const SizedBox(width: 12),
+                        Text(context.l10n.map_shareMarkerHere),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               if (settings.translationEnabled)
                 MessageTranslationButton(

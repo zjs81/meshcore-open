@@ -1145,6 +1145,7 @@
   "map_setAsMyLocation": "Set as my location",
   "map_pinLabel": "Pin label",
   "map_label": "Label",
+  "map_labelUpdateHint": "Using the same label as before will update the marker for MeshCore Open recipients.",
   "map_pointOfInterest": "Point of interest",
   "map_sendToContact": "Send to contact",
   "map_sendToChannel": "Send to channel",
