@@ -298,6 +298,10 @@ class MeshCoreConnector extends ChangeNotifier {
   Stopwatch? _airtimeBumpStopwatch;
   int _prevTotalAirSecs = 0;
   int? _batteryMillivolts;
+  // Thresholds (percent) that trigger a low-battery notification once per
+  // crossing, re-arming 5 points above the threshold after recharge.
+  static const List<int> _lowBatteryThresholds = [25, 10];
+  final Set<int> _batteryAlertedThresholds = {};
   double? _selfLatitude;
   double? _selfLongitude;
   final List<DirectRepeater> _directRepeaters = List.empty(growable: true);
@@ -3718,6 +3722,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _allowedRepeatFreqRanges = null;
     _autoAddMaxHops = null;
     _contactsStorageFull = false;
+    _batteryAlertedThresholds.clear();
     _repeaterBatterySnapshots.clear();
 
     _activeTransport = MeshCoreTransportType.bluetooth;
@@ -6471,6 +6476,7 @@ class MeshCoreConnector extends ChangeNotifier {
       _batteryMillivolts = reader.readUInt16LE();
       _storageUsedKb = reader.readUInt32LE();
       _storageTotalKb = reader.readUInt32LE();
+      _checkLowBatteryThresholds();
       final volts = (_batteryMillivolts! / 1000.0).toStringAsFixed(2);
       _appDebugLogService?.info(
         'Pulled battery: $volts V ($_batteryMillivolts mV)',
@@ -6482,6 +6488,27 @@ class MeshCoreConnector extends ChangeNotifier {
         'Error parsing battery and storage frame: $e',
         tag: 'Connector',
       );
+    }
+  }
+
+  void _checkLowBatteryThresholds() {
+    final percent = batteryPercent;
+    if (percent == null) return;
+
+    for (final threshold in _lowBatteryThresholds) {
+      if (percent <= threshold &&
+          !_batteryAlertedThresholds.contains(threshold)) {
+        _batteryAlertedThresholds.add(threshold);
+        NotificationService().showLowBatteryNotification(
+          batteryPercent: percent,
+          threshold: threshold,
+        );
+      } else if (percent > threshold + 5 &&
+          _batteryAlertedThresholds.contains(threshold)) {
+        // Re-arm once the battery recovers 5 points above the threshold,
+        // so a recharge + discharge cycle alerts again without flapping.
+        _batteryAlertedThresholds.remove(threshold);
+      }
     }
   }
 

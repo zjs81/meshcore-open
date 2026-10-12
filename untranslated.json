@@ -1,1 +1,86 @@
-{}
+{
+  "bg": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "de": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "es": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "fr": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "hu": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "it": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "ja": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "ko": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "nl": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "pl": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "pt": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "ru": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "sk": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "sl": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "sv": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "uk": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ],
+
+  "zh": [
+    "notification_lowBatteryTitle",
+    "notification_lowBatteryBody"
+  ]
+}
