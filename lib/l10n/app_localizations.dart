@@ -1948,6 +1948,90 @@ abstract class AppLocalizations {
   /// **'Number of retry attempts before marking a message as failed'**
   String get appSettings_maxMessageRetriesSubtitle;
 
+  /// No description provided for @appSettings_ipfsImageLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'IPFS provider configuration'**
+  String get appSettings_ipfsImageLinks;
+
+  /// No description provided for @appSettings_ipfsImageLinksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload for url Images (or Files) via IPFS provider and default gateway to receive'**
+  String get appSettings_ipfsImageLinksSubtitle;
+
+  /// No description provided for @appSettings_publicIpfsGateway.
+  ///
+  /// In en, this message translates to:
+  /// **'Public gateway'**
+  String get appSettings_publicIpfsGateway;
+
+  /// No description provided for @appSettings_ipfsGatewayDeactivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivated'**
+  String get appSettings_ipfsGatewayDeactivated;
+
+  /// No description provided for @appSettings_ipfsGatewayPinata.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinata'**
+  String get appSettings_ipfsGatewayPinata;
+
+  /// No description provided for @appSettings_ipfsGatewayFilebase.
+  ///
+  /// In en, this message translates to:
+  /// **'Filebase'**
+  String get appSettings_ipfsGatewayFilebase;
+
+  /// No description provided for @appSettings_ipfsGatewayCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom (Kubo)'**
+  String get appSettings_ipfsGatewayCustom;
+
+  /// No description provided for @appSettings_uploadIpfsProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload provider'**
+  String get appSettings_uploadIpfsProvider;
+
+  /// No description provided for @appSettings_uploadIpfsGateway.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload gateway'**
+  String get appSettings_uploadIpfsGateway;
+
+  /// No description provided for @appSettings_uploadIpfsGatewaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway to share Image or File as url-link. Leave empty to use ipfs: format, which may not be opened by other clients.'**
+  String get appSettings_uploadIpfsGatewaySubtitle;
+
+  /// No description provided for @appSettings_uploadIpfsEndpoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload endpoint'**
+  String get appSettings_uploadIpfsEndpoint;
+
+  /// No description provided for @appSettings_uploadIpfsEndpointSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The API endpoint used to upload files'**
+  String get appSettings_uploadIpfsEndpointSubtitle;
+
+  /// No description provided for @appSettings_uploadIpfsApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload API key'**
+  String get appSettings_uploadIpfsApiKey;
+
+  /// No description provided for @appSettings_ipfsImageLinksDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Public gateway downloads ipfs: format images. Upload gateway is used to generate share links for uploaded url images or files.'**
+  String get appSettings_ipfsImageLinksDescription;
+
   /// No description provided for @appSettings_battery.
   ///
   /// In en, this message translates to:
@@ -3135,6 +3219,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send low-res image over radio'**
   String get chat_sendImageLora;
+
+  /// No description provided for @chat_sendImageIpfs.
+  ///
+  /// In en, this message translates to:
+  /// **'Send image or file via IPFS'**
+  String get chat_sendImageIpfs;
+
+  /// No description provided for @chat_ipfsUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'IPFS upload failed: {error}'**
+  String chat_ipfsUploadFailed(String error);
+
+  /// No description provided for @chat_ipfsUploadNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure an IPFS upload provider in App Settings first.'**
+  String get chat_ipfsUploadNotConfigured;
 
   /// Shown when picking or reading a photo to send fails
   ///

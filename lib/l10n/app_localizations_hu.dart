@@ -1060,6 +1060,52 @@ class AppLocalizationsHu extends AppLocalizations {
       'Az üzenet sikertelenként való megjelölése előtti újrapróbálkozások száma';
 
   @override
+  String get appSettings_ipfsImageLinks => 'IPFS provider configuration';
+
+  @override
+  String get appSettings_ipfsImageLinksSubtitle =>
+      'Upload for url Images (or Files) via IPFS provider and default gateway to receive';
+
+  @override
+  String get appSettings_publicIpfsGateway => 'Public gateway';
+
+  @override
+  String get appSettings_ipfsGatewayDeactivated => 'Deactivated';
+
+  @override
+  String get appSettings_ipfsGatewayPinata => 'Pinata';
+
+  @override
+  String get appSettings_ipfsGatewayFilebase => 'Filebase';
+
+  @override
+  String get appSettings_ipfsGatewayCustom => 'Custom (Kubo)';
+
+  @override
+  String get appSettings_uploadIpfsProvider => 'Upload provider';
+
+  @override
+  String get appSettings_uploadIpfsGateway => 'Upload gateway';
+
+  @override
+  String get appSettings_uploadIpfsGatewaySubtitle =>
+      'Gateway to share Image or File as url-link. Leave empty to use ipfs: format, which may not be opened by other clients.';
+
+  @override
+  String get appSettings_uploadIpfsEndpoint => 'Upload endpoint';
+
+  @override
+  String get appSettings_uploadIpfsEndpointSubtitle =>
+      'The API endpoint used to upload files';
+
+  @override
+  String get appSettings_uploadIpfsApiKey => 'Upload API key';
+
+  @override
+  String get appSettings_ipfsImageLinksDescription =>
+      'Public gateway downloads ipfs: format images. Upload gateway is used to generate share links for uploaded url images or files.';
+
+  @override
   String get appSettings_battery => 'Akkumulátor';
 
   @override
@@ -1751,6 +1797,18 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get chat_sendImageLora => 'Kép küldése MeshCore-on keresztül';
+
+  @override
+  String get chat_sendImageIpfs => 'Send image or file via IPFS';
+
+  @override
+  String chat_ipfsUploadFailed(String error) {
+    return 'IPFS upload failed: $error';
+  }
+
+  @override
+  String get chat_ipfsUploadNotConfigured =>
+      'Configure an IPFS upload provider in App Settings first.';
 
   @override
   String get chat_imagePickFailed => 'Nem tudtam ezt a fenti fényre kapni';

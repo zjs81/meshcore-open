@@ -3794,6 +3794,9 @@ class MeshCoreConnector extends ChangeNotifier {
       if (pendingAck != null) {
         _pendingGenericAckQueue.remove(pendingAck);
       }
+      if (_activeTransport == MeshCoreTransportType.tcp) {
+        unawaited(disconnect(manual: false));
+      }
       rethrow;
     }
 
@@ -5846,17 +5849,16 @@ class MeshCoreConnector extends ChangeNotifier {
         _findChannelByIndex(index)?.storageId ?? _slotChannelIds[index];
     // Delete by setting empty name and zero PSK
     await sendFrame(buildSetChannelFrame(index, '', Uint8List(16)));
+    _channelMessages.remove(index);
+    _processedChannelReactions.remove(index);
+    // Refresh before clearing history so messages from an in-flight queue sync
+    // cannot recreate the channel's stored history after it has been deleted.
+    await getChannels(force: true);
     // Another slot holding the same PSK keeps the shared history.
-    final stillHeld = _channels.any(
-      (channel) => channel.index != index && channel.storageId == channelId,
-    );
+    final stillHeld = _slotChannelIds.containsValue(channelId);
     if (channelId != null && !stillHeld) {
       await _clearChannelStorage(channelId);
     }
-    _channelMessages.remove(index);
-    _processedChannelReactions.remove(index);
-    // Refresh channels after deleting
-    await getChannels(force: true);
   }
 
   /// Removes everything persisted for [channelId]: messages, settings,

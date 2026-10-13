@@ -313,16 +313,34 @@ class AppSettingsService extends ChangeNotifier {
     await updateSettings(_settings.copyWith(jumpToOldestUnread: value));
   }
 
-  Future<void> setImageMessagesEnabled(bool value) async {
-    await updateSettings(_settings.copyWith(imageMessagesEnabled: value));
-  }
-
   Future<void> setNetworkMapUploadEnabled(bool value) async {
     await updateSettings(_settings.copyWith(networkMapUploadEnabled: value));
   }
 
   Future<void> setNetworkMapPromptShown(bool value) async {
     await updateSettings(_settings.copyWith(networkMapPromptShown: value));
+  }
+
+  Future<void> setIpfsImageSettings({
+    required String publicGateway,
+    required String uploadGateway,
+    required String uploadEndpoint,
+    required String uploadApiKey,
+  }) async {
+    final normalizedPublicGateway = normalizeIpfsGateway(publicGateway);
+    final normalizedUploadGateway = normalizeIpfsGateway(uploadGateway);
+    await updateSettings(
+      _settings.copyWith(
+        publicIpfsGateway: normalizedPublicGateway,
+        uploadIpfsGateway: normalizedUploadGateway,
+        uploadIpfsEndpoint: uploadEndpoint.trim(),
+        uploadIpfsApiKey: uploadApiKey.trim(),
+      ),
+    );
+  }
+
+  Future<void> setImageMessagesEnabled(bool value) async {
+    await updateSettings(_settings.copyWith(imageMessagesEnabled: value));
   }
 
   /// See [AppSettings.imageProcessAutomatically]. `main.dart` mirrors this into

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:file_selector/file_selector.dart' as file_selector;
 import 'package:provider/provider.dart';
 
 import '../utils/app_logger.dart';
@@ -20,6 +21,7 @@ import '../widgets/message_status_icon.dart';
 import '../widgets/empty_state.dart';
 import '../helpers/chat_scroll_controller.dart';
 import '../helpers/gif_helper.dart';
+import '../helpers/ipfs_upload_helper.dart';
 import '../models/channel_message.dart';
 import '../models/contact.dart';
 import '../l10n/contact_localization.dart';
@@ -520,31 +522,150 @@ class _ChatScreenState extends State<ChatScreen> {
       sendTooltip: context.l10n.chat_sendMessageTo(
         _resolveContact(connector).name,
       ),
-      // No image action here: the image wire format is GRP_DATA, a channel
-      // primitive with no DM equivalent (see the note at the top of this
-      // file).
-      actionsBuilder: () => [
-        ChatComposerAction(
-          id: 'gif',
-          icon: Icons.gif_box,
-          label: context.l10n.chat_sendGif,
-        ),
-        ChatComposerAction(
-          id: 'send-my-location',
-          icon: Icons.my_location,
-          label: context.l10n.chat_shareMyLocation,
-        ),
-      ],
+      actionsBuilder: () {
+        final showIpfsAction = context
+            .read<AppSettingsService>()
+            .settings
+            .uploadIpfsEndpoint
+            .trim()
+            .isNotEmpty;
+        return [
+          ChatComposerAction(
+            id: 'gif',
+            icon: Icons.gif_box,
+            label: context.l10n.chat_sendGif,
+          ),
+          if (showIpfsAction)
+            ChatComposerAction(
+              id: 'ipfs-image',
+              icon: Icons.cloud_upload_outlined,
+              label: context.l10n.chat_sendImageIpfs,
+            ),
+          ChatComposerAction(
+            id: 'send-my-location',
+            icon: Icons.my_location,
+            label: context.l10n.chat_shareMyLocation,
+          ),
+        ];
+      },
       onAction: (action) {
         if (!mounted) return;
         switch (action) {
           case 'gif':
             showChatGifPicker(context, _textController);
+          case 'ipfs-image':
+            _sendImageViaIpfs();
           case 'send-my-location':
             _shareMyLocation(context.read<MeshCoreConnector>());
         }
       },
     );
+  }
+
+  Future<void> _sendImageViaIpfs() async {
+    final l10n = context.l10n;
+    final settings = context.read<AppSettingsService>().settings;
+    if (settings.uploadIpfsEndpoint.trim().isEmpty) {
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.chat_ipfsUploadNotConfigured),
+      );
+      return;
+    }
+
+    final file_selector.XFile? file;
+    try {
+      file = await file_selector.openFile();
+    } on Exception catch (error) {
+      if (!mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.chat_ipfsUploadFailed('$error')),
+      );
+      return;
+    }
+    if (file == null || !mounted) return;
+
+    final Uint8List bytes;
+    try {
+      bytes = await file.readAsBytes();
+    } on Exception catch (error) {
+      if (!mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.chat_ipfsUploadFailed('$error')),
+      );
+      return;
+    }
+    if (!mounted) return;
+    if (bytes.isEmpty) {
+      showDismissibleSnackBar(
+        context,
+        content: Text(
+          l10n.chat_ipfsUploadFailed('The selected file is empty.'),
+        ),
+      );
+      return;
+    }
+
+    final String messageUrl;
+    try {
+      messageUrl = await IpfsUploadHelper.uploadImageWithSettings(
+        settings: settings,
+        bytes: bytes,
+        fileName: file.name,
+        mimeType: IpfsUploadHelper.mimeTypeForFileName(file.name),
+      );
+    } on Exception catch (error) {
+      if (!mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.chat_ipfsUploadFailed('$error')),
+      );
+      return;
+    }
+    if (!mounted) return;
+
+    final connector = context.read<MeshCoreConnector>();
+    final contact = _resolveContact(connector);
+    final existingText = _textController.text.trim();
+    var messageText = existingText.isEmpty
+        ? '$messageUrl '
+        : '$messageUrl\n$existingText';
+    final maxBytes = maxContactMessageBytes();
+    var encodedText = connector.prepareContactOutboundText(
+      contact,
+      messageText,
+    );
+    if (utf8.encode(encodedText).length > maxBytes && existingText.isNotEmpty) {
+      final originalCharacters = existingText.characters.toList();
+      for (var count = originalCharacters.length - 1; count >= 0; count--) {
+        final shortened = originalCharacters.take(count).join();
+        final candidate = '$messageUrl\n$shortened';
+        final candidateEncoded = connector.prepareContactOutboundText(
+          contact,
+          candidate,
+        );
+        if (utf8.encode(candidateEncoded).length <= maxBytes) {
+          messageText = candidate;
+          encodedText = candidateEncoded;
+          break;
+        }
+      }
+    }
+    if (utf8.encode(encodedText).length > maxBytes) {
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.chat_messageTooLong(maxBytes)),
+      );
+      return;
+    }
+
+    _textController.value = TextEditingValue(
+      text: messageText,
+      selection: TextSelection.collapsed(offset: messageText.length),
+    );
+    _textFieldFocusNode.requestFocus();
   }
 
   /// Shares the radio's own position as a map marker. Shares the text send
@@ -1224,6 +1345,7 @@ class _MessageBubble extends StatelessWidget {
     final urlImagesEnabled = context.select<MeshCoreConnector, bool>(
       (connector) => connector.isContactUrlImagesEnabled(sourceId),
     );
+    final publicIpfsGateway = settingsService.settings.publicIpfsGateway;
 
     final colors = MessageBubbleColors.of(
       scheme,
@@ -1351,6 +1473,7 @@ class _MessageBubble extends StatelessWidget {
                             MessageUrlImageFutureBuilder(
                               messageId: message.messageId,
                               text: message.text,
+                              publicGateway: publicIpfsGateway,
                               builder: (context, snapshot) {
                                 final imageAttachment = snapshot.data;
 

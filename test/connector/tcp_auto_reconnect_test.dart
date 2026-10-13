@@ -198,13 +198,28 @@ void main() {
       expect(_connector.isTcpTransportConnected, isTrue);
 
       // The companion goes away entirely: attempts fail and are rescheduled.
-      await companion.close();
-      await _waitFor(
-        () => _connector.state == MeshCoreConnectionState.disconnected,
-      );
-      await Future<void>.delayed(const Duration(milliseconds: 1500));
+      var sawRetryAttempt = false;
+      void observeRetryAttempt() {
+        if (_connector.state == MeshCoreConnectionState.connecting) {
+          sawRetryAttempt = true;
+        }
+      }
+
+      _connector.addListener(observeRetryAttempt);
+      try {
+        await companion.close();
+        // Wait for a retry to start and fail, then verify another backoff is
+        // scheduled. A fixed delay can observe the connector mid-attempt.
+        await _waitFor(
+          () =>
+              sawRetryAttempt &&
+              _connector.state == MeshCoreConnectionState.disconnected &&
+              _connector.isAutoReconnectScheduled,
+        );
+      } finally {
+        _connector.removeListener(observeRetryAttempt);
+      }
       expect(_connector.isTcpTransportConnected, isFalse);
-      expect(_connector.isAutoReconnectScheduled, isTrue);
     },
   );
 }

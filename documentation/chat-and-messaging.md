@@ -126,4 +126,4 @@ Add emoji reactions to incoming messages (not your own):
 
 ## Image and translation setup
 
-Enable URL images in the contact’s chat settings to preview supported image links; see [URL images](additional-features.md#url-image-previews). Mesh image packets are currently sent through channel chat, not this direct-message composer. Set up translation and download a model in [App Settings](settings.md#translation) before using incoming or pre-send translation.
+Enable URL images in the contact’s chat settings to preview supported image links; see [URL images](additional-features.md#url-image-previews). Images and files can also be uploaded to a configured IPFS provider from the **+** menu in direct or channel chat; the resulting URL is sent as ordinary text. See [sharing via IPFS](additional-features.md#share-an-image-via-ipfs) and [IPFS provider configuration](settings.md#ipfs-provider-configuration). Mesh image packets are currently sent through channel chat, not the direct-message composer. Set up translation and download a model in [App Settings](settings.md#translation) before using incoming or pre-send translation.
