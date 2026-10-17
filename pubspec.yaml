@@ -38,11 +38,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_blue_plus: ^2.3.14
-  # TODO: Switch to official flserial repo once changes are upstreamed
+  # Vendored from MeshEnvy/flserial e1864de. Linux SerialThread waits
+  # until fl_set_callback is installed so a port that transmits on open
+  # does not call a null callback. Switch back upstream once that lands.
   flserial:
-    git:
-      url: https://github.com/MeshEnvy/flserial.git
-      ref: e1864de9b65cda9656dba804329bdd2890dd5a92
+    path: third_party/flserial
   ffi: ^2.1.3            # calloc.free for flserial's native I/O buffers
   provider: ^6.1.5+1
   shared_preferences: ^2.2.2
