@@ -268,6 +268,14 @@ Enable URL images per contact in Chat → overflow → Contact Settings, or per 
 
 The message sends a reference; image retrieval needs internet access and makes requests to the relevant host or gateway. This differs from [image packets transmitted over the mesh](image-messages.md). With previews disabled, the chat may indicate that a message contains a possible image URL.
 
+## Share an Image via IPFS
+
+1. Configure **App Settings → IPFS provider configuration**. Choose Pinata, Filebase, or **Custom (Kubo)** for self hosted or other, then set the upload endpoint, upload gateway, and any required API key. See [IPFS provider configuration](settings.md#ipfs-provider-configuration).
+2. In a direct or channel chat, open the composer’s **+** menu and choose **Send image or file via IPFS**.
+3. Pick an image or file. The app uploads it to the configured provider and inserts the resulting link into the draft. When an upload gateway is configured, the link is `http://gateway/ipfs/CID`; otherwise it is `ipfs://CID`. Review or edit the draft, then send it as a normal text message; uploading does not send the chat message automatically.
+
+Uploads and image previews need internet access. The file is stored with the selected provider; the mesh carries only the text link, not the file bytes. IPFS content is publicly addressable, so only upload content suitable for sharing publicly. A recipient needs internet access and a working IPFS gateway to retrieve it. If the upload link plus existing draft exceeds the message limit, the app may shorten the existing draft to make room for the link.
+
 ## Regions, Mesh Images, and Radio Statistics
 
 See [Regions](regions.md) for default scopes, per-message labels, and reply-region inheritance; [Image Messages](image-messages.md) for model installation and reconstruction; and [Companion Radio Statistics](radio-statistics.md) for connected-radio measurements.

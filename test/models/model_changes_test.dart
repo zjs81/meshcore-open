@@ -443,6 +443,23 @@ void main() {
       expect(settings.evictDiscoveredContactsEnabled, isFalse);
     });
 
+    test('public IPFS gateway defaults to deactivated and preserves empty', () {
+      expect(AppSettings.fromJson({}).publicIpfsGateway, isEmpty);
+      expect(
+        AppSettings.fromJson({'public_ipfs_gateway': ''}).publicIpfsGateway,
+        isEmpty,
+      );
+    });
+
+    test('empty upload gateway does not fall back to the download gateway', () {
+      final settings = AppSettings(
+        publicIpfsGateway: 'https://gateway.example.com/ipfs/',
+        uploadIpfsGateway: '',
+      );
+
+      expect(settings.effectiveUploadIpfsGateway, isEmpty);
+    });
+
     test(
       'fromJson with missing new fields uses defaults (backward compat)',
       () {

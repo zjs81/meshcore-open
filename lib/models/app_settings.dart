@@ -3,6 +3,32 @@ import 'translation_support.dart';
 
 enum UnitSystem { metric, imperial }
 
+String normalizeIpfsGateway(String value) {
+  var gateway = value.trim();
+  if (gateway.isEmpty) return gateway;
+  if (!gateway.startsWith('http://') && !gateway.startsWith('https://')) {
+    gateway = 'https://$gateway';
+  }
+  gateway = gateway.replaceAll('{cid}', '');
+  if (gateway.endsWith('/ipfs')) gateway = '$gateway/';
+  if (!gateway.endsWith('/ipfs/')) {
+    gateway = '${gateway.endsWith('/') ? gateway : '$gateway/'}ipfs/';
+  }
+  return gateway;
+}
+
+String migratePublicIpfsGateway(String? value) {
+  final gateway = value?.trim();
+  if (gateway == null ||
+      gateway == 'https://ipfs.io/ipfs/' ||
+      gateway == 'https://ipfs.io/ipfs' ||
+      gateway == 'https://dweb.link/ipfs/' ||
+      gateway == 'https://dweb.link/ipfs') {
+    return AppSettings.defaultPublicIpfsGateway;
+  }
+  return gateway;
+}
+
 extension UnitSystemValue on UnitSystem {
   String get value {
     switch (this) {
@@ -78,6 +104,7 @@ class Cyr2LatProfile {
 class AppSettings {
   static const Object _unset = Object();
   static const String stadiaDemo = '51bd0381-4685-4666-bae8-48940f6d77c0';
+  static const String defaultPublicIpfsGateway = '';
 
   final bool clearPathOnMaxRetry;
   final bool mapShowRepeaters;
@@ -130,6 +157,10 @@ class AppSettings {
   final int tcpServerPort;
   final bool jumpToOldestUnread;
   final bool imageMessagesEnabled;
+  final String publicIpfsGateway;
+  final String uploadIpfsGateway;
+  final String uploadIpfsEndpoint;
+  final String uploadIpfsApiKey;
 
   /// Opt-in upload of header-only packet records to the network map.
   final bool networkMapUploadEnabled;
@@ -184,6 +215,10 @@ class AppSettings {
       return stadiaDemo;
     }
     return apiKey;
+  }
+
+  String get effectiveUploadIpfsGateway {
+    return uploadIpfsGateway.trim();
   }
 
   bool get usesstadiaDemo => effectiveMapTileApiKey == stadiaDemo;
@@ -244,9 +279,13 @@ class AppSettings {
     this.tcpServerAddress = '',
     this.tcpServerPort = 0,
     this.jumpToOldestUnread = false,
-    this.imageMessagesEnabled = false,
     this.networkMapUploadEnabled = false,
     this.networkMapPromptShown = false,
+    this.publicIpfsGateway = defaultPublicIpfsGateway,
+    this.uploadIpfsGateway = '',
+    this.uploadIpfsEndpoint = '',
+    this.uploadIpfsApiKey = '',
+    this.imageMessagesEnabled = false,
     this.imageProcessAutomatically = false,
     this.imageCodecEnabled = false,
     this.imageCodecSelectedModelId,
@@ -328,9 +367,13 @@ class AppSettings {
       'tcp_server_address': tcpServerAddress,
       'tcp_server_port': tcpServerPort,
       'jump_to_oldest_unread': jumpToOldestUnread,
-      'image_messages_enabled': imageMessagesEnabled,
       'network_map_upload_enabled': networkMapUploadEnabled,
       'network_map_prompt_shown': networkMapPromptShown,
+      'public_ipfs_gateway': publicIpfsGateway,
+      'upload_ipfs_gateway': uploadIpfsGateway,
+      'upload_ipfs_endpoint': uploadIpfsEndpoint,
+      'upload_ipfs_api_key': uploadIpfsApiKey,
+      'image_messages_enabled': imageMessagesEnabled,
       'image_process_automatically': imageProcessAutomatically,
       'image_codec_enabled': imageCodecEnabled,
       'image_codec_selected_model_id': imageCodecSelectedModelId,
@@ -437,10 +480,16 @@ class AppSettings {
       tcpServerAddress: json['tcp_server_address'] as String? ?? '',
       tcpServerPort: json['tcp_server_port'] as int? ?? 0,
       jumpToOldestUnread: json['jump_to_oldest_unread'] as bool? ?? false,
-      imageMessagesEnabled: json['image_messages_enabled'] as bool? ?? false,
       networkMapUploadEnabled:
           json['network_map_upload_enabled'] as bool? ?? false,
       networkMapPromptShown: json['network_map_prompt_shown'] as bool? ?? false,
+      publicIpfsGateway: migratePublicIpfsGateway(
+        json['public_ipfs_gateway'] as String?,
+      ),
+      uploadIpfsGateway: json['upload_ipfs_gateway'] as String? ?? '',
+      uploadIpfsEndpoint: json['upload_ipfs_endpoint'] as String? ?? '',
+      uploadIpfsApiKey: json['upload_ipfs_api_key'] as String? ?? '',
+      imageMessagesEnabled: json['image_messages_enabled'] as bool? ?? false,
       imageProcessAutomatically:
           json['image_process_automatically'] as bool? ?? false,
       imageCodecEnabled: json['image_codec_enabled'] as bool? ?? false,
@@ -560,9 +609,13 @@ class AppSettings {
     String? tcpServerAddress,
     int? tcpServerPort,
     bool? jumpToOldestUnread,
-    bool? imageMessagesEnabled,
     bool? networkMapUploadEnabled,
     bool? networkMapPromptShown,
+    String? publicIpfsGateway,
+    String? uploadIpfsGateway,
+    String? uploadIpfsEndpoint,
+    String? uploadIpfsApiKey,
+    bool? imageMessagesEnabled,
     bool? imageProcessAutomatically,
     bool? imageCodecEnabled,
     Object? imageCodecSelectedModelId = _unset,
@@ -647,11 +700,15 @@ class AppSettings {
       tcpServerAddress: tcpServerAddress ?? this.tcpServerAddress,
       tcpServerPort: tcpServerPort ?? this.tcpServerPort,
       jumpToOldestUnread: jumpToOldestUnread ?? this.jumpToOldestUnread,
-      imageMessagesEnabled: imageMessagesEnabled ?? this.imageMessagesEnabled,
       networkMapUploadEnabled:
           networkMapUploadEnabled ?? this.networkMapUploadEnabled,
       networkMapPromptShown:
           networkMapPromptShown ?? this.networkMapPromptShown,
+      publicIpfsGateway: publicIpfsGateway ?? this.publicIpfsGateway,
+      uploadIpfsGateway: uploadIpfsGateway ?? this.uploadIpfsGateway,
+      uploadIpfsEndpoint: uploadIpfsEndpoint ?? this.uploadIpfsEndpoint,
+      uploadIpfsApiKey: uploadIpfsApiKey ?? this.uploadIpfsApiKey,
+      imageMessagesEnabled: imageMessagesEnabled ?? this.imageMessagesEnabled,
       imageProcessAutomatically:
           imageProcessAutomatically ?? this.imageProcessAutomatically,
       imageCodecEnabled: imageCodecEnabled ?? this.imageCodecEnabled,

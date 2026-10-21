@@ -452,6 +452,20 @@
   "appSettings_routeWeightFailureDecrementSubtitle": "Weight removed from a path after failed delivery",
   "appSettings_maxMessageRetries": "Max Message Retries",
   "appSettings_maxMessageRetriesSubtitle": "Number of retry attempts before marking a message as failed",
+  "appSettings_ipfsImageLinks": "IPFS provider configuration",
+  "appSettings_ipfsImageLinksSubtitle": "Upload for url Images (or Files) via IPFS provider and default gateway to receive",
+  "appSettings_publicIpfsGateway": "Public gateway",
+  "appSettings_ipfsGatewayDeactivated": "Deactivated",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "appSettings_ipfsGatewayCustom": "Custom (Kubo)",
+  "appSettings_uploadIpfsProvider": "Upload provider",
+  "appSettings_uploadIpfsGateway": "Upload gateway",
+  "appSettings_uploadIpfsGatewaySubtitle": "Gateway to share Image or File as url-link. Leave empty to use ipfs: format, which may not be opened by other clients.",
+  "appSettings_uploadIpfsEndpoint": "Upload endpoint",
+  "appSettings_uploadIpfsEndpointSubtitle": "The API endpoint used to upload files",
+  "appSettings_uploadIpfsApiKey": "Upload API key",
+  "appSettings_ipfsImageLinksDescription": "Public gateway downloads ipfs: format images. Upload gateway is used to generate share links for uploaded url images or files.",
   "appSettings_battery": "Battery",
   "appSettings_batteryChemistry": "Battery Chemistry",
   "appSettings_batteryChemistryPerDevice": "Set per device ({deviceName})",
@@ -914,6 +928,16 @@
   "chat_removeGif": "Remove GIF",
   "chat_cancelReply": "Cancel reply",
   "chat_sendImageLora": "Send low-res image over radio",
+  "chat_sendImageIpfs": "Send image or file via IPFS",
+  "chat_ipfsUploadFailed": "IPFS upload failed: {error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "Configure an IPFS upload provider in App Settings first.",
   "chat_imagePickFailed": "Couldn't open that image",
   "@chat_imagePickFailed": {
     "description": "Shown when picking or reading a photo to send fails"

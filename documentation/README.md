@@ -54,7 +54,7 @@ MeshCore Open connects to MeshCore LoRa mesh radios over BLE, USB, or TCP. Once 
 | Mesh image encoding/reconstruction | Local after model installation |
 | On-device translation | Local after model installation |
 | Model downloads | Internet required |
-| GIF search/display and URL image previews | Internet required to retrieve content |
+| GIF search/display, URL image previews, and IPFS image/file uploads | Internet required to upload or retrieve content |
 | Map display | Cached tiles work offline; uncached tiles need internet |
 | Online network map and opt-in uploads | Internet required |
 | Terrain LOS analysis | Elevation lookup needs internet unless the required data is already cached |
