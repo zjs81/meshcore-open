@@ -30,6 +30,9 @@ bool _isAllowedRepeatFreqKHz(MeshCoreConnector connector, int freqKHz) {
 /// Lowest TX power companion firmware accepts (CMD_SET_RADIO_TX_POWER).
 const int _minTxPowerDbm = -9;
 
+/// Companion firmware version that added CMD_SET_PATH_HASH_MODE (v1.14.0).
+const int _minFirmwareVerCodeForPathHashMode = 10;
+
 /// Radio parameter editor (preset, frequency, bandwidth, SF, CR, TX power and
 /// off-grid client repeat). Stays open when the radio rejects or fails to
 /// apply the settings so the user's edits are not lost.
@@ -49,10 +52,15 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
   LoRaCodingRate _codingRate = LoRaCodingRate.cr4_5;
   final _txPowerController = TextEditingController(text: '20');
   bool _clientRepeat = false;
+  int _pathHashByteWidth = 1;
   int? _selectedPresetIndex;
   _RadioSettingsSnapshot? _lastNonRepeatSnapshot;
   String? _frequencyError;
   String? _txPowerError;
+
+  bool get _supportsPathHashMode =>
+      (widget.connector.firmwareVerCode ?? 0) >=
+      _minFirmwareVerCodeForPathHashMode;
 
   AppDebugLogService get _appLog =>
       Provider.of<AppDebugLogService>(context, listen: false);
@@ -106,6 +114,7 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
       _txPowerController.text = widget.connector.currentTxPower.toString();
     }
 
+    _pathHashByteWidth = widget.connector.pathHashByteWidth;
     _clientRepeat = widget.connector.clientRepeat ?? false;
     _selectedPresetIndex = _findMatchingPresetIndex();
     if (_clientRepeat) {
@@ -275,6 +284,7 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
     _spreadingFactor = preset.spreadingFactor;
     _codingRate = preset.codingRate;
     _txPowerController.text = preset.txPowerDbm.toString();
+    _pathHashByteWidth = preset.pathHashByteWidth;
     _selectedPresetIndex = index;
     _lastNonRepeatSnapshot = baseSnapshot;
     // Programmatic writes skip TextField.onChanged, so clear any stale
@@ -439,6 +449,10 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
         return;
       }
       await widget.connector.sendFrame(buildSetRadioTxPowerFrame(txPower));
+      if (_supportsPathHashMode &&
+          _pathHashByteWidth != widget.connector.pathHashByteWidth) {
+        await widget.connector.setPathHashMode(_pathHashByteWidth - 1);
+      }
       final selfInfo = widget.connector.receivedFrames
           .firstWhere((f) => f.isNotEmpty && f[0] == respCodeSelfInfo)
           .timeout(const Duration(seconds: 5));
@@ -673,6 +687,34 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
               },
             ),
             const SizedBox(height: 16),
+            if (_supportsPathHashMode) ...[
+              DropdownButtonFormField<int>(
+                initialValue: _pathHashByteWidth,
+                decoration: InputDecoration(
+                  labelText: l10n.repeater_pathHashMode,
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  DropdownMenuItem(
+                    value: 1,
+                    child: Text(l10n.repeater_pathHashModeOption0),
+                  ),
+                  DropdownMenuItem(
+                    value: 2,
+                    child: Text(l10n.repeater_pathHashModeOption1),
+                  ),
+                  DropdownMenuItem(
+                    value: 3,
+                    child: Text(l10n.repeater_pathHashModeOption2),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() => _pathHashByteWidth = value);
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
             TextField(
               controller: _txPowerController,
               onChanged: (_) => _handleManualSettingsChanged('tx power'),
