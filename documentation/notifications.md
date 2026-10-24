@@ -99,15 +99,23 @@ Access via **App Settings → Notifications**:
 | Channel Message Notifications | On | Channel alerts (greyed out if master is off) |
 | Advertisement Notifications | On | New node alerts (greyed out if master is off) |
 
-### Per-Channel Muting
+### Per-Channel Notification Modes
 
-Mute or unmute a channel from any of these places. Muted channels do not generate OS notifications.
+Each channel supports three notification modes:
 
-- The bell icon in the channel chat app bar
-- Long-press a channel in the channels list → "Mute channel" / "Unmute channel"
-- **Mute channel** on a channel notification (Android)
+| Mode | Icon | Behavior |
+|---|---|---|
+| **All messages** | 🔔 | Receive notifications for every message |
+| **Mentions only** | 🔔! | Only notify when someone mentions you with "@[yourname]" |
+| **Muted** | 🔕 | No notifications |
 
-There is no per-contact muting.
+Set the mode from:
+
+- The notifications icon in the channel chat app bar (tap to cycle through modes)
+- Long-press a channel in the channels list → **Notification settings** → select mode
+- Channel notification actions (Android)
+
+Mentions are detected by looking for "@[yourname]" (username in brackets, case-insensitive).
 
 ## Rate Limiting
 

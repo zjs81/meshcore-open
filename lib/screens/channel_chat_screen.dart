@@ -26,7 +26,8 @@ import '../l10n/l10n.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
 import '../models/image_codec_support.dart' show aeicRatePointForUi;
-import '../services/app_settings_service.dart';
+import '../services/app_settings_service.dart'
+    show AppSettingsService, ChannelNotificationMode;
 import '../services/chat_text_scale_service.dart';
 import '../services/image_chunk_transport.dart';
 import '../services/image_codec_service.dart';
@@ -403,19 +404,33 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
           Consumer<AppSettingsService>(
             builder: (context, settings, _) {
               final muteKey = widget.channel.muteKey;
-              final muted = settings.isChannelMuted(muteKey);
+              final notificationMode = settings.getChannelNotificationMode(
+                muteKey,
+              );
               return IconButton(
-                tooltip: muted
-                    ? context.l10n.channels_unmuteChannel
-                    : context.l10n.channels_muteChannel,
+                tooltip: context.l10n.channels_notificationSettings,
                 icon: Icon(
-                  muted
-                      ? Icons.notifications_off_outlined
-                      : Icons.notifications_outlined,
+                  notificationMode == ChannelNotificationMode.muted
+                      ? Icons.notifications_off
+                      : notificationMode == ChannelNotificationMode.mentionsOnly
+                      ? Icons.notification_important
+                      : Icons.notifications,
                 ),
-                onPressed: () => muted
-                    ? settings.unmuteChannel(muteKey)
-                    : settings.muteChannel(muteKey),
+                onPressed: () {
+                  final currentMode = settings.getChannelNotificationMode(
+                    muteKey,
+                  );
+                  ChannelNotificationMode newMode;
+                  if (currentMode == ChannelNotificationMode.all) {
+                    newMode = ChannelNotificationMode.mentionsOnly;
+                  } else if (currentMode ==
+                      ChannelNotificationMode.mentionsOnly) {
+                    newMode = ChannelNotificationMode.muted;
+                  } else {
+                    newMode = ChannelNotificationMode.all;
+                  }
+                  settings.setChannelNotificationMode(muteKey, newMode);
+                },
               );
             },
           ),

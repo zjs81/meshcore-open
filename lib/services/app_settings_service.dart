@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import '../models/app_settings.dart';
 import '../models/image_codec_support.dart';
 import '../models/translation_support.dart';
+
+export '../models/app_settings.dart' show ChannelNotificationMode;
 import '../storage/prefs_manager.dart';
 import '../utils/app_logger.dart';
 import '../helpers/cyr2lat.dart';
@@ -286,19 +288,36 @@ class AppSettingsService extends ChangeNotifier {
     await updateSettings(_settings.copyWith(unitSystem: value));
   }
 
+  // Backward compatibility: delegates to AppSettings.isChannelMuted
   bool isChannelMuted(String channelName) {
-    return _settings.mutedChannels.contains(channelName);
+    return _settings.isChannelMuted(channelName);
+  }
+
+  ChannelNotificationMode getChannelNotificationMode(String channelName) {
+    return _settings.channelNotificationModes[channelName] ??
+        ChannelNotificationMode.all;
+  }
+
+  Future<void> setChannelNotificationMode(
+    String channelName,
+    ChannelNotificationMode mode,
+  ) async {
+    final updated = Map<String, ChannelNotificationMode>.from(
+      _settings.channelNotificationModes,
+    );
+    updated[channelName] = mode;
+    await updateSettings(_settings.copyWith(channelNotificationModes: updated));
   }
 
   Future<void> muteChannel(String channelName) async {
-    final updated = Set<String>.from(_settings.mutedChannels)..add(channelName);
-    await updateSettings(_settings.copyWith(mutedChannels: updated));
+    await setChannelNotificationMode(
+      channelName,
+      ChannelNotificationMode.muted,
+    );
   }
 
   Future<void> unmuteChannel(String channelName) async {
-    final updated = Set<String>.from(_settings.mutedChannels)
-      ..remove(channelName);
-    await updateSettings(_settings.copyWith(mutedChannels: updated));
+    await setChannelNotificationMode(channelName, ChannelNotificationMode.all);
   }
 
   Future<void> setTcpServerAddress(String value) async {

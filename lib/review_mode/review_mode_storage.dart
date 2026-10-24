@@ -1,4 +1,5 @@
-import '../services/app_settings_service.dart';
+import '../services/app_settings_service.dart'
+    show AppSettingsService, ChannelNotificationMode;
 import '../services/storage_service.dart';
 import '../services/timeout_prediction_service.dart';
 import '../storage/legacy_key_migration.dart';
@@ -48,10 +49,13 @@ Future<void> beginReviewModeSession(AppSettingsService? settings) async {
   }
   // An earlier interrupted session's record holds the real pre-review state.
   if (settings != null && !prefs.containsKey(_savedMutedChannelsKey)) {
-    await prefs.setStringList(
-      _savedMutedChannelsKey,
-      settings.settings.mutedChannels.toList(),
-    );
+    // Save all channel notification modes
+    final channelModes = settings.settings.channelNotificationModes;
+    final mutedChannels = channelModes.entries
+        .where((e) => e.value == ChannelNotificationMode.muted)
+        .map((e) => e.key)
+        .toList();
+    await prefs.setStringList(_savedMutedChannelsKey, mutedChannels);
   }
 }
 
@@ -75,8 +79,17 @@ Future<void> endReviewModeSession(AppSettingsService? settings) async {
   }
   final savedMutes = prefs.getStringList(_savedMutedChannelsKey);
   if (savedMutes == null || settings == null) return;
+  final updatedModes = Map<String, ChannelNotificationMode>.from(
+    settings.settings.channelNotificationModes,
+  );
+  updatedModes.removeWhere(
+    (key, value) => value == ChannelNotificationMode.muted,
+  );
+  for (final channelName in savedMutes) {
+    updatedModes[channelName] = ChannelNotificationMode.muted;
+  }
   await settings.updateSettings(
-    settings.settings.copyWith(mutedChannels: savedMutes.toSet()),
+    settings.settings.copyWith(channelNotificationModes: updatedModes),
   );
   await prefs.remove(_savedMutedChannelsKey);
 }

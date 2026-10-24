@@ -1391,6 +1391,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get channels_editChannel => '채널 편집';
 
   @override
+  String get channels_notificationSettings => '알림 설정';
+
+  @override
+  String get channels_notifyAll => '모든 메시지';
+
+  @override
+  String get channels_notifyMentionsOnly => '언급만';
+
+  @override
+  String get channels_notifyNone => '음소거';
+
+  @override
   String get channels_muteChannel => '음소거 채널';
 
   @override

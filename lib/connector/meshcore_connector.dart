@@ -38,7 +38,8 @@ import '../services/image_codec_service.dart';
 import '../services/received_image_store.dart';
 import '../services/message_retry_service.dart';
 import '../services/path_history_service.dart';
-import '../services/app_settings_service.dart';
+import '../services/app_settings_service.dart'
+    show AppSettingsService, ChannelNotificationMode;
 import '../services/background_service.dart';
 import '../services/timeout_prediction_service.dart';
 import '../services/translation_service.dart';
@@ -7353,7 +7354,12 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     final label = channelName ?? _channelDisplayName(channelIndex);
-    if (_appSettingsService!.isChannelMuted(label)) return;
+    final notificationMode = _appSettingsService!.getChannelNotificationMode(
+      label,
+    );
+
+    // Check if channel is muted
+    if (notificationMode == ChannelNotificationMode.muted) return;
 
     // Reuse translation result only if completed and non-empty; else use original text
     final resolvedText =
@@ -7362,6 +7368,12 @@ class MeshCoreConnector extends ChangeNotifier {
             translationResult.translatedText.trim().isNotEmpty)
         ? translationResult.translatedText.trim()
         : message.text.trim();
+
+    // If mode is mentionsOnly, check if message mentions us
+    if (notificationMode == ChannelNotificationMode.mentionsOnly) {
+      if (!_doesMessageMentionUs(resolvedText, message)) return;
+    }
+
     unawaited(() async {
       await _notificationService.showChannelMessageNotification(
         channelName: label,
@@ -7372,6 +7384,24 @@ class MeshCoreConnector extends ChangeNotifier {
         badgeCount: getTotalUnreadCount(),
       );
     }());
+  }
+
+  /// Checks if a message mentions the current user.
+  /// Detects: @[username] format only.
+  bool _doesMessageMentionUs(String messageText, ChannelMessage message) {
+    final selfName = _selfName;
+    final lowerMessage = messageText.toLowerCase();
+
+    // Check for @[username] pattern (bracketed mention format)
+    if (selfName != null && selfName.isNotEmpty) {
+      final lowerSelfName = selfName.toLowerCase();
+      final bracketedMentionPattern = RegExp(
+        r'@\[(' + RegExp.escape(lowerSelfName) + r')\]',
+      );
+      if (bracketedMentionPattern.hasMatch(lowerMessage)) return true;
+    }
+
+    return false;
   }
 
   /// Handles RESP_CODE_CHANNEL_DATA_RECV (GRP_DATA). Frames whose dataType is

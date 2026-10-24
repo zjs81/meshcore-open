@@ -1459,6 +1459,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get channels_editChannel => 'Kanal bearbeiten';
 
   @override
+  String get channels_notificationSettings => 'Benachrichtigungseinstellungen';
+
+  @override
+  String get channels_notifyAll => 'Alle Nachrichten';
+
+  @override
+  String get channels_notifyMentionsOnly => 'Nur Erwähnungen';
+
+  @override
+  String get channels_notifyNone => 'Stummgeschaltet';
+
+  @override
   String get channels_muteChannel => 'Kanal stummschalten';
 
   @override
