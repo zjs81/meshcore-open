@@ -99,6 +99,11 @@ const int dataTypeAeicImage = 0xAE1C;
 ///   * serial `MAX_CHANNEL_DATA_LENGTH` 176 - 9     = 167
 const int kImageChunkBlobBytes = 163;
 
+/// Largest payload accepted by [MeshCoreConnector.sendChannelData]. Same
+/// binding limit as an image chunk (the BLE notification), not a radio limit:
+/// the firmware itself accepts up to 165.
+const int kMaxChannelDataPayload = kImageChunkBlobBytes;
+
 /// Per-chunk header: sender_prefix(2) + img_id(1) + idx/total(1).
 const int kImageChunkHeaderBytes = 4;
 
