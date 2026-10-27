@@ -1,0 +1,110 @@
+{
+  "description": "regions.resolve vectors (SPEC.md section 8.3) on a synthetic catalogue. Distances use the haversine formula on a sphere of radius 6371 km; compare with a tolerance of 0.001 km.",
+  "earthRadiusKm": 6371.0,
+  "catalogue": [
+    {
+      "name": "xx-city",
+      "label": "Test City",
+      "kind": "city",
+      "lat": 48.7,
+      "lon": 21.25,
+      "radiusKm": 20
+    },
+    {
+      "name": "xx-east",
+      "label": "Test East",
+      "kind": "city",
+      "lat": 48.72,
+      "lon": 21.45,
+      "radiusKm": 20
+    },
+    {
+      "name": "xx",
+      "label": "Test Country",
+      "kind": "country",
+      "lat": 48.7,
+      "lon": 19.7,
+      "radiusKm": 300
+    }
+  ],
+  "cases": [
+    {
+      "why": "centre of xx-city",
+      "lat": 48.7,
+      "lon": 21.25,
+      "region": "xx-city",
+      "distanceKm": 0.0
+    },
+    {
+      "why": "inside both cities, nearer to xx-city",
+      "lat": 48.71,
+      "lon": 21.33,
+      "region": "xx-city",
+      "distanceKm": 5.974904
+    },
+    {
+      "why": "inside both cities, nearer to xx-east",
+      "lat": 48.72,
+      "lon": 21.4,
+      "region": "xx-east",
+      "distanceKm": 3.667984
+    },
+    {
+      "why": "outside both cities, inside the country",
+      "lat": 48.7,
+      "lon": 20.5,
+      "region": "xx",
+      "distanceKm": 58.7108
+    },
+    {
+      "why": "outside everything",
+      "lat": 48.7,
+      "lon": 24.5,
+      "region": null,
+      "distanceKm": null
+    },
+    {
+      "why": "far away",
+      "lat": 0.0,
+      "lon": 0.0,
+      "region": null,
+      "distanceKm": null
+    }
+  ],
+  "errors": [
+    {
+      "params": {
+        "lat": 91,
+        "lon": 0
+      },
+      "error": "coordinate_range"
+    },
+    {
+      "params": {
+        "lat": 0,
+        "lon": -180.5
+      },
+      "error": "coordinate_range"
+    },
+    {
+      "params": {
+        "lat": 90,
+        "lon": 180
+      },
+      "region": null
+    },
+    {
+      "params": {
+        "lat": "48.70",
+        "lon": 21.25
+      },
+      "error": "bad_request"
+    },
+    {
+      "params": {
+        "lon": 21.25
+      },
+      "error": "bad_request"
+    }
+  ]
+}

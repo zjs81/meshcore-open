@@ -4280,5 +4280,30 @@
     }
   },
   "localApi_joinWarning": "Każdy, kto zna nazwę kanału z hashtagiem, może go czytać i w nim pisać.",
-  "localApi_joinAdd": "Dodaj"
+  "localApi_joinAdd": "Dodaj",
+  "localApi_regionsTitle": "Sugerowane regiony rozgłaszania",
+  "localApi_regionsSubtitle": "Obszary: {count}. Aplikacje mogą zapytać o najbliższy obszar, którego promień obejmuje punkt.",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "Miasto · promień {radius} km",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "Kraj · promień {radius} km",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }

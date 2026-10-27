@@ -5,6 +5,7 @@ import '../../connector/meshcore_connector.dart';
 import '../../models/channel.dart';
 import '../../models/contact.dart';
 import '../../models/mesh_event.dart';
+import '../../storage/region_store.dart';
 
 /// What the local API needs from the radio, separated from the connector so the
 /// server can be tested without BLE.
@@ -40,15 +41,20 @@ abstract class LocalApiHost {
   /// The one contact whose key is [pubkeyHex] (see [matchPubkey]), or null.
   Contact? resolveContact(String pubkeyHex);
 
-  Future<void> sendChannelText(Channel channel, String text);
+  /// Region names the user saved in the app (Settings → Regions).
+  List<String> savedRegions();
+
+  /// [region] overrides the channel's flood scope for this message only.
+  Future<void> sendChannelText(Channel channel, String text, {String? region});
 
   /// Returns false when the transport cannot send (disconnected, firmware too
   /// old); throws on a firmware error or command timeout.
   Future<bool> sendChannelData(
     Channel channel,
     int dataType,
-    Uint8List payload,
-  );
+    Uint8List payload, {
+    String? region,
+  });
 
   Future<void> sendDirectText(Contact contact, String text);
 
@@ -155,18 +161,26 @@ class ConnectorLocalApiHost implements LocalApiHost {
   );
 
   @override
-  Future<void> sendChannelText(Channel channel, String text) =>
-      connector.sendChannelMessage(channel, text);
+  List<String> savedRegions() => RegionStore().loadRegions();
+
+  @override
+  Future<void> sendChannelText(
+    Channel channel,
+    String text, {
+    String? region,
+  }) => connector.sendChannelMessage(channel, text, region: region);
 
   @override
   Future<bool> sendChannelData(
     Channel channel,
     int dataType,
-    Uint8List payload,
-  ) => connector.sendChannelData(
+    Uint8List payload, {
+    String? region,
+  }) => connector.sendChannelData(
     channelIndex: channel.index,
     dataType: dataType,
     payload: payload,
+    region: region,
   );
 
   @override

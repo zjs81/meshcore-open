@@ -8404,4 +8404,22 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get localApi_joinAdd => 'Dodaj';
+
+  @override
+  String get localApi_regionsTitle => 'Predlagane regije razpošiljanja';
+
+  @override
+  String localApi_regionsSubtitle(int count) {
+    return 'Območij: $count. Aplikacije lahko zahtevajo najbližje, katerega polmer vsebuje točko.';
+  }
+
+  @override
+  String localApi_regionCity(int radius) {
+    return 'Mesto · polmer $radius km';
+  }
+
+  @override
+  String localApi_regionCountry(int radius) {
+    return 'Država · polmer $radius km';
+  }
 }

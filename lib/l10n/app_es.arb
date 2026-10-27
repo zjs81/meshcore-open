@@ -4227,5 +4227,30 @@
     }
   },
   "localApi_joinWarning": "Cualquiera que conozca el nombre de un canal con hashtag puede leerlo y escribir en él.",
-  "localApi_joinAdd": "Añadir"
+  "localApi_joinAdd": "Añadir",
+  "localApi_regionsTitle": "Regiones de difusión sugeridas",
+  "localApi_regionsSubtitle": "{count} zonas. Las apps pueden pedir la más cercana cuyo radio contenga un punto.",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "Ciudad · radio de {radius} km",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "País · radio de {radius} km",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }

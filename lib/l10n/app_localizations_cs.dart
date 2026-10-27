@@ -8393,4 +8393,22 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get localApi_joinAdd => 'Add';
+
+  @override
+  String get localApi_regionsTitle => 'Suggested flood regions';
+
+  @override
+  String localApi_regionsSubtitle(int count) {
+    return '$count areas. Apps can ask for the nearest one whose radius contains a point.';
+  }
+
+  @override
+  String localApi_regionCity(int radius) {
+    return 'City · $radius km radius';
+  }
+
+  @override
+  String localApi_regionCountry(int radius) {
+    return 'Country · $radius km radius';
+  }
 }

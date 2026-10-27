@@ -4176,5 +4176,30 @@
     }
   },
   "localApi_joinWarning": "Wer den Namen eines Hashtag-Kanals kennt, kann darin lesen und schreiben.",
-  "localApi_joinAdd": "Hinzufügen"
+  "localApi_joinAdd": "Hinzufügen",
+  "localApi_regionsTitle": "Vorgeschlagene Flood-Regionen",
+  "localApi_regionsSubtitle": "{count} Gebiete. Apps können das nächste Gebiet abfragen, dessen Radius einen Punkt enthält.",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "Stadt · {radius} km Radius",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "Land · {radius} km Radius",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }

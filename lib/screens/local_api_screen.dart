@@ -96,6 +96,32 @@ class _LocalApiScreenState extends State<LocalApiScreen> {
                     ),
                   ),
                 const Divider(),
+                if (service.regions.isNotEmpty) ...[
+                  ExpansionTile(
+                    leading: const Icon(Icons.public),
+                    title: Text(l10n.localApi_regionsTitle),
+                    subtitle: Text(
+                      l10n.localApi_regionsSubtitle(service.regions.length),
+                    ),
+                    children: [
+                      for (final region in service.regions)
+                        ListTile(
+                          dense: true,
+                          title: Text('${region.label} (${region.name})'),
+                          subtitle: Text(
+                            region.kind == 'country'
+                                ? l10n.localApi_regionCountry(
+                                    region.radiusKm.round(),
+                                  )
+                                : l10n.localApi_regionCity(
+                                    region.radiusKm.round(),
+                                  ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const Divider(),
+                ],
                 ListTile(
                   leading: const Icon(Icons.delete_sweep_outlined),
                   title: Text(l10n.localApi_clearData),

@@ -4381,5 +4381,30 @@
     }
   },
   "localApi_joinWarning": "해시태그 채널은 이름을 아는 사람이라면 누구나 읽고 쓸 수 있습니다.",
-  "localApi_joinAdd": "추가"
+  "localApi_joinAdd": "추가",
+  "localApi_regionsTitle": "추천 플러드 지역",
+  "localApi_regionsSubtitle": "{count}개 지역. 앱은 반경 안에 지점을 포함하는 가장 가까운 지역을 요청할 수 있습니다.",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "도시 · 반경 {radius} km",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "국가 · 반경 {radius} km",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }

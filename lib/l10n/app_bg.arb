@@ -4041,5 +4041,30 @@
     }
   },
   "localApi_joinWarning": "Всеки, който знае името на хаштаг канал, може да чете и да пише в него.",
-  "localApi_joinAdd": "Добави"
+  "localApi_joinAdd": "Добави",
+  "localApi_regionsTitle": "Препоръчани региони за разпращане",
+  "localApi_regionsSubtitle": "{count} области. Приложенията могат да поискат най-близката, чийто радиус съдържа точка.",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "Град · радиус {radius} км",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "Държава · радиус {radius} км",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }

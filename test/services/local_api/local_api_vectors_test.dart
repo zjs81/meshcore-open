@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:meshcore_open/services/local_api/local_api_crypto.dart';
 import 'package:meshcore_open/services/local_api/local_api_host.dart';
 import 'package:meshcore_open/services/local_api/local_api_server.dart';
+import 'package:meshcore_open/services/local_api/mesh_regions.dart';
 
 /// The shared conformance vectors of the MeshCore Local API
 /// (https://github.com/jooray/meshcore-local-api, vectors/), copied here.
@@ -110,6 +111,42 @@ void main() {
         if (entry.containsKey('storedName')) {
           expect(name, entry['storedName'], reason: reason);
         }
+      }
+    });
+  });
+
+  group('region vectors', () {
+    final vectors = _load('regions');
+    final catalog = MeshRegionCatalog.fromJsonString(
+      jsonEncode({'version': 1, 'regions': vectors['catalogue']}),
+    );
+
+    test(
+      'resolve picks the nearest centre whose circle contains the point',
+      () {
+        for (final entry in vectors['cases'] as List) {
+          final lat = (entry['lat'] as num).toDouble();
+          final lon = (entry['lon'] as num).toDouble();
+          final region = catalog.resolve(lat, lon);
+          expect(region?.name, entry['region'], reason: entry['why'] as String);
+          if (region != null) {
+            expect(
+              distanceKmBetween(lat, lon, region.latitude, region.longitude),
+              closeTo((entry['distanceKm'] as num).toDouble(), 0.001),
+            );
+          }
+        }
+      },
+    );
+
+    test('region names', () {
+      final names = _load('validators')['regionNames']['cases'] as List;
+      for (final entry in names) {
+        expect(
+          LocalApiValidation.isRegionName(entry['name']),
+          entry['wellFormed'],
+          reason: entry['name'] as String,
+        );
       }
     });
   });

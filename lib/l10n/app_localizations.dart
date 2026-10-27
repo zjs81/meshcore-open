@@ -13989,6 +13989,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add'**
   String get localApi_joinAdd;
+
+  /// No description provided for @localApi_regionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested flood regions'**
+  String get localApi_regionsTitle;
+
+  /// No description provided for @localApi_regionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} areas. Apps can ask for the nearest one whose radius contains a point.'**
+  String localApi_regionsSubtitle(int count);
+
+  /// No description provided for @localApi_regionCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City · {radius} km radius'**
+  String localApi_regionCity(int radius);
+
+  /// No description provided for @localApi_regionCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Country · {radius} km radius'**
+  String localApi_regionCountry(int radius);
 }
 
 class _AppLocalizationsDelegate

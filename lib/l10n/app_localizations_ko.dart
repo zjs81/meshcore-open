@@ -8057,4 +8057,22 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get localApi_joinAdd => '추가';
+
+  @override
+  String get localApi_regionsTitle => '추천 플러드 지역';
+
+  @override
+  String localApi_regionsSubtitle(int count) {
+    return '$count개 지역. 앱은 반경 안에 지점을 포함하는 가장 가까운 지역을 요청할 수 있습니다.';
+  }
+
+  @override
+  String localApi_regionCity(int radius) {
+    return '도시 · 반경 $radius km';
+  }
+
+  @override
+  String localApi_regionCountry(int radius) {
+    return '국가 · 반경 $radius km';
+  }
 }

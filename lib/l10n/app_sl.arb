@@ -4248,5 +4248,30 @@
     }
   },
   "localApi_joinWarning": "Kanal s hashtagom lahko bere in vanj piše vsak, ki pozna njegovo ime.",
-  "localApi_joinAdd": "Dodaj"
+  "localApi_joinAdd": "Dodaj",
+  "localApi_regionsTitle": "Predlagane regije razpošiljanja",
+  "localApi_regionsSubtitle": "Območij: {count}. Aplikacije lahko zahtevajo najbližje, katerega polmer vsebuje točko.",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "Mesto · polmer {radius} km",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "Država · polmer {radius} km",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }

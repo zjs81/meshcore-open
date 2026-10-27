@@ -8351,4 +8351,22 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get localApi_joinAdd => 'Lägg till';
+
+  @override
+  String get localApi_regionsTitle => 'Föreslagna flood-regioner';
+
+  @override
+  String localApi_regionsSubtitle(int count) {
+    return '$count områden. Appar kan be om det närmaste vars radie innehåller en punkt.';
+  }
+
+  @override
+  String localApi_regionCity(int radius) {
+    return 'Stad · radie $radius km';
+  }
+
+  @override
+  String localApi_regionCountry(int radius) {
+    return 'Land · radie $radius km';
+  }
 }

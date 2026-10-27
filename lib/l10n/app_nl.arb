@@ -3942,5 +3942,30 @@
     }
   },
   "localApi_joinWarning": "Iedereen die de naam van een hashtagkanaal kent, kan erin lezen en schrijven.",
-  "localApi_joinAdd": "Toevoegen"
+  "localApi_joinAdd": "Toevoegen",
+  "localApi_regionsTitle": "Voorgestelde flood-regio’s",
+  "localApi_regionsSubtitle": "{count} gebieden. Apps kunnen het dichtstbijzijnde gebied opvragen waarvan de straal een punt bevat.",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "Stad · straal {radius} km",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "Land · straal {radius} km",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }

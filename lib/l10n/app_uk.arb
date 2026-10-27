@@ -4021,5 +4021,30 @@
     }
   },
   "localApi_joinWarning": "Будь-хто, хто знає назву хештег-каналу, може читати його й писати в нього.",
-  "localApi_joinAdd": "Додати"
+  "localApi_joinAdd": "Додати",
+  "localApi_regionsTitle": "Рекомендовані регіони розсилки",
+  "localApi_regionsSubtitle": "Областей: {count}. Застосунки можуть запитати найближчу, радіус якої містить точку.",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "Місто · радіус {radius} км",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "Країна · радіус {radius} км",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }

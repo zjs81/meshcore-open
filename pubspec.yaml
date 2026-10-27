@@ -140,6 +140,7 @@ flutter:
     - assets/themes/thanksgiving/
     - assets/themes/christmas/
     - assets/themes/new_year/
+    - assets/mesh_regions.json
 
   fonts:
     - family: Inter

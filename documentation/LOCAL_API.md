@@ -57,18 +57,24 @@ data** on the Local API screen empties it.
 `hello.capabilities` is:
 
 ```json
-["contacts", "advert_send", "channels_join", "replay"]
+["contacts", "advert_send", "regions", "channels_join", "replay"]
 ```
 
 * `contacts`: `contacts.list`, `direct.sendText`, the `direct.text` and `advert` events and the
   `pubkeys` filter. `direct.sendText` also takes a unique key prefix of 12 or more hex characters.
 * `advert_send`: `advert.send`.
+* `regions`: `regions.list`, `regions.resolve` and `region` on `channel.sendText` and
+  `channel.sendData`. The catalogue is `assets/mesh_regions.json`, an editable list of
+  flood-scope areas with a centre and a radius, shown on the Local API screen as suggested
+  regions. A `region` must be a name from that catalogue or a region the user saved in
+  **Settings → Regions**. The names are suggestions: they only work where repeaters are
+  configured with the same names.
 * `channels_join`: `channels.join`, always confirmed by the user in the dialog above.
 * `replay`: the archive above and `since` in `events.subscribe`. Only channel data is archived,
   not texts.
 
-Other features of the specification are not offered. A `region` or a `path` on a send is refused
-with `unsupported`, and so is a subscription to `packet.raw`.
+Other features of the specification are not offered. A `path` on a send is refused with
+`unsupported`, and so is a subscription to `packet.raw`.
 
 Sends go through the same path as the chat screen: the quiet wait before transmitting, the
 channel's flood scope and the radio's command acknowledgement. Texts and channel data sent from

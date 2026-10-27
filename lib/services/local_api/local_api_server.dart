@@ -16,6 +16,7 @@ import 'local_api_archive.dart';
 import 'local_api_crypto.dart';
 import 'local_api_host.dart';
 import 'local_api_pairing.dart';
+import 'mesh_regions.dart';
 
 /// What the server enforces. The defaults are the documented limits; tests
 /// shrink some of them.
@@ -88,6 +89,7 @@ class LocalApiServer {
   final PairingStore pairingStore;
   final PairingBroker pairingBroker;
   final LocalApiArchive? archive;
+  final MeshRegionCatalog? regions;
   final LocalApiLimits limits;
   final int port;
 
@@ -107,6 +109,7 @@ class LocalApiServer {
     required this.pairingStore,
     PairingBroker? pairingBroker,
     this.archive,
+    this.regions,
     this.limits = const LocalApiLimits(),
     this.port = defaultPort,
     this.serverVersion = '',
@@ -119,6 +122,7 @@ class LocalApiServer {
   List<String> get capabilities => [
     'contacts',
     'advert_send',
+    'regions',
     'channels_join',
     if (archive != null) 'replay',
   ];
@@ -589,6 +593,34 @@ class _ApiClient {
         return {...info, 'channels': server.host.channels()};
       case 'channels.list':
         return {'channels': server.host.channels()};
+      case 'regions.list':
+        return {'regions': server.regions?.toJson() ?? const []};
+      case 'regions.resolve':
+        final latitude = params['lat'];
+        final longitude = params['lon'];
+        if (latitude is! num || longitude is! num) {
+          throw _ApiError('bad_request', 'lat and lon are required');
+        }
+        if (latitude.abs() > 90 || longitude.abs() > 180) {
+          throw _ApiError('coordinate_range', 'lat/lon out of range');
+        }
+        final region = server.regions?.resolve(
+          latitude.toDouble(),
+          longitude.toDouble(),
+        );
+        return {
+          'region': region == null
+              ? null
+              : {
+                  ...region.toJson(),
+                  'distanceKm': distanceKmBetween(
+                    latitude.toDouble(),
+                    longitude.toDouble(),
+                    region.latitude,
+                    region.longitude,
+                  ),
+                },
+        };
       case 'contacts.list':
         final limit = _intParam(params, 'limit', fallback: 200);
         return {'contacts': server.host.contacts(limit: limit.clamp(1, 500))};
@@ -604,11 +636,13 @@ class _ApiClient {
         _requireRadio();
         final channel = _channelParam(params);
         final text = _textParam(params, 'text');
-        _refuseUnoffered(params, 'region', 'regions');
+        final region = _regionParam(params);
         // Text along a path is not offered (no `tx_path_text`): refuse it
         // instead of flooding what the client meant to keep local.
         _refuseUnoffered(params, 'path', 'tx_path_text');
-        return _send(() => server.host.sendChannelText(channel, text));
+        return _send(
+          () => server.host.sendChannelText(channel, text, region: region),
+        );
       case 'channel.sendData':
         _requireRadio();
         final channel = _channelParam(params);
@@ -624,7 +658,7 @@ class _ApiClient {
                 '${LocalApiServer.maxPayloadBytes}',
           );
         }
-        _refuseUnoffered(params, 'region', 'regions');
+        final region = _regionParam(params);
         _refuseUnoffered(params, 'path', 'tx_path_data');
         if (!server.host.supportsChannelData) {
           throw _ApiError(
@@ -637,6 +671,7 @@ class _ApiClient {
             channel,
             dataType,
             payload,
+            region: region,
           );
           if (!sent) {
             throw _ApiError('not_connected', 'the radio is not connected');
@@ -953,6 +988,25 @@ class _ApiClient {
       );
     }
     return since;
+  }
+
+  /// A flood-scope name from the region catalogue or the app's saved regions.
+  /// Anything else is refused: the radio would hash any string into a scope
+  /// no repeater serves, and names starting with `!` are internal.
+  String? _regionParam(Map<String, dynamic> params) {
+    final raw = params['region'];
+    if (raw == null) return null;
+    if (raw is! String || raw.isEmpty || raw.startsWith('!')) {
+      throw _ApiError('bad_request', 'region must be a region name');
+    }
+    if (server.host.savedRegions().contains(raw) ||
+        (server.regions?.contains(raw) ?? false)) {
+      return raw;
+    }
+    if (!LocalApiValidation.isRegionName(raw)) {
+      throw _ApiError('bad_request', 'region must be a region name');
+    }
+    throw _ApiError('unknown_region', 'no region named $raw');
   }
 
   List<T> _listParam<T>(Map<String, dynamic> params, String name) {
@@ -1358,6 +1412,12 @@ class LocalApiValidation {
   /// `hello.client.version`: 0 to 32 code points, no control characters.
   static bool isClientVersion(Object? value) =>
       value is String && value.runes.length <= 32 && !_hasControl(value);
+
+  /// A well-formed flood-scope name: 1 to 30 of `a-z`, `0-9` and `-`.
+  static bool isRegionName(Object? value) =>
+      value is String && _regionName.hasMatch(value);
+
+  static final RegExp _regionName = RegExp(r'^[a-z0-9-]{1,30}$');
 
   /// Unicode category Cc.
   static bool _hasControl(String value) =>

@@ -4381,5 +4381,30 @@
     }
   },
   "localApi_joinWarning": "ハッシュタグチャンネルは、名前を知っている人なら誰でも読み書きできます。",
-  "localApi_joinAdd": "追加"
+  "localApi_joinAdd": "追加",
+  "localApi_regionsTitle": "おすすめのフラッド地域",
+  "localApi_regionsSubtitle": "{count} 地域。アプリは地点を半径内に含む最寄りの地域を問い合わせできます。",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "都市 · 半径 {radius} km",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "国 · 半径 {radius} km",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }

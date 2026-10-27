@@ -8414,4 +8414,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get localApi_joinAdd => 'Añadir';
+
+  @override
+  String get localApi_regionsTitle => 'Regiones de difusión sugeridas';
+
+  @override
+  String localApi_regionsSubtitle(int count) {
+    return '$count zonas. Las apps pueden pedir la más cercana cuyo radio contenga un punto.';
+  }
+
+  @override
+  String localApi_regionCity(int radius) {
+    return 'Ciudad · radio de $radius km';
+  }
+
+  @override
+  String localApi_regionCountry(int radius) {
+    return 'País · radio de $radius km';
+  }
 }

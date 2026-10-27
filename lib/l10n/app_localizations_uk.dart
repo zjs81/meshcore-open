@@ -8459,4 +8459,22 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get localApi_joinAdd => 'Додати';
+
+  @override
+  String get localApi_regionsTitle => 'Рекомендовані регіони розсилки';
+
+  @override
+  String localApi_regionsSubtitle(int count) {
+    return 'Областей: $count. Застосунки можуть запитати найближчу, радіус якої містить точку.';
+  }
+
+  @override
+  String localApi_regionCity(int radius) {
+    return 'Місто · радіус $radius км';
+  }
+
+  @override
+  String localApi_regionCountry(int radius) {
+    return 'Країна · радіус $radius км';
+  }
 }

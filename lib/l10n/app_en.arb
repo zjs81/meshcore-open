@@ -4951,5 +4951,30 @@
     }
   },
   "localApi_joinWarning": "Anyone who knows a hashtag channel's name can read it and post in it.",
-  "localApi_joinAdd": "Add"
+  "localApi_joinAdd": "Add",
+  "localApi_regionsTitle": "Suggested flood regions",
+  "localApi_regionsSubtitle": "{count} areas. Apps can ask for the nearest one whose radius contains a point.",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "City · {radius} km radius",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "Country · {radius} km radius",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -8464,4 +8464,22 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get localApi_joinAdd => 'Dodaj';
+
+  @override
+  String get localApi_regionsTitle => 'Sugerowane regiony rozgłaszania';
+
+  @override
+  String localApi_regionsSubtitle(int count) {
+    return 'Obszary: $count. Aplikacje mogą zapytać o najbliższy obszar, którego promień obejmuje punkt.';
+  }
+
+  @override
+  String localApi_regionCity(int radius) {
+    return 'Miasto · promień $radius km';
+  }
+
+  @override
+  String localApi_regionCountry(int radius) {
+    return 'Kraj · promień $radius km';
+  }
 }

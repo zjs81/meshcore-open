@@ -3338,5 +3338,30 @@
     }
   },
   "localApi_joinWarning": "Любой, кто знает название хэштег-канала, может читать его и писать в него.",
-  "localApi_joinAdd": "Добавить"
+  "localApi_joinAdd": "Добавить",
+  "localApi_regionsTitle": "Рекомендуемые регионы рассылки",
+  "localApi_regionsSubtitle": "Областей: {count}. Приложения могут запросить ближайшую, радиус которой содержит точку.",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "Город · радиус {radius} км",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "Страна · радиус {radius} км",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }

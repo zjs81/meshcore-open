@@ -8435,4 +8435,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get localApi_joinAdd => 'Hinzufügen';
+
+  @override
+  String get localApi_regionsTitle => 'Vorgeschlagene Flood-Regionen';
+
+  @override
+  String localApi_regionsSubtitle(int count) {
+    return '$count Gebiete. Apps können das nächste Gebiet abfragen, dessen Radius einen Punkt enthält.';
+  }
+
+  @override
+  String localApi_regionCity(int radius) {
+    return 'Stadt · $radius km Radius';
+  }
+
+  @override
+  String localApi_regionCountry(int radius) {
+    return 'Land · $radius km Radius';
+  }
 }

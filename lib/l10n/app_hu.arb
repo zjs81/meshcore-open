@@ -4132,5 +4132,30 @@
     }
   },
   "localApi_joinWarning": "Egy hashtag csatornát bárki olvashat és írhat, aki ismeri a nevét.",
-  "localApi_joinAdd": "Hozzáadás"
+  "localApi_joinAdd": "Hozzáadás",
+  "localApi_regionsTitle": "Javasolt flood-régiók",
+  "localApi_regionsSubtitle": "{count} terület. Az alkalmazások lekérhetik a legközelebbit, amelynek sugara tartalmaz egy pontot.",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "Város · {radius} km sugár",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "Ország · {radius} km sugár",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }

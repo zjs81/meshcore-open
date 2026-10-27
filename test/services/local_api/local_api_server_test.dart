@@ -11,6 +11,7 @@ import 'package:meshcore_open/services/local_api/local_api_archive.dart';
 import 'package:meshcore_open/services/local_api/local_api_host.dart';
 import 'package:meshcore_open/services/local_api/local_api_pairing.dart';
 import 'package:meshcore_open/services/local_api/local_api_server.dart';
+import 'package:meshcore_open/services/local_api/mesh_regions.dart';
 
 import 'local_api_test_peer.dart';
 
@@ -33,6 +34,12 @@ void main() {
       pairingStore: store,
       pairingBroker: broker,
       archive: archive,
+      regions: MeshRegionCatalog.fromJsonString('''
+        {"regions":[
+          {"name":"sk","label":"Slovakia","kind":"country","lat":48.7164,"lon":19.5,"radiusKm":350},
+          {"name":"sk-ba","label":"Bratislava","kind":"city","lat":48.1486,"lon":17.1077,"radiusKm":100}
+        ]}
+      '''),
       limits: limits,
       port: 0,
     );
@@ -298,6 +305,7 @@ void main() {
       expect(hello['capabilities'], [
         'contacts',
         'advert_send',
+        'regions',
         'channels_join',
         'replay',
       ]);
@@ -683,7 +691,7 @@ void main() {
       expect((await to('7', 3))['error']['code'], 'unknown_channel');
     });
 
-    test('region and path are refused, not ignored', () async {
+    test('path is refused, not ignored', () async {
       final connection = await paired(TestPeer.generate(36));
       Map<String, Object?> data(Map<String, Object?> extra) => {
         'channel': '#roadstr',
@@ -692,17 +700,11 @@ void main() {
         ...extra,
       };
       for (final (id, method, params) in [
-        (1, 'channel.sendData', data({'region': 'xx'})),
         (2, 'channel.sendData', data({'path': ''})),
         (
           3,
           'channel.sendText',
           {'channel': '#roadstr', 'text': 'a', 'path': ''},
-        ),
-        (
-          4,
-          'channel.sendText',
-          {'channel': '#roadstr', 'text': 'a', 'region': 'xx'},
         ),
       ]) {
         final reply = await call(connection, id, method, params);
@@ -751,6 +753,66 @@ void main() {
         (await sendData(connection, 1, [1]))['error']['code'],
         'unsupported_firmware',
       );
+    });
+  });
+
+  group('regions', () {
+    Future<Map<String, dynamic>> sendWithRegion(
+      Connection connection,
+      int id,
+      String region,
+    ) => call(connection, id, 'channel.sendData', {
+      'channel': '#roadstr',
+      'dataType': 0xB652,
+      'payload': base64Encode([id]),
+      'region': region,
+    });
+
+    test('accepts catalogue and saved regions only', () async {
+      host.saved = ['home-repeaters'];
+      final connection = await paired(TestPeer.generate(50));
+
+      expect((await sendWithRegion(connection, 1, 'sk-ba'))['ok'], true);
+      expect(host.lastRegion, 'sk-ba');
+      expect(
+        (await sendWithRegion(connection, 2, 'home-repeaters'))['ok'],
+        true,
+      );
+      expect(host.lastRegion, 'home-repeaters');
+
+      expect(
+        (await sendWithRegion(connection, 3, 'sk-xx'))['error']['code'],
+        'unknown_region',
+      );
+      for (final bad in ['!unscoped', 'Not A Region', '']) {
+        expect(
+          (await sendWithRegion(connection, 4, bad))['error']['code'],
+          'bad_request',
+        );
+      }
+      // Refused requests did not reach the radio.
+      expect(host.sent, hasLength(2));
+    });
+
+    test('resolves a point to the nearest containing region', () async {
+      final connection = await paired(TestPeer.generate(51));
+      final ba = await call(connection, 1, 'regions.resolve', {
+        'lat': 48.15,
+        'lon': 17.11,
+      });
+      expect(ba['result']['region']['name'], 'sk-ba');
+      final none = await call(connection, 2, 'regions.resolve', {
+        'lat': 40,
+        'lon': 0,
+      });
+      expect(none['result']['region'], isNull);
+      final bad = await call(connection, 3, 'regions.resolve', {
+        'lat': 91,
+        'lon': 0,
+      });
+      expect(bad['error']['code'], 'coordinate_range');
+      final list = await call(connection, 4, 'regions.list');
+      expect(list['result']['regions'], hasLength(2));
     });
   });
 
@@ -1060,6 +1122,8 @@ class _FakeHost implements LocalApiHost {
     ),
     Channel(index: 1, name: 'other', psk: Uint8List(16)),
   ];
+  List<String> saved = [];
+  String? lastRegion;
 
   @override
   Stream<MeshEvent> get events => _controller.stream;
@@ -1131,14 +1195,23 @@ class _FakeHost implements LocalApiHost {
   Contact? resolveContact(String pubkeyHex) => null;
 
   @override
-  Future<void> sendChannelText(Channel channel, String text) async {}
+  List<String> savedRegions() => saved;
+
+  @override
+  Future<void> sendChannelText(
+    Channel channel,
+    String text, {
+    String? region,
+  }) async {}
 
   @override
   Future<bool> sendChannelData(
     Channel channel,
     int dataType,
-    Uint8List payload,
-  ) async {
+    Uint8List payload, {
+    String? region,
+  }) async {
+    lastRegion = region;
     if (throwOnSend) throw Exception('Command failed with error code 3');
     final error = sendError;
     if (error != null) throw error;
