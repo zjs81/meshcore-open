@@ -109,6 +109,35 @@ Color networkMapStatusColor(NetworkMapRepeaterStatus status) {
   };
 }
 
+
+
+/// Above this many in-view repeaters, hexagons and marker shadows are skipped.
+const int networkMapDenseNodeCount = 30;
+
+/// Above this many in-view links, each line is one stroke at half width
+const int networkMapDenseLinkCount = 70;
+
+
+/// Full style is a 3.5 px confirmed stroke or a 2.5 px unconfirmed stroke,
+/// each with a 1 px border. Simple style keeps the pattern and drops the
+/// border, so the painter records the line once, at half the stroke width.
+Polyline _onlineLinkPolyline(NetworkMapLink link, {required bool simple}) {
+  final confirmed = link.confirmed;
+  final strokeWidth = confirmed ? 3.5 : 2.5;
+  return Polyline(
+    points: [link.aCell.center, link.bCell.center],
+    strokeWidth: simple ? strokeWidth / 2 : strokeWidth,
+    color: MapPalette.router.withValues(alpha: confirmed ? 0.85 : 0.6),
+    borderStrokeWidth: simple ? 0 : 1,
+    borderColor: MapPalette.markerOutline.withValues(alpha: 0.7),
+    pattern: confirmed
+        ? const StrokePattern.solid()
+        : StrokePattern.dashed(segments: const [10, 8]),
+  );
+}
+
+
+
 /// Map layers for the online network: links, repeater hexagons and a
 /// tappable center marker so small cells stay visible when zoomed out.
 ///
@@ -120,51 +149,44 @@ List<Widget> buildNetworkMapOnlineLayers({
   required ValueChanged<NetworkMapRepeater> onTap,
 }) {
   final repeaters = controller.repeaters;
+  final links = controller.links;
+  final dropHexagons = repeaters.length > networkMapDenseNodeCount;
+  final simpleLines = links.length > networkMapDenseLinkCount;
   return [
     PolylineLayer(
       polylines: [
-        for (final link in controller.links)
-          Polyline(
-            points: [link.aCell.center, link.bCell.center],
-            strokeWidth: link.confirmed ? 3.5 : 2.5,
-            color: MapPalette.router.withValues(
-              alpha: link.confirmed ? 0.85 : 0.6,
-            ),
-            borderStrokeWidth: 1,
-            borderColor: MapPalette.markerOutline.withValues(alpha: 0.7),
-            pattern: link.confirmed
-                ? const StrokePattern.solid()
-                : StrokePattern.dashed(segments: const [10, 8]),
-          ),
+        for (final link in links)
+          _onlineLinkPolyline(link, simple: simpleLines),
       ],
     ),
-    GestureDetector(
-      onTap: () {
-        final hits = controller.hitNotifier.value?.hitValues;
-        if (hits != null && hits.isNotEmpty) onTap(hits.first);
-      },
-      child: PolygonLayer<NetworkMapRepeater>(
-        hitNotifier: controller.hitNotifier,
-        polygons: [
-          for (final repeater in repeaters)
-            if (repeater.cell.boundary.length >= 3)
-              Polygon<NetworkMapRepeater>(
-                points: repeater.cell.boundary,
-                hitValue: repeater,
-                color: localMarkerKeys.contains(repeater.key)
-                    ? null
-                    : networkMapStatusColor(
-                        repeater.status,
-                      ).withValues(alpha: 0.22),
-                borderColor: networkMapStatusColor(repeater.status),
-                borderStrokeWidth: 2.5,
-                pattern: repeater.confirmed
-                    ? const StrokePattern.solid()
-                    : StrokePattern.dashed(segments: const [8, 6]),
-              ),
-        ],
+    if (!dropHexagons)
+      GestureDetector(
+        onTap: () {
+          final hits = controller.hitNotifier.value?.hitValues;
+          if (hits != null && hits.isNotEmpty) onTap(hits.first);
+        },
+        child: PolygonLayer<NetworkMapRepeater>(
+          hitNotifier: controller.hitNotifier,
+          polygons: [
+            for (final repeater in repeaters)
+              if (repeater.cell.boundary.length >= 3)
+                Polygon<NetworkMapRepeater>(
+                  points: repeater.cell.boundary,
+                  hitValue: repeater,
+                  color: localMarkerKeys.contains(repeater.key)
+                      ? null
+                      : networkMapStatusColor(
+                          repeater.status,
+                        ).withValues(alpha: 0.22),
+                  borderColor: networkMapStatusColor(repeater.status),
+                  borderStrokeWidth: 2.5,
+                  pattern: repeater.confirmed
+                      ? const StrokePattern.solid()
+                      : StrokePattern.dashed(segments: const [8, 6]),
+                ),
+          ],
+        ),
       ),
-    ),
     MarkerLayer(
       markers: [
         for (final repeater in repeaters)
@@ -183,13 +205,15 @@ List<Widget> buildNetworkMapOnlineLayers({
                       color: MapPalette.markerOutline,
                       width: 2.5,
                     ),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: MapPalette.markerShadow,
-                        blurRadius: 6,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
+                    boxShadow: dropHexagons
+                        ? null
+                        : const [
+                            BoxShadow(
+                              color: MapPalette.markerShadow,
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
                   ),
                   child: Icon(
                     repeater.type == advTypeRoom
