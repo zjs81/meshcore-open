@@ -1097,15 +1097,6 @@ class AppLocalizationsHu extends AppLocalizations {
   String get appSettings_ipfsGatewayDeactivated => 'Kikapcsolva';
 
   @override
-  String get appSettings_ipfsGatewayIpfsIo => 'ipfs.io';
-
-  @override
-  String get appSettings_ipfsGatewayPinata => 'Pinata';
-
-  @override
-  String get appSettings_ipfsGatewayFilebase => 'Filebase';
-
-  @override
   String get appSettings_ipfsGatewayCustom => 'Egyéni (Kubo)';
 
   @override

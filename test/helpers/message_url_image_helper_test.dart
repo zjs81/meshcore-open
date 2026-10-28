@@ -51,18 +51,18 @@ void main() {
       );
     });
 
-    test('resolves ipfs cid links with the default ipfs.io gateway', () async {
+    test('resolves ipfs cid links with the default Filebase gateway', () async {
       expect(
         await MessageUrlImageHelper.parse(
           'my picture: ipfs://bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly text',
         ),
-        'https://ipfs.io/ipfs/bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly',
+        'https://ipfs.filebase.io/ipfs/bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly',
       );
       expect(
         await MessageUrlImageHelper.parse(
           'my picture: ipfs:bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly text',
         ),
-        'https://ipfs.io/ipfs/bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly',
+        'https://ipfs.filebase.io/ipfs/bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly',
       );
     });
 

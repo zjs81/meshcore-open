@@ -457,12 +457,12 @@ void main() {
       expect(AppSettings.fromJson(saved).showLinkImagesByDefault, isTrue);
     });
 
-    test('public IPFS gateway defaults to ipfs.io when never set', () {
+    test('public IPFS gateway defaults to Filebase when never set', () {
       expect(
         AppSettings.fromJson({}).publicIpfsGateway,
-        'https://ipfs.io/ipfs/',
+        'https://ipfs.filebase.io/ipfs/',
       );
-      expect(AppSettings().publicIpfsGateway, 'https://ipfs.io/ipfs/');
+      expect(AppSettings().publicIpfsGateway, 'https://ipfs.filebase.io/ipfs/');
     });
 
     test('public IPFS gateway keeps a saved empty value as deactivated', () {
@@ -470,12 +470,8 @@ void main() {
       expect(AppSettings.fromJson(saved).publicIpfsGateway, isEmpty);
     });
 
-    test('public IPFS gateway keeps saved ipfs.io and dweb.link values', () {
-      for (final gateway in [
-        'https://ipfs.io/ipfs/',
-        'https://dweb.link/ipfs/',
-        'https://gateway.example.com/ipfs/',
-      ]) {
+    test('public IPFS gateway keeps saved custom values', () {
+      for (final gateway in ['https://gateway.example.com/ipfs/']) {
         final saved = AppSettings(publicIpfsGateway: gateway).toJson();
         expect(AppSettings.fromJson(saved).publicIpfsGateway, gateway);
       }

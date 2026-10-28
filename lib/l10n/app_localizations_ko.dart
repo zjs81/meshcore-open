@@ -1046,15 +1046,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_ipfsGatewayDeactivated => '사용 안 함';
 
   @override
-  String get appSettings_ipfsGatewayIpfsIo => 'ipfs.io';
-
-  @override
-  String get appSettings_ipfsGatewayPinata => 'Pinata';
-
-  @override
-  String get appSettings_ipfsGatewayFilebase => 'Filebase';
-
-  @override
   String get appSettings_ipfsGatewayCustom => '사용자 지정(Kubo)';
 
   @override
