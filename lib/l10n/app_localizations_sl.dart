@@ -6310,6 +6310,18 @@ class AppLocalizationsSl extends AppLocalizations {
   String get appSettings_routingSection => 'Usmerjanje';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Ponastavite algoritem usmerjanja na privzeto';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Obnovite nastavitve algoritma usmerjanja na tovarniške privzetke';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Nastavitve algoritma usmerjanja so ponastavljene na privzeto';
+
+  @override
   String get appSettings_imageMessagesSection => 'Sporočila s slikami';
 
   @override

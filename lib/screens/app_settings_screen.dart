@@ -623,6 +623,38 @@ class AppSettingsScreen extends StatelessWidget {
                           ],
                         ),
                       ),
+                      const Divider(height: 1),
+                      ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 4,
+                        ),
+                        leading: const Icon(Icons.restart_alt, size: 24),
+                        title: Text(
+                          context.l10n.appSettings_resetRoutingToDefault,
+                        ),
+                        subtitle: Text(
+                          context
+                              .l10n
+                              .appSettings_resetRoutingToDefaultSubtitle,
+                        ),
+                        trailing: const Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 18,
+                        ),
+                        onTap: () async {
+                          await settingsService.resetRoutingSettingsToDefault();
+                          if (context.mounted) {
+                            showDismissibleSnackBar(
+                              context,
+                              content: Text(
+                                context.l10n.appSettings_routingResetToDefault,
+                              ),
+                              duration: const Duration(seconds: 2),
+                            );
+                          }
+                        },
+                      ),
                     ],
                   ),
                 )

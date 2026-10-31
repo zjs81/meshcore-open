@@ -496,4 +496,18 @@ class AppSettingsService extends ChangeNotifier {
       ),
     );
   }
+
+  Future<void> resetRoutingSettingsToDefault() async {
+    await updateSettings(
+      _settings.copyWith(
+        maxRouteWeight: AppSettings.defaultMaxRouteWeight,
+        initialRouteWeight: AppSettings.defaultInitialRouteWeight,
+        routeWeightSuccessIncrement:
+            AppSettings.defaultRouteWeightSuccessIncrement,
+        routeWeightFailureDecrement:
+            AppSettings.defaultRouteWeightFailureDecrement,
+        maxMessageRetries: AppSettings.defaultMaxMessageRetries,
+      ),
+    );
+  }
 }

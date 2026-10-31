@@ -6046,6 +6046,17 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_routingSection => 'ルーティング';
 
   @override
+  String get appSettings_resetRoutingToDefault => 'ルーティングアルゴリズムをデフォルトにリセット';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'ルーティングアルゴリズムの設定を工場出荷時のデフォルトに戻す';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'ルーティングアルゴリズムの設定がデフォルトにリセットされました';
+
+  @override
   String get appSettings_imageMessagesSection => '画像メッセージ';
 
   @override

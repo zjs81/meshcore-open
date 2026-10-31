@@ -6330,6 +6330,18 @@ class AppLocalizationsHu extends AppLocalizations {
   String get appSettings_routingSection => 'Útválasztás';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Útvonaltervezési algoritmus visszaállítása alapértelmezettre';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Útvonaltervezési algoritmus beállításainak visszaállítása gyári alapértelmezett értékekre';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Útvonaltervezési algoritmus beállításai visszaállítva alapértelmezettre';
+
+  @override
   String get appSettings_imageMessagesSection => 'Képüzenetek';
 
   @override

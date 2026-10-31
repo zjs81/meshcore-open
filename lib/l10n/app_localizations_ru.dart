@@ -6358,6 +6358,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get appSettings_routingSection => 'Маршрутизация';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Сбросить алгоритм маршрутизации к значению по умолчанию';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Восстановить настройки алгоритма маршрутизации к заводским значениям по умолчанию';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Настройки алгоритма маршрутизации сброшены к значению по умолчанию';
+
+  @override
   String get appSettings_imageMessagesSection => 'Сообщения-изображения';
 
   @override

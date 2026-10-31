@@ -6306,6 +6306,18 @@ class AppLocalizationsNl extends AppLocalizations {
   String get appSettings_routingSection => 'Routering';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Routeringsalgoritme resetten naar standaard';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Routeringsalgoritme-instellingen herstellen naar fabrieksstandaardwaarden';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Routeringsalgoritme-instellingen gereset naar standaard';
+
+  @override
   String get appSettings_imageMessagesSection => 'Afbeeldingsberichten';
 
   @override

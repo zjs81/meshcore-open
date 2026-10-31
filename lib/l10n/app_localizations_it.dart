@@ -6349,6 +6349,18 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appSettings_routingSection => 'Instradamento';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Reimposta algoritmo di instradamento sui valori predefiniti';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Ripristina le impostazioni dell\'algoritmo di instradamento ai valori predefiniti di fabbrica';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Impostazioni algoritmo di instradamento reimpostate sui valori predefiniti';
+
+  @override
   String get appSettings_imageMessagesSection => 'Messaggi immagine';
 
   @override

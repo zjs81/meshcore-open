@@ -6351,6 +6351,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appSettings_routingSection => 'Routing';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Routing-Algorithmus auf Standard zurücksetzen';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Routing-Algorithmus-Einstellungen auf Werkseinstellungen zurücksetzen';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Routing-Algorithmus-Einstellungen auf Standard zurückgesetzt';
+
+  @override
   String get appSettings_imageMessagesSection => 'Bildnachrichten';
 
   @override

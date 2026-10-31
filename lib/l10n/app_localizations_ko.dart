@@ -6056,6 +6056,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_routingSection => '라우팅';
 
   @override
+  String get appSettings_resetRoutingToDefault => '라우팅 알고리즘 기본값으로 재설정';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      '라우팅 알고리즘 설정을 공장 기본값으로 복원';
+
+  @override
+  String get appSettings_routingResetToDefault => '라우팅 알고리즘 설정이 기본값으로 재설정되었습니다';
+
+  @override
   String get appSettings_imageMessagesSection => '이미지 메시지';
 
   @override

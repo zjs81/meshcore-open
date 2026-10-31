@@ -6326,6 +6326,18 @@ class AppLocalizationsSk extends AppLocalizations {
   String get appSettings_routingSection => 'Smerovanie';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Obnoviť algoritmus smerovania na predvolené';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Obnoviť nastavenia algoritmu smerovania na továrne predvolené hodnoty';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Nastavenia algoritmu smerovania obnovené na predvolené';
+
+  @override
   String get appSettings_imageMessagesSection => 'Obrazové správy';
 
   @override
