@@ -25,9 +25,6 @@ import '../widgets/sync_progress_overlay.dart';
 import 'region_management_screen.dart';
 import '../utils/share_origin.dart';
 
-/// Companion firmware version that added CMD_SET_PATH_HASH_MODE (v1.14.0).
-const int _minFirmwareVerCodeForPathHashMode = 10;
-
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -249,7 +246,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ? l10n.common_connected
                             : l10n.common_disconnected,
                         color: connector.isConnected
-                            ? MeshPalette.blue
+                            ? scheme.primary
                             : scheme.onSurfaceVariant,
                         pulse: connector.isConnected,
                       ),
@@ -566,14 +563,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: l10n.repeater_pathHashMode,
           subtitle: !connected
               ? offline
-              : (connector.firmwareVerCode ?? 0) <
-                    _minFirmwareVerCodeForPathHashMode
+              : !connector.supportsPathHashMode
               ? l10n.settings_requiresFirmware('v1.14')
               : _pathHashModeSubtitle(context, connector.pathHashByteWidth),
-          onTap:
-              connector.isConnected &&
-                  (connector.firmwareVerCode ?? 0) >=
-                      _minFirmwareVerCodeForPathHashMode
+          onTap: connector.isConnected && connector.supportsPathHashMode
               ? () => _editPathHashMode(context, connector)
               : null,
         ),
@@ -812,12 +805,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (builderContext, setDialogState) => AlertDialog(
+          scrollable: true,
           title: Text(l10n.repeater_pathHashMode),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DropdownButtonFormField<int>(
+                isExpanded: true,
                 initialValue: selectedMode,
                 decoration: InputDecoration(
                   labelText: l10n.repeater_pathHashMode,
@@ -826,15 +821,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 items: [
                   DropdownMenuItem(
                     value: 0,
-                    child: Text(l10n.repeater_pathHashModeOption0),
+                    child: Text(
+                      l10n.repeater_pathHashModeOption0,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   DropdownMenuItem(
                     value: 1,
-                    child: Text(l10n.repeater_pathHashModeOption1),
+                    child: Text(
+                      l10n.repeater_pathHashModeOption1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   DropdownMenuItem(
                     value: 2,
-                    child: Text(l10n.repeater_pathHashModeOption2),
+                    child: Text(
+                      l10n.repeater_pathHashModeOption2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
                 onChanged: (value) {

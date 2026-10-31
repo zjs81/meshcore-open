@@ -10,7 +10,8 @@ import 'package:uuid/uuid.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../l10n/l10n.dart';
-import '../services/app_settings_service.dart';
+import '../services/app_settings_service.dart'
+    show AppSettingsService, ChannelNotificationMode;
 import '../services/ui_view_state_service.dart';
 import '../models/channel.dart';
 import '../models/community.dart';
@@ -19,6 +20,7 @@ import '../theme/mesh_theme.dart';
 import '../utils/dialog_utils.dart';
 import '../utils/disconnect_navigation_mixin.dart';
 import '../utils/route_transitions.dart';
+import '../widgets/channel_notification_mode_sheet.dart';
 import '../widgets/list_filter_widget.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mesh_ui.dart';
@@ -36,6 +38,7 @@ import 'contacts_screen.dart';
 import 'map_screen.dart';
 import 'settings_screen.dart';
 import '../review_mode/review_mode_banner.dart';
+import '../theme/theme_icons.dart';
 
 class ChannelsScreen extends StatefulWidget {
   final bool hideBackButton;
@@ -147,7 +150,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                 PopupMenuItem(
                   child: Row(
                     children: [
-                      const Icon(Icons.settings),
+                      const ThemedIcon(ThemeIconSlot.settings),
                       const SizedBox(width: 8),
                       Text(menuContext.l10n.settings_title),
                     ],
@@ -372,9 +375,9 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     int listIndex = 0,
   }) {
     final unreadCount = connector.getUnreadCountForChannel(channel);
-    final isMuted = context.watch<AppSettingsService>().isChannelMuted(
-      channel.muteKey,
-    );
+    final notificationMode = context
+        .watch<AppSettingsService>()
+        .getChannelNotificationMode(channel.muteKey);
     final scheme = Theme.of(context).colorScheme;
 
     // Determine icon and colors based on channel type
@@ -580,9 +583,9 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (isMuted) ...[
+                    if (notificationMode != ChannelNotificationMode.all) ...[
                       Icon(
-                        Icons.notifications_off,
+                        channelNotificationModeIcon(notificationMode),
                         size: 18,
                         color: scheme.onSurfaceVariant,
                       ),
@@ -625,66 +628,62 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     Channel channel,
   ) {
     final parentContext = context;
-    final settingsService = context.read<AppSettingsService>();
-    final isMuted = settingsService.isChannelMuted(channel.muteKey);
 
     showMeshSheet(
       parentContext,
       builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.edit_outlined),
-              title: Text(sheetContext.l10n.channels_editChannel),
-              onTap: () async {
-                Navigator.pop(sheetContext);
-                await Future.delayed(const Duration(milliseconds: 100));
-                if (parentContext.mounted) {
-                  _showEditChannelDialog(parentContext, connector, channel);
-                }
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                isMuted
-                    ? Icons.notifications_outlined
-                    : Icons.notifications_off_outlined,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.edit_outlined),
+                title: Text(sheetContext.l10n.channels_editChannel),
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  await Future.delayed(const Duration(milliseconds: 100));
+                  if (parentContext.mounted) {
+                    _showEditChannelDialog(parentContext, connector, channel);
+                  }
+                },
               ),
-              title: Text(
-                isMuted
-                    ? sheetContext.l10n.channels_unmuteChannel
-                    : sheetContext.l10n.channels_muteChannel,
+              // Notification mode selection
+              ListTile(
+                leading: const Icon(Icons.notifications_outlined),
+                title: Text(sheetContext.l10n.channels_notificationSettings),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  await Future.delayed(const Duration(milliseconds: 100));
+                  if (parentContext.mounted) {
+                    showChannelNotificationModeSheet(
+                      parentContext,
+                      channel.muteKey,
+                    );
+                  }
+                },
               ),
-              onTap: () async {
-                Navigator.pop(sheetContext);
-                if (isMuted) {
-                  await settingsService.unmuteChannel(channel.muteKey);
-                } else {
-                  await settingsService.muteChannel(channel.muteKey);
-                }
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.delete_outline,
-                color: Theme.of(sheetContext).colorScheme.error,
-              ),
-              title: Text(
-                sheetContext.l10n.channels_deleteChannel,
-                style: TextStyle(
+              ListTile(
+                leading: Icon(
+                  Icons.delete_outline,
                   color: Theme.of(sheetContext).colorScheme.error,
                 ),
+                title: Text(
+                  sheetContext.l10n.channels_deleteChannel,
+                  style: TextStyle(
+                    color: Theme.of(sheetContext).colorScheme.error,
+                  ),
+                ),
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  await Future.delayed(const Duration(milliseconds: 100));
+                  if (parentContext.mounted) {
+                    _confirmDeleteChannel(parentContext, connector, channel);
+                  }
+                },
               ),
-              onTap: () async {
-                Navigator.pop(sheetContext);
-                await Future.delayed(const Duration(milliseconds: 100));
-                if (parentContext.mounted) {
-                  _confirmDeleteChannel(parentContext, connector, channel);
-                }
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -859,9 +858,11 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                     vertical: 10,
                   ),
                   borderColor: isSelected && enabled
-                      ? MeshPalette.blueLine
+                      ? cardScheme.primary.withValues(alpha: 0.5)
                       : null,
-                  color: isSelected && enabled ? MeshPalette.blueBg : null,
+                  color: isSelected && enabled
+                      ? cardScheme.primary.withValues(alpha: 0.16)
+                      : null,
                   onTap: enabled
                       ? () {
                           setSheetState(() {
@@ -879,7 +880,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                         size: 38,
                         color: enabled
                             ? (isSelected
-                                  ? MeshPalette.blue
+                                  ? cardScheme.primary
                                   : cardScheme.onSurfaceVariant)
                             : cardScheme.outline,
                         icon: icon,
@@ -917,7 +918,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                         Icon(
                           Icons.chevron_right,
                           color: isSelected
-                              ? MeshPalette.blue
+                              ? cardScheme.primary
                               : cardScheme.onSurfaceVariant,
                           size: 20,
                         ),
@@ -1195,12 +1196,16 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                               vertical: 8,
                             ),
                             child: DropdownButtonFormField<Community>(
+                              isExpanded: true,
                               initialValue: selectedCommunity,
                               items: _communities
                                   .map(
                                     (c) => DropdownMenuItem(
                                       value: c,
-                                      child: Text(c.name),
+                                      child: Text(
+                                        c.name,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                   )
                                   .toList(),
@@ -1401,7 +1406,9 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                                 }
                               },
                               icon: const Icon(Icons.qr_code_scanner),
-                              label: Text(sheetContext.l10n.community_scanQr),
+                              label: Text(
+                                sheetContext.l10n.channels_scanQrCode,
+                              ),
                             ),
                           ),
                         ],
@@ -1605,8 +1612,8 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                           buildOptionCard(
                             optionIndex: 4,
                             icon: Icons.qr_code_scanner,
-                            title: sheetContext.l10n.community_scanQr,
-                            subtitle: sheetContext.l10n.community_join,
+                            title: sheetContext.l10n.channels_scanQrCode,
+                            subtitle: sheetContext.l10n.channels_scanQrCodeDesc,
                           ),
                           if (selectedOption == 4) buildExpandedContent()!,
                           SectionHeader(
@@ -1653,7 +1660,11 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     );
     bool smazEnabled = connector.isChannelSmazEnabled(channel.index);
     bool cyr2latEnabled = connector.isChannelCyr2LatEnabled(channel.index);
-    bool urlImagesEnabled = connector.isChannelUrlImagesEnabled(channel.index);
+    final initialUrlImagesEnabled = connector.isChannelUrlImagesEnabled(
+      channel.index,
+    );
+    bool urlImagesEnabled = initialUrlImagesEnabled;
+    final loadLinkImages = appSettingsService.settings.loadLinkImages;
     String? selectedCyr2LatProfileId = connector.getChannelCyr2LatProfileId(
       channel.index,
     );
@@ -1749,6 +1760,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                             child: DropdownButtonFormField<String>(
+                              isExpanded: true,
                               initialValue: selectedCyr2LatProfileId,
                               decoration: InputDecoration(
                                 labelText: sheetContext
@@ -1760,7 +1772,10 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                                   .map((profile) {
                                     return DropdownMenuItem(
                                       value: profile.id,
-                                      child: Text(profile.name),
+                                      child: Text(
+                                        profile.name,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     );
                                   })
                                   .toList(),
@@ -1773,9 +1788,19 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                         SwitchListTile(
                           contentPadding: EdgeInsets.zero,
                           title: Text(sheetContext.l10n.urlImage_enable),
+                          subtitle: loadLinkImages
+                              ? null
+                              : Text(
+                                  sheetContext
+                                      .l10n
+                                      .urlImage_disabledInAppSettings,
+                                ),
                           value: urlImagesEnabled,
-                          onChanged: (value) =>
-                              setSheetState(() => urlImagesEnabled = value),
+                          onChanged: loadLinkImages
+                              ? (value) => setSheetState(
+                                  () => urlImagesEnabled = value,
+                                )
+                              : null,
                         ),
                         const SizedBox(height: 24),
                       ],
@@ -1835,10 +1860,13 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                                   channel.index,
                                   cyr2latEnabled,
                                 );
-                                await connector.setChannelUrlImagesEnabled(
-                                  channel.index,
-                                  urlImagesEnabled,
-                                );
+                                if (urlImagesEnabled !=
+                                    initialUrlImagesEnabled) {
+                                  await connector.setChannelUrlImagesEnabled(
+                                    channel.index,
+                                    urlImagesEnabled,
+                                  );
+                                }
                                 await connector.setChannelCyr2LatProfileId(
                                   channel.index,
                                   selectedCyr2LatProfileId,

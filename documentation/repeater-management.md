@@ -160,23 +160,20 @@ A card titled "Repeater's Neighbors - N" listing each neighbor as:
 
 ### What the User Sees
 
-Nine configuration cards, each with its own per-field refresh button(s):
+Most settings are declared once in `repeaterSettingSpecs` (`lib/models/repeater_setting_spec.dart`): the CLI key, section, input type (toggle, slider, number, choice or text), range, step and labels. The screen builds each control, its refresh button (`get <key>`) and its save command (`set <key> <value>`) from that list, so a new setting only needs a new entry. The radio parameters, passwords and identity keys are hand-built.
 
 **1. Basic Settings**
-- Name field
+- Name (`set name`)
 - Admin password field (write-only; always sent when non-empty)
 - Guest password field (write-only; always sent when non-empty)
 
 **2. Radio Settings**
-- Frequency (MHz)
-- TX Power (dBm) — has its own independent refresh button
-- Bandwidth dropdown (kHz)
-- Spreading Factor (SF5–SF12)
-- Coding Rate (4/5–4/8)
-- RX Gain boost toggle
+- Frequency (MHz), bandwidth, spreading factor (SF5–SF12) and coding rate (4/5–4/8), sent together as `set radio freq,bw,sf,cr`. The firmware only accepts `set freq` over serial, so when the radio hasn't been fetched all four must be filled in before saving
+- TX power (−9 to 30 dBm; `set tx`)
+- Boosted RX gain toggle (`set radio.rxgain`)
 
 **3. Location Settings**
-- Latitude and longitude fields, each with an independent refresh button
+- Latitude and longitude (`set lat`, `set lon`)
 
 **4. Features**
 - Packet forwarding toggle (`set repeat`)
@@ -187,13 +184,16 @@ Nine configuration cards, each with its own per-field refresh button(s):
 **5. Network Health**
 - Loop detection dropdown (off / minimal / moderate / strict; `set loop.detect`)
 - Duty cycle slider (1–100%; `set dutycycle`)
+- Receive delay (0–20; `set rxdelay`)
 
 **6. Advertisement Settings**
 - Local advert interval slider (60–240 minutes) with enable/disable toggle
 - Flood advert interval slider (3–168 hours) with enable/disable toggle
 - Flood max hops slider (0–64; `set flood.max`)
+- Advert flood max hops slider (0–64, default 8; `set flood.max.advert`)
+- Unscoped flood max hops slider (0–64, default 64; `set flood.max.unscoped`). The firmware reports 255 while it is unset and follows `flood.max`; the screen shows that as "Same as flood max"
 
-**7. Owner Info**
+**7. Operator Info**
 - Multi-line text field for operator contact info (`set owner.info`); newlines sent as `|`
 
 **8. Actions** (one-tap, no save needed)
@@ -203,23 +203,27 @@ Nine configuration cards, each with its own per-field refresh button(s):
 
 **9. Advanced** (collapsed by default)
 - Path hash mode dropdown (0–2; `set path.hash.mode`)
-- TX delay field (`set txdelay`)
-- Direct TX delay field (`set direct.txdelay`)
-- Interference threshold field (`set int.thresh`)
-- AGC reset interval slider (0–240s in multiples of 4; `set agc.reset.interval`)
+- TX delay and direct TX delay (0–2; `set txdelay`, `set direct.txdelay`)
+- Interference threshold (0–255; `set int.thresh`)
+- Channel activity detection toggle (`set cad`)
+- AGC reset interval slider (0–1020 s in multiples of 4; `set agc.reset.interval`)
+- Battery voltage calibration (0–10, 0 = board default; `set adc.multiplier`). Not every board supports it; the screen notes this
+- Extra spreading factors (up to 3, comma separated; `set extra.sf`). Only LR2021 builds have this setting; the screen notes this. Its `get` reply has no `> ` prefix
+
+**10. Change Identity Keys** (collapsed by default)
+- Private key field (`set prv.key`, reboot to apply), with a generator that can search for a chosen public-key prefix
 
 **Danger Zone** (red-styled card)
 - Reboot repeater (sends `reboot` with confirmation dialog)
-- Erase filesystem (serial-only; shows a confirmation dialog, then an informational snackbar — no command is sent over the air)
+- Erase filesystem (serial-only; shown disabled with an explanation — no command is sent over the air)
 
 ### Key Interactions
-- **Settings are NOT auto-fetched on open**. Name is pre-filled from cached contact data. Each section has its own refresh button to fetch live values from the repeater
-- TX Power, RX Gain, latitude, longitude, and advanced fields each have independent inline refresh buttons
-- Save button in app bar appears when any change is detected; failed commands keep those fields dirty for retry
+- **Settings are not fetched on open by default.** Each `get` is a separate LoRa round trip, so fetching everything is slow and uses airtime. Turn on **Auto-fetch repeater settings** in App Settings to fetch everything when the screen opens; otherwise use **Refresh all** or the per-setting refresh buttons. Name and location are pre-filled from cached contact data
+- Every control can be edited before its value has been fetched. Unfetched values show as "—" (or off) until fetched or edited, and only edited settings are sent on save
+- Save button in app bar appears when any change is detected; failed commands keep those settings dirty for retry, and a saved value counts as the repeater's current value
 - Settings are sent sequentially with 200ms delays between commands; firmware responses are checked and partial failures are reported in a snackbar
-- Some changes (e.g. radio frequency) require a reboot; the firmware response triggers an orange "reboot needed" snackbar
-- Advertisement interval sliders reset to defaults when re-enabled (local: 60 min, flood: 3 hours)
-- **Erase Filesystem** does NOT send any command over the air — tapping it only shows a snackbar explaining the operation requires physical serial access
+- Some changes (e.g. radio parameters) require a reboot; the firmware response triggers an orange "reboot needed" snackbar
+- Advertisement interval sliders reset to their minimum when re-enabled (local: 60 min, flood: 3 hours)
 
 ## Region configuration and companion statistics
 

@@ -20,6 +20,8 @@ import '../widgets/message_status_icon.dart';
 import '../widgets/empty_state.dart';
 import '../helpers/chat_scroll_controller.dart';
 import '../helpers/gif_helper.dart';
+import '../helpers/ipfs_link_attach_flow.dart';
+import '../helpers/marker_message.dart';
 import '../models/channel_message.dart';
 import '../models/contact.dart';
 import '../l10n/contact_localization.dart';
@@ -50,6 +52,9 @@ import '../theme/mesh_theme.dart';
 import '../widgets/future_timestamp_indicator.dart';
 import '../widgets/mesh_ui.dart';
 import 'telemetry_screen.dart';
+import '../services/chat_background_service.dart';
+import '../widgets/chat_background.dart';
+import '../widgets/holiday_animations.dart';
 
 // Image messages are deliberately absent from this screen, and there is no
 // flag to flip: the AEIC wire format is `CMD_SEND_CHANNEL_DATA` (62) /
@@ -74,6 +79,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final _holidayWatcher = HolidayTriggerWatcher();
+  final _messageAreaKey = GlobalKey();
   final _textController = TextEditingController();
   final _scrollController = ChatScrollController();
   final _textFieldFocusNode = FocusNode();
@@ -269,6 +276,11 @@ class _ChatScreenState extends State<ChatScreen> {
                       _showContactInfo(context);
                     case 'settings':
                       _showContactSettings(context);
+                    case 'background':
+                      showChatBackgroundSheet(
+                        context,
+                        ChatBackgroundService.contactKey(contact),
+                      );
                     case 'telemetry':
                       Navigator.push(
                         context,
@@ -323,6 +335,16 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   PopupMenuItem(
+                    value: 'background',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.wallpaper, size: 20),
+                        const SizedBox(width: 12),
+                        Text(context.l10n.chatBackground_title),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
                     value: 'clearChat',
                     child: Row(
                       children: [
@@ -350,16 +372,31 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Consumer<MeshCoreConnector>(
         builder: (context, connector, child) {
           final messages = connector.getMessages(widget.contact);
+          final newest = messages.isEmpty ? null : messages.last;
+          _holidayWatcher.onNewest(
+            context,
+            id: newest?.messageId,
+            texts: [newest?.text, newest?.translatedText],
+            receivedAt: newest?.receivedAt,
+            originOf: () => newestMessageOrigin(
+              _messageAreaKey,
+              isOutgoing: newest?.isOutgoing ?? false,
+            ),
+          );
           return Column(
             children: [
               Expanded(
-                child: Stack(
-                  children: [
-                    messages.isEmpty
-                        ? _buildEmptyState()
-                        : _buildMessageList(messages, connector),
-                    JumpToBottomButton(scrollController: _scrollController),
-                  ],
+                child: ChatBackdrop(
+                  key: _messageAreaKey,
+                  chatKey: ChatBackgroundService.contactKey(widget.contact),
+                  child: Stack(
+                    children: [
+                      messages.isEmpty
+                          ? _buildEmptyState()
+                          : _buildMessageList(messages, connector),
+                      JumpToBottomButton(scrollController: _scrollController),
+                    ],
+                  ),
                 ),
               ),
               _buildInputBar(connector),
@@ -520,30 +557,56 @@ class _ChatScreenState extends State<ChatScreen> {
       sendTooltip: context.l10n.chat_sendMessageTo(
         _resolveContact(connector).name,
       ),
-      // No image action here: the image wire format is GRP_DATA, a channel
-      // primitive with no DM equivalent (see the note at the top of this
-      // file).
-      actionsBuilder: () => [
-        ChatComposerAction(
-          id: 'gif',
-          icon: Icons.gif_box,
-          label: context.l10n.chat_sendGif,
-        ),
-        ChatComposerAction(
-          id: 'send-my-location',
-          icon: Icons.my_location,
-          label: context.l10n.chat_shareMyLocation,
-        ),
-      ],
+      actionsBuilder: () {
+        final showIpfsAction = context
+            .read<AppSettingsService>()
+            .settings
+            .uploadIpfsEndpoint
+            .trim()
+            .isNotEmpty;
+        return [
+          ChatComposerAction(
+            id: 'gif',
+            icon: Icons.gif_box,
+            label: context.l10n.chat_sendGif,
+          ),
+          if (showIpfsAction)
+            ChatComposerAction(
+              id: 'ipfs-image',
+              icon: Icons.cloud_upload_outlined,
+              label: context.l10n.chat_sendImageIpfs,
+            ),
+          ChatComposerAction(
+            id: 'send-my-location',
+            icon: Icons.my_location,
+            label: context.l10n.chat_shareMyLocation,
+          ),
+        ];
+      },
       onAction: (action) {
         if (!mounted) return;
         switch (action) {
           case 'gif':
             showChatGifPicker(context, _textController);
+          case 'ipfs-image':
+            _sendImageViaIpfs();
           case 'send-my-location':
             _shareMyLocation(context.read<MeshCoreConnector>());
         }
       },
+    );
+  }
+
+  Future<void> _sendImageViaIpfs() {
+    final connector = context.read<MeshCoreConnector>();
+    final contact = _resolveContact(connector);
+    return attachIpfsLinkToDraft(
+      context: context,
+      controller: _textController,
+      focusNode: _textFieldFocusNode,
+      maxBytes: maxContactMessageBytes(),
+      encodeOutbound: (text) =>
+          connector.prepareContactOutboundText(contact, text),
     );
   }
 
@@ -754,6 +817,10 @@ class _ChatScreenState extends State<ChatScreen> {
     bool urlImagesEnabled = connector.isContactUrlImagesEnabled(
       contact.publicKeyHex,
     );
+    final loadLinkImages = context
+        .read<AppSettingsService>()
+        .settings
+        .loadLinkImages;
     String? selectedCyr2LatProfileId = connector.getContactCyr2LatProfileId(
       contact.publicKeyHex,
     );
@@ -838,6 +905,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                     child: DropdownButtonFormField<String>(
+                      isExpanded: true,
                       initialValue: selectedCyr2LatProfileId,
                       decoration: InputDecoration(
                         labelText:
@@ -849,7 +917,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       ) {
                         return DropdownMenuItem(
                           value: profile.id,
-                          child: Text(profile.name),
+                          child: Text(
+                            profile.name,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -868,14 +939,19 @@ class _ChatScreenState extends State<ChatScreen> {
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(context.l10n.urlImage_enable),
+                  subtitle: loadLinkImages
+                      ? null
+                      : Text(context.l10n.urlImage_disabledInAppSettings),
                   value: urlImagesEnabled,
-                  onChanged: (value) {
-                    connector.setContactUrlImagesEnabled(
-                      contact.publicKeyHex,
-                      value,
-                    );
-                    setDialogState(() => urlImagesEnabled = value);
-                  },
+                  onChanged: loadLinkImages
+                      ? (value) {
+                          connector.setContactUrlImagesEnabled(
+                            contact.publicKeyHex,
+                            value,
+                          );
+                          setDialogState(() => urlImagesEnabled = value);
+                        }
+                      : null,
                 ),
                 const Divider(height: 8),
                 SwitchListTile(
@@ -1034,109 +1110,111 @@ class _ChatScreenState extends State<ChatScreen> {
     showMeshSheet(
       context,
       builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            BottomSheetHeader(
-              title: message.text.characters.length > 40
-                  ? '${message.text.characters.take(40)}…'
-                  : message.text,
-            ),
-            // Can't react to your own messages
-            if (!message.isOutgoing)
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BottomSheetHeader(
+                title: message.text.characters.length > 40
+                    ? '${message.text.characters.take(40)}…'
+                    : message.text,
+              ),
+              // Can't react to your own messages
+              if (!message.isOutgoing)
+                ListTile(
+                  leading: const Icon(Icons.add_reaction_outlined),
+                  title: Text(context.l10n.chat_addReaction),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _showEmojiPicker(message, contact);
+                  },
+                ),
               ListTile(
-                leading: const Icon(Icons.add_reaction_outlined),
-                title: Text(context.l10n.chat_addReaction),
+                leading: const Icon(Icons.route),
+                title: Text(context.l10n.chat_path),
                 onTap: () {
                   Navigator.pop(sheetContext);
-                  _showEmojiPicker(message, contact);
+                  _openMessagePath(message, contact);
                 },
               ),
-            ListTile(
-              leading: const Icon(Icons.route),
-              title: Text(context.l10n.chat_path),
-              onTap: () {
-                Navigator.pop(sheetContext);
-                _openMessagePath(message, contact);
-              },
-            ),
-            if (message.pathBytes.isNotEmpty)
+              if (message.pathBytes.isNotEmpty)
+                ListTile(
+                  leading: const Icon(Icons.map_outlined),
+                  title: Text(context.l10n.chat_viewPathOnMap),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _openMessagePath(message, contact, openMap: true);
+                  },
+                ),
               ListTile(
-                leading: const Icon(Icons.map_outlined),
-                title: Text(context.l10n.chat_viewPathOnMap),
+                leading: const Icon(Icons.copy),
+                title: Text(context.l10n.common_copy),
                 onTap: () {
                   Navigator.pop(sheetContext);
-                  _openMessagePath(message, contact, openMap: true);
+                  copyChatMessageText(context, message.text);
                 },
               ),
-            ListTile(
-              leading: const Icon(Icons.copy),
-              title: Text(context.l10n.common_copy),
-              onTap: () {
-                Navigator.pop(sheetContext);
-                copyChatMessageText(context, message.text);
-              },
-            ),
-            if (canTranslateMessage)
+              if (canTranslateMessage)
+                ListTile(
+                  leading: const Icon(Icons.translate),
+                  title: Text(context.l10n.translation_translateMessage),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    unawaited(
+                      context.read<MeshCoreConnector>().translateContactMessage(
+                        widget.contact.publicKeyHex,
+                        message,
+                        manualTranslation: true,
+                      ),
+                    );
+                  },
+                ),
+              if (!message.isOutgoing)
+                ListTile(
+                  leading: const Icon(Icons.mark_chat_unread_outlined),
+                  title: Text(context.l10n.chat_markAsUnread),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _markAsUnread(message);
+                  },
+                ),
+              if (message.isOutgoing && message.status == MessageStatus.failed)
+                ListTile(
+                  leading: const Icon(Icons.refresh),
+                  title: Text(context.l10n.common_retry),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _retryMessage(message);
+                  },
+                ),
+              if (_resolveContact(context.read<MeshCoreConnector>()).type ==
+                  advTypeRoom)
+                ListTile(
+                  leading: const Icon(Icons.chat),
+                  title: Text(context.l10n.contacts_openChat),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _openChat(context, contact);
+                  },
+                ),
+              const Divider(height: 1),
               ListTile(
-                leading: const Icon(Icons.translate),
-                title: Text(context.l10n.translation_translateMessage),
-                onTap: () {
+                leading: Icon(
+                  Icons.delete_outline,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                title: Text(
+                  context.l10n.common_delete,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+                onTap: () async {
                   Navigator.pop(sheetContext);
-                  unawaited(
-                    context.read<MeshCoreConnector>().translateContactMessage(
-                      widget.contact.publicKeyHex,
-                      message,
-                      manualTranslation: true,
-                    ),
-                  );
+                  await _deleteMessage(message);
                 },
               ),
-            if (!message.isOutgoing)
-              ListTile(
-                leading: const Icon(Icons.mark_chat_unread_outlined),
-                title: Text(context.l10n.chat_markAsUnread),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  _markAsUnread(message);
-                },
-              ),
-            if (message.isOutgoing && message.status == MessageStatus.failed)
-              ListTile(
-                leading: const Icon(Icons.refresh),
-                title: Text(context.l10n.common_retry),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  _retryMessage(message);
-                },
-              ),
-            if (_resolveContact(context.read<MeshCoreConnector>()).type ==
-                advTypeRoom)
-              ListTile(
-                leading: const Icon(Icons.chat),
-                title: Text(context.l10n.contacts_openChat),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  _openChat(context, contact);
-                },
-              ),
-            const Divider(height: 1),
-            ListTile(
-              leading: Icon(
-                Icons.delete_outline,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              title: Text(
-                context.l10n.common_delete,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-              onTap: () async {
-                Navigator.pop(sheetContext);
-                await _deleteMessage(message);
-              },
-            ),
-            const SizedBox(height: 8),
-          ],
+              const SizedBox(height: 8),
+            ],
+          ),
         ),
       ),
     );
@@ -1161,9 +1239,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _showEmojiPicker(Message message, Contact senderContact) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
+    showMeshSheet(
+      context,
       builder: (context) => EmojiPicker(
         onEmojiSelected: (emoji) {
           _sendReaction(message, senderContact, emoji);
@@ -1224,9 +1301,10 @@ class _MessageBubble extends StatelessWidget {
     final urlImagesEnabled = context.select<MeshCoreConnector, bool>(
       (connector) => connector.isContactUrlImagesEnabled(sourceId),
     );
+    final publicIpfsGateway = settingsService.settings.publicIpfsGateway;
 
     final colors = MessageBubbleColors.of(
-      scheme,
+      context,
       isOutgoing: isOutgoing,
       isFailed: isFailed,
     );
@@ -1351,6 +1429,7 @@ class _MessageBubble extends StatelessWidget {
                             MessageUrlImageFutureBuilder(
                               messageId: message.messageId,
                               text: message.text,
+                              publicGateway: publicIpfsGateway,
                               builder: (context, snapshot) {
                                 final imageAttachment = snapshot.data;
 
@@ -1403,9 +1482,10 @@ class _MessageBubble extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (MessageUrlImageHelper.hasPotentialImageUrl(
-                                  message.text,
-                                ))
+                                if (settingsService.settings.loadLinkImages &&
+                                    MessageUrlImageHelper.hasPotentialImageUrl(
+                                      message.text,
+                                    ))
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 4),
                                     child: Text(

@@ -104,7 +104,10 @@ Settings take effect when saved. A snackbar confirms the update.
 A dedicated sub-screen for app-level preferences (nothing here is sent to the device). All settings persist locally via SharedPreferences.
 
 ### Appearance
-- **Theme**: System / Light / Dark
+- **Theme**: System / Light / Dark, the brightness of the standard MeshCore theme. While a custom, preset, or holiday theme is active, no option is selected; tapping one returns to the standard theme
+- **Color theme**: Opens the Themes screen: the standard MeshCore theme, built-in presets, holiday themes, and your own themes (create, edit, share codes, `.jsonl` import/export). See [Themes](themes.md)
+- **Automatic holiday themes** (on by default, toggled on the Themes screen as **Switch automatically**): Shows the Halloween, Thanksgiving, Christmas, or New Year's theme from 17 days before each holiday through the day itself, then restores your own theme. Picking any theme or Light/Dark keeps your choice for the rest of that holiday; turn the toggle off to stop it entirely. See [Automatic holiday themes](themes.md#automatic-holiday-themes)
+- **Holiday message animations** (on by default): Plays a short animation when a holiday greeting arrives in or is sent from an open chat. See [Holiday message animations](themes.md#holiday-message-animations)
 - **Language**: System default or one of 18 languages (English, French, Spanish, German, Polish, Slovenian, Portuguese, Italian, Chinese, Swedish, Dutch, Slovak, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
 
 ### Notifications
@@ -118,6 +121,7 @@ Individual channels can be muted from the channel chat bell icon, the channel li
 ### Messaging
 - **Clear Path on Max Retry**: Erases the stored routing path after all retries fail
 - **Jump to Oldest Unread**: When opening a chat, scrolls to the oldest unread message instead of the newest
+- **Auto-fetch Repeater Settings** (off by default): Requests every setting when a repeater's settings screen opens. Each setting is a separate request over LoRa, so this is slow and uses airtime; when off, use Refresh All or the per-setting refresh buttons. See [Repeater Settings](repeater-management.md#repeater-settings)
 - **Auto Route Rotation**: Enables weighted routing algorithm. When enabled, expands to show five slider sub-settings (hidden when off):
   - Max Route Weight (1–10, default 5, integer steps)
   - Initial Route Weight (0.5–5.0, default 3.0)
@@ -157,6 +161,20 @@ Not shown on web. Controls on-device message translation powered by a locally-do
 - **Manual model URL**: Enter a URL to download a custom GGUF-format model; shows download progress and a cancel button
 
 The auto-translate and composer toggles are disabled until **Enable translation** is on.
+
+### IPFS Provider Configuration
+
+Open **App Settings → IPFS provider configuration** to configure IPFS uploads and previews:
+
+- **Public IPFS gateway**: Select Filebase (the default), Pinata, a custom gateway, or deactivate it. This gateway lets the app load bare IPFS content IDs in image links.
+- **Upload provider**: Select Pinata, Filebase, a custom provider, or deactivate uploads. Presets fill in the provider’s upload endpoint and upload gateway; custom setups can edit both.
+- **API key**: Enter the credential required by the selected provider. The value is masked in the settings dialog. Pinata and Filebase presets require provider credentials.
+
+For a self-hosted Kubo node, choose **Custom (Kubo)** and configure its RPC upload endpoint and HTTP gateway. The preset defaults use `http://127.0.0.1:5001/api/v0/add` and `http://127.0.0.1:8080/ipfs/`; replace these with addresses reachable from the device running MeshCore Open. Do not expose Kubo’s unauthenticated RPC API to the public internet.
+
+When an **upload gateway** is configured, uploaded content is added to the draft as an HTTP(S) gateway URL in the form `http://gateway/ipfs/CID`. If it is blank, the app uses `ipfs://CID`. The public gateway setting is separate and is used to retrieve bare IPFS content IDs in incoming links.
+
+Save the settings before sharing. The upload action is shown in the chat composer only when an upload endpoint is configured. Provider accounts, credentials, limits, and terms are managed by the provider, not MeshCore Open. See [sharing images via IPFS](additional-features.md#share-an-image-via-ipfs) for the chat workflow.
 
 ### Image Messages
 

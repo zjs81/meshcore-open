@@ -5,12 +5,12 @@ import 'package:meshcore_open/models/contact.dart';
 import 'package:meshcore_open/models/message.dart';
 import 'package:meshcore_open/services/message_retry_service.dart';
 
-Contact _contact() => Contact(
+Contact _contact({int pathLength = -1, List<int> path = const []}) => Contact(
   publicKey: Uint8List.fromList(List<int>.generate(32, (i) => 0xAA + i)),
   name: 'Test',
   type: 1,
-  pathLength: -1,
-  path: Uint8List(0),
+  pathLength: pathLength,
+  path: Uint8List.fromList(path),
   lastSeen: DateTime.now(),
 );
 
@@ -19,6 +19,7 @@ void main() {
   late Map<String, Message> latest;
   late List<({int attempt, int timestamp})> sends;
   late int timeoutMs;
+  late List<({int pathLength, int tripTimeMs})> observed;
   final selfKey = Uint8List(32);
 
   setUp(() {
@@ -28,6 +29,7 @@ void main() {
     latest = {};
     sends = [];
     timeoutMs = 20;
+    observed = [];
     service.initialize(
       RetryServiceConfig(
         sendMessage: (_, _, attempt, timestamp) async {
@@ -38,6 +40,8 @@ void main() {
         getSelfPublicKey: () => selfKey,
         calculateTimeout: (_, _, {String? contactKey, int? deviceTimeoutMs}) =>
             timeoutMs,
+        onDeliveryObserved: (_, pathLength, _, tripTimeMs) =>
+            observed.add((pathLength: pathLength, tripTimeMs: tripTimeMs)),
       ),
     );
   });
@@ -91,5 +95,22 @@ void main() {
     // The cancelled backoff must not resend.
     await Future<void>.delayed(const Duration(milliseconds: 1100));
     expect(sends, hasLength(1));
+  });
+
+  test('late ACK is observed with the path of the attempt it acks', () async {
+    final direct = _contact(pathLength: 2, path: [0x11, 0x22]);
+    await service.sendMessageWithRetry(contact: direct, text: 'hello');
+    await pumpEventQueue();
+
+    // Attempt 0 times out; the retry then goes out as a flood.
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+    service.updatePendingContact(_contact());
+    await Future<void>.delayed(const Duration(milliseconds: 1100));
+    expect(sends.map((s) => s.attempt), [0, 1]);
+
+    service.handleAckReceived(ackHashFor(0), 700);
+
+    expect(latest.values.single.status, MessageStatus.delivered);
+    expect(observed, [(pathLength: 2, tripTimeMs: 700)]);
   });
 }

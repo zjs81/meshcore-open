@@ -1,14 +1,25 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import '../models/app_settings.dart';
+import '../models/custom_theme.dart';
+import '../models/holiday_schedule.dart';
 import '../models/image_codec_support.dart';
 import '../models/translation_support.dart';
+
+export '../models/app_settings.dart' show ChannelNotificationMode;
 import '../storage/prefs_manager.dart';
 import '../utils/app_logger.dart';
 import '../helpers/cyr2lat.dart';
 
 class AppSettingsService extends ChangeNotifier {
   static const String _settingsKey = 'app_settings';
+
+  /// [clock] supplies "now" for the holiday theme schedule; tests inject one.
+  AppSettingsService({DateTime Function()? clock})
+    : _clock = clock ?? DateTime.now;
+
+  final DateTime Function() _clock;
 
   AppSettings _settings = AppSettings();
 
@@ -53,11 +64,14 @@ class AppSettingsService extends ChangeNotifier {
       _settings = AppSettings();
       Cyr2Lat.setCharMap(_settings.cyr2latCharMap);
     }
+    _syncDateTimer();
   }
 
   Future<void> updateSettings(AppSettings newSettings) async {
     _settings = newSettings;
     Cyr2Lat.setCharMap(_settings.cyr2latCharMap);
+    _lastAutoHolidayKey = autoHoliday?.occurrenceKey;
+    _syncDateTimer();
     notifyListeners();
 
     final prefs = PrefsManager.instance;
@@ -232,8 +246,206 @@ class AppSettingsService extends ChangeNotifier {
     );
   }
 
+  /// Picks a stock light/dark/system mode and leaves any custom theme.
+  ///
+  /// Counts as a manual choice: an automatically applied holiday theme is
+  /// skipped for the rest of that holiday.
   Future<void> setThemeMode(String value) async {
-    await updateSettings(_settings.copyWith(themeMode: value));
+    await updateSettings(
+      _dismissAutoHoliday(
+        _settings.copyWith(themeMode: value, activeThemeId: null),
+      ),
+    );
+  }
+
+  Future<void> setHolidayAnimationsEnabled(bool value) async {
+    await updateSettings(_settings.copyWith(holidayAnimationsEnabled: value));
+  }
+
+  /// The theme in use, or null for the stock theme: the automatic holiday
+  /// theme while one applies ([autoHolidayTheme]), otherwise the user's own
+  /// choice ([AppSettings.activeThemeId]).
+  CustomTheme? get activeCustomTheme =>
+      autoHolidayTheme ?? _themeById(_settings.activeThemeId);
+
+  /// The user's own chosen theme, ignoring any automatic holiday theme.
+  CustomTheme? get chosenCustomTheme => _themeById(_settings.activeThemeId);
+
+  CustomTheme? _themeById(String? id) {
+    if (id == null) return null;
+    return CustomTheme.presetById(id) ??
+        _settings.customThemes.where((t) => t.id == id).firstOrNull;
+  }
+
+  /// The holiday within its window today, if auto-switching is on and the
+  /// user has not overridden this occurrence. Null otherwise.
+  ActiveHoliday? get autoHoliday {
+    if (!_settings.holidayAutoSwitch) return null;
+    final holiday = activeHolidayFor(_clock());
+    if (holiday == null) return null;
+    if (_settings.holidayThemeDismissed == holiday.occurrenceKey) return null;
+    // The user picked this holiday's theme themselves: nothing to override.
+    if (_settings.activeThemeId == holiday.themeId) return null;
+    return holiday;
+  }
+
+  /// The holiday preset being applied automatically in place of the user's
+  /// own theme, or null when none is.
+  CustomTheme? get autoHolidayTheme {
+    final holiday = autoHoliday;
+    return holiday == null ? null : CustomTheme.presetById(holiday.themeId);
+  }
+
+  /// Marks the automatically applied holiday (if any) as overridden for this
+  /// occurrence, so a manual theme choice sticks until the holiday is over.
+  AppSettings _dismissAutoHoliday(AppSettings next) {
+    final holiday = autoHoliday;
+    if (holiday == null) return next;
+    return next.copyWith(holidayThemeDismissed: holiday.occurrenceKey);
+  }
+
+  /// Applies a custom or preset theme; null returns to the stock theme.
+  ///
+  /// Picking a theme while a holiday theme is applied automatically keeps
+  /// the pick for the rest of that holiday. Picking the automatic holiday
+  /// theme itself changes nothing, so the user's own theme still returns
+  /// after the holiday.
+  Future<void> setActiveTheme(String? themeId) async {
+    final holiday = autoHoliday;
+    if (holiday != null && themeId == holiday.themeId) return;
+    await updateSettings(
+      _dismissAutoHoliday(_settings.copyWith(activeThemeId: themeId)),
+    );
+  }
+
+  /// Turns automatic holiday themes on or off. Turning it on also forgets an
+  /// earlier override, so the current holiday's theme shows again.
+  Future<void> setHolidayAutoSwitch(bool value) async {
+    await updateSettings(
+      _settings.copyWith(
+        holidayAutoSwitch: value,
+        holidayThemeDismissed: value ? null : _settings.holidayThemeDismissed,
+      ),
+    );
+  }
+
+  // ---- date-change refresh --------------------------------------------------
+  // The automatic holiday theme depends on the date. Once [startDateWatch] has
+  // been called (the app does so at startup; tests normally don't), a timer
+  // wakes at the next local midnight, or after an hour at most in case the
+  // device slept through it, and tells listeners if the holiday theme
+  // changed. It only runs while auto-switching is on.
+
+  static const Duration _maxDateCheckInterval = Duration(hours: 1);
+
+  Timer? _dateTimer;
+  bool _dateWatchStarted = false;
+  String? _lastAutoHolidayKey;
+
+  /// Starts re-checking the automatic holiday theme when the date changes.
+  void startDateWatch() {
+    _dateWatchStarted = true;
+    _lastAutoHolidayKey = autoHoliday?.occurrenceKey;
+    _syncDateTimer();
+  }
+
+  void _syncDateTimer() {
+    final wanted = _dateWatchStarted && _settings.holidayAutoSwitch;
+    if (!wanted) {
+      _dateTimer?.cancel();
+      _dateTimer = null;
+    } else if (_dateTimer == null) {
+      _scheduleDateTimer();
+    }
+  }
+
+  void _scheduleDateTimer() {
+    final now = _clock();
+    // A second past midnight so a slightly early wake-up still sees the new
+    // day.
+    final nextMidnight = DateTime(now.year, now.month, now.day + 1, 0, 0, 1);
+    var delay = nextMidnight.difference(now);
+    if (delay > _maxDateCheckInterval) delay = _maxDateCheckInterval;
+    _dateTimer = Timer(delay, () {
+      _dateTimer = null;
+      checkDateChange();
+      _syncDateTimer();
+    });
+  }
+
+  /// Notifies listeners if the automatic holiday theme differs from the one
+  /// last seen. Called by the date timer; public so tests can drive it.
+  @visibleForTesting
+  void checkDateChange() {
+    final key = autoHoliday?.occurrenceKey;
+    if (key == _lastAutoHolidayKey) return;
+    _lastAutoHolidayKey = key;
+    notifyListeners();
+  }
+
+  @visibleForTesting
+  bool get hasDateTimer => _dateTimer != null;
+
+  @override
+  void dispose() {
+    _dateTimer?.cancel();
+    _dateTimer = null;
+    super.dispose();
+  }
+
+  /// Adds [theme] or replaces the saved theme with the same ID.
+  Future<void> saveCustomTheme(CustomTheme theme, {bool apply = false}) async {
+    final themes = List<CustomTheme>.from(_settings.customThemes);
+    final index = themes.indexWhere((t) => t.id == theme.id);
+    if (index >= 0) {
+      themes[index] = theme;
+    } else {
+      themes.add(theme);
+    }
+    final next = _settings.copyWith(
+      customThemes: themes,
+      activeThemeId: apply ? theme.id : _settings.activeThemeId,
+    );
+    // Applying a theme is a manual choice, like [setActiveTheme].
+    await updateSettings(apply ? _dismissAutoHoliday(next) : next);
+  }
+
+  Future<void> deleteCustomTheme(String themeId) async {
+    final themes = _settings.customThemes
+        .where((t) => t.id != themeId)
+        .toList();
+    await updateSettings(
+      _settings.copyWith(
+        customThemes: themes,
+        activeThemeId: _settings.activeThemeId == themeId
+            ? null
+            : _settings.activeThemeId,
+      ),
+    );
+  }
+
+  /// A fresh ID for a new custom theme.
+  /// The counter keeps IDs unique when several are made in the same tick
+  /// (bulk imports; web clocks only tick in milliseconds).
+  String newCustomThemeId() =>
+      'custom:${DateTime.now().microsecondsSinceEpoch}-${_themeIdCounter++}';
+  int _themeIdCounter = 0;
+
+  /// Adds [themes], skipping any identical (apart from ID) to a saved one.
+  /// Returns how many were added.
+  Future<int> importCustomThemes(List<CustomTheme> themes) async {
+    final existing = List<CustomTheme>.from(_settings.customThemes);
+    var added = 0;
+    for (final theme in themes) {
+      final duplicate = existing.any((t) => t == theme.copyWith(id: t.id));
+      if (duplicate) continue;
+      existing.add(theme);
+      added++;
+    }
+    if (added > 0) {
+      await updateSettings(_settings.copyWith(customThemes: existing));
+    }
+    return added;
   }
 
   Future<void> setLanguageOverride(String? value) async {
@@ -286,19 +498,24 @@ class AppSettingsService extends ChangeNotifier {
     await updateSettings(_settings.copyWith(unitSystem: value));
   }
 
-  bool isChannelMuted(String channelName) {
-    return _settings.mutedChannels.contains(channelName);
+  ChannelNotificationMode getChannelNotificationMode(String channelName) {
+    return _settings.channelNotificationModes[channelName] ??
+        ChannelNotificationMode.all;
   }
 
-  Future<void> muteChannel(String channelName) async {
-    final updated = Set<String>.from(_settings.mutedChannels)..add(channelName);
-    await updateSettings(_settings.copyWith(mutedChannels: updated));
-  }
-
-  Future<void> unmuteChannel(String channelName) async {
-    final updated = Set<String>.from(_settings.mutedChannels)
-      ..remove(channelName);
-    await updateSettings(_settings.copyWith(mutedChannels: updated));
+  Future<void> setChannelNotificationMode(
+    String channelName,
+    ChannelNotificationMode mode,
+  ) async {
+    final updated = Map<String, ChannelNotificationMode>.from(
+      _settings.channelNotificationModes,
+    );
+    if (mode == ChannelNotificationMode.all) {
+      updated.remove(channelName);
+    } else {
+      updated[channelName] = mode;
+    }
+    await updateSettings(_settings.copyWith(channelNotificationModes: updated));
   }
 
   Future<void> setTcpServerAddress(String value) async {
@@ -313,8 +530,8 @@ class AppSettingsService extends ChangeNotifier {
     await updateSettings(_settings.copyWith(jumpToOldestUnread: value));
   }
 
-  Future<void> setImageMessagesEnabled(bool value) async {
-    await updateSettings(_settings.copyWith(imageMessagesEnabled: value));
+  Future<void> setAutoFetchRepeaterSettings(bool value) async {
+    await updateSettings(_settings.copyWith(autoFetchRepeaterSettings: value));
   }
 
   Future<void> setNetworkMapUploadEnabled(bool value) async {
@@ -323,6 +540,36 @@ class AppSettingsService extends ChangeNotifier {
 
   Future<void> setNetworkMapPromptShown(bool value) async {
     await updateSettings(_settings.copyWith(networkMapPromptShown: value));
+  }
+
+  Future<void> setLoadLinkImages(bool value) async {
+    await updateSettings(_settings.copyWith(loadLinkImages: value));
+  }
+
+  Future<void> setShowLinkImagesByDefault(bool value) async {
+    await updateSettings(_settings.copyWith(showLinkImagesByDefault: value));
+  }
+
+  Future<void> setIpfsImageSettings({
+    required String publicGateway,
+    required String uploadGateway,
+    required String uploadEndpoint,
+    required String uploadApiKey,
+  }) async {
+    final normalizedPublicGateway = normalizeIpfsGateway(publicGateway);
+    final normalizedUploadGateway = normalizeIpfsGateway(uploadGateway);
+    await updateSettings(
+      _settings.copyWith(
+        publicIpfsGateway: normalizedPublicGateway,
+        uploadIpfsGateway: normalizedUploadGateway,
+        uploadIpfsEndpoint: uploadEndpoint.trim(),
+        uploadIpfsApiKey: uploadApiKey.trim(),
+      ),
+    );
+  }
+
+  Future<void> setImageMessagesEnabled(bool value) async {
+    await updateSettings(_settings.copyWith(imageMessagesEnabled: value));
   }
 
   /// See [AppSettings.imageProcessAutomatically]. `main.dart` mirrors this into

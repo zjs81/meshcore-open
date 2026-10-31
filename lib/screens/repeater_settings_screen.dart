@@ -5,9 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
+import '../models/repeater_setting_spec.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/utf8_length_limiter.dart';
+import '../services/app_settings_service.dart';
 import '../services/repeater_command_service.dart';
 import '../services/storage_service.dart';
 import '../theme/mesh_theme.dart';
@@ -29,30 +31,6 @@ class RepeaterSettingsScreen extends StatefulWidget {
 
   @override
   State<RepeaterSettingsScreen> createState() => _RepeaterSettingsScreenState();
-}
-
-enum _SettingField {
-  name,
-  radio,
-  txPower,
-  rxGain,
-  lat,
-  lon,
-  repeat,
-  allowReadOnly,
-  multiAcks,
-  loopDetect,
-  dutyCycle,
-  ownerInfo,
-  floodMax,
-  advertInterval,
-  floodAdvertInterval,
-  pathHashMode,
-  prvKey,
-  txDelay,
-  directTxDelay,
-  intThresh,
-  agcResetInterval,
 }
 
 enum _SaveOutcome { ok, rebootNeeded, error }
@@ -90,30 +68,18 @@ String _shortCommandLabel(String command) {
 class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
   final StorageService _storage = StorageService();
 
+  // Hand-built settings outside [repeaterSettingSpecs]; every other key is a
+  // spec key.
+  static const String _radioKey = 'radio';
+  static const String _prvKeyKey = 'prv.key';
+
   bool _isLoading = false;
   bool _hasChanges = false;
-  final Set<_SettingField> _dirtyFields = {};
-  final Set<_SettingField> _editedDuringSave = {};
-  bool _refreshingBasic = false;
-  bool _refreshingRadio = false;
-  bool _refreshingTxPower = false;
-  bool _refreshingRxGain = false;
-  bool _refreshingRepeat = false;
-  bool _refreshingAllowReadOnly = false;
-  bool _refreshingMultiAcks = false;
-  bool _refreshingOwnerInfo = false;
-  bool _refreshingLat = false;
-  bool _refreshingLon = false;
-  bool _refreshingLoopDetect = false;
-  bool _refreshingDutyCycle = false;
-  bool _refreshingAdvertInterval = false;
-  bool _refreshingFloodAdvertInterval = false;
-  bool _refreshingFloodMax = false;
-  bool _refreshingPathHashMode = false;
-  bool _refreshingTxDelay = false;
-  bool _refreshingDirectTxDelay = false;
-  bool _refreshingIntThresh = false;
-  bool _refreshingAgcResetInterval = false;
+  // Setting keys edited since they were last loaded or saved.
+  final Set<String> _dirtyKeys = {};
+  final Set<String> _editedDuringSave = {};
+  // Setting keys with a `get` in flight.
+  final Set<String> _refreshingKeys = {};
   bool _runningAction = false;
   bool _loadingAll = false;
   int _unansweredSections = 0;
@@ -124,65 +90,35 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
   StreamSubscription<Uint8List>? _frameSubscription;
   RepeaterCommandService? _commandService;
 
-  // Basic settings
-  final TextEditingController _nameController = TextEditingController();
+  // Spec settings: toggle (bool), slider (num) and choice (String) values,
+  // and the text of number and text fields.
+  final Map<String, Object> _values = {};
+  final Map<String, TextEditingController> _controllers = {
+    for (final spec in repeaterSettingSpecs)
+      if (spec.input == RepeaterSettingInput.number ||
+          spec.input == RepeaterSettingInput.text)
+        spec.key: TextEditingController(),
+  };
+
+  // Passwords are write-only.
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _guestPasswordController =
       TextEditingController();
 
-  // Radio settings
+  // Radio parameters, sent together as `set radio freq,bw,sf,cr`.
   final TextEditingController _freqController = TextEditingController();
-  final TextEditingController _txPowerController = TextEditingController();
   int? _bandwidth;
   int? _spreadingFactor;
   int? _codingRate;
 
-  // Location settings
-  final TextEditingController _latController = TextEditingController();
-  final TextEditingController _lonController = TextEditingController();
-  bool _latInvalid = false;
-  bool _lonInvalid = false;
-
-  // Feature toggles
-  bool _repeatEnabled = true;
-  bool _allowReadOnly = true;
-  bool _multiAcks = false;
-  bool _rxGainBoosted = false;
   bool _autoClockSyncAfterLogin = false;
 
-  // Advertisement settings
-  bool _advertEnable = true;
-  int _advertInterval = 120; // minutes/2
-  bool _floodAdvertEnable = true;
-  int _floodAdvertInterval = 12; // hours
-  int _floodMax = 64; // 0-64 hops
-
-  // Network health
-  String _loopDetect = 'off'; // off|minimal|moderate|strict
-  int _dutyCycle = 50; // 1-100
-
-  // Operator info
-  final TextEditingController _ownerInfoController = TextEditingController();
-
-  // Advanced
-  int _pathHashMode = 0; // 0-2
+  // Identity keys
   final TextEditingController _prvKeyController = TextEditingController();
   final TextEditingController _pubKeyController = TextEditingController();
   final TextEditingController _prvKeyPrefixController = TextEditingController();
   final KeyPairSearcher _keyPairSearcher = KeyPairSearcher();
   final int _searchChunkTime = 30; // time in ms to search before yielding
-  final TextEditingController _txDelayController = TextEditingController();
-  final TextEditingController _directTxDelayController =
-      TextEditingController();
-  final TextEditingController _intThreshController = TextEditingController();
-  int _agcResetInterval = 0; // seconds, multiple of 4, 0 disabled
-
-  static const List<String> _loopDetectOptions = [
-    'off',
-    'minimal',
-    'moderate',
-    'strict',
-  ];
 
   final List<int> _bandwidthOptions = [
     7800,
@@ -198,17 +134,14 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
   ];
   final List<int> _spreadingFactorOptions = [5, 6, 7, 8, 9, 10, 11, 12];
   final List<int> _codingRateOptions = [5, 6, 7, 8];
-  static const int _minRepeaterTxPower = -9;
-  static const int _maxRepeaterTxPower = 30;
-  // CommonCLI.h: password[16], node_name[32], owner_info[120].
+  // CommonCLI.h: password[16].
   static const int _maxPasswordBytes = 15;
-  static const int _maxNameBytes = 31;
-  static const int _maxOwnerInfoBytes = 119;
-  static const int _maxAgcResetInterval = 255 * 4;
   // PRV_KEY_SIZE is 64 bytes (expanded Ed25519 key), i.e. 128 hex chars;
   // firmware `set prv.key` rejects anything else.
   static const int _prvKeyHexLength = 128;
   static final RegExp _prvKeyPattern = RegExp(r'^[0-9a-fA-F]{128}$');
+
+  TextEditingController _controller(String key) => _controllers[key]!;
 
   @override
   void initState() {
@@ -217,11 +150,16 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     _commandService = RepeaterCommandService(connector);
     _setupMessageListener();
     _loadSettings();
-    // Fetch current values on open instead of showing disabled fields.
+    // Each setting is its own LoRa round trip, so fetching everything on open
+    // is opt-in; otherwise the user refreshes sections on demand.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      final autoFetch = context
+          .read<AppSettingsService>()
+          .settings
+          .autoFetchRepeaterSettings;
       final connector = Provider.of<MeshCoreConnector>(context, listen: false);
-      if (connector.isConnected) _refreshAll();
+      if (autoFetch && connector.isConnected) _refreshAll();
     });
   }
 
@@ -241,17 +179,12 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
   void dispose() {
     _frameSubscription?.cancel();
     _commandService?.dispose();
-    _nameController.dispose();
+    for (final controller in _controllers.values) {
+      controller.dispose();
+    }
     _passwordController.dispose();
     _guestPasswordController.dispose();
     _freqController.dispose();
-    _txPowerController.dispose();
-    _latController.dispose();
-    _lonController.dispose();
-    _ownerInfoController.dispose();
-    _txDelayController.dispose();
-    _directTxDelayController.dispose();
-    _intThreshController.dispose();
     _prvKeyController.dispose();
     _pubKeyController.dispose();
     _prvKeyPrefixController.dispose();
@@ -310,111 +243,46 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     return true;
   }
 
-  /// Apply a single `get <key>` response value to the relevant UI state.
-  /// Caller is responsible for invoking this inside setState.
-  /// Unparseable values are ignored (current state is preserved).
-  void _applyGetValue(String key, String value) {
-    switch (key) {
-      case 'name':
-        _nameController.text = value;
-        break;
-      case 'radio':
-        _applyRadioValue(value);
-        break;
-      case 'tx':
-        final dbm = int.tryParse(value.replaceAll(RegExp(r'[^0-9-]'), ''));
-        if (dbm != null && dbm >= -128 && dbm <= 127) {
-          _txPowerController.text = dbm.toString();
-        }
-        break;
-      case 'lat':
-        _latController.text = value;
-        break;
-      case 'lon':
-        _lonController.text = value;
-        break;
-      case 'repeat':
-        _repeatEnabled = _parseOnOff(value);
-        break;
-      case 'allow.read.only':
-        _allowReadOnly = _parseOnOff(value);
-        break;
-      case 'advert.interval':
-        final v = int.tryParse(value.trim());
-        if (v != null && v >= 0) {
-          _advertInterval = v;
-          _advertEnable = v > 0;
-        }
-        break;
-      case 'flood.advert.interval':
-        final v = int.tryParse(value.trim());
-        if (v != null && v >= 0) {
-          _floodAdvertInterval = v;
-          _floodAdvertEnable = v > 0;
-        }
-        break;
-      case 'radio.rxgain':
-        _rxGainBoosted = _parseOnOff(value);
-        break;
-      case 'multi.acks':
-        // Firmware reply is "0" or "1".
-        _multiAcks = _parseOnOff(value);
-        break;
-      case 'loop.detect':
+  /// Apply a single `get <key>` reply value to the relevant UI state.
+  /// Caller is responsible for invoking this inside setState. Returns false
+  /// (leaving state untouched) when the value doesn't parse.
+  bool _applyGetValue(String key, String value) {
+    if (key == _radioKey) return _applyRadioValue(value);
+    final spec = repeaterSettingSpecsByKey[key];
+    if (spec == null) return false;
+    switch (spec.input) {
+      case RepeaterSettingInput.toggle:
+        _values[key] = _parseOnOff(value);
+        return true;
+      case RepeaterSettingInput.slider:
+        // First number in the reply, e.g. "50.0%" -> 50.
+        final match = RegExp(r'-?\d+(\.\d+)?').firstMatch(value);
+        final n = match == null ? null : num.tryParse(match.group(0)!);
+        if (n == null) return false;
+        _values[key] = spec.isInteger ? n.round() : n;
+        return true;
+      case RepeaterSettingInput.choice:
         final lower = value.trim().toLowerCase();
-        if (_loopDetectOptions.contains(lower)) _loopDetect = lower;
-        break;
-      case 'dutycycle':
-        // Reply is "<int>.<int>%" e.g. "50.0%"; first number is the percent.
-        final pct = double.tryParse(
-          value.replaceAll('%', '').split('.').first.trim(),
-        );
-        if (pct != null) _dutyCycle = pct.toInt().clamp(1, 100);
-        break;
-      case 'owner.info':
-        // Firmware translates internal newlines back to '|' on the wire.
-        _ownerInfoController.text = value.replaceAll('|', '\n');
-        break;
-      case 'flood.max':
-        final v = int.tryParse(value.trim());
-        if (v != null && v >= 0 && v <= 64) _floodMax = v;
-        break;
-      case 'path.hash.mode':
-        final v = int.tryParse(value.trim());
-        if (v != null && v >= 0 && v <= 2) _pathHashMode = v;
-        break;
-      case 'txdelay':
-        if (double.tryParse(value.trim()) != null) {
-          _txDelayController.text = value.trim();
-        }
-        break;
-      case 'direct.txdelay':
-        if (double.tryParse(value.trim()) != null) {
-          _directTxDelayController.text = value.trim();
-        }
-        break;
-      case 'int.thresh':
-        if (int.tryParse(value.trim()) != null) {
-          _intThreshController.text = value.trim();
-        }
-        break;
-      case 'agc.reset.interval':
-        final v = int.tryParse(value.trim());
-        if (v != null && v >= 0) {
-          _agcResetInterval = v.clamp(0, _maxAgcResetInterval);
-        }
-        break;
+        if (!spec.choices.any((c) => c.value == lower)) return false;
+        _values[key] = lower;
+        return true;
+      case RepeaterSettingInput.number:
+        final text = value.trim();
+        if (num.tryParse(text) == null) return false;
+        _controller(key).text = text;
+        return true;
+      case RepeaterSettingInput.text:
+        _controller(key).text = spec.decode?.call(value) ?? value;
+        return true;
     }
   }
 
   /// Parse the firmware "freq,bw,sf,cr" radio reply (e.g. "908.205017,62.5,10,7").
-  void _applyRadioValue(String radioStr) {
+  bool _applyRadioValue(String radioStr) {
     final parts = radioStr.split(',');
-    if (parts.isEmpty) return;
     final freqText = parts[0].trim();
-    if (freqText.isNotEmpty && double.tryParse(freqText) != null) {
-      _freqController.text = freqText;
-    }
+    if (double.tryParse(freqText) == null) return false;
+    _freqController.text = freqText;
     if (parts.length > 1) {
       final bw = double.tryParse(parts[1].trim());
       if (bw != null) {
@@ -439,6 +307,7 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
         _codingRate = uiCr;
       }
     }
+    return true;
   }
 
   bool _parseOnOff(String value) {
@@ -461,32 +330,39 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
   ///
   /// Response/command pairing is guaranteed by the prefix-matching layer in
   /// RepeaterCommandService (firmware echoes the `XX|` token from MyMesh.cpp),
-  /// so no shape-based validation is needed here — `tryParse` handles any
-  /// malformed value by leaving state untouched.
+  /// so no shape-based validation is needed here — parsing leaves state
+  /// untouched for a malformed value.
   bool _handleGetResponse(String command, String response) {
     final normalized = command.trim().toLowerCase();
     if (!normalized.startsWith('get ')) return false;
     final key = normalized.substring(4).trim();
-    final value = _extractGetValue(response);
+    final parseRaw = repeaterSettingSpecsByKey[key]?.parseRawReply;
+    final value = parseRaw != null
+        ? parseRaw(response)
+        : _extractGetValue(response);
     if (value == null) return false;
+    var applied = false;
     setState(() {
-      _applyGetValue(key, value);
-      _loadedKeys.add(key);
+      applied = _applyGetValue(key, value);
+      if (applied) _loadedKeys.add(key);
     });
-    return true;
+    return applied;
   }
 
   bool _loaded(String key) => _loadedKeys.contains(key);
 
+  /// Whether the setting shows a real value: fetched from the repeater, or
+  /// set by the user. Controls stay editable either way, since fetching every
+  /// setting costs a LoRa round trip each.
+  bool _known(String key) => _loaded(key) || _dirtyKeys.contains(key);
+
   /// Firmware GET replies are always `> <value>` (CommonCLI.cpp `sprintf(reply, "> %s", ...)`).
-  /// Returns the first such value, trimmed; null if none found.
+  /// Returns the first such value, trimmed (empty for an empty setting such
+  /// as cleared operator info); null if none found.
   String? _extractGetValue(String response) {
     for (final line in response.split('\n')) {
       final trimmed = line.trim();
-      if (trimmed.startsWith('>')) {
-        final value = trimmed.substring(1).trim();
-        if (value.isNotEmpty) return value;
-      }
+      if (trimmed.startsWith('>')) return trimmed.substring(1).trim();
     }
     return null;
   }
@@ -544,185 +420,19 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     }
   }
 
-  Future<void> _refreshBasicSettings() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_basicSettings,
-      commands: const ['get name'],
-      setRefreshing: (value) => _refreshingBasic = value,
-    );
-  }
+  /// Fetch one setting with `get <key>`.
+  Future<void> _refreshKey(String key, String label) => _refreshSection(
+    label: label,
+    commands: ['get $key'],
+    setRefreshing: (value) =>
+        value ? _refreshingKeys.add(key) : _refreshingKeys.remove(key),
+  );
 
-  Future<void> _refreshRadioSettings() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_radioSettings,
-      commands: const ['get radio'],
-      setRefreshing: (value) => _refreshingRadio = value,
-    );
-  }
+  Future<void> _refreshRadioSettings() =>
+      _refreshKey(_radioKey, context.l10n.repeater_radioSettings);
 
-  Future<void> _refreshTxPower() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_txPower,
-      commands: const ['get tx'],
-      setRefreshing: (value) => _refreshingTxPower = value,
-    );
-  }
-
-  Future<void> _refreshRepeat() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_packetForwarding,
-      commands: const ['get repeat'],
-      setRefreshing: (value) => _refreshingRepeat = value,
-    );
-  }
-
-  Future<void> _refreshAllowReadOnly() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_guestAccess,
-      commands: const ['get allow.read.only'],
-      setRefreshing: (value) => _refreshingAllowReadOnly = value,
-    );
-  }
-
-  Future<void> _refreshRxGain() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_rxGain,
-      commands: const ['get radio.rxgain'],
-      setRefreshing: (value) => _refreshingRxGain = value,
-    );
-  }
-
-  Future<void> _refreshMultiAcks() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_multiAcks,
-      commands: const ['get multi.acks'],
-      setRefreshing: (value) => _refreshingMultiAcks = value,
-    );
-  }
-
-  Future<void> _refreshOwnerInfo() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_ownerInfo,
-      commands: const ['get owner.info'],
-      setRefreshing: (value) => _refreshingOwnerInfo = value,
-    );
-  }
-
-  Future<void> _refreshLat() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_latitude,
-      commands: const ['get lat'],
-      setRefreshing: (value) => _refreshingLat = value,
-    );
-  }
-
-  Future<void> _refreshLon() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_longitude,
-      commands: const ['get lon'],
-      setRefreshing: (value) => _refreshingLon = value,
-    );
-  }
-
-  Future<void> _refreshLoopDetect() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_loopDetect,
-      commands: const ['get loop.detect'],
-      setRefreshing: (value) => _refreshingLoopDetect = value,
-    );
-  }
-
-  Future<void> _refreshDutyCycle() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_dutyCycle,
-      commands: const ['get dutycycle'],
-      setRefreshing: (value) => _refreshingDutyCycle = value,
-    );
-  }
-
-  Future<void> _refreshAdvertInterval() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_localAdvertInterval,
-      commands: const ['get advert.interval'],
-      setRefreshing: (value) => _refreshingAdvertInterval = value,
-    );
-  }
-
-  Future<void> _refreshFloodAdvertInterval() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_floodAdvertInterval,
-      commands: const ['get flood.advert.interval'],
-      setRefreshing: (value) => _refreshingFloodAdvertInterval = value,
-    );
-  }
-
-  Future<void> _refreshFloodMax() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_floodMax,
-      commands: const ['get flood.max'],
-      setRefreshing: (value) => _refreshingFloodMax = value,
-    );
-  }
-
-  Future<void> _refreshPathHashMode() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_pathHashMode,
-      commands: const ['get path.hash.mode'],
-      setRefreshing: (value) => _refreshingPathHashMode = value,
-    );
-  }
-
-  Future<void> _refreshTxDelay() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_txDelay,
-      commands: const ['get txdelay'],
-      setRefreshing: (value) => _refreshingTxDelay = value,
-    );
-  }
-
-  Future<void> _refreshDirectTxDelay() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_directTxDelay,
-      commands: const ['get direct.txdelay'],
-      setRefreshing: (value) => _refreshingDirectTxDelay = value,
-    );
-  }
-
-  Future<void> _refreshIntThresh() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_intThresh,
-      commands: const ['get int.thresh'],
-      setRefreshing: (value) => _refreshingIntThresh = value,
-    );
-  }
-
-  Future<void> _refreshAgcResetInterval() async {
-    final l10n = context.l10n;
-    await _refreshSection(
-      label: l10n.repeater_agcResetInterval,
-      commands: const ['get agc.reset.interval'],
-      setRefreshing: (value) => _refreshingAgcResetInterval = value,
-    );
-  }
+  Future<void> _refreshSpec(RepeaterSettingSpec spec) =>
+      _refreshKey(spec.key, spec.label(context.l10n));
 
   /// Send a one-shot CLI action (advert / clock sync / etc.) and surface the
   /// firmware's reply via snackbar. Not part of the dirty-field save flow.
@@ -782,26 +492,8 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     if (_loadingAll) return;
     if (!_ensureConnected()) return;
     final sections = <Future<void> Function()>[
-      _refreshBasicSettings,
       _refreshRadioSettings,
-      _refreshTxPower,
-      _refreshRxGain,
-      _refreshLat,
-      _refreshLon,
-      _refreshRepeat,
-      _refreshAllowReadOnly,
-      _refreshMultiAcks,
-      _refreshLoopDetect,
-      _refreshDutyCycle,
-      _refreshAdvertInterval,
-      _refreshFloodAdvertInterval,
-      _refreshFloodMax,
-      _refreshOwnerInfo,
-      _refreshPathHashMode,
-      _refreshTxDelay,
-      _refreshDirectTxDelay,
-      _refreshIntThresh,
-      _refreshAgcResetInterval,
+      for (final spec in repeaterSettingSpecs) () => _refreshSpec(spec),
     ];
     _unansweredSections = 0;
     setState(() {
@@ -826,11 +518,11 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
 
   Future<void> _loadSettings() async {
     setState(() {
-      _nameController.text = widget.repeater.name;
+      _controller('name').text = widget.repeater.name;
 
       if (widget.repeater.hasLocation) {
-        _latController.text = widget.repeater.latitude?.toString() ?? '';
-        _lonController.text = widget.repeater.longitude?.toString() ?? '';
+        _controller('lat').text = widget.repeater.latitude?.toString() ?? '';
+        _controller('lon').text = widget.repeater.longitude?.toString() ?? '';
       }
     });
 
@@ -844,6 +536,59 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     });
   }
 
+  /// Validate a dirty spec setting and build its `set` command. Returns the
+  /// command, or reports the problem through [reject] and returns null.
+  String? _specCommand(
+    RepeaterSettingSpec spec,
+    void Function(String key, String message) reject,
+  ) {
+    final l10n = context.l10n;
+    final key = spec.key;
+    final label = spec.label(l10n);
+    switch (spec.input) {
+      case RepeaterSettingInput.toggle:
+        final on = _values[key] == true;
+        return 'set $key ${on ? spec.onValue : spec.offValue}';
+      case RepeaterSettingInput.slider:
+        final value = _values[key] as num?;
+        if (value == null) return null;
+        return 'set $key ${spec.isInteger ? value.toInt() : value}';
+      case RepeaterSettingInput.choice:
+        final value = _values[key] as String?;
+        if (value == null) return null;
+        return 'set $key $value';
+      case RepeaterSettingInput.number:
+        final text = _normalizeDecimal(_controller(key).text);
+        if (text.isEmpty) {
+          reject(key, l10n.repeater_valueRequired(label));
+          return null;
+        }
+        if (!_isValidNumber(spec, text)) {
+          reject(key, l10n.repeater_invalidSettingValue(label, text));
+          return null;
+        }
+        return 'set $key $text';
+      case RepeaterSettingInput.text:
+        final text = _controller(key).text;
+        if (spec.required && text.trim().isEmpty) {
+          reject(key, l10n.repeater_valueRequired(label));
+          return null;
+        }
+        if (spec.validate != null && !spec.validate!(text)) {
+          reject(key, l10n.repeater_invalidSettingValue(label, text.trim()));
+          return null;
+        }
+        return 'set $key ${spec.encode?.call(text) ?? text.trim()}';
+    }
+  }
+
+  bool _isValidNumber(RepeaterSettingSpec spec, String normalized) {
+    final value = spec.decimal
+        ? double.tryParse(normalized)
+        : int.tryParse(normalized);
+    return value != null && spec.inRange(value);
+  }
+
   Future<void> _saveSettings() async {
     if (_commandService == null) return;
     final connector = Provider.of<MeshCoreConnector>(context, listen: false);
@@ -855,335 +600,77 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
 
     try {
       final l10n = context.l10n;
-      // Each pending command remembers the dirty-field it came from (null for
-      // password commands, which always re-send when text is present). On
-      // failure we keep that field in `_dirtyFields` so the Save button stays
+      // Each pending command remembers the setting key it came from (null
+      // for password commands, which always re-send when text is present). On
+      // failure we keep that key in `_dirtyKeys` so the Save button stays
       // available and the user can retry.
-      final pending = <({_SettingField? field, String command})>[];
+      final pending = <({String? key, String command})>[];
       final failures = <String>[];
-      final retainDirty = <_SettingField>{};
-      void reject(_SettingField field, String message) {
+      final retainDirty = <String>{};
+      void reject(String key, String message) {
         failures.add(message);
-        retainDirty.add(field);
+        retainDirty.add(key);
       }
 
-      // Fields whose edits this save attempts. Anything edited while the
+      // Keys whose edits this save attempts. Anything edited while the
       // commands are in flight stays dirty afterwards (see _markChanged).
-      final savingFields = Set<_SettingField>.of(_dirtyFields);
+      final savingKeys = Set<String>.of(_dirtyKeys);
       _editedDuringSave.clear();
 
-      // A changed text field that was emptied has nothing to send; report it
-      // instead of silently skipping it and claiming the save succeeded.
-      void requireText(
-        _SettingField field,
-        TextEditingController controller,
-        String label,
-      ) {
-        if (_dirtyFields.contains(field) && controller.text.trim().isEmpty) {
-          reject(field, l10n.repeater_valueRequired(label));
-        }
-      }
-
-      requireText(
-        _SettingField.name,
-        _nameController,
-        l10n.repeater_repeaterName,
-      );
-      requireText(
-        _SettingField.radio,
-        _freqController,
-        l10n.repeater_frequencyMhz,
-      );
-      requireText(
-        _SettingField.txPower,
-        _txPowerController,
-        l10n.repeater_txPower,
-      );
-      requireText(_SettingField.lat, _latController, l10n.repeater_latitude);
-      requireText(_SettingField.lon, _lonController, l10n.repeater_longitude);
-      requireText(
-        _SettingField.prvKey,
-        _prvKeyController,
-        l10n.repeater_prvKey,
-      );
-      requireText(
-        _SettingField.txDelay,
-        _txDelayController,
-        l10n.repeater_txDelay,
-      );
-      requireText(
-        _SettingField.directTxDelay,
-        _directTxDelayController,
-        l10n.repeater_directTxDelay,
-      );
-      requireText(
-        _SettingField.intThresh,
-        _intThreshController,
-        l10n.repeater_intThresh,
-      );
-
-      if (_dirtyFields.contains(_SettingField.name) &&
-          _nameController.text.trim().isNotEmpty) {
-        pending.add((
-          field: _SettingField.name,
-          command: 'set name ${_nameController.text.trim()}',
-        ));
+      for (final spec in repeaterSettingSpecs) {
+        if (!_dirtyKeys.contains(spec.key)) continue;
+        final command = _specCommand(spec, reject);
+        if (command != null) pending.add((key: spec.key, command: command));
       }
 
       // Passwords are write-only; send whenever a value was typed.
       if (_passwordController.text.isNotEmpty) {
         pending.add((
-          field: null,
+          key: null,
           command: 'password ${_passwordController.text}',
         ));
       }
       if (_guestPasswordController.text.isNotEmpty) {
         pending.add((
-          field: null,
+          key: null,
           command: 'set guest.password ${_guestPasswordController.text}',
         ));
       }
 
-      // Radio parameters are bundled in a single command.
-      if (_dirtyFields.contains(_SettingField.radio) &&
-          _freqController.text.isNotEmpty &&
-          _bandwidth != null &&
-          _spreadingFactor != null &&
-          _codingRate != null) {
+      // `set radio` takes freq,bw,sf,cr together (the firmware only accepts
+      // `set freq` over serial), so an unfetched radio needs all four.
+      if (_dirtyKeys.contains(_radioKey)) {
         final freqText = _normalizeDecimal(_freqController.text);
         final freq = double.tryParse(freqText);
-        final bwKHz = _bandwidth! / 1000;
-        if (freq == null || freq < 150 || freq > 2500) {
-          reject(_SettingField.radio, l10n.repeater_frequencyInvalid);
-        } else if (bwKHz < 7.8 || bwKHz > 500) {
-          reject(
-            _SettingField.radio,
-            l10n.repeater_invalidSettingValue(
-              l10n.repeater_bandwidth,
-              '$bwKHz',
-            ),
-          );
-        } else if (_spreadingFactor! < 5 || _spreadingFactor! > 12) {
-          reject(
-            _SettingField.radio,
-            l10n.repeater_invalidSettingValue(
-              l10n.repeater_spreadingFactor,
-              '$_spreadingFactor',
-            ),
-          );
-        } else if (_codingRate! < 5 || _codingRate! > 8) {
-          reject(
-            _SettingField.radio,
-            l10n.repeater_invalidSettingValue(
-              l10n.repeater_codingRate,
-              '$_codingRate',
-            ),
-          );
+        final missing = [
+          if (freqText.isEmpty) l10n.repeater_frequencyMhz,
+          if (_bandwidth == null) l10n.repeater_bandwidth,
+          if (_spreadingFactor == null) l10n.repeater_spreadingFactor,
+          if (_codingRate == null) l10n.repeater_codingRate,
+        ];
+        if (missing.isNotEmpty) {
+          for (final label in missing) {
+            reject(_radioKey, l10n.repeater_valueRequired(label));
+          }
+        } else if (freq == null || freq < 150 || freq > 2500) {
+          reject(_radioKey, l10n.repeater_frequencyInvalid);
         } else {
           pending.add((
-            field: _SettingField.radio,
+            key: _radioKey,
             command:
-                'set radio $freqText,$bwKHz,$_spreadingFactor,$_codingRate',
+                'set radio $freqText,${_bandwidth! / 1000},'
+                '$_spreadingFactor,$_codingRate',
           ));
         }
       }
 
-      if (_dirtyFields.contains(_SettingField.txPower) &&
-          _txPowerController.text.isNotEmpty) {
-        final dbm = int.tryParse(_txPowerController.text.trim());
-        if (dbm == null ||
-            dbm < _minRepeaterTxPower ||
-            dbm > _maxRepeaterTxPower) {
-          reject(
-            _SettingField.txPower,
-            l10n.repeater_txPowerOutOfRange(
-              _txPowerController.text.trim(),
-              _minRepeaterTxPower,
-              _maxRepeaterTxPower,
-            ),
-          );
-        } else {
-          pending.add((field: _SettingField.txPower, command: 'set tx $dbm'));
-        }
-      }
-
-      if (_dirtyFields.contains(_SettingField.lat) &&
-          _latController.text.isNotEmpty) {
-        if (_isValidCoordinate(_latController.text, 90)) {
-          pending.add((
-            field: _SettingField.lat,
-            command: 'set lat ${_normalizeDecimal(_latController.text)}',
-          ));
-        } else {
-          reject(
-            _SettingField.lat,
-            l10n.repeater_invalidSettingValue(
-              l10n.repeater_latitude,
-              _latController.text.trim(),
-            ),
-          );
-        }
-      }
-      if (_dirtyFields.contains(_SettingField.lon) &&
-          _lonController.text.isNotEmpty) {
-        if (_isValidCoordinate(_lonController.text, 180)) {
-          pending.add((
-            field: _SettingField.lon,
-            command: 'set lon ${_normalizeDecimal(_lonController.text)}',
-          ));
-        } else {
-          reject(
-            _SettingField.lon,
-            l10n.repeater_invalidSettingValue(
-              l10n.repeater_longitude,
-              _lonController.text.trim(),
-            ),
-          );
-        }
-      }
-
-      if (_dirtyFields.contains(_SettingField.repeat)) {
-        pending.add((
-          field: _SettingField.repeat,
-          command: 'set repeat ${_repeatEnabled ? "on" : "off"}',
-        ));
-      }
-      if (_dirtyFields.contains(_SettingField.allowReadOnly)) {
-        pending.add((
-          field: _SettingField.allowReadOnly,
-          command: 'set allow.read.only ${_allowReadOnly ? "on" : "off"}',
-        ));
-      }
-
-      if (_dirtyFields.contains(_SettingField.advertInterval)) {
-        pending.add((
-          field: _SettingField.advertInterval,
-          command: 'set advert.interval $_advertInterval',
-        ));
-      }
-      if (_dirtyFields.contains(_SettingField.floodAdvertInterval)) {
-        pending.add((
-          field: _SettingField.floodAdvertInterval,
-          command: 'set flood.advert.interval $_floodAdvertInterval',
-        ));
-      }
-      if (_dirtyFields.contains(_SettingField.floodMax)) {
-        pending.add((
-          field: _SettingField.floodMax,
-          command: 'set flood.max $_floodMax',
-        ));
-      }
-
-      if (_dirtyFields.contains(_SettingField.rxGain)) {
-        pending.add((
-          field: _SettingField.rxGain,
-          command: 'set radio.rxgain ${_rxGainBoosted ? "on" : "off"}',
-        ));
-      }
-      if (_dirtyFields.contains(_SettingField.multiAcks)) {
-        pending.add((
-          field: _SettingField.multiAcks,
-          command: 'set multi.acks ${_multiAcks ? 1 : 0}',
-        ));
-      }
-      if (_dirtyFields.contains(_SettingField.loopDetect)) {
-        pending.add((
-          field: _SettingField.loopDetect,
-          command: 'set loop.detect $_loopDetect',
-        ));
-      }
-      if (_dirtyFields.contains(_SettingField.dutyCycle)) {
-        pending.add((
-          field: _SettingField.dutyCycle,
-          command: 'set dutycycle $_dutyCycle',
-        ));
-      }
-      if (_dirtyFields.contains(_SettingField.ownerInfo)) {
-        // Firmware splits on '|', treating it as newline.
-        final encoded = _ownerInfoController.text.replaceAll('\n', '|');
-        pending.add((
-          field: _SettingField.ownerInfo,
-          command: 'set owner.info $encoded',
-        ));
-      }
-      if (_dirtyFields.contains(_SettingField.pathHashMode)) {
-        pending.add((
-          field: _SettingField.pathHashMode,
-          command: 'set path.hash.mode $_pathHashMode',
-        ));
-      }
-      if (_dirtyFields.contains(_SettingField.prvKey)) {
+      if (_dirtyKeys.contains(_prvKeyKey)) {
         final v = _prvKeyController.text.trim();
         if (_prvKeyPattern.hasMatch(v)) {
-          pending.add((field: _SettingField.prvKey, command: 'set prv.key $v'));
+          pending.add((key: _prvKeyKey, command: 'set prv.key $v'));
         } else if (v.isNotEmpty) {
-          reject(
-            _SettingField.prvKey,
-            l10n.repeater_prvKeyLengthError(_prvKeyHexLength),
-          );
+          reject(_prvKeyKey, l10n.repeater_prvKeyLengthError(_prvKeyHexLength));
         }
-      }
-      if (_dirtyFields.contains(_SettingField.txDelay) &&
-          _txDelayController.text.isNotEmpty) {
-        final v = double.tryParse(_normalizeDecimal(_txDelayController.text));
-        if (v != null) {
-          pending.add((
-            field: _SettingField.txDelay,
-            command: 'set txdelay $v',
-          ));
-        } else {
-          reject(
-            _SettingField.txDelay,
-            l10n.repeater_invalidSettingValue(
-              l10n.repeater_txDelay,
-              _txDelayController.text.trim(),
-            ),
-          );
-        }
-      }
-      if (_dirtyFields.contains(_SettingField.directTxDelay) &&
-          _directTxDelayController.text.isNotEmpty) {
-        final v = double.tryParse(
-          _normalizeDecimal(_directTxDelayController.text),
-        );
-        if (v != null) {
-          pending.add((
-            field: _SettingField.directTxDelay,
-            command: 'set direct.txdelay $v',
-          ));
-        } else {
-          reject(
-            _SettingField.directTxDelay,
-            l10n.repeater_invalidSettingValue(
-              l10n.repeater_directTxDelay,
-              _directTxDelayController.text.trim(),
-            ),
-          );
-        }
-      }
-      if (_dirtyFields.contains(_SettingField.intThresh) &&
-          _intThreshController.text.isNotEmpty) {
-        final v = int.tryParse(_intThreshController.text.trim());
-        if (v != null && v >= 0 && v <= 255) {
-          pending.add((
-            field: _SettingField.intThresh,
-            command: 'set int.thresh $v',
-          ));
-        } else {
-          reject(
-            _SettingField.intThresh,
-            l10n.repeater_invalidSettingValue(
-              l10n.repeater_intThresh,
-              _intThreshController.text.trim(),
-            ),
-          );
-        }
-      }
-      if (_dirtyFields.contains(_SettingField.agcResetInterval)) {
-        pending.add((
-          field: _SettingField.agcResetInterval,
-          command: 'set agc.reset.interval $_agcResetInterval',
-        ));
       }
 
       var passwordsFailed = false;
@@ -1210,8 +697,8 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
           failed = true;
         }
         if (failed) {
-          if (entry.field != null) {
-            retainDirty.add(entry.field!);
+          if (entry.key != null) {
+            retainDirty.add(entry.key!);
           } else {
             passwordsFailed = true;
           }
@@ -1228,14 +715,16 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
       }
       setState(() {
         _isLoading = false;
-        // Only drop fields that were actually sent successfully; keep failed
+        // A saved value is now the repeater's value, fetched or not.
+        _loadedKeys.addAll(savingKeys.difference(retainDirty));
+        // Only drop keys that were actually sent successfully; keep failed
         // ones and anything edited while the save was running.
-        _dirtyFields
-          ..removeAll(savingFields)
+        _dirtyKeys
+          ..removeAll(savingKeys)
           ..addAll(retainDirty)
           ..addAll(_editedDuringSave);
         _editedDuringSave.clear();
-        _hasChanges = _dirtyFields.isNotEmpty || passwordsFailed;
+        _hasChanges = _dirtyKeys.isNotEmpty || passwordsFailed;
       });
 
       if (mounted) {
@@ -1276,20 +765,14 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     }
   }
 
-  void _markChanged(_SettingField field) {
-    _dirtyFields.add(field);
-    if (_isLoading) _editedDuringSave.add(field);
+  void _markChanged(String key) {
+    _dirtyKeys.add(key);
+    if (_isLoading) _editedDuringSave.add(key);
     _flagHasChanges();
   }
 
   static String _normalizeDecimal(String text) =>
       text.trim().replaceAll(',', '.');
-
-  static bool _isValidCoordinate(String text, double max) {
-    if (text.trim().isEmpty) return true;
-    final value = double.tryParse(_normalizeDecimal(text));
-    return value != null && value >= -max && value <= max;
-  }
 
   void _flagHasChanges() {
     if (!_hasChanges) {
@@ -1326,10 +809,30 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
       setState(() => _searchingForKeyPair = false);
       _prvKeyController.text = pubKeyToHex(keys.private);
       _pubKeyController.text = pubKeyToHex(keys.public);
-      _markChanged(_SettingField.prvKey);
+      _markChanged(_prvKeyKey);
     }
   }
 
+  Widget _buildRefreshButton({
+    required bool isRefreshing,
+    required VoidCallback onRefresh,
+    required String tooltip,
+  }) {
+    return IconButton(
+      icon: isRefreshing
+          ? const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : const Icon(Icons.refresh, size: 20),
+      onPressed: isRefreshing ? null : onRefresh,
+      tooltip: tooltip,
+      visualDensity: VisualDensity.compact,
+    );
+  }
+
+  /// Refresh button aligned with a text field's input line.
   Widget _buildInlineRefreshButton({
     required bool isRefreshing,
     required VoidCallback onRefresh,
@@ -1337,17 +840,10 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
-      child: IconButton(
-        icon: isRefreshing
-            ? const SizedBox(
-                width: 18,
-                height: 18,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : const Icon(Icons.refresh, size: 20),
-        onPressed: isRefreshing ? null : onRefresh,
+      child: _buildRefreshButton(
+        isRefreshing: isRefreshing,
+        onRefresh: onRefresh,
         tooltip: tooltip,
-        visualDensity: VisualDensity.compact,
       ),
     );
   }
@@ -1401,24 +897,34 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
         ),
         body: SafeArea(
           top: false,
-          child: _isLoading && _nameController.text.isEmpty
+          child: _isLoading && _controller('name').text.isEmpty
               ? const Center(child: CircularProgressIndicator())
               : ListView(
                   padding: const EdgeInsets.only(bottom: 32),
                   children: [
                     const RadioDisconnectedBanner(),
+                    // Keep this slot when the hint hides: shifting the cards
+                    // below would hand their state (e.g. an expanded
+                    // Advanced card) to the wrong card.
                     if (_loadedKeys.isEmpty && !_loadingAll)
                       Padding(
                         padding: const EdgeInsets.only(top: 16),
                         child: MeshCard(
-                          child: Row(
+                          // The button sits under the message so neither is
+                          // squeezed on narrow screens or large text.
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              const Icon(Icons.info_outline, size: 20),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  context.l10n.repeater_settingsNotLoaded,
-                                ),
+                              Row(
+                                children: [
+                                  const Icon(Icons.info_outline, size: 20),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      context.l10n.repeater_settingsNotLoaded,
+                                    ),
+                                  ),
+                                ],
                               ),
                               TextButton(
                                 onPressed: _isLoading || !connected
@@ -1429,14 +935,36 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
                             ],
                           ),
                         ),
-                      ),
-                    _buildBasicSettingsCard(),
+                      )
+                    else
+                      const SizedBox.shrink(),
+                    _buildSectionCard(
+                      l10n.repeater_basicSettings,
+                      RepeaterSettingSection.basic,
+                      extra: _buildPasswordFields(),
+                    ),
                     _buildRadioSettingsCard(),
-                    _buildLocationSettingsCard(),
-                    _buildFeatureTogglesCard(),
-                    _buildNetworkHealthCard(),
-                    _buildAdvertisementSettingsCard(),
-                    _buildOwnerInfoCard(),
+                    _buildSectionCard(
+                      l10n.repeater_locationSettings,
+                      RepeaterSettingSection.location,
+                    ),
+                    _buildSectionCard(
+                      l10n.repeater_features,
+                      RepeaterSettingSection.features,
+                      extra: [_buildClockSyncToggle()],
+                    ),
+                    _buildSectionCard(
+                      l10n.repeater_networkHealth,
+                      RepeaterSettingSection.networkHealth,
+                    ),
+                    _buildSectionCard(
+                      l10n.repeater_advertisementSettings,
+                      RepeaterSettingSection.advertisement,
+                    ),
+                    _buildSectionCard(
+                      l10n.repeater_ownerInfo,
+                      RepeaterSettingSection.ownerInfo,
+                    ),
                     _buildActionsCard(),
                     _buildAdvancedCard(),
                     _buildKeysCard(),
@@ -1494,77 +1022,354 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     Navigator.of(context).pop();
   }
 
-  Widget _buildBasicSettingsCard() {
-    final l10n = context.l10n;
-    final refreshButton = _refreshingBasic
-        ? const SizedBox(
-            width: 18,
-            height: 18,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          )
-        : IconButton(
-            icon: const Icon(Icons.refresh, size: 18),
-            onPressed: _refreshBasicSettings,
-            tooltip: l10n.repeater_refreshBasicSettings,
-            visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
-          );
+  /// The controls for every spec in [section], in list order.
+  List<Widget> _buildSpecControls(RepeaterSettingSection section) => [
+    for (final spec in repeaterSettingSpecs)
+      if (spec.section == section) _buildSpecControl(spec),
+  ];
+
+  /// A section header and card holding [section]'s spec controls, followed by
+  /// any hand-built [extra] controls.
+  Widget _buildSectionCard(
+    String title,
+    RepeaterSettingSection section, {
+    List<Widget> extra = const [],
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionHeader(l10n.repeater_basicSettings, trailing: refreshButton),
+        SectionHeader(title),
         MeshCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                controller: _nameController,
-                enabled: _loaded('name'),
-                decoration: InputDecoration(
-                  labelText: l10n.repeater_repeaterName,
-                  helperText: l10n.repeater_repeaterNameHelper,
-                ),
-                inputFormatters: const [
-                  Utf8LengthLimitingTextInputFormatter(_maxNameBytes),
-                ],
-                onChanged: (_) => _markChanged(_SettingField.name),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: l10n.repeater_adminPassword,
-                  helperText: l10n.repeater_adminPasswordHelper,
-                ),
-                obscureText: true,
-                inputFormatters: const [
-                  Utf8LengthLimitingTextInputFormatter(_maxPasswordBytes),
-                ],
-                onChanged: (_) => _flagHasChanges(),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _guestPasswordController,
-                decoration: InputDecoration(
-                  labelText: l10n.repeater_guestPassword,
-                  helperText: l10n.repeater_guestPasswordHelper,
-                ),
-                obscureText: true,
-                inputFormatters: const [
-                  Utf8LengthLimitingTextInputFormatter(_maxPasswordBytes),
-                ],
-                onChanged: (_) => _flagHasChanges(),
-              ),
-            ],
+            children: [..._buildSpecControls(section), ...extra],
           ),
         ),
       ],
     );
   }
 
+  Widget _buildSpecControl(RepeaterSettingSpec spec) {
+    final l10n = context.l10n;
+    final control = switch (spec.input) {
+      RepeaterSettingInput.toggle => _buildToggleControl(spec),
+      RepeaterSettingInput.slider => _buildSliderControl(spec),
+      RepeaterSettingInput.choice => _buildChoiceControl(spec),
+      RepeaterSettingInput.number ||
+      RepeaterSettingInput.text => _buildTextControl(spec),
+    };
+    final note = spec.note?.call(l10n);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: note == null
+          ? control
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [control, _buildNote(note)],
+            ),
+    );
+  }
+
+  /// Availability caveat under a control (hardware-specific settings).
+  Widget _buildNote(String text) {
+    final color = Theme.of(context).colorScheme.tertiary;
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.info_outline, size: 20, color: color),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: color),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSpecRefreshButton(
+    RepeaterSettingSpec spec, {
+    bool inline = false,
+  }) {
+    final args = (
+      isRefreshing: _refreshingKeys.contains(spec.key),
+      onRefresh: () => _refreshSpec(spec),
+      tooltip: spec.label(context.l10n),
+    );
+    return inline
+        ? _buildInlineRefreshButton(
+            isRefreshing: args.isRefreshing,
+            onRefresh: args.onRefresh,
+            tooltip: args.tooltip,
+          )
+        : _buildRefreshButton(
+            isRefreshing: args.isRefreshing,
+            onRefresh: args.onRefresh,
+            tooltip: args.tooltip,
+          );
+  }
+
+  Widget _buildToggleControl(RepeaterSettingSpec spec) {
+    final l10n = context.l10n;
+    final helper = spec.helper?.call(l10n);
+    return Row(
+      children: [
+        Expanded(
+          child: SwitchListTile(
+            title: Text(spec.label(l10n)),
+            subtitle: helper == null ? null : Text(helper),
+            // An unknown setting shows as off until fetched or set.
+            value: _known(spec.key) && _values[spec.key] == true,
+            onChanged: (value) {
+              setState(() => _values[spec.key] = value);
+              _markChanged(spec.key);
+            },
+            contentPadding: EdgeInsets.zero,
+          ),
+        ),
+        _buildSpecRefreshButton(spec),
+      ],
+    );
+  }
+
+  Widget _buildSliderControl(RepeaterSettingSpec spec) {
+    final l10n = context.l10n;
+    final key = spec.key;
+    final known = _known(key);
+    final value = known ? _values[key] as num? : null;
+    final special = value == null ? null : spec.specialValues[value];
+    final canDisable = spec.offAt != null;
+    final isOff = canDisable && value == spec.offAt;
+
+    // The spec's range, widened to include a value the firmware reported
+    // outside it so the knob matches the label. Special and "off" values
+    // keep the normal range.
+    var lo = spec.min!;
+    var hi = spec.max!;
+    if (value != null && special == null && !isOff) {
+      lo = min(lo, value);
+      hi = max(hi, value);
+    }
+    final steps = (hi - lo) / spec.step;
+    final divisions = steps == steps.roundToDouble() && steps > 0
+        ? steps.toInt()
+        : null;
+
+    String format(num v) => spec.valueLabel?.call(l10n, v) ?? '$v';
+    final display = value == null ? '—' : special?.call(l10n) ?? format(value);
+    final helper = spec.helper?.call(l10n);
+
+    final title = ListTile(
+      title: Text(spec.label(l10n)),
+      // With an on/off switch the value moves under the title; otherwise
+      // it sits on the right.
+      subtitle: canDisable
+          ? Text(helper == null ? display : '$display\n$helper')
+          : helper == null
+          ? null
+          : Text(helper),
+      trailing: canDisable
+          ? Switch(
+              value: value != null && !isOff,
+              onChanged: (on) {
+                setState(() => _values[key] = on ? spec.min! : spec.offAt!);
+                _markChanged(key);
+              },
+            )
+          : Text(display, style: const TextStyle(fontWeight: FontWeight.bold)),
+      contentPadding: EdgeInsets.zero,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(child: title),
+            _buildSpecRefreshButton(spec),
+          ],
+        ),
+        Slider(
+          value: (value ?? lo).clamp(lo, hi).toDouble(),
+          min: lo.toDouble(),
+          max: hi.toDouble(),
+          divisions: divisions,
+          label: value == null ? null : display,
+          onChanged: canDisable && (value == null || isOff)
+              ? null
+              : (v) {
+                  // Snap to the step, counting from the low end.
+                  final snapped =
+                      lo + ((v - lo) / spec.step).floor() * spec.step;
+                  setState(
+                    () => _values[key] = spec.isInteger
+                        ? snapped.round()
+                        : snapped,
+                  );
+                  _markChanged(key);
+                },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChoiceControl(RepeaterSettingSpec spec) {
+    final l10n = context.l10n;
+    final key = spec.key;
+    final value = _known(key) ? _values[key] as String? : null;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: DropdownButtonFormField<String>(
+            // Rebuild the field when a fetch changes the value underneath it.
+            key: ValueKey('$key:$value'),
+            isExpanded: true,
+            initialValue: value,
+            decoration: InputDecoration(
+              labelText: spec.label(l10n),
+              helperText: spec.helper?.call(l10n),
+              helperMaxLines: 5,
+            ),
+            items: [
+              for (final choice in spec.choices)
+                DropdownMenuItem(
+                  value: choice.value,
+                  child: Text(
+                    choice.label(l10n),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+            ],
+            onChanged: (v) {
+              if (v == null) return;
+              setState(() => _values[key] = v);
+              _markChanged(key);
+            },
+          ),
+        ),
+        _buildSpecRefreshButton(spec, inline: true),
+      ],
+    );
+  }
+
+  /// Number and text settings.
+  Widget _buildTextControl(RepeaterSettingSpec spec) {
+    final l10n = context.l10n;
+    final key = spec.key;
+    final controller = _controller(key);
+    final isNumber = spec.input == RepeaterSettingInput.number;
+    final text = controller.text;
+    final invalid = isNumber
+        ? text.trim().isNotEmpty &&
+              !_isValidNumber(spec, _normalizeDecimal(text))
+        : spec.validate != null && !spec.validate!(text);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: spec.label(l10n),
+              helperText: spec.helper?.call(l10n),
+              helperMaxLines: 3,
+              errorText: invalid
+                  ? l10n.repeater_invalidSettingValue(
+                      spec.label(l10n),
+                      text.trim(),
+                    )
+                  : null,
+              errorMaxLines: 3,
+            ),
+            keyboardType: isNumber
+                ? TextInputType.numberWithOptions(
+                    decimal: spec.decimal,
+                    signed: (spec.min ?? 0) < 0,
+                  )
+                : spec.multiline
+                ? TextInputType.multiline
+                : TextInputType.text,
+            maxLines: spec.multiline ? 4 : 1,
+            minLines: spec.multiline ? 2 : null,
+            inputFormatters: [
+              if (spec.maxBytes != null)
+                Utf8LengthLimitingTextInputFormatter(spec.maxBytes!),
+            ],
+            onChanged: (_) {
+              _markChanged(key);
+              // Refresh the inline validation error.
+              setState(() {});
+            },
+          ),
+        ),
+        _buildSpecRefreshButton(spec, inline: true),
+      ],
+    );
+  }
+
+  List<Widget> _buildPasswordFields() {
+    final l10n = context.l10n;
+    return [
+      const SizedBox(height: 4),
+      TextField(
+        controller: _passwordController,
+        decoration: InputDecoration(
+          labelText: l10n.repeater_adminPassword,
+          helperText: l10n.repeater_adminPasswordHelper,
+        ),
+        obscureText: true,
+        inputFormatters: const [
+          Utf8LengthLimitingTextInputFormatter(_maxPasswordBytes),
+        ],
+        onChanged: (_) => _flagHasChanges(),
+      ),
+      const SizedBox(height: 12),
+      TextField(
+        controller: _guestPasswordController,
+        decoration: InputDecoration(
+          labelText: l10n.repeater_guestPassword,
+          helperText: l10n.repeater_guestPasswordHelper,
+        ),
+        obscureText: true,
+        inputFormatters: const [
+          Utf8LengthLimitingTextInputFormatter(_maxPasswordBytes),
+        ],
+        onChanged: (_) => _flagHasChanges(),
+      ),
+    ];
+  }
+
+  Widget _buildClockSyncToggle() {
+    final l10n = context.l10n;
+    return SwitchListTile(
+      title: Text(l10n.repeater_clockSyncAfterLogin),
+      subtitle: Text(l10n.repeater_clockSyncAfterLoginSubtitle),
+      value: _autoClockSyncAfterLogin,
+      onChanged: (value) async {
+        setState(() {
+          _autoClockSyncAfterLogin = value;
+        });
+        await _storage.setRepeaterAutoClockSyncAfterLoginEnabled(
+          widget.repeater.publicKeyHex,
+          value,
+        );
+      },
+      contentPadding: EdgeInsets.zero,
+    );
+  }
+
+  /// Frequency, bandwidth, spreading factor and coding rate are one
+  /// `set radio` command, so they are hand-built rather than specs.
   Widget _buildRadioSettingsCard() {
     final l10n = context.l10n;
-    final refreshButton = _refreshingRadio
+    final refreshButton = _refreshingKeys.contains(_radioKey)
         ? const SizedBox(
             width: 18,
             height: 18,
@@ -1577,6 +1382,35 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
             visualDensity: VisualDensity.compact,
             padding: EdgeInsets.zero,
           );
+
+    Widget dropdown({
+      required int? value,
+      required String label,
+      required List<int> options,
+      required String Function(int) optionLabel,
+      required ValueSetter<int> onSelected,
+    }) {
+      return DropdownButtonFormField<int>(
+        // Rebuild the field when a fetch changes the value underneath it.
+        key: ValueKey('$label:$value'),
+        isExpanded: true,
+        initialValue: value,
+        decoration: InputDecoration(labelText: label),
+        items: [
+          for (final option in options)
+            DropdownMenuItem(
+              value: option,
+              child: Text(optionLabel(option), overflow: TextOverflow.ellipsis),
+            ),
+        ],
+        onChanged: (v) {
+          if (v == null) return;
+          setState(() => onSelected(v));
+          _markChanged(_radioKey);
+        },
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1587,7 +1421,6 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
             children: [
               TextField(
                 controller: _freqController,
-                enabled: _loaded('radio'),
                 decoration: InputDecoration(
                   labelText: l10n.repeater_frequencyMhz,
                   helperText: l10n.repeater_frequencyRangeHelper,
@@ -1596,109 +1429,34 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
-                onChanged: (_) => _markChanged(_SettingField.radio),
+                onChanged: (_) => _markChanged(_radioKey),
               ),
               const SizedBox(height: 12),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _txPowerController,
-                      enabled: _loaded('tx'),
-                      decoration: InputDecoration(
-                        labelText: l10n.repeater_txPower,
-                        helperText: l10n.repeater_txPowerRangeHelper,
-                        suffixText: 'dBm',
-                      ),
-                      keyboardType: const TextInputType.numberWithOptions(
-                        signed: true,
-                      ),
-                      onChanged: (_) => _markChanged(_SettingField.txPower),
-                    ),
-                  ),
-                  _buildInlineRefreshButton(
-                    isRefreshing: _refreshingTxPower,
-                    onRefresh: _refreshTxPower,
-                    tooltip: l10n.repeater_refreshTxPower,
-                  ),
-                ],
+              dropdown(
+                value: _bandwidth,
+                label: l10n.repeater_bandwidth,
+                options: _bandwidthOptions,
+                optionLabel: _formatBandwidthLabel,
+                onSelected: (v) => _bandwidth = v,
               ),
               const SizedBox(height: 12),
-              DropdownButtonFormField<int>(
-                initialValue: _bandwidth,
-                decoration: InputDecoration(labelText: l10n.repeater_bandwidth),
-                items: _bandwidthOptions.map((bw) {
-                  return DropdownMenuItem(
-                    value: bw,
-                    child: Text(_formatBandwidthLabel(bw)),
-                  );
-                }).toList(),
-                onChanged: !_loaded('radio')
-                    ? null
-                    : (value) {
-                        if (value != null) {
-                          setState(() {
-                            _bandwidth = value;
-                          });
-                          _markChanged(_SettingField.radio);
-                        }
-                      },
+              dropdown(
+                value: _spreadingFactor,
+                label: l10n.repeater_spreadingFactor,
+                options: _spreadingFactorOptions,
+                optionLabel: (sf) => 'SF$sf',
+                onSelected: (v) => _spreadingFactor = v,
               ),
               const SizedBox(height: 12),
-              DropdownButtonFormField<int>(
-                initialValue: _spreadingFactor,
-                decoration: InputDecoration(
-                  labelText: l10n.repeater_spreadingFactor,
-                ),
-                items: _spreadingFactorOptions.map((sf) {
-                  return DropdownMenuItem(value: sf, child: Text('SF$sf'));
-                }).toList(),
-                onChanged: !_loaded('radio')
-                    ? null
-                    : (value) {
-                        if (value != null) {
-                          setState(() {
-                            _spreadingFactor = value;
-                          });
-                          _markChanged(_SettingField.radio);
-                        }
-                      },
+              dropdown(
+                value: _codingRate,
+                label: l10n.repeater_codingRate,
+                options: _codingRateOptions,
+                optionLabel: (cr) => '4/$cr',
+                onSelected: (v) => _codingRate = v,
               ),
               const SizedBox(height: 12),
-              DropdownButtonFormField<int>(
-                initialValue: _codingRate,
-                decoration: InputDecoration(
-                  labelText: l10n.repeater_codingRate,
-                ),
-                items: _codingRateOptions.map((cr) {
-                  return DropdownMenuItem(value: cr, child: Text('4/$cr'));
-                }).toList(),
-                onChanged: !_loaded('radio')
-                    ? null
-                    : (value) {
-                        if (value != null) {
-                          setState(() {
-                            _codingRate = value;
-                          });
-                          _markChanged(_SettingField.radio);
-                        }
-                      },
-              ),
-              const SizedBox(height: 4),
-              _buildFeatureToggleRow(
-                title: l10n.repeater_rxGain,
-                subtitle: l10n.repeater_rxGainHelper,
-                value: _rxGainBoosted,
-                loaded: _loaded('radio.rxgain'),
-                isRefreshing: _refreshingRxGain,
-                onChanged: (v) {
-                  setState(() => _rxGainBoosted = v);
-                  _markChanged(_SettingField.rxGain);
-                },
-                onRefresh: _refreshRxGain,
-                refreshTooltip: l10n.repeater_refreshRxGain,
-              ),
+              ..._buildSpecControls(RepeaterSettingSection.radio),
             ],
           ),
         ),
@@ -1706,550 +1464,39 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     );
   }
 
-  Widget _buildLocationSettingsCard() {
+  /// Wraps an [ExpansionTile]'s children in their own [PageStorage] scope.
+  ///
+  /// The tile saves its expanded flag (a bool) under its [PageStorageKey].
+  /// A TextField's inner Scrollable has no key, so without this it shares
+  /// that identifier, reads the bool back as its scroll offset and throws
+  /// while building (a grey box in release builds).
+  List<Widget> _ownPageStorage(String id, List<Widget> children) => [
+    KeyedSubtree(
+      key: PageStorageKey(id),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    ),
+  ];
+
+  Widget _buildAdvancedCard() {
     final l10n = context.l10n;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SectionHeader(l10n.repeater_locationSettings),
-        MeshCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _latController,
-                      enabled: _loaded('lat'),
-                      decoration: InputDecoration(
-                        labelText: l10n.repeater_latitude,
-                        helperText: l10n.repeater_latitudeHelper,
-                        errorText: _latInvalid
-                            ? l10n.settings_locationInvalid
-                            : null,
-                      ),
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                        signed: true,
-                      ),
-                      onChanged: (value) {
-                        _markChanged(_SettingField.lat);
-                        final invalid = !_isValidCoordinate(value, 90);
-                        if (invalid != _latInvalid) {
-                          setState(() => _latInvalid = invalid);
-                        }
-                      },
-                    ),
-                  ),
-                  _buildInlineRefreshButton(
-                    isRefreshing: _refreshingLat,
-                    onRefresh: _refreshLat,
-                    tooltip: l10n.repeater_latitude,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _lonController,
-                      enabled: _loaded('lon'),
-                      decoration: InputDecoration(
-                        labelText: l10n.repeater_longitude,
-                        helperText: l10n.repeater_longitudeHelper,
-                        errorText: _lonInvalid
-                            ? l10n.settings_locationInvalid
-                            : null,
-                      ),
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                        signed: true,
-                      ),
-                      onChanged: (value) {
-                        _markChanged(_SettingField.lon);
-                        final invalid = !_isValidCoordinate(value, 180);
-                        if (invalid != _lonInvalid) {
-                          setState(() => _lonInvalid = invalid);
-                        }
-                      },
-                    ),
-                  ),
-                  _buildInlineRefreshButton(
-                    isRefreshing: _refreshingLon,
-                    onRefresh: _refreshLon,
-                    tooltip: l10n.repeater_longitude,
-                  ),
-                ],
-              ),
-            ],
-          ),
+    return MeshCard(
+      child: ExpansionTile(
+        key: const PageStorageKey('repeater_settings_advanced'),
+        leading: const Icon(Icons.tune),
+        title: Text(
+          l10n.repeater_advancedSettings,
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
         ),
-      ],
-    );
-  }
-
-  Widget _buildFeatureTogglesCard() {
-    final l10n = context.l10n;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SectionHeader(l10n.repeater_features),
-        MeshCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildFeatureToggleRow(
-                title: l10n.repeater_packetForwarding,
-                subtitle: l10n.repeater_packetForwardingSubtitle,
-                value: _repeatEnabled,
-                loaded: _loaded('repeat'),
-                isRefreshing: _refreshingRepeat,
-                onChanged: (value) {
-                  setState(() {
-                    _repeatEnabled = value;
-                  });
-                  _markChanged(_SettingField.repeat);
-                },
-                onRefresh: _refreshRepeat,
-                refreshTooltip: l10n.repeater_refreshPacketForwarding,
-              ),
-              _buildFeatureToggleRow(
-                title: l10n.repeater_guestAccess,
-                subtitle: l10n.repeater_guestAccessSubtitle,
-                value: _allowReadOnly,
-                loaded: _loaded('allow.read.only'),
-                isRefreshing: _refreshingAllowReadOnly,
-                onChanged: (value) {
-                  setState(() {
-                    _allowReadOnly = value;
-                  });
-                  _markChanged(_SettingField.allowReadOnly);
-                },
-                onRefresh: _refreshAllowReadOnly,
-                refreshTooltip: l10n.repeater_refreshGuestAccess,
-              ),
-              _buildFeatureToggleRow(
-                title: l10n.repeater_multiAcks,
-                subtitle: l10n.repeater_multiAcksSubtitle,
-                value: _multiAcks,
-                loaded: _loaded('multi.acks'),
-                isRefreshing: _refreshingMultiAcks,
-                onChanged: (v) {
-                  setState(() => _multiAcks = v);
-                  _markChanged(_SettingField.multiAcks);
-                },
-                onRefresh: _refreshMultiAcks,
-                refreshTooltip: l10n.repeater_refreshMultiAcks,
-              ),
-              SwitchListTile(
-                title: Text(l10n.repeater_clockSyncAfterLogin),
-                subtitle: Text(l10n.repeater_clockSyncAfterLoginSubtitle),
-                value: _autoClockSyncAfterLogin,
-                onChanged: (value) async {
-                  setState(() {
-                    _autoClockSyncAfterLogin = value;
-                  });
-                  await _storage.setRepeaterAutoClockSyncAfterLoginEnabled(
-                    widget.repeater.publicKeyHex,
-                    value,
-                  );
-                },
-                contentPadding: EdgeInsets.zero,
-              ),
-            ],
-          ),
+        subtitle: Text(l10n.repeater_advancedSettingsSubtitle),
+        childrenPadding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
+        children: _ownPageStorage(
+          'repeater_settings_advanced_body',
+          _buildSpecControls(RepeaterSettingSection.advanced),
         ),
-      ],
-    );
-  }
-
-  Widget _buildFeatureToggleRow({
-    required String title,
-    required String subtitle,
-    required bool value,
-    required bool loaded,
-    required bool isRefreshing,
-    required ValueChanged<bool> onChanged,
-    required VoidCallback onRefresh,
-    required String refreshTooltip,
-  }) {
-    return Row(
-      children: [
-        Expanded(
-          child: SwitchListTile(
-            title: Text(title),
-            subtitle: Text(subtitle),
-            value: loaded && value,
-            onChanged: loaded ? onChanged : null,
-            contentPadding: EdgeInsets.zero,
-          ),
-        ),
-        IconButton(
-          icon: isRefreshing
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.refresh, size: 20),
-          onPressed: isRefreshing ? null : onRefresh,
-          tooltip: refreshTooltip,
-          visualDensity: VisualDensity.compact,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAdvertisementSettingsCard() {
-    final l10n = context.l10n;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SectionHeader(l10n.repeater_advertisementSettings),
-        MeshCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: ListTile(
-                      title: Text(l10n.repeater_localAdvertInterval),
-                      subtitle: Text(
-                        _loaded('advert.interval')
-                            ? l10n.repeater_localAdvertIntervalMinutes(
-                                _advertInterval,
-                              )
-                            : '—',
-                      ),
-                      trailing: Switch(
-                        value: _loaded('advert.interval') && _advertEnable,
-                        onChanged: !_loaded('advert.interval')
-                            ? null
-                            : (value) {
-                                setState(() {
-                                  _advertInterval = value ? 60 : 0;
-                                  _advertEnable = value;
-                                });
-                                _markChanged(_SettingField.advertInterval);
-                              },
-                      ),
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ),
-                  IconButton(
-                    icon: _refreshingAdvertInterval
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.refresh, size: 20),
-                    onPressed: _refreshingAdvertInterval
-                        ? null
-                        : _refreshAdvertInterval,
-                    tooltip: l10n.repeater_localAdvertInterval,
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ],
-              ),
-              Slider(
-                // Widen the range to include an out-of-range firmware value
-                // so the knob matches the subtitle.
-                value: _advertSliderValue.toDouble(),
-                min: _advertSliderMin.toDouble(),
-                max: _advertSliderMax.toDouble(),
-                divisions: (_advertSliderMax - _advertSliderMin) % 10 == 0
-                    ? (_advertSliderMax - _advertSliderMin) ~/ 10
-                    : null,
-                label: l10n.repeater_localAdvertIntervalMinutes(
-                  _advertInterval,
-                ),
-                onChanged: _advertEnable && _loaded('advert.interval')
-                    ? (value) {
-                        setState(() {
-                          _advertInterval = value.toInt();
-                        });
-                        _markChanged(_SettingField.advertInterval);
-                      }
-                    : null,
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: ListTile(
-                      title: Text(l10n.repeater_floodAdvertInterval),
-                      subtitle: Text(
-                        _loaded('flood.advert.interval')
-                            ? l10n.repeater_floodAdvertIntervalHours(
-                                _floodAdvertInterval,
-                              )
-                            : '—',
-                      ),
-                      trailing: Switch(
-                        value:
-                            _loaded('flood.advert.interval') &&
-                            _floodAdvertEnable,
-                        onChanged: !_loaded('flood.advert.interval')
-                            ? null
-                            : (value) {
-                                setState(() {
-                                  _floodAdvertInterval = value ? 3 : 0;
-                                  _floodAdvertEnable = value;
-                                });
-                                _markChanged(_SettingField.floodAdvertInterval);
-                              },
-                      ),
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ),
-                  IconButton(
-                    icon: _refreshingFloodAdvertInterval
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.refresh, size: 20),
-                    onPressed: _refreshingFloodAdvertInterval
-                        ? null
-                        : _refreshFloodAdvertInterval,
-                    tooltip: l10n.repeater_floodAdvertInterval,
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ],
-              ),
-              Slider(
-                value: _floodAdvertSliderValue.toDouble(),
-                min: _floodAdvertSliderMin.toDouble(),
-                max: _floodAdvertSliderMax.toDouble(),
-                divisions: _floodAdvertSliderMax - _floodAdvertSliderMin,
-                label: l10n.repeater_floodAdvertIntervalHours(
-                  _floodAdvertInterval,
-                ),
-                onChanged:
-                    _floodAdvertEnable && _loaded('flood.advert.interval')
-                    ? (value) {
-                        setState(() {
-                          _floodAdvertInterval = value.toInt();
-                        });
-                        _markChanged(_SettingField.floodAdvertInterval);
-                      }
-                    : null,
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: ListTile(
-                      title: Text(l10n.repeater_floodMax),
-                      subtitle: Text(l10n.repeater_floodMaxHelper),
-                      trailing: Text(
-                        _loaded('flood.max') ? '$_floodMax' : '—',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ),
-                  IconButton(
-                    icon: _refreshingFloodMax
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.refresh, size: 20),
-                    onPressed: _refreshingFloodMax ? null : _refreshFloodMax,
-                    tooltip: l10n.repeater_floodMax,
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ],
-              ),
-              Slider(
-                value: _floodMax.toDouble(),
-                min: 0,
-                max: 64,
-                divisions: 64,
-                label: '$_floodMax',
-                onChanged: !_loaded('flood.max')
-                    ? null
-                    : (v) {
-                        setState(() => _floodMax = v.toInt());
-                        _markChanged(_SettingField.floodMax);
-                      },
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Slider bounds: the normal UI range, widened to include a non-zero value
-  // the firmware reported outside it. A disabled (0) value parks the knob at
-  // the minimum.
-  int get _advertSliderMin =>
-      _advertInterval > 0 && _advertInterval < 60 ? _advertInterval : 60;
-  int get _advertSliderMax => _advertInterval > 240 ? _advertInterval : 240;
-  int get _advertSliderValue =>
-      _advertInterval.clamp(_advertSliderMin, _advertSliderMax);
-  int get _floodAdvertSliderMin =>
-      _floodAdvertInterval > 0 && _floodAdvertInterval < 3
-      ? _floodAdvertInterval
-      : 3;
-  int get _floodAdvertSliderMax =>
-      _floodAdvertInterval > 168 ? _floodAdvertInterval : 168;
-  int get _floodAdvertSliderValue =>
-      _floodAdvertInterval.clamp(_floodAdvertSliderMin, _floodAdvertSliderMax);
-
-  Widget _buildNetworkHealthCard() {
-    final l10n = context.l10n;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SectionHeader(l10n.repeater_networkHealth),
-        MeshCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: DropdownButtonFormField<String>(
-                      initialValue: _loaded('loop.detect') ? _loopDetect : null,
-                      decoration: InputDecoration(
-                        labelText: l10n.repeater_loopDetect,
-                        helperText: l10n.repeater_loopDetectHelper,
-                        helperMaxLines: 3,
-                      ),
-                      items: [
-                        DropdownMenuItem(
-                          value: 'off',
-                          child: Text(l10n.repeater_loopDetectOff),
-                        ),
-                        DropdownMenuItem(
-                          value: 'minimal',
-                          child: Text(l10n.repeater_loopDetectMinimal),
-                        ),
-                        DropdownMenuItem(
-                          value: 'moderate',
-                          child: Text(l10n.repeater_loopDetectModerate),
-                        ),
-                        DropdownMenuItem(
-                          value: 'strict',
-                          child: Text(l10n.repeater_loopDetectStrict),
-                        ),
-                      ],
-                      onChanged: !_loaded('loop.detect')
-                          ? null
-                          : (v) {
-                              if (v != null) {
-                                setState(() => _loopDetect = v);
-                                _markChanged(_SettingField.loopDetect);
-                              }
-                            },
-                    ),
-                  ),
-                  _buildInlineRefreshButton(
-                    isRefreshing: _refreshingLoopDetect,
-                    onRefresh: _refreshLoopDetect,
-                    tooltip: l10n.repeater_loopDetect,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: ListTile(
-                      title: Text(l10n.repeater_dutyCycle),
-                      subtitle: Text(l10n.repeater_dutyCycleHelper),
-                      trailing: Text(
-                        _loaded('dutycycle')
-                            ? l10n.repeater_dutyCyclePercent(_dutyCycle)
-                            : '—',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ),
-                  IconButton(
-                    icon: _refreshingDutyCycle
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.refresh, size: 20),
-                    onPressed: _refreshingDutyCycle ? null : _refreshDutyCycle,
-                    tooltip: l10n.repeater_dutyCycle,
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ],
-              ),
-              Slider(
-                value: _dutyCycle.toDouble(),
-                min: 1,
-                max: 100,
-                divisions: 99,
-                label: l10n.repeater_dutyCyclePercent(_dutyCycle),
-                onChanged: !_loaded('dutycycle')
-                    ? null
-                    : (v) {
-                        setState(() => _dutyCycle = v.toInt());
-                        _markChanged(_SettingField.dutyCycle);
-                      },
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildOwnerInfoCard() {
-    final l10n = context.l10n;
-    final refreshButton = _refreshingOwnerInfo
-        ? const SizedBox(
-            width: 18,
-            height: 18,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          )
-        : IconButton(
-            icon: const Icon(Icons.refresh, size: 18),
-            onPressed: _refreshOwnerInfo,
-            tooltip: l10n.repeater_refreshOwnerInfo,
-            visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
-          );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SectionHeader(l10n.repeater_ownerInfo, trailing: refreshButton),
-        MeshCard(
-          child: TextField(
-            controller: _ownerInfoController,
-            enabled: _loaded('owner.info'),
-            decoration: InputDecoration(
-              labelText: l10n.repeater_ownerInfo,
-              helperText: l10n.repeater_ownerInfoHelper,
-              helperMaxLines: 3,
-            ),
-            maxLines: 4,
-            minLines: 2,
-            inputFormatters: const [
-              Utf8LengthLimitingTextInputFormatter(_maxOwnerInfoBytes),
-            ],
-            onChanged: (_) => _markChanged(_SettingField.ownerInfo),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -2305,195 +1552,11 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     );
   }
 
-  Widget _buildAdvancedCard() {
-    final l10n = context.l10n;
-    return MeshCard(
-      child: ExpansionTile(
-        leading: const Icon(Icons.tune),
-        title: Text(
-          l10n.repeater_advancedSettings,
-          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-        ),
-        subtitle: Text(l10n.repeater_advancedSettingsSubtitle),
-        childrenPadding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: DropdownButtonFormField<int>(
-                  initialValue: _loaded('path.hash.mode')
-                      ? _pathHashMode
-                      : null,
-                  decoration: InputDecoration(
-                    labelText: l10n.repeater_pathHashMode,
-                    helperText: l10n.repeater_pathHashModeHelper,
-                    helperMaxLines: 5,
-                  ),
-                  items: [
-                    DropdownMenuItem(
-                      value: 0,
-                      child: Text(l10n.repeater_pathHashModeOption0),
-                    ),
-                    DropdownMenuItem(
-                      value: 1,
-                      child: Text(l10n.repeater_pathHashModeOption1),
-                    ),
-                    DropdownMenuItem(
-                      value: 2,
-                      child: Text(l10n.repeater_pathHashModeOption2),
-                    ),
-                  ],
-                  onChanged: !_loaded('path.hash.mode')
-                      ? null
-                      : (v) {
-                          if (v != null) {
-                            setState(() => _pathHashMode = v);
-                            _markChanged(_SettingField.pathHashMode);
-                          }
-                        },
-                ),
-              ),
-              _buildInlineRefreshButton(
-                isRefreshing: _refreshingPathHashMode,
-                onRefresh: _refreshPathHashMode,
-                tooltip: l10n.repeater_pathHashMode,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _txDelayController,
-                  enabled: _loaded('txdelay'),
-                  decoration: InputDecoration(
-                    labelText: l10n.repeater_txDelay,
-                    helperText: l10n.repeater_txDelayHelper,
-                    helperMaxLines: 3,
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  onChanged: (_) => _markChanged(_SettingField.txDelay),
-                ),
-              ),
-              _buildInlineRefreshButton(
-                isRefreshing: _refreshingTxDelay,
-                onRefresh: _refreshTxDelay,
-                tooltip: l10n.repeater_txDelay,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _directTxDelayController,
-                  enabled: _loaded('direct.txdelay'),
-                  decoration: InputDecoration(
-                    labelText: l10n.repeater_directTxDelay,
-                    helperText: l10n.repeater_directTxDelayHelper,
-                    helperMaxLines: 3,
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  onChanged: (_) => _markChanged(_SettingField.directTxDelay),
-                ),
-              ),
-              _buildInlineRefreshButton(
-                isRefreshing: _refreshingDirectTxDelay,
-                onRefresh: _refreshDirectTxDelay,
-                tooltip: l10n.repeater_directTxDelay,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _intThreshController,
-                  enabled: _loaded('int.thresh'),
-                  decoration: InputDecoration(
-                    labelText: l10n.repeater_intThresh,
-                    helperText: l10n.repeater_intThreshHelper,
-                    helperMaxLines: 3,
-                  ),
-                  keyboardType: TextInputType.number,
-                  onChanged: (_) => _markChanged(_SettingField.intThresh),
-                ),
-              ),
-              _buildInlineRefreshButton(
-                isRefreshing: _refreshingIntThresh,
-                onRefresh: _refreshIntThresh,
-                tooltip: l10n.repeater_intThresh,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: ListTile(
-                  title: Text(l10n.repeater_agcResetInterval),
-                  subtitle: Text(l10n.repeater_agcResetIntervalHelper),
-                  trailing: Text(
-                    _loaded('agc.reset.interval')
-                        ? '${_agcResetInterval}s'
-                        : '—',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
-              IconButton(
-                icon: _refreshingAgcResetInterval
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.refresh, size: 20),
-                onPressed: _refreshingAgcResetInterval
-                    ? null
-                    : _refreshAgcResetInterval,
-                tooltip: l10n.repeater_agcResetInterval,
-                visualDensity: VisualDensity.compact,
-              ),
-            ],
-          ),
-          Slider(
-            value: _agcResetInterval.clamp(0, _maxAgcResetInterval).toDouble(),
-            min: 0,
-            max: _maxAgcResetInterval.toDouble(),
-            divisions: _maxAgcResetInterval ~/ 4,
-            label: '${_agcResetInterval}s',
-            onChanged: !_loaded('agc.reset.interval')
-                ? null
-                : (v) {
-                    setState(() {
-                      // Clamp to multiple of 4 to match firmware semantics.
-                      _agcResetInterval = (v.toInt() ~/ 4) * 4;
-                    });
-                    _markChanged(_SettingField.agcResetInterval);
-                  },
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildKeysCard() {
     final l10n = context.l10n;
     return MeshCard(
       child: ExpansionTile(
+        key: const PageStorageKey('repeater_settings_keys'),
         leading: const Icon(Icons.vpn_key),
         title: Text(
           l10n.repeater_keySettings,
@@ -2501,7 +1564,7 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
         ),
         subtitle: Text(l10n.repeater_keySettingsSubtitle),
         childrenPadding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
-        children: [
+        children: _ownPageStorage('repeater_settings_keys_body', [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -2527,7 +1590,7 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
                   onChanged: (_) {
                     _pubKeyController.text = "";
                     if (_prvKeyController.text.isNotEmpty) {
-                      _markChanged(_SettingField.prvKey);
+                      _markChanged(_prvKeyKey);
                     }
                     // Refresh the inline length error.
                     setState(() {});
@@ -2615,7 +1678,7 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
               const SizedBox(width: 48),
             ],
           ),
-        ],
+        ]),
       ),
     );
   }

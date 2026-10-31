@@ -38,6 +38,9 @@ void showDismissibleSnackBar(
   if (!isActive) return;
   final messenger = ScaffoldMessenger.maybeOf(context);
   if (messenger == null) return;
+  // Replace rather than queue: rapid actions (adding ten contacts) would
+  // otherwise leave a backlog the user has to dismiss one by one.
+  messenger.clearSnackBars();
   messenger.showSnackBar(
     SnackBar(
       key: key,

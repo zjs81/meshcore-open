@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 9.5.0+19
+version: 99.0.1+26
 
 environment:
   sdk: ^3.9.2
@@ -38,11 +38,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_blue_plus: ^2.3.14
-  # TODO: Switch to official flserial repo once changes are upstreamed
+  # Vendored from MeshEnvy/flserial e1864de. Linux SerialThread waits
+  # until fl_set_callback is installed so a port that transmits on open
+  # does not call a null callback. Switch back upstream once that lands.
   flserial:
-    git:
-      url: https://github.com/MeshEnvy/flserial.git
-      ref: e1864de9b65cda9656dba804329bdd2890dd5a92
+    path: third_party/flserial
   ffi: ^2.1.3            # calloc.free for flserial's native I/O buffers
   provider: ^6.1.5+1
   shared_preferences: ^2.2.2
@@ -60,6 +60,7 @@ dependencies:
   package_info_plus: ^10.2.2
   mobile_scanner: ^7.4.2  # QR/barcode scanning
   image_picker: ^1.1.2    # Pick photos to send as compressed mesh images
+  koni_jxl_flutter: ^0.1.4 # Chat background pictures stored as JPEG XL
   qr_flutter: ^4.1.0      # QR code generation
   url_launcher: ^6.3.0    # Launch URLs in system browser
   flutter_linkify: ^6.0.0 # Auto-detect and linkify URLs in text
@@ -124,6 +125,10 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/fonts/
+    - assets/themes/halloween/
+    - assets/themes/thanksgiving/
+    - assets/themes/christmas/
+    - assets/themes/new_year/
 
   fonts:
     - family: Inter

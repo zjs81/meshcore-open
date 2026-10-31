@@ -77,6 +77,7 @@ class LinkHandler {
     final shouldOpen = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
+        scrollable: true,
         title: Text(context.l10n.chat_openLink),
         content: Column(
           mainAxisSize: MainAxisSize.min,

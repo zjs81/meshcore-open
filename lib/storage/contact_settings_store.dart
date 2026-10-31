@@ -76,16 +76,16 @@ class ContactSettingsStore {
     await prefs.setBool(key, enabled);
   }
 
-  Future<bool> loadUrlImagesEnabled(String contactKeyHex) async {
+  Future<bool?> loadUrlImagesEnabled(String contactKeyHex) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot load contact URL image settings.',
       );
-      return false;
+      return null;
     }
     final prefs = PrefsManager.instance;
     final key = '$keyForUrlImages$contactKeyHex';
-    return prefs.getBool(key) ?? false;
+    return prefs.getBool(key);
   }
 
   Future<void> saveUrlImagesEnabled(String contactKeyHex, bool enabled) async {

@@ -359,6 +359,10 @@
   "channels_public": "Publik",
   "channels_private": "Privat",
   "channels_editChannel": "Redigera kanal",
+  "channels_notificationSettings": "Aviseringsinställningar",
+  "channels_notifyAll": "Alla meddelanden",
+  "channels_notifyMentionsOnly": "Endast omnämnanden",
+  "channels_notifyNone": "Tyst",
   "channels_muteChannel": "Tysta kanal",
   "channels_unmuteChannel": "Slå på ljud för kanal",
   "channels_deleteChannel": "Ta bort kanal",
@@ -1148,10 +1152,8 @@
   "repeater_settingsSaved": "Inställningarna sparades framgångsrikt.",
   "repeater_rxGain": "Ökad RX-vinst",
   "repeater_rxGainHelper": "Ökad känslighet, högre strömförbrukning (endast för SX1262/SX1268)",
-  "repeater_refreshRxGain": "Uppdatera förstärkt RX-gain",
   "repeater_multiAcks": "Flera bekräftelser",
   "repeater_multiAcksSubtitle": "Kvittera meddelanden via flera rutter för säkrare leverans",
-  "repeater_refreshMultiAcks": "Uppdatera multi-ACK",
   "repeater_networkHealth": "Nätverkets hälsa",
   "repeater_loopDetect": "Identifiering av loopar",
   "repeater_loopDetectHelper": "Släpp flood-paket som ser ut att ingå i routingloopar",
@@ -1171,7 +1173,6 @@
   },
   "repeater_ownerInfo": "Operatörsinformation",
   "repeater_ownerInfoHelper": "Publik metadata för den här repeatern",
-  "repeater_refreshOwnerInfo": "Uppdatera operatörsinformation",
   "repeater_floodMax": "Max antal flood-hopp",
   "repeater_floodMaxHelper": "Maximalt antal hopp som ett flood-paket får färdas (0–64)",
   "repeater_advancedSettings": "Avancerad",
@@ -1229,11 +1230,7 @@
       }
     }
   },
-  "repeater_refreshBasicSettings": "Uppdatera grundinställningar",
   "repeater_refreshRadioSettings": "Uppdatera radioinställningar",
-  "repeater_refreshTxPower": "Uppdatera TX-effekt",
-  "repeater_refreshPacketForwarding": "Uppdatera paketvidarebefordran",
-  "repeater_refreshGuestAccess": "Uppdatera gäståtkomst",
   "repeater_refreshPrivacyMode": "Uppdatera privatläge",
   "repeater_refreshed": "{label} har uppdaterats",
   "@repeater_refreshed": {
@@ -2217,6 +2214,8 @@
     }
   },
   "appSettings_jumpToOldestUnreadSubtitle": "När du öppnar en chatt med oinlästa meddelanden, scrolla till det första oinlästa meddelandet istället för det senaste.",
+  "appSettings_autoFetchRepeaterSettings": "Hämta repeaterinställningar automatiskt",
+  "appSettings_autoFetchRepeaterSettingsSubtitle": "Begär alla inställningar när en repeaters inställningar öppnas. Varje inställning är en separat begäran över LoRa, så det är långsamt och använder sändningstid. När det är av, tryck på Uppdatera alla eller uppdatera enskilda sektioner.",
   "chat_sendCooldown": "Vänligen vänta en stund innan du skickar igen.",
   "appSettings_jumpToOldestUnread": "Gå till äldsta olästa",
   "appSettings_languageHu": "Ungerska",
@@ -3133,6 +3132,21 @@
   "channels_waitForSync": "Kanalerna laddas fortfarande från radion. Försök igen när synkroniseringen är klar.",
   "channels_nameTooLong": "Namnet är för långt (max {maxBytes} byte).",
   "repeater_valueRequired": "{field}: ange ett värde",
+  "repeater_floodMaxAdvert": "Max antal flood-hopp för advert",
+  "repeater_floodMaxAdvertHelper": "Maximalt antal hopp som en flood-advert får färdas (0–64, standard 8)",
+  "repeater_floodMaxUnscoped": "Max antal flood-hopp utan region",
+  "repeater_floodMaxUnscopedHelper": "Maximalt antal hopp för flood utan regionomfång (0–64, standard 64). Ett lågt värde som 3 håller trafik utan region lokal.",
+  "repeater_floodMaxUnscopedUnset": "Samma som flood max",
+  "repeater_rxDelay": "Mottagningsfördröjning",
+  "repeater_rxDelayHelper": "Håller tillbaka flood-paket som hörs med svag signal innan de vidarebefordras, så att vägar med stark signal går först och färre dubbletter skickas (0–20, 0 stänger av det).",
+  "repeater_cad": "Kanalaktivitetsdetektering",
+  "repeater_cadHelper": "Lyssnar efter aktivitet före sändning och väntar medan kanalen är upptagen. Fungerar tillsammans med störningströskeln.",
+  "repeater_adcMultiplier": "Kalibrering av batterispänning",
+  "repeater_adcMultiplierHelper": "Multiplikator för avläsningen av batterispänningen (0–10). 0 använder kortets standardvärde.",
+  "repeater_boardSupportNote": "Alla kort stöder inte detta. Kort som inte stöder det avvisar ändringen.",
+  "repeater_extraSf": "Extra spridningsfaktorer",
+  "repeater_extraSfHelper": "Upp till 3 extra spridningsfaktorer att lyssna på samtidigt, separerade med kommatecken (till exempel 9,10). Lämna tomt för att stänga av.",
+  "repeater_lr2021Only": "Endast för repeatrar med LR2021-radio. Andra repeatrar har inte den här inställningen och avvisar den.",
   "losMapDetailTooltip": "Kartdetaljer",
   "losUnitsTooltip": "Enheter",
   "losDistance": "Avstånd",
@@ -3175,6 +3189,10 @@
   "map_youWithMarkers": "Du och {count} markörer",
   "map_sharedMarkerSemantics": "Delad markör: {label}",
   "map_nodeMarkerSemantics": "{name}, {type}, {status}",
+  "map_requestLocation": "Uppdatera plats",
+  "map_locationUpdated": "Platsen uppdaterad",
+  "map_locationNotShared": "{name} svarade utan plats",
+  "map_locationRequestFailed": "Inget svar från {name}",
   "mapCache_zoomLevel": "Zoom {zoom}",
   "mapCache_sizeBytes": "{size} B",
   "mapCache_sizeKilobytes": "{size} KB",
@@ -3245,7 +3263,6 @@
   "repeater_discardChanges": "Förkasta",
   "repeater_actionSentNoReply": "{action}: kommando skickat. Repeatern svarar inte på detta kommando.",
   "repeater_invalidSettingValue": "{setting}: {value} är inte giltigt",
-  "repeater_txPowerOutOfRange": "TX-effekt {value} ligger utanför intervallet ({min} till {max} dBm)",
   "repeater_prvKeyLengthError": "Privat nyckel måste vara exakt {length} hexadecimala tecken",
   "contacts_advertFailed": "Kunde inte skicka annonsen",
   "contacts_manageGroups": "Hantera grupper",
@@ -3305,5 +3322,204 @@
   "networkMap_manage": "Hantera",
   "networkMap_addedToContacts": "Tillagd i kontakter",
   "networkMap_addFailed": "Det gick inte att lägga till i kontakter",
-  "networkMap_unnamed": "Namnlös repeater"
+  "networkMap_unnamed": "Namnlös repeater",
+  "urlImage_disabledInAppSettings": "Avstängt i appinställningarna",
+  "settings_pathHashModeNotApplied": "Radioinställningarna tillämpades, men radion bekräftade inte den nya storleken på ruttens hash",
+  "appSettings_ipfsImageLinks": "Konfiguration av IPFS-leverantör",
+  "appSettings_ipfsImageLinksSubtitle": "Uppladdning av URL-bilder (eller filer) via IPFS-leverantör och standardgateway för mottagning",
+  "appSettings_loadLinkImages": "Ladda bilder från länkar",
+  "appSettings_loadLinkImagesSubtitle": "Visa bilder från länkar i meddelanden. När en bild laddas delas din IP-adress med webbplatsen som hostar den.",
+  "appSettings_showLinkImagesByDefault": "Visa länkbilder i alla chattar som standard",
+  "appSettings_showLinkImagesByDefaultSubtitle": "Ladda länkbilder i alla chattar om du inte har stängt av det där. Det delar din IP-adress med bildhostar i varje chatt.",
+  "appSettings_publicIpfsGateway": "Offentlig gateway",
+  "appSettings_ipfsGatewayDeactivated": "Avaktiverad",
+  "appSettings_ipfsGatewayCustom": "Egen (Kubo)",
+  "appSettings_uploadIpfsProvider": "Uppladdningsleverantör",
+  "appSettings_uploadIpfsGateway": "Uppladdningsgateway",
+  "appSettings_uploadIpfsGatewaySubtitle": "Gateway för att dela bild eller fil som URL-länk. Lämna tomt för att använda formatet ipfs:, som kanske inte kan öppnas av andra klienter.",
+  "appSettings_uploadIpfsEndpoint": "Uppladdningsslutpunkt",
+  "appSettings_uploadIpfsEndpointSubtitle": "API-slutpunkten som används för att ladda upp filer",
+  "appSettings_uploadIpfsApiKey": "API-nyckel för uppladdning",
+  "appSettings_ipfsImageLinksDescription": "Den offentliga gatewayen laddar ned bilder i formatet ipfs:. Uppladdningsgatewayen används för att skapa delningslänkar till uppladdade URL-bilder eller filer.",
+  "contacts_removeAutoAddNote": "Din radio lägger automatiskt till den här kontakttypen, så den kommer tillbaka nästa gång den skickar en annons. Stäng av automatisk tillägg i kontaktinställningarna för att behålla den borttagen.",
+  "contacts_removeFailed": "Radion bekräftade inte borttagningen. Kontakten togs inte bort.",
+  "channels_notificationModeTooltip": "Notiser: {mode}",
+  "@channels_notificationModeTooltip": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_scanQrCodeDesc": "Gå med i en kanal eller community med dess QR-kod.",
+  "channels_scanQrInstructions": "Rikta kameran mot en kanal- eller community-QR-kod",
+  "channels_invalidQrCode": "Inte en MeshCore-QR-kod för kanal eller community",
+  "channels_joinChannelTitle": "Gå med i kanal",
+  "channels_joinChannelConfirm": "Lägga till \"{name}\" på din radio?",
+  "@channels_joinChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_alreadyOnRadio": "\"{name}\" finns redan på din radio",
+  "@channels_alreadyOnRadio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_sendImageIpfs": "Skicka bild eller fil via IPFS",
+  "chat_ipfsUploadFailed": "IPFS-uppladdningen misslyckades: {error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "Konfigurera först en IPFS-uppladdningsleverantör i appinställningarna.",
+  "chat_ipfsSelectedFileEmpty": "Den valda filen är tom.",
+  "chat_ipfsEndpointInvalid": "IPFS-uppladdningsslutpunkten måste vara en fullständig http://- eller https://-adress. Kontrollera den i appinställningarna.",
+  "chat_ipfsPinataTokenMissing": "Pinata behöver en API-nyckel eller JWT. Lägg till den i appinställningarna.",
+  "chat_ipfsFilebaseTokenMissing": "Filebase behöver en API-token. Lägg till den i appinställningarna.",
+  "chat_ipfsKuboPathInvalid": "Kubo-uppladdningsslutpunkten måste sluta med /api/v0/add. Kontrollera den i appinställningarna.",
+  "chat_ipfsLinkNoRoom": "Det finns inte plats för bildlänken. Korta ned meddelandet och försök igen.",
+  "@chat_ipfsLinkNoRoom": {
+    "description": "Shown before an IPFS upload when the link would push the draft over the message size limit"
+  },
+  "chat_ipfsLinkOverLimit": "Bildlänken lades till, men meddelandet är nu för långt. Korta ned det innan du skickar.",
+  "@chat_ipfsLinkOverLimit": {
+    "description": "Shown after an IPFS upload when the link plus the draft no longer fits the message size limit"
+  },
+  "map_pathTraceAddMoreHint": "Tryck på fler noder för att lägga till hopp, välj hur spårningen returneras och tryck sedan på Kör ruttspårning.",
+  "map_pathTraceModeRoundTrip": "Tur och retur",
+  "map_pathTraceModeRoundTripHint": "Spårningen går ut via dessa hopp och kommer tillbaka samma väg.",
+  "map_pathTraceModeAsEntered": "Som inmatat",
+  "map_pathTraceModeAsEnteredHint": "Spårningen följer exakt dessa hopp. Lägg själv till hoppen tillbaka till dig.",
+  "map_pathTraceViewLast": "Visa senaste resultat",
+  "notification_lowBatteryTitle": "Lågt batteri",
+  "@notification_lowBatteryTitle": {
+    "description": "Title of the low battery notification"
+  },
+  "notification_lowBatteryBody": "Batteriet i {deviceName} är på {percent} %",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification; deviceName is the connected radio's node name",
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_sharedLocation": "Delade en plats",
+  "notification_sharedLocationNamed": "Delade en plats: {label}",
+  "@notification_sharedLocationNamed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_reacted": "Reagerade med {emoji}",
+  "@notification_reacted": {
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_sentGif": "Skickade en GIF",
+  "notification_sentImage": "Skickade en bild",
+  "snrIndicator_unknownRepeater": "Okänd repeater",
+  "snrIndicator_unknownRepeaterHint": "Den här repeatern finns inte bland dina kontakter än. Dess namn, plats och alternativ visas när din radio tar emot dess annons.",
+  "contacts_keyPrefixSemantics": "Nyckelprefix {prefix}",
+  "@contacts_keyPrefixSemantics": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "networkMap_sourceLocalHint": "Noder som din radio har hört",
+  "networkMap_sourceOnlineHint": "Repeatrar från den online-baserade nätverkskartan",
+  "networkMap_sourceBothHint": "Din radios noder plus den online-baserade nätverkskartan",
+  "holidayGreeting_halloween": "Glad Halloween|Trevlig Halloween|Happy Halloween|Gott Halloween",
+  "holidayGreeting_thanksgiving": "Glad Thanksgiving|Trevlig Thanksgiving|Happy Thanksgiving|Glad tacksägelsedag",
+  "holidayGreeting_christmas": "God jul|Glad jul|Trevlig jul|Merry Christmas|God jul och gott nytt år",
+  "holidayGreeting_newYear": "Gott nytt år|Happy New Year|Ett gott nytt år",
+  "appSettings_colorTheme": "Färgtema",
+  "appSettings_holidayAnimations": "Helganimationer i meddelanden",
+  "appSettings_holidayAnimationsSubtitle": "Fladdermöss, en kalkon, tomten eller fyrverkerier när någon skickar en helghälsning",
+  "themes_title": "Teman",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "Standardfärger, följer inställningen Ljust / Mörkt",
+  "themes_builtIn": "Inbyggda",
+  "themes_holidays": "Helger",
+  "themes_holidayAutoSwitch": "Byt automatiskt",
+  "themes_holidayAutoSwitchSubtitle": "Använder varje helgs tema från 17 dagar före till själva dagen",
+  "themes_holidayAutoApplied": "Temat {holiday} är på automatiskt. Ditt eget tema kommer tillbaka efter helgen.",
+  "themes_holidayAutoAppliedTag": "På automatiskt",
+  "themes_myThemes": "Mina teman",
+  "themes_myThemesEmpty": "Skapa ett eget tema genom att välja en bakgrund och en accentfärg.",
+  "themes_create": "Skapa tema",
+  "themes_import": "Importera tema",
+  "themes_importHint": "Klistra in en temakod",
+  "themes_importInvalid": "Det där är ingen giltig temakod",
+  "themes_imported": "Lade till temat \"{name}\"",
+  "themes_customize": "Anpassa en kopia",
+  "themes_copyCode": "Kopiera temakod",
+  "themes_codeCopied": "Temakoden kopierades",
+  "themes_deleteConfirm": "Radera temat \"{name}\"?",
+  "themes_copyName": "Kopia av {name}",
+  "themes_newTitle": "Nytt tema",
+  "themes_editTitle": "Redigera tema",
+  "themes_name": "Namn",
+  "themes_nameRequired": "Ge ditt tema ett namn",
+  "themes_background": "Bakgrund",
+  "themes_backgroundHelp": "En mörk bakgrund ger ett mörkt tema",
+  "themes_accent": "Accentfärg",
+  "themes_accentHelp": "Knappar, markeringar och dina chattbubblor",
+  "themes_hexColor": "Hex-färg",
+  "themes_preview": "Förhandsvisning",
+  "themes_previewIncoming": "Är det någon på nätet ikväll?",
+  "themes_previewOutgoing": "Hör dig tydligt!",
+  "themes_previewSwitch": "Aviseringar",
+  "themes_lowContrast": "Accentfärgen syns dåligt mot den här bakgrunden",
+  "themes_saveAndUse": "Spara och använd",
+  "themes_icons": "Ikoner",
+  "themes_iconsHelp": "Tryck på en ikon för att byta ut den mot en annan ikon eller en egen bild",
+  "themes_iconChanged": "Ändrad",
+  "themes_iconSend": "Skickaknapp",
+  "themes_iconRepeater": "Repeaters",
+  "themes_iconRoom": "Rum",
+  "themes_iconSensor": "Sensorer",
+  "themes_mapMarkers": "Kartmarkörer",
+  "themes_mapMarkersHelp": "Byt ut markörerna för noder och för dig själv på kartan",
+  "themes_iconUsePicture": "Använd en bild",
+  "themes_iconReset": "Använd standardikonen",
+  "themes_iconPictureFailed": "Kunde inte använda den bilden",
+  "themes_exportFile": "Exportera till fil",
+  "themes_exportAll": "Exportera mina teman",
+  "themes_importFile": "Importera från fil",
+  "themes_pasteCode": "Klistra in temakod",
+  "themes_exportFailed": "Kunde inte exportera teman",
+  "themes_importFileResult": "Importerade {count} teman",
+  "themes_importFileNone": "Inga teman hittades i filen",
+  "chatBackground_title": "Chattbakgrund",
+  "chatBackground_thisChatOnly": "Endast för den här chatten",
+  "chatBackground_themeOverrides": "Ditt tema \"{name}\" anger bakgrunden i alla chattar. Stäng av det i temat för att använda den här.",
+  "chatBackground_none": "Ingen",
+  "chatBackground_picture": "Bild",
+  "chatBackground_choosePicture": "Välj en bild",
+  "chatBackground_pictureFailed": "Kunde inte använda den bilden",
+  "chatBackground_fade": "Tona ut",
+  "themes_chatBackground": "Chattbakgrund",
+  "themes_chatBackgroundHelp": "Visas i chattar som inte har en egen bakgrund",
+  "themes_chatBackgroundEverywhere": "Använd i alla chattar",
+  "themes_chatBackgroundEverywhereHelp": "Ersätter även bakgrunder som är inställda för enskilda chattar"
 }

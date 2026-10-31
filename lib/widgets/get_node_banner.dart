@@ -2,25 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/l10n.dart';
+import '../services/node_banner_service.dart';
 import '../theme/mesh_theme.dart';
 
-/// Affiliate link for the SenseCAP MeshTracker X1.
-const getNodeUrl =
-    'https://www.seeedstudio.com/sensecap-meshtracker-x1-meshtastic-gps-tracker-p-6935.html'
-    '?sensecap_affiliate=JFWID0g&referring_service=link';
-
 /// Bottom banner on the connect screen pointing new users at a node to buy.
-class GetNodeBanner extends StatelessWidget {
-  const GetNodeBanner({super.key});
+/// Its link (and optionally its text) comes from the `_banner` DNS TXT
+/// record; it stays hidden until that loads, and when the lookup fails or the
+/// record turns it off.
+class GetNodeBanner extends StatefulWidget {
+  final Future<NodeBannerConfig?> Function()? loadConfig;
 
-  void _open() =>
-      launchUrl(Uri.parse(getNodeUrl), mode: LaunchMode.externalApplication);
+  const GetNodeBanner({super.key, this.loadConfig});
+
+  @override
+  State<GetNodeBanner> createState() => _GetNodeBannerState();
+}
+
+class _GetNodeBannerState extends State<GetNodeBanner> {
+  NodeBannerConfig? _config;
+
+  @override
+  void initState() {
+    super.initState();
+    (widget.loadConfig ?? NodeBannerService().load)().then((config) {
+      if (mounted && config != null) setState(() => _config = config);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final config = _config;
+    if (config == null) return const SizedBox.shrink();
+
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    void open() => launchUrl(config.url, mode: LaunchMode.externalApplication);
 
     return SafeArea(
       top: false,
@@ -34,7 +51,7 @@ class GetNodeBanner extends StatelessWidget {
           ),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
-            onTap: _open,
+            onTap: open,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
               child: Column(
@@ -51,7 +68,7 @@ class GetNodeBanner extends StatelessWidget {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          l10n.scanner_getNodeTitle,
+                          config.title ?? l10n.scanner_getNodeTitle,
                           style: textTheme.titleMedium?.copyWith(
                             color: scheme.onPrimaryContainer,
                             fontWeight: FontWeight.w700,
@@ -62,7 +79,7 @@ class GetNodeBanner extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    l10n.scanner_getNodeBody,
+                    config.body ?? l10n.scanner_getNodeBody,
                     style: textTheme.bodyMedium?.copyWith(
                       color: scheme.onPrimaryContainer,
                       height: 1.35,
@@ -72,9 +89,9 @@ class GetNodeBanner extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
-                      onPressed: _open,
+                      onPressed: open,
                       icon: const Icon(Icons.shopping_cart_outlined, size: 22),
-                      label: Text(l10n.scanner_getNodeAction),
+                      label: Text(config.action ?? l10n.scanner_getNodeAction),
                     ),
                   ),
                   const SizedBox(height: 6),

@@ -30,9 +30,9 @@ bool _isAllowedRepeatFreqKHz(MeshCoreConnector connector, int freqKHz) {
 /// Lowest TX power companion firmware accepts (CMD_SET_RADIO_TX_POWER).
 const int _minTxPowerDbm = -9;
 
-/// Radio parameter editor (preset, frequency, bandwidth, SF, CR, TX power and
-/// off-grid client repeat). Stays open when the radio rejects or fails to
-/// apply the settings so the user's edits are not lost.
+/// Radio parameter editor (preset, frequency, bandwidth, SF, CR, TX power,
+/// path-hash size and off-grid client repeat). Stays open when the radio
+/// rejects or fails to apply the settings so the user's edits are not lost.
 class RadioSettingsDialog extends StatefulWidget {
   final MeshCoreConnector connector;
 
@@ -49,10 +49,13 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
   LoRaCodingRate _codingRate = LoRaCodingRate.cr4_5;
   final _txPowerController = TextEditingController(text: '20');
   bool _clientRepeat = false;
+  int _pathHashByteWidth = 1;
   int? _selectedPresetIndex;
   _RadioSettingsSnapshot? _lastNonRepeatSnapshot;
   String? _frequencyError;
   String? _txPowerError;
+
+  bool get _supportsPathHashMode => widget.connector.supportsPathHashMode;
 
   AppDebugLogService get _appLog =>
       Provider.of<AppDebugLogService>(context, listen: false);
@@ -106,6 +109,7 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
       _txPowerController.text = widget.connector.currentTxPower.toString();
     }
 
+    _pathHashByteWidth = widget.connector.pathHashByteWidth;
     _clientRepeat = widget.connector.clientRepeat ?? false;
     _selectedPresetIndex = _findMatchingPresetIndex();
     if (_clientRepeat) {
@@ -439,11 +443,34 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
         return;
       }
       await widget.connector.sendFrame(buildSetRadioTxPowerFrame(txPower));
+      // setPathHashMode updates the local width optimistically; the refreshed
+      // DEVICE_INFO below overwrites it with what the radio actually stored.
+      final requestedPathHashWidth =
+          _supportsPathHashMode &&
+              _pathHashByteWidth != widget.connector.pathHashByteWidth
+          ? _pathHashByteWidth
+          : null;
+      if (requestedPathHashWidth != null) {
+        await widget.connector.setPathHashMode(requestedPathHashWidth - 1);
+      }
       final selfInfo = widget.connector.receivedFrames
           .firstWhere((f) => f.isNotEmpty && f[0] == respCodeSelfInfo)
           .timeout(const Duration(seconds: 5));
+      final deviceInfo = requestedPathHashWidth == null
+          ? null
+          : widget.connector.receivedFrames
+                .firstWhere((f) => f.isNotEmpty && f[0] == respCodeDeviceInfo)
+                .timeout(const Duration(seconds: 5));
       await widget.connector.refreshDeviceInfo();
-      final applied = await selfInfo.then(
+      // Without a refreshed DEVICE_INFO the path hash change is unconfirmed
+      // (this also covers setPathHashMode skipping a disconnected radio).
+      final pathHashApplied =
+          deviceInfo == null ||
+          await deviceInfo.then(
+            (_) => widget.connector.pathHashByteWidth == requestedPathHashWidth,
+            onError: (_) => false,
+          );
+      final radioApplied = await selfInfo.then(
         (_) => _deviceMatches(
           freqHz: freqHz,
           bwHz: bwHz,
@@ -454,12 +481,23 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
         ),
         onError: (_) => true,
       );
-      if (!applied) {
+      if (!radioApplied) {
         _logRadioSettingsState('Radio did not apply requested settings');
         if (!mounted) return;
         showDismissibleSnackBar(
           context,
           content: Text(l10n.settings_radioSettingsNotApplied),
+        );
+        return;
+      }
+      if (!pathHashApplied) {
+        // Radio params and TX power were already applied; only the path
+        // hash size is outstanding, so say that rather than a generic error.
+        _logRadioSettingsState('Radio did not apply requested path hash size');
+        if (!mounted) return;
+        showDismissibleSnackBar(
+          context,
+          content: Text(l10n.settings_pathHashModeNotApplied),
         );
         return;
       }
@@ -539,6 +577,7 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
       'sf=${_spreadingFactor.label} '
       'cr=${_codingRate.label} '
       'tx=${_txPowerController.text}dBm '
+      'pathHash=${_pathHashByteWidth}B '
       'repeat=$_clientRepeat '
       'preset=${_presetLabel(_selectedPresetIndex)} '
       'lastNonRepeat=${_formatSnapshot(_lastNonRepeatSnapshot)}',
@@ -606,6 +645,7 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<LoRaBandwidth>(
+              isExpanded: true,
               initialValue: _bandwidth,
               decoration: InputDecoration(
                 labelText: l10n.settings_bandwidth,
@@ -613,7 +653,10 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
               ),
               items: LoRaBandwidth.values
                   .map(
-                    (bw) => DropdownMenuItem(value: bw, child: Text(bw.label)),
+                    (bw) => DropdownMenuItem(
+                      value: bw,
+                      child: Text(bw.label, overflow: TextOverflow.ellipsis),
+                    ),
                   )
                   .toList(),
               onChanged: (value) {
@@ -628,6 +671,7 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<LoRaSpreadingFactor>(
+              isExpanded: true,
               initialValue: _spreadingFactor,
               decoration: InputDecoration(
                 labelText: l10n.settings_spreadingFactor,
@@ -635,7 +679,10 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
               ),
               items: LoRaSpreadingFactor.values
                   .map(
-                    (sf) => DropdownMenuItem(value: sf, child: Text(sf.label)),
+                    (sf) => DropdownMenuItem(
+                      value: sf,
+                      child: Text(sf.label, overflow: TextOverflow.ellipsis),
+                    ),
                   )
                   .toList(),
               onChanged: (value) {
@@ -652,6 +699,7 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<LoRaCodingRate>(
+              isExpanded: true,
               initialValue: _codingRate,
               decoration: InputDecoration(
                 labelText: l10n.settings_codingRate,
@@ -659,7 +707,10 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
               ),
               items: LoRaCodingRate.values
                   .map(
-                    (cr) => DropdownMenuItem(value: cr, child: Text(cr.label)),
+                    (cr) => DropdownMenuItem(
+                      value: cr,
+                      child: Text(cr.label, overflow: TextOverflow.ellipsis),
+                    ),
                   )
                   .toList(),
               onChanged: (value) {
@@ -673,6 +724,51 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
               },
             ),
             const SizedBox(height: 16),
+            if (_supportsPathHashMode) ...[
+              // Values are path hash modes (0-2, byte width - 1), matching
+              // the selectors in settings_screen and repeater_settings_screen.
+              DropdownButtonFormField<int>(
+                isExpanded: true,
+                initialValue: (_pathHashByteWidth - 1).clamp(0, 2).toInt(),
+                decoration: InputDecoration(
+                  labelText: l10n.repeater_pathHashMode,
+                  helperText: l10n.settings_pathHashModeHelper,
+                  helperMaxLines: 5,
+                  border: const OutlineInputBorder(),
+                ),
+                items: [
+                  DropdownMenuItem(
+                    value: 0,
+                    child: Text(
+                      l10n.repeater_pathHashModeOption0,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 1,
+                    child: Text(
+                      l10n.repeater_pathHashModeOption1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 2,
+                    child: Text(
+                      l10n.repeater_pathHashModeOption2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() => _pathHashByteWidth = value + 1);
+                  _logRadioSettingsState(
+                    'Manual settings edit: path hash size',
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
             TextField(
               controller: _txPowerController,
               onChanged: (_) => _handleManualSettingsChanged('tx power'),

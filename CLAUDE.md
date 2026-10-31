@@ -21,6 +21,8 @@ flutter build web --release
 
 The versioned web build uses `dart run build_pipe:build` (also `bun run build`). Web deployment pins Flutter 3.41.2; other CI jobs track stable. Read `pubspec.yaml` for current app version and dependencies rather than copying them into this guide.
 
+For Linux, use `nix develop`; see [Linux with Nix](README.md#linux-with-nix) for the pinned SDK, native build checks, cache troubleshooting, and Sysprof host prerequisites.
+
 ## Architecture and important files
 
 | Area | Source |

@@ -151,6 +151,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Possibile immagine URL; abilitala nelle Impostazioni.';
 
   @override
+  String get urlImage_disabledInAppSettings =>
+      'Disattivato nelle impostazioni dell\'app';
+
+  @override
   String get common_reboot => 'Riavvia';
 
   @override
@@ -426,6 +430,10 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get settings_radioSettingsNotApplied =>
       'La radio non ha applicato queste impostazioni';
+
+  @override
+  String get settings_pathHashModeNotApplied =>
+      'Le impostazioni della radio sono state applicate, ma la radio non ha confermato la nuova dimensione dell\'hash del percorso';
 
   @override
   String get settings_regionSettings => 'Regioni';
@@ -821,6 +829,240 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appSettings_themeDark => 'Scuro';
 
   @override
+  String get appSettings_colorTheme => 'Tema colori';
+
+  @override
+  String get appSettings_holidayAnimations =>
+      'Animazioni dei messaggi di festa';
+
+  @override
+  String get appSettings_holidayAnimationsSubtitle =>
+      'Pipistrelli, tacchino, Babbo Natale o fuochi d\'artificio quando qualcuno invia un augurio di festa';
+
+  @override
+  String get themes_title => 'Temi';
+
+  @override
+  String get themes_default => 'MeshCore';
+
+  @override
+  String get themes_defaultSubtitle =>
+      'Colori standard, segue l\'impostazione Chiaro / Scuro';
+
+  @override
+  String get themes_builtIn => 'Integrati';
+
+  @override
+  String get themes_holidays => 'Festività';
+
+  @override
+  String get themes_holidayAutoSwitch => 'Cambia automaticamente';
+
+  @override
+  String get themes_holidayAutoSwitchSubtitle =>
+      'Usa il tema di ogni festività da 17 giorni prima fino al giorno stesso';
+
+  @override
+  String themes_holidayAutoApplied(String holiday) {
+    return 'Il tema $holiday è attivo automaticamente. Il tuo tema tornerà dopo la festività.';
+  }
+
+  @override
+  String get themes_holidayAutoAppliedTag => 'Attivo automaticamente';
+
+  @override
+  String get themes_myThemes => 'I miei temi';
+
+  @override
+  String get themes_myThemesEmpty =>
+      'Crea il tuo tema scegliendo uno sfondo e un colore di risalto.';
+
+  @override
+  String get themes_create => 'Crea tema';
+
+  @override
+  String get themes_import => 'Importa tema';
+
+  @override
+  String get themes_importHint => 'Incolla un codice tema';
+
+  @override
+  String get themes_importInvalid => 'Questo non è un codice tema valido';
+
+  @override
+  String themes_imported(String name) {
+    return 'Tema \"$name\" aggiunto';
+  }
+
+  @override
+  String get themes_customize => 'Personalizza una copia';
+
+  @override
+  String get themes_copyCode => 'Copia codice tema';
+
+  @override
+  String get themes_codeCopied => 'Codice tema copiato';
+
+  @override
+  String themes_deleteConfirm(String name) {
+    return 'Eliminare il tema \"$name\"?';
+  }
+
+  @override
+  String themes_copyName(String name) {
+    return 'Copia di $name';
+  }
+
+  @override
+  String get themes_newTitle => 'Nuovo tema';
+
+  @override
+  String get themes_editTitle => 'Modifica tema';
+
+  @override
+  String get themes_name => 'Nome';
+
+  @override
+  String get themes_nameRequired => 'Dai un nome al tuo tema';
+
+  @override
+  String get themes_background => 'Sfondo';
+
+  @override
+  String get themes_backgroundHelp => 'Uno sfondo scuro crea un tema scuro';
+
+  @override
+  String get themes_accent => 'Colore di risalto';
+
+  @override
+  String get themes_accentHelp =>
+      'Pulsanti, elementi evidenziati e i tuoi fumetti nella chat';
+
+  @override
+  String get themes_hexColor => 'Colore esadecimale';
+
+  @override
+  String get themes_preview => 'Anteprima';
+
+  @override
+  String get themes_previewIncoming => 'C\'è qualcuno sulla mesh stasera?';
+
+  @override
+  String get themes_previewOutgoing => 'Forte e chiaro!';
+
+  @override
+  String get themes_previewSwitch => 'Notifiche';
+
+  @override
+  String get themes_lowContrast =>
+      'Il colore di risalto si vede male su questo sfondo';
+
+  @override
+  String get themes_saveAndUse => 'Salva e usa';
+
+  @override
+  String get themes_icons => 'Icone';
+
+  @override
+  String get themes_iconsHelp =>
+      'Tocca un\'icona per sostituirla con un\'altra icona o con una tua immagine';
+
+  @override
+  String get themes_iconChanged => 'Modificata';
+
+  @override
+  String get themes_iconSend => 'Pulsante di invio';
+
+  @override
+  String get themes_iconRepeater => 'Ripetitori';
+
+  @override
+  String get themes_iconRoom => 'Stanze';
+
+  @override
+  String get themes_iconSensor => 'Sensori';
+
+  @override
+  String get themes_mapMarkers => 'Indicatori della mappa';
+
+  @override
+  String get themes_mapMarkersHelp =>
+      'Sostituisci gli indicatori dei nodi e il tuo sulla mappa';
+
+  @override
+  String get themes_iconUsePicture => 'Usa un\'immagine';
+
+  @override
+  String get themes_iconReset => 'Usa l\'icona predefinita';
+
+  @override
+  String get themes_iconPictureFailed => 'Impossibile usare questa immagine';
+
+  @override
+  String get themes_exportFile => 'Esporta su file';
+
+  @override
+  String get themes_exportAll => 'Esporta i miei temi';
+
+  @override
+  String get themes_importFile => 'Importa da file';
+
+  @override
+  String get themes_pasteCode => 'Incolla codice tema';
+
+  @override
+  String get themes_exportFailed => 'Impossibile esportare i temi';
+
+  @override
+  String themes_importFileResult(int count) {
+    return 'Importati $count temi';
+  }
+
+  @override
+  String get themes_importFileNone => 'Nessun tema trovato in questo file';
+
+  @override
+  String get chatBackground_title => 'Sfondo della chat';
+
+  @override
+  String get chatBackground_thisChatOnly => 'Solo per questa chat';
+
+  @override
+  String chatBackground_themeOverrides(String name) {
+    return 'Il tuo tema \"$name\" imposta lo sfondo in tutte le chat. Disattivalo nel tema per usare questo.';
+  }
+
+  @override
+  String get chatBackground_none => 'Nessuno';
+
+  @override
+  String get chatBackground_picture => 'Immagine';
+
+  @override
+  String get chatBackground_choosePicture => 'Scegli un\'immagine';
+
+  @override
+  String get chatBackground_pictureFailed =>
+      'Impossibile usare questa immagine';
+
+  @override
+  String get chatBackground_fade => 'Dissolvenza';
+
+  @override
+  String get themes_chatBackground => 'Sfondo della chat';
+
+  @override
+  String get themes_chatBackgroundHelp =>
+      'Mostrato nelle chat che non hanno uno sfondo proprio';
+
+  @override
+  String get themes_chatBackgroundEverywhere => 'Usa in tutte le chat';
+
+  @override
+  String get themes_chatBackgroundEverywhereHelp =>
+      'Sostituisce anche gli sfondi impostati sulle singole chat';
+
+  @override
   String get appSettings_language => 'Lingua';
 
   @override
@@ -1071,6 +1313,61 @@ class AppLocalizationsIt extends AppLocalizations {
       'Numero di tentativi di riprova prima di considerare un messaggio come fallito.';
 
   @override
+  String get appSettings_ipfsImageLinks => 'Configurazione del provider IPFS';
+
+  @override
+  String get appSettings_ipfsImageLinksSubtitle =>
+      'Caricamento di immagini (o file) tramite URL con un provider IPFS e gateway predefinito per la ricezione';
+
+  @override
+  String get appSettings_loadLinkImages => 'Carica immagini dai link';
+
+  @override
+  String get appSettings_loadLinkImagesSubtitle =>
+      'Mostra le immagini dei link nei messaggi. Caricare un\'immagine condivide il tuo indirizzo IP con il sito che la ospita.';
+
+  @override
+  String get appSettings_showLinkImagesByDefault =>
+      'Mostra le immagini dei link in tutte le chat per impostazione predefinita';
+
+  @override
+  String get appSettings_showLinkImagesByDefaultSubtitle =>
+      'Carica le immagini dei link in ogni chat, a meno che tu non le abbia disattivate in quella chat. Questo condivide il tuo indirizzo IP con gli host delle immagini in ogni chat.';
+
+  @override
+  String get appSettings_publicIpfsGateway => 'Gateway pubblico';
+
+  @override
+  String get appSettings_ipfsGatewayDeactivated => 'Disattivato';
+
+  @override
+  String get appSettings_ipfsGatewayCustom => 'Personalizzato (Kubo)';
+
+  @override
+  String get appSettings_uploadIpfsProvider => 'Provider di caricamento';
+
+  @override
+  String get appSettings_uploadIpfsGateway => 'Gateway di caricamento';
+
+  @override
+  String get appSettings_uploadIpfsGatewaySubtitle =>
+      'Gateway per condividere immagini o file come link URL. Lascia vuoto per usare il formato ipfs:, che potrebbe non essere aperto da altri client.';
+
+  @override
+  String get appSettings_uploadIpfsEndpoint => 'Endpoint di caricamento';
+
+  @override
+  String get appSettings_uploadIpfsEndpointSubtitle =>
+      'L\'endpoint API usato per caricare i file';
+
+  @override
+  String get appSettings_uploadIpfsApiKey => 'Chiave API di caricamento';
+
+  @override
+  String get appSettings_ipfsImageLinksDescription =>
+      'Il gateway pubblico scarica le immagini in formato ipfs:. Il gateway di caricamento serve a generare i link di condivisione per immagini o file caricati tramite URL.';
+
+  @override
   String get appSettings_battery => 'Batteria';
 
   @override
@@ -1232,7 +1529,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String contacts_searchContacts(int number, String str) {
-    return 'Cerca contatti...';
+    return 'Cerca $number$str contatti...';
   }
 
   @override
@@ -1286,6 +1583,14 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get contacts_remove => 'Rimuovi';
+
+  @override
+  String get contacts_removeAutoAddNote =>
+      'La tua radio aggiunge automaticamente questo tipo di contatto, quindi tornerà alla prossima volta che invierà un annuncio. Disattiva l\'aggiunta automatica nelle impostazioni dei contatti per mantenerlo rimosso.';
+
+  @override
+  String get contacts_removeFailed =>
+      'La radio non ha confermato la rimozione. Il contatto non è stato rimosso.';
 
   @override
   String contacts_discoveredNearby(int count) {
@@ -1460,6 +1765,23 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get channels_editChannel => 'Modifica canale';
+
+  @override
+  String get channels_notificationSettings => 'Impostazioni notifiche';
+
+  @override
+  String get channels_notifyAll => 'Tutti i messaggi';
+
+  @override
+  String get channels_notifyMentionsOnly => 'Solo menzioni';
+
+  @override
+  String get channels_notifyNone => 'Silenziato';
+
+  @override
+  String channels_notificationModeTooltip(String mode) {
+    return 'Notifiche: $mode';
+  }
 
   @override
   String get channels_muteChannel => 'Silenzia canale';
@@ -1644,6 +1966,31 @@ class AppLocalizationsIt extends AppLocalizations {
   String get channels_scanQrCodeComingSoon => 'Arriverà presto';
 
   @override
+  String get channels_scanQrCodeDesc =>
+      'Unisciti a un canale o a una community con il suo codice QR.';
+
+  @override
+  String get channels_scanQrInstructions =>
+      'Inquadra il codice QR di un canale o di una community';
+
+  @override
+  String get channels_invalidQrCode =>
+      'Non è un codice QR di canale o community MeshCore';
+
+  @override
+  String get channels_joinChannelTitle => 'Unisciti al canale';
+
+  @override
+  String channels_joinChannelConfirm(String name) {
+    return 'Aggiungere \"$name\" alla tua radio?';
+  }
+
+  @override
+  String channels_alreadyOnRadio(String name) {
+    return '\"$name\" è già sulla tua radio';
+  }
+
+  @override
   String get channels_enterHashtag => 'Inserisci hashtag';
 
   @override
@@ -1761,6 +2108,45 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get chat_sendImageLora => 'Invia immagine tramite MeshCore';
+
+  @override
+  String get chat_sendImageIpfs => 'Invia immagine o file tramite IPFS';
+
+  @override
+  String chat_ipfsUploadFailed(String error) {
+    return 'Caricamento IPFS non riuscito: $error';
+  }
+
+  @override
+  String get chat_ipfsUploadNotConfigured =>
+      'Configura prima un provider di caricamento IPFS nelle impostazioni dell\'app.';
+
+  @override
+  String get chat_ipfsSelectedFileEmpty => 'Il file selezionato è vuoto.';
+
+  @override
+  String get chat_ipfsEndpointInvalid =>
+      'L\'endpoint di caricamento IPFS deve essere un indirizzo completo http:// o https://. Controllalo nelle impostazioni dell\'app.';
+
+  @override
+  String get chat_ipfsPinataTokenMissing =>
+      'Pinata richiede una chiave API o un JWT. Aggiungila nelle impostazioni dell\'app.';
+
+  @override
+  String get chat_ipfsFilebaseTokenMissing =>
+      'Filebase richiede un token API. Aggiungilo nelle impostazioni dell\'app.';
+
+  @override
+  String get chat_ipfsKuboPathInvalid =>
+      'L\'endpoint di caricamento Kubo deve terminare con /api/v0/add. Controllalo nelle impostazioni dell\'app.';
+
+  @override
+  String get chat_ipfsLinkNoRoom =>
+      'Spazio insufficiente per il link dell\'immagine. Accorcia il messaggio, poi riprova.';
+
+  @override
+  String get chat_ipfsLinkOverLimit =>
+      'Link dell\'immagine aggiunto, ma ora il messaggio è troppo lungo. Accorcialo prima di inviare.';
 
   @override
   String get chat_imagePickFailed =>
@@ -2381,6 +2767,27 @@ class AppLocalizationsIt extends AppLocalizations {
   String get map_pathTraceCancelled => 'Tracciamento del percorso annullato.';
 
   @override
+  String get map_pathTraceAddMoreHint =>
+      'Tocca altri nodi per aggiungere salti, scegli come ritorna la traccia, poi tocca Avvia tracciamento del percorso.';
+
+  @override
+  String get map_pathTraceModeRoundTrip => 'Andata e ritorno';
+
+  @override
+  String get map_pathTraceModeRoundTripHint =>
+      'La traccia passa per questi salti e torna indietro nello stesso modo.';
+
+  @override
+  String get map_pathTraceModeAsEntered => 'Come inserito';
+
+  @override
+  String get map_pathTraceModeAsEnteredHint =>
+      'La traccia segue esattamente questi salti. Aggiungi tu i salti del ritorno.';
+
+  @override
+  String get map_pathTraceViewLast => 'Vedi ultimo risultato';
+
+  @override
   String get mapCache_title => 'Cache mappa offline';
 
   @override
@@ -2980,17 +3387,11 @@ class AppLocalizationsIt extends AppLocalizations {
       'Maggiore sensibilità, maggiore assorbimento di corrente (solo per SX1262/SX1268)';
 
   @override
-  String get repeater_refreshRxGain => 'Rafforza l\'effetto di RX';
-
-  @override
   String get repeater_multiAcks => 'ACK multipli';
 
   @override
   String get repeater_multiAcksSubtitle =>
       'Riconoscere i messaggi attraverso percorsi multipli per una migliore consegna.';
-
-  @override
-  String get repeater_refreshMultiAcks => 'Riaffermare più ACK';
 
   @override
   String get repeater_networkHealth => 'Salute della rete';
@@ -3031,10 +3432,6 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get repeater_ownerInfoHelper =>
       'Metadati pubblici per questo ripetitore';
-
-  @override
-  String get repeater_refreshOwnerInfo =>
-      'Aggiorna le informazioni sull\'operatore';
 
   @override
   String get repeater_floodMax => 'Numero massimo di salti in flood';
@@ -3171,20 +3568,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get repeater_refreshBasicSettings => 'Aggiorna Impostazioni Base';
-
-  @override
   String get repeater_refreshRadioSettings => 'Aggiorna le Impostazioni Radio';
-
-  @override
-  String get repeater_refreshTxPower => 'Aggiorna TX potenza';
-
-  @override
-  String get repeater_refreshPacketForwarding =>
-      'Aggiorna il inoltro pacchetti';
-
-  @override
-  String get repeater_refreshGuestAccess => 'Aggiorna Accesso Ospite';
 
   @override
   String get repeater_refreshPrivacyMode => 'Aggiorna Modalità Privacy';
@@ -4736,6 +5120,14 @@ class AppLocalizationsIt extends AppLocalizations {
   String get notification_activityTitle => 'Attività MeshCore';
 
   @override
+  String get notification_lowBatteryTitle => 'Batteria scarica';
+
+  @override
+  String notification_lowBatteryBody(String deviceName, int percent) {
+    return 'La batteria di $deviceName è al $percent%';
+  }
+
+  @override
   String notification_messagesCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -4775,6 +5167,25 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get notification_receivedNewMessage => 'Nuovo messaggio ricevuto';
+
+  @override
+  String get notification_sharedLocation => 'Ha condiviso una posizione';
+
+  @override
+  String notification_sharedLocationNamed(String label) {
+    return 'Ha condiviso una posizione: $label';
+  }
+
+  @override
+  String notification_reacted(String emoji) {
+    return 'Ha reagito $emoji';
+  }
+
+  @override
+  String get notification_sentGif => 'Ha inviato una GIF';
+
+  @override
+  String get notification_sentImage => 'Ha inviato un\'immagine';
 
   @override
   String get notification_actionReply => 'Rispondi';
@@ -4878,6 +5289,13 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get snrIndicator_nearByRepeatersDescription =>
       'Ripetitori che la tua radio ha sentito direttamente, dal più recente al più vecchio.';
+
+  @override
+  String get snrIndicator_unknownRepeater => 'Ripetitore sconosciuto';
+
+  @override
+  String get snrIndicator_unknownRepeaterHint =>
+      'Questo ripetitore non è ancora nei tuoi contatti. Nome, posizione e opzioni compariranno quando la radio riceverà il suo annuncio.';
 
   @override
   String get contactsSettings_title => 'Impostazioni dei contatti';
@@ -5025,6 +5443,14 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get appSettings_jumpToOldestUnreadSubtitle =>
       'Quando si apre una chat con messaggi non letti, scorrete verso l\'alto fino al primo messaggio non letto, invece che al più recente.';
+
+  @override
+  String get appSettings_autoFetchRepeaterSettings =>
+      'Recupera automaticamente le impostazioni del ripetitore';
+
+  @override
+  String get appSettings_autoFetchRepeaterSettingsSubtitle =>
+      'Richiede ogni impostazione all\'apertura delle impostazioni di un ripetitore. Ognuna è una richiesta separata via LoRa, quindi è lento e usa tempo di trasmissione. Se disattivato, tocca Aggiorna tutto o aggiorna le singole sezioni.';
 
   @override
   String get appSettings_languageHu => 'Ungherese';
@@ -5722,6 +6148,62 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get repeater_floodMaxAdvert =>
+      'Numero massimo di salti in flood per gli advert';
+
+  @override
+  String get repeater_floodMaxAdvertHelper =>
+      'Numero massimo di salti che un advert diffuso in flood può percorrere (0-64, predefinito 8)';
+
+  @override
+  String get repeater_floodMaxUnscoped =>
+      'Numero massimo di salti in flood senza regione';
+
+  @override
+  String get repeater_floodMaxUnscopedHelper =>
+      'Numero massimo di salti per i flood senza ambito regionale (0-64, predefinito 64). Un valore basso come 3 mantiene locale il traffico senza regione.';
+
+  @override
+  String get repeater_floodMaxUnscopedUnset => 'Come il massimo in flood';
+
+  @override
+  String get repeater_rxDelay => 'Ritardo di ricezione';
+
+  @override
+  String get repeater_rxDelayHelper =>
+      'Trattiene i pacchetti flood ricevuti con segnale debole prima di inoltrarli, così i percorsi con segnale forte passano per primi e vengono inviati meno duplicati (0-20, 0 lo disattiva).';
+
+  @override
+  String get repeater_cad => 'Rilevamento dell\'attività del canale';
+
+  @override
+  String get repeater_cadHelper =>
+      'Ascolta l\'attività prima di trasmettere e attende finché il canale è occupato. Funziona insieme alla soglia di interferenza.';
+
+  @override
+  String get repeater_adcMultiplier =>
+      'Calibrazione della tensione della batteria';
+
+  @override
+  String get repeater_adcMultiplierHelper =>
+      'Moltiplicatore della lettura della tensione della batteria (0-10). 0 usa il valore predefinito della scheda.';
+
+  @override
+  String get repeater_boardSupportNote =>
+      'Non tutte le schede lo supportano. Le schede non supportate rifiutano la modifica.';
+
+  @override
+  String get repeater_extraSf => 'Fattori di diffusione (SF) aggiuntivi';
+
+  @override
+  String get repeater_extraSfHelper =>
+      'Fino a 3 fattori di diffusione (SF) in più su cui ascoltare contemporaneamente, separati da virgole (ad esempio 9,10). Lascia vuoto per disattivare.';
+
+  @override
+  String get repeater_lr2021Only =>
+      'Solo per repeater con radio LR2021. Gli altri repeater non hanno questa impostazione e la rifiutano.';
+
+  @override
   String get losMapDetailTooltip => 'Dettaglio mappa';
 
   @override
@@ -5875,6 +6357,22 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String map_nodeMarkerSemantics(String name, String type, String status) {
     return '$name, $type, $status';
+  }
+
+  @override
+  String get map_requestLocation => 'Aggiorna posizione';
+
+  @override
+  String get map_locationUpdated => 'Posizione aggiornata';
+
+  @override
+  String map_locationNotShared(String name) {
+    return '$name ha risposto senza posizione';
+  }
+
+  @override
+  String map_locationRequestFailed(String name) {
+    return 'Nessuna risposta da $name';
   }
 
   @override
@@ -6161,11 +6659,6 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String repeater_txPowerOutOfRange(String value, int min, int max) {
-    return 'Potenza TX $value fuori intervallo ($min - $max dBm)';
-  }
-
-  @override
   String repeater_prvKeyLengthError(int length) {
     return 'La chiave privata deve essere di esattamente $length caratteri esadecimali';
   }
@@ -6175,6 +6668,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get contacts_manageGroups => 'Gestisci gruppi';
+
+  @override
+  String contacts_keyPrefixSemantics(String prefix) {
+    return 'Prefisso chiave $prefix';
+  }
 
   @override
   String community_shortId(String id) {
@@ -6261,6 +6759,17 @@ class AppLocalizationsIt extends AppLocalizations {
   String get networkMap_sourceBoth => 'Entrambi';
 
   @override
+  String get networkMap_sourceLocalHint => 'Nodi sentiti dalla tua radio';
+
+  @override
+  String get networkMap_sourceOnlineHint =>
+      'Ripetitori dalla mappa di rete online';
+
+  @override
+  String get networkMap_sourceBothHint =>
+      'I nodi della tua radio più la mappa di rete online';
+
+  @override
   String get networkMap_zoomInHint =>
       'Ingrandisci per vedere la mappa della rete online';
 
@@ -6324,4 +6833,20 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get networkMap_unnamed => 'Ripetitore senza nome';
+
+  @override
+  String get holidayGreeting_halloween =>
+      'Buon Halloween|Felice Halloween|Happy Halloween';
+
+  @override
+  String get holidayGreeting_thanksgiving =>
+      'Buon Ringraziamento|Buon Thanksgiving|Felice Ringraziamento|Felice Thanksgiving|Happy Thanksgiving';
+
+  @override
+  String get holidayGreeting_christmas =>
+      'Buon Natale|Buone Feste|Felice Natale|Merry Christmas';
+
+  @override
+  String get holidayGreeting_newYear =>
+      'Felice Anno Nuovo|Buon Anno Nuovo|Buon Capodanno|Buon Anno|Felice Anno|Felice Capodanno|Happy New Year';
 }

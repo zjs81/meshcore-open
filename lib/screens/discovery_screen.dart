@@ -195,7 +195,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
               name: contact.name,
               size: 42,
               color: isChat ? null : contactTypeColor(contact.type),
-              icon: contactTypeIcon(contact.type),
+              iconSlot: contactTypeIconSlot(contact.type),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -203,35 +203,30 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Name + type chip
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          contact.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      StatusChip(
-                        label: contact.typeLabel(context.l10n).toUpperCase(),
-                        color: contactTypeColor(contact.type),
-                        icon: contactTypeIcon(contact.type),
-                      ),
-                    ],
+                  // The name gets the full width; a type chip beside it
+                  // squeezed it to nothing on narrow screens or large text.
+                  // The avatar icon already shows the type.
+                  Text(
+                    // Nodes can advertise without a name; show the key
+                    // prefix rather than a blank title.
+                    contact.name.isNotEmpty
+                        ? contact.name
+                        : contact.publicKeyHex.substring(0, 8),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                    ),
                   ),
                   const SizedBox(height: 3),
-                  // Short pub key
+                  // Type and short pub key
                   Row(
                     children: [
                       Expanded(
                         child: Text(
-                          contact.shortPubKeyHex,
+                          '${contact.typeLabel(context.l10n)} · '
+                          '${contact.shortPubKeyHex}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: MeshTheme.mono(
@@ -316,7 +311,15 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
         content: Text(context.l10n.discoveredContacts_contactAdded),
         action: SnackBarAction(
           label: context.l10n.common_undo,
-          onPressed: () => connector.removeContact(contact),
+          onPressed: () => unawaited(
+            connector.removeContact(contact).catchError((Object _) {
+              if (!context.mounted) return;
+              showDismissibleSnackBar(
+                context,
+                content: Text(context.l10n.contacts_removeFailed),
+              );
+            }),
+          ),
         ),
       );
     } catch (_) {
@@ -337,25 +340,27 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
       builder: (sheetContext) {
         final l10n = context.l10n;
         return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              BottomSheetHeader(
-                title: contact.name,
-                subtitle: contact.typeLabel(l10n),
-              ),
-              ListTile(
-                leading: const Icon(Icons.copy),
-                title: Text(l10n.discoveredContacts_copyContact),
-                onTap: () => Navigator.of(sheetContext).pop('copy_contact'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.delete),
-                title: Text(l10n.discoveredContacts_deleteContact),
-                onTap: () => Navigator.of(sheetContext).pop('delete_contact'),
-              ),
-              const SizedBox(height: 8),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BottomSheetHeader(
+                  title: contact.name,
+                  subtitle: contact.typeLabel(l10n),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.copy),
+                  title: Text(l10n.discoveredContacts_copyContact),
+                  onTap: () => Navigator.of(sheetContext).pop('copy_contact'),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.delete),
+                  title: Text(l10n.discoveredContacts_deleteContact),
+                  onTap: () => Navigator.of(sheetContext).pop('delete_contact'),
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
         );
       },

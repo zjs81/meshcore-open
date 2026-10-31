@@ -6,6 +6,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 import '../models/app_settings.dart';
+import '../theme/mesh_theme.dart';
 import 'app_settings_service.dart';
 
 enum MapRasterSourcePreset {
@@ -504,6 +505,19 @@ class MapTileCacheService extends ChangeNotifier {
           ? _darkHCMapFilter
           : _darkMapFilter;
       layer = ColorFiltered(colorFilter: filter, child: layer);
+    }
+
+    // Custom themes wash their background color over the tiles so the map
+    // matches the rest of the app. Kept light so roads and labels stay clear.
+    final tint = MeshMapTheme.of(context).tileTint;
+    if (tint != null) {
+      layer = ColorFiltered(
+        colorFilter: ColorFilter.mode(
+          tint.withValues(alpha: MeshMapTheme.tileTintStrength),
+          BlendMode.srcATop,
+        ),
+        child: layer,
+      );
     }
 
     if (opacity < 1) {

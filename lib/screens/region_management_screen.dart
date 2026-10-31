@@ -180,9 +180,11 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
       child: DropdownButtonFormField<Region>(
         key: ValueKey(current),
         initialValue: current,
+        isExpanded: true,
         decoration: InputDecoration(
           labelText: l10n.settings_regionDefault,
           helperText: l10n.settings_regionDefaultSubtitle,
+          helperMaxLines: 3,
           border: const OutlineInputBorder(),
         ),
         items: [
@@ -192,15 +194,22 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
               radioDefault == null
                   ? l10n.settings_regionDefaultNone
                   : l10n.settings_regionUseRadioDefault(radioDefault),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           if (canForceUnscoped)
             DropdownMenuItem(
               value: kUnscopedRegion,
-              child: Text(l10n.settings_regionNoRegion),
+              child: Text(
+                l10n.settings_regionNoRegion,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           for (final region in _regions)
-            DropdownMenuItem(value: region, child: Text(region)),
+            DropdownMenuItem(
+              value: region,
+              child: Text(region, overflow: TextOverflow.ellipsis),
+            ),
         ],
         onChanged: (value) => connector.setDefaultRegion(value ?? ''),
       ),
@@ -222,6 +231,7 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 8),
       child: DropdownButtonFormField<Region>(
+        isExpanded: true,
         key: ValueKey('radio-default-$radioDefault'),
         initialValue: radioDefault,
         decoration: InputDecoration(
@@ -233,10 +243,16 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
         items: [
           DropdownMenuItem(
             value: '',
-            child: Text(l10n.settings_regionDefaultNone),
+            child: Text(
+              l10n.settings_regionDefaultNone,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           for (final region in options)
-            DropdownMenuItem(value: region, child: Text(region)),
+            DropdownMenuItem(
+              value: region,
+              child: Text(region, overflow: TextOverflow.ellipsis),
+            ),
         ],
         onChanged: (value) => _setRadioDefaultRegion(connector, value ?? ''),
       ),

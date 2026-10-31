@@ -9,7 +9,9 @@ import '../theme/mesh_theme.dart';
 import 'byte_count_input.dart';
 import 'gif_message.dart';
 import 'gif_picker.dart';
+import 'mesh_ui.dart';
 import 'message_translation_button.dart';
+import '../theme/theme_icons.dart';
 
 /// One entry of the composer's "+" menu.
 @immutable
@@ -27,9 +29,8 @@ class ChatComposerAction {
 
 /// Opens the GIF picker and puts the chosen GIF into [controller].
 void showChatGifPicker(BuildContext context, TextEditingController controller) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
+  showMeshSheet<void>(
+    context,
     builder: (context) => GifPicker(
       onGifSelected: (gifId) {
         controller.text = GifHelper.encodeGif(gifId);
@@ -186,7 +187,7 @@ class ChatComposer extends StatelessWidget {
                     builder: (context, value, _) {
                       final hasText = value.text.trim().isNotEmpty;
                       return IconButton.filled(
-                        icon: const Icon(Icons.send, size: 20),
+                        icon: const ThemedIcon(ThemeIconSlot.send, size: 20),
                         tooltip: sendTooltip,
                         style: IconButton.styleFrom(
                           backgroundColor: hasText

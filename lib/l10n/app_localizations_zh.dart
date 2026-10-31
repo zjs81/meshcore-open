@@ -147,6 +147,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get urlImage_possible => '可能是URL图片，请在设置中启用。';
 
   @override
+  String get urlImage_disabledInAppSettings => '已在应用设置中关闭';
+
+  @override
   String get common_reboot => '重启';
 
   @override
@@ -400,6 +403,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings_radioSettingsNotApplied => '收音机未应用这些设置';
+
+  @override
+  String get settings_pathHashModeNotApplied => '无线电设置已应用，但无线电未确认新的路径哈希大小';
 
   @override
   String get settings_regionSettings => '地区';
@@ -768,6 +774,229 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_themeDark => '深色';
 
   @override
+  String get appSettings_colorTheme => '配色主题';
+
+  @override
+  String get appSettings_holidayAnimations => '节日消息动画';
+
+  @override
+  String get appSettings_holidayAnimationsSubtitle =>
+      '有人发送节日祝福时，显示蝙蝠、火鸡、圣诞老人或烟花';
+
+  @override
+  String get themes_title => '主题';
+
+  @override
+  String get themes_default => 'MeshCore';
+
+  @override
+  String get themes_defaultSubtitle => '标准颜色，跟随浅色/深色设置';
+
+  @override
+  String get themes_builtIn => '内置';
+
+  @override
+  String get themes_holidays => '节日';
+
+  @override
+  String get themes_holidayAutoSwitch => '自动切换';
+
+  @override
+  String get themes_holidayAutoSwitchSubtitle => '每个节日的主题从节日前 17 天使用到节日当天';
+
+  @override
+  String themes_holidayAutoApplied(String holiday) {
+    return '已自动启用$holiday主题。节日过后会恢复你自己的主题。';
+  }
+
+  @override
+  String get themes_holidayAutoAppliedTag => '已自动启用';
+
+  @override
+  String get themes_myThemes => '我的主题';
+
+  @override
+  String get themes_myThemesEmpty => '选择背景和强调色，制作你自己的主题。';
+
+  @override
+  String get themes_create => '创建主题';
+
+  @override
+  String get themes_import => '导入主题';
+
+  @override
+  String get themes_importHint => '粘贴主题代码';
+
+  @override
+  String get themes_importInvalid => '这不是有效的主题代码';
+
+  @override
+  String themes_imported(String name) {
+    return '已添加主题“$name”';
+  }
+
+  @override
+  String get themes_customize => '自定义副本';
+
+  @override
+  String get themes_copyCode => '复制主题代码';
+
+  @override
+  String get themes_codeCopied => '主题代码已复制';
+
+  @override
+  String themes_deleteConfirm(String name) {
+    return '删除主题“$name”？';
+  }
+
+  @override
+  String themes_copyName(String name) {
+    return '$name 副本';
+  }
+
+  @override
+  String get themes_newTitle => '新主题';
+
+  @override
+  String get themes_editTitle => '编辑主题';
+
+  @override
+  String get themes_name => '名称';
+
+  @override
+  String get themes_nameRequired => '请为主题起个名字';
+
+  @override
+  String get themes_background => '背景';
+
+  @override
+  String get themes_backgroundHelp => '深色背景会生成深色主题';
+
+  @override
+  String get themes_accent => '强调色';
+
+  @override
+  String get themes_accentHelp => '按钮、高亮和你的聊天气泡';
+
+  @override
+  String get themes_hexColor => '十六进制颜色';
+
+  @override
+  String get themes_preview => '预览';
+
+  @override
+  String get themes_previewIncoming => '今晚网络里有人吗？';
+
+  @override
+  String get themes_previewOutgoing => '收到，信号很清楚！';
+
+  @override
+  String get themes_previewSwitch => '通知';
+
+  @override
+  String get themes_lowContrast => '在此背景上很难看清强调色';
+
+  @override
+  String get themes_saveAndUse => '保存并使用';
+
+  @override
+  String get themes_icons => '图标';
+
+  @override
+  String get themes_iconsHelp => '点按图标，可换成其他图标或你自己的图片';
+
+  @override
+  String get themes_iconChanged => '已更改';
+
+  @override
+  String get themes_iconSend => '发送按钮';
+
+  @override
+  String get themes_iconRepeater => '中继器';
+
+  @override
+  String get themes_iconRoom => '房间';
+
+  @override
+  String get themes_iconSensor => '传感器';
+
+  @override
+  String get themes_mapMarkers => '地图标记';
+
+  @override
+  String get themes_mapMarkersHelp => '更换地图上节点和你自己的标记';
+
+  @override
+  String get themes_iconUsePicture => '使用图片';
+
+  @override
+  String get themes_iconReset => '使用默认图标';
+
+  @override
+  String get themes_iconPictureFailed => '无法使用该图片';
+
+  @override
+  String get themes_exportFile => '导出到文件';
+
+  @override
+  String get themes_exportAll => '导出我的主题';
+
+  @override
+  String get themes_importFile => '从文件导入';
+
+  @override
+  String get themes_pasteCode => '粘贴主题代码';
+
+  @override
+  String get themes_exportFailed => '无法导出主题';
+
+  @override
+  String themes_importFileResult(int count) {
+    return '已导入 $count 个主题';
+  }
+
+  @override
+  String get themes_importFileNone => '该文件中没有找到主题';
+
+  @override
+  String get chatBackground_title => '聊天背景';
+
+  @override
+  String get chatBackground_thisChatOnly => '仅用于此聊天';
+
+  @override
+  String chatBackground_themeOverrides(String name) {
+    return '你的主题“$name”为所有聊天设置了背景。请在该主题中关闭此项，才能使用这里的背景。';
+  }
+
+  @override
+  String get chatBackground_none => '无';
+
+  @override
+  String get chatBackground_picture => '图片';
+
+  @override
+  String get chatBackground_choosePicture => '选择图片';
+
+  @override
+  String get chatBackground_pictureFailed => '无法使用该图片';
+
+  @override
+  String get chatBackground_fade => '淡化';
+
+  @override
+  String get themes_chatBackground => '聊天背景';
+
+  @override
+  String get themes_chatBackgroundHelp => '显示在没有自己背景的聊天中';
+
+  @override
+  String get themes_chatBackgroundEverywhere => '用于所有聊天';
+
+  @override
+  String get themes_chatBackgroundEverywhereHelp => '同时会替换单个聊天中设置的背景';
+
+  @override
   String get appSettings_language => '语言';
 
   @override
@@ -992,6 +1221,59 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_maxMessageRetriesSubtitle => '在将消息标记为失败之前，允许尝试的次数';
 
   @override
+  String get appSettings_ipfsImageLinks => 'IPFS 提供商配置';
+
+  @override
+  String get appSettings_ipfsImageLinksSubtitle =>
+      '通过 IPFS 提供商上传 URL 图片（或文件），并使用默认网关接收';
+
+  @override
+  String get appSettings_loadLinkImages => '加载链接中的图片';
+
+  @override
+  String get appSettings_loadLinkImagesSubtitle =>
+      '在消息中显示链接里的图片。加载图片会向托管该图片的网站暴露你的 IP 地址。';
+
+  @override
+  String get appSettings_showLinkImagesByDefault => '默认在所有聊天中显示链接图片';
+
+  @override
+  String get appSettings_showLinkImagesByDefaultSubtitle =>
+      '在每个聊天中加载链接图片，除非你在该聊天中已将其关闭。这会在每个聊天中向图片托管方暴露你的 IP 地址。';
+
+  @override
+  String get appSettings_publicIpfsGateway => '公共网关';
+
+  @override
+  String get appSettings_ipfsGatewayDeactivated => '已停用';
+
+  @override
+  String get appSettings_ipfsGatewayCustom => '自定义 (Kubo)';
+
+  @override
+  String get appSettings_uploadIpfsProvider => '上传提供商';
+
+  @override
+  String get appSettings_uploadIpfsGateway => '上传网关';
+
+  @override
+  String get appSettings_uploadIpfsGatewaySubtitle =>
+      '用于将图片或文件作为 URL 链接分享的网关。留空则使用 ipfs: 格式，其他客户端可能无法打开。';
+
+  @override
+  String get appSettings_uploadIpfsEndpoint => '上传端点';
+
+  @override
+  String get appSettings_uploadIpfsEndpointSubtitle => '用于上传文件的 API 端点';
+
+  @override
+  String get appSettings_uploadIpfsApiKey => '上传 API 密钥';
+
+  @override
+  String get appSettings_ipfsImageLinksDescription =>
+      '公共网关用于下载 ipfs: 格式的图片。上传网关用于为已上传的 URL 图片或文件生成分享链接。';
+
+  @override
   String get appSettings_battery => '电池';
 
   @override
@@ -1143,7 +1425,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String contacts_searchContacts(int number, String str) {
-    return '搜索联系人...';
+    return '搜索 $number$str 个联系人...';
   }
 
   @override
@@ -1196,6 +1478,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get contacts_remove => '移除';
+
+  @override
+  String get contacts_removeAutoAddNote =>
+      '你的无线电会自动添加此类联系人，因此它下次发送广播时会重新出现。如需保持移除，请在联系人设置中关闭自动添加。';
+
+  @override
+  String get contacts_removeFailed => '无线电未确认移除。该联系人未被移除。';
 
   @override
   String contacts_discoveredNearby(int count) {
@@ -1366,6 +1655,23 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get channels_editChannel => '编辑频道';
+
+  @override
+  String get channels_notificationSettings => '通知设置';
+
+  @override
+  String get channels_notifyAll => '所有消息';
+
+  @override
+  String get channels_notifyMentionsOnly => '仅提及';
+
+  @override
+  String get channels_notifyNone => '静音';
+
+  @override
+  String channels_notificationModeTooltip(String mode) {
+    return '通知：$mode';
+  }
 
   @override
   String get channels_muteChannel => '静音频道';
@@ -1540,6 +1846,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get channels_scanQrCodeComingSoon => '即将推出';
 
   @override
+  String get channels_scanQrCodeDesc => '通过二维码加入频道或社区。';
+
+  @override
+  String get channels_scanQrInstructions => '将相机对准频道或社区二维码';
+
+  @override
+  String get channels_invalidQrCode => '不是 MeshCore 频道或社区二维码';
+
+  @override
+  String get channels_joinChannelTitle => '加入频道';
+
+  @override
+  String channels_joinChannelConfirm(String name) {
+    return '将 \"$name\" 添加到你的无线电？';
+  }
+
+  @override
+  String channels_alreadyOnRadio(String name) {
+    return '\"$name\" 已在你的无线电上';
+  }
+
+  @override
   String get channels_enterHashtag => '输入标签';
 
   @override
@@ -1654,6 +1982,40 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chat_sendImageLora => '通过 MeshCore 发送图片';
+
+  @override
+  String get chat_sendImageIpfs => '通过 IPFS 发送图片或文件';
+
+  @override
+  String chat_ipfsUploadFailed(String error) {
+    return 'IPFS 上传失败：$error';
+  }
+
+  @override
+  String get chat_ipfsUploadNotConfigured => '请先在应用设置中配置 IPFS 上传提供商。';
+
+  @override
+  String get chat_ipfsSelectedFileEmpty => '所选文件为空。';
+
+  @override
+  String get chat_ipfsEndpointInvalid =>
+      'IPFS 上传端点必须是完整的 http:// 或 https:// 地址。请在应用设置中检查。';
+
+  @override
+  String get chat_ipfsPinataTokenMissing => 'Pinata 需要 API 密钥或 JWT。请在应用设置中添加。';
+
+  @override
+  String get chat_ipfsFilebaseTokenMissing => 'Filebase 需要 API 令牌。请在应用设置中添加。';
+
+  @override
+  String get chat_ipfsKuboPathInvalid =>
+      'Kubo 上传端点必须以 /api/v0/add 结尾。请在应用设置中检查。';
+
+  @override
+  String get chat_ipfsLinkNoRoom => '没有足够空间放置图片链接。请缩短消息后重试。';
+
+  @override
+  String get chat_ipfsLinkOverLimit => '图片链接已添加，但消息现在太长。请缩短后再发送。';
 
   @override
   String get chat_imagePickFailed => '无法打开该图片';
@@ -2248,6 +2610,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get map_pathTraceCancelled => '路径追踪已取消';
 
   @override
+  String get map_pathTraceAddMoreHint => '点击更多节点以添加跳数，选择追踪的返回方式，然后点击“运行路径追踪”。';
+
+  @override
+  String get map_pathTraceModeRoundTrip => '往返';
+
+  @override
+  String get map_pathTraceModeRoundTripHint => '追踪经由这些跳发出，并沿原路返回。';
+
+  @override
+  String get map_pathTraceModeAsEntered => '按输入顺序';
+
+  @override
+  String get map_pathTraceModeAsEnteredHint => '追踪严格按这些跳进行。请自行添加返回你的跳。';
+
+  @override
+  String get map_pathTraceViewLast => '查看上次结果';
+
+  @override
   String get mapCache_title => '离线地图缓存';
 
   @override
@@ -2818,16 +3198,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get repeater_rxGainHelper => '更高的灵敏度，更大的电流消耗（仅适用于 SX1262/SX1268）';
 
   @override
-  String get repeater_refreshRxGain => '重新启动增强型 RX 功能';
-
-  @override
   String get repeater_multiAcks => '多重确认';
 
   @override
   String get repeater_multiAcksSubtitle => '通过多个路径确认消息，以提高传递效率。';
-
-  @override
-  String get repeater_refreshMultiAcks => '刷新多个确认';
 
   @override
   String get repeater_networkHealth => '网络健康';
@@ -2866,9 +3240,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get repeater_ownerInfoHelper => '此复播器的公共元数据';
-
-  @override
-  String get repeater_refreshOwnerInfo => '刷新操作员信息';
 
   @override
   String get repeater_floodMax => '最大跳数';
@@ -2994,19 +3365,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get repeater_refreshBasicSettings => '刷新基本设置';
-
-  @override
   String get repeater_refreshRadioSettings => '刷新无线电设置';
-
-  @override
-  String get repeater_refreshTxPower => '刷新 TX 功率';
-
-  @override
-  String get repeater_refreshPacketForwarding => '刷新包转发';
-
-  @override
-  String get repeater_refreshGuestAccess => '刷新访客权限';
 
   @override
   String get repeater_refreshPrivacyMode => '刷新隐私模式';
@@ -4407,6 +4766,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notification_activityTitle => 'MeshCore 活动';
 
   @override
+  String get notification_lowBatteryTitle => '电量低';
+
+  @override
+  String notification_lowBatteryBody(String deviceName, int percent) {
+    return '$deviceName 电量为 $percent%';
+  }
+
+  @override
   String notification_messagesCount(int count) {
     return '$count 条消息';
   }
@@ -4428,6 +4795,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get notification_receivedNewMessage => '收到新消息';
+
+  @override
+  String get notification_sharedLocation => '分享了位置';
+
+  @override
+  String notification_sharedLocationNamed(String label) {
+    return '分享了位置：$label';
+  }
+
+  @override
+  String notification_reacted(String emoji) {
+    return '回应了 $emoji';
+  }
+
+  @override
+  String get notification_sentGif => '发送了 GIF';
+
+  @override
+  String get notification_sentImage => '发送了图片';
 
   @override
   String get notification_actionReply => '回复';
@@ -4519,6 +4905,13 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get snrIndicator_nearByRepeatersDescription =>
       '你的无线电直接听到的中继器，最近听到的排在前面。';
+
+  @override
+  String get snrIndicator_unknownRepeater => '未知中继器';
+
+  @override
+  String get snrIndicator_unknownRepeaterHint =>
+      '此中继器还不在你的联系人中。待你的无线电收到它的广播后，将显示其名称、位置和选项。';
 
   @override
   String get contactsSettings_title => '联系人设置';
@@ -4648,6 +5041,13 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get appSettings_jumpToOldestUnreadSubtitle =>
       '在打开包含未读消息的聊天时，请滚动到第一个未读消息，而不是最新的消息。';
+
+  @override
+  String get appSettings_autoFetchRepeaterSettings => '自动获取转发节点设置';
+
+  @override
+  String get appSettings_autoFetchRepeaterSettingsSubtitle =>
+      '打开转发节点设置时请求所有设置。每项设置都是一次通过 LoRa 发送的独立请求，因此速度较慢并会占用空中时间。关闭后，请点按“全部刷新”或刷新单独的部分。';
 
   @override
   String get appSettings_languageHu => '匈牙利';
@@ -5309,6 +5709,56 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get repeater_floodMaxAdvert => '广播泛洪最大跳数';
+
+  @override
+  String get repeater_floodMaxAdvertHelper =>
+      '广播（advert）泛洪可传输的最大跳数 (0-64，默认 8)';
+
+  @override
+  String get repeater_floodMaxUnscoped => '无区域泛洪最大跳数';
+
+  @override
+  String get repeater_floodMaxUnscopedHelper =>
+      '未指定区域的泛洪最大跳数 (0-64，默认 64)。较低的值（如 3）可将无区域流量限制在本地。';
+
+  @override
+  String get repeater_floodMaxUnscopedUnset => '与泛洪最大跳数相同';
+
+  @override
+  String get repeater_rxDelay => '接收延迟';
+
+  @override
+  String get repeater_rxDelayHelper =>
+      '转发前先暂缓处理以弱信号收到的泛洪包，让强信号路径优先，从而减少重复发送 (0-20，0 为关闭)。';
+
+  @override
+  String get repeater_cad => '信道活动检测';
+
+  @override
+  String get repeater_cadHelper => '发射前先监听是否有活动，信道繁忙时等待。与干扰阈值配合使用。';
+
+  @override
+  String get repeater_adcMultiplier => '电池电压校准';
+
+  @override
+  String get repeater_adcMultiplierHelper => '电池电压读数的倍数 (0-10)。0 表示使用开发板默认值。';
+
+  @override
+  String get repeater_boardSupportNote => '并非所有开发板都支持此功能。不支持的开发板会拒绝该更改。';
+
+  @override
+  String get repeater_extraSf => '额外扩频因子';
+
+  @override
+  String get repeater_extraSfHelper =>
+      '同时监听最多 3 个额外的扩频因子（SF），用逗号分隔（例如 9,10）。留空则关闭。';
+
+  @override
+  String get repeater_lr2021Only =>
+      '仅适用于配备 LR2021 无线电的转发节点。其他转发节点没有此设置，会拒绝该更改。';
+
+  @override
   String get losMapDetailTooltip => '地图细节';
 
   @override
@@ -5456,6 +5906,22 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String map_nodeMarkerSemantics(String name, String type, String status) {
     return '$name,$type,$status';
+  }
+
+  @override
+  String get map_requestLocation => '更新位置';
+
+  @override
+  String get map_locationUpdated => '位置已更新';
+
+  @override
+  String map_locationNotShared(String name) {
+    return '$name 回复中未包含位置';
+  }
+
+  @override
+  String map_locationRequestFailed(String name) {
+    return '$name 没有回复';
   }
 
   @override
@@ -5729,11 +6195,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String repeater_txPowerOutOfRange(String value, int min, int max) {
-    return 'TX 功率 $value 超出范围($min 至 $max dBm)';
-  }
-
-  @override
   String repeater_prvKeyLengthError(int length) {
     return '私钥必须恰好为 $length 个十六进制字符';
   }
@@ -5743,6 +6204,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get contacts_manageGroups => '管理分组';
+
+  @override
+  String contacts_keyPrefixSemantics(String prefix) {
+    return '密钥前缀 $prefix';
+  }
 
   @override
   String community_shortId(String id) {
@@ -5826,6 +6292,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get networkMap_sourceBoth => '两者';
 
   @override
+  String get networkMap_sourceLocalHint => '你的无线电听到的节点';
+
+  @override
+  String get networkMap_sourceOnlineHint => '来自在线网络地图的中继器';
+
+  @override
+  String get networkMap_sourceBothHint => '你的无线电节点加上在线网络地图';
+
+  @override
   String get networkMap_zoomInHint => '放大以查看在线网络地图';
 
   @override
@@ -5884,4 +6359,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get networkMap_unnamed => '未命名转发节点';
+
+  @override
+  String get holidayGreeting_halloween =>
+      '万圣节快乐|萬聖節快樂|万圣夜快乐|萬聖夜快樂|不给糖就捣蛋|不給糖就搗蛋';
+
+  @override
+  String get holidayGreeting_thanksgiving => '感恩节快乐|感恩節快樂|感恩节愉快|感恩節愉快';
+
+  @override
+  String get holidayGreeting_christmas =>
+      '圣诞快乐|聖誕快樂|圣诞节快乐|聖誕節快樂|圣诞节愉快|聖誕節愉快|圣诞愉快|聖誕愉快';
+
+  @override
+  String get holidayGreeting_newYear => '新年快乐|新年快樂|元旦快乐|元旦快樂|新年好|新年愉快';
 }

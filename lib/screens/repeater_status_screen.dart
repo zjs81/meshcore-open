@@ -705,25 +705,38 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
         final columns = constraints.maxWidth / textScaler.scale(1) < 320
             ? 1
             : 2;
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: items.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: columns,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            mainAxisExtent: textScaler.scale(52) + 28,
-          ),
-          itemBuilder: (context, index) {
-            final item = items[index];
-            return StatTile(
-              icon: item.icon,
-              label: item.label,
-              value: item.value,
-              color: item.color,
-            );
-          },
+        // Rows size to their tallest tile, so labels that wrap at large
+        // text scales grow the row instead of overflowing a fixed extent.
+        Widget tile(_StatItem item) => StatTile(
+          icon: item.icon,
+          label: item.label,
+          value: item.value,
+          color: item.color,
+        );
+        return Column(
+          children: [
+            for (var i = 0; i < items.length; i += columns)
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: i + columns < items.length ? 8 : 0,
+                ),
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (var j = 0; j < columns; j++) ...[
+                        if (j > 0) const SizedBox(width: 8),
+                        Expanded(
+                          child: i + j < items.length
+                              ? tile(items[i + j])
+                              : const SizedBox.shrink(),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+          ],
         );
       },
     );

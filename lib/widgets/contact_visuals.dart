@@ -4,6 +4,7 @@ import '../connector/meshcore_protocol.dart';
 import '../l10n/app_localizations.dart';
 import '../models/contact.dart';
 import '../theme/mesh_theme.dart';
+import '../theme/theme_icons.dart';
 
 /// Shared node-type visuals and last-seen formatting for contact lists
 /// (contacts, discovery, nearby-node scan).
@@ -25,28 +26,27 @@ Color contactTypeColor(int type) {
   }
 }
 
-/// Node-type avatar icon. Returns null for chat nodes so [AvatarCircle]
-/// shows initials.
-IconData? contactTypeIcon(int type) {
+/// Node-type avatar icon slot (themes can replace these). Returns null for
+/// chat nodes so [AvatarCircle] shows initials.
+ThemeIconSlot? contactTypeIconSlot(int type) {
   switch (type) {
     case advTypeRepeater:
-      return Icons.cell_tower;
+      return ThemeIconSlot.repeater;
     case advTypeRoom:
-      return Icons.meeting_room;
+      return ThemeIconSlot.room;
     case advTypeSensor:
-      return Icons.sensors;
+      return ThemeIconSlot.sensor;
     default:
       return null;
   }
 }
 
 /// The most recent activity for [contact]: for chat nodes this includes the
-/// last message, for other node types only the last advert.
+/// last message, for other node types only the last advert or telemetry fix.
 DateTime resolveContactLastSeen(Contact contact) {
-  if (contact.type != advTypeChat) return contact.lastSeen;
-  return contact.lastMessageAt.isAfter(contact.lastSeen)
-      ? contact.lastMessageAt
-      : contact.lastSeen;
+  final heard = contact.lastHeard;
+  if (contact.type != advTypeChat) return heard;
+  return contact.lastMessageAt.isAfter(heard) ? contact.lastMessageAt : heard;
 }
 
 /// Short relative "last seen" label ("now", "5 mins ago", "2 days ago").

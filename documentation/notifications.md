@@ -42,7 +42,7 @@ Message notifications can be answered without opening the app, from the notifica
 - **Reply** sends through the connected radio exactly like the chat screen: same length limits, SMAZ and Cyr2Lat handling, and retries. Your reply is then added to the notification.
 - **Replies over the message limit** are split at word boundaries into up to 3 messages. Longer replies are not sent; a "Reply not sent" notification asks you to open the app.
 - **Mark as read** clears the unread count on the phone only. MeshCore has no read receipts, so nothing is sent over the mesh.
-- **Mute channel** (phone and watch) mutes that channel, the same as the bell icon in the channel chat.
+- **Mute channel** (phone and watch) sets that channel to **Muted**, the same as choosing Muted from the bell icon in the channel chat.
 - If the radio is disconnected, the conversation is no longer on the radio, the radio reports a send error, or the app isn't running, a "Reply not sent" notification explains why. The reply is not queued. If a split reply fails partway, earlier parts may already have been sent.
 - Replies are sent as typed; composer translation is not applied.
 
@@ -51,6 +51,14 @@ iOS notifications do not have reply actions yet.
 ### Android Auto
 
 MeshCore Open works in Android Auto as a notification-based messaging app. There is no MeshCore screen in the car; Android Auto provides the interface.
+
+Android Auto support is off by default and is compiled in only when the build passes the `androidAuto` Gradle property:
+
+```bash
+flutter build apk --release --android-project-arg=androidAuto=true
+```
+
+The flag merges `android/app/src/androidAuto/` (the `com.google.android.gms.car.application` manifest entry and `automotive_app_desc.xml`) into the app. Without it, Android Auto does not list the app. Notification replies from the shade and watches work either way.
 
 - New direct and channel messages appear on the car display and can be read aloud.
 - Reply by voice or with a suggested reply; replies follow the rules above (splitting, failure notifications, no translation).
@@ -99,15 +107,24 @@ Access via **App Settings → Notifications**:
 | Channel Message Notifications | On | Channel alerts (greyed out if master is off) |
 | Advertisement Notifications | On | New node alerts (greyed out if master is off) |
 
-### Per-Channel Muting
+### Per-Channel Notification Modes
 
-Mute or unmute a channel from any of these places. Muted channels do not generate OS notifications.
+Each channel supports three notification modes:
 
-- The bell icon in the channel chat app bar
-- Long-press a channel in the channels list → "Mute channel" / "Unmute channel"
-- **Mute channel** on a channel notification (Android)
+| Mode | Icon | Behavior |
+|---|---|---|
+| **All messages** | 🔔 | Receive notifications for every message |
+| **Mentions only** | 🔔! | Only notify when a message mentions your name (see below) |
+| **Muted** | 🔕 | No notifications |
 
-There is no per-contact muting.
+Set the mode from:
+
+- The notifications icon in the channel chat app bar (tap to open the mode picker)
+- Long-press a channel in the channels list → **Notification settings** → select mode
+
+The Android **Mute channel** notification action sets the channel to **Muted**; it cannot choose another mode.
+
+A message mentions you if it contains `@[yourname]` or `@yourname`, case-insensitively. The plain `@yourname` form must stand alone as a word, so `@bobby` does not mention `bob` and `x@bob.com` is not a mention; names with spaces must be written in full. Detection (`MeshCoreConnector.textMentionsName`) runs on the original text, before any automatic translation.
 
 ## Rate Limiting
 

@@ -23,6 +23,7 @@ import '../widgets/sync_progress_overlay.dart';
 import '../widgets/translation_settings_section.dart';
 import '../helpers/snack_bar_builder.dart';
 import 'map_cache_screen.dart';
+import 'themes_screen.dart';
 
 class AppSettingsScreen extends StatelessWidget {
   /// Scrolls the image-message settings into view once, on first build.
@@ -192,13 +193,50 @@ class AppSettingsScreen extends StatelessWidget {
                     label: Text(context.l10n.appSettings_themeDark),
                   ),
                 ],
-                selected: {settingsService.settings.themeMode},
+                // A custom theme sets its own brightness, so no stock mode
+                // is selected while one is active; picking a mode returns
+                // to the stock theme.
+                emptySelectionAllowed: true,
+                selected: settingsService.activeCustomTheme == null
+                    ? {settingsService.settings.themeMode}
+                    : const <String>{},
                 onSelectionChanged: (selection) {
+                  if (selection.isEmpty) return;
                   settingsService.setThemeMode(selection.first);
                 },
               ),
             ],
           ),
+        ),
+        const Divider(height: 1, indent: 16),
+        MeshNavTile(
+          icon: Icons.palette_outlined,
+          title: context.l10n.appSettings_colorTheme,
+          subtitle:
+              settingsService.activeCustomTheme?.name ??
+              context.l10n.themes_default,
+          trailing: settingsService.activeCustomTheme == null
+              ? null
+              : ThemeSwatch(
+                  background: settingsService.activeCustomTheme!.background,
+                  accent: settingsService.activeCustomTheme!.accent,
+                  size: 32,
+                ),
+          onTap: () => Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => const ThemesScreen())),
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.celebration_outlined, size: 24),
+          title: Text(context.l10n.appSettings_holidayAnimations),
+          subtitle: Text(context.l10n.appSettings_holidayAnimationsSubtitle),
+          value: settingsService.settings.holidayAnimationsEnabled,
+          onChanged: settingsService.setHolidayAnimationsEnabled,
         ),
         const Divider(height: 1, indent: 16),
         MeshNavTile(
@@ -403,6 +441,20 @@ class AppSettingsScreen extends StatelessWidget {
           subtitle: Text(context.l10n.appSettings_jumpToOldestUnreadSubtitle),
           value: settingsService.settings.jumpToOldestUnread,
           onChanged: settingsService.setJumpToOldestUnread,
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.settings_remote_outlined, size: 24),
+          title: Text(context.l10n.appSettings_autoFetchRepeaterSettings),
+          subtitle: Text(
+            context.l10n.appSettings_autoFetchRepeaterSettingsSubtitle,
+          ),
+          value: settingsService.settings.autoFetchRepeaterSettings,
+          onChanged: settingsService.setAutoFetchRepeaterSettings,
         ),
         const Divider(height: 1, indent: 16),
         SwitchListTile(
@@ -685,6 +737,46 @@ class AppSettingsScreen extends StatelessWidget {
   ) {
     return Column(
       children: [
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.image_search_outlined, size: 24),
+          title: Text(context.l10n.appSettings_loadLinkImages),
+          subtitle: Text(context.l10n.appSettings_loadLinkImagesSubtitle),
+          value: settingsService.settings.loadLinkImages,
+          onChanged: settingsService.setLoadLinkImages,
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.collections_outlined, size: 24),
+          title: Text(context.l10n.appSettings_showLinkImagesByDefault),
+          subtitle: Text(
+            context.l10n.appSettings_showLinkImagesByDefaultSubtitle,
+          ),
+          value: settingsService.settings.showLinkImagesByDefault,
+          onChanged: settingsService.settings.loadLinkImages
+              ? settingsService.setShowLinkImagesByDefault
+              : null,
+        ),
+        const Divider(height: 1, indent: 16),
+        ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          leading: const Icon(Icons.link_outlined, size: 20),
+          title: Text(context.l10n.appSettings_ipfsImageLinks),
+          subtitle: Text(context.l10n.appSettings_ipfsImageLinksSubtitle),
+          trailing: const Icon(Icons.chevron_right, size: 18),
+          onTap: () => _showIpfsImageLinksDialog(context, settingsService),
+        ),
+        const Divider(height: 1, indent: 16),
         _ScrollIntoViewOnce(
           enabled: focusImageMessages,
           child: SwitchListTile(
@@ -707,7 +799,6 @@ class AppSettingsScreen extends StatelessWidget {
           ),
         ),
         if (settingsService.settings.imageMessagesEnabled) ...[
-          const Divider(height: 1, indent: 16),
           SwitchListTile(
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -733,6 +824,16 @@ class AppSettingsScreen extends StatelessWidget {
     } on ProviderNotFoundException {
       return null;
     }
+  }
+
+  void _showIpfsImageLinksDialog(
+    BuildContext context,
+    AppSettingsService settingsService,
+  ) {
+    showDialog(
+      context: context,
+      builder: (_) => _IpfsImageLinksDialog(settingsService: settingsService),
+    );
   }
 
   /// Model registry for image messages: the download entry point, the
@@ -1369,56 +1470,58 @@ class AppSettingsScreen extends StatelessWidget {
   ) {
     showMeshSheet(
       context,
-      builder: (ctx) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BottomSheetHeader(title: context.l10n.appSettings_mapTimeFilter),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-            child: Text(context.l10n.appSettings_showNodesDiscoveredWithin),
-          ),
-          MeshSheetOption(
-            label: context.l10n.appSettings_allTime,
-            selected: settingsService.settings.mapTimeFilterHours == 0,
-            onTap: () {
-              settingsService.setMapTimeFilterHours(0);
-              Navigator.pop(ctx);
-            },
-          ),
-          MeshSheetOption(
-            label: context.l10n.appSettings_lastHour,
-            selected: settingsService.settings.mapTimeFilterHours == 1,
-            onTap: () {
-              settingsService.setMapTimeFilterHours(1);
-              Navigator.pop(ctx);
-            },
-          ),
-          MeshSheetOption(
-            label: context.l10n.appSettings_last6Hours,
-            selected: settingsService.settings.mapTimeFilterHours == 6,
-            onTap: () {
-              settingsService.setMapTimeFilterHours(6);
-              Navigator.pop(ctx);
-            },
-          ),
-          MeshSheetOption(
-            label: context.l10n.appSettings_last24Hours,
-            selected: settingsService.settings.mapTimeFilterHours == 24,
-            onTap: () {
-              settingsService.setMapTimeFilterHours(24);
-              Navigator.pop(ctx);
-            },
-          ),
-          MeshSheetOption(
-            label: context.l10n.appSettings_lastWeek,
-            selected: settingsService.settings.mapTimeFilterHours == 168,
-            onTap: () {
-              settingsService.setMapTimeFilterHours(168);
-              Navigator.pop(ctx);
-            },
-          ),
-          SizedBox(height: MediaQuery.paddingOf(ctx).bottom + 8),
-        ],
+      builder: (ctx) => SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            BottomSheetHeader(title: context.l10n.appSettings_mapTimeFilter),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+              child: Text(context.l10n.appSettings_showNodesDiscoveredWithin),
+            ),
+            MeshSheetOption(
+              label: context.l10n.appSettings_allTime,
+              selected: settingsService.settings.mapTimeFilterHours == 0,
+              onTap: () {
+                settingsService.setMapTimeFilterHours(0);
+                Navigator.pop(ctx);
+              },
+            ),
+            MeshSheetOption(
+              label: context.l10n.appSettings_lastHour,
+              selected: settingsService.settings.mapTimeFilterHours == 1,
+              onTap: () {
+                settingsService.setMapTimeFilterHours(1);
+                Navigator.pop(ctx);
+              },
+            ),
+            MeshSheetOption(
+              label: context.l10n.appSettings_last6Hours,
+              selected: settingsService.settings.mapTimeFilterHours == 6,
+              onTap: () {
+                settingsService.setMapTimeFilterHours(6);
+                Navigator.pop(ctx);
+              },
+            ),
+            MeshSheetOption(
+              label: context.l10n.appSettings_last24Hours,
+              selected: settingsService.settings.mapTimeFilterHours == 24,
+              onTap: () {
+                settingsService.setMapTimeFilterHours(24);
+                Navigator.pop(ctx);
+              },
+            ),
+            MeshSheetOption(
+              label: context.l10n.appSettings_lastWeek,
+              selected: settingsService.settings.mapTimeFilterHours == 168,
+              onTap: () {
+                settingsService.setMapTimeFilterHours(168);
+                Navigator.pop(ctx);
+              },
+            ),
+            SizedBox(height: MediaQuery.paddingOf(ctx).bottom + 8),
+          ],
+        ),
       ),
     );
   }
@@ -1429,29 +1532,32 @@ class AppSettingsScreen extends StatelessWidget {
   ) {
     showMeshSheet(
       context,
-      builder: (ctx) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BottomSheetHeader(title: context.l10n.appSettings_unitsTitle),
-          MeshSheetOption(
-            label: context.l10n.appSettings_unitsMetric,
-            selected: settingsService.settings.unitSystem == UnitSystem.metric,
-            onTap: () {
-              settingsService.setUnitSystem(UnitSystem.metric);
-              Navigator.pop(ctx);
-            },
-          ),
-          MeshSheetOption(
-            label: context.l10n.appSettings_unitsImperial,
-            selected:
-                settingsService.settings.unitSystem == UnitSystem.imperial,
-            onTap: () {
-              settingsService.setUnitSystem(UnitSystem.imperial);
-              Navigator.pop(ctx);
-            },
-          ),
-          SizedBox(height: MediaQuery.paddingOf(ctx).bottom + 8),
-        ],
+      builder: (ctx) => SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            BottomSheetHeader(title: context.l10n.appSettings_unitsTitle),
+            MeshSheetOption(
+              label: context.l10n.appSettings_unitsMetric,
+              selected:
+                  settingsService.settings.unitSystem == UnitSystem.metric,
+              onTap: () {
+                settingsService.setUnitSystem(UnitSystem.metric);
+                Navigator.pop(ctx);
+              },
+            ),
+            MeshSheetOption(
+              label: context.l10n.appSettings_unitsImperial,
+              selected:
+                  settingsService.settings.unitSystem == UnitSystem.imperial,
+              onTap: () {
+                settingsService.setUnitSystem(UnitSystem.imperial);
+                Navigator.pop(ctx);
+              },
+            ),
+            SizedBox(height: MediaQuery.paddingOf(ctx).bottom + 8),
+          ],
+        ),
       ),
     );
   }
@@ -1488,6 +1594,324 @@ class AppSettingsScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _IpfsImageLinksDialog extends StatefulWidget {
+  const _IpfsImageLinksDialog({required this.settingsService});
+
+  final AppSettingsService settingsService;
+
+  @override
+  State<_IpfsImageLinksDialog> createState() => _IpfsImageLinksDialogState();
+}
+
+class _IpfsImageLinksDialogState extends State<_IpfsImageLinksDialog> {
+  late final TextEditingController _publicController;
+  late final TextEditingController _uploadGatewayController;
+  late final TextEditingController _endpointController;
+  late final TextEditingController _apiKeyController;
+  final FocusNode _apiKeyFocus = FocusNode();
+  late final String _currentApiKey;
+  late final String _maskedApiKey;
+  late String _selectedGateway;
+  late String _selectedUploadProvider;
+  bool _apiKeyChanged = false;
+  bool _apiKeyObscured = true;
+
+  @override
+  void initState() {
+    super.initState();
+    final settings = widget.settingsService.settings;
+    _publicController = TextEditingController(
+      text: normalizeIpfsGateway(settings.publicIpfsGateway),
+    );
+    _uploadGatewayController = TextEditingController(
+      text: normalizeIpfsGateway(settings.uploadIpfsGateway),
+    );
+    _endpointController = TextEditingController(
+      text: settings.uploadIpfsEndpoint,
+    );
+    _currentApiKey = settings.uploadIpfsApiKey.trim();
+    _maskedApiKey = _currentApiKey.isEmpty ? '' : _maskApiKey(_currentApiKey);
+    _apiKeyController = TextEditingController(text: _maskedApiKey);
+    _apiKeyFocus.addListener(_onApiKeyFocusChanged);
+    _selectedGateway = _gatewayPreset(_publicController.text);
+    _selectedUploadProvider = _uploadProvider(
+      _uploadGatewayController.text,
+      _endpointController.text,
+      _currentApiKey,
+    );
+  }
+
+  @override
+  void dispose() {
+    _publicController.dispose();
+    _uploadGatewayController.dispose();
+    _endpointController.dispose();
+    _apiKeyController.dispose();
+    _apiKeyFocus.dispose();
+    super.dispose();
+  }
+
+  /// Swaps the masked key out while the field has focus (by tap, Tab or
+  /// keyboard) so typing never appends to the mask, and puts it back if the
+  /// user leaves without editing.
+  void _onApiKeyFocusChanged() {
+    if (_apiKeyChanged) return;
+    _apiKeyController.text = _apiKeyFocus.hasFocus ? '' : _maskedApiKey;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AlertDialog(
+      title: Text(l10n.appSettings_ipfsImageLinks),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.appSettings_ipfsImageLinksDescription),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              initialValue: _selectedGateway,
+              isExpanded: true,
+              decoration: InputDecoration(
+                labelText: l10n.appSettings_publicIpfsGateway,
+              ),
+              items: [
+                DropdownMenuItem(
+                  value: 'deactivated',
+                  child: Text(l10n.appSettings_ipfsGatewayDeactivated),
+                ),
+                DropdownMenuItem(value: 'pinata', child: const Text('Pinata')),
+                DropdownMenuItem(
+                  value: 'filebase',
+                  child: const Text('Filebase'),
+                ),
+                DropdownMenuItem(
+                  value: 'custom',
+                  child: Text(l10n.appSettings_ipfsGatewayCustom),
+                ),
+              ],
+              onChanged: _selectGateway,
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _publicController,
+              decoration: InputDecoration(
+                labelText: l10n.appSettings_publicIpfsGateway,
+              ),
+              keyboardType: TextInputType.url,
+              autocorrect: false,
+              onChanged: (_) {
+                if (_selectedGateway != 'custom') {
+                  setState(() => _selectedGateway = 'custom');
+                }
+              },
+            ),
+            const Divider(height: 20),
+            DropdownButtonFormField<String>(
+              initialValue: _selectedUploadProvider,
+              isExpanded: true,
+              decoration: InputDecoration(
+                labelText: l10n.appSettings_uploadIpfsProvider,
+              ),
+              items: [
+                DropdownMenuItem(value: 'pinata', child: const Text('Pinata')),
+                DropdownMenuItem(
+                  value: 'filebase',
+                  child: const Text('Filebase'),
+                ),
+                DropdownMenuItem(
+                  value: 'custom',
+                  child: Text(l10n.appSettings_ipfsGatewayCustom),
+                ),
+                DropdownMenuItem(
+                  value: 'deactivated',
+                  child: Text(l10n.appSettings_ipfsGatewayDeactivated),
+                ),
+              ],
+              onChanged: _selectUploadProvider,
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _uploadGatewayController,
+              decoration: InputDecoration(
+                labelText: l10n.appSettings_uploadIpfsGateway,
+                helperText: l10n.appSettings_uploadIpfsGatewaySubtitle,
+                helperMaxLines: 3,
+              ),
+              keyboardType: TextInputType.url,
+              autocorrect: false,
+              onChanged: (_) => _markCustomUploadProvider(),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _endpointController,
+              decoration: InputDecoration(
+                labelText: l10n.appSettings_uploadIpfsEndpoint,
+                helperText: l10n.appSettings_uploadIpfsEndpointSubtitle,
+                helperMaxLines: 3,
+              ),
+              keyboardType: TextInputType.url,
+              autocorrect: false,
+              onChanged: (_) => _markCustomUploadProvider(),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _apiKeyController,
+              focusNode: _apiKeyFocus,
+              decoration: InputDecoration(
+                labelText: l10n.appSettings_uploadIpfsApiKey,
+                suffixIcon: IconButton(
+                  tooltip: _apiKeyObscured
+                      ? l10n.appSettings_showApiKey
+                      : l10n.appSettings_hideApiKey,
+                  icon: Icon(
+                    _apiKeyObscured
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                  ),
+                  onPressed: () =>
+                      setState(() => _apiKeyObscured = !_apiKeyObscured),
+                ),
+              ),
+              autocorrect: false,
+              enableSuggestions: false,
+              obscureText: _apiKeyObscured,
+              onChanged: (_) {
+                _apiKeyChanged = true;
+                _markCustomUploadProvider();
+              },
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.common_cancel),
+        ),
+        TextButton(onPressed: _save, child: Text(l10n.common_save)),
+      ],
+    );
+  }
+
+  void _selectGateway(String? value) {
+    if (value == null) return;
+    setState(() {
+      _selectedGateway = value;
+      final preset = _gatewayValue(value);
+      if (preset != null) _publicController.text = preset;
+    });
+  }
+
+  void _selectUploadProvider(String? value) {
+    if (value == null) return;
+    setState(() {
+      _selectedUploadProvider = value;
+      final preset = _uploadPreset(value);
+      if (preset != null) {
+        _uploadGatewayController.text = preset.gateway;
+        _endpointController.text = preset.endpoint;
+        if (value == 'deactivated') _apiKeyController.clear();
+      }
+    });
+  }
+
+  void _markCustomUploadProvider() {
+    if (_selectedUploadProvider != 'custom') {
+      setState(() => _selectedUploadProvider = 'custom');
+    }
+  }
+
+  Future<void> _save() async {
+    final deactivated = _selectedUploadProvider == 'deactivated';
+    final apiKey = _apiKeyController.text.trim();
+    await widget.settingsService.setIpfsImageSettings(
+      publicGateway: _publicController.text,
+      uploadGateway: deactivated ? '' : _uploadGatewayController.text,
+      uploadEndpoint: deactivated ? '' : _endpointController.text,
+      uploadApiKey: deactivated
+          ? ''
+          : _apiKeyChanged && apiKey != _maskedApiKey
+          ? apiKey
+          : _currentApiKey,
+    );
+    if (mounted) Navigator.pop(context);
+  }
+
+  String _gatewayPreset(String value) {
+    if (value.isEmpty) return 'deactivated';
+    if (value == 'https://gateway.pinata.cloud/ipfs/' ||
+        value == 'https://gateway.pinata.cloud/ipfs') {
+      return 'pinata';
+    }
+    if (value == 'https://ipfs.filebase.io/ipfs/' ||
+        value == 'https://ipfs.filebase.io/ipfs') {
+      return 'filebase';
+    }
+    return 'custom';
+  }
+
+  String? _gatewayValue(String preset) {
+    switch (preset) {
+      case 'deactivated':
+        return '';
+      case 'pinata':
+        return 'https://gateway.pinata.cloud/ipfs/';
+      case 'filebase':
+        return 'https://ipfs.filebase.io/ipfs/';
+      case 'custom':
+        return 'http://127.0.0.1:8080/ipfs/';
+      default:
+        return null;
+    }
+  }
+
+  String _uploadProvider(String gateway, String endpoint, String apiKey) {
+    if (gateway.isEmpty && endpoint.isEmpty && apiKey.isEmpty) {
+      return 'deactivated';
+    }
+    if (gateway == 'https://gateway.pinata.cloud/ipfs/' &&
+        endpoint == 'https://api.pinata.cloud/pinning/pinFileToIPFS') {
+      return 'pinata';
+    }
+    if (gateway == 'https://ipfs.filebase.io/ipfs/' &&
+        endpoint == 'https://rpc.filebase.io/api/v0/add') {
+      return 'filebase';
+    }
+    return 'custom';
+  }
+
+  ({String gateway, String endpoint})? _uploadPreset(String preset) {
+    switch (preset) {
+      case 'pinata':
+        return (
+          gateway: 'https://gateway.pinata.cloud/ipfs/',
+          endpoint: 'https://api.pinata.cloud/pinning/pinFileToIPFS',
+        );
+      case 'filebase':
+        return (
+          gateway: 'https://ipfs.filebase.io/ipfs/',
+          endpoint: 'https://rpc.filebase.io/api/v0/add',
+        );
+      case 'custom':
+        return (
+          gateway: 'http://127.0.0.1:8080/ipfs/',
+          endpoint: 'http://127.0.0.1:5001/api/v0/add',
+        );
+      case 'deactivated':
+        return (gateway: '', endpoint: '');
+      default:
+        return null;
+    }
+  }
+
+  String _maskApiKey(String value) {
+    if (value.length <= 8) return '********';
+    return '${value.substring(0, 4)}...${value.substring(value.length - 4)}';
   }
 }
 
@@ -1534,6 +1958,7 @@ class _MapApiKeyDialogState extends State<_MapApiKeyDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return AlertDialog(
+      scrollable: true,
       title: Text(l10n.appSettings_stadiaApiKey),
       content: SizedBox(
         width: 420,

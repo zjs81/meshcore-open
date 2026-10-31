@@ -382,6 +382,12 @@ abstract class AppLocalizations {
   /// **'Possible URL image; enable it in Settings.'**
   String get urlImage_possible;
 
+  /// No description provided for @urlImage_disabledInAppSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Turned off in app settings'**
+  String get urlImage_disabledInAppSettings;
+
   /// No description provided for @common_reboot.
   ///
   /// In en, this message translates to:
@@ -861,6 +867,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The radio did not apply these settings'**
   String get settings_radioSettingsNotApplied;
+
+  /// No description provided for @settings_pathHashModeNotApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio settings were applied, but the radio did not confirm the new path hash size'**
+  String get settings_pathHashModeNotApplied;
 
   /// No description provided for @settings_regionSettings.
   ///
@@ -1552,6 +1564,426 @@ abstract class AppLocalizations {
   /// **'Dark'**
   String get appSettings_themeDark;
 
+  /// No description provided for @appSettings_colorTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Color theme'**
+  String get appSettings_colorTheme;
+
+  /// No description provided for @appSettings_holidayAnimations.
+  ///
+  /// In en, this message translates to:
+  /// **'Holiday message animations'**
+  String get appSettings_holidayAnimations;
+
+  /// No description provided for @appSettings_holidayAnimationsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bats, a turkey, Santa or fireworks when someone sends a holiday greeting'**
+  String get appSettings_holidayAnimationsSubtitle;
+
+  /// No description provided for @themes_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Themes'**
+  String get themes_title;
+
+  /// No description provided for @themes_default.
+  ///
+  /// In en, this message translates to:
+  /// **'MeshCore'**
+  String get themes_default;
+
+  /// No description provided for @themes_defaultSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard colors, follows the Light / Dark setting'**
+  String get themes_defaultSubtitle;
+
+  /// No description provided for @themes_builtIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in'**
+  String get themes_builtIn;
+
+  /// No description provided for @themes_holidays.
+  ///
+  /// In en, this message translates to:
+  /// **'Holidays'**
+  String get themes_holidays;
+
+  /// No description provided for @themes_holidayAutoSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch automatically'**
+  String get themes_holidayAutoSwitch;
+
+  /// No description provided for @themes_holidayAutoSwitchSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses each holiday\'s theme from 17 days before until the day itself'**
+  String get themes_holidayAutoSwitchSubtitle;
+
+  /// No description provided for @themes_holidayAutoApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'{holiday} theme is on automatically. Your own theme comes back after the holiday.'**
+  String themes_holidayAutoApplied(String holiday);
+
+  /// No description provided for @themes_holidayAutoAppliedTag.
+  ///
+  /// In en, this message translates to:
+  /// **'On automatically'**
+  String get themes_holidayAutoAppliedTag;
+
+  /// No description provided for @themes_myThemes.
+  ///
+  /// In en, this message translates to:
+  /// **'My themes'**
+  String get themes_myThemes;
+
+  /// No description provided for @themes_myThemesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Make your own theme by picking a background and an accent color.'**
+  String get themes_myThemesEmpty;
+
+  /// No description provided for @themes_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create theme'**
+  String get themes_create;
+
+  /// No description provided for @themes_import.
+  ///
+  /// In en, this message translates to:
+  /// **'Import theme'**
+  String get themes_import;
+
+  /// No description provided for @themes_importHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a theme code'**
+  String get themes_importHint;
+
+  /// No description provided for @themes_importInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'That is not a valid theme code'**
+  String get themes_importInvalid;
+
+  /// No description provided for @themes_imported.
+  ///
+  /// In en, this message translates to:
+  /// **'Added theme \"{name}\"'**
+  String themes_imported(String name);
+
+  /// No description provided for @themes_customize.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize a copy'**
+  String get themes_customize;
+
+  /// No description provided for @themes_copyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy theme code'**
+  String get themes_copyCode;
+
+  /// No description provided for @themes_codeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme code copied'**
+  String get themes_codeCopied;
+
+  /// No description provided for @themes_deleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete theme \"{name}\"?'**
+  String themes_deleteConfirm(String name);
+
+  /// No description provided for @themes_copyName.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} copy'**
+  String themes_copyName(String name);
+
+  /// No description provided for @themes_newTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New theme'**
+  String get themes_newTitle;
+
+  /// No description provided for @themes_editTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit theme'**
+  String get themes_editTitle;
+
+  /// No description provided for @themes_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get themes_name;
+
+  /// No description provided for @themes_nameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Give your theme a name'**
+  String get themes_nameRequired;
+
+  /// No description provided for @themes_background.
+  ///
+  /// In en, this message translates to:
+  /// **'Background'**
+  String get themes_background;
+
+  /// No description provided for @themes_backgroundHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A dark background makes a dark theme'**
+  String get themes_backgroundHelp;
+
+  /// No description provided for @themes_accent.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent'**
+  String get themes_accent;
+
+  /// No description provided for @themes_accentHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Buttons, highlights and your chat bubbles'**
+  String get themes_accentHelp;
+
+  /// No description provided for @themes_hexColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Hex color'**
+  String get themes_hexColor;
+
+  /// No description provided for @themes_preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get themes_preview;
+
+  /// No description provided for @themes_previewIncoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone on the mesh tonight?'**
+  String get themes_previewIncoming;
+
+  /// No description provided for @themes_previewOutgoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Loud and clear!'**
+  String get themes_previewOutgoing;
+
+  /// No description provided for @themes_previewSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get themes_previewSwitch;
+
+  /// No description provided for @themes_lowContrast.
+  ///
+  /// In en, this message translates to:
+  /// **'The accent is hard to see on this background'**
+  String get themes_lowContrast;
+
+  /// No description provided for @themes_saveAndUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and use'**
+  String get themes_saveAndUse;
+
+  /// No description provided for @themes_icons.
+  ///
+  /// In en, this message translates to:
+  /// **'Icons'**
+  String get themes_icons;
+
+  /// No description provided for @themes_iconsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap an icon to swap it for another icon or your own picture'**
+  String get themes_iconsHelp;
+
+  /// No description provided for @themes_iconChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed'**
+  String get themes_iconChanged;
+
+  /// No description provided for @themes_iconSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send button'**
+  String get themes_iconSend;
+
+  /// No description provided for @themes_iconRepeater.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeaters'**
+  String get themes_iconRepeater;
+
+  /// No description provided for @themes_iconRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Rooms'**
+  String get themes_iconRoom;
+
+  /// No description provided for @themes_iconSensor.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensors'**
+  String get themes_iconSensor;
+
+  /// No description provided for @themes_mapMarkers.
+  ///
+  /// In en, this message translates to:
+  /// **'Map markers'**
+  String get themes_mapMarkers;
+
+  /// No description provided for @themes_mapMarkersHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap the markers for nodes and for you on the map'**
+  String get themes_mapMarkersHelp;
+
+  /// No description provided for @themes_iconUsePicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a picture'**
+  String get themes_iconUsePicture;
+
+  /// No description provided for @themes_iconReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the default icon'**
+  String get themes_iconReset;
+
+  /// No description provided for @themes_iconPictureFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not use that picture'**
+  String get themes_iconPictureFailed;
+
+  /// No description provided for @themes_exportFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Export to file'**
+  String get themes_exportFile;
+
+  /// No description provided for @themes_exportAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Export my themes'**
+  String get themes_exportAll;
+
+  /// No description provided for @themes_importFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from file'**
+  String get themes_importFile;
+
+  /// No description provided for @themes_pasteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste theme code'**
+  String get themes_pasteCode;
+
+  /// No description provided for @themes_exportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not export themes'**
+  String get themes_exportFailed;
+
+  /// No description provided for @themes_importFileResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {count} themes'**
+  String themes_importFileResult(int count);
+
+  /// No description provided for @themes_importFileNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No themes found in that file'**
+  String get themes_importFileNone;
+
+  /// No description provided for @chatBackground_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat background'**
+  String get chatBackground_title;
+
+  /// No description provided for @chatBackground_thisChatOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only for this chat'**
+  String get chatBackground_thisChatOnly;
+
+  /// No description provided for @chatBackground_themeOverrides.
+  ///
+  /// In en, this message translates to:
+  /// **'Your theme \"{name}\" sets the background in every chat. Turn that off in the theme to use this one.'**
+  String chatBackground_themeOverrides(String name);
+
+  /// No description provided for @chatBackground_none.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get chatBackground_none;
+
+  /// No description provided for @chatBackground_picture.
+  ///
+  /// In en, this message translates to:
+  /// **'Picture'**
+  String get chatBackground_picture;
+
+  /// No description provided for @chatBackground_choosePicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a picture'**
+  String get chatBackground_choosePicture;
+
+  /// No description provided for @chatBackground_pictureFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not use that picture'**
+  String get chatBackground_pictureFailed;
+
+  /// No description provided for @chatBackground_fade.
+  ///
+  /// In en, this message translates to:
+  /// **'Fade'**
+  String get chatBackground_fade;
+
+  /// No description provided for @themes_chatBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat background'**
+  String get themes_chatBackground;
+
+  /// No description provided for @themes_chatBackgroundHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown in chats that do not have their own background'**
+  String get themes_chatBackgroundHelp;
+
+  /// No description provided for @themes_chatBackgroundEverywhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Use in every chat'**
+  String get themes_chatBackgroundEverywhere;
+
+  /// No description provided for @themes_chatBackgroundEverywhereHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Also replaces backgrounds set on individual chats'**
+  String get themes_chatBackgroundEverywhereHelp;
+
   /// No description provided for @appSettings_language.
   ///
   /// In en, this message translates to:
@@ -1948,6 +2380,102 @@ abstract class AppLocalizations {
   /// **'Number of retry attempts before marking a message as failed'**
   String get appSettings_maxMessageRetriesSubtitle;
 
+  /// No description provided for @appSettings_ipfsImageLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'IPFS provider configuration'**
+  String get appSettings_ipfsImageLinks;
+
+  /// No description provided for @appSettings_ipfsImageLinksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload for url Images (or Files) via IPFS provider and default gateway to receive'**
+  String get appSettings_ipfsImageLinksSubtitle;
+
+  /// No description provided for @appSettings_loadLinkImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Load images from links'**
+  String get appSettings_loadLinkImages;
+
+  /// No description provided for @appSettings_loadLinkImagesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show pictures from links in messages. Loading an image shares your IP address with the site that hosts it.'**
+  String get appSettings_loadLinkImagesSubtitle;
+
+  /// No description provided for @appSettings_showLinkImagesByDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Show link images in all chats by default'**
+  String get appSettings_showLinkImagesByDefault;
+
+  /// No description provided for @appSettings_showLinkImagesByDefaultSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Load link images in every chat unless you turned them off there. This shares your IP address with image hosts in every chat.'**
+  String get appSettings_showLinkImagesByDefaultSubtitle;
+
+  /// No description provided for @appSettings_publicIpfsGateway.
+  ///
+  /// In en, this message translates to:
+  /// **'Public gateway'**
+  String get appSettings_publicIpfsGateway;
+
+  /// No description provided for @appSettings_ipfsGatewayDeactivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivated'**
+  String get appSettings_ipfsGatewayDeactivated;
+
+  /// No description provided for @appSettings_ipfsGatewayCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom (Kubo)'**
+  String get appSettings_ipfsGatewayCustom;
+
+  /// No description provided for @appSettings_uploadIpfsProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload provider'**
+  String get appSettings_uploadIpfsProvider;
+
+  /// No description provided for @appSettings_uploadIpfsGateway.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload gateway'**
+  String get appSettings_uploadIpfsGateway;
+
+  /// No description provided for @appSettings_uploadIpfsGatewaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gateway to share Image or File as url-link. Leave empty to use ipfs: format, which may not be opened by other clients.'**
+  String get appSettings_uploadIpfsGatewaySubtitle;
+
+  /// No description provided for @appSettings_uploadIpfsEndpoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload endpoint'**
+  String get appSettings_uploadIpfsEndpoint;
+
+  /// No description provided for @appSettings_uploadIpfsEndpointSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The API endpoint used to upload files'**
+  String get appSettings_uploadIpfsEndpointSubtitle;
+
+  /// No description provided for @appSettings_uploadIpfsApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload API key'**
+  String get appSettings_uploadIpfsApiKey;
+
+  /// No description provided for @appSettings_ipfsImageLinksDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Public gateway downloads ipfs: format images. Upload gateway is used to generate share links for uploaded url images or files.'**
+  String get appSettings_ipfsImageLinksDescription;
+
   /// No description provided for @appSettings_battery.
   ///
   /// In en, this message translates to:
@@ -2314,6 +2842,18 @@ abstract class AppLocalizations {
   /// **'Remove'**
   String get contacts_remove;
 
+  /// No description provided for @contacts_removeAutoAddNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your radio auto-adds this contact type, so it will come back the next time it advertises. Turn off auto-add in Contacts settings to keep it removed.'**
+  String get contacts_removeAutoAddNote;
+
+  /// No description provided for @contacts_removeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The radio did not confirm the removal. The contact was not removed.'**
+  String get contacts_removeFailed;
+
   /// No description provided for @contacts_discoveredNearby.
   ///
   /// In en, this message translates to:
@@ -2619,6 +3159,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit channel'**
   String get channels_editChannel;
+
+  /// No description provided for @channels_notificationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification settings'**
+  String get channels_notificationSettings;
+
+  /// No description provided for @channels_notifyAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All messages'**
+  String get channels_notifyAll;
+
+  /// No description provided for @channels_notifyMentionsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Mentions only'**
+  String get channels_notifyMentionsOnly;
+
+  /// No description provided for @channels_notifyNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Muted'**
+  String get channels_notifyNone;
+
+  /// No description provided for @channels_notificationModeTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications: {mode}'**
+  String channels_notificationModeTooltip(String mode);
 
   /// No description provided for @channels_muteChannel.
   ///
@@ -2932,6 +3502,42 @@ abstract class AppLocalizations {
   /// **'Coming soon'**
   String get channels_scanQrCodeComingSoon;
 
+  /// No description provided for @channels_scanQrCodeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Join a channel or community from its QR code.'**
+  String get channels_scanQrCodeDesc;
+
+  /// No description provided for @channels_scanQrInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Point the camera at a channel or community QR code'**
+  String get channels_scanQrInstructions;
+
+  /// No description provided for @channels_invalidQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a MeshCore channel or community QR code'**
+  String get channels_invalidQrCode;
+
+  /// No description provided for @channels_joinChannelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Channel'**
+  String get channels_joinChannelTitle;
+
+  /// No description provided for @channels_joinChannelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Add \"{name}\" to your radio?'**
+  String channels_joinChannelConfirm(String name);
+
+  /// No description provided for @channels_alreadyOnRadio.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" is already on your radio'**
+  String channels_alreadyOnRadio(String name);
+
   /// No description provided for @channels_enterHashtag.
   ///
   /// In en, this message translates to:
@@ -3135,6 +3741,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send low-res image over radio'**
   String get chat_sendImageLora;
+
+  /// No description provided for @chat_sendImageIpfs.
+  ///
+  /// In en, this message translates to:
+  /// **'Send image or file via IPFS'**
+  String get chat_sendImageIpfs;
+
+  /// No description provided for @chat_ipfsUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'IPFS upload failed: {error}'**
+  String chat_ipfsUploadFailed(String error);
+
+  /// No description provided for @chat_ipfsUploadNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure an IPFS upload provider in App Settings first.'**
+  String get chat_ipfsUploadNotConfigured;
+
+  /// No description provided for @chat_ipfsSelectedFileEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected file is empty.'**
+  String get chat_ipfsSelectedFileEmpty;
+
+  /// No description provided for @chat_ipfsEndpointInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'The IPFS upload endpoint must be a full http:// or https:// address. Check it in App Settings.'**
+  String get chat_ipfsEndpointInvalid;
+
+  /// No description provided for @chat_ipfsPinataTokenMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinata needs an API key or JWT. Add it in App Settings.'**
+  String get chat_ipfsPinataTokenMissing;
+
+  /// No description provided for @chat_ipfsFilebaseTokenMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Filebase needs an API token. Add it in App Settings.'**
+  String get chat_ipfsFilebaseTokenMissing;
+
+  /// No description provided for @chat_ipfsKuboPathInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'The Kubo upload endpoint must end with /api/v0/add. Check it in App Settings.'**
+  String get chat_ipfsKuboPathInvalid;
+
+  /// Shown before an IPFS upload when the link would push the draft over the message size limit
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough room for the image link. Shorten your message, then try again.'**
+  String get chat_ipfsLinkNoRoom;
+
+  /// Shown after an IPFS upload when the link plus the draft no longer fits the message size limit
+  ///
+  /// In en, this message translates to:
+  /// **'Image link added, but the message is now too long. Shorten it before sending.'**
+  String get chat_ipfsLinkOverLimit;
 
   /// Shown when picking or reading a photo to send fails
   ///
@@ -4246,6 +4912,42 @@ abstract class AppLocalizations {
   /// **'Path trace cancelled.'**
   String get map_pathTraceCancelled;
 
+  /// No description provided for @map_pathTraceAddMoreHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap more nodes to add hops, choose how the trace returns, then tap Run path trace.'**
+  String get map_pathTraceAddMoreHint;
+
+  /// No description provided for @map_pathTraceModeRoundTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Round trip'**
+  String get map_pathTraceModeRoundTrip;
+
+  /// No description provided for @map_pathTraceModeRoundTripHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The trace goes out through these hops and comes back the same way.'**
+  String get map_pathTraceModeRoundTripHint;
+
+  /// No description provided for @map_pathTraceModeAsEntered.
+  ///
+  /// In en, this message translates to:
+  /// **'As entered'**
+  String get map_pathTraceModeAsEntered;
+
+  /// No description provided for @map_pathTraceModeAsEnteredHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The trace follows these hops exactly. Add the hops back to you yourself.'**
+  String get map_pathTraceModeAsEnteredHint;
+
+  /// No description provided for @map_pathTraceViewLast.
+  ///
+  /// In en, this message translates to:
+  /// **'View last result'**
+  String get map_pathTraceViewLast;
+
   /// No description provided for @mapCache_title.
   ///
   /// In en, this message translates to:
@@ -5264,12 +5966,6 @@ abstract class AppLocalizations {
   /// **'Higher sensitivity, more current draw (SX1262/SX1268 only)'**
   String get repeater_rxGainHelper;
 
-  /// No description provided for @repeater_refreshRxGain.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh boosted RX gain'**
-  String get repeater_refreshRxGain;
-
   /// No description provided for @repeater_multiAcks.
   ///
   /// In en, this message translates to:
@@ -5281,12 +5977,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Acknowledge messages over multiple paths for better delivery'**
   String get repeater_multiAcksSubtitle;
-
-  /// No description provided for @repeater_refreshMultiAcks.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh multi-ACKs'**
-  String get repeater_refreshMultiAcks;
 
   /// No description provided for @repeater_networkHealth.
   ///
@@ -5359,12 +6049,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Public metadata for this repeater'**
   String get repeater_ownerInfoHelper;
-
-  /// No description provided for @repeater_refreshOwnerInfo.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh operator info'**
-  String get repeater_refreshOwnerInfo;
 
   /// No description provided for @repeater_floodMax.
   ///
@@ -5582,35 +6266,11 @@ abstract class AppLocalizations {
   /// **'Error saving settings: {error}'**
   String repeater_errorSavingSettings(String error);
 
-  /// No description provided for @repeater_refreshBasicSettings.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh Basic Settings'**
-  String get repeater_refreshBasicSettings;
-
   /// No description provided for @repeater_refreshRadioSettings.
   ///
   /// In en, this message translates to:
   /// **'Refresh Radio Settings'**
   String get repeater_refreshRadioSettings;
-
-  /// No description provided for @repeater_refreshTxPower.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh TX power'**
-  String get repeater_refreshTxPower;
-
-  /// No description provided for @repeater_refreshPacketForwarding.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh Packet Forwarding'**
-  String get repeater_refreshPacketForwarding;
-
-  /// No description provided for @repeater_refreshGuestAccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh Guest Access'**
-  String get repeater_refreshGuestAccess;
 
   /// No description provided for @repeater_refreshPrivacyMode.
   ///
@@ -8108,6 +8768,18 @@ abstract class AppLocalizations {
   /// **'MeshCore Activity'**
   String get notification_activityTitle;
 
+  /// Title of the low battery notification
+  ///
+  /// In en, this message translates to:
+  /// **'Low battery'**
+  String get notification_lowBatteryTitle;
+
+  /// Body of the low battery notification; deviceName is the connected radio's node name
+  ///
+  /// In en, this message translates to:
+  /// **'{deviceName} battery is at {percent}%'**
+  String notification_lowBatteryBody(String deviceName, int percent);
+
   /// No description provided for @notification_messagesCount.
   ///
   /// In en, this message translates to:
@@ -8137,6 +8809,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Received new message'**
   String get notification_receivedNewMessage;
+
+  /// No description provided for @notification_sharedLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared a location'**
+  String get notification_sharedLocation;
+
+  /// No description provided for @notification_sharedLocationNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared a location: {label}'**
+  String notification_sharedLocationNamed(String label);
+
+  /// No description provided for @notification_reacted.
+  ///
+  /// In en, this message translates to:
+  /// **'Reacted {emoji}'**
+  String notification_reacted(String emoji);
+
+  /// No description provided for @notification_sentGif.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent a GIF'**
+  String get notification_sentGif;
+
+  /// No description provided for @notification_sentImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent an image'**
+  String get notification_sentImage;
 
   /// No description provided for @notification_actionReply.
   ///
@@ -8311,6 +9013,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Repeaters your radio heard directly, most recently heard first.'**
   String get snrIndicator_nearByRepeatersDescription;
+
+  /// No description provided for @snrIndicator_unknownRepeater.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown repeater'**
+  String get snrIndicator_unknownRepeater;
+
+  /// No description provided for @snrIndicator_unknownRepeaterHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This repeater isn\'t in your contacts yet. Its name, location and options appear once your radio receives its advert.'**
+  String get snrIndicator_unknownRepeaterHint;
 
   /// No description provided for @contactsSettings_title.
   ///
@@ -8539,6 +9253,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'When opening a chat with unread messages, scroll to the first unread instead of the latest.'**
   String get appSettings_jumpToOldestUnreadSubtitle;
+
+  /// No description provided for @appSettings_autoFetchRepeaterSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-fetch repeater settings'**
+  String get appSettings_autoFetchRepeaterSettings;
+
+  /// No description provided for @appSettings_autoFetchRepeaterSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request every setting when opening a repeater\'s settings. Each one is a separate request over LoRa, so this is slow and uses airtime. When off, tap Refresh All or refresh individual sections.'**
+  String get appSettings_autoFetchRepeaterSettingsSubtitle;
 
   /// No description provided for @appSettings_languageHu.
   ///
@@ -9632,6 +10358,96 @@ abstract class AppLocalizations {
   /// **'{field}: enter a value'**
   String repeater_valueRequired(String field);
 
+  /// No description provided for @repeater_floodMaxAdvert.
+  ///
+  /// In en, this message translates to:
+  /// **'Advert flood max hops'**
+  String get repeater_floodMaxAdvert;
+
+  /// No description provided for @repeater_floodMaxAdvertHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum hops a flooded advert may travel (0-64, default 8)'**
+  String get repeater_floodMaxAdvertHelper;
+
+  /// No description provided for @repeater_floodMaxUnscoped.
+  ///
+  /// In en, this message translates to:
+  /// **'Unscoped flood max hops'**
+  String get repeater_floodMaxUnscoped;
+
+  /// No description provided for @repeater_floodMaxUnscopedHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum hops for floods without a region scope (0-64, default 64). A low value such as 3 keeps unscoped traffic local.'**
+  String get repeater_floodMaxUnscopedHelper;
+
+  /// No description provided for @repeater_floodMaxUnscopedUnset.
+  ///
+  /// In en, this message translates to:
+  /// **'Same as flood max'**
+  String get repeater_floodMaxUnscopedUnset;
+
+  /// No description provided for @repeater_rxDelay.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive delay'**
+  String get repeater_rxDelay;
+
+  /// No description provided for @repeater_rxDelayHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Holds flood packets heard with a weak signal before forwarding, so strong-signal paths go first and fewer duplicates are sent (0-20, 0 turns it off).'**
+  String get repeater_rxDelayHelper;
+
+  /// No description provided for @repeater_cad.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel activity detection'**
+  String get repeater_cad;
+
+  /// No description provided for @repeater_cadHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen for activity before transmitting and wait while the channel is busy. Works alongside the interference threshold.'**
+  String get repeater_cadHelper;
+
+  /// No description provided for @repeater_adcMultiplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery voltage calibration'**
+  String get repeater_adcMultiplier;
+
+  /// No description provided for @repeater_adcMultiplierHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiplier for the battery voltage reading (0-10). 0 uses the board\'s default.'**
+  String get repeater_adcMultiplierHelper;
+
+  /// No description provided for @repeater_boardSupportNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Not every board supports this. Unsupported boards reject the change.'**
+  String get repeater_boardSupportNote;
+
+  /// No description provided for @repeater_extraSf.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra spreading factors'**
+  String get repeater_extraSf;
+
+  /// No description provided for @repeater_extraSfHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 3 more spreading factors to listen on at the same time, separated by commas (for example 9,10). Leave empty to turn off.'**
+  String get repeater_extraSfHelper;
+
+  /// No description provided for @repeater_lr2021Only.
+  ///
+  /// In en, this message translates to:
+  /// **'Only for repeaters with an LR2021 radio. Other repeaters don\'t have this setting and reject it.'**
+  String get repeater_lr2021Only;
+
   /// No description provided for @losMapDetailTooltip.
   ///
   /// In en, this message translates to:
@@ -9883,6 +10699,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name}, {type}, {status}'**
   String map_nodeMarkerSemantics(String name, String type, String status);
+
+  /// No description provided for @map_requestLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Update location'**
+  String get map_requestLocation;
+
+  /// No description provided for @map_locationUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Location updated'**
+  String get map_locationUpdated;
+
+  /// No description provided for @map_locationNotShared.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} replied without a location'**
+  String map_locationNotShared(String name);
+
+  /// No description provided for @map_locationRequestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'No reply from {name}'**
+  String map_locationRequestFailed(String name);
 
   /// No description provided for @mapCache_zoomLevel.
   ///
@@ -10309,12 +11149,6 @@ abstract class AppLocalizations {
   /// **'{setting}: {value} is not valid'**
   String repeater_invalidSettingValue(String setting, String value);
 
-  /// No description provided for @repeater_txPowerOutOfRange.
-  ///
-  /// In en, this message translates to:
-  /// **'TX power {value} is out of range ({min} to {max} dBm)'**
-  String repeater_txPowerOutOfRange(String value, int min, int max);
-
   /// No description provided for @repeater_prvKeyLengthError.
   ///
   /// In en, this message translates to:
@@ -10332,6 +11166,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Manage groups'**
   String get contacts_manageGroups;
+
+  /// No description provided for @contacts_keyPrefixSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Key prefix {prefix}'**
+  String contacts_keyPrefixSemantics(String prefix);
 
   /// No description provided for @community_shortId.
   ///
@@ -10471,6 +11311,24 @@ abstract class AppLocalizations {
   /// **'Both'**
   String get networkMap_sourceBoth;
 
+  /// No description provided for @networkMap_sourceLocalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Nodes your radio has heard'**
+  String get networkMap_sourceLocalHint;
+
+  /// No description provided for @networkMap_sourceOnlineHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeaters from the online network map'**
+  String get networkMap_sourceOnlineHint;
+
+  /// No description provided for @networkMap_sourceBothHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your radio\'s nodes plus the online network map'**
+  String get networkMap_sourceBothHint;
+
   /// No description provided for @networkMap_zoomInHint.
   ///
   /// In en, this message translates to:
@@ -10590,6 +11448,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unnamed repeater'**
   String get networkMap_unnamed;
+
+  /// Holiday greeting that plays the Halloween bats animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |.
+  ///
+  /// In en, this message translates to:
+  /// **'Happy Halloween'**
+  String get holidayGreeting_halloween;
+
+  /// Holiday greeting that plays the Thanksgiving turkey animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |.
+  ///
+  /// In en, this message translates to:
+  /// **'Happy Thanksgiving'**
+  String get holidayGreeting_thanksgiving;
+
+  /// Holiday greeting that plays the Christmas Santa animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |.
+  ///
+  /// In en, this message translates to:
+  /// **'Merry Christmas|Merry Xmas|Happy Christmas'**
+  String get holidayGreeting_christmas;
+
+  /// Holiday greeting that plays the New Year's fireworks animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |.
+  ///
+  /// In en, this message translates to:
+  /// **'Happy New Year|Happy New Year\'s'**
+  String get holidayGreeting_newYear;
 }
 
 class _AppLocalizationsDelegate

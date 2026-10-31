@@ -76,19 +76,25 @@ An optional per-contact and per-channel text compression feature using the SMAZ 
 
 ---
 
-## Community QR Scanner
+## Channel and Community QR Scanner
 
 ### How to Access
-From Channels screen → "+" FAB → "Scan Community QR"
+From Channels screen → "+" FAB → "Scan a QR Code"
 
 ### What the User Sees
 A live QR scanner view with instruction text overlay.
 
 ### Key Interactions
-- Scan a community QR code shared by another member
-- On valid scan: confirmation dialog showing community name and ID
-- Option to "Add public channel to device" on join
-- If already a member: shows an "Already a member" dialog
+- **Community QR code** (shared by another member):
+  - On valid scan: confirmation dialog showing community name and ID
+  - Option to "Add public channel to device" on join
+  - If already a member: shows an "Already a member" dialog
+- **Channel QR code** (official MeshCore format, `meshcore://channel/add?name=…&secret=…`, as shared by the official app and sites like ipnt.uk):
+  - On valid scan: confirmation dialog asking to add the named channel to the radio
+  - The channel goes into the next free slot; if every slot is used, or the channel list is still syncing from the radio, a snackbar explains why and nothing is written
+  - If a channel with the same secret is already on the radio, a snackbar says so and scanning continues
+  - Names longer than the radio's 31-byte limit are shortened
+  - The optional `region_scope` parameter is not applied; set the channel's region manually afterwards
 - Invalid QR: shows an orange error snackbar
 
 ---
@@ -267,6 +273,14 @@ On Android, a foreground service (`background_service.dart`) keeps the BLE conne
 Enable URL images per contact in Chat → overflow → Contact Settings, or per channel in Channels → long-press (right-click on desktop) → Edit. Supported references include direct PNG/JPEG/WebP URLs, pyx.li links, ibb.co sharing pages, and IPFS references/gateway URLs.
 
 The message sends a reference; image retrieval needs internet access and makes requests to the relevant host or gateway. This differs from [image packets transmitted over the mesh](image-messages.md). With previews disabled, the chat may indicate that a message contains a possible image URL.
+
+## Share an Image via IPFS
+
+1. Configure **App Settings → IPFS provider configuration**. Choose Pinata, Filebase, or **Custom (Kubo)** for self hosted or other, then set the upload endpoint, upload gateway, and any required API key. See [IPFS provider configuration](settings.md#ipfs-provider-configuration).
+2. In a direct or channel chat, open the composer’s **+** menu and choose **Send image or file via IPFS**.
+3. Pick an image or file. The app uploads it to the configured provider and inserts the resulting link into the draft. When an upload gateway is configured, the link is `http://gateway/ipfs/CID`; otherwise it is `ipfs://CID`. Review or edit the draft, then send it as a normal text message; uploading does not send the chat message automatically.
+
+Uploads and image previews need internet access. The file is stored with the selected provider; the mesh carries only the text link, not the file bytes. IPFS content is publicly addressable, so only upload content suitable for sharing publicly. A recipient needs internet access and a working IPFS gateway to retrieve it. If the upload link plus existing draft exceeds the message limit, the app may shorten the existing draft to make room for the link.
 
 ## Regions, Mesh Images, and Radio Statistics
 

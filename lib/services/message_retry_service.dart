@@ -843,9 +843,12 @@ class MessageRetryService extends ChangeNotifier {
             tripTimeMs,
           );
         }
+        // Learn from the attempt this ACK belongs to, not the latest one: a
+        // late ACK for a direct attempt can land after a retry went flood.
         if (config?.onDeliveryObserved != null &&
             tripTimeMs > 0 &&
-            message.pathLength != null) {
+            selection != null &&
+            !ambiguousPath) {
           final outboundTextForObserved =
               config!.prepareContactOutboundText?.call(contact, message.text) ??
               message.text;
@@ -854,7 +857,7 @@ class MessageRetryService extends ChangeNotifier {
               .length;
           config.onDeliveryObserved!(
             contact.publicKeyHex,
-            message.pathLength!,
+            selection.useFlood ? -1 : selection.hopCount,
             messageBytesForObserved,
             tripTimeMs,
           );

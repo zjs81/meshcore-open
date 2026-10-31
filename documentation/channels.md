@@ -52,7 +52,7 @@ Tap the "+" FAB to open a dialog with six options:
 2. **Join Private Channel** — Enter a name and a 32-hex PSK (non-hex characters like spaces and dashes are silently stripped, so pasted keys with formatting are accepted)
 3. **Join Public Channel** — One tap; uses the well-known public PSK (only shown if no public channel exists)
 4. **Join Hashtag Channel** — Enter a hashtag name; PSK is derived from the name. If communities exist, choose between regular hashtag (SHA-256) or community hashtag (HMAC)
-5. **Scan Community QR** — Opens QR scanner to join a community
+5. **Scan a QR Code** — Opens the QR scanner to join a community, or to add a channel from an official MeshCore channel QR code (`meshcore://channel/add?name=…&secret=…`, as shared by the official app and community sites)
 6. **Create Community** — Enter a name; generates a random 32-byte secret; optionally adds a community public channel; shows QR code for sharing
 
 Name limits count the `#` and any community prefix, so the name stored on the radio matches what you typed and others derive the same key. Adding a channel is blocked until the channel list has finished syncing from the radio (a snackbar says the channels are still loading), and the free slot is picked when you confirm, so an existing channel is never overwritten.
@@ -78,6 +78,7 @@ Tap a channel card to open the channel chat screen.
 - Subtitle: channel type and effective region when set, with `(default)` when inherited
 - Tap the title or landscape icon to select a region; see [Regions](regions.md)
 - Bell icon: mute or unmute notifications for this channel (crossed-out bell when muted)
+- Overflow menu (⋮) → **Chat background**: a color or picture, with a fade slider, behind this channel only. See [Chat backgrounds](themes.md#chat-backgrounds). Holiday greetings in new messages play a short animation, as in [direct chat](chat-and-messaging.md#message-list)
 
 ### Message Display
 

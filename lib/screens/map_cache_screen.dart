@@ -735,15 +735,22 @@ class _MapCacheScreenState extends State<MapCacheScreen> {
                                   ),
                           ),
                           const SizedBox(width: 12),
-                          OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: MeshPalette.alert,
-                              side: const BorderSide(
-                                color: MeshPalette.alertLine,
+                          // Flexible lets the label wrap instead of pushing
+                          // the row past the screen edge at large text sizes.
+                          Flexible(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: MeshPalette.alert,
+                                side: const BorderSide(
+                                  color: MeshPalette.alertLine,
+                                ),
+                              ),
+                              onPressed: _isDownloading ? null : _clearCache,
+                              child: Text(
+                                l10n.mapCache_clearCacheButton,
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                            onPressed: _isDownloading ? null : _clearCache,
-                            child: Text(l10n.mapCache_clearCacheButton),
                           ),
                         ],
                       ),

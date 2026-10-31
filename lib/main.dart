@@ -12,6 +12,7 @@ import 'screens/chrome_required_screen.dart';
 import 'utils/platform_info.dart';
 
 import 'connector/meshcore_connector.dart';
+import 'helpers/message_url_image_helper.dart';
 import 'models/image_codec_support.dart';
 import 'screens/scanner_screen.dart';
 import 'services/image_chunk_transport.dart';
@@ -32,6 +33,7 @@ import 'services/map_tile_cache_service.dart';
 import 'services/chat_text_scale_service.dart';
 import 'services/translation_service.dart';
 import 'services/ui_view_state_service.dart';
+import 'services/chat_background_service.dart';
 import 'services/timeout_prediction_service.dart';
 import 'storage/prefs_manager.dart';
 import 'theme/mesh_theme.dart';
@@ -82,8 +84,13 @@ void main() async {
   // `appSettingsService.settings`, so this cannot stay where it used to be
   // (after the constructions) without those two starting out wrong.
   await appSettingsService.loadSettings();
+  // Re-check the automatic holiday theme when the date changes.
+  appSettingsService.startDateWatch();
   // Undo a review-mode session the app was killed in before it could exit.
   await endReviewModeSession(appSettingsService);
+  final chatBackgroundService = ChatBackgroundService(appSettingsService);
+  // Drop pictures left behind by removed backgrounds or abandoned edits.
+  unawaited(chatBackgroundService.collectGarbage());
 
   // ---- image messages (AEIC over GRP_DATA) --------------------------------
   // The codec owns the ONNX decoder; the store owns received-image state and
@@ -136,6 +143,18 @@ void main() async {
 
   // Initialize notification service
   final notificationService = NotificationService();
+  notificationService.setPublicIpfsGateway(
+    appSettingsService.settings.publicIpfsGateway,
+  );
+  MessageUrlImageHelper.loadLinkImages.value =
+      appSettingsService.settings.loadLinkImages;
+  appSettingsService.addListener(() {
+    notificationService.setPublicIpfsGateway(
+      appSettingsService.settings.publicIpfsGateway,
+    );
+    MessageUrlImageHelper.loadLinkImages.value =
+        appSettingsService.settings.loadLinkImages;
+  });
   await notificationService.initialize();
   await backgroundService.initialize();
   backgroundService.setLanguageOverrideProvider(
@@ -196,6 +215,7 @@ void main() async {
       receivedImageStore: receivedImageStore,
       imageReassembler: imageReassembler,
       networkMapUploadService: networkMapUploadService,
+      chatBackgroundService: chatBackgroundService,
     ),
   );
 }
@@ -341,6 +361,7 @@ class MeshCoreApp extends StatefulWidget {
   final ReceivedImageStore receivedImageStore;
   final ImageStreamReassembler imageReassembler;
   final NetworkMapUploadService networkMapUploadService;
+  final ChatBackgroundService chatBackgroundService;
 
   const MeshCoreApp({
     super.key,
@@ -360,6 +381,7 @@ class MeshCoreApp extends StatefulWidget {
     required this.receivedImageStore,
     required this.imageReassembler,
     required this.networkMapUploadService,
+    required this.chatBackgroundService,
   });
 
   @override
@@ -410,6 +432,15 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
         state == AppLifecycleState.hidden) {
       unawaited(widget.imageCodecService.handleMemoryPressure());
     }
+    // Batched message/contact writes must land before the OS can suspend or
+    // kill a backgrounded app.
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached) {
+      unawaited(widget.connector.flushPendingWrites());
+      unawaited(widget.pathHistoryService.flushPendingWrites());
+    }
     if (state == AppLifecycleState.resumed) {
       widget.connector.syncAppBadge();
     }
@@ -443,9 +474,11 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
         ChangeNotifierProvider.value(value: widget.imageCodecService),
         ChangeNotifierProvider.value(value: widget.receivedImageStore),
         ChangeNotifierProvider.value(value: widget.networkMapUploadService),
+        ChangeNotifierProvider.value(value: widget.chatBackgroundService),
       ],
       child: Consumer<AppSettingsService>(
         builder: (context, settingsService, child) {
+          final customTheme = settingsService.activeCustomTheme;
           return MaterialApp(
             title: 'MeshCore Open',
             debugShowCheckedModeBanner: false,
@@ -459,11 +492,15 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
             locale: _localeFromSetting(
               settingsService.settings.languageOverride,
             ),
-            theme: MeshTheme.light(),
-            darkTheme: MeshTheme.dark(),
-            themeMode: _themeModeFromSetting(
-              settingsService.settings.themeMode,
-            ),
+            theme: customTheme != null
+                ? MeshTheme.fromCustom(customTheme)
+                : MeshTheme.light(),
+            darkTheme: customTheme != null
+                ? MeshTheme.fromCustom(customTheme)
+                : MeshTheme.dark(),
+            themeMode: customTheme != null
+                ? (customTheme.isDark ? ThemeMode.dark : ThemeMode.light)
+                : _themeModeFromSetting(settingsService.settings.themeMode),
             builder: (context, child) {
               // Update notification service with resolved locale
               final locale = Localizations.localeOf(context);

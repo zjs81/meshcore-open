@@ -497,8 +497,16 @@ String ackHashToHex(int ackHash) {
 }
 
 // Helper to convert public key to hex string
+const String _hexDigits = '0123456789abcdef';
+
 String pubKeyToHex(Uint8List pubKey) {
-  return pubKey.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+  final codes = Uint8List(pubKey.length * 2);
+  for (var i = 0; i < pubKey.length; i++) {
+    final b = pubKey[i];
+    codes[i * 2] = _hexDigits.codeUnitAt(b >> 4);
+    codes[i * 2 + 1] = _hexDigits.codeUnitAt(b & 0x0F);
+  }
+  return String.fromCharCodes(codes);
 }
 
 // Helper to convert hex string to public key

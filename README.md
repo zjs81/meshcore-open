@@ -49,7 +49,7 @@ See the [user documentation](documentation/README.md), [connection guide](docume
 - **Contact Groups**: Create custom groups to organize your mesh network contacts
 - **Message Reactions**: React to messages with emoji responses
 - **Message Replies**: Thread conversations with inline reply functionality
-- **Android Auto & Watches**: Hear messages and reply by voice in Android Auto, or reply from the notification shade and Wear OS/Galaxy watches ([guide](documentation/notifications.md#android-auto))
+- **Android Auto & Watches**: Reply from the notification shade and Wear OS/Galaxy watches, or hear messages and reply by voice in Android Auto (optional build flag) ([guide](documentation/notifications.md#android-auto))
 - **Channel Muting**: Mute a channel from its chat screen, the channel list, or its notification
 
 ### Mesh Network
@@ -103,7 +103,7 @@ See the [user documentation](documentation/README.md), [connection guide](docume
 | Map & Location     | ✅                | ✅        | ✅   | ✅      | ✅    | ✅                                |
 | Device Management  | ✅                | ✅        | ✅   | ✅      | ✅    | ✅                                |
 | Repeater Hub       | ✅                | ✅        | ✅   | ✅      | ✅    | ✅                                |
-| Notification replies | ✅<br>(incl. Android Auto, watches) | ❌ | ❌ | ❌ | ❌ | ❌                              |
+| Notification replies | ✅<br>(incl. watches; Android Auto optional) | ❌ | ❌ | ❌ | ❌ | ❌                              |
 
 The matrix describes implemented functionality, not a guarantee that every feature has been tested on every device. Web device connections use Web Serial and require Chrome and a secure origin. Image inference and translation require native runtimes and are unavailable on web. Android APKs currently include only `arm64-v8a`; the minimum Android API follows the Flutter SDK used to build.
 
@@ -149,6 +149,59 @@ The matrix describes implemented functionality, not a guarantee that every featu
    ```bash
    flutter run
    ```
+
+### Linux with Nix
+
+Enter the development shell from the repository root:
+
+```bash
+nix develop
+flutter --version
+pkg-config --exists gtk+-3.0 glib-2.0 gio-2.0 sysprof-capture-4
+flutter pub get
+flutter build linux --debug
+flutter build linux --profile
+```
+
+The lockfile currently supplies Flutter 3.47.4 and its matching Dart SDK. The
+app requires Flutter 3.41.2 or newer. The Linux shell provides wrapped Clang
+compilers, native headers and libraries, and Sysprof capture development files.
+Android SDK warnings do not prevent Linux builds.
+
+If an SDK or toolchain update leaves CMake using an old compiler or install
+prefix, remove the affected generated cache, for example
+`rm -f build/linux/x64/profile/CMakeCache.txt`, and rebuild. If widget tests
+report that `ink_sparkle.frag` cannot be decoded after an SDK update, remove
+the generated `build/unit_test_assets` directory and rerun `flutter test`.
+
+Launch the profile bundle from a graphical session (replace `x64` with `arm64`
+on ARM Linux):
+
+```bash
+build/linux/x64/profile/bundle/meshcore_open
+```
+
+To record with Sysprof, launch the app through the recorder and press Ctrl+C
+when finished. Use a new capture filename for each recording:
+
+```bash
+sysprof-cli meshcore.syscap -- build/linux/x64/profile/bundle/meshcore_open
+sysprof meshcore.syscap
+```
+
+CPU stack sampling requires host support for kernel perf events and appropriate
+permissions, potentially through the Sysprof system service and polkit. The Nix
+shell supplies tools and libraries, not system services or permission changes.
+If Sysprof reports `Permission denied` opening perf events, ask the host
+administrator to configure profiling access. A file being created does not
+prove CPU samples were recorded; check the recording diagnostics and contents.
+For an unprivileged capture smoke test only, use
+`sysprof-cli --no-sysprofd --no-perf smoke.syscap -- build/linux/x64/profile/bundle/meshcore_open`;
+this intentionally excludes CPU stack sampling.
+
+To update the package pin, run `nix flake update nixpkgs`, review the lockfile
+diff, and repeat both Linux builds, analysis, and tests before committing it.
+Keep the updated lockfile with the shell configuration for reproducibility.
 
 ### Web (self-host)
 
@@ -228,7 +281,7 @@ Messages are transmitted as binary frames using a custom protocol optimized for 
 
 - **Theme**: System default, light, or dark mode
 - **Language**: Use one of 18 languages (English, Chinese, French, Spanish, Portuguese, German, Dutch, Polish, Swedish, Italian, Slovak, Slovenian, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
-- **Notifications**: Configurable for messages, channels, and node advertisements; per-channel muting; reply, mark-as-read, and mute actions on Android notifications and watches (reply and mark-as-read in Android Auto)
+- **Notifications**: Configurable for messages, channels, and node advertisements; per-channel muting; reply, mark-as-read, and mute actions on Android notifications and watches (reply and mark-as-read in Android Auto when built with `--android-project-arg=androidAuto=true`)
 - **Battery Chemistry**: Support for NMC, LiFePO4, LiPo, and LiPo HV battery types
 - **Message Retry**: Automatic retry with configurable path clearing
 

@@ -24,6 +24,7 @@ import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/path_map_scaffold.dart';
 import '../widgets/path_map_ui.dart';
+import '../widgets/set_my_location_dialog.dart';
 
 class ChannelMessagePathScreen extends StatelessWidget {
   final ChannelMessage message;
@@ -911,6 +912,10 @@ class _ChannelMessagePathMapScreenState
                     initialCenter: model.initialCenter,
                     initialZoom: model.initialZoom,
                     bounds: model.bounds,
+                    onLongPress: (_, point) =>
+                        confirmAndSetMyLocation(context, connector, point),
+                    onSecondaryTap: (_, point) =>
+                        confirmAndSetMyLocation(context, connector, point),
                     onPositionChanged: (camera, hasGesture) {
                       if (!mounted) return;
                       // A manual pan/zoom releases the follow lock.

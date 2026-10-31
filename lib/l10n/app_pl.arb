@@ -369,6 +369,18 @@
   "channels_public": "Publiczny",
   "channels_private": "Prywatny",
   "channels_editChannel": "Edytuj kanał",
+  "channels_notificationSettings": "Ustawienia powiadomień",
+  "channels_notifyAll": "Wszystkie wiadomości",
+  "channels_notifyMentionsOnly": "Tylko wzmianki",
+  "channels_notifyNone": "Wyciszone",
+  "channels_notificationModeTooltip": "Powiadomienia: {mode}",
+  "@channels_notificationModeTooltip": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
   "channels_muteChannel": "Wycisz kanał",
   "channels_unmuteChannel": "Wyłącz wyciszenie kanału",
   "channels_deleteChannel": "Usuń kanał",
@@ -1157,10 +1169,8 @@
   "repeater_settingsSaved": "Ustawienia zostały pomyślnie zapisane.",
   "repeater_rxGain": "Zwiększony zysk RX",
   "repeater_rxGainHelper": "Większa czułość, większe pobieranie prądu (dotyczy tylko SX1262/SX1268)",
-  "repeater_refreshRxGain": "Zaktualizuj zwiększone zyski RX",
   "repeater_multiAcks": "Wielokrotne potwierdzenia odbioru",
   "repeater_multiAcksSubtitle": "Potwierdź odbiór wiadomości za pomocą różnych ścieżek, aby zapewnić lepszą dostawę.",
-  "repeater_refreshMultiAcks": "Odświeżanie wielokrotnych potwierdzeń",
   "repeater_networkHealth": "Stan sieci",
   "repeater_loopDetect": "Wykrywanie pętli",
   "repeater_loopDetectHelper": "Wysyłaj pakiety, które wyglądają jak pętle routingu.",
@@ -1180,7 +1190,6 @@
   },
   "repeater_ownerInfo": "Informacje o operatorze",
   "repeater_ownerInfoHelper": "Publiczne metadane dla tego urządzenia powielającego",
-  "repeater_refreshOwnerInfo": "Aktualizacja danych dotyczących operatora",
   "repeater_floodMax": "Maksymalna liczba skoków flood",
   "repeater_floodMaxHelper": "Maksymalna liczba pakietów, które mogą przemieszczać się w jednym strumieniu (0-64)",
   "repeater_advancedSettings": "Zaawansowany",
@@ -1238,11 +1247,7 @@
       }
     }
   },
-  "repeater_refreshBasicSettings": "Odśwież Podstawowe Ustawienia",
   "repeater_refreshRadioSettings": "Odśwież ustawienia radia",
-  "repeater_refreshTxPower": "Odśwież moc TX",
-  "repeater_refreshPacketForwarding": "Odśwież trasowanie pakietów",
-  "repeater_refreshGuestAccess": "Odśwież dostęp gościa",
   "repeater_refreshPrivacyMode": "Odśwież Tryb Prywatności",
   "repeater_refreshed": "{label} odświeżone",
   "@repeater_refreshed": {
@@ -1585,6 +1590,26 @@
   "channels_joinHashtagChannelDesc": "Każdy może dołączyć do kanałów z hashtagami.",
   "channels_scanQrCode": "Skanuj kod QR",
   "channels_scanQrCodeComingSoon": "Wkrótce",
+  "channels_scanQrCodeDesc": "Dołącz do kanału lub społeczności za pomocą kodu QR.",
+  "channels_scanQrInstructions": "Skieruj aparat na kod QR kanału lub społeczności",
+  "channels_invalidQrCode": "To nie jest kod QR kanału ani społeczności MeshCore",
+  "channels_joinChannelTitle": "Dołącz do kanału",
+  "channels_joinChannelConfirm": "Dodać \"{name}\" do Twojego radia?",
+  "@channels_joinChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_alreadyOnRadio": "\"{name}\" jest już w Twoim radiu",
+  "@channels_alreadyOnRadio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "channels_enterHashtag": "Wprowadź hashtag",
   "channels_hashtagHint": "np. #zespół",
   "@neighbors_unknownContact": {
@@ -1784,6 +1809,22 @@
   "contacts_ShareContact": "Kopiuj kontakt do schowka",
   "contacts_zeroHopContactAdvertFailed": "Nie udało się wysłać kontaktu.",
   "notification_activityTitle": "Aktywność MeshCore",
+  "notification_lowBatteryTitle": "Niski poziom baterii",
+  "@notification_lowBatteryTitle": {
+    "description": "Title of the low battery notification"
+  },
+  "notification_lowBatteryBody": "Bateria urządzenia {deviceName} ma {percent}%",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification; deviceName is the connected radio's node name",
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "notification_messagesCount": "{count} {count, plural, =1{wiadomość} few{wiadomości} many{wiadomości} other{wiadomości}}",
   "@notification_messagesCount": {
     "placeholders": {
@@ -1817,6 +1858,25 @@
     }
   },
   "notification_receivedNewMessage": "Otrzymano nową wiadomość",
+  "notification_sharedLocation": "Udostępnił(a) lokalizację",
+  "notification_sharedLocationNamed": "Udostępnił(a) lokalizację: {label}",
+  "@notification_sharedLocationNamed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_reacted": "Zareagował(a) {emoji}",
+  "@notification_reacted": {
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_sentGif": "Wysłał(a) GIF",
+  "notification_sentImage": "Wysłał(a) obraz",
   "settings_gpxExportContacts": "Eksportuj towarzyszy do GPX",
   "settings_gpxExportRepeaters": "Eksportuj przekaźniki / roomservery do GPX",
   "settings_gpxExportRepeatersSubtitle": "Eksportuje przekaźniki / roomservery z lokalizacją do pliku GPX.",
@@ -1834,6 +1894,12 @@
   "settings_gpxExportShareSubject": "Eksport danych mapy GPX meshcore-open",
   "pathTrace_someHopsNoLocation": "Jeden lub więcej skoków nie ma określonej lokalizacji!",
   "map_pathTraceCancelled": "Śledzenie ścieżki anulowano.",
+  "map_pathTraceAddMoreHint": "Dotknij kolejnych węzłów, aby dodać skoki, wybierz sposób powrotu śledzenia, a potem dotknij Uruchom śledzenie ścieżki.",
+  "map_pathTraceModeRoundTrip": "Tam i z powrotem",
+  "map_pathTraceModeRoundTripHint": "Śledzenie idzie przez te skoki i wraca tą samą drogą.",
+  "map_pathTraceModeAsEntered": "Jak wprowadzono",
+  "map_pathTraceModeAsEnteredHint": "Śledzenie przechodzi dokładnie przez te skoki. Skoki powrotne do siebie dodaj samodzielnie.",
+  "map_pathTraceViewLast": "Zobacz ostatni wynik",
   "map_runTrace": "Uruchom ślad ścieżki",
   "pathTrace_clearTooltip": "Wyczyść ścieżkę",
   "map_removeLast": "Usuń ostatni",
@@ -2213,6 +2279,22 @@
   "appSettings_routeWeightFailureDecrementSubtitle": "Waga usunięta z trasy po nieudanej dostawie",
   "appSettings_maxMessageRetries": "Maksymalna liczba prób wysłania wiadomości",
   "appSettings_maxMessageRetriesSubtitle": "Liczba prób ponownego wysłania wiadomości przed oznaczaniem jej jako nieudanej",
+  "appSettings_ipfsImageLinks": "Konfiguracja dostawcy IPFS",
+  "appSettings_ipfsImageLinksSubtitle": "Wysyłanie obrazów z URL (lub plików) przez dostawcę IPFS; odbiór przez domyślną bramkę",
+  "appSettings_loadLinkImages": "Wczytuj obrazy z linków",
+  "appSettings_loadLinkImagesSubtitle": "Pokazuj obrazy z linków w wiadomościach. Wczytanie obrazu ujawnia Twój adres IP witrynie, która go hostuje.",
+  "appSettings_showLinkImagesByDefault": "Domyślnie pokazuj obrazy z linków we wszystkich czatach",
+  "appSettings_showLinkImagesByDefaultSubtitle": "Wczytuj obrazy z linków w każdym czacie, chyba że je tam wyłączono. Ujawnia to Twój adres IP hostom obrazów w każdym czacie.",
+  "appSettings_publicIpfsGateway": "Publiczna bramka",
+  "appSettings_ipfsGatewayDeactivated": "Wyłączona",
+  "appSettings_ipfsGatewayCustom": "Własna (Kubo)",
+  "appSettings_uploadIpfsProvider": "Dostawca wysyłania",
+  "appSettings_uploadIpfsGateway": "Bramka wysyłania",
+  "appSettings_uploadIpfsGatewaySubtitle": "Bramka do udostępniania obrazu lub pliku jako linku URL. Zostaw puste, aby użyć formatu ipfs:, którego inni klienci mogą nie otworzyć.",
+  "appSettings_uploadIpfsEndpoint": "Punkt końcowy wysyłania",
+  "appSettings_uploadIpfsEndpointSubtitle": "Punkt końcowy API używany do wysyłania plików",
+  "appSettings_uploadIpfsApiKey": "Klucz API wysyłania",
+  "appSettings_ipfsImageLinksDescription": "Publiczna bramka pobiera obrazy w formacie ipfs:. Bramka wysyłania służy do tworzenia linków udostępniania wysłanych obrazów lub plików z URL.",
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Tryb telemetryczny zaktualizowany",
   "map_showOverlaps": "Nakładające się klucze przekaźników",
@@ -2261,6 +2343,8 @@
   },
   "appSettings_languageHu": "Węgierski",
   "appSettings_jumpToOldestUnreadSubtitle": "Przy otwieraniu czatu z nieodczytanymi wiadomościami, przewijaj, aby przejść do pierwszej nieodczytanej wiadomości, zamiast do najnowszej.",
+  "appSettings_autoFetchRepeaterSettings": "Automatycznie pobieraj ustawienia przekaźnika",
+  "appSettings_autoFetchRepeaterSettingsSubtitle": "Żądaj wszystkich ustawień po otwarciu ustawień przekaźnika. Każde z nich to osobne żądanie przez LoRa, więc jest to wolne i zużywa czas antenowy. Gdy wyłączone, dotknij Odśwież wszystko lub odśwież poszczególne sekcje.",
   "appSettings_jumpToOldestUnread": "Przejdź do najstarszego nieodczytanej wiadomości",
   "chat_sendCooldown": "Prosimy o chwilowe oczekiwanie przed ponownym wysłaniem.",
   "appSettings_languageJa": "Japoński",
@@ -2840,6 +2924,29 @@
   "channels_regionSelect_Title": "Wybierz region",
   "channels_clearRegion": "Przejrzyste obszar",
   "chat_sendImageLora": "Wyślij obraz przez MeshCore",
+  "chat_sendImageIpfs": "Wyślij obraz lub plik przez IPFS",
+  "chat_ipfsUploadFailed": "Wysyłanie przez IPFS nie powiodło się: {error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "Najpierw skonfiguruj dostawcę wysyłania IPFS w Ustawieniach aplikacji.",
+  "chat_ipfsSelectedFileEmpty": "Wybrany plik jest pusty.",
+  "chat_ipfsEndpointInvalid": "Punkt końcowy wysyłania IPFS musi być pełnym adresem http:// lub https://. Sprawdź go w Ustawieniach aplikacji.",
+  "chat_ipfsPinataTokenMissing": "Pinata wymaga klucza API lub JWT. Dodaj go w Ustawieniach aplikacji.",
+  "chat_ipfsFilebaseTokenMissing": "Filebase wymaga tokenu API. Dodaj go w Ustawieniach aplikacji.",
+  "chat_ipfsKuboPathInvalid": "Punkt końcowy wysyłania Kubo musi kończyć się na /api/v0/add. Sprawdź go w Ustawieniach aplikacji.",
+  "chat_ipfsLinkNoRoom": "Za mało miejsca na link do obrazu. Skróć wiadomość i spróbuj ponownie.",
+  "@chat_ipfsLinkNoRoom": {
+    "description": "Shown before an IPFS upload when the link would push the draft over the message size limit"
+  },
+  "chat_ipfsLinkOverLimit": "Link do obrazu dodano, ale wiadomość jest teraz za długa. Skróć ją przed wysłaniem.",
+  "@chat_ipfsLinkOverLimit": {
+    "description": "Shown after an IPFS upload when the link plus the draft no longer fits the message size limit"
+  },
   "chat_imagePickFailed": "Nie mogłem otworzyć tego obrazu",
   "chat_receivedGif": "Otrzymano GIF",
   "repeater_keySettings": "Zmiana kluczy tożsamości",
@@ -2935,8 +3042,10 @@
   "room_postsStored": "Posty",
   "settings_publicKeyCopied": "Skopiowano klucz publiczny",
   "settings_radioSettingsNotApplied": "Radio nie zastosowało tych ustawień",
+  "settings_pathHashModeNotApplied": "Ustawienia radia zastosowano, ale radio nie potwierdziło nowego rozmiaru skrótu ścieżki",
   "urlImage_enable": "Włącz obrazy z URL",
   "urlImage_possible": "Możliwy obraz z URL; włącz go w Ustawieniach.",
+  "urlImage_disabledInAppSettings": "Wyłączone w ustawieniach aplikacji",
   "@chat_longMessageRetryNote": {
     "description": "Shown under the DM composer when the message is too long for the firmware's later retry attempts",
     "placeholders": {
@@ -3047,6 +3156,8 @@
   },
   "contacts_keepChatHistory": "Zachowaj historię czatu",
   "contacts_remove": "Usuń",
+  "contacts_removeAutoAddNote": "Twoje radio automatycznie dodaje ten typ kontaktu, więc wróci przy następnym rozgłoszeniu. Wyłącz automatyczne dodawanie w ustawieniach Kontaktów, aby go usunąć na stałe.",
+  "contacts_removeFailed": "Radio nie potwierdziło usunięcia. Kontakt nie został usunięty.",
   "contacts_discoveredNearby": "Odkryte w pobliżu ({count})",
   "@contacts_discoveredNearby": {
     "placeholders": {
@@ -3101,6 +3212,8 @@
   "notification_replySendFailed": "Twoja odpowiedź mogła nie zostać wysłana. Sprawdź w MeshCore Open i spróbuj ponownie.",
   "notification_replyAppNotRunning": "MeshCore Open nie jest uruchomiony. Otwórz go i wyślij odpowiedź jeszcze raz.",
   "snrIndicator_nearByRepeatersDescription": "Przekaźniki usłyszane bezpośrednio przez Twoje radio, najpierw te ostatnio usłyszane.",
+  "snrIndicator_unknownRepeater": "Nieznany przekaźnik",
+  "snrIndicator_unknownRepeaterHint": "Tego przekaźnika nie ma jeszcze w Twoich kontaktach. Jego nazwa, lokalizacja i opcje pojawią się, gdy radio odbierze jego rozgłoszenie.",
   "radioStats_sectionSignal": "Sygnał",
   "radioStats_sectionAirtime": "Czas w eterze",
   "imageSend_lossyNote": "Skompresowano do około {bytes} bajtów. Model odbiorcy odtworzy obraz, więc szczegóły będą się różnić.",
@@ -3171,6 +3284,21 @@
   "channels_waitForSync": "Kanały są jeszcze wczytywane z radia. Spróbuj ponownie po zakończeniu synchronizacji.",
   "channels_nameTooLong": "Nazwa jest za długa (maks. {maxBytes} bajtów).",
   "repeater_valueRequired": "{field}: wpisz wartość",
+  "repeater_floodMaxAdvert": "Maks. liczba skoków flood dla advertów",
+  "repeater_floodMaxAdvertHelper": "Maksymalna liczba skoków, które może pokonać rozgłaszany (flood) advert (0-64, domyślnie 8)",
+  "repeater_floodMaxUnscoped": "Maks. liczba skoków flood bez zakresu",
+  "repeater_floodMaxUnscopedHelper": "Maksymalna liczba skoków dla floodów bez zakresu regionu (0-64, domyślnie 64). Niska wartość, np. 3, utrzymuje ruch bez zakresu lokalnie.",
+  "repeater_floodMaxUnscopedUnset": "Jak maks. flood",
+  "repeater_rxDelay": "Opóźnienie odbioru",
+  "repeater_rxDelayHelper": "Wstrzymuje pakiety flood odebrane ze słabym sygnałem przed przekazaniem dalej, dzięki czemu ścieżki z silnym sygnałem są pierwsze i wysyłanych jest mniej duplikatów (0-20, 0 wyłącza).",
+  "repeater_cad": "Wykrywanie aktywności kanału",
+  "repeater_cadHelper": "Nasłuchuje aktywności przed nadawaniem i czeka, dopóki kanał jest zajęty. Działa razem z progiem zakłóceń.",
+  "repeater_adcMultiplier": "Kalibracja napięcia baterii",
+  "repeater_adcMultiplierHelper": "Mnożnik odczytu napięcia baterii (0-10). 0 używa wartości domyślnej płytki.",
+  "repeater_boardSupportNote": "Nie każda płytka to obsługuje. Nieobsługiwane płytki odrzucają zmianę.",
+  "repeater_extraSf": "Dodatkowe współczynniki rozpraszania",
+  "repeater_extraSfHelper": "Do 3 dodatkowych współczynników rozpraszania, na których nasłuchiwać jednocześnie, oddzielonych przecinkami (na przykład 9,10). Pozostaw puste, aby wyłączyć.",
+  "repeater_lr2021Only": "Tylko dla przekaźników z radiem LR2021. Inne przekaźniki nie mają tego ustawienia i je odrzucają.",
   "losMapDetailTooltip": "Szczegóły mapy",
   "losUnitsTooltip": "Jednostki",
   "losDistance": "Odległość",
@@ -3213,6 +3341,10 @@
   "map_youWithMarkers": "Ty i znaczniki: {count}",
   "map_sharedMarkerSemantics": "Udostępniony znacznik: {label}",
   "map_nodeMarkerSemantics": "{name}, {type}, {status}",
+  "map_requestLocation": "Zaktualizuj lokalizację",
+  "map_locationUpdated": "Lokalizacja zaktualizowana",
+  "map_locationNotShared": "{name} odpowiedział bez lokalizacji",
+  "map_locationRequestFailed": "Brak odpowiedzi od {name}",
   "mapCache_zoomLevel": "Zoom {zoom}",
   "mapCache_sizeBytes": "{size} B",
   "mapCache_sizeKilobytes": "{size} KB",
@@ -3283,10 +3415,17 @@
   "repeater_discardChanges": "Odrzuć",
   "repeater_actionSentNoReply": "{action}: polecenie wysłane. Przekaźnik nie odpowiada na to polecenie.",
   "repeater_invalidSettingValue": "{setting}: {value} jest nieprawidłowe",
-  "repeater_txPowerOutOfRange": "Moc TX {value} jest poza zakresem (od {min} do {max} dBm)",
   "repeater_prvKeyLengthError": "Klucz prywatny musi mieć dokładnie {length} znaków szesnastkowych",
   "contacts_advertFailed": "Nie udało się wysłać ogłoszenia",
   "contacts_manageGroups": "Zarządzaj grupami",
+  "contacts_keyPrefixSemantics": "Prefiks klucza {prefix}",
+  "@contacts_keyPrefixSemantics": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
   "community_shortId": "ID: {id}…",
   "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Połączono z",
@@ -3324,6 +3463,9 @@
   "networkMap_sourceLocal": "Lokalna",
   "networkMap_sourceOnline": "Online",
   "networkMap_sourceBoth": "Obie",
+  "networkMap_sourceLocalHint": "Węzły słyszane przez Twoje radio",
+  "networkMap_sourceOnlineHint": "Przekaźniki z mapy sieci online",
+  "networkMap_sourceBothHint": "Węzły Twojego radia oraz mapa sieci online",
   "networkMap_zoomInHint": "Przybliż, aby zobaczyć mapę sieci online",
   "networkMap_loadFailed": "Nie udało się wczytać mapy sieci online",
   "networkMap_inYourContacts": "W Twoich kontaktach",
@@ -3343,5 +3485,79 @@
   "networkMap_manage": "Zarządzaj",
   "networkMap_addedToContacts": "Dodano do kontaktów",
   "networkMap_addFailed": "Nie udało się dodać do kontaktów",
-  "networkMap_unnamed": "Repeater bez nazwy"
+  "networkMap_unnamed": "Repeater bez nazwy",
+  "holidayGreeting_halloween": "Wesołego Halloween|Szczęśliwego Halloween|Straszne Halloween|Cukierek albo psikus|Happy Halloween",
+  "holidayGreeting_thanksgiving": "Szczęśliwego Święta Dziękczynienia|Wesołego Święta Dziękczynienia|Szczęśliwego Dnia Dziękczynienia|Wesołego Dnia Dziękczynienia|Happy Thanksgiving",
+  "holidayGreeting_christmas": "Wesołych Świąt|Wesołych Świąt Bożego Narodzenia|Wesołej Gwiazdki|Radosnych Świąt|Merry Christmas",
+  "holidayGreeting_newYear": "Szczęśliwego Nowego Roku|Dobrego Nowego Roku|Udanego Nowego Roku|Happy New Year",
+  "appSettings_colorTheme": "Motyw kolorystyczny",
+  "appSettings_holidayAnimations": "Animacje świątecznych wiadomości",
+  "appSettings_holidayAnimationsSubtitle": "Nietoperze, indyk, Mikołaj lub fajerwerki, gdy ktoś wyśle świąteczne życzenia",
+  "themes_title": "Motywy",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "Standardowe kolory, zależą od ustawienia Jasny / Ciemny",
+  "themes_builtIn": "Wbudowane",
+  "themes_holidays": "Święta",
+  "themes_holidayAutoSwitch": "Przełączaj automatycznie",
+  "themes_holidayAutoSwitchSubtitle": "Używa motywu każdego święta od 17 dni przed nim aż do samego dnia",
+  "themes_holidayAutoApplied": "Motyw {holiday} jest włączony automatycznie. Twój własny motyw wróci po świętach.",
+  "themes_holidayAutoAppliedTag": "Włączony automatycznie",
+  "themes_myThemes": "Moje motywy",
+  "themes_myThemesEmpty": "Stwórz własny motyw, wybierając tło i kolor akcentu.",
+  "themes_create": "Utwórz motyw",
+  "themes_import": "Importuj motyw",
+  "themes_importHint": "Wklej kod motywu",
+  "themes_importInvalid": "To nie jest prawidłowy kod motywu",
+  "themes_imported": "Dodano motyw „{name}”",
+  "themes_customize": "Dostosuj kopię",
+  "themes_copyCode": "Kopiuj kod motywu",
+  "themes_codeCopied": "Skopiowano kod motywu",
+  "themes_deleteConfirm": "Usunąć motyw „{name}”?",
+  "themes_copyName": "{name} – kopia",
+  "themes_newTitle": "Nowy motyw",
+  "themes_editTitle": "Edytuj motyw",
+  "themes_name": "Nazwa",
+  "themes_nameRequired": "Nadaj motywowi nazwę",
+  "themes_background": "Tło",
+  "themes_backgroundHelp": "Ciemne tło tworzy ciemny motyw",
+  "themes_accent": "Akcent",
+  "themes_accentHelp": "Przyciski, wyróżnienia i Twoje dymki czatu",
+  "themes_hexColor": "Kolor szesnastkowy",
+  "themes_preview": "Podgląd",
+  "themes_previewIncoming": "Ktoś jest dziś wieczorem w sieci?",
+  "themes_previewOutgoing": "Odbiór głośny i wyraźny!",
+  "themes_previewSwitch": "Powiadomienia",
+  "themes_lowContrast": "Kolor akcentu jest słabo widoczny na tym tle",
+  "themes_saveAndUse": "Zapisz i użyj",
+  "themes_icons": "Ikony",
+  "themes_iconsHelp": "Dotknij ikony, aby zamienić ją na inną ikonę lub własne zdjęcie",
+  "themes_iconChanged": "Zmieniono",
+  "themes_iconSend": "Przycisk wysyłania",
+  "themes_iconRepeater": "Przekaźniki",
+  "themes_iconRoom": "Pokoje",
+  "themes_iconSensor": "Czujniki",
+  "themes_mapMarkers": "Znaczniki na mapie",
+  "themes_mapMarkersHelp": "Zamień znaczniki węzłów i swojej pozycji na mapie",
+  "themes_iconUsePicture": "Użyj zdjęcia",
+  "themes_iconReset": "Użyj domyślnej ikony",
+  "themes_iconPictureFailed": "Nie udało się użyć tego zdjęcia",
+  "themes_exportFile": "Eksportuj do pliku",
+  "themes_exportAll": "Eksportuj moje motywy",
+  "themes_importFile": "Importuj z pliku",
+  "themes_pasteCode": "Wklej kod motywu",
+  "themes_exportFailed": "Nie udało się wyeksportować motywów",
+  "themes_importFileResult": "Zaimportowano motywy: {count}",
+  "themes_importFileNone": "Nie znaleziono motywów w tym pliku",
+  "chatBackground_title": "Tło czatu",
+  "chatBackground_thisChatOnly": "Tylko w tym czacie",
+  "chatBackground_themeOverrides": "Twój motyw „{name}” ustawia tło w każdym czacie. Wyłącz to w motywie, aby użyć tego tła.",
+  "chatBackground_none": "Brak",
+  "chatBackground_picture": "Zdjęcie",
+  "chatBackground_choosePicture": "Wybierz zdjęcie",
+  "chatBackground_pictureFailed": "Nie udało się użyć tego zdjęcia",
+  "chatBackground_fade": "Zanikanie",
+  "themes_chatBackground": "Tło czatu",
+  "themes_chatBackgroundHelp": "Pokazywane w czatach, które nie mają własnego tła",
+  "themes_chatBackgroundEverywhere": "Użyj w każdym czacie",
+  "themes_chatBackgroundEverywhereHelp": "Zastępuje też tła ustawione w pojedynczych czatach"
 }

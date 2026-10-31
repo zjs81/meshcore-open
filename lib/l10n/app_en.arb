@@ -69,6 +69,7 @@
   },
   "urlImage_enable": "Enable URL images",
   "urlImage_possible": "Possible URL image; enable it in Settings.",
+  "urlImage_disabledInAppSettings": "Turned off in app settings",
   "common_reboot": "Reboot",
   "common_loading": "Loading...",
   "common_notAvailable": "—",
@@ -198,6 +199,7 @@
   "settings_radioSettingsSubtitle": "Frequency, power, spreading factor",
   "settings_radioSettingsUpdated": "Radio settings updated",
   "settings_radioSettingsNotApplied": "The radio did not apply these settings",
+  "settings_pathHashModeNotApplied": "Radio settings were applied, but the radio did not confirm the new path hash size",
   "settings_regionSettings": "Regions",
   "settings_regionSettingsSubtitle": "Limit channel floods to an area",
   "settings_regionEmptyExplanation": "Regions limit flood messages to repeaters in an area. Fetch them from nearby repeaters or add one by name.",
@@ -358,6 +360,118 @@
   "appSettings_themeSystem": "System default",
   "appSettings_themeLight": "Light",
   "appSettings_themeDark": "Dark",
+  "appSettings_colorTheme": "Color theme",
+  "appSettings_holidayAnimations": "Holiday message animations",
+  "appSettings_holidayAnimationsSubtitle": "Bats, a turkey, Santa or fireworks when someone sends a holiday greeting",
+  "themes_title": "Themes",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "Standard colors, follows the Light / Dark setting",
+  "themes_builtIn": "Built-in",
+  "themes_holidays": "Holidays",
+  "themes_holidayAutoSwitch": "Switch automatically",
+  "themes_holidayAutoSwitchSubtitle": "Uses each holiday's theme from 17 days before until the day itself",
+  "themes_holidayAutoApplied": "{holiday} theme is on automatically. Your own theme comes back after the holiday.",
+  "@themes_holidayAutoApplied": {
+    "placeholders": {
+      "holiday": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_holidayAutoAppliedTag": "On automatically",
+  "themes_myThemes": "My themes",
+  "themes_myThemesEmpty": "Make your own theme by picking a background and an accent color.",
+  "themes_create": "Create theme",
+  "themes_import": "Import theme",
+  "themes_importHint": "Paste a theme code",
+  "themes_importInvalid": "That is not a valid theme code",
+  "themes_imported": "Added theme \"{name}\"",
+  "@themes_imported": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_customize": "Customize a copy",
+  "themes_copyCode": "Copy theme code",
+  "themes_codeCopied": "Theme code copied",
+  "themes_deleteConfirm": "Delete theme \"{name}\"?",
+  "@themes_deleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_copyName": "{name} copy",
+  "@themes_copyName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_newTitle": "New theme",
+  "themes_editTitle": "Edit theme",
+  "themes_name": "Name",
+  "themes_nameRequired": "Give your theme a name",
+  "themes_background": "Background",
+  "themes_backgroundHelp": "A dark background makes a dark theme",
+  "themes_accent": "Accent",
+  "themes_accentHelp": "Buttons, highlights and your chat bubbles",
+  "themes_hexColor": "Hex color",
+  "themes_preview": "Preview",
+  "themes_previewIncoming": "Anyone on the mesh tonight?",
+  "themes_previewOutgoing": "Loud and clear!",
+  "themes_previewSwitch": "Notifications",
+  "themes_lowContrast": "The accent is hard to see on this background",
+  "themes_saveAndUse": "Save and use",
+  "themes_icons": "Icons",
+  "themes_iconsHelp": "Tap an icon to swap it for another icon or your own picture",
+  "themes_iconChanged": "Changed",
+  "themes_iconSend": "Send button",
+  "themes_iconRepeater": "Repeaters",
+  "themes_iconRoom": "Rooms",
+  "themes_iconSensor": "Sensors",
+  "themes_mapMarkers": "Map markers",
+  "themes_mapMarkersHelp": "Swap the markers for nodes and for you on the map",
+  "themes_iconUsePicture": "Use a picture",
+  "themes_iconReset": "Use the default icon",
+  "themes_iconPictureFailed": "Could not use that picture",
+  "themes_exportFile": "Export to file",
+  "themes_exportAll": "Export my themes",
+  "themes_importFile": "Import from file",
+  "themes_pasteCode": "Paste theme code",
+  "themes_exportFailed": "Could not export themes",
+  "themes_importFileResult": "Imported {count} themes",
+  "@themes_importFileResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "themes_importFileNone": "No themes found in that file",
+  "chatBackground_title": "Chat background",
+  "chatBackground_thisChatOnly": "Only for this chat",
+  "chatBackground_themeOverrides": "Your theme \"{name}\" sets the background in every chat. Turn that off in the theme to use this one.",
+  "@chatBackground_themeOverrides": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chatBackground_none": "None",
+  "chatBackground_picture": "Picture",
+  "chatBackground_choosePicture": "Choose a picture",
+  "chatBackground_pictureFailed": "Could not use that picture",
+  "chatBackground_fade": "Fade",
+  "themes_chatBackground": "Chat background",
+  "themes_chatBackgroundHelp": "Shown in chats that do not have their own background",
+  "themes_chatBackgroundEverywhere": "Use in every chat",
+  "themes_chatBackgroundEverywhereHelp": "Also replaces backgrounds set on individual chats",
   "appSettings_language": "Language",
   "appSettings_languageSystem": "System default",
   "appSettings_languageEn": "English",
@@ -452,6 +566,22 @@
   "appSettings_routeWeightFailureDecrementSubtitle": "Weight removed from a path after failed delivery",
   "appSettings_maxMessageRetries": "Max Message Retries",
   "appSettings_maxMessageRetriesSubtitle": "Number of retry attempts before marking a message as failed",
+  "appSettings_ipfsImageLinks": "IPFS provider configuration",
+  "appSettings_ipfsImageLinksSubtitle": "Upload for url Images (or Files) via IPFS provider and default gateway to receive",
+  "appSettings_loadLinkImages": "Load images from links",
+  "appSettings_loadLinkImagesSubtitle": "Show pictures from links in messages. Loading an image shares your IP address with the site that hosts it.",
+  "appSettings_showLinkImagesByDefault": "Show link images in all chats by default",
+  "appSettings_showLinkImagesByDefaultSubtitle": "Load link images in every chat unless you turned them off there. This shares your IP address with image hosts in every chat.",
+  "appSettings_publicIpfsGateway": "Public gateway",
+  "appSettings_ipfsGatewayDeactivated": "Deactivated",
+  "appSettings_ipfsGatewayCustom": "Custom (Kubo)",
+  "appSettings_uploadIpfsProvider": "Upload provider",
+  "appSettings_uploadIpfsGateway": "Upload gateway",
+  "appSettings_uploadIpfsGatewaySubtitle": "Gateway to share Image or File as url-link. Leave empty to use ipfs: format, which may not be opened by other clients.",
+  "appSettings_uploadIpfsEndpoint": "Upload endpoint",
+  "appSettings_uploadIpfsEndpointSubtitle": "The API endpoint used to upload files",
+  "appSettings_uploadIpfsApiKey": "Upload API key",
+  "appSettings_ipfsImageLinksDescription": "Public gateway downloads ipfs: format images. Upload gateway is used to generate share links for uploaded url images or files.",
   "appSettings_battery": "Battery",
   "appSettings_batteryChemistry": "Battery Chemistry",
   "appSettings_batteryChemistryPerDevice": "Set per device ({deviceName})",
@@ -608,6 +738,8 @@
   },
   "contacts_keepChatHistory": "Keep chat history",
   "contacts_remove": "Remove",
+  "contacts_removeAutoAddNote": "Your radio auto-adds this contact type, so it will come back the next time it advertises. Turn off auto-add in Contacts settings to keep it removed.",
+  "contacts_removeFailed": "The radio did not confirm the removal. The contact was not removed.",
   "contacts_discoveredNearby": "Discovered nearby ({count})",
   "@contacts_discoveredNearby": {
     "placeholders": {
@@ -715,6 +847,18 @@
   "channels_addSectionCreate": "Create new",
   "channels_dragToReorder": "Drag to reorder",
   "channels_editChannel": "Edit channel",
+  "channels_notificationSettings": "Notification settings",
+  "channels_notifyAll": "All messages",
+  "channels_notifyMentionsOnly": "Mentions only",
+  "channels_notifyNone": "Muted",
+  "channels_notificationModeTooltip": "Notifications: {mode}",
+  "@channels_notificationModeTooltip": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
   "channels_muteChannel": "Mute channel",
   "channels_unmuteChannel": "Unmute channel",
   "channels_deleteChannel": "Delete channel",
@@ -821,6 +965,26 @@
   "channels_joinHashtagChannelDesc": "Anyone can join hashtag channels.",
   "channels_scanQrCode": "Scan a QR Code",
   "channels_scanQrCodeComingSoon": "Coming soon",
+  "channels_scanQrCodeDesc": "Join a channel or community from its QR code.",
+  "channels_scanQrInstructions": "Point the camera at a channel or community QR code",
+  "channels_invalidQrCode": "Not a MeshCore channel or community QR code",
+  "channels_joinChannelTitle": "Join Channel",
+  "channels_joinChannelConfirm": "Add \"{name}\" to your radio?",
+  "@channels_joinChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_alreadyOnRadio": "\"{name}\" is already on your radio",
+  "@channels_alreadyOnRadio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "channels_enterHashtag": "Enter hashtag",
   "channels_hashtagHint": "e.g. #team",
   "channels_regionSetTo": "Region: {region}",
@@ -914,6 +1078,29 @@
   "chat_removeGif": "Remove GIF",
   "chat_cancelReply": "Cancel reply",
   "chat_sendImageLora": "Send low-res image over radio",
+  "chat_sendImageIpfs": "Send image or file via IPFS",
+  "chat_ipfsUploadFailed": "IPFS upload failed: {error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "Configure an IPFS upload provider in App Settings first.",
+  "chat_ipfsSelectedFileEmpty": "The selected file is empty.",
+  "chat_ipfsEndpointInvalid": "The IPFS upload endpoint must be a full http:// or https:// address. Check it in App Settings.",
+  "chat_ipfsPinataTokenMissing": "Pinata needs an API key or JWT. Add it in App Settings.",
+  "chat_ipfsFilebaseTokenMissing": "Filebase needs an API token. Add it in App Settings.",
+  "chat_ipfsKuboPathInvalid": "The Kubo upload endpoint must end with /api/v0/add. Check it in App Settings.",
+  "chat_ipfsLinkNoRoom": "Not enough room for the image link. Shorten your message, then try again.",
+  "@chat_ipfsLinkNoRoom": {
+    "description": "Shown before an IPFS upload when the link would push the draft over the message size limit"
+  },
+  "chat_ipfsLinkOverLimit": "Image link added, but the message is now too long. Shorten it before sending.",
+  "@chat_ipfsLinkOverLimit": {
+    "description": "Shown after an IPFS upload when the link plus the draft no longer fits the message size limit"
+  },
   "chat_imagePickFailed": "Couldn't open that image",
   "@chat_imagePickFailed": {
     "description": "Shown when picking or reading a photo to send fails"
@@ -1234,6 +1421,12 @@
   "map_runTraceWithReturnPath": "Return back on the same path.",
   "map_removeLast": "Remove Last",
   "map_pathTraceCancelled": "Path trace cancelled.",
+  "map_pathTraceAddMoreHint": "Tap more nodes to add hops, choose how the trace returns, then tap Run path trace.",
+  "map_pathTraceModeRoundTrip": "Round trip",
+  "map_pathTraceModeRoundTripHint": "The trace goes out through these hops and comes back the same way.",
+  "map_pathTraceModeAsEntered": "As entered",
+  "map_pathTraceModeAsEnteredHint": "The trace follows these hops exactly. Add the hops back to you yourself.",
+  "map_pathTraceViewLast": "View last result",
   "mapCache_title": "Offline Map Cache",
   "mapCache_selectAreaFirst": "Select an area to cache first",
   "mapCache_noTilesToDownload": "No tiles to download for this area",
@@ -1646,10 +1839,8 @@
   "repeater_settingsSaved": "Settings saved successfully",
   "repeater_rxGain": "Boosted RX gain",
   "repeater_rxGainHelper": "Higher sensitivity, more current draw (SX1262/SX1268 only)",
-  "repeater_refreshRxGain": "Refresh boosted RX gain",
   "repeater_multiAcks": "Multi-ACKs",
   "repeater_multiAcksSubtitle": "Acknowledge messages over multiple paths for better delivery",
-  "repeater_refreshMultiAcks": "Refresh multi-ACKs",
   "repeater_networkHealth": "Network health",
   "repeater_loopDetect": "Loop detection",
   "repeater_loopDetectHelper": "Drop flood packets that look like routing loops",
@@ -1669,7 +1860,6 @@
   },
   "repeater_ownerInfo": "Operator info",
   "repeater_ownerInfoHelper": "Public metadata for this repeater",
-  "repeater_refreshOwnerInfo": "Refresh operator info",
   "repeater_floodMax": "Flood max hops",
   "repeater_floodMaxHelper": "Maximum hops a flood packet may travel (0-64)",
   "repeater_advancedSettings": "Advanced",
@@ -1744,11 +1934,7 @@
       }
     }
   },
-  "repeater_refreshBasicSettings": "Refresh Basic Settings",
   "repeater_refreshRadioSettings": "Refresh Radio Settings",
-  "repeater_refreshTxPower": "Refresh TX power",
-  "repeater_refreshPacketForwarding": "Refresh Packet Forwarding",
-  "repeater_refreshGuestAccess": "Refresh Guest Access",
   "repeater_refreshPrivacyMode": "Refresh Privacy Mode",
   "repeater_refreshAll": "Refresh all",
   "repeater_settingsNotLoaded": "Settings haven't been loaded from this repeater yet.",
@@ -2678,6 +2864,22 @@
   "contacts_contactAdvertCopied": "Advert copied to Clipboard.",
   "contacts_contactAdvertCopyFailed": "Copying advert to Clipboard failed.",
   "notification_activityTitle": "MeshCore Activity",
+  "notification_lowBatteryTitle": "Low battery",
+  "@notification_lowBatteryTitle": {
+    "description": "Title of the low battery notification"
+  },
+  "notification_lowBatteryBody": "{deviceName} battery is at {percent}%",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification; deviceName is the connected radio's node name",
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "notification_messagesCount": "{count} {count, plural, =1{message} other{messages}}",
   "@notification_messagesCount": {
     "placeholders": {
@@ -2711,6 +2913,25 @@
     }
   },
   "notification_receivedNewMessage": "Received new message",
+  "notification_sharedLocation": "Shared a location",
+  "notification_sharedLocationNamed": "Shared a location: {label}",
+  "@notification_sharedLocationNamed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_reacted": "Reacted {emoji}",
+  "@notification_reacted": {
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_sentGif": "Sent a GIF",
+  "notification_sentImage": "Sent an image",
   "notification_actionReply": "Reply",
   "notification_actionMarkRead": "Mark as read",
   "notification_actionMuteChannel": "Mute channel",
@@ -2740,6 +2961,8 @@
   "snrIndicator_nearByRepeaters": "Nearby Repeaters",
   "snrIndicator_lastSeen": "Last seen",
   "snrIndicator_nearByRepeatersDescription": "Repeaters your radio heard directly, most recently heard first.",
+  "snrIndicator_unknownRepeater": "Unknown repeater",
+  "snrIndicator_unknownRepeaterHint": "This repeater isn't in your contacts yet. Its name, location and options appear once your radio receives its advert.",
   "contactsSettings_title": "Contacts settings",
   "contactsSettings_autoAddTitle": "Automatic Discovery",
   "contactsSettings_otherTitle": "Other contact related settings",
@@ -2802,6 +3025,8 @@
   "chat_sendCooldown": "Please wait a moment before sending again.",
   "appSettings_jumpToOldestUnread": "Jump to oldest unread",
   "appSettings_jumpToOldestUnreadSubtitle": "When opening a chat with unread messages, scroll to the first unread instead of the latest.",
+  "appSettings_autoFetchRepeaterSettings": "Auto-fetch repeater settings",
+  "appSettings_autoFetchRepeaterSettingsSubtitle": "Request every setting when opening a repeater's settings. Each one is a separate request over LoRa, so this is slow and uses airtime. When off, tap Refresh All or refresh individual sections.",
   "appSettings_languageHu": "Hungarian",
   "appSettings_languageJa": "Japanese",
   "appSettings_languageKo": "Korean",
@@ -3272,6 +3497,21 @@
   "channels_nameTooLong": "Name is too long (max {maxBytes} bytes).",
   "@channels_nameTooLong": {"description": "Snackbar when a channel name would not fit on the radio", "placeholders": {"maxBytes": {"type": "int"}}},
   "repeater_valueRequired": "{field}: enter a value",
+  "repeater_floodMaxAdvert": "Advert flood max hops",
+  "repeater_floodMaxAdvertHelper": "Maximum hops a flooded advert may travel (0-64, default 8)",
+  "repeater_floodMaxUnscoped": "Unscoped flood max hops",
+  "repeater_floodMaxUnscopedHelper": "Maximum hops for floods without a region scope (0-64, default 64). A low value such as 3 keeps unscoped traffic local.",
+  "repeater_floodMaxUnscopedUnset": "Same as flood max",
+  "repeater_rxDelay": "Receive delay",
+  "repeater_rxDelayHelper": "Holds flood packets heard with a weak signal before forwarding, so strong-signal paths go first and fewer duplicates are sent (0-20, 0 turns it off).",
+  "repeater_cad": "Channel activity detection",
+  "repeater_cadHelper": "Listen for activity before transmitting and wait while the channel is busy. Works alongside the interference threshold.",
+  "repeater_adcMultiplier": "Battery voltage calibration",
+  "repeater_adcMultiplierHelper": "Multiplier for the battery voltage reading (0-10). 0 uses the board's default.",
+  "repeater_boardSupportNote": "Not every board supports this. Unsupported boards reject the change.",
+  "repeater_extraSf": "Extra spreading factors",
+  "repeater_extraSfHelper": "Up to 3 more spreading factors to listen on at the same time, separated by commas (for example 9,10). Leave empty to turn off.",
+  "repeater_lr2021Only": "Only for repeaters with an LR2021 radio. Other repeaters don't have this setting and reject it.",
   "@repeater_valueRequired": {"description": "Save error when a changed repeater setting was left empty", "placeholders": {"field": {"type": "String"}}},
   "losMapDetailTooltip": "Map detail",
   "losUnitsTooltip": "Units",
@@ -3334,6 +3574,12 @@
   "@map_sharedMarkerSemantics": {"placeholders": {"label": {"type": "String"}}},
   "map_nodeMarkerSemantics": "{name}, {type}, {status}",
   "@map_nodeMarkerSemantics": {"placeholders": {"name": {"type": "String"}, "type": {"type": "String"}, "status": {"type": "String"}}},
+  "map_requestLocation": "Update location",
+  "map_locationUpdated": "Location updated",
+  "map_locationNotShared": "{name} replied without a location",
+  "@map_locationNotShared": {"placeholders": {"name": {"type": "String"}}},
+  "map_locationRequestFailed": "No reply from {name}",
+  "@map_locationRequestFailed": {"placeholders": {"name": {"type": "String"}}},
   "mapCache_zoomLevel": "Zoom {zoom}",
   "@mapCache_zoomLevel": {"placeholders": {"zoom": {"type": "int"}}},
   "mapCache_sizeBytes": "{size} B",
@@ -3431,12 +3677,12 @@
   "@repeater_actionSentNoReply": {"placeholders": {"action": {"type": "String"}}},
   "repeater_invalidSettingValue": "{setting}: {value} is not valid",
   "@repeater_invalidSettingValue": {"placeholders": {"setting": {"type": "String"}, "value": {"type": "String"}}},
-  "repeater_txPowerOutOfRange": "TX power {value} is out of range ({min} to {max} dBm)",
-  "@repeater_txPowerOutOfRange": {"placeholders": {"value": {"type": "String"}, "min": {"type": "int"}, "max": {"type": "int"}}},
   "repeater_prvKeyLengthError": "Private key must be exactly {length} hex characters",
   "@repeater_prvKeyLengthError": {"placeholders": {"length": {"type": "int"}}},
   "contacts_advertFailed": "Couldn't send advertisement",
   "contacts_manageGroups": "Manage groups",
+  "contacts_keyPrefixSemantics": "Key prefix {prefix}",
+  "@contacts_keyPrefixSemantics": {"placeholders": {"prefix": {"type": "String"}}},
   "community_shortId": "ID: {id}…",
   "@community_shortId": {"placeholders": {"id": {"type": "String"}}},
   "tcpSectionTitle": "TCP / IP",
@@ -3465,6 +3711,9 @@
   "networkMap_sourceLocal": "Local",
   "networkMap_sourceOnline": "Online",
   "networkMap_sourceBoth": "Both",
+  "networkMap_sourceLocalHint": "Nodes your radio has heard",
+  "networkMap_sourceOnlineHint": "Repeaters from the online network map",
+  "networkMap_sourceBothHint": "Your radio's nodes plus the online network map",
   "networkMap_zoomInHint": "Zoom in to see the online network map",
   "networkMap_loadFailed": "Couldn't load the online network map",
   "networkMap_inYourContacts": "In your contacts",
@@ -3484,5 +3733,21 @@
   "networkMap_manage": "Manage",
   "networkMap_addedToContacts": "Added to contacts",
   "networkMap_addFailed": "Couldn't add to contacts",
-  "networkMap_unnamed": "Unnamed repeater"
+  "networkMap_unnamed": "Unnamed repeater",
+  "holidayGreeting_halloween": "Happy Halloween",
+  "@holidayGreeting_halloween": {
+    "description": "Holiday greeting that plays the Halloween bats animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  },
+  "holidayGreeting_thanksgiving": "Happy Thanksgiving",
+  "@holidayGreeting_thanksgiving": {
+    "description": "Holiday greeting that plays the Thanksgiving turkey animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  },
+  "holidayGreeting_christmas": "Merry Christmas|Merry Xmas|Happy Christmas",
+  "@holidayGreeting_christmas": {
+    "description": "Holiday greeting that plays the Christmas Santa animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  },
+  "holidayGreeting_newYear": "Happy New Year|Happy New Year's",
+  "@holidayGreeting_newYear": {
+    "description": "Holiday greeting that plays the New Year's fireworks animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  }
 }

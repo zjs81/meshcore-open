@@ -65,7 +65,12 @@ void main() {
       waitForReply: true,
     );
     queue.takeErr(6);
-    await expectLater(pending!.completer!.future, throwsException);
+    await expectLater(
+      pending!.completer!.future,
+      throwsA(
+        isA<FirmwareCommandException>().having((e) => e.errCode, 'errCode', 6),
+      ),
+    );
   });
 
   group('timed-out entries', () {

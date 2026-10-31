@@ -12,11 +12,15 @@ import 'package:meshcore_open/services/usb_serial_frame_codec.dart';
 import 'package:meshcore_open/storage/prefs_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> _waitFor(bool Function() condition, {int seconds = 10}) async {
+Future<void> _waitFor(
+  bool Function() condition, {
+  int seconds = 10,
+  Duration pollInterval = const Duration(milliseconds: 25),
+}) async {
   final end = DateTime.now().add(Duration(seconds: seconds));
   while (!condition()) {
     if (DateTime.now().isAfter(end)) fail('Timed out waiting for condition');
-    await Future<void>.delayed(const Duration(milliseconds: 25));
+    await Future<void>.delayed(pollInterval);
   }
 }
 
@@ -200,11 +204,22 @@ void main() {
       // The companion goes away entirely: attempts fail and are rescheduled.
       await companion.close();
       await _waitFor(
-        () => _connector.state == MeshCoreConnectionState.disconnected,
+        () =>
+            _connector.state == MeshCoreConnectionState.disconnected &&
+            _connector.isAutoReconnectScheduled,
       );
-      await Future<void>.delayed(const Duration(milliseconds: 1500));
+      await _waitFor(
+        () => !_connector.isAutoReconnectScheduled,
+        pollInterval: const Duration(milliseconds: 1),
+      );
+      // The timer firing proves an attempt started; wait for its failure to
+      // finish and the next backoff to become active.
+      await _waitFor(
+        () =>
+            _connector.state == MeshCoreConnectionState.disconnected &&
+            _connector.isAutoReconnectScheduled,
+      );
       expect(_connector.isTcpTransportConnected, isFalse);
-      expect(_connector.isAutoReconnectScheduled, isTrue);
     },
   );
 }

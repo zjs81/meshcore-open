@@ -290,7 +290,7 @@
   "contacts_title": "联系人",
   "contacts_noContacts": "暂无联系人",
   "contacts_contactsWillAppear": "当设备发送广播时，联系人将显示。",
-  "contacts_searchContacts": "搜索联系人...",
+  "contacts_searchContacts": "搜索 {number}{str} 个联系人...",
   "contacts_noUnreadContacts": "没有未读内容",
   "contacts_noContactsFound": "未找到任何联系人或群聊",
   "contacts_deleteContact": "删除联系人",
@@ -374,6 +374,10 @@
   "channels_public": "公共",
   "channels_private": "私有",
   "channels_editChannel": "编辑频道",
+  "channels_notificationSettings": "通知设置",
+  "channels_notifyAll": "所有消息",
+  "channels_notifyMentionsOnly": "仅提及",
+  "channels_notifyNone": "静音",
   "channels_muteChannel": "静音频道",
   "channels_unmuteChannel": "取消静音频道",
   "channels_deleteChannel": "删除频道",
@@ -1177,10 +1181,8 @@
   "repeater_settingsSaved": "设置保存成功",
   "repeater_rxGain": "增强的 RX 增益",
   "repeater_rxGainHelper": "更高的灵敏度，更大的电流消耗（仅适用于 SX1262/SX1268）",
-  "repeater_refreshRxGain": "重新启动增强型 RX 功能",
   "repeater_multiAcks": "多重确认",
   "repeater_multiAcksSubtitle": "通过多个路径确认消息，以提高传递效率。",
-  "repeater_refreshMultiAcks": "刷新多个确认",
   "repeater_networkHealth": "网络健康",
   "repeater_loopDetect": "循环检测",
   "repeater_loopDetectHelper": "创建看起来像路由环的“泛洪包”",
@@ -1200,7 +1202,6 @@
   },
   "repeater_ownerInfo": "运营商信息",
   "repeater_ownerInfoHelper": "此复播器的公共元数据",
-  "repeater_refreshOwnerInfo": "刷新操作员信息",
   "repeater_floodMax": "最大跳数",
   "repeater_floodMaxHelper": "一个泛洪包中，最大可以传输的跳数 (0-64)",
   "repeater_advancedSettings": "高级",
@@ -1258,11 +1259,7 @@
       }
     }
   },
-  "repeater_refreshBasicSettings": "刷新基本设置",
   "repeater_refreshRadioSettings": "刷新无线电设置",
-  "repeater_refreshTxPower": "刷新 TX 功率",
-  "repeater_refreshPacketForwarding": "刷新包转发",
-  "repeater_refreshGuestAccess": "刷新访客权限",
   "repeater_refreshPrivacyMode": "刷新隐私模式",
   "repeater_refreshed": "{label} 已刷新",
   "@repeater_refreshed": {
@@ -2222,6 +2219,8 @@
   },
   "chat_sendCooldown": "请稍等片刻后再尝试发送。",
   "appSettings_jumpToOldestUnreadSubtitle": "在打开包含未读消息的聊天时，请滚动到第一个未读消息，而不是最新的消息。",
+  "appSettings_autoFetchRepeaterSettings": "自动获取转发节点设置",
+  "appSettings_autoFetchRepeaterSettingsSubtitle": "打开转发节点设置时请求所有设置。每项设置都是一次通过 LoRa 发送的独立请求，因此速度较慢并会占用空中时间。关闭后，请点按“全部刷新”或刷新单独的部分。",
   "appSettings_jumpToOldestUnread": "跳转到最旧、未读的文章",
   "appSettings_languageHu": "匈牙利",
   "appSettings_languageJa": "日语",
@@ -3143,6 +3142,21 @@
   "channels_waitForSync": "频道仍在从电台加载。请在同步完成后重试。",
   "channels_nameTooLong": "名称过长（最多 {maxBytes} 字节）。",
   "repeater_valueRequired": "{field}：请输入值",
+  "repeater_floodMaxAdvert": "广播泛洪最大跳数",
+  "repeater_floodMaxAdvertHelper": "广播（advert）泛洪可传输的最大跳数 (0-64，默认 8)",
+  "repeater_floodMaxUnscoped": "无区域泛洪最大跳数",
+  "repeater_floodMaxUnscopedHelper": "未指定区域的泛洪最大跳数 (0-64，默认 64)。较低的值（如 3）可将无区域流量限制在本地。",
+  "repeater_floodMaxUnscopedUnset": "与泛洪最大跳数相同",
+  "repeater_rxDelay": "接收延迟",
+  "repeater_rxDelayHelper": "转发前先暂缓处理以弱信号收到的泛洪包，让强信号路径优先，从而减少重复发送 (0-20，0 为关闭)。",
+  "repeater_cad": "信道活动检测",
+  "repeater_cadHelper": "发射前先监听是否有活动，信道繁忙时等待。与干扰阈值配合使用。",
+  "repeater_adcMultiplier": "电池电压校准",
+  "repeater_adcMultiplierHelper": "电池电压读数的倍数 (0-10)。0 表示使用开发板默认值。",
+  "repeater_boardSupportNote": "并非所有开发板都支持此功能。不支持的开发板会拒绝该更改。",
+  "repeater_extraSf": "额外扩频因子",
+  "repeater_extraSfHelper": "同时监听最多 3 个额外的扩频因子（SF），用逗号分隔（例如 9,10）。留空则关闭。",
+  "repeater_lr2021Only": "仅适用于配备 LR2021 无线电的转发节点。其他转发节点没有此设置，会拒绝该更改。",
   "losMapDetailTooltip": "地图细节",
   "losUnitsTooltip": "单位",
   "losDistance": "距离",
@@ -3185,6 +3199,10 @@
   "map_youWithMarkers": "你和 {count} 个标记",
   "map_sharedMarkerSemantics": "共享标记:{label}",
   "map_nodeMarkerSemantics": "{name},{type},{status}",
+  "map_requestLocation": "更新位置",
+  "map_locationUpdated": "位置已更新",
+  "map_locationNotShared": "{name} 回复中未包含位置",
+  "map_locationRequestFailed": "{name} 没有回复",
   "mapCache_zoomLevel": "缩放 {zoom}",
   "mapCache_sizeBytes": "{size} B",
   "mapCache_sizeKilobytes": "{size} KB",
@@ -3255,7 +3273,6 @@
   "repeater_discardChanges": "放弃",
   "repeater_actionSentNoReply": "{action}:命令已发送。中继器不会回复此命令。",
   "repeater_invalidSettingValue": "{setting}:{value} 无效",
-  "repeater_txPowerOutOfRange": "TX 功率 {value} 超出范围({min} 至 {max} dBm)",
   "repeater_prvKeyLengthError": "私钥必须恰好为 {length} 个十六进制字符",
   "contacts_advertFailed": "无法发送广播",
   "contacts_manageGroups": "管理分组",
@@ -3315,5 +3332,204 @@
   "networkMap_manage": "管理",
   "networkMap_addedToContacts": "已添加到联系人",
   "networkMap_addFailed": "无法添加到联系人",
-  "networkMap_unnamed": "未命名转发节点"
+  "networkMap_unnamed": "未命名转发节点",
+  "urlImage_disabledInAppSettings": "已在应用设置中关闭",
+  "settings_pathHashModeNotApplied": "无线电设置已应用，但无线电未确认新的路径哈希大小",
+  "appSettings_ipfsImageLinks": "IPFS 提供商配置",
+  "appSettings_ipfsImageLinksSubtitle": "通过 IPFS 提供商上传 URL 图片（或文件），并使用默认网关接收",
+  "appSettings_loadLinkImages": "加载链接中的图片",
+  "appSettings_loadLinkImagesSubtitle": "在消息中显示链接里的图片。加载图片会向托管该图片的网站暴露你的 IP 地址。",
+  "appSettings_showLinkImagesByDefault": "默认在所有聊天中显示链接图片",
+  "appSettings_showLinkImagesByDefaultSubtitle": "在每个聊天中加载链接图片，除非你在该聊天中已将其关闭。这会在每个聊天中向图片托管方暴露你的 IP 地址。",
+  "appSettings_publicIpfsGateway": "公共网关",
+  "appSettings_ipfsGatewayDeactivated": "已停用",
+  "appSettings_ipfsGatewayCustom": "自定义 (Kubo)",
+  "appSettings_uploadIpfsProvider": "上传提供商",
+  "appSettings_uploadIpfsGateway": "上传网关",
+  "appSettings_uploadIpfsGatewaySubtitle": "用于将图片或文件作为 URL 链接分享的网关。留空则使用 ipfs: 格式，其他客户端可能无法打开。",
+  "appSettings_uploadIpfsEndpoint": "上传端点",
+  "appSettings_uploadIpfsEndpointSubtitle": "用于上传文件的 API 端点",
+  "appSettings_uploadIpfsApiKey": "上传 API 密钥",
+  "appSettings_ipfsImageLinksDescription": "公共网关用于下载 ipfs: 格式的图片。上传网关用于为已上传的 URL 图片或文件生成分享链接。",
+  "contacts_removeAutoAddNote": "你的无线电会自动添加此类联系人，因此它下次发送广播时会重新出现。如需保持移除，请在联系人设置中关闭自动添加。",
+  "contacts_removeFailed": "无线电未确认移除。该联系人未被移除。",
+  "channels_notificationModeTooltip": "通知：{mode}",
+  "@channels_notificationModeTooltip": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_scanQrCodeDesc": "通过二维码加入频道或社区。",
+  "channels_scanQrInstructions": "将相机对准频道或社区二维码",
+  "channels_invalidQrCode": "不是 MeshCore 频道或社区二维码",
+  "channels_joinChannelTitle": "加入频道",
+  "channels_joinChannelConfirm": "将 \"{name}\" 添加到你的无线电？",
+  "@channels_joinChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_alreadyOnRadio": "\"{name}\" 已在你的无线电上",
+  "@channels_alreadyOnRadio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_sendImageIpfs": "通过 IPFS 发送图片或文件",
+  "chat_ipfsUploadFailed": "IPFS 上传失败：{error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "请先在应用设置中配置 IPFS 上传提供商。",
+  "chat_ipfsSelectedFileEmpty": "所选文件为空。",
+  "chat_ipfsEndpointInvalid": "IPFS 上传端点必须是完整的 http:// 或 https:// 地址。请在应用设置中检查。",
+  "chat_ipfsPinataTokenMissing": "Pinata 需要 API 密钥或 JWT。请在应用设置中添加。",
+  "chat_ipfsFilebaseTokenMissing": "Filebase 需要 API 令牌。请在应用设置中添加。",
+  "chat_ipfsKuboPathInvalid": "Kubo 上传端点必须以 /api/v0/add 结尾。请在应用设置中检查。",
+  "chat_ipfsLinkNoRoom": "没有足够空间放置图片链接。请缩短消息后重试。",
+  "@chat_ipfsLinkNoRoom": {
+    "description": "Shown before an IPFS upload when the link would push the draft over the message size limit"
+  },
+  "chat_ipfsLinkOverLimit": "图片链接已添加，但消息现在太长。请缩短后再发送。",
+  "@chat_ipfsLinkOverLimit": {
+    "description": "Shown after an IPFS upload when the link plus the draft no longer fits the message size limit"
+  },
+  "map_pathTraceAddMoreHint": "点击更多节点以添加跳数，选择追踪的返回方式，然后点击“运行路径追踪”。",
+  "map_pathTraceModeRoundTrip": "往返",
+  "map_pathTraceModeRoundTripHint": "追踪经由这些跳发出，并沿原路返回。",
+  "map_pathTraceModeAsEntered": "按输入顺序",
+  "map_pathTraceModeAsEnteredHint": "追踪严格按这些跳进行。请自行添加返回你的跳。",
+  "map_pathTraceViewLast": "查看上次结果",
+  "notification_lowBatteryTitle": "电量低",
+  "@notification_lowBatteryTitle": {
+    "description": "Title of the low battery notification"
+  },
+  "notification_lowBatteryBody": "{deviceName} 电量为 {percent}%",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification; deviceName is the connected radio's node name",
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_sharedLocation": "分享了位置",
+  "notification_sharedLocationNamed": "分享了位置：{label}",
+  "@notification_sharedLocationNamed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_reacted": "回应了 {emoji}",
+  "@notification_reacted": {
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_sentGif": "发送了 GIF",
+  "notification_sentImage": "发送了图片",
+  "snrIndicator_unknownRepeater": "未知中继器",
+  "snrIndicator_unknownRepeaterHint": "此中继器还不在你的联系人中。待你的无线电收到它的广播后，将显示其名称、位置和选项。",
+  "contacts_keyPrefixSemantics": "密钥前缀 {prefix}",
+  "@contacts_keyPrefixSemantics": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "networkMap_sourceLocalHint": "你的无线电听到的节点",
+  "networkMap_sourceOnlineHint": "来自在线网络地图的中继器",
+  "networkMap_sourceBothHint": "你的无线电节点加上在线网络地图",
+  "holidayGreeting_halloween": "万圣节快乐|萬聖節快樂|万圣夜快乐|萬聖夜快樂|不给糖就捣蛋|不給糖就搗蛋",
+  "holidayGreeting_thanksgiving": "感恩节快乐|感恩節快樂|感恩节愉快|感恩節愉快",
+  "holidayGreeting_christmas": "圣诞快乐|聖誕快樂|圣诞节快乐|聖誕節快樂|圣诞节愉快|聖誕節愉快|圣诞愉快|聖誕愉快",
+  "holidayGreeting_newYear": "新年快乐|新年快樂|元旦快乐|元旦快樂|新年好|新年愉快",
+  "appSettings_colorTheme": "配色主题",
+  "appSettings_holidayAnimations": "节日消息动画",
+  "appSettings_holidayAnimationsSubtitle": "有人发送节日祝福时，显示蝙蝠、火鸡、圣诞老人或烟花",
+  "themes_title": "主题",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "标准颜色，跟随浅色/深色设置",
+  "themes_builtIn": "内置",
+  "themes_holidays": "节日",
+  "themes_holidayAutoSwitch": "自动切换",
+  "themes_holidayAutoSwitchSubtitle": "每个节日的主题从节日前 17 天使用到节日当天",
+  "themes_holidayAutoApplied": "已自动启用{holiday}主题。节日过后会恢复你自己的主题。",
+  "themes_holidayAutoAppliedTag": "已自动启用",
+  "themes_myThemes": "我的主题",
+  "themes_myThemesEmpty": "选择背景和强调色，制作你自己的主题。",
+  "themes_create": "创建主题",
+  "themes_import": "导入主题",
+  "themes_importHint": "粘贴主题代码",
+  "themes_importInvalid": "这不是有效的主题代码",
+  "themes_imported": "已添加主题“{name}”",
+  "themes_customize": "自定义副本",
+  "themes_copyCode": "复制主题代码",
+  "themes_codeCopied": "主题代码已复制",
+  "themes_deleteConfirm": "删除主题“{name}”？",
+  "themes_copyName": "{name} 副本",
+  "themes_newTitle": "新主题",
+  "themes_editTitle": "编辑主题",
+  "themes_name": "名称",
+  "themes_nameRequired": "请为主题起个名字",
+  "themes_background": "背景",
+  "themes_backgroundHelp": "深色背景会生成深色主题",
+  "themes_accent": "强调色",
+  "themes_accentHelp": "按钮、高亮和你的聊天气泡",
+  "themes_hexColor": "十六进制颜色",
+  "themes_preview": "预览",
+  "themes_previewIncoming": "今晚网络里有人吗？",
+  "themes_previewOutgoing": "收到，信号很清楚！",
+  "themes_previewSwitch": "通知",
+  "themes_lowContrast": "在此背景上很难看清强调色",
+  "themes_saveAndUse": "保存并使用",
+  "themes_icons": "图标",
+  "themes_iconsHelp": "点按图标，可换成其他图标或你自己的图片",
+  "themes_iconChanged": "已更改",
+  "themes_iconSend": "发送按钮",
+  "themes_iconRepeater": "中继器",
+  "themes_iconRoom": "房间",
+  "themes_iconSensor": "传感器",
+  "themes_mapMarkers": "地图标记",
+  "themes_mapMarkersHelp": "更换地图上节点和你自己的标记",
+  "themes_iconUsePicture": "使用图片",
+  "themes_iconReset": "使用默认图标",
+  "themes_iconPictureFailed": "无法使用该图片",
+  "themes_exportFile": "导出到文件",
+  "themes_exportAll": "导出我的主题",
+  "themes_importFile": "从文件导入",
+  "themes_pasteCode": "粘贴主题代码",
+  "themes_exportFailed": "无法导出主题",
+  "themes_importFileResult": "已导入 {count} 个主题",
+  "themes_importFileNone": "该文件中没有找到主题",
+  "chatBackground_title": "聊天背景",
+  "chatBackground_thisChatOnly": "仅用于此聊天",
+  "chatBackground_themeOverrides": "你的主题“{name}”为所有聊天设置了背景。请在该主题中关闭此项，才能使用这里的背景。",
+  "chatBackground_none": "无",
+  "chatBackground_picture": "图片",
+  "chatBackground_choosePicture": "选择图片",
+  "chatBackground_pictureFailed": "无法使用该图片",
+  "chatBackground_fade": "淡化",
+  "themes_chatBackground": "聊天背景",
+  "themes_chatBackgroundHelp": "显示在没有自己背景的聊天中",
+  "themes_chatBackgroundEverywhere": "用于所有聊天",
+  "themes_chatBackgroundEverywhereHelp": "同时会替换单个聊天中设置的背景"
 }

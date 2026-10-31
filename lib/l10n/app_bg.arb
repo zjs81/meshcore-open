@@ -276,7 +276,7 @@
   "contacts_title": "Контакти",
   "contacts_noContacts": "Няма контакти към момента.",
   "contacts_contactsWillAppear": "Контактите ще се появят, когато устройствата изпратят обява.",
-  "contacts_searchContacts": "Търсене на контакти...",
+  "contacts_searchContacts": "Търсене в {number}{str} контакти...",
   "contacts_noUnreadContacts": "Няма непрочетени контакти",
   "contacts_noContactsFound": "Няма намерени контакти или групи.",
   "contacts_deleteContact": "Изтрий Контакт",
@@ -359,6 +359,18 @@
   "channels_public": "Публично",
   "channels_private": "Частен",
   "channels_editChannel": "Редактирай канал",
+  "channels_notificationSettings": "Настройки за известия",
+  "channels_notifyAll": "Всички съобщения",
+  "channels_notifyMentionsOnly": "Само споменавания",
+  "channels_notifyNone": "Заглушено",
+  "channels_notificationModeTooltip": "Известия: {mode}",
+  "@channels_notificationModeTooltip": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
   "channels_muteChannel": "Заглуши канала",
   "channels_unmuteChannel": "Включи известията на канала",
   "channels_deleteChannel": "Изтрий канала",
@@ -1147,10 +1159,8 @@
   "repeater_settingsSaved": "Настройките са запазени успешно.",
   "repeater_rxGain": "RX усилване",
   "repeater_rxGainHelper": "По-висока чувствителност, по-голям ток (само за SX1262/SX1268)",
-  "repeater_refreshRxGain": "Обнови RX усилването",
   "repeater_multiAcks": "Множество потвърждения",
   "repeater_multiAcksSubtitle": "Потвърждавай съобщенията по множество канали за по-добро доставяне.",
-  "repeater_refreshMultiAcks": "Обнови множествените ACK",
   "repeater_networkHealth": "Състояние на мрежата",
   "repeater_loopDetect": "Откриване на цикли",
   "repeater_loopDetectHelper": "Изпратете пакети, които изглеждат като цикли в маршрутизацията.",
@@ -1170,7 +1180,6 @@
   },
   "repeater_ownerInfo": "Информация за оператора",
   "repeater_ownerInfoHelper": "Публични метаданни за този повторител",
-  "repeater_refreshOwnerInfo": "Обновете информацията за оператора",
   "repeater_floodMax": "Максимален брой скокове при Flood",
   "repeater_floodMaxHelper": "Максималният брой скокове, които един пакет може да премине (0-64)",
   "repeater_advancedSettings": "Разширени настройки",
@@ -1228,11 +1237,7 @@
       }
     }
   },
-  "repeater_refreshBasicSettings": "Обнови основните настройки",
   "repeater_refreshRadioSettings": "Обнови настройките на радиото",
-  "repeater_refreshTxPower": "Обнови TX мощността",
-  "repeater_refreshPacketForwarding": "Обнови препращането на пакети",
-  "repeater_refreshGuestAccess": "Обнови достъпа за гости",
   "repeater_refreshPrivacyMode": "Обнови режима на поверителност",
   "repeater_refreshed": "{label} е обновено",
   "@repeater_refreshed": {
@@ -1575,6 +1580,26 @@
   "channels_joinHashtagChannelDesc": "Всеки може да се присъедини към хаштаговите канали.",
   "channels_scanQrCode": "Сканирайте QR код",
   "channels_scanQrCodeComingSoon": "Ще излезе скоро",
+  "channels_scanQrCodeDesc": "Присъединете се към канал или общност чрез QR код.",
+  "channels_scanQrInstructions": "Насочете камерата към QR код на канал или общност",
+  "channels_invalidQrCode": "Не е QR код на MeshCore канал или общност",
+  "channels_joinChannelTitle": "Присъединяване към канал",
+  "channels_joinChannelConfirm": "Да се добави ли \"{name}\" към радиото ви?",
+  "@channels_joinChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_alreadyOnRadio": "\"{name}\" вече е на радиото ви",
+  "@channels_alreadyOnRadio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "channels_enterHashtag": "Въведете хаштаг",
   "channels_hashtagHint": "напр. #отбор",
   "@neighbors_unknownContact": {
@@ -1774,11 +1799,46 @@
   "contacts_zeroHopContactAdvertSent": "Изпратен контакт по обява.",
   "contacts_contactAdvertCopyFailed": "Копирането на обявата в клипборда не успя.",
   "notification_activityTitle": "Активност на MeshCore",
+  "notification_lowBatteryTitle": "Ниска батерия",
+  "@notification_lowBatteryTitle": {
+    "description": "Title of the low battery notification"
+  },
+  "notification_lowBatteryBody": "Батерията на {deviceName} е на {percent}%",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification; deviceName is the connected radio's node name",
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "notification_messagesCount": "{count} {count, plural, =1{съобщение} other{съобщения}}",
   "notification_channelMessagesCount": "{count} {count, plural, =1{съобщение в канал} other{съобщения в канали}}",
   "notification_newNodesCount": "{count} {count, plural, =1{нов възел} other{нови възли}}",
   "notification_newTypeDiscovered": "Открит нов {contactType}",
   "notification_receivedNewMessage": "Получено ново съобщение",
+  "notification_sharedLocation": "Сподели местоположение",
+  "notification_sharedLocationNamed": "Сподели местоположение: {label}",
+  "@notification_sharedLocationNamed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_reacted": "Реагира с {emoji}",
+  "@notification_reacted": {
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_sentGif": "Изпрати GIF",
+  "notification_sentImage": "Изпрати изображение",
   "settings_gpxExportContactsSubtitle": "Експортира спътници с местоположение в GPX файл.",
   "settings_gpxExportRepeatersSubtitle": "Изпраща повторители / roomserver с местоположение в GPX файл.",
   "settings_gpxExportAll": "Експортирай всички контакти в GPX",
@@ -1796,6 +1856,12 @@
   "settings_gpxExportShareSubject": "meshcore-open износ на данни за карта в формат GPX",
   "pathTrace_someHopsNoLocation": "Един или повече от скоковете няма определено местоположение!",
   "map_pathTraceCancelled": "Отменен е следването на пътя.",
+  "map_pathTraceAddMoreHint": "Докоснете още възли, за да добавите хопове, изберете как се връща трасето, след което докоснете Пусни трасиране на пътя.",
+  "map_pathTraceModeRoundTrip": "Отиване и връщане",
+  "map_pathTraceModeRoundTripHint": "Трасето минава през тези хопове и се връща по същия път.",
+  "map_pathTraceModeAsEntered": "Както е въведено",
+  "map_pathTraceModeAsEnteredHint": "Трасето следва точно тези хопове. Добавете сами хоповете обратно към вас.",
+  "map_pathTraceViewLast": "Преглед на последния резултат",
   "pathTrace_clearTooltip": "Изчисти пътя",
   "map_removeLast": "Премахни последното",
   "map_runTrace": "Стартирай проследяването на пътя",
@@ -2175,6 +2241,22 @@
   "appSettings_routeWeightFailureDecrementSubtitle": "Тегло, което е било премахнато от пътя след неуспешен опит за доставка.",
   "appSettings_maxMessageRetries": "Максимален брой опити за изпращане на съобщение",
   "appSettings_maxMessageRetriesSubtitle": "Брой опити за повторно изпращане, преди съобщението да бъде маркирано като неуспешно.",
+  "appSettings_ipfsImageLinks": "Конфигурация на IPFS доставчик",
+  "appSettings_ipfsImageLinksSubtitle": "Качване на изображения (или файлове) по URL през IPFS доставчик и шлюз по подразбиране за получаване",
+  "appSettings_loadLinkImages": "Зареждане на изображения от линкове",
+  "appSettings_loadLinkImagesSubtitle": "Показва снимки от линкове в съобщенията. Зареждането на изображение споделя вашия IP адрес със сайта, който го хоства.",
+  "appSettings_showLinkImagesByDefault": "Показване на изображения от линкове във всички чатове по подразбиране",
+  "appSettings_showLinkImagesByDefaultSubtitle": "Зарежда изображенията от линкове във всеки чат, освен ако не сте ги изключили там. Това споделя вашия IP адрес с хостовете на изображения във всеки чат.",
+  "appSettings_publicIpfsGateway": "Публичен шлюз",
+  "appSettings_ipfsGatewayDeactivated": "Деактивиран",
+  "appSettings_ipfsGatewayCustom": "Собствен (Kubo)",
+  "appSettings_uploadIpfsProvider": "Доставчик за качване",
+  "appSettings_uploadIpfsGateway": "Шлюз за качване",
+  "appSettings_uploadIpfsGatewaySubtitle": "Шлюз за споделяне на изображение или файл като URL линк. Оставете празно, за да се използва формат ipfs:, който може да не се отваря от други клиенти.",
+  "appSettings_uploadIpfsEndpoint": "Адрес за качване",
+  "appSettings_uploadIpfsEndpointSubtitle": "API адресът, използван за качване на файлове",
+  "appSettings_uploadIpfsApiKey": "API ключ за качване",
+  "appSettings_ipfsImageLinksDescription": "Публичният шлюз изтегля изображения във формат ipfs:. Шлюзът за качване се използва за създаване на линкове за споделяне на качени изображения или файлове по URL.",
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Режим на телеметрията е обновен",
   "map_showOverlaps": "Покриване на ключа на повтаряча",
@@ -2225,6 +2307,8 @@
   "appSettings_languageHu": "Унгарски",
   "appSettings_jumpToOldestUnread": "Преминете към най-старата непочетена статия",
   "appSettings_jumpToOldestUnreadSubtitle": "Когато отворите чат с непрочетени съобщения, плъзнете надолу, за да видите първото непрочетено съобщение, вместо най-новото.",
+  "appSettings_autoFetchRepeaterSettings": "Автоматично зареждане на настройките на повторителя",
+  "appSettings_autoFetchRepeaterSettingsSubtitle": "Заявява всяка настройка при отваряне на настройките на повторител. Всяка е отделна заявка през LoRa, така че е бавно и заема ефирно време. Когато е изключено, натиснете „Обнови всички“ или обновете отделни секции.",
   "appSettings_languageJa": "Японски",
   "appSettings_languageKo": "Корейски",
   "radioStats_tooltip": "Статистика за радио и мрежа",
@@ -2808,6 +2892,29 @@
   "channels_regionSelect_Title": "Выберете регион",
   "channels_clearRegion": "Чиста зона",
   "chat_sendImageLora": "Изпращане на изображение чрез MeshCore",
+  "chat_sendImageIpfs": "Изпращане на изображение или файл през IPFS",
+  "chat_ipfsUploadFailed": "Качването в IPFS е неуспешно: {error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "Първо настройте доставчик за качване в IPFS в настройките на приложението.",
+  "chat_ipfsSelectedFileEmpty": "Избраният файл е празен.",
+  "chat_ipfsEndpointInvalid": "Адресът за качване в IPFS трябва да е пълен адрес с http:// или https://. Проверете го в настройките на приложението.",
+  "chat_ipfsPinataTokenMissing": "Pinata изисква API ключ или JWT. Добавете го в настройките на приложението.",
+  "chat_ipfsFilebaseTokenMissing": "Filebase изисква API токен. Добавете го в настройките на приложението.",
+  "chat_ipfsKuboPathInvalid": "Адресът за качване на Kubo трябва да завършва с /api/v0/add. Проверете го в настройките на приложението.",
+  "chat_ipfsLinkNoRoom": "Няма достатъчно място за линка към изображението. Съкратете съобщението и опитайте отново.",
+  "@chat_ipfsLinkNoRoom": {
+    "description": "Shown before an IPFS upload when the link would push the draft over the message size limit"
+  },
+  "chat_ipfsLinkOverLimit": "Линкът към изображението е добавен, но съобщението вече е твърде дълго. Съкратете го преди изпращане.",
+  "@chat_ipfsLinkOverLimit": {
+    "description": "Shown after an IPFS upload when the link plus the draft no longer fits the message size limit"
+  },
   "chat_imagePickFailed": "Не мог да откривам та изображин",
   "chat_receivedGif": "Получил GIF",
   "repeater_keySettings": "Изменяне на идентичности ключа",
@@ -2888,7 +2995,9 @@
   },
   "urlImage_enable": "Активиране на URL изображения",
   "urlImage_possible": "Възможно изображение от URL; активирайте го в Настройки.",
+  "urlImage_disabledInAppSettings": "Изключено в настройките на приложението",
   "settings_radioSettingsNotApplied": "Радиото не приложи тези настройки",
+  "settings_pathHashModeNotApplied": "Настройките на радиото бяха приложени, но радиото не потвърди новия размер на хеша на пътя",
   "settings_publicKeyCopied": "Публичният ключ е копиран",
   "channels_noFreeSlots": "Няма свободни канални места",
   "reaction_report": "Емоджи реакции",
@@ -3014,6 +3123,8 @@
   },
   "contacts_keepChatHistory": "Запази историята на чата",
   "contacts_remove": "Премахни",
+  "contacts_removeAutoAddNote": "Радиото ви автоматично добавя този тип контакт, така че той ще се върне при следващия му advert. Изключете автоматичното добавяне в настройките на контактите, за да остане премахнат.",
+  "contacts_removeFailed": "Радиото не потвърди премахването. Контактът не беше премахнат.",
   "contacts_discoveredNearby": "Открити наблизо ({count})",
   "@contacts_discoveredNearby": {
     "placeholders": {
@@ -3068,6 +3179,8 @@
   "notification_replySendFailed": "Възможно отговорът ви да не е изпратен. Проверете в MeshCore Open и опитайте отново.",
   "notification_replyAppNotRunning": "MeshCore Open не работи. Отворете го и изпратете отговора си повторно.",
   "snrIndicator_nearByRepeatersDescription": "Повторители, чути от вашето радио пряко, първо най-скорошните.",
+  "snrIndicator_unknownRepeater": "Неизвестен повторител",
+  "snrIndicator_unknownRepeaterHint": "Този повторител още не е във вашите контакти. Името, местоположението и опциите му се появяват, когато радиото ви получи неговия advert.",
   "radioStats_sectionSignal": "Сигнал",
   "radioStats_sectionAirtime": "Време на излъчване",
   "imageSend_lossyNote": "Компресирано до около {bytes} байта. Моделът на получателя възстановява изображението, затова детайлите ще се различават.",
@@ -3138,6 +3251,21 @@
   "channels_waitForSync": "Каналите все още се зареждат от радиото. Опитайте отново, когато синхронизацията приключи.",
   "channels_nameTooLong": "Името е твърде дълго (макс. {maxBytes} байта).",
   "repeater_valueRequired": "{field}: въведете стойност",
+  "repeater_floodMaxAdvert": "Максимален брой скокове при Flood за Advert",
+  "repeater_floodMaxAdvertHelper": "Максимален брой скокове, които може да премине разпространен Advert (0-64, по подразбиране 8)",
+  "repeater_floodMaxUnscoped": "Максимален брой скокове при Flood без обхват",
+  "repeater_floodMaxUnscopedHelper": "Максимален брой скокове за Flood без регионален обхват (0-64, по подразбиране 64). Ниска стойност, например 3, запазва трафика без обхват локален.",
+  "repeater_floodMaxUnscopedUnset": "Като максимума при Flood",
+  "repeater_rxDelay": "Забавяне на приемането",
+  "repeater_rxDelayHelper": "Задържа Flood пакети, чути със слаб сигнал, преди препращане, така че пътищата със силен сигнал да са първи и да се изпращат по-малко дубликати (0-20, 0 го изключва).",
+  "repeater_cad": "Откриване на активност в канала",
+  "repeater_cadHelper": "Слуша за активност преди предаване и изчаква, докато каналът е зает. Работи заедно с прага на смущенията.",
+  "repeater_adcMultiplier": "Калибриране на напрежението на батерията",
+  "repeater_adcMultiplierHelper": "Множител за отчитането на напрежението на батерията (0-10). 0 използва стойността по подразбиране на платката.",
+  "repeater_boardSupportNote": "Не всяка платка поддържа това. Неподдържаните платки отхвърлят промяната.",
+  "repeater_extraSf": "Допълнителни фактори на разпространение (SF)",
+  "repeater_extraSfHelper": "До 3 допълнителни фактора на разпространение (SF), които да се слушат едновременно, разделени със запетаи (например 9,10). Оставете празно, за да изключите.",
+  "repeater_lr2021Only": "Само за репийтъри с радио LR2021. Другите репийтъри нямат тази настройка и я отхвърлят.",
   "losMapDetailTooltip": "Детайл на картата",
   "losUnitsTooltip": "Единици",
   "losDistance": "Разстояние",
@@ -3180,6 +3308,10 @@
   "map_youWithMarkers": "Вие и {count} маркера",
   "map_sharedMarkerSemantics": "Споделен маркер: {label}",
   "map_nodeMarkerSemantics": "{name}, {type}, {status}",
+  "map_requestLocation": "Обнови местоположението",
+  "map_locationUpdated": "Местоположението е обновено",
+  "map_locationNotShared": "{name} отговори без местоположение",
+  "map_locationRequestFailed": "Няма отговор от {name}",
   "mapCache_zoomLevel": "Мащаб {zoom}",
   "mapCache_sizeBytes": "{size} B",
   "mapCache_sizeKilobytes": "{size} KB",
@@ -3250,10 +3382,17 @@
   "repeater_discardChanges": "Отхвърли",
   "repeater_actionSentNoReply": "{action}: командата е изпратена. Ретранслаторът не отговаря на тази команда.",
   "repeater_invalidSettingValue": "{setting}: {value} не е валидна стойност",
-  "repeater_txPowerOutOfRange": "TX мощността {value} е извън диапазона (от {min} до {max} dBm)",
   "repeater_prvKeyLengthError": "Частният ключ трябва да е точно {length} шестнадесетични знака",
   "contacts_advertFailed": "Рекламата не можа да бъде изпратена",
   "contacts_manageGroups": "Управление на групи",
+  "contacts_keyPrefixSemantics": "Префикс на ключ {prefix}",
+  "@contacts_keyPrefixSemantics": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
   "community_shortId": "ID: {id}…",
   "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Свързан с",
@@ -3291,6 +3430,9 @@
   "networkMap_sourceLocal": "Локална",
   "networkMap_sourceOnline": "Онлайн",
   "networkMap_sourceBoth": "И двете",
+  "networkMap_sourceLocalHint": "Възли, чути от радиото ви",
+  "networkMap_sourceOnlineHint": "Повторители от онлайн картата на мрежата",
+  "networkMap_sourceBothHint": "Възлите на радиото ви плюс онлайн картата на мрежата",
   "networkMap_zoomInHint": "Увеличете, за да видите онлайн мрежовата карта",
   "networkMap_loadFailed": "Онлайн мрежовата карта не можа да се зареди",
   "networkMap_inYourContacts": "В контактите ви",
@@ -3310,5 +3452,79 @@
   "networkMap_manage": "Управление",
   "networkMap_addedToContacts": "Добавено към контактите",
   "networkMap_addFailed": "Неуспешно добавяне към контактите",
-  "networkMap_unnamed": "Неназован повторител"
+  "networkMap_unnamed": "Неназован повторител",
+  "holidayGreeting_halloween": "Честит Хелоуин|Весел Хелоуин|Happy Halloween",
+  "holidayGreeting_thanksgiving": "Честит Ден на благодарността|Честит Thanksgiving|Happy Thanksgiving",
+  "holidayGreeting_christmas": "Весела Коледа|Честито Рождество|Честита Коледа|Весели празници|Merry Christmas",
+  "holidayGreeting_newYear": "Честита Нова година|Щастлива Нова година|Happy New Year",
+  "appSettings_colorTheme": "Цветова тема",
+  "appSettings_holidayAnimations": "Анимации за празници в съобщенията",
+  "appSettings_holidayAnimationsSubtitle": "Прилепи, пуйка, Дядо Коледа или фойерверки, когато някой изпрати празнично пожелание",
+  "themes_title": "Теми",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "Стандартни цветове, следва настройката Светла / Тъмна",
+  "themes_builtIn": "Вградени",
+  "themes_holidays": "Празници",
+  "themes_holidayAutoSwitch": "Превключвай автоматично",
+  "themes_holidayAutoSwitchSubtitle": "Използва темата на всеки празник от 17 дни преди него до самия ден",
+  "themes_holidayAutoApplied": "Темата „{holiday}“ е включена автоматично. Вашата тема се връща след празника.",
+  "themes_holidayAutoAppliedTag": "Включена автоматично",
+  "themes_myThemes": "Моите теми",
+  "themes_myThemesEmpty": "Направете своя тема, като изберете фон и акцентен цвят.",
+  "themes_create": "Създай тема",
+  "themes_import": "Импортирай тема",
+  "themes_importHint": "Поставете код на тема",
+  "themes_importInvalid": "Това не е валиден код на тема",
+  "themes_imported": "Добавена тема „{name}“",
+  "themes_customize": "Персонализирай копие",
+  "themes_copyCode": "Копирай кода на темата",
+  "themes_codeCopied": "Кодът на темата е копиран",
+  "themes_deleteConfirm": "Да изтрия ли темата „{name}“?",
+  "themes_copyName": "{name} (копие)",
+  "themes_newTitle": "Нова тема",
+  "themes_editTitle": "Редактиране на тема",
+  "themes_name": "Име",
+  "themes_nameRequired": "Дайте име на темата си",
+  "themes_background": "Фон",
+  "themes_backgroundHelp": "Тъмният фон прави тъмна тема",
+  "themes_accent": "Акцент",
+  "themes_accentHelp": "Бутони, подчертавания и вашите балончета със съобщения",
+  "themes_hexColor": "Шестнадесетичен цвят",
+  "themes_preview": "Преглед",
+  "themes_previewIncoming": "Има ли някой в мрежата тази вечер?",
+  "themes_previewOutgoing": "Чувам ви ясно и силно!",
+  "themes_previewSwitch": "Известия",
+  "themes_lowContrast": "Акцентът трудно се вижда на този фон",
+  "themes_saveAndUse": "Запази и използвай",
+  "themes_icons": "Икони",
+  "themes_iconsHelp": "Докоснете икона, за да я смените с друга икона или със своя снимка",
+  "themes_iconChanged": "Променена",
+  "themes_iconSend": "Бутон за изпращане",
+  "themes_iconRepeater": "Повторители",
+  "themes_iconRoom": "Стаи",
+  "themes_iconSensor": "Сензори",
+  "themes_mapMarkers": "Маркери на картата",
+  "themes_mapMarkersHelp": "Сменете маркерите за възлите и за вас на картата",
+  "themes_iconUsePicture": "Използвай снимка",
+  "themes_iconReset": "Използвай иконата по подразбиране",
+  "themes_iconPictureFailed": "Тази снимка не може да се използва",
+  "themes_exportFile": "Експортирай във файл",
+  "themes_exportAll": "Експортирай моите теми",
+  "themes_importFile": "Импортирай от файл",
+  "themes_pasteCode": "Поставете код на тема",
+  "themes_exportFailed": "Темите не можаха да се експортират",
+  "themes_importFileResult": "Импортирани теми: {count}",
+  "themes_importFileNone": "Във файла не са намерени теми",
+  "chatBackground_title": "Фон на чата",
+  "chatBackground_thisChatOnly": "Само за този чат",
+  "chatBackground_themeOverrides": "Вашата тема „{name}“ задава фона във всички чатове. Изключете това в темата, за да използвате този фон.",
+  "chatBackground_none": "Няма",
+  "chatBackground_picture": "Снимка",
+  "chatBackground_choosePicture": "Избери снимка",
+  "chatBackground_pictureFailed": "Тази снимка не може да се използва",
+  "chatBackground_fade": "Избледняване",
+  "themes_chatBackground": "Фон на чата",
+  "themes_chatBackgroundHelp": "Показва се в чатове, които нямат свой фон",
+  "themes_chatBackgroundEverywhere": "Използвай във всички чатове",
+  "themes_chatBackgroundEverywhereHelp": "Заменя и фоновете, зададени на отделни чатове"
 }

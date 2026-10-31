@@ -60,14 +60,14 @@ class ChannelSettingsStore {
     await PrefsManager.instance.setBool(_cyr2LatKey(channelId), enabled);
   }
 
-  Future<bool> loadUrlImagesEnabled(String channelId) async {
+  Future<bool?> loadUrlImagesEnabled(String channelId) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot load channel URL image settings.',
       );
-      return false;
+      return null;
     }
-    return PrefsManager.instance.getBool(_urlImagesKey(channelId)) ?? false;
+    return PrefsManager.instance.getBool(_urlImagesKey(channelId));
   }
 
   Future<void> saveUrlImagesEnabled(String channelId, bool enabled) async {

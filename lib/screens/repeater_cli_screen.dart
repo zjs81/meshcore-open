@@ -471,7 +471,6 @@ class _RepeaterCliScreenState extends State<RepeaterCliScreen> {
       ),
       body: Column(
         children: [
-          const RadioDisconnectedBanner(),
           // Quick commands bar
           Container(
             color: scheme.surfaceContainer,
@@ -506,10 +505,29 @@ class _RepeaterCliScreenState extends State<RepeaterCliScreen> {
           Divider(height: 1, color: scheme.outlineVariant),
 
           // Output area
+          // The disconnected banner lives in the output area and is capped at
+          // half of it, so large text or an open keyboard can't push the
+          // command input off screen.
           Expanded(
-            child: _commandHistory.isEmpty
-                ? _buildEmptyState()
-                : _buildCommandHistory(),
+            child: LayoutBuilder(
+              builder: (context, constraints) => Column(
+                children: [
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: constraints.maxHeight / 2,
+                    ),
+                    child: const SingleChildScrollView(
+                      child: RadioDisconnectedBanner(),
+                    ),
+                  ),
+                  Expanded(
+                    child: _commandHistory.isEmpty
+                        ? _buildEmptyState()
+                        : _buildCommandHistory(),
+                  ),
+                ],
+              ),
+            ),
           ),
 
           Divider(height: 1, color: scheme.outlineVariant),
@@ -616,10 +634,10 @@ class _RepeaterCliScreenState extends State<RepeaterCliScreen> {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.terminal, size: 48, color: scheme.onSurfaceVariant),
             const SizedBox(height: 12),

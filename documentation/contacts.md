@@ -23,15 +23,18 @@ The Contacts screen is the primary hub for managing mesh nodes your radio has a 
 Each contact is displayed as a list tile showing:
 
 - **Avatar**: Color-coded circle with type icon (or first emoji of the contact's name if it starts with one)
-- **Name**: Contact name (single line)
+- **Name**: Contact name on its own line, wrapping to a second line if it's long
+- **Favorite star**: Amber star icon after the name if favorited
+- **Location pin**: Grey pin icon after the name if the contact has GPS coordinates
+- **Key prefix**: The contact's routing hash (public-key prefix) in a small badge, for matching against hops in paths
 - **Path label**: "Direct", "N hops", or "Flood" (with forced variants if a path override is active)
-- **Public key**: Shortened hex format `<XXXXXXXX...XXXXXXXX>`
-- **Unread badge**: Red pill with count (if unread messages exist)
-- **Last seen**: Relative timestamp ("Now", "5 mins ago", "2 hours ago", "3 days ago"). For chat contacts, this shows whichever is more recent: the last advertisement time or the last message time
-- **Favorite star**: Amber star icon if favorited
-- **Location pin**: Grey pin icon if the contact has GPS coordinates
+- **Last seen**: Relative time at the end of the second line ("recently", "~ 5 min.", "~ 2 hours", "~ 3 days"). It shows whichever is most recent: the last advertisement or telemetry location update, or for chat contacts the last message
+- **Unread badge**: Red pill with count at the right edge (if unread messages exist)
+- **Manage button**: Shield icon at the right edge for repeaters and rooms
 
-Pull-to-refresh re-fetches the full contact list from the device.
+The **Discovered nearby** row at the top of the list opens the Discovery screen and scrolls with the list.
+
+Pull-to-refresh re-fetches the full contact list from the device. Telemetry locations survive the refresh until the node sends a newer advert.
 
 ## Search and Filter
 
@@ -80,7 +83,7 @@ Groups are stored per radio identity (scoped by public key).
 | Add/Remove Favorite | All types | Toggles the favorite flag |
 | Share Contact | All types | Requests advert from device → copies `meshcore://<hex>` URI to clipboard |
 | Share Contact Zero-Hop | All types | Broadcasts the contact's advertisement one hop |
-| Delete Contact | All types | Confirmation dialog → removes from device and clears messages |
+| Delete Contact | All types | Confirmation dialog → removes from device and clears messages. If auto-add is on for that type, the radio adds it back the next time it advertises; the dialog warns about this |
 
 ## App Bar Menus
 

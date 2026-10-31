@@ -152,6 +152,10 @@ class AppLocalizationsNl extends AppLocalizations {
       'Mogelijke URL-afbeelding; schakel dit in bij Instellingen.';
 
   @override
+  String get urlImage_disabledInAppSettings =>
+      'Uitgeschakeld in app-instellingen';
+
+  @override
   String get common_reboot => 'Herstarten';
 
   @override
@@ -422,6 +426,10 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get settings_radioSettingsNotApplied =>
       'De radio heeft deze instellingen niet toegepast';
+
+  @override
+  String get settings_pathHashModeNotApplied =>
+      'Radio-instellingen zijn toegepast, maar de radio heeft de nieuwe padhashgrootte niet bevestigd';
 
   @override
   String get settings_regionSettings => 'Regio\'s';
@@ -814,6 +822,240 @@ class AppLocalizationsNl extends AppLocalizations {
   String get appSettings_themeDark => 'Donker';
 
   @override
+  String get appSettings_colorTheme => 'Kleurthema';
+
+  @override
+  String get appSettings_holidayAnimations => 'Feestdaganimaties in berichten';
+
+  @override
+  String get appSettings_holidayAnimationsSubtitle =>
+      'Vleermuizen, een kalkoen, de Kerstman of vuurwerk wanneer iemand een feestdagwens stuurt';
+
+  @override
+  String get themes_title => 'Thema\'s';
+
+  @override
+  String get themes_default => 'MeshCore';
+
+  @override
+  String get themes_defaultSubtitle =>
+      'Standaardkleuren, volgt de instelling Licht / Donker';
+
+  @override
+  String get themes_builtIn => 'Ingebouwd';
+
+  @override
+  String get themes_holidays => 'Feestdagen';
+
+  @override
+  String get themes_holidayAutoSwitch => 'Automatisch wisselen';
+
+  @override
+  String get themes_holidayAutoSwitchSubtitle =>
+      'Gebruikt het thema van elke feestdag vanaf 17 dagen ervoor tot de dag zelf';
+
+  @override
+  String themes_holidayAutoApplied(String holiday) {
+    return 'Het thema $holiday staat automatisch aan. Na de feestdag komt je eigen thema terug.';
+  }
+
+  @override
+  String get themes_holidayAutoAppliedTag => 'Automatisch aan';
+
+  @override
+  String get themes_myThemes => 'Mijn thema\'s';
+
+  @override
+  String get themes_myThemesEmpty =>
+      'Maak je eigen thema door een achtergrond en een accentkleur te kiezen.';
+
+  @override
+  String get themes_create => 'Thema maken';
+
+  @override
+  String get themes_import => 'Thema importeren';
+
+  @override
+  String get themes_importHint => 'Plak een themacode';
+
+  @override
+  String get themes_importInvalid => 'Dit is geen geldige themacode';
+
+  @override
+  String themes_imported(String name) {
+    return 'Thema \"$name\" toegevoegd';
+  }
+
+  @override
+  String get themes_customize => 'Kopie aanpassen';
+
+  @override
+  String get themes_copyCode => 'Themacode kopiëren';
+
+  @override
+  String get themes_codeCopied => 'Themacode gekopieerd';
+
+  @override
+  String themes_deleteConfirm(String name) {
+    return 'Thema \"$name\" verwijderen?';
+  }
+
+  @override
+  String themes_copyName(String name) {
+    return 'Kopie van $name';
+  }
+
+  @override
+  String get themes_newTitle => 'Nieuw thema';
+
+  @override
+  String get themes_editTitle => 'Thema bewerken';
+
+  @override
+  String get themes_name => 'Naam';
+
+  @override
+  String get themes_nameRequired => 'Geef je thema een naam';
+
+  @override
+  String get themes_background => 'Achtergrond';
+
+  @override
+  String get themes_backgroundHelp =>
+      'Een donkere achtergrond geeft een donker thema';
+
+  @override
+  String get themes_accent => 'Accent';
+
+  @override
+  String get themes_accentHelp => 'Knoppen, markeringen en je chatballonnen';
+
+  @override
+  String get themes_hexColor => 'Hexkleur';
+
+  @override
+  String get themes_preview => 'Voorbeeld';
+
+  @override
+  String get themes_previewIncoming => 'Is er vanavond iemand op de mesh?';
+
+  @override
+  String get themes_previewOutgoing => 'Luid en duidelijk!';
+
+  @override
+  String get themes_previewSwitch => 'Meldingen';
+
+  @override
+  String get themes_lowContrast =>
+      'Het accent is slecht te zien op deze achtergrond';
+
+  @override
+  String get themes_saveAndUse => 'Opslaan en gebruiken';
+
+  @override
+  String get themes_icons => 'Pictogrammen';
+
+  @override
+  String get themes_iconsHelp =>
+      'Tik op een pictogram om het te vervangen door een ander pictogram of je eigen afbeelding';
+
+  @override
+  String get themes_iconChanged => 'Gewijzigd';
+
+  @override
+  String get themes_iconSend => 'Verzendknop';
+
+  @override
+  String get themes_iconRepeater => 'Repeaters';
+
+  @override
+  String get themes_iconRoom => 'Rooms';
+
+  @override
+  String get themes_iconSensor => 'Sensoren';
+
+  @override
+  String get themes_mapMarkers => 'Kaartmarkeringen';
+
+  @override
+  String get themes_mapMarkersHelp =>
+      'Vervang de markeringen voor nodes en voor jezelf op de kaart';
+
+  @override
+  String get themes_iconUsePicture => 'Een afbeelding gebruiken';
+
+  @override
+  String get themes_iconReset => 'Standaardpictogram gebruiken';
+
+  @override
+  String get themes_iconPictureFailed =>
+      'Die afbeelding kon niet worden gebruikt';
+
+  @override
+  String get themes_exportFile => 'Exporteren naar bestand';
+
+  @override
+  String get themes_exportAll => 'Mijn thema\'s exporteren';
+
+  @override
+  String get themes_importFile => 'Importeren uit bestand';
+
+  @override
+  String get themes_pasteCode => 'Themacode plakken';
+
+  @override
+  String get themes_exportFailed => 'Thema\'s konden niet worden geëxporteerd';
+
+  @override
+  String themes_importFileResult(int count) {
+    return '$count thema\'s geïmporteerd';
+  }
+
+  @override
+  String get themes_importFileNone => 'Geen thema\'s gevonden in dat bestand';
+
+  @override
+  String get chatBackground_title => 'Chatachtergrond';
+
+  @override
+  String get chatBackground_thisChatOnly => 'Alleen voor deze chat';
+
+  @override
+  String chatBackground_themeOverrides(String name) {
+    return 'Je thema \"$name\" stelt de achtergrond in voor elke chat. Zet dat uit in het thema om deze te gebruiken.';
+  }
+
+  @override
+  String get chatBackground_none => 'Geen';
+
+  @override
+  String get chatBackground_picture => 'Afbeelding';
+
+  @override
+  String get chatBackground_choosePicture => 'Kies een afbeelding';
+
+  @override
+  String get chatBackground_pictureFailed =>
+      'Die afbeelding kon niet worden gebruikt';
+
+  @override
+  String get chatBackground_fade => 'Vervagen';
+
+  @override
+  String get themes_chatBackground => 'Chatachtergrond';
+
+  @override
+  String get themes_chatBackgroundHelp =>
+      'Getoond in chats die geen eigen achtergrond hebben';
+
+  @override
+  String get themes_chatBackgroundEverywhere => 'In elke chat gebruiken';
+
+  @override
+  String get themes_chatBackgroundEverywhereHelp =>
+      'Vervangt ook achtergronden die voor afzonderlijke chats zijn ingesteld';
+
+  @override
   String get appSettings_language => 'Taal';
 
   @override
@@ -1061,6 +1303,61 @@ class AppLocalizationsNl extends AppLocalizations {
       'Aantal pogingen om een bericht opnieuw te versturen voordat het als mislukt wordt gemarkeerd';
 
   @override
+  String get appSettings_ipfsImageLinks => 'IPFS-providerconfiguratie';
+
+  @override
+  String get appSettings_ipfsImageLinksSubtitle =>
+      'Upload voor URL-afbeeldingen (of bestanden) via een IPFS-provider en standaardgateway om te ontvangen';
+
+  @override
+  String get appSettings_loadLinkImages => 'Afbeeldingen uit links laden';
+
+  @override
+  String get appSettings_loadLinkImagesSubtitle =>
+      'Toon afbeeldingen uit links in berichten. Bij het laden van een afbeelding wordt je IP-adres gedeeld met de site die de afbeelding host.';
+
+  @override
+  String get appSettings_showLinkImagesByDefault =>
+      'Linkafbeeldingen standaard in alle chats tonen';
+
+  @override
+  String get appSettings_showLinkImagesByDefaultSubtitle =>
+      'Laad linkafbeeldingen in elke chat, tenzij je ze daar hebt uitgezet. Hierdoor wordt je IP-adres in elke chat gedeeld met afbeeldingshosts.';
+
+  @override
+  String get appSettings_publicIpfsGateway => 'Publieke gateway';
+
+  @override
+  String get appSettings_ipfsGatewayDeactivated => 'Uitgeschakeld';
+
+  @override
+  String get appSettings_ipfsGatewayCustom => 'Aangepast (Kubo)';
+
+  @override
+  String get appSettings_uploadIpfsProvider => 'Uploadprovider';
+
+  @override
+  String get appSettings_uploadIpfsGateway => 'Uploadgateway';
+
+  @override
+  String get appSettings_uploadIpfsGatewaySubtitle =>
+      'Gateway om afbeeldingen of bestanden als URL-link te delen. Laat leeg om het ipfs:-formaat te gebruiken, dat andere clients mogelijk niet kunnen openen.';
+
+  @override
+  String get appSettings_uploadIpfsEndpoint => 'Upload-endpoint';
+
+  @override
+  String get appSettings_uploadIpfsEndpointSubtitle =>
+      'Het API-endpoint dat wordt gebruikt om bestanden te uploaden';
+
+  @override
+  String get appSettings_uploadIpfsApiKey => 'Upload-API-sleutel';
+
+  @override
+  String get appSettings_ipfsImageLinksDescription =>
+      'De publieke gateway downloadt afbeeldingen in ipfs:-formaat. De uploadgateway maakt deellinks voor geüploade afbeeldingen of bestanden.';
+
+  @override
   String get appSettings_battery => 'Batterij';
 
   @override
@@ -1278,6 +1575,14 @@ class AppLocalizationsNl extends AppLocalizations {
   String get contacts_remove => 'Verwijderen';
 
   @override
+  String get contacts_removeAutoAddNote =>
+      'Je radio voegt dit contacttype automatisch toe, dus het komt terug zodra het weer een advert verstuurt. Zet automatisch toevoegen uit in de Contactinstellingen om het verwijderd te houden.';
+
+  @override
+  String get contacts_removeFailed =>
+      'De radio heeft de verwijdering niet bevestigd. Het contact is niet verwijderd.';
+
+  @override
   String contacts_discoveredNearby(int count) {
     return 'In de buurt ontdekt ($count)';
   }
@@ -1448,6 +1753,23 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get channels_editChannel => 'Kanaal bewerken';
+
+  @override
+  String get channels_notificationSettings => 'Meldingsinstellingen';
+
+  @override
+  String get channels_notifyAll => 'Alle berichten';
+
+  @override
+  String get channels_notifyMentionsOnly => 'Alleen vermeldingen';
+
+  @override
+  String get channels_notifyNone => 'Gedempt';
+
+  @override
+  String channels_notificationModeTooltip(String mode) {
+    return 'Meldingen: $mode';
+  }
 
   @override
   String get channels_muteChannel => 'Kanaal dempen';
@@ -1630,6 +1952,31 @@ class AppLocalizationsNl extends AppLocalizations {
   String get channels_scanQrCodeComingSoon => 'Binnenkort beschikbaar';
 
   @override
+  String get channels_scanQrCodeDesc =>
+      'Word lid van een kanaal of community via de QR-code.';
+
+  @override
+  String get channels_scanQrInstructions =>
+      'Richt de camera op een kanaal- of community-QR-code';
+
+  @override
+  String get channels_invalidQrCode =>
+      'Geen MeshCore-kanaal- of community-QR-code';
+
+  @override
+  String get channels_joinChannelTitle => 'Lid worden van kanaal';
+
+  @override
+  String channels_joinChannelConfirm(String name) {
+    return '\"$name\" aan je radio toevoegen?';
+  }
+
+  @override
+  String channels_alreadyOnRadio(String name) {
+    return '\"$name\" staat al op je radio';
+  }
+
+  @override
   String get channels_enterHashtag => 'Voer hashtag in';
 
   @override
@@ -1747,6 +2094,45 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get chat_sendImageLora =>
       'Afbeelding in lage resolutie via radio verzenden';
+
+  @override
+  String get chat_sendImageIpfs => 'Afbeelding of bestand versturen via IPFS';
+
+  @override
+  String chat_ipfsUploadFailed(String error) {
+    return 'IPFS-upload mislukt: $error';
+  }
+
+  @override
+  String get chat_ipfsUploadNotConfigured =>
+      'Configureer eerst een IPFS-uploadprovider in de App-instellingen.';
+
+  @override
+  String get chat_ipfsSelectedFileEmpty => 'Het geselecteerde bestand is leeg.';
+
+  @override
+  String get chat_ipfsEndpointInvalid =>
+      'Het IPFS-upload-endpoint moet een volledig http://- of https://-adres zijn. Controleer het in de App-instellingen.';
+
+  @override
+  String get chat_ipfsPinataTokenMissing =>
+      'Pinata heeft een API-sleutel of JWT nodig. Voeg die toe in de App-instellingen.';
+
+  @override
+  String get chat_ipfsFilebaseTokenMissing =>
+      'Filebase heeft een API-token nodig. Voeg dat toe in de App-instellingen.';
+
+  @override
+  String get chat_ipfsKuboPathInvalid =>
+      'Het Kubo-upload-endpoint moet eindigen op /api/v0/add. Controleer het in de App-instellingen.';
+
+  @override
+  String get chat_ipfsLinkNoRoom =>
+      'Niet genoeg ruimte voor de afbeeldingslink. Kort je bericht in en probeer het opnieuw.';
+
+  @override
+  String get chat_ipfsLinkOverLimit =>
+      'Afbeeldingslink toegevoegd, maar het bericht is nu te lang. Kort het in voordat je het verstuurt.';
 
   @override
   String get chat_imagePickFailed => 'Kon die afbeelding niet openen';
@@ -2364,6 +2750,27 @@ class AppLocalizationsNl extends AppLocalizations {
   String get map_pathTraceCancelled => 'Pad traceren geannuleerd';
 
   @override
+  String get map_pathTraceAddMoreHint =>
+      'Tik op meer nodes om hops toe te voegen, kies hoe de trace terugkomt en tik dan op Padtrace uitvoeren.';
+
+  @override
+  String get map_pathTraceModeRoundTrip => 'Heen en terug';
+
+  @override
+  String get map_pathTraceModeRoundTripHint =>
+      'De trace gaat via deze hops heen en komt op dezelfde weg terug.';
+
+  @override
+  String get map_pathTraceModeAsEntered => 'Zoals ingevoerd';
+
+  @override
+  String get map_pathTraceModeAsEnteredHint =>
+      'De trace volgt precies deze hops. Voeg zelf de hops terug naar jou toe.';
+
+  @override
+  String get map_pathTraceViewLast => 'Laatste resultaat bekijken';
+
+  @override
   String get mapCache_title => 'Offline Kaarten Cache';
 
   @override
@@ -2959,17 +3366,11 @@ class AppLocalizationsNl extends AppLocalizations {
       'Hogere gevoeligheid, meer stroomverbruik (alleen SX1262/SX1268)';
 
   @override
-  String get repeater_refreshRxGain => 'Verhoogde RX-versterking vernieuwen';
-
-  @override
   String get repeater_multiAcks => 'Multi-ACKs';
 
   @override
   String get repeater_multiAcksSubtitle =>
       'Bevestig berichten via meerdere paden voor betere aflevering';
-
-  @override
-  String get repeater_refreshMultiAcks => 'Multi-ACKs vernieuwen';
 
   @override
   String get repeater_networkHealth => 'Netwerkgezondheid';
@@ -3009,9 +3410,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get repeater_ownerInfoHelper => 'Openbare metadata voor deze repeater';
-
-  @override
-  String get repeater_refreshOwnerInfo => 'Operatorinformatie vernieuwen';
 
   @override
   String get repeater_floodMax => 'Max. flood-hops';
@@ -3147,20 +3545,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get repeater_refreshBasicSettings => 'Basisinstellingen vernieuwen';
-
-  @override
   String get repeater_refreshRadioSettings => 'Radio-instellingen vernieuwen';
-
-  @override
-  String get repeater_refreshTxPower => 'TX-vermogen vernieuwen';
-
-  @override
-  String get repeater_refreshPacketForwarding =>
-      'Pakketten doorsturen vernieuwen';
-
-  @override
-  String get repeater_refreshGuestAccess => 'Gasttoegang vernieuwen';
 
   @override
   String get repeater_refreshPrivacyMode => 'Privacymodus vernieuwen';
@@ -4705,6 +5090,14 @@ class AppLocalizationsNl extends AppLocalizations {
   String get notification_activityTitle => 'MeshCore Activiteit';
 
   @override
+  String get notification_lowBatteryTitle => 'Batterij bijna leeg';
+
+  @override
+  String notification_lowBatteryBody(String deviceName, int percent) {
+    return 'Batterij van $deviceName staat op $percent%';
+  }
+
+  @override
   String notification_messagesCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -4744,6 +5137,25 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get notification_receivedNewMessage => 'Nieuw bericht ontvangen';
+
+  @override
+  String get notification_sharedLocation => 'Locatie gedeeld';
+
+  @override
+  String notification_sharedLocationNamed(String label) {
+    return 'Locatie gedeeld: $label';
+  }
+
+  @override
+  String notification_reacted(String emoji) {
+    return 'Reageerde $emoji';
+  }
+
+  @override
+  String get notification_sentGif => 'GIF verstuurd';
+
+  @override
+  String get notification_sentImage => 'Afbeelding verstuurd';
 
   @override
   String get notification_actionReply => 'Reageren';
@@ -4845,6 +5257,13 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get snrIndicator_nearByRepeatersDescription =>
       'Repeaters die je radio rechtstreeks heeft gehoord, meest recent gehoord eerst.';
+
+  @override
+  String get snrIndicator_unknownRepeater => 'Onbekende repeater';
+
+  @override
+  String get snrIndicator_unknownRepeaterHint =>
+      'Deze repeater staat nog niet in je contacten. Naam, locatie en opties verschijnen zodra je radio zijn advert ontvangt.';
 
   @override
   String get contactsSettings_title => 'Instellingen voor contacten';
@@ -4990,6 +5409,14 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get appSettings_jumpToOldestUnreadSubtitle =>
       'Bij het openen van een chat met ongelezen berichten, scroll dan naar het eerste ongelezen bericht, in plaats van naar het meest recente.';
+
+  @override
+  String get appSettings_autoFetchRepeaterSettings =>
+      'Repeaterinstellingen automatisch ophalen';
+
+  @override
+  String get appSettings_autoFetchRepeaterSettingsSubtitle =>
+      'Vraag alle instellingen op wanneer je de instellingen van een repeater opent. Elke instelling is een apart verzoek via LoRa, dus dit is traag en gebruikt zendtijd. Als dit uit staat, tik je op Alles vernieuwen of vernieuw je afzonderlijke secties.';
 
   @override
   String get appSettings_languageHu => 'Hongaars';
@@ -5682,6 +6109,59 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get repeater_floodMaxAdvert => 'Max. flood-hops voor adverts';
+
+  @override
+  String get repeater_floodMaxAdvertHelper =>
+      'Maximaal aantal hops dat een geflooded advert mag afleggen (0-64, standaard 8)';
+
+  @override
+  String get repeater_floodMaxUnscoped => 'Max. flood-hops zonder scope';
+
+  @override
+  String get repeater_floodMaxUnscopedHelper =>
+      'Maximaal aantal hops voor floods zonder regioscope (0-64, standaard 64). Een lage waarde zoals 3 houdt verkeer zonder scope lokaal.';
+
+  @override
+  String get repeater_floodMaxUnscopedUnset => 'Gelijk aan flood-max';
+
+  @override
+  String get repeater_rxDelay => 'Ontvangstvertraging';
+
+  @override
+  String get repeater_rxDelayHelper =>
+      'Houdt flood-pakketten die met een zwak signaal zijn ontvangen even vast voordat ze worden doorgestuurd, zodat paden met een sterk signaal voorgaan en er minder duplicaten worden verzonden (0-20, 0 schakelt het uit).';
+
+  @override
+  String get repeater_cad => 'Kanaalactiviteitsdetectie';
+
+  @override
+  String get repeater_cadHelper =>
+      'Luister naar activiteit voordat er wordt gezonden en wacht zolang het kanaal bezet is. Werkt samen met de grenswaarde voor interferentie.';
+
+  @override
+  String get repeater_adcMultiplier => 'Kalibratie batterijspanning';
+
+  @override
+  String get repeater_adcMultiplierHelper =>
+      'Vermenigvuldigingsfactor voor de uitgelezen batterijspanning (0-10). 0 gebruikt de standaardwaarde van het bord.';
+
+  @override
+  String get repeater_boardSupportNote =>
+      'Niet elk bord ondersteunt dit. Niet-ondersteunde borden weigeren de wijziging.';
+
+  @override
+  String get repeater_extraSf => 'Extra spreadingfactors';
+
+  @override
+  String get repeater_extraSfHelper =>
+      'Tot 3 extra spreadingfactors om tegelijk op te luisteren, gescheiden door komma\'s (bijvoorbeeld 9,10). Laat leeg om uit te schakelen.';
+
+  @override
+  String get repeater_lr2021Only =>
+      'Alleen voor repeaters met een LR2021-radio. Andere repeaters hebben deze instelling niet en weigeren haar.';
+
+  @override
   String get losMapDetailTooltip => 'Kaartdetail';
 
   @override
@@ -5835,6 +6315,22 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String map_nodeMarkerSemantics(String name, String type, String status) {
     return '$name, $type, $status';
+  }
+
+  @override
+  String get map_requestLocation => 'Locatie bijwerken';
+
+  @override
+  String get map_locationUpdated => 'Locatie bijgewerkt';
+
+  @override
+  String map_locationNotShared(String name) {
+    return '$name antwoordde zonder locatie';
+  }
+
+  @override
+  String map_locationRequestFailed(String name) {
+    return 'Geen antwoord van $name';
   }
 
   @override
@@ -6121,11 +6617,6 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String repeater_txPowerOutOfRange(String value, int min, int max) {
-    return 'TX-vermogen $value valt buiten het bereik ($min tot $max dBm)';
-  }
-
-  @override
   String repeater_prvKeyLengthError(int length) {
     return 'De privésleutel moet precies $length hexadecimale tekens bevatten';
   }
@@ -6135,6 +6626,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get contacts_manageGroups => 'Groepen beheren';
+
+  @override
+  String contacts_keyPrefixSemantics(String prefix) {
+    return 'Sleutelprefix $prefix';
+  }
 
   @override
   String community_shortId(String id) {
@@ -6219,6 +6715,17 @@ class AppLocalizationsNl extends AppLocalizations {
   String get networkMap_sourceBoth => 'Beide';
 
   @override
+  String get networkMap_sourceLocalHint => 'Nodes die je radio heeft gehoord';
+
+  @override
+  String get networkMap_sourceOnlineHint =>
+      'Repeaters van de online netwerkkaart';
+
+  @override
+  String get networkMap_sourceBothHint =>
+      'De nodes van je radio plus de online netwerkkaart';
+
+  @override
   String get networkMap_zoomInHint =>
       'Zoom in om de online netwerkkaart te zien';
 
@@ -6280,4 +6787,20 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get networkMap_unnamed => 'Naamloze repeater';
+
+  @override
+  String get holidayGreeting_halloween =>
+      'Fijne Halloween|Gelukkige Halloween|Happy Halloween|Gruwelijke Halloween';
+
+  @override
+  String get holidayGreeting_thanksgiving =>
+      'Fijne Thanksgiving|Gelukkige Thanksgiving|Happy Thanksgiving|Fijne Thanksgiving Day';
+
+  @override
+  String get holidayGreeting_christmas =>
+      'Vrolijk kerstfeest|Fijne kerst|Prettige kerstdagen|Zalig kerstfeest|Vrolijk kerst|Zalig kerst|Merry Christmas|Fijne feestdagen|Prettige feestdagen';
+
+  @override
+  String get holidayGreeting_newYear =>
+      'Gelukkig Nieuwjaar|Gelukkig nieuw jaar|Prettig nieuwjaar|Een gelukkig nieuwjaar|Happy New Year|Zalig nieuwjaar|Fijne jaarwisseling';
 }

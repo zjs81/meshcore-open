@@ -443,6 +443,49 @@ void main() {
       expect(settings.evictDiscoveredContactsEnabled, isFalse);
     });
 
+    test('load link images defaults on and round-trips through JSON', () {
+      expect(AppSettings().loadLinkImages, isTrue);
+      expect(AppSettings.fromJson({}).loadLinkImages, isTrue);
+      final saved = AppSettings(loadLinkImages: false).toJson();
+      expect(AppSettings.fromJson(saved).loadLinkImages, isFalse);
+    });
+
+    test('show link images by default is off and round-trips', () {
+      expect(AppSettings().showLinkImagesByDefault, isFalse);
+      expect(AppSettings.fromJson({}).showLinkImagesByDefault, isFalse);
+      final saved = AppSettings(showLinkImagesByDefault: true).toJson();
+      expect(AppSettings.fromJson(saved).showLinkImagesByDefault, isTrue);
+    });
+
+    test('public IPFS gateway defaults to Filebase when never set', () {
+      expect(
+        AppSettings.fromJson({}).publicIpfsGateway,
+        'https://ipfs.filebase.io/ipfs/',
+      );
+      expect(AppSettings().publicIpfsGateway, 'https://ipfs.filebase.io/ipfs/');
+    });
+
+    test('public IPFS gateway keeps a saved empty value as deactivated', () {
+      final saved = AppSettings(publicIpfsGateway: '').toJson();
+      expect(AppSettings.fromJson(saved).publicIpfsGateway, isEmpty);
+    });
+
+    test('public IPFS gateway keeps saved custom values', () {
+      for (final gateway in ['https://gateway.example.com/ipfs/']) {
+        final saved = AppSettings(publicIpfsGateway: gateway).toJson();
+        expect(AppSettings.fromJson(saved).publicIpfsGateway, gateway);
+      }
+    });
+
+    test('empty upload gateway does not fall back to the download gateway', () {
+      final settings = AppSettings(
+        publicIpfsGateway: 'https://gateway.example.com/ipfs/',
+        uploadIpfsGateway: '',
+      );
+
+      expect(settings.effectiveUploadIpfsGateway, isEmpty);
+    });
+
     test(
       'fromJson with missing new fields uses defaults (backward compat)',
       () {

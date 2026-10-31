@@ -22,6 +22,12 @@ class Contact {
   final bool isActive;
   final Uint8List? rawPacket;
 
+  /// When [latitude]/[longitude] came from a telemetry reply rather than the
+  /// advert, the phone time of that reply. [lastSeen] stays the node's advert
+  /// timestamp (it is written back to the radio), so a radio refresh carrying
+  /// the same advert keeps the fix and a newer advert replaces it.
+  final DateTime? telemetryFixAt;
+
   Contact({
     required this.publicKey,
     required this.name,
@@ -39,9 +45,23 @@ class Contact {
     DateTime? lastMessageAt,
     this.isActive = true,
     this.rawPacket,
+    this.telemetryFixAt,
   }) : lastMessageAt = lastMessageAt ?? lastSeen;
 
-  String get publicKeyHex => pubKeyToHex(publicKey);
+  /// Cached: it backs ==, hashCode and the per-frame contact lookups, and
+  /// rebuilding it allocated a 64-char string on every access.
+  late final String publicKeyHex = pubKeyToHex(publicKey);
+
+  /// Uppercase hex of the first [byteWidth] public-key bytes: the hash this
+  /// node appears as in routing paths.
+  String publicKeyPrefixHex(int byteWidth) {
+    final width = byteWidth.clamp(1, 3).toInt();
+    return publicKey
+        .take(width)
+        .map((b) => b.toRadixString(16).padLeft(2, '0'))
+        .join()
+        .toUpperCase();
+  }
 
   /// Non-localized type label, intended for logs and non-UI exports
   /// (e.g. GPX). For UI use the `typeLabel(l10n)` extension in
@@ -72,6 +92,12 @@ class Contact {
         lon <= 180.0;
   }
 
+  /// The latest time we heard from the node: its advert or a telemetry fix.
+  DateTime get lastHeard {
+    final fixAt = telemetryFixAt;
+    return fixAt != null && fixAt.isAfter(lastSeen) ? fixAt : lastSeen;
+  }
+
   bool get isFavorite => (flags & contactFlagFavorite) != 0;
 
   Contact copyWith({
@@ -92,6 +118,8 @@ class Contact {
     DateTime? lastModified,
     bool? isActive,
     Uint8List? rawPacket,
+    DateTime? telemetryFixAt,
+    bool clearTelemetryFix = false,
   }) {
     return Contact(
       publicKey: publicKey ?? this.publicKey,
@@ -114,6 +142,9 @@ class Contact {
       lastModified: lastModified ?? this.lastModified,
       isActive: isActive ?? this.isActive,
       rawPacket: rawPacket ?? this.rawPacket,
+      telemetryFixAt: clearTelemetryFix
+          ? null
+          : (telemetryFixAt ?? this.telemetryFixAt),
     );
   }
 

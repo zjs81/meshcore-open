@@ -82,6 +82,32 @@ if(TARGET flserial)
   target_compile_definitions(flserial PRIVATE __STDC_NO_THREADS__)
 endif()
 
+# Issue zjs81/meshcore-open#600: the release zip must contain
+# libonnxruntime.so.1 and must not depend on the build machine's absolute
+# path. The plugin is linked against that library by absolute path, so CMake
+# records the download directory as the plugin RUNPATH, and install(FILES)
+# ships that build-tree file unchanged. The loader uses the plugin RUNPATH,
+# not the executable RPATH, when resolving the plugin's libonnxruntime.so.1
+# dependency. Keep the download directory so ld can resolve the SONAME while
+# linking meshcore_open, and add $ORIGIN so the copy installed next to the
+# plugin is found on a machine that does not have this build tree. Do not set
+# SKIP_BUILD_RPATH: without the download directory the link fails with
+# "libonnxruntime.so.1, needed by libflutter_onnxruntime_plugin.so, not found".
+if(TARGET flutter_onnxruntime_plugin)
+  file(GLOB _onnx_link_libs
+    "${CMAKE_BINARY_DIR}/plugins/flutter_onnxruntime/onnxruntime/onnxruntime-linux-*/lib/libonnxruntime.so"
+    "${PROJECT_BINARY_DIR}/plugins/flutter_onnxruntime/onnxruntime/onnxruntime-linux-*/lib/libonnxruntime.so")
+  if(_onnx_link_libs)
+    list(GET _onnx_link_libs 0 _onnx_link_lib)
+    get_filename_component(_onnx_lib_dir "${_onnx_link_lib}" DIRECTORY)
+    set_target_properties(flutter_onnxruntime_plugin PROPERTIES
+      BUILD_RPATH "\$ORIGIN;${_onnx_lib_dir}")
+  endif()
+endif()
+set_target_properties(${BINARY_NAME} PROPERTIES
+  INSTALL_RPATH "$ORIGIN/lib")
+target_link_options(${BINARY_NAME} PRIVATE "-Wl,--disable-new-dtags")
+
 
 # === Installation ===
 # By default, "installing" just makes a relocatable bundle in the build
@@ -113,6 +139,27 @@ foreach(bundled_library ${PLUGIN_BUNDLED_LIBRARIES})
     DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
     COMPONENT Runtime)
 endforeach(bundled_library)
+
+# Copy ONNX Runtime under the names the dynamic linker asks for. The plugin
+# bundles libonnxruntime.so, which is a symlink; the NEEDED entry is
+# libonnxruntime.so.1.
+install(CODE "
+  set(_onnx_roots
+    \"${CMAKE_BINARY_DIR}/plugins/flutter_onnxruntime/onnxruntime\"
+    \"${PROJECT_BINARY_DIR}/plugins/flutter_onnxruntime/onnxruntime\")
+  foreach(_root \${_onnx_roots})
+    file(GLOB _onnx_libs
+      \"\${_root}/onnxruntime-linux-*/lib/libonnxruntime.so*\"
+      \"\${_root}/onnxruntime-linux-*/lib/libonnxruntime_providers_shared.so\")
+    foreach(_lib \${_onnx_libs})
+      get_filename_component(_name \"\${_lib}\" NAME)
+      execute_process(COMMAND readlink -f \"\${_lib}\"
+        OUTPUT_VARIABLE _real OUTPUT_STRIP_TRAILING_WHITESPACE)
+      execute_process(COMMAND \"${CMAKE_COMMAND}\" -E copy
+        \"\${_real}\" \"${INSTALL_BUNDLE_LIB_DIR}/\${_name}\")
+    endforeach()
+  endforeach()
+  " COMPONENT Runtime)
 
 # Copy the native assets provided by the build.dart from all packages.
 set(NATIVE_ASSETS_DIR "${PROJECT_BUILD_DIR}native_assets/linux/")

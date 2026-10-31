@@ -298,6 +298,8 @@
   "contacts_removeFromContactsConfirm": "{contactName} wordt verplaatst naar Ontdekte contacten. De chatgeschiedenis wordt verwijderd.",
   "contacts_keepChatHistory": "Chatgeschiedenis behouden",
   "contacts_remove": "Verwijderen",
+  "contacts_removeAutoAddNote": "Je radio voegt dit contacttype automatisch toe, dus het komt terug zodra het weer een advert verstuurt. Zet automatisch toevoegen uit in de Contactinstellingen om het verwijderd te houden.",
+  "contacts_removeFailed": "De radio heeft de verwijdering niet bevestigd. Het contact is niet verwijderd.",
   "contacts_discoveredNearby": "In de buurt ontdekt ({count})",
   "contacts_noContactsDiscoveredHint": "Nodes die je radio hoort maar nog niet heeft toegevoegd, staan bij Ontdekte contacten",
   "contacts_manageRepeater": "Beheer Repeater",
@@ -375,6 +377,18 @@
   "channels_addSectionCreate": "Nieuw aanmaken",
   "channels_dragToReorder": "Sleep om te herschikken",
   "channels_editChannel": "Kanaal bewerken",
+  "channels_notificationSettings": "Meldingsinstellingen",
+  "channels_notifyAll": "Alle berichten",
+  "channels_notifyMentionsOnly": "Alleen vermeldingen",
+  "channels_notifyNone": "Gedempt",
+  "channels_notificationModeTooltip": "Meldingen: {mode}",
+  "@channels_notificationModeTooltip": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
   "channels_muteChannel": "Kanaal dempen",
   "channels_unmuteChannel": "Kanaal dempen opheffen",
   "channels_deleteChannel": "Kanaal verwijderen",
@@ -1172,10 +1186,8 @@
   "repeater_settingsSaved": "Instellingen succesvol opgeslagen",
   "repeater_rxGain": "Verhoogde RX-versterking",
   "repeater_rxGainHelper": "Hogere gevoeligheid, meer stroomverbruik (alleen SX1262/SX1268)",
-  "repeater_refreshRxGain": "Verhoogde RX-versterking vernieuwen",
   "repeater_multiAcks": "Multi-ACKs",
   "repeater_multiAcksSubtitle": "Bevestig berichten via meerdere paden voor betere aflevering",
-  "repeater_refreshMultiAcks": "Multi-ACKs vernieuwen",
   "repeater_networkHealth": "Netwerkgezondheid",
   "repeater_loopDetect": "Lusdetectie",
   "repeater_loopDetectHelper": "Flood-pakketten negeren die op routeringslussen lijken",
@@ -1195,7 +1207,6 @@
   },
   "repeater_ownerInfo": "Informatie over de operator",
   "repeater_ownerInfoHelper": "Openbare metadata voor deze repeater",
-  "repeater_refreshOwnerInfo": "Operatorinformatie vernieuwen",
   "repeater_floodMax": "Max. flood-hops",
   "repeater_floodMaxHelper": "Maximaal aantal hops dat een flood-pakket mag afleggen (0-64)",
   "repeater_advancedSettings": "Geavanceerd",
@@ -1253,11 +1264,7 @@
       }
     }
   },
-  "repeater_refreshBasicSettings": "Basisinstellingen vernieuwen",
   "repeater_refreshRadioSettings": "Radio-instellingen vernieuwen",
-  "repeater_refreshTxPower": "TX-vermogen vernieuwen",
-  "repeater_refreshPacketForwarding": "Pakketten doorsturen vernieuwen",
-  "repeater_refreshGuestAccess": "Gasttoegang vernieuwen",
   "repeater_refreshPrivacyMode": "Privacymodus vernieuwen",
   "repeater_refreshAll": "Alles vernieuwen",
   "repeater_settingsNotLoaded": "De instellingen van deze repeater zijn nog niet geladen.",
@@ -1603,6 +1610,26 @@
   "channels_joinHashtagChannelDesc": "Iedereen kan toetreden tot hashtag-kanalen.",
   "channels_scanQrCode": "Scan een QR-code",
   "channels_scanQrCodeComingSoon": "Binnenkort beschikbaar",
+  "channels_scanQrCodeDesc": "Word lid van een kanaal of community via de QR-code.",
+  "channels_scanQrInstructions": "Richt de camera op een kanaal- of community-QR-code",
+  "channels_invalidQrCode": "Geen MeshCore-kanaal- of community-QR-code",
+  "channels_joinChannelTitle": "Lid worden van kanaal",
+  "channels_joinChannelConfirm": "\"{name}\" aan je radio toevoegen?",
+  "@channels_joinChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_alreadyOnRadio": "\"{name}\" staat al op je radio",
+  "@channels_alreadyOnRadio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "channels_enterHashtag": "Voer hashtag in",
   "channels_hashtagHint": "bijv. #team",
   "@neighbors_unknownContact": {
@@ -1807,11 +1834,46 @@
   "contacts_ShareContactZeroHop": "Contact delen via advert",
   "contacts_zeroHopContactAdvertFailed": "Contact verzenden mislukt.",
   "notification_activityTitle": "MeshCore Activiteit",
+  "notification_lowBatteryTitle": "Batterij bijna leeg",
+  "@notification_lowBatteryTitle": {
+    "description": "Title of the low battery notification"
+  },
+  "notification_lowBatteryBody": "Batterij van {deviceName} staat op {percent}%",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification; deviceName is the connected radio's node name",
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "notification_messagesCount": "{count} {count, plural, =1{bericht} other{berichten}}",
   "notification_channelMessagesCount": "{count} {count, plural, =1{kanaalbericht} other{kanaalberichten}}",
   "notification_newNodesCount": "{count} {count, plural, =1{nieuwe node} other{nieuwe nodes}}",
   "notification_newTypeDiscovered": "Nieuw {contactType} ontdekt",
   "notification_receivedNewMessage": "Nieuw bericht ontvangen",
+  "notification_sharedLocation": "Locatie gedeeld",
+  "notification_sharedLocationNamed": "Locatie gedeeld: {label}",
+  "@notification_sharedLocationNamed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_reacted": "Reageerde {emoji}",
+  "@notification_reacted": {
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_sentGif": "GIF verstuurd",
+  "notification_sentImage": "Afbeelding verstuurd",
   "settings_gpxExportRepeatersSubtitle": "Exporteert repeaters / roomserver met een locatie naar GPX-bestand.",
   "settings_gpxExportRepeaters": "Exporteer repeaters / roomserver naar GPX",
   "settings_gpxExportSuccess": "GPX-bestand succesvol geëxporteerd.",
@@ -1831,6 +1893,12 @@
   "map_removeLast": "Verwijder Laatste",
   "pathTrace_clearTooltip": "Pad wissen.",
   "map_pathTraceCancelled": "Pad traceren geannuleerd",
+  "map_pathTraceAddMoreHint": "Tik op meer nodes om hops toe te voegen, kies hoe de trace terugkomt en tik dan op Padtrace uitvoeren.",
+  "map_pathTraceModeRoundTrip": "Heen en terug",
+  "map_pathTraceModeRoundTripHint": "De trace gaat via deze hops heen en komt op dezelfde weg terug.",
+  "map_pathTraceModeAsEntered": "Zoals ingevoerd",
+  "map_pathTraceModeAsEnteredHint": "De trace volgt precies deze hops. Voeg zelf de hops terug naar jou toe.",
+  "map_pathTraceViewLast": "Laatste resultaat bekijken",
   "map_tapToAdd": "Tik op nodes om ze aan het pad toe te voegen.",
   "map_runTrace": "Padtrace uitvoeren",
   "scanner_enableBluetooth": "Activeer Bluetooth",
@@ -1840,6 +1908,8 @@
   "scanner_bluetoothOff": "Bluetooth is uitgeschakeld",
   "snrIndicator_lastSeen": "Laatst gezien",
   "snrIndicator_nearByRepeatersDescription": "Repeaters die je radio rechtstreeks heeft gehoord, meest recent gehoord eerst.",
+  "snrIndicator_unknownRepeater": "Onbekende repeater",
+  "snrIndicator_unknownRepeaterHint": "Deze repeater staat nog niet in je contacten. Naam, locatie en opties verschijnen zodra je radio zijn advert ontvangt.",
   "snrIndicator_nearByRepeaters": "Repeaters in de buurt",
   "chat_ShowAllPaths": "Toon alle paden",
   "settings_clientRepeat": "Off-Grid Herhalen",
@@ -2214,6 +2284,22 @@
   "appSettings_routeWeightFailureDecrementSubtitle": "Gewicht verwijderd van een pad na een mislukte levering",
   "appSettings_maxMessageRetries": "Max. aantal nieuwe pogingen",
   "appSettings_maxMessageRetriesSubtitle": "Aantal pogingen om een bericht opnieuw te versturen voordat het als mislukt wordt gemarkeerd",
+  "appSettings_ipfsImageLinks": "IPFS-providerconfiguratie",
+  "appSettings_ipfsImageLinksSubtitle": "Upload voor URL-afbeeldingen (of bestanden) via een IPFS-provider en standaardgateway om te ontvangen",
+  "appSettings_loadLinkImages": "Afbeeldingen uit links laden",
+  "appSettings_loadLinkImagesSubtitle": "Toon afbeeldingen uit links in berichten. Bij het laden van een afbeelding wordt je IP-adres gedeeld met de site die de afbeelding host.",
+  "appSettings_showLinkImagesByDefault": "Linkafbeeldingen standaard in alle chats tonen",
+  "appSettings_showLinkImagesByDefaultSubtitle": "Laad linkafbeeldingen in elke chat, tenzij je ze daar hebt uitgezet. Hierdoor wordt je IP-adres in elke chat gedeeld met afbeeldingshosts.",
+  "appSettings_publicIpfsGateway": "Publieke gateway",
+  "appSettings_ipfsGatewayDeactivated": "Uitgeschakeld",
+  "appSettings_ipfsGatewayCustom": "Aangepast (Kubo)",
+  "appSettings_uploadIpfsProvider": "Uploadprovider",
+  "appSettings_uploadIpfsGateway": "Uploadgateway",
+  "appSettings_uploadIpfsGatewaySubtitle": "Gateway om afbeeldingen of bestanden als URL-link te delen. Laat leeg om het ipfs:-formaat te gebruiken, dat andere clients mogelijk niet kunnen openen.",
+  "appSettings_uploadIpfsEndpoint": "Upload-endpoint",
+  "appSettings_uploadIpfsEndpointSubtitle": "Het API-endpoint dat wordt gebruikt om bestanden te uploaden",
+  "appSettings_uploadIpfsApiKey": "Upload-API-sleutel",
+  "appSettings_ipfsImageLinksDescription": "De publieke gateway downloadt afbeeldingen in ipfs:-formaat. De uploadgateway maakt deellinks voor geüploade afbeeldingen of bestanden.",
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Telemetrie-modus bijgewerkt",
   "settings_multiAck": "Multi-ACKs",
@@ -2264,6 +2350,8 @@
   },
   "appSettings_jumpToOldestUnread": "Ga naar het oudste ongelezen bericht",
   "appSettings_jumpToOldestUnreadSubtitle": "Bij het openen van een chat met ongelezen berichten, scroll dan naar het eerste ongelezen bericht, in plaats van naar het meest recente.",
+  "appSettings_autoFetchRepeaterSettings": "Repeaterinstellingen automatisch ophalen",
+  "appSettings_autoFetchRepeaterSettingsSubtitle": "Vraag alle instellingen op wanneer je de instellingen van een repeater opent. Elke instelling is een apart verzoek via LoRa, dus dit is traag en gebruikt zendtijd. Als dit uit staat, tik je op Alles vernieuwen of vernieuw je afzonderlijke secties.",
   "chat_sendCooldown": "Wacht even voordat je opnieuw verzendt.",
   "appSettings_languageHu": "Hongaars",
   "appSettings_languageJa": "Japans",
@@ -2876,6 +2964,29 @@
   "channels_regionEmpty": "Nog geen regio's.",
   "channels_manageRegions": "Regio's beheren",
   "chat_sendImageLora": "Afbeelding in lage resolutie via radio verzenden",
+  "chat_sendImageIpfs": "Afbeelding of bestand versturen via IPFS",
+  "chat_ipfsUploadFailed": "IPFS-upload mislukt: {error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "Configureer eerst een IPFS-uploadprovider in de App-instellingen.",
+  "chat_ipfsSelectedFileEmpty": "Het geselecteerde bestand is leeg.",
+  "chat_ipfsEndpointInvalid": "Het IPFS-upload-endpoint moet een volledig http://- of https://-adres zijn. Controleer het in de App-instellingen.",
+  "chat_ipfsPinataTokenMissing": "Pinata heeft een API-sleutel of JWT nodig. Voeg die toe in de App-instellingen.",
+  "chat_ipfsFilebaseTokenMissing": "Filebase heeft een API-token nodig. Voeg dat toe in de App-instellingen.",
+  "chat_ipfsKuboPathInvalid": "Het Kubo-upload-endpoint moet eindigen op /api/v0/add. Controleer het in de App-instellingen.",
+  "chat_ipfsLinkNoRoom": "Niet genoeg ruimte voor de afbeeldingslink. Kort je bericht in en probeer het opnieuw.",
+  "@chat_ipfsLinkNoRoom": {
+    "description": "Shown before an IPFS upload when the link would push the draft over the message size limit"
+  },
+  "chat_ipfsLinkOverLimit": "Afbeeldingslink toegevoegd, maar het bericht is nu te lang. Kort het in voordat je het verstuurt.",
+  "@chat_ipfsLinkOverLimit": {
+    "description": "Shown after an IPFS upload when the link plus the draft no longer fits the message size limit"
+  },
   "chat_imagePickFailed": "Kon die afbeelding niet openen",
   "chat_receivedGif": "GIF ontvangen",
   "repeater_keySettings": "Identiteitssleutels wijzigen",
@@ -2990,8 +3101,10 @@
   "room_postsStored": "Opgeslagen posts",
   "settings_publicKeyCopied": "Openbare sleutel gekopieerd",
   "settings_radioSettingsNotApplied": "De radio heeft deze instellingen niet toegepast",
+  "settings_pathHashModeNotApplied": "Radio-instellingen zijn toegepast, maar de radio heeft de nieuwe padhashgrootte niet bevestigd",
   "urlImage_enable": "URL-afbeeldingen inschakelen",
   "urlImage_possible": "Mogelijke URL-afbeelding; schakel dit in bij Instellingen.",
+  "urlImage_disabledInAppSettings": "Uitgeschakeld in app-instellingen",
   "notification_actionReply": "Reageren",
   "notification_actionMarkRead": "Markeer als gelezen",
   "notification_actionMuteChannel": "Kanaal dempen",
@@ -3039,6 +3152,21 @@
   "channels_waitForSync": "Kanalen worden nog van de radio geladen. Probeer het opnieuw als de synchronisatie klaar is.",
   "channels_nameTooLong": "Naam is te lang (max. {maxBytes} bytes).",
   "repeater_valueRequired": "{field}: voer een waarde in",
+  "repeater_floodMaxAdvert": "Max. flood-hops voor adverts",
+  "repeater_floodMaxAdvertHelper": "Maximaal aantal hops dat een geflooded advert mag afleggen (0-64, standaard 8)",
+  "repeater_floodMaxUnscoped": "Max. flood-hops zonder scope",
+  "repeater_floodMaxUnscopedHelper": "Maximaal aantal hops voor floods zonder regioscope (0-64, standaard 64). Een lage waarde zoals 3 houdt verkeer zonder scope lokaal.",
+  "repeater_floodMaxUnscopedUnset": "Gelijk aan flood-max",
+  "repeater_rxDelay": "Ontvangstvertraging",
+  "repeater_rxDelayHelper": "Houdt flood-pakketten die met een zwak signaal zijn ontvangen even vast voordat ze worden doorgestuurd, zodat paden met een sterk signaal voorgaan en er minder duplicaten worden verzonden (0-20, 0 schakelt het uit).",
+  "repeater_cad": "Kanaalactiviteitsdetectie",
+  "repeater_cadHelper": "Luister naar activiteit voordat er wordt gezonden en wacht zolang het kanaal bezet is. Werkt samen met de grenswaarde voor interferentie.",
+  "repeater_adcMultiplier": "Kalibratie batterijspanning",
+  "repeater_adcMultiplierHelper": "Vermenigvuldigingsfactor voor de uitgelezen batterijspanning (0-10). 0 gebruikt de standaardwaarde van het bord.",
+  "repeater_boardSupportNote": "Niet elk bord ondersteunt dit. Niet-ondersteunde borden weigeren de wijziging.",
+  "repeater_extraSf": "Extra spreadingfactors",
+  "repeater_extraSfHelper": "Tot 3 extra spreadingfactors om tegelijk op te luisteren, gescheiden door komma's (bijvoorbeeld 9,10). Laat leeg om uit te schakelen.",
+  "repeater_lr2021Only": "Alleen voor repeaters met een LR2021-radio. Andere repeaters hebben deze instelling niet en weigeren haar.",
   "losMapDetailTooltip": "Kaartdetail",
   "losUnitsTooltip": "Eenheden",
   "losDistance": "Afstand",
@@ -3081,6 +3209,10 @@
   "map_youWithMarkers": "Jij en {count} markeringen",
   "map_sharedMarkerSemantics": "Gedeelde markering: {label}",
   "map_nodeMarkerSemantics": "{name}, {type}, {status}",
+  "map_requestLocation": "Locatie bijwerken",
+  "map_locationUpdated": "Locatie bijgewerkt",
+  "map_locationNotShared": "{name} antwoordde zonder locatie",
+  "map_locationRequestFailed": "Geen antwoord van {name}",
   "mapCache_zoomLevel": "Zoom {zoom}",
   "mapCache_sizeBytes": "{size} B",
   "mapCache_sizeKilobytes": "{size} KB",
@@ -3151,10 +3283,17 @@
   "repeater_discardChanges": "Verwerpen",
   "repeater_actionSentNoReply": "{action}: commando verzonden. De repeater antwoordt niet op dit commando.",
   "repeater_invalidSettingValue": "{setting}: {value} is niet geldig",
-  "repeater_txPowerOutOfRange": "TX-vermogen {value} valt buiten het bereik ({min} tot {max} dBm)",
   "repeater_prvKeyLengthError": "De privésleutel moet precies {length} hexadecimale tekens bevatten",
   "contacts_advertFailed": "Advertentie kon niet worden verzonden",
   "contacts_manageGroups": "Groepen beheren",
+  "contacts_keyPrefixSemantics": "Sleutelprefix {prefix}",
+  "@contacts_keyPrefixSemantics": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
   "community_shortId": "ID: {id}…",
   "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Verbonden met",
@@ -3192,6 +3331,9 @@
   "networkMap_sourceLocal": "Lokaal",
   "networkMap_sourceOnline": "Online",
   "networkMap_sourceBoth": "Beide",
+  "networkMap_sourceLocalHint": "Nodes die je radio heeft gehoord",
+  "networkMap_sourceOnlineHint": "Repeaters van de online netwerkkaart",
+  "networkMap_sourceBothHint": "De nodes van je radio plus de online netwerkkaart",
   "networkMap_zoomInHint": "Zoom in om de online netwerkkaart te zien",
   "networkMap_loadFailed": "Kan de online netwerkkaart niet laden",
   "networkMap_inYourContacts": "In je contacten",
@@ -3211,5 +3353,79 @@
   "networkMap_manage": "Beheren",
   "networkMap_addedToContacts": "Toegevoegd aan contacten",
   "networkMap_addFailed": "Kan niet aan contacten toevoegen",
-  "networkMap_unnamed": "Naamloze repeater"
+  "networkMap_unnamed": "Naamloze repeater",
+  "holidayGreeting_halloween": "Fijne Halloween|Gelukkige Halloween|Happy Halloween|Gruwelijke Halloween",
+  "holidayGreeting_thanksgiving": "Fijne Thanksgiving|Gelukkige Thanksgiving|Happy Thanksgiving|Fijne Thanksgiving Day",
+  "holidayGreeting_christmas": "Vrolijk kerstfeest|Fijne kerst|Prettige kerstdagen|Zalig kerstfeest|Vrolijk kerst|Zalig kerst|Merry Christmas|Fijne feestdagen|Prettige feestdagen",
+  "holidayGreeting_newYear": "Gelukkig Nieuwjaar|Gelukkig nieuw jaar|Prettig nieuwjaar|Een gelukkig nieuwjaar|Happy New Year|Zalig nieuwjaar|Fijne jaarwisseling",
+  "appSettings_colorTheme": "Kleurthema",
+  "appSettings_holidayAnimations": "Feestdaganimaties in berichten",
+  "appSettings_holidayAnimationsSubtitle": "Vleermuizen, een kalkoen, de Kerstman of vuurwerk wanneer iemand een feestdagwens stuurt",
+  "themes_title": "Thema's",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "Standaardkleuren, volgt de instelling Licht / Donker",
+  "themes_builtIn": "Ingebouwd",
+  "themes_holidays": "Feestdagen",
+  "themes_holidayAutoSwitch": "Automatisch wisselen",
+  "themes_holidayAutoSwitchSubtitle": "Gebruikt het thema van elke feestdag vanaf 17 dagen ervoor tot de dag zelf",
+  "themes_holidayAutoApplied": "Het thema {holiday} staat automatisch aan. Na de feestdag komt je eigen thema terug.",
+  "themes_holidayAutoAppliedTag": "Automatisch aan",
+  "themes_myThemes": "Mijn thema's",
+  "themes_myThemesEmpty": "Maak je eigen thema door een achtergrond en een accentkleur te kiezen.",
+  "themes_create": "Thema maken",
+  "themes_import": "Thema importeren",
+  "themes_importHint": "Plak een themacode",
+  "themes_importInvalid": "Dit is geen geldige themacode",
+  "themes_imported": "Thema \"{name}\" toegevoegd",
+  "themes_customize": "Kopie aanpassen",
+  "themes_copyCode": "Themacode kopiëren",
+  "themes_codeCopied": "Themacode gekopieerd",
+  "themes_deleteConfirm": "Thema \"{name}\" verwijderen?",
+  "themes_copyName": "Kopie van {name}",
+  "themes_newTitle": "Nieuw thema",
+  "themes_editTitle": "Thema bewerken",
+  "themes_name": "Naam",
+  "themes_nameRequired": "Geef je thema een naam",
+  "themes_background": "Achtergrond",
+  "themes_backgroundHelp": "Een donkere achtergrond geeft een donker thema",
+  "themes_accent": "Accent",
+  "themes_accentHelp": "Knoppen, markeringen en je chatballonnen",
+  "themes_hexColor": "Hexkleur",
+  "themes_preview": "Voorbeeld",
+  "themes_previewIncoming": "Is er vanavond iemand op de mesh?",
+  "themes_previewOutgoing": "Luid en duidelijk!",
+  "themes_previewSwitch": "Meldingen",
+  "themes_lowContrast": "Het accent is slecht te zien op deze achtergrond",
+  "themes_saveAndUse": "Opslaan en gebruiken",
+  "themes_icons": "Pictogrammen",
+  "themes_iconsHelp": "Tik op een pictogram om het te vervangen door een ander pictogram of je eigen afbeelding",
+  "themes_iconChanged": "Gewijzigd",
+  "themes_iconSend": "Verzendknop",
+  "themes_iconRepeater": "Repeaters",
+  "themes_iconRoom": "Rooms",
+  "themes_iconSensor": "Sensoren",
+  "themes_mapMarkers": "Kaartmarkeringen",
+  "themes_mapMarkersHelp": "Vervang de markeringen voor nodes en voor jezelf op de kaart",
+  "themes_iconUsePicture": "Een afbeelding gebruiken",
+  "themes_iconReset": "Standaardpictogram gebruiken",
+  "themes_iconPictureFailed": "Die afbeelding kon niet worden gebruikt",
+  "themes_exportFile": "Exporteren naar bestand",
+  "themes_exportAll": "Mijn thema's exporteren",
+  "themes_importFile": "Importeren uit bestand",
+  "themes_pasteCode": "Themacode plakken",
+  "themes_exportFailed": "Thema's konden niet worden geëxporteerd",
+  "themes_importFileResult": "{count} thema's geïmporteerd",
+  "themes_importFileNone": "Geen thema's gevonden in dat bestand",
+  "chatBackground_title": "Chatachtergrond",
+  "chatBackground_thisChatOnly": "Alleen voor deze chat",
+  "chatBackground_themeOverrides": "Je thema \"{name}\" stelt de achtergrond in voor elke chat. Zet dat uit in het thema om deze te gebruiken.",
+  "chatBackground_none": "Geen",
+  "chatBackground_picture": "Afbeelding",
+  "chatBackground_choosePicture": "Kies een afbeelding",
+  "chatBackground_pictureFailed": "Die afbeelding kon niet worden gebruikt",
+  "chatBackground_fade": "Vervagen",
+  "themes_chatBackground": "Chatachtergrond",
+  "themes_chatBackgroundHelp": "Getoond in chats die geen eigen achtergrond hebben",
+  "themes_chatBackgroundEverywhere": "In elke chat gebruiken",
+  "themes_chatBackgroundEverywhereHelp": "Vervangt ook achtergronden die voor afzonderlijke chats zijn ingesteld"
 }

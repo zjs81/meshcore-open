@@ -24,7 +24,10 @@ void main() {
   test('channel mutes made in review mode are undone on exit', () async {
     final settings = AppSettingsService();
     await settings.loadSettings();
-    await settings.muteChannel('Hiking Group');
+    await settings.setChannelNotificationMode(
+      'Hiking Group',
+      ChannelNotificationMode.muted,
+    );
     final connector = MeshCoreConnector();
     addTearDown(connector.dispose);
     final retryService = MessageRetryService();
@@ -39,23 +42,41 @@ void main() {
 
     await connector.connectReview();
     // Mutes are keyed by channel name, so these would leak into real radios.
-    await settings.muteChannel('Public');
-    await settings.unmuteChannel('Hiking Group');
+    await settings.setChannelNotificationMode(
+      'Public',
+      ChannelNotificationMode.muted,
+    );
+    await settings.setChannelNotificationMode(
+      'Hiking Group',
+      ChannelNotificationMode.all,
+    );
     // Other app preferences are the user's to change, even while reviewing.
     await PrefsManager.instance.setString('unrelated_key', 'changed');
 
     await connector.disconnect(manual: true);
 
-    expect(settings.isChannelMuted('Public'), isFalse);
-    expect(settings.isChannelMuted('Hiking Group'), isTrue);
+    expect(
+      settings.getChannelNotificationMode('Public'),
+      ChannelNotificationMode.all,
+    );
+    expect(
+      settings.getChannelNotificationMode('Hiking Group'),
+      ChannelNotificationMode.muted,
+    );
     expect(PrefsManager.instance.getString('unrelated_key'), 'changed');
 
     // A fresh launch has nothing left to undo.
     final relaunched = AppSettingsService();
     await relaunched.loadSettings();
     await endReviewModeSession(relaunched);
-    expect(relaunched.isChannelMuted('Public'), isFalse);
-    expect(relaunched.isChannelMuted('Hiking Group'), isTrue);
+    expect(
+      relaunched.getChannelNotificationMode('Public'),
+      ChannelNotificationMode.all,
+    );
+    expect(
+      relaunched.getChannelNotificationMode('Hiking Group'),
+      ChannelNotificationMode.muted,
+    );
   });
 
   test(
@@ -63,11 +84,20 @@ void main() {
     () async {
       final settings = AppSettingsService();
       await settings.loadSettings();
-      await settings.muteChannel('Hiking Group');
+      await settings.setChannelNotificationMode(
+        'Hiking Group',
+        ChannelNotificationMode.muted,
+      );
 
       await beginReviewModeSession(settings);
-      await settings.muteChannel('Public');
-      await settings.unmuteChannel('Hiking Group');
+      await settings.setChannelNotificationMode(
+        'Public',
+        ChannelNotificationMode.muted,
+      );
+      await settings.setChannelNotificationMode(
+        'Hiking Group',
+        ChannelNotificationMode.all,
+      );
       await PrefsManager.instance.setString(
         'contacts${ReviewRadio.storagePrefix}',
         '[]',
@@ -76,11 +106,20 @@ void main() {
 
       final relaunched = AppSettingsService();
       await relaunched.loadSettings();
-      expect(relaunched.isChannelMuted('Public'), isTrue);
+      expect(
+        relaunched.getChannelNotificationMode('Public'),
+        ChannelNotificationMode.muted,
+      );
       await endReviewModeSession(relaunched);
 
-      expect(relaunched.isChannelMuted('Public'), isFalse);
-      expect(relaunched.isChannelMuted('Hiking Group'), isTrue);
+      expect(
+        relaunched.getChannelNotificationMode('Public'),
+        ChannelNotificationMode.all,
+      );
+      expect(
+        relaunched.getChannelNotificationMode('Hiking Group'),
+        ChannelNotificationMode.muted,
+      );
       expect(
         PrefsManager.instance.getKeys().where(
           (k) => k.contains(ReviewRadio.storagePrefix),
@@ -89,6 +128,61 @@ void main() {
       );
     },
   );
+
+  test('every channel notification mode is restored on exit', () async {
+    final settings = AppSettingsService();
+    await settings.loadSettings();
+    await settings.setChannelNotificationMode(
+      'Hiking Group',
+      ChannelNotificationMode.mentionsOnly,
+    );
+    await settings.setChannelNotificationMode(
+      'Noisy',
+      ChannelNotificationMode.muted,
+    );
+
+    await beginReviewModeSession(settings);
+    await settings.setChannelNotificationMode(
+      'Hiking Group',
+      ChannelNotificationMode.all,
+    );
+    await settings.setChannelNotificationMode(
+      'Noisy',
+      ChannelNotificationMode.mentionsOnly,
+    );
+    await settings.setChannelNotificationMode(
+      'Public',
+      ChannelNotificationMode.mentionsOnly,
+    );
+    await endReviewModeSession(settings);
+
+    expect(
+      settings.getChannelNotificationMode('Hiking Group'),
+      ChannelNotificationMode.mentionsOnly,
+    );
+    expect(
+      settings.getChannelNotificationMode('Noisy'),
+      ChannelNotificationMode.muted,
+    );
+    expect(
+      settings.getChannelNotificationMode('Public'),
+      ChannelNotificationMode.all,
+    );
+  });
+
+  test('setting a channel back to all drops its stored mode', () async {
+    final settings = AppSettingsService();
+    await settings.loadSettings();
+    await settings.setChannelNotificationMode(
+      'Public',
+      ChannelNotificationMode.muted,
+    );
+    await settings.setChannelNotificationMode(
+      'Public',
+      ChannelNotificationMode.all,
+    );
+    expect(settings.settings.channelNotificationModes, isEmpty);
+  });
 
   test('the review scope never adopts legacy unscoped data', () async {
     await PrefsManager.instance.setString('contacts', '[]');

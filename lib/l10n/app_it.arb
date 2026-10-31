@@ -275,7 +275,7 @@
   "contacts_title": "Contatti",
   "contacts_noContacts": "Nessun contatto ancora",
   "contacts_contactsWillAppear": "I contatti appariranno quando i dispositivi si annunciano.",
-  "contacts_searchContacts": "Cerca contatti...",
+  "contacts_searchContacts": "Cerca {number}{str} contatti...",
   "@contacts_searchContacts": {
     "placeholders": {
       "number": {
@@ -414,6 +414,10 @@
   "channels_public": "Pubblico",
   "channels_private": "Privato",
   "channels_editChannel": "Modifica canale",
+  "channels_notificationSettings": "Impostazioni notifiche",
+  "channels_notifyAll": "Tutti i messaggi",
+  "channels_notifyMentionsOnly": "Solo menzioni",
+  "channels_notifyNone": "Silenziato",
   "channels_muteChannel": "Silenzia canale",
   "channels_unmuteChannel": "Attiva notifiche canale",
   "channels_deleteChannel": "Elimina canale",
@@ -1214,10 +1218,8 @@
   "repeater_settingsSaved": "Impostazioni salvate con successo",
   "repeater_rxGain": "Aumento del guadagno RX",
   "repeater_rxGainHelper": "Maggiore sensibilità, maggiore assorbimento di corrente (solo per SX1262/SX1268)",
-  "repeater_refreshRxGain": "Rafforza l'effetto di RX",
   "repeater_multiAcks": "ACK multipli",
   "repeater_multiAcksSubtitle": "Riconoscere i messaggi attraverso percorsi multipli per una migliore consegna.",
-  "repeater_refreshMultiAcks": "Riaffermare più ACK",
   "repeater_networkHealth": "Salute della rete",
   "repeater_loopDetect": "Rilevamento di cicli",
   "repeater_loopDetectHelper": "Crea pacchetti di dati che simulano loop di routing.",
@@ -1237,7 +1239,6 @@
   },
   "repeater_ownerInfo": "Informazioni sull'operatore",
   "repeater_ownerInfoHelper": "Metadati pubblici per questo ripetitore",
-  "repeater_refreshOwnerInfo": "Aggiorna le informazioni sull'operatore",
   "repeater_floodMax": "Numero massimo di salti in flood",
   "repeater_floodMaxHelper": "Numero massimo di pacchetti che un flusso può attraversare (0-64)",
   "repeater_advancedSettings": "Avanzato",
@@ -1295,11 +1296,7 @@
       }
     }
   },
-  "repeater_refreshBasicSettings": "Aggiorna Impostazioni Base",
   "repeater_refreshRadioSettings": "Aggiorna le Impostazioni Radio",
-  "repeater_refreshTxPower": "Aggiorna TX potenza",
-  "repeater_refreshPacketForwarding": "Aggiorna il inoltro pacchetti",
-  "repeater_refreshGuestAccess": "Aggiorna Accesso Ospite",
   "repeater_refreshPrivacyMode": "Aggiorna Modalità Privacy",
   "repeater_refreshed": "{label} aggiornato",
   "@repeater_refreshed": {
@@ -2356,6 +2353,8 @@
     }
   },
   "appSettings_jumpToOldestUnreadSubtitle": "Quando si apre una chat con messaggi non letti, scorrete verso l'alto fino al primo messaggio non letto, invece che al più recente.",
+  "appSettings_autoFetchRepeaterSettings": "Recupera automaticamente le impostazioni del ripetitore",
+  "appSettings_autoFetchRepeaterSettingsSubtitle": "Richiede ogni impostazione all'apertura delle impostazioni di un ripetitore. Ognuna è una richiesta separata via LoRa, quindi è lento e usa tempo di trasmissione. Se disattivato, tocca Aggiorna tutto o aggiorna le singole sezioni.",
   "chat_sendCooldown": "Si prega di attendere un momento prima di inviare nuovamente.",
   "appSettings_jumpToOldestUnread": "Vai al messaggio più vecchio non letto",
   "appSettings_languageHu": "Ungherese",
@@ -3272,6 +3271,21 @@
   "channels_waitForSync": "I canali sono ancora in caricamento dalla radio. Riprova quando la sincronizzazione è terminata.",
   "channels_nameTooLong": "Il nome è troppo lungo (max {maxBytes} byte).",
   "repeater_valueRequired": "{field}: inserisci un valore",
+  "repeater_floodMaxAdvert": "Numero massimo di salti in flood per gli advert",
+  "repeater_floodMaxAdvertHelper": "Numero massimo di salti che un advert diffuso in flood può percorrere (0-64, predefinito 8)",
+  "repeater_floodMaxUnscoped": "Numero massimo di salti in flood senza regione",
+  "repeater_floodMaxUnscopedHelper": "Numero massimo di salti per i flood senza ambito regionale (0-64, predefinito 64). Un valore basso come 3 mantiene locale il traffico senza regione.",
+  "repeater_floodMaxUnscopedUnset": "Come il massimo in flood",
+  "repeater_rxDelay": "Ritardo di ricezione",
+  "repeater_rxDelayHelper": "Trattiene i pacchetti flood ricevuti con segnale debole prima di inoltrarli, così i percorsi con segnale forte passano per primi e vengono inviati meno duplicati (0-20, 0 lo disattiva).",
+  "repeater_cad": "Rilevamento dell'attività del canale",
+  "repeater_cadHelper": "Ascolta l'attività prima di trasmettere e attende finché il canale è occupato. Funziona insieme alla soglia di interferenza.",
+  "repeater_adcMultiplier": "Calibrazione della tensione della batteria",
+  "repeater_adcMultiplierHelper": "Moltiplicatore della lettura della tensione della batteria (0-10). 0 usa il valore predefinito della scheda.",
+  "repeater_boardSupportNote": "Non tutte le schede lo supportano. Le schede non supportate rifiutano la modifica.",
+  "repeater_extraSf": "Fattori di diffusione (SF) aggiuntivi",
+  "repeater_extraSfHelper": "Fino a 3 fattori di diffusione (SF) in più su cui ascoltare contemporaneamente, separati da virgole (ad esempio 9,10). Lascia vuoto per disattivare.",
+  "repeater_lr2021Only": "Solo per repeater con radio LR2021. Gli altri repeater non hanno questa impostazione e la rifiutano.",
   "losMapDetailTooltip": "Dettaglio mappa",
   "losUnitsTooltip": "Unità",
   "losDistance": "Distanza",
@@ -3314,6 +3328,10 @@
   "map_youWithMarkers": "Tu e {count} segnaposti",
   "map_sharedMarkerSemantics": "Segnaposto condiviso: {label}",
   "map_nodeMarkerSemantics": "{name}, {type}, {status}",
+  "map_requestLocation": "Aggiorna posizione",
+  "map_locationUpdated": "Posizione aggiornata",
+  "map_locationNotShared": "{name} ha risposto senza posizione",
+  "map_locationRequestFailed": "Nessuna risposta da {name}",
   "mapCache_zoomLevel": "Zoom {zoom}",
   "mapCache_sizeBytes": "{size} B",
   "mapCache_sizeKilobytes": "{size} KB",
@@ -3384,7 +3402,6 @@
   "repeater_discardChanges": "Scarta",
   "repeater_actionSentNoReply": "{action}: comando inviato. Il ripetitore non risponde a questo comando.",
   "repeater_invalidSettingValue": "{setting}: {value} non è valido",
-  "repeater_txPowerOutOfRange": "Potenza TX {value} fuori intervallo ({min} - {max} dBm)",
   "repeater_prvKeyLengthError": "La chiave privata deve essere di esattamente {length} caratteri esadecimali",
   "contacts_advertFailed": "Impossibile inviare l'annuncio",
   "contacts_manageGroups": "Gestisci gruppi",
@@ -3444,5 +3461,204 @@
   "networkMap_manage": "Gestisci",
   "networkMap_addedToContacts": "Aggiunto ai contatti",
   "networkMap_addFailed": "Impossibile aggiungere ai contatti",
-  "networkMap_unnamed": "Ripetitore senza nome"
+  "networkMap_unnamed": "Ripetitore senza nome",
+  "urlImage_disabledInAppSettings": "Disattivato nelle impostazioni dell'app",
+  "settings_pathHashModeNotApplied": "Le impostazioni della radio sono state applicate, ma la radio non ha confermato la nuova dimensione dell'hash del percorso",
+  "appSettings_ipfsImageLinks": "Configurazione del provider IPFS",
+  "appSettings_ipfsImageLinksSubtitle": "Caricamento di immagini (o file) tramite URL con un provider IPFS e gateway predefinito per la ricezione",
+  "appSettings_loadLinkImages": "Carica immagini dai link",
+  "appSettings_loadLinkImagesSubtitle": "Mostra le immagini dei link nei messaggi. Caricare un'immagine condivide il tuo indirizzo IP con il sito che la ospita.",
+  "appSettings_showLinkImagesByDefault": "Mostra le immagini dei link in tutte le chat per impostazione predefinita",
+  "appSettings_showLinkImagesByDefaultSubtitle": "Carica le immagini dei link in ogni chat, a meno che tu non le abbia disattivate in quella chat. Questo condivide il tuo indirizzo IP con gli host delle immagini in ogni chat.",
+  "appSettings_publicIpfsGateway": "Gateway pubblico",
+  "appSettings_ipfsGatewayDeactivated": "Disattivato",
+  "appSettings_ipfsGatewayCustom": "Personalizzato (Kubo)",
+  "appSettings_uploadIpfsProvider": "Provider di caricamento",
+  "appSettings_uploadIpfsGateway": "Gateway di caricamento",
+  "appSettings_uploadIpfsGatewaySubtitle": "Gateway per condividere immagini o file come link URL. Lascia vuoto per usare il formato ipfs:, che potrebbe non essere aperto da altri client.",
+  "appSettings_uploadIpfsEndpoint": "Endpoint di caricamento",
+  "appSettings_uploadIpfsEndpointSubtitle": "L'endpoint API usato per caricare i file",
+  "appSettings_uploadIpfsApiKey": "Chiave API di caricamento",
+  "appSettings_ipfsImageLinksDescription": "Il gateway pubblico scarica le immagini in formato ipfs:. Il gateway di caricamento serve a generare i link di condivisione per immagini o file caricati tramite URL.",
+  "contacts_removeAutoAddNote": "La tua radio aggiunge automaticamente questo tipo di contatto, quindi tornerà alla prossima volta che invierà un annuncio. Disattiva l'aggiunta automatica nelle impostazioni dei contatti per mantenerlo rimosso.",
+  "contacts_removeFailed": "La radio non ha confermato la rimozione. Il contatto non è stato rimosso.",
+  "channels_notificationModeTooltip": "Notifiche: {mode}",
+  "@channels_notificationModeTooltip": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_scanQrCodeDesc": "Unisciti a un canale o a una community con il suo codice QR.",
+  "channels_scanQrInstructions": "Inquadra il codice QR di un canale o di una community",
+  "channels_invalidQrCode": "Non è un codice QR di canale o community MeshCore",
+  "channels_joinChannelTitle": "Unisciti al canale",
+  "channels_joinChannelConfirm": "Aggiungere \"{name}\" alla tua radio?",
+  "@channels_joinChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_alreadyOnRadio": "\"{name}\" è già sulla tua radio",
+  "@channels_alreadyOnRadio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_sendImageIpfs": "Invia immagine o file tramite IPFS",
+  "chat_ipfsUploadFailed": "Caricamento IPFS non riuscito: {error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "Configura prima un provider di caricamento IPFS nelle impostazioni dell'app.",
+  "chat_ipfsSelectedFileEmpty": "Il file selezionato è vuoto.",
+  "chat_ipfsEndpointInvalid": "L'endpoint di caricamento IPFS deve essere un indirizzo completo http:// o https://. Controllalo nelle impostazioni dell'app.",
+  "chat_ipfsPinataTokenMissing": "Pinata richiede una chiave API o un JWT. Aggiungila nelle impostazioni dell'app.",
+  "chat_ipfsFilebaseTokenMissing": "Filebase richiede un token API. Aggiungilo nelle impostazioni dell'app.",
+  "chat_ipfsKuboPathInvalid": "L'endpoint di caricamento Kubo deve terminare con /api/v0/add. Controllalo nelle impostazioni dell'app.",
+  "chat_ipfsLinkNoRoom": "Spazio insufficiente per il link dell'immagine. Accorcia il messaggio, poi riprova.",
+  "@chat_ipfsLinkNoRoom": {
+    "description": "Shown before an IPFS upload when the link would push the draft over the message size limit"
+  },
+  "chat_ipfsLinkOverLimit": "Link dell'immagine aggiunto, ma ora il messaggio è troppo lungo. Accorcialo prima di inviare.",
+  "@chat_ipfsLinkOverLimit": {
+    "description": "Shown after an IPFS upload when the link plus the draft no longer fits the message size limit"
+  },
+  "map_pathTraceAddMoreHint": "Tocca altri nodi per aggiungere salti, scegli come ritorna la traccia, poi tocca Avvia tracciamento del percorso.",
+  "map_pathTraceModeRoundTrip": "Andata e ritorno",
+  "map_pathTraceModeRoundTripHint": "La traccia passa per questi salti e torna indietro nello stesso modo.",
+  "map_pathTraceModeAsEntered": "Come inserito",
+  "map_pathTraceModeAsEnteredHint": "La traccia segue esattamente questi salti. Aggiungi tu i salti del ritorno.",
+  "map_pathTraceViewLast": "Vedi ultimo risultato",
+  "notification_lowBatteryTitle": "Batteria scarica",
+  "@notification_lowBatteryTitle": {
+    "description": "Title of the low battery notification"
+  },
+  "notification_lowBatteryBody": "La batteria di {deviceName} è al {percent}%",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification; deviceName is the connected radio's node name",
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_sharedLocation": "Ha condiviso una posizione",
+  "notification_sharedLocationNamed": "Ha condiviso una posizione: {label}",
+  "@notification_sharedLocationNamed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_reacted": "Ha reagito {emoji}",
+  "@notification_reacted": {
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_sentGif": "Ha inviato una GIF",
+  "notification_sentImage": "Ha inviato un'immagine",
+  "snrIndicator_unknownRepeater": "Ripetitore sconosciuto",
+  "snrIndicator_unknownRepeaterHint": "Questo ripetitore non è ancora nei tuoi contatti. Nome, posizione e opzioni compariranno quando la radio riceverà il suo annuncio.",
+  "contacts_keyPrefixSemantics": "Prefisso chiave {prefix}",
+  "@contacts_keyPrefixSemantics": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "networkMap_sourceLocalHint": "Nodi sentiti dalla tua radio",
+  "networkMap_sourceOnlineHint": "Ripetitori dalla mappa di rete online",
+  "networkMap_sourceBothHint": "I nodi della tua radio più la mappa di rete online",
+  "holidayGreeting_halloween": "Buon Halloween|Felice Halloween|Happy Halloween",
+  "holidayGreeting_thanksgiving": "Buon Ringraziamento|Buon Thanksgiving|Felice Ringraziamento|Felice Thanksgiving|Happy Thanksgiving",
+  "holidayGreeting_christmas": "Buon Natale|Buone Feste|Felice Natale|Merry Christmas",
+  "holidayGreeting_newYear": "Felice Anno Nuovo|Buon Anno Nuovo|Buon Capodanno|Buon Anno|Felice Anno|Felice Capodanno|Happy New Year",
+  "appSettings_colorTheme": "Tema colori",
+  "appSettings_holidayAnimations": "Animazioni dei messaggi di festa",
+  "appSettings_holidayAnimationsSubtitle": "Pipistrelli, tacchino, Babbo Natale o fuochi d'artificio quando qualcuno invia un augurio di festa",
+  "themes_title": "Temi",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "Colori standard, segue l'impostazione Chiaro / Scuro",
+  "themes_builtIn": "Integrati",
+  "themes_holidays": "Festività",
+  "themes_holidayAutoSwitch": "Cambia automaticamente",
+  "themes_holidayAutoSwitchSubtitle": "Usa il tema di ogni festività da 17 giorni prima fino al giorno stesso",
+  "themes_holidayAutoApplied": "Il tema {holiday} è attivo automaticamente. Il tuo tema tornerà dopo la festività.",
+  "themes_holidayAutoAppliedTag": "Attivo automaticamente",
+  "themes_myThemes": "I miei temi",
+  "themes_myThemesEmpty": "Crea il tuo tema scegliendo uno sfondo e un colore di risalto.",
+  "themes_create": "Crea tema",
+  "themes_import": "Importa tema",
+  "themes_importHint": "Incolla un codice tema",
+  "themes_importInvalid": "Questo non è un codice tema valido",
+  "themes_imported": "Tema \"{name}\" aggiunto",
+  "themes_customize": "Personalizza una copia",
+  "themes_copyCode": "Copia codice tema",
+  "themes_codeCopied": "Codice tema copiato",
+  "themes_deleteConfirm": "Eliminare il tema \"{name}\"?",
+  "themes_copyName": "Copia di {name}",
+  "themes_newTitle": "Nuovo tema",
+  "themes_editTitle": "Modifica tema",
+  "themes_name": "Nome",
+  "themes_nameRequired": "Dai un nome al tuo tema",
+  "themes_background": "Sfondo",
+  "themes_backgroundHelp": "Uno sfondo scuro crea un tema scuro",
+  "themes_accent": "Colore di risalto",
+  "themes_accentHelp": "Pulsanti, elementi evidenziati e i tuoi fumetti nella chat",
+  "themes_hexColor": "Colore esadecimale",
+  "themes_preview": "Anteprima",
+  "themes_previewIncoming": "C'è qualcuno sulla mesh stasera?",
+  "themes_previewOutgoing": "Forte e chiaro!",
+  "themes_previewSwitch": "Notifiche",
+  "themes_lowContrast": "Il colore di risalto si vede male su questo sfondo",
+  "themes_saveAndUse": "Salva e usa",
+  "themes_icons": "Icone",
+  "themes_iconsHelp": "Tocca un'icona per sostituirla con un'altra icona o con una tua immagine",
+  "themes_iconChanged": "Modificata",
+  "themes_iconSend": "Pulsante di invio",
+  "themes_iconRepeater": "Ripetitori",
+  "themes_iconRoom": "Stanze",
+  "themes_iconSensor": "Sensori",
+  "themes_mapMarkers": "Indicatori della mappa",
+  "themes_mapMarkersHelp": "Sostituisci gli indicatori dei nodi e il tuo sulla mappa",
+  "themes_iconUsePicture": "Usa un'immagine",
+  "themes_iconReset": "Usa l'icona predefinita",
+  "themes_iconPictureFailed": "Impossibile usare questa immagine",
+  "themes_exportFile": "Esporta su file",
+  "themes_exportAll": "Esporta i miei temi",
+  "themes_importFile": "Importa da file",
+  "themes_pasteCode": "Incolla codice tema",
+  "themes_exportFailed": "Impossibile esportare i temi",
+  "themes_importFileResult": "Importati {count} temi",
+  "themes_importFileNone": "Nessun tema trovato in questo file",
+  "chatBackground_title": "Sfondo della chat",
+  "chatBackground_thisChatOnly": "Solo per questa chat",
+  "chatBackground_themeOverrides": "Il tuo tema \"{name}\" imposta lo sfondo in tutte le chat. Disattivalo nel tema per usare questo.",
+  "chatBackground_none": "Nessuno",
+  "chatBackground_picture": "Immagine",
+  "chatBackground_choosePicture": "Scegli un'immagine",
+  "chatBackground_pictureFailed": "Impossibile usare questa immagine",
+  "chatBackground_fade": "Dissolvenza",
+  "themes_chatBackground": "Sfondo della chat",
+  "themes_chatBackgroundHelp": "Mostrato nelle chat che non hanno uno sfondo proprio",
+  "themes_chatBackgroundEverywhere": "Usa in tutte le chat",
+  "themes_chatBackgroundEverywhereHelp": "Sostituisce anche gli sfondi impostati sulle singole chat"
 }

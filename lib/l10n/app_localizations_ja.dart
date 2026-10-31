@@ -148,6 +148,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get urlImage_possible => 'URL画像の可能性があります。設定で有効にしてください。';
 
   @override
+  String get urlImage_disabledInAppSettings => 'アプリ設定でオフになっています';
+
+  @override
   String get common_reboot => '再起動';
 
   @override
@@ -406,6 +409,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settings_radioSettingsNotApplied => 'ラジオがこれらの設定を適用しませんでした';
+
+  @override
+  String get settings_pathHashModeNotApplied =>
+      'ラジオ設定は適用されましたが、ラジオが新しい経路ハッシュサイズを確認しませんでした';
 
   @override
   String get settings_regionSettings => '地域';
@@ -779,6 +786,229 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_themeDark => 'ダーク';
 
   @override
+  String get appSettings_colorTheme => 'カラーテーマ';
+
+  @override
+  String get appSettings_holidayAnimations => '祝日メッセージのアニメーション';
+
+  @override
+  String get appSettings_holidayAnimationsSubtitle =>
+      '祝日のあいさつが届くと、コウモリ、七面鳥、サンタ、花火が表示されます';
+
+  @override
+  String get themes_title => 'テーマ';
+
+  @override
+  String get themes_default => 'MeshCore';
+
+  @override
+  String get themes_defaultSubtitle => '標準の色。ライト/ダークの設定に合わせます';
+
+  @override
+  String get themes_builtIn => '標準のテーマ';
+
+  @override
+  String get themes_holidays => '祝日';
+
+  @override
+  String get themes_holidayAutoSwitch => '自動で切り替える';
+
+  @override
+  String get themes_holidayAutoSwitchSubtitle => '各祝日の17日前から当日まで、その祝日のテーマを使います';
+
+  @override
+  String themes_holidayAutoApplied(String holiday) {
+    return '$holidayのテーマを自動で使っています。祝日が終わると、元のテーマに戻ります。';
+  }
+
+  @override
+  String get themes_holidayAutoAppliedTag => '自動で使用中';
+
+  @override
+  String get themes_myThemes => 'マイテーマ';
+
+  @override
+  String get themes_myThemesEmpty => '背景とアクセントカラーを選んで、自分だけのテーマを作りましょう。';
+
+  @override
+  String get themes_create => 'テーマを作成';
+
+  @override
+  String get themes_import => 'テーマを読み込む';
+
+  @override
+  String get themes_importHint => 'テーマコードを貼り付けてください';
+
+  @override
+  String get themes_importInvalid => 'テーマコードが正しくありません';
+
+  @override
+  String themes_imported(String name) {
+    return 'テーマ「$name」を追加しました';
+  }
+
+  @override
+  String get themes_customize => 'コピーして編集';
+
+  @override
+  String get themes_copyCode => 'テーマコードをコピー';
+
+  @override
+  String get themes_codeCopied => 'テーマコードをコピーしました';
+
+  @override
+  String themes_deleteConfirm(String name) {
+    return 'テーマ「$name」を削除しますか?';
+  }
+
+  @override
+  String themes_copyName(String name) {
+    return '$nameのコピー';
+  }
+
+  @override
+  String get themes_newTitle => '新しいテーマ';
+
+  @override
+  String get themes_editTitle => 'テーマを編集';
+
+  @override
+  String get themes_name => '名前';
+
+  @override
+  String get themes_nameRequired => 'テーマの名前を入力してください';
+
+  @override
+  String get themes_background => '背景';
+
+  @override
+  String get themes_backgroundHelp => '背景が暗いと、ダークテーマになります';
+
+  @override
+  String get themes_accent => 'アクセント';
+
+  @override
+  String get themes_accentHelp => 'ボタン、強調表示、自分のチャットの吹き出しに使います';
+
+  @override
+  String get themes_hexColor => '16進数カラー';
+
+  @override
+  String get themes_preview => 'プレビュー';
+
+  @override
+  String get themes_previewIncoming => '今夜、メッシュにいる人はいますか?';
+
+  @override
+  String get themes_previewOutgoing => 'はっきり聞こえます!';
+
+  @override
+  String get themes_previewSwitch => '通知';
+
+  @override
+  String get themes_lowContrast => 'この背景ではアクセントが見えにくいです';
+
+  @override
+  String get themes_saveAndUse => '保存して使う';
+
+  @override
+  String get themes_icons => 'アイコン';
+
+  @override
+  String get themes_iconsHelp => 'アイコンをタップすると、ほかのアイコンや自分の画像に変更できます';
+
+  @override
+  String get themes_iconChanged => '変更済み';
+
+  @override
+  String get themes_iconSend => '送信ボタン';
+
+  @override
+  String get themes_iconRepeater => 'リピータ';
+
+  @override
+  String get themes_iconRoom => 'ルームサーバー';
+
+  @override
+  String get themes_iconSensor => 'センサー';
+
+  @override
+  String get themes_mapMarkers => '地図のマーカー';
+
+  @override
+  String get themes_mapMarkersHelp => '地図上のノードと自分のマーカーを変更します';
+
+  @override
+  String get themes_iconUsePicture => '画像を使う';
+
+  @override
+  String get themes_iconReset => '標準のアイコンに戻す';
+
+  @override
+  String get themes_iconPictureFailed => 'その画像は使えませんでした';
+
+  @override
+  String get themes_exportFile => 'ファイルに書き出す';
+
+  @override
+  String get themes_exportAll => 'マイテーマを書き出す';
+
+  @override
+  String get themes_importFile => 'ファイルから読み込む';
+
+  @override
+  String get themes_pasteCode => 'テーマコードを貼り付け';
+
+  @override
+  String get themes_exportFailed => 'テーマを書き出せませんでした';
+
+  @override
+  String themes_importFileResult(int count) {
+    return '$count件のテーマを読み込みました';
+  }
+
+  @override
+  String get themes_importFileNone => 'そのファイルにテーマが見つかりません';
+
+  @override
+  String get chatBackground_title => 'チャットの背景';
+
+  @override
+  String get chatBackground_thisChatOnly => 'このチャットだけ';
+
+  @override
+  String chatBackground_themeOverrides(String name) {
+    return 'テーマ「$name」が、すべてのチャットの背景を指定しています。この背景を使うには、テーマ側でその設定をオフにしてください。';
+  }
+
+  @override
+  String get chatBackground_none => 'なし';
+
+  @override
+  String get chatBackground_picture => '画像';
+
+  @override
+  String get chatBackground_choosePicture => '画像を選ぶ';
+
+  @override
+  String get chatBackground_pictureFailed => 'その画像は使えませんでした';
+
+  @override
+  String get chatBackground_fade => '薄さ';
+
+  @override
+  String get themes_chatBackground => 'チャットの背景';
+
+  @override
+  String get themes_chatBackgroundHelp => '個別の背景がないチャットに表示されます';
+
+  @override
+  String get themes_chatBackgroundEverywhere => 'すべてのチャットで使う';
+
+  @override
+  String get themes_chatBackgroundEverywhereHelp => 'チャットごとに設定した背景も置き換えます';
+
+  @override
   String get appSettings_language => '言語';
 
   @override
@@ -1008,6 +1238,60 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_maxMessageRetriesSubtitle => 'メッセージを失敗として扱うまでの再試行回数';
 
   @override
+  String get appSettings_ipfsImageLinks => 'IPFSプロバイダー設定';
+
+  @override
+  String get appSettings_ipfsImageLinksSubtitle =>
+      'URL画像（またはファイル）のアップロードにIPFSプロバイダーを、受信にデフォルトゲートウェイを使用します';
+
+  @override
+  String get appSettings_loadLinkImages => 'リンクの画像を読み込む';
+
+  @override
+  String get appSettings_loadLinkImagesSubtitle =>
+      'メッセージ内のリンクの画像を表示します。画像を読み込むと、ホスト先のサイトにIPアドレスが共有されます。';
+
+  @override
+  String get appSettings_showLinkImagesByDefault => 'すべてのチャットでリンク画像を既定で表示';
+
+  @override
+  String get appSettings_showLinkImagesByDefaultSubtitle =>
+      'チャットごとにオフにしていない限り、すべてのチャットでリンク画像を読み込みます。すべてのチャットで画像ホストにIPアドレスが共有されます。';
+
+  @override
+  String get appSettings_publicIpfsGateway => '公開ゲートウェイ';
+
+  @override
+  String get appSettings_ipfsGatewayDeactivated => '無効';
+
+  @override
+  String get appSettings_ipfsGatewayCustom => 'カスタム（Kubo）';
+
+  @override
+  String get appSettings_uploadIpfsProvider => 'アップロードプロバイダー';
+
+  @override
+  String get appSettings_uploadIpfsGateway => 'アップロードゲートウェイ';
+
+  @override
+  String get appSettings_uploadIpfsGatewaySubtitle =>
+      '画像やファイルをURLリンクとして共有するためのゲートウェイです。空欄の場合は ipfs: 形式を使用しますが、他のクライアントでは開けない場合があります。';
+
+  @override
+  String get appSettings_uploadIpfsEndpoint => 'アップロードエンドポイント';
+
+  @override
+  String get appSettings_uploadIpfsEndpointSubtitle =>
+      'ファイルのアップロードに使用するAPIエンドポイント';
+
+  @override
+  String get appSettings_uploadIpfsApiKey => 'アップロードAPIキー';
+
+  @override
+  String get appSettings_ipfsImageLinksDescription =>
+      '公開ゲートウェイは ipfs: 形式の画像をダウンロードします。アップロードゲートウェイは、アップロードしたURL画像やファイルの共有リンクの生成に使用されます。';
+
+  @override
   String get appSettings_battery => 'バッテリー';
 
   @override
@@ -1216,6 +1500,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get contacts_remove => '削除';
 
   @override
+  String get contacts_removeAutoAddNote =>
+      'このタイプの連絡先はラジオが自動追加するため、次回アドバートを送信すると再び追加されます。削除したままにするには、連絡先設定で自動追加をオフにしてください。';
+
+  @override
+  String get contacts_removeFailed => 'ラジオが削除を確認しませんでした。連絡先は削除されていません。';
+
+  @override
   String contacts_discoveredNearby(int count) {
     return '近くで発見された連絡先（$count）';
   }
@@ -1384,6 +1675,23 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get channels_editChannel => 'チャンネルを編集';
+
+  @override
+  String get channels_notificationSettings => '通知設定';
+
+  @override
+  String get channels_notifyAll => 'すべてのメッセージ';
+
+  @override
+  String get channels_notifyMentionsOnly => 'メンションのみ';
+
+  @override
+  String get channels_notifyNone => 'ミュート';
+
+  @override
+  String channels_notificationModeTooltip(String mode) {
+    return '通知：$mode';
+  }
 
   @override
   String get channels_muteChannel => 'チャンネルをミュート';
@@ -1558,6 +1866,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String get channels_scanQrCodeComingSoon => '近日公開';
 
   @override
+  String get channels_scanQrCodeDesc => 'QRコードからチャンネルまたはコミュニティに参加します。';
+
+  @override
+  String get channels_scanQrInstructions => 'チャンネルまたはコミュニティのQRコードにカメラを向けてください';
+
+  @override
+  String get channels_invalidQrCode => 'MeshCoreのチャンネルまたはコミュニティのQRコードではありません';
+
+  @override
+  String get channels_joinChannelTitle => 'チャンネルに参加';
+
+  @override
+  String channels_joinChannelConfirm(String name) {
+    return '「$name」をラジオに追加しますか？';
+  }
+
+  @override
+  String channels_alreadyOnRadio(String name) {
+    return '「$name」はすでにラジオにあります';
+  }
+
+  @override
   String get channels_enterHashtag => 'ハッシュタグを入力してください';
 
   @override
@@ -1674,6 +2004,45 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get chat_sendImageLora => 'MeshCore経由で画像を送信';
+
+  @override
+  String get chat_sendImageIpfs => 'IPFSで画像またはファイルを送信';
+
+  @override
+  String chat_ipfsUploadFailed(String error) {
+    return 'IPFSアップロードに失敗しました：$error';
+  }
+
+  @override
+  String get chat_ipfsUploadNotConfigured =>
+      '先にアプリ設定でIPFSアップロードプロバイダーを設定してください。';
+
+  @override
+  String get chat_ipfsSelectedFileEmpty => '選択したファイルは空です。';
+
+  @override
+  String get chat_ipfsEndpointInvalid =>
+      'IPFSアップロードエンドポイントは http:// または https:// で始まる完全なアドレスにしてください。アプリ設定で確認してください。';
+
+  @override
+  String get chat_ipfsPinataTokenMissing =>
+      'PinataにはAPIキーまたはJWTが必要です。アプリ設定で追加してください。';
+
+  @override
+  String get chat_ipfsFilebaseTokenMissing =>
+      'FilebaseにはAPIトークンが必要です。アプリ設定で追加してください。';
+
+  @override
+  String get chat_ipfsKuboPathInvalid =>
+      'Kuboのアップロードエンドポイントは /api/v0/add で終わる必要があります。アプリ設定で確認してください。';
+
+  @override
+  String get chat_ipfsLinkNoRoom =>
+      '画像リンクを入れる余裕がありません。メッセージを短くしてからもう一度お試しください。';
+
+  @override
+  String get chat_ipfsLinkOverLimit =>
+      '画像リンクを追加しましたが、メッセージが長すぎます。送信前に短くしてください。';
 
   @override
   String get chat_imagePickFailed => 'その画像を開けませんでした';
@@ -2277,6 +2646,27 @@ class AppLocalizationsJa extends AppLocalizations {
   String get map_pathTraceCancelled => '経路トレースはキャンセルされました';
 
   @override
+  String get map_pathTraceAddMoreHint =>
+      'ノードをタップしてホップを追加し、トレースの戻り方を選んでから「経路トレースを実行」をタップします。';
+
+  @override
+  String get map_pathTraceModeRoundTrip => '往復';
+
+  @override
+  String get map_pathTraceModeRoundTripHint =>
+      'トレースはこれらのホップを経由して送信され、同じ経路で戻ってきます。';
+
+  @override
+  String get map_pathTraceModeAsEntered => '入力どおり';
+
+  @override
+  String get map_pathTraceModeAsEnteredHint =>
+      'トレースはこれらのホップをそのとおりにたどります。自分へ戻るホップは自分で追加してください。';
+
+  @override
+  String get map_pathTraceViewLast => '前回の結果を表示';
+
+  @override
   String get mapCache_title => 'オフライン用地図キャッシュ';
 
   @override
@@ -2851,16 +3241,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get repeater_rxGainHelper => 'より高い感度、より大きな電流（SX1262/SX1268のみ）';
 
   @override
-  String get repeater_refreshRxGain => '強化されたRX効果を再確認';
-
-  @override
   String get repeater_multiAcks => '複数のACK（応答）';
 
   @override
   String get repeater_multiAcksSubtitle => '複数の経路でメッセージを送信することで、より確実な配信を実現する。';
-
-  @override
-  String get repeater_refreshMultiAcks => '複数のACKをリフレッシュする';
 
   @override
   String get repeater_networkHealth => 'ネットワークの状態';
@@ -2899,9 +3283,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get repeater_ownerInfoHelper => 'このリピータに関する公開メタデータ';
-
-  @override
-  String get repeater_refreshOwnerInfo => 'オペレーター情報の更新';
 
   @override
   String get repeater_floodMax => '最大ホップ数';
@@ -3028,19 +3409,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get repeater_refreshBasicSettings => '基本設定をリセットする';
-
-  @override
   String get repeater_refreshRadioSettings => 'ラジオ設定をリセットする';
-
-  @override
-  String get repeater_refreshTxPower => 'TX の電力レベルをリセットする';
-
-  @override
-  String get repeater_refreshPacketForwarding => 'パケット転送の刷新';
-
-  @override
-  String get repeater_refreshGuestAccess => 'ゲストへのアクセスをリフレッシュする';
 
   @override
   String get repeater_refreshPrivacyMode => 'プライバシーモードをリセットする';
@@ -4499,6 +4868,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get notification_activityTitle => 'メッシュコアの活動';
 
   @override
+  String get notification_lowBatteryTitle => 'バッテリー残量低下';
+
+  @override
+  String notification_lowBatteryBody(String deviceName, int percent) {
+    return '$deviceNameのバッテリー残量は$percent%です';
+  }
+
+  @override
   String notification_messagesCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -4538,6 +4915,25 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get notification_receivedNewMessage => '新しいメッセージを受信';
+
+  @override
+  String get notification_sharedLocation => '位置情報を共有しました';
+
+  @override
+  String notification_sharedLocationNamed(String label) {
+    return '位置情報を共有しました：$label';
+  }
+
+  @override
+  String notification_reacted(String emoji) {
+    return '$emojiでリアクションしました';
+  }
+
+  @override
+  String get notification_sentGif => 'GIFを送信しました';
+
+  @override
+  String get notification_sentImage => '画像を送信しました';
 
   @override
   String get notification_actionReply => '返信';
@@ -4634,6 +5030,13 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get snrIndicator_nearByRepeatersDescription =>
       'ラジオが直接受信したリピータ（最近受信した順）';
+
+  @override
+  String get snrIndicator_unknownRepeater => '不明なリピータ';
+
+  @override
+  String get snrIndicator_unknownRepeaterHint =>
+      'このリピータはまだ連絡先にありません。ラジオがアドバートを受信すると、名前、場所、オプションが表示されます。';
 
   @override
   String get contactsSettings_title => '連絡先設定';
@@ -4769,6 +5172,13 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get appSettings_jumpToOldestUnreadSubtitle =>
       '未読メッセージがあるチャットを開く際、「最新のメッセージ」ではなく、最初に未読のメッセージまでスクロールしてください。';
+
+  @override
+  String get appSettings_autoFetchRepeaterSettings => 'リピータの設定を自動取得';
+
+  @override
+  String get appSettings_autoFetchRepeaterSettingsSubtitle =>
+      'リピータの設定を開いたときに、すべての設定を要求します。各設定はLoRa経由の個別のリクエストになるため、時間がかかり、通信時間(エアタイム)を消費します。オフの場合は、「すべて更新」をタップするか、各セクションを個別に更新してください。';
 
   @override
   String get appSettings_languageHu => 'ハンガリー語';
@@ -5439,6 +5849,59 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get repeater_floodMaxAdvert => 'アドバートのフラッド最大ホップ数';
+
+  @override
+  String get repeater_floodMaxAdvertHelper =>
+      'フラッドされるアドバートが通過できる最大ホップ数（0-64、デフォルト 8）';
+
+  @override
+  String get repeater_floodMaxUnscoped => 'スコープなしのフラッド最大ホップ数';
+
+  @override
+  String get repeater_floodMaxUnscopedHelper =>
+      'リージョンスコープのないフラッドの最大ホップ数（0-64、デフォルト 64）。3 などの低い値にすると、スコープなしのトラフィックをローカルに留められます。';
+
+  @override
+  String get repeater_floodMaxUnscopedUnset => 'フラッド最大と同じ';
+
+  @override
+  String get repeater_rxDelay => '受信遅延';
+
+  @override
+  String get repeater_rxDelayHelper =>
+      '弱い信号で受信したフラッドパケットを転送前に保留し、強い信号の経路を優先させて重複送信を減らします（0-20、0 で無効）。';
+
+  @override
+  String get repeater_cad => 'チャンネルアクティビティ検出';
+
+  @override
+  String get repeater_cadHelper =>
+      '送信前に通信の有無を確認し、チャンネルがビジー状態の間は待機します。干渉閾値と併せて機能します。';
+
+  @override
+  String get repeater_adcMultiplier => 'バッテリー電圧の補正';
+
+  @override
+  String get repeater_adcMultiplierHelper =>
+      'バッテリー電圧の読み取り値に掛ける係数（0-10）。0 の場合はボードのデフォルト値を使用します。';
+
+  @override
+  String get repeater_boardSupportNote =>
+      'すべてのボードが対応しているわけではありません。非対応のボードは変更を拒否します。';
+
+  @override
+  String get repeater_extraSf => '追加の伝播係数';
+
+  @override
+  String get repeater_extraSfHelper =>
+      '同時に受信待ちする追加の伝播係数を最大 3 つまで、カンマ区切りで指定します（例: 9,10）。空欄にすると無効になります。';
+
+  @override
+  String get repeater_lr2021Only =>
+      'LR2021 無線を搭載したリピータ専用です。他のリピータにはこの設定がなく、変更は拒否されます。';
+
+  @override
   String get losMapDetailTooltip => '地図の詳細';
 
   @override
@@ -5587,6 +6050,22 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String map_nodeMarkerSemantics(String name, String type, String status) {
     return '$name、$type、$status';
+  }
+
+  @override
+  String get map_requestLocation => '位置情報を更新';
+
+  @override
+  String get map_locationUpdated => '位置情報を更新しました';
+
+  @override
+  String map_locationNotShared(String name) {
+    return '$name は位置情報なしで応答しました';
+  }
+
+  @override
+  String map_locationRequestFailed(String name) {
+    return '$name から応答がありません';
   }
 
   @override
@@ -5863,11 +6342,6 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String repeater_txPowerOutOfRange(String value, int min, int max) {
-    return 'TX出力 $value は範囲外です($min~$max dBm)';
-  }
-
-  @override
   String repeater_prvKeyLengthError(int length) {
     return '秘密鍵は16進数でちょうど$length文字である必要があります';
   }
@@ -5877,6 +6351,11 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get contacts_manageGroups => 'グループを管理';
+
+  @override
+  String contacts_keyPrefixSemantics(String prefix) {
+    return 'キープレフィックス $prefix';
+  }
 
   @override
   String community_shortId(String id) {
@@ -5961,6 +6440,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get networkMap_sourceBoth => '両方';
 
   @override
+  String get networkMap_sourceLocalHint => 'ラジオが受信したノード';
+
+  @override
+  String get networkMap_sourceOnlineHint => 'オンラインネットワークマップのリピータ';
+
+  @override
+  String get networkMap_sourceBothHint => 'ラジオのノードとオンラインネットワークマップ';
+
+  @override
   String get networkMap_zoomInHint => 'ズームインするとオンラインのネットワークマップが表示されます';
 
   @override
@@ -6019,4 +6507,20 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get networkMap_unnamed => '名前のないリピータ';
+
+  @override
+  String get holidayGreeting_halloween =>
+      'ハッピーハロウィン|ハッピーハロウィーン|ハッピーハロウィン|ハピハロ|トリックオアトリート|Happy Halloween';
+
+  @override
+  String get holidayGreeting_thanksgiving =>
+      'ハッピーサンクスギビング|ハッピー・サンクスギビング|感謝祭おめでとう|Happy Thanksgiving';
+
+  @override
+  String get holidayGreeting_christmas =>
+      'メリークリスマス|メリー・クリスマス|メリクリ|Merry Christmas';
+
+  @override
+  String get holidayGreeting_newYear =>
+      'あけましておめでとう|明けましておめでとう|あけおめ|アケオメ|ハッピーニューイヤー|ハッピー・ニューイヤー|謹賀新年|Happy New Year';
 }

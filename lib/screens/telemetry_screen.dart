@@ -12,6 +12,7 @@ import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../services/app_settings_service.dart';
 import '../services/repeater_command_service.dart';
+import '../services/telemetry_location_request.dart';
 import '../utils/app_logger.dart';
 import '../widgets/routing_sheet.dart';
 import '../helpers/cayenne_lpp.dart';
@@ -206,6 +207,14 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
         widget.contact.publicKeyHex,
         batteryMv,
         source: 'telemetry',
+      );
+    }
+    final fix = telemetryGpsFix(parsedTelemetry);
+    if (fix != null && !widget.isSelf) {
+      context.read<MeshCoreConnector>().updateContactLocationFromTelemetry(
+        widget.contact.publicKeyHex,
+        fix.latitude,
+        fix.longitude,
       );
     }
     if (!mounted) return;

@@ -517,6 +517,10 @@
   "channels_public": "公開",
   "channels_private": "非公開",
   "channels_editChannel": "チャンネルを編集",
+  "channels_notificationSettings": "通知設定",
+  "channels_notifyAll": "すべてのメッセージ",
+  "channels_notifyMentionsOnly": "メンションのみ",
+  "channels_notifyNone": "ミュート",
   "channels_muteChannel": "チャンネルをミュート",
   "channels_unmuteChannel": "チャンネルのミュートを解除",
   "channels_deleteChannel": "チャンネルを削除",
@@ -1351,10 +1355,8 @@
   "repeater_settingsSaved": "設定が正常に保存されました",
   "repeater_rxGain": "RX ゲインの向上",
   "repeater_rxGainHelper": "より高い感度、より大きな電流（SX1262/SX1268のみ）",
-  "repeater_refreshRxGain": "強化されたRX効果を再確認",
   "repeater_multiAcks": "複数のACK（応答）",
   "repeater_multiAcksSubtitle": "複数の経路でメッセージを送信することで、より確実な配信を実現する。",
-  "repeater_refreshMultiAcks": "複数のACKをリフレッシュする",
   "repeater_networkHealth": "ネットワークの状態",
   "repeater_loopDetect": "ループ検出",
   "repeater_loopDetectHelper": "ルーティングループを検知する",
@@ -1374,7 +1376,6 @@
   },
   "repeater_ownerInfo": "事業者の情報",
   "repeater_ownerInfoHelper": "このリピータに関する公開メタデータ",
-  "repeater_refreshOwnerInfo": "オペレーター情報の更新",
   "repeater_floodMax": "最大ホップ数",
   "repeater_floodMaxHelper": "フラッドパケットが移動できる最大ホップ数 (0-64)",
   "repeater_advancedSettings": "高度な",
@@ -1432,11 +1433,7 @@
       }
     }
   },
-  "repeater_refreshBasicSettings": "基本設定をリセットする",
   "repeater_refreshRadioSettings": "ラジオ設定をリセットする",
-  "repeater_refreshTxPower": "TX の電力レベルをリセットする",
-  "repeater_refreshPacketForwarding": "パケット転送の刷新",
-  "repeater_refreshGuestAccess": "ゲストへのアクセスをリフレッシュする",
   "repeater_refreshPrivacyMode": "プライバシーモードをリセットする",
   "repeater_refreshed": "{label} が更新されました",
   "@repeater_refreshed": {
@@ -2290,6 +2287,8 @@
   "chat_sendCooldown": "再度送信する前に、しばらくお待ちください。",
   "appSettings_jumpToOldestUnread": "最も古い未読のメッセージへ移動",
   "appSettings_jumpToOldestUnreadSubtitle": "未読メッセージがあるチャットを開く際、「最新のメッセージ」ではなく、最初に未読のメッセージまでスクロールしてください。",
+  "appSettings_autoFetchRepeaterSettings": "リピータの設定を自動取得",
+  "appSettings_autoFetchRepeaterSettingsSubtitle": "リピータの設定を開いたときに、すべての設定を要求します。各設定はLoRa経由の個別のリクエストになるため、時間がかかり、通信時間(エアタイム)を消費します。オフの場合は、「すべて更新」をタップするか、各セクションを個別に更新してください。",
   "appSettings_languageHu": "ハンガリー語",
   "appSettings_languageJa": "日本語",
   "appSettings_languageKo": "韓国語",
@@ -3272,6 +3271,21 @@
   "channels_waitForSync": "チャンネルは無線機からまだ読み込み中です。同期が完了してからもう一度お試しください。",
   "channels_nameTooLong": "名前が長すぎます（最大 {maxBytes} バイト）。",
   "repeater_valueRequired": "{field}：値を入力してください",
+  "repeater_floodMaxAdvert": "アドバートのフラッド最大ホップ数",
+  "repeater_floodMaxAdvertHelper": "フラッドされるアドバートが通過できる最大ホップ数（0-64、デフォルト 8）",
+  "repeater_floodMaxUnscoped": "スコープなしのフラッド最大ホップ数",
+  "repeater_floodMaxUnscopedHelper": "リージョンスコープのないフラッドの最大ホップ数（0-64、デフォルト 64）。3 などの低い値にすると、スコープなしのトラフィックをローカルに留められます。",
+  "repeater_floodMaxUnscopedUnset": "フラッド最大と同じ",
+  "repeater_rxDelay": "受信遅延",
+  "repeater_rxDelayHelper": "弱い信号で受信したフラッドパケットを転送前に保留し、強い信号の経路を優先させて重複送信を減らします（0-20、0 で無効）。",
+  "repeater_cad": "チャンネルアクティビティ検出",
+  "repeater_cadHelper": "送信前に通信の有無を確認し、チャンネルがビジー状態の間は待機します。干渉閾値と併せて機能します。",
+  "repeater_adcMultiplier": "バッテリー電圧の補正",
+  "repeater_adcMultiplierHelper": "バッテリー電圧の読み取り値に掛ける係数（0-10）。0 の場合はボードのデフォルト値を使用します。",
+  "repeater_boardSupportNote": "すべてのボードが対応しているわけではありません。非対応のボードは変更を拒否します。",
+  "repeater_extraSf": "追加の伝播係数",
+  "repeater_extraSfHelper": "同時に受信待ちする追加の伝播係数を最大 3 つまで、カンマ区切りで指定します（例: 9,10）。空欄にすると無効になります。",
+  "repeater_lr2021Only": "LR2021 無線を搭載したリピータ専用です。他のリピータにはこの設定がなく、変更は拒否されます。",
   "losMapDetailTooltip": "地図の詳細",
   "losUnitsTooltip": "単位",
   "losDistance": "距離",
@@ -3314,6 +3328,10 @@
   "map_youWithMarkers": "自分と{count}件のマーカー",
   "map_sharedMarkerSemantics": "共有マーカー: {label}",
   "map_nodeMarkerSemantics": "{name}、{type}、{status}",
+  "map_requestLocation": "位置情報を更新",
+  "map_locationUpdated": "位置情報を更新しました",
+  "map_locationNotShared": "{name} は位置情報なしで応答しました",
+  "map_locationRequestFailed": "{name} から応答がありません",
   "mapCache_zoomLevel": "ズーム {zoom}",
   "mapCache_sizeBytes": "{size} B",
   "mapCache_sizeKilobytes": "{size} KB",
@@ -3384,7 +3402,6 @@
   "repeater_discardChanges": "破棄",
   "repeater_actionSentNoReply": "{action}: コマンドを送信しました。リピータはこのコマンドに応答しません。",
   "repeater_invalidSettingValue": "{setting}: {value}は無効です",
-  "repeater_txPowerOutOfRange": "TX出力 {value} は範囲外です({min}~{max} dBm)",
   "repeater_prvKeyLengthError": "秘密鍵は16進数でちょうど{length}文字である必要があります",
   "contacts_advertFailed": "アドバートを送信できませんでした",
   "contacts_manageGroups": "グループを管理",
@@ -3444,5 +3461,204 @@
   "networkMap_manage": "管理",
   "networkMap_addedToContacts": "連絡先に追加しました",
   "networkMap_addFailed": "連絡先に追加できませんでした",
-  "networkMap_unnamed": "名前のないリピータ"
+  "networkMap_unnamed": "名前のないリピータ",
+  "urlImage_disabledInAppSettings": "アプリ設定でオフになっています",
+  "settings_pathHashModeNotApplied": "ラジオ設定は適用されましたが、ラジオが新しい経路ハッシュサイズを確認しませんでした",
+  "appSettings_ipfsImageLinks": "IPFSプロバイダー設定",
+  "appSettings_ipfsImageLinksSubtitle": "URL画像（またはファイル）のアップロードにIPFSプロバイダーを、受信にデフォルトゲートウェイを使用します",
+  "appSettings_loadLinkImages": "リンクの画像を読み込む",
+  "appSettings_loadLinkImagesSubtitle": "メッセージ内のリンクの画像を表示します。画像を読み込むと、ホスト先のサイトにIPアドレスが共有されます。",
+  "appSettings_showLinkImagesByDefault": "すべてのチャットでリンク画像を既定で表示",
+  "appSettings_showLinkImagesByDefaultSubtitle": "チャットごとにオフにしていない限り、すべてのチャットでリンク画像を読み込みます。すべてのチャットで画像ホストにIPアドレスが共有されます。",
+  "appSettings_publicIpfsGateway": "公開ゲートウェイ",
+  "appSettings_ipfsGatewayDeactivated": "無効",
+  "appSettings_ipfsGatewayCustom": "カスタム（Kubo）",
+  "appSettings_uploadIpfsProvider": "アップロードプロバイダー",
+  "appSettings_uploadIpfsGateway": "アップロードゲートウェイ",
+  "appSettings_uploadIpfsGatewaySubtitle": "画像やファイルをURLリンクとして共有するためのゲートウェイです。空欄の場合は ipfs: 形式を使用しますが、他のクライアントでは開けない場合があります。",
+  "appSettings_uploadIpfsEndpoint": "アップロードエンドポイント",
+  "appSettings_uploadIpfsEndpointSubtitle": "ファイルのアップロードに使用するAPIエンドポイント",
+  "appSettings_uploadIpfsApiKey": "アップロードAPIキー",
+  "appSettings_ipfsImageLinksDescription": "公開ゲートウェイは ipfs: 形式の画像をダウンロードします。アップロードゲートウェイは、アップロードしたURL画像やファイルの共有リンクの生成に使用されます。",
+  "contacts_removeAutoAddNote": "このタイプの連絡先はラジオが自動追加するため、次回アドバートを送信すると再び追加されます。削除したままにするには、連絡先設定で自動追加をオフにしてください。",
+  "contacts_removeFailed": "ラジオが削除を確認しませんでした。連絡先は削除されていません。",
+  "channels_notificationModeTooltip": "通知：{mode}",
+  "@channels_notificationModeTooltip": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_scanQrCodeDesc": "QRコードからチャンネルまたはコミュニティに参加します。",
+  "channels_scanQrInstructions": "チャンネルまたはコミュニティのQRコードにカメラを向けてください",
+  "channels_invalidQrCode": "MeshCoreのチャンネルまたはコミュニティのQRコードではありません",
+  "channels_joinChannelTitle": "チャンネルに参加",
+  "channels_joinChannelConfirm": "「{name}」をラジオに追加しますか？",
+  "@channels_joinChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_alreadyOnRadio": "「{name}」はすでにラジオにあります",
+  "@channels_alreadyOnRadio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_sendImageIpfs": "IPFSで画像またはファイルを送信",
+  "chat_ipfsUploadFailed": "IPFSアップロードに失敗しました：{error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "先にアプリ設定でIPFSアップロードプロバイダーを設定してください。",
+  "chat_ipfsSelectedFileEmpty": "選択したファイルは空です。",
+  "chat_ipfsEndpointInvalid": "IPFSアップロードエンドポイントは http:// または https:// で始まる完全なアドレスにしてください。アプリ設定で確認してください。",
+  "chat_ipfsPinataTokenMissing": "PinataにはAPIキーまたはJWTが必要です。アプリ設定で追加してください。",
+  "chat_ipfsFilebaseTokenMissing": "FilebaseにはAPIトークンが必要です。アプリ設定で追加してください。",
+  "chat_ipfsKuboPathInvalid": "Kuboのアップロードエンドポイントは /api/v0/add で終わる必要があります。アプリ設定で確認してください。",
+  "chat_ipfsLinkNoRoom": "画像リンクを入れる余裕がありません。メッセージを短くしてからもう一度お試しください。",
+  "@chat_ipfsLinkNoRoom": {
+    "description": "Shown before an IPFS upload when the link would push the draft over the message size limit"
+  },
+  "chat_ipfsLinkOverLimit": "画像リンクを追加しましたが、メッセージが長すぎます。送信前に短くしてください。",
+  "@chat_ipfsLinkOverLimit": {
+    "description": "Shown after an IPFS upload when the link plus the draft no longer fits the message size limit"
+  },
+  "map_pathTraceAddMoreHint": "ノードをタップしてホップを追加し、トレースの戻り方を選んでから「経路トレースを実行」をタップします。",
+  "map_pathTraceModeRoundTrip": "往復",
+  "map_pathTraceModeRoundTripHint": "トレースはこれらのホップを経由して送信され、同じ経路で戻ってきます。",
+  "map_pathTraceModeAsEntered": "入力どおり",
+  "map_pathTraceModeAsEnteredHint": "トレースはこれらのホップをそのとおりにたどります。自分へ戻るホップは自分で追加してください。",
+  "map_pathTraceViewLast": "前回の結果を表示",
+  "notification_lowBatteryTitle": "バッテリー残量低下",
+  "@notification_lowBatteryTitle": {
+    "description": "Title of the low battery notification"
+  },
+  "notification_lowBatteryBody": "{deviceName}のバッテリー残量は{percent}%です",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification; deviceName is the connected radio's node name",
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_sharedLocation": "位置情報を共有しました",
+  "notification_sharedLocationNamed": "位置情報を共有しました：{label}",
+  "@notification_sharedLocationNamed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_reacted": "{emoji}でリアクションしました",
+  "@notification_reacted": {
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_sentGif": "GIFを送信しました",
+  "notification_sentImage": "画像を送信しました",
+  "snrIndicator_unknownRepeater": "不明なリピータ",
+  "snrIndicator_unknownRepeaterHint": "このリピータはまだ連絡先にありません。ラジオがアドバートを受信すると、名前、場所、オプションが表示されます。",
+  "contacts_keyPrefixSemantics": "キープレフィックス {prefix}",
+  "@contacts_keyPrefixSemantics": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "networkMap_sourceLocalHint": "ラジオが受信したノード",
+  "networkMap_sourceOnlineHint": "オンラインネットワークマップのリピータ",
+  "networkMap_sourceBothHint": "ラジオのノードとオンラインネットワークマップ",
+  "appSettings_colorTheme": "カラーテーマ",
+  "appSettings_holidayAnimations": "祝日メッセージのアニメーション",
+  "appSettings_holidayAnimationsSubtitle": "祝日のあいさつが届くと、コウモリ、七面鳥、サンタ、花火が表示されます",
+  "themes_title": "テーマ",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "標準の色。ライト/ダークの設定に合わせます",
+  "themes_builtIn": "標準のテーマ",
+  "themes_holidays": "祝日",
+  "themes_holidayAutoSwitch": "自動で切り替える",
+  "themes_holidayAutoSwitchSubtitle": "各祝日の17日前から当日まで、その祝日のテーマを使います",
+  "themes_holidayAutoApplied": "{holiday}のテーマを自動で使っています。祝日が終わると、元のテーマに戻ります。",
+  "themes_holidayAutoAppliedTag": "自動で使用中",
+  "themes_myThemes": "マイテーマ",
+  "themes_myThemesEmpty": "背景とアクセントカラーを選んで、自分だけのテーマを作りましょう。",
+  "themes_create": "テーマを作成",
+  "themes_import": "テーマを読み込む",
+  "themes_importHint": "テーマコードを貼り付けてください",
+  "themes_importInvalid": "テーマコードが正しくありません",
+  "themes_imported": "テーマ「{name}」を追加しました",
+  "themes_customize": "コピーして編集",
+  "themes_copyCode": "テーマコードをコピー",
+  "themes_codeCopied": "テーマコードをコピーしました",
+  "themes_deleteConfirm": "テーマ「{name}」を削除しますか?",
+  "themes_copyName": "{name}のコピー",
+  "themes_newTitle": "新しいテーマ",
+  "themes_editTitle": "テーマを編集",
+  "themes_name": "名前",
+  "themes_nameRequired": "テーマの名前を入力してください",
+  "themes_background": "背景",
+  "themes_backgroundHelp": "背景が暗いと、ダークテーマになります",
+  "themes_accent": "アクセント",
+  "themes_accentHelp": "ボタン、強調表示、自分のチャットの吹き出しに使います",
+  "themes_hexColor": "16進数カラー",
+  "themes_preview": "プレビュー",
+  "themes_previewIncoming": "今夜、メッシュにいる人はいますか?",
+  "themes_previewOutgoing": "はっきり聞こえます!",
+  "themes_previewSwitch": "通知",
+  "themes_lowContrast": "この背景ではアクセントが見えにくいです",
+  "themes_saveAndUse": "保存して使う",
+  "themes_icons": "アイコン",
+  "themes_iconsHelp": "アイコンをタップすると、ほかのアイコンや自分の画像に変更できます",
+  "themes_iconChanged": "変更済み",
+  "themes_iconSend": "送信ボタン",
+  "themes_iconRepeater": "リピータ",
+  "themes_iconRoom": "ルームサーバー",
+  "themes_iconSensor": "センサー",
+  "themes_mapMarkers": "地図のマーカー",
+  "themes_mapMarkersHelp": "地図上のノードと自分のマーカーを変更します",
+  "themes_iconUsePicture": "画像を使う",
+  "themes_iconReset": "標準のアイコンに戻す",
+  "themes_iconPictureFailed": "その画像は使えませんでした",
+  "themes_exportFile": "ファイルに書き出す",
+  "themes_exportAll": "マイテーマを書き出す",
+  "themes_importFile": "ファイルから読み込む",
+  "themes_pasteCode": "テーマコードを貼り付け",
+  "themes_exportFailed": "テーマを書き出せませんでした",
+  "themes_importFileResult": "{count}件のテーマを読み込みました",
+  "themes_importFileNone": "そのファイルにテーマが見つかりません",
+  "chatBackground_title": "チャットの背景",
+  "chatBackground_thisChatOnly": "このチャットだけ",
+  "chatBackground_themeOverrides": "テーマ「{name}」が、すべてのチャットの背景を指定しています。この背景を使うには、テーマ側でその設定をオフにしてください。",
+  "chatBackground_none": "なし",
+  "chatBackground_picture": "画像",
+  "chatBackground_choosePicture": "画像を選ぶ",
+  "chatBackground_pictureFailed": "その画像は使えませんでした",
+  "chatBackground_fade": "薄さ",
+  "themes_chatBackground": "チャットの背景",
+  "themes_chatBackgroundHelp": "個別の背景がないチャットに表示されます",
+  "themes_chatBackgroundEverywhere": "すべてのチャットで使う",
+  "themes_chatBackgroundEverywhereHelp": "チャットごとに設定した背景も置き換えます",
+  "holidayGreeting_halloween": "ハッピーハロウィン|ハッピーハロウィーン|ハッピーハロウィン|ハピハロ|トリックオアトリート|Happy Halloween",
+  "holidayGreeting_thanksgiving": "ハッピーサンクスギビング|ハッピー・サンクスギビング|感謝祭おめでとう|Happy Thanksgiving",
+  "holidayGreeting_christmas": "メリークリスマス|メリー・クリスマス|メリクリ|Merry Christmas",
+  "holidayGreeting_newYear": "あけましておめでとう|明けましておめでとう|あけおめ|アケオメ|ハッピーニューイヤー|ハッピー・ニューイヤー|謹賀新年|Happy New Year"
 }
