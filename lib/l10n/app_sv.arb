@@ -3450,5 +3450,9 @@
   },
   "networkMap_sourceLocalHint": "Noder som din radio har hört",
   "networkMap_sourceOnlineHint": "Repeatrar från den online-baserade nätverkskartan",
-  "networkMap_sourceBothHint": "Din radios noder plus den online-baserade nätverkskartan"
+  "networkMap_sourceBothHint": "Din radios noder plus den online-baserade nätverkskartan",
+  "holidayGreeting_halloween": "Glad Halloween",
+  "holidayGreeting_thanksgiving": "Glad Thanksgiving|Trevlig Thanksgiving",
+  "holidayGreeting_christmas": "God jul",
+  "holidayGreeting_newYear": "Gott nytt år"
 }

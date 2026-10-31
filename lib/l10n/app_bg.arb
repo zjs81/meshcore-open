@@ -3455,5 +3455,9 @@
   "networkMap_manage": "Управление",
   "networkMap_addedToContacts": "Добавено към контактите",
   "networkMap_addFailed": "Неуспешно добавяне към контактите",
-  "networkMap_unnamed": "Неназован повторител"
+  "networkMap_unnamed": "Неназован повторител",
+  "holidayGreeting_halloween": "Честит Хелоуин|Весел Хелоуин",
+  "holidayGreeting_thanksgiving": "Честит Ден на благодарността",
+  "holidayGreeting_christmas": "Весела Коледа|Честито Рождество",
+  "holidayGreeting_newYear": "Честита Нова година|Щастлива Нова година"
 }

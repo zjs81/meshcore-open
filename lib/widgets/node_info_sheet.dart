@@ -14,6 +14,7 @@ import '../theme/mesh_theme.dart';
 import 'mesh_ui.dart';
 import 'repeater_login_dialog.dart';
 import 'room_login_dialog.dart';
+import '../theme/theme_icons.dart';
 
 /// Map accent colour for a node type.
 Color mapNodeTypeColor(int type) {
@@ -230,11 +231,17 @@ void showNodeInfoSheet(
               BottomSheetHeader(
                 title: contact.name,
                 subtitle: contact.typeLabel(l10n),
-                trailing: Icon(
-                  mapNodeTypeIcon(contact.type),
-                  color: mapNodeTypeColor(contact.type),
-                  size: 20,
-                ),
+                trailing: mapMarkerSlotForNodeType(contact.type) == null
+                    ? Icon(
+                        mapNodeTypeIcon(contact.type),
+                        color: mapNodeTypeColor(contact.type),
+                        size: 20,
+                      )
+                    : ThemedIcon(
+                        mapMarkerSlotForNodeType(contact.type)!,
+                        color: mapNodeTypeColor(contact.type),
+                        size: 20,
+                      ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),

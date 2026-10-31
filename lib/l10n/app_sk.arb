@@ -3456,5 +3456,9 @@
   "networkMap_manage": "Spravovať",
   "networkMap_addedToContacts": "Pridané do kontaktov",
   "networkMap_addFailed": "Nepodarilo sa pridať do kontaktov",
-  "networkMap_unnamed": "Nepomenovaný opakovač"
+  "networkMap_unnamed": "Nepomenovaný opakovač",
+  "holidayGreeting_halloween": "Veselý Halloween|Šťastný Halloween",
+  "holidayGreeting_thanksgiving": "Šťastný Deň vďakyvzdania",
+  "holidayGreeting_christmas": "Veselé Vianoce",
+  "holidayGreeting_newYear": "Šťastný Nový rok"
 }

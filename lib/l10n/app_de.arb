@@ -3590,5 +3590,9 @@
   "networkMap_manage": "Verwalten",
   "networkMap_addedToContacts": "Zu Kontakten hinzugefügt",
   "networkMap_addFailed": "Hinzufügen zu Kontakten fehlgeschlagen",
-  "networkMap_unnamed": "Unbenannter Repeater"
+  "networkMap_unnamed": "Unbenannter Repeater",
+  "holidayGreeting_halloween": "Frohes Halloween|Fröhliches Halloween",
+  "holidayGreeting_thanksgiving": "Frohes Thanksgiving|Schönes Thanksgiving|Frohes Erntedankfest",
+  "holidayGreeting_christmas": "Frohe Weihnachten|Fröhliche Weihnachten",
+  "holidayGreeting_newYear": "Frohes neues Jahr|Gutes neues Jahr|Guten Rutsch|Prosit Neujahr"
 }

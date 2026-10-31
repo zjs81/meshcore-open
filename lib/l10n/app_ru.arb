@@ -2752,5 +2752,9 @@
   "networkMap_manage": "Управлять",
   "networkMap_addedToContacts": "Добавлено в контакты",
   "networkMap_addFailed": "Не удалось добавить в контакты",
-  "networkMap_unnamed": "Репитер без имени"
+  "networkMap_unnamed": "Репитер без имени",
+  "holidayGreeting_halloween": "С Хэллоуином|С Хеллоуином|Счастливого Хэллоуина",
+  "holidayGreeting_thanksgiving": "С Днём благодарения|С Днем благодарения",
+  "holidayGreeting_christmas": "С Рождеством|Счастливого Рождества",
+  "holidayGreeting_newYear": "С Новым годом"
 }

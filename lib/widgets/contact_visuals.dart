@@ -4,6 +4,7 @@ import '../connector/meshcore_protocol.dart';
 import '../l10n/app_localizations.dart';
 import '../models/contact.dart';
 import '../theme/mesh_theme.dart';
+import '../theme/theme_icons.dart';
 
 /// Shared node-type visuals and last-seen formatting for contact lists
 /// (contacts, discovery, nearby-node scan).
@@ -25,16 +26,16 @@ Color contactTypeColor(int type) {
   }
 }
 
-/// Node-type avatar icon. Returns null for chat nodes so [AvatarCircle]
-/// shows initials.
-IconData? contactTypeIcon(int type) {
+/// Node-type avatar icon slot (themes can replace these). Returns null for
+/// chat nodes so [AvatarCircle] shows initials.
+ThemeIconSlot? contactTypeIconSlot(int type) {
   switch (type) {
     case advTypeRepeater:
-      return Icons.cell_tower;
+      return ThemeIconSlot.repeater;
     case advTypeRoom:
-      return Icons.meeting_room;
+      return ThemeIconSlot.room;
     case advTypeSensor:
-      return Icons.sensors;
+      return ThemeIconSlot.sensor;
     default:
       return null;
   }

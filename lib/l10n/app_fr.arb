@@ -3589,5 +3589,9 @@
   },
   "networkMap_sourceLocalHint": "Nœuds entendus par votre radio",
   "networkMap_sourceOnlineHint": "Répéteurs de la carte du réseau en ligne",
-  "networkMap_sourceBothHint": "Les nœuds de votre radio plus la carte du réseau en ligne"
+  "networkMap_sourceBothHint": "Les nœuds de votre radio plus la carte du réseau en ligne",
+  "holidayGreeting_halloween": "Joyeux Halloween|Joyeuse Halloween",
+  "holidayGreeting_thanksgiving": "Joyeux Thanksgiving|Joyeuse Action de grâce",
+  "holidayGreeting_christmas": "Joyeux Noël",
+  "holidayGreeting_newYear": "Bonne année"
 }

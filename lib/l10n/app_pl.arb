@@ -3488,5 +3488,9 @@
   "networkMap_manage": "Zarządzaj",
   "networkMap_addedToContacts": "Dodano do kontaktów",
   "networkMap_addFailed": "Nie udało się dodać do kontaktów",
-  "networkMap_unnamed": "Repeater bez nazwy"
+  "networkMap_unnamed": "Repeater bez nazwy",
+  "holidayGreeting_halloween": "Wesołego Halloween|Szczęśliwego Halloween",
+  "holidayGreeting_thanksgiving": "Szczęśliwego Święta Dziękczynienia|Wesołego Święta Dziękczynienia",
+  "holidayGreeting_christmas": "Wesołych Świąt",
+  "holidayGreeting_newYear": "Szczęśliwego Nowego Roku"
 }

@@ -3435,5 +3435,9 @@
   "networkMap_manage": "Керувати",
   "networkMap_addedToContacts": "Додано до контактів",
   "networkMap_addFailed": "Не вдалося додати до контактів",
-  "networkMap_unnamed": "Ретранслятор без назви"
+  "networkMap_unnamed": "Ретранслятор без назви",
+  "holidayGreeting_halloween": "З Гелловіном|З Хелловіном|Щасливого Гелловіну",
+  "holidayGreeting_thanksgiving": "З Днем подяки",
+  "holidayGreeting_christmas": "З Різдвом|Веселого Різдва|Щасливого Різдва",
+  "holidayGreeting_newYear": "З Новим роком"
 }

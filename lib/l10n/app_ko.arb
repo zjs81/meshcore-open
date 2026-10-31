@@ -3589,5 +3589,9 @@
   },
   "networkMap_sourceLocalHint": "내 라디오가 수신한 노드",
   "networkMap_sourceOnlineHint": "온라인 네트워크 지도의 리피터",
-  "networkMap_sourceBothHint": "내 라디오의 노드와 온라인 네트워크 지도"
+  "networkMap_sourceBothHint": "내 라디오의 노드와 온라인 네트워크 지도",
+  "holidayGreeting_halloween": "해피 할로윈|즐거운 할로윈",
+  "holidayGreeting_thanksgiving": "해피 땡스기빙|즐거운 추수감사절|행복한 추수감사절",
+  "holidayGreeting_christmas": "메리 크리스마스|즐거운 성탄절",
+  "holidayGreeting_newYear": "새해 복 많이 받으세요|새해 복 많이 받아|해피 뉴 이어"
 }

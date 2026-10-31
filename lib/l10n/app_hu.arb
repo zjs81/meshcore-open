@@ -3494,5 +3494,9 @@
   "networkMap_manage": "Kezelés",
   "networkMap_addedToContacts": "Hozzáadva a kapcsolatokhoz",
   "networkMap_addFailed": "Nem sikerült hozzáadni a kapcsolatokhoz",
-  "networkMap_unnamed": "Névtelen repeater"
+  "networkMap_unnamed": "Névtelen repeater",
+  "holidayGreeting_halloween": "Boldog Halloweent|Boldog Halloween",
+  "holidayGreeting_thanksgiving": "Boldog hálaadást",
+  "holidayGreeting_christmas": "Boldog karácsonyt",
+  "holidayGreeting_newYear": "Boldog új évet"
 }

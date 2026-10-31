@@ -3456,5 +3456,9 @@
   },
   "networkMap_sourceLocalHint": "Vozlišča, ki jih je slišal vaš radio",
   "networkMap_sourceOnlineHint": "Ponovitelji z spletnega zemljevida omrežja",
-  "networkMap_sourceBothHint": "Vozlišča vašega radia in spletni zemljevid omrežja"
+  "networkMap_sourceBothHint": "Vozlišča vašega radia in spletni zemljevid omrežja",
+  "holidayGreeting_halloween": "Vesel Halloween|Srečen Halloween",
+  "holidayGreeting_thanksgiving": "Vesel dan zahvalnosti",
+  "holidayGreeting_christmas": "Vesel božič",
+  "holidayGreeting_newYear": "Srečno novo leto"
 }

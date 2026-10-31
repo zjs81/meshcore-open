@@ -3589,5 +3589,9 @@
   },
   "networkMap_sourceLocalHint": "ラジオが受信したノード",
   "networkMap_sourceOnlineHint": "オンラインネットワークマップのリピータ",
-  "networkMap_sourceBothHint": "ラジオのノードとオンラインネットワークマップ"
+  "networkMap_sourceBothHint": "ラジオのノードとオンラインネットワークマップ",
+  "holidayGreeting_halloween": "ハッピーハロウィン|ハッピーハロウィーン",
+  "holidayGreeting_thanksgiving": "ハッピーサンクスギビング|感謝祭おめでとう",
+  "holidayGreeting_christmas": "メリークリスマス",
+  "holidayGreeting_newYear": "あけましておめでとう|明けましておめでとう|ハッピーニューイヤー"
 }

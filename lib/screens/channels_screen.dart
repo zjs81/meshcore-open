@@ -38,6 +38,7 @@ import 'contacts_screen.dart';
 import 'map_screen.dart';
 import 'settings_screen.dart';
 import '../review_mode/review_mode_banner.dart';
+import '../theme/theme_icons.dart';
 
 class ChannelsScreen extends StatefulWidget {
   final bool hideBackButton;
@@ -149,7 +150,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                 PopupMenuItem(
                   child: Row(
                     children: [
-                      const Icon(Icons.settings),
+                      const ThemedIcon(ThemeIconSlot.settings),
                       const SizedBox(width: 8),
                       Text(menuContext.l10n.settings_title),
                     ],
@@ -857,9 +858,11 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                     vertical: 10,
                   ),
                   borderColor: isSelected && enabled
-                      ? MeshPalette.blueLine
+                      ? cardScheme.primary.withValues(alpha: 0.5)
                       : null,
-                  color: isSelected && enabled ? MeshPalette.blueBg : null,
+                  color: isSelected && enabled
+                      ? cardScheme.primary.withValues(alpha: 0.16)
+                      : null,
                   onTap: enabled
                       ? () {
                           setSheetState(() {
@@ -877,7 +880,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                         size: 38,
                         color: enabled
                             ? (isSelected
-                                  ? MeshPalette.blue
+                                  ? cardScheme.primary
                                   : cardScheme.onSurfaceVariant)
                             : cardScheme.outline,
                         icon: icon,
@@ -915,7 +918,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                         Icon(
                           Icons.chevron_right,
                           color: isSelected
-                              ? MeshPalette.blue
+                              ? cardScheme.primary
                               : cardScheme.onSurfaceVariant,
                           size: 20,
                         ),

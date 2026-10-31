@@ -3460,5 +3460,9 @@
   },
   "networkMap_sourceLocalHint": "你的无线电听到的节点",
   "networkMap_sourceOnlineHint": "来自在线网络地图的中继器",
-  "networkMap_sourceBothHint": "你的无线电节点加上在线网络地图"
+  "networkMap_sourceBothHint": "你的无线电节点加上在线网络地图",
+  "holidayGreeting_halloween": "万圣节快乐|萬聖節快樂",
+  "holidayGreeting_thanksgiving": "感恩节快乐|感恩節快樂",
+  "holidayGreeting_christmas": "圣诞快乐|聖誕快樂",
+  "holidayGreeting_newYear": "新年快乐|新年快樂"
 }

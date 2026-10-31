@@ -360,6 +360,118 @@
   "appSettings_themeSystem": "System default",
   "appSettings_themeLight": "Light",
   "appSettings_themeDark": "Dark",
+  "appSettings_colorTheme": "Color theme",
+  "appSettings_holidayAnimations": "Holiday message animations",
+  "appSettings_holidayAnimationsSubtitle": "Bats, a turkey, Santa or fireworks when someone sends a holiday greeting",
+  "themes_title": "Themes",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "Standard colors, follows the Light / Dark setting",
+  "themes_builtIn": "Built-in",
+  "themes_holidays": "Holidays",
+  "themes_holidayAutoSwitch": "Switch automatically",
+  "themes_holidayAutoSwitchSubtitle": "Uses each holiday's theme from 17 days before until the day itself",
+  "themes_holidayAutoApplied": "{holiday} theme is on automatically. Your own theme comes back after the holiday.",
+  "@themes_holidayAutoApplied": {
+    "placeholders": {
+      "holiday": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_holidayAutoAppliedTag": "On automatically",
+  "themes_myThemes": "My themes",
+  "themes_myThemesEmpty": "Make your own theme by picking a background and an accent color.",
+  "themes_create": "Create theme",
+  "themes_import": "Import theme",
+  "themes_importHint": "Paste a theme code",
+  "themes_importInvalid": "That is not a valid theme code",
+  "themes_imported": "Added theme \"{name}\"",
+  "@themes_imported": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_customize": "Customize a copy",
+  "themes_copyCode": "Copy theme code",
+  "themes_codeCopied": "Theme code copied",
+  "themes_deleteConfirm": "Delete theme \"{name}\"?",
+  "@themes_deleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_copyName": "{name} copy",
+  "@themes_copyName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_newTitle": "New theme",
+  "themes_editTitle": "Edit theme",
+  "themes_name": "Name",
+  "themes_nameRequired": "Give your theme a name",
+  "themes_background": "Background",
+  "themes_backgroundHelp": "A dark background makes a dark theme",
+  "themes_accent": "Accent",
+  "themes_accentHelp": "Buttons, highlights and your chat bubbles",
+  "themes_hexColor": "Hex color",
+  "themes_preview": "Preview",
+  "themes_previewIncoming": "Anyone on the mesh tonight?",
+  "themes_previewOutgoing": "Loud and clear!",
+  "themes_previewSwitch": "Notifications",
+  "themes_lowContrast": "The accent is hard to see on this background",
+  "themes_saveAndUse": "Save and use",
+  "themes_icons": "Icons",
+  "themes_iconsHelp": "Tap an icon to swap it for another icon or your own picture",
+  "themes_iconChanged": "Changed",
+  "themes_iconSend": "Send button",
+  "themes_iconRepeater": "Repeaters",
+  "themes_iconRoom": "Rooms",
+  "themes_iconSensor": "Sensors",
+  "themes_mapMarkers": "Map markers",
+  "themes_mapMarkersHelp": "Swap the markers for nodes and for you on the map",
+  "themes_iconUsePicture": "Use a picture",
+  "themes_iconReset": "Use the default icon",
+  "themes_iconPictureFailed": "Could not use that picture",
+  "themes_exportFile": "Export to file",
+  "themes_exportAll": "Export my themes",
+  "themes_importFile": "Import from file",
+  "themes_pasteCode": "Paste theme code",
+  "themes_exportFailed": "Could not export themes",
+  "themes_importFileResult": "Imported {count} themes",
+  "@themes_importFileResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "themes_importFileNone": "No themes found in that file",
+  "chatBackground_title": "Chat background",
+  "chatBackground_thisChatOnly": "Only for this chat",
+  "chatBackground_themeOverrides": "Your theme \"{name}\" sets the background in every chat. Turn that off in the theme to use this one.",
+  "@chatBackground_themeOverrides": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chatBackground_none": "None",
+  "chatBackground_picture": "Picture",
+  "chatBackground_choosePicture": "Choose a picture",
+  "chatBackground_pictureFailed": "Could not use that picture",
+  "chatBackground_fade": "Fade",
+  "themes_chatBackground": "Chat background",
+  "themes_chatBackgroundHelp": "Shown in chats that do not have their own background",
+  "themes_chatBackgroundEverywhere": "Use in every chat",
+  "themes_chatBackgroundEverywhereHelp": "Also replaces backgrounds set on individual chats",
   "appSettings_language": "Language",
   "appSettings_languageSystem": "System default",
   "appSettings_languageEn": "English",
@@ -3624,5 +3736,21 @@
   "networkMap_manage": "Manage",
   "networkMap_addedToContacts": "Added to contacts",
   "networkMap_addFailed": "Couldn't add to contacts",
-  "networkMap_unnamed": "Unnamed repeater"
+  "networkMap_unnamed": "Unnamed repeater",
+  "holidayGreeting_halloween": "Happy Halloween",
+  "@holidayGreeting_halloween": {
+    "description": "Holiday greeting that plays the Halloween bats animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  },
+  "holidayGreeting_thanksgiving": "Happy Thanksgiving",
+  "@holidayGreeting_thanksgiving": {
+    "description": "Holiday greeting that plays the Thanksgiving turkey animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  },
+  "holidayGreeting_christmas": "Merry Christmas|Merry Xmas|Happy Christmas",
+  "@holidayGreeting_christmas": {
+    "description": "Holiday greeting that plays the Christmas Santa animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  },
+  "holidayGreeting_newYear": "Happy New Year|Happy New Year's",
+  "@holidayGreeting_newYear": {
+    "description": "Holiday greeting that plays the New Year's fireworks animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  }
 }

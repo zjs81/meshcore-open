@@ -3356,5 +3356,9 @@
   "networkMap_manage": "Beheren",
   "networkMap_addedToContacts": "Toegevoegd aan contacten",
   "networkMap_addFailed": "Kan niet aan contacten toevoegen",
-  "networkMap_unnamed": "Naamloze repeater"
+  "networkMap_unnamed": "Naamloze repeater",
+  "holidayGreeting_halloween": "Fijne Halloween|Gelukkige Halloween",
+  "holidayGreeting_thanksgiving": "Fijne Thanksgiving|Gelukkige Thanksgiving",
+  "holidayGreeting_christmas": "Vrolijk kerstfeest|Fijne kerst|Prettige kerstdagen|Zalig kerstfeest",
+  "holidayGreeting_newYear": "Gelukkig Nieuwjaar|Gelukkig nieuw jaar"
 }

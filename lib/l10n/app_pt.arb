@@ -3455,5 +3455,9 @@
   },
   "networkMap_sourceLocalHint": "Nós que o seu rádio ouviu",
   "networkMap_sourceOnlineHint": "Repetidores do mapa de rede online",
-  "networkMap_sourceBothHint": "Os nós do seu rádio mais o mapa de rede online"
+  "networkMap_sourceBothHint": "Os nós do seu rádio mais o mapa de rede online",
+  "holidayGreeting_halloween": "Feliz Halloween|Feliz Dia das Bruxas",
+  "holidayGreeting_thanksgiving": "Feliz Dia de Ação de Graças|Feliz Thanksgiving",
+  "holidayGreeting_christmas": "Feliz Natal|Boas Festas",
+  "holidayGreeting_newYear": "Feliz Ano Novo"
 }

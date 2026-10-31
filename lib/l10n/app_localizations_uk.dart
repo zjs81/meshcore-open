@@ -823,6 +823,237 @@ class AppLocalizationsUk extends AppLocalizations {
   String get appSettings_themeDark => 'Темна';
 
   @override
+  String get appSettings_colorTheme => 'Color theme';
+
+  @override
+  String get appSettings_holidayAnimations => 'Holiday message animations';
+
+  @override
+  String get appSettings_holidayAnimationsSubtitle =>
+      'Bats, a turkey, Santa or fireworks when someone sends a holiday greeting';
+
+  @override
+  String get themes_title => 'Themes';
+
+  @override
+  String get themes_default => 'MeshCore';
+
+  @override
+  String get themes_defaultSubtitle =>
+      'Standard colors, follows the Light / Dark setting';
+
+  @override
+  String get themes_builtIn => 'Built-in';
+
+  @override
+  String get themes_holidays => 'Holidays';
+
+  @override
+  String get themes_holidayAutoSwitch => 'Switch automatically';
+
+  @override
+  String get themes_holidayAutoSwitchSubtitle =>
+      'Uses each holiday\'s theme from 17 days before until the day itself';
+
+  @override
+  String themes_holidayAutoApplied(String holiday) {
+    return '$holiday theme is on automatically. Your own theme comes back after the holiday.';
+  }
+
+  @override
+  String get themes_holidayAutoAppliedTag => 'On automatically';
+
+  @override
+  String get themes_myThemes => 'My themes';
+
+  @override
+  String get themes_myThemesEmpty =>
+      'Make your own theme by picking a background and an accent color.';
+
+  @override
+  String get themes_create => 'Create theme';
+
+  @override
+  String get themes_import => 'Import theme';
+
+  @override
+  String get themes_importHint => 'Paste a theme code';
+
+  @override
+  String get themes_importInvalid => 'That is not a valid theme code';
+
+  @override
+  String themes_imported(String name) {
+    return 'Added theme \"$name\"';
+  }
+
+  @override
+  String get themes_customize => 'Customize a copy';
+
+  @override
+  String get themes_copyCode => 'Copy theme code';
+
+  @override
+  String get themes_codeCopied => 'Theme code copied';
+
+  @override
+  String themes_deleteConfirm(String name) {
+    return 'Delete theme \"$name\"?';
+  }
+
+  @override
+  String themes_copyName(String name) {
+    return '$name copy';
+  }
+
+  @override
+  String get themes_newTitle => 'New theme';
+
+  @override
+  String get themes_editTitle => 'Edit theme';
+
+  @override
+  String get themes_name => 'Name';
+
+  @override
+  String get themes_nameRequired => 'Give your theme a name';
+
+  @override
+  String get themes_background => 'Background';
+
+  @override
+  String get themes_backgroundHelp => 'A dark background makes a dark theme';
+
+  @override
+  String get themes_accent => 'Accent';
+
+  @override
+  String get themes_accentHelp => 'Buttons, highlights and your chat bubbles';
+
+  @override
+  String get themes_hexColor => 'Hex color';
+
+  @override
+  String get themes_preview => 'Preview';
+
+  @override
+  String get themes_previewIncoming => 'Anyone on the mesh tonight?';
+
+  @override
+  String get themes_previewOutgoing => 'Loud and clear!';
+
+  @override
+  String get themes_previewSwitch => 'Notifications';
+
+  @override
+  String get themes_lowContrast =>
+      'The accent is hard to see on this background';
+
+  @override
+  String get themes_saveAndUse => 'Save and use';
+
+  @override
+  String get themes_icons => 'Icons';
+
+  @override
+  String get themes_iconsHelp =>
+      'Tap an icon to swap it for another icon or your own picture';
+
+  @override
+  String get themes_iconChanged => 'Changed';
+
+  @override
+  String get themes_iconSend => 'Send button';
+
+  @override
+  String get themes_iconRepeater => 'Repeaters';
+
+  @override
+  String get themes_iconRoom => 'Rooms';
+
+  @override
+  String get themes_iconSensor => 'Sensors';
+
+  @override
+  String get themes_mapMarkers => 'Map markers';
+
+  @override
+  String get themes_mapMarkersHelp =>
+      'Swap the markers for nodes and for you on the map';
+
+  @override
+  String get themes_iconUsePicture => 'Use a picture';
+
+  @override
+  String get themes_iconReset => 'Use the default icon';
+
+  @override
+  String get themes_iconPictureFailed => 'Could not use that picture';
+
+  @override
+  String get themes_exportFile => 'Export to file';
+
+  @override
+  String get themes_exportAll => 'Export my themes';
+
+  @override
+  String get themes_importFile => 'Import from file';
+
+  @override
+  String get themes_pasteCode => 'Paste theme code';
+
+  @override
+  String get themes_exportFailed => 'Could not export themes';
+
+  @override
+  String themes_importFileResult(int count) {
+    return 'Imported $count themes';
+  }
+
+  @override
+  String get themes_importFileNone => 'No themes found in that file';
+
+  @override
+  String get chatBackground_title => 'Chat background';
+
+  @override
+  String get chatBackground_thisChatOnly => 'Only for this chat';
+
+  @override
+  String chatBackground_themeOverrides(String name) {
+    return 'Your theme \"$name\" sets the background in every chat. Turn that off in the theme to use this one.';
+  }
+
+  @override
+  String get chatBackground_none => 'None';
+
+  @override
+  String get chatBackground_picture => 'Picture';
+
+  @override
+  String get chatBackground_choosePicture => 'Choose a picture';
+
+  @override
+  String get chatBackground_pictureFailed => 'Could not use that picture';
+
+  @override
+  String get chatBackground_fade => 'Fade';
+
+  @override
+  String get themes_chatBackground => 'Chat background';
+
+  @override
+  String get themes_chatBackgroundHelp =>
+      'Shown in chats that do not have their own background';
+
+  @override
+  String get themes_chatBackgroundEverywhere => 'Use in every chat';
+
+  @override
+  String get themes_chatBackgroundEverywhereHelp =>
+      'Also replaces backgrounds set on individual chats';
+
+  @override
   String get appSettings_language => 'Мова';
 
   @override
@@ -6621,4 +6852,18 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get networkMap_unnamed => 'Ретранслятор без назви';
+
+  @override
+  String get holidayGreeting_halloween =>
+      'З Гелловіном|З Хелловіном|Щасливого Гелловіну';
+
+  @override
+  String get holidayGreeting_thanksgiving => 'З Днем подяки';
+
+  @override
+  String get holidayGreeting_christmas =>
+      'З Різдвом|Веселого Різдва|Щасливого Різдва';
+
+  @override
+  String get holidayGreeting_newYear => 'З Новим роком';
 }

@@ -11,6 +11,7 @@ import '../theme/mesh_theme.dart';
 import 'mesh_ui.dart';
 import 'node_info_sheet.dart';
 import 'signal_ui.dart';
+import '../theme/theme_icons.dart';
 
 Contact? _getRepeaterPrefixMatchNearLocation(
   List<Contact> contacts,
@@ -386,8 +387,8 @@ class _SNRIndicatorState extends State<SNRIndicator> {
                 BottomSheetHeader(
                   title: prefixLabel,
                   subtitle: l10n.snrIndicator_unknownRepeater,
-                  trailing: Icon(
-                    mapNodeTypeIcon(advTypeRepeater),
+                  trailing: ThemedIcon(
+                    ThemeIconSlot.mapRepeater,
                     color: mapNodeTypeColor(advTypeRepeater),
                     size: 20,
                   ),

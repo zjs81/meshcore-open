@@ -1,3 +1,4 @@
+import 'custom_theme.dart';
 import 'image_codec_support.dart';
 import 'translation_support.dart';
 
@@ -135,6 +136,25 @@ class AppSettings {
   /// different first-hop repeaters also satisfies the channel resend.
   final bool channelMinHopsCountRepeaters;
   final String themeMode;
+
+  /// Themes the user made. Built-in presets live in [CustomTheme.presets].
+  final List<CustomTheme> customThemes;
+
+  /// ID of the active custom or preset theme; null uses the stock theme with
+  /// [themeMode].
+  final String? activeThemeId;
+
+  /// Play a short animation for holiday greetings ("Happy Halloween", ...).
+  final bool holidayAnimationsEnabled;
+
+  /// Show each holiday's theme automatically in the days before it (see
+  /// `activeHolidayFor`), without changing [activeThemeId].
+  final bool holidayAutoSwitch;
+
+  /// Occurrence key (`ActiveHoliday.occurrenceKey`) of the holiday whose
+  /// automatic theme the user overrode by picking a theme themselves. Only
+  /// that occurrence is skipped; the next holiday switches again.
+  final String? holidayThemeDismissed;
   final String? languageOverride; // null = system default
   final bool appDebugLogEnabled;
   final Map<String, String> batteryChemistryByDeviceId;
@@ -265,6 +285,11 @@ class AppSettings {
     this.channelMinHopsRetries = 1,
     this.channelMinHopsCountRepeaters = false,
     this.themeMode = 'system',
+    this.customThemes = const [],
+    this.activeThemeId,
+    this.holidayAnimationsEnabled = true,
+    this.holidayAutoSwitch = true,
+    this.holidayThemeDismissed,
     this.languageOverride,
     this.appDebugLogEnabled = false,
     Map<String, String>? batteryChemistryByDeviceId,
@@ -356,6 +381,11 @@ class AppSettings {
       'channel_min_hops_retries': channelMinHopsRetries,
       'channel_min_hops_count_repeaters': channelMinHopsCountRepeaters,
       'theme_mode': themeMode,
+      'custom_themes': customThemes.map((t) => t.toJson()).toList(),
+      'active_theme_id': activeThemeId,
+      'holiday_animations_enabled': holidayAnimationsEnabled,
+      'holiday_auto_switch': holidayAutoSwitch,
+      'holiday_theme_dismissed': holidayThemeDismissed,
       'language_override': languageOverride,
       'app_debug_log_enabled': appDebugLogEnabled,
       'battery_chemistry_by_device_id': batteryChemistryByDeviceId,
@@ -494,6 +524,18 @@ class AppSettings {
       channelMinHopsCountRepeaters:
           json['channel_min_hops_count_repeaters'] as bool? ?? false,
       themeMode: json['theme_mode'] as String? ?? 'system',
+      customThemes:
+          (json['custom_themes'] as List<dynamic>?)
+              ?.whereType<Map>()
+              .map((e) => CustomTheme.fromJson(Map<String, dynamic>.from(e)))
+              .where((t) => t.id.isNotEmpty)
+              .toList() ??
+          const [],
+      activeThemeId: json['active_theme_id'] as String?,
+      holidayAnimationsEnabled:
+          json['holiday_animations_enabled'] as bool? ?? true,
+      holidayAutoSwitch: json['holiday_auto_switch'] as bool? ?? true,
+      holidayThemeDismissed: json['holiday_theme_dismissed'] as String?,
       languageOverride: json['language_override'] as String?,
       appDebugLogEnabled: json['app_debug_log_enabled'] as bool? ?? false,
       batteryChemistryByDeviceId:
@@ -637,6 +679,11 @@ class AppSettings {
     int? channelMinHopsRetries,
     bool? channelMinHopsCountRepeaters,
     String? themeMode,
+    List<CustomTheme>? customThemes,
+    Object? activeThemeId = _unset,
+    bool? holidayAnimationsEnabled,
+    bool? holidayAutoSwitch,
+    Object? holidayThemeDismissed = _unset,
     Object? languageOverride = _unset,
     bool? appDebugLogEnabled,
     Map<String, String>? batteryChemistryByDeviceId,
@@ -725,6 +772,16 @@ class AppSettings {
       channelMinHopsCountRepeaters:
           channelMinHopsCountRepeaters ?? this.channelMinHopsCountRepeaters,
       themeMode: themeMode ?? this.themeMode,
+      customThemes: customThemes ?? this.customThemes,
+      activeThemeId: activeThemeId == _unset
+          ? this.activeThemeId
+          : activeThemeId as String?,
+      holidayAnimationsEnabled:
+          holidayAnimationsEnabled ?? this.holidayAnimationsEnabled,
+      holidayAutoSwitch: holidayAutoSwitch ?? this.holidayAutoSwitch,
+      holidayThemeDismissed: holidayThemeDismissed == _unset
+          ? this.holidayThemeDismissed
+          : holidayThemeDismissed as String?,
       languageOverride: languageOverride == _unset
           ? this.languageOverride
           : languageOverride as String?,

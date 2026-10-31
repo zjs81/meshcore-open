@@ -60,6 +60,7 @@ dependencies:
   package_info_plus: ^10.2.2
   mobile_scanner: ^7.4.2  # QR/barcode scanning
   image_picker: ^1.1.2    # Pick photos to send as compressed mesh images
+  koni_jxl_flutter: ^0.1.4 # Chat background pictures stored as JPEG XL
   qr_flutter: ^4.1.0      # QR code generation
   url_launcher: ^6.3.0    # Launch URLs in system browser
   flutter_linkify: ^6.0.0 # Auto-detect and linkify URLs in text
@@ -124,6 +125,10 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/fonts/
+    - assets/themes/halloween/
+    - assets/themes/thanksgiving/
+    - assets/themes/christmas/
+    - assets/themes/new_year/
 
   fonts:
     - family: Inter

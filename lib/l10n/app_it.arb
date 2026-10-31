@@ -3589,5 +3589,9 @@
   },
   "networkMap_sourceLocalHint": "Nodi sentiti dalla tua radio",
   "networkMap_sourceOnlineHint": "Ripetitori dalla mappa di rete online",
-  "networkMap_sourceBothHint": "I nodi della tua radio più la mappa di rete online"
+  "networkMap_sourceBothHint": "I nodi della tua radio più la mappa di rete online",
+  "holidayGreeting_halloween": "Buon Halloween|Felice Halloween",
+  "holidayGreeting_thanksgiving": "Buon Ringraziamento|Buon Thanksgiving",
+  "holidayGreeting_christmas": "Buon Natale",
+  "holidayGreeting_newYear": "Felice Anno Nuovo|Buon Anno Nuovo|Buon Capodanno"
 }

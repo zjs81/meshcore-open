@@ -52,6 +52,9 @@ import '../theme/mesh_theme.dart';
 import '../widgets/future_timestamp_indicator.dart';
 import '../widgets/mesh_ui.dart';
 import 'telemetry_screen.dart';
+import '../services/chat_background_service.dart';
+import '../widgets/chat_background.dart';
+import '../widgets/holiday_animations.dart';
 
 // Image messages are deliberately absent from this screen, and there is no
 // flag to flip: the AEIC wire format is `CMD_SEND_CHANNEL_DATA` (62) /
@@ -76,6 +79,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final _holidayWatcher = HolidayTriggerWatcher();
+  final _messageAreaKey = GlobalKey();
   final _textController = TextEditingController();
   final _scrollController = ChatScrollController();
   final _textFieldFocusNode = FocusNode();
@@ -271,6 +276,11 @@ class _ChatScreenState extends State<ChatScreen> {
                       _showContactInfo(context);
                     case 'settings':
                       _showContactSettings(context);
+                    case 'background':
+                      showChatBackgroundSheet(
+                        context,
+                        ChatBackgroundService.contactKey(contact),
+                      );
                     case 'telemetry':
                       Navigator.push(
                         context,
@@ -325,6 +335,16 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   PopupMenuItem(
+                    value: 'background',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.wallpaper, size: 20),
+                        const SizedBox(width: 12),
+                        Text(context.l10n.chatBackground_title),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
                     value: 'clearChat',
                     child: Row(
                       children: [
@@ -352,16 +372,31 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Consumer<MeshCoreConnector>(
         builder: (context, connector, child) {
           final messages = connector.getMessages(widget.contact);
+          final newest = messages.isEmpty ? null : messages.last;
+          _holidayWatcher.onNewest(
+            context,
+            id: newest?.messageId,
+            texts: [newest?.text, newest?.translatedText],
+            receivedAt: newest?.receivedAt,
+            originOf: () => newestMessageOrigin(
+              _messageAreaKey,
+              isOutgoing: newest?.isOutgoing ?? false,
+            ),
+          );
           return Column(
             children: [
               Expanded(
-                child: Stack(
-                  children: [
-                    messages.isEmpty
-                        ? _buildEmptyState()
-                        : _buildMessageList(messages, connector),
-                    JumpToBottomButton(scrollController: _scrollController),
-                  ],
+                child: ChatBackdrop(
+                  key: _messageAreaKey,
+                  chatKey: ChatBackgroundService.contactKey(widget.contact),
+                  child: Stack(
+                    children: [
+                      messages.isEmpty
+                          ? _buildEmptyState()
+                          : _buildMessageList(messages, connector),
+                      JumpToBottomButton(scrollController: _scrollController),
+                    ],
+                  ),
                 ),
               ),
               _buildInputBar(connector),
@@ -1269,7 +1304,7 @@ class _MessageBubble extends StatelessWidget {
     final publicIpfsGateway = settingsService.settings.publicIpfsGateway;
 
     final colors = MessageBubbleColors.of(
-      scheme,
+      context,
       isOutgoing: isOutgoing,
       isFailed: isFailed,
     );
