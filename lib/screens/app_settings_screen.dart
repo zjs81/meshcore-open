@@ -1684,17 +1684,10 @@ class _IpfsImageLinksDialogState extends State<_IpfsImageLinksDialog> {
                   value: 'deactivated',
                   child: Text(l10n.appSettings_ipfsGatewayDeactivated),
                 ),
-                DropdownMenuItem(
-                  value: 'ipfsio',
-                  child: Text(l10n.appSettings_ipfsGatewayIpfsIo),
-                ),
-                DropdownMenuItem(
-                  value: 'pinata',
-                  child: Text(l10n.appSettings_ipfsGatewayPinata),
-                ),
+                DropdownMenuItem(value: 'pinata', child: const Text('Pinata')),
                 DropdownMenuItem(
                   value: 'filebase',
-                  child: Text(l10n.appSettings_ipfsGatewayFilebase),
+                  child: const Text('Filebase'),
                 ),
                 DropdownMenuItem(
                   value: 'custom',
@@ -1725,13 +1718,10 @@ class _IpfsImageLinksDialogState extends State<_IpfsImageLinksDialog> {
                 labelText: l10n.appSettings_uploadIpfsProvider,
               ),
               items: [
-                DropdownMenuItem(
-                  value: 'pinata',
-                  child: Text(l10n.appSettings_ipfsGatewayPinata),
-                ),
+                DropdownMenuItem(value: 'pinata', child: const Text('Pinata')),
                 DropdownMenuItem(
                   value: 'filebase',
-                  child: Text(l10n.appSettings_ipfsGatewayFilebase),
+                  child: const Text('Filebase'),
                 ),
                 DropdownMenuItem(
                   value: 'custom',
@@ -1854,10 +1844,6 @@ class _IpfsImageLinksDialogState extends State<_IpfsImageLinksDialog> {
 
   String _gatewayPreset(String value) {
     if (value.isEmpty) return 'deactivated';
-    if (value == AppSettings.defaultPublicIpfsGateway ||
-        value == 'https://ipfs.io/ipfs') {
-      return 'ipfsio';
-    }
     if (value == 'https://gateway.pinata.cloud/ipfs/' ||
         value == 'https://gateway.pinata.cloud/ipfs') {
       return 'pinata';
@@ -1873,8 +1859,6 @@ class _IpfsImageLinksDialogState extends State<_IpfsImageLinksDialog> {
     switch (preset) {
       case 'deactivated':
         return '';
-      case 'ipfsio':
-        return AppSettings.defaultPublicIpfsGateway;
       case 'pinata':
         return 'https://gateway.pinata.cloud/ipfs/';
       case 'filebase':
