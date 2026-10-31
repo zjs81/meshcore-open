@@ -357,17 +357,19 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                     ),
                     Consumer<MeshCoreConnector>(
                       builder: (context, connector, _) {
+                        // Hashtag channels get no type label: the # icon
+                        // and name already say it, and the title needs the
+                        // room.
                         final privacy = switch (Channel.getChannelType(
                           widget.channel,
                           _communityIndex,
                         )) {
                           ChannelType.public => context.l10n.channels_public,
-                          ChannelType.hashtag => context.l10n.channels_hashtag,
+                          ChannelType.hashtag => null,
                           ChannelType.private => context.l10n.channels_private,
                           ChannelType.communityPublic =>
                             context.l10n.community_publicChannel,
-                          ChannelType.communityHashtag =>
-                            context.l10n.community_hashtagChannel,
+                          ChannelType.communityHashtag => null,
                         };
                         final ownRegion = connector.getChannelRegion(
                           widget.channel.index,
@@ -380,15 +382,17 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                             : '';
                         final radioDefault = connector.defaultFloodScopeName;
                         final regionText = region.isNotEmpty
-                            ? ' • ${context.l10n.channels_regionSetTo(region)}$defaultSuffix'
+                            ? '${context.l10n.channels_regionSetTo(region)}$defaultSuffix'
                             : radioDefault != null &&
                                   connector.channelUsesRadioDefaultScope(
                                     widget.channel.index,
                                   )
-                            ? ' • ${context.l10n.channels_regionSetTo(radioDefault)} ${context.l10n.channels_regionRadioDefaultSuffix}'
-                            : '';
+                            ? '${context.l10n.channels_regionSetTo(radioDefault)} ${context.l10n.channels_regionRadioDefaultSuffix}'
+                            : null;
+                        final subtitle = [?privacy, ?regionText].join(' • ');
+                        if (subtitle.isEmpty) return const SizedBox.shrink();
                         return Text(
-                          '$privacy$regionText',
+                          subtitle,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(fontSize: 12),
                         );
@@ -425,20 +429,29 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               );
             },
           ),
-          IconButton(
-            tooltip: context.l10n.channels_regionSelect_Title,
-            icon: const Icon(Icons.landscape),
-            onPressed: () => openRegionSelectDialog(widget.channel),
-          ),
           const RadioStatsIconButton(),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
             onSelected: (value) {
-              if (value == 'clearChat') {
+              if (value == 'region') {
+                openRegionSelectDialog(widget.channel);
+              } else if (value == 'clearChat') {
                 _confirmClearChat();
               }
             },
+            // Region lives here (and on a tap of the title) so the channel
+            // name keeps its room in the app bar.
             itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'region',
+                child: Row(
+                  children: [
+                    const Icon(Icons.landscape, size: 20),
+                    const SizedBox(width: 12),
+                    Text(context.l10n.channels_regionSelect_Title),
+                  ],
+                ),
+              ),
               PopupMenuItem(
                 value: 'clearChat',
                 child: Row(

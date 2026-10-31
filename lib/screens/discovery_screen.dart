@@ -203,35 +203,30 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Name + type chip
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          contact.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      StatusChip(
-                        label: contact.typeLabel(context.l10n).toUpperCase(),
-                        color: contactTypeColor(contact.type),
-                        icon: contactTypeIcon(contact.type),
-                      ),
-                    ],
+                  // The name gets the full width; a type chip beside it
+                  // squeezed it to nothing on narrow screens or large text.
+                  // The avatar icon already shows the type.
+                  Text(
+                    // Nodes can advertise without a name; show the key
+                    // prefix rather than a blank title.
+                    contact.name.isNotEmpty
+                        ? contact.name
+                        : contact.publicKeyHex.substring(0, 8),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                    ),
                   ),
                   const SizedBox(height: 3),
-                  // Short pub key
+                  // Type and short pub key
                   Row(
                     children: [
                       Expanded(
                         child: Text(
-                          contact.shortPubKeyHex,
+                          '${contact.typeLabel(context.l10n)} · '
+                          '${contact.shortPubKeyHex}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: MeshTheme.mono(

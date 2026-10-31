@@ -1464,6 +1464,22 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     );
   }
 
+  /// Wraps an [ExpansionTile]'s children in their own [PageStorage] scope.
+  ///
+  /// The tile saves its expanded flag (a bool) under its [PageStorageKey].
+  /// A TextField's inner Scrollable has no key, so without this it shares
+  /// that identifier, reads the bool back as its scroll offset and throws
+  /// while building (a grey box in release builds).
+  List<Widget> _ownPageStorage(String id, List<Widget> children) => [
+    KeyedSubtree(
+      key: PageStorageKey(id),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    ),
+  ];
+
   Widget _buildAdvancedCard() {
     final l10n = context.l10n;
     return MeshCard(
@@ -1476,7 +1492,10 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
         ),
         subtitle: Text(l10n.repeater_advancedSettingsSubtitle),
         childrenPadding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
-        children: _buildSpecControls(RepeaterSettingSection.advanced),
+        children: _ownPageStorage(
+          'repeater_settings_advanced_body',
+          _buildSpecControls(RepeaterSettingSection.advanced),
+        ),
       ),
     );
   }
@@ -1545,7 +1564,7 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
         ),
         subtitle: Text(l10n.repeater_keySettingsSubtitle),
         childrenPadding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
-        children: [
+        children: _ownPageStorage('repeater_settings_keys_body', [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1659,7 +1678,7 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
               const SizedBox(width: 48),
             ],
           ),
-        ],
+        ]),
       ),
     );
   }
