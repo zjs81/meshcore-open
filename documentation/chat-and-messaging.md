@@ -19,11 +19,13 @@ From the Contacts screen, tap any Chat-type contact to open the ChatScreen.
 - **Title**: Contact name
 - **Subtitle**: Current routing path label (e.g., "2 hops", "flood (auto)", "direct (forced)") and unread count. Tapping the subtitle shows the full path details.
 - **Action button**:
-  - **Overflow menu** (⋮ icon): Contains Routing, Info, Telemetry, Settings, and Clear Chat. Routing opens the routing sheet where you can switch between Auto, Direct, and Flood routing and manage recent paths (hop count, round-trip time, age, success count, color-coded by repeater). Info shows a dialog with contact type, path, GPS coordinates, and public key.
+  - **Overflow menu** (⋮ icon): Contains Routing, Info, Telemetry, Settings, Chat background, and Clear Chat. Routing opens the routing sheet where you can switch between Auto, Direct, and Flood routing and manage recent paths (hop count, round-trip time, age, success count, color-coded by repeater). Info shows a dialog with contact type, path, GPS coordinates, and public key. Chat background sets a color or picture (with a fade slider) behind this chat only; see [Chat backgrounds](themes.md#chat-backgrounds).
 
 ### Message List
 
 - Scrollable list with newest messages at the bottom
+- **Background**: The chat's own background, or the active theme's chat background when the chat has none (a theme set to **Use in every chat** replaces per-chat backgrounds). See [Chat backgrounds](themes.md#chat-backgrounds)
+- **Holiday animations**: A new message with a holiday greeting ("Happy Halloween", "Merry Christmas", and so on, in any app language) plays a short animation. Turn off in App Settings → Appearance; see [Holiday message animations](themes.md#holiday-message-animations)
 - **Outgoing messages**: Right-aligned, primary color background. **Failed messages** change to a red-toned error container background
 - **Incoming messages**: Left-aligned, grey background with a colored avatar (initial letter or first emoji of sender name; color is deterministic from a hash of the sender name)
 - Bubble width capped at 72% of screen width
