@@ -359,14 +359,27 @@ class NotificationService {
       ),
   ];
 
-  // Always MessagingStyle: Android Auto only handles messaging notifications
-  // in that style, so an image preview is shown as the large icon instead.
   AndroidNotificationDetails _androidConversationDetails(
     _Conversation conversation, {
     int? badgeCount,
     bool silent = false,
   }) {
     final imagePath = conversation.imagePath;
+    final styleInformation = imagePath != null
+        ? BigPictureStyleInformation(
+            FilePathAndroidBitmap(imagePath),
+            contentTitle: conversation.title,
+            summaryText: _collapsedBody(conversation),
+            showBigPictureWhenCollapsed: true,
+          )
+        : MessagingStyleInformation(
+            Person(key: 'self', name: _selfName ?? _l10n.notification_you),
+            conversationTitle: conversation.isChannel
+                ? conversation.title
+                : null,
+            groupConversation: conversation.isChannel,
+            messages: List<Message>.of(conversation.messages),
+          );
     return AndroidNotificationDetails(
       conversation.isChannel ? 'channel_messages' : 'messages',
       conversation.isChannel ? 'Channel Messages' : 'Messages',
@@ -379,13 +392,7 @@ class NotificationService {
       number: badgeCount,
       silent: silent,
       category: AndroidNotificationCategory.message,
-      largeIcon: imagePath != null ? FilePathAndroidBitmap(imagePath) : null,
-      styleInformation: MessagingStyleInformation(
-        Person(key: 'self', name: _selfName ?? _l10n.notification_you),
-        conversationTitle: conversation.isChannel ? conversation.title : null,
-        groupConversation: conversation.isChannel,
-        messages: List<Message>.of(conversation.messages),
-      ),
+      styleInformation: styleInformation,
       actions: _conversationActions(conversation.isChannel),
     );
   }

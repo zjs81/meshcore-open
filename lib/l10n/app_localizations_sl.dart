@@ -1098,15 +1098,6 @@ class AppLocalizationsSl extends AppLocalizations {
   String get appSettings_ipfsGatewayDeactivated => 'Deaktivirano';
 
   @override
-  String get appSettings_ipfsGatewayIpfsIo => 'ipfs.io';
-
-  @override
-  String get appSettings_ipfsGatewayPinata => 'Pinata';
-
-  @override
-  String get appSettings_ipfsGatewayFilebase => 'Filebase';
-
-  @override
   String get appSettings_ipfsGatewayCustom => 'Po meri (Kubo)';
 
   @override

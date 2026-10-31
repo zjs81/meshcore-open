@@ -163,7 +163,7 @@ The auto-translate and composer toggles are disabled until **Enable translation*
 
 Open **App Settings → IPFS provider configuration** to configure IPFS uploads and previews:
 
-- **Public IPFS gateway**: Select Pinata, Filebase, a custom gateway, or deactivate it. This gateway lets the app load bare IPFS content IDs in image links.
+- **Public IPFS gateway**: Select Filebase (the default), Pinata, a custom gateway, or deactivate it. This gateway lets the app load bare IPFS content IDs in image links.
 - **Upload provider**: Select Pinata, Filebase, a custom provider, or deactivate uploads. Presets fill in the provider’s upload endpoint and upload gateway; custom setups can edit both.
 - **API key**: Enter the credential required by the selected provider. The value is masked in the settings dialog. Pinata and Filebase presets require provider credentials.
 
