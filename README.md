@@ -199,6 +199,9 @@ For an unprivileged capture smoke test only, use
 `sysprof-cli --no-sysprofd --no-perf smoke.syscap -- build/linux/x64/profile/bundle/meshcore_open`;
 this intentionally excludes CPU stack sampling.
 
+For repeatable before/after CPU measurements and the scan-throttle results,
+see [Linux performance measurements](documentation/linux-performance.md).
+
 To update the package pin, run `nix flake update nixpkgs`, review the lockfile
 diff, and repeat both Linux builds, analysis, and tests before committing it.
 Keep the updated lockfile with the shell configuration for reproducibility.

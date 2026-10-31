@@ -63,6 +63,7 @@ import '../review_mode/review_radio.dart';
 import '../utils/app_logger.dart';
 import '../utils/battery_utils.dart';
 import '../utils/platform_info.dart';
+import '../utils/scan_update_throttle.dart';
 import 'meshcore_uuids.dart';
 import 'meshcore_protocol.dart';
 import 'pending_command_replies.dart';
@@ -225,11 +226,15 @@ class MeshCoreConnector extends ChangeNotifier {
 
   final List<ScanResult> _scanResults = [];
   final List<ScanResult> _linuxSystemScanResults = [];
+  late final ScanUpdateThrottle _scanUpdateThrottle = ScanUpdateThrottle(
+    onNotify: notifyListeners,
+  );
   final List<Contact> _contacts = [];
   final List<Contact> _discoveredContacts = [];
   final List<Channel> _channels = [];
   final Map<String, List<Message>> _conversations = {};
   final Map<int, List<ChannelMessage>> _channelMessages = {};
+  Map<int, List<Channel>>? _channelsByHash;
   final List<String> _pendingChannelSentQueue = [];
   final PendingCommandReplies _pendingGenericAckQueue = PendingCommandReplies(
     staleAfter: _commandAckTimeout * 2,
@@ -897,6 +902,7 @@ class MeshCoreConnector extends ChangeNotifier {
     final removed = messages.remove(message);
     if (!removed) return;
     _retryService?.untrack(message.messageId);
+    _coalescedWrites.cancel('conversation:$contactKeyHex');
     await _messageStore.saveMessages(contactKeyHex, messages);
     notifyListeners();
   }
@@ -1292,6 +1298,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
   Future<void> loadCachedChannels() async {
     _cachedChannels = await _channelStore.loadChannels();
+    _channelsByHash = null;
     _recalculateCachedChannelsUnreadTotal();
   }
 
@@ -2017,7 +2024,7 @@ class MeshCoreConnector extends ChangeNotifier {
       );
       if (index != -1) {
         messages[index] = message;
-        _messageStore.saveMessages(contactKey, messages);
+        _scheduleConversationSave(contactKey);
         notifyListeners();
       }
     }
@@ -2029,10 +2036,7 @@ class MeshCoreConnector extends ChangeNotifier {
             message.status == MessageStatus.failed)) {
       final contactKey2 = pubKeyToHex(message.senderKey);
       _setReactionStatus(contactKey2, reactionInfo, message.status);
-      _messageStore.saveMessages(
-        contactKey2,
-        _conversations[contactKey2] ?? [],
-      );
+      _scheduleConversationSave(contactKey2);
       notifyListeners();
     }
   }
@@ -2168,7 +2172,7 @@ class MeshCoreConnector extends ChangeNotifier {
       return;
     }
     messages[index] = update(messages[index]);
-    _messageStore.saveMessages(contactKeyHex, messages);
+    _scheduleConversationSave(contactKeyHex);
     notifyListeners();
   }
 
@@ -2283,6 +2287,7 @@ class MeshCoreConnector extends ChangeNotifier {
       return;
     }
 
+    _scanUpdateThrottle.reset();
     _scanResults.clear();
     _linuxSystemScanResults.clear();
     _setState(MeshCoreConnectionState.scanning);
@@ -2332,7 +2337,7 @@ class MeshCoreConnector extends ChangeNotifier {
         ..clear()
         ..addAll(results);
       _mergeLinuxSystemScanResults();
-      notifyListeners();
+      _scanUpdateThrottle.schedule();
     });
 
     try {
@@ -2445,6 +2450,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _scanSubscription = null;
     await _isScanningSubscription?.cancel();
     _isScanningSubscription = null;
+    _scanUpdateThrottle.reset();
 
     if (_state == MeshCoreConnectionState.scanning) {
       // Restore to `connected` if a non-BLE transport is still live, so a stray
@@ -4456,7 +4462,7 @@ class MeshCoreConnector extends ChangeNotifier {
         reactionInfo,
         MessageStatus.pending,
       );
-      _messageStore.saveMessages(contact.publicKeyHex, messages);
+      _scheduleConversationSave(contact.publicKeyHex);
       notifyListeners();
 
       // Route through retry service (same as normal messages)
@@ -5641,6 +5647,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _hasLoadedChannels = false;
     _previousChannelsCache = List<Channel>.from(_channels);
     _channels.clear();
+    _channelsByHash = null;
     _unconfirmedChannelSlots.clear();
     _channelSyncIncomplete = false;
     _nextChannelIndexToRequest = 0;
@@ -5666,6 +5673,7 @@ class MeshCoreConnector extends ChangeNotifier {
     };
     _previousChannelsCache = known.values.toList();
     _channels.clear();
+    _channelsByHash = null;
     _unconfirmedChannelSlots.clear();
     _channelSyncIncomplete = false;
     _nextChannelIndexToRequest = 0;
@@ -5730,6 +5738,7 @@ class MeshCoreConnector extends ChangeNotifier {
         '[ChannelSync] Max retries reached for channel $channelIndex, attempting cache restore',
       );
       _channelSyncIncomplete = true;
+      _channelsByHash = null;
 
       // Try to restore this channel from cache
       try {
@@ -5982,6 +5991,7 @@ class MeshCoreConnector extends ChangeNotifier {
       // A failed initial sync should not leave the UI empty/spinning forever.
       // Restore the pre-sync list so cached channels remain usable.
       _channels.addAll(_previousChannelsCache);
+      _channelsByHash = null;
       _applyChannelOrder();
       _recalculateCachedChannelsUnreadTotal();
     }
@@ -7725,13 +7735,7 @@ class MeshCoreConnector extends ChangeNotifier {
       final encrypted = Uint8List.fromList(payload.readRemainingBytes());
 
       // Use cached channels as fallback if live channels not yet loaded
-      final channelsToSearch = _channels.isNotEmpty
-          ? _channels
-          : _cachedChannels;
-      for (final channel in channelsToSearch) {
-        if (channel.isEmpty) continue;
-        final hash = _computeChannelHash(channel.psk);
-        if (hash != channelHash) continue;
+      for (final channel in _channelsForHash(channelHash)) {
         try {
           final decryptedBytes = _decryptPayload(channel.psk, encrypted);
           if (decryptedBytes == null || decryptedBytes.length < 6) continue;
@@ -7985,6 +7989,7 @@ class MeshCoreConnector extends ChangeNotifier {
   void _handleChannelInfo(Uint8List frame) {
     final channel = Channel.fromFrame(frame);
     if (channel == null) return;
+    _channelsByHash = null;
     _unconfirmedChannelSlots.remove(channel.index);
 
     debugPrint(
@@ -8232,7 +8237,7 @@ class MeshCoreConnector extends ChangeNotifier {
       );
       if (reactionApplied) {
         appLogger.info('Adding reaction, id: $reactionIdentifier');
-        _messageStore.saveMessages(pubKeyHex, messages);
+        _scheduleConversationSave(pubKeyHex);
 
         // Mark as processed
         _processedContactReactions[pubKeyHex]!.add(reactionIdentifier);
@@ -8388,6 +8393,21 @@ class MeshCoreConnector extends ChangeNotifier {
   int _computeChannelHash(Uint8List psk) {
     final digest = crypto.sha256.convert(psk).bytes;
     return digest[0];
+  }
+
+  List<Channel> _channelsForHash(int channelHash) {
+    final index = _channelsByHash ??= () {
+      final channelsByHash = <int, List<Channel>>{};
+      final channels = _channels.isNotEmpty ? _channels : _cachedChannels;
+      for (final channel in channels) {
+        if (channel.isEmpty) continue;
+        channelsByHash
+            .putIfAbsent(_computeChannelHash(channel.psk), () => <Channel>[])
+            .add(channel);
+      }
+      return channelsByHash;
+    }();
+    return index[channelHash] ?? const <Channel>[];
   }
 
   String? _resolveTransportRegion(_RawPacket packet) {
@@ -9022,6 +9042,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _notificationReplySubscription?.cancel();
     _notificationService.releaseReplyPort();
     _notifyListenersTimer?.cancel();
+    _scanUpdateThrottle.dispose();
     unawaited(_coalescedWrites.flush());
     _reconnectTimer?.cancel();
     _batteryPollTimer?.cancel();

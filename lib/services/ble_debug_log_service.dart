@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import '../connector/meshcore_protocol.dart';
@@ -43,9 +45,14 @@ class BleRawLogRxEntry {
 
 class BleDebugLogService extends ChangeNotifier {
   static const int maxEntries = 500;
+  BleDebugLogService({this.notifyInterval = const Duration(milliseconds: 50)});
+
+  final Duration notifyInterval;
   final List<BleDebugLogEntry> _entries = [];
   final List<BleRawLogRxEntry> _rawLogRxEntries = [];
   bool _notifyScheduled = false;
+  bool _disposed = false;
+  Timer? _notifyTimer;
 
   List<BleDebugLogEntry> get entries => List.unmodifiable(_entries);
   List<BleRawLogRxEntry> get rawLogRxEntries =>
@@ -90,6 +97,17 @@ class BleDebugLogService extends ChangeNotifier {
   }
 
   void _notifyListenersSafely() {
+    if (_disposed || !hasListeners) return;
+    if (notifyInterval == Duration.zero) {
+      _flushNotifications();
+    } else {
+      _notifyTimer ??= Timer(notifyInterval, _flushNotifications);
+    }
+  }
+
+  void _flushNotifications() {
+    _notifyTimer = null;
+    if (_disposed || !hasListeners) return;
     final phase = SchedulerBinding.instance.schedulerPhase;
     final canNotifyNow =
         phase == SchedulerPhase.idle ||
@@ -103,8 +121,16 @@ class BleDebugLogService extends ChangeNotifier {
     _notifyScheduled = true;
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _notifyScheduled = false;
-      notifyListeners();
+      if (!_disposed) notifyListeners();
     });
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    _notifyTimer?.cancel();
+    _notifyTimer = null;
+    super.dispose();
   }
 
   String _describeFrame(
