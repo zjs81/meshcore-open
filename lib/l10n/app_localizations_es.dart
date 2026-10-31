@@ -6342,6 +6342,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appSettings_routingSection => 'Enrutamiento';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Restablecer algoritmo de enrutamiento a predeterminado';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Restaurar la configuración del algoritmo de enrutamiento a los valores predeterminados de fábrica';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Configuración del algoritmo de enrutamiento restablecida a predeterminado';
+
+  @override
   String get appSettings_imageMessagesSection => 'Mensajes con imágenes';
 
   @override

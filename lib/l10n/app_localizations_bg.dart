@@ -6342,6 +6342,18 @@ class AppLocalizationsBg extends AppLocalizations {
   String get appSettings_routingSection => 'Маршрутизиране';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Нулиране на алгоритъма за маршрутизация до стойност по подразбиране';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Възстановяване на настройките на алгоритъма за маршрутизация до заводските стойности по подразбиране';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Настройките на алгоритъма за маршрутизация са нулирани до стойност по подразбиране';
+
+  @override
   String get appSettings_imageMessagesSection => 'Съобщения с изображения';
 
   @override

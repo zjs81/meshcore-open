@@ -6363,6 +6363,18 @@ class AppLocalizationsUk extends AppLocalizations {
   String get appSettings_routingSection => 'Маршрутизація';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Скинути алгоритм маршрутизації до типового';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Відновити налаштування алгоритму маршрутизації до заводських значень за замовчуванням';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Налаштування алгоритму маршрутизації скинуто до типових';
+
+  @override
   String get appSettings_imageMessagesSection => 'Повідомлення із зображеннями';
 
   @override

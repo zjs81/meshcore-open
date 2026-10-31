@@ -6338,6 +6338,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appSettings_routingSection => 'Roteamento';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Redefinir algoritmo de roteamento para o padrão';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Restaurar as configurações do algoritmo de roteamento para os valores padrão de fábrica';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Configurações do algoritmo de roteamento redefinidas para o padrão';
+
+  @override
   String get appSettings_imageMessagesSection => 'Mensagens de imagem';
 
   @override

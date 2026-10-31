@@ -6363,6 +6363,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appSettings_routingSection => 'Routage';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Réinitialiser l\'algorithme de routage';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Restaurer les paramètres de l\'algorithme de routage aux valeurs par défaut';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Paramètres de l\'algorithme de routage réinitialisés';
+
+  @override
   String get appSettings_imageMessagesSection => 'Messages image';
 
   @override
