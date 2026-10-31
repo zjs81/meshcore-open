@@ -106,6 +106,46 @@ class MeshCard extends StatelessWidget {
 }
 
 /// Tinted pill chip for statuses: a dot or icon plus a short label.
+/// Contrast ratio between two opaque colors (WCAG definition).
+double meshContrastRatio(Color a, Color b) {
+  final la = a.computeLuminance();
+  final lb = b.computeLuminance();
+  return (math.max(la, lb) + 0.05) / (math.min(la, lb) + 0.05);
+}
+
+/// [accent] darkened (on light backgrounds) or lightened (on dark ones) until
+/// it reaches [minContrast] against [background]. WCAG asks 4.5 for text and
+/// 3 for icons. Accents such as amber are bright enough for the dark theme but
+/// unreadable on their own pale tint in the light theme.
+Color readableAccent(
+  Color accent,
+  Color background, {
+  double minContrast = 4.5,
+}) {
+  if (meshContrastRatio(accent, background) >= minContrast) return accent;
+  final darken = background.computeLuminance() > 0.18;
+  final hsl = HSLColor.fromColor(accent);
+  for (var step = 1; step <= 20; step++) {
+    final lightness = (hsl.lightness + (darken ? -0.05 : 0.05) * step).clamp(
+      0.0,
+      1.0,
+    );
+    final candidate = hsl.withLightness(lightness).toColor();
+    if (meshContrastRatio(candidate, background) >= minContrast) {
+      return candidate;
+    }
+  }
+  return darken ? Colors.black : Colors.white;
+}
+
+/// The background of a [tint] alpha wash of [accent] drawn on a card.
+Color _tintedCardBackground(BuildContext context, Color accent, double tint) {
+  return Color.alphaBlend(
+    accent.withValues(alpha: tint),
+    Theme.of(context).colorScheme.surfaceContainerLow,
+  );
+}
+
 class StatusChip extends StatelessWidget {
   final String label;
   final Color color;
@@ -124,6 +164,11 @@ class StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The label uses the normal text color: colored text on a tint of the
+    // same color is hard to read. The icon or dot carries the color, adjusted
+    // to stay visible on the tint.
+    final background = _tintedCardBackground(context, color, 0.12);
+    final markColor = readableAccent(color, background, minContrast: 3);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
@@ -135,9 +180,9 @@ class StatusChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null)
-            Icon(icon, size: fontSize + 2, color: color)
+            Icon(icon, size: fontSize + 2, color: markColor)
           else
-            PulseDot(color: color, size: 7, animate: pulse),
+            PulseDot(color: markColor, size: 7, animate: pulse),
           const SizedBox(width: 5),
           Flexible(
             child: Text(
@@ -147,7 +192,7 @@ class StatusChip extends StatelessWidget {
               style: MeshTheme.mono(
                 fontSize: fontSize,
                 fontWeight: FontWeight.w600,
-                color: color,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
@@ -274,6 +319,7 @@ class AvatarCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = color ?? _colorFor(name);
     final initials = _initials(name);
+    final background = _tintedCardBackground(context, accent, 0.14);
     return Container(
       width: size,
       height: size,
@@ -284,13 +330,17 @@ class AvatarCircle extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: icon != null
-          ? Icon(icon, size: size * 0.5, color: accent)
+          ? Icon(
+              icon,
+              size: size * 0.5,
+              color: readableAccent(accent, background, minContrast: 3),
+            )
           : Text(
               initials,
               style: MeshTheme.mono(
                 fontSize: size * 0.36,
                 fontWeight: FontWeight.w700,
-                color: accent,
+                color: readableAccent(accent, background),
               ),
             ),
     );

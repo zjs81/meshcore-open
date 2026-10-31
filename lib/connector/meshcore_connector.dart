@@ -9127,13 +9127,18 @@ class MeshCoreConnector extends ChangeNotifier {
       final flags = packet.readByte();
       type = flags & 0x0F;
       hasLocation = (flags & 0x10) != 0;
-      // For future use:
-      //final hasFeature1 = (flags & 0x20) != 0;
-      //final hasFeature2 = (flags & 0x40) != 0;
       hasName = (flags & 0x80) != 0;
       if (hasLocation && packet.remaining >= 8) {
         latitude = packet.readInt32LE() / 1e6;
         longitude = packet.readInt32LE() / 1e6;
+      }
+      // Two optional 16-bit feature fields sit between the location and the
+      // name (AdvertDataParser in MeshCore AdvertDataHelpers.cpp). Skip them
+      // so their bytes aren't read as the start of the name.
+      for (final featureMask in const [0x20, 0x40]) {
+        if ((flags & featureMask) != 0 && packet.remaining >= 2) {
+          packet.skipBytes(2);
+        }
       }
       if (hasName && packet.remaining > 0) {
         name = packet.readCString();
@@ -9204,13 +9209,18 @@ class MeshCoreConnector extends ChangeNotifier {
       final flags = advert.readByte();
       type = flags & 0x0F;
       hasLocation = (flags & 0x10) != 0;
-      // For future use:
-      //final hasFeature1 = (flags & 0x20) != 0;
-      //final hasFeature2 = (flags & 0x40) != 0;
       hasName = (flags & 0x80) != 0;
       if (hasLocation && advert.remaining >= 8) {
         latitude = advert.readInt32LE() / 1e6;
         longitude = advert.readInt32LE() / 1e6;
+      }
+      // Two optional 16-bit feature fields sit between the location and the
+      // name (AdvertDataParser in MeshCore AdvertDataHelpers.cpp). Skip them
+      // so their bytes aren't read as the start of the name.
+      for (final featureMask in const [0x20, 0x40]) {
+        if ((flags & featureMask) != 0 && advert.remaining >= 2) {
+          advert.skipBytes(2);
+        }
       }
       // Validate location values if present
       hasLocation = hasValidLocation(latitude, longitude);
@@ -9489,20 +9499,21 @@ class MeshCoreConnector extends ChangeNotifier {
 
     // Update existing contact
     if (existingIndex >= 0) {
-      _discoveredContacts[existingIndex] = _discoveredContacts[existingIndex]
-          .copyWith(
-            rawPacket: rawPacket,
-            name: contact.name,
-            type: contact.type,
-            pathLength: contact.pathLength,
-            path: contact.path,
-            pathHashWidth: contact.pathHashWidth,
-            latitude: contact.latitude,
-            longitude: contact.longitude,
-            lastSeen: contact.lastSeen,
-            flags: 0,
-            isActive: addActive,
-          );
+      final existing = _discoveredContacts[existingIndex];
+      _discoveredContacts[existingIndex] = existing.copyWith(
+        rawPacket: rawPacket,
+        // A nameless advert or removal must not wipe a known name.
+        name: contact.name.isEmpty ? existing.name : contact.name,
+        type: contact.type,
+        pathLength: contact.pathLength,
+        path: contact.path,
+        pathHashWidth: contact.pathHashWidth,
+        latitude: contact.latitude,
+        longitude: contact.longitude,
+        lastSeen: contact.lastSeen,
+        flags: 0,
+        isActive: addActive,
+      );
       notifyListeners();
       _scheduleDiscoveredContactsPersist();
       return;

@@ -215,10 +215,14 @@ class _NodeScanSheetState extends State<NodeScanSheet> {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      StatusChip(
-                        label: contact.typeLabel(l10n).toUpperCase(),
-                        color: color,
-                        icon: contactTypeIcon(response.nodeType),
+                      // Let the chip shrink too, so it can't squeeze the
+                      // name to nothing on narrow screens or large text.
+                      Flexible(
+                        child: StatusChip(
+                          label: contact.typeLabel(l10n).toUpperCase(),
+                          color: color,
+                          icon: contactTypeIcon(response.nodeType),
+                        ),
                       ),
                     ],
                   ),
