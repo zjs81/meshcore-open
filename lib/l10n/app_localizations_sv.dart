@@ -814,6 +814,237 @@ class AppLocalizationsSv extends AppLocalizations {
   String get appSettings_themeDark => 'Mörkt';
 
   @override
+  String get appSettings_colorTheme => 'Färgtema';
+
+  @override
+  String get appSettings_holidayAnimations => 'Helganimationer i meddelanden';
+
+  @override
+  String get appSettings_holidayAnimationsSubtitle =>
+      'Fladdermöss, en kalkon, tomten eller fyrverkerier när någon skickar en helghälsning';
+
+  @override
+  String get themes_title => 'Teman';
+
+  @override
+  String get themes_default => 'MeshCore';
+
+  @override
+  String get themes_defaultSubtitle =>
+      'Standardfärger, följer inställningen Ljust / Mörkt';
+
+  @override
+  String get themes_builtIn => 'Inbyggda';
+
+  @override
+  String get themes_holidays => 'Helger';
+
+  @override
+  String get themes_holidayAutoSwitch => 'Byt automatiskt';
+
+  @override
+  String get themes_holidayAutoSwitchSubtitle =>
+      'Använder varje helgs tema från 17 dagar före till själva dagen';
+
+  @override
+  String themes_holidayAutoApplied(String holiday) {
+    return 'Temat $holiday är på automatiskt. Ditt eget tema kommer tillbaka efter helgen.';
+  }
+
+  @override
+  String get themes_holidayAutoAppliedTag => 'På automatiskt';
+
+  @override
+  String get themes_myThemes => 'Mina teman';
+
+  @override
+  String get themes_myThemesEmpty =>
+      'Skapa ett eget tema genom att välja en bakgrund och en accentfärg.';
+
+  @override
+  String get themes_create => 'Skapa tema';
+
+  @override
+  String get themes_import => 'Importera tema';
+
+  @override
+  String get themes_importHint => 'Klistra in en temakod';
+
+  @override
+  String get themes_importInvalid => 'Det där är ingen giltig temakod';
+
+  @override
+  String themes_imported(String name) {
+    return 'Lade till temat \"$name\"';
+  }
+
+  @override
+  String get themes_customize => 'Anpassa en kopia';
+
+  @override
+  String get themes_copyCode => 'Kopiera temakod';
+
+  @override
+  String get themes_codeCopied => 'Temakoden kopierades';
+
+  @override
+  String themes_deleteConfirm(String name) {
+    return 'Radera temat \"$name\"?';
+  }
+
+  @override
+  String themes_copyName(String name) {
+    return 'Kopia av $name';
+  }
+
+  @override
+  String get themes_newTitle => 'Nytt tema';
+
+  @override
+  String get themes_editTitle => 'Redigera tema';
+
+  @override
+  String get themes_name => 'Namn';
+
+  @override
+  String get themes_nameRequired => 'Ge ditt tema ett namn';
+
+  @override
+  String get themes_background => 'Bakgrund';
+
+  @override
+  String get themes_backgroundHelp => 'En mörk bakgrund ger ett mörkt tema';
+
+  @override
+  String get themes_accent => 'Accentfärg';
+
+  @override
+  String get themes_accentHelp => 'Knappar, markeringar och dina chattbubblor';
+
+  @override
+  String get themes_hexColor => 'Hex-färg';
+
+  @override
+  String get themes_preview => 'Förhandsvisning';
+
+  @override
+  String get themes_previewIncoming => 'Är det någon på nätet ikväll?';
+
+  @override
+  String get themes_previewOutgoing => 'Hör dig tydligt!';
+
+  @override
+  String get themes_previewSwitch => 'Aviseringar';
+
+  @override
+  String get themes_lowContrast =>
+      'Accentfärgen syns dåligt mot den här bakgrunden';
+
+  @override
+  String get themes_saveAndUse => 'Spara och använd';
+
+  @override
+  String get themes_icons => 'Ikoner';
+
+  @override
+  String get themes_iconsHelp =>
+      'Tryck på en ikon för att byta ut den mot en annan ikon eller en egen bild';
+
+  @override
+  String get themes_iconChanged => 'Ändrad';
+
+  @override
+  String get themes_iconSend => 'Skickaknapp';
+
+  @override
+  String get themes_iconRepeater => 'Repeaters';
+
+  @override
+  String get themes_iconRoom => 'Rum';
+
+  @override
+  String get themes_iconSensor => 'Sensorer';
+
+  @override
+  String get themes_mapMarkers => 'Kartmarkörer';
+
+  @override
+  String get themes_mapMarkersHelp =>
+      'Byt ut markörerna för noder och för dig själv på kartan';
+
+  @override
+  String get themes_iconUsePicture => 'Använd en bild';
+
+  @override
+  String get themes_iconReset => 'Använd standardikonen';
+
+  @override
+  String get themes_iconPictureFailed => 'Kunde inte använda den bilden';
+
+  @override
+  String get themes_exportFile => 'Exportera till fil';
+
+  @override
+  String get themes_exportAll => 'Exportera mina teman';
+
+  @override
+  String get themes_importFile => 'Importera från fil';
+
+  @override
+  String get themes_pasteCode => 'Klistra in temakod';
+
+  @override
+  String get themes_exportFailed => 'Kunde inte exportera teman';
+
+  @override
+  String themes_importFileResult(int count) {
+    return 'Importerade $count teman';
+  }
+
+  @override
+  String get themes_importFileNone => 'Inga teman hittades i filen';
+
+  @override
+  String get chatBackground_title => 'Chattbakgrund';
+
+  @override
+  String get chatBackground_thisChatOnly => 'Endast för den här chatten';
+
+  @override
+  String chatBackground_themeOverrides(String name) {
+    return 'Ditt tema \"$name\" anger bakgrunden i alla chattar. Stäng av det i temat för att använda den här.';
+  }
+
+  @override
+  String get chatBackground_none => 'Ingen';
+
+  @override
+  String get chatBackground_picture => 'Bild';
+
+  @override
+  String get chatBackground_choosePicture => 'Välj en bild';
+
+  @override
+  String get chatBackground_pictureFailed => 'Kunde inte använda den bilden';
+
+  @override
+  String get chatBackground_fade => 'Tona ut';
+
+  @override
+  String get themes_chatBackground => 'Chattbakgrund';
+
+  @override
+  String get themes_chatBackgroundHelp =>
+      'Visas i chattar som inte har en egen bakgrund';
+
+  @override
+  String get themes_chatBackgroundEverywhere => 'Använd i alla chattar';
+
+  @override
+  String get themes_chatBackgroundEverywhereHelp =>
+      'Ersätter även bakgrunder som är inställda för enskilda chattar';
+
+  @override
   String get appSettings_language => 'Språk';
 
   @override
@@ -6533,4 +6764,20 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get networkMap_unnamed => 'Namnlös repeater';
+
+  @override
+  String get holidayGreeting_halloween =>
+      'Glad Halloween|Trevlig Halloween|Happy Halloween|Gott Halloween';
+
+  @override
+  String get holidayGreeting_thanksgiving =>
+      'Glad Thanksgiving|Trevlig Thanksgiving|Happy Thanksgiving|Glad tacksägelsedag';
+
+  @override
+  String get holidayGreeting_christmas =>
+      'God jul|Glad jul|Trevlig jul|Merry Christmas|God jul och gott nytt år';
+
+  @override
+  String get holidayGreeting_newYear =>
+      'Gott nytt år|Happy New Year|Ett gott nytt år';
 }

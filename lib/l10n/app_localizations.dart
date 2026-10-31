@@ -1564,6 +1564,426 @@ abstract class AppLocalizations {
   /// **'Dark'**
   String get appSettings_themeDark;
 
+  /// No description provided for @appSettings_colorTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Color theme'**
+  String get appSettings_colorTheme;
+
+  /// No description provided for @appSettings_holidayAnimations.
+  ///
+  /// In en, this message translates to:
+  /// **'Holiday message animations'**
+  String get appSettings_holidayAnimations;
+
+  /// No description provided for @appSettings_holidayAnimationsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bats, a turkey, Santa or fireworks when someone sends a holiday greeting'**
+  String get appSettings_holidayAnimationsSubtitle;
+
+  /// No description provided for @themes_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Themes'**
+  String get themes_title;
+
+  /// No description provided for @themes_default.
+  ///
+  /// In en, this message translates to:
+  /// **'MeshCore'**
+  String get themes_default;
+
+  /// No description provided for @themes_defaultSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard colors, follows the Light / Dark setting'**
+  String get themes_defaultSubtitle;
+
+  /// No description provided for @themes_builtIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in'**
+  String get themes_builtIn;
+
+  /// No description provided for @themes_holidays.
+  ///
+  /// In en, this message translates to:
+  /// **'Holidays'**
+  String get themes_holidays;
+
+  /// No description provided for @themes_holidayAutoSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch automatically'**
+  String get themes_holidayAutoSwitch;
+
+  /// No description provided for @themes_holidayAutoSwitchSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses each holiday\'s theme from 17 days before until the day itself'**
+  String get themes_holidayAutoSwitchSubtitle;
+
+  /// No description provided for @themes_holidayAutoApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'{holiday} theme is on automatically. Your own theme comes back after the holiday.'**
+  String themes_holidayAutoApplied(String holiday);
+
+  /// No description provided for @themes_holidayAutoAppliedTag.
+  ///
+  /// In en, this message translates to:
+  /// **'On automatically'**
+  String get themes_holidayAutoAppliedTag;
+
+  /// No description provided for @themes_myThemes.
+  ///
+  /// In en, this message translates to:
+  /// **'My themes'**
+  String get themes_myThemes;
+
+  /// No description provided for @themes_myThemesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Make your own theme by picking a background and an accent color.'**
+  String get themes_myThemesEmpty;
+
+  /// No description provided for @themes_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create theme'**
+  String get themes_create;
+
+  /// No description provided for @themes_import.
+  ///
+  /// In en, this message translates to:
+  /// **'Import theme'**
+  String get themes_import;
+
+  /// No description provided for @themes_importHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a theme code'**
+  String get themes_importHint;
+
+  /// No description provided for @themes_importInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'That is not a valid theme code'**
+  String get themes_importInvalid;
+
+  /// No description provided for @themes_imported.
+  ///
+  /// In en, this message translates to:
+  /// **'Added theme \"{name}\"'**
+  String themes_imported(String name);
+
+  /// No description provided for @themes_customize.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize a copy'**
+  String get themes_customize;
+
+  /// No description provided for @themes_copyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy theme code'**
+  String get themes_copyCode;
+
+  /// No description provided for @themes_codeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme code copied'**
+  String get themes_codeCopied;
+
+  /// No description provided for @themes_deleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete theme \"{name}\"?'**
+  String themes_deleteConfirm(String name);
+
+  /// No description provided for @themes_copyName.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} copy'**
+  String themes_copyName(String name);
+
+  /// No description provided for @themes_newTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New theme'**
+  String get themes_newTitle;
+
+  /// No description provided for @themes_editTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit theme'**
+  String get themes_editTitle;
+
+  /// No description provided for @themes_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get themes_name;
+
+  /// No description provided for @themes_nameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Give your theme a name'**
+  String get themes_nameRequired;
+
+  /// No description provided for @themes_background.
+  ///
+  /// In en, this message translates to:
+  /// **'Background'**
+  String get themes_background;
+
+  /// No description provided for @themes_backgroundHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A dark background makes a dark theme'**
+  String get themes_backgroundHelp;
+
+  /// No description provided for @themes_accent.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent'**
+  String get themes_accent;
+
+  /// No description provided for @themes_accentHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Buttons, highlights and your chat bubbles'**
+  String get themes_accentHelp;
+
+  /// No description provided for @themes_hexColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Hex color'**
+  String get themes_hexColor;
+
+  /// No description provided for @themes_preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get themes_preview;
+
+  /// No description provided for @themes_previewIncoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone on the mesh tonight?'**
+  String get themes_previewIncoming;
+
+  /// No description provided for @themes_previewOutgoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Loud and clear!'**
+  String get themes_previewOutgoing;
+
+  /// No description provided for @themes_previewSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get themes_previewSwitch;
+
+  /// No description provided for @themes_lowContrast.
+  ///
+  /// In en, this message translates to:
+  /// **'The accent is hard to see on this background'**
+  String get themes_lowContrast;
+
+  /// No description provided for @themes_saveAndUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and use'**
+  String get themes_saveAndUse;
+
+  /// No description provided for @themes_icons.
+  ///
+  /// In en, this message translates to:
+  /// **'Icons'**
+  String get themes_icons;
+
+  /// No description provided for @themes_iconsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap an icon to swap it for another icon or your own picture'**
+  String get themes_iconsHelp;
+
+  /// No description provided for @themes_iconChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed'**
+  String get themes_iconChanged;
+
+  /// No description provided for @themes_iconSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send button'**
+  String get themes_iconSend;
+
+  /// No description provided for @themes_iconRepeater.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeaters'**
+  String get themes_iconRepeater;
+
+  /// No description provided for @themes_iconRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Rooms'**
+  String get themes_iconRoom;
+
+  /// No description provided for @themes_iconSensor.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensors'**
+  String get themes_iconSensor;
+
+  /// No description provided for @themes_mapMarkers.
+  ///
+  /// In en, this message translates to:
+  /// **'Map markers'**
+  String get themes_mapMarkers;
+
+  /// No description provided for @themes_mapMarkersHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap the markers for nodes and for you on the map'**
+  String get themes_mapMarkersHelp;
+
+  /// No description provided for @themes_iconUsePicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a picture'**
+  String get themes_iconUsePicture;
+
+  /// No description provided for @themes_iconReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the default icon'**
+  String get themes_iconReset;
+
+  /// No description provided for @themes_iconPictureFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not use that picture'**
+  String get themes_iconPictureFailed;
+
+  /// No description provided for @themes_exportFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Export to file'**
+  String get themes_exportFile;
+
+  /// No description provided for @themes_exportAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Export my themes'**
+  String get themes_exportAll;
+
+  /// No description provided for @themes_importFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from file'**
+  String get themes_importFile;
+
+  /// No description provided for @themes_pasteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste theme code'**
+  String get themes_pasteCode;
+
+  /// No description provided for @themes_exportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not export themes'**
+  String get themes_exportFailed;
+
+  /// No description provided for @themes_importFileResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {count} themes'**
+  String themes_importFileResult(int count);
+
+  /// No description provided for @themes_importFileNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No themes found in that file'**
+  String get themes_importFileNone;
+
+  /// No description provided for @chatBackground_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat background'**
+  String get chatBackground_title;
+
+  /// No description provided for @chatBackground_thisChatOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only for this chat'**
+  String get chatBackground_thisChatOnly;
+
+  /// No description provided for @chatBackground_themeOverrides.
+  ///
+  /// In en, this message translates to:
+  /// **'Your theme \"{name}\" sets the background in every chat. Turn that off in the theme to use this one.'**
+  String chatBackground_themeOverrides(String name);
+
+  /// No description provided for @chatBackground_none.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get chatBackground_none;
+
+  /// No description provided for @chatBackground_picture.
+  ///
+  /// In en, this message translates to:
+  /// **'Picture'**
+  String get chatBackground_picture;
+
+  /// No description provided for @chatBackground_choosePicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a picture'**
+  String get chatBackground_choosePicture;
+
+  /// No description provided for @chatBackground_pictureFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not use that picture'**
+  String get chatBackground_pictureFailed;
+
+  /// No description provided for @chatBackground_fade.
+  ///
+  /// In en, this message translates to:
+  /// **'Fade'**
+  String get chatBackground_fade;
+
+  /// No description provided for @themes_chatBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat background'**
+  String get themes_chatBackground;
+
+  /// No description provided for @themes_chatBackgroundHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown in chats that do not have their own background'**
+  String get themes_chatBackgroundHelp;
+
+  /// No description provided for @themes_chatBackgroundEverywhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Use in every chat'**
+  String get themes_chatBackgroundEverywhere;
+
+  /// No description provided for @themes_chatBackgroundEverywhereHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Also replaces backgrounds set on individual chats'**
+  String get themes_chatBackgroundEverywhereHelp;
+
   /// No description provided for @appSettings_language.
   ///
   /// In en, this message translates to:
@@ -11028,6 +11448,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unnamed repeater'**
   String get networkMap_unnamed;
+
+  /// Holiday greeting that plays the Halloween bats animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |.
+  ///
+  /// In en, this message translates to:
+  /// **'Happy Halloween'**
+  String get holidayGreeting_halloween;
+
+  /// Holiday greeting that plays the Thanksgiving turkey animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |.
+  ///
+  /// In en, this message translates to:
+  /// **'Happy Thanksgiving'**
+  String get holidayGreeting_thanksgiving;
+
+  /// Holiday greeting that plays the Christmas Santa animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |.
+  ///
+  /// In en, this message translates to:
+  /// **'Merry Christmas|Merry Xmas|Happy Christmas'**
+  String get holidayGreeting_christmas;
+
+  /// Holiday greeting that plays the New Year's fireworks animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |.
+  ///
+  /// In en, this message translates to:
+  /// **'Happy New Year|Happy New Year\'s'**
+  String get holidayGreeting_newYear;
 }
 
 class _AppLocalizationsDelegate

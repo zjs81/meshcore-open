@@ -66,6 +66,9 @@ import 'map_screen.dart';
 import 'region_management_screen.dart';
 import '../storage/region_store.dart';
 import '../utils/share_origin.dart';
+import '../services/chat_background_service.dart';
+import '../widgets/chat_background.dart';
+import '../widgets/holiday_animations.dart';
 
 class ChannelChatScreen extends StatefulWidget {
   final Channel channel;
@@ -82,6 +85,8 @@ class ChannelChatScreen extends StatefulWidget {
 }
 
 class _ChannelChatScreenState extends State<ChannelChatScreen> {
+  final _holidayWatcher = HolidayTriggerWatcher();
+  final _messageAreaKey = GlobalKey();
   final TextEditingController _textController = TextEditingController();
   final ChatScrollController _scrollController = ChatScrollController();
   final FocusNode _textFieldFocusNode = FocusNode();
@@ -435,6 +440,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
             onSelected: (value) {
               if (value == 'region') {
                 openRegionSelectDialog(widget.channel);
+              } else if (value == 'background') {
+                showChatBackgroundSheet(
+                  context,
+                  ChatBackgroundService.channelKey(widget.channel),
+                );
               } else if (value == 'clearChat') {
                 _confirmClearChat();
               }
@@ -449,6 +459,16 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                     const Icon(Icons.landscape, size: 20),
                     const SizedBox(width: 12),
                     Text(context.l10n.channels_regionSelect_Title),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'background',
+                child: Row(
+                  children: [
+                    const Icon(Icons.wallpaper, size: 20),
+                    const SizedBox(width: 12),
+                    Text(context.l10n.chatBackground_title),
                   ],
                 ),
               ),
@@ -480,130 +500,148 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
         child: Column(
           children: [
             Expanded(
-              child: Consumer<MeshCoreConnector>(
-                builder: (context, connector, child) {
-                  final messages = connector.getChannelMessages(widget.channel);
-                  final layout = _transcriptLayoutFor(context, messages);
-
-                  if (layout.length == 0) {
-                    return EmptyState(
-                      icon: widget.channel.isPublicChannel
-                          ? Icons.public
-                          : Icons.tag,
-                      title: context.l10n.chat_noMessages,
-                      subtitle: context.l10n.chat_sendMessageTo(
-                        widget.channel.name.isEmpty
-                            ? context.l10n.channels_channelIndex(
-                                widget.channel.index,
-                              )
-                            : widget.channel.name,
+              child: ChatBackdrop(
+                key: _messageAreaKey,
+                chatKey: ChatBackgroundService.channelKey(widget.channel),
+                child: Consumer<MeshCoreConnector>(
+                  builder: (context, connector, child) {
+                    final messages = connector.getChannelMessages(
+                      widget.channel,
+                    );
+                    final newest = messages.isEmpty ? null : messages.last;
+                    _holidayWatcher.onNewest(
+                      context,
+                      id: newest?.messageId,
+                      texts: [newest?.text, newest?.translatedText],
+                      receivedAt: newest?.receivedAt,
+                      originOf: () => newestMessageOrigin(
+                        _messageAreaKey,
+                        isOutgoing: newest?.isOutgoing ?? false,
                       ),
                     );
-                  }
+                    final layout = _transcriptLayoutFor(context, messages);
 
-                  final urlImagesEnabled = connector.isChannelUrlImagesEnabled(
-                    widget.channel.index,
-                  );
-                  final rowCount = layout.length;
-                  final itemCount = rowCount + (_isLoadingOlder ? 1 : 0);
-
-                  // Auto-scroll to bottom if user is already at bottom
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (!mounted) return;
-                    if (_channelSkipNextBottomSnap) {
-                      _channelSkipNextBottomSnap = false;
-                      return;
+                    if (layout.length == 0) {
+                      return EmptyState(
+                        icon: widget.channel.isPublicChannel
+                            ? Icons.public
+                            : Icons.tag,
+                        title: context.l10n.chat_noMessages,
+                        subtitle: context.l10n.chat_sendMessageTo(
+                          widget.channel.name.isEmpty
+                              ? context.l10n.channels_channelIndex(
+                                  widget.channel.index,
+                                )
+                              : widget.channel.name,
+                        ),
+                      );
                     }
-                    _scrollController.scrollToBottomIfAtBottom();
-                  });
 
-                  return Stack(
-                    children: [
-                      ChatZoomWrapper(
-                        child: ListView.builder(
-                          reverse: true, // List grows from bottom up
-                          controller: _scrollController,
-                          padding: const EdgeInsets.all(8),
-                          itemCount: itemCount,
-                          itemBuilder: (context, index) {
-                            // Loading indicator now appears at end (bottom) of reversed list
-                            if (_isLoadingOlder && index == itemCount - 1) {
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
+                    final urlImagesEnabled = connector
+                        .isChannelUrlImagesEnabled(widget.channel.index);
+                    final rowCount = layout.length;
+                    final itemCount = rowCount + (_isLoadingOlder ? 1 : 0);
+
+                    // Auto-scroll to bottom if user is already at bottom
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (!mounted) return;
+                      if (_channelSkipNextBottomSnap) {
+                        _channelSkipNextBottomSnap = false;
+                        return;
+                      }
+                      _scrollController.scrollToBottomIfAtBottom();
+                    });
+
+                    return Stack(
+                      children: [
+                        ChatZoomWrapper(
+                          child: ListView.builder(
+                            reverse: true, // List grows from bottom up
+                            controller: _scrollController,
+                            padding: const EdgeInsets.all(8),
+                            itemCount: itemCount,
+                            itemBuilder: (context, index) {
+                              // Loading indicator now appears at end (bottom) of reversed list
+                              if (_isLoadingOlder && index == itemCount - 1) {
+                                return const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
                                     ),
                                   ),
+                                );
+                              }
+                              final row = layout.rowAt(index, messages);
+                              final GlobalKey messageKey;
+                              if (layout.keyedIndices.contains(index)) {
+                                messageKey = _messageKeys.putIfAbsent(
+                                  row.id,
+                                  GlobalKey.new,
+                                );
+                              } else {
+                                messageKey = GlobalKey();
+                              }
+                              final isUnreadAnchor =
+                                  _unreadDividerMessageId != null &&
+                                  row.id == _unreadDividerMessageId;
+                              return Container(
+                                key: messageKey,
+                                child: Builder(
+                                  builder: (context) {
+                                    final textScale = context
+                                        .select<ChatTextScaleService, double>(
+                                          (service) => service.scale,
+                                        );
+                                    final message = row.message;
+                                    final bubble = message != null
+                                        ? _buildMessageBubble(
+                                            message,
+                                            textScale,
+                                            urlImagesEnabled,
+                                          )
+                                        : _buildImageBubble(
+                                            row.image!,
+                                            textScale,
+                                          );
+                                    final startsDay =
+                                        index == rowCount - 1 ||
+                                        !isSameChatDay(
+                                          layout
+                                              .rowAt(index + 1, messages)
+                                              .receivedAt,
+                                          row.receivedAt,
+                                        );
+                                    if (isUnreadAnchor || startsDay) {
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          if (startsDay)
+                                            ChatDaySeparator(
+                                              day: row.receivedAt,
+                                            ),
+                                          if (isUnreadAnchor)
+                                            const UnreadDivider(),
+                                          bubble,
+                                        ],
+                                      );
+                                    }
+                                    return bubble;
+                                  },
                                 ),
                               );
-                            }
-                            final row = layout.rowAt(index, messages);
-                            final GlobalKey messageKey;
-                            if (layout.keyedIndices.contains(index)) {
-                              messageKey = _messageKeys.putIfAbsent(
-                                row.id,
-                                GlobalKey.new,
-                              );
-                            } else {
-                              messageKey = GlobalKey();
-                            }
-                            final isUnreadAnchor =
-                                _unreadDividerMessageId != null &&
-                                row.id == _unreadDividerMessageId;
-                            return Container(
-                              key: messageKey,
-                              child: Builder(
-                                builder: (context) {
-                                  final textScale = context
-                                      .select<ChatTextScaleService, double>(
-                                        (service) => service.scale,
-                                      );
-                                  final message = row.message;
-                                  final bubble = message != null
-                                      ? _buildMessageBubble(
-                                          message,
-                                          textScale,
-                                          urlImagesEnabled,
-                                        )
-                                      : _buildImageBubble(
-                                          row.image!,
-                                          textScale,
-                                        );
-                                  final startsDay =
-                                      index == rowCount - 1 ||
-                                      !isSameChatDay(
-                                        layout
-                                            .rowAt(index + 1, messages)
-                                            .receivedAt,
-                                        row.receivedAt,
-                                      );
-                                  if (isUnreadAnchor || startsDay) {
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        if (startsDay)
-                                          ChatDaySeparator(day: row.receivedAt),
-                                        if (isUnreadAnchor)
-                                          const UnreadDivider(),
-                                        bubble,
-                                      ],
-                                    );
-                                  }
-                                  return bubble;
-                                },
-                              ),
-                            );
-                          },
+                            },
+                          ),
                         ),
-                      ),
-                      JumpToBottomButton(scrollController: _scrollController),
-                    ],
-                  );
-                },
+                        JumpToBottomButton(scrollController: _scrollController),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
             _buildInputBar(),
@@ -660,7 +698,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       message.pathLength,
     );
 
-    final colors = MessageBubbleColors.of(scheme, isOutgoing: isOutgoing);
+    final colors = MessageBubbleColors.of(context, isOutgoing: isOutgoing);
     final textColor = colors.text;
     final metaColor = colors.meta;
     const bodyFontSize = 14.0;
@@ -1224,7 +1262,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     Widget? trailing,
   }) {
     final scheme = Theme.of(context).colorScheme;
-    final textColor = isOutgoing ? MeshPalette.meInk : scheme.onSurface;
+    final bubble = MeshBubbleTheme.of(context);
+    final textColor = isOutgoing ? bubble.meInk : scheme.onSurface;
     final metaColor = textColor.withValues(alpha: 0.7);
 
     return Row(
@@ -1691,7 +1730,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   Widget _buildImageBubble(ReceivedImageEntry entry, double textScale) {
     final scheme = Theme.of(context).colorScheme;
     final isOutgoing = entry.isOutgoing;
-    final textColor = isOutgoing ? MeshPalette.meInk : scheme.onSurface;
+    final bubbleTheme = MeshBubbleTheme.of(context);
+    final textColor = isOutgoing ? bubbleTheme.meInk : scheme.onSurface;
     final metaColor = textColor.withValues(alpha: 0.65);
 
     final bubble = Padding(
@@ -1710,11 +1750,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
             child: Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: isOutgoing ? MeshPalette.me : scheme.surfaceContainerLow,
+                color: isOutgoing ? bubbleTheme.me : scheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(MeshRadii.lg),
                 border: Border.all(
                   color: isOutgoing
-                      ? MeshPalette.meBorder
+                      ? bubbleTheme.meBorder
                       : scheme.outlineVariant,
                   width: 1,
                 ),
@@ -2490,16 +2530,12 @@ class _RegionSelectDialogState extends State<_RegionSelectDialog> {
     final selected = connector.isChannelExplicitlyUnscoped(
       widget.channel.index,
     );
+    final primary = Theme.of(context).colorScheme.primary;
     return ListTile(
-      leading: Icon(
-        Icons.public_off,
-        color: selected ? MeshPalette.blue : null,
-      ),
+      leading: Icon(Icons.public_off, color: selected ? primary : null),
       title: Text(context.l10n.settings_regionNoRegion),
-      trailing: selected
-          ? const Icon(Icons.check, color: MeshPalette.blue)
-          : null,
-      tileColor: selected ? MeshPalette.blueBg : null,
+      trailing: selected ? Icon(Icons.check, color: primary) : null,
+      tileColor: selected ? primary.withValues(alpha: 0.16) : null,
       onTap: () {
         // Tapping the already-selected option clears it back to the default.
         connector.setChannelRegion(
@@ -2565,16 +2601,19 @@ class _RegionSelectDialogState extends State<_RegionSelectDialog> {
                   itemCount: regions.length,
                   itemBuilder: (context, index) {
                     final selected = selectedIndex == index;
+                    final primary = Theme.of(context).colorScheme.primary;
                     return ListTile(
                       leading: Icon(
                         Icons.landscape,
-                        color: selected ? MeshPalette.blue : null,
+                        color: selected ? primary : null,
                       ),
                       title: Text(regions[index]),
                       trailing: selected
-                          ? const Icon(Icons.check, color: MeshPalette.blue)
+                          ? Icon(Icons.check, color: primary)
                           : null,
-                      tileColor: selected ? MeshPalette.blueBg : null,
+                      tileColor: selected
+                          ? primary.withValues(alpha: 0.16)
+                          : null,
                       onTap: () {
                         // Tapping the already-selected region clears it.
                         context.read<MeshCoreConnector>().setChannelRegion(

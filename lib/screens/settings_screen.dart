@@ -246,7 +246,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ? l10n.common_connected
                             : l10n.common_disconnected,
                         color: connector.isConnected
-                            ? MeshPalette.blue
+                            ? scheme.primary
                             : scheme.onSurfaceVariant,
                         pulse: connector.isConnected,
                       ),

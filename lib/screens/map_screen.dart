@@ -51,6 +51,7 @@ import '../helpers/snack_bar_builder.dart';
 import '../helpers/utf8_length_limiter.dart';
 import 'settings_screen.dart';
 import 'line_of_sight_map_screen.dart';
+import '../theme/theme_icons.dart';
 
 class MapScreen extends StatefulWidget {
   final LatLng? highlightPosition;
@@ -176,24 +177,30 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
 
   bool get _useDarkOverlay => Theme.of(context).brightness == Brightness.dark;
 
-  Color get _overlayPanelColor => _useDarkOverlay
+  /// The stock dark theme keeps the map's fixed high-contrast panels; custom
+  /// themes (and light mode) draw panels in the theme's own colors.
+  bool get _usePaletteOverlay =>
+      _useDarkOverlay && !MeshMapTheme.of(context).followsTheme;
+
+  Color get _overlayPanelColor => _usePaletteOverlay
       ? MapPalette.panelDark
       : _overlayScheme.surfaceContainerLow.withValues(alpha: 0.96);
 
   Color get _overlayPrimaryTextColor =>
-      _useDarkOverlay ? MapPalette.textPrimary : _overlayScheme.onSurface;
+      _usePaletteOverlay ? MapPalette.textPrimary : _overlayScheme.onSurface;
 
-  Color get _overlaySecondaryTextColor => _useDarkOverlay
+  Color get _overlaySecondaryTextColor => _usePaletteOverlay
       ? MapPalette.textSecondary
       : _overlayScheme.onSurfaceVariant;
 
-  Color get _overlayMutedTextColor =>
-      _useDarkOverlay ? MapPalette.textMuted : _overlayScheme.onSurfaceVariant;
+  Color get _overlayMutedTextColor => _usePaletteOverlay
+      ? MapPalette.textMuted
+      : _overlayScheme.onSurfaceVariant;
 
   Color get _overlayBorderColor =>
-      _useDarkOverlay ? MapPalette.border : _overlayScheme.outlineVariant;
+      _usePaletteOverlay ? MapPalette.border : _overlayScheme.outlineVariant;
 
-  Color get _overlayShadowColor => _useDarkOverlay
+  Color get _overlayShadowColor => _usePaletteOverlay
       ? MapPalette.markerShadow
       : MapPalette.markerShadow.withValues(alpha: 0.18);
 
@@ -450,7 +457,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
               ),
               if (hasSelf)
                 IconButton(
-                  color: MapPalette.selected,
+                  color: MeshMapTheme.of(context).accent,
                   icon: const Icon(Icons.my_location),
                   tooltip: context.l10n.map_centerOnMe,
                   onPressed: () => _mapController.move(
@@ -636,7 +643,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                   Polyline(
                     points: _points,
                     strokeWidth: 4,
-                    color: MapPalette.selected,
+                    color: MeshMapTheme.of(context).accent,
                   ),
                 ]
               : <Polyline>[],
@@ -783,7 +790,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                                   connector.selfLatitude!,
                                   connector.selfLongitude!,
                                 ),
-                                color: MapPalette.selected,
+                                color: MeshMapTheme.of(context).accent,
                                 icon: Icons.person_pin_circle,
                               ),
                             );
@@ -825,7 +832,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     PopupMenuItem(
                       child: Row(
                         children: [
-                          const Icon(Icons.settings),
+                          const ThemedIcon(ThemeIconSlot.settings),
                           const SizedBox(width: 8),
                           Text(context.l10n.settings_title),
                         ],
@@ -1082,7 +1089,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     _handleQuickSwitch(index, context),
                 contactsUnreadCount: connector.getTotalContactsUnreadCount(),
                 channelsUnreadCount: connector.getTotalChannelsUnreadCount(),
-                highContrast: _useDarkOverlay,
+                highContrast: _usePaletteOverlay,
               ),
             ),
             floatingActionButton:
@@ -1591,6 +1598,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                 : _buildNodeMarkerWidget(
                     color: baseColor,
                     icon: mapNodeTypeIcon(contact.type),
+                    slot: mapMarkerSlotForNodeType(contact.type),
                     selected: selected,
                     stale: stale,
                     online: online,
@@ -1734,6 +1742,14 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     );
   }
 
+  /// A node type's icon as the theme shows it on the map.
+  Widget _nodeTypeIcon(int type, {required double size, Color? color}) {
+    final slot = mapMarkerSlotForNodeType(type);
+    return slot == null
+        ? Icon(mapNodeTypeIcon(type), size: size, color: color)
+        : ThemedIcon(slot, size: size, color: color);
+  }
+
   Color _markerColor(Contact contact) {
     switch (contact.type) {
       case advTypeRepeater:
@@ -1760,9 +1776,52 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     return estimateBatteryPercentFromMillivolts(millivolts, chemistry) <= 20;
   }
 
+  /// A theme's picture drawn as a whole round marker, with the usual
+  /// shadow and the accent ring when selected.
+  Widget _pictureMarker(
+    ImageProvider picture, {
+    required double size,
+    required bool selected,
+    required IconData fallback,
+  }) {
+    final accent = MeshMapTheme.of(context).accent;
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: selected ? Border.all(color: accent, width: 3) : null,
+        boxShadow: [
+          const BoxShadow(
+            color: MapPalette.markerShadow,
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          ),
+          if (selected)
+            BoxShadow(
+              color: accent.withValues(alpha: 0.75),
+              blurRadius: 14,
+              spreadRadius: 3,
+            ),
+        ],
+      ),
+      child: ClipOval(
+        child: Image(
+          image: picture,
+          fit: BoxFit.cover,
+          gaplessPlayback: true,
+          filterQuality: FilterQuality.medium,
+          errorBuilder: (_, _, _) =>
+              Icon(fallback, color: accent, size: size * 0.55),
+        ),
+      ),
+    );
+  }
+
   Widget _buildNodeMarkerWidget({
     required Color color,
     required IconData icon,
+    ThemeIconSlot? slot,
     bool selected = false,
     bool stale = false,
     bool online = false,
@@ -1775,41 +1834,57 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         : stale
         ? MapPalette.offline
         : MapPalette.stale;
+    final override = slot == null ? null : MeshIconTheme.of(context)[slot];
+    final picture = themePictureOf(override);
+    final namedIcon = override?.icon == null
+        ? null
+        : kThemeIconCatalog[override!.icon];
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
-        Container(
-          width: selected ? 44 : 36,
-          height: selected ? 44 : 36,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: selected ? MapPalette.selected : color,
-            border: Border.all(
-              color: MapPalette.markerOutline,
-              width: selected ? 3 : 2.5,
-            ),
-            boxShadow: [
-              const BoxShadow(
-                color: MapPalette.markerShadow,
-                blurRadius: 8,
-                offset: Offset(0, 3),
+        if (picture != null)
+          // Pictures carry more detail than a glyph, so they get more room.
+          _pictureMarker(
+            picture,
+            size: selected ? 50 : 42,
+            selected: selected,
+            fallback: icon,
+          )
+        else
+          Container(
+            width: selected ? 44 : 36,
+            height: selected ? 44 : 36,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: selected ? MeshMapTheme.of(context).accent : color,
+              border: Border.all(
+                color: MapPalette.markerOutline,
+                width: selected ? 3 : 2.5,
               ),
-              if (selected)
-                BoxShadow(
-                  color: MapPalette.selected.withValues(alpha: 0.75),
-                  blurRadius: 14,
-                  spreadRadius: 3,
+              boxShadow: [
+                const BoxShadow(
+                  color: MapPalette.markerShadow,
+                  blurRadius: 8,
+                  offset: Offset(0, 3),
                 ),
-            ],
+                if (selected)
+                  BoxShadow(
+                    color: MeshMapTheme.of(
+                      context,
+                    ).accent.withValues(alpha: 0.75),
+                    blurRadius: 14,
+                    spreadRadius: 3,
+                  ),
+              ],
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              namedIcon ?? icon,
+              color: MapPalette.markerOutline,
+              size: selected ? 22 : 19,
+            ),
           ),
-          alignment: Alignment.center,
-          child: Icon(
-            icon,
-            color: MapPalette.markerOutline,
-            size: selected ? 22 : 19,
-          ),
-        ),
         Positioned(
           right: selected ? -1 : -2,
           bottom: selected ? 0 : -2,
@@ -1835,13 +1910,21 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     );
   }
 
-  Widget _buildLegendItem(IconData icon, String label, Color color) {
+  Widget _buildLegendItem(
+    IconData icon,
+    String label,
+    Color color, {
+    ThemeIconSlot? slot,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1.5),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18, color: color),
+          if (slot != null)
+            ThemedIcon(slot, size: 18, color: color)
+          else
+            Icon(icon, size: 18, color: color),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -1952,7 +2035,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                       color: _overlayPrimaryTextColor,
                       fontWeight: FontWeight.w600,
                     ),
-                    cursorColor: MapPalette.selected,
+                    cursorColor: MeshMapTheme.of(context).accent,
                     onChanged: (value) {
                       setState(() => _searchQuery = value);
                     },
@@ -1974,10 +2057,10 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.hub,
                           size: 18,
-                          color: MapPalette.selected,
+                          color: MeshMapTheme.of(context).accent,
                         ),
                         const SizedBox(width: 6),
                         Text(
@@ -2049,7 +2132,9 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
           side: BorderSide.none,
           foregroundColor: _overlaySecondaryTextColor,
           selectedForegroundColor: _overlayPrimaryTextColor,
-          selectedBackgroundColor: MapPalette.selected.withValues(alpha: 0.34),
+          selectedBackgroundColor: MeshMapTheme.of(
+            context,
+          ).accent.withValues(alpha: 0.34),
           textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
         ),
         segments: [
@@ -2168,7 +2253,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     ),
                     child: Row(
                       children: [
-                        Icon(mapNodeTypeIcon(c.type), size: 18, color: color),
+                        _nodeTypeIcon(c.type, size: 18, color: color),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Column(
@@ -2278,7 +2363,11 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _statRow(context.l10n.map_visible, visibleCount, MapPalette.selected),
+          _statRow(
+            context.l10n.map_visible,
+            visibleCount,
+            MeshMapTheme.of(context).accent,
+          ),
           _statRow(context.l10n.map_online, onlineCount, MapPalette.online),
           _statRow(
             context.l10n.map_repeaters,
@@ -2291,22 +2380,26 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
           _buildLegendItem(
             Icons.person,
             context.l10n.map_chat,
-            MapPalette.selected,
+            MeshMapTheme.of(context).accent,
+            slot: ThemeIconSlot.mapChat,
           ),
           _buildLegendItem(
             Icons.router,
             context.l10n.map_repeater,
             MapPalette.repeater,
+            slot: ThemeIconSlot.mapRepeater,
           ),
           _buildLegendItem(
             Icons.meeting_room,
             context.l10n.map_room,
             MapPalette.router,
+            slot: ThemeIconSlot.mapRoom,
           ),
           _buildLegendItem(
             Icons.sensors,
             context.l10n.map_sensor,
             MapPalette.sensor,
+            slot: ThemeIconSlot.mapSensor,
           ),
           _buildLegendItem(
             Icons.flag,
@@ -2393,6 +2486,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     size: 38,
                     color: color,
                     icon: mapNodeTypeIcon(contact.type),
+                    iconSlot: mapMarkerSlotForNodeType(contact.type),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -2525,7 +2619,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     ),
                   TextButton(
                     style: TextButton.styleFrom(
-                      foregroundColor: MapPalette.selected,
+                      foregroundColor: MeshMapTheme.of(context).accent,
                     ),
                     onPressed: () => showNodeInfoSheet(
                       context,
@@ -2819,35 +2913,50 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
   }
 
   Marker _buildSelfMarker(LatLng position) {
+    final override = MeshIconTheme.of(context)[ThemeIconSlot.mapSelf];
+    final picture = themePictureOf(override);
+    final namedIcon = override?.icon == null
+        ? null
+        : kThemeIconCatalog[override!.icon];
     return Marker(
       point: position,
-      width: 40,
-      height: 40,
+      width: picture != null ? 48 : 40,
+      height: picture != null ? 48 : 40,
       child: IgnorePointer(
         child: Semantics(
           label: context.l10n.pathTrace_you,
-          child: Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: MapPalette.panelDark,
-              border: Border.all(color: MapPalette.markerOutline, width: 2.5),
-              boxShadow: const [
-                BoxShadow(
-                  color: MapPalette.markerShadow,
-                  blurRadius: 8,
-                  offset: Offset(0, 2),
+          child: picture != null
+              ? _pictureMarker(
+                  picture,
+                  size: 46,
+                  selected: false,
+                  fallback: Icons.person_pin_circle,
+                )
+              : Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: MapPalette.panelDark,
+                    border: Border.all(
+                      color: MapPalette.markerOutline,
+                      width: 2.5,
+                    ),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: MapPalette.markerShadow,
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(
+                    namedIcon ?? Icons.person_pin_circle,
+                    color: MeshMapTheme.of(context).accent,
+                    size: 22,
+                  ),
                 ),
-              ],
-            ),
-            alignment: Alignment.center,
-            child: const Icon(
-              Icons.person_pin_circle,
-              color: MapPalette.selected,
-              size: 22,
-            ),
-          ),
         ),
       ),
     );
@@ -2959,9 +3068,9 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     children: [
                       if (selfPosition != null)
                         ListTile(
-                          leading: const Icon(
+                          leading: Icon(
                             Icons.person_pin_circle,
-                            color: MapPalette.selected,
+                            color: MeshMapTheme.of(context).accent,
                           ),
                           title: Text(l10n.pathTrace_you),
                           subtitle: Text(
@@ -3467,7 +3576,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
               Widget freshnessChip(_Freshness value, String label) {
                 final selected = _freshness == value;
                 final accent = switch (value) {
-                  _Freshness.all => MapPalette.selected,
+                  _Freshness.all => MeshMapTheme.of(context).accent,
                   _Freshness.online => MapPalette.online,
                   _Freshness.recent => MapPalette.stale,
                   _Freshness.stale => MapPalette.offline,
@@ -3940,7 +4049,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     style: MeshTheme.mono(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: MapPalette.selected,
+                      color: MeshMapTheme.of(context).accent,
                     ),
                   ),
                   Text(

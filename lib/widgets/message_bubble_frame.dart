@@ -17,28 +17,30 @@ class MessageBubbleColors {
     required this.meta,
   });
 
-  /// Outgoing bubbles use [MeshPalette.me] / [MeshPalette.meBorder] /
-  /// [MeshPalette.meInk]; a failed send switches to the error container.
+  /// Outgoing bubbles use the theme's [MeshBubbleTheme]; a failed send
+  /// switches to the error container.
   factory MessageBubbleColors.of(
-    ColorScheme scheme, {
+    BuildContext context, {
     required bool isOutgoing,
     bool isFailed = false,
   }) {
+    final scheme = Theme.of(context).colorScheme;
+    final bubble = MeshBubbleTheme.of(context);
     final text = isFailed
         ? scheme.onErrorContainer
         : isOutgoing
-        ? MeshPalette.meInk
+        ? bubble.meInk
         : scheme.onSurface;
     return MessageBubbleColors(
       background: isFailed
           ? scheme.errorContainer
           : isOutgoing
-          ? MeshPalette.me
+          ? bubble.me
           : scheme.surfaceContainerLow,
       border: isFailed
           ? scheme.error
           : isOutgoing
-          ? MeshPalette.meBorder
+          ? bubble.meBorder
           : scheme.outlineVariant,
       text: text,
       meta: text.withValues(alpha: 0.65),
@@ -109,7 +111,7 @@ class MessageBubbleFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = MessageBubbleColors.of(
-      Theme.of(context).colorScheme,
+      context,
       isOutgoing: isOutgoing,
       isFailed: isFailed,
     );

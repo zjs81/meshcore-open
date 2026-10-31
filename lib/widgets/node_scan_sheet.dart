@@ -193,7 +193,7 @@ class _NodeScanSheetState extends State<NodeScanSheet> {
               name: contact.name,
               size: 42,
               color: color,
-              icon: contactTypeIcon(response.nodeType),
+              iconSlot: contactTypeIconSlot(response.nodeType),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -221,7 +221,7 @@ class _NodeScanSheetState extends State<NodeScanSheet> {
                         child: StatusChip(
                           label: contact.typeLabel(l10n).toUpperCase(),
                           color: color,
-                          icon: contactTypeIcon(response.nodeType),
+                          icon: contactTypeIconSlot(response.nodeType)?.icon,
                         ),
                       ),
                     ],

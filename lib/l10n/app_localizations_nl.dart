@@ -822,6 +822,240 @@ class AppLocalizationsNl extends AppLocalizations {
   String get appSettings_themeDark => 'Donker';
 
   @override
+  String get appSettings_colorTheme => 'Kleurthema';
+
+  @override
+  String get appSettings_holidayAnimations => 'Feestdaganimaties in berichten';
+
+  @override
+  String get appSettings_holidayAnimationsSubtitle =>
+      'Vleermuizen, een kalkoen, de Kerstman of vuurwerk wanneer iemand een feestdagwens stuurt';
+
+  @override
+  String get themes_title => 'Thema\'s';
+
+  @override
+  String get themes_default => 'MeshCore';
+
+  @override
+  String get themes_defaultSubtitle =>
+      'Standaardkleuren, volgt de instelling Licht / Donker';
+
+  @override
+  String get themes_builtIn => 'Ingebouwd';
+
+  @override
+  String get themes_holidays => 'Feestdagen';
+
+  @override
+  String get themes_holidayAutoSwitch => 'Automatisch wisselen';
+
+  @override
+  String get themes_holidayAutoSwitchSubtitle =>
+      'Gebruikt het thema van elke feestdag vanaf 17 dagen ervoor tot de dag zelf';
+
+  @override
+  String themes_holidayAutoApplied(String holiday) {
+    return 'Het thema $holiday staat automatisch aan. Na de feestdag komt je eigen thema terug.';
+  }
+
+  @override
+  String get themes_holidayAutoAppliedTag => 'Automatisch aan';
+
+  @override
+  String get themes_myThemes => 'Mijn thema\'s';
+
+  @override
+  String get themes_myThemesEmpty =>
+      'Maak je eigen thema door een achtergrond en een accentkleur te kiezen.';
+
+  @override
+  String get themes_create => 'Thema maken';
+
+  @override
+  String get themes_import => 'Thema importeren';
+
+  @override
+  String get themes_importHint => 'Plak een themacode';
+
+  @override
+  String get themes_importInvalid => 'Dit is geen geldige themacode';
+
+  @override
+  String themes_imported(String name) {
+    return 'Thema \"$name\" toegevoegd';
+  }
+
+  @override
+  String get themes_customize => 'Kopie aanpassen';
+
+  @override
+  String get themes_copyCode => 'Themacode kopiëren';
+
+  @override
+  String get themes_codeCopied => 'Themacode gekopieerd';
+
+  @override
+  String themes_deleteConfirm(String name) {
+    return 'Thema \"$name\" verwijderen?';
+  }
+
+  @override
+  String themes_copyName(String name) {
+    return 'Kopie van $name';
+  }
+
+  @override
+  String get themes_newTitle => 'Nieuw thema';
+
+  @override
+  String get themes_editTitle => 'Thema bewerken';
+
+  @override
+  String get themes_name => 'Naam';
+
+  @override
+  String get themes_nameRequired => 'Geef je thema een naam';
+
+  @override
+  String get themes_background => 'Achtergrond';
+
+  @override
+  String get themes_backgroundHelp =>
+      'Een donkere achtergrond geeft een donker thema';
+
+  @override
+  String get themes_accent => 'Accent';
+
+  @override
+  String get themes_accentHelp => 'Knoppen, markeringen en je chatballonnen';
+
+  @override
+  String get themes_hexColor => 'Hexkleur';
+
+  @override
+  String get themes_preview => 'Voorbeeld';
+
+  @override
+  String get themes_previewIncoming => 'Is er vanavond iemand op de mesh?';
+
+  @override
+  String get themes_previewOutgoing => 'Luid en duidelijk!';
+
+  @override
+  String get themes_previewSwitch => 'Meldingen';
+
+  @override
+  String get themes_lowContrast =>
+      'Het accent is slecht te zien op deze achtergrond';
+
+  @override
+  String get themes_saveAndUse => 'Opslaan en gebruiken';
+
+  @override
+  String get themes_icons => 'Pictogrammen';
+
+  @override
+  String get themes_iconsHelp =>
+      'Tik op een pictogram om het te vervangen door een ander pictogram of je eigen afbeelding';
+
+  @override
+  String get themes_iconChanged => 'Gewijzigd';
+
+  @override
+  String get themes_iconSend => 'Verzendknop';
+
+  @override
+  String get themes_iconRepeater => 'Repeaters';
+
+  @override
+  String get themes_iconRoom => 'Rooms';
+
+  @override
+  String get themes_iconSensor => 'Sensoren';
+
+  @override
+  String get themes_mapMarkers => 'Kaartmarkeringen';
+
+  @override
+  String get themes_mapMarkersHelp =>
+      'Vervang de markeringen voor nodes en voor jezelf op de kaart';
+
+  @override
+  String get themes_iconUsePicture => 'Een afbeelding gebruiken';
+
+  @override
+  String get themes_iconReset => 'Standaardpictogram gebruiken';
+
+  @override
+  String get themes_iconPictureFailed =>
+      'Die afbeelding kon niet worden gebruikt';
+
+  @override
+  String get themes_exportFile => 'Exporteren naar bestand';
+
+  @override
+  String get themes_exportAll => 'Mijn thema\'s exporteren';
+
+  @override
+  String get themes_importFile => 'Importeren uit bestand';
+
+  @override
+  String get themes_pasteCode => 'Themacode plakken';
+
+  @override
+  String get themes_exportFailed => 'Thema\'s konden niet worden geëxporteerd';
+
+  @override
+  String themes_importFileResult(int count) {
+    return '$count thema\'s geïmporteerd';
+  }
+
+  @override
+  String get themes_importFileNone => 'Geen thema\'s gevonden in dat bestand';
+
+  @override
+  String get chatBackground_title => 'Chatachtergrond';
+
+  @override
+  String get chatBackground_thisChatOnly => 'Alleen voor deze chat';
+
+  @override
+  String chatBackground_themeOverrides(String name) {
+    return 'Je thema \"$name\" stelt de achtergrond in voor elke chat. Zet dat uit in het thema om deze te gebruiken.';
+  }
+
+  @override
+  String get chatBackground_none => 'Geen';
+
+  @override
+  String get chatBackground_picture => 'Afbeelding';
+
+  @override
+  String get chatBackground_choosePicture => 'Kies een afbeelding';
+
+  @override
+  String get chatBackground_pictureFailed =>
+      'Die afbeelding kon niet worden gebruikt';
+
+  @override
+  String get chatBackground_fade => 'Vervagen';
+
+  @override
+  String get themes_chatBackground => 'Chatachtergrond';
+
+  @override
+  String get themes_chatBackgroundHelp =>
+      'Getoond in chats die geen eigen achtergrond hebben';
+
+  @override
+  String get themes_chatBackgroundEverywhere => 'In elke chat gebruiken';
+
+  @override
+  String get themes_chatBackgroundEverywhereHelp =>
+      'Vervangt ook achtergronden die voor afzonderlijke chats zijn ingesteld';
+
+  @override
   String get appSettings_language => 'Taal';
 
   @override
@@ -6553,4 +6787,20 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get networkMap_unnamed => 'Naamloze repeater';
+
+  @override
+  String get holidayGreeting_halloween =>
+      'Fijne Halloween|Gelukkige Halloween|Happy Halloween|Gruwelijke Halloween';
+
+  @override
+  String get holidayGreeting_thanksgiving =>
+      'Fijne Thanksgiving|Gelukkige Thanksgiving|Happy Thanksgiving|Fijne Thanksgiving Day';
+
+  @override
+  String get holidayGreeting_christmas =>
+      'Vrolijk kerstfeest|Fijne kerst|Prettige kerstdagen|Zalig kerstfeest|Vrolijk kerst|Zalig kerst|Merry Christmas|Fijne feestdagen|Prettige feestdagen';
+
+  @override
+  String get holidayGreeting_newYear =>
+      'Gelukkig Nieuwjaar|Gelukkig nieuw jaar|Prettig nieuwjaar|Een gelukkig nieuwjaar|Happy New Year|Zalig nieuwjaar|Fijne jaarwisseling';
 }

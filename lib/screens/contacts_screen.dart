@@ -42,6 +42,7 @@ import 'map_screen.dart';
 import '../review_mode/review_mode_banner.dart';
 import 'repeater_hub_screen.dart';
 import 'settings_screen.dart';
+import '../theme/theme_icons.dart';
 
 enum RoomLoginDestination { chat, management }
 
@@ -500,7 +501,7 @@ class _ContactsScreenState extends State<ContactsScreen>
                 PopupMenuItem(
                   child: Row(
                     children: [
-                      const Icon(Icons.settings),
+                      const ThemedIcon(ThemeIconSlot.settings),
                       const SizedBox(width: 8),
                       Text(context.l10n.settings_title),
                     ],
@@ -1886,7 +1887,7 @@ class _ContactTile extends StatelessWidget {
                 name: contact.name,
                 size: 42,
                 color: isChat ? null : contactTypeColor(contact.type),
-                icon: contactTypeIcon(contact.type),
+                iconSlot: contactTypeIconSlot(contact.type),
               ),
             const SizedBox(width: 12),
             // Main content. The name owns the whole first row (wrapping to
@@ -1978,7 +1979,7 @@ class _ContactTile extends StatelessWidget {
                           style: MeshTheme.mono(
                             fontSize: 12.5,
                             color: unreadCount > 0
-                                ? MeshPalette.blue
+                                ? scheme.primary
                                 : scheme.onSurfaceVariant,
                           ),
                         ),

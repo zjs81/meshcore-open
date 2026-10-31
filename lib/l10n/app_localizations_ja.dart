@@ -786,6 +786,229 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_themeDark => 'ダーク';
 
   @override
+  String get appSettings_colorTheme => 'カラーテーマ';
+
+  @override
+  String get appSettings_holidayAnimations => '祝日メッセージのアニメーション';
+
+  @override
+  String get appSettings_holidayAnimationsSubtitle =>
+      '祝日のあいさつが届くと、コウモリ、七面鳥、サンタ、花火が表示されます';
+
+  @override
+  String get themes_title => 'テーマ';
+
+  @override
+  String get themes_default => 'MeshCore';
+
+  @override
+  String get themes_defaultSubtitle => '標準の色。ライト/ダークの設定に合わせます';
+
+  @override
+  String get themes_builtIn => '標準のテーマ';
+
+  @override
+  String get themes_holidays => '祝日';
+
+  @override
+  String get themes_holidayAutoSwitch => '自動で切り替える';
+
+  @override
+  String get themes_holidayAutoSwitchSubtitle => '各祝日の17日前から当日まで、その祝日のテーマを使います';
+
+  @override
+  String themes_holidayAutoApplied(String holiday) {
+    return '$holidayのテーマを自動で使っています。祝日が終わると、元のテーマに戻ります。';
+  }
+
+  @override
+  String get themes_holidayAutoAppliedTag => '自動で使用中';
+
+  @override
+  String get themes_myThemes => 'マイテーマ';
+
+  @override
+  String get themes_myThemesEmpty => '背景とアクセントカラーを選んで、自分だけのテーマを作りましょう。';
+
+  @override
+  String get themes_create => 'テーマを作成';
+
+  @override
+  String get themes_import => 'テーマを読み込む';
+
+  @override
+  String get themes_importHint => 'テーマコードを貼り付けてください';
+
+  @override
+  String get themes_importInvalid => 'テーマコードが正しくありません';
+
+  @override
+  String themes_imported(String name) {
+    return 'テーマ「$name」を追加しました';
+  }
+
+  @override
+  String get themes_customize => 'コピーして編集';
+
+  @override
+  String get themes_copyCode => 'テーマコードをコピー';
+
+  @override
+  String get themes_codeCopied => 'テーマコードをコピーしました';
+
+  @override
+  String themes_deleteConfirm(String name) {
+    return 'テーマ「$name」を削除しますか?';
+  }
+
+  @override
+  String themes_copyName(String name) {
+    return '$nameのコピー';
+  }
+
+  @override
+  String get themes_newTitle => '新しいテーマ';
+
+  @override
+  String get themes_editTitle => 'テーマを編集';
+
+  @override
+  String get themes_name => '名前';
+
+  @override
+  String get themes_nameRequired => 'テーマの名前を入力してください';
+
+  @override
+  String get themes_background => '背景';
+
+  @override
+  String get themes_backgroundHelp => '背景が暗いと、ダークテーマになります';
+
+  @override
+  String get themes_accent => 'アクセント';
+
+  @override
+  String get themes_accentHelp => 'ボタン、強調表示、自分のチャットの吹き出しに使います';
+
+  @override
+  String get themes_hexColor => '16進数カラー';
+
+  @override
+  String get themes_preview => 'プレビュー';
+
+  @override
+  String get themes_previewIncoming => '今夜、メッシュにいる人はいますか?';
+
+  @override
+  String get themes_previewOutgoing => 'はっきり聞こえます!';
+
+  @override
+  String get themes_previewSwitch => '通知';
+
+  @override
+  String get themes_lowContrast => 'この背景ではアクセントが見えにくいです';
+
+  @override
+  String get themes_saveAndUse => '保存して使う';
+
+  @override
+  String get themes_icons => 'アイコン';
+
+  @override
+  String get themes_iconsHelp => 'アイコンをタップすると、ほかのアイコンや自分の画像に変更できます';
+
+  @override
+  String get themes_iconChanged => '変更済み';
+
+  @override
+  String get themes_iconSend => '送信ボタン';
+
+  @override
+  String get themes_iconRepeater => 'リピータ';
+
+  @override
+  String get themes_iconRoom => 'ルームサーバー';
+
+  @override
+  String get themes_iconSensor => 'センサー';
+
+  @override
+  String get themes_mapMarkers => '地図のマーカー';
+
+  @override
+  String get themes_mapMarkersHelp => '地図上のノードと自分のマーカーを変更します';
+
+  @override
+  String get themes_iconUsePicture => '画像を使う';
+
+  @override
+  String get themes_iconReset => '標準のアイコンに戻す';
+
+  @override
+  String get themes_iconPictureFailed => 'その画像は使えませんでした';
+
+  @override
+  String get themes_exportFile => 'ファイルに書き出す';
+
+  @override
+  String get themes_exportAll => 'マイテーマを書き出す';
+
+  @override
+  String get themes_importFile => 'ファイルから読み込む';
+
+  @override
+  String get themes_pasteCode => 'テーマコードを貼り付け';
+
+  @override
+  String get themes_exportFailed => 'テーマを書き出せませんでした';
+
+  @override
+  String themes_importFileResult(int count) {
+    return '$count件のテーマを読み込みました';
+  }
+
+  @override
+  String get themes_importFileNone => 'そのファイルにテーマが見つかりません';
+
+  @override
+  String get chatBackground_title => 'チャットの背景';
+
+  @override
+  String get chatBackground_thisChatOnly => 'このチャットだけ';
+
+  @override
+  String chatBackground_themeOverrides(String name) {
+    return 'テーマ「$name」が、すべてのチャットの背景を指定しています。この背景を使うには、テーマ側でその設定をオフにしてください。';
+  }
+
+  @override
+  String get chatBackground_none => 'なし';
+
+  @override
+  String get chatBackground_picture => '画像';
+
+  @override
+  String get chatBackground_choosePicture => '画像を選ぶ';
+
+  @override
+  String get chatBackground_pictureFailed => 'その画像は使えませんでした';
+
+  @override
+  String get chatBackground_fade => '薄さ';
+
+  @override
+  String get themes_chatBackground => 'チャットの背景';
+
+  @override
+  String get themes_chatBackgroundHelp => '個別の背景がないチャットに表示されます';
+
+  @override
+  String get themes_chatBackgroundEverywhere => 'すべてのチャットで使う';
+
+  @override
+  String get themes_chatBackgroundEverywhereHelp => 'チャットごとに設定した背景も置き換えます';
+
+  @override
   String get appSettings_language => '言語';
 
   @override
@@ -6284,4 +6507,20 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get networkMap_unnamed => '名前のないリピータ';
+
+  @override
+  String get holidayGreeting_halloween =>
+      'ハッピーハロウィン|ハッピーハロウィーン|ハッピーハロウィン|ハピハロ|トリックオアトリート|Happy Halloween';
+
+  @override
+  String get holidayGreeting_thanksgiving =>
+      'ハッピーサンクスギビング|ハッピー・サンクスギビング|感謝祭おめでとう|Happy Thanksgiving';
+
+  @override
+  String get holidayGreeting_christmas =>
+      'メリークリスマス|メリー・クリスマス|メリクリ|Merry Christmas';
+
+  @override
+  String get holidayGreeting_newYear =>
+      'あけましておめでとう|明けましておめでとう|あけおめ|アケオメ|ハッピーニューイヤー|ハッピー・ニューイヤー|謹賀新年|Happy New Year';
 }

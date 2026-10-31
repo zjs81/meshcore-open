@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../l10n/l10n.dart';
 import '../theme/mesh_theme.dart';
+import '../theme/theme_icons.dart';
 
 /// MeshCore shared design kit.
 ///
@@ -283,12 +284,14 @@ class StatTile extends StatelessWidget {
 }
 
 /// Initials avatar with a deterministic per-name hue, or a fixed [color]
-/// for node-type coloring. Optional [icon] replaces initials.
+/// for node-type coloring. Optional [icon] or themeable [iconSlot] replaces
+/// initials.
 class AvatarCircle extends StatelessWidget {
   final String name;
   final double size;
   final Color? color;
   final IconData? icon;
+  final ThemeIconSlot? iconSlot;
 
   const AvatarCircle({
     super.key,
@@ -296,6 +299,7 @@ class AvatarCircle extends StatelessWidget {
     this.size = 40,
     this.color,
     this.icon,
+    this.iconSlot,
   });
 
   static const _hues = [
@@ -320,6 +324,29 @@ class AvatarCircle extends StatelessWidget {
     final accent = color ?? _colorFor(name);
     final initials = _initials(name);
     final background = _tintedCardBackground(context, accent, 0.14);
+    // A theme picture (e.g. a holiday marker) fills the whole circle, the
+    // same as on the map, rather than sitting small inside the tint.
+    final picture = iconSlot == null
+        ? null
+        : themePictureOf(MeshIconTheme.of(context)[iconSlot!]);
+    if (picture != null) {
+      return SizedBox.square(
+        dimension: size,
+        child: ClipOval(
+          child: Image(
+            image: picture,
+            fit: BoxFit.cover,
+            gaplessPlayback: true,
+            filterQuality: FilterQuality.medium,
+            errorBuilder: (_, _, _) => Icon(
+              iconSlot!.icon,
+              size: size * 0.5,
+              color: readableAccent(accent, background, minContrast: 3),
+            ),
+          ),
+        ),
+      );
+    }
     return Container(
       width: size,
       height: size,
@@ -329,7 +356,13 @@ class AvatarCircle extends StatelessWidget {
         border: Border.all(color: accent.withValues(alpha: 0.4)),
       ),
       alignment: Alignment.center,
-      child: icon != null
+      child: iconSlot != null
+          ? ThemedIcon(
+              iconSlot!,
+              size: size * 0.55,
+              color: readableAccent(accent, background, minContrast: 3),
+            )
+          : icon != null
           ? Icon(
               icon,
               size: size * 0.5,

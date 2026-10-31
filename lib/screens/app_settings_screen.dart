@@ -23,6 +23,7 @@ import '../widgets/sync_progress_overlay.dart';
 import '../widgets/translation_settings_section.dart';
 import '../helpers/snack_bar_builder.dart';
 import 'map_cache_screen.dart';
+import 'themes_screen.dart';
 
 class AppSettingsScreen extends StatelessWidget {
   /// Scrolls the image-message settings into view once, on first build.
@@ -192,13 +193,50 @@ class AppSettingsScreen extends StatelessWidget {
                     label: Text(context.l10n.appSettings_themeDark),
                   ),
                 ],
-                selected: {settingsService.settings.themeMode},
+                // A custom theme sets its own brightness, so no stock mode
+                // is selected while one is active; picking a mode returns
+                // to the stock theme.
+                emptySelectionAllowed: true,
+                selected: settingsService.activeCustomTheme == null
+                    ? {settingsService.settings.themeMode}
+                    : const <String>{},
                 onSelectionChanged: (selection) {
+                  if (selection.isEmpty) return;
                   settingsService.setThemeMode(selection.first);
                 },
               ),
             ],
           ),
+        ),
+        const Divider(height: 1, indent: 16),
+        MeshNavTile(
+          icon: Icons.palette_outlined,
+          title: context.l10n.appSettings_colorTheme,
+          subtitle:
+              settingsService.activeCustomTheme?.name ??
+              context.l10n.themes_default,
+          trailing: settingsService.activeCustomTheme == null
+              ? null
+              : ThemeSwatch(
+                  background: settingsService.activeCustomTheme!.background,
+                  accent: settingsService.activeCustomTheme!.accent,
+                  size: 32,
+                ),
+          onTap: () => Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => const ThemesScreen())),
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.celebration_outlined, size: 24),
+          title: Text(context.l10n.appSettings_holidayAnimations),
+          subtitle: Text(context.l10n.appSettings_holidayAnimationsSubtitle),
+          value: settingsService.settings.holidayAnimationsEnabled,
+          onChanged: settingsService.setHolidayAnimationsEnabled,
         ),
         const Divider(height: 1, indent: 16),
         MeshNavTile(

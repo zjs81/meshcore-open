@@ -824,6 +824,239 @@ class AppLocalizationsHu extends AppLocalizations {
   String get appSettings_themeDark => 'Sötét';
 
   @override
+  String get appSettings_colorTheme => 'Színtéma';
+
+  @override
+  String get appSettings_holidayAnimations => 'Ünnepi üzenet-animációk';
+
+  @override
+  String get appSettings_holidayAnimationsSubtitle =>
+      'Denevérek, pulyka, Mikulás vagy tűzijáték, ha valaki ünnepi jókívánságot küld';
+
+  @override
+  String get themes_title => 'Témák';
+
+  @override
+  String get themes_default => 'MeshCore';
+
+  @override
+  String get themes_defaultSubtitle =>
+      'Alapszínek, a Világos / Sötét beállítást követi';
+
+  @override
+  String get themes_builtIn => 'Beépített';
+
+  @override
+  String get themes_holidays => 'Ünnepek';
+
+  @override
+  String get themes_holidayAutoSwitch => 'Automatikus váltás';
+
+  @override
+  String get themes_holidayAutoSwitchSubtitle =>
+      'Minden ünnep témáját használja az ünnep előtt 17 nappal kezdve, magán az ünnepen is';
+
+  @override
+  String themes_holidayAutoApplied(String holiday) {
+    return 'A(z) $holiday téma automatikusan be van kapcsolva. Az ünnep után visszaáll a saját témád.';
+  }
+
+  @override
+  String get themes_holidayAutoAppliedTag => 'Automatikusan bekapcsolva';
+
+  @override
+  String get themes_myThemes => 'Saját témáim';
+
+  @override
+  String get themes_myThemesEmpty =>
+      'Készíts saját témát egy háttér és egy kiemelőszín kiválasztásával.';
+
+  @override
+  String get themes_create => 'Téma létrehozása';
+
+  @override
+  String get themes_import => 'Téma importálása';
+
+  @override
+  String get themes_importHint => 'Illeszd be a téma kódját';
+
+  @override
+  String get themes_importInvalid => 'Ez nem érvényes témakód';
+
+  @override
+  String themes_imported(String name) {
+    return 'A(z) „$name” téma hozzáadva';
+  }
+
+  @override
+  String get themes_customize => 'Másolat testreszabása';
+
+  @override
+  String get themes_copyCode => 'Témakód másolása';
+
+  @override
+  String get themes_codeCopied => 'Témakód másolva';
+
+  @override
+  String themes_deleteConfirm(String name) {
+    return 'Törlöd a(z) „$name” témát?';
+  }
+
+  @override
+  String themes_copyName(String name) {
+    return '$name másolata';
+  }
+
+  @override
+  String get themes_newTitle => 'Új téma';
+
+  @override
+  String get themes_editTitle => 'Téma szerkesztése';
+
+  @override
+  String get themes_name => 'Név';
+
+  @override
+  String get themes_nameRequired => 'Adj nevet a témádnak';
+
+  @override
+  String get themes_background => 'Háttér';
+
+  @override
+  String get themes_backgroundHelp => 'Sötét háttérrel sötét téma lesz';
+
+  @override
+  String get themes_accent => 'Kiemelőszín';
+
+  @override
+  String get themes_accentHelp =>
+      'Gombok, kiemelések és a saját üzenetbuborékaid';
+
+  @override
+  String get themes_hexColor => 'Hexa színkód';
+
+  @override
+  String get themes_preview => 'Előnézet';
+
+  @override
+  String get themes_previewIncoming => 'Van valaki a hálón ma este?';
+
+  @override
+  String get themes_previewOutgoing => 'Hangosan és tisztán!';
+
+  @override
+  String get themes_previewSwitch => 'Értesítések';
+
+  @override
+  String get themes_lowContrast =>
+      'A kiemelőszín nehezen látszik ezen a háttéren';
+
+  @override
+  String get themes_saveAndUse => 'Mentés és használat';
+
+  @override
+  String get themes_icons => 'Ikonok';
+
+  @override
+  String get themes_iconsHelp =>
+      'Koppints egy ikonra, hogy másik ikonra vagy saját képre cseréld';
+
+  @override
+  String get themes_iconChanged => 'Módosítva';
+
+  @override
+  String get themes_iconSend => 'Küldés gomb';
+
+  @override
+  String get themes_iconRepeater => 'Átjátszók';
+
+  @override
+  String get themes_iconRoom => 'Szobák';
+
+  @override
+  String get themes_iconSensor => 'Érzékelők';
+
+  @override
+  String get themes_mapMarkers => 'Térképjelölők';
+
+  @override
+  String get themes_mapMarkersHelp =>
+      'Cseréld le a csomópontok és a te jelölődet a térképen';
+
+  @override
+  String get themes_iconUsePicture => 'Kép használata';
+
+  @override
+  String get themes_iconReset => 'Alapértelmezett ikon használata';
+
+  @override
+  String get themes_iconPictureFailed => 'Ezt a képet nem sikerült használni';
+
+  @override
+  String get themes_exportFile => 'Exportálás fájlba';
+
+  @override
+  String get themes_exportAll => 'Témáim exportálása';
+
+  @override
+  String get themes_importFile => 'Importálás fájlból';
+
+  @override
+  String get themes_pasteCode => 'Témakód beillesztése';
+
+  @override
+  String get themes_exportFailed => 'A témákat nem sikerült exportálni';
+
+  @override
+  String themes_importFileResult(int count) {
+    return '$count téma importálva';
+  }
+
+  @override
+  String get themes_importFileNone => 'Nem található téma ebben a fájlban';
+
+  @override
+  String get chatBackground_title => 'Csevegés háttere';
+
+  @override
+  String get chatBackground_thisChatOnly => 'Csak ennél a csevegésnél';
+
+  @override
+  String chatBackground_themeOverrides(String name) {
+    return 'A(z) „$name” témád minden csevegésben beállítja a hátteret. Kapcsold ki ezt a témában, hogy ezt használhasd.';
+  }
+
+  @override
+  String get chatBackground_none => 'Nincs';
+
+  @override
+  String get chatBackground_picture => 'Kép';
+
+  @override
+  String get chatBackground_choosePicture => 'Kép kiválasztása';
+
+  @override
+  String get chatBackground_pictureFailed =>
+      'Ezt a képet nem sikerült használni';
+
+  @override
+  String get chatBackground_fade => 'Halványítás';
+
+  @override
+  String get themes_chatBackground => 'Csevegés háttere';
+
+  @override
+  String get themes_chatBackgroundHelp =>
+      'Azokban a csevegésekben jelenik meg, amelyeknek nincs saját hátterük';
+
+  @override
+  String get themes_chatBackgroundEverywhere => 'Használat minden csevegésben';
+
+  @override
+  String get themes_chatBackgroundEverywhereHelp =>
+      'Az egyes csevegésekhez beállított hátteret is felülírja';
+
+  @override
   String get appSettings_language => 'Nyelv';
 
   @override
@@ -6579,4 +6812,20 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get networkMap_unnamed => 'Névtelen repeater';
+
+  @override
+  String get holidayGreeting_halloween =>
+      'Boldog Halloweent|Boldog Halloween|Boldog Halloweent kívánok|Vidám Halloweent|Happy Halloween';
+
+  @override
+  String get holidayGreeting_thanksgiving =>
+      'Boldog hálaadást|Boldog hálaadás napot|Boldog Thanksgivinget|Happy Thanksgiving';
+
+  @override
+  String get holidayGreeting_christmas =>
+      'Boldog karácsonyt|Kellemes karácsonyi ünnepeket|Kellemes ünnepeket|Áldott karácsonyt|Merry Christmas';
+
+  @override
+  String get holidayGreeting_newYear =>
+      'Boldog új évet|Boldog újévet|Boldog új esztendőt|BÚÉK|Happy New Year';
 }

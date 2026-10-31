@@ -826,6 +826,243 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appSettings_themeDark => 'Dunkel';
 
   @override
+  String get appSettings_colorTheme => 'Farbdesign';
+
+  @override
+  String get appSettings_holidayAnimations =>
+      'Feiertags-Animationen in Nachrichten';
+
+  @override
+  String get appSettings_holidayAnimationsSubtitle =>
+      'Fledermäuse, ein Truthahn, der Weihnachtsmann oder Feuerwerk, wenn jemand einen Feiertagsgruß schreibt';
+
+  @override
+  String get themes_title => 'Designs';
+
+  @override
+  String get themes_default => 'MeshCore';
+
+  @override
+  String get themes_defaultSubtitle =>
+      'Standardfarben, folgt der Einstellung Hell / Dunkel';
+
+  @override
+  String get themes_builtIn => 'Vorinstalliert';
+
+  @override
+  String get themes_holidays => 'Feiertage';
+
+  @override
+  String get themes_holidayAutoSwitch => 'Automatisch wechseln';
+
+  @override
+  String get themes_holidayAutoSwitchSubtitle =>
+      'Nutzt das Design jedes Feiertags ab 17 Tage vorher bis zum Feiertag selbst';
+
+  @override
+  String themes_holidayAutoApplied(String holiday) {
+    return 'Das Design „$holiday“ ist automatisch aktiv. Nach dem Feiertag kommt Ihr eigenes Design zurück.';
+  }
+
+  @override
+  String get themes_holidayAutoAppliedTag => 'Automatisch aktiv';
+
+  @override
+  String get themes_myThemes => 'Meine Designs';
+
+  @override
+  String get themes_myThemesEmpty =>
+      'Erstellen Sie ein eigenes Design, indem Sie einen Hintergrund und eine Akzentfarbe wählen.';
+
+  @override
+  String get themes_create => 'Design erstellen';
+
+  @override
+  String get themes_import => 'Design importieren';
+
+  @override
+  String get themes_importHint => 'Design-Code einfügen';
+
+  @override
+  String get themes_importInvalid => 'Das ist kein gültiger Design-Code';
+
+  @override
+  String themes_imported(String name) {
+    return 'Design „$name“ hinzugefügt';
+  }
+
+  @override
+  String get themes_customize => 'Kopie anpassen';
+
+  @override
+  String get themes_copyCode => 'Design-Code kopieren';
+
+  @override
+  String get themes_codeCopied => 'Design-Code kopiert';
+
+  @override
+  String themes_deleteConfirm(String name) {
+    return 'Design „$name“ löschen?';
+  }
+
+  @override
+  String themes_copyName(String name) {
+    return '$name Kopie';
+  }
+
+  @override
+  String get themes_newTitle => 'Neues Design';
+
+  @override
+  String get themes_editTitle => 'Design bearbeiten';
+
+  @override
+  String get themes_name => 'Name';
+
+  @override
+  String get themes_nameRequired => 'Geben Sie Ihrem Design einen Namen';
+
+  @override
+  String get themes_background => 'Hintergrund';
+
+  @override
+  String get themes_backgroundHelp =>
+      'Ein dunkler Hintergrund ergibt ein dunkles Design';
+
+  @override
+  String get themes_accent => 'Akzent';
+
+  @override
+  String get themes_accentHelp =>
+      'Schaltflächen, Hervorhebungen und Ihre Chat-Blasen';
+
+  @override
+  String get themes_hexColor => 'Hex-Farbe';
+
+  @override
+  String get themes_preview => 'Vorschau';
+
+  @override
+  String get themes_previewIncoming => 'Ist heute Abend jemand im Mesh?';
+
+  @override
+  String get themes_previewOutgoing => 'Laut und deutlich!';
+
+  @override
+  String get themes_previewSwitch => 'Benachrichtigungen';
+
+  @override
+  String get themes_lowContrast =>
+      'Der Akzent ist auf diesem Hintergrund schlecht zu sehen';
+
+  @override
+  String get themes_saveAndUse => 'Speichern und verwenden';
+
+  @override
+  String get themes_icons => 'Symbole';
+
+  @override
+  String get themes_iconsHelp =>
+      'Tippen Sie auf ein Symbol, um es durch ein anderes Symbol oder ein eigenes Bild zu ersetzen';
+
+  @override
+  String get themes_iconChanged => 'Geändert';
+
+  @override
+  String get themes_iconSend => 'Senden-Schaltfläche';
+
+  @override
+  String get themes_iconRepeater => 'Repeater';
+
+  @override
+  String get themes_iconRoom => 'Raumserver';
+
+  @override
+  String get themes_iconSensor => 'Sensoren';
+
+  @override
+  String get themes_mapMarkers => 'Kartenmarkierungen';
+
+  @override
+  String get themes_mapMarkersHelp =>
+      'Ersetzen Sie die Markierungen für Knoten und für Sie selbst auf der Karte';
+
+  @override
+  String get themes_iconUsePicture => 'Bild verwenden';
+
+  @override
+  String get themes_iconReset => 'Standardsymbol verwenden';
+
+  @override
+  String get themes_iconPictureFailed =>
+      'Das Bild konnte nicht verwendet werden';
+
+  @override
+  String get themes_exportFile => 'In Datei exportieren';
+
+  @override
+  String get themes_exportAll => 'Meine Designs exportieren';
+
+  @override
+  String get themes_importFile => 'Aus Datei importieren';
+
+  @override
+  String get themes_pasteCode => 'Design-Code einfügen';
+
+  @override
+  String get themes_exportFailed => 'Designs konnten nicht exportiert werden';
+
+  @override
+  String themes_importFileResult(int count) {
+    return '$count Designs importiert';
+  }
+
+  @override
+  String get themes_importFileNone =>
+      'In dieser Datei wurden keine Designs gefunden';
+
+  @override
+  String get chatBackground_title => 'Chat-Hintergrund';
+
+  @override
+  String get chatBackground_thisChatOnly => 'Nur für diesen Chat';
+
+  @override
+  String chatBackground_themeOverrides(String name) {
+    return 'Ihr Design „$name“ legt den Hintergrund in jedem Chat fest. Schalten Sie das im Design aus, um diesen zu verwenden.';
+  }
+
+  @override
+  String get chatBackground_none => 'Kein Hintergrund';
+
+  @override
+  String get chatBackground_picture => 'Bild';
+
+  @override
+  String get chatBackground_choosePicture => 'Bild auswählen';
+
+  @override
+  String get chatBackground_pictureFailed =>
+      'Das Bild konnte nicht verwendet werden';
+
+  @override
+  String get chatBackground_fade => 'Abblenden';
+
+  @override
+  String get themes_chatBackground => 'Chat-Hintergrund';
+
+  @override
+  String get themes_chatBackgroundHelp =>
+      'Wird in Chats gezeigt, die keinen eigenen Hintergrund haben';
+
+  @override
+  String get themes_chatBackgroundEverywhere => 'In jedem Chat verwenden';
+
+  @override
+  String get themes_chatBackgroundEverywhereHelp =>
+      'Ersetzt auch Hintergründe, die für einzelne Chats gesetzt wurden';
+
+  @override
   String get appSettings_language => 'Sprache';
 
   @override
@@ -6601,4 +6838,20 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get networkMap_unnamed => 'Unbenannter Repeater';
+
+  @override
+  String get holidayGreeting_halloween =>
+      'Frohes Halloween|Fröhliches Halloween|Happy Halloween|Schaurig schönes Halloween|Gruselige Halloween|Süßes oder Saures';
+
+  @override
+  String get holidayGreeting_thanksgiving =>
+      'Frohes Thanksgiving|Schönes Thanksgiving|Frohes Erntedankfest|Happy Thanksgiving|Schönes Erntedankfest';
+
+  @override
+  String get holidayGreeting_christmas =>
+      'Frohe Weihnachten|Fröhliche Weihnachten|Frohes Fest|Schöne Weihnachten|Merry Christmas|Gesegnete Weihnachten|Frohe Weihnachtstage';
+
+  @override
+  String get holidayGreeting_newYear =>
+      'Frohes neues Jahr|Gutes neues Jahr|Guten Rutsch|Prosit Neujahr|Happy New Year|Ein gutes neues Jahr|Guten Rutsch ins neue Jahr|Frohes Neues';
 }
