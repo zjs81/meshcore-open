@@ -831,235 +831,237 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appSettings_themeDark => 'Sombre';
 
   @override
-  String get appSettings_colorTheme => 'Color theme';
+  String get appSettings_colorTheme => 'Thème de couleurs';
 
   @override
-  String get appSettings_holidayAnimations => 'Holiday message animations';
+  String get appSettings_holidayAnimations => 'Animations des messages de fête';
 
   @override
   String get appSettings_holidayAnimationsSubtitle =>
-      'Bats, a turkey, Santa or fireworks when someone sends a holiday greeting';
+      'Chauves-souris, dinde, Père Noël ou feux d\'artifice quand quelqu\'un envoie des vœux de fête';
 
   @override
-  String get themes_title => 'Themes';
+  String get themes_title => 'Thèmes';
 
   @override
   String get themes_default => 'MeshCore';
 
   @override
   String get themes_defaultSubtitle =>
-      'Standard colors, follows the Light / Dark setting';
+      'Couleurs standard, suit le réglage Clair / Sombre';
 
   @override
-  String get themes_builtIn => 'Built-in';
+  String get themes_builtIn => 'Intégrés';
 
   @override
-  String get themes_holidays => 'Holidays';
+  String get themes_holidays => 'Fêtes';
 
   @override
-  String get themes_holidayAutoSwitch => 'Switch automatically';
+  String get themes_holidayAutoSwitch => 'Changer automatiquement';
 
   @override
   String get themes_holidayAutoSwitchSubtitle =>
-      'Uses each holiday\'s theme from 17 days before until the day itself';
+      'Utilise le thème de chaque fête de 17 jours avant jusqu\'au jour même';
 
   @override
   String themes_holidayAutoApplied(String holiday) {
-    return '$holiday theme is on automatically. Your own theme comes back after the holiday.';
+    return 'Le thème $holiday est activé automatiquement. Votre propre thème reviendra après la fête.';
   }
 
   @override
-  String get themes_holidayAutoAppliedTag => 'On automatically';
+  String get themes_holidayAutoAppliedTag => 'Activé automatiquement';
 
   @override
-  String get themes_myThemes => 'My themes';
+  String get themes_myThemes => 'Mes thèmes';
 
   @override
   String get themes_myThemesEmpty =>
-      'Make your own theme by picking a background and an accent color.';
+      'Créez votre propre thème en choisissant un fond et une couleur d\'accent.';
 
   @override
-  String get themes_create => 'Create theme';
+  String get themes_create => 'Créer un thème';
 
   @override
-  String get themes_import => 'Import theme';
+  String get themes_import => 'Importer un thème';
 
   @override
-  String get themes_importHint => 'Paste a theme code';
+  String get themes_importHint => 'Collez un code de thème';
 
   @override
-  String get themes_importInvalid => 'That is not a valid theme code';
+  String get themes_importInvalid => 'Ce code de thème n\'est pas valide';
 
   @override
   String themes_imported(String name) {
-    return 'Added theme \"$name\"';
+    return 'Thème « $name » ajouté';
   }
 
   @override
-  String get themes_customize => 'Customize a copy';
+  String get themes_customize => 'Personnaliser une copie';
 
   @override
-  String get themes_copyCode => 'Copy theme code';
+  String get themes_copyCode => 'Copier le code du thème';
 
   @override
-  String get themes_codeCopied => 'Theme code copied';
+  String get themes_codeCopied => 'Code du thème copié';
 
   @override
   String themes_deleteConfirm(String name) {
-    return 'Delete theme \"$name\"?';
+    return 'Supprimer le thème « $name » ?';
   }
 
   @override
   String themes_copyName(String name) {
-    return '$name copy';
+    return 'Copie de $name';
   }
 
   @override
-  String get themes_newTitle => 'New theme';
+  String get themes_newTitle => 'Nouveau thème';
 
   @override
-  String get themes_editTitle => 'Edit theme';
+  String get themes_editTitle => 'Modifier le thème';
 
   @override
-  String get themes_name => 'Name';
+  String get themes_name => 'Nom';
 
   @override
-  String get themes_nameRequired => 'Give your theme a name';
+  String get themes_nameRequired => 'Donnez un nom à votre thème';
 
   @override
-  String get themes_background => 'Background';
+  String get themes_background => 'Fond';
 
   @override
-  String get themes_backgroundHelp => 'A dark background makes a dark theme';
+  String get themes_backgroundHelp => 'Un fond sombre donne un thème sombre';
 
   @override
   String get themes_accent => 'Accent';
 
   @override
-  String get themes_accentHelp => 'Buttons, highlights and your chat bubbles';
+  String get themes_accentHelp =>
+      'Boutons, éléments en surbrillance et vos bulles de discussion';
 
   @override
-  String get themes_hexColor => 'Hex color';
+  String get themes_hexColor => 'Couleur hexadécimale';
 
   @override
-  String get themes_preview => 'Preview';
+  String get themes_preview => 'Aperçu';
 
   @override
-  String get themes_previewIncoming => 'Anyone on the mesh tonight?';
+  String get themes_previewIncoming => 'Quelqu\'un sur le réseau ce soir ?';
 
   @override
-  String get themes_previewOutgoing => 'Loud and clear!';
+  String get themes_previewOutgoing => 'Fort et clair !';
 
   @override
   String get themes_previewSwitch => 'Notifications';
 
   @override
-  String get themes_lowContrast =>
-      'The accent is hard to see on this background';
+  String get themes_lowContrast => 'L\'accent est difficile à voir sur ce fond';
 
   @override
-  String get themes_saveAndUse => 'Save and use';
+  String get themes_saveAndUse => 'Enregistrer et utiliser';
 
   @override
-  String get themes_icons => 'Icons';
+  String get themes_icons => 'Icônes';
 
   @override
   String get themes_iconsHelp =>
-      'Tap an icon to swap it for another icon or your own picture';
+      'Touchez une icône pour la remplacer par une autre icône ou par votre propre image';
 
   @override
-  String get themes_iconChanged => 'Changed';
+  String get themes_iconChanged => 'Modifiée';
 
   @override
-  String get themes_iconSend => 'Send button';
+  String get themes_iconSend => 'Bouton d\'envoi';
 
   @override
-  String get themes_iconRepeater => 'Repeaters';
+  String get themes_iconRepeater => 'Répéteurs';
 
   @override
   String get themes_iconRoom => 'Rooms';
 
   @override
-  String get themes_iconSensor => 'Sensors';
+  String get themes_iconSensor => 'Capteurs';
 
   @override
-  String get themes_mapMarkers => 'Map markers';
+  String get themes_mapMarkers => 'Marqueurs de la carte';
 
   @override
   String get themes_mapMarkersHelp =>
-      'Swap the markers for nodes and for you on the map';
+      'Remplacez les marqueurs des nœuds et le vôtre sur la carte';
 
   @override
-  String get themes_iconUsePicture => 'Use a picture';
+  String get themes_iconUsePicture => 'Utiliser une image';
 
   @override
-  String get themes_iconReset => 'Use the default icon';
+  String get themes_iconReset => 'Utiliser l\'icône par défaut';
 
   @override
-  String get themes_iconPictureFailed => 'Could not use that picture';
+  String get themes_iconPictureFailed => 'Impossible d\'utiliser cette image';
 
   @override
-  String get themes_exportFile => 'Export to file';
+  String get themes_exportFile => 'Exporter vers un fichier';
 
   @override
-  String get themes_exportAll => 'Export my themes';
+  String get themes_exportAll => 'Exporter mes thèmes';
 
   @override
-  String get themes_importFile => 'Import from file';
+  String get themes_importFile => 'Importer depuis un fichier';
 
   @override
-  String get themes_pasteCode => 'Paste theme code';
+  String get themes_pasteCode => 'Coller le code du thème';
 
   @override
-  String get themes_exportFailed => 'Could not export themes';
+  String get themes_exportFailed => 'Impossible d\'exporter les thèmes';
 
   @override
   String themes_importFileResult(int count) {
-    return 'Imported $count themes';
+    return '$count thèmes importés';
   }
 
   @override
-  String get themes_importFileNone => 'No themes found in that file';
+  String get themes_importFileNone => 'Aucun thème trouvé dans ce fichier';
 
   @override
-  String get chatBackground_title => 'Chat background';
+  String get chatBackground_title => 'Fond de discussion';
 
   @override
-  String get chatBackground_thisChatOnly => 'Only for this chat';
+  String get chatBackground_thisChatOnly => 'Seulement pour cette discussion';
 
   @override
   String chatBackground_themeOverrides(String name) {
-    return 'Your theme \"$name\" sets the background in every chat. Turn that off in the theme to use this one.';
+    return 'Votre thème « $name » définit le fond dans toutes les discussions. Désactivez cette option dans le thème pour utiliser celui-ci.';
   }
 
   @override
-  String get chatBackground_none => 'None';
+  String get chatBackground_none => 'Aucun';
 
   @override
-  String get chatBackground_picture => 'Picture';
+  String get chatBackground_picture => 'Image';
 
   @override
-  String get chatBackground_choosePicture => 'Choose a picture';
+  String get chatBackground_choosePicture => 'Choisir une image';
 
   @override
-  String get chatBackground_pictureFailed => 'Could not use that picture';
+  String get chatBackground_pictureFailed =>
+      'Impossible d\'utiliser cette image';
 
   @override
-  String get chatBackground_fade => 'Fade';
+  String get chatBackground_fade => 'Atténuation';
 
   @override
-  String get themes_chatBackground => 'Chat background';
+  String get themes_chatBackground => 'Fond de discussion';
 
   @override
   String get themes_chatBackgroundHelp =>
-      'Shown in chats that do not have their own background';
+      'Affiché dans les discussions qui n\'ont pas leur propre fond';
 
   @override
-  String get themes_chatBackgroundEverywhere => 'Use in every chat';
+  String get themes_chatBackgroundEverywhere =>
+      'Utiliser dans toutes les discussions';
 
   @override
   String get themes_chatBackgroundEverywhereHelp =>
-      'Also replaces backgrounds set on individual chats';
+      'Remplace aussi les fonds définis pour chaque discussion';
 
   @override
   String get appSettings_language => 'Langue';
@@ -6847,15 +6849,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get networkMap_unnamed => 'Répéteur sans nom';
 
   @override
-  String get holidayGreeting_halloween => 'Joyeux Halloween|Joyeuse Halloween';
+  String get holidayGreeting_halloween =>
+      'Joyeux Halloween|Joyeuse Halloween|Bon Halloween|Happy Halloween';
 
   @override
   String get holidayGreeting_thanksgiving =>
-      'Joyeux Thanksgiving|Joyeuse Action de grâce';
+      'Joyeux Thanksgiving|Joyeuse Action de grâce|Joyeux Jour de l\'Action de grâce|Bon Thanksgiving|Happy Thanksgiving';
 
   @override
-  String get holidayGreeting_christmas => 'Joyeux Noël';
+  String get holidayGreeting_christmas =>
+      'Joyeux Noël|Joyeuses fêtes|Bon Noël|Merry Christmas';
 
   @override
-  String get holidayGreeting_newYear => 'Bonne année';
+  String get holidayGreeting_newYear =>
+      'Bonne année|Bonne et heureuse année|Happy New Year';
 }

@@ -786,235 +786,227 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_themeDark => 'ダーク';
 
   @override
-  String get appSettings_colorTheme => 'Color theme';
+  String get appSettings_colorTheme => 'カラーテーマ';
 
   @override
-  String get appSettings_holidayAnimations => 'Holiday message animations';
+  String get appSettings_holidayAnimations => '祝日メッセージのアニメーション';
 
   @override
   String get appSettings_holidayAnimationsSubtitle =>
-      'Bats, a turkey, Santa or fireworks when someone sends a holiday greeting';
+      '祝日のあいさつが届くと、コウモリ、七面鳥、サンタ、花火が表示されます';
 
   @override
-  String get themes_title => 'Themes';
+  String get themes_title => 'テーマ';
 
   @override
   String get themes_default => 'MeshCore';
 
   @override
-  String get themes_defaultSubtitle =>
-      'Standard colors, follows the Light / Dark setting';
+  String get themes_defaultSubtitle => '標準の色。ライト/ダークの設定に合わせます';
 
   @override
-  String get themes_builtIn => 'Built-in';
+  String get themes_builtIn => '標準のテーマ';
 
   @override
-  String get themes_holidays => 'Holidays';
+  String get themes_holidays => '祝日';
 
   @override
-  String get themes_holidayAutoSwitch => 'Switch automatically';
+  String get themes_holidayAutoSwitch => '自動で切り替える';
 
   @override
-  String get themes_holidayAutoSwitchSubtitle =>
-      'Uses each holiday\'s theme from 17 days before until the day itself';
+  String get themes_holidayAutoSwitchSubtitle => '各祝日の17日前から当日まで、その祝日のテーマを使います';
 
   @override
   String themes_holidayAutoApplied(String holiday) {
-    return '$holiday theme is on automatically. Your own theme comes back after the holiday.';
+    return '$holidayのテーマを自動で使っています。祝日が終わると、元のテーマに戻ります。';
   }
 
   @override
-  String get themes_holidayAutoAppliedTag => 'On automatically';
+  String get themes_holidayAutoAppliedTag => '自動で使用中';
 
   @override
-  String get themes_myThemes => 'My themes';
+  String get themes_myThemes => 'マイテーマ';
 
   @override
-  String get themes_myThemesEmpty =>
-      'Make your own theme by picking a background and an accent color.';
+  String get themes_myThemesEmpty => '背景とアクセントカラーを選んで、自分だけのテーマを作りましょう。';
 
   @override
-  String get themes_create => 'Create theme';
+  String get themes_create => 'テーマを作成';
 
   @override
-  String get themes_import => 'Import theme';
+  String get themes_import => 'テーマを読み込む';
 
   @override
-  String get themes_importHint => 'Paste a theme code';
+  String get themes_importHint => 'テーマコードを貼り付けてください';
 
   @override
-  String get themes_importInvalid => 'That is not a valid theme code';
+  String get themes_importInvalid => 'テーマコードが正しくありません';
 
   @override
   String themes_imported(String name) {
-    return 'Added theme \"$name\"';
+    return 'テーマ「$name」を追加しました';
   }
 
   @override
-  String get themes_customize => 'Customize a copy';
+  String get themes_customize => 'コピーして編集';
 
   @override
-  String get themes_copyCode => 'Copy theme code';
+  String get themes_copyCode => 'テーマコードをコピー';
 
   @override
-  String get themes_codeCopied => 'Theme code copied';
+  String get themes_codeCopied => 'テーマコードをコピーしました';
 
   @override
   String themes_deleteConfirm(String name) {
-    return 'Delete theme \"$name\"?';
+    return 'テーマ「$name」を削除しますか?';
   }
 
   @override
   String themes_copyName(String name) {
-    return '$name copy';
+    return '$nameのコピー';
   }
 
   @override
-  String get themes_newTitle => 'New theme';
+  String get themes_newTitle => '新しいテーマ';
 
   @override
-  String get themes_editTitle => 'Edit theme';
+  String get themes_editTitle => 'テーマを編集';
 
   @override
-  String get themes_name => 'Name';
+  String get themes_name => '名前';
 
   @override
-  String get themes_nameRequired => 'Give your theme a name';
+  String get themes_nameRequired => 'テーマの名前を入力してください';
 
   @override
-  String get themes_background => 'Background';
+  String get themes_background => '背景';
 
   @override
-  String get themes_backgroundHelp => 'A dark background makes a dark theme';
+  String get themes_backgroundHelp => '背景が暗いと、ダークテーマになります';
 
   @override
-  String get themes_accent => 'Accent';
+  String get themes_accent => 'アクセント';
 
   @override
-  String get themes_accentHelp => 'Buttons, highlights and your chat bubbles';
+  String get themes_accentHelp => 'ボタン、強調表示、自分のチャットの吹き出しに使います';
 
   @override
-  String get themes_hexColor => 'Hex color';
+  String get themes_hexColor => '16進数カラー';
 
   @override
-  String get themes_preview => 'Preview';
+  String get themes_preview => 'プレビュー';
 
   @override
-  String get themes_previewIncoming => 'Anyone on the mesh tonight?';
+  String get themes_previewIncoming => '今夜、メッシュにいる人はいますか?';
 
   @override
-  String get themes_previewOutgoing => 'Loud and clear!';
+  String get themes_previewOutgoing => 'はっきり聞こえます!';
 
   @override
-  String get themes_previewSwitch => 'Notifications';
+  String get themes_previewSwitch => '通知';
 
   @override
-  String get themes_lowContrast =>
-      'The accent is hard to see on this background';
+  String get themes_lowContrast => 'この背景ではアクセントが見えにくいです';
 
   @override
-  String get themes_saveAndUse => 'Save and use';
+  String get themes_saveAndUse => '保存して使う';
 
   @override
-  String get themes_icons => 'Icons';
+  String get themes_icons => 'アイコン';
 
   @override
-  String get themes_iconsHelp =>
-      'Tap an icon to swap it for another icon or your own picture';
+  String get themes_iconsHelp => 'アイコンをタップすると、ほかのアイコンや自分の画像に変更できます';
 
   @override
-  String get themes_iconChanged => 'Changed';
+  String get themes_iconChanged => '変更済み';
 
   @override
-  String get themes_iconSend => 'Send button';
+  String get themes_iconSend => '送信ボタン';
 
   @override
-  String get themes_iconRepeater => 'Repeaters';
+  String get themes_iconRepeater => 'リピータ';
 
   @override
-  String get themes_iconRoom => 'Rooms';
+  String get themes_iconRoom => 'ルームサーバー';
 
   @override
-  String get themes_iconSensor => 'Sensors';
+  String get themes_iconSensor => 'センサー';
 
   @override
-  String get themes_mapMarkers => 'Map markers';
+  String get themes_mapMarkers => '地図のマーカー';
 
   @override
-  String get themes_mapMarkersHelp =>
-      'Swap the markers for nodes and for you on the map';
+  String get themes_mapMarkersHelp => '地図上のノードと自分のマーカーを変更します';
 
   @override
-  String get themes_iconUsePicture => 'Use a picture';
+  String get themes_iconUsePicture => '画像を使う';
 
   @override
-  String get themes_iconReset => 'Use the default icon';
+  String get themes_iconReset => '標準のアイコンに戻す';
 
   @override
-  String get themes_iconPictureFailed => 'Could not use that picture';
+  String get themes_iconPictureFailed => 'その画像は使えませんでした';
 
   @override
-  String get themes_exportFile => 'Export to file';
+  String get themes_exportFile => 'ファイルに書き出す';
 
   @override
-  String get themes_exportAll => 'Export my themes';
+  String get themes_exportAll => 'マイテーマを書き出す';
 
   @override
-  String get themes_importFile => 'Import from file';
+  String get themes_importFile => 'ファイルから読み込む';
 
   @override
-  String get themes_pasteCode => 'Paste theme code';
+  String get themes_pasteCode => 'テーマコードを貼り付け';
 
   @override
-  String get themes_exportFailed => 'Could not export themes';
+  String get themes_exportFailed => 'テーマを書き出せませんでした';
 
   @override
   String themes_importFileResult(int count) {
-    return 'Imported $count themes';
+    return '$count件のテーマを読み込みました';
   }
 
   @override
-  String get themes_importFileNone => 'No themes found in that file';
+  String get themes_importFileNone => 'そのファイルにテーマが見つかりません';
 
   @override
-  String get chatBackground_title => 'Chat background';
+  String get chatBackground_title => 'チャットの背景';
 
   @override
-  String get chatBackground_thisChatOnly => 'Only for this chat';
+  String get chatBackground_thisChatOnly => 'このチャットだけ';
 
   @override
   String chatBackground_themeOverrides(String name) {
-    return 'Your theme \"$name\" sets the background in every chat. Turn that off in the theme to use this one.';
+    return 'テーマ「$name」が、すべてのチャットの背景を指定しています。この背景を使うには、テーマ側でその設定をオフにしてください。';
   }
 
   @override
-  String get chatBackground_none => 'None';
+  String get chatBackground_none => 'なし';
 
   @override
-  String get chatBackground_picture => 'Picture';
+  String get chatBackground_picture => '画像';
 
   @override
-  String get chatBackground_choosePicture => 'Choose a picture';
+  String get chatBackground_choosePicture => '画像を選ぶ';
 
   @override
-  String get chatBackground_pictureFailed => 'Could not use that picture';
+  String get chatBackground_pictureFailed => 'その画像は使えませんでした';
 
   @override
-  String get chatBackground_fade => 'Fade';
+  String get chatBackground_fade => '薄さ';
 
   @override
-  String get themes_chatBackground => 'Chat background';
+  String get themes_chatBackground => 'チャットの背景';
 
   @override
-  String get themes_chatBackgroundHelp =>
-      'Shown in chats that do not have their own background';
+  String get themes_chatBackgroundHelp => '個別の背景がないチャットに表示されます';
 
   @override
-  String get themes_chatBackgroundEverywhere => 'Use in every chat';
+  String get themes_chatBackgroundEverywhere => 'すべてのチャットで使う';
 
   @override
-  String get themes_chatBackgroundEverywhereHelp =>
-      'Also replaces backgrounds set on individual chats';
+  String get themes_chatBackgroundEverywhereHelp => 'チャットごとに設定した背景も置き換えます';
 
   @override
   String get appSettings_language => '言語';
@@ -6517,14 +6509,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get networkMap_unnamed => '名前のないリピータ';
 
   @override
-  String get holidayGreeting_halloween => 'ハッピーハロウィン|ハッピーハロウィーン';
+  String get holidayGreeting_halloween =>
+      'ハッピーハロウィン|ハッピーハロウィーン|ハッピーハロウィン|ハピハロ|トリックオアトリート|Happy Halloween';
 
   @override
-  String get holidayGreeting_thanksgiving => 'ハッピーサンクスギビング|感謝祭おめでとう';
+  String get holidayGreeting_thanksgiving =>
+      'ハッピーサンクスギビング|ハッピー・サンクスギビング|感謝祭おめでとう|Happy Thanksgiving';
 
   @override
-  String get holidayGreeting_christmas => 'メリークリスマス';
+  String get holidayGreeting_christmas =>
+      'メリークリスマス|メリー・クリスマス|メリクリ|Merry Christmas';
 
   @override
-  String get holidayGreeting_newYear => 'あけましておめでとう|明けましておめでとう|ハッピーニューイヤー';
+  String get holidayGreeting_newYear =>
+      'あけましておめでとう|明けましておめでとう|あけおめ|アケオメ|ハッピーニューイヤー|ハッピー・ニューイヤー|謹賀新年|Happy New Year';
 }

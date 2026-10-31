@@ -821,235 +821,237 @@ class AppLocalizationsSk extends AppLocalizations {
   String get appSettings_themeDark => 'Tmavé';
 
   @override
-  String get appSettings_colorTheme => 'Color theme';
+  String get appSettings_colorTheme => 'Farebná téma';
 
   @override
-  String get appSettings_holidayAnimations => 'Holiday message animations';
+  String get appSettings_holidayAnimations => 'Sviatočné animácie správ';
 
   @override
   String get appSettings_holidayAnimationsSubtitle =>
-      'Bats, a turkey, Santa or fireworks when someone sends a holiday greeting';
+      'Netopiere, moriak, Santa alebo ohňostroj, keď niekto pošle sviatočné želanie';
 
   @override
-  String get themes_title => 'Themes';
+  String get themes_title => 'Témy';
 
   @override
   String get themes_default => 'MeshCore';
 
   @override
   String get themes_defaultSubtitle =>
-      'Standard colors, follows the Light / Dark setting';
+      'Štandardné farby, riadi sa nastavením Svetlý / Tmavý';
 
   @override
-  String get themes_builtIn => 'Built-in';
+  String get themes_builtIn => 'Vstavané';
 
   @override
-  String get themes_holidays => 'Holidays';
+  String get themes_holidays => 'Sviatky';
 
   @override
-  String get themes_holidayAutoSwitch => 'Switch automatically';
+  String get themes_holidayAutoSwitch => 'Prepínať automaticky';
 
   @override
   String get themes_holidayAutoSwitchSubtitle =>
-      'Uses each holiday\'s theme from 17 days before until the day itself';
+      'Používa tému každého sviatku od 17 dní pred ním až do samotného dňa';
 
   @override
   String themes_holidayAutoApplied(String holiday) {
-    return '$holiday theme is on automatically. Your own theme comes back after the holiday.';
+    return 'Téma $holiday je zapnutá automaticky. Vaša vlastná téma sa vráti po sviatku.';
   }
 
   @override
-  String get themes_holidayAutoAppliedTag => 'On automatically';
+  String get themes_holidayAutoAppliedTag => 'Zapnuté automaticky';
 
   @override
-  String get themes_myThemes => 'My themes';
+  String get themes_myThemes => 'Moje témy';
 
   @override
   String get themes_myThemesEmpty =>
-      'Make your own theme by picking a background and an accent color.';
+      'Vytvorte si vlastnú tému výberom pozadia a farby zvýraznenia.';
 
   @override
-  String get themes_create => 'Create theme';
+  String get themes_create => 'Vytvoriť tému';
 
   @override
-  String get themes_import => 'Import theme';
+  String get themes_import => 'Importovať tému';
 
   @override
-  String get themes_importHint => 'Paste a theme code';
+  String get themes_importHint => 'Vložte kód témy';
 
   @override
-  String get themes_importInvalid => 'That is not a valid theme code';
+  String get themes_importInvalid => 'Toto nie je platný kód témy';
 
   @override
   String themes_imported(String name) {
-    return 'Added theme \"$name\"';
+    return 'Pridaná téma „$name“';
   }
 
   @override
-  String get themes_customize => 'Customize a copy';
+  String get themes_customize => 'Upraviť kópiu';
 
   @override
-  String get themes_copyCode => 'Copy theme code';
+  String get themes_copyCode => 'Kopírovať kód témy';
 
   @override
-  String get themes_codeCopied => 'Theme code copied';
+  String get themes_codeCopied => 'Kód témy skopírovaný';
 
   @override
   String themes_deleteConfirm(String name) {
-    return 'Delete theme \"$name\"?';
+    return 'Odstrániť tému „$name“?';
   }
 
   @override
   String themes_copyName(String name) {
-    return '$name copy';
+    return '$name – kópia';
   }
 
   @override
-  String get themes_newTitle => 'New theme';
+  String get themes_newTitle => 'Nová téma';
 
   @override
-  String get themes_editTitle => 'Edit theme';
+  String get themes_editTitle => 'Upraviť tému';
 
   @override
-  String get themes_name => 'Name';
+  String get themes_name => 'Názov';
 
   @override
-  String get themes_nameRequired => 'Give your theme a name';
+  String get themes_nameRequired => 'Pomenujte svoju tému';
 
   @override
-  String get themes_background => 'Background';
+  String get themes_background => 'Pozadie';
 
   @override
-  String get themes_backgroundHelp => 'A dark background makes a dark theme';
+  String get themes_backgroundHelp => 'Tmavé pozadie vytvorí tmavú tému';
 
   @override
-  String get themes_accent => 'Accent';
+  String get themes_accent => 'Zvýraznenie';
 
   @override
-  String get themes_accentHelp => 'Buttons, highlights and your chat bubbles';
+  String get themes_accentHelp =>
+      'Tlačidlá, zvýraznenia a vaše bubliny v chate';
 
   @override
-  String get themes_hexColor => 'Hex color';
+  String get themes_hexColor => 'Hexadecimálna farba';
 
   @override
-  String get themes_preview => 'Preview';
+  String get themes_preview => 'Náhľad';
 
   @override
-  String get themes_previewIncoming => 'Anyone on the mesh tonight?';
+  String get themes_previewIncoming => 'Je dnes večer niekto v sieti?';
 
   @override
-  String get themes_previewOutgoing => 'Loud and clear!';
+  String get themes_previewOutgoing => 'Počujem hlasno a zreteľne!';
 
   @override
-  String get themes_previewSwitch => 'Notifications';
+  String get themes_previewSwitch => 'Upozornenia';
 
   @override
   String get themes_lowContrast =>
-      'The accent is hard to see on this background';
+      'Farba zvýraznenia je na tomto pozadí zle viditeľná';
 
   @override
-  String get themes_saveAndUse => 'Save and use';
+  String get themes_saveAndUse => 'Uložiť a použiť';
 
   @override
-  String get themes_icons => 'Icons';
+  String get themes_icons => 'Ikony';
 
   @override
   String get themes_iconsHelp =>
-      'Tap an icon to swap it for another icon or your own picture';
+      'Ťuknite na ikonu a zamente ju za inú ikonu alebo vlastný obrázok';
 
   @override
-  String get themes_iconChanged => 'Changed';
+  String get themes_iconChanged => 'Zmenené';
 
   @override
-  String get themes_iconSend => 'Send button';
+  String get themes_iconSend => 'Tlačidlo odoslať';
 
   @override
-  String get themes_iconRepeater => 'Repeaters';
+  String get themes_iconRepeater => 'Opakovače';
 
   @override
-  String get themes_iconRoom => 'Rooms';
+  String get themes_iconRoom => 'Miestnosti';
 
   @override
-  String get themes_iconSensor => 'Sensors';
+  String get themes_iconSensor => 'Senzory';
 
   @override
-  String get themes_mapMarkers => 'Map markers';
+  String get themes_mapMarkers => 'Značky na mape';
 
   @override
   String get themes_mapMarkersHelp =>
-      'Swap the markers for nodes and for you on the map';
+      'Zamente značky uzlov a vašej polohy na mape';
 
   @override
-  String get themes_iconUsePicture => 'Use a picture';
+  String get themes_iconUsePicture => 'Použiť obrázok';
 
   @override
-  String get themes_iconReset => 'Use the default icon';
+  String get themes_iconReset => 'Použiť predvolenú ikonu';
 
   @override
-  String get themes_iconPictureFailed => 'Could not use that picture';
+  String get themes_iconPictureFailed => 'Tento obrázok sa nepodarilo použiť';
 
   @override
-  String get themes_exportFile => 'Export to file';
+  String get themes_exportFile => 'Exportovať do súboru';
 
   @override
-  String get themes_exportAll => 'Export my themes';
+  String get themes_exportAll => 'Exportovať moje témy';
 
   @override
-  String get themes_importFile => 'Import from file';
+  String get themes_importFile => 'Importovať zo súboru';
 
   @override
-  String get themes_pasteCode => 'Paste theme code';
+  String get themes_pasteCode => 'Vložiť kód témy';
 
   @override
-  String get themes_exportFailed => 'Could not export themes';
+  String get themes_exportFailed => 'Témy sa nepodarilo exportovať';
 
   @override
   String themes_importFileResult(int count) {
-    return 'Imported $count themes';
+    return 'Importované témy: $count';
   }
 
   @override
-  String get themes_importFileNone => 'No themes found in that file';
+  String get themes_importFileNone => 'V tomto súbore sa nenašli žiadne témy';
 
   @override
-  String get chatBackground_title => 'Chat background';
+  String get chatBackground_title => 'Pozadie chatu';
 
   @override
-  String get chatBackground_thisChatOnly => 'Only for this chat';
+  String get chatBackground_thisChatOnly => 'Len pre tento chat';
 
   @override
   String chatBackground_themeOverrides(String name) {
-    return 'Your theme \"$name\" sets the background in every chat. Turn that off in the theme to use this one.';
+    return 'Vaša téma „$name“ nastavuje pozadie v každom chate. Vypnite to v téme, ak chcete použiť toto.';
   }
 
   @override
-  String get chatBackground_none => 'None';
+  String get chatBackground_none => 'Žiadne';
 
   @override
-  String get chatBackground_picture => 'Picture';
+  String get chatBackground_picture => 'Obrázok';
 
   @override
-  String get chatBackground_choosePicture => 'Choose a picture';
+  String get chatBackground_choosePicture => 'Vybrať obrázok';
 
   @override
-  String get chatBackground_pictureFailed => 'Could not use that picture';
+  String get chatBackground_pictureFailed =>
+      'Tento obrázok sa nepodarilo použiť';
 
   @override
-  String get chatBackground_fade => 'Fade';
+  String get chatBackground_fade => 'Vyblednutie';
 
   @override
-  String get themes_chatBackground => 'Chat background';
+  String get themes_chatBackground => 'Pozadie chatu';
 
   @override
   String get themes_chatBackgroundHelp =>
-      'Shown in chats that do not have their own background';
+      'Zobrazuje sa v chatoch, ktoré nemajú vlastné pozadie';
 
   @override
-  String get themes_chatBackgroundEverywhere => 'Use in every chat';
+  String get themes_chatBackgroundEverywhere => 'Použiť v každom chate';
 
   @override
   String get themes_chatBackgroundEverywhereHelp =>
-      'Also replaces backgrounds set on individual chats';
+      'Nahradí aj pozadia nastavené v jednotlivých chatoch';
 
   @override
   String get appSettings_language => 'Jazyk';
@@ -6806,14 +6808,18 @@ class AppLocalizationsSk extends AppLocalizations {
   String get networkMap_unnamed => 'Nepomenovaný opakovač';
 
   @override
-  String get holidayGreeting_halloween => 'Veselý Halloween|Šťastný Halloween';
+  String get holidayGreeting_halloween =>
+      'Veselý Halloween|Šťastný Halloween|Veselého Halloweenu|Happy Halloween';
 
   @override
-  String get holidayGreeting_thanksgiving => 'Šťastný Deň vďakyvzdania';
+  String get holidayGreeting_thanksgiving =>
+      'Šťastný Deň vďakyvzdania|Šťastný Deň vďaky|Happy Thanksgiving';
 
   @override
-  String get holidayGreeting_christmas => 'Veselé Vianoce';
+  String get holidayGreeting_christmas =>
+      'Veselé Vianoce|Šťastné a veselé Vianoce|Príjemné Vianoce|Požehnané Vianoce|Merry Christmas';
 
   @override
-  String get holidayGreeting_newYear => 'Šťastný Nový rok';
+  String get holidayGreeting_newYear =>
+      'Šťastný Nový rok|Úspešný nový rok|Happy New Year';
 }

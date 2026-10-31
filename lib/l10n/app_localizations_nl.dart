@@ -822,147 +822,148 @@ class AppLocalizationsNl extends AppLocalizations {
   String get appSettings_themeDark => 'Donker';
 
   @override
-  String get appSettings_colorTheme => 'Color theme';
+  String get appSettings_colorTheme => 'Kleurthema';
 
   @override
-  String get appSettings_holidayAnimations => 'Holiday message animations';
+  String get appSettings_holidayAnimations => 'Feestdaganimaties in berichten';
 
   @override
   String get appSettings_holidayAnimationsSubtitle =>
-      'Bats, a turkey, Santa or fireworks when someone sends a holiday greeting';
+      'Vleermuizen, een kalkoen, de Kerstman of vuurwerk wanneer iemand een feestdagwens stuurt';
 
   @override
-  String get themes_title => 'Themes';
+  String get themes_title => 'Thema\'s';
 
   @override
   String get themes_default => 'MeshCore';
 
   @override
   String get themes_defaultSubtitle =>
-      'Standard colors, follows the Light / Dark setting';
+      'Standaardkleuren, volgt de instelling Licht / Donker';
 
   @override
-  String get themes_builtIn => 'Built-in';
+  String get themes_builtIn => 'Ingebouwd';
 
   @override
-  String get themes_holidays => 'Holidays';
+  String get themes_holidays => 'Feestdagen';
 
   @override
-  String get themes_holidayAutoSwitch => 'Switch automatically';
+  String get themes_holidayAutoSwitch => 'Automatisch wisselen';
 
   @override
   String get themes_holidayAutoSwitchSubtitle =>
-      'Uses each holiday\'s theme from 17 days before until the day itself';
+      'Gebruikt het thema van elke feestdag vanaf 17 dagen ervoor tot de dag zelf';
 
   @override
   String themes_holidayAutoApplied(String holiday) {
-    return '$holiday theme is on automatically. Your own theme comes back after the holiday.';
+    return 'Het thema $holiday staat automatisch aan. Na de feestdag komt je eigen thema terug.';
   }
 
   @override
-  String get themes_holidayAutoAppliedTag => 'On automatically';
+  String get themes_holidayAutoAppliedTag => 'Automatisch aan';
 
   @override
-  String get themes_myThemes => 'My themes';
+  String get themes_myThemes => 'Mijn thema\'s';
 
   @override
   String get themes_myThemesEmpty =>
-      'Make your own theme by picking a background and an accent color.';
+      'Maak je eigen thema door een achtergrond en een accentkleur te kiezen.';
 
   @override
-  String get themes_create => 'Create theme';
+  String get themes_create => 'Thema maken';
 
   @override
-  String get themes_import => 'Import theme';
+  String get themes_import => 'Thema importeren';
 
   @override
-  String get themes_importHint => 'Paste a theme code';
+  String get themes_importHint => 'Plak een themacode';
 
   @override
-  String get themes_importInvalid => 'That is not a valid theme code';
+  String get themes_importInvalid => 'Dit is geen geldige themacode';
 
   @override
   String themes_imported(String name) {
-    return 'Added theme \"$name\"';
+    return 'Thema \"$name\" toegevoegd';
   }
 
   @override
-  String get themes_customize => 'Customize a copy';
+  String get themes_customize => 'Kopie aanpassen';
 
   @override
-  String get themes_copyCode => 'Copy theme code';
+  String get themes_copyCode => 'Themacode kopiëren';
 
   @override
-  String get themes_codeCopied => 'Theme code copied';
+  String get themes_codeCopied => 'Themacode gekopieerd';
 
   @override
   String themes_deleteConfirm(String name) {
-    return 'Delete theme \"$name\"?';
+    return 'Thema \"$name\" verwijderen?';
   }
 
   @override
   String themes_copyName(String name) {
-    return '$name copy';
+    return 'Kopie van $name';
   }
 
   @override
-  String get themes_newTitle => 'New theme';
+  String get themes_newTitle => 'Nieuw thema';
 
   @override
-  String get themes_editTitle => 'Edit theme';
+  String get themes_editTitle => 'Thema bewerken';
 
   @override
-  String get themes_name => 'Name';
+  String get themes_name => 'Naam';
 
   @override
-  String get themes_nameRequired => 'Give your theme a name';
+  String get themes_nameRequired => 'Geef je thema een naam';
 
   @override
-  String get themes_background => 'Background';
+  String get themes_background => 'Achtergrond';
 
   @override
-  String get themes_backgroundHelp => 'A dark background makes a dark theme';
+  String get themes_backgroundHelp =>
+      'Een donkere achtergrond geeft een donker thema';
 
   @override
   String get themes_accent => 'Accent';
 
   @override
-  String get themes_accentHelp => 'Buttons, highlights and your chat bubbles';
+  String get themes_accentHelp => 'Knoppen, markeringen en je chatballonnen';
 
   @override
-  String get themes_hexColor => 'Hex color';
+  String get themes_hexColor => 'Hexkleur';
 
   @override
-  String get themes_preview => 'Preview';
+  String get themes_preview => 'Voorbeeld';
 
   @override
-  String get themes_previewIncoming => 'Anyone on the mesh tonight?';
+  String get themes_previewIncoming => 'Is er vanavond iemand op de mesh?';
 
   @override
-  String get themes_previewOutgoing => 'Loud and clear!';
+  String get themes_previewOutgoing => 'Luid en duidelijk!';
 
   @override
-  String get themes_previewSwitch => 'Notifications';
+  String get themes_previewSwitch => 'Meldingen';
 
   @override
   String get themes_lowContrast =>
-      'The accent is hard to see on this background';
+      'Het accent is slecht te zien op deze achtergrond';
 
   @override
-  String get themes_saveAndUse => 'Save and use';
+  String get themes_saveAndUse => 'Opslaan en gebruiken';
 
   @override
-  String get themes_icons => 'Icons';
+  String get themes_icons => 'Pictogrammen';
 
   @override
   String get themes_iconsHelp =>
-      'Tap an icon to swap it for another icon or your own picture';
+      'Tik op een pictogram om het te vervangen door een ander pictogram of je eigen afbeelding';
 
   @override
-  String get themes_iconChanged => 'Changed';
+  String get themes_iconChanged => 'Gewijzigd';
 
   @override
-  String get themes_iconSend => 'Send button';
+  String get themes_iconSend => 'Verzendknop';
 
   @override
   String get themes_iconRepeater => 'Repeaters';
@@ -971,86 +972,88 @@ class AppLocalizationsNl extends AppLocalizations {
   String get themes_iconRoom => 'Rooms';
 
   @override
-  String get themes_iconSensor => 'Sensors';
+  String get themes_iconSensor => 'Sensoren';
 
   @override
-  String get themes_mapMarkers => 'Map markers';
+  String get themes_mapMarkers => 'Kaartmarkeringen';
 
   @override
   String get themes_mapMarkersHelp =>
-      'Swap the markers for nodes and for you on the map';
+      'Vervang de markeringen voor nodes en voor jezelf op de kaart';
 
   @override
-  String get themes_iconUsePicture => 'Use a picture';
+  String get themes_iconUsePicture => 'Een afbeelding gebruiken';
 
   @override
-  String get themes_iconReset => 'Use the default icon';
+  String get themes_iconReset => 'Standaardpictogram gebruiken';
 
   @override
-  String get themes_iconPictureFailed => 'Could not use that picture';
+  String get themes_iconPictureFailed =>
+      'Die afbeelding kon niet worden gebruikt';
 
   @override
-  String get themes_exportFile => 'Export to file';
+  String get themes_exportFile => 'Exporteren naar bestand';
 
   @override
-  String get themes_exportAll => 'Export my themes';
+  String get themes_exportAll => 'Mijn thema\'s exporteren';
 
   @override
-  String get themes_importFile => 'Import from file';
+  String get themes_importFile => 'Importeren uit bestand';
 
   @override
-  String get themes_pasteCode => 'Paste theme code';
+  String get themes_pasteCode => 'Themacode plakken';
 
   @override
-  String get themes_exportFailed => 'Could not export themes';
+  String get themes_exportFailed => 'Thema\'s konden niet worden geëxporteerd';
 
   @override
   String themes_importFileResult(int count) {
-    return 'Imported $count themes';
+    return '$count thema\'s geïmporteerd';
   }
 
   @override
-  String get themes_importFileNone => 'No themes found in that file';
+  String get themes_importFileNone => 'Geen thema\'s gevonden in dat bestand';
 
   @override
-  String get chatBackground_title => 'Chat background';
+  String get chatBackground_title => 'Chatachtergrond';
 
   @override
-  String get chatBackground_thisChatOnly => 'Only for this chat';
+  String get chatBackground_thisChatOnly => 'Alleen voor deze chat';
 
   @override
   String chatBackground_themeOverrides(String name) {
-    return 'Your theme \"$name\" sets the background in every chat. Turn that off in the theme to use this one.';
+    return 'Je thema \"$name\" stelt de achtergrond in voor elke chat. Zet dat uit in het thema om deze te gebruiken.';
   }
 
   @override
-  String get chatBackground_none => 'None';
+  String get chatBackground_none => 'Geen';
 
   @override
-  String get chatBackground_picture => 'Picture';
+  String get chatBackground_picture => 'Afbeelding';
 
   @override
-  String get chatBackground_choosePicture => 'Choose a picture';
+  String get chatBackground_choosePicture => 'Kies een afbeelding';
 
   @override
-  String get chatBackground_pictureFailed => 'Could not use that picture';
+  String get chatBackground_pictureFailed =>
+      'Die afbeelding kon niet worden gebruikt';
 
   @override
-  String get chatBackground_fade => 'Fade';
+  String get chatBackground_fade => 'Vervagen';
 
   @override
-  String get themes_chatBackground => 'Chat background';
+  String get themes_chatBackground => 'Chatachtergrond';
 
   @override
   String get themes_chatBackgroundHelp =>
-      'Shown in chats that do not have their own background';
+      'Getoond in chats die geen eigen achtergrond hebben';
 
   @override
-  String get themes_chatBackgroundEverywhere => 'Use in every chat';
+  String get themes_chatBackgroundEverywhere => 'In elke chat gebruiken';
 
   @override
   String get themes_chatBackgroundEverywhereHelp =>
-      'Also replaces backgrounds set on individual chats';
+      'Vervangt ook achtergronden die voor afzonderlijke chats zijn ingesteld';
 
   @override
   String get appSettings_language => 'Taal';
@@ -6786,17 +6789,18 @@ class AppLocalizationsNl extends AppLocalizations {
   String get networkMap_unnamed => 'Naamloze repeater';
 
   @override
-  String get holidayGreeting_halloween => 'Fijne Halloween|Gelukkige Halloween';
+  String get holidayGreeting_halloween =>
+      'Fijne Halloween|Gelukkige Halloween|Happy Halloween|Gruwelijke Halloween';
 
   @override
   String get holidayGreeting_thanksgiving =>
-      'Fijne Thanksgiving|Gelukkige Thanksgiving';
+      'Fijne Thanksgiving|Gelukkige Thanksgiving|Happy Thanksgiving|Fijne Thanksgiving Day';
 
   @override
   String get holidayGreeting_christmas =>
-      'Vrolijk kerstfeest|Fijne kerst|Prettige kerstdagen|Zalig kerstfeest';
+      'Vrolijk kerstfeest|Fijne kerst|Prettige kerstdagen|Zalig kerstfeest|Vrolijk kerst|Zalig kerst|Merry Christmas|Fijne feestdagen|Prettige feestdagen';
 
   @override
   String get holidayGreeting_newYear =>
-      'Gelukkig Nieuwjaar|Gelukkig nieuw jaar';
+      'Gelukkig Nieuwjaar|Gelukkig nieuw jaar|Prettig nieuwjaar|Een gelukkig nieuwjaar|Happy New Year|Zalig nieuwjaar|Fijne jaarwisseling';
 }

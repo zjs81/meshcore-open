@@ -70,6 +70,9 @@ List<_Matcher> _buildMatchers() {
       }
     }
   }
+  // Longest first, so the most specific greeting wins: "Boas Festas e Feliz
+  // Ano Novo" is New Year's even though it contains "Boas Festas".
+  matchers.sort((a, b) => b.joined.length.compareTo(a.joined.length));
   return matchers;
 }
 

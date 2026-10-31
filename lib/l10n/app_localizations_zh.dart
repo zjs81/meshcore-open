@@ -774,235 +774,227 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_themeDark => '深色';
 
   @override
-  String get appSettings_colorTheme => 'Color theme';
+  String get appSettings_colorTheme => '配色主题';
 
   @override
-  String get appSettings_holidayAnimations => 'Holiday message animations';
+  String get appSettings_holidayAnimations => '节日消息动画';
 
   @override
   String get appSettings_holidayAnimationsSubtitle =>
-      'Bats, a turkey, Santa or fireworks when someone sends a holiday greeting';
+      '有人发送节日祝福时，显示蝙蝠、火鸡、圣诞老人或烟花';
 
   @override
-  String get themes_title => 'Themes';
+  String get themes_title => '主题';
 
   @override
   String get themes_default => 'MeshCore';
 
   @override
-  String get themes_defaultSubtitle =>
-      'Standard colors, follows the Light / Dark setting';
+  String get themes_defaultSubtitle => '标准颜色，跟随浅色/深色设置';
 
   @override
-  String get themes_builtIn => 'Built-in';
+  String get themes_builtIn => '内置';
 
   @override
-  String get themes_holidays => 'Holidays';
+  String get themes_holidays => '节日';
 
   @override
-  String get themes_holidayAutoSwitch => 'Switch automatically';
+  String get themes_holidayAutoSwitch => '自动切换';
 
   @override
-  String get themes_holidayAutoSwitchSubtitle =>
-      'Uses each holiday\'s theme from 17 days before until the day itself';
+  String get themes_holidayAutoSwitchSubtitle => '每个节日的主题从节日前 17 天使用到节日当天';
 
   @override
   String themes_holidayAutoApplied(String holiday) {
-    return '$holiday theme is on automatically. Your own theme comes back after the holiday.';
+    return '已自动启用$holiday主题。节日过后会恢复你自己的主题。';
   }
 
   @override
-  String get themes_holidayAutoAppliedTag => 'On automatically';
+  String get themes_holidayAutoAppliedTag => '已自动启用';
 
   @override
-  String get themes_myThemes => 'My themes';
+  String get themes_myThemes => '我的主题';
 
   @override
-  String get themes_myThemesEmpty =>
-      'Make your own theme by picking a background and an accent color.';
+  String get themes_myThemesEmpty => '选择背景和强调色，制作你自己的主题。';
 
   @override
-  String get themes_create => 'Create theme';
+  String get themes_create => '创建主题';
 
   @override
-  String get themes_import => 'Import theme';
+  String get themes_import => '导入主题';
 
   @override
-  String get themes_importHint => 'Paste a theme code';
+  String get themes_importHint => '粘贴主题代码';
 
   @override
-  String get themes_importInvalid => 'That is not a valid theme code';
+  String get themes_importInvalid => '这不是有效的主题代码';
 
   @override
   String themes_imported(String name) {
-    return 'Added theme \"$name\"';
+    return '已添加主题“$name”';
   }
 
   @override
-  String get themes_customize => 'Customize a copy';
+  String get themes_customize => '自定义副本';
 
   @override
-  String get themes_copyCode => 'Copy theme code';
+  String get themes_copyCode => '复制主题代码';
 
   @override
-  String get themes_codeCopied => 'Theme code copied';
+  String get themes_codeCopied => '主题代码已复制';
 
   @override
   String themes_deleteConfirm(String name) {
-    return 'Delete theme \"$name\"?';
+    return '删除主题“$name”？';
   }
 
   @override
   String themes_copyName(String name) {
-    return '$name copy';
+    return '$name 副本';
   }
 
   @override
-  String get themes_newTitle => 'New theme';
+  String get themes_newTitle => '新主题';
 
   @override
-  String get themes_editTitle => 'Edit theme';
+  String get themes_editTitle => '编辑主题';
 
   @override
-  String get themes_name => 'Name';
+  String get themes_name => '名称';
 
   @override
-  String get themes_nameRequired => 'Give your theme a name';
+  String get themes_nameRequired => '请为主题起个名字';
 
   @override
-  String get themes_background => 'Background';
+  String get themes_background => '背景';
 
   @override
-  String get themes_backgroundHelp => 'A dark background makes a dark theme';
+  String get themes_backgroundHelp => '深色背景会生成深色主题';
 
   @override
-  String get themes_accent => 'Accent';
+  String get themes_accent => '强调色';
 
   @override
-  String get themes_accentHelp => 'Buttons, highlights and your chat bubbles';
+  String get themes_accentHelp => '按钮、高亮和你的聊天气泡';
 
   @override
-  String get themes_hexColor => 'Hex color';
+  String get themes_hexColor => '十六进制颜色';
 
   @override
-  String get themes_preview => 'Preview';
+  String get themes_preview => '预览';
 
   @override
-  String get themes_previewIncoming => 'Anyone on the mesh tonight?';
+  String get themes_previewIncoming => '今晚网络里有人吗？';
 
   @override
-  String get themes_previewOutgoing => 'Loud and clear!';
+  String get themes_previewOutgoing => '收到，信号很清楚！';
 
   @override
-  String get themes_previewSwitch => 'Notifications';
+  String get themes_previewSwitch => '通知';
 
   @override
-  String get themes_lowContrast =>
-      'The accent is hard to see on this background';
+  String get themes_lowContrast => '在此背景上很难看清强调色';
 
   @override
-  String get themes_saveAndUse => 'Save and use';
+  String get themes_saveAndUse => '保存并使用';
 
   @override
-  String get themes_icons => 'Icons';
+  String get themes_icons => '图标';
 
   @override
-  String get themes_iconsHelp =>
-      'Tap an icon to swap it for another icon or your own picture';
+  String get themes_iconsHelp => '点按图标，可换成其他图标或你自己的图片';
 
   @override
-  String get themes_iconChanged => 'Changed';
+  String get themes_iconChanged => '已更改';
 
   @override
-  String get themes_iconSend => 'Send button';
+  String get themes_iconSend => '发送按钮';
 
   @override
-  String get themes_iconRepeater => 'Repeaters';
+  String get themes_iconRepeater => '中继器';
 
   @override
-  String get themes_iconRoom => 'Rooms';
+  String get themes_iconRoom => '房间';
 
   @override
-  String get themes_iconSensor => 'Sensors';
+  String get themes_iconSensor => '传感器';
 
   @override
-  String get themes_mapMarkers => 'Map markers';
+  String get themes_mapMarkers => '地图标记';
 
   @override
-  String get themes_mapMarkersHelp =>
-      'Swap the markers for nodes and for you on the map';
+  String get themes_mapMarkersHelp => '更换地图上节点和你自己的标记';
 
   @override
-  String get themes_iconUsePicture => 'Use a picture';
+  String get themes_iconUsePicture => '使用图片';
 
   @override
-  String get themes_iconReset => 'Use the default icon';
+  String get themes_iconReset => '使用默认图标';
 
   @override
-  String get themes_iconPictureFailed => 'Could not use that picture';
+  String get themes_iconPictureFailed => '无法使用该图片';
 
   @override
-  String get themes_exportFile => 'Export to file';
+  String get themes_exportFile => '导出到文件';
 
   @override
-  String get themes_exportAll => 'Export my themes';
+  String get themes_exportAll => '导出我的主题';
 
   @override
-  String get themes_importFile => 'Import from file';
+  String get themes_importFile => '从文件导入';
 
   @override
-  String get themes_pasteCode => 'Paste theme code';
+  String get themes_pasteCode => '粘贴主题代码';
 
   @override
-  String get themes_exportFailed => 'Could not export themes';
+  String get themes_exportFailed => '无法导出主题';
 
   @override
   String themes_importFileResult(int count) {
-    return 'Imported $count themes';
+    return '已导入 $count 个主题';
   }
 
   @override
-  String get themes_importFileNone => 'No themes found in that file';
+  String get themes_importFileNone => '该文件中没有找到主题';
 
   @override
-  String get chatBackground_title => 'Chat background';
+  String get chatBackground_title => '聊天背景';
 
   @override
-  String get chatBackground_thisChatOnly => 'Only for this chat';
+  String get chatBackground_thisChatOnly => '仅用于此聊天';
 
   @override
   String chatBackground_themeOverrides(String name) {
-    return 'Your theme \"$name\" sets the background in every chat. Turn that off in the theme to use this one.';
+    return '你的主题“$name”为所有聊天设置了背景。请在该主题中关闭此项，才能使用这里的背景。';
   }
 
   @override
-  String get chatBackground_none => 'None';
+  String get chatBackground_none => '无';
 
   @override
-  String get chatBackground_picture => 'Picture';
+  String get chatBackground_picture => '图片';
 
   @override
-  String get chatBackground_choosePicture => 'Choose a picture';
+  String get chatBackground_choosePicture => '选择图片';
 
   @override
-  String get chatBackground_pictureFailed => 'Could not use that picture';
+  String get chatBackground_pictureFailed => '无法使用该图片';
 
   @override
-  String get chatBackground_fade => 'Fade';
+  String get chatBackground_fade => '淡化';
 
   @override
-  String get themes_chatBackground => 'Chat background';
+  String get themes_chatBackground => '聊天背景';
 
   @override
-  String get themes_chatBackgroundHelp =>
-      'Shown in chats that do not have their own background';
+  String get themes_chatBackgroundHelp => '显示在没有自己背景的聊天中';
 
   @override
-  String get themes_chatBackgroundEverywhere => 'Use in every chat';
+  String get themes_chatBackgroundEverywhere => '用于所有聊天';
 
   @override
-  String get themes_chatBackgroundEverywhereHelp =>
-      'Also replaces backgrounds set on individual chats';
+  String get themes_chatBackgroundEverywhereHelp => '同时会替换单个聊天中设置的背景';
 
   @override
   String get appSettings_language => '语言';
@@ -6369,14 +6361,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get networkMap_unnamed => '未命名转发节点';
 
   @override
-  String get holidayGreeting_halloween => '万圣节快乐|萬聖節快樂';
+  String get holidayGreeting_halloween =>
+      '万圣节快乐|萬聖節快樂|万圣夜快乐|萬聖夜快樂|不给糖就捣蛋|不給糖就搗蛋';
 
   @override
-  String get holidayGreeting_thanksgiving => '感恩节快乐|感恩節快樂';
+  String get holidayGreeting_thanksgiving => '感恩节快乐|感恩節快樂|感恩节愉快|感恩節愉快';
 
   @override
-  String get holidayGreeting_christmas => '圣诞快乐|聖誕快樂';
+  String get holidayGreeting_christmas =>
+      '圣诞快乐|聖誕快樂|圣诞节快乐|聖誕節快樂|圣诞节愉快|聖誕節愉快|圣诞愉快|聖誕愉快';
 
   @override
-  String get holidayGreeting_newYear => '新年快乐|新年快樂';
+  String get holidayGreeting_newYear => '新年快乐|新年快樂|元旦快乐|元旦快樂|新年好|新年愉快';
 }

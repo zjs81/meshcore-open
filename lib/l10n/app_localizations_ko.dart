@@ -788,235 +788,228 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_themeDark => '어두움';
 
   @override
-  String get appSettings_colorTheme => 'Color theme';
+  String get appSettings_colorTheme => '색상 테마';
 
   @override
-  String get appSettings_holidayAnimations => 'Holiday message animations';
+  String get appSettings_holidayAnimations => '명절 메시지 애니메이션';
 
   @override
   String get appSettings_holidayAnimationsSubtitle =>
-      'Bats, a turkey, Santa or fireworks when someone sends a holiday greeting';
+      '누군가 명절 인사를 보내면 박쥐, 칠면조, 산타, 불꽃놀이가 나타납니다';
 
   @override
-  String get themes_title => 'Themes';
+  String get themes_title => '테마';
 
   @override
   String get themes_default => 'MeshCore';
 
   @override
-  String get themes_defaultSubtitle =>
-      'Standard colors, follows the Light / Dark setting';
+  String get themes_defaultSubtitle => '기본 색상, 밝음/어두움 설정을 따릅니다';
 
   @override
-  String get themes_builtIn => 'Built-in';
+  String get themes_builtIn => '기본 제공';
 
   @override
-  String get themes_holidays => 'Holidays';
+  String get themes_holidays => '명절';
 
   @override
-  String get themes_holidayAutoSwitch => 'Switch automatically';
+  String get themes_holidayAutoSwitch => '자동으로 바꾸기';
 
   @override
   String get themes_holidayAutoSwitchSubtitle =>
-      'Uses each holiday\'s theme from 17 days before until the day itself';
+      '명절 17일 전부터 당일까지 그 명절 테마를 사용합니다';
 
   @override
   String themes_holidayAutoApplied(String holiday) {
-    return '$holiday theme is on automatically. Your own theme comes back after the holiday.';
+    return '$holiday 테마가 자동으로 켜져 있습니다. 명절이 끝나면 내 테마로 돌아갑니다.';
   }
 
   @override
-  String get themes_holidayAutoAppliedTag => 'On automatically';
+  String get themes_holidayAutoAppliedTag => '자동 적용 중';
 
   @override
-  String get themes_myThemes => 'My themes';
+  String get themes_myThemes => '내 테마';
 
   @override
-  String get themes_myThemesEmpty =>
-      'Make your own theme by picking a background and an accent color.';
+  String get themes_myThemesEmpty => '배경과 강조 색을 골라 나만의 테마를 만들어 보세요.';
 
   @override
-  String get themes_create => 'Create theme';
+  String get themes_create => '테마 만들기';
 
   @override
-  String get themes_import => 'Import theme';
+  String get themes_import => '테마 가져오기';
 
   @override
-  String get themes_importHint => 'Paste a theme code';
+  String get themes_importHint => '테마 코드를 붙여넣으세요';
 
   @override
-  String get themes_importInvalid => 'That is not a valid theme code';
+  String get themes_importInvalid => '올바른 테마 코드가 아닙니다';
 
   @override
   String themes_imported(String name) {
-    return 'Added theme \"$name\"';
+    return '테마 \"$name\"을(를) 추가했습니다';
   }
 
   @override
-  String get themes_customize => 'Customize a copy';
+  String get themes_customize => '복사본 꾸미기';
 
   @override
-  String get themes_copyCode => 'Copy theme code';
+  String get themes_copyCode => '테마 코드 복사';
 
   @override
-  String get themes_codeCopied => 'Theme code copied';
+  String get themes_codeCopied => '테마 코드를 복사했습니다';
 
   @override
   String themes_deleteConfirm(String name) {
-    return 'Delete theme \"$name\"?';
+    return '테마 \"$name\"을(를) 삭제할까요?';
   }
 
   @override
   String themes_copyName(String name) {
-    return '$name copy';
+    return '$name 복사본';
   }
 
   @override
-  String get themes_newTitle => 'New theme';
+  String get themes_newTitle => '새 테마';
 
   @override
-  String get themes_editTitle => 'Edit theme';
+  String get themes_editTitle => '테마 편집';
 
   @override
-  String get themes_name => 'Name';
+  String get themes_name => '이름';
 
   @override
-  String get themes_nameRequired => 'Give your theme a name';
+  String get themes_nameRequired => '테마 이름을 입력하세요';
 
   @override
-  String get themes_background => 'Background';
+  String get themes_background => '배경';
 
   @override
-  String get themes_backgroundHelp => 'A dark background makes a dark theme';
+  String get themes_backgroundHelp => '어두운 배경을 고르면 어두운 테마가 됩니다';
 
   @override
-  String get themes_accent => 'Accent';
+  String get themes_accent => '강조 색';
 
   @override
-  String get themes_accentHelp => 'Buttons, highlights and your chat bubbles';
+  String get themes_accentHelp => '버튼, 강조 표시, 내 말풍선에 쓰입니다';
 
   @override
-  String get themes_hexColor => 'Hex color';
+  String get themes_hexColor => '16진수 색상';
 
   @override
-  String get themes_preview => 'Preview';
+  String get themes_preview => '미리보기';
 
   @override
-  String get themes_previewIncoming => 'Anyone on the mesh tonight?';
+  String get themes_previewIncoming => '오늘 밤 메시에 계신 분 있나요?';
 
   @override
-  String get themes_previewOutgoing => 'Loud and clear!';
+  String get themes_previewOutgoing => '잘 들립니다!';
 
   @override
-  String get themes_previewSwitch => 'Notifications';
+  String get themes_previewSwitch => '알림';
 
   @override
-  String get themes_lowContrast =>
-      'The accent is hard to see on this background';
+  String get themes_lowContrast => '이 배경에서는 강조 색이 잘 보이지 않습니다';
 
   @override
-  String get themes_saveAndUse => 'Save and use';
+  String get themes_saveAndUse => '저장하고 사용';
 
   @override
-  String get themes_icons => 'Icons';
+  String get themes_icons => '아이콘';
 
   @override
-  String get themes_iconsHelp =>
-      'Tap an icon to swap it for another icon or your own picture';
+  String get themes_iconsHelp => '아이콘을 눌러 다른 아이콘이나 내 사진으로 바꾸세요';
 
   @override
-  String get themes_iconChanged => 'Changed';
+  String get themes_iconChanged => '변경됨';
 
   @override
-  String get themes_iconSend => 'Send button';
+  String get themes_iconSend => '보내기 버튼';
 
   @override
-  String get themes_iconRepeater => 'Repeaters';
+  String get themes_iconRepeater => '리피터';
 
   @override
-  String get themes_iconRoom => 'Rooms';
+  String get themes_iconRoom => '룸';
 
   @override
-  String get themes_iconSensor => 'Sensors';
+  String get themes_iconSensor => '센서';
 
   @override
-  String get themes_mapMarkers => 'Map markers';
+  String get themes_mapMarkers => '지도 마커';
 
   @override
-  String get themes_mapMarkersHelp =>
-      'Swap the markers for nodes and for you on the map';
+  String get themes_mapMarkersHelp => '지도에서 노드와 내 위치 마커를 바꿉니다';
 
   @override
-  String get themes_iconUsePicture => 'Use a picture';
+  String get themes_iconUsePicture => '사진 사용';
 
   @override
-  String get themes_iconReset => 'Use the default icon';
+  String get themes_iconReset => '기본 아이콘 사용';
 
   @override
-  String get themes_iconPictureFailed => 'Could not use that picture';
+  String get themes_iconPictureFailed => '그 사진을 사용할 수 없습니다';
 
   @override
-  String get themes_exportFile => 'Export to file';
+  String get themes_exportFile => '파일로 내보내기';
 
   @override
-  String get themes_exportAll => 'Export my themes';
+  String get themes_exportAll => '내 테마 내보내기';
 
   @override
-  String get themes_importFile => 'Import from file';
+  String get themes_importFile => '파일에서 가져오기';
 
   @override
-  String get themes_pasteCode => 'Paste theme code';
+  String get themes_pasteCode => '테마 코드 붙여넣기';
 
   @override
-  String get themes_exportFailed => 'Could not export themes';
+  String get themes_exportFailed => '테마를 내보내지 못했습니다';
 
   @override
   String themes_importFileResult(int count) {
-    return 'Imported $count themes';
+    return '테마 $count개를 가져왔습니다';
   }
 
   @override
-  String get themes_importFileNone => 'No themes found in that file';
+  String get themes_importFileNone => '그 파일에서 테마를 찾지 못했습니다';
 
   @override
-  String get chatBackground_title => 'Chat background';
+  String get chatBackground_title => '채팅 배경';
 
   @override
-  String get chatBackground_thisChatOnly => 'Only for this chat';
+  String get chatBackground_thisChatOnly => '이 채팅에만 적용';
 
   @override
   String chatBackground_themeOverrides(String name) {
-    return 'Your theme \"$name\" sets the background in every chat. Turn that off in the theme to use this one.';
+    return '내 테마 \"$name\"이(가) 모든 채팅의 배경을 정하고 있습니다. 이 배경을 쓰려면 테마에서 그 설정을 끄세요.';
   }
 
   @override
-  String get chatBackground_none => 'None';
+  String get chatBackground_none => '없음';
 
   @override
-  String get chatBackground_picture => 'Picture';
+  String get chatBackground_picture => '사진';
 
   @override
-  String get chatBackground_choosePicture => 'Choose a picture';
+  String get chatBackground_choosePicture => '사진 선택';
 
   @override
-  String get chatBackground_pictureFailed => 'Could not use that picture';
+  String get chatBackground_pictureFailed => '그 사진을 사용할 수 없습니다';
 
   @override
-  String get chatBackground_fade => 'Fade';
+  String get chatBackground_fade => '흐리게';
 
   @override
-  String get themes_chatBackground => 'Chat background';
+  String get themes_chatBackground => '채팅 배경';
 
   @override
-  String get themes_chatBackgroundHelp =>
-      'Shown in chats that do not have their own background';
+  String get themes_chatBackgroundHelp => '따로 배경이 없는 채팅에 표시됩니다';
 
   @override
-  String get themes_chatBackgroundEverywhere => 'Use in every chat';
+  String get themes_chatBackgroundEverywhere => '모든 채팅에 사용';
 
   @override
-  String get themes_chatBackgroundEverywhereHelp =>
-      'Also replaces backgrounds set on individual chats';
+  String get themes_chatBackgroundEverywhereHelp => '개별 채팅에 정한 배경도 바뀝니다';
 
   @override
   String get appSettings_language => '언어';
@@ -6527,14 +6520,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get networkMap_unnamed => '이름 없는 리피터';
 
   @override
-  String get holidayGreeting_halloween => '해피 할로윈|즐거운 할로윈';
+  String get holidayGreeting_halloween =>
+      '해피 할로윈|즐거운 할로윈|행복한 할로윈|할로윈 축하해|할로윈 잘 보내세요|트릭 오어 트릿|해피 할로윈데이';
 
   @override
-  String get holidayGreeting_thanksgiving => '해피 땡스기빙|즐거운 추수감사절|행복한 추수감사절';
+  String get holidayGreeting_thanksgiving =>
+      '해피 땡스기빙|즐거운 추수감사절|행복한 추수감사절|추수감사절 잘 보내세요|추수감사절 축하해요|해피 땡스기빙데이';
 
   @override
-  String get holidayGreeting_christmas => '메리 크리스마스|즐거운 성탄절';
+  String get holidayGreeting_christmas =>
+      '메리 크리스마스|즐거운 성탄절|즐거운 크리스마스|행복한 성탄절|성탄 축하드립니다|메리 크리스마스 되세요|해피 크리스마스|메리 크리스마스 이브';
 
   @override
-  String get holidayGreeting_newYear => '새해 복 많이 받으세요|새해 복 많이 받아|해피 뉴 이어';
+  String get holidayGreeting_newYear =>
+      '새해 복 많이 받으세요|새해 복 많이 받아|새해 복 많이 받으십시오|새해 복 많이 받아요|해피 뉴 이어|해피 뉴이어|즐거운 새해|행복한 새해';
 }
