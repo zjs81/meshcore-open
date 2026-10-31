@@ -150,6 +150,59 @@ The matrix describes implemented functionality, not a guarantee that every featu
    flutter run
    ```
 
+### Linux with Nix
+
+Enter the development shell from the repository root:
+
+```bash
+nix develop
+flutter --version
+pkg-config --exists gtk+-3.0 glib-2.0 gio-2.0 sysprof-capture-4
+flutter pub get
+flutter build linux --debug
+flutter build linux --profile
+```
+
+The lockfile currently supplies Flutter 3.47.4 and its matching Dart SDK. The
+app requires Flutter 3.41.2 or newer. The Linux shell provides wrapped Clang
+compilers, native headers and libraries, and Sysprof capture development files.
+Android SDK warnings do not prevent Linux builds.
+
+If an SDK or toolchain update leaves CMake using an old compiler or install
+prefix, remove the affected generated cache, for example
+`rm -f build/linux/x64/profile/CMakeCache.txt`, and rebuild. If widget tests
+report that `ink_sparkle.frag` cannot be decoded after an SDK update, remove
+the generated `build/unit_test_assets` directory and rerun `flutter test`.
+
+Launch the profile bundle from a graphical session (replace `x64` with `arm64`
+on ARM Linux):
+
+```bash
+build/linux/x64/profile/bundle/meshcore_open
+```
+
+To record with Sysprof, launch the app through the recorder and press Ctrl+C
+when finished. Use a new capture filename for each recording:
+
+```bash
+sysprof-cli meshcore.syscap -- build/linux/x64/profile/bundle/meshcore_open
+sysprof meshcore.syscap
+```
+
+CPU stack sampling requires host support for kernel perf events and appropriate
+permissions, potentially through the Sysprof system service and polkit. The Nix
+shell supplies tools and libraries, not system services or permission changes.
+If Sysprof reports `Permission denied` opening perf events, ask the host
+administrator to configure profiling access. A file being created does not
+prove CPU samples were recorded; check the recording diagnostics and contents.
+For an unprivileged capture smoke test only, use
+`sysprof-cli --no-sysprofd --no-perf smoke.syscap -- build/linux/x64/profile/bundle/meshcore_open`;
+this intentionally excludes CPU stack sampling.
+
+To update the package pin, run `nix flake update nixpkgs`, review the lockfile
+diff, and repeat both Linux builds, analysis, and tests before committing it.
+Keep the updated lockfile with the shell configuration for reproducibility.
+
 ### Web (self-host)
 
 Use a Chromium browser. Device APIs are origin-gated, so serve the build over HTTPS.
