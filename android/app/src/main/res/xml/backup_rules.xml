@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 11 and below. Received radio data kept for the local API stays on
+     the device; everything else is backed up as before. -->
+<full-backup-content>
+    <exclude domain="file" path="local_api/" />
+</full-backup-content>

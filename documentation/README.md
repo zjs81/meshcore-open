@@ -31,6 +31,7 @@ MeshCore Open is an open-source Flutter client for MeshCore LoRa mesh networking
 18. [Network Map](network-map.md) - Online repeater map, adding and managing repeaters from it, opt-in uploads, and hiding a repeater
 19. [Themes](themes.md) - Color themes, custom icons and map markers, chat backgrounds, automatic holiday themes, and holiday message animations
 20. [Message Filter](message-filter.md) - Hide spam and repeated channel messages with your own rules, automatic checks, and learning from Spam taps, all on the device
+21. [Local API](LOCAL_API.md) - Loopback WebSocket API that lets other apps on the device share the radio connection
 
 ## App Overview
 

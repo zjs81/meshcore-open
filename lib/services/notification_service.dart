@@ -676,6 +676,60 @@ class NotificationService {
     }
   }
 
+  /// Tells the user an app is waiting for them to allow it while MeshCore
+  /// Open is in the background, where its dialog cannot be seen. Tapping it
+  /// opens the app, and the dialog with it.
+  Future<void> showLocalApiPairingRequest(String appName) async {
+    if (!await _ensureCanNotify()) return;
+
+    const androidDetails = AndroidNotificationDetails(
+      'local_api_pairing',
+      'App connection requests',
+      channelDescription: 'An app asks to use the radio through MeshCore Open',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
+    );
+
+    const darwinDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: false,
+      presentSound: true,
+    );
+
+    const notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: darwinDetails,
+      macOS: darwinDetails,
+    );
+
+    try {
+      await _notifications.show(
+        id: _localApiPairingNotificationId,
+        title: _l10n.localApi_pairNotificationTitle(appName),
+        body: _l10n.localApi_pairNotificationBody,
+        notificationDetails: notificationDetails,
+        payload: 'local_api_pairing',
+      );
+    } catch (e) {
+      debugPrint('Failed to show pairing notification: $e');
+    }
+  }
+
+  /// Removes the pairing notification once nothing is waiting or the dialog
+  /// is on screen.
+  Future<void> clearLocalApiPairingRequest() async {
+    if (!await _ensureInitialized()) return;
+    try {
+      await _notifications.cancel(id: _localApiPairingNotificationId);
+    } catch (e) {
+      debugPrint('Failed to clear pairing notification: $e');
+    }
+  }
+
+  static final int _localApiPairingNotificationId =
+      'local_api_pairing'.hashCode;
+
   /// Returns a privacy-safe identifier for debug logging.
   /// - advert: shows device name (body contains contactName)
   /// - message: shows "from: sender" (avoids logging message content)
