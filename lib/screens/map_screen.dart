@@ -3611,6 +3611,8 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     BuildContext context,
     AppSettingsService settingsService,
   ) {
+    final showOnlineFilters =
+        context.read<UiViewStateService>().mapSource != MapSourceOption.local;
     showMeshSheet(
       context,
       builder: (sheetContext) => StatefulBuilder(
@@ -3741,13 +3743,16 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                           onChanged: (value) =>
                               service.setMapShowOtherNodes(value),
                         ),
-                        SwitchListTile(
-                          title: Text(sheetContext.l10n.map_showOnlineLinks),
-                          value: settings.mapShowOnlineLinks,
-                          dense: true,
-                          onChanged: (value) =>
-                              service.setMapShowOnlineLinks(value),
-                        ),
+                        if (showOnlineFilters)
+                          SwitchListTile(
+                            title: Text(
+                              sheetContext.l10n.map_showOnlineLinks,
+                            ),
+                            value: settings.mapShowOnlineLinks,
+                            dense: true,
+                            onChanged: (value) =>
+                                service.setMapShowOnlineLinks(value),
+                          ),
                         SectionHeader(sheetContext.l10n.map_markers),
                         SwitchListTile(
                           title: Text(sheetContext.l10n.map_showSharedMarkers),
