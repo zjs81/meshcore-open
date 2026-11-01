@@ -237,7 +237,13 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
 
   void _requestOnlineData() {
     try {
-      _online.requestBounds(_mapController.camera.visibleBounds);
+      _online.requestBounds(
+        _mapController.camera.visibleBounds,
+        fetchLinks: context
+            .read<AppSettingsService>()
+            .settings
+            .mapShowOnlineLinks,
+      );
     } catch (_) {
       // Camera not ready yet; onMapReady requests once it is.
     }
@@ -714,6 +720,10 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
           contactsWithLocation,
           settings,
         );
+        final visibleOnlineRepeaters = _filterOnlineRepeatersBySettings(
+          _online.repeaters,
+          settings,
+        );
         Contact? selectedContact;
         if (_selectedKey != null) {
           for (final c in allContacts) {
@@ -937,6 +947,8 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     if (showOnline)
                       ...buildNetworkMapOnlineLayers(
                         controller: _online,
+                        repeaters: visibleOnlineRepeaters,
+                        showLinks: settings.mapShowOnlineLinks,
                         localMarkerKeys: showLocal
                             ? {for (final c in visibleContacts) c.publicKeyHex}
                             : const {},
@@ -1423,6 +1435,40 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
       }
     }
     return filtered;
+  }
+
+  List<NetworkMapRepeater> _filterOnlineRepeatersBySettings(
+    List<NetworkMapRepeater> repeaters,
+    dynamic settings,
+  ) {
+    final keyPrefix = settings.mapKeyPrefix.trim().toLowerCase();
+    final now = DateTime.now();
+
+    return repeaters.where((repeater) {
+      final typeVisible = switch (repeater.type) {
+        advTypeRepeater => settings.mapShowRepeaters,
+        advTypeChat => settings.mapShowChatNodes,
+        _ => settings.mapShowOtherNodes,
+      };
+      if (!typeVisible) return false;
+
+      final freshnessVisible = switch (_freshness) {
+        _Freshness.all => true,
+        _Freshness.online => repeater.status == NetworkMapRepeaterStatus.active,
+        _Freshness.recent => repeater.status != NetworkMapRepeaterStatus.stale,
+        _Freshness.stale => repeater.status == NetworkMapRepeaterStatus.stale,
+      };
+      if (!freshnessVisible) return false;
+
+      if (settings.mapTimeFilterHours > 0 && repeater.lastSeen != null) {
+        final age = now.difference(repeater.lastSeen!).inHours;
+        if (age > settings.mapTimeFilterHours) return false;
+      }
+
+      return !settings.mapKeyPrefixEnabled ||
+          keyPrefix.isEmpty ||
+          repeater.key.toLowerCase().startsWith(keyPrefix);
+    }).toList();
   }
 
   List<Marker> _buildNodeMarkers(
@@ -2116,6 +2162,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     !settings.mapShowChatNodes,
     !settings.mapShowRepeaters,
     !settings.mapShowOtherNodes,
+    !settings.mapShowOnlineLinks,
     settings.mapKeyPrefixEnabled,
   ].where((active) => active).length;
 
@@ -3693,6 +3740,13 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                           dense: true,
                           onChanged: (value) =>
                               service.setMapShowOtherNodes(value),
+                        ),
+                        SwitchListTile(
+                          title: Text(sheetContext.l10n.map_showOnlineLinks),
+                          value: settings.mapShowOnlineLinks,
+                          dense: true,
+                          onChanged: (value) =>
+                              service.setMapShowOnlineLinks(value),
                         ),
                         SectionHeader(sheetContext.l10n.map_markers),
                         SwitchListTile(

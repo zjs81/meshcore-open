@@ -1408,6 +1408,13 @@ class AppLocalizationsHu extends AppLocalizations {
       'Más csomóponttípusok megjelenítése a térképen';
 
   @override
+  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+
+  @override
+  String get appSettings_showOnlineLinksSubtitle =>
+      'Display connection lines between nodes from the online map';
+
+  @override
   String get appSettings_timeFilter => 'Időszűrő';
 
   @override
@@ -2684,6 +2691,9 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get map_otherNodes => 'Egyéb csomópontok';
+
+  @override
+  String get map_showOnlineLinks => 'Show Online Map Connections';
 
   @override
   String get map_showOverlaps => 'Repeater Key átfedések';
