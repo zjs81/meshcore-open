@@ -3745,9 +3745,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                         ),
                         if (showOnlineFilters)
                           SwitchListTile(
-                            title: Text(
-                              sheetContext.l10n.map_showOnlineLinks,
-                            ),
+                            title: Text(sheetContext.l10n.map_showOnlineLinks),
                             value: settings.mapShowOnlineLinks,
                             dense: true,
                             onChanged: (value) =>
