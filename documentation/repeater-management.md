@@ -144,15 +144,21 @@ Shows "No data" until a response arrives from the repeater.
 
 ### What the User Sees
 
-A card titled "Repeater's Neighbors - N" listing each neighbor as:
+Two tabs: **List** and **Map**.
+
+List tab — a card titled "Repeater's Neighbors - N" listing each neighbor as:
 - Repeater name (or hex key prefix if unknown)
 - Time since last heard
 - SNR quality icon with color coding and label
 
+Map tab — the logged-in repeater and every neighbor with a known position, with a line per link. Each link carries a three-line label (distance, SNR in color, time since last heard) centered on the line; neighbor names are pinned above their icons. Labels fade out when they would collide with another label or a marker. If the repeater has no location, the neighbors are still shown without the repeater marker or link lines. Neighbors without a location are counted in a note.
+
 ### Key Interactions
 - Auto-queries up to 15 neighbors on open
 - Matches public key prefixes against known contacts to show names
-- Pull-to-refresh
+- Pull-to-refresh (List tab)
+- **Discover** action button: sends `discover.neighbors`, making the repeater itself broadcast a zero-hop neighbor discovery request (not the connected companion)
+- **Erase all** action button (confirm dialog): sends `neighbor.remove` with an empty prefix, which the firmware matches against every neighbor entry
 
 ---
 
@@ -174,6 +180,7 @@ Most settings are declared once in `repeaterSettingSpecs` (`lib/models/repeater_
 
 **3. Location Settings**
 - Latitude and longitude (`set lat`, `set lon`)
+- **Set from map** button: opens a map picker centered on the phone's location (when available), where you tap to place a pin and confirm; the picked point fills the latitude and longitude fields (`set lat`, `set lon`)
 
 **4. Features**
 - Packet forwarding toggle (`set repeat`)
@@ -215,6 +222,7 @@ Most settings are declared once in `repeaterSettingSpecs` (`lib/models/repeater_
 
 **Danger Zone** (red-styled card)
 - Reboot repeater (sends `reboot` with confirmation dialog)
+- Start OTA (sends `start ota` with confirmation dialog; supported boards only). ESP32 boards answer with the OTA server address instead of "OK" — any non-error reply counts as success and is shown as-is
 - Erase filesystem (serial-only; shown disabled with an explanation — no command is sent over the air)
 
 ### Key Interactions

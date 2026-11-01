@@ -1,1 +1,239 @@
-{}
+{
+  "bg": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "de": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "es": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "fr": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "hu": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "it": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "ja": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "ko": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "nl": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "pl": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "pt": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "ru": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "sk": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "sl": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "sv": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "uk": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ],
+
+  "zh": [
+    "neighbors_tabList",
+    "neighbors_tabMap",
+    "neighbors_discoverTooltip",
+    "neighbors_discoverySent",
+    "neighbors_discoveryFailed",
+    "neighbors_eraseTooltip",
+    "neighbors_eraseConfirm",
+    "neighbors_erased",
+    "neighbors_eraseFailed",
+    "neighbors_mapNoNeighborLocations",
+    "neighbors_mapHiddenWithoutLocation"
+  ]
+}
