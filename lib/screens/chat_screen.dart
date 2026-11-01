@@ -370,11 +370,12 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
       body: Consumer<MeshCoreConnector>(
-        child: Selector<MeshCoreConnector, (bool, bool, String)>(
+        child: Selector<MeshCoreConnector, (bool, bool, String, String?)>(
           selector: (_, connector) => (
             connector.isContactSmazEnabled(widget.contact.publicKeyHex),
             connector.isContactCyr2LatEnabled(widget.contact.publicKeyHex),
             _resolveContact(connector).name,
+            connector.getContactCyr2LatProfileId(widget.contact.publicKeyHex),
           ),
           builder: (context, _, _) =>
               _buildInputBar(context.read<MeshCoreConnector>()),
@@ -430,7 +431,8 @@ class _ChatScreenState extends State<ChatScreen> {
     List<Message> messages,
     MeshCoreConnector connector,
   ) {
-    final itemCount = messages.length + (_isLoadingOlder ? 1 : 0);
+    final messageSnapshot = List<Message>.of(messages);
+    final itemCount = messageSnapshot.length + (_isLoadingOlder ? 1 : 0);
 
     // Auto-scroll to bottom if user is already at bottom
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -462,8 +464,8 @@ class _ChatScreenState extends State<ChatScreen> {
           final messageIndex = index;
           Contact contact = _resolveContact(connector);
           final bool isRoom = contact.type == advTypeRoom;
-          final sourceIndex = messages.length - 1 - messageIndex;
-          final message = messages[sourceIndex];
+          final sourceIndex = messageSnapshot.length - 1 - messageIndex;
+          final message = messageSnapshot[sourceIndex];
           String fourByteHex = '';
           Contact? roomAuthor;
           if (isRoom) {
