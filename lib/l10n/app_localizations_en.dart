@@ -1396,6 +1396,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Display other node types on the map';
 
   @override
+  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+
+  @override
+  String get appSettings_showOnlineLinksSubtitle =>
+      'Display connection lines between nodes from the online map';
+
+  @override
   String get appSettings_timeFilter => 'Time Filter';
 
   @override
@@ -2655,6 +2662,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get map_otherNodes => 'Other Nodes';
+
+  @override
+  String get map_showOnlineLinks => 'Show Online Map Connections';
 
   @override
   String get map_showOverlaps => 'Repeater Key Overlaps';

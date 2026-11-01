@@ -1423,6 +1423,13 @@ class AppLocalizationsPl extends AppLocalizations {
       'Wyświetl inne typy węzłów na mapie';
 
   @override
+  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+
+  @override
+  String get appSettings_showOnlineLinksSubtitle =>
+      'Display connection lines between nodes from the online map';
+
+  @override
   String get appSettings_timeFilter => 'Filtrowanie Czasu';
 
   @override
@@ -2711,6 +2718,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get map_otherNodes => 'Inne węzły';
+
+  @override
+  String get map_showOnlineLinks => 'Show Online Map Connections';
 
   @override
   String get map_showOverlaps => 'Nakładające się klucze przekaźników';

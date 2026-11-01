@@ -95,6 +95,10 @@ class AppSettingsService extends ChangeNotifier {
     await updateSettings(_settings.copyWith(mapShowOtherNodes: value));
   }
 
+  Future<void> setMapShowOnlineLinks(bool value) async {
+    await updateSettings(_settings.copyWith(mapShowOnlineLinks: value));
+  }
+
   Future<void> setMapShowOverlaps(bool value) async {
     await updateSettings(_settings.copyWith(mapShowOverlaps: value));
   }

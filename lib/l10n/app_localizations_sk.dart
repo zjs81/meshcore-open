@@ -1409,6 +1409,13 @@ class AppLocalizationsSk extends AppLocalizations {
       'Zobraziť ostatné typy uzlov na mape';
 
   @override
+  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+
+  @override
+  String get appSettings_showOnlineLinksSubtitle =>
+      'Display connection lines between nodes from the online map';
+
+  @override
   String get appSettings_timeFilter => 'Časový filter';
 
   @override
@@ -2686,6 +2693,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get map_otherNodes => 'Ostatné uzly';
+
+  @override
+  String get map_showOnlineLinks => 'Show Online Map Connections';
 
   @override
   String get map_showOverlaps => 'Prekrývanie opakovača kľúča';

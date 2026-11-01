@@ -1,1 +1,103 @@
-{}
+{
+  "bg": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "de": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "es": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "fr": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "hu": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "it": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "ja": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "ko": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "nl": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "pl": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "pt": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "ru": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "sk": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "sl": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "sv": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "uk": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ],
+
+  "zh": [
+    "appSettings_showOnlineLinks",
+    "appSettings_showOnlineLinksSubtitle",
+    "map_showOnlineLinks"
+  ]
+}

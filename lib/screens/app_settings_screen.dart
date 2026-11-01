@@ -1130,6 +1130,15 @@ class AppSettingsScreen extends StatelessWidget {
           onChanged: (value) => settingsService.setMapShowOtherNodes(value),
         ),
         const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: tilePadding,
+          secondary: const Icon(Icons.polyline_outlined, size: 24),
+          title: Text(context.l10n.appSettings_showOnlineLinks),
+          subtitle: Text(context.l10n.appSettings_showOnlineLinksSubtitle),
+          value: settings.mapShowOnlineLinks,
+          onChanged: (value) => settingsService.setMapShowOnlineLinks(value),
+        ),
+        const Divider(height: 1, indent: 16),
         MeshNavTile(
           icon: Icons.timer_outlined,
           title: context.l10n.appSettings_timeFilter,
