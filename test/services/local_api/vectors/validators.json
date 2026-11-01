@@ -1,0 +1,628 @@
+{
+  "description": "Validator vectors for MeshCore Local API protocol 1. 'error' and 'expect' values are API error codes; 'ok' means accepted.",
+  "hashtagChannelNames": {
+    "rule": "'#' followed by 1 to 31 characters from a-z, 0-9 and '-'",
+    "cases": [
+      {
+        "name": "#roadstr",
+        "valid": true
+      },
+      {
+        "name": "#a",
+        "valid": true
+      },
+      {
+        "name": "#a-1",
+        "valid": true
+      },
+      {
+        "name": "#0",
+        "valid": true
+      },
+      {
+        "name": "#-",
+        "valid": true
+      },
+      {
+        "name": "#nostr",
+        "valid": true
+      },
+      {
+        "name": "#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "valid": true
+      },
+      {
+        "name": "roadstr",
+        "valid": false
+      },
+      {
+        "name": "#",
+        "valid": false
+      },
+      {
+        "name": "#Road",
+        "valid": false
+      },
+      {
+        "name": "#road str",
+        "valid": false
+      },
+      {
+        "name": "#road_str",
+        "valid": false
+      },
+      {
+        "name": "#road.str",
+        "valid": false
+      },
+      {
+        "name": "#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "valid": false
+      },
+      {
+        "name": "##a",
+        "valid": false
+      },
+      {
+        "name": "#ä",
+        "valid": false
+      },
+      {
+        "name": "#roadstr ",
+        "valid": false
+      },
+      {
+        "name": " #roadstr",
+        "valid": false
+      },
+      {
+        "name": "",
+        "valid": false
+      }
+    ]
+  },
+  "hashtagChannelKeys": {
+    "rule": "key = first 16 bytes of SHA-256 over the UTF-8 name including the leading '#'",
+    "cases": [
+      {
+        "name": "#roadstr",
+        "sha256Hex": "b7f4317db7b03aeb563b2c4bdc476d6ad9d1e66d985ce56a04c88c820d1befb3",
+        "keyHex": "b7f4317db7b03aeb563b2c4bdc476d6a",
+        "keyBase64": "t/QxfbewOutWOyxL3Edtag=="
+      },
+      {
+        "name": "#libretag",
+        "sha256Hex": "39651f8d33f0242e14284a03ae3c779209900e76b5d1f232096cd395ca93515a",
+        "keyHex": "39651f8d33f0242e14284a03ae3c7792",
+        "keyBase64": "OWUfjTPwJC4UKEoDrjx3kg=="
+      },
+      {
+        "name": "#nostr",
+        "sha256Hex": "1c38b59fc19975244a21da0a456bc9a3ca26b1908075fca713c83c90ec657f0d",
+        "keyHex": "1c38b59fc19975244a21da0a456bc9a3",
+        "keyBase64": "HDi1n8GZdSRKIdoKRWvJow=="
+      },
+      {
+        "name": "#test",
+        "sha256Hex": "9cd8fcf22a47333b591d96a2b848b73f457b1bb1a3ea2453a885f9e5787765b1",
+        "keyHex": "9cd8fcf22a47333b591d96a2b848b73f",
+        "keyBase64": "nNj88ipHMztZHZaiuEi3Pw=="
+      },
+      {
+        "name": "#a",
+        "sha256Hex": "302d59c4f9e75750166105ea1d8b36730ed611cbb4312c01aee763d25ee39231",
+        "keyHex": "302d59c4f9e75750166105ea1d8b3673",
+        "keyBase64": "MC1ZxPnnV1AWYQXqHYs2cw=="
+      },
+      {
+        "name": "#zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+        "sha256Hex": "57740f8fee68836be2ba73f4fab14b05462396b744cfe02ee5db2e215d967b4a",
+        "keyHex": "57740f8fee68836be2ba73f4fab14b05",
+        "keyBase64": "V3QPj+5og2viunP0+rFLBQ=="
+      }
+    ]
+  },
+  "regionNames": {
+    "rule": "1 to 30 characters from a-z, 0-9 and '-'. A well-formed name that the server does not know is unknown_region; anything else is bad_request.",
+    "cases": [
+      {
+        "name": "sk",
+        "wellFormed": true
+      },
+      {
+        "name": "sk-ba",
+        "wellFormed": true
+      },
+      {
+        "name": "eu",
+        "wellFormed": true
+      },
+      {
+        "name": "0",
+        "wellFormed": true
+      },
+      {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "wellFormed": true
+      },
+      {
+        "name": "",
+        "wellFormed": false
+      },
+      {
+        "name": "!sk",
+        "wellFormed": false
+      },
+      {
+        "name": "SK",
+        "wellFormed": false
+      },
+      {
+        "name": "sk_ba",
+        "wellFormed": false
+      },
+      {
+        "name": "sk ba",
+        "wellFormed": false
+      },
+      {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "wellFormed": false
+      },
+      {
+        "name": "#sk",
+        "wellFormed": false
+      },
+      {
+        "name": "sk-á",
+        "wellFormed": false
+      }
+    ]
+  },
+  "since": {
+    "rule": "RFC 3339 date-time with 'Z' or an offset, or a non-negative integer: epoch seconds, or epoch milliseconds when greater than 100000000000. Fractions below a millisecond are truncated.",
+    "cases": [
+      {
+        "since": "2026-10-26T12:00:00.000Z",
+        "epochMs": 1793016000000
+      },
+      {
+        "since": "2026-10-26T12:00:00Z",
+        "epochMs": 1793016000000
+      },
+      {
+        "since": "2026-10-26T14:00:00.000+02:00",
+        "epochMs": 1793016000000
+      },
+      {
+        "since": "2026-10-26T12:00:00.123456Z",
+        "epochMs": 1793016000123
+      },
+      {
+        "since": 1793016000,
+        "epochMs": 1793016000000
+      },
+      {
+        "since": 1793016000123,
+        "epochMs": 1793016000123
+      },
+      {
+        "since": 0,
+        "epochMs": 0
+      },
+      {
+        "since": 100000000000,
+        "epochMs": 100000000000000
+      },
+      {
+        "since": 100000000001,
+        "epochMs": 100000000001
+      },
+      {
+        "since": "2026-10-26T12:00:00",
+        "error": "bad_request"
+      },
+      {
+        "since": "2026-10-26",
+        "error": "bad_request"
+      },
+      {
+        "since": "yesterday",
+        "error": "bad_request"
+      },
+      {
+        "since": "",
+        "error": "bad_request"
+      },
+      {
+        "since": -1,
+        "error": "bad_request"
+      },
+      {
+        "since": 1.5,
+        "error": "bad_request"
+      },
+      {
+        "since": true,
+        "error": "bad_request"
+      },
+      {
+        "since": null,
+        "error": "bad_request"
+      },
+      {
+        "since": [
+          "2026-10-26T12:00:00Z"
+        ],
+        "error": "bad_request"
+      }
+    ]
+  },
+  "paths": {
+    "rule": "hex, even length, upper or lower case; pathHashSize 1, 2 or 3 (default 1); length a multiple of pathHashSize; at most 63 hops and 64 bytes. Absent or null path: flood. Empty path: zero-hop. pathLenByte is the firmware's packed path_len: (pathHashSize - 1) << 6 | hops.",
+    "cases": [
+      {
+        "path": null,
+        "result": "flood"
+      },
+      {
+        "path": "",
+        "result": "zero_hop",
+        "hops": 0,
+        "pathLenByte": 0
+      },
+      {
+        "path": "",
+        "pathHashSize": 1,
+        "result": "zero_hop",
+        "hops": 0,
+        "pathLenByte": 0
+      },
+      {
+        "path": "",
+        "pathHashSize": 2,
+        "result": "zero_hop",
+        "hops": 0,
+        "pathLenByte": 64
+      },
+      {
+        "path": "",
+        "pathHashSize": 3,
+        "result": "zero_hop",
+        "hops": 0,
+        "pathLenByte": 128
+      },
+      {
+        "path": "a1",
+        "result": "direct",
+        "hops": 1,
+        "pathLenByte": 1
+      },
+      {
+        "path": "a1b2c3",
+        "pathHashSize": 1,
+        "result": "direct",
+        "hops": 3,
+        "pathLenByte": 3
+      },
+      {
+        "path": "A1B2C3",
+        "pathHashSize": 1,
+        "result": "direct",
+        "hops": 3,
+        "pathLenByte": 3
+      },
+      {
+        "path": "a1b2c3",
+        "pathHashSize": 2,
+        "error": "bad_request",
+        "reason": "length is not a multiple of pathHashSize"
+      },
+      {
+        "path": "a1b2c3",
+        "pathHashSize": 3,
+        "result": "direct",
+        "hops": 1,
+        "pathLenByte": 129
+      },
+      {
+        "path": "a1b2c3d4",
+        "pathHashSize": 2,
+        "result": "direct",
+        "hops": 2,
+        "pathLenByte": 66
+      },
+      {
+        "path": "a1b",
+        "pathHashSize": 1,
+        "error": "bad_request",
+        "reason": "path is not hex"
+      },
+      {
+        "path": "zz",
+        "pathHashSize": 1,
+        "error": "bad_request",
+        "reason": "path is not hex"
+      },
+      {
+        "path": "0x a1",
+        "pathHashSize": 1,
+        "error": "bad_request",
+        "reason": "path is not hex"
+      },
+      {
+        "path": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e",
+        "pathHashSize": 1,
+        "result": "direct",
+        "hops": 63,
+        "pathLenByte": 63
+      },
+      {
+        "path": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e40",
+        "pathHashSize": 1,
+        "error": "bad_request",
+        "reason": "more than 63 hops or 64 bytes"
+      },
+      {
+        "path": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e40",
+        "pathHashSize": 2,
+        "result": "direct",
+        "hops": 32,
+        "pathLenByte": 96
+      },
+      {
+        "path": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e",
+        "pathHashSize": 3,
+        "result": "direct",
+        "hops": 21,
+        "pathLenByte": 149
+      },
+      {
+        "path": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e404142",
+        "pathHashSize": 3,
+        "error": "bad_request",
+        "reason": "more than 63 hops or 64 bytes"
+      },
+      {
+        "path": "a1",
+        "pathHashSize": 0,
+        "error": "bad_request",
+        "reason": "pathHashSize is not 1, 2 or 3"
+      },
+      {
+        "path": "a1",
+        "pathHashSize": 4,
+        "error": "bad_request",
+        "reason": "pathHashSize is not 1, 2 or 3"
+      },
+      {
+        "path": "a1",
+        "pathHashSize": "1",
+        "error": "bad_request",
+        "reason": "pathHashSize is not 1, 2 or 3"
+      },
+      {
+        "path": "a1",
+        "pathHashSize": 1.5,
+        "error": "bad_request",
+        "reason": "pathHashSize is not 1, 2 or 3"
+      },
+      {
+        "path": 123,
+        "pathHashSize": 1,
+        "error": "bad_request",
+        "reason": "path is not a string"
+      },
+      {
+        "path": [
+          "a1"
+        ],
+        "pathHashSize": 1,
+        "error": "bad_request",
+        "reason": "path is not a string"
+      }
+    ]
+  },
+  "payloads": {
+    "rule": "standard base64 with padding (RFC 4648 section 4) of 1 to limits.maxPayloadBytes bytes; these cases assume maxPayloadBytes = 163. 'either' means ok or bad_request are both conformant.",
+    "maxPayloadBytes": 163,
+    "cases": [
+      {
+        "why": "smallest payload",
+        "bytes": 1,
+        "payload": "AA==",
+        "expect": "ok"
+      },
+      {
+        "why": "the recommended maxPayloadBytes",
+        "bytes": 163,
+        "payload": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6Chog==",
+        "expect": "ok"
+      },
+      {
+        "why": "one byte over 163",
+        "bytes": 164,
+        "payload": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqM=",
+        "expect": "payload_too_large"
+      },
+      {
+        "why": "MeshCore's radio-side limit, still over the API's 163",
+        "bytes": 165,
+        "payload": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOk",
+        "expect": "payload_too_large"
+      },
+      {
+        "why": "empty string",
+        "payload": "",
+        "expect": "bad_request"
+      },
+      {
+        "why": "not base64",
+        "payload": "***",
+        "expect": "bad_request"
+      },
+      {
+        "why": "base64url alphabet; clients MUST NOT send it, servers MAY accept it",
+        "payload": "-_-_",
+        "expect": "either"
+      },
+      {
+        "why": "unpadded standard base64 of 1 byte; clients MUST NOT send it, servers MAY accept it",
+        "payload": "AA",
+        "expect": "either"
+      },
+      {
+        "why": "payload is a number",
+        "payload": 12,
+        "expect": "bad_request"
+      }
+    ]
+  },
+  "dataTypes": {
+    "rule": "integer 1 to 65535",
+    "cases": [
+      {
+        "dataType": 1,
+        "expect": "ok"
+      },
+      {
+        "dataType": 336,
+        "expect": "ok"
+      },
+      {
+        "dataType": 65535,
+        "expect": "ok"
+      },
+      {
+        "dataType": 0,
+        "expect": "invalid_data_type"
+      },
+      {
+        "dataType": -1,
+        "expect": "invalid_data_type"
+      },
+      {
+        "dataType": 65536,
+        "expect": "invalid_data_type"
+      },
+      {
+        "dataType": "336",
+        "expect": "bad_request"
+      },
+      {
+        "dataType": 336.5,
+        "expect": "bad_request"
+      },
+      {
+        "dataType": null,
+        "expect": "bad_request"
+      }
+    ]
+  },
+  "texts": {
+    "rule": "string of 1 to 2000 Unicode code points",
+    "cases": [
+      {
+        "why": "one character",
+        "text": "a",
+        "expect": "ok"
+      },
+      {
+        "why": "2000 code points",
+        "textRepeat": {
+          "unit": "a",
+          "count": 2000
+        },
+        "expect": "ok"
+      },
+      {
+        "why": "2001 code points",
+        "textRepeat": {
+          "unit": "a",
+          "count": 2001
+        },
+        "expect": "bad_request"
+      },
+      {
+        "why": "2000 code points outside the BMP (4000 UTF-16 code units, 8000 UTF-8 bytes)",
+        "textRepeat": {
+          "unit": "😀",
+          "count": 2000
+        },
+        "expect": "ok"
+      },
+      {
+        "why": "empty",
+        "text": "",
+        "expect": "bad_request"
+      },
+      {
+        "why": "not a string",
+        "text": 5,
+        "expect": "bad_request"
+      }
+    ]
+  },
+  "clientIdentity": {
+    "rule": "hello.client.name: 1 to 64 code points after trimming, no control characters; version: 0 to 32 code points, no control characters",
+    "cases": [
+      {
+        "name": "Roadbeacon",
+        "version": "0.4.0",
+        "expect": "ok"
+      },
+      {
+        "name": "  Roadbeacon  ",
+        "version": "",
+        "expect": "ok",
+        "storedName": "Roadbeacon"
+      },
+      {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "version": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+        "expect": "ok"
+      },
+      {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "version": "1",
+        "expect": "bad_request"
+      },
+      {
+        "name": "a",
+        "version": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+        "expect": "bad_request"
+      },
+      {
+        "name": "   ",
+        "version": "1",
+        "expect": "bad_request"
+      },
+      {
+        "name": "",
+        "version": "1",
+        "expect": "bad_request"
+      },
+      {
+        "name": "Road\nbeacon",
+        "version": "1",
+        "expect": "bad_request"
+      },
+      {
+        "name": "Roadbeacon",
+        "version": "1\u0007",
+        "expect": "bad_request"
+      },
+      {
+        "name": "Roadbeacon",
+        "version": null,
+        "expect": "bad_request"
+      },
+      {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+        "version": "1",
+        "expect": "ok",
+        "note": "64 code points"
+      }
+    ]
+  }
+}
