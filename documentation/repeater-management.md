@@ -157,7 +157,7 @@ Map tab — the logged-in repeater and every neighbor with a known position, wit
 - Auto-queries up to 15 neighbors on open
 - Matches public key prefixes against known contacts to show names
 - Pull-to-refresh (List tab)
-- **Discover** action button: sends `discover.neighbors`, making the repeater itself broadcast a zero-hop neighbor discovery request (not the connected companion)
+- **Discover** action button: sends `discover.neighbors`, making the repeater itself broadcast a zero-hop neighbor discovery request (not the connected companion). Waits for the repeater's reply; if none arrives within the normal command timeout it reports a timeout instead of retrying
 - **Erase all** action button (confirm dialog): sends `neighbor.remove` with an empty prefix, which the firmware matches against every neighbor entry
 
 ---

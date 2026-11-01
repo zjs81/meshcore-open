@@ -308,7 +308,9 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
 
   /// Tell the repeater itself to broadcast a zero-hop neighbor discovery
   /// request (`discover.neighbors`, MyMesh.cpp sendNodeDiscoverReq) rather
-  /// than making the connected companion do it.
+  /// than making the connected companion do it. Waits for the repeater's
+  /// reply; without a reply within the normal command timeout the request
+  /// is reported as timed out instead of retried.
   Future<void> _sendDiscovery() async {
     if (_commandService == null) return;
     final l10n = context.l10n;
@@ -316,7 +318,11 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
     final repeater = _resolveRepeater(connector);
     setState(() => _isDiscovering = true);
     try {
-      await _commandService!.sendCommand(repeater, 'discover.neighbors');
+      await _commandService!.sendCommand(
+        repeater,
+        'discover.neighbors',
+        retries: 1,
+      );
       if (!mounted) return;
       showDismissibleSnackBar(
         context,
@@ -324,9 +330,14 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
       );
     } catch (e) {
       if (!mounted) return;
+      final isTimeout = e.toString().contains('Command timeout');
       showDismissibleSnackBar(
         context,
-        content: Text(l10n.neighbors_discoveryFailed(e.toString())),
+        content: Text(
+          isTimeout
+              ? l10n.neighbors_requestTimedOut
+              : l10n.neighbors_discoveryFailed(e.toString()),
+        ),
         backgroundColor: Theme.of(context).colorScheme.error,
       );
     } finally {
