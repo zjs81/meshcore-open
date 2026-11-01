@@ -6803,4 +6803,114 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Gelukkig Nieuwjaar|Gelukkig nieuw jaar|Prettig nieuwjaar|Een gelukkig nieuwjaar|Happy New Year|Zalig nieuwjaar|Fijne jaarwisseling';
+
+  @override
+  String get appSettings_ipfsGatewayIpfsIo => 'ipfs.io';
+
+  @override
+  String get appSettings_ipfsGatewayPinata => 'Pinata';
+
+  @override
+  String get appSettings_ipfsGatewayFilebase => 'Filebase';
+
+  @override
+  String get localApi_title => 'Lokale API';
+
+  @override
+  String get localApi_settingsSubtitle => 'Laat andere apps de radio gebruiken';
+
+  @override
+  String get localApi_unavailable => 'De API is niet beschikbaar.';
+
+  @override
+  String get localApi_enableSubtitle =>
+      'Laat andere apps op dit apparaat de radio gebruiken via MeshCore Open. Elke app vraagt de eerste keer om toestemming.';
+
+  @override
+  String get localApi_address => 'Adres';
+
+  @override
+  String get localApi_off => 'Uit';
+
+  @override
+  String get localApi_allowedApps => 'Toegestane apps';
+
+  @override
+  String get localApi_allowedAppsSubtitle =>
+      'Goedgekeurd bij de eerste verbinding. Een verwijderde app vraagt opnieuw.';
+
+  @override
+  String get localApi_noApps => 'Nog geen apps';
+
+  @override
+  String get localApi_noAppsSubtitle =>
+      'Een verzoek verschijnt hier zodra een app verbinding maakt.';
+
+  @override
+  String localApi_pairedOn(String date) {
+    return 'Gekoppeld $date';
+  }
+
+  @override
+  String get localApi_remove => 'Verwijderen';
+
+  @override
+  String get localApi_clearData => 'Opgeslagen radiogegevens wissen';
+
+  @override
+  String get localApi_clearDataSubtitle =>
+      'Verwijdert kanaalgegevens die bewaard zijn voor apps die niet actief waren.';
+
+  @override
+  String get localApi_dataCleared => 'Opgeslagen radiogegevens gewist';
+
+  @override
+  String get localApi_pairTitle => 'Verbinding toestaan?';
+
+  @override
+  String localApi_pairBody(String name) {
+    return '‘$name’ wil via deze app MeshCore-berichten verzenden en ontvangen terwijl deze de radio verbonden houdt.';
+  }
+
+  @override
+  String get localApi_keyFingerprint => 'Vingerafdruk van de sleutel';
+
+  @override
+  String get localApi_pairWarning =>
+      'Sta alleen apps toe die je vertrouwt: ze kunnen je berichten lezen en via je radio zenden.';
+
+  @override
+  String get localApi_deny => 'Weigeren';
+
+  @override
+  String get localApi_allow => 'Toestaan';
+
+  @override
+  String localApi_pairExpired(String name) {
+    return '‘$name’ wachtte niet meer voordat hij werd toegestaan. Open hem opnieuw om te koppelen.';
+  }
+
+  @override
+  String localApi_pairNotificationTitle(String name) {
+    return '“$name” wil de radio gebruiken';
+  }
+
+  @override
+  String get localApi_pairNotificationBody =>
+      'Open MeshCore Open om het toe te staan of te weigeren.';
+
+  @override
+  String get localApi_joinTitle => 'Kanaal toevoegen?';
+
+  @override
+  String localApi_joinBody(String name, String channel) {
+    return '“$name” wil het hashtagkanaal $channel aan je radio toevoegen.';
+  }
+
+  @override
+  String get localApi_joinWarning =>
+      'Iedereen die de naam van een hashtagkanaal kent, kan erin lezen en schrijven.';
+
+  @override
+  String get localApi_joinAdd => 'Toevoegen';
 }

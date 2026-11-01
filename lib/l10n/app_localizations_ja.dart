@@ -6523,4 +6523,111 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'あけましておめでとう|明けましておめでとう|あけおめ|アケオメ|ハッピーニューイヤー|ハッピー・ニューイヤー|謹賀新年|Happy New Year';
+
+  @override
+  String get appSettings_ipfsGatewayIpfsIo => 'ipfs.io';
+
+  @override
+  String get appSettings_ipfsGatewayPinata => 'Pinata';
+
+  @override
+  String get appSettings_ipfsGatewayFilebase => 'Filebase';
+
+  @override
+  String get localApi_title => 'ローカル API';
+
+  @override
+  String get localApi_settingsSubtitle => '他のアプリに無線機の使用を許可';
+
+  @override
+  String get localApi_unavailable => 'API は利用できません。';
+
+  @override
+  String get localApi_enableSubtitle =>
+      'この端末の他のアプリが MeshCore Open 経由で無線機を使えるようにします。各アプリは初回に許可を求めます。';
+
+  @override
+  String get localApi_address => 'アドレス';
+
+  @override
+  String get localApi_off => 'オフ';
+
+  @override
+  String get localApi_allowedApps => '許可したアプリ';
+
+  @override
+  String get localApi_allowedAppsSubtitle => '初回接続時に承認されたアプリです。削除すると再度確認されます。';
+
+  @override
+  String get localApi_noApps => 'アプリはまだありません';
+
+  @override
+  String get localApi_noAppsSubtitle => 'アプリが接続するとここにリクエストが表示されます。';
+
+  @override
+  String localApi_pairedOn(String date) {
+    return 'ペアリング日時 $date';
+  }
+
+  @override
+  String get localApi_remove => '削除';
+
+  @override
+  String get localApi_clearData => '保存された無線データを消去';
+
+  @override
+  String get localApi_clearDataSubtitle =>
+      '起動していなかったアプリのために保存したチャンネルデータを削除します。';
+
+  @override
+  String get localApi_dataCleared => '保存された無線データを消去しました';
+
+  @override
+  String get localApi_pairTitle => '接続を許可しますか？';
+
+  @override
+  String localApi_pairBody(String name) {
+    return '「$name」が、このアプリが無線機に接続している間、このアプリ経由で MeshCore メッセージを送受信しようとしています。';
+  }
+
+  @override
+  String get localApi_keyFingerprint => '鍵のフィンガープリント';
+
+  @override
+  String get localApi_pairWarning =>
+      '信頼できるアプリだけを許可してください。メッセージの読み取りや無線機での送信ができるようになります。';
+
+  @override
+  String get localApi_deny => '拒否';
+
+  @override
+  String get localApi_allow => '許可';
+
+  @override
+  String localApi_pairExpired(String name) {
+    return '「$name」は許可される前に待機をやめました。もう一度開いてペアリングしてください。';
+  }
+
+  @override
+  String localApi_pairNotificationTitle(String name) {
+    return '「$name」が無線機の使用を求めています';
+  }
+
+  @override
+  String get localApi_pairNotificationBody =>
+      'MeshCore Open を開いて許可または拒否してください。';
+
+  @override
+  String get localApi_joinTitle => 'チャンネルを追加しますか？';
+
+  @override
+  String localApi_joinBody(String name, String channel) {
+    return '「$name」がハッシュタグチャンネル $channel を無線機に追加しようとしています。';
+  }
+
+  @override
+  String get localApi_joinWarning => 'ハッシュタグチャンネルは、名前を知っている人なら誰でも読み書きできます。';
+
+  @override
+  String get localApi_joinAdd => '追加';
 }

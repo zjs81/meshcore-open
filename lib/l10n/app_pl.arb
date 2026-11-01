@@ -3559,5 +3559,67 @@
   "themes_chatBackground": "Tło czatu",
   "themes_chatBackgroundHelp": "Pokazywane w czatach, które nie mają własnego tła",
   "themes_chatBackgroundEverywhere": "Użyj w każdym czacie",
-  "themes_chatBackgroundEverywhereHelp": "Zastępuje też tła ustawione w pojedynczych czatach"
+  "themes_chatBackgroundEverywhereHelp": "Zastępuje też tła ustawione w pojedynczych czatach",
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "Lokalne API",
+  "localApi_settingsSubtitle": "Pozwól innym aplikacjom używać radia",
+  "localApi_unavailable": "API jest niedostępne.",
+  "localApi_enableSubtitle": "Pozwala innym aplikacjom na tym urządzeniu używać radia przez MeshCore Open. Każda aplikacja za pierwszym razem prosi o zgodę.",
+  "localApi_address": "Adres",
+  "localApi_off": "Wyłączone",
+  "localApi_allowedApps": "Dozwolone aplikacje",
+  "localApi_allowedAppsSubtitle": "Zatwierdzone przy pierwszym połączeniu. Usunięta aplikacja zapyta ponownie.",
+  "localApi_noApps": "Brak aplikacji",
+  "localApi_noAppsSubtitle": "Prośba pojawi się tutaj, gdy aplikacja się połączy.",
+  "localApi_pairedOn": "Sparowano {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "Usuń",
+  "localApi_clearData": "Wyczyść zapisane dane radia",
+  "localApi_clearDataSubtitle": "Usuwa dane kanałów zachowane dla aplikacji, które nie działały.",
+  "localApi_dataCleared": "Wyczyszczono zapisane dane radia",
+  "localApi_pairTitle": "Zezwolić na połączenie?",
+  "localApi_pairBody": "„{name}” chce wysyłać i odbierać wiadomości MeshCore przez tę aplikację, gdy utrzymuje ona połączenie z radiem.",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "Odcisk klucza",
+  "localApi_pairWarning": "Zezwalaj tylko zaufanym aplikacjom: będą mogły czytać twoje wiadomości i nadawać przez twoje radio.",
+  "localApi_deny": "Odmów",
+  "localApi_allow": "Zezwól",
+  "localApi_pairExpired": "„{name}” przestała czekać, zanim została dopuszczona. Otwórz ją ponownie, aby sparować.",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "„{name}” chce używać radia",
+  "localApi_pairNotificationBody": "Otwórz MeshCore Open, aby zezwolić lub odmówić.",
+  "localApi_joinTitle": "Dodać kanał?",
+  "localApi_joinBody": "„{name}” chce dodać kanał z hashtagiem {channel} do Twojego radia.",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "Każdy, kto zna nazwę kanału z hashtagiem, może go czytać i w nim pisać.",
+  "localApi_joinAdd": "Dodaj"
 }

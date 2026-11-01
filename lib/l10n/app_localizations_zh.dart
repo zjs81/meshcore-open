@@ -6373,4 +6373,108 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get holidayGreeting_newYear => '新年快乐|新年快樂|元旦快乐|元旦快樂|新年好|新年愉快';
+
+  @override
+  String get appSettings_ipfsGatewayIpfsIo => 'ipfs.io';
+
+  @override
+  String get appSettings_ipfsGatewayPinata => 'Pinata';
+
+  @override
+  String get appSettings_ipfsGatewayFilebase => 'Filebase';
+
+  @override
+  String get localApi_title => '本地 API';
+
+  @override
+  String get localApi_settingsSubtitle => '允许其他应用使用电台';
+
+  @override
+  String get localApi_unavailable => 'API 不可用。';
+
+  @override
+  String get localApi_enableSubtitle =>
+      '允许此设备上的其他应用通过 MeshCore Open 使用电台。每个应用首次使用时都会请求许可。';
+
+  @override
+  String get localApi_address => '地址';
+
+  @override
+  String get localApi_off => '关闭';
+
+  @override
+  String get localApi_allowedApps => '已允许的应用';
+
+  @override
+  String get localApi_allowedAppsSubtitle => '在首次连接时批准。移除后，该应用会再次请求。';
+
+  @override
+  String get localApi_noApps => '暂无应用';
+
+  @override
+  String get localApi_noAppsSubtitle => '应用连接后，请求会显示在这里。';
+
+  @override
+  String localApi_pairedOn(String date) {
+    return '配对于 $date';
+  }
+
+  @override
+  String get localApi_remove => '移除';
+
+  @override
+  String get localApi_clearData => '清除已存储的电台数据';
+
+  @override
+  String get localApi_clearDataSubtitle => '删除为未运行的应用保留的频道数据。';
+
+  @override
+  String get localApi_dataCleared => '已清除存储的电台数据';
+
+  @override
+  String get localApi_pairTitle => '允许连接？';
+
+  @override
+  String localApi_pairBody(String name) {
+    return '“$name”想在本应用保持电台连接时，通过本应用收发 MeshCore 消息。';
+  }
+
+  @override
+  String get localApi_keyFingerprint => '密钥指纹';
+
+  @override
+  String get localApi_pairWarning => '只允许你信任的应用：它将能读取你的消息并通过你的电台发射。';
+
+  @override
+  String get localApi_deny => '拒绝';
+
+  @override
+  String get localApi_allow => '允许';
+
+  @override
+  String localApi_pairExpired(String name) {
+    return '“$name”在获得允许前已停止等待。请重新打开它以进行配对。';
+  }
+
+  @override
+  String localApi_pairNotificationTitle(String name) {
+    return '“$name”想要使用无线电';
+  }
+
+  @override
+  String get localApi_pairNotificationBody => '打开 MeshCore Open 以允许或拒绝。';
+
+  @override
+  String get localApi_joinTitle => '添加频道？';
+
+  @override
+  String localApi_joinBody(String name, String channel) {
+    return '“$name”想将标签频道 $channel 添加到你的无线电。';
+  }
+
+  @override
+  String get localApi_joinWarning => '任何知道标签频道名称的人都可以在其中阅读和发言。';
+
+  @override
+  String get localApi_joinAdd => '添加';
 }

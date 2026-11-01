@@ -6740,4 +6740,114 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get holidayGreeting_newYear => 'Happy New Year|Happy New Year\'s';
+
+  @override
+  String get appSettings_ipfsGatewayIpfsIo => 'ipfs.io';
+
+  @override
+  String get appSettings_ipfsGatewayPinata => 'Pinata';
+
+  @override
+  String get appSettings_ipfsGatewayFilebase => 'Filebase';
+
+  @override
+  String get localApi_title => 'Local API';
+
+  @override
+  String get localApi_settingsSubtitle => 'Let other apps use the radio';
+
+  @override
+  String get localApi_unavailable => 'The API is not available.';
+
+  @override
+  String get localApi_enableSubtitle =>
+      'Let other apps on this device use the radio through MeshCore Open. Each app asks for permission the first time.';
+
+  @override
+  String get localApi_address => 'Address';
+
+  @override
+  String get localApi_off => 'Off';
+
+  @override
+  String get localApi_allowedApps => 'Allowed apps';
+
+  @override
+  String get localApi_allowedAppsSubtitle =>
+      'Approved when they first connected. Removing one makes it ask again.';
+
+  @override
+  String get localApi_noApps => 'No apps yet';
+
+  @override
+  String get localApi_noAppsSubtitle =>
+      'A request appears here after an app connects.';
+
+  @override
+  String localApi_pairedOn(String date) {
+    return 'Paired $date';
+  }
+
+  @override
+  String get localApi_remove => 'Remove';
+
+  @override
+  String get localApi_clearData => 'Clear stored radio data';
+
+  @override
+  String get localApi_clearDataSubtitle =>
+      'Removes channel data kept for apps that were not running.';
+
+  @override
+  String get localApi_dataCleared => 'Stored radio data cleared';
+
+  @override
+  String get localApi_pairTitle => 'Allow connection?';
+
+  @override
+  String localApi_pairBody(String name) {
+    return '“$name” wants to send and receive MeshCore messages through this app while it keeps the radio connected.';
+  }
+
+  @override
+  String get localApi_keyFingerprint => 'Key fingerprint';
+
+  @override
+  String get localApi_pairWarning =>
+      'Only allow an app you trust: it will be able to read your messages and transmit on your radio.';
+
+  @override
+  String get localApi_deny => 'Deny';
+
+  @override
+  String get localApi_allow => 'Allow';
+
+  @override
+  String localApi_pairExpired(String name) {
+    return '“$name” stopped waiting before it was allowed. Open it again to pair.';
+  }
+
+  @override
+  String localApi_pairNotificationTitle(String name) {
+    return '“$name” wants to use the radio';
+  }
+
+  @override
+  String get localApi_pairNotificationBody =>
+      'Open MeshCore Open to allow or deny it.';
+
+  @override
+  String get localApi_joinTitle => 'Add a channel?';
+
+  @override
+  String localApi_joinBody(String name, String channel) {
+    return '“$name” wants to add the hashtag channel $channel to your radio.';
+  }
+
+  @override
+  String get localApi_joinWarning =>
+      'Anyone who knows a hashtag channel\'s name can read it and post in it.';
+
+  @override
+  String get localApi_joinAdd => 'Add';
 }

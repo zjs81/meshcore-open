@@ -3427,5 +3427,67 @@
   "themes_chatBackground": "Chatachtergrond",
   "themes_chatBackgroundHelp": "Getoond in chats die geen eigen achtergrond hebben",
   "themes_chatBackgroundEverywhere": "In elke chat gebruiken",
-  "themes_chatBackgroundEverywhereHelp": "Vervangt ook achtergronden die voor afzonderlijke chats zijn ingesteld"
+  "themes_chatBackgroundEverywhereHelp": "Vervangt ook achtergronden die voor afzonderlijke chats zijn ingesteld",
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "Lokale API",
+  "localApi_settingsSubtitle": "Laat andere apps de radio gebruiken",
+  "localApi_unavailable": "De API is niet beschikbaar.",
+  "localApi_enableSubtitle": "Laat andere apps op dit apparaat de radio gebruiken via MeshCore Open. Elke app vraagt de eerste keer om toestemming.",
+  "localApi_address": "Adres",
+  "localApi_off": "Uit",
+  "localApi_allowedApps": "Toegestane apps",
+  "localApi_allowedAppsSubtitle": "Goedgekeurd bij de eerste verbinding. Een verwijderde app vraagt opnieuw.",
+  "localApi_noApps": "Nog geen apps",
+  "localApi_noAppsSubtitle": "Een verzoek verschijnt hier zodra een app verbinding maakt.",
+  "localApi_pairedOn": "Gekoppeld {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "Verwijderen",
+  "localApi_clearData": "Opgeslagen radiogegevens wissen",
+  "localApi_clearDataSubtitle": "Verwijdert kanaalgegevens die bewaard zijn voor apps die niet actief waren.",
+  "localApi_dataCleared": "Opgeslagen radiogegevens gewist",
+  "localApi_pairTitle": "Verbinding toestaan?",
+  "localApi_pairBody": "‘{name}’ wil via deze app MeshCore-berichten verzenden en ontvangen terwijl deze de radio verbonden houdt.",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "Vingerafdruk van de sleutel",
+  "localApi_pairWarning": "Sta alleen apps toe die je vertrouwt: ze kunnen je berichten lezen en via je radio zenden.",
+  "localApi_deny": "Weigeren",
+  "localApi_allow": "Toestaan",
+  "localApi_pairExpired": "‘{name}’ wachtte niet meer voordat hij werd toegestaan. Open hem opnieuw om te koppelen.",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "“{name}” wil de radio gebruiken",
+  "localApi_pairNotificationBody": "Open MeshCore Open om het toe te staan of te weigeren.",
+  "localApi_joinTitle": "Kanaal toevoegen?",
+  "localApi_joinBody": "“{name}” wil het hashtagkanaal {channel} aan je radio toevoegen.",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "Iedereen die de naam van een hashtagkanaal kent, kan erin lezen en schrijven.",
+  "localApi_joinAdd": "Toevoegen"
 }

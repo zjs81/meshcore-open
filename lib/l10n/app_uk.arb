@@ -3506,5 +3506,67 @@
   "themes_chatBackground": "Тло чату",
   "themes_chatBackgroundHelp": "Показується в чатах, які не мають власного тла",
   "themes_chatBackgroundEverywhere": "Використовувати в усіх чатах",
-  "themes_chatBackgroundEverywhereHelp": "Також замінює тла, задані в окремих чатах"
+  "themes_chatBackgroundEverywhereHelp": "Також замінює тла, задані в окремих чатах",
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "Локальний API",
+  "localApi_settingsSubtitle": "Дозволити іншим застосункам використовувати радіо",
+  "localApi_unavailable": "API недоступний.",
+  "localApi_enableSubtitle": "Дозволяє іншим застосункам на цьому пристрої використовувати радіо через MeshCore Open. Кожен застосунок запитує дозвіл першого разу.",
+  "localApi_address": "Адреса",
+  "localApi_off": "Вимкнено",
+  "localApi_allowedApps": "Дозволені застосунки",
+  "localApi_allowedAppsSubtitle": "Схвалені під час першого підключення. Видалений застосунок запитає знову.",
+  "localApi_noApps": "Ще немає застосунків",
+  "localApi_noAppsSubtitle": "Запит з'явиться тут, коли застосунок підключиться.",
+  "localApi_pairedOn": "Сполучено {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "Видалити",
+  "localApi_clearData": "Очистити збережені дані радіо",
+  "localApi_clearDataSubtitle": "Видаляє дані каналів, збережені для застосунків, що не працювали.",
+  "localApi_dataCleared": "Збережені дані радіо очищено",
+  "localApi_pairTitle": "Дозволити підключення?",
+  "localApi_pairBody": "«{name}» хоче надсилати й отримувати повідомлення MeshCore через цей застосунок, поки він тримає радіо підключеним.",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "Відбиток ключа",
+  "localApi_pairWarning": "Дозволяйте лише застосункам, яким довіряєте: вони зможуть читати ваші повідомлення й передавати через ваше радіо.",
+  "localApi_deny": "Відхилити",
+  "localApi_allow": "Дозволити",
+  "localApi_pairExpired": "«{name}» перестав чекати до отримання дозволу. Відкрийте його знову для сполучення.",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "«{name}» хоче використовувати радіо",
+  "localApi_pairNotificationBody": "Відкрийте MeshCore Open, щоб дозволити або заборонити.",
+  "localApi_joinTitle": "Додати канал?",
+  "localApi_joinBody": "«{name}» хоче додати хештег-канал {channel} до вашого радіо.",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "Будь-хто, хто знає назву хештег-каналу, може читати його й писати в нього.",
+  "localApi_joinAdd": "Додати"
 }

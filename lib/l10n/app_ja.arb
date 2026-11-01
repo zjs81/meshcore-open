@@ -3660,5 +3660,67 @@
   "holidayGreeting_halloween": "ハッピーハロウィン|ハッピーハロウィーン|ハッピーハロウィン|ハピハロ|トリックオアトリート|Happy Halloween",
   "holidayGreeting_thanksgiving": "ハッピーサンクスギビング|ハッピー・サンクスギビング|感謝祭おめでとう|Happy Thanksgiving",
   "holidayGreeting_christmas": "メリークリスマス|メリー・クリスマス|メリクリ|Merry Christmas",
-  "holidayGreeting_newYear": "あけましておめでとう|明けましておめでとう|あけおめ|アケオメ|ハッピーニューイヤー|ハッピー・ニューイヤー|謹賀新年|Happy New Year"
+  "holidayGreeting_newYear": "あけましておめでとう|明けましておめでとう|あけおめ|アケオメ|ハッピーニューイヤー|ハッピー・ニューイヤー|謹賀新年|Happy New Year",
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "ローカル API",
+  "localApi_settingsSubtitle": "他のアプリに無線機の使用を許可",
+  "localApi_unavailable": "API は利用できません。",
+  "localApi_enableSubtitle": "この端末の他のアプリが MeshCore Open 経由で無線機を使えるようにします。各アプリは初回に許可を求めます。",
+  "localApi_address": "アドレス",
+  "localApi_off": "オフ",
+  "localApi_allowedApps": "許可したアプリ",
+  "localApi_allowedAppsSubtitle": "初回接続時に承認されたアプリです。削除すると再度確認されます。",
+  "localApi_noApps": "アプリはまだありません",
+  "localApi_noAppsSubtitle": "アプリが接続するとここにリクエストが表示されます。",
+  "localApi_pairedOn": "ペアリング日時 {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "削除",
+  "localApi_clearData": "保存された無線データを消去",
+  "localApi_clearDataSubtitle": "起動していなかったアプリのために保存したチャンネルデータを削除します。",
+  "localApi_dataCleared": "保存された無線データを消去しました",
+  "localApi_pairTitle": "接続を許可しますか？",
+  "localApi_pairBody": "「{name}」が、このアプリが無線機に接続している間、このアプリ経由で MeshCore メッセージを送受信しようとしています。",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "鍵のフィンガープリント",
+  "localApi_pairWarning": "信頼できるアプリだけを許可してください。メッセージの読み取りや無線機での送信ができるようになります。",
+  "localApi_deny": "拒否",
+  "localApi_allow": "許可",
+  "localApi_pairExpired": "「{name}」は許可される前に待機をやめました。もう一度開いてペアリングしてください。",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "「{name}」が無線機の使用を求めています",
+  "localApi_pairNotificationBody": "MeshCore Open を開いて許可または拒否してください。",
+  "localApi_joinTitle": "チャンネルを追加しますか？",
+  "localApi_joinBody": "「{name}」がハッシュタグチャンネル {channel} を無線機に追加しようとしています。",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "ハッシュタグチャンネルは、名前を知っている人なら誰でも読み書きできます。",
+  "localApi_joinAdd": "追加"
 }

@@ -11472,6 +11472,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Happy New Year|Happy New Year\'s'**
   String get holidayGreeting_newYear;
+
+  /// No description provided for @appSettings_ipfsGatewayIpfsIo.
+  ///
+  /// In en, this message translates to:
+  /// **'ipfs.io'**
+  String get appSettings_ipfsGatewayIpfsIo;
+
+  /// No description provided for @appSettings_ipfsGatewayPinata.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinata'**
+  String get appSettings_ipfsGatewayPinata;
+
+  /// No description provided for @appSettings_ipfsGatewayFilebase.
+  ///
+  /// In en, this message translates to:
+  /// **'Filebase'**
+  String get appSettings_ipfsGatewayFilebase;
+
+  /// No description provided for @localApi_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Local API'**
+  String get localApi_title;
+
+  /// No description provided for @localApi_settingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let other apps use the radio'**
+  String get localApi_settingsSubtitle;
+
+  /// No description provided for @localApi_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The API is not available.'**
+  String get localApi_unavailable;
+
+  /// No description provided for @localApi_enableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let other apps on this device use the radio through MeshCore Open. Each app asks for permission the first time.'**
+  String get localApi_enableSubtitle;
+
+  /// No description provided for @localApi_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get localApi_address;
+
+  /// No description provided for @localApi_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get localApi_off;
+
+  /// No description provided for @localApi_allowedApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed apps'**
+  String get localApi_allowedApps;
+
+  /// No description provided for @localApi_allowedAppsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved when they first connected. Removing one makes it ask again.'**
+  String get localApi_allowedAppsSubtitle;
+
+  /// No description provided for @localApi_noApps.
+  ///
+  /// In en, this message translates to:
+  /// **'No apps yet'**
+  String get localApi_noApps;
+
+  /// No description provided for @localApi_noAppsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A request appears here after an app connects.'**
+  String get localApi_noAppsSubtitle;
+
+  /// No description provided for @localApi_pairedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired {date}'**
+  String localApi_pairedOn(String date);
+
+  /// No description provided for @localApi_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get localApi_remove;
+
+  /// No description provided for @localApi_clearData.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear stored radio data'**
+  String get localApi_clearData;
+
+  /// No description provided for @localApi_clearDataSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Removes channel data kept for apps that were not running.'**
+  String get localApi_clearDataSubtitle;
+
+  /// No description provided for @localApi_dataCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Stored radio data cleared'**
+  String get localApi_dataCleared;
+
+  /// No description provided for @localApi_pairTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow connection?'**
+  String get localApi_pairTitle;
+
+  /// No description provided for @localApi_pairBody.
+  ///
+  /// In en, this message translates to:
+  /// **'“{name}” wants to send and receive MeshCore messages through this app while it keeps the radio connected.'**
+  String localApi_pairBody(String name);
+
+  /// No description provided for @localApi_keyFingerprint.
+  ///
+  /// In en, this message translates to:
+  /// **'Key fingerprint'**
+  String get localApi_keyFingerprint;
+
+  /// No description provided for @localApi_pairWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Only allow an app you trust: it will be able to read your messages and transmit on your radio.'**
+  String get localApi_pairWarning;
+
+  /// No description provided for @localApi_deny.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny'**
+  String get localApi_deny;
+
+  /// No description provided for @localApi_allow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get localApi_allow;
+
+  /// No description provided for @localApi_pairExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'“{name}” stopped waiting before it was allowed. Open it again to pair.'**
+  String localApi_pairExpired(String name);
+
+  /// No description provided for @localApi_pairNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'“{name}” wants to use the radio'**
+  String localApi_pairNotificationTitle(String name);
+
+  /// No description provided for @localApi_pairNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open MeshCore Open to allow or deny it.'**
+  String get localApi_pairNotificationBody;
+
+  /// No description provided for @localApi_joinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a channel?'**
+  String get localApi_joinTitle;
+
+  /// No description provided for @localApi_joinBody.
+  ///
+  /// In en, this message translates to:
+  /// **'“{name}” wants to add the hashtag channel {channel} to your radio.'**
+  String localApi_joinBody(String name, String channel);
+
+  /// No description provided for @localApi_joinWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone who knows a hashtag channel\'s name can read it and post in it.'**
+  String get localApi_joinWarning;
+
+  /// No description provided for @localApi_joinAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get localApi_joinAdd;
 }
 
 class _AppLocalizationsDelegate

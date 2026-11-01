@@ -3531,5 +3531,67 @@
   "themes_chatBackground": "聊天背景",
   "themes_chatBackgroundHelp": "显示在没有自己背景的聊天中",
   "themes_chatBackgroundEverywhere": "用于所有聊天",
-  "themes_chatBackgroundEverywhereHelp": "同时会替换单个聊天中设置的背景"
+  "themes_chatBackgroundEverywhereHelp": "同时会替换单个聊天中设置的背景",
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "本地 API",
+  "localApi_settingsSubtitle": "允许其他应用使用电台",
+  "localApi_unavailable": "API 不可用。",
+  "localApi_enableSubtitle": "允许此设备上的其他应用通过 MeshCore Open 使用电台。每个应用首次使用时都会请求许可。",
+  "localApi_address": "地址",
+  "localApi_off": "关闭",
+  "localApi_allowedApps": "已允许的应用",
+  "localApi_allowedAppsSubtitle": "在首次连接时批准。移除后，该应用会再次请求。",
+  "localApi_noApps": "暂无应用",
+  "localApi_noAppsSubtitle": "应用连接后，请求会显示在这里。",
+  "localApi_pairedOn": "配对于 {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "移除",
+  "localApi_clearData": "清除已存储的电台数据",
+  "localApi_clearDataSubtitle": "删除为未运行的应用保留的频道数据。",
+  "localApi_dataCleared": "已清除存储的电台数据",
+  "localApi_pairTitle": "允许连接？",
+  "localApi_pairBody": "“{name}”想在本应用保持电台连接时，通过本应用收发 MeshCore 消息。",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "密钥指纹",
+  "localApi_pairWarning": "只允许你信任的应用：它将能读取你的消息并通过你的电台发射。",
+  "localApi_deny": "拒绝",
+  "localApi_allow": "允许",
+  "localApi_pairExpired": "“{name}”在获得允许前已停止等待。请重新打开它以进行配对。",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "“{name}”想要使用无线电",
+  "localApi_pairNotificationBody": "打开 MeshCore Open 以允许或拒绝。",
+  "localApi_joinTitle": "添加频道？",
+  "localApi_joinBody": "“{name}”想将标签频道 {channel} 添加到你的无线电。",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "任何知道标签频道名称的人都可以在其中阅读和发言。",
+  "localApi_joinAdd": "添加"
 }

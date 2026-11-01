@@ -3521,5 +3521,67 @@
   "themes_chatBackground": "Chattbakgrund",
   "themes_chatBackgroundHelp": "Visas i chattar som inte har en egen bakgrund",
   "themes_chatBackgroundEverywhere": "Använd i alla chattar",
-  "themes_chatBackgroundEverywhereHelp": "Ersätter även bakgrunder som är inställda för enskilda chattar"
+  "themes_chatBackgroundEverywhereHelp": "Ersätter även bakgrunder som är inställda för enskilda chattar",
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "Lokalt API",
+  "localApi_settingsSubtitle": "Låt andra appar använda radion",
+  "localApi_unavailable": "API:t är inte tillgängligt.",
+  "localApi_enableSubtitle": "Låter andra appar på den här enheten använda radion via MeshCore Open. Varje app ber om lov första gången.",
+  "localApi_address": "Adress",
+  "localApi_off": "Av",
+  "localApi_allowedApps": "Tillåtna appar",
+  "localApi_allowedAppsSubtitle": "Godkända vid första anslutningen. En borttagen app frågar igen.",
+  "localApi_noApps": "Inga appar än",
+  "localApi_noAppsSubtitle": "En förfrågan visas här när en app ansluter.",
+  "localApi_pairedOn": "Parkopplad {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "Ta bort",
+  "localApi_clearData": "Rensa sparad radiodata",
+  "localApi_clearDataSubtitle": "Tar bort kanaldata som sparats för appar som inte var igång.",
+  "localApi_dataCleared": "Sparad radiodata rensad",
+  "localApi_pairTitle": "Tillåta anslutning?",
+  "localApi_pairBody": "”{name}” vill skicka och ta emot MeshCore-meddelanden via den här appen medan den håller radion ansluten.",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "Nyckelns fingeravtryck",
+  "localApi_pairWarning": "Tillåt bara appar du litar på: de kan läsa dina meddelanden och sända med din radio.",
+  "localApi_deny": "Neka",
+  "localApi_allow": "Tillåt",
+  "localApi_pairExpired": "”{name}” slutade vänta innan den tilläts. Öppna den igen för att parkoppla.",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "”{name}” vill använda radion",
+  "localApi_pairNotificationBody": "Öppna MeshCore Open för att tillåta eller neka.",
+  "localApi_joinTitle": "Lägga till en kanal?",
+  "localApi_joinBody": "”{name}” vill lägga till hashtagkanalen {channel} i din radio.",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "Alla som känner till namnet på en hashtagkanal kan läsa och skriva i den.",
+  "localApi_joinAdd": "Lägg till"
 }
