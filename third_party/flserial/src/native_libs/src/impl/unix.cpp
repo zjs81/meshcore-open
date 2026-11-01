@@ -55,11 +55,10 @@ using serial::SerialException;
 using serial::PortNotOpenedException;
 using serial::IOException;
 
-// glibc 2.42 made cfsetispeed/cfsetospeed default to GLIBC_2.42 and turned
-// the B* macros into plain baud numbers. A library built on that glibc will
-// not load on Ubuntu 24.04 / Linux Mint 22 (glibc 2.39). Bind the old symbols
-// and pass the legacy c_cflag values those symbols still expect.
-#if defined(__linux__) && defined(__GLIBC__)
+// On x86_64, glibc 2.42 changed cfsetispeed/cfsetospeed to GLIBC_2.42 and
+// changed the B* macros to plain baud numbers. Bind the old x86_64 symbols
+// so builds remain compatible with Ubuntu 24.04 / Linux Mint 22 (glibc 2.39).
+#if defined(__linux__) && defined(__GLIBC__) && defined(__x86_64__)
 __asm__(".symver cfsetispeed, cfsetispeed@GLIBC_2.2.5");
 __asm__(".symver cfsetospeed, cfsetospeed@GLIBC_2.2.5");
 

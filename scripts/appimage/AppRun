@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+export APPDIR="${APPDIR:-$(cd "$(dirname "$0")" && pwd)}"
+export PATH="$APPDIR/usr/bin:$PATH"
+for hook in "$APPDIR"/apprun-hooks/*.sh; do
+  # shellcheck source=/dev/null
+  [[ ! -f "$hook" ]] || source "$hook"
+done
+exec "$APPDIR/usr/bin/meshcore_open" "$@"
