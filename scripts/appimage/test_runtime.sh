@@ -4,6 +4,15 @@ set -euo pipefail
 image="$(realpath "$1")"
 mkdir -p "$2"
 output="$(realpath "$2")"
+case "$(uname -m)" in
+  x86_64) expected_machine='Advanced Micro Devices X86-64' ;;
+  aarch64) expected_machine='AArch64' ;;
+  *) printf 'Unsupported runtime-test architecture: %s\n' "$(uname -m)" >&2; exit 1 ;;
+esac
+if ! readelf -h "$image" | grep -Fq "$expected_machine"; then
+  printf 'AppImage runtime is not built for %s\n' "$(uname -m)" >&2
+  exit 1
+fi
 workspace="$(mktemp -d)"
 app_pid=''
 bus_pid=''
@@ -23,6 +32,13 @@ appdir="$workspace/squashfs-root"
   -f "$appdir/usr/bin/data/icudtl.dat" && -d "$appdir/usr/bin/data/flutter_assets" ]]
 [[ -f "$appdir/usr/bin/lib/libonnxruntime.so.1" && \
   -f "$appdir/usr/share/glib-2.0/schemas/gschemas.compiled" ]]
+while IFS= read -r -d '' library; do
+  if readelf -h "$library" >/dev/null 2>&1 && \
+    ! readelf -h "$library" | grep -Fq "$expected_machine"; then
+    printf 'Wrong ELF architecture in AppImage: %s\n' "${library#"$appdir/"}" >&2
+    exit 1
+  fi
+done < <(find "$appdir/usr/bin" "$appdir/usr/lib" -type f -print0)
 ldd "$appdir/usr/bin/meshcore_open" > "$output/dependencies.log" 2>&1
 while IFS= read -r -d '' library; do
   printf '\n%s\n' "${library#"$appdir/"}" >> "$output/dependencies.log"

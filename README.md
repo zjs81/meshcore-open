@@ -152,11 +152,13 @@ The matrix describes implemented functionality, not a guarantee that every featu
 
 ### Linux AppImage
 
-`flutter build linux --release` produces both the regular Flutter bundle and
-`build/linux/x64/release/meshcore-open-x86_64.AppImage`. Packaging runs after
-Flutter installs its assets and native libraries. Debug and Profile builds do
-not produce an AppImage. The initial AppImage target is x86_64, with Ubuntu
-24.04 as the packaging baseline; older distributions are not guaranteed.
+`flutter build linux --release` produces the regular Flutter bundle and an
+AppImage on supported Linux architectures. The x86_64 artifact is
+`build/linux/x64/release/meshcore-open-x86_64.AppImage`; the ARM64 artifact is
+`build/linux/arm64/release/meshcore-open-aarch64.AppImage`. Debug and Profile
+builds do not produce AppImages.
+Both use Ubuntu 24.04 as the packaging baseline; older distributions are not
+guaranteed.
 
 For a bundle-only build, including other architectures:
 
@@ -173,13 +175,20 @@ sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev \
    libgdk-pixbuf-2.0-dev dpkg-dev patchelf binutils curl jq file desktop-file-utils xdg-user-dirs
 ```
 
-The build automatically downloads checksum-verified linuxdeploy, its GTK
-plugin, appimagetool, and an AppImage runtime. Pins are in
+The build automatically downloads checksum-verified architecture-matched
+linuxdeploy, its GTK plugin, appimagetool, and an AppImage runtime. Pins are in
 `scripts/appimage-tools.json`; the cache is under
 `${XDG_CACHE_HOME:-$HOME/.cache}/meshcore-open/appimage/`. Packaging can reuse
 valid cached tools offline, but Flutter dependencies and native-library
 downloads must also be available. A packaging failure fails the enabled build,
 without publishing a stale image as a new artifact.
+
+GitHub Actions builds ARM64 on a native `ubuntu-24.04-arm` runner. Flutter's
+Linux release SDK archive is x64-only, so that job bootstraps Flutter 3.47.4
+from its pinned source revision. Flutter does not support x64-to-ARM64 Linux
+cross-builds; use an ARM64 Linux host to build the ARM64 bundle locally. The
+ARM64 AppImage is CI-built and hardware validation on a Raspberry Pi 5 is still
+needed for graphics, BLE, USB and inference behavior.
 
 Hosts with newer glibc than the pinned baseline (2.39 for Ubuntu 24.04),
 including Ubuntu 26.04 runners under `ubuntu-latest`, use the same isolated

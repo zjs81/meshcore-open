@@ -10,6 +10,14 @@ packaging_enabled() {
   [[ "${MESHCORE_BUILD_APPIMAGE:-1}" != 0 && "$1" == Release ]]
 }
 
+canonical_arch() {
+  case "$1" in
+    x64|x86_64) printf 'x86_64\n' ;;
+    arm64|aarch64) printf 'aarch64\n' ;;
+    *) fail "Unsupported AppImage architecture: $1"; return 1 ;;
+  esac
+}
+
 check_bundle() {
   local bundle="$1"
   [[ -x "$bundle/meshcore_open" && -f "$bundle/lib/libapp.so" && \
@@ -53,13 +61,18 @@ require_tools() {
 }
 
 prepare_tools() {
-  local manifest="$1" cache="$2" tool url checksum
+  local manifest="$1" cache="$2" architecture="$3" tool url checksum
   mkdir -p "$cache"
   exec {cache_lock}>"$cache/tools.lock"
   flock "$cache_lock"
   for tool in linuxdeploy appimagetool gtk runtime; do
-    url="$(jq -er --arg tool "$tool" '.tools[$tool].url' "$manifest")"
-    checksum="$(jq -er --arg tool "$tool" '.tools[$tool].sha256' "$manifest")"
+    if [[ "$tool" == gtk ]]; then
+      url="$(jq -er '.tools.gtk.url' "$manifest")"
+      checksum="$(jq -er '.tools.gtk.sha256' "$manifest")"
+    else
+      url="$(jq -er --arg arch "$architecture" --arg tool "$tool" '.tools[$arch][$tool].url' "$manifest")"
+      checksum="$(jq -er --arg arch "$architecture" --arg tool "$tool" '.tools[$arch][$tool].sha256' "$manifest")"
+    fi
     download_verified "$url" "$checksum" "$cache/$tool"
     chmod +x "$cache/$tool"
   done
@@ -104,14 +117,16 @@ audit_appdir() {
 }
 
 package_direct() {
-  local project="$1" bundle="$2" output="$3" manifest="$4" cache="$5"
-  local work appdir library relative linuxdeploy appimagetool
+  local project="$1" bundle="$2" output="$3" manifest="$4" cache="$5" architecture="$6"
+  local work appdir library relative linuxdeploy appimagetool appimage_name appimage_arch
   local dependencies=()
   require_tools curl jq sha256sum flock file readelf patchelf pkg-config \
     desktop-file-validate glib-compile-schemas gdk-pixbuf-thumbnailer xdg-user-dir
   pkg-config --exists gtk+-3.0 librsvg-2.0 gobject-introspection-1.0 || \
     { fail 'Missing GTK, librsvg or GObject introspection development files'; return 1; }
-  prepare_tools "$manifest" "$cache"
+  prepare_tools "$manifest" "$cache" "$architecture"
+  appimage_arch="$architecture"
+  appimage_name="meshcore-open-$architecture.AppImage"
   work="$(mktemp -d "$output/appimage.XXXXXX")"
   # shellcheck disable=SC2064
   trap "rm -rf -- $(printf '%q' "$work")" EXIT
@@ -172,10 +187,10 @@ package_direct() {
     cp "$MESHCORE_APPIMAGE_FLUTTER_ROOT/LICENSE" "$appdir/usr/share/doc/meshcore-open/Flutter-LICENSE"
   fi
   audit_appdir "$appdir" "$work/audit.txt"
-  ARCH=x86_64 "$appimagetool" --runtime-file "$cache/runtime" --no-appstream \
-    "$appdir" "$work/meshcore-open-x86_64.AppImage"
-  chmod +x "$work/meshcore-open-x86_64.AppImage"
-  mv "$work/meshcore-open-x86_64.AppImage" "$output/meshcore-open-x86_64.AppImage"
+  ARCH="$appimage_arch" "$appimagetool" --runtime-file "$cache/runtime" --no-appstream \
+    "$appdir" "$work/$appimage_name"
+  chmod +x "$work/$appimage_name"
+  mv "$work/$appimage_name" "$output/$appimage_name"
   mv "$work/audit.txt" "$output/appimage-audit.txt"
   cp "$manifest" "$output/appimage-tools.json"
   rm -rf "$work"
@@ -283,25 +298,26 @@ main() {
   [[ $# == 5 ]] || { fail 'Expected: project bundle output configuration architecture'; return 1; }
   local project="$1" bundle="$2" output="$3" configuration="$4" architecture="$5"
   packaging_enabled "$configuration" || return 0
-  [[ "$architecture" == x64 || "$architecture" == x86_64 ]] || \
-    { fail 'Only x86_64 AppImages are supported; set MESHCORE_BUILD_APPIMAGE=0 for other architectures'; return 1; }
+  architecture="$(canonical_arch "$architecture")" || return 1
   mkdir -p "$output"
   output="$(realpath "$output")"
   exec {output_lock}>"$output/appimage.lock"
   flock "$output_lock"
-  rm -f "$output/meshcore-open-x86_64.AppImage" "$output/appimage-audit.txt" "$output/appimage-tools.json"
+  rm -f "$output/meshcore-open-$architecture.AppImage" "$output/appimage-audit.txt" "$output/appimage-tools.json"
   check_bundle "$bundle"
   require_tools jq readelf sha256sum
   local manifest="$project/scripts/appimage-tools.json" pin cache
   pin="$(sha256sum "$manifest")"
   pin="${pin%% *}"
-  cache="${XDG_CACHE_HOME:-$HOME/.cache}/meshcore-open/appimage/$pin/x86_64"
+  cache="${XDG_CACHE_HOME:-$HOME/.cache}/meshcore-open/appimage/$pin/$architecture"
   if requires_container_rebuild "$bundle/meshcore_open" "$(jq -er '.glibc' "$manifest")"; then
+    [[ "$architecture" == x86_64 ]] || \
+      { fail 'ARM64 container rebuild is not configured; build on an Ubuntu 24.04 ARM64 host or set MESHCORE_BUILD_APPIMAGE=0'; return 1; }
     package_container "$project" "$output" "$manifest" "$cache"
   else
-    package_direct "$project" "$bundle" "$output" "$manifest" "$cache"
+    package_direct "$project" "$bundle" "$output" "$manifest" "$cache" "$architecture"
   fi
-  printf 'AppImage created: %s/meshcore-open-x86_64.AppImage\n' "$output"
+  printf 'AppImage created: %s/meshcore-open-%s.AppImage\n' "$output" "$architecture"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then

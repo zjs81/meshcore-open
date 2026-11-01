@@ -16,6 +16,10 @@ assert_fails() {
 assert_fails packaging_enabled Debug
 assert_fails packaging_enabled Profile
 packaging_enabled Release
+[[ "$(canonical_arch x64)" == x86_64 ]]
+[[ "$(canonical_arch aarch64)" == aarch64 ]]
+[[ "$(canonical_arch arm64)" == aarch64 ]]
+assert_fails canonical_arch riscv64
 MESHCORE_BUILD_APPIMAGE=0 assert_fails packaging_enabled Release
 assert_fails check_bundle "$temporary/missing"
 
@@ -32,7 +36,13 @@ MESHCORE_BUILD_APPIMAGE=0 bash "$project/scripts/build_appimage.sh" \
 bash "$project/scripts/build_appimage.sh" "$project" /missing "$temporary/output" Debug x64
 [[ ! -d "$temporary/output" ]]
 assert_fails bash "$project/scripts/build_appimage.sh" \
-  "$project" /missing "$temporary/output" Release arm64
+  "$project" /missing "$temporary/output" Release riscv64
+jq -e '.flutter.source_revision == "9584c6713b324636289d067944a46fd6b49df14b" and
+  (.tools.x86_64.linuxdeploy.sha256 | length == 64) and
+  (.tools.aarch64.linuxdeploy.sha256 | length == 64) and
+  (.tools.aarch64.appimagetool.sha256 | length == 64) and
+  (.tools.aarch64.runtime.sha256 | length == 64)' \
+  "$project/scripts/appimage-tools.json" >/dev/null
 
 stage_bundle "$project" "$temporary/bundle" "$temporary/AppDir with spaces"
 check_bundle "$temporary/AppDir with spaces/usr/bin"
@@ -50,9 +60,35 @@ assert_fails download_verified "file://$temporary/input" \
 printf 'corruption\n' >> "$temporary/cache/tool"
 assert_fails download_verified "file://$temporary/input" "$checksum" "$temporary/cache/tool"
 
+# shellcheck disable=SC2329
+download_verified() {
+  printf '%s %s\n' "$1" "$3" >> "$temporary/tool-selection"
+  mkdir -p "$(dirname "$3")"
+  : > "$3"
+}
+
+prepare_tools "$project/scripts/appimage-tools.json" "$temporary/tools-x64" x86_64
+prepare_tools "$project/scripts/appimage-tools.json" "$temporary/tools-arm64" aarch64
+grep -Fq 'linuxdeploy-x86_64.AppImage' "$temporary/tool-selection"
+grep -Fq 'appimagetool-x86_64.AppImage' "$temporary/tool-selection"
+grep -Fq 'runtime-x86_64' "$temporary/tool-selection"
+grep -Fq 'linuxdeploy-aarch64.AppImage' "$temporary/tool-selection"
+grep -Fq 'appimagetool-aarch64.AppImage' "$temporary/tool-selection"
+grep -Fq 'runtime-aarch64' "$temporary/tool-selection"
+unset -f download_verified
+
 mkdir -p "$temporary/project/scripts/appimage"
 touch "$temporary/project/pubspec.lock"
 cp "$project/scripts/appimage/Dockerfile" "$temporary/project/scripts/appimage/"
+
+# shellcheck disable=SC2329
+jq() {
+  case "$*" in
+    *'.flutter.version'*) printf '3.47.4\n' ;;
+    *'.ubuntu'*) printf 'ubuntu:24.04\n' ;;
+    *) return 1 ;;
+  esac
+}
 
 # shellcheck disable=SC2329
 podman() {
@@ -84,7 +120,7 @@ package_container "$temporary/project" "$temporary/output" \
   "$project/scripts/appimage-tools.json" "$temporary/container-cache"
 assert_fails grep -Fxq -- '--userns=keep-id' "$temporary/container-arguments"
 grep -Fxq -- "$(id -u):$(id -g)" "$temporary/container-arguments"
-unset -f podman docker
+unset -f jq podman docker
 
 # shellcheck disable=SC2329
 readelf() {

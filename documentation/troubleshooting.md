@@ -31,7 +31,14 @@ mismatch must not be bypassed: remove the named corrupted cache file and retry.
 Tools are pinned in `scripts/appimage-tools.json`; cached tools can be reused
 offline, but dependency downloads and first-time container setup still need
 network access. Use `MESHCORE_BUILD_APPIMAGE=0 flutter build linux --release`
-for a bundle-only build, including ARM builds.
+for a bundle-only build, including unsupported architectures/build hosts.
+
+ARM64 AppImages are built on a native GitHub `ubuntu-24.04-arm` runner using
+the pinned Flutter source revision. An x64 host cannot use Flutter's Linux
+cross-build option to produce ARM64; build locally on an ARM64 Linux host or
+use the CI artifact. The CI smoke test checks AArch64 ELF files and launches
+under emulation on an ARM64 runner, but does not replace Raspberry Pi 5
+graphics, BLE, USB or inference hardware testing.
 
 For a Nix build or a host with glibc newer than the pinned Ubuntu baseline,
 verify that your user can access Podman or Docker without interactive
