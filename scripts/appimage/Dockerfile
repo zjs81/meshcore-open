@@ -5,8 +5,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates clang cmake ninja-build pkg-config libgtk-3-dev \
     librsvg2-dev libgirepository1.0-dev libgdk-pixbuf-2.0-dev libgtk-3-bin \
-    libgdk-pixbuf2.0-bin libgdk-pixbuf2.0-dev binutils patchelf curl jq \
-    file desktop-file-utils xdg-user-dirs git rsync unzip xz-utils make g++ \
+    libgdk-pixbuf2.0-bin binutils patchelf curl jq \
+    file desktop-file-utils xdg-user-dirs git rsync unzip xz-utils make g++ dpkg-dev \
     libssl-dev libunwind-dev libvulkan-dev libgl1-mesa-dev libglu1-mesa-dev \
     libasound2-dev libsecret-1-dev \
     && rm -rf /var/lib/apt/lists/*

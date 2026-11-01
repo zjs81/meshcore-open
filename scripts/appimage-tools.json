@@ -1,5 +1,6 @@
 {
   "ubuntu": "ubuntu:24.04@sha256:fe81560990fae86dc4743202b2cb4d3df98d0bcf949173cecef15ce1127ef852",
+  "glibc": "2.39",
   "flutter": {
     "version": "3.47.4",
     "url": "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.47.4-stable.tar.xz",

@@ -240,7 +240,7 @@ package_container() {
   mkdir -p "$cache" "$cache/pub"
   pin="$(sha256sum "$manifest" "$project/scripts/appimage/Dockerfile" | sha256sum)"
   image="meshcore-open-appimage:${pin:0:16}"
-  printf 'AppImage: rebuilding in Ubuntu with %s (Flutter %s); native Nix bundle is unchanged\n' \
+  printf 'AppImage: rebuilding in Ubuntu with %s (Flutter %s); original native bundle is unchanged\n' \
     "$engine" "$(jq -r '.flutter.version' "$manifest")"
   if ! "$engine" image inspect "$image" >/dev/null 2>&1; then
     "$engine" build --target build --platform linux/amd64 --tag "$image" \
@@ -252,11 +252,31 @@ package_container() {
   for key in FLUTTER_TARGET DART_DEFINES DART_OBFUSCATION SPLIT_DEBUG_INFO TREE_SHAKE_ICONS; do
     environment+=(--env "MESHCORE_APPIMAGE_$key")
   done
-  "$engine" run --rm --platform linux/amd64 --user "$(id -u):$(id -g)" \
+  local user_namespace=()
+  if [[ "$engine" == podman ]]; then
+    user_namespace+=(--userns=keep-id)
+  fi
+  "$engine" run --rm --platform linux/amd64 "${user_namespace[@]}" --user "$(id -u):$(id -g)" \
     "${environment[@]}" --mount "type=bind,source=$(realpath "$project"),target=/source,readonly" \
     --mount "type=bind,source=$output,target=/output" \
     --mount "type=bind,source=$cache,target=/cache" \
     "$image" bash /source/scripts/build_appimage.sh --container-build
+}
+
+requires_container_rebuild() {
+  local executable="$1" baseline="$2" host_glibc host_major host_minor baseline_major baseline_minor
+  if [[ "$(readelf -l "$executable")" == *'/nix/store/'* ]]; then
+    return 0
+  fi
+  host_glibc="$(getconf GNU_LIBC_VERSION)" || return 0
+  host_glibc="${host_glibc#glibc }"
+  host_major="${host_glibc%%.*}"
+  host_minor="${host_glibc#*.}"
+  host_minor="${host_minor%%.*}"
+  baseline_major="${baseline%%.*}"
+  baseline_minor="${baseline#*.}"
+  [[ "$host_major" =~ ^[0-9]+$ && "$host_minor" =~ ^[0-9]+$ ]] || return 0
+  (( host_major > baseline_major || (host_major == baseline_major && host_minor > baseline_minor) ))
 }
 
 main() {
@@ -276,7 +296,7 @@ main() {
   pin="$(sha256sum "$manifest")"
   pin="${pin%% *}"
   cache="${XDG_CACHE_HOME:-$HOME/.cache}/meshcore-open/appimage/$pin/x86_64"
-  if [[ "$(readelf -l "$bundle/meshcore_open")" == *'/nix/store/'* ]]; then
+  if requires_container_rebuild "$bundle/meshcore_open" "$(jq -er '.glibc' "$manifest")"; then
     package_container "$project" "$output" "$manifest" "$cache"
   else
     package_direct "$project" "$bundle" "$output" "$manifest" "$cache"

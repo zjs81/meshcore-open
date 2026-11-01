@@ -50,4 +50,60 @@ assert_fails download_verified "file://$temporary/input" \
 printf 'corruption\n' >> "$temporary/cache/tool"
 assert_fails download_verified "file://$temporary/input" "$checksum" "$temporary/cache/tool"
 
+mkdir -p "$temporary/project/scripts/appimage"
+touch "$temporary/project/pubspec.lock"
+cp "$project/scripts/appimage/Dockerfile" "$temporary/project/scripts/appimage/"
+
+# shellcheck disable=SC2329
+podman() {
+  case "$1" in
+    info) [[ "$mock_engine" == podman ]] ;;
+    image) return 0 ;;
+    run) printf '%s\n' "$@" > "$temporary/container-arguments" ;;
+    *) return 1 ;;
+  esac
+}
+
+# shellcheck disable=SC2329
+docker() {
+  case "$1" in
+    info|image) return 0 ;;
+    run) printf '%s\n' "$@" > "$temporary/container-arguments" ;;
+    *) return 1 ;;
+  esac
+}
+
+mock_engine=podman
+package_container "$temporary/project" "$temporary/output" \
+  "$project/scripts/appimage-tools.json" "$temporary/container-cache"
+grep -Fxq -- '--userns=keep-id' "$temporary/container-arguments"
+grep -Fxq -- "$(id -u):$(id -g)" "$temporary/container-arguments"
+
+mock_engine=docker
+package_container "$temporary/project" "$temporary/output" \
+  "$project/scripts/appimage-tools.json" "$temporary/container-cache"
+assert_fails grep -Fxq -- '--userns=keep-id' "$temporary/container-arguments"
+grep -Fxq -- "$(id -u):$(id -g)" "$temporary/container-arguments"
+unset -f podman docker
+
+# shellcheck disable=SC2329
+readelf() {
+  printf '%s\n' "$mock_interpreter"
+}
+
+# shellcheck disable=SC2329
+getconf() {
+  printf 'glibc %s\n' "$mock_glibc"
+}
+
+mock_interpreter=/lib64/ld-linux-x86-64.so.2
+mock_glibc=2.39
+assert_fails requires_container_rebuild "$temporary/bundle/meshcore_open" 2.39
+mock_glibc=2.43
+requires_container_rebuild "$temporary/bundle/meshcore_open" 2.39
+mock_interpreter=/nix/store/glibc/lib/ld-linux-x86-64.so.2
+mock_glibc=2.39
+requires_container_rebuild "$temporary/bundle/meshcore_open" 2.39
+unset -f readelf getconf
+
 printf 'AppImage packaging contract tests passed\n'

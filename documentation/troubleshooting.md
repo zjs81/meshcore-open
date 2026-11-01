@@ -33,9 +33,10 @@ offline, but dependency downloads and first-time container setup still need
 network access. Use `MESHCORE_BUILD_APPIMAGE=0 flutter build linux --release`
 for a bundle-only build, including ARM builds.
 
-For a Nix build, verify that your user can access Podman or Docker without
-interactive privilege escalation. The image is rebuilt in Ubuntu, not made
-from the Nix-linked executable. The regular Nix bundle remains available if
+For a Nix build or a host with glibc newer than the pinned Ubuntu baseline,
+verify that your user can access Podman or Docker without interactive
+privilege escalation. The image is rebuilt in Ubuntu, not made from the
+host-linked executable. The regular native bundle remains available if
 packaging fails. Custom targets, obfuscation and split-debug-info are not
 supported by the container rebuild.
 

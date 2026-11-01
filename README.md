@@ -170,7 +170,7 @@ dependencies:
 ```bash
 sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev \
    librsvg2-dev libgirepository1.0-dev libgtk-3-bin libgdk-pixbuf2.0-bin \
-   libgdk-pixbuf2.0-dev patchelf binutils curl jq file desktop-file-utils xdg-user-dirs
+   libgdk-pixbuf-2.0-dev dpkg-dev patchelf binutils curl jq file desktop-file-utils xdg-user-dirs
 ```
 
 The build automatically downloads checksum-verified linuxdeploy, its GTK
@@ -180,6 +180,14 @@ plugin, appimagetool, and an AppImage runtime. Pins are in
 valid cached tools offline, but Flutter dependencies and native-library
 downloads must also be available. A packaging failure fails the enabled build,
 without publishing a stale image as a new artifact.
+
+Hosts with newer glibc than the pinned baseline (2.39 for Ubuntu 24.04),
+including Ubuntu 26.04 runners under `ubuntu-latest`, use the same isolated
+Ubuntu rebuild as Nix. A usable Podman or Docker engine is required on those
+hosts. Rootless Podman preserves your UID/GID with `--userns=keep-id`, so the
+container can write the host-owned output and cache directories. The original
+native bundle is retained. Custom targets, obfuscation and split-debug-info
+require a bundle-only build when container rebuilding is needed.
 
 The image includes Flutter assets, native plugins, ONNX Runtime and
 redistributable GTK dependencies. It does not include graphics drivers, BlueZ
