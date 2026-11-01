@@ -90,6 +90,8 @@ dependencies:
 hooks:
   user_defines:
     llamadart:
+      # Translation uses llama.cpp. LiteRT-LM is unused and requires iOS 26.4.
+      llamadart_native_runtimes: [llama_cpp]
       llamadart_native_backends:
         platforms:
           android-arm64:
