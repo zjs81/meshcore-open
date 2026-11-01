@@ -2,102 +2,153 @@
   "bg": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "de": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "es": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "fr": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "hu": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "it": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "ja": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "ko": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "nl": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "pl": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "pt": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "ru": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "sk": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "sl": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "sv": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "uk": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ],
 
   "zh": [
     "appSettings_showOnlineLinks",
     "appSettings_showOnlineLinksSubtitle",
-    "map_showOnlineLinks"
+    "appSettings_useOnlineMapForPaths",
+    "appSettings_useOnlineMapForPathsSubtitle",
+    "map_showOnlineLinks",
+    "channelPath_loadingOnlineMap"
   ]
 }

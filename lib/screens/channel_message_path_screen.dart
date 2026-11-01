@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -9,9 +10,11 @@ import 'package:meshcore_open/screens/path_trace_map.dart';
 import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
+import '../connector/meshcore_protocol.dart';
 import '../helpers/path_hop_resolver.dart';
 import '../services/map_tile_cache_service.dart';
 import '../services/app_settings_service.dart';
+import '../services/network_map/network_map_api_client.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/l10n.dart';
 import '../models/channel_message.dart';
@@ -26,7 +29,7 @@ import '../widgets/path_map_scaffold.dart';
 import '../widgets/path_map_ui.dart';
 import '../widgets/set_my_location_dialog.dart';
 
-class ChannelMessagePathScreen extends StatelessWidget {
+class ChannelMessagePathScreen extends StatefulWidget {
   final ChannelMessage message;
   final bool channelMessage;
   const ChannelMessagePathScreen({
@@ -36,31 +39,120 @@ class ChannelMessagePathScreen extends StatelessWidget {
   });
 
   @override
+  State<ChannelMessagePathScreen> createState() =>
+      _ChannelMessagePathScreenState();
+}
+
+class _ChannelMessagePathScreenState extends State<ChannelMessagePathScreen> {
+  final NetworkMapApiClient _onlineMapClient = NetworkMapApiClient();
+  List<Contact> _onlinePathContacts = const [];
+  bool _onlinePathLoadStarted = false;
+
+  @override
+  void dispose() {
+    _onlineMapClient.close();
+    super.dispose();
+  }
+
+  void _startOnlinePathLoad(MeshCoreConnector connector) {
+    if (_onlinePathLoadStarted) return;
+    _onlinePathLoadStarted = true;
+    unawaited(_loadOnlinePathContacts(connector));
+  }
+
+  Future<void> _loadOnlinePathContacts(MeshCoreConnector connector) async {
+    final selfPoint = plausibleSelfPoint(connector);
+    final points = [
+      ?selfPoint,
+      for (final contact in connector.allContacts)
+        if (contact.hasLocation) LatLng(contact.latitude!, contact.longitude!),
+    ];
+    if (points.isEmpty) return;
+
+    final minLat = points.map((point) => point.latitude).reduce(min);
+    final maxLat = points.map((point) => point.latitude).reduce(max);
+    final minLon = points.map((point) => point.longitude).reduce(min);
+    final maxLon = points.map((point) => point.longitude).reduce(max);
+    final boxes = NetworkMapBbox.forVisibleArea(
+      west: minLon - 1,
+      south: minLat - 1,
+      east: maxLon + 1,
+      north: maxLat + 1,
+    );
+    if (boxes == null) return;
+
+    try {
+      final results = await Future.wait(
+        boxes.map(_onlineMapClient.fetchRepeaters),
+      );
+      if (!mounted) return;
+      final onlineContacts = <Contact>[];
+      final seenKeys = <String>{};
+      for (final repeater in results.expand((items) => items)) {
+        if (repeater.type != advTypeRepeater && repeater.type != advTypeRoom) {
+          continue;
+        }
+        if (!seenKeys.add(repeater.key)) continue;
+        onlineContacts.add(
+          Contact(
+            publicKey: hexToPubKey(repeater.key),
+            name: repeater.name ?? context.l10n.map_online,
+            type: repeater.type,
+            pathLength: 0,
+            path: Uint8List(0),
+            latitude: repeater.cell.center.latitude,
+            longitude: repeater.cell.center.longitude,
+            lastSeen:
+                repeater.lastSeen ?? DateTime.fromMillisecondsSinceEpoch(0),
+            isActive: false,
+          ),
+        );
+      }
+      setState(() => _onlinePathContacts = onlineContacts);
+    } catch (_) {
+      // Local contacts remain sufficient when the optional online source fails.
+    }
+  }
+
+  List<Contact> _pathContacts(MeshCoreConnector connector) {
+    final contacts = [...connector.allContacts];
+    final localKeys = {for (final contact in contacts) contact.publicKeyHex};
+    for (final contact in _onlinePathContacts) {
+      if (localKeys.add(contact.publicKeyHex)) contacts.add(contact);
+    }
+    return contacts;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<MeshCoreConnector>(
       builder: (context, connector, _) {
+        final settings = context.watch<AppSettingsService>().settings;
+        if (settings.mapUseOnlineMapForPaths) {
+          _startOnlinePathLoad(connector);
+        }
         final l10n = context.l10n;
         final primaryPathTmp = _selectPrimaryPath(
-          message.pathBytes,
-          message.pathVariants,
+          widget.message.pathBytes,
+          widget.message.pathVariants,
         );
 
         final hashByteWidth =
-            (message.pathHashWidth ?? connector.pathHashByteWidth)
+            (widget.message.pathHashWidth ?? connector.pathHashByteWidth)
                 .clamp(1, 4)
                 .toInt();
         final primaryPath = _orientPathBytes(
           primaryPathTmp,
           hashByteWidth,
-          reverse: !channelMessage && !message.isOutgoing,
+          reverse: !widget.channelMessage && !widget.message.isOutgoing,
         );
         final hops = _buildPathHops(
           primaryPath,
-          connector.allContacts,
+          _pathContacts(connector),
           plausibleSelfPoint(connector),
           l10n,
           hashByteWidth,
-          resolveFromEnd: !message.isOutgoing,
+          resolveFromEnd: !widget.message.isOutgoing,
         );
         final hasHopDetails = primaryPath.isNotEmpty;
 
@@ -72,7 +164,7 @@ class ChannelMessagePathScreen extends StatelessWidget {
           primaryPath.length,
           hashByteWidth,
         );
-        final reportedHopCount = message.pathLength;
+        final reportedHopCount = widget.message.pathLength;
         final effectiveHopCount = observedHopCount > 0
             ? observedHopCount
             : reportedHopCount;
@@ -82,7 +174,10 @@ class ChannelMessagePathScreen extends StatelessWidget {
           effectiveHopCount,
           l10n,
         );
-        final extraPaths = _otherPaths(primaryPath, message.pathVariants);
+        final extraPaths = _otherPaths(
+          primaryPath,
+          widget.message.pathVariants,
+        );
         return Scaffold(
           appBar: AppBar(
             title: AdaptiveAppBarTitle(l10n.channelPath_title),
@@ -108,7 +203,10 @@ class ChannelMessagePathScreen extends StatelessWidget {
                 tooltip: l10n.channelPath_viewMap,
                 onPressed: hasHopDetails
                     ? () {
-                        _openPathMap(context, channelMessage: channelMessage);
+                        _openPathMap(
+                          context,
+                          channelMessage: widget.channelMessage,
+                        );
                       }
                     : null,
               ),
@@ -185,20 +283,20 @@ class ChannelMessagePathScreen extends StatelessWidget {
           _buildDetailRow(
             context,
             l10n.channelPath_senderLabel,
-            message.senderName,
+            widget.message.senderName,
             scheme: scheme,
           ),
           _buildDetailRow(
             context,
             l10n.channelPath_timeLabel,
-            _formatTime(context, message.timestamp),
+            _formatTime(context, widget.message.timestamp),
             scheme: scheme,
           ),
-          if (message.repeatCount > 0)
+          if (widget.message.repeatCount > 0)
             _buildDetailRow(
               context,
               l10n.channelPath_repeatsLabel,
-              message.repeatCount.toString(),
+              widget.message.repeatCount.toString(),
               scheme: scheme,
             ),
           _buildDetailRow(
@@ -214,11 +312,11 @@ class ChannelMessagePathScreen extends StatelessWidget {
               observedLabel,
               scheme: scheme,
             ),
-          if (message.region?.isNotEmpty ?? false)
+          if (widget.message.region?.isNotEmpty ?? false)
             _buildDetailRow(
               context,
               l10n.settings_regionName,
-              message.region!,
+              widget.message.region!,
               scheme: scheme,
             ),
         ],
@@ -242,7 +340,7 @@ class ChannelMessagePathScreen extends StatelessWidget {
             onTap: () => _openPathMap(
               context,
               initialPath: variants[i],
-              channelMessage: channelMessage,
+              channelMessage: widget.channelMessage,
             ),
             child: Row(
               children: [
@@ -511,9 +609,10 @@ class ChannelMessagePathScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => ChannelMessagePathMapScreen(
-          message: message,
+          message: widget.message,
           initialPath: initialPath,
           channelMessage: channelMessage,
+          onlinePathContacts: _onlinePathContacts,
         ),
       ),
     );
@@ -524,12 +623,14 @@ class ChannelMessagePathMapScreen extends StatefulWidget {
   final ChannelMessage message;
   final Uint8List? initialPath;
   final bool channelMessage;
+  final List<Contact> onlinePathContacts;
 
   const ChannelMessagePathMapScreen({
     super.key,
     required this.message,
     this.initialPath,
     this.channelMessage = false,
+    this.onlinePathContacts = const [],
   });
 
   @override
@@ -543,6 +644,10 @@ class _ChannelMessagePathMapScreenState
   static const double _labelZoomThreshold = kPathMapLabelZoomThreshold;
 
   final MapController _mapController = MapController();
+  final NetworkMapApiClient _onlineMapClient = NetworkMapApiClient();
+  late List<Contact> _onlinePathContacts = List.of(widget.onlinePathContacts);
+  bool _onlinePathLoading = false;
+  bool _onlinePathLoadStarted = false;
   Uint8List? _selectedPath;
   bool _showNodeLabels = true;
   bool _didReceivePositionUpdate = false;
@@ -569,6 +674,13 @@ class _ChannelMessagePathMapScreenState
     _selectedPath = widget.initialPath;
     _playback = PathPlaybackController(this);
     _playback.addListener(_followPacketCamera);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final settings = context.read<AppSettingsService>().settings;
+      if (settings.mapUseOnlineMapForPaths && _onlinePathContacts.isEmpty) {
+        _startOnlinePathLoad(context.read<MeshCoreConnector>());
+      }
+    });
   }
 
   /// Keeps the camera centered on the packet while the follow lock is on.
@@ -603,8 +715,85 @@ class _ChannelMessagePathMapScreenState
   @override
   void dispose() {
     _playback.dispose();
+    _onlineMapClient.close();
     _mapController.dispose();
     super.dispose();
+  }
+
+  void _startOnlinePathLoad(MeshCoreConnector connector) {
+    if (_onlinePathLoadStarted) return;
+    _onlinePathLoadStarted = true;
+    setState(() => _onlinePathLoading = true);
+    unawaited(_loadOnlinePathContacts(connector));
+  }
+
+  Future<void> _loadOnlinePathContacts(MeshCoreConnector connector) async {
+    final selfPoint = plausibleSelfPoint(connector);
+    final points = [
+      ?selfPoint,
+      for (final contact in connector.allContacts)
+        if (contact.hasLocation) LatLng(contact.latitude!, contact.longitude!),
+    ];
+    if (points.isEmpty) {
+      if (mounted) setState(() => _onlinePathLoading = false);
+      return;
+    }
+
+    final minLat = points.map((point) => point.latitude).reduce(min);
+    final maxLat = points.map((point) => point.latitude).reduce(max);
+    final minLon = points.map((point) => point.longitude).reduce(min);
+    final maxLon = points.map((point) => point.longitude).reduce(max);
+    final boxes = NetworkMapBbox.forVisibleArea(
+      west: minLon - 1,
+      south: minLat - 1,
+      east: maxLon + 1,
+      north: maxLat + 1,
+    );
+    if (boxes == null) {
+      if (mounted) setState(() => _onlinePathLoading = false);
+      return;
+    }
+
+    try {
+      final results = await Future.wait(
+        boxes.map(_onlineMapClient.fetchRepeaters),
+      );
+      if (!mounted) return;
+      final onlineContacts = <Contact>[];
+      final localKeys = {
+        for (final contact in connector.allContacts) contact.publicKeyHex,
+      };
+      for (final repeater in results.expand((items) => items)) {
+        if ((repeater.type != advTypeRepeater &&
+                repeater.type != advTypeRoom) ||
+            localKeys.contains(repeater.key)) {
+          continue;
+        }
+        localKeys.add(repeater.key);
+        onlineContacts.add(
+          Contact(
+            publicKey: hexToPubKey(repeater.key),
+            name: repeater.name ?? context.l10n.map_online,
+            type: repeater.type,
+            pathLength: 0,
+            path: Uint8List(0),
+            latitude: repeater.cell.center.latitude,
+            longitude: repeater.cell.center.longitude,
+            lastSeen:
+                repeater.lastSeen ?? DateTime.fromMillisecondsSinceEpoch(0),
+            isActive: false,
+          ),
+        );
+      }
+      setState(() {
+        _onlinePathContacts = onlineContacts;
+        _onlinePathLoading = false;
+        _model = null;
+        _modelKey = null;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _onlinePathLoading = false);
+    }
   }
 
   /// Builds a renderable [DisplayPath] for one observed route, oriented in
@@ -696,7 +885,14 @@ class _ChannelMessagePathMapScreenState
         .clamp(1, 4)
         .toInt();
     final selfPoint = plausibleSelfPoint(connector);
-    final contacts = connector.allContacts;
+    final contacts = [
+      ...connector.allContacts,
+      ..._onlinePathContacts.where(
+        (online) => !connector.allContacts.any(
+          (local) => local.publicKeyHex == online.publicKeyHex,
+        ),
+      ),
+    ];
     final key = (
       widget.message,
       widget.channelMessage,
@@ -1038,6 +1234,34 @@ class _ChannelMessagePathMapScreenState
                         border: Border.all(color: mapScheme.outlineVariant),
                       ),
                       child: Text(context.l10n.channelPath_noRepeaterLocations),
+                    ),
+                  ),
+                if (_onlinePathLoading)
+                  Positioned(
+                    top: 12,
+                    left: 16,
+                    right: 16,
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        child: Row(
+                          children: [
+                            const SizedBox.square(
+                              dimension: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                context.l10n.channelPath_loadingOnlineMap,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 _buildLegendCard(

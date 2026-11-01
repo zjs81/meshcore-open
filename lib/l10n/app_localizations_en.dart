@@ -1403,6 +1403,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Display connection lines between nodes from the online map';
 
   @override
+  String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
+
+  @override
+  String get appSettings_useOnlineMapForPathsSubtitle =>
+      'Use repeater locations from the online map when reconstructing message paths';
+
+  @override
   String get appSettings_timeFilter => 'Time Filter';
 
   @override
@@ -4430,6 +4437,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get channelPath_noHopDetails =>
       'Hop details are not provided for this packet.';
+
+  @override
+  String get channelPath_loadingOnlineMap =>
+      'Loading repeater locations from the online map...';
 
   @override
   String get channelPath_messageDetails => 'Message Details';
