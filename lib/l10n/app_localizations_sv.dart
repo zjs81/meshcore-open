@@ -1394,6 +1394,20 @@ class AppLocalizationsSv extends AppLocalizations {
       'Visa andra nodtyper på kartan';
 
   @override
+  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+
+  @override
+  String get appSettings_showOnlineLinksSubtitle =>
+      'Display connection lines between nodes from the online map';
+
+  @override
+  String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
+
+  @override
+  String get appSettings_useOnlineMapForPathsSubtitle =>
+      'Use repeater locations from the online map when reconstructing message paths';
+
+  @override
   String get appSettings_timeFilter => 'Tidsfilter';
 
   @override
@@ -2663,6 +2677,9 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get map_otherNodes => 'Andra noder';
+
+  @override
+  String get map_showOnlineLinks => 'Show Online Map Connections';
 
   @override
   String get map_showOverlaps => 'Repeater-nyckelöverlappningar';
@@ -4441,6 +4458,10 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get channelPath_noHopDetails =>
       'Hoppdetaljer anges inte för det här paketet.';
+
+  @override
+  String get channelPath_loadingOnlineMap =>
+      'Loading repeater locations from the online map...';
 
   @override
   String get channelPath_messageDetails => 'Meddelandets detaljer';

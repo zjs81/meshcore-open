@@ -447,6 +447,7 @@ class MeshCoreConnector extends ChangeNotifier {
   static const int _maxChannelMapSyncRetries = 2;
   // Completes when the running channel sync has applied its slot map.
   Completer<void>? _channelSyncCompleter;
+  int _channelSyncGeneration = 0;
   static const int _maxChannelSyncRetries = 3;
   @visibleForTesting
   int channelSyncTimeoutMs = 2000; // timeout per channel
@@ -3603,6 +3604,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _channelSyncRetries = 0;
     _nextChannelIndexToRequest = 0;
     _totalChannelsToRequest = 0;
+    _channelSyncGeneration++;
     _previousChannelsCache.clear();
     _unconfirmedChannelSlots.clear();
     _channelSyncIncomplete = false;
@@ -4342,7 +4344,7 @@ class MeshCoreConnector extends ChangeNotifier {
         _activeTransport == MeshCoreTransportType.bluetooth &&
         _isSyncingChannels &&
         !_channelSyncInFlight) {
-      unawaited(_requestNextChannel());
+      unawaited(_requestNextChannel(generation: _channelSyncGeneration));
     }
     if (_appStartDeferredForContactSync) {
       _appStartDeferredForContactSync = false;
@@ -5634,6 +5636,7 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     final completer = Completer<void>();
+    final generation = ++_channelSyncGeneration;
     _channelSyncCompleter = completer;
     _channelMapSyncRetries = 0;
     _isLoadingChannels = true;
@@ -5653,13 +5656,14 @@ class MeshCoreConnector extends ChangeNotifier {
     );
 
     // Start sequential sync
-    await _requestNextChannel();
+    await _requestNextChannel(generation: generation);
     return completer.future;
   }
 
   /// Runs another full pass after slots timed out, keeping what this pass
   /// learned as the fallback for slots that time out again.
-  void _restartChannelSyncPass() {
+  void _restartChannelSyncPass(int generation) {
+    if (generation != _channelSyncGeneration) return;
     final known = <int, Channel>{
       for (final channel in _previousChannelsCache) channel.index: channel,
       for (final channel in _channels) channel.index: channel,
@@ -5672,10 +5676,11 @@ class MeshCoreConnector extends ChangeNotifier {
     _channelSyncRetries = 0;
     _channelSyncInFlight = false;
     notifyListeners();
-    unawaited(_requestNextChannel());
+    unawaited(_requestNextChannel(generation: generation));
   }
 
-  Future<void> _requestNextChannel() async {
+  Future<void> _requestNextChannel({required int generation}) async {
+    if (generation != _channelSyncGeneration) return;
     if (!isConnected) {
       _cleanupChannelSync(completed: false);
       return;
@@ -5698,7 +5703,7 @@ class MeshCoreConnector extends ChangeNotifier {
     // Set up timeout for this channel request
     _channelSyncTimeout = Timer(
       Duration(milliseconds: channelSyncTimeoutMs),
-      () => _handleChannelSyncTimeout(channelIndex),
+      () => _handleChannelSyncTimeout(channelIndex, generation),
     );
 
     debugPrint(
@@ -5709,12 +5714,14 @@ class MeshCoreConnector extends ChangeNotifier {
       await sendFrame(buildGetChannelFrame(channelIndex));
     } catch (e) {
       debugPrint('[ChannelSync] Error sending channel request: $e');
+      if (generation != _channelSyncGeneration) return;
       _channelSyncInFlight = false;
       _cleanupChannelSync(completed: false);
     }
   }
 
-  void _handleChannelSyncTimeout(int channelIndex) {
+  void _handleChannelSyncTimeout(int channelIndex, int generation) {
+    if (generation != _channelSyncGeneration) return;
     debugPrint(
       '[ChannelSync] Timeout waiting for channel $channelIndex (retry: $_channelSyncRetries/$_maxChannelSyncRetries)',
     );
@@ -5723,7 +5730,7 @@ class MeshCoreConnector extends ChangeNotifier {
       // Retry the same channel
       _channelSyncRetries++;
       _channelSyncInFlight = false;
-      unawaited(_requestNextChannel());
+      unawaited(_requestNextChannel(generation: generation));
     } else {
       // Max retries reached for this channel, restore from cache and move to next
       debugPrint(
@@ -5752,7 +5759,7 @@ class MeshCoreConnector extends ChangeNotifier {
       _channelSyncRetries = 0;
       _channelSyncInFlight = false;
       notifyListeners();
-      unawaited(_requestNextChannel());
+      unawaited(_requestNextChannel(generation: generation));
     }
   }
 
@@ -5785,7 +5792,7 @@ class MeshCoreConnector extends ChangeNotifier {
         '[ChannelSync] Some slots did not answer; retrying the sync '
         '($_channelMapSyncRetries/$_maxChannelMapSyncRetries)',
       );
-      _restartChannelSyncPass();
+      _restartChannelSyncPass(_channelSyncGeneration);
       return;
     }
     final complete = !_channelSyncIncomplete;
@@ -8022,7 +8029,7 @@ class MeshCoreConnector extends ChangeNotifier {
         // Move to next channel
         _nextChannelIndexToRequest++;
         notifyListeners();
-        unawaited(_requestNextChannel());
+        unawaited(_requestNextChannel(generation: _channelSyncGeneration));
         return;
       } else {
         // Received a channel but not the one we're waiting for

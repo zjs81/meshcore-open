@@ -1409,6 +1409,20 @@ class AppLocalizationsNl extends AppLocalizations {
       'Toon andere nodetypes op de kaart';
 
   @override
+  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+
+  @override
+  String get appSettings_showOnlineLinksSubtitle =>
+      'Display connection lines between nodes from the online map';
+
+  @override
+  String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
+
+  @override
+  String get appSettings_useOnlineMapForPathsSubtitle =>
+      'Use repeater locations from the online map when reconstructing message paths';
+
+  @override
   String get appSettings_timeFilter => 'Filter op tijd';
 
   @override
@@ -2678,6 +2692,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get map_otherNodes => 'Andere Nodes';
+
+  @override
+  String get map_showOnlineLinks => 'Show Online Map Connections';
 
   @override
   String get map_showOverlaps => 'Overlappende repeatersleutels';
@@ -4458,6 +4475,10 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get channelPath_noHopDetails =>
       'Voor dit pakket zijn geen hopdetails beschikbaar.';
+
+  @override
+  String get channelPath_loadingOnlineMap =>
+      'Loading repeater locations from the online map...';
 
   @override
   String get channelPath_messageDetails => 'Details Bericht';

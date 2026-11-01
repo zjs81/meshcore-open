@@ -1411,6 +1411,20 @@ class AppLocalizationsUk extends AppLocalizations {
       'Відображати інші типи вузлів на карті';
 
   @override
+  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+
+  @override
+  String get appSettings_showOnlineLinksSubtitle =>
+      'Display connection lines between nodes from the online map';
+
+  @override
+  String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
+
+  @override
+  String get appSettings_useOnlineMapForPathsSubtitle =>
+      'Use repeater locations from the online map when reconstructing message paths';
+
+  @override
   String get appSettings_timeFilter => 'Фільтр часу';
 
   @override
@@ -2687,6 +2701,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get map_otherNodes => 'Інші вузли';
+
+  @override
+  String get map_showOnlineLinks => 'Show Online Map Connections';
 
   @override
   String get map_showOverlaps => 'Перекриття ключів ретрансляторів';
@@ -4483,6 +4500,10 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get channelPath_noHopDetails =>
       'Деталі відправки не надані для цього пакету.';
+
+  @override
+  String get channelPath_loadingOnlineMap =>
+      'Loading repeater locations from the online map...';
 
   @override
   String get channelPath_messageDetails => 'Деталі повідомлення';

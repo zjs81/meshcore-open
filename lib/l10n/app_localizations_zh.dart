@@ -1321,6 +1321,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_showOtherNodesSubtitle => '在地图上显示其他节点类型';
 
   @override
+  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+
+  @override
+  String get appSettings_showOnlineLinksSubtitle =>
+      'Display connection lines between nodes from the online map';
+
+  @override
+  String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
+
+  @override
+  String get appSettings_useOnlineMapForPathsSubtitle =>
+      'Use repeater locations from the online map when reconstructing message paths';
+
+  @override
   String get appSettings_timeFilter => '时间过滤器';
 
   @override
@@ -2539,6 +2553,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get map_otherNodes => '其他节点';
+
+  @override
+  String get map_showOnlineLinks => 'Show Online Map Connections';
 
   @override
   String get map_showOverlaps => '重复键重叠';
@@ -4160,6 +4177,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get channelPath_noHopDetails => '此数据包未提供详细信息';
+
+  @override
+  String get channelPath_loadingOnlineMap =>
+      'Loading repeater locations from the online map...';
 
   @override
   String get channelPath_messageDetails => '消息详情';

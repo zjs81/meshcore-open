@@ -450,6 +450,20 @@ void main() {
       expect(AppSettings.fromJson(saved).loadLinkImages, isFalse);
     });
 
+    test('online map links default on and round-trip through JSON', () {
+      expect(AppSettings().mapShowOnlineLinks, isTrue);
+      expect(AppSettings.fromJson({}).mapShowOnlineLinks, isTrue);
+      final saved = AppSettings(mapShowOnlineLinks: false).toJson();
+      expect(AppSettings.fromJson(saved).mapShowOnlineLinks, isFalse);
+    });
+
+    test('online map paths default off and round-trip through JSON', () {
+      expect(AppSettings().mapUseOnlineMapForPaths, isFalse);
+      expect(AppSettings.fromJson({}).mapUseOnlineMapForPaths, isFalse);
+      final saved = AppSettings(mapUseOnlineMapForPaths: true).toJson();
+      expect(AppSettings.fromJson(saved).mapUseOnlineMapForPaths, isTrue);
+    });
+
     test('show link images by default is off and round-trips', () {
       expect(AppSettings().showLinkImagesByDefault, isFalse);
       expect(AppSettings.fromJson({}).showLinkImagesByDefault, isFalse);

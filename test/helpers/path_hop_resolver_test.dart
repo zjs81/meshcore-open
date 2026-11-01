@@ -91,4 +91,36 @@ void main() {
 
     expect(resolved.single?.name, 'Newer');
   });
+
+  test('drops an isolated location that is too far from both neighbors', () {
+    final previous = _contact(
+      prefix: 0xAA,
+      name: 'Previous',
+      latitude: 1,
+      longitude: 0,
+    );
+    final isolated = _contact(
+      prefix: 0xBB,
+      name: 'Isolated',
+      latitude: 1,
+      longitude: 1.7,
+    );
+    final next = _contact(
+      prefix: 0xCC,
+      name: 'Next',
+      latitude: 1,
+      longitude: 3.4,
+    );
+
+    final resolved = PathHopResolver.resolve(
+      pathBytes: const [0xAA, 0xBB, 0xCC],
+      contacts: [previous, isolated, next],
+    );
+
+    expect(resolved.map((contact) => contact?.name), [
+      'Previous',
+      null,
+      'Next',
+    ]);
+  });
 }
