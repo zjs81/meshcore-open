@@ -67,11 +67,23 @@ jobs:
           bash scripts/appimage/test_packaging.sh
       - run: flutter pub get
       - run: flutter build linux --release --no-pub
+      - uses: docker/setup-buildx-action@v3
+      - name: Build cached x86_64 runtime test image
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            --target runtime-test \
+            --build-arg "BASE_IMAGE=$(jq -r '.ubuntu' scripts/appimage-tools.json)" \
+            --cache-from type=gha,scope=meshcore-appimage-runtime-amd64 \
+            --cache-to type=gha,mode=max,scope=meshcore-appimage-runtime-amd64 \
+            --tag meshcore-appimage-runtime:ci \
+            --load \
+            -f scripts/appimage/Dockerfile \
+            scripts
       - name: Test AppImage in clean Ubuntu
         run: |
-          docker build --target runtime-test --build-arg "BASE_IMAGE=$(jq -r '.ubuntu' scripts/appimage-tools.json)" -f scripts/appimage/Dockerfile -t meshcore-appimage-runtime scripts
           mkdir -p build/appimage-runtime
-          docker run --rm --user "$(id -u):$(id -g)" --mount "type=bind,source=$PWD/build/linux/x64/release/meshcore-open-x86_64.AppImage,target=/artifact.AppImage,readonly" --mount "type=bind,source=$PWD/scripts/appimage/test_runtime.sh,target=/test_runtime.sh,readonly" --mount "type=bind,source=$PWD/build/appimage-runtime,target=/results" meshcore-appimage-runtime xvfb-run -a bash /test_runtime.sh /artifact.AppImage /results
+          docker run --rm --user "$(id -u):$(id -g)" --mount "type=bind,source=$PWD/build/linux/x64/release/meshcore-open-x86_64.AppImage,target=/artifact.AppImage,readonly" --mount "type=bind,source=$PWD/scripts/appimage/test_runtime.sh,target=/test_runtime.sh,readonly" --mount "type=bind,source=$PWD/build/appimage-runtime,target=/results" meshcore-appimage-runtime:ci xvfb-run -a bash /test_runtime.sh /artifact.AppImage /results
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -127,11 +139,23 @@ jobs:
             tail -n 200 build/linux-arm64-build.log
             exit 1
           fi
+      - uses: docker/setup-buildx-action@v3
+      - name: Build cached ARM64 runtime test image
+        run: |
+          docker buildx build \
+            --platform linux/arm64 \
+            --target runtime-test \
+            --build-arg "BASE_IMAGE=$(jq -r '.ubuntu' scripts/appimage-tools.json)" \
+            --cache-from type=gha,scope=meshcore-appimage-runtime-arm64 \
+            --cache-to type=gha,mode=max,scope=meshcore-appimage-runtime-arm64 \
+            --tag meshcore-appimage-runtime-arm64:ci \
+            --load \
+            -f scripts/appimage/Dockerfile \
+            scripts
       - name: Test ARM64 AppImage in clean Ubuntu
         run: |
-          docker build --platform linux/arm64 --target runtime-test --build-arg "BASE_IMAGE=$(jq -r '.ubuntu' scripts/appimage-tools.json)" -f scripts/appimage/Dockerfile -t meshcore-appimage-runtime-arm64 scripts
           mkdir -p build/appimage-runtime
-          docker run --rm --platform linux/arm64 --user "$(id -u):$(id -g)" --mount "type=bind,source=$PWD/build/linux/arm64/release/meshcore-open-aarch64.AppImage,target=/artifact.AppImage,readonly" --mount "type=bind,source=$PWD/scripts/appimage/test_runtime.sh,target=/test_runtime.sh,readonly" --mount "type=bind,source=$PWD/build/appimage-runtime,target=/results" meshcore-appimage-runtime-arm64 xvfb-run -a bash /test_runtime.sh /artifact.AppImage /results
+          docker run --rm --platform linux/arm64 --user "$(id -u):$(id -g)" --mount "type=bind,source=$PWD/build/linux/arm64/release/meshcore-open-aarch64.AppImage,target=/artifact.AppImage,readonly" --mount "type=bind,source=$PWD/scripts/appimage/test_runtime.sh,target=/test_runtime.sh,readonly" --mount "type=bind,source=$PWD/build/appimage-runtime,target=/results" meshcore-appimage-runtime-arm64:ci xvfb-run -a bash /test_runtime.sh /artifact.AppImage /results
       - uses: actions/upload-artifact@v4
         if: always()
         with:
