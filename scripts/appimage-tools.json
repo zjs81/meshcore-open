@@ -1,0 +1,26 @@
+{
+  "ubuntu": "ubuntu:24.04@sha256:fe81560990fae86dc4743202b2cb4d3df98d0bcf949173cecef15ce1127ef852",
+  "flutter": {
+    "version": "3.47.4",
+    "url": "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.47.4-stable.tar.xz",
+    "sha256": "5b45f0ceda99b9bebdc873e7e69f6450aeb4c30f454b505e2e62fc9255a907d3"
+  },
+  "tools": {
+    "linuxdeploy": {
+      "url": "https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20251107-1/linuxdeploy-x86_64.AppImage",
+      "sha256": "c20cd71e3a4e3b80c3483cef793cda3f4e990aca14014d23c544ca3ce1270b4d"
+    },
+    "appimagetool": {
+      "url": "https://github.com/AppImage/appimagetool/releases/download/1.9.1/appimagetool-x86_64.AppImage",
+      "sha256": "ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0"
+    },
+    "gtk": {
+      "url": "https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/7a3fbc31a9e5075073ff8790f26effbac5f84453/linuxdeploy-plugin-gtk.sh",
+      "sha256": "b0f4cbc684a0103a9651f0955b635eaea0096b3a66c0f5a2c2aa337960375171"
+    },
+    "runtime": {
+      "url": "https://github.com/AppImage/type2-runtime/releases/download/20251108/runtime-x86_64",
+      "sha256": "2fca8b443c92510f1483a883f60061ad09b46b978b2631c807cd873a47ec260d"
+    }
+  }
+}

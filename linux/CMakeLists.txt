@@ -181,3 +181,7 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
   install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
     COMPONENT Runtime)
 endif()
+
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/appimage.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/appimage.cmake" @ONLY)
+install(SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/appimage.cmake" COMPONENT Runtime)

@@ -22,6 +22,32 @@ BLE and TCP retry an unexpected disconnect with exponential backoff; manual disc
 
 Companion stats require firmware code 8+, and image channel data requires code 11+. Image inference also needs an enabled, complete model bundle and adequate memory. A missing incoming region label can mean unknown or unavailable metadata, not an unscoped message. See [images](image-messages.md), [regions](regions.md), and [radio stats](radio-statistics.md).
 
+## Linux AppImage build or launch fails
+
+Linux Release builds package an x86_64 AppImage automatically. Missing
+packaging dependencies, failed downloads or checksum mismatches fail the build;
+see [Linux AppImage prerequisites](../README.md#linux-appimage). A checksum
+mismatch must not be bypassed: remove the named corrupted cache file and retry.
+Tools are pinned in `scripts/appimage-tools.json`; cached tools can be reused
+offline, but dependency downloads and first-time container setup still need
+network access. Use `MESHCORE_BUILD_APPIMAGE=0 flutter build linux --release`
+for a bundle-only build, including ARM builds.
+
+For a Nix build, verify that your user can access Podman or Docker without
+interactive privilege escalation. The image is rebuilt in Ubuntu, not made
+from the Nix-linked executable. The regular Nix bundle remains available if
+packaging fails. Custom targets, obfuscation and split-debug-info are not
+supported by the container rebuild.
+
+The initial compatibility baseline is Ubuntu 24.04. The host must provide
+compatible glibc, graphics drivers, and X11/XWayland; Bluetooth still requires
+BlueZ and USB still requires device permissions. If FUSE mounting is
+unavailable, try the image's `--appimage-extract-and-run` option, or extract
+with `--appimage-extract` and launch `squashfs-root/AppRun`. On NixOS, the
+distribution's `appimage-run` support may be required. Include
+`appimage-audit.txt` and `appimage-tools.json` from the Release output directory
+when reporting packaging failures. Never include private message/model data.
+
 ## Useful bug-report details
 
 Include app version, OS/device, radio board and firmware version, transport, reproduction steps, expected behavior, and the exact error. Where relevant, include entries from the **Companion Debug Log** in Settings (frame traffic for BLE, TCP, and USB) or the **App Debug Log**. The App Debug Log only records after you enable App Settings → Debug → **App Debug Logging**. Inspect logs before sharing: they can contain message content, identifiers, and location data.

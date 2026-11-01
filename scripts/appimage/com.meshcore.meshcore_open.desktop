@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=MeshCore Open
+Exec=meshcore_open
+Icon=com.meshcore.meshcore_open
+Terminal=false
+Categories=Network;InstantMessaging;

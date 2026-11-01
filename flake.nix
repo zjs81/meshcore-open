@@ -43,6 +43,9 @@
             unzip
           ] ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
             pkgs.libsysprof-capture
+            pkgs.jq
+            pkgs.binutils
+            pkgs.util-linux
           ];
 
           shellHook = ''
