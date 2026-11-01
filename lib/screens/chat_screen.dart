@@ -370,6 +370,16 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
       body: Consumer<MeshCoreConnector>(
+        child: Selector<MeshCoreConnector, (bool, bool, String, String?)>(
+          selector: (_, connector) => (
+            connector.isContactSmazEnabled(widget.contact.publicKeyHex),
+            connector.isContactCyr2LatEnabled(widget.contact.publicKeyHex),
+            _resolveContact(connector).name,
+            connector.getContactCyr2LatProfileId(widget.contact.publicKeyHex),
+          ),
+          builder: (context, _, _) =>
+              _buildInputBar(context.read<MeshCoreConnector>()),
+        ),
         builder: (context, connector, child) {
           final messages = connector.getMessages(widget.contact);
           final newest = messages.isEmpty ? null : messages.last;
@@ -399,7 +409,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
               ),
-              _buildInputBar(connector),
+              child!,
             ],
           );
         },
@@ -421,9 +431,8 @@ class _ChatScreenState extends State<ChatScreen> {
     List<Message> messages,
     MeshCoreConnector connector,
   ) {
-    // Reverse messages so newest appear at bottom with reverse: true
-    final reversedMessages = messages.reversed.toList();
-    final itemCount = reversedMessages.length + (_isLoadingOlder ? 1 : 0);
+    final messageSnapshot = List<Message>.of(messages);
+    final itemCount = messageSnapshot.length + (_isLoadingOlder ? 1 : 0);
 
     // Auto-scroll to bottom if user is already at bottom
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -455,7 +464,8 @@ class _ChatScreenState extends State<ChatScreen> {
           final messageIndex = index;
           Contact contact = _resolveContact(connector);
           final bool isRoom = contact.type == advTypeRoom;
-          final message = reversedMessages[messageIndex];
+          final sourceIndex = messageSnapshot.length - 1 - messageIndex;
+          final message = messageSnapshot[sourceIndex];
           String fourByteHex = '';
           Contact? roomAuthor;
           if (isRoom) {
@@ -498,9 +508,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   _unreadDividerMessageId != null &&
                   message.messageId == _unreadDividerMessageId;
               final startsDay =
-                  messageIndex == reversedMessages.length - 1 ||
+                  sourceIndex == 0 ||
                   !isSameChatDay(
-                    reversedMessages[messageIndex + 1].receivedAt,
+                    messageSnapshot[sourceIndex - 1].receivedAt,
                     message.receivedAt,
                   );
               final child = isUnreadAnchor || startsDay

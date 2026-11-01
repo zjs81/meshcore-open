@@ -19,22 +19,34 @@ int _decodeRawPathByteLen(int pathLenRaw) {
 }
 
 class BleDebugLogScreen extends StatefulWidget {
-  const BleDebugLogScreen({super.key});
+  const BleDebugLogScreen({super.key, this.initialRawLogRx = false});
+
+  final bool initialRawLogRx;
 
   @override
   State<BleDebugLogScreen> createState() => _BleDebugLogScreenState();
 }
 
 class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
-  _BleLogView _view = _BleLogView.frames;
+  late _BleLogView _view;
+
+  @override
+  void initState() {
+    super.initState();
+    _view = widget.initialRawLogRx ? _BleLogView.rawLogRx : _BleLogView.frames;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<BleDebugLogService>(
       builder: (context, logService, _) {
-        final entries = logService.entries.reversed.toList();
-        final rawEntries = logService.rawLogRxEntries.reversed.toList();
         final showingFrames = _view == _BleLogView.frames;
+        final entries = showingFrames
+            ? logService.entries
+            : const <BleDebugLogEntry>[];
+        final rawEntries = showingFrames
+            ? const <BleRawLogRxEntry>[]
+            : logService.rawLogRxEntries;
         final hasEntries = showingFrames
             ? entries.isNotEmpty
             : rawEntries.isNotEmpty;
@@ -123,7 +135,7 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
                               Divider(height: 1, color: scheme.outlineVariant),
                           itemBuilder: (context, index) {
                             if (showingFrames) {
-                              final entry = entries[index];
+                              final entry = entries[entries.length - 1 - index];
                               final time =
                                   '${entry.timestamp.hour.toString().padLeft(2, '0')}:${entry.timestamp.minute.toString().padLeft(2, '0')}:${entry.timestamp.second.toString().padLeft(2, '0')}';
                               Future<void> copyHex() async {
@@ -209,7 +221,8 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
                               );
                             }
 
-                            final entry = rawEntries[index];
+                            final entry =
+                                rawEntries[rawEntries.length - 1 - index];
                             final info = _decodeRawPacket(entry.payload);
                             final time =
                                 '${entry.timestamp.hour.toString().padLeft(2, '0')}:${entry.timestamp.minute.toString().padLeft(2, '0')}:${entry.timestamp.second.toString().padLeft(2, '0')}';

@@ -35,11 +35,13 @@ int SerialThread(void *aArg)
 
     while (!serial->breakThread)
     {
+        int didWork = 0;
         try
         {
             res = (int)serial->serialport->read((uint8_t *)buff, (size_t)len);
             if (res > 0)
             {
+                didWork = 1;
                 mtx_lock(&serial->inFifo_mutex);
                 ring_buffer_queue_arr(&serial->cinfifo, (const char *)buff, res);
                 mtx_unlock(&serial->inFifo_mutex);
@@ -67,6 +69,7 @@ int SerialThread(void *aArg)
                 mtx_unlock(&serial->outFifo_mutex);
                 if (res > 0) {
                     res = (int)serial->serialport->write((uint8_t*)buff, (size_t)res);
+                    didWork = 1;
                 }
 
            
@@ -76,6 +79,14 @@ int SerialThread(void *aArg)
             serial->lasterror = FL_ERROR_IO;
             strncpy(serial->lasterrormsg , ioe.what(), sizeof(serial->lasterrormsg) - 1);
         }
+
+#if defined(__linux__) && !defined(__ANDROID__)
+        if (!didWork && !serial->breakThread)
+        {
+            const struct timespec wait = {0, 5000000L};
+            thrd_sleep(&wait, NULL);
+        }
+#endif
     }
 
     return 0;
