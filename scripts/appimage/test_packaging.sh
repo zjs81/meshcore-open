@@ -37,6 +37,7 @@ bash "$project/scripts/build_appimage.sh" "$project" /missing "$temporary/output
 [[ ! -d "$temporary/output" ]]
 assert_fails bash "$project/scripts/build_appimage.sh" \
   "$project" /missing "$temporary/output" Release riscv64
+# shellcheck disable=SC2218
 jq -e '.flutter.source_revision == "9584c6713b324636289d067944a46fd6b49df14b" and
   (.tools.x86_64.linuxdeploy.sha256 | length == 64) and
   (.tools.aarch64.linuxdeploy.sha256 | length == 64) and
@@ -52,7 +53,9 @@ check_bundle "$temporary/AppDir with spaces/usr/bin"
 printf 'fixture\n' > "$temporary/input"
 checksum="$(sha256sum "$temporary/input")"
 checksum="${checksum%% *}"
+# shellcheck disable=SC2218
 download_verified "file://$temporary/input" "$checksum" "$temporary/cache/tool"
+# shellcheck disable=SC2218
 download_verified 'https://invalid.example/offline' "$checksum" "$temporary/cache/tool"
 assert_fails download_verified "file://$temporary/input" \
   '0000000000000000000000000000000000000000000000000000000000000000' "$temporary/cache/invalid"
@@ -92,6 +95,7 @@ jq() {
 
 # shellcheck disable=SC2329
 podman() {
+  # shellcheck disable=SC2317
   case "$1" in
     info) [[ "$mock_engine" == podman ]] ;;
     image) return 0 ;;
@@ -102,6 +106,7 @@ podman() {
 
 # shellcheck disable=SC2329
 docker() {
+  # shellcheck disable=SC2317
   case "$1" in
     info|image) return 0 ;;
     run) printf '%s\n' "$@" > "$temporary/container-arguments" ;;
