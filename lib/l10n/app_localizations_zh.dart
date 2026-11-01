@@ -3155,6 +3155,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get repeater_rebootRepeaterConfirm => '确定要重启此转发节点吗？';
 
   @override
+  String get repeater_startOta => '开始OTA';
+
+  @override
+  String get repeater_startOtaSubtitle => '这会将转发节点置于OTA模式';
+
+  @override
+  String get repeater_startOtaConfirm => '这会将转发节点置于OTA模式。是否继续?';
+
+  @override
+  String get repeater_setFromMap => '从地图设置';
+
+  @override
+  String get repeater_locationPickerHint => '点按地图放置图钉,然后确认。';
+
+  @override
   String get repeater_regenerateIdentityKey => '重新生成身份密钥';
 
   @override
@@ -4144,6 +4159,48 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String neighbors_heardAgo(String time) {
     return '听到：$time前';
+  }
+
+  @override
+  String get neighbors_tabList => 'List';
+
+  @override
+  String get neighbors_tabMap => 'Map';
+
+  @override
+  String get neighbors_discoverTooltip => 'Send discovery request';
+
+  @override
+  String get neighbors_discoverySent =>
+      'Discovery request sent to the repeater.';
+
+  @override
+  String neighbors_discoveryFailed(String error) {
+    return 'Discovery failed: $error';
+  }
+
+  @override
+  String get neighbors_eraseTooltip => 'Erase all neighbors';
+
+  @override
+  String get neighbors_eraseConfirm =>
+      'This removes every neighbor from the repeater. They will reappear as adverts are heard.';
+
+  @override
+  String get neighbors_erased => 'All neighbors erased.';
+
+  @override
+  String neighbors_eraseFailed(String error) {
+    return 'Failed to erase neighbors: $error';
+  }
+
+  @override
+  String get neighbors_mapNoNeighborLocations =>
+      'No neighbors have a location to map.';
+
+  @override
+  String neighbors_mapHiddenWithoutLocation(int count) {
+    return '$count neighbors without location hidden.';
   }
 
   @override

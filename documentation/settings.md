@@ -74,6 +74,7 @@ Opens the radio statistics screen for the paired radio: noise floor, last RSSI, 
 ### Location
 Opens a dialog pre-populated with the device's current coordinates (if known):
 - Latitude and longitude fields (decimal, 6 decimal places). If only one field is provided, the other uses the device's current value
+- **Set from map** button: opens a map picker centered on the phone's location (when available), where you tap to place a pin and confirm; the picked point fills the latitude and longitude fields
 - If GPS-capable hardware (detected via `gps` custom variable):
   - GPS Update Interval (seconds, 60–86399, default 900 = 15 minutes). Validated and sent separately before lat/lon
   - Enable GPS toggle (takes effect immediately, not deferred to Save)

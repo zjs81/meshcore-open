@@ -1812,6 +1812,11 @@
   "repeater_rebootRepeater": "Reboot Repeater",
   "repeater_rebootRepeaterSubtitle": "Restart the repeater device",
   "repeater_rebootRepeaterConfirm": "Are you sure you want to reboot this repeater?",
+  "repeater_startOta": "Start OTA",
+  "repeater_startOtaSubtitle": "This will put the repeater into OTA mode",
+  "repeater_startOtaConfirm": "This will put the repeater into OTA mode. Continue?",
+  "repeater_setFromMap": "Set from map",
+  "repeater_locationPickerHint": "Tap the map to place the pin, then confirm.",
   "repeater_regenerateIdentityKey": "Regenerate Identity Key",
   "repeater_regenerateIdentityKeySubtitle": "Generate new public/private key pair",
   "repeater_regenerateIdentityKeyConfirm": "This will generate a new identity for the repeater. Continue?",
@@ -2339,6 +2344,38 @@
     "placeholders": {
       "time": {
         "type": "String"
+      }
+    }
+  },
+  "neighbors_tabList": "List",
+  "neighbors_tabMap": "Map",
+  "neighbors_discoverTooltip": "Send discovery request",
+  "neighbors_discoverySent": "Discovery request sent to the repeater.",
+  "neighbors_discoveryFailed": "Discovery failed: {error}",
+  "@neighbors_discoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_eraseTooltip": "Erase all neighbors",
+  "neighbors_eraseConfirm": "This removes every neighbor from the repeater. They will reappear as adverts are heard.",
+  "neighbors_erased": "All neighbors erased.",
+  "neighbors_eraseFailed": "Failed to erase neighbors: {error}",
+  "@neighbors_eraseFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_mapNoNeighborLocations": "No neighbors have a location to map.",
+  "neighbors_mapHiddenWithoutLocation": "{count} neighbors without location hidden.",
+  "@neighbors_mapHiddenWithoutLocation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
       }
     }
   },

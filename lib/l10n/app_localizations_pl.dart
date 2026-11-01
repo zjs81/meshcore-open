@@ -3353,6 +3353,23 @@ class AppLocalizationsPl extends AppLocalizations {
       'Czy na pewno chcesz zrestartować ten przekaźnik?';
 
   @override
+  String get repeater_startOta => 'Rozpocznij OTA';
+
+  @override
+  String get repeater_startOtaSubtitle => 'To przełączy przekaźnik w tryb OTA';
+
+  @override
+  String get repeater_startOtaConfirm =>
+      'To przełączy przekaźnik w tryb OTA. Kontynuować?';
+
+  @override
+  String get repeater_setFromMap => 'Ustaw z mapy';
+
+  @override
+  String get repeater_locationPickerHint =>
+      'Dotknij mapy, aby umieścić pinezkę, a następnie potwierdź.';
+
+  @override
   String get repeater_regenerateIdentityKey => 'Wygeneruj klucz tożsamości';
 
   @override
@@ -4486,6 +4503,48 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String neighbors_heardAgo(String time) {
     return 'Usłyszano: $time temu';
+  }
+
+  @override
+  String get neighbors_tabList => 'List';
+
+  @override
+  String get neighbors_tabMap => 'Map';
+
+  @override
+  String get neighbors_discoverTooltip => 'Send discovery request';
+
+  @override
+  String get neighbors_discoverySent =>
+      'Discovery request sent to the repeater.';
+
+  @override
+  String neighbors_discoveryFailed(String error) {
+    return 'Discovery failed: $error';
+  }
+
+  @override
+  String get neighbors_eraseTooltip => 'Erase all neighbors';
+
+  @override
+  String get neighbors_eraseConfirm =>
+      'This removes every neighbor from the repeater. They will reappear as adverts are heard.';
+
+  @override
+  String get neighbors_erased => 'All neighbors erased.';
+
+  @override
+  String neighbors_eraseFailed(String error) {
+    return 'Failed to erase neighbors: $error';
+  }
+
+  @override
+  String get neighbors_mapNoNeighborLocations =>
+      'No neighbors have a location to map.';
+
+  @override
+  String neighbors_mapHiddenWithoutLocation(int count) {
+    return '$count neighbors without location hidden.';
   }
 
   @override

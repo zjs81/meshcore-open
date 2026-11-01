@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_windows
   flutter_blue_plus_winrt
   flutter_onnxruntime
+  geolocator_windows
   share_plus
   url_launcher_windows
 )

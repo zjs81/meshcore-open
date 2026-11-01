@@ -3325,6 +3325,23 @@ class AppLocalizationsSk extends AppLocalizations {
       'Ste si istý, že chcete tento opakovač restartovať?';
 
   @override
+  String get repeater_startOta => 'Spustiť OTA';
+
+  @override
+  String get repeater_startOtaSubtitle => 'Toto prepne opakovač do OTA režimu';
+
+  @override
+  String get repeater_startOtaConfirm =>
+      'Toto prepne opakovač do OTA režimu. Pokračovať?';
+
+  @override
+  String get repeater_setFromMap => 'Nastaviť z mapy';
+
+  @override
+  String get repeater_locationPickerHint =>
+      'Klepnutím na mapu umiestnite kolík a potvrďte.';
+
+  @override
   String get repeater_regenerateIdentityKey =>
       'Znovu vygenerovať kľúč identity';
 
@@ -4453,6 +4470,48 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String neighbors_heardAgo(String time) {
     return 'Počuli sme to: $time dozadu';
+  }
+
+  @override
+  String get neighbors_tabList => 'List';
+
+  @override
+  String get neighbors_tabMap => 'Map';
+
+  @override
+  String get neighbors_discoverTooltip => 'Send discovery request';
+
+  @override
+  String get neighbors_discoverySent =>
+      'Discovery request sent to the repeater.';
+
+  @override
+  String neighbors_discoveryFailed(String error) {
+    return 'Discovery failed: $error';
+  }
+
+  @override
+  String get neighbors_eraseTooltip => 'Erase all neighbors';
+
+  @override
+  String get neighbors_eraseConfirm =>
+      'This removes every neighbor from the repeater. They will reappear as adverts are heard.';
+
+  @override
+  String get neighbors_erased => 'All neighbors erased.';
+
+  @override
+  String neighbors_eraseFailed(String error) {
+    return 'Failed to erase neighbors: $error';
+  }
+
+  @override
+  String get neighbors_mapNoNeighborLocations =>
+      'No neighbors have a location to map.';
+
+  @override
+  String neighbors_mapHiddenWithoutLocation(int count) {
+    return '$count neighbors without location hidden.';
   }
 
   @override

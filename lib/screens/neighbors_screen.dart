@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:meshcore_open/utils/app_logger.dart';
 import 'package:provider/provider.dart';
 import '../l10n/l10n.dart';
@@ -10,8 +11,10 @@ import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../services/repeater_command_service.dart';
 import '../theme/mesh_theme.dart';
+import '../widgets/confirm_clear_dialog.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/neighbors_map_view.dart';
 import '../widgets/routing_sheet.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../l10n/app_localizations.dart';
@@ -40,14 +43,18 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
   static const int _statusStatsSize = 52;
   static const int _statusResponseBytes =
       _statusPayloadOffset + _statusStatsSize;
+  static const int _maxPageRetries = 2;
   Uint8List _tagData = Uint8List(4);
   bool _awaitingSent = false;
   int _neighborCount = 0;
   int _pageOffset = 0;
+  int _pageRetries = 0;
 
   bool _isLoading = false;
   bool _isLoaded = false;
   bool _hasData = false;
+  bool _isDiscovering = false;
+  bool _isErasing = false;
   Timer? _statusTimeout;
   StreamSubscription<Uint8List>? _frameSubscription;
   RepeaterCommandService? _commandService;
@@ -94,6 +101,15 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
         _tagData = frame.sublist(2, 6);
       }
 
+      if (frame[0] == respCodeContactMsgRecv ||
+          frame[0] == respCodeContactMsgRecvV3) {
+        final parsed = parseContactMessageText(frame);
+        if (parsed == null) return;
+        if (!_matchesRepeaterPrefix(parsed.senderPrefix)) return;
+        _commandService?.handleResponse(widget.repeater, parsed.text);
+        return;
+      }
+
       // Check if it's a binary response
       if (frame[0] == pushCodeBinaryResponse &&
           frame.length >= 6 &&
@@ -101,6 +117,15 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
         _handleNeighborsResponse(connector, frame.sublist(6));
       }
     });
+  }
+
+  bool _matchesRepeaterPrefix(Uint8List prefix) {
+    final target = widget.repeater.publicKey;
+    if (target.length < 6 || prefix.length < 6) return false;
+    for (int i = 0; i < 6; i++) {
+      if (prefix[i] != target[i]) return false;
+    }
+    return true;
   }
 
   static String fmtDuration(AppLocalizations l10n, double seconds) {
@@ -158,10 +183,18 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
     try {
       final neighborCount = buffer.readUInt16LE();
       final page = parseNeighborsData(buffer, buffer.readUInt16LE());
-      final parsedNeighbors = [
+      // Dedupe by pubkey prefix: paging windows or repeated pushes must never
+      // list the same neighbor twice.
+      final parsedNeighbors = <Map<String, dynamic>>[];
+      final seen = <String>{};
+      for (final entry in [
         if (_pageOffset > 0) ...?_parsedNeighbors,
         ...page,
-      ];
+      ]) {
+        if (seen.add((entry['publicKey'] as Uint8List).join(','))) {
+          parsedNeighbors.add(entry);
+        }
+      }
       contacts.where((c) => c.type == advTypeRepeater).forEach((repeater) {
         for (var neighborData in parsedNeighbors) {
           final publicKey = neighborData['publicKey'];
@@ -181,6 +214,7 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
 
       _tagData = Uint8List(4);
       _statusTimeout?.cancel();
+      _pageRetries = 0;
       _recordStatusResult(true);
       if (!mounted) return;
       if (page.isNotEmpty && parsedNeighbors.length < neighborCount) {
@@ -200,6 +234,9 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
   Future<void> _loadNeighbors({int offset = 0}) async {
     if (_commandService == null) return;
 
+    if (offset == 0) {
+      _pageRetries = 0;
+    }
     _pageOffset = offset;
     setState(() {
       _isLoading = true;
@@ -238,6 +275,17 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
       _statusTimeout?.cancel();
       _statusTimeout = Timer(Duration(milliseconds: timeoutMs), () {
         if (!mounted) return;
+        if (_pageRetries < _maxPageRetries) {
+          _pageRetries++;
+          appLogger.info(
+            'Neighbors page at offset $_pageOffset timed out, '
+            'retrying ($_pageRetries/$_maxPageRetries)',
+            tag: 'NeighborsScreen',
+          );
+          _loadNeighbors(offset: _pageOffset);
+          return;
+        }
+        _pageRetries = 0;
         setState(() {
           _isLoading = false;
           _isLoaded = false;
@@ -251,6 +299,8 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
       });
     } catch (e) {
       _awaitingSent = false;
+      _pageRetries = 0;
+      _statusTimeout?.cancel();
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -275,6 +325,113 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
     _pendingStatusSelection = null;
   }
 
+  /// Tell the repeater itself to broadcast a zero-hop neighbor discovery
+  /// request (`discover.neighbors`, MyMesh.cpp sendNodeDiscoverReq) rather
+  /// than making the connected companion do it. Waits for the repeater's
+  /// reply; without a reply within the normal command timeout the request
+  /// is reported as timed out instead of retried.
+  Future<void> _sendDiscovery() async {
+    if (_commandService == null) return;
+    final l10n = context.l10n;
+    final connector = Provider.of<MeshCoreConnector>(context, listen: false);
+    final repeater = _resolveRepeater(connector);
+    setState(() => _isDiscovering = true);
+    try {
+      await _commandService!.sendCommand(
+        repeater,
+        'discover.neighbors',
+        retries: 1,
+      );
+      if (!mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.neighbors_discoverySent),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      final isTimeout = e.toString().contains('Command timeout');
+      showDismissibleSnackBar(
+        context,
+        content: Text(
+          isTimeout
+              ? l10n.neighbors_requestTimedOut
+              : l10n.neighbors_discoveryFailed(e.toString()),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      );
+    } finally {
+      if (mounted) setState(() => _isDiscovering = false);
+    }
+  }
+
+  /// Erase the repeater's whole neighbor list. The firmware's
+  /// `neighbor.remove` treats an empty pubkey prefix as matching every
+  /// entry, so the command is sent with no argument (trailing space).
+  Future<void> _confirmEraseAll() async {
+    if (_commandService == null) return;
+    final l10n = context.l10n;
+    final confirmed = await showConfirmClearDialog(
+      context,
+      title: l10n.neighbors_eraseTooltip,
+      message: l10n.neighbors_eraseConfirm,
+    );
+    if (!confirmed || !mounted) return;
+    final connector = Provider.of<MeshCoreConnector>(context, listen: false);
+    final repeater = _resolveRepeater(connector);
+    setState(() => _isErasing = true);
+    try {
+      await _commandService!.sendCommand(repeater, 'neighbor.remove ');
+      if (!mounted) return;
+      setState(() {
+        _parsedNeighbors = null;
+        _neighborCount = 0;
+        _hasData = false;
+        _isLoaded = false;
+      });
+      showDismissibleSnackBar(context, content: Text(l10n.neighbors_erased));
+    } catch (e) {
+      if (!mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.neighbors_eraseFailed(e.toString())),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      );
+    } finally {
+      if (mounted) setState(() => _isErasing = false);
+    }
+  }
+
+  /// Neighbor entries with a resolved contact that carries a position, for
+  /// the map tab. Distance is only measured when the repeater itself has a
+  /// location; without one the links still draw, just unmeasured.
+  List<NeighborLink> _buildLinks(MeshCoreConnector connector) {
+    final parsed = _parsedNeighbors;
+    if (parsed == null) return const [];
+    final repeater = _resolveRepeater(connector);
+    final repeaterPoint = repeater.hasLocation
+        ? LatLng(repeater.latitude!, repeater.longitude!)
+        : null;
+    final distance = Distance();
+    final links = <NeighborLink>[];
+    for (final entry in parsed) {
+      final contact = entry['contact'] as Contact?;
+      if (contact == null || !contact.hasLocation) continue;
+      final point = LatLng(contact.latitude!, contact.longitude!);
+      links.add(
+        NeighborLink(
+          neighbor: contact,
+          point: point,
+          snr: entry['snr'] as double,
+          lastHeardSeconds: entry['lastHeard'] as int,
+          distanceMeters: repeaterPoint == null
+              ? null
+              : distance(repeaterPoint, point),
+        ),
+      );
+    }
+    return links;
+  }
+
   @override
   void dispose() {
     _frameSubscription?.cancel();
@@ -290,84 +447,145 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
     final repeater = _resolveRepeater(connector);
     final isFloodMode = repeater.pathOverride == -1;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              l10n.neighbors_repeatersNeighbors,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            Text(
-              repeater.name,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.neighbors_repeatersNeighbors,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+              Text(
+                repeater.name,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: Icon(isFloodMode ? Icons.waves : Icons.route),
+              tooltip: l10n.repeater_routingMode,
+              onPressed: () =>
+                  ContactRoutingSheet.show(context, contact: repeater),
+            ),
+            IconButton(
+              icon: _isDiscovering
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.radar),
+              tooltip: l10n.neighbors_discoverTooltip,
+              onPressed: _isDiscovering ? null : _sendDiscovery,
+            ),
+            IconButton(
+              icon: _isErasing
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.delete_sweep),
+              tooltip: l10n.neighbors_eraseTooltip,
+              onPressed: _isErasing ? null : _confirmEraseAll,
+            ),
+            IconButton(
+              icon: _isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.refresh),
+              onPressed: _isLoading ? null : _loadNeighbors,
+              tooltip: l10n.repeater_refresh,
             ),
           ],
+          bottom: TabBar(
+            tabs: [
+              Tab(text: l10n.neighbors_tabList),
+              Tab(text: l10n.neighbors_tabMap),
+            ],
+          ),
         ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(isFloodMode ? Icons.waves : Icons.route),
-            tooltip: l10n.repeater_routingMode,
-            onPressed: () =>
-                ContactRoutingSheet.show(context, contact: repeater),
-          ),
-          IconButton(
-            icon: _isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.refresh),
-            onPressed: _isLoading ? null : _loadNeighbors,
-            tooltip: l10n.repeater_refresh,
-          ),
-        ],
-      ),
-      body: SafeArea(
-        top: false,
-        child: RefreshIndicator(
-          onRefresh: _loadNeighbors,
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        body: SafeArea(
+          top: false,
+          child: TabBarView(
             children: [
-              // First request still in flight: show progress, not "no data".
-              if (_isLoading && _parsedNeighbors == null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 64),
-                  child: Column(
-                    children: [
-                      const CircularProgressIndicator(),
-                      const SizedBox(height: 16),
-                      Text(
-                        l10n.common_loading,
-                        style: const TextStyle(fontSize: 16),
+              RefreshIndicator(
+                onRefresh: _loadNeighbors,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                  children: [
+                    // First request still in flight: show progress, not "no data".
+                    if (_isLoading && _parsedNeighbors == null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 64),
+                        child: Column(
+                          children: [
+                            const CircularProgressIndicator(),
+                            const SizedBox(height: 16),
+                            Text(
+                              l10n.common_loading,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      )
+                    else if (!_isLoaded &&
+                        !_hasData &&
+                        (_parsedNeighbors == null || _parsedNeighbors!.isEmpty))
+                      EmptyState(
+                        icon: Icons.wifi_find,
+                        title: l10n.neighbors_noData,
                       ),
-                    ],
-                  ),
-                )
-              else if (!_isLoaded &&
-                  !_hasData &&
-                  (_parsedNeighbors == null || _parsedNeighbors!.isEmpty))
-                EmptyState(icon: Icons.wifi_find, title: l10n.neighbors_noData),
-              if (_isLoaded ||
-                  _hasData &&
-                      !(_parsedNeighbors == null || _parsedNeighbors!.isEmpty))
-                _buildNeighborsList(connector),
+                    if (_isLoaded ||
+                        _hasData &&
+                            !(_parsedNeighbors == null ||
+                                _parsedNeighbors!.isEmpty))
+                      _buildNeighborsList(connector),
+                  ],
+                ),
+              ),
+              _buildMapView(connector),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMapView(MeshCoreConnector connector) {
+    if (_parsedNeighbors == null) {
+      if (_isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return EmptyState(
+        icon: Icons.wifi_find,
+        title: context.l10n.neighbors_noData,
+      );
+    }
+    final links = _buildLinks(connector);
+    return NeighborsMapView(
+      repeater: _resolveRepeater(connector),
+      links: links,
+      hiddenCount: _parsedNeighbors!.length - links.length,
     );
   }
 

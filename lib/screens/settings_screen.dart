@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:meshcore_open/utils/gpx_export.dart';
 import 'package:meshcore_open/widgets/elements_ui.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,7 @@ import '../helpers/snack_bar_builder.dart';
 import '../helpers/utf8_length_limiter.dart';
 import '../widgets/mesh_nav_tile.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/map_location_picker.dart';
 import '../widgets/radio_settings_dialog.dart';
 import 'app_settings_screen.dart';
 import 'app_debug_log_screen.dart';
@@ -1702,6 +1704,34 @@ class _LocationDialogState extends State<_LocationDialog> {
                 errorMaxLines: 2,
               ),
               keyboardType: coordinateKeyboard,
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () async {
+                  final lat = double.tryParse(_latController.text.trim());
+                  final lon = double.tryParse(_lonController.text.trim());
+                  final initial = lat != null && lon != null
+                      ? LatLng(lat, lon)
+                      : null;
+                  final startCenter = await fetchPhonePosition();
+                  if (!context.mounted) return;
+                  final picked = await showMapLocationPicker(
+                    context,
+                    initial: initial,
+                    startCenter: startCenter,
+                  );
+                  if (picked == null || !mounted) return;
+                  setState(() {
+                    _latController.text = picked.latitude.toStringAsFixed(6);
+                    _lonController.text = picked.longitude.toStringAsFixed(6);
+                    _latError = null;
+                    _lonError = null;
+                  });
+                },
+                icon: const Icon(Icons.map),
+                label: Text(l10n.repeater_setFromMap),
+              ),
             ),
             if (widget.hasGPS) ...[
               const SizedBox(height: 16),

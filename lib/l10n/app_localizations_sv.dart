@@ -3304,6 +3304,23 @@ class AppLocalizationsSv extends AppLocalizations {
       'Är du säker på att du vill starta om denna repeater?';
 
   @override
+  String get repeater_startOta => 'Starta OTA';
+
+  @override
+  String get repeater_startOtaSubtitle => 'Detta sätter repeatern i OTA-läge';
+
+  @override
+  String get repeater_startOtaConfirm =>
+      'Detta sätter repeatern i OTA-läge. Fortsätt?';
+
+  @override
+  String get repeater_setFromMap => 'Ange från kartan';
+
+  @override
+  String get repeater_locationPickerHint =>
+      'Tryck på kartan för att placera en pin, bekräfta sedan.';
+
+  @override
   String get repeater_regenerateIdentityKey => 'Generera Identitetsknyckel';
 
   @override
@@ -4424,6 +4441,48 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String neighbors_heardAgo(String time) {
     return 'Hördes: $time sedan';
+  }
+
+  @override
+  String get neighbors_tabList => 'List';
+
+  @override
+  String get neighbors_tabMap => 'Map';
+
+  @override
+  String get neighbors_discoverTooltip => 'Send discovery request';
+
+  @override
+  String get neighbors_discoverySent =>
+      'Discovery request sent to the repeater.';
+
+  @override
+  String neighbors_discoveryFailed(String error) {
+    return 'Discovery failed: $error';
+  }
+
+  @override
+  String get neighbors_eraseTooltip => 'Erase all neighbors';
+
+  @override
+  String get neighbors_eraseConfirm =>
+      'This removes every neighbor from the repeater. They will reappear as adverts are heard.';
+
+  @override
+  String get neighbors_erased => 'All neighbors erased.';
+
+  @override
+  String neighbors_eraseFailed(String error) {
+    return 'Failed to erase neighbors: $error';
+  }
+
+  @override
+  String get neighbors_mapNoNeighborLocations =>
+      'No neighbors have a location to map.';
+
+  @override
+  String neighbors_mapHiddenWithoutLocation(int count) {
+    return '$count neighbors without location hidden.';
   }
 
   @override

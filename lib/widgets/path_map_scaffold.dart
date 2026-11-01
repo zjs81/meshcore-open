@@ -122,6 +122,7 @@ MapOptions buildPathMapOptions({
   double minZoom = kPathMapMinZoom,
   double maxZoom = kPathMapMaxZoom,
   PositionCallback? onPositionChanged,
+  VoidCallback? onMapReady,
   TapCallback? onLongPress,
   TapCallback? onSecondaryTap,
 }) {
@@ -147,6 +148,7 @@ MapOptions buildPathMapOptions({
           : const KeyboardOptions.disabled(),
     ),
     onPositionChanged: onPositionChanged,
+    onMapReady: onMapReady,
     onLongPress: onLongPress,
     onSecondaryTap: onSecondaryTap,
   );
