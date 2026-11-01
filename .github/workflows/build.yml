@@ -104,6 +104,7 @@ jobs:
         run: |
           test "$(uname -m)" = aarch64
           mkdir -p build
+          flutter --version
           flutter --version --machine > build/flutter-version.json
           jq -e --arg revision "$FLUTTER_REVISION" '.frameworkVersion == "3.47.4" and .frameworkRevision == $revision' build/flutter-version.json
       - name: Install Linux build deps
