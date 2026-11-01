@@ -3565,5 +3565,67 @@
   "themes_chatBackground": "Csevegés háttere",
   "themes_chatBackgroundHelp": "Azokban a csevegésekben jelenik meg, amelyeknek nincs saját hátterük",
   "themes_chatBackgroundEverywhere": "Használat minden csevegésben",
-  "themes_chatBackgroundEverywhereHelp": "Az egyes csevegésekhez beállított hátteret is felülírja"
+  "themes_chatBackgroundEverywhereHelp": "Az egyes csevegésekhez beállított hátteret is felülírja",
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "Helyi API",
+  "localApi_settingsSubtitle": "Más alkalmazások is használhatják a rádiót",
+  "localApi_unavailable": "Az API nem érhető el.",
+  "localApi_enableSubtitle": "Lehetővé teszi, hogy az eszköz más alkalmazásai a MeshCore Openen keresztül használják a rádiót. Minden alkalmazás először engedélyt kér.",
+  "localApi_address": "Cím",
+  "localApi_off": "Ki",
+  "localApi_allowedApps": "Engedélyezett alkalmazások",
+  "localApi_allowedAppsSubtitle": "Az első csatlakozáskor jóváhagyva. Az eltávolított alkalmazás újra kérni fog.",
+  "localApi_noApps": "Még nincs alkalmazás",
+  "localApi_noAppsSubtitle": "Itt jelenik meg a kérés, amikor egy alkalmazás csatlakozik.",
+  "localApi_pairedOn": "Párosítva: {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "Eltávolítás",
+  "localApi_clearData": "Tárolt rádióadatok törlése",
+  "localApi_clearDataSubtitle": "Törli a nem futó alkalmazások számára megőrzött csatornaadatokat.",
+  "localApi_dataCleared": "A tárolt rádióadatok törölve",
+  "localApi_pairTitle": "Engedélyezed a kapcsolatot?",
+  "localApi_pairBody": "A(z) „{name}” MeshCore-üzeneteket szeretne küldeni és fogadni ezen az alkalmazáson keresztül, amíg az csatlakoztatva tartja a rádiót.",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "Kulcs ujjlenyomata",
+  "localApi_pairWarning": "Csak megbízható alkalmazást engedélyezz: olvashatja az üzeneteidet és adhat a rádióddal.",
+  "localApi_deny": "Elutasítás",
+  "localApi_allow": "Engedélyezés",
+  "localApi_pairExpired": "A(z) „{name}” abbahagyta a várakozást, mielőtt engedélyt kapott. Nyisd meg újra a párosításhoz.",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "A(z) „{name}” használni szeretné a rádiót",
+  "localApi_pairNotificationBody": "Nyisd meg a MeshCore Opent az engedélyezéshez vagy elutasításhoz.",
+  "localApi_joinTitle": "Hozzáadod a csatornát?",
+  "localApi_joinBody": "A(z) „{name}” hozzá szeretné adni a(z) {channel} hashtag csatornát a rádiódhoz.",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "Egy hashtag csatornát bárki olvashat és írhat, aki ismeri a nevét.",
+  "localApi_joinAdd": "Hozzáadás"
 }

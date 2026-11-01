@@ -3527,5 +3527,67 @@
   "themes_chatBackground": "Ozadje klepeta",
   "themes_chatBackgroundHelp": "Prikazano v klepetih, ki nimajo svojega ozadja",
   "themes_chatBackgroundEverywhere": "Uporabi v vseh klepetih",
-  "themes_chatBackgroundEverywhereHelp": "Zamenja tudi ozadja, nastavljena v posameznih klepetih"
+  "themes_chatBackgroundEverywhereHelp": "Zamenja tudi ozadja, nastavljena v posameznih klepetih",
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "Lokalni API",
+  "localApi_settingsSubtitle": "Dovoli drugim aplikacijam uporabo radia",
+  "localApi_unavailable": "API ni na voljo.",
+  "localApi_enableSubtitle": "Drugim aplikacijam na tej napravi omogoči uporabo radia prek MeshCore Open. Vsaka aplikacija prvič zaprosi za dovoljenje.",
+  "localApi_address": "Naslov",
+  "localApi_off": "Izklopljeno",
+  "localApi_allowedApps": "Dovoljene aplikacije",
+  "localApi_allowedAppsSubtitle": "Odobrene ob prvi povezavi. Odstranjena aplikacija bo vprašala znova.",
+  "localApi_noApps": "Še ni aplikacij",
+  "localApi_noAppsSubtitle": "Zahteva se prikaže tukaj, ko se aplikacija poveže.",
+  "localApi_pairedOn": "Seznanjeno {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "Odstrani",
+  "localApi_clearData": "Počisti shranjene podatke radia",
+  "localApi_clearDataSubtitle": "Odstrani podatke kanalov, shranjene za aplikacije, ki niso tekle.",
+  "localApi_dataCleared": "Shranjeni podatki radia počiščeni",
+  "localApi_pairTitle": "Dovolim povezavo?",
+  "localApi_pairBody": "»{name}« želi prek te aplikacije pošiljati in prejemati sporočila MeshCore, dokler ta ohranja povezavo z radiem.",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "Prstni odtis ključa",
+  "localApi_pairWarning": "Dovolite le aplikacijo, ki ji zaupate: brala bo vaša sporočila in oddajala z vašim radiem.",
+  "localApi_deny": "Zavrni",
+  "localApi_allow": "Dovoli",
+  "localApi_pairExpired": "»{name}« je nehala čakati, preden je bila dovoljena. Odprite jo znova za seznanitev.",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "»{name}« želi uporabljati radio",
+  "localApi_pairNotificationBody": "Odprite MeshCore Open, da to dovolite ali zavrnete.",
+  "localApi_joinTitle": "Dodam kanal?",
+  "localApi_joinBody": "»{name}« želi v vaš radio dodati kanal s hashtagom {channel}.",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "Kanal s hashtagom lahko bere in vanj piše vsak, ki pozna njegovo ime.",
+  "localApi_joinAdd": "Dodaj"
 }

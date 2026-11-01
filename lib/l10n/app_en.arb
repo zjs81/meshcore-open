@@ -3749,5 +3749,74 @@
   "holidayGreeting_newYear": "Happy New Year|Happy New Year's",
   "@holidayGreeting_newYear": {
     "description": "Holiday greeting that plays the New Year's fireworks animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
-  }
+  },
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "Local API",
+  "localApi_settingsSubtitle": "Let other apps use the radio",
+  "localApi_unavailable": "The API is not available.",
+  "localApi_enableSubtitle": "Let other apps on this device use the radio through MeshCore Open. Each app asks for permission the first time.",
+  "localApi_address": "Address",
+  "localApi_off": "Off",
+  "localApi_allowedApps": "Allowed apps",
+  "localApi_allowedAppsSubtitle": "Approved when they first connected. Removing one makes it ask again.",
+  "localApi_noApps": "No apps yet",
+  "localApi_noAppsSubtitle": "A request appears here after an app connects.",
+  "localApi_pairedOn": "Paired {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "Remove",
+  "localApi_clearData": "Clear stored radio data",
+  "localApi_clearDataSubtitle": "Removes channel data kept for apps that were not running.",
+  "localApi_dataCleared": "Stored radio data cleared",
+  "localApi_pairTitle": "Allow connection?",
+  "localApi_pairBody": "“{name}” wants to send and receive MeshCore messages through this app while it keeps the radio connected.",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "Key fingerprint",
+  "localApi_pairWarning": "Only allow an app you trust: it will be able to read your messages and transmit on your radio.",
+  "localApi_deny": "Deny",
+  "localApi_allow": "Allow",
+  "localApi_pairExpired": "“{name}” stopped waiting before it was allowed. Open it again to pair.",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "“{name}” wants to use the radio",
+  "@localApi_pairNotificationTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationBody": "Open MeshCore Open to allow or deny it.",
+  "localApi_joinTitle": "Add a channel?",
+  "localApi_joinBody": "“{name}” wants to add the hashtag channel {channel} to your radio.",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "Anyone who knows a hashtag channel's name can read it and post in it.",
+  "localApi_joinAdd": "Add"
 }

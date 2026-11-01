@@ -6854,4 +6854,115 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Frohes neues Jahr|Gutes neues Jahr|Guten Rutsch|Prosit Neujahr|Happy New Year|Ein gutes neues Jahr|Guten Rutsch ins neue Jahr|Frohes Neues';
+
+  @override
+  String get appSettings_ipfsGatewayIpfsIo => 'ipfs.io';
+
+  @override
+  String get appSettings_ipfsGatewayPinata => 'Pinata';
+
+  @override
+  String get appSettings_ipfsGatewayFilebase => 'Filebase';
+
+  @override
+  String get localApi_title => 'Lokale API';
+
+  @override
+  String get localApi_settingsSubtitle =>
+      'Anderen Apps das Funkgerät überlassen';
+
+  @override
+  String get localApi_unavailable => 'Die API ist nicht verfügbar.';
+
+  @override
+  String get localApi_enableSubtitle =>
+      'Erlaubt anderen Apps auf diesem Gerät, das Funkgerät über MeshCore Open zu nutzen. Jede App fragt beim ersten Mal um Erlaubnis.';
+
+  @override
+  String get localApi_address => 'Adresse';
+
+  @override
+  String get localApi_off => 'Aus';
+
+  @override
+  String get localApi_allowedApps => 'Erlaubte Apps';
+
+  @override
+  String get localApi_allowedAppsSubtitle =>
+      'Beim ersten Verbinden genehmigt. Eine entfernte App fragt erneut.';
+
+  @override
+  String get localApi_noApps => 'Noch keine Apps';
+
+  @override
+  String get localApi_noAppsSubtitle =>
+      'Eine Anfrage erscheint hier, sobald sich eine App verbindet.';
+
+  @override
+  String localApi_pairedOn(String date) {
+    return 'Gekoppelt $date';
+  }
+
+  @override
+  String get localApi_remove => 'Entfernen';
+
+  @override
+  String get localApi_clearData => 'Gespeicherte Funkdaten löschen';
+
+  @override
+  String get localApi_clearDataSubtitle =>
+      'Entfernt Kanaldaten, die für nicht laufende Apps aufbewahrt wurden.';
+
+  @override
+  String get localApi_dataCleared => 'Gespeicherte Funkdaten gelöscht';
+
+  @override
+  String get localApi_pairTitle => 'Verbindung erlauben?';
+
+  @override
+  String localApi_pairBody(String name) {
+    return '„$name“ möchte über diese App MeshCore-Nachrichten senden und empfangen, während sie das Funkgerät verbunden hält.';
+  }
+
+  @override
+  String get localApi_keyFingerprint => 'Schlüssel-Fingerabdruck';
+
+  @override
+  String get localApi_pairWarning =>
+      'Erlaube nur Apps, denen du vertraust: Sie können deine Nachrichten lesen und über dein Funkgerät senden.';
+
+  @override
+  String get localApi_deny => 'Ablehnen';
+
+  @override
+  String get localApi_allow => 'Erlauben';
+
+  @override
+  String localApi_pairExpired(String name) {
+    return '„$name“ hat nicht mehr gewartet, bevor sie erlaubt wurde. Öffne sie erneut zum Koppeln.';
+  }
+
+  @override
+  String localApi_pairNotificationTitle(String name) {
+    return '„$name“ möchte das Funkgerät nutzen';
+  }
+
+  @override
+  String get localApi_pairNotificationBody =>
+      'Öffne MeshCore Open, um es zu erlauben oder abzulehnen.';
+
+  @override
+  String get localApi_joinTitle => 'Kanal hinzufügen?';
+
+  @override
+  String localApi_joinBody(String name, String channel) {
+    return '„$name“ möchte den Hashtag-Kanal $channel zu deinem Funkgerät hinzufügen.';
+  }
+
+  @override
+  String get localApi_joinWarning =>
+      'Wer den Namen eines Hashtag-Kanals kennt, kann darin lesen und schreiben.';
+
+  @override
+  String get localApi_joinAdd => 'Hinzufügen';
 }

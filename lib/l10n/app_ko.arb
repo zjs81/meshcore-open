@@ -3660,5 +3660,67 @@
   "holidayGreeting_halloween": "해피 할로윈|즐거운 할로윈|행복한 할로윈|할로윈 축하해|할로윈 잘 보내세요|트릭 오어 트릿|해피 할로윈데이",
   "holidayGreeting_thanksgiving": "해피 땡스기빙|즐거운 추수감사절|행복한 추수감사절|추수감사절 잘 보내세요|추수감사절 축하해요|해피 땡스기빙데이",
   "holidayGreeting_christmas": "메리 크리스마스|즐거운 성탄절|즐거운 크리스마스|행복한 성탄절|성탄 축하드립니다|메리 크리스마스 되세요|해피 크리스마스|메리 크리스마스 이브",
-  "holidayGreeting_newYear": "새해 복 많이 받으세요|새해 복 많이 받아|새해 복 많이 받으십시오|새해 복 많이 받아요|해피 뉴 이어|해피 뉴이어|즐거운 새해|행복한 새해"
+  "holidayGreeting_newYear": "새해 복 많이 받으세요|새해 복 많이 받아|새해 복 많이 받으십시오|새해 복 많이 받아요|해피 뉴 이어|해피 뉴이어|즐거운 새해|행복한 새해",
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "로컬 API",
+  "localApi_settingsSubtitle": "다른 앱이 무전기를 사용하도록 허용",
+  "localApi_unavailable": "API를 사용할 수 없습니다.",
+  "localApi_enableSubtitle": "이 기기의 다른 앱이 MeshCore Open을 통해 무전기를 사용할 수 있게 합니다. 각 앱은 처음에 권한을 요청합니다.",
+  "localApi_address": "주소",
+  "localApi_off": "꺼짐",
+  "localApi_allowedApps": "허용된 앱",
+  "localApi_allowedAppsSubtitle": "처음 연결할 때 승인된 앱입니다. 삭제하면 다시 요청합니다.",
+  "localApi_noApps": "아직 앱이 없습니다",
+  "localApi_noAppsSubtitle": "앱이 연결되면 여기에 요청이 표시됩니다.",
+  "localApi_pairedOn": "페어링됨 {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "삭제",
+  "localApi_clearData": "저장된 무전 데이터 지우기",
+  "localApi_clearDataSubtitle": "실행 중이 아니던 앱을 위해 보관한 채널 데이터를 삭제합니다.",
+  "localApi_dataCleared": "저장된 무전 데이터를 지웠습니다",
+  "localApi_pairTitle": "연결을 허용할까요?",
+  "localApi_pairBody": "“{name}”이(가) 이 앱이 무전기 연결을 유지하는 동안 이 앱을 통해 MeshCore 메시지를 주고받으려 합니다.",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "키 지문",
+  "localApi_pairWarning": "신뢰하는 앱만 허용하세요. 메시지를 읽고 무전기로 송신할 수 있습니다.",
+  "localApi_deny": "거부",
+  "localApi_allow": "허용",
+  "localApi_pairExpired": "“{name}”이(가) 허용되기 전에 대기를 멈췄습니다. 다시 열어 페어링하세요.",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "“{name}”이(가) 무전기를 사용하려고 합니다",
+  "localApi_pairNotificationBody": "MeshCore Open을 열어 허용하거나 거부하세요.",
+  "localApi_joinTitle": "채널을 추가할까요?",
+  "localApi_joinBody": "“{name}”이(가) 해시태그 채널 {channel}을(를) 무전기에 추가하려고 합니다.",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "해시태그 채널은 이름을 아는 사람이라면 누구나 읽고 쓸 수 있습니다.",
+  "localApi_joinAdd": "추가"
 }

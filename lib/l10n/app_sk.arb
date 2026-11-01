@@ -3527,5 +3527,67 @@
   "themes_chatBackground": "Pozadie chatu",
   "themes_chatBackgroundHelp": "Zobrazuje sa v chatoch, ktoré nemajú vlastné pozadie",
   "themes_chatBackgroundEverywhere": "Použiť v každom chate",
-  "themes_chatBackgroundEverywhereHelp": "Nahradí aj pozadia nastavené v jednotlivých chatoch"
+  "themes_chatBackgroundEverywhereHelp": "Nahradí aj pozadia nastavené v jednotlivých chatoch",
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "Lokálne API",
+  "localApi_settingsSubtitle": "Umožniť iným aplikáciám používať rádio",
+  "localApi_unavailable": "API nie je dostupné.",
+  "localApi_enableSubtitle": "Umožní iným aplikáciám v tomto zariadení používať rádio cez MeshCore Open. Každá aplikácia sa prvýkrát opýta na povolenie.",
+  "localApi_address": "Adresa",
+  "localApi_off": "Vypnuté",
+  "localApi_allowedApps": "Povolené aplikácie",
+  "localApi_allowedAppsSubtitle": "Schválené pri prvom pripojení. Po odstránení sa aplikácia opýta znova.",
+  "localApi_noApps": "Zatiaľ žiadne aplikácie",
+  "localApi_noAppsSubtitle": "Žiadosť sa tu zobrazí, keď sa aplikácia pripojí.",
+  "localApi_pairedOn": "Spárované {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "Odstrániť",
+  "localApi_clearData": "Vymazať uložené dáta z rádia",
+  "localApi_clearDataSubtitle": "Odstráni dáta kanálov uložené pre aplikácie, ktoré nebežali.",
+  "localApi_dataCleared": "Uložené dáta z rádia boli vymazané",
+  "localApi_pairTitle": "Povoliť pripojenie?",
+  "localApi_pairBody": "„{name}“ chce cez túto aplikáciu odosielať a prijímať správy MeshCore, kým drží rádio pripojené.",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "Odtlačok kľúča",
+  "localApi_pairWarning": "Povoľte len aplikáciu, ktorej dôverujete: bude môcť čítať vaše správy a vysielať cez vaše rádio.",
+  "localApi_deny": "Zamietnuť",
+  "localApi_allow": "Povoliť",
+  "localApi_pairExpired": "„{name}“ prestala čakať skôr, než bola povolená. Otvorte ju znova a spárujte.",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "„{name}“ chce používať rádio",
+  "localApi_pairNotificationBody": "Otvorte MeshCore Open a povoľte alebo zamietnite to.",
+  "localApi_joinTitle": "Pridať kanál?",
+  "localApi_joinBody": "„{name}“ chce do vášho rádia pridať hashtagový kanál {channel}.",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "Hashtagový kanál môže čítať a písať doň každý, kto pozná jeho názov.",
+  "localApi_joinAdd": "Pridať"
 }

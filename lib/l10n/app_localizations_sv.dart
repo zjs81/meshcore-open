@@ -6780,4 +6780,114 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Gott nytt år|Happy New Year|Ett gott nytt år';
+
+  @override
+  String get appSettings_ipfsGatewayIpfsIo => 'ipfs.io';
+
+  @override
+  String get appSettings_ipfsGatewayPinata => 'Pinata';
+
+  @override
+  String get appSettings_ipfsGatewayFilebase => 'Filebase';
+
+  @override
+  String get localApi_title => 'Lokalt API';
+
+  @override
+  String get localApi_settingsSubtitle => 'Låt andra appar använda radion';
+
+  @override
+  String get localApi_unavailable => 'API:t är inte tillgängligt.';
+
+  @override
+  String get localApi_enableSubtitle =>
+      'Låter andra appar på den här enheten använda radion via MeshCore Open. Varje app ber om lov första gången.';
+
+  @override
+  String get localApi_address => 'Adress';
+
+  @override
+  String get localApi_off => 'Av';
+
+  @override
+  String get localApi_allowedApps => 'Tillåtna appar';
+
+  @override
+  String get localApi_allowedAppsSubtitle =>
+      'Godkända vid första anslutningen. En borttagen app frågar igen.';
+
+  @override
+  String get localApi_noApps => 'Inga appar än';
+
+  @override
+  String get localApi_noAppsSubtitle =>
+      'En förfrågan visas här när en app ansluter.';
+
+  @override
+  String localApi_pairedOn(String date) {
+    return 'Parkopplad $date';
+  }
+
+  @override
+  String get localApi_remove => 'Ta bort';
+
+  @override
+  String get localApi_clearData => 'Rensa sparad radiodata';
+
+  @override
+  String get localApi_clearDataSubtitle =>
+      'Tar bort kanaldata som sparats för appar som inte var igång.';
+
+  @override
+  String get localApi_dataCleared => 'Sparad radiodata rensad';
+
+  @override
+  String get localApi_pairTitle => 'Tillåta anslutning?';
+
+  @override
+  String localApi_pairBody(String name) {
+    return '”$name” vill skicka och ta emot MeshCore-meddelanden via den här appen medan den håller radion ansluten.';
+  }
+
+  @override
+  String get localApi_keyFingerprint => 'Nyckelns fingeravtryck';
+
+  @override
+  String get localApi_pairWarning =>
+      'Tillåt bara appar du litar på: de kan läsa dina meddelanden och sända med din radio.';
+
+  @override
+  String get localApi_deny => 'Neka';
+
+  @override
+  String get localApi_allow => 'Tillåt';
+
+  @override
+  String localApi_pairExpired(String name) {
+    return '”$name” slutade vänta innan den tilläts. Öppna den igen för att parkoppla.';
+  }
+
+  @override
+  String localApi_pairNotificationTitle(String name) {
+    return '”$name” vill använda radion';
+  }
+
+  @override
+  String get localApi_pairNotificationBody =>
+      'Öppna MeshCore Open för att tillåta eller neka.';
+
+  @override
+  String get localApi_joinTitle => 'Lägga till en kanal?';
+
+  @override
+  String localApi_joinBody(String name, String channel) {
+    return '”$name” vill lägga till hashtagkanalen $channel i din radio.';
+  }
+
+  @override
+  String get localApi_joinWarning =>
+      'Alla som känner till namnet på en hashtagkanal kan läsa och skriva i den.';
+
+  @override
+  String get localApi_joinAdd => 'Lägg till';
 }

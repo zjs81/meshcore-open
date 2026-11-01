@@ -3661,5 +3661,67 @@
   "themes_chatBackground": "Chat-Hintergrund",
   "themes_chatBackgroundHelp": "Wird in Chats gezeigt, die keinen eigenen Hintergrund haben",
   "themes_chatBackgroundEverywhere": "In jedem Chat verwenden",
-  "themes_chatBackgroundEverywhereHelp": "Ersetzt auch Hintergründe, die für einzelne Chats gesetzt wurden"
+  "themes_chatBackgroundEverywhereHelp": "Ersetzt auch Hintergründe, die für einzelne Chats gesetzt wurden",
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "Lokale API",
+  "localApi_settingsSubtitle": "Anderen Apps das Funkgerät überlassen",
+  "localApi_unavailable": "Die API ist nicht verfügbar.",
+  "localApi_enableSubtitle": "Erlaubt anderen Apps auf diesem Gerät, das Funkgerät über MeshCore Open zu nutzen. Jede App fragt beim ersten Mal um Erlaubnis.",
+  "localApi_address": "Adresse",
+  "localApi_off": "Aus",
+  "localApi_allowedApps": "Erlaubte Apps",
+  "localApi_allowedAppsSubtitle": "Beim ersten Verbinden genehmigt. Eine entfernte App fragt erneut.",
+  "localApi_noApps": "Noch keine Apps",
+  "localApi_noAppsSubtitle": "Eine Anfrage erscheint hier, sobald sich eine App verbindet.",
+  "localApi_pairedOn": "Gekoppelt {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "Entfernen",
+  "localApi_clearData": "Gespeicherte Funkdaten löschen",
+  "localApi_clearDataSubtitle": "Entfernt Kanaldaten, die für nicht laufende Apps aufbewahrt wurden.",
+  "localApi_dataCleared": "Gespeicherte Funkdaten gelöscht",
+  "localApi_pairTitle": "Verbindung erlauben?",
+  "localApi_pairBody": "„{name}“ möchte über diese App MeshCore-Nachrichten senden und empfangen, während sie das Funkgerät verbunden hält.",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "Schlüssel-Fingerabdruck",
+  "localApi_pairWarning": "Erlaube nur Apps, denen du vertraust: Sie können deine Nachrichten lesen und über dein Funkgerät senden.",
+  "localApi_deny": "Ablehnen",
+  "localApi_allow": "Erlauben",
+  "localApi_pairExpired": "„{name}“ hat nicht mehr gewartet, bevor sie erlaubt wurde. Öffne sie erneut zum Koppeln.",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "„{name}“ möchte das Funkgerät nutzen",
+  "localApi_pairNotificationBody": "Öffne MeshCore Open, um es zu erlauben oder abzulehnen.",
+  "localApi_joinTitle": "Kanal hinzufügen?",
+  "localApi_joinBody": "„{name}“ möchte den Hashtag-Kanal {channel} zu deinem Funkgerät hinzufügen.",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "Wer den Namen eines Hashtag-Kanals kennt, kann darin lesen und schreiben.",
+  "localApi_joinAdd": "Hinzufügen"
 }

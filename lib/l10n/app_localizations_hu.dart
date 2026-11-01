@@ -6828,4 +6828,115 @@ class AppLocalizationsHu extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Boldog új évet|Boldog újévet|Boldog új esztendőt|BÚÉK|Happy New Year';
+
+  @override
+  String get appSettings_ipfsGatewayIpfsIo => 'ipfs.io';
+
+  @override
+  String get appSettings_ipfsGatewayPinata => 'Pinata';
+
+  @override
+  String get appSettings_ipfsGatewayFilebase => 'Filebase';
+
+  @override
+  String get localApi_title => 'Helyi API';
+
+  @override
+  String get localApi_settingsSubtitle =>
+      'Más alkalmazások is használhatják a rádiót';
+
+  @override
+  String get localApi_unavailable => 'Az API nem érhető el.';
+
+  @override
+  String get localApi_enableSubtitle =>
+      'Lehetővé teszi, hogy az eszköz más alkalmazásai a MeshCore Openen keresztül használják a rádiót. Minden alkalmazás először engedélyt kér.';
+
+  @override
+  String get localApi_address => 'Cím';
+
+  @override
+  String get localApi_off => 'Ki';
+
+  @override
+  String get localApi_allowedApps => 'Engedélyezett alkalmazások';
+
+  @override
+  String get localApi_allowedAppsSubtitle =>
+      'Az első csatlakozáskor jóváhagyva. Az eltávolított alkalmazás újra kérni fog.';
+
+  @override
+  String get localApi_noApps => 'Még nincs alkalmazás';
+
+  @override
+  String get localApi_noAppsSubtitle =>
+      'Itt jelenik meg a kérés, amikor egy alkalmazás csatlakozik.';
+
+  @override
+  String localApi_pairedOn(String date) {
+    return 'Párosítva: $date';
+  }
+
+  @override
+  String get localApi_remove => 'Eltávolítás';
+
+  @override
+  String get localApi_clearData => 'Tárolt rádióadatok törlése';
+
+  @override
+  String get localApi_clearDataSubtitle =>
+      'Törli a nem futó alkalmazások számára megőrzött csatornaadatokat.';
+
+  @override
+  String get localApi_dataCleared => 'A tárolt rádióadatok törölve';
+
+  @override
+  String get localApi_pairTitle => 'Engedélyezed a kapcsolatot?';
+
+  @override
+  String localApi_pairBody(String name) {
+    return 'A(z) „$name” MeshCore-üzeneteket szeretne küldeni és fogadni ezen az alkalmazáson keresztül, amíg az csatlakoztatva tartja a rádiót.';
+  }
+
+  @override
+  String get localApi_keyFingerprint => 'Kulcs ujjlenyomata';
+
+  @override
+  String get localApi_pairWarning =>
+      'Csak megbízható alkalmazást engedélyezz: olvashatja az üzeneteidet és adhat a rádióddal.';
+
+  @override
+  String get localApi_deny => 'Elutasítás';
+
+  @override
+  String get localApi_allow => 'Engedélyezés';
+
+  @override
+  String localApi_pairExpired(String name) {
+    return 'A(z) „$name” abbahagyta a várakozást, mielőtt engedélyt kapott. Nyisd meg újra a párosításhoz.';
+  }
+
+  @override
+  String localApi_pairNotificationTitle(String name) {
+    return 'A(z) „$name” használni szeretné a rádiót';
+  }
+
+  @override
+  String get localApi_pairNotificationBody =>
+      'Nyisd meg a MeshCore Opent az engedélyezéshez vagy elutasításhoz.';
+
+  @override
+  String get localApi_joinTitle => 'Hozzáadod a csatornát?';
+
+  @override
+  String localApi_joinBody(String name, String channel) {
+    return 'A(z) „$name” hozzá szeretné adni a(z) $channel hashtag csatornát a rádiódhoz.';
+  }
+
+  @override
+  String get localApi_joinWarning =>
+      'Egy hashtag csatornát bárki olvashat és írhat, aki ismeri a nevét.';
+
+  @override
+  String get localApi_joinAdd => 'Hozzáadás';
 }

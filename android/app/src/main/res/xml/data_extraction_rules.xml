@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+. Received radio data kept for the local API stays on the
+     device; everything else is backed up and transferred as before. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="local_api/" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" path="local_api/" />
+    </device-transfer>
+</data-extraction-rules>

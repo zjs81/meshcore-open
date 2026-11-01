@@ -3526,5 +3526,67 @@
   "themes_chatBackground": "Fundo da conversa",
   "themes_chatBackgroundHelp": "Mostrado nas conversas que não têm fundo próprio",
   "themes_chatBackgroundEverywhere": "Usar em todas as conversas",
-  "themes_chatBackgroundEverywhereHelp": "Também substitui os fundos definidos em conversas individuais"
+  "themes_chatBackgroundEverywhereHelp": "Também substitui os fundos definidos em conversas individuais",
+  "appSettings_ipfsGatewayIpfsIo": "ipfs.io",
+  "appSettings_ipfsGatewayPinata": "Pinata",
+  "appSettings_ipfsGatewayFilebase": "Filebase",
+  "localApi_title": "API local",
+  "localApi_settingsSubtitle": "Permitir que outras apps usem o rádio",
+  "localApi_unavailable": "A API não está disponível.",
+  "localApi_enableSubtitle": "Permite que outras apps neste dispositivo usem o rádio através do MeshCore Open. Cada app pede permissão na primeira vez.",
+  "localApi_address": "Endereço",
+  "localApi_off": "Desligada",
+  "localApi_allowedApps": "Apps permitidas",
+  "localApi_allowedAppsSubtitle": "Aprovadas na primeira ligação. Ao remover uma, ela volta a pedir.",
+  "localApi_noApps": "Ainda sem apps",
+  "localApi_noAppsSubtitle": "Um pedido aparece aqui quando uma app se liga.",
+  "localApi_pairedOn": "Emparelhada {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "Remover",
+  "localApi_clearData": "Limpar dados de rádio guardados",
+  "localApi_clearDataSubtitle": "Remove dados de canal guardados para apps que não estavam a correr.",
+  "localApi_dataCleared": "Dados de rádio guardados limpos",
+  "localApi_pairTitle": "Permitir ligação?",
+  "localApi_pairBody": "“{name}” quer enviar e receber mensagens MeshCore através desta app enquanto ela mantém o rádio ligado.",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "Impressão digital da chave",
+  "localApi_pairWarning": "Permita apenas apps em que confia: poderão ler as suas mensagens e transmitir pelo seu rádio.",
+  "localApi_deny": "Recusar",
+  "localApi_allow": "Permitir",
+  "localApi_pairExpired": "“{name}” deixou de esperar antes de ser permitida. Abra-a novamente para emparelhar.",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "“{name}” quer usar o rádio",
+  "localApi_pairNotificationBody": "Abra o MeshCore Open para permitir ou recusar.",
+  "localApi_joinTitle": "Adicionar um canal?",
+  "localApi_joinBody": "“{name}” quer adicionar o canal com hashtag {channel} ao seu rádio.",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "Qualquer pessoa que saiba o nome de um canal com hashtag pode lê-lo e escrever nele.",
+  "localApi_joinAdd": "Adicionar"
 }

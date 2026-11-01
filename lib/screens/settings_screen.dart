@@ -16,7 +16,9 @@ import '../helpers/utf8_length_limiter.dart';
 import '../widgets/mesh_nav_tile.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/radio_settings_dialog.dart';
+import '../utils/platform_info.dart';
 import 'app_settings_screen.dart';
+import 'local_api_screen.dart';
 import 'app_debug_log_screen.dart';
 import 'ble_debug_log_screen.dart';
 import '../widgets/radio_stats_entry.dart';
@@ -124,14 +126,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SectionHeader(l10n.settings_appSettings),
             MeshCard(
               padding: EdgeInsets.zero,
-              child: MeshNavTile(
-                icon: Icons.settings_outlined,
-                title: l10n.settings_appSettings,
-                subtitle: l10n.settings_appSettingsSubtitle,
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AppSettingsScreen()),
-                ),
+              child: Column(
+                children: [
+                  MeshNavTile(
+                    icon: Icons.settings_outlined,
+                    title: l10n.settings_appSettings,
+                    subtitle: l10n.settings_appSettingsSubtitle,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AppSettingsScreen(),
+                      ),
+                    ),
+                  ),
+                  if (!PlatformInfo.isWeb) ...[
+                    const Divider(height: 1),
+                    MeshNavTile(
+                      icon: Icons.hub_outlined,
+                      title: l10n.localApi_title,
+                      subtitle: l10n.localApi_settingsSubtitle,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const LocalApiScreen(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
 
