@@ -154,7 +154,7 @@ List tab — a card titled "Repeater's Neighbors - N" listing each neighbor as:
 Map tab — the logged-in repeater and every neighbor with a known position, with a line per link. Each link carries a three-line label (distance, SNR in color, time since last heard) centered on the line; neighbor names are pinned above their icons. Labels fade out when they would collide with another label or a marker. If the repeater has no location, the neighbors are still shown without the repeater marker or link lines. Neighbors without a location are counted in a note.
 
 ### Key Interactions
-- Auto-queries up to 15 neighbors on open
+- Auto-queries up to 15 neighbors on open; each page is resent up to two times if its response times out before the request is reported as timed out
 - Matches public key prefixes against known contacts to show names
 - Pull-to-refresh (List tab)
 - **Discover** action button: sends `discover.neighbors`, making the repeater itself broadcast a zero-hop neighbor discovery request (not the connected companion). Waits for the repeater's reply; if none arrives within the normal command timeout it reports a timeout instead of retrying

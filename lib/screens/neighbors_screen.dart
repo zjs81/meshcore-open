@@ -43,10 +43,12 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
   static const int _statusStatsSize = 52;
   static const int _statusResponseBytes =
       _statusPayloadOffset + _statusStatsSize;
+  static const int _maxPageRetries = 2;
   Uint8List _tagData = Uint8List(4);
   bool _awaitingSent = false;
   int _neighborCount = 0;
   int _pageOffset = 0;
+  int _pageRetries = 0;
 
   bool _isLoading = false;
   bool _isLoaded = false;
@@ -212,6 +214,7 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
 
       _tagData = Uint8List(4);
       _statusTimeout?.cancel();
+      _pageRetries = 0;
       _recordStatusResult(true);
       if (!mounted) return;
       if (page.isNotEmpty && parsedNeighbors.length < neighborCount) {
@@ -231,6 +234,9 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
   Future<void> _loadNeighbors({int offset = 0}) async {
     if (_commandService == null) return;
 
+    if (offset == 0) {
+      _pageRetries = 0;
+    }
     _pageOffset = offset;
     setState(() {
       _isLoading = true;
@@ -269,6 +275,17 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
       _statusTimeout?.cancel();
       _statusTimeout = Timer(Duration(milliseconds: timeoutMs), () {
         if (!mounted) return;
+        if (_pageRetries < _maxPageRetries) {
+          _pageRetries++;
+          appLogger.info(
+            'Neighbors page at offset $_pageOffset timed out, '
+            'retrying ($_pageRetries/$_maxPageRetries)',
+            tag: 'NeighborsScreen',
+          );
+          _loadNeighbors(offset: _pageOffset);
+          return;
+        }
+        _pageRetries = 0;
         setState(() {
           _isLoading = false;
           _isLoaded = false;
@@ -282,6 +299,8 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
       });
     } catch (e) {
       _awaitingSent = false;
+      _pageRetries = 0;
+      _statusTimeout?.cancel();
       if (mounted) {
         setState(() {
           _isLoading = false;
