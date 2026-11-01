@@ -121,7 +121,12 @@ jobs:
           bash scripts/appimage/test_packaging.sh
       - run: flutter pub get
       - run: flutter test --reporter expanded
-      - run: flutter build linux --release --no-pub
+      - name: Build ARM64 Linux release
+        run: |
+          if ! flutter build linux --release --no-pub --verbose > build/linux-arm64-build.log 2>&1; then
+            tail -n 200 build/linux-arm64-build.log
+            exit 1
+          fi
       - name: Test ARM64 AppImage in clean Ubuntu
         run: |
           docker build --platform linux/arm64 --target runtime-test --build-arg "BASE_IMAGE=$(jq -r '.ubuntu' scripts/appimage-tools.json)" -f scripts/appimage/Dockerfile -t meshcore-appimage-runtime-arm64 scripts
@@ -137,6 +142,7 @@ jobs:
             build/linux/arm64/release/appimage-tools.json
             build/flutter-version.json
             build/appimage-runtime/
+            build/linux-arm64-build.log
           if-no-files-found: warn
 
   macos:
