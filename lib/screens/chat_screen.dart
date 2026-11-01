@@ -510,7 +510,7 @@ class _ChatScreenState extends State<ChatScreen> {
               final startsDay =
                   sourceIndex == 0 ||
                   !isSameChatDay(
-                    messages[sourceIndex - 1].receivedAt,
+                    messageSnapshot[sourceIndex - 1].receivedAt,
                     message.receivedAt,
                   );
               final child = isUnreadAnchor || startsDay
