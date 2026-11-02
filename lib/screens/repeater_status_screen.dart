@@ -348,7 +348,7 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
       batteryMv,
       _batteryChemistry(),
     );
-    final volts = (batteryMv / 1000.0).toStringAsFixed(2);
+    final volts = (batteryMv / 1000.0).toStringAsFixed(3);
     return '$percent% / ${volts}V';
   }
 

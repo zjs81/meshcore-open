@@ -4145,6 +4145,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get telemetry_powerLabel => '電力';
 
   @override
+  String get telemetry_computedPowerLabel => '計算電力';
+
+  @override
   String get telemetry_distanceLabel => '距離';
 
   @override
@@ -6441,6 +6444,11 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String neighbors_durationHours(int hours, int minutes) {
     return '$hours時間$minutes分';
+  }
+
+  @override
+  String neighbors_durationDays(int days, int hours) {
+    return '$days日$hours時間';
   }
 
   @override

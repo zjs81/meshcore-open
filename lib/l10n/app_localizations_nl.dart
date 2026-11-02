@@ -4347,6 +4347,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get telemetry_powerLabel => 'Vermogen';
 
   @override
+  String get telemetry_computedPowerLabel => 'Berekend vermogen';
+
+  @override
   String get telemetry_distanceLabel => 'Afstand';
 
   @override
@@ -6719,6 +6722,11 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String neighbors_durationHours(int hours, int minutes) {
     return '${hours}u ${minutes}m';
+  }
+
+  @override
+  String neighbors_durationDays(int days, int hours) {
+    return '${days}d ${hours}u';
   }
 
   @override

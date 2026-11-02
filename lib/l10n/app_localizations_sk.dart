@@ -4357,6 +4357,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get telemetry_powerLabel => 'Výkon';
 
   @override
+  String get telemetry_computedPowerLabel => 'Vypočítaný výkon';
+
+  @override
   String get telemetry_distanceLabel => 'Vzdialenosť';
 
   @override
@@ -6736,6 +6739,11 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String neighbors_durationHours(int hours, int minutes) {
     return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String neighbors_durationDays(int days, int hours) {
+    return '${days}d ${hours}h';
   }
 
   @override

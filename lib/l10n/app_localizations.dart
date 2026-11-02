@@ -7568,6 +7568,12 @@ abstract class AppLocalizations {
   /// **'Power'**
   String get telemetry_powerLabel;
 
+  /// No description provided for @telemetry_computedPowerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Computed power'**
+  String get telemetry_computedPowerLabel;
+
   /// No description provided for @telemetry_distanceLabel.
   ///
   /// In en, this message translates to:
@@ -11310,6 +11316,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{hours}h {minutes}m'**
   String neighbors_durationHours(int hours, int minutes);
+
+  /// No description provided for @neighbors_durationDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d {hours}h'**
+  String neighbors_durationDays(int days, int hours);
 
   /// No description provided for @networkMap_settingsSection.
   ///

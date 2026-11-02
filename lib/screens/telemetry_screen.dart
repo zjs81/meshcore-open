@@ -506,6 +506,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
     int channel,
     bool isImperialUnits,
   ) {
+    final computedPower = _computedPowerText(channelData);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -517,11 +518,24 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
             children: [
               for (final entry in channelData.entries)
                 _buildTelemetryField(entry, channel, isImperialUnits),
+              if (computedPower != null)
+                _buildInfoRow(
+                  context.l10n.telemetry_computedPowerLabel,
+                  computedPower,
+                ),
             ],
           ),
         ),
       ],
     );
+  }
+
+  String? _computedPowerText(Map<String, dynamic> channelData) {
+    final voltage = channelData['voltage'];
+    final current = channelData['current'];
+    if (voltage is! num || current is! num) return null;
+    final watts = voltage.toDouble() * current.toDouble();
+    return context.l10n.telemetry_powerValue(watts.toStringAsFixed(3));
   }
 
   Widget _buildTelemetryField(
@@ -611,7 +625,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
       case 'current':
         return _TelemetryFieldDisplay(
           l10n.telemetry_currentLabel,
-          l10n.telemetry_currentValue(text),
+          l10n.telemetry_currentValue(_currentText(value)),
         );
       case 'frequency':
         return _TelemetryFieldDisplay(
@@ -950,6 +964,11 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
       return value.toString();
     }
     return value.toString();
+  }
+
+  String _currentText(dynamic value) {
+    if (value is num) return value.toDouble().toStringAsFixed(3);
+    return _telemetryValueText(value);
   }
 
   String _telemetryAxisText(dynamic value) {

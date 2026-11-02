@@ -50,7 +50,7 @@ The battery chemistry selector and CLI/Settings cards are hidden from guest user
 Three information cards:
 
 **System Information**:
-- Battery percentage and voltage (e.g. "85% / 3.95V"), using the battery chemistry set in the hub screen
+- Battery percentage and voltage (e.g. "85% / 3.950V"), using the battery chemistry set in the hub screen
 - Clock at login time
 - Uptime (days/hours/minutes/seconds)
 - Queue length
@@ -129,6 +129,8 @@ A list of Cayenne LPP sensor channel cards:
 
 - **Channel 1** (special): Battery voltage (shown as percentage or raw mV) and MCU temperature
 - **Other channels**: Raw sensor values with appropriate labels
+- Current is shown to 3 decimal places (LPP current resolution is 0.001A); voltage carries only 0.01V on the wire, so telemetry voltage shows 2 decimals
+- When a channel reports both voltage and current, a "Computed power" row shows voltage × current in watts (3 decimals) alongside any reported power value
 
 Shows "No data" until a response arrives from the repeater.
 

@@ -4047,6 +4047,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get telemetry_powerLabel => '功率';
 
   @override
+  String get telemetry_computedPowerLabel => '计算功率';
+
+  @override
   String get telemetry_distanceLabel => '距离';
 
   @override
@@ -6294,6 +6297,11 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String neighbors_durationHours(int hours, int minutes) {
     return '$hours小时$minutes分';
+  }
+
+  @override
+  String neighbors_durationDays(int days, int hours) {
+    return '$days天$hours小时';
   }
 
   @override

@@ -516,7 +516,11 @@ String _fmtDuration(AppLocalizations l10n, double seconds) {
   final int h = m ~/ 60;
   final int m2 = m % 60;
 
-  return l10n.neighbors_durationHours(h, m2);
+  if (h < 24) {
+    return l10n.neighbors_durationHours(h, m2);
+  }
+
+  return l10n.neighbors_durationDays(h ~/ 24, h % 24);
 }
 
 class _MarkerBubble extends StatelessWidget {

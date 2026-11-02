@@ -4363,6 +4363,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get telemetry_powerLabel => 'Hatalom';
 
   @override
+  String get telemetry_computedPowerLabel => 'Számított teljesítmény';
+
+  @override
   String get telemetry_distanceLabel => 'Távolság';
 
   @override
@@ -6740,6 +6743,11 @@ class AppLocalizationsHu extends AppLocalizations {
   @override
   String neighbors_durationHours(int hours, int minutes) {
     return '$hours ó $minutes p';
+  }
+
+  @override
+  String neighbors_durationDays(int days, int hours) {
+    return '$days n $hours ó';
   }
 
   @override

@@ -4375,6 +4375,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get telemetry_powerLabel => 'Leistung';
 
   @override
+  String get telemetry_computedPowerLabel => 'Berechnete Leistung';
+
+  @override
   String get telemetry_distanceLabel => 'Entfernung';
 
   @override
@@ -6766,6 +6769,11 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String neighbors_durationHours(int hours, int minutes) {
     return '$hours Std. $minutes Min.';
+  }
+
+  @override
+  String neighbors_durationDays(int days, int hours) {
+    return '$days T. $hours Std.';
   }
 
   @override
