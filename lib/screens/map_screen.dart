@@ -723,6 +723,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         final visibleOnlineRepeaters = _filterOnlineRepeatersBySettings(
           _online.repeaters,
           settings,
+          showGuessedLocations: settings.mapShowGuessedLocations,
         );
         Contact? selectedContact;
         if (_selectedKey != null) {
@@ -1439,12 +1440,15 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
 
   List<NetworkMapRepeater> _filterOnlineRepeatersBySettings(
     List<NetworkMapRepeater> repeaters,
-    dynamic settings,
-  ) {
+    dynamic settings, {
+    required bool showGuessedLocations,
+  }) {
     final keyPrefix = settings.mapKeyPrefix.trim().toLowerCase();
     final now = DateTime.now();
 
     return repeaters.where((repeater) {
+      if (repeater.isEstimated && !showGuessedLocations) return false;
+
       final typeVisible = switch (repeater.type) {
         advTypeRepeater => settings.mapShowRepeaters,
         advTypeChat => settings.mapShowChatNodes,
