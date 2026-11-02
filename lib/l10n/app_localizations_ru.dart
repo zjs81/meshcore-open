@@ -4526,6 +4526,11 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String neighbors_fetchedOfTotal(int fetched, int total) {
+    return '$fetched of $total fetched';
+  }
+
+  @override
   String get neighbors_mapNoNeighborLocations =>
       'No neighbors have a location to map.';
 

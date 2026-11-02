@@ -2371,6 +2371,17 @@
       }
     }
   },
+  "neighbors_fetchedOfTotal": "{fetched} of {total} fetched",
+  "@neighbors_fetchedOfTotal": {
+    "placeholders": {
+      "fetched": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "neighbors_mapNoNeighborLocations": "No neighbors have a location to map.",
   "neighbors_mapHiddenWithoutLocation": "{count} neighbors without location hidden.",
   "@neighbors_mapHiddenWithoutLocation": {

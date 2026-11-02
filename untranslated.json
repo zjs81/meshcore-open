@@ -9,6 +9,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -23,6 +24,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -37,6 +39,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -51,6 +54,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -65,6 +69,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -79,6 +84,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -93,6 +99,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -107,6 +114,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -121,6 +129,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -135,6 +144,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -149,6 +159,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -163,6 +174,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -177,6 +189,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -191,6 +204,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -205,6 +219,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -219,6 +234,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ],
@@ -233,6 +249,7 @@
     "neighbors_eraseConfirm",
     "neighbors_erased",
     "neighbors_eraseFailed",
+    "neighbors_fetchedOfTotal",
     "neighbors_mapNoNeighborLocations",
     "neighbors_mapHiddenWithoutLocation"
   ]

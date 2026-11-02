@@ -53,6 +53,7 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
   bool _isLoading = false;
   bool _isLoaded = false;
   bool _hasData = false;
+  bool _timedOut = false;
   bool _isDiscovering = false;
   bool _isErasing = false;
   Timer? _statusTimeout;
@@ -229,6 +230,7 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
         _isLoading = false;
         _isLoaded = true;
         _hasData = true;
+        _timedOut = false;
       });
     } catch (e) {
       appLogger.error('Error handling neighbors response: $e');
@@ -245,6 +247,7 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
     setState(() {
       _isLoading = true;
       _isLoaded = false;
+      _timedOut = false;
     });
     try {
       final connector = Provider.of<MeshCoreConnector>(context, listen: false);
@@ -293,6 +296,7 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
         setState(() {
           _isLoading = false;
           _isLoaded = false;
+          _timedOut = true;
         });
         showDismissibleSnackBar(
           context,
@@ -560,7 +564,7 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
                         title: l10n.neighbors_noData,
                       ),
                     if (_isLoaded ||
-                        _hasData &&
+                        (_hasData || _timedOut) &&
                             !(_parsedNeighbors == null ||
                                 _parsedNeighbors!.isEmpty))
                       _buildNeighborsList(connector),
@@ -586,22 +590,28 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
       );
     }
     final links = _buildLinks(connector);
+    final fetched = _parsedNeighbors!.length;
     return NeighborsMapView(
       repeater: _resolveRepeater(connector),
       links: links,
       hiddenCount: _parsedNeighbors!.length - links.length,
+      notice: _timedOut && fetched < _neighborCount
+          ? context.l10n.neighbors_fetchedOfTotal(fetched, _neighborCount)
+          : null,
     );
   }
 
   Widget _buildNeighborsList(MeshCoreConnector connector) {
     final l10n = context.l10n;
+    final fetched = _parsedNeighbors?.length ?? 0;
+    final header = _timedOut && fetched < _neighborCount
+        ? '${l10n.repeater_neighbors} — '
+              '${l10n.neighbors_fetchedOfTotal(fetched, _neighborCount)}'
+        : '${l10n.repeater_neighbors} — $_neighborCount';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionHeader(
-          '${l10n.repeater_neighbors} — $_neighborCount',
-          padding: const EdgeInsets.fromLTRB(4, 8, 4, 10),
-        ),
+        SectionHeader(header, padding: const EdgeInsets.fromLTRB(4, 8, 4, 10)),
         for (var i = 0; i < _parsedNeighbors!.length; i++)
           ListEntrance(
             index: i,

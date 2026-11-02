@@ -7802,6 +7802,12 @@ abstract class AppLocalizations {
   /// **'Failed to erase neighbors: {error}'**
   String neighbors_eraseFailed(String error);
 
+  /// No description provided for @neighbors_fetchedOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{fetched} of {total} fetched'**
+  String neighbors_fetchedOfTotal(int fetched, int total);
+
   /// No description provided for @neighbors_mapNoNeighborLocations.
   ///
   /// In en, this message translates to:

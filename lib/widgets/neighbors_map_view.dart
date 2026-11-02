@@ -42,11 +42,15 @@ class NeighborsMapView extends StatefulWidget {
   final List<NeighborLink> links;
   final int hiddenCount;
 
+  /// Optional banner shown over the map, e.g. a partial-fetch notice.
+  final String? notice;
+
   const NeighborsMapView({
     super.key,
     required this.repeater,
     required this.links,
     required this.hiddenCount,
+    this.notice,
   });
 
   @override
@@ -224,6 +228,44 @@ class _NeighborsMapViewState extends State<NeighborsMapView> {
                     ),
                     onReset: _fitCamera,
                   ),
+                  if (widget.notice != null)
+                    Positioned(
+                      top: 16,
+                      right: 16,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: MeshPalette.bg1.withValues(alpha: 0.92),
+                          borderRadius: BorderRadius.circular(MeshRadii.md),
+                          border: Border.all(color: MeshPalette.line2),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.cloud_off,
+                                size: 15,
+                                color: MeshPalette.warn,
+                              ),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Text(
+                                  widget.notice!,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: MeshPalette.ink,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   if (widget.hiddenCount > 0)
                     Positioned(
                       left: 16,
