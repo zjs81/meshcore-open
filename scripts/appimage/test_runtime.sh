@@ -18,11 +18,12 @@ run_timed() {
   if timeout --signal=TERM --kill-after=5s "$limit" "$@" >"$capture" 2>&1; then
     log "PASS $label ($((SECONDS - started))s)"
     return 0
+  else
+    status=$?
+    tail -n 40 "$capture" >&2 || true
+    log "FAIL $label (exit $status after $((SECONDS - started))s)"
+    return "$status"
   fi
-  status=$?
-  tail -n 40 "$capture" >&2 || true
-  log "FAIL $label (exit $status after $((SECONDS - started))s)"
-  return "$status"
 }
 
 case "$(uname -m)" in
@@ -38,7 +39,6 @@ fi
 
 workspace="$(mktemp -d)"
 app_pid=''
-bus_pid=''
 stop_process() {
   local process_id="$1" attempt
   [[ -n "$process_id" ]] || return 0
@@ -52,9 +52,8 @@ stop_process() {
   wait "$process_id" 2>/dev/null || true
 }
 cleanup() {
-  log 'Cleanup: stopping application and D-Bus processes'
+  log 'Cleanup: stopping application process'
   stop_process "$app_pid"
-  stop_process "$bus_pid"
   rm -rf "$workspace"
 }
 trap cleanup EXIT
@@ -111,17 +110,14 @@ log 'Dependency audit passed'
 
 mkdir -p "$workspace/home/Documents" "$workspace/home/config"
 printf 'XDG_DOCUMENTS_DIR="%s/Documents"\n' "$workspace/home" > "$workspace/home/config/user-dirs.dirs"
-run_timed 'start private D-Bus system bus' 10s "$output/dbus-daemon.log" \
-  dbus-daemon --session --address="unix:path=$workspace/system-bus" --fork --print-pid
-bus_pid="$(<"$output/dbus-daemon.log")"
-log "D-Bus system bus started: pid=$bus_pid"
-
-log 'Starting AppRun'
+log 'Starting AppRun under a private D-Bus session (also used as the system bus)'
+# shellcheck disable=SC2016
 env -u LD_LIBRARY_PATH -u GTK_PATH -u GSETTINGS_SCHEMA_DIR \
   HOME="$workspace/home" XDG_CONFIG_HOME="$workspace/home/config" \
   XDG_DATA_HOME="$workspace/home/data" XDG_CACHE_HOME="$workspace/home/cache" \
-  DBUS_SYSTEM_BUS_ADDRESS="unix:path=$workspace/system-bus" \
-  dbus-run-session -- "$appdir/AppRun" > "$output/startup.log" 2>&1 &
+  dbus-run-session -- bash -c \
+  'export DBUS_SYSTEM_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS"; exec "$1"' \
+  _ "$appdir/AppRun" > "$output/startup.log" 2>&1 &
 app_pid=$!
 log "AppRun started: pid=$app_pid"
 
