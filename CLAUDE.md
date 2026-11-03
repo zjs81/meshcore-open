@@ -17,9 +17,14 @@ flutter test
 flutter build apk --release
 flutter build ios --release
 flutter build web --release
+flutter build linux --release
+MESHCORE_BUILD_APPIMAGE=0 flutter build linux --release
+bash scripts/appimage/test_packaging.sh
 ```
 
-The versioned web build uses `dart run build_pipe:build` (also `bun run build`). Web deployment pins Flutter 3.41.2; other CI jobs track stable. Read `pubspec.yaml` for current app version and dependencies rather than copying them into this guide.
+The versioned web build uses `dart run build_pipe:build` (also `bun run build`). Web deployment pins Flutter 3.41.2; Linux packaging uses the SDK pin in `scripts/appimage-tools.json`; other CI jobs track stable. Read `pubspec.yaml` for current app version and dependencies rather than copying them into this guide.
+
+Linux Release installs generate architecture-matched AppImages using linuxdeploy/GTK and appimagetool: x86_64 on x64 and AArch64 on ARM64. Tools and runtime download automatically with pinned SHA-256 checksums. `MESHCORE_BUILD_APPIMAGE=0` skips packaging at install time, without a CMake cache reset. Debug/Profile are unchanged. Nix-linked x64 bundles and hosts with glibc newer than the pinned baseline trigger an isolated Ubuntu rebuild through an available Podman/Docker engine. Rootless Podman uses `--userns=keep-id` for host-owned bind mounts; see [Linux AppImage](README.md#linux-appimage) for prerequisites, cache/offline behavior and limitations. Preserve binary/data/lib adjacency and nested native assets when changing packaging.
 
 For Linux, use `nix develop`; see [Linux with Nix](README.md#linux-with-nix) for the pinned SDK, native build checks, cache troubleshooting, and Sysprof host prerequisites.
 

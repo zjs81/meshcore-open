@@ -1,0 +1,25 @@
+if(NOT CMAKE_INSTALL_CONFIG_NAME STREQUAL "Release" OR
+   "$ENV{MESHCORE_BUILD_APPIMAGE}" STREQUAL "0")
+  return()
+endif()
+
+function(meshcore_package_appimage)
+  include("@CMAKE_CURRENT_SOURCE_DIR@/flutter/ephemeral/generated_config.cmake")
+  set(packaging_environment)
+  foreach(entry IN LISTS FLUTTER_TOOL_ENVIRONMENT)
+    if(entry MATCHES "^(FLUTTER_ROOT|FLUTTER_TARGET|DART_DEFINES|DART_OBFUSCATION|SPLIT_DEBUG_INFO|TREE_SHAKE_ICONS)=")
+      list(APPEND packaging_environment "MESHCORE_APPIMAGE_${entry}")
+    endif()
+  endforeach()
+  execute_process(
+    COMMAND "@CMAKE_COMMAND@" -E env ${packaging_environment}
+      bash "@CMAKE_CURRENT_SOURCE_DIR@/../scripts/build_appimage.sh"
+      "@CMAKE_CURRENT_SOURCE_DIR@/.." "${CMAKE_INSTALL_PREFIX}"
+      "@CMAKE_CURRENT_BINARY_DIR@" "${CMAKE_INSTALL_CONFIG_NAME}" "@CMAKE_SYSTEM_PROCESSOR@"
+    RESULT_VARIABLE appimage_result)
+  if(NOT appimage_result EQUAL 0)
+    message(FATAL_ERROR "AppImage packaging failed (${appimage_result}). Set MESHCORE_BUILD_APPIMAGE=0 to build only the Flutter bundle.")
+  endif()
+endfunction()
+
+meshcore_package_appimage()
