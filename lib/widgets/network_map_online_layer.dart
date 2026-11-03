@@ -109,14 +109,11 @@ Color networkMapStatusColor(NetworkMapRepeaterStatus status) {
   };
 }
 
-
-
 /// Above this many in-view repeaters, hexagons and marker shadows are skipped.
 const int networkMapDenseNodeCount = 30;
 
 /// Above this many in-view links, each line is one stroke at half width
 const int networkMapDenseLinkCount = 70;
-
 
 /// Full style is a 3.5 px confirmed stroke or a 2.5 px unconfirmed stroke,
 /// each with a 1 px border. Simple style keeps the pattern and drops the
@@ -135,8 +132,6 @@ Polyline _onlineLinkPolyline(NetworkMapLink link, {required bool simple}) {
         : StrokePattern.dashed(segments: const [10, 8]),
   );
 }
-
-
 
 /// Map layers for the online network: links, repeater hexagons and a
 /// tappable center marker so small cells stay visible when zoomed out.
