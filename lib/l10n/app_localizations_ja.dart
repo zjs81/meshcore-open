@@ -1339,6 +1339,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_showOtherNodesSubtitle => '地図上に、他のノードの種類を表示する';
 
   @override
+  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+
+  @override
+  String get appSettings_showOnlineLinksSubtitle =>
+      'Display connection lines between nodes from the online map';
+
+  @override
   String get appSettings_timeFilter => '時間フィルター';
 
   @override
@@ -2575,6 +2582,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get map_otherNodes => 'その他のノード';
+
+  @override
+  String get map_showOnlineLinks => 'Show Online Map Connections';
 
   @override
   String get map_showOverlaps => 'リピータキーの重複';

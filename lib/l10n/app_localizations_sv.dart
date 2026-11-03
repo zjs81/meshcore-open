@@ -1394,6 +1394,13 @@ class AppLocalizationsSv extends AppLocalizations {
       'Visa andra nodtyper på kartan';
 
   @override
+  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+
+  @override
+  String get appSettings_showOnlineLinksSubtitle =>
+      'Display connection lines between nodes from the online map';
+
+  @override
   String get appSettings_timeFilter => 'Tidsfilter';
 
   @override
@@ -2663,6 +2670,9 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get map_otherNodes => 'Andra noder';
+
+  @override
+  String get map_showOnlineLinks => 'Show Online Map Connections';
 
   @override
   String get map_showOverlaps => 'Repeater-nyckelöverlappningar';
