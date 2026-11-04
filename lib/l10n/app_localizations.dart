@@ -2578,6 +2578,18 @@ abstract class AppLocalizations {
   /// **'Display connection lines between nodes from the online map'**
   String get appSettings_showOnlineLinksSubtitle;
 
+  /// No description provided for @appSettings_useOnlineMapForPaths.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Online Map for Paths'**
+  String get appSettings_useOnlineMapForPaths;
+
+  /// No description provided for @appSettings_useOnlineMapForPathsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use repeater locations from the online map when reconstructing message paths'**
+  String get appSettings_useOnlineMapForPathsSubtitle;
+
   /// No description provided for @appSettings_timeFilter.
   ///
   /// In en, this message translates to:
@@ -7759,6 +7771,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hop details are not provided for this packet.'**
   String get channelPath_noHopDetails;
+
+  /// No description provided for @channelPath_loadingOnlineMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading repeater locations from the online map...'**
+  String get channelPath_loadingOnlineMap;
 
   /// No description provided for @channelPath_messageDetails.
   ///

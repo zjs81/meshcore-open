@@ -103,6 +103,7 @@ class AppSettings {
   final bool mapShowChatNodes;
   final bool mapShowOtherNodes;
   final bool mapShowOnlineLinks;
+  final bool mapUseOnlineMapForPaths;
   final bool mapShowOverlaps;
   final double mapTimeFilterHours; // 0 = all time
   final bool mapKeyPrefixEnabled;
@@ -256,6 +257,7 @@ class AppSettings {
     this.mapShowChatNodes = true,
     this.mapShowOtherNodes = true,
     this.mapShowOnlineLinks = true,
+    this.mapUseOnlineMapForPaths = false,
     this.mapShowOverlaps = false,
     this.mapTimeFilterHours = 168,
     this.mapKeyPrefixEnabled = false,
@@ -352,6 +354,7 @@ class AppSettings {
       'map_show_chat_nodes': mapShowChatNodes,
       'map_show_other_nodes': mapShowOtherNodes,
       'map_show_online_links': mapShowOnlineLinks,
+      'map_use_online_map_for_paths': mapUseOnlineMapForPaths,
       'map_show_overlaps': mapShowOverlaps,
       'map_time_filter_hours': mapTimeFilterHours,
       'map_key_prefix_enabled': mapKeyPrefixEnabled,
@@ -485,6 +488,8 @@ class AppSettings {
       mapShowChatNodes: json['map_show_chat_nodes'] as bool? ?? true,
       mapShowOtherNodes: json['map_show_other_nodes'] as bool? ?? true,
       mapShowOnlineLinks: json['map_show_online_links'] as bool? ?? true,
+      mapUseOnlineMapForPaths:
+          json['map_use_online_map_for_paths'] as bool? ?? false,
       mapShowOverlaps: json['map_show_overlaps'] as bool? ?? false,
       mapTimeFilterHours:
           (json['map_time_filter_hours'] as num?)?.toDouble() ?? 168,
@@ -653,6 +658,7 @@ class AppSettings {
     bool? mapShowChatNodes,
     bool? mapShowOtherNodes,
     bool? mapShowOnlineLinks,
+    bool? mapUseOnlineMapForPaths,
     bool? mapShowOverlaps,
     double? mapTimeFilterHours,
     bool? mapKeyPrefixEnabled,
@@ -733,6 +739,8 @@ class AppSettings {
       mapShowChatNodes: mapShowChatNodes ?? this.mapShowChatNodes,
       mapShowOtherNodes: mapShowOtherNodes ?? this.mapShowOtherNodes,
       mapShowOnlineLinks: mapShowOnlineLinks ?? this.mapShowOnlineLinks,
+      mapUseOnlineMapForPaths:
+          mapUseOnlineMapForPaths ?? this.mapUseOnlineMapForPaths,
       mapShowOverlaps: mapShowOverlaps ?? this.mapShowOverlaps,
       mapTimeFilterHours: mapTimeFilterHours ?? this.mapTimeFilterHours,
       mapKeyPrefixEnabled: mapKeyPrefixEnabled ?? this.mapKeyPrefixEnabled,
