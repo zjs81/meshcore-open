@@ -102,6 +102,8 @@
   "settings_longitude": "Dolžina",
   "settings_autoZeroHopAdvertOnGpsUpdate": "Samodejni zero-hop oglas ob posodobitvi GPS",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Ko se GPS lokacija spremeni, pošlji zero-hop oglas (zahteva lokacijo v oglasu).",
+  "settings_autoSelfAdvertAsFlood": "Pošlji samodejni lastni oglas kot flood",
+  "settings_autoSelfAdvertAsFloodSubtitle": "Če je omogočeno, se samodejni lastni oglasi pošiljajo kot flood namesto zero-hop.",
   "settings_privacyMode": "Zasebnost",
   "settings_privacyModeSubtitle": "Skrita imena/lokacije v oglasih",
   "settings_privacyModeToggle": "Omogoči način zasebnosti, da skrijemo tvoje ime in lokacijo v oglasih.",

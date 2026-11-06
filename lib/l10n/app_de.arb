@@ -102,6 +102,8 @@
   "settings_longitude": "Längengrad",
   "settings_autoZeroHopAdvertOnGpsUpdate": "Automatische Zero-Hop-Ankündigung bei GPS-Update",
   "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Wenn sich der GPS-Standort ändert, eine Zero-Hop-Ankündigung senden (erfordert Standort in der Ankündigung).",
+  "settings_autoSelfAdvertAsFlood": "Automatische Ankündigung als Flood senden",
+  "settings_autoSelfAdvertAsFloodSubtitle": "Wenn aktiviert, werden automatisierte Ankündigungen als Flood statt als Zero-Hop gesendet.",
   "settings_privacyMode": "Privatsphärenmodus",
   "settings_privacyModeSubtitle": "Name und Standort in Ankündigungen verbergen",
   "settings_privacyModeToggle": "Privatsphärenmodus aktivieren, um Namen und Standort in Ankündigungen zu verbergen.",
