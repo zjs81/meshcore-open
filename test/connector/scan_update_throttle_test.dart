@@ -50,6 +50,28 @@ void main() {
     },
   );
 
+  test('flush publishes a held update immediately', () async {
+    var notifications = 0;
+    final throttle = ScanUpdateThrottle(
+      interval: const Duration(milliseconds: 40),
+      onNotify: () => notifications++,
+    );
+    addTearDown(throttle.dispose);
+
+    throttle.schedule();
+    throttle.schedule();
+    expect(notifications, 1);
+
+    throttle.flush();
+    expect(notifications, 2);
+
+    // Nothing pending: flushing again or letting the old timer slot pass
+    // publishes nothing more.
+    throttle.flush();
+    await Future<void>.delayed(const Duration(milliseconds: 60));
+    expect(notifications, 2);
+  });
+
   test('dispose cancels a pending notification', () async {
     var notifications = 0;
     final throttle = ScanUpdateThrottle(

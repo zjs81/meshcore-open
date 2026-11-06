@@ -19,22 +19,14 @@ int _decodeRawPathByteLen(int pathLenRaw) {
 }
 
 class BleDebugLogScreen extends StatefulWidget {
-  const BleDebugLogScreen({super.key, this.initialRawLogRx = false});
-
-  final bool initialRawLogRx;
+  const BleDebugLogScreen({super.key});
 
   @override
   State<BleDebugLogScreen> createState() => _BleDebugLogScreenState();
 }
 
 class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
-  late _BleLogView _view;
-
-  @override
-  void initState() {
-    super.initState();
-    _view = widget.initialRawLogRx ? _BleLogView.rawLogRx : _BleLogView.frames;
-  }
+  _BleLogView _view = _BleLogView.frames;
 
   @override
   Widget build(BuildContext context) {

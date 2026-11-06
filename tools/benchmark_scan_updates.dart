@@ -2,190 +2,50 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:typed_data';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:provider/provider.dart';
 
 import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/connector/meshcore_protocol.dart';
-import 'package:meshcore_open/l10n/app_localizations.dart';
-import 'package:meshcore_open/models/contact.dart';
-import 'package:meshcore_open/models/message.dart';
-import 'package:meshcore_open/screens/chat_screen.dart';
-import 'package:meshcore_open/screens/ble_debug_log_screen.dart';
-import 'package:meshcore_open/screens/scanner_screen.dart';
-import 'package:meshcore_open/services/app_settings_service.dart';
 import 'package:meshcore_open/services/ble_debug_log_service.dart';
-import 'package:meshcore_open/services/chat_text_scale_service.dart';
 import 'package:meshcore_open/services/message_retry_service.dart';
 import 'package:meshcore_open/services/path_history_service.dart';
 import 'package:meshcore_open/services/storage_service.dart';
-import 'package:meshcore_open/services/translation_service.dart';
 import 'package:meshcore_open/storage/prefs_manager.dart';
-import 'package:meshcore_open/theme/mesh_theme.dart';
-import 'package:meshcore_open/utils/scan_update_throttle.dart';
+
+import '../test/support/ui_replay_harness.dart';
 
 class _ImmediateBleDebugLogService extends BleDebugLogService {
   _ImmediateBleDebugLogService() : super(notifyInterval: Duration.zero);
 }
 
-class UiReplayConnector extends MeshCoreConnector {
-  UiReplayConnector({
-    required this.throttled,
-    required int devices,
-    this.scenario = 'scanner',
-    this.bleDebugLogService,
-    int history = 1000,
-  }) {
-    _devices = List.generate(
-      devices,
-      (index) => BluetoothDevice.fromId(
-        '02:00:00:00:00:${index.toRadixString(16).padLeft(2, '0')}',
-      ),
-    );
-    _throttle = ScanUpdateThrottle(onNotify: notifyListeners);
-    if (scenario.startsWith('chat-')) {
-      messages.addAll(List.generate(history, _message));
-    }
-    void recordNotification() {
-      notifications++;
-      lastNotifiedEvent = events;
-      deliveryAgesUs.add(_clock.elapsedMicroseconds - lastEventUs);
-    }
-
-    if (bleDebugLogService != null) {
-      bleDebugLogService!.addListener(recordNotification);
-      _bleLogListener = recordNotification;
-    } else {
-      addListener(recordNotification);
-    }
-    ingest();
-  }
-
-  final bool throttled;
-  final String scenario;
-  final BleDebugLogService? bleDebugLogService;
-  VoidCallback? _bleLogListener;
-  Contact contact = Contact(
-    publicKey: Uint8List.fromList(List.filled(32, 1)),
-    name: 'Benchmark contact',
-    type: 1,
-    pathLength: -1,
-    path: Uint8List(0),
-    lastSeen: DateTime(2026, 1, 1),
-  );
-  final List<Message> messages = [];
-  final Stopwatch _clock = Stopwatch()..start();
-  late final List<BluetoothDevice> _devices;
-  late final ScanUpdateThrottle _throttle;
-  List<ScanResult> _results = [];
-  int events = 0;
-  int notifications = 0;
-  int lastNotifiedEvent = 0;
-  int lastEventUs = 0;
-  final List<int> deliveryAgesUs = [];
-
-  @override
-  MeshCoreConnectionState get state => scenario == 'scanner'
-      ? MeshCoreConnectionState.scanning
-      : MeshCoreConnectionState.connected;
-
-  @override
-  bool get isConnected => scenario != 'scanner';
-
-  @override
-  List<Contact> get contacts => [contact];
-
-  @override
-  List<Message> getMessages(Contact contact) => messages;
-
-  @override
-  void setActiveContact(String? keyHex) {}
-
-  Message _message(int index) => Message(
-    senderKey: contact.publicKey,
-    text: 'Benchmark message $index',
-    timestamp: DateTime(2026, 1, 1).add(Duration(seconds: index)),
-    isOutgoing: index.isOdd,
-    status: MessageStatus.sent,
-    messageId: 'benchmark-$index',
-  );
-
-  @override
-  List<ScanResult> get scanResults => List.unmodifiable(_results);
-
-  void ingest() {
-    events++;
-    lastEventUs = _clock.elapsedMicroseconds;
-    if (scenario.startsWith('ble-log')) {
-      final frame = scenario == 'ble-log-raw'
-          ? Uint8List.fromList([
-              pushCodeLogRxData,
-              32,
-              96,
-              0x15,
-              0,
-              1,
-              2,
-              events & 0xFF,
-            ])
-          : Uint8List.fromList([respCodeOk, events & 0xFF]);
-      bleDebugLogService!.logFrame(frame, outgoing: false);
+/// Switches the debug log screen to its raw RX view the way a user does, by
+/// tapping the right-hand segment of its view toggle.
+Future<void> _tapRawLogRxSegment() async {
+  Element? toggle;
+  void visit(Element element) {
+    if (toggle != null) return;
+    if (element.widget is SegmentedButton) {
+      toggle = element;
       return;
     }
-    if (scenario != 'scanner') {
-      if (scenario == 'chat-arrival') {
-        messages.add(_message(messages.length));
-      } else if (scenario == 'chat-status' && messages.isNotEmpty) {
-        messages[messages.length - 1] = messages.last.copyWith(
-          status: events.isEven ? MessageStatus.sent : MessageStatus.delivered,
-        );
-      }
-      notifyListeners();
-      return;
-    }
-    _results = List.generate(
-      _devices.length,
-      (index) => ScanResult(
-        device: _devices[index],
-        advertisementData: AdvertisementData(
-          advName: 'MeshCore benchmark $index',
-          txPowerLevel: null,
-          appearance: null,
-          connectable: true,
-          manufacturerData: const {},
-          serviceData: const {},
-          serviceUuids: const [],
-        ),
-        rssi: -50 - (events + index) % 40,
-        timeStamp: DateTime.now(),
-      ),
-    );
-    if (throttled) {
-      _throttle.schedule();
-    } else {
-      notifyListeners();
-    }
+    element.visitChildElements(visit);
   }
 
-  @override
-  Future<void> startScan({
-    Duration timeout = const Duration(seconds: 10),
-  }) async {}
-
-  @override
-  Future<void> stopScan() async {}
-
-  @override
-  void dispose() {
-    _throttle.dispose();
-    final listener = _bleLogListener;
-    if (listener != null) bleDebugLogService?.removeListener(listener);
-    super.dispose();
+  WidgetsBinding.instance.rootElement?.visitChildElements(visit);
+  final box = toggle?.renderObject as RenderBox?;
+  if (box == null) {
+    throw StateError('Debug log view toggle not found');
   }
+  final target = box.localToGlobal(
+    Offset(box.size.width * 0.75, box.size.height / 2),
+  );
+  GestureBinding.instance
+    ..handlePointerEvent(PointerDownEvent(position: target))
+    ..handlePointerEvent(PointerUpEvent(position: target));
+  await WidgetsBinding.instance.endOfFrame;
 }
 
 double _cpuSeconds(int ticksPerSecond) {
@@ -234,53 +94,6 @@ Future<void> _replay(UiReplayConnector connector, int rate, int seconds) async {
     }
   });
   await done.future;
-}
-
-Widget buildUiBenchmarkApp(
-  MeshCoreConnector connector, {
-  bool usbControl = false,
-}) {
-  final chatConnector =
-      connector is UiReplayConnector && connector.scenario.startsWith('chat-')
-      ? connector
-      : null;
-  return MultiProvider(
-    providers: [
-      ChangeNotifierProvider<MeshCoreConnector>.value(value: connector),
-      if (connector is UiReplayConnector &&
-          connector.bleDebugLogService != null)
-        ChangeNotifierProvider<BleDebugLogService>.value(
-          value: connector.bleDebugLogService!,
-        ),
-      if (chatConnector != null) ...[
-        ChangeNotifierProvider(create: (_) => AppSettingsService()),
-        ChangeNotifierProvider(create: (_) => ChatTextScaleService()),
-        ChangeNotifierProvider(
-          create: (_) => PathHistoryService(StorageService()),
-        ),
-        ChangeNotifierProvider(
-          create: (context) =>
-              TranslationService(context.read<AppSettingsService>()),
-        ),
-      ],
-    ],
-    child: MaterialApp(
-      theme: MeshTheme.light(),
-      locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: usbControl
-          ? const Scaffold(body: Center(child: Icon(Icons.usb, size: 48)))
-          : chatConnector != null
-          ? ChatScreen(contact: chatConnector.contact)
-          : connector is UiReplayConnector &&
-                connector.scenario.startsWith('ble-log')
-          ? BleDebugLogScreen(
-              initialRawLogRx: connector.scenario == 'ble-log-raw',
-            )
-          : const ScannerScreen(),
-    ),
-  );
 }
 
 Future<void> _measureUsb({
@@ -534,6 +347,9 @@ Future<void> _runBenchmark(List<String> arguments) async {
   );
   runApp(buildUiBenchmarkApp(connector));
   await WidgetsBinding.instance.endOfFrame;
+  if (scenario == 'ble-log-raw') {
+    await _tapRawLogRxSegment();
+  }
   await _replay(connector, rate, warmup);
   await Future<void>.delayed(const Duration(milliseconds: 400));
 

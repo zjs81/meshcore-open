@@ -226,8 +226,10 @@ class MeshCoreConnector extends ChangeNotifier {
 
   final List<ScanResult> _scanResults = [];
   final List<ScanResult> _linuxSystemScanResults = [];
+  // Scan results are rate-limited here, so they publish straight through
+  // instead of waiting a second time in the 50 ms notify batching.
   late final ScanUpdateThrottle _scanUpdateThrottle = ScanUpdateThrottle(
-    onNotify: notifyListeners,
+    onNotify: _notifyListenersNow,
   );
   final List<Contact> _contacts = [];
   final List<Contact> _discoveredContacts = [];
@@ -1096,6 +1098,23 @@ class MeshCoreConnector extends ChangeNotifier {
       if (messages == null) return Future<void>.value();
       return _messageStore.saveMessages(contactKeyHex, messages);
     });
+  }
+
+  /// Saves the conversation with [contactKeyHex] now, superseding any queued
+  /// save. Used for delivery and reaction status, which must survive the app
+  /// being killed inside the coalescing window: a stale pending/failed status
+  /// after restart would show the wrong state or prompt a needless resend.
+  void _saveConversationNow(String contactKeyHex) {
+    _coalescedWrites.cancel('conversation:$contactKeyHex');
+    final messages = _conversations[contactKeyHex];
+    if (messages == null) return;
+    unawaited(
+      _messageStore.saveMessages(contactKeyHex, messages).catchError((
+        Object error,
+      ) {
+        appLogger.warn('Conversation save failed: $error', tag: 'Storage');
+      }),
+    );
   }
 
   /// Runs queued persistence now. Called before the app is backgrounded and
@@ -2017,6 +2036,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
   void _updateMessage(Message message) {
     final contactKey = pubKeyToHex(message.senderKey);
+    var changed = false;
     final messages = _conversations[contactKey];
     if (messages != null) {
       final index = messages.indexWhere(
@@ -2024,8 +2044,7 @@ class MeshCoreConnector extends ChangeNotifier {
       );
       if (index != -1) {
         messages[index] = message;
-        _scheduleConversationSave(contactKey);
-        notifyListeners();
+        changed = true;
       }
     }
 
@@ -2034,9 +2053,12 @@ class MeshCoreConnector extends ChangeNotifier {
     if (reactionInfo != null &&
         (message.status == MessageStatus.delivered ||
             message.status == MessageStatus.failed)) {
-      final contactKey2 = pubKeyToHex(message.senderKey);
-      _setReactionStatus(contactKey2, reactionInfo, message.status);
-      _scheduleConversationSave(contactKey2);
+      _setReactionStatus(contactKey, reactionInfo, message.status);
+      changed = true;
+    }
+
+    if (changed) {
+      _saveConversationNow(contactKey);
       notifyListeners();
     }
   }
@@ -2450,7 +2472,9 @@ class MeshCoreConnector extends ChangeNotifier {
     _scanSubscription = null;
     await _isScanningSubscription?.cancel();
     _isScanningSubscription = null;
-    _scanUpdateThrottle.reset();
+    // Publish results still held by the throttle; _setState below only
+    // notifies when the state actually changes.
+    _scanUpdateThrottle.flush();
 
     if (_state == MeshCoreConnectionState.scanning) {
       // Restore to `connected` if a non-BLE transport is still live, so a stray
@@ -4462,7 +4486,7 @@ class MeshCoreConnector extends ChangeNotifier {
         reactionInfo,
         MessageStatus.pending,
       );
-      _scheduleConversationSave(contact.publicKeyHex);
+      _saveConversationNow(contact.publicKeyHex);
       notifyListeners();
 
       // Route through retry service (same as normal messages)
@@ -9022,6 +9046,16 @@ class MeshCoreConnector extends ChangeNotifier {
         _flushBatchedNotify,
       );
     }
+  }
+
+  /// Notifies now, skipping the batching in [markNotifyDirty]. For sources
+  /// that already rate-limit themselves, so they are not delayed twice.
+  void _notifyListenersNow() {
+    if (_disposed) return;
+    _notifyListenersTimer?.cancel();
+    _notifyListenersTimer = null;
+    _notifyListenersDirty = true;
+    _flushBatchedNotify();
   }
 
   @override

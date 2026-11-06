@@ -374,7 +374,12 @@ class _ChatScreenState extends State<ChatScreen> {
           selector: (_, connector) => (
             connector.isContactSmazEnabled(widget.contact.publicKeyHex),
             connector.isContactCyr2LatEnabled(widget.contact.publicKeyHex),
-            _resolveContact(connector).name,
+            // Runs on every connector notify: look the name up without
+            // copying the contact list.
+            connector
+                    .getContactByPubKeyHex(widget.contact.publicKeyHex)
+                    ?.name ??
+                widget.contact.name,
             connector.getContactCyr2LatProfileId(widget.contact.publicKeyHex),
           ),
           builder: (context, _, _) =>
@@ -431,6 +436,9 @@ class _ChatScreenState extends State<ChatScreen> {
     List<Message> messages,
     MeshCoreConnector connector,
   ) {
+    // The connector mutates this list in place, and the item builder below
+    // also runs on scroll between rebuilds. Index a snapshot so it always
+    // matches itemCount; the copy is the same O(n) cost as the old reversal.
     final messageSnapshot = List<Message>.of(messages);
     final itemCount = messageSnapshot.length + (_isLoadingOlder ? 1 : 0);
 
@@ -702,19 +710,21 @@ class _ChatScreenState extends State<ChatScreen> {
   int _resolveContactIndex = -1;
 
   Contact _resolveContact(MeshCoreConnector connector) {
+    // `contacts` builds a filtered copy on every read, so read it once.
+    final contacts = connector.contacts;
     if (_resolveContactIndex >= 0 &&
-        _resolveContactIndex < connector.contacts.length &&
-        connector.contacts[_resolveContactIndex].publicKeyHex ==
+        _resolveContactIndex < contacts.length &&
+        contacts[_resolveContactIndex].publicKeyHex ==
             widget.contact.publicKeyHex) {
-      return connector.contacts[_resolveContactIndex];
+      return contacts[_resolveContactIndex];
     }
-    _resolveContactIndex = connector.contacts.indexWhere(
+    _resolveContactIndex = contacts.indexWhere(
       (c) => c.publicKeyHex == widget.contact.publicKeyHex,
     );
     if (_resolveContactIndex == -1) {
       return widget.contact;
     }
-    return connector.contacts[_resolveContactIndex];
+    return contacts[_resolveContactIndex];
   }
 
   Contact? _resolveContactFrom4Bytes(

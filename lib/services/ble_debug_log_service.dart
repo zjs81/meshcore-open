@@ -50,8 +50,8 @@ class BleDebugLogService extends ChangeNotifier {
   final Duration notifyInterval;
   final List<BleDebugLogEntry> _entries = [];
   final List<BleRawLogRxEntry> _rawLogRxEntries = [];
-  bool _notifyScheduled = false;
   bool _disposed = false;
+  bool _notifyPending = false;
   Timer? _notifyTimer;
 
   List<BleDebugLogEntry> get entries => List.unmodifiable(_entries);
@@ -96,33 +96,31 @@ class BleDebugLogService extends ChangeNotifier {
     _notifyListenersSafely();
   }
 
+  /// Coalesces bursts of frames into one notification per [notifyInterval].
+  /// A timer callback never runs mid-frame, so only the immediate path
+  /// (a zero interval) has to defer past a build in progress.
   void _notifyListenersSafely() {
-    if (_disposed || !hasListeners) return;
-    if (notifyInterval == Duration.zero) {
-      _flushNotifications();
+    if (_disposed || !hasListeners || _notifyPending) return;
+    _notifyPending = true;
+    if (notifyInterval > Duration.zero) {
+      _notifyTimer = Timer(notifyInterval, _deliverNotification);
+      return;
+    }
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    if (phase == SchedulerPhase.idle ||
+        phase == SchedulerPhase.postFrameCallbacks) {
+      _deliverNotification();
     } else {
-      _notifyTimer ??= Timer(notifyInterval, _flushNotifications);
+      SchedulerBinding.instance.addPostFrameCallback(
+        (_) => _deliverNotification(),
+      );
     }
   }
 
-  void _flushNotifications() {
+  void _deliverNotification() {
     _notifyTimer = null;
-    if (_disposed || !hasListeners) return;
-    final phase = SchedulerBinding.instance.schedulerPhase;
-    final canNotifyNow =
-        phase == SchedulerPhase.idle ||
-        phase == SchedulerPhase.postFrameCallbacks;
-    if (canNotifyNow) {
-      notifyListeners();
-      return;
-    }
-
-    if (_notifyScheduled) return;
-    _notifyScheduled = true;
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _notifyScheduled = false;
-      if (!_disposed) notifyListeners();
-    });
+    _notifyPending = false;
+    if (!_disposed && hasListeners) notifyListeners();
   }
 
   @override

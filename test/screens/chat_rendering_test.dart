@@ -6,7 +6,7 @@ import 'package:meshcore_open/widgets/chat_composer.dart';
 import 'package:meshcore_open/widgets/message_status_icon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../tools/benchmark_scan_updates.dart';
+import '../support/ui_replay_harness.dart';
 
 class _EncodingConnector extends UiReplayConnector {
   _EncodingConnector({super.history = 6})

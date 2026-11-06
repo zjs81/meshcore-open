@@ -39,6 +39,12 @@ are intentionally coalesced. The final input must have been notified after
 the fixed 400 ms drain window. Rendering errors or missing frames invalidate
 the run.
 
+In the app, the throttle now publishes straight through instead of also
+waiting in the connector's 50 ms batching, so a scan update is not delayed
+twice. `stopScan()` flushes any update the throttle is still holding. The
+replay keeps the batching so its results stay comparable with those recorded
+below.
+
 This isolates the notification policy; it is **not** a pair of full app builds
 at different revisions or a native BLE scan. It excludes Bluetooth discovery,
 platform-channel delivery, and Linux paired-device merging. Only claim the
@@ -313,8 +319,13 @@ to `/dev/ttyUSB0`. With sync complete and 60 seconds of settling, the earlier
 four incidental frames and one native thread accounting for 298.44 seconds.
 The native function was not verified by sampled stacks.
 
-The desktop-Linux serial worker now sleeps for a bounded 5 ms only after an
-iteration completes without RX or TX work. The initial focused result was:
+These measurements were taken with an extra 5 ms sleep after idle
+iterations of the serial worker. That sleep was later removed: the 10 ms read
+timeout set in `fl_open` already blocks the idle worker in `select()`, so the
+sleep only added write latency. The worker now backs off 5 ms only after an
+I/O error, when a failing port would otherwise throw in a tight loop. Rerun
+the idle measurement before quoting these numbers for the current code. The
+initial focused result was:
 
 - 15-second final smoke: 0.133% of one core with one incidental RX frame;
   connection healthy, three software reconnects passed, and CPU returned to

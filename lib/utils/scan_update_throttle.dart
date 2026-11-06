@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+/// Rate-limits scan-result notifications: the first update publishes at once,
+/// later ones at most once per [interval], always ending with the latest.
 class ScanUpdateThrottle {
   ScanUpdateThrottle({
     required this.onNotify,
@@ -42,6 +44,13 @@ class ScanUpdateThrottle {
     onNotify();
   }
 
+  /// Publishes a pending update now instead of waiting for the interval.
+  void flush() {
+    _timer?.cancel();
+    _publish();
+  }
+
+  /// Drops any pending update and lets the next one publish immediately.
   void reset() {
     _timer?.cancel();
     _timer = null;
