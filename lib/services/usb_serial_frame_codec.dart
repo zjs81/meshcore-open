@@ -3,7 +3,11 @@ import 'dart:typed_data';
 const int usbSerialTxFrameStart = 0x3c;
 const int usbSerialRxFrameStart = 0x3e;
 const int usbSerialHeaderLength = 3;
+// Outgoing (app → radio) payload cap; matches the app's TX frame budget.
 const int usbSerialMaxPayloadLength = 172;
+// Incoming (radio → app) payload cap; firmware MAX_FRAME_SIZE is 176 (it
+// grew by 4 bytes for region transport codes).
+const int usbSerialMaxRxPayloadLength = 176;
 
 Uint8List wrapUsbSerialTxFrame(Uint8List payload) {
   if (payload.length > usbSerialMaxPayloadLength) {
@@ -72,7 +76,7 @@ class UsbSerialFrameDecoder {
 
       final payloadLength =
           _rxBuffer[_startIndex + 1] | (_rxBuffer[_startIndex + 2] << 8);
-      if (payloadLength > usbSerialMaxPayloadLength) {
+      if (payloadLength > usbSerialMaxRxPayloadLength) {
         _startIndex++;
         _compactBufferIfNeeded();
         continue;

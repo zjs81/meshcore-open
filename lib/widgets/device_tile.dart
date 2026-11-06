@@ -77,7 +77,7 @@ class DeviceTile extends StatelessWidget {
                 Text(
                   mac,
                   style: MeshTheme.mono(
-                    fontSize: 11,
+                    fontSize: 13,
                     color: scheme.onSurfaceVariant,
                   ),
                   maxLines: 1,
@@ -101,11 +101,15 @@ class DeviceTile extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Icon(signalUi.icon, size: 16, color: signalUi.color),
+                Icon(signalUi.icon, size: 20, color: signalUi.color),
                 const SizedBox(height: 3),
                 Text(
                   '$rssi dBm',
-                  style: MeshTheme.mono(fontSize: 10, color: signalUi.color),
+                  style: MeshTheme.mono(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: signalUi.color,
+                  ),
                 ),
               ],
             ),

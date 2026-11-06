@@ -17,9 +17,16 @@ flutter test
 flutter build apk --release
 flutter build ios --release
 flutter build web --release
+flutter build linux --release
+MESHCORE_BUILD_APPIMAGE=0 flutter build linux --release
+bash scripts/appimage/test_packaging.sh
 ```
 
-The versioned web build uses `dart run build_pipe:build` (also `bun run build`). Web deployment pins Flutter 3.41.2; other CI jobs track stable. Read `pubspec.yaml` for current app version and dependencies rather than copying them into this guide.
+The versioned web build uses `dart run build_pipe:build` (also `bun run build`). `pubspec.yaml` pins an exact Flutter release (`environment.flutter`); `flutter pub get` refuses other versions and every CI job reads it via `flutter-version-file`. Linux packaging uses the matching pin in `scripts/appimage-tools.json`, and CI fails if the two differ. The Nix shell does not provide Flutter; use the pinned SDK on PATH. Read `pubspec.yaml` for current app version and dependencies rather than copying them into this guide.
+
+Linux Release installs generate architecture-matched AppImages using linuxdeploy/GTK and appimagetool: x86_64 on x64 and AArch64 on ARM64. Tools and runtime download automatically with pinned SHA-256 checksums. `MESHCORE_BUILD_APPIMAGE=0` skips packaging at install time, without a CMake cache reset. Debug/Profile are unchanged. Nix-linked x64 bundles and hosts with glibc newer than the pinned baseline trigger an isolated Ubuntu rebuild through an available Podman/Docker engine. Rootless Podman uses `--userns=keep-id` for host-owned bind mounts; see [Linux AppImage](README.md#linux-appimage) for prerequisites, cache/offline behavior and limitations. Preserve binary/data/lib adjacency and nested native assets when changing packaging.
+
+For Linux, use `nix develop`; see [Linux with Nix](README.md#linux-with-nix) for the pinned SDK, native build checks, cache troubleshooting, and Sysprof host prerequisites.
 
 ## Architecture and important files
 
@@ -34,6 +41,7 @@ The versioned web build uses `dart run build_pipe:build` (also `bun run build`).
 | Route scoring/history | `lib/services/path_history_service.dart` |
 | Preferences and JSON stores | `lib/storage/` |
 | Region list and channel/default assignments | `lib/storage/region_store.dart`, `lib/storage/channel_region_store.dart` |
+| Message filter (rules, duplicate/spam checks, on-device classifier) | `lib/services/message_filter/`, `lib/models/message_filter.dart`, `lib/storage/message_filter_store.dart`, `lib/screens/message_filter_settings_screen.dart`, `lib/screens/filtered_messages_screen.dart` |
 | Translation models/inference | `lib/services/translation_service.dart` |
 | Image models/inference and GRP_DATA chunks | `lib/services/image_codec_service.dart`, `lib/services/image_chunk_transport.dart` |
 | Image reassembly and file persistence | `lib/services/received_image_store.dart`, `lib/services/received_image_blob_store_io.dart` |
@@ -41,7 +49,7 @@ The versioned web build uses `dart run build_pipe:build` (also `bun run build`).
 | Screens and reusable UI | `lib/screens/`, `lib/widgets/` |
 | Localization | `lib/l10n/` (18 locales) |
 
-`Provider`/`ChangeNotifier` drives UI state. `main.dart` wires `MeshTheme.light()` and `MeshTheme.dark()` and uses the saved theme preference. Its `MultiProvider` exposes `MeshCoreConnector`, `MessageRetryService`, `PathHistoryService`, `AppSettingsService`, `BleDebugLogService`, `AppDebugLogService`, `ChatTextScaleService`, `TranslationService`, `UiViewStateService`, `StorageService` (plain `Provider`), `MapTileCacheService`, `TimeoutPredictionService`, `ImageCodecService`, and `ReceivedImageStore`; screens read them with `Consumer<T>`, `context.watch<T>()`, or `context.read<T>()`.
+`Provider`/`ChangeNotifier` drives UI state. `main.dart` wires `MeshTheme.light()` and `MeshTheme.dark()` and uses the saved theme preference. Its `MultiProvider` exposes `MeshCoreConnector`, `MessageRetryService`, `PathHistoryService`, `AppSettingsService`, `BleDebugLogService`, `AppDebugLogService`, `ChatTextScaleService`, `TranslationService`, `UiViewStateService`, `StorageService` (plain `Provider`), `MapTileCacheService`, `TimeoutPredictionService`, `ImageCodecService`, `ReceivedImageStore`, and `MessageFilterService`; screens read them with `Consumer<T>`, `context.watch<T>()`, or `context.read<T>()`.
 
 Most JSON stores scope keys by the first 10 hex chars of the connected device's public key, so per-radio data stays isolated; some preferences, including the saved region-name list, are global. Model bundles, received images, and caches use files.
 
@@ -61,4 +69,4 @@ Android builds currently include ARM64 only and use Java 17. iOS targets 16.4. R
 
 ## Documentation
 
-Use the [feature index](documentation/README.md), [regions](documentation/regions.md), [image messages](documentation/image-messages.md), and [routing reference](documentation/routing-paths.md). Keep protocol details in the canonical reference rather than maintaining competing command tables.
+Use the [feature index](documentation/README.md), [regions](documentation/regions.md), [image messages](documentation/image-messages.md), [message filter](documentation/message-filter.md), and [routing reference](documentation/routing-paths.md). Keep protocol details in the canonical reference rather than maintaining competing command tables.

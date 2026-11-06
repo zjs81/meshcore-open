@@ -99,7 +99,11 @@ class ImageCodecFileStore {
   }) async {
     final directoryPath = await modelDirectoryPath();
     final file = File('$directoryPath/$fileName');
-    final sink = file.openWrite();
+    // Written under a hidden temp name and renamed into place, so a kill
+    // mid-write never leaves a truncated file under the real name, which the
+    // startup scan would register as an installed model.
+    final temp = File(_tempPathFor(directoryPath, fileName));
+    final sink = temp.openWrite();
     var fileSizeBytes = 0;
     var completed = false;
     try {
@@ -110,15 +114,21 @@ class ImageCodecFileStore {
       completed = true;
     } finally {
       await sink.close();
-      if (!completed && file.existsSync()) {
-        await file.delete();
+      if (!completed && temp.existsSync()) {
+        await temp.delete();
       }
     }
+    await temp.rename(file.path);
     return DownloadedCodecFile(
       localPath: file.path,
       fileSizeBytes: fileSizeBytes,
     );
   }
+
+  /// Hidden (leading dot), so [scanDownloadedModels] never lists it and sweeps
+  /// it as junk if a kill leaves it behind.
+  static String _tempPathFor(String directoryPath, String fileName) =>
+      '$directoryPath/.$fileName.part';
 
   Future<String> chunkFilePath(String fileName, int index) async {
     final dir = await modelDirectoryPath();
@@ -195,7 +205,11 @@ class ImageCodecFileStore {
   }) async {
     final dir = await modelDirectoryPath();
     final finalPath = '$dir/$fileName';
-    final sink = File(finalPath).openWrite();
+    // Merged into a hidden temp file first, for the same reason as
+    // [writeModelBytes]: a kill mid-merge must not leave a truncated file
+    // under the real name.
+    final tempPath = _tempPathFor(dir, fileName);
+    final sink = File(tempPath).openWrite();
     var totalSize = 0;
     var completed = false;
     try {
@@ -208,6 +222,7 @@ class ImageCodecFileStore {
     } finally {
       await sink.close();
       if (completed) {
+        await File(tempPath).rename(finalPath);
         for (final chunkPath in chunkPaths) {
           final file = File(chunkPath);
           if (file.existsSync()) {
@@ -219,9 +234,9 @@ class ImageCodecFileStore {
         // merge target is thrown away. (The previous version deleted the chunks
         // unconditionally, which is why an interrupted 872 MB download restarted
         // from zero.)
-        final finalFile = File(finalPath);
-        if (finalFile.existsSync()) {
-          await finalFile.delete();
+        final tempFile = File(tempPath);
+        if (tempFile.existsSync()) {
+          await tempFile.delete();
         }
       }
     }

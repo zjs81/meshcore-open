@@ -14,6 +14,9 @@ import '../widgets/empty_state.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/routing_sheet.dart';
 import '../helpers/snack_bar_builder.dart';
+import '../l10n/app_localizations.dart';
+import '../widgets/repeater_login_dialog.dart';
+import 'repeater_hub_screen.dart';
 
 class NeighborsScreen extends StatefulWidget {
   final Contact repeater;
@@ -100,22 +103,22 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
     });
   }
 
-  String fmtDuration(double seconds) {
+  static String fmtDuration(AppLocalizations l10n, double seconds) {
     if (seconds < 60) {
-      return '${seconds.toStringAsFixed(1)}s';
+      return l10n.neighbors_durationSeconds(seconds.toStringAsFixed(1));
     }
 
     final int m = (seconds ~/ 60).toInt();
     final double s = seconds - (60 * m);
 
     if (m < 60) {
-      return '${m}m ${s.toStringAsFixed(0)}s';
+      return l10n.neighbors_durationMinutes(m, s.toStringAsFixed(0));
     }
 
     final int h = m ~/ 60;
     final int m2 = m % 60;
 
-    return '${h}h ${m2}m';
+    return l10n.neighbors_durationHours(h, m2);
   }
 
   static List<Map<String, dynamic>> parseNeighborsData(
@@ -184,11 +187,6 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
         _loadNeighbors(offset: parsedNeighbors.length);
         return;
       }
-      showDismissibleSnackBar(
-        context,
-        content: Text(context.l10n.neighbors_receivedData),
-        backgroundColor: Theme.of(context).colorScheme.tertiary,
-      );
       setState(() {
         _isLoading = false;
         _isLoaded = true;
@@ -343,7 +341,22 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             children: [
-              if (!_isLoaded &&
+              // First request still in flight: show progress, not "no data".
+              if (_isLoading && _parsedNeighbors == null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 64),
+                  child: Column(
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.common_loading,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                )
+              else if (!_isLoaded &&
                   !_hasData &&
                   (_parsedNeighbors == null || _parsedNeighbors!.isEmpty))
                 EmptyState(icon: Icons.wifi_find, title: l10n.neighbors_noData),
@@ -391,12 +404,15 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
 
     final snrColor = MeshTheme.snrColor(snr, blocked: false);
     final heardLabel = l10n.neighbors_heardAgo(
-      fmtDuration(lastHeardSeconds + 0.0),
+      fmtDuration(l10n, lastHeardSeconds + 0.0),
     );
+    // Only repeaters saved on the radio can be logged into.
+    final canOpen = contact != null && contact.isActive;
 
     return MeshCard(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       margin: const EdgeInsets.symmetric(vertical: 4),
+      onTap: canOpen ? () => _openNeighbor(contact) : null,
       child: Row(
         children: [
           AvatarCircle(
@@ -426,7 +442,7 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 13,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
@@ -443,14 +459,42 @@ class _NeighborsScreenState extends State<NeighborsScreen> {
               Text(
                 '${snr.toStringAsFixed(1)} dB',
                 style: MeshTheme.mono(
-                  fontSize: 11,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: snrColor,
                 ),
               ),
             ],
           ),
+          if (canOpen) ...[
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right, size: 24, color: scheme.onSurfaceVariant),
+          ],
         ],
+      ),
+    );
+  }
+
+  /// Opens a resolved neighbor the same way the contacts list does:
+  /// repeaters go through the login dialog to the repeater hub.
+  void _openNeighbor(Contact contact) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => RepeaterLoginDialog(
+        repeater: contact,
+        onLogin: (password, isAdmin) {
+          if (!mounted) return;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RepeaterHubScreen(
+                repeater: contact,
+                password: password,
+                isAdmin: isAdmin,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

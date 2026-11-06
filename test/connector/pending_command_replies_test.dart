@@ -65,6 +65,59 @@ void main() {
       waitForReply: true,
     );
     queue.takeErr(6);
-    await expectLater(pending!.completer!.future, throwsException);
+    await expectLater(
+      pending!.completer!.future,
+      throwsA(
+        isA<FirmwareCommandException>().having((e) => e.errCode, 'errCode', 6),
+      ),
+    );
+  });
+
+  group('timed-out entries', () {
+    late DateTime now;
+    PendingCommandReplies clockedQueue() => PendingCommandReplies(
+      staleAfter: const Duration(seconds: 10),
+      tombstoneLifetime: const Duration(seconds: 5),
+      clock: () => now,
+    );
+
+    setUp(() => now = DateTime(2026, 1, 1));
+
+    test('late OK is absorbed instead of completing the next command', () {
+      final queue = clockedQueue();
+      final scope = queue.track(
+        buildSetFloodScopeFrame(''),
+        waitForReply: true,
+      );
+      final text = queue.track(
+        buildSendChannelTextMsgFrame(0, 'hi'),
+        channelSendQueueId: 'msg-1',
+      );
+      queue.markTimedOut(scope!);
+
+      expect(queue.takeOk(), isNull); // the late OK for SET_FLOOD_SCOPE
+      expect(queue.takeOk(), same(text));
+      expect(queue.length, 0);
+    });
+
+    test('late ERR is absorbed by the oldest timed-out entry', () {
+      final queue = clockedQueue();
+      final first = queue.track(buildSetDeviceTimeFrame(1), waitForReply: true);
+      final second = queue.track(buildSetAdvertNameFrame('x'));
+      queue.markTimedOut(first!);
+
+      expect(queue.takeErr(2), isNull);
+      expect(queue.takeErr(2), same(second));
+    });
+
+    test('a timed-out entry expires after its lifetime', () {
+      final queue = clockedQueue();
+      final first = queue.track(buildSetDeviceTimeFrame(1), waitForReply: true);
+      queue.markTimedOut(first!);
+      now = now.add(const Duration(seconds: 6));
+      final next = queue.track(buildSetAdvertNameFrame('x'));
+
+      expect(queue.takeOk(), same(next));
+    });
   });
 }

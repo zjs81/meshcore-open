@@ -1,4 +1,6 @@
 import 'package:file_selector/file_selector.dart';
+import 'dart:ui' show Rect;
+
 import 'package:flutter/foundation.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -12,6 +14,7 @@ Future<bool> saveImagePng(
   Uint8List png,
   ReceivedImageEntry entry, {
   String? shareText,
+  Rect? sharePositionOrigin,
 }) async {
   final name = entry.synthesized
       ? 'meshcore-ai-reconstructed-${entry.streamId}.png'
@@ -33,6 +36,7 @@ Future<bool> saveImagePng(
         files: [file],
         fileNameOverrides: [name],
         text: entry.synthesized ? shareText : null,
+        sharePositionOrigin: sharePositionOrigin,
       ),
     );
     return result.status != ShareResultStatus.unavailable;

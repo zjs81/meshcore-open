@@ -1,6 +1,6 @@
 # Privacy Policy for MeshCore Open
 
-**Last Updated:** September 27, 2026
+**Last Updated:** October 11, 2026
 
 ## Introduction
 
@@ -11,7 +11,7 @@ MeshCore Open ("the App") is an open-source Flutter application for communicatin
 ### Data We Do NOT Collect
 
 MeshCore Open does **not**:
-- Collect personal information for the developer
+- Collect personal information for the developer. The optional network map upload described below sends anonymized radio data only if you turn it on
 - Track your usage or behavior
 - Use analytics services
 - Require account creation
@@ -54,7 +54,7 @@ Required by Android for BLE scanning on Android 11 and below. MeshCore Open does
 ### Internet Permission
 - **INTERNET**
 
-Used for features that access third-party internet services, including map tiles, Line-of-Sight elevation lookups, optional model downloads, GIF search/display, and optional URL image previews.
+Used for features that access third-party internet services, including map tiles, the MeshCore Open network map, Line-of-Sight elevation lookups, optional model downloads, GIF search/display, and optional URL image previews.
 
 ### Notification Permission
 - **POST_NOTIFICATIONS** (Android 13+)
@@ -69,6 +69,39 @@ Used to maintain BLE connection with your MeshCore device while the app is in th
 ### Camera and Photo Library
 
 Camera access is used for contact and community QR scanning. Photo-library access is used when you select a photo for mesh image messaging. Selected photos are encoded locally for transmission over the mesh; the App does not upload them to a model service for inference.
+
+## MeshCore Open Network Map
+
+The MeshCore Open project runs a public network map at [map.meshcoreopen.org](https://map.meshcoreopen.org). It shows MeshCore repeaters, room servers, the links between them, traffic and measured coverage.
+
+### Viewing the map
+When you use the Online or Both view on the App's map, the App requests map data for the area on screen from `map.meshcoreopen.org`. These requests include the visible map area and expose your device's IP address to the server as part of normal internet communication. Viewing the map never uploads anything.
+
+### Sharing data (opt-in)
+Uploading is **off by default**. The first time a radio connects, the App asks once whether you want to share; you can also turn it on or off at any time in **Settings → App settings → Network map**. Turning it off stops uploads immediately and discards anything waiting to be sent.
+
+While sharing is on and a radio is connected, the App sends the following about once a minute:
+
+- **Packet headers** for packets your radio hears: payload type, route type, the repeater path hashes, hop count, signal strength (SNR/RSSI), size rounded to 16 bytes, a one-way packet fingerprint used to count duplicates, and the time rounded to the minute.
+- **Repeater and room server adverts** with a valid signature: public key, name, node type and advertised location.
+- **Your radio's position and settings**, if the radio has a position: rounded to a grid of about 2 km, plus its frequency, bandwidth, spreading factor and coding rate.
+- **A random install ID** that changes every 24 hours.
+
+All locations are rounded to the ~2 km grid on your phone before upload, and the map shows them only as hexagons.
+
+The App never uploads message text or payloads, channel or community names, keys or hashes, direct-message sender or recipient hashes, region transport codes, exact coordinates, your contact list, or information about chat or sensor nodes beyond the header-only packet records above.
+
+### How the server handles uploads
+- **IP addresses are not stored or logged.** The server uses your IP address in memory to rate-limit uploads and to check whether a request comes from a hosting provider. To count how many independent people reported something, it keeps a keyed hash of your network prefix (the /24 IPv4 or /48 IPv6 block) until the end of the day. The key changes daily and is discarded, after which these hashes cannot be linked to an address; they are then deleted.
+- **Retention:** individual packet and advert records are deleted after 7 days. Hourly and daily totals (for example, the number of packets a link carried in a day) are kept longer to draw 30-day views.
+- **Public data:** repeater names, rough locations, links, traffic totals and coverage are shown publicly on the map and in the App.
+
+Uploaded records are not linked to an account, name or device identity, so the project cannot find or delete a particular person's records; they expire on the schedule above.
+
+### Hiding a repeater
+Repeater and room server owners can remove their node from the map by putting the 🚫 emoji anywhere in its name and sending a flood advert. Its name and location are then removed from the map, and the packet viewer shows it only as an anonymous repeater with its public key. Location traces tied to it, such as which areas heard it, are deleted too. To show it again, remove the emoji; it reappears with its first advert after 7 days without one.
+
+See the map's [privacy page](https://map.meshcoreopen.org/privacy) for more detail.
 
 ## Third-Party Services
 
@@ -98,6 +131,9 @@ The App includes a GIF picker feature powered by Giphy. When you use the GIF sea
 - Giphy may collect usage data according to their privacy policy
 
 GIF search is optional and activated through the picker. Displaying a GIF reference received in a chat also requests image content from Giphy’s CDN, even if you did not perform a search. See [Giphy's Privacy Policy](https://support.giphy.com/hc/en-us/articles/360032872931-GIPHY-Privacy-Policy) for more information about how they handle data.
+
+### Device Purchase Link (Seeed Studio)
+The connection screen shows a link to buy a MeshCore device from Seeed Studio. The link contains a MeshCore Open affiliate code, so the project may earn a commission on purchases made through it, at no extra cost to you. The App sends nothing to Seeed Studio unless you tap the link; tapping it opens Seeed Studio's website in your browser, where Seeed Studio's own privacy policy applies.
 
 ### URL Image Previews and Custom Model URLs
 
@@ -131,4 +167,4 @@ If you have questions about this Privacy Policy or the App's privacy practices, 
 
 ---
 
-**Summary**: MeshCore Open does not use the phone's GPS for location, does not include analytics, and does not collect personal information for the developer. Some optional features communicate with third-party services, including map tile providers, Open-Meteo for LOS elevation lookups, Hugging Face for model downloads, Giphy for GIF search/display, and image hosts/gateways for enabled URL previews.
+**Summary**: MeshCore Open does not use the phone's GPS for location, does not include analytics, and does not collect personal information for the developer. If you opt in, the App uploads anonymized packet headers, repeater adverts and ~2 km rounded locations to the MeshCore Open network map; the server does not store IP addresses and deletes raw records after 7 days. Some optional features communicate with third-party services, including map tile providers, Open-Meteo for LOS elevation lookups, Hugging Face for model downloads, Giphy for GIF search/display, and image hosts/gateways for enabled URL previews.

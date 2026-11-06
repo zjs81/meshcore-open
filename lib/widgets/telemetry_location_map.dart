@@ -240,7 +240,7 @@ class _TelemetryLocationMapState extends State<TelemetryLocationMap> {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
               ),

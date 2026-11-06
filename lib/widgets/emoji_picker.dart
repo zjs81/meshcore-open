@@ -210,12 +210,8 @@ class EmojiPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final emojiCategories = _emojiCategories(l10n);
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       child: Column(
         children: [
           Padding(

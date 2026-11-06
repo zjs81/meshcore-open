@@ -105,7 +105,7 @@ void main() {
       final packets = decoder.ingest(
         Uint8List.fromList(<int>[
           usbSerialRxFrameStart,
-          0xAD,
+          usbSerialMaxRxPayloadLength + 1,
           0x00,
           0x99,
           usbSerialRxFrameStart,
@@ -118,6 +118,35 @@ void main() {
       expect(packets, hasLength(1));
       expect(packets.single.isRxFrame, isTrue);
       expect(packets.single.payload, orderedEquals(<int>[0x44]));
+    },
+  );
+
+  test(
+    'UsbSerialFrameDecoder accepts firmware frames up to 176 bytes and keeps the next frame',
+    () {
+      final decoder = UsbSerialFrameDecoder();
+      final payload = Uint8List(usbSerialMaxRxPayloadLength);
+      for (var i = 0; i < payload.length; i++) {
+        // Include stray frame-start bytes inside the payload.
+        payload[i] = i.isEven ? usbSerialTxFrameStart : usbSerialRxFrameStart;
+      }
+
+      final packets = decoder.ingest(
+        Uint8List.fromList(<int>[
+          usbSerialRxFrameStart,
+          usbSerialMaxRxPayloadLength & 0xff,
+          usbSerialMaxRxPayloadLength >> 8,
+          ...payload,
+          usbSerialRxFrameStart,
+          0x01,
+          0x00,
+          0x06,
+        ]),
+      );
+
+      expect(packets, hasLength(2));
+      expect(packets[0].payload, orderedEquals(payload));
+      expect(packets[1].payload, orderedEquals(<int>[0x06]));
     },
   );
 

@@ -6,6 +6,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 import '../models/app_settings.dart';
+import '../theme/mesh_theme.dart';
 import 'app_settings_service.dart';
 
 enum MapRasterSourcePreset {
@@ -275,12 +276,24 @@ class MapTileCacheResult {
   final int total;
   final int downloaded;
   final int failed;
+  final bool cancelled;
 
   const MapTileCacheResult({
     required this.total,
     required this.downloaded,
     required this.failed,
+    this.cancelled = false,
   });
+}
+
+/// Cooperative cancellation flag for [MapTileCacheService.downloadRegion].
+/// Tiles already in flight finish; no new tiles are queued after [cancel].
+class MapTileDownloadCancelToken {
+  bool _cancelled = false;
+
+  bool get isCancelled => _cancelled;
+
+  void cancel() => _cancelled = true;
 }
 
 class CachedTileInfo {
@@ -315,6 +328,10 @@ class MapTileCacheService extends ChangeNotifier {
   static const String userAgentPackageName = 'com.meshcore.open';
   static const int defaultMinZoom = 10;
   static const int defaultMaxZoom = 15;
+
+  /// Largest bulk download the UI allows in one go. Keeps a single request
+  /// within tile-server usage policies and avoids filling the device.
+  static const int maxBulkDownloadTiles = 20000;
 
   final AppSettingsService appSettingsService;
   final BaseCacheManager cacheManager;
@@ -490,6 +507,19 @@ class MapTileCacheService extends ChangeNotifier {
       layer = ColorFiltered(colorFilter: filter, child: layer);
     }
 
+    // Custom themes wash their background color over the tiles so the map
+    // matches the rest of the app. Kept light so roads and labels stay clear.
+    final tint = MeshMapTheme.of(context).tileTint;
+    if (tint != null) {
+      layer = ColorFiltered(
+        colorFilter: ColorFilter.mode(
+          tint.withValues(alpha: MeshMapTheme.tileTintStrength),
+          BlendMode.srcATop,
+        ),
+        child: layer,
+      );
+    }
+
     if (opacity < 1) {
       layer = Opacity(opacity: opacity, child: layer);
     }
@@ -614,6 +644,7 @@ class MapTileCacheService extends ChangeNotifier {
     int concurrentDownloads = 8,
     Map<String, String>? headers,
     void Function(MapTileCacheProgress progress)? onProgress,
+    MapTileDownloadCancelToken? cancelToken,
   }) async {
     final safeMin = math.min(minZoom, maxZoom);
     final safeMax = math.max(minZoom, maxZoom);
@@ -652,10 +683,17 @@ class MapTileCacheService extends ChangeNotifier {
       }
     }
 
+    var stoppedEarly = false;
+
+    outer:
     for (int zoom = safeMin; zoom <= safeMax; zoom++) {
       final tileBounds = _tileBoundsForBounds(bounds, zoom);
       for (int x = tileBounds.minX; x <= tileBounds.maxX; x++) {
         for (int y = tileBounds.minY; y <= tileBounds.maxY; y++) {
+          if (cancelToken?.isCancelled ?? false) {
+            stoppedEarly = true;
+            break outer;
+          }
           final url = _buildTileUrl(x, y, zoom, urlTemplate: currentTemplate);
           await queueDownload(url);
         }
@@ -670,6 +708,7 @@ class MapTileCacheService extends ChangeNotifier {
       total: total,
       downloaded: completed - failed,
       failed: failed,
+      cancelled: stoppedEarly,
     );
   }
 

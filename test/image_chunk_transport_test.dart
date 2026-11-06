@@ -330,6 +330,40 @@ void main() {
       );
       expect(r.pendingCount, 2);
     });
+
+    test('clearChannel stops a reused slot finishing with old bytes', () {
+      final oldSet = buildImageChunks(
+        payload: payloadOf(300, seed: 1),
+        metadata: stdMeta,
+        senderPrefix: senderA,
+        imgId: 9,
+      );
+      final newPayload = payloadOf(300, seed: 2);
+      final newSet = buildImageChunks(
+        payload: newPayload,
+        metadata: stdMeta,
+        senderPrefix: senderA,
+        imgId: 9,
+      );
+      expect(newSet.dataChunkCount, greaterThanOrEqualTo(2));
+      final failures = <ImageReassemblyFailure>[];
+      final r = ImageReassembler(onFailed: failures.add);
+      r.addChunk(oldSet.blobs[0], channelIndex: 3);
+      r.addChunk(oldSet.blobs[0], channelIndex: 4);
+
+      r.clearChannel(3);
+      expect(failures.single.key.channelIndex, 3);
+      expect(
+        failures.single.reason,
+        ImageReassemblyFailureReason.channelChanged,
+      );
+      expect(r.pendingKeys.single.channelIndex, 4);
+
+      // Without the clear, these would complete with the old chunk 0.
+      final dataBlobs = newSet.blobs.sublist(0, newSet.dataChunkCount);
+      expect(feed(r, dataBlobs.sublist(1), channelIndex: 3), isNull);
+      expect(feed(r, [dataBlobs[0]], channelIndex: 3)!.data, newPayload);
+    });
   });
 
   group('parity recovery', () {

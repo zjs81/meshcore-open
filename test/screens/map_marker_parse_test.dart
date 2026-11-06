@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:meshcore_open/screens/map_screen.dart';
+import 'package:meshcore_open/helpers/marker_message.dart';
 
 void main() {
   test('parseMarkerText accepts in-range coordinates', () {

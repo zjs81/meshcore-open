@@ -98,6 +98,24 @@ android {
     // }
 }
 
+// Android Auto (notification read-aloud and voice reply) is opt-in, because
+// declaring it puts the app through Play's separate Android Auto review.
+// Enable it with `flutter build apk --android-project-arg=androidAuto=true`
+// or `./gradlew -PandroidAuto=true ...`.
+val androidAutoEnabled = (findProperty("androidAuto") as String?)?.toBoolean() == true
+
+if (androidAutoEnabled) {
+    android.sourceSets.getByName("main").res.srcDir("src/androidAuto/res")
+}
+
+androidComponents {
+    onVariants { variant ->
+        if (androidAutoEnabled) {
+            variant.sources.manifests.addStaticManifestFile("src/androidAuto/AndroidManifest.xml")
+        }
+    }
+}
+
 flutter {
     source = "../.."
 }

@@ -1,0 +1,11 @@
+LIBRARY   flserial
+EXPORTS
+    fl_init
+    fl_open
+    fl_read
+    fl_write
+    fl_close
+    fl_ctrl
+    fl_free
+    fl_ports
+    fl_set_callback

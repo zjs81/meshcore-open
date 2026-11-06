@@ -5,7 +5,10 @@ import 'package:meshcore_open/helpers/message_url_image_helper.dart';
 
 void main() {
   group('MessageUrlImageHelper', () {
-    tearDown(() => MessageUrlImageHelper.httpClient = null);
+    tearDown(() {
+      MessageUrlImageHelper.httpClient = null;
+      MessageUrlImageHelper.loadLinkImages.value = true;
+    });
 
     void mockPyxPage(String id) {
       MessageUrlImageHelper.httpClient = MockClient((request) async {
@@ -48,28 +51,44 @@ void main() {
       );
     });
 
-    test('parses direct ipfs cid urls', () async {
-      final attachment = await MessageUrlImageHelper.parse(
-        'my picture: ipfs://bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly text',
-      );
-
-      expect(attachment, isNotNull);
+    test('resolves ipfs cid links with the default Filebase gateway', () async {
       expect(
-        attachment,
-        'https://ipfs.io/ipfs/bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly',
+        await MessageUrlImageHelper.parse(
+          'my picture: ipfs://bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly text',
+        ),
+        'https://ipfs.filebase.io/ipfs/bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly',
+      );
+      expect(
+        await MessageUrlImageHelper.parse(
+          'my picture: ipfs:bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly text',
+        ),
+        'https://ipfs.filebase.io/ipfs/bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly',
       );
     });
 
-    test('parses direct ipfs cid urls without double slashes', () async {
+    test('uses the configured public gateway for direct ipfs cid urls', () async {
       final attachment = await MessageUrlImageHelper.parse(
-        'my picture: ipfs:bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly text',
+        'ipfs://bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly',
+        publicGateway: 'https://gateway.example.com',
       );
 
       expect(
         attachment,
-        'https://ipfs.io/ipfs/bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly',
+        'https://gateway.example.com/ipfs/bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly',
       );
     });
+
+    test(
+      'does not resolve ipfs cid links when the download gateway is empty',
+      () async {
+        final attachment = await MessageUrlImageHelper.parse(
+          'ipfs://bafybeibq75ws6nwk6wi473dch42wwy6woyj4dwdfy7nfz3buqx2caieoly',
+          publicGateway: '',
+        );
+
+        expect(attachment, isNull);
+      },
+    );
 
     test('parses http image urls', () async {
       final attachment = await MessageUrlImageHelper.parse(
@@ -103,6 +122,27 @@ void main() {
       );
 
       expect(attachment, isNull);
+    });
+
+    test('fetches nothing when loading link images is off', () async {
+      MessageUrlImageHelper.loadLinkImages.value = false;
+      MessageUrlImageHelper.httpClient = MockClient((request) async {
+        fail('Unexpected request to ${request.url}');
+      });
+
+      for (final text in [
+        'https://pyx.li/?i=RzmdkTsE',
+        'https://ibb.co/abc123',
+        'ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi',
+        'https://example.com/photo.png',
+      ]) {
+        expect(await MessageUrlImageHelper.parse(text), isNull);
+        expect(await MessageUrlImageHelper.parseVerified(text), isNull);
+        expect(
+          await MessageUrlImageHelper.parseVerifiedForMessage('m1', text),
+          isNull,
+        );
+      }
     });
   });
 }

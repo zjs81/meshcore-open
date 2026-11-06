@@ -29,9 +29,8 @@
 /// with whoever implements export, not here.
 library;
 
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../services/received_image_store.dart';
@@ -458,7 +457,7 @@ class _ReceivedImageMessageState extends State<ReceivedImageMessage> {
       textAlign: TextAlign.center,
       maxLines: 3,
       overflow: TextOverflow.ellipsis,
-      style: TextStyle(fontSize: 11, color: color ?? widget.fallbackTextColor),
+      style: TextStyle(fontSize: 12, color: color ?? widget.fallbackTextColor),
     );
   }
 
@@ -527,6 +526,7 @@ class _ReceivedImageMessageState extends State<ReceivedImageMessage> {
           png: png,
           synthesized: entry.synthesized,
           bytes: entry.bitstreamByteCount,
+          aspectRatio: entry.displayAspectRatio,
         ),
       ),
     );
@@ -547,20 +547,22 @@ class _SyntheticBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 18,
+      height: 20,
       alignment: Alignment.center,
       color: Colors.black.withValues(alpha: 0.62),
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.auto_awesome, size: 11, color: Colors.white),
+          const Icon(Icons.auto_awesome, size: 12, color: Colors.white),
           const SizedBox(width: 4),
-          Text(
-            _kSyntheticBadge,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 10, color: Colors.white),
+          Flexible(
+            child: Text(
+              _kSyntheticBadge,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 12, color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -590,7 +592,7 @@ class _SyntheticCaption extends StatelessWidget {
         // than none — it clips exactly where the warning was going.
         softWrap: true,
         style: TextStyle(
-          fontSize: 10,
+          fontSize: 12,
           color: onDark
               ? Colors.white70
               : Theme.of(context).colorScheme.onSurfaceVariant,
@@ -610,44 +612,61 @@ class _ReceivedImageViewer extends StatelessWidget {
   /// the one in the transcript.
   final int bytes;
 
+  /// Source shape (w/h) to undo the sender's stretch, as in the bubble. Null
+  /// means square or unknown.
+  final double? aspectRatio;
+
   const _ReceivedImageViewer({
     required this.png,
     required this.synthesized,
     required this.bytes,
+    this.aspectRatio,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
+    // Light system bar icons over the black viewer, whatever the app theme.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
         backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: Stack(
-                children: [
-                  InteractiveViewer(child: Image.memory(png)),
-                  if (synthesized)
-                    const Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: _SyntheticBanner(),
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Stack(
+                  children: [
+                    InteractiveViewer(
+                      // fill inside the original aspect box: the exact
+                      // inverse of the sender's stretch, as in the bubble.
+                      child: AspectRatio(
+                        aspectRatio: aspectRatio ?? 1,
+                        child: Image.memory(png, fit: BoxFit.fill),
+                      ),
                     ),
-                ],
+                    if (synthesized)
+                      const Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: _SyntheticBanner(),
+                      ),
+                  ],
+                ),
               ),
-            ),
-            if (synthesized)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: _SyntheticCaption(bytes: bytes, onDark: true),
-              ),
-          ],
+              if (synthesized)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _SyntheticCaption(bytes: bytes, onDark: true),
+                ),
+            ],
+          ),
         ),
       ),
     );

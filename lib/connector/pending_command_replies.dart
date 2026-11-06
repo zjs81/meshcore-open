@@ -5,6 +5,16 @@ import 'package:flutter/foundation.dart';
 import '../services/image_chunk_transport.dart' show cmdSendChannelData;
 import 'meshcore_protocol.dart';
 
+/// RESP_CODE_ERR received for a command that was waiting for its reply.
+class FirmwareCommandException implements Exception {
+  final int errCode;
+
+  const FirmwareCommandException(this.errCode);
+
+  @override
+  String toString() => 'Exception: Command failed with error code $errCode';
+}
+
 /// A command waiting for its reply from the companion firmware.
 class PendingCommandReply {
   final int commandCode;
@@ -17,7 +27,14 @@ class PendingCommandReply {
   final Uint8List? matchKey;
   final String? channelSendQueueId;
   final Completer<void>? completer;
-  final DateTime createdAt = DateTime.now();
+  final DateTime createdAt;
+
+  /// Set when the sender gave up waiting. The entry then stays queued as a
+  /// tombstone so the firmware's late reply is absorbed here instead of being
+  /// credited to the next command.
+  DateTime? timedOutAt;
+
+  bool get isTombstone => timedOutAt != null;
 
   PendingCommandReply({
     required this.commandCode,
@@ -25,7 +42,8 @@ class PendingCommandReply {
     this.matchKey,
     this.channelSendQueueId,
     this.completer,
-  });
+    DateTime? createdAt,
+  }) : createdAt = createdAt ?? DateTime.now();
 }
 
 /// Success reply for each command whose single reply is OK/ERR or a specific
@@ -53,6 +71,7 @@ int? replyCodeForCommand(Uint8List data) {
     case cmdSetAutoAddConfig:
     case cmdSetPathHashMode:
     case cmdSendChannelData:
+    case cmdSetDefaultFloodScope:
       return respCodeOk;
     case cmdSendTxtMsg:
     case cmdSendLogin:
@@ -88,6 +107,8 @@ int? replyCodeForCommand(Uint8List data) {
       return respCodeAutoAddConfig;
     case cmdGetAllowedRepeatFreq:
       return respCodeAllowedRepeatFreq;
+    case cmdGetDefaultFloodScope:
+      return respCodeDefaultFloodScope;
   }
   return null;
 }
@@ -96,11 +117,20 @@ int? replyCodeForCommand(Uint8List data) {
 /// and answers each with OK, ERR or a specific RESP_CODE, so an ERR belongs
 /// to the oldest pending command and an OK to the oldest one expecting OK.
 class PendingCommandReplies {
-  PendingCommandReplies({required this.staleAfter});
+  PendingCommandReplies({
+    required this.staleAfter,
+    this.tombstoneLifetime = const Duration(seconds: 10),
+    DateTime Function()? clock,
+  }) : _clock = clock ?? DateTime.now;
 
   /// Entries older than this are dropped so a lost reply cannot swallow a
   /// later, unrelated OK/ERR. Awaited entries time out in sendFrame first.
   final Duration staleAfter;
+
+  /// How long a timed-out entry waits for its late reply. Kept short so a
+  /// reply that never comes swallows at most a brief window of replies.
+  final Duration tombstoneLifetime;
+  final DateTime Function() _clock;
   final List<PendingCommandReply> _queue = [];
 
   int get length => _queue.length;
@@ -123,6 +153,7 @@ class PendingCommandReplies {
           : null,
       channelSendQueueId: channelSendQueueId,
       completer: waitForReply ? Completer<void>() : null,
+      createdAt: _clock(),
     );
     if (pending.completer != null) {
       // The sender awaits this future after transport I/O; attach an error
@@ -135,11 +166,19 @@ class PendingCommandReplies {
 
   void remove(PendingCommandReply pending) => _queue.remove(pending);
 
+  /// Marks [pending] as abandoned by its sender. It keeps its place in the
+  /// FIFO so a late reply is consumed by it rather than misattributed.
+  void markTimedOut(PendingCommandReply pending) {
+    if (!_queue.contains(pending)) return;
+    pending.timedOutAt = _clock();
+  }
+
   void clear() => _queue.clear();
 
   /// Completes the oldest command whose success reply is [frame]'s code.
   bool completeReply(Uint8List frame) {
     if (frame.isEmpty) return false;
+    _pruneStale();
     final code = frame[0];
     if (code == respCodeOk || code == respCodeErr) return false;
     final key = code == respCodeContact && frame.length >= 1 + pubKeySize
@@ -156,28 +195,36 @@ class PendingCommandReplies {
   }
 
   /// Attributes RESP_CODE_OK; commands expecting a specific reply are skipped.
+  /// Returns null when no command matches or a timed-out entry absorbed it.
   PendingCommandReply? takeOk() {
     _pruneStale();
     final index = _queue.indexWhere((p) => p.replyCode == respCodeOk);
     if (index < 0) return null;
     final pending = _queue.removeAt(index);
+    if (pending.isTombstone) return null;
     pending.completer?.complete();
     return pending;
   }
 
   /// Attributes RESP_CODE_ERR to the oldest pending command.
+  /// Returns null when nothing is pending or a timed-out entry absorbed it.
   PendingCommandReply? takeErr(int errCode) {
     _pruneStale();
     if (_queue.isEmpty) return null;
     final pending = _queue.removeAt(0);
-    pending.completer?.completeError(
-      Exception('Command failed with error code $errCode'),
-    );
+    if (pending.isTombstone) return null;
+    pending.completer?.completeError(FirmwareCommandException(errCode));
     return pending;
   }
 
   void _pruneStale() {
-    final cutoff = DateTime.now().subtract(staleAfter);
-    _queue.removeWhere((p) => p.createdAt.isBefore(cutoff));
+    final now = _clock();
+    final cutoff = now.subtract(staleAfter);
+    final tombstoneCutoff = now.subtract(tombstoneLifetime);
+    _queue.removeWhere(
+      (p) =>
+          p.createdAt.isBefore(cutoff) ||
+          (p.timedOutAt?.isBefore(tombstoneCutoff) ?? false),
+    );
   }
 }

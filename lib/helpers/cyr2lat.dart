@@ -24,7 +24,9 @@ class Cyr2Lat {
     'х': 'x',
   };
 
-  static final RegExp _prefixRegExp = RegExp(r'\@\[[\S\s]+\] ');
+  // Non-greedy so only the leading "@[name] " mention is treated as the
+  // sender prefix, not everything up to the last "] " in the message.
+  static final RegExp _prefixRegExp = RegExp(r'@\[[\S\s]+?\] ');
 
   static void setCharMap(Map<String, String> charMap) {
     _charMap = Map.from(charMap);

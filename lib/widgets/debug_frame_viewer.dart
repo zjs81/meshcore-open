@@ -65,7 +65,7 @@ class DebugFrameViewer {
             children: [
               Text(
                 details.toString(),
-                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                style: const TextStyle(fontFamily: 'monospace', fontSize: 13),
               ),
               const Divider(),
               Text(
@@ -75,7 +75,7 @@ class DebugFrameViewer {
               const SizedBox(height: 8),
               Text(
                 hexString,
-                style: const TextStyle(fontFamily: 'monospace', fontSize: 11),
+                style: const TextStyle(fontFamily: 'monospace', fontSize: 13),
               ),
             ],
           ),

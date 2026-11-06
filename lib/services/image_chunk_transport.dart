@@ -633,6 +633,10 @@ enum ImageReassemblyFailureReason {
 
   /// Dropped by [ImageReassembler.clear] (disconnect / new session).
   disconnected,
+
+  /// Dropped by [ImageReassembler.clearChannel] because the radio slot it
+  /// arrived on now holds a different channel.
+  channelChanged,
 }
 
 /// A fully reassembled image.
@@ -878,6 +882,34 @@ class ImageReassembler {
     }
   }
 
+  /// Drops every stream that arrived on [channelIndex], whose radio slot now
+  /// holds a different channel, so a new image there can never be completed
+  /// with the old channel's bytes. In-progress streams are reported through
+  /// [onFailed] so their bubbles stop showing "receiving".
+  void clearChannel(int channelIndex, {DateTime? now}) {
+    final at = now ?? _clock();
+    _recentlyCompleted.removeWhere(
+      (key, _) => key.channelIndex == channelIndex,
+    );
+    final dropped = _pending.values
+        .where((entry) => entry.key.channelIndex == channelIndex)
+        .toList();
+    for (final entry in dropped) {
+      _pending.remove(entry.key);
+      onFailed?.call(
+        ImageReassemblyFailure(
+          key: entry.key,
+          total: entry.total,
+          receivedDataChunks: entry.bodies.length,
+          hadParity: entry.hasParity,
+          firstSeen: entry.firstSeen,
+          expiredAt: at,
+          reason: ImageReassemblyFailureReason.channelChanged,
+        ),
+      );
+    }
+  }
+
   /// Feeds one received GRP_DATA blob.
   ///
   /// [now] overrides the clock for tests. Expired entries are swept first, so
@@ -1117,10 +1149,15 @@ class ImageReassembler {
 
   _FinishOutcome? _assemble(_PendingImage entry, {required bool recovered}) {
     final first = entry.bodies[0];
-    // Chunk 0 must hold the metadata byte; anything shorter cannot
-    // be a chunk 0 from this framing, so keep waiting rather than guessing.
-    if (first == null || first.length < kImageChunkZeroMetadataBytes) {
-      return null;
+    if (first == null) return null;
+    // Chunk 0 must hold the metadata byte; anything shorter cannot be a chunk
+    // 0 from this framing. Every chunk is already here, so waiting would only
+    // leave the stream on "receiving" until the TTL reports it as incomplete.
+    if (first.length < kImageChunkZeroMetadataBytes) {
+      return const _FinishOutcome.failed(
+        ImageChunkStatus.unsupportedFormat,
+        ImageReassemblyFailureReason.unsupportedFormat,
+      );
     }
     final metadata = ImageStreamMetadata.decode(first[0]);
     final out = BytesBuilder();

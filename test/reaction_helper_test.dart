@@ -131,6 +131,41 @@ void main() {
         expect(hash, matches(RegExp(r'^[0-9a-f]{4}$')));
       });
 
+      test('matches legacy native (Dart VM String.hashCode) vectors', () {
+        // Values produced by `String.hashCode & 0xFFFF` on the Dart VM, which
+        // existing native clients send. Web builds must compute the same.
+        expect(
+          ReactionHelper.computeReactionHash(1700000000, 'Bob', 'hello'),
+          'e779',
+        );
+        expect(
+          ReactionHelper.computeReactionHash(1700000000, null, 'hi'),
+          'b5bd',
+        );
+        expect(
+          ReactionHelper.computeReactionHash(1700000000, 'Привет😀', 'x'),
+          '7fee',
+        );
+      });
+
+      test('stableStringHash equals VM String.hashCode', () {
+        // Only meaningful on the VM, where the test suite runs.
+        for (final input in [
+          '',
+          'a',
+          '1234567890AliceHello',
+          'Привет мир',
+          '😀🎉 emoji',
+          'x' * 300,
+        ]) {
+          expect(
+            ReactionHelper.stableStringHash(input),
+            input.hashCode,
+            reason: input,
+          );
+        }
+      });
+
       test('should be deterministic', () {
         final hash1 = ReactionHelper.computeReactionHash(
           1234567890,

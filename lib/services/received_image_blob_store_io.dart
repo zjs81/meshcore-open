@@ -118,7 +118,7 @@ class FileReceivedImageBlobStore implements ReceivedImageBlobStore {
     }
   }
 
-  Future<void> _write(
+  Future<bool> _write(
     String streamId,
     String extension,
     Uint8List bytes,
@@ -127,13 +127,17 @@ class FileReceivedImageBlobStore implements ReceivedImageBlobStore {
       final path = await _pathFor(streamId, extension);
       if (path == null) {
         debugPrint('received_image_blob_store: refusing unsafe id "$streamId"');
-        return;
+        return false;
       }
       await File(path).writeAsBytes(bytes, flush: true);
+      return true;
     } catch (error) {
       debugPrint(
         'received_image_blob_store: write $streamId$extension: $error',
       );
+      // A partial file would be counted as stored by the next startup scan.
+      await _delete(streamId, extension);
+      return false;
     }
   }
 
@@ -163,7 +167,7 @@ class FileReceivedImageBlobStore implements ReceivedImageBlobStore {
   }
 
   @override
-  Future<void> writeBitstream(String streamId, Uint8List bytes) =>
+  Future<bool> writeBitstream(String streamId, Uint8List bytes) =>
       _write(streamId, _bitstreamExt, bytes);
 
   @override
@@ -178,7 +182,7 @@ class FileReceivedImageBlobStore implements ReceivedImageBlobStore {
   Future<int?> bitstreamSize(String streamId) => _size(streamId, _bitstreamExt);
 
   @override
-  Future<void> writePng(String streamId, Uint8List bytes) =>
+  Future<bool> writePng(String streamId, Uint8List bytes) =>
       _write(streamId, _pngExt, bytes);
 
   @override

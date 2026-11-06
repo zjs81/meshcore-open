@@ -9,6 +9,7 @@ import '../l10n/contact_localization.dart';
 import '../services/app_settings_service.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/radio_disconnected_banner.dart';
 import 'repeater_status_screen.dart';
 import 'repeater_cli_screen.dart';
 import 'repeater_settings_screen.dart';
@@ -51,6 +52,7 @@ class RepeaterHubScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.only(bottom: 24),
           children: [
+            const RadioDisconnectedBanner(),
             // ── Identity card ─────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
@@ -81,7 +83,7 @@ class RepeaterHubScreen extends StatelessWidget {
                           Text(
                             repeater.shortPubKeyHex,
                             style: MeshTheme.mono(
-                              fontSize: 11,
+                              fontSize: 13,
                               color: scheme.onSurfaceVariant,
                             ),
                           ),
@@ -100,7 +102,7 @@ class RepeaterHubScreen extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.location_on,
-                                  size: 12,
+                                  size: 16,
                                   color: scheme.onSurfaceVariant,
                                 ),
                                 const SizedBox(width: 3),
@@ -109,7 +111,7 @@ class RepeaterHubScreen extends StatelessWidget {
                                     '${repeater.latitude?.toStringAsFixed(4)}, '
                                     '${repeater.longitude?.toStringAsFixed(4)}',
                                     style: MeshTheme.mono(
-                                      fontSize: 10,
+                                      fontSize: 13,
                                       color: scheme.onSurfaceVariant,
                                     ),
                                     overflow: TextOverflow.ellipsis,
@@ -125,9 +127,7 @@ class RepeaterHubScreen extends StatelessWidget {
                       label: isAdmin
                           ? l10n.repeater_roleAdmin
                           : l10n.repeater_roleGuest,
-                      color: isAdmin
-                          ? MeshPalette.blue
-                          : scheme.onSurfaceVariant,
+                      color: isAdmin ? scheme.primary : scheme.onSurfaceVariant,
                     ),
                   ],
                 ),
@@ -308,6 +308,7 @@ class _HubActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return ListEntrance(
       index: index,
       child: Semantics(
@@ -334,16 +335,14 @@ class _HubActionTile extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        fontSize: 15,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
-                      style: TextStyle(
-                        fontSize: 12.5,
+                      style: textTheme.bodyMedium?.copyWith(
                         color: scheme.onSurfaceVariant,
                       ),
                     ),

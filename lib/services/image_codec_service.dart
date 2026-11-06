@@ -413,17 +413,26 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
         for (final asset in spec.assets) asset.fileName,
     };
 
+    // A file only counts when its size matches the registry: one cut short by
+    // a kill mid-write must not register the bundle as installed, or every
+    // decode fails and reads as "corrupt". Only enforced where a digest pins
+    // the file, since the size is otherwise advisory.
+    bool intact(ImageCodecModelAsset asset) {
+      final file = onDisk[asset.fileName];
+      if (file == null) return false;
+      if (!asset.hasChecksum || asset.sizeBytes <= 0) return true;
+      return file.fileSizeBytes == asset.sizeBytes;
+    }
+
     for (final spec in imageCodecPresetModels) {
       final graphFile = onDisk[spec.fileName];
       if (graphFile == null) continue;
       final present = [
         for (final asset in spec.assets)
-          if (onDisk.containsKey(asset.fileName)) asset.fileName,
+          if (intact(asset)) asset.fileName,
       ];
       final existing = existingByPath[graphFile.localPath];
-      final complete = spec.assets.every(
-        (asset) => onDisk.containsKey(asset.fileName),
-      );
+      final complete = spec.assets.every(intact);
       merged.add(
         ImageCodecModelRecord(
           id: spec.id,
@@ -437,8 +446,7 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
           assetFileNames: present,
           assetRoles: {
             for (final asset in spec.assets)
-              if (onDisk.containsKey(asset.fileName))
-                asset.fileName: asset.role,
+              if (intact(asset)) asset.fileName: asset.role,
           },
           bundleVersion: complete ? kImageCodecBundleVersion : 0,
         ),
@@ -1360,8 +1368,14 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
         await pendingRelease;
       } catch (_) {}
     }
-    if (_session != null && _loadedBundle == bundle) {
-      return _session;
+    final cached = _session;
+    if (cached != null && cached.isDead) {
+      // The worker isolate died; its port answers nothing. Spawn a fresh one
+      // rather than hanging every later job on it.
+      _session = null;
+      _loadedBundle = null;
+    } else if (cached != null && _loadedBundle == bundle) {
+      return cached;
     }
     if (bundle == _failedBundle) {
       return null;

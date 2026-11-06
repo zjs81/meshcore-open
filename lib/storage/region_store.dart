@@ -1,9 +1,13 @@
 import 'package:meshcore_open/storage/channel_region_store.dart';
-import 'package:meshcore_open/storage/channel_store.dart';
 
 import 'prefs_manager.dart';
 
 typedef Region = String;
+
+/// Stored region assignment meaning "explicitly no region": floods go out
+/// unscoped even when an app or radio default region exists. '!' cannot occur
+/// in a region name, so it never collides with a real region.
+const Region kUnscopedRegion = '!unscoped';
 
 class RegionStore {
   static const String key = 'regions';
@@ -36,20 +40,7 @@ class RegionStore {
 
   Future<void> removeRegion(Region region) async {
     final regions = loadRegions();
-    final channelStore = ChannelStore();
-    final channelRegionStore = ChannelRegionStore();
-    channelStore.setPublicKeyHex = publicKeyHex;
-    channelRegionStore.setPublicKeyHex = publicKeyHex;
-
-    for (var channel in await channelStore.loadChannels()) {
-      var channelRegion = await channelRegionStore.loadRegion(channel.index);
-      if (channelRegion == region) {
-        await channelRegionStore.saveRegion(channel.index, '');
-      }
-    }
-    if (channelRegionStore.loadDefaultRegion() == region) {
-      await channelRegionStore.saveDefaultRegion('');
-    }
+    await ChannelRegionStore.clearRegionEverywhere(region);
     regions.remove(region);
     saveRegions(regions);
   }

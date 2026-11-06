@@ -22,7 +22,9 @@ import '../models/path_playback.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/path_map_scaffold.dart';
 import '../widgets/path_map_ui.dart';
+import '../widgets/set_my_location_dialog.dart';
 
 class ChannelMessagePathScreen extends StatelessWidget {
   final ChannelMessage message;
@@ -54,7 +56,8 @@ class ChannelMessagePathScreen extends StatelessWidget {
         );
         final hops = _buildPathHops(
           primaryPath,
-          connector,
+          connector.allContacts,
+          plausibleSelfPoint(connector),
           l10n,
           hashByteWidth,
           resolveFromEnd: !message.isOutgoing,
@@ -188,7 +191,7 @@ class ChannelMessagePathScreen extends StatelessWidget {
           _buildDetailRow(
             context,
             l10n.channelPath_timeLabel,
-            _formatTime(message.timestamp, l10n),
+            _formatTime(context, message.timestamp),
             scheme: scheme,
           ),
           if (message.repeatCount > 0)
@@ -264,7 +267,7 @@ class ChannelMessagePathScreen extends StatelessWidget {
                       Text(
                         _formatPathPrefixes(variants[i], hashByteWidth),
                         style: MeshTheme.mono(
-                          fontSize: 11,
+                          fontSize: 12,
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
@@ -358,8 +361,8 @@ class ChannelMessagePathScreen extends StatelessWidget {
                       right: -4,
                       top: -4,
                       child: Container(
-                        width: 18,
-                        height: 18,
+                        width: 22,
+                        height: 22,
                         decoration: BoxDecoration(
                           color: MeshPalette.blueDim,
                           shape: BoxShape.circle,
@@ -369,12 +372,15 @@ class ChannelMessagePathScreen extends StatelessWidget {
                           ),
                         ),
                         alignment: Alignment.center,
-                        child: Text(
-                          hop.index.toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 9,
-                            fontWeight: FontWeight.w700,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            hop.index.toString(),
+                            style: const TextStyle(
+                              color: MeshPalette.ink,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ),
@@ -411,7 +417,7 @@ class ChannelMessagePathScreen extends StatelessWidget {
                   Text(
                     hexPrefix,
                     style: MeshTheme.mono(
-                      fontSize: 11,
+                      fontSize: 12,
                       color: scheme.onSurfaceVariant,
                     ),
                   ),
@@ -419,7 +425,7 @@ class ChannelMessagePathScreen extends StatelessWidget {
                   Text(
                     locationText,
                     style: MeshTheme.mono(
-                      fontSize: 11,
+                      fontSize: 12,
                       color: scheme.onSurfaceVariant,
                     ),
                   ),
@@ -432,18 +438,16 @@ class ChannelMessagePathScreen extends StatelessWidget {
     );
   }
 
-  String _formatTime(DateTime time, AppLocalizations l10n) {
-    final now = DateTime.now();
-    final diff = now.difference(time);
-
-    if (diff.inDays > 0) {
-      final timeLabel =
-          '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
-      return l10n.channelPath_timeWithDate(time.day, time.month, timeLabel);
-    }
-    return l10n.channelPath_timeOnly(
-      '${time.hour}:${time.minute.toString().padLeft(2, '0')}',
+  String _formatTime(BuildContext context, DateTime time) {
+    final localizations = MaterialLocalizations.of(context);
+    final timeLabel = localizations.formatTimeOfDay(
+      TimeOfDay.fromDateTime(time),
+      alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context),
     );
+    if (DateTime.now().difference(time).inDays > 0) {
+      return '${localizations.formatShortMonthDay(time)} $timeLabel';
+    }
+    return context.l10n.channelPath_timeOnly(timeLabel);
   }
 
   String _formatPathLabel(int? hopCount, AppLocalizations l10n) {
@@ -536,13 +540,10 @@ class ChannelMessagePathMapScreen extends StatefulWidget {
 class _ChannelMessagePathMapScreenState
     extends State<ChannelMessagePathMapScreen>
     with SingleTickerProviderStateMixin {
-  static const double _labelZoomThreshold = 8.5;
-  static const double _mapMinZoom = 2.0;
-  static const double _mapMaxZoom = 18.0;
+  static const double _labelZoomThreshold = kPathMapLabelZoomThreshold;
 
   final MapController _mapController = MapController();
   Uint8List? _selectedPath;
-  double _pathDistance = 0.0;
   bool _showNodeLabels = true;
   bool _didReceivePositionUpdate = false;
   int? _focusedHopIndex;
@@ -555,6 +556,13 @@ class _ChannelMessagePathMapScreenState
   bool _animationEnabled = true;
   bool _followPacket = false;
 
+  // Resolved paths, reused across connector notifications until the inputs
+  // they depend on (selection, contacts, self position) change.
+  _PathMapModel? _model;
+  Object? _modelKey;
+  DisplayPath? _syncedDisplay;
+  bool _playbackSyncPending = false;
+
   @override
   void initState() {
     super.initState();
@@ -565,14 +573,12 @@ class _ChannelMessagePathMapScreenState
 
   /// Keeps the camera centered on the packet while the follow lock is on.
   void _followPacketCamera() {
-    if (!_followPacket ||
-        !_animationEnabled ||
-        !_playback.started ||
-        !_playback.hasPath ||
-        !mounted) {
-      return;
-    }
-    _mapController.move(_playback.position, _mapController.camera.zoom);
+    if (!mounted) return;
+    followPacketCamera(
+      _mapController,
+      _playback,
+      enabled: _followPacket && _animationEnabled,
+    );
   }
 
   void _toggleFollowPacket() {
@@ -606,13 +612,10 @@ class _ChannelMessagePathMapScreenState
   DisplayPath? _buildDisplayPath({
     required int index,
     required bool isPrimary,
-    required Uint8List orientedBytes,
     required List<_PathHop> hops,
-    required MeshCoreConnector connector,
+    required LatLng? selfPoint,
   }) {
     final l10n = context.l10n;
-    final selfLat = connector.selfLatitude;
-    final selfLon = connector.selfLongitude;
 
     final points = <LatLng>[];
     final labels = <String>[];
@@ -623,8 +626,8 @@ class _ChannelMessagePathMapScreenState
     var locatedHops = 0;
 
     void addSelf() {
-      if (selfLat == null || selfLon == null) return;
-      points.add(LatLng(selfLat, selfLon));
+      if (selfPoint == null) return;
+      points.add(selfPoint);
       labels.add(l10n.pathTrace_you);
       confirmed.add(true);
       rowIdx.add(-1);
@@ -685,24 +688,131 @@ class _ChannelMessagePathMapScreenState
     );
   }
 
-  /// Updates the playback path after this frame, but only when the selected
-  /// path's geometry actually changed, so rebuilds don't reset a running
-  /// animation.
+  /// Returns the resolved paths for the current selection, recomputing them
+  /// (hop resolution, display paths, polyline) only when an input changed.
+  _PathMapModel _resolveModel(MeshCoreConnector connector) {
+    final l10n = context.l10n;
+    final width = (widget.message.pathHashWidth ?? connector.pathHashByteWidth)
+        .clamp(1, 4)
+        .toInt();
+    final selfPoint = plausibleSelfPoint(connector);
+    final contacts = connector.allContacts;
+    final key = (
+      widget.message,
+      widget.channelMessage,
+      _selectedPath?.join(','),
+      width,
+      contactListSignature(contacts),
+      selfPoint,
+      l10n.localeName,
+    );
+    final cached = _model;
+    if (cached != null && key == _modelKey) return cached;
+
+    final primaryPath = _selectPrimaryPath(
+      widget.message.pathBytes,
+      widget.message.pathVariants,
+    );
+    final observedPaths = _buildObservedPaths(
+      primaryPath,
+      widget.message.pathVariants,
+    );
+    final selectedPathTmp = _resolveSelectedPath(
+      _selectedPath,
+      observedPaths,
+      primaryPath,
+    );
+    final selectedPath = _orientPath(selectedPathTmp, width);
+
+    // Match on the unoriented bytes — observedPaths stores them as
+    // recorded, while selectedPath may be reversed for display.
+    final selectedIndex = _indexForPath(selectedPathTmp, observedPaths);
+    final resolveFromEnd = !widget.message.isOutgoing;
+    final hops = _buildPathHops(
+      selectedPath,
+      contacts,
+      selfPoint,
+      l10n,
+      width,
+      resolveFromEnd: resolveFromEnd,
+    );
+
+    // Renderable paths for the animation and combined view.
+    final entries = <_ObservedPathEntry>[];
+    _ObservedPathEntry? selectedEntry;
+    for (var i = 0; i < observedPaths.length; i++) {
+      final pathHops = i == selectedIndex
+          ? hops
+          : _buildPathHops(
+              _orientPath(observedPaths[i].pathBytes, width),
+              contacts,
+              selfPoint,
+              l10n,
+              width,
+              resolveFromEnd: resolveFromEnd,
+            );
+      final display = _buildDisplayPath(
+        index: i,
+        isPrimary: observedPaths[i].isPrimary,
+        hops: pathHops,
+        selfPoint: selfPoint,
+      );
+      if (display == null) continue;
+      final entry = _ObservedPathEntry(
+        index: i,
+        observedBytes: observedPaths[i].pathBytes,
+        display: display,
+        hops: pathHops,
+      );
+      entries.add(entry);
+      if (i == selectedIndex) selectedEntry = entry;
+    }
+
+    // Self sits at the sending end for outgoing messages, the receiving end
+    // otherwise; it is omitted without a GPS fix.
+    final points = <LatLng>[
+      if (widget.message.isOutgoing) ?selfPoint,
+      for (final hop in hops)
+        if (hop.hasLocation) hop.position!,
+      if (!widget.message.isOutgoing) ?selfPoint,
+    ];
+
+    final initialZoom = points.isNotEmpty ? 13.0 : 2.0;
+    final model = _PathMapModel(
+      observedPaths: observedPaths,
+      selectedIndex: selectedIndex,
+      width: width,
+      selectedPath: selectedPath,
+      hops: hops,
+      entries: entries,
+      selectedEntry: selectedEntry,
+      points: points,
+      polylines: points.length > 1
+          ? [Polyline(points: points, strokeWidth: 4, color: MeshPalette.blue)]
+          : const <Polyline>[],
+      initialCenter: points.isNotEmpty ? points.first : const LatLng(0, 0),
+      initialZoom: initialZoom,
+      bounds: points.length > 1 ? LatLngBounds.fromPoints(points) : null,
+      pathDistance: getPathDistanceMeters(points),
+      hasSelfPoint: selfPoint != null,
+    );
+    _model = model;
+    _modelKey = key;
+    return model;
+  }
+
+  /// Updates the playback path after this frame when the selected path
+  /// changed. Geometry is compared before resetting, so rebuilds don't
+  /// restart a running animation.
   void _schedulePlaybackSync(DisplayPath? selected) {
-    final points = selected?.points ?? const <LatLng>[];
+    if (identical(selected, _syncedDisplay)) return;
+    _syncedDisplay = selected;
+    if (_playbackSyncPending) return;
+    _playbackSyncPending = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _playbackSyncPending = false;
       if (!mounted) return;
-      if (points.length == _playback.points.length) {
-        var same = true;
-        for (var i = 0; i < points.length; i++) {
-          if (points[i] != _playback.points[i]) {
-            same = false;
-            break;
-          }
-        }
-        if (same) return;
-      }
-      _playback.setPath(points);
+      syncPlaybackPath(_playback, _syncedDisplay?.points ?? const <LatLng>[]);
     });
   }
 
@@ -735,23 +845,6 @@ class _ChannelMessagePathMapScreenState
     });
   }
 
-  bool _isDesktopPlatform(TargetPlatform platform) {
-    return platform == TargetPlatform.linux ||
-        platform == TargetPlatform.windows ||
-        platform == TargetPlatform.macOS;
-  }
-
-  double _getPathDistance(List<LatLng> points) {
-    double totalDistance = 0.0;
-    final distanceCalculator = Distance();
-
-    for (int i = 0; i < points.length - 1; i++) {
-      totalDistance += distanceCalculator(points[i], points[i + 1]);
-    }
-
-    return totalDistance;
-  }
-
   void _focusHop(_PathHop hop) {
     if (!hop.hasLocation) return;
     final targetZoom = _didReceivePositionUpdate
@@ -768,70 +861,6 @@ class _ChannelMessagePathMapScreenState
     });
   }
 
-  void _zoomMapBy(double delta) {
-    final camera = _mapController.camera;
-    final nextZoom = (camera.zoom + delta)
-        .clamp(_mapMinZoom, _mapMaxZoom)
-        .toDouble();
-    _mapController.move(camera.center, nextZoom);
-  }
-
-  void _resetMapView({
-    required LatLng initialCenter,
-    required double initialZoom,
-    required LatLngBounds? bounds,
-  }) {
-    if (bounds != null) {
-      _mapController.fitCamera(
-        CameraFit.bounds(
-          bounds: bounds,
-          padding: const EdgeInsets.all(64),
-          maxZoom: 16,
-        ),
-      );
-      return;
-    }
-    _mapController.move(initialCenter, initialZoom);
-  }
-
-  Widget _buildDesktopMapControls({
-    required LatLng initialCenter,
-    required double initialZoom,
-    required LatLngBounds? bounds,
-  }) {
-    return Positioned(
-      left: 16,
-      top: 16,
-      child: Card(
-        elevation: 4,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.add),
-              tooltip: context.l10n.map_zoomIn,
-              onPressed: () => _zoomMapBy(1),
-            ),
-            IconButton(
-              icon: const Icon(Icons.remove),
-              tooltip: context.l10n.map_zoomOut,
-              onPressed: () => _zoomMapBy(-1),
-            ),
-            IconButton(
-              icon: const Icon(Icons.my_location),
-              tooltip: context.l10n.map_centerMap,
-              onPressed: () => _resetMapView(
-                initialCenter: initialCenter,
-                initialZoom: initialZoom,
-                bounds: bounds,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<MeshCoreConnector>(
@@ -840,79 +869,18 @@ class _ChannelMessagePathMapScreenState
         final isImperial = settings.unitSystem == UnitSystem.imperial;
         final tileCache = context.read<MapTileCacheService>();
         final mapScheme = Theme.of(context).colorScheme;
-        final primaryPath = _selectPrimaryPath(
-          widget.message.pathBytes,
-          widget.message.pathVariants,
-        );
-        final observedPaths = _buildObservedPaths(
-          primaryPath,
-          widget.message.pathVariants,
-        );
-        final isDesktop = _isDesktopPlatform(defaultTargetPlatform);
-        final selectedPathTmp = _resolveSelectedPath(
-          _selectedPath,
-          observedPaths,
-          primaryPath,
-        );
+        final model = _resolveModel(connector);
+        final observedPaths = model.observedPaths;
+        final selectedIndex = model.selectedIndex;
+        final width = model.width;
+        final hops = model.hops;
+        final entries = model.entries;
+        final points = model.points;
 
-        final width =
-            (widget.message.pathHashWidth ?? connector.pathHashByteWidth)
-                .clamp(1, 4)
-                .toInt();
-        final selectedPath = _orientPath(selectedPathTmp, width);
-
-        // Match on the unoriented bytes — observedPaths stores them as
-        // recorded, while selectedPath may be reversed for display.
-        final selectedIndex = _indexForPath(selectedPathTmp, observedPaths);
-        final hops = _buildPathHops(
-          selectedPath,
-          connector,
-          context.l10n,
-          width,
-          resolveFromEnd: !widget.message.isOutgoing,
-        );
-
-        // Renderable paths for the animation and combined view.
-        final entries = <_ObservedPathEntry>[];
-        for (var i = 0; i < observedPaths.length; i++) {
-          final oriented = _orientPath(observedPaths[i].pathBytes, width);
-          final pathHops = i == selectedIndex
-              ? hops
-              : _buildPathHops(
-                  oriented,
-                  connector,
-                  context.l10n,
-                  width,
-                  resolveFromEnd: !widget.message.isOutgoing,
-                );
-          final display = _buildDisplayPath(
-            index: i,
-            isPrimary: observedPaths[i].isPrimary,
-            orientedBytes: oriented,
-            hops: pathHops,
-            connector: connector,
-          );
-          if (display != null) {
-            entries.add(
-              _ObservedPathEntry(
-                index: i,
-                observedBytes: observedPaths[i].pathBytes,
-                display: display,
-                hops: pathHops,
-              ),
-            );
-          }
-        }
         final effectiveMode = entries.length > 1
             ? _viewMode
             : PathViewMode.single;
-        _ObservedPathEntry? selectedEntry;
-        for (final entry in entries) {
-          if (entry.index == selectedIndex) {
-            selectedEntry = entry;
-            break;
-          }
-        }
+        final selectedEntry = model.selectedEntry;
         final selectedDisplay = selectedEntry?.display;
         final visibleEntries = effectiveMode == PathViewMode.single
             ? [?selectedEntry]
@@ -922,48 +890,12 @@ class _ChannelMessagePathMapScreenState
         final visibleDisplays = visibleEntries.map((e) => e.display).toList();
         _schedulePlaybackSync(selectedDisplay);
 
-        final points = <LatLng>[];
-
-        if ((widget.message.isOutgoing && !widget.channelMessage) ||
-            (widget.message.isOutgoing && widget.channelMessage)) {
-          points.add(LatLng(connector.selfLatitude!, connector.selfLongitude!));
-        }
-
-        for (final hop in hops) {
-          if (hop.hasLocation) {
-            points.add(hop.position!);
-          }
-        }
-
-        if ((!widget.message.isOutgoing && !widget.channelMessage) ||
-            (!widget.message.isOutgoing && widget.channelMessage)) {
-          points.add(LatLng(connector.selfLatitude!, connector.selfLongitude!));
-        }
-
-        final polylines = points.length > 1
-            ? [
-                Polyline(
-                  points: points,
-                  strokeWidth: 4,
-                  color: MeshPalette.blue,
-                ),
-              ]
-            : <Polyline>[];
-
-        final initialCenter = points.isNotEmpty
-            ? points.first
-            : const LatLng(0, 0);
-        final initialZoom = points.isNotEmpty ? 13.0 : 2.0;
         if (!_didReceivePositionUpdate) {
-          _showNodeLabels = initialZoom >= _labelZoomThreshold;
+          _showNodeLabels = model.initialZoom >= _labelZoomThreshold;
         }
-        final bounds = points.length > 1
-            ? LatLngBounds.fromPoints(points)
-            : null;
         final mapKey = ValueKey(
-          '${_formatPathPrefixes(selectedPath, width)},${context.l10n.pathTrace_you}',
+          '${_formatPathPrefixes(model.selectedPath, width)},${context.l10n.pathTrace_you}',
         );
-        _pathDistance = _getPathDistance(points);
 
         return Scaffold(
           appBar: AppBar(
@@ -976,31 +908,14 @@ class _ChannelMessagePathMapScreenState
                 FlutterMap(
                   key: mapKey,
                   mapController: _mapController,
-                  options: MapOptions(
-                    initialCenter: initialCenter,
-                    initialZoom: initialZoom,
-                    initialCameraFit: bounds == null
-                        ? null
-                        : CameraFit.bounds(
-                            bounds: bounds,
-                            padding: const EdgeInsets.all(64),
-                            maxZoom: 16,
-                          ),
-                    minZoom: _mapMinZoom,
-                    maxZoom: _mapMaxZoom,
-                    interactionOptions: InteractionOptions(
-                      flags: ~InteractiveFlag.rotate,
-                      scrollWheelVelocity: isDesktop ? 0.012 : 0.005,
-                      cursorKeyboardRotationOptions:
-                          CursorKeyboardRotationOptions.disabled(),
-                      keyboardOptions: isDesktop
-                          ? const KeyboardOptions(
-                              enableArrowKeysPanning: true,
-                              enableWASDPanning: true,
-                              enableRFZooming: true,
-                            )
-                          : const KeyboardOptions.disabled(),
-                    ),
+                  options: buildPathMapOptions(
+                    initialCenter: model.initialCenter,
+                    initialZoom: model.initialZoom,
+                    bounds: model.bounds,
+                    onLongPress: (_, point) =>
+                        confirmAndSetMyLocation(context, connector, point),
+                    onSecondaryTap: (_, point) =>
+                        confirmAndSetMyLocation(context, connector, point),
                     onPositionChanged: (camera, hasGesture) {
                       if (!mounted) return;
                       // A manual pan/zoom releases the follow lock.
@@ -1026,7 +941,7 @@ class _ChannelMessagePathMapScreenState
                       builder: (context, _) {
                         List<Polyline> lines;
                         if (visibleDisplays.isEmpty) {
-                          lines = polylines;
+                          lines = model.polylines;
                         } else {
                           final animating =
                               _animationEnabled &&
@@ -1081,11 +996,16 @@ class _ChannelMessagePathMapScreenState
                     ),
                   ],
                 ),
-                if (isDesktop)
-                  _buildDesktopMapControls(
-                    initialCenter: initialCenter,
-                    initialZoom: initialZoom,
-                    bounds: bounds,
+                if (isDesktopMapPlatform())
+                  PathMapDesktopControls(
+                    onZoomIn: () => zoomMapBy(_mapController, 1),
+                    onZoomOut: () => zoomMapBy(_mapController, -1),
+                    onReset: () => resetMapView(
+                      _mapController,
+                      bounds: model.bounds,
+                      center: model.initialCenter,
+                      zoom: model.initialZoom,
+                    ),
                   ),
                 if (entries.length > 1)
                   PathViewModeToggle(
@@ -1127,6 +1047,8 @@ class _ChannelMessagePathMapScreenState
                   entries: entries,
                   selectedEntry: selectedEntry,
                   effectiveMode: effectiveMode,
+                  pathDistance: model.pathDistance,
+                  hasSelfPoint: model.hasSelfPoint,
                 ),
               ],
             ),
@@ -1225,20 +1147,14 @@ class _ChannelMessagePathMapScreenState
               decoration: BoxDecoration(
                 color: MeshPalette.blue,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                border: Border.all(color: MapPalette.markerOutline, width: 2),
+                boxShadow: [_markerShadow],
               ),
               alignment: Alignment.center,
               child: Text(
                 hop.index.toString(),
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: MapPalette.textPrimary,
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                 ),
@@ -1249,7 +1165,7 @@ class _ChannelMessagePathMapScreenState
       );
       if (showLabels) {
         markers.add(
-          _buildNodeLabelMarker(
+          buildPathNodeLabelMarker(
             point: point,
             label: hop.contact?.name ?? _formatPrefix(hop.prefix),
           ),
@@ -1263,11 +1179,9 @@ class _ChannelMessagePathMapScreenState
   }
 
   List<Marker> _buildSelfMarkers({required bool showLabels}) {
-    final selfLat = context.read<MeshCoreConnector>().selfLatitude;
-    final selfLon = context.read<MeshCoreConnector>().selfLongitude;
-    if (selfLat == null || selfLon == null) return const [];
+    final selfPoint = plausibleSelfPoint(context.read<MeshCoreConnector>());
+    if (selfPoint == null) return const [];
     final markers = <Marker>[];
-    final selfPoint = LatLng(selfLat, selfLon);
     markers.add(
       Marker(
         point: selfPoint,
@@ -1280,22 +1194,20 @@ class _ChannelMessagePathMapScreenState
             decoration: BoxDecoration(
               color: MeshPalette.signal,
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              border: Border.all(color: MapPalette.markerOutline, width: 2),
+              boxShadow: [_markerShadow],
             ),
             alignment: Alignment.center,
-            child: Text(
-              context.l10n.pathTrace_you,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
+            padding: const EdgeInsets.all(3),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                context.l10n.pathTrace_you,
+                style: const TextStyle(
+                  color: MapPalette.textPrimary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),
@@ -1304,7 +1216,7 @@ class _ChannelMessagePathMapScreenState
     );
     if (showLabels) {
       markers.add(
-        _buildNodeLabelMarker(
+        buildPathNodeLabelMarker(
           point: selfPoint,
           label: context.l10n.pathTrace_you,
         ),
@@ -1369,24 +1281,22 @@ class _ChannelMessagePathMapScreenState
                     color: MeshPalette.blue,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.white,
+                      color: MapPalette.markerOutline,
                       width: shared ? 2.5 : 2,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.3),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                    boxShadow: [_markerShadow],
                   ),
                   alignment: Alignment.center,
-                  child: Text(
-                    label,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 11,
+                  padding: const EdgeInsets.all(2),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      label,
+                      style: const TextStyle(
+                        color: MapPalette.textPrimary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
@@ -1394,24 +1304,7 @@ class _ChannelMessagePathMapScreenState
                   Positioned(
                     top: 0,
                     right: 0,
-                    child: Container(
-                      width: 17,
-                      height: 17,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: MeshPalette.bg1,
-                        border: Border.all(color: MeshPalette.line3),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '${node.paths.length}',
-                        style: MeshTheme.mono(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w700,
-                          color: MeshPalette.ink,
-                        ),
-                      ),
-                    ),
+                    child: PathSharedCountBadge(count: node.paths.length),
                   ),
               ],
             ),
@@ -1420,7 +1313,7 @@ class _ChannelMessagePathMapScreenState
       );
       if (showLabels) {
         markers.add(
-          _buildNodeLabelMarker(
+          buildPathNodeLabelMarker(
             point: point,
             label: hop.contact?.name ?? label,
           ),
@@ -1441,41 +1334,6 @@ class _ChannelMessagePathMapScreenState
     return _orientPathBytes(bytes, hashByteWidth, reverse: reverse);
   }
 
-  Marker _buildNodeLabelMarker({required LatLng point, required String label}) {
-    return Marker(
-      point: point,
-      width: 120,
-      height: 24,
-      alignment: Alignment.topCenter,
-      child: IgnorePointer(
-        child: Transform.translate(
-          offset: const Offset(0, -20),
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildLegendCard(
     BuildContext context,
     List<_PathHop> hops,
@@ -1483,21 +1341,12 @@ class _ChannelMessagePathMapScreenState
     required List<_ObservedPathEntry> entries,
     required _ObservedPathEntry? selectedEntry,
     required PathViewMode effectiveMode,
+    required double pathDistance,
+    required bool hasSelfPoint,
   }) {
     final l10n = context.l10n;
     final combined = effectiveMode == PathViewMode.combined;
     final selectedDisplay = selectedEntry?.display;
-    final maxHeight =
-        MediaQuery.of(context).size.height * (combined ? 0.45 : 0.35);
-
-    double cardHeight;
-    if (_panelCollapsed) {
-      cardHeight = 128;
-    } else {
-      final summaryHeight = combined ? 34.0 + entries.length * 36.0 : 0;
-      final estimatedHeight = 132.0 + summaryHeight + hops.length * 56.0;
-      cardHeight = max(176.0, min(maxHeight, estimatedHeight));
-    }
 
     final hopUseCount = <int, int>{};
     if (combined) {
@@ -1509,152 +1358,62 @@ class _ChannelMessagePathMapScreenState
       }
     }
 
-    return Positioned(
-      left: 16,
-      right: 16,
-      bottom: 16,
-      child: SizedBox(
-        height: cardHeight,
-        child: Container(
-          decoration: BoxDecoration(
-            color: MeshPalette.bg1,
-            borderRadius: BorderRadius.circular(MeshRadii.md),
-            border: Border.all(color: MeshPalette.line2),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: DefaultTextStyle(
-            style: const TextStyle(color: MeshPalette.ink),
-            child: IconTheme(
-              data: const IconThemeData(color: MeshPalette.ink),
-              child: TextButtonTheme(
-                data: TextButtonThemeData(
-                  style: TextButton.styleFrom(foregroundColor: MeshPalette.ink),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 8, 4, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        l10n.channelPath_repeaterHops,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      formatDistance(
-                                        selectedDisplay?.distanceMeters ??
-                                            _pathDistance,
-                                        isImperial: isImperial,
-                                      ),
-                                      style: MeshTheme.mono(
-                                        fontSize: 12,
-                                        color: MeshPalette.ink2,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 4),
-                                PathMiniLegend(
-                                  combined: combined,
-                                  showInferred: false,
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            visualDensity: VisualDensity.compact,
-                            icon: Icon(
-                              _panelCollapsed
-                                  ? Icons.expand_less
-                                  : Icons.expand_more,
-                              size: 20,
-                            ),
-                            tooltip: _panelCollapsed
-                                ? l10n.pathMap_expandPanel
-                                : l10n.pathMap_collapsePanel,
-                            onPressed: () => setState(
-                              () => _panelCollapsed = !_panelCollapsed,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    PathAnimationControls(
-                      playback: _playback,
-                      selected: selectedDisplay,
-                      animationEnabled: _animationEnabled,
-                      onToggleAnimation: () => setState(() {
-                        _animationEnabled = !_animationEnabled;
-                        if (!_animationEnabled) _playback.stop();
-                      }),
-                      followEnabled: _followPacket,
-                      onToggleFollow: _toggleFollowPacket,
-                    ),
-                    if (!_panelCollapsed) ...[
-                      if (selectedDisplay != null &&
-                          selectedDisplay.unresolvedHops > 0)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
-                          child: Text(
-                            l10n.pathMap_partialAnimation(
-                              selectedDisplay.unresolvedHops,
-                            ),
-                            style: TextStyle(
-                              fontSize: 10.5,
-                              color: MeshPalette.warn,
-                            ),
-                          ),
-                        ),
-                      if (combined)
-                        PathSummaryList(
-                          paths: entries.map((e) => e.display).toList(),
-                          selectedId: selectedDisplay?.id ?? '',
-                          hiddenIds: _hiddenPathIds,
-                          isImperial: isImperial,
-                          onSelect: (display) {
-                            for (final entry in entries) {
-                              if (entry.display.id == display.id) {
-                                _selectEntry(entry);
-                                break;
-                              }
-                            }
-                          },
-                          onToggleVisibility: (display) =>
-                              _togglePathVisibility(
-                                display,
-                                entries,
-                                selectedDisplay,
-                              ),
-                          onShowAll: () => setState(_hiddenPathIds.clear),
-                        ),
-                      const Divider(height: 1),
-                      Expanded(
-                        child: _buildHopListView(
-                          hops,
-                          selectedDisplay,
-                          hopUseCount,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
+    return PathMapBottomPanel(
+      header: Row(
+        children: [
+          Expanded(
+            child: Text(
+              l10n.channelPath_repeaterHops,
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
-        ),
+          Text(
+            formatDistance(
+              selectedDisplay?.distanceMeters ?? pathDistance,
+              isImperial: isImperial,
+              l10n: l10n,
+            ),
+            style: MeshTheme.mono(fontSize: 12, color: MeshPalette.ink2),
+          ),
+        ],
       ),
+      combined: combined,
+      showInferredLegend: false,
+      collapsed: _panelCollapsed,
+      onToggleCollapsed: () =>
+          setState(() => _panelCollapsed = !_panelCollapsed),
+      playback: _playback,
+      selected: selectedDisplay,
+      animationEnabled: _animationEnabled,
+      onToggleAnimation: () => setState(() {
+        _animationEnabled = !_animationEnabled;
+        if (!_animationEnabled) _playback.stop();
+      }),
+      followEnabled: _followPacket,
+      onToggleFollow: _toggleFollowPacket,
+      showNoSelfGpsNote: !hasSelfPoint,
+      pathCount: entries.length,
+      hopRowCount: hops.length,
+      summary: combined
+          ? PathSummaryList(
+              paths: entries.map((e) => e.display).toList(),
+              selectedId: selectedDisplay?.id ?? '',
+              hiddenIds: _hiddenPathIds,
+              isImperial: isImperial,
+              onSelect: (display) {
+                for (final entry in entries) {
+                  if (entry.display.id == display.id) {
+                    _selectEntry(entry);
+                    break;
+                  }
+                }
+              },
+              onToggleVisibility: (display) =>
+                  _togglePathVisibility(display, entries, selectedDisplay),
+              onShowAll: () => setState(_hiddenPathIds.clear),
+            )
+          : null,
+      hopList: _buildHopListView(hops, selectedDisplay, hopUseCount),
     );
   }
 
@@ -1702,8 +1461,8 @@ class _ChannelMessagePathMapScreenState
                 child: Row(
                   children: [
                     Container(
-                      width: 28,
-                      height: 28,
+                      width: 30,
+                      height: 30,
                       decoration: BoxDecoration(
                         color: MeshPalette.blueDim.withValues(alpha: 0.3),
                         shape: BoxShape.circle,
@@ -1712,12 +1471,15 @@ class _ChannelMessagePathMapScreenState
                         ),
                       ),
                       alignment: Alignment.center,
-                      child: Text(
-                        hop.index.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          hop.index.toString(),
+                          style: const TextStyle(
+                            color: MeshPalette.ink,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
@@ -1746,7 +1508,7 @@ class _ChannelMessagePathMapScreenState
                                 ),
                             ].join(' · '),
                             style: MeshTheme.mono(
-                              fontSize: 10,
+                              fontSize: 12,
                               color: MeshPalette.ink3,
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -1763,6 +1525,47 @@ class _ChannelMessagePathMapScreenState
       },
     );
   }
+}
+
+final BoxShadow _markerShadow = BoxShadow(
+  color: MapPalette.markerShadow.withValues(alpha: 0.3),
+  blurRadius: 4,
+  offset: Offset(0, 2),
+);
+
+/// Resolved map state for the current selection, cached between rebuilds.
+class _PathMapModel {
+  final List<_ObservedPath> observedPaths;
+  final int selectedIndex;
+  final int width;
+  final Uint8List selectedPath;
+  final List<_PathHop> hops;
+  final List<_ObservedPathEntry> entries;
+  final _ObservedPathEntry? selectedEntry;
+  final List<LatLng> points;
+  final List<Polyline> polylines;
+  final LatLng initialCenter;
+  final double initialZoom;
+  final LatLngBounds? bounds;
+  final double pathDistance;
+  final bool hasSelfPoint;
+
+  const _PathMapModel({
+    required this.observedPaths,
+    required this.selectedIndex,
+    required this.width,
+    required this.selectedPath,
+    required this.hops,
+    required this.entries,
+    required this.selectedEntry,
+    required this.points,
+    required this.polylines,
+    required this.initialCenter,
+    required this.initialZoom,
+    required this.bounds,
+    required this.pathDistance,
+    required this.hasSelfPoint,
+  });
 }
 
 /// One observed route paired with its renderable form and resolved hops.
@@ -1827,20 +1630,17 @@ class _ObservedPath {
 
 List<_PathHop> _buildPathHops(
   Uint8List pathBytes,
-  MeshCoreConnector connector,
+  List<Contact> contacts,
+  LatLng? endpoint,
   AppLocalizations l10n,
   int hashByteWidth, {
   bool resolveFromEnd = false,
 }) {
   if (pathBytes.isEmpty) return const [];
   final width = hashByteWidth.clamp(1, 4).toInt();
-  final endpoint =
-      (connector.selfLatitude != null && connector.selfLongitude != null)
-      ? LatLng(connector.selfLatitude!, connector.selfLongitude!)
-      : null;
   final resolvedContacts = PathHopResolver.resolve(
     pathBytes: pathBytes,
-    contacts: connector.allContacts,
+    contacts: contacts,
     endpoint: endpoint,
     resolveFromEnd: resolveFromEnd,
     pathHashByteWidth: width,

@@ -28,6 +28,8 @@ class _TcpScreenState extends State<TcpScreen> {
   late final MeshCoreConnector _connector;
   late final VoidCallback _connectionListener;
   bool _navigatedToChannels = false;
+  String? _hostError;
+  String? _portError;
 
   @override
   void initState() {
@@ -47,8 +49,12 @@ class _TcpScreenState extends State<TcpScreen> {
       if (_connector.state == MeshCoreConnectionState.disconnected) {
         _navigatedToChannels = false;
       }
+      // Only navigate while this route is on top; otherwise a reconnect
+      // would replace whatever screen the user has pushed above it.
+      final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
       if (_connector.state == MeshCoreConnectionState.connected &&
           _connector.isTcpTransportConnected &&
+          isCurrentRoute &&
           !_navigatedToChannels) {
         context.read<AppSettingsService>().setTcpServerAddress(
           _hostController.text,
@@ -122,7 +128,7 @@ class _TcpScreenState extends State<TcpScreen> {
                 _buildTransportLinks(context),
 
                 // Connection form
-                const SectionHeader('TCP / IP'),
+                SectionHeader(context.l10n.tcpSectionTitle),
                 MeshCard(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -133,9 +139,16 @@ class _TcpScreenState extends State<TcpScreen> {
                         decoration: InputDecoration(
                           labelText: context.l10n.tcpHostLabel,
                           hintText: context.l10n.tcpHostHint,
+                          errorText: _hostError,
+                          errorMaxLines: 3,
                         ),
                         enabled: !isConnecting,
                         keyboardType: TextInputType.url,
+                        onChanged: (_) {
+                          if (_hostError != null) {
+                            setState(() => _hostError = null);
+                          }
+                        },
                       ),
                       const SizedBox(height: 12),
                       TextField(
@@ -143,9 +156,16 @@ class _TcpScreenState extends State<TcpScreen> {
                         decoration: InputDecoration(
                           labelText: context.l10n.tcpPortLabel,
                           hintText: context.l10n.tcpPortHint,
+                          errorText: _portError,
+                          errorMaxLines: 3,
                         ),
                         enabled: !isConnecting,
                         keyboardType: TextInputType.number,
+                        onChanged: (_) {
+                          if (_portError != null) {
+                            setState(() => _portError = null);
+                          }
+                        },
                       ),
                       const SizedBox(height: 16),
                       FilledButton.icon(
@@ -178,7 +198,7 @@ class _TcpScreenState extends State<TcpScreen> {
                 // Last used endpoint
                 if (connector.activeTcpEndpoint != null &&
                     connector.isTcpTransportConnected) ...[
-                  const SectionHeader('CONNECTED TO'),
+                  SectionHeader(context.l10n.tcpConnectedToHeader),
                   MeshCard(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 14,
@@ -188,7 +208,7 @@ class _TcpScreenState extends State<TcpScreen> {
                       children: [
                         Icon(
                           Icons.lan,
-                          size: 16,
+                          size: 20,
                           color: Theme.of(context).colorScheme.primary,
                         ),
                         const SizedBox(width: 10),
@@ -196,7 +216,7 @@ class _TcpScreenState extends State<TcpScreen> {
                           child: Text(
                             connector.activeTcpEndpoint!,
                             style: MeshTheme.mono(
-                              fontSize: 13,
+                              fontSize: 15,
                               color: Theme.of(context).colorScheme.onSurface,
                             ),
                             maxLines: 1,
@@ -283,12 +303,15 @@ class _TcpScreenState extends State<TcpScreen> {
 
     final host = _hostController.text.trim();
     final parsedPort = int.tryParse(_portController.text.trim());
-    if (host.isEmpty) {
-      _showError(context.l10n.tcpErrorHostRequired);
-      return;
-    }
-    if (parsedPort == null || parsedPort < 1 || parsedPort > 65535) {
-      _showError(context.l10n.tcpErrorPortInvalid);
+    final hostError = host.isEmpty ? context.l10n.tcpErrorHostRequired : null;
+    final portError = parsedPort == null || parsedPort < 1 || parsedPort > 65535
+        ? context.l10n.tcpErrorPortInvalid
+        : null;
+    setState(() {
+      _hostError = hostError;
+      _portError = portError;
+    });
+    if (hostError != null || portError != null || parsedPort == null) {
       return;
     }
 

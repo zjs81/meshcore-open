@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
@@ -12,12 +15,13 @@ import '../models/contact.dart';
 import '../theme/mesh_theme.dart';
 import '../utils/contact_search.dart';
 import '../utils/platform_info.dart';
+import '../utils/share_origin.dart';
 import '../widgets/app_bar.dart';
+import '../widgets/contact_visuals.dart';
 import '../widgets/list_filter_widget.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/node_scan_sheet.dart';
 import '../helpers/snack_bar_builder.dart';
-
-enum DiscoverySortOption { lastSeen, name, type }
 
 class DiscoveryScreen extends StatefulWidget {
   const DiscoveryScreen({super.key});
@@ -30,10 +34,9 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
   final TextEditingController _searchController = TextEditingController();
   String searchQuery = '';
   ContactSortOption sortOption = ContactSortOption.lastSeen;
-  bool showUnreadOnly = false;
   ContactTypeFilter typeFilter = ContactTypeFilter.all;
-  DiscoverySortOption discoverySortOption = DiscoverySortOption.lastSeen;
   Timer? _searchDebounce;
+  final DerivedListCache<Contact> _filteredCache = DerivedListCache<Contact>();
   ScaffoldMessengerState? _messenger;
 
   @override
@@ -48,41 +51,6 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
     _searchController.dispose();
     _searchDebounce?.cancel();
     super.dispose();
-  }
-
-  DateTime _resolveLastSeen(Contact contact) {
-    if (contact.type != advTypeChat) return contact.lastSeen;
-    return contact.lastMessageAt.isAfter(contact.lastSeen)
-        ? contact.lastMessageAt
-        : contact.lastSeen;
-  }
-
-  /// Node-type avatar color per design language.
-  Color _avatarColor(int type) {
-    switch (type) {
-      case advTypeRepeater:
-        return MeshPalette.warn;
-      case advTypeRoom:
-        return MeshPalette.magenta;
-      case advTypeSensor:
-        return const Color(0xFF4ACCC4); // teal
-      default:
-        return MeshPalette.blue;
-    }
-  }
-
-  /// Node-type avatar icon; null = show initials for chat nodes.
-  IconData? _avatarIcon(int type) {
-    switch (type) {
-      case advTypeRepeater:
-        return Icons.cell_tower;
-      case advTypeRoom:
-        return Icons.meeting_room;
-      case advTypeSensor:
-        return Icons.sensors;
-      default:
-        return null;
-    }
   }
 
   @override
@@ -105,9 +73,50 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
         ),
         centerTitle: true,
         actions: [
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
+          if (connector.isConnected && connector.supportsNodeDiscover)
+            IconButton(
+              tooltip: l10n.discoveredContacts_scan,
+              icon: const Icon(Icons.radar),
+              onPressed: () => showNodeScanSheet(context, connector),
+            ),
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              switch (value) {
+                case 'export':
+                  unawaited(_exportDiscoveredContacts(context, connector));
+                  break;
+                case 'import':
+                  unawaited(_importDiscoveredContacts(context, connector));
+                  break;
+                case 'delete_all':
+                  _deleteContacts(context, connector);
+                  break;
+              }
+            },
+            itemBuilder: (context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'export',
+                child: Row(
+                  children: [
+                    const Icon(Icons.upload_file),
+                    const SizedBox(width: 8),
+                    Text(l10n.discoveredContacts_export),
+                  ],
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'import',
+                child: Row(
+                  children: [
+                    const Icon(Icons.download),
+                    const SizedBox(width: 8),
+                    Text(l10n.discoveredContacts_import),
+                  ],
+                ),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem<String>(
+                value: 'delete_all',
                 child: Row(
                   children: [
                     Icon(
@@ -118,9 +127,6 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                     Text(context.l10n.discoveredContacts_deleteContactAll),
                   ],
                 ),
-                onTap: () {
-                  _deleteContacts(context, connector);
-                },
               ),
             ],
             icon: const Icon(Icons.more_vert),
@@ -188,8 +194,8 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
             AvatarCircle(
               name: contact.name,
               size: 42,
-              color: isChat ? null : _avatarColor(contact.type),
-              icon: _avatarIcon(contact.type),
+              color: isChat ? null : contactTypeColor(contact.type),
+              iconSlot: contactTypeIconSlot(contact.type),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -197,39 +203,34 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Name + type chip
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          contact.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      StatusChip(
-                        label: contact.typeLabel(context.l10n).toUpperCase(),
-                        color: _avatarColor(contact.type),
-                        icon: _avatarIcon(contact.type),
-                      ),
-                    ],
+                  // The name gets the full width; a type chip beside it
+                  // squeezed it to nothing on narrow screens or large text.
+                  // The avatar icon already shows the type.
+                  Text(
+                    // Nodes can advertise without a name; show the key
+                    // prefix rather than a blank title.
+                    contact.name.isNotEmpty
+                        ? contact.name
+                        : contact.publicKeyHex.substring(0, 8),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                    ),
                   ),
                   const SizedBox(height: 3),
-                  // Short pub key
+                  // Type and short pub key
                   Row(
                     children: [
                       Expanded(
                         child: Text(
-                          contact.shortPubKeyHex,
+                          '${contact.typeLabel(context.l10n)} · '
+                          '${contact.shortPubKeyHex}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: MeshTheme.mono(
-                            fontSize: 11,
+                            fontSize: 12.5,
                             color: scheme.onSurfaceVariant,
                           ),
                         ),
@@ -238,20 +239,16 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                         const SizedBox(width: 6),
                         Icon(
                           Icons.location_on,
-                          size: 13,
-                          color: scheme.onSurfaceVariant.withValues(
-                            alpha: 0.55,
-                          ),
+                          size: 16,
+                          color: scheme.onSurfaceVariant,
                         ),
                       ],
                       if (contact.rawPacket != null) ...[
                         const SizedBox(width: 4),
                         Icon(
                           Icons.cell_tower,
-                          size: 13,
-                          color: scheme.onSurfaceVariant.withValues(
-                            alpha: 0.55,
-                          ),
+                          size: 16,
+                          color: scheme.onSurfaceVariant,
                         ),
                       ],
                     ],
@@ -260,21 +257,26 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
               ),
             ),
             const SizedBox(width: 10),
-            // Last seen time
-            MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                textScaler: TextScaler.linear(
-                  MediaQuery.textScalerOf(context).scale(1.0).clamp(1.0, 1.3),
+            // Last seen time. A width cap + wrapping keeps large text scales
+            // from overflowing without clamping the user's text size.
+            Flexible(
+              flex: 0,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.sizeOf(context).width * 0.25,
                 ),
-              ),
-              child: Text(
-                _formatLastSeen(context, _resolveLastSeen(contact)),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.right,
-                style: MeshTheme.mono(
-                  fontSize: 11,
-                  color: scheme.onSurfaceVariant,
+                child: Text(
+                  formatContactLastSeen(
+                    context.l10n,
+                    resolveContactLastSeen(contact),
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.right,
+                  style: MeshTheme.mono(
+                    fontSize: 12.5,
+                    color: scheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ),
@@ -309,7 +311,15 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
         content: Text(context.l10n.discoveredContacts_contactAdded),
         action: SnackBarAction(
           label: context.l10n.common_undo,
-          onPressed: () => connector.removeContact(contact),
+          onPressed: () => unawaited(
+            connector.removeContact(contact).catchError((Object _) {
+              if (!context.mounted) return;
+              showDismissibleSnackBar(
+                context,
+                content: Text(context.l10n.contacts_removeFailed),
+              );
+            }),
+          ),
         ),
       );
     } catch (_) {
@@ -330,25 +340,27 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
       builder: (sheetContext) {
         final l10n = context.l10n;
         return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              BottomSheetHeader(
-                title: contact.name,
-                subtitle: contact.typeLabel(l10n),
-              ),
-              ListTile(
-                leading: const Icon(Icons.copy),
-                title: Text(l10n.discoveredContacts_copyContact),
-                onTap: () => Navigator.of(sheetContext).pop('copy_contact'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.delete),
-                title: Text(l10n.discoveredContacts_deleteContact),
-                onTap: () => Navigator.of(sheetContext).pop('delete_contact'),
-              ),
-              const SizedBox(height: 8),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BottomSheetHeader(
+                  title: contact.name,
+                  subtitle: contact.typeLabel(l10n),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.copy),
+                  title: Text(l10n.discoveredContacts_copyContact),
+                  onTap: () => Navigator.of(sheetContext).pop('copy_contact'),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.delete),
+                  title: Text(l10n.discoveredContacts_deleteContact),
+                  onTap: () => Navigator.of(sheetContext).pop('delete_contact'),
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
         );
       },
@@ -397,43 +409,159 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
     );
   }
 
+  static const int _maxImportBytes = 2 * 1024 * 1024;
+
+  Future<void> _exportDiscoveredContacts(
+    BuildContext context,
+    MeshCoreConnector connector,
+  ) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final shareOrigin = shareOriginOf(context);
+    final json = connector.exportDiscoveredContactsJson();
+
+    try {
+      const filename = 'meshcore_discovered_contacts.json';
+      final exportFile = XFile.fromData(
+        Uint8List.fromList(utf8.encode(json)),
+        mimeType: 'application/json',
+        name: filename,
+      );
+
+      if (PlatformInfo.isDesktop) {
+        final location = await getSaveLocation(
+          suggestedName: filename,
+          acceptedTypeGroups: [
+            const XTypeGroup(label: 'JSON', extensions: ['json']),
+          ],
+        );
+        if (!mounted) return;
+        if (location == null) return;
+        await exportFile.saveTo(location.path);
+        if (!mounted) return;
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(l10n.discoveredContacts_exported(location.path)),
+          ),
+        );
+        return;
+      }
+
+      // Mobile shares the in-memory file; web shares it or, without the Web
+      // Share API, downloads it (reported as `unavailable`).
+      final result = await SharePlus.instance.share(
+        ShareParams(
+          subject: filename,
+          files: [exportFile],
+          fileNameOverrides: const [filename],
+          sharePositionOrigin: shareOrigin,
+        ),
+      );
+      if (!mounted) return;
+      final delivered =
+          result.status == ShareResultStatus.success ||
+          (PlatformInfo.isWeb &&
+              result.status == ShareResultStatus.unavailable);
+      if (delivered) {
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.discoveredContacts_exported(filename))),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.discoveredContacts_exportFailed(e.toString())),
+        ),
+      );
+    }
+  }
+
+  Future<void> _importDiscoveredContacts(
+    BuildContext context,
+    MeshCoreConnector connector,
+  ) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    void show(String text) {
+      if (!mounted) return;
+      messenger.showSnackBar(SnackBar(content: Text(text)));
+    }
+
+    try {
+      final file = await openFile(
+        acceptedTypeGroups: [
+          const XTypeGroup(label: 'JSON', extensions: ['json']),
+        ],
+      );
+      // A null file means the picker was cancelled.
+      if (file == null) return;
+      if (await file.length() > _maxImportBytes) {
+        show(
+          l10n.discoveredContacts_importTooLarge(
+            _maxImportBytes ~/ (1024 * 1024),
+          ),
+        );
+        return;
+      }
+
+      final String text;
+      try {
+        text = utf8.decode(await file.readAsBytes());
+      } on FormatException {
+        show(
+          l10n.discoveredContacts_importFailed(
+            l10n.discoveredContacts_importInvalidFile,
+          ),
+        );
+        return;
+      }
+      // Strip a UTF-8 byte order mark if present.
+      final json = text.startsWith('\ufeff') ? text.substring(1) : text;
+
+      final result = await connector.importDiscoveredContactsJson(json);
+      if (result.total == 0) {
+        show(l10n.discoveredContacts_importNoContacts);
+      } else if (result.skipped == 0 && result.invalid == 0) {
+        show(l10n.discoveredContacts_imported(result.imported));
+      } else {
+        show(
+          l10n.discoveredContacts_importSummary(
+            result.imported,
+            result.skipped,
+            result.invalid,
+          ),
+        );
+      }
+    } on FormatException {
+      show(
+        l10n.discoveredContacts_importFailed(
+          l10n.discoveredContacts_importInvalidFile,
+        ),
+      );
+    } catch (e) {
+      show(l10n.discoveredContacts_importFailed(e.toString()));
+    }
+  }
+
   Widget _buildFilters(
     List<Contact> filteredAndSorted,
     MeshCoreConnector connector,
   ) {
-    String hintText = "";
-    switch (typeFilter) {
-      case ContactTypeFilter.all:
-        hintText = context.l10n.contacts_searchContacts(
-          filteredAndSorted.length,
-          showUnreadOnly ? " ${context.l10n.contacts_unread}" : "",
-        );
-        break;
-      case ContactTypeFilter.users:
-        hintText = context.l10n.contacts_searchUsers(
-          filteredAndSorted.length,
-          showUnreadOnly ? " ${context.l10n.contacts_unread}" : "",
-        );
-        break;
-      case ContactTypeFilter.repeaters:
-        hintText = context.l10n.contacts_searchRepeaters(
-          filteredAndSorted.length,
-          showUnreadOnly ? " ${context.l10n.contacts_unread}" : "",
-        );
-        break;
-      case ContactTypeFilter.rooms:
-        hintText = context.l10n.contacts_searchRoomServers(
-          filteredAndSorted.length,
-          showUnreadOnly ? " ${context.l10n.contacts_unread}" : "",
-        );
-        break;
-      case ContactTypeFilter.favorites:
-        hintText = context.l10n.contacts_searchFavorites(
-          filteredAndSorted.length,
-          showUnreadOnly ? " ${context.l10n.contacts_unread}" : "",
-        );
-        break;
-    }
+    final count = filteredAndSorted.length;
+    final hintText = switch (typeFilter) {
+      ContactTypeFilter.users => context.l10n.contacts_searchUsers(count, ''),
+      ContactTypeFilter.repeaters => context.l10n.contacts_searchRepeaters(
+        count,
+        '',
+      ),
+      ContactTypeFilter.rooms => context.l10n.contacts_searchRoomServers(
+        count,
+        '',
+      ),
+      // Discovery offers no favorites filter; fall back to the generic hint.
+      _ => context.l10n.contacts_searchContacts(count, ''),
+    };
 
     return Column(
       children: [
@@ -505,26 +633,34 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
     List<Contact> contacts,
     MeshCoreConnector connector,
   ) {
-    var filtered = contacts.where((contact) {
-      if (searchQuery.isEmpty) return true;
-      return matchesDiscoveryContactQuery(contact, searchQuery);
+    // knownContactKeys returns a fresh copy; read it once per build.
+    final knownKeys = connector.knownContactKeys;
+    final selfKey = connector.selfPublicKey;
+    final selfPubKeyHex = selfKey == null ? null : pubKeyToHex(selfKey);
+    return _filteredCache.get(contacts, [
+      searchQuery,
+      typeFilter,
+      sortOption,
+      selfPubKeyHex,
+      Object.hashAllUnordered(knownKeys),
+    ], () => _computeFilteredContacts(contacts, knownKeys, selfPubKeyHex));
+  }
+
+  List<Contact> _computeFilteredContacts(
+    List<Contact> contacts,
+    Set<String> knownKeys,
+    String? selfPubKeyHex,
+  ) {
+    final filtered = contacts.where((contact) {
+      if (searchQuery.isNotEmpty &&
+          !matchesDiscoveryContactQuery(contact, searchQuery)) {
+        return false;
+      }
+      if (knownKeys.contains(contact.publicKeyHex)) return false;
+      // Filter out own node from the list
+      if (contact.publicKeyHex == selfPubKeyHex) return false;
+      return _matchesTypeFilter(contact);
     }).toList();
-
-    filtered = filtered.where((contact) {
-      return !connector.knownContactKeys.contains(contact.publicKeyHex);
-    }).toList();
-
-    // Filter out own node from the list
-    if (connector.selfPublicKey != null) {
-      final selfPubKeyHex = pubKeyToHex(connector.selfPublicKey!);
-      filtered = filtered.where((contact) {
-        return contact.publicKeyHex != selfPubKeyHex;
-      }).toList();
-    }
-
-    if (typeFilter != ContactTypeFilter.all) {
-      filtered = filtered.where(_matchesTypeFilter).toList();
-    }
 
     switch (sortOption) {
       case ContactSortOption.lastSeen:
@@ -552,30 +688,9 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
         return contact.type == advTypeRepeater;
       case ContactTypeFilter.rooms:
         return contact.type == advTypeRoom;
-      default:
-        return false;
+      case ContactTypeFilter.favorites:
+        // Not offered by the discovery filter menu.
+        return true;
     }
-  }
-
-  String _formatLastSeen(BuildContext context, DateTime lastSeen) {
-    final now = DateTime.now();
-    final diff = now.difference(lastSeen);
-
-    if (diff.isNegative || diff.inMinutes < 5) {
-      return context.l10n.contacts_lastSeenNow;
-    }
-    if (diff.inMinutes < 60) {
-      return context.l10n.contacts_lastSeenMinsAgo(diff.inMinutes);
-    }
-    if (diff.inHours < 24) {
-      final hours = diff.inHours;
-      return hours == 1
-          ? context.l10n.contacts_lastSeenHourAgo
-          : context.l10n.contacts_lastSeenHoursAgo(hours);
-    }
-    final days = diff.inDays;
-    return days == 1
-        ? context.l10n.contacts_lastSeenDayAgo
-        : context.l10n.contacts_lastSeenDaysAgo(days);
   }
 }

@@ -14,105 +14,83 @@ class ChannelSettingsStore {
   String get keyForCyr2Lat => '$_cyr2latKeyPrefix$publicKeyHex';
   String get keyForUrlImages => '$_urlImagesKeyPrefix$publicKeyHex';
 
-  Future<bool> loadSmazEnabled(int channelIndex) async {
+  String _smazKey(String channelId) => '${keyFor}_$channelId';
+  String _cyr2LatKey(String channelId) => '${keyForCyr2Lat}_$channelId';
+  String _cyr2LatProfileKey(String channelId) =>
+      '${keyForCyr2Lat}_profile_$channelId';
+  String _urlImagesKey(String channelId) => '${keyForUrlImages}_$channelId';
+
+  Future<bool> loadSmazEnabled(String channelId) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot load channel settings.',
       );
       return false;
     }
-    final prefs = PrefsManager.instance;
-    final key = '$keyFor$channelIndex';
-    final oldKey = '$_keyPrefix$channelIndex';
-    bool? enabled = prefs.getBool(key);
-    if (enabled == null) {
-      // Attempt migration from legacy unscoped key on first load
-      enabled = prefs.getBool(oldKey);
-      prefs.remove(oldKey);
-      if (enabled != null) {
-        appLogger.info(
-          'Migrating channel settings from legacy key $oldKey to scoped key $key',
-        );
-        await prefs.setBool(key, enabled);
-      }
-    }
-    return enabled ?? false;
+    return PrefsManager.instance.getBool(_smazKey(channelId)) ?? false;
   }
 
-  Future<void> saveSmazEnabled(int channelIndex, bool enabled) async {
+  Future<void> saveSmazEnabled(String channelId, bool enabled) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot save channel settings.',
       );
       return;
     }
-    final prefs = PrefsManager.instance;
-    final key = '$keyFor$channelIndex';
-    await prefs.setBool(key, enabled);
+    await PrefsManager.instance.setBool(_smazKey(channelId), enabled);
   }
 
-  Future<bool> loadCyr2LatEnabled(int channelIndex) async {
+  Future<bool> loadCyr2LatEnabled(String channelId) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot load channel Cyr2Lat settings.',
       );
       return false;
     }
-    final prefs = PrefsManager.instance;
-    final key = '$keyForCyr2Lat$channelIndex';
-    return prefs.getBool(key) ?? false;
+    return PrefsManager.instance.getBool(_cyr2LatKey(channelId)) ?? false;
   }
 
-  Future<void> saveCyr2LatEnabled(int channelIndex, bool enabled) async {
+  Future<void> saveCyr2LatEnabled(String channelId, bool enabled) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot save channel Cyr2Lat settings.',
       );
       return;
     }
-    final prefs = PrefsManager.instance;
-    final key = '$keyForCyr2Lat$channelIndex';
-    await prefs.setBool(key, enabled);
+    await PrefsManager.instance.setBool(_cyr2LatKey(channelId), enabled);
   }
 
-  Future<bool> loadUrlImagesEnabled(int channelIndex) async {
+  Future<bool?> loadUrlImagesEnabled(String channelId) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot load channel URL image settings.',
       );
-      return false;
+      return null;
     }
-    final prefs = PrefsManager.instance;
-    final key = '$keyForUrlImages$channelIndex';
-    return prefs.getBool(key) ?? false;
+    return PrefsManager.instance.getBool(_urlImagesKey(channelId));
   }
 
-  Future<void> saveUrlImagesEnabled(int channelIndex, bool enabled) async {
+  Future<void> saveUrlImagesEnabled(String channelId, bool enabled) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot save channel URL image settings.',
       );
       return;
     }
-    await PrefsManager.instance.setBool(
-      '$keyForUrlImages$channelIndex',
-      enabled,
-    );
+    await PrefsManager.instance.setBool(_urlImagesKey(channelId), enabled);
   }
 
-  Future<String?> loadCyr2LatProfileId(int channelIndex) async {
+  Future<String?> loadCyr2LatProfileId(String channelId) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot load channel settings.',
       );
       return null;
     }
-    final prefs = PrefsManager.instance;
-    final key = '${keyForCyr2Lat}profile_$channelIndex';
-    return prefs.getString(key);
+    return PrefsManager.instance.getString(_cyr2LatProfileKey(channelId));
   }
 
-  Future<void> saveCyr2LatProfileId(int channelIndex, String? profileId) async {
+  Future<void> saveCyr2LatProfileId(String channelId, String? profileId) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot save channel settings.',
@@ -120,11 +98,21 @@ class ChannelSettingsStore {
       return;
     }
     final prefs = PrefsManager.instance;
-    final key = '${keyForCyr2Lat}profile_$channelIndex';
+    final key = _cyr2LatProfileKey(channelId);
     if (profileId == null) {
       await prefs.remove(key);
     } else {
       await prefs.setString(key, profileId);
     }
+  }
+
+  /// Removes every setting stored for [channelId].
+  Future<void> clearChannel(String channelId) async {
+    if (publicKeyHex.isEmpty) return;
+    final prefs = PrefsManager.instance;
+    await prefs.remove(_smazKey(channelId));
+    await prefs.remove(_cyr2LatKey(channelId));
+    await prefs.remove(_cyr2LatProfileKey(channelId));
+    await prefs.remove(_urlImagesKey(channelId));
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import '../models/delivery_observation.dart';
 import '../models/path_history.dart';
+import '../storage/legacy_key_migration.dart';
 import '../storage/prefs_manager.dart';
 import '../utils/app_logger.dart';
 
@@ -11,6 +12,13 @@ class StorageService {
   static const String _repeaterAutoClockSyncAfterLoginKey =
       'repeater_auto_clock_sync_after_login';
   static const String _deliveryObservationsKey = 'delivery_observations';
+
+  /// App-wide keys (not scoped to a radio) that hold per-repeater data. Review
+  /// mode snapshots and restores them so simulated logins leave nothing behind.
+  static const List<String> globalRepeaterKeys = [
+    _repeaterPasswordsKey,
+    _repeaterAutoClockSyncAfterLoginKey,
+  ];
 
   String _publicKeyHex = '';
   set setPublicKeyHex(String value) =>
@@ -65,10 +73,22 @@ class StorageService {
   Future<ContactPathHistory?> loadPathHistory(String contactPubKeyHex) async {
     final prefs = PrefsManager.instance;
     final key = _pathHistoryKey(contactPubKeyHex);
-    // Fall back to the pre-scoping key so learned routes survive the upgrade.
-    final jsonStr =
-        prefs.getString(key) ??
-        prefs.getString('$_pathHistoryPrefix$contactPubKeyHex');
+    var jsonStr = prefs.getString(key);
+    final legacyKey = '$_pathHistoryPrefix$contactPubKeyHex';
+    if (jsonStr == null &&
+        _publicKeyHex.isNotEmpty &&
+        canMigrateLegacyKeys(_publicKeyHex)) {
+      // Move the pre-scoping history into the first radio that loads it so
+      // learned routes survive the upgrade without leaking into other radios.
+      final legacy = prefs.getString(legacyKey);
+      if (legacy != null) {
+        await prefs.setString(key, legacy);
+        await prefs.remove(legacyKey);
+        jsonStr = legacy;
+      }
+    } else if (jsonStr == null && _publicKeyHex.isEmpty) {
+      jsonStr = prefs.getString(legacyKey);
+    }
 
     if (jsonStr == null) return null;
 
@@ -86,12 +106,23 @@ class StorageService {
     await prefs.remove('$_pathHistoryPrefix$contactPubKeyHex');
   }
 
+  /// Clears the path histories of the connected radio only. Histories of other
+  /// radios are left alone; with no radio scope set, everything is cleared.
   Future<void> clearAllPathHistories() async {
     final prefs = PrefsManager.instance;
-    final keys = prefs.getKeys();
-    final pathHistoryKeys = keys.where(
-      (key) => key.startsWith(_pathHistoryPrefix),
-    );
+    final scopedPrefix = _publicKeyHex.isEmpty
+        ? _pathHistoryPrefix
+        : '$_pathHistoryPrefix${_publicKeyHex}_';
+    // Pre-scoping keys (no radio prefix) would otherwise be migrated into this
+    // radio on the next load and bring the cleared routes back.
+    final clearLegacy =
+        _publicKeyHex.isNotEmpty && canMigrateLegacyKeys(_publicKeyHex);
+    final pathHistoryKeys = prefs.getKeys().where((key) {
+      if (key.startsWith(scopedPrefix)) return true;
+      return clearLegacy &&
+          key.startsWith(_pathHistoryPrefix) &&
+          !key.substring(_pathHistoryPrefix.length).contains('_');
+    }).toList();
 
     for (final key in pathHistoryKeys) {
       await prefs.remove(key);

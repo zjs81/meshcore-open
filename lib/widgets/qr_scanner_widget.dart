@@ -1,5 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+
+import '../helpers/snack_bar_builder.dart';
+import '../l10n/l10n.dart';
+import '../theme/mesh_theme.dart';
+
+/// Size of the square scan window cut out of the overlay.
+const double _scanWindowSize = 250;
+
+/// Full-screen spinner shown in place of the scanner while a scanned code is
+/// being processed (stops the camera and prevents duplicate detections).
+class QrScannerProcessingBody extends StatelessWidget {
+  const QrScannerProcessingBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surface,
+      child: const Center(child: CircularProgressIndicator()),
+    );
+  }
+}
+
+/// Short warning snackbar for a QR code that isn't the expected kind.
+void showInvalidQrSnackBar(BuildContext context, String message) {
+  showDismissibleSnackBar(
+    context,
+    content: Text(message),
+    backgroundColor: MeshPalette.warn,
+    duration: const Duration(seconds: 2),
+  );
+}
 
 /// A reusable QR code scanner widget that can be embedded anywhere.
 ///
@@ -30,6 +62,11 @@ class QrScannerWidget extends StatefulWidget {
   /// Custom overlay widget (defaults to scan window frame)
   final Widget? overlay;
 
+  /// Use the app-themed overlay (accent corner brackets and a high-contrast
+  /// instructions pill) instead of the plain default. Ignored when [overlay]
+  /// is given.
+  final bool themed;
+
   /// Instructions text shown below the scan window
   final String? instructions;
 
@@ -47,6 +84,7 @@ class QrScannerWidget extends StatefulWidget {
     this.showFlashButton = true,
     this.showCameraSwitchButton = true,
     this.overlay,
+    this.themed = false,
     this.instructions,
     this.continuousScanning = false,
     this.debounceDuration = const Duration(milliseconds: 500),
@@ -150,81 +188,110 @@ class _QrScannerWidgetState extends State<QrScannerWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // Scanner view
-        MobileScanner(
-          controller: _controller,
-          onDetect: _handleDetection,
-          errorBuilder: (context, error) {
-            return _buildErrorWidget(context, error);
-          },
-        ),
+    // The camera preview is dark, so keep the system bar icons light, and lift
+    // the controls above the navigation bar the app draws behind.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Stack(
+        children: [
+          // Scanner view
+          MobileScanner(
+            controller: _controller,
+            onDetect: _handleDetection,
+            errorBuilder: (context, error) {
+              return _buildErrorWidget(context, error);
+            },
+          ),
 
-        // Overlay
-        widget.overlay ?? _buildDefaultOverlay(context),
+          // Overlay
+          widget.overlay ?? _buildDefaultOverlay(context),
 
-        // Control buttons
-        Positioned(
-          bottom: 16,
-          left: 0,
-          right: 0,
-          child: _buildControls(context),
-        ),
-      ],
+          // Control buttons
+          Positioned(
+            bottom: 16 + MediaQuery.viewPaddingOf(context).bottom,
+            left: 0,
+            right: 0,
+            child: _buildControls(context),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildDefaultOverlay(BuildContext context) {
-    return ColorFiltered(
-      colorFilter: ColorFilter.mode(
-        Colors.black.withValues(alpha: 0.5),
-        BlendMode.srcOut,
-      ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              backgroundBlendMode: BlendMode.dstOut,
-            ),
+    final instructions = widget.instructions;
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Dimmed background with a transparent cutout for the scan window.
+        ColorFiltered(
+          colorFilter: ColorFilter.mode(
+            MeshPalette.bg.withValues(alpha: 0.55),
+            BlendMode.srcOut,
           ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  color: MeshPalette.bg,
+                  backgroundBlendMode: BlendMode.dstOut,
+                ),
+              ),
+              Center(
+                child: Container(
+                  height: _scanWindowSize,
+                  width: _scanWindowSize,
+                  decoration: BoxDecoration(
+                    // Any opaque colour: it only defines the cutout shape.
+                    color: MeshPalette.ink,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (widget.themed)
+          const ScannerCornerOverlay(
+            scanWindowSize: _scanWindowSize,
+            borderColor: MeshPalette.blue,
+            borderWidth: 3,
+            cornerLength: 28,
+          ),
+        // Instructions pill below the scan window.
+        if (instructions != null)
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                const SizedBox(height: _scanWindowSize + 24),
                 Container(
-                  height: 250,
-                  width: 250,
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
-                    color: Colors.red, // This color is used for cutout
-                    borderRadius: BorderRadius.circular(16),
+                    color: MeshPalette.bg.withValues(alpha: 0.85),
+                    borderRadius: BorderRadius.circular(
+                      widget.themed ? MeshRadii.pill : 8,
+                    ),
+                  ),
+                  child: Text(
+                    instructions,
+                    style: const TextStyle(
+                      color: MeshPalette.ink,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-                if (widget.instructions != null) ...[
-                  const SizedBox(height: 24),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.7),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      widget.instructions!,
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
               ],
             ),
           ),
-        ],
-      ),
+      ],
     );
   }
 
@@ -243,10 +310,7 @@ class _QrScannerWidgetState extends State<QrScannerWidget>
                       ? Icons.flash_on
                       : Icons.flash_off,
                 ),
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.black54,
-                  foregroundColor: Colors.white,
-                ),
+                style: _controlStyle,
               );
             },
           ),
@@ -256,14 +320,18 @@ class _QrScannerWidgetState extends State<QrScannerWidget>
           IconButton.filled(
             onPressed: () => _controller.switchCamera(),
             icon: const Icon(Icons.cameraswitch),
-            style: IconButton.styleFrom(
-              backgroundColor: Colors.black54,
-              foregroundColor: Colors.white,
-            ),
+            style: _controlStyle,
           ),
       ],
     );
   }
+
+  static final ButtonStyle _controlStyle = IconButton.styleFrom(
+    backgroundColor: MeshPalette.bg.withValues(alpha: 0.7),
+    foregroundColor: MeshPalette.ink,
+    minimumSize: const Size(56, 56),
+    iconSize: 28,
+  );
 
   Widget _buildErrorWidget(BuildContext context, MobileScannerException error) {
     String message;
@@ -271,34 +339,38 @@ class _QrScannerWidgetState extends State<QrScannerWidget>
 
     switch (error.errorCode) {
       case MobileScannerErrorCode.permissionDenied:
-        message =
-            'Camera permission denied.\nPlease enable camera access in settings.';
+        message = context.l10n.qr_cameraPermissionDenied;
         icon = Icons.no_photography;
         break;
       case MobileScannerErrorCode.unsupported:
-        message = 'Camera not supported on this device.';
+        message = context.l10n.qr_cameraUnsupported;
         icon = Icons.videocam_off;
         break;
       default:
-        message =
-            'Failed to start camera.\n${error.errorDetails?.message ?? ''}';
+        message = context.l10n.qr_cameraStartFailed(
+          error.errorDetails?.message ?? '',
+        );
         icon = Icons.error_outline;
     }
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 64, color: Colors.grey),
-            const SizedBox(height: 16),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey[600], fontSize: 16),
-            ),
-          ],
+    final scheme = Theme.of(context).colorScheme;
+    return ColoredBox(
+      color: scheme.surface,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 64, color: scheme.onSurfaceVariant),
+              const SizedBox(height: 16),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: scheme.onSurface, fontSize: 16),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -315,7 +387,7 @@ class ScannerCornerOverlay extends StatelessWidget {
   const ScannerCornerOverlay({
     super.key,
     this.scanWindowSize = 250,
-    this.borderColor = Colors.white,
+    this.borderColor = MeshPalette.ink,
     this.borderWidth = 3,
     this.cornerLength = 30,
   });

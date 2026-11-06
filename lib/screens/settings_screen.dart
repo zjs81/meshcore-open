@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meshcore_open/utils/gpx_export.dart';
@@ -9,44 +8,23 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../l10n/l10n.dart';
-import '../models/radio_settings.dart';
 import '../services/app_settings_service.dart';
-import '../services/app_debug_log_service.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/app_bar.dart';
 import '../helpers/snack_bar_builder.dart';
+import '../helpers/utf8_length_limiter.dart';
+import '../widgets/mesh_nav_tile.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/radio_settings_dialog.dart';
 import 'app_settings_screen.dart';
 import 'app_debug_log_screen.dart';
+import 'message_filter_settings_screen.dart';
 import 'ble_debug_log_screen.dart';
 import '../widgets/radio_stats_entry.dart';
 import 'telemetry_screen.dart';
 import '../widgets/sync_progress_overlay.dart';
 import 'region_management_screen.dart';
-
-/// Convert device coding-rate value (1-4 on some firmware, 5-8 on others)
-/// to the UI enum range (always 5-8).
-int _toUiCodingRate(int deviceCr) {
-  return deviceCr <= 4 ? deviceCr + 4 : deviceCr;
-}
-
-const Set<int> _defaultRepeatFreqsKHz = {433000, 869495, 918000};
-
-/// Whether the firmware accepts [freqKHz] for off-grid client repeat, using
-/// the ranges from CMD_GET_ALLOWED_REPEAT_FREQ when known.
-bool _isAllowedRepeatFreqKHz(MeshCoreConnector connector, int freqKHz) {
-  final ranges = connector.allowedRepeatFreqRanges;
-  if (ranges == null || ranges.isEmpty) {
-    return _defaultRepeatFreqsKHz.contains(freqKHz);
-  }
-  return ranges.any((r) => freqKHz >= r.lowKHz && freqKHz <= r.highKHz);
-}
-
-/// Companion firmware version that added CMD_SET_PATH_HASH_MODE (v1.14.0).
-const int _minFirmwareVerCodeForPathHashMode = 10;
-
-/// Lowest TX power companion firmware accepts (CMD_SET_RADIO_TX_POWER).
-const int _minTxPowerDbm = -9;
+import '../utils/share_origin.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -70,7 +48,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final packageInfo = await PackageInfo.fromPlatform();
     if (!mounted) return;
     setState(() {
-      _appVersion = packageInfo.version;
+      _appVersion = '${packageInfo.version} BETA';
     });
   }
 
@@ -89,129 +67,163 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: SafeArea(
         top: false,
-        child: Consumer<MeshCoreConnector>(
-          builder: (context, connector, child) {
-            return ListView(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-              children: [
-                // IDENTITY section
-                SectionHeader(l10n.settings_deviceInfo),
-                MeshCard(
-                  padding: EdgeInsets.zero,
-                  child: _buildIdentityCardContent(context, connector),
+        // Each card selects only the connector fields it renders, so the
+        // frequent unrelated connector notifications (frames, contacts,
+        // messages) do not rebuild the whole settings list.
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+          children: [
+            // IDENTITY section
+            SectionHeader(l10n.settings_deviceInfo),
+            MeshCard(
+              padding: EdgeInsets.zero,
+              child: _selectConnector(
+                (c) => (
+                  c.deviceDisplayName,
+                  c.isConnected,
+                  c.deviceIdLabel,
+                  c.batteryPercent,
+                  c.batteryMillivolts,
+                  c.manufacturerName,
+                  c.firmwareVersionString,
+                  c.selfName,
+                  c.selfPublicKey == null ? null : c.selfPublicKeyHex,
+                  c.contacts.length,
+                  c.channels.length,
                 ),
+                _buildIdentityCardContent,
+              ),
+            ),
 
-                // NODE section
-                SectionHeader(l10n.settings_nodeSettings),
-                MeshCard(
-                  padding: EdgeInsets.zero,
-                  child: _buildNodeCardContent(context, connector),
+            // NODE section
+            SectionHeader(l10n.settings_nodeSettings),
+            MeshCard(
+              padding: EdgeInsets.zero,
+              child: _selectConnector(
+                (c) => (
+                  c.isConnected,
+                  c.selfName,
+                  c.supportsCompanionRadioStats,
+                  c.firmwareVerCode,
+                  c.pathHashByteWidth,
                 ),
+                _buildNodeCardContent,
+              ),
+            ),
 
-                // LOCATION section
-                SectionHeader(l10n.settings_location),
-                MeshCard(
-                  padding: EdgeInsets.zero,
-                  child: _buildLocationCardContent(context, connector),
-                ),
+            // LOCATION section
+            SectionHeader(l10n.settings_location),
+            MeshCard(
+              padding: EdgeInsets.zero,
+              child: _selectConnector(
+                (c) => c.isConnected,
+                _buildLocationCardContent,
+              ),
+            ),
 
-                // APP SETTINGS
-                SectionHeader(l10n.settings_appSettings),
-                MeshCard(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AppSettingsScreen(),
-                    ),
-                  ),
-                  child: _buildNavTileContent(
-                    context,
+            // APP SETTINGS
+            SectionHeader(l10n.settings_appSettings),
+            MeshCard(
+              padding: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  MeshNavTile(
                     icon: Icons.settings_outlined,
                     title: l10n.settings_appSettings,
                     subtitle: l10n.settings_appSettingsSubtitle,
-                  ),
-                ),
-
-                // ACTIONS section
-                SectionHeader(l10n.settings_actions),
-                MeshCard(
-                  padding: EdgeInsets.zero,
-                  child: _buildActionsCardContent(context, connector),
-                ),
-
-                // EXPORT section
-                SectionHeader(l10n.settings_gpxExportRepeaters),
-                MeshCard(
-                  padding: EdgeInsets.zero,
-                  child: _buildExportCardContent(context, connector),
-                ),
-
-                // DEBUG section
-                SectionHeader(l10n.settings_debug),
-                MeshCard(
-                  padding: EdgeInsets.zero,
-                  child: _buildDebugCardContent(context),
-                ),
-
-                // ABOUT
-                SectionHeader(l10n.settings_about),
-                MeshCard(
-                  onTap: () => _showAbout(context),
-                  child: _buildNavTileContent(
-                    context,
-                    icon: Icons.info_outline,
-                    title: l10n.settings_about,
-                    subtitle: l10n.settings_aboutVersion(
-                      _appVersion.isEmpty ? l10n.common_loading : _appVersion,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AppSettingsScreen(),
+                      ),
                     ),
-                    showChevron: false,
                   ),
+                  const Divider(height: 1, indent: 16),
+                  MeshNavTile(
+                    icon: Icons.filter_alt_outlined,
+                    title: l10n.messageFilter_title,
+                    subtitle: l10n.messageFilter_settingsSubtitle,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const MessageFilterSettingsScreen(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ACTIONS section
+            SectionHeader(l10n.settings_actions),
+            MeshCard(
+              padding: EdgeInsets.zero,
+              child: _selectConnector(
+                (c) => c.isConnected,
+                _buildActionsCardContent,
+              ),
+            ),
+
+            // EXPORT section
+            SectionHeader(l10n.settings_gpxExportRepeaters),
+            MeshCard(
+              padding: EdgeInsets.zero,
+              child: _buildExportCardContent(
+                context,
+                context.read<MeshCoreConnector>(),
+              ),
+            ),
+
+            // DEBUG section
+            SectionHeader(l10n.settings_debug),
+            MeshCard(
+              padding: EdgeInsets.zero,
+              child: _buildDebugCardContent(context),
+            ),
+
+            // ABOUT
+            SectionHeader(l10n.settings_about),
+            MeshCard(
+              padding: EdgeInsets.zero,
+              child: MeshNavTile(
+                icon: Icons.info_outline,
+                title: l10n.settings_about,
+                subtitle: l10n.settings_aboutVersion(
+                  _appVersion.isEmpty ? l10n.common_loading : _appVersion,
                 ),
-              ],
-            );
-          },
+                showChevron: false,
+                onTap: () => _showAbout(context),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildNavTileContent(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    bool showChevron = true,
-  }) {
-    final scheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    return Row(
-      children: [
-        Icon(icon, size: 20, color: scheme.onSurfaceVariant),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                subtitle,
-                style: textTheme.bodySmall?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (showChevron)
-          Icon(Icons.chevron_right, color: scheme.onSurfaceVariant, size: 16),
-      ],
+  /// Rebuilds [builder] only when [selector]'s value changes (records compare
+  /// field by field) or when this screen itself rebuilds.
+  Widget _selectConnector<T>(
+    T Function(MeshCoreConnector connector) selector,
+    Widget Function(BuildContext context, MeshCoreConnector connector) builder,
+  ) {
+    return Selector<MeshCoreConnector, T>(
+      selector: (_, connector) => selector(connector),
+      builder: (context, _, _) =>
+          builder(context, context.read<MeshCoreConnector>()),
     );
+  }
+
+  /// Guards a radio command: returns false (after telling the user) when the
+  /// radio is not connected, because the connector silently ignores commands
+  /// sent while disconnected and a success message would be a lie.
+  bool _ensureConnected(BuildContext context, MeshCoreConnector connector) {
+    if (connector.isConnected) return true;
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.settings_notConnectedError),
+    );
+    return false;
   }
 
   Widget _buildIdentityCardContent(
@@ -253,7 +265,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ? l10n.common_connected
                             : l10n.common_disconnected,
                         color: connector.isConnected
-                            ? MeshPalette.blue
+                            ? scheme.primary
                             : scheme.onSurfaceVariant,
                         pulse: connector.isConnected,
                       ),
@@ -346,6 +358,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       label: label,
       value: publicKeyHex,
       mono: true,
+      semanticsHint: context.l10n.settings_publicKeyCopyHint,
+      trailing: Icon(
+        Icons.copy_outlined,
+        size: 20,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
       onTap: () => _copyPublicKey(context, publicKeyHex),
     );
   }
@@ -366,12 +384,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     bool mono = false,
     Widget? leading,
     Color? valueColor,
+    Widget? trailing,
+    String? semanticsHint,
     VoidCallback? onTap,
   }) {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    final content = Padding(
+    Widget content = Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -381,7 +401,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               if (leading != null) ...[leading, const SizedBox(width: 6)],
               Text(
                 label,
-                style: textTheme.bodySmall?.copyWith(
+                style: textTheme.bodyMedium?.copyWith(
                   color: scheme.onSurfaceVariant,
                   fontWeight: FontWeight.w500,
                 ),
@@ -393,14 +413,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ? Text(
                   value,
                   style: MeshTheme.mono(
-                    fontSize: 13,
+                    fontSize: 15,
                     fontWeight: FontWeight.w500,
                     color: valueColor ?? scheme.onSurface,
                   ),
                 )
               : Text(
                   value,
-                  style: textTheme.bodyMedium?.copyWith(
+                  style: textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w500,
                     color: valueColor,
                   ),
@@ -409,11 +429,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
 
+    if (trailing != null) {
+      content = Row(
+        children: [
+          Expanded(child: content),
+          const SizedBox(width: 8),
+          trailing,
+        ],
+      );
+    }
+
     if (onTap != null) {
-      return InkWell(
-        borderRadius: BorderRadius.circular(MeshRadii.xs),
-        onTap: onTap,
-        child: content,
+      return Semantics(
+        button: true,
+        hint: semanticsHint,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(MeshRadii.xs),
+          onTap: onTap,
+          child: content,
+        ),
       );
     }
     return content;
@@ -460,10 +494,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return _infoRow(
       context,
+      semanticsHint: millivolts != null
+          ? l10n.settings_batteryToggleHint
+          : null,
       label: l10n.settings_infoBattery,
       value: displayValue,
-      leading: Icon(icon, size: 14, color: iconColor),
+      leading: Icon(icon, size: 20, color: iconColor),
       valueColor: valueColor,
+      trailing: millivolts != null
+          ? Tooltip(
+              message: l10n.settings_batteryToggleHint,
+              child: Icon(
+                Icons.swap_horiz,
+                size: 20,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            )
+          : null,
       onTap: millivolts != null
           ? () {
               setState(() {
@@ -479,38 +526,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
     MeshCoreConnector connector,
   ) {
     final l10n = context.l10n;
+    final connected = connector.isConnected;
+    final offline = l10n.settings_requiresConnection;
     return Column(
       children: [
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.person_outline,
           title: l10n.settings_nodeName,
-          subtitle: connector.selfName ?? l10n.settings_nodeNameNotSet,
-          onTap: () => _editNodeName(context, connector),
+          subtitle: connected
+              ? connector.selfName ?? l10n.settings_nodeNameNotSet
+              : offline,
+          onTap: connected ? () => _editNodeName(context, connector) : null,
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.radio,
           title: l10n.settings_radioSettings,
-          subtitle: l10n.settings_radioSettingsSubtitle,
-          onTap: () => _showRadioSettings(context, connector),
+          subtitle: connected ? l10n.settings_radioSettingsSubtitle : offline,
+          onTap: connected
+              ? () => _showRadioSettings(context, connector)
+              : null,
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.landscape,
           title: l10n.settings_regionSettings,
           subtitle: l10n.settings_regionSettingsSubtitle,
           onTap: () => pushRegionManagementScreen(context),
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.sensors_outlined,
           title: l10n.radioStats_settingsTile,
-          subtitle:
-              connector.isConnected && !connector.supportsCompanionRadioStats
+          subtitle: !connected
+              ? offline
+              : !connector.supportsCompanionRadioStats
               ? l10n.settings_requiresFirmware('v1.10')
               : l10n.radioStats_settingsSubtitle,
           onTap: connector.isConnected && connector.supportsCompanionRadioStats
@@ -518,30 +568,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
               : null,
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.thermostat_outlined,
           title: l10n.contact_telemetry,
-          subtitle: l10n.repeater_telemetrySubtitle,
+          subtitle: connected ? l10n.repeater_telemetrySubtitle : offline,
           onTap: connector.isConnected
               ? () => pushSelfTelemetryScreen(context)
               : null,
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.route_outlined,
           title: l10n.repeater_pathHashMode,
-          subtitle:
-              connector.isConnected &&
-                  (connector.firmwareVerCode ?? 0) <
-                      _minFirmwareVerCodeForPathHashMode
+          subtitle: !connected
+              ? offline
+              : !connector.supportsPathHashMode
               ? l10n.settings_requiresFirmware('v1.14')
               : _pathHashModeSubtitle(context, connector.pathHashByteWidth),
-          onTap:
-              connector.isConnected &&
-                  (connector.firmwareVerCode ?? 0) >=
-                      _minFirmwareVerCodeForPathHashMode
+          onTap: connector.isConnected && connector.supportsPathHashMode
               ? () => _editPathHashMode(context, connector)
               : null,
         ),
@@ -564,30 +608,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
     MeshCoreConnector connector,
   ) {
     final l10n = context.l10n;
+    final connected = connector.isConnected;
+    final offline = l10n.settings_requiresConnection;
     return Column(
       children: [
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.location_on_outlined,
           title: l10n.settings_location,
-          subtitle: l10n.settings_locationSubtitle,
-          onTap: () => _editLocation(context, connector),
+          subtitle: connected ? l10n.settings_locationSubtitle : offline,
+          onTap: connected ? () => _editLocation(context, connector) : null,
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.group_add_outlined,
           title: l10n.settings_contactSettings,
-          subtitle: l10n.settings_contactSettingsSubtitle,
-          onTap: () => _editAutoAddConfig(context, connector),
+          subtitle: connected ? l10n.settings_contactSettingsSubtitle : offline,
+          onTap: connected
+              ? () => _editAutoAddConfig(context, connector)
+              : null,
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.visibility_off_outlined,
           title: l10n.settings_privacy,
-          subtitle: l10n.settings_privacySubtitle,
-          onTap: () => _privacySettings(context, connector),
+          subtitle: connected ? l10n.settings_privacySubtitle : offline,
+          onTap: connected ? () => _privacySettings(context, connector) : null,
         ),
       ],
     );
@@ -598,36 +643,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
     MeshCoreConnector connector,
   ) {
     final l10n = context.l10n;
+    final connected = connector.isConnected;
+    final offline = l10n.settings_requiresConnection;
     return Column(
       children: [
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.sync,
           title: l10n.settings_syncTime,
-          subtitle: l10n.settings_syncTimeSubtitle,
-          onTap: () => _syncTime(context, connector),
+          subtitle: connected ? l10n.settings_syncTimeSubtitle : offline,
+          onTap: connected ? () => _syncTime(context, connector) : null,
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.refresh,
           title: l10n.settings_refreshContacts,
-          subtitle: l10n.settings_refreshContactsSubtitle,
-          onTap: () => connector.getContacts(),
+          subtitle: connected ? l10n.settings_refreshContactsSubtitle : offline,
+          onTap: connected ? () => connector.getContacts() : null,
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.restart_alt,
           title: l10n.settings_rebootDevice,
-          subtitle: l10n.settings_rebootDeviceSubtitle,
+          subtitle: connected ? l10n.settings_rebootDeviceSubtitle : offline,
           titleColor: MeshPalette.warn,
           iconColor: MeshPalette.warn,
-          onTap: () => _confirmReboot(context, connector),
+          onTap: connected ? () => _confirmReboot(context, connector) : null,
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.delete_outline,
           title: l10n.settings_deleteAllPaths,
           subtitle: l10n.settings_deleteAllPathsSubtitle,
@@ -646,8 +689,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final l10n = context.l10n;
     return Column(
       children: [
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.download_outlined,
           title: l10n.settings_gpxExportRepeaters,
           subtitle: l10n.settings_gpxExportRepeatersSubtitle,
@@ -665,8 +707,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           },
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.download_outlined,
           title: l10n.settings_gpxExportContacts,
           subtitle: l10n.settings_gpxExportContactsSubtitle,
@@ -684,8 +725,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           },
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.download_outlined,
           title: l10n.settings_gpxExportAll,
           subtitle: l10n.settings_gpxExportAllSubtitle,
@@ -710,8 +750,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final l10n = context.l10n;
     return Column(
       children: [
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.bluetooth_outlined,
           title: l10n.settings_companionDebugLog,
           subtitle: l10n.settings_companionDebugLogSubtitle,
@@ -725,8 +764,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           },
         ),
         const Divider(height: 1, indent: 16),
-        _tappableTile(
-          context,
+        MeshNavTile(
           icon: Icons.code_outlined,
           title: l10n.settings_appDebugLog,
           subtitle: l10n.settings_appDebugLogSubtitle,
@@ -743,107 +781,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _tappableTile(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    VoidCallback? onTap,
-    Color? titleColor,
-    Color? iconColor,
-  }) {
-    final scheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final effectiveIconColor = iconColor ?? scheme.onSurfaceVariant;
-
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          children: [
-            Icon(icon, size: 20, color: effectiveIconColor),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: titleColor,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: textTheme.bodySmall?.copyWith(
-                      color: titleColor != null
-                          ? titleColor.withValues(alpha: 0.7)
-                          : scheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(Icons.chevron_right, color: scheme.onSurfaceVariant, size: 16),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _editNodeName(BuildContext context, MeshCoreConnector connector) {
+  Future<void> _editNodeName(
+    BuildContext context,
+    MeshCoreConnector connector,
+  ) async {
     final l10n = context.l10n;
-    final controller = TextEditingController(text: connector.selfName ?? '');
-    showDialog(
+    final name = await showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.settings_nodeName),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: l10n.settings_nodeNameHint,
-            border: const OutlineInputBorder(),
-          ),
-          maxLength: 31,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.common_cancel),
-          ),
-          ListenableBuilder(
-            listenable: controller,
-            builder: (context, _) {
-              final name = controller.text.trim();
-              return TextButton(
-                onPressed: name.isEmpty
-                    ? null
-                    : () async {
-                        Navigator.pop(context);
-                        await connector.setNodeName(name);
-                        await connector.refreshDeviceInfo();
-                        if (!context.mounted) return;
-                        showDismissibleSnackBar(
-                          context,
-                          content: Text(l10n.settings_nodeNameUpdated),
-                        );
-                      },
-                child: Text(l10n.common_save),
-              );
-            },
-          ),
-        ],
-      ),
+      builder: (_) => _NodeNameDialog(initialName: connector.selfName ?? ''),
     );
+    if (name == null || !context.mounted) return;
+    if (!_ensureConnected(context, connector)) return;
+    try {
+      await connector.setNodeName(name);
+      await connector.refreshDeviceInfo();
+      if (!context.mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.settings_nodeNameUpdated),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.settings_error(e.toString())),
+      );
+    }
   }
 
   void _showRadioSettings(BuildContext context, MeshCoreConnector connector) {
     showDialog(
       context: context,
-      builder: (context) => _RadioSettingsDialog(connector: connector),
+      builder: (context) => RadioSettingsDialog(connector: connector),
     );
   }
 
@@ -855,12 +824,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (builderContext, setDialogState) => AlertDialog(
+          scrollable: true,
           title: Text(l10n.repeater_pathHashMode),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DropdownButtonFormField<int>(
+                isExpanded: true,
                 initialValue: selectedMode,
                 decoration: InputDecoration(
                   labelText: l10n.repeater_pathHashMode,
@@ -869,15 +840,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 items: [
                   DropdownMenuItem(
                     value: 0,
-                    child: Text(l10n.repeater_pathHashModeOption0),
+                    child: Text(
+                      l10n.repeater_pathHashModeOption0,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   DropdownMenuItem(
                     value: 1,
-                    child: Text(l10n.repeater_pathHashModeOption1),
+                    child: Text(
+                      l10n.repeater_pathHashModeOption1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   DropdownMenuItem(
                     value: 2,
-                    child: Text(l10n.repeater_pathHashModeOption2),
+                    child: Text(
+                      l10n.repeater_pathHashModeOption2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
                 onChanged: (value) {
@@ -888,7 +868,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(height: 12),
               Text(
                 l10n.settings_pathHashModeHelper,
-                style: Theme.of(builderContext).textTheme.bodySmall,
+                style: Theme.of(builderContext).textTheme.bodyMedium,
               ),
             ],
           ),
@@ -900,6 +880,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             FilledButton(
               onPressed: () async {
                 Navigator.pop(dialogContext);
+                if (!_ensureConnected(context, connector)) return;
                 try {
                   await connector.setPathHashMode(selectedMode);
                   await connector.refreshDeviceInfo();
@@ -924,187 +905,90 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _editLocation(BuildContext context, MeshCoreConnector connector) {
+  Future<void> _editLocation(
+    BuildContext context,
+    MeshCoreConnector connector,
+  ) async {
     final l10n = context.l10n;
     final settingsService = context.read<AppSettingsService>();
-    final latController = TextEditingController();
-    final lonController = TextEditingController();
-    final intervalController = TextEditingController();
-    latController.text = connector.selfLatitude?.toStringAsFixed(6) ?? '';
-    lonController.text = connector.selfLongitude?.toStringAsFixed(6) ?? '';
 
     // Safe access to custom vars - may be null before device responds
     final customVars = connector.currentCustomVars ?? {};
     final bool hasGPS = customVars.containsKey("gps");
-    bool isGPSEnabled = customVars["gps"] == "1";
+    final bool initialGPSEnabled = customVars["gps"] == "1";
 
-    final currentInterval = settingsService.resolvedGpsIntervalSeconds(
-      customVars,
-    );
-    intervalController.text = currentInterval.toString();
-
-    String? intervalError;
-
-    showDialog(
+    final edit = await showDialog<_LocationEdit>(
       context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (builderContext, setDialogState) => AlertDialog(
-          title: Text(l10n.settings_location),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: latController,
-                decoration: InputDecoration(
-                  labelText: l10n.settings_latitude,
-                  border: const OutlineInputBorder(),
-                ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                  signed: true,
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: lonController,
-                decoration: InputDecoration(
-                  labelText: l10n.settings_longitude,
-                  border: const OutlineInputBorder(),
-                ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                  signed: true,
-                ),
-              ),
-              if (hasGPS) ...[
-                const SizedBox(height: 16),
-                TextField(
-                  controller: intervalController,
-                  onChanged: (_) {
-                    if (intervalError != null) {
-                      setDialogState(() => intervalError = null);
-                    }
-                  },
-                  decoration: InputDecoration(
-                    labelText: l10n.settings_locationIntervalSec,
-                    border: const OutlineInputBorder(),
-                    errorText: intervalError,
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: false,
-                    signed: false,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                FeatureToggleRow(
-                  title: l10n.settings_locationGPSEnable,
-                  subtitle: l10n.settings_locationGPSEnableSubtitle,
-                  value: isGPSEnabled,
-                  onChanged: (value) async {
-                    setDialogState(() => isGPSEnabled = value);
-                    if (value) {
-                      await connector.setCustomVar("gps:1");
-                    } else {
-                      await connector.setCustomVar("gps:0");
-                    }
-                  },
-                ),
-              ],
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(l10n.common_cancel),
-            ),
-            TextButton(
-              onPressed: () async {
-                int? interval;
-                if (hasGPS) {
-                  final intervalText = intervalController.text.trim();
-                  if (intervalText.isNotEmpty) {
-                    interval = int.tryParse(intervalText);
-                    if (interval == null ||
-                        interval < 60 ||
-                        interval >= 86400) {
-                      setDialogState(() {
-                        intervalError = l10n.settings_locationIntervalInvalid;
-                      });
-                      return;
-                    }
-                  }
-                }
-
-                Navigator.pop(dialogContext);
-
-                if (interval != null) {
-                  await settingsService.setGpsIntervalSeconds(
-                    interval,
-                    writeToDevice: (value) =>
-                        connector.setCustomVar("gps_interval:$value"),
-                  );
-                  await connector.refreshDeviceInfo();
-                  if (!context.mounted) return;
-                  showDismissibleSnackBar(
-                    context,
-                    content: Text(l10n.settings_locationUpdated),
-                  );
-                }
-
-                final latText = latController.text.trim();
-                final lonText = lonController.text.trim();
-                if (latText.isEmpty && lonText.isEmpty) {
-                  return;
-                }
-
-                final currentLat = connector.selfLatitude;
-                final currentLon = connector.selfLongitude;
-                final lat = latText.isNotEmpty
-                    ? double.tryParse(latText)
-                    : currentLat;
-                final lon = lonText.isNotEmpty
-                    ? double.tryParse(lonText)
-                    : currentLon;
-                if (lat == null || lon == null) {
-                  if (!context.mounted) return;
-                  showDismissibleSnackBar(
-                    context,
-                    content: Text(l10n.settings_locationBothRequired),
-                  );
-                  return;
-                }
-                if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
-                  if (!context.mounted) return;
-                  showDismissibleSnackBar(
-                    context,
-                    content: Text(l10n.settings_locationInvalid),
-                  );
-                  return;
-                }
-
-                await connector.setNodeLocation(lat: lat, lon: lon);
-                await connector.refreshDeviceInfo();
-                if (!context.mounted) return;
-                showDismissibleSnackBar(
-                  context,
-                  content: Text(l10n.settings_locationUpdated),
-                );
-              },
-              child: Text(l10n.common_save),
-            ),
-          ],
+      builder: (_) => _LocationDialog(
+        latitude: connector.selfLatitude,
+        longitude: connector.selfLongitude,
+        hasGPS: hasGPS,
+        initialGPSEnabled: initialGPSEnabled,
+        initialIntervalSeconds: settingsService.resolvedGpsIntervalSeconds(
+          customVars,
         ),
       ),
     );
+    if (edit == null || !edit.hasChanges || !context.mounted) return;
+    if (!_ensureConnected(context, connector)) return;
+
+    try {
+      final gpsEnabled = edit.gpsEnabled;
+      if (gpsEnabled != null) {
+        await connector.setCustomVar(gpsEnabled ? "gps:1" : "gps:0");
+      }
+      final interval = edit.intervalSeconds;
+      if (interval != null) {
+        await settingsService.setGpsIntervalSeconds(
+          interval,
+          writeToDevice: (value) =>
+              connector.setCustomVar("gps_interval:$value"),
+        );
+      }
+      final lat = edit.latitude;
+      final lon = edit.longitude;
+      if (lat != null && lon != null) {
+        await connector.setNodeLocation(lat: lat, lon: lon);
+      }
+      await connector.refreshDeviceInfo();
+      if (!context.mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(
+          edit.clearsLocation
+              ? l10n.settings_locationCleared
+              : l10n.settings_locationUpdated,
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.settings_error(e.toString())),
+      );
+    }
   }
 
-  void _syncTime(BuildContext context, MeshCoreConnector connector) {
+  Future<void> _syncTime(
+    BuildContext context,
+    MeshCoreConnector connector,
+  ) async {
     final l10n = context.l10n;
-    connector.syncTime();
-    showDismissibleSnackBar(
-      context,
-      content: Text(l10n.settings_timeSynchronized),
-    );
+    if (!_ensureConnected(context, connector)) return;
+    try {
+      await connector.syncTime();
+      if (!context.mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.settings_timeSynchronized),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(l10n.settings_error(e.toString())),
+      );
+    }
   }
 
   void _confirmDeleteAllPaths(
@@ -1139,6 +1023,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _confirmReboot(BuildContext context, MeshCoreConnector connector) {
     final l10n = context.l10n;
+    final screenContext = context;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -1152,6 +1037,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
+              if (!_ensureConnected(screenContext, connector)) return;
               connector.rebootDevice();
             },
             child: Text(
@@ -1195,6 +1081,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       filename,
       shareText,
       subject,
+      sharePositionOrigin: shareOriginOf(context),
     );
     if (!mounted) return;
     switch (result) {
@@ -1226,11 +1113,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _editAutoAddConfig(BuildContext context, MeshCoreConnector connector) {
     final l10n = context.l10n;
+    // The dialog's context is gone once it pops; report through the screen.
+    final screenContext = context;
     bool autoAddChat = false;
     bool autoAddRepeater = false;
     bool autoAddRoomServer = false;
     bool autoAddSensor = false;
     bool overwriteOldest = false;
+    final appSettingsService = context.read<AppSettingsService>();
+    bool evictDiscoveredContactsEnabled =
+        appSettingsService.settings.evictDiscoveredContactsEnabled;
+    bool saving = false;
 
     final connector = context.read<MeshCoreConnector>();
     autoAddChat = connector.autoAddUsers ?? false;
@@ -1292,6 +1185,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     setDialogState(() => overwriteOldest = value);
                   },
                 ),
+                const Divider(height: 4),
+                FeatureToggleRow(
+                  title: l10n.contactsSettings_evictDiscoveredContactsTitle,
+                  subtitle: l10n
+                      .contactsSettings_evictDiscoveredContactsSubtitle(
+                        MeshCoreConnector.maxDiscoveredContacts,
+                      ),
+                  value: evictDiscoveredContactsEnabled,
+                  onChanged: (value) {
+                    setDialogState(
+                      () => evictDiscoveredContactsEnabled = value,
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -1301,17 +1208,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Text(l10n.common_cancel),
             ),
             TextButton(
-              onPressed: () {
-                _sendSettings(
-                  connector,
-                  autoAddChat,
-                  autoAddRepeater,
-                  autoAddRoomServer,
-                  autoAddSensor,
-                  overwriteOldest,
-                );
-                Navigator.pop(context);
-              },
+              onPressed: saving
+                  ? null
+                  : () async {
+                      if (!_ensureConnected(context, connector)) return;
+                      setDialogState(() => saving = true);
+                      try {
+                        await _sendSettings(
+                          connector,
+                          autoAddChat,
+                          autoAddRepeater,
+                          autoAddRoomServer,
+                          autoAddSensor,
+                          overwriteOldest,
+                        );
+                        await appSettingsService
+                            .setEvictDiscoveredContactsEnabled(
+                              evictDiscoveredContactsEnabled,
+                            );
+                        if (evictDiscoveredContactsEnabled) {
+                          await connector.trimDiscoveredContactsToLimit();
+                        }
+                      } catch (e) {
+                        if (!context.mounted) return;
+                        showDismissibleSnackBar(
+                          context,
+                          content: Text(l10n.settings_error(e.toString())),
+                        );
+                        setDialogState(() => saving = false);
+                        return;
+                      }
+                      if (!context.mounted) return;
+                      Navigator.pop(context);
+                      showDismissibleSnackBar(
+                        screenContext,
+                        content: Text(l10n.settings_contactSettingsSaved),
+                      );
+                    },
               child: Text(l10n.common_save),
             ),
           ],
@@ -1320,7 +1253,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _sendSettings(
+  Future<void> _sendSettings(
     MeshCoreConnector connector,
     bool autoAddChat,
     bool autoAddRepeater,
@@ -1489,7 +1422,7 @@ void _privacySettings(BuildContext context, MeshCoreConnector connector) {
               const SizedBox(height: 8),
               Text(
                 l10n.settings_telemetryPerContactHint,
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
           ),
@@ -1502,25 +1435,40 @@ void _privacySettings(BuildContext context, MeshCoreConnector connector) {
           TextButton(
             onPressed: () async {
               Navigator.pop(dialogContext);
-              await connector.setTelemetryModeBase(
-                telemetryMode,
-                telemetryLocMode,
-                telemetryEnvMode,
-                advertLocPolicy ? 1 : 0,
-                multiAcks,
-              );
-              await settingsService.setAutoSendZeroHopAdvertOnGpsUpdate(
-                autoZeroHopAdvertOnGpsUpdate,
-              );
-              await settingsService.setAutoSendSelfAdvertAsFlood(
-                autoSelfAdvertAsFlood,
-              );
-              await connector.refreshDeviceInfo();
-              if (!context.mounted) return;
-              showDismissibleSnackBar(
-                context,
-                content: Text(l10n.settings_telemetryModeUpdated),
-              );
+              if (!connector.isConnected) {
+                showDismissibleSnackBar(
+                  context,
+                  content: Text(l10n.settings_notConnectedError),
+                );
+                return;
+              }
+              try {
+                await connector.setTelemetryModeBase(
+                  telemetryMode,
+                  telemetryLocMode,
+                  telemetryEnvMode,
+                  advertLocPolicy ? 1 : 0,
+                  multiAcks,
+                );
+                await settingsService.setAutoSendZeroHopAdvertOnGpsUpdate(
+                  autoZeroHopAdvertOnGpsUpdate,
+                );
+                await settingsService.setAutoSendSelfAdvertAsFlood(
+                  autoSelfAdvertAsFlood,
+                );
+                await connector.refreshDeviceInfo();
+                if (!context.mounted) return;
+                showDismissibleSnackBar(
+                  context,
+                  content: Text(l10n.settings_telemetryModeUpdated),
+                );
+              } catch (e) {
+                if (!context.mounted) return;
+                showDismissibleSnackBar(
+                  context,
+                  content: Text(l10n.settings_error(e.toString())),
+                );
+              }
             },
             child: Text(l10n.common_save),
           ),
@@ -1530,669 +1478,298 @@ void _privacySettings(BuildContext context, MeshCoreConnector connector) {
   );
 }
 
-class _RadioSettingsDialog extends StatefulWidget {
-  final MeshCoreConnector connector;
+/// Node-name editor. Owns (and disposes) its controller; pops with the
+/// trimmed name on Save, or null on Cancel.
+class _NodeNameDialog extends StatefulWidget {
+  final String initialName;
 
-  const _RadioSettingsDialog({required this.connector});
+  const _NodeNameDialog({required this.initialName});
 
   @override
-  State<_RadioSettingsDialog> createState() => _RadioSettingsDialogState();
+  State<_NodeNameDialog> createState() => _NodeNameDialogState();
 }
 
-class _RadioSettingsDialogState extends State<_RadioSettingsDialog> {
-  final _frequencyController = TextEditingController();
-  LoRaBandwidth _bandwidth = LoRaBandwidth.bw125;
-  LoRaSpreadingFactor _spreadingFactor = LoRaSpreadingFactor.sf7;
-  LoRaCodingRate _codingRate = LoRaCodingRate.cr4_5;
-  final _txPowerController = TextEditingController(text: '20');
-  bool _clientRepeat = false;
-  int? _selectedPresetIndex;
-  _RadioSettingsSnapshot? _lastNonRepeatSnapshot;
-  String? _frequencyError;
-  String? _txPowerError;
-
-  AppDebugLogService get _appLog =>
-      Provider.of<AppDebugLogService>(context, listen: false);
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Populate with current settings if available
-    if (widget.connector.currentFreqHz != null) {
-      _frequencyController.text = (widget.connector.currentFreqHz! / 1000.0)
-          .toStringAsFixed(3);
-    } else {
-      _frequencyController.text = '915.0';
-    }
-
-    if (widget.connector.currentBwHz != null) {
-      // Find matching bandwidth enum
-      final bwValue = widget.connector.currentBwHz!;
-      for (var bw in LoRaBandwidth.values) {
-        if (bw.hz == bwValue) {
-          _bandwidth = bw;
-          break;
-        }
-      }
-    }
-
-    if (widget.connector.currentSf != null) {
-      // Find matching spreading factor enum
-      final sfValue = widget.connector.currentSf!;
-      for (var sf in LoRaSpreadingFactor.values) {
-        if (sf.value == sfValue) {
-          _spreadingFactor = sf;
-          break;
-        }
-      }
-    }
-
-    if (widget.connector.currentCr != null) {
-      // Find matching coding rate enum
-      final crValue = _toUiCodingRate(widget.connector.currentCr!);
-      for (var cr in LoRaCodingRate.values) {
-        if (cr.value == crValue) {
-          _codingRate = cr;
-          break;
-        }
-      }
-    }
-
-    if (widget.connector.currentTxPower != null) {
-      _txPowerController.text = widget.connector.currentTxPower.toString();
-    }
-
-    _clientRepeat = widget.connector.clientRepeat ?? false;
-    _selectedPresetIndex = _findMatchingPresetIndex();
-    if (_clientRepeat) {
-      _lastNonRepeatSnapshot =
-          _sessionRememberedNonRepeatSnapshot() ??
-          _inferNonRepeatSnapshotForRepeatEnabled();
-      _selectedPresetIndex = _findMatchingPresetIndexForSnapshot(
-        _lastNonRepeatSnapshot!,
-      );
-    } else {
-      _lastNonRepeatSnapshot = _nonRepeatSnapshotForCurrentSelection();
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _logRadioSettingsState('Dialog initialized');
-    });
-  }
+class _NodeNameDialogState extends State<_NodeNameDialog> {
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.initialName,
+  );
 
   @override
   void dispose() {
-    _frequencyController.dispose();
-    _txPowerController.dispose();
+    _controller.dispose();
     super.dispose();
-  }
-
-  void _applyPreset(int index) {
-    setState(() {
-      _applyPresetState(index);
-    });
-    _logRadioSettingsState(
-      'Applied preset ${RadioSettings.presets[index].$1} (#$index)',
-    );
-  }
-
-  int? _findMatchingPresetIndex() {
-    return _findMatchingPresetIndexForSnapshot(_currentSnapshot());
-  }
-
-  int? _findMatchingPresetIndexForSnapshot(_RadioSettingsSnapshot snapshot) {
-    for (final i in _visiblePresetIndexes()) {
-      final preset = RadioSettings.presets[i].$2;
-      if (preset.frequencyHz == snapshot.frequencyHz &&
-          preset.bandwidth == snapshot.bandwidth &&
-          preset.spreadingFactor == snapshot.spreadingFactor &&
-          preset.codingRate == snapshot.codingRate) {
-        return i;
-      }
-    }
-    return null;
-  }
-
-  Iterable<int> _visiblePresetIndexes() sync* {
-    for (var i = 0; i < RadioSettings.presets.length; i++) {
-      if (_isOffGridPresetIndex(i)) {
-        continue;
-      }
-      yield i;
-    }
-  }
-
-  _RadioSettingsSnapshot _currentSnapshot() {
-    final frequencyMHz = double.tryParse(_frequencyController.text) ?? 915.0;
-    final txPowerDbm = int.tryParse(_txPowerController.text) ?? 20;
-    return _RadioSettingsSnapshot(
-      frequencyMHz: frequencyMHz,
-      bandwidth: _bandwidth,
-      spreadingFactor: _spreadingFactor,
-      codingRate: _codingRate,
-      txPowerDbm: txPowerDbm,
-    );
-  }
-
-  bool _isOffGridPresetIndex(int? index) {
-    if (index == null) return false;
-    return RadioSettings.presets[index].$1.startsWith('Off-Grid ');
-  }
-
-  double _offGridFrequencyForBaseFrequency(double baseFrequencyMHz) {
-    final baseKHz = (baseFrequencyMHz * 1000).round();
-    final ranges = widget.connector.allowedRepeatFreqRanges;
-    final candidates = ranges == null || ranges.isEmpty
-        ? _defaultRepeatFreqsKHz
-        : {for (final r in ranges) baseKHz.clamp(r.lowKHz, r.highKHz)};
-    final closestKHz = candidates.reduce(
-      (a, b) => (a - baseKHz).abs() <= (b - baseKHz).abs() ? a : b,
-    );
-    return closestKHz / 1000.0;
-  }
-
-  double _normalFrequencyForBand(double frequencyMHz) {
-    if (frequencyMHz < 500) return 433.650;
-    if (frequencyMHz < 900) return 869.432;
-    return 915.8;
-  }
-
-  _RadioSettingsSnapshot _fallbackNonRepeatSnapshot(
-    double currentFrequencyMHz,
-  ) {
-    return _RadioSettingsSnapshot(
-      frequencyMHz: _normalFrequencyForBand(currentFrequencyMHz),
-      bandwidth: _bandwidth,
-      spreadingFactor: _spreadingFactor,
-      codingRate: _codingRate,
-      txPowerDbm: int.tryParse(_txPowerController.text) ?? 20,
-    );
-  }
-
-  _RadioSettingsSnapshot _nonRepeatSnapshotForCurrentSelection() {
-    final current = _currentSnapshot();
-    if (!_isOffGridPresetIndex(_selectedPresetIndex)) {
-      return current;
-    }
-    return _fallbackNonRepeatSnapshot(current.frequencyMHz);
-  }
-
-  _RadioSettingsSnapshot? _sessionRememberedNonRepeatSnapshot() {
-    final snapshot = widget.connector.rememberedNonRepeatRadioState;
-    if (snapshot == null) return null;
-    return _RadioSettingsSnapshot.fromMeshCoreSnapshot(snapshot);
-  }
-
-  _RadioSettingsSnapshot _inferNonRepeatSnapshotForRepeatEnabled() {
-    final current = _currentSnapshot();
-    for (final i in _visiblePresetIndexes()) {
-      final preset = RadioSettings.presets[i].$2;
-      final offGridFreqHz =
-          (_offGridFrequencyForBaseFrequency(preset.frequencyMHz) * 1000)
-              .round();
-      if (offGridFreqHz == current.frequencyHz &&
-          preset.bandwidth == current.bandwidth &&
-          preset.spreadingFactor == current.spreadingFactor &&
-          preset.codingRate == current.codingRate) {
-        return _RadioSettingsSnapshot(
-          frequencyMHz: preset.frequencyMHz,
-          bandwidth: preset.bandwidth,
-          spreadingFactor: preset.spreadingFactor,
-          codingRate: preset.codingRate,
-          txPowerDbm: current.txPowerDbm,
-        );
-      }
-    }
-    return _fallbackNonRepeatSnapshot(current.frequencyMHz);
-  }
-
-  void _applySnapshot(_RadioSettingsSnapshot snapshot) {
-    _frequencyController.text = snapshot.frequencyMHz.toStringAsFixed(3);
-    _bandwidth = snapshot.bandwidth;
-    _spreadingFactor = snapshot.spreadingFactor;
-    _codingRate = snapshot.codingRate;
-    _txPowerController.text = snapshot.txPowerDbm.toString();
-  }
-
-  void _applyPresetState(int index) {
-    final preset = RadioSettings.presets[index].$2;
-    final baseSnapshot = _RadioSettingsSnapshot(
-      frequencyMHz: preset.frequencyMHz,
-      bandwidth: preset.bandwidth,
-      spreadingFactor: preset.spreadingFactor,
-      codingRate: preset.codingRate,
-      txPowerDbm: preset.txPowerDbm,
-    );
-    final frequencyMHz = _clientRepeat
-        ? _offGridFrequencyForBaseFrequency(baseSnapshot.frequencyMHz)
-        : baseSnapshot.frequencyMHz;
-    _frequencyController.text = frequencyMHz.toString();
-    _bandwidth = preset.bandwidth;
-    _spreadingFactor = preset.spreadingFactor;
-    _codingRate = preset.codingRate;
-    _txPowerController.text = preset.txPowerDbm.toString();
-    _selectedPresetIndex = index;
-    _lastNonRepeatSnapshot = baseSnapshot;
-  }
-
-  void _syncPresetSelection() {
-    final previousPresetIndex = _selectedPresetIndex;
-    final previousLastNonRepeat = _lastNonRepeatSnapshot;
-    if (_clientRepeat) {
-      final baseSnapshot =
-          previousLastNonRepeat ?? _inferNonRepeatSnapshotForRepeatEnabled();
-      if (_bandwidth != baseSnapshot.bandwidth ||
-          _spreadingFactor != baseSnapshot.spreadingFactor ||
-          _codingRate != baseSnapshot.codingRate ||
-          (int.tryParse(_txPowerController.text) ?? 20) !=
-              baseSnapshot.txPowerDbm) {
-        _lastNonRepeatSnapshot = _RadioSettingsSnapshot(
-          frequencyMHz: baseSnapshot.frequencyMHz,
-          bandwidth: _bandwidth,
-          spreadingFactor: _spreadingFactor,
-          codingRate: _codingRate,
-          txPowerDbm: int.tryParse(_txPowerController.text) ?? 20,
-        );
-      }
-      _selectedPresetIndex = _findMatchingPresetIndexForSnapshot(
-        _lastNonRepeatSnapshot ?? baseSnapshot,
-      );
-      if (previousPresetIndex != _selectedPresetIndex ||
-          previousLastNonRepeat != _lastNonRepeatSnapshot) {
-        _logRadioSettingsState(
-          'Preset match updated while repeat enabled: ${_presetLabel(previousPresetIndex)} -> ${_presetLabel(_selectedPresetIndex)}',
-        );
-      }
-      return;
-    }
-    _lastNonRepeatSnapshot = _nonRepeatSnapshotForCurrentSelection();
-    _selectedPresetIndex = _findMatchingPresetIndexForSnapshot(
-      _lastNonRepeatSnapshot!,
-    );
-    if (previousPresetIndex != _selectedPresetIndex ||
-        previousLastNonRepeat != _lastNonRepeatSnapshot) {
-      _logRadioSettingsState(
-        'Preset sync updated state from ${_presetLabel(previousPresetIndex)} to ${_presetLabel(_selectedPresetIndex)}',
-      );
-    }
-  }
-
-  void _handleManualSettingsChanged(String source) {
-    _logRadioSettingsState('Manual settings edit: $source');
-    setState(() {
-      _validateFields();
-      _syncPresetSelection();
-    });
-  }
-
-  void _validateFields() {
-    final l10n = context.l10n;
-    final freqMHz = double.tryParse(_frequencyController.text);
-    _frequencyError = (freqMHz == null || freqMHz < 150 || freqMHz > 2500)
-        ? l10n.settings_frequencyInvalid
-        : null;
-
-    final maxTxPower = widget.connector.maxTxPower ?? 22;
-    final txPower = int.tryParse(_txPowerController.text);
-    _txPowerError =
-        (txPower == null || txPower < _minTxPowerDbm || txPower > maxTxPower)
-        ? '${l10n.settings_txPowerInvalid} ($_minTxPowerDbm-$maxTxPower dBm)'
-        : null;
-  }
-
-  void _handleClientRepeatChanged(bool enabled) {
-    _logRadioSettingsState(
-      'Off-grid repeat toggle requested: $_clientRepeat -> $enabled',
-    );
-    setState(() {
-      final currentSnapshot = _currentSnapshot();
-      if (enabled) {
-        if (!_clientRepeat) {
-          _syncPresetSelection();
-        }
-        final baseSnapshot = _lastNonRepeatSnapshot ?? currentSnapshot;
-        _clientRepeat = true;
-        _frequencyController.text = _offGridFrequencyForBaseFrequency(
-          baseSnapshot.frequencyMHz,
-        ).toStringAsFixed(3);
-        return;
-      }
-
-      _clientRepeat = false;
-      _applySnapshot(
-        _lastNonRepeatSnapshot ??
-            _fallbackNonRepeatSnapshot(currentSnapshot.frequencyMHz),
-      );
-      _syncPresetSelection();
-    });
-    _logRadioSettingsState('Off-grid repeat toggle applied');
-  }
-
-  Future<void> _saveSettings() async {
-    final l10n = context.l10n;
-    final freqMHz = double.tryParse(_frequencyController.text);
-    final txPower = int.tryParse(_txPowerController.text);
-
-    if (freqMHz == null || freqMHz < 150 || freqMHz > 2500) {
-      showDismissibleSnackBar(
-        context,
-        content: Text(l10n.settings_frequencyInvalid),
-      );
-      return;
-    }
-
-    final maxTxPower = widget.connector.maxTxPower ?? 22;
-    if (txPower == null || txPower < _minTxPowerDbm || txPower > maxTxPower) {
-      showDismissibleSnackBar(
-        context,
-        content: Text(
-          '${l10n.settings_txPowerInvalid} ($_minTxPowerDbm-$maxTxPower dBm)',
-        ),
-      );
-      return;
-    }
-
-    final freqHz = (freqMHz * 1000).round();
-    final bwHz = _bandwidth.hz;
-    final sf = _spreadingFactor.value;
-    final cr = _codingRate.value;
-
-    // if the client repeat isnt null then we know its supported
-    //otherwise we leave it out of the frame to avoid accidentally enabling
-    final knownRepeat = widget.connector.clientRepeat != null;
-
-    if (knownRepeat) {
-      if (_clientRepeat && !_isAllowedRepeatFreqKHz(widget.connector, freqHz)) {
-        showDismissibleSnackBar(
-          context,
-          content: Text(l10n.settings_clientRepeatFreqWarning),
-        );
-        return;
-      }
-    }
-
-    try {
-      _logRadioSettingsState('Saving radio settings');
-      final accepted = await widget.connector.setRadioParams(
-        freqHz,
-        bwHz,
-        sf,
-        cr,
-        clientRepeat: knownRepeat ? _clientRepeat : null,
-      );
-      if (!accepted) {
-        _logRadioSettingsState('Radio rejected requested settings');
-        if (!mounted) return;
-        showDismissibleSnackBar(
-          context,
-          content: Text(l10n.settings_radioSettingsNotApplied),
-        );
-        return;
-      }
-      await widget.connector.sendFrame(buildSetRadioTxPowerFrame(txPower));
-      final selfInfo = widget.connector.receivedFrames
-          .firstWhere((f) => f.isNotEmpty && f[0] == respCodeSelfInfo)
-          .timeout(const Duration(seconds: 5));
-      await widget.connector.refreshDeviceInfo();
-      final applied = await selfInfo.then(
-        (_) => _deviceMatches(
-          freqHz: freqHz,
-          bwHz: bwHz,
-          sf: sf,
-          cr: cr,
-          txPower: txPower,
-          clientRepeat: knownRepeat ? _clientRepeat : null,
-        ),
-        onError: (_) => true,
-      );
-      if (!applied) {
-        _logRadioSettingsState('Radio did not apply requested settings');
-        if (!mounted) return;
-        showDismissibleSnackBar(
-          context,
-          content: Text(l10n.settings_radioSettingsNotApplied),
-        );
-        return;
-      }
-      final rememberedSnapshot = _clientRepeat
-          ? _lastNonRepeatSnapshot
-          : _currentSnapshot();
-      if (rememberedSnapshot != null) {
-        widget.connector.rememberNonRepeatRadioState(
-          rememberedSnapshot.toMeshCoreSnapshot(),
-        );
-      }
-
-      if (!mounted) return;
-      _logRadioSettingsState('Radio settings saved successfully');
-      showDismissibleSnackBar(
-        context,
-        content: Text(l10n.settings_radioSettingsUpdated),
-      );
-    } catch (e) {
-      _appLog.warn('Radio settings save failed: $e', tag: 'RadioSettings');
-      if (!mounted) return;
-      showDismissibleSnackBar(
-        context,
-        content: Text(l10n.settings_error(e.toString())),
-      );
-    }
-    if (!mounted) return;
-    Navigator.pop(context);
-  }
-
-  bool _deviceMatches({
-    required int freqHz,
-    required int bwHz,
-    required int sf,
-    required int cr,
-    required int txPower,
-    required bool? clientRepeat,
-  }) {
-    final c = widget.connector;
-    // Firmware stores freq/bw as float MHz/kHz, so allow 1 unit of rounding.
-    return c.currentFreqHz != null &&
-        (c.currentFreqHz! - freqHz).abs() <= 1 &&
-        c.currentBwHz != null &&
-        (c.currentBwHz! - bwHz).abs() <= 1 &&
-        c.currentSf == sf &&
-        c.currentCr != null &&
-        _toUiCodingRate(c.currentCr!) == cr &&
-        c.currentTxPower == txPower &&
-        (clientRepeat == null || c.clientRepeat == clientRepeat);
-  }
-
-  String _presetLabel(int? index) {
-    if (index == null) {
-      return 'custom';
-    }
-    return '${RadioSettings.presets[index].$1} (#$index)';
-  }
-
-  String _formatSnapshot(_RadioSettingsSnapshot? snapshot) {
-    if (snapshot == null) {
-      return 'null';
-    }
-    return '${snapshot.frequencyMHz.toStringAsFixed(3)}MHz/'
-        '${snapshot.bandwidth.label}/'
-        '${snapshot.spreadingFactor.label}/'
-        '${snapshot.codingRate.label}/'
-        '${snapshot.txPowerDbm}dBm';
-  }
-
-  void _logRadioSettingsState(String message) {
-    if (!kDebugMode) return;
-    _appLog.info(
-      '$message | '
-      'freq=${_frequencyController.text}MHz '
-      'bw=${_bandwidth.label} '
-      'sf=${_spreadingFactor.label} '
-      'cr=${_codingRate.label} '
-      'tx=${_txPowerController.text}dBm '
-      'repeat=$_clientRepeat '
-      'preset=${_presetLabel(_selectedPresetIndex)} '
-      'lastNonRepeat=${_formatSnapshot(_lastNonRepeatSnapshot)}',
-      tag: 'RadioSettings',
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return AlertDialog(
-      title: Text(l10n.settings_radioSettings),
+      title: Text(l10n.settings_nodeName),
+      content: TextField(
+        controller: _controller,
+        decoration: InputDecoration(
+          hintText: l10n.settings_nodeNameHint,
+          border: const OutlineInputBorder(),
+        ),
+        inputFormatters: const [
+          Utf8LengthLimitingTextInputFormatter(maxRadioNameBytes),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.common_cancel),
+        ),
+        ListenableBuilder(
+          listenable: _controller,
+          builder: (context, _) {
+            final name = _controller.text.trim();
+            return TextButton(
+              onPressed: name.isEmpty
+                  ? null
+                  : () => Navigator.pop(context, name),
+              child: Text(l10n.common_save),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+/// What the location dialog asks the screen to apply. Null fields are left
+/// unchanged on the device.
+class _LocationEdit {
+  final bool? gpsEnabled;
+  final int? intervalSeconds;
+  final double? latitude;
+  final double? longitude;
+  final bool clearsLocation;
+
+  const _LocationEdit({
+    this.gpsEnabled,
+    this.intervalSeconds,
+    this.latitude,
+    this.longitude,
+    this.clearsLocation = false,
+  });
+
+  bool get hasChanges =>
+      gpsEnabled != null ||
+      intervalSeconds != null ||
+      (latitude != null && longitude != null);
+}
+
+/// Location / GPS editor. Owns (and disposes) its controllers and validates
+/// every field before closing, reporting each error under the field it
+/// belongs to.
+class _LocationDialog extends StatefulWidget {
+  final double? latitude;
+  final double? longitude;
+  final bool hasGPS;
+  final bool initialGPSEnabled;
+  final int initialIntervalSeconds;
+
+  const _LocationDialog({
+    required this.latitude,
+    required this.longitude,
+    required this.hasGPS,
+    required this.initialGPSEnabled,
+    required this.initialIntervalSeconds,
+  });
+
+  @override
+  State<_LocationDialog> createState() => _LocationDialogState();
+}
+
+class _LocationDialogState extends State<_LocationDialog> {
+  late final TextEditingController _latController;
+  late final TextEditingController _lonController;
+  late final TextEditingController _intervalController;
+  late bool _isGPSEnabled = widget.initialGPSEnabled;
+  String? _latError;
+  String? _lonError;
+  String? _intervalError;
+
+  /// Firmware stores "no location" as 0,0 (the default for a fresh node), so
+  /// that pair is shown as empty fields rather than a real coordinate.
+  bool get _hasLocation {
+    final lat = widget.latitude;
+    final lon = widget.longitude;
+    return lat != null && lon != null && !(lat == 0 && lon == 0);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _latController = TextEditingController(
+      text: _hasLocation ? widget.latitude!.toStringAsFixed(6) : '',
+    );
+    _lonController = TextEditingController(
+      text: _hasLocation ? widget.longitude!.toStringAsFixed(6) : '',
+    );
+    _intervalController = TextEditingController(
+      text: widget.initialIntervalSeconds.toString(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _latController.dispose();
+    _lonController.dispose();
+    _intervalController.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    final l10n = context.l10n;
+    // Validate every field before closing so a typo doesn't discard the
+    // input or leave half the changes applied.
+    int? interval;
+    String? intervalError;
+    if (widget.hasGPS) {
+      final intervalText = _intervalController.text.trim();
+      if (intervalText.isNotEmpty) {
+        interval = int.tryParse(intervalText);
+        if (interval == null || interval < 60 || interval >= 86400) {
+          intervalError = l10n.settings_locationIntervalInvalid;
+        }
+      }
+    }
+
+    final latText = _latController.text.trim();
+    final lonText = _lonController.text.trim();
+    double? lat;
+    double? lon;
+    String? latError;
+    String? lonError;
+    var clearsLocation = false;
+    if (latText.isEmpty && lonText.isEmpty) {
+      // Clearing both fields removes the location. Companion firmware has no
+      // dedicated "clear" command: CMD_SET_ADVERT_LATLON with 0,0 restores
+      // the factory default, which firmware and this app treat as unset.
+      if (_hasLocation) {
+        lat = 0;
+        lon = 0;
+        clearsLocation = true;
+      }
+    } else {
+      // One empty field keeps the device's current value for that axis.
+      lat = latText.isNotEmpty
+          ? double.tryParse(latText)
+          : (_hasLocation ? widget.latitude : null);
+      lon = lonText.isNotEmpty
+          ? double.tryParse(lonText)
+          : (_hasLocation ? widget.longitude : null);
+      if (lat == null) {
+        latError = latText.isEmpty
+            ? l10n.settings_locationBothRequired
+            : l10n.settings_locationInvalid;
+      } else if (lat < -90 || lat > 90) {
+        latError = l10n.settings_locationInvalid;
+      }
+      if (lon == null) {
+        lonError = lonText.isEmpty
+            ? l10n.settings_locationBothRequired
+            : l10n.settings_locationInvalid;
+      } else if (lon < -180 || lon > 180) {
+        lonError = l10n.settings_locationInvalid;
+      }
+    }
+
+    if (intervalError != null || latError != null || lonError != null) {
+      setState(() {
+        _intervalError = intervalError;
+        _latError = latError;
+        _lonError = lonError;
+      });
+      return;
+    }
+
+    Navigator.pop(
+      context,
+      _LocationEdit(
+        gpsEnabled: widget.hasGPS && _isGPSEnabled != widget.initialGPSEnabled
+            ? _isGPSEnabled
+            : null,
+        intervalSeconds: interval,
+        latitude: lat,
+        longitude: lon,
+        clearsLocation: clearsLocation,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    const coordinateKeyboard = TextInputType.numberWithOptions(
+      decimal: true,
+      signed: true,
+    );
+    return AlertDialog(
+      title: Text(l10n.settings_location),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DropdownButtonFormField<int>(
-              key: ValueKey<int?>(_selectedPresetIndex),
-              initialValue: _selectedPresetIndex ?? -1,
-              isExpanded: true,
-              decoration: InputDecoration(
-                labelText: l10n.settings_presets,
-                border: const OutlineInputBorder(),
-              ),
-              items: [
-                if (_selectedPresetIndex == null)
-                  DropdownMenuItem(
-                    value: -1,
-                    child: Text(l10n.settings_presetCustom),
-                  ),
-                for (final i in _visiblePresetIndexes())
-                  DropdownMenuItem(
-                    value: i,
-                    child: Text(
-                      RadioSettings.presets[i].$1,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-              ],
-              onChanged: (index) {
-                if (index != null && index >= 0) {
-                  _applyPreset(index);
-                }
+            TextField(
+              controller: _latController,
+              onChanged: (_) {
+                if (_latError != null) setState(() => _latError = null);
               },
+              decoration: InputDecoration(
+                labelText: l10n.settings_latitude,
+                border: const OutlineInputBorder(),
+                errorText: _latError,
+                errorMaxLines: 2,
+              ),
+              keyboardType: coordinateKeyboard,
             ),
             const SizedBox(height: 16),
             TextField(
-              controller: _frequencyController,
-              onChanged: (_) => _handleManualSettingsChanged('frequency'),
-              decoration: InputDecoration(
-                labelText: l10n.settings_frequency,
-                border: const OutlineInputBorder(),
-                helperText: _clientRepeat
-                    ? l10n.settings_clientRepeatFrequencyNote(
-                        _frequencyController.text,
-                      )
-                    : l10n.settings_frequencyHelper,
-                errorText: _frequencyError,
-              ),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<LoRaBandwidth>(
-              initialValue: _bandwidth,
-              decoration: InputDecoration(
-                labelText: l10n.settings_bandwidth,
-                border: const OutlineInputBorder(),
-              ),
-              items: LoRaBandwidth.values
-                  .map(
-                    (bw) => DropdownMenuItem(value: bw, child: Text(bw.label)),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _bandwidth = value;
-                    _syncPresetSelection();
-                  });
-                  _logRadioSettingsState('Manual settings edit: bandwidth');
-                }
+              controller: _lonController,
+              onChanged: (_) {
+                if (_lonError != null) setState(() => _lonError = null);
               },
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<LoRaSpreadingFactor>(
-              initialValue: _spreadingFactor,
               decoration: InputDecoration(
-                labelText: l10n.settings_spreadingFactor,
+                labelText: l10n.settings_longitude,
                 border: const OutlineInputBorder(),
+                helperText: l10n.settings_locationClearHelper,
+                helperMaxLines: 2,
+                errorText: _lonError,
+                errorMaxLines: 2,
               ),
-              items: LoRaSpreadingFactor.values
-                  .map(
-                    (sf) => DropdownMenuItem(value: sf, child: Text(sf.label)),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _spreadingFactor = value;
-                    _syncPresetSelection();
-                  });
-                  _logRadioSettingsState(
-                    'Manual settings edit: spreading factor',
-                  );
-                }
-              },
+              keyboardType: coordinateKeyboard,
             ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<LoRaCodingRate>(
-              initialValue: _codingRate,
-              decoration: InputDecoration(
-                labelText: l10n.settings_codingRate,
-                border: const OutlineInputBorder(),
-              ),
-              items: LoRaCodingRate.values
-                  .map(
-                    (cr) => DropdownMenuItem(value: cr, child: Text(cr.label)),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _codingRate = value;
-                    _syncPresetSelection();
-                  });
-                  _logRadioSettingsState('Manual settings edit: coding rate');
-                }
-              },
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _txPowerController,
-              onChanged: (_) => _handleManualSettingsChanged('tx power'),
-              decoration: InputDecoration(
-                labelText: l10n.settings_txPower,
-                border: const OutlineInputBorder(),
-                helperText: l10n.settings_txPowerRangeHelper(
-                  _minTxPowerDbm,
-                  widget.connector.maxTxPower ?? 22,
-                ),
-                errorText: _txPowerError,
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            if (widget.connector.clientRepeat != null) ...[
+            if (widget.hasGPS) ...[
               const SizedBox(height: 16),
-              SwitchListTile(
-                title: Text(l10n.settings_clientRepeat),
-                subtitle: Text(l10n.settings_clientRepeatSubtitle),
-                value: _clientRepeat,
-                onChanged: _handleClientRepeatChanged,
-                contentPadding: EdgeInsets.zero,
+              TextField(
+                controller: _intervalController,
+                onChanged: (_) {
+                  if (_intervalError != null) {
+                    setState(() => _intervalError = null);
+                  }
+                },
+                decoration: InputDecoration(
+                  labelText: l10n.settings_locationIntervalSec,
+                  border: const OutlineInputBorder(),
+                  errorText: _intervalError,
+                ),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: false,
+                  signed: false,
+                ),
+              ),
+              const SizedBox(height: 16),
+              FeatureToggleRow(
+                title: l10n.settings_locationGPSEnable,
+                subtitle: l10n.settings_locationGPSEnableSubtitle,
+                value: _isGPSEnabled,
+                // Applied on Save so Cancel leaves the device untouched.
+                onChanged: (value) => setState(() => _isGPSEnabled = value),
               ),
             ],
-            const SizedBox(height: 16),
-            Text(
-              l10n.settings_radioMatchWarning,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
           ],
         ),
       ),
@@ -2201,85 +1778,8 @@ class _RadioSettingsDialogState extends State<_RadioSettingsDialog> {
           onPressed: () => Navigator.pop(context),
           child: Text(l10n.common_cancel),
         ),
-        FilledButton(
-          onPressed: (_frequencyError != null || _txPowerError != null)
-              ? null
-              : _saveSettings,
-          child: Text(l10n.common_save),
-        ),
+        TextButton(onPressed: _save, child: Text(l10n.common_save)),
       ],
     );
   }
-}
-
-class _RadioSettingsSnapshot {
-  final double frequencyMHz;
-  final LoRaBandwidth bandwidth;
-  final LoRaSpreadingFactor spreadingFactor;
-  final LoRaCodingRate codingRate;
-  final int txPowerDbm;
-
-  const _RadioSettingsSnapshot({
-    required this.frequencyMHz,
-    required this.bandwidth,
-    required this.spreadingFactor,
-    required this.codingRate,
-    required this.txPowerDbm,
-  });
-
-  /// Frequency in integer Hz — avoids floating-point comparison issues.
-  int get frequencyHz => (frequencyMHz * 1000).round();
-
-  /// Convert from the connector's raw-int snapshot to UI-enum snapshot.
-  static _RadioSettingsSnapshot? fromMeshCoreSnapshot(
-    MeshCoreRadioStateSnapshot snapshot,
-  ) {
-    final bw = LoRaBandwidth.values
-        .where((b) => b.hz == snapshot.bwHz)
-        .firstOrNull;
-    final sf = LoRaSpreadingFactor.values
-        .where((s) => s.value == snapshot.sf)
-        .firstOrNull;
-    final cr = LoRaCodingRate.values
-        .where((c) => c.value == _toUiCodingRate(snapshot.cr))
-        .firstOrNull;
-    if (bw == null || sf == null || cr == null) return null;
-    return _RadioSettingsSnapshot(
-      frequencyMHz: snapshot.freqHz / 1000.0,
-      bandwidth: bw,
-      spreadingFactor: sf,
-      codingRate: cr,
-      txPowerDbm: snapshot.txPowerDbm,
-    );
-  }
-
-  /// Convert back to the connector's raw-int snapshot.
-  MeshCoreRadioStateSnapshot toMeshCoreSnapshot() {
-    return MeshCoreRadioStateSnapshot(
-      freqHz: frequencyHz,
-      bwHz: bandwidth.hz,
-      sf: spreadingFactor.value,
-      cr: codingRate.value,
-      txPowerDbm: txPowerDbm,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is _RadioSettingsSnapshot &&
-        frequencyHz == other.frequencyHz &&
-        bandwidth == other.bandwidth &&
-        spreadingFactor == other.spreadingFactor &&
-        codingRate == other.codingRate &&
-        txPowerDbm == other.txPowerDbm;
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    frequencyHz,
-    bandwidth,
-    spreadingFactor,
-    codingRate,
-    txPowerDbm,
-  );
 }

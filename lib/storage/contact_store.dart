@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import '../models/contact.dart';
 import '../utils/app_logger.dart';
+import 'legacy_key_migration.dart';
 import 'prefs_manager.dart';
 
 class ContactStore {
@@ -21,7 +22,8 @@ class ContactStore {
     }
     final prefs = PrefsManager.instance;
     String? jsonString = prefs.getString(keyFor);
-    if (jsonString == null || jsonString.isEmpty) {
+    if ((jsonString == null || jsonString.isEmpty) &&
+        canMigrateLegacyKeys(publicKeyHex)) {
       // Attempt migration from legacy unscoped key on first load
       final legacyJsonString = prefs.getString(_keyPrefix);
       prefs.remove(_keyPrefix);
@@ -90,6 +92,7 @@ class ContactStore {
       'rawPacket': contact.rawPacket != null
           ? base64Encode(contact.rawPacket!)
           : null,
+      'telemetryFixAt': contact.telemetryFixAt?.millisecondsSinceEpoch,
     };
   }
 
@@ -97,6 +100,7 @@ class ContactStore {
     final lastSeenMs = json['lastSeen'] as int? ?? 0;
     final lastMessageMs = json['lastMessageAt'] as int?;
     final lastModifiedMs = json['lastModified'] as int?;
+    final telemetryFixMs = json['telemetryFixAt'] as int?;
 
     final rawPathLength = json['pathLength'] as int? ?? -1;
     final rawPath = json['path'] != null
@@ -155,6 +159,9 @@ class ContactStore {
       rawPacket: json['rawPacket'] != null
           ? Uint8List.fromList(base64Decode(json['rawPacket'] as String))
           : null,
+      telemetryFixAt: telemetryFixMs == null
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(telemetryFixMs),
     );
   }
 }

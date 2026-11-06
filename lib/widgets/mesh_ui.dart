@@ -1,8 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../l10n/l10n.dart';
 import '../theme/mesh_theme.dart';
+import '../theme/theme_icons.dart';
 
 /// MeshCore shared design kit.
 ///
@@ -34,7 +37,10 @@ class SectionHeader extends StatelessWidget {
           Expanded(
             child: Text(
               label.toUpperCase(),
-              style: MeshTheme.accentLabel(color: scheme.onSurfaceVariant),
+              style: MeshTheme.accentLabel(
+                color: scheme.onSurfaceVariant,
+                fontSize: 13,
+              ),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -101,6 +107,46 @@ class MeshCard extends StatelessWidget {
 }
 
 /// Tinted pill chip for statuses: a dot or icon plus a short label.
+/// Contrast ratio between two opaque colors (WCAG definition).
+double meshContrastRatio(Color a, Color b) {
+  final la = a.computeLuminance();
+  final lb = b.computeLuminance();
+  return (math.max(la, lb) + 0.05) / (math.min(la, lb) + 0.05);
+}
+
+/// [accent] darkened (on light backgrounds) or lightened (on dark ones) until
+/// it reaches [minContrast] against [background]. WCAG asks 4.5 for text and
+/// 3 for icons. Accents such as amber are bright enough for the dark theme but
+/// unreadable on their own pale tint in the light theme.
+Color readableAccent(
+  Color accent,
+  Color background, {
+  double minContrast = 4.5,
+}) {
+  if (meshContrastRatio(accent, background) >= minContrast) return accent;
+  final darken = background.computeLuminance() > 0.18;
+  final hsl = HSLColor.fromColor(accent);
+  for (var step = 1; step <= 20; step++) {
+    final lightness = (hsl.lightness + (darken ? -0.05 : 0.05) * step).clamp(
+      0.0,
+      1.0,
+    );
+    final candidate = hsl.withLightness(lightness).toColor();
+    if (meshContrastRatio(candidate, background) >= minContrast) {
+      return candidate;
+    }
+  }
+  return darken ? Colors.black : Colors.white;
+}
+
+/// The background of a [tint] alpha wash of [accent] drawn on a card.
+Color _tintedCardBackground(BuildContext context, Color accent, double tint) {
+  return Color.alphaBlend(
+    accent.withValues(alpha: tint),
+    Theme.of(context).colorScheme.surfaceContainerLow,
+  );
+}
+
 class StatusChip extends StatelessWidget {
   final String label;
   final Color color;
@@ -114,11 +160,16 @@ class StatusChip extends StatelessWidget {
     required this.color,
     this.icon,
     this.pulse = false,
-    this.fontSize = 11.5,
+    this.fontSize = 12.5,
   });
 
   @override
   Widget build(BuildContext context) {
+    // The label uses the normal text color: colored text on a tint of the
+    // same color is hard to read. The icon or dot carries the color, adjusted
+    // to stay visible on the tint.
+    final background = _tintedCardBackground(context, color, 0.12);
+    final markColor = readableAccent(color, background, minContrast: 3);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
@@ -130,9 +181,9 @@ class StatusChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null)
-            Icon(icon, size: fontSize + 2, color: color)
+            Icon(icon, size: fontSize + 2, color: markColor)
           else
-            PulseDot(color: color, size: 7, animate: pulse),
+            PulseDot(color: markColor, size: 7, animate: pulse),
           const SizedBox(width: 5),
           Flexible(
             child: Text(
@@ -142,7 +193,7 @@ class StatusChip extends StatelessWidget {
               style: MeshTheme.mono(
                 fontSize: fontSize,
                 fontWeight: FontWeight.w600,
-                color: color,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
@@ -192,7 +243,7 @@ class StatTile extends StatelessWidget {
                   label.toUpperCase(),
                   style: MeshTheme.accentLabel(
                     color: scheme.onSurfaceVariant,
-                    fontSize: 11,
+                    fontSize: 12,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -217,7 +268,7 @@ class StatTile extends StatelessWidget {
                     TextSpan(
                       text: ' $unit',
                       style: MeshTheme.mono(
-                        fontSize: 11,
+                        fontSize: 12,
                         color: scheme.onSurfaceVariant,
                       ),
                     ),
@@ -233,12 +284,14 @@ class StatTile extends StatelessWidget {
 }
 
 /// Initials avatar with a deterministic per-name hue, or a fixed [color]
-/// for node-type coloring. Optional [icon] replaces initials.
+/// for node-type coloring. Optional [icon] or themeable [iconSlot] replaces
+/// initials.
 class AvatarCircle extends StatelessWidget {
   final String name;
   final double size;
   final Color? color;
   final IconData? icon;
+  final ThemeIconSlot? iconSlot;
 
   const AvatarCircle({
     super.key,
@@ -246,6 +299,7 @@ class AvatarCircle extends StatelessWidget {
     this.size = 40,
     this.color,
     this.icon,
+    this.iconSlot,
   });
 
   static const _hues = [
@@ -269,6 +323,30 @@ class AvatarCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = color ?? _colorFor(name);
     final initials = _initials(name);
+    final background = _tintedCardBackground(context, accent, 0.14);
+    // A theme picture (e.g. a holiday marker) fills the whole circle, the
+    // same as on the map, rather than sitting small inside the tint.
+    final picture = iconSlot == null
+        ? null
+        : themePictureOf(MeshIconTheme.of(context)[iconSlot!]);
+    if (picture != null) {
+      return SizedBox.square(
+        dimension: size,
+        child: ClipOval(
+          child: Image(
+            image: picture,
+            fit: BoxFit.cover,
+            gaplessPlayback: true,
+            filterQuality: FilterQuality.medium,
+            errorBuilder: (_, _, _) => Icon(
+              iconSlot!.icon,
+              size: size * 0.5,
+              color: readableAccent(accent, background, minContrast: 3),
+            ),
+          ),
+        ),
+      );
+    }
     return Container(
       width: size,
       height: size,
@@ -278,14 +356,24 @@ class AvatarCircle extends StatelessWidget {
         border: Border.all(color: accent.withValues(alpha: 0.4)),
       ),
       alignment: Alignment.center,
-      child: icon != null
-          ? Icon(icon, size: size * 0.5, color: accent)
+      child: iconSlot != null
+          ? ThemedIcon(
+              iconSlot!,
+              size: size * 0.55,
+              color: readableAccent(accent, background, minContrast: 3),
+            )
+          : icon != null
+          ? Icon(
+              icon,
+              size: size * 0.5,
+              color: readableAccent(accent, background, minContrast: 3),
+            )
           : Text(
               initials,
               style: MeshTheme.mono(
                 fontSize: size * 0.36,
                 fontWeight: FontWeight.w700,
-                color: accent,
+                color: readableAccent(accent, background),
               ),
             ),
     );
@@ -377,7 +465,7 @@ class RouteChip extends StatelessWidget {
         children: [
           Icon(
             isDirect ? Icons.trending_flat : Icons.podcasts,
-            size: 11,
+            size: 14,
             color: scheme.onSurfaceVariant,
           ),
           const SizedBox(width: 3),
@@ -385,7 +473,7 @@ class RouteChip extends StatelessWidget {
             label,
             style: MeshTheme.accentLabel(
               color: scheme.onSurfaceVariant,
-              fontSize: 8.5,
+              fontSize: 12,
             ),
           ),
         ],
@@ -539,6 +627,11 @@ class BottomSheetHeader extends StatelessWidget {
 
 /// Shows a modal bottom sheet with the app-standard shape, scroll behavior
 /// and safe-area handling. Pair the content with [BottomSheetHeader].
+///
+/// `useSafeArea` only pads the top and sides, so the bottom is padded here by
+/// whichever is larger: the keyboard inset or the system navigation bar
+/// (edge-to-edge Android, iOS home indicator). Both are then removed from the
+/// content's [MediaQuery] so nested [SafeArea]s don't apply them twice.
 Future<T?> showMeshSheet<T>(
   BuildContext context, {
   required WidgetBuilder builder,
@@ -549,10 +642,23 @@ Future<T?> showMeshSheet<T>(
     isScrollControlled: isScrollControlled,
     useSafeArea: true,
     showDragHandle: false,
-    builder: (context) => Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-      child: builder(context),
-    ),
+    builder: (sheetContext) {
+      final media = MediaQuery.of(sheetContext);
+      final bottom = math.max(
+        media.viewInsets.bottom,
+        media.viewPadding.bottom,
+      );
+      return Padding(
+        padding: EdgeInsets.only(bottom: bottom),
+        child: MediaQuery(
+          data: media
+              .removeViewInsets(removeBottom: true)
+              .removeViewPadding(removeBottom: true)
+              .removePadding(removeBottom: true),
+          child: Builder(builder: builder),
+        ),
+      );
+    },
   );
 }
 

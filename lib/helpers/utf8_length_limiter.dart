@@ -72,3 +72,33 @@ class Utf8LengthLimitingTextInputFormatter extends TextInputFormatter {
   bool _isLowSurrogate(int codeUnit) =>
       codeUnit >= 0xDC00 && codeUnit <= 0xDFFF;
 }
+
+/// Longest name (in UTF-8 bytes) the radio stores for channels and the node
+/// advert name: a 32-byte field that keeps one byte for the NUL terminator.
+const int maxRadioNameBytes = 31;
+
+int utf8ByteLength(String text) => utf8.encode(text).length;
+
+/// Cuts [text] to at most [maxBytes] UTF-8 bytes without splitting a
+/// character (grapheme cluster).
+String truncateUtf8(String text, int maxBytes) {
+  if (maxBytes <= 0) return '';
+  if (utf8ByteLength(text) <= maxBytes) return text;
+  final kept = StringBuffer();
+  var used = 0;
+  for (final char in text.characters) {
+    final size = utf8ByteLength(char);
+    if (used + size > maxBytes) break;
+    kept.write(char);
+    used += size;
+  }
+  return kept.toString();
+}
+
+/// Builds `"<label> <suffix>"`, shortening [label] so the whole name fits
+/// in [maxRadioNameBytes].
+String fitRadioName(String label, String suffix) {
+  final suffixPart = ' $suffix';
+  final room = maxRadioNameBytes - utf8ByteLength(suffixPart);
+  return '${truncateUtf8(label, room)}$suffixPart';
+}

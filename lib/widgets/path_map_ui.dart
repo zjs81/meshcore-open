@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../l10n/app_localizations.dart';
 import '../l10n/l10n.dart';
 import '../models/display_path.dart';
 import '../models/path_playback.dart';
@@ -13,7 +14,7 @@ import '../theme/mesh_theme.dart';
 
 enum PathViewMode { single, combined }
 
-const Color kPrimaryPathColor = Colors.blueAccent;
+const Color kPrimaryPathColor = MeshPalette.blue;
 const List<Color> kAlternatePathColors = [
   Color(0xFF8B5CF6), // purple
   MeshPalette.signal, // green
@@ -34,11 +35,15 @@ double getPathDistanceMeters(List<LatLng> points) {
   return distanceMeters;
 }
 
-String formatDistance(double distanceMeters, {required bool isImperial}) {
+String formatDistance(
+  double distanceMeters, {
+  required bool isImperial,
+  AppLocalizations? l10n,
+}) {
   if (isImperial) {
-    return '(${(distanceMeters / 1609.34).toStringAsFixed(2)} mi)';
+    return '(${(distanceMeters / 1609.34).toStringAsFixed(2)} ${l10n?.units_mi ?? 'mi'})';
   }
-  return '(${(distanceMeters / 1000).toStringAsFixed(2)} km)';
+  return '(${(distanceMeters / 1000).toStringAsFixed(2)} ${l10n?.units_km ?? 'km'})';
 }
 
 String formatLastObserved(BuildContext context, DateTime timestamp) {
@@ -87,7 +92,7 @@ List<Polyline> buildMultiPathPolylines({
           Polyline(
             points: [path.points[i], path.points[i + 1]],
             strokeWidth: 11,
-            color: Colors.white.withValues(alpha: 0.22),
+            color: MapPalette.markerOutline.withValues(alpha: 0.22),
           ),
         );
       }
@@ -153,7 +158,7 @@ List<Polyline> buildPacketTrailPolylines(
     Polyline(
       points: [playback.points[seg], playback.position],
       strokeWidth: 8,
-      color: Colors.white.withValues(alpha: 0.45),
+      color: MapPalette.markerOutline.withValues(alpha: 0.45),
     ),
     Polyline(points: traversed, strokeWidth: 5, color: color),
   ];
@@ -201,7 +206,7 @@ List<Marker> buildPacketMarkers(PathPlaybackController playback, Color color) {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: color,
-            border: Border.all(color: Colors.white, width: 2),
+            border: Border.all(color: MapPalette.markerOutline, width: 2),
             boxShadow: [
               BoxShadow(
                 color: color.withValues(alpha: 0.7),
@@ -262,7 +267,7 @@ void showSharedNodeSheet(
               ),
               trailing: Text(
                 l10n.pathMap_hopCount(path.totalTransmissions),
-                style: MeshTheme.mono(fontSize: 11, color: MeshPalette.ink3),
+                style: MeshTheme.mono(fontSize: 12, color: MeshPalette.ink3),
               ),
               onTap: () {
                 Navigator.pop(sheetContext);
@@ -380,82 +385,92 @@ class PathAnimationControls extends StatelessWidget {
           VoidCallback? onPressed,
           Color? color,
         }) => IconButton(
-          icon: Icon(icon, size: 20, color: color),
+          icon: Icon(icon, size: 24, color: color),
           tooltip: tooltip,
           onPressed: onPressed,
-          visualDensity: VisualDensity.compact,
           padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
         );
 
         return Padding(
           padding: const EdgeInsets.fromLTRB(4, 0, 12, 2),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              controlButton(
-                icon: Icons.animation,
-                tooltip: animationEnabled
-                    ? l10n.pathMap_animationOff
-                    : l10n.pathMap_animationOn,
-                color: animationEnabled ? MeshPalette.blue : MeshPalette.ink4,
-                onPressed: onToggleAnimation,
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  controlButton(
+                    icon: Icons.animation,
+                    tooltip: animationEnabled
+                        ? l10n.pathMap_animationOff
+                        : l10n.pathMap_animationOn,
+                    color: animationEnabled
+                        ? MeshPalette.blue
+                        : MeshPalette.ink4,
+                    onPressed: onToggleAnimation,
+                  ),
+                  controlButton(
+                    icon: Icons.skip_previous,
+                    tooltip: l10n.pathMap_stepBack,
+                    onPressed: enabled && playback.started
+                        ? playback.stepBack
+                        : null,
+                  ),
+                  controlButton(
+                    icon: playback.playing ? Icons.pause : Icons.play_arrow,
+                    tooltip: playback.playing
+                        ? l10n.pathMap_pause
+                        : l10n.pathMap_play,
+                    onPressed: enabled ? playback.togglePlay : null,
+                  ),
+                  controlButton(
+                    icon: Icons.skip_next,
+                    tooltip: l10n.pathMap_stepForward,
+                    onPressed: enabled ? playback.stepForward : null,
+                  ),
+                  controlButton(
+                    icon: Icons.replay,
+                    tooltip: l10n.pathMap_replay,
+                    onPressed: enabled ? playback.replay : null,
+                  ),
+                  controlButton(
+                    icon: followEnabled ? Icons.lock : Icons.lock_open,
+                    tooltip: followEnabled
+                        ? l10n.pathMap_unfollowPacket
+                        : l10n.pathMap_followPacket,
+                    color: followEnabled ? MeshPalette.blue : null,
+                    onPressed: enabled ? onToggleFollow : null,
+                  ),
+                  TextButton(
+                    onPressed: enabled ? playback.cycleSpeed : null,
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      minimumSize: const Size(48, 48),
+                    ),
+                    child: Text(
+                      playback.speed == 0.5
+                          ? '0.5×'
+                          : '${playback.speed.toInt()}×',
+                      style: MeshTheme.mono(fontSize: 14),
+                    ),
+                  ),
+                ],
               ),
-              controlButton(
-                icon: Icons.skip_previous,
-                tooltip: l10n.pathMap_stepBack,
-                onPressed: enabled && playback.started
-                    ? playback.stepBack
-                    : null,
-              ),
-              controlButton(
-                icon: playback.playing ? Icons.pause : Icons.play_arrow,
-                tooltip: playback.playing
-                    ? l10n.pathMap_pause
-                    : l10n.pathMap_play,
-                onPressed: enabled ? playback.togglePlay : null,
-              ),
-              controlButton(
-                icon: Icons.skip_next,
-                tooltip: l10n.pathMap_stepForward,
-                onPressed: enabled ? playback.stepForward : null,
-              ),
-              controlButton(
-                icon: Icons.replay,
-                tooltip: l10n.pathMap_replay,
-                onPressed: enabled ? playback.replay : null,
-              ),
-              controlButton(
-                icon: followEnabled ? Icons.lock : Icons.lock_open,
-                tooltip: followEnabled
-                    ? l10n.pathMap_unfollowPacket
-                    : l10n.pathMap_followPacket,
-                color: followEnabled ? MeshPalette.blue : null,
-                onPressed: enabled ? onToggleFollow : null,
-              ),
-              TextButton(
-                onPressed: enabled ? playback.cycleSpeed : null,
-                style: TextButton.styleFrom(
-                  visualDensity: VisualDensity.compact,
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                  minimumSize: const Size(36, 30),
-                ),
-                child: Text(
-                  playback.speed == 0.5 ? '0.5×' : '${playback.speed.toInt()}×',
-                  style: MeshTheme.mono(fontSize: 12),
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  hopLabel ?? '',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
-                  style: MeshTheme.mono(
-                    fontSize: 10.5,
-                    color: MeshPalette.ink2,
+              if (hopLabel != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Text(
+                    hopLabel,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: MeshTheme.mono(
+                      fontSize: 12,
+                      color: MeshPalette.ink2,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         );
@@ -483,7 +498,12 @@ class PathMiniLegend extends StatelessWidget {
       children: [
         swatch,
         const SizedBox(width: 4),
-        Text(text, style: TextStyle(fontSize: 11, color: MeshPalette.ink3)),
+        Flexible(
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 12, color: MeshPalette.ink3),
+          ),
+        ),
       ],
     );
     Widget dashSample() => Row(
@@ -511,7 +531,7 @@ class PathMiniLegend extends StatelessWidget {
               width: 14,
               height: 6,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.35),
+                color: MapPalette.markerOutline.withValues(alpha: 0.35),
                 borderRadius: BorderRadius.circular(3),
               ),
             ),
@@ -572,7 +592,7 @@ class PathSummaryList extends StatelessWidget {
                   ),
                   child: Text(
                     l10n.pathMap_showAllPaths,
-                    style: const TextStyle(fontSize: 11),
+                    style: const TextStyle(fontSize: 12),
                   ),
                 ),
             ],
@@ -590,7 +610,7 @@ class PathSummaryList extends StatelessWidget {
     final hidden = hiddenIds.contains(path.id);
     final timestamp = path.record?.timestamp;
     final parts = <String>[
-      '${l10n.pathMap_hopCount(path.totalTransmissions)} ${formatDistance(path.distanceMeters, isImperial: isImperial)}',
+      '${l10n.pathMap_hopCount(path.totalTransmissions)} ${formatDistance(path.distanceMeters, isImperial: isImperial, l10n: l10n)}',
       l10n.pathMap_gpsCount(path.gpsConfirmedHops, path.hopBytes.length),
       if (timestamp != null) formatLastObserved(context, timestamp),
     ];
@@ -634,23 +654,19 @@ class PathSummaryList extends StatelessWidget {
                   parts.join(' · '),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: MeshTheme.mono(
-                    fontSize: 10.5,
-                    color: MeshPalette.ink3,
-                  ),
+                  style: MeshTheme.mono(fontSize: 12, color: MeshPalette.ink3),
                 ),
               ),
             ),
             IconButton(
               icon: Icon(
                 hidden ? Icons.visibility_off : Icons.visibility,
-                size: 16,
+                size: 20,
                 color: hidden ? MeshPalette.ink4 : MeshPalette.ink3,
               ),
               tooltip: hidden ? l10n.pathMap_showPath : l10n.pathMap_hidePath,
-              visualDensity: VisualDensity.compact,
               padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
+              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
               onPressed: () => onToggleVisibility(path),
             ),
           ],

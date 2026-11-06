@@ -133,9 +133,8 @@ class BufferWriter {
   void writeCString(String string, int maxLength) {
     final bytes = Uint8List(maxLength);
     final encoded = utf8.encode(string);
-    for (var i = 0; i < maxLength - 1 && i < encoded.length; i++) {
-      bytes[i] = encoded[i];
-    }
+    final len = utf8BoundaryLength(encoded, maxLength - 1);
+    bytes.setRange(0, len, encoded);
     writeBytes(bytes);
   }
 
@@ -215,6 +214,8 @@ const int cmdSetAutoAddConfig = 58;
 const int cmdGetAutoAddConfig = 59;
 const int cmdGetAllowedRepeatFreq = 60;
 const int cmdSetPathHashMode = 61;
+const int cmdSetDefaultFloodScope = 63; // FIRMWARE_VER_CODE 11+
+const int cmdGetDefaultFloodScope = 64; // FIRMWARE_VER_CODE 11+
 
 // Text message types
 const int txtTypePlain = 0;
@@ -265,6 +266,12 @@ const int respCodeCustomVars = 21;
 const int respCodeAutoAddConfig = 25;
 const int respCodeAllowedRepeatFreq = 26;
 const int respCodeStats = 24;
+const int respCodeDefaultFloodScope = 28;
+
+/// Region name field width in SET/GET_DEFAULT_FLOOD_SCOPE frames (NUL padded,
+/// so at most 30 name bytes).
+const int defaultFloodScopeNameSize = 31;
+const int floodScopeKeySize = 16;
 
 const int statsTypeCore = 0;
 const int statsTypeRadio = 1;
@@ -333,13 +340,34 @@ const int autoAddRoomServerFlag =
 const int autoAddSensorFlag =
     1 << 4; // 0x10 - auto-add Sensor (ADV_TYPE_SENSOR)
 
+/// Returns the largest prefix length of [bytes] that is at most [maxBytes]
+/// and does not end in the middle of a UTF-8 encoded character.
+int utf8BoundaryLength(List<int> bytes, int maxBytes) {
+  if (bytes.length <= maxBytes) return bytes.length;
+  if (maxBytes <= 0) return 0;
+  var len = maxBytes;
+  // Back up over continuation bytes (10xxxxxx) to the lead byte, then drop
+  // that lead byte too since its character would be cut short.
+  while (len > 0 && (bytes[len] & 0xC0) == 0x80) {
+    len--;
+  }
+  return len;
+}
+
 // Sizes
 const int pubKeySize = 32;
 const int signatureSize = 64;
 const int maxPathSize = 64;
 const int pathHashSize = 1;
 const int maxNameSize = 32;
+// Largest frame the app sends. Kept at 172 so commands still fit radios on
+// firmware built before MAX_FRAME_SIZE grew to 176.
 const int maxFrameSize = 172;
+// Largest frame current firmware may send (MAX_FRAME_SIZE 176, +4 bytes for
+// region transport codes). Receive paths must accept frames up to this size.
+const int maxRxFrameSize = 176;
+// Widest per-hop path hash firmware accepts on air (mode 2); 4 is reserved.
+const int maxPathHashWidth = 3;
 const int appProtocolVersion = 4;
 // Matches firmware MAX_TEXT_LEN (10 * CIPHER_BLOCK_SIZE).
 const int maxTextPayloadBytes = 160;
@@ -469,8 +497,16 @@ String ackHashToHex(int ackHash) {
 }
 
 // Helper to convert public key to hex string
+const String _hexDigits = '0123456789abcdef';
+
 String pubKeyToHex(Uint8List pubKey) {
-  return pubKey.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+  final codes = Uint8List(pubKey.length * 2);
+  for (var i = 0; i < pubKey.length; i++) {
+    final b = pubKey[i];
+    codes[i * 2] = _hexDigits.codeUnitAt(b >> 4);
+    codes[i * 2 + 1] = _hexDigits.codeUnitAt(b & 0x0F);
+  }
+  return String.fromCharCodes(codes);
 }
 
 // Helper to convert hex string to public key
@@ -599,7 +635,8 @@ Uint8List buildGetStatsFrame(int statsType) {
   return Uint8List.fromList([cmdGetStats, statsType & 0xFF]);
 }
 
-/// Path hash width on air: [61][0][mode], mode 0..3 → (mode+1) bytes per hop hash.
+/// Path hash width on air: [61][0][mode], mode 0..2 → (mode+1) bytes per hop
+/// hash. Firmware rejects mode 3 (4-byte hashes are reserved).
 Uint8List buildSetPathHashModeFrame(int mode) {
   final m = mode.clamp(0, 2).toInt();
   return Uint8List.fromList([cmdSetPathHashMode, 0, m]);
@@ -623,9 +660,7 @@ Uint8List buildSendSelfAdvertFrame({bool flood = false}) {
 // Format: [cmd][name...]
 Uint8List buildSetAdvertNameFrame(String name) {
   final nameBytes = utf8.encode(name);
-  final nameLen = nameBytes.length < maxNameSize
-      ? nameBytes.length
-      : maxNameSize - 1;
+  final nameLen = utf8BoundaryLength(nameBytes, maxNameSize - 1);
   final writer = BufferWriter();
   writer.writeByte(cmdSetAdvertName);
   writer.writeBytes(Uint8List.fromList(nameBytes.sublist(0, nameLen)));
@@ -938,9 +973,72 @@ Uint8List buildDiscoveryRequestPayload(
   return writer.toBytes();
 }
 
+/// Node types a manual nearby-node scan asks for. Firmware repeaters and
+/// sensors answer DISCOVER_REQ; room servers and companions currently don't,
+/// but the room bit is harmless and lets future firmware reply.
+const int nodeDiscoverScanTypeMask =
+    (1 << advTypeRepeater) | (1 << advTypeRoom) | (1 << advTypeSensor);
+
+/// One DISCOVER_RESP, as pushed by the companion in PUSH_CODE_CONTROL_DATA:
+/// `[0x8E][snr x4 int8][rssi int8][path_len][0x9<type>][snr x4 int8][tag u32 LE][pub_key 8|32]`.
+class NodeDiscoverResponse {
+  NodeDiscoverResponse({
+    required this.nodeType,
+    required this.snr,
+    required this.rssi,
+    required this.remoteSnr,
+    required this.tag,
+    required this.publicKey,
+  });
+
+  final int nodeType;
+
+  /// SNR (dB) of the response as received by our radio.
+  final double snr;
+  final int rssi;
+
+  /// SNR (dB) of our request as heard by the responding node.
+  final double remoteSnr;
+  final int tag;
+
+  /// Full 32-byte key, or an 8-byte prefix when the request was prefix-only.
+  final Uint8List publicKey;
+
+  bool get hasFullKey => publicKey.length == pubKeySize;
+  String get publicKeyHex => pubKeyToHex(publicKey);
+}
+
+/// Parses a PUSH_CODE_CONTROL_DATA frame carrying a DISCOVER_RESP, or returns
+/// null for any other or malformed frame.
+NodeDiscoverResponse? parseNodeDiscoverResponse(Uint8List frame) {
+  // Push header (4) + type, snr, tag (6) + at least an 8-byte key prefix.
+  if (frame.length < 4 + 6 + 8 || frame[0] != pushCodeControlData) {
+    return null;
+  }
+  final reader = BufferReader(frame);
+  reader.skipBytes(1);
+  final snr = reader.readInt8() / 4.0;
+  final rssi = reader.readInt8();
+  reader.skipBytes(1); // path_len: responses are sent zero-hop.
+  final typeByte = reader.readByte();
+  if ((typeByte >> 4) != controlSubtypeDiscoverResp) return null;
+  final remoteSnr = reader.readInt8() / 4.0;
+  final tag = reader.readUInt32LE();
+  final keyBytes = reader.readRemainingBytes();
+  final keyLength = keyBytes.length >= pubKeySize ? pubKeySize : 8;
+  return NodeDiscoverResponse(
+    nodeType: typeByte & 0x0F,
+    snr: snr,
+    rssi: rssi,
+    remoteSnr: remoteSnr,
+    tag: tag,
+    publicKey: Uint8List.fromList(keyBytes.sublist(0, keyLength)),
+  );
+}
+
 Uint8List _reversePathByHop(Uint8List path, int pathHashWidth) {
   if (path.isEmpty) return Uint8List(0);
-  final width = pathHashWidth.clamp(1, 4).toInt();
+  final width = pathHashWidth.clamp(1, maxPathHashWidth).toInt();
   if (path.length % width != 0) {
     return Uint8List.fromList(path.reversed.toList());
   }
@@ -963,7 +1061,7 @@ Uint8List buildSendAnonReqFrame(
   int replyHopCount = 0,
   int pathHashWidth = pathHashSize,
 }) {
-  final width = pathHashWidth.clamp(1, 4).toInt();
+  final width = pathHashWidth.clamp(1, maxPathHashWidth).toInt();
   final path = replyPath ?? Uint8List(0);
   final encodedPathLen = ((width - 1) << 6) | (replyHopCount & 0x3F);
   final writer = BufferWriter();
@@ -1084,6 +1182,63 @@ Uint8List buildSetFloodScopeFrame(String region) {
   final scope = floodScopeKeyForRegion(region);
 
   return Uint8List.fromList([cmdSetFloodScope, 0, ...scope]);
+}
+
+/// CMD_SET_FLOOD_SCOPE variant 1 (FIRMWARE_VER_CODE 12+): send floods with no
+/// transport scope at all, overriding the radio's default flood scope.
+Uint8List buildSetFloodScopeUnscopedFrame() {
+  return Uint8List.fromList([cmdSetFloodScope, 1]);
+}
+
+Uint8List buildGetDefaultFloodScopeFrame() {
+  return Uint8List.fromList([cmdGetDefaultFloodScope]);
+}
+
+/// CMD_SET_DEFAULT_FLOOD_SCOPE: `[63][name 31][key 16]` stores [region] as the
+/// radio's default flood scope; an empty [region] clears it (`[63]`).
+/// The name is stored without a leading '#'; the key uses the same derivation
+/// as [buildSetFloodScopeFrame].
+Uint8List buildSetDefaultFloodScopeFrame(String region) {
+  final name = region.startsWith('#') ? region.substring(1) : region;
+  if (name.isEmpty) return Uint8List.fromList([cmdSetDefaultFloodScope]);
+  final nameBytes = utf8.encode(name);
+  if (nameBytes.length >= defaultFloodScopeNameSize) {
+    throw ArgumentError.value(region, 'region', 'name longer than 30 bytes');
+  }
+  final frame = Uint8List(1 + defaultFloodScopeNameSize + floodScopeKeySize);
+  frame[0] = cmdSetDefaultFloodScope;
+  frame.setRange(1, 1 + nameBytes.length, nameBytes);
+  frame.setRange(
+    1 + defaultFloodScopeNameSize,
+    frame.length,
+    floodScopeKeyForRegion(name),
+  );
+  return frame;
+}
+
+/// Parses RESP_CODE_DEFAULT_FLOOD_SCOPE. Returns null when the radio has no
+/// default scope (`[28]` alone) or the frame is malformed.
+({String name, Uint8List key})? parseDefaultFloodScopeFrame(Uint8List frame) {
+  if (frame.isEmpty || frame[0] != respCodeDefaultFloodScope) return null;
+  if (frame.length < 1 + defaultFloodScopeNameSize + floodScopeKeySize) {
+    return null;
+  }
+  final nameField = frame.sublist(1, 1 + defaultFloodScopeNameSize);
+  final end = nameField.indexOf(0);
+  final name = utf8
+      .decode(
+        end >= 0 ? nameField.sublist(0, end) : nameField,
+        allowMalformed: true,
+      )
+      .trim();
+  if (name.isEmpty) return null;
+  final keyStart = 1 + defaultFloodScopeNameSize;
+  return (
+    name: name,
+    key: Uint8List.fromList(
+      frame.sublist(keyStart, keyStart + floodScopeKeySize),
+    ),
+  );
 }
 
 Uint8List floodScopeKeyForRegion(String region) {

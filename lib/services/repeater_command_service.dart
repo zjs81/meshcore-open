@@ -14,12 +14,21 @@ String normalizeRepeaterClockSyncCommand(String command, {int? nowSeconds}) {
   return command.trim().toLowerCase() == 'clock sync' ? 'time $epoch' : command;
 }
 
+/// One [RepeaterCommandService.sendCommand] call. Every retry adds a fresh
+/// `XX|` prefix, and a reply to any of them completes the call, so a late
+/// reply to an earlier attempt is not mistaken for silence.
+class _PendingCommand {
+  _PendingCommand(this.repeaterKey);
+
+  final String repeaterKey;
+  final Completer<String> completer = Completer<String>();
+  final Set<String> prefixes = {};
+}
+
 class RepeaterCommandService {
   final MeshCoreConnector _connector;
-  final Map<String, Completer<String>> _pendingCommands = {};
-  final Map<String, Timer> _commandTimeouts = {};
-  final Map<String, String> _commandPrefixes = {};
-  final Map<String, String> _pendingByPrefix = {};
+  final Set<_PendingCommand> _pendingCommands = {};
+  final Map<String, _PendingCommand> _pendingByPrefix = {};
   int _prefixCounter = 0;
 
   static const int maxRetries = 5;
@@ -40,26 +49,33 @@ class RepeaterCommandService {
   }) async {
     if (!raw) command = normalizeRepeaterClockSyncCommand(command);
     final attemptCount = retries < 1 ? 1 : retries;
-    final selection = await _connector.preparePathForContactSend(repeater);
+    final pending = _PendingCommand(repeater.publicKeyHex);
+    _pendingCommands.add(pending);
+    try {
+      final selection = await _connector.preparePathForContactSend(repeater);
 
-    for (int attempt = 0; attempt < attemptCount; attempt++) {
-      onAttempt?.call(attempt + 1);
-      try {
-        final response = await _sendCommandAttempt(
-          repeater,
-          command,
-          selection,
-          attempt,
-          raw,
-        );
-        onResponse?.call(response);
-        return response;
-      } catch (e) {
-        if (attempt == attemptCount - 1) rethrow;
+      for (int attempt = 0; attempt < attemptCount; attempt++) {
+        onAttempt?.call(attempt + 1);
+        try {
+          final response = await _sendCommandAttempt(
+            repeater,
+            command,
+            selection,
+            attempt,
+            raw,
+            pending,
+          );
+          onResponse?.call(response);
+          return response;
+        } catch (e) {
+          if (attempt == attemptCount - 1) rethrow;
+        }
       }
-    }
 
-    throw Exception('Command failed after $attemptCount attempts');
+      throw Exception('Command failed after $attemptCount attempts');
+    } finally {
+      _cleanup(pending);
+    }
   }
 
   Future<String> _sendCommandAttempt(
@@ -68,15 +84,16 @@ class RepeaterCommandService {
     PathSelection selection,
     int attempt,
     bool raw,
+    _PendingCommand pending,
   ) async {
-    final repeaterKey = repeater.publicKeyHex;
-    final prefix = _nextPrefixToken();
-    final commandId = '${repeaterKey}_$prefix';
-    final completer = Completer<String>();
-    _pendingCommands[commandId] = completer;
-    _commandPrefixes[commandId] = prefix;
-    _pendingByPrefix[prefix] = commandId;
+    // A reply to an earlier attempt may have arrived during the backoff.
+    if (pending.completer.isCompleted) return pending.completer.future;
 
+    final prefix = _nextPrefixToken();
+    pending.prefixes.add(prefix);
+    _pendingByPrefix[prefix] = pending;
+
+    final int timeoutMs;
     try {
       final framedCommand = raw ? command : '$prefix$command';
       final pathLengthValue = selection.useFlood ? -1 : selection.hopCount;
@@ -97,35 +114,29 @@ class RepeaterCommandService {
       final responseBytes = frame.length > maxFrameSize
           ? frame.length
           : maxFrameSize;
-      final timeoutMs = _connector.calculateTimeout(
+      timeoutMs = _connector.calculateTimeout(
         pathLength: pathLengthValue,
         messageBytes: responseBytes,
       );
-      final timeoutSeconds = (timeoutMs / 1000).ceil();
       await _connector.sendFrame(frame);
-      _commandTimeouts[commandId]?.cancel();
-      _commandTimeouts[commandId] = Timer(
-        Duration(milliseconds: timeoutMs),
-        () {
-          final completer = _pendingCommands[commandId];
-          if (completer != null && !completer.isCompleted) {
-            completer.completeError(
-              'Command timeout after $timeoutSeconds seconds',
-            );
-            _cleanup(commandId);
-          }
-        },
-      );
     } catch (e) {
-      _cleanup(commandId);
       throw Exception('Failed to send command: $e');
     }
 
-    try {
-      return await completer.future;
-    } finally {
-      _cleanup(commandId);
-    }
+    final timeoutSeconds = (timeoutMs / 1000).ceil();
+    return pending.completer.future.timeout(
+      Duration(milliseconds: timeoutMs),
+      onTimeout: () =>
+          Future<String>.error('Command timeout after $timeoutSeconds seconds'),
+    );
+  }
+
+  /// The text [sendCommand] would put on the wire for its next attempt: the
+  /// clock-sync rewrite plus the `XX|` reply prefix (unless [raw]). Used for
+  /// debug previews so they match what is actually sent.
+  String previewFramedCommand(String command, {bool raw = false}) {
+    if (raw) return command;
+    return '${_peekPrefixToken()}${normalizeRepeaterClockSyncCommand(command)}';
   }
 
   /// Send [line] verbatim and don't wait for a reply. While `region load` is
@@ -142,49 +153,55 @@ class RepeaterCommandService {
     // Find pending command for this repeater and complete it
     final repeaterKey = repeater.publicKeyHex;
 
-    String? commandId;
+    _PendingCommand? pending;
     String responsePayload = responseText;
     if (_prefixPattern.hasMatch(responseText)) {
       final prefix = responseText.substring(0, 3).toUpperCase();
-      commandId = _pendingByPrefix[prefix];
-      if (commandId == null || !commandId.startsWith('${repeaterKey}_')) {
+      pending = _pendingByPrefix[prefix];
+      if (pending == null || pending.repeaterKey != repeaterKey) {
         return;
       }
       responsePayload = responseText.substring(3).trimLeft();
     }
 
-    commandId ??= _pendingCommands.keys.firstWhere(
-      (id) => id.startsWith('${repeaterKey}_'),
-      orElse: () => '',
-    );
+    if (pending == null) {
+      for (final candidate in _pendingCommands) {
+        if (candidate.repeaterKey == repeaterKey &&
+            !candidate.completer.isCompleted) {
+          pending = candidate;
+          break;
+        }
+      }
+    }
 
-    if (commandId.isEmpty) return;
-
-    final completer = _pendingCommands[commandId];
-    if (completer != null && !completer.isCompleted) {
-      completer.complete(responsePayload);
-      _cleanup(commandId);
+    if (pending != null && !pending.completer.isCompleted) {
+      pending.completer.complete(responsePayload);
     }
   }
 
-  void _cleanup(String commandId) {
-    _commandTimeouts[commandId]?.cancel();
-    _commandTimeouts.remove(commandId);
-    _pendingCommands.remove(commandId);
-    final prefix = _commandPrefixes.remove(commandId);
-    if (prefix != null) {
-      _pendingByPrefix.remove(prefix);
+  void _cleanup(_PendingCommand pending) {
+    _pendingCommands.remove(pending);
+    for (final prefix in pending.prefixes) {
+      if (identical(_pendingByPrefix[prefix], pending)) {
+        _pendingByPrefix.remove(prefix);
+      }
     }
   }
 
   void dispose() {
-    for (final timer in _commandTimeouts.values) {
-      timer.cancel();
-    }
-    _commandTimeouts.clear();
     _pendingCommands.clear();
-    _commandPrefixes.clear();
     _pendingByPrefix.clear();
+  }
+
+  String _peekPrefixToken() {
+    for (var i = 0; i < 256; i++) {
+      final value = (_prefixCounter + i) & 0xFF;
+      final token = '${value.toRadixString(16).padLeft(2, '0').toUpperCase()}|';
+      if (!_pendingByPrefix.containsKey(token)) {
+        return token;
+      }
+    }
+    return '00|';
   }
 
   String _nextPrefixToken() {

@@ -313,6 +313,7 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
+        scrollable: true,
         title: Text(l10n.chat_fullPath),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -492,7 +493,7 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
         title: Text(l10n.routing_floodDelivery),
         subtitle: Text(
           _floodStatsLine(context, stats),
-          style: const TextStyle(fontSize: 11),
+          style: const TextStyle(fontSize: 12),
         ),
         trailing: mode == _RoutingMode.flood
             ? Icon(
@@ -596,7 +597,7 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
           title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
           subtitle: Text(
             '$line1\n${line2Parts.join(' • ')}',
-            style: const TextStyle(fontSize: 11),
+            style: const TextStyle(fontSize: 12),
           ),
           isThreeLine: true,
           trailing: Row(

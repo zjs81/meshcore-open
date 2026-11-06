@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/reaction_helper.dart';
 import '../helpers/smaz.dart';
+import 'message.dart' show futureTimestampTolerance;
 import 'translation_support.dart';
 import '../utils/app_logger.dart';
 
@@ -36,6 +37,11 @@ class ChannelMessage {
   final MessageTranslationStatus translationStatus;
   final String? translationModelId;
   final DateTime timestamp;
+
+  /// Local clock time when this message was added (received or sent). Feeds
+  /// are ordered by it so a sender clock running ahead cannot pin a message
+  /// to the bottom; [timestamp] stays the sender's identity time.
+  final DateTime receivedAt;
   final bool isOutgoing;
   final ChannelMessageStatus status;
   final List<Repeat> repeats;
@@ -53,6 +59,12 @@ class ChannelMessage {
   final String? replyToText;
   final Map<String, List<String?>> reactions;
 
+  /// Set when the message filter hid this message (a FilterReason JSON name).
+  final String? filterReason;
+
+  /// Extra context for [filterReason], e.g. the matching rule pattern.
+  final String? filterDetail;
+
   ChannelMessage({
     this.senderKey,
     required this.senderName,
@@ -63,6 +75,7 @@ class ChannelMessage {
     this.translationStatus = MessageTranslationStatus.none,
     this.translationModelId,
     required this.timestamp,
+    DateTime? receivedAt,
     required this.isOutgoing,
     this.status = ChannelMessageStatus.pending,
     this.repeats = const [],
@@ -79,9 +92,12 @@ class ChannelMessage {
     this.replyToSenderName,
     this.replyToText,
     Map<String, List<String?>>? reactions,
+    this.filterReason,
+    this.filterDetail,
   }) : messageId =
            messageId ??
            '${timestamp.millisecondsSinceEpoch}_${senderName.hashCode}_${text.hashCode}',
+       receivedAt = receivedAt ?? timestamp,
        reactions = reactions ?? {},
        pathBytes = pathBytes ?? Uint8List(0),
        pathVariants = _mergePathVariants(
@@ -89,8 +105,15 @@ class ChannelMessage {
          pathVariants,
        );
 
+  bool get isFiltered => filterReason != null;
+
   String? get senderKeyHex =>
       senderKey != null ? pubKeyToHex(senderKey!) : null;
+
+  /// True when the sender's clock put [timestamp] clearly ahead of the time
+  /// this device received the message.
+  bool get hasFutureTimestamp =>
+      timestamp.difference(receivedAt) > futureTimestampTolerance;
 
   ChannelMessage copyWith({
     ChannelMessageStatus? status,
@@ -111,6 +134,10 @@ class ChannelMessage {
     MessageTranslationStatus? translationStatus,
     Object? translationModelId = _unset,
     Map<String, List<String?>>? reactions,
+    int? channelIndex,
+    String? filterReason,
+    String? filterDetail,
+    bool clearFilter = false,
   }) {
     return ChannelMessage(
       senderKey: senderKey,
@@ -130,6 +157,7 @@ class ChannelMessage {
           ? this.translationModelId
           : translationModelId as String?,
       timestamp: timestamp,
+      receivedAt: receivedAt,
       isOutgoing: isOutgoing,
       status: status ?? this.status,
       repeats: repeats ?? this.repeats,
@@ -138,7 +166,7 @@ class ChannelMessage {
       pathHashWidth: pathHashWidth ?? this.pathHashWidth,
       pathBytes: pathBytes ?? this.pathBytes,
       pathVariants: pathVariants ?? this.pathVariants,
-      channelIndex: channelIndex,
+      channelIndex: channelIndex ?? this.channelIndex,
       region: region == _unset ? this.region : region as String?,
       messageId: messageId,
       packetHash: packetHash ?? this.packetHash,
@@ -146,6 +174,8 @@ class ChannelMessage {
       replyToSenderName: replyToSenderName ?? this.replyToSenderName,
       replyToText: replyToText ?? this.replyToText,
       reactions: reactions ?? this.reactions,
+      filterReason: clearFilter ? null : (filterReason ?? this.filterReason),
+      filterDetail: clearFilter ? null : (filterDetail ?? this.filterDetail),
     );
   }
 
@@ -225,6 +255,7 @@ class ChannelMessage {
         senderName: senderName,
         text: decodedText,
         timestamp: DateTime.fromMillisecondsSinceEpoch(timestampRaw * 1000),
+        receivedAt: DateTime.now(),
         isOutgoing: false,
         status: ChannelMessageStatus.sent,
         pathLength: pathLen,

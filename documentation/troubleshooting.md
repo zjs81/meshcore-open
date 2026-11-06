@@ -16,11 +16,45 @@ Use Chrome (or a Chromium browser that identifies as Chrome) and HTTPS (or an ap
 
 ## Unexpected disconnect
 
-BLE can retry an unexpected disconnect with exponential backoff; manual disconnects do not trigger reconnect. USB and TCP require reconnection through their connection screens. Navigation returns to the scanner when a connection is lost. If reconnect continues to fail, check power, firmware, adapter state, and competing clients.
+BLE and TCP retry an unexpected disconnect with exponential backoff; manual disconnects do not trigger reconnect. USB requires reconnection through its connection screen. If a TCP companion still drops in the background on Android, allow background activity (App Settings → Notifications → **Background Activity**) and check the phone's Wi-Fi power-saving settings. Navigation returns to the scanner when a connection is lost. If reconnect continues to fail, check power, firmware, adapter state, and competing clients.
 
 ## Feature unavailable or no data
 
 Companion stats require firmware code 8+, and image channel data requires code 11+. Image inference also needs an enabled, complete model bundle and adequate memory. A missing incoming region label can mean unknown or unavailable metadata, not an unscoped message. See [images](image-messages.md), [regions](regions.md), and [radio stats](radio-statistics.md).
+
+## Linux AppImage build or launch fails
+
+Linux Release builds package an x86_64 AppImage automatically. Missing
+packaging dependencies, failed downloads or checksum mismatches fail the build;
+see [Linux AppImage prerequisites](../README.md#linux-appimage). A checksum
+mismatch must not be bypassed: remove the named corrupted cache file and retry.
+Tools are pinned in `scripts/appimage-tools.json`; cached tools can be reused
+offline, but dependency downloads and first-time container setup still need
+network access. Use `MESHCORE_BUILD_APPIMAGE=0 flutter build linux --release`
+for a bundle-only build, including unsupported architectures/build hosts.
+
+ARM64 AppImages are built on a native GitHub `ubuntu-24.04-arm` runner using
+the pinned Flutter source revision. An x64 host cannot use Flutter's Linux
+cross-build option to produce ARM64; build locally on an ARM64 Linux host or
+use the CI artifact. The CI smoke test checks AArch64 ELF files and launches
+under emulation on an ARM64 runner, but does not replace Raspberry Pi 5
+graphics, BLE, USB or inference hardware testing.
+
+For a Nix build or a host with glibc newer than the pinned Ubuntu baseline,
+verify that your user can access Podman or Docker without interactive
+privilege escalation. The image is rebuilt in Ubuntu, not made from the
+host-linked executable. The regular native bundle remains available if
+packaging fails. Custom targets, obfuscation and split-debug-info are not
+supported by the container rebuild.
+
+The initial compatibility baseline is Ubuntu 24.04. The host must provide
+compatible glibc, graphics drivers, and X11/XWayland; Bluetooth still requires
+BlueZ and USB still requires device permissions. If FUSE mounting is
+unavailable, try the image's `--appimage-extract-and-run` option, or extract
+with `--appimage-extract` and launch `squashfs-root/AppRun`. On NixOS, the
+distribution's `appimage-run` support may be required. Include
+`appimage-audit.txt` and `appimage-tools.json` from the Release output directory
+when reporting packaging failures. Never include private message/model data.
 
 ## Useful bug-report details
 

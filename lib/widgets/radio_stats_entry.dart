@@ -7,7 +7,6 @@ import 'package:meshcore_open/l10n/l10n.dart';
 import 'package:meshcore_open/screens/companion_radio_stats_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../theme/mesh_theme.dart';
 import 'mesh_ui.dart';
 
 void pushCompanionRadioStatsScreen(BuildContext context) {
@@ -146,7 +145,7 @@ class AirActivityDotState extends State<AirActivityDot> {
     final on = widget.active && _blink;
     final scheme = Theme.of(context).colorScheme;
     return PulseDot(
-      color: on ? MeshPalette.blue : scheme.outline,
+      color: on ? scheme.primary : scheme.outline,
       size: 11,
       animate: false,
     );

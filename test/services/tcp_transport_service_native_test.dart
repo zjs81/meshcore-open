@@ -30,7 +30,62 @@ final class _DelayedConnectOverrides extends IOOverrides {
   }
 }
 
+final class _CapturingConnectOverrides extends IOOverrides {
+  Socket? socket;
+
+  @override
+  Future<Socket> socketConnect(
+    host,
+    int port, {
+    sourceAddress,
+    int sourcePort = 0,
+    Duration? timeout,
+  }) async {
+    final connected = await super.socketConnect(
+      host,
+      port,
+      sourceAddress: sourceAddress,
+      sourcePort: sourcePort,
+      timeout: timeout,
+    );
+    socket = connected;
+    return connected;
+  }
+}
+
+int _readIntOption(Socket socket, int level, int option) {
+  final value = socket.getRawOption(
+    RawSocketOption(level, option, Uint8List(4)),
+  );
+  return ByteData.sublistView(value).getInt32(0, Endian.host);
+}
+
 void main() {
+  test('connect enables TCP keepalive with short probe timings', () async {
+    final server = await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
+    final overrides = _CapturingConnectOverrides();
+    final service = TcpTransportService();
+    try {
+      await IOOverrides.runZoned(
+        () => service.connect(
+          host: InternetAddress.loopbackIPv4.address,
+          port: server.port,
+        ),
+        socketConnect: overrides.socketConnect,
+      );
+      final socket = overrides.socket!;
+      // Linux values: SO_KEEPALIVE 9, TCP_KEEPIDLE 4, TCP_KEEPINTVL 5,
+      // TCP_KEEPCNT 6.
+      expect(_readIntOption(socket, RawSocketOption.levelSocket, 9), 1);
+      expect(_readIntOption(socket, RawSocketOption.levelTcp, 4), 30);
+      expect(_readIntOption(socket, RawSocketOption.levelTcp, 5), 10);
+      expect(_readIntOption(socket, RawSocketOption.levelTcp, 6), 3);
+    } finally {
+      await service.disconnect();
+      await server.close();
+    }
+  }, skip: Platform.isLinux ? false : 'Option numbers checked are Linux ones');
+
   test('connect/disconnect updates TCP transport state', () async {
     final server = await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
     final service = TcpTransportService();

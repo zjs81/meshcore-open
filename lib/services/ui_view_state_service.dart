@@ -2,12 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../models/map_path_trace_draft.dart';
 import '../storage/prefs_manager.dart';
 import '../utils/contact_search.dart';
 
 const String contactsAllGroupsValue = '__all__';
 
 enum ChannelSortOption { manual, name, latestMessages, unread }
+
+/// Which nodes the map draws: the radio's own contacts, the online network
+/// map, or both.
+enum MapSourceOption { local, online, both }
 
 class UiViewStateService extends ChangeNotifier {
   static const _keyContactsSelectedGroupName = 'ui_contacts_selected_group';
@@ -16,6 +21,7 @@ class UiViewStateService extends ChangeNotifier {
   static const _keyContactsTypeFilter = 'ui_contacts_type_filter';
   static const _keyChannelsSortOption = 'ui_channels_sort_option';
   static const _keyChannelsSortIndexLegacy = 'ui_channels_sort_index';
+  static const _keyMapSource = 'ui_map_source';
 
   String _contactsSelectedGroupName = contactsAllGroupsValue;
   String _contactsSearchText = '';
@@ -26,6 +32,9 @@ class UiViewStateService extends ChangeNotifier {
 
   String _channelsSearchText = '';
   ChannelSortOption _channelsSortOption = ChannelSortOption.manual;
+  MapSourceOption _mapSource = MapSourceOption.local;
+
+  final MapPathTraceDraft mapPathTrace = MapPathTraceDraft();
 
   String get contactsSelectedGroupName => _contactsSelectedGroupName;
   String get contactsSearchText => _contactsSearchText;
@@ -35,6 +44,7 @@ class UiViewStateService extends ChangeNotifier {
   ContactTypeFilter get contactsTypeFilter => _contactsTypeFilter;
   String get channelsSearchText => _channelsSearchText;
   ChannelSortOption get channelsSortOption => _channelsSortOption;
+  MapSourceOption get mapSource => _mapSource;
 
   Future<void> initialize() async {
     final prefs = PrefsManager.instance;
@@ -60,6 +70,14 @@ class UiViewStateService extends ChangeNotifier {
       _contactsTypeFilter = ContactTypeFilter.values.firstWhere(
         (e) => e.name == typeStr,
         orElse: () => ContactTypeFilter.all,
+      );
+    }
+
+    final mapSourceStr = prefs.getString(_keyMapSource);
+    if (mapSourceStr != null) {
+      _mapSource = MapSourceOption.values.firstWhere(
+        (e) => e.name == mapSourceStr,
+        orElse: () => MapSourceOption.local,
       );
     }
 
@@ -150,5 +168,12 @@ class UiViewStateService extends ChangeNotifier {
     unawaited(
       PrefsManager.instance.setString(_keyChannelsSortOption, value.name),
     );
+  }
+
+  void setMapSource(MapSourceOption value) {
+    if (_mapSource == value) return;
+    _mapSource = value;
+    notifyListeners();
+    unawaited(PrefsManager.instance.setString(_keyMapSource, value.name));
   }
 }

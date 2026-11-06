@@ -5,14 +5,19 @@ import 'dart:ui';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
+import '../helpers/gif_helper.dart';
+import '../helpers/marker_message.dart';
 import '../helpers/message_url_image_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../l10n/app_localizations.dart';
+import '../models/app_settings.dart';
 import '../storage/prefs_manager.dart';
 import '../utils/platform_info.dart';
 import 'notification_reply.dart';
+import 'received_image_store.dart' show ReceivedImageRef;
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -25,6 +30,11 @@ class NotificationService {
 
   // Locale for localized notification strings
   Locale _locale = const Locale('en');
+  String _publicIpfsGateway = AppSettings.defaultPublicIpfsGateway;
+
+  void setPublicIpfsGateway(String gateway) {
+    _publicIpfsGateway = gateway.trim();
+  }
 
   /// Set the locale for notification strings (call when app locale changes)
   void setLocale(Locale locale) {
@@ -277,15 +287,26 @@ class NotificationService {
     await requestPermissions();
   }
 
-  /// Format special message types for human-readable notifications.
-  static String formatNotificationText(String text) {
+  /// Summarizes structured payloads (reactions, images, GIFs, shared
+  /// locations) with the same parsers the chat bubbles use; other text is
+  /// returned unchanged.
+  static String formatNotificationText(String text, AppLocalizations l10n) {
     final trimmed = text.trim();
     final reaction = ReactionHelper.parseReaction(trimmed);
     if (reaction != null) {
-      return 'Reacted ${reaction.emoji}';
+      return l10n.notification_reacted(reaction.emoji);
     }
-    if (RegExp(r'^g:[A-Za-z0-9_-]+$').hasMatch(trimmed)) {
-      return 'Sent a GIF';
+    if (ReceivedImageRef.parse(trimmed) != null) {
+      return l10n.notification_sentImage;
+    }
+    if (GifHelper.parseGif(trimmed) != null) {
+      return l10n.notification_sentGif;
+    }
+    final marker = parseMarkerText(trimmed);
+    if (marker != null) {
+      return marker.label.isEmpty
+          ? l10n.notification_sharedLocation
+          : l10n.notification_sharedLocationNamed(marker.label);
     }
     return text;
   }
@@ -296,7 +317,10 @@ class NotificationService {
   }) async {
     if (!urlImagesEnabled) return null;
 
-    final imageUrl = await MessageUrlImageHelper.parseVerified(text);
+    final imageUrl = await MessageUrlImageHelper.parseVerified(
+      text,
+      publicGateway: _publicIpfsGateway,
+    );
     if (imageUrl == null) return null;
 
     try {
@@ -335,14 +359,27 @@ class NotificationService {
       ),
   ];
 
-  // Always MessagingStyle: Android Auto only handles messaging notifications
-  // in that style, so an image preview is shown as the large icon instead.
   AndroidNotificationDetails _androidConversationDetails(
     _Conversation conversation, {
     int? badgeCount,
     bool silent = false,
   }) {
     final imagePath = conversation.imagePath;
+    final styleInformation = imagePath != null
+        ? BigPictureStyleInformation(
+            FilePathAndroidBitmap(imagePath),
+            contentTitle: conversation.title,
+            summaryText: _collapsedBody(conversation),
+            showBigPictureWhenCollapsed: true,
+          )
+        : MessagingStyleInformation(
+            Person(key: 'self', name: _selfName ?? _l10n.notification_you),
+            conversationTitle: conversation.isChannel
+                ? conversation.title
+                : null,
+            groupConversation: conversation.isChannel,
+            messages: List<Message>.of(conversation.messages),
+          );
     return AndroidNotificationDetails(
       conversation.isChannel ? 'channel_messages' : 'messages',
       conversation.isChannel ? 'Channel Messages' : 'Messages',
@@ -355,13 +392,7 @@ class NotificationService {
       number: badgeCount,
       silent: silent,
       category: AndroidNotificationCategory.message,
-      largeIcon: imagePath != null ? FilePathAndroidBitmap(imagePath) : null,
-      styleInformation: MessagingStyleInformation(
-        Person(key: 'self', name: _selfName ?? _l10n.notification_you),
-        conversationTitle: conversation.isChannel ? conversation.title : null,
-        groupConversation: conversation.isChannel,
-        messages: List<Message>.of(conversation.messages),
-      ),
+      styleInformation: styleInformation,
       actions: _conversationActions(conversation.isChannel),
     );
   }
@@ -396,7 +427,7 @@ class NotificationService {
       message,
       urlImagesEnabled: urlImagesEnabled,
     );
-    final preview = formatNotificationText(message.trim());
+    final preview = formatNotificationText(message.trim(), _l10n);
     final body = preview.isEmpty
         ? _l10n.notification_receivedNewMessage
         : preview;
@@ -597,6 +628,54 @@ class NotificationService {
     }
   }
 
+  /// Posts a low-battery alert for the connected device.
+  ///
+  /// Uses a per-device, per-threshold notification id so each alert level
+  /// updates its own notification instead of stacking, and alerts for
+  /// different radios don't overwrite each other. Bypasses the rate-limit
+  /// queue, which only handles message and advert notifications.
+  Future<void> showLowBatteryNotification({
+    required String deviceKey,
+    required String deviceName,
+    required int batteryPercent,
+    required int threshold,
+  }) async {
+    if (!await _ensureCanNotify()) return;
+
+    const androidDetails = AndroidNotificationDetails(
+      'low_battery',
+      'Low Battery',
+      channelDescription: 'Low battery alerts for the connected device',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
+    );
+
+    const darwinDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: false,
+      presentSound: true,
+    );
+
+    const notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: darwinDetails,
+      macOS: darwinDetails,
+    );
+
+    try {
+      await _notifications.show(
+        id: _lowBatteryNotificationId(deviceKey, threshold),
+        title: _l10n.notification_lowBatteryTitle,
+        body: _l10n.notification_lowBatteryBody(deviceName, batteryPercent),
+        notificationDetails: notificationDetails,
+        payload: 'low_battery',
+      );
+    } catch (e) {
+      debugPrint('Failed to show low battery notification: $e');
+    }
+  }
+
   /// Returns a privacy-safe identifier for debug logging.
   /// - advert: shows device name (body contains contactName)
   /// - message: shows "from: sender" (avoids logging message content)
@@ -624,6 +703,7 @@ class NotificationService {
   Future<void> cancelAll() async {
     _conversations.clear();
     await _notifications.cancelAll();
+    await _updateBadge(0);
   }
 
   Future<void> cancel(int id) async {
@@ -652,6 +732,26 @@ class NotificationService {
     await _updateBadge(totalUnreadCount);
   }
 
+  static int _lowBatteryNotificationId(String deviceKey, int threshold) =>
+      'low_battery:$deviceKey:$threshold'.hashCode;
+
+  /// Cancel a device's low-battery notifications for the given thresholds.
+  Future<void> clearLowBatteryNotifications(
+    String deviceKey,
+    Iterable<int> thresholds,
+  ) async {
+    if (!await _ensureInitialized()) return;
+    for (final threshold in thresholds) {
+      try {
+        await _notifications.cancel(
+          id: _lowBatteryNotificationId(deviceKey, threshold),
+        );
+      } catch (e) {
+        debugPrint('Failed to clear low battery notification: $e');
+      }
+    }
+  }
+
   /// Cancel advert notifications for the given contact public key hexes.
   Future<void> clearAdvertNotifications(List<String> contactIds) async {
     if (!await _ensureInitialized()) return;
@@ -660,28 +760,22 @@ class NotificationService {
     }
   }
 
+  static const MethodChannel _badgeChannel = MethodChannel(
+    'meshcore_open/app_badge',
+  );
+
+  /// Sets the app icon badge to the current unread total.
+  Future<void> setAppBadge(int count) => _updateBadge(count);
+
   Future<void> _updateBadge(int count) async {
     if (PlatformInfo.isIOS || PlatformInfo.isMacOS) {
-      // On Apple platforms, set the badge number directly via a silent update.
-      final darwinDetails = DarwinNotificationDetails(
-        presentAlert: false,
-        presentSound: false,
-        presentBadge: true,
-        badgeNumber: count,
-      );
-      final details = NotificationDetails(
-        iOS: darwinDetails,
-        macOS: darwinDetails,
-      );
-      // Use a fixed ID so each update replaces the previous one.
-      await _notifications.show(
-        id: 'badge_update'.hashCode,
-        title: null,
-        body: null,
-        notificationDetails: details,
-      );
-      // Immediately cancel the silent notification so it doesn't appear in tray.
-      await _notifications.cancel(id: 'badge_update'.hashCode);
+      // Set natively: a silent notification cancelled right after show() is
+      // removed before iOS delivers it, so its badge number never applied.
+      try {
+        await _badgeChannel.invokeMethod<void>('setBadgeCount', count);
+      } catch (e) {
+        debugPrint('Failed to update app badge: $e');
+      }
     }
     // On Android, badge count is derived from active notifications,
     // so cancelling the specific notification above is sufficient.

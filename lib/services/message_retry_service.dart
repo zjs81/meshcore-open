@@ -26,7 +26,9 @@ class _AckHistoryEntry {
 /// for O(1) lookup.  [pathSelection] snapshots the route used for this
 /// specific attempt so that a late PUSH_CODE_SEND_CONFIRMED credits the
 /// correct path even when the message has since been retried on a different
-/// route.
+/// route.  Firmware hashes only `attempt & 3`, so attempts N and N+4 of one
+/// message share an ACK hash; each hash therefore keeps every attempt that
+/// produced it.
 typedef AckHashMapping = ({
   String messageId,
   DateTime timestamp,
@@ -93,7 +95,7 @@ class MessageRetryService extends ChangeNotifier {
   final Map<String, Message> _pendingMessages = {};
   final Map<String, Contact> _pendingContacts = {};
   final Map<String, List<PathSelection>> _attemptPathHistory = {};
-  final Map<String, AckHashMapping> _ackHashToMessageId = {};
+  final Map<String, List<AckHashMapping>> _ackHashToMessageId = {};
   final Map<String, List<int>> _expectedAckHashes = {};
   final List<_AckHistoryEntry> _ackHistory = [];
   final Map<String, List<String>> _sendQueue = {};
@@ -103,7 +105,11 @@ class MessageRetryService extends ChangeNotifier {
 
   RetryServiceConfig? _config;
 
-  MessageRetryService();
+  /// Extra time allowed for RESP_CODE_SENT on top of the delivery timeout
+  /// before an attempt with no SENT reply is treated as timed out.
+  final Duration sentWatchdogGrace;
+
+  MessageRetryService({this.sentWatchdogGrace = const Duration(seconds: 5)});
 
   void initialize(RetryServiceConfig config) {
     _config = config;
@@ -387,6 +393,7 @@ class MessageRetryService extends ChangeNotifier {
     if (config.getSelfPublicKey != null && selfPubKey == null) {
       throw StateError('Self public key unknown; cannot track ACK');
     }
+    String? expectedHashHex;
     if (selfPubKey != null) {
       final outboundText =
           config.prepareContactOutboundText?.call(contact, message.text) ??
@@ -397,7 +404,7 @@ class MessageRetryService extends ChangeNotifier {
         outboundText,
         selfPubKey,
       );
-      final expectedHashHex = expectedHash.toRadixString(16).padLeft(8, '0');
+      expectedHashHex = expectedHash.toRadixString(16).padLeft(8, '0');
       _expectedHashToMessageId[expectedHashHex] = messageId;
 
       final shortText = message.text.length > 20
@@ -410,6 +417,87 @@ class MessageRetryService extends ChangeNotifier {
     }
 
     await config.sendMessage(contact, message.text, attempt, timestampSeconds);
+    _startSentWatchdog(messageId, attempt, expectedHashHex);
+  }
+
+  /// Arms a timer for an attempt whose RESP_CODE_SENT has not arrived yet.
+  /// Without it a lost SENT reply leaves the message pending forever and
+  /// blocks the contact's queue. A SENT reply replaces this timer with the
+  /// normal ACK timeout via [_startTimeoutTimer].
+  void _startSentWatchdog(
+    String messageId,
+    int attempt,
+    String? expectedHashHex,
+  ) {
+    final message = _pendingMessages[messageId];
+    final contact = _pendingContacts[messageId];
+    if (message == null || contact == null) return;
+    if (_resolvedMessages.contains(messageId)) return;
+    if (message.retryCount != attempt ||
+        message.status != MessageStatus.pending) {
+      return; // SENT already arrived, or a newer attempt took over.
+    }
+    if (_timeoutTimers[messageId]?.isActive ?? false) return;
+
+    final timeoutMs =
+        _deliveryTimeoutFor(message, contact) +
+        sentWatchdogGrace.inMilliseconds;
+    _timeoutTimers[messageId] = Timer(Duration(milliseconds: timeoutMs), () {
+      final current = _pendingMessages[messageId];
+      if (current == null ||
+          current.retryCount != attempt ||
+          current.status != MessageStatus.pending) {
+        return;
+      }
+      _config?.debugLogService?.warn(
+        'No RESP_CODE_SENT for message $messageId (attempt $attempt) '
+        'after ${timeoutMs}ms → treating as timed out',
+        tag: 'AckHash',
+      );
+      if (expectedHashHex != null &&
+          _expectedHashToMessageId[expectedHashHex] == messageId) {
+        // Drop the SENT expectation so a late SENT for this attempt can't
+        // restart timers for the retry; keep the hash ACK-matchable in case
+        // the radio did transmit it.
+        _expectedHashToMessageId.remove(expectedHashHex);
+        _addAckHashMapping(expectedHashHex, messageId, current);
+        final hash = int.parse(expectedHashHex, radix: 16);
+        final hashes = _expectedAckHashes.putIfAbsent(messageId, () => []);
+        if (!hashes.contains(hash)) hashes.add(hash);
+      }
+      _handleTimeout(messageId);
+    });
+  }
+
+  int _deliveryTimeoutFor(Message message, Contact contact) {
+    final config = _config;
+    final calculate = config?.calculateTimeout;
+    if (calculate == null) return calculateDefaultTimeout(contact);
+    final outboundText =
+        config?.prepareContactOutboundText?.call(contact, message.text) ??
+        message.text;
+    return calculate(
+      message.pathLength ?? contact.pathLength,
+      utf8.encode(outboundText).length,
+      contactKey: contact.publicKeyHex,
+    );
+  }
+
+  void _addAckHashMapping(
+    String ackHashHex,
+    String messageId,
+    Message message,
+  ) {
+    final mappings = _ackHashToMessageId.putIfAbsent(ackHashHex, () => []);
+    mappings.removeWhere(
+      (m) => m.messageId == messageId && m.attemptIndex == message.retryCount,
+    );
+    mappings.add((
+      messageId: messageId,
+      timestamp: DateTime.now(),
+      attemptIndex: message.retryCount,
+      pathSelection: _selectionFromMessage(message),
+    ));
   }
 
   bool updateMessageFromSent(int ackHash, int timeoutMs) {
@@ -454,12 +542,7 @@ class MessageRetryService extends ChangeNotifier {
     }
 
     final message = _pendingMessages[messageId]!;
-    _ackHashToMessageId[ackHashHex] = (
-      messageId: messageId,
-      timestamp: DateTime.now(),
-      attemptIndex: message.retryCount,
-      pathSelection: _selectionFromMessage(message),
-    );
+    _addAckHashMapping(ackHashHex, messageId, message);
 
     // Add this ACK hash to the list of expected ACKs for this message (for history)
     _expectedAckHashes[messageId] ??= [];
@@ -526,9 +609,10 @@ class MessageRetryService extends ChangeNotifier {
 
   void _cleanupMessage(String messageId) {
     _moveAckHashesToHistory(messageId);
-    _ackHashToMessageId.removeWhere(
-      (_, mapping) => mapping.messageId == messageId,
-    );
+    _ackHashToMessageId.removeWhere((_, mappings) {
+      mappings.removeWhere((mapping) => mapping.messageId == messageId);
+      return mappings.isEmpty;
+    });
     _expectedHashToMessageId.removeWhere((_, msgId) => msgId == messageId);
     final contactKey = _pendingContacts[messageId]?.publicKeyHex;
     _pendingMessages.remove(messageId);
@@ -672,26 +756,30 @@ class MessageRetryService extends ChangeNotifier {
     String? matchedMessageId;
     int? matchedAttemptIndex;
     PathSelection? matchedPathSelection;
+    // True when attempts on different routes share this ACK hash, so the
+    // route that delivered it is unknown and must not be credited.
+    var ambiguousPath = false;
     final ackHashHex = ackHash.toRadixString(16).padLeft(8, '0');
 
     // Clean up old ACK hash mappings (older than 15 minutes)
     final cutoffTime = DateTime.now().subtract(const Duration(minutes: 15));
-    final hashesToRemove = <String>[];
-    for (var entry in _ackHashToMessageId.entries) {
-      if (entry.value.timestamp.isBefore(cutoffTime)) {
-        hashesToRemove.add(entry.key);
-      }
-    }
-    for (var hash in hashesToRemove) {
-      _ackHashToMessageId.remove(hash);
-    }
+    _ackHashToMessageId.removeWhere((_, mappings) {
+      mappings.removeWhere((m) => m.timestamp.isBefore(cutoffTime));
+      return mappings.isEmpty;
+    });
 
     // Use direct O(1) lookup via ACK hash mapping
-    final mapping = _ackHashToMessageId[ackHashHex];
-    if (mapping != null) {
+    final mappings = _ackHashToMessageId[ackHashHex];
+    if (mappings != null && mappings.isNotEmpty) {
+      final mapping = mappings.first;
       matchedMessageId = mapping.messageId;
       matchedAttemptIndex = mapping.attemptIndex;
       matchedPathSelection = mapping.pathSelection;
+      ambiguousPath = mappings.any(
+        (m) =>
+            m.messageId != mapping.messageId ||
+            !_sameSelection(m.pathSelection, mapping.pathSelection),
+      );
     } else {
       config?.debugLogService?.warn(
         'PUSH_CODE_SEND_CONFIRMED: ACK hash $ackHashHex not found in direct mapping, trying fallback',
@@ -746,16 +834,21 @@ class MessageRetryService extends ChangeNotifier {
       config?.updateMessage(deliveredMessage);
 
       if (contact != null) {
-        _recordPathResultFromMessage(
-          contact.publicKeyHex,
-          message,
-          selection,
-          true,
-          tripTimeMs,
-        );
+        if (!ambiguousPath) {
+          _recordPathResultFromMessage(
+            contact.publicKeyHex,
+            message,
+            selection,
+            true,
+            tripTimeMs,
+          );
+        }
+        // Learn from the attempt this ACK belongs to, not the latest one: a
+        // late ACK for a direct attempt can land after a retry went flood.
         if (config?.onDeliveryObserved != null &&
             tripTimeMs > 0 &&
-            message.pathLength != null) {
+            selection != null &&
+            !ambiguousPath) {
           final outboundTextForObserved =
               config!.prepareContactOutboundText?.call(contact, message.text) ??
               message.text;
@@ -764,7 +857,7 @@ class MessageRetryService extends ChangeNotifier {
               .length;
           config.onDeliveryObserved!(
             contact.publicKeyHex,
-            message.pathLength!,
+            selection.useFlood ? -1 : selection.hopCount,
             messageBytesForObserved,
             tripTimeMs,
           );
@@ -823,6 +916,13 @@ class MessageRetryService extends ChangeNotifier {
     final recordSelection = selection ?? _selectionFromMessage(message);
     if (recordSelection == null) return;
     callback(contactKey, recordSelection, success, tripTimeMs);
+  }
+
+  static bool _sameSelection(PathSelection? a, PathSelection? b) {
+    if (a == null || b == null) return a == b;
+    return a.useFlood == b.useFlood &&
+        a.hopCount == b.hopCount &&
+        listEquals(a.pathBytes, b.pathBytes);
   }
 
   PathSelection? _selectionFromMessage(Message message) {

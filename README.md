@@ -6,7 +6,7 @@ Open-source Flutter client for MeshCore LoRa mesh networking devices.
 
 MeshCore Open is a cross-platform application for communicating with MeshCore LoRa mesh radios over Bluetooth Low Energy (BLE), USB serial, or TCP. The app enables long-range, off-grid communication through peer-to-peer messaging, public channels, and mesh networking capabilities.
 
-**Website:** [meshcoreopen.org](https://meshcoreopen.org/)
+**Website:** [meshcoreopen.org](https://meshcoreopen.org/) · **Network map:** [map.meshcoreopen.org](https://map.meshcoreopen.org/)
 
 <a href="https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/zjs81/meshcore-open">
         <img src="assets/badges/badge_obtainium.png" height="80" align="center" alt="Get it on Obtainium"/>
@@ -43,13 +43,14 @@ See the [user documentation](documentation/README.md), [connection guide](docume
 - **Direct Messaging**: Private encrypted conversations with individual contacts
 - **Channels**: Public, hashtag, private, and community channels
 - **Mesh Images**: Send compressed images in channel chat with optional recovery packets ([guide](documentation/image-messages.md))
+- **Message Filter**: Hide spam and repeated channel messages with your own rules and on-device learning ([guide](documentation/message-filter.md))
 - **Regions**: Scope channel floods and reply using a message’s known region ([guide](documentation/regions.md))
 - **Translation**: Optional on-device incoming and pre-send translation
 - **Contact Management**: Organize contacts, track last seen times, and manage conversation history
 - **Contact Groups**: Create custom groups to organize your mesh network contacts
 - **Message Reactions**: React to messages with emoji responses
 - **Message Replies**: Thread conversations with inline reply functionality
-- **Android Auto & Watches**: Hear messages and reply by voice in Android Auto, or reply from the notification shade and Wear OS/Galaxy watches ([guide](documentation/notifications.md#android-auto))
+- **Android Auto & Watches**: Reply from the notification shade and Wear OS/Galaxy watches, or hear messages and reply by voice in Android Auto (optional build flag) ([guide](documentation/notifications.md#android-auto))
 - **Channel Muting**: Mute a channel from its chat screen, the channel list, or its notification
 
 ### Mesh Network
@@ -85,7 +86,7 @@ See the [user documentation](documentation/README.md), [connection guide](docume
 
 ### Architecture
 
-- **Framework**: Flutter (web deployment pins 3.41.2); Dart SDK constraint `^3.9.2`
+- **Framework**: Flutter, pinned to an exact release in `pubspec.yaml` (`environment.flutter`); Dart SDK constraint `^3.9.2`
 - **State Management**: Provider pattern with ChangeNotifier
 - **BLE Protocol**: Nordic UART Service (NUS) over Bluetooth Low Energy
 - **Storage**: JSON in SharedPreferences for messages and contacts; files for models, images, and map caches
@@ -103,7 +104,7 @@ See the [user documentation](documentation/README.md), [connection guide](docume
 | Map & Location     | ✅                | ✅        | ✅   | ✅      | ✅    | ✅                                |
 | Device Management  | ✅                | ✅        | ✅   | ✅      | ✅    | ✅                                |
 | Repeater Hub       | ✅                | ✅        | ✅   | ✅      | ✅    | ✅                                |
-| Notification replies | ✅<br>(incl. Android Auto, watches) | ❌ | ❌ | ❌ | ❌ | ❌                              |
+| Notification replies | ✅<br>(incl. watches; Android Auto optional) | ❌ | ❌ | ❌ | ❌ | ❌                              |
 
 The matrix describes implemented functionality, not a guarantee that every feature has been tested on every device. Web device connections use Web Serial and require Chrome and a secure origin. Image inference and translation require native runtimes and are unavailable on web. Android APKs currently include only `arm64-v8a`; the minimum Android API follows the Flutter SDK used to build.
 
@@ -125,7 +126,7 @@ The matrix describes implemented functionality, not a guarantee that every featu
 
 ### Prerequisites
 
-- Flutter SDK; web deployment currently pins 3.41.2. The Dart SDK constraint is `^3.9.2` (see `pubspec.yaml`).
+- Flutter SDK at exactly the version in `pubspec.yaml` under `environment.flutter`. `flutter pub get` refuses any other version; run `flutter upgrade` or check out that release.
 - Android Studio / Xcode (for mobile development)
 - A MeshCore-compatible LoRa device
 
@@ -149,6 +150,134 @@ The matrix describes implemented functionality, not a guarantee that every featu
    ```bash
    flutter run
    ```
+
+### Linux AppImage
+
+`flutter build linux --release` produces the regular Flutter bundle and an
+AppImage on supported Linux architectures. The x86_64 artifact is
+`build/linux/x64/release/meshcore-open-x86_64.AppImage`; the ARM64 artifact is
+`build/linux/arm64/release/meshcore-open-aarch64.AppImage`. Debug and Profile
+builds do not produce AppImages.
+Both use Ubuntu 24.04 as the packaging baseline; older distributions are not
+guaranteed.
+
+For a bundle-only build, including other architectures:
+
+```bash
+MESHCORE_BUILD_APPIMAGE=0 flutter build linux --release
+```
+
+On Ubuntu 24.04, install the packaging prerequisites alongside Flutter's build
+dependencies:
+
+```bash
+sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev \
+   librsvg2-dev libgirepository1.0-dev libgtk-3-bin libgdk-pixbuf2.0-bin \
+   libgdk-pixbuf-2.0-dev dpkg-dev patchelf binutils curl jq file desktop-file-utils xdg-user-dirs
+```
+
+The build automatically downloads checksum-verified architecture-matched
+linuxdeploy, its GTK plugin, appimagetool, and an AppImage runtime. Pins are in
+`scripts/appimage-tools.json`; the cache is under
+`${XDG_CACHE_HOME:-$HOME/.cache}/meshcore-open/appimage/`. Packaging can reuse
+valid cached tools offline, but Flutter dependencies and native-library
+downloads must also be available. A packaging failure fails the enabled build,
+without publishing a stale image as a new artifact.
+
+GitHub Actions builds ARM64 on a native `ubuntu-24.04-arm` runner. Flutter's
+Linux release SDK archive is x64-only, so that job bootstraps the pinned Flutter
+release from its source revision in `scripts/appimage-tools.json`. Flutter does not support x64-to-ARM64 Linux
+cross-builds; use an ARM64 Linux host to build the ARM64 bundle locally. The
+ARM64 AppImage is CI-built and hardware validation on a Raspberry Pi 5 is still
+needed for graphics, BLE, USB and inference behavior.
+
+Hosts with newer glibc than the pinned baseline (2.39 for Ubuntu 24.04),
+including Ubuntu 26.04 runners under `ubuntu-latest`, use the same isolated
+Ubuntu rebuild as Nix. A usable Podman or Docker engine is required on those
+hosts. Rootless Podman preserves your UID/GID with `--userns=keep-id`, so the
+container can write the host-owned output and cache directories. The original
+native bundle is retained. Custom targets, obfuscation and split-debug-info
+require a bundle-only build when container rebuilding is needed.
+
+The image includes Flutter assets, native plugins, ONNX Runtime and
+redistributable GTK dependencies. It does not include graphics drivers, BlueZ
+services, USB permissions, downloaded inference models or user data. The GTK
+packaging plugin uses X11, so Wayland sessions need XWayland. The host still
+needs compatible glibc and graphics libraries (`libgl1`, `libegl1`, and
+`libgles2` on Ubuntu). Launch normally, or without
+FUSE by extracting:
+
+```bash
+./build/linux/x64/release/meshcore-open-x86_64.AppImage --appimage-extract-and-run
+```
+
+### Linux with Nix
+
+Enter the development shell from the repository root:
+
+```bash
+nix develop
+flutter --version
+pkg-config --exists gtk+-3.0 glib-2.0 gio-2.0 sysprof-capture-4
+flutter pub get
+flutter build linux --debug
+flutter build linux --profile
+```
+
+The shell does not provide Flutter, because `pubspec.yaml` pins an exact
+release that nixpkgs may not package yet. Put that Flutter SDK on PATH before
+entering the shell; the shell warns when it is missing or the wrong version.
+The Linux shell provides wrapped Clang
+compilers, native headers and libraries, and Sysprof capture development files.
+Android SDK warnings do not prevent Linux builds.
+
+Release AppImage builds inside `nix develop` require a usable Podman or Docker
+engine on the host. The install hook automatically rebuilds in a pinned Ubuntu
+container to avoid shipping Nix store dependencies, while keeping the native
+Nix bundle intact. The first build downloads a container image and Flutter SDK;
+later builds reuse the image and dependency caches. No privileged package
+installation is performed on the host. The container uses the SDK pin in
+`scripts/appimage-tools.json` and the current source tree, including local
+changes and the resolved `pubspec.lock`. Custom Dart defines and build
+name/number are forwarded; custom targets, obfuscation and split-debug-info
+require a bundle-only build. Use `MESHCORE_BUILD_APPIMAGE=0` to opt out when no
+container engine is available. On NixOS, use the distribution's `appimage-run`
+support when needed to launch downloaded AppImages.
+
+If an SDK or toolchain update leaves CMake using an old compiler or install
+prefix, remove the affected generated cache, for example
+`rm -f build/linux/x64/profile/CMakeCache.txt`, and rebuild. If widget tests
+report that `ink_sparkle.frag` cannot be decoded after an SDK update, remove
+the generated `build/unit_test_assets` directory and rerun `flutter test`.
+
+Launch the profile bundle from a graphical session (replace `x64` with `arm64`
+on ARM Linux):
+
+```bash
+build/linux/x64/profile/bundle/meshcore_open
+```
+
+To record with Sysprof, launch the app through the recorder and press Ctrl+C
+when finished. Use a new capture filename for each recording:
+
+```bash
+sysprof-cli meshcore.syscap -- build/linux/x64/profile/bundle/meshcore_open
+sysprof meshcore.syscap
+```
+
+CPU stack sampling requires host support for kernel perf events and appropriate
+permissions, potentially through the Sysprof system service and polkit. The Nix
+shell supplies tools and libraries, not system services or permission changes.
+If Sysprof reports `Permission denied` opening perf events, ask the host
+administrator to configure profiling access. A file being created does not
+prove CPU samples were recorded; check the recording diagnostics and contents.
+For an unprivileged capture smoke test only, use
+`sysprof-cli --no-sysprofd --no-perf smoke.syscap -- build/linux/x64/profile/bundle/meshcore_open`;
+this intentionally excludes CPU stack sampling.
+
+To update the package pin, run `nix flake update nixpkgs`, review the lockfile
+diff, and repeat both Linux builds, analysis, and tests before committing it.
+Keep the updated lockfile with the shell configuration for reproducibility.
 
 ### Web (self-host)
 
@@ -228,7 +357,7 @@ Messages are transmitted as binary frames using a custom protocol optimized for 
 
 - **Theme**: System default, light, or dark mode
 - **Language**: Use one of 18 languages (English, Chinese, French, Spanish, Portuguese, German, Dutch, Polish, Swedish, Italian, Slovak, Slovenian, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
-- **Notifications**: Configurable for messages, channels, and node advertisements; per-channel muting; reply, mark-as-read, and mute actions on Android notifications and watches (reply and mark-as-read in Android Auto)
+- **Notifications**: Configurable for messages, channels, and node advertisements; per-channel muting; reply, mark-as-read, and mute actions on Android notifications and watches (reply and mark-as-read in Android Auto when built with `--android-project-arg=androidAuto=true`)
 - **Battery Chemistry**: Support for NMC, LiFePO4, LiPo, and LiPo HV battery types
 - **Message Retry**: Automatic retry with configurable path clearing
 

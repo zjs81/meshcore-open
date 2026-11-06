@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/models/companion_radio_stats.dart';
@@ -328,8 +329,11 @@ class _NoiseChartPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _NoiseChartPainter oldDelegate) {
-    return oldDelegate.samples.length != samples.length ||
-        oldDelegate.colorScheme != colorScheme;
+    // Once the ring buffer is full its length stays constant, so compare the
+    // contents (samples is a fresh copy per build).
+    return !listEquals(oldDelegate.samples, samples) ||
+        oldDelegate.colorScheme != colorScheme ||
+        oldDelegate.textTheme != textTheme;
   }
 
   TextPainter _yAxisLabel(double v) {

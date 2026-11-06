@@ -20,25 +20,27 @@ import '../widgets/message_status_icon.dart';
 import '../widgets/empty_state.dart';
 import '../helpers/chat_scroll_controller.dart';
 import '../helpers/gif_helper.dart';
+import '../helpers/ipfs_link_attach_flow.dart';
+import '../helpers/marker_message.dart';
 import '../models/channel_message.dart';
 import '../models/contact.dart';
 import '../l10n/contact_localization.dart';
 import '../models/message.dart';
-import '../models/translation_support.dart';
 import '../services/app_settings_service.dart';
 import '../services/chat_text_scale_service.dart';
 import '../services/path_history_service.dart';
 import '../services/translation_service.dart';
+import '../widgets/chat_composer.dart';
+import '../widgets/chat_send_pipeline.dart';
 import '../widgets/chat_zoom_wrapper.dart';
-import '../widgets/byte_count_input.dart';
+import '../widgets/message_bubble_frame.dart';
+import '../widgets/reaction_chips.dart';
 import '../widgets/chat_day_separator.dart';
 import 'channel_message_path_screen.dart';
 import 'map_screen.dart';
 import '../widgets/emoji_picker.dart';
 import '../widgets/gif_message.dart';
 import '../widgets/jump_to_bottom_button.dart';
-import '../widgets/gif_picker.dart';
-import '../widgets/message_translation_button.dart';
 import '../widgets/routing_sheet.dart';
 import '../widgets/radio_stats_entry.dart';
 import '../widgets/sync_progress_overlay.dart';
@@ -47,8 +49,12 @@ import '../l10n/l10n.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../widgets/unread_divider.dart';
 import '../theme/mesh_theme.dart';
+import '../widgets/future_timestamp_indicator.dart';
 import '../widgets/mesh_ui.dart';
 import 'telemetry_screen.dart';
+import '../services/chat_background_service.dart';
+import '../widgets/chat_background.dart';
+import '../widgets/holiday_animations.dart';
 
 // Image messages are deliberately absent from this screen, and there is no
 // flag to flip: the AEIC wire format is `CMD_SEND_CHANNEL_DATA` (62) /
@@ -73,6 +79,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final _holidayWatcher = HolidayTriggerWatcher();
+  final _messageAreaKey = GlobalKey();
   final _textController = TextEditingController();
   final _scrollController = ChatScrollController();
   final _textFieldFocusNode = FocusNode();
@@ -81,11 +89,18 @@ class _ChatScreenState extends State<ChatScreen> {
   MeshCoreConnector? _connector;
   Message? _pendingUnreadScrollTarget;
   String? _unreadDividerMessageId;
-  DateTime? _lastTextSendAt;
+  final ChatSendGuard _sendGuard = ChatSendGuard();
+
+  /// Contact keys of the chat screens currently on the navigation stack, in
+  /// push order. A room chat can push a nested ChatScreen for one of its
+  /// posters; when that one is popped, the room underneath must become the
+  /// active conversation again rather than none at all.
+  static final List<String> _activeContactStack = [];
 
   @override
   void initState() {
     super.initState();
+    _activeContactStack.add(widget.contact.publicKeyHex);
     _textFieldFocusNode.addListener(_onTextFieldFocusChange);
     _scrollController.onScrollNearTop = _loadOlderMessages;
     _scrollController.showJumpToBottom.addListener(_clearDividerAtBottom);
@@ -174,7 +189,16 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    _connector?.setActiveContact(null);
+    final index = _activeContactStack.lastIndexOf(widget.contact.publicKeyHex);
+    final wasTop = index == _activeContactStack.length - 1;
+    if (index >= 0) _activeContactStack.removeAt(index);
+    if (wasTop) {
+      // Restore whichever chat is now on top (e.g. the room this nested chat
+      // was opened from), or clear when this was the only one.
+      _connector?.setActiveContact(
+        _activeContactStack.isEmpty ? null : _activeContactStack.last,
+      );
+    }
     _scrollController.showJumpToBottom.removeListener(_clearDividerAtBottom);
     _textFieldFocusNode.removeListener(_onTextFieldFocusChange);
     _textFieldFocusNode.dispose();
@@ -207,15 +231,26 @@ class _ChatScreenState extends State<ChatScreen> {
                       ContactRoutingSheet.show(context, contact: contact),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Text(
-                      pathLabel,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.normal,
-                        decoration: TextDecoration.underline,
-                        decorationStyle: TextDecorationStyle.dotted,
-                      ),
+                    child: Builder(
+                      builder: (context) {
+                        // Follows the chat text size, capped so the two-line
+                        // title still fits the app bar.
+                        final textScale = context
+                            .select<ChatTextScaleService, double>(
+                              (service) => service.scale,
+                            )
+                            .clamp(1.0, 1.3);
+                        return Text(
+                          pathLabel,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12 * textScale,
+                            fontWeight: FontWeight.normal,
+                            decoration: TextDecoration.underline,
+                            decorationStyle: TextDecorationStyle.dotted,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -241,6 +276,11 @@ class _ChatScreenState extends State<ChatScreen> {
                       _showContactInfo(context);
                     case 'settings':
                       _showContactSettings(context);
+                    case 'background':
+                      showChatBackgroundSheet(
+                        context,
+                        ChatBackgroundService.contactKey(contact),
+                      );
                     case 'telemetry':
                       Navigator.push(
                         context,
@@ -295,6 +335,16 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   PopupMenuItem(
+                    value: 'background',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.wallpaper, size: 20),
+                        const SizedBox(width: 12),
+                        Text(context.l10n.chatBackground_title),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
                     value: 'clearChat',
                     child: Row(
                       children: [
@@ -322,16 +372,31 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Consumer<MeshCoreConnector>(
         builder: (context, connector, child) {
           final messages = connector.getMessages(widget.contact);
+          final newest = messages.isEmpty ? null : messages.last;
+          _holidayWatcher.onNewest(
+            context,
+            id: newest?.messageId,
+            texts: [newest?.text, newest?.translatedText],
+            receivedAt: newest?.receivedAt,
+            originOf: () => newestMessageOrigin(
+              _messageAreaKey,
+              isOutgoing: newest?.isOutgoing ?? false,
+            ),
+          );
           return Column(
             children: [
               Expanded(
-                child: Stack(
-                  children: [
-                    messages.isEmpty
-                        ? _buildEmptyState()
-                        : _buildMessageList(messages, connector),
-                    JumpToBottomButton(scrollController: _scrollController),
-                  ],
+                child: ChatBackdrop(
+                  key: _messageAreaKey,
+                  chatKey: ChatBackgroundService.contactKey(widget.contact),
+                  child: Stack(
+                    children: [
+                      messages.isEmpty
+                          ? _buildEmptyState()
+                          : _buildMessageList(messages, connector),
+                      JumpToBottomButton(scrollController: _scrollController),
+                    ],
+                  ),
                 ),
               ),
               _buildInputBar(connector),
@@ -435,14 +500,15 @@ class _ChatScreenState extends State<ChatScreen> {
               final startsDay =
                   messageIndex == reversedMessages.length - 1 ||
                   !isSameChatDay(
-                    reversedMessages[messageIndex + 1].timestamp,
-                    message.timestamp,
+                    reversedMessages[messageIndex + 1].receivedAt,
+                    message.receivedAt,
                   );
               final child = isUnreadAnchor || startsDay
                   ? Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (startsDay) ChatDaySeparator(day: message.timestamp),
+                        if (startsDay)
+                          ChatDaySeparator(day: message.receivedAt),
                         if (isUnreadAnchor) const UnreadDivider(),
                         bubble,
                       ],
@@ -472,240 +538,103 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildInputBar(MeshCoreConnector connector) {
-    final maxBytes = maxContactMessageBytes();
-    final scheme = Theme.of(context).colorScheme;
-    final settings = context.watch<AppSettingsService>().settings;
-    return Container(
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        border: Border(top: BorderSide(color: scheme.outlineVariant, width: 1)),
+    final keyHex = widget.contact.publicKeyHex;
+    final useEncoder =
+        connector.isContactSmazEnabled(keyHex) ||
+        connector.isContactCyr2LatEnabled(keyHex);
+    return ChatComposer(
+      controller: _textController,
+      focusNode: _textFieldFocusNode,
+      maxBytes: maxContactMessageBytes(),
+      softLimitBytes: maxTextPayloadBytesAfterFullLengthAttempts,
+      softLimitNote: context.l10n.chat_longMessageRetryNote(
+        maxFullLengthTextAttempt + 1,
       ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.gif_box_outlined),
-                tooltip: context.l10n.chat_sendGif,
-                onPressed: () => _showGifPicker(context),
-              ),
-              if (settings.translationEnabled)
-                MessageTranslationButton(
-                  enabled: settings.composerTranslationEnabled,
-                  languageCode: settings.translationTargetLanguageCode,
-                  onPressed: _showTranslationOptions,
-                ),
-              // No image button here: the image wire format is GRP_DATA, a
-              // channel primitive with no DM equivalent (see the note at the
-              // top of this file).
-              Expanded(
-                child: ValueListenableBuilder<TextEditingValue>(
-                  valueListenable: _textController,
-                  builder: (context, value, child) {
-                    final gifId = GifHelper.parseGif(value.text);
-                    if (gifId != null) {
-                      return Focus(
-                        autofocus: true,
-                        onKeyEvent: (node, event) {
-                          if (event is KeyDownEvent &&
-                              (event.logicalKey == LogicalKeyboardKey.enter ||
-                                  event.logicalKey ==
-                                      LogicalKeyboardKey.numpadEnter)) {
-                            _sendMessage(connector);
-                            return KeyEventResult.handled;
-                          }
-                          return KeyEventResult.ignored;
-                        },
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: GifMessage(
-                                  url:
-                                      'https://media.giphy.com/media/$gifId/giphy.gif',
-                                  backgroundColor:
-                                      scheme.surfaceContainerHighest,
-                                  fallbackTextColor: scheme.onSurface
-                                      .withValues(alpha: 0.6),
-                                  maxSize: 160,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            IconButton(
-                              icon: const Icon(Icons.close),
-                              tooltip: context.l10n.chat_removeGif,
-                              onPressed: () {
-                                _textController.clear();
-                                _textFieldFocusNode.requestFocus();
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                    return ByteCountedTextField(
-                      maxBytes: maxBytes,
-                      softLimitBytes:
-                          maxTextPayloadBytesAfterFullLengthAttempts,
-                      softLimitNote: context.l10n.chat_longMessageRetryNote(
-                        maxFullLengthTextAttempt + 1,
-                      ),
-                      controller: _textController,
-                      focusNode: _textFieldFocusNode,
-                      hintText: context.l10n.chat_typeMessage,
-                      onSubmitted: (_) => _sendMessage(connector),
-                      encoder:
-                          (connector.isContactSmazEnabled(
-                                widget.contact.publicKeyHex,
-                              ) ||
-                              connector.isContactCyr2LatEnabled(
-                                widget.contact.publicKeyHex,
-                              ))
-                          ? (text) => connector.prepareContactOutboundText(
-                              widget.contact,
-                              text,
-                            )
-                          : null,
-                      decoration: InputDecoration(
-                        hintText: context.l10n.chat_typeMessage,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(MeshRadii.md),
-                          borderSide: BorderSide(color: scheme.outlineVariant),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(MeshRadii.md),
-                          borderSide: BorderSide(color: scheme.outlineVariant),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(MeshRadii.md),
-                          borderSide: BorderSide(
-                            color: scheme.primary,
-                            width: 1.5,
-                          ),
-                        ),
-                        filled: true,
-                        fillColor: scheme.surfaceContainerLow,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 12,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(width: 6),
-              ValueListenableBuilder<TextEditingValue>(
-                valueListenable: _textController,
-                builder: (context, value, _) {
-                  final hasText = value.text.trim().isNotEmpty;
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    curve: Curves.easeInOut,
-                    child: IconButton.filled(
-                      icon: const Icon(Icons.send, size: 20),
-                      tooltip: context.l10n.chat_sendMessageTo(
-                        _resolveContact(connector).name,
-                      ),
-                      style: IconButton.styleFrom(
-                        backgroundColor: hasText
-                            ? scheme.primary
-                            : scheme.surfaceContainerHighest,
-                        foregroundColor: hasText
-                            ? scheme.onPrimary
-                            : scheme.onSurfaceVariant,
-                        minimumSize: const Size(40, 40),
-                        shape: const CircleBorder(),
-                      ),
-                      onPressed: hasText
-                          ? () {
-                              HapticFeedback.lightImpact();
-                              _sendMessage(connector);
-                            }
-                          : null,
-                    ),
-                  );
-                },
-              ),
-            ],
+      encoder: useEncoder
+          ? (text) => connector.prepareContactOutboundText(widget.contact, text)
+          : null,
+      onSend: () => _sendMessage(connector),
+      sendTooltip: context.l10n.chat_sendMessageTo(
+        _resolveContact(connector).name,
+      ),
+      actionsBuilder: () {
+        final showIpfsAction = context
+            .read<AppSettingsService>()
+            .settings
+            .uploadIpfsEndpoint
+            .trim()
+            .isNotEmpty;
+        return [
+          ChatComposerAction(
+            id: 'gif',
+            icon: Icons.gif_box,
+            label: context.l10n.chat_sendGif,
           ),
-        ),
-      ),
+          if (showIpfsAction)
+            ChatComposerAction(
+              id: 'ipfs-image',
+              icon: Icons.cloud_upload_outlined,
+              label: context.l10n.chat_sendImageIpfs,
+            ),
+          ChatComposerAction(
+            id: 'send-my-location',
+            icon: Icons.my_location,
+            label: context.l10n.chat_shareMyLocation,
+          ),
+        ];
+      },
+      onAction: (action) {
+        if (!mounted) return;
+        switch (action) {
+          case 'gif':
+            showChatGifPicker(context, _textController);
+          case 'ipfs-image':
+            _sendImageViaIpfs();
+          case 'send-my-location':
+            _shareMyLocation(context.read<MeshCoreConnector>());
+        }
+      },
     );
   }
 
-  void _showGifPicker(BuildContext context) {
-    showModalBottomSheet(
+  Future<void> _sendImageViaIpfs() {
+    final connector = context.read<MeshCoreConnector>();
+    final contact = _resolveContact(connector);
+    return attachIpfsLinkToDraft(
       context: context,
-      isScrollControlled: true,
-      builder: (context) => GifPicker(
-        onGifSelected: (gifId) {
-          _textController.text = GifHelper.encodeGif(gifId);
-        },
-      ),
+      controller: _textController,
+      focusNode: _textFieldFocusNode,
+      maxBytes: maxContactMessageBytes(),
+      encodeOutbound: (text) =>
+          connector.prepareContactOutboundText(contact, text),
     );
   }
 
-  Future<void> _showTranslationOptions() async {
-    final settingsService = context.read<AppSettingsService>();
-    final settings = settingsService.settings;
-    await showMessageTranslationSheet(
+  /// Shares the radio's own position as a map marker. Shares the text send
+  /// guard and cooldown so it can't race or flood alongside typed messages.
+  Future<void> _shareMyLocation(MeshCoreConnector connector) {
+    return shareMyLocationMarker(
       context: context,
-      enabled: settings.composerTranslationEnabled,
-      selectedLanguageCode: settings.translationTargetLanguageCode,
-      onEnabledChanged: settingsService.setComposerTranslationEnabled,
-      onLanguageSelected: settingsService.setTranslationTargetLanguageCode,
+      connector: connector,
+      guard: _sendGuard,
+      send: (markerText) =>
+          connector.sendMessage(_resolveContact(connector), markerText),
     );
   }
 
-  Future<void> _sendMessage(MeshCoreConnector connector) async {
+  Future<void> _sendMessage(MeshCoreConnector connector) {
+    return _sendGuard.runExclusive(() => _sendMessageInner(connector));
+  }
+
+  Future<void> _sendMessageInner(MeshCoreConnector connector) async {
     final text = _textController.text.trim();
     if (text.isEmpty) return;
+    if (!_sendGuard.checkCooldown(context)) return;
 
-    final now = DateTime.now();
-    if (_lastTextSendAt != null &&
-        now.difference(_lastTextSendAt!) < const Duration(seconds: 1)) {
-      showDismissibleSnackBar(
-        context,
-        content: Text(context.l10n.chat_sendCooldown),
-      );
-      return;
-    }
-    _lastTextSendAt = now;
+    final translation = await translateOutgoingText(context, text);
+    if (translation == null || !mounted) return;
+    var outgoingText = translation.text;
 
-    final settings = context.read<AppSettingsService>().settings;
-    final translationService = context.read<TranslationService>();
-    var outgoingText = text;
-    String? originalText;
-    String? translatedLanguageCode;
-    String? translationModelId;
-    if (settings.translationEnabled) {
-      final targetLanguageCode = translationService.resolvedTargetLanguageCode(
-        Localizations.localeOf(context).languageCode,
-      );
-      if (translationService.shouldTranslateOutgoing(
-        text: text,
-        targetLanguageCode: targetLanguageCode,
-      )) {
-        final result = await translationService.translateOutgoingText(
-          text: text,
-          targetLanguageCode: targetLanguageCode,
-        );
-        if (!mounted) return;
-        if (result != null &&
-            result.status == MessageTranslationStatus.completed &&
-            result.translatedText.isNotEmpty) {
-          outgoingText = result.translatedText;
-          originalText = text;
-          translatedLanguageCode = result.targetLanguageCode;
-          translationModelId = result.modelId;
-        }
-      }
-    }
     final maxBytes = maxContactMessageBytes();
     final outboundText = connector.prepareContactOutboundText(
       _resolveContact(connector),
@@ -731,41 +660,31 @@ class _ChatScreenState extends State<ChatScreen> {
     }
     // end transform
 
-    _textController.clear();
+    // Keep anything the user typed while translation was running.
+    if (_textController.text.trim() == text) {
+      _textController.clear();
+    }
     _textFieldFocusNode.requestFocus();
     connector.sendMessage(
       _resolveContact(connector),
       outgoingText,
-      originalText: originalText,
-      translatedLanguageCode: translatedLanguageCode,
-      translationModelId: translationModelId,
+      originalText: translation.originalText,
+      translatedLanguageCode: translation.languageCode,
+      translationModelId: translation.modelId,
     );
+    // Only a dispatched send starts the cooldown.
+    _sendGuard.markDispatched();
   }
 
   Future<void> _confirmClearChat(
     BuildContext context,
     MeshCoreConnector connector,
   ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(context.l10n.contact_clearChat),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(context.l10n.common_cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: Text(context.l10n.common_delete),
-          ),
-        ],
-      ),
+    final confirmed = await confirmClearChat(
+      context,
+      message: context.l10n.chat_clearChatConfirm,
     );
-    if (confirmed == true) {
+    if (confirmed) {
       connector.clearMessagesForContact(widget.contact);
     }
   }
@@ -888,7 +807,9 @@ class _ChatScreenState extends State<ChatScreen> {
     );
     connector.ensureContactSmazSettingLoaded(widget.contact.publicKeyHex);
     connector.ensureContactCyr2LatSettingLoaded(widget.contact.publicKeyHex);
-    final contact = widget.contact;
+    // The live contact carries the current telemetry flags; widget.contact
+    // is the snapshot this screen was opened with.
+    final contact = _resolveContact(connector);
     bool smazEnabled = connector.isContactSmazEnabled(contact.publicKeyHex);
     bool cyr2latEnabled = connector.isContactCyr2LatEnabled(
       contact.publicKeyHex,
@@ -896,12 +817,28 @@ class _ChatScreenState extends State<ChatScreen> {
     bool urlImagesEnabled = connector.isContactUrlImagesEnabled(
       contact.publicKeyHex,
     );
+    final loadLinkImages = context
+        .read<AppSettingsService>()
+        .settings
+        .loadLinkImages;
     String? selectedCyr2LatProfileId = connector.getContactCyr2LatProfileId(
       contact.publicKeyHex,
     );
     bool teleBaseEnabled = contact.teleBaseEnabled;
     bool teleLocEnabled = contact.teleLocEnabled;
     bool teleEnvEnabled = contact.teleEnvEnabled;
+    // Each toggle is committed immediately, like the compression switches,
+    // so dismissing the dialog by tapping outside keeps the change. All three
+    // flags are sent every time so overlapping writes can't undo each other.
+    void commitTelemetryFlags() {
+      connector.setContactFlags(
+        contact,
+        teleBase: teleBaseEnabled,
+        teleLoc: teleLocEnabled,
+        teleEnv: teleEnvEnabled,
+      );
+    }
+
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -968,6 +905,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                     child: DropdownButtonFormField<String>(
+                      isExpanded: true,
                       initialValue: selectedCyr2LatProfileId,
                       decoration: InputDecoration(
                         labelText:
@@ -979,7 +917,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       ) {
                         return DropdownMenuItem(
                           value: profile.id,
-                          child: Text(profile.name),
+                          child: Text(
+                            profile.name,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -998,14 +939,19 @@ class _ChatScreenState extends State<ChatScreen> {
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(context.l10n.urlImage_enable),
+                  subtitle: loadLinkImages
+                      ? null
+                      : Text(context.l10n.urlImage_disabledInAppSettings),
                   value: urlImagesEnabled,
-                  onChanged: (value) {
-                    connector.setContactUrlImagesEnabled(
-                      contact.publicKeyHex,
-                      value,
-                    );
-                    setDialogState(() => urlImagesEnabled = value);
-                  },
+                  onChanged: loadLinkImages
+                      ? (value) {
+                          connector.setContactUrlImagesEnabled(
+                            contact.publicKeyHex,
+                            value,
+                          );
+                          setDialogState(() => urlImagesEnabled = value);
+                        }
+                      : null,
                 ),
                 const Divider(height: 8),
                 SwitchListTile(
@@ -1015,6 +961,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   value: teleBaseEnabled,
                   onChanged: (value) {
                     setDialogState(() => teleBaseEnabled = value);
+                    commitTelemetryFlags();
                   },
                 ),
                 const Divider(height: 8),
@@ -1025,6 +972,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   value: teleLocEnabled,
                   onChanged: (value) {
                     setDialogState(() => teleLocEnabled = value);
+                    commitTelemetryFlags();
                   },
                 ),
                 const Divider(height: 8),
@@ -1035,6 +983,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   value: teleEnvEnabled,
                   onChanged: (value) {
                     setDialogState(() => teleEnvEnabled = value);
+                    commitTelemetryFlags();
                   },
                 ),
               ],
@@ -1042,15 +991,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                connector.setContactFlags(
-                  contact,
-                  teleBase: teleBaseEnabled,
-                  teleLoc: teleLocEnabled,
-                  teleEnv: teleEnvEnabled,
-                );
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
               child: Text(context.l10n.common_close),
             ),
           ],
@@ -1169,119 +1110,113 @@ class _ChatScreenState extends State<ChatScreen> {
     showMeshSheet(
       context,
       builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            BottomSheetHeader(
-              title: message.text.characters.length > 40
-                  ? '${message.text.characters.take(40)}…'
-                  : message.text,
-            ),
-            // Can't react to your own messages
-            if (!message.isOutgoing)
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BottomSheetHeader(
+                title: message.text.characters.length > 40
+                    ? '${message.text.characters.take(40)}…'
+                    : message.text,
+              ),
+              // Can't react to your own messages
+              if (!message.isOutgoing)
+                ListTile(
+                  leading: const Icon(Icons.add_reaction_outlined),
+                  title: Text(context.l10n.chat_addReaction),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _showEmojiPicker(message, contact);
+                  },
+                ),
               ListTile(
-                leading: const Icon(Icons.add_reaction_outlined),
-                title: Text(context.l10n.chat_addReaction),
+                leading: const Icon(Icons.route),
+                title: Text(context.l10n.chat_path),
                 onTap: () {
                   Navigator.pop(sheetContext);
-                  _showEmojiPicker(message, contact);
+                  _openMessagePath(message, contact);
                 },
               ),
-            ListTile(
-              leading: const Icon(Icons.route),
-              title: Text(context.l10n.chat_path),
-              onTap: () {
-                Navigator.pop(sheetContext);
-                _openMessagePath(message, contact);
-              },
-            ),
-            if (message.pathBytes.isNotEmpty)
+              if (message.pathBytes.isNotEmpty)
+                ListTile(
+                  leading: const Icon(Icons.map_outlined),
+                  title: Text(context.l10n.chat_viewPathOnMap),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _openMessagePath(message, contact, openMap: true);
+                  },
+                ),
               ListTile(
-                leading: const Icon(Icons.map_outlined),
-                title: Text(context.l10n.chat_viewPathOnMap),
+                leading: const Icon(Icons.copy),
+                title: Text(context.l10n.common_copy),
                 onTap: () {
                   Navigator.pop(sheetContext);
-                  _openMessagePath(message, contact, openMap: true);
+                  copyChatMessageText(context, message.text);
                 },
               ),
-            ListTile(
-              leading: const Icon(Icons.copy),
-              title: Text(context.l10n.common_copy),
-              onTap: () {
-                Navigator.pop(sheetContext);
-                _copyMessageText(message.text);
-              },
-            ),
-            if (canTranslateMessage)
+              if (canTranslateMessage)
+                ListTile(
+                  leading: const Icon(Icons.translate),
+                  title: Text(context.l10n.translation_translateMessage),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    unawaited(
+                      context.read<MeshCoreConnector>().translateContactMessage(
+                        widget.contact.publicKeyHex,
+                        message,
+                        manualTranslation: true,
+                      ),
+                    );
+                  },
+                ),
+              if (!message.isOutgoing)
+                ListTile(
+                  leading: const Icon(Icons.mark_chat_unread_outlined),
+                  title: Text(context.l10n.chat_markAsUnread),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _markAsUnread(message);
+                  },
+                ),
+              if (message.isOutgoing && message.status == MessageStatus.failed)
+                ListTile(
+                  leading: const Icon(Icons.refresh),
+                  title: Text(context.l10n.common_retry),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _retryMessage(message);
+                  },
+                ),
+              if (_resolveContact(context.read<MeshCoreConnector>()).type ==
+                  advTypeRoom)
+                ListTile(
+                  leading: const Icon(Icons.chat),
+                  title: Text(context.l10n.contacts_openChat),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _openChat(context, contact);
+                  },
+                ),
+              const Divider(height: 1),
               ListTile(
-                leading: const Icon(Icons.translate),
-                title: Text(context.l10n.translation_translateMessage),
-                onTap: () {
+                leading: Icon(
+                  Icons.delete_outline,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                title: Text(
+                  context.l10n.common_delete,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+                onTap: () async {
                   Navigator.pop(sheetContext);
-                  unawaited(
-                    context.read<MeshCoreConnector>().translateContactMessage(
-                      widget.contact.publicKeyHex,
-                      message,
-                      manualTranslation: true,
-                    ),
-                  );
+                  await _deleteMessage(message);
                 },
               ),
-            if (!message.isOutgoing)
-              ListTile(
-                leading: const Icon(Icons.mark_chat_unread_outlined),
-                title: Text(context.l10n.chat_markAsUnread),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  _markAsUnread(message);
-                },
-              ),
-            if (message.isOutgoing && message.status == MessageStatus.failed)
-              ListTile(
-                leading: const Icon(Icons.refresh),
-                title: Text(context.l10n.common_retry),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  _retryMessage(message);
-                },
-              ),
-            if (_resolveContact(context.read<MeshCoreConnector>()).type ==
-                advTypeRoom)
-              ListTile(
-                leading: const Icon(Icons.chat),
-                title: Text(context.l10n.contacts_openChat),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  _openChat(context, contact);
-                },
-              ),
-            const Divider(height: 1),
-            ListTile(
-              leading: Icon(
-                Icons.delete_outline,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              title: Text(
-                context.l10n.common_delete,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-              onTap: () async {
-                Navigator.pop(sheetContext);
-                await _deleteMessage(message);
-              },
-            ),
-            const SizedBox(height: 8),
-          ],
+              const SizedBox(height: 8),
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  void _copyMessageText(String text) {
-    Clipboard.setData(ClipboardData(text: text));
-    showDismissibleSnackBar(
-      context,
-      content: Text(context.l10n.chat_messageCopied),
     );
   }
 
@@ -1304,9 +1239,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _showEmojiPicker(Message message, Contact senderContact) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
+    showMeshSheet(
+      context,
       builder: (context) => EmojiPicker(
         onEmojiSelected: (emoji) {
           _sendReaction(message, senderContact, emoji);
@@ -1367,40 +1301,16 @@ class _MessageBubble extends StatelessWidget {
     final urlImagesEnabled = context.select<MeshCoreConnector, bool>(
       (connector) => connector.isContactUrlImagesEnabled(sourceId),
     );
+    final publicIpfsGateway = settingsService.settings.publicIpfsGateway;
 
-    // Bubble colors — outgoing uses MeshPalette.me / meBorder / meInk.
-    final bubbleColor = isFailed
-        ? scheme.errorContainer
-        : isOutgoing
-        ? MeshPalette.me
-        : scheme.surfaceContainerLow;
-    final bubbleBorder = isFailed
-        ? scheme.error
-        : isOutgoing
-        ? MeshPalette.meBorder
-        : scheme.outlineVariant;
-    final textColor = isFailed
-        ? scheme.onErrorContainer
-        : isOutgoing
-        ? MeshPalette.meInk
-        : scheme.onSurface;
-    final metaColor = textColor.withValues(alpha: 0.65);
+    final colors = MessageBubbleColors.of(
+      context,
+      isOutgoing: isOutgoing,
+      isFailed: isFailed,
+    );
+    final textColor = colors.text;
+    final metaColor = colors.meta;
     const bodyFontSize = 14.0;
-
-    // Asymmetric radius: outgoing — top-left large, others also large; outgoing bottom-right tight.
-    final borderRadius = isOutgoing
-        ? const BorderRadius.only(
-            topLeft: Radius.circular(MeshRadii.lg),
-            topRight: Radius.circular(MeshRadii.lg),
-            bottomLeft: Radius.circular(MeshRadii.lg),
-            bottomRight: Radius.circular(MeshRadii.xs),
-          )
-        : const BorderRadius.only(
-            topLeft: Radius.circular(MeshRadii.xs),
-            topRight: Radius.circular(MeshRadii.lg),
-            bottomLeft: Radius.circular(MeshRadii.lg),
-            bottomRight: Radius.circular(MeshRadii.lg),
-          );
 
     // Do not strip room-server author bytes here: the parser stores them in
     // fourByteRoomContactKey, so message.text is safe to render as-is.
@@ -1462,21 +1372,11 @@ class _MessageBubble extends StatelessWidget {
                     const SizedBox(width: 6),
                   ],
                   Flexible(
-                    child: Container(
-                      padding: gifId != null
-                          ? const EdgeInsets.all(4)
-                          : const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                      constraints: BoxConstraints(
-                        maxWidth: constraints.maxWidth * 0.72,
-                      ),
-                      decoration: BoxDecoration(
-                        color: bubbleColor,
-                        borderRadius: borderRadius,
-                        border: Border.all(color: bubbleBorder, width: 1),
-                      ),
+                    child: MessageBubbleFrame(
+                      isOutgoing: isOutgoing,
+                      isFailed: isFailed,
+                      compact: gifId != null,
+                      maxWidth: constraints.maxWidth,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -1492,9 +1392,9 @@ class _MessageBubble extends StatelessWidget {
                               child: Text(
                                 senderName,
                                 style: MeshTheme.mono(
-                                  fontSize: 11,
+                                  fontSize: 13 * textScale,
                                   fontWeight: FontWeight.w700,
-                                  color: _colorForName(senderName),
+                                  color: senderNameColor(senderName),
                                 ),
                               ),
                             ),
@@ -1529,6 +1429,7 @@ class _MessageBubble extends StatelessWidget {
                             MessageUrlImageFutureBuilder(
                               messageId: message.messageId,
                               text: message.text,
+                              publicGateway: publicIpfsGateway,
                               builder: (context, snapshot) {
                                 final imageAttachment = snapshot.data;
 
@@ -1581,16 +1482,17 @@ class _MessageBubble extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (MessageUrlImageHelper.hasPotentialImageUrl(
-                                  message.text,
-                                ))
+                                if (settingsService.settings.loadLinkImages &&
+                                    MessageUrlImageHelper.hasPotentialImageUrl(
+                                      message.text,
+                                    ))
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 4),
                                     child: Text(
                                       context.l10n.urlImage_possible,
                                       style: TextStyle(
                                         color: metaColor,
-                                        fontSize: 11 * textScale,
+                                        fontSize: 12 * textScale,
                                       ),
                                     ),
                                   ),
@@ -1614,7 +1516,7 @@ class _MessageBubble extends StatelessWidget {
                                       .maxMessageRetries,
                                 ),
                                 style: MeshTheme.mono(
-                                  fontSize: 9.5 * textScale,
+                                  fontSize: 12 * textScale,
                                   color: metaColor,
                                 ),
                               ),
@@ -1641,6 +1543,10 @@ class _MessageBubble extends StatelessWidget {
                                     color: metaColor,
                                   ),
                                 ),
+                                if (message.hasFutureTimestamp)
+                                  FutureTimestampIndicator(
+                                    size: 16 * textScale,
+                                  ),
                                 if (isOutgoing) ...[
                                   const SizedBox(width: 2),
                                   MessageStatusIcon(
@@ -1662,7 +1568,7 @@ class _MessageBubble extends StatelessWidget {
                                   const SizedBox(width: 2),
                                   Icon(
                                     Icons.speed,
-                                    size: 10 * textScale,
+                                    size: 14 * textScale,
                                     color: isOutgoing
                                         ? metaColor
                                         : scheme.tertiary,
@@ -1670,7 +1576,7 @@ class _MessageBubble extends StatelessWidget {
                                   Text(
                                     '${(message.tripTimeMs! / 1000).toStringAsFixed(1)}s',
                                     style: MeshTheme.mono(
-                                      fontSize: 11 * textScale,
+                                      fontSize: 12 * textScale,
                                       color: isOutgoing
                                           ? metaColor
                                           : scheme.tertiary,
@@ -1692,7 +1598,13 @@ class _MessageBubble extends StatelessWidget {
             const SizedBox(height: 4),
             Padding(
               padding: EdgeInsets.only(left: isOutgoing ? 0 : 42),
-              child: _buildReactionsDisplay(context, message, scheme),
+              child: ReactionChips(
+                reactions: message.reactions,
+                statuses: message.reactionStatuses,
+                onRetry: onRetryReaction == null
+                    ? null
+                    : (emoji) => onRetryReaction!(message, emoji),
+              ),
             ),
           ],
         ],
@@ -1766,104 +1678,7 @@ class _MessageBubble extends StatelessWidget {
     );
   }
 
-  Widget _buildReactionsDisplay(
-    BuildContext context,
-    Message message,
-    ColorScheme scheme,
-  ) {
-    return Wrap(
-      spacing: 6,
-      runSpacing: 6,
-      children: message.reactions.entries.map((entry) {
-        final emoji = entry.key;
-        final count = entry.value.length;
-        final status = message.reactionStatuses[emoji];
-        final isPending =
-            status == MessageStatus.pending || status == MessageStatus.sent;
-        final isFailed = status == MessageStatus.failed;
-
-        return GestureDetector(
-          onTap: isFailed && onRetryReaction != null
-              ? () => onRetryReaction!(message, emoji)
-              : null,
-          child: Opacity(
-            opacity: isPending ? 0.5 : 1.0,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: isFailed
-                    ? scheme.errorContainer
-                    : scheme.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(MeshRadii.pill),
-                border: Border.all(
-                  color: isFailed ? scheme.error : scheme.outlineVariant,
-                  width: 1,
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    emoji,
-                    style: MeshTheme.emoji(fontSize: 16),
-                    textHeightBehavior: const TextHeightBehavior(
-                      applyHeightToFirstAscent: false,
-                      applyHeightToLastDescent: false,
-                    ),
-                  ),
-                  if (count > 1) ...[
-                    const SizedBox(width: 4),
-                    Text(
-                      '$count',
-                      style: MeshTheme.mono(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: scheme.onSurface,
-                      ),
-                    ),
-                  ],
-                  if (isPending) ...[
-                    const SizedBox(width: 2),
-                    SizedBox(
-                      width: 8,
-                      height: 8,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 1.5,
-                        color: scheme.primary,
-                      ),
-                    ),
-                  ],
-                  if (isFailed) ...[
-                    const SizedBox(width: 2),
-                    Icon(Icons.replay, size: 10, color: scheme.error),
-                  ],
-                ],
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
   Widget _buildAvatar(String senderName) {
     return AvatarCircle(name: senderName, size: 32);
   }
-}
-
-/// Deterministic name-to-hue mapping consistent with [AvatarCircle].
-Color _colorForName(String name) {
-  const hues = [
-    MeshPalette.blue,
-    MeshPalette.magenta,
-    MeshPalette.signal,
-    MeshPalette.warn,
-    Color(0xFF8FA8F0),
-    Color(0xFF6FD9CE),
-  ];
-  var h = 0;
-  for (final c in name.codeUnits) {
-    h = (h * 31 + c) & 0x7fffffff;
-  }
-  return hues[h % hues.length];
 }

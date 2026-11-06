@@ -18,8 +18,11 @@ import 'package:meshcore_open/services/app_settings_service.dart';
 import 'package:meshcore_open/services/map_tile_cache_service.dart';
 import 'package:meshcore_open/services/path_history_service.dart';
 import 'package:meshcore_open/utils/app_logger.dart';
+import 'package:meshcore_open/helpers/snack_bar_builder.dart';
+import 'package:meshcore_open/widgets/path_map_scaffold.dart';
 import 'package:meshcore_open/widgets/path_map_ui.dart';
 import 'package:meshcore_open/widgets/snr_indicator.dart';
+import 'package:meshcore_open/widgets/set_my_location_dialog.dart';
 import 'package:provider/provider.dart';
 import '../theme/mesh_theme.dart';
 
@@ -62,6 +65,13 @@ class PathTraceMapScreen extends StatefulWidget {
   final int pathHashByteWidth;
   final List<Contact>? pathContacts;
 
+  /// A previous PUSH_CODE_TRACE_DATA frame to show instead of sending a new
+  /// trace when the screen opens.
+  final Uint8List? initialTraceFrame;
+
+  /// Called with each trace response frame this screen receives.
+  final ValueChanged<Uint8List>? onTraceFrame;
+
   const PathTraceMapScreen({
     super.key,
     required this.title,
@@ -72,6 +82,8 @@ class PathTraceMapScreen extends StatefulWidget {
     this.targetContact,
     this.pathHashByteWidth = pathHashSize,
     this.pathContacts,
+    this.initialTraceFrame,
+    this.onTraceFrame,
   });
 
   @override
@@ -80,9 +92,9 @@ class PathTraceMapScreen extends StatefulWidget {
 
 class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     with SingleTickerProviderStateMixin {
-  static const double _labelZoomThreshold = 8.5;
-  static const double _mapMinZoom = 2.0;
-  static const double _mapMaxZoom = 18.0;
+  static const double _labelZoomThreshold = kPathMapLabelZoomThreshold;
+  // Used when the radio never acknowledges the trace request.
+  static const Duration _sendAckTimeout = Duration(seconds: 15);
   //miles to meters conversion for filtering out repeaters that are too far from the last known GPS hop to be a likely match, to avoid false matches that throw off the inferred positions of other hops in the path
   static const double _maxRepeaterMatchDistanceMeters = 40 * 1609.344;
 
@@ -110,6 +122,9 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
   bool _showNodeLabels = true;
   Contact? _targetContact;
   Uint8List? _sentTagBytes;
+  // Tag the radio reported in RESP_CODE_SENT for the current trace; reset
+  // on every new trace so a late reply to an earlier one isn't accepted.
+  Uint8List? _sentAckTag;
   // Live path resolved at trace time; used by the response handler for
   // endpoint inference so it matches the path that was actually traced.
   Uint8List _tracedPath = Uint8List(0);
@@ -126,6 +141,10 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
   bool _panelCollapsed = false;
   bool _animationEnabled = true;
   bool _followPacket = false;
+
+  // Hop-prefix -> contact lookups, invalidated when the contact list changes.
+  final Map<String, Contact?> _hopContactCache = {};
+  int? _hopContactCacheSignature;
 
   String _formatPathPrefixes(Uint8List pathBytes, [int? hashByteWidth]) {
     return PathHelper.splitPathBytes(
@@ -210,7 +229,20 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     _pathHistory = context.read<PathHistoryService>();
     _pathHistory!.addListener(_onPathHistoryChanged);
     _setupFrameListener();
-    _doPathTrace();
+    final initialFrame = widget.initialTraceFrame;
+    if (initialFrame == null) {
+      _doPathTrace();
+      return;
+    }
+    final (livePath, hopWidth) = _resolveLivePath(
+      context.read<MeshCoreConnector>(),
+    );
+    _tracedPath = livePath;
+    _tracedPathHashWidth = hopWidth;
+    _isLoading = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _handleTraceResponse(initialFrame);
+    });
   }
 
   @override
@@ -230,17 +262,24 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     });
   }
 
+  Future<void> _setMyLocation(LatLng point) async {
+    final connector = context.read<MeshCoreConnector>();
+    final ok = await confirmAndSetMyLocation(context, connector, point);
+    if (!ok || !mounted || !_hasData) return;
+    // Display paths start at the self position, so redraw them from it.
+    setState(() {
+      _rebuildDisplayPaths(connector);
+    });
+  }
+
   /// Keeps the camera centered on the packet while the follow lock is on.
   void _followPacketCamera() {
-    if (!_followPacket ||
-        !_animationEnabled ||
-        !_playback.started ||
-        !_playback.hasPath ||
-        !mounted ||
-        !_hasData) {
-      return;
-    }
-    _mapController.move(_playback.position, _mapController.camera.zoom);
+    if (!mounted) return;
+    followPacketCamera(
+      _mapController,
+      _playback,
+      enabled: _followPacket && _animationEnabled && _hasData,
+    );
   }
 
   void _toggleFollowPacket() {
@@ -250,72 +289,12 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     _followPacketCamera();
   }
 
-  bool _isDesktopPlatform(TargetPlatform platform) {
-    return platform == TargetPlatform.linux ||
-        platform == TargetPlatform.windows ||
-        platform == TargetPlatform.macOS;
-  }
-
-  void _zoomMapBy(double delta) {
-    final camera = _mapController.camera;
-    final nextZoom = (camera.zoom + delta)
-        .clamp(_mapMinZoom, _mapMaxZoom)
-        .toDouble();
-    _mapController.move(camera.center, nextZoom);
-  }
-
   void _resetMapView() {
-    final bounds = _bounds;
-    if (bounds != null) {
-      _mapController.fitCamera(
-        CameraFit.bounds(
-          bounds: bounds,
-          padding: const EdgeInsets.all(64),
-          maxZoom: 16,
-        ),
-      );
-      return;
-    }
-    final center = _initialCenter;
-    if (center != null) {
-      _mapController.move(center, _initialZoom);
-    }
-  }
-
-  Widget _buildDesktopMapControls() {
-    return Positioned(
-      top: 16,
-      left: 16,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: MeshPalette.bg1.withValues(alpha: 0.90),
-          borderRadius: BorderRadius.circular(MeshRadii.md),
-          border: Border.all(color: MeshPalette.line2),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(MeshRadii.md),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.add),
-                tooltip: context.l10n.map_zoomIn,
-                onPressed: () => _zoomMapBy(1),
-              ),
-              IconButton(
-                icon: const Icon(Icons.remove),
-                tooltip: context.l10n.map_zoomOut,
-                onPressed: () => _zoomMapBy(-1),
-              ),
-              IconButton(
-                icon: const Icon(Icons.my_location),
-                tooltip: context.l10n.map_centerMap,
-                onPressed: _resetMapView,
-              ),
-            ],
-          ),
-        ),
-      ),
+    resetMapView(
+      _mapController,
+      bounds: _bounds,
+      center: _initialCenter,
+      zoom: _initialZoom,
     );
   }
 
@@ -449,6 +428,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     );
 
     final sentTag = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    _sentAckTag = null;
     _sentTagBytes = Uint8List(4)
       ..[0] = sentTag & 0xFF
       ..[1] = (sentTag >> 8) & 0xFF
@@ -465,12 +445,41 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
       payload: tracePayload,
     );
     _awaitingTraceSent = true;
-    connector.sendFrame(frame);
+    _timeoutTimer?.cancel();
+    // Fallback in case RESP_CODE_SENT / RESP_CODE_ERR never arrives; the
+    // RESP_CODE_SENT handler replaces it with the radio's own timeout.
+    _timeoutTimer = Timer(_sendAckTimeout, () {
+      if (!mounted || !_awaitingTraceSent) return;
+      _awaitingTraceSent = false;
+      setState(() {
+        _isLoading = false;
+        _failed2Loaded = true;
+      });
+    });
+    try {
+      await connector.sendFrame(frame);
+    } catch (e) {
+      _awaitingTraceSent = false;
+      _timeoutTimer?.cancel();
+      appLogger.error(
+        'Failed to send path trace: $e',
+        tag: 'PathTraceMapScreen',
+      );
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _failed2Loaded = true;
+      });
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.pathTrace_sendFailed(e.toString())),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      );
+    }
   }
 
   void _setupFrameListener() {
     final connector = Provider.of<MeshCoreConnector>(context, listen: false);
-    Uint8List tagData = Uint8List(4);
     // Listen for incoming text messages from the repeater
     _frameSubscription = connector.receivedFrames.listen((frame) {
       if (frame.isEmpty) return;
@@ -481,7 +490,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
         if (code == respCodeSent && _awaitingTraceSent) {
           _awaitingTraceSent = false;
           frameBuffer.skipBytes(1); //reserved
-          tagData = frameBuffer.readBytes(4);
+          _sentAckTag = frameBuffer.readBytes(4);
           final timeoutMilliseconds = frameBuffer.readUInt32LE();
 
           // Start timeout timer for trace response
@@ -512,8 +521,9 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
         if (frame.length >= 12 &&
             code == pushCodeTraceData &&
             (listEquals(frame.sublist(4, 8), _sentTagBytes) ||
-                listEquals(frame.sublist(4, 8), tagData))) {
+                listEquals(frame.sublist(4, 8), _sentAckTag))) {
           _timeoutTimer?.cancel();
+          widget.onTraceFrame?.call(frame);
           if (!mounted) return;
           _handleTraceResponse(frame);
         }
@@ -722,7 +732,8 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
         _targetContactIsGuessed = targetGuessed;
 
         _points = <LatLng>[];
-        _points.add(LatLng(connector.selfLatitude!, connector.selfLongitude!));
+        final selfPoint = plausibleSelfPoint(connector);
+        if (selfPoint != null) _points.add(selfPoint);
         String hopLast = '';
         String hopLastLast = '';
         for (final hop in _traceData!.pathData) {
@@ -750,7 +761,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
                 Polyline(
                   points: _points,
                   strokeWidth: 4,
-                  color: Colors.blueAccent,
+                  color: kPrimaryPathColor,
                 ),
               ]
             : <Polyline>[];
@@ -798,16 +809,31 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
   }
 
   Contact? _contactForHop(Uint8List hop, MeshCoreConnector connector) {
-    final traced = _traceData?.pathContacts[_hopKey(hop)];
+    final hopKey = _hopKey(hop);
+    final traced = _traceData?.pathContacts[hopKey];
     if (traced != null) return traced;
-    for (final c in connector.allContactsUnfiltered) {
-      if (c.type != advTypeChat &&
-          c.publicKey.length >= hop.length &&
-          listEquals(c.publicKey.sublist(0, hop.length), hop)) {
-        return c;
+    _hopContactCacheSignature ??= _refreshHopContactCache(connector);
+    return _hopContactCache.putIfAbsent(hopKey, () {
+      for (final c in connector.allContactsUnfiltered) {
+        if (c.type != advTypeChat &&
+            c.publicKey.length >= hop.length &&
+            listEquals(c.publicKey.sublist(0, hop.length), hop)) {
+          return c;
+        }
       }
+      return null;
+    });
+  }
+
+  /// Drops cached hop -> contact lookups when the contact list changed;
+  /// called once per build so per-hop lookups stay cheap.
+  int _refreshHopContactCache(MeshCoreConnector connector) {
+    final signature = contactListSignature(connector.allContactsUnfiltered);
+    if (signature != _hopContactCacheSignature) {
+      _hopContactCache.clear();
+      _hopContactCacheSignature = signature;
     }
-    return null;
+    return signature;
   }
 
   LatLng? _inferredPositionForHop(Uint8List hop, MeshCoreConnector connector) {
@@ -839,6 +865,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
   /// Rebuilds the renderable paths: the traced path as primary plus up to
   /// four distinct alternates from the target contact's path history.
   void _rebuildDisplayPaths(MeshCoreConnector connector) {
+    _refreshHopContactCache(connector);
     final paths = <DisplayPath>[];
     final primary = _buildDisplayPath(
       id: 'primary',
@@ -897,15 +924,14 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     required MeshCoreConnector connector,
     PathRecord? record,
   }) {
-    final selfLat = connector.selfLatitude;
-    final selfLon = connector.selfLongitude;
-    if (selfLat == null || selfLon == null) return null;
-
-    final points = <LatLng>[LatLng(selfLat, selfLon)];
-    final labels = <String>[context.l10n.pathTrace_you];
-    final confirmed = <bool>[true];
-    final hopOrdinals = <int>[-1];
-    final gapBefore = <bool>[false];
+    // Without a GPS fix for the local radio the path starts at the first
+    // located hop instead of a bogus "You" at 0,0.
+    final selfPoint = plausibleSelfPoint(connector);
+    final points = <LatLng>[?selfPoint];
+    final labels = <String>[if (selfPoint != null) context.l10n.pathTrace_you];
+    final confirmed = <bool>[if (selfPoint != null) true];
+    final hopOrdinals = <int>[if (selfPoint != null) -1];
+    final gapBefore = <bool>[if (selfPoint != null) false];
     int gpsConfirmedHops = 0;
     int unresolvedHops = 0;
     bool pendingGap = false;
@@ -1001,18 +1027,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
   /// actually changed, so unrelated path-history updates don't reset a
   /// running animation.
   void _syncPlaybackToSelection() {
-    final points = _selectedPath?.points ?? const <LatLng>[];
-    if (points.length == _playback.points.length) {
-      var same = true;
-      for (var i = 0; i < points.length; i++) {
-        if (points[i] != _playback.points[i]) {
-          same = false;
-          break;
-        }
-      }
-      if (same) return;
-    }
-    _playback.setPath(points);
+    syncPlaybackPath(_playback, _selectedPath?.points ?? const <LatLng>[]);
   }
 
   void _selectPath(DisplayPath path) {
@@ -1044,6 +1059,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
   Widget build(BuildContext context) {
     return Consumer<MeshCoreConnector>(
       builder: (context, connector, _) {
+        if (_hasData) _refreshHopContactCache(connector);
         final settings = context.watch<AppSettingsService>().settings;
         final isImperial = settings.unitSystem == UnitSystem.imperial;
         final tileCache = context.read<MapTileCacheService>();
@@ -1089,8 +1105,12 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
                   ),
                 if (_hasData)
                   _buildMapPathTrace(context, tileCache, _targetContact),
-                if (_hasData && _isDesktopPlatform(defaultTargetPlatform))
-                  _buildDesktopMapControls(),
+                if (_hasData && isDesktopMapPlatform())
+                  PathMapDesktopControls(
+                    onZoomIn: () => zoomMapBy(_mapController, 1),
+                    onZoomOut: () => zoomMapBy(_mapController, -1),
+                    onReset: _resetMapView,
+                  ),
                 if (_hasData && _displayPaths.length > 1)
                   PathViewModeToggle(
                     mode: _viewMode,
@@ -1199,7 +1219,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
         ),
       );
       if (showLabels) {
-        markers.add(_buildNodeLabelMarker(point: point, label: fullLabel));
+        markers.add(buildPathNodeLabelMarker(point: point, label: fullLabel));
       }
       hopLastLast = hopLast;
       hopLast = hopKey;
@@ -1216,10 +1236,8 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     required bool showLabels,
     required Contact? target,
   }) {
-    final selfLat = context.read<MeshCoreConnector>().selfLatitude;
-    final selfLon = context.read<MeshCoreConnector>().selfLongitude;
-    if (selfLat != null && selfLon != null) {
-      final selfPoint = LatLng(selfLat, selfLon);
+    final selfPoint = plausibleSelfPoint(context.read<MeshCoreConnector>());
+    if (selfPoint != null) {
       markers.add(
         Marker(
           point: selfPoint,
@@ -1244,12 +1262,16 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
                 ],
               ),
               alignment: Alignment.center,
-              child: Text(
-                context.l10n.pathTrace_you,
-                style: MeshTheme.mono(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700,
-                  color: MeshPalette.blue,
+              padding: const EdgeInsets.all(3),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  context.l10n.pathTrace_you,
+                  style: MeshTheme.mono(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: MeshPalette.blue,
+                  ),
                 ),
               ),
             ),
@@ -1258,7 +1280,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
       );
       if (showLabels) {
         markers.add(
-          _buildNodeLabelMarker(
+          buildPathNodeLabelMarker(
             point: selfPoint,
             label: context.l10n.pathTrace_you,
           ),
@@ -1312,7 +1334,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
       );
       if (showLabels) {
         markers.add(
-          _buildNodeLabelMarker(
+          buildPathNodeLabelMarker(
             point: targetPos,
             label: isGuessed ? '~$targetName' : targetName,
           ),
@@ -1385,12 +1407,16 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
                     ],
                   ),
                   alignment: Alignment.center,
-                  child: Text(
-                    hasGps ? label : '~$label',
-                    style: MeshTheme.mono(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: baseColor,
+                  padding: const EdgeInsets.all(2),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      hasGps ? label : '~$label',
+                      style: MeshTheme.mono(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: baseColor,
+                      ),
                     ),
                   ),
                 ),
@@ -1398,24 +1424,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
                   Positioned(
                     top: 0,
                     right: 0,
-                    child: Container(
-                      width: 17,
-                      height: 17,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: MeshPalette.bg1,
-                        border: Border.all(color: MeshPalette.line3),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '${paths.length}',
-                        style: MeshTheme.mono(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w700,
-                          color: MeshPalette.ink,
-                        ),
-                      ),
-                    ),
+                    child: PathSharedCountBadge(count: paths.length),
                   ),
               ],
             ),
@@ -1424,7 +1433,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
       );
       if (showLabels) {
         markers.add(
-          _buildNodeLabelMarker(
+          buildPathNodeLabelMarker(
             point: point,
             label: contact?.name ?? '~$label',
           ),
@@ -1449,42 +1458,6 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
           '$hex: ${contact?.name ?? context.l10n.channelPath_unknownRepeater}',
       paths: paths,
       onSelect: _selectPath,
-    );
-  }
-
-  Marker _buildNodeLabelMarker({required LatLng point, required String label}) {
-    return Marker(
-      point: point,
-      width: 120,
-      height: 24,
-      alignment: Alignment.topCenter,
-      child: IgnorePointer(
-        child: Transform.translate(
-          offset: const Offset(0, -20),
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: MeshPalette.bg.withValues(alpha: 0.82),
-                borderRadius: BorderRadius.circular(MeshRadii.xs),
-                border: Border.all(color: MeshPalette.line, width: 0.5),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: MeshTheme.mono(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w500,
-                  color: MeshPalette.ink2,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -1551,35 +1524,15 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     MapTileCacheService tileCache,
     Contact? target,
   ) {
-    final isDesktop = _isDesktopPlatform(defaultTargetPlatform);
     return FlutterMap(
       key: _mapKey,
       mapController: _mapController,
-      options: MapOptions(
-        interactionOptions: InteractionOptions(
-          flags: ~InteractiveFlag.rotate,
-          scrollWheelVelocity: isDesktop ? 0.012 : 0.005,
-          cursorKeyboardRotationOptions:
-              CursorKeyboardRotationOptions.disabled(),
-          keyboardOptions: isDesktop
-              ? const KeyboardOptions(
-                  enableArrowKeysPanning: true,
-                  enableWASDPanning: true,
-                  enableRFZooming: true,
-                )
-              : const KeyboardOptions.disabled(),
-        ),
+      options: buildPathMapOptions(
         initialCenter: _initialCenter!,
         initialZoom: _initialZoom,
-        initialCameraFit: _bounds == null
-            ? null
-            : CameraFit.bounds(
-                bounds: _bounds!,
-                padding: const EdgeInsets.all(64),
-                maxZoom: 16,
-              ),
-        minZoom: _mapMinZoom,
-        maxZoom: _mapMaxZoom,
+        bounds: _bounds,
+        onLongPress: (_, point) => _setMyLocation(point),
+        onSecondaryTap: (_, point) => _setMyLocation(point),
         onPositionChanged: (camera, hasGesture) {
           if (!mounted) return;
           // A manual pan/zoom releases the follow lock.
@@ -1671,118 +1624,49 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     final l10n = context.l10n;
     final selected = _selectedPath;
     final combined = _viewMode == PathViewMode.combined;
-    final maxHeight =
-        MediaQuery.of(context).size.height * (combined ? 0.45 : 0.35);
+    final connector = context.read<MeshCoreConnector>();
+    final hopRows = combined
+        ? (selected?.totalTransmissions ?? 0)
+        : pathTraceData.pathData.length + 1;
 
-    double cardHeight;
-    if (_panelCollapsed) {
-      cardHeight = 128;
-    } else {
-      final summaryHeight = combined ? 34.0 + _displayPaths.length * 36.0 : 0;
-      final hopRows = combined
-          ? (selected?.totalTransmissions ?? 0)
-          : pathTraceData.pathData.length + 1;
-      final estimatedHeight = 132.0 + summaryHeight + hopRows * 56.0;
-      cardHeight = max(176.0, min(maxHeight, estimatedHeight));
-    }
-
-    return Positioned(
-      left: 16,
-      right: 16,
-      bottom: 16,
-      child: SizedBox(
-        height: cardHeight,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: MeshPalette.bg1.withValues(alpha: 0.95),
-            borderRadius: BorderRadius.circular(MeshRadii.md),
-            border: Border.all(color: MeshPalette.line2),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(MeshRadii.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 8, 4, 0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${l10n.channelPath_repeaterHops} ${formatDistance(selected?.distanceMeters ?? _pathDistanceMeters, isImperial: isImperial)}',
-                              style: MeshTheme.mono(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13,
-                                color: MeshPalette.ink,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            PathMiniLegend(combined: combined),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        visualDensity: VisualDensity.compact,
-                        icon: Icon(
-                          _panelCollapsed
-                              ? Icons.expand_less
-                              : Icons.expand_more,
-                          size: 20,
-                        ),
-                        tooltip: _panelCollapsed
-                            ? l10n.pathMap_expandPanel
-                            : l10n.pathMap_collapsePanel,
-                        onPressed: () =>
-                            setState(() => _panelCollapsed = !_panelCollapsed),
-                      ),
-                    ],
-                  ),
-                ),
-                PathAnimationControls(
-                  playback: _playback,
-                  selected: selected,
-                  animationEnabled: _animationEnabled,
-                  onToggleAnimation: () => setState(() {
-                    _animationEnabled = !_animationEnabled;
-                    if (!_animationEnabled) _playback.stop();
-                  }),
-                  followEnabled: _followPacket,
-                  onToggleFollow: _toggleFollowPacket,
-                ),
-                if (!_panelCollapsed) ...[
-                  if (selected != null && selected.unresolvedHops > 0)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
-                      child: Text(
-                        l10n.pathMap_partialAnimation(selected.unresolvedHops),
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          color: MeshPalette.warn,
-                        ),
-                      ),
-                    ),
-                  if (combined)
-                    PathSummaryList(
-                      paths: _displayPaths,
-                      selectedId: _selectedPathId,
-                      hiddenIds: _hiddenPathIds,
-                      isImperial: isImperial,
-                      onSelect: _selectPath,
-                      onToggleVisibility: _togglePathVisibility,
-                      onShowAll: () => setState(_hiddenPathIds.clear),
-                    ),
-                  const Divider(height: 1),
-                  Expanded(child: _buildHopList(pathTraceData, selected)),
-                ],
-              ],
-            ),
-          ),
+    return PathMapBottomPanel(
+      header: Text(
+        '${l10n.channelPath_repeaterHops} ${formatDistance(selected?.distanceMeters ?? _pathDistanceMeters, isImperial: isImperial, l10n: l10n)}',
+        style: MeshTheme.mono(
+          fontWeight: FontWeight.w600,
+          fontSize: 13,
+          color: MeshPalette.ink,
         ),
       ),
+      combined: combined,
+      showInferredLegend: true,
+      collapsed: _panelCollapsed,
+      onToggleCollapsed: () =>
+          setState(() => _panelCollapsed = !_panelCollapsed),
+      playback: _playback,
+      selected: selected,
+      animationEnabled: _animationEnabled,
+      onToggleAnimation: () => setState(() {
+        _animationEnabled = !_animationEnabled;
+        if (!_animationEnabled) _playback.stop();
+      }),
+      followEnabled: _followPacket,
+      onToggleFollow: _toggleFollowPacket,
+      showNoSelfGpsNote: plausibleSelfPoint(connector) == null,
+      pathCount: _displayPaths.length,
+      hopRowCount: hopRows,
+      summary: combined
+          ? PathSummaryList(
+              paths: _displayPaths,
+              selectedId: _selectedPathId,
+              hiddenIds: _hiddenPathIds,
+              isImperial: isImperial,
+              onSelect: _selectPath,
+              onToggleVisibility: _togglePathVisibility,
+              onShowAll: () => setState(_hiddenPathIds.clear),
+            )
+          : null,
+      hopList: _buildHopList(pathTraceData, selected),
     );
   }
 
@@ -1833,9 +1717,12 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
             tileColor: index == highlightRow
                 ? kPrimaryPathColor.withValues(alpha: 0.14)
                 : null,
-            leading: index >= pathTraceData.snrData.length / 2
-                ? Icon(Icons.call_received)
-                : Icon(Icons.call_made),
+            leading: Icon(
+              index >= pathTraceData.snrData.length / 2
+                  ? Icons.call_received
+                  : Icons.call_made,
+              color: MeshPalette.ink2,
+            ),
             title: Text(
               formatDirectionText(pathTraceData, index),
               style: MeshTheme.mono(fontSize: 13, color: MeshPalette.ink),
@@ -1850,7 +1737,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
                 Icon(snrUi.icon, color: snrUi.color, size: 18.0),
                 Text(
                   snrUi.text,
-                  style: MeshTheme.mono(fontSize: 10, color: snrUi.color),
+                  style: MeshTheme.mono(fontSize: 12, color: snrUi.color),
                 ),
               ],
             ),
@@ -1916,7 +1803,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
                   Icon(snrUi.icon, color: snrUi.color, size: 18.0),
                   Text(
                     snrUi.text,
-                    style: MeshTheme.mono(fontSize: 10, color: snrUi.color),
+                    style: MeshTheme.mono(fontSize: 12, color: snrUi.color),
                   ),
                 ],
               );
@@ -1943,7 +1830,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
               child: Text(
                 '${index + 1}',
                 style: MeshTheme.mono(
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: FontWeight.w700,
                   color: path.color,
                 ),
@@ -1955,7 +1842,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
             ),
             subtitle: Text(
               subtitle,
-              style: MeshTheme.mono(fontSize: 11, color: MeshPalette.ink3),
+              style: MeshTheme.mono(fontSize: 12, color: MeshPalette.ink3),
             ),
             trailing: trailing,
           );

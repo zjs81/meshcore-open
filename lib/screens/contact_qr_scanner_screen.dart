@@ -44,10 +44,7 @@ class _ContactQrScannerScreenState extends State<ContactQrScannerScreen> {
         ],
       ),
       body: _isProcessing
-          ? Container(
-              color: Theme.of(context).colorScheme.surface,
-              child: const Center(child: CircularProgressIndicator()),
-            )
+          ? const QrScannerProcessingBody()
           : _importFailed
           ? _buildImportFailed(context)
           : QrScannerWidget(
@@ -55,7 +52,7 @@ class _ContactQrScannerScreenState extends State<ContactQrScannerScreen> {
               validator: (data) => parseContactQr(data) != null,
               onValidationFailed: (_) => _showInvalidQrError(),
               instructions: context.l10n.contacts_scanQrInstructions,
-              overlay: _buildThemedOverlay(context),
+              themed: true,
             ),
     );
   }
@@ -87,73 +84,6 @@ class _ContactQrScannerScreenState extends State<ContactQrScannerScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildThemedOverlay(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        // Dark semi-transparent background with cutout
-        ColorFiltered(
-          colorFilter: ColorFilter.mode(
-            Colors.black.withValues(alpha: 0.5),
-            BlendMode.srcOut,
-          ),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                  backgroundBlendMode: BlendMode.dstOut,
-                ),
-              ),
-              Center(
-                child: Container(
-                  height: 250,
-                  width: 250,
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        // Corner brackets on top
-        const ScannerCornerOverlay(
-          scanWindowSize: 250,
-          borderColor: MeshPalette.blue,
-          borderWidth: 2,
-          cornerLength: 24,
-        ),
-        // Instructions pill below the scan window
-        Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 250 + 24),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.72),
-                  borderRadius: BorderRadius.circular(MeshRadii.pill),
-                ),
-                child: Text(
-                  context.l10n.contacts_scanQrInstructions,
-                  style: const TextStyle(color: MeshPalette.ink2, fontSize: 13),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -291,12 +221,7 @@ class _ContactQrScannerScreenState extends State<ContactQrScannerScreen> {
   }
 
   void _showInvalidQrError() {
-    showDismissibleSnackBar(
-      context,
-      content: Text(context.l10n.contacts_invalidAdvertFormat),
-      backgroundColor: MeshPalette.warn,
-      duration: const Duration(seconds: 2),
-    );
+    showInvalidQrSnackBar(context, context.l10n.contacts_invalidAdvertFormat);
   }
 
   void _showGalleryError() {

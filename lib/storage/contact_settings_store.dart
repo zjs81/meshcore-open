@@ -1,4 +1,5 @@
 import '../utils/app_logger.dart';
+import 'legacy_key_migration.dart';
 import 'prefs_manager.dart';
 
 class ContactSettingsStore {
@@ -25,7 +26,7 @@ class ContactSettingsStore {
     final key = '$keyFor$contactKeyHex';
     final oldKey = '$_keyPrefix$contactKeyHex';
     bool? enabled = prefs.getBool(key);
-    if (enabled == null) {
+    if (enabled == null && canMigrateLegacyKeys(publicKeyHex)) {
       // Attempt migration from legacy unscoped key on first load
       enabled = prefs.getBool(oldKey);
       prefs.remove(oldKey);
@@ -75,16 +76,16 @@ class ContactSettingsStore {
     await prefs.setBool(key, enabled);
   }
 
-  Future<bool> loadUrlImagesEnabled(String contactKeyHex) async {
+  Future<bool?> loadUrlImagesEnabled(String contactKeyHex) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot load contact URL image settings.',
       );
-      return false;
+      return null;
     }
     final prefs = PrefsManager.instance;
     final key = '$keyForUrlImages$contactKeyHex';
-    return prefs.getBool(key) ?? false;
+    return prefs.getBool(key);
   }
 
   Future<void> saveUrlImagesEnabled(String contactKeyHex, bool enabled) async {

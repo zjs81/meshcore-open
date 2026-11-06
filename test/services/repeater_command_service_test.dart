@@ -21,6 +21,28 @@ class _FakeConnector extends MeshCoreConnector {
   }) async {}
 }
 
+class _ShortTimeoutConnector extends _FakeConnector {
+  final List<Uint8List> sentFrames = [];
+
+  @override
+  int calculateTimeout({
+    required int pathLength,
+    int messageBytes = 100,
+    String? contactKey,
+    int? deviceTimeoutMs,
+  }) => 30;
+
+  @override
+  Future<void> sendFrame(
+    Uint8List data, {
+    String? channelSendQueueId,
+    bool expectsGenericAck = false,
+    bool waitForGenericAck = false,
+  }) async {
+    sentFrames.add(data);
+  }
+}
+
 Contact _repeater(int seed) => Contact(
   publicKey: Uint8List.fromList(List<int>.generate(32, (i) => seed + i)),
   name: 'R$seed',
@@ -116,6 +138,65 @@ void main() {
       service.handleResponse(a, 'unprefixed');
       await pumpEventQueue();
       expect(result, 'unprefixed');
+    });
+  });
+
+  group('RepeaterCommandService retries', () {
+    test('late reply to an earlier attempt completes the command', () async {
+      final connector = _ShortTimeoutConnector();
+      final service = RepeaterCommandService(connector);
+      addTearDown(service.dispose);
+      final repeater = _repeater(1);
+      String? result;
+      unawaited(
+        service
+            .sendCommand(repeater, 'password x', retries: 3)
+            .then((r) => result = r, onError: (_) {}),
+      );
+
+      // Attempt 1 (00|) times out after 30ms and attempt 2 (01|) is sent.
+      await Future<void>.delayed(const Duration(milliseconds: 45));
+      expect(connector.sentFrames, hasLength(2));
+
+      service.handleResponse(repeater, '00|OK');
+      await pumpEventQueue();
+      expect(result, 'OK');
+
+      // No third attempt goes out once the call has completed.
+      await Future<void>.delayed(const Duration(milliseconds: 60));
+      expect(connector.sentFrames, hasLength(2));
+    });
+
+    test('prefixes are released once the command finishes', () async {
+      final connector = _ShortTimeoutConnector();
+      final service = RepeaterCommandService(connector);
+      addTearDown(service.dispose);
+      final repeater = _repeater(1);
+      Object? error;
+      await service.sendCommand(repeater, 'ver', retries: 2).catchError((
+        Object e,
+      ) {
+        error = e;
+        return '';
+      });
+      expect(error, isNotNull);
+
+      String? result;
+      unawaited(
+        service
+            .sendCommand(repeater, 'ver', retries: 1)
+            .then((r) => result = r, onError: (_) {}),
+      );
+      await pumpEventQueue();
+      // Replies to the finished call's prefixes are ignored.
+      service.handleResponse(repeater, '00|stale');
+      service.handleResponse(repeater, '01|stale');
+      await pumpEventQueue();
+      expect(result, isNull);
+
+      service.handleResponse(repeater, '02|fresh');
+      await pumpEventQueue();
+      expect(result, 'fresh');
     });
   });
 }

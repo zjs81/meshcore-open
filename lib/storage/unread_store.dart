@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import '../utils/app_logger.dart';
+import 'legacy_key_migration.dart';
 import 'prefs_manager.dart';
 
 /// Storage for unread message tracking with debounced writes to reduce I/O.
@@ -33,7 +34,8 @@ class UnreadStore {
     }
     final prefs = PrefsManager.instance;
     String? jsonString = prefs.getString(keyFor);
-    if (jsonString == null || jsonString.isEmpty) {
+    if ((jsonString == null || jsonString.isEmpty) &&
+        canMigrateLegacyKeys(publicKeyHex)) {
       // Attempt migration from legacy unscoped key on first load
       final legacyJsonString = prefs.getString(_keyPrefix);
       prefs.remove(_keyPrefix);
@@ -52,12 +54,22 @@ class UnreadStore {
       return {};
     }
 
+    final Map<String, dynamic> json;
     try {
-      final json = jsonDecode(jsonString) as Map<String, dynamic>;
-      return json.map((key, value) => MapEntry(key, value as int));
-    } catch (_) {
+      json = jsonDecode(jsonString) as Map<String, dynamic>;
+    } catch (e) {
+      appLogger.warn('Stored unread counts are unreadable: $e');
       return {};
     }
+    final counts = <String, int>{};
+    json.forEach((key, value) {
+      if (value is int) {
+        counts[key] = value;
+      } else if (value is num) {
+        counts[key] = value.toInt();
+      }
+    });
+    return counts;
   }
 
   void saveContactUnreadCount(Map<String, int> counts) {

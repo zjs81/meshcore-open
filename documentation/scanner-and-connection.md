@@ -124,3 +124,10 @@ From the Scanner screen, tap the **TCP/IP** icon button in the app bar.
 - On success, navigates to Channels screen and saves the host/port to settings
 - On connection, the status bar shows the active TCP endpoint (e.g., "Connected to 192.168.1.1:5000")
 - Error messages for timeout, unsupported platform, and connection failures
+
+### Automatic Reconnect
+
+- If an established TCP link drops without you disconnecting (for example Wi-Fi power saving while the app is in the background), the app reconnects to the same host and port automatically, using the same exponential backoff as BLE. The background service keeps running while it retries.
+- Only a link that completed its handshake is reconnected; a first connection to a wrong address is not retried. A manual disconnect, or connecting over BLE or USB, cancels it.
+- The socket uses TCP keepalive (probes after 30 seconds of silence, every 10 seconds, 3 tries), so a dead link is noticed in about a minute instead of the system default of hours.
+- USB is not reconnected automatically: losing a USB link usually means the cable was unplugged.

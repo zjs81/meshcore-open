@@ -15,6 +15,19 @@ class LinkHandler {
     return base.copyWith(color: orange, decoration: TextDecoration.underline);
   }
 
+  /// The system text scale as a linear factor for [style]'s size.
+  ///
+  /// flutter_linkify only takes a `textScaleFactor` (default 1.0, which
+  /// ignores the system font size), so the ambient [TextScaler] is sampled
+  /// at the style's font size to keep Android's nonlinear scaling. The
+  /// in-app chat text scale is already part of `style.fontSize`.
+  static double systemTextScaleFactor(BuildContext context, TextStyle style) {
+    final fontSize =
+        style.fontSize ?? DefaultTextStyle.of(context).style.fontSize ?? 14;
+    if (fontSize <= 0) return 1.0;
+    return MediaQuery.textScalerOf(context).scale(fontSize) / fontSize;
+  }
+
   /// Returns a [SelectableLinkify] on desktop or a [Linkify] on mobile.
   static Widget buildLinkifyText({
     required BuildContext context,
@@ -27,6 +40,7 @@ class LinkHandler {
     const options = LinkifyOptions(humanize: false, defaultToHttps: false);
     const linkifiers = [UrlLinkifier(), EmailLinkifier()];
     void onOpen(LinkableElement link) => handleLinkTap(context, link.url);
+    final textScaleFactor = systemTextScaleFactor(context, style);
 
     if (PlatformInfo.isDesktop) {
       final linkify = SelectableLinkify(
@@ -36,6 +50,7 @@ class LinkHandler {
         options: options,
         linkifiers: linkifiers,
         onOpen: onOpen,
+        textScaleFactor: textScaleFactor,
       );
       if (onSecondaryTap == null) return linkify;
       return Listener(
@@ -53,6 +68,7 @@ class LinkHandler {
       options: options,
       linkifiers: linkifiers,
       onOpen: onOpen,
+      textScaleFactor: textScaleFactor,
     );
   }
 
@@ -61,6 +77,7 @@ class LinkHandler {
     final shouldOpen = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
+        scrollable: true,
         title: Text(context.l10n.chat_openLink),
         content: Column(
           mainAxisSize: MainAxisSize.min,

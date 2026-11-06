@@ -72,4 +72,29 @@ void main() {
     );
     expect(result.text, 'abcdef');
   });
+
+  test('truncateUtf8 never splits a multi-byte character', () {
+    // 'й' is 2 bytes; 31 bytes would land mid-character.
+    final name = 'й' * 20;
+    final cut = truncateUtf8(name, maxRadioNameBytes);
+    expect(utf8ByteLength(cut), 30);
+    expect(cut, 'й' * 15);
+    expect(truncateUtf8('short', maxRadioNameBytes), 'short');
+  });
+
+  test('fitRadioName keeps the suffix and fits the radio field', () {
+    final fitted = fitRadioName('A' * 40, 'Public');
+    expect(fitted.endsWith(' Public'), isTrue);
+    expect(utf8ByteLength(fitted), maxRadioNameBytes);
+    expect(fitRadioName('Hikers', 'Public'), 'Hikers Public');
+  });
+
+  test('encoder counts a hashtag prefix toward the byte limit', () {
+    final formatter = Utf8LengthLimitingTextInputFormatter(
+      maxRadioNameBytes,
+      encoder: (text) => '#$text',
+    );
+    final result = formatter.formatEditUpdate(_value(''), _value('a' * 40));
+    expect(result.text, 'a' * 30);
+  });
 }

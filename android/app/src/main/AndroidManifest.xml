@@ -34,10 +34,6 @@
         <receiver
             android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
             android:exported="false" />
-        <!-- Android Auto: message notifications can be read aloud and replied to -->
-        <meta-data
-            android:name="com.google.android.gms.car.application"
-            android:resource="@xml/automotive_app_desc" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -17,6 +17,8 @@ Future<void> _init(Map<String, Object> values) async {
   await PrefsManager.initialize();
 }
 
+const _channelId = '0123456789abcdef';
+
 void main() {
   test(
     'message store skips a malformed record instead of dropping all',
@@ -42,13 +44,13 @@ void main() {
 
   test('channel message store skips a malformed record', () async {
     await _init({
-      'channel_messages_${_device.substring(0, 10)}0': jsonEncode([
+      'channel_messages_${_device.substring(0, 10)}_$_channelId': jsonEncode([
         {'text': 'hi', 'timestamp': 1000, 'status': 1},
         'garbage',
       ]),
     });
     final store = ChannelMessageStore()..setPublicKeyHex = _device;
-    final messages = await store.loadChannelMessages(0);
+    final messages = await store.loadChannelMessages(_channelId);
     expect(messages.map((m) => m.text), ['hi']);
   });
 

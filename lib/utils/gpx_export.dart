@@ -1,3 +1,5 @@
+import 'dart:ui' show Rect;
+
 import 'package:flutter/foundation.dart';
 import 'package:gpx/gpx.dart';
 import 'package:meshcore_open/connector/meshcore_connector.dart';
@@ -122,8 +124,9 @@ class GpxExport {
     String description,
     String filename,
     String shareText,
-    String subject,
-  ) async {
+    String subject, {
+    Rect? sharePositionOrigin,
+  }) async {
     if (PlatformInfo.isWeb) {
       debugPrint("GPX export is not supported on Web.");
       return gpxExportNotAvailable;
@@ -197,7 +200,12 @@ class GpxExport {
       await file.writeAsString(xml);
 
       final result = await SharePlus.instance.share(
-        ShareParams(text: shareText, subject: subject, files: [XFile(path)]),
+        ShareParams(
+          text: shareText,
+          subject: subject,
+          files: [XFile(path)],
+          sharePositionOrigin: sharePositionOrigin,
+        ),
       );
 
       await file.delete();

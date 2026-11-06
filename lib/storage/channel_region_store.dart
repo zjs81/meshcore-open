@@ -3,6 +3,7 @@ import 'prefs_manager.dart';
 
 class ChannelRegionStore {
   static const String _keyPrefix = 'channel_region_';
+  static const String _defaultKeyPrefix = 'default_region_';
 
   String publicKeyHex = '';
   set setPublicKeyHex(String value) =>
@@ -10,7 +11,27 @@ class ChannelRegionStore {
 
   String get keyFor => '$_keyPrefix$publicKeyHex';
 
-  String get _defaultKey => 'default_region_$publicKeyHex';
+  String get _defaultKey => '$_defaultKeyPrefix$publicKeyHex';
+
+  /// Clears every channel and default region assignment equal to [region],
+  /// across all radios. The region list is app-wide, so a deleted region must
+  /// not stay assigned on radios other than the connected one.
+  static Future<void> clearRegionEverywhere(String region) async {
+    final prefs = PrefsManager.instance;
+    final keys = prefs
+        .getKeys()
+        .where(
+          (key) =>
+              key.startsWith(_keyPrefix) || key.startsWith(_defaultKeyPrefix),
+        )
+        .toList();
+    for (final key in keys) {
+      final value = prefs.get(key);
+      if (value is String && value == region) {
+        await prefs.setString(key, '');
+      }
+    }
+  }
 
   String loadDefaultRegion() {
     if (publicKeyHex.isEmpty) return '';
@@ -22,30 +43,31 @@ class ChannelRegionStore {
     await PrefsManager.instance.setString(_defaultKey, region);
   }
 
-  Future<String> loadRegion(int channelIndex) async {
+  String _keyForChannel(String channelId) => '${keyFor}_$channelId';
+
+  Future<String> loadRegion(String channelId) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot load channel settings.',
       );
       return '';
     }
-    final prefs = PrefsManager.instance;
-    final key = '$keyFor$channelIndex';
-    String? region = prefs.getString(key);
-    return region ?? '';
+    return PrefsManager.instance.getString(_keyForChannel(channelId)) ?? '';
   }
 
-  Future<String> saveRegion(int channelIndex, String region) async {
+  Future<String> saveRegion(String channelId, String region) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot save channel settings.',
       );
       return '';
     }
-
-    final prefs = PrefsManager.instance;
-    final key = '$keyFor$channelIndex';
-    await prefs.setString(key, region);
+    await PrefsManager.instance.setString(_keyForChannel(channelId), region);
     return region;
+  }
+
+  Future<void> clearRegion(String channelId) async {
+    if (publicKeyHex.isEmpty) return;
+    await PrefsManager.instance.remove(_keyForChannel(channelId));
   }
 }

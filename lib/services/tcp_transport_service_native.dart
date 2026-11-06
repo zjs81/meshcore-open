@@ -64,6 +64,7 @@ class TcpTransportService {
         return;
       }
       socket.setOption(SocketOption.tcpNoDelay, true);
+      _enableKeepAlive(socket);
       _socket = socket;
       _activeHost = trimmedHost;
       _activePort = port;
@@ -137,6 +138,85 @@ class TcpTransportService {
 
   void dispose() {
     unawaited(disconnect().whenComplete(_closeFrameController));
+  }
+
+  /// Seconds of silence before the first keepalive probe, the gap between
+  /// probes, and how many unanswered probes drop the socket: a dead peer or
+  /// a link killed by Wi-Fi power saving surfaces in about a minute instead
+  /// of the OS default of two hours, so the connector can reconnect.
+  static const int _keepAliveIdleSeconds = 30;
+  static const int _keepAliveIntervalSeconds = 10;
+  static const int _keepAliveProbeCount = 3;
+
+  /// Dart's [Socket] has no keepalive option, so the raw socket options are
+  /// set per platform. Every option is best-effort: a platform that rejects
+  /// one keeps a working (if slower to notice a dead peer) connection.
+  void _enableKeepAlive(Socket socket) {
+    final int soKeepAlive;
+    final int? tcpKeepIdle;
+    final int? tcpKeepInterval;
+    final int? tcpKeepCount;
+    if (Platform.isLinux || Platform.isAndroid) {
+      soKeepAlive = 9;
+      tcpKeepIdle = 4;
+      tcpKeepInterval = 5;
+      tcpKeepCount = 6;
+    } else if (Platform.isMacOS || Platform.isIOS) {
+      soKeepAlive = 0x0008;
+      tcpKeepIdle = 0x10; // TCP_KEEPALIVE
+      tcpKeepInterval = 0x101;
+      tcpKeepCount = 0x102;
+    } else if (Platform.isWindows) {
+      soKeepAlive = 0x0008;
+      tcpKeepIdle = null;
+      tcpKeepInterval = null;
+      tcpKeepCount = null;
+    } else {
+      return;
+    }
+
+    void trySet(String name, RawSocketOption option) {
+      try {
+        socket.setRawOption(option);
+      } catch (error) {
+        _debugLogService?.warn('TCP $name not set: $error', tag: 'TCP');
+      }
+    }
+
+    trySet(
+      'SO_KEEPALIVE',
+      RawSocketOption.fromBool(RawSocketOption.levelSocket, soKeepAlive, true),
+    );
+    if (tcpKeepIdle != null) {
+      trySet(
+        'keepalive idle',
+        RawSocketOption.fromInt(
+          RawSocketOption.levelTcp,
+          tcpKeepIdle,
+          _keepAliveIdleSeconds,
+        ),
+      );
+    }
+    if (tcpKeepInterval != null) {
+      trySet(
+        'keepalive interval',
+        RawSocketOption.fromInt(
+          RawSocketOption.levelTcp,
+          tcpKeepInterval,
+          _keepAliveIntervalSeconds,
+        ),
+      );
+    }
+    if (tcpKeepCount != null) {
+      trySet(
+        'keepalive count',
+        RawSocketOption.fromInt(
+          RawSocketOption.levelTcp,
+          tcpKeepCount,
+          _keepAliveProbeCount,
+        ),
+      );
+    }
   }
 
   Future<void> _cleanupFailedConnect() async {

@@ -104,7 +104,10 @@ Settings take effect when saved. A snackbar confirms the update.
 A dedicated sub-screen for app-level preferences (nothing here is sent to the device). All settings persist locally via SharedPreferences.
 
 ### Appearance
-- **Theme**: System / Light / Dark
+- **Theme**: System / Light / Dark, the brightness of the standard MeshCore theme. While a custom, preset, or holiday theme is active, no option is selected; tapping one returns to the standard theme
+- **Color theme**: Opens the Themes screen: the standard MeshCore theme, built-in presets, holiday themes, and your own themes (create, edit, share codes, `.jsonl` import/export). See [Themes](themes.md)
+- **Automatic holiday themes** (on by default, toggled on the Themes screen as **Switch automatically**): Shows the Halloween, Thanksgiving, Christmas, or New Year's theme from 17 days before each holiday through the day itself, then restores your own theme. Picking any theme or Light/Dark keeps your choice for the rest of that holiday; turn the toggle off to stop it entirely. See [Automatic holiday themes](themes.md#automatic-holiday-themes)
+- **Holiday message animations** (on by default): Plays a short animation when a holiday greeting arrives in or is sent from an open chat. See [Holiday message animations](themes.md#holiday-message-animations)
 - **Language**: System default or one of 18 languages (English, French, Spanish, German, Polish, Slovenian, Portuguese, Italian, Chinese, Swedish, Dutch, Slovak, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
 
 ### Notifications
@@ -118,13 +121,20 @@ Individual channels can be muted from the channel chat bell icon, the channel li
 ### Messaging
 - **Clear Path on Max Retry**: Erases the stored routing path after all retries fail
 - **Jump to Oldest Unread**: When opening a chat, scrolls to the oldest unread message instead of the newest
-- **Auto Route Rotation**: Enables weighted routing algorithm. When enabled, expands to show five slider sub-settings (hidden when off):
+- **Auto-fetch Repeater Settings** (off by default): Requests every setting when a repeater's settings screen opens. Each setting is a separate request over LoRa, so this is slow and uses airtime; when off, use Refresh All or the per-setting refresh buttons. See [Repeater Settings](repeater-management.md#repeater-settings)
+- **Auto Route Rotation**: Enables weighted routing algorithm. When enabled, expands to show five slider sub-settings (hidden when off) and a Reset button:
   - Max Route Weight (1–10, default 5, integer steps)
   - Initial Route Weight (0.5–5.0, default 3.0)
   - Success Increment (0.1–2.0, default 0.5, 0.1 steps)
   - Failure Decrement (0.1–2.0, default 0.2, 0.1 steps)
   - Max Message Retries (2–10, default 5)
+  - **Reset Routing Algorithm to Default**: Restores all five routing algorithm settings to their factory default values
 - **Enable Message Tracing**: Shows path trace overlays and extra metadata on messages
+- **Region next to hop count** (default off): Shows a channel message's region chip on the same line as its hop count instead of below it
+- **Resend channel messages until they travel far enough** (default off): If your channel message isn't heard coming back through enough repeaters, it's sent again. Uses more airtime. When on, it shows:
+  - Required hops (1–8, default 2)
+  - Resend up to (1–5 times, default 1)
+  - **Also count different nearby repeaters** (default off): Treats the message as sent once that many *different* first-hop repeaters have repeated it, even if you can't hear it travel further. Useful where only nearby repeaters are audible. See [Channels](channels.md#channel-auto-resend)
 
 ### Battery
 - **Battery Chemistry**: NMC / LiFePO4 / LiPo (per device, used to calibrate percentage from voltage)
@@ -153,6 +163,20 @@ Not shown on web. Controls on-device message translation powered by a locally-do
 
 The auto-translate and composer toggles are disabled until **Enable translation** is on.
 
+### IPFS Provider Configuration
+
+Open **App Settings → IPFS provider configuration** to configure IPFS uploads and previews:
+
+- **Public IPFS gateway**: Select Filebase (the default), Pinata, a custom gateway, or deactivate it. This gateway lets the app load bare IPFS content IDs in image links.
+- **Upload provider**: Select Pinata, Filebase, a custom provider, or deactivate uploads. Presets fill in the provider’s upload endpoint and upload gateway; custom setups can edit both.
+- **API key**: Enter the credential required by the selected provider. The value is masked in the settings dialog. Pinata and Filebase presets require provider credentials.
+
+For a self-hosted Kubo node, choose **Custom (Kubo)** and configure its RPC upload endpoint and HTTP gateway. The preset defaults use `http://127.0.0.1:5001/api/v0/add` and `http://127.0.0.1:8080/ipfs/`; replace these with addresses reachable from the device running MeshCore Open. Do not expose Kubo’s unauthenticated RPC API to the public internet.
+
+When an **upload gateway** is configured, uploaded content is added to the draft as an HTTP(S) gateway URL in the form `http://gateway/ipfs/CID`. If it is blank, the app uses `ipfs://CID`. The public gateway setting is separate and is used to retrieve bare IPFS content IDs in incoming links.
+
+Save the settings before sharing. The upload action is shown in the chat composer only when an upload endpoint is configured. Provider accounts, credentials, limits, and terms are managed by the provider, not MeshCore Open. See [sharing images via IPFS](additional-features.md#share-an-image-via-ipfs) for the chat workflow.
+
 ### Image Messages
 
 Image message controls live in App Settings → Messaging. Turn on **Enable image messages** first; **Process images automatically** and the image model download/cancel/removal controls then appear. Automatic processing reconstructs every image as it arrives and uses about 2 GB of memory for a second each time; leave it off to reconstruct with a tap. See [Image Messages](image-messages.md) for firmware, native-runtime, storage, and memory requirements.
@@ -164,6 +188,10 @@ Controls character substitution profiles used to render Cyrillic text in Latin c
 - **App Debug Logging**: Enable the in-app debug log
 
 ---
+
+### Message filter
+
+On the Settings screen, below App Settings, **Message filter** opens a page to hide spam and repeated channel messages: a master switch, display mode, your own rules, automatic checks, and learning. See [Message Filter](message-filter.md).
 
 ## Actions
 

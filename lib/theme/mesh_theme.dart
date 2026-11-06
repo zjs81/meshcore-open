@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../models/custom_theme.dart';
+import 'theme_icons.dart';
+
 /// MeshCore palette — high-contrast slate surfaces with sky-blue accents.
 class MeshPalette {
   MeshPalette._();
@@ -157,6 +160,98 @@ class MeshRadii {
   static const pill = 999.0;
 }
 
+/// Map colors. The stock themes keep the map's own high-contrast palette;
+/// custom themes tint the tiles and use their accent and surfaces.
+@immutable
+class MeshMapTheme extends ThemeExtension<MeshMapTheme> {
+  /// Selection, own-position and route color.
+  final Color accent;
+
+  /// Washed over map tiles; null leaves tiles untouched.
+  final Color? tileTint;
+
+  /// True for custom themes: map overlays use the theme's colors instead of
+  /// [MapPalette]'s fixed dark panels.
+  final bool followsTheme;
+
+  const MeshMapTheme({
+    required this.accent,
+    this.tileTint,
+    this.followsTheme = false,
+  });
+
+  static const standard = MeshMapTheme(accent: MapPalette.selected);
+
+  /// How strongly [tileTint] colors the tiles.
+  static const double tileTintStrength = 0.22;
+
+  static MeshMapTheme of(BuildContext context) =>
+      Theme.of(context).extension<MeshMapTheme>() ?? standard;
+
+  @override
+  MeshMapTheme copyWith({Color? accent, Color? tileTint, bool? followsTheme}) {
+    return MeshMapTheme(
+      accent: accent ?? this.accent,
+      tileTint: tileTint ?? this.tileTint,
+      followsTheme: followsTheme ?? this.followsTheme,
+    );
+  }
+
+  @override
+  MeshMapTheme lerp(MeshMapTheme? other, double t) {
+    if (other == null) return this;
+    return MeshMapTheme(
+      accent: Color.lerp(accent, other.accent, t)!,
+      tileTint: Color.lerp(tileTint, other.tileTint, t),
+      followsTheme: t < 0.5 ? followsTheme : other.followsTheme,
+    );
+  }
+}
+
+/// Colors for your own (outgoing) chat bubbles. Part of the theme so custom
+/// themes can tint them with their accent.
+@immutable
+class MeshBubbleTheme extends ThemeExtension<MeshBubbleTheme> {
+  final Color me;
+  final Color meBorder;
+  final Color meInk;
+
+  const MeshBubbleTheme({
+    required this.me,
+    required this.meBorder,
+    required this.meInk,
+  });
+
+  /// The stock dusk-blue bubble used by the built-in light and dark themes.
+  static const standard = MeshBubbleTheme(
+    me: MeshPalette.me,
+    meBorder: MeshPalette.meBorder,
+    meInk: MeshPalette.meInk,
+  );
+
+  static MeshBubbleTheme of(BuildContext context) =>
+      Theme.of(context).extension<MeshBubbleTheme>() ?? standard;
+
+  @override
+  MeshBubbleTheme copyWith({Color? me, Color? meBorder, Color? meInk}) {
+    return MeshBubbleTheme(
+      me: me ?? this.me,
+      meBorder: meBorder ?? this.meBorder,
+      meInk: meInk ?? this.meInk,
+    );
+  }
+
+  @override
+  MeshBubbleTheme lerp(MeshBubbleTheme? other, double t) {
+    if (other == null) return this;
+    return MeshBubbleTheme(
+      me: Color.lerp(me, other.me, t)!,
+      meBorder: Color.lerp(meBorder, other.meBorder, t)!,
+      meInk: Color.lerp(meInk, other.meInk, t)!,
+    );
+  }
+}
+
 /// Shared helpers exposed via [MeshTheme.of].
 class MeshTheme {
   MeshTheme._();
@@ -195,7 +290,13 @@ class MeshTheme {
       onInverseSurface: MeshPalette.bg,
       inversePrimary: MeshPalette.blueDim,
     );
-    return _build(scheme, Brightness.dark);
+    return _build(
+      scheme,
+      Brightness.dark,
+      MeshBubbleTheme.standard,
+      MeshIconTheme.none,
+      MeshMapTheme.standard,
+    );
   }
 
   static ThemeData light() {
@@ -227,10 +328,70 @@ class MeshTheme {
       outline: MeshPalette.lightLine,
       outlineVariant: Color(0xFFD8DEE5),
     );
-    return _build(scheme, Brightness.light);
+    return _build(
+      scheme,
+      Brightness.light,
+      MeshBubbleTheme.standard,
+      MeshIconTheme.none,
+      MeshMapTheme.standard,
+    );
   }
 
-  static ThemeData _build(ColorScheme scheme, Brightness brightness) {
+  /// Builds a full theme from a user's two-color [CustomTheme].
+  ///
+  /// Surfaces are stepped from the background toward the text color, so any
+  /// background yields evenly separated cards, inputs and borders. Text is
+  /// near-white on dark backgrounds and near-black on light ones. Status
+  /// colors (warning, error, secondary) come from the stock theme of the
+  /// same brightness so they keep their meaning.
+  static ThemeData fromCustom(CustomTheme custom) {
+    final dark = custom.isDark;
+    final bg = custom.background;
+    final accent = custom.accent;
+    final ink = dark ? MeshPalette.ink : MeshPalette.lightInk;
+    Color step(double t) => Color.lerp(bg, ink, t)!;
+    Color onColor(Color c) =>
+        isDarkColor(c) ? Colors.white : MeshPalette.lightInk;
+
+    final base = (dark ? MeshTheme.dark() : MeshTheme.light()).colorScheme;
+    final primaryContainer = Color.lerp(bg, accent, 0.4)!;
+    final scheme = base.copyWith(
+      primary: accent,
+      onPrimary: onColor(accent),
+      primaryContainer: primaryContainer,
+      onPrimaryContainer: onColor(primaryContainer),
+      surface: bg,
+      onSurface: ink,
+      surfaceContainerLowest: bg,
+      surfaceContainerLow: step(dark ? 0.04 : 0.035),
+      surfaceContainer: step(dark ? 0.04 : 0.035),
+      surfaceContainerHigh: step(dark ? 0.08 : 0.07),
+      surfaceContainerHighest: step(dark ? 0.13 : 0.11),
+      onSurfaceVariant: step(dark ? 0.8 : 0.75),
+      outline: step(dark ? 0.28 : 0.24),
+      outlineVariant: step(dark ? 0.15 : 0.13),
+      inverseSurface: ink,
+      onInverseSurface: bg,
+      inversePrimary: Color.lerp(accent, bg, 0.3),
+    );
+
+    final me = Color.lerp(bg, accent, dark ? 0.35 : 0.22)!;
+    return _build(
+      scheme,
+      dark ? Brightness.dark : Brightness.light,
+      MeshBubbleTheme(me: me, meBorder: accent, meInk: onColor(me)),
+      MeshIconTheme(custom.icons),
+      MeshMapTheme(accent: accent, tileTint: bg, followsTheme: true),
+    );
+  }
+
+  static ThemeData _build(
+    ColorScheme scheme,
+    Brightness brightness,
+    MeshBubbleTheme bubble,
+    MeshIconTheme icons,
+    MeshMapTheme map,
+  ) {
     final baseText =
         Typography.material2021(
           platform: TargetPlatform.android,
@@ -244,6 +405,7 @@ class MeshTheme {
 
     return ThemeData(
       useMaterial3: true,
+      extensions: [bubble, icons, map],
       brightness: brightness,
       colorScheme: scheme,
       scaffoldBackgroundColor: scheme.surface,

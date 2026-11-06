@@ -12,6 +12,7 @@ import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
 import '../services/app_settings_service.dart';
 import '../services/repeater_command_service.dart';
+import '../services/telemetry_location_request.dart';
 import '../utils/app_logger.dart';
 import '../widgets/routing_sheet.dart';
 import '../helpers/cayenne_lpp.dart';
@@ -135,27 +136,17 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
           _tripTime = reader.readUInt32LE();
           _statusTimeout?.cancel();
           final isAutoRefreshRequest = _activeTelemetryRequestIsAutoRefresh;
-          _statusTimeout = Timer(Duration(milliseconds: _tripTime), () {
-            if (!mounted) return;
-            setState(() {
-              _isLoading = false;
-              _isLoaded = false;
-              if (isAutoRefreshRequest && _isAutoRefreshEnabled) {
-                _autoRefreshLastAttemptFailed = true;
-              }
-            });
-            if (!isAutoRefreshRequest) {
-              showDismissibleSnackBar(
-                context,
-                content: Text(context.l10n.telemetry_requestTimeout),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              );
-            }
-            if (isAutoRefreshRequest && _isAutoRefreshEnabled) {
-              _scheduleNextAutoRefreshAttempt();
-            }
-            _recordTelemetryResult(false);
-          });
+          _statusTimeout = Timer(
+            Duration(milliseconds: _tripTime),
+            () => _handleRequestFailed(isAutoRefreshRequest),
+          );
+        }
+
+        // The radio rejected the send: fail now instead of waiting forever.
+        if (cmd == respCodeErr && _awaitingSent) {
+          _awaitingSent = false;
+          _statusTimeout?.cancel();
+          _handleRequestFailed(_activeTelemetryRequestIsAutoRefresh);
         }
 
         // Check if it's a binary response
@@ -183,6 +174,30 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
     });
   }
 
+  /// Ends a telemetry request that timed out or was rejected by the radio.
+  void _handleRequestFailed(bool isAutoRefreshRequest) {
+    if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+      _isLoaded = false;
+      if (isAutoRefreshRequest && _isAutoRefreshEnabled) {
+        _autoRefreshLastAttemptFailed = true;
+      }
+      _activeTelemetryRequestIsAutoRefresh = false;
+    });
+    if (!isAutoRefreshRequest) {
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.telemetry_requestTimeout),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      );
+    }
+    if (isAutoRefreshRequest && _isAutoRefreshEnabled) {
+      _scheduleNextAutoRefreshAttempt();
+    }
+    _recordTelemetryResult(false);
+  }
+
   void _handleTelemetryResponse(Uint8List frame) {
     final parsedTelemetry = CayenneLpp.parseByChannel(frame);
     final batteryMv = _extractTelemetryBatteryMillivolts(parsedTelemetry);
@@ -192,6 +207,14 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
         widget.contact.publicKeyHex,
         batteryMv,
         source: 'telemetry',
+      );
+    }
+    final fix = telemetryGpsFix(parsedTelemetry);
+    if (fix != null && !widget.isSelf) {
+      context.read<MeshCoreConnector>().updateContactLocationFromTelemetry(
+        widget.contact.publicKeyHex,
+        fix.latitude,
+        fix.longitude,
       );
     }
     if (!mounted) return;
@@ -239,28 +262,10 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
         frame = buildSendTelemetryReq(null);
         final isAutoRefreshRequest = _activeTelemetryRequestIsAutoRefresh;
         _statusTimeout?.cancel();
-        _statusTimeout = Timer(const Duration(seconds: 5), () {
-          if (!mounted) return;
-          setState(() {
-            _isLoading = false;
-            _isLoaded = false;
-            if (isAutoRefreshRequest && _isAutoRefreshEnabled) {
-              _autoRefreshLastAttemptFailed = true;
-            }
-            _activeTelemetryRequestIsAutoRefresh = false;
-          });
-          if (!isAutoRefreshRequest) {
-            showDismissibleSnackBar(
-              context,
-              content: Text(context.l10n.telemetry_requestTimeout),
-              backgroundColor: Theme.of(context).colorScheme.error,
-            );
-          }
-          if (isAutoRefreshRequest && _isAutoRefreshEnabled) {
-            _scheduleNextAutoRefreshAttempt();
-          }
-          _recordTelemetryResult(false);
-        });
+        _statusTimeout = Timer(
+          const Duration(seconds: 5),
+          () => _handleRequestFailed(isAutoRefreshRequest),
+        );
       } else {
         final selection = await connector.preparePathForContactSend(
           _resolveContact(connector),
@@ -446,7 +451,26 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              if (!_isLoaded &&
+              if (_isLoading &&
+                  !_hasData &&
+                  (_parsedTelemetry == null || _parsedTelemetry!.isEmpty))
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24),
+                  child: Column(
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 12),
+                      Text(
+                        l10n.telemetry_loading,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else if (!_isLoaded &&
                   !_hasData &&
                   (_parsedTelemetry == null || _parsedTelemetry!.isEmpty))
                 Center(
@@ -506,7 +530,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
     bool isImperialUnits,
   ) {
     if (entry.key == 'gps') {
-      return _buildGpsInfo(entry.value);
+      return _buildGpsInfo(entry.value, isImperialUnits);
     }
 
     final display = _formatTelemetryField(
@@ -573,7 +597,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
       case 'altitude':
         return _TelemetryFieldDisplay(
           l10n.telemetry_altitudeLabel,
-          l10n.telemetry_altitudeValue(text),
+          _lengthText(value, isImperialUnits, altitude: true),
         );
       case 'voltage':
         return _TelemetryFieldDisplay(
@@ -612,7 +636,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
       case 'distance':
         return _TelemetryFieldDisplay(
           l10n.telemetry_distanceLabel,
-          l10n.telemetry_distanceValue(text),
+          _lengthText(value, isImperialUnits, altitude: false),
         );
       case 'energy':
         return _TelemetryFieldDisplay(
@@ -863,7 +887,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
     return value;
   }
 
-  Widget _buildGpsInfo(dynamic value) {
+  Widget _buildGpsInfo(dynamic value, bool isImperialUnits) {
     final latitude = _readGpsValue(value, 'latitude');
     final longitude = _readGpsValue(value, 'longitude');
     final altitude = _readGpsValue(value, 'altitude');
@@ -872,7 +896,13 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
         ? [
             latitude!.toStringAsFixed(5),
             longitude!.toStringAsFixed(5),
-            if (altitude != null) '${altitude.toStringAsFixed(1)} m',
+            if (altitude != null)
+              _lengthText(
+                altitude,
+                isImperialUnits,
+                altitude: true,
+                metricText: altitude.toStringAsFixed(1),
+              ),
           ].join(', ')
         : value.toString();
 
@@ -927,7 +957,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
     final x = _telemetryValueText(value['x']);
     final y = _telemetryValueText(value['y']);
     final z = _telemetryValueText(value['z']);
-    return 'X: $x, Y: $y, Z: $z';
+    return context.l10n.telemetry_axisValue(x, y, z);
   }
 
   String _telemetryColorText(dynamic value) {
@@ -935,7 +965,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
     final red = _telemetryValueText(value['red']);
     final green = _telemetryValueText(value['green']);
     final blue = _telemetryValueText(value['blue']);
-    return 'R: $red, G: $green, B: $blue';
+    return context.l10n.telemetry_colourValue(red, green, blue);
   }
 
   String _telemetryMapText(dynamic value) {
@@ -1017,6 +1047,32 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
     return settingsService.batteryChemistryForRepeater(
       widget.contact.publicKeyHex,
     );
+  }
+
+  /// Formats a length reported in meters, converting to feet in imperial mode.
+  String _lengthText(
+    dynamic meters,
+    bool isImperialUnits, {
+    required bool altitude,
+    String? metricText,
+  }) {
+    final l10n = context.l10n;
+    if (meters is! num) {
+      final text = _telemetryValueText(meters);
+      return altitude
+          ? l10n.telemetry_altitudeValue(text)
+          : l10n.telemetry_distanceValue(text);
+    }
+    if (isImperialUnits) {
+      final feet = (meters * 3.28084).toStringAsFixed(1);
+      return altitude
+          ? l10n.telemetry_altitudeValueFeet(feet)
+          : l10n.telemetry_distanceValueFeet(feet);
+    }
+    final text = metricText ?? _telemetryValueText(meters);
+    return altitude
+        ? l10n.telemetry_altitudeValue(text)
+        : l10n.telemetry_distanceValue(text);
   }
 
   String _temperatureText(double? tempC, bool isImperialUnits) {

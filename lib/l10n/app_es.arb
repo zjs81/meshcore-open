@@ -371,6 +371,10 @@
   "channels_public": "Público",
   "channels_private": "Privado",
   "channels_editChannel": "Editar canal",
+  "channels_notificationSettings": "Configuración de notificaciones",
+  "channels_notifyAll": "Todos los mensajes",
+  "channels_notifyMentionsOnly": "Solo menciones",
+  "channels_notifyNone": "Silenciado",
   "channels_muteChannel": "Silenciar canal",
   "channels_unmuteChannel": "Activar canal",
   "channels_deleteChannel": "Eliminar canal",
@@ -477,6 +481,8 @@
       }
     }
   },
+  "chat_noRadioLocation": "Tu radio no tiene una ubicación definida",
+  "chat_shareMyLocation": "Compartir mi ubicación",
   "chat_location": "Ubicación",
   "chat_sendMessageTo": "Enviar un mensaje a {contactName}",
   "@chat_sendMessageTo": {
@@ -713,6 +719,7 @@
   "map_shareMarkerHere": "Compartir marcador aquí",
   "map_pinLabel": "Etiqueta del pin",
   "map_label": "Etiqueta",
+  "map_labelUpdateHint": "Si usas la misma etiqueta que antes, el marcador se actualizará para los destinatarios de MeshCore Open.",
   "map_pointOfInterest": "Punto de interés",
   "map_sendToContact": "Enviar a contacto",
   "map_sendToChannel": "Enviar a canal",
@@ -1168,10 +1175,8 @@
   "repeater_settingsSaved": "Ajustes guardados correctamente",
   "repeater_rxGain": "Ganancia RX",
   "repeater_rxGainHelper": "Mayor sensibilidad, mayor consumo de corriente (solo para SX1262/SX1268)",
-  "repeater_refreshRxGain": "Mejora el rendimiento de RX con la nueva versión.",
   "repeater_multiAcks": "ACK múltiples",
   "repeater_multiAcksSubtitle": "Reconocer mensajes a través de múltiples rutas para una mejor entrega.",
-  "repeater_refreshMultiAcks": "Actualizar ACK múltiples",
   "repeater_networkHealth": "Salud de la red",
   "repeater_loopDetect": "Detección de bucles",
   "repeater_loopDetectHelper": "Descarta los paquetes de inundación que parezcan bucles de enrutamiento",
@@ -1191,7 +1196,6 @@
   },
   "repeater_ownerInfo": "Información del propietario",
   "repeater_ownerInfoHelper": "Metadatos públicos para este repetidor",
-  "repeater_refreshOwnerInfo": "Actualizar información del propietario",
   "repeater_floodMax": "Máximo de saltos por inundación",
   "repeater_floodMaxHelper": "Número máximo de paquetes de inundación que un nodo puede enviar (0-64)",
   "repeater_advancedSettings": "Ajustes avanzados",
@@ -1249,11 +1253,7 @@
       }
     }
   },
-  "repeater_refreshBasicSettings": "Actualizar Configuración Básica",
   "repeater_refreshRadioSettings": "Actualizar Ajustes de Radio",
-  "repeater_refreshTxPower": "Actualizar TX de energía",
-  "repeater_refreshPacketForwarding": "Actualizar Enrutamiento de Paquetes",
-  "repeater_refreshGuestAccess": "Actualizar Acceso Invitados",
   "repeater_refreshPrivacyMode": "Actualizar Modo Privacidad",
   "repeater_refreshed": "{label} actualizado",
   "@repeater_refreshed": {
@@ -2147,9 +2147,56 @@
   "discoveredContacts_searchHint": "Buscar contactos descubiertos",
   "discoveredContacts_addContact": "Agregar contacto",
   "contactsSettings_overwriteOldestSubtitle": "Cuando la lista de contactos esté llena, se reemplazará el contacto no favorito más antiguo.",
+  "contactsSettings_evictDiscoveredContactsTitle": "Expulsar contactos descubiertos",
+  "contactsSettings_evictDiscoveredContactsSubtitle": "Si está activado, la aplicación elimina los contactos descubiertos más antiguos cuando la lista de descubrimiento alcanza su límite de {limit} entradas.",
+  "@contactsSettings_evictDiscoveredContactsSubtitle": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
   "common_deleteAll": "Eliminar todo",
   "discoveredContacts_deleteContactAll": "Eliminar Todos los Contactos Descubiertos",
   "discoveredContacts_deleteContactAllContent": "¿Está seguro de que desea eliminar todos los contactos descubiertos!",
+  "discoveredContacts_export": "Exportar contactos descubiertos",
+  "discoveredContacts_import": "Importar contactos descubiertos",
+  "discoveredContacts_exported": "Contactos descubiertos exportados a {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "Error al exportar contactos descubiertos: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "{count} contactos descubiertos importados.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "No se encontraron contactos en el archivo de importación.",
+  "discoveredContacts_importInvalidFile": "El archivo no es una exportación de contactos descubiertos.",
+  "discoveredContacts_importSummary": "Se importaron {imported} contactos descubiertos. Se omitieron {skipped} ya conocidos y {invalid} entradas ilegibles.",
+  "discoveredContacts_importTooLarge": "El archivo de importación es demasiado grande (máximo {maxMb} MB).",
+  "discoveredContacts_importFailed": "Error al importar contactos descubiertos: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "map_guessedLocation": "Ubicación estimada",
   "map_showGuessedLocations": "Mostrar las ubicaciones estimadas de los nodos.",
   "usbScreenTitle": "Conecte mediante USB",
@@ -2305,6 +2352,8 @@
   "chat_sendCooldown": "Por favor, espere un momento antes de reenviar.",
   "appSettings_languageHu": "Húngaro",
   "appSettings_jumpToOldestUnreadSubtitle": "Cuando abras una conversación con mensajes sin leer, desplázate hacia el primer mensaje sin leer en lugar del más reciente.",
+  "appSettings_autoFetchRepeaterSettings": "Obtener automáticamente los ajustes del repetidor",
+  "appSettings_autoFetchRepeaterSettingsSubtitle": "Solicita todos los ajustes al abrir los ajustes de un repetidor. Cada uno es una solicitud independiente por LoRa, así que es lento y consume tiempo de aire. Si está desactivado, toca Actualizar todo o actualiza secciones individuales.",
   "appSettings_languageJa": "Japonés",
   "appSettings_languageKo": "Coreano",
   "radioStats_tooltip": "Estadísticas de radio y malla",
@@ -3039,7 +3088,7 @@
   "settings_telemetryPerContactHint": "Para permitir un contacto, abre su chat y elige Configuración de contacto en el menú.",
   "settings_multiAckSubtitle": "Enviar confirmaciones adicionales para mejorar la entrega; usa más tiempo de emisión",
   "settings_presetCustom": "Personalizado",
-  "settings_radioMatchWarning": "Todos los nodos con los que hablas deben usar la misma frecuencia, ancho de banda, SF y CR.",
+  "settings_radioMatchWarning": "Todos los nodos con los que hablas deben usar la misma frecuencia, ancho de banda y SF. La tasa de codificación (CR) puede ser distinta.",
   "settings_txPowerRangeHelper": "{min} a {max} dBm",
   "@settings_txPowerRangeHelper": {
     "placeholders": {
@@ -3187,5 +3236,546 @@
       }
     }
   },
-  "receivedImage_saveFailed": "No se pudo guardar la imagen"
+  "receivedImage_saveFailed": "No se pudo guardar la imagen",
+  "reviewMode_dialogTitle": "¿Entrar en el modo de revisión?",
+  "reviewMode_dialogBody": "El modo de revisión se conecta a una radio simulada con contactos, canales y mensajes de ejemplo. No se necesita una radio real.",
+  "reviewMode_confirm": "Entrar",
+  "reviewMode_cancel": "Cancelar",
+  "reviewMode_banner": "Modo de revisión — datos simulados",
+  "reviewMode_sendTest": "Enviar mensaje de prueba",
+  "reviewMode_testSent": "En breve llegará un mensaje de prueba.",
+  "reviewMode_exit": "Salir",
+  "reviewMode_connectFailed": "No se pudo iniciar el modo de revisión: {error}",
+  "settings_regionUseRadioDefault": "Predeterminada de la radio ({region})",
+  "settings_regionNoRegion": "Sin región (sin ámbito)",
+  "settings_regionRadioDefault": "Región predeterminada de la radio",
+  "settings_regionRadioDefaultSubtitle": "Guardada en la radio. Las inundaciones enviadas sin región la usan, desde esta app y desde cualquier otra app conectada a la radio.",
+  "settings_regionRadioDefaultUpdated": "Región predeterminada de la radio actualizada",
+  "settings_regionRadioDefaultFailed": "No se pudo actualizar la región predeterminada de la radio",
+  "appSettings_channelMinHopsCountRepeaters": "Contar también repetidores cercanos distintos",
+  "appSettings_channelMinHopsCountRepeatersSubtitle": "Considerar el mensaje como enviado cuando {count, plural, =1{1 repetidor cercano} other{{count} repetidores cercanos distintos}} lo repitan, aunque no oigas que avance más.",
+  "appSettings_regionOnHopsLine": "Región junto al número de saltos",
+  "appSettings_regionOnHopsLineSubtitle": "Mostrar la región de un mensaje de canal en la misma línea que su número de saltos en lugar de debajo.",
+  "channels_regionRadioDefaultSuffix": "(predeterminada de la radio)",
+  "channels_regionRadioDefaultApplies": "Esta radio envía las inundaciones sin región en su región predeterminada: {region}.",
+  "chat_futureTimestampWarning": "La hora de este mensaje está en el futuro, por lo que el reloj del remitente puede estar mal. Se muestra en el orden en que llegó.",
+  "discoveredContacts_scan": "Buscar nodos cercanos",
+  "discoveredContacts_scanTitle": "Nodos cercanos",
+  "discoveredContacts_scanExplanation": "Pide a los nodos dentro del alcance directo de radio que se identifiquen. Los repetidores y sensores responden. Los servidores de sala y los compañeros normalmente no.",
+  "discoveredContacts_scanning": "Buscando…",
+  "discoveredContacts_scanFound": "{count, plural, =1{1 nodo encontrado} other{{count} nodos encontrados}}",
+  "discoveredContacts_scanNoResults": "Ningún nodo respondió. Los repetidores limitan la frecuencia de sus respuestas, así que inténtalo de nuevo en un minuto.",
+  "discoveredContacts_scanAgain": "Buscar de nuevo",
+  "discoveredContacts_scanFailed": "No se pudo enviar la solicitud de búsqueda.",
+  "discoveredContacts_scanSignal": "Señal {snr} dB · nos oyeron a {remoteSnr} dB",
+  "discoveredContacts_scanInContacts": "Ya está en contactos",
+  "discoveredContacts_scanNameLater": "El nombre aparece tras su próximo anuncio",
+  "channels_waitForSync": "Los canales aún se están cargando desde la radio. Inténtalo de nuevo cuando termine la sincronización.",
+  "channels_nameTooLong": "El nombre es demasiado largo (máx. {maxBytes} bytes).",
+  "repeater_valueRequired": "{field}: introduce un valor",
+  "repeater_floodMaxAdvert": "Máximo de saltos de anuncio por inundación",
+  "repeater_floodMaxAdvertHelper": "Máximo de saltos que puede recorrer un anuncio difundido por inundación (0-64, por defecto 8)",
+  "repeater_floodMaxUnscoped": "Máximo de saltos por inundación sin región",
+  "repeater_floodMaxUnscopedHelper": "Máximo de saltos para inundaciones sin ámbito de región (0-64, por defecto 64). Un valor bajo como 3 mantiene local el tráfico sin región.",
+  "repeater_floodMaxUnscopedUnset": "Igual que el máximo de inundación",
+  "repeater_rxDelay": "Retardo de recepción",
+  "repeater_rxDelayHelper": "Retiene los paquetes de inundación oídos con señal débil antes de reenviarlos, para que las rutas con señal fuerte vayan primero y se envíen menos duplicados (0-20, 0 lo desactiva).",
+  "repeater_cad": "Detección de actividad del canal",
+  "repeater_cadHelper": "Escucha si hay actividad antes de transmitir y espera mientras el canal está ocupado. Funciona junto con el límite de interferencia.",
+  "repeater_adcMultiplier": "Calibración del voltaje de la batería",
+  "repeater_adcMultiplierHelper": "Multiplicador de la lectura del voltaje de la batería (0-10). 0 usa el valor por defecto de la placa.",
+  "repeater_boardSupportNote": "No todas las placas lo admiten. Las placas no compatibles rechazan el cambio.",
+  "repeater_extraSf": "Factores de propagación (SF) adicionales",
+  "repeater_extraSfHelper": "Hasta 3 factores de propagación (SF) más para escuchar a la vez, separados por comas (por ejemplo 9,10). Déjalo vacío para desactivarlo.",
+  "repeater_lr2021Only": "Solo para repetidores con radio LR2021. Los demás repetidores no tienen este ajuste y lo rechazan.",
+  "losMapDetailTooltip": "Detalle del mapa",
+  "losUnitsTooltip": "Unidades",
+  "losDistance": "Distancia",
+  "losClearance": "Margen libre",
+  "losBlockedBy": "Bloqueado por",
+  "losObstruction": "Obstáculo",
+  "losDistanceFromA": "{distance} desde A",
+  "losWorstBadge": "PEOR",
+  "losBlockedAmount": "Bloqueado {amount}",
+  "losFromA": "Desde A",
+  "losFromB": "Desde B",
+  "losElevation": "Elevación",
+  "losCenterOnMap": "Centrar en el mapa",
+  "losStatusClear": "Despejado",
+  "losStatusMarginal": "Marginal",
+  "losStatusBlocked": "Bloqueado",
+  "losStatusCheckingShort": "Comprobando",
+  "losStatusNoResult": "Sin resultado",
+  "losSelectedPill": "Seleccionado",
+  "gif_tapToLoad": "Toca para cargar el GIF",
+  "gif_loadFailedRetry": "No se puede cargar el GIF\nToca para reintentar",
+  "qr_cameraPermissionDenied": "Permiso de cámara denegado.\nActiva el acceso a la cámara en los ajustes.",
+  "qr_cameraUnsupported": "Cámara no compatible con este dispositivo.",
+  "qr_cameraStartFailed": "No se pudo iniciar la cámara.\n{details}",
+  "imageMessages_downloadFailedWithError": "No se pudo descargar el modelo de imagen: {error}",
+  "map_nodeId": "ID",
+  "map_markerHideHint": "Ocultar: permanece oculto hasta que salgas del mapa.",
+  "map_markerRemoveHint": "Eliminar: permanece oculto hasta que lo restaures desde el menú de filtros.",
+  "map_markerRemoved": "Marcador eliminado",
+  "map_restoreRemovedMarkers": "Restaurar marcadores eliminados",
+  "map_restoreRemovedMarkersSubtitle": "{count} eliminados",
+  "map_markersRestored": "{count} marcadores restaurados",
+  "map_setLocationConfirmTitle": "¿Establecer como tu ubicación?",
+  "map_setLocationConfirmBody": "Tu nodo anunciará esta posición:\n{lat}, {lon}",
+  "map_setLocationAction": "Establecer ubicación",
+  "map_locationSetSuccess": "Ubicación del nodo actualizada",
+  "map_locationSetFailed": "El dispositivo no confirmó la nueva ubicación. Inténtalo de nuevo.",
+  "map_poiClusterTitle": "{count} marcadores aquí",
+  "map_poiClusterSemantics": "{count} marcadores compartidos. Toca para verlos.",
+  "map_youWithMarkers": "Tú y {count} marcadores",
+  "map_sharedMarkerSemantics": "Marcador compartido: {label}",
+  "map_nodeMarkerSemantics": "{name}, {type}, {status}",
+  "map_requestLocation": "Actualizar ubicación",
+  "map_locationUpdated": "Ubicación actualizada",
+  "map_locationNotShared": "{name} respondió sin ubicación",
+  "map_locationRequestFailed": "Sin respuesta de {name}",
+  "mapCache_zoomLevel": "Zoom {zoom}",
+  "mapCache_sizeBytes": "{size} B",
+  "mapCache_sizeKilobytes": "{size} KB",
+  "mapCache_sizeMegabytes": "{size} MB",
+  "mapCache_sizeGigabytes": "{size} GB",
+  "mapCache_downloadCancelled": "Descarga cancelada. {count} teselas en caché.",
+  "mapCache_tooManyTilesTitle": "Área demasiado grande",
+  "mapCache_tooManyTiles": "Esta área necesita {count} teselas, más que el límite de {max}. Elige un área más pequeña o reduce el zoom máximo.",
+  "chat_clearChatConfirm": "Esto borra todos los mensajes de esta conversación de este dispositivo. No se puede deshacer.",
+  "channels_clearChatConfirm": "Esto borra todos los mensajes de este canal de este dispositivo, incluidas las imágenes recibidas. No se puede deshacer.",
+  "channels_timeNow": "ahora",
+  "channels_timeMinutes": "{minutes} min",
+  "channels_timeHours": "{hours} h",
+  "channels_timeDays": "{days} d",
+  "channels_indexChip": "CH {index}",
+  "reaction_unknownSender": "Desconocido",
+  "pathMap_noSelfGpsFix": "El nodo local no tiene fijación GPS",
+  "pathTrace_sendFailed": "No se pudo enviar el trazado de ruta: {error}",
+  "losErrorNoInternet": "Los datos de elevación requieren conexión a internet",
+  "losResultStale": "Desactualizado: la altura de la antena cambió",
+  "losSnrValue": "{snr} dB",
+  "losFrequencyValue": "{frequency} MHz",
+  "losKFactorValue": "k={kFactor}",
+  "losEndpointA": "A",
+  "losEndpointB": "B",
+  "units_km": "km",
+  "units_mi": "mi",
+  "units_m": "m",
+  "units_ft": "ft",
+  "telemetry_loading": "Cargando telemetría…",
+  "telemetry_axisValue": "X: {x}, Y: {y}, Z: {z}",
+  "telemetry_colourValue": "R: {red}, G: {green}, B: {blue}",
+  "telemetry_altitudeValueFeet": "{feet} ft",
+  "telemetry_distanceValueFeet": "{feet} ft",
+  "settings_notConnectedError": "No hay conexión con una radio. Conéctate e inténtalo de nuevo.",
+  "settings_requiresConnection": "Conéctate a una radio para usar esto",
+  "settings_txPowerInvalidRange": "Potencia TX inválida ({min} a {max} dBm)",
+  "settings_contactSettingsSaved": "Ajustes del contacto guardados",
+  "settings_batteryToggleHint": "Toca para alternar entre porcentaje y voltaje",
+  "settings_publicKeyCopyHint": "Copiar clave pública",
+  "settings_locationClearHelper": "Deja ambos campos vacíos para eliminar tu ubicación.",
+  "settings_locationCleared": "Ubicación eliminada",
+  "settings_regionFetchDiscovering": "Buscando repetidores cercanos…",
+  "settings_regionFetchProgress": "Consultando al repetidor {current} de {total}…",
+  "settings_regionFetchNoRepeaters": "Aún no se conoce ningún repetidor. Añade un repetidor como contacto o espera a que anuncie su presencia, e inténtalo de nuevo.",
+  "settings_regionFetchNoneResponded": "Ningún repetidor cercano respondió. Acércate a un repetidor e inténtalo de nuevo.",
+  "appSettings_sourceSummary": "{label} - {description}",
+  "appSettings_routingSection": "Enrutamiento",
+  "appSettings_resetRoutingToDefault": "Restablecer algoritmo de enrutamiento a predeterminado",
+  "appSettings_resetRoutingToDefaultSubtitle": "Restaurar la configuración del algoritmo de enrutamiento a los valores predeterminados de fábrica",
+  "appSettings_routingResetToDefault": "Configuración del algoritmo de enrutamiento restablecida a predeterminado",
+  "appSettings_imageMessagesSection": "Mensajes con imágenes",
+  "appSettings_showApiKey": "Mostrar clave de API",
+  "appSettings_hideApiKey": "Ocultar clave de API",
+  "translation_defaultModelName": "Modelo",
+  "translation_downloadProgressBytes": "{fileName}: {current} MB",
+  "translation_downloadProgressTotal": "{fileName}: {current} / {total} MB ({percent}%)",
+  "translation_downloadedModelDetails": "{size} MB • {source}",
+  "repeater_radioDisconnected": "Radio desconectada",
+  "repeater_radioDisconnectedHint": "Vuelve a conectarte a tu radio para enviar comandos, actualizar o guardar cambios.",
+  "repeater_cliSend": "Enviar comando",
+  "repeater_cliCopyTranscript": "Copiar transcripción",
+  "repeater_cliShareTranscript": "Compartir transcripción",
+  "repeater_cliTranscriptCopied": "Transcripción copiada",
+  "repeater_cliClearHistoryConfirm": "¿Borrar el historial de comandos? No se puede deshacer.",
+  "repeater_cliSearchCommands": "Buscar comandos",
+  "repeater_cliNoMatchingCommands": "Ningún comando coincide",
+  "debugLog_clearConfirm": "¿Borrar todas las entradas del registro? No se puede deshacer.",
+  "repeater_unsavedChangesTitle": "Cambios sin guardar",
+  "repeater_unsavedChangesMessage": "Tienes cambios que no se han guardado en el repetidor.",
+  "repeater_discardChanges": "Descartar",
+  "repeater_actionSentNoReply": "{action}: comando enviado. El repetidor no responde a este comando.",
+  "repeater_invalidSettingValue": "{setting}: {value} no es válido",
+  "repeater_prvKeyLengthError": "La clave privada debe tener exactamente {length} caracteres hexadecimales",
+  "contacts_advertFailed": "No se pudo enviar el anuncio",
+  "contacts_manageGroups": "Gestionar grupos",
+  "community_shortId": "ID: {id}…",
+  "tcpSectionTitle": "TCP / IP",
+  "tcpConnectedToHeader": "Conectado a",
+  "usbChooseSerialPort": "Elegir puerto serie",
+  "neighbors_durationSeconds": "{seconds} s",
+  "neighbors_durationMinutes": "{minutes} min {seconds} s",
+  "neighbors_durationHours": "{hours} h {minutes} min",
+  "scanner_getNodeTitle": "¿Necesitas un nodo nuevo?",
+  "scanner_getNodeBody": "Tamaño cartera, funciona con MeshCore, GPS de doble banda, resistente al agua y 5 días de batería.",
+  "scanner_getNodeAction": "Consíguelo aquí",
+  "scanner_getNodeDisclosure": "Enlace de afiliado: cada compra apoya a MeshCore Open.",
+  "networkMap_settingsSection": "Mapa de la red",
+  "networkMap_uploadTitle": "Compartir lo que escucha mi radio",
+  "networkMap_uploadExplanation": "Cuando esto está activado y tu radio está conectada, la app envía un breve resumen de los paquetes que escucha tu radio al mapa de la red de MeshCore Open, para que todos puedan ver qué repetidores existen y cómo se conectan. Envía el tipo, la ruta, los saltos, la intensidad de señal y el tamaño de cada paquete, además de los nombres y ubicaciones aproximadas de los repetidores a partir de sus propios adverts. Nunca envía el texto de los mensajes, quién habla con quién, nombres de canales, tus contactos ni tu posición exacta: las ubicaciones se redondean a unos 2 km y tu app recibe un ID aleatorio nuevo cada día.",
+  "networkMap_whatWeCollect": "Qué recopilamos",
+  "networkMap_promptTitle": "¿Ayudar a construir el mapa de la red?",
+  "networkMap_promptBody": "MeshCore Open puede compartir lo que escucha tu radio con el mapa público de la red en map.meshcoreopen.org, para que todos puedan ver qué repetidores existen y cómo se conectan.\n\nNunca envía el texto de los mensajes, quién habla con quién, nombres de canales, tus contactos ni tu posición exacta. Las ubicaciones se redondean a unos 2 km.",
+  "networkMap_promptSettingsHint": "Puedes cambiarlo cuando quieras en Configuración → Configuración de la App → Mapa de la red.",
+  "networkMap_promptAccept": "Compartir",
+  "networkMap_promptDecline": "No, gracias",
+  "networkMap_statusOff": "Desactivado. No se envía nada.",
+  "networkMap_statusWaiting": "Activado. Esperando conexión con la radio.",
+  "networkMap_statusNothingSent": "Activado. Aún no se ha enviado nada.",
+  "networkMap_statusLastSent": "Último envío {time}. {count} paquetes hoy.",
+  "@networkMap_statusLastSent": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "networkMap_sourceLocal": "Local",
+  "networkMap_sourceOnline": "En línea",
+  "networkMap_sourceBoth": "Ambos",
+  "networkMap_zoomInHint": "Acerca el zoom para ver el mapa de la red en línea",
+  "networkMap_loadFailed": "No se pudo cargar el mapa de la red en línea",
+  "networkMap_inYourContacts": "En tus contactos",
+  "networkMap_status": "Estado",
+  "networkMap_statusActive": "Activo en la última hora",
+  "networkMap_statusRecent": "Escuchado en el último día",
+  "networkMap_statusStale": "No escuchado recientemente",
+  "networkMap_confirmed": "Confirmado",
+  "networkMap_singleSource": "Fuente única, aún sin confirmar",
+  "networkMap_reports": "Reportes",
+  "networkMap_locationEstimated": "Ubicación aproximada, estimada según quién lo escuchó",
+  "networkMap_locationAdvertised": "Ubicación aproximada, de su propio advert",
+  "networkMap_heardByRadio": "Escuchado por tu radio",
+  "networkMap_inYourArea": "En tu zona",
+  "networkMap_farAway": "Muy lejos. La administración no podrá alcanzarlo.",
+  "networkMap_addToContacts": "Añadir a contactos",
+  "networkMap_manage": "Administrar",
+  "networkMap_addedToContacts": "Añadido a contactos",
+  "networkMap_addFailed": "No se pudo añadir a contactos",
+  "networkMap_unnamed": "Repetidor sin nombre",
+  "urlImage_disabledInAppSettings": "Desactivado en los ajustes de la app",
+  "settings_pathHashModeNotApplied": "Se aplicaron los ajustes de la radio, pero la radio no confirmó el nuevo tamaño del hash de ruta",
+  "appSettings_ipfsImageLinks": "Configuración del proveedor IPFS",
+  "appSettings_ipfsImageLinksSubtitle": "Subida de imágenes (o archivos) por URL mediante un proveedor IPFS y la pasarela predeterminada para recibir",
+  "appSettings_loadLinkImages": "Cargar imágenes de enlaces",
+  "appSettings_loadLinkImagesSubtitle": "Muestra las imágenes de los enlaces en los mensajes. Al cargar una imagen, tu dirección IP se comparte con el sitio que la aloja.",
+  "appSettings_showLinkImagesByDefault": "Mostrar imágenes de enlaces en todos los chats por defecto",
+  "appSettings_showLinkImagesByDefaultSubtitle": "Carga las imágenes de enlaces en cada chat salvo que las hayas desactivado allí. Esto comparte tu dirección IP con los servidores de imágenes en todos los chats.",
+  "appSettings_publicIpfsGateway": "Pasarela pública",
+  "appSettings_ipfsGatewayDeactivated": "Desactivada",
+  "appSettings_ipfsGatewayCustom": "Personalizada (Kubo)",
+  "appSettings_uploadIpfsProvider": "Proveedor de subida",
+  "appSettings_uploadIpfsGateway": "Pasarela de subida",
+  "appSettings_uploadIpfsGatewaySubtitle": "Pasarela para compartir la imagen o el archivo como enlace URL. Déjala vacía para usar el formato ipfs:, que otros clientes pueden no abrir.",
+  "appSettings_uploadIpfsEndpoint": "Endpoint de subida",
+  "appSettings_uploadIpfsEndpointSubtitle": "El endpoint de la API que se usa para subir archivos",
+  "appSettings_uploadIpfsApiKey": "Clave API de subida",
+  "appSettings_ipfsImageLinksDescription": "La pasarela pública descarga las imágenes en formato ipfs:. La pasarela de subida se usa para generar los enlaces de las imágenes o archivos subidos por URL.",
+  "contacts_removeAutoAddNote": "Tu radio añade automáticamente este tipo de contacto, así que volverá la próxima vez que envíe un anuncio. Desactiva la adición automática en los ajustes de Contactos para mantenerlo eliminado.",
+  "contacts_removeFailed": "La radio no confirmó la eliminación. El contacto no se eliminó.",
+  "channels_notificationModeTooltip": "Notificaciones: {mode}",
+  "@channels_notificationModeTooltip": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_scanQrCodeDesc": "Únete a un canal o comunidad con su código QR.",
+  "channels_scanQrInstructions": "Apunta la cámara a un código QR de canal o comunidad",
+  "channels_invalidQrCode": "No es un código QR de canal o comunidad de MeshCore",
+  "channels_joinChannelTitle": "Unirse al canal",
+  "channels_joinChannelConfirm": "¿Añadir \"{name}\" a tu radio?",
+  "@channels_joinChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_alreadyOnRadio": "\"{name}\" ya está en tu radio",
+  "@channels_alreadyOnRadio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_sendImageIpfs": "Enviar imagen o archivo por IPFS",
+  "chat_ipfsUploadFailed": "Error al subir a IPFS: {error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "Configura primero un proveedor de subida IPFS en Ajustes de la app.",
+  "chat_ipfsSelectedFileEmpty": "El archivo seleccionado está vacío.",
+  "chat_ipfsEndpointInvalid": "El endpoint de subida IPFS debe ser una dirección completa http:// o https://. Compruébalo en Ajustes de la app.",
+  "chat_ipfsPinataTokenMissing": "Pinata necesita una clave API o un JWT. Añádelo en Ajustes de la app.",
+  "chat_ipfsFilebaseTokenMissing": "Filebase necesita un token de API. Añádelo en Ajustes de la app.",
+  "chat_ipfsKuboPathInvalid": "El endpoint de subida de Kubo debe terminar en /api/v0/add. Compruébalo en Ajustes de la app.",
+  "chat_ipfsLinkNoRoom": "No hay espacio suficiente para el enlace de la imagen. Acorta tu mensaje e inténtalo de nuevo.",
+  "@chat_ipfsLinkNoRoom": {
+    "description": "Shown before an IPFS upload when the link would push the draft over the message size limit"
+  },
+  "chat_ipfsLinkOverLimit": "Enlace de imagen añadido, pero el mensaje ahora es demasiado largo. Acórtalo antes de enviarlo.",
+  "@chat_ipfsLinkOverLimit": {
+    "description": "Shown after an IPFS upload when the link plus the draft no longer fits the message size limit"
+  },
+  "map_pathTraceAddMoreHint": "Toca más nodos para añadir saltos, elige cómo vuelve la traza y toca Ejecutar traza de ruta.",
+  "map_pathTraceModeRoundTrip": "Ida y vuelta",
+  "map_pathTraceModeRoundTripHint": "La traza sale por estos saltos y vuelve por el mismo camino.",
+  "map_pathTraceModeAsEntered": "Tal como se introdujo",
+  "map_pathTraceModeAsEnteredHint": "La traza sigue estos saltos exactamente. Añade tú mismo los saltos de vuelta hacia ti.",
+  "map_pathTraceViewLast": "Ver último resultado",
+  "notification_lowBatteryTitle": "Batería baja",
+  "@notification_lowBatteryTitle": {
+    "description": "Title of the low battery notification"
+  },
+  "notification_lowBatteryBody": "La batería de {deviceName} está al {percent}%",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification; deviceName is the connected radio's node name",
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_sharedLocation": "Compartió una ubicación",
+  "notification_sharedLocationNamed": "Compartió una ubicación: {label}",
+  "@notification_sharedLocationNamed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_reacted": "Reaccionó {emoji}",
+  "@notification_reacted": {
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_sentGif": "Envió un GIF",
+  "notification_sentImage": "Envió una imagen",
+  "snrIndicator_unknownRepeater": "Repetidor desconocido",
+  "snrIndicator_unknownRepeaterHint": "Este repetidor aún no está en tus contactos. Su nombre, ubicación y opciones aparecerán cuando tu radio reciba su anuncio.",
+  "contacts_keyPrefixSemantics": "Prefijo de clave {prefix}",
+  "@contacts_keyPrefixSemantics": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "networkMap_sourceLocalHint": "Nodos que tu radio ha escuchado",
+  "networkMap_sourceOnlineHint": "Repetidores del mapa de red en línea",
+  "networkMap_sourceBothHint": "Los nodos de tu radio más el mapa de red en línea",
+  "holidayGreeting_halloween": "Feliz Halloween|Feliz Noche de Brujas|Feliz Noche de Halloween|Felices Halloween|Truco o trato",
+  "holidayGreeting_thanksgiving": "Feliz Día de Acción de Gracias|Feliz Thanksgiving|Feliz Día de Gracias|Feliz Acción de Gracias",
+  "holidayGreeting_christmas": "Feliz Navidad|Felices Fiestas|Feliz Nochebuena|Felices Navidades|Merry Christmas",
+  "holidayGreeting_newYear": "Feliz Año Nuevo|Próspero Año Nuevo|Feliz Año|Feliz Nochevieja|Próspero Año|Happy New Year",
+  "appSettings_colorTheme": "Tema de color",
+  "appSettings_holidayAnimations": "Animaciones de mensajes festivos",
+  "appSettings_holidayAnimationsSubtitle": "Murciélagos, un pavo, Papá Noel o fuegos artificiales cuando alguien envía un saludo festivo",
+  "themes_title": "Temas",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "Colores estándar, sigue el ajuste Claro / Oscuro",
+  "themes_builtIn": "Incluidos",
+  "themes_holidays": "Fiestas",
+  "themes_holidayAutoSwitch": "Cambiar automáticamente",
+  "themes_holidayAutoSwitchSubtitle": "Usa el tema de cada fiesta desde 17 días antes hasta el día mismo",
+  "themes_holidayAutoApplied": "El tema de {holiday} se activó automáticamente. Tu propio tema vuelve después de la fiesta.",
+  "themes_holidayAutoAppliedTag": "Activado automáticamente",
+  "themes_myThemes": "Mis temas",
+  "themes_myThemesEmpty": "Crea tu propio tema eligiendo un fondo y un color de acento.",
+  "themes_create": "Crear tema",
+  "themes_import": "Importar tema",
+  "themes_importHint": "Pega un código de tema",
+  "themes_importInvalid": "Ese no es un código de tema válido",
+  "themes_imported": "Se agregó el tema \"{name}\"",
+  "themes_customize": "Personalizar una copia",
+  "themes_copyCode": "Copiar código del tema",
+  "themes_codeCopied": "Código del tema copiado",
+  "themes_deleteConfirm": "¿Eliminar el tema \"{name}\"?",
+  "themes_copyName": "Copia de {name}",
+  "themes_newTitle": "Tema nuevo",
+  "themes_editTitle": "Editar tema",
+  "themes_name": "Nombre",
+  "themes_nameRequired": "Ponle un nombre a tu tema",
+  "themes_background": "Fondo",
+  "themes_backgroundHelp": "Un fondo oscuro crea un tema oscuro",
+  "themes_accent": "Acento",
+  "themes_accentHelp": "Botones, resaltados y tus burbujas de chat",
+  "themes_hexColor": "Color hexadecimal",
+  "themes_preview": "Vista previa",
+  "themes_previewIncoming": "¿Alguien en la malla esta noche?",
+  "themes_previewOutgoing": "¡Fuerte y claro!",
+  "themes_previewSwitch": "Notificaciones",
+  "themes_lowContrast": "El acento casi no se ve sobre este fondo",
+  "themes_saveAndUse": "Guardar y usar",
+  "themes_icons": "Iconos",
+  "themes_iconsHelp": "Toca un icono para cambiarlo por otro icono o por tu propia imagen",
+  "themes_iconChanged": "Cambiado",
+  "themes_iconSend": "Botón de enviar",
+  "themes_iconRepeater": "Repetidores",
+  "themes_iconRoom": "Salas",
+  "themes_iconSensor": "Sensores",
+  "themes_mapMarkers": "Marcadores del mapa",
+  "themes_mapMarkersHelp": "Cambia los marcadores de los nodos y el tuyo en el mapa",
+  "themes_iconUsePicture": "Usar una imagen",
+  "themes_iconReset": "Usar el icono predeterminado",
+  "themes_iconPictureFailed": "No se pudo usar esa imagen",
+  "themes_exportFile": "Exportar a archivo",
+  "themes_exportAll": "Exportar mis temas",
+  "themes_importFile": "Importar desde archivo",
+  "themes_pasteCode": "Pegar código del tema",
+  "themes_exportFailed": "No se pudieron exportar los temas",
+  "themes_importFileResult": "Se importaron {count} temas",
+  "themes_importFileNone": "No se encontraron temas en ese archivo",
+  "chatBackground_title": "Fondo del chat",
+  "chatBackground_thisChatOnly": "Solo para este chat",
+  "chatBackground_themeOverrides": "Tu tema \"{name}\" define el fondo en todos los chats. Desactívalo en el tema para usar este.",
+  "chatBackground_none": "Ninguno",
+  "chatBackground_picture": "Imagen",
+  "chatBackground_choosePicture": "Elegir una imagen",
+  "chatBackground_pictureFailed": "No se pudo usar esa imagen",
+  "chatBackground_fade": "Difuminado",
+  "themes_chatBackground": "Fondo del chat",
+  "themes_chatBackgroundHelp": "Se muestra en los chats que no tienen fondo propio",
+  "themes_chatBackgroundEverywhere": "Usar en todos los chats",
+  "themes_chatBackgroundEverywhereHelp": "También reemplaza los fondos de chats individuales",
+  "appSettings_showOnlineLinks": "Mostrar conexiones del mapa en línea",
+  "appSettings_showOnlineLinksSubtitle": "Muestra líneas de conexión entre nodos del mapa en línea",
+  "map_showOnlineLinks": "Mostrar conexiones del mapa en línea",
+  "chat_loadOlderMessages": "Cargar mensajes anteriores",
+  "messageFilter_title": "Filtro de mensajes",
+  "messageFilter_settingsSubtitle": "Oculta mensajes de spam y repetidos",
+  "messageFilter_enabled": "Filtrar mensajes",
+  "messageFilter_enabledSubtitle": "Se aplica a los mensajes de canal",
+  "messageFilter_displayTitle": "Mensajes filtrados",
+  "messageFilter_displayPlaceholder": "Mostrar un aviso pequeño",
+  "messageFilter_displayHide": "Ocultar por completo",
+  "messageFilter_displayHideHelp": "Los mensajes ocultos permanecen en la lista de Mensajes filtrados.",
+  "messageFilter_rulesSection": "Tus reglas",
+  "messageFilter_rulesEmpty": "Aún no hay reglas. Añade una palabra, frase o nombre de remitente para ocultar los mensajes que coincidan.",
+  "messageFilter_addRule": "Añadir regla",
+  "messageFilter_editRule": "Editar regla",
+  "messageFilter_rulePattern": "Palabra, frase o nombre",
+  "messageFilter_rulePatternHint": "p. ej. meshos",
+  "messageFilter_ruleWhere": "Buscar en",
+  "messageFilter_ruleFieldText": "Texto del mensaje",
+  "messageFilter_ruleFieldSender": "Nombre del remitente",
+  "messageFilter_ruleFieldBoth": "Ambos",
+  "messageFilter_ruleMatch": "Coincidencia",
+  "messageFilter_ruleMatchContains": "Contiene",
+  "messageFilter_ruleMatchWholeWord": "Palabra completa",
+  "messageFilter_ruleMatchExact": "Exacta",
+  "messageFilter_ruleDeleted": "Regla eliminada",
+  "messageFilter_ruleSaved": "Regla guardada",
+  "messageFilter_automaticSection": "Automático",
+  "messageFilter_duplicates": "Mensajes repetidos",
+  "messageFilter_duplicatesSubtitle": "El mismo mensaje enviado de nuevo, o por varios remitentes",
+  "messageFilter_repeatedCharacters": "Caracteres repetidos",
+  "messageFilter_repeatedCharactersSubtitle": "Secuencias largas de un mismo carácter, como \"aaaaaaaaaaaaaaaaaaaa\"",
+  "messageFilter_learning": "Aprender de los toques en Spam",
+  "messageFilter_learningSubtitle": "{spam} ejemplos de spam y {notSpam} de no spam",
+  "@messageFilter_learningSubtitle": {
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "Restablecer aprendizaje",
+  "messageFilter_resetLearningConfirm": "¿Olvidar todo lo aprendido de tus toques en Spam y No es spam? Tus reglas se conservan.",
+  "messageFilter_filteredMessages": "Mensajes filtrados ({count})",
+  "@messageFilter_filteredMessages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "No se ha filtrado nada.",
+  "messageFilter_ghostSingle": "Mensaje oculto · Toca para ver",
+  "messageFilter_ghostMany": "{count, plural, one{{count} mensaje oculto · Toca para ver} other{{count} mensajes ocultos · Toca para ver}}",
+  "@messageFilter_ghostMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "Mostrando mensaje oculto · Toca para ocultar",
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{Mostrando 1 mensaje oculto · Toca para ocultar} other{Mostrando {count} mensajes ocultos · Toca para ocultar}}",
+  "@messageFilter_ghostManyExpanded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "Filtrado: coincide con \"{pattern}\"",
+  "@messageFilter_reasonTextRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "Filtrado: remitente \"{pattern}\"",
+  "@messageFilter_reasonSenderRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "Filtrado: caracteres repetidos",
+  "messageFilter_reasonDuplicate": "Filtrado: mensaje repetido",
+  "messageFilter_reasonCrossSenderDuplicate": "Filtrado: el mismo mensaje de varios remitentes",
+  "messageFilter_reasonLearned": "Filtrado: se parece a mensajes que marcaste como spam",
+  "messageFilter_reasonManual": "Filtrado: lo marcaste como spam",
+  "messageFilter_notSpam": "No es spam",
+  "messageFilter_hideAgain": "Ocultar",
+  "messageFilter_markSpam": "Marcar como spam",
+  "messageFilter_markedSpam": "Marcado como spam",
+  "messageFilter_markedNotSpam": "Marcado como no spam",
+  "messageFilter_filterSender": "Filtrar este remitente",
+  "messageFilter_filterSenderConfirm": "¿Ocultar todos los mensajes de \"{name}\"?",
+  "@messageFilter_filterSenderConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "Filtrar mensajes como este…",
+  "messageFilter_channelToggle": "Filtrar mensajes en este canal",
+  "messageFilter_ghostIconTooltip": "Oculto por tu filtro de mensajes"
 }

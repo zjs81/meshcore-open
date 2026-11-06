@@ -1,0 +1,9 @@
+- Android Auto: hear and reply to messages in your car
+- Reply, mark as read or mute a channel from notifications
+- Import contacts from a QR code; show and copy a node's full public key
+- Image previews for links, enabled per contact or channel
+- MeshCore One emoji reactions
+- Regions shown on received messages, with replies sent to the same region
+- More reliable Bluetooth, USB and reconnect handling
+- Edge-to-edge layout on Android 10 and newer
+- New radio presets and updated translations

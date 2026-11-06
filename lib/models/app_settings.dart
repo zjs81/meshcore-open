@@ -1,7 +1,24 @@
+import 'custom_theme.dart';
 import 'image_codec_support.dart';
 import 'translation_support.dart';
 
 enum UnitSystem { metric, imperial }
+
+String normalizeIpfsGateway(String value) {
+  var gateway = value.trim();
+  if (gateway.isEmpty) return gateway;
+  if (!gateway.startsWith('http://') && !gateway.startsWith('https://')) {
+    gateway = 'https://$gateway';
+  }
+  gateway = gateway.replaceAll('{cid}', '');
+  if (gateway.endsWith('/ipfs')) gateway = '$gateway/';
+  if (!gateway.endsWith('/ipfs/')) {
+    gateway = '${gateway.endsWith('/') ? gateway : '$gateway/'}ipfs/';
+  }
+  return gateway;
+}
+
+enum ChannelNotificationMode { all, mentionsOnly, muted }
 
 extension UnitSystemValue on UnitSystem {
   String get value {
@@ -78,11 +95,21 @@ class Cyr2LatProfile {
 class AppSettings {
   static const Object _unset = Object();
   static const String stadiaDemo = '51bd0381-4685-4666-bae8-48940f6d77c0';
+  static const String defaultPublicIpfsGateway =
+      'https://ipfs.filebase.io/ipfs/';
+
+  // Routing algorithm default values
+  static const double defaultMaxRouteWeight = 5.0;
+  static const double defaultInitialRouteWeight = 3.0;
+  static const double defaultRouteWeightSuccessIncrement = 0.5;
+  static const double defaultRouteWeightFailureDecrement = 0.2;
+  static const int defaultMaxMessageRetries = 5;
 
   final bool clearPathOnMaxRetry;
   final bool mapShowRepeaters;
   final bool mapShowChatNodes;
   final bool mapShowOtherNodes;
+  final bool mapShowOnlineLinks;
   final bool mapShowOverlaps;
   final double mapTimeFilterHours; // 0 = all time
   final bool mapKeyPrefixEnabled;
@@ -91,6 +118,7 @@ class AppSettings {
   final bool mapShowGuessedLocations;
   final bool mapClusterNodes;
   final bool enableMessageTracing;
+  final bool regionOnHopsLine;
   final Map<String, double>? mapCacheBounds;
   final int mapCacheMinZoom;
   final int mapCacheMaxZoom;
@@ -113,18 +141,59 @@ class AppSettings {
   final bool channelMinHopsEnabled;
   final int channelMinHops;
   final int channelMinHopsRetries;
+
+  /// When on, hearing the message repeated by at least [channelMinHops]
+  /// different first-hop repeaters also satisfies the channel resend.
+  final bool channelMinHopsCountRepeaters;
   final String themeMode;
+
+  /// Themes the user made. Built-in presets live in [CustomTheme.presets].
+  final List<CustomTheme> customThemes;
+
+  /// ID of the active custom or preset theme; null uses the stock theme with
+  /// [themeMode].
+  final String? activeThemeId;
+
+  /// Play a short animation for holiday greetings ("Happy Halloween", ...).
+  final bool holidayAnimationsEnabled;
+
+  /// Show each holiday's theme automatically in the days before it (see
+  /// `activeHolidayFor`), without changing [activeThemeId].
+  final bool holidayAutoSwitch;
+
+  /// Occurrence key (`ActiveHoliday.occurrenceKey`) of the holiday whose
+  /// automatic theme the user overrode by picking a theme themselves. Only
+  /// that occurrence is skipped; the next holiday switches again.
+  final String? holidayThemeDismissed;
   final String? languageOverride; // null = system default
   final bool appDebugLogEnabled;
   final Map<String, String> batteryChemistryByDeviceId;
   final Map<String, String> batteryChemistryByRepeaterId;
   final UnitSystem unitSystem;
-  final Set<String> mutedChannels;
+  final Map<String, ChannelNotificationMode> channelNotificationModes;
   final bool mapShowDiscoveryContacts;
+  final bool evictDiscoveredContactsEnabled;
   final String tcpServerAddress;
   final int tcpServerPort;
   final bool jumpToOldestUnread;
+  final bool autoFetchRepeaterSettings;
   final bool imageMessagesEnabled;
+
+  /// Master switch for fetching images behind links in messages.
+  final bool loadLinkImages;
+
+  /// Chats with no saved link-image choice load link images when true.
+  final bool showLinkImagesByDefault;
+  final String publicIpfsGateway;
+  final String uploadIpfsGateway;
+  final String uploadIpfsEndpoint;
+  final String uploadIpfsApiKey;
+
+  /// Opt-in upload of header-only packet records to the network map.
+  final bool networkMapUploadEnabled;
+
+  /// Whether the one-time network map opt-in dialog has been shown.
+  final bool networkMapPromptShown;
 
   /// Whether a received image is decoded as soon as it is reassembled.
   ///
@@ -175,6 +244,10 @@ class AppSettings {
     return apiKey;
   }
 
+  String get effectiveUploadIpfsGateway {
+    return uploadIpfsGateway.trim();
+  }
+
   bool get usesstadiaDemo => effectiveMapTileApiKey == stadiaDemo;
 
   Map<String, String> get cyr2latCharMap {
@@ -190,6 +263,7 @@ class AppSettings {
     this.mapShowRepeaters = true,
     this.mapShowChatNodes = true,
     this.mapShowOtherNodes = true,
+    this.mapShowOnlineLinks = true,
     this.mapShowOverlaps = false,
     this.mapTimeFilterHours = 168,
     this.mapKeyPrefixEnabled = false,
@@ -198,6 +272,7 @@ class AppSettings {
     this.mapShowGuessedLocations = true,
     this.mapClusterNodes = true,
     this.enableMessageTracing = false,
+    this.regionOnHopsLine = false,
     this.mapCacheBounds,
     this.mapCacheMinZoom = 10,
     this.mapCacheMaxZoom = 15,
@@ -212,25 +287,41 @@ class AppSettings {
     this.autoSendSelfAdvertAsFlood = false,
     this.gpsIntervalSeconds = 900,
     this.autoRouteRotationEnabled = true,
-    this.maxRouteWeight = 5.0,
-    this.initialRouteWeight = 3.0,
-    this.routeWeightSuccessIncrement = 0.5,
-    this.routeWeightFailureDecrement = 0.2,
-    this.maxMessageRetries = 5,
+    this.maxRouteWeight = defaultMaxRouteWeight,
+    this.initialRouteWeight = defaultInitialRouteWeight,
+    this.routeWeightSuccessIncrement = defaultRouteWeightSuccessIncrement,
+    this.routeWeightFailureDecrement = defaultRouteWeightFailureDecrement,
+    this.maxMessageRetries = defaultMaxMessageRetries,
     this.channelMinHopsEnabled = false,
     this.channelMinHops = 2,
     this.channelMinHopsRetries = 1,
+    this.channelMinHopsCountRepeaters = false,
     this.themeMode = 'system',
+    this.customThemes = const [],
+    this.activeThemeId,
+    this.holidayAnimationsEnabled = true,
+    this.holidayAutoSwitch = true,
+    this.holidayThemeDismissed,
     this.languageOverride,
     this.appDebugLogEnabled = false,
     Map<String, String>? batteryChemistryByDeviceId,
     Map<String, String>? batteryChemistryByRepeaterId,
     this.unitSystem = UnitSystem.metric,
-    Set<String>? mutedChannels,
+    Map<String, ChannelNotificationMode>? channelNotificationModes,
     this.mapShowDiscoveryContacts = true,
+    this.evictDiscoveredContactsEnabled = true,
     this.tcpServerAddress = '',
     this.tcpServerPort = 0,
     this.jumpToOldestUnread = false,
+    this.autoFetchRepeaterSettings = false,
+    this.networkMapUploadEnabled = false,
+    this.networkMapPromptShown = false,
+    this.loadLinkImages = true,
+    this.showLinkImagesByDefault = false,
+    this.publicIpfsGateway = defaultPublicIpfsGateway,
+    this.uploadIpfsGateway = '',
+    this.uploadIpfsEndpoint = '',
+    this.uploadIpfsApiKey = '',
     this.imageMessagesEnabled = false,
     this.imageProcessAutomatically = false,
     this.imageCodecEnabled = false,
@@ -249,7 +340,7 @@ class AppSettings {
     String? selectedCyr2latProfileId,
   }) : batteryChemistryByDeviceId = batteryChemistryByDeviceId ?? {},
        batteryChemistryByRepeaterId = batteryChemistryByRepeaterId ?? {},
-       mutedChannels = mutedChannels ?? {},
+       channelNotificationModes = channelNotificationModes ?? {},
        imageCodecDownloadedModels = imageCodecDownloadedModels ?? const [],
        translationDownloadedModels = translationDownloadedModels ?? const [],
        cyr2latProfiles =
@@ -269,6 +360,7 @@ class AppSettings {
       'map_show_repeaters': mapShowRepeaters,
       'map_show_chat_nodes': mapShowChatNodes,
       'map_show_other_nodes': mapShowOtherNodes,
+      'map_show_online_links': mapShowOnlineLinks,
       'map_show_overlaps': mapShowOverlaps,
       'map_time_filter_hours': mapTimeFilterHours,
       'map_key_prefix_enabled': mapKeyPrefixEnabled,
@@ -277,6 +369,7 @@ class AppSettings {
       'map_show_guessed_locations': mapShowGuessedLocations,
       'map_cluster_nodes': mapClusterNodes,
       'enable_message_tracing': enableMessageTracing,
+      'region_on_hops_line': regionOnHopsLine,
       'map_cache_bounds': mapCacheBounds,
       'map_cache_min_zoom': mapCacheMinZoom,
       'map_cache_max_zoom': mapCacheMaxZoom,
@@ -300,17 +393,40 @@ class AppSettings {
       'channel_min_hops_enabled': channelMinHopsEnabled,
       'channel_min_hops': channelMinHops,
       'channel_min_hops_retries': channelMinHopsRetries,
+      'channel_min_hops_count_repeaters': channelMinHopsCountRepeaters,
       'theme_mode': themeMode,
+      'custom_themes': customThemes.map((t) => t.toJson()).toList(),
+      'active_theme_id': activeThemeId,
+      'holiday_animations_enabled': holidayAnimationsEnabled,
+      'holiday_auto_switch': holidayAutoSwitch,
+      'holiday_theme_dismissed': holidayThemeDismissed,
       'language_override': languageOverride,
       'app_debug_log_enabled': appDebugLogEnabled,
       'battery_chemistry_by_device_id': batteryChemistryByDeviceId,
       'battery_chemistry_by_repeater_id': batteryChemistryByRepeaterId,
       'unit_system': unitSystem.value,
-      'muted_channels': mutedChannels.toList(),
+      // Written for older builds that only read the muted set.
+      'muted_channels': [
+        for (final entry in channelNotificationModes.entries)
+          if (entry.value == ChannelNotificationMode.muted) entry.key,
+      ],
+      'channel_notification_modes': channelNotificationModes.map(
+        (key, value) => MapEntry(key, value.name),
+      ),
       'map_show_discovery_contacts': mapShowDiscoveryContacts,
+      'evict_discovered_contacts_enabled': evictDiscoveredContactsEnabled,
       'tcp_server_address': tcpServerAddress,
       'tcp_server_port': tcpServerPort,
       'jump_to_oldest_unread': jumpToOldestUnread,
+      'auto_fetch_repeater_settings': autoFetchRepeaterSettings,
+      'network_map_upload_enabled': networkMapUploadEnabled,
+      'network_map_prompt_shown': networkMapPromptShown,
+      'load_link_images': loadLinkImages,
+      'show_link_images_by_default': showLinkImagesByDefault,
+      'public_ipfs_gateway': publicIpfsGateway,
+      'upload_ipfs_gateway': uploadIpfsGateway,
+      'upload_ipfs_endpoint': uploadIpfsEndpoint,
+      'upload_ipfs_api_key': uploadIpfsApiKey,
       'image_messages_enabled': imageMessagesEnabled,
       'image_process_automatically': imageProcessAutomatically,
       'image_codec_enabled': imageCodecEnabled,
@@ -344,11 +460,41 @@ class AppSettings {
       return UnitSystem.metric;
     }
 
+    Map<String, ChannelNotificationMode> parseChannelNotificationModes(
+      Map<String, dynamic> json,
+    ) {
+      // Migration from old muted_channels (Set<String>) to new system
+      final mutedList = json['muted_channels'] as List?;
+      final newModes = json['channel_notification_modes'] as Map?;
+
+      final result = <String, ChannelNotificationMode>{};
+
+      // Migrate old muted channels
+      if (mutedList != null) {
+        for (final channelName in mutedList) {
+          result[channelName.toString()] = ChannelNotificationMode.muted;
+        }
+      }
+
+      // Load new modes (overrides old muted channels if present)
+      if (newModes != null) {
+        for (final entry in newModes.entries) {
+          final value = entry.value;
+          if (value is! String) continue;
+          final mode = ChannelNotificationMode.values.asNameMap()[value];
+          if (mode != null) result[entry.key.toString()] = mode;
+        }
+      }
+
+      return result;
+    }
+
     return AppSettings(
       clearPathOnMaxRetry: json['clear_path_on_max_retry'] as bool? ?? false,
       mapShowRepeaters: json['map_show_repeaters'] as bool? ?? true,
       mapShowChatNodes: json['map_show_chat_nodes'] as bool? ?? true,
       mapShowOtherNodes: json['map_show_other_nodes'] as bool? ?? true,
+      mapShowOnlineLinks: json['map_show_online_links'] as bool? ?? true,
       mapShowOverlaps: json['map_show_overlaps'] as bool? ?? false,
       mapTimeFilterHours:
           (json['map_time_filter_hours'] as num?)?.toDouble() ?? 168,
@@ -359,6 +505,7 @@ class AppSettings {
           json['map_show_guessed_locations'] as bool? ?? true,
       mapClusterNodes: json['map_cluster_nodes'] as bool? ?? true,
       enableMessageTracing: json['enable_message_tracing'] as bool? ?? false,
+      regionOnHopsLine: json['region_on_hops_line'] as bool? ?? false,
       mapCacheBounds: (json['map_cache_bounds'] as Map?)?.map(
         (key, value) => MapEntry(key.toString(), (value as num).toDouble()),
       ),
@@ -380,18 +527,38 @@ class AppSettings {
           (json['gps_interval_seconds'] as num?)?.toInt() ?? 900,
       autoRouteRotationEnabled:
           json['auto_route_rotation_enabled'] as bool? ?? true,
-      maxRouteWeight: (json['max_route_weight'] as num?)?.toDouble() ?? 5.0,
+      maxRouteWeight:
+          (json['max_route_weight'] as num?)?.toDouble() ??
+          defaultMaxRouteWeight,
       initialRouteWeight:
-          (json['initial_route_weight'] as num?)?.toDouble() ?? 3.0,
+          (json['initial_route_weight'] as num?)?.toDouble() ??
+          defaultInitialRouteWeight,
       routeWeightSuccessIncrement:
-          (json['route_weight_success_increment'] as num?)?.toDouble() ?? 0.5,
+          (json['route_weight_success_increment'] as num?)?.toDouble() ??
+          defaultRouteWeightSuccessIncrement,
       routeWeightFailureDecrement:
-          (json['route_weight_failure_decrement'] as num?)?.toDouble() ?? 0.2,
-      maxMessageRetries: json['max_message_retries'] as int? ?? 5,
+          (json['route_weight_failure_decrement'] as num?)?.toDouble() ??
+          defaultRouteWeightFailureDecrement,
+      maxMessageRetries:
+          json['max_message_retries'] as int? ?? defaultMaxMessageRetries,
       channelMinHopsEnabled: json['channel_min_hops_enabled'] as bool? ?? false,
       channelMinHops: json['channel_min_hops'] as int? ?? 2,
       channelMinHopsRetries: json['channel_min_hops_retries'] as int? ?? 1,
+      channelMinHopsCountRepeaters:
+          json['channel_min_hops_count_repeaters'] as bool? ?? false,
       themeMode: json['theme_mode'] as String? ?? 'system',
+      customThemes:
+          (json['custom_themes'] as List<dynamic>?)
+              ?.whereType<Map>()
+              .map((e) => CustomTheme.fromJson(Map<String, dynamic>.from(e)))
+              .where((t) => t.id.isNotEmpty)
+              .toList() ??
+          const [],
+      activeThemeId: json['active_theme_id'] as String?,
+      holidayAnimationsEnabled:
+          json['holiday_animations_enabled'] as bool? ?? true,
+      holidayAutoSwitch: json['holiday_auto_switch'] as bool? ?? true,
+      holidayThemeDismissed: json['holiday_theme_dismissed'] as String?,
       languageOverride: json['language_override'] as String?,
       appDebugLogEnabled: json['app_debug_log_enabled'] as bool? ?? false,
       batteryChemistryByDeviceId:
@@ -405,16 +572,27 @@ class AppSettings {
           ) ??
           {},
       unitSystem: parseUnitSystem(json['unit_system']),
-      mutedChannels:
-          ((json['muted_channels'] as List?)
-              ?.map((e) => e.toString())
-              .toSet()) ??
-          {},
+      channelNotificationModes: parseChannelNotificationModes(json),
       mapShowDiscoveryContacts:
           json['map_show_discovery_contacts'] as bool? ?? true,
+      evictDiscoveredContactsEnabled:
+          json['evict_discovered_contacts_enabled'] as bool? ?? true,
       tcpServerAddress: json['tcp_server_address'] as String? ?? '',
       tcpServerPort: json['tcp_server_port'] as int? ?? 0,
       jumpToOldestUnread: json['jump_to_oldest_unread'] as bool? ?? false,
+      autoFetchRepeaterSettings:
+          json['auto_fetch_repeater_settings'] as bool? ?? false,
+      networkMapUploadEnabled:
+          json['network_map_upload_enabled'] as bool? ?? false,
+      networkMapPromptShown: json['network_map_prompt_shown'] as bool? ?? false,
+      loadLinkImages: json['load_link_images'] as bool? ?? true,
+      showLinkImagesByDefault:
+          json['show_link_images_by_default'] as bool? ?? false,
+      publicIpfsGateway:
+          json['public_ipfs_gateway'] as String? ?? defaultPublicIpfsGateway,
+      uploadIpfsGateway: json['upload_ipfs_gateway'] as String? ?? '',
+      uploadIpfsEndpoint: json['upload_ipfs_endpoint'] as String? ?? '',
+      uploadIpfsApiKey: json['upload_ipfs_api_key'] as String? ?? '',
       imageMessagesEnabled: json['image_messages_enabled'] as bool? ?? false,
       imageProcessAutomatically:
           json['image_process_automatically'] as bool? ?? false,
@@ -492,6 +670,7 @@ class AppSettings {
     bool? mapShowRepeaters,
     bool? mapShowChatNodes,
     bool? mapShowOtherNodes,
+    bool? mapShowOnlineLinks,
     bool? mapShowOverlaps,
     double? mapTimeFilterHours,
     bool? mapKeyPrefixEnabled,
@@ -500,6 +679,7 @@ class AppSettings {
     bool? mapShowGuessedLocations,
     bool? mapClusterNodes,
     bool? enableMessageTracing,
+    bool? regionOnHopsLine,
     Object? mapCacheBounds = _unset,
     int? mapCacheMinZoom,
     int? mapCacheMaxZoom,
@@ -522,17 +702,33 @@ class AppSettings {
     bool? channelMinHopsEnabled,
     int? channelMinHops,
     int? channelMinHopsRetries,
+    bool? channelMinHopsCountRepeaters,
     String? themeMode,
+    List<CustomTheme>? customThemes,
+    Object? activeThemeId = _unset,
+    bool? holidayAnimationsEnabled,
+    bool? holidayAutoSwitch,
+    Object? holidayThemeDismissed = _unset,
     Object? languageOverride = _unset,
     bool? appDebugLogEnabled,
     Map<String, String>? batteryChemistryByDeviceId,
     Map<String, String>? batteryChemistryByRepeaterId,
     UnitSystem? unitSystem,
-    Set<String>? mutedChannels,
+    Map<String, ChannelNotificationMode>? channelNotificationModes,
     bool? mapShowDiscoveryContacts,
+    bool? evictDiscoveredContactsEnabled,
     String? tcpServerAddress,
     int? tcpServerPort,
     bool? jumpToOldestUnread,
+    bool? autoFetchRepeaterSettings,
+    bool? networkMapUploadEnabled,
+    bool? networkMapPromptShown,
+    bool? loadLinkImages,
+    bool? showLinkImagesByDefault,
+    String? publicIpfsGateway,
+    String? uploadIpfsGateway,
+    String? uploadIpfsEndpoint,
+    String? uploadIpfsApiKey,
     bool? imageMessagesEnabled,
     bool? imageProcessAutomatically,
     bool? imageCodecEnabled,
@@ -555,6 +751,7 @@ class AppSettings {
       mapShowRepeaters: mapShowRepeaters ?? this.mapShowRepeaters,
       mapShowChatNodes: mapShowChatNodes ?? this.mapShowChatNodes,
       mapShowOtherNodes: mapShowOtherNodes ?? this.mapShowOtherNodes,
+      mapShowOnlineLinks: mapShowOnlineLinks ?? this.mapShowOnlineLinks,
       mapShowOverlaps: mapShowOverlaps ?? this.mapShowOverlaps,
       mapTimeFilterHours: mapTimeFilterHours ?? this.mapTimeFilterHours,
       mapKeyPrefixEnabled: mapKeyPrefixEnabled ?? this.mapKeyPrefixEnabled,
@@ -564,6 +761,7 @@ class AppSettings {
           mapShowGuessedLocations ?? this.mapShowGuessedLocations,
       mapClusterNodes: mapClusterNodes ?? this.mapClusterNodes,
       enableMessageTracing: enableMessageTracing ?? this.enableMessageTracing,
+      regionOnHopsLine: regionOnHopsLine ?? this.regionOnHopsLine,
       mapCacheBounds: mapCacheBounds == _unset
           ? this.mapCacheBounds
           : mapCacheBounds as Map<String, double>?,
@@ -599,7 +797,19 @@ class AppSettings {
       channelMinHops: channelMinHops ?? this.channelMinHops,
       channelMinHopsRetries:
           channelMinHopsRetries ?? this.channelMinHopsRetries,
+      channelMinHopsCountRepeaters:
+          channelMinHopsCountRepeaters ?? this.channelMinHopsCountRepeaters,
       themeMode: themeMode ?? this.themeMode,
+      customThemes: customThemes ?? this.customThemes,
+      activeThemeId: activeThemeId == _unset
+          ? this.activeThemeId
+          : activeThemeId as String?,
+      holidayAnimationsEnabled:
+          holidayAnimationsEnabled ?? this.holidayAnimationsEnabled,
+      holidayAutoSwitch: holidayAutoSwitch ?? this.holidayAutoSwitch,
+      holidayThemeDismissed: holidayThemeDismissed == _unset
+          ? this.holidayThemeDismissed
+          : holidayThemeDismissed as String?,
       languageOverride: languageOverride == _unset
           ? this.languageOverride
           : languageOverride as String?,
@@ -609,12 +819,28 @@ class AppSettings {
       batteryChemistryByRepeaterId:
           batteryChemistryByRepeaterId ?? this.batteryChemistryByRepeaterId,
       unitSystem: unitSystem ?? this.unitSystem,
-      mutedChannels: mutedChannels ?? this.mutedChannels,
+      channelNotificationModes:
+          channelNotificationModes ?? this.channelNotificationModes,
       mapShowDiscoveryContacts:
           mapShowDiscoveryContacts ?? this.mapShowDiscoveryContacts,
+      evictDiscoveredContactsEnabled:
+          evictDiscoveredContactsEnabled ?? this.evictDiscoveredContactsEnabled,
       tcpServerAddress: tcpServerAddress ?? this.tcpServerAddress,
       tcpServerPort: tcpServerPort ?? this.tcpServerPort,
       jumpToOldestUnread: jumpToOldestUnread ?? this.jumpToOldestUnread,
+      autoFetchRepeaterSettings:
+          autoFetchRepeaterSettings ?? this.autoFetchRepeaterSettings,
+      networkMapUploadEnabled:
+          networkMapUploadEnabled ?? this.networkMapUploadEnabled,
+      networkMapPromptShown:
+          networkMapPromptShown ?? this.networkMapPromptShown,
+      loadLinkImages: loadLinkImages ?? this.loadLinkImages,
+      showLinkImagesByDefault:
+          showLinkImagesByDefault ?? this.showLinkImagesByDefault,
+      publicIpfsGateway: publicIpfsGateway ?? this.publicIpfsGateway,
+      uploadIpfsGateway: uploadIpfsGateway ?? this.uploadIpfsGateway,
+      uploadIpfsEndpoint: uploadIpfsEndpoint ?? this.uploadIpfsEndpoint,
+      uploadIpfsApiKey: uploadIpfsApiKey ?? this.uploadIpfsApiKey,
       imageMessagesEnabled: imageMessagesEnabled ?? this.imageMessagesEnabled,
       imageProcessAutomatically:
           imageProcessAutomatically ?? this.imageProcessAutomatically,

@@ -1,0 +1,53 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Flutter
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - uses: seanmiddleditch/gha-setup-ninja@master
+      
+
+      - name: Sudo apt update
+        run: sudo apt update
+
+      - name: Install gtk3
+        run: sudo apt-get install libgtk-3-dev
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze project source
+        run: flutter analyze
+
+      - name: Build release
+        working-directory: ./example
+        run: flutter build linux --release
+
+      - name: Print Folder Tree
+        uses: jaywcjlove/github-action-folder-tree@main
+        id: tree
+        with:
+          exclude: "node_modules|dist|.git|.husky"
+          path: ./
+          depth: 10
+
+      #- name: List files in the repository
+      #  run: ls -lR ${{ github.workspace }}/build/linux
+      # - name: Run tests
+      #  run: cp ./example/build/linux/x64/release/bundle/lib/libflserial.so ./test/lib/libflserial.so
+      #- name: Run tests
+      #  run: flutter test

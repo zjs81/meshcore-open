@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import '../models/contact.dart';
 import '../models/path_history.dart';
 import '../models/path_selection.dart';
+import '../utils/coalesced_writes.dart';
 import 'storage_service.dart';
 
 class PathHistoryService extends ChangeNotifier {
@@ -10,6 +13,10 @@ class PathHistoryService extends ChangeNotifier {
   final Map<String, int> _autoRotationIndex = {};
   final Map<String, _FloodStats> _floodStats = {};
   final Map<String, Future<void>> _pendingLoads = {};
+  // A path record lands for most received messages, so saves are batched.
+  final CoalescedWrites _writes = CoalescedWrites(
+    delay: const Duration(seconds: 5),
+  );
 
   // LRU cache eviction tracking
   static const int _maxCachedContacts = 50;
@@ -23,6 +30,9 @@ class PathHistoryService extends ChangeNotifier {
   PathHistoryService(this._storage);
 
   void setDevicePublicKey(String publicKeyHex) {
+    // Queued saves use the storage key on entry, so they still land under
+    // the previous radio's key.
+    unawaited(_writes.flush());
     _storage.setPublicKeyHex = publicKeyHex;
     _cache.clear();
     _cacheAccessOrder.clear();
@@ -347,8 +357,9 @@ class PathHistoryService extends ChangeNotifier {
 
     updatedPaths.removeWhere((p) => _pathsEqual(p.pathBytes, pathBytes));
 
+    // Make room by dropping the weakest path so new discoveries still land.
     if (existing == null && updatedPaths.length >= _maxHistoryEntries) {
-      return;
+      updatedPaths.remove(_lowestScoredPath(updatedPaths));
     }
 
     updatedPaths.insert(0, newRecord);
@@ -361,7 +372,12 @@ class PathHistoryService extends ChangeNotifier {
     _cache[contactPubKeyHex] = updatedHistory;
     _trackAccess(contactPubKeyHex);
     _evictIfNeeded();
-    _storage.savePathHistory(contactPubKeyHex, updatedHistory);
+    // The snapshot is written, not the cache entry: the LRU may evict it
+    // before the batch runs.
+    _writes.schedule(
+      contactPubKeyHex,
+      () => _storage.savePathHistory(contactPubKeyHex, updatedHistory),
+    );
 
     notifyListeners();
   }
@@ -404,6 +420,9 @@ class PathHistoryService extends ChangeNotifier {
   Future<ContactPathHistory?> _loadHistoryFromStorage(
     String contactPubKeyHex,
   ) async {
+    // An evicted contact may still have a queued save; it reaches the prefs
+    // cache synchronously, so the load below reads it.
+    unawaited(_writes.flush());
     return await _storage.loadPathHistory(contactPubKeyHex);
   }
 
@@ -445,6 +464,7 @@ class PathHistoryService extends ChangeNotifier {
     _cacheAccessOrder.remove(contactPubKeyHex);
     _autoRotationIndex.remove(contactPubKeyHex);
     _floodStats.remove(contactPubKeyHex);
+    _writes.cancel(contactPubKeyHex);
     await _storage.clearPathHistory(contactPubKeyHex);
     _version++;
     notifyListeners();
@@ -465,6 +485,7 @@ class PathHistoryService extends ChangeNotifier {
       recentPaths: updatedPaths,
     );
 
+    _writes.cancel(contactPubKeyHex);
     await _storage.savePathHistory(contactPubKeyHex, _cache[contactPubKeyHex]!);
     _version++;
     notifyListeners();
@@ -518,6 +539,17 @@ class PathHistoryService extends ChangeNotifier {
     });
 
     return ranked;
+  }
+
+  PathRecord _lowestScoredPath(List<PathRecord> paths) {
+    final fastestTripMs = _getFastestKnownTripMs(paths);
+    final highestRouteWeight = _getHighestKnownRouteWeight(paths);
+    double score(PathRecord p) => _scorePathRecord(
+      p,
+      fastestTripMs: fastestTripMs,
+      highestRouteWeight: highestRouteWeight,
+    );
+    return paths.reduce((a, b) => score(b) < score(a) ? b : a);
   }
 
   int? _getFastestKnownTripMs(List<PathRecord> paths) {
@@ -588,11 +620,21 @@ class PathHistoryService extends ChangeNotifier {
     }
   }
 
+  /// Runs queued saves now, e.g. before the app is backgrounded.
+  Future<void> flushPendingWrites() => _writes.flush();
+
+  @override
+  void dispose() {
+    unawaited(_writes.flush());
+    super.dispose();
+  }
+
   void clearAllHistories() {
     _cache.clear();
     _cacheAccessOrder.clear();
     _autoRotationIndex.clear();
     _floodStats.clear();
+    _writes.dispose();
     _storage.clearAllPathHistories();
     _version = 0;
     notifyListeners();

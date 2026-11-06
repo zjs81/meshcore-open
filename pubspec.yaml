@@ -16,10 +16,14 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 9.5.0+17
+version: 99.0.2+27
 
 environment:
   sdk: ^3.9.2
+  # Everyone builds with this exact Flutter release; pub get refuses others.
+  # CI reads it via flutter-version-file. Keep scripts/appimage-tools.json in
+  # step when changing it.
+  flutter: 3.47.9
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -37,36 +41,37 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  flutter_blue_plus: ^2.1.0
-  # TODO: Switch to official flserial repo once changes are upstreamed
+  flutter_blue_plus: ^2.3.14
+  # Vendored from MeshEnvy/flserial e1864de. Linux SerialThread waits
+  # until fl_set_callback is installed so a port that transmits on open
+  # does not call a null callback. Switch back upstream once that lands.
   flserial:
-    git:
-      url: https://github.com/MeshEnvy/flserial.git
-      ref: e1864de9b65cda9656dba804329bdd2890dd5a92
+    path: third_party/flserial
   ffi: ^2.1.3            # calloc.free for flserial's native I/O buffers
   provider: ^6.1.5+1
   shared_preferences: ^2.2.2
   uuid: ^4.3.3
-  flutter_map: ^8.2.2
+  flutter_map: ^8.3.2
   latlong2: ^0.9.1
-  flutter_local_notifications: ^22.0.0
+  flutter_local_notifications: ^22.3.1
   crypto: ^3.0.3
   pointycastle: ^4.0.0
   http: ^1.2.0
   cached_network_image: ^3.4.1
-  flutter_cache_manager: ^3.4.1
+  flutter_cache_manager: ^3.4.5
   flutter_foreground_task: ^9.2.0
   characters: ^1.4.0
-  package_info_plus: ^10.1.0
-  mobile_scanner: ^7.1.4  # QR/barcode scanning
+  package_info_plus: ^10.2.2
+  mobile_scanner: ^7.4.2  # QR/barcode scanning
   image_picker: ^1.1.2    # Pick photos to send as compressed mesh images
+  koni_jxl_flutter: ^0.1.4 # Chat background pictures stored as JPEG XL
   qr_flutter: ^4.1.0      # QR code generation
   url_launcher: ^6.3.0    # Launch URLs in system browser
   flutter_linkify: ^6.0.0 # Auto-detect and linkify URLs in text
   gpx: ^2.3.0
   path_provider: ^2.1.5
   file_selector: ^1.0.3   # desktop save dialog for GPX export
-  share_plus: ^13.1.0
+  share_plus: ^13.3.1
   build_pipe: ^0.3.1
   material_symbols_icons: ^4.2928.1
   web: ^1.1.1
@@ -83,12 +88,14 @@ dependencies:
   # decoder (lib/services/image_codec_backend.dart). arm64-only on Android — see
   # the abiFilters note in android/app/build.gradle.kts; a universal APK pays
   # ~56 MB for ORT instead of ~18 MB.
-  flutter_onnxruntime: ^1.8.3
+  flutter_onnxruntime: ^1.9.0
   base32: ^2.2.0
 
 hooks:
   user_defines:
     llamadart:
+      # Translation uses llama.cpp. LiteRT-LM is unused and requires iOS 26.4.
+      llamadart_native_runtimes: [llama_cpp]
       llamadart_native_backends:
         platforms:
           android-arm64:
@@ -124,6 +131,10 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/fonts/
+    - assets/themes/halloween/
+    - assets/themes/thanksgiving/
+    - assets/themes/christmas/
+    - assets/themes/new_year/
 
   fonts:
     - family: Inter

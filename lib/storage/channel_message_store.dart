@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:meshcore_open/utils/app_logger.dart';
 
 import '../models/channel_message.dart';
+import '../models/message.dart' show legacyAwareReceivedAt;
 import '../models/translation_support.dart';
 import '../helpers/smaz.dart';
 import 'prefs_manager.dart';
@@ -16,9 +17,24 @@ class ChannelMessageStore {
 
   String get keyFor => '$_keyPrefix$publicKeyHex';
 
-  /// Save messages for a specific channel
+  /// Upper bound on persisted messages per channel. The oldest entries
+  /// beyond it are dropped on save.
+  static const int maxStoredMessages = 1000;
+
+  /// Encoded entries persisted ahead of the connector's in-memory window,
+  /// keyed by scoped storage key. A missing entry means the window has not
+  /// been reconciled with storage yet, so the next save keeps what is already
+  /// stored instead of replacing it. Shared across instances so a store
+  /// created by a screen to clear a key also resets the connector's view.
+  static final Map<String, List<String>> _archived = {};
+
+  String _keyForChannel(String channelId) => '${keyFor}_$channelId';
+
+  /// Save messages for a specific channel: [messages] is the in-memory
+  /// window (oldest first) and is written after the archived entries that
+  /// sit ahead of it in storage.
   Future<void> saveChannelMessages(
-    int channelIndex,
+    String channelId,
     List<ChannelMessage> messages,
   ) async {
     if (publicKeyHex.isEmpty) {
@@ -28,43 +44,91 @@ class ChannelMessageStore {
       return;
     }
     final prefs = PrefsManager.instance;
-    final key = '$keyFor$channelIndex';
+    final key = _keyForChannel(channelId);
+    final visibleJson = messages.map(_messageToJson).toList();
+    final archived =
+        _archived[key] ??
+        _unreconciledArchive(prefs.getString(key), visibleJson);
+    final overflow = archived.length + visibleJson.length - maxStoredMessages;
+    if (overflow > 0) {
+      archived.removeRange(0, overflow.clamp(0, archived.length));
+    }
+    _archived[key] = archived;
+    final entries = [...archived, ...visibleJson.map(jsonEncode)];
+    await prefs.setString(key, '[${entries.join(',')}]');
+  }
 
-    // Convert messages to JSON
-    final jsonList = messages.map((msg) => _messageToJson(msg)).toList();
-    final jsonString = jsonEncode(jsonList);
+  /// Records [olderMessages] as the stored entries that precede the
+  /// in-memory window for [channelId].
+  void setArchived(String channelId, List<ChannelMessage> olderMessages) {
+    _archived[_keyForChannel(channelId)] = olderMessages
+        .map((message) => jsonEncode(_messageToJson(message)))
+        .toList();
+  }
 
-    await prefs.setString(key, jsonString);
+  /// Number of stored entries ahead of the in-memory window, or null when
+  /// the window has not been reconciled with storage.
+  int? archivedCount(String channelId) =>
+      _archived[_keyForChannel(channelId)]?.length;
+
+  /// Removes the newest [count] archived entries after they were paged back
+  /// into the in-memory window.
+  void unarchiveNewest(String channelId, int count) {
+    final archived = _archived[_keyForChannel(channelId)];
+    if (archived == null || count <= 0) return;
+    archived.removeRange(
+      (archived.length - count).clamp(0, archived.length),
+      archived.length,
+    );
+  }
+
+  /// Drops the archive bookkeeping, for one channel or all of them, when the
+  /// matching in-memory window is discarded.
+  void forgetArchive([String? channelId]) {
+    if (channelId == null) {
+      _archived.clear();
+    } else {
+      _archived.remove(_keyForChannel(channelId));
+    }
+  }
+
+  List<String> _unreconciledArchive(
+    String? storedJson,
+    List<Map<String, dynamic>> visibleJson,
+  ) {
+    if (storedJson == null || storedJson.isEmpty) return [];
+    final List<dynamic> stored;
+    try {
+      stored = jsonDecode(storedJson) as List<dynamic>;
+    } catch (_) {
+      return [];
+    }
+    final visibleKeys = visibleJson.map(_storedMergeKey).toSet();
+    return [
+      for (final entry in stored)
+        if (entry is Map<String, dynamic> &&
+            !visibleKeys.contains(_storedMergeKey(entry)))
+          jsonEncode(entry),
+    ];
+  }
+
+  static String _storedMergeKey(Map<String, dynamic> json) {
+    final messageId = json['messageId'];
+    if (messageId is String && messageId.isNotEmpty) return 'id:$messageId';
+    return 'fallback:${json['timestamp']}:${json['senderName']}:${json['text']}';
   }
 
   /// Load messages for a specific channel
-  Future<List<ChannelMessage>> loadChannelMessages(int channelIndex) async {
+  Future<List<ChannelMessage>> loadChannelMessages(String channelId) async {
     if (publicKeyHex.isEmpty) {
       appLogger.warn(
         'Public key hex is not set. Cannot load channel messages.',
       );
       return [];
     }
-    final prefs = PrefsManager.instance;
-    final key = '$keyFor$channelIndex';
-    final oldKey = '$_keyPrefix$channelIndex';
-
-    String? jsonString = prefs.getString(key);
-    if (jsonString == null || jsonString.isEmpty) {
-      // Attempt migration from legacy unscoped key on first load
-      final legacyJsonString = prefs.getString(oldKey);
-      prefs.remove(oldKey);
-      if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
-        appLogger.info(
-          'Migrating channel messages from legacy key $oldKey to scoped key $key',
-        );
-        await prefs.setString(key, legacyJsonString);
-        jsonString = legacyJsonString;
-      }
-    }
-    if (jsonString == null || jsonString.isEmpty) {
-      jsonString = prefs.getString(keyFor);
-    }
+    final jsonString = PrefsManager.instance.getString(
+      _keyForChannel(channelId),
+    );
     if (jsonString == null || jsonString.isEmpty) {
       return [];
     }
@@ -73,7 +137,7 @@ class ChannelMessageStore {
       jsonList = jsonDecode(jsonString) as List<dynamic>;
     } catch (e) {
       appLogger.warn(
-        'Stored messages for channel $channelIndex are unreadable: $e',
+        'Stored messages for channel $channelId are unreadable: $e',
       );
       return [];
     }
@@ -89,16 +153,18 @@ class ChannelMessageStore {
   }
 
   /// Clear messages for a specific channel
-  Future<void> clearChannelMessages(int channelIndex) async {
+  Future<void> clearChannelMessages(String channelId) async {
     final prefs = PrefsManager.instance;
-    final key = '$keyFor$channelIndex';
+    final key = _keyForChannel(channelId);
+    _archived[key] = [];
     await prefs.remove(key);
   }
 
   /// Clear all channel messages
   Future<void> clearAllChannelMessages() async {
     final prefs = PrefsManager.instance;
-    final keys = prefs.getKeys().where((k) => k.startsWith(keyFor));
+    final keys = prefs.getKeys().where((k) => k.startsWith(keyFor)).toList();
+    _archived.clear();
     for (var key in keys) {
       await prefs.remove(key);
     }
@@ -116,6 +182,7 @@ class ChannelMessageStore {
       'translationStatus': msg.translationStatus.value,
       'translationModelId': msg.translationModelId,
       'timestamp': msg.timestamp.millisecondsSinceEpoch,
+      'receivedAt': msg.receivedAt.millisecondsSinceEpoch,
       'isOutgoing': msg.isOutgoing,
       'status': msg.status.index,
       'channelIndex': msg.channelIndex,
@@ -132,13 +199,20 @@ class ChannelMessageStore {
       'replyToSenderName': msg.replyToSenderName,
       'replyToText': msg.replyToText,
       'reactions': msg.reactions,
+      if (msg.filterReason != null) 'filterReason': msg.filterReason,
+      if (msg.filterDetail != null) 'filterDetail': msg.filterDetail,
+      // `text` is stored decoded; legacy records without this flag may still
+      // hold a Smaz payload.
+      'plainText': true,
     };
   }
 
   /// Convert JSON map to ChannelMessage
   ChannelMessage _messageFromJson(Map<String, dynamic> json) {
     final rawText = json['text'] as String;
-    final decodedText = Smaz.tryDecodePrefixed(rawText) ?? rawText;
+    final decodedText = json['plainText'] == true
+        ? rawText
+        : (Smaz.tryDecodePrefixed(rawText) ?? rawText);
 
     final rawPathLength = json['pathLength'] as int?;
     final rawPathBytes = json['pathBytes'] != null
@@ -185,12 +259,9 @@ class ChannelMessageStore {
       ),
       translationModelId: json['translationModelId'] as String?,
       timestamp: DateTime.fromMillisecondsSinceEpoch(json['timestamp'] as int),
+      receivedAt: legacyAwareReceivedAt(json),
       isOutgoing: json['isOutgoing'] as bool? ?? false,
-      status:
-          ChannelMessageStatus.values.elementAtOrNull(
-            json['status'] as int? ?? -1,
-          ) ??
-          ChannelMessageStatus.failed,
+      status: _statusAt(json['status']) ?? ChannelMessageStatus.failed,
       repeatCount: (json['repeatCount'] as int?) ?? 0,
       pathLength: decodedPathLength,
       pathHashWidth: decodedPathHashWidth,
@@ -220,6 +291,8 @@ class ChannelMessageStore {
             ),
           ) ??
           {},
+      filterReason: json['filterReason'] as String?,
+      filterDetail: json['filterDetail'] as String?,
     );
   }
 
@@ -245,5 +318,16 @@ class ChannelMessageStore {
           ?.map((entry) => Uint8List.fromList(base64Decode(entry as String)))
           .toList(),
     );
+  }
+
+  /// Out-of-range or non-int values yield null; `elementAtOrNull` throws on
+  /// negative indexes.
+  static ChannelMessageStatus? _statusAt(Object? value) {
+    if (value is! int ||
+        value < 0 ||
+        value >= ChannelMessageStatus.values.length) {
+      return null;
+    }
+    return ChannelMessageStatus.values[value];
   }
 }

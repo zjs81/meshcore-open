@@ -78,7 +78,7 @@ class _BatteryIndicatorState extends State<BatteryIndicator> {
                   child: Text(
                     displayText,
                     style: MeshTheme.mono(
-                      fontSize: 11,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: batteryUi.color,
                     ),

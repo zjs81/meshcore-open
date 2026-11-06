@@ -51,7 +51,7 @@ class ChatDaySeparator extends StatelessWidget {
           Text(
             formatChatDayLabel(context, day),
             style: MeshTheme.mono(
-              fontSize: 10.5,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
               color: color,
             ),

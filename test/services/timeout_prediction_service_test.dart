@@ -156,7 +156,6 @@ DeliveryObservation _obs({
     contactKey: contactKey,
     pathLength: pathLength,
     messageBytes: messageBytes,
-    secondsSinceLastRx: 5,
     isFlood: pathLength < 0,
     deliveryMs: deliveryMs,
     timestamp: DateTime.now(),

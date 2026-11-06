@@ -519,6 +519,10 @@
   "channels_public": "公開",
   "channels_private": "非公開",
   "channels_editChannel": "チャンネルを編集",
+  "channels_notificationSettings": "通知設定",
+  "channels_notifyAll": "すべてのメッセージ",
+  "channels_notifyMentionsOnly": "メンションのみ",
+  "channels_notifyNone": "ミュート",
   "channels_muteChannel": "チャンネルをミュート",
   "channels_unmuteChannel": "チャンネルのミュートを解除",
   "channels_deleteChannel": "チャンネルを削除",
@@ -626,6 +630,8 @@
   "channels_scanQrCodeComingSoon": "近日公開",
   "channels_enterHashtag": "ハッシュタグを入力してください",
   "channels_hashtagHint": "例：#チーム",
+  "chat_noRadioLocation": "無線機に位置情報が設定されていません",
+  "chat_shareMyLocation": "自分の位置情報を共有",
   "chat_noMessages": "まだメッセージは届いていません",
   "chat_sendMessageToStart": "開始するためにメッセージを送信してください",
   "chat_originalMessageNotFound": "元のメッセージが見つかりませんでした",
@@ -885,6 +891,7 @@
   "map_setAsMyLocation": "現在地として設定",
   "map_pinLabel": "ピンラベル",
   "map_label": "ラベル",
+  "map_labelUpdateHint": "以前と同じラベルを使うと、MeshCore Open の受信者側でマーカーが更新されます。",
   "map_pointOfInterest": "興味地点",
   "map_sendToContact": "連絡先へ送信",
   "map_sendToChannel": "チャンネルへ送信",
@@ -1350,10 +1357,8 @@
   "repeater_settingsSaved": "設定が正常に保存されました",
   "repeater_rxGain": "RX ゲインの向上",
   "repeater_rxGainHelper": "より高い感度、より大きな電流（SX1262/SX1268のみ）",
-  "repeater_refreshRxGain": "強化されたRX効果を再確認",
   "repeater_multiAcks": "複数のACK（応答）",
   "repeater_multiAcksSubtitle": "複数の経路でメッセージを送信することで、より確実な配信を実現する。",
-  "repeater_refreshMultiAcks": "複数のACKをリフレッシュする",
   "repeater_networkHealth": "ネットワークの状態",
   "repeater_loopDetect": "ループ検出",
   "repeater_loopDetectHelper": "ルーティングループを検知する",
@@ -1373,7 +1378,6 @@
   },
   "repeater_ownerInfo": "事業者の情報",
   "repeater_ownerInfoHelper": "このリピータに関する公開メタデータ",
-  "repeater_refreshOwnerInfo": "オペレーター情報の更新",
   "repeater_floodMax": "最大ホップ数",
   "repeater_floodMaxHelper": "フラッドパケットが移動できる最大ホップ数 (0-64)",
   "repeater_advancedSettings": "高度な",
@@ -1431,11 +1435,7 @@
       }
     }
   },
-  "repeater_refreshBasicSettings": "基本設定をリセットする",
   "repeater_refreshRadioSettings": "ラジオ設定をリセットする",
-  "repeater_refreshTxPower": "TX の電力レベルをリセットする",
-  "repeater_refreshPacketForwarding": "パケット転送の刷新",
-  "repeater_refreshGuestAccess": "ゲストへのアクセスをリフレッシュする",
   "repeater_refreshPrivacyMode": "プライバシーモードをリセットする",
   "repeater_refreshed": "{label} が更新されました",
   "@repeater_refreshed": {
@@ -2230,6 +2230,15 @@
   "contactsSettings_autoAddSensorsSubtitle": "利用者が、発見したセンサーを自動的に追加できるようにする。",
   "contactsSettings_overwriteOldestTitle": "最も古いものを上書きする",
   "contactsSettings_overwriteOldestSubtitle": "連絡先リストが満杯になった場合、最も古いかつ「お気に入り」ではない連絡先が削除されます。",
+  "contactsSettings_evictDiscoveredContactsTitle": "検出された連絡先を削除",
+  "contactsSettings_evictDiscoveredContactsSubtitle": "有効にすると、検出された連絡先のリストが上限の{limit}件に達した際に、最も古い検出済み連絡先が削除されます。",
+  "@contactsSettings_evictDiscoveredContactsSubtitle": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
   "discoveredContacts_Title": "連絡先が見つかった",
   "discoveredContacts_noMatching": "一致する連絡先が見つかりませんでした",
   "discoveredContacts_searchHint": "発見された連絡先を検索する",
@@ -2239,9 +2248,49 @@
   "discoveredContacts_deleteContact": "発見された連絡先を削除",
   "discoveredContacts_deleteContactAll": "発見されたすべての連絡先を削除",
   "discoveredContacts_deleteContactAllContent": "本当に、見つけたすべての連絡先を削除してもよろしいですか？",
+  "discoveredContacts_export": "発見済みの連絡先をエクスポート",
+  "discoveredContacts_import": "発見済みの連絡先をインポート",
+  "discoveredContacts_exported": "発見済みの連絡先を {path} にエクスポートしました。",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "発見済みの連絡先のエクスポートに失敗しました: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "{count} 件の発見済み連絡先をインポートしました。",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "インポートファイルに連絡先が見つかりませんでした。",
+  "discoveredContacts_importInvalidFile": "このファイルは発見済み連絡先のエクスポートではありません。",
+  "discoveredContacts_importSummary": "インポート: {imported} 件、スキップ（既知）: {skipped} 件、読み取れないエントリ: {invalid} 件。",
+  "discoveredContacts_importTooLarge": "インポートファイルが大きすぎます（最大 {maxMb} MB）。",
+  "discoveredContacts_importFailed": "発見済みの連絡先のインポートに失敗しました: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "chat_sendCooldown": "再度送信する前に、しばらくお待ちください。",
   "appSettings_jumpToOldestUnread": "最も古い未読のメッセージへ移動",
   "appSettings_jumpToOldestUnreadSubtitle": "未読メッセージがあるチャットを開く際、「最新のメッセージ」ではなく、最初に未読のメッセージまでスクロールしてください。",
+  "appSettings_autoFetchRepeaterSettings": "リピータの設定を自動取得",
+  "appSettings_autoFetchRepeaterSettingsSubtitle": "リピータの設定を開いたときに、すべての設定を要求します。各設定はLoRa経由の個別のリクエストになるため、時間がかかり、通信時間(エアタイム)を消費します。オフの場合は、「すべて更新」をタップするか、各セクションを個別に更新してください。",
   "appSettings_languageHu": "ハンガリー語",
   "appSettings_languageJa": "日本語",
   "appSettings_languageKo": "韓国語",
@@ -3039,7 +3088,7 @@
   "settings_telemetryPerContactHint": "連絡先に許可するには、そのチャットを開いてメニューから「連絡先設定」を選択してください。",
   "settings_multiAckSubtitle": "配信を確実にするため ACK を追加送信します。放送時間が長くなります",
   "settings_presetCustom": "カスタム",
-  "settings_radioMatchWarning": "通信するすべてのノードで、周波数・帯域幅・伝播係数・コーディング速度を揃える必要があります。",
+  "settings_radioMatchWarning": "通信するすべてのノードで、周波数・帯域幅・伝播係数を揃える必要があります。コーディング速度（CR）は異なっていても構いません。",
   "settings_txPowerRangeHelper": "{min}～{max} dBm",
   "@settings_txPowerRangeHelper": {
     "placeholders": {
@@ -3187,5 +3236,700 @@
       }
     }
   },
-  "receivedImage_saveFailed": "画像を保存できませんでした"
+  "receivedImage_saveFailed": "画像を保存できませんでした",
+  "reviewMode_dialogTitle": "レビューモードに入りますか？",
+  "reviewMode_dialogBody": "レビューモードでは、サンプルの連絡先、チャンネル、メッセージを備えたシミュレートされたデバイスに接続します。実際のデバイスは不要です。",
+  "reviewMode_confirm": "開始",
+  "reviewMode_cancel": "キャンセル",
+  "reviewMode_banner": "レビューモード — シミュレーションデータ",
+  "reviewMode_sendTest": "テストメッセージを送信",
+  "reviewMode_testSent": "まもなくテストメッセージが届きます。",
+  "reviewMode_exit": "終了",
+  "reviewMode_connectFailed": "レビューモードを開始できませんでした: {error}",
+  "settings_regionUseRadioDefault": "無線機の既定（{region}）",
+  "settings_regionNoRegion": "地域なし（スコープなし）",
+  "settings_regionRadioDefault": "無線機の既定の地域",
+  "settings_regionRadioDefaultSubtitle": "無線機に保存されます。地域を指定せずに送るフラッドは、このアプリや無線機に接続した他のアプリからでも、この地域を使います。",
+  "settings_regionRadioDefaultUpdated": "無線機の既定の地域を更新しました",
+  "settings_regionRadioDefaultFailed": "無線機の既定の地域を更新できませんでした",
+  "appSettings_channelMinHopsCountRepeaters": "近くの別のリピータも数える",
+  "appSettings_channelMinHopsCountRepeatersSubtitle": "{count, plural, =1{近くのリピータ 1 台} other{近くの異なるリピータ {count} 台}}が再送したら、それ以上先に届くのが聞こえなくても送信済みとみなします。",
+  "appSettings_regionOnHopsLine": "ホップ数の横に地域を表示",
+  "appSettings_regionOnHopsLineSubtitle": "チャンネルメッセージの地域を、ホップ数の下ではなく同じ行に表示します。",
+  "channels_regionRadioDefaultSuffix": "（無線機の既定）",
+  "channels_regionRadioDefaultApplies": "この無線機は、地域なしのフラッドを既定の地域で送信します：{region}。",
+  "chat_futureTimestampWarning": "このメッセージの時刻は未来です。送信者の時計がずれている可能性があります。届いた順に表示しています。",
+  "discoveredContacts_scan": "近くのノードをスキャン",
+  "discoveredContacts_scanTitle": "近くのノード",
+  "discoveredContacts_scanExplanation": "直接電波が届く範囲のノードに応答を求めます。リピータとセンサーが応答します。ルームサーバーやコンパニオンは通常応答しません。",
+  "discoveredContacts_scanning": "スキャン中…",
+  "discoveredContacts_scanFound": "{count, plural, =1{1 件のノードが見つかりました} other{{count} 件のノードが見つかりました}}",
+  "discoveredContacts_scanNoResults": "応答したノードはありません。リピータは応答頻度を制限しているため、1 分ほど待ってからもう一度お試しください。",
+  "discoveredContacts_scanAgain": "もう一度スキャン",
+  "discoveredContacts_scanFailed": "スキャン要求を送信できませんでした。",
+  "discoveredContacts_scanSignal": "信号 {snr} dB ・ 相手の受信 {remoteSnr} dB",
+  "discoveredContacts_scanInContacts": "すでに連絡先にあります",
+  "discoveredContacts_scanNameLater": "次のアドバートの後に名前が表示されます",
+  "channels_waitForSync": "チャンネルは無線機からまだ読み込み中です。同期が完了してからもう一度お試しください。",
+  "channels_nameTooLong": "名前が長すぎます（最大 {maxBytes} バイト）。",
+  "repeater_valueRequired": "{field}：値を入力してください",
+  "repeater_floodMaxAdvert": "アドバートのフラッド最大ホップ数",
+  "repeater_floodMaxAdvertHelper": "フラッドされるアドバートが通過できる最大ホップ数（0-64、デフォルト 8）",
+  "repeater_floodMaxUnscoped": "スコープなしのフラッド最大ホップ数",
+  "repeater_floodMaxUnscopedHelper": "リージョンスコープのないフラッドの最大ホップ数（0-64、デフォルト 64）。3 などの低い値にすると、スコープなしのトラフィックをローカルに留められます。",
+  "repeater_floodMaxUnscopedUnset": "フラッド最大と同じ",
+  "repeater_rxDelay": "受信遅延",
+  "repeater_rxDelayHelper": "弱い信号で受信したフラッドパケットを転送前に保留し、強い信号の経路を優先させて重複送信を減らします（0-20、0 で無効）。",
+  "repeater_cad": "チャンネルアクティビティ検出",
+  "repeater_cadHelper": "送信前に通信の有無を確認し、チャンネルがビジー状態の間は待機します。干渉閾値と併せて機能します。",
+  "repeater_adcMultiplier": "バッテリー電圧の補正",
+  "repeater_adcMultiplierHelper": "バッテリー電圧の読み取り値に掛ける係数（0-10）。0 の場合はボードのデフォルト値を使用します。",
+  "repeater_boardSupportNote": "すべてのボードが対応しているわけではありません。非対応のボードは変更を拒否します。",
+  "repeater_extraSf": "追加の伝播係数",
+  "repeater_extraSfHelper": "同時に受信待ちする追加の伝播係数を最大 3 つまで、カンマ区切りで指定します（例: 9,10）。空欄にすると無効になります。",
+  "repeater_lr2021Only": "LR2021 無線を搭載したリピータ専用です。他のリピータにはこの設定がなく、変更は拒否されます。",
+  "losMapDetailTooltip": "地図の詳細",
+  "losUnitsTooltip": "単位",
+  "losDistance": "距離",
+  "losClearance": "クリアランス",
+  "losBlockedBy": "遮蔽物",
+  "losObstruction": "障害物",
+  "losDistanceFromA": "A から {distance}",
+  "losWorstBadge": "最悪",
+  "losBlockedAmount": "遮断量 {amount}",
+  "losFromA": "A から",
+  "losFromB": "B から",
+  "losElevation": "標高",
+  "losCenterOnMap": "地図の中心に表示",
+  "losStatusClear": "クリア",
+  "losStatusMarginal": "境界",
+  "losStatusBlocked": "遮断",
+  "losStatusCheckingShort": "確認中",
+  "losStatusNoResult": "結果なし",
+  "losSelectedPill": "選択中",
+  "gif_tapToLoad": "タップして GIF を読み込む",
+  "gif_loadFailedRetry": "GIF を読み込めません\nタップして再試行",
+  "qr_cameraPermissionDenied": "カメラの権限が拒否されました。\n設定でカメラへのアクセスを有効にしてください。",
+  "qr_cameraUnsupported": "この端末ではカメラがサポートされていません。",
+  "qr_cameraStartFailed": "カメラを起動できませんでした。\n{details}",
+  "imageMessages_downloadFailedWithError": "画像モデルをダウンロードできませんでした：{error}",
+  "map_nodeId": "ID",
+  "map_markerHideHint": "非表示:マップを離れるまで非表示になります。",
+  "map_markerRemoveHint": "削除:フィルターメニューから復元するまで非表示のままです。",
+  "map_markerRemoved": "マーカーを削除しました",
+  "map_restoreRemovedMarkers": "削除したマーカーを復元",
+  "map_restoreRemovedMarkersSubtitle": "{count}件削除済み",
+  "map_markersRestored": "{count}件のマーカーを復元しました",
+  "map_setLocationConfirmTitle": "この位置を自分の位置に設定しますか?",
+  "map_setLocationConfirmBody": "ノードは次の位置をアドバートします:\n{lat}, {lon}",
+  "map_setLocationAction": "位置を設定",
+  "map_locationSetSuccess": "ノードの位置を更新しました",
+  "map_locationSetFailed": "デバイスが新しい位置を確認しませんでした。もう一度お試しください。",
+  "map_poiClusterTitle": "ここに{count}件のマーカー",
+  "map_poiClusterSemantics": "共有マーカー{count}件。タップして一覧を表示します。",
+  "map_youWithMarkers": "自分と{count}件のマーカー",
+  "map_sharedMarkerSemantics": "共有マーカー: {label}",
+  "map_nodeMarkerSemantics": "{name}、{type}、{status}",
+  "map_requestLocation": "位置情報を更新",
+  "map_locationUpdated": "位置情報を更新しました",
+  "map_locationNotShared": "{name} は位置情報なしで応答しました",
+  "map_locationRequestFailed": "{name} から応答がありません",
+  "mapCache_zoomLevel": "ズーム {zoom}",
+  "mapCache_sizeBytes": "{size} B",
+  "mapCache_sizeKilobytes": "{size} KB",
+  "mapCache_sizeMegabytes": "{size} MB",
+  "mapCache_sizeGigabytes": "{size} GB",
+  "mapCache_downloadCancelled": "ダウンロードをキャンセルしました。{count}枚のタイルをキャッシュしました。",
+  "mapCache_tooManyTilesTitle": "エリアが大きすぎます",
+  "mapCache_tooManyTiles": "このエリアには{count}枚のタイルが必要で、上限の{max}枚を超えています。より小さいエリアを選ぶか、最大ズームを下げてください。",
+  "chat_clearChatConfirm": "この会話のすべてのメッセージをこのデバイスから消去します。元に戻せません。",
+  "channels_clearChatConfirm": "このチャンネルのすべてのメッセージを、受信した画像も含めてこのデバイスから消去します。元に戻せません。",
+  "channels_timeNow": "今",
+  "channels_timeMinutes": "{minutes}分",
+  "channels_timeHours": "{hours}時間",
+  "channels_timeDays": "{days}日",
+  "channels_indexChip": "CH {index}",
+  "reaction_unknownSender": "不明",
+  "pathMap_noSelfGpsFix": "ローカルノードにGPS測位がありません",
+  "pathTrace_sendFailed": "パストレースを送信できませんでした: {error}",
+  "losErrorNoInternet": "標高データにはインターネット接続が必要です",
+  "losResultStale": "古い結果: アンテナ高が変更されました",
+  "losSnrValue": "{snr} dB",
+  "losFrequencyValue": "{frequency} MHz",
+  "losKFactorValue": "k={kFactor}",
+  "losEndpointA": "A",
+  "losEndpointB": "B",
+  "units_km": "km",
+  "units_mi": "mi",
+  "units_m": "m",
+  "units_ft": "ft",
+  "telemetry_loading": "テレメトリを読み込み中…",
+  "telemetry_axisValue": "X: {x}, Y: {y}, Z: {z}",
+  "telemetry_colourValue": "R: {red}, G: {green}, B: {blue}",
+  "telemetry_altitudeValueFeet": "{feet} ft",
+  "telemetry_distanceValueFeet": "{feet} ft",
+  "settings_notConnectedError": "無線機に接続されていません。接続してからもう一度お試しください。",
+  "settings_requiresConnection": "使用するには無線機に接続してください",
+  "settings_txPowerInvalidRange": "TX出力が無効です({min}~{max} dBm)",
+  "settings_contactSettingsSaved": "連絡先設定を保存しました",
+  "settings_batteryToggleHint": "タップでパーセントと電圧を切り替え",
+  "settings_publicKeyCopyHint": "公開鍵をコピー",
+  "settings_locationClearHelper": "位置情報を削除するには、両方の欄を空にしてください。",
+  "settings_locationCleared": "位置情報を削除しました",
+  "settings_regionFetchDiscovering": "近くのリピータを検索中…",
+  "settings_regionFetchProgress": "リピータ {current}/{total} に問い合わせ中…",
+  "settings_regionFetchNoRepeaters": "既知のリピータがまだありません。リピータを連絡先に追加するか、アドバートを待ってからもう一度お試しください。",
+  "settings_regionFetchNoneResponded": "近くのリピータから応答がありませんでした。リピータに近づいてもう一度お試しください。",
+  "appSettings_sourceSummary": "{label} - {description}",
+  "appSettings_routingSection": "ルーティング",
+  "appSettings_resetRoutingToDefault": "ルーティングアルゴリズムをデフォルトにリセット",
+  "appSettings_resetRoutingToDefaultSubtitle": "ルーティングアルゴリズムの設定を工場出荷時のデフォルトに戻す",
+  "appSettings_routingResetToDefault": "ルーティングアルゴリズムの設定がデフォルトにリセットされました",
+  "appSettings_imageMessagesSection": "画像メッセージ",
+  "appSettings_showApiKey": "APIキーを表示",
+  "appSettings_hideApiKey": "APIキーを非表示",
+  "translation_defaultModelName": "モデル",
+  "translation_downloadProgressBytes": "{fileName}: {current} MB",
+  "translation_downloadProgressTotal": "{fileName}: {current} / {total} MB({percent}%)",
+  "translation_downloadedModelDetails": "{size} MB • {source}",
+  "repeater_radioDisconnected": "無線機が切断されました",
+  "repeater_radioDisconnectedHint": "コマンドの送信、更新、変更の保存を行うには、無線機に再接続してください。",
+  "repeater_cliSend": "コマンドを送信",
+  "repeater_cliCopyTranscript": "履歴をコピー",
+  "repeater_cliShareTranscript": "履歴を共有",
+  "repeater_cliTranscriptCopied": "履歴をコピーしました",
+  "repeater_cliClearHistoryConfirm": "コマンド履歴を消去しますか?元に戻せません。",
+  "repeater_cliSearchCommands": "コマンドを検索",
+  "repeater_cliNoMatchingCommands": "一致するコマンドがありません",
+  "debugLog_clearConfirm": "すべてのログを消去しますか?元に戻せません。",
+  "repeater_unsavedChangesTitle": "未保存の変更",
+  "repeater_unsavedChangesMessage": "リピータに保存されていない変更があります。",
+  "repeater_discardChanges": "破棄",
+  "repeater_actionSentNoReply": "{action}: コマンドを送信しました。リピータはこのコマンドに応答しません。",
+  "repeater_invalidSettingValue": "{setting}: {value}は無効です",
+  "repeater_prvKeyLengthError": "秘密鍵は16進数でちょうど{length}文字である必要があります",
+  "contacts_advertFailed": "アドバートを送信できませんでした",
+  "contacts_manageGroups": "グループを管理",
+  "community_shortId": "ID: {id}…",
+  "tcpSectionTitle": "TCP / IP",
+  "tcpConnectedToHeader": "接続先",
+  "usbChooseSerialPort": "シリアルポートを選択",
+  "neighbors_durationSeconds": "{seconds}秒",
+  "neighbors_durationMinutes": "{minutes}分{seconds}秒",
+  "neighbors_durationHours": "{hours}時間{minutes}分",
+  "scanner_getNodeTitle": "新しいノードが必要ですか?",
+  "scanner_getNodeBody": "財布サイズで MeshCore が動作。デュアルバンドGPS、防水、バッテリー5日間。",
+  "scanner_getNodeAction": "こちらで入手",
+  "scanner_getNodeDisclosure": "アフィリエイトリンク: 購入のたびに MeshCore Open を応援できます。",
+  "networkMap_settingsSection": "ネットワークマップ",
+  "networkMap_uploadTitle": "ラジオが受信した情報を共有",
+  "networkMap_uploadExplanation": "オンにしてラジオが接続されている間、ラジオが受信したパケットの概要をアプリが MeshCore Open のネットワークマップに送信します。これにより、どんなリピータがあり、どうつながっているかを誰でも見られます。送信するのは、各パケットの種類、経路、ホップ数、信号強度、サイズと、リピータ自身のアドバートに含まれる名前とおおよその位置です。メッセージの本文、誰が誰と話しているか、チャンネル名、連絡先、正確な位置は送信しません。位置は約2km単位に丸められ、アプリのIDは毎日ランダムに新しくなります。",
+  "networkMap_whatWeCollect": "収集する情報",
+  "networkMap_promptTitle": "ネットワークマップの作成にご協力いただけますか?",
+  "networkMap_promptBody": "MeshCore Open は、ラジオが受信した情報を map.meshcoreopen.org の公開ネットワークマップと共有できます。これにより、どんなリピータがあり、どうつながっているかを誰でも見られます。\n\nメッセージの本文、誰が誰と話しているか、チャンネル名、連絡先、正確な位置は送信しません。位置は約2km単位に丸められます。",
+  "networkMap_promptSettingsHint": "この設定はいつでも「設定」→「アプリ設定」→「ネットワークマップ」で変更できます。",
+  "networkMap_promptAccept": "共有する",
+  "networkMap_promptDecline": "いいえ、結構です",
+  "networkMap_statusOff": "オフ。何も送信されません。",
+  "networkMap_statusWaiting": "オン。ラジオの接続を待っています。",
+  "networkMap_statusNothingSent": "オン。まだ何も送信されていません。",
+  "networkMap_statusLastSent": "最終送信: {time}。今日は{count}パケット。",
+  "@networkMap_statusLastSent": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "networkMap_sourceLocal": "ローカル",
+  "networkMap_sourceOnline": "オンライン",
+  "networkMap_sourceBoth": "両方",
+  "networkMap_zoomInHint": "ズームインするとオンラインのネットワークマップが表示されます",
+  "networkMap_loadFailed": "オンラインのネットワークマップを読み込めませんでした",
+  "networkMap_inYourContacts": "連絡先にあります",
+  "networkMap_status": "ステータス",
+  "networkMap_statusActive": "直近1時間にアクティブ",
+  "networkMap_statusRecent": "直近1日以内に受信",
+  "networkMap_statusStale": "最近受信されていません",
+  "networkMap_confirmed": "確認済み",
+  "networkMap_singleSource": "情報源が1つのみで、未確認",
+  "networkMap_reports": "レポート",
+  "networkMap_locationEstimated": "おおよその位置(受信したノードから推定)",
+  "networkMap_locationAdvertised": "おおよその位置(自身のアドバートより)",
+  "networkMap_heardByRadio": "ラジオが受信",
+  "networkMap_inYourArea": "お近く",
+  "networkMap_farAway": "遠すぎます。管理はできません。",
+  "networkMap_addToContacts": "連絡先に追加",
+  "networkMap_manage": "管理",
+  "networkMap_addedToContacts": "連絡先に追加しました",
+  "networkMap_addFailed": "連絡先に追加できませんでした",
+  "networkMap_unnamed": "名前のないリピータ",
+  "urlImage_disabledInAppSettings": "アプリ設定でオフになっています",
+  "settings_pathHashModeNotApplied": "ラジオ設定は適用されましたが、ラジオが新しい経路ハッシュサイズを確認しませんでした",
+  "appSettings_ipfsImageLinks": "IPFSプロバイダー設定",
+  "appSettings_ipfsImageLinksSubtitle": "URL画像（またはファイル）のアップロードにIPFSプロバイダーを、受信にデフォルトゲートウェイを使用します",
+  "appSettings_loadLinkImages": "リンクの画像を読み込む",
+  "appSettings_loadLinkImagesSubtitle": "メッセージ内のリンクの画像を表示します。画像を読み込むと、ホスト先のサイトにIPアドレスが共有されます。",
+  "appSettings_showLinkImagesByDefault": "すべてのチャットでリンク画像を既定で表示",
+  "appSettings_showLinkImagesByDefaultSubtitle": "チャットごとにオフにしていない限り、すべてのチャットでリンク画像を読み込みます。すべてのチャットで画像ホストにIPアドレスが共有されます。",
+  "appSettings_publicIpfsGateway": "公開ゲートウェイ",
+  "appSettings_ipfsGatewayDeactivated": "無効",
+  "appSettings_ipfsGatewayCustom": "カスタム（Kubo）",
+  "appSettings_uploadIpfsProvider": "アップロードプロバイダー",
+  "appSettings_uploadIpfsGateway": "アップロードゲートウェイ",
+  "appSettings_uploadIpfsGatewaySubtitle": "画像やファイルをURLリンクとして共有するためのゲートウェイです。空欄の場合は ipfs: 形式を使用しますが、他のクライアントでは開けない場合があります。",
+  "appSettings_uploadIpfsEndpoint": "アップロードエンドポイント",
+  "appSettings_uploadIpfsEndpointSubtitle": "ファイルのアップロードに使用するAPIエンドポイント",
+  "appSettings_uploadIpfsApiKey": "アップロードAPIキー",
+  "appSettings_ipfsImageLinksDescription": "公開ゲートウェイは ipfs: 形式の画像をダウンロードします。アップロードゲートウェイは、アップロードしたURL画像やファイルの共有リンクの生成に使用されます。",
+  "contacts_removeAutoAddNote": "このタイプの連絡先はラジオが自動追加するため、次回アドバートを送信すると再び追加されます。削除したままにするには、連絡先設定で自動追加をオフにしてください。",
+  "contacts_removeFailed": "ラジオが削除を確認しませんでした。連絡先は削除されていません。",
+  "channels_notificationModeTooltip": "通知：{mode}",
+  "@channels_notificationModeTooltip": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_scanQrCodeDesc": "QRコードからチャンネルまたはコミュニティに参加します。",
+  "channels_scanQrInstructions": "チャンネルまたはコミュニティのQRコードにカメラを向けてください",
+  "channels_invalidQrCode": "MeshCoreのチャンネルまたはコミュニティのQRコードではありません",
+  "channels_joinChannelTitle": "チャンネルに参加",
+  "channels_joinChannelConfirm": "「{name}」をラジオに追加しますか？",
+  "@channels_joinChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_alreadyOnRadio": "「{name}」はすでにラジオにあります",
+  "@channels_alreadyOnRadio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_sendImageIpfs": "IPFSで画像またはファイルを送信",
+  "chat_ipfsUploadFailed": "IPFSアップロードに失敗しました：{error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "先にアプリ設定でIPFSアップロードプロバイダーを設定してください。",
+  "chat_ipfsSelectedFileEmpty": "選択したファイルは空です。",
+  "chat_ipfsEndpointInvalid": "IPFSアップロードエンドポイントは http:// または https:// で始まる完全なアドレスにしてください。アプリ設定で確認してください。",
+  "chat_ipfsPinataTokenMissing": "PinataにはAPIキーまたはJWTが必要です。アプリ設定で追加してください。",
+  "chat_ipfsFilebaseTokenMissing": "FilebaseにはAPIトークンが必要です。アプリ設定で追加してください。",
+  "chat_ipfsKuboPathInvalid": "Kuboのアップロードエンドポイントは /api/v0/add で終わる必要があります。アプリ設定で確認してください。",
+  "chat_ipfsLinkNoRoom": "画像リンクを入れる余裕がありません。メッセージを短くしてからもう一度お試しください。",
+  "@chat_ipfsLinkNoRoom": {
+    "description": "Shown before an IPFS upload when the link would push the draft over the message size limit"
+  },
+  "chat_ipfsLinkOverLimit": "画像リンクを追加しましたが、メッセージが長すぎます。送信前に短くしてください。",
+  "@chat_ipfsLinkOverLimit": {
+    "description": "Shown after an IPFS upload when the link plus the draft no longer fits the message size limit"
+  },
+  "map_pathTraceAddMoreHint": "ノードをタップしてホップを追加し、トレースの戻り方を選んでから「経路トレースを実行」をタップします。",
+  "map_pathTraceModeRoundTrip": "往復",
+  "map_pathTraceModeRoundTripHint": "トレースはこれらのホップを経由して送信され、同じ経路で戻ってきます。",
+  "map_pathTraceModeAsEntered": "入力どおり",
+  "map_pathTraceModeAsEnteredHint": "トレースはこれらのホップをそのとおりにたどります。自分へ戻るホップは自分で追加してください。",
+  "map_pathTraceViewLast": "前回の結果を表示",
+  "notification_lowBatteryTitle": "バッテリー残量低下",
+  "@notification_lowBatteryTitle": {
+    "description": "Title of the low battery notification"
+  },
+  "notification_lowBatteryBody": "{deviceName}のバッテリー残量は{percent}%です",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification; deviceName is the connected radio's node name",
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_sharedLocation": "位置情報を共有しました",
+  "notification_sharedLocationNamed": "位置情報を共有しました：{label}",
+  "@notification_sharedLocationNamed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_reacted": "{emoji}でリアクションしました",
+  "@notification_reacted": {
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_sentGif": "GIFを送信しました",
+  "notification_sentImage": "画像を送信しました",
+  "snrIndicator_unknownRepeater": "不明なリピータ",
+  "snrIndicator_unknownRepeaterHint": "このリピータはまだ連絡先にありません。ラジオがアドバートを受信すると、名前、場所、オプションが表示されます。",
+  "contacts_keyPrefixSemantics": "キープレフィックス {prefix}",
+  "@contacts_keyPrefixSemantics": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "networkMap_sourceLocalHint": "ラジオが受信したノード",
+  "networkMap_sourceOnlineHint": "オンラインネットワークマップのリピータ",
+  "networkMap_sourceBothHint": "ラジオのノードとオンラインネットワークマップ",
+  "appSettings_colorTheme": "カラーテーマ",
+  "appSettings_holidayAnimations": "祝日メッセージのアニメーション",
+  "appSettings_holidayAnimationsSubtitle": "祝日のあいさつが届くと、コウモリ、七面鳥、サンタ、花火が表示されます",
+  "themes_title": "テーマ",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "標準の色。ライト/ダークの設定に合わせます",
+  "themes_builtIn": "標準のテーマ",
+  "themes_holidays": "祝日",
+  "themes_holidayAutoSwitch": "自動で切り替える",
+  "themes_holidayAutoSwitchSubtitle": "各祝日の17日前から当日まで、その祝日のテーマを使います",
+  "themes_holidayAutoApplied": "{holiday}のテーマを自動で使っています。祝日が終わると、元のテーマに戻ります。",
+  "themes_holidayAutoAppliedTag": "自動で使用中",
+  "themes_myThemes": "マイテーマ",
+  "themes_myThemesEmpty": "背景とアクセントカラーを選んで、自分だけのテーマを作りましょう。",
+  "themes_create": "テーマを作成",
+  "themes_import": "テーマを読み込む",
+  "themes_importHint": "テーマコードを貼り付けてください",
+  "themes_importInvalid": "テーマコードが正しくありません",
+  "themes_imported": "テーマ「{name}」を追加しました",
+  "themes_customize": "コピーして編集",
+  "themes_copyCode": "テーマコードをコピー",
+  "themes_codeCopied": "テーマコードをコピーしました",
+  "themes_deleteConfirm": "テーマ「{name}」を削除しますか?",
+  "themes_copyName": "{name}のコピー",
+  "themes_newTitle": "新しいテーマ",
+  "themes_editTitle": "テーマを編集",
+  "themes_name": "名前",
+  "themes_nameRequired": "テーマの名前を入力してください",
+  "themes_background": "背景",
+  "themes_backgroundHelp": "背景が暗いと、ダークテーマになります",
+  "themes_accent": "アクセント",
+  "themes_accentHelp": "ボタン、強調表示、自分のチャットの吹き出しに使います",
+  "themes_hexColor": "16進数カラー",
+  "themes_preview": "プレビュー",
+  "themes_previewIncoming": "今夜、メッシュにいる人はいますか?",
+  "themes_previewOutgoing": "はっきり聞こえます!",
+  "themes_previewSwitch": "通知",
+  "themes_lowContrast": "この背景ではアクセントが見えにくいです",
+  "themes_saveAndUse": "保存して使う",
+  "themes_icons": "アイコン",
+  "themes_iconsHelp": "アイコンをタップすると、ほかのアイコンや自分の画像に変更できます",
+  "themes_iconChanged": "変更済み",
+  "themes_iconSend": "送信ボタン",
+  "themes_iconRepeater": "リピータ",
+  "themes_iconRoom": "ルームサーバー",
+  "themes_iconSensor": "センサー",
+  "themes_mapMarkers": "地図のマーカー",
+  "themes_mapMarkersHelp": "地図上のノードと自分のマーカーを変更します",
+  "themes_iconUsePicture": "画像を使う",
+  "themes_iconReset": "標準のアイコンに戻す",
+  "themes_iconPictureFailed": "その画像は使えませんでした",
+  "themes_exportFile": "ファイルに書き出す",
+  "themes_exportAll": "マイテーマを書き出す",
+  "themes_importFile": "ファイルから読み込む",
+  "themes_pasteCode": "テーマコードを貼り付け",
+  "themes_exportFailed": "テーマを書き出せませんでした",
+  "themes_importFileResult": "{count}件のテーマを読み込みました",
+  "themes_importFileNone": "そのファイルにテーマが見つかりません",
+  "chatBackground_title": "チャットの背景",
+  "chatBackground_thisChatOnly": "このチャットだけ",
+  "chatBackground_themeOverrides": "テーマ「{name}」が、すべてのチャットの背景を指定しています。この背景を使うには、テーマ側でその設定をオフにしてください。",
+  "chatBackground_none": "なし",
+  "chatBackground_picture": "画像",
+  "chatBackground_choosePicture": "画像を選ぶ",
+  "chatBackground_pictureFailed": "その画像は使えませんでした",
+  "chatBackground_fade": "薄さ",
+  "themes_chatBackground": "チャットの背景",
+  "themes_chatBackgroundHelp": "個別の背景がないチャットに表示されます",
+  "themes_chatBackgroundEverywhere": "すべてのチャットで使う",
+  "themes_chatBackgroundEverywhereHelp": "チャットごとに設定した背景も置き換えます",
+  "holidayGreeting_halloween": "ハッピーハロウィン|ハッピーハロウィーン|ハッピーハロウィン|ハピハロ|トリックオアトリート|Happy Halloween",
+  "holidayGreeting_thanksgiving": "ハッピーサンクスギビング|ハッピー・サンクスギビング|感謝祭おめでとう|Happy Thanksgiving",
+  "holidayGreeting_christmas": "メリークリスマス|メリー・クリスマス|メリクリ|Merry Christmas",
+  "holidayGreeting_newYear": "あけましておめでとう|明けましておめでとう|あけおめ|アケオメ|ハッピーニューイヤー|ハッピー・ニューイヤー|謹賀新年|Happy New Year",
+  "appSettings_showOnlineLinks": "オンライン地図の接続を表示",
+  "appSettings_showOnlineLinksSubtitle": "オンライン地図にあるノード間の接続線を表示する",
+  "map_showOnlineLinks": "オンライン地図の接続を表示",
+  "chat_loadOlderMessages": "以前のメッセージを読み込む",
+  "messageFilter_title": "メッセージフィルター",
+  "@messageFilter_title": {
+    "description": "Message filter: Message filter"
+  },
+  "messageFilter_settingsSubtitle": "スパムや繰り返しのメッセージを隠す",
+  "@messageFilter_settingsSubtitle": {
+    "description": "Message filter: Hide spam and repeated messages"
+  },
+  "messageFilter_enabled": "メッセージをフィルターする",
+  "@messageFilter_enabled": {
+    "description": "Message filter: Filter messages"
+  },
+  "messageFilter_enabledSubtitle": "チャンネルのメッセージに適用されます",
+  "@messageFilter_enabledSubtitle": {
+    "description": "Message filter: Applies to channel messages"
+  },
+  "messageFilter_displayTitle": "フィルターされたメッセージ",
+  "@messageFilter_displayTitle": {
+    "description": "Message filter: Filtered messages"
+  },
+  "messageFilter_displayPlaceholder": "小さな表示を残す",
+  "@messageFilter_displayPlaceholder": {
+    "description": "Message filter: Show a small placeholder"
+  },
+  "messageFilter_displayHide": "完全に隠す",
+  "@messageFilter_displayHide": {
+    "description": "Message filter: Hide completely"
+  },
+  "messageFilter_displayHideHelp": "隠したメッセージは「フィルターされたメッセージ」の一覧に残ります。",
+  "@messageFilter_displayHideHelp": {
+    "description": "Message filter: Hidden messages stay in the Filtered messages list."
+  },
+  "messageFilter_rulesSection": "あなたのルール",
+  "@messageFilter_rulesSection": {
+    "description": "Message filter: Your rules"
+  },
+  "messageFilter_rulesEmpty": "ルールはまだありません。単語、フレーズ、送信者名を追加すると、一致するメッセージを隠せます。",
+  "@messageFilter_rulesEmpty": {
+    "description": "Message filter: No rules yet. Add a word, phrase or sender name to hide messages that match it."
+  },
+  "messageFilter_addRule": "ルールを追加",
+  "@messageFilter_addRule": {
+    "description": "Message filter: Add rule"
+  },
+  "messageFilter_editRule": "ルールを編集",
+  "@messageFilter_editRule": {
+    "description": "Message filter: Edit rule"
+  },
+  "messageFilter_rulePattern": "単語、フレーズ、名前",
+  "@messageFilter_rulePattern": {
+    "description": "Message filter: Word, phrase or name"
+  },
+  "messageFilter_rulePatternHint": "例: meshos",
+  "@messageFilter_rulePatternHint": {
+    "description": "Message filter: e.g. meshos"
+  },
+  "messageFilter_ruleWhere": "対象",
+  "@messageFilter_ruleWhere": {
+    "description": "Message filter: Look in"
+  },
+  "messageFilter_ruleFieldText": "メッセージ本文",
+  "@messageFilter_ruleFieldText": {
+    "description": "Message filter: Message text"
+  },
+  "messageFilter_ruleFieldSender": "送信者名",
+  "@messageFilter_ruleFieldSender": {
+    "description": "Message filter: Sender name"
+  },
+  "messageFilter_ruleFieldBoth": "両方",
+  "@messageFilter_ruleFieldBoth": {
+    "description": "Message filter: Both"
+  },
+  "messageFilter_ruleMatch": "一致の条件",
+  "@messageFilter_ruleMatch": {
+    "description": "Message filter: Match"
+  },
+  "messageFilter_ruleMatchContains": "含む",
+  "@messageFilter_ruleMatchContains": {
+    "description": "Message filter: Contains"
+  },
+  "messageFilter_ruleMatchWholeWord": "単語全体",
+  "@messageFilter_ruleMatchWholeWord": {
+    "description": "Message filter: Whole word"
+  },
+  "messageFilter_ruleMatchExact": "完全一致",
+  "@messageFilter_ruleMatchExact": {
+    "description": "Message filter: Exact"
+  },
+  "messageFilter_ruleDeleted": "ルールを削除しました",
+  "@messageFilter_ruleDeleted": {
+    "description": "Message filter: Rule deleted"
+  },
+  "messageFilter_ruleSaved": "ルールを保存しました",
+  "@messageFilter_ruleSaved": {
+    "description": "Message filter: Rule saved"
+  },
+  "messageFilter_automaticSection": "自動",
+  "@messageFilter_automaticSection": {
+    "description": "Message filter: Automatic"
+  },
+  "messageFilter_duplicates": "繰り返しのメッセージ",
+  "@messageFilter_duplicates": {
+    "description": "Message filter: Repeated messages"
+  },
+  "messageFilter_duplicatesSubtitle": "同じメッセージが再送されたり、複数の送信者から届いたりしたもの",
+  "@messageFilter_duplicatesSubtitle": {
+    "description": "Message filter: The same message sent again, or by several senders"
+  },
+  "messageFilter_repeatedCharacters": "繰り返しの文字",
+  "@messageFilter_repeatedCharacters": {
+    "description": "Message filter: Repeated characters"
+  },
+  "messageFilter_repeatedCharactersSubtitle": "同じ文字の長い連続（例：「aaaaaaaaaaaaaaaaaaaa」）",
+  "@messageFilter_repeatedCharactersSubtitle": {
+    "description": "Message filter: Messages like \"aaaaaaaa\" or \"!!!!!!!!\""
+  },
+  "messageFilter_learning": "スパムのタップから学習",
+  "@messageFilter_learning": {
+    "description": "Message filter: Learn from Spam taps"
+  },
+  "messageFilter_learningSubtitle": "スパム {spam} 件、スパムではない {notSpam} 件の例",
+  "@messageFilter_learningSubtitle": {
+    "description": "Message filter: {spam} spam and {notSpam} not-spam examples",
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "学習をリセット",
+  "@messageFilter_resetLearning": {
+    "description": "Message filter: Reset learning"
+  },
+  "messageFilter_resetLearningConfirm": "「スパム」と「スパムではない」のタップから学習した内容をすべて忘れますか？ルールはそのまま残ります。",
+  "@messageFilter_resetLearningConfirm": {
+    "description": "Message filter: Forget everything learned from your Spam and Not spam taps? Your rules are kept."
+  },
+  "messageFilter_filteredMessages": "フィルターされたメッセージ ({count})",
+  "@messageFilter_filteredMessages": {
+    "description": "Message filter: Filtered messages ({count})",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "フィルターされたメッセージはありません。",
+  "@messageFilter_filteredMessagesEmpty": {
+    "description": "Message filter: Nothing has been filtered."
+  },
+  "messageFilter_ghostSingle": "隠したメッセージ · タップで表示",
+  "@messageFilter_ghostSingle": {
+    "description": "Message filter: Hidden message · Tap to view"
+  },
+  "messageFilter_ghostMany": "{count, plural, other{隠したメッセージ {count} 件 · タップで表示}}",
+  "@messageFilter_ghostMany": {
+    "description": "Message filter: {count, plural, one{{count} hidden message · Tap to view} other{{count} hidden messages · Tap to view}}",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "隠したメッセージを表示中 · タップで隠す",
+  "@messageFilter_ghostSingleExpanded": {
+    "description": "Header above one revealed filtered message; tapping it hides the message again"
+  },
+  "messageFilter_ghostManyExpanded": "{count, plural, other{隠したメッセージ {count} 件を表示中 · タップで隠す}}",
+  "@messageFilter_ghostManyExpanded": {
+    "description": "Header above a revealed run of filtered messages; tapping it hides them again",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "フィルター: 「{pattern}」に一致",
+  "@messageFilter_reasonTextRule": {
+    "description": "Message filter: Filtered: matches \"{pattern}\"",
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "フィルター: 送信者「{pattern}」",
+  "@messageFilter_reasonSenderRule": {
+    "description": "Message filter: Filtered: sender \"{pattern}\"",
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "フィルター: 繰り返しの文字",
+  "@messageFilter_reasonRepeatedCharacters": {
+    "description": "Message filter: Filtered: repeated characters"
+  },
+  "messageFilter_reasonDuplicate": "フィルター: 繰り返しのメッセージ",
+  "@messageFilter_reasonDuplicate": {
+    "description": "Message filter: Filtered: repeated message"
+  },
+  "messageFilter_reasonCrossSenderDuplicate": "フィルター: 複数の送信者から同じメッセージ",
+  "@messageFilter_reasonCrossSenderDuplicate": {
+    "description": "Message filter: Filtered: same message from several senders"
+  },
+  "messageFilter_reasonLearned": "フィルター: スパムにしたメッセージに似ています",
+  "@messageFilter_reasonLearned": {
+    "description": "Message filter: Filtered: looks like messages you marked as spam"
+  },
+  "messageFilter_reasonManual": "フィルター: あなたがスパムにしました",
+  "@messageFilter_reasonManual": {
+    "description": "Message filter: Filtered: you marked this as spam"
+  },
+  "messageFilter_notSpam": "スパムではない",
+  "@messageFilter_notSpam": {
+    "description": "Message filter: Not spam"
+  },
+  "messageFilter_hideAgain": "隠す",
+  "@messageFilter_hideAgain": {
+    "description": "Message filter: Hide"
+  },
+  "messageFilter_markSpam": "スパムにする",
+  "@messageFilter_markSpam": {
+    "description": "Message filter: Mark as spam"
+  },
+  "messageFilter_markedSpam": "スパムとしてマークしました",
+  "@messageFilter_markedSpam": {
+    "description": "Message filter: Marked as spam"
+  },
+  "messageFilter_markedNotSpam": "スパムではないとマークしました",
+  "@messageFilter_markedNotSpam": {
+    "description": "Message filter: Marked as not spam"
+  },
+  "messageFilter_filterSender": "この送信者をフィルター",
+  "@messageFilter_filterSender": {
+    "description": "Message filter: Filter this sender"
+  },
+  "messageFilter_filterSenderConfirm": "「{name}」からのメッセージをすべて隠しますか？",
+  "@messageFilter_filterSenderConfirm": {
+    "description": "Message filter: Hide all messages from \"{name}\"?",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "このようなメッセージをフィルター…",
+  "@messageFilter_filterLikeThis": {
+    "description": "Message filter: Filter messages like this…"
+  },
+  "messageFilter_channelToggle": "このチャンネルでメッセージをフィルター",
+  "@messageFilter_channelToggle": {
+    "description": "Message filter: Filter messages in this channel"
+  },
+  "messageFilter_ghostIconTooltip": "メッセージフィルターで隠されました",
+  "@messageFilter_ghostIconTooltip": {
+    "description": "Message filter: Hidden by your message filter"
+  }
 }

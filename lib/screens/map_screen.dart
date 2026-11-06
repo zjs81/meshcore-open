@@ -16,6 +16,7 @@ import '../connector/meshcore_protocol.dart';
 import '../l10n/l10n.dart';
 import '../models/app_settings.dart';
 import '../models/channel.dart';
+import '../models/map_path_trace_draft.dart';
 import '../models/contact.dart';
 import '../models/path_history.dart';
 import '../l10n/contact_localization.dart';
@@ -23,11 +24,17 @@ import '../services/app_settings_service.dart';
 import '../services/path_history_service.dart';
 import '../services/map_marker_service.dart';
 import '../services/map_tile_cache_service.dart';
+import '../services/telemetry_location_request.dart';
+import '../services/network_map/network_map_api_client.dart';
+import '../services/ui_view_state_service.dart';
 import '../storage/prefs_manager.dart';
 import '../utils/contact_search.dart';
 import '../utils/disconnect_navigation_mixin.dart';
 import '../utils/battery_utils.dart';
 import '../utils/route_transitions.dart';
+import '../widgets/map_poi_cluster.dart';
+import '../widgets/marker_label_dialog.dart';
+import '../widgets/network_map_online_layer.dart';
 import '../widgets/quick_switch_bar.dart';
 import '../widgets/sync_progress_overlay.dart';
 import '../icons/los_icon.dart';
@@ -36,13 +43,15 @@ import 'chat_screen.dart';
 import 'contacts_screen.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/mesh_ui.dart';
-import '../widgets/repeater_login_dialog.dart';
-import '../widgets/room_login_dialog.dart';
+import '../widgets/node_info_sheet.dart';
+import '../widgets/set_my_location_dialog.dart';
 import '../helpers/guessed_location_estimator.dart';
+import '../helpers/marker_message.dart';
 import '../helpers/snack_bar_builder.dart';
-import 'repeater_hub_screen.dart';
+import '../helpers/utf8_length_limiter.dart';
 import 'settings_screen.dart';
 import 'line_of_sight_map_screen.dart';
+import '../theme/theme_icons.dart';
 
 class MapScreen extends StatefulWidget {
   final LatLng? highlightPosition;
@@ -77,21 +86,27 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
 
   final MapController _mapController = MapController();
   final MapMarkerService _markerService = MapMarkerService();
+  final NetworkMapOnlineController _online = NetworkMapOnlineController();
   final Set<String> _hiddenMarkerIds = {};
   Set<String> _removedMarkerIds = {};
-  bool _isBuildingPathTrace = false;
+  late final MapPathTraceDraft _traceDraft = context
+      .read<UiViewStateService>()
+      .mapPathTrace;
+  bool get _isBuildingPathTrace => _traceDraft.active;
+  set _isBuildingPathTrace(bool value) => _traceDraft.active = value;
   bool _isSelectingPoi = false;
   bool _hasInitializedMap = false;
   bool _removedMarkersLoaded = false;
-  final List<int> _pathTrace = [];
-  final List<int> _pathTraceHopWidths = [];
-  final List<Contact> _pathTraceContacts = [];
-  final List<LatLng> _points = [];
+  List<int> get _pathTrace => _traceDraft.pathBytes;
+  List<int> get _pathTraceHopWidths => _traceDraft.hopWidths;
+  List<Contact> get _pathTraceContacts => _traceDraft.contacts;
+  List<LatLng> get _points => _traceDraft.points;
   final List<Polyline> _polylines = [];
   bool _statsExpanded = false;
   bool _showNodeLabels = true;
   double _zoom = 10.0;
   String? _selectedKey;
+  String? _locatingKey;
   LatLng? _selectedGuessPos;
   _Freshness _freshness = _Freshness.all;
   final TextEditingController _searchController = TextEditingController();
@@ -110,6 +125,12 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
   List<_SharedMarker> _cachedSharedMarkers = const [];
   _NodeMarkersCacheKey? _nodeMarkersCacheKey;
   List<Marker> _cachedNodeMarkers = const [];
+  // Online/recent status is derived from DateTime.now(); rebuild periodically
+  // so markers age even when the connector stays quiet.
+  Timer? _ageTimer;
+  // Camera computed from the visible points; only needed until the map has
+  // been positioned once.
+  ({LatLng center, double zoom})? _initialCamera;
 
   static const String _lastCameraKey = 'map_last_camera';
 
@@ -142,6 +163,9 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
 
   @override
   void dispose() {
+    _ageTimer?.cancel();
+    _online.removeListener(_onOnlineChanged);
+    _online.dispose();
     _saveLastCamera();
     _searchController.dispose();
     _searchFocus.dispose();
@@ -153,29 +177,35 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
 
   bool get _useDarkOverlay => Theme.of(context).brightness == Brightness.dark;
 
-  Color get _overlayPanelColor => _useDarkOverlay
+  /// The stock dark theme keeps the map's fixed high-contrast panels; custom
+  /// themes (and light mode) draw panels in the theme's own colors.
+  bool get _usePaletteOverlay =>
+      _useDarkOverlay && !MeshMapTheme.of(context).followsTheme;
+
+  Color get _overlayPanelColor => _usePaletteOverlay
       ? MapPalette.panelDark
       : _overlayScheme.surfaceContainerLow.withValues(alpha: 0.96);
 
   Color get _overlayPrimaryTextColor =>
-      _useDarkOverlay ? MapPalette.textPrimary : _overlayScheme.onSurface;
+      _usePaletteOverlay ? MapPalette.textPrimary : _overlayScheme.onSurface;
 
-  Color get _overlaySecondaryTextColor => _useDarkOverlay
+  Color get _overlaySecondaryTextColor => _usePaletteOverlay
       ? MapPalette.textSecondary
       : _overlayScheme.onSurfaceVariant;
 
-  Color get _overlayMutedTextColor =>
-      _useDarkOverlay ? MapPalette.textMuted : _overlayScheme.onSurfaceVariant;
+  Color get _overlayMutedTextColor => _usePaletteOverlay
+      ? MapPalette.textMuted
+      : _overlayScheme.onSurfaceVariant;
 
   Color get _overlayBorderColor =>
-      _useDarkOverlay ? MapPalette.border : _overlayScheme.outlineVariant;
+      _usePaletteOverlay ? MapPalette.border : _overlayScheme.outlineVariant;
 
-  Color get _overlayShadowColor => _useDarkOverlay
+  Color get _overlayShadowColor => _usePaletteOverlay
       ? MapPalette.markerShadow
-      : Colors.black.withValues(alpha: 0.18);
+      : MapPalette.markerShadow.withValues(alpha: 0.18);
 
   _NodeAge _ageOf(Contact contact) {
-    final d = DateTime.now().difference(contact.lastSeen);
+    final d = DateTime.now().difference(contact.lastHeard);
     if (d.inMinutes <= 60) return _NodeAge.online;
     if (d.inHours <= 24) return _NodeAge.recent;
     return _NodeAge.stale;
@@ -199,10 +229,58 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     });
   }
 
+  void _onOnlineChanged() {
+    if (mounted) setState(() {});
+  }
+
+  bool _showsOnline(MapSourceOption source) => source != MapSourceOption.local;
+
+  void _requestOnlineData() {
+    try {
+      _online.requestBounds(
+        _mapController.camera.visibleBounds,
+        fetchLinks: context
+            .read<AppSettingsService>()
+            .settings
+            .mapShowOnlineLinks,
+      );
+    } catch (_) {
+      // Camera not ready yet; onMapReady requests once it is.
+    }
+  }
+
+  void _setMapSource(MapSourceOption source) {
+    context.read<UiViewStateService>().setMapSource(source);
+    if (_showsOnline(source)) {
+      _requestOnlineData();
+    } else {
+      _online.cancel();
+    }
+  }
+
+  void _showOnlineRepeater(
+    BuildContext context,
+    MeshCoreConnector connector,
+    NetworkMapRepeater repeater,
+  ) {
+    showNetworkMapRepeaterSheet(
+      context,
+      connector: connector,
+      repeater: repeater,
+      onManage: (contact) => contact.type == advTypeRoom
+          ? showRoomLoginDialog(context, contact, manage: true)
+          : showRepeaterLoginDialog(context, contact),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _loadRemovedMarkers();
+    _online.addListener(_onOnlineChanged);
+    _ageTimer = Timer.periodic(const Duration(seconds: 60), (_) {
+      if (mounted) setState(() {});
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<MeshCoreConnector>().getChannels();
@@ -264,6 +342,61 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     return zoom.clamp(4.0, 15.0);
   }
 
+  /// Centre and zoom that frame [allPoints], ignoring outliers more than two
+  /// standard deviations away. Returns null when there are no points.
+  ({LatLng center, double zoom})? _cameraForPoints(List<LatLng> allPoints) {
+    if (allPoints.isEmpty) return null;
+    if (allPoints.length < 3) {
+      double avgLat = 0.0;
+      double avgLon = 0.0;
+      for (final point in allPoints) {
+        avgLat += point.latitude;
+        avgLon += point.longitude;
+      }
+      return (
+        center: LatLng(avgLat / allPoints.length, avgLon / allPoints.length),
+        zoom: 12.0,
+      );
+    }
+    final latValues = allPoints.map((p) => p.latitude).toList();
+    final lonValues = allPoints.map((p) => p.longitude).toList();
+
+    final meanLat = latValues.reduce((a, b) => a + b) / latValues.length;
+    final meanLon = lonValues.reduce((a, b) => a + b) / lonValues.length;
+    final latStdDev = _standardDeviation(latValues);
+    final lonStdDev = _standardDeviation(lonValues);
+
+    final filteredPoints = allPoints
+        .where(
+          (p) =>
+              (p.latitude - meanLat).abs() <= latStdDev * 2 &&
+              (p.longitude - meanLon).abs() <= lonStdDev * 2,
+        )
+        .toList();
+
+    if (filteredPoints.isEmpty) {
+      return (
+        center: LatLng(meanLat, meanLon),
+        zoom: _zoomFromStdDev(latStdDev, lonStdDev),
+      );
+    }
+    final filteredLatValues = filteredPoints.map((p) => p.latitude).toList();
+    final filteredLonValues = filteredPoints.map((p) => p.longitude).toList();
+    final avgLat = filteredLatValues.reduce((a, b) => a + b);
+    final avgLon = filteredLonValues.reduce((a, b) => a + b);
+    return (
+      center: LatLng(
+        avgLat / filteredPoints.length,
+        avgLon / filteredPoints.length,
+      ),
+      // Use std deviation of filtered points for zoom
+      zoom: _zoomFromStdDev(
+        _standardDeviation(filteredLatValues),
+        _standardDeviation(filteredLonValues),
+      ),
+    );
+  }
+
   bool _isDesktopPlatform(TargetPlatform platform) {
     return platform == TargetPlatform.linux ||
         platform == TargetPlatform.windows ||
@@ -280,8 +413,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
 
   Widget _buildControlRail(
     BuildContext context, {
-    required LatLng center,
-    required double zoom,
+    required ({LatLng center, double zoom}) Function() computeCamera,
     required MeshCoreConnector connector,
   }) {
     final hasSelf =
@@ -324,11 +456,14 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                 color: _overlayPrimaryTextColor,
                 icon: const Icon(Icons.crop_free),
                 tooltip: context.l10n.map_centerMap,
-                onPressed: () => _mapController.move(center, zoom),
+                onPressed: () {
+                  final camera = computeCamera();
+                  _mapController.move(camera.center, camera.zoom);
+                },
               ),
               if (hasSelf)
                 IconButton(
-                  color: MapPalette.selected,
+                  color: MeshMapTheme.of(context).accent,
                   icon: const Icon(Icons.my_location),
                   tooltip: context.l10n.map_centerOnMe,
                   onPressed: () => _mapController.move(
@@ -386,6 +521,11 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         final pathHistoryVersion = context.select<PathHistoryService, int>(
           (service) => service.version,
         );
+        final mapSource = context.select<UiViewStateService, MapSourceOption>(
+          (service) => service.mapSource,
+        );
+        final showLocal = mapSource != MapSourceOption.online;
+        final showOnline = _showsOnline(mapSource);
         final settingsService = context.read<AppSettingsService>();
         final pathHistory = context.read<PathHistoryService>();
         final tileCache = context.read<MapTileCacheService>();
@@ -416,7 +556,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         final filteredByTime = settings.mapTimeFilterHours == 0
             ? contacts
             : contacts.where((c) {
-                final hoursSinceLastSeen = now.difference(c.lastSeen).inHours;
+                final hoursSinceLastSeen = now.difference(c.lastHeard).inHours;
                 return hoursSinceLastSeen <= settings.mapTimeFilterHours;
               }).toList();
 
@@ -509,7 +649,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                   Polyline(
                     points: _points,
                     strokeWidth: 4,
-                    color: MapPalette.selected,
+                    color: MeshMapTheme.of(context).accent,
                   ),
                 ]
               : <Polyline>[],
@@ -536,84 +676,32 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         }
 
         // Only the first frame's camera matters; afterwards reuse it instead
-        // of re-reading prefs on every rebuild.
-        final (center: fallbackCenter, zoom: fallbackZoom) = _hasInitializedMap
-            ? (_cachedFallbackCamera ??= _fallbackCamera(connector))
-            : _fallbackCamera(connector);
-        LatLng center = fallbackCenter;
-        double initialZoom = fallbackZoom;
-        if (contactsWithLocation.isNotEmpty || sharedMarkers.isNotEmpty) {
-          final allPoints = [
-            ...contactsWithLocation.map(
-              (c) => LatLng(c.latitude!, c.longitude!),
-            ),
-            ...sharedMarkers.map((m) => m.position),
-          ];
-          if (allPoints.length >= 3) {
-            final latValues = allPoints.map((p) => p.latitude).toList();
-            final lonValues = allPoints.map((p) => p.longitude).toList();
-
-            final meanLat =
-                latValues.reduce((a, b) => a + b) / latValues.length;
-            final meanLon =
-                lonValues.reduce((a, b) => a + b) / lonValues.length;
-            final latStdDev = _standardDeviation(latValues);
-            final lonStdDev = _standardDeviation(lonValues);
-
-            final filteredPoints = allPoints
-                .where(
-                  (p) =>
-                      (p.latitude - meanLat).abs() <= latStdDev * 2 &&
-                      (p.longitude - meanLon).abs() <= lonStdDev * 2,
-                )
-                .toList();
-
-            if (filteredPoints.isNotEmpty) {
-              final filteredLatValues = filteredPoints
-                  .map((p) => p.latitude)
-                  .toList();
-              final filteredLonValues = filteredPoints
-                  .map((p) => p.longitude)
-                  .toList();
-              final avgLat = filteredLatValues.reduce((a, b) => a + b);
-              final avgLon = filteredLonValues.reduce((a, b) => a + b);
-              center = LatLng(
-                avgLat / filteredPoints.length,
-                avgLon / filteredPoints.length,
-              );
-              // Use std deviation of filtered points for zoom
-              final filteredLatStdDev = _standardDeviation(filteredLatValues);
-              final filteredLonStdDev = _standardDeviation(filteredLonValues);
-              initialZoom = _zoomFromStdDev(
-                filteredLatStdDev,
-                filteredLonStdDev,
-              );
-            } else {
-              center = LatLng(meanLat, meanLon);
-              initialZoom = _zoomFromStdDev(latStdDev, lonStdDev);
-            }
-          } else {
-            double avgLat = 0.0;
-            double avgLon = 0.0;
-            for (final point in allPoints) {
-              avgLat += point.latitude;
-              avgLon += point.longitude;
-            }
-            center = LatLng(
-              avgLat / allPoints.length,
-              avgLon / allPoints.length,
-            );
-            initialZoom = 12.0;
+        // of re-reading prefs and re-running the spread statistics on every
+        // rebuild. The "center map" control recomputes on demand.
+        ({LatLng center, double zoom}) computeCamera() {
+          final fallback = _hasInitializedMap
+              ? (_cachedFallbackCamera ??= _fallbackCamera(connector))
+              : _fallbackCamera(connector);
+          if (highlightPosition != null) {
+            return (center: highlightPosition, zoom: widget.highlightZoom);
           }
+          return _cameraForPoints([
+                ...contactsWithLocation.map(
+                  (c) => LatLng(c.latitude!, c.longitude!),
+                ),
+                ...sharedMarkers.map((m) => m.position),
+              ]) ??
+              fallback;
         }
-        if (highlightPosition != null) {
-          center = highlightPosition;
-          initialZoom = widget.highlightZoom;
-        }
+
+        final (center: center, zoom: initialZoom) = _hasInitializedMap
+            ? (_initialCamera ??= computeCamera())
+            : computeCamera();
 
         // Re center map after removed markers have loaded
         if (!_hasInitializedMap && _removedMarkersLoaded) {
           _hasInitializedMap = true;
+          _initialCamera = (center: center, zoom: initialZoom);
           _showNodeLabels = initialZoom >= _labelZoomThreshold;
           _zoom = initialZoom;
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -623,11 +711,19 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
           });
         }
 
-        final allowBack = !connector.isConnected;
+        // Opened as a detail screen (e.g. from a chat's location link): let the
+        // user go back. As a quick-switch root, keep the tab-like behaviour.
+        final isDetailScreen = !widget.hideBackButton;
+        final allowBack = isDetailScreen || !connector.isConnected;
 
         final visibleContacts = _filterContactsBySettings(
           contactsWithLocation,
           settings,
+        );
+        final visibleOnlineRepeaters = _filterOnlineRepeatersBySettings(
+          _online.repeaters,
+          settings,
+          showGuessedLocations: settings.mapShowGuessedLocations,
         );
         Contact? selectedContact;
         if (_selectedKey != null) {
@@ -648,7 +744,10 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
             .length;
 
         return PopScope(
-          canPop: allowBack,
+          canPop: allowBack && !_isBuildingPathTrace,
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop && _isBuildingPathTrace) _closePathTrace();
+          },
           child: Scaffold(
             appBar: AppBar(
               backgroundColor: scheme.surface,
@@ -656,6 +755,9 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
               title: AppBarTitle(context.l10n.map_title),
               centerTitle: true,
               automaticallyImplyLeading: false,
+              leading: isDetailScreen && Navigator.canPop(context)
+                  ? BackButton(onPressed: () => Navigator.maybePop(context))
+                  : null,
               bottom: const SyncProgressAppBarBottom(),
               actions: [
                 PopupMenuButton(
@@ -671,7 +773,8 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                             Text(context.l10n.contacts_pathTrace),
                           ],
                         ),
-                        onTap: () => _startPath(
+                        onTap: () => _openPathTrace(
+                          connector,
                           LatLng(
                             connector.selfLatitude!,
                             connector.selfLongitude!,
@@ -698,7 +801,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                                   connector.selfLatitude!,
                                   connector.selfLongitude!,
                                 ),
-                                color: MapPalette.selected,
+                                color: MeshMapTheme.of(context).accent,
                                 icon: Icons.person_pin_circle,
                               ),
                             );
@@ -708,8 +811,8 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                               LineOfSightEndpoint(
                                 label: c.name,
                                 point: LatLng(c.latitude!, c.longitude!),
-                                color: _getNodeColor(c.type),
-                                icon: _getNodeIcon(c.type),
+                                color: mapNodeTypeColor(c.type),
+                                icon: mapNodeTypeIcon(c.type),
                               ),
                             );
                           }
@@ -740,7 +843,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     PopupMenuItem(
                       child: Row(
                         children: [
-                          const Icon(Icons.settings),
+                          const ThemedIcon(ThemeIconSlot.settings),
                           const SizedBox(width: 8),
                           Text(context.l10n.settings_title),
                         ],
@@ -810,10 +913,16 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     onSecondaryTap: (_, latLng) {
                       _handleMapContextPress(context, connector, latLng);
                     },
+                    onMapReady: () {
+                      if (showOnline) _requestOnlineData();
+                    },
                     onMapEvent: (event) {
                       if (event is MapEventMoveEnd ||
-                          event is MapEventFlingAnimationEnd) {
+                          event is MapEventFlingAnimationEnd ||
+                          event is MapEventScrollWheelZoom ||
+                          event is MapEventDoubleTapZoomEnd) {
                         _saveLastCamera();
+                        if (showOnline) _requestOnlineData();
                       }
                     },
                     onPositionChanged: (camera, hasGesture) {
@@ -836,6 +945,17 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                       PolylineLayer(polylines: _polylines),
                     if (sharedMarkerPolylines.isNotEmpty)
                       PolylineLayer(polylines: sharedMarkerPolylines),
+                    if (showOnline)
+                      ...buildNetworkMapOnlineLayers(
+                        controller: _online,
+                        repeaters: visibleOnlineRepeaters,
+                        showLinks: settings.mapShowOnlineLinks,
+                        localMarkerKeys: showLocal
+                            ? {for (final c in visibleContacts) c.publicKeyHex}
+                            : const {},
+                        onTap: (repeater) =>
+                            _showOnlineRepeater(context, connector, repeater),
+                      ),
                     MarkerLayer(
                       markers: [
                         if (highlightPosition != null)
@@ -862,76 +982,53 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                                 ),
                                 child: const Icon(
                                   Icons.location_on,
-                                  color: Colors.white,
+                                  color: MapPalette.markerOutline,
                                   size: 25,
                                 ),
                               ),
                             ),
                           ),
-                        if (!settings.mapShowOverlaps &&
+                        if (showLocal &&
+                            !settings.mapShowOverlaps &&
                             (_zoom >= _guessedZoomThreshold ||
                                 _isBuildingPathTrace))
                           ..._buildGuessedMarker(
                             guessedLocations,
                             showLabels: _showNodeLabels,
                           ),
-                        ..._buildNodeMarkersCached(
-                          visibleContacts,
-                          settings,
-                          connectorSnapshot.contactsSignature,
-                          connectorSnapshot.batterySignature,
-                          _freshness,
-                          settings.mapTimeFilterHours,
-                          settings.mapKeyPrefixEnabled,
-                          settings.mapKeyPrefix,
-                          settings.mapShowDiscoveryContacts,
-                          Object.hashAllUnordered(
-                            settings.batteryChemistryByRepeaterId.entries.map(
-                              (entry) => Object.hash(entry.key, entry.value),
-                            ),
-                          ),
-                          showLabels: _showNodeLabels,
-                          selectedContact: selectedContact,
-                        ),
-                        ...sharedMarkers.map(_buildSharedMarker),
-                        if (connector.selfLatitude != null &&
-                            connector.selfLongitude != null)
-                          Marker(
-                            point: LatLng(
-                              connector.selfLatitude!,
-                              connector.selfLongitude!,
-                            ),
-                            width: 40,
-                            height: 40,
-                            child: IgnorePointer(
-                              ignoring: true,
-                              child: Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: MapPalette.panelDark,
-                                  border: Border.all(
-                                    color: MapPalette.markerOutline,
-                                    width: 2.5,
-                                  ),
-                                  boxShadow: [
-                                    const BoxShadow(
-                                      color: MapPalette.markerShadow,
-                                      blurRadius: 8,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                alignment: Alignment.center,
-                                child: const Icon(
-                                  Icons.person_pin_circle,
-                                  color: MapPalette.selected,
-                                  size: 22,
-                                ),
+                        if (showLocal)
+                          ..._buildNodeMarkersCached(
+                            visibleContacts,
+                            settings,
+                            connectorSnapshot.contactsSignature,
+                            connectorSnapshot.batterySignature,
+                            _freshness,
+                            settings.mapTimeFilterHours,
+                            settings.mapKeyPrefixEnabled,
+                            settings.mapKeyPrefix,
+                            settings.mapShowDiscoveryContacts,
+                            Object.hashAllUnordered(
+                              settings.batteryChemistryByRepeaterId.entries.map(
+                                (entry) => Object.hash(entry.key, entry.value),
                               ),
                             ),
+                            showLabels: _showNodeLabels,
+                            selectedContact: selectedContact,
                           ),
+                        ..._buildPoiAndSelfMarkers(
+                          sharedMarkers,
+                          selfPosition:
+                              connector.selfLatitude != null &&
+                                  connector.selfLongitude != null
+                              ? LatLng(
+                                  connector.selfLatitude!,
+                                  connector.selfLongitude!,
+                                )
+                              : null,
+                          clusterPois:
+                              !settings.mapShowOverlaps &&
+                              !_isBuildingPathTrace,
+                        ),
                         if (_showNodeLabels &&
                             connector.selfLatitude != null &&
                             connector.selfLongitude != null)
@@ -949,13 +1046,13 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                 if (selectedContact == null)
                   _buildControlRail(
                     context,
-                    center: center,
-                    zoom: initialZoom,
+                    computeCamera: computeCamera,
                     connector: connector,
                   ),
                 if (!_isBuildingPathTrace)
                   _buildTopOverlay(
                     context,
+                    mapSource: mapSource,
                     connector: connector,
                     settingsService: settingsService,
                     allContacts: allContacts,
@@ -972,7 +1069,14 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     pinCount: sharedMarkers.length,
                   ),
                 if (_isBuildingPathTrace) _buildPathTraceOverlay(),
-                if (contactsWithLocation.isEmpty &&
+                if (showOnline &&
+                    !_isBuildingPathTrace &&
+                    selectedContact == null &&
+                    (_online.state == NetworkMapLoadState.zoomIn ||
+                        _online.state == NetworkMapLoadState.error))
+                  _buildOnlineHint(context, _online.state)
+                else if (showLocal &&
+                    contactsWithLocation.isEmpty &&
                     selectedContact == null &&
                     !_isBuildingPathTrace)
                   Positioned(
@@ -998,7 +1102,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     _handleQuickSwitch(index, context),
                 contactsUnreadCount: connector.getTotalContactsUnreadCount(),
                 channelsUnreadCount: connector.getTotalChannelsUnreadCount(),
-                highContrast: _useDarkOverlay,
+                highContrast: _usePaletteOverlay,
               ),
             ),
             floatingActionButton:
@@ -1006,7 +1110,11 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                 ? FloatingActionButton(
                     onPressed: () => _showFilterSheet(context, settingsService),
                     tooltip: context.l10n.map_filterNodes,
-                    child: const Icon(Icons.filter_list),
+                    child: Badge.count(
+                      count: _activeFilterCount(settings),
+                      isLabelVisible: _activeFilterCount(settings) > 0,
+                      child: const Icon(Icons.filter_list),
+                    ),
                   )
                 : null,
           ),
@@ -1095,10 +1203,17 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     final eligible = candidates
         .where((c) => !c.hasLocation && c.lastSeen.isAfter(cutoff))
         .toList();
-    for (final c in eligible) {
-      final key = c.publicKeyHex;
-      if (pathHistory.isCached(key) || _storedPaths.containsKey(key)) continue;
-      _storedPaths[key] = await pathHistory.readStoredPaths(key);
+    final toLoad = <String>{
+      for (final c in eligible)
+        if (!pathHistory.isCached(c.publicKeyHex) &&
+            !_storedPaths.containsKey(c.publicKeyHex))
+          c.publicKeyHex,
+    }.toList();
+    if (toLoad.isNotEmpty) {
+      final loaded = await Future.wait(toLoad.map(pathHistory.readStoredPaths));
+      for (var i = 0; i < toLoad.length; i++) {
+        _storedPaths[toLoad[i]] = loaded[i];
+      }
     }
     if (!mounted) {
       _guessInFlight = false;
@@ -1222,17 +1337,17 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         continue;
       }
 
-      final color = _getNodeColor(guess.contact.type);
+      final color = mapNodeTypeColor(guess.contact.type);
       final marker = Marker(
         point: guess.position,
         width: 48,
         height: 48,
         child: GestureDetector(
           onLongPress: () {
-            if (_isBuildingPathTrace) _showNodeInfo(context, guess.contact);
+            if (_isBuildingPathTrace) showNodeInfoSheet(context, guess.contact);
           },
           onSecondaryTap: () {
-            if (_isBuildingPathTrace) _showNodeInfo(context, guess.contact);
+            if (_isBuildingPathTrace) showNodeInfoSheet(context, guess.contact);
           },
           onTap: () => _isBuildingPathTrace
               ? _addToPath(context, guess.contact, position: guess.position)
@@ -1321,6 +1436,43 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
       }
     }
     return filtered;
+  }
+
+  List<NetworkMapRepeater> _filterOnlineRepeatersBySettings(
+    List<NetworkMapRepeater> repeaters,
+    dynamic settings, {
+    required bool showGuessedLocations,
+  }) {
+    final keyPrefix = settings.mapKeyPrefix.trim().toLowerCase();
+    final now = DateTime.now();
+
+    return repeaters.where((repeater) {
+      if (repeater.isEstimated && !showGuessedLocations) return false;
+
+      final typeVisible = switch (repeater.type) {
+        advTypeRepeater => settings.mapShowRepeaters,
+        advTypeChat => settings.mapShowChatNodes,
+        _ => settings.mapShowOtherNodes,
+      };
+      if (!typeVisible) return false;
+
+      final freshnessVisible = switch (_freshness) {
+        _Freshness.all => true,
+        _Freshness.online => repeater.status == NetworkMapRepeaterStatus.active,
+        _Freshness.recent => repeater.status != NetworkMapRepeaterStatus.stale,
+        _Freshness.stale => repeater.status == NetworkMapRepeaterStatus.stale,
+      };
+      if (!freshnessVisible) return false;
+
+      if (settings.mapTimeFilterHours > 0 && repeater.lastSeen != null) {
+        final age = now.difference(repeater.lastSeen!).inHours;
+        if (age > settings.mapTimeFilterHours) return false;
+      }
+
+      return !settings.mapKeyPrefixEnabled ||
+          keyPrefix.isEmpty ||
+          repeater.key.toLowerCase().startsWith(keyPrefix);
+    }).toList();
   }
 
   List<Marker> _buildNodeMarkers(
@@ -1452,46 +1604,57 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
       point: LatLng(contact.latitude!, contact.longitude!),
       width: size,
       height: size,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onLongPress: () {
-          if (_isBuildingPathTrace) _showNodeInfo(context, contact);
-        },
-        onSecondaryTap: () {
-          if (_isBuildingPathTrace) _showNodeInfo(context, contact);
-        },
-        onTap: () => _isBuildingPathTrace
-            ? _addToPath(context, contact)
-            : _selectNode(contact),
-        child: Center(
-          child: dot && !selected
-              ? Container(
-                  width: 15,
-                  height: 15,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: baseColor,
-                    border: Border.all(
-                      color: MapPalette.markerOutline,
-                      width: 2,
-                    ),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: MapPalette.markerShadow,
-                        blurRadius: 6,
-                        offset: Offset(0, 2),
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: context.l10n.map_nodeMarkerSemantics(
+          contact.name,
+          contact.typeLabel(context.l10n),
+          _ageLabel(age),
+        ),
+        excludeSemantics: true,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onLongPress: () {
+            if (_isBuildingPathTrace) showNodeInfoSheet(context, contact);
+          },
+          onSecondaryTap: () {
+            if (_isBuildingPathTrace) showNodeInfoSheet(context, contact);
+          },
+          onTap: () => _isBuildingPathTrace
+              ? _addToPath(context, contact)
+              : _selectNode(contact),
+          child: Center(
+            child: dot && !selected
+                ? Container(
+                    width: 15,
+                    height: 15,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: baseColor,
+                      border: Border.all(
+                        color: MapPalette.markerOutline,
+                        width: 2,
                       ),
-                    ],
+                      boxShadow: const [
+                        BoxShadow(
+                          color: MapPalette.markerShadow,
+                          blurRadius: 6,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  )
+                : _buildNodeMarkerWidget(
+                    color: baseColor,
+                    icon: mapNodeTypeIcon(contact.type),
+                    slot: mapMarkerSlotForNodeType(contact.type),
+                    selected: selected,
+                    stale: stale,
+                    online: online,
+                    batteryLow: batteryLow,
                   ),
-                )
-              : _buildNodeMarkerWidget(
-                  color: baseColor,
-                  icon: _getNodeIcon(contact.type),
-                  selected: selected,
-                  stale: stale,
-                  online: online,
-                  batteryLow: batteryLow,
-                ),
+          ),
         ),
       ),
     );
@@ -1542,9 +1705,9 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
               Text(
                 '$count',
                 style: MeshTheme.mono(
-                  fontSize: count >= 100 ? 11.5 : 13.5,
+                  fontSize: count >= 100 ? 13 : 15,
                   fontWeight: FontWeight.w800,
-                  color: Colors.white,
+                  color: MapPalette.markerOutline,
                 ),
               ),
               if (online > 0)
@@ -1555,7 +1718,10 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: MapPalette.online,
-                    border: Border.all(color: Colors.white, width: 1),
+                    border: Border.all(
+                      color: MapPalette.markerOutline,
+                      width: 1,
+                    ),
                   ),
                 ),
             ],
@@ -1587,16 +1753,15 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
   Marker _buildNodeLabelMarker({required LatLng point, required String label}) {
     return Marker(
       point: point,
-      width: 120,
-      height: 24,
+      width: 140,
+      height: 26,
       alignment: Alignment.topCenter,
       child: IgnorePointer(
         child: Transform.translate(
           offset: const Offset(0, -20),
-          child: FittedBox(
-            fit: BoxFit.contain,
+          child: Center(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
               decoration: BoxDecoration(
                 color: _overlayPanelColor,
                 borderRadius: BorderRadius.circular(MeshRadii.xs),
@@ -1615,10 +1780,10 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: MeshTheme.mono(
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: FontWeight.w700,
                   color: _overlayPrimaryTextColor,
-                ),
+                ).copyWith(height: 1.15),
               ),
             ),
           ),
@@ -1627,19 +1792,12 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     );
   }
 
-  Color _getNodeColor(int type) {
-    switch (type) {
-      case advTypeChat:
-        return MapPalette.selected;
-      case advTypeRepeater:
-        return MapPalette.repeater;
-      case advTypeRoom:
-        return MapPalette.router;
-      case advTypeSensor:
-        return MapPalette.sensor;
-      default:
-        return MapPalette.offline;
-    }
+  /// A node type's icon as the theme shows it on the map.
+  Widget _nodeTypeIcon(int type, {required double size, Color? color}) {
+    final slot = mapMarkerSlotForNodeType(type);
+    return slot == null
+        ? Icon(mapNodeTypeIcon(type), size: size, color: color)
+        : ThemedIcon(slot, size: size, color: color);
   }
 
   Color _markerColor(Contact contact) {
@@ -1668,24 +1826,52 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     return estimateBatteryPercentFromMillivolts(millivolts, chemistry) <= 20;
   }
 
-  IconData _getNodeIcon(int type) {
-    switch (type) {
-      case advTypeChat:
-        return Icons.person;
-      case advTypeRepeater:
-        return Icons.router;
-      case advTypeRoom:
-        return Icons.meeting_room;
-      case advTypeSensor:
-        return Icons.sensors;
-      default:
-        return Icons.device_unknown;
-    }
+  /// A theme's picture drawn as a whole round marker, with the usual
+  /// shadow and the accent ring when selected.
+  Widget _pictureMarker(
+    ImageProvider picture, {
+    required double size,
+    required bool selected,
+    required IconData fallback,
+  }) {
+    final accent = MeshMapTheme.of(context).accent;
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: selected ? Border.all(color: accent, width: 3) : null,
+        boxShadow: [
+          const BoxShadow(
+            color: MapPalette.markerShadow,
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          ),
+          if (selected)
+            BoxShadow(
+              color: accent.withValues(alpha: 0.75),
+              blurRadius: 14,
+              spreadRadius: 3,
+            ),
+        ],
+      ),
+      child: ClipOval(
+        child: Image(
+          image: picture,
+          fit: BoxFit.cover,
+          gaplessPlayback: true,
+          filterQuality: FilterQuality.medium,
+          errorBuilder: (_, _, _) =>
+              Icon(fallback, color: accent, size: size * 0.55),
+        ),
+      ),
+    );
   }
 
   Widget _buildNodeMarkerWidget({
     required Color color,
     required IconData icon,
+    ThemeIconSlot? slot,
     bool selected = false,
     bool stale = false,
     bool online = false,
@@ -1698,37 +1884,57 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         : stale
         ? MapPalette.offline
         : MapPalette.stale;
+    final override = slot == null ? null : MeshIconTheme.of(context)[slot];
+    final picture = themePictureOf(override);
+    final namedIcon = override?.icon == null
+        ? null
+        : kThemeIconCatalog[override!.icon];
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
-        Container(
-          width: selected ? 44 : 36,
-          height: selected ? 44 : 36,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: selected ? MapPalette.selected : color,
-            border: Border.all(
-              color: MapPalette.markerOutline,
-              width: selected ? 3 : 2.5,
-            ),
-            boxShadow: [
-              const BoxShadow(
-                color: MapPalette.markerShadow,
-                blurRadius: 8,
-                offset: Offset(0, 3),
+        if (picture != null)
+          // Pictures carry more detail than a glyph, so they get more room.
+          _pictureMarker(
+            picture,
+            size: selected ? 50 : 42,
+            selected: selected,
+            fallback: icon,
+          )
+        else
+          Container(
+            width: selected ? 44 : 36,
+            height: selected ? 44 : 36,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: selected ? MeshMapTheme.of(context).accent : color,
+              border: Border.all(
+                color: MapPalette.markerOutline,
+                width: selected ? 3 : 2.5,
               ),
-              if (selected)
-                BoxShadow(
-                  color: MapPalette.selected.withValues(alpha: 0.75),
-                  blurRadius: 14,
-                  spreadRadius: 3,
+              boxShadow: [
+                const BoxShadow(
+                  color: MapPalette.markerShadow,
+                  blurRadius: 8,
+                  offset: Offset(0, 3),
                 ),
-            ],
+                if (selected)
+                  BoxShadow(
+                    color: MeshMapTheme.of(
+                      context,
+                    ).accent.withValues(alpha: 0.75),
+                    blurRadius: 14,
+                    spreadRadius: 3,
+                  ),
+              ],
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              namedIcon ?? icon,
+              color: MapPalette.markerOutline,
+              size: selected ? 22 : 19,
+            ),
           ),
-          alignment: Alignment.center,
-          child: Icon(icon, color: Colors.white, size: selected ? 22 : 19),
-        ),
         Positioned(
           right: selected ? -1 : -2,
           bottom: selected ? 0 : -2,
@@ -1742,7 +1948,11 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
             ),
             alignment: Alignment.center,
             child: batteryLow
-                ? const Icon(Icons.battery_alert, size: 10, color: Colors.white)
+                ? const Icon(
+                    Icons.battery_alert,
+                    size: 12,
+                    color: MapPalette.markerOutline,
+                  )
                 : null,
           ),
         ),
@@ -1750,19 +1960,27 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     );
   }
 
-  Widget _buildLegendItem(IconData icon, String label, Color color) {
+  Widget _buildLegendItem(
+    IconData icon,
+    String label,
+    Color color, {
+    ThemeIconSlot? slot,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1.5),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 15, color: color),
+          if (slot != null)
+            ThemedIcon(slot, size: 18, color: color)
+          else
+            Icon(icon, size: 18, color: color),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               label,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: _overlaySecondaryTextColor,
               ),
@@ -1798,6 +2016,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
 
   Widget _buildTopOverlay(
     BuildContext context, {
+    required MapSourceOption mapSource,
     required MeshCoreConnector connector,
     required AppSettingsService settingsService,
     required List<Contact> allContacts,
@@ -1866,7 +2085,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                       color: _overlayPrimaryTextColor,
                       fontWeight: FontWeight.w600,
                     ),
-                    cursorColor: MapPalette.selected,
+                    cursorColor: MeshMapTheme.of(context).accent,
                     onChanged: (value) {
                       setState(() => _searchQuery = value);
                     },
@@ -1882,24 +2101,22 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
                   onTap: () => setState(() => _statsExpanded = !_statsExpanded),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 11,
-                    ),
+                  child: Container(
+                    constraints: const BoxConstraints(minHeight: 46),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.hub,
-                          size: 15,
-                          color: MapPalette.selected,
+                          size: 18,
+                          color: MeshMapTheme.of(context).accent,
                         ),
                         const SizedBox(width: 6),
                         Text(
                           '$visibleCount',
                           style: MeshTheme.mono(
-                            fontSize: 13,
+                            fontSize: 15,
                             fontWeight: FontWeight.w700,
                             color: _overlayPrimaryTextColor,
                           ),
@@ -1922,68 +2139,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
             ],
           ),
           const SizedBox(height: 6),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final chips = <Widget>[
-                _mapChip(
-                  label: context.l10n.time_allTime,
-                  selected: _freshness == _Freshness.all,
-                  onTap: () => setState(() => _freshness = _Freshness.all),
-                ),
-                _mapChip(
-                  label: context.l10n.map_online,
-                  selected: _freshness == _Freshness.online,
-                  color: MapPalette.online,
-                  onTap: () => setState(() => _freshness = _Freshness.online),
-                ),
-                _mapChip(
-                  label: context.l10n.map_recent,
-                  selected: _freshness == _Freshness.recent,
-                  color: MapPalette.stale,
-                  onTap: () => setState(() => _freshness = _Freshness.recent),
-                ),
-                _mapChip(
-                  label: context.l10n.map_stale,
-                  selected: _freshness == _Freshness.stale,
-                  color: MapPalette.offline,
-                  onTap: () => setState(() => _freshness = _Freshness.stale),
-                ),
-                _mapChip(
-                  label: context.l10n.map_repeaters,
-                  selected: settings.mapShowRepeaters,
-                  color: MapPalette.repeater,
-                  onTap: () => settingsService.setMapShowRepeaters(
-                    !settings.mapShowRepeaters,
-                  ),
-                ),
-                _mapChip(
-                  label: context.l10n.map_chatNodes,
-                  selected: settings.mapShowChatNodes,
-                  color: MapPalette.selected,
-                  onTap: () => settingsService.setMapShowChatNodes(
-                    !settings.mapShowChatNodes,
-                  ),
-                ),
-                _mapChip(
-                  label: context.l10n.map_groupChip,
-                  selected: settings.mapClusterNodes,
-                  color: MapPalette.cluster,
-                  onTap: () => settingsService.setMapClusterNodes(
-                    !settings.mapClusterNodes,
-                  ),
-                ),
-              ];
-
-              if (constraints.maxWidth < 600) {
-                return Wrap(runSpacing: 6, children: chips);
-              }
-
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(children: chips),
-              );
-            },
-          ),
+          _buildMapSourceSwitch(context, mapSource),
           if (hasQuery)
             _buildSearchResults(context, allContacts, guessedLocations)
           else if (_statsExpanded)
@@ -2005,63 +2161,84 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     );
   }
 
-  Widget _mapChip({
-    required String label,
-    required bool selected,
-    required VoidCallback onTap,
-    Color? color,
-  }) {
-    final accent = color ?? MapPalette.selected;
-    return Padding(
-      padding: const EdgeInsets.only(right: 6),
-      child: Semantics(
-        button: true,
-        selected: selected,
-        child: Material(
-          color: selected
-              ? Color.alphaBlend(
-                  accent.withValues(alpha: 0.34),
-                  _overlayPanelColor,
-                )
-              : _overlayPanelColor,
-          shape: StadiumBorder(
-            side: BorderSide(
-              color: selected ? accent : _overlayBorderColor,
-              width: selected ? 1.5 : 1,
-            ),
+  int _activeFilterCount(AppSettings settings) => [
+    _freshness != _Freshness.all,
+    !settings.mapShowChatNodes,
+    !settings.mapShowRepeaters,
+    !settings.mapShowOtherNodes,
+    !settings.mapShowOnlineLinks,
+    settings.mapKeyPrefixEnabled,
+  ].where((active) => active).length;
+
+  Widget _buildMapSourceSwitch(BuildContext context, MapSourceOption source) {
+    final l10n = context.l10n;
+    return Material(
+      color: _overlayPanelColor,
+      shape: StadiumBorder(side: BorderSide(color: _overlayBorderColor)),
+      clipBehavior: Clip.antiAlias,
+      child: SegmentedButton<MapSourceOption>(
+        showSelectedIcon: false,
+        style: SegmentedButton.styleFrom(
+          minimumSize: const Size(0, 46),
+          side: BorderSide.none,
+          foregroundColor: _overlaySecondaryTextColor,
+          selectedForegroundColor: _overlayPrimaryTextColor,
+          selectedBackgroundColor: MeshMapTheme.of(
+            context,
+          ).accent.withValues(alpha: 0.34),
+          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+        ),
+        segments: [
+          ButtonSegment(
+            value: MapSourceOption.local,
+            icon: const Icon(Icons.radio, size: 20),
+            label: Text(l10n.networkMap_sourceLocal),
+            tooltip: l10n.networkMap_sourceLocalHint,
           ),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: () {
-              HapticFeedback.selectionClick();
-              onTap();
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (selected) ...[
-                    Icon(
-                      Icons.check,
-                      size: 13,
-                      color: _overlayPrimaryTextColor,
-                    ),
-                    const SizedBox(width: 4),
-                  ],
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w600,
-                      color: selected
-                          ? _overlayPrimaryTextColor
-                          : _overlaySecondaryTextColor,
-                    ),
-                  ),
-                ],
+          ButtonSegment(
+            value: MapSourceOption.online,
+            icon: const Icon(Icons.public, size: 20),
+            label: Text(l10n.networkMap_sourceOnline),
+            tooltip: l10n.networkMap_sourceOnlineHint,
+          ),
+          ButtonSegment(
+            value: MapSourceOption.both,
+            icon: const Icon(Icons.layers, size: 20),
+            label: Text(l10n.networkMap_sourceBoth),
+            tooltip: l10n.networkMap_sourceBothHint,
+          ),
+        ],
+        selected: {source},
+        onSelectionChanged: (selection) {
+          HapticFeedback.selectionClick();
+          _setMapSource(selection.first);
+        },
+      ),
+    );
+  }
+
+  Widget _buildOnlineHint(BuildContext context, NetworkMapLoadState state) {
+    final zoomIn = state == NetworkMapLoadState.zoomIn;
+    return Positioned(
+      left: 16,
+      right: 88,
+      bottom: 16,
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            children: [
+              Icon(zoomIn ? Icons.zoom_in : Icons.cloud_off, size: 26),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  zoomIn
+                      ? context.l10n.networkMap_zoomInHint
+                      : context.l10n.networkMap_loadFailed,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -2080,7 +2257,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
             if (a.hasLocation != b.hasLocation) {
               return a.hasLocation ? -1 : 1;
             }
-            return b.lastSeen.compareTo(a.lastSeen);
+            return b.lastHeard.compareTo(a.lastHeard);
           });
     final results = matches.take(8).toList();
     return Container(
@@ -2117,7 +2294,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                   Divider(height: 1, color: _overlayBorderColor),
               itemBuilder: (context, index) {
                 final c = results[index];
-                final color = _getNodeColor(c.type);
+                final color = mapNodeTypeColor(c.type);
                 return InkWell(
                   onTap: () => _onSearchResultTap(c, guessedLocations),
                   child: Padding(
@@ -2127,7 +2304,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     ),
                     child: Row(
                       children: [
-                        Icon(_getNodeIcon(c.type), size: 18, color: color),
+                        _nodeTypeIcon(c.type, size: 18, color: color),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Column(
@@ -2136,7 +2313,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                               Text(
                                 c.name,
                                 style: TextStyle(
-                                  fontSize: 13.5,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.w600,
                                   color: _overlayPrimaryTextColor,
                                 ),
@@ -2145,7 +2322,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                               Text(
                                 c.publicKeyHex.substring(0, 12),
                                 style: MeshTheme.mono(
-                                  fontSize: 10.5,
+                                  fontSize: 12,
                                   color: _overlaySecondaryTextColor,
                                 ),
                               ),
@@ -2163,7 +2340,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                             context.l10n.map_noGps.toUpperCase(),
                             style: MeshTheme.accentLabel(
                               color: _overlayMutedTextColor,
-                              fontSize: 8.5,
+                              fontSize: 12,
                             ),
                           ),
                       ],
@@ -2203,7 +2380,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         _searchController.clear();
         _searchFocus.unfocus();
       });
-      _showNodeInfo(context, contact);
+      showNodeInfoSheet(context, contact);
     }
   }
 
@@ -2219,7 +2396,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
   }) {
     return Container(
       margin: const EdgeInsets.only(top: 6),
-      width: 230,
+      width: 250,
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
       decoration: BoxDecoration(
         color: _overlayPanelColor,
@@ -2237,7 +2414,11 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _statRow(context.l10n.map_visible, visibleCount, MapPalette.selected),
+          _statRow(
+            context.l10n.map_visible,
+            visibleCount,
+            MeshMapTheme.of(context).accent,
+          ),
           _statRow(context.l10n.map_online, onlineCount, MapPalette.online),
           _statRow(
             context.l10n.map_repeaters,
@@ -2250,22 +2431,26 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
           _buildLegendItem(
             Icons.person,
             context.l10n.map_chat,
-            MapPalette.selected,
+            MeshMapTheme.of(context).accent,
+            slot: ThemeIconSlot.mapChat,
           ),
           _buildLegendItem(
             Icons.router,
             context.l10n.map_repeater,
             MapPalette.repeater,
+            slot: ThemeIconSlot.mapRepeater,
           ),
           _buildLegendItem(
             Icons.meeting_room,
             context.l10n.map_room,
             MapPalette.router,
+            slot: ThemeIconSlot.mapRoom,
           ),
           _buildLegendItem(
             Icons.sensors,
             context.l10n.map_sensor,
             MapPalette.sensor,
+            slot: ThemeIconSlot.mapSensor,
           ),
           _buildLegendItem(
             Icons.flag,
@@ -2297,17 +2482,14 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
           Expanded(
             child: Text(
               label,
-              style: TextStyle(
-                fontSize: 12.5,
-                color: _overlaySecondaryTextColor,
-              ),
+              style: TextStyle(fontSize: 14, color: _overlaySecondaryTextColor),
               overflow: TextOverflow.ellipsis,
             ),
           ),
           Text(
             '$value',
             style: MeshTheme.mono(
-              fontSize: 13,
+              fontSize: 14,
               fontWeight: FontWeight.w700,
               color: _overlayPrimaryTextColor,
             ),
@@ -2354,7 +2536,8 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                     name: contact.name,
                     size: 38,
                     color: color,
-                    icon: _getNodeIcon(contact.type),
+                    icon: mapNodeTypeIcon(contact.type),
+                    iconSlot: mapMarkerSlotForNodeType(contact.type),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -2390,7 +2573,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                             StatusChip(
                               label: _ageLabel(age),
                               color: _ageColor(age),
-                              fontSize: 9.5,
+                              fontSize: 12,
                               pulse: age == _NodeAge.online,
                             ),
                             const SizedBox(width: 6),
@@ -2398,7 +2581,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                               child: Text(
                                 contact.typeLabel(context.l10n),
                                 style: TextStyle(
-                                  fontSize: 11.5,
+                                  fontSize: 13,
                                   color: _overlaySecondaryTextColor,
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -2431,7 +2614,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                 children: [
                   _miniMeta(
                     context.l10n.map_lastSeen,
-                    _formatLastSeen(contact.lastSeen),
+                    formatNodeLastSeen(context.l10n, contact.lastHeard),
                   ),
                   _miniMeta(
                     context.l10n.map_path,
@@ -2440,7 +2623,10 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                       pathHashByteWidth: connector.pathHashByteWidth,
                     ),
                   ),
-                  _miniMeta('ID', contact.publicKeyHex.substring(0, 12)),
+                  _miniMeta(
+                    context.l10n.map_nodeId,
+                    contact.publicKeyHex.substring(0, 12),
+                  ),
                   if (pos != null)
                     _miniMeta(
                       context.l10n.map_location,
@@ -2449,21 +2635,54 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                 ],
               ),
               const SizedBox(height: 10),
-              Row(
+              Wrap(
+                spacing: 8,
+                runSpacing: 6,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   ..._selectedNodeActions(context, contact, connector),
+                  // Repeaters and rooms only send GPS to logged-in admins.
+                  if (contact.isActive &&
+                      (contact.type == advTypeChat ||
+                          contact.type == advTypeSensor))
+                    OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: _overlayPrimaryTextColor,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 8,
+                        ),
+                        minimumSize: const Size(0, 44),
+                      ),
+                      onPressed: _locatingKey == null
+                          ? () => _requestNodeLocation(contact, connector)
+                          : null,
+                      icon: _locatingKey == contact.publicKeyHex
+                          ? const SizedBox.square(
+                              dimension: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.my_location, size: 18),
+                      label: Text(
+                        context.l10n.map_requestLocation,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
                   TextButton(
                     style: TextButton.styleFrom(
-                      foregroundColor: MapPalette.selected,
+                      foregroundColor: MeshMapTheme.of(context).accent,
                     ),
-                    onPressed: () => _showNodeInfo(
+                    onPressed: () => showNodeInfoSheet(
                       context,
                       contact,
                       guessedPosition: contact.hasLocation
                           ? null
                           : _selectedGuessPos,
                     ),
-                    child: Text(context.l10n.map_details),
+                    child: Text(
+                      context.l10n.map_details,
+                      style: const TextStyle(fontSize: 14),
+                    ),
                   ),
                 ],
               ),
@@ -2472,6 +2691,36 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         ),
       ),
     );
+  }
+
+  /// Asks the node for telemetry; a GPS fix in the reply moves its marker.
+  Future<void> _requestNodeLocation(
+    Contact contact,
+    MeshCoreConnector connector,
+  ) async {
+    setState(() => _locatingKey = contact.publicKeyHex);
+    final result = await requestTelemetryLocation(connector, contact);
+    if (!mounted) return;
+    setState(() => _locatingKey = null);
+    final l10n = context.l10n;
+    final message = switch (result) {
+      TelemetryLocationResult.located => l10n.map_locationUpdated,
+      TelemetryLocationResult.noLocation => l10n.map_locationNotShared(
+        contact.name,
+      ),
+      TelemetryLocationResult.failed => l10n.map_locationRequestFailed(
+        contact.name,
+      ),
+    };
+    showDismissibleSnackBar(context, content: Text(message));
+    final updated = connector.contacts
+        .where((c) => c.publicKeyHex == contact.publicKeyHex)
+        .firstOrNull;
+    if (result == TelemetryLocationResult.located &&
+        updated != null &&
+        updated.hasLocation) {
+      _mapController.move(LatLng(updated.latitude!, updated.longitude!), _zoom);
+    }
   }
 
   Widget _miniMeta(String label, String value) {
@@ -2483,16 +2732,13 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
           label.toUpperCase(),
           style: MeshTheme.accentLabel(
             color: _overlayMutedTextColor,
-            fontSize: 8,
+            fontSize: 12,
           ),
         ),
         const SizedBox(height: 1),
         Text(
           value,
-          style: MeshTheme.mono(
-            fontSize: 11.5,
-            color: _overlayPrimaryTextColor,
-          ),
+          style: MeshTheme.mono(fontSize: 13, color: _overlayPrimaryTextColor),
         ),
       ],
     );
@@ -2504,17 +2750,14 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     MeshCoreConnector connector,
   ) {
     Widget action(String label, IconData icon, VoidCallback onPressed) {
-      return Padding(
-        padding: const EdgeInsets.only(right: 8),
-        child: FilledButton.icon(
-          style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            visualDensity: VisualDensity.compact,
-          ),
-          onPressed: onPressed,
-          icon: Icon(icon, size: 16),
-          label: Text(label, style: const TextStyle(fontSize: 12.5)),
+      return FilledButton.icon(
+        style: FilledButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          minimumSize: const Size(0, 44),
         ),
+        onPressed: onPressed,
+        icon: Icon(icon, size: 18),
+        label: Text(label, style: const TextStyle(fontSize: 14)),
       );
     }
 
@@ -2543,7 +2786,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
             if (!contact.isActive) {
               connector.importDiscoveredContact(contact);
             }
-            _showRepeaterLogin(context, contact);
+            showRepeaterLoginDialog(context, contact);
           }),
         ];
       case advTypeRoom:
@@ -2552,13 +2795,13 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
             if (!contact.isActive) {
               connector.importDiscoveredContact(contact);
             }
-            _showRoomLogin(context, contact);
+            showRoomLoginDialog(context, contact);
           }),
           action(context.l10n.map_manageServer, Icons.room_preferences, () {
             if (!contact.isActive) {
               connector.importDiscoveredContact(contact);
             }
-            _showRoomLogin(context, contact, manage: true);
+            showRoomLoginDialog(context, contact, manage: true);
           }),
         ];
       default:
@@ -2579,7 +2822,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     // Build a _SharedMarker per message (history empty), grouped by dedupe key.
     // Afterwards pick the latest per key and fill its history from older ones.
     final updatesByKey = <String, List<_SharedMarker>>{};
-    final selfName = connector.selfName ?? 'Me';
+    final selfName = connector.selfName ?? context.l10n.chat_me;
 
     void addUpdate(_SharedMarker update) {
       (updatesByKey[update.id] ??= <_SharedMarker>[]).add(update);
@@ -2639,7 +2882,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
             flags: payload.flags,
             fromName: message.senderName,
             sourceLabel: channel.name.isEmpty
-                ? 'Channel ${channel.index}'
+                ? context.l10n.channels_channelIndex(channel.index)
                 : channel.name,
             timestamp: message.timestamp,
             isChannel: true,
@@ -2673,32 +2916,31 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     return _cachedSharedMarkers;
   }
 
+  Color _sharedMarkerColor(_SharedMarker marker) => marker.isChannel
+      ? (marker.isPublicChannel ? MapPalette.cluster : MapPalette.router)
+      : MapPalette.shared;
+
   Marker _buildSharedMarker(_SharedMarker marker) {
-    final markerColor = marker.isChannel
-        ? (marker.isPublicChannel ? MapPalette.cluster : MapPalette.router)
-        : MapPalette.shared;
+    // Square marker with the circle centred, so the pin sits exactly on its
+    // coordinate (the default Marker alignment is centre).
     return Marker(
       point: marker.position,
-      width: 60,
-      height: 60,
-      child: GestureDetector(
-        onTap: () async {
-          if (_removedMarkerIds.contains(marker.id)) {
-            setState(() {
-              _removedMarkerIds.remove(marker.id);
-            });
-            await _markerService.saveRemovedIds(_removedMarkerIds);
-          }
-          _showMarkerInfo(marker);
-        },
-        child: Column(
-          children: [
-            Container(
+      width: 44,
+      height: 44,
+      child: Semantics(
+        button: true,
+        label: context.l10n.map_sharedMarkerSemantics(marker.label),
+        excludeSemantics: true,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => _showMarkerInfo(marker),
+          child: Center(
+            child: Container(
               width: 36,
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: markerColor,
+                color: _sharedMarkerColor(marker),
                 border: Border.all(color: MapPalette.markerOutline, width: 2.5),
                 boxShadow: const [
                   BoxShadow(
@@ -2709,190 +2951,213 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                 ],
               ),
               alignment: Alignment.center,
-              child: const Icon(Icons.flag, color: Colors.white, size: 19),
+              child: const Icon(
+                Icons.flag,
+                color: MapPalette.markerOutline,
+                size: 19,
+              ),
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  void _showRepeaterLogin(BuildContext context, Contact repeater) {
-    showDialog(
-      context: context,
-      builder: (context) => RepeaterLoginDialog(
-        repeater: repeater,
-        onLogin: (password, isAdmin) {
-          // Navigate to repeater hub screen after successful login
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => RepeaterHubScreen(
-                repeater: repeater,
-                password: password,
-                isAdmin: isAdmin,
-              ),
-            ),
-          );
-        },
+  Marker _buildSelfMarker(LatLng position) {
+    final override = MeshIconTheme.of(context)[ThemeIconSlot.mapSelf];
+    final picture = themePictureOf(override);
+    final namedIcon = override?.icon == null
+        ? null
+        : kThemeIconCatalog[override!.icon];
+    return Marker(
+      point: position,
+      width: picture != null ? 48 : 40,
+      height: picture != null ? 48 : 40,
+      child: IgnorePointer(
+        child: Semantics(
+          label: context.l10n.pathTrace_you,
+          child: picture != null
+              ? _pictureMarker(
+                  picture,
+                  size: 46,
+                  selected: false,
+                  fallback: Icons.person_pin_circle,
+                )
+              : Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: MapPalette.panelDark,
+                    border: Border.all(
+                      color: MapPalette.markerOutline,
+                      width: 2.5,
+                    ),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: MapPalette.markerShadow,
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(
+                    namedIcon ?? Icons.person_pin_circle,
+                    color: MeshMapTheme.of(context).accent,
+                    size: 22,
+                  ),
+                ),
+        ),
       ),
     );
   }
 
-  void _showRoomLogin(
-    BuildContext context,
-    Contact room, {
-    bool manage = false,
+  /// Shared POI markers plus the "You" marker. Outside overlaps/path-trace
+  /// mode, POIs falling into the same ~64px grid cell at the current zoom
+  /// (the same grid the node clusters use) collapse into one numbered marker.
+  /// The self position joins its cell, so POIs placed at or near the user's
+  /// position are not hidden under the "You" marker.
+  List<Marker> _buildPoiAndSelfMarkers(
+    List<_SharedMarker> pois, {
+    required LatLng? selfPosition,
+    required bool clusterPois,
   }) {
-    showDialog(
-      context: context,
-      builder: (context) => RoomLoginDialog(
-        room: room,
-        onLogin: (password, isAdmin) {
-          final connector = context.read<MeshCoreConnector>();
-          final unread = connector.getUnreadCountForContactKey(
-            room.publicKeyHex,
-          );
-          connector.markContactRead(room.publicKeyHex);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => manage
-                  ? RepeaterHubScreen(
-                      repeater: room,
-                      password: password,
-                      isAdmin: isAdmin,
-                    )
-                  : ChatScreen(contact: room, initialUnreadCount: unread),
-            ),
-          );
-        },
+    if (!clusterPois) {
+      return [
+        ...pois.map(_buildSharedMarker),
+        if (selfPosition != null) _buildSelfMarker(selfPosition),
+      ];
+    }
+    final cellDeg = mapGridCellDegrees(_zoom);
+    final cells = mapGridCluster(pois, (m) => m.position, cellDeg);
+    final selfCellKey = selfPosition == null
+        ? null
+        : mapGridCellKey(selfPosition, cellDeg);
+    final markers = <Marker>[];
+    Marker? selfMarker;
+    cells.forEach((key, members) {
+      if (key == selfCellKey) {
+        selfMarker = _poiClusterMarker(members, selfPosition: selfPosition);
+      } else if (members.length == 1) {
+        markers.add(_buildSharedMarker(members.first));
+      } else {
+        markers.add(_poiClusterMarker(members));
+      }
+    });
+    // Self is drawn last so it stays on top of nearby node markers.
+    if (selfPosition != null) {
+      markers.add(selfMarker ?? _buildSelfMarker(selfPosition));
+    }
+    return markers;
+  }
+
+  Marker _poiClusterMarker(
+    List<_SharedMarker> members, {
+    LatLng? selfPosition,
+  }) {
+    final count = members.length;
+    LatLng point;
+    if (selfPosition != null) {
+      point = selfPosition;
+    } else {
+      double lat = 0, lon = 0;
+      for (final m in members) {
+        lat += m.position.latitude;
+        lon += m.position.longitude;
+      }
+      point = LatLng(lat / count, lon / count);
+    }
+    final l10n = context.l10n;
+    return Marker(
+      point: point,
+      width: 48,
+      height: 48,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _showPoiClusterSheet(members, selfPosition: selfPosition),
+        child: Center(
+          child: PoiClusterMarker(
+            count: count,
+            includesSelf: selfPosition != null,
+            semanticLabel: selfPosition != null
+                ? l10n.map_youWithMarkers(count)
+                : l10n.map_poiClusterSemantics(count),
+          ),
+        ),
       ),
     );
   }
 
-  void _showNodeInfo(
-    BuildContext context,
-    Contact contact, {
-    LatLng? guessedPosition,
+  void _showPoiClusterSheet(
+    List<_SharedMarker> members, {
+    LatLng? selfPosition,
   }) {
-    final connector = context.read<MeshCoreConnector>();
+    HapticFeedback.selectionClick();
     showMeshSheet(
       context,
       builder: (sheetContext) {
-        final actions = <Widget>[];
-        if (contact.type == advTypeChat) {
-          actions.add(
-            FilledButton(
-              onPressed: () {
-                if (!contact.isActive) {
-                  connector.importDiscoveredContact(contact);
-                }
-                final unread = connector.getUnreadCountForContactKey(
-                  contact.publicKeyHex,
-                );
-                Navigator.pop(sheetContext);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChatScreen(
-                      contact: contact,
-                      initialUnreadCount: unread,
-                    ),
-                  ),
-                );
-              },
-              child: Text(context.l10n.contacts_openChat),
-            ),
-          );
-        }
-        if (contact.type == advTypeRepeater) {
-          actions.add(
-            FilledButton(
-              onPressed: () {
-                if (!contact.isActive) {
-                  connector.importDiscoveredContact(contact);
-                }
-                Navigator.pop(sheetContext);
-                _showRepeaterLogin(context, contact);
-              },
-              child: Text(context.l10n.map_manageRepeater),
-            ),
-          );
-        }
-        if (contact.type == advTypeRoom) {
-          actions.add(
-            FilledButton(
-              onPressed: () {
-                if (!contact.isActive) {
-                  connector.importDiscoveredContact(contact);
-                }
-                Navigator.pop(sheetContext);
-                _showRoomLogin(context, contact);
-              },
-              child: Text(context.l10n.map_joinRoom),
-            ),
-          );
-          actions.add(
-            FilledButton(
-              onPressed: () {
-                if (!contact.isActive) {
-                  connector.importDiscoveredContact(contact);
-                }
-                Navigator.pop(sheetContext);
-                _showRoomLogin(context, contact, manage: true);
-              },
-              child: Text(context.l10n.map_manageServer),
-            ),
-          );
-        }
+        final l10n = sheetContext.l10n;
+        final scheme = Theme.of(sheetContext).colorScheme;
         return SafeArea(
-          child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.7,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 BottomSheetHeader(
-                  title: contact.name,
-                  subtitle: contact.typeLabel(context.l10n),
-                  trailing: Icon(
-                    _getNodeIcon(contact.type),
-                    color: _getNodeColor(contact.type),
-                    size: 20,
-                  ),
+                  title: selfPosition != null
+                      ? l10n.map_youWithMarkers(members.length)
+                      : l10n.map_poiClusterTitle(members.length),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
                     children: [
-                      _buildInfoRow(
-                        context.l10n.map_path,
-                        contact.pathLabel(
-                          context.l10n,
-                          pathHashByteWidth: connector.pathHashByteWidth,
+                      if (selfPosition != null)
+                        ListTile(
+                          leading: Icon(
+                            Icons.person_pin_circle,
+                            color: MeshMapTheme.of(context).accent,
+                          ),
+                          title: Text(l10n.pathTrace_you),
+                          subtitle: Text(
+                            '${selfPosition.latitude.toStringAsFixed(5)}, ${selfPosition.longitude.toStringAsFixed(5)}',
+                            style: MeshTheme.mono(
+                              fontSize: 13,
+                              color: scheme.onSurfaceVariant,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(sheetContext);
+                            _mapController.move(selfPosition, max(_zoom, 16));
+                          },
                         ),
-                      ),
-                      if (contact.hasLocation)
-                        _buildInfoRow(
-                          context.l10n.map_location,
-                          '${contact.latitude!.toStringAsFixed(6)}, ${contact.longitude!.toStringAsFixed(6)}',
-                        )
-                      else if (guessedPosition != null)
-                        _buildInfoRow(
-                          context.l10n.map_estLocation,
-                          '~${guessedPosition.latitude.toStringAsFixed(6)}, ${guessedPosition.longitude.toStringAsFixed(6)}',
+                      for (final marker in members)
+                        ListTile(
+                          leading: Icon(
+                            Icons.flag,
+                            color: _sharedMarkerColor(marker),
+                          ),
+                          title: Text(
+                            marker.label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Text(
+                            '${marker.fromName} · ${formatNodeLastSeen(context.l10n, marker.timestamp)}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () {
+                            Navigator.pop(sheetContext);
+                            _showMarkerInfo(marker);
+                          },
                         ),
-                      _buildInfoRow(
-                        context.l10n.map_lastSeen,
-                        _formatLastSeen(contact.lastSeen),
-                      ),
-                      _buildInfoRow(
-                        context.l10n.map_publicKey,
-                        contact.publicKeyHex,
-                      ),
-                      const SizedBox(height: 16),
-                      ...actions,
                     ],
                   ),
                 ),
@@ -2953,6 +3218,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
+        scrollable: true,
         title: Text(
           marker.label.isEmpty ? context.l10n.map_sharedPin : marker.label,
         ),
@@ -2960,18 +3226,38 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildInfoRow(context.l10n.map_from, marker.fromName),
-            _buildInfoRow(context.l10n.map_source, marker.sourceLabel),
-            _buildInfoRow(
-              context.l10n.map_sharedAt,
-              _formatLastSeen(marker.timestamp),
+            NodeInfoRow(label: context.l10n.map_from, value: marker.fromName),
+            NodeInfoRow(
+              label: context.l10n.map_source,
+              value: marker.sourceLabel,
             ),
-            _buildInfoRow(
-              context.l10n.map_location,
-              '${marker.position.latitude.toStringAsFixed(6)}, ${marker.position.longitude.toStringAsFixed(6)}',
+            NodeInfoRow(
+              label: context.l10n.map_sharedAt,
+              value: formatNodeLastSeen(context.l10n, marker.timestamp),
+            ),
+            NodeInfoRow(
+              label: context.l10n.map_location,
+              value:
+                  '${marker.position.latitude.toStringAsFixed(6)}, ${marker.position.longitude.toStringAsFixed(6)}',
             ),
             if (marker.flags.isNotEmpty)
-              _buildInfoRow(context.l10n.map_flags, marker.flags),
+              NodeInfoRow(label: context.l10n.map_flags, value: marker.flags),
+            const SizedBox(height: 12),
+            Text(
+              context.l10n.map_markerHideHint,
+              style: TextStyle(
+                fontSize: 13,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              context.l10n.map_markerRemoveHint,
+              style: TextStyle(
+                fontSize: 13,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
           ],
         ),
         actions: [
@@ -2989,14 +3275,8 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
               foregroundColor: Theme.of(context).colorScheme.error,
             ),
             onPressed: () async {
-              setState(() {
-                _hiddenMarkerIds.add(marker.id);
-                _removedMarkerIds.add(marker.id);
-              });
-              await _markerService.saveRemovedIds(_removedMarkerIds);
-              if (dialogContext.mounted) {
-                Navigator.pop(dialogContext);
-              }
+              Navigator.pop(dialogContext);
+              await _removeMarkerWithUndo(marker);
             },
             child: Text(context.l10n.common_remove),
           ),
@@ -3009,46 +3289,45 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 2),
-          SelectableText(
-            value,
-            style: MeshTheme.mono(
-              fontSize: 13,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-        ],
+  Future<void> _removeMarkerWithUndo(_SharedMarker marker) async {
+    final previous = Set<String>.from(_removedMarkerIds);
+    final wasHidden = _hiddenMarkerIds.contains(marker.id);
+    setState(() {
+      _hiddenMarkerIds.add(marker.id);
+      _removedMarkerIds = {...previous, marker.id};
+    });
+    await _markerService.saveRemovedIds(_removedMarkerIds);
+    if (!mounted) return;
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.map_markerRemoved),
+      action: SnackBarAction(
+        label: context.l10n.common_undo,
+        onPressed: () async {
+          if (!mounted) return;
+          setState(() {
+            if (!wasHidden) _hiddenMarkerIds.remove(marker.id);
+            _removedMarkerIds = Set<String>.from(previous);
+          });
+          await _markerService.saveRemovedIds(_removedMarkerIds);
+        },
       ),
     );
   }
 
-  String _formatLastSeen(DateTime lastSeen) {
-    final now = DateTime.now();
-    final difference = now.difference(lastSeen);
-
-    if (difference.inSeconds < 60) {
-      return context.l10n.time_justNow;
-    } else if (difference.inMinutes < 60) {
-      return context.l10n.time_minutesAgo(difference.inMinutes);
-    } else if (difference.inHours < 24) {
-      return context.l10n.time_hoursAgo(difference.inHours);
-    } else {
-      return context.l10n.time_daysAgo(difference.inDays);
-    }
+  Future<void> _restoreRemovedMarkers() async {
+    final count = _removedMarkerIds.length;
+    if (count == 0) return;
+    setState(() {
+      _hiddenMarkerIds.removeAll(_removedMarkerIds);
+      _removedMarkerIds = <String>{};
+    });
+    await _markerService.saveRemovedIds(_removedMarkerIds);
+    if (!mounted) return;
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.map_markersRestored(count)),
+    );
   }
 
   void _showShareMarkerAtPositionSheet({
@@ -3079,18 +3358,9 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
             ListTile(
               leading: const Icon(Icons.my_location),
               title: Text(context.l10n.map_setAsMyLocation),
-              onTap: () async {
-                final messenger = ScaffoldMessenger.of(context);
-                final successMsg = context.l10n.settings_locationUpdated;
+              onTap: () {
                 Navigator.pop(sheetContext);
-                if (!connector.isConnected) return;
-                await connector.setNodeLocation(
-                  lat: position.latitude,
-                  lon: position.longitude,
-                );
-                await connector.refreshDeviceInfo();
-                if (!mounted) return;
-                messenger.showSnackBar(SnackBar(content: Text(successMsg)));
+                confirmAndSetMyLocation(this.context, connector, position);
               },
             ),
             ListTile(
@@ -3119,7 +3389,16 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
       return;
     }
 
-    final label = await _promptForLabel(context, defaultLabel);
+    // A map point is not the user's own position, so it keeps the point's
+    // default label; reusing one label would move earlier shared points.
+    final label = await showMarkerLabelDialog(
+      context,
+      lat: position.latitude,
+      lon: position.longitude,
+      defaultLabel: defaultLabel,
+      flags: flags,
+      confirmText: context.l10n.common_continue,
+    );
     if (label == null || !mounted) return;
 
     final markerText = _formatMarkerMessage(position, label, flags);
@@ -3133,51 +3412,17 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     );
   }
 
-  Future<String?> _promptForLabel(
-    BuildContext context,
-    String defaultLabel,
-  ) async {
-    final controller = TextEditingController(text: defaultLabel);
-    controller.selection = TextSelection(
-      baseOffset: 0,
-      extentOffset: controller.text.length,
+  bool _markerFits(BuildContext context, String markerText, int maxBytes) {
+    if (utf8ByteLength(markerText) <= maxBytes) return true;
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.chat_messageTooLong(maxBytes)),
     );
-    return showDialog<String>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(context.l10n.map_pinLabel),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: context.l10n.map_label,
-            border: const OutlineInputBorder(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(context.l10n.common_cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              final label = controller.text.trim().replaceAll('|', '/');
-              Navigator.pop(
-                dialogContext,
-                label.isEmpty ? defaultLabel : label,
-              );
-            },
-            child: Text(context.l10n.common_continue),
-          ),
-        ],
-      ),
-    );
+    return false;
   }
 
-  String _formatMarkerMessage(LatLng position, String label, String flags) {
-    final lat = position.latitude.toStringAsFixed(6);
-    final lon = position.longitude.toStringAsFixed(6);
-    return 'm:$lat,$lon|$label|$flags';
-  }
+  String _formatMarkerMessage(LatLng position, String label, String flags) =>
+      formatMarkerText(position.latitude, position.longitude, label, flags);
 
   Future<void> _showRecipientSheet({
     required BuildContext context,
@@ -3249,6 +3494,13 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                               title: Text(contact.name),
                               onTap: () {
                                 Navigator.pop(sheetContext);
+                                if (!_markerFits(
+                                  context,
+                                  markerText,
+                                  maxContactMessageBytes(),
+                                )) {
+                                  return;
+                                }
                                 liveConnector.sendMessage(contact, markerText);
                               },
                             );
@@ -3284,7 +3536,9 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                         ) {
                           final isPublic = _isPublicChannel(channel);
                           final label = channel.name.isEmpty
-                              ? 'Channel ${channel.index}'
+                              ? context.l10n.channels_channelIndex(
+                                  channel.index,
+                                )
                               : channel.name;
                           return ListTile(
                             leading: Icon(
@@ -3299,7 +3553,15 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                               final canSend = isPublic
                                   ? await _confirmPublicShare(context, label)
                                   : true;
-                              if (canSend) {
+                              if (canSend &&
+                                  context.mounted &&
+                                  _markerFits(
+                                    context,
+                                    markerText,
+                                    maxChannelMessageBytes(
+                                      liveConnector.selfName,
+                                    ),
+                                  )) {
                                 liveConnector.sendChannelMessage(
                                   channel,
                                   markerText,
@@ -3353,6 +3615,8 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     BuildContext context,
     AppSettingsService settingsService,
   ) {
+    final showOnlineFilters =
+        context.read<UiViewStateService>().mapSource != MapSourceOption.local;
     showMeshSheet(
       context,
       builder: (sheetContext) => StatefulBuilder(
@@ -3365,7 +3629,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
               Widget freshnessChip(_Freshness value, String label) {
                 final selected = _freshness == value;
                 final accent = switch (value) {
-                  _Freshness.all => MapPalette.selected,
+                  _Freshness.all => MeshMapTheme.of(context).accent,
                   _Freshness.online => MapPalette.online,
                   _Freshness.recent => MapPalette.stale,
                   _Freshness.stale => MapPalette.offline,
@@ -3441,7 +3705,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                           trailing: Text(
                             _getTimeFilterLabel(settings.mapTimeFilterHours),
                             style: MeshTheme.mono(
-                              fontSize: 11,
+                              fontSize: 13,
                               color: scheme.onSurfaceVariant,
                             ),
                           ),
@@ -3483,6 +3747,14 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                           onChanged: (value) =>
                               service.setMapShowOtherNodes(value),
                         ),
+                        if (showOnlineFilters)
+                          SwitchListTile(
+                            title: Text(sheetContext.l10n.map_showOnlineLinks),
+                            value: settings.mapShowOnlineLinks,
+                            dense: true,
+                            onChanged: (value) =>
+                                service.setMapShowOnlineLinks(value),
+                          ),
                         SectionHeader(sheetContext.l10n.map_markers),
                         SwitchListTile(
                           title: Text(sheetContext.l10n.map_showSharedMarkers),
@@ -3490,6 +3762,22 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                           dense: true,
                           onChanged: (value) =>
                               service.setMapShowMarkers(value),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.restore),
+                          title: Text(
+                            sheetContext.l10n.map_restoreRemovedMarkers,
+                          ),
+                          subtitle: Text(
+                            sheetContext.l10n.map_restoreRemovedMarkersSubtitle(
+                              _removedMarkerIds.length,
+                            ),
+                          ),
+                          enabled: _removedMarkerIds.isNotEmpty,
+                          onTap: () async {
+                            await _restoreRemovedMarkers();
+                            setSheetState(() {});
+                          },
                         ),
                         SwitchListTile(
                           title: Text(sheetContext.l10n.map_clusterNodes),
@@ -3651,18 +3939,40 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         ),
       ); // Add contact to path trace contacts
       _points.add(position ?? LatLng(contact.latitude!, contact.longitude!));
+      _traceDraft.lastResultFrame = null;
     });
   }
 
-  void _startPath(LatLng position) {
+  /// Opens the path-trace builder, resuming hops picked earlier this session
+  /// on the same radio.
+  void _openPathTrace(MeshCoreConnector connector, LatLng position) {
     setState(() {
+      final selfKey = connector.selfPublicKey;
+      if (!_traceDraft.belongsTo(selfKey) || !_traceDraft.hasHops) {
+        _traceDraft.clear();
+      }
+      _traceDraft.radioKey = selfKey;
+      if (_points.isEmpty) {
+        _points.add(position);
+      } else {
+        _points[0] = position;
+      }
       _isBuildingPathTrace = true;
-      _pathTrace.clear();
-      _pathTraceHopWidths.clear();
-      _pathTraceContacts.clear();
-      _points.clear();
-      _polylines.clear();
-      _points.add(position);
+    });
+  }
+
+  /// Hides the builder but keeps the picked hops and last result.
+  void _closePathTrace() {
+    setState(() {
+      _isBuildingPathTrace = false;
+    });
+  }
+
+  void _clearPath() {
+    setState(() {
+      final start = _points.isNotEmpty ? _points.first : null;
+      _traceDraft.clear();
+      if (start != null) _points.add(start);
     });
   }
 
@@ -3681,16 +3991,55 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
         _pathTrace.length - hopByteCount,
         _pathTrace.length,
       );
-      _points.removeLast(); // Remove last point from points list
-      _polylines.clear(); // Clear polylines
+      _points.removeLast();
+      _traceDraft.lastResultFrame = null;
     });
+  }
+
+  void _setTraceReturnPath(bool returnPath) {
+    if (_traceDraft.returnPath == returnPath) return;
+    setState(() {
+      _traceDraft.returnPath = returnPath;
+      _traceDraft.lastResultFrame = null;
+    });
+  }
+
+  void _openTraceResult({required bool reuseLastResult}) {
+    final draft = _traceDraft;
+    final path = Uint8List.fromList(_pathTrace);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PathTraceMapScreen(
+          title: context.l10n.contacts_pathTrace,
+          path: path,
+          flipPathAround: draft.returnPath,
+          pathHashByteWidth: context
+              .read<MeshCoreConnector>()
+              .pathHashByteWidth,
+          pathContacts: List.of(_pathTraceContacts),
+          initialTraceFrame: reuseLastResult ? draft.lastResultFrame : null,
+          onTraceFrame: (frame) {
+            // Ignore a reply for a selection the user has since changed.
+            if (!listEquals(draft.pathBytes, path)) return;
+            draft.lastResultFrame = frame;
+            if (mounted) setState(() {});
+          },
+        ),
+      ),
+    );
   }
 
   Widget _buildPathTraceOverlay() {
     final l10n = context.l10n;
+    final theme = Theme.of(context);
     final isImperial =
         context.read<AppSettingsService>().settings.unitSystem ==
         UnitSystem.imperial;
+    final hasHops = _pathTrace.isNotEmpty;
+    final returnPath = _traceDraft.returnPath;
+    const buttonSize = Size(48, 48);
+    final hopNames = _pathTraceContacts.map((c) => c.name).join(' → ');
     return Positioned(
       top: 16,
       left: 16,
@@ -3714,124 +4063,136 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
             padding: const EdgeInsets.all(12.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.contacts_pathTrace,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: _overlayPrimaryTextColor,
+                        ),
+                      ),
+                    ),
+                    TextButton.icon(
+                      onPressed: _closePathTrace,
+                      style: TextButton.styleFrom(minimumSize: buttonSize),
+                      icon: const Icon(Icons.close),
+                      label: Text(l10n.common_close),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
                 Text(
-                  l10n.contacts_pathTrace,
+                  hasHops ? l10n.map_pathTraceAddMoreHint : l10n.map_tapToAdd,
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: _overlayPrimaryTextColor,
+                    fontSize: 15,
+                    color: _overlaySecondaryTextColor,
                   ),
                 ),
-                if (_pathTrace.isEmpty) const SizedBox(height: 8),
-                if (_pathTrace.isEmpty)
+                if (hasHops) ...[
+                  const SizedBox(height: 8),
                   Text(
-                    l10n.map_tapToAdd,
+                    hopNames,
                     style: TextStyle(
-                      fontSize: 12,
-                      color: _overlaySecondaryTextColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: _overlayPrimaryTextColor,
                     ),
                   ),
-                const SizedBox(height: 6),
-                if (_pathTrace.isNotEmpty)
+                  SelectableText(
+                    PathHelper.splitPathBytes(
+                      _pathTrace,
+                      context.read<MeshCoreConnector>().pathHashByteWidth,
+                    ).map(PathHelper.formatHopHex).join(','),
+                    style: MeshTheme.mono(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: MeshMapTheme.of(context).accent,
+                    ),
+                  ),
                   Text(
                     "${l10n.path_currentPathLabel} ${formatDistance(getPathDistanceMeters(_points), isImperial: isImperial)}",
                     style: MeshTheme.mono(
-                      fontSize: 12,
+                      fontSize: 14,
                       color: _overlaySecondaryTextColor,
                     ),
                   ),
-                SelectableText(
-                  PathHelper.splitPathBytes(
-                    _pathTrace,
-                    context.read<MeshCoreConnector>().pathHashByteWidth,
-                  ).map(PathHelper.formatHopHex).join(','),
-                  style: MeshTheme.mono(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: MapPalette.selected,
-                  ),
-                ),
-                // const SizedBox(height: 6),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 1,
-                  runSpacing: 1,
-                  children: [
-                    if (_pathTrace.isNotEmpty)
-                      IconButton(
-                        onPressed: () {
-                          final hashW = context
-                              .read<MeshCoreConnector>()
-                              .pathHashByteWidth;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PathTraceMapScreen(
-                                title: l10n.contacts_pathTrace,
-                                path: Uint8List.fromList(_pathTrace),
-                                flipPathAround: false,
-                                pathHashByteWidth: hashW,
-                                pathContacts: _pathTraceContacts,
-                              ),
-                            ),
-                          );
-                          setState(() {
-                            _isBuildingPathTrace = false;
-                          });
-                        },
-                        tooltip: l10n.map_runTrace,
-                        icon: const Icon(Icons.arrow_forward_outlined),
-                      ),
-                    if (_pathTrace.isNotEmpty)
-                      IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PathTraceMapScreen(
-                                title: l10n.contacts_pathTrace,
-                                path: Uint8List.fromList(_pathTrace),
-                                flipPathAround: true,
-                                pathHashByteWidth: context
-                                    .read<MeshCoreConnector>()
-                                    .pathHashByteWidth,
-                                pathContacts: _pathTraceContacts,
-                              ),
-                            ),
-                          );
-                          setState(() {
-                            _isBuildingPathTrace = false;
-                          });
-                        },
-                        tooltip: l10n.map_runTraceWithReturnPath,
-                        icon: const Icon(Icons.replay),
-                      ),
-                    if (_pathTrace.isNotEmpty)
-                      IconButton(
+                  const SizedBox(height: 4),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      TextButton.icon(
                         onPressed: _removePath,
-                        tooltip: l10n.map_removeLast,
+                        style: TextButton.styleFrom(minimumSize: buttonSize),
                         icon: const Icon(Icons.undo),
+                        label: Text(l10n.map_removeLast),
                       ),
-                    if (_pathTrace.isEmpty)
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _isBuildingPathTrace = false;
-                            _pathTrace.clear();
-                            _pathTraceHopWidths.clear();
-                            _points.clear();
-                            _polylines.clear();
-                          });
-                          showDismissibleSnackBar(
-                            context,
-                            content: Text(l10n.map_pathTraceCancelled),
-                          );
-                        },
-                        tooltip: l10n.common_cancel,
-                        icon: const Icon(Icons.close),
+                      TextButton.icon(
+                        onPressed: _clearPath,
+                        style: TextButton.styleFrom(minimumSize: buttonSize),
+                        icon: const Icon(Icons.delete_outline),
+                        label: Text(l10n.common_clear),
                       ),
-                  ],
-                ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  SegmentedButton<bool>(
+                    segments: [
+                      ButtonSegment(
+                        value: true,
+                        icon: const Icon(Icons.sync_alt),
+                        label: Text(l10n.map_pathTraceModeRoundTrip),
+                      ),
+                      ButtonSegment(
+                        value: false,
+                        icon: const Icon(Icons.arrow_forward),
+                        label: Text(l10n.map_pathTraceModeAsEntered),
+                      ),
+                    ],
+                    selected: {returnPath},
+                    onSelectionChanged: (selection) =>
+                        _setTraceReturnPath(selection.first),
+                    style: SegmentedButton.styleFrom(minimumSize: buttonSize),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    returnPath
+                        ? l10n.map_pathTraceModeRoundTripHint
+                        : l10n.map_pathTraceModeAsEnteredHint,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: _overlaySecondaryTextColor,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    alignment: WrapAlignment.end,
+                    children: [
+                      if (_traceDraft.lastResultFrame != null)
+                        OutlinedButton.icon(
+                          onPressed: () =>
+                              _openTraceResult(reuseLastResult: true),
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: buttonSize,
+                          ),
+                          icon: const Icon(Icons.history),
+                          label: Text(l10n.map_pathTraceViewLast),
+                        ),
+                      FilledButton.icon(
+                        onPressed: () =>
+                            _openTraceResult(reuseLastResult: false),
+                        style: FilledButton.styleFrom(minimumSize: buttonSize),
+                        icon: const Icon(Icons.radar),
+                        label: Text(l10n.map_runTrace),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
@@ -3863,10 +4224,9 @@ int _mapContactSignature(Contact contact) {
     _bytesSignature(contact.pathOverrideBytes),
     contact.latitude,
     contact.longitude,
-    contact.lastSeen.millisecondsSinceEpoch,
+    contact.lastHeard.millisecondsSinceEpoch,
     contact.lastMessageAt.millisecondsSinceEpoch,
     contact.isActive,
-    contact.wasPulled,
   );
 }
 
@@ -4063,35 +4423,6 @@ class _GuessedLocation {
     required this.position,
     required this.highConfidence,
   });
-}
-
-class MarkerPayload {
-  final LatLng position;
-  final String label;
-  final String flags;
-
-  MarkerPayload({
-    required this.position,
-    required this.label,
-    required this.flags,
-  });
-}
-
-/// Parse a shared marker text message of the form
-/// `m:<lat>,<lon>|<label>|<flags>` and return a [MarkerPayload].
-MarkerPayload? parseMarkerText(String text) {
-  final trimmed = text.trim();
-  final match = RegExp(
-    r'm:([\-0-9.]+),([\-0-9.]+)\|([^|]*)\|(.*)',
-  ).firstMatch(trimmed);
-  if (match == null) return null;
-  final lat = double.tryParse(match.group(1) ?? '');
-  final lon = double.tryParse(match.group(2) ?? '');
-  if (lat == null || lon == null) return null;
-  if (lat.abs() > 90 || lon.abs() > 180) return null;
-  final label = (match.group(3) ?? '').trim();
-  final flags = (match.group(4) ?? '').trim();
-  return MarkerPayload(position: LatLng(lat, lon), label: label, flags: flags);
 }
 
 /// Build a normalized dedupe key for shared markers.

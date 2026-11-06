@@ -487,6 +487,9 @@ class OnnxImageCodecBackend implements ImageCodecBackend {
     bool Function()? shouldCancel,
   }) async {
     _checkRatePoint(ratePoint);
+    // A previous decode leaves the 2.16 GiB synthesis session resident; the
+    // entropy graph must never be created on top of it.
+    await releaseDecoderSession();
     final codec = await _ensureEntropy(resolution, forDecode: false);
     try {
       // The entropy session stays up on purpose: a second photo is free.
@@ -509,6 +512,9 @@ class OnnxImageCodecBackend implements ImageCodecBackend {
     bool Function()? shouldCancel,
   }) async {
     _checkRatePoint(ratePoint);
+    // Same rule in the other direction: the previous decode's synthesis
+    // session is still up, and the entropy graph is about to load.
+    await releaseDecoderSession();
     final codec = await _ensureEntropy(resolution, forDecode: true);
     final Float32List yHat;
     try {

@@ -6,6 +6,7 @@ import '../l10n/l10n.dart';
 import '../services/app_debug_log_service.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/adaptive_app_bar_title.dart';
+import '../widgets/confirm_clear_dialog.dart';
 import '../helpers/snack_bar_builder.dart';
 
 class AppDebugLogScreen extends StatelessWidget {
@@ -17,6 +18,8 @@ class AppDebugLogScreen extends StatelessWidget {
       builder: (context, logService, _) {
         final entries = logService.entries.reversed.toList();
         final hasEntries = entries.isNotEmpty;
+        final scheme = Theme.of(context).colorScheme;
+        final textTheme = Theme.of(context).textTheme;
 
         return Scaffold(
           appBar: AppBar(
@@ -47,8 +50,13 @@ class AppDebugLogScreen extends StatelessWidget {
                 tooltip: context.l10n.debugLog_clearLog,
                 icon: const Icon(Icons.delete_outline),
                 onPressed: hasEntries
-                    ? () {
-                        logService.clear();
+                    ? () async {
+                        final confirmed = await showConfirmClearDialog(
+                          context,
+                          title: context.l10n.debugLog_clearLog,
+                          message: context.l10n.debugLog_clearConfirm,
+                        );
+                        if (confirmed) logService.clear();
                       }
                     : null,
               ),
@@ -60,11 +68,11 @@ class AppDebugLogScreen extends StatelessWidget {
                 ? ListView.separated(
                     itemCount: entries.length,
                     separatorBuilder: (_, _) =>
-                        const Divider(height: 1, color: MeshPalette.line),
+                        Divider(height: 1, color: scheme.outlineVariant),
                     itemBuilder: (context, index) {
                       final entry = entries[index];
                       return Container(
-                        color: MeshPalette.bg,
+                        color: scheme.surfaceContainerLowest,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 8,
@@ -84,15 +92,18 @@ class AppDebugLogScreen extends StatelessWidget {
                                         TextSpan(
                                           text: '[${entry.tag}] ',
                                           style: MeshTheme.mono(
-                                            fontSize: 11.5,
-                                            color: _levelColor(entry.level),
+                                            fontSize: 13,
+                                            color: _levelColor(
+                                              context,
+                                              entry.level,
+                                            ),
                                           ),
                                         ),
                                         TextSpan(
                                           text: entry.message,
                                           style: MeshTheme.mono(
-                                            fontSize: 11.5,
-                                            color: MeshPalette.ink2,
+                                            fontSize: 13,
+                                            color: scheme.onSurface,
                                           ),
                                         ),
                                       ],
@@ -102,8 +113,8 @@ class AppDebugLogScreen extends StatelessWidget {
                                   Text(
                                     entry.formattedTime,
                                     style: MeshTheme.mono(
-                                      fontSize: 9.5,
-                                      color: MeshPalette.ink4,
+                                      fontSize: 12,
+                                      color: scheme.onSurfaceVariant,
                                     ),
                                   ),
                                 ],
@@ -118,25 +129,25 @@ class AppDebugLogScreen extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.bug_report_outlined,
                           size: 64,
-                          color: MeshPalette.ink3,
+                          color: scheme.onSurfaceVariant,
                         ),
                         const SizedBox(height: 16),
                         Text(
                           context.l10n.debugLog_noEntries,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: MeshPalette.ink3,
+                          textAlign: TextAlign.center,
+                          style: textTheme.titleMedium?.copyWith(
+                            color: scheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           context.l10n.debugLog_enableInSettings,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: MeshPalette.ink3,
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: scheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -148,36 +159,38 @@ class AppDebugLogScreen extends StatelessWidget {
     );
   }
 
-  Color _levelColor(AppDebugLogLevel level) {
+  Color _levelColor(BuildContext context, AppDebugLogLevel level) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     switch (level) {
       case AppDebugLogLevel.info:
-        return MeshPalette.blue;
+        return scheme.primary;
       case AppDebugLogLevel.warning:
-        return MeshPalette.warn;
+        return isDark ? MeshPalette.warn : MeshPalette.warnDim;
       case AppDebugLogLevel.error:
-        return MeshPalette.alert;
+        return scheme.error;
     }
   }
 
   Widget _buildLevelIcon(BuildContext context, AppDebugLogLevel level) {
     switch (level) {
       case AppDebugLogLevel.info:
-        return const Icon(
+        return Icon(
           Icons.info_outline,
-          size: 18,
-          color: MeshPalette.blue,
+          size: 20,
+          color: _levelColor(context, level),
         );
       case AppDebugLogLevel.warning:
-        return const Icon(
+        return Icon(
           Icons.warning_amber_outlined,
-          size: 18,
-          color: MeshPalette.warn,
+          size: 20,
+          color: _levelColor(context, level),
         );
       case AppDebugLogLevel.error:
-        return const Icon(
+        return Icon(
           Icons.error_outline,
-          size: 18,
-          color: MeshPalette.alert,
+          size: 20,
+          color: _levelColor(context, level),
         );
     }
   }

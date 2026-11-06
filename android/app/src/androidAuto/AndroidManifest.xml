@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Merged only when built with -PandroidAuto=true; see app/build.gradle.kts -->
+    <application>
+        <!-- Android Auto: message notifications can be read aloud and replied to -->
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
+    </application>
+</manifest>

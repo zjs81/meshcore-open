@@ -20,6 +20,8 @@ class ImageCodecSession {
 
   bool get hasTables => false;
 
+  bool get isDead => false;
+
   Future<void> release({bool decoder = false, bool entropy = false}) async {}
 
   Future<Uint8List> decodeLatent(

@@ -86,6 +86,10 @@ class UsbSerialService {
     if (!_isSupported) {
       throw UnsupportedError('Web Serial is not supported by this browser.');
     }
+    if (_port != null || _reader != null || _writer != null) {
+      // Leftovers from a link that died on a read error.
+      await disconnect();
+    }
 
     _status = UsbSerialStatus.connecting;
     _lastError = null;
@@ -169,7 +173,15 @@ class UsbSerialService {
   }
 
   Future<void> disconnect() async {
-    if (_status == UsbSerialStatus.disconnected) return;
+    // A read error or end of stream marks the link disconnected without
+    // closing the port, so still tear down anything left open; otherwise the
+    // next connect() fails with "port already open".
+    if (_status == UsbSerialStatus.disconnected &&
+        _port == null &&
+        _reader == null &&
+        _writer == null) {
+      return;
+    }
 
     final portLabel = _connectedPortName ?? _connectedPortKey;
     _debugLogService?.info(

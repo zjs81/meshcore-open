@@ -281,17 +281,39 @@ class Smaz {
     return text;
   }
 
+  /// Decodes text produced by [encodeIfSmaller]. Returns null when [text] is
+  /// not a compressed payload.
+  ///
+  /// Plain text can also start with `s:` followed by base64-looking
+  /// characters ("s:test"), so a payload only counts as compressed when it
+  /// satisfies the encoder's invariants: valid UTF-8, re-compressing the
+  /// result yields the same bytes, and the encoded form is shorter than the
+  /// decoded text. Very short ambiguous inputs can still match.
   static String? tryDecodePrefixed(String text) {
     final trimmedLeft = text.trimLeft();
     if (!trimmedLeft.startsWith('s:') || trimmedLeft.length <= 2) return null;
     final encoded = trimmedLeft.substring(2);
     try {
       final compressed = _decodeBase64Flexible(encoded);
+      if (compressed.isEmpty) return null;
       final decompressed = decompressBytes(compressed);
-      return utf8.decode(decompressed, allowMalformed: true);
+      final decoded = utf8.decode(decompressed);
+      final recompressed = compressBytes(decompressed);
+      if (!_bytesEqual(recompressed, compressed)) return null;
+      final candidateLength = 2 + base64Encode(compressed).length;
+      if (candidateLength >= decompressed.length) return null;
+      return decoded;
     } catch (_) {
       return null;
     }
+  }
+
+  static bool _bytesEqual(List<int> a, List<int> b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
   }
 
   static Uint8List compressBytes(Uint8List input) {

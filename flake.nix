@@ -12,12 +12,16 @@
         pkgs = nixpkgs.legacyPackages.${system};
       in
       {
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            # Flutter and Dart
-            flutter
-            dart
+        devShells.default = (pkgs.mkShell.override {
+          stdenv = if pkgs.stdenv.hostPlatform.isLinux then pkgs.clangStdenv else pkgs.stdenv;
+        }) {
+          nativeBuildInputs = with pkgs; [
+            cmake
+            ninja
+            pkg-config
+          ];
 
+          buildInputs = with pkgs; [
             # Java (required for Android development)
             jdk17
 
@@ -29,22 +33,29 @@
             gtk3
             glib
             sysprof
-            libclang
-            cmake
-            ninja
-            pkg-config
             libdatrie
 
             # Additional tools for installing Android SDK if not present
             curl
             unzip
+          ] ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+            pkgs.libsysprof-capture
+            pkgs.jq
+            pkgs.binutils
+            pkgs.util-linux
           ];
 
           shellHook = ''
             echo "MeshCore Flutter Development Environment"
-            export PKG_CONFIG_PATH="${pkgs.gtk3}/lib/pkgconfig:${pkgs.glib}/lib/pkgconfig:${pkgs.sysprof}/lib/pkgconfig:$PKG_CONFIG_PATH"
+            # Flutter itself is not provided here: pubspec.yaml pins an exact
+            # release that nixpkgs may not have yet. Use that SDK from PATH.
+            required_flutter=$(sed -n 's/^  flutter: *//p' pubspec.yaml 2>/dev/null)
+            if ! command -v flutter >/dev/null; then
+              echo "WARNING: flutter not on PATH; install Flutter $required_flutter"
+            elif ! flutter --version 2>/dev/null | grep -q "^Flutter $required_flutter "; then
+              echo "WARNING: this project requires Flutter $required_flutter; found $(flutter --version 2>/dev/null | head -1)"
+            fi
             export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [pkgs.gtk3 pkgs.glib pkgs.sysprof pkgs.libdatrie]}:$LD_LIBRARY_PATH"
-            export CMAKE_INSTALL_PREFIX="$PWD/build/bundle"
             
             # Setup Android SDK in home directory (standard location)
             export ANDROID_HOME="$HOME/Android/Sdk"
@@ -62,7 +73,7 @@
               echo ""
               cat << 'EOF'
 mkdir -p ~/Android/Sdk && cd ~/Android/Sdk && \
-curl -o cmdline-tools.zip ${if pkgs.stdenv.isDarwin then "https://dl.google.com/android/repository/commandlinetools-mac-10406996_latest.zip" else "https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip"} && \
+curl -o cmdline-tools.zip ${if pkgs.stdenv.hostPlatform.isDarwin then "https://dl.google.com/android/repository/commandlinetools-mac-10406996_latest.zip" else "https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip"} && \
 unzip -q cmdline-tools.zip && \
 mkdir -p cmdline-tools/latest && \
 mv cmdline-tools/* cmdline-tools/latest/ 2>/dev/null || echo "Warning: failed to move Android cmdline-tools into 'latest' directory; please check your SDK layout." >&2 && \

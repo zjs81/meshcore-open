@@ -24,7 +24,7 @@ class UsbScreen extends StatefulWidget {
   State<UsbScreen> createState() => _UsbScreenState();
 }
 
-class _UsbScreenState extends State<UsbScreen> {
+class _UsbScreenState extends State<UsbScreen> with WidgetsBindingObserver {
   final List<String> _ports = <String>[];
   bool _isLoadingPorts = true;
   bool _navigatedToChannels = false;
@@ -35,6 +35,13 @@ class _UsbScreenState extends State<UsbScreen> {
 
   bool get _supportsHotPlug =>
       PlatformInfo.isWindows || PlatformInfo.isLinux || PlatformInfo.isMacOS;
+
+  /// Web Serial lists a synthetic "request a port" entry plus ports the user
+  /// already authorised; the request entry opens the browser's port picker.
+  static const String _webRequestPortName = 'web:request';
+
+  bool _isWebRequestEntry(String port) =>
+      normalizeUsbPortName(port) == _webRequestPortName;
 
   @override
   void initState() {
@@ -55,7 +62,23 @@ class _UsbScreenState extends State<UsbScreen> {
       }
     };
     _connector.addListener(_connectionListener);
+    WidgetsBinding.instance.addObserver(this);
     _startHotPlugTimer();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Polling the serial ports in the background wastes power; stop while
+    // the app isn't in the foreground and resume when it returns.
+    if (state == AppLifecycleState.resumed) {
+      if (_supportsHotPlug && _hotPlugTimer == null) {
+        _startHotPlugTimer();
+        unawaited(_pollHotPlug());
+      }
+    } else {
+      _hotPlugTimer?.cancel();
+      _hotPlugTimer = null;
+    }
   }
 
   @override
@@ -71,6 +94,7 @@ class _UsbScreenState extends State<UsbScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _hotPlugTimer?.cancel();
     _hotPlugTimer = null;
     _connector.removeListener(_connectionListener);
@@ -125,7 +149,8 @@ class _UsbScreenState extends State<UsbScreen> {
           },
         ),
       ),
-      bottomNavigationBar: _supportsHotPlug
+      // Desktop hot-plugs automatically; web uses the port-picker button.
+      bottomNavigationBar: _supportsHotPlug || PlatformInfo.isWeb
           ? null
           : SafeArea(
               top: false,
@@ -227,6 +252,14 @@ class _UsbScreenState extends State<UsbScreen> {
   Widget _buildPortList(BuildContext context, MeshCoreConnector connector) {
     final l10n = context.l10n;
 
+    final isConnecting =
+        connector.state == MeshCoreConnectionState.connecting &&
+        connector.activeTransport == MeshCoreTransportType.usb;
+
+    if (PlatformInfo.isWeb) {
+      return _buildWebPortPicker(context, connector, isConnecting);
+    }
+
     if (_isLoadingPorts) {
       return EmptyState(icon: Icons.usb, title: l10n.usbStatus_searching);
     }
@@ -235,15 +268,67 @@ class _UsbScreenState extends State<UsbScreen> {
       return EmptyState(icon: Icons.usb, title: l10n.usbScreenEmptyState);
     }
 
-    final isConnecting =
-        connector.state == MeshCoreConnectionState.connecting &&
-        connector.activeTransport == MeshCoreTransportType.usb;
+    return _buildPortListView(context, _ports, isConnecting);
+  }
 
+  /// Web: one prominent button opens the browser's serial-port picker;
+  /// ports the user already authorised are listed below it for reconnects.
+  Widget _buildWebPortPicker(
+    BuildContext context,
+    MeshCoreConnector connector,
+    bool isConnecting,
+  ) {
+    final authorizedPorts = _ports
+        .where((port) => !_isWebRequestEntry(port))
+        .toList();
+    final canConnect =
+        !isConnecting &&
+        connector.state == MeshCoreConnectionState.disconnected;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          child: FilledButton.icon(
+            key: const Key('usb_choose_serial_port_button'),
+            style: FilledButton.styleFrom(minimumSize: const Size(0, 56)),
+            onPressed: canConnect
+                ? () {
+                    HapticFeedback.selectionClick();
+                    _connectPort(_webRequestPortName);
+                  }
+                : null,
+            icon: isConnecting
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.usb),
+            label: Text(
+              context.l10n.usbChooseSerialPort,
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+        ),
+        if (authorizedPorts.isNotEmpty)
+          Expanded(
+            child: _buildPortListView(context, authorizedPorts, isConnecting),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildPortListView(
+    BuildContext context,
+    List<String> ports,
+    bool isConnecting,
+  ) {
     return ListView.builder(
       padding: const EdgeInsets.only(bottom: 32),
-      itemCount: _ports.length,
+      itemCount: ports.length,
       itemBuilder: (context, index) {
-        final port = _ports[index];
+        final port = ports[index];
         final displayName = friendlyUsbPortName(port);
         final rawName = normalizeUsbPortName(port);
         final showRawName =
@@ -279,7 +364,7 @@ class _UsbScreenState extends State<UsbScreen> {
                   ? Text(
                       rawName,
                       style: MeshTheme.mono(
-                        fontSize: 11,
+                        fontSize: 13,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       maxLines: 1,
@@ -288,7 +373,7 @@ class _UsbScreenState extends State<UsbScreen> {
                   : null,
               trailing: Icon(
                 Icons.chevron_right,
-                size: 18,
+                size: 24,
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
@@ -309,6 +394,8 @@ class _UsbScreenState extends State<UsbScreen> {
   Future<void> _pollHotPlug() async {
     if (_isLoadingPorts) return;
     if (!mounted) return;
+    // Skip while another screen covers this one.
+    if (!(ModalRoute.of(context)?.isCurrent ?? true)) return;
     // Don't poll while connecting or connected.
     if (_connector.state != MeshCoreConnectionState.disconnected) return;
     try {

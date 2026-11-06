@@ -69,6 +69,7 @@
   },
   "urlImage_enable": "Enable URL images",
   "urlImage_possible": "Possible URL image; enable it in Settings.",
+  "urlImage_disabledInAppSettings": "Turned off in app settings",
   "common_reboot": "Reboot",
   "common_loading": "Loading...",
   "common_notAvailable": "—",
@@ -178,6 +179,10 @@
   "scanner_chromeRequired": "Chrome Browser Required",
   "scanner_chromeRequiredMessage": "This web application requires Google Chrome or a Chromium-based browser for Bluetooth support.",
   "scanner_enableBluetooth": "Enable Bluetooth",
+  "scanner_getNodeTitle": "Need a new node?",
+  "scanner_getNodeBody": "Wallet-sized, runs MeshCore, dual-band GPS, waterproof, 5-day battery.",
+  "scanner_getNodeAction": "Get one here",
+  "scanner_getNodeDisclosure": "Affiliate link: each purchase supports MeshCore Open.",
   "scanner_bluetoothWebUnsupported": "Bluetooth isn't available in the browser. Connect over USB instead.",
   "device_quickSwitch": "Quick switch",
   "device_meshcore": "MeshCore",
@@ -194,6 +199,7 @@
   "settings_radioSettingsSubtitle": "Frequency, power, spreading factor",
   "settings_radioSettingsUpdated": "Radio settings updated",
   "settings_radioSettingsNotApplied": "The radio did not apply these settings",
+  "settings_pathHashModeNotApplied": "Radio settings were applied, but the radio did not confirm the new path hash size",
   "settings_regionSettings": "Regions",
   "settings_regionSettingsSubtitle": "Limit channel floods to an area",
   "settings_regionEmptyExplanation": "Regions limit flood messages to repeaters in an area. Fetch them from nearby repeaters or add one by name.",
@@ -201,6 +207,19 @@
   "settings_regionDefault": "Default region",
   "settings_regionDefaultSubtitle": "Used by channels without their own region",
   "settings_regionDefaultNone": "None",
+  "settings_regionUseRadioDefault": "Radio default ({region})",
+  "@settings_regionUseRadioDefault": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_regionNoRegion": "No region (unscoped)",
+  "settings_regionRadioDefault": "Radio default region",
+  "settings_regionRadioDefaultSubtitle": "Saved on the radio. Floods sent without a region use it, from this app and any other app connected to the radio.",
+  "settings_regionRadioDefaultUpdated": "Radio default region updated",
+  "settings_regionRadioDefaultFailed": "Could not update the radio default region",
   "settings_regionManagement_screenTitle": "Region Management",
   "settings_regionNameHint": "Enter region name",
   "settings_regionAddRegion": "Add region",
@@ -298,7 +317,7 @@
   "settings_infoFirmware": "Firmware",
   "settings_presets": "Presets",
   "settings_presetCustom": "Custom",
-  "settings_radioMatchWarning": "All nodes you talk to must use the same frequency, bandwidth, SF and CR.",
+  "settings_radioMatchWarning": "All nodes you talk to must use the same frequency, bandwidth and SF. The coding rate (CR) can differ.",
   "settings_frequency": "Frequency (MHz)",
   "settings_frequencyHelper": "150.0 - 2500.0",
   "settings_frequencyInvalid": "Invalid frequency (150-2500 MHz)",
@@ -343,6 +362,118 @@
   "appSettings_themeSystem": "System default",
   "appSettings_themeLight": "Light",
   "appSettings_themeDark": "Dark",
+  "appSettings_colorTheme": "Color theme",
+  "appSettings_holidayAnimations": "Holiday message animations",
+  "appSettings_holidayAnimationsSubtitle": "Bats, a turkey, Santa or fireworks when someone sends a holiday greeting",
+  "themes_title": "Themes",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "Standard colors, follows the Light / Dark setting",
+  "themes_builtIn": "Built-in",
+  "themes_holidays": "Holidays",
+  "themes_holidayAutoSwitch": "Switch automatically",
+  "themes_holidayAutoSwitchSubtitle": "Uses each holiday's theme from 17 days before until the day itself",
+  "themes_holidayAutoApplied": "{holiday} theme is on automatically. Your own theme comes back after the holiday.",
+  "@themes_holidayAutoApplied": {
+    "placeholders": {
+      "holiday": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_holidayAutoAppliedTag": "On automatically",
+  "themes_myThemes": "My themes",
+  "themes_myThemesEmpty": "Make your own theme by picking a background and an accent color.",
+  "themes_create": "Create theme",
+  "themes_import": "Import theme",
+  "themes_importHint": "Paste a theme code",
+  "themes_importInvalid": "That is not a valid theme code",
+  "themes_imported": "Added theme \"{name}\"",
+  "@themes_imported": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_customize": "Customize a copy",
+  "themes_copyCode": "Copy theme code",
+  "themes_codeCopied": "Theme code copied",
+  "themes_deleteConfirm": "Delete theme \"{name}\"?",
+  "@themes_deleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_copyName": "{name} copy",
+  "@themes_copyName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_newTitle": "New theme",
+  "themes_editTitle": "Edit theme",
+  "themes_name": "Name",
+  "themes_nameRequired": "Give your theme a name",
+  "themes_background": "Background",
+  "themes_backgroundHelp": "A dark background makes a dark theme",
+  "themes_accent": "Accent",
+  "themes_accentHelp": "Buttons, highlights and your chat bubbles",
+  "themes_hexColor": "Hex color",
+  "themes_preview": "Preview",
+  "themes_previewIncoming": "Anyone on the mesh tonight?",
+  "themes_previewOutgoing": "Loud and clear!",
+  "themes_previewSwitch": "Notifications",
+  "themes_lowContrast": "The accent is hard to see on this background",
+  "themes_saveAndUse": "Save and use",
+  "themes_icons": "Icons",
+  "themes_iconsHelp": "Tap an icon to swap it for another icon or your own picture",
+  "themes_iconChanged": "Changed",
+  "themes_iconSend": "Send button",
+  "themes_iconRepeater": "Repeaters",
+  "themes_iconRoom": "Rooms",
+  "themes_iconSensor": "Sensors",
+  "themes_mapMarkers": "Map markers",
+  "themes_mapMarkersHelp": "Swap the markers for nodes and for you on the map",
+  "themes_iconUsePicture": "Use a picture",
+  "themes_iconReset": "Use the default icon",
+  "themes_iconPictureFailed": "Could not use that picture",
+  "themes_exportFile": "Export to file",
+  "themes_exportAll": "Export my themes",
+  "themes_importFile": "Import from file",
+  "themes_pasteCode": "Paste theme code",
+  "themes_exportFailed": "Could not export themes",
+  "themes_importFileResult": "Imported {count} themes",
+  "@themes_importFileResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "themes_importFileNone": "No themes found in that file",
+  "chatBackground_title": "Chat background",
+  "chatBackground_thisChatOnly": "Only for this chat",
+  "chatBackground_themeOverrides": "Your theme \"{name}\" sets the background in every chat. Turn that off in the theme to use this one.",
+  "@chatBackground_themeOverrides": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chatBackground_none": "None",
+  "chatBackground_picture": "Picture",
+  "chatBackground_choosePicture": "Choose a picture",
+  "chatBackground_pictureFailed": "Could not use that picture",
+  "chatBackground_fade": "Fade",
+  "themes_chatBackground": "Chat background",
+  "themes_chatBackgroundHelp": "Shown in chats that do not have their own background",
+  "themes_chatBackgroundEverywhere": "Use in every chat",
+  "themes_chatBackgroundEverywhereHelp": "Also replaces backgrounds set on individual chats",
   "appSettings_language": "Language",
   "appSettings_languageSystem": "System default",
   "appSettings_languageEn": "English",
@@ -391,8 +522,19 @@
       }
     }
   },
+  "appSettings_channelMinHopsCountRepeaters": "Also count different nearby repeaters",
+  "appSettings_channelMinHopsCountRepeatersSubtitle": "Treat the message as sent when {count, plural, =1{1 nearby repeater} other{{count} different nearby repeaters}} repeat it, even if you can't hear it travel further.",
+  "@appSettings_channelMinHopsCountRepeatersSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "appSettings_enableMessageTracing": "Show full repeater path in messages",
   "appSettings_enableMessageTracingSubtitle": "Also show repeat counts and trip times. Long-press a message and choose Path for full details.",
+  "appSettings_regionOnHopsLine": "Region next to hop count",
+  "appSettings_regionOnHopsLineSubtitle": "Show a channel message's region on the same line as its hop count instead of below it.",
   "appSettings_notifications": "Notifications",
   "appSettings_enableNotifications": "Enable Notifications",
   "appSettings_enableNotificationsSubtitle": "Receive notifications for messages and adverts",
@@ -426,6 +568,22 @@
   "appSettings_routeWeightFailureDecrementSubtitle": "Weight removed from a path after failed delivery",
   "appSettings_maxMessageRetries": "Max Message Retries",
   "appSettings_maxMessageRetriesSubtitle": "Number of retry attempts before marking a message as failed",
+  "appSettings_ipfsImageLinks": "IPFS provider configuration",
+  "appSettings_ipfsImageLinksSubtitle": "Upload for url Images (or Files) via IPFS provider and default gateway to receive",
+  "appSettings_loadLinkImages": "Load images from links",
+  "appSettings_loadLinkImagesSubtitle": "Show pictures from links in messages. Loading an image shares your IP address with the site that hosts it.",
+  "appSettings_showLinkImagesByDefault": "Show link images in all chats by default",
+  "appSettings_showLinkImagesByDefaultSubtitle": "Load link images in every chat unless you turned them off there. This shares your IP address with image hosts in every chat.",
+  "appSettings_publicIpfsGateway": "Public gateway",
+  "appSettings_ipfsGatewayDeactivated": "Deactivated",
+  "appSettings_ipfsGatewayCustom": "Custom (Kubo)",
+  "appSettings_uploadIpfsProvider": "Upload provider",
+  "appSettings_uploadIpfsGateway": "Upload gateway",
+  "appSettings_uploadIpfsGatewaySubtitle": "Gateway to share Image or File as url-link. Leave empty to use ipfs: format, which may not be opened by other clients.",
+  "appSettings_uploadIpfsEndpoint": "Upload endpoint",
+  "appSettings_uploadIpfsEndpointSubtitle": "The API endpoint used to upload files",
+  "appSettings_uploadIpfsApiKey": "Upload API key",
+  "appSettings_ipfsImageLinksDescription": "Public gateway downloads ipfs: format images. Upload gateway is used to generate share links for uploaded url images or files.",
   "appSettings_battery": "Battery",
   "appSettings_batteryChemistry": "Battery Chemistry",
   "appSettings_batteryChemistryPerDevice": "Set per device ({deviceName})",
@@ -448,6 +606,8 @@
   "appSettings_showChatNodesSubtitle": "Display chat nodes on the map",
   "appSettings_showOtherNodes": "Show Other Nodes",
   "appSettings_showOtherNodesSubtitle": "Display other node types on the map",
+  "appSettings_showOnlineLinks": "Show Online Map Connections",
+  "appSettings_showOnlineLinksSubtitle": "Display connection lines between nodes from the online map",
   "appSettings_timeFilter": "Time Filter",
   "appSettings_timeFilterShowAll": "Show all nodes",
   "appSettings_timeFilterShowLast": "Show nodes from last {hours} hours",
@@ -582,6 +742,8 @@
   },
   "contacts_keepChatHistory": "Keep chat history",
   "contacts_remove": "Remove",
+  "contacts_removeAutoAddNote": "Your radio auto-adds this contact type, so it will come back the next time it advertises. Turn off auto-add in Contacts settings to keep it removed.",
+  "contacts_removeFailed": "The radio did not confirm the removal. The contact was not removed.",
   "contacts_discoveredNearby": "Discovered nearby ({count})",
   "@contacts_discoveredNearby": {
     "placeholders": {
@@ -689,6 +851,18 @@
   "channels_addSectionCreate": "Create new",
   "channels_dragToReorder": "Drag to reorder",
   "channels_editChannel": "Edit channel",
+  "channels_notificationSettings": "Notification settings",
+  "channels_notifyAll": "All messages",
+  "channels_notifyMentionsOnly": "Mentions only",
+  "channels_notifyNone": "Muted",
+  "channels_notificationModeTooltip": "Notifications: {mode}",
+  "@channels_notificationModeTooltip": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
   "channels_muteChannel": "Mute channel",
   "channels_unmuteChannel": "Unmute channel",
   "channels_deleteChannel": "Delete channel",
@@ -795,6 +969,26 @@
   "channels_joinHashtagChannelDesc": "Anyone can join hashtag channels.",
   "channels_scanQrCode": "Scan a QR Code",
   "channels_scanQrCodeComingSoon": "Coming soon",
+  "channels_scanQrCodeDesc": "Join a channel or community from its QR code.",
+  "channels_scanQrInstructions": "Point the camera at a channel or community QR code",
+  "channels_invalidQrCode": "Not a MeshCore channel or community QR code",
+  "channels_joinChannelTitle": "Join Channel",
+  "channels_joinChannelConfirm": "Add \"{name}\" to your radio?",
+  "@channels_joinChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_alreadyOnRadio": "\"{name}\" is already on your radio",
+  "@channels_alreadyOnRadio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "channels_enterHashtag": "Enter hashtag",
   "channels_hashtagHint": "e.g. #team",
   "channels_regionSetTo": "Region: {region}",
@@ -810,6 +1004,15 @@
   "channels_regionSelect_Title": "Select a region",
   "channels_clearRegion": "Clear region",
   "channels_regionDefaultSuffix": "(default)",
+  "channels_regionRadioDefaultSuffix": "(radio default)",
+  "channels_regionRadioDefaultApplies": "This radio sends floods without a region in its default region: {region}.",
+  "@channels_regionRadioDefaultApplies": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
   "channels_regionSelectExplanation": "Flood messages on this channel will only be forwarded by repeaters in the selected region.",
   "channels_regionEmpty": "No regions yet.",
   "channels_manageRegions": "Manage regions",
@@ -843,6 +1046,7 @@
   },
   "chat_location": "Location",
   "chat_typeMessage": "Type a message...",
+  "chat_futureTimestampWarning": "This message's time is in the future, so the sender's clock may be wrong. It is shown in the order it arrived.",
   "chat_messageTooLong": "Message too long (max {maxBytes} bytes).",
   "@chat_messageTooLong": {
     "placeholders": {
@@ -867,9 +1071,40 @@
   },
   "chat_selectSendAction": "Select send action",
   "chat_sendGif": "Send GIF",
+  "chat_shareMyLocation": "Share my location",
+  "@chat_shareMyLocation": {
+    "description": "Chat input menu action that shares the radio's own position as a map marker"
+  },
+  "chat_noRadioLocation": "Your radio has no location set",
+  "@chat_noRadioLocation": {
+    "description": "Shown when sharing a location but the radio reports no usable position"
+  },
   "chat_removeGif": "Remove GIF",
   "chat_cancelReply": "Cancel reply",
   "chat_sendImageLora": "Send low-res image over radio",
+  "chat_sendImageIpfs": "Send image or file via IPFS",
+  "chat_ipfsUploadFailed": "IPFS upload failed: {error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "Configure an IPFS upload provider in App Settings first.",
+  "chat_ipfsSelectedFileEmpty": "The selected file is empty.",
+  "chat_ipfsEndpointInvalid": "The IPFS upload endpoint must be a full http:// or https:// address. Check it in App Settings.",
+  "chat_ipfsPinataTokenMissing": "Pinata needs an API key or JWT. Add it in App Settings.",
+  "chat_ipfsFilebaseTokenMissing": "Filebase needs an API token. Add it in App Settings.",
+  "chat_ipfsKuboPathInvalid": "The Kubo upload endpoint must end with /api/v0/add. Check it in App Settings.",
+  "chat_ipfsLinkNoRoom": "Not enough room for the image link. Shorten your message, then try again.",
+  "@chat_ipfsLinkNoRoom": {
+    "description": "Shown before an IPFS upload when the link would push the draft over the message size limit"
+  },
+  "chat_ipfsLinkOverLimit": "Image link added, but the message is now too long. Shorten it before sending.",
+  "@chat_ipfsLinkOverLimit": {
+    "description": "Shown after an IPFS upload when the link plus the draft no longer fits the message size limit"
+  },
   "chat_imagePickFailed": "Couldn't open that image",
   "@chat_imagePickFailed": {
     "description": "Shown when picking or reading a photo to send fails"
@@ -1147,6 +1382,7 @@
   "map_setAsMyLocation": "Set as my location",
   "map_pinLabel": "Pin label",
   "map_label": "Label",
+  "map_labelUpdateHint": "Using the same label as before will update the marker for MeshCore Open recipients.",
   "map_pointOfInterest": "Point of interest",
   "map_sendToContact": "Send to contact",
   "map_sendToChannel": "Send to channel",
@@ -1166,6 +1402,7 @@
   "map_chatNodes": "Chat Nodes",
   "map_repeaters": "Repeaters",
   "map_otherNodes": "Other Nodes",
+  "map_showOnlineLinks": "Show Online Map Connections",
   "map_showOverlaps": "Repeater Key Overlaps",
   "map_keyPrefix": "Key Prefix",
   "map_filterByKeyPrefix": "Filter by key prefix",
@@ -1189,6 +1426,12 @@
   "map_runTraceWithReturnPath": "Return back on the same path.",
   "map_removeLast": "Remove Last",
   "map_pathTraceCancelled": "Path trace cancelled.",
+  "map_pathTraceAddMoreHint": "Tap more nodes to add hops, choose how the trace returns, then tap Run path trace.",
+  "map_pathTraceModeRoundTrip": "Round trip",
+  "map_pathTraceModeRoundTripHint": "The trace goes out through these hops and comes back the same way.",
+  "map_pathTraceModeAsEntered": "As entered",
+  "map_pathTraceModeAsEnteredHint": "The trace follows these hops exactly. Add the hops back to you yourself.",
+  "map_pathTraceViewLast": "View last result",
   "mapCache_title": "Offline Map Cache",
   "mapCache_selectAreaFirst": "Select an area to cache first",
   "mapCache_noTilesToDownload": "No tiles to download for this area",
@@ -1601,10 +1844,8 @@
   "repeater_settingsSaved": "Settings saved successfully",
   "repeater_rxGain": "Boosted RX gain",
   "repeater_rxGainHelper": "Higher sensitivity, more current draw (SX1262/SX1268 only)",
-  "repeater_refreshRxGain": "Refresh boosted RX gain",
   "repeater_multiAcks": "Multi-ACKs",
   "repeater_multiAcksSubtitle": "Acknowledge messages over multiple paths for better delivery",
-  "repeater_refreshMultiAcks": "Refresh multi-ACKs",
   "repeater_networkHealth": "Network health",
   "repeater_loopDetect": "Loop detection",
   "repeater_loopDetectHelper": "Drop flood packets that look like routing loops",
@@ -1624,7 +1865,6 @@
   },
   "repeater_ownerInfo": "Operator info",
   "repeater_ownerInfoHelper": "Public metadata for this repeater",
-  "repeater_refreshOwnerInfo": "Refresh operator info",
   "repeater_floodMax": "Flood max hops",
   "repeater_floodMaxHelper": "Maximum hops a flood packet may travel (0-64)",
   "repeater_advancedSettings": "Advanced",
@@ -1699,11 +1939,7 @@
       }
     }
   },
-  "repeater_refreshBasicSettings": "Refresh Basic Settings",
   "repeater_refreshRadioSettings": "Refresh Radio Settings",
-  "repeater_refreshTxPower": "Refresh TX power",
-  "repeater_refreshPacketForwarding": "Refresh Packet Forwarding",
-  "repeater_refreshGuestAccess": "Refresh Guest Access",
   "repeater_refreshPrivacyMode": "Refresh Privacy Mode",
   "repeater_refreshAll": "Refresh all",
   "repeater_settingsNotLoaded": "Settings haven't been loaded from this repeater yet.",
@@ -2559,6 +2795,64 @@
   "contacts_invalidAdvertFormat": "Invalid contact data",
   "contacts_contactImported": "Contact has been imported.",
   "contacts_contactImportFailed": "Failed to import contact.",
+  "discoveredContacts_export": "Export discovered contacts",
+  "discoveredContacts_import": "Import discovered contacts",
+  "discoveredContacts_exported": "Exported discovered contacts to {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "Failed to export discovered contacts: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "Imported {count} discovered contacts.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "No contacts found in import file.",
+  "discoveredContacts_importSummary": "Imported {imported} discovered contacts. Skipped {skipped} already known and {invalid} unreadable entries.",
+  "@discoveredContacts_importSummary": {
+    "placeholders": {
+      "imported": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      },
+      "invalid": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importInvalidFile": "The file is not a discovered contacts export.",
+  "discoveredContacts_importTooLarge": "The import file is too large (maximum {maxMb} MB).",
+  "@discoveredContacts_importTooLarge": {
+    "placeholders": {
+      "maxMb": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importFailed": "Failed to import discovered contacts: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "contacts_zeroHopAdvert": "Zero Hop Advert",
   "contacts_floodAdvert": "Flood Advert",
   "contacts_copyAdvertToClipboard": "Copy Advert to Clipboard",
@@ -2575,6 +2869,22 @@
   "contacts_contactAdvertCopied": "Advert copied to Clipboard.",
   "contacts_contactAdvertCopyFailed": "Copying advert to Clipboard failed.",
   "notification_activityTitle": "MeshCore Activity",
+  "notification_lowBatteryTitle": "Low battery",
+  "@notification_lowBatteryTitle": {
+    "description": "Title of the low battery notification"
+  },
+  "notification_lowBatteryBody": "{deviceName} battery is at {percent}%",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification; deviceName is the connected radio's node name",
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "notification_messagesCount": "{count} {count, plural, =1{message} other{messages}}",
   "@notification_messagesCount": {
     "placeholders": {
@@ -2608,6 +2918,25 @@
     }
   },
   "notification_receivedNewMessage": "Received new message",
+  "notification_sharedLocation": "Shared a location",
+  "notification_sharedLocationNamed": "Shared a location: {label}",
+  "@notification_sharedLocationNamed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_reacted": "Reacted {emoji}",
+  "@notification_reacted": {
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_sentGif": "Sent a GIF",
+  "notification_sentImage": "Sent an image",
   "notification_actionReply": "Reply",
   "notification_actionMarkRead": "Mark as read",
   "notification_actionMuteChannel": "Mute channel",
@@ -2637,6 +2966,8 @@
   "snrIndicator_nearByRepeaters": "Nearby Repeaters",
   "snrIndicator_lastSeen": "Last seen",
   "snrIndicator_nearByRepeatersDescription": "Repeaters your radio heard directly, most recently heard first.",
+  "snrIndicator_unknownRepeater": "Unknown repeater",
+  "snrIndicator_unknownRepeaterHint": "This repeater isn't in your contacts yet. Its name, location and options appear once your radio receives its advert.",
   "contactsSettings_title": "Contacts settings",
   "contactsSettings_autoAddTitle": "Automatic Discovery",
   "contactsSettings_otherTitle": "Other contact related settings",
@@ -2650,6 +2981,15 @@
   "contactsSettings_autoAddSensorsSubtitle": "Allow the companion to automatically add discovered sensors.",
   "contactsSettings_overwriteOldestTitle": "Overwrite Oldest",
   "contactsSettings_overwriteOldestSubtitle": "When the contact list is full, the oldest non-favorited contact will be replaced.",
+  "contactsSettings_evictDiscoveredContactsTitle": "Evict discovered contacts",
+  "contactsSettings_evictDiscoveredContactsSubtitle": "When enabled, the app removes the oldest discovered contacts once the discovery list reaches its limit of {limit} entries.",
+  "@contactsSettings_evictDiscoveredContactsSubtitle": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
   "discoveredContacts_Title": "Discovered Contacts",
   "discoveredContacts_noMatching": "No matching contacts",
   "discoveredContacts_searchHint": "Search discovered contacts",
@@ -2659,9 +2999,39 @@
   "discoveredContacts_deleteContact": "Delete Discovered Contact",
   "discoveredContacts_deleteContactAll": "Delete All Discovered Contacts",
   "discoveredContacts_deleteContactAllContent": "Are you sure you want to delete all discovered contacts?",
+  "discoveredContacts_scan": "Scan for nearby nodes",
+  "discoveredContacts_scanTitle": "Nearby nodes",
+  "discoveredContacts_scanExplanation": "Asks nodes within direct radio range to identify themselves. Repeaters and sensors answer. Room servers and companions usually don't.",
+  "discoveredContacts_scanning": "Scanning…",
+  "discoveredContacts_scanFound": "{count, plural, =1{1 node found} other{{count} nodes found}}",
+  "@discoveredContacts_scanFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_scanNoResults": "No nodes answered. Repeaters limit how often they reply, so try again in a minute.",
+  "discoveredContacts_scanAgain": "Scan again",
+  "discoveredContacts_scanFailed": "Could not send the scan request.",
+  "discoveredContacts_scanSignal": "Signal {snr} dB · they heard us at {remoteSnr} dB",
+  "@discoveredContacts_scanSignal": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      },
+      "remoteSnr": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_scanInContacts": "Already in contacts",
+  "discoveredContacts_scanNameLater": "Name appears after its next advert",
   "chat_sendCooldown": "Please wait a moment before sending again.",
   "appSettings_jumpToOldestUnread": "Jump to oldest unread",
   "appSettings_jumpToOldestUnreadSubtitle": "When opening a chat with unread messages, scroll to the first unread instead of the latest.",
+  "appSettings_autoFetchRepeaterSettings": "Auto-fetch repeater settings",
+  "appSettings_autoFetchRepeaterSettingsSubtitle": "Request every setting when opening a repeater's settings. Each one is a separate request over LoRa, so this is slow and uses airtime. When off, tap Refresh All or refresh individual sections.",
   "appSettings_languageHu": "Hungarian",
   "appSettings_languageJa": "Japanese",
   "appSettings_languageKo": "Korean",
@@ -3108,5 +3478,550 @@
         "type": "int"
       }
     }
+  },
+  "reviewMode_dialogTitle": "Enter review mode?",
+  "@reviewMode_dialogTitle": {"description": "Title of the review mode confirmation dialog"},
+  "reviewMode_dialogBody": "Review mode connects to a simulated radio with sample contacts, channels and messages. No real radio is needed.",
+  "@reviewMode_dialogBody": {"description": "Body of the review mode confirmation dialog"},
+  "reviewMode_confirm": "Enter",
+  "@reviewMode_confirm": {"description": "Confirm button of the review mode dialog"},
+  "reviewMode_cancel": "Cancel",
+  "@reviewMode_cancel": {"description": "Cancel button of the review mode dialog"},
+  "reviewMode_banner": "Review mode — simulated data",
+  "@reviewMode_banner": {"description": "Label of the banner shown while review mode is active"},
+  "reviewMode_sendTest": "Send test message",
+  "@reviewMode_sendTest": {"description": "Banner action that makes the simulated radio deliver a message"},
+  "reviewMode_testSent": "A test message will arrive shortly.",
+  "@reviewMode_testSent": {"description": "Snackbar shown after requesting a test message"},
+  "reviewMode_exit": "Exit",
+  "@reviewMode_exit": {"description": "Banner action that leaves review mode"},
+  "reviewMode_connectFailed": "Could not start review mode: {error}",
+  "@reviewMode_connectFailed": {"description": "Snackbar shown when review mode fails to connect", "placeholders": {"error": {"type": "String"}}},
+  "channels_waitForSync": "Channels are still loading from the radio. Try again when the sync finishes.",
+  "@channels_waitForSync": {"description": "Snackbar when the user tries to add a channel before the channel list has fully synced"},
+  "channels_nameTooLong": "Name is too long (max {maxBytes} bytes).",
+  "@channels_nameTooLong": {"description": "Snackbar when a channel name would not fit on the radio", "placeholders": {"maxBytes": {"type": "int"}}},
+  "repeater_valueRequired": "{field}: enter a value",
+  "repeater_floodMaxAdvert": "Advert flood max hops",
+  "repeater_floodMaxAdvertHelper": "Maximum hops a flooded advert may travel (0-64, default 8)",
+  "repeater_floodMaxUnscoped": "Unscoped flood max hops",
+  "repeater_floodMaxUnscopedHelper": "Maximum hops for floods without a region scope (0-64, default 64). A low value such as 3 keeps unscoped traffic local.",
+  "repeater_floodMaxUnscopedUnset": "Same as flood max",
+  "repeater_rxDelay": "Receive delay",
+  "repeater_rxDelayHelper": "Holds flood packets heard with a weak signal before forwarding, so strong-signal paths go first and fewer duplicates are sent (0-20, 0 turns it off).",
+  "repeater_cad": "Channel activity detection",
+  "repeater_cadHelper": "Listen for activity before transmitting and wait while the channel is busy. Works alongside the interference threshold.",
+  "repeater_adcMultiplier": "Battery voltage calibration",
+  "repeater_adcMultiplierHelper": "Multiplier for the battery voltage reading (0-10). 0 uses the board's default.",
+  "repeater_boardSupportNote": "Not every board supports this. Unsupported boards reject the change.",
+  "repeater_extraSf": "Extra spreading factors",
+  "repeater_extraSfHelper": "Up to 3 more spreading factors to listen on at the same time, separated by commas (for example 9,10). Leave empty to turn off.",
+  "repeater_lr2021Only": "Only for repeaters with an LR2021 radio. Other repeaters don't have this setting and reject it.",
+  "@repeater_valueRequired": {"description": "Save error when a changed repeater setting was left empty", "placeholders": {"field": {"type": "String"}}},
+  "losMapDetailTooltip": "Map detail",
+  "losUnitsTooltip": "Units",
+  "losDistance": "Distance",
+  "losClearance": "Clearance",
+  "losBlockedBy": "Blocked by",
+  "losObstruction": "Obstruction",
+  "losDistanceFromA": "{distance} from A",
+  "@losDistanceFromA": {"description": "Distance of the worst obstruction from point A, e.g. \"1.2 km from A\"", "placeholders": {"distance": {"type": "String"}}},
+  "losWorstBadge": "WORST",
+  "@losWorstBadge": {"description": "Badge on the worst obstruction in the list"},
+  "losBlockedAmount": "Blocked {amount}",
+  "@losBlockedAmount": {"description": "How much an obstruction blocks the beam, e.g. \"Blocked 12 m\"", "placeholders": {"amount": {"type": "String"}}},
+  "losFromA": "From A",
+  "losFromB": "From B",
+  "losElevation": "Elevation",
+  "losCenterOnMap": "Center on map",
+  "losStatusClear": "Clear",
+  "@losStatusClear": {"description": "Line-of-sight status"},
+  "losStatusMarginal": "Marginal",
+  "@losStatusMarginal": {"description": "Line-of-sight status"},
+  "losStatusBlocked": "Blocked",
+  "@losStatusBlocked": {"description": "Line-of-sight status and legend entry"},
+  "losStatusCheckingShort": "Checking",
+  "@losStatusCheckingShort": {"description": "Line-of-sight status while the check runs"},
+  "losStatusNoResult": "No result",
+  "@losStatusNoResult": {"description": "Line-of-sight status when there is no result"},
+  "losSelectedPill": "Selected",
+  "@losSelectedPill": {"description": "Label drawn on the elevation chart at the selected point"},
+  "gif_tapToLoad": "Tap to load GIF",
+  "gif_loadFailedRetry": "Can't load GIF\nTap to retry",
+  "qr_cameraPermissionDenied": "Camera permission denied.\nPlease enable camera access in settings.",
+  "qr_cameraUnsupported": "Camera not supported on this device.",
+  "qr_cameraStartFailed": "Failed to start camera.\n{details}",
+  "@qr_cameraStartFailed": {"placeholders": {"details": {"type": "String"}}},
+  "imageMessages_downloadFailedWithError": "The image model could not be downloaded: {error}",
+  "@imageMessages_downloadFailedWithError": {"placeholders": {"error": {"type": "String"}}},
+  "map_nodeId": "ID",
+  "map_markerHideHint": "Hide: hidden until you leave the map.",
+  "map_markerRemoveHint": "Remove: stays hidden until you restore it from the filter menu.",
+  "map_markerRemoved": "Marker removed",
+  "map_restoreRemovedMarkers": "Restore removed markers",
+  "map_restoreRemovedMarkersSubtitle": "{count} removed",
+  "@map_restoreRemovedMarkersSubtitle": {"placeholders": {"count": {"type": "int"}}},
+  "map_markersRestored": "Restored {count} markers",
+  "@map_markersRestored": {"placeholders": {"count": {"type": "int"}}},
+  "map_setLocationConfirmTitle": "Set as your location?",
+  "map_setLocationConfirmBody": "Your node will advertise this position:\n{lat}, {lon}",
+  "@map_setLocationConfirmBody": {"placeholders": {"lat": {"type": "String"}, "lon": {"type": "String"}}},
+  "map_setLocationAction": "Set location",
+  "map_locationSetSuccess": "Node location updated",
+  "map_locationSetFailed": "The device did not confirm the new location. Try again.",
+  "map_poiClusterTitle": "{count} markers here",
+  "@map_poiClusterTitle": {"placeholders": {"count": {"type": "int"}}},
+  "map_poiClusterSemantics": "{count} shared markers. Tap to list them.",
+  "@map_poiClusterSemantics": {"placeholders": {"count": {"type": "int"}}},
+  "map_youWithMarkers": "You and {count} markers",
+  "@map_youWithMarkers": {"placeholders": {"count": {"type": "int"}}},
+  "map_sharedMarkerSemantics": "Shared marker: {label}",
+  "@map_sharedMarkerSemantics": {"placeholders": {"label": {"type": "String"}}},
+  "map_nodeMarkerSemantics": "{name}, {type}, {status}",
+  "@map_nodeMarkerSemantics": {"placeholders": {"name": {"type": "String"}, "type": {"type": "String"}, "status": {"type": "String"}}},
+  "map_requestLocation": "Update location",
+  "map_locationUpdated": "Location updated",
+  "map_locationNotShared": "{name} replied without a location",
+  "@map_locationNotShared": {"placeholders": {"name": {"type": "String"}}},
+  "map_locationRequestFailed": "No reply from {name}",
+  "@map_locationRequestFailed": {"placeholders": {"name": {"type": "String"}}},
+  "mapCache_zoomLevel": "Zoom {zoom}",
+  "@mapCache_zoomLevel": {"placeholders": {"zoom": {"type": "int"}}},
+  "mapCache_sizeBytes": "{size} B",
+  "@mapCache_sizeBytes": {"placeholders": {"size": {"type": "String"}}},
+  "mapCache_sizeKilobytes": "{size} KB",
+  "@mapCache_sizeKilobytes": {"placeholders": {"size": {"type": "String"}}},
+  "mapCache_sizeMegabytes": "{size} MB",
+  "@mapCache_sizeMegabytes": {"placeholders": {"size": {"type": "String"}}},
+  "mapCache_sizeGigabytes": "{size} GB",
+  "@mapCache_sizeGigabytes": {"placeholders": {"size": {"type": "String"}}},
+  "mapCache_downloadCancelled": "Download cancelled. Cached {count} tiles.",
+  "@mapCache_downloadCancelled": {"placeholders": {"count": {"type": "int"}}},
+  "mapCache_tooManyTilesTitle": "Area too large",
+  "mapCache_tooManyTiles": "This area needs {count} tiles, more than the limit of {max}. Pick a smaller area or lower the maximum zoom.",
+  "@mapCache_tooManyTiles": {"placeholders": {"count": {"type": "int"}, "max": {"type": "int"}}},
+  "chat_clearChatConfirm": "This erases every message in this conversation from this device. It cannot be undone.",
+  "channels_clearChatConfirm": "This erases every message in this channel from this device, including received images. It cannot be undone.",
+  "channels_timeNow": "now",
+  "channels_timeMinutes": "{minutes}m",
+  "@channels_timeMinutes": {"placeholders": {"minutes": {"type": "int"}}},
+  "channels_timeHours": "{hours}h",
+  "@channels_timeHours": {"placeholders": {"hours": {"type": "int"}}},
+  "channels_timeDays": "{days}d",
+  "@channels_timeDays": {"placeholders": {"days": {"type": "int"}}},
+  "channels_indexChip": "CH {index}",
+  "@channels_indexChip": {"placeholders": {"index": {"type": "int"}}},
+  "reaction_unknownSender": "Unknown",
+  "pathMap_noSelfGpsFix": "Local node has no GPS fix",
+  "pathTrace_sendFailed": "Could not send the path trace: {error}",
+  "@pathTrace_sendFailed": {"placeholders": {"error": {"type": "String"}}},
+  "losErrorNoInternet": "Elevation data needs an internet connection",
+  "losResultStale": "Out of date: antenna height changed",
+  "losSnrValue": "{snr} dB",
+  "@losSnrValue": {"placeholders": {"snr": {"type": "String"}}},
+  "losFrequencyValue": "{frequency} MHz",
+  "@losFrequencyValue": {"placeholders": {"frequency": {"type": "String"}}},
+  "losKFactorValue": "k={kFactor}",
+  "@losKFactorValue": {"placeholders": {"kFactor": {"type": "String"}}},
+  "losEndpointA": "A",
+  "losEndpointB": "B",
+  "units_km": "km",
+  "units_mi": "mi",
+  "units_m": "m",
+  "units_ft": "ft",
+  "telemetry_loading": "Loading telemetry…",
+  "telemetry_axisValue": "X: {x}, Y: {y}, Z: {z}",
+  "@telemetry_axisValue": {"placeholders": {"x": {"type": "String"}, "y": {"type": "String"}, "z": {"type": "String"}}},
+  "telemetry_colourValue": "R: {red}, G: {green}, B: {blue}",
+  "@telemetry_colourValue": {"placeholders": {"red": {"type": "String"}, "green": {"type": "String"}, "blue": {"type": "String"}}},
+  "telemetry_altitudeValueFeet": "{feet} ft",
+  "@telemetry_altitudeValueFeet": {"placeholders": {"feet": {"type": "String"}}},
+  "telemetry_distanceValueFeet": "{feet} ft",
+  "@telemetry_distanceValueFeet": {"placeholders": {"feet": {"type": "String"}}},
+  "settings_notConnectedError": "Not connected to a radio. Connect and try again.",
+  "settings_requiresConnection": "Connect to a radio to use this",
+  "settings_txPowerInvalidRange": "Invalid TX power ({min} to {max} dBm)",
+  "@settings_txPowerInvalidRange": {"placeholders": {"min": {"type": "int"}, "max": {"type": "int"}}},
+  "settings_contactSettingsSaved": "Contact settings saved",
+  "settings_batteryToggleHint": "Tap to switch between percent and voltage",
+  "settings_publicKeyCopyHint": "Copy public key",
+  "settings_locationClearHelper": "Leave both fields empty to remove your location.",
+  "settings_locationCleared": "Location removed",
+  "settings_regionFetchDiscovering": "Looking for nearby repeaters…",
+  "settings_regionFetchProgress": "Asking repeater {current} of {total}…",
+  "@settings_regionFetchProgress": {"placeholders": {"current": {"type": "int"}, "total": {"type": "int"}}},
+  "settings_regionFetchNoRepeaters": "No repeaters are known yet. Add a repeater as a contact or wait for one to advertise, then try again.",
+  "settings_regionFetchNoneResponded": "No nearby repeaters answered. Move closer to a repeater and try again.",
+  "appSettings_sourceSummary": "{label} - {description}",
+  "@appSettings_sourceSummary": {"placeholders": {"label": {"type": "String"}, "description": {"type": "String"}}},
+  "appSettings_routingSection": "Routing",
+  "appSettings_resetRoutingToDefault": "Reset Routing Algorithm to Default",
+  "appSettings_resetRoutingToDefaultSubtitle": "Restore routing algorithm settings to factory defaults",
+  "appSettings_routingResetToDefault": "Routing algorithm settings reset to default",
+  "appSettings_imageMessagesSection": "Image messages",
+  "appSettings_showApiKey": "Show API key",
+  "appSettings_hideApiKey": "Hide API key",
+  "translation_defaultModelName": "Model",
+  "translation_downloadProgressBytes": "{fileName}: {current} MB",
+  "@translation_downloadProgressBytes": {"placeholders": {"fileName": {"type": "String"}, "current": {"type": "String"}}},
+  "translation_downloadProgressTotal": "{fileName}: {current} / {total} MB ({percent}%)",
+  "@translation_downloadProgressTotal": {"placeholders": {"fileName": {"type": "String"}, "current": {"type": "String"}, "total": {"type": "String"}, "percent": {"type": "String"}}},
+  "translation_downloadedModelDetails": "{size} MB • {source}",
+  "@translation_downloadedModelDetails": {"placeholders": {"size": {"type": "String"}, "source": {"type": "String"}}},
+  "repeater_radioDisconnected": "Radio disconnected",
+  "repeater_radioDisconnectedHint": "Reconnect to your radio to send commands, refresh or save changes.",
+  "repeater_cliSend": "Send command",
+  "repeater_cliCopyTranscript": "Copy transcript",
+  "repeater_cliShareTranscript": "Share transcript",
+  "repeater_cliTranscriptCopied": "Transcript copied",
+  "repeater_cliClearHistoryConfirm": "Clear the command history? This cannot be undone.",
+  "repeater_cliSearchCommands": "Search commands",
+  "repeater_cliNoMatchingCommands": "No matching commands",
+  "debugLog_clearConfirm": "Clear all log entries? This cannot be undone.",
+  "repeater_unsavedChangesTitle": "Unsaved changes",
+  "repeater_unsavedChangesMessage": "You have changes that haven't been saved to the repeater.",
+  "repeater_discardChanges": "Discard",
+  "repeater_actionSentNoReply": "{action}: command sent. The repeater does not reply to this command.",
+  "@repeater_actionSentNoReply": {"placeholders": {"action": {"type": "String"}}},
+  "repeater_invalidSettingValue": "{setting}: {value} is not valid",
+  "@repeater_invalidSettingValue": {"placeholders": {"setting": {"type": "String"}, "value": {"type": "String"}}},
+  "repeater_prvKeyLengthError": "Private key must be exactly {length} hex characters",
+  "@repeater_prvKeyLengthError": {"placeholders": {"length": {"type": "int"}}},
+  "contacts_advertFailed": "Couldn't send advertisement",
+  "contacts_manageGroups": "Manage groups",
+  "contacts_keyPrefixSemantics": "Key prefix {prefix}",
+  "@contacts_keyPrefixSemantics": {"placeholders": {"prefix": {"type": "String"}}},
+  "community_shortId": "ID: {id}…",
+  "@community_shortId": {"placeholders": {"id": {"type": "String"}}},
+  "tcpSectionTitle": "TCP / IP",
+  "tcpConnectedToHeader": "Connected to",
+  "usbChooseSerialPort": "Choose serial port",
+  "neighbors_durationSeconds": "{seconds}s",
+  "@neighbors_durationSeconds": {"placeholders": {"seconds": {"type": "String"}}},
+  "neighbors_durationMinutes": "{minutes}m {seconds}s",
+  "@neighbors_durationMinutes": {"placeholders": {"minutes": {"type": "int"}, "seconds": {"type": "String"}}},
+  "neighbors_durationHours": "{hours}h {minutes}m",
+  "@neighbors_durationHours": {"placeholders": {"hours": {"type": "int"}, "minutes": {"type": "int"}}},
+  "networkMap_settingsSection": "Network map",
+  "networkMap_uploadTitle": "Share what my radio hears",
+  "networkMap_uploadExplanation": "When this is on and your radio is connected, the app sends a short summary of the packets your radio hears to the MeshCore Open network map, so everyone can see which repeaters exist and how they link up. It sends each packet's type, route, hops, signal strength and size, plus repeater names and rough locations from their own adverts. It never sends message text, who is talking to whom, channel names, your contacts or your exact position: locations are rounded to about 2 km, and your app gets a new random ID every day.",
+  "networkMap_whatWeCollect": "What we collect",
+  "networkMap_promptTitle": "Help build the network map?",
+  "networkMap_promptBody": "MeshCore Open can share what your radio hears with the public network map at map.meshcoreopen.org, so everyone can see which repeaters exist and how they link up.\n\nIt never sends message text, who is talking to whom, channel names, your contacts or your exact position. Locations are rounded to about 2 km.",
+  "networkMap_promptSettingsHint": "You can change this any time in Settings → App settings → Network map.",
+  "networkMap_promptAccept": "Share",
+  "networkMap_promptDecline": "No thanks",
+  "networkMap_statusOff": "Off. Nothing is sent.",
+  "networkMap_statusWaiting": "On. Waiting for a radio connection.",
+  "networkMap_statusNothingSent": "On. Nothing sent yet.",
+  "networkMap_statusLastSent": "Last sent {time}. {count} packets today.",
+  "@networkMap_statusLastSent": {"placeholders": {"time": {"type": "String"}, "count": {"type": "int"}}},
+  "networkMap_sourceLocal": "Local",
+  "networkMap_sourceOnline": "Online",
+  "networkMap_sourceBoth": "Both",
+  "networkMap_sourceLocalHint": "Nodes your radio has heard",
+  "networkMap_sourceOnlineHint": "Repeaters from the online network map",
+  "networkMap_sourceBothHint": "Your radio's nodes plus the online network map",
+  "networkMap_zoomInHint": "Zoom in to see the online network map",
+  "networkMap_loadFailed": "Couldn't load the online network map",
+  "networkMap_inYourContacts": "In your contacts",
+  "networkMap_status": "Status",
+  "networkMap_statusActive": "Active in the last hour",
+  "networkMap_statusRecent": "Heard in the last day",
+  "networkMap_statusStale": "Not heard lately",
+  "networkMap_confirmed": "Confirmed",
+  "networkMap_singleSource": "Single source, not yet confirmed",
+  "networkMap_reports": "Reports",
+  "networkMap_locationEstimated": "Rough location, estimated from who heard it",
+  "networkMap_locationAdvertised": "Rough location, from its own advert",
+  "networkMap_heardByRadio": "Heard by your radio",
+  "networkMap_inYourArea": "In your area",
+  "networkMap_farAway": "Far away. Management won't reach it.",
+  "networkMap_addToContacts": "Add to contacts",
+  "networkMap_manage": "Manage",
+  "networkMap_addedToContacts": "Added to contacts",
+  "networkMap_addFailed": "Couldn't add to contacts",
+  "networkMap_unnamed": "Unnamed repeater",
+  "holidayGreeting_halloween": "Happy Halloween",
+  "@holidayGreeting_halloween": {
+    "description": "Holiday greeting that plays the Halloween bats animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  },
+  "holidayGreeting_thanksgiving": "Happy Thanksgiving",
+  "@holidayGreeting_thanksgiving": {
+    "description": "Holiday greeting that plays the Thanksgiving turkey animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  },
+  "holidayGreeting_christmas": "Merry Christmas|Merry Xmas|Happy Christmas",
+  "@holidayGreeting_christmas": {
+    "description": "Holiday greeting that plays the Christmas Santa animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  },
+  "holidayGreeting_newYear": "Happy New Year|Happy New Year's",
+  "@holidayGreeting_newYear": {
+    "description": "Holiday greeting that plays the New Year's fireworks animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  },
+  "chat_loadOlderMessages": "Load older messages",
+  "@chat_loadOlderMessages": {
+    "description": "Button on an empty channel when filtered messages hide the loaded ones and older history may exist"
+  },
+  "messageFilter_title": "Message filter",
+  "@messageFilter_title": {
+    "description": "Message filter: Message filter"
+  },
+  "messageFilter_settingsSubtitle": "Hide spam and repeated messages",
+  "@messageFilter_settingsSubtitle": {
+    "description": "Message filter: Hide spam and repeated messages"
+  },
+  "messageFilter_enabled": "Filter messages",
+  "@messageFilter_enabled": {
+    "description": "Message filter: Filter messages"
+  },
+  "messageFilter_enabledSubtitle": "Applies to channel messages",
+  "@messageFilter_enabledSubtitle": {
+    "description": "Message filter: Applies to channel messages"
+  },
+  "messageFilter_displayTitle": "Filtered messages",
+  "@messageFilter_displayTitle": {
+    "description": "Message filter: Filtered messages"
+  },
+  "messageFilter_displayPlaceholder": "Show a small placeholder",
+  "@messageFilter_displayPlaceholder": {
+    "description": "Message filter: Show a small placeholder"
+  },
+  "messageFilter_displayHide": "Hide completely",
+  "@messageFilter_displayHide": {
+    "description": "Message filter: Hide completely"
+  },
+  "messageFilter_displayHideHelp": "Hidden messages stay in the Filtered messages list.",
+  "@messageFilter_displayHideHelp": {
+    "description": "Message filter: Hidden messages stay in the Filtered messages list."
+  },
+  "messageFilter_rulesSection": "Your rules",
+  "@messageFilter_rulesSection": {
+    "description": "Message filter: Your rules"
+  },
+  "messageFilter_rulesEmpty": "No rules yet. Add a word, phrase or sender name to hide messages that match it.",
+  "@messageFilter_rulesEmpty": {
+    "description": "Message filter: No rules yet. Add a word, phrase or sender name to hide messages that match it."
+  },
+  "messageFilter_addRule": "Add rule",
+  "@messageFilter_addRule": {
+    "description": "Message filter: Add rule"
+  },
+  "messageFilter_editRule": "Edit rule",
+  "@messageFilter_editRule": {
+    "description": "Message filter: Edit rule"
+  },
+  "messageFilter_rulePattern": "Word, phrase or name",
+  "@messageFilter_rulePattern": {
+    "description": "Message filter: Word, phrase or name"
+  },
+  "messageFilter_rulePatternHint": "e.g. meshos",
+  "@messageFilter_rulePatternHint": {
+    "description": "Message filter: e.g. meshos"
+  },
+  "messageFilter_ruleWhere": "Look in",
+  "@messageFilter_ruleWhere": {
+    "description": "Message filter: Look in"
+  },
+  "messageFilter_ruleFieldText": "Message text",
+  "@messageFilter_ruleFieldText": {
+    "description": "Message filter: Message text"
+  },
+  "messageFilter_ruleFieldSender": "Sender name",
+  "@messageFilter_ruleFieldSender": {
+    "description": "Message filter: Sender name"
+  },
+  "messageFilter_ruleFieldBoth": "Both",
+  "@messageFilter_ruleFieldBoth": {
+    "description": "Message filter: Both"
+  },
+  "messageFilter_ruleMatch": "Match",
+  "@messageFilter_ruleMatch": {
+    "description": "Message filter: Match"
+  },
+  "messageFilter_ruleMatchContains": "Contains",
+  "@messageFilter_ruleMatchContains": {
+    "description": "Message filter: Contains"
+  },
+  "messageFilter_ruleMatchWholeWord": "Whole word",
+  "@messageFilter_ruleMatchWholeWord": {
+    "description": "Message filter: Whole word"
+  },
+  "messageFilter_ruleMatchExact": "Exact",
+  "@messageFilter_ruleMatchExact": {
+    "description": "Message filter: Exact"
+  },
+  "messageFilter_ruleDeleted": "Rule deleted",
+  "@messageFilter_ruleDeleted": {
+    "description": "Message filter: Rule deleted"
+  },
+  "messageFilter_ruleSaved": "Rule saved",
+  "@messageFilter_ruleSaved": {
+    "description": "Message filter: Rule saved"
+  },
+  "messageFilter_automaticSection": "Automatic",
+  "@messageFilter_automaticSection": {
+    "description": "Message filter: Automatic"
+  },
+  "messageFilter_duplicates": "Repeated messages",
+  "@messageFilter_duplicates": {
+    "description": "Message filter: Repeated messages"
+  },
+  "messageFilter_duplicatesSubtitle": "The same message sent again, or by several senders",
+  "@messageFilter_duplicatesSubtitle": {
+    "description": "Message filter: The same message sent again, or by several senders"
+  },
+  "messageFilter_repeatedCharacters": "Repeated characters",
+  "@messageFilter_repeatedCharacters": {
+    "description": "Message filter: Repeated characters"
+  },
+  "messageFilter_repeatedCharactersSubtitle": "Long runs of one character, like \"aaaaaaaaaaaaaaaaaaaa\"",
+  "@messageFilter_repeatedCharactersSubtitle": {
+    "description": "Message filter: Messages like \"aaaaaaaa\" or \"!!!!!!!!\""
+  },
+  "messageFilter_learning": "Learn from Spam taps",
+  "@messageFilter_learning": {
+    "description": "Message filter: Learn from Spam taps"
+  },
+  "messageFilter_learningSubtitle": "{spam} spam and {notSpam} not-spam examples",
+  "@messageFilter_learningSubtitle": {
+    "description": "Message filter: {spam} spam and {notSpam} not-spam examples",
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "Reset learning",
+  "@messageFilter_resetLearning": {
+    "description": "Message filter: Reset learning"
+  },
+  "messageFilter_resetLearningConfirm": "Forget everything learned from your Spam and Not spam taps? Your rules are kept.",
+  "@messageFilter_resetLearningConfirm": {
+    "description": "Message filter: Forget everything learned from your Spam and Not spam taps? Your rules are kept."
+  },
+  "messageFilter_filteredMessages": "Filtered messages ({count})",
+  "@messageFilter_filteredMessages": {
+    "description": "Message filter: Filtered messages ({count})",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "Nothing has been filtered.",
+  "@messageFilter_filteredMessagesEmpty": {
+    "description": "Message filter: Nothing has been filtered."
+  },
+  "messageFilter_ghostSingle": "Hidden message · Tap to view",
+  "@messageFilter_ghostSingle": {
+    "description": "Message filter: Hidden message · Tap to view"
+  },
+  "messageFilter_ghostMany": "{count, plural, one{{count} hidden message · Tap to view} other{{count} hidden messages · Tap to view}}",
+  "@messageFilter_ghostMany": {
+    "description": "Message filter: {count, plural, one{{count} hidden message · Tap to view} other{{count} hidden messages · Tap to view}}",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "Showing hidden message · Tap to hide",
+  "@messageFilter_ghostSingleExpanded": {
+    "description": "Header above one revealed filtered message; tapping it hides the message again"
+  },
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{Showing 1 hidden message · Tap to hide} other{Showing {count} hidden messages · Tap to hide}}",
+  "@messageFilter_ghostManyExpanded": {
+    "description": "Header above a revealed run of filtered messages; tapping it hides them again",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "Filtered: matches \"{pattern}\"",
+  "@messageFilter_reasonTextRule": {
+    "description": "Message filter: Filtered: matches \"{pattern}\"",
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "Filtered: sender \"{pattern}\"",
+  "@messageFilter_reasonSenderRule": {
+    "description": "Message filter: Filtered: sender \"{pattern}\"",
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "Filtered: repeated characters",
+  "@messageFilter_reasonRepeatedCharacters": {
+    "description": "Message filter: Filtered: repeated characters"
+  },
+  "messageFilter_reasonDuplicate": "Filtered: repeated message",
+  "@messageFilter_reasonDuplicate": {
+    "description": "Message filter: Filtered: repeated message"
+  },
+  "messageFilter_reasonCrossSenderDuplicate": "Filtered: same message from several senders",
+  "@messageFilter_reasonCrossSenderDuplicate": {
+    "description": "Message filter: Filtered: same message from several senders"
+  },
+  "messageFilter_reasonLearned": "Filtered: looks like messages you marked as spam",
+  "@messageFilter_reasonLearned": {
+    "description": "Message filter: Filtered: looks like messages you marked as spam"
+  },
+  "messageFilter_reasonManual": "Filtered: you marked this as spam",
+  "@messageFilter_reasonManual": {
+    "description": "Message filter: Filtered: you marked this as spam"
+  },
+  "messageFilter_notSpam": "Not spam",
+  "@messageFilter_notSpam": {
+    "description": "Message filter: Not spam"
+  },
+  "messageFilter_hideAgain": "Hide",
+  "@messageFilter_hideAgain": {
+    "description": "Message filter: Hide"
+  },
+  "messageFilter_markSpam": "Mark as spam",
+  "@messageFilter_markSpam": {
+    "description": "Message filter: Mark as spam"
+  },
+  "messageFilter_markedSpam": "Marked as spam",
+  "@messageFilter_markedSpam": {
+    "description": "Message filter: Marked as spam"
+  },
+  "messageFilter_markedNotSpam": "Marked as not spam",
+  "@messageFilter_markedNotSpam": {
+    "description": "Message filter: Marked as not spam"
+  },
+  "messageFilter_filterSender": "Filter this sender",
+  "@messageFilter_filterSender": {
+    "description": "Message filter: Filter this sender"
+  },
+  "messageFilter_filterSenderConfirm": "Hide all messages from \"{name}\"?",
+  "@messageFilter_filterSenderConfirm": {
+    "description": "Message filter: Hide all messages from \"{name}\"?",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "Filter messages like this…",
+  "@messageFilter_filterLikeThis": {
+    "description": "Message filter: Filter messages like this…"
+  },
+  "messageFilter_channelToggle": "Filter messages in this channel",
+  "@messageFilter_channelToggle": {
+    "description": "Message filter: Filter messages in this channel"
+  },
+  "messageFilter_ghostIconTooltip": "Hidden by your message filter",
+  "@messageFilter_ghostIconTooltip": {
+    "description": "Message filter: Hidden by your message filter"
   }
 }

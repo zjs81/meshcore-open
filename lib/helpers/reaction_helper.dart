@@ -120,9 +120,30 @@ class ReactionHelper {
     final input = senderName != null
         ? '$timestampSeconds$senderName$first5'
         : '$timestampSeconds$first5';
-    // Use hashCode and take lower 16 bits, format as 4 hex chars
-    final hash = input.hashCode & 0xFFFF;
+    // Take the lower 16 bits of the string hash, format as 4 hex chars
+    final hash = stableStringHash(input) & 0xFFFF;
     return hash.toRadixString(16).padLeft(4, '0');
+  }
+
+  /// Platform-independent reimplementation of the Dart VM's
+  /// `String.hashCode` (one-at-a-time hash over UTF-16 code units, finalized
+  /// to 30 bits). Reaction hashes were originally computed with
+  /// `String.hashCode`, which differs on the web (dart2js), so this keeps
+  /// the wire format identical to existing native clients while giving web
+  /// builds the same result.
+  static int stableStringHash(String input) {
+    const mask32 = 0xFFFFFFFF;
+    var hash = 0;
+    for (final unit in input.codeUnits) {
+      hash = (hash + unit) & mask32;
+      hash = (hash + ((hash << 10) & mask32)) & mask32;
+      hash ^= hash >> 6;
+    }
+    hash = (hash + ((hash << 3) & mask32)) & mask32;
+    hash ^= hash >> 11;
+    hash = (hash + ((hash << 15) & mask32)) & mask32;
+    hash &= 0x3FFFFFFF;
+    return hash == 0 ? 1 : hash;
   }
 
   // Compute the type of reaction hash used by MeshCoreOne.
