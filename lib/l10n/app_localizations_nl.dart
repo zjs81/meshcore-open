@@ -1409,11 +1409,12 @@ class AppLocalizationsNl extends AppLocalizations {
       'Toon andere nodetypes op de kaart';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks =>
+      'Verbindingen van de online kaart tonen';
 
   @override
   String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+      'Verbindingslijnen tussen nodes van de online kaart tonen';
 
   @override
   String get appSettings_timeFilter => 'Filter op tijd';
@@ -2687,7 +2688,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get map_otherNodes => 'Andere Nodes';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => 'Verbindingen van de online kaart tonen';
 
   @override
   String get map_showOverlaps => 'Overlappende repeatersleutels';
@@ -6825,4 +6826,215 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Gelukkig Nieuwjaar|Gelukkig nieuw jaar|Prettig nieuwjaar|Een gelukkig nieuwjaar|Happy New Year|Zalig nieuwjaar|Fijne jaarwisseling';
+
+  @override
+  String get chat_loadOlderMessages => 'Oudere berichten laden';
+
+  @override
+  String get messageFilter_title => 'Berichtenfilter';
+
+  @override
+  String get messageFilter_settingsSubtitle =>
+      'Spam en herhaalde berichten verbergen';
+
+  @override
+  String get messageFilter_enabled => 'Berichten filteren';
+
+  @override
+  String get messageFilter_enabledSubtitle => 'Geldt voor kanaalberichten';
+
+  @override
+  String get messageFilter_displayTitle => 'Gefilterde berichten';
+
+  @override
+  String get messageFilter_displayPlaceholder =>
+      'Een kleine plaatsaanduiding tonen';
+
+  @override
+  String get messageFilter_displayHide => 'Helemaal verbergen';
+
+  @override
+  String get messageFilter_displayHideHelp =>
+      'Verborgen berichten blijven in de lijst Gefilterde berichten staan.';
+
+  @override
+  String get messageFilter_rulesSection => 'Jouw regels';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      'Nog geen regels. Voeg een woord, zin of afzendernaam toe om passende berichten te verbergen.';
+
+  @override
+  String get messageFilter_addRule => 'Regel toevoegen';
+
+  @override
+  String get messageFilter_editRule => 'Regel bewerken';
+
+  @override
+  String get messageFilter_rulePattern => 'Woord, zin of naam';
+
+  @override
+  String get messageFilter_rulePatternHint => 'bijv. meshos';
+
+  @override
+  String get messageFilter_ruleWhere => 'Zoeken in';
+
+  @override
+  String get messageFilter_ruleFieldText => 'Berichttekst';
+
+  @override
+  String get messageFilter_ruleFieldSender => 'Afzendernaam';
+
+  @override
+  String get messageFilter_ruleFieldBoth => 'Beide';
+
+  @override
+  String get messageFilter_ruleMatch => 'Overeenkomst';
+
+  @override
+  String get messageFilter_ruleMatchContains => 'Bevat';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => 'Heel woord';
+
+  @override
+  String get messageFilter_ruleMatchExact => 'Exact';
+
+  @override
+  String get messageFilter_ruleDeleted => 'Regel verwijderd';
+
+  @override
+  String get messageFilter_ruleSaved => 'Regel opgeslagen';
+
+  @override
+  String get messageFilter_automaticSection => 'Automatisch';
+
+  @override
+  String get messageFilter_duplicates => 'Herhaalde berichten';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      'Hetzelfde bericht opnieuw verstuurd, of door meerdere afzenders';
+
+  @override
+  String get messageFilter_repeatedCharacters => 'Herhaalde tekens';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      'Lange reeksen van hetzelfde teken, zoals „aaaaaaaaaaaaaaaaaaaa”';
+
+  @override
+  String get messageFilter_learning => 'Leren van Spam-tikken';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return '$spam spam- en $notSpam geen-spamvoorbeelden';
+  }
+
+  @override
+  String get messageFilter_resetLearning => 'Geleerde gegevens wissen';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      'Alles vergeten wat is geleerd van je tikken op Spam en Geen spam? Je regels blijven behouden.';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return 'Gefilterde berichten ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'Er is niets gefilterd.';
+
+  @override
+  String get messageFilter_ghostSingle =>
+      'Verborgen bericht · Tik om te bekijken';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count verborgen berichten · Tik om te bekijken',
+      one: '$count verborgen bericht · Tik om te bekijken',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded =>
+      'Verborgen bericht wordt getoond · Tik om te verbergen';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count verborgen berichten worden getoond · Tik om te verbergen',
+      one: '1 verborgen bericht wordt getoond · Tik om te verbergen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return 'Gefilterd: komt overeen met „$pattern”';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return 'Gefilterd: afzender „$pattern”';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters =>
+      'Gefilterd: herhaalde tekens';
+
+  @override
+  String get messageFilter_reasonDuplicate => 'Gefilterd: herhaald bericht';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate =>
+      'Gefilterd: hetzelfde bericht van meerdere afzenders';
+
+  @override
+  String get messageFilter_reasonLearned =>
+      'Gefilterd: lijkt op berichten die je als spam hebt gemarkeerd';
+
+  @override
+  String get messageFilter_reasonManual =>
+      'Gefilterd: je hebt dit als spam gemarkeerd';
+
+  @override
+  String get messageFilter_notSpam => 'Geen spam';
+
+  @override
+  String get messageFilter_hideAgain => 'Verbergen';
+
+  @override
+  String get messageFilter_markSpam => 'Markeren als spam';
+
+  @override
+  String get messageFilter_markedSpam => 'Gemarkeerd als spam';
+
+  @override
+  String get messageFilter_markedNotSpam => 'Gemarkeerd als geen spam';
+
+  @override
+  String get messageFilter_filterSender => 'Deze afzender filteren';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return 'Alle berichten van „$name” verbergen?';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => 'Berichten zoals dit filteren…';
+
+  @override
+  String get messageFilter_channelToggle => 'Berichten in dit kanaal filteren';
+
+  @override
+  String get messageFilter_ghostIconTooltip =>
+      'Verborgen door je berichtenfilter';
 }

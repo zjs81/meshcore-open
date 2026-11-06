@@ -3530,5 +3530,117 @@
   "themes_chatBackground": "Pozadie chatu",
   "themes_chatBackgroundHelp": "Zobrazuje sa v chatoch, ktoré nemajú vlastné pozadie",
   "themes_chatBackgroundEverywhere": "Použiť v každom chate",
-  "themes_chatBackgroundEverywhereHelp": "Nahradí aj pozadia nastavené v jednotlivých chatoch"
+  "themes_chatBackgroundEverywhereHelp": "Nahradí aj pozadia nastavené v jednotlivých chatoch",
+  "appSettings_showOnlineLinks": "Zobraziť spojenia z online mapy",
+  "appSettings_showOnlineLinksSubtitle": "Zobrazí spojovacie čiary medzi uzlami z online mapy",
+  "map_showOnlineLinks": "Zobraziť spojenia z online mapy",
+  "chat_loadOlderMessages": "Načítať staršie správy",
+  "messageFilter_title": "Filter správ",
+  "messageFilter_settingsSubtitle": "Skryje spam a opakované správy",
+  "messageFilter_enabled": "Filtrovať správy",
+  "messageFilter_enabledSubtitle": "Platí pre správy v kanáloch",
+  "messageFilter_displayTitle": "Filtrované správy",
+  "messageFilter_displayPlaceholder": "Zobraziť malý zástupný riadok",
+  "messageFilter_displayHide": "Úplne skryť",
+  "messageFilter_displayHideHelp": "Skryté správy zostanú v zozname Filtrované správy.",
+  "messageFilter_rulesSection": "Vaše pravidlá",
+  "messageFilter_rulesEmpty": "Zatiaľ žiadne pravidlá. Pridajte slovo, frázu alebo meno odosielateľa, aby sa zodpovedajúce správy skryli.",
+  "messageFilter_addRule": "Pridať pravidlo",
+  "messageFilter_editRule": "Upraviť pravidlo",
+  "messageFilter_rulePattern": "Slovo, fráza alebo meno",
+  "messageFilter_rulePatternHint": "napr. meshos",
+  "messageFilter_ruleWhere": "Hľadať v",
+  "messageFilter_ruleFieldText": "Text správy",
+  "messageFilter_ruleFieldSender": "Meno odosielateľa",
+  "messageFilter_ruleFieldBoth": "Oboje",
+  "messageFilter_ruleMatch": "Zhoda",
+  "messageFilter_ruleMatchContains": "Obsahuje",
+  "messageFilter_ruleMatchWholeWord": "Celé slovo",
+  "messageFilter_ruleMatchExact": "Presná",
+  "messageFilter_ruleDeleted": "Pravidlo bolo odstránené",
+  "messageFilter_ruleSaved": "Pravidlo bolo uložené",
+  "messageFilter_automaticSection": "Automatické",
+  "messageFilter_duplicates": "Opakované správy",
+  "messageFilter_duplicatesSubtitle": "Rovnaká správa odoslaná znova alebo viacerými odosielateľmi",
+  "messageFilter_repeatedCharacters": "Opakované znaky",
+  "messageFilter_repeatedCharactersSubtitle": "Dlhé rady jedného znaku, napríklad „aaaaaaaaaaaaaaaaaaaa“",
+  "messageFilter_learning": "Učiť sa z klepnutí na Spam",
+  "messageFilter_learningSubtitle": "{spam} príkladov spamu a {notSpam} príkladov nie spamu",
+  "@messageFilter_learningSubtitle": {
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "Obnoviť učenie",
+  "messageFilter_resetLearningConfirm": "Zabudnúť všetko, čo sa filter naučil z vašich klepnutí na Spam a Nie spam? Vaše pravidlá zostanú zachované.",
+  "messageFilter_filteredMessages": "Filtrované správy ({count})",
+  "@messageFilter_filteredMessages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "Nič nebolo odfiltrované.",
+  "messageFilter_ghostSingle": "Skrytá správa · Klepnutím zobrazíte",
+  "messageFilter_ghostMany": "{count, plural, one{{count} skrytá správa · Klepnutím zobrazíte} few{{count} skryté správy · Klepnutím zobrazíte} many{{count} skrytej správy · Klepnutím zobrazíte} other{{count} skrytých správ · Klepnutím zobrazíte}}",
+  "@messageFilter_ghostMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "Zobrazená skrytá správa · Klepnutím skryjete",
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{Zobrazená 1 skrytá správa · Klepnutím skryjete} few{Zobrazené {count} skryté správy · Klepnutím skryjete} many{Zobrazených {count} skrytej správy · Klepnutím skryjete} other{Zobrazených {count} skrytých správ · Klepnutím skryjete}}",
+  "@messageFilter_ghostManyExpanded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "Odfiltrované: zodpovedá „{pattern}“",
+  "@messageFilter_reasonTextRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "Odfiltrované: odosielateľ „{pattern}“",
+  "@messageFilter_reasonSenderRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "Odfiltrované: opakované znaky",
+  "messageFilter_reasonDuplicate": "Odfiltrované: opakovaná správa",
+  "messageFilter_reasonCrossSenderDuplicate": "Odfiltrované: rovnaká správa od viacerých odosielateľov",
+  "messageFilter_reasonLearned": "Odfiltrované: podobá sa správam, ktoré ste označili ako spam",
+  "messageFilter_reasonManual": "Odfiltrované: označili ste to ako spam",
+  "messageFilter_notSpam": "Nie spam",
+  "messageFilter_hideAgain": "Skryť",
+  "messageFilter_markSpam": "Označiť ako spam",
+  "messageFilter_markedSpam": "Označené ako spam",
+  "messageFilter_markedNotSpam": "Označené ako nie spam",
+  "messageFilter_filterSender": "Filtrovať tohto odosielateľa",
+  "messageFilter_filterSenderConfirm": "Skryť všetky správy od „{name}“?",
+  "@messageFilter_filterSenderConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "Filtrovať podobné správy…",
+  "messageFilter_channelToggle": "Filtrovať správy v tomto kanáli",
+  "messageFilter_ghostIconTooltip": "Skryté vaším filtrom správ"
 }

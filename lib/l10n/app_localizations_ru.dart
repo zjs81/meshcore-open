@@ -1419,11 +1419,11 @@ class AppLocalizationsRu extends AppLocalizations {
       'Отображать другие типы нод на карте';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks => 'Показывать связи с онлайн-карты';
 
   @override
   String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+      'Показывать линии связи между узлами с онлайн-карты';
 
   @override
   String get appSettings_timeFilter => 'Фильтр по времени';
@@ -2704,7 +2704,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get map_otherNodes => 'Другие ноды';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => 'Показывать связи с онлайн-карты';
 
   @override
   String get map_showOverlaps => 'Перекрытия ключа повтора';
@@ -6875,4 +6875,222 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'С Новым годом|С Новым годом!|С Новым годом всех|С наступающим Новым годом|Счастливого Нового года|Happy New Year';
+
+  @override
+  String get chat_loadOlderMessages => 'Загрузить более старые сообщения';
+
+  @override
+  String get messageFilter_title => 'Фильтр сообщений';
+
+  @override
+  String get messageFilter_settingsSubtitle =>
+      'Скрывать спам и повторяющиеся сообщения';
+
+  @override
+  String get messageFilter_enabled => 'Фильтровать сообщения';
+
+  @override
+  String get messageFilter_enabledSubtitle =>
+      'Действует для сообщений в каналах';
+
+  @override
+  String get messageFilter_displayTitle => 'Отфильтрованные сообщения';
+
+  @override
+  String get messageFilter_displayPlaceholder =>
+      'Показывать небольшую заглушку';
+
+  @override
+  String get messageFilter_displayHide => 'Скрывать полностью';
+
+  @override
+  String get messageFilter_displayHideHelp =>
+      'Скрытые сообщения остаются в списке «Отфильтрованные сообщения».';
+
+  @override
+  String get messageFilter_rulesSection => 'Ваши правила';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      'Правил пока нет. Добавьте слово, фразу или имя отправителя, чтобы скрывать подходящие сообщения.';
+
+  @override
+  String get messageFilter_addRule => 'Добавить правило';
+
+  @override
+  String get messageFilter_editRule => 'Изменить правило';
+
+  @override
+  String get messageFilter_rulePattern => 'Слово, фраза или имя';
+
+  @override
+  String get messageFilter_rulePatternHint => 'например, meshos';
+
+  @override
+  String get messageFilter_ruleWhere => 'Где искать';
+
+  @override
+  String get messageFilter_ruleFieldText => 'Текст сообщения';
+
+  @override
+  String get messageFilter_ruleFieldSender => 'Имя отправителя';
+
+  @override
+  String get messageFilter_ruleFieldBoth => 'И то и другое';
+
+  @override
+  String get messageFilter_ruleMatch => 'Совпадение';
+
+  @override
+  String get messageFilter_ruleMatchContains => 'Содержит';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => 'Целое слово';
+
+  @override
+  String get messageFilter_ruleMatchExact => 'Точное';
+
+  @override
+  String get messageFilter_ruleDeleted => 'Правило удалено';
+
+  @override
+  String get messageFilter_ruleSaved => 'Правило сохранено';
+
+  @override
+  String get messageFilter_automaticSection => 'Автоматически';
+
+  @override
+  String get messageFilter_duplicates => 'Повторяющиеся сообщения';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      'Одно и то же сообщение, отправленное снова или несколькими отправителями';
+
+  @override
+  String get messageFilter_repeatedCharacters => 'Повторяющиеся символы';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      'Длинные последовательности одного символа, например «aaaaaaaaaaaaaaaaaaaa»';
+
+  @override
+  String get messageFilter_learning => 'Учиться на нажатиях «Спам»';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return 'Примеров спама: $spam, не спама: $notSpam';
+  }
+
+  @override
+  String get messageFilter_resetLearning => 'Сбросить обучение';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      'Забыть всё, чему фильтр научился на ваших нажатиях «Спам» и «Не спам»? Ваши правила сохранятся.';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return 'Отфильтрованные сообщения ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'Ничего не отфильтровано.';
+
+  @override
+  String get messageFilter_ghostSingle =>
+      'Скрытое сообщение · Нажмите, чтобы посмотреть';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count скрытых сообщений · Нажмите, чтобы посмотреть',
+      many: '$count скрытых сообщений · Нажмите, чтобы посмотреть',
+      few: '$count скрытых сообщения · Нажмите, чтобы посмотреть',
+      one: '$count скрытое сообщение · Нажмите, чтобы посмотреть',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded =>
+      'Показано скрытое сообщение · Нажмите, чтобы скрыть';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Показано $count скрытых сообщений · Нажмите, чтобы скрыть',
+      many: 'Показано $count скрытых сообщений · Нажмите, чтобы скрыть',
+      few: 'Показано $count скрытых сообщения · Нажмите, чтобы скрыть',
+      one: 'Показано $count скрытое сообщение · Нажмите, чтобы скрыть',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return 'Отфильтровано: совпадает с «$pattern»';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return 'Отфильтровано: отправитель «$pattern»';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters =>
+      'Отфильтровано: повторяющиеся символы';
+
+  @override
+  String get messageFilter_reasonDuplicate =>
+      'Отфильтровано: повторное сообщение';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate =>
+      'Отфильтровано: одно и то же сообщение от нескольких отправителей';
+
+  @override
+  String get messageFilter_reasonLearned =>
+      'Отфильтровано: похоже на сообщения, которые вы отметили как спам';
+
+  @override
+  String get messageFilter_reasonManual =>
+      'Отфильтровано: вы отметили это как спам';
+
+  @override
+  String get messageFilter_notSpam => 'Не спам';
+
+  @override
+  String get messageFilter_hideAgain => 'Скрыть';
+
+  @override
+  String get messageFilter_markSpam => 'Отметить как спам';
+
+  @override
+  String get messageFilter_markedSpam => 'Отмечено как спам';
+
+  @override
+  String get messageFilter_markedNotSpam => 'Отмечено как не спам';
+
+  @override
+  String get messageFilter_filterSender => 'Фильтровать этого отправителя';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return 'Скрывать все сообщения от «$name»?';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => 'Фильтровать похожие сообщения…';
+
+  @override
+  String get messageFilter_channelToggle =>
+      'Фильтровать сообщения в этом канале';
+
+  @override
+  String get messageFilter_ghostIconTooltip =>
+      'Скрыто вашим фильтром сообщений';
 }

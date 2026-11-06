@@ -126,6 +126,8 @@ Add emoji reactions to incoming messages (not your own):
 | Retry | Failed outgoing messages | Re-sends the message |
 | Open chat with sender | Room server chats | Opens 1:1 chat with the message sender |
 
+In channel chats the menu also offers **Mark as spam**, **Filter this sender** and **Filter messages like this…**; see [Message filter](message-filter.md). Direct messages are never filtered.
+
 ## Image and translation setup
 
 Enable URL images in the contact’s chat settings to preview supported image links; see [URL images](additional-features.md#url-image-previews). Images and files can also be uploaded to a configured IPFS provider from the **+** menu in direct or channel chat; the resulting URL is sent as ordinary text. See [sharing via IPFS](additional-features.md#share-an-image-via-ipfs) and [IPFS provider configuration](settings.md#ipfs-provider-configuration). Mesh image packets are currently sent through channel chat, not the direct-message composer. Set up translation and download a model in [App Settings](settings.md#translation) before using incoming or pre-send translation.

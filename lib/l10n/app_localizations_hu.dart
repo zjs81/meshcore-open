@@ -1408,11 +1408,12 @@ class AppLocalizationsHu extends AppLocalizations {
       'Más csomóponttípusok megjelenítése a térképen';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks =>
+      'Online térkép kapcsolatainak megjelenítése';
 
   @override
   String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+      'A csomópontok közötti kapcsolatvonalak megjelenítése az online térképről';
 
   @override
   String get appSettings_timeFilter => 'Időszűrő';
@@ -2693,7 +2694,8 @@ class AppLocalizationsHu extends AppLocalizations {
   String get map_otherNodes => 'Egyéb csomópontok';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks =>
+      'Online térkép kapcsolatainak megjelenítése';
 
   @override
   String get map_showOverlaps => 'Repeater Key átfedések';
@@ -6850,4 +6852,212 @@ class AppLocalizationsHu extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Boldog új évet|Boldog újévet|Boldog új esztendőt|BÚÉK|Happy New Year';
+
+  @override
+  String get chat_loadOlderMessages => 'Régebbi üzenetek betöltése';
+
+  @override
+  String get messageFilter_title => 'Üzenetszűrő';
+
+  @override
+  String get messageFilter_settingsSubtitle =>
+      'Spam és ismétlődő üzenetek elrejtése';
+
+  @override
+  String get messageFilter_enabled => 'Üzenetek szűrése';
+
+  @override
+  String get messageFilter_enabledSubtitle => 'A csatornaüzenetekre vonatkozik';
+
+  @override
+  String get messageFilter_displayTitle => 'Szűrt üzenetek';
+
+  @override
+  String get messageFilter_displayPlaceholder => 'Kis helyőrző megjelenítése';
+
+  @override
+  String get messageFilter_displayHide => 'Teljes elrejtés';
+
+  @override
+  String get messageFilter_displayHideHelp =>
+      'Az elrejtett üzenetek a Szűrt üzenetek listában megmaradnak.';
+
+  @override
+  String get messageFilter_rulesSection => 'Az Ön szabályai';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      'Még nincs szabály. Adjon hozzá egy szót, kifejezést vagy feladónevet, hogy elrejtse a rá illő üzeneteket.';
+
+  @override
+  String get messageFilter_addRule => 'Szabály hozzáadása';
+
+  @override
+  String get messageFilter_editRule => 'Szabály szerkesztése';
+
+  @override
+  String get messageFilter_rulePattern => 'Szó, kifejezés vagy név';
+
+  @override
+  String get messageFilter_rulePatternHint => 'pl. meshos';
+
+  @override
+  String get messageFilter_ruleWhere => 'Keresés ebben';
+
+  @override
+  String get messageFilter_ruleFieldText => 'Üzenet szövege';
+
+  @override
+  String get messageFilter_ruleFieldSender => 'Feladó neve';
+
+  @override
+  String get messageFilter_ruleFieldBoth => 'Mindkettő';
+
+  @override
+  String get messageFilter_ruleMatch => 'Egyezés';
+
+  @override
+  String get messageFilter_ruleMatchContains => 'Tartalmazza';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => 'Egész szó';
+
+  @override
+  String get messageFilter_ruleMatchExact => 'Pontos';
+
+  @override
+  String get messageFilter_ruleDeleted => 'Szabály törölve';
+
+  @override
+  String get messageFilter_ruleSaved => 'Szabály mentve';
+
+  @override
+  String get messageFilter_automaticSection => 'Automatikus';
+
+  @override
+  String get messageFilter_duplicates => 'Ismétlődő üzenetek';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      'Ugyanaz az üzenet újra elküldve, vagy több feladótól';
+
+  @override
+  String get messageFilter_repeatedCharacters => 'Ismétlődő karakterek';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      'Ugyanazon karakter hosszú sorozata, például „aaaaaaaaaaaaaaaaaaaa”';
+
+  @override
+  String get messageFilter_learning => 'Tanulás a Spam gombokból';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return '$spam spam és $notSpam nem spam példa';
+  }
+
+  @override
+  String get messageFilter_resetLearning => 'Tanulás visszaállítása';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      'Elfelejtse mindazt, amit a Spam és Nem spam gombokból tanult? A szabályai megmaradnak.';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return 'Szűrt üzenetek ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'Semmi sincs kiszűrve.';
+
+  @override
+  String get messageFilter_ghostSingle =>
+      'Elrejtett üzenet · Koppintson a megtekintéshez';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count elrejtett üzenet · Koppintson a megtekintéshez',
+      one: '$count elrejtett üzenet · Koppintson a megtekintéshez',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded =>
+      'Elrejtett üzenet megjelenítve · Koppintson az elrejtéshez';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count elrejtett üzenet megjelenítve · Koppintson az elrejtéshez',
+      one: '1 elrejtett üzenet megjelenítve · Koppintson az elrejtéshez',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return 'Kiszűrve: egyezik ezzel: „$pattern”';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return 'Kiszűrve: feladó „$pattern”';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters =>
+      'Kiszűrve: ismétlődő karakterek';
+
+  @override
+  String get messageFilter_reasonDuplicate => 'Kiszűrve: ismétlődő üzenet';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate =>
+      'Kiszűrve: ugyanaz az üzenet több feladótól';
+
+  @override
+  String get messageFilter_reasonLearned =>
+      'Kiszűrve: hasonlít az Ön által spamnek jelölt üzenetekhez';
+
+  @override
+  String get messageFilter_reasonManual => 'Kiszűrve: Ön spamnek jelölte';
+
+  @override
+  String get messageFilter_notSpam => 'Nem spam';
+
+  @override
+  String get messageFilter_hideAgain => 'Elrejtés';
+
+  @override
+  String get messageFilter_markSpam => 'Jelölés spamként';
+
+  @override
+  String get messageFilter_markedSpam => 'Spamként megjelölve';
+
+  @override
+  String get messageFilter_markedNotSpam => 'Nem spamként megjelölve';
+
+  @override
+  String get messageFilter_filterSender => 'E feladó szűrése';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return 'Elrejti a(z) „$name” összes üzenetét?';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => 'Ehhez hasonló üzenetek szűrése…';
+
+  @override
+  String get messageFilter_channelToggle => 'Üzenetek szűrése ezen a csatornán';
+
+  @override
+  String get messageFilter_ghostIconTooltip => 'Az üzenetszűrő elrejtette';
 }

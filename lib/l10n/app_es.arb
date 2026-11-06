@@ -3663,5 +3663,117 @@
   "themes_chatBackground": "Fondo del chat",
   "themes_chatBackgroundHelp": "Se muestra en los chats que no tienen fondo propio",
   "themes_chatBackgroundEverywhere": "Usar en todos los chats",
-  "themes_chatBackgroundEverywhereHelp": "También reemplaza los fondos de chats individuales"
+  "themes_chatBackgroundEverywhereHelp": "También reemplaza los fondos de chats individuales",
+  "appSettings_showOnlineLinks": "Mostrar conexiones del mapa en línea",
+  "appSettings_showOnlineLinksSubtitle": "Muestra líneas de conexión entre nodos del mapa en línea",
+  "map_showOnlineLinks": "Mostrar conexiones del mapa en línea",
+  "chat_loadOlderMessages": "Cargar mensajes anteriores",
+  "messageFilter_title": "Filtro de mensajes",
+  "messageFilter_settingsSubtitle": "Oculta mensajes de spam y repetidos",
+  "messageFilter_enabled": "Filtrar mensajes",
+  "messageFilter_enabledSubtitle": "Se aplica a los mensajes de canal",
+  "messageFilter_displayTitle": "Mensajes filtrados",
+  "messageFilter_displayPlaceholder": "Mostrar un aviso pequeño",
+  "messageFilter_displayHide": "Ocultar por completo",
+  "messageFilter_displayHideHelp": "Los mensajes ocultos permanecen en la lista de Mensajes filtrados.",
+  "messageFilter_rulesSection": "Tus reglas",
+  "messageFilter_rulesEmpty": "Aún no hay reglas. Añade una palabra, frase o nombre de remitente para ocultar los mensajes que coincidan.",
+  "messageFilter_addRule": "Añadir regla",
+  "messageFilter_editRule": "Editar regla",
+  "messageFilter_rulePattern": "Palabra, frase o nombre",
+  "messageFilter_rulePatternHint": "p. ej. meshos",
+  "messageFilter_ruleWhere": "Buscar en",
+  "messageFilter_ruleFieldText": "Texto del mensaje",
+  "messageFilter_ruleFieldSender": "Nombre del remitente",
+  "messageFilter_ruleFieldBoth": "Ambos",
+  "messageFilter_ruleMatch": "Coincidencia",
+  "messageFilter_ruleMatchContains": "Contiene",
+  "messageFilter_ruleMatchWholeWord": "Palabra completa",
+  "messageFilter_ruleMatchExact": "Exacta",
+  "messageFilter_ruleDeleted": "Regla eliminada",
+  "messageFilter_ruleSaved": "Regla guardada",
+  "messageFilter_automaticSection": "Automático",
+  "messageFilter_duplicates": "Mensajes repetidos",
+  "messageFilter_duplicatesSubtitle": "El mismo mensaje enviado de nuevo, o por varios remitentes",
+  "messageFilter_repeatedCharacters": "Caracteres repetidos",
+  "messageFilter_repeatedCharactersSubtitle": "Secuencias largas de un mismo carácter, como \"aaaaaaaaaaaaaaaaaaaa\"",
+  "messageFilter_learning": "Aprender de los toques en Spam",
+  "messageFilter_learningSubtitle": "{spam} ejemplos de spam y {notSpam} de no spam",
+  "@messageFilter_learningSubtitle": {
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "Restablecer aprendizaje",
+  "messageFilter_resetLearningConfirm": "¿Olvidar todo lo aprendido de tus toques en Spam y No es spam? Tus reglas se conservan.",
+  "messageFilter_filteredMessages": "Mensajes filtrados ({count})",
+  "@messageFilter_filteredMessages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "No se ha filtrado nada.",
+  "messageFilter_ghostSingle": "Mensaje oculto · Toca para ver",
+  "messageFilter_ghostMany": "{count, plural, one{{count} mensaje oculto · Toca para ver} other{{count} mensajes ocultos · Toca para ver}}",
+  "@messageFilter_ghostMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "Mostrando mensaje oculto · Toca para ocultar",
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{Mostrando 1 mensaje oculto · Toca para ocultar} other{Mostrando {count} mensajes ocultos · Toca para ocultar}}",
+  "@messageFilter_ghostManyExpanded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "Filtrado: coincide con \"{pattern}\"",
+  "@messageFilter_reasonTextRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "Filtrado: remitente \"{pattern}\"",
+  "@messageFilter_reasonSenderRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "Filtrado: caracteres repetidos",
+  "messageFilter_reasonDuplicate": "Filtrado: mensaje repetido",
+  "messageFilter_reasonCrossSenderDuplicate": "Filtrado: el mismo mensaje de varios remitentes",
+  "messageFilter_reasonLearned": "Filtrado: se parece a mensajes que marcaste como spam",
+  "messageFilter_reasonManual": "Filtrado: lo marcaste como spam",
+  "messageFilter_notSpam": "No es spam",
+  "messageFilter_hideAgain": "Ocultar",
+  "messageFilter_markSpam": "Marcar como spam",
+  "messageFilter_markedSpam": "Marcado como spam",
+  "messageFilter_markedNotSpam": "Marcado como no spam",
+  "messageFilter_filterSender": "Filtrar este remitente",
+  "messageFilter_filterSenderConfirm": "¿Ocultar todos los mensajes de \"{name}\"?",
+  "@messageFilter_filterSenderConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "Filtrar mensajes como este…",
+  "messageFilter_channelToggle": "Filtrar mensajes en este canal",
+  "messageFilter_ghostIconTooltip": "Oculto por tu filtro de mensajes"
 }

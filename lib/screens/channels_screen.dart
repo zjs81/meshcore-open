@@ -12,6 +12,7 @@ import '../connector/meshcore_connector.dart';
 import '../l10n/l10n.dart';
 import '../services/app_settings_service.dart'
     show AppSettingsService, ChannelNotificationMode;
+import '../services/message_filter/message_filter_service.dart';
 import '../services/ui_view_state_service.dart';
 import '../models/channel.dart';
 import '../models/community.dart';
@@ -102,6 +103,12 @@ class _ChannelsScreenState extends State<ChannelsScreen>
   Widget build(BuildContext context) {
     final connector = context.watch<MeshCoreConnector>();
     final viewState = context.watch<UiViewStateService>();
+    // Previews and "latest" sorting depend on per-channel filter settings.
+    try {
+      context.watch<MessageFilterService>();
+    } on ProviderNotFoundException {
+      // No message filter in this tree (tests); previews ignore it.
+    }
 
     // Auto-navigate back to scanner if disconnected
     if (!checkConnectionAndNavigate(connector)) {
@@ -426,9 +433,9 @@ class _ChannelsScreenState extends State<ChannelsScreen>
         iconColor = MeshPalette.blue;
     }
 
-    // Last message preview
-    final messages = connector.getChannelMessages(channel);
-    final lastMessage = messages.isNotEmpty ? messages.last : null;
+    // Last message preview. Messages hidden by the message filter never
+    // become the preview.
+    final lastMessage = connector.latestVisibleChannelMessage(channel);
     final lastMessageText = lastMessage?.text ?? '';
     final lastPreview =
         lastMessageText.isNotEmpty &&
@@ -773,16 +780,18 @@ class _ChannelsScreenState extends State<ChannelsScreen>
       case ChannelSortOption.manual:
         break;
       case ChannelSortOption.latestMessages:
+        // Filtered messages don't bump a channel, matching the preview.
+        // Looked up once per channel: the lookup can scan back through
+        // filtered messages, and the comparator runs O(n log n) times.
+        final epoch = DateTime(1970);
+        final latest = <Channel, DateTime>{
+          for (final channel in filtered)
+            channel:
+                connector.latestVisibleChannelMessage(channel)?.timestamp ??
+                epoch,
+        };
         filtered.sort((a, b) {
-          final aMessages = connector.getChannelMessages(a);
-          final bMessages = connector.getChannelMessages(b);
-          final aLast = aMessages.isEmpty
-              ? DateTime(1970)
-              : aMessages.last.timestamp;
-          final bLast = bMessages.isEmpty
-              ? DateTime(1970)
-              : bMessages.last.timestamp;
-          final timeCompare = bLast.compareTo(aLast);
+          final timeCompare = latest[b]!.compareTo(latest[a]!);
           if (timeCompare != 0) return timeCompare;
           return compareByName(a, b);
         });

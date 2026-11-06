@@ -3568,5 +3568,117 @@
   "themes_chatBackground": "Csevegés háttere",
   "themes_chatBackgroundHelp": "Azokban a csevegésekben jelenik meg, amelyeknek nincs saját hátterük",
   "themes_chatBackgroundEverywhere": "Használat minden csevegésben",
-  "themes_chatBackgroundEverywhereHelp": "Az egyes csevegésekhez beállított hátteret is felülírja"
+  "themes_chatBackgroundEverywhereHelp": "Az egyes csevegésekhez beállított hátteret is felülírja",
+  "appSettings_showOnlineLinks": "Online térkép kapcsolatainak megjelenítése",
+  "appSettings_showOnlineLinksSubtitle": "A csomópontok közötti kapcsolatvonalak megjelenítése az online térképről",
+  "map_showOnlineLinks": "Online térkép kapcsolatainak megjelenítése",
+  "chat_loadOlderMessages": "Régebbi üzenetek betöltése",
+  "messageFilter_title": "Üzenetszűrő",
+  "messageFilter_settingsSubtitle": "Spam és ismétlődő üzenetek elrejtése",
+  "messageFilter_enabled": "Üzenetek szűrése",
+  "messageFilter_enabledSubtitle": "A csatornaüzenetekre vonatkozik",
+  "messageFilter_displayTitle": "Szűrt üzenetek",
+  "messageFilter_displayPlaceholder": "Kis helyőrző megjelenítése",
+  "messageFilter_displayHide": "Teljes elrejtés",
+  "messageFilter_displayHideHelp": "Az elrejtett üzenetek a Szűrt üzenetek listában megmaradnak.",
+  "messageFilter_rulesSection": "Az Ön szabályai",
+  "messageFilter_rulesEmpty": "Még nincs szabály. Adjon hozzá egy szót, kifejezést vagy feladónevet, hogy elrejtse a rá illő üzeneteket.",
+  "messageFilter_addRule": "Szabály hozzáadása",
+  "messageFilter_editRule": "Szabály szerkesztése",
+  "messageFilter_rulePattern": "Szó, kifejezés vagy név",
+  "messageFilter_rulePatternHint": "pl. meshos",
+  "messageFilter_ruleWhere": "Keresés ebben",
+  "messageFilter_ruleFieldText": "Üzenet szövege",
+  "messageFilter_ruleFieldSender": "Feladó neve",
+  "messageFilter_ruleFieldBoth": "Mindkettő",
+  "messageFilter_ruleMatch": "Egyezés",
+  "messageFilter_ruleMatchContains": "Tartalmazza",
+  "messageFilter_ruleMatchWholeWord": "Egész szó",
+  "messageFilter_ruleMatchExact": "Pontos",
+  "messageFilter_ruleDeleted": "Szabály törölve",
+  "messageFilter_ruleSaved": "Szabály mentve",
+  "messageFilter_automaticSection": "Automatikus",
+  "messageFilter_duplicates": "Ismétlődő üzenetek",
+  "messageFilter_duplicatesSubtitle": "Ugyanaz az üzenet újra elküldve, vagy több feladótól",
+  "messageFilter_repeatedCharacters": "Ismétlődő karakterek",
+  "messageFilter_repeatedCharactersSubtitle": "Ugyanazon karakter hosszú sorozata, például „aaaaaaaaaaaaaaaaaaaa”",
+  "messageFilter_learning": "Tanulás a Spam gombokból",
+  "messageFilter_learningSubtitle": "{spam} spam és {notSpam} nem spam példa",
+  "@messageFilter_learningSubtitle": {
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "Tanulás visszaállítása",
+  "messageFilter_resetLearningConfirm": "Elfelejtse mindazt, amit a Spam és Nem spam gombokból tanult? A szabályai megmaradnak.",
+  "messageFilter_filteredMessages": "Szűrt üzenetek ({count})",
+  "@messageFilter_filteredMessages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "Semmi sincs kiszűrve.",
+  "messageFilter_ghostSingle": "Elrejtett üzenet · Koppintson a megtekintéshez",
+  "messageFilter_ghostMany": "{count, plural, one{{count} elrejtett üzenet · Koppintson a megtekintéshez} other{{count} elrejtett üzenet · Koppintson a megtekintéshez}}",
+  "@messageFilter_ghostMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "Elrejtett üzenet megjelenítve · Koppintson az elrejtéshez",
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{1 elrejtett üzenet megjelenítve · Koppintson az elrejtéshez} other{{count} elrejtett üzenet megjelenítve · Koppintson az elrejtéshez}}",
+  "@messageFilter_ghostManyExpanded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "Kiszűrve: egyezik ezzel: „{pattern}”",
+  "@messageFilter_reasonTextRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "Kiszűrve: feladó „{pattern}”",
+  "@messageFilter_reasonSenderRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "Kiszűrve: ismétlődő karakterek",
+  "messageFilter_reasonDuplicate": "Kiszűrve: ismétlődő üzenet",
+  "messageFilter_reasonCrossSenderDuplicate": "Kiszűrve: ugyanaz az üzenet több feladótól",
+  "messageFilter_reasonLearned": "Kiszűrve: hasonlít az Ön által spamnek jelölt üzenetekhez",
+  "messageFilter_reasonManual": "Kiszűrve: Ön spamnek jelölte",
+  "messageFilter_notSpam": "Nem spam",
+  "messageFilter_hideAgain": "Elrejtés",
+  "messageFilter_markSpam": "Jelölés spamként",
+  "messageFilter_markedSpam": "Spamként megjelölve",
+  "messageFilter_markedNotSpam": "Nem spamként megjelölve",
+  "messageFilter_filterSender": "E feladó szűrése",
+  "messageFilter_filterSenderConfirm": "Elrejti a(z) „{name}” összes üzenetét?",
+  "@messageFilter_filterSenderConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "Ehhez hasonló üzenetek szűrése…",
+  "messageFilter_channelToggle": "Üzenetek szűrése ezen a csatornán",
+  "messageFilter_ghostIconTooltip": "Az üzenetszűrő elrejtette"
 }

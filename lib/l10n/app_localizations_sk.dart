@@ -1409,11 +1409,11 @@ class AppLocalizationsSk extends AppLocalizations {
       'Zobraziť ostatné typy uzlov na mape';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks => 'Zobraziť spojenia z online mapy';
 
   @override
   String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+      'Zobrazí spojovacie čiary medzi uzlami z online mapy';
 
   @override
   String get appSettings_timeFilter => 'Časový filter';
@@ -2695,7 +2695,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get map_otherNodes => 'Ostatné uzly';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => 'Zobraziť spojenia z online mapy';
 
   @override
   String get map_showOverlaps => 'Prekrývanie opakovača kľúča';
@@ -6844,4 +6844,216 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Šťastný Nový rok|Úspešný nový rok|Happy New Year';
+
+  @override
+  String get chat_loadOlderMessages => 'Načítať staršie správy';
+
+  @override
+  String get messageFilter_title => 'Filter správ';
+
+  @override
+  String get messageFilter_settingsSubtitle => 'Skryje spam a opakované správy';
+
+  @override
+  String get messageFilter_enabled => 'Filtrovať správy';
+
+  @override
+  String get messageFilter_enabledSubtitle => 'Platí pre správy v kanáloch';
+
+  @override
+  String get messageFilter_displayTitle => 'Filtrované správy';
+
+  @override
+  String get messageFilter_displayPlaceholder =>
+      'Zobraziť malý zástupný riadok';
+
+  @override
+  String get messageFilter_displayHide => 'Úplne skryť';
+
+  @override
+  String get messageFilter_displayHideHelp =>
+      'Skryté správy zostanú v zozname Filtrované správy.';
+
+  @override
+  String get messageFilter_rulesSection => 'Vaše pravidlá';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      'Zatiaľ žiadne pravidlá. Pridajte slovo, frázu alebo meno odosielateľa, aby sa zodpovedajúce správy skryli.';
+
+  @override
+  String get messageFilter_addRule => 'Pridať pravidlo';
+
+  @override
+  String get messageFilter_editRule => 'Upraviť pravidlo';
+
+  @override
+  String get messageFilter_rulePattern => 'Slovo, fráza alebo meno';
+
+  @override
+  String get messageFilter_rulePatternHint => 'napr. meshos';
+
+  @override
+  String get messageFilter_ruleWhere => 'Hľadať v';
+
+  @override
+  String get messageFilter_ruleFieldText => 'Text správy';
+
+  @override
+  String get messageFilter_ruleFieldSender => 'Meno odosielateľa';
+
+  @override
+  String get messageFilter_ruleFieldBoth => 'Oboje';
+
+  @override
+  String get messageFilter_ruleMatch => 'Zhoda';
+
+  @override
+  String get messageFilter_ruleMatchContains => 'Obsahuje';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => 'Celé slovo';
+
+  @override
+  String get messageFilter_ruleMatchExact => 'Presná';
+
+  @override
+  String get messageFilter_ruleDeleted => 'Pravidlo bolo odstránené';
+
+  @override
+  String get messageFilter_ruleSaved => 'Pravidlo bolo uložené';
+
+  @override
+  String get messageFilter_automaticSection => 'Automatické';
+
+  @override
+  String get messageFilter_duplicates => 'Opakované správy';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      'Rovnaká správa odoslaná znova alebo viacerými odosielateľmi';
+
+  @override
+  String get messageFilter_repeatedCharacters => 'Opakované znaky';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      'Dlhé rady jedného znaku, napríklad „aaaaaaaaaaaaaaaaaaaa“';
+
+  @override
+  String get messageFilter_learning => 'Učiť sa z klepnutí na Spam';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return '$spam príkladov spamu a $notSpam príkladov nie spamu';
+  }
+
+  @override
+  String get messageFilter_resetLearning => 'Obnoviť učenie';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      'Zabudnúť všetko, čo sa filter naučil z vašich klepnutí na Spam a Nie spam? Vaše pravidlá zostanú zachované.';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return 'Filtrované správy ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'Nič nebolo odfiltrované.';
+
+  @override
+  String get messageFilter_ghostSingle => 'Skrytá správa · Klepnutím zobrazíte';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count skrytých správ · Klepnutím zobrazíte',
+      many: '$count skrytej správy · Klepnutím zobrazíte',
+      few: '$count skryté správy · Klepnutím zobrazíte',
+      one: '$count skrytá správa · Klepnutím zobrazíte',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded =>
+      'Zobrazená skrytá správa · Klepnutím skryjete';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Zobrazených $count skrytých správ · Klepnutím skryjete',
+      many: 'Zobrazených $count skrytej správy · Klepnutím skryjete',
+      few: 'Zobrazené $count skryté správy · Klepnutím skryjete',
+      one: 'Zobrazená 1 skrytá správa · Klepnutím skryjete',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return 'Odfiltrované: zodpovedá „$pattern“';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return 'Odfiltrované: odosielateľ „$pattern“';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters =>
+      'Odfiltrované: opakované znaky';
+
+  @override
+  String get messageFilter_reasonDuplicate => 'Odfiltrované: opakovaná správa';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate =>
+      'Odfiltrované: rovnaká správa od viacerých odosielateľov';
+
+  @override
+  String get messageFilter_reasonLearned =>
+      'Odfiltrované: podobá sa správam, ktoré ste označili ako spam';
+
+  @override
+  String get messageFilter_reasonManual =>
+      'Odfiltrované: označili ste to ako spam';
+
+  @override
+  String get messageFilter_notSpam => 'Nie spam';
+
+  @override
+  String get messageFilter_hideAgain => 'Skryť';
+
+  @override
+  String get messageFilter_markSpam => 'Označiť ako spam';
+
+  @override
+  String get messageFilter_markedSpam => 'Označené ako spam';
+
+  @override
+  String get messageFilter_markedNotSpam => 'Označené ako nie spam';
+
+  @override
+  String get messageFilter_filterSender => 'Filtrovať tohto odosielateľa';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return 'Skryť všetky správy od „$name“?';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => 'Filtrovať podobné správy…';
+
+  @override
+  String get messageFilter_channelToggle => 'Filtrovať správy v tomto kanáli';
+
+  @override
+  String get messageFilter_ghostIconTooltip => 'Skryté vaším filtrom správ';
 }

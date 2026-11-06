@@ -199,6 +199,8 @@ class ChannelMessageStore {
       'replyToSenderName': msg.replyToSenderName,
       'replyToText': msg.replyToText,
       'reactions': msg.reactions,
+      if (msg.filterReason != null) 'filterReason': msg.filterReason,
+      if (msg.filterDetail != null) 'filterDetail': msg.filterDetail,
       // `text` is stored decoded; legacy records without this flag may still
       // hold a Smaz payload.
       'plainText': true,
@@ -289,6 +291,8 @@ class ChannelMessageStore {
             ),
           ) ??
           {},
+      filterReason: json['filterReason'] as String?,
+      filterDetail: json['filterDetail'] as String?,
     );
   }
 
