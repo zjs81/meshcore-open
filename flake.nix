@@ -22,9 +22,6 @@
           ];
 
           buildInputs = with pkgs; [
-            # Flutter and Dart
-            flutter
-
             # Java (required for Android development)
             jdk17
 
@@ -50,6 +47,14 @@
 
           shellHook = ''
             echo "MeshCore Flutter Development Environment"
+            # Flutter itself is not provided here: pubspec.yaml pins an exact
+            # release that nixpkgs may not have yet. Use that SDK from PATH.
+            required_flutter=$(sed -n 's/^  flutter: *//p' pubspec.yaml 2>/dev/null)
+            if ! command -v flutter >/dev/null; then
+              echo "WARNING: flutter not on PATH; install Flutter $required_flutter"
+            elif ! flutter --version 2>/dev/null | grep -q "^Flutter $required_flutter "; then
+              echo "WARNING: this project requires Flutter $required_flutter; found $(flutter --version 2>/dev/null | head -1)"
+            fi
             export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [pkgs.gtk3 pkgs.glib pkgs.sysprof pkgs.libdatrie]}:$LD_LIBRARY_PATH"
             
             # Setup Android SDK in home directory (standard location)
