@@ -6855,6 +6855,9 @@ class AppLocalizationsBg extends AppLocalizations {
       'Честита Нова година|Щастлива Нова година|Happy New Year';
 
   @override
+  String get chat_loadOlderMessages => 'Зареди по-стари съобщения';
+
+  @override
   String get messageFilter_title => 'Филтър за съобщения';
 
   @override

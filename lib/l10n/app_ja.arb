@@ -3664,6 +3664,7 @@
   "appSettings_showOnlineLinks": "オンライン地図の接続を表示",
   "appSettings_showOnlineLinksSubtitle": "オンライン地図にあるノード間の接続線を表示する",
   "map_showOnlineLinks": "オンライン地図の接続を表示",
+  "chat_loadOlderMessages": "以前のメッセージを読み込む",
   "messageFilter_title": "メッセージフィルター",
   "@messageFilter_title": {
     "description": "Message filter: Message filter"

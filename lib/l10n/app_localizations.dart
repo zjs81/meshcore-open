@@ -11491,6 +11491,12 @@ abstract class AppLocalizations {
   /// **'Happy New Year|Happy New Year\'s'**
   String get holidayGreeting_newYear;
 
+  /// Button on an empty channel when filtered messages hide the loaded ones and older history may exist
+  ///
+  /// In en, this message translates to:
+  /// **'Load older messages'**
+  String get chat_loadOlderMessages;
+
   /// Message filter: Message filter
   ///
   /// In en, this message translates to:

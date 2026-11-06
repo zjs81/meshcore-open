@@ -2827,6 +2827,7 @@
   "appSettings_showOnlineLinks": "Показывать связи с онлайн-карты",
   "appSettings_showOnlineLinksSubtitle": "Показывать линии связи между узлами с онлайн-карты",
   "map_showOnlineLinks": "Показывать связи с онлайн-карты",
+  "chat_loadOlderMessages": "Загрузить более старые сообщения",
   "messageFilter_title": "Фильтр сообщений",
   "messageFilter_settingsSubtitle": "Скрывать спам и повторяющиеся сообщения",
   "messageFilter_enabled": "Фильтровать сообщения",

@@ -6816,6 +6816,9 @@ class AppLocalizationsNl extends AppLocalizations {
       'Gelukkig Nieuwjaar|Gelukkig nieuw jaar|Prettig nieuwjaar|Een gelukkig nieuwjaar|Happy New Year|Zalig nieuwjaar|Fijne jaarwisseling';
 
   @override
+  String get chat_loadOlderMessages => 'Oudere berichten laden';
+
+  @override
   String get messageFilter_title => 'Berichtenfilter';
 
   @override

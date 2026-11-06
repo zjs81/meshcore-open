@@ -3535,6 +3535,7 @@
   "appSettings_showOnlineLinks": "显示在线地图连接",
   "appSettings_showOnlineLinksSubtitle": "显示在线地图中节点之间的连接线",
   "map_showOnlineLinks": "显示在线地图连接",
+  "chat_loadOlderMessages": "加载更早的消息",
   "messageFilter_title": "消息过滤",
   "messageFilter_settingsSubtitle": "隐藏垃圾消息和重复消息",
   "messageFilter_enabled": "过滤消息",

@@ -3563,6 +3563,7 @@
   "appSettings_showOnlineLinks": "Pokaż połączenia z mapy online",
   "appSettings_showOnlineLinksSubtitle": "Wyświetlaj linie połączeń między węzłami z mapy online",
   "map_showOnlineLinks": "Pokaż połączenia z mapy online",
+  "chat_loadOlderMessages": "Wczytaj starsze wiadomości",
   "messageFilter_title": "Filtr wiadomości",
   "@messageFilter_title": {
     "description": "Message filter: Message filter"

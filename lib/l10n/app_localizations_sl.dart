@@ -6820,6 +6820,9 @@ class AppLocalizationsSl extends AppLocalizations {
       'Srečno novo leto|Srečno v novem letu|Vse najboljše v novem letu|Happy New Year';
 
   @override
+  String get chat_loadOlderMessages => 'Naloži starejša sporočila';
+
+  @override
   String get messageFilter_title => 'Filter sporočil';
 
   @override

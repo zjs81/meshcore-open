@@ -6384,6 +6384,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get holidayGreeting_newYear => '新年快乐|新年快樂|元旦快乐|元旦快樂|新年好|新年愉快';
 
   @override
+  String get chat_loadOlderMessages => '加载更早的消息';
+
+  @override
   String get messageFilter_title => '消息过滤';
 
   @override

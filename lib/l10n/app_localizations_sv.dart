@@ -6793,6 +6793,9 @@ class AppLocalizationsSv extends AppLocalizations {
       'Gott nytt år|Happy New Year|Ett gott nytt år';
 
   @override
+  String get chat_loadOlderMessages => 'Ladda äldre meddelanden';
+
+  @override
   String get messageFilter_title => 'Meddelandefilter';
 
   @override

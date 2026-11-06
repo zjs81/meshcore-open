@@ -6834,6 +6834,9 @@ class AppLocalizationsSk extends AppLocalizations {
       'Šťastný Nový rok|Úspešný nový rok|Happy New Year';
 
   @override
+  String get chat_loadOlderMessages => 'Načítať staršie správy';
+
+  @override
   String get messageFilter_title => 'Filter správ';
 
   @override

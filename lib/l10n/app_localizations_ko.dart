@@ -6545,6 +6545,9 @@ class AppLocalizationsKo extends AppLocalizations {
       '새해 복 많이 받으세요|새해 복 많이 받아|새해 복 많이 받으십시오|새해 복 많이 받아요|해피 뉴 이어|해피 뉴이어|즐거운 새해|행복한 새해';
 
   @override
+  String get chat_loadOlderMessages => '이전 메시지 불러오기';
+
+  @override
   String get messageFilter_title => '메시지 필터';
 
   @override

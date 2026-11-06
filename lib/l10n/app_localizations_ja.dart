@@ -6534,6 +6534,9 @@ class AppLocalizationsJa extends AppLocalizations {
       'あけましておめでとう|明けましておめでとう|あけおめ|アケオメ|ハッピーニューイヤー|ハッピー・ニューイヤー|謹賀新年|Happy New Year';
 
   @override
+  String get chat_loadOlderMessages => '以前のメッセージを読み込む';
+
+  @override
   String get messageFilter_title => 'メッセージフィルター';
 
   @override

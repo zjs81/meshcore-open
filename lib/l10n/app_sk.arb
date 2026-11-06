@@ -3531,6 +3531,7 @@
   "appSettings_showOnlineLinks": "Zobraziť spojenia z online mapy",
   "appSettings_showOnlineLinksSubtitle": "Zobrazí spojovacie čiary medzi uzlami z online mapy",
   "map_showOnlineLinks": "Zobraziť spojenia z online mapy",
+  "chat_loadOlderMessages": "Načítať staršie správy",
   "messageFilter_title": "Filter správ",
   "messageFilter_settingsSubtitle": "Skryje spam a opakované správy",
   "messageFilter_enabled": "Filtrovať správy",

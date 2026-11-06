@@ -3569,6 +3569,7 @@
   "appSettings_showOnlineLinks": "Online térkép kapcsolatainak megjelenítése",
   "appSettings_showOnlineLinksSubtitle": "A csomópontok közötti kapcsolatvonalak megjelenítése az online térképről",
   "map_showOnlineLinks": "Online térkép kapcsolatainak megjelenítése",
+  "chat_loadOlderMessages": "Régebbi üzenetek betöltése",
   "messageFilter_title": "Üzenetszűrő",
   "messageFilter_settingsSubtitle": "Spam és ismétlődő üzenetek elrejtése",
   "messageFilter_enabled": "Üzenetek szűrése",

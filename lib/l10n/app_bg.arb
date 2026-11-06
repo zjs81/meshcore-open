@@ -3530,6 +3530,7 @@
   "appSettings_showOnlineLinks": "Показвай връзките от онлайн картата",
   "appSettings_showOnlineLinksSubtitle": "Показва линии между възлите от онлайн картата",
   "map_showOnlineLinks": "Показвай връзките от онлайн картата",
+  "chat_loadOlderMessages": "Зареди по-стари съобщения",
   "messageFilter_title": "Филтър за съобщения",
   "messageFilter_settingsSubtitle": "Скрива спам и повтарящи се съобщения",
   "messageFilter_enabled": "Филтрирай съобщенията",

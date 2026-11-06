@@ -3431,6 +3431,7 @@
   "appSettings_showOnlineLinks": "Verbindingen van de online kaart tonen",
   "appSettings_showOnlineLinksSubtitle": "Verbindingslijnen tussen nodes van de online kaart tonen",
   "map_showOnlineLinks": "Verbindingen van de online kaart tonen",
+  "chat_loadOlderMessages": "Oudere berichten laden",
   "messageFilter_title": "Berichtenfilter",
   "messageFilter_settingsSubtitle": "Spam en herhaalde berichten verbergen",
   "messageFilter_enabled": "Berichten filteren",

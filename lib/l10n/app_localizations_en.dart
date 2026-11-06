@@ -6752,6 +6752,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get holidayGreeting_newYear => 'Happy New Year|Happy New Year\'s';
 
   @override
+  String get chat_loadOlderMessages => 'Load older messages';
+
+  @override
   String get messageFilter_title => 'Message filter';
 
   @override

@@ -6865,6 +6865,9 @@ class AppLocalizationsRu extends AppLocalizations {
       'С Новым годом|С Новым годом!|С Новым годом всех|С наступающим Новым годом|Счастливого Нового года|Happy New Year';
 
   @override
+  String get chat_loadOlderMessages => 'Загрузить более старые сообщения';
+
+  @override
   String get messageFilter_title => 'Фильтр сообщений';
 
   @override

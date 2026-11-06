@@ -101,6 +101,15 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   final CommunityPskIndex _communityIndex = CommunityPskIndex();
   final Map<String, GlobalKey> _messageKeys = {};
   bool _isLoadingOlder = false;
+
+  /// Storage returned no more history; stop asking for older pages.
+  bool _olderHistoryExhausted = false;
+
+  /// Older pages loaded automatically because filtered messages left the
+  /// list too short to scroll (and so to reach the load-older trigger).
+  int _hiddenBackfillPages = 0;
+  bool _hiddenBackfillScheduled = false;
+  static const int _maxHiddenBackfillPages = 20;
   bool _communitiesLoaded = false;
 
   /// Per-screen image-id allocator. The id is 8 bits and the reassembly key also
@@ -229,15 +238,50 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   }
 
   Future<void> _loadOlderMessages() async {
-    if (_isLoadingOlder) return;
+    if (_isLoadingOlder || _olderHistoryExhausted) return;
     setState(() => _isLoadingOlder = true);
 
     final connector = context.read<MeshCoreConnector>();
-    await connector.loadOlderChannelMessages(widget.channel.index);
+    final older = await connector.loadOlderChannelMessages(
+      widget.channel.index,
+    );
 
     if (mounted) {
-      setState(() => _isLoadingOlder = false);
+      setState(() {
+        _isLoadingOlder = false;
+        if (older.isEmpty) _olderHistoryExhausted = true;
+      });
     }
+  }
+
+  /// When filtered messages are hidden or collapsed, the loaded window can
+  /// leave nothing (or too little) on screen to scroll, so the scroll-near-top
+  /// trigger for older history never fires. Keep loading older pages until
+  /// the list can scroll, storage runs out, or the automatic page cap is hit.
+  void _scheduleHiddenHistoryBackfill() {
+    if (_hiddenBackfillScheduled ||
+        _isLoadingOlder ||
+        _olderHistoryExhausted ||
+        _hiddenBackfillPages >= _maxHiddenBackfillPages) {
+      return;
+    }
+    _hiddenBackfillScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _hiddenBackfillScheduled = false;
+      if (!mounted || _isLoadingOlder || _olderHistoryExhausted) return;
+      if (_scrollController.hasClients &&
+          _scrollController.position.maxScrollExtent > 0) {
+        return;
+      }
+      _hiddenBackfillPages++;
+      unawaited(_loadOlderMessages());
+    });
+  }
+
+  /// Loads an older page on request, restarting the automatic page cap.
+  void _loadOlderHiddenHistory() {
+    _hiddenBackfillPages = 0;
+    unawaited(_loadOlderMessages());
   }
 
   @override
@@ -563,8 +607,14 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                       ),
                     );
                     final layout = _transcriptLayoutFor(context, messages);
+                    // Fewer entries than messages means the filter hid or
+                    // collapsed some; make sure older history stays reachable.
+                    final hidesMessages = layout.length < messages.length;
+                    if (hidesMessages) _scheduleHiddenHistoryBackfill();
 
                     if (layout.length == 0) {
+                      final canLoadOlder =
+                          hidesMessages && !_olderHistoryExhausted;
                       return EmptyState(
                         icon: widget.channel.isPublicChannel
                             ? Icons.public
@@ -577,6 +627,18 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                 )
                               : widget.channel.name,
                         ),
+                        // Past the automatic page cap, filtered messages may
+                        // still hide older conversation: let the user ask.
+                        action: canLoadOlder
+                            ? FilledButton.tonal(
+                                onPressed: _isLoadingOlder
+                                    ? null
+                                    : _loadOlderHiddenHistory,
+                                child: Text(
+                                  context.l10n.chat_loadOlderMessages,
+                                ),
+                              )
+                            : null,
                       );
                     }
 

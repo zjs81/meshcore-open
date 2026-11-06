@@ -1118,6 +1118,17 @@ class MeshCoreConnector extends ChangeNotifier {
     return true;
   }
 
+  /// The loaded copy of [messageId] in channel [channelIndex], or null when
+  /// it is not in the in-memory window.
+  ChannelMessage? _loadedChannelMessage(int channelIndex, String messageId) {
+    final messages = _channelMessages[_canonicalSlot(channelIndex)];
+    if (messages == null) return null;
+    for (var i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].messageId == messageId) return messages[i];
+    }
+    return null;
+  }
+
   /// User marked [message] in [channel] as spam: hide it and teach the
   /// filter.
   Future<void> markChannelMessageSpam(
@@ -7783,6 +7794,12 @@ class MeshCoreConnector extends ChangeNotifier {
 
     // Check if channel is muted
     if (notificationMode == ChannelNotificationMode.muted) return;
+
+    // Callers notify after awaiting translation, and the user may mark the
+    // message as spam meanwhile; that replaces the stored copy, not the
+    // [message] the caller captured. Go by the stored state.
+    final stored = _loadedChannelMessage(channelIndex, message.messageId);
+    if (stored != null && stored.isFiltered) return;
 
     // Reuse translation result only if completed and non-empty; else use original text
     final resolvedText =

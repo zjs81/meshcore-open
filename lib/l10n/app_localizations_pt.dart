@@ -6845,6 +6845,9 @@ class AppLocalizationsPt extends AppLocalizations {
       'Feliz Ano Novo|Próspero Ano Novo|Feliz Ano|Feliz Réveillon|Boas Festas e Feliz Ano Novo|Happy New Year';
 
   @override
+  String get chat_loadOlderMessages => 'Carregar mensagens mais antigas';
+
+  @override
   String get messageFilter_title => 'Filtro de mensagens';
 
   @override

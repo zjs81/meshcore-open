@@ -3530,6 +3530,7 @@
   "appSettings_showOnlineLinks": "Mostrar conexões do mapa online",
   "appSettings_showOnlineLinksSubtitle": "Exibe linhas de conexão entre nós do mapa online",
   "map_showOnlineLinks": "Mostrar conexões do mapa online",
+  "chat_loadOlderMessages": "Carregar mensagens mais antigas",
   "messageFilter_title": "Filtro de mensagens",
   "messageFilter_settingsSubtitle": "Oculta mensagens de spam e repetidas",
   "messageFilter_enabled": "Filtrar mensagens",

@@ -3531,6 +3531,7 @@
   "appSettings_showOnlineLinks": "Pokaži povezave spletnega zemljevida",
   "appSettings_showOnlineLinksSubtitle": "Prikaži povezovalne črte med napravami iz spletnega zemljevida",
   "map_showOnlineLinks": "Pokaži povezave spletnega zemljevida",
+  "chat_loadOlderMessages": "Naloži starejša sporočila",
   "messageFilter_title": "Filter sporočil",
   "@messageFilter_title": {
     "description": "Message filter: Message filter"

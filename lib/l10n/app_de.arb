@@ -3665,6 +3665,7 @@
   "appSettings_showOnlineLinks": "Verbindungen der Online-Karte anzeigen",
   "appSettings_showOnlineLinksSubtitle": "Verbindungslinien zwischen Knoten aus der Online-Karte anzeigen",
   "map_showOnlineLinks": "Verbindungen der Online-Karte anzeigen",
+  "chat_loadOlderMessages": "Ältere Nachrichten laden",
   "messageFilter_title": "Nachrichtenfilter",
   "messageFilter_settingsSubtitle": "Spam und wiederholte Nachrichten ausblenden",
   "messageFilter_enabled": "Nachrichten filtern",

@@ -3753,6 +3753,10 @@
   "@holidayGreeting_newYear": {
     "description": "Holiday greeting that plays the New Year's fireworks animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
   },
+  "chat_loadOlderMessages": "Load older messages",
+  "@chat_loadOlderMessages": {
+    "description": "Button on an empty channel when filtered messages hide the loaded ones and older history may exist"
+  },
   "messageFilter_title": "Message filter",
   "@messageFilter_title": {
     "description": "Message filter: Message filter"

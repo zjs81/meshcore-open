@@ -3664,6 +3664,7 @@
   "appSettings_showOnlineLinks": "Mostrar conexiones del mapa en línea",
   "appSettings_showOnlineLinksSubtitle": "Muestra líneas de conexión entre nodos del mapa en línea",
   "map_showOnlineLinks": "Mostrar conexiones del mapa en línea",
+  "chat_loadOlderMessages": "Cargar mensajes anteriores",
   "messageFilter_title": "Filtro de mensajes",
   "messageFilter_settingsSubtitle": "Oculta mensajes de spam y repetidos",
   "messageFilter_enabled": "Filtrar mensajes",

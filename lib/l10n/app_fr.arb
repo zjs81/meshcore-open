@@ -3664,6 +3664,7 @@
   "appSettings_showOnlineLinks": "Afficher les connexions de la carte en ligne",
   "appSettings_showOnlineLinksSubtitle": "Affiche les lignes de connexion entre les nœuds de la carte en ligne",
   "map_showOnlineLinks": "Afficher les connexions de la carte en ligne",
+  "chat_loadOlderMessages": "Charger les anciens messages",
   "messageFilter_title": "Filtre de messages",
   "messageFilter_settingsSubtitle": "Masquer les spams et les messages répétés",
   "messageFilter_enabled": "Filtrer les messages",

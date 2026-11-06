@@ -3525,6 +3525,7 @@
   "appSettings_showOnlineLinks": "Visa anslutningar från onlinekartan",
   "appSettings_showOnlineLinksSubtitle": "Visa anslutningslinjer mellan noder från onlinekartan",
   "map_showOnlineLinks": "Visa anslutningar från onlinekartan",
+  "chat_loadOlderMessages": "Ladda äldre meddelanden",
   "messageFilter_title": "Meddelandefilter",
   "messageFilter_settingsSubtitle": "Dölj skräppost och upprepade meddelanden",
   "messageFilter_enabled": "Filtrera meddelanden",

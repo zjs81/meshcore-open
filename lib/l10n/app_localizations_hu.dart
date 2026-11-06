@@ -6842,6 +6842,9 @@ class AppLocalizationsHu extends AppLocalizations {
       'Boldog új évet|Boldog újévet|Boldog új esztendőt|BÚÉK|Happy New Year';
 
   @override
+  String get chat_loadOlderMessages => 'Régebbi üzenetek betöltése';
+
+  @override
   String get messageFilter_title => 'Üzenetszűrő';
 
   @override

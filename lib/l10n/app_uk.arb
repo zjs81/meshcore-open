@@ -3510,6 +3510,7 @@
   "appSettings_showOnlineLinks": "Показувати зв’язки з онлайн-карти",
   "appSettings_showOnlineLinksSubtitle": "Показує лінії між вузлами з онлайн-карти",
   "map_showOnlineLinks": "Показувати зв’язки з онлайн-карти",
+  "chat_loadOlderMessages": "Завантажити старіші повідомлення",
   "messageFilter_title": "Фільтр повідомлень",
   "messageFilter_settingsSubtitle": "Приховує спам і повідомлення, що повторюються",
   "messageFilter_enabled": "Фільтрувати повідомлення",

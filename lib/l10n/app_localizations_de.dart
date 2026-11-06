@@ -6867,6 +6867,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Frohes neues Jahr|Gutes neues Jahr|Guten Rutsch|Prosit Neujahr|Happy New Year|Ein gutes neues Jahr|Guten Rutsch ins neue Jahr|Frohes Neues';
 
   @override
+  String get chat_loadOlderMessages => 'Ältere Nachrichten laden';
+
+  @override
   String get messageFilter_title => 'Nachrichtenfilter';
 
   @override
