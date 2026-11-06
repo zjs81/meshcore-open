@@ -2,10 +2,10 @@
   "ubuntu": "ubuntu:24.04@sha256:fe81560990fae86dc4743202b2cb4d3df98d0bcf949173cecef15ce1127ef852",
   "glibc": "2.39",
   "flutter": {
-    "version": "3.47.4",
-    "source_revision": "9584c6713b324636289d067944a46fd6b49df14b",
-    "url": "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.47.4-stable.tar.xz",
-    "sha256": "5b45f0ceda99b9bebdc873e7e69f6450aeb4c30f454b505e2e62fc9255a907d3"
+    "version": "3.47.9",
+    "source_revision": "c197ca5199e9ee5661e865596c9c07294dfab51c",
+    "url": "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.47.9-stable.tar.xz",
+    "sha256": "25ed8c3c29d51a7353f2a944310b478af8214920639524b19c50a19e6c044c5a"
   },
   "tools": {
     "gtk": {

@@ -85,7 +85,7 @@ See the [user documentation](documentation/README.md), [connection guide](docume
 
 ### Architecture
 
-- **Framework**: Flutter (web deployment pins 3.41.2); Dart SDK constraint `^3.9.2`
+- **Framework**: Flutter, pinned to an exact release in `pubspec.yaml` (`environment.flutter`); Dart SDK constraint `^3.9.2`
 - **State Management**: Provider pattern with ChangeNotifier
 - **BLE Protocol**: Nordic UART Service (NUS) over Bluetooth Low Energy
 - **Storage**: JSON in SharedPreferences for messages and contacts; files for models, images, and map caches
@@ -125,7 +125,7 @@ The matrix describes implemented functionality, not a guarantee that every featu
 
 ### Prerequisites
 
-- Flutter SDK; web deployment currently pins 3.41.2. The Dart SDK constraint is `^3.9.2` (see `pubspec.yaml`).
+- Flutter SDK at exactly the version in `pubspec.yaml` under `environment.flutter`. `flutter pub get` refuses any other version; run `flutter upgrade` or check out that release.
 - Android Studio / Xcode (for mobile development)
 - A MeshCore-compatible LoRa device
 
@@ -184,8 +184,8 @@ downloads must also be available. A packaging failure fails the enabled build,
 without publishing a stale image as a new artifact.
 
 GitHub Actions builds ARM64 on a native `ubuntu-24.04-arm` runner. Flutter's
-Linux release SDK archive is x64-only, so that job bootstraps Flutter 3.47.4
-from its pinned source revision. Flutter does not support x64-to-ARM64 Linux
+Linux release SDK archive is x64-only, so that job bootstraps the pinned Flutter
+release from its source revision in `scripts/appimage-tools.json`. Flutter does not support x64-to-ARM64 Linux
 cross-builds; use an ARM64 Linux host to build the ARM64 bundle locally. The
 ARM64 AppImage is CI-built and hardware validation on a Raspberry Pi 5 is still
 needed for graphics, BLE, USB and inference behavior.
@@ -223,8 +223,10 @@ flutter build linux --debug
 flutter build linux --profile
 ```
 
-The lockfile currently supplies Flutter 3.47.4 and its matching Dart SDK. The
-app requires Flutter 3.41.2 or newer. The Linux shell provides wrapped Clang
+The shell does not provide Flutter, because `pubspec.yaml` pins an exact
+release that nixpkgs may not package yet. Put that Flutter SDK on PATH before
+entering the shell; the shell warns when it is missing or the wrong version.
+The Linux shell provides wrapped Clang
 compilers, native headers and libraries, and Sysprof capture development files.
 Android SDK warnings do not prevent Linux builds.
 

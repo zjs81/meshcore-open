@@ -20,6 +20,10 @@ version: 99.0.2+27
 
 environment:
   sdk: ^3.9.2
+  # Everyone builds with this exact Flutter release; pub get refuses others.
+  # CI reads it via flutter-version-file. Keep scripts/appimage-tools.json in
+  # step when changing it.
+  flutter: 3.47.9
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions

@@ -38,7 +38,7 @@ bash "$project/scripts/build_appimage.sh" "$project" /missing "$temporary/output
 assert_fails bash "$project/scripts/build_appimage.sh" \
   "$project" /missing "$temporary/output" Release riscv64
 # shellcheck disable=SC2218
-jq -e '.flutter.source_revision == "9584c6713b324636289d067944a46fd6b49df14b" and
+jq -e '.flutter.source_revision == "c197ca5199e9ee5661e865596c9c07294dfab51c" and
   (.tools.x86_64.linuxdeploy.sha256 | length == 64) and
   (.tools.aarch64.linuxdeploy.sha256 | length == 64) and
   (.tools.aarch64.appimagetool.sha256 | length == 64) and
@@ -87,7 +87,7 @@ cp "$project/scripts/appimage/Dockerfile" "$temporary/project/scripts/appimage/"
 # shellcheck disable=SC2329
 jq() {
   case "$*" in
-    *'.flutter.version'*) printf '3.47.4\n' ;;
+    *'.flutter.version'*) printf '3.47.9\n' ;;
     *'.ubuntu'*) printf 'ubuntu:24.04\n' ;;
     *) return 1 ;;
   esac
