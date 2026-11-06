@@ -1419,11 +1419,12 @@ class AppLocalizationsDe extends AppLocalizations {
       'Andere Knotentypen auf der Karte anzeigen';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks =>
+      'Verbindungen der Online-Karte anzeigen';
 
   @override
   String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+      'Verbindungslinien zwischen Knoten aus der Online-Karte anzeigen';
 
   @override
   String get appSettings_timeFilter => 'Zeitfilter';
@@ -2705,7 +2706,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get map_otherNodes => 'Andere Knoten';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => 'Verbindungen der Online-Karte anzeigen';
 
   @override
   String get map_showOverlaps => 'Repeater-Schlüsselüberlappungen';
@@ -6864,4 +6865,215 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Frohes neues Jahr|Gutes neues Jahr|Guten Rutsch|Prosit Neujahr|Happy New Year|Ein gutes neues Jahr|Guten Rutsch ins neue Jahr|Frohes Neues';
+
+  @override
+  String get messageFilter_title => 'Nachrichtenfilter';
+
+  @override
+  String get messageFilter_settingsSubtitle =>
+      'Spam und wiederholte Nachrichten ausblenden';
+
+  @override
+  String get messageFilter_enabled => 'Nachrichten filtern';
+
+  @override
+  String get messageFilter_enabledSubtitle => 'Gilt für Kanalnachrichten';
+
+  @override
+  String get messageFilter_displayTitle => 'Gefilterte Nachrichten';
+
+  @override
+  String get messageFilter_displayPlaceholder => 'Kleinen Platzhalter anzeigen';
+
+  @override
+  String get messageFilter_displayHide => 'Komplett ausblenden';
+
+  @override
+  String get messageFilter_displayHideHelp =>
+      'Ausgeblendete Nachrichten bleiben in der Liste „Gefilterte Nachrichten“.';
+
+  @override
+  String get messageFilter_rulesSection => 'Ihre Regeln';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      'Noch keine Regeln. Fügen Sie ein Wort, eine Wortgruppe oder einen Absendernamen hinzu, um passende Nachrichten auszublenden.';
+
+  @override
+  String get messageFilter_addRule => 'Regel hinzufügen';
+
+  @override
+  String get messageFilter_editRule => 'Regel bearbeiten';
+
+  @override
+  String get messageFilter_rulePattern => 'Wort, Wortgruppe oder Name';
+
+  @override
+  String get messageFilter_rulePatternHint => 'z. B. meshos';
+
+  @override
+  String get messageFilter_ruleWhere => 'Suchen in';
+
+  @override
+  String get messageFilter_ruleFieldText => 'Nachrichtentext';
+
+  @override
+  String get messageFilter_ruleFieldSender => 'Absendername';
+
+  @override
+  String get messageFilter_ruleFieldBoth => 'Beides';
+
+  @override
+  String get messageFilter_ruleMatch => 'Übereinstimmung';
+
+  @override
+  String get messageFilter_ruleMatchContains => 'Enthält';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => 'Ganzes Wort';
+
+  @override
+  String get messageFilter_ruleMatchExact => 'Genau';
+
+  @override
+  String get messageFilter_ruleDeleted => 'Regel gelöscht';
+
+  @override
+  String get messageFilter_ruleSaved => 'Regel gespeichert';
+
+  @override
+  String get messageFilter_automaticSection => 'Automatisch';
+
+  @override
+  String get messageFilter_duplicates => 'Wiederholte Nachrichten';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      'Dieselbe Nachricht erneut gesendet oder von mehreren Absendern';
+
+  @override
+  String get messageFilter_repeatedCharacters => 'Wiederholte Zeichen';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      'Nachrichten wie „aaaaaaaa“ oder „!!!!!!!!“';
+
+  @override
+  String get messageFilter_learning => 'Aus Spam-Markierungen lernen';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return '$spam Spam- und $notSpam Kein-Spam-Beispiele';
+  }
+
+  @override
+  String get messageFilter_resetLearning => 'Gelerntes zurücksetzen';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      'Alles vergessen, was aus Ihren Markierungen „Spam“ und „Kein Spam“ gelernt wurde? Ihre Regeln bleiben erhalten.';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return 'Gefilterte Nachrichten ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty =>
+      'Es wurde nichts gefiltert.';
+
+  @override
+  String get messageFilter_ghostSingle =>
+      'Ausgeblendete Nachricht · Zum Anzeigen tippen';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ausgeblendete Nachrichten · Zum Anzeigen tippen',
+      one: '$count ausgeblendete Nachricht · Zum Anzeigen tippen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded =>
+      'Ausgeblendete Nachricht wird angezeigt · Zum Ausblenden tippen';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count ausgeblendete Nachrichten werden angezeigt · Zum Ausblenden tippen',
+      one: '1 ausgeblendete Nachricht wird angezeigt · Zum Ausblenden tippen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return 'Gefiltert: passt zu „$pattern“';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return 'Gefiltert: Absender „$pattern“';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters =>
+      'Gefiltert: wiederholte Zeichen';
+
+  @override
+  String get messageFilter_reasonDuplicate =>
+      'Gefiltert: wiederholte Nachricht';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate =>
+      'Gefiltert: dieselbe Nachricht von mehreren Absendern';
+
+  @override
+  String get messageFilter_reasonLearned =>
+      'Gefiltert: ähnelt Nachrichten, die Sie als Spam markiert haben';
+
+  @override
+  String get messageFilter_reasonManual =>
+      'Gefiltert: Sie haben dies als Spam markiert';
+
+  @override
+  String get messageFilter_notSpam => 'Kein Spam';
+
+  @override
+  String get messageFilter_hideAgain => 'Verbergen';
+
+  @override
+  String get messageFilter_markSpam => 'Als Spam markieren';
+
+  @override
+  String get messageFilter_markedSpam => 'Als Spam markiert';
+
+  @override
+  String get messageFilter_markedNotSpam => 'Als Kein Spam markiert';
+
+  @override
+  String get messageFilter_filterSender => 'Diesen Absender filtern';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return 'Alle Nachrichten von „$name“ ausblenden?';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => 'Ähnliche Nachrichten filtern…';
+
+  @override
+  String get messageFilter_channelToggle =>
+      'Nachrichten in diesem Kanal filtern';
+
+  @override
+  String get messageFilter_ghostIconTooltip =>
+      'Von Ihrem Nachrichtenfilter ausgeblendet';
 }

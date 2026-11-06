@@ -43,6 +43,7 @@ See the [user documentation](documentation/README.md), [connection guide](docume
 - **Direct Messaging**: Private encrypted conversations with individual contacts
 - **Channels**: Public, hashtag, private, and community channels
 - **Mesh Images**: Send compressed images in channel chat with optional recovery packets ([guide](documentation/image-messages.md))
+- **Message Filter**: Hide spam and repeated channel messages with your own rules and on-device learning ([guide](documentation/message-filter.md))
 - **Regions**: Scope channel floods and reply using a message’s known region ([guide](documentation/regions.md))
 - **Translation**: Optional on-device incoming and pre-send translation
 - **Contact Management**: Organize contacts, track last seen times, and manage conversation history

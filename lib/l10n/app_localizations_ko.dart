@@ -1344,11 +1344,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_showOtherNodesSubtitle => '지도에 다른 노드 유형을 표시';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks => '온라인 지도 연결선 표시';
 
   @override
-  String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+  String get appSettings_showOnlineLinksSubtitle => '온라인 지도에 있는 노드 간 연결선을 표시';
 
   @override
   String get appSettings_timeFilter => '시간 필터';
@@ -2588,7 +2587,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get map_otherNodes => '다른 노드';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => '온라인 지도 연결선 표시';
 
   @override
   String get map_showOverlaps => '반복 키 중복';
@@ -6544,4 +6543,200 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       '새해 복 많이 받으세요|새해 복 많이 받아|새해 복 많이 받으십시오|새해 복 많이 받아요|해피 뉴 이어|해피 뉴이어|즐거운 새해|행복한 새해';
+
+  @override
+  String get messageFilter_title => '메시지 필터';
+
+  @override
+  String get messageFilter_settingsSubtitle => '스팸과 반복된 메시지를 숨김';
+
+  @override
+  String get messageFilter_enabled => '메시지 필터링';
+
+  @override
+  String get messageFilter_enabledSubtitle => '채널 메시지에 적용됩니다';
+
+  @override
+  String get messageFilter_displayTitle => '필터링된 메시지';
+
+  @override
+  String get messageFilter_displayPlaceholder => '작은 안내 표시';
+
+  @override
+  String get messageFilter_displayHide => '완전히 숨기기';
+
+  @override
+  String get messageFilter_displayHideHelp => '숨겨진 메시지는 필터링된 메시지 목록에 남아 있습니다.';
+
+  @override
+  String get messageFilter_rulesSection => '내 규칙';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      '아직 규칙이 없습니다. 단어, 문구 또는 발신자 이름을 추가하면 일치하는 메시지를 숨깁니다.';
+
+  @override
+  String get messageFilter_addRule => '규칙 추가';
+
+  @override
+  String get messageFilter_editRule => '규칙 수정';
+
+  @override
+  String get messageFilter_rulePattern => '단어, 문구 또는 이름';
+
+  @override
+  String get messageFilter_rulePatternHint => '예: meshos';
+
+  @override
+  String get messageFilter_ruleWhere => '확인할 위치';
+
+  @override
+  String get messageFilter_ruleFieldText => '메시지 내용';
+
+  @override
+  String get messageFilter_ruleFieldSender => '발신자 이름';
+
+  @override
+  String get messageFilter_ruleFieldBoth => '둘 다';
+
+  @override
+  String get messageFilter_ruleMatch => '일치 방식';
+
+  @override
+  String get messageFilter_ruleMatchContains => '포함';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => '단어 전체';
+
+  @override
+  String get messageFilter_ruleMatchExact => '정확히 일치';
+
+  @override
+  String get messageFilter_ruleDeleted => '규칙을 삭제했습니다';
+
+  @override
+  String get messageFilter_ruleSaved => '규칙을 저장했습니다';
+
+  @override
+  String get messageFilter_automaticSection => '자동';
+
+  @override
+  String get messageFilter_duplicates => '반복된 메시지';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      '같은 메시지를 다시 보냈거나 여러 발신자가 보낸 경우';
+
+  @override
+  String get messageFilter_repeatedCharacters => '반복된 문자';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      '\"aaaaaaaa\" 또는 \"!!!!!!!!\" 같은 메시지';
+
+  @override
+  String get messageFilter_learning => '스팸 표시에서 학습';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return '스팸 $spam개, 스팸 아님 $notSpam개 예시';
+  }
+
+  @override
+  String get messageFilter_resetLearning => '학습 초기화';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      '스팸 및 스팸 아님 표시로 학습한 내용을 모두 지울까요? 내 규칙은 그대로 유지됩니다.';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return '필터링된 메시지 ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => '필터링된 메시지가 없습니다.';
+
+  @override
+  String get messageFilter_ghostSingle => '숨겨진 메시지 · 눌러서 보기';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '숨겨진 메시지 $count개 · 눌러서 보기',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded => '숨겨진 메시지 표시 중 · 눌러서 숨기기';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '숨겨진 메시지 $count개 표시 중 · 눌러서 숨기기',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return '필터링됨: \"$pattern\"와(과) 일치';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return '필터링됨: 발신자 \"$pattern\"';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters => '필터링됨: 반복된 문자';
+
+  @override
+  String get messageFilter_reasonDuplicate => '필터링됨: 반복된 메시지';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate => '필터링됨: 여러 발신자의 같은 메시지';
+
+  @override
+  String get messageFilter_reasonLearned => '필터링됨: 스팸으로 표시한 메시지와 비슷함';
+
+  @override
+  String get messageFilter_reasonManual => '필터링됨: 스팸으로 표시함';
+
+  @override
+  String get messageFilter_notSpam => '스팸 아님';
+
+  @override
+  String get messageFilter_hideAgain => '숨기기';
+
+  @override
+  String get messageFilter_markSpam => '스팸으로 표시';
+
+  @override
+  String get messageFilter_markedSpam => '스팸으로 표시했습니다';
+
+  @override
+  String get messageFilter_markedNotSpam => '스팸 아님으로 표시했습니다';
+
+  @override
+  String get messageFilter_filterSender => '이 발신자 필터링';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return '\"$name\"의 모든 메시지를 숨길까요?';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => '이와 비슷한 메시지 필터링…';
+
+  @override
+  String get messageFilter_channelToggle => '이 채널에서 메시지 필터링';
+
+  @override
+  String get messageFilter_ghostIconTooltip => '메시지 필터로 숨겨짐';
 }

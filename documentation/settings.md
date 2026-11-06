@@ -188,6 +188,10 @@ Controls character substitution profiles used to render Cyrillic text in Latin c
 
 ---
 
+### Message filter
+
+On the Settings screen, below App Settings, **Message filter** opens a page to hide spam and repeated channel messages: a master switch, display mode, your own rules, automatic checks, and learning. See [Message Filter](message-filter.md).
+
 ## Actions
 
 One-tap device operations:

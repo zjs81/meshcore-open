@@ -21,6 +21,7 @@ import 'services/image_codec_settings_store.dart';
 import 'services/received_image_blob_store_factory.dart';
 import 'services/received_image_store.dart';
 import 'services/storage_service.dart';
+import 'services/message_filter/message_filter_service.dart';
 import 'services/message_retry_service.dart';
 import 'services/path_history_service.dart';
 import 'services/app_settings_service.dart';
@@ -78,6 +79,7 @@ void main() async {
   final translationService = TranslationService(appSettingsService);
   final uiViewStateService = UiViewStateService();
   final timeoutPredictionService = TimeoutPredictionService(storage);
+  final messageFilterService = MessageFilterService();
 
   // Load settings before anything reads them. The image stack below takes its
   // model registry and its "process automatically" default straight off
@@ -168,6 +170,7 @@ void main() async {
   await receivedImageStore.load();
   await uiViewStateService.initialize();
   await timeoutPredictionService.initialize();
+  await messageFilterService.load();
 
   // Wire up connector with services
   connector.initialize(
@@ -182,6 +185,7 @@ void main() async {
     imageCodecService: imageCodecService,
     imageTransport: imageTransport,
     receivedImageStore: receivedImageStore,
+    messageFilterService: messageFilterService,
     // ImageStreamReassembler.addChunk already forwards every outcome to the
     // store together with the channel index (which ImageChunkOutcome itself
     // does not carry), so onImageChunk would be a second, channel-blind path.
@@ -216,6 +220,7 @@ void main() async {
       imageReassembler: imageReassembler,
       networkMapUploadService: networkMapUploadService,
       chatBackgroundService: chatBackgroundService,
+      messageFilterService: messageFilterService,
     ),
   );
 }
@@ -362,6 +367,7 @@ class MeshCoreApp extends StatefulWidget {
   final ImageStreamReassembler imageReassembler;
   final NetworkMapUploadService networkMapUploadService;
   final ChatBackgroundService chatBackgroundService;
+  final MessageFilterService messageFilterService;
 
   const MeshCoreApp({
     super.key,
@@ -382,6 +388,7 @@ class MeshCoreApp extends StatefulWidget {
     required this.imageReassembler,
     required this.networkMapUploadService,
     required this.chatBackgroundService,
+    required this.messageFilterService,
   });
 
   @override
@@ -475,6 +482,7 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
         ChangeNotifierProvider.value(value: widget.receivedImageStore),
         ChangeNotifierProvider.value(value: widget.networkMapUploadService),
         ChangeNotifierProvider.value(value: widget.chatBackgroundService),
+        ChangeNotifierProvider.value(value: widget.messageFilterService),
       ],
       child: Consumer<AppSettingsService>(
         builder: (context, settingsService, child) {

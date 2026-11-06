@@ -3521,5 +3521,116 @@
   "themes_chatBackground": "Chattbakgrund",
   "themes_chatBackgroundHelp": "Visas i chattar som inte har en egen bakgrund",
   "themes_chatBackgroundEverywhere": "Använd i alla chattar",
-  "themes_chatBackgroundEverywhereHelp": "Ersätter även bakgrunder som är inställda för enskilda chattar"
+  "themes_chatBackgroundEverywhereHelp": "Ersätter även bakgrunder som är inställda för enskilda chattar",
+  "appSettings_showOnlineLinks": "Visa anslutningar från onlinekartan",
+  "appSettings_showOnlineLinksSubtitle": "Visa anslutningslinjer mellan noder från onlinekartan",
+  "map_showOnlineLinks": "Visa anslutningar från onlinekartan",
+  "messageFilter_title": "Meddelandefilter",
+  "messageFilter_settingsSubtitle": "Dölj skräppost och upprepade meddelanden",
+  "messageFilter_enabled": "Filtrera meddelanden",
+  "messageFilter_enabledSubtitle": "Gäller kanalmeddelanden",
+  "messageFilter_displayTitle": "Filtrerade meddelanden",
+  "messageFilter_displayPlaceholder": "Visa en liten platshållare",
+  "messageFilter_displayHide": "Dölj helt",
+  "messageFilter_displayHideHelp": "Dolda meddelanden finns kvar i listan Filtrerade meddelanden.",
+  "messageFilter_rulesSection": "Dina regler",
+  "messageFilter_rulesEmpty": "Inga regler ännu. Lägg till ett ord, en fras eller ett avsändarnamn för att dölja matchande meddelanden.",
+  "messageFilter_addRule": "Lägg till regel",
+  "messageFilter_editRule": "Redigera regel",
+  "messageFilter_rulePattern": "Ord, fras eller namn",
+  "messageFilter_rulePatternHint": "t.ex. meshos",
+  "messageFilter_ruleWhere": "Sök i",
+  "messageFilter_ruleFieldText": "Meddelandetext",
+  "messageFilter_ruleFieldSender": "Avsändarnamn",
+  "messageFilter_ruleFieldBoth": "Båda",
+  "messageFilter_ruleMatch": "Matchning",
+  "messageFilter_ruleMatchContains": "Innehåller",
+  "messageFilter_ruleMatchWholeWord": "Helt ord",
+  "messageFilter_ruleMatchExact": "Exakt",
+  "messageFilter_ruleDeleted": "Regeln har raderats",
+  "messageFilter_ruleSaved": "Regeln har sparats",
+  "messageFilter_automaticSection": "Automatiskt",
+  "messageFilter_duplicates": "Upprepade meddelanden",
+  "messageFilter_duplicatesSubtitle": "Samma meddelande skickas igen, eller av flera avsändare",
+  "messageFilter_repeatedCharacters": "Upprepade tecken",
+  "messageFilter_repeatedCharactersSubtitle": "Meddelanden som ”aaaaaaaa” eller ”!!!!!!!!”",
+  "messageFilter_learning": "Lär av tryck på Skräppost",
+  "messageFilter_learningSubtitle": "{spam} skräppost- och {notSpam} inte-skräppost-exempel",
+  "@messageFilter_learningSubtitle": {
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "Återställ inlärning",
+  "messageFilter_resetLearningConfirm": "Glömma allt som lärts från dina tryck på Skräppost och Inte skräppost? Dina regler behålls.",
+  "messageFilter_filteredMessages": "Filtrerade meddelanden ({count})",
+  "@messageFilter_filteredMessages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "Inget har filtrerats.",
+  "messageFilter_ghostSingle": "Dolt meddelande · Tryck för att visa",
+  "messageFilter_ghostMany": "{count, plural, one{{count} dolt meddelande · Tryck för att visa} other{{count} dolda meddelanden · Tryck för att visa}}",
+  "@messageFilter_ghostMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "Visar dolt meddelande · Tryck för att dölja",
+  "messageFilter_ghostManyExpanded": "{count, plural, one{Visar {count} dolt meddelande · Tryck för att dölja} other{Visar {count} dolda meddelanden · Tryck för att dölja}}",
+  "@messageFilter_ghostManyExpanded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "Filtrerat: matchar ”{pattern}”",
+  "@messageFilter_reasonTextRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "Filtrerat: avsändare ”{pattern}”",
+  "@messageFilter_reasonSenderRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "Filtrerat: upprepade tecken",
+  "messageFilter_reasonDuplicate": "Filtrerat: upprepat meddelande",
+  "messageFilter_reasonCrossSenderDuplicate": "Filtrerat: samma meddelande från flera avsändare",
+  "messageFilter_reasonLearned": "Filtrerat: liknar meddelanden du markerat som skräppost",
+  "messageFilter_reasonManual": "Filtrerat: du markerade detta som skräppost",
+  "messageFilter_notSpam": "Inte skräppost",
+  "messageFilter_hideAgain": "Dölj",
+  "messageFilter_markSpam": "Markera som skräppost",
+  "messageFilter_markedSpam": "Markerat som skräppost",
+  "messageFilter_markedNotSpam": "Markerat som inte skräppost",
+  "messageFilter_filterSender": "Filtrera denna avsändare",
+  "messageFilter_filterSenderConfirm": "Dölja alla meddelanden från ”{name}”?",
+  "@messageFilter_filterSenderConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "Filtrera meddelanden som detta…",
+  "messageFilter_channelToggle": "Filtrera meddelanden i den här kanalen",
+  "messageFilter_ghostIconTooltip": "Dolt av ditt meddelandefilter"
 }

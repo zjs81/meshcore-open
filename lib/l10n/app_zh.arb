@@ -3531,5 +3531,116 @@
   "themes_chatBackground": "聊天背景",
   "themes_chatBackgroundHelp": "显示在没有自己背景的聊天中",
   "themes_chatBackgroundEverywhere": "用于所有聊天",
-  "themes_chatBackgroundEverywhereHelp": "同时会替换单个聊天中设置的背景"
+  "themes_chatBackgroundEverywhereHelp": "同时会替换单个聊天中设置的背景",
+  "appSettings_showOnlineLinks": "显示在线地图连接",
+  "appSettings_showOnlineLinksSubtitle": "显示在线地图中节点之间的连接线",
+  "map_showOnlineLinks": "显示在线地图连接",
+  "messageFilter_title": "消息过滤",
+  "messageFilter_settingsSubtitle": "隐藏垃圾消息和重复消息",
+  "messageFilter_enabled": "过滤消息",
+  "messageFilter_enabledSubtitle": "适用于频道消息",
+  "messageFilter_displayTitle": "已过滤的消息",
+  "messageFilter_displayPlaceholder": "显示一个小占位提示",
+  "messageFilter_displayHide": "完全隐藏",
+  "messageFilter_displayHideHelp": "被隐藏的消息仍会保留在“已过滤的消息”列表中。",
+  "messageFilter_rulesSection": "你的规则",
+  "messageFilter_rulesEmpty": "还没有规则。添加一个词语、短语或发送者名称，即可隐藏匹配的消息。",
+  "messageFilter_addRule": "添加规则",
+  "messageFilter_editRule": "编辑规则",
+  "messageFilter_rulePattern": "词语、短语或名称",
+  "messageFilter_rulePatternHint": "例如 meshos",
+  "messageFilter_ruleWhere": "查找范围",
+  "messageFilter_ruleFieldText": "消息内容",
+  "messageFilter_ruleFieldSender": "发送者名称",
+  "messageFilter_ruleFieldBoth": "两者",
+  "messageFilter_ruleMatch": "匹配方式",
+  "messageFilter_ruleMatchContains": "包含",
+  "messageFilter_ruleMatchWholeWord": "完整词语",
+  "messageFilter_ruleMatchExact": "完全相同",
+  "messageFilter_ruleDeleted": "规则已删除",
+  "messageFilter_ruleSaved": "规则已保存",
+  "messageFilter_automaticSection": "自动",
+  "messageFilter_duplicates": "重复消息",
+  "messageFilter_duplicatesSubtitle": "重复发送的相同消息，或多个发送者发送的相同消息",
+  "messageFilter_repeatedCharacters": "重复字符",
+  "messageFilter_repeatedCharactersSubtitle": "类似“aaaaaaaa”或“!!!!!!!!”的消息",
+  "messageFilter_learning": "从“垃圾消息”点击中学习",
+  "messageFilter_learningSubtitle": "{spam} 个垃圾消息示例和 {notSpam} 个非垃圾消息示例",
+  "@messageFilter_learningSubtitle": {
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "重置学习",
+  "messageFilter_resetLearningConfirm": "要清除从你点击“垃圾消息”和“非垃圾消息”中学到的所有内容吗？你的规则会保留。",
+  "messageFilter_filteredMessages": "已过滤的消息（{count}）",
+  "@messageFilter_filteredMessages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "没有被过滤的消息。",
+  "messageFilter_ghostSingle": "已隐藏的消息 · 点击查看",
+  "messageFilter_ghostMany": "{count, plural, other{{count} 条已隐藏的消息 · 点击查看}}",
+  "@messageFilter_ghostMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "正在显示已隐藏的消息 · 点击隐藏",
+  "messageFilter_ghostManyExpanded": "{count, plural, other{正在显示 {count} 条已隐藏的消息 · 点击隐藏}}",
+  "@messageFilter_ghostManyExpanded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "已过滤：匹配“{pattern}”",
+  "@messageFilter_reasonTextRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "已过滤：发送者“{pattern}”",
+  "@messageFilter_reasonSenderRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "已过滤：重复字符",
+  "messageFilter_reasonDuplicate": "已过滤：重复消息",
+  "messageFilter_reasonCrossSenderDuplicate": "已过滤：多个发送者发送的相同消息",
+  "messageFilter_reasonLearned": "已过滤：与你标记为垃圾消息的内容相似",
+  "messageFilter_reasonManual": "已过滤：你已将此消息标记为垃圾消息",
+  "messageFilter_notSpam": "非垃圾消息",
+  "messageFilter_hideAgain": "隐藏",
+  "messageFilter_markSpam": "标记为垃圾消息",
+  "messageFilter_markedSpam": "已标记为垃圾消息",
+  "messageFilter_markedNotSpam": "已标记为非垃圾消息",
+  "messageFilter_filterSender": "过滤此发送者",
+  "messageFilter_filterSenderConfirm": "要隐藏来自“{name}”的所有消息吗？",
+  "@messageFilter_filterSenderConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "过滤类似的消息…",
+  "messageFilter_channelToggle": "过滤此频道中的消息",
+  "messageFilter_ghostIconTooltip": "已被你的消息过滤隐藏"
 }
