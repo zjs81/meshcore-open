@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import '../connector/meshcore_protocol.dart';
@@ -43,9 +45,14 @@ class BleRawLogRxEntry {
 
 class BleDebugLogService extends ChangeNotifier {
   static const int maxEntries = 500;
+  BleDebugLogService({this.notifyInterval = const Duration(milliseconds: 50)});
+
+  final Duration notifyInterval;
   final List<BleDebugLogEntry> _entries = [];
   final List<BleRawLogRxEntry> _rawLogRxEntries = [];
-  bool _notifyScheduled = false;
+  bool _disposed = false;
+  bool _notifyPending = false;
+  Timer? _notifyTimer;
 
   List<BleDebugLogEntry> get entries => List.unmodifiable(_entries);
   List<BleRawLogRxEntry> get rawLogRxEntries =>
@@ -89,22 +96,39 @@ class BleDebugLogService extends ChangeNotifier {
     _notifyListenersSafely();
   }
 
+  /// Coalesces bursts of frames into one notification per [notifyInterval].
+  /// A timer callback never runs mid-frame, so only the immediate path
+  /// (a zero interval) has to defer past a build in progress.
   void _notifyListenersSafely() {
-    final phase = SchedulerBinding.instance.schedulerPhase;
-    final canNotifyNow =
-        phase == SchedulerPhase.idle ||
-        phase == SchedulerPhase.postFrameCallbacks;
-    if (canNotifyNow) {
-      notifyListeners();
+    if (_disposed || !hasListeners || _notifyPending) return;
+    _notifyPending = true;
+    if (notifyInterval > Duration.zero) {
+      _notifyTimer = Timer(notifyInterval, _deliverNotification);
       return;
     }
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    if (phase == SchedulerPhase.idle ||
+        phase == SchedulerPhase.postFrameCallbacks) {
+      _deliverNotification();
+    } else {
+      SchedulerBinding.instance.addPostFrameCallback(
+        (_) => _deliverNotification(),
+      );
+    }
+  }
 
-    if (_notifyScheduled) return;
-    _notifyScheduled = true;
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _notifyScheduled = false;
-      notifyListeners();
-    });
+  void _deliverNotification() {
+    _notifyTimer = null;
+    _notifyPending = false;
+    if (!_disposed && hasListeners) notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    _notifyTimer?.cancel();
+    _notifyTimer = null;
+    super.dispose();
   }
 
   String _describeFrame(
