@@ -246,12 +246,12 @@ new timer; those invalid measurements are excluded.
 
 ### Message Persistence and Chat List
 
-Message status, translation and reaction updates now use the existing
-per-conversation `CoalescedWrites` queue instead of immediately serializing
-the full stored conversation on every update. Explicit deletion remains
-immediate and cancels any older pending conversation save first. The direct
-chat list indexes its source messages in reverse rather than allocating a
-reversed copy on each rebuild. Reverse order, day separators, status updates
+Translation results and incoming reaction updates use the existing
+per-conversation `CoalescedWrites` queue. Delivery and outgoing reaction status
+still save immediately via `_saveConversationNow`, canceling pending saves.
+Explicit deletion also remains immediate and cancels pending saves. The direct
+chat list reverse-indexes a snapshot, retaining an O(n) copy on each rebuild.
+Reverse order, day separators, status updates
 and scroll position have regression coverage. The composite chat-arrival replay
 including these changes measured 17.99% to 16.91% of one core (6.0% relative)
 across five pairs, but a large outlier widened paired savings to 0.66–8.58
