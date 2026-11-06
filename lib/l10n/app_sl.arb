@@ -3644,7 +3644,7 @@
   "@messageFilter_repeatedCharacters": {
     "description": "Message filter: Repeated characters"
   },
-  "messageFilter_repeatedCharactersSubtitle": "Sporočila, kot sta „aaaaaaaa“ ali „!!!!!!!!“",
+  "messageFilter_repeatedCharactersSubtitle": "Dolga zaporedja istega znaka, kot je „aaaaaaaaaaaaaaaaaaaa“",
   "@messageFilter_repeatedCharactersSubtitle": {
     "description": "Message filter: Messages like \"aaaaaaaa\" or \"!!!!!!!!\""
   },

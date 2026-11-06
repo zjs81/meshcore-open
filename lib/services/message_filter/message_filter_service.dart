@@ -8,6 +8,9 @@ import 'duplicate_tracker.dart';
 import 'message_filter_text.dart';
 import 'ngram_spam_classifier.dart';
 
+/// Trains a spam model from a job (see [MessageFilterService.new]).
+typedef SpamTrainer = Future<SpamModel?> Function(SpamTrainingJob job);
+
 /// Decides whether incoming channel messages should be filtered, and owns the
 /// filter's settings, user rules and the learned classifier.
 ///
@@ -19,7 +22,9 @@ class MessageFilterService extends ChangeNotifier {
     DateTime Function()? clock,
     DuplicateTracker? duplicateTracker,
     NgramSpamClassifier? classifier,
-  }) : _store = store ?? MessageFilterStore(),
+    SpamTrainer? trainer,
+  }) : _trainer = trainer ?? _trainInBackground,
+       _store = store ?? MessageFilterStore(),
        _clock = clock ?? DateTime.now,
        _tracker = duplicateTracker ?? DuplicateTracker(),
        _classifier = classifier ?? NgramSpamClassifier();
@@ -40,6 +45,19 @@ class MessageFilterService extends ChangeNotifier {
   /// Recent-clean entries buffered before they are written to storage.
   static const int _recentCleanSaveEvery = 10;
 
+  /// Runs classifier training; a background isolate by default. Widget tests
+  /// pass [trainInline], since an isolate's result is never delivered under
+  /// the fake clock `testWidgets` runs on.
+  final SpamTrainer _trainer;
+
+  static Future<SpamModel?> _trainInBackground(SpamTrainingJob job) =>
+      compute(NgramSpamClassifier.fitInBackground, job);
+
+  /// Trains on the calling isolate. For tests.
+  @visibleForTesting
+  static Future<SpamModel?> trainInline(SpamTrainingJob job) async =>
+      NgramSpamClassifier.fitInBackground(job);
+
   final MessageFilterStore _store;
   final DateTime Function() _clock;
   final DuplicateTracker _tracker;
@@ -56,6 +74,13 @@ class MessageFilterService extends ChangeNotifier {
   /// A retrain is queued (see [_scheduleRetrainIfInactive]).
   bool _retrainPending = false;
 
+  /// Bumped on each retrain; a background result for an older generation is
+  /// discarded because newer examples have arrived since.
+  int _trainGeneration = 0;
+  Future<void> _training = Future<void>.value();
+
+  int _rulesRevision = 0;
+
   static int _idCounter = 0;
 
   /// Unique-enough rule id: microsecond timestamp plus a process counter.
@@ -66,6 +91,14 @@ class MessageFilterService extends ChangeNotifier {
   }
 
   MessageFilterSettings get settings => _settings;
+
+  /// Changes whenever rules are added, edited or removed, so listeners can
+  /// re-apply rules to messages already stored.
+  int get rulesRevision => _rulesRevision;
+
+  /// Completes when the most recently started classifier training has been
+  /// applied (or discarded).
+  Future<void> get trainingSettled => _training;
   List<FilterRule> get rules => List.unmodifiable(_rules);
   int get spamExampleCount => _spamExamples.length;
   int get notSpamExampleCount => _hamExamples.length;
@@ -89,7 +122,8 @@ class MessageFilterService extends ChangeNotifier {
     _trimToCap(_hamExamples, maxNotSpamExamples);
     _trimToCap(_recentClean, maxRecentClean);
     _unsavedCleanCount = 0;
-    _retrain();
+    // Training runs in the background so app start-up does not wait for it.
+    unawaited(_retrain());
     _notify();
   }
 
@@ -127,24 +161,8 @@ class MessageFilterService extends ChangeNotifier {
       receivedAt: _clock(),
     );
 
-    for (final rule in _rules) {
-      if (!rule.enabled || rule.field == FilterRuleField.text) continue;
-      if (MessageFilterText.matchesSender(rule, sender)) {
-        return FilterVerdict(
-          reason: FilterReason.senderRule,
-          detail: rule.pattern,
-        );
-      }
-    }
-    for (final rule in _rules) {
-      if (!rule.enabled || rule.field == FilterRuleField.sender) continue;
-      if (MessageFilterText.matchesText(rule, text)) {
-        return FilterVerdict(
-          reason: FilterReason.textRule,
-          detail: rule.pattern,
-        );
-      }
-    }
+    final byRule = _matchRules(sender, text);
+    if (byRule != null) return byRule;
 
     if (_settings.repeatedCharacters &&
         MessageFilterText.hasRepeatedCharacters(text)) {
@@ -167,10 +185,56 @@ class MessageFilterService extends ChangeNotifier {
     return null;
   }
 
-  /// Remembers an unfiltered incoming message as an implicit "not spam"
-  /// training example (rolling buffer of [maxRecentClean]).
-  void recordClean({required String sender, required String text}) {
-    if (!_settings.enabled || !_settings.learning) return;
+  /// The user-rule verdict for a message already stored, or null when no
+  /// enabled rule matches or [channelId] is not filtered. Unlike [evaluate]
+  /// it does not record anything, so it can be re-run over stored history
+  /// when the rules change.
+  FilterVerdict? ruleVerdict({
+    required String channelId,
+    required String sender,
+    required String text,
+  }) {
+    if (!isChannelFiltered(channelId)) return null;
+    if (text.trim().isEmpty || MessageFilterText.isStructuredPayload(text)) {
+      return null;
+    }
+    return _matchRules(sender, text);
+  }
+
+  FilterVerdict? _matchRules(String sender, String text) {
+    for (final rule in _rules) {
+      if (!rule.enabled || rule.field == FilterRuleField.text) continue;
+      if (MessageFilterText.matchesSender(rule, sender)) {
+        return FilterVerdict(
+          reason: FilterReason.senderRule,
+          detail: rule.pattern,
+        );
+      }
+    }
+    for (final rule in _rules) {
+      if (!rule.enabled || rule.field == FilterRuleField.sender) continue;
+      if (MessageFilterText.matchesText(rule, text)) {
+        return FilterVerdict(
+          reason: FilterReason.textRule,
+          detail: rule.pattern,
+        );
+      }
+    }
+    return null;
+  }
+
+  /// Remembers an unfiltered incoming message in [channelId] as an implicit
+  /// "not spam" training example (rolling buffer of [maxRecentClean]).
+  ///
+  /// Channels excluded from filtering are skipped: the user has stopped
+  /// judging them, so their unfiltered messages (spam included) say nothing
+  /// about what is clean.
+  void recordClean({
+    required String channelId,
+    required String sender,
+    required String text,
+  }) {
+    if (!isChannelFiltered(channelId) || !_settings.learning) return;
     if (text.trim().isEmpty || MessageFilterText.isStructuredPayload(text)) {
       return;
     }
@@ -199,9 +263,11 @@ class MessageFilterService extends ChangeNotifier {
     if (_spamExamples.length < minSpamExamplesForLearning) return;
     _retrainPending = true;
     scheduleMicrotask(() {
-      _retrainPending = false;
-      if (_disposed || _classifier.isTrained) return;
-      _retrain();
+      if (_disposed || _classifier.isTrained) {
+        _retrainPending = false;
+        return;
+      }
+      _retrain().whenComplete(() => _retrainPending = false);
     });
   }
 
@@ -212,13 +278,14 @@ class MessageFilterService extends ChangeNotifier {
     _recentClean.removeWhere((e) => MessageFilterText.normalize(e.text) == key);
     _hamExamples.removeWhere((e) => MessageFilterText.normalize(e.text) == key);
     _addExample(_spamExamples, _example(sender, text), maxSpamExamples);
-    _retrain();
+    final training = _retrain();
     _notify();
     await _guardSave(() async {
       await _store.saveSpamExamples(_spamExamples);
       await _store.saveHamExamples(_hamExamples);
       await _flushRecentClean();
     });
+    await training;
   }
 
   /// User tapped "Not spam": store the example, exempt this text in this
@@ -238,20 +305,22 @@ class MessageFilterService extends ChangeNotifier {
       (e) => MessageFilterText.normalize(e.text) == key,
     );
     _addExample(_hamExamples, _example(sender, text), maxNotSpamExamples);
-    _retrain();
+    final training = _retrain();
     _notify();
     await _guardSave(() async {
       await _store.saveSpamExamples(_spamExamples);
       await _store.saveHamExamples(_hamExamples);
     });
+    await training;
   }
 
   Future<void> updateSettings(MessageFilterSettings settings) async {
     final learningTurnedOn = settings.learning && !_settings.learning;
     _settings = settings;
-    if (learningTurnedOn) _retrain();
+    final training = learningTurnedOn ? _retrain() : null;
     _notify();
     await _guardSave(() => _store.saveSettings(_settings));
+    if (training != null) await training;
   }
 
   Future<void> setChannelExcluded(String channelId, bool excluded) async {
@@ -276,6 +345,7 @@ class MessageFilterService extends ChangeNotifier {
       others.insert(index.clamp(0, others.length), rule);
     }
     _rules = others;
+    _rulesRevision++;
     _notify();
     await _guardSave(() => _store.saveRules(_rules));
   }
@@ -287,6 +357,7 @@ class MessageFilterService extends ChangeNotifier {
       return;
     }
     _rules = List.of(_rules)..[index] = rule;
+    _rulesRevision++;
     _notify();
     await _guardSave(() => _store.saveRules(_rules));
   }
@@ -295,6 +366,7 @@ class MessageFilterService extends ChangeNotifier {
     final before = _rules.length;
     _rules = _rules.where((r) => r.id != id).toList();
     if (_rules.length == before) return;
+    _rulesRevision++;
     _notify();
     await _guardSave(() => _store.saveRules(_rules));
   }
@@ -305,6 +377,7 @@ class MessageFilterService extends ChangeNotifier {
     _hamExamples = <FilterExample>[];
     _recentClean = <FilterExample>[];
     _unsavedCleanCount = 0;
+    _trainGeneration++; // drop any training still running
     _classifier.reset();
     _notify();
     await _guardSave(() async {
@@ -355,20 +428,41 @@ class MessageFilterService extends ChangeNotifier {
     if (list.length > cap) list.removeRange(0, list.length - cap);
   }
 
-  void _retrain() {
+  /// Retrains from the current examples in a background isolate (training
+  /// is up to ~700 documents x 200 SGD epochs, too slow for the UI thread).
+  /// The previous model keeps scoring until the new one is ready. Completes
+  /// once the result is applied, or discarded because a newer retrain or a
+  /// reset started meanwhile.
+  Future<void> _retrain() {
+    final generation = ++_trainGeneration;
     if (_spamExamples.isEmpty) {
       _classifier.reset();
-      return;
+      return _training = Future<void>.value();
     }
+    final job = _classifier.trainingJob(List.of(_spamExamples), [
+      ..._hamExamples,
+      ..._recentClean,
+    ]);
     final stopwatch = Stopwatch()..start();
-    _classifier.train(_spamExamples, [..._hamExamples, ..._recentClean]);
-    stopwatch.stop();
-    if (stopwatch.elapsedMilliseconds > 200) {
-      debugPrint(
-        'MessageFilterService: classifier training took '
-        '${stopwatch.elapsedMilliseconds} ms',
-      );
-    }
+    return _training = _trainer(job)
+        .then((model) {
+          if (_disposed || generation != _trainGeneration) return;
+          if (stopwatch.elapsedMilliseconds > 1000) {
+            debugPrint(
+              'MessageFilterService: classifier training took '
+              '${stopwatch.elapsedMilliseconds} ms',
+            );
+          }
+          if (model == null) {
+            _classifier.reset();
+          } else {
+            _classifier.use(model);
+          }
+          _notify();
+        })
+        .catchError((Object e) {
+          debugPrint('MessageFilterService: training failed: $e');
+        });
   }
 
   Future<void> _flushRecentClean() async {

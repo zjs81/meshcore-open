@@ -6885,7 +6885,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
-      'Meddelanden som ”aaaaaaaa” eller ”!!!!!!!!”';
+      'Långa följder av samma tecken, som ”aaaaaaaaaaaaaaaaaaaa”';
 
   @override
   String get messageFilter_learning => 'Lär av tryck på Skräppost';

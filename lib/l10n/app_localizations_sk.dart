@@ -6926,7 +6926,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
-      'Správy ako „aaaaaaaa“ alebo „!!!!!!!!“';
+      'Dlhé rady jedného znaku, napríklad „aaaaaaaaaaaaaaaaaaaa“';
 
   @override
   String get messageFilter_learning => 'Učiť sa z klepnutí na Spam';

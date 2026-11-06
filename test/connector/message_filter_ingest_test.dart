@@ -371,4 +371,64 @@ void main() {
     addTearDown(() => _filter.setChannelExcluded(channelId, false));
     expect(_connector.latestVisibleChannelMessage(channel)?.text, text);
   });
+
+  test('rule changes apply to messages already in the chat', () async {
+    await _connect();
+    const text = 'Cheap antennas at the swap meet, ask me';
+    _connector.handleFrameForTest(
+      ReviewFrames.channelMessage(
+        channelIndex: 2,
+        sender: 'Vendor',
+        message: text,
+        timestampSecs: _nowSecs(),
+      ),
+    );
+    await _waitFor(() => _find(2, text) != null);
+    expect(_find(2, text)!.isFiltered, isFalse);
+
+    // A new rule hides the message that already arrived...
+    await _filter.addRule(const FilterRule(id: 'retro', pattern: 'antennas'));
+    expect(
+      _find(2, text)!.filterReason,
+      filterReasonToJson(FilterReason.textRule),
+    );
+    expect(_find(2, text)!.filterDetail, 'antennas');
+
+    // ...and deleting it shows the message again.
+    await _filter.removeRule('retro');
+    expect(_find(2, text)!.isFiltered, isFalse);
+
+    // Other filter reasons are not touched by rule changes.
+    await _connector.markChannelMessageSpam(_channelAt(2), _find(2, text)!);
+    await _filter.addRule(const FilterRule(id: 'retro2', pattern: 'swap'));
+    await _filter.removeRule('retro2');
+    expect(_find(2, text)!.filterReason, 'manual');
+  });
+
+  test('mesh copies of one message are stored and filtered once', () async {
+    await _connect();
+    const text = 'Weather net starts at seven tonight on the hill';
+    final ts = _nowSecs();
+    final cleanBefore = _filter.recentCleanCount;
+    _connector.handleFrameForTest(
+      ReviewFrames.channelMessage(
+        channelIndex: 2,
+        sender: 'Relay',
+        message: text,
+        timestampSecs: ts,
+      ),
+    );
+    _connector.handleFrameForTest(_logRxGroupText(_psk(2), 'Relay: $text', ts));
+    _connector.handleFrameForTest(_logRxGroupText(_psk(2), 'Relay: $text', ts));
+    await _waitFor(() => _find(2, text) != null);
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+    final copies = _connector
+        .getChannelMessages(_channelAt(2))
+        .where((m) => m.text == text)
+        .toList();
+    expect(copies, hasLength(1));
+    // Not mistaken for the sender repeating themselves.
+    expect(copies.single.isFiltered, isFalse);
+    expect(_filter.recentCleanCount, cleanBefore + 1);
+  });
 }

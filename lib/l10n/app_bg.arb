@@ -3559,7 +3559,7 @@
   "messageFilter_duplicates": "Повтарящи се съобщения",
   "messageFilter_duplicatesSubtitle": "Същото съобщение, изпратено отново или от няколко подателя",
   "messageFilter_repeatedCharacters": "Повтарящи се символи",
-  "messageFilter_repeatedCharactersSubtitle": "Съобщения като „aaaaaaaa“ или „!!!!!!!!“",
+  "messageFilter_repeatedCharactersSubtitle": "Дълги поредици от един и същ знак, като „aaaaaaaaaaaaaaaaaaaa“",
   "messageFilter_learning": "Учи се от натискането на „Спам“",
   "messageFilter_learningSubtitle": "{spam} примера за спам и {notSpam} примера, които не са спам",
   "messageFilter_resetLearning": "Нулирай наученото",

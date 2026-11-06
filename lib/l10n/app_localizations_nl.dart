@@ -6909,7 +6909,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
-      'Berichten zoals „aaaaaaaa” of „!!!!!!!!”';
+      'Lange reeksen van hetzelfde teken, zoals „aaaaaaaaaaaaaaaaaaaa”';
 
   @override
   String get messageFilter_learning => 'Leren van Spam-tikken';

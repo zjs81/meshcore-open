@@ -3777,7 +3777,7 @@
   "@messageFilter_repeatedCharacters": {
     "description": "Message filter: Repeated characters"
   },
-  "messageFilter_repeatedCharactersSubtitle": "「aaaaaaaa」や「!!!!!!!!」のようなメッセージ",
+  "messageFilter_repeatedCharactersSubtitle": "同じ文字の長い連続（例：「aaaaaaaaaaaaaaaaaaaa」）",
   "@messageFilter_repeatedCharactersSubtitle": {
     "description": "Message filter: Messages like \"aaaaaaaa\" or \"!!!!!!!!\""
   },

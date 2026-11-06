@@ -6971,7 +6971,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
-      'Wiadomości typu „aaaaaaaa” lub „!!!!!!!!”';
+      'Długie ciągi jednego znaku, np. „aaaaaaaaaaaaaaaaaaaa”';
 
   @override
   String get messageFilter_learning => 'Ucz się z oznaczeń Spam';

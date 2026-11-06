@@ -13,7 +13,17 @@ class MessageFilterText {
     r'[^\p{L}\p{N}\s]+',
     unicode: true,
   );
-  static final RegExp _repeatedChars = RegExp(r'(\S)\1{7,}', unicode: true);
+
+  /// Shortest run of one character that counts as repeated characters.
+  static const int repeatedCharacterRun = 20;
+
+  // Digits are left out: long numbers (frequencies, coordinates, ids) are
+  // legitimate. Shorter runs are too: "Noooooooo!", "--------" separators
+  // and a row of emoji are ordinary chat.
+  static final RegExp _repeatedChars = RegExp(
+    '([^\\s\\p{N}])\\1{${repeatedCharacterRun - 1},}',
+    unicode: true,
+  );
 
   static final Map<int, String> _foldMap = _buildFoldMap();
 
@@ -143,11 +153,12 @@ class MessageFilterText {
         .trim();
   }
 
-  /// True when the same visible character appears 8 or more times in a row.
+  /// True when the same visible character appears [repeatedCharacterRun] or
+  /// more times in a row (keyboard-mash floods such as "aaaaaaaaaaaaaaaaaaaa").
   ///
-  /// Whitespace runs are ignored (they are layout, not content).
+  /// Whitespace and digit runs are ignored.
   static bool hasRepeatedCharacters(String text) {
-    if (text.length < 8) return false;
+    if (text.length < repeatedCharacterRun) return false;
     return _repeatedChars.hasMatch(_fold(text));
   }
 

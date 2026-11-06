@@ -6948,7 +6948,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
-      'Съобщения като „aaaaaaaa“ или „!!!!!!!!“';
+      'Дълги поредици от един и същ знак, като „aaaaaaaaaaaaaaaaaaaa“';
 
   @override
   String get messageFilter_learning => 'Учи се от натискането на „Спам“';

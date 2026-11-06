@@ -3693,7 +3693,7 @@
   "messageFilter_duplicates": "Messaggi ripetuti",
   "messageFilter_duplicatesSubtitle": "Lo stesso messaggio inviato di nuovo, o da più mittenti",
   "messageFilter_repeatedCharacters": "Caratteri ripetuti",
-  "messageFilter_repeatedCharactersSubtitle": "Messaggi come «aaaaaaaa» o «!!!!!!!!»",
+  "messageFilter_repeatedCharactersSubtitle": "Lunghe sequenze dello stesso carattere, come «aaaaaaaaaaaaaaaaaaaa»",
   "messageFilter_learning": "Impara dai tocchi su Spam",
   "messageFilter_learningSubtitle": "{spam} esempi di spam e {notSpam} di non spam",
   "messageFilter_resetLearning": "Azzera apprendimento",

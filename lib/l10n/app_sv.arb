@@ -3554,7 +3554,7 @@
   "messageFilter_duplicates": "Upprepade meddelanden",
   "messageFilter_duplicatesSubtitle": "Samma meddelande skickas igen, eller av flera avsändare",
   "messageFilter_repeatedCharacters": "Upprepade tecken",
-  "messageFilter_repeatedCharactersSubtitle": "Meddelanden som ”aaaaaaaa” eller ”!!!!!!!!”",
+  "messageFilter_repeatedCharactersSubtitle": "Långa följder av samma tecken, som ”aaaaaaaaaaaaaaaaaaaa”",
   "messageFilter_learning": "Lär av tryck på Skräppost",
   "messageFilter_learningSubtitle": "{spam} skräppost- och {notSpam} inte-skräppost-exempel",
   "@messageFilter_learningSubtitle": {

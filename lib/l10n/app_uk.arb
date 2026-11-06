@@ -3539,7 +3539,7 @@
   "messageFilter_duplicates": "Повідомлення, що повторюються",
   "messageFilter_duplicatesSubtitle": "Те саме повідомлення, надіслане знову або кількома відправниками",
   "messageFilter_repeatedCharacters": "Повторювані символи",
-  "messageFilter_repeatedCharactersSubtitle": "Повідомлення на кшталт «aaaaaaaa» або «!!!!!!!!»",
+  "messageFilter_repeatedCharactersSubtitle": "Довгі послідовності одного символа, наприклад «aaaaaaaaaaaaaaaaaaaa»",
   "messageFilter_learning": "Навчання на натисканнях «Спам»",
   "messageFilter_learningSubtitle": "{spam} прикладів спаму та {notSpam} прикладів не спаму",
   "messageFilter_resetLearning": "Скинути навчання",

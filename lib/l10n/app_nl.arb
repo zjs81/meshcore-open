@@ -3460,7 +3460,7 @@
   "messageFilter_duplicates": "Herhaalde berichten",
   "messageFilter_duplicatesSubtitle": "Hetzelfde bericht opnieuw verstuurd, of door meerdere afzenders",
   "messageFilter_repeatedCharacters": "Herhaalde tekens",
-  "messageFilter_repeatedCharactersSubtitle": "Berichten zoals „aaaaaaaa” of „!!!!!!!!”",
+  "messageFilter_repeatedCharactersSubtitle": "Lange reeksen van hetzelfde teken, zoals „aaaaaaaaaaaaaaaaaaaa”",
   "messageFilter_learning": "Leren van Spam-tikken",
   "messageFilter_learningSubtitle": "{spam} spam- en {notSpam} geen-spamvoorbeelden",
   "messageFilter_resetLearning": "Geleerde gegevens wissen",

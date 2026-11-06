@@ -6912,7 +6912,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
-      'Sporočila, kot sta „aaaaaaaa“ ali „!!!!!!!!“';
+      'Dolga zaporedja istega znaka, kot je „aaaaaaaaaaaaaaaaaaaa“';
 
   @override
   String get messageFilter_learning => 'Uči se iz dotikov Neželeno';

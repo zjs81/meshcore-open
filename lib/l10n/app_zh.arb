@@ -3564,7 +3564,7 @@
   "messageFilter_duplicates": "重复消息",
   "messageFilter_duplicatesSubtitle": "重复发送的相同消息，或多个发送者发送的相同消息",
   "messageFilter_repeatedCharacters": "重复字符",
-  "messageFilter_repeatedCharactersSubtitle": "类似“aaaaaaaa”或“!!!!!!!!”的消息",
+  "messageFilter_repeatedCharactersSubtitle": "同一字符的长串重复，例如“aaaaaaaaaaaaaaaaaaaa”",
   "messageFilter_learning": "从“垃圾消息”点击中学习",
   "messageFilter_learningSubtitle": "{spam} 个垃圾消息示例和 {notSpam} 个非垃圾消息示例",
   "@messageFilter_learningSubtitle": {

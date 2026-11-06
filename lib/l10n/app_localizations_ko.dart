@@ -6635,7 +6635,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
-      '\"aaaaaaaa\" 또는 \"!!!!!!!!\" 같은 메시지';
+      '같은 문자가 길게 반복되는 경우, 예: \"aaaaaaaaaaaaaaaaaaaa\"';
 
   @override
   String get messageFilter_learning => '스팸 표시에서 학습';

@@ -64,6 +64,48 @@ void main() {
     expect(eval('Bob', 'hello there'), isNull);
   });
 
+  test('no implicit clean examples from excluded channels', () async {
+    await service.setChannelExcluded('ads', true);
+    final before = service.recentCleanCount;
+    service.recordClean(
+      channelId: 'ads',
+      sender: 'Bot',
+      text: 'Buy cheap radios today at the store',
+    );
+    expect(service.recentCleanCount, before);
+    service.recordClean(
+      channelId: _channel,
+      sender: 'Sam',
+      text: 'Anyone on the hill repeater tonight?',
+    );
+    expect(service.recentCleanCount, before + 1);
+  });
+
+  test('ruleVerdict matches rules without recording duplicates', () async {
+    await service.addRule(const FilterRule(id: 'r', pattern: 'meshos'));
+    expect(
+      service
+          .ruleVerdict(channelId: _channel, sender: 'a', text: 'get meshos')
+          ?.reason,
+      FilterReason.textRule,
+    );
+    expect(
+      service.ruleVerdict(channelId: _channel, sender: 'a', text: 'hello'),
+      isNull,
+    );
+    await service.setChannelExcluded('off', true);
+    expect(
+      service.ruleVerdict(channelId: 'off', sender: 'a', text: 'get meshos'),
+      isNull,
+    );
+    // Nothing was recorded: the first real arrival is not a repeat.
+    const text = 'meet at the old fire tower at noon';
+    for (var i = 0; i < 3; i++) {
+      service.ruleVerdict(channelId: _channel, sender: 'a', text: text);
+    }
+    expect(eval('a', text), isNull);
+  });
+
   test('skips outgoing, reactions, payloads, disabled and excluded', () async {
     await service.addRule(
       FilterRule(id: MessageFilterService.newRuleId(), pattern: 'bad'),
@@ -135,11 +177,12 @@ void main() {
   );
 
   test('repeated characters, togglable', () async {
-    expect(eval('a', 'nooooooooo')?.reason, FilterReason.repeatedCharacters);
+    expect(eval('a', 'n${'o' * 20}')?.reason, FilterReason.repeatedCharacters);
+    expect(eval('a', 'nooooooooo'), isNull);
     await service.updateSettings(
       service.settings.copyWith(repeatedCharacters: false),
     );
-    expect(eval('b', 'yesssssssss'), isNull);
+    expect(eval('b', 'ye${'s' * 20}'), isNull);
   });
 
   test('duplicates: same sender and cross sender', () {
@@ -169,9 +212,15 @@ void main() {
 
   test('rule-filtered texts are still recorded for duplicates', () async {
     await service.addRule(const FilterRule(id: 'x', pattern: 'buy'));
-    expect(eval('a', 'buy stuff')?.reason, FilterReason.textRule);
+    expect(
+      eval('a', 'buy cheap radios here now')?.reason,
+      FilterReason.textRule,
+    );
     await service.removeRule('x');
-    expect(eval('a', 'buy stuff')?.reason, FilterReason.duplicate);
+    expect(
+      eval('a', 'buy cheap radios here now')?.reason,
+      FilterReason.duplicate,
+    );
   });
 
   test('not spam exempts duplicates in that channel', () async {
@@ -187,7 +236,7 @@ void main() {
 
   test('learning needs two spam taps, then catches similar promos', () async {
     for (var i = 0; i < _chat.length; i++) {
-      service.recordClean(sender: 'User$i', text: _chat[i]);
+      service.recordClean(channelId: 'chat', sender: 'User$i', text: _chat[i]);
     }
     await service.markSpam(
       sender: 'PromoBot',
@@ -259,7 +308,9 @@ void main() {
     await service.addRule(const FilterRule(id: 'n', pattern: 'x'));
     await service.markSpam(sender: 'a', text: 'b');
     await service.setChannelExcluded('c', true);
-    expect(count, 3);
+    // addRule, markSpam (plus once more when its background training lands)
+    // and setChannelExcluded.
+    expect(count, 4);
   });
 
   test('addRule with index restores a deleted rule in place', () async {
@@ -297,9 +348,14 @@ void main() {
 
       // Ordinary chat then arrives; no further taps.
       for (var i = 0; i < _chat.length; i++) {
-        service.recordClean(sender: 'User$i', text: _chat[i]);
+        service.recordClean(
+          channelId: 'chat',
+          sender: 'User$i',
+          text: _chat[i],
+        );
       }
-      await Future<void>.delayed(Duration.zero); // let the queued retrain run
+      await Future<void>.delayed(Duration.zero); // let the queued retrain start
+      await service.trainingSettled;
       expect(eval('B', probe)?.reason, FilterReason.learned);
       expect(eval('C', 'Anyone on the hill repeater tonight?'), isNull);
     },

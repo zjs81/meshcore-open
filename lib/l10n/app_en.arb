@@ -3869,7 +3869,7 @@
   "@messageFilter_repeatedCharacters": {
     "description": "Message filter: Repeated characters"
   },
-  "messageFilter_repeatedCharactersSubtitle": "Messages like \"aaaaaaaa\" or \"!!!!!!!!\"",
+  "messageFilter_repeatedCharactersSubtitle": "Long runs of one character, like \"aaaaaaaaaaaaaaaaaaaa\"",
   "@messageFilter_repeatedCharactersSubtitle": {
     "description": "Message filter: Messages like \"aaaaaaaa\" or \"!!!!!!!!\""
   },

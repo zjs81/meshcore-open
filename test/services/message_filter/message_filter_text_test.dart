@@ -136,11 +136,21 @@ void main() {
   });
 
   test('repeated characters', () {
-    expect(MessageFilterText.hasRepeatedCharacters('aaaaaaaa'), isTrue);
-    expect(MessageFilterText.hasRepeatedCharacters('wow!!!!!!!!'), isTrue);
-    expect(MessageFilterText.hasRepeatedCharacters('AAAAaaaa'), isTrue);
-    expect(MessageFilterText.hasRepeatedCharacters('😀' * 8), isTrue);
-    expect(MessageFilterText.hasRepeatedCharacters('aaaaaaa'), isFalse);
+    expect(MessageFilterText.hasRepeatedCharacters('a' * 20), isTrue);
+    expect(MessageFilterText.hasRepeatedCharacters('wow${'!' * 20}'), isTrue);
+    expect(
+      MessageFilterText.hasRepeatedCharacters('AAAAAAAAAA${'a' * 10}'),
+      isTrue,
+    );
+    expect(MessageFilterText.hasRepeatedCharacters('😀' * 20), isTrue);
+    expect(MessageFilterText.hasRepeatedCharacters('a' * 19), isFalse);
+    // Ordinary chat that the old 8-character threshold caught.
+    expect(MessageFilterText.hasRepeatedCharacters('Noooooooo!'), isFalse);
+    expect(MessageFilterText.hasRepeatedCharacters('-' * 12), isFalse);
+    expect(MessageFilterText.hasRepeatedCharacters('!!!!!!!!'), isFalse);
+    expect(MessageFilterText.hasRepeatedCharacters('😀' * 8), isFalse);
+    // Digit runs never count (frequencies, coordinates, ids).
+    expect(MessageFilterText.hasRepeatedCharacters('0' * 30), isFalse);
     expect(
       MessageFilterText.hasRepeatedCharacters('hello        there'),
       isFalse,

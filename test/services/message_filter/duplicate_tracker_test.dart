@@ -8,18 +8,42 @@ void main() {
   test('same sender repeat within 10 minutes is a duplicate', () {
     final tracker = DuplicateTracker();
     expect(
-      tracker.check(channelId: 'c', sender: 'Bob', text: 'Hello', at: t0),
+      tracker.check(
+        channelId: 'c',
+        sender: 'Bob',
+        text: 'Anyone on the hill repeater?',
+        at: t0,
+      ),
       isNull,
     );
     expect(
       tracker.check(
         channelId: 'c',
         sender: 'Bob',
-        text: 'hello!',
+        text: 'anyone on the hill repeater!',
         at: t0.add(const Duration(minutes: 9)),
       ),
       FilterReason.duplicate,
     );
+  });
+
+  test('short replies repeated by the same sender are not duplicates', () {
+    final tracker = DuplicateTracker();
+    for (final text in ['ok', 'test', 'yes sir', 'ok']) {
+      tracker.check(channelId: 'c', sender: 'Alice', text: text, at: t0);
+    }
+    for (final text in ['@[Bob] ok', 'test', 'yes sir']) {
+      expect(
+        tracker.check(
+          channelId: 'c',
+          sender: 'Alice',
+          text: text,
+          at: t0.add(const Duration(minutes: 5)),
+        ),
+        isNull,
+        reason: text,
+      );
+    }
   });
 
   test('same sender repeat after the window is not a duplicate', () {
@@ -141,13 +165,14 @@ void main() {
 
   test('filtered texts are still recorded so floods keep being caught', () {
     final tracker = DuplicateTracker();
-    tracker.check(channelId: 'c', sender: 'Bob', text: 'buy now', at: t0);
+    const text = 'buy cheap radios now';
+    tracker.check(channelId: 'c', sender: 'Bob', text: text, at: t0);
     for (var i = 1; i <= 5; i++) {
       expect(
         tracker.check(
           channelId: 'c',
           sender: 'Bob',
-          text: 'buy now',
+          text: text,
           at: t0.add(Duration(minutes: 8 * i)),
         ),
         FilterReason.duplicate,

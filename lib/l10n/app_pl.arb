@@ -3676,7 +3676,7 @@
   "@messageFilter_repeatedCharacters": {
     "description": "Message filter: Repeated characters"
   },
-  "messageFilter_repeatedCharactersSubtitle": "Wiadomości typu „aaaaaaaa” lub „!!!!!!!!”",
+  "messageFilter_repeatedCharactersSubtitle": "Długie ciągi jednego znaku, np. „aaaaaaaaaaaaaaaaaaaa”",
   "@messageFilter_repeatedCharactersSubtitle": {
     "description": "Message filter: Messages like \"aaaaaaaa\" or \"!!!!!!!!\""
   },

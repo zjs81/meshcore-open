@@ -6959,7 +6959,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
-      'Сообщения вроде «aaaaaaaa» или «!!!!!!!!»';
+      'Длинные последовательности одного символа, например «aaaaaaaaaaaaaaaaaaaa»';
 
   @override
   String get messageFilter_learning => 'Учиться на нажатиях «Спам»';

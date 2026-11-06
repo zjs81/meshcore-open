@@ -780,15 +780,18 @@ class _ChannelsScreenState extends State<ChannelsScreen>
       case ChannelSortOption.manual:
         break;
       case ChannelSortOption.latestMessages:
+        // Filtered messages don't bump a channel, matching the preview.
+        // Looked up once per channel: the lookup can scan back through
+        // filtered messages, and the comparator runs O(n log n) times.
+        final epoch = DateTime(1970);
+        final latest = <Channel, DateTime>{
+          for (final channel in filtered)
+            channel:
+                connector.latestVisibleChannelMessage(channel)?.timestamp ??
+                epoch,
+        };
         filtered.sort((a, b) {
-          // Filtered messages don't bump a channel, matching the preview.
-          final aLast =
-              connector.latestVisibleChannelMessage(a)?.timestamp ??
-              DateTime(1970);
-          final bLast =
-              connector.latestVisibleChannelMessage(b)?.timestamp ??
-              DateTime(1970);
-          final timeCompare = bLast.compareTo(aLast);
+          final timeCompare = latest[b]!.compareTo(latest[a]!);
           if (timeCompare != 0) return timeCompare;
           return compareByName(a, b);
         });

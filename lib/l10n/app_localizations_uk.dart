@@ -6966,7 +6966,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
-      'Повідомлення на кшталт «aaaaaaaa» або «!!!!!!!!»';
+      'Довгі послідовності одного символа, наприклад «aaaaaaaaaaaaaaaaaaaa»';
 
   @override
   String get messageFilter_learning => 'Навчання на натисканнях «Спам»';

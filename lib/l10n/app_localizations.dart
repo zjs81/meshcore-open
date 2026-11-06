@@ -11668,7 +11668,7 @@ abstract class AppLocalizations {
   /// Message filter: Messages like "aaaaaaaa" or "!!!!!!!!"
   ///
   /// In en, this message translates to:
-  /// **'Messages like \"aaaaaaaa\" or \"!!!!!!!!\"'**
+  /// **'Long runs of one character, like \"aaaaaaaaaaaaaaaaaaaa\"'**
   String get messageFilter_repeatedCharactersSubtitle;
 
   /// Message filter: Learn from Spam taps

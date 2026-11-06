@@ -17,22 +17,46 @@ The message filter hides spam and repeated messages in channel chats. It runs en
 
 ## How it works
 
-Each new incoming channel message is checked in this order. The first check that matches decides:
+### When a message is checked
+
+A channel message is usually heard more than once: the same packet arrives over several repeater paths, and the radio may deliver it both as a channel message and in its RX log. The app first merges all of those copies into one message, and only then runs the filter, **once per message**. Repeats over the mesh are never mistaken for someone sending the same thing twice.
+
+The message is then checked in this order. The first check that matches decides, and the message is stored with that reason. It is never deleted.
 
 1. **Sender rule**: one of your rules matches the sender's name.
 2. **Text rule**: one of your rules matches the message text.
-3. **Repeated characters** (automatic): the same character 8 or more times in a row, such as "aaaaaaaa" or "!!!!!!!!".
+3. **Repeated characters** (automatic): one character repeated 20 or more times in a row, such as "aaaaaaaaaaaaaaaaaaaa". Digits and spaces don't count, so long numbers (frequencies, coordinates) are safe. Shorter runs, like "Noooooooo!", a `--------` separator or a row of emoji, are ordinary chat and are left alone.
 4. **Repeated messages** (automatic):
-   - The **same sender** sends the same message again within 10 minutes.
+   - The **same sender** sends the same message again within 10 minutes. This only applies to messages of at least 3 words and 10 characters, because people naturally repeat short replies such as "ok", "yes" or "test".
    - The **same text from 3 or more different senders** within 30 minutes. This only applies to longer messages, at least 10 characters and at least 6 words, so short greetings such as "Happy New Year!" are never caught.
-5. **Learned from your Spam taps** (automatic): the app compares the message with messages you marked as spam. This needs at least 2 messages marked as spam and 80% confidence.
+5. **Learned from your Spam taps** (automatic): a small classifier scores how much the message looks like the messages you marked as spam (see below). It needs at least 2 messages marked as spam, and it hides a message only when it is at least 80% confident.
 
-Details worth knowing:
+### Matching text
 
-- Time windows use the time the message was **sent**, not when it reached your phone. History that is synced after you reconnect is not mistaken for a flood.
-- Rules ignore capital letters, accents, zero-width (invisible) characters and look-alike letters (for example Cyrillic or Greek letters that look like Latin ones, or fullwidth letters), so spammers cannot easily sneak around a rule.
-- Repeated-message checks also ignore punctuation, emoji and `@[name]` mentions.
+Before comparing, both your rule and the message are normalised:
+
+- Capital letters, accents and zero-width (invisible) characters are ignored.
+- Look-alike letters are treated as the letter they imitate: Cyrillic or Greek letters that look Latin, fullwidth letters, and "styled" letters such as 𝐛𝐨𝐥𝐝 or 𝘪𝘵𝘢𝘭𝘪𝘤. Swapping in look-alike letters doesn't get a message past a rule.
+- Repeated-message checks also ignore punctuation, emoji and `@[name]` mentions, so "Meet at the park!" and "meet at the park" count as the same text.
 - A reply's leading `@[name]` mention is not part of the text that is checked.
+
+### Repeated-message memory
+
+The app keeps a short in-memory list of recent messages for each channel: up to 1,000 per channel, for 30 minutes. Each new message is compared against it. Every checked message is added, including ones a rule already hid, so a flood keeps being caught even after you add a rule for part of it.
+
+Time windows use the time the message was **sent**, not when it reached your phone. History synced in a burst after you reconnect was sent hours apart, so it is not mistaken for a flood. Old entries are forgotten by the time they *arrived*, so a sender with a wrong clock can't push everyone else out of the list.
+
+### Learning from your taps
+
+The learned check is a small statistical model, a class-balanced logistic regression. It runs entirely in the app; there is nothing to download.
+
+- **What it learns from:**
+  - Every message you mark as spam, up to 200.
+  - Every message you mark as not spam, up to 200.
+  - Up to 300 recent ordinary messages that weren't filtered. These implicit "clean" examples are taken only from channels where filtering is on. Channels you have switched filtering off for are ignored, because their unfiltered messages may well include spam.
+- **What it looks at:** short letter sequences (3 to 5 characters within each word), whole words and word pairs, and the sender's name. All of these are normalised the same way as rules. So it recognises a promo that has been reworded or re-spaced, not just an exact copy.
+- **When it trains:** whenever you tap Spam or Not spam, when you turn learning on, and when the app starts. Training runs in the background, so the app never freezes while it learns. The previous model keeps working until the new one is ready.
+- **Reset learning** forgets every example; your rules are kept.
 
 ## Marking messages yourself
 
@@ -66,13 +90,13 @@ Under **Message filter → Filtered messages** choose one of two display modes:
 - **Show a small placeholder** (default): hidden messages are replaced by a small line, "Hidden message · Tap to view". Several hidden messages in a row collapse into one line, for example "3 hidden messages · Tap to view".
   - Tap the line to open it with a short animation. The header then reads "Showing hidden message · Tap to hide"; tap it again to close.
   - Each opened message shows why it was filtered (for example `Filtered: matches "meshos"`, `Filtered: repeated message` or `Filtered: you marked this as spam`) with **Not spam** and **Hide** buttons.
-- **Hide completely**: nothing is shown in the chat. "Hidden messages stay in the Filtered messages list."
+- **Hide completely**: nothing is shown in the chat. "Hidden messages stay in the Filtered messages list." If hidden messages leave too little in a chat to scroll, the app loads older history automatically, up to 20 pages, so earlier conversation stays reachable after a spam burst. If the chat is still empty after that, a **Load older messages** button appears.
 
 The **Filtered messages (n)** entry on the settings screen opens a list of everything that was filtered, newest first, across all channels. Tap a row to view it, or tap **Not spam** to restore it.
 
 Other effects of filtering:
 
-- Filtered messages never count as **unread** and never send a **notification**.
+- Filtered messages never count as **unread** and never send a **notification**. This includes a message you mark as spam while it is still being translated: it won't notify when translation finishes. In a channel where filtering is off, earlier-filtered messages show and count as ordinary messages.
 - They are not **auto-translated**.
 - They are not used as the **last-message preview** in the Channels list; the newest message that was not hidden is shown instead.
 - If someone replies to a hidden message, the quoted text in the reply is concealed ("Hidden message · Tap to view") until the original is opened.
@@ -85,7 +109,7 @@ Other effects of filtering:
 | **Show a small placeholder** / **Hide completely** | Placeholder | How filtered messages appear in chat. |
 | **Your rules** | None | Your own rules (see above). |
 | **Repeated messages** | On | "The same message sent again, or by several senders". |
-| **Repeated characters** | On | Messages like "aaaaaaaa" or "!!!!!!!!". |
+| **Repeated characters** | On | Long runs of one character, like "aaaaaaaaaaaaaaaaaaaa". |
 | **Learn from Spam taps** | On | Shows how many "spam and not-spam examples" the app is using. |
 | **Reset learning** | | Asks for confirmation, then forgets everything learned from your Spam and Not spam taps. Your rules are kept. |
 
@@ -100,7 +124,7 @@ Rules, settings and the examples used for learning are stored on your device in 
 ## Limitations
 
 - **Channels only.** Direct messages and room chats are not filtered.
-- **New messages only.** A new rule or a changed switch applies to messages received from then on, not to messages already in the chat. Use Mark as spam on an old message to hide it.
+- **Rules apply to existing messages; automatic checks don't.** Adding, editing, turning off or deleting a rule updates messages already in your chats: "Filter this sender" also hides that sender's earlier messages, and deleting a rule shows again what only that rule was hiding. The automatic checks (repeats, repeated characters, learning) only judge messages as they arrive. Use Mark as spam on an old message to hide it.
 - **Reveal lasts while the chat is open.** Messages you open stay open until you tap the "Tap to hide" header (or Hide on one of them) or leave the chat; they collapse again next time.
 - **Learning is per device.** It is not shared between your phones or computers, and it needs at least 2 Spam taps before it does anything.
 - **Repeat tracking is not remembered.** The recent-message memory used for repeat checks is kept only while the app is running.

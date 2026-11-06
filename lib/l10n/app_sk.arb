@@ -3560,7 +3560,7 @@
   "messageFilter_duplicates": "Opakované správy",
   "messageFilter_duplicatesSubtitle": "Rovnaká správa odoslaná znova alebo viacerými odosielateľmi",
   "messageFilter_repeatedCharacters": "Opakované znaky",
-  "messageFilter_repeatedCharactersSubtitle": "Správy ako „aaaaaaaa“ alebo „!!!!!!!!“",
+  "messageFilter_repeatedCharactersSubtitle": "Dlhé rady jedného znaku, napríklad „aaaaaaaaaaaaaaaaaaaa“",
   "messageFilter_learning": "Učiť sa z klepnutí na Spam",
   "messageFilter_learningSubtitle": "{spam} príkladov spamu a {notSpam} príkladov nie spamu",
   "@messageFilter_learningSubtitle": {

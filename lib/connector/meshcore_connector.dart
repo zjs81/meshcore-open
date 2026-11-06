@@ -329,6 +329,10 @@ class MeshCoreConnector extends ChangeNotifier {
   TimeoutPredictionService? _timeoutPredictionService;
   TranslationService? _translationService;
   MessageFilterService? _messageFilterService;
+
+  /// Rules revision last applied to stored messages (see
+  /// [_onMessageFilterChanged]).
+  int _appliedFilterRulesRevision = 0;
   ImageCodecService? _imageCodecService;
   // Holds the ImageReassembler, so partially received images survive across
   // frames (chunks of one image arrive in separate GRP_DATA frames, and via the
@@ -1089,11 +1093,86 @@ class MeshCoreConnector extends ChangeNotifier {
     if (service == null || !isNew) return;
     if (message.isOutgoing || message.isFiltered) return;
     if (message.parseReaction() != null) return;
-    // The service ignores structured payloads (GIFs etc.) itself.
+    // The service ignores structured payloads (GIFs etc.) and channels
+    // excluded from filtering itself.
     service.recordClean(
+      channelId: _messageFilterChannelIdForSlot(message.channelIndex!),
       sender: message.senderName,
       text: _messageFilterText(message),
     );
+  }
+
+  /// [incoming] carrying the filter tag the stored copy got, if any.
+  ///
+  /// The filter runs inside [_addChannelMessage] on the stored copy (only for
+  /// new messages), while callers keep using the message as received (with
+  /// its reply mention) for translation and notifications.
+  static ChannelMessage _withFilterOf(
+    ChannelMessage incoming,
+    ChannelMessage? stored,
+  ) {
+    if (stored == null || !stored.isFiltered) return incoming;
+    return incoming.copyWith(
+      filterReason: stored.filterReason,
+      filterDetail: stored.filterDetail,
+    );
+  }
+
+  void _onMessageFilterChanged() {
+    final service = _messageFilterService;
+    if (service == null ||
+        service.rulesRevision == _appliedFilterRulesRevision) {
+      return;
+    }
+    _appliedFilterRulesRevision = service.rulesRevision;
+    var changed = false;
+    _channelMessages.forEach((slot, messages) {
+      if (_applyFilterRules(slot, messages)) {
+        _scheduleChannelSave(slot);
+        changed = true;
+      }
+    });
+    if (changed) notifyListeners();
+  }
+
+  /// Brings rule tags on stored [messages] of [slot] in line with the current
+  /// rules, in place: a new rule hides messages that already arrived, and a
+  /// deleted or disabled rule shows again what only it was hiding. Tags from
+  /// other reasons (duplicates, learned, manual spam) are left alone. Returns
+  /// whether anything changed.
+  bool _applyFilterRules(int slot, List<ChannelMessage> messages) {
+    final service = _messageFilterService;
+    if (service == null || messages.isEmpty) return false;
+    final channelId = _messageFilterChannelIdForSlot(slot);
+    if (!service.isChannelFiltered(channelId)) return false;
+    var changed = false;
+    for (var i = 0; i < messages.length; i++) {
+      final message = messages[i];
+      if (message.isOutgoing || message.parseReaction() != null) continue;
+      final reason = filterReasonFromJson(message.filterReason);
+      final ruleTagged =
+          reason == FilterReason.senderRule || reason == FilterReason.textRule;
+      if (message.isFiltered && !ruleTagged) continue;
+      final verdict = service.ruleVerdict(
+        channelId: channelId,
+        sender: message.senderName,
+        text: _messageFilterText(message),
+      );
+      if (verdict == null) {
+        if (ruleTagged) {
+          messages[i] = message.copyWith(clearFilter: true);
+          changed = true;
+        }
+      } else if (reason != verdict.reason ||
+          message.filterDetail != verdict.detail) {
+        messages[i] = applyFilterVerdict(
+          message.copyWith(clearFilter: true),
+          verdict,
+        );
+        changed = true;
+      }
+    }
+    return changed;
   }
 
   /// Finds the stored message with [messageId] in [channel] and replaces it
@@ -1845,6 +1924,10 @@ class MeshCoreConnector extends ChangeNotifier {
     // Replace even when nothing is stored so another radio's messages never
     // linger under this index.
     final hadMessages = _channelMessages[channelIndex]?.isNotEmpty ?? false;
+    // Rules may have changed since these were stored.
+    if (_applyFilterRules(channelIndex, windowedMessages)) {
+      _scheduleChannelSave(channelIndex);
+    }
     _channelMessages[channelIndex] = windowedMessages;
     if (hadMessages || windowedMessages.isNotEmpty) notifyListeners();
   }
@@ -1880,8 +1963,11 @@ class MeshCoreConnector extends ChangeNotifier {
     );
     _channelMessageStore.unarchiveNewest(channelId, olderMessages.length);
 
+    // Rules may have changed since these were stored.
+    final retagged = _applyFilterRules(slot, olderMessages);
     // Prepend to current conversation
     _channelMessages[slot] = [...olderMessages, ...currentMessages];
+    if (retagged) _scheduleChannelSave(slot);
     notifyListeners();
 
     return olderMessages;
@@ -1927,7 +2013,10 @@ class MeshCoreConnector extends ChangeNotifier {
     _lastShowLinkImagesByDefault = _showLinkImagesByDefault;
     appSettingsService?.addListener(_onAppSettingsChanged);
     _translationService = translationService;
+    _messageFilterService?.removeListener(_onMessageFilterChanged);
     _messageFilterService = messageFilterService;
+    _appliedFilterRulesRevision = messageFilterService?.rulesRevision ?? 0;
+    messageFilterService?.addListener(_onMessageFilterChanged);
     _imageCodecService = imageCodecService;
     _imageTransport = imageTransport;
     _receivedImageStore = receivedImageStore;
@@ -7874,17 +7963,25 @@ class MeshCoreConnector extends ChangeNotifier {
         parsed.timestamp.millisecondsSinceEpoch ~/ 1000,
         '${parsed.senderName}: ${parsed.text}',
       );
-      final message = _applyMessageFilter(
-        _messageFilterChannelIdForSlot(parsed.channelIndex!),
-        parsed.copyWith(packetHash: contentHash),
+      final incoming = parsed.copyWith(packetHash: contentHash);
+      final filterChannelId = _messageFilterChannelIdForSlot(
+        parsed.channelIndex!,
       );
       _updateContactLastMessageAtByName(
-        message.senderName,
-        message.timestamp,
-        pathBytes: message.pathBytes,
-        pathHashWidth: message.pathHashWidth,
+        incoming.senderName,
+        incoming.timestamp,
+        pathBytes: incoming.pathBytes,
+        pathHashWidth: incoming.pathHashWidth,
       );
-      final isNew = _addChannelMessage(message.channelIndex!, message);
+      // Filtered after dedup, so mesh repeats of one message are evaluated
+      // (and counted by the duplicate tracker) once.
+      final stored = _addChannelMessage(
+        incoming.channelIndex!,
+        incoming,
+        filterIfNew: (m) => _applyMessageFilter(filterChannelId, m),
+      );
+      final isNew = stored != null;
+      final message = _withFilterOf(incoming, stored);
       _recordCleanChannelMessage(message, isNew: isNew);
       // Filtered messages are stored but never count as unread, notify or
       // get auto-translated.
@@ -7964,34 +8061,38 @@ class MeshCoreConnector extends ChangeNotifier {
 
           final pktHash = computePacketHash(packet.payloadType, packet.payload);
 
-          final message = _applyMessageFilter(
-            messageFilterChannelId(channel),
-            ChannelMessage(
-              senderKey: null,
-              senderName: parsed.senderName,
-              text: decodedText,
-              timestamp: DateTime.fromMillisecondsSinceEpoch(
-                timestampRaw * 1000,
-              ),
-              receivedAt: DateTime.now(),
-              isOutgoing: false,
-              status: ChannelMessageStatus.sent,
-              pathLength: packet.isFlood ? packet.hopCount : 0,
-              pathHashWidth: packet.pathHashWidth,
-              pathBytes: packet.pathBytes,
-              channelIndex: slot,
-              region: _resolveTransportRegion(packet),
-              packetHash: pktHash,
-            ),
-          );
+          final incoming = (ChannelMessage(
+            senderKey: null,
+            senderName: parsed.senderName,
+            text: decodedText,
+            timestamp: DateTime.fromMillisecondsSinceEpoch(timestampRaw * 1000),
+            receivedAt: DateTime.now(),
+            isOutgoing: false,
+            status: ChannelMessageStatus.sent,
+            pathLength: packet.isFlood ? packet.hopCount : 0,
+            pathHashWidth: packet.pathHashWidth,
+            pathBytes: packet.pathBytes,
+            channelIndex: slot,
+            region: _resolveTransportRegion(packet),
+            packetHash: pktHash,
+          ));
 
           _updateContactLastMessageAtByName(
             parsed.senderName,
-            message.timestamp,
-            pathBytes: message.pathBytes,
-            pathHashWidth: message.pathHashWidth,
+            incoming.timestamp,
+            pathBytes: incoming.pathBytes,
+            pathHashWidth: incoming.pathHashWidth,
           );
-          final isNew = _addChannelMessage(slot, message);
+          final filterChannelId = messageFilterChannelId(channel);
+          // Filtered after dedup, so mesh repeats of one message are
+          // evaluated (and counted by the duplicate tracker) once.
+          final stored = _addChannelMessage(
+            slot,
+            incoming,
+            filterIfNew: (m) => _applyMessageFilter(filterChannelId, m),
+          );
+          final isNew = stored != null;
+          final message = _withFilterOf(incoming, stored);
           _recordCleanChannelMessage(message, isNew: isNew);
           // Filtered messages are stored but never count as unread, notify
           // or get auto-translated.
@@ -8708,7 +8809,15 @@ class MeshCoreConnector extends ChangeNotifier {
     return _ParsedText(senderName: 'Unknown', text: text);
   }
 
-  bool _addChannelMessage(int slot, ChannelMessage message) {
+  /// Stores [message] in [slot], merging it into an existing copy when it is a
+  /// mesh repeat. Returns the stored message when it was new, else null.
+  ///
+  /// [filterIfNew] runs on new messages only, just before they are stored.
+  ChannelMessage? _addChannelMessage(
+    int slot,
+    ChannelMessage message, {
+    ChannelMessage Function(ChannelMessage message)? filterIfNew,
+  }) {
     final channelIndex = _canonicalSlot(slot);
     _channelMessages.putIfAbsent(channelIndex, () => []);
     final messages = _channelMessages[channelIndex]!;
@@ -8724,7 +8833,7 @@ class MeshCoreConnector extends ChangeNotifier {
         reactionIdentifier,
       );
 
-      if (isDuplicate) return false;
+      if (isDuplicate) return null;
 
       // New reaction - process it
       final reactionApplied = _processReaction(messages, reactionInfo);
@@ -8735,7 +8844,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
         // Mark as processed
         _processedChannelReactions[channelIndex]!.add(reactionIdentifier);
-        return false; // Don't add reaction as a visible message
+        return null; // Don't add reaction as a visible message
       }
       // Looks like a reaction, but didn't match any message we have.
       // Old behavior is to silently drop these. We'll continue doing that
@@ -8743,7 +8852,7 @@ class MeshCoreConnector extends ChangeNotifier {
       // informative on their own, but the MC1 format is useful even if
       // in raw form, so we'll let those through.
       appLogger.info('No match for reaction, id: $reactionIdentifier');
-      if (reactionInfo.hashType == HashType.ours) return false;
+      if (reactionInfo.hashType == HashType.ours) return null;
     }
 
     // Parse reply info from message text
@@ -8795,9 +8904,8 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     final existingIndex = _findChannelRepeatIndex(messages, processedMessage);
-    var isNew = true;
+    ChannelMessage? added;
     if (existingIndex >= 0) {
-      isNew = false;
       final existing = messages[existingIndex];
       final mergedPathBytes = _selectPreferredPathBytes(
         existing.pathBytes,
@@ -8837,6 +8945,8 @@ class MeshCoreConnector extends ChangeNotifier {
         _pendingChannelSentQueue.remove(existing.messageId);
       }
     } else {
+      if (filterIfNew != null) processedMessage = filterIfNew(processedMessage);
+      added = processedMessage;
       messages.add(processedMessage);
       // Storage keeps only the newest maxStoredMessages per channel, so older
       // entries are gone after the next save anyway. Without this cap a long
@@ -8846,7 +8956,7 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     _scheduleChannelSave(channelIndex);
-    return isNew;
+    return added;
   }
 
   ChannelMessage? _findMessageBySender(
@@ -9219,6 +9329,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
   @override
   void dispose() {
+    _messageFilterService?.removeListener(_onMessageFilterChanged);
     _disposed = true;
     _appSettingsService?.removeListener(_onAppSettingsChanged);
     _scanSubscription?.cancel();

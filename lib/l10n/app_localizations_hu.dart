@@ -6934,7 +6934,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
-      'Olyan üzenetek, mint „aaaaaaaa” vagy „!!!!!!!!”';
+      'Ugyanazon karakter hosszú sorozata, például „aaaaaaaaaaaaaaaaaaaa”';
 
   @override
   String get messageFilter_learning => 'Tanulás a Spam gombokból';

@@ -6472,7 +6472,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
-      '类似“aaaaaaaa”或“!!!!!!!!”的消息';
+      '同一字符的长串重复，例如“aaaaaaaaaaaaaaaaaaaa”';
 
   @override
   String get messageFilter_learning => '从“垃圾消息”点击中学习';

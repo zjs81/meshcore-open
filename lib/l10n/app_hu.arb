@@ -3598,7 +3598,7 @@
   "messageFilter_duplicates": "Ismétlődő üzenetek",
   "messageFilter_duplicatesSubtitle": "Ugyanaz az üzenet újra elküldve, vagy több feladótól",
   "messageFilter_repeatedCharacters": "Ismétlődő karakterek",
-  "messageFilter_repeatedCharactersSubtitle": "Olyan üzenetek, mint „aaaaaaaa” vagy „!!!!!!!!”",
+  "messageFilter_repeatedCharactersSubtitle": "Ugyanazon karakter hosszú sorozata, például „aaaaaaaaaaaaaaaaaaaa”",
   "messageFilter_learning": "Tanulás a Spam gombokból",
   "messageFilter_learningSubtitle": "{spam} spam és {notSpam} nem spam példa",
   "@messageFilter_learningSubtitle": {

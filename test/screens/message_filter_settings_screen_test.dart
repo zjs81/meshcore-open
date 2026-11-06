@@ -20,7 +20,10 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     PrefsManager.reset();
     await PrefsManager.initialize();
-    service = MessageFilterService(store: MessageFilterStore());
+    service = MessageFilterService(
+      store: MessageFilterStore(),
+      trainer: MessageFilterService.trainInline,
+    );
     await service.load();
     connector = MeshCoreConnector();
   });

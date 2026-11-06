@@ -2856,7 +2856,7 @@
   "messageFilter_duplicates": "Повторяющиеся сообщения",
   "messageFilter_duplicatesSubtitle": "Одно и то же сообщение, отправленное снова или несколькими отправителями",
   "messageFilter_repeatedCharacters": "Повторяющиеся символы",
-  "messageFilter_repeatedCharactersSubtitle": "Сообщения вроде «aaaaaaaa» или «!!!!!!!!»",
+  "messageFilter_repeatedCharactersSubtitle": "Длинные последовательности одного символа, например «aaaaaaaaaaaaaaaaaaaa»",
   "messageFilter_learning": "Учиться на нажатиях «Спам»",
   "messageFilter_learningSubtitle": "Примеров спама: {spam}, не спама: {notSpam}",
   "messageFilter_resetLearning": "Сбросить обучение",

@@ -35,6 +35,7 @@ import '../services/chat_text_scale_service.dart';
 import '../services/image_chunk_transport.dart';
 import '../services/image_codec_service.dart';
 import '../services/message_filter/message_filter_service.dart';
+import '../services/message_filter/message_filter_text.dart';
 import '../services/received_image_store.dart';
 import '../services/translation_service.dart';
 import '../utils/image_save.dart';
@@ -215,8 +216,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     var n = 0;
     ChannelMessage? oldest;
     for (final m in messages.reversed) {
-      // Filtered messages never count as unread (see the connector).
-      if (m.isOutgoing || m.isFiltered) continue;
+      if (!_countsAsUnread(m)) continue;
       n++;
       oldest = m;
       if (n >= unreadCount) break;
@@ -771,6 +771,17 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     );
   }
 
+  /// Whether [m] counts toward the unread badge and divider. Filtered
+  /// messages don't while the filter hides them here (the connector never
+  /// counts them on arrival); with filtering off for this channel they show
+  /// as ordinary messages and count like ordinary messages.
+  bool _countsAsUnread(ChannelMessage m) {
+    if (m.isOutgoing) return false;
+    if (!m.isFiltered) return true;
+    return !(_messageFilter?.isChannelFiltered(_messageFilterChannelId) ??
+        false);
+  }
+
   void _markAsUnread(ChannelMessage message) {
     final connector = context.read<MeshCoreConnector>();
     final messages = connector.getChannelMessages(widget.channel);
@@ -778,7 +789,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     var found = false;
     for (final m in messages) {
       if (m.messageId == message.messageId) found = true;
-      if (found && !m.isOutgoing && !m.isFiltered) count++;
+      if (found && _countsAsUnread(m)) count++;
     }
     connector.setChannelUnreadCount(widget.channel.index, count);
   }
@@ -1292,10 +1303,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final quotedId = message.replyToMessageId;
     final quoted = quotedId == null
         ? null
-        : connector
-              .getChannelMessages(widget.channel)
-              .where((m) => m.messageId == quotedId)
-              .lastOrNull;
+        : _channelMessageById(
+            connector.getChannelMessages(widget.channel),
+            quotedId,
+          );
     final concealed =
         quoted != null &&
         isReplyPreviewConcealed(
@@ -1925,6 +1936,42 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
   void _onImageStoreChanged() => _imageStoreVersion++;
 
+  List<ChannelMessage>? _indexSource;
+  int _indexSourceLength = -1;
+  Map<String, int> _indexById = const {};
+
+  /// The newest message with [id] in [messages], via an id -> index map
+  /// rebuilt only when the list is replaced, changes length, or an entry
+  /// moved. Reply previews call this per bubble on every rebuild; a linear
+  /// scan each time made a busy transcript O(n^2).
+  ChannelMessage? _channelMessageById(
+    List<ChannelMessage> messages,
+    String id,
+  ) {
+    if (!identical(messages, _indexSource) ||
+        messages.length != _indexSourceLength) {
+      _rebuildIndex(messages);
+    }
+    var index = _indexById[id];
+    if (index != null &&
+        (index >= messages.length || messages[index].messageId != id)) {
+      _rebuildIndex(messages);
+      index = _indexById[id];
+    }
+    return index == null ? null : messages[index];
+  }
+
+  void _rebuildIndex(List<ChannelMessage> messages) {
+    final byId = <String, int>{};
+    // Later entries win, matching the previous `lastOrNull` lookup.
+    for (var i = 0; i < messages.length; i++) {
+      byId[messages[i].messageId] = i;
+    }
+    _indexById = byId;
+    _indexSource = messages;
+    _indexSourceLength = messages.length;
+  }
+
   /// Cheap fingerprint of which messages are filtered, so the layout memo
   /// notices a message being marked spam or not spam in place.
   static int _filteredMessagesSignature(List<ChannelMessage> messages) {
@@ -2507,7 +2554,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
         !message.isOutgoing &&
         filter != null &&
         filter.isChannelFiltered(_messageFilterChannelId) &&
-        (message.isFiltered || !_isStructuredPayload(message.text));
+        (message.isFiltered ||
+            !MessageFilterText.isStructuredPayload(message.text));
 
     showMeshSheet(
       context,
@@ -2673,13 +2721,6 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
   String get _messageFilterChannelId =>
       MeshCoreConnector.messageFilterChannelId(widget.channel);
-
-  /// GIFs and other structured payloads (same test as the connector's
-  /// outbound check), which the filter never looks at.
-  static bool _isStructuredPayload(String text) {
-    final trimmed = text.trimLeft();
-    return trimmed.startsWith('g:') || trimmed.startsWith('m:');
-  }
 
   void _setRevealed(Iterable<String> ids, {required bool revealed}) {
     setState(() {

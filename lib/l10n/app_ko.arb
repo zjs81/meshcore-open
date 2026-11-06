@@ -3777,7 +3777,7 @@
   "@messageFilter_repeatedCharacters": {
     "description": "Message filter: Repeated characters"
   },
-  "messageFilter_repeatedCharactersSubtitle": "\"aaaaaaaa\" 또는 \"!!!!!!!!\" 같은 메시지",
+  "messageFilter_repeatedCharactersSubtitle": "같은 문자가 길게 반복되는 경우, 예: \"aaaaaaaaaaaaaaaaaaaa\"",
   "@messageFilter_repeatedCharactersSubtitle": {
     "description": "Message filter: Messages like \"aaaaaaaa\" or \"!!!!!!!!\""
   },

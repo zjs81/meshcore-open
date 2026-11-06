@@ -28,6 +28,11 @@ class _SeenMessage {
 /// so a sender whose clock is far off cannot push everyone else's entries
 /// out early or keep its own around forever.
 ///
+/// The same-sender rule only applies to texts of at least
+/// [sameSenderMinWords] words and [sameSenderMinLength] characters: people
+/// naturally repeat short replies ("ok", "yes", "test" when checking reach),
+/// while spam that gets re-posted is a whole sentence.
+///
 /// The cross-sender rule only applies to sentence-length texts (at least
 /// [crossSenderMinWords] words): short greetings like "Happy New Year!" or
 /// "Good morning everyone" are naturally sent by many people at once, while
@@ -35,6 +40,8 @@ class _SeenMessage {
 class DuplicateTracker {
   DuplicateTracker({
     this.sameSenderWindow = const Duration(minutes: 10),
+    this.sameSenderMinLength = 10,
+    this.sameSenderMinWords = 3,
     this.crossSenderWindow = const Duration(minutes: 30),
     this.crossSenderMinSenders = 3,
     this.crossSenderMinLength = 10,
@@ -43,6 +50,10 @@ class DuplicateTracker {
   });
 
   final Duration sameSenderWindow;
+
+  /// Minimum length / word count for the same-sender rule (see class docs).
+  final int sameSenderMinLength;
+  final int sameSenderMinWords;
   final Duration crossSenderWindow;
   final int crossSenderMinSenders;
   final int crossSenderMinLength;
@@ -106,7 +117,9 @@ class DuplicateTracker {
           senders.add(entry.sender);
         }
       }
-      if (sameSender) {
+      if (sameSender &&
+          key.length >= sameSenderMinLength &&
+          _wordCount(key) >= sameSenderMinWords) {
         result = FilterReason.duplicate;
       } else if (key.length >= crossSenderMinLength &&
           _wordCount(key) >= crossSenderMinWords &&

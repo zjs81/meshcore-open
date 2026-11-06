@@ -4,6 +4,24 @@ import 'dart:typed_data';
 import '../../models/message_filter.dart';
 import 'message_filter_text.dart';
 
+/// Weights and bias of a trained [NgramSpamClassifier]. Plain data, so
+/// training can run in a background isolate and hand the result back.
+class SpamModel {
+  final Map<int, double> weights;
+  final double bias;
+  const SpamModel(this.weights, this.bias);
+}
+
+/// Inputs for [NgramSpamClassifier.fitInBackground].
+typedef SpamTrainingJob = ({
+  int epochs,
+  double learningRate,
+  double lambda,
+  int seed,
+  List<FilterExample> spam,
+  List<FilterExample> ham,
+});
+
 /// A sparse, L2-normalised feature vector (hashed bucket ids and values).
 class _SparseVector {
   final Int32List indices;
@@ -143,8 +161,63 @@ class NgramSpamClassifier {
   /// Trains from scratch. Needs at least one example of each class; otherwise
   /// the classifier is left untrained (and [probability] returns 0).
   void train(List<FilterExample> spam, List<FilterExample> ham) {
-    reset();
-    if (spam.isEmpty || ham.isEmpty) return;
+    final model = fit(
+      spam,
+      ham,
+      epochs: epochs,
+      learningRate: learningRate,
+      lambda: lambda,
+      seed: seed,
+    );
+    if (model == null) {
+      reset();
+    } else {
+      use(model);
+    }
+  }
+
+  /// The job [fitInBackground] runs for this classifier's settings.
+  SpamTrainingJob trainingJob(
+    List<FilterExample> spam,
+    List<FilterExample> ham,
+  ) => (
+    epochs: epochs,
+    learningRate: learningRate,
+    lambda: lambda,
+    seed: seed,
+    spam: spam,
+    ham: ham,
+  );
+
+  /// Entry point for `compute`: trains on [job] and returns the model, or
+  /// null when either class has no usable examples.
+  static SpamModel? fitInBackground(SpamTrainingJob job) => fit(
+    job.spam,
+    job.ham,
+    epochs: job.epochs,
+    learningRate: job.learningRate,
+    lambda: job.lambda,
+    seed: job.seed,
+  );
+
+  /// Switches to [model] (from [fit] or [fitInBackground]).
+  void use(SpamModel model) {
+    _weights = model.weights;
+    _bias = model.bias;
+    _trained = true;
+  }
+
+  /// Pure training step: same inputs, same model. Null when either class has
+  /// no usable examples.
+  static SpamModel? fit(
+    List<FilterExample> spam,
+    List<FilterExample> ham, {
+    required int epochs,
+    required double learningRate,
+    required double lambda,
+    required int seed,
+  }) {
+    if (spam.isEmpty || ham.isEmpty) return null;
 
     // Vectorize and remap hashed buckets to a compact local index space.
     final localIndex = <int, int>{};
@@ -174,7 +247,7 @@ class NgramSpamClassifier {
     final n = docs.length;
     final nPos = labels.where((y) => y == 1).length;
     final nNeg = n - nPos;
-    if (nPos == 0 || nNeg == 0) return;
+    if (nPos == 0 || nNeg == 0) return null;
     final wPos = n / (2 * nPos);
     final wNeg = n / (2 * nNeg);
 
@@ -210,9 +283,7 @@ class NgramSpamClassifier {
       final weight = weights[local];
       if (weight != 0) compact[bucket] = weight;
     });
-    _weights = compact;
-    _bias = bias;
-    _trained = true;
+    return SpamModel(compact, bias);
   }
 
   /// Probability (0..1) that the message is spam; 0 when untrained.
