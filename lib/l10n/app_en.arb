@@ -1716,6 +1716,20 @@
       }
     }
   },
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
+  "@repeater_hoursMinsSecs": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "repeater_packetTxTotal": "Total: {total}, Flood: {flood}, Direct: {direct}",
   "@repeater_packetTxTotal": {
     "placeholders": {

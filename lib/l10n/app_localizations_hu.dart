@@ -3196,6 +3196,11 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '$hoursó ${minutes}p ${seconds}s';
+  }
+
+  @override
   String repeater_packetTxTotal(int total, String flood, String direct) {
     return 'Összesen: $total, Elárasztás: $flood, Közvetlen: $direct';
   }

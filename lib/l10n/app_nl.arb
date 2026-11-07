@@ -1044,6 +1044,7 @@
   "repeater_received": "Ontvangen",
   "repeater_duplicates": "Duplicaten",
   "repeater_daysHoursMinsSecs": "{days} dagen {hours} uur {minutes} minuten {seconds} seconden",
+  "repeater_hoursMinsSecs": "{hours} uur {minutes} minuten {seconds} seconden",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {

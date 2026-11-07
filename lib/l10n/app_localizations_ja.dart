@@ -3067,6 +3067,11 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '$hours時間 $minutes分 $seconds秒';
+  }
+
+  @override
   String repeater_packetTxTotal(int total, String flood, String direct) {
     return '合計: $total, フラッド: $flood, 直接: $direct';
   }
@@ -3078,7 +3083,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String repeater_duplicatesFloodDirect(String flood, String direct) {
-    return '$flood: $flood, 直接: $direct';
+    return 'フラッド: $flood, 直接: $direct';
   }
 
   @override

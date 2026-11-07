@@ -1076,6 +1076,7 @@
   "repeater_received": "Ricevuto",
   "repeater_duplicates": "Duplicati",
   "repeater_daysHoursMinsSecs": "{days} giorni {hours}h {minutes}m {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {

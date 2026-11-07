@@ -178,6 +178,8 @@ class _RulesList extends StatelessWidget {
       SnackBar(
         content: Text(l10n.messageFilter_ruleDeleted),
         duration: const Duration(seconds: 6),
+        // Newer Flutter persists snackbars with an action unless told not to.
+        persist: false,
         action: SnackBarAction(
           label: l10n.common_undo,
           onPressed: () =>

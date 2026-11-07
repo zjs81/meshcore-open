@@ -3207,6 +3207,11 @@ class AppLocalizationsBg extends AppLocalizations {
   }
 
   @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '$hoursч $minutesм $secondsс';
+  }
+
+  @override
   String repeater_packetTxTotal(int total, String flood, String direct) {
     return 'Общо: $total, Flood: $flood, Директно: $direct';
   }

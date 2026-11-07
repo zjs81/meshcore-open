@@ -3026,6 +3026,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '$hours小时 $minutes分 $seconds秒';
+  }
+
+  @override
   String repeater_packetTxTotal(int total, String flood, String direct) {
     return '总计：$total，泛洪：$flood，直连：$direct';
   }

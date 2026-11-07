@@ -1039,6 +1039,7 @@
   "repeater_received": "接收",
   "repeater_duplicates": "重复",
   "repeater_daysHoursMinsSecs": "{days}天 {hours}小时 {minutes}分 {seconds}秒",
+  "repeater_hoursMinsSecs": "{hours}小时 {minutes}分 {seconds}秒",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {

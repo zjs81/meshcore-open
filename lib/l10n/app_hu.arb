@@ -1245,6 +1245,7 @@
   "repeater_received": "Fogadva",
   "repeater_duplicates": "Ismétlődések",
   "repeater_daysHoursMinsSecs": "{days} nap {hours}ó {minutes}p {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}ó {minutes}p {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {

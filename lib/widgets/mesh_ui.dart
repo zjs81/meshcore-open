@@ -243,7 +243,7 @@ class StatTile extends StatelessWidget {
                   label.toUpperCase(),
                   style: MeshTheme.accentLabel(
                     color: scheme.onSurfaceVariant,
-                    fontSize: 12,
+                    fontSize: 14,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -252,30 +252,26 @@ class StatTile extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: AlignmentDirectional.centerStart,
-            child: Text.rich(
-              TextSpan(
-                text: value,
-                style: MeshTheme.mono(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                  color: scheme.onSurface,
-                ),
-                children: [
-                  if (unit != null)
-                    TextSpan(
-                      text: ' $unit',
-                      style: MeshTheme.mono(
-                        fontSize: 12,
-                        color: scheme.onSurfaceVariant,
-                      ),
-                    ),
-                ],
+          Text.rich(
+            TextSpan(
+              text: value,
+              style: MeshTheme.mono(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: scheme.onSurface,
               ),
-              maxLines: 1,
+              children: [
+                if (unit != null)
+                  TextSpan(
+                    text: ' $unit',
+                    style: MeshTheme.mono(
+                      fontSize: 12,
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+              ],
             ),
+            softWrap: true,
           ),
         ],
       ),
