@@ -97,7 +97,11 @@ mkdir -p "$workspace/home/Documents" "$workspace/home/config"
 printf 'XDG_DOCUMENTS_DIR="%s/Documents"\n' "$workspace/home" > "$workspace/home/config/user-dirs.dirs"
 log 'Starting AppRun under a private D-Bus session (also used as the system bus)'
 # shellcheck disable=SC2016
-env -u LD_LIBRARY_PATH -u GTK_PATH -u GSETTINGS_SCHEMA_DIR \
+env -u LD_LIBRARY_PATH \
+  GIO_EXTRA_MODULES=/host/gio/modules GIO_MODULE_DIR=/host/gio/modules \
+  GI_TYPELIB_PATH=/host/girepository GTK_PATH=/host/gtk/modules \
+  GTK_MODULES=host-module GDK_PIXBUF_MODULE_FILE=/host/pixbuf.loaders \
+  GSETTINGS_SCHEMA_DIR=/host/glib-2.0/schemas \
   HOME="$workspace/home" XDG_CONFIG_HOME="$workspace/home/config" \
   XDG_DATA_HOME="$workspace/home/data" XDG_CACHE_HOME="$workspace/home/cache" \
   dbus-run-session -- bash -c \

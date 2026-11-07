@@ -152,8 +152,14 @@ mkdir -p "$temporary/audit-appdir/usr/bin" "$temporary/audit-appdir/usr/lib" \
 cp "$(type -P true)" "$temporary/audit-appdir/usr/bin/fixture"
 printf 'test library\n' > "$temporary/host/libgpg-error.so.0.37.0"
 ln -s libgpg-error.so.0.37.0 "$temporary/host/libgpg-error.so.0"
+printf 'host display library\n' > "$temporary/host/libwayland-client.so.0"
 cat > "$temporary/fakebin/ldd" <<'EOF'
 #!/usr/bin/env bash
+if [[ -e "$MESHCORE_TEST_HOST_WAYLAND" ]]; then
+  printf 'libwayland-client.so.0 => %s (0x0)\n' "$MESHCORE_TEST_HOST_WAYLAND"
+else
+  printf 'libwayland-client.so.0 => not found\n'
+fi
 if [[ -e "$MESHCORE_TEST_APPDIR/usr/lib/libgpg-error.so.0" ]]; then
   printf 'libgpg-error.so.0 => %s/usr/lib/libgpg-error.so.0 (0x0)\n' "$MESHCORE_TEST_APPDIR"
 else
@@ -163,20 +169,46 @@ EOF
 chmod +x "$temporary/fakebin/ldd"
 MESHCORE_TEST_APPDIR="$temporary/audit-appdir" \
   MESHCORE_TEST_HOST_LIBRARY="$temporary/host/libgpg-error.so.0" \
+  MESHCORE_TEST_HOST_WAYLAND="$temporary/host/libwayland-client.so.0" \
   PATH="$temporary/fakebin:$PATH" \
   bash "$project/scripts/appimage/dependencies.sh" bundle \
   "$temporary/audit-appdir" "$temporary/dependency-audit.log"
 [[ -L "$temporary/audit-appdir/usr/lib/libgpg-error.so.0" ]]
 [[ -f "$temporary/audit-appdir/usr/lib/libgpg-error.so.0.37.0" ]]
+[[ ! -e "$temporary/audit-appdir/usr/lib/libwayland-client.so.0" ]]
 grep -Fq 'libgpg-error.so.0 =>' "$temporary/dependency-audit.log"
+grep -Fq 'libwayland-client.so.0 =>' "$temporary/dependency-audit.log"
 
 mkdir -p "$temporary/audit-missing/usr/bin" "$temporary/audit-missing/usr/lib"
 cp "$temporary/audit-appdir/usr/bin/fixture" "$temporary/audit-missing/usr/bin/fixture"
 MESHCORE_TEST_APPDIR="$temporary/audit-missing" \
   MESHCORE_TEST_HOST_LIBRARY="$temporary/host/libgpg-error.so.0" \
+  MESHCORE_TEST_HOST_WAYLAND="$temporary/host/missing-libwayland-client.so.0" \
   PATH="$temporary/fakebin:$PATH" \
   assert_fails bash "$project/scripts/appimage/dependencies.sh" audit \
   "$temporary/audit-missing" "$temporary/dependency-rejected.log"
 grep -Fq 'unexpected host dependency' "$temporary/dependency-rejected.log"
+grep -Fq 'libwayland-client.so.0 => NOT PRESENT ON AUDIT HOST [host interface]' \
+  "$temporary/dependency-rejected.log"
+
+mkdir -p "$temporary/launcher-appdir/usr/bin"
+cp "$project/scripts/appimage/AppRun" "$temporary/launcher-appdir/AppRun"
+cat > "$temporary/launcher-appdir/usr/bin/meshcore_open" <<'EOF'
+#!/usr/bin/env bash
+env | sort
+EOF
+chmod +x "$temporary/launcher-appdir/usr/bin/meshcore_open"
+env APPDIR="$temporary/launcher-appdir" \
+  GIO_EXTRA_MODULES=/host/gio/modules GIO_MODULE_DIR=/host/gio/modules \
+  GI_TYPELIB_PATH=/host/girepository GTK_PATH=/host/gtk/modules \
+  GTK_MODULES=host-module GDK_PIXBUF_MODULE_FILE=/host/pixbuf.loaders \
+  bash "$temporary/launcher-appdir/AppRun" > "$temporary/launcher-environment"
+for variable in GIO_EXTRA_MODULES GIO_MODULE_DIR GI_TYPELIB_PATH GTK_PATH \
+  GTK_MODULES GDK_PIXBUF_MODULE_FILE; do
+  if grep -q "^$variable=" "$temporary/launcher-environment"; then
+    printf 'Host plugin environment leaked through AppRun: %s\n' "$variable" >&2
+    exit 1
+  fi
+done
 
 printf 'AppImage packaging contract tests passed\n'

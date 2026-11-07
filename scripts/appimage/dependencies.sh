@@ -11,7 +11,8 @@ is_host_interface() {
     linux-vdso.so.*|ld-linux*.so.*|ld64.so.*|libc.so.*|libm.so.*|libpthread.so.*|\
       libdl.so.*|librt.so.*|libresolv.so.*|libutil.so.*|libanl.so.*|\
       libBrokenLocale.so.*|libnss_*.so.*|libGL.so.*|libGLX.so.*|libEGL.so.*|\
-      libGLES*.so.*|libOpenGL.so.*|libglapi.so.*|libvulkan.so.*|libdrm*.so.*|libgbm.so.*)
+      libGLES*.so.*|libOpenGL.so.*|libglapi.so.*|libvulkan.so.*|libdrm*.so.*|libgbm.so.*|\
+      libX*.so.*|libxcb*.so.*|libwayland*.so.*|libxkbcommon.so.*)
       return 0
       ;;
     *) return 1 ;;
@@ -93,18 +94,27 @@ scan_appdir() {
       fi
       soname="${soname##*/}"
       if [[ "$resolution" == 'not found'* ]]; then
-        printf '  %s => NOT FOUND\n' "$soname" >> "$report"
-        printf 'AppImage dependencies: %s needs missing %s\n' "$elf" "$soname" >&2
-        failed=1
+        if is_host_interface "$soname"; then
+          printf '  %s => NOT PRESENT ON AUDIT HOST [host interface]\n' "$soname" >> "$report"
+        else
+          printf '  %s => NOT FOUND\n' "$soname" >> "$report"
+          printf 'AppImage dependencies: %s needs missing %s\n' "$elf" "$soname" >&2
+          failed=1
+        fi
         continue
       fi
       resolved="${resolution%%[[:space:]]*}"
       [[ "$resolved" == /* ]] || continue
       if ! resolved_real="$(realpath -e -- "$resolved" 2>/dev/null)"; then
-        printf '  %s => UNRESOLVED (%s)\n' "$soname" "$resolved" >> "$report"
-        printf 'AppImage dependencies: %s resolves %s to missing path %s\n' \
-          "$elf" "$soname" "$resolved" >&2
-        failed=1
+        if is_host_interface "$soname"; then
+          printf '  %s => NOT PRESENT ON AUDIT HOST (%s) [host interface]\n' \
+            "$soname" "$resolved" >> "$report"
+        else
+          printf '  %s => UNRESOLVED (%s)\n' "$soname" "$resolved" >> "$report"
+          printf 'AppImage dependencies: %s resolves %s to missing path %s\n' \
+            "$elf" "$soname" "$resolved" >&2
+          failed=1
+        fi
         continue
       fi
       if is_inside_appdir "$resolved_real" "$appdir_real"; then

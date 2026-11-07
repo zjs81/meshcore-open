@@ -200,14 +200,15 @@ native bundle is retained. Custom targets, obfuscation and split-debug-info
 require a bundle-only build when container rebuilding is needed.
 
 The image includes Flutter assets, native plugins, ONNX Runtime and the
-transitive redistributable runtime libraries, including GTK and X11/Wayland
-client libraries. Packaging audits every bundled ELF and fails if a portable
-dependency resolves from the build host instead of the AppDir. It does not
-include glibc/the ELF loader, graphics drivers, BlueZ services, USB permissions,
-downloaded inference models or user data. The GTK packaging plugin uses X11, so
-Wayland sessions need XWayland. The host still needs compatible glibc and
-graphics libraries (`libgl1`, `libegl1`, and `libgles2` on Ubuntu). Launch
-normally, or without
+transitive redistributable runtime libraries. Packaging audits every bundled
+ELF and fails if a portable dependency resolves from the build host instead of
+the AppDir. Host display-stack libraries (X11/XCB/Wayland) and graphics drivers
+remain external so they stay ABI-compatible with the system's EGL/GL driver.
+The image also relies on host glibc/the ELF loader, BlueZ services and USB
+permissions; downloaded inference models and user data are not included. The
+GTK packaging plugin uses X11, so Wayland sessions need XWayland. The host needs
+compatible graphics libraries (`libgl1`, `libegl1`, and `libgles2` on Ubuntu).
+Launch normally, or without
 FUSE by extracting:
 
 ```bash
