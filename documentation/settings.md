@@ -14,7 +14,7 @@ The settings screen is a scrollable list of cards:
 1. [Device Info](#device-info)
 2. [Node Settings](#node-settings)
 3. [Location](#location)
-4. [App Settings](#app-settings) (link to sub-screen)
+4. [App Settings](#app-settings) and [Local API](#local-api) (links to sub-screens)
 5. [Actions](#actions)
 6. [Export](#export)
 7. [Debug](#debug)
@@ -96,6 +96,12 @@ Opens a dialog with controls for how the node shares telemetry and location data
 - **Telemetry Environment Mode**: Deny All / Allow by Contact / Allow All
 
 Settings take effect when saved. A snackbar confirms the update.
+
+---
+
+## Local API
+
+Not on web. Open **Settings → Local API** to let other apps on the same device send and receive through this app's radio connection. It is off by default. Each app asks once in a dialog showing its name and key fingerprint; allowed apps are listed here and can be removed, which also disconnects them. **Clear stored radio data** deletes channel data kept for apps that were not running. See [Local API](LOCAL_API.md).
 
 ---
 
