@@ -51,6 +51,21 @@ void main() {
     expect(queue.length, 0);
   });
 
+  test('firmware-disabled private-key transfer fails its waiter', () async {
+    final queue = newQueue();
+    final pending = queue.track(
+      buildExportPrivateKeyFrame(),
+      waitForReply: true,
+    );
+
+    expect(queue.completeReply(frame([respCodeDisabled])), isTrue);
+    await expectLater(
+      pending!.completer!.future,
+      throwsA(isA<UnsupportedError>()),
+    );
+    expect(queue.length, 0);
+  });
+
   test('untracked commands are not enrolled', () {
     final queue = newQueue();
     expect(queue.track(buildSyncNextMessageFrame()), isNull);

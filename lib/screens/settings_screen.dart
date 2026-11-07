@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:meshcore_open/utils/gpx_export.dart';
 import 'package:meshcore_open/widgets/elements_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -24,7 +23,8 @@ import '../widgets/radio_stats_entry.dart';
 import 'telemetry_screen.dart';
 import '../widgets/sync_progress_overlay.dart';
 import 'region_management_screen.dart';
-import '../utils/share_origin.dart';
+import 'backup_restore_screen.dart';
+import 'export_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -164,13 +164,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
 
-            // EXPORT section
-            SectionHeader(l10n.settings_gpxExportRepeaters),
+            // BACKUP AND EXPORT
+            SectionHeader(l10n.settings_export),
             MeshCard(
               padding: EdgeInsets.zero,
-              child: _buildExportCardContent(
-                context,
-                context.read<MeshCoreConnector>(),
+              child: Column(
+                children: [
+                  MeshNavTile(
+                    icon: Icons.backup_outlined,
+                    title: l10n.backupRestore_title,
+                    subtitle: l10n.backupRestore_subtitle,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const BackupRestoreScreen(),
+                      ),
+                    ),
+                  ),
+                  const Divider(height: 1, indent: 16),
+                  MeshNavTile(
+                    icon: Icons.download_outlined,
+                    title: l10n.settings_export,
+                    subtitle: l10n.settings_exportSubtitle,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ExportScreen()),
+                    ),
+                  ),
+                ],
               ),
             ),
 
@@ -682,70 +703,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildExportCardContent(
-    BuildContext context,
-    MeshCoreConnector connector,
-  ) {
-    final l10n = context.l10n;
-    return Column(
-      children: [
-        MeshNavTile(
-          icon: Icons.download_outlined,
-          title: l10n.settings_gpxExportRepeaters,
-          subtitle: l10n.settings_gpxExportRepeatersSubtitle,
-          onTap: () async {
-            final exporter = GpxExport(connector);
-            exporter.addRepeaters();
-            _gpxExport(
-              exporter,
-              l10n.map_repeater,
-              l10n.settings_gpxExportRepeatersRoom,
-              'meshcore_repeaters_',
-              l10n.settings_gpxExportShareText,
-              l10n.settings_gpxExportShareSubject,
-            );
-          },
-        ),
-        const Divider(height: 1, indent: 16),
-        MeshNavTile(
-          icon: Icons.download_outlined,
-          title: l10n.settings_gpxExportContacts,
-          subtitle: l10n.settings_gpxExportContactsSubtitle,
-          onTap: () async {
-            final exporter = GpxExport(connector);
-            exporter.addContacts();
-            _gpxExport(
-              exporter,
-              l10n.map_repeater,
-              l10n.settings_gpxExportChat,
-              'meshcore_contacts_',
-              l10n.settings_gpxExportShareText,
-              l10n.settings_gpxExportShareSubject,
-            );
-          },
-        ),
-        const Divider(height: 1, indent: 16),
-        MeshNavTile(
-          icon: Icons.download_outlined,
-          title: l10n.settings_gpxExportAll,
-          subtitle: l10n.settings_gpxExportAllSubtitle,
-          onTap: () async {
-            final exporter = GpxExport(connector);
-            exporter.addAll();
-            _gpxExport(
-              exporter,
-              l10n.map_repeater,
-              l10n.settings_gpxExportAllContacts,
-              'meshcore_all_',
-              l10n.settings_gpxExportShareText,
-              l10n.settings_gpxExportShareSubject,
-            );
-          },
-        ),
-      ],
-    );
-  }
-
   Widget _buildDebugCardContent(BuildContext context) {
     final l10n = context.l10n;
     return Column(
@@ -1064,51 +1021,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         Text(l10n.settings_aboutDescription),
       ],
     );
-  }
-
-  Future<void> _gpxExport(
-    GpxExport exporter,
-    String name,
-    String description,
-    String filename,
-    String shareText,
-    String subject,
-  ) async {
-    final l10n = context.l10n;
-    final result = await exporter.exportGPX(
-      name,
-      description,
-      filename,
-      shareText,
-      subject,
-      sharePositionOrigin: shareOriginOf(context),
-    );
-    if (!mounted) return;
-    switch (result) {
-      case gpxExportSuccess:
-        showDismissibleSnackBar(
-          context,
-          content: Text(l10n.settings_gpxExportSuccess),
-        );
-      case gpxExportNoContacts:
-        showDismissibleSnackBar(
-          context,
-          content: Text(l10n.settings_gpxExportNoContacts),
-        );
-        break;
-      case gpxExportNotAvailable:
-        showDismissibleSnackBar(
-          context,
-          content: Text(l10n.settings_gpxExportNotAvailable),
-        );
-        break;
-      case gpxExportFailed:
-        showDismissibleSnackBar(
-          context,
-          content: Text(l10n.settings_gpxExportError),
-        );
-        break;
-    }
   }
 
   void _editAutoAddConfig(BuildContext context, MeshCoreConnector connector) {

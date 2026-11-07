@@ -63,6 +63,7 @@ int? replyCodeForCommand(Uint8List data) {
     case cmdRemoveContact:
     case cmdShareContact:
     case cmdImportContact:
+    case cmdImportPrivateKey:
     case cmdSetChannel:
     case cmdSetOtherParams:
     case cmdSetCustomVar:
@@ -95,6 +96,8 @@ int? replyCodeForCommand(Uint8List data) {
       return respCodeCurrTime;
     case cmdExportContact:
       return respCodeExportContact;
+    case cmdExportPrivateKey:
+      return respCodePrivateKey;
     case cmdGetBattAndStorage:
       return respCodeBattAndStorage;
     case cmdGetChannel:
@@ -180,6 +183,19 @@ class PendingCommandReplies {
     if (frame.isEmpty) return false;
     _pruneStale();
     final code = frame[0];
+    if (code == respCodeDisabled) {
+      final index = _queue.indexWhere(
+        (pending) =>
+            pending.commandCode == cmdExportPrivateKey ||
+            pending.commandCode == cmdImportPrivateKey,
+      );
+      if (index < 0) return false;
+      final pending = _queue.removeAt(index);
+      pending.completer?.completeError(
+        UnsupportedError('Private-key transfer is disabled by firmware'),
+      );
+      return true;
+    }
     if (code == respCodeOk || code == respCodeErr) return false;
     final key = code == respCodeContact && frame.length >= 1 + pubKeySize
         ? frame.sublist(1, 1 + pubKeySize)

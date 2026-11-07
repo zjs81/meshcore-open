@@ -16,7 +16,7 @@ The settings screen is a scrollable list of cards:
 3. [Location](#location)
 4. [App Settings](#app-settings) (link to sub-screen)
 5. [Actions](#actions)
-6. [Export](#export)
+6. [Backup & Restore and Export](#export)
 7. [Debug](#debug)
 8. [About](#about)
 
@@ -206,7 +206,19 @@ One-tap device operations:
 
 ---
 
-## Export
+## Backup & Restore and Export
+
+The settings card links to **Backup & Restore** and **Export** subpages.
+
+### Backup & Restore
+
+Choose which information to include or restore: node name, identity, radio settings and regions; location, contact and privacy settings; app preferences; contacts and their filters and settings, groups, direct-message and route history; discovered contacts; and channels, filters, communities, settings and history. A radio connection is required to back up or restore radio settings and contact or channel lists. Contact and channel lists are restored to the connected radio; message history and groups are restored in the app.
+
+Node Settings includes the radio's identity and private key. Some radio firmware does not allow identity backup or restore; the app will let you know if this feature is unavailable. Restoring Node Settings replaces the connected radio's identity after confirmation.
+
+A password protects the backup file. Leave the password blank to create an unprotected file. Backups may contain your radio's private key, channel keys, messages and saved passwords, so store them carefully. Downloaded models, received image files and cached map tiles are not included.
+
+### GPX Export
 
 Three GPX export options (not available on web):
 

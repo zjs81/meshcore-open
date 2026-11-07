@@ -406,6 +406,109 @@ class AppLocalizationsPl extends AppLocalizations {
       'Powiadomienia, wiadomości i preferencje mapy';
 
   @override
+  String get settings_export => 'Export';
+
+  @override
+  String get settings_exportSubtitle => 'Export contacts and repeaters as GPX';
+
+  @override
+  String get backupRestore_title => 'Backup & Restore';
+
+  @override
+  String get backupRestore_subtitle =>
+      'Save or restore app data and radio settings';
+
+  @override
+  String get backupRestore_import => 'Import';
+
+  @override
+  String get backupRestore_selectImportFile => 'Import File';
+
+  @override
+  String get backupRestore_password => 'Password (optional)';
+
+  @override
+  String get backupRestore_passwordHelp =>
+      'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.';
+
+  @override
+  String get backupRestore_items => 'Backup and restore items';
+
+  @override
+  String get backupRestore_nodeSettings => 'Node Settings';
+
+  @override
+  String get backupRestore_nodeSettingsDescription =>
+      'Device name, private and public keys, radio settings, and regions';
+
+  @override
+  String get backupRestore_locationSettings => 'Location Settings';
+
+  @override
+  String get backupRestore_locationSettingsDescription =>
+      'Location, contact settings, and privacy settings';
+
+  @override
+  String get backupRestore_appSettings => 'App Settings';
+
+  @override
+  String get backupRestore_appSettingsDescription =>
+      'App preferences and appearance settings';
+
+  @override
+  String get backupRestore_contacts => 'Contacts';
+
+  @override
+  String get backupRestore_contactsDescription =>
+      'Contacts, per-contact filters and settings, groups, and message history';
+
+  @override
+  String get backupRestore_discoveredContacts => 'Discovered Contacts';
+
+  @override
+  String get backupRestore_discoveredContactsDescription =>
+      'Discovered contacts and their saved details';
+
+  @override
+  String get backupRestore_channels => 'Channels';
+
+  @override
+  String get backupRestore_channelsDescription =>
+      'Channels, channel filters, communities, and message history';
+
+  @override
+  String get backupRestore_backup => 'Create Backup';
+
+  @override
+  String get backupRestore_restore => 'Restore Selected';
+
+  @override
+  String get backupRestore_backupComplete => 'Backup file created.';
+
+  @override
+  String get backupRestore_restoreComplete =>
+      'Restore complete. Reconnect the radio to refresh its data.';
+
+  @override
+  String backupRestore_failed(String error) {
+    return 'Backup operation failed: $error';
+  }
+
+  @override
+  String get backupRestore_fileTooLarge =>
+      'Backup file is larger than the 100 MB limit.';
+
+  @override
+  String get backupRestore_selectAtLeastOne => 'Select at least one item.';
+
+  @override
+  String get backupRestore_replaceIdentityTitle => 'Replace radio identity?';
+
+  @override
+  String get backupRestore_replaceIdentityMessage =>
+      'Restoring Node Settings replaces the connected radio\'s private key and changes its identity. Continue only if this is intended.';
+
+  @override
   String get settings_nodeSettings => 'Ustawienia węzła';
 
   @override
