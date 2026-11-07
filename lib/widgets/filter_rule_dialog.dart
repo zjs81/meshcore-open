@@ -100,6 +100,11 @@ class _FilterRuleDialogState extends State<_FilterRuleDialog> {
       content: SizedBox(
         width: 420,
         child: SingleChildScrollView(
+          // The outlined field's floating label is painted above the field's
+          // box, outside the scroll content bounds. Without top padding the
+          // viewport clips it (worst when the focused field is scrolled flush
+          // to the top while the keyboard is open).
+          padding: const EdgeInsets.only(top: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,6 +112,14 @@ class _FilterRuleDialogState extends State<_FilterRuleDialog> {
               TextField(
                 controller: _controller,
                 autofocus: true,
+                // Keep room above the field when it is scrolled into view, so
+                // the floating label (drawn above the box) is not clipped.
+                scrollPadding: EdgeInsets.fromLTRB(
+                  20,
+                  16 + MediaQuery.textScalerOf(context).scale(16),
+                  20,
+                  20,
+                ),
                 minLines: 1,
                 maxLines: 4,
                 textInputAction: TextInputAction.done,

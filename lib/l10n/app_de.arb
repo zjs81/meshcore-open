@@ -1039,6 +1039,7 @@
   "repeater_received": "Empfangen",
   "repeater_duplicates": "Duplikate",
   "repeater_daysHoursMinsSecs": "{days} Tage {hours}h {minutes}m {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {

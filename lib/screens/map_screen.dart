@@ -3170,6 +3170,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
   }
 
   void _handleQuickSwitch(int index, BuildContext context) {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (index == 2) return;
     switch (index) {
       case 0:

@@ -697,6 +697,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
   }
 
   void _handleQuickSwitch(int index, BuildContext context) {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (index == 1) return;
     switch (index) {
       case 0:
