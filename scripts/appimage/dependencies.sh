@@ -103,7 +103,10 @@ scan_appdir() {
         fi
         continue
       fi
-      resolved="${resolution%%[[:space:]]*}"
+      resolved="$resolution"
+      if [[ "$resolved" =~ ^(.*)[[:space:]]+\(0x[[:xdigit:]]+\)$ ]]; then
+        resolved="${BASH_REMATCH[1]}"
+      fi
       [[ "$resolved" == /* ]] || continue
       if ! resolved_real="$(realpath -e -- "$resolved" 2>/dev/null)"; then
         if is_host_interface "$soname"; then
@@ -132,8 +135,8 @@ scan_appdir() {
         failed=1
       fi
     done <<< "$output"
-    if ((status != 0)) && [[ "$output" != *'not found'* ]]; then
-      printf 'AppImage dependencies: ldd failed for %s (exit %s): %s\n' \
+    if ((status != 0)) || [[ "$output" =~ version[[:space:]].*not[[:space:]]found ]]; then
+      printf 'AppImage dependencies: ldd dependency check failed for %s (exit %s): %s\n' \
         "$elf" "$status" "$output" >&2
       failed=1
     fi

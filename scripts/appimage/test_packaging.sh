@@ -155,6 +155,11 @@ ln -s libgpg-error.so.0.37.0 "$temporary/host/libgpg-error.so.0"
 printf 'host display library\n' > "$temporary/host/libwayland-client.so.0"
 cat > "$temporary/fakebin/ldd" <<'EOF'
 #!/usr/bin/env bash
+if [[ "${MESHCORE_TEST_LDD_VERSION_FAILURE:-0}" == 1 ]]; then
+  printf "%s: /lib/x86_64-linux-gnu/libc.so.6: version 'GLIBC_2.39' not found (required by %s)\n" \
+    "$MESHCORE_TEST_APPDIR/usr/bin/fixture" "$MESHCORE_TEST_APPDIR/usr/bin/fixture"
+  exit 1
+fi
 if [[ -e "$MESHCORE_TEST_HOST_WAYLAND" ]]; then
   printf 'libwayland-client.so.0 => %s (0x0)\n' "$MESHCORE_TEST_HOST_WAYLAND"
 else
@@ -179,6 +184,17 @@ MESHCORE_TEST_APPDIR="$temporary/audit-appdir" \
 grep -Fq 'libgpg-error.so.0 =>' "$temporary/dependency-audit.log"
 grep -Fq 'libwayland-client.so.0 =>' "$temporary/dependency-audit.log"
 
+mkdir -p "$temporary/audit AppDir/usr/bin" "$temporary/audit AppDir/usr/lib"
+cp "$temporary/audit-appdir/usr/bin/fixture" "$temporary/audit AppDir/usr/bin/fixture"
+MESHCORE_TEST_APPDIR="$temporary/audit AppDir" \
+  MESHCORE_TEST_HOST_LIBRARY="$temporary/host/libgpg-error.so.0" \
+  MESHCORE_TEST_HOST_WAYLAND="$temporary/host/libwayland-client.so.0" \
+  PATH="$temporary/fakebin:$PATH" \
+  bash "$project/scripts/appimage/dependencies.sh" bundle \
+  "$temporary/audit AppDir" "$temporary/dependency-audit-spaces.log"
+[[ -L "$temporary/audit AppDir/usr/lib/libgpg-error.so.0" ]]
+grep -Fq 'libgpg-error.so.0 =>' "$temporary/dependency-audit-spaces.log"
+
 mkdir -p "$temporary/audit-missing/usr/bin" "$temporary/audit-missing/usr/lib"
 cp "$temporary/audit-appdir/usr/bin/fixture" "$temporary/audit-missing/usr/bin/fixture"
 MESHCORE_TEST_APPDIR="$temporary/audit-missing" \
@@ -190,6 +206,14 @@ MESHCORE_TEST_APPDIR="$temporary/audit-missing" \
 grep -Fq 'unexpected host dependency' "$temporary/dependency-rejected.log"
 grep -Fq 'libwayland-client.so.0 => NOT PRESENT ON AUDIT HOST [host interface]' \
   "$temporary/dependency-rejected.log"
+MESHCORE_TEST_APPDIR="$temporary/audit-appdir" \
+  MESHCORE_TEST_HOST_LIBRARY="$temporary/host/libgpg-error.so.0" \
+  MESHCORE_TEST_HOST_WAYLAND="$temporary/host/libwayland-client.so.0" \
+  MESHCORE_TEST_LDD_VERSION_FAILURE=1 \
+  PATH="$temporary/fakebin:$PATH" \
+  assert_fails bash "$project/scripts/appimage/dependencies.sh" audit \
+  "$temporary/audit-appdir" "$temporary/dependency-version-rejected.log"
+grep -Fq "version 'GLIBC_2.39' not found" "$temporary/error"
 
 mkdir -p "$temporary/launcher-appdir/usr/bin"
 cp "$project/scripts/appimage/AppRun" "$temporary/launcher-appdir/AppRun"

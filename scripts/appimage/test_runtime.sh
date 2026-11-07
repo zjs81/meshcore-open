@@ -4,6 +4,11 @@ set -euo pipefail
 image="$(realpath "$1")"
 mkdir -p "$2"
 output="$(realpath "$2")"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+dependency_checker="${MESHCORE_APPIMAGE_DEPENDENCIES:-$script_dir/dependencies.sh}"
+if [[ "$dependency_checker" != /* ]]; then
+  dependency_checker="$(realpath -e -- "$dependency_checker")"
+fi
 exec > >(tee -a "$output/runtime-test.log") 2>&1
 
 log() {
@@ -86,7 +91,6 @@ log "ELF architecture audit passed ($elf_count files)"
 
 dependencies="$output/dependencies.log"
 : > "$dependencies"
-dependency_checker="${MESHCORE_APPIMAGE_DEPENDENCIES:-$(dirname "${BASH_SOURCE[0]}")/dependencies.sh}"
 [[ -f "$dependency_checker" ]] || { log "Missing dependency checker: $dependency_checker"; exit 1; }
 run_timed 'audit dependency origins' 120s "$workspace/dependency-audit.log" \
   bash "$dependency_checker" audit "$appdir" "$dependencies"
