@@ -147,4 +147,36 @@ mock_glibc=2.39
 requires_container_rebuild "$temporary/bundle/meshcore_open" 2.39
 unset -f readelf getconf
 
+mkdir -p "$temporary/audit-appdir/usr/bin" "$temporary/audit-appdir/usr/lib" \
+  "$temporary/host" "$temporary/fakebin"
+cp "$(type -P true)" "$temporary/audit-appdir/usr/bin/fixture"
+printf 'test library\n' > "$temporary/host/libgpg-error.so.0.37.0"
+ln -s libgpg-error.so.0.37.0 "$temporary/host/libgpg-error.so.0"
+cat > "$temporary/fakebin/ldd" <<'EOF'
+#!/usr/bin/env bash
+if [[ -e "$MESHCORE_TEST_APPDIR/usr/lib/libgpg-error.so.0" ]]; then
+  printf 'libgpg-error.so.0 => %s/usr/lib/libgpg-error.so.0 (0x0)\n' "$MESHCORE_TEST_APPDIR"
+else
+  printf 'libgpg-error.so.0 => %s (0x0)\n' "$MESHCORE_TEST_HOST_LIBRARY"
+fi
+EOF
+chmod +x "$temporary/fakebin/ldd"
+MESHCORE_TEST_APPDIR="$temporary/audit-appdir" \
+  MESHCORE_TEST_HOST_LIBRARY="$temporary/host/libgpg-error.so.0" \
+  PATH="$temporary/fakebin:$PATH" \
+  bash "$project/scripts/appimage/dependencies.sh" bundle \
+  "$temporary/audit-appdir" "$temporary/dependency-audit.log"
+[[ -L "$temporary/audit-appdir/usr/lib/libgpg-error.so.0" ]]
+[[ -f "$temporary/audit-appdir/usr/lib/libgpg-error.so.0.37.0" ]]
+grep -Fq 'libgpg-error.so.0 =>' "$temporary/dependency-audit.log"
+
+mkdir -p "$temporary/audit-missing/usr/bin" "$temporary/audit-missing/usr/lib"
+cp "$temporary/audit-appdir/usr/bin/fixture" "$temporary/audit-missing/usr/bin/fixture"
+MESHCORE_TEST_APPDIR="$temporary/audit-missing" \
+  MESHCORE_TEST_HOST_LIBRARY="$temporary/host/libgpg-error.so.0" \
+  PATH="$temporary/fakebin:$PATH" \
+  assert_fails bash "$project/scripts/appimage/dependencies.sh" audit \
+  "$temporary/audit-missing" "$temporary/dependency-rejected.log"
+grep -Fq 'unexpected host dependency' "$temporary/dependency-rejected.log"
+
 printf 'AppImage packaging contract tests passed\n'

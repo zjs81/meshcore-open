@@ -86,27 +86,12 @@ log "ELF architecture audit passed ($elf_count files)"
 
 dependencies="$output/dependencies.log"
 : > "$dependencies"
-run_timed 'check application dependencies' 20s "$workspace/ldd.log" \
-  ldd "$appdir/usr/bin/meshcore_open"
-cat "$workspace/ldd.log" >> "$dependencies"
-while IFS= read -r -d '' library; do
-  relative="${library#"$appdir/"}"
-  if run_timed "check dependencies: $relative" 20s "$workspace/ldd.log" ldd "$library"; then
-    cat "$workspace/ldd.log" >> "$dependencies"
-  else
-    status=$?
-    cat "$workspace/ldd.log" >> "$dependencies"
-    if [[ "$status" == 124 || "$status" == 137 ]]; then
-      exit "$status"
-    fi
-    log "ldd returned $status for $relative; continuing unresolved-dependency scan"
-  fi
-done < <(find "$appdir/usr/bin/lib" "$appdir/usr/lib" -type f -name '*.so*' -print0)
-if grep 'not found' "$dependencies"; then
-  log 'Unresolved AppImage dependencies'
-  exit 1
-fi
-log 'Dependency audit passed'
+dependency_checker="${MESHCORE_APPIMAGE_DEPENDENCIES:-$(dirname "${BASH_SOURCE[0]}")/dependencies.sh}"
+[[ -f "$dependency_checker" ]] || { log "Missing dependency checker: $dependency_checker"; exit 1; }
+run_timed 'audit dependency origins' 120s "$workspace/dependency-audit.log" \
+  bash "$dependency_checker" audit "$appdir" "$dependencies"
+cat "$workspace/dependency-audit.log" >> "$dependencies"
+log 'Dependency origin audit passed'
 
 mkdir -p "$workspace/home/Documents" "$workspace/home/config"
 printf 'XDG_DOCUMENTS_DIR="%s/Documents"\n' "$workspace/home" > "$workspace/home/config/user-dirs.dirs"
