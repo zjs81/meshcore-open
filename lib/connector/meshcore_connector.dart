@@ -551,6 +551,10 @@ class MeshCoreConnector extends ChangeNotifier {
   bool get isAutoReconnectScheduled =>
       (_shouldAutoReconnect || _shouldAutoReconnectTcp) &&
       (_reconnectTimer?.isActive ?? false);
+
+  @visibleForTesting
+  int get reconnectAttemptsForTesting => _reconnectAttempts;
+
   String? get activeTcpEndpoint => _tcpConnector.activeEndpoint;
   bool get isTcpTransportConnected =>
       _state == MeshCoreConnectionState.connected &&
