@@ -382,8 +382,14 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         password: _passwordController.text,
       );
       if (!mounted) return;
+      final deviceName = (connector.selfName ?? '')
+          .trim()
+          .replaceAll(RegExp(r'[<>:"/\\|?*\x00-\x1f]'), '_')
+          .replaceAll(RegExp(r'\s+'), '_')
+          .replaceAll(RegExp(r'^\.+'), '')
+          .replaceAll(RegExp(r'[. ]+$'), '');
       final filename =
-          'meshcore-open_backup_${DateTime.now().millisecondsSinceEpoch}.json';
+          'meshcore-open_${deviceName.isEmpty ? 'radio' : deviceName}_backup_${DateTime.now().millisecondsSinceEpoch}.json';
       final file = XFile.fromData(
         Uint8List.fromList(utf8.encode(contents)),
         name: filename,
