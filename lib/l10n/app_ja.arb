@@ -254,7 +254,8 @@
   "appSettings_languageZh": "中国語",
   "appSettings_languageSv": "スウェーデン語",
   "appSettings_languageNl": "オランダ語",
-  "appSettings_languageSk": "スロベニア語",
+  "appSettings_languageSk": "スロバキア語",
+  "appSettings_languageCs": "チェコ語",
   "appSettings_languageBg": "ブルガリア語",
   "appSettings_languageRu": "ロシア語",
   "appSettings_languageUk": "ウクライナ語",
@@ -3930,5 +3931,80 @@
   "messageFilter_ghostIconTooltip": "メッセージフィルターで隠されました",
   "@messageFilter_ghostIconTooltip": {
     "description": "Message filter: Hidden by your message filter"
+  },
+  "chatSearch_tooltip": "メッセージを検索",
+  "chatSearch_hint": "メッセージを検索",
+  "chatSearch_close": "検索を閉じる",
+  "chatSearch_resultCount": "{count, plural, other{{count} 件の結果}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "一致するメッセージはありません",
+  "chatSearch_noResultsHint": "別の単語を試すか、スペルを確認してください",
+  "contactShare_headerOutgoing": "連絡先を共有しました",
+  "contactShare_headerIncoming": "連絡先を共有",
+  "contactShare_add": "連絡先を追加",
+  "contactShare_adding": "連絡先を追加中...",
+  "contactShare_saved": "登録済み",
+  "contactShare_isYou": "これはあなたです",
+  "contactShare_shareAction": "連絡先を共有",
+  "contactShare_pickerTitle": "連絡先を共有",
+  "contactShare_myContact": "自分の連絡先",
+  "contactShare_searchHint": "連絡先を検索",
+  "contactShare_noContacts": "連絡先が見つかりません",
+  "contactShare_preview": "共有された連絡先: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "連絡先を共有: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "ハッシュで経路追跡",
+  "manualTrace_inputLabel": "リピーターのハッシュ",
+  "manualTrace_helper": "例: {example}。カンマまたはスペースで区切ってください。",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "ホップ ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "不明なノード",
+  "manualTrace_enterHashes": "ハッシュを入力",
+  "manualTrace_run": "経路トレースを実行",
+  "manualTrace_notConnected": "トレースを実行するには無線機に接続してください",
+  "manualTrace_errorInvalidHex": "16進数の文字(0-9、A-F)のみ使用できます",
+  "manualTrace_errorOddLength": "各ハッシュはホップのサイズに合わせて、16進数の文字数が偶数である必要があります",
+  "manualTrace_errorMixedWidths": "すべてのハッシュは同じ長さにしてください",
+  "manualTrace_errorUnsupportedWidth": "ハッシュは1、2、3バイト(16進数で2、4、6文字)にしてください",
+  "manualTrace_errorTooManyHops": "経路が長すぎます(最大 {max} バイト)",
+  "manualTrace_errorTraceTooLong": "1回のリクエストでトレースできるホップ数を超えています。ホップを減らすか、「入力どおり」を選んでください。",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
   }
 }

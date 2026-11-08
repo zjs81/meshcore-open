@@ -181,8 +181,9 @@
   "appSettings_languageZh": "Chiński",
   "appSettings_languageSv": "Szwedzki",
   "appSettings_languageNl": "Niderlandzki",
-  "appSettings_languageSk": "Słoweniština",
-  "appSettings_languageBg": "Българский",
+  "appSettings_languageSk": "Słowacki",
+  "appSettings_languageCs": "Czeski",
+  "appSettings_languageBg": "Bułgarski",
   "appSettings_notifications": "Powiadomienia",
   "appSettings_enableNotifications": "Włącz Powiadomienia",
   "appSettings_enableNotificationsSubtitle": "Otrzymuj powiadomienia o wiadomościach i rozgłoszeniach.",
@@ -1792,7 +1793,7 @@
   "contacts_pathTraceTo": "Śledź trasę do {name}",
   "contacts_chatTraceRoute": "Śledź trasę promienia",
   "appSettings_languageRu": "Rosyjski",
-  "appSettings_languageUk": "Ukraińska",
+  "appSettings_languageUk": "Ukraiński",
   "appSettings_enableMessageTracing": "Włącz śledzenie wiadomości",
   "appSettings_enableMessageTracingSubtitle": "Pokaż szczegółowe metadane trasowania i czasu dla wiadomości",
   "contacts_contactImportFailed": "Kontakt nie został zaimportowany.",
@@ -3829,5 +3830,80 @@
   "messageFilter_ghostIconTooltip": "Ukryte przez Twój filtr wiadomości",
   "@messageFilter_ghostIconTooltip": {
     "description": "Message filter: Hidden by your message filter"
+  },
+  "chatSearch_tooltip": "Szukaj wiadomości",
+  "chatSearch_hint": "Szukaj wiadomości",
+  "chatSearch_close": "Zamknij wyszukiwanie",
+  "chatSearch_resultCount": "{count, plural, one{{count} wynik} few{{count} wyniki} many{{count} wyników} other{{count} wyniku}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Brak pasujących wiadomości",
+  "chatSearch_noResultsHint": "Spróbuj innego słowa lub sprawdź pisownię",
+  "contactShare_headerOutgoing": "Udostępniono kontakt",
+  "contactShare_headerIncoming": "Udostępnił(a) kontakt",
+  "contactShare_add": "Dodaj kontakt",
+  "contactShare_adding": "Dodawanie kontaktu...",
+  "contactShare_saved": "Zapisano",
+  "contactShare_isYou": "To Ty",
+  "contactShare_shareAction": "Udostępnij kontakt",
+  "contactShare_pickerTitle": "Udostępnij kontakt",
+  "contactShare_myContact": "Mój kontakt",
+  "contactShare_searchHint": "Szukaj kontaktów",
+  "contactShare_noContacts": "Nie znaleziono kontaktów",
+  "contactShare_preview": "Udostępniony kontakt: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Udostępnił(a) kontakt: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Śledzenie ścieżki po hashach",
+  "manualTrace_inputLabel": "Hasze przekaźników",
+  "manualTrace_helper": "Przykład: {example}. Oddziel przecinkami lub spacjami.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Skoki ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Nieznany węzeł",
+  "manualTrace_enterHashes": "Wpisz hasze",
+  "manualTrace_run": "Uruchom śledzenie ścieżki",
+  "manualTrace_notConnected": "Połącz się z radiem, aby uruchomić śledzenie",
+  "manualTrace_errorInvalidHex": "Dozwolone są tylko znaki szesnastkowe (0-9, A-F)",
+  "manualTrace_errorOddLength": "Każdy hasz musi mieć parzystą liczbę znaków szesnastkowych, zgodną z rozmiarem skoku",
+  "manualTrace_errorMixedWidths": "Wszystkie hasze muszą mieć tę samą długość",
+  "manualTrace_errorUnsupportedWidth": "Hasze muszą mieć 1, 2 lub 3 bajty (2, 4 lub 6 znaków szesnastkowych)",
+  "manualTrace_errorTooManyHops": "Ścieżka jest zbyt długa (maksymalnie {max} bajtów)",
+  "manualTrace_errorTraceTooLong": "Zbyt wiele skoków do prześledzenia w jednym żądaniu. Usuń część skoków lub wybierz „Jak wprowadzono”.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
   }
 }

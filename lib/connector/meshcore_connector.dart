@@ -64,6 +64,8 @@ import '../storage/unread_store.dart';
 import '../review_mode/review_mode_storage.dart';
 import '../review_mode/review_radio.dart';
 import '../utils/app_logger.dart';
+import '../utils/contact_qr.dart';
+import '../utils/contact_qr_frame.dart';
 import '../utils/battery_utils.dart';
 import '../utils/platform_info.dart';
 import 'meshcore_uuids.dart';
@@ -1016,6 +1018,34 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
 
     return olderMessages;
+  }
+
+  /// Full stored history (archived prefix plus the in-memory window) for
+  /// search. Read-only: nothing is unarchived and listeners are not notified.
+  Future<List<Message>> allMessagesForSearch(String contactKeyHex) async {
+    final stored = await _messageStore.loadMessages(contactKeyHex);
+    final window = _conversations[contactKeyHex] ?? const <Message>[];
+    final archived =
+        (_messageStore.archivedCount(contactKeyHex) ??
+                stored.length - window.length)
+            .clamp(0, stored.length);
+    return [...stored.sublist(0, archived), ...window];
+  }
+
+  /// Channel counterpart of [allMessagesForSearch]; read-only.
+  Future<List<ChannelMessage>> allChannelMessagesForSearch(
+    int channelIndex,
+  ) async {
+    final slot = _canonicalSlot(channelIndex);
+    final window = _channelMessages[slot] ?? const <ChannelMessage>[];
+    final channelId = _channelIdForSlot(slot);
+    if (channelId == null) return List.of(window);
+    final stored = await _channelMessageStore.loadChannelMessages(channelId);
+    final archived =
+        (_channelMessageStore.archivedCount(channelId) ??
+                stored.length - window.length)
+            .clamp(0, stored.length);
+    return [..._bindToSlot(stored.sublist(0, archived), slot), ...window];
   }
 
   List<ChannelMessage> getChannelMessages(Channel channel) {
@@ -4673,6 +4703,28 @@ class MeshCoreConnector extends ChangeNotifier {
         isUnknownSenderReplay: true,
       );
     }
+  }
+
+  /// Adds (or updates) a contact from a scanned/shared card on the radio and
+  /// refreshes the contact list. Throws when the radio does not acknowledge.
+  Future<void> addContactFromCard(ScannedContact card) async {
+    final publicKey = card.publicKey;
+    // Saved contacts first (their flags matter), then discovery-only records,
+    // which still carry a known name worth preserving.
+    final existing = publicKey == null
+        ? null
+        : allContactsUnfiltered
+              .where(
+                (contact) => contact.publicKeyHex == pubKeyToHex(publicKey),
+              )
+              .firstOrNull;
+    final frame = buildContactQrFrame(
+      card,
+      existing: existing,
+      pathHashByteWidth: pathHashByteWidth,
+    );
+    await sendFrame(frame, waitForGenericAck: true);
+    await refreshContacts();
   }
 
   Future<void> refreshContacts() async {

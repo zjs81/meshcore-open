@@ -183,6 +183,7 @@
   "appSettings_languageSv": "Шведська",
   "appSettings_languageNl": "Нідерландська",
   "appSettings_languageSk": "Словацька",
+  "appSettings_languageCs": "Чеська",
   "appSettings_languageBg": "Болгарська",
   "appSettings_languageUk": "Українська",
   "appSettings_notifications": "Сповіщення",
@@ -3570,5 +3571,80 @@
   "messageFilter_filterSenderConfirm": "Приховати всі повідомлення від «{name}»?",
   "messageFilter_filterLikeThis": "Фільтрувати повідомлення, схожі на це…",
   "messageFilter_channelToggle": "Фільтрувати повідомлення в цьому каналі",
-  "messageFilter_ghostIconTooltip": "Приховано вашим фільтром повідомлень"
+  "messageFilter_ghostIconTooltip": "Приховано вашим фільтром повідомлень",
+  "chatSearch_tooltip": "Пошук повідомлень",
+  "chatSearch_hint": "Пошук повідомлень",
+  "chatSearch_close": "Закрити пошук",
+  "chatSearch_resultCount": "{count, plural, one{{count} результат} few{{count} результати} many{{count} результатів} other{{count} результату}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Відповідних повідомлень немає",
+  "chatSearch_noResultsHint": "Спробуйте інше слово або перевірте написання",
+  "contactShare_headerOutgoing": "Ви надіслали контакт",
+  "contactShare_headerIncoming": "Надіслав(-ла) контакт",
+  "contactShare_add": "Додати контакт",
+  "contactShare_adding": "Додавання контакту...",
+  "contactShare_saved": "Збережено",
+  "contactShare_isYou": "Це ви",
+  "contactShare_shareAction": "Надіслати контакт",
+  "contactShare_pickerTitle": "Надіслати контакт",
+  "contactShare_myContact": "Мій контакт",
+  "contactShare_searchHint": "Пошук контактів",
+  "contactShare_noContacts": "Контактів не знайдено",
+  "contactShare_preview": "Контакт: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Надіслав(-ла) контакт: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Трасування шляху за хешами",
+  "manualTrace_inputLabel": "Хеші репітерів",
+  "manualTrace_helper": "Приклад: {example}. Розділяйте комами або пробілами.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Хопи ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Невідомий вузол",
+  "manualTrace_enterHashes": "Введіть хеші",
+  "manualTrace_run": "Запустити трасування шляху",
+  "manualTrace_notConnected": "Підключіться до радіо, щоб запустити трасування",
+  "manualTrace_errorInvalidHex": "Дозволені лише шістнадцяткові символи (0-9, A-F)",
+  "manualTrace_errorOddLength": "Кожен хеш має складатися з парної кількості шістнадцяткових символів, що відповідає розміру хопа",
+  "manualTrace_errorMixedWidths": "Усі хеші мають бути однакової довжини",
+  "manualTrace_errorUnsupportedWidth": "Хеші мають бути завдовжки 1, 2 або 3 байти (2, 4 або 6 шістнадцяткових символів)",
+  "manualTrace_errorTooManyHops": "Шлях задовгий (максимум {max} байт)",
+  "manualTrace_errorTraceTooLong": "Забагато хопів для трасування в одному запиті. Видаліть кілька хопів або виберіть «Як введено».",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -182,6 +182,7 @@
   "appSettings_languageSv": "Schwedisch",
   "appSettings_languageNl": "Niederländisch",
   "appSettings_languageSk": "Slowakisch",
+  "appSettings_languageCs": "Tschechisch",
   "appSettings_languageBg": "Bulgarisch",
   "appSettings_notifications": "Benachrichtigungen",
   "appSettings_enableNotifications": "Benachrichtigungen aktivieren",
@@ -3725,5 +3726,80 @@
   "messageFilter_filterSenderConfirm": "Alle Nachrichten von „{name}“ ausblenden?",
   "messageFilter_filterLikeThis": "Ähnliche Nachrichten filtern…",
   "messageFilter_channelToggle": "Nachrichten in diesem Kanal filtern",
-  "messageFilter_ghostIconTooltip": "Von Ihrem Nachrichtenfilter ausgeblendet"
+  "messageFilter_ghostIconTooltip": "Von Ihrem Nachrichtenfilter ausgeblendet",
+  "chatSearch_tooltip": "Nachrichten durchsuchen",
+  "chatSearch_hint": "Nachrichten durchsuchen",
+  "chatSearch_close": "Suche schließen",
+  "chatSearch_resultCount": "{count, plural, =1{1 Treffer} other{{count} Treffer}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Keine passenden Nachrichten",
+  "chatSearch_noResultsHint": "Versuchen Sie ein anderes Wort oder prüfen Sie die Schreibweise",
+  "contactShare_headerOutgoing": "Sie haben einen Kontakt geteilt",
+  "contactShare_headerIncoming": "Hat einen Kontakt geteilt",
+  "contactShare_add": "Kontakt hinzufügen",
+  "contactShare_adding": "Kontakt wird hinzugefügt...",
+  "contactShare_saved": "Gespeichert",
+  "contactShare_isYou": "Das sind Sie",
+  "contactShare_shareAction": "Kontakt teilen",
+  "contactShare_pickerTitle": "Kontakt teilen",
+  "contactShare_myContact": "Mein Kontakt",
+  "contactShare_searchHint": "Kontakte durchsuchen",
+  "contactShare_noContacts": "Keine Kontakte gefunden",
+  "contactShare_preview": "Geteilter Kontakt: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Hat einen Kontakt geteilt: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Pfadverfolgung per Hash",
+  "manualTrace_inputLabel": "Repeater-Hashes",
+  "manualTrace_helper": "Beispiel: {example}. Mit Kommas oder Leerzeichen trennen.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Hops ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Unbekannter Knoten",
+  "manualTrace_enterHashes": "Hashes eingeben",
+  "manualTrace_run": "Pfadverfolgung starten",
+  "manualTrace_notConnected": "Verbinden Sie sich mit einem Funkgerät, um eine Verfolgung zu starten",
+  "manualTrace_errorInvalidHex": "Nur Hex-Zeichen (0-9, A-F) sind erlaubt",
+  "manualTrace_errorOddLength": "Jeder Hash benötigt eine gerade Anzahl von Hex-Zeichen, passend zur Hop-Größe",
+  "manualTrace_errorMixedWidths": "Alle Hashes müssen die gleiche Länge haben",
+  "manualTrace_errorUnsupportedWidth": "Hashes müssen 1, 2 oder 3 Bytes lang sein (2, 4 oder 6 Hex-Zeichen)",
+  "manualTrace_errorTooManyHops": "Pfad ist zu lang (maximal {max} Bytes)",
+  "manualTrace_errorTraceTooLong": "Zu viele Hops für eine einzelne Verfolgung. Entfernen Sie einige Hops oder wählen Sie „Wie eingegeben“.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

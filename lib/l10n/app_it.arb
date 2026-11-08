@@ -180,7 +180,8 @@
   "appSettings_languageZh": "Cinese",
   "appSettings_languageSv": "Svedese",
   "appSettings_languageNl": "Olandese",
-  "appSettings_languageSk": "Sloveno",
+  "appSettings_languageSk": "Slovacco",
+  "appSettings_languageCs": "Ceco",
   "appSettings_languageBg": "Bulgaro",
   "appSettings_notifications": "Notifiche",
   "appSettings_enableNotifications": "Abilita Notifiche",
@@ -3724,5 +3725,80 @@
   "messageFilter_filterSenderConfirm": "Nascondere tutti i messaggi di «{name}»?",
   "messageFilter_filterLikeThis": "Filtra messaggi come questo…",
   "messageFilter_channelToggle": "Filtra i messaggi in questo canale",
-  "messageFilter_ghostIconTooltip": "Nascosto dal tuo filtro messaggi"
+  "messageFilter_ghostIconTooltip": "Nascosto dal tuo filtro messaggi",
+  "chatSearch_tooltip": "Cerca messaggi",
+  "chatSearch_hint": "Cerca messaggi",
+  "chatSearch_close": "Chiudi ricerca",
+  "chatSearch_resultCount": "{count, plural, =1{1 risultato} other{{count} risultati}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Nessun messaggio corrispondente",
+  "chatSearch_noResultsHint": "Prova con un'altra parola o controlla l'ortografia",
+  "contactShare_headerOutgoing": "Hai condiviso un contatto",
+  "contactShare_headerIncoming": "Ha condiviso un contatto",
+  "contactShare_add": "Aggiungi contatto",
+  "contactShare_adding": "Aggiunta del contatto...",
+  "contactShare_saved": "Salvato",
+  "contactShare_isYou": "Sei tu",
+  "contactShare_shareAction": "Condividi contatto",
+  "contactShare_pickerTitle": "Condividi un contatto",
+  "contactShare_myContact": "Il mio contatto",
+  "contactShare_searchHint": "Cerca contatti",
+  "contactShare_noContacts": "Nessun contatto trovato",
+  "contactShare_preview": "Contatto condiviso: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Ha condiviso un contatto: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Tracciamento del percorso per hash",
+  "manualTrace_inputLabel": "Hash dei ripetitori",
+  "manualTrace_helper": "Esempio: {example}. Separa con virgole o spazi.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Salti ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Nodo sconosciuto",
+  "manualTrace_enterHashes": "Inserisci gli hash",
+  "manualTrace_run": "Avvia tracciamento del percorso",
+  "manualTrace_notConnected": "Connettiti a una radio per eseguire una traccia",
+  "manualTrace_errorInvalidHex": "Sono ammessi solo caratteri esadecimali (0-9, A-F)",
+  "manualTrace_errorOddLength": "Ogni hash richiede un numero pari di caratteri esadecimali, corrispondente alla dimensione del salto",
+  "manualTrace_errorMixedWidths": "Tutti gli hash devono avere la stessa lunghezza",
+  "manualTrace_errorUnsupportedWidth": "Gli hash devono essere di 1, 2 o 3 byte (2, 4 o 6 caratteri esadecimali)",
+  "manualTrace_errorTooManyHops": "Il percorso è troppo lungo (massimo {max} byte)",
+  "manualTrace_errorTraceTooLong": "Troppi salti da tracciare in una sola richiesta. Rimuovi alcuni salti o scegli «Come inserito».",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

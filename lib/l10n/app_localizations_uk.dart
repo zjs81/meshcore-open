@@ -1106,6 +1106,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get appSettings_languageUk => 'Українська';
 
   @override
+  String get appSettings_languageCs => 'Чеська';
+
+  @override
   String get repeater_pathHashModeOption0 => '1 байт';
 
   @override
@@ -2031,6 +2034,35 @@ class AppLocalizationsUk extends AppLocalizations {
   String get chat_noMessages => 'Поки немає повідомлень.';
 
   @override
+  String get chatSearch_tooltip => 'Пошук повідомлень';
+
+  @override
+  String get chatSearch_hint => 'Пошук повідомлень';
+
+  @override
+  String get chatSearch_close => 'Закрити пошук';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count результату',
+      many: '$count результатів',
+      few: '$count результати',
+      one: '$count результат',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Відповідних повідомлень немає';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Спробуйте інше слово або перевірте написання';
+
+  @override
   String get chat_sendMessage => 'Надіслати повідомлення';
 
   @override
@@ -2485,6 +2517,49 @@ class AppLocalizationsUk extends AppLocalizations {
   String get chat_poiShared => 'Поділилися точкою інтересу';
 
   @override
+  String get contactShare_headerOutgoing => 'Ви надіслали контакт';
+
+  @override
+  String get contactShare_headerIncoming => 'Надіслав(-ла) контакт';
+
+  @override
+  String get contactShare_add => 'Додати контакт';
+
+  @override
+  String get contactShare_adding => 'Додавання контакту...';
+
+  @override
+  String get contactShare_saved => 'Збережено';
+
+  @override
+  String get contactShare_isYou => 'Це ви';
+
+  @override
+  String get contactShare_shareAction => 'Надіслати контакт';
+
+  @override
+  String get contactShare_pickerTitle => 'Надіслати контакт';
+
+  @override
+  String get contactShare_myContact => 'Мій контакт';
+
+  @override
+  String get contactShare_searchHint => 'Пошук контактів';
+
+  @override
+  String get contactShare_noContacts => 'Контактів не знайдено';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Контакт: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Надіслав(-ла) контакт: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Непрочитано: $count';
   }
@@ -2789,6 +2864,60 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Переглянути останній результат';
+
+  @override
+  String get manualTrace_menuItem => 'Трасування шляху за хешами';
+
+  @override
+  String get manualTrace_inputLabel => 'Хеші репітерів';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Приклад: $example. Розділяйте комами або пробілами.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Хопи ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Невідомий вузол';
+
+  @override
+  String get manualTrace_enterHashes => 'Введіть хеші';
+
+  @override
+  String get manualTrace_run => 'Запустити трасування шляху';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Підключіться до радіо, щоб запустити трасування';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Дозволені лише шістнадцяткові символи (0-9, A-F)';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Кожен хеш має складатися з парної кількості шістнадцяткових символів, що відповідає розміру хопа';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Усі хеші мають бути однакової довжини';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Хеші мають бути завдовжки 1, 2 або 3 байти (2, 4 або 6 шістнадцяткових символів)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Шлях задовгий (максимум $max байт)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Забагато хопів для трасування в одному запиті. Видаліть кілька хопів або виберіть «Як введено».';
 
   @override
   String get mapCache_title => 'Офлайн-кеш карти';

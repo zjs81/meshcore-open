@@ -21,7 +21,10 @@ import '../widgets/empty_state.dart';
 import '../helpers/chat_scroll_controller.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/ipfs_link_attach_flow.dart';
+import '../helpers/contact_share_message.dart';
 import '../helpers/marker_message.dart';
+import '../helpers/message_search.dart';
+import '../widgets/chat_search_results.dart';
 import '../models/channel_message.dart';
 import '../models/contact.dart';
 import '../l10n/contact_localization.dart';
@@ -51,6 +54,8 @@ import '../widgets/unread_divider.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/future_timestamp_indicator.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/share_contact_sheet.dart';
+import '../widgets/shared_contact_card.dart';
 import 'telemetry_screen.dart';
 import '../services/chat_background_service.dart';
 import '../widgets/chat_background.dart';
@@ -203,65 +208,172 @@ class _ChatScreenState extends State<ChatScreen> {
     _textFieldFocusNode.removeListener(_onTextFieldFocusChange);
     _textFieldFocusNode.dispose();
     _textController.dispose();
+    _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
+  bool _searching = false;
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
+
+  bool get _showSearchResults => _searching && _searchQuery.trim().isNotEmpty;
+
+  void _openSearch() => setState(() => _searching = true);
+
+  void _closeSearch() {
+    _searchController.clear();
+    setState(() {
+      _searching = false;
+      _searchQuery = '';
+    });
+  }
+
+  Widget _buildSearchField() {
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.escape): _closeSearch,
+      },
+      child: TextField(
+        controller: _searchController,
+        autofocus: true,
+        textInputAction: TextInputAction.search,
+        style: const TextStyle(fontSize: 16),
+        decoration: InputDecoration(
+          hintText: context.l10n.chatSearch_hint,
+          border: InputBorder.none,
+        ),
+        onChanged: (value) => setState(() => _searchQuery = value),
+      ),
+    );
+  }
+
+  Widget _buildSearchResults(
+    Future<List<ChatSearchEntry>> Function() loadEntries,
+  ) {
+    return ChatSearchResults(
+      query: _searchQuery.trim(),
+      loadEntries: loadEntries,
+      textScale: context.watch<ChatTextScaleService>().scale,
+    );
+  }
+
+  Future<List<ChatSearchEntry>> _loadSearchEntries() async {
+    final connector = context.read<MeshCoreConnector>();
+    final contact = _resolveContact(connector);
+    final isRoom = contact.type == advTypeRoom;
+    final youLabel = context.l10n.notification_you;
+    final messages = await connector.allMessagesForSearch(
+      widget.contact.publicKeyHex,
+    );
+    String senderOf(Message m) {
+      if (m.isOutgoing) return youLabel;
+      if (!isRoom) return contact.name;
+      // Room posts name their author by a 4-byte key prefix, as in the list.
+      final key = m.fourByteRoomContactKey;
+      final hex = key
+          .map((b) => b.toRadixString(16).padLeft(2, '0'))
+          .join()
+          .toUpperCase();
+      final author = key.isEmpty
+          ? null
+          : _resolveContactFrom4Bytes(connector, key);
+      return author != null ? '${author.name} [$hex]' : '[$hex]';
+    }
+
+    return [
+      for (final m in messages)
+        if (!m.isCli)
+          ChatSearchEntry(
+            id: m.messageId,
+            sender: senderOf(m),
+            text: m.text,
+            translatedText: m.translatedText,
+            time: m.receivedAt,
+          ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
+    return PopScope(
+      canPop: !_searching,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _searching) _closeSearch();
+      },
+      child: _buildScaffold(context),
+    );
+  }
+
+  Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Consumer2<PathHistoryService, MeshCoreConnector>(
-          builder: (context, pathService, connector, _) {
-            final contact = _resolveContact(connector);
-            final pathLabel = _currentPathLabel(contact);
+        leading: _searching
+            ? IconButton(
+                tooltip: context.l10n.chatSearch_close,
+                icon: const Icon(Icons.arrow_back),
+                onPressed: _closeSearch,
+              )
+            : null,
+        title: _searching
+            ? _buildSearchField()
+            : Consumer2<PathHistoryService, MeshCoreConnector>(
+                builder: (context, pathService, connector, _) {
+                  final contact = _resolveContact(connector);
+                  final pathLabel = _currentPathLabel(contact);
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  contact.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () =>
-                      ContactRoutingSheet.show(context, contact: contact),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Builder(
-                      builder: (context) {
-                        // Follows the chat text size, capped so the two-line
-                        // title still fits the app bar.
-                        final textScale = context
-                            .select<ChatTextScaleService, double>(
-                              (service) => service.scale,
-                            )
-                            .clamp(1.0, 1.3);
-                        return Text(
-                          pathLabel,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 12 * textScale,
-                            fontWeight: FontWeight.normal,
-                            decoration: TextDecoration.underline,
-                            decorationStyle: TextDecorationStyle.dotted,
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        contact.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () =>
+                            ContactRoutingSheet.show(context, contact: contact),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Builder(
+                            builder: (context) {
+                              // Follows the chat text size, capped so the two-line
+                              // title still fits the app bar.
+                              final textScale = context
+                                  .select<ChatTextScaleService, double>(
+                                    (service) => service.scale,
+                                  )
+                                  .clamp(1.0, 1.3);
+                              return Text(
+                                pathLabel,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 12 * textScale,
+                                  fontWeight: FontWeight.normal,
+                                  decoration: TextDecoration.underline,
+                                  decorationStyle: TextDecorationStyle.dotted,
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
         centerTitle: false,
         bottom: const SyncProgressAppBarBottom(),
         actions: [
           const RadioStatsIconButton(),
+          if (!_searching)
+            IconButton(
+              tooltip: context.l10n.chatSearch_tooltip,
+              icon: const Icon(Icons.search),
+              onPressed: _openSearch,
+            ),
           Consumer<MeshCoreConnector>(
             builder: (context, connector, _) {
               final contact = _resolveContact(connector);
@@ -369,41 +481,47 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ],
       ),
-      body: Consumer<MeshCoreConnector>(
-        builder: (context, connector, child) {
-          final messages = connector.getMessages(widget.contact);
-          final newest = messages.isEmpty ? null : messages.last;
-          _holidayWatcher.onNewest(
-            context,
-            id: newest?.messageId,
-            texts: [newest?.text, newest?.translatedText],
-            receivedAt: newest?.receivedAt,
-            originOf: () => newestMessageOrigin(
-              _messageAreaKey,
-              isOutgoing: newest?.isOutgoing ?? false,
-            ),
-          );
-          return Column(
-            children: [
-              Expanded(
-                child: ChatBackdrop(
-                  key: _messageAreaKey,
-                  chatKey: ChatBackgroundService.contactKey(widget.contact),
-                  child: Stack(
-                    children: [
-                      messages.isEmpty
-                          ? _buildEmptyState()
-                          : _buildMessageList(messages, connector),
-                      JumpToBottomButton(scrollController: _scrollController),
-                    ],
+      body: _showSearchResults
+          ? _buildSearchResults(_loadSearchEntries)
+          : Consumer<MeshCoreConnector>(
+              builder: (context, connector, child) {
+                final messages = connector.getMessages(widget.contact);
+                final newest = messages.isEmpty ? null : messages.last;
+                _holidayWatcher.onNewest(
+                  context,
+                  id: newest?.messageId,
+                  texts: [newest?.text, newest?.translatedText],
+                  receivedAt: newest?.receivedAt,
+                  originOf: () => newestMessageOrigin(
+                    _messageAreaKey,
+                    isOutgoing: newest?.isOutgoing ?? false,
                   ),
-                ),
-              ),
-              _buildInputBar(connector),
-            ],
-          );
-        },
-      ),
+                );
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ChatBackdrop(
+                        key: _messageAreaKey,
+                        chatKey: ChatBackgroundService.contactKey(
+                          widget.contact,
+                        ),
+                        child: Stack(
+                          children: [
+                            messages.isEmpty
+                                ? _buildEmptyState()
+                                : _buildMessageList(messages, connector),
+                            JumpToBottomButton(
+                              scrollController: _scrollController,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    _buildInputBar(connector),
+                  ],
+                );
+              },
+            ),
     );
   }
 
@@ -581,6 +699,11 @@ class _ChatScreenState extends State<ChatScreen> {
             icon: Icons.my_location,
             label: context.l10n.chat_shareMyLocation,
           ),
+          ChatComposerAction(
+            id: 'share-contact',
+            icon: Icons.person_add_alt,
+            label: context.l10n.contactShare_shareAction,
+          ),
         ];
       },
       onAction: (action) {
@@ -592,6 +715,12 @@ class _ChatScreenState extends State<ChatScreen> {
             _sendImageViaIpfs();
           case 'send-my-location':
             _shareMyLocation(context.read<MeshCoreConnector>());
+          case 'share-contact':
+            showShareContactSheet(
+              context,
+              _textController,
+              focusNode: _textFieldFocusNode,
+            );
         }
       },
     );
@@ -1297,6 +1426,7 @@ class _MessageBubble extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final gifId = GifHelper.parseGif(message.text);
     final poi = parseMarkerText(message.text);
+    final contactShare = parseContactShare(message.text);
     final isFailed = message.status == MessageStatus.failed;
     final urlImagesEnabled = context.select<MeshCoreConnector, bool>(
       (connector) => connector.isContactUrlImagesEnabled(sourceId),
@@ -1400,7 +1530,15 @@ class _MessageBubble extends StatelessWidget {
                             ),
                             if (gifId == null) const SizedBox(height: 2),
                           ],
-                          if (poi != null)
+                          if (contactShare != null)
+                            SharedContactCard(
+                              share: contactShare,
+                              isOutgoing: isOutgoing,
+                              textScale: textScale,
+                              textColor: textColor,
+                              metaColor: metaColor,
+                            )
+                          else if (poi != null)
                             _buildPoiMessage(
                               context,
                               poi,

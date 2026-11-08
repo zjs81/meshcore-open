@@ -1091,7 +1091,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get appSettings_languageNl => 'Nizozemščina';
 
   @override
-  String get appSettings_languageSk => 'Slovenščina';
+  String get appSettings_languageSk => 'Slovaščina';
 
   @override
   String get appSettings_languageBg => 'Български';
@@ -1101,6 +1101,9 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get appSettings_languageUk => 'Ukrajinščina';
+
+  @override
+  String get appSettings_languageCs => 'Češčina';
 
   @override
   String get repeater_pathHashModeOption0 => '0 - 1 bajt';
@@ -2028,6 +2031,35 @@ class AppLocalizationsSl extends AppLocalizations {
   String get chat_noMessages => 'Še ni sporočil.';
 
   @override
+  String get chatSearch_tooltip => 'Išči sporočila';
+
+  @override
+  String get chatSearch_hint => 'Išči sporočila';
+
+  @override
+  String get chatSearch_close => 'Zapri iskanje';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count zadetkov',
+      few: '$count zadetki',
+      two: '$count zadetka',
+      one: '$count zadetek',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Ni ustreznih sporočil';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Poskusite z drugo besedo ali preverite črkovanje';
+
+  @override
   String get chat_sendMessage => 'Pošlji sporočilo';
 
   @override
@@ -2475,6 +2507,49 @@ class AppLocalizationsSl extends AppLocalizations {
   String get chat_poiShared => 'Deljeno točke MN';
 
   @override
+  String get contactShare_headerOutgoing => 'Delili ste stik';
+
+  @override
+  String get contactShare_headerIncoming => 'Delil stik';
+
+  @override
+  String get contactShare_add => 'Dodaj stik';
+
+  @override
+  String get contactShare_adding => 'Dodajanje stika ...';
+
+  @override
+  String get contactShare_saved => 'Shranjeno';
+
+  @override
+  String get contactShare_isYou => 'To ste vi';
+
+  @override
+  String get contactShare_shareAction => 'Deli stik';
+
+  @override
+  String get contactShare_pickerTitle => 'Deli stik';
+
+  @override
+  String get contactShare_myContact => 'Moj stik';
+
+  @override
+  String get contactShare_searchHint => 'Išči stike';
+
+  @override
+  String get contactShare_noContacts => 'Ni najdenih stikov';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Deljen stik: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Delil stik: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Nerešeno: $count';
   }
@@ -2779,6 +2854,60 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Poglej zadnji rezultat';
+
+  @override
+  String get manualTrace_menuItem => 'Sledenje poti po zgoščenih vrednostih';
+
+  @override
+  String get manualTrace_inputLabel => 'Zgoščene vrednosti repetitorjev';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Primer: $example. Ločite z vejicami ali presledki.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Skoki ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Neznano vozlišče';
+
+  @override
+  String get manualTrace_enterHashes => 'Vnesite zgoščene vrednosti';
+
+  @override
+  String get manualTrace_run => 'Zaženi sledenje poti';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Za izvedbo sledenja se povežite z radiem';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Dovoljeni so samo šestnajstiški znaki (0-9, A-F)';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Vsaka zgoščena vrednost mora imeti sodo število šestnajstiških znakov, skladno z velikostjo skoka';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Vse zgoščene vrednosti morajo biti enake dolžine';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Zgoščene vrednosti morajo imeti 1, 2 ali 3 bajte (2, 4 ali 6 šestnajstiških znakov)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Pot je predolga (največ $max bajtov)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Preveč skokov za sledenje v eni zahtevi. Odstranite nekaj skokov ali izberite »Kot vneseno«.';
 
   @override
   String get mapCache_title =>

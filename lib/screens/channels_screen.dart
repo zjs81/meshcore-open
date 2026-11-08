@@ -30,6 +30,7 @@ import '../widgets/qr_code_display.dart';
 import '../widgets/quick_switch_bar.dart';
 import '../widgets/sync_progress_overlay.dart';
 import '../widgets/unread_badge.dart';
+import '../helpers/contact_share_message.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../helpers/utf8_length_limiter.dart';
@@ -437,10 +438,15 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     // become the preview.
     final lastMessage = connector.latestVisibleChannelMessage(channel);
     final lastMessageText = lastMessage?.text ?? '';
+    final lastShare = parseContactShare(lastMessageText);
     final lastPreview =
         lastMessageText.isNotEmpty &&
             GifHelper.parseGif(lastMessageText) != null
         ? context.l10n.chat_receivedGif
+        : lastShare != null
+        ? context.l10n.contactShare_preview(
+            lastShare.name.isEmpty ? lastShare.shortKey : lastShare.name,
+          )
         : lastMessageText;
     final lastTime = lastMessage?.timestamp;
 

@@ -1115,6 +1115,9 @@ class AppLocalizationsBg extends AppLocalizations {
   String get appSettings_languageUk => 'Украински';
 
   @override
+  String get appSettings_languageCs => 'Чешки';
+
+  @override
   String get repeater_pathHashModeOption0 => '0 - 1 байт';
 
   @override
@@ -2045,6 +2048,33 @@ class AppLocalizationsBg extends AppLocalizations {
   String get chat_noMessages => 'Няма съобщения.';
 
   @override
+  String get chatSearch_tooltip => 'Търсене на съобщения';
+
+  @override
+  String get chatSearch_hint => 'Търсене на съобщения';
+
+  @override
+  String get chatSearch_close => 'Затвори търсенето';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count резултата',
+      one: '1 резултат',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Няма съответстващи съобщения';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Опитайте с друга дума или проверете правописа';
+
+  @override
   String get chat_sendMessage => 'Изпратете съобщение';
 
   @override
@@ -2496,6 +2526,49 @@ class AppLocalizationsBg extends AppLocalizations {
   String get chat_poiShared => 'Споделена точка на интерес';
 
   @override
+  String get contactShare_headerOutgoing => 'Споделихте контакт';
+
+  @override
+  String get contactShare_headerIncoming => 'Сподели контакт';
+
+  @override
+  String get contactShare_add => 'Добави контакт';
+
+  @override
+  String get contactShare_adding => 'Добавяне на контакт...';
+
+  @override
+  String get contactShare_saved => 'Запазен';
+
+  @override
+  String get contactShare_isYou => 'Това сте вие';
+
+  @override
+  String get contactShare_shareAction => 'Сподели контакт';
+
+  @override
+  String get contactShare_pickerTitle => 'Споделяне на контакт';
+
+  @override
+  String get contactShare_myContact => 'Моят контакт';
+
+  @override
+  String get contactShare_searchHint => 'Търсене на контакти';
+
+  @override
+  String get contactShare_noContacts => 'Не са намерени контакти';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Споделен контакт: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Сподели контакт: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Непрочетени: $count';
   }
@@ -2800,6 +2873,60 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Преглед на последния резултат';
+
+  @override
+  String get manualTrace_menuItem => 'Трасиране на пътя по хешове';
+
+  @override
+  String get manualTrace_inputLabel => 'Хешове на репитери';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Пример: $example. Разделяйте със запетаи или интервали.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Хопове ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Непознат възел';
+
+  @override
+  String get manualTrace_enterHashes => 'Въведете хешове';
+
+  @override
+  String get manualTrace_run => 'Пусни трасиране на пътя';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Свържете се с радио, за да пуснете трасиране';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Позволени са само шестнадесетични знаци (0-9, A-F)';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Всеки хеш трябва да има четен брой шестнадесетични знаци, съответстващ на размера на хопа';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Всички хешове трябва да са с еднаква дължина';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Хешовете трябва да са 1, 2 или 3 байта (2, 4 или 6 шестнадесетични знаци)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Пътят е твърде дълъг (максимум $max байта)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Твърде много хопове за трасиране в една заявка. Премахнете няколко хопа или изберете „Както е въведено“.';
 
   @override
   String get mapCache_title => 'Кеш на офлайн карти';

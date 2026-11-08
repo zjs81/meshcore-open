@@ -360,7 +360,7 @@ Messages are transmitted as binary frames using a custom protocol optimized for 
 ### App Settings
 
 - **Theme**: System default, light, or dark mode
-- **Language**: Use one of 18 languages (English, Chinese, French, Spanish, Portuguese, German, Dutch, Polish, Swedish, Italian, Slovak, Slovenian, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
+- **Language**: Use one of 19 languages (English, Chinese, French, Spanish, Portuguese, German, Dutch, Polish, Swedish, Italian, Slovak, Czech, Slovenian, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
 - **Notifications**: Configurable for messages, channels, and node advertisements; per-channel muting; reply, mark-as-read, and mute actions on Android notifications and watches (reply and mark-as-read in Android Auto when built with `--android-project-arg=androidAuto=true`)
 - **Battery Chemistry**: Support for NMC, LiFePO4, LiPo, and LiPo HV battery types
 - **Message Retry**: Automatic retry with configurable path clearing

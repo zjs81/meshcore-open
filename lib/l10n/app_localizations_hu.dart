@@ -1108,6 +1108,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get appSettings_languageUk => 'Українська';
 
   @override
+  String get appSettings_languageCs => 'Čeština';
+
+  @override
   String get repeater_pathHashModeOption0 => '1 bájt';
 
   @override
@@ -2034,6 +2037,33 @@ class AppLocalizationsHu extends AppLocalizations {
   String get chat_noMessages => 'Még nincsenek üzenetek';
 
   @override
+  String get chatSearch_tooltip => 'Üzenetek keresése';
+
+  @override
+  String get chatSearch_hint => 'Üzenetek keresése';
+
+  @override
+  String get chatSearch_close => 'Keresés bezárása';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count találat',
+      one: '1 találat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Nincs egyező üzenet';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Próbálj másik szót, vagy ellenőrizd a helyesírást';
+
+  @override
   String get chat_sendMessage => 'Üzenet küldése';
 
   @override
@@ -2481,6 +2511,49 @@ class AppLocalizationsHu extends AppLocalizations {
   String get chat_poiShared => 'POI megosztva';
 
   @override
+  String get contactShare_headerOutgoing => 'Megosztottál egy névjegyet';
+
+  @override
+  String get contactShare_headerIncoming => 'Megosztott egy névjegyet';
+
+  @override
+  String get contactShare_add => 'Névjegy hozzáadása';
+
+  @override
+  String get contactShare_adding => 'Névjegy hozzáadása...';
+
+  @override
+  String get contactShare_saved => 'Mentve';
+
+  @override
+  String get contactShare_isYou => 'Ez te vagy';
+
+  @override
+  String get contactShare_shareAction => 'Névjegy megosztása';
+
+  @override
+  String get contactShare_pickerTitle => 'Névjegy megosztása';
+
+  @override
+  String get contactShare_myContact => 'Saját névjegyem';
+
+  @override
+  String get contactShare_searchHint => 'Névjegyek keresése';
+
+  @override
+  String get contactShare_noContacts => 'Nem található névjegy';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Megosztott névjegy: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Megosztott egy névjegyet: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Olvasatlan: $count';
   }
@@ -2789,6 +2862,60 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Utolsó eredmény megtekintése';
+
+  @override
+  String get manualTrace_menuItem => 'Útvonal-nyomkövetés hashek alapján';
+
+  @override
+  String get manualTrace_inputLabel => 'Átjátszó hashek';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Példa: $example. Vesszővel vagy szóközzel válaszd el.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Ugrások ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Ismeretlen csomópont';
+
+  @override
+  String get manualTrace_enterHashes => 'Add meg a hasheket';
+
+  @override
+  String get manualTrace_run => 'Útvonal-nyomkövetés indítása';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Csatlakozz egy rádióhoz a nyomkövetés indításához';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Csak hexadecimális karakterek (0-9, A-F) engedélyezettek';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Minden hashnek páros számú hexadecimális karakterből kell állnia, az ugrásmérettel egyezően';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Minden hashnek azonos hosszúságúnak kell lennie';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'A hasheknek 1, 2 vagy 3 bájtosnak kell lenniük (2, 4 vagy 6 hexadecimális karakter)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Az útvonal túl hosszú (legfeljebb $max bájt)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Túl sok ugrás egyetlen nyomkövetési kéréshez. Távolíts el néhány ugrást, vagy válaszd a „Megadott sorrendben” lehetőséget.';
 
   @override
   String get mapCache_title => 'Offline térképgyorsítótár';

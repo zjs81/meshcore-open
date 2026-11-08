@@ -1107,6 +1107,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get appSettings_languageUk => 'Oekraïens';
 
   @override
+  String get appSettings_languageCs => 'Tsjechisch';
+
+  @override
   String get repeater_pathHashModeOption0 => '1 byte';
 
   @override
@@ -2029,6 +2032,33 @@ class AppLocalizationsNl extends AppLocalizations {
   String get chat_noMessages => 'Nog geen berichten.';
 
   @override
+  String get chatSearch_tooltip => 'Berichten zoeken';
+
+  @override
+  String get chatSearch_hint => 'Berichten zoeken';
+
+  @override
+  String get chatSearch_close => 'Zoeken sluiten';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count resultaten',
+      one: '1 resultaat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Geen overeenkomende berichten';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Probeer een ander woord of controleer de spelling';
+
+  @override
   String get chat_sendMessage => 'Verzend bericht';
 
   @override
@@ -2477,6 +2507,49 @@ class AppLocalizationsNl extends AppLocalizations {
   String get chat_poiShared => 'Gedeelde POI';
 
   @override
+  String get contactShare_headerOutgoing => 'Je hebt een contact gedeeld';
+
+  @override
+  String get contactShare_headerIncoming => 'Heeft een contact gedeeld';
+
+  @override
+  String get contactShare_add => 'Contact toevoegen';
+
+  @override
+  String get contactShare_adding => 'Contact toevoegen...';
+
+  @override
+  String get contactShare_saved => 'Opgeslagen';
+
+  @override
+  String get contactShare_isYou => 'Dit ben jij';
+
+  @override
+  String get contactShare_shareAction => 'Contact delen';
+
+  @override
+  String get contactShare_pickerTitle => 'Een contact delen';
+
+  @override
+  String get contactShare_myContact => 'Mijn contact';
+
+  @override
+  String get contactShare_searchHint => 'Contacten zoeken';
+
+  @override
+  String get contactShare_noContacts => 'Geen contacten gevonden';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Gedeeld contact: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Heeft een contact gedeeld: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Ongelezen: $count';
   }
@@ -2780,6 +2853,60 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Laatste resultaat bekijken';
+
+  @override
+  String get manualTrace_menuItem => 'Padtrace via hashes';
+
+  @override
+  String get manualTrace_inputLabel => 'Repeater-hashes';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Voorbeeld: $example. Scheid met komma\'s of spaties.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Hops ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Onbekende node';
+
+  @override
+  String get manualTrace_enterHashes => 'Voer hashes in';
+
+  @override
+  String get manualTrace_run => 'Padtrace uitvoeren';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Maak verbinding met een radio om een trace uit te voeren';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Alleen hex-tekens (0-9, A-F) zijn toegestaan';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Elke hash heeft een even aantal hex-tekens nodig, passend bij de hopgrootte';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Alle hashes moeten even lang zijn';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Hashes moeten 1, 2 of 3 bytes zijn (2, 4 of 6 hex-tekens)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Pad is te lang (maximaal $max bytes)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Te veel hops om in één verzoek te tracen. Verwijder enkele hops of kies „Zoals ingevoerd”.';
 
   @override
   String get mapCache_title => 'Offline Kaarten Cache';

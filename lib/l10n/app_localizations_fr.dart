@@ -1115,6 +1115,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appSettings_languageUk => 'Ukrainien';
 
   @override
+  String get appSettings_languageCs => 'Tchèque';
+
+  @override
   String get repeater_pathHashModeOption0 => '0 - 1 octet';
 
   @override
@@ -2043,6 +2046,33 @@ class AppLocalizationsFr extends AppLocalizations {
   String get chat_noMessages => 'Aucun message pour le moment';
 
   @override
+  String get chatSearch_tooltip => 'Rechercher des messages';
+
+  @override
+  String get chatSearch_hint => 'Rechercher des messages';
+
+  @override
+  String get chatSearch_close => 'Fermer la recherche';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count résultats',
+      one: '1 résultat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Aucun message correspondant';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Essayez un autre mot ou vérifiez l\'orthographe';
+
+  @override
   String get chat_sendMessage => 'Envoyer un message';
 
   @override
@@ -2492,6 +2522,49 @@ class AppLocalizationsFr extends AppLocalizations {
   String get chat_poiShared => 'Point d\'intérêt partagé';
 
   @override
+  String get contactShare_headerOutgoing => 'Vous avez partagé un contact';
+
+  @override
+  String get contactShare_headerIncoming => 'A partagé un contact';
+
+  @override
+  String get contactShare_add => 'Ajouter le contact';
+
+  @override
+  String get contactShare_adding => 'Ajout du contact...';
+
+  @override
+  String get contactShare_saved => 'Enregistré';
+
+  @override
+  String get contactShare_isYou => 'C\'est vous';
+
+  @override
+  String get contactShare_shareAction => 'Partager le contact';
+
+  @override
+  String get contactShare_pickerTitle => 'Partager un contact';
+
+  @override
+  String get contactShare_myContact => 'Mon contact';
+
+  @override
+  String get contactShare_searchHint => 'Rechercher des contacts';
+
+  @override
+  String get contactShare_noContacts => 'Aucun contact trouvé';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Contact partagé : $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'A partagé un contact : $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Non lu : $count';
   }
@@ -2799,6 +2872,60 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Voir le dernier résultat';
+
+  @override
+  String get manualTrace_menuItem => 'Traçage de chemin par hachages';
+
+  @override
+  String get manualTrace_inputLabel => 'Hachages des répéteurs';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Exemple : $example. Séparez par des virgules ou des espaces.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Sauts ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Nœud inconnu';
+
+  @override
+  String get manualTrace_enterHashes => 'Saisissez les hachages';
+
+  @override
+  String get manualTrace_run => 'Lancer le traçage de chemin';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Connectez-vous à une radio pour lancer une trace';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Seuls les caractères hexadécimaux (0-9, A-F) sont autorisés';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Chaque hachage doit avoir un nombre pair de caractères hexadécimaux, correspondant à la taille du saut';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Tous les hachages doivent avoir la même longueur';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Les hachages doivent faire 1, 2 ou 3 octets (2, 4 ou 6 caractères hexadécimaux)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Le chemin est trop long (maximum $max octets)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Trop de sauts à tracer en une seule requête. Retirez des sauts ou choisissez « Tel que saisi ».';
 
   @override
   String get mapCache_title => 'Cache de carte hors ligne';

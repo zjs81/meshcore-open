@@ -182,6 +182,7 @@
   "appSettings_languageSv": "Svenska",
   "appSettings_languageNl": "Nederländska",
   "appSettings_languageSk": "Slovakiska",
+  "appSettings_languageCs": "Tjeckiska",
   "appSettings_languageBg": "Bulgariska",
   "appSettings_notifications": "Notifieringar",
   "appSettings_enableNotifications": "Aktivera notifieringar",
@@ -3637,5 +3638,80 @@
   },
   "messageFilter_filterLikeThis": "Filtrera meddelanden som detta…",
   "messageFilter_channelToggle": "Filtrera meddelanden i den här kanalen",
-  "messageFilter_ghostIconTooltip": "Dolt av ditt meddelandefilter"
+  "messageFilter_ghostIconTooltip": "Dolt av ditt meddelandefilter",
+  "chatSearch_tooltip": "Sök i meddelanden",
+  "chatSearch_hint": "Sök i meddelanden",
+  "chatSearch_close": "Stäng sökning",
+  "chatSearch_resultCount": "{count, plural, =1{1 träff} other{{count} träffar}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Inga matchande meddelanden",
+  "chatSearch_noResultsHint": "Prova ett annat ord eller kontrollera stavningen",
+  "contactShare_headerOutgoing": "Du delade en kontakt",
+  "contactShare_headerIncoming": "Delade en kontakt",
+  "contactShare_add": "Lägg till kontakt",
+  "contactShare_adding": "Lägger till kontakt...",
+  "contactShare_saved": "Sparad",
+  "contactShare_isYou": "Det här är du",
+  "contactShare_shareAction": "Dela kontakt",
+  "contactShare_pickerTitle": "Dela en kontakt",
+  "contactShare_myContact": "Min kontakt",
+  "contactShare_searchHint": "Sök bland kontakter",
+  "contactShare_noContacts": "Inga kontakter hittades",
+  "contactShare_preview": "Delad kontakt: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Delade en kontakt: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Ruttspårning via hashar",
+  "manualTrace_inputLabel": "Repeater-hashar",
+  "manualTrace_helper": "Exempel: {example}. Separera med kommatecken eller mellanslag.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Hopp ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Okänd nod",
+  "manualTrace_enterHashes": "Ange hashar",
+  "manualTrace_run": "Kör ruttspårning",
+  "manualTrace_notConnected": "Anslut till en radio för att köra en spårning",
+  "manualTrace_errorInvalidHex": "Endast hex-tecken (0-9, A-F) är tillåtna",
+  "manualTrace_errorOddLength": "Varje hash måste ha ett jämnt antal hex-tecken, som matchar hoppstorleken",
+  "manualTrace_errorMixedWidths": "Alla hashar måste ha samma längd",
+  "manualTrace_errorUnsupportedWidth": "Hashar måste vara 1, 2 eller 3 byte (2, 4 eller 6 hex-tecken)",
+  "manualTrace_errorTooManyHops": "Rutten är för lång (högst {max} byte)",
+  "manualTrace_errorTraceTooLong": "För många hopp för att spåra i en enda förfrågan. Ta bort några hopp eller välj ”Som inmatat”.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

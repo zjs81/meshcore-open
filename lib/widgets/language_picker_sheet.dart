@@ -25,6 +25,7 @@ final List<(String?, String Function(AppLocalizations))> appLanguageOptions = [
   ('sv', (l) => l.appSettings_languageSv),
   ('nl', (l) => l.appSettings_languageNl),
   ('sk', (l) => l.appSettings_languageSk),
+  ('cs', (l) => l.appSettings_languageCs),
   ('bg', (l) => l.appSettings_languageBg),
   ('ru', (l) => l.appSettings_languageRu),
   ('uk', (l) => l.appSettings_languageUk),

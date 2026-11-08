@@ -1095,6 +1095,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appSettings_languageUk => 'Українська';
 
   @override
+  String get appSettings_languageCs => 'Čeština';
+
+  @override
   String get repeater_pathHashModeOption0 => '1 byte';
 
   @override
@@ -2008,6 +2011,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chat_noMessages => 'No messages yet';
 
   @override
+  String get chatSearch_tooltip => 'Search messages';
+
+  @override
+  String get chatSearch_hint => 'Search messages';
+
+  @override
+  String get chatSearch_close => 'Close search';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count results',
+      one: '1 result',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'No matching messages';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Try a different word or check the spelling';
+
+  @override
   String get chat_sendMessage => 'Send message';
 
   @override
@@ -2453,6 +2483,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chat_poiShared => 'POI Shared';
 
   @override
+  String get contactShare_headerOutgoing => 'You shared a contact';
+
+  @override
+  String get contactShare_headerIncoming => 'Shared a contact';
+
+  @override
+  String get contactShare_add => 'Add contact';
+
+  @override
+  String get contactShare_adding => 'Adding contact...';
+
+  @override
+  String get contactShare_saved => 'Saved';
+
+  @override
+  String get contactShare_isYou => 'This is you';
+
+  @override
+  String get contactShare_shareAction => 'Share contact';
+
+  @override
+  String get contactShare_pickerTitle => 'Share a contact';
+
+  @override
+  String get contactShare_myContact => 'My contact';
+
+  @override
+  String get contactShare_searchHint => 'Search contacts';
+
+  @override
+  String get contactShare_noContacts => 'No contacts found';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Shared contact: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Shared a contact: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Unread: $count';
   }
@@ -2756,6 +2829,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'View last result';
+
+  @override
+  String get manualTrace_menuItem => 'Path trace by hashes';
+
+  @override
+  String get manualTrace_inputLabel => 'Repeater hashes';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Example: $example. Separate with commas or spaces.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Hops ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Unknown node';
+
+  @override
+  String get manualTrace_enterHashes => 'Enter hashes';
+
+  @override
+  String get manualTrace_run => 'Run path trace';
+
+  @override
+  String get manualTrace_notConnected => 'Connect to a radio to run a trace';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Only hex characters (0-9, A-F) are allowed';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Each hash needs an even number of hex characters, matching the hop size';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'All hashes must be the same length';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Hashes must be 1, 2 or 3 bytes (2, 4 or 6 hex characters)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Path is too long (maximum $max bytes)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Too many hops to trace in one request. Remove some hops or choose As entered.';
 
   @override
   String get mapCache_title => 'Offline Map Cache';
