@@ -3563,6 +3563,8 @@
   "messageFilter_automaticSection": "Automático",
   "messageFilter_duplicates": "Mensagens repetidas",
   "messageFilter_duplicatesSubtitle": "A mesma mensagem enviada de novo, ou por vários remetentes",
+  "messageFilter_repeatSends": "Envios que contam como repetição",
+  "messageFilter_repeatSendsSubtitle": "Ocultar uma mensagem quando o mesmo remetente a envia {count} vezes em 10 minutos",
   "messageFilter_repeatedCharacters": "Caracteres repetidos",
   "messageFilter_repeatedCharactersSubtitle": "Sequências longas de um mesmo caractere, como \"aaaaaaaaaaaaaaaaaaaa\"",
   "messageFilter_learning": "Aprender com os toques em Spam",

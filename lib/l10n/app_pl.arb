@@ -3677,6 +3677,8 @@
   "@messageFilter_duplicatesSubtitle": {
     "description": "Message filter: The same message sent again, or by several senders"
   },
+  "messageFilter_repeatSends": "Liczba wysłań uznawana za powtórkę",
+  "messageFilter_repeatSendsSubtitle": "Ukryj wiadomość, gdy ten sam nadawca wyśle ją w ciągu 10 minut tyle razy: {count}",
   "messageFilter_repeatedCharacters": "Powtarzające się znaki",
   "@messageFilter_repeatedCharacters": {
     "description": "Message filter: Repeated characters"

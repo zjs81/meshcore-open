@@ -3697,6 +3697,8 @@
   "messageFilter_automaticSection": "Automatico",
   "messageFilter_duplicates": "Messaggi ripetuti",
   "messageFilter_duplicatesSubtitle": "Lo stesso messaggio inviato di nuovo, o da più mittenti",
+  "messageFilter_repeatSends": "Invii da considerare ripetizione",
+  "messageFilter_repeatSendsSubtitle": "Nascondi un messaggio quando lo stesso mittente lo invia {count} volte entro 10 minuti",
   "messageFilter_repeatedCharacters": "Caratteri ripetuti",
   "messageFilter_repeatedCharactersSubtitle": "Lunghe sequenze dello stesso carattere, come «aaaaaaaaaaaaaaaaaaaa»",
   "messageFilter_learning": "Impara dai tocchi su Spam",

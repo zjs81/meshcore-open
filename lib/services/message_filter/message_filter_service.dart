@@ -139,6 +139,10 @@ class MessageFilterService extends ChangeNotifier {
   /// [sentAt] is the message's own timestamp. Duplicate windows are measured
   /// between send times, so history synced in a burst after reconnecting is
   /// not mistaken for a flood; without it the local clock is used.
+  ///
+  /// Messages addressed to someone ([isReply], or an `@[name]` mention in
+  /// [text]) are exempt from duplicate detection and not recorded for it:
+  /// asking several people the same thing is conversation, not a repeat.
   FilterVerdict? evaluate({
     required String channelId,
     required String sender,
@@ -146,6 +150,7 @@ class MessageFilterService extends ChangeNotifier {
     DateTime? sentAt,
     bool isOutgoing = false,
     bool isReaction = false,
+    bool isReply = false,
   }) {
     if (!isChannelFiltered(channelId)) return null;
     if (isOutgoing || isReaction) return null;
@@ -153,13 +158,17 @@ class MessageFilterService extends ChangeNotifier {
     if (MessageFilterText.isStructuredPayload(text)) return null;
 
     // Always record (even when a rule matches) so floods keep being caught.
-    final duplicateReason = _tracker.check(
-      channelId: channelId,
-      sender: sender,
-      text: text,
-      at: sentAt ?? _clock(),
-      receivedAt: _clock(),
-    );
+    final mentionsSomeone = isReply || MessageFilterText.hasMention(text);
+    final duplicateReason = mentionsSomeone
+        ? null
+        : _tracker.check(
+            channelId: channelId,
+            sender: sender,
+            text: text,
+            at: sentAt ?? _clock(),
+            receivedAt: _clock(),
+            sameSenderSends: _settings.repeatSends,
+          );
 
     final byRule = _matchRules(sender, text);
     if (byRule != null) return byRule;

@@ -99,5 +99,6 @@ When a new message containing a holiday greeting arrives in, or is sent from, th
 
 - Only new messages play; messages already in the chat when you open it, and synced messages more than 2 minutes old, stay quiet.
 - Animations play any day of the year, not only during the holiday windows.
+- Only one animation plays at a time. A greeting that arrives while one is playing, or within 5 seconds after it ends, is skipped (not queued), so a burst of greetings plays once.
 - Touches pass through the animation.
 - Turn them off with **App Settings → Appearance → Holiday message animations**. They are also skipped when the system's reduce-motion / remove-animations setting is on.

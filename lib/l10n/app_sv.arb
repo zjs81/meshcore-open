@@ -3558,6 +3558,8 @@
   "messageFilter_automaticSection": "Automatiskt",
   "messageFilter_duplicates": "Upprepade meddelanden",
   "messageFilter_duplicatesSubtitle": "Samma meddelande skickas igen, eller av flera avsändare",
+  "messageFilter_repeatSends": "Utskick som räknas som upprepning",
+  "messageFilter_repeatSendsSubtitle": "Dölj ett meddelande när samma avsändare skickar det {count} gånger inom 10 minuter",
   "messageFilter_repeatedCharacters": "Upprepade tecken",
   "messageFilter_repeatedCharactersSubtitle": "Långa följder av samma tecken, som ”aaaaaaaaaaaaaaaaaaaa”",
   "messageFilter_learning": "Lär av tryck på Skräppost",

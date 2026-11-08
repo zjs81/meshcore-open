@@ -7054,6 +7054,14 @@ class AppLocalizationsCs extends AppLocalizations {
       'Stejná zpráva odeslaná znovu nebo více odesílateli';
 
   @override
+  String get messageFilter_repeatSends => 'Počet odeslání pro opakování';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Skrýt zprávu, když ji stejný odesílatel odešle $count× během 10 minut';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Opakované znaky';
 
   @override

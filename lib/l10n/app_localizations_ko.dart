@@ -6767,6 +6767,14 @@ class AppLocalizationsKo extends AppLocalizations {
       '같은 메시지를 다시 보냈거나 여러 발신자가 보낸 경우';
 
   @override
+  String get messageFilter_repeatSends => '반복으로 간주할 전송 횟수';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return '같은 발신자가 10분 안에 같은 메시지를 $count번 보내면 숨깁니다';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => '반복된 문자';
 
   @override

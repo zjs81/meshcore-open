@@ -3778,6 +3778,8 @@
   "@messageFilter_duplicatesSubtitle": {
     "description": "Message filter: The same message sent again, or by several senders"
   },
+  "messageFilter_repeatSends": "반복으로 간주할 전송 횟수",
+  "messageFilter_repeatSendsSubtitle": "같은 발신자가 10분 안에 같은 메시지를 {count}번 보내면 숨깁니다",
   "messageFilter_repeatedCharacters": "반복된 문자",
   "@messageFilter_repeatedCharacters": {
     "description": "Message filter: Repeated characters"

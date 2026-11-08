@@ -3778,6 +3778,8 @@
   "@messageFilter_duplicatesSubtitle": {
     "description": "Message filter: The same message sent again, or by several senders"
   },
+  "messageFilter_repeatSends": "繰り返しと見なす送信回数",
+  "messageFilter_repeatSendsSubtitle": "同じ送信者が10分以内に同じメッセージを{count}回送信したら非表示にします",
   "messageFilter_repeatedCharacters": "繰り返しの文字",
   "@messageFilter_repeatedCharacters": {
     "description": "Message filter: Repeated characters"

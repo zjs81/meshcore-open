@@ -7049,6 +7049,15 @@ class AppLocalizationsNl extends AppLocalizations {
       'Hetzelfde bericht opnieuw verstuurd, of door meerdere afzenders';
 
   @override
+  String get messageFilter_repeatSends =>
+      'Verzendingen die als herhaling tellen';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Verberg een bericht wanneer dezelfde afzender het $count keer verstuurt binnen 10 minuten';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Herhaalde tekens';
 
   @override

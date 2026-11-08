@@ -6983,6 +6983,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'The same message sent again, or by several senders';
 
   @override
+  String get messageFilter_repeatSends => 'Sends to count as a repeat';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Hide a message when the same sender sends it $count times within 10 minutes';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Repeated characters';
 
   @override

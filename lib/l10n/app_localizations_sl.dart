@@ -7054,6 +7054,14 @@ class AppLocalizationsSl extends AppLocalizations {
       'Isto sporočilo, poslano znova ali od več pošiljateljev';
 
   @override
+  String get messageFilter_repeatSends => 'Pošiljanje, šteto kot ponovitev';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Skrij sporočilo, ko ga isti pošiljatelj v 10 minutah pošlje ponovno (število pošiljanj: $count)';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Ponavljajoči se znaki';
 
   @override

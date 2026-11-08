@@ -7099,6 +7099,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dieselbe Nachricht erneut gesendet oder von mehreren Absendern';
 
   @override
+  String get messageFilter_repeatSends => 'Sendungen bis zur Wiederholung';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Nachricht ausblenden, wenn derselbe Absender sie innerhalb von 10 Minuten $count-mal sendet';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Wiederholte Zeichen';
 
   @override

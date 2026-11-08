@@ -7108,6 +7108,14 @@ class AppLocalizationsUk extends AppLocalizations {
       'Те саме повідомлення, надіслане знову або кількома відправниками';
 
   @override
+  String get messageFilter_repeatSends => 'Яка відправка вважається повтором';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Приховувати повідомлення, якщо той самий відправник надсилає його повторно протягом 10 хвилин (кількість відправлень: $count)';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Повторювані символи';
 
   @override

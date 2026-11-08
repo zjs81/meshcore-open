@@ -3698,6 +3698,8 @@
   "messageFilter_automaticSection": "Automatisch",
   "messageFilter_duplicates": "Wiederholte Nachrichten",
   "messageFilter_duplicatesSubtitle": "Dieselbe Nachricht erneut gesendet oder von mehreren Absendern",
+  "messageFilter_repeatSends": "Sendungen bis zur Wiederholung",
+  "messageFilter_repeatSendsSubtitle": "Nachricht ausblenden, wenn derselbe Absender sie innerhalb von 10 Minuten {count}-mal sendet",
   "messageFilter_repeatedCharacters": "Wiederholte Zeichen",
   "messageFilter_repeatedCharactersSubtitle": "Lange Folgen desselben Zeichens, z. B. „aaaaaaaaaaaaaaaaaaaa“",
   "messageFilter_learning": "Aus Spam-Markierungen lernen",
