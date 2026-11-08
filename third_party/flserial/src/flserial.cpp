@@ -75,6 +75,11 @@ int SerialThread(void *aArg)
         {
             serial->lasterror = FL_ERROR_IO;
             strncpy(serial->lasterrormsg , ioe.what(), sizeof(serial->lasterrormsg) - 1);
+            // A failing port throws on every call without blocking, so back
+            // off briefly. The idle path needs no sleep: the read timeout set
+            // in fl_open already blocks in select().
+            const struct timespec wait = {0, 5000000L};
+            thrd_sleep(&wait, NULL);
         }
     }
 
