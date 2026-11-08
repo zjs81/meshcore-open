@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
@@ -6,8 +7,8 @@ import 'package:cryptography/cryptography.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
+import '../connector/pending_command_replies.dart';
 import '../models/app_settings.dart';
-import '../models/contact.dart';
 import 'app_settings_service.dart';
 import '../storage/channel_store.dart';
 import '../storage/contact_store.dart';
@@ -302,6 +303,8 @@ class BackupService {
     final restoreChannels = selectedItems.any(
       (item) => _sectionForItem(item) == BackupSection.channels,
     );
+    final replaceContacts = selectedItems.contains(BackupItem.contacts);
+    final replaceChannels = selectedItems.contains(BackupItem.channels);
     if (importingIdentity &&
         (sourcePublicKey.isEmpty ||
             _normalizePublicKey(node?['publicKey'] as String? ?? '') !=
@@ -315,6 +318,9 @@ class BackupService {
         throw StateError('Wait for radio identity to finish loading');
       }
     }
+    if (replaceContacts) await _clearRadioContacts(connector);
+    if (replaceChannels) await _clearRadioChannels(connector);
+
     if (node != null) {
       final name = node['name'];
       if (selectedItems.contains(BackupItem.deviceName) && name is String) {
@@ -474,11 +480,60 @@ class BackupService {
         );
       }
     }
-    if (selectedItems.contains(BackupItem.contacts)) {
+    if (replaceContacts) {
       await _restoreRadioContacts(connector, destinationPublicKey);
     }
-    if (selectedItems.contains(BackupItem.channels)) {
+    if (replaceChannels) {
       await _restoreRadioChannels(connector, destinationPublicKey);
+    }
+    if (!importingIdentity) {
+      if (replaceContacts) await _refreshContactsFromRadio(connector);
+      if (replaceChannels) await connector.getChannels(force: true);
+    }
+  }
+
+  Future<void> _clearRadioContacts(MeshCoreConnector connector) async {
+    await _refreshContactsFromRadio(connector);
+    for (final contact in connector.contacts.toList()) {
+      try {
+        await connector.sendFrame(
+          buildRemoveContactFrame(contact.publicKey),
+          waitForGenericAck: true,
+        );
+      } on FirmwareCommandException {
+        // A contact removed on the radio since its last sync is already clear.
+      }
+    }
+  }
+
+  Future<void> _clearRadioChannels(MeshCoreConnector connector) async {
+    await connector.getChannels(force: true);
+    for (final channel in connector.channels) {
+      if (channel.isEmpty) continue;
+      await connector.sendFrame(
+        buildSetChannelFrame(channel.index, '', Uint8List(16)),
+        waitForGenericAck: true,
+      );
+    }
+  }
+
+  Future<void> _refreshContactsFromRadio(MeshCoreConnector connector) async {
+    final refreshed = Completer<void>();
+    void checkComplete() {
+      if (connector.hasLoadedContacts &&
+          !connector.isLoadingContacts &&
+          !refreshed.isCompleted) {
+        refreshed.complete();
+      }
+    }
+
+    connector.addListener(checkComplete);
+    try {
+      await connector.getContacts();
+      checkComplete();
+      await refreshed.future.timeout(const Duration(seconds: 30));
+    } finally {
+      connector.removeListener(checkComplete);
     }
   }
 
@@ -492,22 +547,14 @@ class BackupService {
       if (contact.publicKeyHex.toUpperCase() == publicKey.toUpperCase()) {
         continue;
       }
-      Contact? existing;
-      for (final candidate in connector.contacts) {
-        if (candidate.publicKeyHex == contact.publicKeyHex) {
-          existing = candidate;
-          break;
-        }
-      }
-      final pathLengthValue = existing?.pathLength ?? contact.pathLength;
-      final pathHashWidth = existing?.pathHashWidth ?? contact.pathHashWidth;
-      final pathLength = pathLengthValue < 0
+      final pathLength = contact.pathLength < 0
           ? 0xff
-          : (pathLengthValue & 0x3f) | (((pathHashWidth - 1) & 0x03) << 6);
+          : (contact.pathLength & 0x3f) |
+                (((contact.pathHashWidth - 1) & 0x03) << 6);
       await connector.sendFrame(
         buildUpdateContactPathFrame(
           contact.publicKey,
-          existing?.path ?? contact.path,
+          contact.path,
           pathLength,
           type: contact.type,
           flags: contact.flags,

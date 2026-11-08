@@ -541,7 +541,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get backupRestore_restoreComplete =>
-      'Restore complete. Reconnect the radio to refresh its data.';
+      'Restore complete. Reconnect if you restored the radio identity.';
 
   @override
   String backupRestore_failed(String error) {

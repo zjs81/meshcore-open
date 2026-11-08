@@ -234,7 +234,7 @@
   "backupRestore_backup": "Create Backup",
   "backupRestore_restore": "Restore Selected",
   "backupRestore_backupComplete": "Backup file created.",
-  "backupRestore_restoreComplete": "Restore complete. Reconnect the radio to refresh its data.",
+  "backupRestore_restoreComplete": "Restore complete. Reconnect if you restored the radio identity.",
   "backupRestore_failed": "Backup operation failed: {error}",
   "@backupRestore_failed": {
     "placeholders": {

@@ -46,6 +46,8 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     BackupItem.location,
     BackupItem.contactSettings,
     BackupItem.privacySettings,
+    BackupItem.contacts,
+    BackupItem.channels,
   };
   static const Set<BackupItem> _defaultUncheckedOnRestore = {
     ..._defaultUncheckedItems,

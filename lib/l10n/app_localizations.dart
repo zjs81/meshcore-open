@@ -1081,7 +1081,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupRestore_restoreComplete.
   ///
   /// In en, this message translates to:
-  /// **'Restore complete. Reconnect the radio to refresh its data.'**
+  /// **'Restore complete. Reconnect if you restored the radio identity.'**
   String get backupRestore_restoreComplete;
 
   /// No description provided for @backupRestore_failed.
