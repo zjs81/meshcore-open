@@ -1195,6 +1195,7 @@
   "repeater_received": "수신",
   "repeater_duplicates": "중복",
   "repeater_daysHoursMinsSecs": "{days}일 {hours}시간 {minutes}분 {seconds}초",
+  "repeater_hoursMinsSecs": "{hours}시간 {minutes}분 {seconds}초",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {

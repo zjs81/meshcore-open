@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_blue_plus_platform_interface/flutter_blue_plus_platform_interface.dart';
 
+import '../utils/advert_signature.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
 import '../models/companion_radio_stats.dart';
@@ -6433,6 +6434,13 @@ class MeshCoreConnector extends ChangeNotifier {
           _contactsStorageFull = false; // capacity freed up since the warning
         }
         _hasLoadedContacts = true;
+        if (!_preserveContactsOnRefresh && !_contactSyncUsesSinceFilter) {
+          // A full sync replaced _contacts; drop keys the radio no longer
+          // holds so removed nodes reappear in discovery.
+          _knownContactKeys
+            ..clear()
+            ..addAll(_contacts.map((c) => c.publicKeyHex));
+        }
         _preserveContactsOnRefresh = false;
         _telemetryFixesDuringSync.clear();
         _contactSyncUsesSinceFilter = false;
@@ -9383,13 +9391,15 @@ class MeshCoreConnector extends ChangeNotifier {
       final rawPacket = frame.sublist(3);
       switch (payloadType) {
         case payloadTypeADVERT:
-          _handlePayloadAdvertReceived(
-            rawPacket,
-            payload,
-            pathBytes,
-            pathHashWidth,
-            routeType,
-            snr,
+          unawaited(
+            _verifyThenHandleAdvert(
+              rawPacket,
+              payload,
+              pathBytes,
+              pathHashWidth,
+              routeType,
+              snr,
+            ),
           );
           break;
         default:
@@ -9400,89 +9410,32 @@ class MeshCoreConnector extends ChangeNotifier {
     }
   }
 
-  void importContact(Uint8List frame) {
-    final packet = BufferReader(frame);
-    int payloadType = 0;
-    Uint8List pathBytes = Uint8List(0);
-    int pathHashWidth = 1;
-    try {
-      packet.skipBytes(1); // Skip frame type byte
-      packet.skipBytes(1); // Skip SNR byte
-      packet.skipBytes(1); // Skip RSSI byte
-      final header = packet.readByte();
-      final routeType = header & 0x03;
-      payloadType = (header >> 2) & 0x0F;
-      if (routeType == _routeTransportFlood ||
-          routeType == _routeTransportDirect) {
-        packet.skipBytes(4); // Skip transport-specific bytes
-      }
-      //final payloadVer = (header >> 6) & 0x03;
-      final pathLenRaw = packet.readByte();
-      final pathByteLen = decodePathByteLen(pathLenRaw);
-      pathHashWidth = decodePathHashWidth(pathLenRaw);
-      pathBytes = packet.readBytes(pathByteLen);
-    } catch (e) {
-      appLogger.warn('Malformed RX frame: $e', tag: 'Connector');
+  /// Drops adverts whose Ed25519 signature does not verify against the
+  /// advertised public key, so forged adverts cannot add or update a contact
+  /// of any type (chat, repeater, room, sensor).
+  Future<void> _verifyThenHandleAdvert(
+    Uint8List rawPacket,
+    Uint8List payload,
+    Uint8List path,
+    int pathHashWidth,
+    int routeType,
+    double snr,
+  ) async {
+    if (!await verifyAdvertSignature(payload)) {
+      appLogger.warn(
+        'Dropped advert with invalid signature'
+        '${payload.length >= 4 ? ' from ${pubKeyToHex(payload.sublist(0, 4))}' : ''}',
+        tag: 'Connector',
+      );
       return;
     }
-    double? latitude;
-    double? longitude;
-    String name = '';
-    Uint8List publicKey = Uint8List(0);
-    int type = 0;
-    int timestamp = 0;
-    bool hasLocation = false;
-    bool hasName = false;
-    if (payloadType != payloadTypeADVERT) {
-      appLogger.warn('Unexpected payload type: $payloadType', tag: 'Connector');
-      return;
-    }
-    try {
-      publicKey = packet.readBytes(32);
-      timestamp = packet.readInt32LE();
-      //TODO add signature verification
-      packet.skipBytes(64); // Skip signature for now
-      final flags = packet.readByte();
-      type = flags & 0x0F;
-      hasLocation = (flags & 0x10) != 0;
-      hasName = (flags & 0x80) != 0;
-      if (hasLocation && packet.remaining >= 8) {
-        latitude = packet.readInt32LE() / 1e6;
-        longitude = packet.readInt32LE() / 1e6;
-      }
-      // Two optional 16-bit feature fields sit between the location and the
-      // name (AdvertDataParser in MeshCore AdvertDataHelpers.cpp). Skip them
-      // so their bytes aren't read as the start of the name.
-      for (final featureMask in const [0x20, 0x40]) {
-        if ((flags & featureMask) != 0 && packet.remaining >= 2) {
-          packet.skipBytes(2);
-        }
-      }
-      if (hasName && packet.remaining > 0) {
-        name = packet.readCString();
-      }
-    } catch (e) {
-      appLogger.warn('Malformed advert frame: $e', tag: 'Connector');
-      return;
-    }
-
-    importDiscoveredContact(
-      Contact(
-        rawPacket: frame,
-        publicKey: publicKey,
-        name: name,
-        type: type,
-        pathLength: pathBytes.isEmpty
-            ? -1
-            : (pathBytes.length ~/ pathHashWidth),
-        // Store hop order reversed for easier outgoing messages; keep bytes
-        // inside each multi-byte hop in their original order.
-        path: _reversePathByHop(pathBytes, pathHashWidth),
-        pathHashWidth: pathHashWidth,
-        latitude: latitude,
-        longitude: longitude,
-        lastSeen: DateTime.fromMillisecondsSinceEpoch(timestamp * 1000),
-      ),
+    _handlePayloadAdvertReceived(
+      rawPacket,
+      payload,
+      path,
+      pathHashWidth,
+      routeType,
+      snr,
     );
   }
 
@@ -9522,8 +9475,8 @@ class MeshCoreConnector extends ChangeNotifier {
           .join();
 
       timestamp = advert.readInt32LE();
-      //TODO add signature verification
-      advert.skipBytes(64); // Skip signature for now
+      // Signature already checked by _verifyThenHandleAdvert.
+      advert.skipBytes(signatureSize);
       final flags = advert.readByte();
       type = flags & 0x0F;
       hasLocation = (flags & 0x10) != 0;

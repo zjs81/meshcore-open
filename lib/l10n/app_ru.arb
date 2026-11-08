@@ -627,6 +627,7 @@
   "repeater_received": "Получено",
   "repeater_duplicates": "Дубликаты",
   "repeater_daysHoursMinsSecs": "{days} дн. {hours}ч {minutes}м {seconds}с",
+  "repeater_hoursMinsSecs": "{hours}ч {minutes}м {seconds}с",
   "repeater_packetTxTotal": "Всего: {total}, Рассылка: {flood}, Прямые: {direct}",
   "repeater_packetRxTotal": "Всего: {total}, Рассылка: {flood}, Прямые: {direct}",
   "repeater_duplicatesFloodDirect": "Рассылка: {flood}, Прямые: {direct}",

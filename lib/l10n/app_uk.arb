@@ -1027,6 +1027,7 @@
   "repeater_received": "Отримано",
   "repeater_duplicates": "Дублікати",
   "repeater_daysHoursMinsSecs": "{days} дн. {hours} год {minutes} хв {seconds} с",
+  "repeater_hoursMinsSecs": "{hours} год {minutes} хв {seconds} с",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {

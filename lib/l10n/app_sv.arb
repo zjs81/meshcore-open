@@ -1010,6 +1010,7 @@
   "repeater_received": "Mottaget",
   "repeater_duplicates": "Dubbletter",
   "repeater_daysHoursMinsSecs": "{days} dagar {hours} timmar {minutes} minuter {seconds} sekunder",
+  "repeater_hoursMinsSecs": "{hours} timmar {minutes} minuter {seconds} sekunder",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {

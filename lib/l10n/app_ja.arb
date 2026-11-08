@@ -1213,6 +1213,7 @@
   "repeater_received": "受信済み",
   "repeater_duplicates": "重複",
   "repeater_daysHoursMinsSecs": "{days}日 {hours}時間 {minutes}分 {seconds}秒",
+  "repeater_hoursMinsSecs": "{hours}時間 {minutes}分 {seconds}秒",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -1257,7 +1258,7 @@
       }
     }
   },
-  "repeater_duplicatesFloodDirect": "{flood}: {flood}, 直接: {direct}",
+  "repeater_duplicatesFloodDirect": "フラッド: {flood}, 直接: {direct}",
   "@repeater_duplicatesFloodDirect": {
     "placeholders": {
       "flood": {

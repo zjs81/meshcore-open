@@ -1009,6 +1009,7 @@
   "repeater_received": "Prejeto",
   "repeater_duplicates": "Duplikati",
   "repeater_daysHoursMinsSecs": "{days} dni {hours}h {minutes}m {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {

@@ -3194,6 +3194,11 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '$hours год $minutes хв $seconds с';
+  }
+
+  @override
   String repeater_packetTxTotal(int total, String flood, String direct) {
     return 'Всього: $total, Через всю мережу: $flood, Прямі: $direct';
   }

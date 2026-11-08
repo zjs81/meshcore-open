@@ -1017,6 +1017,7 @@
   "repeater_received": "Prijaté",
   "repeater_duplicates": "Duplikáty",
   "repeater_daysHoursMinsSecs": "{days} dní {hours}h {minutes}m {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
