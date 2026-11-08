@@ -942,7 +942,7 @@ class AppSettingsScreen extends StatelessWidget {
   ) {
     final textTheme = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    final alreadyHave = codec.availableModels.any((m) => m.id == spec.id);
+    final alreadyHave = spec.hasCompleteInstalledRecord(codec.availableModels);
     // downloadPresetModel throws StateError on a placeholder URL, deliberately,
     // so the button must not be offerable until the weights are published.
     final blocked = spec.urlsArePlaceholders;
@@ -1001,7 +1001,7 @@ class AppSettingsScreen extends StatelessWidget {
     final l10n = context.l10n;
     try {
       await codec.downloadPresetModel(spec);
-    } on Exception catch (error) {
+    } catch (error) {
       messenger.showSnackBar(
         SnackBar(
           content: Text(l10n.imageMessages_downloadFailedWithError('$error')),

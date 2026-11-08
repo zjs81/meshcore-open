@@ -10,8 +10,12 @@ import 'package:share_plus/share_plus.dart';
 import '../connector/meshcore_connector.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../l10n/l10n.dart';
+import '../models/image_codec_support.dart';
+import '../models/translation_support.dart';
 import '../services/app_settings_service.dart';
 import '../services/backup_service.dart';
+import '../services/image_codec_service.dart';
+import '../services/translation_service.dart';
 import '../services/message_filter/message_filter_service.dart';
 import '../utils/platform_info.dart';
 import '../utils/share_origin.dart';
@@ -429,6 +433,8 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     final connector = context.read<MeshCoreConnector>();
     final appSettingsService = context.read<AppSettingsService>();
     final messageFilterService = context.read<MessageFilterService>();
+    final translationService = context.read<TranslationService>();
+    final imageCodecService = context.read<ImageCodecService>();
     final needsKeyConfirmation = _selectedItems.contains(BackupItem.privateKey);
     if (needsKeyConfirmation && !await _confirmIdentityReplacement()) return;
     setState(() => _busy = true);
@@ -447,6 +453,13 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
             item == BackupItem.stadiaMapKey,
       )) {
         await appSettingsService.loadSettings();
+        if (_selectedItems.contains(BackupItem.appSettings)) {
+          await _offerMissingModels(
+            appSettingsService,
+            translationService,
+            imageCodecService,
+          );
+        }
       }
       if (_selectedItems.contains(BackupItem.channelFilters)) {
         await messageFilterService.load();
@@ -474,6 +487,312 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     } finally {
       if (mounted) setState(() => _busy = false);
     }
+  }
+
+  Future<void> _offerMissingModels(
+    AppSettingsService appSettingsService,
+    TranslationService translationService,
+    ImageCodecService imageCodecService,
+  ) async {
+    if (PlatformInfo.isWeb) return;
+    final settings = appSettingsService.settings;
+    final translationId = settings.translationSelectedModelId;
+    final imageCodecId = settings.imageCodecSelectedModelId;
+
+    TranslationModelRecord? translationModel;
+    for (final model in settings.translationDownloadedModels) {
+      if (model.id == translationId) {
+        translationModel = model;
+        break;
+      }
+    }
+    for (final model in translationPresetModels) {
+      if (model.id == translationId) {
+        translationModel ??= model;
+        break;
+      }
+    }
+    if (translationModel == null &&
+        translationId != null &&
+        settings.translationModelSourceUrl != null) {
+      final uri = Uri.tryParse(settings.translationModelSourceUrl!);
+      final pathSegments = uri?.pathSegments ?? const <String>[];
+      final fileName = pathSegments.isEmpty ? null : pathSegments.last;
+      translationModel = TranslationModelRecord(
+        id: translationId,
+        name: fileName?.isNotEmpty == true ? fileName! : translationId,
+        sourceUrl: settings.translationModelSourceUrl!,
+        localPath: '',
+        downloadedAt: DateTime.fromMillisecondsSinceEpoch(0),
+        fileSizeBytes: 0,
+      );
+    }
+
+    ImageCodecModelRecord? imageCodecModel;
+    for (final model in settings.imageCodecDownloadedModels) {
+      if (model.id == imageCodecId) {
+        imageCodecModel = model;
+        break;
+      }
+    }
+    ImageCodecModelSpec? imageCodecSpec;
+    for (final spec in imageCodecPresetModels) {
+      if (spec.id == imageCodecId) {
+        imageCodecSpec = spec;
+        break;
+      }
+    }
+    if (imageCodecModel == null && imageCodecSpec != null) {
+      final graph = imageCodecSpec.graph;
+      imageCodecModel = ImageCodecModelRecord(
+        id: imageCodecSpec.id,
+        name: graph.fileName,
+        sourceUrl: graph.sourceUrl,
+        localPath: '',
+        downloadedAt: DateTime.fromMillisecondsSinceEpoch(0),
+        fileSizeBytes: imageCodecSpec.totalSizeBytes,
+        assetFileNames: [
+          for (final asset in imageCodecSpec.assets) asset.fileName,
+        ],
+        bundleVersion: kImageCodecBundleVersion,
+      );
+    } else if (imageCodecModel == null &&
+        imageCodecId != null &&
+        settings.imageCodecModelSourceUrl != null) {
+      final uri = Uri.tryParse(settings.imageCodecModelSourceUrl!);
+      final pathSegments = uri?.pathSegments ?? const <String>[];
+      final fileName = pathSegments.isEmpty ? null : pathSegments.last;
+      imageCodecModel = ImageCodecModelRecord(
+        id: imageCodecId,
+        name: fileName?.isNotEmpty == true ? fileName! : imageCodecId,
+        sourceUrl: settings.imageCodecModelSourceUrl!,
+        localPath: '',
+        downloadedAt: DateTime.fromMillisecondsSinceEpoch(0),
+        fileSizeBytes: 0,
+      );
+    }
+
+    await translationService.refreshDownloadedModels(clearMissing: true);
+    await imageCodecService.refreshDownloadedModels(clearMissing: true);
+
+    final translationRequest = translationModel;
+    final translationMissing =
+        translationRequest != null &&
+        !translationService.availableModels.any(
+          (model) =>
+              model.id == translationRequest.id ||
+              model.name == translationRequest.name,
+        );
+    ImageCodecModelRecord? installedCodec;
+    if (imageCodecModel != null) {
+      for (final model in imageCodecService.availableModels) {
+        if (model.id == imageCodecModel.id ||
+            model.name == imageCodecModel.name) {
+          installedCodec = model;
+          break;
+        }
+      }
+    }
+    final codecRequest = imageCodecModel;
+    final installedCodecForCheck = installedCodec;
+    final imageCodecMissing =
+        codecRequest != null &&
+        (imageCodecSpec != null
+            ? !imageCodecSpec.hasCompleteInstalledRecord(
+                imageCodecService.availableModels,
+              )
+            : installedCodecForCheck == null);
+    if (!translationMissing && !imageCodecMissing) return;
+    if (!mounted) return;
+
+    await _showModelDownloadDialog(
+      translationModel: translationMissing ? translationRequest : null,
+      imageCodecModel: imageCodecMissing ? codecRequest : null,
+      imageCodecSpec: imageCodecMissing ? imageCodecSpec : null,
+      translationService: translationService,
+      imageCodecService: imageCodecService,
+    );
+  }
+
+  Future<void> _showModelDownloadDialog({
+    required TranslationModelRecord? translationModel,
+    required ImageCodecModelRecord? imageCodecModel,
+    required ImageCodecModelSpec? imageCodecSpec,
+    required TranslationService translationService,
+    required ImageCodecService imageCodecService,
+  }) async {
+    final l10n = context.l10n;
+    final modelNames = [
+      if (translationModel != null)
+        translationModelFriendlyName(translationModel),
+      if (imageCodecModel != null)
+        imageCodecSpec?.label ?? imageCodecModel.name,
+    ];
+    var starting = false;
+    var cancelRequested = false;
+    var translationDone = translationModel == null;
+    var imageCodecDone = imageCodecModel == null;
+    String? currentModel;
+    String? downloadError;
+    final servicesListenable = Listenable.merge([
+      translationService,
+      imageCodecService,
+    ]);
+
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AnimatedBuilder(
+          animation: servicesListenable,
+          builder: (context, _) {
+            final isDownloading =
+                starting ||
+                translationService.isDownloading ||
+                imageCodecService.isDownloading;
+            final currentProgress = currentModel == translationModel?.name
+                ? translationService.downloadProgress
+                : currentModel == imageCodecModel?.name
+                ? imageCodecService.downloadProgress
+                : null;
+            final currentFile = currentModel == translationModel?.name
+                ? translationService.downloadFileName
+                : currentModel == imageCodecModel?.name
+                ? imageCodecService.downloadFileName
+                : null;
+
+            void requestDownloadCancel() {
+              cancelRequested = true;
+              translationService.cancelDownload();
+              imageCodecService.cancelDownload();
+            }
+
+            return PopScope<void>(
+              canPop: !isDownloading,
+              onPopInvokedWithResult: (didPop, _) {
+                if (!didPop && isDownloading) requestDownloadCancel();
+              },
+              child: AlertDialog(
+                title: Text(l10n.backupRestore_missingModelsTitle),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.backupRestore_missingModelsMessage(
+                        modelNames.join('\n'),
+                      ),
+                    ),
+                    if (isDownloading) ...[
+                      const SizedBox(height: 16),
+                      Text(currentFile ?? currentModel ?? ''),
+                      const SizedBox(height: 8),
+                      LinearProgressIndicator(value: currentProgress),
+                    ],
+                    if (downloadError != null) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        l10n.backupRestore_failed(downloadError!),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      if (isDownloading) {
+                        requestDownloadCancel();
+                      } else {
+                        Navigator.pop(dialogContext);
+                      }
+                    },
+                    child: Text(
+                      isDownloading
+                          ? l10n.backupRestore_cancelDownload
+                          : l10n.common_cancel,
+                    ),
+                  ),
+                  FilledButton(
+                    onPressed: isDownloading
+                        ? null
+                        : () async {
+                            setDialogState(() {
+                              starting = true;
+                              currentModel = translationDone
+                                  ? imageCodecModel?.name
+                                  : translationModel?.name;
+                              downloadError = null;
+                            });
+                            try {
+                              if (!translationDone) {
+                                final model = translationModel!;
+                                if (model.sourceUrl.isEmpty) {
+                                  throw StateError(
+                                    'No download address is available for ${model.name}',
+                                  );
+                                }
+                                await translationService.downloadModel(
+                                  sourceUrl: model.sourceUrl,
+                                  fileName: model.name,
+                                  id: model.id,
+                                );
+                                translationDone = true;
+                                setDialogState(() {
+                                  currentModel = imageCodecModel?.name;
+                                });
+                              }
+                              if (!imageCodecDone) {
+                                final model = imageCodecModel!;
+                                final spec = imageCodecSpec;
+                                if (spec != null) {
+                                  await imageCodecService.downloadPresetModel(
+                                    spec,
+                                  );
+                                } else if (model.sourceUrl.isNotEmpty) {
+                                  await imageCodecService.downloadModel(
+                                    sourceUrl: model.sourceUrl,
+                                    fileName: model.name,
+                                    id: model.id,
+                                  );
+                                } else {
+                                  throw StateError(
+                                    'No download address is available for ${model.name}',
+                                  );
+                                }
+                                imageCodecDone = true;
+                              }
+                              if (dialogContext.mounted) {
+                                Navigator.pop(dialogContext);
+                              }
+                            } catch (error) {
+                              if (dialogContext.mounted) {
+                                if (cancelRequested) {
+                                  Navigator.pop(dialogContext);
+                                } else {
+                                  setDialogState(() {
+                                    starting = false;
+                                    downloadError = error.toString();
+                                  });
+                                }
+                              }
+                            }
+                          },
+                    child: Text(
+                      isDownloading
+                          ? l10n.backupRestore_downloading
+                          : l10n.backupRestore_downloadModels,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   Future<bool> _confirmIdentityReplacement() async {

@@ -142,18 +142,25 @@ class TranslationService extends ChangeNotifier {
     return availableModels.isNotEmpty ? availableModels.first : null;
   }
 
-  Future<void> refreshDownloadedModels() async {
+  Future<void> refreshDownloadedModels({bool clearMissing = false}) async {
     if (_isDownloading) return;
     final scanned = await _fileStore.scanDownloadedModels();
+    if (scanned.isEmpty && !clearMissing) return;
     if (scanned.isEmpty) {
+      await _appSettingsService.setTranslationDownloadedModels(const []);
       return;
     }
     final existingByPath = {
       for (final model in _settings.translationDownloadedModels)
         model.localPath: model,
     };
+    final existingByName = {
+      for (final model in _settings.translationDownloadedModels)
+        model.name: model,
+    };
     final merged = scanned.map((model) {
-      final existing = existingByPath[model.localPath];
+      final existing =
+          existingByPath[model.localPath] ?? existingByName[model.name];
       if (existing == null) {
         return model;
       }

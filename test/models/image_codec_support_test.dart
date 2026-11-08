@@ -454,6 +454,42 @@ void main() {
       expect(sendOnly.isComplete, isFalse);
     });
 
+    test('only considers a complete bundle installed', () {
+      final spec = imageCodecPresetModels.single;
+      ImageCodecModelRecord record({
+        required int bundleVersion,
+        required List<String> assetFileNames,
+        required Map<String, ImageCodecAssetRole> assetRoles,
+      }) => ImageCodecModelRecord(
+        id: spec.id,
+        name: spec.fileName,
+        sourceUrl: spec.graph.sourceUrl,
+        localPath: '/models/${spec.fileName}',
+        downloadedAt: DateTime.fromMillisecondsSinceEpoch(0),
+        fileSizeBytes: 10,
+        assetFileNames: assetFileNames,
+        assetRoles: assetRoles,
+        bundleVersion: bundleVersion,
+      );
+
+      final completeRecord = record(
+        bundleVersion: kImageCodecBundleVersion,
+        assetFileNames: [for (final asset in spec.assets) asset.fileName],
+        assetRoles: {
+          for (final asset in spec.assets) asset.fileName: asset.role,
+        },
+      );
+      final partialRecord = record(
+        bundleVersion: 0,
+        assetFileNames: [spec.fileName],
+        assetRoles: {spec.fileName: ImageCodecAssetRole.decoderGraph},
+      );
+
+      expect(spec.hasCompleteInstalledRecord([completeRecord]), isTrue);
+      expect(spec.hasCompleteInstalledRecord([partialRecord]), isFalse);
+      expect(spec.hasCompleteInstalledRecord([]), isFalse);
+    });
+
     test('uses the HuggingFace resolve/main URL shape', () {
       for (final asset in imageCodecPresetModels.single.assets) {
         expect(asset.sourceUrl, startsWith('https://huggingface.co/'));

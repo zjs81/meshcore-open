@@ -235,6 +235,16 @@
   "backupRestore_restore": "Restore Selected",
   "backupRestore_backupComplete": "Backup file created.",
   "backupRestore_restoreComplete": "Restore complete. Reconnect if you restored the radio identity.",
+  "backupRestore_missingModelsTitle": "Models Not Downloaded",
+  "backupRestore_missingModelsMessage": "The restored settings select models that are not available on this device:\n{models}\n\nDownload them now?",
+  "@backupRestore_missingModelsMessage": {
+    "placeholders": {
+      "models": {"type": "String"}
+    }
+  },
+  "backupRestore_downloadModels": "Download Models",
+  "backupRestore_downloading": "Downloading…",
+  "backupRestore_cancelDownload": "Cancel Download",
   "backupRestore_failed": "Backup operation failed: {error}",
   "@backupRestore_failed": {
     "placeholders": {

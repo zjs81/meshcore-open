@@ -3,10 +3,43 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/models/app_settings.dart';
+import 'package:meshcore_open/models/image_codec_support.dart';
+import 'package:meshcore_open/models/translation_support.dart';
 import 'package:meshcore_open/services/app_settings_service.dart';
+import 'package:meshcore_open/services/image_codec_file_store.dart';
+import 'package:meshcore_open/services/image_codec_service.dart';
+import 'package:meshcore_open/services/image_codec_settings_store.dart';
+import 'package:meshcore_open/services/translation_file_store.dart';
+import 'package:meshcore_open/services/translation_service.dart';
 import 'package:meshcore_open/services/backup_service.dart';
 import 'package:meshcore_open/storage/prefs_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class _EmptyTranslationFileStore extends TranslationFileStore {
+  @override
+  Future<List<TranslationModelRecord>> scanDownloadedModels() async => const [];
+}
+
+class _EmptyImageCodecFileStore extends ImageCodecFileStore {
+  @override
+  Future<List<ImageCodecModelRecord>> scanDownloadedModels() async => const [];
+}
+
+class _AppSettingsCodecStore implements ImageCodecSettingsStore {
+  _AppSettingsCodecStore(this.service);
+
+  final AppSettingsService service;
+
+  @override
+  ImageCodecPreferences get preferences => service.settings.imageCodec;
+
+  @override
+  Future<void> load() async {}
+
+  @override
+  Future<void> save(ImageCodecPreferences preferences) =>
+      service.setImageCodecPreferences(preferences);
+}
 
 void main() {
   const payload = <String, Object?>{
@@ -26,6 +59,7 @@ void main() {
         SharedPreferences.setMockInitialValues({
           'app_settings': jsonEncode({
             'theme_mode': 'dark',
+            'map_use_online_map_for_paths': true,
             'upload_ipfs_api_key': 'ipfs-secret',
             'map_tile_api_key': 'stadia-secret',
             'custom_themes': [
@@ -60,6 +94,7 @@ void main() {
         final appSettings = values['app_settings'] as Map<String, dynamic>;
         expect(appSettings, isNot(contains('upload_ipfs_api_key')));
         expect(appSettings, isNot(contains('map_tile_api_key')));
+        expect(appSettings['map_use_online_map_for_paths'], isTrue);
         expect(values['node_banner_txt'], 'banner text');
         expect(values['node_banner_expires_ms'], 123);
         expect(json, contains('"theme_mode": "dark"'));
@@ -174,6 +209,74 @@ void main() {
         expect(restored['theme_mode'], 'light');
         expect(restored['upload_ipfs_api_key'], 'new-ipfs');
         expect(restored['map_tile_api_key'], 'existing-stadia');
+      },
+    );
+  });
+
+  group('restored model registry reconciliation', () {
+    test(
+      'removes model records absent from disk but retains selections',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        PrefsManager.reset();
+        await PrefsManager.initialize();
+        addTearDown(PrefsManager.reset);
+        final settingsService = AppSettingsService();
+        addTearDown(settingsService.dispose);
+        final downloadedAt = DateTime(2026);
+        await settingsService.updateSettings(
+          AppSettings(
+            mapUseOnlineMapForPaths: true,
+            translationSelectedModelId: 'translation-model',
+            translationDownloadedModels: [
+              TranslationModelRecord(
+                id: 'translation-model',
+                name: 'translation.gguf',
+                sourceUrl: 'https://example.com/translation.gguf',
+                localPath: '/old-device/translation.gguf',
+                downloadedAt: downloadedAt,
+                fileSizeBytes: 100,
+              ),
+            ],
+            imageCodecSelectedModelId: 'image-model',
+            imageCodecDownloadedModels: [
+              ImageCodecModelRecord(
+                id: 'image-model',
+                name: 'image.onnx',
+                sourceUrl: 'https://example.com/image.onnx',
+                localPath: '/old-device/image.onnx',
+                downloadedAt: downloadedAt,
+                fileSizeBytes: 100,
+              ),
+            ],
+          ),
+        );
+        final translationService = TranslationService(
+          settingsService,
+          fileStore: _EmptyTranslationFileStore(),
+        );
+        final imageCodecService = ImageCodecService(
+          settingsService,
+          fileStore: _EmptyImageCodecFileStore(),
+          settingsStore: _AppSettingsCodecStore(settingsService),
+        );
+        addTearDown(translationService.dispose);
+        addTearDown(imageCodecService.dispose);
+
+        await translationService.refreshDownloadedModels(clearMissing: true);
+        await imageCodecService.refreshDownloadedModels(clearMissing: true);
+
+        expect(settingsService.settings.translationDownloadedModels, isEmpty);
+        expect(settingsService.settings.mapUseOnlineMapForPaths, isTrue);
+        expect(
+          settingsService.settings.translationSelectedModelId,
+          'translation-model',
+        );
+        expect(settingsService.settings.imageCodecDownloadedModels, isEmpty);
+        expect(
+          settingsService.settings.imageCodecSelectedModelId,
+          'image-model',
+        );
       },
     );
   });

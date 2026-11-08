@@ -480,6 +480,10 @@ class BackupService {
         );
       }
     }
+    if (!importingIdentity &&
+        selectedItems.contains(BackupItem.discoveredContacts)) {
+      await connector.reloadDiscoveredContacts();
+    }
     if (replaceContacts) {
       await _restoreRadioContacts(connector, destinationPublicKey);
     }

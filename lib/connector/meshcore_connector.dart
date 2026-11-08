@@ -605,6 +605,12 @@ class MeshCoreConnector extends ChangeNotifier {
     return List.unmodifiable(_discoveredContacts);
   }
 
+  Future<void> reloadDiscoveredContacts() async {
+    if (!isConnected) return;
+    await _loadDiscoveredContactCache();
+    await updateKnownDiscovered();
+  }
+
   String exportDiscoveredContactsJson() {
     return _discoveryContactStore.exportContactsJson(_discoveredContacts);
   }

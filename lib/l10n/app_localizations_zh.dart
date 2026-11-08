@@ -523,6 +523,23 @@ class AppLocalizationsZh extends AppLocalizations {
       'Restore complete. Reconnect if you restored the radio identity.';
 
   @override
+  String get backupRestore_missingModelsTitle => 'Models Not Downloaded';
+
+  @override
+  String backupRestore_missingModelsMessage(String models) {
+    return 'The restored settings select models that are not available on this device:\n$models\n\nDownload them now?';
+  }
+
+  @override
+  String get backupRestore_downloadModels => 'Download Models';
+
+  @override
+  String get backupRestore_downloading => 'Downloading…';
+
+  @override
+  String get backupRestore_cancelDownload => 'Cancel Download';
+
+  @override
   String backupRestore_failed(String error) {
     return 'Backup operation failed: $error';
   }

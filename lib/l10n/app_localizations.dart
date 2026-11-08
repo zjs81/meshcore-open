@@ -1084,6 +1084,36 @@ abstract class AppLocalizations {
   /// **'Restore complete. Reconnect if you restored the radio identity.'**
   String get backupRestore_restoreComplete;
 
+  /// No description provided for @backupRestore_missingModelsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Models Not Downloaded'**
+  String get backupRestore_missingModelsTitle;
+
+  /// No description provided for @backupRestore_missingModelsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The restored settings select models that are not available on this device:\n{models}\n\nDownload them now?'**
+  String backupRestore_missingModelsMessage(String models);
+
+  /// No description provided for @backupRestore_downloadModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Models'**
+  String get backupRestore_downloadModels;
+
+  /// No description provided for @backupRestore_downloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading…'**
+  String get backupRestore_downloading;
+
+  /// No description provided for @backupRestore_cancelDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Download'**
+  String get backupRestore_cancelDownload;
+
   /// No description provided for @backupRestore_failed.
   ///
   /// In en, this message translates to:

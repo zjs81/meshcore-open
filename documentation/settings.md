@@ -216,7 +216,7 @@ Choose individual items to include in a backup or restore. Location settings inc
 
 The private-key option is off by default because it changes the radio's identity. Select it only when you intend to restore that identity; the app asks for confirmation before proceeding. Some radios do not allow identity backup or restore, and the app will let you know if this feature is unavailable.
 
-A password protects the backup file. Leave the password blank to create an unprotected file. Backups may contain your radio's private key, channel keys, messages and saved passwords, so store them carefully. Downloaded models, received image files and cached map tiles are not included.
+A password protects the backup file. Leave the password blank to create an unprotected file. Backups may contain your radio's private key, channel keys, messages and saved passwords, so store them carefully. Model settings are backed up, but model files are not; after restoring, the app offers to download selected models that are missing. Download progress appears in that prompt, and closing it cancels an active download. Received image files and cached map tiles are not included.
 
 ### GPX Export
 
