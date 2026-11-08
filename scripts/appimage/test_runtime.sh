@@ -4,6 +4,11 @@ set -euo pipefail
 image="$(realpath "$1")"
 mkdir -p "$2"
 output="$(realpath "$2")"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+dependency_checker="${MESHCORE_APPIMAGE_DEPENDENCIES:-$script_dir/dependencies.sh}"
+if [[ "$dependency_checker" != /* ]]; then
+  dependency_checker="$(realpath -e -- "$dependency_checker")"
+fi
 exec > >(tee -a "$output/runtime-test.log") 2>&1
 
 log() {
@@ -86,33 +91,21 @@ log "ELF architecture audit passed ($elf_count files)"
 
 dependencies="$output/dependencies.log"
 : > "$dependencies"
-run_timed 'check application dependencies' 20s "$workspace/ldd.log" \
-  ldd "$appdir/usr/bin/meshcore_open"
-cat "$workspace/ldd.log" >> "$dependencies"
-while IFS= read -r -d '' library; do
-  relative="${library#"$appdir/"}"
-  if run_timed "check dependencies: $relative" 20s "$workspace/ldd.log" ldd "$library"; then
-    cat "$workspace/ldd.log" >> "$dependencies"
-  else
-    status=$?
-    cat "$workspace/ldd.log" >> "$dependencies"
-    if [[ "$status" == 124 || "$status" == 137 ]]; then
-      exit "$status"
-    fi
-    log "ldd returned $status for $relative; continuing unresolved-dependency scan"
-  fi
-done < <(find "$appdir/usr/bin/lib" "$appdir/usr/lib" -type f -name '*.so*' -print0)
-if grep 'not found' "$dependencies"; then
-  log 'Unresolved AppImage dependencies'
-  exit 1
-fi
-log 'Dependency audit passed'
+[[ -f "$dependency_checker" ]] || { log "Missing dependency checker: $dependency_checker"; exit 1; }
+run_timed 'audit dependency origins' 120s "$workspace/dependency-audit.log" \
+  bash "$dependency_checker" audit "$appdir" "$dependencies"
+cat "$workspace/dependency-audit.log" >> "$dependencies"
+log 'Dependency origin audit passed'
 
 mkdir -p "$workspace/home/Documents" "$workspace/home/config"
 printf 'XDG_DOCUMENTS_DIR="%s/Documents"\n' "$workspace/home" > "$workspace/home/config/user-dirs.dirs"
 log 'Starting AppRun under a private D-Bus session (also used as the system bus)'
 # shellcheck disable=SC2016
-env -u LD_LIBRARY_PATH -u GTK_PATH -u GSETTINGS_SCHEMA_DIR \
+env -u LD_LIBRARY_PATH \
+  GIO_EXTRA_MODULES=/host/gio/modules GIO_MODULE_DIR=/host/gio/modules \
+  GI_TYPELIB_PATH=/host/girepository GTK_PATH=/host/gtk/modules \
+  GTK_MODULES=host-module GDK_PIXBUF_MODULE_FILE=/host/pixbuf.loaders \
+  GSETTINGS_SCHEMA_DIR=/host/glib-2.0/schemas \
   HOME="$workspace/home" XDG_CONFIG_HOME="$workspace/home/config" \
   XDG_DATA_HOME="$workspace/home/data" XDG_CACHE_HOME="$workspace/home/cache" \
   dbus-run-session -- bash -c \

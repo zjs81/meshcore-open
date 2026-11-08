@@ -156,6 +156,7 @@ package_direct() {
     dependencies+=(--deploy-deps-only "$library")
   done < <(find "$appdir/usr/bin/lib" -type f -print0)
   "$linuxdeploy" --appdir "$appdir" "${dependencies[@]}"
+  bash "$project/scripts/appimage/dependencies.sh" bundle "$appdir" "$work/dependency-audit.txt"
   while IFS= read -r -d '' library; do
     readelf -h "$library" >/dev/null 2>&1 || continue
     relative="$(realpath --relative-to="$(dirname "$library")" "$appdir/usr/lib")"
@@ -187,6 +188,7 @@ package_direct() {
     cp "$MESHCORE_APPIMAGE_FLUTTER_ROOT/LICENSE" "$appdir/usr/share/doc/meshcore-open/Flutter-LICENSE"
   fi
   audit_appdir "$appdir" "$work/audit.txt"
+  cat "$work/dependency-audit.txt" >> "$work/audit.txt"
   ARCH="$appimage_arch" "$appimagetool" --runtime-file "$cache/runtime" --no-appstream \
     "$appdir" "$work/$appimage_name"
   chmod +x "$work/$appimage_name"

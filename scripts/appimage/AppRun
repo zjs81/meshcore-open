@@ -2,6 +2,8 @@
 set -eo pipefail
 
 export APPDIR="${APPDIR:-$(cd "$(dirname "$0")" && pwd)}"
+unset GIO_EXTRA_MODULES GIO_MODULE_DIR GI_TYPELIB_PATH GTK_PATH GTK_MODULES GDK_PIXBUF_MODULE_FILE
+export GSETTINGS_SCHEMA_DIR="$APPDIR/usr/share/glib-2.0/schemas"
 export PATH="$APPDIR/usr/bin:$PATH"
 for hook in "$APPDIR"/apprun-hooks/*.sh; do
   # shellcheck source=/dev/null
