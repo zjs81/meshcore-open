@@ -181,7 +181,8 @@
   "appSettings_languageZh": "Chinês",
   "appSettings_languageSv": "Sueco",
   "appSettings_languageNl": "Holandês",
-  "appSettings_languageSk": "Esloveno",
+  "appSettings_languageSk": "Eslovaco",
+  "appSettings_languageCs": "Tcheco",
   "appSettings_languageBg": "Búlgaro",
   "appSettings_notifications": "Notificações",
   "appSettings_enableNotifications": "Ativar Notificações",
@@ -3642,5 +3643,79 @@
   },
   "messageFilter_filterLikeThis": "Filtrar mensagens como esta…",
   "messageFilter_channelToggle": "Filtrar mensagens neste canal",
-  "messageFilter_ghostIconTooltip": "Oculta pelo seu filtro de mensagens"
+  "messageFilter_ghostIconTooltip": "Oculta pelo seu filtro de mensagens",
+  "chatSearch_tooltip": "Pesquisar mensagens",
+  "chatSearch_hint": "Pesquisar mensagens",
+  "chatSearch_close": "Fechar pesquisa",
+  "chatSearch_resultCount": "{count, plural, =1{1 resultado} other{{count} resultados}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Nenhuma mensagem correspondente",
+  "chatSearch_noResultsHint": "Tente outra palavra ou verifique a ortografia",
+  "contactShare_headerOutgoing": "Você compartilhou um contato",
+  "contactShare_headerIncoming": "Compartilhou um contato",
+  "contactShare_add": "Adicionar contato",
+  "contactShare_adding": "Adicionando contato...",
+  "contactShare_saved": "Salvo",
+  "contactShare_isYou": "Este é você",
+  "contactShare_shareAction": "Compartilhar contato",
+  "contactShare_pickerTitle": "Compartilhar um contato",
+  "contactShare_myContact": "Meu contato",
+  "contactShare_searchHint": "Pesquisar contatos",
+  "contactShare_noContacts": "Nenhum contato encontrado",
+  "contactShare_preview": "Contato compartilhado: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Compartilhou um contato: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Rastreamento de caminho por hashes",
+  "manualTrace_inputLabel": "Hashes de repetidores",
+  "manualTrace_helper": "Exemplo: {example}. Separe com vírgulas ou espaços.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Saltos ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Nó desconhecido",
+  "manualTrace_enterHashes": "Insira os hashes",
+  "manualTrace_run": "Executar rastreamento de caminho",
+  "manualTrace_notConnected": "Conecte-se a um rádio para executar um rastreamento",
+  "manualTrace_errorInvalidHex": "Somente caracteres hexadecimais (0-9, A-F) são permitidos",
+  "manualTrace_errorOddLength": "Cada hash precisa de um número par de caracteres hexadecimais, de acordo com o tamanho do salto",
+  "manualTrace_errorMixedWidths": "Todos os hashes devem ter o mesmo comprimento",
+  "manualTrace_errorUnsupportedWidth": "Os hashes devem ter 1, 2 ou 3 bytes (2, 4 ou 6 caracteres hexadecimais)",
+  "manualTrace_errorTooManyHops": "O caminho é muito longo (máximo de {max} bytes)",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

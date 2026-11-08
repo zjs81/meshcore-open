@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_bg.dart';
+import 'app_localizations_cs.dart';
 import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
@@ -111,6 +112,7 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('bg'),
+    Locale('cs'),
     Locale('de'),
     Locale('en'),
     Locale('es'),
@@ -2086,6 +2088,12 @@ abstract class AppLocalizations {
   /// **'Українська'**
   String get appSettings_languageUk;
 
+  /// No description provided for @appSettings_languageCs.
+  ///
+  /// In en, this message translates to:
+  /// **'Čeština'**
+  String get appSettings_languageCs;
+
   /// No description provided for @repeater_pathHashModeOption0.
   ///
   /// In en, this message translates to:
@@ -3628,6 +3636,42 @@ abstract class AppLocalizations {
   /// **'No messages yet'**
   String get chat_noMessages;
 
+  /// No description provided for @chatSearch_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Search messages'**
+  String get chatSearch_tooltip;
+
+  /// No description provided for @chatSearch_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search messages'**
+  String get chatSearch_hint;
+
+  /// No description provided for @chatSearch_close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close search'**
+  String get chatSearch_close;
+
+  /// No description provided for @chatSearch_resultCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 result} other{{count} results}}'**
+  String chatSearch_resultCount(int count);
+
+  /// No description provided for @chatSearch_noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching messages'**
+  String get chatSearch_noResults;
+
+  /// No description provided for @chatSearch_noResultsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different word or check the spelling'**
+  String get chatSearch_noResultsHint;
+
   /// No description provided for @chat_sendMessage.
   ///
   /// In en, this message translates to:
@@ -4396,6 +4440,84 @@ abstract class AppLocalizations {
   /// **'POI Shared'**
   String get chat_poiShared;
 
+  /// No description provided for @contactShare_headerOutgoing.
+  ///
+  /// In en, this message translates to:
+  /// **'You shared a contact'**
+  String get contactShare_headerOutgoing;
+
+  /// No description provided for @contactShare_headerIncoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared a contact'**
+  String get contactShare_headerIncoming;
+
+  /// No description provided for @contactShare_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add contact'**
+  String get contactShare_add;
+
+  /// No description provided for @contactShare_adding.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding contact...'**
+  String get contactShare_adding;
+
+  /// No description provided for @contactShare_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get contactShare_saved;
+
+  /// No description provided for @contactShare_isYou.
+  ///
+  /// In en, this message translates to:
+  /// **'This is you'**
+  String get contactShare_isYou;
+
+  /// No description provided for @contactShare_shareAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Share contact'**
+  String get contactShare_shareAction;
+
+  /// No description provided for @contactShare_pickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share a contact'**
+  String get contactShare_pickerTitle;
+
+  /// No description provided for @contactShare_myContact.
+  ///
+  /// In en, this message translates to:
+  /// **'My contact'**
+  String get contactShare_myContact;
+
+  /// No description provided for @contactShare_searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search contacts'**
+  String get contactShare_searchHint;
+
+  /// No description provided for @contactShare_noContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'No contacts found'**
+  String get contactShare_noContacts;
+
+  /// No description provided for @contactShare_preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared contact: {name}'**
+  String contactShare_preview(String name);
+
+  /// No description provided for @contactShare_notification.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared a contact: {name}'**
+  String contactShare_notification(String name);
+
   /// No description provided for @chat_unread.
   ///
   /// In en, this message translates to:
@@ -4965,6 +5087,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View last result'**
   String get map_pathTraceViewLast;
+
+  /// No description provided for @manualTrace_menuItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Path trace by hashes'**
+  String get manualTrace_menuItem;
+
+  /// No description provided for @manualTrace_inputLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeater hashes'**
+  String get manualTrace_inputLabel;
+
+  /// No description provided for @manualTrace_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: {example}. Separate with commas or spaces.'**
+  String manualTrace_helper(String example);
+
+  /// No description provided for @manualTrace_previewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hops ({count})'**
+  String manualTrace_previewTitle(int count);
+
+  /// No description provided for @manualTrace_unknownNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown node'**
+  String get manualTrace_unknownNode;
+
+  /// No description provided for @manualTrace_enterHashes.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter hashes'**
+  String get manualTrace_enterHashes;
+
+  /// No description provided for @manualTrace_run.
+  ///
+  /// In en, this message translates to:
+  /// **'Run path trace'**
+  String get manualTrace_run;
+
+  /// No description provided for @manualTrace_notConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to a radio to run a trace'**
+  String get manualTrace_notConnected;
+
+  /// No description provided for @manualTrace_errorInvalidHex.
+  ///
+  /// In en, this message translates to:
+  /// **'Only hex characters (0-9, A-F) are allowed'**
+  String get manualTrace_errorInvalidHex;
+
+  /// No description provided for @manualTrace_errorOddLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Each hash needs an even number of hex characters, matching the hop size'**
+  String get manualTrace_errorOddLength;
+
+  /// No description provided for @manualTrace_errorMixedWidths.
+  ///
+  /// In en, this message translates to:
+  /// **'All hashes must be the same length'**
+  String get manualTrace_errorMixedWidths;
+
+  /// No description provided for @manualTrace_errorUnsupportedWidth.
+  ///
+  /// In en, this message translates to:
+  /// **'Hashes must be 1, 2 or 3 bytes (2, 4 or 6 hex characters)'**
+  String get manualTrace_errorUnsupportedWidth;
+
+  /// No description provided for @manualTrace_errorTooManyHops.
+  ///
+  /// In en, this message translates to:
+  /// **'Path is too long (maximum {max} bytes)'**
+  String manualTrace_errorTooManyHops(int max);
 
   /// No description provided for @mapCache_title.
   ///
@@ -11870,6 +12070,7 @@ class _AppLocalizationsDelegate
   @override
   bool isSupported(Locale locale) => <String>[
     'bg',
+    'cs',
     'de',
     'en',
     'es',
@@ -11898,6 +12099,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'bg':
       return AppLocalizationsBg();
+    case 'cs':
+      return AppLocalizationsCs();
     case 'de':
       return AppLocalizationsDe();
     case 'en':

@@ -192,6 +192,7 @@
   "appSettings_languageSv": "瑞典语",
   "appSettings_languageNl": "荷兰语",
   "appSettings_languageSk": "斯洛伐克语",
+  "appSettings_languageCs": "捷克语",
   "appSettings_languageBg": "保加利亚语",
   "appSettings_languageRu": "俄语",
   "appSettings_languageUk": "乌克兰语",
@@ -2223,7 +2224,7 @@
   "appSettings_autoFetchRepeaterSettings": "自动获取转发节点设置",
   "appSettings_autoFetchRepeaterSettingsSubtitle": "打开转发节点设置时请求所有设置。每项设置都是一次通过 LoRa 发送的独立请求，因此速度较慢并会占用空中时间。关闭后，请点按“全部刷新”或刷新单独的部分。",
   "appSettings_jumpToOldestUnread": "跳转到最旧、未读的文章",
-  "appSettings_languageHu": "匈牙利",
+  "appSettings_languageHu": "匈牙利语",
   "appSettings_languageJa": "日语",
   "appSettings_languageKo": "韩语",
   "radioStats_tooltip": "无线电和网状结构统计数据",
@@ -3647,5 +3648,79 @@
   },
   "messageFilter_filterLikeThis": "过滤类似的消息…",
   "messageFilter_channelToggle": "过滤此频道中的消息",
-  "messageFilter_ghostIconTooltip": "已被你的消息过滤隐藏"
+  "messageFilter_ghostIconTooltip": "已被你的消息过滤隐藏",
+  "chatSearch_tooltip": "搜索消息",
+  "chatSearch_hint": "搜索消息",
+  "chatSearch_close": "关闭搜索",
+  "chatSearch_resultCount": "{count, plural, other{{count} 条结果}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "没有匹配的消息",
+  "chatSearch_noResultsHint": "请尝试其他词语或检查拼写",
+  "contactShare_headerOutgoing": "你分享了一个联系人",
+  "contactShare_headerIncoming": "分享了一个联系人",
+  "contactShare_add": "添加联系人",
+  "contactShare_adding": "正在添加联系人...",
+  "contactShare_saved": "已保存",
+  "contactShare_isYou": "这是你自己",
+  "contactShare_shareAction": "分享联系人",
+  "contactShare_pickerTitle": "分享联系人",
+  "contactShare_myContact": "我的联系人",
+  "contactShare_searchHint": "搜索联系人",
+  "contactShare_noContacts": "未找到联系人",
+  "contactShare_preview": "分享的联系人：{name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "分享了一个联系人：{name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "按哈希进行路径追踪",
+  "manualTrace_inputLabel": "中继器哈希",
+  "manualTrace_helper": "示例：{example}。用逗号或空格分隔。",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "跳数（{count}）",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "未知节点",
+  "manualTrace_enterHashes": "输入哈希",
+  "manualTrace_run": "运行路径追踪",
+  "manualTrace_notConnected": "请连接电台以运行追踪",
+  "manualTrace_errorInvalidHex": "仅允许十六进制字符（0-9、A-F）",
+  "manualTrace_errorOddLength": "每个哈希的十六进制字符数必须为偶数，与跳大小一致",
+  "manualTrace_errorMixedWidths": "所有哈希长度必须相同",
+  "manualTrace_errorUnsupportedWidth": "哈希必须为 1、2 或 3 字节（2、4 或 6 个十六进制字符）",
+  "manualTrace_errorTooManyHops": "路径过长（最多 {max} 字节）",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

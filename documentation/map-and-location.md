@@ -120,6 +120,7 @@ Shows node count and pin count. Tappable to expand a legend of all marker types.
 
 ### How to Access
 - From the main map's menu → **Path Trace** (build your own route, see below)
+- From the Contacts or map menu → **Path trace by hashes** (type the hops, see below)
 - From a contact's long-press menu → "Path Trace / Ping"
 - From a message's path view → radar icon
 
@@ -130,6 +131,14 @@ Shows node count and pin count. Tappable to expand a legend of all marker types.
 4. Tap **Run path trace**. Nothing is sent until you press this button.
 
 Returning from the result keeps your hops, mode and the last result (**View last result** reopens it without sending again). **Close** or the back button hides the panel without discarding the hops; reopening **Path Trace** during the same session resumes where you left off. The hops are dropped when you connect to a different radio.
+
+### Tracing by Typed Hashes
+Nodes without a location can't be tapped on the map, so **Path trace by hashes** (Contacts menu, map menu, or **Enter hashes** in the map's trace panel, which prefills the hops already picked) lets you type them instead:
+1. Enter the hop prefixes in order, e.g. `A1,B2,C3`. Commas, spaces, `>`, `→`, `-` or `/` separate hops; 2, 4 or 6 hex characters give 1-, 2- or 3-byte hops (all hops must be the same width). A continuous string is split by the radio's current path hash size.
+2. Each hop is listed with the known repeaters or rooms whose key starts with it, or "Unknown node".
+3. Choose **Round trip** or **As entered**, then tap **Run path trace**. The result opens on the path trace map; hops without a location are listed but not drawn. 3-byte hops are traced as 4-byte key prefixes, so they must belong to known contacts.
+
+The typed hops and mode are kept for the app session.
 
 ### What the User Sees
 A map with a polyline showing the route from your node through repeater hops to the target:

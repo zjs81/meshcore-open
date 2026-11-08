@@ -489,6 +489,7 @@
   "appSettings_languageBg": "Български",
   "appSettings_languageRu": "Русский",
   "appSettings_languageUk": "Українська",
+  "appSettings_languageCs": "Čeština",
   "repeater_pathHashModeOption0": "1 byte",
   "repeater_pathHashModeOption1": "2 bytes",
   "repeater_pathHashModeOption2": "3 bytes",
@@ -1015,6 +1016,19 @@
   "channels_regionEmpty": "No regions yet.",
   "channels_manageRegions": "Manage regions",
   "chat_noMessages": "No messages yet",
+  "chatSearch_tooltip": "Search messages",
+  "chatSearch_hint": "Search messages",
+  "chatSearch_close": "Close search",
+  "chatSearch_resultCount": "{count, plural, =1{1 result} other{{count} results}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "No matching messages",
+  "chatSearch_noResultsHint": "Try a different word or check the spelling",
   "chat_sendMessage": "Send message",
   "chat_sendMessageTo": "Send a message to {contactName}",
   "@chat_sendMessageTo": {
@@ -1300,6 +1314,33 @@
   "chat_floodAuto": "Flood (auto)",
   "chat_direct": "Direct",
   "chat_poiShared": "POI Shared",
+  "contactShare_headerOutgoing": "You shared a contact",
+  "contactShare_headerIncoming": "Shared a contact",
+  "contactShare_add": "Add contact",
+  "contactShare_adding": "Adding contact...",
+  "contactShare_saved": "Saved",
+  "contactShare_isYou": "This is you",
+  "contactShare_shareAction": "Share contact",
+  "contactShare_pickerTitle": "Share a contact",
+  "contactShare_myContact": "My contact",
+  "contactShare_searchHint": "Search contacts",
+  "contactShare_noContacts": "No contacts found",
+  "contactShare_preview": "Shared contact: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Shared a contact: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "chat_unread": "Unread: {count}",
   "@chat_unread": {
     "placeholders": {
@@ -1430,6 +1471,40 @@
   "map_pathTraceModeAsEntered": "As entered",
   "map_pathTraceModeAsEnteredHint": "The trace follows these hops exactly. Add the hops back to you yourself.",
   "map_pathTraceViewLast": "View last result",
+  "manualTrace_menuItem": "Path trace by hashes",
+  "manualTrace_inputLabel": "Repeater hashes",
+  "manualTrace_helper": "Example: {example}. Separate with commas or spaces.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Hops ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Unknown node",
+  "manualTrace_enterHashes": "Enter hashes",
+  "manualTrace_run": "Run path trace",
+  "manualTrace_notConnected": "Connect to a radio to run a trace",
+  "manualTrace_errorInvalidHex": "Only hex characters (0-9, A-F) are allowed",
+  "manualTrace_errorOddLength": "Each hash needs an even number of hex characters, matching the hop size",
+  "manualTrace_errorMixedWidths": "All hashes must be the same length",
+  "manualTrace_errorUnsupportedWidth": "Hashes must be 1, 2 or 3 bytes (2, 4 or 6 hex characters)",
+  "manualTrace_errorTooManyHops": "Path is too long (maximum {max} bytes)",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "mapCache_title": "Offline Map Cache",
   "mapCache_selectAreaFirst": "Select an area to cache first",
   "mapCache_noTilesToDownload": "No tiles to download for this area",

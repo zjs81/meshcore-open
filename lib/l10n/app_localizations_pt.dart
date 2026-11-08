@@ -1098,7 +1098,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appSettings_languageNl => 'Holandês';
 
   @override
-  String get appSettings_languageSk => 'Esloveno';
+  String get appSettings_languageSk => 'Eslovaco';
 
   @override
   String get appSettings_languageBg => 'Búlgaro';
@@ -1108,6 +1108,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appSettings_languageUk => 'Ucraniano';
+
+  @override
+  String get appSettings_languageCs => 'Tcheco';
 
   @override
   String get repeater_pathHashModeOption0 => '0 - 1 byte';
@@ -2036,6 +2039,33 @@ class AppLocalizationsPt extends AppLocalizations {
   String get chat_noMessages => 'Ainda não existem mensagens.';
 
   @override
+  String get chatSearch_tooltip => 'Pesquisar mensagens';
+
+  @override
+  String get chatSearch_hint => 'Pesquisar mensagens';
+
+  @override
+  String get chatSearch_close => 'Fechar pesquisa';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count resultados',
+      one: '1 resultado',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Nenhuma mensagem correspondente';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Tente outra palavra ou verifique a ortografia';
+
+  @override
   String get chat_sendMessage => 'Enviar mensagem';
 
   @override
@@ -2486,6 +2516,49 @@ class AppLocalizationsPt extends AppLocalizations {
   String get chat_poiShared => 'Ponto de Interesse Compartilhado';
 
   @override
+  String get contactShare_headerOutgoing => 'Você compartilhou um contato';
+
+  @override
+  String get contactShare_headerIncoming => 'Compartilhou um contato';
+
+  @override
+  String get contactShare_add => 'Adicionar contato';
+
+  @override
+  String get contactShare_adding => 'Adicionando contato...';
+
+  @override
+  String get contactShare_saved => 'Salvo';
+
+  @override
+  String get contactShare_isYou => 'Este é você';
+
+  @override
+  String get contactShare_shareAction => 'Compartilhar contato';
+
+  @override
+  String get contactShare_pickerTitle => 'Compartilhar um contato';
+
+  @override
+  String get contactShare_myContact => 'Meu contato';
+
+  @override
+  String get contactShare_searchHint => 'Pesquisar contatos';
+
+  @override
+  String get contactShare_noContacts => 'Nenhum contato encontrado';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Contato compartilhado: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Compartilhou um contato: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Não lido: $count';
   }
@@ -2791,6 +2864,56 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Ver último resultado';
+
+  @override
+  String get manualTrace_menuItem => 'Rastreamento de caminho por hashes';
+
+  @override
+  String get manualTrace_inputLabel => 'Hashes de repetidores';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Exemplo: $example. Separe com vírgulas ou espaços.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Saltos ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Nó desconhecido';
+
+  @override
+  String get manualTrace_enterHashes => 'Insira os hashes';
+
+  @override
+  String get manualTrace_run => 'Executar rastreamento de caminho';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Conecte-se a um rádio para executar um rastreamento';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Somente caracteres hexadecimais (0-9, A-F) são permitidos';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Cada hash precisa de um número par de caracteres hexadecimais, de acordo com o tamanho do salto';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Todos os hashes devem ter o mesmo comprimento';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Os hashes devem ter 1, 2 ou 3 bytes (2, 4 ou 6 caracteres hexadecimais)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'O caminho é muito longo (máximo de $max bytes)';
+  }
 
   @override
   String get mapCache_title => 'Cache de Mapa Offline';

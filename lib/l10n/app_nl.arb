@@ -185,6 +185,7 @@
   "appSettings_languageSv": "Zweeds",
   "appSettings_languageNl": "Nederlands",
   "appSettings_languageSk": "Slowaaks",
+  "appSettings_languageCs": "Tsjechisch",
   "appSettings_languageBg": "Bulgaars",
   "appSettings_notifications": "Notificaties",
   "appSettings_enableNotifications": "Notificaties inschakelen",
@@ -3491,5 +3492,79 @@
   "messageFilter_filterSenderConfirm": "Alle berichten van „{name}” verbergen?",
   "messageFilter_filterLikeThis": "Berichten zoals dit filteren…",
   "messageFilter_channelToggle": "Berichten in dit kanaal filteren",
-  "messageFilter_ghostIconTooltip": "Verborgen door je berichtenfilter"
+  "messageFilter_ghostIconTooltip": "Verborgen door je berichtenfilter",
+  "chatSearch_tooltip": "Berichten zoeken",
+  "chatSearch_hint": "Berichten zoeken",
+  "chatSearch_close": "Zoeken sluiten",
+  "chatSearch_resultCount": "{count, plural, =1{1 resultaat} other{{count} resultaten}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Geen overeenkomende berichten",
+  "chatSearch_noResultsHint": "Probeer een ander woord of controleer de spelling",
+  "contactShare_headerOutgoing": "Je hebt een contact gedeeld",
+  "contactShare_headerIncoming": "Heeft een contact gedeeld",
+  "contactShare_add": "Contact toevoegen",
+  "contactShare_adding": "Contact toevoegen...",
+  "contactShare_saved": "Opgeslagen",
+  "contactShare_isYou": "Dit ben jij",
+  "contactShare_shareAction": "Contact delen",
+  "contactShare_pickerTitle": "Een contact delen",
+  "contactShare_myContact": "Mijn contact",
+  "contactShare_searchHint": "Contacten zoeken",
+  "contactShare_noContacts": "Geen contacten gevonden",
+  "contactShare_preview": "Gedeeld contact: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Heeft een contact gedeeld: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Padtrace via hashes",
+  "manualTrace_inputLabel": "Repeater-hashes",
+  "manualTrace_helper": "Voorbeeld: {example}. Scheid met komma's of spaties.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Hops ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Onbekende node",
+  "manualTrace_enterHashes": "Voer hashes in",
+  "manualTrace_run": "Padtrace uitvoeren",
+  "manualTrace_notConnected": "Maak verbinding met een radio om een trace uit te voeren",
+  "manualTrace_errorInvalidHex": "Alleen hex-tekens (0-9, A-F) zijn toegestaan",
+  "manualTrace_errorOddLength": "Elke hash heeft een even aantal hex-tekens nodig, passend bij de hopgrootte",
+  "manualTrace_errorMixedWidths": "Alle hashes moeten even lang zijn",
+  "manualTrace_errorUnsupportedWidth": "Hashes moeten 1, 2 of 3 bytes zijn (2, 4 of 6 hex-tekens)",
+  "manualTrace_errorTooManyHops": "Pad is te lang (maximaal {max} bytes)",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

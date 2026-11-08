@@ -1048,6 +1048,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_languageUk => '乌克兰语';
 
   @override
+  String get appSettings_languageCs => '捷克语';
+
+  @override
   String get repeater_pathHashModeOption0 => '0 - 1 字节';
 
   @override
@@ -1917,6 +1920,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chat_noMessages => '暂无消息';
 
   @override
+  String get chatSearch_tooltip => '搜索消息';
+
+  @override
+  String get chatSearch_hint => '搜索消息';
+
+  @override
+  String get chatSearch_close => '关闭搜索';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 条结果',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => '没有匹配的消息';
+
+  @override
+  String get chatSearch_noResultsHint => '请尝试其他词语或检查拼写';
+
+  @override
   String get chat_sendMessage => '发送消息';
 
   @override
@@ -2342,6 +2370,49 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chat_poiShared => '共享位置';
 
   @override
+  String get contactShare_headerOutgoing => '你分享了一个联系人';
+
+  @override
+  String get contactShare_headerIncoming => '分享了一个联系人';
+
+  @override
+  String get contactShare_add => '添加联系人';
+
+  @override
+  String get contactShare_adding => '正在添加联系人...';
+
+  @override
+  String get contactShare_saved => '已保存';
+
+  @override
+  String get contactShare_isYou => '这是你自己';
+
+  @override
+  String get contactShare_shareAction => '分享联系人';
+
+  @override
+  String get contactShare_pickerTitle => '分享联系人';
+
+  @override
+  String get contactShare_myContact => '我的联系人';
+
+  @override
+  String get contactShare_searchHint => '搜索联系人';
+
+  @override
+  String get contactShare_noContacts => '未找到联系人';
+
+  @override
+  String contactShare_preview(String name) {
+    return '分享的联系人：$name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return '分享了一个联系人：$name';
+  }
+
+  @override
   String chat_unread(int count) {
     return '未读：$count';
   }
@@ -2635,6 +2706,52 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => '查看上次结果';
+
+  @override
+  String get manualTrace_menuItem => '按哈希进行路径追踪';
+
+  @override
+  String get manualTrace_inputLabel => '中继器哈希';
+
+  @override
+  String manualTrace_helper(String example) {
+    return '示例：$example。用逗号或空格分隔。';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return '跳数（$count）';
+  }
+
+  @override
+  String get manualTrace_unknownNode => '未知节点';
+
+  @override
+  String get manualTrace_enterHashes => '输入哈希';
+
+  @override
+  String get manualTrace_run => '运行路径追踪';
+
+  @override
+  String get manualTrace_notConnected => '请连接电台以运行追踪';
+
+  @override
+  String get manualTrace_errorInvalidHex => '仅允许十六进制字符（0-9、A-F）';
+
+  @override
+  String get manualTrace_errorOddLength => '每个哈希的十六进制字符数必须为偶数，与跳大小一致';
+
+  @override
+  String get manualTrace_errorMixedWidths => '所有哈希长度必须相同';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      '哈希必须为 1、2 或 3 字节（2、4 或 6 个十六进制字符）';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return '路径过长（最多 $max 字节）';
+  }
 
   @override
   String get mapCache_title => '离线地图缓存';
@@ -5064,7 +5181,7 @@ class AppLocalizationsZh extends AppLocalizations {
       '打开转发节点设置时请求所有设置。每项设置都是一次通过 LoRa 发送的独立请求，因此速度较慢并会占用空中时间。关闭后，请点按“全部刷新”或刷新单独的部分。';
 
   @override
-  String get appSettings_languageHu => '匈牙利';
+  String get appSettings_languageHu => '匈牙利语';
 
   @override
   String get appSettings_languageJa => '日语';

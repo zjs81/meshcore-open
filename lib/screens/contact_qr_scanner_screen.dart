@@ -4,12 +4,10 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
-import '../connector/meshcore_protocol.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../l10n/l10n.dart';
 import '../theme/mesh_theme.dart';
 import '../utils/contact_qr.dart';
-import '../utils/contact_qr_frame.dart';
 import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/qr_scanner_widget.dart';
 
@@ -183,25 +181,8 @@ class _ContactQrScannerScreenState extends State<ContactQrScannerScreen> {
     }
 
     final connector = Provider.of<MeshCoreConnector>(context, listen: false);
-    final publicKey = scanned.publicKey;
-    // Saved contacts first (their flags matter), then discovery-only records,
-    // which still carry a known name worth preserving.
-    final existing = publicKey == null
-        ? null
-        : connector.allContactsUnfiltered
-              .where(
-                (contact) => contact.publicKeyHex == pubKeyToHex(publicKey),
-              )
-              .firstOrNull;
-    final frame = buildContactQrFrame(
-      scanned,
-      existing: existing,
-      pathHashByteWidth: connector.pathHashByteWidth,
-    );
-
     try {
-      await connector.sendFrame(frame, waitForGenericAck: true);
-      await connector.refreshContacts();
+      await connector.addContactFromCard(scanned);
       if (!mounted) return;
       showDismissibleSnackBar(
         context,

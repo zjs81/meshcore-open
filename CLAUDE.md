@@ -47,7 +47,7 @@ For Linux, use `nix develop`; see [Linux with Nix](README.md#linux-with-nix) for
 | Image reassembly and file persistence | `lib/services/received_image_store.dart`, `lib/services/received_image_blob_store_io.dart` |
 | Material themes | `lib/theme/mesh_theme.dart` |
 | Screens and reusable UI | `lib/screens/`, `lib/widgets/` |
-| Localization | `lib/l10n/` (18 locales) |
+| Localization | `lib/l10n/` (19 locales) |
 
 `Provider`/`ChangeNotifier` drives UI state. `main.dart` wires `MeshTheme.light()` and `MeshTheme.dark()` and uses the saved theme preference. Its `MultiProvider` exposes `MeshCoreConnector`, `MessageRetryService`, `PathHistoryService`, `AppSettingsService`, `BleDebugLogService`, `AppDebugLogService`, `ChatTextScaleService`, `TranslationService`, `UiViewStateService`, `StorageService` (plain `Provider`), `MapTileCacheService`, `TimeoutPredictionService`, `ImageCodecService`, `ReceivedImageStore`, and `MessageFilterService`; screens read them with `Consumer<T>`, `context.watch<T>()`, or `context.read<T>()`.
 

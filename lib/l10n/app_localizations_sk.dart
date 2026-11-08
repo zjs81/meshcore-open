@@ -1105,6 +1105,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get appSettings_languageUk => 'Ukrajinčina';
 
   @override
+  String get appSettings_languageCs => 'Čeština';
+
+  @override
   String get repeater_pathHashModeOption0 => '0 - 1 byt';
 
   @override
@@ -2032,6 +2035,35 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chat_noMessages => 'Zatiaľ žiadne správy.';
 
   @override
+  String get chatSearch_tooltip => 'Hľadať správy';
+
+  @override
+  String get chatSearch_hint => 'Hľadať správy';
+
+  @override
+  String get chatSearch_close => 'Zavrieť hľadanie';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count výsledkov',
+      many: '$count výsledku',
+      few: '$count výsledky',
+      one: '1 výsledok',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Žiadne zodpovedajúce správy';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Skúste iné slovo alebo skontrolujte preklepy';
+
+  @override
   String get chat_sendMessage => 'Odoslať správu';
 
   @override
@@ -2484,6 +2516,49 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chat_poiShared => 'Zdieľané body záujmu';
 
   @override
+  String get contactShare_headerOutgoing => 'Zdieľali ste kontakt';
+
+  @override
+  String get contactShare_headerIncoming => 'Zdieľal(a) kontakt';
+
+  @override
+  String get contactShare_add => 'Pridať kontakt';
+
+  @override
+  String get contactShare_adding => 'Pridávanie kontaktu...';
+
+  @override
+  String get contactShare_saved => 'Uložené';
+
+  @override
+  String get contactShare_isYou => 'Toto ste vy';
+
+  @override
+  String get contactShare_shareAction => 'Zdieľať kontakt';
+
+  @override
+  String get contactShare_pickerTitle => 'Zdieľať kontakt';
+
+  @override
+  String get contactShare_myContact => 'Môj kontakt';
+
+  @override
+  String get contactShare_searchHint => 'Hľadať kontakty';
+
+  @override
+  String get contactShare_noContacts => 'Nenašli sa žiadne kontakty';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Zdieľaný kontakt: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Zdieľal(a) kontakt: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Nezriadené: $count';
   }
@@ -2788,6 +2863,56 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Zobraziť posledný výsledok';
+
+  @override
+  String get manualTrace_menuItem => 'Sledovanie cesty podľa hashov';
+
+  @override
+  String get manualTrace_inputLabel => 'Hashe opakovačov';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Príklad: $example. Oddeľte čiarkami alebo medzerami.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Skoky ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Neznámy uzol';
+
+  @override
+  String get manualTrace_enterHashes => 'Zadajte hashe';
+
+  @override
+  String get manualTrace_run => 'Spustiť sledovanie cesty';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Na spustenie sledovania sa pripojte k rádiu';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Povolené sú iba hexadecimálne znaky (0-9, A-F)';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Každý hash potrebuje párny počet hexadecimálnych znakov zodpovedajúci veľkosti skoku';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Všetky hashe musia mať rovnakú dĺžku';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Hashe musia mať 1, 2 alebo 3 bajty (2, 4 alebo 6 hexadecimálnych znakov)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Cesta je príliš dlhá (maximum $max bajtov)';
+  }
 
   @override
   String get mapCache_title => 'Offline Mapa Pamäť';

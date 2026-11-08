@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meshcore_open/screens/path_trace_map.dart';
+import 'package:meshcore_open/screens/manual_path_trace_screen.dart';
 import 'package:meshcore_open/services/notification_service.dart';
 import 'package:meshcore_open/utils/app_logger.dart';
 import 'package:meshcore_open/utils/platform_info.dart';
@@ -483,6 +484,16 @@ class _ContactsScreenState extends State<ContactsScreen>
                     ],
                   ),
                   onTap: () => _contactExport(Uint8List.fromList([])),
+                ),
+                PopupMenuItem(
+                  child: Row(
+                    children: [
+                      const Icon(Icons.radar),
+                      const SizedBox(width: 8),
+                      Text(context.l10n.manualTrace_menuItem),
+                    ],
+                  ),
+                  onTap: () => ManualPathTraceScreen.open(context),
                 ),
                 const PopupMenuDivider(),
                 PopupMenuItem(

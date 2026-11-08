@@ -1114,6 +1114,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appSettings_languageUk => 'Ukrainisch';
 
   @override
+  String get appSettings_languageCs => 'Tschechisch';
+
+  @override
   String get repeater_pathHashModeOption0 => '0 - 1 Byte';
 
   @override
@@ -2045,6 +2048,33 @@ class AppLocalizationsDe extends AppLocalizations {
   String get chat_noMessages => 'Noch keine Nachrichten.';
 
   @override
+  String get chatSearch_tooltip => 'Nachrichten durchsuchen';
+
+  @override
+  String get chatSearch_hint => 'Nachrichten durchsuchen';
+
+  @override
+  String get chatSearch_close => 'Suche schließen';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Treffer',
+      one: '1 Treffer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Keine passenden Nachrichten';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Versuchen Sie ein anderes Wort oder prüfen Sie die Schreibweise';
+
+  @override
   String get chat_sendMessage => 'Nachricht senden';
 
   @override
@@ -2495,6 +2525,49 @@ class AppLocalizationsDe extends AppLocalizations {
   String get chat_poiShared => 'Geteilter POI';
 
   @override
+  String get contactShare_headerOutgoing => 'Sie haben einen Kontakt geteilt';
+
+  @override
+  String get contactShare_headerIncoming => 'Hat einen Kontakt geteilt';
+
+  @override
+  String get contactShare_add => 'Kontakt hinzufügen';
+
+  @override
+  String get contactShare_adding => 'Kontakt wird hinzugefügt...';
+
+  @override
+  String get contactShare_saved => 'Gespeichert';
+
+  @override
+  String get contactShare_isYou => 'Das sind Sie';
+
+  @override
+  String get contactShare_shareAction => 'Kontakt teilen';
+
+  @override
+  String get contactShare_pickerTitle => 'Kontakt teilen';
+
+  @override
+  String get contactShare_myContact => 'Mein Kontakt';
+
+  @override
+  String get contactShare_searchHint => 'Kontakte durchsuchen';
+
+  @override
+  String get contactShare_noContacts => 'Keine Kontakte gefunden';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Geteilter Kontakt: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Hat einen Kontakt geteilt: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Ungelesen: $count';
   }
@@ -2800,6 +2873,56 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Letztes Ergebnis anzeigen';
+
+  @override
+  String get manualTrace_menuItem => 'Pfadverfolgung per Hash';
+
+  @override
+  String get manualTrace_inputLabel => 'Repeater-Hashes';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Beispiel: $example. Mit Kommas oder Leerzeichen trennen.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Hops ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Unbekannter Knoten';
+
+  @override
+  String get manualTrace_enterHashes => 'Hashes eingeben';
+
+  @override
+  String get manualTrace_run => 'Pfadverfolgung starten';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Verbinden Sie sich mit einem Funkgerät, um eine Verfolgung zu starten';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Nur Hex-Zeichen (0-9, A-F) sind erlaubt';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Jeder Hash benötigt eine gerade Anzahl von Hex-Zeichen, passend zur Hop-Größe';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Alle Hashes müssen die gleiche Länge haben';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Hashes müssen 1, 2 oder 3 Bytes lang sein (2, 4 oder 6 Hex-Zeichen)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Pfad ist zu lang (maximal $max Bytes)';
+  }
 
   @override
   String get mapCache_title => 'Offline-Karten-Cache';

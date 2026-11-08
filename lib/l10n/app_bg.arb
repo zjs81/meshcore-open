@@ -182,6 +182,7 @@
   "appSettings_languageSv": "Шведски",
   "appSettings_languageNl": "Нидерландски",
   "appSettings_languageSk": "Словашки",
+  "appSettings_languageCs": "Чешки",
   "appSettings_languageBg": "Български",
   "appSettings_notifications": "Уведомления",
   "appSettings_enableNotifications": "Включи известията",
@@ -3590,5 +3591,79 @@
   "messageFilter_filterSenderConfirm": "Да се скрият ли всички съобщения от „{name}“?",
   "messageFilter_filterLikeThis": "Филтрирай съобщения като това…",
   "messageFilter_channelToggle": "Филтрирай съобщенията в този канал",
-  "messageFilter_ghostIconTooltip": "Скрито от твоя филтър за съобщения"
+  "messageFilter_ghostIconTooltip": "Скрито от твоя филтър за съобщения",
+  "chatSearch_tooltip": "Търсене на съобщения",
+  "chatSearch_hint": "Търсене на съобщения",
+  "chatSearch_close": "Затвори търсенето",
+  "chatSearch_resultCount": "{count, plural, =1{1 резултат} other{{count} резултата}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Няма съответстващи съобщения",
+  "chatSearch_noResultsHint": "Опитайте с друга дума или проверете правописа",
+  "contactShare_headerOutgoing": "Споделихте контакт",
+  "contactShare_headerIncoming": "Сподели контакт",
+  "contactShare_add": "Добави контакт",
+  "contactShare_adding": "Добавяне на контакт...",
+  "contactShare_saved": "Запазен",
+  "contactShare_isYou": "Това сте вие",
+  "contactShare_shareAction": "Сподели контакт",
+  "contactShare_pickerTitle": "Споделяне на контакт",
+  "contactShare_myContact": "Моят контакт",
+  "contactShare_searchHint": "Търсене на контакти",
+  "contactShare_noContacts": "Не са намерени контакти",
+  "contactShare_preview": "Споделен контакт: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Сподели контакт: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Трасиране на пътя по хешове",
+  "manualTrace_inputLabel": "Хешове на репитери",
+  "manualTrace_helper": "Пример: {example}. Разделяйте със запетаи или интервали.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Хопове ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Непознат възел",
+  "manualTrace_enterHashes": "Въведете хешове",
+  "manualTrace_run": "Пусни трасиране на пътя",
+  "manualTrace_notConnected": "Свържете се с радио, за да пуснете трасиране",
+  "manualTrace_errorInvalidHex": "Позволени са само шестнадесетични знаци (0-9, A-F)",
+  "manualTrace_errorOddLength": "Всеки хеш трябва да има четен брой шестнадесетични знаци, съответстващ на размера на хопа",
+  "manualTrace_errorMixedWidths": "Всички хешове трябва да са с еднаква дължина",
+  "manualTrace_errorUnsupportedWidth": "Хешовете трябва да са 1, 2 или 3 байта (2, 4 или 6 шестнадесетични знаци)",
+  "manualTrace_errorTooManyHops": "Пътят е твърде дълъг (максимум {max} байта)",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

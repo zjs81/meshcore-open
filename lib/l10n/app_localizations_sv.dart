@@ -1096,6 +1096,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get appSettings_languageUk => 'Ukrainska';
 
   @override
+  String get appSettings_languageCs => 'Tjeckiska';
+
+  @override
   String get repeater_pathHashModeOption0 => '0 - 1 byte';
 
   @override
@@ -2013,6 +2016,33 @@ class AppLocalizationsSv extends AppLocalizations {
   String get chat_noMessages => 'Inga meddelanden ännu';
 
   @override
+  String get chatSearch_tooltip => 'Sök i meddelanden';
+
+  @override
+  String get chatSearch_hint => 'Sök i meddelanden';
+
+  @override
+  String get chatSearch_close => 'Stäng sökning';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count träffar',
+      one: '1 träff',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Inga matchande meddelanden';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Prova ett annat ord eller kontrollera stavningen';
+
+  @override
   String get chat_sendMessage => 'Skicka meddelande';
 
   @override
@@ -2462,6 +2492,49 @@ class AppLocalizationsSv extends AppLocalizations {
   String get chat_poiShared => 'Delad POI';
 
   @override
+  String get contactShare_headerOutgoing => 'Du delade en kontakt';
+
+  @override
+  String get contactShare_headerIncoming => 'Delade en kontakt';
+
+  @override
+  String get contactShare_add => 'Lägg till kontakt';
+
+  @override
+  String get contactShare_adding => 'Lägger till kontakt...';
+
+  @override
+  String get contactShare_saved => 'Sparad';
+
+  @override
+  String get contactShare_isYou => 'Det här är du';
+
+  @override
+  String get contactShare_shareAction => 'Dela kontakt';
+
+  @override
+  String get contactShare_pickerTitle => 'Dela en kontakt';
+
+  @override
+  String get contactShare_myContact => 'Min kontakt';
+
+  @override
+  String get contactShare_searchHint => 'Sök bland kontakter';
+
+  @override
+  String get contactShare_noContacts => 'Inga kontakter hittades';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Delad kontakt: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Delade en kontakt: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Olästa: $count';
   }
@@ -2766,6 +2839,55 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Visa senaste resultat';
+
+  @override
+  String get manualTrace_menuItem => 'Ruttspårning via hashar';
+
+  @override
+  String get manualTrace_inputLabel => 'Repeater-hashar';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Exempel: $example. Separera med kommatecken eller mellanslag.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Hopp ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Okänd nod';
+
+  @override
+  String get manualTrace_enterHashes => 'Ange hashar';
+
+  @override
+  String get manualTrace_run => 'Kör ruttspårning';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Anslut till en radio för att köra en spårning';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Endast hex-tecken (0-9, A-F) är tillåtna';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Varje hash måste ha ett jämnt antal hex-tecken, som matchar hoppstorleken';
+
+  @override
+  String get manualTrace_errorMixedWidths => 'Alla hashar måste ha samma längd';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Hashar måste vara 1, 2 eller 3 byte (2, 4 eller 6 hex-tecken)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Rutten är för lång (högst $max byte)';
+  }
 
   @override
   String get mapCache_title => 'Offline Kartcache';

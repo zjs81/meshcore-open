@@ -181,7 +181,8 @@
   "appSettings_languageZh": "中文",
   "appSettings_languageSv": "Švedščina",
   "appSettings_languageNl": "Nizozemščina",
-  "appSettings_languageSk": "Slovenščina",
+  "appSettings_languageSk": "Slovaščina",
+  "appSettings_languageCs": "Češčina",
   "appSettings_languageBg": "Български",
   "appSettings_notifications": "Obvestila",
   "appSettings_enableNotifications": "Omogoči obvestila",
@@ -3797,5 +3798,79 @@
   "messageFilter_ghostIconTooltip": "Skrito z vašim filtrom sporočil",
   "@messageFilter_ghostIconTooltip": {
     "description": "Message filter: Hidden by your message filter"
+  },
+  "chatSearch_tooltip": "Išči sporočila",
+  "chatSearch_hint": "Išči sporočila",
+  "chatSearch_close": "Zapri iskanje",
+  "chatSearch_resultCount": "{count, plural, one{{count} zadetek} two{{count} zadetka} few{{count} zadetki} other{{count} zadetkov}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Ni ustreznih sporočil",
+  "chatSearch_noResultsHint": "Poskusite z drugo besedo ali preverite črkovanje",
+  "contactShare_headerOutgoing": "Delili ste stik",
+  "contactShare_headerIncoming": "Delil stik",
+  "contactShare_add": "Dodaj stik",
+  "contactShare_adding": "Dodajanje stika ...",
+  "contactShare_saved": "Shranjeno",
+  "contactShare_isYou": "To ste vi",
+  "contactShare_shareAction": "Deli stik",
+  "contactShare_pickerTitle": "Deli stik",
+  "contactShare_myContact": "Moj stik",
+  "contactShare_searchHint": "Išči stike",
+  "contactShare_noContacts": "Ni najdenih stikov",
+  "contactShare_preview": "Deljen stik: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Delil stik: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Sledenje poti po zgoščenih vrednostih",
+  "manualTrace_inputLabel": "Zgoščene vrednosti repetitorjev",
+  "manualTrace_helper": "Primer: {example}. Ločite z vejicami ali presledki.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Skoki ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Neznano vozlišče",
+  "manualTrace_enterHashes": "Vnesite zgoščene vrednosti",
+  "manualTrace_run": "Zaženi sledenje poti",
+  "manualTrace_notConnected": "Za izvedbo sledenja se povežite z radiem",
+  "manualTrace_errorInvalidHex": "Dovoljeni so samo šestnajstiški znaki (0-9, A-F)",
+  "manualTrace_errorOddLength": "Vsaka zgoščena vrednost mora imeti sodo število šestnajstiških znakov, skladno z velikostjo skoka",
+  "manualTrace_errorMixedWidths": "Vse zgoščene vrednosti morajo biti enake dolžine",
+  "manualTrace_errorUnsupportedWidth": "Zgoščene vrednosti morajo imeti 1, 2 ali 3 bajte (2, 4 ali 6 šestnajstiških znakov)",
+  "manualTrace_errorTooManyHops": "Pot je predolga (največ {max} bajtov)",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
   }
 }

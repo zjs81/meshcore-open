@@ -39,6 +39,7 @@ import '../widgets/quick_switch_bar.dart';
 import '../widgets/sync_progress_overlay.dart';
 import '../icons/los_icon.dart';
 import 'channels_screen.dart';
+import 'manual_path_trace_screen.dart';
 import 'chat_screen.dart';
 import 'contacts_screen.dart';
 import '../theme/mesh_theme.dart';
@@ -780,6 +781,17 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                             connector.selfLongitude!,
                           ),
                         ),
+                      ),
+                    if (!_isBuildingPathTrace)
+                      PopupMenuItem(
+                        child: Row(
+                          children: [
+                            const Icon(Icons.radar),
+                            const SizedBox(width: 8),
+                            Text(context.l10n.manualTrace_menuItem),
+                          ],
+                        ),
+                        onTap: () => ManualPathTraceScreen.open(context),
                       ),
                     if (!_isBuildingPathTrace)
                       PopupMenuItem(
@@ -4005,6 +4017,18 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     });
   }
 
+  void _openManualEntry() {
+    final text = PathHelper.splitPathBytes(
+      _pathTrace,
+      context.read<MeshCoreConnector>().pathHashByteWidth,
+    ).map(PathHelper.formatHopHex).join(',');
+    ManualPathTraceScreen.open(
+      context,
+      initialText: text,
+      initialReturnPath: _traceDraft.returnPath,
+    );
+  }
+
   void _openTraceResult({required bool reuseLastResult}) {
     final draft = _traceDraft;
     final path = Uint8List.fromList(_pathTrace);
@@ -4130,6 +4154,12 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                         style: TextButton.styleFrom(minimumSize: buttonSize),
                         icon: const Icon(Icons.undo),
                         label: Text(l10n.map_removeLast),
+                      ),
+                      TextButton.icon(
+                        onPressed: _openManualEntry,
+                        style: TextButton.styleFrom(minimumSize: buttonSize),
+                        icon: const Icon(Icons.keyboard),
+                        label: Text(l10n.manualTrace_enterHashes),
                       ),
                       TextButton.icon(
                         onPressed: _clearPath,

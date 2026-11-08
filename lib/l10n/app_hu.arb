@@ -249,6 +249,7 @@
   "appSettings_languageSv": "Svenska",
   "appSettings_languageNl": "Nederlands",
   "appSettings_languageSk": "Slovenčina",
+  "appSettings_languageCs": "Čeština",
   "appSettings_languageBg": "Български",
   "appSettings_languageRu": "Русский",
   "appSettings_languageUk": "Українська",
@@ -3681,5 +3682,79 @@
   },
   "messageFilter_filterLikeThis": "Ehhez hasonló üzenetek szűrése…",
   "messageFilter_channelToggle": "Üzenetek szűrése ezen a csatornán",
-  "messageFilter_ghostIconTooltip": "Az üzenetszűrő elrejtette"
+  "messageFilter_ghostIconTooltip": "Az üzenetszűrő elrejtette",
+  "chatSearch_tooltip": "Üzenetek keresése",
+  "chatSearch_hint": "Üzenetek keresése",
+  "chatSearch_close": "Keresés bezárása",
+  "chatSearch_resultCount": "{count, plural, =1{1 találat} other{{count} találat}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Nincs egyező üzenet",
+  "chatSearch_noResultsHint": "Próbálj másik szót, vagy ellenőrizd a helyesírást",
+  "contactShare_headerOutgoing": "Megosztottál egy névjegyet",
+  "contactShare_headerIncoming": "Megosztott egy névjegyet",
+  "contactShare_add": "Névjegy hozzáadása",
+  "contactShare_adding": "Névjegy hozzáadása...",
+  "contactShare_saved": "Mentve",
+  "contactShare_isYou": "Ez te vagy",
+  "contactShare_shareAction": "Névjegy megosztása",
+  "contactShare_pickerTitle": "Névjegy megosztása",
+  "contactShare_myContact": "Saját névjegyem",
+  "contactShare_searchHint": "Névjegyek keresése",
+  "contactShare_noContacts": "Nem található névjegy",
+  "contactShare_preview": "Megosztott névjegy: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Megosztott egy névjegyet: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Útvonal-nyomkövetés hashek alapján",
+  "manualTrace_inputLabel": "Átjátszó hashek",
+  "manualTrace_helper": "Példa: {example}. Vesszővel vagy szóközzel válaszd el.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Ugrások ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Ismeretlen csomópont",
+  "manualTrace_enterHashes": "Add meg a hasheket",
+  "manualTrace_run": "Útvonal-nyomkövetés indítása",
+  "manualTrace_notConnected": "Csatlakozz egy rádióhoz a nyomkövetés indításához",
+  "manualTrace_errorInvalidHex": "Csak hexadecimális karakterek (0-9, A-F) engedélyezettek",
+  "manualTrace_errorOddLength": "Minden hashnek páros számú hexadecimális karakterből kell állnia, az ugrásmérettel egyezően",
+  "manualTrace_errorMixedWidths": "Minden hashnek azonos hosszúságúnak kell lennie",
+  "manualTrace_errorUnsupportedWidth": "A hasheknek 1, 2 vagy 3 bájtosnak kell lenniük (2, 4 vagy 6 hexadecimális karakter)",
+  "manualTrace_errorTooManyHops": "Az útvonal túl hosszú (legfeljebb {max} bájt)",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }
