@@ -3794,6 +3794,7 @@
   "manualTrace_errorMixedWidths": "Alle Hashes müssen die gleiche Länge haben",
   "manualTrace_errorUnsupportedWidth": "Hashes müssen 1, 2 oder 3 Bytes lang sein (2, 4 oder 6 Hex-Zeichen)",
   "manualTrace_errorTooManyHops": "Pfad ist zu lang (maximal {max} Bytes)",
+  "manualTrace_errorTraceTooLong": "Zu viele Hops für eine einzelne Verfolgung. Entfernen Sie einige Hops oder wählen Sie „Wie eingegeben“.",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

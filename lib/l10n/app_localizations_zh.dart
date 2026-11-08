@@ -2754,6 +2754,10 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      '跳数过多，无法在一次请求中追踪。请减少一些跳，或选择“按输入顺序”。';
+
+  @override
   String get mapCache_title => '离线地图缓存';
 
   @override

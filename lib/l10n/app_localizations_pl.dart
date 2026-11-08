@@ -2940,6 +2940,10 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Zbyt wiele skoków do prześledzenia w jednym żądaniu. Usuń część skoków lub wybierz „Jak wprowadzono”.';
+
+  @override
   String get mapCache_title => 'Pamięć podręczna map offline';
 
   @override

@@ -2924,6 +2924,10 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Trop de sauts à tracer en une seule requête. Retirez des sauts ou choisissez « Tel que saisi ».';
+
+  @override
   String get mapCache_title => 'Cache de carte hors ligne';
 
   @override

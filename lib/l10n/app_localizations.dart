@@ -5166,6 +5166,12 @@ abstract class AppLocalizations {
   /// **'Path is too long (maximum {max} bytes)'**
   String manualTrace_errorTooManyHops(int max);
 
+  /// No description provided for @manualTrace_errorTraceTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many hops to trace in one request. Remove some hops or choose As entered.'**
+  String get manualTrace_errorTraceTooLong;
+
   /// No description provided for @mapCache_title.
   ///
   /// In en, this message translates to:

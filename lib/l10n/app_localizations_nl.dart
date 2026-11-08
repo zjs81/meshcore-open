@@ -2905,6 +2905,10 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Te veel hops om in één verzoek te tracen. Verwijder enkele hops of kies „Zoals ingevoerd”.';
+
+  @override
   String get mapCache_title => 'Offline Kaarten Cache';
 
   @override

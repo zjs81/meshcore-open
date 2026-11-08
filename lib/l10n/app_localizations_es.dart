@@ -2914,6 +2914,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Demasiados saltos para trazar en una sola solicitud. Quita algunos saltos o elige «Tal como se introdujo».';
+
+  @override
   String get mapCache_title => 'Caché de mapa sin conexión';
 
   @override

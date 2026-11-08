@@ -3999,6 +3999,7 @@
   "manualTrace_errorMixedWidths": "すべてのハッシュは同じ長さにしてください",
   "manualTrace_errorUnsupportedWidth": "ハッシュは1、2、3バイト(16進数で2、4、6文字)にしてください",
   "manualTrace_errorTooManyHops": "経路が長すぎます(最大 {max} バイト)",
+  "manualTrace_errorTraceTooLong": "1回のリクエストでトレースできるホップ数を超えています。ホップを減らすか、「入力どおり」を選んでください。",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

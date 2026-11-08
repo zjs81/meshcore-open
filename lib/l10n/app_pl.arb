@@ -3898,6 +3898,7 @@
   "manualTrace_errorMixedWidths": "Wszystkie hasze muszą mieć tę samą długość",
   "manualTrace_errorUnsupportedWidth": "Hasze muszą mieć 1, 2 lub 3 bajty (2, 4 lub 6 znaków szesnastkowych)",
   "manualTrace_errorTooManyHops": "Ścieżka jest zbyt długa (maksymalnie {max} bajtów)",
+  "manualTrace_errorTraceTooLong": "Zbyt wiele skoków do prześledzenia w jednym żądaniu. Usuń część skoków lub wybierz „Jak wprowadzono”.",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

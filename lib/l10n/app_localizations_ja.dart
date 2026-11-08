@@ -2794,6 +2794,10 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      '1回のリクエストでトレースできるホップ数を超えています。ホップを減らすか、「入力どおり」を選んでください。';
+
+  @override
   String get mapCache_title => 'オフライン用地図キャッシュ';
 
   @override

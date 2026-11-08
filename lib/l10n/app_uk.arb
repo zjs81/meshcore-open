@@ -3639,6 +3639,7 @@
   "manualTrace_errorMixedWidths": "Усі хеші мають бути однакової довжини",
   "manualTrace_errorUnsupportedWidth": "Хеші мають бути завдовжки 1, 2 або 3 байти (2, 4 або 6 шістнадцяткових символів)",
   "manualTrace_errorTooManyHops": "Шлях задовгий (максимум {max} байт)",
+  "manualTrace_errorTraceTooLong": "Забагато хопів для трасування в одному запиті. Видаліть кілька хопів або виберіть «Як введено».",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

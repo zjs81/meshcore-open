@@ -2916,6 +2916,10 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Saltos demais para rastrear em uma única solicitação. Remova alguns saltos ou escolha “Como inserido”.';
+
+  @override
   String get mapCache_title => 'Cache de Mapa Offline';
 
   @override

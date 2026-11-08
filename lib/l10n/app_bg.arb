@@ -3659,6 +3659,7 @@
   "manualTrace_errorMixedWidths": "Всички хешове трябва да са с еднаква дължина",
   "manualTrace_errorUnsupportedWidth": "Хешовете трябва да са 1, 2 или 3 байта (2, 4 или 6 шестнадесетични знаци)",
   "manualTrace_errorTooManyHops": "Пътят е твърде дълъг (максимум {max} байта)",
+  "manualTrace_errorTraceTooLong": "Твърде много хопове за трасиране в една заявка. Премахнете няколко хопа или изберете „Както е въведено“.",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

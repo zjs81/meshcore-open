@@ -2925,6 +2925,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Zu viele Hops für eine einzelne Verfolgung. Entfernen Sie einige Hops oder wählen Sie „Wie eingegeben“.';
+
+  @override
   String get mapCache_title => 'Offline-Karten-Cache';
 
   @override

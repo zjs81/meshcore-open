@@ -47,4 +47,28 @@ void main() {
     final wide = List.filled(22, 'aabbcc').join(',');
     expect(p(wide).error, PathTraceInputError.tooManyHops);
   });
+
+  group('traceFitsInRequest', () {
+    PathTraceInput hops(int count, int width) => PathTraceInputParser.parse(
+      List.generate(count, (i) => 'ab' * width).join(','),
+      width,
+    ).input!;
+
+    test('round trip of 21 three-byte hops exceeds the frame limit', () {
+      // 41 hops x 4-byte trace prefixes + 10-byte header = 174 > 172.
+      expect(traceFitsInRequest(hops(21, 3), roundTrip: true), isFalse);
+      expect(traceFitsInRequest(hops(21, 3), roundTrip: false), isTrue);
+    });
+
+    test('round trip of 20 three-byte hops fits', () {
+      // 39 x 4 + 10 = 166.
+      expect(traceFitsInRequest(hops(20, 3), roundTrip: true), isTrue);
+    });
+
+    test('hop count is capped at 64 even when bytes fit', () {
+      // 33 one-byte hops round trip = 65 hops.
+      expect(traceFitsInRequest(hops(33, 1), roundTrip: true), isFalse);
+      expect(traceFitsInRequest(hops(32, 1), roundTrip: true), isTrue);
+    });
+  });
 }

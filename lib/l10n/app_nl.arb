@@ -3560,6 +3560,7 @@
   "manualTrace_errorMixedWidths": "Alle hashes moeten even lang zijn",
   "manualTrace_errorUnsupportedWidth": "Hashes moeten 1, 2 of 3 bytes zijn (2, 4 of 6 hex-tekens)",
   "manualTrace_errorTooManyHops": "Pad is te lang (maximaal {max} bytes)",
+  "manualTrace_errorTraceTooLong": "Te veel hops om in één verzoek te tracen. Verwijder enkele hops of kies „Zoals ingevoerd”.",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

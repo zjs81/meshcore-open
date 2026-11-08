@@ -7,6 +7,7 @@ import 'package:flutter_langdetect/flutter_langdetect.dart';
 
 import '../models/app_settings.dart';
 import '../models/translation_support.dart';
+import '../helpers/contact_share_message.dart';
 import '../helpers/gif_helper.dart';
 import '../utils/app_logger.dart';
 import 'app_settings_service.dart';
@@ -571,6 +572,10 @@ class TranslationService extends ChangeNotifier {
       return false;
     }
     if (GifHelper.parseGif(trimmed) != null) {
+      return false;
+    }
+    // A shared contact card is data: translating it would mangle the token.
+    if (parseContactShare(trimmed) != null) {
       return false;
     }
     return !(trimmed.startsWith('m:') ||

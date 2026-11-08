@@ -2925,6 +2925,10 @@ class AppLocalizationsBg extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Твърде много хопове за трасиране в една заявка. Премахнете няколко хопа или изберете „Както е въведено“.';
+
+  @override
   String get mapCache_title => 'Кеш на офлайн карти';
 
   @override

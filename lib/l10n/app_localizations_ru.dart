@@ -2923,6 +2923,10 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Слишком много хопов для трассировки за один запрос. Удалите часть хопов или выберите «Как введено».';
+
+  @override
   String get mapCache_title => 'Кэш офлайн-карты';
 
   @override

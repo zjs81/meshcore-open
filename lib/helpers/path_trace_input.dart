@@ -115,3 +115,28 @@ class PathTraceInputParser {
   static String _stripPrefix(String t) =>
       (t.startsWith('0x') || t.startsWith('0X')) ? t.substring(2) : t;
 }
+
+/// `CMD_SEND_TRACE_PATH` header: command, tag x4, auth x4, flags.
+const int traceRequestHeaderBytes = 10;
+
+/// Bytes per hop the trace request uses for [hopWidth]-byte hashes. Trace
+/// flags encode the width as a power of two, so 3-byte hops are sent as
+/// 4-byte public-key prefixes.
+int traceHashWidthFor(int hopWidth) => hopWidth <= 1
+    ? 1
+    : hopWidth == 2
+    ? 2
+    : 4;
+
+/// Hops actually sent: a round trip goes out and back over the same hops,
+/// sharing the far end (n hops become 2n - 1).
+int tracedHopCount(int hops, {required bool roundTrip}) =>
+    roundTrip && hops > 1 ? hops * 2 - 1 : hops;
+
+/// Whether [input] traced in this mode fits one request: the firmware takes
+/// at most [maxPathSize] hops and the frame must stay within [maxFrameSize].
+bool traceFitsInRequest(PathTraceInput input, {required bool roundTrip}) {
+  final hops = tracedHopCount(input.hops.length, roundTrip: roundTrip);
+  final bytes = hops * traceHashWidthFor(input.hopWidth);
+  return hops <= maxPathSize && traceRequestHeaderBytes + bytes <= maxFrameSize;
+}

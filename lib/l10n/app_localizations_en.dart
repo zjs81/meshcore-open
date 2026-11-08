@@ -2880,6 +2880,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Too many hops to trace in one request. Remove some hops or choose As entered.';
+
+  @override
   String get mapCache_title => 'Offline Map Cache';
 
   @override

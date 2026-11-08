@@ -2797,6 +2797,10 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      '한 번의 요청으로 추적하기에는 홉이 너무 많습니다. 홉을 줄이거나 “입력한 대로”를 선택하세요.';
+
+  @override
   String get mapCache_title => '오프라인 지도 캐시';
 
   @override

@@ -3793,6 +3793,7 @@
   "manualTrace_errorMixedWidths": "Tous les hachages doivent avoir la même longueur",
   "manualTrace_errorUnsupportedWidth": "Les hachages doivent faire 1, 2 ou 3 octets (2, 4 ou 6 caractères hexadécimaux)",
   "manualTrace_errorTooManyHops": "Le chemin est trop long (maximum {max} octets)",
+  "manualTrace_errorTraceTooLong": "Trop de sauts à tracer en une seule requête. Retirez des sauts ou choisissez « Tel que saisi ».",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

@@ -3716,6 +3716,7 @@
   "manualTrace_errorMixedWidths": "所有哈希长度必须相同",
   "manualTrace_errorUnsupportedWidth": "哈希必须为 1、2 或 3 字节（2、4 或 6 个十六进制字符）",
   "manualTrace_errorTooManyHops": "路径过长（最多 {max} 字节）",
+  "manualTrace_errorTraceTooLong": "跳数过多，无法在一次请求中追踪。请减少一些跳，或选择“按输入顺序”。",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

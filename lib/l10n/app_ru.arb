@@ -2956,6 +2956,7 @@
   "manualTrace_errorMixedWidths": "Все хэши должны быть одной длины",
   "manualTrace_errorUnsupportedWidth": "Хэши должны быть длиной 1, 2 или 3 байта (2, 4 или 6 шестнадцатеричных символов)",
   "manualTrace_errorTooManyHops": "Путь слишком длинный (максимум {max} байт)",
+  "manualTrace_errorTraceTooLong": "Слишком много хопов для трассировки за один запрос. Удалите часть хопов или выберите «Как введено».",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

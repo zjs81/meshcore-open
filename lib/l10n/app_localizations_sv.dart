@@ -2890,6 +2890,10 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'För många hopp för att spåra i en enda förfrågan. Ta bort några hopp eller välj ”Som inmatat”.';
+
+  @override
   String get mapCache_title => 'Offline Kartcache';
 
   @override

@@ -3706,6 +3706,7 @@
   "manualTrace_errorMixedWidths": "Alla hashar måste ha samma längd",
   "manualTrace_errorUnsupportedWidth": "Hashar måste vara 1, 2 eller 3 byte (2, 4 eller 6 hex-tecken)",
   "manualTrace_errorTooManyHops": "Rutten är för lång (högst {max} byte)",
+  "manualTrace_errorTraceTooLong": "För många hopp för att spåra i en enda förfrågan. Ta bort några hopp eller välj ”Som inmatat”.",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

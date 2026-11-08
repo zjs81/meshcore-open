@@ -2915,6 +2915,10 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Príliš veľa skokov na sledovanie v jednej požiadavke. Odstráňte niektoré skoky alebo zvoľte „Podľa zadania“.';
+
+  @override
   String get mapCache_title => 'Offline Mapa Pamäť';
 
   @override

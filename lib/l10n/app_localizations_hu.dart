@@ -2914,6 +2914,10 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Túl sok ugrás egyetlen nyomkövetési kéréshez. Távolíts el néhány ugrást, vagy válaszd a „Megadott sorrendben” lehetőséget.';
+
+  @override
   String get mapCache_title => 'Offline térképgyorsítótár';
 
   @override

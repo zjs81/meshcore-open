@@ -1498,6 +1498,7 @@
   "manualTrace_errorMixedWidths": "All hashes must be the same length",
   "manualTrace_errorUnsupportedWidth": "Hashes must be 1, 2 or 3 bytes (2, 4 or 6 hex characters)",
   "manualTrace_errorTooManyHops": "Path is too long (maximum {max} bytes)",
+  "manualTrace_errorTraceTooLong": "Too many hops to trace in one request. Remove some hops or choose As entered.",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

@@ -3711,6 +3711,7 @@
   "manualTrace_errorMixedWidths": "Todos os hashes devem ter o mesmo comprimento",
   "manualTrace_errorUnsupportedWidth": "Os hashes devem ter 1, 2 ou 3 bytes (2, 4 ou 6 caracteres hexadecimais)",
   "manualTrace_errorTooManyHops": "O caminho é muito longo (máximo de {max} bytes)",
+  "manualTrace_errorTraceTooLong": "Saltos demais para rastrear em uma única solicitação. Remova alguns saltos ou escolha “Como inserido”.",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

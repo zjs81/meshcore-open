@@ -3712,6 +3712,7 @@
   "manualTrace_errorMixedWidths": "Všetky hashe musia mať rovnakú dĺžku",
   "manualTrace_errorUnsupportedWidth": "Hashe musia mať 1, 2 alebo 3 bajty (2, 4 alebo 6 hexadecimálnych znakov)",
   "manualTrace_errorTooManyHops": "Cesta je príliš dlhá (maximum {max} bajtov)",
+  "manualTrace_errorTraceTooLong": "Príliš veľa skokov na sledovanie v jednej požiadavke. Odstráňte niektoré skoky alebo zvoľte „Podľa zadania“.",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {

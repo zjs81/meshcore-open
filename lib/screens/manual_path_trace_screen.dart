@@ -137,9 +137,13 @@ class _ManualPathTraceScreenState extends State<ManualPathTraceScreen> {
       connector.pathHashByteWidth,
     );
     final input = result.input;
-    final errorText = result.error == null ? null : _errorText(result.error!);
+    final fits =
+        input == null || traceFitsInRequest(input, roundTrip: _returnPath);
+    final errorText = result.error != null
+        ? _errorText(result.error!)
+        : (fits ? null : l10n.manualTrace_errorTraceTooLong);
     final exampleWidth = input?.hopWidth ?? connector.pathHashByteWidth;
-    final canRun = input != null && connector.isConnected;
+    final canRun = input != null && fits && connector.isConnected;
     const buttonSize = Size(48, 48);
 
     return Scaffold(

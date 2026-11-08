@@ -2908,6 +2908,10 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Příliš mnoho skoků pro trasování v jednom požadavku. Odeberte některé skoky nebo zvolte „Dle zadání“.';
+
+  @override
   String get mapCache_title => 'Offline mezipaměť map';
 
   @override

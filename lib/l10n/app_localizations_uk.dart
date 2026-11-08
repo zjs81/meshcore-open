@@ -2916,6 +2916,10 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Забагато хопів для трасування в одному запиті. Видаліть кілька хопів або виберіть «Як введено».';
+
+  @override
   String get mapCache_title => 'Офлайн-кеш карти';
 
   @override

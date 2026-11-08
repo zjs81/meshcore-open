@@ -2906,6 +2906,10 @@ class AppLocalizationsSl extends AppLocalizations {
   }
 
   @override
+  String get manualTrace_errorTraceTooLong =>
+      'Preveč skokov za sledenje v eni zahtevi. Odstranite nekaj skokov ali izberite »Kot vneseno«.';
+
+  @override
   String get mapCache_title =>
       'Omrezni predpomnilnik zemljeških zemljejevskih slik';
 

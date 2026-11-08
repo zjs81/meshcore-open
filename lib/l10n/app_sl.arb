@@ -3866,6 +3866,7 @@
   "manualTrace_errorMixedWidths": "Vse zgoščene vrednosti morajo biti enake dolžine",
   "manualTrace_errorUnsupportedWidth": "Zgoščene vrednosti morajo imeti 1, 2 ali 3 bajte (2, 4 ali 6 šestnajstiških znakov)",
   "manualTrace_errorTooManyHops": "Pot je predolga (največ {max} bajtov)",
+  "manualTrace_errorTraceTooLong": "Preveč skokov za sledenje v eni zahtevi. Odstranite nekaj skokov ali izberite »Kot vneseno«.",
   "@manualTrace_errorTooManyHops": {
     "placeholders": {
       "max": {
