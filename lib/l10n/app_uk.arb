@@ -3543,6 +3543,8 @@
   "messageFilter_automaticSection": "Автоматично",
   "messageFilter_duplicates": "Повідомлення, що повторюються",
   "messageFilter_duplicatesSubtitle": "Те саме повідомлення, надіслане знову або кількома відправниками",
+  "messageFilter_repeatSends": "Яка відправка вважається повтором",
+  "messageFilter_repeatSendsSubtitle": "Приховувати повідомлення, якщо той самий відправник надсилає його повторно протягом 10 хвилин (кількість відправлень: {count})",
   "messageFilter_repeatedCharacters": "Повторювані символи",
   "messageFilter_repeatedCharactersSubtitle": "Довгі послідовності одного символа, наприклад «aaaaaaaaaaaaaaaaaaaa»",
   "messageFilter_learning": "Навчання на натисканнях «Спам»",

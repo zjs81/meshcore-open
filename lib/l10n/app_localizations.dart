@@ -11889,6 +11889,18 @@ abstract class AppLocalizations {
   /// **'The same message sent again, or by several senders'**
   String get messageFilter_duplicatesSubtitle;
 
+  /// Message filter: title of the setting for which send of the same message by the same sender is hidden as a repeat
+  ///
+  /// In en, this message translates to:
+  /// **'Sends to count as a repeat'**
+  String get messageFilter_repeatSends;
+
+  /// Message filter: subtitle of the repeat-sends setting
+  ///
+  /// In en, this message translates to:
+  /// **'Hide a message when the same sender sends it {count} times within 10 minutes'**
+  String messageFilter_repeatSendsSubtitle(int count);
+
   /// Message filter: Repeated characters
   ///
   /// In en, this message translates to:

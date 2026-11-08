@@ -7074,6 +7074,14 @@ class AppLocalizationsHu extends AppLocalizations {
       'Ugyanaz az üzenet újra elküldve, vagy több feladótól';
 
   @override
+  String get messageFilter_repeatSends => 'Ismétlésnek számító küldések';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Üzenet elrejtése, ha ugyanaz a feladó $count× elküldi 10 percen belül';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Ismétlődő karakterek';
 
   @override

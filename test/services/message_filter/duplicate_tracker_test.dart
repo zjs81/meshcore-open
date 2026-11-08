@@ -27,6 +27,56 @@ void main() {
     );
   });
 
+  test('sameSenderSends sets which send in a row is flagged', () {
+    final tracker = DuplicateTracker();
+    const text = 'Anyone on the hill repeater?';
+    FilterReason? send(int minutes) => tracker.check(
+      channelId: 'c',
+      sender: 'Bob',
+      text: text,
+      at: t0.add(Duration(minutes: minutes)),
+      sameSenderSends: 3,
+    );
+    expect(send(0), isNull);
+    // Re-sent because nobody answered.
+    expect(send(4), isNull);
+    expect(send(9), FilterReason.duplicate);
+    // A slow flood keeps the run going: each send is within the window of
+    // the previous one.
+    expect(send(17), FilterReason.duplicate);
+    expect(send(25), FilterReason.duplicate);
+  });
+
+  test('the same message seen again is never a repeat', () {
+    final tracker = DuplicateTracker();
+    const text = 'Gday from Brunkerville, how is everyone';
+    // Another companion syncing messages the first one already delivered:
+    // same sender, text and send second, arriving later.
+    for (var i = 0; i < 5; i++) {
+      expect(
+        tracker.check(
+          channelId: 'c',
+          sender: 'VK2WSL TRACKER',
+          text: text,
+          at: t0,
+          receivedAt: t0.add(Duration(minutes: i)),
+        ),
+        isNull,
+      );
+    }
+    // Copies are not counted: a real re-send is only the second send.
+    expect(
+      tracker.check(
+        channelId: 'c',
+        sender: 'VK2WSL TRACKER',
+        text: text,
+        at: t0.add(const Duration(minutes: 2)),
+        sameSenderSends: 3,
+      ),
+      isNull,
+    );
+  });
+
   test('short replies repeated by the same sender are not duplicates', () {
     final tracker = DuplicateTracker();
     for (final text in ['ok', 'test', 'yes sir', 'ok']) {

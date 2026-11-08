@@ -7111,6 +7111,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le même message envoyé de nouveau, ou par plusieurs expéditeurs';
 
   @override
+  String get messageFilter_repeatSends => 'Envois comptés comme répétition';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Masquer un message lorsque le même expéditeur l\'envoie $count fois en 10 minutes';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Caractères répétés';
 
   @override

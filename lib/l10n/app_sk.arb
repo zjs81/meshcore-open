@@ -3564,6 +3564,8 @@
   "messageFilter_automaticSection": "Automatické",
   "messageFilter_duplicates": "Opakované správy",
   "messageFilter_duplicatesSubtitle": "Rovnaká správa odoslaná znova alebo viacerými odosielateľmi",
+  "messageFilter_repeatSends": "Odoslanie počítané ako opakovanie",
+  "messageFilter_repeatSendsSubtitle": "Skryť správu, ak ju ten istý odosielateľ pošle opakovane do 10 minút (počet odoslaní: {count})",
   "messageFilter_repeatedCharacters": "Opakované znaky",
   "messageFilter_repeatedCharactersSubtitle": "Dlhé rady jedného znaku, napríklad „aaaaaaaaaaaaaaaaaaaa“",
   "messageFilter_learning": "Učiť sa z klepnutí na Spam",

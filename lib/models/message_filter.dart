@@ -143,6 +143,10 @@ class MessageFilterSettings {
   final bool enabled;
   final FilterDisplayMode displayMode;
   final bool duplicates;
+
+  /// Which send in a row of the same message by the same sender is flagged
+  /// as a repeat (2 = the first re-send).
+  final int repeatSends;
   final bool repeatedCharacters;
   final bool learning;
   final Set<String> excludedChannelIds;
@@ -151,6 +155,7 @@ class MessageFilterSettings {
     this.enabled = true,
     this.displayMode = FilterDisplayMode.placeholder,
     this.duplicates = true,
+    this.repeatSends = defaultRepeatSends,
     this.repeatedCharacters = true,
     this.learning = true,
     this.excludedChannelIds = const <String>{},
@@ -158,10 +163,15 @@ class MessageFilterSettings {
 
   static const MessageFilterSettings defaults = MessageFilterSettings();
 
+  static const int defaultRepeatSends = 2;
+  static const int minRepeatSends = 2;
+  static const int maxRepeatSends = 5;
+
   MessageFilterSettings copyWith({
     bool? enabled,
     FilterDisplayMode? displayMode,
     bool? duplicates,
+    int? repeatSends,
     bool? repeatedCharacters,
     bool? learning,
     Set<String>? excludedChannelIds,
@@ -170,6 +180,7 @@ class MessageFilterSettings {
       enabled: enabled ?? this.enabled,
       displayMode: displayMode ?? this.displayMode,
       duplicates: duplicates ?? this.duplicates,
+      repeatSends: repeatSends ?? this.repeatSends,
       repeatedCharacters: repeatedCharacters ?? this.repeatedCharacters,
       learning: learning ?? this.learning,
       excludedChannelIds: excludedChannelIds ?? this.excludedChannelIds,
@@ -180,6 +191,7 @@ class MessageFilterSettings {
     'enabled': enabled,
     'displayMode': displayMode.name,
     'duplicates': duplicates,
+    'repeatSends': repeatSends,
     'repeatedCharacters': repeatedCharacters,
     'learning': learning,
     'excludedChannelIds': excludedChannelIds.toList()..sort(),
@@ -195,6 +207,11 @@ class MessageFilterSettings {
         FilterDisplayMode.placeholder,
       ),
       duplicates: json['duplicates'] as bool? ?? true,
+      repeatSends:
+          ((json['repeatSends'] as num?)?.toInt() ?? defaultRepeatSends).clamp(
+            minRepeatSends,
+            maxRepeatSends,
+          ),
       repeatedCharacters: json['repeatedCharacters'] as bool? ?? true,
       learning: json['learning'] as bool? ?? true,
       excludedChannelIds: excluded is List

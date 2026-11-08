@@ -3563,6 +3563,8 @@
   "messageFilter_automaticSection": "Автоматично",
   "messageFilter_duplicates": "Повтарящи се съобщения",
   "messageFilter_duplicatesSubtitle": "Същото съобщение, изпратено отново или от няколко подателя",
+  "messageFilter_repeatSends": "Изпращания, броени за повторение",
+  "messageFilter_repeatSendsSubtitle": "Скриване на съобщение, когато същият подател го изпрати {count} пъти в рамките на 10 минути",
   "messageFilter_repeatedCharacters": "Повтарящи се символи",
   "messageFilter_repeatedCharactersSubtitle": "Дълги поредици от един и същ знак, като „aaaaaaaaaaaaaaaaaaaa“",
   "messageFilter_learning": "Учи се от натискането на „Спам“",

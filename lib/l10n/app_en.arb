@@ -3958,6 +3958,19 @@
   "@messageFilter_duplicatesSubtitle": {
     "description": "Message filter: The same message sent again, or by several senders"
   },
+  "messageFilter_repeatSends": "Sends to count as a repeat",
+  "@messageFilter_repeatSends": {
+    "description": "Message filter: title of the setting for which send of the same message by the same sender is hidden as a repeat"
+  },
+  "messageFilter_repeatSendsSubtitle": "Hide a message when the same sender sends it {count} times within 10 minutes",
+  "@messageFilter_repeatSendsSubtitle": {
+    "description": "Message filter: subtitle of the repeat-sends setting",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "messageFilter_repeatedCharacters": "Repeated characters",
   "@messageFilter_repeatedCharacters": {
     "description": "Message filter: Repeated characters"

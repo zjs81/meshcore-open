@@ -7068,6 +7068,14 @@ class AppLocalizationsSk extends AppLocalizations {
       'Rovnaká správa odoslaná znova alebo viacerými odosielateľmi';
 
   @override
+  String get messageFilter_repeatSends => 'Odoslanie počítané ako opakovanie';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Skryť správu, ak ju ten istý odosielateľ pošle opakovane do 10 minút (počet odoslaní: $count)';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Opakované znaky';
 
   @override

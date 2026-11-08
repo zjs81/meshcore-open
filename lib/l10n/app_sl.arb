@@ -3645,6 +3645,8 @@
   "@messageFilter_duplicatesSubtitle": {
     "description": "Message filter: The same message sent again, or by several senders"
   },
+  "messageFilter_repeatSends": "Pošiljanje, šteto kot ponovitev",
+  "messageFilter_repeatSendsSubtitle": "Skrij sporočilo, ko ga isti pošiljatelj v 10 minutah pošlje ponovno (število pošiljanj: {count})",
   "messageFilter_repeatedCharacters": "Ponavljajoči se znaki",
   "@messageFilter_repeatedCharacters": {
     "description": "Message filter: Repeated characters"

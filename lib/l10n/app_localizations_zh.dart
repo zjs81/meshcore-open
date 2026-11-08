@@ -6603,6 +6603,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get messageFilter_duplicatesSubtitle => '重复发送的相同消息，或多个发送者发送的相同消息';
 
   @override
+  String get messageFilter_repeatSends => '视为重复的发送次数';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return '同一发送者在 10 分钟内发送同一消息 $count 次时隐藏该消息';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => '重复字符';
 
   @override

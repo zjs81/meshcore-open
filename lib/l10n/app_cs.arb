@@ -4117,6 +4117,8 @@
   "messageFilter_automaticSection": "Automatické",
   "messageFilter_duplicates": "Opakované zprávy",
   "messageFilter_duplicatesSubtitle": "Stejná zpráva odeslaná znovu nebo více odesílateli",
+  "messageFilter_repeatSends": "Počet odeslání pro opakování",
+  "messageFilter_repeatSendsSubtitle": "Skrýt zprávu, když ji stejný odesílatel odešle {count}× během 10 minut",
   "messageFilter_repeatedCharacters": "Opakované znaky",
   "messageFilter_repeatedCharactersSubtitle": "Dlouhé řady jednoho znaku, například \"aaaaaaaaaaaaaaaaaaaa\"",
   "messageFilter_learning": "Učit se z klepnutí na Spam",

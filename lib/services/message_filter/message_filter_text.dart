@@ -141,6 +141,9 @@ class MessageFilterText {
     return _fold(text).replaceAll(_whitespace, ' ').trim();
   }
 
+  /// True when [text] contains an `@[name]` mention.
+  static bool hasMention(String text) => _mention.hasMatch(text);
+
   /// Looser form used to detect repeated messages: also drops `@[name]`
   /// mentions, punctuation and emoji so trivial variations still match.
   static String normalizeForDuplicates(String text) {

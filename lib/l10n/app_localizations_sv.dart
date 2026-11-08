@@ -7024,6 +7024,14 @@ class AppLocalizationsSv extends AppLocalizations {
       'Samma meddelande skickas igen, eller av flera avsändare';
 
   @override
+  String get messageFilter_repeatSends => 'Utskick som räknas som upprepning';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Dölj ett meddelande när samma avsändare skickar det $count gånger inom 10 minuter';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Upprepade tecken';
 
   @override

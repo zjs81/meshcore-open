@@ -3602,6 +3602,8 @@
   "messageFilter_automaticSection": "Automatikus",
   "messageFilter_duplicates": "Ismétlődő üzenetek",
   "messageFilter_duplicatesSubtitle": "Ugyanaz az üzenet újra elküldve, vagy több feladótól",
+  "messageFilter_repeatSends": "Ismétlésnek számító küldések",
+  "messageFilter_repeatSendsSubtitle": "Üzenet elrejtése, ha ugyanaz a feladó {count}× elküldi 10 percen belül",
   "messageFilter_repeatedCharacters": "Ismétlődő karakterek",
   "messageFilter_repeatedCharactersSubtitle": "Ugyanazon karakter hosszú sorozata, például „aaaaaaaaaaaaaaaaaaaa”",
   "messageFilter_learning": "Tanulás a Spam gombokból",

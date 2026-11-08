@@ -7088,6 +7088,14 @@ class AppLocalizationsBg extends AppLocalizations {
       'Същото съобщение, изпратено отново или от няколко подателя';
 
   @override
+  String get messageFilter_repeatSends => 'Изпращания, броени за повторение';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Скриване на съобщение, когато същият подател го изпрати $count пъти в рамките на 10 минути';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Повтарящи се символи';
 
   @override

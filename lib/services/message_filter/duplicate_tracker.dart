@@ -12,7 +12,17 @@ class _SeenMessage {
 
   /// When this device saw it (local clock). Only used to forget entries.
   final DateTime receivedAt;
-  const _SeenMessage(this.sender, this.key, this.sentAt, this.receivedAt);
+
+  /// How many sends of this text by this sender, each within the
+  /// same-sender window of the previous one, end with this one (1 = first).
+  final int sends;
+  const _SeenMessage(
+    this.sender,
+    this.key,
+    this.sentAt,
+    this.receivedAt, {
+    this.sends = 1,
+  });
 }
 
 /// In-memory, per-channel tracker of recently seen channel texts used to catch
@@ -28,6 +38,16 @@ class _SeenMessage {
 /// so a sender whose clock is far off cannot push everyone else's entries
 /// out early or keep its own around forever.
 ///
+/// A copy with the same sender, text and send second as an entry already
+/// recorded is the same message seen again (another companion syncing it,
+/// a mesh repeat that slipped past storage dedup), never a repeat, and is
+/// not recorded twice.
+///
+/// The same-sender rule flags the [sameSenderSends]th send of a text in a
+/// row, each send within [sameSenderWindow] of the previous one (2 = the
+/// first re-send). Higher values tolerate people re-sending when they see
+/// no repeat or reply.
+///
 /// The same-sender rule only applies to texts of at least
 /// [sameSenderMinWords] words and [sameSenderMinLength] characters: people
 /// naturally repeat short replies ("ok", "yes", "test" when checking reach),
@@ -42,6 +62,7 @@ class DuplicateTracker {
     this.sameSenderWindow = const Duration(minutes: 10),
     this.sameSenderMinLength = 10,
     this.sameSenderMinWords = 3,
+    this.sameSenderSends = 2,
     this.crossSenderWindow = const Duration(minutes: 30),
     this.crossSenderMinSenders = 3,
     this.crossSenderMinLength = 10,
@@ -54,6 +75,10 @@ class DuplicateTracker {
   /// Minimum length / word count for the same-sender rule (see class docs).
   final int sameSenderMinLength;
   final int sameSenderMinWords;
+
+  /// Which send in a row of the same text is flagged; can be overridden per
+  /// call so a settings change applies immediately.
+  final int sameSenderSends;
   final Duration crossSenderWindow;
   final int crossSenderMinSenders;
   final int crossSenderMinLength;
@@ -95,7 +120,11 @@ class DuplicateTracker {
     required String text,
     required DateTime at,
     DateTime? receivedAt,
+    int? sameSenderSends,
   }) {
+    final flagAt = (sameSenderSends ?? this.sameSenderSends) < 2
+        ? 2
+        : (sameSenderSends ?? this.sameSenderSends);
     final arrived = receivedAt ?? at;
     final key = MessageFilterText.normalizeForDuplicates(text);
     if (key.isEmpty) return null;
@@ -103,21 +132,38 @@ class DuplicateTracker {
     final entries = _seen.putIfAbsent(channelId, ListQueue<_SeenMessage>.new);
     _prune(entries, arrived);
 
+    final atSecond = _second(at);
+    for (final entry in entries) {
+      if (entry.key == key &&
+          entry.sender == senderKey &&
+          _second(entry.sentAt) == atSecond) {
+        // The same message seen again, not a new send.
+        return null;
+      }
+    }
+
+    // The longest run of sends this one continues: earlier sends of this
+    // text by this sender within the window, each already carrying its run.
+    var sends = 1;
+    for (final entry in entries) {
+      if (entry.key != key || entry.sender != senderKey) continue;
+      if (entry.sentAt.difference(at).abs() <= sameSenderWindow &&
+          entry.sends + 1 > sends) {
+        sends = entry.sends + 1;
+      }
+    }
+
     FilterReason? result;
     if (!isAllowed(channelId, text)) {
       final senders = <String>{senderKey};
-      var sameSender = false;
       for (final entry in entries) {
-        if (entry.key != key) continue;
+        if (entry.key != key || entry.sender == senderKey) continue;
         // Absolute gap between send times: delivery order does not matter.
-        final gap = entry.sentAt.difference(at).abs();
-        if (entry.sender == senderKey) {
-          if (gap <= sameSenderWindow) sameSender = true;
-        } else if (gap <= crossSenderWindow) {
+        if (entry.sentAt.difference(at).abs() <= crossSenderWindow) {
           senders.add(entry.sender);
         }
       }
-      if (sameSender &&
+      if (sends >= flagAt &&
           key.length >= sameSenderMinLength &&
           _wordCount(key) >= sameSenderMinWords) {
         result = FilterReason.duplicate;
@@ -128,10 +174,12 @@ class DuplicateTracker {
       }
     }
 
-    entries.addLast(_SeenMessage(senderKey, key, at, arrived));
+    entries.addLast(_SeenMessage(senderKey, key, at, arrived, sends: sends));
     if (entries.length > maxEntriesPerChannel) entries.removeFirst();
     return result;
   }
+
+  static int _second(DateTime time) => time.millisecondsSinceEpoch ~/ 1000;
 
   /// [key] is already whitespace-collapsed by `normalizeForDuplicates`.
   static int _wordCount(String key) => key.isEmpty ? 0 : key.split(' ').length;

@@ -6759,6 +6759,14 @@ class AppLocalizationsJa extends AppLocalizations {
       '同じメッセージが再送されたり、複数の送信者から届いたりしたもの';
 
   @override
+  String get messageFilter_repeatSends => '繰り返しと見なす送信回数';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return '同じ送信者が10分以内に同じメッセージを$count回送信したら非表示にします';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => '繰り返しの文字';
 
   @override

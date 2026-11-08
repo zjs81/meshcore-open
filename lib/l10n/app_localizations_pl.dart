@@ -7113,6 +7113,14 @@ class AppLocalizationsPl extends AppLocalizations {
       'Ta sama wiadomość wysłana ponownie lub przez kilku nadawców';
 
   @override
+  String get messageFilter_repeatSends => 'Liczba wysłań uznawana za powtórkę';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Ukryj wiadomość, gdy ten sam nadawca wyśle ją w ciągu 10 minut tyle razy: $count';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Powtarzające się znaki';
 
   @override

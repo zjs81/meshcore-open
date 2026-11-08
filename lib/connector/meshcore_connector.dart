@@ -1110,6 +1110,10 @@ class MeshCoreConnector extends ChangeNotifier {
       // after reconnecting arrives in a burst but was sent spread out.
       sentAt: message.timestamp,
       isReaction: message.parseReaction() != null,
+      // The reply mention may already be stripped into reply metadata.
+      isReply:
+          message.replyToSenderName != null ||
+          ChannelMessage.parseReplyMention(message.text) != null,
     );
     return applyFilterVerdict(message, verdict);
   }
