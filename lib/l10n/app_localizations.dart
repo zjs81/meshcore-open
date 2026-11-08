@@ -862,6 +862,12 @@ abstract class AppLocalizations {
   /// **'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.'**
   String get backupRestore_passwordHelp;
 
+  /// No description provided for @backupRestore_importUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the password or choose a supported backup file.'**
+  String get backupRestore_importUnavailable;
+
   /// No description provided for @backupRestore_items.
   ///
   /// In en, this message translates to:
@@ -879,6 +885,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Device name, private and public keys, radio settings, and regions'**
   String get backupRestore_nodeSettingsDescription;
+
+  /// No description provided for @backupRestore_deviceName.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Name'**
+  String get backupRestore_deviceName;
+
+  /// No description provided for @backupRestore_privateKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Private Key (sensitive)'**
+  String get backupRestore_privateKey;
+
+  /// No description provided for @backupRestore_publicKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Public Key'**
+  String get backupRestore_publicKey;
+
+  /// No description provided for @backupRestore_radioSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio Settings'**
+  String get backupRestore_radioSettings;
+
+  /// No description provided for @backupRestore_regions.
+  ///
+  /// In en, this message translates to:
+  /// **'Regions'**
+  String get backupRestore_regions;
+
+  /// No description provided for @backupRestore_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get backupRestore_location;
+
+  /// No description provided for @backupRestore_contactSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Settings'**
+  String get backupRestore_contactSettings;
+
+  /// No description provided for @backupRestore_privacySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Settings'**
+  String get backupRestore_privacySettings;
+
+  /// No description provided for @backupRestore_contactsData.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts'**
+  String get backupRestore_contactsData;
+
+  /// No description provided for @backupRestore_perContactSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Settings and Filters'**
+  String get backupRestore_perContactSettings;
+
+  /// No description provided for @backupRestore_contactGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Groups'**
+  String get backupRestore_contactGroups;
+
+  /// No description provided for @backupRestore_contactHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact History'**
+  String get backupRestore_contactHistory;
+
+  /// No description provided for @backupRestore_channelsData.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels'**
+  String get backupRestore_channelsData;
+
+  /// No description provided for @backupRestore_channelFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Message Filter Settings'**
+  String get backupRestore_channelFilters;
+
+  /// No description provided for @backupRestore_channelSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel Settings'**
+  String get backupRestore_channelSettings;
+
+  /// No description provided for @backupRestore_communities.
+  ///
+  /// In en, this message translates to:
+  /// **'Communities'**
+  String get backupRestore_communities;
+
+  /// No description provided for @backupRestore_channelHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel History'**
+  String get backupRestore_channelHistory;
 
   /// No description provided for @backupRestore_locationSettings.
   ///
@@ -903,6 +1011,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'App preferences and appearance settings'**
   String get backupRestore_appSettingsDescription;
+
+  /// No description provided for @backupRestore_ipfsKey.
+  ///
+  /// In en, this message translates to:
+  /// **'IPFS API Key (sensitive)'**
+  String get backupRestore_ipfsKey;
+
+  /// No description provided for @backupRestore_stadiaMapKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Stadia Maps API Key (sensitive)'**
+  String get backupRestore_stadiaMapKey;
 
   /// No description provided for @backupRestore_contacts.
   ///

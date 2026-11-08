@@ -212,9 +212,9 @@ The settings card links to **Backup & Restore** and **Export** subpages.
 
 ### Backup & Restore
 
-Choose which information to include or restore: node name, identity, radio settings and regions; location, contact and privacy settings; app preferences; contacts and their filters and settings, groups, direct-message and route history; discovered contacts; and channels, filters, communities, settings and history. A radio connection is required to back up or restore radio settings and contact or channel lists. Contact and channel lists are restored to the connected radio; message history and groups are restored in the app.
+Choose individual items to include in a backup or restore. Location settings include the saved coordinates, GPS enable state and interval, contact discovery options, and privacy/adverts settings. When importing, only items found in the selected file can be selected. Backups from the official MeshCore app are supported; those files do not include app preferences, groups, filters, or message history, so those choices are unavailable. A radio connection is required to restore radio settings and contact or channel lists. Contact and channel lists are restored to the connected radio; message history and groups are restored in the app.
 
-Node Settings includes the radio's identity and private key. Some radio firmware does not allow identity backup or restore; the app will let you know if this feature is unavailable. Restoring Node Settings replaces the connected radio's identity after confirmation.
+The private-key option is off by default because it changes the radio's identity. Select it only when you intend to restore that identity; the app asks for confirmation before proceeding. Some radios do not allow identity backup or restore, and the app will let you know if this feature is unavailable.
 
 A password protects the backup file. Leave the password blank to create an unprotected file. Backups may contain your radio's private key, channel keys, messages and saved passwords, so store them carefully. Downloaded models, received image files and cached map tiles are not included.
 

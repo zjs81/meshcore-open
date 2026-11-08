@@ -427,6 +427,10 @@ class AppLocalizationsSl extends AppLocalizations {
       'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.';
 
   @override
+  String get backupRestore_importUnavailable =>
+      'Check the password or choose a supported backup file.';
+
+  @override
   String get backupRestore_items => 'Backup and restore items';
 
   @override
@@ -435,6 +439,57 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get backupRestore_nodeSettingsDescription =>
       'Device name, private and public keys, radio settings, and regions';
+
+  @override
+  String get backupRestore_deviceName => 'Device Name';
+
+  @override
+  String get backupRestore_privateKey => 'Private Key (sensitive)';
+
+  @override
+  String get backupRestore_publicKey => 'Public Key';
+
+  @override
+  String get backupRestore_radioSettings => 'Radio Settings';
+
+  @override
+  String get backupRestore_regions => 'Regions';
+
+  @override
+  String get backupRestore_location => 'Location';
+
+  @override
+  String get backupRestore_contactSettings => 'Contact Settings';
+
+  @override
+  String get backupRestore_privacySettings => 'Privacy Settings';
+
+  @override
+  String get backupRestore_contactsData => 'Contacts';
+
+  @override
+  String get backupRestore_perContactSettings => 'Contact Settings and Filters';
+
+  @override
+  String get backupRestore_contactGroups => 'Contact Groups';
+
+  @override
+  String get backupRestore_contactHistory => 'Contact History';
+
+  @override
+  String get backupRestore_channelsData => 'Channels';
+
+  @override
+  String get backupRestore_channelFilters => 'Message Filter Settings';
+
+  @override
+  String get backupRestore_channelSettings => 'Channel Settings';
+
+  @override
+  String get backupRestore_communities => 'Communities';
+
+  @override
+  String get backupRestore_channelHistory => 'Channel History';
 
   @override
   String get backupRestore_locationSettings => 'Location Settings';
@@ -449,6 +504,12 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get backupRestore_appSettingsDescription =>
       'App preferences and appearance settings';
+
+  @override
+  String get backupRestore_ipfsKey => 'IPFS API Key (sensitive)';
+
+  @override
+  String get backupRestore_stadiaMapKey => 'Stadia Maps API Key (sensitive)';
 
   @override
   String get backupRestore_contacts => 'Contacts';
