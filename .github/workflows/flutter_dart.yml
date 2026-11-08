@@ -16,7 +16,16 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version-file: pubspec.yaml
+
+      - name: Check Flutter pins agree
+        run: |
+          pubspec=$(sed -n 's/^  flutter: *//p' pubspec.yaml)
+          appimage=$(jq -r '.flutter.version' scripts/appimage-tools.json)
+          if [ "$pubspec" != "$appimage" ]; then
+            echo "pubspec.yaml pins Flutter $pubspec but scripts/appimage-tools.json pins $appimage" >&2
+            exit 1
+          fi
 
       - name: Install dependencies
         run: flutter pub get

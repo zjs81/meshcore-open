@@ -249,6 +249,7 @@
   "appSettings_languageSv": "Svenska",
   "appSettings_languageNl": "Nederlands",
   "appSettings_languageSk": "Slovenčina",
+  "appSettings_languageCs": "Čeština",
   "appSettings_languageBg": "Български",
   "appSettings_languageRu": "Русский",
   "appSettings_languageUk": "Українська",
@@ -1245,6 +1246,7 @@
   "repeater_received": "Fogadva",
   "repeater_duplicates": "Ismétlődések",
   "repeater_daysHoursMinsSecs": "{days} nap {hours}ó {minutes}p {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}ó {minutes}p {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -3399,6 +3401,9 @@
   "settings_regionFetchNoneResponded": "Egyik közeli átjátszó sem válaszolt. Menjen közelebb egy átjátszóhoz, és próbálja újra.",
   "appSettings_sourceSummary": "{label} - {description}",
   "appSettings_routingSection": "Útválasztás",
+  "appSettings_resetRoutingToDefault": "Útvonaltervezési algoritmus visszaállítása alapértelmezettre",
+  "appSettings_resetRoutingToDefaultSubtitle": "Útvonaltervezési algoritmus beállításainak visszaállítása gyári alapértelmezett értékekre",
+  "appSettings_routingResetToDefault": "Útvonaltervezési algoritmus beállításai visszaállítva alapértelmezettre",
   "appSettings_imageMessagesSection": "Képüzenetek",
   "appSettings_showApiKey": "API-kulcs megjelenítése",
   "appSettings_hideApiKey": "API-kulcs elrejtése",
@@ -3565,5 +3570,194 @@
   "themes_chatBackground": "Csevegés háttere",
   "themes_chatBackgroundHelp": "Azokban a csevegésekben jelenik meg, amelyeknek nincs saját hátterük",
   "themes_chatBackgroundEverywhere": "Használat minden csevegésben",
-  "themes_chatBackgroundEverywhereHelp": "Az egyes csevegésekhez beállított hátteret is felülírja"
+  "themes_chatBackgroundEverywhereHelp": "Az egyes csevegésekhez beállított hátteret is felülírja",
+  "appSettings_showOnlineLinks": "Online térkép kapcsolatainak megjelenítése",
+  "appSettings_showOnlineLinksSubtitle": "A csomópontok közötti kapcsolatvonalak megjelenítése az online térképről",
+  "map_showOnlineLinks": "Online térkép kapcsolatainak megjelenítése",
+  "chat_loadOlderMessages": "Régebbi üzenetek betöltése",
+  "messageFilter_title": "Üzenetszűrő",
+  "messageFilter_settingsSubtitle": "Spam és ismétlődő üzenetek elrejtése",
+  "messageFilter_enabled": "Üzenetek szűrése",
+  "messageFilter_enabledSubtitle": "A csatornaüzenetekre vonatkozik",
+  "messageFilter_displayTitle": "Szűrt üzenetek",
+  "messageFilter_displayPlaceholder": "Kis helyőrző megjelenítése",
+  "messageFilter_displayHide": "Teljes elrejtés",
+  "messageFilter_displayHideHelp": "Az elrejtett üzenetek a Szűrt üzenetek listában megmaradnak.",
+  "messageFilter_rulesSection": "Az Ön szabályai",
+  "messageFilter_rulesEmpty": "Még nincs szabály. Adjon hozzá egy szót, kifejezést vagy feladónevet, hogy elrejtse a rá illő üzeneteket.",
+  "messageFilter_addRule": "Szabály hozzáadása",
+  "messageFilter_editRule": "Szabály szerkesztése",
+  "messageFilter_rulePattern": "Szó, kifejezés vagy név",
+  "messageFilter_rulePatternHint": "pl. meshos",
+  "messageFilter_ruleWhere": "Keresés ebben",
+  "messageFilter_ruleFieldText": "Üzenet szövege",
+  "messageFilter_ruleFieldSender": "Feladó neve",
+  "messageFilter_ruleFieldBoth": "Mindkettő",
+  "messageFilter_ruleMatch": "Egyezés",
+  "messageFilter_ruleMatchContains": "Tartalmazza",
+  "messageFilter_ruleMatchWholeWord": "Egész szó",
+  "messageFilter_ruleMatchExact": "Pontos",
+  "messageFilter_ruleDeleted": "Szabály törölve",
+  "messageFilter_ruleSaved": "Szabály mentve",
+  "messageFilter_automaticSection": "Automatikus",
+  "messageFilter_duplicates": "Ismétlődő üzenetek",
+  "messageFilter_duplicatesSubtitle": "Ugyanaz az üzenet újra elküldve, vagy több feladótól",
+  "messageFilter_repeatSends": "Ismétlésnek számító küldések",
+  "messageFilter_repeatSendsSubtitle": "Üzenet elrejtése, ha ugyanaz a feladó {count}× elküldi 10 percen belül",
+  "messageFilter_repeatedCharacters": "Ismétlődő karakterek",
+  "messageFilter_repeatedCharactersSubtitle": "Ugyanazon karakter hosszú sorozata, például „aaaaaaaaaaaaaaaaaaaa”",
+  "messageFilter_learning": "Tanulás a Spam gombokból",
+  "messageFilter_learningSubtitle": "{spam} spam és {notSpam} nem spam példa",
+  "@messageFilter_learningSubtitle": {
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "Tanulás visszaállítása",
+  "messageFilter_resetLearningConfirm": "Elfelejtse mindazt, amit a Spam és Nem spam gombokból tanult? A szabályai megmaradnak.",
+  "messageFilter_filteredMessages": "Szűrt üzenetek ({count})",
+  "@messageFilter_filteredMessages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "Semmi sincs kiszűrve.",
+  "messageFilter_ghostSingle": "Elrejtett üzenet · Koppintson a megtekintéshez",
+  "messageFilter_ghostMany": "{count, plural, one{{count} elrejtett üzenet · Koppintson a megtekintéshez} other{{count} elrejtett üzenet · Koppintson a megtekintéshez}}",
+  "@messageFilter_ghostMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "Elrejtett üzenet megjelenítve · Koppintson az elrejtéshez",
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{1 elrejtett üzenet megjelenítve · Koppintson az elrejtéshez} other{{count} elrejtett üzenet megjelenítve · Koppintson az elrejtéshez}}",
+  "@messageFilter_ghostManyExpanded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "Kiszűrve: egyezik ezzel: „{pattern}”",
+  "@messageFilter_reasonTextRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "Kiszűrve: feladó „{pattern}”",
+  "@messageFilter_reasonSenderRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "Kiszűrve: ismétlődő karakterek",
+  "messageFilter_reasonDuplicate": "Kiszűrve: ismétlődő üzenet",
+  "messageFilter_reasonCrossSenderDuplicate": "Kiszűrve: ugyanaz az üzenet több feladótól",
+  "messageFilter_reasonLearned": "Kiszűrve: hasonlít az Ön által spamnek jelölt üzenetekhez",
+  "messageFilter_reasonManual": "Kiszűrve: Ön spamnek jelölte",
+  "messageFilter_notSpam": "Nem spam",
+  "messageFilter_hideAgain": "Elrejtés",
+  "messageFilter_markSpam": "Jelölés spamként",
+  "messageFilter_markedSpam": "Spamként megjelölve",
+  "messageFilter_markedNotSpam": "Nem spamként megjelölve",
+  "messageFilter_filterSender": "E feladó szűrése",
+  "messageFilter_filterSenderConfirm": "Elrejti a(z) „{name}” összes üzenetét?",
+  "@messageFilter_filterSenderConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "Ehhez hasonló üzenetek szűrése…",
+  "messageFilter_channelToggle": "Üzenetek szűrése ezen a csatornán",
+  "messageFilter_ghostIconTooltip": "Az üzenetszűrő elrejtette",
+  "chatSearch_tooltip": "Üzenetek keresése",
+  "chatSearch_hint": "Üzenetek keresése",
+  "chatSearch_close": "Keresés bezárása",
+  "chatSearch_resultCount": "{count, plural, =1{1 találat} other{{count} találat}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Nincs egyező üzenet",
+  "chatSearch_noResultsHint": "Próbálj másik szót, vagy ellenőrizd a helyesírást",
+  "contactShare_headerOutgoing": "Megosztottál egy névjegyet",
+  "contactShare_headerIncoming": "Megosztott egy névjegyet",
+  "contactShare_add": "Névjegy hozzáadása",
+  "contactShare_adding": "Névjegy hozzáadása...",
+  "contactShare_saved": "Mentve",
+  "contactShare_isYou": "Ez te vagy",
+  "contactShare_shareAction": "Névjegy megosztása",
+  "contactShare_pickerTitle": "Névjegy megosztása",
+  "contactShare_myContact": "Saját névjegyem",
+  "contactShare_searchHint": "Névjegyek keresése",
+  "contactShare_noContacts": "Nem található névjegy",
+  "contactShare_preview": "Megosztott névjegy: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Megosztott egy névjegyet: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Útvonal-nyomkövetés hashek alapján",
+  "manualTrace_inputLabel": "Átjátszó hashek",
+  "manualTrace_helper": "Példa: {example}. Vesszővel vagy szóközzel válaszd el.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Ugrások ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Ismeretlen csomópont",
+  "manualTrace_enterHashes": "Add meg a hasheket",
+  "manualTrace_run": "Útvonal-nyomkövetés indítása",
+  "manualTrace_notConnected": "Csatlakozz egy rádióhoz a nyomkövetés indításához",
+  "manualTrace_errorInvalidHex": "Csak hexadecimális karakterek (0-9, A-F) engedélyezettek",
+  "manualTrace_errorOddLength": "Minden hashnek páros számú hexadecimális karakterből kell állnia, az ugrásmérettel egyezően",
+  "manualTrace_errorMixedWidths": "Minden hashnek azonos hosszúságúnak kell lennie",
+  "manualTrace_errorUnsupportedWidth": "A hasheknek 1, 2 vagy 3 bájtosnak kell lenniük (2, 4 vagy 6 hexadecimális karakter)",
+  "manualTrace_errorTooManyHops": "Az útvonal túl hosszú (legfeljebb {max} bájt)",
+  "manualTrace_errorTraceTooLong": "Túl sok ugrás egyetlen nyomkövetési kéréshez. Távolíts el néhány ugrást, vagy válaszd a „Megadott sorrendben” lehetőséget.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

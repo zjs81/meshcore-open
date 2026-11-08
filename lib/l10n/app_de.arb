@@ -182,6 +182,7 @@
   "appSettings_languageSv": "Schwedisch",
   "appSettings_languageNl": "Niederländisch",
   "appSettings_languageSk": "Slowakisch",
+  "appSettings_languageCs": "Tschechisch",
   "appSettings_languageBg": "Bulgarisch",
   "appSettings_notifications": "Benachrichtigungen",
   "appSettings_enableNotifications": "Benachrichtigungen aktivieren",
@@ -1039,6 +1040,7 @@
   "repeater_received": "Empfangen",
   "repeater_duplicates": "Duplikate",
   "repeater_daysHoursMinsSecs": "{days} Tage {hours}h {minutes}m {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -3495,6 +3497,9 @@
   "settings_regionFetchNoneResponded": "Kein Repeater in der Nähe hat geantwortet. Gehe näher an einen Repeater heran und versuche es erneut.",
   "appSettings_sourceSummary": "{label} - {description}",
   "appSettings_routingSection": "Routing",
+  "appSettings_resetRoutingToDefault": "Routing-Algorithmus auf Standard zurücksetzen",
+  "appSettings_resetRoutingToDefaultSubtitle": "Routing-Algorithmus-Einstellungen auf Werkseinstellungen zurücksetzen",
+  "appSettings_routingResetToDefault": "Routing-Algorithmus-Einstellungen auf Standard zurückgesetzt",
   "appSettings_imageMessagesSection": "Bildnachrichten",
   "appSettings_showApiKey": "API-Schlüssel anzeigen",
   "appSettings_hideApiKey": "API-Schlüssel verbergen",
@@ -3661,5 +3666,142 @@
   "themes_chatBackground": "Chat-Hintergrund",
   "themes_chatBackgroundHelp": "Wird in Chats gezeigt, die keinen eigenen Hintergrund haben",
   "themes_chatBackgroundEverywhere": "In jedem Chat verwenden",
-  "themes_chatBackgroundEverywhereHelp": "Ersetzt auch Hintergründe, die für einzelne Chats gesetzt wurden"
+  "themes_chatBackgroundEverywhereHelp": "Ersetzt auch Hintergründe, die für einzelne Chats gesetzt wurden",
+  "appSettings_showOnlineLinks": "Verbindungen der Online-Karte anzeigen",
+  "appSettings_showOnlineLinksSubtitle": "Verbindungslinien zwischen Knoten aus der Online-Karte anzeigen",
+  "map_showOnlineLinks": "Verbindungen der Online-Karte anzeigen",
+  "chat_loadOlderMessages": "Ältere Nachrichten laden",
+  "messageFilter_title": "Nachrichtenfilter",
+  "messageFilter_settingsSubtitle": "Spam und wiederholte Nachrichten ausblenden",
+  "messageFilter_enabled": "Nachrichten filtern",
+  "messageFilter_enabledSubtitle": "Gilt für Kanalnachrichten",
+  "messageFilter_displayTitle": "Gefilterte Nachrichten",
+  "messageFilter_displayPlaceholder": "Kleinen Platzhalter anzeigen",
+  "messageFilter_displayHide": "Komplett ausblenden",
+  "messageFilter_displayHideHelp": "Ausgeblendete Nachrichten bleiben in der Liste „Gefilterte Nachrichten“.",
+  "messageFilter_rulesSection": "Ihre Regeln",
+  "messageFilter_rulesEmpty": "Noch keine Regeln. Fügen Sie ein Wort, eine Wortgruppe oder einen Absendernamen hinzu, um passende Nachrichten auszublenden.",
+  "messageFilter_addRule": "Regel hinzufügen",
+  "messageFilter_editRule": "Regel bearbeiten",
+  "messageFilter_rulePattern": "Wort, Wortgruppe oder Name",
+  "messageFilter_rulePatternHint": "z. B. meshos",
+  "messageFilter_ruleWhere": "Suchen in",
+  "messageFilter_ruleFieldText": "Nachrichtentext",
+  "messageFilter_ruleFieldSender": "Absendername",
+  "messageFilter_ruleFieldBoth": "Beides",
+  "messageFilter_ruleMatch": "Übereinstimmung",
+  "messageFilter_ruleMatchContains": "Enthält",
+  "messageFilter_ruleMatchWholeWord": "Ganzes Wort",
+  "messageFilter_ruleMatchExact": "Genau",
+  "messageFilter_ruleDeleted": "Regel gelöscht",
+  "messageFilter_ruleSaved": "Regel gespeichert",
+  "messageFilter_automaticSection": "Automatisch",
+  "messageFilter_duplicates": "Wiederholte Nachrichten",
+  "messageFilter_duplicatesSubtitle": "Dieselbe Nachricht erneut gesendet oder von mehreren Absendern",
+  "messageFilter_repeatSends": "Sendungen bis zur Wiederholung",
+  "messageFilter_repeatSendsSubtitle": "Nachricht ausblenden, wenn derselbe Absender sie innerhalb von 10 Minuten {count}-mal sendet",
+  "messageFilter_repeatedCharacters": "Wiederholte Zeichen",
+  "messageFilter_repeatedCharactersSubtitle": "Lange Folgen desselben Zeichens, z. B. „aaaaaaaaaaaaaaaaaaaa“",
+  "messageFilter_learning": "Aus Spam-Markierungen lernen",
+  "messageFilter_learningSubtitle": "{spam} Spam- und {notSpam} Kein-Spam-Beispiele",
+  "messageFilter_resetLearning": "Gelerntes zurücksetzen",
+  "messageFilter_resetLearningConfirm": "Alles vergessen, was aus Ihren Markierungen „Spam“ und „Kein Spam“ gelernt wurde? Ihre Regeln bleiben erhalten.",
+  "messageFilter_filteredMessages": "Gefilterte Nachrichten ({count})",
+  "messageFilter_filteredMessagesEmpty": "Es wurde nichts gefiltert.",
+  "messageFilter_ghostSingle": "Ausgeblendete Nachricht · Zum Anzeigen tippen",
+  "messageFilter_ghostMany": "{count, plural, one{{count} ausgeblendete Nachricht · Zum Anzeigen tippen} other{{count} ausgeblendete Nachrichten · Zum Anzeigen tippen}}",
+  "messageFilter_ghostSingleExpanded": "Ausgeblendete Nachricht wird angezeigt · Zum Ausblenden tippen",
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{1 ausgeblendete Nachricht wird angezeigt · Zum Ausblenden tippen} other{{count} ausgeblendete Nachrichten werden angezeigt · Zum Ausblenden tippen}}",
+  "messageFilter_reasonTextRule": "Gefiltert: passt zu „{pattern}“",
+  "messageFilter_reasonSenderRule": "Gefiltert: Absender „{pattern}“",
+  "messageFilter_reasonRepeatedCharacters": "Gefiltert: wiederholte Zeichen",
+  "messageFilter_reasonDuplicate": "Gefiltert: wiederholte Nachricht",
+  "messageFilter_reasonCrossSenderDuplicate": "Gefiltert: dieselbe Nachricht von mehreren Absendern",
+  "messageFilter_reasonLearned": "Gefiltert: ähnelt Nachrichten, die Sie als Spam markiert haben",
+  "messageFilter_reasonManual": "Gefiltert: Sie haben dies als Spam markiert",
+  "messageFilter_notSpam": "Kein Spam",
+  "messageFilter_hideAgain": "Verbergen",
+  "messageFilter_markSpam": "Als Spam markieren",
+  "messageFilter_markedSpam": "Als Spam markiert",
+  "messageFilter_markedNotSpam": "Als Kein Spam markiert",
+  "messageFilter_filterSender": "Diesen Absender filtern",
+  "messageFilter_filterSenderConfirm": "Alle Nachrichten von „{name}“ ausblenden?",
+  "messageFilter_filterLikeThis": "Ähnliche Nachrichten filtern…",
+  "messageFilter_channelToggle": "Nachrichten in diesem Kanal filtern",
+  "messageFilter_ghostIconTooltip": "Von Ihrem Nachrichtenfilter ausgeblendet",
+  "chatSearch_tooltip": "Nachrichten durchsuchen",
+  "chatSearch_hint": "Nachrichten durchsuchen",
+  "chatSearch_close": "Suche schließen",
+  "chatSearch_resultCount": "{count, plural, =1{1 Treffer} other{{count} Treffer}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Keine passenden Nachrichten",
+  "chatSearch_noResultsHint": "Versuchen Sie ein anderes Wort oder prüfen Sie die Schreibweise",
+  "contactShare_headerOutgoing": "Sie haben einen Kontakt geteilt",
+  "contactShare_headerIncoming": "Hat einen Kontakt geteilt",
+  "contactShare_add": "Kontakt hinzufügen",
+  "contactShare_adding": "Kontakt wird hinzugefügt...",
+  "contactShare_saved": "Gespeichert",
+  "contactShare_isYou": "Das sind Sie",
+  "contactShare_shareAction": "Kontakt teilen",
+  "contactShare_pickerTitle": "Kontakt teilen",
+  "contactShare_myContact": "Mein Kontakt",
+  "contactShare_searchHint": "Kontakte durchsuchen",
+  "contactShare_noContacts": "Keine Kontakte gefunden",
+  "contactShare_preview": "Geteilter Kontakt: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Hat einen Kontakt geteilt: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Pfadverfolgung per Hash",
+  "manualTrace_inputLabel": "Repeater-Hashes",
+  "manualTrace_helper": "Beispiel: {example}. Mit Kommas oder Leerzeichen trennen.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Hops ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Unbekannter Knoten",
+  "manualTrace_enterHashes": "Hashes eingeben",
+  "manualTrace_run": "Pfadverfolgung starten",
+  "manualTrace_notConnected": "Verbinden Sie sich mit einem Funkgerät, um eine Verfolgung zu starten",
+  "manualTrace_errorInvalidHex": "Nur Hex-Zeichen (0-9, A-F) sind erlaubt",
+  "manualTrace_errorOddLength": "Jeder Hash benötigt eine gerade Anzahl von Hex-Zeichen, passend zur Hop-Größe",
+  "manualTrace_errorMixedWidths": "Alle Hashes müssen die gleiche Länge haben",
+  "manualTrace_errorUnsupportedWidth": "Hashes müssen 1, 2 oder 3 Bytes lang sein (2, 4 oder 6 Hex-Zeichen)",
+  "manualTrace_errorTooManyHops": "Pfad ist zu lang (maximal {max} Bytes)",
+  "manualTrace_errorTraceTooLong": "Zu viele Hops für eine einzelne Verfolgung. Entfernen Sie einige Hops oder wählen Sie „Wie eingegeben“.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -444,6 +444,20 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
       flags, // flag
       payload: tracePayload,
     );
+    if (frame.length > maxFrameSize) {
+      // Too many hops for one request (round trips double them); the radio
+      // would reject or truncate it.
+      appLogger.warn(
+        'Path trace request too large: ${frame.length} bytes',
+        tag: 'PathTraceMapScreen',
+      );
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _failed2Loaded = true;
+      });
+      return;
+    }
     _awaitingTraceSent = true;
     _timeoutTimer?.cancel();
     // Fallback in case RESP_CODE_SENT / RESP_CODE_ERR never arrives; the

@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_bg.dart';
+import 'app_localizations_cs.dart';
 import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
@@ -111,6 +112,7 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('bg'),
+    Locale('cs'),
     Locale('de'),
     Locale('en'),
     Locale('es'),
@@ -2086,6 +2088,12 @@ abstract class AppLocalizations {
   /// **'Українська'**
   String get appSettings_languageUk;
 
+  /// No description provided for @appSettings_languageCs.
+  ///
+  /// In en, this message translates to:
+  /// **'Čeština'**
+  String get appSettings_languageCs;
+
   /// No description provided for @repeater_pathHashModeOption0.
   ///
   /// In en, this message translates to:
@@ -3640,6 +3648,42 @@ abstract class AppLocalizations {
   /// **'No messages yet'**
   String get chat_noMessages;
 
+  /// No description provided for @chatSearch_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Search messages'**
+  String get chatSearch_tooltip;
+
+  /// No description provided for @chatSearch_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search messages'**
+  String get chatSearch_hint;
+
+  /// No description provided for @chatSearch_close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close search'**
+  String get chatSearch_close;
+
+  /// No description provided for @chatSearch_resultCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 result} other{{count} results}}'**
+  String chatSearch_resultCount(int count);
+
+  /// No description provided for @chatSearch_noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching messages'**
+  String get chatSearch_noResults;
+
+  /// No description provided for @chatSearch_noResultsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different word or check the spelling'**
+  String get chatSearch_noResultsHint;
+
   /// No description provided for @chat_sendMessage.
   ///
   /// In en, this message translates to:
@@ -4408,6 +4452,84 @@ abstract class AppLocalizations {
   /// **'POI Shared'**
   String get chat_poiShared;
 
+  /// No description provided for @contactShare_headerOutgoing.
+  ///
+  /// In en, this message translates to:
+  /// **'You shared a contact'**
+  String get contactShare_headerOutgoing;
+
+  /// No description provided for @contactShare_headerIncoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared a contact'**
+  String get contactShare_headerIncoming;
+
+  /// No description provided for @contactShare_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add contact'**
+  String get contactShare_add;
+
+  /// No description provided for @contactShare_adding.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding contact...'**
+  String get contactShare_adding;
+
+  /// No description provided for @contactShare_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get contactShare_saved;
+
+  /// No description provided for @contactShare_isYou.
+  ///
+  /// In en, this message translates to:
+  /// **'This is you'**
+  String get contactShare_isYou;
+
+  /// No description provided for @contactShare_shareAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Share contact'**
+  String get contactShare_shareAction;
+
+  /// No description provided for @contactShare_pickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share a contact'**
+  String get contactShare_pickerTitle;
+
+  /// No description provided for @contactShare_myContact.
+  ///
+  /// In en, this message translates to:
+  /// **'My contact'**
+  String get contactShare_myContact;
+
+  /// No description provided for @contactShare_searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search contacts'**
+  String get contactShare_searchHint;
+
+  /// No description provided for @contactShare_noContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'No contacts found'**
+  String get contactShare_noContacts;
+
+  /// No description provided for @contactShare_preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared contact: {name}'**
+  String contactShare_preview(String name);
+
+  /// No description provided for @contactShare_notification.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared a contact: {name}'**
+  String contactShare_notification(String name);
+
   /// No description provided for @chat_unread.
   ///
   /// In en, this message translates to:
@@ -4977,6 +5099,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View last result'**
   String get map_pathTraceViewLast;
+
+  /// No description provided for @manualTrace_menuItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Path trace by hashes'**
+  String get manualTrace_menuItem;
+
+  /// No description provided for @manualTrace_inputLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeater hashes'**
+  String get manualTrace_inputLabel;
+
+  /// No description provided for @manualTrace_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: {example}. Separate with commas or spaces.'**
+  String manualTrace_helper(String example);
+
+  /// No description provided for @manualTrace_previewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hops ({count})'**
+  String manualTrace_previewTitle(int count);
+
+  /// No description provided for @manualTrace_unknownNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown node'**
+  String get manualTrace_unknownNode;
+
+  /// No description provided for @manualTrace_enterHashes.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter hashes'**
+  String get manualTrace_enterHashes;
+
+  /// No description provided for @manualTrace_run.
+  ///
+  /// In en, this message translates to:
+  /// **'Run path trace'**
+  String get manualTrace_run;
+
+  /// No description provided for @manualTrace_notConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to a radio to run a trace'**
+  String get manualTrace_notConnected;
+
+  /// No description provided for @manualTrace_errorInvalidHex.
+  ///
+  /// In en, this message translates to:
+  /// **'Only hex characters (0-9, A-F) are allowed'**
+  String get manualTrace_errorInvalidHex;
+
+  /// No description provided for @manualTrace_errorOddLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Each hash needs an even number of hex characters, matching the hop size'**
+  String get manualTrace_errorOddLength;
+
+  /// No description provided for @manualTrace_errorMixedWidths.
+  ///
+  /// In en, this message translates to:
+  /// **'All hashes must be the same length'**
+  String get manualTrace_errorMixedWidths;
+
+  /// No description provided for @manualTrace_errorUnsupportedWidth.
+  ///
+  /// In en, this message translates to:
+  /// **'Hashes must be 1, 2 or 3 bytes (2, 4 or 6 hex characters)'**
+  String get manualTrace_errorUnsupportedWidth;
+
+  /// No description provided for @manualTrace_errorTooManyHops.
+  ///
+  /// In en, this message translates to:
+  /// **'Path is too long (maximum {max} bytes)'**
+  String manualTrace_errorTooManyHops(int max);
+
+  /// No description provided for @manualTrace_errorTraceTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many hops to trace in one request. Remove some hops or choose As entered.'**
+  String get manualTrace_errorTraceTooLong;
 
   /// No description provided for @mapCache_title.
   ///
@@ -5665,6 +5871,12 @@ abstract class AppLocalizations {
     int minutes,
     int seconds,
   );
+
+  /// No description provided for @repeater_hoursMinsSecs.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h {minutes}m {seconds}s'**
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds);
 
   /// No description provided for @repeater_packetTxTotal.
   ///
@@ -11048,6 +11260,24 @@ abstract class AppLocalizations {
   /// **'Routing'**
   String get appSettings_routingSection;
 
+  /// No description provided for @appSettings_resetRoutingToDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Routing Algorithm to Default'**
+  String get appSettings_resetRoutingToDefault;
+
+  /// No description provided for @appSettings_resetRoutingToDefaultSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore routing algorithm settings to factory defaults'**
+  String get appSettings_resetRoutingToDefaultSubtitle;
+
+  /// No description provided for @appSettings_routingResetToDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Routing algorithm settings reset to default'**
+  String get appSettings_routingResetToDefault;
+
   /// No description provided for @appSettings_imageMessagesSection.
   ///
   /// In en, this message translates to:
@@ -11508,6 +11738,360 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Happy New Year|Happy New Year\'s'**
   String get holidayGreeting_newYear;
+
+  /// Button on an empty channel when filtered messages hide the loaded ones and older history may exist
+  ///
+  /// In en, this message translates to:
+  /// **'Load older messages'**
+  String get chat_loadOlderMessages;
+
+  /// Message filter: Message filter
+  ///
+  /// In en, this message translates to:
+  /// **'Message filter'**
+  String get messageFilter_title;
+
+  /// Message filter: Hide spam and repeated messages
+  ///
+  /// In en, this message translates to:
+  /// **'Hide spam and repeated messages'**
+  String get messageFilter_settingsSubtitle;
+
+  /// Message filter: Filter messages
+  ///
+  /// In en, this message translates to:
+  /// **'Filter messages'**
+  String get messageFilter_enabled;
+
+  /// Message filter: Applies to channel messages
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to channel messages'**
+  String get messageFilter_enabledSubtitle;
+
+  /// Message filter: Filtered messages
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered messages'**
+  String get messageFilter_displayTitle;
+
+  /// Message filter: Show a small placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Show a small placeholder'**
+  String get messageFilter_displayPlaceholder;
+
+  /// Message filter: Hide completely
+  ///
+  /// In en, this message translates to:
+  /// **'Hide completely'**
+  String get messageFilter_displayHide;
+
+  /// Message filter: Hidden messages stay in the Filtered messages list.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden messages stay in the Filtered messages list.'**
+  String get messageFilter_displayHideHelp;
+
+  /// Message filter: Your rules
+  ///
+  /// In en, this message translates to:
+  /// **'Your rules'**
+  String get messageFilter_rulesSection;
+
+  /// Message filter: No rules yet. Add a word, phrase or sender name to hide messages that match it.
+  ///
+  /// In en, this message translates to:
+  /// **'No rules yet. Add a word, phrase or sender name to hide messages that match it.'**
+  String get messageFilter_rulesEmpty;
+
+  /// Message filter: Add rule
+  ///
+  /// In en, this message translates to:
+  /// **'Add rule'**
+  String get messageFilter_addRule;
+
+  /// Message filter: Edit rule
+  ///
+  /// In en, this message translates to:
+  /// **'Edit rule'**
+  String get messageFilter_editRule;
+
+  /// Message filter: Word, phrase or name
+  ///
+  /// In en, this message translates to:
+  /// **'Word, phrase or name'**
+  String get messageFilter_rulePattern;
+
+  /// Message filter: e.g. meshos
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. meshos'**
+  String get messageFilter_rulePatternHint;
+
+  /// Message filter: Look in
+  ///
+  /// In en, this message translates to:
+  /// **'Look in'**
+  String get messageFilter_ruleWhere;
+
+  /// Message filter: Message text
+  ///
+  /// In en, this message translates to:
+  /// **'Message text'**
+  String get messageFilter_ruleFieldText;
+
+  /// Message filter: Sender name
+  ///
+  /// In en, this message translates to:
+  /// **'Sender name'**
+  String get messageFilter_ruleFieldSender;
+
+  /// Message filter: Both
+  ///
+  /// In en, this message translates to:
+  /// **'Both'**
+  String get messageFilter_ruleFieldBoth;
+
+  /// Message filter: Match
+  ///
+  /// In en, this message translates to:
+  /// **'Match'**
+  String get messageFilter_ruleMatch;
+
+  /// Message filter: Contains
+  ///
+  /// In en, this message translates to:
+  /// **'Contains'**
+  String get messageFilter_ruleMatchContains;
+
+  /// Message filter: Whole word
+  ///
+  /// In en, this message translates to:
+  /// **'Whole word'**
+  String get messageFilter_ruleMatchWholeWord;
+
+  /// Message filter: Exact
+  ///
+  /// In en, this message translates to:
+  /// **'Exact'**
+  String get messageFilter_ruleMatchExact;
+
+  /// Message filter: Rule deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Rule deleted'**
+  String get messageFilter_ruleDeleted;
+
+  /// Message filter: Rule saved
+  ///
+  /// In en, this message translates to:
+  /// **'Rule saved'**
+  String get messageFilter_ruleSaved;
+
+  /// Message filter: Automatic
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get messageFilter_automaticSection;
+
+  /// Message filter: Repeated messages
+  ///
+  /// In en, this message translates to:
+  /// **'Repeated messages'**
+  String get messageFilter_duplicates;
+
+  /// Message filter: The same message sent again, or by several senders
+  ///
+  /// In en, this message translates to:
+  /// **'The same message sent again, or by several senders'**
+  String get messageFilter_duplicatesSubtitle;
+
+  /// Message filter: title of the setting for which send of the same message by the same sender is hidden as a repeat
+  ///
+  /// In en, this message translates to:
+  /// **'Sends to count as a repeat'**
+  String get messageFilter_repeatSends;
+
+  /// Message filter: subtitle of the repeat-sends setting
+  ///
+  /// In en, this message translates to:
+  /// **'Hide a message when the same sender sends it {count} times within 10 minutes'**
+  String messageFilter_repeatSendsSubtitle(int count);
+
+  /// Message filter: Repeated characters
+  ///
+  /// In en, this message translates to:
+  /// **'Repeated characters'**
+  String get messageFilter_repeatedCharacters;
+
+  /// Message filter: Messages like "aaaaaaaa" or "!!!!!!!!"
+  ///
+  /// In en, this message translates to:
+  /// **'Long runs of one character, like \"aaaaaaaaaaaaaaaaaaaa\"'**
+  String get messageFilter_repeatedCharactersSubtitle;
+
+  /// Message filter: Learn from Spam taps
+  ///
+  /// In en, this message translates to:
+  /// **'Learn from Spam taps'**
+  String get messageFilter_learning;
+
+  /// Message filter: {spam} spam and {notSpam} not-spam examples
+  ///
+  /// In en, this message translates to:
+  /// **'{spam} spam and {notSpam} not-spam examples'**
+  String messageFilter_learningSubtitle(int spam, int notSpam);
+
+  /// Message filter: Reset learning
+  ///
+  /// In en, this message translates to:
+  /// **'Reset learning'**
+  String get messageFilter_resetLearning;
+
+  /// Message filter: Forget everything learned from your Spam and Not spam taps? Your rules are kept.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget everything learned from your Spam and Not spam taps? Your rules are kept.'**
+  String get messageFilter_resetLearningConfirm;
+
+  /// Message filter: Filtered messages ({count})
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered messages ({count})'**
+  String messageFilter_filteredMessages(int count);
+
+  /// Message filter: Nothing has been filtered.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing has been filtered.'**
+  String get messageFilter_filteredMessagesEmpty;
+
+  /// Message filter: Hidden message · Tap to view
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden message · Tap to view'**
+  String get messageFilter_ghostSingle;
+
+  /// Message filter: {count, plural, one{{count} hidden message · Tap to view} other{{count} hidden messages · Tap to view}}
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} hidden message · Tap to view} other{{count} hidden messages · Tap to view}}'**
+  String messageFilter_ghostMany(int count);
+
+  /// Header above one revealed filtered message; tapping it hides the message again
+  ///
+  /// In en, this message translates to:
+  /// **'Showing hidden message · Tap to hide'**
+  String get messageFilter_ghostSingleExpanded;
+
+  /// Header above a revealed run of filtered messages; tapping it hides them again
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Showing 1 hidden message · Tap to hide} other{Showing {count} hidden messages · Tap to hide}}'**
+  String messageFilter_ghostManyExpanded(int count);
+
+  /// Message filter: Filtered: matches "{pattern}"
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered: matches \"{pattern}\"'**
+  String messageFilter_reasonTextRule(String pattern);
+
+  /// Message filter: Filtered: sender "{pattern}"
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered: sender \"{pattern}\"'**
+  String messageFilter_reasonSenderRule(String pattern);
+
+  /// Message filter: Filtered: repeated characters
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered: repeated characters'**
+  String get messageFilter_reasonRepeatedCharacters;
+
+  /// Message filter: Filtered: repeated message
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered: repeated message'**
+  String get messageFilter_reasonDuplicate;
+
+  /// Message filter: Filtered: same message from several senders
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered: same message from several senders'**
+  String get messageFilter_reasonCrossSenderDuplicate;
+
+  /// Message filter: Filtered: looks like messages you marked as spam
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered: looks like messages you marked as spam'**
+  String get messageFilter_reasonLearned;
+
+  /// Message filter: Filtered: you marked this as spam
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered: you marked this as spam'**
+  String get messageFilter_reasonManual;
+
+  /// Message filter: Not spam
+  ///
+  /// In en, this message translates to:
+  /// **'Not spam'**
+  String get messageFilter_notSpam;
+
+  /// Message filter: Hide
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get messageFilter_hideAgain;
+
+  /// Message filter: Mark as spam
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as spam'**
+  String get messageFilter_markSpam;
+
+  /// Message filter: Marked as spam
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as spam'**
+  String get messageFilter_markedSpam;
+
+  /// Message filter: Marked as not spam
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as not spam'**
+  String get messageFilter_markedNotSpam;
+
+  /// Message filter: Filter this sender
+  ///
+  /// In en, this message translates to:
+  /// **'Filter this sender'**
+  String get messageFilter_filterSender;
+
+  /// Message filter: Hide all messages from "{name}"?
+  ///
+  /// In en, this message translates to:
+  /// **'Hide all messages from \"{name}\"?'**
+  String messageFilter_filterSenderConfirm(String name);
+
+  /// Message filter: Filter messages like this…
+  ///
+  /// In en, this message translates to:
+  /// **'Filter messages like this…'**
+  String get messageFilter_filterLikeThis;
+
+  /// Message filter: Filter messages in this channel
+  ///
+  /// In en, this message translates to:
+  /// **'Filter messages in this channel'**
+  String get messageFilter_channelToggle;
+
+  /// Message filter: Hidden by your message filter
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden by your message filter'**
+  String get messageFilter_ghostIconTooltip;
 }
 
 class _AppLocalizationsDelegate
@@ -11522,6 +12106,7 @@ class _AppLocalizationsDelegate
   @override
   bool isSupported(Locale locale) => <String>[
     'bg',
+    'cs',
     'de',
     'en',
     'es',
@@ -11550,6 +12135,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'bg':
       return AppLocalizationsBg();
+    case 'cs':
+      return AppLocalizationsCs();
     case 'de':
       return AppLocalizationsDe();
     case 'en':

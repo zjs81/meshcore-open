@@ -17,7 +17,7 @@ jobs:
           java-version: "17"
       - uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
+          flutter-version-file: pubspec.yaml
           cache: true
       - name: Cache Gradle
         uses: actions/cache@v4
@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
+          flutter-version-file: pubspec.yaml
           cache: true
       - run: flutter pub get
       - run: flutter build ios --release --no-codesign --no-pub
@@ -56,7 +56,7 @@ jobs:
       - name: Install Linux build deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang cmake ninja-build pkg-config jq libgtk-3-dev librsvg2-dev libgirepository1.0-dev libgtk-3-bin libgdk-pixbuf2.0-bin libgdk-pixbuf-2.0-dev dpkg-dev patchelf file desktop-file-utils xdg-user-dirs shellcheck libssl-dev libunwind-dev libvulkan-dev libgl1-mesa-dev libasound2-dev libsecret-1-dev
+          sudo apt-get install -y clang cmake ninja-build pkg-config jq libgtk-3-dev librsvg2-dev libgirepository1.0-dev libgtk-3-bin libgdk-pixbuf2.0-bin libgdk-pixbuf-2.0-dev dpkg-dev patchelf file desktop-file-utils xdg-user-dirs shellcheck libssl-dev libunwind-dev libvulkan-dev libgl1-mesa-dev libasound2-dev libsecret-1-dev libgpg-error0
       - uses: actions/cache@v4
         with:
           path: ~/.cache/meshcore-open/appimage
@@ -87,7 +87,7 @@ jobs:
       - name: Test AppImage in clean Ubuntu
         run: |
           mkdir -p build/appimage-runtime
-          docker run --rm --stop-timeout 15 --user "$(id -u):$(id -g)" --mount "type=bind,source=$PWD/build/linux/x64/release/meshcore-open-x86_64.AppImage,target=/artifact.AppImage,readonly" --mount "type=bind,source=$PWD/scripts/appimage/test_runtime.sh,target=/test_runtime.sh,readonly" --mount "type=bind,source=$PWD/build/appimage-runtime,target=/results" meshcore-appimage-runtime:ci timeout --verbose --signal=TERM --kill-after=15s 300s xvfb-run -a bash /test_runtime.sh /artifact.AppImage /results
+          docker run --rm --stop-timeout 15 --user "$(id -u):$(id -g)" --mount "type=bind,source=$PWD/build/linux/x64/release/meshcore-open-x86_64.AppImage,target=/artifact.AppImage,readonly" --mount "type=bind,source=$PWD/scripts/appimage/test_runtime.sh,target=/test_runtime.sh,readonly" --mount "type=bind,source=$PWD/scripts/appimage/dependencies.sh,target=/dependencies.sh,readonly" --mount "type=bind,source=$PWD/build/appimage-runtime,target=/results" meshcore-appimage-runtime:ci env MESHCORE_APPIMAGE_DEPENDENCIES=/dependencies.sh timeout --verbose --signal=TERM --kill-after=15s 300s xvfb-run -a bash /test_runtime.sh /artifact.AppImage /results
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -122,11 +122,11 @@ jobs:
           mkdir -p build
           flutter --version
           flutter --version --machine > build/flutter-version.json
-          jq -e --arg revision "$FLUTTER_REVISION" '.frameworkVersion == "3.47.4" and .frameworkRevision == $revision' build/flutter-version.json
+          jq -e --arg revision "$FLUTTER_REVISION" --arg version "$(jq -r '.flutter.version' scripts/appimage-tools.json)" '.frameworkVersion == $version and .frameworkRevision == $revision' build/flutter-version.json
       - name: Install Linux build deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang cmake ninja-build pkg-config jq libgtk-3-dev librsvg2-dev libgirepository1.0-dev libgtk-3-bin libgdk-pixbuf2.0-bin libgdk-pixbuf-2.0-dev dpkg-dev patchelf file desktop-file-utils xdg-user-dirs shellcheck libssl-dev libunwind-dev libvulkan-dev libgl1-mesa-dev libasound2-dev libsecret-1-dev
+          sudo apt-get install -y clang cmake ninja-build pkg-config jq libgtk-3-dev librsvg2-dev libgirepository1.0-dev libgtk-3-bin libgdk-pixbuf2.0-bin libgdk-pixbuf-2.0-dev dpkg-dev patchelf file desktop-file-utils xdg-user-dirs shellcheck libssl-dev libunwind-dev libvulkan-dev libgl1-mesa-dev libasound2-dev libsecret-1-dev libgpg-error0
       - uses: actions/cache@v4
         with:
           path: ~/.cache/meshcore-open/appimage
@@ -163,7 +163,7 @@ jobs:
       - name: Test ARM64 AppImage in clean Ubuntu
         run: |
           mkdir -p build/appimage-runtime
-          docker run --rm --stop-timeout 15 --platform linux/arm64 --user "$(id -u):$(id -g)" --mount "type=bind,source=$PWD/build/linux/arm64/release/meshcore-open-aarch64.AppImage,target=/artifact.AppImage,readonly" --mount "type=bind,source=$PWD/scripts/appimage/test_runtime.sh,target=/test_runtime.sh,readonly" --mount "type=bind,source=$PWD/build/appimage-runtime,target=/results" meshcore-appimage-runtime-arm64:ci timeout --verbose --signal=TERM --kill-after=15s 300s xvfb-run -a bash /test_runtime.sh /artifact.AppImage /results
+          docker run --rm --stop-timeout 15 --platform linux/arm64 --user "$(id -u):$(id -g)" --mount "type=bind,source=$PWD/build/linux/arm64/release/meshcore-open-aarch64.AppImage,target=/artifact.AppImage,readonly" --mount "type=bind,source=$PWD/scripts/appimage/test_runtime.sh,target=/test_runtime.sh,readonly" --mount "type=bind,source=$PWD/scripts/appimage/dependencies.sh,target=/dependencies.sh,readonly" --mount "type=bind,source=$PWD/build/appimage-runtime,target=/results" meshcore-appimage-runtime-arm64:ci env MESHCORE_APPIMAGE_DEPENDENCIES=/dependencies.sh timeout --verbose --signal=TERM --kill-after=15s 300s xvfb-run -a bash /test_runtime.sh /artifact.AppImage /results
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -183,7 +183,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
+          flutter-version-file: pubspec.yaml
           cache: true
       - run: flutter pub get
       - run: flutter build macos --release --no-pub
@@ -194,7 +194,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
+          flutter-version-file: pubspec.yaml
           cache: true
       - run: flutter pub get
       - run: flutter build web --release --no-pub

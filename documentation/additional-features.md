@@ -26,7 +26,7 @@ A bottom sheet with a search field and a grid of GIF thumbnails.
 App Settings → Appearance → Language
 
 ### Supported Languages (18)
-English, French, Spanish, German, Polish, Slovenian, Portuguese, Italian, Chinese, Swedish, Dutch, Slovak, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean
+English, French, Spanish, German, Polish, Slovenian, Portuguese, Italian, Chinese, Swedish, Dutch, Slovak, Czech, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean
 
 ### How It Works
 - All UI strings go through Flutter's ARB localization system

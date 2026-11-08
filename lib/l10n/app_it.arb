@@ -180,7 +180,8 @@
   "appSettings_languageZh": "Cinese",
   "appSettings_languageSv": "Svedese",
   "appSettings_languageNl": "Olandese",
-  "appSettings_languageSk": "Sloveno",
+  "appSettings_languageSk": "Slovacco",
+  "appSettings_languageCs": "Ceco",
   "appSettings_languageBg": "Bulgaro",
   "appSettings_notifications": "Notifiche",
   "appSettings_enableNotifications": "Abilita Notifiche",
@@ -1076,6 +1077,7 @@
   "repeater_received": "Ricevuto",
   "repeater_duplicates": "Duplicati",
   "repeater_daysHoursMinsSecs": "{days} giorni {hours}h {minutes}m {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -3380,6 +3382,9 @@
   "settings_regionFetchNoneResponded": "Nessun ripetitore vicino ha risposto. Avvicinati a un ripetitore e riprova.",
   "appSettings_sourceSummary": "{label} - {description}",
   "appSettings_routingSection": "Instradamento",
+  "appSettings_resetRoutingToDefault": "Reimposta algoritmo di instradamento sui valori predefiniti",
+  "appSettings_resetRoutingToDefaultSubtitle": "Ripristina le impostazioni dell'algoritmo di instradamento ai valori predefiniti di fabbrica",
+  "appSettings_routingResetToDefault": "Impostazioni algoritmo di instradamento reimpostate sui valori predefiniti",
   "appSettings_imageMessagesSection": "Messaggi immagine",
   "appSettings_showApiKey": "Mostra chiave API",
   "appSettings_hideApiKey": "Nascondi chiave API",
@@ -3660,5 +3665,142 @@
   "themes_chatBackground": "Sfondo della chat",
   "themes_chatBackgroundHelp": "Mostrato nelle chat che non hanno uno sfondo proprio",
   "themes_chatBackgroundEverywhere": "Usa in tutte le chat",
-  "themes_chatBackgroundEverywhereHelp": "Sostituisce anche gli sfondi impostati sulle singole chat"
+  "themes_chatBackgroundEverywhereHelp": "Sostituisce anche gli sfondi impostati sulle singole chat",
+  "appSettings_showOnlineLinks": "Mostra connessioni della mappa online",
+  "appSettings_showOnlineLinksSubtitle": "Mostra le linee di collegamento tra i nodi della mappa online",
+  "map_showOnlineLinks": "Mostra connessioni della mappa online",
+  "chat_loadOlderMessages": "Carica messaggi meno recenti",
+  "messageFilter_title": "Filtro messaggi",
+  "messageFilter_settingsSubtitle": "Nascondi spam e messaggi ripetuti",
+  "messageFilter_enabled": "Filtra i messaggi",
+  "messageFilter_enabledSubtitle": "Si applica ai messaggi dei canali",
+  "messageFilter_displayTitle": "Messaggi filtrati",
+  "messageFilter_displayPlaceholder": "Mostra un piccolo segnaposto",
+  "messageFilter_displayHide": "Nascondi completamente",
+  "messageFilter_displayHideHelp": "I messaggi nascosti restano nell'elenco dei messaggi filtrati.",
+  "messageFilter_rulesSection": "Le tue regole",
+  "messageFilter_rulesEmpty": "Ancora nessuna regola. Aggiungi una parola, una frase o il nome di un mittente per nascondere i messaggi corrispondenti.",
+  "messageFilter_addRule": "Aggiungi regola",
+  "messageFilter_editRule": "Modifica regola",
+  "messageFilter_rulePattern": "Parola, frase o nome",
+  "messageFilter_rulePatternHint": "es. meshos",
+  "messageFilter_ruleWhere": "Cerca in",
+  "messageFilter_ruleFieldText": "Testo del messaggio",
+  "messageFilter_ruleFieldSender": "Nome del mittente",
+  "messageFilter_ruleFieldBoth": "Entrambi",
+  "messageFilter_ruleMatch": "Corrispondenza",
+  "messageFilter_ruleMatchContains": "Contiene",
+  "messageFilter_ruleMatchWholeWord": "Parola intera",
+  "messageFilter_ruleMatchExact": "Esatta",
+  "messageFilter_ruleDeleted": "Regola eliminata",
+  "messageFilter_ruleSaved": "Regola salvata",
+  "messageFilter_automaticSection": "Automatico",
+  "messageFilter_duplicates": "Messaggi ripetuti",
+  "messageFilter_duplicatesSubtitle": "Lo stesso messaggio inviato di nuovo, o da più mittenti",
+  "messageFilter_repeatSends": "Invii da considerare ripetizione",
+  "messageFilter_repeatSendsSubtitle": "Nascondi un messaggio quando lo stesso mittente lo invia {count} volte entro 10 minuti",
+  "messageFilter_repeatedCharacters": "Caratteri ripetuti",
+  "messageFilter_repeatedCharactersSubtitle": "Lunghe sequenze dello stesso carattere, come «aaaaaaaaaaaaaaaaaaaa»",
+  "messageFilter_learning": "Impara dai tocchi su Spam",
+  "messageFilter_learningSubtitle": "{spam} esempi di spam e {notSpam} di non spam",
+  "messageFilter_resetLearning": "Azzera apprendimento",
+  "messageFilter_resetLearningConfirm": "Dimenticare tutto ciò che è stato appreso dai tuoi tocchi su Spam e Non spam? Le tue regole vengono mantenute.",
+  "messageFilter_filteredMessages": "Messaggi filtrati ({count})",
+  "messageFilter_filteredMessagesEmpty": "Nessun messaggio è stato filtrato.",
+  "messageFilter_ghostSingle": "Messaggio nascosto · Tocca per vedere",
+  "messageFilter_ghostMany": "{count, plural, one{{count} messaggio nascosto · Tocca per vedere} other{{count} messaggi nascosti · Tocca per vedere}}",
+  "messageFilter_ghostSingleExpanded": "Messaggio nascosto visibile · Tocca per nascondere",
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{1 messaggio nascosto visibile · Tocca per nascondere} other{{count} messaggi nascosti visibili · Tocca per nascondere}}",
+  "messageFilter_reasonTextRule": "Filtrato: corrisponde a «{pattern}»",
+  "messageFilter_reasonSenderRule": "Filtrato: mittente «{pattern}»",
+  "messageFilter_reasonRepeatedCharacters": "Filtrato: caratteri ripetuti",
+  "messageFilter_reasonDuplicate": "Filtrato: messaggio ripetuto",
+  "messageFilter_reasonCrossSenderDuplicate": "Filtrato: stesso messaggio da più mittenti",
+  "messageFilter_reasonLearned": "Filtrato: assomiglia ai messaggi che hai segnato come spam",
+  "messageFilter_reasonManual": "Filtrato: hai segnato questo messaggio come spam",
+  "messageFilter_notSpam": "Non spam",
+  "messageFilter_hideAgain": "Nascondi",
+  "messageFilter_markSpam": "Segna come spam",
+  "messageFilter_markedSpam": "Segnato come spam",
+  "messageFilter_markedNotSpam": "Segnato come non spam",
+  "messageFilter_filterSender": "Filtra questo mittente",
+  "messageFilter_filterSenderConfirm": "Nascondere tutti i messaggi di «{name}»?",
+  "messageFilter_filterLikeThis": "Filtra messaggi come questo…",
+  "messageFilter_channelToggle": "Filtra i messaggi in questo canale",
+  "messageFilter_ghostIconTooltip": "Nascosto dal tuo filtro messaggi",
+  "chatSearch_tooltip": "Cerca messaggi",
+  "chatSearch_hint": "Cerca messaggi",
+  "chatSearch_close": "Chiudi ricerca",
+  "chatSearch_resultCount": "{count, plural, =1{1 risultato} other{{count} risultati}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Nessun messaggio corrispondente",
+  "chatSearch_noResultsHint": "Prova con un'altra parola o controlla l'ortografia",
+  "contactShare_headerOutgoing": "Hai condiviso un contatto",
+  "contactShare_headerIncoming": "Ha condiviso un contatto",
+  "contactShare_add": "Aggiungi contatto",
+  "contactShare_adding": "Aggiunta del contatto...",
+  "contactShare_saved": "Salvato",
+  "contactShare_isYou": "Sei tu",
+  "contactShare_shareAction": "Condividi contatto",
+  "contactShare_pickerTitle": "Condividi un contatto",
+  "contactShare_myContact": "Il mio contatto",
+  "contactShare_searchHint": "Cerca contatti",
+  "contactShare_noContacts": "Nessun contatto trovato",
+  "contactShare_preview": "Contatto condiviso: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Ha condiviso un contatto: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Tracciamento del percorso per hash",
+  "manualTrace_inputLabel": "Hash dei ripetitori",
+  "manualTrace_helper": "Esempio: {example}. Separa con virgole o spazi.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Salti ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Nodo sconosciuto",
+  "manualTrace_enterHashes": "Inserisci gli hash",
+  "manualTrace_run": "Avvia tracciamento del percorso",
+  "manualTrace_notConnected": "Connettiti a una radio per eseguire una traccia",
+  "manualTrace_errorInvalidHex": "Sono ammessi solo caratteri esadecimali (0-9, A-F)",
+  "manualTrace_errorOddLength": "Ogni hash richiede un numero pari di caratteri esadecimali, corrispondente alla dimensione del salto",
+  "manualTrace_errorMixedWidths": "Tutti gli hash devono avere la stessa lunghezza",
+  "manualTrace_errorUnsupportedWidth": "Gli hash devono essere di 1, 2 o 3 byte (2, 4 o 6 caratteri esadecimali)",
+  "manualTrace_errorTooManyHops": "Il percorso è troppo lungo (massimo {max} byte)",
+  "manualTrace_errorTraceTooLong": "Troppi salti da tracciare in una sola richiesta. Rimuovi alcuni salti o scegli «Come inserito».",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

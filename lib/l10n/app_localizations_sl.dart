@@ -1091,7 +1091,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get appSettings_languageNl => 'Nizozemščina';
 
   @override
-  String get appSettings_languageSk => 'Slovenščina';
+  String get appSettings_languageSk => 'Slovaščina';
 
   @override
   String get appSettings_languageBg => 'Български';
@@ -1101,6 +1101,9 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get appSettings_languageUk => 'Ukrajinščina';
+
+  @override
+  String get appSettings_languageCs => 'Češčina';
 
   @override
   String get repeater_pathHashModeOption0 => '0 - 1 bajt';
@@ -1407,11 +1410,12 @@ class AppLocalizationsSl extends AppLocalizations {
       'Pokaži druge vrste naprav na zemljevidu.';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks =>
+      'Pokaži povezave spletnega zemljevida';
 
   @override
   String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+      'Prikaži povezovalne črte med napravami iz spletnega zemljevida';
 
   @override
   String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
@@ -2034,6 +2038,35 @@ class AppLocalizationsSl extends AppLocalizations {
   String get chat_noMessages => 'Še ni sporočil.';
 
   @override
+  String get chatSearch_tooltip => 'Išči sporočila';
+
+  @override
+  String get chatSearch_hint => 'Išči sporočila';
+
+  @override
+  String get chatSearch_close => 'Zapri iskanje';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count zadetkov',
+      few: '$count zadetki',
+      two: '$count zadetka',
+      one: '$count zadetek',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Ni ustreznih sporočil';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Poskusite z drugo besedo ali preverite črkovanje';
+
+  @override
   String get chat_sendMessage => 'Pošlji sporočilo';
 
   @override
@@ -2481,6 +2514,49 @@ class AppLocalizationsSl extends AppLocalizations {
   String get chat_poiShared => 'Deljeno točke MN';
 
   @override
+  String get contactShare_headerOutgoing => 'Delili ste stik';
+
+  @override
+  String get contactShare_headerIncoming => 'Delil stik';
+
+  @override
+  String get contactShare_add => 'Dodaj stik';
+
+  @override
+  String get contactShare_adding => 'Dodajanje stika ...';
+
+  @override
+  String get contactShare_saved => 'Shranjeno';
+
+  @override
+  String get contactShare_isYou => 'To ste vi';
+
+  @override
+  String get contactShare_shareAction => 'Deli stik';
+
+  @override
+  String get contactShare_pickerTitle => 'Deli stik';
+
+  @override
+  String get contactShare_myContact => 'Moj stik';
+
+  @override
+  String get contactShare_searchHint => 'Išči stike';
+
+  @override
+  String get contactShare_noContacts => 'Ni najdenih stikov';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Deljen stik: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Delil stik: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Nerešeno: $count';
   }
@@ -2693,7 +2769,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get map_otherNodes => 'Druge vozlišča';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => 'Pokaži povezave spletnega zemljevida';
 
   @override
   String get map_showOverlaps => 'Prekrivanje ključa ponovnega predvajanja';
@@ -2785,6 +2861,60 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Poglej zadnji rezultat';
+
+  @override
+  String get manualTrace_menuItem => 'Sledenje poti po zgoščenih vrednostih';
+
+  @override
+  String get manualTrace_inputLabel => 'Zgoščene vrednosti repetitorjev';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Primer: $example. Ločite z vejicami ali presledki.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Skoki ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Neznano vozlišče';
+
+  @override
+  String get manualTrace_enterHashes => 'Vnesite zgoščene vrednosti';
+
+  @override
+  String get manualTrace_run => 'Zaženi sledenje poti';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Za izvedbo sledenja se povežite z radiem';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Dovoljeni so samo šestnajstiški znaki (0-9, A-F)';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Vsaka zgoščena vrednost mora imeti sodo število šestnajstiških znakov, skladno z velikostjo skoka';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Vse zgoščene vrednosti morajo biti enake dolžine';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Zgoščene vrednosti morajo imeti 1, 2 ali 3 bajte (2, 4 ali 6 šestnajstiških znakov)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Pot je predolga (največ $max bajtov)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Preveč skokov za sledenje v eni zahtevi. Odstranite nekaj skokov ali izberite »Kot vneseno«.';
 
   @override
   String get mapCache_title =>
@@ -3188,6 +3318,11 @@ class AppLocalizationsSl extends AppLocalizations {
     int seconds,
   ) {
     return '$days dni ${hours}h ${minutes}m ${seconds}s';
+  }
+
+  @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '${hours}h ${minutes}m ${seconds}s';
   }
 
   @override
@@ -6554,6 +6689,18 @@ class AppLocalizationsSl extends AppLocalizations {
   String get appSettings_routingSection => 'Usmerjanje';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Ponastavite algoritem usmerjanja na privzeto';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Obnovite nastavitve algoritma usmerjanja na tovarniške privzetke';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Nastavitve algoritma usmerjanja so ponastavljene na privzeto';
+
+  @override
   String get appSettings_imageMessagesSection => 'Sporočila s slikami';
 
   @override
@@ -6828,4 +6975,227 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Srečno novo leto|Srečno v novem letu|Vse najboljše v novem letu|Happy New Year';
+
+  @override
+  String get chat_loadOlderMessages => 'Naloži starejša sporočila';
+
+  @override
+  String get messageFilter_title => 'Filter sporočil';
+
+  @override
+  String get messageFilter_settingsSubtitle =>
+      'Skrij neželena in ponavljajoča se sporočila';
+
+  @override
+  String get messageFilter_enabled => 'Filtriraj sporočila';
+
+  @override
+  String get messageFilter_enabledSubtitle => 'Velja za sporočila v kanalih';
+
+  @override
+  String get messageFilter_displayTitle => 'Filtrirana sporočila';
+
+  @override
+  String get messageFilter_displayPlaceholder => 'Pokaži majhno oznako';
+
+  @override
+  String get messageFilter_displayHide => 'Skrij popolnoma';
+
+  @override
+  String get messageFilter_displayHideHelp =>
+      'Skrita sporočila ostanejo na seznamu Filtrirana sporočila.';
+
+  @override
+  String get messageFilter_rulesSection => 'Vaša pravila';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      'Še ni pravil. Dodajte besedo, frazo ali ime pošiljatelja, da skrijete ujemajoča se sporočila.';
+
+  @override
+  String get messageFilter_addRule => 'Dodaj pravilo';
+
+  @override
+  String get messageFilter_editRule => 'Uredi pravilo';
+
+  @override
+  String get messageFilter_rulePattern => 'Beseda, fraza ali ime';
+
+  @override
+  String get messageFilter_rulePatternHint => 'npr. meshos';
+
+  @override
+  String get messageFilter_ruleWhere => 'Išči v';
+
+  @override
+  String get messageFilter_ruleFieldText => 'Besedilo sporočila';
+
+  @override
+  String get messageFilter_ruleFieldSender => 'Ime pošiljatelja';
+
+  @override
+  String get messageFilter_ruleFieldBoth => 'Oboje';
+
+  @override
+  String get messageFilter_ruleMatch => 'Ujemanje';
+
+  @override
+  String get messageFilter_ruleMatchContains => 'Vsebuje';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => 'Cela beseda';
+
+  @override
+  String get messageFilter_ruleMatchExact => 'Natančno';
+
+  @override
+  String get messageFilter_ruleDeleted => 'Pravilo izbrisano';
+
+  @override
+  String get messageFilter_ruleSaved => 'Pravilo shranjeno';
+
+  @override
+  String get messageFilter_automaticSection => 'Samodejno';
+
+  @override
+  String get messageFilter_duplicates => 'Ponavljajoča se sporočila';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      'Isto sporočilo, poslano znova ali od več pošiljateljev';
+
+  @override
+  String get messageFilter_repeatSends => 'Pošiljanje, šteto kot ponovitev';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Skrij sporočilo, ko ga isti pošiljatelj v 10 minutah pošlje ponovno (število pošiljanj: $count)';
+  }
+
+  @override
+  String get messageFilter_repeatedCharacters => 'Ponavljajoči se znaki';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      'Dolga zaporedja istega znaka, kot je „aaaaaaaaaaaaaaaaaaaa“';
+
+  @override
+  String get messageFilter_learning => 'Uči se iz dotikov Neželeno';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return 'Primeri: $spam neželenih in $notSpam ne neželenih';
+  }
+
+  @override
+  String get messageFilter_resetLearning => 'Ponastavi učenje';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      'Pozabim vse, kar se je filter naučil iz vaših dotikov Neželeno in Ni neželeno? Vaša pravila ostanejo.';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return 'Filtrirana sporočila ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'Nič ni bilo filtrirano.';
+
+  @override
+  String get messageFilter_ghostSingle =>
+      'Skrito sporočilo · Dotaknite se za ogled';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count skritih sporočil · Dotaknite se za ogled',
+      few: '$count skrita sporočila · Dotaknite se za ogled',
+      two: '$count skriti sporočili · Dotaknite se za ogled',
+      one: '$count skrito sporočilo · Dotaknite se za ogled',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded =>
+      'Prikazano skrito sporočilo · Dotaknite se za skritje';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Prikazanih $count skritih sporočil · Dotaknite se za skritje',
+      few: 'Prikazana $count skrita sporočila · Dotaknite se za skritje',
+      two: 'Prikazani $count skriti sporočili · Dotaknite se za skritje',
+      one: 'Prikazano 1 skrito sporočilo · Dotaknite se za skritje',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return 'Filtrirano: ujema se z „$pattern“';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return 'Filtrirano: pošiljatelj „$pattern“';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters =>
+      'Filtrirano: ponavljajoči se znaki';
+
+  @override
+  String get messageFilter_reasonDuplicate =>
+      'Filtrirano: ponovljeno sporočilo';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate =>
+      'Filtrirano: isto sporočilo od več pošiljateljev';
+
+  @override
+  String get messageFilter_reasonLearned =>
+      'Filtrirano: podobno sporočilom, ki ste jih označili kot neželena';
+
+  @override
+  String get messageFilter_reasonManual =>
+      'Filtrirano: to ste označili kot neželeno';
+
+  @override
+  String get messageFilter_notSpam => 'Ni neželeno';
+
+  @override
+  String get messageFilter_hideAgain => 'Skrij';
+
+  @override
+  String get messageFilter_markSpam => 'Označi kot neželeno';
+
+  @override
+  String get messageFilter_markedSpam => 'Označeno kot neželeno';
+
+  @override
+  String get messageFilter_markedNotSpam => 'Označeno kot ni neželeno';
+
+  @override
+  String get messageFilter_filterSender => 'Filtriraj tega pošiljatelja';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return 'Skrijem vsa sporočila od „$name“?';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => 'Filtriraj podobna sporočila…';
+
+  @override
+  String get messageFilter_channelToggle => 'Filtriraj sporočila v tem kanalu';
+
+  @override
+  String get messageFilter_ghostIconTooltip =>
+      'Skrito z vašim filtrom sporočil';
 }

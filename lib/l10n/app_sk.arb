@@ -182,6 +182,7 @@
   "appSettings_languageSv": "Švédčina",
   "appSettings_languageNl": "Niderlandsky",
   "appSettings_languageSk": "Slovenčina",
+  "appSettings_languageCs": "Čeština",
   "appSettings_languageBg": "Bulharčina",
   "appSettings_notifications": "Upozornenia",
   "appSettings_enableNotifications": "Povoliť upozornenia",
@@ -1017,6 +1018,7 @@
   "repeater_received": "Prijaté",
   "repeater_duplicates": "Duplikáty",
   "repeater_daysHoursMinsSecs": "{days} dní {hours}h {minutes}m {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -3361,6 +3363,9 @@
   "settings_regionFetchNoneResponded": "Blízke opakovače neodpovedali. Priblížte sa k opakovaču a skúste to znova.",
   "appSettings_sourceSummary": "{label} - {description}",
   "appSettings_routingSection": "Smerovanie",
+  "appSettings_resetRoutingToDefault": "Obnoviť algoritmus smerovania na predvolené",
+  "appSettings_resetRoutingToDefaultSubtitle": "Obnoviť nastavenia algoritmu smerovania na továrne predvolené hodnoty",
+  "appSettings_routingResetToDefault": "Nastavenia algoritmu smerovania obnovené na predvolené",
   "appSettings_imageMessagesSection": "Obrazové správy",
   "appSettings_showApiKey": "Zobraziť API kľúč",
   "appSettings_hideApiKey": "Skryť API kľúč",
@@ -3527,5 +3532,194 @@
   "themes_chatBackground": "Pozadie chatu",
   "themes_chatBackgroundHelp": "Zobrazuje sa v chatoch, ktoré nemajú vlastné pozadie",
   "themes_chatBackgroundEverywhere": "Použiť v každom chate",
-  "themes_chatBackgroundEverywhereHelp": "Nahradí aj pozadia nastavené v jednotlivých chatoch"
+  "themes_chatBackgroundEverywhereHelp": "Nahradí aj pozadia nastavené v jednotlivých chatoch",
+  "appSettings_showOnlineLinks": "Zobraziť spojenia z online mapy",
+  "appSettings_showOnlineLinksSubtitle": "Zobrazí spojovacie čiary medzi uzlami z online mapy",
+  "map_showOnlineLinks": "Zobraziť spojenia z online mapy",
+  "chat_loadOlderMessages": "Načítať staršie správy",
+  "messageFilter_title": "Filter správ",
+  "messageFilter_settingsSubtitle": "Skryje spam a opakované správy",
+  "messageFilter_enabled": "Filtrovať správy",
+  "messageFilter_enabledSubtitle": "Platí pre správy v kanáloch",
+  "messageFilter_displayTitle": "Filtrované správy",
+  "messageFilter_displayPlaceholder": "Zobraziť malý zástupný riadok",
+  "messageFilter_displayHide": "Úplne skryť",
+  "messageFilter_displayHideHelp": "Skryté správy zostanú v zozname Filtrované správy.",
+  "messageFilter_rulesSection": "Vaše pravidlá",
+  "messageFilter_rulesEmpty": "Zatiaľ žiadne pravidlá. Pridajte slovo, frázu alebo meno odosielateľa, aby sa zodpovedajúce správy skryli.",
+  "messageFilter_addRule": "Pridať pravidlo",
+  "messageFilter_editRule": "Upraviť pravidlo",
+  "messageFilter_rulePattern": "Slovo, fráza alebo meno",
+  "messageFilter_rulePatternHint": "napr. meshos",
+  "messageFilter_ruleWhere": "Hľadať v",
+  "messageFilter_ruleFieldText": "Text správy",
+  "messageFilter_ruleFieldSender": "Meno odosielateľa",
+  "messageFilter_ruleFieldBoth": "Oboje",
+  "messageFilter_ruleMatch": "Zhoda",
+  "messageFilter_ruleMatchContains": "Obsahuje",
+  "messageFilter_ruleMatchWholeWord": "Celé slovo",
+  "messageFilter_ruleMatchExact": "Presná",
+  "messageFilter_ruleDeleted": "Pravidlo bolo odstránené",
+  "messageFilter_ruleSaved": "Pravidlo bolo uložené",
+  "messageFilter_automaticSection": "Automatické",
+  "messageFilter_duplicates": "Opakované správy",
+  "messageFilter_duplicatesSubtitle": "Rovnaká správa odoslaná znova alebo viacerými odosielateľmi",
+  "messageFilter_repeatSends": "Odoslanie počítané ako opakovanie",
+  "messageFilter_repeatSendsSubtitle": "Skryť správu, ak ju ten istý odosielateľ pošle opakovane do 10 minút (počet odoslaní: {count})",
+  "messageFilter_repeatedCharacters": "Opakované znaky",
+  "messageFilter_repeatedCharactersSubtitle": "Dlhé rady jedného znaku, napríklad „aaaaaaaaaaaaaaaaaaaa“",
+  "messageFilter_learning": "Učiť sa z klepnutí na Spam",
+  "messageFilter_learningSubtitle": "{spam} príkladov spamu a {notSpam} príkladov nie spamu",
+  "@messageFilter_learningSubtitle": {
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "Obnoviť učenie",
+  "messageFilter_resetLearningConfirm": "Zabudnúť všetko, čo sa filter naučil z vašich klepnutí na Spam a Nie spam? Vaše pravidlá zostanú zachované.",
+  "messageFilter_filteredMessages": "Filtrované správy ({count})",
+  "@messageFilter_filteredMessages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "Nič nebolo odfiltrované.",
+  "messageFilter_ghostSingle": "Skrytá správa · Klepnutím zobrazíte",
+  "messageFilter_ghostMany": "{count, plural, one{{count} skrytá správa · Klepnutím zobrazíte} few{{count} skryté správy · Klepnutím zobrazíte} many{{count} skrytej správy · Klepnutím zobrazíte} other{{count} skrytých správ · Klepnutím zobrazíte}}",
+  "@messageFilter_ghostMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "Zobrazená skrytá správa · Klepnutím skryjete",
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{Zobrazená 1 skrytá správa · Klepnutím skryjete} few{Zobrazené {count} skryté správy · Klepnutím skryjete} many{Zobrazených {count} skrytej správy · Klepnutím skryjete} other{Zobrazených {count} skrytých správ · Klepnutím skryjete}}",
+  "@messageFilter_ghostManyExpanded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "Odfiltrované: zodpovedá „{pattern}“",
+  "@messageFilter_reasonTextRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "Odfiltrované: odosielateľ „{pattern}“",
+  "@messageFilter_reasonSenderRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "Odfiltrované: opakované znaky",
+  "messageFilter_reasonDuplicate": "Odfiltrované: opakovaná správa",
+  "messageFilter_reasonCrossSenderDuplicate": "Odfiltrované: rovnaká správa od viacerých odosielateľov",
+  "messageFilter_reasonLearned": "Odfiltrované: podobá sa správam, ktoré ste označili ako spam",
+  "messageFilter_reasonManual": "Odfiltrované: označili ste to ako spam",
+  "messageFilter_notSpam": "Nie spam",
+  "messageFilter_hideAgain": "Skryť",
+  "messageFilter_markSpam": "Označiť ako spam",
+  "messageFilter_markedSpam": "Označené ako spam",
+  "messageFilter_markedNotSpam": "Označené ako nie spam",
+  "messageFilter_filterSender": "Filtrovať tohto odosielateľa",
+  "messageFilter_filterSenderConfirm": "Skryť všetky správy od „{name}“?",
+  "@messageFilter_filterSenderConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "Filtrovať podobné správy…",
+  "messageFilter_channelToggle": "Filtrovať správy v tomto kanáli",
+  "messageFilter_ghostIconTooltip": "Skryté vaším filtrom správ",
+  "chatSearch_tooltip": "Hľadať správy",
+  "chatSearch_hint": "Hľadať správy",
+  "chatSearch_close": "Zavrieť hľadanie",
+  "chatSearch_resultCount": "{count, plural, =1{1 výsledok} few{{count} výsledky} many{{count} výsledku} other{{count} výsledkov}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Žiadne zodpovedajúce správy",
+  "chatSearch_noResultsHint": "Skúste iné slovo alebo skontrolujte preklepy",
+  "contactShare_headerOutgoing": "Zdieľali ste kontakt",
+  "contactShare_headerIncoming": "Zdieľal(a) kontakt",
+  "contactShare_add": "Pridať kontakt",
+  "contactShare_adding": "Pridávanie kontaktu...",
+  "contactShare_saved": "Uložené",
+  "contactShare_isYou": "Toto ste vy",
+  "contactShare_shareAction": "Zdieľať kontakt",
+  "contactShare_pickerTitle": "Zdieľať kontakt",
+  "contactShare_myContact": "Môj kontakt",
+  "contactShare_searchHint": "Hľadať kontakty",
+  "contactShare_noContacts": "Nenašli sa žiadne kontakty",
+  "contactShare_preview": "Zdieľaný kontakt: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Zdieľal(a) kontakt: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Sledovanie cesty podľa hashov",
+  "manualTrace_inputLabel": "Hashe opakovačov",
+  "manualTrace_helper": "Príklad: {example}. Oddeľte čiarkami alebo medzerami.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Skoky ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Neznámy uzol",
+  "manualTrace_enterHashes": "Zadajte hashe",
+  "manualTrace_run": "Spustiť sledovanie cesty",
+  "manualTrace_notConnected": "Na spustenie sledovania sa pripojte k rádiu",
+  "manualTrace_errorInvalidHex": "Povolené sú iba hexadecimálne znaky (0-9, A-F)",
+  "manualTrace_errorOddLength": "Každý hash potrebuje párny počet hexadecimálnych znakov zodpovedajúci veľkosti skoku",
+  "manualTrace_errorMixedWidths": "Všetky hashe musia mať rovnakú dĺžku",
+  "manualTrace_errorUnsupportedWidth": "Hashe musia mať 1, 2 alebo 3 bajty (2, 4 alebo 6 hexadecimálnych znakov)",
+  "manualTrace_errorTooManyHops": "Cesta je príliš dlhá (maximum {max} bajtov)",
+  "manualTrace_errorTraceTooLong": "Príliš veľa skokov na sledovanie v jednej požiadavke. Odstráňte niektoré skoky alebo zvoľte „Podľa zadania“.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

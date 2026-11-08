@@ -1096,6 +1096,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get appSettings_languageUk => 'Ukrainska';
 
   @override
+  String get appSettings_languageCs => 'Tjeckiska';
+
+  @override
   String get repeater_pathHashModeOption0 => '0 - 1 byte';
 
   @override
@@ -1394,11 +1397,12 @@ class AppLocalizationsSv extends AppLocalizations {
       'Visa andra nodtyper på kartan';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks =>
+      'Visa anslutningar från onlinekartan';
 
   @override
   String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+      'Visa anslutningslinjer mellan noder från onlinekartan';
 
   @override
   String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
@@ -2019,6 +2023,33 @@ class AppLocalizationsSv extends AppLocalizations {
   String get chat_noMessages => 'Inga meddelanden ännu';
 
   @override
+  String get chatSearch_tooltip => 'Sök i meddelanden';
+
+  @override
+  String get chatSearch_hint => 'Sök i meddelanden';
+
+  @override
+  String get chatSearch_close => 'Stäng sökning';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count träffar',
+      one: '1 träff',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Inga matchande meddelanden';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Prova ett annat ord eller kontrollera stavningen';
+
+  @override
   String get chat_sendMessage => 'Skicka meddelande';
 
   @override
@@ -2468,6 +2499,49 @@ class AppLocalizationsSv extends AppLocalizations {
   String get chat_poiShared => 'Delad POI';
 
   @override
+  String get contactShare_headerOutgoing => 'Du delade en kontakt';
+
+  @override
+  String get contactShare_headerIncoming => 'Delade en kontakt';
+
+  @override
+  String get contactShare_add => 'Lägg till kontakt';
+
+  @override
+  String get contactShare_adding => 'Lägger till kontakt...';
+
+  @override
+  String get contactShare_saved => 'Sparad';
+
+  @override
+  String get contactShare_isYou => 'Det här är du';
+
+  @override
+  String get contactShare_shareAction => 'Dela kontakt';
+
+  @override
+  String get contactShare_pickerTitle => 'Dela en kontakt';
+
+  @override
+  String get contactShare_myContact => 'Min kontakt';
+
+  @override
+  String get contactShare_searchHint => 'Sök bland kontakter';
+
+  @override
+  String get contactShare_noContacts => 'Inga kontakter hittades';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Delad kontakt: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Delade en kontakt: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Olästa: $count';
   }
@@ -2679,7 +2753,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get map_otherNodes => 'Andra noder';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => 'Visa anslutningar från onlinekartan';
 
   @override
   String get map_showOverlaps => 'Repeater-nyckelöverlappningar';
@@ -2772,6 +2846,59 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Visa senaste resultat';
+
+  @override
+  String get manualTrace_menuItem => 'Ruttspårning via hashar';
+
+  @override
+  String get manualTrace_inputLabel => 'Repeater-hashar';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Exempel: $example. Separera med kommatecken eller mellanslag.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Hopp ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Okänd nod';
+
+  @override
+  String get manualTrace_enterHashes => 'Ange hashar';
+
+  @override
+  String get manualTrace_run => 'Kör ruttspårning';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Anslut till en radio för att köra en spårning';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Endast hex-tecken (0-9, A-F) är tillåtna';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Varje hash måste ha ett jämnt antal hex-tecken, som matchar hoppstorleken';
+
+  @override
+  String get manualTrace_errorMixedWidths => 'Alla hashar måste ha samma längd';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Hashar måste vara 1, 2 eller 3 byte (2, 4 eller 6 hex-tecken)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Rutten är för lång (högst $max byte)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'För många hopp för att spåra i en enda förfrågan. Ta bort några hopp eller välj ”Som inmatat”.';
 
   @override
   String get mapCache_title => 'Offline Kartcache';
@@ -3174,6 +3301,11 @@ class AppLocalizationsSv extends AppLocalizations {
     int seconds,
   ) {
     return '$days dagar $hours timmar $minutes minuter $seconds sekunder';
+  }
+
+  @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '$hours timmar $minutes minuter $seconds sekunder';
   }
 
   @override
@@ -6529,6 +6661,18 @@ class AppLocalizationsSv extends AppLocalizations {
   String get appSettings_routingSection => 'Routing';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Återställ rutningsalgoritm till standard';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Återställ rutningsalgoritmins inställningar till fabriksstandard';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Rutningsalgoritmins inställningar återställda till standard';
+
+  @override
   String get appSettings_imageMessagesSection => 'Bildmeddelanden';
 
   @override
@@ -6801,4 +6945,222 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Gott nytt år|Happy New Year|Ett gott nytt år';
+
+  @override
+  String get chat_loadOlderMessages => 'Ladda äldre meddelanden';
+
+  @override
+  String get messageFilter_title => 'Meddelandefilter';
+
+  @override
+  String get messageFilter_settingsSubtitle =>
+      'Dölj skräppost och upprepade meddelanden';
+
+  @override
+  String get messageFilter_enabled => 'Filtrera meddelanden';
+
+  @override
+  String get messageFilter_enabledSubtitle => 'Gäller kanalmeddelanden';
+
+  @override
+  String get messageFilter_displayTitle => 'Filtrerade meddelanden';
+
+  @override
+  String get messageFilter_displayPlaceholder => 'Visa en liten platshållare';
+
+  @override
+  String get messageFilter_displayHide => 'Dölj helt';
+
+  @override
+  String get messageFilter_displayHideHelp =>
+      'Dolda meddelanden finns kvar i listan Filtrerade meddelanden.';
+
+  @override
+  String get messageFilter_rulesSection => 'Dina regler';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      'Inga regler ännu. Lägg till ett ord, en fras eller ett avsändarnamn för att dölja matchande meddelanden.';
+
+  @override
+  String get messageFilter_addRule => 'Lägg till regel';
+
+  @override
+  String get messageFilter_editRule => 'Redigera regel';
+
+  @override
+  String get messageFilter_rulePattern => 'Ord, fras eller namn';
+
+  @override
+  String get messageFilter_rulePatternHint => 't.ex. meshos';
+
+  @override
+  String get messageFilter_ruleWhere => 'Sök i';
+
+  @override
+  String get messageFilter_ruleFieldText => 'Meddelandetext';
+
+  @override
+  String get messageFilter_ruleFieldSender => 'Avsändarnamn';
+
+  @override
+  String get messageFilter_ruleFieldBoth => 'Båda';
+
+  @override
+  String get messageFilter_ruleMatch => 'Matchning';
+
+  @override
+  String get messageFilter_ruleMatchContains => 'Innehåller';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => 'Helt ord';
+
+  @override
+  String get messageFilter_ruleMatchExact => 'Exakt';
+
+  @override
+  String get messageFilter_ruleDeleted => 'Regeln har raderats';
+
+  @override
+  String get messageFilter_ruleSaved => 'Regeln har sparats';
+
+  @override
+  String get messageFilter_automaticSection => 'Automatiskt';
+
+  @override
+  String get messageFilter_duplicates => 'Upprepade meddelanden';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      'Samma meddelande skickas igen, eller av flera avsändare';
+
+  @override
+  String get messageFilter_repeatSends => 'Utskick som räknas som upprepning';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Dölj ett meddelande när samma avsändare skickar det $count gånger inom 10 minuter';
+  }
+
+  @override
+  String get messageFilter_repeatedCharacters => 'Upprepade tecken';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      'Långa följder av samma tecken, som ”aaaaaaaaaaaaaaaaaaaa”';
+
+  @override
+  String get messageFilter_learning => 'Lär av tryck på Skräppost';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return '$spam skräppost- och $notSpam inte-skräppost-exempel';
+  }
+
+  @override
+  String get messageFilter_resetLearning => 'Återställ inlärning';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      'Glömma allt som lärts från dina tryck på Skräppost och Inte skräppost? Dina regler behålls.';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return 'Filtrerade meddelanden ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'Inget har filtrerats.';
+
+  @override
+  String get messageFilter_ghostSingle =>
+      'Dolt meddelande · Tryck för att visa';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dolda meddelanden · Tryck för att visa',
+      one: '$count dolt meddelande · Tryck för att visa',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded =>
+      'Visar dolt meddelande · Tryck för att dölja';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Visar $count dolda meddelanden · Tryck för att dölja',
+      one: 'Visar $count dolt meddelande · Tryck för att dölja',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return 'Filtrerat: matchar ”$pattern”';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return 'Filtrerat: avsändare ”$pattern”';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters =>
+      'Filtrerat: upprepade tecken';
+
+  @override
+  String get messageFilter_reasonDuplicate => 'Filtrerat: upprepat meddelande';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate =>
+      'Filtrerat: samma meddelande från flera avsändare';
+
+  @override
+  String get messageFilter_reasonLearned =>
+      'Filtrerat: liknar meddelanden du markerat som skräppost';
+
+  @override
+  String get messageFilter_reasonManual =>
+      'Filtrerat: du markerade detta som skräppost';
+
+  @override
+  String get messageFilter_notSpam => 'Inte skräppost';
+
+  @override
+  String get messageFilter_hideAgain => 'Dölj';
+
+  @override
+  String get messageFilter_markSpam => 'Markera som skräppost';
+
+  @override
+  String get messageFilter_markedSpam => 'Markerat som skräppost';
+
+  @override
+  String get messageFilter_markedNotSpam => 'Markerat som inte skräppost';
+
+  @override
+  String get messageFilter_filterSender => 'Filtrera denna avsändare';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return 'Dölja alla meddelanden från ”$name”?';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => 'Filtrera meddelanden som detta…';
+
+  @override
+  String get messageFilter_channelToggle =>
+      'Filtrera meddelanden i den här kanalen';
+
+  @override
+  String get messageFilter_ghostIconTooltip => 'Dolt av ditt meddelandefilter';
 }

@@ -194,6 +194,7 @@ class _ChannelMessagePathScreenState extends State<ChannelMessagePathScreen> {
                       flipPathAround: true,
                       reversePathAround: false,
                       pathHashByteWidth: hashByteWidth,
+                      pathContacts: _pathContacts(connector),
                     ),
                   ),
                 ),

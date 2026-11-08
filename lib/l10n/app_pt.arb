@@ -181,7 +181,8 @@
   "appSettings_languageZh": "Chinês",
   "appSettings_languageSv": "Sueco",
   "appSettings_languageNl": "Holandês",
-  "appSettings_languageSk": "Esloveno",
+  "appSettings_languageSk": "Eslovaco",
+  "appSettings_languageCs": "Tcheco",
   "appSettings_languageBg": "Búlgaro",
   "appSettings_notifications": "Notificações",
   "appSettings_enableNotifications": "Ativar Notificações",
@@ -1009,6 +1010,7 @@
   "repeater_received": "Recebido",
   "repeater_duplicates": "Duplicatas",
   "repeater_daysHoursMinsSecs": "{days} dias {hours}h {minutes}m {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -3246,6 +3248,9 @@
   "settings_regionFetchNoneResponded": "Nenhum repetidor próximo respondeu. Aproxime-se de um repetidor e tente novamente.",
   "appSettings_sourceSummary": "{label} - {description}",
   "appSettings_routingSection": "Roteamento",
+  "appSettings_resetRoutingToDefault": "Redefinir algoritmo de roteamento para o padrão",
+  "appSettings_resetRoutingToDefaultSubtitle": "Restaurar as configurações do algoritmo de roteamento para os valores padrão de fábrica",
+  "appSettings_routingResetToDefault": "Configurações do algoritmo de roteamento redefinidas para o padrão",
   "appSettings_imageMessagesSection": "Mensagens de imagem",
   "appSettings_showApiKey": "Mostrar chave de API",
   "appSettings_hideApiKey": "Ocultar chave de API",
@@ -3526,5 +3531,194 @@
   "themes_chatBackground": "Fundo da conversa",
   "themes_chatBackgroundHelp": "Mostrado nas conversas que não têm fundo próprio",
   "themes_chatBackgroundEverywhere": "Usar em todas as conversas",
-  "themes_chatBackgroundEverywhereHelp": "Também substitui os fundos definidos em conversas individuais"
+  "themes_chatBackgroundEverywhereHelp": "Também substitui os fundos definidos em conversas individuais",
+  "appSettings_showOnlineLinks": "Mostrar conexões do mapa online",
+  "appSettings_showOnlineLinksSubtitle": "Exibe linhas de conexão entre nós do mapa online",
+  "map_showOnlineLinks": "Mostrar conexões do mapa online",
+  "chat_loadOlderMessages": "Carregar mensagens mais antigas",
+  "messageFilter_title": "Filtro de mensagens",
+  "messageFilter_settingsSubtitle": "Oculta mensagens de spam e repetidas",
+  "messageFilter_enabled": "Filtrar mensagens",
+  "messageFilter_enabledSubtitle": "Aplica-se às mensagens de canal",
+  "messageFilter_displayTitle": "Mensagens filtradas",
+  "messageFilter_displayPlaceholder": "Mostrar um aviso pequeno",
+  "messageFilter_displayHide": "Ocultar completamente",
+  "messageFilter_displayHideHelp": "As mensagens ocultas continuam na lista de Mensagens filtradas.",
+  "messageFilter_rulesSection": "Suas regras",
+  "messageFilter_rulesEmpty": "Ainda não há regras. Adicione uma palavra, frase ou nome de remetente para ocultar as mensagens que correspondam.",
+  "messageFilter_addRule": "Adicionar regra",
+  "messageFilter_editRule": "Editar regra",
+  "messageFilter_rulePattern": "Palavra, frase ou nome",
+  "messageFilter_rulePatternHint": "ex.: meshos",
+  "messageFilter_ruleWhere": "Procurar em",
+  "messageFilter_ruleFieldText": "Texto da mensagem",
+  "messageFilter_ruleFieldSender": "Nome do remetente",
+  "messageFilter_ruleFieldBoth": "Ambos",
+  "messageFilter_ruleMatch": "Correspondência",
+  "messageFilter_ruleMatchContains": "Contém",
+  "messageFilter_ruleMatchWholeWord": "Palavra inteira",
+  "messageFilter_ruleMatchExact": "Exata",
+  "messageFilter_ruleDeleted": "Regra excluída",
+  "messageFilter_ruleSaved": "Regra salva",
+  "messageFilter_automaticSection": "Automático",
+  "messageFilter_duplicates": "Mensagens repetidas",
+  "messageFilter_duplicatesSubtitle": "A mesma mensagem enviada de novo, ou por vários remetentes",
+  "messageFilter_repeatSends": "Envios que contam como repetição",
+  "messageFilter_repeatSendsSubtitle": "Ocultar uma mensagem quando o mesmo remetente a envia {count} vezes em 10 minutos",
+  "messageFilter_repeatedCharacters": "Caracteres repetidos",
+  "messageFilter_repeatedCharactersSubtitle": "Sequências longas de um mesmo caractere, como \"aaaaaaaaaaaaaaaaaaaa\"",
+  "messageFilter_learning": "Aprender com os toques em Spam",
+  "messageFilter_learningSubtitle": "{spam} exemplos de spam e {notSpam} de não spam",
+  "@messageFilter_learningSubtitle": {
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "Redefinir aprendizado",
+  "messageFilter_resetLearningConfirm": "Esquecer tudo o que foi aprendido com seus toques em Spam e Não é spam? Suas regras são mantidas.",
+  "messageFilter_filteredMessages": "Mensagens filtradas ({count})",
+  "@messageFilter_filteredMessages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "Nada foi filtrado.",
+  "messageFilter_ghostSingle": "Mensagem oculta · Toque para ver",
+  "messageFilter_ghostMany": "{count, plural, one{{count} mensagem oculta · Toque para ver} other{{count} mensagens ocultas · Toque para ver}}",
+  "@messageFilter_ghostMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "Mostrando mensagem oculta · Toque para ocultar",
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{Mostrando 1 mensagem oculta · Toque para ocultar} other{Mostrando {count} mensagens ocultas · Toque para ocultar}}",
+  "@messageFilter_ghostManyExpanded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "Filtrada: corresponde a \"{pattern}\"",
+  "@messageFilter_reasonTextRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "Filtrada: remetente \"{pattern}\"",
+  "@messageFilter_reasonSenderRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "Filtrada: caracteres repetidos",
+  "messageFilter_reasonDuplicate": "Filtrada: mensagem repetida",
+  "messageFilter_reasonCrossSenderDuplicate": "Filtrada: a mesma mensagem de vários remetentes",
+  "messageFilter_reasonLearned": "Filtrada: parece mensagens que você marcou como spam",
+  "messageFilter_reasonManual": "Filtrada: você a marcou como spam",
+  "messageFilter_notSpam": "Não é spam",
+  "messageFilter_hideAgain": "Ocultar",
+  "messageFilter_markSpam": "Marcar como spam",
+  "messageFilter_markedSpam": "Marcada como spam",
+  "messageFilter_markedNotSpam": "Marcada como não spam",
+  "messageFilter_filterSender": "Filtrar este remetente",
+  "messageFilter_filterSenderConfirm": "Ocultar todas as mensagens de \"{name}\"?",
+  "@messageFilter_filterSenderConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "Filtrar mensagens como esta…",
+  "messageFilter_channelToggle": "Filtrar mensagens neste canal",
+  "messageFilter_ghostIconTooltip": "Oculta pelo seu filtro de mensagens",
+  "chatSearch_tooltip": "Pesquisar mensagens",
+  "chatSearch_hint": "Pesquisar mensagens",
+  "chatSearch_close": "Fechar pesquisa",
+  "chatSearch_resultCount": "{count, plural, =1{1 resultado} other{{count} resultados}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Nenhuma mensagem correspondente",
+  "chatSearch_noResultsHint": "Tente outra palavra ou verifique a ortografia",
+  "contactShare_headerOutgoing": "Você compartilhou um contato",
+  "contactShare_headerIncoming": "Compartilhou um contato",
+  "contactShare_add": "Adicionar contato",
+  "contactShare_adding": "Adicionando contato...",
+  "contactShare_saved": "Salvo",
+  "contactShare_isYou": "Este é você",
+  "contactShare_shareAction": "Compartilhar contato",
+  "contactShare_pickerTitle": "Compartilhar um contato",
+  "contactShare_myContact": "Meu contato",
+  "contactShare_searchHint": "Pesquisar contatos",
+  "contactShare_noContacts": "Nenhum contato encontrado",
+  "contactShare_preview": "Contato compartilhado: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Compartilhou um contato: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Rastreamento de caminho por hashes",
+  "manualTrace_inputLabel": "Hashes de repetidores",
+  "manualTrace_helper": "Exemplo: {example}. Separe com vírgulas ou espaços.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Saltos ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Nó desconhecido",
+  "manualTrace_enterHashes": "Insira os hashes",
+  "manualTrace_run": "Executar rastreamento de caminho",
+  "manualTrace_notConnected": "Conecte-se a um rádio para executar um rastreamento",
+  "manualTrace_errorInvalidHex": "Somente caracteres hexadecimais (0-9, A-F) são permitidos",
+  "manualTrace_errorOddLength": "Cada hash precisa de um número par de caracteres hexadecimais, de acordo com o tamanho do salto",
+  "manualTrace_errorMixedWidths": "Todos os hashes devem ter o mesmo comprimento",
+  "manualTrace_errorUnsupportedWidth": "Os hashes devem ter 1, 2 ou 3 bytes (2, 4 ou 6 caracteres hexadecimais)",
+  "manualTrace_errorTooManyHops": "O caminho é muito longo (máximo de {max} bytes)",
+  "manualTrace_errorTraceTooLong": "Saltos demais para rastrear em uma única solicitação. Remova alguns saltos ou escolha “Como inserido”.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

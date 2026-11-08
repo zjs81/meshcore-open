@@ -1728,6 +1728,7 @@ class _LineOfSightMapScreenState extends State<LineOfSightMapScreen> {
   }
 
   void _handleQuickSwitch(int index, BuildContext context) {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (index == 2) {
       Navigator.pop(context);
       return;

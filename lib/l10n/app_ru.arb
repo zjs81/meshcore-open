@@ -145,6 +145,7 @@
   "appSettings_languageSv": "Шведский",
   "appSettings_languageNl": "Нидерландский",
   "appSettings_languageSk": "Словацкий",
+  "appSettings_languageCs": "Чешский",
   "appSettings_languageBg": "Болгарский",
   "appSettings_languageRu": "Русский",
   "appSettings_notifications": "Уведомления",
@@ -627,6 +628,7 @@
   "repeater_received": "Получено",
   "repeater_duplicates": "Дубликаты",
   "repeater_daysHoursMinsSecs": "{days} дн. {hours}ч {minutes}м {seconds}с",
+  "repeater_hoursMinsSecs": "{hours}ч {minutes}м {seconds}с",
   "repeater_packetTxTotal": "Всего: {total}, Рассылка: {flood}, Прямые: {direct}",
   "repeater_packetRxTotal": "Всего: {total}, Рассылка: {flood}, Прямые: {direct}",
   "repeater_duplicatesFloodDirect": "Рассылка: {flood}, Прямые: {direct}",
@@ -957,7 +959,7 @@
   "contacts_contactImportFailed": "Контакт не удалось импортировать",
   "contacts_invalidAdvertFormat": "Недействительные контактные данные",
   "contacts_zeroHopAdvert": "Анонс без хопов",
-  "appSettings_languageUk": "Українська",
+  "appSettings_languageUk": "Украинский",
   "appSettings_enableMessageTracing": "Включить трассировку сообщений",
   "appSettings_enableMessageTracingSubtitle": "Показывать подробные метаданные о маршрутизации и времени для сообщений",
   "contacts_floodAdvert": "Анонс рассылкой",
@@ -2657,6 +2659,9 @@
   "settings_regionFetchNoneResponded": "Ближайшие репитеры не ответили. Подойдите ближе к репитеру и повторите попытку.",
   "appSettings_sourceSummary": "{label} - {description}",
   "appSettings_routingSection": "Маршрутизация",
+  "appSettings_resetRoutingToDefault": "Сбросить алгоритм маршрутизации к значению по умолчанию",
+  "appSettings_resetRoutingToDefaultSubtitle": "Восстановить настройки алгоритма маршрутизации к заводским значениям по умолчанию",
+  "appSettings_routingResetToDefault": "Настройки алгоритма маршрутизации сброшены к значению по умолчанию",
   "appSettings_imageMessagesSection": "Сообщения-изображения",
   "appSettings_showApiKey": "Показать API-ключ",
   "appSettings_hideApiKey": "Скрыть API-ключ",
@@ -2823,5 +2828,142 @@
   "themes_chatBackground": "Фон чата",
   "themes_chatBackgroundHelp": "Показывается в чатах, у которых нет своего фона",
   "themes_chatBackgroundEverywhere": "Использовать во всех чатах",
-  "themes_chatBackgroundEverywhereHelp": "Также заменяет фоны, заданные в отдельных чатах"
+  "themes_chatBackgroundEverywhereHelp": "Также заменяет фоны, заданные в отдельных чатах",
+  "appSettings_showOnlineLinks": "Показывать связи с онлайн-карты",
+  "appSettings_showOnlineLinksSubtitle": "Показывать линии связи между узлами с онлайн-карты",
+  "map_showOnlineLinks": "Показывать связи с онлайн-карты",
+  "chat_loadOlderMessages": "Загрузить более старые сообщения",
+  "messageFilter_title": "Фильтр сообщений",
+  "messageFilter_settingsSubtitle": "Скрывать спам и повторяющиеся сообщения",
+  "messageFilter_enabled": "Фильтровать сообщения",
+  "messageFilter_enabledSubtitle": "Действует для сообщений в каналах",
+  "messageFilter_displayTitle": "Отфильтрованные сообщения",
+  "messageFilter_displayPlaceholder": "Показывать небольшую заглушку",
+  "messageFilter_displayHide": "Скрывать полностью",
+  "messageFilter_displayHideHelp": "Скрытые сообщения остаются в списке «Отфильтрованные сообщения».",
+  "messageFilter_rulesSection": "Ваши правила",
+  "messageFilter_rulesEmpty": "Правил пока нет. Добавьте слово, фразу или имя отправителя, чтобы скрывать подходящие сообщения.",
+  "messageFilter_addRule": "Добавить правило",
+  "messageFilter_editRule": "Изменить правило",
+  "messageFilter_rulePattern": "Слово, фраза или имя",
+  "messageFilter_rulePatternHint": "например, meshos",
+  "messageFilter_ruleWhere": "Где искать",
+  "messageFilter_ruleFieldText": "Текст сообщения",
+  "messageFilter_ruleFieldSender": "Имя отправителя",
+  "messageFilter_ruleFieldBoth": "И то и другое",
+  "messageFilter_ruleMatch": "Совпадение",
+  "messageFilter_ruleMatchContains": "Содержит",
+  "messageFilter_ruleMatchWholeWord": "Целое слово",
+  "messageFilter_ruleMatchExact": "Точное",
+  "messageFilter_ruleDeleted": "Правило удалено",
+  "messageFilter_ruleSaved": "Правило сохранено",
+  "messageFilter_automaticSection": "Автоматически",
+  "messageFilter_duplicates": "Повторяющиеся сообщения",
+  "messageFilter_duplicatesSubtitle": "Одно и то же сообщение, отправленное снова или несколькими отправителями",
+  "messageFilter_repeatSends": "Отправка, считающаяся повтором",
+  "messageFilter_repeatSendsSubtitle": "Скрывать сообщение, если один отправитель отправляет его повторно в течение 10 минут (число отправок: {count})",
+  "messageFilter_repeatedCharacters": "Повторяющиеся символы",
+  "messageFilter_repeatedCharactersSubtitle": "Длинные последовательности одного символа, например «aaaaaaaaaaaaaaaaaaaa»",
+  "messageFilter_learning": "Учиться на нажатиях «Спам»",
+  "messageFilter_learningSubtitle": "Примеров спама: {spam}, не спама: {notSpam}",
+  "messageFilter_resetLearning": "Сбросить обучение",
+  "messageFilter_resetLearningConfirm": "Забыть всё, чему фильтр научился на ваших нажатиях «Спам» и «Не спам»? Ваши правила сохранятся.",
+  "messageFilter_filteredMessages": "Отфильтрованные сообщения ({count})",
+  "messageFilter_filteredMessagesEmpty": "Ничего не отфильтровано.",
+  "messageFilter_ghostSingle": "Скрытое сообщение · Нажмите, чтобы посмотреть",
+  "messageFilter_ghostMany": "{count, plural, one{{count} скрытое сообщение · Нажмите, чтобы посмотреть} few{{count} скрытых сообщения · Нажмите, чтобы посмотреть} many{{count} скрытых сообщений · Нажмите, чтобы посмотреть} other{{count} скрытых сообщений · Нажмите, чтобы посмотреть}}",
+  "messageFilter_ghostSingleExpanded": "Показано скрытое сообщение · Нажмите, чтобы скрыть",
+  "messageFilter_ghostManyExpanded": "{count, plural, one{Показано {count} скрытое сообщение · Нажмите, чтобы скрыть} few{Показано {count} скрытых сообщения · Нажмите, чтобы скрыть} many{Показано {count} скрытых сообщений · Нажмите, чтобы скрыть} other{Показано {count} скрытых сообщений · Нажмите, чтобы скрыть}}",
+  "messageFilter_reasonTextRule": "Отфильтровано: совпадает с «{pattern}»",
+  "messageFilter_reasonSenderRule": "Отфильтровано: отправитель «{pattern}»",
+  "messageFilter_reasonRepeatedCharacters": "Отфильтровано: повторяющиеся символы",
+  "messageFilter_reasonDuplicate": "Отфильтровано: повторное сообщение",
+  "messageFilter_reasonCrossSenderDuplicate": "Отфильтровано: одно и то же сообщение от нескольких отправителей",
+  "messageFilter_reasonLearned": "Отфильтровано: похоже на сообщения, которые вы отметили как спам",
+  "messageFilter_reasonManual": "Отфильтровано: вы отметили это как спам",
+  "messageFilter_notSpam": "Не спам",
+  "messageFilter_hideAgain": "Скрыть",
+  "messageFilter_markSpam": "Отметить как спам",
+  "messageFilter_markedSpam": "Отмечено как спам",
+  "messageFilter_markedNotSpam": "Отмечено как не спам",
+  "messageFilter_filterSender": "Фильтровать этого отправителя",
+  "messageFilter_filterSenderConfirm": "Скрывать все сообщения от «{name}»?",
+  "messageFilter_filterLikeThis": "Фильтровать похожие сообщения…",
+  "messageFilter_channelToggle": "Фильтровать сообщения в этом канале",
+  "messageFilter_ghostIconTooltip": "Скрыто вашим фильтром сообщений",
+  "chatSearch_tooltip": "Поиск сообщений",
+  "chatSearch_hint": "Поиск сообщений",
+  "chatSearch_close": "Закрыть поиск",
+  "chatSearch_resultCount": "{count, plural, one{{count} результат} few{{count} результата} many{{count} результатов} other{{count} результата}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Подходящих сообщений нет",
+  "chatSearch_noResultsHint": "Попробуйте другое слово или проверьте написание",
+  "contactShare_headerOutgoing": "Вы отправили контакт",
+  "contactShare_headerIncoming": "Отправил(а) контакт",
+  "contactShare_add": "Добавить контакт",
+  "contactShare_adding": "Добавление контакта...",
+  "contactShare_saved": "Сохранён",
+  "contactShare_isYou": "Это вы",
+  "contactShare_shareAction": "Отправить контакт",
+  "contactShare_pickerTitle": "Отправить контакт",
+  "contactShare_myContact": "Мой контакт",
+  "contactShare_searchHint": "Поиск контактов",
+  "contactShare_noContacts": "Контакты не найдены",
+  "contactShare_preview": "Контакт: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Отправил(а) контакт: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Трассировка пути по хэшам",
+  "manualTrace_inputLabel": "Хэши репитеров",
+  "manualTrace_helper": "Пример: {example}. Разделяйте запятыми или пробелами.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Хопы ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Неизвестная нода",
+  "manualTrace_enterHashes": "Введите хэши",
+  "manualTrace_run": "Запустить трассировку пути",
+  "manualTrace_notConnected": "Подключитесь к радио, чтобы запустить трассировку",
+  "manualTrace_errorInvalidHex": "Допустимы только шестнадцатеричные символы (0-9, A-F)",
+  "manualTrace_errorOddLength": "Каждый хэш должен состоять из чётного числа шестнадцатеричных символов, соответствующего размеру хопа",
+  "manualTrace_errorMixedWidths": "Все хэши должны быть одной длины",
+  "manualTrace_errorUnsupportedWidth": "Хэши должны быть длиной 1, 2 или 3 байта (2, 4 или 6 шестнадцатеричных символов)",
+  "manualTrace_errorTooManyHops": "Путь слишком длинный (максимум {max} байт)",
+  "manualTrace_errorTraceTooLong": "Слишком много хопов для трассировки за один запрос. Удалите часть хопов или выберите «Как введено».",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

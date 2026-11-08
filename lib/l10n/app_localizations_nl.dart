@@ -1107,6 +1107,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get appSettings_languageUk => 'Oekraïens';
 
   @override
+  String get appSettings_languageCs => 'Tsjechisch';
+
+  @override
   String get repeater_pathHashModeOption0 => '1 byte';
 
   @override
@@ -1409,11 +1412,12 @@ class AppLocalizationsNl extends AppLocalizations {
       'Toon andere nodetypes op de kaart';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks =>
+      'Verbindingen van de online kaart tonen';
 
   @override
   String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+      'Verbindingslijnen tussen nodes van de online kaart tonen';
 
   @override
   String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
@@ -2035,6 +2039,33 @@ class AppLocalizationsNl extends AppLocalizations {
   String get chat_noMessages => 'Nog geen berichten.';
 
   @override
+  String get chatSearch_tooltip => 'Berichten zoeken';
+
+  @override
+  String get chatSearch_hint => 'Berichten zoeken';
+
+  @override
+  String get chatSearch_close => 'Zoeken sluiten';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count resultaten',
+      one: '1 resultaat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Geen overeenkomende berichten';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Probeer een ander woord of controleer de spelling';
+
+  @override
   String get chat_sendMessage => 'Verzend bericht';
 
   @override
@@ -2483,6 +2514,49 @@ class AppLocalizationsNl extends AppLocalizations {
   String get chat_poiShared => 'Gedeelde POI';
 
   @override
+  String get contactShare_headerOutgoing => 'Je hebt een contact gedeeld';
+
+  @override
+  String get contactShare_headerIncoming => 'Heeft een contact gedeeld';
+
+  @override
+  String get contactShare_add => 'Contact toevoegen';
+
+  @override
+  String get contactShare_adding => 'Contact toevoegen...';
+
+  @override
+  String get contactShare_saved => 'Opgeslagen';
+
+  @override
+  String get contactShare_isYou => 'Dit ben jij';
+
+  @override
+  String get contactShare_shareAction => 'Contact delen';
+
+  @override
+  String get contactShare_pickerTitle => 'Een contact delen';
+
+  @override
+  String get contactShare_myContact => 'Mijn contact';
+
+  @override
+  String get contactShare_searchHint => 'Contacten zoeken';
+
+  @override
+  String get contactShare_noContacts => 'Geen contacten gevonden';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Gedeeld contact: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Heeft een contact gedeeld: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Ongelezen: $count';
   }
@@ -2694,7 +2768,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get map_otherNodes => 'Andere Nodes';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => 'Verbindingen van de online kaart tonen';
 
   @override
   String get map_showOverlaps => 'Overlappende repeatersleutels';
@@ -2786,6 +2860,60 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Laatste resultaat bekijken';
+
+  @override
+  String get manualTrace_menuItem => 'Padtrace via hashes';
+
+  @override
+  String get manualTrace_inputLabel => 'Repeater-hashes';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Voorbeeld: $example. Scheid met komma\'s of spaties.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Hops ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Onbekende node';
+
+  @override
+  String get manualTrace_enterHashes => 'Voer hashes in';
+
+  @override
+  String get manualTrace_run => 'Padtrace uitvoeren';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Maak verbinding met een radio om een trace uit te voeren';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Alleen hex-tekens (0-9, A-F) zijn toegestaan';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Elke hash heeft een even aantal hex-tekens nodig, passend bij de hopgrootte';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Alle hashes moeten even lang zijn';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Hashes moeten 1, 2 of 3 bytes zijn (2, 4 of 6 hex-tekens)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Pad is te lang (maximaal $max bytes)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Te veel hops om in één verzoek te tracen. Verwijder enkele hops of kies „Zoals ingevoerd”.';
 
   @override
   String get mapCache_title => 'Offline Kaarten Cache';
@@ -3186,6 +3314,11 @@ class AppLocalizationsNl extends AppLocalizations {
     int seconds,
   ) {
     return '$days dagen $hours uur $minutes minuten $seconds seconden';
+  }
+
+  @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '$hours uur $minutes minuten $seconds seconden';
   }
 
   @override
@@ -6552,6 +6685,18 @@ class AppLocalizationsNl extends AppLocalizations {
   String get appSettings_routingSection => 'Routering';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Routeringsalgoritme resetten naar standaard';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Routeringsalgoritme-instellingen herstellen naar fabrieksstandaardwaarden';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Routeringsalgoritme-instellingen gereset naar standaard';
+
+  @override
   String get appSettings_imageMessagesSection => 'Afbeeldingsberichten';
 
   @override
@@ -6824,4 +6969,224 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Gelukkig Nieuwjaar|Gelukkig nieuw jaar|Prettig nieuwjaar|Een gelukkig nieuwjaar|Happy New Year|Zalig nieuwjaar|Fijne jaarwisseling';
+
+  @override
+  String get chat_loadOlderMessages => 'Oudere berichten laden';
+
+  @override
+  String get messageFilter_title => 'Berichtenfilter';
+
+  @override
+  String get messageFilter_settingsSubtitle =>
+      'Spam en herhaalde berichten verbergen';
+
+  @override
+  String get messageFilter_enabled => 'Berichten filteren';
+
+  @override
+  String get messageFilter_enabledSubtitle => 'Geldt voor kanaalberichten';
+
+  @override
+  String get messageFilter_displayTitle => 'Gefilterde berichten';
+
+  @override
+  String get messageFilter_displayPlaceholder =>
+      'Een kleine plaatsaanduiding tonen';
+
+  @override
+  String get messageFilter_displayHide => 'Helemaal verbergen';
+
+  @override
+  String get messageFilter_displayHideHelp =>
+      'Verborgen berichten blijven in de lijst Gefilterde berichten staan.';
+
+  @override
+  String get messageFilter_rulesSection => 'Jouw regels';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      'Nog geen regels. Voeg een woord, zin of afzendernaam toe om passende berichten te verbergen.';
+
+  @override
+  String get messageFilter_addRule => 'Regel toevoegen';
+
+  @override
+  String get messageFilter_editRule => 'Regel bewerken';
+
+  @override
+  String get messageFilter_rulePattern => 'Woord, zin of naam';
+
+  @override
+  String get messageFilter_rulePatternHint => 'bijv. meshos';
+
+  @override
+  String get messageFilter_ruleWhere => 'Zoeken in';
+
+  @override
+  String get messageFilter_ruleFieldText => 'Berichttekst';
+
+  @override
+  String get messageFilter_ruleFieldSender => 'Afzendernaam';
+
+  @override
+  String get messageFilter_ruleFieldBoth => 'Beide';
+
+  @override
+  String get messageFilter_ruleMatch => 'Overeenkomst';
+
+  @override
+  String get messageFilter_ruleMatchContains => 'Bevat';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => 'Heel woord';
+
+  @override
+  String get messageFilter_ruleMatchExact => 'Exact';
+
+  @override
+  String get messageFilter_ruleDeleted => 'Regel verwijderd';
+
+  @override
+  String get messageFilter_ruleSaved => 'Regel opgeslagen';
+
+  @override
+  String get messageFilter_automaticSection => 'Automatisch';
+
+  @override
+  String get messageFilter_duplicates => 'Herhaalde berichten';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      'Hetzelfde bericht opnieuw verstuurd, of door meerdere afzenders';
+
+  @override
+  String get messageFilter_repeatSends =>
+      'Verzendingen die als herhaling tellen';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Verberg een bericht wanneer dezelfde afzender het $count keer verstuurt binnen 10 minuten';
+  }
+
+  @override
+  String get messageFilter_repeatedCharacters => 'Herhaalde tekens';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      'Lange reeksen van hetzelfde teken, zoals „aaaaaaaaaaaaaaaaaaaa”';
+
+  @override
+  String get messageFilter_learning => 'Leren van Spam-tikken';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return '$spam spam- en $notSpam geen-spamvoorbeelden';
+  }
+
+  @override
+  String get messageFilter_resetLearning => 'Geleerde gegevens wissen';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      'Alles vergeten wat is geleerd van je tikken op Spam en Geen spam? Je regels blijven behouden.';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return 'Gefilterde berichten ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'Er is niets gefilterd.';
+
+  @override
+  String get messageFilter_ghostSingle =>
+      'Verborgen bericht · Tik om te bekijken';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count verborgen berichten · Tik om te bekijken',
+      one: '$count verborgen bericht · Tik om te bekijken',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded =>
+      'Verborgen bericht wordt getoond · Tik om te verbergen';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count verborgen berichten worden getoond · Tik om te verbergen',
+      one: '1 verborgen bericht wordt getoond · Tik om te verbergen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return 'Gefilterd: komt overeen met „$pattern”';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return 'Gefilterd: afzender „$pattern”';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters =>
+      'Gefilterd: herhaalde tekens';
+
+  @override
+  String get messageFilter_reasonDuplicate => 'Gefilterd: herhaald bericht';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate =>
+      'Gefilterd: hetzelfde bericht van meerdere afzenders';
+
+  @override
+  String get messageFilter_reasonLearned =>
+      'Gefilterd: lijkt op berichten die je als spam hebt gemarkeerd';
+
+  @override
+  String get messageFilter_reasonManual =>
+      'Gefilterd: je hebt dit als spam gemarkeerd';
+
+  @override
+  String get messageFilter_notSpam => 'Geen spam';
+
+  @override
+  String get messageFilter_hideAgain => 'Verbergen';
+
+  @override
+  String get messageFilter_markSpam => 'Markeren als spam';
+
+  @override
+  String get messageFilter_markedSpam => 'Gemarkeerd als spam';
+
+  @override
+  String get messageFilter_markedNotSpam => 'Gemarkeerd als geen spam';
+
+  @override
+  String get messageFilter_filterSender => 'Deze afzender filteren';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return 'Alle berichten van „$name” verbergen?';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => 'Berichten zoals dit filteren…';
+
+  @override
+  String get messageFilter_channelToggle => 'Berichten in dit kanaal filteren';
+
+  @override
+  String get messageFilter_ghostIconTooltip =>
+      'Verborgen door je berichtenfilter';
 }

@@ -18,7 +18,8 @@ From the Contacts screen, tap any Chat-type contact to open the ChatScreen.
 
 - **Title**: Contact name
 - **Subtitle**: Current routing path label (e.g., "2 hops", "flood (auto)", "direct (forced)") and unread count. Tapping the subtitle shows the full path details.
-- **Action button**:
+- **Action buttons**:
+  - **Search** (magnifier icon): Replaces the title with a search field and lists every message in this conversation's full history whose text (or translation) contains the typed word, newest first, with matches highlighted. Channel search also matches sender names and skips messages caught by the [message filter](message-filter.md). Back, Esc or the arrow closes search. Channel chats have the same button.
   - **Overflow menu** (⋮ icon): Contains Routing, Info, Telemetry, Settings, Chat background, and Clear Chat. Routing opens the routing sheet where you can switch between Auto, Direct, and Flood routing and manage recent paths (hop count, round-trip time, age, success count, color-coded by repeater). Info shows a dialog with contact type, path, GPS coordinates, and public key. Chat background sets a color or picture (with a fade slider) behind this chat only; see [Chat backgrounds](themes.md#chat-backgrounds).
 
 ### Message List
@@ -55,6 +56,14 @@ From the Contacts screen, tap any Chat-type contact to open the ChatScreen.
 | GIF | `g:<giphy-id>` | Inline GIF image from Giphy CDN |
 | Location pin | `m:<lat>,<lon>\|<label>\|...` | Location icon + label; tap to open map |
 | Reaction | `r:<hash>:<emoji-index>` | Applied to target message as emoji pill |
+
+## Sharing Contacts
+
+A contact can be shared in any direct or channel chat. It is sent as an ordinary text message whose whole text is `<PUBKEYHEX:TYPE:NAME>` (64-hex-character public key, advert type 1 Companion / 2 Repeater / 3 Room / 4 Sensor, then the name, which may contain colons). This is the same format the official MeshCore app uses, so shares work in both directions.
+
+- **Sending**: tap **+** in the input bar, choose **Share contact**, and pick **My contact** or a saved contact (the list has a name search). The token is placed in the text field; press send. Names count toward the message length limit.
+- **Receiving**: the message shows as a card with the name, contact type and shortened key. If the key is not saved on your radio yet, tap **Add contact** to add it; the card then shows **Saved** (or **This is you** for your own key). Adding needs a connected radio and uses the same radio command as scanning a contact QR code.
+- Notifications and reply previews show "Shared a contact: NAME" instead of the raw text.
 
 ## Message Status
 
@@ -125,6 +134,8 @@ Add emoji reactions to incoming messages (not your own):
 | Delete | All messages | Removes locally (not from mesh) |
 | Retry | Failed outgoing messages | Re-sends the message |
 | Open chat with sender | Room server chats | Opens 1:1 chat with the message sender |
+
+In channel chats the menu also offers **Mark as spam**, **Filter this sender** and **Filter messages like this…**; see [Message filter](message-filter.md). Direct messages are never filtered.
 
 ## Image and translation setup
 

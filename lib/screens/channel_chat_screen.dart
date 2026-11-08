@@ -19,7 +19,10 @@ import '../connector/meshcore_protocol.dart';
 import '../helpers/cyr2lat.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/ipfs_link_attach_flow.dart';
+import '../helpers/contact_share_message.dart';
 import '../helpers/marker_message.dart';
+import '../helpers/message_search.dart';
+import '../widgets/chat_search_results.dart';
 import '../helpers/message_url_image_helper.dart';
 import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
@@ -28,11 +31,14 @@ import '../l10n/l10n.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
 import '../models/image_codec_support.dart' show aeicRatePointForUi;
+import '../models/message_filter.dart';
 import '../services/app_settings_service.dart'
     show AppSettingsService, ChannelNotificationMode;
 import '../services/chat_text_scale_service.dart';
 import '../services/image_chunk_transport.dart';
 import '../services/image_codec_service.dart';
+import '../services/message_filter/message_filter_service.dart';
+import '../services/message_filter/message_filter_text.dart';
 import '../services/received_image_store.dart';
 import '../services/translation_service.dart';
 import '../utils/image_save.dart';
@@ -42,6 +48,8 @@ import '../widgets/received_image_message.dart';
 import '../widgets/channel_notification_mode_sheet.dart';
 import '../widgets/chat_day_separator.dart';
 import '../widgets/empty_state.dart';
+import '../widgets/filter_rule_dialog.dart';
+import '../widgets/filtered_message_ghost.dart';
 import '../widgets/chat_composer.dart';
 import '../widgets/chat_send_pipeline.dart';
 import '../widgets/chat_zoom_wrapper.dart';
@@ -60,7 +68,10 @@ import '../widgets/unread_divider.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/future_timestamp_indicator.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/share_contact_sheet.dart';
+import '../widgets/shared_contact_card.dart';
 import 'app_settings_screen.dart';
+import 'channel_chat_transcript_grouping.dart';
 import 'channel_message_path_screen.dart';
 import 'map_screen.dart';
 import 'region_management_screen.dart';
@@ -96,6 +107,15 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   final CommunityPskIndex _communityIndex = CommunityPskIndex();
   final Map<String, GlobalKey> _messageKeys = {};
   bool _isLoadingOlder = false;
+
+  /// Storage returned no more history; stop asking for older pages.
+  bool _olderHistoryExhausted = false;
+
+  /// Older pages loaded automatically because filtered messages left the
+  /// list too short to scroll (and so to reach the load-older trigger).
+  int _hiddenBackfillPages = 0;
+  bool _hiddenBackfillScheduled = false;
+  static const int _maxHiddenBackfillPages = 20;
   bool _communitiesLoaded = false;
 
   /// Per-screen image-id allocator. The id is 8 bits and the reassembly key also
@@ -116,6 +136,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   ReceivedImageStore? _watchedImageStore;
   int _imageStoreVersion = 0;
   ModalRoute<dynamic>? _route;
+
+  /// Filtered messages the user tapped open on this screen. Session-only by
+  /// design: leaving the chat hides them again.
+  final Set<String> _revealedFilteredIds = <String>{};
+  int _revealVersion = 0;
 
   @override
   void initState() {
@@ -144,9 +169,26 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
         _channelSkipNextBottomSnap = true;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
+          // Estimate from visible list entries: filtered messages collapse
+          // into ghost rows (or vanish in hide mode), so raw message counts
+          // would undershoot.
+          var unreadEntries = unread;
+          var totalEntries = messages.length;
+          final layout = _transcriptLayout;
+          if (layout != null && layout.length > 0) {
+            final entryIndex = layout.ids.indexOf(
+              layout.entryIdFor(anchor!.messageId),
+            );
+            if (entryIndex >= 0) {
+              // Entries are newest first, so the anchor has entryIndex
+              // newer entries below it.
+              unreadEntries = entryIndex + 1;
+              totalEntries = layout.length;
+            }
+          }
           _scrollController.jumpToEstimatedOffset(
-            unreadCount: unread,
-            totalMessages: messages.length,
+            unreadCount: unreadEntries,
+            totalMessages: totalEntries,
             onJumped: () {
               if (!mounted) return;
               _scrollToMessage(anchor!.messageId, quiet: true);
@@ -179,7 +221,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     var n = 0;
     ChannelMessage? oldest;
     for (final m in messages.reversed) {
-      if (m.isOutgoing) continue;
+      if (!_countsAsUnread(m)) continue;
       n++;
       oldest = m;
       if (n >= unreadCount) break;
@@ -201,15 +243,50 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   }
 
   Future<void> _loadOlderMessages() async {
-    if (_isLoadingOlder) return;
+    if (_isLoadingOlder || _olderHistoryExhausted) return;
     setState(() => _isLoadingOlder = true);
 
     final connector = context.read<MeshCoreConnector>();
-    await connector.loadOlderChannelMessages(widget.channel.index);
+    final older = await connector.loadOlderChannelMessages(
+      widget.channel.index,
+    );
 
     if (mounted) {
-      setState(() => _isLoadingOlder = false);
+      setState(() {
+        _isLoadingOlder = false;
+        if (older.isEmpty) _olderHistoryExhausted = true;
+      });
     }
+  }
+
+  /// When filtered messages are hidden or collapsed, the loaded window can
+  /// leave nothing (or too little) on screen to scroll, so the scroll-near-top
+  /// trigger for older history never fires. Keep loading older pages until
+  /// the list can scroll, storage runs out, or the automatic page cap is hit.
+  void _scheduleHiddenHistoryBackfill() {
+    if (_hiddenBackfillScheduled ||
+        _isLoadingOlder ||
+        _olderHistoryExhausted ||
+        _hiddenBackfillPages >= _maxHiddenBackfillPages) {
+      return;
+    }
+    _hiddenBackfillScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _hiddenBackfillScheduled = false;
+      if (!mounted || _isLoadingOlder || _olderHistoryExhausted) return;
+      if (_scrollController.hasClients &&
+          _scrollController.position.maxScrollExtent > 0) {
+        return;
+      }
+      _hiddenBackfillPages++;
+      unawaited(_loadOlderMessages());
+    });
+  }
+
+  /// Loads an older page on request, restarting the automatic page cap.
+  void _loadOlderHiddenHistory() {
+    _hiddenBackfillPages = 0;
+    unawaited(_loadOlderMessages());
   }
 
   @override
@@ -240,6 +317,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     _textFieldFocusNode.removeListener(_onTextFieldFocusChange);
     _textFieldFocusNode.dispose();
     _textController.dispose();
+    _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -261,7 +339,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   }
 
   Future<void> _scrollToMessage(String messageId, {bool quiet = false}) async {
-    final key = _messageKeys[messageId];
+    // A message hidden by the filter is represented by its ghost row (or the
+    // nearest visible row in hide mode).
+    final key =
+        _messageKeys[_transcriptLayout?.entryIdFor(messageId) ?? messageId];
     if (key == null) {
       // The auto unread-jump can resolve a frame after navigating away;
       // a deactivated context can't host a snackbar.
@@ -335,80 +416,173 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     );
   }
 
+  bool _searching = false;
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
+
+  bool get _showSearchResults => _searching && _searchQuery.trim().isNotEmpty;
+
+  void _openSearch() => setState(() => _searching = true);
+
+  void _closeSearch() {
+    _searchController.clear();
+    setState(() {
+      _searching = false;
+      _searchQuery = '';
+    });
+  }
+
+  Widget _buildSearchField() {
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.escape): _closeSearch,
+      },
+      child: TextField(
+        controller: _searchController,
+        autofocus: true,
+        textInputAction: TextInputAction.search,
+        style: const TextStyle(fontSize: 16),
+        decoration: InputDecoration(
+          hintText: context.l10n.chatSearch_hint,
+          border: InputBorder.none,
+        ),
+        onChanged: (value) => setState(() => _searchQuery = value),
+      ),
+    );
+  }
+
+  Widget _buildSearchResults(
+    Future<List<ChatSearchEntry>> Function() loadEntries,
+  ) {
+    return ChatSearchResults(
+      query: _searchQuery.trim(),
+      loadEntries: loadEntries,
+      textScale: context.watch<ChatTextScaleService>().scale,
+    );
+  }
+
+  Future<List<ChatSearchEntry>> _loadSearchEntries() async {
+    final connector = context.read<MeshCoreConnector>();
+    final messages = await connector.allChannelMessagesForSearch(
+      widget.channel.index,
+    );
+    return [
+      // Messages the filter caught stay out of search, as in the chat.
+      for (final m in messages)
+        if (!m.isFiltered)
+          ChatSearchEntry(
+            id: m.messageId,
+            sender: m.senderName,
+            text: m.text,
+            translatedText: m.translatedText,
+            time: m.receivedAt,
+            matchSender: true,
+          ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
+    return PopScope(
+      canPop: !_searching,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _searching) _closeSearch();
+      },
+      child: _buildScaffold(context),
+    );
+  }
+
+  Widget _buildScaffold(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => openRegionSelectDialog(widget.channel),
-          child: Row(
-            children: [
-              _channelIcon(widget.channel),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        leading: _searching
+            ? IconButton(
+                tooltip: context.l10n.chatSearch_close,
+                icon: const Icon(Icons.arrow_back),
+                onPressed: _closeSearch,
+              )
+            : null,
+        title: _searching
+            ? _buildSearchField()
+            : GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => openRegionSelectDialog(widget.channel),
+                child: Row(
                   children: [
-                    Text(
-                      widget.channel.name.isEmpty
-                          ? context.l10n.channels_channelIndex(
-                              widget.channel.index,
-                            )
-                          : widget.channel.name,
-                      style: const TextStyle(fontSize: 16),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Consumer<MeshCoreConnector>(
-                      builder: (context, connector, _) {
-                        // Hashtag channels get no type label: the # icon
-                        // and name already say it, and the title needs the
-                        // room.
-                        final privacy = switch (Channel.getChannelType(
-                          widget.channel,
-                          _communityIndex,
-                        )) {
-                          ChannelType.public => context.l10n.channels_public,
-                          ChannelType.hashtag => null,
-                          ChannelType.private => context.l10n.channels_private,
-                          ChannelType.communityPublic =>
-                            context.l10n.community_publicChannel,
-                          ChannelType.communityHashtag => null,
-                        };
-                        final ownRegion = connector.getChannelRegion(
-                          widget.channel.index,
-                        );
-                        final region = connector.getEffectiveChannelRegion(
-                          widget.channel.index,
-                        );
-                        final defaultSuffix = ownRegion.isEmpty
-                            ? ' ${context.l10n.channels_regionDefaultSuffix}'
-                            : '';
-                        final radioDefault = connector.defaultFloodScopeName;
-                        final regionText = region.isNotEmpty
-                            ? '${context.l10n.channels_regionSetTo(region)}$defaultSuffix'
-                            : radioDefault != null &&
-                                  connector.channelUsesRadioDefaultScope(
+                    _channelIcon(widget.channel),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.channel.name.isEmpty
+                                ? context.l10n.channels_channelIndex(
                                     widget.channel.index,
                                   )
-                            ? '${context.l10n.channels_regionSetTo(radioDefault)} ${context.l10n.channels_regionRadioDefaultSuffix}'
-                            : null;
-                        final subtitle = [?privacy, ?regionText].join(' • ');
-                        if (subtitle.isEmpty) return const SizedBox.shrink();
-                        return Text(
-                          subtitle,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 12),
-                        );
-                      },
+                                : widget.channel.name,
+                            style: const TextStyle(fontSize: 16),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Consumer<MeshCoreConnector>(
+                            builder: (context, connector, _) {
+                              // Hashtag channels get no type label: the # icon
+                              // and name already say it, and the title needs the
+                              // room.
+                              final privacy = switch (Channel.getChannelType(
+                                widget.channel,
+                                _communityIndex,
+                              )) {
+                                ChannelType.public =>
+                                  context.l10n.channels_public,
+                                ChannelType.hashtag => null,
+                                ChannelType.private =>
+                                  context.l10n.channels_private,
+                                ChannelType.communityPublic =>
+                                  context.l10n.community_publicChannel,
+                                ChannelType.communityHashtag => null,
+                              };
+                              final ownRegion = connector.getChannelRegion(
+                                widget.channel.index,
+                              );
+                              final region = connector
+                                  .getEffectiveChannelRegion(
+                                    widget.channel.index,
+                                  );
+                              final defaultSuffix = ownRegion.isEmpty
+                                  ? ' ${context.l10n.channels_regionDefaultSuffix}'
+                                  : '';
+                              final radioDefault =
+                                  connector.defaultFloodScopeName;
+                              final regionText = region.isNotEmpty
+                                  ? '${context.l10n.channels_regionSetTo(region)}$defaultSuffix'
+                                  : radioDefault != null &&
+                                        connector.channelUsesRadioDefaultScope(
+                                          widget.channel.index,
+                                        )
+                                  ? '${context.l10n.channels_regionSetTo(radioDefault)} ${context.l10n.channels_regionRadioDefaultSuffix}'
+                                  : null;
+                              final subtitle = [
+                                ?privacy,
+                                ?regionText,
+                              ].join(' • ');
+                              if (subtitle.isEmpty) {
+                                return const SizedBox.shrink();
+                              }
+                              return Text(
+                                subtitle,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontSize: 12),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
         centerTitle: false,
         bottom: const SyncProgressAppBarBottom(),
         actions: [
@@ -435,6 +609,12 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
             },
           ),
           const RadioStatsIconButton(),
+          if (!_searching)
+            IconButton(
+              tooltip: context.l10n.chatSearch_tooltip,
+              icon: const Icon(Icons.search),
+              onPressed: _openSearch,
+            ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
             onSelected: (value) {
@@ -447,11 +627,20 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                 );
               } else if (value == 'clearChat') {
                 _confirmClearChat();
+              } else if (value == 'messageFilter') {
+                _toggleChannelFiltering();
               }
             },
             // Region lives here (and on a tap of the title) so the channel
             // name keeps its room in the app bar.
             itemBuilder: (context) => [
+              if (_messageFilter case final filter?
+                  when filter.settings.enabled)
+                CheckedPopupMenuItem(
+                  value: 'messageFilter',
+                  checked: filter.isChannelFiltered(_messageFilterChannelId),
+                  child: Text(context.l10n.messageFilter_channelToggle),
+                ),
               PopupMenuItem(
                 value: 'region',
                 child: Row(
@@ -495,160 +684,220 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
           ),
         ],
       ),
-      body: SafeArea(
-        top: false,
-        child: Column(
-          children: [
-            Expanded(
-              child: ChatBackdrop(
-                key: _messageAreaKey,
-                chatKey: ChatBackgroundService.channelKey(widget.channel),
-                child: Consumer<MeshCoreConnector>(
-                  builder: (context, connector, child) {
-                    final messages = connector.getChannelMessages(
-                      widget.channel,
-                    );
-                    final newest = messages.isEmpty ? null : messages.last;
-                    _holidayWatcher.onNewest(
-                      context,
-                      id: newest?.messageId,
-                      texts: [newest?.text, newest?.translatedText],
-                      receivedAt: newest?.receivedAt,
-                      originOf: () => newestMessageOrigin(
-                        _messageAreaKey,
-                        isOutgoing: newest?.isOutgoing ?? false,
-                      ),
-                    );
-                    final layout = _transcriptLayoutFor(context, messages);
+      body: _showSearchResults
+          ? _buildSearchResults(_loadSearchEntries)
+          : SafeArea(
+              top: false,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ChatBackdrop(
+                      key: _messageAreaKey,
+                      chatKey: ChatBackgroundService.channelKey(widget.channel),
+                      child: Consumer<MeshCoreConnector>(
+                        builder: (context, connector, child) {
+                          final messages = connector.getChannelMessages(
+                            widget.channel,
+                          );
+                          // A filtered message must not trigger holiday effects.
+                          final newest = connector.latestVisibleChannelMessage(
+                            widget.channel,
+                          );
+                          _holidayWatcher.onNewest(
+                            context,
+                            id: newest?.messageId,
+                            texts: [newest?.text, newest?.translatedText],
+                            receivedAt: newest?.receivedAt,
+                            originOf: () => newestMessageOrigin(
+                              _messageAreaKey,
+                              isOutgoing: newest?.isOutgoing ?? false,
+                            ),
+                          );
+                          final layout = _transcriptLayoutFor(
+                            context,
+                            messages,
+                          );
+                          // Fewer entries than messages means the filter hid or
+                          // collapsed some; make sure older history stays reachable.
+                          final hidesMessages = layout.length < messages.length;
+                          if (hidesMessages) _scheduleHiddenHistoryBackfill();
 
-                    if (layout.length == 0) {
-                      return EmptyState(
-                        icon: widget.channel.isPublicChannel
-                            ? Icons.public
-                            : Icons.tag,
-                        title: context.l10n.chat_noMessages,
-                        subtitle: context.l10n.chat_sendMessageTo(
-                          widget.channel.name.isEmpty
-                              ? context.l10n.channels_channelIndex(
-                                  widget.channel.index,
-                                )
-                              : widget.channel.name,
-                        ),
-                      );
-                    }
-
-                    final urlImagesEnabled = connector
-                        .isChannelUrlImagesEnabled(widget.channel.index);
-                    final rowCount = layout.length;
-                    final itemCount = rowCount + (_isLoadingOlder ? 1 : 0);
-
-                    // Auto-scroll to bottom if user is already at bottom
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (!mounted) return;
-                      if (_channelSkipNextBottomSnap) {
-                        _channelSkipNextBottomSnap = false;
-                        return;
-                      }
-                      _scrollController.scrollToBottomIfAtBottom();
-                    });
-
-                    return Stack(
-                      children: [
-                        ChatZoomWrapper(
-                          child: ListView.builder(
-                            reverse: true, // List grows from bottom up
-                            controller: _scrollController,
-                            padding: const EdgeInsets.all(8),
-                            itemCount: itemCount,
-                            itemBuilder: (context, index) {
-                              // Loading indicator now appears at end (bottom) of reversed list
-                              if (_isLoadingOlder && index == itemCount - 1) {
-                                return const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 16),
-                                  child: Center(
-                                    child: SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
+                          if (layout.length == 0) {
+                            final canLoadOlder =
+                                hidesMessages && !_olderHistoryExhausted;
+                            return EmptyState(
+                              icon: widget.channel.isPublicChannel
+                                  ? Icons.public
+                                  : Icons.tag,
+                              title: context.l10n.chat_noMessages,
+                              subtitle: context.l10n.chat_sendMessageTo(
+                                widget.channel.name.isEmpty
+                                    ? context.l10n.channels_channelIndex(
+                                        widget.channel.index,
+                                      )
+                                    : widget.channel.name,
+                              ),
+                              // Past the automatic page cap, filtered messages may
+                              // still hide older conversation: let the user ask.
+                              action: canLoadOlder
+                                  ? FilledButton.tonal(
+                                      onPressed: _isLoadingOlder
+                                          ? null
+                                          : _loadOlderHiddenHistory,
+                                      child: Text(
+                                        context.l10n.chat_loadOlderMessages,
                                       ),
-                                    ),
-                                  ),
-                                );
-                              }
-                              final row = layout.rowAt(index, messages);
-                              final GlobalKey messageKey;
-                              if (layout.keyedIndices.contains(index)) {
-                                messageKey = _messageKeys.putIfAbsent(
-                                  row.id,
-                                  GlobalKey.new,
-                                );
-                              } else {
-                                messageKey = GlobalKey();
-                              }
-                              final isUnreadAnchor =
-                                  _unreadDividerMessageId != null &&
-                                  row.id == _unreadDividerMessageId;
-                              return Container(
-                                key: messageKey,
-                                child: Builder(
-                                  builder: (context) {
-                                    final textScale = context
-                                        .select<ChatTextScaleService, double>(
-                                          (service) => service.scale,
-                                        );
-                                    final message = row.message;
-                                    final bubble = message != null
-                                        ? _buildMessageBubble(
-                                            message,
-                                            textScale,
-                                            urlImagesEnabled,
-                                          )
-                                        : _buildImageBubble(
-                                            row.image!,
-                                            textScale,
-                                          );
-                                    final startsDay =
-                                        index == rowCount - 1 ||
-                                        !isSameChatDay(
-                                          layout
-                                              .rowAt(index + 1, messages)
-                                              .receivedAt,
-                                          row.receivedAt,
-                                        );
-                                    if (isUnreadAnchor || startsDay) {
-                                      return Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          if (startsDay)
-                                            ChatDaySeparator(
-                                              day: row.receivedAt,
+                                    )
+                                  : null,
+                            );
+                          }
+
+                          final urlImagesEnabled = connector
+                              .isChannelUrlImagesEnabled(widget.channel.index);
+                          final rowCount = layout.length;
+                          final itemCount =
+                              rowCount + (_isLoadingOlder ? 1 : 0);
+
+                          // Auto-scroll to bottom if user is already at bottom
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (!mounted) return;
+                            if (_channelSkipNextBottomSnap) {
+                              _channelSkipNextBottomSnap = false;
+                              return;
+                            }
+                            _scrollController.scrollToBottomIfAtBottom();
+                          });
+
+                          return Stack(
+                            children: [
+                              ChatZoomWrapper(
+                                child: ListView.builder(
+                                  reverse: true, // List grows from bottom up
+                                  controller: _scrollController,
+                                  padding: const EdgeInsets.all(8),
+                                  itemCount: itemCount,
+                                  itemBuilder: (context, index) {
+                                    // Loading indicator now appears at end (bottom) of reversed list
+                                    if (_isLoadingOlder &&
+                                        index == itemCount - 1) {
+                                      return const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 16,
+                                        ),
+                                        child: Center(
+                                          child: SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
                                             ),
-                                          if (isUnreadAnchor)
-                                            const UnreadDivider(),
-                                          bubble,
-                                        ],
+                                          ),
+                                        ),
                                       );
                                     }
-                                    return bubble;
+                                    final row = layout.rowAt(index, messages);
+                                    final GlobalKey messageKey;
+                                    if (layout.keyedIndices.contains(index)) {
+                                      messageKey = _messageKeys.putIfAbsent(
+                                        row.id,
+                                        GlobalKey.new,
+                                      );
+                                    } else {
+                                      messageKey = GlobalKey();
+                                    }
+                                    final dividerId = _unreadDividerMessageId;
+                                    final isUnreadAnchor =
+                                        dividerId != null &&
+                                        row.id == layout.entryIdFor(dividerId);
+                                    return Container(
+                                      key: messageKey,
+                                      child: Builder(
+                                        builder: (context) {
+                                          final textScale = context
+                                              .select<
+                                                ChatTextScaleService,
+                                                double
+                                              >((service) => service.scale);
+                                          final message = row.message;
+                                          final ghost = row.ghost;
+                                          final Widget bubble;
+                                          if (ghost != null) {
+                                            bubble = _buildFilteredGhost(
+                                              ghost,
+                                              textScale,
+                                              expanded: row.ghostExpanded,
+                                              urlImagesEnabled:
+                                                  urlImagesEnabled,
+                                            );
+                                          } else if (message != null) {
+                                            bubble = _buildMessageBubble(
+                                              message,
+                                              textScale,
+                                              urlImagesEnabled,
+                                              showFilterBanner:
+                                                  layout.filterActive &&
+                                                  message.isFiltered,
+                                            );
+                                          } else {
+                                            bubble = _buildImageBubble(
+                                              row.image!,
+                                              textScale,
+                                            );
+                                          }
+                                          final startsDay =
+                                              index == rowCount - 1 ||
+                                              !isSameChatDay(
+                                                layout
+                                                    .rowAt(index + 1, messages)
+                                                    .receivedAt,
+                                                row.receivedAt,
+                                              );
+                                          if (isUnreadAnchor || startsDay) {
+                                            return Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                if (startsDay)
+                                                  ChatDaySeparator(
+                                                    day: row.receivedAt,
+                                                  ),
+                                                if (isUnreadAnchor)
+                                                  const UnreadDivider(),
+                                                bubble,
+                                              ],
+                                            );
+                                          }
+                                          return bubble;
+                                        },
+                                      ),
+                                    );
                                   },
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                        JumpToBottomButton(scrollController: _scrollController),
-                      ],
-                    );
-                  },
-                ),
+                              ),
+                              JumpToBottomButton(
+                                scrollController: _scrollController,
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  _buildInputBar(),
+                ],
               ),
             ),
-            _buildInputBar(),
-          ],
-        ),
-      ),
     );
+  }
+
+  /// Whether [m] counts toward the unread badge and divider. Filtered
+  /// messages don't while the filter hides them here (the connector never
+  /// counts them on arrival); with filtering off for this channel they show
+  /// as ordinary messages and count like ordinary messages.
+  bool _countsAsUnread(ChannelMessage m) {
+    if (m.isOutgoing) return false;
+    if (!m.isFiltered) return true;
+    return !(_messageFilter?.isChannelFiltered(_messageFilterChannelId) ??
+        false);
   }
 
   void _markAsUnread(ChannelMessage message) {
@@ -658,7 +907,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     var found = false;
     for (final m in messages) {
       if (m.messageId == message.messageId) found = true;
-      if (found && !m.isOutgoing) count++;
+      if (found && _countsAsUnread(m)) count++;
     }
     connector.setChannelUnreadCount(widget.channel.index, count);
   }
@@ -666,8 +915,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   Widget _buildMessageBubble(
     ChannelMessage message,
     double textScale,
-    bool urlImagesEnabled,
-  ) {
+    bool urlImagesEnabled, {
+    bool showFilterBanner = false,
+  }) {
     final settingsService = context.watch<AppSettingsService>();
     final publicIpfsGateway = settingsService.settings.publicIpfsGateway;
     final enableTracing = settingsService.settings.enableMessageTracing;
@@ -676,6 +926,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final scheme = Theme.of(context).colorScheme;
     final gifId = GifHelper.parseGif(message.text);
     final poi = parseMarkerText(message.text);
+    final contactShare = parseContactShare(message.text);
     final translatedDisplayText =
         message.translatedText != null &&
             message.translatedText!.trim().isNotEmpty
@@ -781,11 +1032,31 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                           ),
                           if (gifId == null) const SizedBox(height: 2),
                         ],
+                        if (showFilterBanner)
+                          FilteredMessageBanner(
+                            reason: messageFilterReasonLabel(
+                              context.l10n,
+                              message.filterReason,
+                              message.filterDetail,
+                            ),
+                            color: textColor,
+                            textScale: textScale,
+                            onNotSpam: () => _markNotSpam(message),
+                            onHide: () => _hideFilteredMessage(message),
+                          ),
                         if (message.replyToMessageId != null) ...[
                           _buildReplyPreview(message, textScale),
                           const SizedBox(height: 8),
                         ],
-                        if (poi != null)
+                        if (contactShare != null)
+                          SharedContactCard(
+                            share: contactShare,
+                            isOutgoing: isOutgoing,
+                            textScale: textScale,
+                            textColor: textColor,
+                            metaColor: textColor.withValues(alpha: 0.7),
+                          )
+                        else if (poi != null)
                           _buildPoiMessage(
                             context,
                             poi,
@@ -1121,6 +1392,27 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
         ),
       );
     }
+    final contactShare = parseContactShare(replyText);
+    if (contactShare != null) {
+      return Row(
+        children: [
+          Icon(Icons.person_add_alt, size: 16, color: color),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              context.l10n.contactShare_preview(
+                contactShare.name.isEmpty
+                    ? contactShare.shortKey
+                    : contactShare.name,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 12 * textScale, color: color),
+            ),
+          ),
+        ],
+      );
+    }
     if (poi != null) {
       return Row(
         children: [
@@ -1153,11 +1445,52 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final connector = context.read<MeshCoreConnector>();
     final isOwnNode = message.replyToSenderName == connector.selfName;
     final colorScheme = Theme.of(context).colorScheme;
-    final contentPreview = _buildReplyContent(
-      message.replyToText ?? '',
-      textScale,
-      color: colorScheme.onSurface.withValues(alpha: 0.7),
-    );
+    final previewColor = colorScheme.onSurface.withValues(alpha: 0.7);
+    // The quoted text was copied when the reply arrived; if the quoted message
+    // is hidden by the filter, don't spell it out until it is revealed.
+    final quotedId = message.replyToMessageId;
+    final quoted = quotedId == null
+        ? null
+        : _channelMessageById(
+            connector.getChannelMessages(widget.channel),
+            quotedId,
+          );
+    final concealed =
+        quoted != null &&
+        isReplyPreviewConcealed(
+          quotedIsFiltered: quoted.isFiltered,
+          filterActive:
+              _messageFilter?.isChannelFiltered(_messageFilterChannelId) ??
+              false,
+          quotedRevealed: _revealedFilteredIds.contains(quoted.messageId),
+        );
+    final contentPreview = concealed
+        ? Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.visibility_off_outlined,
+                size: 16 * textScale,
+                color: previewColor,
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  context.l10n.messageFilter_ghostSingle,
+                  style: TextStyle(
+                    fontSize: 13 * textScale,
+                    fontStyle: FontStyle.italic,
+                    color: previewColor,
+                  ),
+                ),
+              ),
+            ],
+          )
+        : _buildReplyContent(
+            message.replyToText ?? '',
+            textScale,
+            color: previewColor,
+          );
 
     return GestureDetector(
       onTap: () => _scrollToMessage(message.replyToMessageId!),
@@ -1701,9 +2034,32 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       store?.addListener(_onImageStoreChanged);
       _imageStoreVersion++;
     }
+    MessageFilterService? filter;
+    try {
+      filter = context.watch<MessageFilterService>();
+    } on ProviderNotFoundException {
+      filter = null;
+    }
+    final displayMode =
+        filter?.settings.displayMode ?? FilterDisplayMode.placeholder;
+    final filterActive =
+        filter?.isChannelFiltered(_messageFilterChannelId) ?? true;
+    // Spam / Not spam replace a message in place (same list, length and
+    // ends), so the memo also keys on which messages are filtered.
+    final filterVersion = Object.hash(
+      displayMode,
+      filterActive,
+      _revealVersion,
+      _filteredMessagesSignature(messages),
+    );
     final cached = _transcriptLayout;
     if (cached != null &&
-        cached.matches(messages, _imageStoreVersion, widget.channel.index)) {
+        cached.matches(
+          messages,
+          _imageStoreVersion,
+          widget.channel.index,
+          filterVersion,
+        )) {
       return cached;
     }
     final images = store == null
@@ -1714,6 +2070,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       images: images,
       imageVersion: _imageStoreVersion,
       channelIndex: widget.channel.index,
+      filterVersion: filterVersion,
+      displayMode: displayMode,
+      filterActive: filterActive,
+      revealedIds: _revealedFilteredIds,
     );
     // Prune stale keys (deleted/cleared messages) to avoid unbounded growth.
     final liveIds = layout.ids.toSet();
@@ -1723,6 +2083,55 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   }
 
   void _onImageStoreChanged() => _imageStoreVersion++;
+
+  List<ChannelMessage>? _indexSource;
+  int _indexSourceLength = -1;
+  Map<String, int> _indexById = const {};
+
+  /// The newest message with [id] in [messages], via an id -> index map
+  /// rebuilt only when the list is replaced, changes length, or an entry
+  /// moved. Reply previews call this per bubble on every rebuild; a linear
+  /// scan each time made a busy transcript O(n^2).
+  ChannelMessage? _channelMessageById(
+    List<ChannelMessage> messages,
+    String id,
+  ) {
+    if (!identical(messages, _indexSource) ||
+        messages.length != _indexSourceLength) {
+      _rebuildIndex(messages);
+    }
+    var index = _indexById[id];
+    if (index != null &&
+        (index >= messages.length || messages[index].messageId != id)) {
+      _rebuildIndex(messages);
+      index = _indexById[id];
+    }
+    return index == null ? null : messages[index];
+  }
+
+  void _rebuildIndex(List<ChannelMessage> messages) {
+    final byId = <String, int>{};
+    // Later entries win, matching the previous `lastOrNull` lookup.
+    for (var i = 0; i < messages.length; i++) {
+      byId[messages[i].messageId] = i;
+    }
+    _indexById = byId;
+    _indexSource = messages;
+    _indexSourceLength = messages.length;
+  }
+
+  /// Cheap fingerprint of which messages are filtered, so the layout memo
+  /// notices a message being marked spam or not spam in place.
+  static int _filteredMessagesSignature(List<ChannelMessage> messages) {
+    var hash = 0;
+    var count = 0;
+    for (final m in messages) {
+      if (!m.isFiltered) continue;
+      count++;
+      hash = Object.hash(hash, m.messageId);
+    }
+    return Object.hash(count, hash);
+  }
 
   /// Bubble for one AEIC image, following the GIF-message precedent: minimal
   /// chrome, the renderer owns every state (receiving / decoding / failed) and
@@ -2169,6 +2578,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               icon: Icons.my_location,
               label: context.l10n.chat_shareMyLocation,
             ),
+          ChatComposerAction(
+            id: 'share-contact',
+            icon: Icons.person_add_alt,
+            label: context.l10n.contactShare_shareAction,
+          ),
         ];
       },
       onAction: (action) {
@@ -2182,6 +2596,12 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
             _showImageSendPreview();
           case 'send-my-location':
             _shareMyLocation(context.read<MeshCoreConnector>());
+          case 'share-contact':
+            showShareContactSheet(
+              context,
+              _textController,
+              focusNode: _textFieldFocusNode,
+            );
         }
       },
     );
@@ -2286,6 +2706,15 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
           isOutgoing: message.isOutgoing,
         ) &&
         (message.translatedText?.trim().isEmpty ?? true);
+    // Filter actions apply to incoming messages in a channel the filter
+    // covers; structured payloads (GIFs, markers) are never filtered.
+    final filter = _messageFilter;
+    final showFilterActions =
+        !message.isOutgoing &&
+        filter != null &&
+        filter.isChannelFiltered(_messageFilterChannelId) &&
+        (message.isFiltered ||
+            !MessageFilterText.isStructuredPayload(message.text));
 
     showMeshSheet(
       context,
@@ -2377,6 +2806,44 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                     _markAsUnread(message);
                   },
                 ),
+              if (showFilterActions) ...[
+                const Divider(height: 1),
+                if (message.isFiltered)
+                  ListTile(
+                    leading: const Icon(Icons.visibility_outlined),
+                    title: Text(context.l10n.messageFilter_notSpam),
+                    onTap: () {
+                      Navigator.pop(sheetContext);
+                      _markNotSpam(message);
+                    },
+                  )
+                else
+                  ListTile(
+                    leading: const Icon(Icons.visibility_off_outlined),
+                    title: Text(context.l10n.messageFilter_markSpam),
+                    onTap: () {
+                      Navigator.pop(sheetContext);
+                      _markSpam(message);
+                    },
+                  ),
+                if (message.senderName.trim().isNotEmpty)
+                  ListTile(
+                    leading: const Icon(Icons.person_off_outlined),
+                    title: Text(context.l10n.messageFilter_filterSender),
+                    onTap: () {
+                      Navigator.pop(sheetContext);
+                      _filterSender(message.senderName);
+                    },
+                  ),
+                ListTile(
+                  leading: const Icon(Icons.filter_alt_outlined),
+                  title: Text(context.l10n.messageFilter_filterLikeThis),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _filterMessagesLike(message);
+                  },
+                ),
+              ],
               const Divider(height: 1),
               ListTile(
                 leading: Icon(
@@ -2397,6 +2864,165 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  // ---- message filter -------------------------------------------------------
+
+  /// The message filter, or null when it is not registered (screen tests).
+  MessageFilterService? get _messageFilter {
+    try {
+      return context.read<MessageFilterService>();
+    } on ProviderNotFoundException {
+      return null;
+    }
+  }
+
+  String get _messageFilterChannelId =>
+      MeshCoreConnector.messageFilterChannelId(widget.channel);
+
+  void _setRevealed(Iterable<String> ids, {required bool revealed}) {
+    setState(() {
+      if (revealed) {
+        _revealedFilteredIds.addAll(ids);
+      } else {
+        _revealedFilteredIds.removeAll(ids);
+      }
+      _revealVersion++;
+    });
+  }
+
+  /// "Hide" on a revealed message collapses its whole run back into one
+  /// ghost row, not just that message.
+  void _hideFilteredMessage(ChannelMessage message) {
+    final layout = _transcriptLayout;
+    final messages = context.read<MeshCoreConnector>().getChannelMessages(
+      widget.channel,
+    );
+    final ids = layout == null
+        ? [message.messageId]
+        : layout.revealedRunIdsFor(message.messageId, messages);
+    _setRevealed(ids, revealed: false);
+  }
+
+  Future<void> _markSpam(ChannelMessage message) async {
+    final connector = context.read<MeshCoreConnector>();
+    // Collapse it straight away, even if it had been revealed before.
+    _setRevealed([message.messageId], revealed: false);
+    await connector.markChannelMessageSpam(widget.channel, message);
+    if (!mounted) return;
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.messageFilter_markedSpam),
+    );
+  }
+
+  Future<void> _markNotSpam(ChannelMessage message) async {
+    final connector = context.read<MeshCoreConnector>();
+    _setRevealed([message.messageId], revealed: false);
+    await connector.markChannelMessageNotSpam(widget.channel, message);
+    if (!mounted) return;
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.messageFilter_markedNotSpam),
+    );
+  }
+
+  Future<void> _filterSender(String senderName) async {
+    final filter = _messageFilter;
+    if (filter == null) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(dialogContext.l10n.messageFilter_filterSender),
+        content: Text(
+          dialogContext.l10n.messageFilter_filterSenderConfirm(senderName),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(dialogContext.l10n.common_cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(dialogContext.l10n.messageFilter_filterSender),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await filter.addRule(
+      FilterRule(
+        id: MessageFilterService.newRuleId(),
+        pattern: senderName,
+        field: FilterRuleField.sender,
+        match: FilterRuleMatch.exact,
+      ),
+    );
+    if (!mounted) return;
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.messageFilter_ruleSaved),
+    );
+  }
+
+  Future<void> _filterMessagesLike(ChannelMessage message) async {
+    final filter = _messageFilter;
+    if (filter == null) return;
+    final rule = await showFilterRuleDialog(
+      context,
+      initialPattern: message.text,
+      initialField: FilterRuleField.text,
+    );
+    if (rule == null) return;
+    await filter.addRule(rule);
+    if (!mounted) return;
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.messageFilter_ruleSaved),
+    );
+  }
+
+  Future<void> _toggleChannelFiltering() async {
+    final filter = _messageFilter;
+    if (filter == null) return;
+    final channelId = _messageFilterChannelId;
+    await filter.setChannelExcluded(
+      channelId,
+      filter.isChannelFiltered(channelId),
+    );
+  }
+
+  /// One entry for a run of hidden messages (newest first): a ghost header
+  /// that animates the run's messages open and closed underneath it. Opening
+  /// lasts for this visit to the chat.
+  Widget _buildFilteredGhost(
+    List<ChannelMessage> run,
+    double textScale, {
+    required bool expanded,
+    required bool urlImagesEnabled,
+  }) {
+    final newest = run.first;
+    return FilteredMessageRun(
+      count: run.length,
+      expanded: expanded,
+      buildMessages: (context) => [
+        for (final message in run.reversed)
+          _buildMessageBubble(
+            message,
+            textScale,
+            urlImagesEnabled,
+            showFilterBanner: true,
+          ),
+      ],
+      reason: messageFilterReasonLabel(
+        context.l10n,
+        newest.filterReason,
+        newest.filterDetail,
+      ),
+      textScale: textScale,
+      onToggle: () =>
+          _setRevealed([for (final m in run) m.messageId], revealed: !expanded),
     );
   }
 
@@ -2822,7 +3448,7 @@ class _SwipeReplyBubbleState extends State<_SwipeReplyBubble> {
 
 /// One row of the channel transcript.
 ///
-/// Exactly one of [message] / [image] is non-null. Images cannot be
+/// Exactly one of [message] / [image] / [ghost] is non-null. Images cannot be
 /// `ChannelMessage`s: they arrive as GRP_DATA chunks with no text frame behind
 /// them, are keyed on (sender prefix, img id, channel) rather than a message id,
 /// and are persisted by [ReceivedImageStore] instead of the channel message
@@ -2832,15 +3458,34 @@ class _ChannelChatRow {
   final ChannelMessage? message;
   final ReceivedImageEntry? image;
 
-  const _ChannelChatRow({this.message, this.image});
+  /// A run of consecutive messages hidden by the message filter, newest
+  /// first, shown as one ghost row.
+  final List<ChannelMessage>? ghost;
+
+  /// [ghost] is a revealed run: its messages are shown under the header.
+  final bool ghostExpanded;
+
+  const _ChannelChatRow({
+    this.message,
+    this.image,
+    this.ghost,
+    this.ghostExpanded = false,
+  });
 
   /// Local arrival time, used for ordering and day separators so a sender
-  /// clock running ahead cannot pin a row to the bottom (#584).
-  DateTime get receivedAt => message?.receivedAt ?? image!.firstSeen;
+  /// clock running ahead cannot pin a row to the bottom (#584). A ghost run
+  /// never spans two days, so its newest member stands for it.
+  DateTime get receivedAt =>
+      message?.receivedAt ?? ghost?.first.receivedAt ?? image!.firstSeen;
 
   /// Stable identity for the scroll-to-message [GlobalKey] map. The `aeic:`
-  /// prefix keeps a stream id from ever colliding with a message id.
-  String get id => message?.messageId ?? 'aeic:${image!.streamId}';
+  /// and `ghost:` prefixes keep these from ever colliding with a message id.
+  String get id {
+    final run = ghost;
+    // Same id open or closed, so the run keeps its State and can animate.
+    if (run != null) return 'ghost:${run.first.messageId}';
+    return message?.messageId ?? 'aeic:${image!.streamId}';
+  }
 }
 
 /// Memoised ordering of a channel transcript, newest first.
@@ -2848,6 +3493,10 @@ class _ChannelChatRow {
 /// Rows hold positions, not message objects: the connector replaces messages
 /// in place (status, repeats, reactions) without changing their order or id,
 /// so [rowAt] always reads the current object from the live list.
+///
+/// Messages hidden by the message filter are grouped by [groupFilteredRows]:
+/// each visible entry is one row, or one ghost standing in for a run of
+/// hidden messages (none at all in hide mode).
 class _TranscriptLayout {
   final List<ChannelMessage> _source;
   final int _sourceLength;
@@ -2855,13 +3504,25 @@ class _TranscriptLayout {
   final String? _lastId;
   final int _imageVersion;
   final int _channelIndex;
+  final int _filterVersion;
 
   /// Newest first. `>= 0` is a message index; `< 0` is image `-(i + 1)`.
   final List<int> _order;
   final List<ReceivedImageEntry> _images;
 
-  /// Row ids, aligned with [_order].
+  /// Visible entries, newest first; their rows index into [_order].
+  final List<TranscriptEntry> _entries;
+
+  /// Whether filtered messages are being hidden in this channel. When false
+  /// they render as ordinary bubbles, without the filter banner.
+  final bool filterActive;
+
+  /// Entry ids, aligned with the visible entries.
   final List<String> ids;
+
+  /// Row id (message id) -> id of the entry that shows it, for rows that are
+  /// not entries themselves (inside a ghost, or dropped in hide mode).
+  final Map<String, String> _entryIdByRowId;
 
   /// Two messages can collide on messageId (same ms + name/text hash). Only
   /// the first occurrence owns the shared GlobalKey used for
@@ -2876,9 +3537,13 @@ class _TranscriptLayout {
     this._lastId,
     this._imageVersion,
     this._channelIndex,
+    this._filterVersion,
     this._order,
     this._images,
+    this._entries,
+    this.filterActive,
     this.ids,
+    this._entryIdByRowId,
     this.keyedIndices,
   );
 
@@ -2887,6 +3552,10 @@ class _TranscriptLayout {
     required List<ReceivedImageEntry> images,
     required int imageVersion,
     required int channelIndex,
+    required int filterVersion,
+    required FilterDisplayMode displayMode,
+    required bool filterActive,
+    required Set<String> revealedIds,
   }) {
     DateTime timeOf(int code) =>
         code >= 0 ? messages[code].receivedAt : images[-code - 1].firstSeen;
@@ -2901,12 +3570,38 @@ class _TranscriptLayout {
     // the reversed ListView.
     mergeSort<int>(order, compare: (a, b) => timeOf(a).compareTo(timeOf(b)));
     final reversed = order.reversed.toList(growable: false);
-    final ids = <String>[
+    final rowInfos = <TranscriptRowInfo>[
       for (final code in reversed)
         code >= 0
-            ? messages[code].messageId
-            : 'aeic:${images[-code - 1].streamId}',
+            ? TranscriptRowInfo(
+                id: messages[code].messageId,
+                receivedAt: messages[code].receivedAt,
+                isFiltered: messages[code].isFiltered,
+              )
+            : TranscriptRowInfo(
+                id: 'aeic:${images[-code - 1].streamId}',
+                receivedAt: images[-code - 1].firstSeen,
+                isImage: true,
+              ),
     ];
+    final entries = groupFilteredRows(
+      rowInfos,
+      mode: displayMode,
+      revealedIds: revealedIds,
+      filterActive: filterActive,
+      sameDay: isSameChatDay,
+    );
+    final ids = <String>[for (final entry in entries) entry.id];
+    final entryIdByRowId = <String, String>{};
+    final entryByRow = entryIndexByRow(entries, rowInfos.length);
+    for (var row = 0; row < rowInfos.length; row++) {
+      final entry = entryByRow[row];
+      if (entry == null) continue;
+      final rowId = rowInfos[row].id;
+      final entryId = ids[entry];
+      // First occurrence wins, matching the GlobalKey ownership below.
+      if (rowId != entryId) entryIdByRowId.putIfAbsent(rowId, () => entryId);
+    }
     final seen = <String>{};
     final keyed = <int>{};
     for (var i = 0; i < ids.length; i++) {
@@ -2919,26 +3614,65 @@ class _TranscriptLayout {
       messages.isEmpty ? null : messages.last.messageId,
       imageVersion,
       channelIndex,
+      filterVersion,
       reversed,
       images,
+      entries,
+      filterActive,
       ids,
+      entryIdByRowId,
       keyed,
     );
   }
 
-  int get length => _order.length;
+  int get length => _entries.length;
 
-  bool matches(List<ChannelMessage> messages, int imageVersion, int channel) {
+  bool matches(
+    List<ChannelMessage> messages,
+    int imageVersion,
+    int channel,
+    int filterVersion,
+  ) {
     return identical(messages, _source) &&
         messages.length == _sourceLength &&
         imageVersion == _imageVersion &&
         channel == _channelIndex &&
+        filterVersion == _filterVersion &&
         (messages.isEmpty ? null : messages.first.messageId) == _firstId &&
         (messages.isEmpty ? null : messages.last.messageId) == _lastId;
   }
 
+  /// Id of the visible entry that shows the row with [rowId]: the row itself,
+  /// its ghost, or (hide mode) the nearest visible row.
+  String entryIdFor(String rowId) => _entryIdByRowId[rowId] ?? rowId;
+
+  /// Ids of every message in the revealed run containing [messageId], so
+  /// "Hide" on one of them collapses the whole run; just [messageId] when it
+  /// is not part of a revealed run.
+  List<String> revealedRunIdsFor(
+    String messageId,
+    List<ChannelMessage> messages,
+  ) {
+    for (final entry in _entries) {
+      if (!entry.expanded) continue;
+      final ids = [
+        for (final row in entry.rows)
+          if (_order[row] >= 0) messages[_order[row]].messageId,
+      ];
+      if (ids.contains(messageId)) return ids;
+    }
+    return [messageId];
+  }
+
   _ChannelChatRow rowAt(int index, List<ChannelMessage> messages) {
-    final code = _order[index];
+    final entry = _entries[index];
+    if (entry.isGhost) {
+      return _ChannelChatRow(
+        ghost: [for (final row in entry.rows) messages[_order[row]]],
+        ghostExpanded: entry.expanded,
+      );
+    }
+    final code = _order[entry.row];
     return code >= 0
         ? _ChannelChatRow(message: messages[code])
         : _ChannelChatRow(image: _images[-code - 1]);

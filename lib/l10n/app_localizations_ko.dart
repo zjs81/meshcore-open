@@ -1063,6 +1063,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_languageUk => '우크라이나어';
 
   @override
+  String get appSettings_languageCs => '체코어';
+
+  @override
   String get repeater_pathHashModeOption0 => '1 바이트';
 
   @override
@@ -1344,11 +1347,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_showOtherNodesSubtitle => '지도에 다른 노드 유형을 표시';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks => '온라인 지도 연결선 표시';
 
   @override
-  String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+  String get appSettings_showOnlineLinksSubtitle => '온라인 지도에 있는 노드 간 연결선을 표시';
 
   @override
   String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
@@ -1951,6 +1953,31 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chat_noMessages => '아직 메시지가 없습니다.';
 
   @override
+  String get chatSearch_tooltip => '메시지 검색';
+
+  @override
+  String get chatSearch_hint => '메시지 검색';
+
+  @override
+  String get chatSearch_close => '검색 닫기';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '결과 $count개',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => '일치하는 메시지가 없습니다';
+
+  @override
+  String get chatSearch_noResultsHint => '다른 단어를 입력하거나 철자를 확인해 보세요';
+
+  @override
   String get chat_sendMessage => '메시지를 보내기';
 
   @override
@@ -2388,6 +2415,49 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chat_poiShared => '공유된 POI';
 
   @override
+  String get contactShare_headerOutgoing => '연락처를 공유했습니다';
+
+  @override
+  String get contactShare_headerIncoming => '연락처를 공유받음';
+
+  @override
+  String get contactShare_add => '연락처 추가';
+
+  @override
+  String get contactShare_adding => '연락처 추가 중...';
+
+  @override
+  String get contactShare_saved => '저장됨';
+
+  @override
+  String get contactShare_isYou => '본인입니다';
+
+  @override
+  String get contactShare_shareAction => '연락처 공유';
+
+  @override
+  String get contactShare_pickerTitle => '연락처 공유';
+
+  @override
+  String get contactShare_myContact => '내 연락처';
+
+  @override
+  String get contactShare_searchHint => '연락처 검색';
+
+  @override
+  String get contactShare_noContacts => '연락처를 찾을 수 없습니다';
+
+  @override
+  String contactShare_preview(String name) {
+    return '공유된 연락처: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return '연락처를 공유받음: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return '읽지 않음: $count';
   }
@@ -2595,7 +2665,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get map_otherNodes => '다른 노드';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => '온라인 지도 연결선 표시';
 
   @override
   String get map_showOverlaps => '반복 키 중복';
@@ -2686,6 +2756,56 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => '마지막 결과 보기';
+
+  @override
+  String get manualTrace_menuItem => '해시로 경로 추적';
+
+  @override
+  String get manualTrace_inputLabel => '리피터 해시';
+
+  @override
+  String manualTrace_helper(String example) {
+    return '예: $example. 쉼표 또는 공백으로 구분하세요.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return '홉 ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => '알 수 없는 노드';
+
+  @override
+  String get manualTrace_enterHashes => '해시 입력';
+
+  @override
+  String get manualTrace_run => '경로 추적 실행';
+
+  @override
+  String get manualTrace_notConnected => '추적을 실행하려면 무선 장치에 연결하세요';
+
+  @override
+  String get manualTrace_errorInvalidHex => '16진수 문자(0-9, A-F)만 사용할 수 있습니다';
+
+  @override
+  String get manualTrace_errorOddLength => '각 해시는 홉 크기에 맞게 16진수 문자 수가 짝수여야 합니다';
+
+  @override
+  String get manualTrace_errorMixedWidths => '모든 해시의 길이가 같아야 합니다';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      '해시는 1, 2 또는 3바이트(16진수 2, 4 또는 6자)여야 합니다';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return '경로가 너무 깁니다(최대 $max바이트)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      '한 번의 요청으로 추적하기에는 홉이 너무 많습니다. 홉을 줄이거나 “입력한 대로”를 선택하세요.';
 
   @override
   String get mapCache_title => '오프라인 지도 캐시';
@@ -3076,6 +3196,11 @@ class AppLocalizationsKo extends AppLocalizations {
     int seconds,
   ) {
     return '$days일 $hours시간 $minutes분 $seconds초';
+  }
+
+  @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '$hours시간 $minutes분 $seconds초';
   }
 
   @override
@@ -5213,7 +5338,7 @@ class AppLocalizationsKo extends AppLocalizations {
       '리피터 설정을 열 때 모든 설정을 요청합니다. 각 설정은 LoRa를 통한 별도의 요청이므로 느리고 전송 시간(airtime)을 사용합니다. 꺼져 있으면 \'모두 새로고침\'을 누르거나 개별 섹션을 새로고침하세요.';
 
   @override
-  String get appSettings_languageHu => '헝가리';
+  String get appSettings_languageHu => '헝가리어';
 
   @override
   String get appSettings_languageJa => '일본어';
@@ -6292,6 +6417,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_routingSection => '라우팅';
 
   @override
+  String get appSettings_resetRoutingToDefault => '라우팅 알고리즘 기본값으로 재설정';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      '라우팅 알고리즘 설정을 공장 기본값으로 복원';
+
+  @override
+  String get appSettings_routingResetToDefault => '라우팅 알고리즘 설정이 기본값으로 재설정되었습니다';
+
+  @override
   String get appSettings_imageMessagesSection => '이미지 메시지';
 
   @override
@@ -6555,4 +6690,211 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       '새해 복 많이 받으세요|새해 복 많이 받아|새해 복 많이 받으십시오|새해 복 많이 받아요|해피 뉴 이어|해피 뉴이어|즐거운 새해|행복한 새해';
+
+  @override
+  String get chat_loadOlderMessages => '이전 메시지 불러오기';
+
+  @override
+  String get messageFilter_title => '메시지 필터';
+
+  @override
+  String get messageFilter_settingsSubtitle => '스팸과 반복된 메시지를 숨김';
+
+  @override
+  String get messageFilter_enabled => '메시지 필터링';
+
+  @override
+  String get messageFilter_enabledSubtitle => '채널 메시지에 적용됩니다';
+
+  @override
+  String get messageFilter_displayTitle => '필터링된 메시지';
+
+  @override
+  String get messageFilter_displayPlaceholder => '작은 안내 표시';
+
+  @override
+  String get messageFilter_displayHide => '완전히 숨기기';
+
+  @override
+  String get messageFilter_displayHideHelp => '숨겨진 메시지는 필터링된 메시지 목록에 남아 있습니다.';
+
+  @override
+  String get messageFilter_rulesSection => '내 규칙';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      '아직 규칙이 없습니다. 단어, 문구 또는 발신자 이름을 추가하면 일치하는 메시지를 숨깁니다.';
+
+  @override
+  String get messageFilter_addRule => '규칙 추가';
+
+  @override
+  String get messageFilter_editRule => '규칙 수정';
+
+  @override
+  String get messageFilter_rulePattern => '단어, 문구 또는 이름';
+
+  @override
+  String get messageFilter_rulePatternHint => '예: meshos';
+
+  @override
+  String get messageFilter_ruleWhere => '확인할 위치';
+
+  @override
+  String get messageFilter_ruleFieldText => '메시지 내용';
+
+  @override
+  String get messageFilter_ruleFieldSender => '발신자 이름';
+
+  @override
+  String get messageFilter_ruleFieldBoth => '둘 다';
+
+  @override
+  String get messageFilter_ruleMatch => '일치 방식';
+
+  @override
+  String get messageFilter_ruleMatchContains => '포함';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => '단어 전체';
+
+  @override
+  String get messageFilter_ruleMatchExact => '정확히 일치';
+
+  @override
+  String get messageFilter_ruleDeleted => '규칙을 삭제했습니다';
+
+  @override
+  String get messageFilter_ruleSaved => '규칙을 저장했습니다';
+
+  @override
+  String get messageFilter_automaticSection => '자동';
+
+  @override
+  String get messageFilter_duplicates => '반복된 메시지';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      '같은 메시지를 다시 보냈거나 여러 발신자가 보낸 경우';
+
+  @override
+  String get messageFilter_repeatSends => '반복으로 간주할 전송 횟수';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return '같은 발신자가 10분 안에 같은 메시지를 $count번 보내면 숨깁니다';
+  }
+
+  @override
+  String get messageFilter_repeatedCharacters => '반복된 문자';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      '같은 문자가 길게 반복되는 경우, 예: \"aaaaaaaaaaaaaaaaaaaa\"';
+
+  @override
+  String get messageFilter_learning => '스팸 표시에서 학습';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return '스팸 $spam개, 스팸 아님 $notSpam개 예시';
+  }
+
+  @override
+  String get messageFilter_resetLearning => '학습 초기화';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      '스팸 및 스팸 아님 표시로 학습한 내용을 모두 지울까요? 내 규칙은 그대로 유지됩니다.';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return '필터링된 메시지 ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => '필터링된 메시지가 없습니다.';
+
+  @override
+  String get messageFilter_ghostSingle => '숨겨진 메시지 · 눌러서 보기';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '숨겨진 메시지 $count개 · 눌러서 보기',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded => '숨겨진 메시지 표시 중 · 눌러서 숨기기';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '숨겨진 메시지 $count개 표시 중 · 눌러서 숨기기',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return '필터링됨: \"$pattern\"와(과) 일치';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return '필터링됨: 발신자 \"$pattern\"';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters => '필터링됨: 반복된 문자';
+
+  @override
+  String get messageFilter_reasonDuplicate => '필터링됨: 반복된 메시지';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate => '필터링됨: 여러 발신자의 같은 메시지';
+
+  @override
+  String get messageFilter_reasonLearned => '필터링됨: 스팸으로 표시한 메시지와 비슷함';
+
+  @override
+  String get messageFilter_reasonManual => '필터링됨: 스팸으로 표시함';
+
+  @override
+  String get messageFilter_notSpam => '스팸 아님';
+
+  @override
+  String get messageFilter_hideAgain => '숨기기';
+
+  @override
+  String get messageFilter_markSpam => '스팸으로 표시';
+
+  @override
+  String get messageFilter_markedSpam => '스팸으로 표시했습니다';
+
+  @override
+  String get messageFilter_markedNotSpam => '스팸 아님으로 표시했습니다';
+
+  @override
+  String get messageFilter_filterSender => '이 발신자 필터링';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return '\"$name\"의 모든 메시지를 숨길까요?';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => '이와 비슷한 메시지 필터링…';
+
+  @override
+  String get messageFilter_channelToggle => '이 채널에서 메시지 필터링';
+
+  @override
+  String get messageFilter_ghostIconTooltip => '메시지 필터로 숨겨짐';
 }

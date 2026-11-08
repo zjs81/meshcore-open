@@ -1105,6 +1105,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get appSettings_languageUk => 'Ukrajinčina';
 
   @override
+  String get appSettings_languageCs => 'Čeština';
+
+  @override
   String get repeater_pathHashModeOption0 => '0 - 1 byt';
 
   @override
@@ -1409,11 +1412,11 @@ class AppLocalizationsSk extends AppLocalizations {
       'Zobraziť ostatné typy uzlov na mape';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks => 'Zobraziť spojenia z online mapy';
 
   @override
   String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+      'Zobrazí spojovacie čiary medzi uzlami z online mapy';
 
   @override
   String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
@@ -2039,6 +2042,35 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chat_noMessages => 'Zatiaľ žiadne správy.';
 
   @override
+  String get chatSearch_tooltip => 'Hľadať správy';
+
+  @override
+  String get chatSearch_hint => 'Hľadať správy';
+
+  @override
+  String get chatSearch_close => 'Zavrieť hľadanie';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count výsledkov',
+      many: '$count výsledku',
+      few: '$count výsledky',
+      one: '1 výsledok',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Žiadne zodpovedajúce správy';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Skúste iné slovo alebo skontrolujte preklepy';
+
+  @override
   String get chat_sendMessage => 'Odoslať správu';
 
   @override
@@ -2491,6 +2523,49 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chat_poiShared => 'Zdieľané body záujmu';
 
   @override
+  String get contactShare_headerOutgoing => 'Zdieľali ste kontakt';
+
+  @override
+  String get contactShare_headerIncoming => 'Zdieľal(a) kontakt';
+
+  @override
+  String get contactShare_add => 'Pridať kontakt';
+
+  @override
+  String get contactShare_adding => 'Pridávanie kontaktu...';
+
+  @override
+  String get contactShare_saved => 'Uložené';
+
+  @override
+  String get contactShare_isYou => 'Toto ste vy';
+
+  @override
+  String get contactShare_shareAction => 'Zdieľať kontakt';
+
+  @override
+  String get contactShare_pickerTitle => 'Zdieľať kontakt';
+
+  @override
+  String get contactShare_myContact => 'Môj kontakt';
+
+  @override
+  String get contactShare_searchHint => 'Hľadať kontakty';
+
+  @override
+  String get contactShare_noContacts => 'Nenašli sa žiadne kontakty';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Zdieľaný kontakt: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Zdieľal(a) kontakt: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Nezriadené: $count';
   }
@@ -2702,7 +2777,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get map_otherNodes => 'Ostatné uzly';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => 'Zobraziť spojenia z online mapy';
 
   @override
   String get map_showOverlaps => 'Prekrývanie opakovača kľúča';
@@ -2795,6 +2870,60 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Zobraziť posledný výsledok';
+
+  @override
+  String get manualTrace_menuItem => 'Sledovanie cesty podľa hashov';
+
+  @override
+  String get manualTrace_inputLabel => 'Hashe opakovačov';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Príklad: $example. Oddeľte čiarkami alebo medzerami.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Skoky ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Neznámy uzol';
+
+  @override
+  String get manualTrace_enterHashes => 'Zadajte hashe';
+
+  @override
+  String get manualTrace_run => 'Spustiť sledovanie cesty';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Na spustenie sledovania sa pripojte k rádiu';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Povolené sú iba hexadecimálne znaky (0-9, A-F)';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Každý hash potrebuje párny počet hexadecimálnych znakov zodpovedajúci veľkosti skoku';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Všetky hashe musia mať rovnakú dĺžku';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Hashe musia mať 1, 2 alebo 3 bajty (2, 4 alebo 6 hexadecimálnych znakov)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Cesta je príliš dlhá (maximum $max bajtov)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Príliš veľa skokov na sledovanie v jednej požiadavke. Odstráňte niektoré skoky alebo zvoľte „Podľa zadania“.';
 
   @override
   String get mapCache_title => 'Offline Mapa Pamäť';
@@ -3196,6 +3325,11 @@ class AppLocalizationsSk extends AppLocalizations {
     int seconds,
   ) {
     return '$days dní ${hours}h ${minutes}m ${seconds}s';
+  }
+
+  @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '${hours}h ${minutes}m ${seconds}s';
   }
 
   @override
@@ -6571,6 +6705,18 @@ class AppLocalizationsSk extends AppLocalizations {
   String get appSettings_routingSection => 'Smerovanie';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Obnoviť algoritmus smerovania na predvolené';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Obnoviť nastavenia algoritmu smerovania na továrne predvolené hodnoty';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Nastavenia algoritmu smerovania obnovené na predvolené';
+
+  @override
   String get appSettings_imageMessagesSection => 'Obrazové správy';
 
   @override
@@ -6843,4 +6989,224 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Šťastný Nový rok|Úspešný nový rok|Happy New Year';
+
+  @override
+  String get chat_loadOlderMessages => 'Načítať staršie správy';
+
+  @override
+  String get messageFilter_title => 'Filter správ';
+
+  @override
+  String get messageFilter_settingsSubtitle => 'Skryje spam a opakované správy';
+
+  @override
+  String get messageFilter_enabled => 'Filtrovať správy';
+
+  @override
+  String get messageFilter_enabledSubtitle => 'Platí pre správy v kanáloch';
+
+  @override
+  String get messageFilter_displayTitle => 'Filtrované správy';
+
+  @override
+  String get messageFilter_displayPlaceholder =>
+      'Zobraziť malý zástupný riadok';
+
+  @override
+  String get messageFilter_displayHide => 'Úplne skryť';
+
+  @override
+  String get messageFilter_displayHideHelp =>
+      'Skryté správy zostanú v zozname Filtrované správy.';
+
+  @override
+  String get messageFilter_rulesSection => 'Vaše pravidlá';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      'Zatiaľ žiadne pravidlá. Pridajte slovo, frázu alebo meno odosielateľa, aby sa zodpovedajúce správy skryli.';
+
+  @override
+  String get messageFilter_addRule => 'Pridať pravidlo';
+
+  @override
+  String get messageFilter_editRule => 'Upraviť pravidlo';
+
+  @override
+  String get messageFilter_rulePattern => 'Slovo, fráza alebo meno';
+
+  @override
+  String get messageFilter_rulePatternHint => 'napr. meshos';
+
+  @override
+  String get messageFilter_ruleWhere => 'Hľadať v';
+
+  @override
+  String get messageFilter_ruleFieldText => 'Text správy';
+
+  @override
+  String get messageFilter_ruleFieldSender => 'Meno odosielateľa';
+
+  @override
+  String get messageFilter_ruleFieldBoth => 'Oboje';
+
+  @override
+  String get messageFilter_ruleMatch => 'Zhoda';
+
+  @override
+  String get messageFilter_ruleMatchContains => 'Obsahuje';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => 'Celé slovo';
+
+  @override
+  String get messageFilter_ruleMatchExact => 'Presná';
+
+  @override
+  String get messageFilter_ruleDeleted => 'Pravidlo bolo odstránené';
+
+  @override
+  String get messageFilter_ruleSaved => 'Pravidlo bolo uložené';
+
+  @override
+  String get messageFilter_automaticSection => 'Automatické';
+
+  @override
+  String get messageFilter_duplicates => 'Opakované správy';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      'Rovnaká správa odoslaná znova alebo viacerými odosielateľmi';
+
+  @override
+  String get messageFilter_repeatSends => 'Odoslanie počítané ako opakovanie';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Skryť správu, ak ju ten istý odosielateľ pošle opakovane do 10 minút (počet odoslaní: $count)';
+  }
+
+  @override
+  String get messageFilter_repeatedCharacters => 'Opakované znaky';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      'Dlhé rady jedného znaku, napríklad „aaaaaaaaaaaaaaaaaaaa“';
+
+  @override
+  String get messageFilter_learning => 'Učiť sa z klepnutí na Spam';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return '$spam príkladov spamu a $notSpam príkladov nie spamu';
+  }
+
+  @override
+  String get messageFilter_resetLearning => 'Obnoviť učenie';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      'Zabudnúť všetko, čo sa filter naučil z vašich klepnutí na Spam a Nie spam? Vaše pravidlá zostanú zachované.';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return 'Filtrované správy ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'Nič nebolo odfiltrované.';
+
+  @override
+  String get messageFilter_ghostSingle => 'Skrytá správa · Klepnutím zobrazíte';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count skrytých správ · Klepnutím zobrazíte',
+      many: '$count skrytej správy · Klepnutím zobrazíte',
+      few: '$count skryté správy · Klepnutím zobrazíte',
+      one: '$count skrytá správa · Klepnutím zobrazíte',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded =>
+      'Zobrazená skrytá správa · Klepnutím skryjete';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Zobrazených $count skrytých správ · Klepnutím skryjete',
+      many: 'Zobrazených $count skrytej správy · Klepnutím skryjete',
+      few: 'Zobrazené $count skryté správy · Klepnutím skryjete',
+      one: 'Zobrazená 1 skrytá správa · Klepnutím skryjete',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return 'Odfiltrované: zodpovedá „$pattern“';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return 'Odfiltrované: odosielateľ „$pattern“';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters =>
+      'Odfiltrované: opakované znaky';
+
+  @override
+  String get messageFilter_reasonDuplicate => 'Odfiltrované: opakovaná správa';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate =>
+      'Odfiltrované: rovnaká správa od viacerých odosielateľov';
+
+  @override
+  String get messageFilter_reasonLearned =>
+      'Odfiltrované: podobá sa správam, ktoré ste označili ako spam';
+
+  @override
+  String get messageFilter_reasonManual =>
+      'Odfiltrované: označili ste to ako spam';
+
+  @override
+  String get messageFilter_notSpam => 'Nie spam';
+
+  @override
+  String get messageFilter_hideAgain => 'Skryť';
+
+  @override
+  String get messageFilter_markSpam => 'Označiť ako spam';
+
+  @override
+  String get messageFilter_markedSpam => 'Označené ako spam';
+
+  @override
+  String get messageFilter_markedNotSpam => 'Označené ako nie spam';
+
+  @override
+  String get messageFilter_filterSender => 'Filtrovať tohto odosielateľa';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return 'Skryť všetky správy od „$name“?';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => 'Filtrovať podobné správy…';
+
+  @override
+  String get messageFilter_channelToggle => 'Filtrovať správy v tomto kanáli';
+
+  @override
+  String get messageFilter_ghostIconTooltip => 'Skryté vaším filtrom správ';
 }

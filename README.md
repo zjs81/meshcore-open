@@ -43,6 +43,7 @@ See the [user documentation](documentation/README.md), [connection guide](docume
 - **Direct Messaging**: Private encrypted conversations with individual contacts
 - **Channels**: Public, hashtag, private, and community channels
 - **Mesh Images**: Send compressed images in channel chat with optional recovery packets ([guide](documentation/image-messages.md))
+- **Message Filter**: Hide spam and repeated channel messages with your own rules and on-device learning ([guide](documentation/message-filter.md))
 - **Regions**: Scope channel floods and reply using a message’s known region ([guide](documentation/regions.md))
 - **Translation**: Optional on-device incoming and pre-send translation
 - **Contact Management**: Organize contacts, track last seen times, and manage conversation history
@@ -85,7 +86,7 @@ See the [user documentation](documentation/README.md), [connection guide](docume
 
 ### Architecture
 
-- **Framework**: Flutter (web deployment pins 3.41.2); Dart SDK constraint `^3.9.2`
+- **Framework**: Flutter, pinned to an exact release in `pubspec.yaml` (`environment.flutter`); Dart SDK constraint `^3.9.2`
 - **State Management**: Provider pattern with ChangeNotifier
 - **BLE Protocol**: Nordic UART Service (NUS) over Bluetooth Low Energy
 - **Storage**: JSON in SharedPreferences for messages and contacts; files for models, images, and map caches
@@ -125,7 +126,7 @@ The matrix describes implemented functionality, not a guarantee that every featu
 
 ### Prerequisites
 
-- Flutter SDK; web deployment currently pins 3.41.2. The Dart SDK constraint is `^3.9.2` (see `pubspec.yaml`).
+- Flutter SDK at exactly the version in `pubspec.yaml` under `environment.flutter`. `flutter pub get` refuses any other version; run `flutter upgrade` or check out that release.
 - Android Studio / Xcode (for mobile development)
 - A MeshCore-compatible LoRa device
 
@@ -172,7 +173,7 @@ dependencies:
 ```bash
 sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev \
    librsvg2-dev libgirepository1.0-dev libgtk-3-bin libgdk-pixbuf2.0-bin \
-   libgdk-pixbuf-2.0-dev dpkg-dev patchelf binutils curl jq file desktop-file-utils xdg-user-dirs
+   libgdk-pixbuf-2.0-dev dpkg-dev patchelf binutils curl jq file desktop-file-utils xdg-user-dirs libgpg-error0
 ```
 
 The build automatically downloads checksum-verified architecture-matched
@@ -184,8 +185,8 @@ downloads must also be available. A packaging failure fails the enabled build,
 without publishing a stale image as a new artifact.
 
 GitHub Actions builds ARM64 on a native `ubuntu-24.04-arm` runner. Flutter's
-Linux release SDK archive is x64-only, so that job bootstraps Flutter 3.47.4
-from its pinned source revision. Flutter does not support x64-to-ARM64 Linux
+Linux release SDK archive is x64-only, so that job bootstraps the pinned Flutter
+release from its source revision in `scripts/appimage-tools.json`. Flutter does not support x64-to-ARM64 Linux
 cross-builds; use an ARM64 Linux host to build the ARM64 bundle locally. The
 ARM64 AppImage is CI-built and hardware validation on a Raspberry Pi 5 is still
 needed for graphics, BLE, USB and inference behavior.
@@ -198,12 +199,16 @@ container can write the host-owned output and cache directories. The original
 native bundle is retained. Custom targets, obfuscation and split-debug-info
 require a bundle-only build when container rebuilding is needed.
 
-The image includes Flutter assets, native plugins, ONNX Runtime and
-redistributable GTK dependencies. It does not include graphics drivers, BlueZ
-services, USB permissions, downloaded inference models or user data. The GTK
-packaging plugin uses X11, so Wayland sessions need XWayland. The host still
-needs compatible glibc and graphics libraries (`libgl1`, `libegl1`, and
-`libgles2` on Ubuntu). Launch normally, or without
+The image includes Flutter assets, native plugins, ONNX Runtime and the
+transitive redistributable runtime libraries. Packaging audits every bundled
+ELF and fails if a portable dependency resolves from the build host instead of
+the AppDir. Host display-stack libraries (X11/XCB/Wayland) and graphics drivers
+remain external so they stay ABI-compatible with the system's EGL/GL driver.
+The image also relies on host glibc/the ELF loader, BlueZ services and USB
+permissions; downloaded inference models and user data are not included. The
+GTK packaging plugin uses X11, so Wayland sessions need XWayland. The host needs
+compatible graphics libraries (`libgl1`, `libegl1`, and `libgles2` on Ubuntu).
+Launch normally, or without
 FUSE by extracting:
 
 ```bash
@@ -223,8 +228,10 @@ flutter build linux --debug
 flutter build linux --profile
 ```
 
-The lockfile currently supplies Flutter 3.47.4 and its matching Dart SDK. The
-app requires Flutter 3.41.2 or newer. The Linux shell provides wrapped Clang
+The shell does not provide Flutter, because `pubspec.yaml` pins an exact
+release that nixpkgs may not package yet. Put that Flutter SDK on PATH before
+entering the shell; the shell warns when it is missing or the wrong version.
+The Linux shell provides wrapped Clang
 compilers, native headers and libraries, and Sysprof capture development files.
 Android SDK warnings do not prevent Linux builds.
 
@@ -353,7 +360,7 @@ Messages are transmitted as binary frames using a custom protocol optimized for 
 ### App Settings
 
 - **Theme**: System default, light, or dark mode
-- **Language**: Use one of 18 languages (English, Chinese, French, Spanish, Portuguese, German, Dutch, Polish, Swedish, Italian, Slovak, Slovenian, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
+- **Language**: Use one of 19 languages (English, Chinese, French, Spanish, Portuguese, German, Dutch, Polish, Swedish, Italian, Slovak, Czech, Slovenian, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
 - **Notifications**: Configurable for messages, channels, and node advertisements; per-channel muting; reply, mark-as-read, and mute actions on Android notifications and watches (reply and mark-as-read in Android Auto when built with `--android-project-arg=androidAuto=true`)
 - **Battery Chemistry**: Support for NMC, LiFePO4, LiPo, and LiPo HV battery types
 - **Message Retry**: Automatic retry with configurable path clearing

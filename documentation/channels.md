@@ -101,6 +101,10 @@ Messages also show a region label when known, independently of message tracing. 
 - **URL image previews** when enabled per channel; content is fetched over the internet
 - **Reactions** displayed as emoji pills below target messages
 
+### Message Filter
+
+The app bar overflow menu (⋮) has **Filter messages in this channel** (shown while the master switch is on) to turn the [message filter](message-filter.md) on or off for just this channel. Hidden messages do not count as unread, notify, or appear in the channel list preview.
+
 ### Replies (Channel Chat Only)
 
 - **Mobile**: Swipe an **incoming** message left to trigger reply (with haptic feedback). You cannot swipe your own outgoing messages. Swipe reply is not available on desktop.
@@ -128,6 +132,7 @@ Where your radio only hears nearby repeaters, turn on **Also count different nea
 | Reply | All messages | Triggers reply mode |
 | Path | All messages | Opens message path view |
 | Add Reaction | Incoming messages only | Opens emoji picker (cannot react to your own messages) |
+| Mark as spam / Filter this sender / Filter messages like this… | Incoming messages (when filtering is on for the channel) | Hides spam; see [Message filter](message-filter.md) |
 | Copy | All messages | Copies text to clipboard |
 | Mark as Unread | Incoming messages only | Marks this message and all subsequent incoming messages as unread |
 | Delete | All messages | Removes locally (not from mesh) |

@@ -182,6 +182,7 @@
   "appSettings_languageSv": "Suédois",
   "appSettings_languageNl": "Néerlandais",
   "appSettings_languageSk": "Slovaque",
+  "appSettings_languageCs": "Tchèque",
   "appSettings_languageBg": "Bulgare",
   "appSettings_notifications": "Notifications",
   "appSettings_enableNotifications": "Activer les notifications",
@@ -1031,6 +1032,7 @@
   "repeater_received": "Reçu",
   "repeater_duplicates": "Doublons",
   "repeater_daysHoursMinsSecs": "{days} jours {hours}h {minutes}m {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -3380,6 +3382,9 @@
   "settings_regionFetchNoneResponded": "Aucun répéteur à proximité n'a répondu. Rapprochez-vous d'un répéteur et réessayez.",
   "appSettings_sourceSummary": "{label} - {description}",
   "appSettings_routingSection": "Routage",
+  "appSettings_resetRoutingToDefault": "Réinitialiser l'algorithme de routage",
+  "appSettings_resetRoutingToDefaultSubtitle": "Restaurer les paramètres de l'algorithme de routage aux valeurs par défaut",
+  "appSettings_routingResetToDefault": "Paramètres de l'algorithme de routage réinitialisés",
   "appSettings_imageMessagesSection": "Messages image",
   "appSettings_showApiKey": "Afficher la clé API",
   "appSettings_hideApiKey": "Masquer la clé API",
@@ -3660,5 +3665,142 @@
   "themes_chatBackground": "Fond de discussion",
   "themes_chatBackgroundHelp": "Affiché dans les discussions qui n'ont pas leur propre fond",
   "themes_chatBackgroundEverywhere": "Utiliser dans toutes les discussions",
-  "themes_chatBackgroundEverywhereHelp": "Remplace aussi les fonds définis pour chaque discussion"
+  "themes_chatBackgroundEverywhereHelp": "Remplace aussi les fonds définis pour chaque discussion",
+  "appSettings_showOnlineLinks": "Afficher les connexions de la carte en ligne",
+  "appSettings_showOnlineLinksSubtitle": "Affiche les lignes de connexion entre les nœuds de la carte en ligne",
+  "map_showOnlineLinks": "Afficher les connexions de la carte en ligne",
+  "chat_loadOlderMessages": "Charger les anciens messages",
+  "messageFilter_title": "Filtre de messages",
+  "messageFilter_settingsSubtitle": "Masquer les spams et les messages répétés",
+  "messageFilter_enabled": "Filtrer les messages",
+  "messageFilter_enabledSubtitle": "S'applique aux messages des canaux",
+  "messageFilter_displayTitle": "Messages filtrés",
+  "messageFilter_displayPlaceholder": "Afficher un petit message à la place",
+  "messageFilter_displayHide": "Masquer complètement",
+  "messageFilter_displayHideHelp": "Les messages masqués restent dans la liste des messages filtrés.",
+  "messageFilter_rulesSection": "Vos règles",
+  "messageFilter_rulesEmpty": "Aucune règle pour l'instant. Ajoutez un mot, une phrase ou un nom d'expéditeur pour masquer les messages correspondants.",
+  "messageFilter_addRule": "Ajouter une règle",
+  "messageFilter_editRule": "Modifier la règle",
+  "messageFilter_rulePattern": "Mot, phrase ou nom",
+  "messageFilter_rulePatternHint": "p. ex. meshos",
+  "messageFilter_ruleWhere": "Chercher dans",
+  "messageFilter_ruleFieldText": "Texte du message",
+  "messageFilter_ruleFieldSender": "Nom de l'expéditeur",
+  "messageFilter_ruleFieldBoth": "Les deux",
+  "messageFilter_ruleMatch": "Correspondance",
+  "messageFilter_ruleMatchContains": "Contient",
+  "messageFilter_ruleMatchWholeWord": "Mot entier",
+  "messageFilter_ruleMatchExact": "Exacte",
+  "messageFilter_ruleDeleted": "Règle supprimée",
+  "messageFilter_ruleSaved": "Règle enregistrée",
+  "messageFilter_automaticSection": "Automatique",
+  "messageFilter_duplicates": "Messages répétés",
+  "messageFilter_duplicatesSubtitle": "Le même message envoyé de nouveau, ou par plusieurs expéditeurs",
+  "messageFilter_repeatSends": "Envois comptés comme répétition",
+  "messageFilter_repeatSendsSubtitle": "Masquer un message lorsque le même expéditeur l'envoie {count} fois en 10 minutes",
+  "messageFilter_repeatedCharacters": "Caractères répétés",
+  "messageFilter_repeatedCharactersSubtitle": "Longues séquences d'un même caractère, comme « aaaaaaaaaaaaaaaaaaaa »",
+  "messageFilter_learning": "Apprendre des appuis sur Spam",
+  "messageFilter_learningSubtitle": "{spam} exemples de spam et {notSpam} de non-spam",
+  "messageFilter_resetLearning": "Réinitialiser l'apprentissage",
+  "messageFilter_resetLearningConfirm": "Oublier tout ce qui a été appris de vos appuis sur Spam et Pas un spam ? Vos règles sont conservées.",
+  "messageFilter_filteredMessages": "Messages filtrés ({count})",
+  "messageFilter_filteredMessagesEmpty": "Rien n'a été filtré.",
+  "messageFilter_ghostSingle": "Message masqué · Appuyez pour voir",
+  "messageFilter_ghostMany": "{count, plural, one{{count} message masqué · Appuyez pour voir} other{{count} messages masqués · Appuyez pour voir}}",
+  "messageFilter_ghostSingleExpanded": "Message masqué affiché · Appuyez pour masquer",
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{1 message masqué affiché · Appuyez pour masquer} other{{count} messages masqués affichés · Appuyez pour masquer}}",
+  "messageFilter_reasonTextRule": "Filtré : correspond à « {pattern} »",
+  "messageFilter_reasonSenderRule": "Filtré : expéditeur « {pattern} »",
+  "messageFilter_reasonRepeatedCharacters": "Filtré : caractères répétés",
+  "messageFilter_reasonDuplicate": "Filtré : message répété",
+  "messageFilter_reasonCrossSenderDuplicate": "Filtré : même message de plusieurs expéditeurs",
+  "messageFilter_reasonLearned": "Filtré : ressemble aux messages que vous avez marqués comme spam",
+  "messageFilter_reasonManual": "Filtré : vous avez marqué ce message comme spam",
+  "messageFilter_notSpam": "Pas un spam",
+  "messageFilter_hideAgain": "Masquer",
+  "messageFilter_markSpam": "Marquer comme spam",
+  "messageFilter_markedSpam": "Marqué comme spam",
+  "messageFilter_markedNotSpam": "Marqué comme pas un spam",
+  "messageFilter_filterSender": "Filtrer cet expéditeur",
+  "messageFilter_filterSenderConfirm": "Masquer tous les messages de « {name} » ?",
+  "messageFilter_filterLikeThis": "Filtrer les messages comme celui-ci…",
+  "messageFilter_channelToggle": "Filtrer les messages de ce canal",
+  "messageFilter_ghostIconTooltip": "Masqué par votre filtre de messages",
+  "chatSearch_tooltip": "Rechercher des messages",
+  "chatSearch_hint": "Rechercher des messages",
+  "chatSearch_close": "Fermer la recherche",
+  "chatSearch_resultCount": "{count, plural, =1{1 résultat} other{{count} résultats}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Aucun message correspondant",
+  "chatSearch_noResultsHint": "Essayez un autre mot ou vérifiez l'orthographe",
+  "contactShare_headerOutgoing": "Vous avez partagé un contact",
+  "contactShare_headerIncoming": "A partagé un contact",
+  "contactShare_add": "Ajouter le contact",
+  "contactShare_adding": "Ajout du contact...",
+  "contactShare_saved": "Enregistré",
+  "contactShare_isYou": "C'est vous",
+  "contactShare_shareAction": "Partager le contact",
+  "contactShare_pickerTitle": "Partager un contact",
+  "contactShare_myContact": "Mon contact",
+  "contactShare_searchHint": "Rechercher des contacts",
+  "contactShare_noContacts": "Aucun contact trouvé",
+  "contactShare_preview": "Contact partagé : {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "A partagé un contact : {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Traçage de chemin par hachages",
+  "manualTrace_inputLabel": "Hachages des répéteurs",
+  "manualTrace_helper": "Exemple : {example}. Séparez par des virgules ou des espaces.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Sauts ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Nœud inconnu",
+  "manualTrace_enterHashes": "Saisissez les hachages",
+  "manualTrace_run": "Lancer le traçage de chemin",
+  "manualTrace_notConnected": "Connectez-vous à une radio pour lancer une trace",
+  "manualTrace_errorInvalidHex": "Seuls les caractères hexadécimaux (0-9, A-F) sont autorisés",
+  "manualTrace_errorOddLength": "Chaque hachage doit avoir un nombre pair de caractères hexadécimaux, correspondant à la taille du saut",
+  "manualTrace_errorMixedWidths": "Tous les hachages doivent avoir la même longueur",
+  "manualTrace_errorUnsupportedWidth": "Les hachages doivent faire 1, 2 ou 3 octets (2, 4 ou 6 caractères hexadécimaux)",
+  "manualTrace_errorTooManyHops": "Le chemin est trop long (maximum {max} octets)",
+  "manualTrace_errorTraceTooLong": "Trop de sauts à tracer en une seule requête. Retirez des sauts ou choisissez « Tel que saisi ».",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

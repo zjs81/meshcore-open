@@ -1048,7 +1048,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_languageNl => 'オランダ語';
 
   @override
-  String get appSettings_languageSk => 'スロベニア語';
+  String get appSettings_languageSk => 'スロバキア語';
 
   @override
   String get appSettings_languageBg => 'ブルガリア語';
@@ -1058,6 +1058,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get appSettings_languageUk => 'ウクライナ語';
+
+  @override
+  String get appSettings_languageCs => 'チェコ語';
 
   @override
   String get repeater_pathHashModeOption0 => '0 - 1バイト';
@@ -1339,11 +1342,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_showOtherNodesSubtitle => '地図上に、他のノードの種類を表示する';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks => 'オンライン地図の接続を表示';
 
   @override
-  String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+  String get appSettings_showOnlineLinksSubtitle => 'オンライン地図にあるノード間の接続線を表示する';
 
   @override
   String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
@@ -1946,6 +1948,31 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chat_noMessages => 'まだメッセージは届いていません';
 
   @override
+  String get chatSearch_tooltip => 'メッセージを検索';
+
+  @override
+  String get chatSearch_hint => 'メッセージを検索';
+
+  @override
+  String get chatSearch_close => '検索を閉じる';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 件の結果',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => '一致するメッセージはありません';
+
+  @override
+  String get chatSearch_noResultsHint => '別の単語を試すか、スペルを確認してください';
+
+  @override
   String get chat_sendMessage => 'メッセージを送信する';
 
   @override
@@ -2384,6 +2411,49 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chat_poiShared => '共有された POI';
 
   @override
+  String get contactShare_headerOutgoing => '連絡先を共有しました';
+
+  @override
+  String get contactShare_headerIncoming => '連絡先を共有';
+
+  @override
+  String get contactShare_add => '連絡先を追加';
+
+  @override
+  String get contactShare_adding => '連絡先を追加中...';
+
+  @override
+  String get contactShare_saved => '登録済み';
+
+  @override
+  String get contactShare_isYou => 'これはあなたです';
+
+  @override
+  String get contactShare_shareAction => '連絡先を共有';
+
+  @override
+  String get contactShare_pickerTitle => '連絡先を共有';
+
+  @override
+  String get contactShare_myContact => '自分の連絡先';
+
+  @override
+  String get contactShare_searchHint => '連絡先を検索';
+
+  @override
+  String get contactShare_noContacts => '連絡先が見つかりません';
+
+  @override
+  String contactShare_preview(String name) {
+    return '共有された連絡先: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return '連絡先を共有: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return '未読: $count';
   }
@@ -2591,7 +2661,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get map_otherNodes => 'その他のノード';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => 'オンライン地図の接続を表示';
 
   @override
   String get map_showOverlaps => 'リピータキーの重複';
@@ -2682,6 +2752,57 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => '前回の結果を表示';
+
+  @override
+  String get manualTrace_menuItem => 'ハッシュで経路追跡';
+
+  @override
+  String get manualTrace_inputLabel => 'リピーターのハッシュ';
+
+  @override
+  String manualTrace_helper(String example) {
+    return '例: $example。カンマまたはスペースで区切ってください。';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'ホップ ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => '不明なノード';
+
+  @override
+  String get manualTrace_enterHashes => 'ハッシュを入力';
+
+  @override
+  String get manualTrace_run => '経路トレースを実行';
+
+  @override
+  String get manualTrace_notConnected => 'トレースを実行するには無線機に接続してください';
+
+  @override
+  String get manualTrace_errorInvalidHex => '16進数の文字(0-9、A-F)のみ使用できます';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      '各ハッシュはホップのサイズに合わせて、16進数の文字数が偶数である必要があります';
+
+  @override
+  String get manualTrace_errorMixedWidths => 'すべてのハッシュは同じ長さにしてください';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'ハッシュは1、2、3バイト(16進数で2、4、6文字)にしてください';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return '経路が長すぎます(最大 $max バイト)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      '1回のリクエストでトレースできるホップ数を超えています。ホップを減らすか、「入力どおり」を選んでください。';
 
   @override
   String get mapCache_title => 'オフライン用地図キャッシュ';
@@ -3075,6 +3196,11 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '$hours時間 $minutes分 $seconds秒';
+  }
+
+  @override
   String repeater_packetTxTotal(int total, String flood, String direct) {
     return '合計: $total, フラッド: $flood, 直接: $direct';
   }
@@ -3086,7 +3212,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String repeater_duplicatesFloodDirect(String flood, String direct) {
-    return '$flood: $flood, 直接: $direct';
+    return 'フラッド: $flood, 直接: $direct';
   }
 
   @override
@@ -6281,6 +6407,17 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_routingSection => 'ルーティング';
 
   @override
+  String get appSettings_resetRoutingToDefault => 'ルーティングアルゴリズムをデフォルトにリセット';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'ルーティングアルゴリズムの設定を工場出荷時のデフォルトに戻す';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'ルーティングアルゴリズムの設定がデフォルトにリセットされました';
+
+  @override
   String get appSettings_imageMessagesSection => '画像メッセージ';
 
   @override
@@ -6544,4 +6681,213 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'あけましておめでとう|明けましておめでとう|あけおめ|アケオメ|ハッピーニューイヤー|ハッピー・ニューイヤー|謹賀新年|Happy New Year';
+
+  @override
+  String get chat_loadOlderMessages => '以前のメッセージを読み込む';
+
+  @override
+  String get messageFilter_title => 'メッセージフィルター';
+
+  @override
+  String get messageFilter_settingsSubtitle => 'スパムや繰り返しのメッセージを隠す';
+
+  @override
+  String get messageFilter_enabled => 'メッセージをフィルターする';
+
+  @override
+  String get messageFilter_enabledSubtitle => 'チャンネルのメッセージに適用されます';
+
+  @override
+  String get messageFilter_displayTitle => 'フィルターされたメッセージ';
+
+  @override
+  String get messageFilter_displayPlaceholder => '小さな表示を残す';
+
+  @override
+  String get messageFilter_displayHide => '完全に隠す';
+
+  @override
+  String get messageFilter_displayHideHelp =>
+      '隠したメッセージは「フィルターされたメッセージ」の一覧に残ります。';
+
+  @override
+  String get messageFilter_rulesSection => 'あなたのルール';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      'ルールはまだありません。単語、フレーズ、送信者名を追加すると、一致するメッセージを隠せます。';
+
+  @override
+  String get messageFilter_addRule => 'ルールを追加';
+
+  @override
+  String get messageFilter_editRule => 'ルールを編集';
+
+  @override
+  String get messageFilter_rulePattern => '単語、フレーズ、名前';
+
+  @override
+  String get messageFilter_rulePatternHint => '例: meshos';
+
+  @override
+  String get messageFilter_ruleWhere => '対象';
+
+  @override
+  String get messageFilter_ruleFieldText => 'メッセージ本文';
+
+  @override
+  String get messageFilter_ruleFieldSender => '送信者名';
+
+  @override
+  String get messageFilter_ruleFieldBoth => '両方';
+
+  @override
+  String get messageFilter_ruleMatch => '一致の条件';
+
+  @override
+  String get messageFilter_ruleMatchContains => '含む';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => '単語全体';
+
+  @override
+  String get messageFilter_ruleMatchExact => '完全一致';
+
+  @override
+  String get messageFilter_ruleDeleted => 'ルールを削除しました';
+
+  @override
+  String get messageFilter_ruleSaved => 'ルールを保存しました';
+
+  @override
+  String get messageFilter_automaticSection => '自動';
+
+  @override
+  String get messageFilter_duplicates => '繰り返しのメッセージ';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      '同じメッセージが再送されたり、複数の送信者から届いたりしたもの';
+
+  @override
+  String get messageFilter_repeatSends => '繰り返しと見なす送信回数';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return '同じ送信者が10分以内に同じメッセージを$count回送信したら非表示にします';
+  }
+
+  @override
+  String get messageFilter_repeatedCharacters => '繰り返しの文字';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      '同じ文字の長い連続（例：「aaaaaaaaaaaaaaaaaaaa」）';
+
+  @override
+  String get messageFilter_learning => 'スパムのタップから学習';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return 'スパム $spam 件、スパムではない $notSpam 件の例';
+  }
+
+  @override
+  String get messageFilter_resetLearning => '学習をリセット';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      '「スパム」と「スパムではない」のタップから学習した内容をすべて忘れますか？ルールはそのまま残ります。';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return 'フィルターされたメッセージ ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'フィルターされたメッセージはありません。';
+
+  @override
+  String get messageFilter_ghostSingle => '隠したメッセージ · タップで表示';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '隠したメッセージ $count 件 · タップで表示',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded => '隠したメッセージを表示中 · タップで隠す';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '隠したメッセージ $count 件を表示中 · タップで隠す',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return 'フィルター: 「$pattern」に一致';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return 'フィルター: 送信者「$pattern」';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters => 'フィルター: 繰り返しの文字';
+
+  @override
+  String get messageFilter_reasonDuplicate => 'フィルター: 繰り返しのメッセージ';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate =>
+      'フィルター: 複数の送信者から同じメッセージ';
+
+  @override
+  String get messageFilter_reasonLearned => 'フィルター: スパムにしたメッセージに似ています';
+
+  @override
+  String get messageFilter_reasonManual => 'フィルター: あなたがスパムにしました';
+
+  @override
+  String get messageFilter_notSpam => 'スパムではない';
+
+  @override
+  String get messageFilter_hideAgain => '隠す';
+
+  @override
+  String get messageFilter_markSpam => 'スパムにする';
+
+  @override
+  String get messageFilter_markedSpam => 'スパムとしてマークしました';
+
+  @override
+  String get messageFilter_markedNotSpam => 'スパムではないとマークしました';
+
+  @override
+  String get messageFilter_filterSender => 'この送信者をフィルター';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return '「$name」からのメッセージをすべて隠しますか？';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => 'このようなメッセージをフィルター…';
+
+  @override
+  String get messageFilter_channelToggle => 'このチャンネルでメッセージをフィルター';
+
+  @override
+  String get messageFilter_ghostIconTooltip => 'メッセージフィルターで隠されました';
 }

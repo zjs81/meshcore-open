@@ -182,6 +182,7 @@
   "appSettings_languageSv": "Шведски",
   "appSettings_languageNl": "Нидерландски",
   "appSettings_languageSk": "Словашки",
+  "appSettings_languageCs": "Чешки",
   "appSettings_languageBg": "Български",
   "appSettings_notifications": "Уведомления",
   "appSettings_enableNotifications": "Включи известията",
@@ -1017,6 +1018,7 @@
   "repeater_received": "Получено",
   "repeater_duplicates": "Дубликати",
   "repeater_daysHoursMinsSecs": "{days} дни {hours}ч {minutes}м {seconds}с",
+  "repeater_hoursMinsSecs": "{hours}ч {minutes}м {seconds}с",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -3360,6 +3362,9 @@
   "settings_regionFetchNoneResponded": "Нито един близък ретранслатор не отговори. Приближете се до ретранслатор и опитайте отново.",
   "appSettings_sourceSummary": "{label} - {description}",
   "appSettings_routingSection": "Маршрутизиране",
+  "appSettings_resetRoutingToDefault": "Нулиране на алгоритъма за маршрутизация до стойност по подразбиране",
+  "appSettings_resetRoutingToDefaultSubtitle": "Възстановяване на настройките на алгоритъма за маршрутизация до заводските стойности по подразбиране",
+  "appSettings_routingResetToDefault": "Настройките на алгоритъма за маршрутизация са нулирани до стойност по подразбиране",
   "appSettings_imageMessagesSection": "Съобщения с изображения",
   "appSettings_showApiKey": "Показване на API ключа",
   "appSettings_hideApiKey": "Скриване на API ключа",
@@ -3526,5 +3531,142 @@
   "themes_chatBackground": "Фон на чата",
   "themes_chatBackgroundHelp": "Показва се в чатове, които нямат свой фон",
   "themes_chatBackgroundEverywhere": "Използвай във всички чатове",
-  "themes_chatBackgroundEverywhereHelp": "Заменя и фоновете, зададени на отделни чатове"
+  "themes_chatBackgroundEverywhereHelp": "Заменя и фоновете, зададени на отделни чатове",
+  "appSettings_showOnlineLinks": "Показвай връзките от онлайн картата",
+  "appSettings_showOnlineLinksSubtitle": "Показва линии между възлите от онлайн картата",
+  "map_showOnlineLinks": "Показвай връзките от онлайн картата",
+  "chat_loadOlderMessages": "Зареди по-стари съобщения",
+  "messageFilter_title": "Филтър за съобщения",
+  "messageFilter_settingsSubtitle": "Скрива спам и повтарящи се съобщения",
+  "messageFilter_enabled": "Филтрирай съобщенията",
+  "messageFilter_enabledSubtitle": "Важи за съобщенията в каналите",
+  "messageFilter_displayTitle": "Филтрирани съобщения",
+  "messageFilter_displayPlaceholder": "Показвай малък знак на мястото им",
+  "messageFilter_displayHide": "Скрий напълно",
+  "messageFilter_displayHideHelp": "Скритите съобщения остават в списъка „Филтрирани съобщения“.",
+  "messageFilter_rulesSection": "Твоите правила",
+  "messageFilter_rulesEmpty": "Още няма правила. Добави дума, фраза или име на подател, за да скриваш съобщенията, които съвпадат.",
+  "messageFilter_addRule": "Добави правило",
+  "messageFilter_editRule": "Редактирай правило",
+  "messageFilter_rulePattern": "Дума, фраза или име",
+  "messageFilter_rulePatternHint": "напр. meshos",
+  "messageFilter_ruleWhere": "Търси в",
+  "messageFilter_ruleFieldText": "Текст на съобщението",
+  "messageFilter_ruleFieldSender": "Име на подателя",
+  "messageFilter_ruleFieldBoth": "И двете",
+  "messageFilter_ruleMatch": "Съвпадение",
+  "messageFilter_ruleMatchContains": "Съдържа",
+  "messageFilter_ruleMatchWholeWord": "Цяла дума",
+  "messageFilter_ruleMatchExact": "Точно",
+  "messageFilter_ruleDeleted": "Правилото е изтрито",
+  "messageFilter_ruleSaved": "Правилото е запазено",
+  "messageFilter_automaticSection": "Автоматично",
+  "messageFilter_duplicates": "Повтарящи се съобщения",
+  "messageFilter_duplicatesSubtitle": "Същото съобщение, изпратено отново или от няколко подателя",
+  "messageFilter_repeatSends": "Изпращания, броени за повторение",
+  "messageFilter_repeatSendsSubtitle": "Скриване на съобщение, когато същият подател го изпрати {count} пъти в рамките на 10 минути",
+  "messageFilter_repeatedCharacters": "Повтарящи се символи",
+  "messageFilter_repeatedCharactersSubtitle": "Дълги поредици от един и същ знак, като „aaaaaaaaaaaaaaaaaaaa“",
+  "messageFilter_learning": "Учи се от натискането на „Спам“",
+  "messageFilter_learningSubtitle": "{spam} примера за спам и {notSpam} примера, които не са спам",
+  "messageFilter_resetLearning": "Нулирай наученото",
+  "messageFilter_resetLearningConfirm": "Да се забрави ли всичко, научено от натискането на „Спам“ и „Не е спам“? Правилата ти се запазват.",
+  "messageFilter_filteredMessages": "Филтрирани съобщения ({count})",
+  "messageFilter_filteredMessagesEmpty": "Нищо не е филтрирано.",
+  "messageFilter_ghostSingle": "Скрито съобщение · Докосни, за да го видиш",
+  "messageFilter_ghostMany": "{count, plural, one{{count} скрито съобщение · Докосни, за да го видиш} other{{count} скрити съобщения · Докосни, за да ги видиш}}",
+  "messageFilter_ghostSingleExpanded": "Показва се скрито съобщение · Докосни, за да го скриеш",
+  "messageFilter_ghostManyExpanded": "{count, plural, one{Показва се 1 скрито съобщение · Докосни, за да го скриеш} other{Показват се {count} скрити съобщения · Докосни, за да ги скриеш}}",
+  "messageFilter_reasonTextRule": "Филтрирано: съвпада с „{pattern}“",
+  "messageFilter_reasonSenderRule": "Филтрирано: подател „{pattern}“",
+  "messageFilter_reasonRepeatedCharacters": "Филтрирано: повтарящи се символи",
+  "messageFilter_reasonDuplicate": "Филтрирано: повтарящо се съобщение",
+  "messageFilter_reasonCrossSenderDuplicate": "Филтрирано: същото съобщение от няколко подателя",
+  "messageFilter_reasonLearned": "Филтрирано: прилича на съобщения, които си отбелязал като спам",
+  "messageFilter_reasonManual": "Филтрирано: ти го отбеляза като спам",
+  "messageFilter_notSpam": "Не е спам",
+  "messageFilter_hideAgain": "Скрий",
+  "messageFilter_markSpam": "Отбележи като спам",
+  "messageFilter_markedSpam": "Отбелязано като спам",
+  "messageFilter_markedNotSpam": "Отбелязано като не е спам",
+  "messageFilter_filterSender": "Филтрирай този подател",
+  "messageFilter_filterSenderConfirm": "Да се скрият ли всички съобщения от „{name}“?",
+  "messageFilter_filterLikeThis": "Филтрирай съобщения като това…",
+  "messageFilter_channelToggle": "Филтрирай съобщенията в този канал",
+  "messageFilter_ghostIconTooltip": "Скрито от твоя филтър за съобщения",
+  "chatSearch_tooltip": "Търсене на съобщения",
+  "chatSearch_hint": "Търсене на съобщения",
+  "chatSearch_close": "Затвори търсенето",
+  "chatSearch_resultCount": "{count, plural, =1{1 резултат} other{{count} резултата}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Няма съответстващи съобщения",
+  "chatSearch_noResultsHint": "Опитайте с друга дума или проверете правописа",
+  "contactShare_headerOutgoing": "Споделихте контакт",
+  "contactShare_headerIncoming": "Сподели контакт",
+  "contactShare_add": "Добави контакт",
+  "contactShare_adding": "Добавяне на контакт...",
+  "contactShare_saved": "Запазен",
+  "contactShare_isYou": "Това сте вие",
+  "contactShare_shareAction": "Сподели контакт",
+  "contactShare_pickerTitle": "Споделяне на контакт",
+  "contactShare_myContact": "Моят контакт",
+  "contactShare_searchHint": "Търсене на контакти",
+  "contactShare_noContacts": "Не са намерени контакти",
+  "contactShare_preview": "Споделен контакт: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Сподели контакт: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Трасиране на пътя по хешове",
+  "manualTrace_inputLabel": "Хешове на репитери",
+  "manualTrace_helper": "Пример: {example}. Разделяйте със запетаи или интервали.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Хопове ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Непознат възел",
+  "manualTrace_enterHashes": "Въведете хешове",
+  "manualTrace_run": "Пусни трасиране на пътя",
+  "manualTrace_notConnected": "Свържете се с радио, за да пуснете трасиране",
+  "manualTrace_errorInvalidHex": "Позволени са само шестнадесетични знаци (0-9, A-F)",
+  "manualTrace_errorOddLength": "Всеки хеш трябва да има четен брой шестнадесетични знаци, съответстващ на размера на хопа",
+  "manualTrace_errorMixedWidths": "Всички хешове трябва да са с еднаква дължина",
+  "manualTrace_errorUnsupportedWidth": "Хешовете трябва да са 1, 2 или 3 байта (2, 4 или 6 шестнадесетични знаци)",
+  "manualTrace_errorTooManyHops": "Пътят е твърде дълъг (максимум {max} байта)",
+  "manualTrace_errorTraceTooLong": "Твърде много хопове за трасиране в една заявка. Премахнете няколко хопа или изберете „Както е въведено“.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

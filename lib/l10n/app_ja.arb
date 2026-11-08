@@ -254,7 +254,8 @@
   "appSettings_languageZh": "中国語",
   "appSettings_languageSv": "スウェーデン語",
   "appSettings_languageNl": "オランダ語",
-  "appSettings_languageSk": "スロベニア語",
+  "appSettings_languageSk": "スロバキア語",
+  "appSettings_languageCs": "チェコ語",
   "appSettings_languageBg": "ブルガリア語",
   "appSettings_languageRu": "ロシア語",
   "appSettings_languageUk": "ウクライナ語",
@@ -1213,6 +1214,7 @@
   "repeater_received": "受信済み",
   "repeater_duplicates": "重複",
   "repeater_daysHoursMinsSecs": "{days}日 {hours}時間 {minutes}分 {seconds}秒",
+  "repeater_hoursMinsSecs": "{hours}時間 {minutes}分 {seconds}秒",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -1257,7 +1259,7 @@
       }
     }
   },
-  "repeater_duplicatesFloodDirect": "{flood}: {flood}, 直接: {direct}",
+  "repeater_duplicatesFloodDirect": "フラッド: {flood}, 直接: {direct}",
   "@repeater_duplicatesFloodDirect": {
     "placeholders": {
       "flood": {
@@ -3380,6 +3382,9 @@
   "settings_regionFetchNoneResponded": "近くのリピータから応答がありませんでした。リピータに近づいてもう一度お試しください。",
   "appSettings_sourceSummary": "{label} - {description}",
   "appSettings_routingSection": "ルーティング",
+  "appSettings_resetRoutingToDefault": "ルーティングアルゴリズムをデフォルトにリセット",
+  "appSettings_resetRoutingToDefaultSubtitle": "ルーティングアルゴリズムの設定を工場出荷時のデフォルトに戻す",
+  "appSettings_routingResetToDefault": "ルーティングアルゴリズムの設定がデフォルトにリセットされました",
   "appSettings_imageMessagesSection": "画像メッセージ",
   "appSettings_showApiKey": "APIキーを表示",
   "appSettings_hideApiKey": "APIキーを非表示",
@@ -3660,5 +3665,348 @@
   "holidayGreeting_halloween": "ハッピーハロウィン|ハッピーハロウィーン|ハッピーハロウィン|ハピハロ|トリックオアトリート|Happy Halloween",
   "holidayGreeting_thanksgiving": "ハッピーサンクスギビング|ハッピー・サンクスギビング|感謝祭おめでとう|Happy Thanksgiving",
   "holidayGreeting_christmas": "メリークリスマス|メリー・クリスマス|メリクリ|Merry Christmas",
-  "holidayGreeting_newYear": "あけましておめでとう|明けましておめでとう|あけおめ|アケオメ|ハッピーニューイヤー|ハッピー・ニューイヤー|謹賀新年|Happy New Year"
+  "holidayGreeting_newYear": "あけましておめでとう|明けましておめでとう|あけおめ|アケオメ|ハッピーニューイヤー|ハッピー・ニューイヤー|謹賀新年|Happy New Year",
+  "appSettings_showOnlineLinks": "オンライン地図の接続を表示",
+  "appSettings_showOnlineLinksSubtitle": "オンライン地図にあるノード間の接続線を表示する",
+  "map_showOnlineLinks": "オンライン地図の接続を表示",
+  "chat_loadOlderMessages": "以前のメッセージを読み込む",
+  "messageFilter_title": "メッセージフィルター",
+  "@messageFilter_title": {
+    "description": "Message filter: Message filter"
+  },
+  "messageFilter_settingsSubtitle": "スパムや繰り返しのメッセージを隠す",
+  "@messageFilter_settingsSubtitle": {
+    "description": "Message filter: Hide spam and repeated messages"
+  },
+  "messageFilter_enabled": "メッセージをフィルターする",
+  "@messageFilter_enabled": {
+    "description": "Message filter: Filter messages"
+  },
+  "messageFilter_enabledSubtitle": "チャンネルのメッセージに適用されます",
+  "@messageFilter_enabledSubtitle": {
+    "description": "Message filter: Applies to channel messages"
+  },
+  "messageFilter_displayTitle": "フィルターされたメッセージ",
+  "@messageFilter_displayTitle": {
+    "description": "Message filter: Filtered messages"
+  },
+  "messageFilter_displayPlaceholder": "小さな表示を残す",
+  "@messageFilter_displayPlaceholder": {
+    "description": "Message filter: Show a small placeholder"
+  },
+  "messageFilter_displayHide": "完全に隠す",
+  "@messageFilter_displayHide": {
+    "description": "Message filter: Hide completely"
+  },
+  "messageFilter_displayHideHelp": "隠したメッセージは「フィルターされたメッセージ」の一覧に残ります。",
+  "@messageFilter_displayHideHelp": {
+    "description": "Message filter: Hidden messages stay in the Filtered messages list."
+  },
+  "messageFilter_rulesSection": "あなたのルール",
+  "@messageFilter_rulesSection": {
+    "description": "Message filter: Your rules"
+  },
+  "messageFilter_rulesEmpty": "ルールはまだありません。単語、フレーズ、送信者名を追加すると、一致するメッセージを隠せます。",
+  "@messageFilter_rulesEmpty": {
+    "description": "Message filter: No rules yet. Add a word, phrase or sender name to hide messages that match it."
+  },
+  "messageFilter_addRule": "ルールを追加",
+  "@messageFilter_addRule": {
+    "description": "Message filter: Add rule"
+  },
+  "messageFilter_editRule": "ルールを編集",
+  "@messageFilter_editRule": {
+    "description": "Message filter: Edit rule"
+  },
+  "messageFilter_rulePattern": "単語、フレーズ、名前",
+  "@messageFilter_rulePattern": {
+    "description": "Message filter: Word, phrase or name"
+  },
+  "messageFilter_rulePatternHint": "例: meshos",
+  "@messageFilter_rulePatternHint": {
+    "description": "Message filter: e.g. meshos"
+  },
+  "messageFilter_ruleWhere": "対象",
+  "@messageFilter_ruleWhere": {
+    "description": "Message filter: Look in"
+  },
+  "messageFilter_ruleFieldText": "メッセージ本文",
+  "@messageFilter_ruleFieldText": {
+    "description": "Message filter: Message text"
+  },
+  "messageFilter_ruleFieldSender": "送信者名",
+  "@messageFilter_ruleFieldSender": {
+    "description": "Message filter: Sender name"
+  },
+  "messageFilter_ruleFieldBoth": "両方",
+  "@messageFilter_ruleFieldBoth": {
+    "description": "Message filter: Both"
+  },
+  "messageFilter_ruleMatch": "一致の条件",
+  "@messageFilter_ruleMatch": {
+    "description": "Message filter: Match"
+  },
+  "messageFilter_ruleMatchContains": "含む",
+  "@messageFilter_ruleMatchContains": {
+    "description": "Message filter: Contains"
+  },
+  "messageFilter_ruleMatchWholeWord": "単語全体",
+  "@messageFilter_ruleMatchWholeWord": {
+    "description": "Message filter: Whole word"
+  },
+  "messageFilter_ruleMatchExact": "完全一致",
+  "@messageFilter_ruleMatchExact": {
+    "description": "Message filter: Exact"
+  },
+  "messageFilter_ruleDeleted": "ルールを削除しました",
+  "@messageFilter_ruleDeleted": {
+    "description": "Message filter: Rule deleted"
+  },
+  "messageFilter_ruleSaved": "ルールを保存しました",
+  "@messageFilter_ruleSaved": {
+    "description": "Message filter: Rule saved"
+  },
+  "messageFilter_automaticSection": "自動",
+  "@messageFilter_automaticSection": {
+    "description": "Message filter: Automatic"
+  },
+  "messageFilter_duplicates": "繰り返しのメッセージ",
+  "@messageFilter_duplicates": {
+    "description": "Message filter: Repeated messages"
+  },
+  "messageFilter_duplicatesSubtitle": "同じメッセージが再送されたり、複数の送信者から届いたりしたもの",
+  "@messageFilter_duplicatesSubtitle": {
+    "description": "Message filter: The same message sent again, or by several senders"
+  },
+  "messageFilter_repeatSends": "繰り返しと見なす送信回数",
+  "messageFilter_repeatSendsSubtitle": "同じ送信者が10分以内に同じメッセージを{count}回送信したら非表示にします",
+  "messageFilter_repeatedCharacters": "繰り返しの文字",
+  "@messageFilter_repeatedCharacters": {
+    "description": "Message filter: Repeated characters"
+  },
+  "messageFilter_repeatedCharactersSubtitle": "同じ文字の長い連続（例：「aaaaaaaaaaaaaaaaaaaa」）",
+  "@messageFilter_repeatedCharactersSubtitle": {
+    "description": "Message filter: Messages like \"aaaaaaaa\" or \"!!!!!!!!\""
+  },
+  "messageFilter_learning": "スパムのタップから学習",
+  "@messageFilter_learning": {
+    "description": "Message filter: Learn from Spam taps"
+  },
+  "messageFilter_learningSubtitle": "スパム {spam} 件、スパムではない {notSpam} 件の例",
+  "@messageFilter_learningSubtitle": {
+    "description": "Message filter: {spam} spam and {notSpam} not-spam examples",
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "学習をリセット",
+  "@messageFilter_resetLearning": {
+    "description": "Message filter: Reset learning"
+  },
+  "messageFilter_resetLearningConfirm": "「スパム」と「スパムではない」のタップから学習した内容をすべて忘れますか？ルールはそのまま残ります。",
+  "@messageFilter_resetLearningConfirm": {
+    "description": "Message filter: Forget everything learned from your Spam and Not spam taps? Your rules are kept."
+  },
+  "messageFilter_filteredMessages": "フィルターされたメッセージ ({count})",
+  "@messageFilter_filteredMessages": {
+    "description": "Message filter: Filtered messages ({count})",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "フィルターされたメッセージはありません。",
+  "@messageFilter_filteredMessagesEmpty": {
+    "description": "Message filter: Nothing has been filtered."
+  },
+  "messageFilter_ghostSingle": "隠したメッセージ · タップで表示",
+  "@messageFilter_ghostSingle": {
+    "description": "Message filter: Hidden message · Tap to view"
+  },
+  "messageFilter_ghostMany": "{count, plural, other{隠したメッセージ {count} 件 · タップで表示}}",
+  "@messageFilter_ghostMany": {
+    "description": "Message filter: {count, plural, one{{count} hidden message · Tap to view} other{{count} hidden messages · Tap to view}}",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "隠したメッセージを表示中 · タップで隠す",
+  "@messageFilter_ghostSingleExpanded": {
+    "description": "Header above one revealed filtered message; tapping it hides the message again"
+  },
+  "messageFilter_ghostManyExpanded": "{count, plural, other{隠したメッセージ {count} 件を表示中 · タップで隠す}}",
+  "@messageFilter_ghostManyExpanded": {
+    "description": "Header above a revealed run of filtered messages; tapping it hides them again",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "フィルター: 「{pattern}」に一致",
+  "@messageFilter_reasonTextRule": {
+    "description": "Message filter: Filtered: matches \"{pattern}\"",
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "フィルター: 送信者「{pattern}」",
+  "@messageFilter_reasonSenderRule": {
+    "description": "Message filter: Filtered: sender \"{pattern}\"",
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "フィルター: 繰り返しの文字",
+  "@messageFilter_reasonRepeatedCharacters": {
+    "description": "Message filter: Filtered: repeated characters"
+  },
+  "messageFilter_reasonDuplicate": "フィルター: 繰り返しのメッセージ",
+  "@messageFilter_reasonDuplicate": {
+    "description": "Message filter: Filtered: repeated message"
+  },
+  "messageFilter_reasonCrossSenderDuplicate": "フィルター: 複数の送信者から同じメッセージ",
+  "@messageFilter_reasonCrossSenderDuplicate": {
+    "description": "Message filter: Filtered: same message from several senders"
+  },
+  "messageFilter_reasonLearned": "フィルター: スパムにしたメッセージに似ています",
+  "@messageFilter_reasonLearned": {
+    "description": "Message filter: Filtered: looks like messages you marked as spam"
+  },
+  "messageFilter_reasonManual": "フィルター: あなたがスパムにしました",
+  "@messageFilter_reasonManual": {
+    "description": "Message filter: Filtered: you marked this as spam"
+  },
+  "messageFilter_notSpam": "スパムではない",
+  "@messageFilter_notSpam": {
+    "description": "Message filter: Not spam"
+  },
+  "messageFilter_hideAgain": "隠す",
+  "@messageFilter_hideAgain": {
+    "description": "Message filter: Hide"
+  },
+  "messageFilter_markSpam": "スパムにする",
+  "@messageFilter_markSpam": {
+    "description": "Message filter: Mark as spam"
+  },
+  "messageFilter_markedSpam": "スパムとしてマークしました",
+  "@messageFilter_markedSpam": {
+    "description": "Message filter: Marked as spam"
+  },
+  "messageFilter_markedNotSpam": "スパムではないとマークしました",
+  "@messageFilter_markedNotSpam": {
+    "description": "Message filter: Marked as not spam"
+  },
+  "messageFilter_filterSender": "この送信者をフィルター",
+  "@messageFilter_filterSender": {
+    "description": "Message filter: Filter this sender"
+  },
+  "messageFilter_filterSenderConfirm": "「{name}」からのメッセージをすべて隠しますか？",
+  "@messageFilter_filterSenderConfirm": {
+    "description": "Message filter: Hide all messages from \"{name}\"?",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "このようなメッセージをフィルター…",
+  "@messageFilter_filterLikeThis": {
+    "description": "Message filter: Filter messages like this…"
+  },
+  "messageFilter_channelToggle": "このチャンネルでメッセージをフィルター",
+  "@messageFilter_channelToggle": {
+    "description": "Message filter: Filter messages in this channel"
+  },
+  "messageFilter_ghostIconTooltip": "メッセージフィルターで隠されました",
+  "@messageFilter_ghostIconTooltip": {
+    "description": "Message filter: Hidden by your message filter"
+  },
+  "chatSearch_tooltip": "メッセージを検索",
+  "chatSearch_hint": "メッセージを検索",
+  "chatSearch_close": "検索を閉じる",
+  "chatSearch_resultCount": "{count, plural, other{{count} 件の結果}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "一致するメッセージはありません",
+  "chatSearch_noResultsHint": "別の単語を試すか、スペルを確認してください",
+  "contactShare_headerOutgoing": "連絡先を共有しました",
+  "contactShare_headerIncoming": "連絡先を共有",
+  "contactShare_add": "連絡先を追加",
+  "contactShare_adding": "連絡先を追加中...",
+  "contactShare_saved": "登録済み",
+  "contactShare_isYou": "これはあなたです",
+  "contactShare_shareAction": "連絡先を共有",
+  "contactShare_pickerTitle": "連絡先を共有",
+  "contactShare_myContact": "自分の連絡先",
+  "contactShare_searchHint": "連絡先を検索",
+  "contactShare_noContacts": "連絡先が見つかりません",
+  "contactShare_preview": "共有された連絡先: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "連絡先を共有: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "ハッシュで経路追跡",
+  "manualTrace_inputLabel": "リピーターのハッシュ",
+  "manualTrace_helper": "例: {example}。カンマまたはスペースで区切ってください。",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "ホップ ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "不明なノード",
+  "manualTrace_enterHashes": "ハッシュを入力",
+  "manualTrace_run": "経路トレースを実行",
+  "manualTrace_notConnected": "トレースを実行するには無線機に接続してください",
+  "manualTrace_errorInvalidHex": "16進数の文字(0-9、A-F)のみ使用できます",
+  "manualTrace_errorOddLength": "各ハッシュはホップのサイズに合わせて、16進数の文字数が偶数である必要があります",
+  "manualTrace_errorMixedWidths": "すべてのハッシュは同じ長さにしてください",
+  "manualTrace_errorUnsupportedWidth": "ハッシュは1、2、3バイト(16進数で2、4、6文字)にしてください",
+  "manualTrace_errorTooManyHops": "経路が長すぎます(最大 {max} バイト)",
+  "manualTrace_errorTraceTooLong": "1回のリクエストでトレースできるホップ数を超えています。ホップを減らすか、「入力どおり」を選んでください。",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

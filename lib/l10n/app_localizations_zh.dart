@@ -1048,6 +1048,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_languageUk => '乌克兰语';
 
   @override
+  String get appSettings_languageCs => '捷克语';
+
+  @override
   String get repeater_pathHashModeOption0 => '0 - 1 字节';
 
   @override
@@ -1321,11 +1324,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_showOtherNodesSubtitle => '在地图上显示其他节点类型';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks => '显示在线地图连接';
 
   @override
-  String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+  String get appSettings_showOnlineLinksSubtitle => '显示在线地图中节点之间的连接线';
 
   @override
   String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
@@ -1925,6 +1927,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chat_noMessages => '暂无消息';
 
   @override
+  String get chatSearch_tooltip => '搜索消息';
+
+  @override
+  String get chatSearch_hint => '搜索消息';
+
+  @override
+  String get chatSearch_close => '关闭搜索';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 条结果',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => '没有匹配的消息';
+
+  @override
+  String get chatSearch_noResultsHint => '请尝试其他词语或检查拼写';
+
+  @override
   String get chat_sendMessage => '发送消息';
 
   @override
@@ -2350,6 +2377,49 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chat_poiShared => '共享位置';
 
   @override
+  String get contactShare_headerOutgoing => '你分享了一个联系人';
+
+  @override
+  String get contactShare_headerIncoming => '分享了一个联系人';
+
+  @override
+  String get contactShare_add => '添加联系人';
+
+  @override
+  String get contactShare_adding => '正在添加联系人...';
+
+  @override
+  String get contactShare_saved => '已保存';
+
+  @override
+  String get contactShare_isYou => '这是你自己';
+
+  @override
+  String get contactShare_shareAction => '分享联系人';
+
+  @override
+  String get contactShare_pickerTitle => '分享联系人';
+
+  @override
+  String get contactShare_myContact => '我的联系人';
+
+  @override
+  String get contactShare_searchHint => '搜索联系人';
+
+  @override
+  String get contactShare_noContacts => '未找到联系人';
+
+  @override
+  String contactShare_preview(String name) {
+    return '分享的联系人：$name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return '分享了一个联系人：$name';
+  }
+
+  @override
   String chat_unread(int count) {
     return '未读：$count';
   }
@@ -2555,7 +2625,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get map_otherNodes => '其他节点';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => '显示在线地图连接';
 
   @override
   String get map_showOverlaps => '重复键重叠';
@@ -2643,6 +2713,56 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => '查看上次结果';
+
+  @override
+  String get manualTrace_menuItem => '按哈希进行路径追踪';
+
+  @override
+  String get manualTrace_inputLabel => '中继器哈希';
+
+  @override
+  String manualTrace_helper(String example) {
+    return '示例：$example。用逗号或空格分隔。';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return '跳数（$count）';
+  }
+
+  @override
+  String get manualTrace_unknownNode => '未知节点';
+
+  @override
+  String get manualTrace_enterHashes => '输入哈希';
+
+  @override
+  String get manualTrace_run => '运行路径追踪';
+
+  @override
+  String get manualTrace_notConnected => '请连接电台以运行追踪';
+
+  @override
+  String get manualTrace_errorInvalidHex => '仅允许十六进制字符（0-9、A-F）';
+
+  @override
+  String get manualTrace_errorOddLength => '每个哈希的十六进制字符数必须为偶数，与跳大小一致';
+
+  @override
+  String get manualTrace_errorMixedWidths => '所有哈希长度必须相同';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      '哈希必须为 1、2 或 3 字节（2、4 或 6 个十六进制字符）';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return '路径过长（最多 $max 字节）';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      '跳数过多，无法在一次请求中追踪。请减少一些跳，或选择“按输入顺序”。';
 
   @override
   String get mapCache_title => '离线地图缓存';
@@ -3031,6 +3151,11 @@ class AppLocalizationsZh extends AppLocalizations {
     int seconds,
   ) {
     return '$days天 $hours小时 $minutes分 $seconds秒';
+  }
+
+  @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '$hours小时 $minutes分 $seconds秒';
   }
 
   @override
@@ -5071,7 +5196,7 @@ class AppLocalizationsZh extends AppLocalizations {
       '打开转发节点设置时请求所有设置。每项设置都是一次通过 LoRa 发送的独立请求，因此速度较慢并会占用空中时间。关闭后，请点按“全部刷新”或刷新单独的部分。';
 
   @override
-  String get appSettings_languageHu => '匈牙利';
+  String get appSettings_languageHu => '匈牙利语';
 
   @override
   String get appSettings_languageJa => '日语';
@@ -6135,6 +6260,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_routingSection => '路由';
 
   @override
+  String get appSettings_resetRoutingToDefault => '将路由算法重置为默认值';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle => '将路由算法设置恢复为出厂默认值';
+
+  @override
+  String get appSettings_routingResetToDefault => '路由算法设置已重置为默认值';
+
+  @override
   String get appSettings_imageMessagesSection => '图片消息';
 
   @override
@@ -6394,4 +6528,209 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get holidayGreeting_newYear => '新年快乐|新年快樂|元旦快乐|元旦快樂|新年好|新年愉快';
+
+  @override
+  String get chat_loadOlderMessages => '加载更早的消息';
+
+  @override
+  String get messageFilter_title => '消息过滤';
+
+  @override
+  String get messageFilter_settingsSubtitle => '隐藏垃圾消息和重复消息';
+
+  @override
+  String get messageFilter_enabled => '过滤消息';
+
+  @override
+  String get messageFilter_enabledSubtitle => '适用于频道消息';
+
+  @override
+  String get messageFilter_displayTitle => '已过滤的消息';
+
+  @override
+  String get messageFilter_displayPlaceholder => '显示一个小占位提示';
+
+  @override
+  String get messageFilter_displayHide => '完全隐藏';
+
+  @override
+  String get messageFilter_displayHideHelp => '被隐藏的消息仍会保留在“已过滤的消息”列表中。';
+
+  @override
+  String get messageFilter_rulesSection => '你的规则';
+
+  @override
+  String get messageFilter_rulesEmpty => '还没有规则。添加一个词语、短语或发送者名称，即可隐藏匹配的消息。';
+
+  @override
+  String get messageFilter_addRule => '添加规则';
+
+  @override
+  String get messageFilter_editRule => '编辑规则';
+
+  @override
+  String get messageFilter_rulePattern => '词语、短语或名称';
+
+  @override
+  String get messageFilter_rulePatternHint => '例如 meshos';
+
+  @override
+  String get messageFilter_ruleWhere => '查找范围';
+
+  @override
+  String get messageFilter_ruleFieldText => '消息内容';
+
+  @override
+  String get messageFilter_ruleFieldSender => '发送者名称';
+
+  @override
+  String get messageFilter_ruleFieldBoth => '两者';
+
+  @override
+  String get messageFilter_ruleMatch => '匹配方式';
+
+  @override
+  String get messageFilter_ruleMatchContains => '包含';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => '完整词语';
+
+  @override
+  String get messageFilter_ruleMatchExact => '完全相同';
+
+  @override
+  String get messageFilter_ruleDeleted => '规则已删除';
+
+  @override
+  String get messageFilter_ruleSaved => '规则已保存';
+
+  @override
+  String get messageFilter_automaticSection => '自动';
+
+  @override
+  String get messageFilter_duplicates => '重复消息';
+
+  @override
+  String get messageFilter_duplicatesSubtitle => '重复发送的相同消息，或多个发送者发送的相同消息';
+
+  @override
+  String get messageFilter_repeatSends => '视为重复的发送次数';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return '同一发送者在 10 分钟内发送同一消息 $count 次时隐藏该消息';
+  }
+
+  @override
+  String get messageFilter_repeatedCharacters => '重复字符';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      '同一字符的长串重复，例如“aaaaaaaaaaaaaaaaaaaa”';
+
+  @override
+  String get messageFilter_learning => '从“垃圾消息”点击中学习';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return '$spam 个垃圾消息示例和 $notSpam 个非垃圾消息示例';
+  }
+
+  @override
+  String get messageFilter_resetLearning => '重置学习';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      '要清除从你点击“垃圾消息”和“非垃圾消息”中学到的所有内容吗？你的规则会保留。';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return '已过滤的消息（$count）';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => '没有被过滤的消息。';
+
+  @override
+  String get messageFilter_ghostSingle => '已隐藏的消息 · 点击查看';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 条已隐藏的消息 · 点击查看',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded => '正在显示已隐藏的消息 · 点击隐藏';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '正在显示 $count 条已隐藏的消息 · 点击隐藏',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return '已过滤：匹配“$pattern”';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return '已过滤：发送者“$pattern”';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters => '已过滤：重复字符';
+
+  @override
+  String get messageFilter_reasonDuplicate => '已过滤：重复消息';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate => '已过滤：多个发送者发送的相同消息';
+
+  @override
+  String get messageFilter_reasonLearned => '已过滤：与你标记为垃圾消息的内容相似';
+
+  @override
+  String get messageFilter_reasonManual => '已过滤：你已将此消息标记为垃圾消息';
+
+  @override
+  String get messageFilter_notSpam => '非垃圾消息';
+
+  @override
+  String get messageFilter_hideAgain => '隐藏';
+
+  @override
+  String get messageFilter_markSpam => '标记为垃圾消息';
+
+  @override
+  String get messageFilter_markedSpam => '已标记为垃圾消息';
+
+  @override
+  String get messageFilter_markedNotSpam => '已标记为非垃圾消息';
+
+  @override
+  String get messageFilter_filterSender => '过滤此发送者';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return '要隐藏来自“$name”的所有消息吗？';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => '过滤类似的消息…';
+
+  @override
+  String get messageFilter_channelToggle => '过滤此频道中的消息';
+
+  @override
+  String get messageFilter_ghostIconTooltip => '已被你的消息过滤隐藏';
 }

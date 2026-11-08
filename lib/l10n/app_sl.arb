@@ -181,7 +181,8 @@
   "appSettings_languageZh": "中文",
   "appSettings_languageSv": "Švedščina",
   "appSettings_languageNl": "Nizozemščina",
-  "appSettings_languageSk": "Slovenščina",
+  "appSettings_languageSk": "Slovaščina",
+  "appSettings_languageCs": "Češčina",
   "appSettings_languageBg": "Български",
   "appSettings_notifications": "Obvestila",
   "appSettings_enableNotifications": "Omogoči obvestila",
@@ -1009,6 +1010,7 @@
   "repeater_received": "Prejeto",
   "repeater_duplicates": "Duplikati",
   "repeater_daysHoursMinsSecs": "{days} dni {hours}h {minutes}m {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -3247,6 +3249,9 @@
   "settings_regionFetchNoneResponded": "Noben bližnji ponovitelj ni odgovoril. Približajte se ponovitelju in poskusite znova.",
   "appSettings_sourceSummary": "{label} - {description}",
   "appSettings_routingSection": "Usmerjanje",
+  "appSettings_resetRoutingToDefault": "Ponastavite algoritem usmerjanja na privzeto",
+  "appSettings_resetRoutingToDefaultSubtitle": "Obnovite nastavitve algoritma usmerjanja na tovarniške privzetke",
+  "appSettings_routingResetToDefault": "Nastavitve algoritma usmerjanja so ponastavljene na privzeto",
   "appSettings_imageMessagesSection": "Sporočila s slikami",
   "appSettings_showApiKey": "Pokaži API ključ",
   "appSettings_hideApiKey": "Skrij API ključ",
@@ -3527,5 +3532,348 @@
   "themes_chatBackground": "Ozadje klepeta",
   "themes_chatBackgroundHelp": "Prikazano v klepetih, ki nimajo svojega ozadja",
   "themes_chatBackgroundEverywhere": "Uporabi v vseh klepetih",
-  "themes_chatBackgroundEverywhereHelp": "Zamenja tudi ozadja, nastavljena v posameznih klepetih"
+  "themes_chatBackgroundEverywhereHelp": "Zamenja tudi ozadja, nastavljena v posameznih klepetih",
+  "appSettings_showOnlineLinks": "Pokaži povezave spletnega zemljevida",
+  "appSettings_showOnlineLinksSubtitle": "Prikaži povezovalne črte med napravami iz spletnega zemljevida",
+  "map_showOnlineLinks": "Pokaži povezave spletnega zemljevida",
+  "chat_loadOlderMessages": "Naloži starejša sporočila",
+  "messageFilter_title": "Filter sporočil",
+  "@messageFilter_title": {
+    "description": "Message filter: Message filter"
+  },
+  "messageFilter_settingsSubtitle": "Skrij neželena in ponavljajoča se sporočila",
+  "@messageFilter_settingsSubtitle": {
+    "description": "Message filter: Hide spam and repeated messages"
+  },
+  "messageFilter_enabled": "Filtriraj sporočila",
+  "@messageFilter_enabled": {
+    "description": "Message filter: Filter messages"
+  },
+  "messageFilter_enabledSubtitle": "Velja za sporočila v kanalih",
+  "@messageFilter_enabledSubtitle": {
+    "description": "Message filter: Applies to channel messages"
+  },
+  "messageFilter_displayTitle": "Filtrirana sporočila",
+  "@messageFilter_displayTitle": {
+    "description": "Message filter: Filtered messages"
+  },
+  "messageFilter_displayPlaceholder": "Pokaži majhno oznako",
+  "@messageFilter_displayPlaceholder": {
+    "description": "Message filter: Show a small placeholder"
+  },
+  "messageFilter_displayHide": "Skrij popolnoma",
+  "@messageFilter_displayHide": {
+    "description": "Message filter: Hide completely"
+  },
+  "messageFilter_displayHideHelp": "Skrita sporočila ostanejo na seznamu Filtrirana sporočila.",
+  "@messageFilter_displayHideHelp": {
+    "description": "Message filter: Hidden messages stay in the Filtered messages list."
+  },
+  "messageFilter_rulesSection": "Vaša pravila",
+  "@messageFilter_rulesSection": {
+    "description": "Message filter: Your rules"
+  },
+  "messageFilter_rulesEmpty": "Še ni pravil. Dodajte besedo, frazo ali ime pošiljatelja, da skrijete ujemajoča se sporočila.",
+  "@messageFilter_rulesEmpty": {
+    "description": "Message filter: No rules yet. Add a word, phrase or sender name to hide messages that match it."
+  },
+  "messageFilter_addRule": "Dodaj pravilo",
+  "@messageFilter_addRule": {
+    "description": "Message filter: Add rule"
+  },
+  "messageFilter_editRule": "Uredi pravilo",
+  "@messageFilter_editRule": {
+    "description": "Message filter: Edit rule"
+  },
+  "messageFilter_rulePattern": "Beseda, fraza ali ime",
+  "@messageFilter_rulePattern": {
+    "description": "Message filter: Word, phrase or name"
+  },
+  "messageFilter_rulePatternHint": "npr. meshos",
+  "@messageFilter_rulePatternHint": {
+    "description": "Message filter: e.g. meshos"
+  },
+  "messageFilter_ruleWhere": "Išči v",
+  "@messageFilter_ruleWhere": {
+    "description": "Message filter: Look in"
+  },
+  "messageFilter_ruleFieldText": "Besedilo sporočila",
+  "@messageFilter_ruleFieldText": {
+    "description": "Message filter: Message text"
+  },
+  "messageFilter_ruleFieldSender": "Ime pošiljatelja",
+  "@messageFilter_ruleFieldSender": {
+    "description": "Message filter: Sender name"
+  },
+  "messageFilter_ruleFieldBoth": "Oboje",
+  "@messageFilter_ruleFieldBoth": {
+    "description": "Message filter: Both"
+  },
+  "messageFilter_ruleMatch": "Ujemanje",
+  "@messageFilter_ruleMatch": {
+    "description": "Message filter: Match"
+  },
+  "messageFilter_ruleMatchContains": "Vsebuje",
+  "@messageFilter_ruleMatchContains": {
+    "description": "Message filter: Contains"
+  },
+  "messageFilter_ruleMatchWholeWord": "Cela beseda",
+  "@messageFilter_ruleMatchWholeWord": {
+    "description": "Message filter: Whole word"
+  },
+  "messageFilter_ruleMatchExact": "Natančno",
+  "@messageFilter_ruleMatchExact": {
+    "description": "Message filter: Exact"
+  },
+  "messageFilter_ruleDeleted": "Pravilo izbrisano",
+  "@messageFilter_ruleDeleted": {
+    "description": "Message filter: Rule deleted"
+  },
+  "messageFilter_ruleSaved": "Pravilo shranjeno",
+  "@messageFilter_ruleSaved": {
+    "description": "Message filter: Rule saved"
+  },
+  "messageFilter_automaticSection": "Samodejno",
+  "@messageFilter_automaticSection": {
+    "description": "Message filter: Automatic"
+  },
+  "messageFilter_duplicates": "Ponavljajoča se sporočila",
+  "@messageFilter_duplicates": {
+    "description": "Message filter: Repeated messages"
+  },
+  "messageFilter_duplicatesSubtitle": "Isto sporočilo, poslano znova ali od več pošiljateljev",
+  "@messageFilter_duplicatesSubtitle": {
+    "description": "Message filter: The same message sent again, or by several senders"
+  },
+  "messageFilter_repeatSends": "Pošiljanje, šteto kot ponovitev",
+  "messageFilter_repeatSendsSubtitle": "Skrij sporočilo, ko ga isti pošiljatelj v 10 minutah pošlje ponovno (število pošiljanj: {count})",
+  "messageFilter_repeatedCharacters": "Ponavljajoči se znaki",
+  "@messageFilter_repeatedCharacters": {
+    "description": "Message filter: Repeated characters"
+  },
+  "messageFilter_repeatedCharactersSubtitle": "Dolga zaporedja istega znaka, kot je „aaaaaaaaaaaaaaaaaaaa“",
+  "@messageFilter_repeatedCharactersSubtitle": {
+    "description": "Message filter: Messages like \"aaaaaaaa\" or \"!!!!!!!!\""
+  },
+  "messageFilter_learning": "Uči se iz dotikov Neželeno",
+  "@messageFilter_learning": {
+    "description": "Message filter: Learn from Spam taps"
+  },
+  "messageFilter_learningSubtitle": "Primeri: {spam} neželenih in {notSpam} ne neželenih",
+  "@messageFilter_learningSubtitle": {
+    "description": "Message filter: {spam} spam and {notSpam} not-spam examples",
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "Ponastavi učenje",
+  "@messageFilter_resetLearning": {
+    "description": "Message filter: Reset learning"
+  },
+  "messageFilter_resetLearningConfirm": "Pozabim vse, kar se je filter naučil iz vaših dotikov Neželeno in Ni neželeno? Vaša pravila ostanejo.",
+  "@messageFilter_resetLearningConfirm": {
+    "description": "Message filter: Forget everything learned from your Spam and Not spam taps? Your rules are kept."
+  },
+  "messageFilter_filteredMessages": "Filtrirana sporočila ({count})",
+  "@messageFilter_filteredMessages": {
+    "description": "Message filter: Filtered messages ({count})",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "Nič ni bilo filtrirano.",
+  "@messageFilter_filteredMessagesEmpty": {
+    "description": "Message filter: Nothing has been filtered."
+  },
+  "messageFilter_ghostSingle": "Skrito sporočilo · Dotaknite se za ogled",
+  "@messageFilter_ghostSingle": {
+    "description": "Message filter: Hidden message · Tap to view"
+  },
+  "messageFilter_ghostMany": "{count, plural, one{{count} skrito sporočilo · Dotaknite se za ogled} two{{count} skriti sporočili · Dotaknite se za ogled} few{{count} skrita sporočila · Dotaknite se za ogled} other{{count} skritih sporočil · Dotaknite se za ogled}}",
+  "@messageFilter_ghostMany": {
+    "description": "Message filter: {count, plural, one{{count} hidden message · Tap to view} other{{count} hidden messages · Tap to view}}",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "Prikazano skrito sporočilo · Dotaknite se za skritje",
+  "@messageFilter_ghostSingleExpanded": {
+    "description": "Header above one revealed filtered message; tapping it hides the message again"
+  },
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{Prikazano 1 skrito sporočilo · Dotaknite se za skritje} two{Prikazani {count} skriti sporočili · Dotaknite se za skritje} few{Prikazana {count} skrita sporočila · Dotaknite se za skritje} other{Prikazanih {count} skritih sporočil · Dotaknite se za skritje}}",
+  "@messageFilter_ghostManyExpanded": {
+    "description": "Header above a revealed run of filtered messages; tapping it hides them again",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "Filtrirano: ujema se z „{pattern}“",
+  "@messageFilter_reasonTextRule": {
+    "description": "Message filter: Filtered: matches \"{pattern}\"",
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "Filtrirano: pošiljatelj „{pattern}“",
+  "@messageFilter_reasonSenderRule": {
+    "description": "Message filter: Filtered: sender \"{pattern}\"",
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "Filtrirano: ponavljajoči se znaki",
+  "@messageFilter_reasonRepeatedCharacters": {
+    "description": "Message filter: Filtered: repeated characters"
+  },
+  "messageFilter_reasonDuplicate": "Filtrirano: ponovljeno sporočilo",
+  "@messageFilter_reasonDuplicate": {
+    "description": "Message filter: Filtered: repeated message"
+  },
+  "messageFilter_reasonCrossSenderDuplicate": "Filtrirano: isto sporočilo od več pošiljateljev",
+  "@messageFilter_reasonCrossSenderDuplicate": {
+    "description": "Message filter: Filtered: same message from several senders"
+  },
+  "messageFilter_reasonLearned": "Filtrirano: podobno sporočilom, ki ste jih označili kot neželena",
+  "@messageFilter_reasonLearned": {
+    "description": "Message filter: Filtered: looks like messages you marked as spam"
+  },
+  "messageFilter_reasonManual": "Filtrirano: to ste označili kot neželeno",
+  "@messageFilter_reasonManual": {
+    "description": "Message filter: Filtered: you marked this as spam"
+  },
+  "messageFilter_notSpam": "Ni neželeno",
+  "@messageFilter_notSpam": {
+    "description": "Message filter: Not spam"
+  },
+  "messageFilter_hideAgain": "Skrij",
+  "@messageFilter_hideAgain": {
+    "description": "Message filter: Hide"
+  },
+  "messageFilter_markSpam": "Označi kot neželeno",
+  "@messageFilter_markSpam": {
+    "description": "Message filter: Mark as spam"
+  },
+  "messageFilter_markedSpam": "Označeno kot neželeno",
+  "@messageFilter_markedSpam": {
+    "description": "Message filter: Marked as spam"
+  },
+  "messageFilter_markedNotSpam": "Označeno kot ni neželeno",
+  "@messageFilter_markedNotSpam": {
+    "description": "Message filter: Marked as not spam"
+  },
+  "messageFilter_filterSender": "Filtriraj tega pošiljatelja",
+  "@messageFilter_filterSender": {
+    "description": "Message filter: Filter this sender"
+  },
+  "messageFilter_filterSenderConfirm": "Skrijem vsa sporočila od „{name}“?",
+  "@messageFilter_filterSenderConfirm": {
+    "description": "Message filter: Hide all messages from \"{name}\"?",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "Filtriraj podobna sporočila…",
+  "@messageFilter_filterLikeThis": {
+    "description": "Message filter: Filter messages like this…"
+  },
+  "messageFilter_channelToggle": "Filtriraj sporočila v tem kanalu",
+  "@messageFilter_channelToggle": {
+    "description": "Message filter: Filter messages in this channel"
+  },
+  "messageFilter_ghostIconTooltip": "Skrito z vašim filtrom sporočil",
+  "@messageFilter_ghostIconTooltip": {
+    "description": "Message filter: Hidden by your message filter"
+  },
+  "chatSearch_tooltip": "Išči sporočila",
+  "chatSearch_hint": "Išči sporočila",
+  "chatSearch_close": "Zapri iskanje",
+  "chatSearch_resultCount": "{count, plural, one{{count} zadetek} two{{count} zadetka} few{{count} zadetki} other{{count} zadetkov}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Ni ustreznih sporočil",
+  "chatSearch_noResultsHint": "Poskusite z drugo besedo ali preverite črkovanje",
+  "contactShare_headerOutgoing": "Delili ste stik",
+  "contactShare_headerIncoming": "Delil stik",
+  "contactShare_add": "Dodaj stik",
+  "contactShare_adding": "Dodajanje stika ...",
+  "contactShare_saved": "Shranjeno",
+  "contactShare_isYou": "To ste vi",
+  "contactShare_shareAction": "Deli stik",
+  "contactShare_pickerTitle": "Deli stik",
+  "contactShare_myContact": "Moj stik",
+  "contactShare_searchHint": "Išči stike",
+  "contactShare_noContacts": "Ni najdenih stikov",
+  "contactShare_preview": "Deljen stik: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Delil stik: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Sledenje poti po zgoščenih vrednostih",
+  "manualTrace_inputLabel": "Zgoščene vrednosti repetitorjev",
+  "manualTrace_helper": "Primer: {example}. Ločite z vejicami ali presledki.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Skoki ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Neznano vozlišče",
+  "manualTrace_enterHashes": "Vnesite zgoščene vrednosti",
+  "manualTrace_run": "Zaženi sledenje poti",
+  "manualTrace_notConnected": "Za izvedbo sledenja se povežite z radiem",
+  "manualTrace_errorInvalidHex": "Dovoljeni so samo šestnajstiški znaki (0-9, A-F)",
+  "manualTrace_errorOddLength": "Vsaka zgoščena vrednost mora imeti sodo število šestnajstiških znakov, skladno z velikostjo skoka",
+  "manualTrace_errorMixedWidths": "Vse zgoščene vrednosti morajo biti enake dolžine",
+  "manualTrace_errorUnsupportedWidth": "Zgoščene vrednosti morajo imeti 1, 2 ali 3 bajte (2, 4 ali 6 šestnajstiških znakov)",
+  "manualTrace_errorTooManyHops": "Pot je predolga (največ {max} bajtov)",
+  "manualTrace_errorTraceTooLong": "Preveč skokov za sledenje v eni zahtevi. Odstranite nekaj skokov ali izberite »Kot vneseno«.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

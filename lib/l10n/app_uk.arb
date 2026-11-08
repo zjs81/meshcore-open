@@ -183,6 +183,7 @@
   "appSettings_languageSv": "Шведська",
   "appSettings_languageNl": "Нідерландська",
   "appSettings_languageSk": "Словацька",
+  "appSettings_languageCs": "Чеська",
   "appSettings_languageBg": "Болгарська",
   "appSettings_languageUk": "Українська",
   "appSettings_notifications": "Сповіщення",
@@ -1027,6 +1028,7 @@
   "repeater_received": "Отримано",
   "repeater_duplicates": "Дублікати",
   "repeater_daysHoursMinsSecs": "{days} дн. {hours} год {minutes} хв {seconds} с",
+  "repeater_hoursMinsSecs": "{hours} год {minutes} хв {seconds} с",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -3340,6 +3342,9 @@
   "settings_regionFetchNoneResponded": "Ближні ретранслятори не відповіли. Підійдіть ближче до ретранслятора й спробуйте ще раз.",
   "appSettings_sourceSummary": "{label} - {description}",
   "appSettings_routingSection": "Маршрутизація",
+  "appSettings_resetRoutingToDefault": "Скинути алгоритм маршрутизації до типового",
+  "appSettings_resetRoutingToDefaultSubtitle": "Відновити налаштування алгоритму маршрутизації до заводських значень за замовчуванням",
+  "appSettings_routingResetToDefault": "Налаштування алгоритму маршрутизації скинуто до типових",
   "appSettings_imageMessagesSection": "Повідомлення із зображеннями",
   "appSettings_showApiKey": "Показати API-ключ",
   "appSettings_hideApiKey": "Приховати API-ключ",
@@ -3506,5 +3511,142 @@
   "themes_chatBackground": "Тло чату",
   "themes_chatBackgroundHelp": "Показується в чатах, які не мають власного тла",
   "themes_chatBackgroundEverywhere": "Використовувати в усіх чатах",
-  "themes_chatBackgroundEverywhereHelp": "Також замінює тла, задані в окремих чатах"
+  "themes_chatBackgroundEverywhereHelp": "Також замінює тла, задані в окремих чатах",
+  "appSettings_showOnlineLinks": "Показувати зв’язки з онлайн-карти",
+  "appSettings_showOnlineLinksSubtitle": "Показує лінії між вузлами з онлайн-карти",
+  "map_showOnlineLinks": "Показувати зв’язки з онлайн-карти",
+  "chat_loadOlderMessages": "Завантажити старіші повідомлення",
+  "messageFilter_title": "Фільтр повідомлень",
+  "messageFilter_settingsSubtitle": "Приховує спам і повідомлення, що повторюються",
+  "messageFilter_enabled": "Фільтрувати повідомлення",
+  "messageFilter_enabledSubtitle": "Стосується повідомлень у каналах",
+  "messageFilter_displayTitle": "Відфільтровані повідомлення",
+  "messageFilter_displayPlaceholder": "Показувати невеликий замінник",
+  "messageFilter_displayHide": "Приховати повністю",
+  "messageFilter_displayHideHelp": "Приховані повідомлення залишаються у списку «Відфільтровані повідомлення».",
+  "messageFilter_rulesSection": "Ваші правила",
+  "messageFilter_rulesEmpty": "Правил ще немає. Додайте слово, фразу або ім’я відправника, щоб приховувати повідомлення, які їм відповідають.",
+  "messageFilter_addRule": "Додати правило",
+  "messageFilter_editRule": "Змінити правило",
+  "messageFilter_rulePattern": "Слово, фраза або ім’я",
+  "messageFilter_rulePatternHint": "напр. meshos",
+  "messageFilter_ruleWhere": "Де шукати",
+  "messageFilter_ruleFieldText": "Текст повідомлення",
+  "messageFilter_ruleFieldSender": "Ім’я відправника",
+  "messageFilter_ruleFieldBoth": "Обидва",
+  "messageFilter_ruleMatch": "Збіг",
+  "messageFilter_ruleMatchContains": "Містить",
+  "messageFilter_ruleMatchWholeWord": "Ціле слово",
+  "messageFilter_ruleMatchExact": "Точно",
+  "messageFilter_ruleDeleted": "Правило видалено",
+  "messageFilter_ruleSaved": "Правило збережено",
+  "messageFilter_automaticSection": "Автоматично",
+  "messageFilter_duplicates": "Повідомлення, що повторюються",
+  "messageFilter_duplicatesSubtitle": "Те саме повідомлення, надіслане знову або кількома відправниками",
+  "messageFilter_repeatSends": "Яка відправка вважається повтором",
+  "messageFilter_repeatSendsSubtitle": "Приховувати повідомлення, якщо той самий відправник надсилає його повторно протягом 10 хвилин (кількість відправлень: {count})",
+  "messageFilter_repeatedCharacters": "Повторювані символи",
+  "messageFilter_repeatedCharactersSubtitle": "Довгі послідовності одного символа, наприклад «aaaaaaaaaaaaaaaaaaaa»",
+  "messageFilter_learning": "Навчання на натисканнях «Спам»",
+  "messageFilter_learningSubtitle": "{spam} прикладів спаму та {notSpam} прикладів не спаму",
+  "messageFilter_resetLearning": "Скинути навчання",
+  "messageFilter_resetLearningConfirm": "Забути все, чого було навчено натисканнями «Спам» і «Не спам»? Ваші правила буде збережено.",
+  "messageFilter_filteredMessages": "Відфільтровані повідомлення ({count})",
+  "messageFilter_filteredMessagesEmpty": "Нічого не відфільтровано.",
+  "messageFilter_ghostSingle": "Приховане повідомлення · Торкніться, щоб переглянути",
+  "messageFilter_ghostMany": "{count, plural, one{{count} приховане повідомлення · Торкніться, щоб переглянути} few{{count} приховані повідомлення · Торкніться, щоб переглянути} many{{count} прихованих повідомлень · Торкніться, щоб переглянути} other{{count} прихованого повідомлення · Торкніться, щоб переглянути}}",
+  "messageFilter_ghostSingleExpanded": "Показано приховане повідомлення · Торкніться, щоб приховати",
+  "messageFilter_ghostManyExpanded": "{count, plural, one{Показано {count} приховане повідомлення · Торкніться, щоб приховати} few{Показано {count} приховані повідомлення · Торкніться, щоб приховати} many{Показано {count} прихованих повідомлень · Торкніться, щоб приховати} other{Показано {count} прихованого повідомлення · Торкніться, щоб приховати}}",
+  "messageFilter_reasonTextRule": "Відфільтровано: збігається з «{pattern}»",
+  "messageFilter_reasonSenderRule": "Відфільтровано: відправник «{pattern}»",
+  "messageFilter_reasonRepeatedCharacters": "Відфільтровано: повторювані символи",
+  "messageFilter_reasonDuplicate": "Відфільтровано: повідомлення повторюється",
+  "messageFilter_reasonCrossSenderDuplicate": "Відфільтровано: те саме повідомлення від кількох відправників",
+  "messageFilter_reasonLearned": "Відфільтровано: схоже на повідомлення, які ви позначили як спам",
+  "messageFilter_reasonManual": "Відфільтровано: ви позначили це як спам",
+  "messageFilter_notSpam": "Не спам",
+  "messageFilter_hideAgain": "Приховати",
+  "messageFilter_markSpam": "Позначити як спам",
+  "messageFilter_markedSpam": "Позначено як спам",
+  "messageFilter_markedNotSpam": "Позначено як не спам",
+  "messageFilter_filterSender": "Фільтрувати цього відправника",
+  "messageFilter_filterSenderConfirm": "Приховати всі повідомлення від «{name}»?",
+  "messageFilter_filterLikeThis": "Фільтрувати повідомлення, схожі на це…",
+  "messageFilter_channelToggle": "Фільтрувати повідомлення в цьому каналі",
+  "messageFilter_ghostIconTooltip": "Приховано вашим фільтром повідомлень",
+  "chatSearch_tooltip": "Пошук повідомлень",
+  "chatSearch_hint": "Пошук повідомлень",
+  "chatSearch_close": "Закрити пошук",
+  "chatSearch_resultCount": "{count, plural, one{{count} результат} few{{count} результати} many{{count} результатів} other{{count} результату}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Відповідних повідомлень немає",
+  "chatSearch_noResultsHint": "Спробуйте інше слово або перевірте написання",
+  "contactShare_headerOutgoing": "Ви надіслали контакт",
+  "contactShare_headerIncoming": "Надіслав(-ла) контакт",
+  "contactShare_add": "Додати контакт",
+  "contactShare_adding": "Додавання контакту...",
+  "contactShare_saved": "Збережено",
+  "contactShare_isYou": "Це ви",
+  "contactShare_shareAction": "Надіслати контакт",
+  "contactShare_pickerTitle": "Надіслати контакт",
+  "contactShare_myContact": "Мій контакт",
+  "contactShare_searchHint": "Пошук контактів",
+  "contactShare_noContacts": "Контактів не знайдено",
+  "contactShare_preview": "Контакт: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Надіслав(-ла) контакт: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Трасування шляху за хешами",
+  "manualTrace_inputLabel": "Хеші репітерів",
+  "manualTrace_helper": "Приклад: {example}. Розділяйте комами або пробілами.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Хопи ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Невідомий вузол",
+  "manualTrace_enterHashes": "Введіть хеші",
+  "manualTrace_run": "Запустити трасування шляху",
+  "manualTrace_notConnected": "Підключіться до радіо, щоб запустити трасування",
+  "manualTrace_errorInvalidHex": "Дозволені лише шістнадцяткові символи (0-9, A-F)",
+  "manualTrace_errorOddLength": "Кожен хеш має складатися з парної кількості шістнадцяткових символів, що відповідає розміру хопа",
+  "manualTrace_errorMixedWidths": "Усі хеші мають бути однакової довжини",
+  "manualTrace_errorUnsupportedWidth": "Хеші мають бути завдовжки 1, 2 або 3 байти (2, 4 або 6 шістнадцяткових символів)",
+  "manualTrace_errorTooManyHops": "Шлях задовгий (максимум {max} байт)",
+  "manualTrace_errorTraceTooLong": "Забагато хопів для трасування в одному запиті. Видаліть кілька хопів або виберіть «Як введено».",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import '../helpers/gif_helper.dart';
+import '../helpers/contact_share_message.dart';
 import '../helpers/marker_message.dart';
 import '../helpers/message_url_image_helper.dart';
 import '../helpers/reaction_helper.dart';
@@ -301,6 +302,12 @@ class NotificationService {
     }
     if (GifHelper.parseGif(trimmed) != null) {
       return l10n.notification_sentGif;
+    }
+    final contactShare = parseContactShare(trimmed);
+    if (contactShare != null) {
+      return l10n.contactShare_notification(
+        contactShare.name.isEmpty ? contactShare.shortKey : contactShare.name,
+      );
     }
     final marker = parseMarkerText(trimmed);
     if (marker != null) {

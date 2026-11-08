@@ -93,7 +93,7 @@ The app icon (iOS) or dock icon (macOS) badge shows the total unread count. It i
 
 - Stored per contact (by public key) and per channel, **scoped to the connected device's identity** (first 10 hex characters of its public key). Switching between different radios gives each its own independent unread state
 - **Suppressed when viewing**: Opening a chat resets the count to 0 and cancels the OS notification
-- **Ignored for**: Outgoing messages, CLI messages, and repeater contacts
+- **Ignored for**: Outgoing messages, CLI messages, repeater contacts, and channel messages hidden by the [message filter](message-filter.md) (these also never send a notification)
 - Debounced writes (500ms) to avoid excessive storage I/O during message bursts
 
 ## Notification Settings

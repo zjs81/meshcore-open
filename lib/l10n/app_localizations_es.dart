@@ -1107,6 +1107,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appSettings_languageUk => 'Ucraniano';
 
   @override
+  String get appSettings_languageCs => 'Checo';
+
+  @override
   String get repeater_pathHashModeOption0 => '0 - 1 byte';
 
   @override
@@ -1410,11 +1413,12 @@ class AppLocalizationsEs extends AppLocalizations {
       'Mostrar otros tipos de nodo en el mapa';
 
   @override
-  String get appSettings_showOnlineLinks => 'Show Online Map Connections';
+  String get appSettings_showOnlineLinks =>
+      'Mostrar conexiones del mapa en línea';
 
   @override
   String get appSettings_showOnlineLinksSubtitle =>
-      'Display connection lines between nodes from the online map';
+      'Muestra líneas de conexión entre nodos del mapa en línea';
 
   @override
   String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
@@ -2043,6 +2047,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chat_noMessages => 'Aún no hay mensajes';
 
   @override
+  String get chatSearch_tooltip => 'Buscar mensajes';
+
+  @override
+  String get chatSearch_hint => 'Buscar mensajes';
+
+  @override
+  String get chatSearch_close => 'Cerrar búsqueda';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count resultados',
+      one: '1 resultado',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'No hay mensajes coincidentes';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Prueba con otra palabra o revisa la ortografía';
+
+  @override
   String get chat_sendMessage => 'Enviar mensaje';
 
   @override
@@ -2491,6 +2522,49 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chat_poiShared => 'Punto de interés compartido';
 
   @override
+  String get contactShare_headerOutgoing => 'Compartiste un contacto';
+
+  @override
+  String get contactShare_headerIncoming => 'Compartió un contacto';
+
+  @override
+  String get contactShare_add => 'Añadir contacto';
+
+  @override
+  String get contactShare_adding => 'Añadiendo contacto...';
+
+  @override
+  String get contactShare_saved => 'Guardado';
+
+  @override
+  String get contactShare_isYou => 'Eres tú';
+
+  @override
+  String get contactShare_shareAction => 'Compartir contacto';
+
+  @override
+  String get contactShare_pickerTitle => 'Compartir un contacto';
+
+  @override
+  String get contactShare_myContact => 'Mi contacto';
+
+  @override
+  String get contactShare_searchHint => 'Buscar contactos';
+
+  @override
+  String get contactShare_noContacts => 'No se encontraron contactos';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Contacto compartido: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Compartió un contacto: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Sin leer: $count';
   }
@@ -2702,7 +2776,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get map_otherNodes => 'Otros nodos';
 
   @override
-  String get map_showOnlineLinks => 'Show Online Map Connections';
+  String get map_showOnlineLinks => 'Mostrar conexiones del mapa en línea';
 
   @override
   String get map_showOverlaps => 'Superposiciones de tecla repetidora';
@@ -2795,6 +2869,60 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Ver último resultado';
+
+  @override
+  String get manualTrace_menuItem => 'Traza de ruta por hashes';
+
+  @override
+  String get manualTrace_inputLabel => 'Hashes de repetidores';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Ejemplo: $example. Separa con comas o espacios.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Saltos ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Nodo desconocido';
+
+  @override
+  String get manualTrace_enterHashes => 'Introduce los hashes';
+
+  @override
+  String get manualTrace_run => 'Ejecutar traza de ruta';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Conéctate a una radio para ejecutar una traza';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Solo se permiten caracteres hexadecimales (0-9, A-F)';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Cada hash necesita un número par de caracteres hexadecimales, acorde al tamaño del salto';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Todos los hashes deben tener la misma longitud';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Los hashes deben ser de 1, 2 o 3 bytes (2, 4 o 6 caracteres hexadecimales)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'La ruta es demasiado larga (máximo $max bytes)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Demasiados saltos para trazar en una sola solicitud. Quita algunos saltos o elige «Tal como se introdujo».';
 
   @override
   String get mapCache_title => 'Caché de mapa sin conexión';
@@ -3197,6 +3325,11 @@ class AppLocalizationsEs extends AppLocalizations {
     int seconds,
   ) {
     return '$days días ${hours}h $minutes min $seconds s';
+  }
+
+  @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '${hours}h $minutes min $seconds s';
   }
 
   @override
@@ -6585,6 +6718,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appSettings_routingSection => 'Enrutamiento';
 
   @override
+  String get appSettings_resetRoutingToDefault =>
+      'Restablecer algoritmo de enrutamiento a predeterminado';
+
+  @override
+  String get appSettings_resetRoutingToDefaultSubtitle =>
+      'Restaurar la configuración del algoritmo de enrutamiento a los valores predeterminados de fábrica';
+
+  @override
+  String get appSettings_routingResetToDefault =>
+      'Configuración del algoritmo de enrutamiento restablecida a predeterminado';
+
+  @override
   String get appSettings_imageMessagesSection => 'Mensajes con imágenes';
 
   @override
@@ -6860,4 +7005,221 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Feliz Año Nuevo|Próspero Año Nuevo|Feliz Año|Feliz Nochevieja|Próspero Año|Happy New Year';
+
+  @override
+  String get chat_loadOlderMessages => 'Cargar mensajes anteriores';
+
+  @override
+  String get messageFilter_title => 'Filtro de mensajes';
+
+  @override
+  String get messageFilter_settingsSubtitle =>
+      'Oculta mensajes de spam y repetidos';
+
+  @override
+  String get messageFilter_enabled => 'Filtrar mensajes';
+
+  @override
+  String get messageFilter_enabledSubtitle =>
+      'Se aplica a los mensajes de canal';
+
+  @override
+  String get messageFilter_displayTitle => 'Mensajes filtrados';
+
+  @override
+  String get messageFilter_displayPlaceholder => 'Mostrar un aviso pequeño';
+
+  @override
+  String get messageFilter_displayHide => 'Ocultar por completo';
+
+  @override
+  String get messageFilter_displayHideHelp =>
+      'Los mensajes ocultos permanecen en la lista de Mensajes filtrados.';
+
+  @override
+  String get messageFilter_rulesSection => 'Tus reglas';
+
+  @override
+  String get messageFilter_rulesEmpty =>
+      'Aún no hay reglas. Añade una palabra, frase o nombre de remitente para ocultar los mensajes que coincidan.';
+
+  @override
+  String get messageFilter_addRule => 'Añadir regla';
+
+  @override
+  String get messageFilter_editRule => 'Editar regla';
+
+  @override
+  String get messageFilter_rulePattern => 'Palabra, frase o nombre';
+
+  @override
+  String get messageFilter_rulePatternHint => 'p. ej. meshos';
+
+  @override
+  String get messageFilter_ruleWhere => 'Buscar en';
+
+  @override
+  String get messageFilter_ruleFieldText => 'Texto del mensaje';
+
+  @override
+  String get messageFilter_ruleFieldSender => 'Nombre del remitente';
+
+  @override
+  String get messageFilter_ruleFieldBoth => 'Ambos';
+
+  @override
+  String get messageFilter_ruleMatch => 'Coincidencia';
+
+  @override
+  String get messageFilter_ruleMatchContains => 'Contiene';
+
+  @override
+  String get messageFilter_ruleMatchWholeWord => 'Palabra completa';
+
+  @override
+  String get messageFilter_ruleMatchExact => 'Exacta';
+
+  @override
+  String get messageFilter_ruleDeleted => 'Regla eliminada';
+
+  @override
+  String get messageFilter_ruleSaved => 'Regla guardada';
+
+  @override
+  String get messageFilter_automaticSection => 'Automático';
+
+  @override
+  String get messageFilter_duplicates => 'Mensajes repetidos';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      'El mismo mensaje enviado de nuevo, o por varios remitentes';
+
+  @override
+  String get messageFilter_repeatSends => 'Envíos para contar como repetición';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Ocultar un mensaje cuando el mismo remitente lo envía $count veces en 10 minutos';
+  }
+
+  @override
+  String get messageFilter_repeatedCharacters => 'Caracteres repetidos';
+
+  @override
+  String get messageFilter_repeatedCharactersSubtitle =>
+      'Secuencias largas de un mismo carácter, como \"aaaaaaaaaaaaaaaaaaaa\"';
+
+  @override
+  String get messageFilter_learning => 'Aprender de los toques en Spam';
+
+  @override
+  String messageFilter_learningSubtitle(int spam, int notSpam) {
+    return '$spam ejemplos de spam y $notSpam de no spam';
+  }
+
+  @override
+  String get messageFilter_resetLearning => 'Restablecer aprendizaje';
+
+  @override
+  String get messageFilter_resetLearningConfirm =>
+      '¿Olvidar todo lo aprendido de tus toques en Spam y No es spam? Tus reglas se conservan.';
+
+  @override
+  String messageFilter_filteredMessages(int count) {
+    return 'Mensajes filtrados ($count)';
+  }
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'No se ha filtrado nada.';
+
+  @override
+  String get messageFilter_ghostSingle => 'Mensaje oculto · Toca para ver';
+
+  @override
+  String messageFilter_ghostMany(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mensajes ocultos · Toca para ver',
+      one: '$count mensaje oculto · Toca para ver',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_ghostSingleExpanded =>
+      'Mostrando mensaje oculto · Toca para ocultar';
+
+  @override
+  String messageFilter_ghostManyExpanded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Mostrando $count mensajes ocultos · Toca para ocultar',
+      one: 'Mostrando 1 mensaje oculto · Toca para ocultar',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_reasonTextRule(String pattern) {
+    return 'Filtrado: coincide con \"$pattern\"';
+  }
+
+  @override
+  String messageFilter_reasonSenderRule(String pattern) {
+    return 'Filtrado: remitente \"$pattern\"';
+  }
+
+  @override
+  String get messageFilter_reasonRepeatedCharacters =>
+      'Filtrado: caracteres repetidos';
+
+  @override
+  String get messageFilter_reasonDuplicate => 'Filtrado: mensaje repetido';
+
+  @override
+  String get messageFilter_reasonCrossSenderDuplicate =>
+      'Filtrado: el mismo mensaje de varios remitentes';
+
+  @override
+  String get messageFilter_reasonLearned =>
+      'Filtrado: se parece a mensajes que marcaste como spam';
+
+  @override
+  String get messageFilter_reasonManual => 'Filtrado: lo marcaste como spam';
+
+  @override
+  String get messageFilter_notSpam => 'No es spam';
+
+  @override
+  String get messageFilter_hideAgain => 'Ocultar';
+
+  @override
+  String get messageFilter_markSpam => 'Marcar como spam';
+
+  @override
+  String get messageFilter_markedSpam => 'Marcado como spam';
+
+  @override
+  String get messageFilter_markedNotSpam => 'Marcado como no spam';
+
+  @override
+  String get messageFilter_filterSender => 'Filtrar este remitente';
+
+  @override
+  String messageFilter_filterSenderConfirm(String name) {
+    return '¿Ocultar todos los mensajes de \"$name\"?';
+  }
+
+  @override
+  String get messageFilter_filterLikeThis => 'Filtrar mensajes como este…';
+
+  @override
+  String get messageFilter_channelToggle => 'Filtrar mensajes en este canal';
+
+  @override
+  String get messageFilter_ghostIconTooltip =>
+      'Oculto por tu filtro de mensajes';
 }

@@ -108,7 +108,7 @@ A dedicated sub-screen for app-level preferences (nothing here is sent to the de
 - **Color theme**: Opens the Themes screen: the standard MeshCore theme, built-in presets, holiday themes, and your own themes (create, edit, share codes, `.jsonl` import/export). See [Themes](themes.md)
 - **Automatic holiday themes** (on by default, toggled on the Themes screen as **Switch automatically**): Shows the Halloween, Thanksgiving, Christmas, or New Year's theme from 17 days before each holiday through the day itself, then restores your own theme. Picking any theme or Light/Dark keeps your choice for the rest of that holiday; turn the toggle off to stop it entirely. See [Automatic holiday themes](themes.md#automatic-holiday-themes)
 - **Holiday message animations** (on by default): Plays a short animation when a holiday greeting arrives in or is sent from an open chat. See [Holiday message animations](themes.md#holiday-message-animations)
-- **Language**: System default or one of 18 languages (English, French, Spanish, German, Polish, Slovenian, Portuguese, Italian, Chinese, Swedish, Dutch, Slovak, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
+- **Language**: System default or one of 19 languages (English, French, Spanish, German, Polish, Slovenian, Portuguese, Italian, Chinese, Swedish, Dutch, Slovak, Czech, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
 
 ### Notifications
 - **Master enable/disable**: Requests OS permission when enabling
@@ -122,12 +122,13 @@ Individual channels can be muted from the channel chat bell icon, the channel li
 - **Clear Path on Max Retry**: Erases the stored routing path after all retries fail
 - **Jump to Oldest Unread**: When opening a chat, scrolls to the oldest unread message instead of the newest
 - **Auto-fetch Repeater Settings** (off by default): Requests every setting when a repeater's settings screen opens. Each setting is a separate request over LoRa, so this is slow and uses airtime; when off, use Refresh All or the per-setting refresh buttons. See [Repeater Settings](repeater-management.md#repeater-settings)
-- **Auto Route Rotation**: Enables weighted routing algorithm. When enabled, expands to show five slider sub-settings (hidden when off):
+- **Auto Route Rotation**: Enables weighted routing algorithm. When enabled, expands to show five slider sub-settings (hidden when off) and a Reset button:
   - Max Route Weight (1–10, default 5, integer steps)
   - Initial Route Weight (0.5–5.0, default 3.0)
   - Success Increment (0.1–2.0, default 0.5, 0.1 steps)
   - Failure Decrement (0.1–2.0, default 0.2, 0.1 steps)
   - Max Message Retries (2–10, default 5)
+  - **Reset Routing Algorithm to Default**: Restores all five routing algorithm settings to their factory default values
 - **Enable Message Tracing**: Shows path trace overlays and extra metadata on messages
 - **Region next to hop count** (default off): Shows a channel message's region chip on the same line as its hop count instead of below it
 - **Resend channel messages until they travel far enough** (default off): If your channel message isn't heard coming back through enough repeaters, it's sent again. Uses more airtime. When on, it shows:
@@ -187,6 +188,10 @@ Controls character substitution profiles used to render Cyrillic text in Latin c
 - **App Debug Logging**: Enable the in-app debug log
 
 ---
+
+### Message filter
+
+On the Settings screen, below App Settings, **Message filter** opens a page to hide spam and repeated channel messages: a master switch, display mode, your own rules, automatic checks, and learning. See [Message Filter](message-filter.md).
 
 ## Actions
 

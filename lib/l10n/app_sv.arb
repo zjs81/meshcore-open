@@ -182,6 +182,7 @@
   "appSettings_languageSv": "Svenska",
   "appSettings_languageNl": "Nederländska",
   "appSettings_languageSk": "Slovakiska",
+  "appSettings_languageCs": "Tjeckiska",
   "appSettings_languageBg": "Bulgariska",
   "appSettings_notifications": "Notifieringar",
   "appSettings_enableNotifications": "Aktivera notifieringar",
@@ -1010,6 +1011,7 @@
   "repeater_received": "Mottaget",
   "repeater_duplicates": "Dubbletter",
   "repeater_daysHoursMinsSecs": "{days} dagar {hours} timmar {minutes} minuter {seconds} sekunder",
+  "repeater_hoursMinsSecs": "{hours} timmar {minutes} minuter {seconds} sekunder",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -3241,6 +3243,9 @@
   "settings_regionFetchNoneResponded": "Ingen repeater i närheten svarade. Flytta dig närmare en repeater och försök igen.",
   "appSettings_sourceSummary": "{label} - {description}",
   "appSettings_routingSection": "Routing",
+  "appSettings_resetRoutingToDefault": "Återställ rutningsalgoritm till standard",
+  "appSettings_resetRoutingToDefaultSubtitle": "Återställ rutningsalgoritmins inställningar till fabriksstandard",
+  "appSettings_routingResetToDefault": "Rutningsalgoritmins inställningar återställda till standard",
   "appSettings_imageMessagesSection": "Bildmeddelanden",
   "appSettings_showApiKey": "Visa API-nyckel",
   "appSettings_hideApiKey": "Dölj API-nyckel",
@@ -3521,5 +3526,194 @@
   "themes_chatBackground": "Chattbakgrund",
   "themes_chatBackgroundHelp": "Visas i chattar som inte har en egen bakgrund",
   "themes_chatBackgroundEverywhere": "Använd i alla chattar",
-  "themes_chatBackgroundEverywhereHelp": "Ersätter även bakgrunder som är inställda för enskilda chattar"
+  "themes_chatBackgroundEverywhereHelp": "Ersätter även bakgrunder som är inställda för enskilda chattar",
+  "appSettings_showOnlineLinks": "Visa anslutningar från onlinekartan",
+  "appSettings_showOnlineLinksSubtitle": "Visa anslutningslinjer mellan noder från onlinekartan",
+  "map_showOnlineLinks": "Visa anslutningar från onlinekartan",
+  "chat_loadOlderMessages": "Ladda äldre meddelanden",
+  "messageFilter_title": "Meddelandefilter",
+  "messageFilter_settingsSubtitle": "Dölj skräppost och upprepade meddelanden",
+  "messageFilter_enabled": "Filtrera meddelanden",
+  "messageFilter_enabledSubtitle": "Gäller kanalmeddelanden",
+  "messageFilter_displayTitle": "Filtrerade meddelanden",
+  "messageFilter_displayPlaceholder": "Visa en liten platshållare",
+  "messageFilter_displayHide": "Dölj helt",
+  "messageFilter_displayHideHelp": "Dolda meddelanden finns kvar i listan Filtrerade meddelanden.",
+  "messageFilter_rulesSection": "Dina regler",
+  "messageFilter_rulesEmpty": "Inga regler ännu. Lägg till ett ord, en fras eller ett avsändarnamn för att dölja matchande meddelanden.",
+  "messageFilter_addRule": "Lägg till regel",
+  "messageFilter_editRule": "Redigera regel",
+  "messageFilter_rulePattern": "Ord, fras eller namn",
+  "messageFilter_rulePatternHint": "t.ex. meshos",
+  "messageFilter_ruleWhere": "Sök i",
+  "messageFilter_ruleFieldText": "Meddelandetext",
+  "messageFilter_ruleFieldSender": "Avsändarnamn",
+  "messageFilter_ruleFieldBoth": "Båda",
+  "messageFilter_ruleMatch": "Matchning",
+  "messageFilter_ruleMatchContains": "Innehåller",
+  "messageFilter_ruleMatchWholeWord": "Helt ord",
+  "messageFilter_ruleMatchExact": "Exakt",
+  "messageFilter_ruleDeleted": "Regeln har raderats",
+  "messageFilter_ruleSaved": "Regeln har sparats",
+  "messageFilter_automaticSection": "Automatiskt",
+  "messageFilter_duplicates": "Upprepade meddelanden",
+  "messageFilter_duplicatesSubtitle": "Samma meddelande skickas igen, eller av flera avsändare",
+  "messageFilter_repeatSends": "Utskick som räknas som upprepning",
+  "messageFilter_repeatSendsSubtitle": "Dölj ett meddelande när samma avsändare skickar det {count} gånger inom 10 minuter",
+  "messageFilter_repeatedCharacters": "Upprepade tecken",
+  "messageFilter_repeatedCharactersSubtitle": "Långa följder av samma tecken, som ”aaaaaaaaaaaaaaaaaaaa”",
+  "messageFilter_learning": "Lär av tryck på Skräppost",
+  "messageFilter_learningSubtitle": "{spam} skräppost- och {notSpam} inte-skräppost-exempel",
+  "@messageFilter_learningSubtitle": {
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "Återställ inlärning",
+  "messageFilter_resetLearningConfirm": "Glömma allt som lärts från dina tryck på Skräppost och Inte skräppost? Dina regler behålls.",
+  "messageFilter_filteredMessages": "Filtrerade meddelanden ({count})",
+  "@messageFilter_filteredMessages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "Inget har filtrerats.",
+  "messageFilter_ghostSingle": "Dolt meddelande · Tryck för att visa",
+  "messageFilter_ghostMany": "{count, plural, one{{count} dolt meddelande · Tryck för att visa} other{{count} dolda meddelanden · Tryck för att visa}}",
+  "@messageFilter_ghostMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "Visar dolt meddelande · Tryck för att dölja",
+  "messageFilter_ghostManyExpanded": "{count, plural, one{Visar {count} dolt meddelande · Tryck för att dölja} other{Visar {count} dolda meddelanden · Tryck för att dölja}}",
+  "@messageFilter_ghostManyExpanded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "Filtrerat: matchar ”{pattern}”",
+  "@messageFilter_reasonTextRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "Filtrerat: avsändare ”{pattern}”",
+  "@messageFilter_reasonSenderRule": {
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "Filtrerat: upprepade tecken",
+  "messageFilter_reasonDuplicate": "Filtrerat: upprepat meddelande",
+  "messageFilter_reasonCrossSenderDuplicate": "Filtrerat: samma meddelande från flera avsändare",
+  "messageFilter_reasonLearned": "Filtrerat: liknar meddelanden du markerat som skräppost",
+  "messageFilter_reasonManual": "Filtrerat: du markerade detta som skräppost",
+  "messageFilter_notSpam": "Inte skräppost",
+  "messageFilter_hideAgain": "Dölj",
+  "messageFilter_markSpam": "Markera som skräppost",
+  "messageFilter_markedSpam": "Markerat som skräppost",
+  "messageFilter_markedNotSpam": "Markerat som inte skräppost",
+  "messageFilter_filterSender": "Filtrera denna avsändare",
+  "messageFilter_filterSenderConfirm": "Dölja alla meddelanden från ”{name}”?",
+  "@messageFilter_filterSenderConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "Filtrera meddelanden som detta…",
+  "messageFilter_channelToggle": "Filtrera meddelanden i den här kanalen",
+  "messageFilter_ghostIconTooltip": "Dolt av ditt meddelandefilter",
+  "chatSearch_tooltip": "Sök i meddelanden",
+  "chatSearch_hint": "Sök i meddelanden",
+  "chatSearch_close": "Stäng sökning",
+  "chatSearch_resultCount": "{count, plural, =1{1 träff} other{{count} träffar}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Inga matchande meddelanden",
+  "chatSearch_noResultsHint": "Prova ett annat ord eller kontrollera stavningen",
+  "contactShare_headerOutgoing": "Du delade en kontakt",
+  "contactShare_headerIncoming": "Delade en kontakt",
+  "contactShare_add": "Lägg till kontakt",
+  "contactShare_adding": "Lägger till kontakt...",
+  "contactShare_saved": "Sparad",
+  "contactShare_isYou": "Det här är du",
+  "contactShare_shareAction": "Dela kontakt",
+  "contactShare_pickerTitle": "Dela en kontakt",
+  "contactShare_myContact": "Min kontakt",
+  "contactShare_searchHint": "Sök bland kontakter",
+  "contactShare_noContacts": "Inga kontakter hittades",
+  "contactShare_preview": "Delad kontakt: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Delade en kontakt: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Ruttspårning via hashar",
+  "manualTrace_inputLabel": "Repeater-hashar",
+  "manualTrace_helper": "Exempel: {example}. Separera med kommatecken eller mellanslag.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Hopp ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Okänd nod",
+  "manualTrace_enterHashes": "Ange hashar",
+  "manualTrace_run": "Kör ruttspårning",
+  "manualTrace_notConnected": "Anslut till en radio för att köra en spårning",
+  "manualTrace_errorInvalidHex": "Endast hex-tecken (0-9, A-F) är tillåtna",
+  "manualTrace_errorOddLength": "Varje hash måste ha ett jämnt antal hex-tecken, som matchar hoppstorleken",
+  "manualTrace_errorMixedWidths": "Alla hashar måste ha samma längd",
+  "manualTrace_errorUnsupportedWidth": "Hashar måste vara 1, 2 eller 3 byte (2, 4 eller 6 hex-tecken)",
+  "manualTrace_errorTooManyHops": "Rutten är för lång (högst {max} byte)",
+  "manualTrace_errorTraceTooLong": "För många hopp för att spåra i en enda förfrågan. Ta bort några hopp eller välj ”Som inmatat”.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

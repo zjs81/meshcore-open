@@ -95,6 +95,7 @@ class TranslationLanguageOption {
 
 const List<TranslationLanguageOption> supportedTranslationLanguages = [
   TranslationLanguageOption(code: 'bg', label: 'Bulgarian'),
+  TranslationLanguageOption(code: 'cs', label: 'Czech'),
   TranslationLanguageOption(code: 'de', label: 'German'),
   TranslationLanguageOption(code: 'en', label: 'English'),
   TranslationLanguageOption(code: 'es', label: 'Spanish'),

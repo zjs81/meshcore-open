@@ -61,6 +61,7 @@ MapScreen (selected=2)
   ├─ [quick-switch 0] → pushReplacement → ContactsScreen
   ├─ [quick-switch 1] → pushReplacement → ChannelsScreen
   ├─ [radar menu item] → enters in-map path trace mode (push → PathTraceMapScreen after path is built)
+  ├─ [Path trace by hashes] → push → ManualPathTraceScreen → push → PathTraceMapScreen
   ├─ [terrain menu item] → push → LineOfSightMapScreen
   └─ [long-press] → share marker sheet
 
