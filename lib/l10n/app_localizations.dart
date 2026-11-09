@@ -816,6 +816,336 @@ abstract class AppLocalizations {
   /// **'Notifications, messaging, and map preferences'**
   String get settings_appSettingsSubtitle;
 
+  /// No description provided for @settings_export.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get settings_export;
+
+  /// No description provided for @settings_exportSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export contacts and repeaters as GPX'**
+  String get settings_exportSubtitle;
+
+  /// No description provided for @backupRestore_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup & Restore'**
+  String get backupRestore_title;
+
+  /// No description provided for @backupRestore_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save or restore app data and radio settings'**
+  String get backupRestore_subtitle;
+
+  /// No description provided for @backupRestore_import.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get backupRestore_import;
+
+  /// No description provided for @backupRestore_selectImportFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Import File'**
+  String get backupRestore_selectImportFile;
+
+  /// No description provided for @backupRestore_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password (optional)'**
+  String get backupRestore_password;
+
+  /// No description provided for @backupRestore_passwordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.'**
+  String get backupRestore_passwordHelp;
+
+  /// No description provided for @backupRestore_importUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the password or choose a supported backup file.'**
+  String get backupRestore_importUnavailable;
+
+  /// No description provided for @backupRestore_items.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup and restore items'**
+  String get backupRestore_items;
+
+  /// No description provided for @backupRestore_nodeSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Node Settings'**
+  String get backupRestore_nodeSettings;
+
+  /// No description provided for @backupRestore_nodeSettingsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Device name, private and public keys, radio settings, and regions'**
+  String get backupRestore_nodeSettingsDescription;
+
+  /// No description provided for @backupRestore_deviceName.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Name'**
+  String get backupRestore_deviceName;
+
+  /// No description provided for @backupRestore_privateKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Private Key (sensitive)'**
+  String get backupRestore_privateKey;
+
+  /// No description provided for @backupRestore_publicKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Public Key'**
+  String get backupRestore_publicKey;
+
+  /// No description provided for @backupRestore_radioSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio Settings'**
+  String get backupRestore_radioSettings;
+
+  /// No description provided for @backupRestore_regions.
+  ///
+  /// In en, this message translates to:
+  /// **'Regions'**
+  String get backupRestore_regions;
+
+  /// No description provided for @backupRestore_location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get backupRestore_location;
+
+  /// No description provided for @backupRestore_contactSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Settings'**
+  String get backupRestore_contactSettings;
+
+  /// No description provided for @backupRestore_privacySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Settings'**
+  String get backupRestore_privacySettings;
+
+  /// No description provided for @backupRestore_contactsData.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts'**
+  String get backupRestore_contactsData;
+
+  /// No description provided for @backupRestore_perContactSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Settings and Filters'**
+  String get backupRestore_perContactSettings;
+
+  /// No description provided for @backupRestore_contactGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Groups'**
+  String get backupRestore_contactGroups;
+
+  /// No description provided for @backupRestore_contactHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact History'**
+  String get backupRestore_contactHistory;
+
+  /// No description provided for @backupRestore_channelsData.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels'**
+  String get backupRestore_channelsData;
+
+  /// No description provided for @backupRestore_channelFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Message Filter Settings'**
+  String get backupRestore_channelFilters;
+
+  /// No description provided for @backupRestore_channelSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel Settings'**
+  String get backupRestore_channelSettings;
+
+  /// No description provided for @backupRestore_communities.
+  ///
+  /// In en, this message translates to:
+  /// **'Communities'**
+  String get backupRestore_communities;
+
+  /// No description provided for @backupRestore_channelHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel History'**
+  String get backupRestore_channelHistory;
+
+  /// No description provided for @backupRestore_locationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Settings'**
+  String get backupRestore_locationSettings;
+
+  /// No description provided for @backupRestore_locationSettingsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Location, contact settings, and privacy settings'**
+  String get backupRestore_locationSettingsDescription;
+
+  /// No description provided for @backupRestore_appSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'App Settings'**
+  String get backupRestore_appSettings;
+
+  /// No description provided for @backupRestore_appSettingsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'App preferences and appearance settings'**
+  String get backupRestore_appSettingsDescription;
+
+  /// No description provided for @backupRestore_ipfsKey.
+  ///
+  /// In en, this message translates to:
+  /// **'IPFS API Key (sensitive)'**
+  String get backupRestore_ipfsKey;
+
+  /// No description provided for @backupRestore_stadiaMapKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Stadia Maps API Key (sensitive)'**
+  String get backupRestore_stadiaMapKey;
+
+  /// No description provided for @backupRestore_contacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts'**
+  String get backupRestore_contacts;
+
+  /// No description provided for @backupRestore_contactsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts, per-contact filters and settings, groups, and message history'**
+  String get backupRestore_contactsDescription;
+
+  /// No description provided for @backupRestore_discoveredContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Discovered Contacts'**
+  String get backupRestore_discoveredContacts;
+
+  /// No description provided for @backupRestore_discoveredContactsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Discovered contacts and their saved details'**
+  String get backupRestore_discoveredContactsDescription;
+
+  /// No description provided for @backupRestore_channels.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels'**
+  String get backupRestore_channels;
+
+  /// No description provided for @backupRestore_channelsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels, channel filters, communities, and message history'**
+  String get backupRestore_channelsDescription;
+
+  /// No description provided for @backupRestore_backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Backup'**
+  String get backupRestore_backup;
+
+  /// No description provided for @backupRestore_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Selected'**
+  String get backupRestore_restore;
+
+  /// No description provided for @backupRestore_backupComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup file created.'**
+  String get backupRestore_backupComplete;
+
+  /// No description provided for @backupRestore_restoreComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore complete. Reconnect if you restored the radio identity.'**
+  String get backupRestore_restoreComplete;
+
+  /// No description provided for @backupRestore_missingModelsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Models Not Downloaded'**
+  String get backupRestore_missingModelsTitle;
+
+  /// No description provided for @backupRestore_missingModelsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The restored settings select models that are not available on this device:\n{models}\n\nDownload them now?'**
+  String backupRestore_missingModelsMessage(String models);
+
+  /// No description provided for @backupRestore_downloadModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Models'**
+  String get backupRestore_downloadModels;
+
+  /// No description provided for @backupRestore_downloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading…'**
+  String get backupRestore_downloading;
+
+  /// No description provided for @backupRestore_cancelDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Download'**
+  String get backupRestore_cancelDownload;
+
+  /// No description provided for @backupRestore_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup operation failed: {error}'**
+  String backupRestore_failed(String error);
+
+  /// No description provided for @backupRestore_fileTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup file is larger than the 100 MB limit.'**
+  String get backupRestore_fileTooLarge;
+
+  /// No description provided for @backupRestore_selectAtLeastOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one item.'**
+  String get backupRestore_selectAtLeastOne;
+
+  /// No description provided for @backupRestore_replaceIdentityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace radio identity?'**
+  String get backupRestore_replaceIdentityTitle;
+
+  /// No description provided for @backupRestore_replaceIdentityMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring Node Settings replaces the connected radio\'s private key and changes its identity. Continue only if this is intended.'**
+  String get backupRestore_replaceIdentityMessage;
+
   /// No description provided for @settings_nodeSettings.
   ///
   /// In en, this message translates to:

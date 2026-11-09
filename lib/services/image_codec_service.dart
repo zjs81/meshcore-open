@@ -385,7 +385,7 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
   ///
   /// Call once at startup, next to
   /// `await translationService.refreshDownloadedModels();` in `main.dart`.
-  Future<void> refreshDownloadedModels() async {
+  Future<void> refreshDownloadedModels({bool clearMissing = false}) async {
     if (_isDownloading) return;
     await _settingsStore.load();
     if (kIsWeb) {
@@ -393,7 +393,7 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
       return;
     }
     final scanned = await _fileStore.scanDownloadedModels();
-    if (scanned.isEmpty) {
+    if (scanned.isEmpty && !clearMissing) {
       _notify();
       return;
     }
@@ -404,6 +404,9 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
     final onDisk = {for (final model in scanned) model.name: model};
     final existingByPath = {
       for (final model in preferences.downloadedModels) model.localPath: model,
+    };
+    final existingByName = {
+      for (final model in preferences.downloadedModels) model.name: model,
     };
     final merged = <ImageCodecModelRecord>[];
     // Every filename the registry knows about, so a half-installed bundle's
@@ -457,9 +460,14 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
     // as its own single-file record so a hand-fetched graph is not deleted.
     for (final model in scanned) {
       if (claimed.contains(model.name)) continue;
-      final existing = existingByPath[model.localPath];
+      final existing =
+          existingByPath[model.localPath] ?? existingByName[model.name];
       merged.add(
-        existing?.copyWith(fileSizeBytes: model.fileSizeBytes) ?? model,
+        existing?.copyWith(
+              localPath: model.localPath,
+              fileSizeBytes: model.fileSizeBytes,
+            ) ??
+            model,
       );
     }
 

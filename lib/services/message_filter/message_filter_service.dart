@@ -107,6 +107,14 @@ class MessageFilterService extends ChangeNotifier {
   @visibleForTesting
   int get recentCleanCount => _recentClean.length;
 
+  @visibleForTesting
+  bool hasRecentCleanExample(String text) {
+    final key = MessageFilterText.normalize(text);
+    return _recentClean.any(
+      (example) => MessageFilterText.normalize(example.text) == key,
+    );
+  }
+
   /// Loads persisted state and trains the classifier.
   Future<void> load() async {
     try {

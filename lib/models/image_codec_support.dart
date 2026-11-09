@@ -481,6 +481,19 @@ class ImageCodecModelSpec {
       maybeAssetFor(ImageCodecAssetRole.entropyGraph) != null &&
       maybeAssetFor(ImageCodecAssetRole.entropyDecodeGraph) != null &&
       maybeAssetFor(ImageCodecAssetRole.cdfTables) != null;
+
+  bool hasCompleteInstalledRecord(
+    Iterable<ImageCodecModelRecord> downloadedModels,
+  ) => downloadedModels.any(
+    (record) =>
+        record.id == id &&
+        record.bundleVersion >= kImageCodecBundleVersion &&
+        assets.every(
+          (asset) =>
+              record.assetFileNames.contains(asset.fileName) &&
+              record.assetRoles[asset.fileName] == asset.role,
+        ),
+  );
 }
 
 /// The set of on-disk paths a codec session needs, replacing the bare

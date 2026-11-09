@@ -16,7 +16,7 @@ The settings screen is a scrollable list of cards:
 3. [Location](#location)
 4. [App Settings](#app-settings) (link to sub-screen)
 5. [Actions](#actions)
-6. [Export](#export)
+6. [Backup & Restore and Export](#export)
 7. [Debug](#debug)
 8. [About](#about)
 
@@ -202,7 +202,19 @@ One-tap device operations:
 
 ---
 
-## Export
+## Backup & Restore and Export
+
+The settings card links to **Backup & Restore** and **Export** subpages.
+
+### Backup & Restore
+
+Choose individual items to include in a backup or restore. Location settings include the saved coordinates, GPS enable state and interval, contact discovery options, and privacy/adverts settings. When importing, only items found in the selected file can be selected. Backups from the official MeshCore app are supported; those files do not include app preferences, groups, filters, or message history, so those choices are unavailable. A radio connection is required to restore radio settings and contact or channel lists. Restoring contacts or channels replaces the selected list on the radio, then reloads it from the device. If you also restore the radio identity, reconnect afterward to reload its data. Message history and groups are restored in the app.
+
+The private-key option is off by default because it changes the radio's identity. Select it only when you intend to restore that identity; the app asks for confirmation before proceeding. Some radios do not allow identity backup or restore, and the app will let you know if this feature is unavailable.
+
+A password protects the backup file. Leave the password blank to create an unprotected file. Backups may contain your radio's private key, channel keys, messages and saved passwords, so store them carefully. Model settings are backed up, but model files are not; after restoring, the app offers to download selected models that are missing. Download progress appears in that prompt, and closing it cancels an active download. Received image files and cached map tiles are not included.
+
+### GPX Export
 
 Three GPX export options (not available on web):
 

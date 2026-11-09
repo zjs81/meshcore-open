@@ -568,6 +568,10 @@ class MeshCoreConnector extends ChangeNotifier {
   bool get isAutoReconnectScheduled =>
       (_shouldAutoReconnect || _shouldAutoReconnectTcp) &&
       (_reconnectTimer?.isActive ?? false);
+
+  @visibleForTesting
+  int get reconnectAttemptsForTesting => _reconnectAttempts;
+
   String? get activeTcpEndpoint => _tcpConnector.activeEndpoint;
   bool get isTcpTransportConnected =>
       _state == MeshCoreConnectionState.connected &&
@@ -620,6 +624,12 @@ class MeshCoreConnector extends ChangeNotifier {
 
   List<Contact> get discoveredContacts {
     return List.unmodifiable(_discoveredContacts);
+  }
+
+  Future<void> reloadDiscoveredContacts() async {
+    if (!isConnected) return;
+    await _loadDiscoveredContactCache();
+    await updateKnownDiscovered();
   }
 
   String exportDiscoveredContactsJson() {
@@ -4462,6 +4472,36 @@ class MeshCoreConnector extends ChangeNotifier {
     try {
       await sendFrame(buildGetStatsFrame(statsTypeRadio));
     } catch (_) {}
+  }
+
+  Future<Uint8List> exportPrivateKey() async {
+    if (!isConnected) throw StateError('Not connected to a MeshCore device');
+    final response = Completer<Uint8List>();
+    final subscription = receivedFrames.listen((frame) {
+      if (frame.isNotEmpty &&
+          frame[0] == respCodePrivateKey &&
+          !response.isCompleted) {
+        response.complete(Uint8List.fromList(frame));
+      }
+    });
+    try {
+      await sendFrame(buildExportPrivateKeyFrame(), waitForGenericAck: true);
+      final frame = await response.future.timeout(const Duration(seconds: 1));
+      if (frame.length != 65) {
+        throw FormatException('Firmware returned an invalid private-key frame');
+      }
+      return Uint8List.fromList(frame.sublist(1));
+    } finally {
+      await subscription.cancel();
+    }
+  }
+
+  Future<void> importPrivateKey(Uint8List keyData) async {
+    if (!isConnected) throw StateError('Not connected to a MeshCore device');
+    await sendFrame(
+      buildImportPrivateKeyFrame(keyData),
+      waitForGenericAck: true,
+    );
   }
 
   /// Sends CMD_SET_RADIO_PARAMS (same arguments as [buildSetRadioParamsFrame])
