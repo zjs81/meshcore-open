@@ -2284,14 +2284,6 @@
   "contact_lastSeen": "Vu pour la dernière fois",
   "contact_clearChat": "Effacer la conversation",
   "contact_teleBaseSubtitle": "Autoriser le partage du niveau de batterie et de la télémétrie de base",
-  "appSettings_maxRouteWeightSubtitle": "Poids maximal qu'un chemin peut accumuler grâce aux livraisons réussies.",
-  "appSettings_initialRouteWeight": "Poids initial de l'itinéraire",
-  "appSettings_maxRouteWeight": "Poids maximal du chemin",
-  "appSettings_initialRouteWeightSubtitle": "Poids de départ pour les nouveaux chemins découverts",
-  "appSettings_routeWeightSuccessIncrement": "Incrément du poids de succès",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Poids ajouté à un chemin après une livraison réussie.",
-  "appSettings_routeWeightFailureDecrement": "Décrément du poids d'échec",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Poids retiré d'un chemin après une tentative de livraison infructueuse.",
   "appSettings_maxMessageRetries": "Nombre maximal de tentatives d'envoi",
   "appSettings_maxMessageRetriesSubtitle": "Nombre de tentatives avant de marquer un message comme ayant échoué.",
   "path_routeWeight": "{weight}/{max}",
@@ -3802,5 +3794,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Impossible de trouver ce message dans la discussion",
+  "chat_clearSelection": "Effacer la sélection",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Supprimer 1 message de cet appareil ?} other{Supprimer {count} messages de cet appareil ?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Supprimer les messages ?",
+  "chat_messagesDeleted": "{count, plural, one{1 message supprimé} other{{count} messages supprimés}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Tout sélectionner",
+  "chat_selectMessages": "Sélectionner des messages",
+  "chat_selectedCount": "{count} sélectionné(s)",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Ajouter à nouveau",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{1 message marqué comme pas un spam} other{{count} messages marqués comme pas un spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{1 message marqué comme spam} other{{count} messages marqués comme spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Agrandir la liste des relais",
+  "pathMap_showMap": "Afficher la carte",
+  "routing_modeDirect": "Direct",
+  "routing_modeDirectHint": "Envoie toujours directement à ce contact, sans relais. À utiliser quand il est à portée radio."
 }

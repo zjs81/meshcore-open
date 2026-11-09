@@ -14,6 +14,7 @@ import '../connector/meshcore_connector.dart';
 import '../models/community.dart';
 import '../storage/community_store.dart';
 import '../utils/platform_info.dart';
+import '../helpers/chat_jump.dart';
 import '../helpers/chat_scroll_controller.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/cyr2lat.dart';
@@ -137,10 +138,33 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   int _imageStoreVersion = 0;
   ModalRoute<dynamic>? _route;
 
+  /// The channel chat currently registered as the visible conversation. A
+  /// screen only clears the registration it owns, so one disposed after the
+  /// screen underneath re-registered cannot wipe that out.
+  static _ChannelChatScreenState? _activeOwner;
+
+  void _registerActive() {
+    final connector = _connector;
+    if (connector == null) return;
+    _activeOwner = this;
+    connector.setActiveChannel(widget.channel.index);
+  }
+
+  void _unregisterActive() {
+    if (!identical(_activeOwner, this)) return;
+    _activeOwner = null;
+    _connector?.setActiveChannel(null);
+  }
+
   /// Filtered messages the user tapped open on this screen. Session-only by
   /// design: leaving the chat hides them again.
   final Set<String> _revealedFilteredIds = <String>{};
   int _revealVersion = 0;
+
+  /// Message ids picked for a bulk action. Non-empty means selection mode:
+  /// taps toggle messages and the app bar shows the bulk actions.
+  final Set<String> _selectedIds = <String>{};
+  bool get _selecting => _selectedIds.isNotEmpty;
 
   @override
   void initState() {
@@ -152,7 +176,6 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       if (!mounted) return;
       final connector = context.read<MeshCoreConnector>();
       final settings = context.read<AppSettingsService>().settings;
-      final idx = widget.channel.index;
       final unread = widget.initialUnreadCount;
       final messages = connector.getChannelMessages(widget.channel);
       _loadCommunities();
@@ -163,8 +186,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       setState(() {
         if (anchor != null) _unreadDividerMessageId = anchor.messageId;
       });
-      connector.setActiveChannel(idx);
       _connector = connector;
+      if (_route?.isCurrent ?? true) _registerActive();
       if (anchor != null && settings.jumpToOldestUnread) {
         _channelSkipNextBottomSnap = true;
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -302,9 +325,19 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
   /// Reloads communities when a route pushed on top of this one is popped,
   /// so a community joined or created elsewhere gets its badge and type here.
+  ///
+  /// Also keeps the active conversation honest: a page pushed on top (e.g.
+  /// another chat opened from a notification) hides this channel, so its
+  /// messages must count as unread again until it is uncovered.
   void _onCoveringRouteStatus(AnimationStatus status) {
-    if (status == AnimationStatus.dismissed && mounted) {
+    if (!mounted) return;
+    if (status == AnimationStatus.dismissed) {
+      _registerActive();
       _loadCommunities();
+    } else {
+      // Not just `forward`: a page pushed without a transition jumps
+      // straight to `completed`.
+      _unregisterActive();
     }
   }
 
@@ -312,12 +345,13 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   void dispose() {
     _route?.secondaryAnimation?.removeStatusListener(_onCoveringRouteStatus);
     _watchedImageStore?.removeListener(_onImageStoreChanged);
-    _connector?.setActiveChannel(null);
+    _unregisterActive();
     _scrollController.showJumpToBottom.removeListener(_clearDividerAtBottom);
     _textFieldFocusNode.removeListener(_onTextFieldFocusChange);
     _textFieldFocusNode.dispose();
     _textController.dispose();
     _searchController.dispose();
+    _highlightTimer?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -458,7 +492,59 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       query: _searchQuery.trim(),
       loadEntries: loadEntries,
       textScale: context.watch<ChatTextScaleService>().scale,
+      onSelect: (entry) => unawaited(_jumpToSearchResult(entry.id)),
     );
+  }
+
+  /// Message briefly highlighted after jumping to it from search.
+  String? _highlightedMessageId;
+  Timer? _highlightTimer;
+
+  /// Closes search and scrolls the transcript to [messageId], loading older
+  /// pages first when the message is further back than what is loaded.
+  Future<void> _jumpToSearchResult(String messageId) async {
+    FocusScope.of(context).unfocus();
+    _closeSearch();
+    final connector = context.read<MeshCoreConnector>();
+    bool loaded() => connector
+        .getChannelMessages(widget.channel)
+        .any((m) => m.messageId == messageId);
+    for (var page = 0; page < 500 && !loaded(); page++) {
+      if (!mounted || _olderHistoryExhausted) break;
+      if (_isLoadingOlder) {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        continue;
+      }
+      await _loadOlderMessages();
+    }
+    // Let the transcript (rebuilt after closing search) lay out.
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+    final layout = _transcriptLayout;
+    final index = layout == null || !loaded()
+        ? -1
+        : layout.ids.indexOf(layout.entryIdFor(messageId));
+    final found =
+        index >= 0 &&
+        await scrollListToIndex(
+          controller: _scrollController,
+          targetIndex: index,
+          itemCount: layout!.length,
+          isMounted: () => mounted,
+        );
+    if (!mounted) return;
+    if (!found) {
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.chatSearch_jumpFailed),
+      );
+      return;
+    }
+    _highlightTimer?.cancel();
+    setState(() => _highlightedMessageId = layout.entryIdFor(messageId));
+    _highlightTimer = Timer(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _highlightedMessageId = null);
+    });
   }
 
   Future<List<ChatSearchEntry>> _loadSearchEntries() async {
@@ -484,9 +570,14 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: !_searching,
+      canPop: !_searching && !_selecting,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop && _searching) _closeSearch();
+        if (didPop) return;
+        if (_selecting) {
+          _clearSelection();
+        } else if (_searching) {
+          _closeSearch();
+        }
       },
       child: _buildScaffold(context),
     );
@@ -494,196 +585,203 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: _searching
-            ? IconButton(
-                tooltip: context.l10n.chatSearch_close,
-                icon: const Icon(Icons.arrow_back),
-                onPressed: _closeSearch,
-              )
-            : null,
-        title: _searching
-            ? _buildSearchField()
-            : GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => openRegionSelectDialog(widget.channel),
-                child: Row(
-                  children: [
-                    _channelIcon(widget.channel),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: _selecting
+          ? _buildSelectionAppBar(context)
+          : AppBar(
+              leading: _searching
+                  ? IconButton(
+                      tooltip: context.l10n.chatSearch_close,
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: _closeSearch,
+                    )
+                  : null,
+              title: _searching
+                  ? _buildSearchField()
+                  : GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => openRegionSelectDialog(widget.channel),
+                      child: Row(
                         children: [
-                          Text(
-                            widget.channel.name.isEmpty
-                                ? context.l10n.channels_channelIndex(
-                                    widget.channel.index,
-                                  )
-                                : widget.channel.name,
-                            style: const TextStyle(fontSize: 16),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Consumer<MeshCoreConnector>(
-                            builder: (context, connector, _) {
-                              // Hashtag channels get no type label: the # icon
-                              // and name already say it, and the title needs the
-                              // room.
-                              final privacy = switch (Channel.getChannelType(
-                                widget.channel,
-                                _communityIndex,
-                              )) {
-                                ChannelType.public =>
-                                  context.l10n.channels_public,
-                                ChannelType.hashtag => null,
-                                ChannelType.private =>
-                                  context.l10n.channels_private,
-                                ChannelType.communityPublic =>
-                                  context.l10n.community_publicChannel,
-                                ChannelType.communityHashtag => null,
-                              };
-                              final ownRegion = connector.getChannelRegion(
-                                widget.channel.index,
-                              );
-                              final region = connector
-                                  .getEffectiveChannelRegion(
-                                    widget.channel.index,
-                                  );
-                              final defaultSuffix = ownRegion.isEmpty
-                                  ? ' ${context.l10n.channels_regionDefaultSuffix}'
-                                  : '';
-                              final radioDefault =
-                                  connector.defaultFloodScopeName;
-                              final regionText = region.isNotEmpty
-                                  ? '${context.l10n.channels_regionSetTo(region)}$defaultSuffix'
-                                  : radioDefault != null &&
-                                        connector.channelUsesRadioDefaultScope(
+                          _channelIcon(widget.channel),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.channel.name.isEmpty
+                                      ? context.l10n.channels_channelIndex(
                                           widget.channel.index,
                                         )
-                                  ? '${context.l10n.channels_regionSetTo(radioDefault)} ${context.l10n.channels_regionRadioDefaultSuffix}'
-                                  : null;
-                              final subtitle = [
-                                ?privacy,
-                                ?regionText,
-                              ].join(' • ');
-                              if (subtitle.isEmpty) {
-                                return const SizedBox.shrink();
-                              }
-                              return Text(
-                                subtitle,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 12),
-                              );
-                            },
+                                      : widget.channel.name,
+                                  style: const TextStyle(fontSize: 16),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Consumer<MeshCoreConnector>(
+                                  builder: (context, connector, _) {
+                                    // Hashtag channels get no type label: the # icon
+                                    // and name already say it, and the title needs the
+                                    // room.
+                                    final privacy =
+                                        switch (Channel.getChannelType(
+                                          widget.channel,
+                                          _communityIndex,
+                                        )) {
+                                          ChannelType.public =>
+                                            context.l10n.channels_public,
+                                          ChannelType.hashtag => null,
+                                          ChannelType.private =>
+                                            context.l10n.channels_private,
+                                          ChannelType.communityPublic =>
+                                            context
+                                                .l10n
+                                                .community_publicChannel,
+                                          ChannelType.communityHashtag => null,
+                                        };
+                                    final ownRegion = connector
+                                        .getChannelRegion(widget.channel.index);
+                                    final region = connector
+                                        .getEffectiveChannelRegion(
+                                          widget.channel.index,
+                                        );
+                                    final defaultSuffix = ownRegion.isEmpty
+                                        ? ' ${context.l10n.channels_regionDefaultSuffix}'
+                                        : '';
+                                    final radioDefault =
+                                        connector.defaultFloodScopeName;
+                                    final regionText = region.isNotEmpty
+                                        ? '${context.l10n.channels_regionSetTo(region)}$defaultSuffix'
+                                        : radioDefault != null &&
+                                              connector
+                                                  .channelUsesRadioDefaultScope(
+                                                    widget.channel.index,
+                                                  )
+                                        ? '${context.l10n.channels_regionSetTo(radioDefault)} ${context.l10n.channels_regionRadioDefaultSuffix}'
+                                        : null;
+                                    final subtitle = [
+                                      ?privacy,
+                                      ?regionText,
+                                    ].join(' • ');
+                                    if (subtitle.isEmpty) {
+                                      return const SizedBox.shrink();
+                                    }
+                                    return Text(
+                                      subtitle,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(fontSize: 12),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+              centerTitle: false,
+              bottom: const SyncProgressAppBarBottom(),
+              actions: [
+                Consumer<AppSettingsService>(
+                  builder: (context, settings, _) {
+                    final muteKey = widget.channel.muteKey;
+                    final notificationMode = settings
+                        .getChannelNotificationMode(muteKey);
+                    return IconButton(
+                      tooltip: context.l10n.channels_notificationModeTooltip(
+                        channelNotificationModeLabel(context, notificationMode),
+                      ),
+                      icon: Icon(
+                        notificationMode == ChannelNotificationMode.muted
+                            ? Icons.notifications_off
+                            : notificationMode ==
+                                  ChannelNotificationMode.mentionsOnly
+                            ? Icons.notification_important
+                            : Icons.notifications,
+                      ),
+                      onPressed: () =>
+                          showChannelNotificationModeSheet(context, muteKey),
+                    );
+                  },
+                ),
+                const RadioStatsIconButton(),
+                if (!_searching)
+                  IconButton(
+                    tooltip: context.l10n.chatSearch_tooltip,
+                    icon: const Icon(Icons.search),
+                    onPressed: _openSearch,
+                  ),
+                PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (value) {
+                    if (value == 'region') {
+                      openRegionSelectDialog(widget.channel);
+                    } else if (value == 'background') {
+                      showChatBackgroundSheet(
+                        context,
+                        ChatBackgroundService.channelKey(widget.channel),
+                      );
+                    } else if (value == 'clearChat') {
+                      _confirmClearChat();
+                    } else if (value == 'messageFilter') {
+                      _toggleChannelFiltering();
+                    }
+                  },
+                  // Region lives here (and on a tap of the title) so the channel
+                  // name keeps its room in the app bar.
+                  itemBuilder: (context) => [
+                    if (_messageFilter case final filter?
+                        when filter.settings.enabled)
+                      CheckedPopupMenuItem(
+                        value: 'messageFilter',
+                        checked: filter.isChannelFiltered(
+                          _messageFilterChannelId,
+                        ),
+                        child: Text(context.l10n.messageFilter_channelToggle),
+                      ),
+                    PopupMenuItem(
+                      value: 'region',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.landscape, size: 20),
+                          const SizedBox(width: 12),
+                          Text(context.l10n.channels_regionSelect_Title),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'background',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.wallpaper, size: 20),
+                          const SizedBox(width: 12),
+                          Text(context.l10n.chatBackground_title),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'clearChat',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.delete,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            context.l10n.contact_clearChat,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ],
                 ),
-              ),
-        centerTitle: false,
-        bottom: const SyncProgressAppBarBottom(),
-        actions: [
-          Consumer<AppSettingsService>(
-            builder: (context, settings, _) {
-              final muteKey = widget.channel.muteKey;
-              final notificationMode = settings.getChannelNotificationMode(
-                muteKey,
-              );
-              return IconButton(
-                tooltip: context.l10n.channels_notificationModeTooltip(
-                  channelNotificationModeLabel(context, notificationMode),
-                ),
-                icon: Icon(
-                  notificationMode == ChannelNotificationMode.muted
-                      ? Icons.notifications_off
-                      : notificationMode == ChannelNotificationMode.mentionsOnly
-                      ? Icons.notification_important
-                      : Icons.notifications,
-                ),
-                onPressed: () =>
-                    showChannelNotificationModeSheet(context, muteKey),
-              );
-            },
-          ),
-          const RadioStatsIconButton(),
-          if (!_searching)
-            IconButton(
-              tooltip: context.l10n.chatSearch_tooltip,
-              icon: const Icon(Icons.search),
-              onPressed: _openSearch,
+              ],
             ),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: (value) {
-              if (value == 'region') {
-                openRegionSelectDialog(widget.channel);
-              } else if (value == 'background') {
-                showChatBackgroundSheet(
-                  context,
-                  ChatBackgroundService.channelKey(widget.channel),
-                );
-              } else if (value == 'clearChat') {
-                _confirmClearChat();
-              } else if (value == 'messageFilter') {
-                _toggleChannelFiltering();
-              }
-            },
-            // Region lives here (and on a tap of the title) so the channel
-            // name keeps its room in the app bar.
-            itemBuilder: (context) => [
-              if (_messageFilter case final filter?
-                  when filter.settings.enabled)
-                CheckedPopupMenuItem(
-                  value: 'messageFilter',
-                  checked: filter.isChannelFiltered(_messageFilterChannelId),
-                  child: Text(context.l10n.messageFilter_channelToggle),
-                ),
-              PopupMenuItem(
-                value: 'region',
-                child: Row(
-                  children: [
-                    const Icon(Icons.landscape, size: 20),
-                    const SizedBox(width: 12),
-                    Text(context.l10n.channels_regionSelect_Title),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'background',
-                child: Row(
-                  children: [
-                    const Icon(Icons.wallpaper, size: 20),
-                    const SizedBox(width: 12),
-                    Text(context.l10n.chatBackground_title),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'clearChat',
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.delete,
-                      size: 20,
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      context.l10n.contact_clearChat,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
       body: _showSearchResults
           ? _buildSearchResults(_loadSearchEntries)
           : SafeArea(
@@ -820,7 +918,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                               >((service) => service.scale);
                                           final message = row.message;
                                           final ghost = row.ghost;
-                                          final Widget bubble;
+                                          Widget bubble;
                                           if (ghost != null) {
                                             bubble = _buildFilteredGhost(
                                               ghost,
@@ -852,6 +950,24 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                                     .receivedAt,
                                                 row.receivedAt,
                                               );
+                                          if (row.id == _highlightedMessageId) {
+                                            bubble = AnimatedContainer(
+                                              duration: const Duration(
+                                                milliseconds: 300,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary
+                                                    .withValues(alpha: 0.18),
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                      MeshRadii.md,
+                                                    ),
+                                              ),
+                                              child: bubble,
+                                            );
+                                          }
                                           if (isUnreadAnchor || startsDay) {
                                             return Column(
                                               mainAxisSize: MainAxisSize.min,
@@ -1001,7 +1117,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               ],
               Flexible(
                 child: GestureDetector(
-                  onLongPress: () => _showMessageActions(message),
+                  onLongPress: () => _selecting
+                      ? _toggleSelected(message)
+                      : _showMessageActions(message),
                   onSecondaryTapUp: PlatformInfo.isDesktop
                       ? (_) => _showMessageActions(message)
                       : null,
@@ -1311,6 +1429,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       ),
     );
 
+    if (_selecting) {
+      return _buildSelectableRow(message, messageBody);
+    }
     if (!isOutgoing && !PlatformInfo.isDesktop) {
       return _SwipeReplyBubble(
         maxSwipeOffset: maxSwipeOffset,
@@ -2740,6 +2861,14 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                 },
               ),
               ListTile(
+                leading: const Icon(Icons.checklist),
+                title: Text(context.l10n.chat_selectMessages),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  _toggleSelected(message);
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.route),
                 title: Text(context.l10n.chat_path),
                 onTap: () {
@@ -2865,6 +2994,212 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
         ),
       ),
     );
+  }
+
+  // ---- bulk selection -------------------------------------------------------
+
+  void _toggleSelected(ChannelMessage message) {
+    HapticFeedback.selectionClick();
+    setState(() {
+      if (!_selectedIds.remove(message.messageId)) {
+        _selectedIds.add(message.messageId);
+      }
+    });
+  }
+
+  void _clearSelection() => setState(_selectedIds.clear);
+
+  /// Selected messages still in the transcript, oldest first.
+  List<ChannelMessage> _selectedMessages() {
+    final messages = context.read<MeshCoreConnector>().getChannelMessages(
+      widget.channel,
+    );
+    return [
+      for (final m in messages)
+        if (_selectedIds.contains(m.messageId)) m,
+    ];
+  }
+
+  /// Messages the user can currently see (filtered ones only once revealed).
+  List<ChannelMessage> _visibleMessages() {
+    final messages = context.read<MeshCoreConnector>().getChannelMessages(
+      widget.channel,
+    );
+    final filterActive = _transcriptLayout?.filterActive ?? true;
+    return [
+      for (final m in messages)
+        if (!(filterActive &&
+            m.isFiltered &&
+            !_revealedFilteredIds.contains(m.messageId)))
+          m,
+    ];
+  }
+
+  bool _canMarkSpam(ChannelMessage m) =>
+      !m.isOutgoing &&
+      !m.isFiltered &&
+      !MessageFilterText.isStructuredPayload(m.text);
+
+  Widget _buildSelectableRow(ChannelMessage message, Widget messageBody) {
+    final scheme = Theme.of(context).colorScheme;
+    final selected = _selectedIds.contains(message.messageId);
+    return Semantics(
+      selected: selected,
+      button: true,
+      child: Material(
+        color: selected
+            ? scheme.primary.withValues(alpha: 0.16)
+            : Colors.transparent,
+        child: InkWell(
+          onTap: () => _toggleSelected(message),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+            child: Row(
+              children: [
+                Icon(
+                  selected ? Icons.check_circle : Icons.radio_button_unchecked,
+                  size: 28,
+                  color: selected ? scheme.primary : scheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 8),
+                // Links, reply previews and reactions inside the bubble must
+                // not react while picking messages.
+                Expanded(child: AbsorbPointer(child: messageBody)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildSelectionAppBar(BuildContext context) {
+    final l10n = context.l10n;
+    final selected = _selectedMessages();
+    final filter = _messageFilter;
+    final filterCoversChannel =
+        filter != null && filter.isChannelFiltered(_messageFilterChannelId);
+    final spamCandidates = filterCoversChannel
+        ? selected.where(_canMarkSpam).toList()
+        : const <ChannelMessage>[];
+    final notSpamCandidates = filterCoversChannel
+        ? selected.where((m) => m.isFiltered).toList()
+        : const <ChannelMessage>[];
+    return AppBar(
+      leading: IconButton(
+        tooltip: l10n.chat_clearSelection,
+        icon: const Icon(Icons.close),
+        onPressed: _clearSelection,
+      ),
+      title: Text(l10n.chat_selectedCount(selected.length)),
+      actions: [
+        if (spamCandidates.isNotEmpty)
+          IconButton(
+            tooltip: l10n.messageFilter_markSpam,
+            icon: const Icon(Icons.visibility_off_outlined),
+            onPressed: () => _bulkMarkSpam(spamCandidates),
+          ),
+        if (notSpamCandidates.isNotEmpty)
+          IconButton(
+            tooltip: l10n.messageFilter_notSpam,
+            icon: const Icon(Icons.visibility_outlined),
+            onPressed: () => _bulkMarkNotSpam(notSpamCandidates),
+          ),
+        IconButton(
+          tooltip: l10n.common_delete,
+          icon: const Icon(Icons.delete_outline),
+          onPressed: selected.isEmpty ? null : () => _bulkDelete(selected),
+        ),
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.more_vert),
+          onSelected: (value) {
+            switch (value) {
+              case 'select_all':
+                setState(() {
+                  _selectedIds.addAll(
+                    _visibleMessages().map((m) => m.messageId),
+                  );
+                });
+              case 'copy':
+                _bulkCopy(selected);
+            }
+          },
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: 'select_all',
+              child: ListTile(
+                leading: const Icon(Icons.select_all),
+                title: Text(l10n.chat_selectAll),
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+            PopupMenuItem(
+              value: 'copy',
+              child: ListTile(
+                leading: const Icon(Icons.copy),
+                title: Text(l10n.common_copy),
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Future<void> _bulkMarkSpam(List<ChannelMessage> messages) async {
+    final connector = context.read<MeshCoreConnector>();
+    final text = context.l10n.messageFilter_markedSpamCount(messages.length);
+    setState(() {
+      _selectedIds.clear();
+      _revealedFilteredIds.removeAll(messages.map((m) => m.messageId));
+      _revealVersion++;
+    });
+    await connector.markChannelMessagesSpam([
+      for (final m in messages) (widget.channel, m),
+    ]);
+    if (!mounted) return;
+    showDismissibleSnackBar(context, content: Text(text));
+  }
+
+  Future<void> _bulkMarkNotSpam(List<ChannelMessage> messages) async {
+    final connector = context.read<MeshCoreConnector>();
+    final text = context.l10n.messageFilter_markedNotSpamCount(messages.length);
+    setState(() {
+      _selectedIds.clear();
+      _revealedFilteredIds.removeAll(messages.map((m) => m.messageId));
+      _revealVersion++;
+    });
+    await connector.markChannelMessagesNotSpam([
+      for (final m in messages) (widget.channel, m),
+    ]);
+    if (!mounted) return;
+    showDismissibleSnackBar(context, content: Text(text));
+  }
+
+  Future<void> _bulkDelete(List<ChannelMessage> messages) async {
+    final connector = context.read<MeshCoreConnector>();
+    final confirmed = await confirmBulkDelete(context, messages.length);
+    if (!confirmed || !mounted) return;
+    setState(_selectedIds.clear);
+    final removed = await connector.deleteChannelMessages(messages);
+    if (!mounted || removed == 0) return;
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.chat_messagesDeleted(removed)),
+    );
+  }
+
+  void _bulkCopy(List<ChannelMessage> messages) {
+    final text = messages
+        .map(
+          (m) => m.senderName.isEmpty || m.isOutgoing
+              ? m.text
+              : '${m.senderName}: ${m.text}',
+        )
+        .join('\n');
+    setState(_selectedIds.clear);
+    copyChatMessageText(context, text);
   }
 
   // ---- message filter -------------------------------------------------------
@@ -3331,15 +3666,28 @@ class _SwipeReplyBubbleState extends State<_SwipeReplyBubble> {
     }
 
     final rawDx = event.position.dx - _swipeStartPosition!.dx;
+    final dy = (event.position.dy - _swipeStartPosition!.dy).abs();
     // In LTR swipe left (rawDx < 0) triggers reply; in RTL swipe right (rawDx > 0).
     final signedDx = _isRtl ? rawDx : -rawDx;
 
     const axisLockThreshold = 12.0;
     if (!_swipeLockedToHorizontal) {
-      if (signedDx < axisLockThreshold) {
+      // A gesture that moves vertically first is a scroll: give it up for
+      // the rest of this pointer so a diagonal thumb drift while scrolling
+      // cannot trigger a reply.
+      if (dy >= axisLockThreshold && dy >= signedDx.abs()) {
+        _resetSwipe();
+        return;
+      }
+      // Lock only for a clearly horizontal drag.
+      if (signedDx < axisLockThreshold || signedDx < dy * 2) {
         return;
       }
       _swipeLockedToHorizontal = true;
+    } else if (dy > math.max(48.0, signedDx)) {
+      // The finger wandered off vertically (list scrolled under it).
+      _resetSwipe();
+      return;
     }
 
     _handleSwipeUpdate(event.position);

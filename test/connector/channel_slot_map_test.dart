@@ -226,6 +226,28 @@ void main() {
   });
 
   test(
+    'bulk delete matches by id, not the object held by the selection',
+    () async {
+      await _connect(_TestRadio());
+      await _waitFor(() => _texts(1).contains(_queuedHikingText));
+      final stored = _connector
+          .getChannelMessages(_channelAt(1))
+          .firstWhere((m) => m.text == _queuedHikingText);
+      // A repeat heard while the confirmation was open replaces the stored
+      // object; the selection still holds the old one with the same id.
+      final stale = stored.copyWith();
+      expect(identical(stale, stored), isFalse);
+      expect(stale.messageId, stored.messageId);
+
+      final removed = await _connector.deleteChannelMessages([stale]);
+      await _connector.flushPendingWrites();
+      expect(removed, 1);
+      expect(_texts(1), isNot(contains(_queuedHikingText)));
+      expect(_storedTexts(hikingId), isNot(contains(_queuedHikingText)));
+    },
+  );
+
+  test(
     'a PSK edit in place keeps the channel\'s place in the custom order',
     () async {
       await _connect(_TestRadio());

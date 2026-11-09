@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -104,8 +105,32 @@ void main() {
 
   setUp(() {
     storage = FakeStorageService();
-    svc = PathHistoryService(storage);
+    // Picks are random by design (Thompson sampling); seed for repeatability.
+    svc = PathHistoryService(storage, random: math.Random(1));
   });
+
+  /// How often each route is picked over [n] selections, keyed by hex bytes.
+  Map<String, int> tally(
+    String pubKey, {
+    int n = 400,
+    int attemptIndex = 0,
+    List<PathSelection> recent = const [],
+  }) {
+    final counts = <String, int>{};
+    for (var i = 0; i < n; i++) {
+      final pick = svc.selectPathForAttempt(
+        pubKey,
+        attemptIndex: attemptIndex,
+        maxRetries: 5,
+        recentSelections: recent,
+      );
+      final key = pick.useFlood
+          ? 'flood'
+          : pick.pathBytes.map((b) => b.toRadixString(16)).join(',');
+      counts[key] = (counts[key] ?? 0) + 1;
+    }
+    return counts;
+  }
 
   group('path selection', () {
     test('empty path history returns flood', () {
@@ -149,135 +174,129 @@ void main() {
       }
     });
 
-    test(
-      'retries avoid immediately repeating the same path when possible',
-      () async {
-        final pubKey = _hex('rot1');
-        await _seed(svc, pubKey, pathBytes: [0xAA], hopCount: 1, weight: 1.0);
+    test('retries usually move to a different path', () async {
+      final pubKey = _hex('rot1');
+      await _seed(svc, pubKey, pathBytes: [0xAA], hopCount: 1, weight: 1.0);
+      svc.recordPathResult(
+        pubKey,
+        const PathSelection(pathBytes: [0xBB], hopCount: 1, useFlood: false),
+        success: true,
+        successIncrement: 0.0,
+      );
+      await _flush();
+
+      // After [0xBB] missed, the retry should mostly try [0xAA].
+      final counts = tally(
+        pubKey,
+        attemptIndex: 1,
+        recent: const [
+          PathSelection(pathBytes: [0xBB], hopCount: 1, useFlood: false),
+        ],
+      );
+      expect(counts['flood'], isNull);
+      expect(counts['aa']!, greaterThan(counts['bb'] ?? 0));
+    });
+
+    test('a third retry favours the path not yet tried', () async {
+      final pubKey = _hex('rot2');
+      await _seed(svc, pubKey, pathBytes: [0xA1], hopCount: 1, weight: 3.0);
+      for (final bytes in const [
+        [0xB2],
+        [0xC3],
+      ]) {
         svc.recordPathResult(
           pubKey,
-          const PathSelection(pathBytes: [0xBB], hopCount: 1, useFlood: false),
+          PathSelection(pathBytes: bytes, hopCount: 1, useFlood: false),
           success: true,
-          successIncrement: 0.0,
         );
-        await _flush();
+      }
+      await _flush();
 
-        final first = svc.selectPathForAttempt(
-          pubKey,
-          attemptIndex: 0,
-          maxRetries: 5,
-        );
-        final second = svc.selectPathForAttempt(
-          pubKey,
-          attemptIndex: 1,
-          maxRetries: 5,
-          recentSelections: [first],
-        );
+      final counts = tally(
+        pubKey,
+        attemptIndex: 2,
+        recent: const [
+          PathSelection(pathBytes: [0xB2], hopCount: 1, useFlood: false),
+          PathSelection(pathBytes: [0xC3], hopCount: 1, useFlood: false),
+        ],
+      );
+      // [0xA1] is untested (no results) yet still the most likely pick,
+      // because both others just missed for this message.
+      expect(counts['a1']!, greaterThan(counts['b2'] ?? 0));
+      expect(counts['a1']!, greaterThan(counts['c3'] ?? 0));
+    });
 
-        expect(first.useFlood, isFalse);
-        expect(second.useFlood, isFalse);
-        expect(second.pathBytes, isNot(equals(first.pathBytes)));
-      },
-    );
-
-    test(
-      'retries avoid the last two paths when a third option exists',
-      () async {
-        final pubKey = _hex('rot2');
-        await _seed(svc, pubKey, pathBytes: [0xA1], hopCount: 1, weight: 3.0);
+    test('first attempts favour the best path but still try others', () async {
+      final pubKey = _hex('rot3');
+      await _seed(svc, pubKey, pathBytes: [0xA1], hopCount: 1, weight: 4.0);
+      for (var i = 0; i < 6; i++) {
         svc.recordPathResult(
           pubKey,
           const PathSelection(pathBytes: [0xB2], hopCount: 1, useFlood: false),
           success: true,
-          successIncrement: 1.0,
         );
-        svc.recordPathResult(
-          pubKey,
-          const PathSelection(pathBytes: [0xC3], hopCount: 1, useFlood: false),
-          success: true,
-          successIncrement: 0.0,
-        );
-        await _flush();
-
-        final first = svc.selectPathForAttempt(
-          pubKey,
-          attemptIndex: 0,
-          maxRetries: 5,
-        );
-        final second = svc.selectPathForAttempt(
-          pubKey,
-          attemptIndex: 1,
-          maxRetries: 5,
-          recentSelections: [first],
-        );
-        final third = svc.selectPathForAttempt(
-          pubKey,
-          attemptIndex: 2,
-          maxRetries: 5,
-          recentSelections: [first, second],
-        );
-
-        final chosenPaths = [
-          first.pathBytes,
-          second.pathBytes,
-          third.pathBytes,
-        ];
-        expect(
-          chosenPaths
-              .map((path) => path.map((b) => b.toRadixString(16)).join(','))
-              .toSet()
-              .length,
-          equals(3),
-        );
-        expect(
-          chosenPaths,
-          everyElement(anyOf(equals([0xA1]), equals([0xB2]), equals([0xC3]))),
-        );
-      },
-    );
-
-    test('first-attempt selection rotates across ranked candidates', () async {
-      final pubKey = _hex('rot3');
-      await _seed(svc, pubKey, pathBytes: [0xA1], hopCount: 1, weight: 4.0);
-      svc.recordPathResult(
-        pubKey,
-        const PathSelection(pathBytes: [0xB2], hopCount: 1, useFlood: false),
-        success: true,
-        successIncrement: 1.0,
-      );
+      }
       svc.recordPathResult(
         pubKey,
         const PathSelection(pathBytes: [0xC3], hopCount: 1, useFlood: false),
-        success: true,
-        successIncrement: 0.5,
+        success: false,
       );
       await _flush();
 
-      final first = svc.selectPathForAttempt(
-        pubKey,
-        attemptIndex: 0,
-        maxRetries: 5,
-      );
-      final second = svc.selectPathForAttempt(
-        pubKey,
-        attemptIndex: 0,
-        maxRetries: 5,
-      );
-      final third = svc.selectPathForAttempt(
-        pubKey,
-        attemptIndex: 0,
-        maxRetries: 5,
-      );
+      final counts = tally(pubKey);
+      expect(counts['b2']!, greaterThan(counts['a1'] ?? 0));
+      expect(counts['b2']!, greaterThan(counts['c3'] ?? 0));
+      // Exploration: the untested path is still tried now and then.
+      expect(counts['a1'] ?? 0, greaterThan(0));
+    });
 
-      expect(first.pathBytes, isNot(equals(second.pathBytes)));
-      expect(second.pathBytes, isNot(equals(third.pathBytes)));
-      expect(
-        [first.pathBytes, second.pathBytes, third.pathBytes]
-            .map((path) => path.map((b) => b.toRadixString(16)).join(','))
-            .toSet()
-            .length,
-        equals(3),
+    // Issue #643: the direct path (zero hops, no bytes) must be a rotation
+    // candidate alongside saved multi-hop routes.
+    test('direct path is a candidate alongside other routes', () async {
+      final pubKey = _hex('dir1');
+      await _seed(svc, pubKey, pathBytes: const [], hopCount: 0, weight: 2.0);
+      svc.recordPathResult(
+        pubKey,
+        const PathSelection(pathBytes: [0xA1], hopCount: 1, useFlood: false),
+        success: true,
       );
+      await _flush();
+
+      final counts = tally(pubKey);
+      expect(counts['flood'], isNull);
+      expect(counts[''] ?? 0, greaterThan(0), reason: 'direct must be tried');
+      expect(counts['a1'] ?? 0, greaterThan(0));
+    });
+
+    test('a lone direct path is used instead of flooding', () async {
+      final pubKey = _hex('dir2');
+      await _seed(svc, pubKey, pathBytes: const [], hopCount: 0);
+      final pick = svc.selectPathForAttempt(
+        pubKey,
+        attemptIndex: 0,
+        maxRetries: 5,
+      );
+      expect(pick.useFlood, isFalse);
+      expect(pick.hopCount, 0);
+    });
+
+    test('resolvePathSelection keeps a direct auto selection', () {
+      final contact = _makeContact(
+        publicKeyHex: _hex('dir3'),
+        pathLength: 2,
+        path: const [0x01, 0x02],
+      );
+      final resolved = resolvePathSelection(
+        contact,
+        selection: const PathSelection(
+          pathBytes: [],
+          hopCount: 0,
+          useFlood: false,
+        ),
+      );
+      expect(resolved.useFlood, isFalse);
+      expect(resolved.hopCount, 0);
+      expect(resolved.pathBytes, isEmpty);
     });
 
     test('final attempt is always flood regardless of known paths', () async {
@@ -330,12 +349,8 @@ void main() {
       );
       await _flush();
 
-      final first = svc.selectPathForAttempt(
-        pubKey,
-        attemptIndex: 0,
-        maxRetries: 5,
-      );
-      expect(first.pathBytes, equals([0x02]));
+      final counts = tally(pubKey);
+      expect(counts['2']!, greaterThan(counts['1'] ?? 0));
     });
 
     test('lower latency wins when reliability is tied', () async {
@@ -356,12 +371,8 @@ void main() {
       );
       await _flush();
 
-      final first = svc.selectPathForAttempt(
-        pubKey,
-        attemptIndex: 0,
-        maxRetries: 5,
-      );
-      expect(first.pathBytes, equals([0x20]));
+      final counts = tally(pubKey, n: 1000);
+      expect(counts['20']!, greaterThan(counts['10'] ?? 0));
     });
 
     test('fresher path wins when reliability and latency are tied', () async {
@@ -396,57 +407,47 @@ void main() {
       svc.getRecentPaths(pubKey);
       await _flush();
 
-      final first = svc.selectPathForAttempt(
-        pubKey,
-        attemptIndex: 0,
-        maxRetries: 5,
-      );
-      expect(first.pathBytes, equals([0x02]));
+      final counts = tally(pubKey, n: 1000);
+      expect(counts['2']!, greaterThan(counts['1'] ?? 0));
     });
 
-    test(
-      'higher route weight wins when other factors are effectively tied',
-      () async {
-        final pubKey = _hex('rank4');
-        final sharedTimestamp = DateTime.now().subtract(
-          const Duration(minutes: 30),
-        );
-        storage._store[pubKey] = ContactPathHistory(
-          contactPubKeyHex: pubKey,
-          recentPaths: [
-            PathRecord(
-              hopCount: 1,
-              tripTimeMs: 750,
-              timestamp: sharedTimestamp,
-              wasFloodDiscovery: false,
-              pathBytes: const [0x01],
-              successCount: 1,
-              failureCount: 0,
-              routeWeight: 4.0,
-            ),
-            PathRecord(
-              hopCount: 1,
-              tripTimeMs: 750,
-              timestamp: sharedTimestamp,
-              wasFloodDiscovery: false,
-              pathBytes: const [0x02],
-              successCount: 1,
-              failureCount: 0,
-              routeWeight: 1.0,
-            ),
-          ],
-        );
-        svc.getRecentPaths(pubKey);
-        await _flush();
+    test('route weight alone does not decide between equal routes', () async {
+      final pubKey = _hex('rank4');
+      final sharedTimestamp = DateTime.now().subtract(
+        const Duration(minutes: 30),
+      );
+      storage._store[pubKey] = ContactPathHistory(
+        contactPubKeyHex: pubKey,
+        recentPaths: [
+          PathRecord(
+            hopCount: 1,
+            tripTimeMs: 750,
+            timestamp: sharedTimestamp,
+            wasFloodDiscovery: false,
+            pathBytes: const [0x01],
+            successCount: 1,
+            failureCount: 0,
+            routeWeight: 4.0,
+          ),
+          PathRecord(
+            hopCount: 1,
+            tripTimeMs: 750,
+            timestamp: sharedTimestamp,
+            wasFloodDiscovery: false,
+            pathBytes: const [0x02],
+            successCount: 1,
+            failureCount: 0,
+            routeWeight: 1.0,
+          ),
+        ],
+      );
+      svc.getRecentPaths(pubKey);
+      await _flush();
 
-        final first = svc.selectPathForAttempt(
-          pubKey,
-          attemptIndex: 0,
-          maxRetries: 5,
-        );
-        expect(first.pathBytes, equals([0x01]));
-      },
-    );
+      // Choice follows delivery results; weight only guards deletion.
+      final counts = tally(pubKey, n: 1000);
+      expect(counts['1']!, inInclusiveRange(350, 650));
+    });
   });
 
   // -------------------------------------------------------------------------
@@ -543,6 +544,48 @@ void main() {
 
       final paths = svc.getRecentPaths(pubKey);
       expect(paths.first.routeWeight, closeTo(1.5, 0.001));
+    });
+
+    test('a route that delivered this week survives a run of failures', () {
+      // e.g. a repeater down for a day: the route must still be there when
+      // it comes back. Faded stats keep it out of use meanwhile.
+      var clock = DateTime(2026, 11, 1);
+      final timed = PathHistoryService(
+        FakeStorageService(),
+        random: math.Random(1),
+        clock: () => clock,
+      );
+      final pubKey = _hex('w0a1');
+      const route = PathSelection(
+        pathBytes: [0x01],
+        hopCount: 1,
+        useFlood: false,
+      );
+      return () async {
+        timed.getRecentPaths(pubKey);
+        await _flush();
+        timed.recordPathResult(pubKey, route, success: true);
+        clock = clock.add(const Duration(days: 1));
+        for (var i = 0; i < 6; i++) {
+          timed.recordPathResult(
+            pubKey,
+            route,
+            success: false,
+            failureDecrement: 0.5,
+          );
+        }
+        expect(timed.getRecentPaths(pubKey), hasLength(1));
+
+        // A week without a delivery: the next failure removes it.
+        clock = clock.add(const Duration(days: 8));
+        timed.recordPathResult(
+          pubKey,
+          route,
+          success: false,
+          failureDecrement: 0.5,
+        );
+        expect(timed.getRecentPaths(pubKey), isEmpty);
+      }();
     });
 
     test('failure to 0 removes the path', () async {
@@ -735,6 +778,27 @@ void main() {
       expect(credited.tripTimeMs, equals(3000));
     });
 
+    test('a flood answered directly credits the direct path', () async {
+      final pubKey = _hex('fa0d');
+      await _seed(svc, pubKey, pathBytes: [0xAA], hopCount: 1, weight: 1.0);
+
+      svc.recordFloodPathAttribution(
+        contactPubKeyHex: pubKey,
+        pathBytes: const [],
+        hopCount: 0,
+        tripTimeMs: 800,
+        successIncrement: 0.5,
+        maxWeight: 5.0,
+      );
+      await _flush();
+
+      final direct = svc
+          .getRecentPaths(pubKey)
+          .firstWhere((p) => p.pathBytes.isEmpty && p.hopCount == 0);
+      expect(direct.successCount, 1);
+      expect(direct.routeWeight, closeTo(1.5, 0.001));
+    });
+
     test('creates new path record when path is unknown', () async {
       final pubKey = _hex('fa02');
       // Seed with a different path so the cache is warm.
@@ -777,24 +841,27 @@ void main() {
       expect(paths.first.routeWeight, closeTo(5.0, 0.001));
     });
 
-    test('ignores empty pathBytes', () async {
+    test('ignores empty pathBytes for a multi-hop path', () async {
       final pubKey = _hex('fa04');
       await _seed(svc, pubKey, pathBytes: [0x01], hopCount: 1, weight: 1.0);
 
       final pathsBefore = svc.getRecentPaths(pubKey);
       final weightBefore = pathsBefore.first.routeWeight;
 
+      // Hops without their bytes can't be replayed; only zero hops (the
+      // direct path) may be recorded without bytes.
       svc.recordFloodPathAttribution(
         contactPubKeyHex: pubKey,
         pathBytes: [],
-        hopCount: 0,
+        hopCount: 2,
         successIncrement: 0.5,
         maxWeight: 5.0,
       );
       await _flush();
 
-      // Existing path should be untouched.
+      // Existing path should be untouched and nothing new recorded.
       final pathsAfter = svc.getRecentPaths(pubKey);
+      expect(pathsAfter, hasLength(1));
       expect(pathsAfter.first.routeWeight, equals(weightBefore));
     });
 

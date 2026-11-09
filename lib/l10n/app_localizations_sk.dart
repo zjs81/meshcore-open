@@ -1270,35 +1270,6 @@ class AppLocalizationsSk extends AppLocalizations {
       'Automatické striedanie trás je vypnuté';
 
   @override
-  String get appSettings_maxRouteWeight => 'Maximálna váha trasy';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Maximálna váha, ktorú môže cesta nazbierať z úspešných doručení';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Počiatočná váha trasy';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Počiatočná váha pre nové, objavené cesty';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement => 'Zvyšenie váhy úspechu';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Váha pridaná k ceste po úspešnom doručení';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Zníženie váhy pri neúspechu';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Váha odobraná z cesty po neúspešnom doručení';
-
-  @override
   String get appSettings_maxMessageRetries =>
       'Maximálny počet pokusov o odoslanie správy';
 
@@ -2064,6 +2035,9 @@ class AppLocalizationsSk extends AppLocalizations {
       'Skúste iné slovo alebo skontrolujte preklepy';
 
   @override
+  String get chatSearch_jumpFailed => 'Túto správu sa v chate nepodarilo nájsť';
+
+  @override
   String get chat_sendMessage => 'Odoslať správu';
 
   @override
@@ -2106,7 +2080,76 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chat_messageCopied => 'Správa skopírovaná';
 
   @override
-  String get chat_messageDeleted => 'Posolstvo odstránené';
+  String get chat_messageDeleted => 'Správa odstránená';
+
+  @override
+  String get chat_selectMessages => 'Vybrať správy';
+
+  @override
+  String chat_selectedCount(int count) {
+    return 'Vybrané: $count';
+  }
+
+  @override
+  String get chat_selectAll => 'Vybrať všetko';
+
+  @override
+  String get chat_clearSelection => 'Zrušiť výber';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Odstrániť správy?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Odstrániť $count správ z tohto zariadenia?',
+      many: 'Odstrániť $count správy z tohto zariadenia?',
+      few: 'Odstrániť $count správy z tohto zariadenia?',
+      one: 'Odstrániť $count správu z tohto zariadenia?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count správ odstránených',
+      many: '$count správy odstránené',
+      few: '$count správy odstránené',
+      one: '$count správa odstránená',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count správ označených ako spam',
+      many: '$count správy označené ako spam',
+      few: '$count správy označené ako spam',
+      one: '$count správa označená ako spam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count správ označených ako nie spam',
+      many: '$count správy označené ako nie spam',
+      few: '$count správy označené ako nie spam',
+      one: '$count správa označená ako nie spam',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Pokus o obnovenie';
@@ -2344,7 +2387,10 @@ class AppLocalizationsSk extends AppLocalizations {
   String get routing_modeFlood => 'Flood';
 
   @override
-  String get routing_modeManual => 'Ručná príručka';
+  String get routing_modeManual => 'Ručne';
+
+  @override
+  String get routing_modeDirect => 'Priamo';
 
   @override
   String get routing_modeAutoHint =>
@@ -2357,6 +2403,10 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Vždy dodáva presne podľa zadaného trasy.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Vždy odosiela priamo tomuto kontaktu, bez prechodov cez opakovače. Použite, ak je v dosahu rádia.';
 
   @override
   String get routing_currentRoute => 'Aktuálna trasa';
@@ -2529,6 +2579,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Uložené';
+
+  @override
+  String get contactShare_addAgain => 'Pridať znova';
 
   @override
   String get contactShare_isYou => 'Toto ste vy';
@@ -5970,6 +6023,12 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => 'Rozbaliť panel';
+
+  @override
+  String get pathMap_expandHopList => 'Rozbaliť zoznam opakovačov';
+
+  @override
+  String get pathMap_showMap => 'Zobraziť mapu';
 
   @override
   String get pathMap_noLocation => 'Bez polohy';

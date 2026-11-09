@@ -1269,36 +1269,6 @@ class AppLocalizationsNl extends AppLocalizations {
       'Automatische route rotatie is uitgeschakeld';
 
   @override
-  String get appSettings_maxRouteWeight => 'Maximaal routegewicht';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Het maximale gewicht dat een route kan bereiken door succesvolle leveringen.';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Initieel routegewicht';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Startgewicht voor nieuwe, ontdekte routes';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Gewichtstoename bij succes';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Gewicht wordt toegevoegd aan een route na een succesvolle levering.';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Gewichtsafname bij mislukking';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Gewicht verwijderd van een pad na een mislukte levering';
-
-  @override
   String get appSettings_maxMessageRetries => 'Max. aantal nieuwe pogingen';
 
   @override
@@ -2059,6 +2029,9 @@ class AppLocalizationsNl extends AppLocalizations {
       'Probeer een ander woord of controleer de spelling';
 
   @override
+  String get chatSearch_jumpFailed => 'Dat bericht is niet gevonden in de chat';
+
+  @override
   String get chat_sendMessage => 'Verzend bericht';
 
   @override
@@ -2102,6 +2075,67 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Bericht verwijderd';
+
+  @override
+  String get chat_selectMessages => 'Berichten selecteren';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '$count geselecteerd';
+  }
+
+  @override
+  String get chat_selectAll => 'Alles selecteren';
+
+  @override
+  String get chat_clearSelection => 'Selectie wissen';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Berichten verwijderen?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count berichten van dit apparaat verwijderen?',
+      one: '1 bericht van dit apparaat verwijderen?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count berichten verwijderd',
+      one: '1 bericht verwijderd',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count berichten gemarkeerd als spam',
+      one: '1 bericht gemarkeerd als spam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count berichten gemarkeerd als geen spam',
+      one: '1 bericht gemarkeerd als geen spam',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Bericht opnieuw verzenden';
@@ -2342,6 +2376,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get routing_modeManual => 'Handmatig';
 
   @override
+  String get routing_modeDirect => 'Direct';
+
+  @override
   String get routing_modeAutoHint =>
       'Kiest automatisch het beste bekende pad en gebruikt flood als er geen bekend is.';
 
@@ -2352,6 +2389,10 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Verstuurt altijd via het exacte pad dat je hebt ingesteld.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Verstuurt altijd rechtstreeks naar dit contact, zonder repeater-hops. Gebruik dit als diegene binnen radiobereik is.';
 
   @override
   String get routing_currentRoute => 'Huidige route';
@@ -2520,6 +2561,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Opgeslagen';
+
+  @override
+  String get contactShare_addAgain => 'Opnieuw toevoegen';
 
   @override
   String get contactShare_isYou => 'Dit ben jij';
@@ -5951,6 +5995,12 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => 'Paneel uitklappen';
+
+  @override
+  String get pathMap_expandHopList => 'Hoplijst uitklappen';
+
+  @override
+  String get pathMap_showMap => 'Kaart tonen';
 
   @override
   String get pathMap_noLocation => 'Geen locatie';

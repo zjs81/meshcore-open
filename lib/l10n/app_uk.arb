@@ -2236,14 +2236,6 @@
   "contact_lastSeen": "Останній раз бачили",
   "contact_teleEnv": "Середовище телеметрії",
   "contact_teleEnvSubtitle": "Дозволити спільний доступ до даних датчиків середовища",
-  "appSettings_initialRouteWeight": "Початкова вартість маршруту",
-  "appSettings_initialRouteWeightSubtitle": "Початкова вага для нових відкритих шляхів",
-  "appSettings_maxRouteWeight": "Максимальна вага маршруту",
-  "appSettings_maxRouteWeightSubtitle": "Максимальна вага, яку може накопичити маршрут завдяки успішним доставкам.",
-  "appSettings_routeWeightSuccessIncrement": "Збільшення ваги успіху",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Вага, додана до маршруту після успішної доставки",
-  "appSettings_routeWeightFailureDecrement": "Зменшення ваги помилки",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Вага, яка була знята з маршруту після невдалої доставки",
   "appSettings_maxMessageRetries": "Максимальна кількість повторних спроб надсилання повідомлення",
   "appSettings_maxMessageRetriesSubtitle": "Кількість спроб повторного відправлення повідомлення перед тим, як позначити його як невдале",
   "appSettings_ipfsImageLinks": "Налаштування IPFS-провайдера",
@@ -2577,9 +2569,9 @@
   "contacts_searchOpen": "Пошук контактів",
   "contacts_searchClose": "Закрити пошук",
   "routing_title": "Маршрутизація",
-  "routing_modeAuto": "Автомобіль",
+  "routing_modeAuto": "Авто",
   "routing_modeFlood": "Через всю мережу",
-  "routing_modeManual": "Інструкція",
+  "routing_modeManual": "Вручну",
   "routing_modeAutoHint": "Автоматично обирає найкращий відомий шлях, а за відсутності відомого шляху використовує режим «через всю мережу» (flood).",
   "routing_modeFloodHint": "Передавання через усі ретранслятори. Найбільш надійний спосіб, але потребує більше часу.",
   "routing_modeManualHint": "Завжди доставляє точно за вказаним вами маршрутом.",
@@ -3648,5 +3640,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Не вдалося знайти це повідомлення в чаті",
+  "chat_clearSelection": "Скасувати вибір",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Видалити {count} повідомлення з цього пристрою?} few{Видалити {count} повідомлення з цього пристрою?} many{Видалити {count} повідомлень з цього пристрою?} other{Видалити {count} повідомлення з цього пристрою?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Видалити повідомлення?",
+  "chat_messagesDeleted": "{count, plural, one{{count} повідомлення видалено} few{{count} повідомлення видалено} many{{count} повідомлень видалено} other{{count} повідомлення видалено}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Вибрати все",
+  "chat_selectMessages": "Вибрати повідомлення",
+  "chat_selectedCount": "Вибрано: {count}",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Додати знову",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{{count} повідомлення позначено як не спам} few{{count} повідомлення позначено як не спам} many{{count} повідомлень позначено як не спам} other{{count} повідомлення позначено як не спам}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{{count} повідомлення позначено як спам} few{{count} повідомлення позначено як спам} many{{count} повідомлень позначено як спам} other{{count} повідомлення позначено як спам}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Розгорнути список ретрансляторів",
+  "pathMap_showMap": "Показати карту",
+  "routing_modeDirect": "Напряму",
+  "routing_modeDirectHint": "Завжди надсилає напряму цьому контакту, без проміжних ретрансляторів. Використовуйте, якщо він у зоні радіозв'язку."
 }

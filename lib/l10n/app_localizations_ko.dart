@@ -1213,33 +1213,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_autoRouteRotationDisabled => '자동 경로 순환 기능 비활성화';
 
   @override
-  String get appSettings_maxRouteWeight => '최대 경로 가중치';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      '한 경로가 성공적인 전송을 통해 누적할 수 있는 최대 가중치';
-
-  @override
-  String get appSettings_initialRouteWeight => '초기 경로 가중치';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle => '새로 발견된 경로의 초기 가중치';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement => '성공 시 증가';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      '성공적으로 전송된 경로에 추가되는 가중치';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement => '실패 시 감소';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      '전송 실패 후 경로에서 제거되는 가중치';
-
-  @override
   String get appSettings_maxMessageRetries => '최대 메시지 재시도 횟수';
 
   @override
@@ -1971,6 +1944,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chatSearch_noResultsHint => '다른 단어를 입력하거나 철자를 확인해 보세요';
 
   @override
+  String get chatSearch_jumpFailed => '채팅에서 해당 메시지를 찾을 수 없습니다';
+
+  @override
   String get chat_sendMessage => '메시지를 보내기';
 
   @override
@@ -2014,6 +1990,63 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => '메시지가 삭제되었습니다.';
+
+  @override
+  String get chat_selectMessages => '메시지 선택';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '$count개 선택됨';
+  }
+
+  @override
+  String get chat_selectAll => '모두 선택';
+
+  @override
+  String get chat_clearSelection => '선택 해제';
+
+  @override
+  String get chat_deleteSelectedTitle => '메시지를 삭제하시겠습니까?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '이 기기에서 메시지 $count개를 삭제하시겠습니까?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '메시지 $count개를 삭제했습니다',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '메시지 $count개를 스팸으로 표시했습니다',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '메시지 $count개를 스팸 아님으로 표시했습니다',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => '재시도 메시지';
@@ -2248,6 +2281,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get routing_modeManual => '수동';
 
   @override
+  String get routing_modeDirect => '직접';
+
+  @override
   String get routing_modeAutoHint =>
       '가장 잘 알려진 경로를 자동으로 선택하고, 경로가 없으면 플러딩으로 전환합니다.';
 
@@ -2257,6 +2293,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get routing_modeManualHint => '항상 지정한 정확한 경로를 따릅니다.';
+
+  @override
+  String get routing_modeDirectHint =>
+      '중계기를 거치지 않고 항상 이 연락처로 바로 보냅니다. 상대가 무선 범위 안에 있을 때 사용하세요.';
 
   @override
   String get routing_currentRoute => '현재 경로';
@@ -2421,6 +2461,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get contactShare_saved => '저장됨';
+
+  @override
+  String get contactShare_addAgain => '다시 추가';
 
   @override
   String get contactShare_isYou => '본인입니다';
@@ -5704,6 +5747,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => '패널 펼치기';
+
+  @override
+  String get pathMap_expandHopList => '중계 목록 펼치기';
+
+  @override
+  String get pathMap_showMap => '지도 보기';
 
   @override
   String get pathMap_noLocation => '위치 없음';

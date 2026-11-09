@@ -487,7 +487,7 @@
     }
   },
   "chat_messageCopied": "Správa skopírovaná",
-  "chat_messageDeleted": "Posolstvo odstránené",
+  "chat_messageDeleted": "Správa odstránená",
   "chat_retryingMessage": "Pokus o obnovenie",
   "chat_retryCount": "Skúsiť {current}/{max}",
   "@chat_retryCount": {
@@ -2233,14 +2233,6 @@
   "contact_lastSeen": "Naposledy videný",
   "contact_teleBase": "Báza telemetrie",
   "contact_teleEnvSubtitle": "Povoliť zdieľanie údajov senzorov prostredia",
-  "appSettings_maxRouteWeightSubtitle": "Maximálna váha, ktorú môže cesta nazbierať z úspešných doručení",
-  "appSettings_initialRouteWeightSubtitle": "Počiatočná váha pre nové, objavené cesty",
-  "appSettings_initialRouteWeight": "Počiatočná váha trasy",
-  "appSettings_maxRouteWeight": "Maximálna váha trasy",
-  "appSettings_routeWeightSuccessIncrement": "Zvyšenie váhy úspechu",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Váha pridaná k ceste po úspešnom doručení",
-  "appSettings_routeWeightFailureDecrement": "Zníženie váhy pri neúspechu",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Váha odobraná z cesty po neúspešnom doručení",
   "appSettings_maxMessageRetries": "Maximálny počet pokusov o odoslanie správy",
   "appSettings_maxMessageRetriesSubtitle": "Počet opakovaných pokusov pred označením správy ako neúspešnej",
   "appSettings_ipfsImageLinks": "Konfigurácia poskytovateľa IPFS",
@@ -2606,7 +2598,7 @@
   "routing_title": "Navigácia",
   "routing_modeAuto": "Auto",
   "routing_modeFlood": "Flood",
-  "routing_modeManual": "Ručná príručka",
+  "routing_modeManual": "Ručne",
   "routing_modeAutoHint": "Automaticky vyberá najznámejší trasa, a ak žiadna nie je známa, použije náhodnú trasu.",
   "routing_modeFloodHint": "Prenos prostredníctvom všetkých opakovačov. Najspoľahlivejší spôsob, ale vyžaduje viac času vysielania.",
   "routing_modeManualHint": "Vždy dodáva presne podľa zadaného trasy.",
@@ -3721,5 +3713,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Túto správu sa v chate nepodarilo nájsť",
+  "chat_clearSelection": "Zrušiť výber",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Odstrániť {count} správu z tohto zariadenia?} few{Odstrániť {count} správy z tohto zariadenia?} many{Odstrániť {count} správy z tohto zariadenia?} other{Odstrániť {count} správ z tohto zariadenia?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Odstrániť správy?",
+  "chat_messagesDeleted": "{count, plural, one{{count} správa odstránená} few{{count} správy odstránené} many{{count} správy odstránené} other{{count} správ odstránených}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Vybrať všetko",
+  "chat_selectMessages": "Vybrať správy",
+  "chat_selectedCount": "Vybrané: {count}",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Pridať znova",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{{count} správa označená ako nie spam} few{{count} správy označené ako nie spam} many{{count} správy označené ako nie spam} other{{count} správ označených ako nie spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{{count} správa označená ako spam} few{{count} správy označené ako spam} many{{count} správy označené ako spam} other{{count} správ označených ako spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Rozbaliť zoznam opakovačov",
+  "pathMap_showMap": "Zobraziť mapu",
+  "routing_modeDirect": "Priamo",
+  "routing_modeDirectHint": "Vždy odosiela priamo tomuto kontaktu, bez prechodov cez opakovače. Použite, ak je v dosahu rádia."
 }

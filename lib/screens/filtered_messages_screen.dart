@@ -9,6 +9,7 @@ import '../models/channel_message.dart';
 import '../models/message_filter.dart';
 import '../widgets/filtered_message_ghost.dart';
 import '../widgets/adaptive_app_bar_title.dart';
+import '../widgets/chat_send_pipeline.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mesh_ui.dart';
 
@@ -32,6 +33,63 @@ String filteredMessageRowId(Channel channel, ChannelMessage message) =>
 
 class _FilteredMessagesScreenState extends State<FilteredMessagesScreen> {
   final Set<String> _revealed = <String>{};
+
+  /// Bulk selection: when on, taps toggle rows and the app bar holds the
+  /// bulk actions.
+  bool _selectMode = false;
+  final Set<String> _selected = <String>{};
+
+  void _toggleSelected(String rowId) {
+    setState(() {
+      _selectMode = true;
+      if (!_selected.remove(rowId)) _selected.add(rowId);
+    });
+  }
+
+  void _exitSelectMode() => setState(() {
+    _selectMode = false;
+    _selected.clear();
+  });
+
+  List<(Channel, ChannelMessage)> _selectedEntries(
+    List<(Channel, ChannelMessage)> entries,
+  ) => [
+    for (final e in entries)
+      if (_selected.contains(_rowId(e.$1, e.$2))) e,
+  ];
+
+  Future<void> _bulkNotSpam(List<(Channel, ChannelMessage)> items) async {
+    final connector = context.read<MeshCoreConnector>();
+    final text = context.l10n.messageFilter_markedNotSpamCount(items.length);
+    setState(() {
+      for (final (channel, message) in items) {
+        _revealed.remove(_rowId(channel, message));
+      }
+      _selectMode = false;
+      _selected.clear();
+    });
+    await connector.markChannelMessagesNotSpam(items);
+    if (!mounted) return;
+    showDismissibleSnackBar(context, content: Text(text));
+  }
+
+  Future<void> _bulkDelete(List<(Channel, ChannelMessage)> items) async {
+    final connector = context.read<MeshCoreConnector>();
+    final confirmed = await confirmBulkDelete(context, items.length);
+    if (!confirmed || !mounted) return;
+    setState(() {
+      _selectMode = false;
+      _selected.clear();
+    });
+    final removed = await connector.deleteChannelMessages(
+      items.map((e) => e.$2),
+    );
+    if (!mounted || removed == 0) return;
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.chat_messagesDeleted(removed)),
+    );
+  }
 
   static String _rowId(Channel channel, ChannelMessage message) =>
       filteredMessageRowId(channel, message);
@@ -60,35 +118,86 @@ class _FilteredMessagesScreenState extends State<FilteredMessagesScreen> {
     final l10n = context.l10n;
     final connector = context.watch<MeshCoreConnector>();
     final entries = connector.recentFilteredChannelMessages();
+    final selectedEntries = _selectedEntries(entries);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: AdaptiveAppBarTitle(l10n.messageFilter_displayTitle),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        top: false,
-        child: entries.isEmpty
-            ? EmptyState(
-                icon: Icons.filter_alt_outlined,
-                title: l10n.messageFilter_filteredMessagesEmpty,
+    return PopScope(
+      canPop: !_selectMode,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _selectMode) _exitSelectMode();
+      },
+      child: Scaffold(
+        appBar: _selectMode
+            ? AppBar(
+                leading: IconButton(
+                  tooltip: l10n.chat_clearSelection,
+                  icon: const Icon(Icons.close),
+                  onPressed: _exitSelectMode,
+                ),
+                title: Text(l10n.chat_selectedCount(selectedEntries.length)),
+                actions: [
+                  IconButton(
+                    tooltip: l10n.chat_selectAll,
+                    icon: const Icon(Icons.select_all),
+                    onPressed: () => setState(() {
+                      _selected.addAll(entries.map((e) => _rowId(e.$1, e.$2)));
+                    }),
+                  ),
+                  IconButton(
+                    tooltip: l10n.messageFilter_notSpam,
+                    icon: const Icon(Icons.check_circle_outline),
+                    onPressed: selectedEntries.isEmpty
+                        ? null
+                        : () => _bulkNotSpam(selectedEntries),
+                  ),
+                  IconButton(
+                    tooltip: l10n.common_delete,
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: selectedEntries.isEmpty
+                        ? null
+                        : () => _bulkDelete(selectedEntries),
+                  ),
+                ],
               )
-            : ListView.builder(
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-                itemCount: entries.length,
-                itemBuilder: (context, index) {
-                  final (channel, message) = entries[index];
-                  final id = _rowId(channel, message);
-                  return _FilteredMessageCard(
-                    key: ValueKey('filtered_$id'),
-                    channel: channel,
-                    message: message,
-                    revealed: _revealed.contains(id),
-                    onToggle: () => _toggle(id),
-                    onNotSpam: () => _markNotSpam(channel, message),
-                  );
-                },
+            : AppBar(
+                title: AdaptiveAppBarTitle(l10n.messageFilter_displayTitle),
+                centerTitle: true,
+                actions: [
+                  if (entries.isNotEmpty)
+                    IconButton(
+                      tooltip: l10n.chat_selectMessages,
+                      icon: const Icon(Icons.checklist),
+                      onPressed: () => setState(() => _selectMode = true),
+                    ),
+                ],
               ),
+        body: SafeArea(
+          top: false,
+          child: entries.isEmpty
+              ? EmptyState(
+                  icon: Icons.filter_alt_outlined,
+                  title: l10n.messageFilter_filteredMessagesEmpty,
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+                  itemCount: entries.length,
+                  itemBuilder: (context, index) {
+                    final (channel, message) = entries[index];
+                    final id = _rowId(channel, message);
+                    return _FilteredMessageCard(
+                      key: ValueKey('filtered_$id'),
+                      channel: channel,
+                      message: message,
+                      revealed: _revealed.contains(id),
+                      selectMode: _selectMode,
+                      selected: _selected.contains(id),
+                      onToggle: () =>
+                          _selectMode ? _toggleSelected(id) : _toggle(id),
+                      onLongPress: () => _toggleSelected(id),
+                      onNotSpam: () => _markNotSpam(channel, message),
+                    );
+                  },
+                ),
+        ),
       ),
     );
   }
@@ -98,7 +207,10 @@ class _FilteredMessageCard extends StatelessWidget {
   final Channel channel;
   final ChannelMessage message;
   final bool revealed;
+  final bool selectMode;
+  final bool selected;
   final VoidCallback onToggle;
+  final VoidCallback onLongPress;
   final VoidCallback onNotSpam;
 
   const _FilteredMessageCard({
@@ -106,7 +218,10 @@ class _FilteredMessageCard extends StatelessWidget {
     required this.channel,
     required this.message,
     required this.revealed,
+    required this.selectMode,
+    required this.selected,
     required this.onToggle,
+    required this.onLongPress,
     required this.onNotSpam,
   });
 
@@ -131,9 +246,11 @@ class _FilteredMessageCard extends StatelessWidget {
       color: scheme.onSurfaceVariant,
     );
 
-    return MeshCard(
+    final card = MeshCard(
       onTap: onToggle,
-      padding: const EdgeInsets.fromLTRB(16, 12, 8, 4),
+      onLongPress: onLongPress,
+      color: selected ? scheme.primary.withValues(alpha: 0.16) : null,
+      padding: EdgeInsets.fromLTRB(16, 12, 8, selectMode ? 12 : 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -208,15 +325,33 @@ class _FilteredMessageCard extends StatelessWidget {
                     ),
             ),
           ),
-          Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: TextButton.icon(
-              style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
-              onPressed: onNotSpam,
-              icon: const Icon(Icons.check_circle_outline, size: 22),
-              label: Text(l10n.messageFilter_notSpam),
+          if (!selectMode)
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: TextButton.icon(
+                style: TextButton.styleFrom(minimumSize: const Size(0, 48)),
+                onPressed: onNotSpam,
+                icon: const Icon(Icons.check_circle_outline, size: 22),
+                label: Text(l10n.messageFilter_notSpam),
+              ),
+            ),
+        ],
+      ),
+    );
+    if (!selectMode) return card;
+    return Semantics(
+      selected: selected,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 12),
+            child: Icon(
+              selected ? Icons.check_circle : Icons.radio_button_unchecked,
+              size: 28,
+              color: selected ? scheme.primary : scheme.onSurfaceVariant,
             ),
           ),
+          Expanded(child: card),
         ],
       ),
     );

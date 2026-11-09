@@ -2328,54 +2328,6 @@ abstract class AppLocalizations {
   /// **'Auto route rotation disabled'**
   String get appSettings_autoRouteRotationDisabled;
 
-  /// No description provided for @appSettings_maxRouteWeight.
-  ///
-  /// In en, this message translates to:
-  /// **'Max Route Weight'**
-  String get appSettings_maxRouteWeight;
-
-  /// No description provided for @appSettings_maxRouteWeightSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Maximum weight a path can accumulate from successful deliveries'**
-  String get appSettings_maxRouteWeightSubtitle;
-
-  /// No description provided for @appSettings_initialRouteWeight.
-  ///
-  /// In en, this message translates to:
-  /// **'Initial Route Weight'**
-  String get appSettings_initialRouteWeight;
-
-  /// No description provided for @appSettings_initialRouteWeightSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Starting weight for newly discovered paths'**
-  String get appSettings_initialRouteWeightSubtitle;
-
-  /// No description provided for @appSettings_routeWeightSuccessIncrement.
-  ///
-  /// In en, this message translates to:
-  /// **'Success Weight Increment'**
-  String get appSettings_routeWeightSuccessIncrement;
-
-  /// No description provided for @appSettings_routeWeightSuccessIncrementSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Weight added to a path after successful delivery'**
-  String get appSettings_routeWeightSuccessIncrementSubtitle;
-
-  /// No description provided for @appSettings_routeWeightFailureDecrement.
-  ///
-  /// In en, this message translates to:
-  /// **'Failure Weight Decrement'**
-  String get appSettings_routeWeightFailureDecrement;
-
-  /// No description provided for @appSettings_routeWeightFailureDecrementSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Weight removed from a path after failed delivery'**
-  String get appSettings_routeWeightFailureDecrementSubtitle;
-
   /// No description provided for @appSettings_maxMessageRetries.
   ///
   /// In en, this message translates to:
@@ -3672,6 +3624,12 @@ abstract class AppLocalizations {
   /// **'Try a different word or check the spelling'**
   String get chatSearch_noResultsHint;
 
+  /// No description provided for @chatSearch_jumpFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t find that message in the chat'**
+  String get chatSearch_jumpFailed;
+
   /// No description provided for @chat_sendMessage.
   ///
   /// In en, this message translates to:
@@ -3743,6 +3701,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Message deleted'**
   String get chat_messageDeleted;
+
+  /// No description provided for @chat_selectMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Select messages'**
+  String get chat_selectMessages;
+
+  /// No description provided for @chat_selectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String chat_selectedCount(int count);
+
+  /// No description provided for @chat_selectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get chat_selectAll;
+
+  /// No description provided for @chat_clearSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection'**
+  String get chat_clearSelection;
+
+  /// No description provided for @chat_deleteSelectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete messages?'**
+  String get chat_deleteSelectedTitle;
+
+  /// No description provided for @chat_deleteSelectedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Delete 1 message from this device?} other{Delete {count} messages from this device?}}'**
+  String chat_deleteSelectedConfirm(int count);
+
+  /// No description provided for @chat_messagesDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 message deleted} other{{count} messages deleted}}'**
+  String chat_messagesDeleted(int count);
+
+  /// No description provided for @messageFilter_markedSpamCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 message marked as spam} other{{count} messages marked as spam}}'**
+  String messageFilter_markedSpamCount(int count);
+
+  /// No description provided for @messageFilter_markedNotSpamCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 message marked as not spam} other{{count} messages marked as not spam}}'**
+  String messageFilter_markedNotSpamCount(int count);
 
   /// No description provided for @chat_retryingMessage.
   ///
@@ -4146,6 +4158,12 @@ abstract class AppLocalizations {
   /// **'Manual'**
   String get routing_modeManual;
 
+  /// No description provided for @routing_modeDirect.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct'**
+  String get routing_modeDirect;
+
   /// No description provided for @routing_modeAutoHint.
   ///
   /// In en, this message translates to:
@@ -4163,6 +4181,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Always sends along the exact path you set.'**
   String get routing_modeManualHint;
+
+  /// No description provided for @routing_modeDirectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Always sends straight to this contact with no repeater hops. Use it when they are in radio range.'**
+  String get routing_modeDirectHint;
 
   /// No description provided for @routing_currentRoute.
   ///
@@ -4469,6 +4493,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saved'**
   String get contactShare_saved;
+
+  /// No description provided for @contactShare_addAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Add again'**
+  String get contactShare_addAgain;
 
   /// No description provided for @contactShare_isYou.
   ///
@@ -10137,6 +10167,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Expand panel'**
   String get pathMap_expandPanel;
+
+  /// No description provided for @pathMap_expandHopList.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand hop list'**
+  String get pathMap_expandHopList;
+
+  /// No description provided for @pathMap_showMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Show map'**
+  String get pathMap_showMap;
 
   /// No description provided for @pathMap_noLocation.
   ///

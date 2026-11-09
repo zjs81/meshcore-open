@@ -2158,14 +2158,6 @@
   "contact_teleBaseSubtitle": "Tillåt delning av batterinivå och grundläggande telemetri",
   "contact_teleLoc": "Telemetridata plats",
   "contact_teleLocSubtitle": "Tillåt delning av platsdata",
-  "appSettings_initialRouteWeightSubtitle": "Startvikt för nyligen upptäckta rutter",
-  "appSettings_maxRouteWeight": "Maximal ruttvikt",
-  "appSettings_maxRouteWeightSubtitle": "Maximal vikt som en rutt kan samla efter lyckade leveranser",
-  "appSettings_initialRouteWeight": "Initial vikt för rutt",
-  "appSettings_routeWeightSuccessIncrement": "Ökning av vikt för framgång",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Vikt som läggs till en rutt efter en lyckad leverans",
-  "appSettings_routeWeightFailureDecrement": "Minskning av vikten för misslyckande",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Vikt som tas bort från en rutt efter en misslyckad leverans",
   "appSettings_maxMessageRetries": "Maximalt antal försök",
   "appSettings_maxMessageRetriesSubtitle": "Antal försök att skicka om ett meddelande innan det markeras som misslyckat.",
   "path_routeWeight": "{weight}/{max}",
@@ -3715,5 +3707,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Det gick inte att hitta meddelandet i chatten",
+  "chat_clearSelection": "Rensa markering",
+  "chat_deleteSelectedConfirm": "{count, plural, =1{Radera 1 meddelande från den här enheten?} other{Radera {count} meddelanden från den här enheten?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Radera meddelanden?",
+  "chat_messagesDeleted": "{count, plural, =1{1 meddelande raderat} other{{count} meddelanden raderade}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Markera alla",
+  "chat_selectMessages": "Markera meddelanden",
+  "chat_selectedCount": "{count} markerade",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Lägg till igen",
+  "messageFilter_markedNotSpamCount": "{count, plural, =1{1 meddelande markerat som inte skräppost} other{{count} meddelanden markerade som inte skräppost}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, =1{1 meddelande markerat som skräppost} other{{count} meddelanden markerade som skräppost}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Expandera hopplistan",
+  "pathMap_showMap": "Visa karta",
+  "routing_modeDirect": "Direkt",
+  "routing_modeDirectHint": "Skickar alltid direkt till den här kontakten utan repeaterhopp. Använd när kontakten är inom radioräckvidd."
 }

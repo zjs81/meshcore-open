@@ -12,6 +12,7 @@ import '../utils/platform_info.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
+import '../helpers/chat_jump.dart';
 import '../helpers/cyr2lat.dart';
 import '../helpers/message_url_image_helper.dart';
 import '../helpers/path_helper.dart';
@@ -96,16 +97,53 @@ class _ChatScreenState extends State<ChatScreen> {
   String? _unreadDividerMessageId;
   final ChatSendGuard _sendGuard = ChatSendGuard();
 
-  /// Contact keys of the chat screens currently on the navigation stack, in
-  /// push order. A room chat can push a nested ChatScreen for one of its
-  /// posters; when that one is popped, the room underneath must become the
-  /// active conversation again rather than none at all.
-  static final List<String> _activeContactStack = [];
+  /// The chat currently registered as the visible conversation. Screens
+  /// register while their route is uncovered and unregister when a page is
+  /// pushed over them (a nested room poster chat, a chat opened from a
+  /// notification, …), re-registering when it is popped. Only the owner
+  /// clears the registration, so a screen disposed after the one underneath
+  /// re-registered cannot wipe it out.
+  static _ChatScreenState? _activeOwner;
+  ModalRoute<dynamic>? _route;
+
+  void _registerActive() {
+    final connector = _connector;
+    if (connector == null) return;
+    _activeOwner = this;
+    connector.setActiveContact(widget.contact.publicKeyHex);
+  }
+
+  void _unregisterActive() {
+    if (!identical(_activeOwner, this)) return;
+    _activeOwner = null;
+    _connector?.setActiveContact(null);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (!identical(route, _route)) {
+      _route?.secondaryAnimation?.removeStatusListener(_onCoveringRouteStatus);
+      _route = route;
+      route?.secondaryAnimation?.addStatusListener(_onCoveringRouteStatus);
+    }
+  }
+
+  void _onCoveringRouteStatus(AnimationStatus status) {
+    if (!mounted) return;
+    if (status == AnimationStatus.dismissed) {
+      _registerActive();
+    } else {
+      // Not just `forward`: a page pushed without a transition jumps
+      // straight to `completed`.
+      _unregisterActive();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _activeContactStack.add(widget.contact.publicKeyHex);
     _textFieldFocusNode.addListener(_onTextFieldFocusChange);
     _scrollController.onScrollNearTop = _loadOlderMessages;
     _scrollController.showJumpToBottom.addListener(_clearDividerAtBottom);
@@ -113,7 +151,6 @@ class _ChatScreenState extends State<ChatScreen> {
       if (!mounted) return;
       final connector = context.read<MeshCoreConnector>();
       final settings = context.read<AppSettingsService>().settings;
-      final keyHex = widget.contact.publicKeyHex;
       final unread = widget.initialUnreadCount;
       final messages = connector.getMessages(widget.contact);
       Message? anchor;
@@ -126,8 +163,8 @@ class _ChatScreenState extends State<ChatScreen> {
           _pendingUnreadScrollTarget = anchor;
         }
       });
-      connector.setActiveContact(keyHex);
       _connector = connector;
+      if (_route?.isCurrent ?? true) _registerActive();
       if (anchor != null && settings.jumpToOldestUnread) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
@@ -194,21 +231,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    final index = _activeContactStack.lastIndexOf(widget.contact.publicKeyHex);
-    final wasTop = index == _activeContactStack.length - 1;
-    if (index >= 0) _activeContactStack.removeAt(index);
-    if (wasTop) {
-      // Restore whichever chat is now on top (e.g. the room this nested chat
-      // was opened from), or clear when this was the only one.
-      _connector?.setActiveContact(
-        _activeContactStack.isEmpty ? null : _activeContactStack.last,
-      );
-    }
+    _route?.secondaryAnimation?.removeStatusListener(_onCoveringRouteStatus);
+    _unregisterActive();
     _scrollController.showJumpToBottom.removeListener(_clearDividerAtBottom);
     _textFieldFocusNode.removeListener(_onTextFieldFocusChange);
     _textFieldFocusNode.dispose();
     _textController.dispose();
     _searchController.dispose();
+    _highlightTimer?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -255,7 +285,63 @@ class _ChatScreenState extends State<ChatScreen> {
       query: _searchQuery.trim(),
       loadEntries: loadEntries,
       textScale: context.watch<ChatTextScaleService>().scale,
+      onSelect: (entry) => unawaited(_jumpToSearchResult(entry.id)),
     );
+  }
+
+  /// Message briefly highlighted after jumping to it from search.
+  String? _highlightedMessageId;
+  Timer? _highlightTimer;
+
+  /// Closes search and scrolls the conversation to [messageId], loading
+  /// older pages first when the message is further back than what is loaded.
+  Future<void> _jumpToSearchResult(String messageId) async {
+    FocusScope.of(context).unfocus();
+    _closeSearch();
+    final connector = context.read<MeshCoreConnector>();
+    final keyHex = widget.contact.publicKeyHex;
+    int indexOf() => connector
+        .getMessages(widget.contact)
+        .indexWhere((m) => m.messageId == messageId);
+    for (var page = 0; page < 500 && indexOf() < 0; page++) {
+      if (!mounted) return;
+      if (_isLoadingOlder) {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        continue;
+      }
+      setState(() => _isLoadingOlder = true);
+      final older = await connector.loadOlderMessages(keyHex);
+      if (!mounted) return;
+      setState(() => _isLoadingOlder = false);
+      if (older.isEmpty) break;
+    }
+    // Let the list (rebuilt after closing search) lay out.
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+    final messages = connector.getMessages(widget.contact);
+    final index = indexOf();
+    // The list is reversed: newest message is row 0.
+    final found =
+        index >= 0 &&
+        await scrollListToIndex(
+          controller: _scrollController,
+          targetIndex: messages.length - 1 - index,
+          itemCount: messages.length,
+          isMounted: () => mounted,
+        );
+    if (!mounted) return;
+    if (!found) {
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.chatSearch_jumpFailed),
+      );
+      return;
+    }
+    _highlightTimer?.cancel();
+    setState(() => _highlightedMessageId = messageId);
+    _highlightTimer = Timer(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _highlightedMessageId = null);
+    });
   }
 
   Future<List<ChatSearchEntry>> _loadSearchEntries() async {
@@ -621,6 +707,19 @@ class _ChatScreenState extends State<ChatScreen> {
                     reversedMessages[messageIndex + 1].receivedAt,
                     message.receivedAt,
                   );
+              final highlighted = message.messageId == _highlightedMessageId;
+              final shown = highlighted
+                  ? AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(MeshRadii.md),
+                      ),
+                      child: bubble,
+                    )
+                  : bubble;
               final child = isUnreadAnchor || startsDay
                   ? Column(
                       mainAxisSize: MainAxisSize.min,
@@ -628,10 +727,10 @@ class _ChatScreenState extends State<ChatScreen> {
                         if (startsDay)
                           ChatDaySeparator(day: message.receivedAt),
                         if (isUnreadAnchor) const UnreadDivider(),
-                        bubble,
+                        shown,
                       ],
                     )
-                  : bubble;
+                  : shown;
               if (identical(message, _pendingUnreadScrollTarget)) {
                 return KeyedSubtree(key: _unreadScrollKey, child: child);
               }

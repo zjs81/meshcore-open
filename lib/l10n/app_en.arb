@@ -557,14 +557,6 @@
   "appSettings_autoRouteRotationSubtitle": "Cycle between best paths and flood mode",
   "appSettings_autoRouteRotationEnabled": "Auto route rotation enabled",
   "appSettings_autoRouteRotationDisabled": "Auto route rotation disabled",
-  "appSettings_maxRouteWeight": "Max Route Weight",
-  "appSettings_maxRouteWeightSubtitle": "Maximum weight a path can accumulate from successful deliveries",
-  "appSettings_initialRouteWeight": "Initial Route Weight",
-  "appSettings_initialRouteWeightSubtitle": "Starting weight for newly discovered paths",
-  "appSettings_routeWeightSuccessIncrement": "Success Weight Increment",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Weight added to a path after successful delivery",
-  "appSettings_routeWeightFailureDecrement": "Failure Weight Decrement",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Weight removed from a path after failed delivery",
   "appSettings_maxMessageRetries": "Max Message Retries",
   "appSettings_maxMessageRetriesSubtitle": "Number of retry attempts before marking a message as failed",
   "appSettings_ipfsImageLinks": "IPFS provider configuration",
@@ -1029,6 +1021,7 @@
   },
   "chatSearch_noResults": "No matching messages",
   "chatSearch_noResultsHint": "Try a different word or check the spelling",
+  "chatSearch_jumpFailed": "Couldn't find that message in the chat",
   "chat_sendMessage": "Send message",
   "chat_sendMessageTo": "Send a message to {contactName}",
   "@chat_sendMessageTo": {
@@ -1069,6 +1062,50 @@
   },
   "chat_messageCopied": "Message copied",
   "chat_messageDeleted": "Message deleted",
+  "chat_selectMessages": "Select messages",
+  "chat_selectedCount": "{count} selected",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Select all",
+  "chat_clearSelection": "Clear selection",
+  "chat_deleteSelectedTitle": "Delete messages?",
+  "chat_deleteSelectedConfirm": "{count, plural, =1{Delete 1 message from this device?} other{Delete {count} messages from this device?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_messagesDeleted": "{count, plural, =1{1 message deleted} other{{count} messages deleted}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, =1{1 message marked as spam} other{{count} messages marked as spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedNotSpamCount": "{count, plural, =1{1 message marked as not spam} other{{count} messages marked as not spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chat_retryingMessage": "Retrying message",
   "chat_retryCount": "Retry {current}/{max}",
   "@chat_retryCount": {
@@ -1227,9 +1264,11 @@
   "routing_modeAuto": "Auto",
   "routing_modeFlood": "Flood",
   "routing_modeManual": "Manual",
+  "routing_modeDirect": "Direct",
   "routing_modeAutoHint": "Picks the best known path automatically, flooding when none is known.",
   "routing_modeFloodHint": "Broadcasts through every repeater. Most reliable, but uses more airtime.",
   "routing_modeManualHint": "Always sends along the exact path you set.",
+  "routing_modeDirectHint": "Always sends straight to this contact with no repeater hops. Use it when they are in radio range.",
   "routing_currentRoute": "Current route",
   "routing_directNoHops": "Direct — no repeater hops",
   "routing_noPathYet": "No path yet. The next message floods until a route is discovered.",
@@ -1319,6 +1358,7 @@
   "contactShare_add": "Add contact",
   "contactShare_adding": "Adding contact...",
   "contactShare_saved": "Saved",
+  "contactShare_addAgain": "Add again",
   "contactShare_isYou": "This is you",
   "contactShare_shareAction": "Share contact",
   "contactShare_pickerTitle": "Share a contact",
@@ -3373,6 +3413,8 @@
   "pathMap_showPath": "Show path",
   "pathMap_collapsePanel": "Collapse panel",
   "pathMap_expandPanel": "Expand panel",
+  "pathMap_expandHopList": "Expand hop list",
+  "pathMap_showMap": "Show map",
   "pathMap_noLocation": "No location",
   "pathMap_followPacket": "Lock view to packet",
   "pathMap_unfollowPacket": "Unlock view from packet",

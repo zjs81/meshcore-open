@@ -2162,14 +2162,6 @@
   "contact_settings": "联系人设置",
   "contact_teleLocSubtitle": "允许共享位置数据",
   "contact_telemetry": "遥测数据",
-  "appSettings_maxRouteWeight": "最大路径重量",
-  "appSettings_initialRouteWeightSubtitle": "新发现路径的初始重量",
-  "appSettings_initialRouteWeight": "初始路线权重",
-  "appSettings_maxRouteWeightSubtitle": "一条路径可以累积的最大重量，取决于成功交付的数量。",
-  "appSettings_routeWeightSuccessIncrement": "成功权重增加",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "在成功交付后，将重量添加到路径中",
-  "appSettings_routeWeightFailureDecrement": "失败权重降低",
-  "appSettings_routeWeightFailureDecrementSubtitle": "从一条路径上移除的货物，由于无法成功交付而移除。",
   "appSettings_maxMessageRetries": "最大消息重试次数",
   "appSettings_maxMessageRetriesSubtitle": "在将消息标记为失败之前，允许尝试的次数",
   "path_routeWeight": "{weight}/{max}",
@@ -2517,9 +2509,9 @@
   "contacts_searchOpen": "搜索联系人",
   "contacts_searchClose": "高级搜索",
   "routing_title": "路由",
-  "routing_modeAuto": "汽车",
+  "routing_modeAuto": "自动",
   "routing_modeFlood": "泛洪",
-  "routing_modeManual": "手册",
+  "routing_modeManual": "手动",
   "routing_modeAutoHint": "自动选择已知最佳路径，当没有已知路径时，则进行“泛洪”搜索。",
   "routing_modeFloodHint": "通过所有中继站进行广播。 这种方式最可靠，但占用更多的时间。",
   "routing_modeManualHint": "总是按照您设置的路径进行导航。",
@@ -3725,5 +3717,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "在聊天中找不到该消息",
+  "chat_clearSelection": "取消选择",
+  "chat_deleteSelectedConfirm": "{count, plural, other{要从此设备删除 {count} 条消息吗？}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "删除消息？",
+  "chat_messagesDeleted": "{count, plural, other{已删除 {count} 条消息}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "全选",
+  "chat_selectMessages": "选择消息",
+  "chat_selectedCount": "已选择 {count} 项",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "重新添加",
+  "messageFilter_markedNotSpamCount": "{count, plural, other{已将 {count} 条消息标记为非垃圾消息}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, other{已将 {count} 条消息标记为垃圾消息}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "展开中继列表",
+  "pathMap_showMap": "显示地图",
+  "routing_modeDirect": "直连",
+  "routing_modeDirectHint": "始终直接发送给该联系人，不经过中继跳。在对方处于无线电范围内时使用。"
 }

@@ -20,12 +20,14 @@ import 'services/image_codec_service.dart';
 import 'services/image_codec_settings_store.dart';
 import 'services/received_image_blob_store_factory.dart';
 import 'services/received_image_store.dart';
+import 'services/scroll_capture_service.dart';
 import 'services/storage_service.dart';
 import 'services/message_filter/message_filter_service.dart';
 import 'services/message_retry_service.dart';
 import 'services/path_history_service.dart';
 import 'services/app_settings_service.dart';
 import 'services/network_map/network_map_upload_service.dart';
+import 'services/notification_navigator.dart';
 import 'services/notification_service.dart';
 import 'services/ble_debug_log_service.dart';
 import 'services/app_debug_log_service.dart';
@@ -58,6 +60,8 @@ void main() async {
   // this mode before Android 10, where the old layout remains.
   if (PlatformInfo.isAndroid) {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    // Android's scrolling screenshot ("Capture more") for Flutter lists.
+    ScrollCaptureService.initialize();
   }
 
   // Initialize SharedPreferences cache
@@ -404,11 +408,19 @@ const Duration _kImageSweepInterval = Duration(seconds: 5);
 
 class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
   Timer? _imageSweepTimer;
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  late final NotificationNavigator _notificationNavigator =
+      NotificationNavigator(
+        navigatorKey: _navigatorKey,
+        connector: widget.connector,
+        notifications: NotificationService(),
+      );
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _notificationNavigator.attach();
     _imageSweepTimer = Timer.periodic(
       _kImageSweepInterval,
       (_) => widget.imageReassembler.evictExpired(),
@@ -417,6 +429,7 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    _notificationNavigator.dispose();
     _imageSweepTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -488,6 +501,7 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
         builder: (context, settingsService, child) {
           final customTheme = settingsService.activeCustomTheme;
           return MaterialApp(
+            navigatorKey: _navigatorKey,
             title: 'MeshCore Open',
             debugShowCheckedModeBanner: false,
             localizationsDelegates: const [

@@ -34,6 +34,7 @@ import '../widgets/repeater_login_dialog.dart';
 import '../widgets/room_login_dialog.dart';
 import '../widgets/sync_progress_overlay.dart';
 import '../widgets/unread_badge.dart';
+import '../helpers/contact_share_message.dart';
 import '../helpers/snack_bar_builder.dart';
 import 'channels_screen.dart';
 import 'chat_screen.dart';
@@ -356,6 +357,12 @@ class _ContactsScreenState extends State<ContactsScreen>
       return;
     }
     final text = clipboardData.text!.trim();
+    // A contact shared in chat (`<PUBKEY:TYPE:NAME>`) copied from the bubble.
+    final share = findContactShare(text);
+    if (share != null && !text.startsWith('meshcore://')) {
+      await _importContactShare(connector, share);
+      return;
+    }
     if (!text.startsWith('meshcore://')) {
       if (mounted) {
         showDismissibleSnackBar(
@@ -391,6 +398,32 @@ class _ContactsScreenState extends State<ContactsScreen>
         );
       }
     }
+  }
+
+  Future<void> _importContactShare(
+    MeshCoreConnector connector,
+    ContactShare share,
+  ) async {
+    if (!mounted) return;
+    final l10n = context.l10n;
+    if (share.publicKeyHex == connector.selfPublicKeyHex) {
+      showDismissibleSnackBar(context, content: Text(l10n.contactShare_isYou));
+      return;
+    }
+    var ok = true;
+    try {
+      await connector.addContactFromCard(share.toScannedContact());
+    } catch (e) {
+      appLogger.warn('Contact share import failed: $e', tag: 'ContactsScreen');
+      ok = false;
+    }
+    if (!mounted) return;
+    showDismissibleSnackBar(
+      context,
+      content: Text(
+        ok ? l10n.contacts_contactImported : l10n.contacts_contactImportFailed,
+      ),
+    );
   }
 
   @override

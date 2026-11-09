@@ -1269,34 +1269,6 @@ class AppLocalizationsHu extends AppLocalizations {
       'Az automatikus útvonalforgatás letiltva';
 
   @override
-  String get appSettings_maxRouteWeight => 'Maximális útvonalsúly';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Maximális súly, amelyet egy útvonal felhalmozhat a sikeres szállításokból';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Az útvonal kezdeti súlya';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Kezdősúly az újonnan felfedezett utakhoz';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement => 'Siker súlynövekedés';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Súly hozzáadva egy útvonalhoz a sikeres szállítás után';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement => 'Hiba súlycsökkentés';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Sikertelen szállítás után eltávolított súly az útvonalról';
-
-  @override
   String get appSettings_maxMessageRetries =>
       'Üzenet újrapróbálkozások maximális száma';
 
@@ -2064,6 +2036,10 @@ class AppLocalizationsHu extends AppLocalizations {
       'Próbálj másik szót, vagy ellenőrizd a helyesírást';
 
   @override
+  String get chatSearch_jumpFailed =>
+      'Ez az üzenet nem található a csevegésben';
+
+  @override
   String get chat_sendMessage => 'Üzenet küldése';
 
   @override
@@ -2107,6 +2083,67 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Üzenet törölve';
+
+  @override
+  String get chat_selectMessages => 'Üzenetek kijelölése';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '$count kijelölve';
+  }
+
+  @override
+  String get chat_selectAll => 'Összes kijelölése';
+
+  @override
+  String get chat_clearSelection => 'Kijelölés törlése';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Törli az üzeneteket?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Törli a(z) $count üzenetet erről az eszközről?',
+      one: 'Törli az 1 üzenetet erről az eszközről?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count üzenet törölve',
+      one: '1 üzenet törölve',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count üzenet spamként megjelölve',
+      one: '1 üzenet spamként megjelölve',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count üzenet nem spamként megjelölve',
+      one: '1 üzenet nem spamként megjelölve',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Üzenet újrapróbálkozása';
@@ -2343,7 +2380,10 @@ class AppLocalizationsHu extends AppLocalizations {
   String get routing_modeFlood => 'Elárasztás';
 
   @override
-  String get routing_modeManual => 'Kézikönyv';
+  String get routing_modeManual => 'Kézi';
+
+  @override
+  String get routing_modeDirect => 'Közvetlen';
 
   @override
   String get routing_modeAutoHint =>
@@ -2356,6 +2396,10 @@ class AppLocalizationsHu extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Mindig pontosan az Ön által megadott útvonalon küld.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Mindig közvetlenül ennek a névjegynek küld, átjátszó ugrások nélkül. Akkor használja, ha rádiótávolságon belül van.';
 
   @override
   String get routing_currentRoute => 'Jelenlegi útvonal';
@@ -2524,6 +2568,9 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Mentve';
+
+  @override
+  String get contactShare_addAgain => 'Hozzáadás újra';
 
   @override
   String get contactShare_isYou => 'Ez te vagy';
@@ -5976,6 +6023,12 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => 'Panel kibontása';
+
+  @override
+  String get pathMap_expandHopList => 'Ugráslista kibontása';
+
+  @override
+  String get pathMap_showMap => 'Térkép megjelenítése';
 
   @override
   String get pathMap_noLocation => 'Nincs hely';

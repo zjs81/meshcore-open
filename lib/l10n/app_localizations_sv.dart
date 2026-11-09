@@ -1255,36 +1255,6 @@ class AppLocalizationsSv extends AppLocalizations {
       'Automatisk ruttrotation är avstängd';
 
   @override
-  String get appSettings_maxRouteWeight => 'Maximal ruttvikt';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Maximal vikt som en rutt kan samla efter lyckade leveranser';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Initial vikt för rutt';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Startvikt för nyligen upptäckta rutter';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Ökning av vikt för framgång';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Vikt som läggs till en rutt efter en lyckad leverans';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Minskning av vikten för misslyckande';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Vikt som tas bort från en rutt efter en misslyckad leverans';
-
-  @override
   String get appSettings_maxMessageRetries => 'Maximalt antal försök';
 
   @override
@@ -2043,6 +2013,10 @@ class AppLocalizationsSv extends AppLocalizations {
       'Prova ett annat ord eller kontrollera stavningen';
 
   @override
+  String get chatSearch_jumpFailed =>
+      'Det gick inte att hitta meddelandet i chatten';
+
+  @override
   String get chat_sendMessage => 'Skicka meddelande';
 
   @override
@@ -2088,6 +2062,67 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Meddelandet raderat';
+
+  @override
+  String get chat_selectMessages => 'Markera meddelanden';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '$count markerade';
+  }
+
+  @override
+  String get chat_selectAll => 'Markera alla';
+
+  @override
+  String get chat_clearSelection => 'Rensa markering';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Radera meddelanden?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Radera $count meddelanden från den här enheten?',
+      one: 'Radera 1 meddelande från den här enheten?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meddelanden raderade',
+      one: '1 meddelande raderat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meddelanden markerade som skräppost',
+      one: '1 meddelande markerat som skräppost',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count meddelanden markerade som inte skräppost',
+      one: '1 meddelande markerat som inte skräppost',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Försöker igen';
@@ -2327,6 +2362,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get routing_modeManual => 'Manuell';
 
   @override
+  String get routing_modeDirect => 'Direkt';
+
+  @override
   String get routing_modeAutoHint =>
       'Väljer automatiskt den bästa kända rutten och använder flood när ingen rutt är känd.';
 
@@ -2337,6 +2375,10 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Skickar alltid längs exakt den rutt du anger.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Skickar alltid direkt till den här kontakten utan repeaterhopp. Använd när kontakten är inom radioräckvidd.';
 
   @override
   String get routing_currentRoute => 'Nuvarande rutt';
@@ -2505,6 +2547,9 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Sparad';
+
+  @override
+  String get contactShare_addAgain => 'Lägg till igen';
 
   @override
   String get contactShare_isYou => 'Det här är du';
@@ -5931,6 +5976,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => 'Expandera panel';
+
+  @override
+  String get pathMap_expandHopList => 'Expandera hopplistan';
+
+  @override
+  String get pathMap_showMap => 'Visa karta';
 
   @override
   String get pathMap_noLocation => 'Ingen position';

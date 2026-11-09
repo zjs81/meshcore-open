@@ -1267,36 +1267,6 @@ class AppLocalizationsSl extends AppLocalizations {
       'Samodejno kroženje poti onemogočeno';
 
   @override
-  String get appSettings_maxRouteWeight => 'Največja dovoljena teža poti';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Največja teža, ki jo pot lahko nabere z uspešnimi dostavami';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Začetna teža poti';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Začetna teža novo odkritih poti';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Povečanje teže ob uspehu';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Teža, dodana poti po uspešni dostavi';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Zmanjšanje teže ob neuspehu';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Teža, odstranjena s poti po neuspešni dostavi';
-
-  @override
   String get appSettings_maxMessageRetries =>
       'Največ poskusov pošiljanja sporočila';
 
@@ -2060,6 +2030,10 @@ class AppLocalizationsSl extends AppLocalizations {
       'Poskusite z drugo besedo ali preverite črkovanje';
 
   @override
+  String get chatSearch_jumpFailed =>
+      'Sporočila ni bilo mogoče najti v klepetu';
+
+  @override
   String get chat_sendMessage => 'Pošlji sporočilo';
 
   @override
@@ -2104,6 +2078,75 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Sporočilo izbrisano';
+
+  @override
+  String get chat_selectMessages => 'Izberi sporočila';
+
+  @override
+  String chat_selectedCount(int count) {
+    return 'Izbrano: $count';
+  }
+
+  @override
+  String get chat_selectAll => 'Izberi vse';
+
+  @override
+  String get chat_clearSelection => 'Počisti izbiro';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Izbrisati sporočila?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Želite izbrisati $count sporočil iz te naprave?',
+      few: 'Želite izbrisati $count sporočila iz te naprave?',
+      two: 'Želite izbrisati $count sporočili iz te naprave?',
+      one: 'Želite izbrisati $count sporočilo iz te naprave?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sporočil izbrisanih',
+      few: '$count sporočila izbrisana',
+      two: '$count sporočili izbrisani',
+      one: '$count sporočilo izbrisano',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sporočil označenih kot neželeno',
+      few: '$count sporočila označena kot neželeno',
+      two: '$count sporočili označeni kot neželeno',
+      one: '$count sporočilo označeno kot neželeno',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sporočil označenih kot ni neželeno',
+      few: '$count sporočila označena kot ni neželeno',
+      two: '$count sporočili označeni kot ni neželeno',
+      one: '$count sporočilo označeno kot ni neželeno',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Ponovni poskus.';
@@ -2334,13 +2377,16 @@ class AppLocalizationsSl extends AppLocalizations {
   String get routing_title => 'Navigacija';
 
   @override
-  String get routing_modeAuto => 'Avto';
+  String get routing_modeAuto => 'Samodejno';
 
   @override
   String get routing_modeFlood => 'Flood';
 
   @override
-  String get routing_modeManual => 'Navodilo';
+  String get routing_modeManual => 'Ročno';
+
+  @override
+  String get routing_modeDirect => 'Neposredno';
 
   @override
   String get routing_modeAutoHint =>
@@ -2353,6 +2399,10 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Vedno sledi natančni poti, ki jo ste določili.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Vedno pošlje neposredno temu stiku, brez skokov prek repetitorjev. Uporabite, če je v radijskem dosegu.';
 
   @override
   String get routing_currentRoute => 'Trenutna pot';
@@ -2520,6 +2570,9 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Shranjeno';
+
+  @override
+  String get contactShare_addAgain => 'Dodaj znova';
 
   @override
   String get contactShare_isYou => 'To ste vi';
@@ -5958,6 +6011,12 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => 'Razširi ploščo';
+
+  @override
+  String get pathMap_expandHopList => 'Razširi seznam repetitorjev';
+
+  @override
+  String get pathMap_showMap => 'Pokaži zemljevid';
 
   @override
   String get pathMap_noLocation => 'Brez lokacije';

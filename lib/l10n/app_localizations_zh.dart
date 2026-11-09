@@ -1192,32 +1192,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_autoRouteRotationDisabled => '自动路径轮换已禁用';
 
   @override
-  String get appSettings_maxRouteWeight => '最大路径重量';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle => '一条路径可以累积的最大重量，取决于成功交付的数量。';
-
-  @override
-  String get appSettings_initialRouteWeight => '初始路线权重';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle => '新发现路径的初始重量';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement => '成功权重增加';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      '在成功交付后，将重量添加到路径中';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement => '失败权重降低';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      '从一条路径上移除的货物，由于无法成功交付而移除。';
-
-  @override
   String get appSettings_maxMessageRetries => '最大消息重试次数';
 
   @override
@@ -1945,6 +1919,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chatSearch_noResultsHint => '请尝试其他词语或检查拼写';
 
   @override
+  String get chatSearch_jumpFailed => '在聊天中找不到该消息';
+
+  @override
   String get chat_sendMessage => '发送消息';
 
   @override
@@ -1987,6 +1964,63 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => '消息已删除';
+
+  @override
+  String get chat_selectMessages => '选择消息';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '已选择 $count 项';
+  }
+
+  @override
+  String get chat_selectAll => '全选';
+
+  @override
+  String get chat_clearSelection => '取消选择';
+
+  @override
+  String get chat_deleteSelectedTitle => '删除消息？';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '要从此设备删除 $count 条消息吗？',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已删除 $count 条消息',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已将 $count 条消息标记为垃圾消息',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已将 $count 条消息标记为非垃圾消息',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => '正在重试消息';
@@ -2203,13 +2237,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get routing_title => '路由';
 
   @override
-  String get routing_modeAuto => '汽车';
+  String get routing_modeAuto => '自动';
 
   @override
   String get routing_modeFlood => '泛洪';
 
   @override
-  String get routing_modeManual => '手册';
+  String get routing_modeManual => '手动';
+
+  @override
+  String get routing_modeDirect => '直连';
 
   @override
   String get routing_modeAutoHint => '自动选择已知最佳路径，当没有已知路径时，则进行“泛洪”搜索。';
@@ -2219,6 +2256,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get routing_modeManualHint => '总是按照您设置的路径进行导航。';
+
+  @override
+  String get routing_modeDirectHint => '始终直接发送给该联系人，不经过中继跳。在对方处于无线电范围内时使用。';
 
   @override
   String get routing_currentRoute => '当前路线';
@@ -2383,6 +2423,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get contactShare_saved => '已保存';
+
+  @override
+  String get contactShare_addAgain => '重新添加';
 
   @override
   String get contactShare_isYou => '这是你自己';
@@ -5558,6 +5601,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => '展开面板';
+
+  @override
+  String get pathMap_expandHopList => '展开中继列表';
+
+  @override
+  String get pathMap_showMap => '显示地图';
 
   @override
   String get pathMap_noLocation => '无位置';

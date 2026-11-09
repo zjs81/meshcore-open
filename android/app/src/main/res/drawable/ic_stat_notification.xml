@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Monochrome status-bar icon (chat bubble with radio tower). Android only
+     uses the alpha channel for small notification icons, so this must stay
+     white-on-transparent; the full-colour launcher icon renders as a blob. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineJoin="round"
+        android:pathData="M12,3C6.75,3 2.5,6.58 2.5,11c0,2.28 1.13,4.34 2.95,5.8L4.5,21l4.36,-2.38C9.84,18.87 10.9,19 12,19c5.25,0 9.5,-3.58 9.5,-8S17.25,3 12,3z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.6"
+        android:strokeLineCap="round"
+        android:pathData="M8,10A5,5 0,0 1,16 10" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.6"
+        android:strokeLineCap="round"
+        android:pathData="M9.78,11.3A2.8,2.8 0,0 1,14.22 11.3" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,12.4L14.1,17L9.9,17z" />
+</vector>

@@ -33,6 +33,11 @@ class BackgroundService {
         eventAction: ForegroundTaskEventAction.repeat(5000),
         autoRunOnBoot: false,
         allowWifiLock: false,
+        // The radio link lives in the app process; once the user swipes the
+        // app away it is gone, so a lingering "connected" notification (or
+        // an automatic restart) would only be misleading.
+        allowAutoRestart: false,
+        stopWithTask: true,
       ),
     );
     _initialized = true;
@@ -49,6 +54,9 @@ class BackgroundService {
     await FlutterForegroundTask.startService(
       notificationTitle: l10n.background_serviceTitle,
       notificationText: l10n.background_serviceText,
+      notificationIcon: const NotificationIcon(
+        metaDataName: 'org.meshcore.open.NOTIFICATION_ICON',
+      ),
       callback: startCallback,
     );
   }

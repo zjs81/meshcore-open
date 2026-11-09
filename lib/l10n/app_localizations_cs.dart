@@ -1272,36 +1272,6 @@ class AppLocalizationsCs extends AppLocalizations {
       'Automatické střídání tras vypnuto';
 
   @override
-  String get appSettings_maxRouteWeight => 'Maximální váha trasy';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Maximální váha, kterou může cesta nasbírat z úspěšných doručení';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Počáteční váha trasy';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Výchozí váha nově objevených cest';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Přírůstek váhy při úspěchu';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Váha přidaná cestě po úspěšném doručení';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Úbytek váhy při neúspěchu';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Váha odebraná cestě po neúspěšném doručení';
-
-  @override
   String get appSettings_maxMessageRetries => 'Maximum opakování zprávy';
 
   @override
@@ -2062,6 +2032,9 @@ class AppLocalizationsCs extends AppLocalizations {
       'Zkuste jiné slovo nebo zkontrolujte překlepy';
 
   @override
+  String get chatSearch_jumpFailed => 'Tuto zprávu se v chatu nepodařilo najít';
+
+  @override
   String get chat_sendMessage => 'Odeslat zprávu';
 
   @override
@@ -2105,6 +2078,75 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Zpráva smazána';
+
+  @override
+  String get chat_selectMessages => 'Vybrat zprávy';
+
+  @override
+  String chat_selectedCount(int count) {
+    return 'Vybráno: $count';
+  }
+
+  @override
+  String get chat_selectAll => 'Vybrat vše';
+
+  @override
+  String get chat_clearSelection => 'Zrušit výběr';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Smazat zprávy?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Smazat $count zpráv z tohoto zařízení?',
+      many: 'Smazat $count zprávy z tohoto zařízení?',
+      few: 'Smazat $count zprávy z tohoto zařízení?',
+      one: 'Smazat 1 zprávu z tohoto zařízení?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Smazáno $count zpráv',
+      many: 'Smazáno $count zprávy',
+      few: 'Smazány $count zprávy',
+      one: 'Smazána 1 zpráva',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count zpráv označeno jako spam',
+      many: '$count zprávy označeno jako spam',
+      few: '$count zprávy označeny jako spam',
+      one: '1 zpráva označena jako spam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count zpráv označeno jako ne-spam',
+      many: '$count zprávy označeno jako ne-spam',
+      few: '$count zprávy označeny jako ne-spam',
+      one: '1 zpráva označena jako ne-spam',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Opakované odesílání zprávy';
@@ -2347,6 +2389,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get routing_modeManual => 'Ručně';
 
   @override
+  String get routing_modeDirect => 'Přímo';
+
+  @override
   String get routing_modeAutoHint =>
       'Automaticky vybere nejlepší známou cestu a pokud žádnou nezná, použije flood.';
 
@@ -2357,6 +2402,10 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Vždy odesílá přesně po cestě, kterou nastavíte.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Vždy odešle zprávu přímo tomuto kontaktu, bez skoků přes opakovače. Použijte, když je v dosahu rádia.';
 
   @override
   String get routing_currentRoute => 'Aktuální trasa';
@@ -2523,6 +2572,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Uloženo';
+
+  @override
+  String get contactShare_addAgain => 'Přidat znovu';
 
   @override
   String get contactShare_isYou => 'To jste vy';
@@ -5960,6 +6012,12 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => 'Rozbalit panel';
+
+  @override
+  String get pathMap_expandHopList => 'Rozbalit seznam skoků';
+
+  @override
+  String get pathMap_showMap => 'Zobrazit mapu';
 
   @override
   String get pathMap_noLocation => 'Bez polohy';

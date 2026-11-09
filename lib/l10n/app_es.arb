@@ -2291,14 +2291,6 @@
   "contact_teleBaseSubtitle": "Permitir el intercambio de nivel de batería y telemetría básica",
   "contact_teleEnv": "Entorno de Telemetría",
   "contact_teleEnvSubtitle": "Permitir el intercambio de datos de sensores de entorno",
-  "appSettings_initialRouteWeight": "Peso inicial de la ruta",
-  "appSettings_maxRouteWeight": "Peso máximo permitido para la ruta",
-  "appSettings_initialRouteWeightSubtitle": "Peso inicial para rutas recién descubiertas",
-  "appSettings_maxRouteWeightSubtitle": "Peso máximo que una ruta puede acumular gracias a entregas exitosas.",
-  "appSettings_routeWeightSuccessIncrement": "Incremento de peso para el éxito",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Peso añadido a una ruta después de una entrega exitosa.",
-  "appSettings_routeWeightFailureDecrement": "Reducción del peso asociado al fallo",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Peso retirado de una ruta después de un intento de entrega fallido.",
   "appSettings_maxMessageRetries": "Número máximo de reintentos de envío de mensajes",
   "appSettings_maxMessageRetriesSubtitle": "Número de intentos de reintento antes de marcar un mensaje como fallido.",
   "path_routeWeight": "{weight}/{max}",
@@ -3854,5 +3846,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "No se encontró ese mensaje en el chat",
+  "chat_clearSelection": "Borrar selección",
+  "chat_deleteSelectedConfirm": "{count, plural, one{¿Borrar 1 mensaje de este dispositivo?} other{¿Borrar {count} mensajes de este dispositivo?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "¿Borrar mensajes?",
+  "chat_messagesDeleted": "{count, plural, one{1 mensaje borrado} other{{count} mensajes borrados}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Seleccionar todo",
+  "chat_selectMessages": "Seleccionar mensajes",
+  "chat_selectedCount": "{count} seleccionados",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Añadir de nuevo",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{1 mensaje marcado como no spam} other{{count} mensajes marcados como no spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{1 mensaje marcado como spam} other{{count} mensajes marcados como spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Ampliar lista de saltos",
+  "pathMap_showMap": "Mostrar mapa",
+  "routing_modeDirect": "Directo",
+  "routing_modeDirectHint": "Envía siempre directamente a este contacto, sin saltos de repetidor. Úselo cuando esté al alcance de la radio."
 }

@@ -1277,38 +1277,6 @@ class AppLocalizationsBg extends AppLocalizations {
       'Автоматичната ротация на маршрутите е изключена';
 
   @override
-  String get appSettings_maxRouteWeight =>
-      'Максимално допустимо тегло на маршрута';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Максималното тегло, което един маршрут може да събере от успешни доставки.';
-
-  @override
-  String get appSettings_initialRouteWeight =>
-      'Първоначална тежест на маршрута';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Начално тегло за новооткрити маршрути';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Увеличение на теглото за успех';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Тегло, добавено към път след успешно доставяне.';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Намаляване на теглото, свързано с неуспех';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Тегло, което е било премахнато от пътя след неуспешен опит за доставка.';
-
-  @override
   String get appSettings_maxMessageRetries =>
       'Максимален брой опити за изпращане на съобщение';
 
@@ -2075,6 +2043,9 @@ class AppLocalizationsBg extends AppLocalizations {
       'Опитайте с друга дума или проверете правописа';
 
   @override
+  String get chatSearch_jumpFailed => 'Съобщението не беше намерено в чата';
+
+  @override
   String get chat_sendMessage => 'Изпратете съобщение';
 
   @override
@@ -2118,6 +2089,67 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Съобщението е изтрито';
+
+  @override
+  String get chat_selectMessages => 'Избор на съобщения';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '$count избрани';
+  }
+
+  @override
+  String get chat_selectAll => 'Избери всички';
+
+  @override
+  String get chat_clearSelection => 'Изчисти избора';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Изтриване на съобщения?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Да се изтрият ли $count съобщения от това устройство?',
+      one: 'Да се изтрие ли 1 съобщение от това устройство?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count съобщения са изтрити',
+      one: '1 съобщение е изтрито',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count съобщения са отбелязани като спам',
+      one: '1 съобщение е отбелязано като спам',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count съобщения са отбелязани като не е спам',
+      one: '1 съобщение е отбелязано като не е спам',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Опитваме се отново.';
@@ -2359,6 +2391,9 @@ class AppLocalizationsBg extends AppLocalizations {
   String get routing_modeManual => 'Ръчно';
 
   @override
+  String get routing_modeDirect => 'Директно';
+
+  @override
   String get routing_modeAutoHint =>
       'Автоматично избира най-добрия известен път, а при липса на такъв използва режим Flood.';
 
@@ -2369,6 +2404,10 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Винаги следва точно пътя, който сте определили.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Винаги изпраща направо към този контакт, без скокове през ретранслатори. Използвайте го, когато е в обхват на радиото.';
 
   @override
   String get routing_currentRoute => 'Текущ маршрут';
@@ -2539,6 +2578,9 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Запазен';
+
+  @override
+  String get contactShare_addAgain => 'Добави отново';
 
   @override
   String get contactShare_isYou => 'Това сте вие';
@@ -5979,6 +6021,12 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => 'Разгъни панела';
+
+  @override
+  String get pathMap_expandHopList => 'Разгъни списъка със скокове';
+
+  @override
+  String get pathMap_showMap => 'Покажи картата';
 
   @override
   String get pathMap_noLocation => 'Без посочено местоположение';
