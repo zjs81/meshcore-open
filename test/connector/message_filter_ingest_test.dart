@@ -7,6 +7,7 @@ import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/connector/meshcore_protocol.dart';
 import 'package:meshcore_open/models/channel.dart';
 import 'package:meshcore_open/models/channel_message.dart';
+import 'package:meshcore_open/models/mesh_event.dart';
 import 'package:meshcore_open/models/message_filter.dart';
 import 'package:meshcore_open/review_mode/review_frames.dart';
 import 'package:meshcore_open/review_mode/review_radio.dart';
@@ -199,6 +200,38 @@ void main() {
       isNot('get meshos now'),
     );
   });
+
+  test(
+    'an RX-log message reaches event listeners once, unless filtered',
+    () async {
+      await _connect();
+      final events = <MeshEvent>[];
+      final subscription = _connector.meshEvents.listen(events.add);
+      addTearDown(subscription.cancel);
+      const text = 'Road closed past the bridge';
+      final ts = _nowSecs();
+      _connector.handleFrameForTest(
+        _logRxGroupText(_psk(2), 'Relay: $text', ts),
+      );
+      _connector.handleFrameForTest(
+        _logRxGroupText(_psk(2), 'Relay: $text', ts),
+      );
+      _connector.handleFrameForTest(
+        _logRxGroupText(_psk(2), 'Bot: more meshos today', ts),
+      );
+      await _waitFor(() => _find(2, 'more meshos today') != null);
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+      final texts = events.whereType<ChannelTextEvent>().map((e) => e.text);
+      expect(texts.where((t) => t == text), hasLength(1));
+      expect(texts, isNot(contains('more meshos today')));
+      final event = events.whereType<ChannelTextEvent>().firstWhere(
+        (e) => e.text == text,
+      );
+      expect(event.channelIndex, 2);
+      expect(event.senderName, 'Relay');
+      expect(event.outgoing, isFalse);
+    },
+  );
 
   test('mark spam and not spam update the stored message', () async {
     await _connect();
