@@ -1256,36 +1256,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Auto route rotation disabled';
 
   @override
-  String get appSettings_maxRouteWeight => 'Max Route Weight';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Maximum weight a path can accumulate from successful deliveries';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Initial Route Weight';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Starting weight for newly discovered paths';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Success Weight Increment';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Weight added to a path after successful delivery';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Failure Weight Decrement';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Weight removed from a path after failed delivery';
-
-  @override
   String get appSettings_maxMessageRetries => 'Max Message Retries';
 
   @override
@@ -2038,6 +2008,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Try a different word or check the spelling';
 
   @override
+  String get chatSearch_jumpFailed => 'Couldn\'t find that message in the chat';
+
+  @override
   String get chat_sendMessage => 'Send message';
 
   @override
@@ -2081,6 +2054,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Message deleted';
+
+  @override
+  String get chat_selectMessages => 'Select messages';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get chat_selectAll => 'Select all';
+
+  @override
+  String get chat_clearSelection => 'Clear selection';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Delete messages?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Delete $count messages from this device?',
+      one: 'Delete 1 message from this device?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messages deleted',
+      one: '1 message deleted',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messages marked as spam',
+      one: '1 message marked as spam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messages marked as not spam',
+      one: '1 message marked as not spam',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Retrying message';
@@ -2320,6 +2354,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get routing_modeManual => 'Manual';
 
   @override
+  String get routing_modeDirect => 'Direct';
+
+  @override
   String get routing_modeAutoHint =>
       'Picks the best known path automatically, flooding when none is known.';
 
@@ -2330,6 +2367,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Always sends along the exact path you set.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Always sends straight to this contact with no repeater hops. Use it when they are in radio range.';
 
   @override
   String get routing_currentRoute => 'Current route';
@@ -2496,6 +2537,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Saved';
+
+  @override
+  String get contactShare_addAgain => 'Add again';
 
   @override
   String get contactShare_isYou => 'This is you';
@@ -5897,6 +5941,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => 'Expand panel';
+
+  @override
+  String get pathMap_expandHopList => 'Expand hop list';
+
+  @override
+  String get pathMap_showMap => 'Show map';
 
   @override
   String get pathMap_noLocation => 'No location';

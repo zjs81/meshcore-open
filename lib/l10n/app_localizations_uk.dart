@@ -1269,36 +1269,6 @@ class AppLocalizationsUk extends AppLocalizations {
       'Авторотація маршрутизації вимкнена';
 
   @override
-  String get appSettings_maxRouteWeight => 'Максимальна вага маршруту';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Максимальна вага, яку може накопичити маршрут завдяки успішним доставкам.';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Початкова вартість маршруту';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Початкова вага для нових відкритих шляхів';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Збільшення ваги успіху';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Вага, додана до маршруту після успішної доставки';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Зменшення ваги помилки';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Вага, яка була знята з маршруту після невдалої доставки';
-
-  @override
   String get appSettings_maxMessageRetries =>
       'Максимальна кількість повторних спроб надсилання повідомлення';
 
@@ -2063,6 +2033,10 @@ class AppLocalizationsUk extends AppLocalizations {
       'Спробуйте інше слово або перевірте написання';
 
   @override
+  String get chatSearch_jumpFailed =>
+      'Не вдалося знайти це повідомлення в чаті';
+
+  @override
   String get chat_sendMessage => 'Надіслати повідомлення';
 
   @override
@@ -2107,6 +2081,75 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Повідомлення видалено';
+
+  @override
+  String get chat_selectMessages => 'Вибрати повідомлення';
+
+  @override
+  String chat_selectedCount(int count) {
+    return 'Вибрано: $count';
+  }
+
+  @override
+  String get chat_selectAll => 'Вибрати все';
+
+  @override
+  String get chat_clearSelection => 'Скасувати вибір';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Видалити повідомлення?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Видалити $count повідомлення з цього пристрою?',
+      many: 'Видалити $count повідомлень з цього пристрою?',
+      few: 'Видалити $count повідомлення з цього пристрою?',
+      one: 'Видалити $count повідомлення з цього пристрою?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count повідомлення видалено',
+      many: '$count повідомлень видалено',
+      few: '$count повідомлення видалено',
+      one: '$count повідомлення видалено',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count повідомлення позначено як спам',
+      many: '$count повідомлень позначено як спам',
+      few: '$count повідомлення позначено як спам',
+      one: '$count повідомлення позначено як спам',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count повідомлення позначено як не спам',
+      many: '$count повідомлень позначено як не спам',
+      few: '$count повідомлення позначено як не спам',
+      one: '$count повідомлення позначено як не спам',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Спроба відновлення.';
@@ -2340,13 +2383,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get routing_title => 'Маршрутизація';
 
   @override
-  String get routing_modeAuto => 'Автомобіль';
+  String get routing_modeAuto => 'Авто';
 
   @override
   String get routing_modeFlood => 'Через всю мережу';
 
   @override
-  String get routing_modeManual => 'Інструкція';
+  String get routing_modeManual => 'Вручну';
+
+  @override
+  String get routing_modeDirect => 'Напряму';
 
   @override
   String get routing_modeAutoHint =>
@@ -2359,6 +2405,10 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Завжди доставляє точно за вказаним вами маршрутом.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Завжди надсилає напряму цьому контакту, без проміжних ретрансляторів. Використовуйте, якщо він у зоні радіозв\'язку.';
 
   @override
   String get routing_currentRoute => 'Поточний маршрут';
@@ -2530,6 +2580,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Збережено';
+
+  @override
+  String get contactShare_addAgain => 'Додати знову';
 
   @override
   String get contactShare_isYou => 'Це ви';
@@ -6003,6 +6056,12 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => 'Розгорнути панель';
+
+  @override
+  String get pathMap_expandHopList => 'Розгорнути список ретрансляторів';
+
+  @override
+  String get pathMap_showMap => 'Показати карту';
 
   @override
   String get pathMap_noLocation => 'Без геопозиції';

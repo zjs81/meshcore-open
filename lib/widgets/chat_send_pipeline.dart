@@ -163,6 +163,35 @@ void copyChatMessageText(BuildContext context, String text) {
   );
 }
 
+/// Asks before deleting [count] selected messages from this device.
+Future<bool> confirmBulkDelete(BuildContext context, int count) async {
+  final result = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) {
+      final l10n = dialogContext.l10n;
+      return AlertDialog(
+        title: Text(l10n.chat_deleteSelectedTitle),
+        content: Text(l10n.chat_deleteSelectedConfirm(count)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.common_cancel),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(dialogContext).colorScheme.error,
+              foregroundColor: Theme.of(dialogContext).colorScheme.onError,
+            ),
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(l10n.common_delete),
+          ),
+        ],
+      );
+    },
+  );
+  return result ?? false;
+}
+
 /// Asks before clearing a transcript. [message] says what will be erased.
 Future<bool> confirmClearChat(
   BuildContext context, {

@@ -2276,14 +2276,6 @@
   "contact_lastSeen": "Laatst gezien",
   "contact_clearChat": "Chat leegmaken",
   "contact_teleBaseSubtitle": "Delen van batterijniveau en basistelemetrie toestaan",
-  "appSettings_maxRouteWeightSubtitle": "Het maximale gewicht dat een route kan bereiken door succesvolle leveringen.",
-  "appSettings_initialRouteWeight": "Initieel routegewicht",
-  "appSettings_maxRouteWeight": "Maximaal routegewicht",
-  "appSettings_initialRouteWeightSubtitle": "Startgewicht voor nieuwe, ontdekte routes",
-  "appSettings_routeWeightSuccessIncrement": "Gewichtstoename bij succes",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Gewicht wordt toegevoegd aan een route na een succesvolle levering.",
-  "appSettings_routeWeightFailureDecrement": "Gewichtsafname bij mislukking",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Gewicht verwijderd van een pad na een mislukte levering",
   "appSettings_maxMessageRetries": "Max. aantal nieuwe pogingen",
   "appSettings_maxMessageRetriesSubtitle": "Aantal pogingen om een bericht opnieuw te versturen voordat het als mislukt wordt gemarkeerd",
   "appSettings_ipfsImageLinks": "IPFS-providerconfiguratie",
@@ -3569,5 +3561,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Dat bericht is niet gevonden in de chat",
+  "chat_clearSelection": "Selectie wissen",
+  "chat_deleteSelectedConfirm": "{count, plural, =1{1 bericht van dit apparaat verwijderen?} other{{count} berichten van dit apparaat verwijderen?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Berichten verwijderen?",
+  "chat_messagesDeleted": "{count, plural, =1{1 bericht verwijderd} other{{count} berichten verwijderd}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Alles selecteren",
+  "chat_selectMessages": "Berichten selecteren",
+  "chat_selectedCount": "{count} geselecteerd",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Opnieuw toevoegen",
+  "messageFilter_markedNotSpamCount": "{count, plural, =1{1 bericht gemarkeerd als geen spam} other{{count} berichten gemarkeerd als geen spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, =1{1 bericht gemarkeerd als spam} other{{count} berichten gemarkeerd als spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Hoplijst uitklappen",
+  "pathMap_showMap": "Kaart tonen",
+  "routing_modeDirect": "Direct",
+  "routing_modeDirectHint": "Verstuurt altijd rechtstreeks naar dit contact, zonder repeater-hops. Gebruik dit als diegene binnen radiobereik is."
 }

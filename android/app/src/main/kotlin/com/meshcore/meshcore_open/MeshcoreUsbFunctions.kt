@@ -14,7 +14,7 @@ import android.hardware.usb.UsbManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import io.flutter.embedding.android.FlutterActivity
+import android.app.Activity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class MeshcoreUsbFunctions(
-    private val activity: FlutterActivity,
+    private val activity: Activity,
 ) {
     private companion object {
         const val usbRecipientInterface = 0x01

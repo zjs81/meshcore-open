@@ -2271,14 +2271,6 @@
   "contact_settings": "Ustawienia kontaktowe",
   "contact_lastSeen": "Ostatnio widziany",
   "contact_teleBaseSubtitle": "Pozwól na udostępnianie poziomu naładowania baterii i podstawowych danych telemetrycznych",
-  "appSettings_initialRouteWeight": "Początkowa waga trasy",
-  "appSettings_maxRouteWeight": "Maksymalny dopuszczalny ciężar pojazdu",
-  "appSettings_initialRouteWeightSubtitle": "Początkowa waga dla nowych, odkrytych ścieżek",
-  "appSettings_maxRouteWeightSubtitle": "Maksymalna waga, jaką ścieżka może zgromadzić dzięki udanym dostawom.",
-  "appSettings_routeWeightSuccessIncrement": "Wzrost wagi sukcesu",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Waga dodana do ścieżki po pomyślnym dostarczeniu",
-  "appSettings_routeWeightFailureDecrement": "Zmniejszenie wagi kary",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Waga usunięta z trasy po nieudanej dostawie",
   "appSettings_maxMessageRetries": "Maksymalna liczba prób wysłania wiadomości",
   "appSettings_maxMessageRetriesSubtitle": "Liczba prób ponownego wysłania wiadomości przed oznaczaniem jej jako nieudanej",
   "appSettings_ipfsImageLinks": "Konfiguracja dostawcy IPFS",
@@ -2636,9 +2628,9 @@
   "contacts_searchOpen": "Wyszukaj kontakty",
   "contacts_searchClose": "Zaawansowane wyszukiwanie",
   "routing_title": "Planowanie tras",
-  "routing_modeAuto": "Samochód",
+  "routing_modeAuto": "Auto",
   "routing_modeFlood": "Flood",
-  "routing_modeManual": "Instrukcja obsługi",
+  "routing_modeManual": "Ręcznie",
   "routing_modeAutoHint": "Automatycznie wybiera najpopularniejszą ścieżkę, a w przypadku braku znanej, przechodzi do trybu \"przepływu\".",
   "routing_modeFloodHint": "Transmisje za pośrednictwem każdego repeatera. Najbardziej niezawodna metoda, ale zużywa więcej czasu transmisji.",
   "routing_modeManualHint": "Zawsze prowadzi dokładnie po trasie, którą określiłeś.",
@@ -3907,5 +3899,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Nie znaleziono tej wiadomości w czacie",
+  "chat_clearSelection": "Wyczyść zaznaczenie",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Usunąć 1 wiadomość z tego urządzenia?} few{Usunąć {count} wiadomości z tego urządzenia?} many{Usunąć {count} wiadomości z tego urządzenia?} other{Usunąć {count} wiadomości z tego urządzenia?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Usunąć wiadomości?",
+  "chat_messagesDeleted": "{count, plural, one{Usunięto 1 wiadomość} few{Usunięto {count} wiadomości} many{Usunięto {count} wiadomości} other{Usunięto {count} wiadomości}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Zaznacz wszystko",
+  "chat_selectMessages": "Wybierz wiadomości",
+  "chat_selectedCount": "Wybrano: {count}",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Dodaj ponownie",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{Oznaczono 1 wiadomość jako nie spam} few{Oznaczono {count} wiadomości jako nie spam} many{Oznaczono {count} wiadomości jako nie spam} other{Oznaczono {count} wiadomości jako nie spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{Oznaczono 1 wiadomość jako spam} few{Oznaczono {count} wiadomości jako spam} many{Oznaczono {count} wiadomości jako spam} other{Oznaczono {count} wiadomości jako spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Rozwiń listę przeskoków",
+  "pathMap_showMap": "Pokaż mapę",
+  "routing_modeDirect": "Bezpośrednio",
+  "routing_modeDirectHint": "Zawsze wysyła prosto do tego kontaktu, bez przeskoków przez repeatery. Użyj, gdy kontakt jest w zasięgu radia."
 }

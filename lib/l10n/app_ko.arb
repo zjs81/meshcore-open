@@ -276,14 +276,6 @@
   "appSettings_autoRouteRotationSubtitle": "최적 경로와 플러딩 모드 사이를 전환합니다.",
   "appSettings_autoRouteRotationEnabled": "자동 경로 순환 기능 활성화",
   "appSettings_autoRouteRotationDisabled": "자동 경로 순환 기능 비활성화",
-  "appSettings_maxRouteWeight": "최대 경로 가중치",
-  "appSettings_maxRouteWeightSubtitle": "한 경로가 성공적인 전송을 통해 누적할 수 있는 최대 가중치",
-  "appSettings_initialRouteWeight": "초기 경로 가중치",
-  "appSettings_initialRouteWeightSubtitle": "새로 발견된 경로의 초기 가중치",
-  "appSettings_routeWeightSuccessIncrement": "성공 시 증가",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "성공적으로 전송된 경로에 추가되는 가중치",
-  "appSettings_routeWeightFailureDecrement": "실패 시 감소",
-  "appSettings_routeWeightFailureDecrementSubtitle": "전송 실패 후 경로에서 제거되는 가중치",
   "appSettings_maxMessageRetries": "최대 메시지 재시도 횟수",
   "appSettings_maxMessageRetriesSubtitle": "메시지를 실패로 처리하기 전 시도 횟수",
   "path_routeWeight": "{weight}/{max}",
@@ -4008,5 +4000,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "채팅에서 해당 메시지를 찾을 수 없습니다",
+  "chat_clearSelection": "선택 해제",
+  "chat_deleteSelectedConfirm": "{count, plural, other{이 기기에서 메시지 {count}개를 삭제하시겠습니까?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "메시지를 삭제하시겠습니까?",
+  "chat_messagesDeleted": "{count, plural, other{메시지 {count}개를 삭제했습니다}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "모두 선택",
+  "chat_selectMessages": "메시지 선택",
+  "chat_selectedCount": "{count}개 선택됨",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "다시 추가",
+  "messageFilter_markedNotSpamCount": "{count, plural, other{메시지 {count}개를 스팸 아님으로 표시했습니다}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, other{메시지 {count}개를 스팸으로 표시했습니다}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "중계 목록 펼치기",
+  "pathMap_showMap": "지도 보기",
+  "routing_modeDirect": "직접",
+  "routing_modeDirectHint": "중계기를 거치지 않고 항상 이 연락처로 바로 보냅니다. 상대가 무선 범위 안에 있을 때 사용하세요."
 }

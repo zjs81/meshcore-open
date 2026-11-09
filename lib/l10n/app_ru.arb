@@ -1405,14 +1405,6 @@
   "contact_clearChat": "Очистить чат",
   "contact_lastSeen": "Последний раз видели",
   "contact_teleBaseSubtitle": "Разрешить обмен уровнем заряда батареи и базовой телеметрией",
-  "appSettings_maxRouteWeight": "Максимальный допустимый вес маршрута",
-  "appSettings_maxRouteWeightSubtitle": "Максимальный вес, который может быть перевезён по определённому маршруту при успешных доставках.",
-  "appSettings_initialRouteWeightSubtitle": "Начальный вес для новых, только что открытых маршрутов",
-  "appSettings_initialRouteWeight": "Начальный вес маршрута",
-  "appSettings_routeWeightSuccessIncrement": "Увеличение веса успеха",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Вес, добавленный к маршруту после успешной доставки.",
-  "appSettings_routeWeightFailureDecrement": "Уменьшение веса неудачи",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Вес, который был удален с пути после неудачной доставки.",
   "appSettings_maxMessageRetries": "Максимальное количество повторных попыток отправки сообщения",
   "appSettings_maxMessageRetriesSubtitle": "Количество попыток повторной отправки сообщения перед тем, как пометить его как неудачное.",
   "appSettings_ipfsImageLinks": "Настройка провайдера IPFS",
@@ -1903,7 +1895,7 @@
   "routing_title": "Маршрутизация",
   "routing_modeAuto": "Авто",
   "routing_modeFlood": "Рассылка",
-  "routing_modeManual": "Инструкция",
+  "routing_modeManual": "Вручную",
   "routing_modeAutoHint": "Автоматически выбирает наиболее известный путь, и если такой путь неизвестен, использует алгоритм поиска пути.",
   "routing_modeFloodHint": "Передача сигнала через все ретрансляторы. Самый надежный способ, но требует больше времени на передачу.",
   "routing_modeManualHint": "Всегда следует точно по указанному вами маршруту.",
@@ -2965,5 +2957,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Не удалось найти это сообщение в чате",
+  "chat_clearSelection": "Снять выделение",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Удалить {count} сообщение с этого устройства?} few{Удалить {count} сообщения с этого устройства?} many{Удалить {count} сообщений с этого устройства?} other{Удалить {count} сообщения с этого устройства?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Удалить сообщения?",
+  "chat_messagesDeleted": "{count, plural, one{{count} сообщение удалено} few{{count} сообщения удалено} many{{count} сообщений удалено} other{{count} сообщения удалено}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Выбрать все",
+  "chat_selectMessages": "Выбрать сообщения",
+  "chat_selectedCount": "Выбрано: {count}",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Добавить снова",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{{count} сообщение отмечено как не спам} few{{count} сообщения отмечено как не спам} many{{count} сообщений отмечено как не спам} other{{count} сообщения отмечено как не спам}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{{count} сообщение отмечено как спам} few{{count} сообщения отмечено как спам} many{{count} сообщений отмечено как спам} other{{count} сообщения отмечено как спам}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Развернуть список ретрансляторов",
+  "pathMap_showMap": "Показать карту",
+  "routing_modeDirect": "Прямой",
+  "routing_modeDirectHint": "Всегда отправляет напрямую этому контакту, без промежуточных ретрансляторов. Используйте, если он в зоне радиосвязи."
 }

@@ -323,6 +323,26 @@ void main() {
     expect(service.notSpamExampleCount, 1);
   });
 
+  test('bulk spam and not-spam store every example and persist', () async {
+    await service.markSpamMany([
+      (sender: 'a', text: 'Buy now'),
+      (sender: 'b', text: 'Free crypto'),
+      (sender: 'c', text: '   '),
+    ]);
+    expect(service.spamExampleCount, 2);
+
+    await service.markNotSpamMany([
+      (channelId: _channel, sender: 'a', text: 'buy now'),
+      (channelId: _channel, sender: 'd', text: 'Hello all'),
+    ]);
+    expect(service.spamExampleCount, 1);
+    expect(service.notSpamExampleCount, 2);
+
+    final reloaded = await create();
+    expect(reloaded.spamExampleCount, 1);
+    expect(reloaded.notSpamExampleCount, 2);
+  });
+
   test('state persists across instances and reset keeps rules', () async {
     await service.addRule(const FilterRule(id: 'r1', pattern: 'promo'));
     await service.updateSettings(

@@ -8,6 +8,13 @@ class PathRecord {
   final int failureCount;
   final double routeWeight;
 
+  /// Deliveries and failures with older results faded out (see
+  /// `routeDecayFactor`), as of [statsAt]. Auto routing samples from these so
+  /// a route that worked last month but fails today loses its rank quickly.
+  final double recentSuccess;
+  final double recentFailure;
+  final DateTime? statsAt;
+
   PathRecord({
     required this.hopCount,
     required this.tripTimeMs,
@@ -17,7 +24,21 @@ class PathRecord {
     required this.successCount,
     required this.failureCount,
     this.routeWeight = 1.0,
-  });
+    double? recentSuccess,
+    double? recentFailure,
+    DateTime? statsAt,
+  }) : recentSuccess = recentSuccess ?? _seedRecent(successCount),
+       recentFailure = recentFailure ?? _seedRecent(failureCount),
+       statsAt = statsAt ?? timestamp;
+
+  /// History saved before faded stats existed: start from the lifetime
+  /// counts, capped so years of old results can't outvote new ones.
+  static double _seedRecent(int count) => count.clamp(0, 5).toDouble();
+
+  /// Bytes per hop, derived from the stored path.
+  int get hashWidth => hopCount > 0 && pathBytes.length >= hopCount
+      ? (pathBytes.length ~/ hopCount).clamp(1, 4)
+      : 1;
 
   String get displayText =>
       '$hopCount ${hopCount == 1 ? 'hop' : 'hops'} - ${(tripTimeMs / 1000).toStringAsFixed(2)}s';
@@ -32,6 +53,9 @@ class PathRecord {
       'success_count': successCount,
       'failure_count': failureCount,
       'route_weight': routeWeight,
+      'recent_success': recentSuccess,
+      'recent_failure': recentFailure,
+      'stats_at': statsAt?.toIso8601String(),
     };
   }
 
@@ -48,6 +72,11 @@ class PathRecord {
       successCount: json['success_count'] as int? ?? 0,
       failureCount: json['failure_count'] as int? ?? 0,
       routeWeight: (json['route_weight'] as num?)?.toDouble() ?? 1.0,
+      recentSuccess: (json['recent_success'] as num?)?.toDouble(),
+      recentFailure: (json['recent_failure'] as num?)?.toDouble(),
+      statsAt: json['stats_at'] != null
+          ? DateTime.tryParse(json['stats_at'] as String)
+          : null,
     );
   }
 }

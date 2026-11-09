@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -56,6 +57,7 @@ import 'package:meshcore_open/services/translation_service.dart';
 import 'package:meshcore_open/services/ui_view_state_service.dart';
 import 'package:meshcore_open/storage/prefs_manager.dart';
 import 'package:meshcore_open/theme/mesh_theme.dart';
+import 'package:meshcore_open/widgets/routing_sheet.dart';
 
 /// Renders every screen on a small phone (320x568, the narrowest common
 /// width) at several text scales, plus a desktop window, and fails on any
@@ -146,11 +148,21 @@ _interactions = {
   'Contacts add sheet': (t, _) async {
     await t.tap(find.byType(FloatingActionButton));
   },
+  // Four routing modes (Auto, Flood, Direct, Manual) share one row.
+  'Routing sheet': (t, c) async {
+    unawaited(
+      ContactRoutingSheet.show(
+        t.element(find.byType(ChatScreen)),
+        contact: _contactOfType(c, advTypeChat),
+      ),
+    );
+  },
 };
 
 final Map<String, _ScreenBuilder> _screens = {
   'Contacts options sheet': (_) => const ContactsScreen(),
   'Contacts add sheet': (_) => const ContactsScreen(),
+  'Routing sheet': (c) => ChatScreen(contact: _contactOfType(c, advTypeChat)),
   'Scanner': (_) => const ScannerScreen(),
   'Tcp': (_) => const TcpScreen(),
   'Usb': (_) => const UsbScreen(),

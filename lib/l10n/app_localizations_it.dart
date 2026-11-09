@@ -1277,37 +1277,6 @@ class AppLocalizationsIt extends AppLocalizations {
       'Rotazione del percorso automatico disabilitata';
 
   @override
-  String get appSettings_maxRouteWeight =>
-      'Massimo peso consentito per il percorso';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Il peso massimo che un percorso può accumulare grazie a consegne di successo.';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Peso iniziale del percorso';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Peso di partenza per nuovi percorsi';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Aumento del peso del successo';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Peso aggiunto a un percorso dopo una consegna riuscita.';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Riduzione del peso associato al fallimento';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Peso rimosso da un percorso dopo un tentativo di consegna fallito.';
-
-  @override
   String get appSettings_maxMessageRetries =>
       'Numero massimo di tentativi di invio del messaggio';
 
@@ -2073,6 +2042,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Prova con un\'altra parola o controlla l\'ortografia';
 
   @override
+  String get chatSearch_jumpFailed =>
+      'Impossibile trovare quel messaggio nella chat';
+
+  @override
   String get chat_sendMessage => 'Invia messaggio';
 
   @override
@@ -2116,6 +2089,67 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Messaggio eliminato';
+
+  @override
+  String get chat_selectMessages => 'Seleziona messaggi';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '$count selezionati';
+  }
+
+  @override
+  String get chat_selectAll => 'Seleziona tutto';
+
+  @override
+  String get chat_clearSelection => 'Annulla selezione';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Eliminare i messaggi?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Eliminare $count messaggi da questo dispositivo?',
+      one: 'Eliminare 1 messaggio da questo dispositivo?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messaggi eliminati',
+      one: '1 messaggio eliminato',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messaggi segnati come spam',
+      one: '1 messaggio segnato come spam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messaggi segnati come non spam',
+      one: '1 messaggio segnato come non spam',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Riprovo';
@@ -2357,6 +2391,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get routing_modeManual => 'Manuale';
 
   @override
+  String get routing_modeDirect => 'Diretto';
+
+  @override
   String get routing_modeAutoHint =>
       'Seleziona automaticamente il percorso migliore noto, ricorrendo al flood quando non ne è noto nessuno.';
 
@@ -2367,6 +2404,10 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Invia sempre lungo il percorso esatto che hai definito.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Invia sempre direttamente a questo contatto, senza salti tramite ripetitori. Usalo quando è nel raggio radio.';
 
   @override
   String get routing_currentRoute => 'Percorso attuale';
@@ -2537,6 +2578,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Salvato';
+
+  @override
+  String get contactShare_addAgain => 'Aggiungi di nuovo';
 
   @override
   String get contactShare_isYou => 'Sei tu';
@@ -5989,6 +6033,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => 'Espandi pannello';
+
+  @override
+  String get pathMap_expandHopList => 'Espandi elenco dei salti';
+
+  @override
+  String get pathMap_showMap => 'Mostra mappa';
 
   @override
   String get pathMap_noLocation => 'Nessuna posizione';

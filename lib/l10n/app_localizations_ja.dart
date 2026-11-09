@@ -1209,32 +1209,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_autoRouteRotationDisabled => '自動経路切り替えは無効です';
 
   @override
-  String get appSettings_maxRouteWeight => '最大経路重み';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle => '成功配送によって経路に蓄積できる最大重み';
-
-  @override
-  String get appSettings_initialRouteWeight => '初期経路重み';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle => '新しく発見された経路の初期重み';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement => '成功時の重み増加';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      '成功配送後に経路へ加算する重み';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement => '失敗時の重み減少';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      '失敗配送後に経路から差し引く重み';
-
-  @override
   String get appSettings_maxMessageRetries => '最大メッセージ再試行回数';
 
   @override
@@ -1966,6 +1940,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chatSearch_noResultsHint => '別の単語を試すか、スペルを確認してください';
 
   @override
+  String get chatSearch_jumpFailed => 'チャット内でそのメッセージが見つかりませんでした';
+
+  @override
   String get chat_sendMessage => 'メッセージを送信する';
 
   @override
@@ -2009,6 +1986,63 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'メッセージは削除されました';
+
+  @override
+  String get chat_selectMessages => 'メッセージを選択';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '$count 件を選択中';
+  }
+
+  @override
+  String get chat_selectAll => 'すべて選択';
+
+  @override
+  String get chat_clearSelection => '選択を解除';
+
+  @override
+  String get chat_deleteSelectedTitle => 'メッセージを削除しますか？';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'この端末からメッセージ $count 件を削除しますか？',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'メッセージ $count 件を削除しました',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'メッセージ $count 件をスパムとしてマークしました',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'メッセージ $count 件をスパムではないとマークしました',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'メッセージを再試行中';
@@ -2245,6 +2279,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get routing_modeManual => '手動';
 
   @override
+  String get routing_modeDirect => '直接';
+
+  @override
   String get routing_modeAutoHint => '既知の最良経路を自動で選び、経路がないときはフラッドします。';
 
   @override
@@ -2253,6 +2290,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get routing_modeManualHint => '常に、設定した正確な経路を使います。';
+
+  @override
+  String get routing_modeDirectHint =>
+      '中継ホップなしで、常にこの連絡先へ直接送信します。相手が電波の届く範囲にいるときに使います。';
 
   @override
   String get routing_currentRoute => '現在の経路';
@@ -2417,6 +2458,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get contactShare_saved => '登録済み';
+
+  @override
+  String get contactShare_addAgain => 'もう一度追加';
 
   @override
   String get contactShare_isYou => 'これはあなたです';
@@ -5694,6 +5738,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => 'パネルを展開';
+
+  @override
+  String get pathMap_expandHopList => 'ホップ一覧を広げる';
+
+  @override
+  String get pathMap_showMap => '地図を表示';
 
   @override
   String get pathMap_noLocation => '位置情報なし';

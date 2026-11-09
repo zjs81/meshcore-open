@@ -2157,14 +2157,6 @@
   "contact_teleEnv": "Okolje telemetrije",
   "contact_teleEnvSubtitle": "Dovoli deljenje podatkov okoljskih senzorjev",
   "contact_teleLocSubtitle": "Dovoli deljenje podatkov o lokaciji",
-  "appSettings_maxRouteWeightSubtitle": "Največja teža, ki jo pot lahko nabere z uspešnimi dostavami",
-  "appSettings_initialRouteWeight": "Začetna teža poti",
-  "appSettings_initialRouteWeightSubtitle": "Začetna teža novo odkritih poti",
-  "appSettings_maxRouteWeight": "Največja dovoljena teža poti",
-  "appSettings_routeWeightSuccessIncrement": "Povečanje teže ob uspehu",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Teža, dodana poti po uspešni dostavi",
-  "appSettings_routeWeightFailureDecrement": "Zmanjšanje teže ob neuspehu",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Teža, odstranjena s poti po neuspešni dostavi",
   "appSettings_maxMessageRetries": "Največ poskusov pošiljanja sporočila",
   "appSettings_maxMessageRetriesSubtitle": "Število poskusov ponovnega poslanja, preden se sporočilo označuje kot neuspešno",
   "path_routeWeight": "{weight}/{max}",
@@ -2512,9 +2504,9 @@
   "contacts_searchOpen": "Iskanje kontaktov",
   "contacts_searchClose": "Izklopi iskanje",
   "routing_title": "Navigacija",
-  "routing_modeAuto": "Avto",
+  "routing_modeAuto": "Samodejno",
   "routing_modeFlood": "Flood",
-  "routing_modeManual": "Navodilo",
+  "routing_modeManual": "Ročno",
   "routing_modeAutoHint": "Samodejno izbere najbolj poznano pot, in sicer, ko ni na voljo nobena.",
   "routing_modeFloodHint": "Prenosi preko vseh repetitorjev. Najzanesljivejši način, vendar zahteva več časa.",
   "routing_modeManualHint": "Vedno sledi natančni poti, ki jo ste določili.",
@@ -3875,5 +3867,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Sporočila ni bilo mogoče najti v klepetu",
+  "chat_clearSelection": "Počisti izbiro",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Želite izbrisati {count} sporočilo iz te naprave?} two{Želite izbrisati {count} sporočili iz te naprave?} few{Želite izbrisati {count} sporočila iz te naprave?} other{Želite izbrisati {count} sporočil iz te naprave?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Izbrisati sporočila?",
+  "chat_messagesDeleted": "{count, plural, one{{count} sporočilo izbrisano} two{{count} sporočili izbrisani} few{{count} sporočila izbrisana} other{{count} sporočil izbrisanih}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Izberi vse",
+  "chat_selectMessages": "Izberi sporočila",
+  "chat_selectedCount": "Izbrano: {count}",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Dodaj znova",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{{count} sporočilo označeno kot ni neželeno} two{{count} sporočili označeni kot ni neželeno} few{{count} sporočila označena kot ni neželeno} other{{count} sporočil označenih kot ni neželeno}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{{count} sporočilo označeno kot neželeno} two{{count} sporočili označeni kot neželeno} few{{count} sporočila označena kot neželeno} other{{count} sporočil označenih kot neželeno}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Razširi seznam repetitorjev",
+  "pathMap_showMap": "Pokaži zemljevid",
+  "routing_modeDirect": "Neposredno",
+  "routing_modeDirectHint": "Vedno pošlje neposredno temu stiku, brez skokov prek repetitorjev. Uporabite, če je v radijskem dosegu."
 }

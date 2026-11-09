@@ -324,6 +324,20 @@ class MeshCoreConnector extends ChangeNotifier {
   double? _selfLatitude;
   double? _selfLongitude;
   final List<DirectRepeater> _directRepeaters = List.empty(growable: true);
+
+  /// Nodes heard with no repeater in between — advertisers heard directly
+  /// and the last hop of relayed adverts — for auto routing's [RouteContext].
+  /// Kept longer and wider than [_directRepeaters] (which is capped at the
+  /// five strongest for display).
+  static const Duration _heardNeighbourWindow = Duration(hours: 2);
+  static const int _maxHeardNeighbours = 128;
+  final List<({List<int> prefix, DateTime at})> _heardNeighbours = [];
+
+  /// When each contact was last heard with no repeater in between.
+  final Map<String, DateTime> _heardDirectAt = {};
+
+  /// Radio the heard-neighbour observations above belong to.
+  String? _heardNeighboursRadioKey;
   bool _isLoadingContacts = false;
   DateTime? _contactSyncRequestedAt;
   bool _hasLoadedContacts = false;
@@ -1052,16 +1066,42 @@ class MeshCoreConnector extends ChangeNotifier {
     return _channelMessages[_canonicalSlot(channel.index)] ?? [];
   }
 
-  Future<void> deleteChannelMessage(ChannelMessage message) async {
-    final channelIndex = message.channelIndex;
-    if (channelIndex == null) return;
-    final slot = _canonicalSlot(channelIndex);
-    final messages = _channelMessages[slot];
-    if (messages == null) return;
-    final removed = messages.remove(message);
-    if (!removed) return;
-    await _saveChannelMessages(slot, messages);
+  Future<void> deleteChannelMessage(ChannelMessage message) =>
+      deleteChannelMessages([message]);
+
+  /// Deletes channel messages, saving each affected channel once. Returns how
+  /// many were removed.
+  ///
+  /// Matches by message id, not object identity: a repeat heard while a
+  /// confirmation dialog was open replaces the stored object (new path,
+  /// reactions), and identity matching would then silently delete nothing.
+  Future<int> deleteChannelMessages(Iterable<ChannelMessage> messages) async {
+    final idsBySlot = <int, Set<String>>{};
+    for (final message in messages) {
+      final channelIndex = message.channelIndex;
+      if (channelIndex == null) continue;
+      idsBySlot
+          .putIfAbsent(_canonicalSlot(channelIndex), () => <String>{})
+          .add(message.messageId);
+    }
+    var removed = 0;
+    final touched = <int>[];
+    for (final MapEntry(key: slot, value: ids) in idsBySlot.entries) {
+      final stored = _channelMessages[slot];
+      if (stored == null) continue;
+      final before = stored.length;
+      stored.removeWhere((m) => ids.contains(m.messageId));
+      if (stored.length != before) {
+        removed += before - stored.length;
+        touched.add(slot);
+      }
+    }
+    if (touched.isEmpty) return 0;
+    for (final slot in touched) {
+      await _saveChannelMessages(slot, _channelMessages[slot]!);
+    }
     notifyListeners();
+    return removed;
   }
 
   // ---- message filter -------------------------------------------------------
@@ -1248,21 +1288,29 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> markChannelMessageSpam(
     Channel channel,
     ChannelMessage message,
+  ) => markChannelMessagesSpam([(channel, message)]);
+
+  /// Bulk "Spam": hides every message and teaches the filter once.
+  Future<void> markChannelMessagesSpam(
+    List<(Channel channel, ChannelMessage message)> items,
   ) async {
-    _updateLoadedChannelMessageById(
-      channel,
-      message.messageId,
-      (existing) => existing
-          .copyWith(clearFilter: true)
-          .copyWith(filterReason: filterReasonToJson(FilterReason.manual)),
-    );
+    if (items.isEmpty) return;
+    for (final (channel, message) in items) {
+      _updateLoadedChannelMessageById(
+        channel,
+        message.messageId,
+        (existing) => existing
+            .copyWith(clearFilter: true)
+            .copyWith(filterReason: filterReasonToJson(FilterReason.manual)),
+      );
+    }
     notifyListeners();
     // Same text intake saw (reply mention stripped), so the spam example
     // replaces the clean one recorded on arrival instead of contradicting it.
-    await _messageFilterService?.markSpam(
-      sender: message.senderName,
-      text: _messageFilterText(message),
-    );
+    await _messageFilterService?.markSpamMany([
+      for (final (_, message) in items)
+        (sender: message.senderName, text: _messageFilterText(message)),
+    ]);
   }
 
   /// User marked [message] in [channel] as not spam: show it again and teach
@@ -1270,20 +1318,31 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> markChannelMessageNotSpam(
     Channel channel,
     ChannelMessage message,
+  ) => markChannelMessagesNotSpam([(channel, message)]);
+
+  /// Bulk "Not spam": shows every message again and teaches the filter once.
+  Future<void> markChannelMessagesNotSpam(
+    List<(Channel channel, ChannelMessage message)> items,
   ) async {
-    _updateLoadedChannelMessageById(
-      channel,
-      message.messageId,
-      (existing) => existing.copyWith(clearFilter: true),
-    );
+    if (items.isEmpty) return;
+    for (final (channel, message) in items) {
+      _updateLoadedChannelMessageById(
+        channel,
+        message.messageId,
+        (existing) => existing.copyWith(clearFilter: true),
+      );
+    }
     notifyListeners();
     final service = _messageFilterService;
     if (service == null) return;
-    await service.markNotSpam(
-      channelId: messageFilterChannelId(channel),
-      sender: message.senderName,
-      text: _messageFilterText(message),
-    );
+    await service.markNotSpamMany([
+      for (final (channel, message) in items)
+        (
+          channelId: messageFilterChannelId(channel),
+          sender: message.senderName,
+          text: _messageFilterText(message),
+        ),
+    ]);
   }
 
   /// Filtered messages across all loaded channels, newest first.
@@ -1587,6 +1646,12 @@ class MeshCoreConnector extends ChangeNotifier {
     _cachedChannels = await _channelStore.loadChannels();
     _recalculateCachedChannelsUnreadTotal();
   }
+
+  /// Contact whose chat is on screen, if any.
+  String? get activeContactKey => _activeContactKey;
+
+  /// Channel whose chat is on screen, if any.
+  int? get activeChannelIndex => _activeChannelIndex;
 
   void setActiveContact(String? contactKeyHex) {
     if (contactKeyHex != null &&
@@ -2066,6 +2131,8 @@ class MeshCoreConnector extends ChangeNotifier {
 
     // Initialize notification service
     _notificationService.initialize();
+    _notificationService.isBulkSyncActive = () => isSyncingQueuedMessages;
+    _notificationService.unreadTotalProvider = getTotalUnreadCount;
     _notificationReplySubscription ??= _notificationService.replies.listen(
       (reply) => unawaited(
         handleNotificationReply(reply).catchError((Object e) {
@@ -2496,6 +2563,15 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
   }
 
+  static String _describeRoute(PathSelection selection) {
+    if (selection.useFlood) return 'flood';
+    if (selection.hopCount == 0) return 'direct';
+    final hex = selection.pathBytes
+        .map((b) => b.toRadixString(16).padLeft(2, '0'))
+        .join();
+    return '${selection.hopCount} hops [$hex]';
+  }
+
   void _recordPathResult(
     String contactPubKeyHex,
     PathSelection selection,
@@ -2503,6 +2579,12 @@ class MeshCoreConnector extends ChangeNotifier {
     int? tripTimeMs,
   ) {
     if (_pathHistoryService == null) return;
+    _appDebugLogService?.info(
+      'Route result for ${getContactByPubKeyHex(contactPubKeyHex)?.name ?? contactPubKeyHex.substring(0, 8)}: '
+      '${_describeRoute(selection)} ${success ? 'delivered' : 'failed'}'
+      '${tripTimeMs != null ? ' in ${tripTimeMs}ms' : ''}',
+      tag: 'Routing',
+    );
     final settings = _appSettingsService?.settings;
     _pathHistoryService!.recordPathResult(
       contactPubKeyHex,
@@ -2522,9 +2604,10 @@ class MeshCoreConnector extends ChangeNotifier {
         (c) => c?.publicKeyHex == contactPubKeyHex,
         orElse: () => null,
       );
+      // pathLength 0 with no bytes is the direct path: credit it too.
       if (contact != null &&
           contact.pathLength >= 0 &&
-          contact.path.isNotEmpty) {
+          (contact.path.isNotEmpty || contact.pathLength == 0)) {
         _pathHistoryService!.recordFloodPathAttribution(
           contactPubKeyHex: contactPubKeyHex,
           pathBytes: contact.path,
@@ -2556,14 +2639,26 @@ class MeshCoreConnector extends ChangeNotifier {
       return null;
     }
 
+    final contact = getContactByPubKeyHex(contactPubKeyHex);
+    final routeContext = routeContextFor(contact);
     final selection = _pathHistoryService?.selectPathForAttempt(
       contactPubKeyHex,
       attemptIndex: attemptIndex,
       maxRetries: maxRetries,
       recentSelections: recentSelections,
+      context: routeContext,
     );
     if (selection != null) {
       _pathHistoryService?.recordPathAttempt(contactPubKeyHex, selection);
+      // Logged so route choices and their outcomes can be compared from the
+      // app debug log on a live mesh.
+      _appDebugLogService?.info(
+        'Route pick for ${contact?.name ?? contactPubKeyHex.substring(0, 8)}: '
+        'attempt ${attemptIndex + 1}/$maxRetries → ${_describeRoute(selection)} '
+        '(heard nearby: ${routeContext.hasNeighbourInfo}, '
+        'contact heard direct: ${routeContext.contactHeardDirectly})',
+        tag: 'Routing',
+      );
     }
     return selection;
   }
@@ -4410,6 +4505,7 @@ class MeshCoreConnector extends ChangeNotifier {
     if (_pathHashByteWidth != nextWidth) {
       _pathHashByteWidth = nextWidth;
       _directRepeaters.clear();
+      _heardNeighbours.clear();
       notifyListeners();
     }
   }
@@ -6252,6 +6348,13 @@ class MeshCoreConnector extends ChangeNotifier {
 
   /// Forgets everything held in memory for [slot], whose channel changed.
   void _dropChannelSlotState(int slot, String? previousId) {
+    // A notification for the old channel would open the new one.
+    unawaited(
+      _notificationService.clearChannelNotification(
+        slot,
+        getTotalUnreadCount(),
+      ),
+    );
     _channelMessages.remove(slot);
     _processedChannelReactions.remove(slot);
     _channelSmazEnabled.remove(slot);
@@ -6792,6 +6895,13 @@ class MeshCoreConnector extends ChangeNotifier {
     _unreadStore.setPublicKeyHex = selfPublicKeyHex;
     _discoveryContactStore.setPublicKeyHex = selfPublicKeyHex;
     _pathHistoryService?.setDevicePublicKey(selfPublicKeyHex);
+    // What one radio hears says nothing about another's surroundings.
+    if (_heardNeighboursRadioKey != selfPublicKeyHex) {
+      _heardNeighbours.clear();
+      _heardDirectAt.clear();
+      _heardNeighboursRadioKey = selfPublicKeyHex;
+    }
+    unawaited(_notificationService.bindRadio(selfPublicKeyHex));
 
     // Now that we have self info, we can load all the persisted data for this node
     loadContactCache();
@@ -6854,6 +6964,7 @@ class MeshCoreConnector extends ChangeNotifier {
     }
     if (_pathHashByteWidth != previousPathHashByteWidth) {
       _directRepeaters.clear();
+      _heardNeighbours.clear();
     }
 
     // Firmware reports MAX_CONTACTS / 2 for v3+ device info.
@@ -9652,6 +9763,66 @@ class MeshCoreConnector extends ChangeNotifier {
     }
   }
 
+  /// Records who was heard with no repeater in between for this advert.
+  void _noteHeardNeighbour(Contact contact, Uint8List path, int hashWidth) {
+    final now = DateTime.now();
+    final List<int> prefix;
+    if (path.isEmpty) {
+      _heardDirectAt[contact.publicKeyHex] = now;
+      prefix = contact.publicKey.sublist(
+        0,
+        math.min(4, contact.publicKey.length),
+      );
+    } else if (path.length >= hashWidth) {
+      // Advert paths run from the originator toward us: the last hop is the
+      // node we heard.
+      prefix = path.sublist(path.length - hashWidth);
+    } else {
+      return;
+    }
+    _heardNeighbours
+      ..removeWhere(
+        (n) =>
+            listEquals(n.prefix, prefix) ||
+            now.difference(n.at) > _heardNeighbourWindow,
+      )
+      ..add((prefix: List<int>.unmodifiable(prefix), at: now));
+    if (_heardNeighbours.length > _maxHeardNeighbours) {
+      _heardNeighbours.removeAt(0);
+    }
+  }
+
+  /// What the radio hears right now, for choosing a route to [contact].
+  RouteContext routeContextFor(Contact? contact) {
+    final now = DateTime.now();
+    _heardNeighbours.removeWhere(
+      (n) => now.difference(n.at) > _heardNeighbourWindow,
+    );
+    final neighbours = List.of(_heardNeighbours);
+    final heardDirectAt = contact == null
+        ? null
+        : _heardDirectAt[contact.publicKeyHex];
+    return RouteContext(
+      hasNeighbourInfo: neighbours.isNotEmpty,
+      contactHeardDirectly:
+          heardDirectAt != null &&
+          now.difference(heardDirectAt) <= _heardNeighbourWindow,
+      firstHopHeard: (pathBytes, hashWidth) {
+        final width = hashWidth.clamp(1, 4);
+        if (pathBytes.length < width) return false;
+        final hop = pathBytes.sublist(0, width);
+        return neighbours.any(
+          (n) =>
+              n.prefix.length >= width &&
+              listEquals(n.prefix.sublist(0, width), hop),
+        );
+      },
+      radioPath: contact != null && contact.pathLength >= 0
+          ? contact.path
+          : null,
+    );
+  }
+
   void _updateDirectRepeater(
     Contact contact,
     double snr,
@@ -9659,6 +9830,7 @@ class MeshCoreConnector extends ChangeNotifier {
     required int pathHashWidth,
   }) {
     final hashWidth = pathHashWidth.clamp(1, 4).toInt();
+    _noteHeardNeighbour(contact, path, hashWidth);
     if (path.isNotEmpty && path.length < hashWidth) {
       return;
     }

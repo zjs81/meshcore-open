@@ -2360,14 +2360,6 @@
   "contact_lastSeen": "Zuletzt gesehen",
   "contact_clearChat": "Chat löschen",
   "contact_teleEnvSubtitle": "Teilen von Umgebungsensordaten zulassen",
-  "appSettings_initialRouteWeightSubtitle": "Ausgangsgewicht für neu entdeckte Pfade",
-  "appSettings_maxRouteWeightSubtitle": "Maximales Gewicht, das ein Weg durch erfolgreiche Lieferungen erreichen kann.",
-  "appSettings_maxRouteWeight": "Maximale Gesamtstreckenlänge",
-  "appSettings_initialRouteWeight": "Anfangs-Streckengewicht",
-  "appSettings_routeWeightSuccessIncrement": "Erhöhung des Erfolgsgewichts",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Gewicht, das einem Pfad nach erfolgreicher Lieferung hinzugefügt wird.",
-  "appSettings_routeWeightFailureDecrement": "Reduzierung des Gewichts bei Fehlern",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Gewicht, das nach einem fehlgeschlagenen Versand von einem Weg entfernt wurde",
   "appSettings_maxMessageRetries": "Maximale Anzahl an Wiederholungsversuchen",
   "appSettings_maxMessageRetriesSubtitle": "Anzahl der Versuche, eine Nachricht erneut zu senden, bevor sie als fehlgeschlagen markiert wird.",
   "appSettings_ipfsImageLinks": "IPFS-Anbieter-Konfiguration",
@@ -3803,5 +3795,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Diese Nachricht wurde im Chat nicht gefunden",
+  "chat_clearSelection": "Auswahl aufheben",
+  "chat_deleteSelectedConfirm": "{count, plural, one{1 Nachricht von diesem Gerät löschen?} other{{count} Nachrichten von diesem Gerät löschen?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Nachrichten löschen?",
+  "chat_messagesDeleted": "{count, plural, one{1 Nachricht gelöscht} other{{count} Nachrichten gelöscht}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Alle auswählen",
+  "chat_selectMessages": "Nachrichten auswählen",
+  "chat_selectedCount": "{count} ausgewählt",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Erneut hinzufügen",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{1 Nachricht als Kein Spam markiert} other{{count} Nachrichten als Kein Spam markiert}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{1 Nachricht als Spam markiert} other{{count} Nachrichten als Spam markiert}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Sprungliste erweitern",
+  "pathMap_showMap": "Karte anzeigen",
+  "routing_modeDirect": "Direkt",
+  "routing_modeDirectHint": "Sendet immer direkt an diesen Kontakt, ohne Repeater-Sprünge. Nutzen Sie dies, wenn er in Funkreichweite ist."
 }

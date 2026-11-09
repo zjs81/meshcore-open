@@ -82,7 +82,34 @@ class _SharedContactCardState extends State<SharedContactCard> {
       if (isSelf) {
         action = _status(Icons.person_outline, l10n.contactShare_isYou);
       } else if (isSaved) {
-        action = _status(Icons.check_circle_outline, l10n.contactShare_saved);
+        // Still offer a re-add: the app's list can lag the radio (e.g. the
+        // contact was dropped on the radio or by another client), and adding
+        // again just refreshes an existing entry.
+        action = Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 8,
+          children: [
+            _status(Icons.check_circle_outline, l10n.contactShare_saved),
+            TextButton(
+              onPressed: connector.isConnected && !_adding
+                  ? () => _add(connector)
+                  : null,
+              style: TextButton.styleFrom(
+                foregroundColor: widget.textColor,
+                minimumSize: const Size(48, 48),
+              ),
+              child: Text(
+                _adding ? l10n.contactShare_adding : l10n.contactShare_addAgain,
+                style: TextStyle(
+                  fontSize: 14 * scale,
+                  fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.underline,
+                  decorationColor: widget.textColor,
+                ),
+              ),
+            ),
+          ],
+        );
       } else {
         action = SizedBox(
           width: double.infinity,

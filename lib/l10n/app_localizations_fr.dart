@@ -1277,36 +1277,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Rotation automatique du routage désactivée';
 
   @override
-  String get appSettings_maxRouteWeight => 'Poids maximal du chemin';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Poids maximal qu\'un chemin peut accumuler grâce aux livraisons réussies.';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Poids initial de l\'itinéraire';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Poids de départ pour les nouveaux chemins découverts';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Incrément du poids de succès';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Poids ajouté à un chemin après une livraison réussie.';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Décrément du poids d\'échec';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Poids retiré d\'un chemin après une tentative de livraison infructueuse.';
-
-  @override
   String get appSettings_maxMessageRetries =>
       'Nombre maximal de tentatives d\'envoi';
 
@@ -2073,6 +2043,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Essayez un autre mot ou vérifiez l\'orthographe';
 
   @override
+  String get chatSearch_jumpFailed =>
+      'Impossible de trouver ce message dans la discussion';
+
+  @override
   String get chat_sendMessage => 'Envoyer un message';
 
   @override
@@ -2116,6 +2090,67 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Message supprimé';
+
+  @override
+  String get chat_selectMessages => 'Sélectionner des messages';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '$count sélectionné(s)';
+  }
+
+  @override
+  String get chat_selectAll => 'Tout sélectionner';
+
+  @override
+  String get chat_clearSelection => 'Effacer la sélection';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Supprimer les messages ?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Supprimer $count messages de cet appareil ?',
+      one: 'Supprimer 1 message de cet appareil ?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messages supprimés',
+      one: '1 message supprimé',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messages marqués comme spam',
+      one: '1 message marqué comme spam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messages marqués comme pas un spam',
+      one: '1 message marqué comme pas un spam',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Nouvelle tentative d\'envoi du message';
@@ -2356,6 +2391,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get routing_modeManual => 'Manuel';
 
   @override
+  String get routing_modeDirect => 'Direct';
+
+  @override
   String get routing_modeAutoHint =>
       'Sélectionne automatiquement le meilleur chemin connu, et utilise le flood si aucun chemin n\'est connu.';
 
@@ -2366,6 +2404,10 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Envoie toujours selon le chemin exact que vous avez défini.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Envoie toujours directement à ce contact, sans relais. À utiliser quand il est à portée radio.';
 
   @override
   String get routing_currentRoute => 'Route actuelle';
@@ -2535,6 +2577,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Enregistré';
+
+  @override
+  String get contactShare_addAgain => 'Ajouter à nouveau';
 
   @override
   String get contactShare_isYou => 'C\'est vous';
@@ -6004,6 +6049,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get pathMap_expandPanel => 'Développer le panneau';
+
+  @override
+  String get pathMap_expandHopList => 'Agrandir la liste des relais';
+
+  @override
+  String get pathMap_showMap => 'Afficher la carte';
 
   @override
   String get pathMap_noLocation => 'Aucune localisation';

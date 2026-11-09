@@ -2233,14 +2233,6 @@
   "contact_teleLocSubtitle": "Позволи споделяне на данни за местоположение",
   "contact_teleLoc": "Местоположение на телеметрията",
   "contact_teleEnvSubtitle": "Позволи споделяне на данни от средносферните датчици",
-  "appSettings_initialRouteWeight": "Първоначална тежест на маршрута",
-  "appSettings_maxRouteWeight": "Максимално допустимо тегло на маршрута",
-  "appSettings_initialRouteWeightSubtitle": "Начално тегло за новооткрити маршрути",
-  "appSettings_maxRouteWeightSubtitle": "Максималното тегло, което един маршрут може да събере от успешни доставки.",
-  "appSettings_routeWeightSuccessIncrement": "Увеличение на теглото за успех",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Тегло, добавено към път след успешно доставяне.",
-  "appSettings_routeWeightFailureDecrement": "Намаляване на теглото, свързано с неуспех",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Тегло, което е било премахнато от пътя след неуспешен опит за доставка.",
   "appSettings_maxMessageRetries": "Максимален брой опити за изпращане на съобщение",
   "appSettings_maxMessageRetriesSubtitle": "Брой опити за повторно изпращане, преди съобщението да бъде маркирано като неуспешно.",
   "appSettings_ipfsImageLinks": "Конфигурация на IPFS доставчик",
@@ -3668,5 +3660,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Съобщението не беше намерено в чата",
+  "chat_clearSelection": "Изчисти избора",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Да се изтрие ли 1 съобщение от това устройство?} other{Да се изтрият ли {count} съобщения от това устройство?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Изтриване на съобщения?",
+  "chat_messagesDeleted": "{count, plural, one{1 съобщение е изтрито} other{{count} съобщения са изтрити}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Избери всички",
+  "chat_selectMessages": "Избор на съобщения",
+  "chat_selectedCount": "{count} избрани",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Добави отново",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{1 съобщение е отбелязано като не е спам} other{{count} съобщения са отбелязани като не е спам}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{1 съобщение е отбелязано като спам} other{{count} съобщения са отбелязани като спам}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Разгъни списъка със скокове",
+  "pathMap_showMap": "Покажи картата",
+  "routing_modeDirect": "Директно",
+  "routing_modeDirectHint": "Винаги изпраща направо към този контакт, без скокове през ретранслатори. Използвайте го, когато е в обхват на радиото."
 }

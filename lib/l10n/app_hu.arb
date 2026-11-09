@@ -276,14 +276,6 @@
   "appSettings_autoRouteRotationSubtitle": "Váltson a legjobb útvonalak és az elárasztási mód között",
   "appSettings_autoRouteRotationEnabled": "Az automatikus útvonalforgatás engedélyezve",
   "appSettings_autoRouteRotationDisabled": "Az automatikus útvonalforgatás letiltva",
-  "appSettings_maxRouteWeight": "Maximális útvonalsúly",
-  "appSettings_maxRouteWeightSubtitle": "Maximális súly, amelyet egy útvonal felhalmozhat a sikeres szállításokból",
-  "appSettings_initialRouteWeight": "Az útvonal kezdeti súlya",
-  "appSettings_initialRouteWeightSubtitle": "Kezdősúly az újonnan felfedezett utakhoz",
-  "appSettings_routeWeightSuccessIncrement": "Siker súlynövekedés",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Súly hozzáadva egy útvonalhoz a sikeres szállítás után",
-  "appSettings_routeWeightFailureDecrement": "Hiba súlycsökkentés",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Sikertelen szállítás után eltávolított súly az útvonalról",
   "appSettings_maxMessageRetries": "Üzenet újrapróbálkozások maximális száma",
   "appSettings_maxMessageRetriesSubtitle": "Az üzenet sikertelenként való megjelölése előtti újrapróbálkozások száma",
   "appSettings_ipfsImageLinks": "IPFS-szolgáltató beállítása",
@@ -2644,7 +2636,7 @@
   "routing_title": "Útválasztás",
   "routing_modeAuto": "Auto",
   "routing_modeFlood": "Elárasztás",
-  "routing_modeManual": "Kézikönyv",
+  "routing_modeManual": "Kézi",
   "routing_modeAutoHint": "Automatikusan kiválasztja a legismertebb utat, és elárasztja, ha nem ismert.",
   "routing_modeFloodHint": "Minden átjátszón keresztül sugároz. A legmegbízhatóbb, de több műsoridőt használ.",
   "routing_modeManualHint": "Mindig pontosan az Ön által megadott útvonalon küld.",
@@ -3759,5 +3751,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Ez az üzenet nem található a csevegésben",
+  "chat_clearSelection": "Kijelölés törlése",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Törli az 1 üzenetet erről az eszközről?} other{Törli a(z) {count} üzenetet erről az eszközről?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Törli az üzeneteket?",
+  "chat_messagesDeleted": "{count, plural, one{1 üzenet törölve} other{{count} üzenet törölve}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Összes kijelölése",
+  "chat_selectMessages": "Üzenetek kijelölése",
+  "chat_selectedCount": "{count} kijelölve",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Hozzáadás újra",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{1 üzenet nem spamként megjelölve} other{{count} üzenet nem spamként megjelölve}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{1 üzenet spamként megjelölve} other{{count} üzenet spamként megjelölve}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Ugráslista kibontása",
+  "pathMap_showMap": "Térkép megjelenítése",
+  "routing_modeDirect": "Közvetlen",
+  "routing_modeDirectHint": "Mindig közvetlenül ennek a névjegynek küld, átjátszó ugrások nélkül. Akkor használja, ha rádiótávolságon belül van."
 }

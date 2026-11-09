@@ -556,14 +556,6 @@
   "appSettings_autoRouteRotationSubtitle": "Střídat nejlepší cesty a režim flood",
   "appSettings_autoRouteRotationEnabled": "Automatické střídání tras zapnuto",
   "appSettings_autoRouteRotationDisabled": "Automatické střídání tras vypnuto",
-  "appSettings_maxRouteWeight": "Maximální váha trasy",
-  "appSettings_maxRouteWeightSubtitle": "Maximální váha, kterou může cesta nasbírat z úspěšných doručení",
-  "appSettings_initialRouteWeight": "Počáteční váha trasy",
-  "appSettings_initialRouteWeightSubtitle": "Výchozí váha nově objevených cest",
-  "appSettings_routeWeightSuccessIncrement": "Přírůstek váhy při úspěchu",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Váha přidaná cestě po úspěšném doručení",
-  "appSettings_routeWeightFailureDecrement": "Úbytek váhy při neúspěchu",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Váha odebraná cestě po neúspěšném doručení",
   "appSettings_maxMessageRetries": "Maximum opakování zprávy",
   "appSettings_maxMessageRetriesSubtitle": "Počet opakovaných pokusů, než se zpráva označí jako neodeslaná",
   "appSettings_ipfsImageLinks": "Konfigurace poskytovatele IPFS",
@@ -4281,5 +4273,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Tuto zprávu se v chatu nepodařilo najít",
+  "chat_clearSelection": "Zrušit výběr",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Smazat 1 zprávu z tohoto zařízení?} few{Smazat {count} zprávy z tohoto zařízení?} many{Smazat {count} zprávy z tohoto zařízení?} other{Smazat {count} zpráv z tohoto zařízení?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Smazat zprávy?",
+  "chat_messagesDeleted": "{count, plural, one{Smazána 1 zpráva} few{Smazány {count} zprávy} many{Smazáno {count} zprávy} other{Smazáno {count} zpráv}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Vybrat vše",
+  "chat_selectMessages": "Vybrat zprávy",
+  "chat_selectedCount": "Vybráno: {count}",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Přidat znovu",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{1 zpráva označena jako ne-spam} few{{count} zprávy označeny jako ne-spam} many{{count} zprávy označeno jako ne-spam} other{{count} zpráv označeno jako ne-spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{1 zpráva označena jako spam} few{{count} zprávy označeny jako spam} many{{count} zprávy označeno jako spam} other{{count} zpráv označeno jako spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Rozbalit seznam skoků",
+  "pathMap_showMap": "Zobrazit mapu",
+  "routing_modeDirect": "Přímo",
+  "routing_modeDirectHint": "Vždy odešle zprávu přímo tomuto kontaktu, bez skoků přes opakovače. Použijte, když je v dosahu rádia."
 }

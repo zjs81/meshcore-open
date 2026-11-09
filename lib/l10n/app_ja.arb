@@ -282,14 +282,6 @@
   "appSettings_autoRouteRotationSubtitle": "最適な経路とフラッドモードを切り替えます",
   "appSettings_autoRouteRotationEnabled": "自動経路切り替えが有効です",
   "appSettings_autoRouteRotationDisabled": "自動経路切り替えは無効です",
-  "appSettings_maxRouteWeight": "最大経路重み",
-  "appSettings_maxRouteWeightSubtitle": "成功配送によって経路に蓄積できる最大重み",
-  "appSettings_initialRouteWeight": "初期経路重み",
-  "appSettings_initialRouteWeightSubtitle": "新しく発見された経路の初期重み",
-  "appSettings_routeWeightSuccessIncrement": "成功時の重み増加",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "成功配送後に経路へ加算する重み",
-  "appSettings_routeWeightFailureDecrement": "失敗時の重み減少",
-  "appSettings_routeWeightFailureDecrementSubtitle": "失敗配送後に経路から差し引く重み",
   "appSettings_maxMessageRetries": "最大メッセージ再試行回数",
   "appSettings_maxMessageRetriesSubtitle": "メッセージを失敗として扱うまでの再試行回数",
   "path_routeWeight": "{weight}/{max}",
@@ -4008,5 +4000,55 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "チャット内でそのメッセージが見つかりませんでした",
+  "chat_clearSelection": "選択を解除",
+  "chat_deleteSelectedConfirm": "{count, plural, other{この端末からメッセージ {count} 件を削除しますか？}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "メッセージを削除しますか？",
+  "chat_messagesDeleted": "{count, plural, other{メッセージ {count} 件を削除しました}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "すべて選択",
+  "chat_selectMessages": "メッセージを選択",
+  "chat_selectedCount": "{count} 件を選択中",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "もう一度追加",
+  "messageFilter_markedNotSpamCount": "{count, plural, other{メッセージ {count} 件をスパムではないとマークしました}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, other{メッセージ {count} 件をスパムとしてマークしました}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "ホップ一覧を広げる",
+  "pathMap_showMap": "地図を表示",
+  "routing_modeDirect": "直接",
+  "routing_modeDirectHint": "中継ホップなしで、常にこの連絡先へ直接送信します。相手が電波の届く範囲にいるときに使います。"
 }

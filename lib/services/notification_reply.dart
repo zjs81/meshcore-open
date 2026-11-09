@@ -153,7 +153,9 @@ Future<void> notificationActionBackgroundHandler(
     final plugin = FlutterLocalNotificationsPlugin();
     await plugin.initialize(
       settings: const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        android: AndroidInitializationSettings(
+          '@drawable/ic_stat_notification',
+        ),
       ),
     );
     final l10n = await _backgroundLocalizations();
@@ -168,7 +170,7 @@ Future<void> notificationActionBackgroundHandler(
           channelDescription: 'New message notifications',
           importance: Importance.high,
           priority: Priority.high,
-          icon: '@mipmap/ic_launcher',
+          icon: '@drawable/ic_stat_notification',
         ),
       ),
     );
