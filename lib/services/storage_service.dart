@@ -3,6 +3,7 @@ import '../models/delivery_observation.dart';
 import '../models/path_history.dart';
 import '../storage/legacy_key_migration.dart';
 import '../storage/prefs_manager.dart';
+import '../storage/history_store.dart';
 import '../utils/app_logger.dart';
 
 class StorageService {
@@ -64,30 +65,32 @@ class StorageService {
     String contactPubKeyHex,
     ContactPathHistory history,
   ) async {
-    final prefs = PrefsManager.instance;
+    final prefs = HistoryStore.instance;
     final key = _pathHistoryKey(contactPubKeyHex);
     final jsonStr = jsonEncode(history.toJson());
     await prefs.setString(key, jsonStr);
   }
 
   Future<ContactPathHistory?> loadPathHistory(String contactPubKeyHex) async {
-    final prefs = PrefsManager.instance;
+    final prefs = HistoryStore.instance;
+    final scope = _publicKeyHex;
+    final allowLegacyMigration =
+        scope.isNotEmpty && canMigrateLegacyKeys(scope);
     final key = _pathHistoryKey(contactPubKeyHex);
-    var jsonStr = prefs.getString(key);
+    var jsonStr = await prefs.getString(key);
     final legacyKey = '$_pathHistoryPrefix$contactPubKeyHex';
-    if (jsonStr == null &&
-        _publicKeyHex.isNotEmpty &&
-        canMigrateLegacyKeys(_publicKeyHex)) {
+    if (jsonStr == null && allowLegacyMigration) {
       // Move the pre-scoping history into the first radio that loads it so
       // learned routes survive the upgrade without leaking into other radios.
-      final legacy = prefs.getString(legacyKey);
+      final legacy = await prefs.getString(legacyKey);
       if (legacy != null) {
-        await prefs.setString(key, legacy);
-        await prefs.remove(legacyKey);
+        if (await prefs.setString(key, legacy)) {
+          await prefs.remove(legacyKey);
+        }
         jsonStr = legacy;
       }
-    } else if (jsonStr == null && _publicKeyHex.isEmpty) {
-      jsonStr = prefs.getString(legacyKey);
+    } else if (jsonStr == null && scope.isEmpty) {
+      jsonStr = await prefs.getString(legacyKey);
     }
 
     if (jsonStr == null) return null;
@@ -101,7 +104,7 @@ class StorageService {
   }
 
   Future<void> clearPathHistory(String contactPubKeyHex) async {
-    final prefs = PrefsManager.instance;
+    final prefs = HistoryStore.instance;
     await prefs.remove(_pathHistoryKey(contactPubKeyHex));
     await prefs.remove('$_pathHistoryPrefix$contactPubKeyHex');
   }
@@ -109,7 +112,7 @@ class StorageService {
   /// Clears the path histories of the connected radio only. Histories of other
   /// radios are left alone; with no radio scope set, everything is cleared.
   Future<void> clearAllPathHistories() async {
-    final prefs = PrefsManager.instance;
+    final prefs = HistoryStore.instance;
     final scopedPrefix = _publicKeyHex.isEmpty
         ? _pathHistoryPrefix
         : '$_pathHistoryPrefix${_publicKeyHex}_';
@@ -117,7 +120,7 @@ class StorageService {
     // radio on the next load and bring the cleared routes back.
     final clearLegacy =
         _publicKeyHex.isNotEmpty && canMigrateLegacyKeys(_publicKeyHex);
-    final pathHistoryKeys = prefs.getKeys().where((key) {
+    final pathHistoryKeys = (await prefs.getKeys()).where((key) {
       if (key.startsWith(scopedPrefix)) return true;
       return clearLegacy &&
           key.startsWith(_pathHistoryPrefix) &&

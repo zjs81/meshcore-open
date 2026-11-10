@@ -184,6 +184,15 @@ A full-screen map with a draggable bottom sheet containing:
 
 ## Offline Map Cache
 
+Linux and Windows keep the tile index in SQLite, so opening a large offline map
+does not load every tile's metadata into memory. Existing JSON indexes migrate
+automatically on first use; downloaded tile files and the cache limit are
+preserved. The old index is removed only after its replacement is committed.
+Unreadable records are skipped, and an index that contained any is kept beside
+the database with an `.unreadable` suffix instead of being deleted.
+The database and import marker are versioned, so a completed migration is not
+repeated and an older app does not downgrade a newer database.
+
 ### How to Access
 Settings → App Settings → Map Display → Offline Map Cache
 

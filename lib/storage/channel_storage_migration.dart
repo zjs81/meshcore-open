@@ -5,13 +5,15 @@ import 'channel_message_store.dart';
 import 'channel_store.dart';
 import 'legacy_key_migration.dart';
 import 'prefs_manager.dart';
+import 'history_store.dart';
 
 /// One-shot move of a radio's per-channel data from slot-index keys
 /// (`<prefix><scope><slot>`) to channel-ID keys (`<prefix><scope>_<id>`).
 ///
 /// The slot -> PSK mapping comes from the radio's cached channel list, which is
 /// the mapping the legacy data was written under. Legacy keys of slots with no
-/// cached PSK are left alone and never read again.
+/// cached PSK are left alone and never read again, and so is a legacy history
+/// that cannot be parsed.
 class ChannelStorageMigration {
   static const String _doneKeyPrefix = 'channel_storage_v2_';
 
@@ -70,8 +72,8 @@ class ChannelStorageMigration {
     await _migrateOrder(scope, slotIds);
     if (slotIds.isNotEmpty) await beforeDone?.call(slotIds);
 
-    await prefs.setBool(doneKey, true);
     await channelStore.saveSlotChannelIds(slotIds);
+    await _requireWrite(prefs.setBool(doneKey, true));
     if (slotIds.isNotEmpty) {
       appLogger.info(
         'Moved channel data for ${slotIds.length} slots of $scope to channel IDs',
@@ -81,38 +83,60 @@ class ChannelStorageMigration {
   }
 
   static Future<void> _moveMessages(String scope, int slot, String id) async {
-    final prefs = PrefsManager.instance;
+    final prefs = HistoryStore.instance;
     final oldKey = '$_messagesPrefix$scope$slot';
     final legacyKey = '$_messagesPrefix$slot';
     final newKey = '$_messagesPrefix${scope}_$id';
-    var json = prefs.getString(oldKey);
-    if (json == null || json.isEmpty) json = prefs.getString(legacyKey);
+    var json = await prefs.getString(oldKey);
+    if (json == null || json.isEmpty) json = await prefs.getString(legacyKey);
     if (json != null && json.isNotEmpty) {
-      final existing = prefs.getString(newKey);
-      // Two slots holding the same PSK now share one history.
-      await prefs.setString(
-        newKey,
-        existing == null || existing.isEmpty
+      final String moved;
+      try {
+        if (jsonDecode(json) is! List) {
+          throw const FormatException('Channel history is not an array');
+        }
+        final existing = await prefs.getString(newKey);
+        // Two slots holding the same PSK now share one history.
+        moved = existing == null || existing.isEmpty
             ? json
-            : _mergeMessages(existing, json),
-      );
+            : _mergeMessages(existing, json);
+      } on FormatException catch (error) {
+        // One unreadable history must not hold back the other slots. It
+        // stays under its old key, which nothing reads again.
+        appLogger.warn(
+          'Leaving unreadable channel history of slot $slot in place: $error',
+        );
+        return;
+      }
+      await _requireWrite(prefs.setString(newKey, moved));
     }
     // Old keys go only after the new one is written, so an interrupted run
     // loses nothing; the next launch repeats it.
-    await prefs.remove(oldKey);
-    await prefs.remove(legacyKey);
+    await _requireWrite(prefs.remove(oldKey));
+    await _requireWrite(prefs.remove(legacyKey));
   }
 
   static String _mergeMessages(String a, String b) {
     try {
       // A rerun after an interrupted migration merges a history into
       // itself, so drop entries already present.
+      final existing = jsonDecode(a);
+      final incoming = jsonDecode(b);
+      if (existing is! List ||
+          incoming is! List ||
+          ![
+            ...existing,
+            ...incoming,
+          ].every((entry) => entry is Map<String, dynamic>)) {
+        throw const FormatException(
+          'Cannot merge unreadable channel histories',
+        );
+      }
       final seen = <String>{};
-      final merged =
-          [...jsonDecode(a) as List<dynamic>, ...jsonDecode(b) as List<dynamic>]
-              .whereType<Map<String, dynamic>>()
-              .where((m) => seen.add(_mergeKey(m)))
-              .toList();
+      final merged = [...existing, ...incoming]
+          .cast<Map<String, dynamic>>()
+          .where((m) => seen.add(_mergeKey(m)))
+          .toList();
       merged.sort(
         (x, y) => ((x['timestamp'] as int?) ?? 0).compareTo(
           (y['timestamp'] as int?) ?? 0,
@@ -122,7 +146,7 @@ class ChannelStorageMigration {
       if (overflow > 0) merged.removeRange(0, overflow);
       return jsonEncode(merged);
     } catch (_) {
-      return a;
+      throw const FormatException('Cannot merge unreadable channel histories');
     }
   }
 
@@ -145,19 +169,19 @@ class ChannelStorageMigration {
     var value = prefs.get(oldKey);
     if (value == null && legacyKey != null) value = prefs.get(legacyKey);
     if (value is bool && !prefs.containsKey(newKey)) {
-      await prefs.setBool(newKey, value);
+      await _requireWrite(prefs.setBool(newKey, value));
     }
-    await prefs.remove(oldKey);
-    if (legacyKey != null) await prefs.remove(legacyKey);
+    await _removeIfPresent(oldKey);
+    if (legacyKey != null) await _removeIfPresent(legacyKey);
   }
 
   static Future<void> _moveString(String oldKey, String newKey) async {
     final prefs = PrefsManager.instance;
     final value = prefs.get(oldKey);
     if (value is String && !prefs.containsKey(newKey)) {
-      await prefs.setString(newKey, value);
+      await _requireWrite(prefs.setString(newKey, value));
     }
-    await prefs.remove(oldKey);
+    await _removeIfPresent(oldKey);
   }
 
   static Future<void> _migrateOrder(
@@ -188,7 +212,18 @@ class ChannelStorageMigration {
       final id = slotIds[slot];
       if (id != null && !ids.contains(id)) ids.add(id);
     }
-    await prefs.setString(key, jsonEncode(ids));
-    await prefs.remove(_orderPrefix);
+    await _requireWrite(prefs.setString(key, jsonEncode(ids)));
+    await _removeIfPresent(_orderPrefix);
+  }
+
+  static Future<void> _removeIfPresent(String key) async {
+    final prefs = PrefsManager.instance;
+    if (prefs.containsKey(key)) await prefs.remove(key);
+  }
+
+  static Future<void> _requireWrite(Future<bool> write) async {
+    if (!await write) {
+      throw StateError('Could not persist channel storage migration');
+    }
   }
 }

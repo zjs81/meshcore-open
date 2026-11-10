@@ -15,6 +15,7 @@ class CoalescedWrites {
 
   final Duration delay;
   final Map<String, Future<void> Function()> _pending = {};
+  final Set<Future<void>> _inFlight = {};
   Timer? _timer;
 
   bool get hasPending => _pending.isNotEmpty;
@@ -38,20 +39,20 @@ class CoalescedWrites {
   Future<void> flush() {
     _timer?.cancel();
     _timer = null;
-    if (_pending.isEmpty) return Future<void>.value();
     final writes = _pending.values.toList();
     _pending.clear();
     // Callers fire and forget, so a failed write is logged rather than left
     // as an unhandled async error, and never stops the other writes.
-    final futures = <Future<void>>[];
     for (final write in writes) {
       try {
-        futures.add(write().catchError(_logFailure));
+        final future = write().catchError(_logFailure);
+        _inFlight.add(future);
+        unawaited(future.whenComplete(() => _inFlight.remove(future)));
       } catch (error) {
         _logFailure(error);
       }
     }
-    return Future.wait(futures).then((_) {});
+    return Future.wait(_inFlight.toList()).then((_) {});
   }
 
   static void _logFailure(Object error) {
