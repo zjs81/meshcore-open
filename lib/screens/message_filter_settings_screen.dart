@@ -30,50 +30,52 @@ class MessageFilterSettingsScreen extends StatelessWidget {
         title: AdaptiveAppBarTitle(l10n.messageFilter_title),
         centerTitle: true,
       ),
-      body: SafeArea(
-        top: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-          children: [
-            MeshCard(
-              padding: EdgeInsets.zero,
-              child: SwitchListTile(
-                key: const ValueKey('messageFilter_enabledSwitch'),
-                contentPadding: _tilePadding,
-                secondary: const Icon(Icons.filter_alt_outlined, size: 24),
-                title: Text(l10n.messageFilter_enabled),
-                subtitle: Text(l10n.messageFilter_enabledSubtitle),
-                value: settings.enabled,
-                onChanged: (value) => service.updateSettings(
-                  service.settings.copyWith(enabled: value),
+      body: MeshSettingsTileTheme(
+        child: SafeArea(
+          top: false,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+            children: [
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: SwitchListTile(
+                  key: const ValueKey('messageFilter_enabledSwitch'),
+                  contentPadding: _tilePadding,
+                  secondary: const Icon(Icons.filter_alt_outlined, size: 24),
+                  title: Text(l10n.messageFilter_enabled),
+                  subtitle: Text(l10n.messageFilter_enabledSubtitle),
+                  value: settings.enabled,
+                  onChanged: (value) => service.updateSettings(
+                    service.settings.copyWith(enabled: value),
+                  ),
                 ),
               ),
-            ),
 
-            SectionHeader(l10n.messageFilter_displayTitle),
-            MeshCard(
-              padding: EdgeInsets.zero,
-              child: Column(
-                children: [
-                  _DisplayModeOptions(service: service),
-                  const Divider(height: 1, indent: 16),
-                  const _FilteredMessagesTile(),
-                ],
+              SectionHeader(l10n.messageFilter_displayTitle),
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: Column(
+                  children: [
+                    _DisplayModeOptions(service: service),
+                    const Divider(height: 1, indent: 16),
+                    const _FilteredMessagesTile(),
+                  ],
+                ),
               ),
-            ),
 
-            SectionHeader(l10n.messageFilter_rulesSection),
-            MeshCard(
-              padding: EdgeInsets.zero,
-              child: _RulesList(service: service),
-            ),
+              SectionHeader(l10n.messageFilter_rulesSection),
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: _RulesList(service: service),
+              ),
 
-            SectionHeader(l10n.messageFilter_automaticSection),
-            MeshCard(
-              padding: EdgeInsets.zero,
-              child: _AutomaticOptions(service: service),
-            ),
-          ],
+              SectionHeader(l10n.messageFilter_automaticSection),
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: _AutomaticOptions(service: service),
+              ),
+            ],
+          ),
         ),
       ),
     );

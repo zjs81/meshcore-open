@@ -36,7 +36,8 @@ class NotificationNavigator {
     if (payload == null) return;
     notifications.pendingTap.value = null;
     final navigator = navigatorKey.currentState;
-    if (navigator == null || !connector.isConnected) return;
+    // Offline the last radio's saved chats still open (read-only).
+    if (navigator == null || !connector.hasRadioData) return;
 
     final sep = payload.indexOf(':');
     if (sep <= 0) return;

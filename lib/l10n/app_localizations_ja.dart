@@ -384,185 +384,180 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_appSettingsSubtitle => '通知、メッセージング、および地図の表示設定';
 
   @override
-  String get settings_export => 'Export';
+  String get settings_export => 'エクスポート';
 
   @override
-  String get settings_exportSubtitle => 'Export contacts and repeaters as GPX';
+  String get settings_exportSubtitle => '連絡先とリピータをGPXでエクスポート';
 
   @override
-  String get backupRestore_title => 'Backup & Restore';
+  String get backupRestore_title => 'バックアップと復元';
 
   @override
-  String get backupRestore_subtitle =>
-      'Save or restore app data and radio settings';
+  String get backupRestore_subtitle => 'アプリのデータと無線機の設定を保存または復元します';
 
   @override
-  String get backupRestore_import => 'Import';
+  String get backupRestore_import => 'インポート';
 
   @override
-  String get backupRestore_selectImportFile => 'Import File';
+  String get backupRestore_selectImportFile => 'ファイルをインポート';
 
   @override
-  String get backupRestore_password => 'Password (optional)';
+  String get backupRestore_password => 'パスワード（任意）';
 
   @override
   String get backupRestore_passwordHelp =>
-      'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.';
+      'パスワードを設定するとファイルが暗号化されます。空欄の場合は平文で保存され、秘密鍵/チャンネル鍵、履歴、認証情報が含まれる可能性があります。';
 
   @override
   String get backupRestore_importUnavailable =>
-      'Check the password or choose a supported backup file.';
+      'パスワードを確認するか、対応しているバックアップファイルを選択してください。';
 
   @override
-  String get backupRestore_items => 'Backup and restore items';
+  String get backupRestore_items => 'バックアップと復元の項目';
 
   @override
-  String get backupRestore_nodeSettings => 'Node Settings';
+  String get backupRestore_nodeSettings => 'ノード設定';
 
   @override
   String get backupRestore_nodeSettingsDescription =>
-      'Device name, private and public keys, radio settings, and regions';
+      'デバイス名、秘密鍵と公開鍵、無線設定、リージョン';
 
   @override
-  String get backupRestore_deviceName => 'Device Name';
+  String get backupRestore_deviceName => 'デバイス名';
 
   @override
-  String get backupRestore_privateKey => 'Private Key (sensitive)';
+  String get backupRestore_privateKey => '秘密鍵（機密）';
 
   @override
-  String get backupRestore_publicKey => 'Public Key';
+  String get backupRestore_publicKey => '公開鍵';
 
   @override
-  String get backupRestore_radioSettings => 'Radio Settings';
+  String get backupRestore_radioSettings => '無線設定';
 
   @override
-  String get backupRestore_regions => 'Regions';
+  String get backupRestore_regions => 'リージョン';
 
   @override
-  String get backupRestore_location => 'Location';
+  String get backupRestore_location => '位置情報';
 
   @override
-  String get backupRestore_contactSettings => 'Contact Settings';
+  String get backupRestore_contactSettings => '連絡先設定';
 
   @override
-  String get backupRestore_privacySettings => 'Privacy Settings';
+  String get backupRestore_privacySettings => 'プライバシー設定';
 
   @override
-  String get backupRestore_contactsData => 'Contacts';
+  String get backupRestore_contactsData => '連絡先';
 
   @override
-  String get backupRestore_perContactSettings => 'Contact Settings and Filters';
+  String get backupRestore_perContactSettings => '連絡先ごとの設定とフィルター';
 
   @override
-  String get backupRestore_contactGroups => 'Contact Groups';
+  String get backupRestore_contactGroups => '連絡先グループ';
 
   @override
-  String get backupRestore_contactHistory => 'Contact History';
+  String get backupRestore_contactHistory => '連絡先の履歴';
 
   @override
-  String get backupRestore_channelsData => 'Channels';
+  String get backupRestore_channelsData => 'チャンネル';
 
   @override
-  String get backupRestore_channelFilters => 'Message Filter Settings';
+  String get backupRestore_channelFilters => 'メッセージフィルター設定';
 
   @override
-  String get backupRestore_channelSettings => 'Channel Settings';
+  String get backupRestore_channelSettings => 'チャンネル設定';
 
   @override
-  String get backupRestore_communities => 'Communities';
+  String get backupRestore_communities => 'コミュニティ';
 
   @override
-  String get backupRestore_channelHistory => 'Channel History';
+  String get backupRestore_channelHistory => 'チャンネルの履歴';
 
   @override
-  String get backupRestore_locationSettings => 'Location Settings';
+  String get backupRestore_locationSettings => '位置情報設定';
 
   @override
-  String get backupRestore_locationSettingsDescription =>
-      'Location, contact settings, and privacy settings';
+  String get backupRestore_locationSettingsDescription => '位置情報、連絡先設定、プライバシー設定';
 
   @override
-  String get backupRestore_appSettings => 'App Settings';
+  String get backupRestore_appSettings => 'アプリ設定';
 
   @override
-  String get backupRestore_appSettingsDescription =>
-      'App preferences and appearance settings';
+  String get backupRestore_appSettingsDescription => 'アプリの設定と外観設定';
 
   @override
-  String get backupRestore_ipfsKey => 'IPFS API Key (sensitive)';
+  String get backupRestore_ipfsKey => 'IPFS APIキー（機密）';
 
   @override
-  String get backupRestore_stadiaMapKey => 'Stadia Maps API Key (sensitive)';
+  String get backupRestore_stadiaMapKey => 'Stadia Maps APIキー（機密）';
 
   @override
-  String get backupRestore_contacts => 'Contacts';
+  String get backupRestore_contacts => '連絡先';
 
   @override
   String get backupRestore_contactsDescription =>
-      'Contacts, per-contact filters and settings, groups, and message history';
+      '連絡先、連絡先ごとのフィルターと設定、グループ、メッセージ履歴';
 
   @override
-  String get backupRestore_discoveredContacts => 'Discovered Contacts';
+  String get backupRestore_discoveredContacts => '検出された連絡先';
 
   @override
-  String get backupRestore_discoveredContactsDescription =>
-      'Discovered contacts and their saved details';
+  String get backupRestore_discoveredContactsDescription => '検出された連絡先と保存済みの詳細';
 
   @override
-  String get backupRestore_channels => 'Channels';
+  String get backupRestore_channels => 'チャンネル';
 
   @override
   String get backupRestore_channelsDescription =>
-      'Channels, channel filters, communities, and message history';
+      'チャンネル、チャンネルフィルター、コミュニティ、メッセージ履歴';
 
   @override
-  String get backupRestore_backup => 'Create Backup';
+  String get backupRestore_backup => 'バックアップを作成';
 
   @override
-  String get backupRestore_restore => 'Restore Selected';
+  String get backupRestore_restore => '選択項目を復元';
 
   @override
-  String get backupRestore_backupComplete => 'Backup file created.';
+  String get backupRestore_backupComplete => 'バックアップファイルを作成しました。';
 
   @override
   String get backupRestore_restoreComplete =>
-      'Restore complete. Reconnect if you restored the radio identity.';
+      '復元が完了しました。無線機のIDを復元した場合は再接続してください。';
 
   @override
-  String get backupRestore_missingModelsTitle => 'Models Not Downloaded';
+  String get backupRestore_missingModelsTitle => 'モデル未ダウンロード';
 
   @override
   String backupRestore_missingModelsMessage(String models) {
-    return 'The restored settings select models that are not available on this device:\n$models\n\nDownload them now?';
+    return '復元された設定で選択されているモデルが、このデバイスにありません:\n$models\n\n今すぐダウンロードしますか？';
   }
 
   @override
-  String get backupRestore_downloadModels => 'Download Models';
+  String get backupRestore_downloadModels => 'モデルをダウンロード';
 
   @override
-  String get backupRestore_downloading => 'Downloading…';
+  String get backupRestore_downloading => 'ダウンロード中…';
 
   @override
-  String get backupRestore_cancelDownload => 'Cancel Download';
+  String get backupRestore_cancelDownload => 'ダウンロードをキャンセル';
 
   @override
   String backupRestore_failed(String error) {
-    return 'Backup operation failed: $error';
+    return 'バックアップ操作に失敗しました: $error';
   }
 
   @override
-  String get backupRestore_fileTooLarge =>
-      'Backup file is larger than the 100 MB limit.';
+  String get backupRestore_fileTooLarge => 'バックアップファイルが100 MBの上限を超えています。';
 
   @override
-  String get backupRestore_selectAtLeastOne => 'Select at least one item.';
+  String get backupRestore_selectAtLeastOne => '項目を1つ以上選択してください。';
 
   @override
-  String get backupRestore_replaceIdentityTitle => 'Replace radio identity?';
+  String get backupRestore_replaceIdentityTitle => '無線機のIDを置き換えますか？';
 
   @override
   String get backupRestore_replaceIdentityMessage =>
-      'Restoring Node Settings replaces the connected radio\'s private key and changes its identity. Continue only if this is intended.';
+      'ノード設定を復元すると、接続中の無線機の秘密鍵が置き換えられ、IDが変わります。意図している場合のみ続行してください。';
 
   @override
   String get settings_nodeSettings => 'ノード設定';
@@ -1214,7 +1209,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_languageSl => 'スロベニア語';
 
   @override
-  String get appSettings_languagePt => 'ポルトガル語';
+  String get appSettings_languagePt => 'ポルトガル語（ブラジル）';
+
+  @override
+  String get appSettings_languagePtPt => 'ポルトガル語（ポルトガル）';
 
   @override
   String get appSettings_languageIt => 'イタリア語';
@@ -2795,9 +2793,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get map_lastSeen => '最後に確認';
 
   @override
-  String get map_disconnectConfirm => '本当にこのデバイスとの接続を解除したいですか？';
-
-  @override
   String get map_from => '送信元';
 
   @override
@@ -3935,7 +3930,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetRxDelay =>
-      '（実験用）遅延時間を設定するためのベース（1以上の値に設定する必要）\n受信パケットに対して、信号強度/スコアに基づいてわずかな遅延を適用します。 0に設定すると無効化されます。';
+      '（実験用）遅延時間を設定するためのベース（1以上の値に設定する必要）受信パケットに対して、信号強度/スコアに基づいてわずかな遅延を適用します。 0に設定すると無効化されます。';
 
   @override
   String get repeater_cliHelpSetTxDelay =>
@@ -4990,7 +4985,7 @@ class AppLocalizationsJa extends AppLocalizations {
     String clearance,
     String heightUnit,
   ) {
-    return '$distance $distanceUnit, clear LOS, min clearance $clearance $heightUnit';
+    return '$distance $distanceUnit、LOS クリア、最小クリアランス $clearance $heightUnit';
   }
 
   @override
@@ -5000,7 +4995,7 @@ class AppLocalizationsJa extends AppLocalizations {
     String obstruction,
     String heightUnit,
   ) {
-    return '$distance $distanceUnit, blocked by $obstruction $heightUnit';
+    return '$distance $distanceUnit、$obstruction $heightUnit で遮断';
   }
 
   @override
@@ -5011,7 +5006,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String losStatusSummary(int clear, int total, int blocked, int unknown) {
-    return 'LOS: $clear/$total clear, $blocked blocked, $unknown unknown';
+    return 'LOS: $clear/$total クリア、$blocked 遮断、$unknown 不明';
   }
 
   @override
@@ -5238,13 +5233,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String notification_messagesCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'messages',
-      one: 'message',
-    );
-    return '$count $_temp0';
+    return '$count 件のメッセージ';
   }
 
   @override
@@ -5960,8 +5949,7 @@ class AppLocalizationsJa extends AppLocalizations {
       '画像モデルがまだダウンロードされていません。設定でダウンロードすると画像を送信できます。';
 
   @override
-  String get imageSend_originalSize =>
-      '原文：\nThe early morning light filtered through the curtains, casting a soft glow on the room.\n\n翻訳：\n早朝の光がカーテンをすり抜け、部屋に柔らかな光を投げかけていた。';
+  String get imageSend_originalSize => 'オリジナル';
 
   @override
   String get imageSend_onAirSize => '放送中';
@@ -6130,6 +6118,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String receivedImage_shareCaption(int bytes) {
     return '$bytes バイトから AI で復元。細部は送信されたものではなく、生成されたものです。';
   }
+
+  @override
+  String get receivedImage_syntheticBadge => 'AI再構築';
 
   @override
   String get receivedImage_packetInfo => 'パケット情報';
@@ -7110,4 +7101,40 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get messageFilter_ghostIconTooltip => 'メッセージフィルターで隠されました';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'オフライン · $name';
+  }
+
+  @override
+  String get appBar_offline => 'オフライン';
+
+  @override
+  String get appBar_reconnecting => '再接続中…';
+
+  @override
+  String get connectSheet_title => '無線機に接続';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return '$name に再接続';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => '無線機を選択';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth、USB、またはTCP';
+
+  @override
+  String get connectSheet_stopReconnecting => '再接続を停止';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return '$name に接続できませんでした。電源が入っていて近くにあることを確認してください。';
+  }
+
+  @override
+  String get chat_composerOffline => 'メッセージを送信するには無線機に接続してください';
 }

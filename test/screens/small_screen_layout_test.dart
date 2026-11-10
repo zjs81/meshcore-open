@@ -241,9 +241,20 @@ void main() {
 
   final variants = [
     for (final entry in _screens.entries) (entry, false),
-    // Repeater screens add a banner while the companion radio is offline.
+    // Repeater screens add a banner while the companion radio is offline;
+    // the main and chat screens swap in the Connect button and the
+    // read-only composer bar.
     for (final entry in _screens.entries)
-      if (entry.key.startsWith('Repeater') || entry.key == 'Neighbors')
+      if (entry.key.startsWith('Repeater') ||
+          const {
+            'Neighbors',
+            'Channels',
+            'Contacts',
+            'Map',
+            'Chat',
+            'ChannelChat',
+            'Settings',
+          }.contains(entry.key))
         (entry, true),
   ];
   for (final (entry, offline) in variants) {

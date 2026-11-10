@@ -7,8 +7,6 @@
 /// them, and matching ignores case and punctuation.
 library;
 
-import 'dart:ui' show Locale;
-
 import '../l10n/app_localizations.dart';
 
 enum HolidayAnimation { halloween, thanksgiving, christmas, newYear }
@@ -58,7 +56,7 @@ List<_Matcher> _buildMatchers() {
   final seen = <(HolidayAnimation, String)>{};
   final matchers = <_Matcher>[];
   for (final locale in AppLocalizations.supportedLocales) {
-    final l10n = lookupAppLocalizations(Locale(locale.languageCode));
+    final l10n = lookupAppLocalizations(locale);
     for (final animation in HolidayAnimation.values) {
       for (final phrase in holidayGreetingsIn(l10n, animation).split('|')) {
         final normalized = _normalize(phrase);

@@ -403,185 +403,189 @@ class AppLocalizationsFr extends AppLocalizations {
       'Notifications, messagerie et préférences de carte';
 
   @override
-  String get settings_export => 'Export';
+  String get settings_export => 'Exporter';
 
   @override
-  String get settings_exportSubtitle => 'Export contacts and repeaters as GPX';
+  String get settings_exportSubtitle =>
+      'Exporter les contacts et répéteurs au format GPX';
 
   @override
-  String get backupRestore_title => 'Backup & Restore';
+  String get backupRestore_title => 'Sauvegarde et restauration';
 
   @override
   String get backupRestore_subtitle =>
-      'Save or restore app data and radio settings';
+      'Enregistrer ou restaurer les données de l\'application et les réglages de la radio';
 
   @override
-  String get backupRestore_import => 'Import';
+  String get backupRestore_import => 'Importer';
 
   @override
-  String get backupRestore_selectImportFile => 'Import File';
+  String get backupRestore_selectImportFile => 'Importer un fichier';
 
   @override
-  String get backupRestore_password => 'Password (optional)';
+  String get backupRestore_password => 'Mot de passe (facultatif)';
 
   @override
   String get backupRestore_passwordHelp =>
-      'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.';
+      'Un mot de passe chiffre le fichier. Sans mot de passe, il est enregistré en clair et peut inclure des clés privées/de canal, l\'historique et les identifiants.';
 
   @override
   String get backupRestore_importUnavailable =>
-      'Check the password or choose a supported backup file.';
+      'Vérifiez le mot de passe ou choisissez un fichier de sauvegarde pris en charge.';
 
   @override
-  String get backupRestore_items => 'Backup and restore items';
+  String get backupRestore_items => 'Éléments de sauvegarde et de restauration';
 
   @override
-  String get backupRestore_nodeSettings => 'Node Settings';
+  String get backupRestore_nodeSettings => 'Réglages du nœud';
 
   @override
   String get backupRestore_nodeSettingsDescription =>
-      'Device name, private and public keys, radio settings, and regions';
+      'Nom de l\'appareil, clés privée et publique, réglages radio et régions';
 
   @override
-  String get backupRestore_deviceName => 'Device Name';
+  String get backupRestore_deviceName => 'Nom de l\'appareil';
 
   @override
-  String get backupRestore_privateKey => 'Private Key (sensitive)';
+  String get backupRestore_privateKey => 'Clé privée (sensible)';
 
   @override
-  String get backupRestore_publicKey => 'Public Key';
+  String get backupRestore_publicKey => 'Clé publique';
 
   @override
-  String get backupRestore_radioSettings => 'Radio Settings';
+  String get backupRestore_radioSettings => 'Réglages radio';
 
   @override
-  String get backupRestore_regions => 'Regions';
+  String get backupRestore_regions => 'Régions';
 
   @override
-  String get backupRestore_location => 'Location';
+  String get backupRestore_location => 'Position';
 
   @override
-  String get backupRestore_contactSettings => 'Contact Settings';
+  String get backupRestore_contactSettings => 'Réglages des contacts';
 
   @override
-  String get backupRestore_privacySettings => 'Privacy Settings';
+  String get backupRestore_privacySettings => 'Réglages de confidentialité';
 
   @override
   String get backupRestore_contactsData => 'Contacts';
 
   @override
-  String get backupRestore_perContactSettings => 'Contact Settings and Filters';
+  String get backupRestore_perContactSettings =>
+      'Réglages et filtres par contact';
 
   @override
-  String get backupRestore_contactGroups => 'Contact Groups';
+  String get backupRestore_contactGroups => 'Groupes de contacts';
 
   @override
-  String get backupRestore_contactHistory => 'Contact History';
+  String get backupRestore_contactHistory => 'Historique des contacts';
 
   @override
-  String get backupRestore_channelsData => 'Channels';
+  String get backupRestore_channelsData => 'Canaux';
 
   @override
-  String get backupRestore_channelFilters => 'Message Filter Settings';
+  String get backupRestore_channelFilters => 'Réglages du filtre de messages';
 
   @override
-  String get backupRestore_channelSettings => 'Channel Settings';
+  String get backupRestore_channelSettings => 'Réglages des canaux';
 
   @override
-  String get backupRestore_communities => 'Communities';
+  String get backupRestore_communities => 'Communautés';
 
   @override
-  String get backupRestore_channelHistory => 'Channel History';
+  String get backupRestore_channelHistory => 'Historique des canaux';
 
   @override
-  String get backupRestore_locationSettings => 'Location Settings';
+  String get backupRestore_locationSettings => 'Réglages de position';
 
   @override
   String get backupRestore_locationSettingsDescription =>
-      'Location, contact settings, and privacy settings';
+      'Position, réglages des contacts et de confidentialité';
 
   @override
-  String get backupRestore_appSettings => 'App Settings';
+  String get backupRestore_appSettings => 'Réglages de l\'application';
 
   @override
   String get backupRestore_appSettingsDescription =>
-      'App preferences and appearance settings';
+      'Préférences de l\'application et réglages d\'apparence';
 
   @override
-  String get backupRestore_ipfsKey => 'IPFS API Key (sensitive)';
+  String get backupRestore_ipfsKey => 'Clé API IPFS (sensible)';
 
   @override
-  String get backupRestore_stadiaMapKey => 'Stadia Maps API Key (sensitive)';
+  String get backupRestore_stadiaMapKey => 'Clé API Stadia Maps (sensible)';
 
   @override
   String get backupRestore_contacts => 'Contacts';
 
   @override
   String get backupRestore_contactsDescription =>
-      'Contacts, per-contact filters and settings, groups, and message history';
+      'Contacts, filtres et réglages par contact, groupes et historique des messages';
 
   @override
-  String get backupRestore_discoveredContacts => 'Discovered Contacts';
+  String get backupRestore_discoveredContacts => 'Contacts découverts';
 
   @override
   String get backupRestore_discoveredContactsDescription =>
-      'Discovered contacts and their saved details';
+      'Contacts découverts et leurs détails enregistrés';
 
   @override
-  String get backupRestore_channels => 'Channels';
+  String get backupRestore_channels => 'Canaux';
 
   @override
   String get backupRestore_channelsDescription =>
-      'Channels, channel filters, communities, and message history';
+      'Canaux, filtres de canaux, communautés et historique des messages';
 
   @override
-  String get backupRestore_backup => 'Create Backup';
+  String get backupRestore_backup => 'Créer une sauvegarde';
 
   @override
-  String get backupRestore_restore => 'Restore Selected';
+  String get backupRestore_restore => 'Restaurer la sélection';
 
   @override
-  String get backupRestore_backupComplete => 'Backup file created.';
+  String get backupRestore_backupComplete => 'Fichier de sauvegarde créé.';
 
   @override
   String get backupRestore_restoreComplete =>
-      'Restore complete. Reconnect if you restored the radio identity.';
+      'Restauration terminée. Reconnectez-vous si vous avez restauré l\'identité de la radio.';
 
   @override
-  String get backupRestore_missingModelsTitle => 'Models Not Downloaded';
+  String get backupRestore_missingModelsTitle => 'Modèles non téléchargés';
 
   @override
   String backupRestore_missingModelsMessage(String models) {
-    return 'The restored settings select models that are not available on this device:\n$models\n\nDownload them now?';
+    return 'Les réglages restaurés sélectionnent des modèles indisponibles sur cet appareil :\n$models\n\nLes télécharger maintenant ?';
   }
 
   @override
-  String get backupRestore_downloadModels => 'Download Models';
+  String get backupRestore_downloadModels => 'Télécharger les modèles';
 
   @override
-  String get backupRestore_downloading => 'Downloading…';
+  String get backupRestore_downloading => 'Téléchargement…';
 
   @override
-  String get backupRestore_cancelDownload => 'Cancel Download';
+  String get backupRestore_cancelDownload => 'Annuler le téléchargement';
 
   @override
   String backupRestore_failed(String error) {
-    return 'Backup operation failed: $error';
+    return 'Échec de l\'opération de sauvegarde : $error';
   }
 
   @override
   String get backupRestore_fileTooLarge =>
-      'Backup file is larger than the 100 MB limit.';
+      'Le fichier de sauvegarde dépasse la limite de 100 Mo.';
 
   @override
-  String get backupRestore_selectAtLeastOne => 'Select at least one item.';
+  String get backupRestore_selectAtLeastOne =>
+      'Sélectionnez au moins un élément.';
 
   @override
-  String get backupRestore_replaceIdentityTitle => 'Replace radio identity?';
+  String get backupRestore_replaceIdentityTitle =>
+      'Remplacer l\'identité de la radio ?';
 
   @override
   String get backupRestore_replaceIdentityMessage =>
-      'Restoring Node Settings replaces the connected radio\'s private key and changes its identity. Continue only if this is intended.';
+      'Restaurer les réglages du nœud remplace la clé privée de la radio connectée et modifie son identité. Continuez uniquement si c\'est voulu.';
 
   @override
   String get settings_nodeSettings => 'Paramètres du nœud';
@@ -620,7 +624,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settings_regionSettings => 'Régions';
 
   @override
-  String get settings_regionSettingsSubtitle => 'Gérer les régions stockées';
+  String get settings_regionSettingsSubtitle => 'Limiter les flood à une zone';
 
   @override
   String get settings_regionEmptyExplanation =>
@@ -803,11 +807,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settings_autoZeroHopAdvertOnGpsUpdate =>
-      'Annonce zéro saut automatique lors de la mise à jour GPS';
+      'Annonce Zero Hop automatique lors de la mise à jour GPS';
 
   @override
   String get settings_autoZeroHopAdvertOnGpsUpdateSubtitle =>
-      'Lorsque la position GPS change, envoyer une annonce zéro saut (nécessite la position dans l\'annonce).';
+      'Lorsque la position GPS change, envoyer une annonce Zero Hop (nécessite la position dans l\'annonce).';
 
   @override
   String get settings_multiAck => 'Plusieurs accusés de réception';
@@ -1158,7 +1162,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get themes_iconRepeater => 'Répéteurs';
 
   @override
-  String get themes_iconRoom => 'Rooms';
+  String get themes_iconRoom => 'Salles';
 
   @override
   String get themes_iconSensor => 'Capteurs';
@@ -1269,7 +1273,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appSettings_languageSl => 'Slovène';
 
   @override
-  String get appSettings_languagePt => 'Portugais';
+  String get appSettings_languagePt => 'Portugais (Brésil)';
+
+  @override
+  String get appSettings_languagePtPt => 'Portugais (Portugal)';
 
   @override
   String get appSettings_languageIt => 'Italien';
@@ -2917,10 +2924,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get map_lastSeen => 'Vu pour la dernière fois';
 
   @override
-  String get map_disconnectConfirm =>
-      'Êtes-vous sûr de vouloir vous déconnecter de cet appareil ?';
-
-  @override
   String get map_from => 'Depuis';
 
   @override
@@ -3376,7 +3379,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get login_autoUseSavedPath => 'Auto (utiliser le chemin sauvegardé)';
 
   @override
-  String get login_forceFloodMode => 'Mode tout le réseau forcé';
+  String get login_forceFloodMode => 'Mode flood forcé';
 
   @override
   String get login_managePaths => 'Gérer les chemins';
@@ -3461,7 +3464,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get repeater_neighbors => 'Voisins';
 
   @override
-  String get repeater_neighborsSubtitle => 'Afficher les voisins de saut nuls.';
+  String get repeater_neighborsSubtitle => 'Afficher les voisins Zero Hop.';
 
   @override
   String get repeater_settings => 'Paramètres';
@@ -3527,10 +3530,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get repeater_noiseFloor => 'Niveau de Bruit';
 
   @override
-  String get repeater_txAirtime => 'TX Airtime';
+  String get repeater_txAirtime => 'Temps d\'antenne TX';
 
   @override
-  String get repeater_rxAirtime => 'RX Airtime';
+  String get repeater_rxAirtime => 'Temps d\'antenne RX';
 
   @override
   String get repeater_chanUtil => 'Utilisation du canal';
@@ -3564,17 +3567,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String repeater_packetTxTotal(int total, String flood, String direct) {
-    return 'Total : $total, Tout le réseau : $flood, Direct : $direct';
+    return 'Total : $total, Flood : $flood, Direct : $direct';
   }
 
   @override
   String repeater_packetRxTotal(int total, String flood, String direct) {
-    return 'Total : $total, Tout le réseau : $flood, Direct : $direct';
+    return 'Total : $total, Flood : $flood, Direct : $direct';
   }
 
   @override
   String repeater_duplicatesFloodDirect(String flood, String direct) {
-    return 'Tout le réseau : $flood, Direct : $direct';
+    return 'Flood : $flood, Direct : $direct';
   }
 
   @override
@@ -3685,8 +3688,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get repeater_floodAdvertInterval =>
-      'Intervalle des annonces à tout le réseau (flood)';
+  String get repeater_floodAdvertInterval => 'Intervalle des annonces flood';
 
   @override
   String repeater_floodAdvertIntervalHours(int hours) {
@@ -3776,7 +3778,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get repeater_loopDetectHelper =>
-      'Envoyer des paquets de données qui semblent former des boucles de routage.';
+      'Ignore les paquets flood qui semblent former des boucles de routage';
 
   @override
   String get repeater_loopDetectOff => 'Désactivé';
@@ -3814,7 +3816,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get repeater_floodMaxHelper =>
-      'Nombre maximal de paquets de données qu\'un flux peut transmettre (0-64)';
+      'Nombre maximal de sauts qu\'un paquet flood peut parcourir (0-64)';
 
   @override
   String get repeater_advancedSettings => 'Avancé';
@@ -3906,7 +3908,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Diffuser une annonce flood via le réseau.';
 
   @override
-  String get repeater_sendAdvertZeroHop => 'Envoyer une annonce sans relais';
+  String get repeater_sendAdvertZeroHop => 'Envoyer une annonce Zero Hop';
 
   @override
   String get repeater_sendAdvertZeroHopSubtitle =>
@@ -4094,11 +4096,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetAdvertInterval =>
-      'Définit l\'intervalle entre chaque émission d\'une annonce locale (sans relais). Définir sur 0 pour désactiver.';
+      'Définit l\'intervalle entre chaque émission d\'une annonce locale (Zero Hop). Définir sur 0 pour désactiver.';
 
   @override
   String get repeater_cliHelpSetFloodAdvertInterval =>
-      'Définit l\'intervalle du minuteur en heures pour envoyer un paquet d\'annonce massive. Définir sur 0 pour désactiver.';
+      'Définit l\'intervalle du minuteur en heures pour envoyer un paquet d\'annonce flood. Définir sur 0 pour désactiver.';
 
   @override
   String get repeater_cliHelpSetGuestPassword =>
@@ -4125,7 +4127,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetTxDelay =>
-      'Définit un facteur multiplié par le temps de fonctionnement en mode vers tout le réseau (flood) pour un paquet et avec un système de slot aléatoire, afin de retarder son envoi (pour diminuer la probabilité de collisions).';
+      'Définit un facteur multiplié par le temps de fonctionnement en mode flood pour un paquet et avec un système de slot aléatoire, afin de retarder son envoi (pour diminuer la probabilité de collisions).';
 
   @override
   String get repeater_cliHelpSetDirectTxDelay =>
@@ -4188,7 +4190,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get repeater_cliHelpRegion =>
-      '(série uniquement) Liste toutes les régions définies et les autorisations actuelles d\'annonces sur tout le réseau (flood).';
+      '(série uniquement) Liste toutes les régions définies et les autorisations flood actuelles.';
 
   @override
   String get repeater_cliHelpRegionLoad =>
@@ -4373,7 +4375,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get repeater_cliHelpAdvertZeroHop =>
-      'Envoie une annonce zéro saut (uniquement aux voisins immédiats).';
+      'Envoie une annonce Zero Hop (uniquement aux voisins immédiats).';
 
   @override
   String get repeater_cliHelpStartOta =>
@@ -4525,7 +4527,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get repeater_cliHelpGetFloodMax =>
-      'Indique le nombre maximal de fois où le niveau de l\'eau a atteint son point culminant.';
+      'Indique le nombre maximal de sauts en flood.';
 
   @override
   String get repeater_cliHelpGetOwnerInfo =>
@@ -4613,11 +4615,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get repeater_cliHelpRegionListAllowed =>
-      'Énumère les régions autorisant la circulation des véhicules en cas de flood.';
+      'Liste les régions qui autorisent le trafic flood.';
 
   @override
   String get repeater_cliHelpRegionListDenied =>
-      'Liste les régions qui interdisent la circulation en cas de flood.';
+      'Liste les régions qui interdisent le trafic flood.';
 
   @override
   String get repeater_cliHelpStatsPackets =>
@@ -4904,7 +4906,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get channelPath_unknownPath => 'Inconnu';
 
   @override
-  String get channelPath_floodPath => 'Tout le réseau';
+  String get channelPath_floodPath => 'Flood';
 
   @override
   String get channelPath_directPath => 'Afficher';
@@ -5442,10 +5444,10 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get contacts_zeroHopAdvert => 'Annonce Zero saut';
+  String get contacts_zeroHopAdvert => 'Annonce Zero Hop';
 
   @override
-  String get contacts_floodAdvert => 'Annonce à tout le réseau';
+  String get contacts_floodAdvert => 'Annonce flood';
 
   @override
   String get contacts_copyAdvertToClipboard =>
@@ -6273,8 +6275,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le modèle d\'image n\'est pas encore téléchargé. Téléchargez-le dans Paramètres pour envoyer des images.';
 
   @override
-  String get imageSend_originalSize =>
-      'Texte original\n\nVeuillez traduire le texte suivant en français :';
+  String get imageSend_originalSize => 'Original';
 
   @override
   String get imageSend_onAirSize => 'En direct';
@@ -6450,6 +6451,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String receivedImage_shareCaption(int bytes) {
     return 'Reconstruit par IA à partir de $bytes octets ; les détails fins sont générés, pas transmis.';
   }
+
+  @override
+  String get receivedImage_syntheticBadge => 'Reconstruite par IA';
 
   @override
   String get receivedImage_packetInfo => 'Informations sur le paquet';
@@ -7471,4 +7475,41 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get messageFilter_ghostIconTooltip =>
       'Masqué par votre filtre de messages';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'Hors ligne · $name';
+  }
+
+  @override
+  String get appBar_offline => 'Hors ligne';
+
+  @override
+  String get appBar_reconnecting => 'Reconnexion…';
+
+  @override
+  String get connectSheet_title => 'Connecter une radio';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return 'Se reconnecter à $name';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => 'Choisir une radio';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB ou TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => 'Arrêter la reconnexion';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return 'Impossible de joindre $name. Vérifiez qu\'elle est allumée et à proximité.';
+  }
+
+  @override
+  String get chat_composerOffline =>
+      'Connectez-vous à une radio pour envoyer des messages';
 }

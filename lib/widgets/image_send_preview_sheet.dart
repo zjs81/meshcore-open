@@ -9,6 +9,7 @@ import '../l10n/l10n.dart';
 import '../services/image_chunk_transport.dart';
 import '../utils/lora_airtime.dart';
 import 'image_send_codec_binding.dart';
+import 'mesh_ui.dart';
 
 /// Estimated wall clock above which the sheet warns the user explicitly.
 const Duration kImageSendLongAirtime = Duration(seconds: 5);
@@ -426,11 +427,11 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
             segments: [
               ButtonSegment(
                 value: false,
-                label: Text(l10n.imageSend_viewOriginal),
+                label: MeshSegmentLabel(l10n.imageSend_viewOriginal),
               ),
               ButtonSegment(
                 value: true,
-                label: Text(l10n.imageSend_viewReconstruction),
+                label: MeshSegmentLabel(l10n.imageSend_viewReconstruction),
                 enabled: _encoded != null && !_reconstructionUnavailable,
               ),
             ],

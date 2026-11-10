@@ -10,6 +10,7 @@ import 'package:meshcore_open/l10n/l10n.dart';
 import 'package:meshcore_open/models/contact.dart';
 import 'package:meshcore_open/storage/region_store.dart';
 import 'package:meshcore_open/theme/mesh_theme.dart';
+import 'package:meshcore_open/utils/radio_guard.dart';
 import 'package:meshcore_open/widgets/mesh_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -56,7 +57,7 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
   void initState() {
     super.initState();
     final connector = context.read<MeshCoreConnector>();
-    _regionStore.setPublicKeyHex = connector.selfPublicKeyHex;
+    _regionStore.setPublicKeyHex = connector.storageKeyHex;
     _loadRegions();
   }
 
@@ -72,6 +73,8 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    // Fetching asks repeaters over the mesh; offline it is unavailable.
+    final canFetch = !_isFetchingRegions && !context.radioReadOnly;
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.settings_regionManagement_screenTitle),
@@ -91,7 +94,7 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.travel_explore),
-            onPressed: _isFetchingRegions ? null : _showFetchRegionsDialog,
+            onPressed: canFetch ? _showFetchRegionsDialog : null,
           ),
         ],
       ),
@@ -123,6 +126,7 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
 
   Widget _buildEmptyState(BuildContext context) {
     final l10n = context.l10n;
+    final canFetch = !_isFetchingRegions && !context.radioReadOnly;
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -148,7 +152,7 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
             FilledButton.icon(
               icon: const Icon(Icons.travel_explore),
               label: Text(l10n.settings_regionFetchFromRepeaters),
-              onPressed: _isFetchingRegions ? null : _showFetchRegionsDialog,
+              onPressed: canFetch ? _showFetchRegionsDialog : null,
             ),
             const SizedBox(height: 8),
             OutlinedButton.icon(
@@ -294,13 +298,7 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
     final l10n = context.l10n;
     final connector = context.read<MeshCoreConnector>();
 
-    if (!connector.isConnected) {
-      showDismissibleSnackBar(
-        context,
-        content: Text(l10n.settings_notConnectedError),
-      );
-      return;
-    }
+    if (!ensureRadioConnected(context)) return;
     final knownRepeaters = connector.contacts
         .where((contact) => contact.type == advTypeRepeater)
         .toList();

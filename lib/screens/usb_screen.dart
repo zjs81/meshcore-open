@@ -14,7 +14,7 @@ import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mesh_ui.dart';
 import '../helpers/snack_bar_builder.dart';
-import 'channels_screen.dart';
+import '../utils/main_navigation.dart';
 import 'tcp_screen.dart';
 
 class UsbScreen extends StatefulWidget {
@@ -56,9 +56,7 @@ class _UsbScreenState extends State<UsbScreen> with WidgetsBindingObserver {
           _connector.isUsbTransportConnected &&
           !_navigatedToChannels) {
         _navigatedToChannels = true;
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const ChannelsScreen()),
-        );
+        navigateToMainAfterConnect(context);
       }
     };
     _connector.addListener(_connectionListener);

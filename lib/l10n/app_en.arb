@@ -545,7 +545,8 @@
   "appSettings_languageDe": "Deutsch",
   "appSettings_languagePl": "Polski",
   "appSettings_languageSl": "Slovenščina",
-  "appSettings_languagePt": "Português",
+  "appSettings_languagePt": "Português (Brasil)",
+  "appSettings_languagePtPt": "Português (Portugal)",
   "appSettings_languageIt": "Italiano",
   "appSettings_languageZh": "中文",
   "appSettings_languageSv": "Svenska",
@@ -1512,7 +1513,6 @@
   "map_pinPrivate": "Pin (Private)",
   "map_pinPublic": "Pin (Public)",
   "map_lastSeen": "Last Seen",
-  "map_disconnectConfirm": "Are you sure you want to disconnect from this device?",
   "map_from": "From",
   "map_source": "Source",
   "map_flags": "Flags",
@@ -3624,6 +3624,10 @@
       }
     }
   },
+  "receivedImage_syntheticBadge": "AI-reconstructed",
+  "@receivedImage_syntheticBadge": {
+    "description": "Permanent label burnt into the bottom of every received image that an AI model reconstructed from a tiny bitstream. Must never be empty; keep it short (one line over a narrow image)."
+  },
   "receivedImage_packetInfo": "Packet info",
   "receivedImage_parityRecovered": "One packet was rebuilt from the recovery packet.",
   "receivedImage_decodeTime": "Reconstructed in {ms} ms",
@@ -4231,5 +4235,60 @@
   "messageFilter_ghostIconTooltip": "Hidden by your message filter",
   "@messageFilter_ghostIconTooltip": {
     "description": "Message filter: Hidden by your message filter"
+  },
+  "appBar_offlineSubtitle": "Offline · {name}",
+  "@appBar_offlineSubtitle": {
+    "description": "App bar subtitle while no radio is connected; name is the last connected radio",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "appBar_offline": "Offline",
+  "@appBar_offline": {
+    "description": "App bar subtitle while no radio is connected and no radio name is known"
+  },
+  "appBar_reconnecting": "Reconnecting…",
+  "@appBar_reconnecting": {
+    "description": "App bar chip while the app is reconnecting to the radio"
+  },
+  "connectSheet_title": "Connect a radio",
+  "@connectSheet_title": {
+    "description": "Title of the sheet opened by the Connect button"
+  },
+  "connectSheet_reconnect": "Reconnect to {name}",
+  "@connectSheet_reconnect": {
+    "description": "Connect sheet option that reconnects to the last radio",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "connectSheet_chooseRadio": "Choose a radio",
+  "@connectSheet_chooseRadio": {
+    "description": "Connect sheet option that opens the radio scanner"
+  },
+  "connectSheet_chooseRadioSubtitle": "Bluetooth, USB or TCP",
+  "@connectSheet_chooseRadioSubtitle": {
+    "description": "Subtitle of the Choose a radio option"
+  },
+  "connectSheet_stopReconnecting": "Stop reconnecting",
+  "@connectSheet_stopReconnecting": {
+    "description": "Connect sheet option that cancels the automatic reconnect"
+  },
+  "connectSheet_reconnectFailed": "Couldn't reach {name}. Make sure it is on and nearby.",
+  "@connectSheet_reconnectFailed": {
+    "description": "Shown when reconnecting to the last radio fails",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_composerOffline": "Connect to a radio to send messages",
+  "@chat_composerOffline": {
+    "description": "Shown in place of the message box while no radio is connected"
   }
 }

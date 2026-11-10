@@ -45,7 +45,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get common_close => 'Zapri';
 
   @override
-  String get common_done => 'Done';
+  String get common_done => 'Opravljeno';
 
   @override
   String get common_edit => 'Uredi';
@@ -321,7 +321,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get scanner_disconnecting => 'Odklapljam se...';
 
   @override
-  String get scanner_notConnected => 'Nezavezan';
+  String get scanner_notConnected => 'Ni povezave';
 
   @override
   String scanner_connectedTo(String deviceName) {
@@ -332,8 +332,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get scanner_searchingDevices => 'Iskanje naprav MeshCore...';
 
   @override
-  String get scanner_tapToScan =>
-      'Nagneš na skeniranje za najdene naprave MeshCore.';
+  String get scanner_tapToScan => 'Tapnite Skeniraj za iskanje naprav MeshCore';
 
   @override
   String scanner_connectionFailed(String error) {
@@ -401,185 +400,189 @@ class AppLocalizationsSl extends AppLocalizations {
       'Obveščanja, sporoščanje in zemljevidi.';
 
   @override
-  String get settings_export => 'Export';
+  String get settings_export => 'Izvozi';
 
   @override
-  String get settings_exportSubtitle => 'Export contacts and repeaters as GPX';
+  String get settings_exportSubtitle =>
+      'Izvozi kontakte in repetitorje kot GPX';
 
   @override
-  String get backupRestore_title => 'Backup & Restore';
+  String get backupRestore_title => 'Varnostna kopija in obnovitev';
 
   @override
   String get backupRestore_subtitle =>
-      'Save or restore app data and radio settings';
+      'Shranite ali obnovite podatke aplikacije in nastavitve radia';
 
   @override
-  String get backupRestore_import => 'Import';
+  String get backupRestore_import => 'Uvozi';
 
   @override
-  String get backupRestore_selectImportFile => 'Import File';
+  String get backupRestore_selectImportFile => 'Uvozi datoteko';
 
   @override
-  String get backupRestore_password => 'Password (optional)';
+  String get backupRestore_password => 'Geslo (neobvezno)';
 
   @override
   String get backupRestore_passwordHelp =>
-      'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.';
+      'Geslo datoteko šifrira. Prazno geslo shrani navadno besedilo, ki lahko vsebuje zasebne ključe in ključe kanalov, zgodovino in poverilnice.';
 
   @override
   String get backupRestore_importUnavailable =>
-      'Check the password or choose a supported backup file.';
+      'Preverite geslo ali izberite podprto datoteko varnostne kopije.';
 
   @override
-  String get backupRestore_items => 'Backup and restore items';
+  String get backupRestore_items => 'Elementi varnostne kopije in obnovitve';
 
   @override
-  String get backupRestore_nodeSettings => 'Node Settings';
+  String get backupRestore_nodeSettings => 'Nastavitve vozlišča';
 
   @override
   String get backupRestore_nodeSettingsDescription =>
-      'Device name, private and public keys, radio settings, and regions';
+      'Ime naprave, zasebni in javni ključ, nastavitve radia in regije';
 
   @override
-  String get backupRestore_deviceName => 'Device Name';
+  String get backupRestore_deviceName => 'Ime naprave';
 
   @override
-  String get backupRestore_privateKey => 'Private Key (sensitive)';
+  String get backupRestore_privateKey => 'Zasebni ključ (občutljivo)';
 
   @override
-  String get backupRestore_publicKey => 'Public Key';
+  String get backupRestore_publicKey => 'Javni ključ';
 
   @override
-  String get backupRestore_radioSettings => 'Radio Settings';
+  String get backupRestore_radioSettings => 'Nastavitve radia';
 
   @override
-  String get backupRestore_regions => 'Regions';
+  String get backupRestore_regions => 'Regije';
 
   @override
-  String get backupRestore_location => 'Location';
+  String get backupRestore_location => 'Lokacija';
 
   @override
-  String get backupRestore_contactSettings => 'Contact Settings';
+  String get backupRestore_contactSettings => 'Nastavitve kontaktov';
 
   @override
-  String get backupRestore_privacySettings => 'Privacy Settings';
+  String get backupRestore_privacySettings => 'Nastavitve zasebnosti';
 
   @override
-  String get backupRestore_contactsData => 'Contacts';
+  String get backupRestore_contactsData => 'Kontakti';
 
   @override
-  String get backupRestore_perContactSettings => 'Contact Settings and Filters';
+  String get backupRestore_perContactSettings =>
+      'Nastavitve in filtri kontaktov';
 
   @override
-  String get backupRestore_contactGroups => 'Contact Groups';
+  String get backupRestore_contactGroups => 'Skupine kontaktov';
 
   @override
-  String get backupRestore_contactHistory => 'Contact History';
+  String get backupRestore_contactHistory => 'Zgodovina kontaktov';
 
   @override
-  String get backupRestore_channelsData => 'Channels';
+  String get backupRestore_channelsData => 'Kanali';
 
   @override
-  String get backupRestore_channelFilters => 'Message Filter Settings';
+  String get backupRestore_channelFilters => 'Nastavitve filtra sporočil';
 
   @override
-  String get backupRestore_channelSettings => 'Channel Settings';
+  String get backupRestore_channelSettings => 'Nastavitve kanalov';
 
   @override
-  String get backupRestore_communities => 'Communities';
+  String get backupRestore_communities => 'Skupnosti';
 
   @override
-  String get backupRestore_channelHistory => 'Channel History';
+  String get backupRestore_channelHistory => 'Zgodovina kanalov';
 
   @override
-  String get backupRestore_locationSettings => 'Location Settings';
+  String get backupRestore_locationSettings => 'Nastavitve lokacije';
 
   @override
   String get backupRestore_locationSettingsDescription =>
-      'Location, contact settings, and privacy settings';
+      'Lokacija, nastavitve kontaktov in zasebnosti';
 
   @override
-  String get backupRestore_appSettings => 'App Settings';
+  String get backupRestore_appSettings => 'Nastavitve aplikacije';
 
   @override
   String get backupRestore_appSettingsDescription =>
-      'App preferences and appearance settings';
+      'Nastavitve aplikacije in videza';
 
   @override
-  String get backupRestore_ipfsKey => 'IPFS API Key (sensitive)';
+  String get backupRestore_ipfsKey => 'Ključ API IPFS (občutljivo)';
 
   @override
-  String get backupRestore_stadiaMapKey => 'Stadia Maps API Key (sensitive)';
+  String get backupRestore_stadiaMapKey => 'Ključ API Stadia Maps (občutljivo)';
 
   @override
-  String get backupRestore_contacts => 'Contacts';
+  String get backupRestore_contacts => 'Kontakti';
 
   @override
   String get backupRestore_contactsDescription =>
-      'Contacts, per-contact filters and settings, groups, and message history';
+      'Kontakti, filtri in nastavitve posameznih kontaktov, skupine in zgodovina sporočil';
 
   @override
-  String get backupRestore_discoveredContacts => 'Discovered Contacts';
+  String get backupRestore_discoveredContacts => 'Odkriti kontakti';
 
   @override
   String get backupRestore_discoveredContactsDescription =>
-      'Discovered contacts and their saved details';
+      'Odkriti kontakti in njihovi shranjeni podatki';
 
   @override
-  String get backupRestore_channels => 'Channels';
+  String get backupRestore_channels => 'Kanali';
 
   @override
   String get backupRestore_channelsDescription =>
-      'Channels, channel filters, communities, and message history';
+      'Kanali, filtri kanalov, skupnosti in zgodovina sporočil';
 
   @override
-  String get backupRestore_backup => 'Create Backup';
+  String get backupRestore_backup => 'Ustvari varnostno kopijo';
 
   @override
-  String get backupRestore_restore => 'Restore Selected';
+  String get backupRestore_restore => 'Obnovi izbrano';
 
   @override
-  String get backupRestore_backupComplete => 'Backup file created.';
+  String get backupRestore_backupComplete =>
+      'Datoteka varnostne kopije je ustvarjena.';
 
   @override
   String get backupRestore_restoreComplete =>
-      'Restore complete. Reconnect if you restored the radio identity.';
+      'Obnovitev je končana. Če ste obnovili identiteto radia, se znova povežite.';
 
   @override
-  String get backupRestore_missingModelsTitle => 'Models Not Downloaded';
+  String get backupRestore_missingModelsTitle => 'Modeli niso preneseni';
 
   @override
   String backupRestore_missingModelsMessage(String models) {
-    return 'The restored settings select models that are not available on this device:\n$models\n\nDownload them now?';
+    return 'Obnovljene nastavitve izbirajo modele, ki niso na voljo v tej napravi:\n$models\n\nJih želite prenesti zdaj?';
   }
 
   @override
-  String get backupRestore_downloadModels => 'Download Models';
+  String get backupRestore_downloadModels => 'Prenesi modele';
 
   @override
-  String get backupRestore_downloading => 'Downloading…';
+  String get backupRestore_downloading => 'Prenašanje…';
 
   @override
-  String get backupRestore_cancelDownload => 'Cancel Download';
+  String get backupRestore_cancelDownload => 'Prekliči prenos';
 
   @override
   String backupRestore_failed(String error) {
-    return 'Backup operation failed: $error';
+    return 'Operacija varnostne kopije ni uspela: $error';
   }
 
   @override
   String get backupRestore_fileTooLarge =>
-      'Backup file is larger than the 100 MB limit.';
+      'Datoteka varnostne kopije presega omejitev 100 MB.';
 
   @override
-  String get backupRestore_selectAtLeastOne => 'Select at least one item.';
+  String get backupRestore_selectAtLeastOne => 'Izberite vsaj en element.';
 
   @override
-  String get backupRestore_replaceIdentityTitle => 'Replace radio identity?';
+  String get backupRestore_replaceIdentityTitle =>
+      'Zamenjati identiteto radia?';
 
   @override
   String get backupRestore_replaceIdentityMessage =>
-      'Restoring Node Settings replaces the connected radio\'s private key and changes its identity. Continue only if this is intended.';
+      'Obnovitev nastavitev vozlišča zamenja zasebni ključ povezanega radia in spremeni njegovo identiteto. Nadaljujte le, če je to namerno.';
 
   @override
   String get settings_nodeSettings => 'Nastavitev časa';
@@ -815,11 +818,11 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_actions => 'Akcije';
 
   @override
-  String get settings_deleteAllPaths => 'Delete All Paths';
+  String get settings_deleteAllPaths => 'Izbriši vse poti';
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Clear all path data from contacts.';
+      'Počisti vse podatke o poteh iz stikov.';
 
   @override
   String get settings_sendAdvertisement => 'Pošlji Oglas';
@@ -1257,7 +1260,10 @@ class AppLocalizationsSl extends AppLocalizations {
   String get appSettings_languageSl => 'Slovenščina';
 
   @override
-  String get appSettings_languagePt => 'Portugalski';
+  String get appSettings_languagePt => 'Portugalski (Brazilija)';
+
+  @override
+  String get appSettings_languagePtPt => 'Portugalski (Portugalska)';
 
   @override
   String get appSettings_languageIt => 'Italijanščina';
@@ -1811,27 +1817,27 @@ class AppLocalizationsSl extends AppLocalizations {
   String get contacts_noMembers => 'Ni članov.';
 
   @override
-  String get contacts_lastSeenNow => 'Nazadnje viden zdaj';
+  String get contacts_lastSeenNow => 'pravkar';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
-    return 'Zadnjič viden pred $minutes minutami';
+    return '~ $minutes min';
   }
 
   @override
-  String get contacts_lastSeenHourAgo => 'Zadnjič viden pred 1 uro.';
+  String get contacts_lastSeenHourAgo => '~ 1 ura';
 
   @override
   String contacts_lastSeenHoursAgo(int hours) {
-    return 'Zadnjič viden pred $hours urami';
+    return '~ $hours ur';
   }
 
   @override
-  String get contacts_lastSeenDayAgo => 'Zadnjič viden pred 1 dnem';
+  String get contacts_lastSeenDayAgo => '~ 1 dan';
 
   @override
   String contacts_lastSeenDaysAgo(int days) {
-    return 'Zadnjič viden pred $days dnem';
+    return '~ $days dni';
   }
 
   @override
@@ -2110,7 +2116,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get channels_scanQrCode => 'Skeniraj QR kodo';
 
   @override
-  String get channels_scanQrCodeComingSoon => 'Prihajajoča';
+  String get channels_scanQrCodeComingSoon => 'Kmalu';
 
   @override
   String get channels_scanQrCodeDesc =>
@@ -2145,7 +2151,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String channels_regionSetTo(String region) {
-    return 'Osebno: $region';
+    return 'Regija: $region';
   }
 
   @override
@@ -2516,7 +2522,7 @@ class AppLocalizationsSl extends AppLocalizations {
   }
 
   @override
-  String get debugFrame_textTypeCli => 'CLI (Command Line Interface)';
+  String get debugFrame_textTypeCli => 'CLI';
 
   @override
   String get debugFrame_textTypePlain => 'Preprosto';
@@ -2571,7 +2577,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get routing_modeAutoHint =>
-      'Samodejno izbere najbolj poznano pot, in sicer, ko ni na voljo nobena.';
+      'Samodejno izbere najboljšo znano pot, če je ni, uporabi flood.';
 
   @override
   String get routing_modeFloodHint =>
@@ -2641,7 +2647,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String routing_deliveryCounts(int successes, int failures) {
-    return '$successes delivered, $failures failed';
+    return '$successes dostavljenih, $failures neuspelih';
   }
 
   @override
@@ -2725,7 +2731,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String chat_hopsForced(int count) {
-    return '$count skoki (nasilje)';
+    return '$count skokov (vsiljeno)';
   }
 
   @override
@@ -2910,10 +2916,6 @@ class AppLocalizationsSl extends AppLocalizations {
   String get map_lastSeen => 'Zadnjič Zazet';
 
   @override
-  String get map_disconnectConfirm =>
-      'Ste prepričani, da želite se odklopiti s tega naprave?';
-
-  @override
   String get map_from => 'Od';
 
   @override
@@ -2926,16 +2928,16 @@ class AppLocalizationsSl extends AppLocalizations {
   String get map_type => 'Type';
 
   @override
-  String get map_path => 'Path';
+  String get map_path => 'Pot';
 
   @override
-  String get map_location => 'Location';
+  String get map_location => 'Lokacija';
 
   @override
-  String get map_estLocation => 'Est. Location';
+  String get map_estLocation => 'Ocenjena lokacija';
 
   @override
-  String get map_publicKey => 'Public Key';
+  String get map_publicKey => 'Javni ključ';
 
   @override
   String get map_publicKeyPrefixHint => 'e.g. ab12';
@@ -3445,7 +3447,7 @@ class AppLocalizationsSl extends AppLocalizations {
       'Poglej telemetrijo senzorjev in sistemsko statistiko';
 
   @override
-  String get repeater_cli => 'CLI (Command Line Interface)';
+  String get repeater_cli => 'CLI';
 
   @override
   String get repeater_cliSubtitle => 'Pošiljaj ukaze repetitorju';
@@ -3517,10 +3519,10 @@ class AppLocalizationsSl extends AppLocalizations {
   String get repeater_noiseFloor => 'Raven šuma';
 
   @override
-  String get repeater_txAirtime => 'TX Airtime';
+  String get repeater_txAirtime => 'Čas oddajanja TX';
 
   @override
-  String get repeater_rxAirtime => 'RX Airtime';
+  String get repeater_rxAirtime => 'Čas sprejemanja RX';
 
   @override
   String get repeater_chanUtil => 'Uporaba kanala';
@@ -4915,7 +4917,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get channelPath_noHopDetailsAvailable =>
-      'Niso na voljo podrobnosti o letu.';
+      'Za ta paket ni podrobnosti o skokih.';
 
   @override
   String get channelPath_unknownRepeater => 'Nepoznati ponovitelj';
@@ -5345,7 +5347,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String contacts_pathTraceTo(String name) {
-    return 'Trace route to $name';
+    return 'Sledi poti do $name';
   }
 
   @override
@@ -5409,7 +5411,7 @@ class AppLocalizationsSl extends AppLocalizations {
   }
 
   @override
-  String get contacts_zeroHopAdvert => 'Oglas brez posrednikov';
+  String get contacts_zeroHopAdvert => 'Zero-hop oglas';
 
   @override
   String get contacts_floodAdvert => 'Flood oglas';
@@ -6032,24 +6034,24 @@ class AppLocalizationsSl extends AppLocalizations {
   String get translation_systemLanguage => 'Jezik sistema';
 
   @override
-  String get background_serviceTitle => 'MeshCore running';
+  String get background_serviceTitle => 'MeshCore deluje';
 
   @override
-  String get background_serviceText => 'Keeping BLE connected';
+  String get background_serviceText => 'BLE povezava ostaja aktivna';
 
   @override
   String appSettings_translationModelDeleted(String name) {
-    return 'Deleted $name';
+    return 'Izbrisano: $name';
   }
 
   @override
   String appSettings_translationModelDeleteFailed(String error) {
-    return 'Failed to delete: $error';
+    return 'Brisanje ni uspelo: $error';
   }
 
   @override
   String channels_channelUpdateFailed(String error) {
-    return 'Failed to update channel: $error';
+    return 'Posodobitev kanala ni uspela: $error';
   }
 
   @override
@@ -6065,7 +6067,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get contact_typeSensor => 'Sensor';
 
   @override
-  String get contact_typeUnknown => 'Unknown';
+  String get contact_typeUnknown => 'Neznano';
 
   @override
   String get map_zoomIn => 'Povečaj';
@@ -6235,8 +6237,7 @@ class AppLocalizationsSl extends AppLocalizations {
       'Obrazni model še ni prenesen. Prenesite ga v Nastavitvah, da boste lahko pošiljali slike.';
 
   @override
-  String get imageSend_originalSize =>
-      'Original text:\n\nThe early bird catches the worm.\n\nTranslation:\n\nPojdi prvi, zlati v kroku.';
+  String get imageSend_originalSize => 'Izvirnik';
 
   @override
   String get imageSend_onAirSize => 'Na vodi';
@@ -6411,6 +6412,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String receivedImage_shareCaption(int bytes) {
     return 'Z umetno inteligenco rekonstruirano iz $bytes bajtov; drobni detajli so generirani, ne poslani.';
   }
+
+  @override
+  String get receivedImage_syntheticBadge => 'Rekonstruirala UI';
 
   @override
   String get receivedImage_packetInfo => 'Podatki o paketu';
@@ -7427,4 +7431,41 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get messageFilter_ghostIconTooltip =>
       'Skrito z vašim filtrom sporočil';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'Brez povezave · $name';
+  }
+
+  @override
+  String get appBar_offline => 'Brez povezave';
+
+  @override
+  String get appBar_reconnecting => 'Ponovno povezovanje…';
+
+  @override
+  String get connectSheet_title => 'Poveži radio';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return 'Ponovno poveži z $name';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => 'Izberi radio';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB ali TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => 'Ustavi ponovno povezovanje';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return 'Ni mogoče doseči $name. Preverite, ali je vklopljen in v bližini.';
+  }
+
+  @override
+  String get chat_composerOffline =>
+      'Za pošiljanje sporočil se povežite z radiem';
 }

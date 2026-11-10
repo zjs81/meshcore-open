@@ -17,7 +17,7 @@ import '../widgets/get_node_banner.dart';
 import '../widgets/mesh_ui.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../review_mode/review_mode_entry.dart';
-import 'channels_screen.dart';
+import '../utils/main_navigation.dart';
 import 'tcp_screen.dart';
 import 'usb_screen.dart';
 
@@ -56,9 +56,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
           isCurrentRoute &&
           !_changedNavigation) {
         _changedNavigation = true;
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => const ChannelsScreen()));
+        navigateToMainAfterConnect(context);
       }
     };
 
@@ -86,7 +84,14 @@ class _ScannerScreenState extends State<ScannerScreen> {
   void dispose() {
     _connector.removeListener(_connectionListener);
     unawaited(_bluetoothStateSubscription.cancel());
-    if (!_changedNavigation) {
+    // Only cancel a Bluetooth connection this screen started; a pending
+    // auto-reconnect (state disconnected) or a USB/TCP/review link is left
+    // alone, so peeking at the scanner from the main screens is harmless.
+    final state = _connector.state;
+    if (!_changedNavigation &&
+        _connector.activeTransport == MeshCoreTransportType.bluetooth &&
+        (state == MeshCoreConnectionState.connecting ||
+            state == MeshCoreConnectionState.connected)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         unawaited(_connector.disconnect(manual: true));
       });
@@ -249,16 +254,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
         subtitle: isBluetoothOff
             ? context.l10n.scanner_bluetoothOffMessage
             : null,
-        action: (isBluetoothOff || isScanning)
-            ? null
-            : FilledButton.icon(
-                onPressed: () {
-                  HapticFeedback.lightImpact();
-                  _toggleScan(connector);
-                },
-                icon: const Icon(Icons.bluetooth_searching),
-                label: Text(context.l10n.scanner_scan),
-              ),
       );
     }
 

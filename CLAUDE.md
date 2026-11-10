@@ -70,3 +70,5 @@ Android builds currently include ARM64 only and use Java 17. iOS targets 16.4. R
 ## Documentation
 
 Use the [feature index](documentation/README.md), [regions](documentation/regions.md), [image messages](documentation/image-messages.md), [message filter](documentation/message-filter.md), and [routing reference](documentation/routing-paths.md). Keep protocol details in the canonical reference rather than maintaining competing command tables.
+
+Follow the [UI design reference](documentation/design.md) for any UI work, and update it in the same change when you add or change a UI pattern.

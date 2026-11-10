@@ -45,7 +45,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get common_close => '关闭';
 
   @override
-  String get common_done => 'Done';
+  String get common_done => '完成';
 
   @override
   String get common_edit => '编辑';
@@ -378,185 +378,175 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_appSettingsSubtitle => '通知、消息和地图偏好';
 
   @override
-  String get settings_export => 'Export';
+  String get settings_export => '导出';
 
   @override
-  String get settings_exportSubtitle => 'Export contacts and repeaters as GPX';
+  String get settings_exportSubtitle => '将联系人和中继站导出为 GPX';
 
   @override
-  String get backupRestore_title => 'Backup & Restore';
+  String get backupRestore_title => '备份与恢复';
 
   @override
-  String get backupRestore_subtitle =>
-      'Save or restore app data and radio settings';
+  String get backupRestore_subtitle => '保存或恢复应用数据和无线电设置';
 
   @override
-  String get backupRestore_import => 'Import';
+  String get backupRestore_import => '导入';
 
   @override
-  String get backupRestore_selectImportFile => 'Import File';
+  String get backupRestore_selectImportFile => '导入文件';
 
   @override
-  String get backupRestore_password => 'Password (optional)';
+  String get backupRestore_password => '密码（可选）';
 
   @override
   String get backupRestore_passwordHelp =>
-      'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.';
+      '设置密码会加密文件。留空则以明文保存，可能包含私钥/频道密钥、历史记录和凭据。';
 
   @override
-  String get backupRestore_importUnavailable =>
-      'Check the password or choose a supported backup file.';
+  String get backupRestore_importUnavailable => '请检查密码，或选择受支持的备份文件。';
 
   @override
-  String get backupRestore_items => 'Backup and restore items';
+  String get backupRestore_items => '备份和恢复项目';
 
   @override
-  String get backupRestore_nodeSettings => 'Node Settings';
+  String get backupRestore_nodeSettings => '节点设置';
 
   @override
-  String get backupRestore_nodeSettingsDescription =>
-      'Device name, private and public keys, radio settings, and regions';
+  String get backupRestore_nodeSettingsDescription => '设备名称、私钥和公钥、无线电设置以及区域';
 
   @override
-  String get backupRestore_deviceName => 'Device Name';
+  String get backupRestore_deviceName => '设备名称';
 
   @override
-  String get backupRestore_privateKey => 'Private Key (sensitive)';
+  String get backupRestore_privateKey => '私钥（敏感）';
 
   @override
-  String get backupRestore_publicKey => 'Public Key';
+  String get backupRestore_publicKey => '公钥';
 
   @override
-  String get backupRestore_radioSettings => 'Radio Settings';
+  String get backupRestore_radioSettings => '无线电设置';
 
   @override
-  String get backupRestore_regions => 'Regions';
+  String get backupRestore_regions => '区域';
 
   @override
-  String get backupRestore_location => 'Location';
+  String get backupRestore_location => '位置';
 
   @override
-  String get backupRestore_contactSettings => 'Contact Settings';
+  String get backupRestore_contactSettings => '联系人设置';
 
   @override
-  String get backupRestore_privacySettings => 'Privacy Settings';
+  String get backupRestore_privacySettings => '隐私设置';
 
   @override
-  String get backupRestore_contactsData => 'Contacts';
+  String get backupRestore_contactsData => '联系人';
 
   @override
-  String get backupRestore_perContactSettings => 'Contact Settings and Filters';
+  String get backupRestore_perContactSettings => '联系人设置和过滤器';
 
   @override
-  String get backupRestore_contactGroups => 'Contact Groups';
+  String get backupRestore_contactGroups => '联系人分组';
 
   @override
-  String get backupRestore_contactHistory => 'Contact History';
+  String get backupRestore_contactHistory => '联系人历史记录';
 
   @override
-  String get backupRestore_channelsData => 'Channels';
+  String get backupRestore_channelsData => '频道';
 
   @override
-  String get backupRestore_channelFilters => 'Message Filter Settings';
+  String get backupRestore_channelFilters => '消息过滤设置';
 
   @override
-  String get backupRestore_channelSettings => 'Channel Settings';
+  String get backupRestore_channelSettings => '频道设置';
 
   @override
-  String get backupRestore_communities => 'Communities';
+  String get backupRestore_communities => '社区';
 
   @override
-  String get backupRestore_channelHistory => 'Channel History';
+  String get backupRestore_channelHistory => '频道历史记录';
 
   @override
-  String get backupRestore_locationSettings => 'Location Settings';
+  String get backupRestore_locationSettings => '位置设置';
 
   @override
-  String get backupRestore_locationSettingsDescription =>
-      'Location, contact settings, and privacy settings';
+  String get backupRestore_locationSettingsDescription => '位置、联系人设置和隐私设置';
 
   @override
-  String get backupRestore_appSettings => 'App Settings';
+  String get backupRestore_appSettings => '应用设置';
 
   @override
-  String get backupRestore_appSettingsDescription =>
-      'App preferences and appearance settings';
+  String get backupRestore_appSettingsDescription => '应用偏好和外观设置';
 
   @override
-  String get backupRestore_ipfsKey => 'IPFS API Key (sensitive)';
+  String get backupRestore_ipfsKey => 'IPFS API 密钥（敏感）';
 
   @override
-  String get backupRestore_stadiaMapKey => 'Stadia Maps API Key (sensitive)';
+  String get backupRestore_stadiaMapKey => 'Stadia Maps API 密钥（敏感）';
 
   @override
-  String get backupRestore_contacts => 'Contacts';
+  String get backupRestore_contacts => '联系人';
 
   @override
-  String get backupRestore_contactsDescription =>
-      'Contacts, per-contact filters and settings, groups, and message history';
+  String get backupRestore_contactsDescription => '联系人、每个联系人的过滤器和设置、分组以及消息历史记录';
 
   @override
-  String get backupRestore_discoveredContacts => 'Discovered Contacts';
+  String get backupRestore_discoveredContacts => '已发现的联系人';
 
   @override
-  String get backupRestore_discoveredContactsDescription =>
-      'Discovered contacts and their saved details';
+  String get backupRestore_discoveredContactsDescription => '已发现的联系人及其保存的详细信息';
 
   @override
-  String get backupRestore_channels => 'Channels';
+  String get backupRestore_channels => '频道';
 
   @override
-  String get backupRestore_channelsDescription =>
-      'Channels, channel filters, communities, and message history';
+  String get backupRestore_channelsDescription => '频道、频道过滤器、社区和消息历史记录';
 
   @override
-  String get backupRestore_backup => 'Create Backup';
+  String get backupRestore_backup => '创建备份';
 
   @override
-  String get backupRestore_restore => 'Restore Selected';
+  String get backupRestore_restore => '恢复所选项';
 
   @override
-  String get backupRestore_backupComplete => 'Backup file created.';
+  String get backupRestore_backupComplete => '备份文件已创建。';
 
   @override
-  String get backupRestore_restoreComplete =>
-      'Restore complete. Reconnect if you restored the radio identity.';
+  String get backupRestore_restoreComplete => '恢复完成。如果恢复了无线电身份，请重新连接。';
 
   @override
-  String get backupRestore_missingModelsTitle => 'Models Not Downloaded';
+  String get backupRestore_missingModelsTitle => '模型未下载';
 
   @override
   String backupRestore_missingModelsMessage(String models) {
-    return 'The restored settings select models that are not available on this device:\n$models\n\nDownload them now?';
+    return '恢复的设置所选用的模型在此设备上不可用：\n$models\n\n现在下载吗？';
   }
 
   @override
-  String get backupRestore_downloadModels => 'Download Models';
+  String get backupRestore_downloadModels => '下载模型';
 
   @override
-  String get backupRestore_downloading => 'Downloading…';
+  String get backupRestore_downloading => '正在下载…';
 
   @override
-  String get backupRestore_cancelDownload => 'Cancel Download';
+  String get backupRestore_cancelDownload => '取消下载';
 
   @override
   String backupRestore_failed(String error) {
-    return 'Backup operation failed: $error';
+    return '备份操作失败：$error';
   }
 
   @override
-  String get backupRestore_fileTooLarge =>
-      'Backup file is larger than the 100 MB limit.';
+  String get backupRestore_fileTooLarge => '备份文件超过 100 MB 的限制。';
 
   @override
-  String get backupRestore_selectAtLeastOne => 'Select at least one item.';
+  String get backupRestore_selectAtLeastOne => '请至少选择一项。';
 
   @override
-  String get backupRestore_replaceIdentityTitle => 'Replace radio identity?';
+  String get backupRestore_replaceIdentityTitle => '替换无线电身份？';
 
   @override
   String get backupRestore_replaceIdentityMessage =>
-      'Restoring Node Settings replaces the connected radio\'s private key and changes its identity. Continue only if this is intended.';
+      '恢复节点设置会替换已连接无线电的私钥并更改其身份。仅在确有此意时继续。';
 
   @override
   String get settings_nodeSettings => '节点设置';
@@ -774,11 +764,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_actions => '操作';
 
   @override
-  String get settings_deleteAllPaths => 'Delete All Paths';
+  String get settings_deleteAllPaths => '删除所有路径';
 
   @override
-  String get settings_deleteAllPathsSubtitle =>
-      'Clear all path data from contacts.';
+  String get settings_deleteAllPathsSubtitle => '清除联系人中的所有路径数据。';
 
   @override
   String get settings_sendAdvertisement => '发送广播';
@@ -1202,7 +1191,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_languageSl => '斯洛文尼亚语';
 
   @override
-  String get appSettings_languagePt => '葡萄牙语';
+  String get appSettings_languagePt => '葡萄牙语（巴西）';
+
+  @override
+  String get appSettings_languagePtPt => '葡萄牙语（葡萄牙）';
 
   @override
   String get appSettings_languageIt => '意大利语';
@@ -1722,23 +1714,23 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
-    return '最后在线 $minutes 分钟前';
+    return '约 $minutes 分钟';
   }
 
   @override
-  String get contacts_lastSeenHourAgo => '最后在线 1小时前';
+  String get contacts_lastSeenHourAgo => '约 1 小时';
 
   @override
   String contacts_lastSeenHoursAgo(int hours) {
-    return '最后在线 $hours 小时前';
+    return '约 $hours 小时';
   }
 
   @override
-  String get contacts_lastSeenDayAgo => '最后在线 1天前';
+  String get contacts_lastSeenDayAgo => '约 1 天';
 
   @override
   String contacts_lastSeenDaysAgo(int days) {
-    return '最后在线 $days 天前';
+    return '约 $days 天';
   }
 
   @override
@@ -2496,7 +2488,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String routing_deliveryCounts(int successes, int failures) {
-    return '$successes delivered, $failures failed';
+    return '已送达 $successes，失败 $failures';
   }
 
   @override
@@ -2507,7 +2499,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String pathEditor_hopCounter(int count) {
-    return '$count of 64 hops';
+    return '$count / 64 跳';
   }
 
   @override
@@ -2759,9 +2751,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get map_lastSeen => '最后在线';
 
   @override
-  String get map_disconnectConfirm => '确定要断开与此设备的连接吗？';
-
-  @override
   String get map_from => '来自';
 
   @override
@@ -2774,16 +2763,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get map_type => 'Type';
 
   @override
-  String get map_path => 'Path';
+  String get map_path => '路径';
 
   @override
-  String get map_location => 'Location';
+  String get map_location => '位置';
 
   @override
-  String get map_estLocation => 'Est. Location';
+  String get map_estLocation => '预估位置';
 
   @override
-  String get map_publicKey => 'Public Key';
+  String get map_publicKey => '公钥';
 
   @override
   String get map_publicKeyPrefixHint => 'e.g. ab12';
@@ -3572,7 +3561,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get repeater_loopDetectHelper => '创建看起来像路由环的“泛洪包”';
 
   @override
-  String get repeater_loopDetectOff => '离开';
+  String get repeater_loopDetectOff => '关闭';
 
   @override
   String get repeater_loopDetectMinimal => '最少';
@@ -5626,24 +5615,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get translation_systemLanguage => '系统语言';
 
   @override
-  String get background_serviceTitle => 'MeshCore running';
+  String get background_serviceTitle => 'MeshCore 运行中';
 
   @override
-  String get background_serviceText => 'Keeping BLE connected';
+  String get background_serviceText => '保持蓝牙连接';
 
   @override
   String appSettings_translationModelDeleted(String name) {
-    return 'Deleted $name';
+    return '已删除 $name';
   }
 
   @override
   String appSettings_translationModelDeleteFailed(String error) {
-    return 'Failed to delete: $error';
+    return '删除失败：$error';
   }
 
   @override
   String channels_channelUpdateFailed(String error) {
-    return 'Failed to update channel: $error';
+    return '更新频道失败：$error';
   }
 
   @override
@@ -5659,7 +5648,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get contact_typeSensor => 'Sensor';
 
   @override
-  String get contact_typeUnknown => 'Unknown';
+  String get contact_typeUnknown => '未知';
 
   @override
   String get map_zoomIn => '放大';
@@ -5822,7 +5811,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get imageSend_modelNotDownloaded => '图像模型尚未下载。在设置中下载后才能发送图像。';
 
   @override
-  String get imageSend_originalSize => '原文';
+  String get imageSend_originalSize => '原图';
 
   @override
   String get imageSend_onAirSize => '直播中';
@@ -5990,6 +5979,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String receivedImage_shareCaption(int bytes) {
     return '由 $bytes 字节经 AI 重建；细节为生成内容，并非传输而来。';
   }
+
+  @override
+  String get receivedImage_syntheticBadge => 'AI 重建';
 
   @override
   String get receivedImage_packetInfo => '数据包信息';
@@ -6952,4 +6944,40 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get messageFilter_ghostIconTooltip => '已被你的消息过滤隐藏';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return '离线 · $name';
+  }
+
+  @override
+  String get appBar_offline => '离线';
+
+  @override
+  String get appBar_reconnecting => '正在重新连接…';
+
+  @override
+  String get connectSheet_title => '连接无线电';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return '重新连接到 $name';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => '选择无线电';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => '蓝牙、USB 或 TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => '停止重新连接';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return '无法连接到 $name。请确保其已开机且在附近。';
+  }
+
+  @override
+  String get chat_composerOffline => '连接到无线电后才能发送消息';
 }

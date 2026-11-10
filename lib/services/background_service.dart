@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 import '../l10n/app_localizations.dart';
+import '../l10n/locale_tag.dart';
 import '../utils/platform_info.dart';
 
 class BackgroundService {
@@ -65,7 +66,7 @@ class BackgroundService {
     final supported = AppLocalizations.supportedLocales;
     final override = _languageOverrideProvider?.call();
     if (override != null && override.isNotEmpty) {
-      final overrideLocale = Locale(override);
+      final overrideLocale = localeFromTag(override);
       final isSupported = supported.any(
         (l) => l.languageCode == overrideLocale.languageCode,
       );

@@ -14,6 +14,7 @@ import '../helpers/marker_message.dart';
 import '../helpers/message_url_image_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../l10n/app_localizations.dart';
+import '../l10n/locale_tag.dart';
 import '../models/app_settings.dart';
 import '../storage/prefs_manager.dart';
 import '../utils/platform_info.dart';
@@ -44,7 +45,7 @@ class NotificationService {
     try {
       PrefsManager.instance.setString(
         notificationLanguagePrefsKey,
-        locale.languageCode,
+        localeTag(locale),
       );
     } catch (_) {}
   }
