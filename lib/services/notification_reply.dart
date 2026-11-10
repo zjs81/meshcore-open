@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/app_localizations.dart';
+import '../l10n/locale_tag.dart';
 
 /// Name under which the main isolate registers the port that receives
 /// notification actions from the plugin's background isolate.
@@ -188,7 +189,7 @@ Future<AppLocalizations> _backgroundLocalizations() async {
     );
   } catch (_) {}
   for (final locale in [
-    if (code != null) Locale(code),
+    if (code != null) localeFromTag(code),
     PlatformDispatcher.instance.locale,
   ]) {
     try {

@@ -13,6 +13,7 @@ import '../services/app_settings_service.dart';
 import '../services/repeater_command_service.dart';
 import '../services/storage_service.dart';
 import '../theme/mesh_theme.dart';
+import '../widgets/mesh_nav_tile.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/radio_disconnected_banner.dart';
 import '../widgets/routing_sheet.dart';
@@ -895,83 +896,85 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
                 )
               : null,
         ),
-        body: SafeArea(
-          top: false,
-          child: _isLoading && _controller('name').text.isEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : ListView(
-                  padding: const EdgeInsets.only(bottom: 32),
-                  children: [
-                    const RadioDisconnectedBanner(),
-                    // Keep this slot when the hint hides: shifting the cards
-                    // below would hand their state (e.g. an expanded
-                    // Advanced card) to the wrong card.
-                    if (_loadedKeys.isEmpty && !_loadingAll)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: MeshCard(
-                          // The button sits under the message so neither is
-                          // squeezed on narrow screens or large text.
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Row(
-                                children: [
-                                  const Icon(Icons.info_outline, size: 20),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text(
-                                      context.l10n.repeater_settingsNotLoaded,
+        body: MeshSettingsTileTheme(
+          child: SafeArea(
+            top: false,
+            child: _isLoading && _controller('name').text.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : ListView(
+                    padding: const EdgeInsets.only(bottom: 32),
+                    children: [
+                      const RadioDisconnectedBanner(),
+                      // Keep this slot when the hint hides: shifting the cards
+                      // below would hand their state (e.g. an expanded
+                      // Advanced card) to the wrong card.
+                      if (_loadedKeys.isEmpty && !_loadingAll)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: MeshCard(
+                            // The button sits under the message so neither is
+                            // squeezed on narrow screens or large text.
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.info_outline, size: 20),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        context.l10n.repeater_settingsNotLoaded,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              TextButton(
-                                onPressed: _isLoading || !connected
-                                    ? null
-                                    : _refreshAll,
-                                child: Text(context.l10n.repeater_refreshAll),
-                              ),
-                            ],
+                                  ],
+                                ),
+                                TextButton(
+                                  onPressed: _isLoading || !connected
+                                      ? null
+                                      : _refreshAll,
+                                  child: Text(context.l10n.repeater_refreshAll),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      )
-                    else
-                      const SizedBox.shrink(),
-                    _buildSectionCard(
-                      l10n.repeater_basicSettings,
-                      RepeaterSettingSection.basic,
-                      extra: _buildPasswordFields(),
-                    ),
-                    _buildRadioSettingsCard(),
-                    _buildSectionCard(
-                      l10n.repeater_locationSettings,
-                      RepeaterSettingSection.location,
-                    ),
-                    _buildSectionCard(
-                      l10n.repeater_features,
-                      RepeaterSettingSection.features,
-                      extra: [_buildClockSyncToggle()],
-                    ),
-                    _buildSectionCard(
-                      l10n.repeater_networkHealth,
-                      RepeaterSettingSection.networkHealth,
-                    ),
-                    _buildSectionCard(
-                      l10n.repeater_advertisementSettings,
-                      RepeaterSettingSection.advertisement,
-                    ),
-                    _buildSectionCard(
-                      l10n.repeater_ownerInfo,
-                      RepeaterSettingSection.ownerInfo,
-                    ),
-                    _buildActionsCard(),
-                    _buildAdvancedCard(),
-                    _buildKeysCard(),
-                    const SizedBox(height: 16),
-                    _buildDangerZoneCard(),
-                  ],
-                ),
+                        )
+                      else
+                        const SizedBox.shrink(),
+                      _buildSectionCard(
+                        l10n.repeater_basicSettings,
+                        RepeaterSettingSection.basic,
+                        extra: _buildPasswordFields(),
+                      ),
+                      _buildRadioSettingsCard(),
+                      _buildSectionCard(
+                        l10n.repeater_locationSettings,
+                        RepeaterSettingSection.location,
+                      ),
+                      _buildSectionCard(
+                        l10n.repeater_features,
+                        RepeaterSettingSection.features,
+                        extra: [_buildClockSyncToggle()],
+                      ),
+                      _buildSectionCard(
+                        l10n.repeater_networkHealth,
+                        RepeaterSettingSection.networkHealth,
+                      ),
+                      _buildSectionCard(
+                        l10n.repeater_advertisementSettings,
+                        RepeaterSettingSection.advertisement,
+                      ),
+                      _buildSectionCard(
+                        l10n.repeater_ownerInfo,
+                        RepeaterSettingSection.ownerInfo,
+                      ),
+                      _buildActionsCard(),
+                      _buildAdvancedCard(),
+                      _buildKeysCard(),
+                      const SizedBox(height: 16),
+                      _buildDangerZoneCard(),
+                    ],
+                  ),
+          ),
         ),
       ),
     );
@@ -1115,22 +1118,36 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
           );
   }
 
+  /// Dims a control whose remote value has not been fetched (or set) yet,
+  /// so a placeholder position is not mistaken for the repeater's value.
+  /// The control stays usable: setting it makes the value known.
+  Widget _dimIfUnknown(String key, Widget child) {
+    return AnimatedOpacity(
+      opacity: _known(key) ? 1 : 0.6,
+      duration: const Duration(milliseconds: 150),
+      child: child,
+    );
+  }
+
   Widget _buildToggleControl(RepeaterSettingSpec spec) {
     final l10n = context.l10n;
     final helper = spec.helper?.call(l10n);
     return Row(
       children: [
         Expanded(
-          child: SwitchListTile(
-            title: Text(spec.label(l10n)),
-            subtitle: helper == null ? null : Text(helper),
-            // An unknown setting shows as off until fetched or set.
-            value: _known(spec.key) && _values[spec.key] == true,
-            onChanged: (value) {
-              setState(() => _values[spec.key] = value);
-              _markChanged(spec.key);
-            },
-            contentPadding: EdgeInsets.zero,
+          child: _dimIfUnknown(
+            spec.key,
+            SwitchListTile(
+              title: Text(spec.label(l10n)),
+              subtitle: helper == null ? null : Text(helper),
+              // An unknown setting shows as off until fetched or set.
+              value: _known(spec.key) && _values[spec.key] == true,
+              onChanged: (value) {
+                setState(() => _values[spec.key] = value);
+                _markChanged(spec.key);
+              },
+              contentPadding: EdgeInsets.zero,
+            ),
           ),
         ),
         _buildSpecRefreshButton(spec),
@@ -1191,29 +1208,32 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
       children: [
         Row(
           children: [
-            Expanded(child: title),
+            Expanded(child: _dimIfUnknown(key, title)),
             _buildSpecRefreshButton(spec),
           ],
         ),
-        Slider(
-          value: (value ?? lo).clamp(lo, hi).toDouble(),
-          min: lo.toDouble(),
-          max: hi.toDouble(),
-          divisions: divisions,
-          label: value == null ? null : display,
-          onChanged: canDisable && (value == null || isOff)
-              ? null
-              : (v) {
-                  // Snap to the step, counting from the low end.
-                  final snapped =
-                      lo + ((v - lo) / spec.step).floor() * spec.step;
-                  setState(
-                    () => _values[key] = spec.isInteger
-                        ? snapped.round()
-                        : snapped,
-                  );
-                  _markChanged(key);
-                },
+        _dimIfUnknown(
+          key,
+          Slider(
+            value: (value ?? lo).clamp(lo, hi).toDouble(),
+            min: lo.toDouble(),
+            max: hi.toDouble(),
+            divisions: divisions,
+            label: value == null ? null : display,
+            onChanged: canDisable && (value == null || isOff)
+                ? null
+                : (v) {
+                    // Snap to the step, counting from the low end.
+                    final snapped =
+                        lo + ((v - lo) / spec.step).floor() * spec.step;
+                    setState(
+                      () => _values[key] = spec.isInteger
+                          ? snapped.round()
+                          : snapped,
+                    );
+                    _markChanged(key);
+                  },
+          ),
         ),
       ],
     );

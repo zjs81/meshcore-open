@@ -10,6 +10,8 @@ import '../models/contact.dart';
 import '../models/path_history.dart';
 import '../screens/path_trace_map.dart';
 import '../services/path_history_service.dart';
+import '../utils/radio_guard.dart';
+import 'mesh_ui.dart';
 import 'path_editor_sheet.dart';
 
 enum _RoutingMode { auto, flood, direct, manual }
@@ -448,7 +450,11 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
                   TextButton.icon(
                     icon: const Icon(Icons.restart_alt, size: 18),
                     label: Text(l10n.routing_forgetPath),
-                    onPressed: () => _forgetPath(connector, contact),
+                    // Resets the path on the radio; offline it would do
+                    // nothing yet report success.
+                    onPressed: isRadioReadOnly(connector)
+                        ? null
+                        : () => _forgetPath(connector, contact),
                   ),
               ],
             ),
@@ -733,10 +739,7 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
                 ) => ButtonSegment(
                   value: value,
                   icon: showIcons ? Icon(icon) : null,
-                  label: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(label, maxLines: 1, softWrap: false),
-                  ),
+                  label: MeshSegmentLabel(label),
                 );
                 return SegmentedButton<_RoutingMode>(
                   showSelectedIcon: false,

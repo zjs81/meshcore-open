@@ -6,7 +6,9 @@ import '../helpers/gif_helper.dart';
 import '../l10n/l10n.dart';
 import '../services/app_settings_service.dart';
 import '../theme/mesh_theme.dart';
+import '../utils/radio_guard.dart';
 import 'byte_count_input.dart';
+import 'connect_sheet.dart';
 import 'gif_message.dart';
 import 'gif_picker.dart';
 import 'mesh_ui.dart';
@@ -116,13 +118,7 @@ class ChatComposer extends StatelessWidget {
         for (final action in actions)
           PopupMenuItem(
             value: action.id,
-            child: Row(
-              children: [
-                Icon(action.icon),
-                const SizedBox(width: 12),
-                Flexible(child: Text(action.label)),
-              ],
-            ),
+            child: MeshMenuItemRow(icon: action.icon, label: action.label),
           ),
       ],
     );
@@ -133,6 +129,9 @@ class ChatComposer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    // Offline the chat is read-only. The draft stays in [controller] (owned
+    // by the screen) and is back when the radio reconnects.
+    if (context.radioReadOnly) return const OfflineComposerBar();
     final translation = context
         .select<AppSettingsService, (bool, bool, String?)>(
           (s) => (
@@ -285,6 +284,73 @@ class ChatComposer extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
           vertical: 12,
+        ),
+      ),
+    );
+  }
+}
+
+/// Stands in for the composer while no radio is connected.
+class OfflineComposerBar extends StatelessWidget {
+  const OfflineComposerBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLow,
+        border: Border(top: BorderSide(color: scheme.outlineVariant, width: 1)),
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 12, 10),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final message = Row(
+                children: [
+                  Icon(
+                    Icons.cloud_off,
+                    color: scheme.onSurfaceVariant,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      context.l10n.chat_composerOffline,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyLarge?.copyWith(color: scheme.onSurface),
+                    ),
+                  ),
+                ],
+              );
+              // Side by side when there is room; otherwise the button goes
+              // under the message so large text never squeezes it.
+              final roomy =
+                  constraints.maxWidth /
+                      MediaQuery.textScalerOf(context).scale(1) >=
+                  420;
+              if (roomy) {
+                return Row(
+                  children: [
+                    Expanded(child: message),
+                    const SizedBox(width: 8),
+                    const ConnectButton(),
+                  ],
+                );
+              }
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  message,
+                  const SizedBox(height: 8),
+                  const ConnectButton(),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

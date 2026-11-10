@@ -401,185 +401,188 @@ class AppLocalizationsUk extends AppLocalizations {
       'Сповіщення, повідомлення та налаштування карти';
 
   @override
-  String get settings_export => 'Export';
+  String get settings_export => 'Експорт';
 
   @override
-  String get settings_exportSubtitle => 'Export contacts and repeaters as GPX';
+  String get settings_exportSubtitle => 'Експорт контактів і репітерів у GPX';
 
   @override
-  String get backupRestore_title => 'Backup & Restore';
+  String get backupRestore_title => 'Резервне копіювання';
 
   @override
   String get backupRestore_subtitle =>
-      'Save or restore app data and radio settings';
+      'Збереження та відновлення даних застосунку й налаштувань радіо';
 
   @override
-  String get backupRestore_import => 'Import';
+  String get backupRestore_import => 'Імпорт';
 
   @override
-  String get backupRestore_selectImportFile => 'Import File';
+  String get backupRestore_selectImportFile => 'Імпорт файлу';
 
   @override
-  String get backupRestore_password => 'Password (optional)';
+  String get backupRestore_password => 'Пароль (необов\'язково)';
 
   @override
   String get backupRestore_passwordHelp =>
-      'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.';
+      'Пароль шифрує файл. Без пароля файл зберігається відкритим текстом і може містити приватні ключі й ключі каналів, історію та облікові дані.';
 
   @override
   String get backupRestore_importUnavailable =>
-      'Check the password or choose a supported backup file.';
+      'Перевірте пароль або виберіть підтримуваний файл резервної копії.';
 
   @override
-  String get backupRestore_items => 'Backup and restore items';
+  String get backupRestore_items => 'Елементи резервної копії та відновлення';
 
   @override
-  String get backupRestore_nodeSettings => 'Node Settings';
+  String get backupRestore_nodeSettings => 'Налаштування вузла';
 
   @override
   String get backupRestore_nodeSettingsDescription =>
-      'Device name, private and public keys, radio settings, and regions';
+      'Назва пристрою, приватний і публічний ключі, налаштування радіо та регіони';
 
   @override
-  String get backupRestore_deviceName => 'Device Name';
+  String get backupRestore_deviceName => 'Назва пристрою';
 
   @override
-  String get backupRestore_privateKey => 'Private Key (sensitive)';
+  String get backupRestore_privateKey => 'Приватний ключ (секретний)';
 
   @override
-  String get backupRestore_publicKey => 'Public Key';
+  String get backupRestore_publicKey => 'Публічний ключ';
 
   @override
-  String get backupRestore_radioSettings => 'Radio Settings';
+  String get backupRestore_radioSettings => 'Налаштування радіо';
 
   @override
-  String get backupRestore_regions => 'Regions';
+  String get backupRestore_regions => 'Регіони';
 
   @override
-  String get backupRestore_location => 'Location';
+  String get backupRestore_location => 'Місцезнаходження';
 
   @override
-  String get backupRestore_contactSettings => 'Contact Settings';
+  String get backupRestore_contactSettings => 'Налаштування контактів';
 
   @override
-  String get backupRestore_privacySettings => 'Privacy Settings';
+  String get backupRestore_privacySettings => 'Налаштування приватності';
 
   @override
-  String get backupRestore_contactsData => 'Contacts';
+  String get backupRestore_contactsData => 'Контакти';
 
   @override
-  String get backupRestore_perContactSettings => 'Contact Settings and Filters';
+  String get backupRestore_perContactSettings =>
+      'Налаштування й фільтри контактів';
 
   @override
-  String get backupRestore_contactGroups => 'Contact Groups';
+  String get backupRestore_contactGroups => 'Групи контактів';
 
   @override
-  String get backupRestore_contactHistory => 'Contact History';
+  String get backupRestore_contactHistory => 'Історія контактів';
 
   @override
-  String get backupRestore_channelsData => 'Channels';
+  String get backupRestore_channelsData => 'Канали';
 
   @override
-  String get backupRestore_channelFilters => 'Message Filter Settings';
+  String get backupRestore_channelFilters => 'Налаштування фільтра повідомлень';
 
   @override
-  String get backupRestore_channelSettings => 'Channel Settings';
+  String get backupRestore_channelSettings => 'Налаштування каналів';
 
   @override
-  String get backupRestore_communities => 'Communities';
+  String get backupRestore_communities => 'Спільноти';
 
   @override
-  String get backupRestore_channelHistory => 'Channel History';
+  String get backupRestore_channelHistory => 'Історія каналів';
 
   @override
-  String get backupRestore_locationSettings => 'Location Settings';
+  String get backupRestore_locationSettings => 'Налаштування місцезнаходження';
 
   @override
   String get backupRestore_locationSettingsDescription =>
-      'Location, contact settings, and privacy settings';
+      'Місцезнаходження, налаштування контактів і приватності';
 
   @override
-  String get backupRestore_appSettings => 'App Settings';
+  String get backupRestore_appSettings => 'Налаштування застосунку';
 
   @override
   String get backupRestore_appSettingsDescription =>
-      'App preferences and appearance settings';
+      'Параметри застосунку та зовнішнього вигляду';
 
   @override
-  String get backupRestore_ipfsKey => 'IPFS API Key (sensitive)';
+  String get backupRestore_ipfsKey => 'Ключ API IPFS (секретний)';
 
   @override
-  String get backupRestore_stadiaMapKey => 'Stadia Maps API Key (sensitive)';
+  String get backupRestore_stadiaMapKey => 'Ключ API Stadia Maps (секретний)';
 
   @override
-  String get backupRestore_contacts => 'Contacts';
+  String get backupRestore_contacts => 'Контакти';
 
   @override
   String get backupRestore_contactsDescription =>
-      'Contacts, per-contact filters and settings, groups, and message history';
+      'Контакти, фільтри й налаштування по контактах, групи та історія повідомлень';
 
   @override
-  String get backupRestore_discoveredContacts => 'Discovered Contacts';
+  String get backupRestore_discoveredContacts => 'Виявлені контакти';
 
   @override
   String get backupRestore_discoveredContactsDescription =>
-      'Discovered contacts and their saved details';
+      'Виявлені контакти та їхні збережені дані';
 
   @override
-  String get backupRestore_channels => 'Channels';
+  String get backupRestore_channels => 'Канали';
 
   @override
   String get backupRestore_channelsDescription =>
-      'Channels, channel filters, communities, and message history';
+      'Канали, фільтри каналів, спільноти та історія повідомлень';
 
   @override
-  String get backupRestore_backup => 'Create Backup';
+  String get backupRestore_backup => 'Створити резервну копію';
 
   @override
-  String get backupRestore_restore => 'Restore Selected';
+  String get backupRestore_restore => 'Відновити вибране';
 
   @override
-  String get backupRestore_backupComplete => 'Backup file created.';
+  String get backupRestore_backupComplete => 'Файл резервної копії створено.';
 
   @override
   String get backupRestore_restoreComplete =>
-      'Restore complete. Reconnect if you restored the radio identity.';
+      'Відновлення завершено. Перепідключіться, якщо ви відновили ідентифікатор радіо.';
 
   @override
-  String get backupRestore_missingModelsTitle => 'Models Not Downloaded';
+  String get backupRestore_missingModelsTitle => 'Моделі не завантажено';
 
   @override
   String backupRestore_missingModelsMessage(String models) {
-    return 'The restored settings select models that are not available on this device:\n$models\n\nDownload them now?';
+    return 'Відновлені налаштування вибирають моделі, яких немає на цьому пристрої:\n$models\n\nЗавантажити їх зараз?';
   }
 
   @override
-  String get backupRestore_downloadModels => 'Download Models';
+  String get backupRestore_downloadModels => 'Завантажити моделі';
 
   @override
-  String get backupRestore_downloading => 'Downloading…';
+  String get backupRestore_downloading => 'Завантаження…';
 
   @override
-  String get backupRestore_cancelDownload => 'Cancel Download';
+  String get backupRestore_cancelDownload => 'Скасувати завантаження';
 
   @override
   String backupRestore_failed(String error) {
-    return 'Backup operation failed: $error';
+    return 'Помилка резервного копіювання: $error';
   }
 
   @override
   String get backupRestore_fileTooLarge =>
-      'Backup file is larger than the 100 MB limit.';
+      'Файл резервної копії перевищує ліміт 100 МБ.';
 
   @override
-  String get backupRestore_selectAtLeastOne => 'Select at least one item.';
+  String get backupRestore_selectAtLeastOne =>
+      'Виберіть принаймні один елемент.';
 
   @override
-  String get backupRestore_replaceIdentityTitle => 'Replace radio identity?';
+  String get backupRestore_replaceIdentityTitle =>
+      'Замінити ідентифікатор радіо?';
 
   @override
   String get backupRestore_replaceIdentityMessage =>
-      'Restoring Node Settings replaces the connected radio\'s private key and changes its identity. Continue only if this is intended.';
+      'Відновлення налаштувань вузла замінює приватний ключ підключеного радіо та змінює його ідентифікатор. Продовжуйте, лише якщо це навмисно.';
 
   @override
   String get settings_nodeSettings => 'Налаштування вузла';
@@ -650,7 +653,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get settings_regionRadioDefaultSubtitle =>
-      'Зберігається на радіо. Його використовують flood-розсилки без регіону — із цього та будь-якого іншого застосунку, підключеного до радіо.';
+      'Зберігається на радіо. Його використовують Flood-розсилки без регіону — із цього та будь-якого іншого застосунку, підключеного до радіо.';
 
   @override
   String get settings_regionRadioDefaultUpdated =>
@@ -794,11 +797,11 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get settings_autoZeroHopAdvertOnGpsUpdate =>
-      'Автооголошення без хопів при оновленні GPS';
+      'Авто Zero Hop оголошення при оновленні GPS';
 
   @override
   String get settings_autoZeroHopAdvertOnGpsUpdateSubtitle =>
-      'Коли GPS-локація змінюється, надсилати оголошення без хопів (потрібна геопозиція в оголошенні).';
+      'Коли GPS-локація змінюється, надсилати Zero Hop оголошення (потрібна геопозиція в оголошенні).';
 
   @override
   String get settings_multiAck => 'Багато підтверджень';
@@ -1260,7 +1263,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get appSettings_languageSl => 'Словенська';
 
   @override
-  String get appSettings_languagePt => 'Португальська';
+  String get appSettings_languagePt => 'Португальська (Бразилія)';
+
+  @override
+  String get appSettings_languagePtPt => 'Португальська (Португалія)';
 
   @override
   String get appSettings_languageIt => 'Італійська';
@@ -1303,7 +1309,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get settings_pathHashModeHelper =>
-      'Розмір кожного ідентифікатора вузла, який записується в шлях flood-пакетів, які надсилає це радіо: 1 байт (256 ідентифікаторів, до 64 переходів), 2 байти (65 тис. ідентифікаторів, до 32 переходів), 3 байти (16 млн ідентифікаторів, до 21 переходу). Більші ідентифікатори зменшують кількість зіткнень, але ретранслятори з прошивкою старішою за v1.14 відкидають пакети з 2- або 3-байтовими ідентифікаторами.';
+      'Розмір кожного ідентифікатора вузла, який записується в шлях Flood-пакетів, які надсилає це радіо: 1 байт (256 ідентифікаторів, до 64 переходів), 2 байти (65 тис. ідентифікаторів, до 32 переходів), 3 байти (16 млн ідентифікаторів, до 21 переходу). Більші ідентифікатори зменшують кількість зіткнень, але ретранслятори з прошивкою старішою за v1.14 відкидають пакети з 2- або 3-байтовими ідентифікаторами.';
 
   @override
   String settings_requiresFirmware(String version) {
@@ -1439,7 +1445,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Чергувати найкращі шляхи та режим «через всю мережу» (flood)';
+      'Чергувати найкращі шляхи та режим Flood';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1815,27 +1821,27 @@ class AppLocalizationsUk extends AppLocalizations {
   String get contacts_noMembers => 'Немає учасників';
 
   @override
-  String get contacts_lastSeenNow => 'В мережі';
+  String get contacts_lastSeenNow => 'нещодавно';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
-    return 'В мережі $minutes хв. тому';
+    return '~ $minutes хв.';
   }
 
   @override
-  String get contacts_lastSeenHourAgo => 'В мережі 1 годину тому';
+  String get contacts_lastSeenHourAgo => '~ 1 год.';
 
   @override
   String contacts_lastSeenHoursAgo(int hours) {
-    return 'В мережі $hours год. тому';
+    return '~ $hours год.';
   }
 
   @override
-  String get contacts_lastSeenDayAgo => 'В мережі 1 день тому';
+  String get contacts_lastSeenDayAgo => '~ 1 дн.';
 
   @override
   String contacts_lastSeenDaysAgo(int days) {
-    return 'В мережі $days дн. тому';
+    return '~ $days дн.';
   }
 
   @override
@@ -2168,7 +2174,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String channels_regionRadioDefaultApplies(String region) {
-    return 'Це радіо надсилає flood без регіону у свій типовий регіон: $region.';
+    return 'Це радіо надсилає Flood без регіону у свій типовий регіон: $region.';
   }
 
   @override
@@ -2567,7 +2573,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get routing_modeAuto => 'Авто';
 
   @override
-  String get routing_modeFlood => 'Через всю мережу';
+  String get routing_modeFlood => 'Flood';
 
   @override
   String get routing_modeManual => 'Вручну';
@@ -2577,7 +2583,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get routing_modeAutoHint =>
-      'Автоматично обирає найкращий відомий шлях, а за відсутності відомого шляху використовує режим «через всю мережу» (flood).';
+      'Автоматично обирає найкращий відомий шлях, а за відсутності відомого шляху використовує режим Flood.';
 
   @override
   String get routing_modeFloodHint =>
@@ -2634,7 +2640,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get routing_qualityWorked => 'Доставлено';
 
   @override
-  String get routing_qualityFlood => 'Отримано через всю мережу (flood)';
+  String get routing_qualityFlood => 'Отримано через Flood';
 
   @override
   String get routing_qualityUntested => 'Не протестовано';
@@ -2653,7 +2659,7 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get routing_floodDelivery => 'Доставка через всю мережу (flood)';
+  String get routing_floodDelivery => 'Доставка через Flood';
 
   @override
   String get pathEditor_title => 'Створити маршрут';
@@ -2728,7 +2734,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get chat_compressOutgoingMessages => 'Стискати вихідні повідомлення';
 
   @override
-  String get chat_floodForced => 'Через всю мережу (примусово)';
+  String get chat_floodForced => 'Flood (примусово)';
 
   @override
   String get chat_directForced => 'Напряму (примусово)';
@@ -2739,7 +2745,7 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get chat_floodAuto => 'Через всю мережу (авто)';
+  String get chat_floodAuto => 'Flood (авто)';
 
   @override
   String get chat_direct => 'Напряму';
@@ -2917,10 +2923,6 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get map_lastSeen => 'Останній раз бачили';
-
-  @override
-  String get map_disconnectConfirm =>
-      'Ви впевнені, що хочете відключитись від цього пристрою?';
 
   @override
   String get map_from => 'Від';
@@ -3375,7 +3377,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get login_autoUseSavedPath => 'Авто (збережений шлях)';
 
   @override
-  String get login_forceFloodMode => 'Примусово через всю мережу';
+  String get login_forceFloodMode => 'Примусовий режим Flood';
 
   @override
   String get login_managePaths => 'Керувати шляхами';
@@ -3563,17 +3565,17 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String repeater_packetTxTotal(int total, String flood, String direct) {
-    return 'Всього: $total, Через всю мережу: $flood, Прямі: $direct';
+    return 'Всього: $total, Flood: $flood, Прямі: $direct';
   }
 
   @override
   String repeater_packetRxTotal(int total, String flood, String direct) {
-    return 'Всього: $total, Через всю мережу: $flood, Прямі: $direct';
+    return 'Всього: $total, Flood: $flood, Прямі: $direct';
   }
 
   @override
   String repeater_duplicatesFloodDirect(String flood, String direct) {
-    return 'Через всю мережу: $flood, Прямі: $direct';
+    return 'Flood: $flood, Прямі: $direct';
   }
 
   @override
@@ -3685,8 +3687,7 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get repeater_floodAdvertInterval =>
-      'Інтервал оголошень через всю мережу (flood)';
+  String get repeater_floodAdvertInterval => 'Інтервал Flood-оголошень';
 
   @override
   String repeater_floodAdvertIntervalHours(int hours) {
@@ -3776,7 +3777,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_loopDetectHelper =>
-      'Відкидати flood-пакети, схожі на петлі маршрутизації';
+      'Відкидати Flood-пакети, схожі на петлі маршрутизації';
 
   @override
   String get repeater_loopDetectOff => 'Вимкнено';
@@ -3810,12 +3811,11 @@ class AppLocalizationsUk extends AppLocalizations {
       'Публічні метадані для цього ретранслятора';
 
   @override
-  String get repeater_floodMax =>
-      'Максимальна кількість переходів під час поширення через всю мережу (flood)';
+  String get repeater_floodMax => 'Макс. кількість переходів Flood';
 
   @override
   String get repeater_floodMaxHelper =>
-      'Максимальна кількість переходів, яку може пройти flood-пакет (0-64)';
+      'Максимальна кількість переходів, яку може пройти Flood-пакет (0-64)';
 
   @override
   String get repeater_advancedSettings => 'Додатково';
@@ -3867,18 +3867,18 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get repeater_txDelay => 'Затримка TX для flood';
+  String get repeater_txDelay => 'Затримка TX для Flood';
 
   @override
   String get repeater_txDelayHelper =>
-      'Затримка повторного надсилання для трафіку через всю мережу (flood), як множник від часу передачі пакета (0-2, за замовчуванням 0,5). Чим вище значення, тим менше конфліктів, але повільніше передавання.';
+      'Затримка повторного надсилання для Flood-трафіку, як множник від часу передачі пакета (0-2, за замовчуванням 0,5). Чим вище значення, тим менше конфліктів, але повільніше передавання.';
 
   @override
   String get repeater_directTxDelay => 'Затримка прямої передачі TX';
 
   @override
   String get repeater_directTxDelayHelper =>
-      'Інтервал між повторними передачами для прямого (не flood) трафіку, як множник часу передачі пакета в ефірі (0-2, за замовчуванням 0,3).';
+      'Інтервал між повторними передачами для прямого (не Flood) трафіку, як множник часу передачі пакета в ефірі (0-2, за замовчуванням 0,3).';
 
   @override
   String get repeater_intThresh => 'Порогове значення перешкод';
@@ -3898,20 +3898,17 @@ class AppLocalizationsUk extends AppLocalizations {
   String get repeater_actionsTitle => 'Дії';
 
   @override
-  String get repeater_sendAdvert =>
-      'Надіслати оголошення через всю мережу (flood)';
+  String get repeater_sendAdvert => 'Надіслати Flood-оголошення';
 
   @override
-  String get repeater_sendAdvertSubtitle =>
-      'Розповсюдити оголошення через всю мережу (flood).';
+  String get repeater_sendAdvertSubtitle => 'Розповсюдити Flood-оголошення.';
 
   @override
-  String get repeater_sendAdvertZeroHop =>
-      'Надіслати оголошення без ретрансляції';
+  String get repeater_sendAdvertZeroHop => 'Надіслати Zero Hop оголошення';
 
   @override
   String get repeater_sendAdvertZeroHopSubtitle =>
-      'Розповсюдити оголошення лише на один перехід (без ретрансляторів)';
+      'Оголошення лише безпосереднім сусідам (без ретрансляторів)';
 
   @override
   String get repeater_clockSync => 'Синхронізувати годинник зараз';
@@ -4077,7 +4074,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetFloodMax =>
-      'Встановлює максимальну кількість переходів для вхідних пакетів flood (якщо >= max, пакет не пересилається).';
+      'Встановлює максимальну кількість переходів для вхідних пакетів Flood (якщо >= max, пакет не пересилається).';
 
   @override
   String get repeater_cliHelpSetIntThresh =>
@@ -4097,7 +4094,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetFloodAdvertInterval =>
-      'Встановлює інтервал таймера в годинах для надсилання пакету оголошення через всю мережу. Встановіть 0 для вимкнення.';
+      'Встановлює інтервал таймера в годинах для надсилання Flood-оголошень. Встановіть 0 для вимкнення.';
 
   @override
   String get repeater_cliHelpSetGuestPassword =>
@@ -4124,7 +4121,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetTxDelay =>
-      'Встановлює множник для часу роботи в режимі «через всю мережу» (flood) для пакету та системи випадкових слотів, щоб затримати його відправку (для зменшення ймовірності колізій).';
+      'Встановлює множник для часу в ефірі Flood-пакету та систему випадкових слотів, щоб затримати його відправку (для зменшення ймовірності колізій).';
 
   @override
   String get repeater_cliHelpSetDirectTxDelay =>
@@ -4187,7 +4184,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_cliHelpRegion =>
-      '(тільки серійний) Перелічує всі визначені регіони та поточні дозволи на оголошення «через всю мережу» (flood).';
+      '(тільки серійний) Перелічує всі визначені регіони та поточні дозволи Flood.';
 
   @override
   String get repeater_cliHelpRegionLoad =>
@@ -4207,11 +4204,11 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_cliHelpRegionAllowf =>
-      'Встановлює дозвіл «Flood» для заданого регіону. (\'*\' для глобальної/успадкованої області)';
+      'Встановлює дозвіл «F»lood для заданого регіону. (\'*\' для глобальної/успадкованої області)';
 
   @override
   String get repeater_cliHelpRegionDenyf =>
-      'Видаляє дозвіл «Flood» для заданого регіону. (ПРИМІТКА: на даному етапі не рекомендується використовувати для глобальної/успадкованої області!! )';
+      'Видаляє дозвіл «F»lood для заданого регіону. (ПРИМІТКА: на даному етапі не рекомендується використовувати для глобальної/успадкованої області!! )';
 
   @override
   String get repeater_cliHelpRegionHome =>
@@ -4274,7 +4271,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_cliRegionLoadActive =>
-      'Режим завантаження регіонів: надсилайте по одному імені регіону в рядку, з відступом пробілами під батьківським регіоном (додайте F після імені, щоб дозволити поширення через всю мережу). Рядки не отримують відповіді. Надішліть порожній рядок, щоб завершити, а потім \"region save\", щоб зберегти результат.';
+      'Режим завантаження регіонів: надсилайте по одному імені регіону в рядку, з відступом пробілами під батьківським регіоном (додайте F після імені, щоб дозволити поширення Flood). Рядки не отримують відповіді. Надішліть порожній рядок, щоб завершити, а потім \"region save\", щоб зберегти результат.';
 
   @override
   String get repeater_cliRegionLoadHint =>
@@ -4289,19 +4286,19 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetFloodMaxUnscoped =>
-      'Встановлює максимальну кількість переходів для пересилання пакетів через всю мережу (flood) без визначеної області регіону (0-64).';
+      'Встановлює максимальну кількість переходів для пересилання Flood-пакетів без визначеної області регіону (0-64).';
 
   @override
   String get repeater_cliHelpSetFloodMaxAdvert =>
-      'Встановлює максимальну кількість переходів для пересилання оголошень через всю мережу (flood) (0-64).';
+      'Встановлює максимальну кількість переходів для пересилання Flood-оголошень (0-64).';
 
   @override
   String get repeater_cliHelpGetFloodMaxUnscoped =>
-      'Показує максимальну кількість переходів для пакетів через всю мережу (flood) без визначеної області.';
+      'Показує максимальну кількість переходів для Flood-пакетів без визначеної області.';
 
   @override
   String get repeater_cliHelpGetFloodMaxAdvert =>
-      'Показує максимальну кількість переходів для оголошень через всю мережу (flood).';
+      'Показує максимальну кількість переходів для Flood-оголошень.';
 
   @override
   String get repeater_cliHelpSetRadioFemRxGain =>
@@ -4372,7 +4369,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_cliHelpAdvertZeroHop =>
-      'Надсилає оголошення без ретрансляції (лише безпосереднім сусідам).';
+      'Надсилає Zero Hop оголошення (лише безпосереднім сусідам).';
 
   @override
   String get repeater_cliHelpStartOta =>
@@ -4500,7 +4497,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_cliHelpGetFloodAdvertInterval =>
-      'Показує інтервал оголошень через всю мережу (flood), виражений у годинах.';
+      'Показує інтервал Flood-оголошень у годинах.';
 
   @override
   String get repeater_cliHelpGetGuestPassword =>
@@ -4518,7 +4515,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_cliHelpGetTxDelay =>
-      'Показує коефіцієнт затримки сигналу в режимі «через всю мережу» (flood).';
+      'Показує коефіцієнт затримки сигналу в режимі Flood.';
 
   @override
   String get repeater_cliHelpGetDirectTxDelay =>
@@ -4526,7 +4523,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_cliHelpGetFloodMax =>
-      'Показує максимальну кількість переходів під час пересилання через всю мережу (flood).';
+      'Показує максимальну кількість переходів для Flood.';
 
   @override
   String get repeater_cliHelpGetOwnerInfo =>
@@ -4614,11 +4611,11 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_cliHelpRegionListAllowed =>
-      'Перелік регіонів, де дозволено поширення через всю мережу (flood).';
+      'Перелік регіонів, де дозволено Flood.';
 
   @override
   String get repeater_cliHelpRegionListDenied =>
-      'Перелік регіонів, де заборонено поширення через всю мережу (flood).';
+      'Перелік регіонів, де заборонено Flood.';
 
   @override
   String get repeater_cliHelpStatsPackets =>
@@ -4904,7 +4901,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get channelPath_unknownPath => 'Невідомий';
 
   @override
-  String get channelPath_floodPath => 'Через всю мережу';
+  String get channelPath_floodPath => 'Flood';
 
   @override
   String get channelPath_directPath => 'Напряму';
@@ -5447,10 +5444,10 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get contacts_zeroHopAdvert => 'Оголошення без ретрансляції';
+  String get contacts_zeroHopAdvert => 'Zero Hop оголошення';
 
   @override
-  String get contacts_floodAdvert => 'Оголошення через всю мережу (flood)';
+  String get contacts_floodAdvert => 'Flood-оголошення';
 
   @override
   String get contacts_copyAdvertToClipboard => 'Копіювати оголошення';
@@ -6342,7 +6339,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get imageSend_floodNote =>
-      'Поширення через всю мережу (flood): кожен ретранслятор у діапазоні пересилає кожен пакет, тому канал залишається зайнятим довше, ніж зазначено тут.';
+      'Flood: кожен ретранслятор у діапазоні пересилає кожен пакет, тому канал залишається зайнятим довше, ніж зазначено тут.';
 
   @override
   String get imageSend_parityTitle => 'Пакет відновлення';
@@ -6461,6 +6458,9 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String get receivedImage_syntheticBadge => 'Відновлено ШІ';
+
+  @override
   String get receivedImage_packetInfo => 'Інформація про пакет';
 
   @override
@@ -6547,7 +6547,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_floodMaxAdvert =>
-      'Макс. кількість переходів для advert (flood)';
+      'Макс. кількість переходів для advert (Flood)';
 
   @override
   String get repeater_floodMaxAdvertHelper =>
@@ -6555,21 +6555,21 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_floodMaxUnscoped =>
-      'Макс. кількість переходів flood без регіону';
+      'Макс. кількість переходів Flood без регіону';
 
   @override
   String get repeater_floodMaxUnscopedHelper =>
-      'Максимальна кількість переходів для flood без області регіону (0-64, за замовчуванням 64). Низьке значення, наприклад 3, залишає трафік без регіону локальним.';
+      'Максимальна кількість переходів для Flood без області регіону (0-64, за замовчуванням 64). Низьке значення, наприклад 3, залишає трафік без регіону локальним.';
 
   @override
-  String get repeater_floodMaxUnscopedUnset => 'Те саме, що flood max';
+  String get repeater_floodMaxUnscopedUnset => 'Те саме, що Flood max';
 
   @override
   String get repeater_rxDelay => 'Затримка приймання';
 
   @override
   String get repeater_rxDelayHelper =>
-      'Утримує flood-пакети, почуті зі слабким сигналом, перед пересиланням, щоб шляхи з сильним сигналом ішли першими і надсилалося менше дублікатів (0-20, 0 вимикає).';
+      'Утримує Flood-пакети, почуті зі слабким сигналом, перед пересиланням, щоб шляхи з сильним сигналом ішли першими і надсилалося менше дублікатів (0-20, 0 вимикає).';
 
   @override
   String get repeater_cad => 'Виявлення активності каналу';
@@ -7485,4 +7485,41 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get messageFilter_ghostIconTooltip =>
       'Приховано вашим фільтром повідомлень';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'Офлайн · $name';
+  }
+
+  @override
+  String get appBar_offline => 'Офлайн';
+
+  @override
+  String get appBar_reconnecting => 'Перепідключення…';
+
+  @override
+  String get connectSheet_title => 'Підключити радіо';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return 'Перепідключитися до $name';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => 'Вибрати радіо';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB або TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => 'Зупинити перепідключення';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return 'Не вдалося зв\'язатися з $name. Переконайтеся, що воно увімкнене й поруч.';
+  }
+
+  @override
+  String get chat_composerOffline =>
+      'Підключіться до радіо, щоб надсилати повідомлення';
 }

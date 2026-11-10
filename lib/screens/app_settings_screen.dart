@@ -45,92 +45,94 @@ class AppSettingsScreen extends StatelessWidget {
         centerTitle: true,
         bottom: const SyncProgressAppBarBottom(),
       ),
-      body: SafeArea(
-        top: false,
-        // Each card subscribes to only what it shows, so connector traffic
-        // and translation download ticks do not rebuild the whole list.
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-          children: [
-            // APPEARANCE
-            SectionHeader(context.l10n.appSettings_appearance),
-            MeshCard(
-              padding: EdgeInsets.zero,
-              child: _settingsCard(_buildAppearanceContent),
-            ),
+      body: MeshSettingsTileTheme(
+        child: SafeArea(
+          top: false,
+          // Each card subscribes to only what it shows, so connector traffic
+          // and translation download ticks do not rebuild the whole list.
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+            children: [
+              // APPEARANCE
+              SectionHeader(context.l10n.appSettings_appearance),
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: _settingsCard(_buildAppearanceContent),
+              ),
 
-            // NOTIFICATIONS
-            SectionHeader(context.l10n.appSettings_notifications),
-            MeshCard(
-              padding: EdgeInsets.zero,
-              child: _settingsCard(_buildNotificationsContent),
-            ),
+              // NOTIFICATIONS
+              SectionHeader(context.l10n.appSettings_notifications),
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: _settingsCard(_buildNotificationsContent),
+              ),
 
-            // MESSAGING
-            SectionHeader(context.l10n.appSettings_messaging),
-            MeshCard(
-              padding: EdgeInsets.zero,
-              child: _settingsCard(_buildMessagingContent),
-            ),
+              // MESSAGING
+              SectionHeader(context.l10n.appSettings_messaging),
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: _settingsCard(_buildMessagingContent),
+              ),
 
-            // ROUTING
-            SectionHeader(context.l10n.appSettings_routingSection),
-            MeshCard(
-              padding: EdgeInsets.zero,
-              child: _settingsCard(_buildRoutingContent),
-            ),
+              // ROUTING
+              SectionHeader(context.l10n.appSettings_routingSection),
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: _settingsCard(_buildRoutingContent),
+              ),
 
-            // IMAGE MESSAGES
-            SectionHeader(context.l10n.appSettings_imageMessagesSection),
-            MeshCard(
-              padding: EdgeInsets.zero,
-              child: _settingsCard(_buildImageMessagesContent),
-            ),
+              // IMAGE MESSAGES
+              SectionHeader(context.l10n.appSettings_imageMessagesSection),
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: _settingsCard(_buildImageMessagesContent),
+              ),
 
-            // BATTERY
-            SectionHeader(context.l10n.appSettings_battery),
-            MeshCard(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-              child: _settingsCard(_buildBatteryContent),
-            ),
+              // BATTERY
+              SectionHeader(context.l10n.appSettings_battery),
+              MeshCard(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+                child: _settingsCard(_buildBatteryContent),
+              ),
 
-            // MAP
-            SectionHeader(context.l10n.appSettings_mapDisplay),
-            MeshCard(
-              padding: EdgeInsets.zero,
-              child: _settingsCard(_buildMapContent),
-            ),
+              // MAP
+              SectionHeader(context.l10n.appSettings_mapDisplay),
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: _settingsCard(_buildMapContent),
+              ),
 
-            // NETWORK MAP
-            SectionHeader(context.l10n.networkMap_settingsSection),
-            const MeshCard(
-              padding: EdgeInsets.zero,
-              child: NetworkMapSettingsSection(),
-            ),
-
-            // TRANSLATION (non-web only)
-            if (!kIsWeb) ...[
-              SectionHeader(context.l10n.translation_title),
+              // NETWORK MAP
+              SectionHeader(context.l10n.networkMap_settingsSection),
               const MeshCard(
                 padding: EdgeInsets.zero,
-                child: TranslationSettingsSection(),
+                child: NetworkMapSettingsSection(),
+              ),
+
+              // TRANSLATION (non-web only)
+              if (!kIsWeb) ...[
+                SectionHeader(context.l10n.translation_title),
+                const MeshCard(
+                  padding: EdgeInsets.zero,
+                  child: TranslationSettingsSection(),
+                ),
+              ],
+
+              // CYR2LAT
+              SectionHeader(context.l10n.channels_cyr2latSettingsHeading),
+              MeshCard(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+                child: _settingsCard(_buildCyr2LatContent),
+              ),
+
+              // DEBUG
+              SectionHeader(context.l10n.appSettings_debugCard),
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: _settingsCard(_buildDebugContent),
               ),
             ],
-
-            // CYR2LAT
-            SectionHeader(context.l10n.channels_cyr2latSettingsHeading),
-            MeshCard(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-              child: _settingsCard(_buildCyr2LatContent),
-            ),
-
-            // DEBUG
-            SectionHeader(context.l10n.appSettings_debugCard),
-            MeshCard(
-              padding: EdgeInsets.zero,
-              child: _settingsCard(_buildDebugContent),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -182,15 +184,19 @@ class AppSettingsScreen extends StatelessWidget {
                 segments: [
                   ButtonSegment(
                     value: 'system',
-                    label: Text(context.l10n.appSettings_themeSystem),
+                    label: MeshSegmentLabel(
+                      context.l10n.appSettings_themeSystem,
+                    ),
                   ),
                   ButtonSegment(
                     value: 'light',
-                    label: Text(context.l10n.appSettings_themeLight),
+                    label: MeshSegmentLabel(
+                      context.l10n.appSettings_themeLight,
+                    ),
                   ),
                   ButtonSegment(
                     value: 'dark',
-                    label: Text(context.l10n.appSettings_themeDark),
+                    label: MeshSegmentLabel(context.l10n.appSettings_themeDark),
                   ),
                 ],
                 // A custom theme sets its own brightness, so no stock mode

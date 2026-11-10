@@ -399,185 +399,188 @@ class AppLocalizationsNl extends AppLocalizations {
       'Notificaties, berichten en kaartinstellingen';
 
   @override
-  String get settings_export => 'Export';
+  String get settings_export => 'Exporteren';
 
   @override
-  String get settings_exportSubtitle => 'Export contacts and repeaters as GPX';
+  String get settings_exportSubtitle =>
+      'Contacten en repeaters exporteren als GPX';
 
   @override
-  String get backupRestore_title => 'Backup & Restore';
+  String get backupRestore_title => 'Back-up en herstel';
 
   @override
   String get backupRestore_subtitle =>
-      'Save or restore app data and radio settings';
+      'App-gegevens en radio-instellingen opslaan of herstellen';
 
   @override
-  String get backupRestore_import => 'Import';
+  String get backupRestore_import => 'Importeren';
 
   @override
-  String get backupRestore_selectImportFile => 'Import File';
+  String get backupRestore_selectImportFile => 'Bestand importeren';
 
   @override
-  String get backupRestore_password => 'Password (optional)';
+  String get backupRestore_password => 'Wachtwoord (optioneel)';
 
   @override
   String get backupRestore_passwordHelp =>
-      'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.';
+      'Een wachtwoord versleutelt het bestand. Leeg laten slaat platte tekst op die privé-/kanaalsleutels, geschiedenis en inloggegevens kan bevatten.';
 
   @override
   String get backupRestore_importUnavailable =>
-      'Check the password or choose a supported backup file.';
+      'Controleer het wachtwoord of kies een ondersteund back-upbestand.';
 
   @override
-  String get backupRestore_items => 'Backup and restore items';
+  String get backupRestore_items => 'Items voor back-up en herstel';
 
   @override
-  String get backupRestore_nodeSettings => 'Node Settings';
+  String get backupRestore_nodeSettings => 'Node-instellingen';
 
   @override
   String get backupRestore_nodeSettingsDescription =>
-      'Device name, private and public keys, radio settings, and regions';
+      'Apparaatnaam, privé- en openbare sleutels, radio-instellingen en regio\'s';
 
   @override
-  String get backupRestore_deviceName => 'Device Name';
+  String get backupRestore_deviceName => 'Apparaatnaam';
 
   @override
-  String get backupRestore_privateKey => 'Private Key (sensitive)';
+  String get backupRestore_privateKey => 'Privésleutel (gevoelig)';
 
   @override
-  String get backupRestore_publicKey => 'Public Key';
+  String get backupRestore_publicKey => 'Openbare sleutel';
 
   @override
-  String get backupRestore_radioSettings => 'Radio Settings';
+  String get backupRestore_radioSettings => 'Radio-instellingen';
 
   @override
-  String get backupRestore_regions => 'Regions';
+  String get backupRestore_regions => 'Regio\'s';
 
   @override
-  String get backupRestore_location => 'Location';
+  String get backupRestore_location => 'Locatie';
 
   @override
-  String get backupRestore_contactSettings => 'Contact Settings';
+  String get backupRestore_contactSettings => 'Contactinstellingen';
 
   @override
-  String get backupRestore_privacySettings => 'Privacy Settings';
+  String get backupRestore_privacySettings => 'Privacy-instellingen';
 
   @override
-  String get backupRestore_contactsData => 'Contacts';
+  String get backupRestore_contactsData => 'Contacten';
 
   @override
-  String get backupRestore_perContactSettings => 'Contact Settings and Filters';
+  String get backupRestore_perContactSettings =>
+      'Contactinstellingen en filters';
 
   @override
-  String get backupRestore_contactGroups => 'Contact Groups';
+  String get backupRestore_contactGroups => 'Contactgroepen';
 
   @override
-  String get backupRestore_contactHistory => 'Contact History';
+  String get backupRestore_contactHistory => 'Contactgeschiedenis';
 
   @override
-  String get backupRestore_channelsData => 'Channels';
+  String get backupRestore_channelsData => 'Kanalen';
 
   @override
-  String get backupRestore_channelFilters => 'Message Filter Settings';
+  String get backupRestore_channelFilters => 'Instellingen berichtfilter';
 
   @override
-  String get backupRestore_channelSettings => 'Channel Settings';
+  String get backupRestore_channelSettings => 'Kanaalinstellingen';
 
   @override
   String get backupRestore_communities => 'Communities';
 
   @override
-  String get backupRestore_channelHistory => 'Channel History';
+  String get backupRestore_channelHistory => 'Kanaalgeschiedenis';
 
   @override
-  String get backupRestore_locationSettings => 'Location Settings';
+  String get backupRestore_locationSettings => 'Locatie-instellingen';
 
   @override
   String get backupRestore_locationSettingsDescription =>
-      'Location, contact settings, and privacy settings';
+      'Locatie, contactinstellingen en privacy-instellingen';
 
   @override
-  String get backupRestore_appSettings => 'App Settings';
+  String get backupRestore_appSettings => 'App-instellingen';
 
   @override
   String get backupRestore_appSettingsDescription =>
-      'App preferences and appearance settings';
+      'App-voorkeuren en weergave-instellingen';
 
   @override
-  String get backupRestore_ipfsKey => 'IPFS API Key (sensitive)';
+  String get backupRestore_ipfsKey => 'IPFS API-sleutel (gevoelig)';
 
   @override
-  String get backupRestore_stadiaMapKey => 'Stadia Maps API Key (sensitive)';
+  String get backupRestore_stadiaMapKey => 'Stadia Maps API-sleutel (gevoelig)';
 
   @override
-  String get backupRestore_contacts => 'Contacts';
+  String get backupRestore_contacts => 'Contacten';
 
   @override
   String get backupRestore_contactsDescription =>
-      'Contacts, per-contact filters and settings, groups, and message history';
+      'Contacten, filters en instellingen per contact, groepen en berichtgeschiedenis';
 
   @override
-  String get backupRestore_discoveredContacts => 'Discovered Contacts';
+  String get backupRestore_discoveredContacts => 'Ontdekte contacten';
 
   @override
   String get backupRestore_discoveredContactsDescription =>
-      'Discovered contacts and their saved details';
+      'Ontdekte contacten en hun opgeslagen gegevens';
 
   @override
-  String get backupRestore_channels => 'Channels';
+  String get backupRestore_channels => 'Kanalen';
 
   @override
   String get backupRestore_channelsDescription =>
-      'Channels, channel filters, communities, and message history';
+      'Kanalen, kanaalfilters, communities en berichtgeschiedenis';
 
   @override
-  String get backupRestore_backup => 'Create Backup';
+  String get backupRestore_backup => 'Back-up maken';
 
   @override
-  String get backupRestore_restore => 'Restore Selected';
+  String get backupRestore_restore => 'Selectie herstellen';
 
   @override
-  String get backupRestore_backupComplete => 'Backup file created.';
+  String get backupRestore_backupComplete => 'Back-upbestand gemaakt.';
 
   @override
   String get backupRestore_restoreComplete =>
-      'Restore complete. Reconnect if you restored the radio identity.';
+      'Herstel voltooid. Verbind opnieuw als je de radio-identiteit hebt hersteld.';
 
   @override
-  String get backupRestore_missingModelsTitle => 'Models Not Downloaded';
+  String get backupRestore_missingModelsTitle => 'Modellen niet gedownload';
 
   @override
   String backupRestore_missingModelsMessage(String models) {
-    return 'The restored settings select models that are not available on this device:\n$models\n\nDownload them now?';
+    return 'De herstelde instellingen selecteren modellen die op dit apparaat niet beschikbaar zijn:\n$models\n\nNu downloaden?';
   }
 
   @override
-  String get backupRestore_downloadModels => 'Download Models';
+  String get backupRestore_downloadModels => 'Modellen downloaden';
 
   @override
-  String get backupRestore_downloading => 'Downloading…';
+  String get backupRestore_downloading => 'Downloaden…';
 
   @override
-  String get backupRestore_cancelDownload => 'Cancel Download';
+  String get backupRestore_cancelDownload => 'Download annuleren';
 
   @override
   String backupRestore_failed(String error) {
-    return 'Backup operation failed: $error';
+    return 'Back-upbewerking mislukt: $error';
   }
 
   @override
   String get backupRestore_fileTooLarge =>
-      'Backup file is larger than the 100 MB limit.';
+      'Het back-upbestand is groter dan de limiet van 100 MB.';
 
   @override
-  String get backupRestore_selectAtLeastOne => 'Select at least one item.';
+  String get backupRestore_selectAtLeastOne => 'Selecteer minstens één item.';
 
   @override
-  String get backupRestore_replaceIdentityTitle => 'Replace radio identity?';
+  String get backupRestore_replaceIdentityTitle =>
+      'Radio-identiteit vervangen?';
 
   @override
   String get backupRestore_replaceIdentityMessage =>
-      'Restoring Node Settings replaces the connected radio\'s private key and changes its identity. Continue only if this is intended.';
+      'Het herstellen van de node-instellingen vervangt de privésleutel van de verbonden radio en wijzigt de identiteit ervan. Ga alleen door als dit de bedoeling is.';
 
   @override
   String get settings_nodeSettings => 'Node Instellingen';
@@ -1261,7 +1264,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get appSettings_languageSl => 'Sloveens';
 
   @override
-  String get appSettings_languagePt => 'Portugees';
+  String get appSettings_languagePt => 'Portugees (Brazilië)';
+
+  @override
+  String get appSettings_languagePtPt => 'Portugees (Portugal)';
 
   @override
   String get appSettings_languageIt => 'Italiaans';
@@ -2898,10 +2904,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get map_lastSeen => 'Laatst gezien';
-
-  @override
-  String get map_disconnectConfirm =>
-      'Ben je er zeker van dat je verbinding met dit apparaat wilt verbreken?';
 
   @override
   String get map_from => 'Van';
@@ -6398,6 +6400,9 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get receivedImage_syntheticBadge => 'Door AI gereconstrueerd';
+
+  @override
   String get receivedImage_packetInfo => 'Pakketinfo';
 
   @override
@@ -7409,4 +7414,41 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get messageFilter_ghostIconTooltip =>
       'Verborgen door je berichtenfilter';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'Offline · $name';
+  }
+
+  @override
+  String get appBar_offline => 'Offline';
+
+  @override
+  String get appBar_reconnecting => 'Opnieuw verbinden…';
+
+  @override
+  String get connectSheet_title => 'Radio verbinden';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return 'Opnieuw verbinden met $name';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => 'Kies een radio';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB of TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => 'Opnieuw verbinden stoppen';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return 'Kan $name niet bereiken. Controleer of het aan staat en in de buurt is.';
+  }
+
+  @override
+  String get chat_composerOffline =>
+      'Verbind met een radio om berichten te versturen';
 }

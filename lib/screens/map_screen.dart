@@ -29,9 +29,10 @@ import '../services/network_map/network_map_api_client.dart';
 import '../services/ui_view_state_service.dart';
 import '../storage/prefs_manager.dart';
 import '../utils/contact_search.dart';
-import '../utils/disconnect_navigation_mixin.dart';
+import '../utils/radio_guard.dart';
 import '../utils/battery_utils.dart';
 import '../utils/route_transitions.dart';
+import '../widgets/connect_sheet.dart';
 import '../widgets/map_poi_cluster.dart';
 import '../widgets/marker_label_dialog.dart';
 import '../widgets/network_map_online_layer.dart';
@@ -74,7 +75,7 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
+class _MapScreenState extends State<MapScreen> {
   // Zoom level at which node labels start to appear
   static const double _labelZoomThreshold = 14.0;
   // Below this zoom, nearby nodes collapse into clusters.
@@ -513,9 +514,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
               _MapConnectorSnapshot.fromConnector,
             );
         final connector = connectorSnapshot.connector;
-        if (!checkConnectionAndNavigate(connector)) {
-          return const SizedBox.shrink();
-        }
+        final readOnly = isRadioReadOnly(connector);
         final settings = context.select<AppSettingsService, AppSettings>(
           (service) => service.settings,
         );
@@ -767,12 +766,9 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                         connector.selfLatitude != null &&
                         connector.selfLongitude != null)
                       PopupMenuItem(
-                        child: Row(
-                          children: [
-                            const Icon(Icons.radar),
-                            const SizedBox(width: 8),
-                            Text(context.l10n.contacts_pathTrace),
-                          ],
+                        child: MeshMenuItemRow(
+                          icon: Icons.radar,
+                          label: context.l10n.contacts_pathTrace,
                         ),
                         onTap: () => _openPathTrace(
                           connector,
@@ -784,23 +780,18 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                       ),
                     if (!_isBuildingPathTrace)
                       PopupMenuItem(
-                        child: Row(
-                          children: [
-                            const Icon(Icons.radar),
-                            const SizedBox(width: 8),
-                            Text(context.l10n.manualTrace_menuItem),
-                          ],
+                        enabled: !readOnly,
+                        child: MeshMenuItemRow(
+                          icon: Icons.radar,
+                          label: context.l10n.manualTrace_menuItem,
                         ),
                         onTap: () => ManualPathTraceScreen.open(context),
                       ),
                     if (!_isBuildingPathTrace)
                       PopupMenuItem(
-                        child: Row(
-                          children: [
-                            const LosIcon(),
-                            const SizedBox(width: 8),
-                            Text(context.l10n.map_lineOfSight),
-                          ],
+                        child: MeshMenuItemRow(
+                          leading: const LosIcon(size: 20),
+                          label: context.l10n.map_lineOfSight,
                         ),
                         onTap: () {
                           final candidates = <LineOfSightEndpoint>[];
@@ -839,26 +830,14 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                           );
                         },
                       ),
+                    connectionMenuItem(this.context, context),
                     PopupMenuItem(
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.logout,
-                            color: Theme.of(context).colorScheme.error,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(context.l10n.common_disconnect),
-                        ],
-                      ),
-                      onTap: () => _disconnect(context, connector),
-                    ),
-                    PopupMenuItem(
-                      child: Row(
-                        children: [
-                          const ThemedIcon(ThemeIconSlot.settings),
-                          const SizedBox(width: 8),
-                          Text(context.l10n.settings_title),
-                        ],
+                      child: MeshMenuItemRow(
+                        leading: const ThemedIcon(
+                          ThemeIconSlot.settings,
+                          size: 20,
+                        ),
+                        label: context.l10n.settings_title,
                       ),
                       onTap: () => Navigator.push(
                         context,
@@ -1710,33 +1689,37 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
             ],
           ),
           alignment: Alignment.center,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '$count',
-                style: MeshTheme.mono(
-                  fontSize: count >= 100 ? 13 : 15,
-                  fontWeight: FontWeight.w800,
-                  color: MapPalette.markerOutline,
-                ),
-              ),
-              if (online > 0)
-                Container(
-                  width: 7,
-                  height: 7,
-                  margin: const EdgeInsets.only(top: 1),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: MapPalette.online,
-                    border: Border.all(
-                      color: MapPalette.markerOutline,
-                      width: 1,
-                    ),
+          // The marker has a fixed size; large text scales shrink to fit it.
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '$count',
+                  style: MeshTheme.mono(
+                    fontSize: count >= 100 ? 13 : 15,
+                    fontWeight: FontWeight.w800,
+                    color: MapPalette.markerOutline,
                   ),
                 ),
-            ],
+                if (online > 0)
+                  Container(
+                    width: 7,
+                    height: 7,
+                    margin: const EdgeInsets.only(top: 1),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: MapPalette.online,
+                      border: Border.all(
+                        color: MapPalette.markerOutline,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -2204,19 +2187,19 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
           ButtonSegment(
             value: MapSourceOption.local,
             icon: const Icon(Icons.radio, size: 20),
-            label: Text(l10n.networkMap_sourceLocal),
+            label: MeshSegmentLabel(l10n.networkMap_sourceLocal),
             tooltip: l10n.networkMap_sourceLocalHint,
           ),
           ButtonSegment(
             value: MapSourceOption.online,
             icon: const Icon(Icons.public, size: 20),
-            label: Text(l10n.networkMap_sourceOnline),
+            label: MeshSegmentLabel(l10n.networkMap_sourceOnline),
             tooltip: l10n.networkMap_sourceOnlineHint,
           ),
           ButtonSegment(
             value: MapSourceOption.both,
             icon: const Icon(Icons.layers, size: 20),
-            label: Text(l10n.networkMap_sourceBoth),
+            label: MeshSegmentLabel(l10n.networkMap_sourceBoth),
             tooltip: l10n.networkMap_sourceBothHint,
           ),
         ],
@@ -3200,33 +3183,6 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     }
   }
 
-  Future<void> _disconnect(
-    BuildContext context,
-    MeshCoreConnector connector,
-  ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(context.l10n.common_disconnect),
-        content: Text(context.l10n.map_disconnectConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(context.l10n.common_cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(context.l10n.common_disconnect),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      await connector.disconnect();
-    }
-  }
-
   void _showMarkerInfo(_SharedMarker marker) {
     showDialog(
       context: context,
@@ -3348,6 +3304,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
     required MeshCoreConnector connector,
     required LatLng position,
   }) {
+    final readOnly = isRadioReadOnly(connector);
     showModalBottomSheet(
       context: context,
       builder: (sheetContext) => SafeArea(
@@ -3355,6 +3312,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
+              enabled: !readOnly,
               leading: const Icon(Icons.place),
               title: Text(context.l10n.map_shareMarkerHere),
               onTap: () {
@@ -3369,6 +3327,7 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
               },
             ),
             ListTile(
+              enabled: !readOnly,
               leading: const Icon(Icons.my_location),
               title: Text(context.l10n.map_setAsMyLocation),
               onTap: () {
@@ -4175,12 +4134,16 @@ class _MapScreenState extends State<MapScreen> with DisconnectNavigationMixin {
                       ButtonSegment(
                         value: true,
                         icon: const Icon(Icons.sync_alt),
-                        label: Text(l10n.map_pathTraceModeRoundTrip),
+                        label: MeshSegmentLabel(
+                          l10n.map_pathTraceModeRoundTrip,
+                        ),
                       ),
                       ButtonSegment(
                         value: false,
                         icon: const Icon(Icons.arrow_forward),
-                        label: Text(l10n.map_pathTraceModeAsEntered),
+                        label: MeshSegmentLabel(
+                          l10n.map_pathTraceModeAsEntered,
+                        ),
                       ),
                     ],
                     selected: {returnPath},

@@ -322,7 +322,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get scanner_disconnecting => 'Odpojuje sa...';
 
   @override
-  String get scanner_notConnected => 'Nezriadené';
+  String get scanner_notConnected => 'Nepripojené';
 
   @override
   String scanner_connectedTo(String deviceName) {
@@ -334,7 +334,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get scanner_tapToScan =>
-      'Stlač skenovanie na nájdenie zariadení MeshCore.';
+      'Klepnutím na Skenovať nájdete zariadenia MeshCore';
 
   @override
   String scanner_connectionFailed(String error) {
@@ -345,7 +345,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get scanner_stop => 'Zastavte';
 
   @override
-  String get scanner_scan => 'Skončiť';
+  String get scanner_scan => 'Skenovať';
 
   @override
   String get scanner_bluetoothOff => 'Bluetooth je vypnutý';
@@ -402,185 +402,187 @@ class AppLocalizationsSk extends AppLocalizations {
       'Upozornenia, správy a nastavenia mapy';
 
   @override
-  String get settings_export => 'Export';
+  String get settings_export => 'Exportovať';
 
   @override
-  String get settings_exportSubtitle => 'Export contacts and repeaters as GPX';
+  String get settings_exportSubtitle =>
+      'Exportovať kontakty a opakovače ako GPX';
 
   @override
-  String get backupRestore_title => 'Backup & Restore';
+  String get backupRestore_title => 'Zálohovanie a obnovenie';
 
   @override
   String get backupRestore_subtitle =>
-      'Save or restore app data and radio settings';
+      'Uložte alebo obnovte dáta aplikácie a nastavenia rádia';
 
   @override
-  String get backupRestore_import => 'Import';
+  String get backupRestore_import => 'Importovať';
 
   @override
-  String get backupRestore_selectImportFile => 'Import File';
+  String get backupRestore_selectImportFile => 'Importovať súbor';
 
   @override
-  String get backupRestore_password => 'Password (optional)';
+  String get backupRestore_password => 'Heslo (voliteľné)';
 
   @override
   String get backupRestore_passwordHelp =>
-      'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.';
+      'Heslo súbor zašifruje. Prázdne heslo uloží čistý text, ktorý môže obsahovať súkromné kľúče a kľúče kanálov, históriu a prihlasovacie údaje.';
 
   @override
   String get backupRestore_importUnavailable =>
-      'Check the password or choose a supported backup file.';
+      'Skontrolujte heslo alebo vyberte podporovaný súbor zálohy.';
 
   @override
-  String get backupRestore_items => 'Backup and restore items';
+  String get backupRestore_items => 'Položky zálohy a obnovenia';
 
   @override
-  String get backupRestore_nodeSettings => 'Node Settings';
+  String get backupRestore_nodeSettings => 'Nastavenia uzla';
 
   @override
   String get backupRestore_nodeSettingsDescription =>
-      'Device name, private and public keys, radio settings, and regions';
+      'Názov zariadenia, súkromný a verejný kľúč, nastavenia rádia a regióny';
 
   @override
-  String get backupRestore_deviceName => 'Device Name';
+  String get backupRestore_deviceName => 'Názov zariadenia';
 
   @override
-  String get backupRestore_privateKey => 'Private Key (sensitive)';
+  String get backupRestore_privateKey => 'Súkromný kľúč (citlivé)';
 
   @override
-  String get backupRestore_publicKey => 'Public Key';
+  String get backupRestore_publicKey => 'Verejný kľúč';
 
   @override
-  String get backupRestore_radioSettings => 'Radio Settings';
+  String get backupRestore_radioSettings => 'Nastavenia rádia';
 
   @override
-  String get backupRestore_regions => 'Regions';
+  String get backupRestore_regions => 'Regióny';
 
   @override
-  String get backupRestore_location => 'Location';
+  String get backupRestore_location => 'Poloha';
 
   @override
-  String get backupRestore_contactSettings => 'Contact Settings';
+  String get backupRestore_contactSettings => 'Nastavenia kontaktov';
 
   @override
-  String get backupRestore_privacySettings => 'Privacy Settings';
+  String get backupRestore_privacySettings => 'Nastavenia súkromia';
 
   @override
-  String get backupRestore_contactsData => 'Contacts';
+  String get backupRestore_contactsData => 'Kontakty';
 
   @override
-  String get backupRestore_perContactSettings => 'Contact Settings and Filters';
+  String get backupRestore_perContactSettings =>
+      'Nastavenia a filtre kontaktov';
 
   @override
-  String get backupRestore_contactGroups => 'Contact Groups';
+  String get backupRestore_contactGroups => 'Skupiny kontaktov';
 
   @override
-  String get backupRestore_contactHistory => 'Contact History';
+  String get backupRestore_contactHistory => 'História kontaktov';
 
   @override
-  String get backupRestore_channelsData => 'Channels';
+  String get backupRestore_channelsData => 'Kanály';
 
   @override
-  String get backupRestore_channelFilters => 'Message Filter Settings';
+  String get backupRestore_channelFilters => 'Nastavenia filtra správ';
 
   @override
-  String get backupRestore_channelSettings => 'Channel Settings';
+  String get backupRestore_channelSettings => 'Nastavenia kanálov';
 
   @override
-  String get backupRestore_communities => 'Communities';
+  String get backupRestore_communities => 'Komunity';
 
   @override
-  String get backupRestore_channelHistory => 'Channel History';
+  String get backupRestore_channelHistory => 'História kanálov';
 
   @override
-  String get backupRestore_locationSettings => 'Location Settings';
+  String get backupRestore_locationSettings => 'Nastavenia polohy';
 
   @override
   String get backupRestore_locationSettingsDescription =>
-      'Location, contact settings, and privacy settings';
+      'Poloha, nastavenia kontaktov a súkromia';
 
   @override
-  String get backupRestore_appSettings => 'App Settings';
+  String get backupRestore_appSettings => 'Nastavenia aplikácie';
 
   @override
   String get backupRestore_appSettingsDescription =>
-      'App preferences and appearance settings';
+      'Predvoľby aplikácie a nastavenia vzhľadu';
 
   @override
-  String get backupRestore_ipfsKey => 'IPFS API Key (sensitive)';
+  String get backupRestore_ipfsKey => 'Kľúč API IPFS (citlivé)';
 
   @override
-  String get backupRestore_stadiaMapKey => 'Stadia Maps API Key (sensitive)';
+  String get backupRestore_stadiaMapKey => 'Kľúč API Stadia Maps (citlivé)';
 
   @override
-  String get backupRestore_contacts => 'Contacts';
+  String get backupRestore_contacts => 'Kontakty';
 
   @override
   String get backupRestore_contactsDescription =>
-      'Contacts, per-contact filters and settings, groups, and message history';
+      'Kontakty, filtre a nastavenia jednotlivých kontaktov, skupiny a história správ';
 
   @override
-  String get backupRestore_discoveredContacts => 'Discovered Contacts';
+  String get backupRestore_discoveredContacts => 'Objavené kontakty';
 
   @override
   String get backupRestore_discoveredContactsDescription =>
-      'Discovered contacts and their saved details';
+      'Objavené kontakty a ich uložené údaje';
 
   @override
-  String get backupRestore_channels => 'Channels';
+  String get backupRestore_channels => 'Kanály';
 
   @override
   String get backupRestore_channelsDescription =>
-      'Channels, channel filters, communities, and message history';
+      'Kanály, filtre kanálov, komunity a história správ';
 
   @override
-  String get backupRestore_backup => 'Create Backup';
+  String get backupRestore_backup => 'Vytvoriť zálohu';
 
   @override
-  String get backupRestore_restore => 'Restore Selected';
+  String get backupRestore_restore => 'Obnoviť vybrané';
 
   @override
-  String get backupRestore_backupComplete => 'Backup file created.';
+  String get backupRestore_backupComplete => 'Súbor zálohy bol vytvorený.';
 
   @override
   String get backupRestore_restoreComplete =>
-      'Restore complete. Reconnect if you restored the radio identity.';
+      'Obnovenie dokončené. Ak ste obnovili identitu rádia, pripojte sa znova.';
 
   @override
-  String get backupRestore_missingModelsTitle => 'Models Not Downloaded';
+  String get backupRestore_missingModelsTitle => 'Modely nie sú stiahnuté';
 
   @override
   String backupRestore_missingModelsMessage(String models) {
-    return 'The restored settings select models that are not available on this device:\n$models\n\nDownload them now?';
+    return 'Obnovené nastavenia vyberajú modely, ktoré nie sú v tomto zariadení k dispozícii:\n$models\n\nStiahnuť ich teraz?';
   }
 
   @override
-  String get backupRestore_downloadModels => 'Download Models';
+  String get backupRestore_downloadModels => 'Stiahnuť modely';
 
   @override
-  String get backupRestore_downloading => 'Downloading…';
+  String get backupRestore_downloading => 'Sťahovanie…';
 
   @override
-  String get backupRestore_cancelDownload => 'Cancel Download';
+  String get backupRestore_cancelDownload => 'Zrušiť sťahovanie';
 
   @override
   String backupRestore_failed(String error) {
-    return 'Backup operation failed: $error';
+    return 'Operácia zálohy zlyhala: $error';
   }
 
   @override
   String get backupRestore_fileTooLarge =>
-      'Backup file is larger than the 100 MB limit.';
+      'Súbor zálohy je väčší ako limit 100 MB.';
 
   @override
-  String get backupRestore_selectAtLeastOne => 'Select at least one item.';
+  String get backupRestore_selectAtLeastOne => 'Vyberte aspoň jednu položku.';
 
   @override
-  String get backupRestore_replaceIdentityTitle => 'Replace radio identity?';
+  String get backupRestore_replaceIdentityTitle => 'Nahradiť identitu rádia?';
 
   @override
   String get backupRestore_replaceIdentityMessage =>
-      'Restoring Node Settings replaces the connected radio\'s private key and changes its identity. Continue only if this is intended.';
+      'Obnovenie nastavení uzla nahradí súkromný kľúč pripojeného rádia a zmení jeho identitu. Pokračujte, iba ak je to zámer.';
 
   @override
   String get settings_nodeSettings => 'Nastavenia uzla';
@@ -993,13 +995,13 @@ class AppLocalizationsSk extends AppLocalizations {
   String get appSettings_theme => 'Téma';
 
   @override
-  String get appSettings_themeSystem => 'Predvolený systém';
+  String get appSettings_themeSystem => 'Podľa systému';
 
   @override
-  String get appSettings_themeLight => 'Svetlo';
+  String get appSettings_themeLight => 'Svetlý';
 
   @override
-  String get appSettings_themeDark => 'Tmavé';
+  String get appSettings_themeDark => 'Tmavý';
 
   @override
   String get appSettings_colorTheme => 'Farebná téma';
@@ -1259,7 +1261,10 @@ class AppLocalizationsSk extends AppLocalizations {
   String get appSettings_languageSl => 'Slovinčina';
 
   @override
-  String get appSettings_languagePt => 'Portugalčina';
+  String get appSettings_languagePt => 'Portugalčina (Brazília)';
+
+  @override
+  String get appSettings_languagePtPt => 'Portugalčina (Portugalsko)';
 
   @override
   String get appSettings_languageIt => 'Taliančina';
@@ -1814,29 +1819,27 @@ class AppLocalizationsSk extends AppLocalizations {
   String get contacts_noMembers => 'Žiadni členovia';
 
   @override
-  String get contacts_lastSeenNow => 'Posledné zreteľné zobrazenie teraz';
+  String get contacts_lastSeenNow => 'nedávno';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
-    return 'Posledné zobrazenie $minutes min. dozadu';
+    return '~ $minutes min.';
   }
 
   @override
-  String get contacts_lastSeenHourAgo =>
-      'Zobral/Zabral poslednýkrát pred hodinou.';
+  String get contacts_lastSeenHourAgo => '~ 1 hod.';
 
   @override
   String contacts_lastSeenHoursAgo(int hours) {
-    return 'Posledné zobrazenie $hours hodín dozadu';
+    return '~ $hours hod.';
   }
 
   @override
-  String get contacts_lastSeenDayAgo =>
-      'Zobral/Zabral posledný raz pred 1 dňom.';
+  String get contacts_lastSeenDayAgo => '~ 1 deň';
 
   @override
   String contacts_lastSeenDaysAgo(int days) {
-    return 'Posledné zobrazenie $days dní dozadu';
+    return '~ $days dní';
   }
 
   @override
@@ -2575,7 +2578,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get routing_modeAutoHint =>
-      'Automaticky vyberá najznámejší trasa, a ak žiadna nie je známa, použije náhodnú trasu.';
+      'Automaticky vyberie najlepšiu známu trasu a ak žiadnu nepozná, použije flood.';
 
   @override
   String get routing_modeFloodHint =>
@@ -2583,7 +2586,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get routing_modeManualHint =>
-      'Vždy dodáva presne podľa zadaného trasy.';
+      'Vždy posiela presne po nastavenej trase.';
 
   @override
   String get routing_modeDirectHint =>
@@ -2632,8 +2635,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get routing_qualityWorked => 'Dosiahnutý úspech';
 
   @override
-  String get routing_qualityFlood =>
-      'Zistil som to z informácií, ktoré som získal cez flood.';
+  String get routing_qualityFlood => 'Počuté cez flood';
 
   @override
   String get routing_qualityUntested => 'Neotestované';
@@ -2916,10 +2918,6 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get map_lastSeen => 'Posledné zreteľné zobrazenie';
-
-  @override
-  String get map_disconnectConfirm =>
-      'Ste si istý/á, že chcete odpojiť od tohto zariadenia?';
 
   @override
   String get map_from => 'Od';
@@ -3373,7 +3371,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get login_autoUseSavedPath => 'Použiť uloženú cestu';
 
   @override
-  String get login_forceFloodMode => 'Zavrieť núdzový flood režim';
+  String get login_forceFloodMode => 'Vynútiť flood režim';
 
   @override
   String get login_managePaths => 'Spravovať Cesty';
@@ -4958,7 +4956,7 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
-  String get community_scanQr => 'Skontrolujte komunitný QR kód';
+  String get community_scanQr => 'Skenovať QR komunity';
 
   @override
   String get community_scanInstructions =>
@@ -4990,11 +4988,11 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
-  String get community_qrTitle => 'Zdieľť komunitu';
+  String get community_qrTitle => 'Zdieľať komunitu';
 
   @override
   String community_qrInstructions(String name) {
-    return 'Skenejte tento QR kód, aby ste sa pripojili k $name.';
+    return 'Naskenujte tento QR kód a pripojte sa k $name.';
   }
 
   @override
@@ -5025,7 +5023,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get community_scanOrCreate =>
-      'Skene QR kód alebo vytvor komunitu na začiatok.';
+      'Naskenujte QR kód alebo vytvorte komunitu a začnite.';
 
   @override
   String get community_manageCommunities => 'Spravovať komunity';
@@ -5074,7 +5072,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String community_scanToUpdateSecret(String name) {
-    return 'Skáňte nový QR kód na aktualizáciu tajného hesla pre \"$name\"';
+    return 'Naskenujte nový QR kód a aktualizujte tajný kľúč pre \"$name\"';
   }
 
   @override
@@ -6307,7 +6305,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get imageSend_floodNote =>
-      'Flood routing: každý repeater v rozsahu zrňa každý paket, takže kanál zostá zajetší dlouše, než tu.';
+      'Flood routing: každý opakovač v dosahu znova vysiela každý paket, takže kanál zostane obsadený dlhšie, než je uvedené.';
 
   @override
   String get imageSend_parityTitle => 'Poučný paket pre očudenie';
@@ -6423,6 +6421,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String receivedImage_shareCaption(int bytes) {
     return 'Zrekonštruované umelou inteligenciou z $bytes bajtov; jemné detaily sú generované, nie prenášané.';
   }
+
+  @override
+  String get receivedImage_syntheticBadge => 'Rekonštruované AI';
 
   @override
   String get receivedImage_packetInfo => 'Informácie o pakete';
@@ -7438,4 +7439,40 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get messageFilter_ghostIconTooltip => 'Skryté vaším filtrom správ';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'Offline · $name';
+  }
+
+  @override
+  String get appBar_offline => 'Offline';
+
+  @override
+  String get appBar_reconnecting => 'Pripájanie…';
+
+  @override
+  String get connectSheet_title => 'Pripojiť rádio';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return 'Znova sa pripojiť k $name';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => 'Vybrať rádio';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB alebo TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => 'Zastaviť pripájanie';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return 'Nedá sa spojiť s $name. Uistite sa, že je zapnuté a nablízku.';
+  }
+
+  @override
+  String get chat_composerOffline => 'Na odosielanie správ sa pripojte k rádiu';
 }

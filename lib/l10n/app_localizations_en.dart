@@ -1249,7 +1249,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appSettings_languageSl => 'Slovenščina';
 
   @override
-  String get appSettings_languagePt => 'Português';
+  String get appSettings_languagePt => 'Português (Brasil)';
+
+  @override
+  String get appSettings_languagePtPt => 'Português (Portugal)';
 
   @override
   String get appSettings_languageIt => 'Italiano';
@@ -2874,10 +2877,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get map_lastSeen => 'Last Seen';
-
-  @override
-  String get map_disconnectConfirm =>
-      'Are you sure you want to disconnect from this device?';
 
   @override
   String get map_from => 'From';
@@ -6342,6 +6341,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get receivedImage_syntheticBadge => 'AI-reconstructed';
+
+  @override
   String get receivedImage_packetInfo => 'Packet info';
 
   @override
@@ -7340,4 +7342,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get messageFilter_ghostIconTooltip => 'Hidden by your message filter';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'Offline · $name';
+  }
+
+  @override
+  String get appBar_offline => 'Offline';
+
+  @override
+  String get appBar_reconnecting => 'Reconnecting…';
+
+  @override
+  String get connectSheet_title => 'Connect a radio';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return 'Reconnect to $name';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => 'Choose a radio';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB or TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => 'Stop reconnecting';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return 'Couldn\'t reach $name. Make sure it is on and nearby.';
+  }
+
+  @override
+  String get chat_composerOffline => 'Connect to a radio to send messages';
 }

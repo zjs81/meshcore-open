@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../helpers/message_search.dart';
+import '../helpers/snack_bar_builder.dart';
 import '../l10n/l10n.dart';
 import 'chat_day_separator.dart';
 import 'empty_state.dart';
@@ -15,6 +17,7 @@ class ChatSearchResults extends StatefulWidget {
   final double textScale;
 
   /// Tapping a result: the chat closes search and jumps to the message.
+  /// Long-pressing one copies its text.
   final ValueChanged<ChatSearchEntry>? onSelect;
 
   const ChatSearchResults({
@@ -156,6 +159,14 @@ class _ResultRow extends StatelessWidget {
     final shown = body.toLowerCase().contains(needle) ? body : entry.text;
     return InkWell(
       onTap: onTap,
+      onLongPress: () async {
+        await Clipboard.setData(ClipboardData(text: shown));
+        if (!context.mounted) return;
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.chat_messageCopied),
+        );
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Column(

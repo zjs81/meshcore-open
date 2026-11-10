@@ -200,12 +200,12 @@ class _ManualPathTraceScreenState extends State<ManualPathTraceScreen> {
                 ButtonSegment(
                   value: true,
                   icon: const Icon(Icons.sync_alt),
-                  label: Text(l10n.map_pathTraceModeRoundTrip),
+                  label: MeshSegmentLabel(l10n.map_pathTraceModeRoundTrip),
                 ),
                 ButtonSegment(
                   value: false,
                   icon: const Icon(Icons.arrow_forward),
-                  label: Text(l10n.map_pathTraceModeAsEntered),
+                  label: MeshSegmentLabel(l10n.map_pathTraceModeAsEntered),
                 ),
               ],
               selected: {_returnPath},

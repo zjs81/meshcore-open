@@ -384,185 +384,180 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_appSettingsSubtitle => '알림, 메시징, 지도 설정';
 
   @override
-  String get settings_export => 'Export';
+  String get settings_export => '내보내기';
 
   @override
-  String get settings_exportSubtitle => 'Export contacts and repeaters as GPX';
+  String get settings_exportSubtitle => '연락처와 중계기를 GPX로 내보내기';
 
   @override
-  String get backupRestore_title => 'Backup & Restore';
+  String get backupRestore_title => '백업 및 복원';
 
   @override
-  String get backupRestore_subtitle =>
-      'Save or restore app data and radio settings';
+  String get backupRestore_subtitle => '앱 데이터와 무전기 설정을 저장하거나 복원합니다';
 
   @override
-  String get backupRestore_import => 'Import';
+  String get backupRestore_import => '가져오기';
 
   @override
-  String get backupRestore_selectImportFile => 'Import File';
+  String get backupRestore_selectImportFile => '파일 가져오기';
 
   @override
-  String get backupRestore_password => 'Password (optional)';
+  String get backupRestore_password => '비밀번호(선택)';
 
   @override
   String get backupRestore_passwordHelp =>
-      'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.';
+      '비밀번호를 설정하면 파일이 암호화됩니다. 비워 두면 개인/채널 키, 기록, 자격 증명이 포함될 수 있는 평문으로 저장됩니다.';
 
   @override
   String get backupRestore_importUnavailable =>
-      'Check the password or choose a supported backup file.';
+      '비밀번호를 확인하거나 지원되는 백업 파일을 선택하세요.';
 
   @override
-  String get backupRestore_items => 'Backup and restore items';
+  String get backupRestore_items => '백업 및 복원 항목';
 
   @override
-  String get backupRestore_nodeSettings => 'Node Settings';
+  String get backupRestore_nodeSettings => '노드 설정';
 
   @override
   String get backupRestore_nodeSettingsDescription =>
-      'Device name, private and public keys, radio settings, and regions';
+      '장치 이름, 개인 키와 공개 키, 무선 설정, 지역';
 
   @override
-  String get backupRestore_deviceName => 'Device Name';
+  String get backupRestore_deviceName => '장치 이름';
 
   @override
-  String get backupRestore_privateKey => 'Private Key (sensitive)';
+  String get backupRestore_privateKey => '개인 키(민감)';
 
   @override
-  String get backupRestore_publicKey => 'Public Key';
+  String get backupRestore_publicKey => '공개 키';
 
   @override
-  String get backupRestore_radioSettings => 'Radio Settings';
+  String get backupRestore_radioSettings => '무선 설정';
 
   @override
-  String get backupRestore_regions => 'Regions';
+  String get backupRestore_regions => '지역';
 
   @override
-  String get backupRestore_location => 'Location';
+  String get backupRestore_location => '위치';
 
   @override
-  String get backupRestore_contactSettings => 'Contact Settings';
+  String get backupRestore_contactSettings => '연락처 설정';
 
   @override
-  String get backupRestore_privacySettings => 'Privacy Settings';
+  String get backupRestore_privacySettings => '개인정보 설정';
 
   @override
-  String get backupRestore_contactsData => 'Contacts';
+  String get backupRestore_contactsData => '연락처';
 
   @override
-  String get backupRestore_perContactSettings => 'Contact Settings and Filters';
+  String get backupRestore_perContactSettings => '연락처별 설정 및 필터';
 
   @override
-  String get backupRestore_contactGroups => 'Contact Groups';
+  String get backupRestore_contactGroups => '연락처 그룹';
 
   @override
-  String get backupRestore_contactHistory => 'Contact History';
+  String get backupRestore_contactHistory => '연락처 기록';
 
   @override
-  String get backupRestore_channelsData => 'Channels';
+  String get backupRestore_channelsData => '채널';
 
   @override
-  String get backupRestore_channelFilters => 'Message Filter Settings';
+  String get backupRestore_channelFilters => '메시지 필터 설정';
 
   @override
-  String get backupRestore_channelSettings => 'Channel Settings';
+  String get backupRestore_channelSettings => '채널 설정';
 
   @override
-  String get backupRestore_communities => 'Communities';
+  String get backupRestore_communities => '커뮤니티';
 
   @override
-  String get backupRestore_channelHistory => 'Channel History';
+  String get backupRestore_channelHistory => '채널 기록';
 
   @override
-  String get backupRestore_locationSettings => 'Location Settings';
+  String get backupRestore_locationSettings => '위치 설정';
 
   @override
-  String get backupRestore_locationSettingsDescription =>
-      'Location, contact settings, and privacy settings';
+  String get backupRestore_locationSettingsDescription => '위치, 연락처 설정, 개인정보 설정';
 
   @override
-  String get backupRestore_appSettings => 'App Settings';
+  String get backupRestore_appSettings => '앱 설정';
 
   @override
-  String get backupRestore_appSettingsDescription =>
-      'App preferences and appearance settings';
+  String get backupRestore_appSettingsDescription => '앱 환경설정 및 화면 설정';
 
   @override
-  String get backupRestore_ipfsKey => 'IPFS API Key (sensitive)';
+  String get backupRestore_ipfsKey => 'IPFS API 키(민감)';
 
   @override
-  String get backupRestore_stadiaMapKey => 'Stadia Maps API Key (sensitive)';
+  String get backupRestore_stadiaMapKey => 'Stadia Maps API 키(민감)';
 
   @override
-  String get backupRestore_contacts => 'Contacts';
+  String get backupRestore_contacts => '연락처';
 
   @override
   String get backupRestore_contactsDescription =>
-      'Contacts, per-contact filters and settings, groups, and message history';
+      '연락처, 연락처별 필터와 설정, 그룹, 메시지 기록';
 
   @override
-  String get backupRestore_discoveredContacts => 'Discovered Contacts';
+  String get backupRestore_discoveredContacts => '발견된 연락처';
 
   @override
   String get backupRestore_discoveredContactsDescription =>
-      'Discovered contacts and their saved details';
+      '발견된 연락처와 저장된 세부 정보';
 
   @override
-  String get backupRestore_channels => 'Channels';
+  String get backupRestore_channels => '채널';
 
   @override
-  String get backupRestore_channelsDescription =>
-      'Channels, channel filters, communities, and message history';
+  String get backupRestore_channelsDescription => '채널, 채널 필터, 커뮤니티, 메시지 기록';
 
   @override
-  String get backupRestore_backup => 'Create Backup';
+  String get backupRestore_backup => '백업 만들기';
 
   @override
-  String get backupRestore_restore => 'Restore Selected';
+  String get backupRestore_restore => '선택 항목 복원';
 
   @override
-  String get backupRestore_backupComplete => 'Backup file created.';
+  String get backupRestore_backupComplete => '백업 파일을 만들었습니다.';
 
   @override
   String get backupRestore_restoreComplete =>
-      'Restore complete. Reconnect if you restored the radio identity.';
+      '복원이 완료되었습니다. 무전기 ID를 복원했다면 다시 연결하세요.';
 
   @override
-  String get backupRestore_missingModelsTitle => 'Models Not Downloaded';
+  String get backupRestore_missingModelsTitle => '모델이 다운로드되지 않음';
 
   @override
   String backupRestore_missingModelsMessage(String models) {
-    return 'The restored settings select models that are not available on this device:\n$models\n\nDownload them now?';
+    return '복원된 설정에서 선택한 모델이 이 기기에 없습니다:\n$models\n\n지금 다운로드할까요?';
   }
 
   @override
-  String get backupRestore_downloadModels => 'Download Models';
+  String get backupRestore_downloadModels => '모델 다운로드';
 
   @override
-  String get backupRestore_downloading => 'Downloading…';
+  String get backupRestore_downloading => '다운로드 중…';
 
   @override
-  String get backupRestore_cancelDownload => 'Cancel Download';
+  String get backupRestore_cancelDownload => '다운로드 취소';
 
   @override
   String backupRestore_failed(String error) {
-    return 'Backup operation failed: $error';
+    return '백업 작업 실패: $error';
   }
 
   @override
-  String get backupRestore_fileTooLarge =>
-      'Backup file is larger than the 100 MB limit.';
+  String get backupRestore_fileTooLarge => '백업 파일이 100 MB 제한보다 큽니다.';
 
   @override
-  String get backupRestore_selectAtLeastOne => 'Select at least one item.';
+  String get backupRestore_selectAtLeastOne => '항목을 하나 이상 선택하세요.';
 
   @override
-  String get backupRestore_replaceIdentityTitle => 'Replace radio identity?';
+  String get backupRestore_replaceIdentityTitle => '무전기 ID를 교체할까요?';
 
   @override
   String get backupRestore_replaceIdentityMessage =>
-      'Restoring Node Settings replaces the connected radio\'s private key and changes its identity. Continue only if this is intended.';
+      '노드 설정을 복원하면 연결된 무전기의 개인 키가 교체되고 ID가 바뀝니다. 의도한 경우에만 계속하세요.';
 
   @override
   String get settings_nodeSettings => '노드 설정';
@@ -1217,7 +1212,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_languageSl => '슬로베니아어';
 
   @override
-  String get appSettings_languagePt => '포르투갈어';
+  String get appSettings_languagePt => '포르투갈어(브라질)';
+
+  @override
+  String get appSettings_languagePtPt => '포르투갈어(포르투갈)';
 
   @override
   String get appSettings_languageIt => '이탈리아어';
@@ -1750,7 +1748,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get contacts_lastSeenHourAgo => '약 1시간';
+  String get contacts_lastSeenHourAgo => '~ 1시간';
 
   @override
   String contacts_lastSeenHoursAgo(int hours) {
@@ -2796,9 +2794,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get map_lastSeen => '마지막으로 목격';
-
-  @override
-  String get map_disconnectConfirm => '이 장치와의 연결을 해제하시겠습니까?';
 
   @override
   String get map_from => '~부터';
@@ -6141,6 +6136,9 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get receivedImage_syntheticBadge => 'AI 재구성';
+
+  @override
   String get receivedImage_packetInfo => '패킷 정보';
 
   @override
@@ -7116,4 +7114,40 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get messageFilter_ghostIconTooltip => '메시지 필터로 숨겨짐';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return '오프라인 · $name';
+  }
+
+  @override
+  String get appBar_offline => '오프라인';
+
+  @override
+  String get appBar_reconnecting => '다시 연결 중…';
+
+  @override
+  String get connectSheet_title => '무전기 연결';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return '$name에 다시 연결';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => '무전기 선택';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB 또는 TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => '재연결 중지';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return '$name에 연결할 수 없습니다. 전원이 켜져 있고 가까이 있는지 확인하세요.';
+  }
+
+  @override
+  String get chat_composerOffline => '메시지를 보내려면 무전기에 연결하세요';
 }

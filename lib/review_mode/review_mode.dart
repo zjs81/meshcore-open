@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../l10n/l10n.dart';
-import '../screens/channels_screen.dart';
+import '../utils/main_navigation.dart';
 
 export 'review_mode_banner.dart';
 export 'review_mode_entry.dart';
@@ -64,5 +64,5 @@ Future<void> enterReviewMode(BuildContext context) async {
   // or cancelled by a disconnect while it was running.
   if (!connector.isReviewMode || !connector.isConnected) return;
 
-  navigator.push(MaterialPageRoute(builder: (_) => const ChannelsScreen()));
+  navigateToMainAfterConnect(navigator.context);
 }

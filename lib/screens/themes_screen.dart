@@ -38,22 +38,25 @@ class ThemesScreen extends StatelessWidget {
             itemBuilder: (_) => [
               PopupMenuItem(
                 onTap: () => _importFile(context, settingsService),
-                child: _MenuRow(
-                  Icons.file_open_outlined,
-                  l10n.themes_importFile,
+                child: MeshMenuItemRow(
+                  icon: Icons.file_open_outlined,
+                  label: l10n.themes_importFile,
                 ),
               ),
               PopupMenuItem(
                 onTap: () => _showImportDialog(context, settingsService),
-                child: _MenuRow(
-                  Icons.content_paste_go_outlined,
-                  l10n.themes_pasteCode,
+                child: MeshMenuItemRow(
+                  icon: Icons.content_paste_go_outlined,
+                  label: l10n.themes_pasteCode,
                 ),
               ),
               PopupMenuItem(
                 enabled: myThemes.isNotEmpty,
                 onTap: () => _exportFile(context, myThemes, 'meshcore-themes'),
-                child: _MenuRow(Icons.ios_share, l10n.themes_exportAll),
+                child: MeshMenuItemRow(
+                  icon: Icons.ios_share,
+                  label: l10n.themes_exportAll,
+                ),
               ),
             ],
           ),
@@ -164,11 +167,17 @@ class ThemesScreen extends StatelessWidget {
               startFrom: preset,
               copyName: l10n.themes_copyName(preset.name),
             ),
-            child: _MenuRow(Icons.tune, l10n.themes_customize),
+            child: MeshMenuItemRow(
+              icon: Icons.tune,
+              label: l10n.themes_customize,
+            ),
           ),
           PopupMenuItem(
             onTap: () => _copyCode(context, preset),
-            child: _MenuRow(Icons.copy, l10n.themes_copyCode),
+            child: MeshMenuItemRow(
+              icon: Icons.copy,
+              label: l10n.themes_copyCode,
+            ),
           ),
         ],
       ),
@@ -186,19 +195,28 @@ class ThemesScreen extends StatelessWidget {
       itemBuilder: (_) => [
         PopupMenuItem(
           onTap: () => _openEditor(context, existing: theme),
-          child: _MenuRow(Icons.edit_outlined, l10n.common_edit),
+          child: MeshMenuItemRow(
+            icon: Icons.edit_outlined,
+            label: l10n.common_edit,
+          ),
         ),
         PopupMenuItem(
           onTap: () => _copyCode(context, theme),
-          child: _MenuRow(Icons.copy, l10n.themes_copyCode),
+          child: MeshMenuItemRow(icon: Icons.copy, label: l10n.themes_copyCode),
         ),
         PopupMenuItem(
           onTap: () => _exportFile(context, [theme], themeFileStem(theme.name)),
-          child: _MenuRow(Icons.ios_share, l10n.themes_exportFile),
+          child: MeshMenuItemRow(
+            icon: Icons.ios_share,
+            label: l10n.themes_exportFile,
+          ),
         ),
         PopupMenuItem(
           onTap: () => _confirmDelete(context, settingsService, theme),
-          child: _MenuRow(Icons.delete_outline, l10n.common_delete),
+          child: MeshMenuItemRow(
+            icon: Icons.delete_outline,
+            label: l10n.common_delete,
+          ),
         ),
       ],
     );
@@ -418,24 +436,6 @@ class _AutoHolidayNote extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _MenuRow extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _MenuRow(this.icon, this.label);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 22),
-        const SizedBox(width: 12),
-        Flexible(child: Text(label)),
-      ],
     );
   }
 }

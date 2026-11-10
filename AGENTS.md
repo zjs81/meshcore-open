@@ -28,7 +28,7 @@
 ## Coding Style & Naming Conventions
 - Follow `flutter_lints`, use `lowerCamelCase`/`UpperCamelCase`/`snake_case`, prefer `StatelessWidget` + `Consumer`, and use `const` constructors.
 - Material widgets only (no Cupertino); center app bar titles (`centerTitle: true`); prefix private members with `_`.
-- Keep screens simple, handle disconnects by returning to the scanner, and avoid premature abstractions (don't add a helper until it is needed in 3+ places).
+- Keep screens simple, keep the main screens open and read-only when the radio disconnects (see `documentation/offline-mode.md`), and avoid premature abstractions (don't add a helper until it is needed in 3+ places).
 - Avoid unnecessary comments, feature flags, and backwards-compatibility shims.
 
 ## Testing Guidelines

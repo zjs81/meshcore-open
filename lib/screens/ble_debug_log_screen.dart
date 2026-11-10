@@ -7,6 +7,7 @@ import '../connector/meshcore_protocol.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/confirm_clear_dialog.dart';
+import '../widgets/mesh_ui.dart';
 import '../helpers/snack_bar_builder.dart';
 
 enum _BleLogView { frames, rawLogRx }
@@ -99,11 +100,11 @@ class _BleDebugLogScreenState extends State<BleDebugLogScreen> {
                     segments: [
                       ButtonSegment(
                         value: _BleLogView.frames,
-                        label: Text(context.l10n.debugLog_frames),
+                        label: MeshSegmentLabel(context.l10n.debugLog_frames),
                       ),
                       ButtonSegment(
                         value: _BleLogView.rawLogRx,
-                        label: Text(context.l10n.debugLog_rawLogRx),
+                        label: MeshSegmentLabel(context.l10n.debugLog_rawLogRx),
                       ),
                     ],
                     selected: {_view},

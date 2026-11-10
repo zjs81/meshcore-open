@@ -25,6 +25,7 @@ import '../widgets/sync_progress_overlay.dart';
 import 'region_management_screen.dart';
 import 'backup_restore_screen.dart';
 import 'export_screen.dart';
+import '../utils/radio_guard.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -238,14 +239,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// Guards a radio command: returns false (after telling the user) when the
   /// radio is not connected, because the connector silently ignores commands
   /// sent while disconnected and a success message would be a lie.
-  bool _ensureConnected(BuildContext context, MeshCoreConnector connector) {
-    if (connector.isConnected) return true;
-    showDismissibleSnackBar(
-      context,
-      content: Text(context.l10n.settings_notConnectedError),
-    );
-    return false;
-  }
+  bool _ensureConnected(BuildContext context, MeshCoreConnector connector) =>
+      ensureRadioConnected(context);
 
   Widget _buildIdentityCardContent(
     BuildContext context,
@@ -1148,14 +1143,13 @@ void _privacySettings(BuildContext context, MeshCoreConnector connector) {
                     : null,
               ),
               const SizedBox(height: 8),
-              SwitchListTile(
-                title: Text(l10n.settings_multiAck),
-                subtitle: Text(l10n.settings_multiAckSubtitle),
+              FeatureToggleRow(
+                title: l10n.settings_multiAck,
+                subtitle: l10n.settings_multiAckSubtitle,
                 value: multiAcks == 1,
                 onChanged: (value) {
                   setDialogState(() => multiAcks = value ? 1 : 0);
                 },
-                contentPadding: EdgeInsets.zero,
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int>(

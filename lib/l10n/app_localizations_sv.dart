@@ -397,185 +397,190 @@ class AppLocalizationsSv extends AppLocalizations {
       'Notifieringar, meddelanden och kartinställningar';
 
   @override
-  String get settings_export => 'Export';
+  String get settings_export => 'Exportera';
 
   @override
-  String get settings_exportSubtitle => 'Export contacts and repeaters as GPX';
+  String get settings_exportSubtitle =>
+      'Exportera kontakter och repeatrar som GPX';
 
   @override
-  String get backupRestore_title => 'Backup & Restore';
+  String get backupRestore_title => 'Säkerhetskopia och återställning';
 
   @override
   String get backupRestore_subtitle =>
-      'Save or restore app data and radio settings';
+      'Spara eller återställ appdata och radioinställningar';
 
   @override
-  String get backupRestore_import => 'Import';
+  String get backupRestore_import => 'Importera';
 
   @override
-  String get backupRestore_selectImportFile => 'Import File';
+  String get backupRestore_selectImportFile => 'Importera fil';
 
   @override
-  String get backupRestore_password => 'Password (optional)';
+  String get backupRestore_password => 'Lösenord (valfritt)';
 
   @override
   String get backupRestore_passwordHelp =>
-      'A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.';
+      'Ett lösenord krypterar filen. Utan lösenord sparas klartext som kan innehålla privata nycklar/kanalnycklar, historik och inloggningsuppgifter.';
 
   @override
   String get backupRestore_importUnavailable =>
-      'Check the password or choose a supported backup file.';
+      'Kontrollera lösenordet eller välj en fil som stöds.';
 
   @override
-  String get backupRestore_items => 'Backup and restore items';
+  String get backupRestore_items =>
+      'Objekt för säkerhetskopiering och återställning';
 
   @override
-  String get backupRestore_nodeSettings => 'Node Settings';
+  String get backupRestore_nodeSettings => 'Nodinställningar';
 
   @override
   String get backupRestore_nodeSettingsDescription =>
-      'Device name, private and public keys, radio settings, and regions';
+      'Enhetsnamn, privata och publika nycklar, radioinställningar och regioner';
 
   @override
-  String get backupRestore_deviceName => 'Device Name';
+  String get backupRestore_deviceName => 'Enhetsnamn';
 
   @override
-  String get backupRestore_privateKey => 'Private Key (sensitive)';
+  String get backupRestore_privateKey => 'Privat nyckel (känslig)';
 
   @override
-  String get backupRestore_publicKey => 'Public Key';
+  String get backupRestore_publicKey => 'Publik nyckel';
 
   @override
-  String get backupRestore_radioSettings => 'Radio Settings';
+  String get backupRestore_radioSettings => 'Radioinställningar';
 
   @override
-  String get backupRestore_regions => 'Regions';
+  String get backupRestore_regions => 'Regioner';
 
   @override
-  String get backupRestore_location => 'Location';
+  String get backupRestore_location => 'Plats';
 
   @override
-  String get backupRestore_contactSettings => 'Contact Settings';
+  String get backupRestore_contactSettings => 'Kontaktinställningar';
 
   @override
-  String get backupRestore_privacySettings => 'Privacy Settings';
+  String get backupRestore_privacySettings => 'Integritetsinställningar';
 
   @override
-  String get backupRestore_contactsData => 'Contacts';
+  String get backupRestore_contactsData => 'Kontakter';
 
   @override
-  String get backupRestore_perContactSettings => 'Contact Settings and Filters';
+  String get backupRestore_perContactSettings =>
+      'Kontaktinställningar och filter';
 
   @override
-  String get backupRestore_contactGroups => 'Contact Groups';
+  String get backupRestore_contactGroups => 'Kontaktgrupper';
 
   @override
-  String get backupRestore_contactHistory => 'Contact History';
+  String get backupRestore_contactHistory => 'Kontakthistorik';
 
   @override
-  String get backupRestore_channelsData => 'Channels';
+  String get backupRestore_channelsData => 'Kanaler';
 
   @override
-  String get backupRestore_channelFilters => 'Message Filter Settings';
+  String get backupRestore_channelFilters =>
+      'Inställningar för meddelandefilter';
 
   @override
-  String get backupRestore_channelSettings => 'Channel Settings';
+  String get backupRestore_channelSettings => 'Kanalinställningar';
 
   @override
-  String get backupRestore_communities => 'Communities';
+  String get backupRestore_communities => 'Communityn';
 
   @override
-  String get backupRestore_channelHistory => 'Channel History';
+  String get backupRestore_channelHistory => 'Kanalhistorik';
 
   @override
-  String get backupRestore_locationSettings => 'Location Settings';
+  String get backupRestore_locationSettings => 'Platsinställningar';
 
   @override
   String get backupRestore_locationSettingsDescription =>
-      'Location, contact settings, and privacy settings';
+      'Plats, kontaktinställningar och integritetsinställningar';
 
   @override
-  String get backupRestore_appSettings => 'App Settings';
+  String get backupRestore_appSettings => 'Appinställningar';
 
   @override
   String get backupRestore_appSettingsDescription =>
-      'App preferences and appearance settings';
+      'Appinställningar och utseende';
 
   @override
-  String get backupRestore_ipfsKey => 'IPFS API Key (sensitive)';
+  String get backupRestore_ipfsKey => 'IPFS API-nyckel (känslig)';
 
   @override
-  String get backupRestore_stadiaMapKey => 'Stadia Maps API Key (sensitive)';
+  String get backupRestore_stadiaMapKey =>
+      'API-nyckel för Stadia Maps (känslig)';
 
   @override
-  String get backupRestore_contacts => 'Contacts';
+  String get backupRestore_contacts => 'Kontakter';
 
   @override
   String get backupRestore_contactsDescription =>
-      'Contacts, per-contact filters and settings, groups, and message history';
+      'Kontakter, filter och inställningar per kontakt, grupper och meddelandehistorik';
 
   @override
-  String get backupRestore_discoveredContacts => 'Discovered Contacts';
+  String get backupRestore_discoveredContacts => 'Upptäckta kontakter';
 
   @override
   String get backupRestore_discoveredContactsDescription =>
-      'Discovered contacts and their saved details';
+      'Upptäckta kontakter och deras sparade uppgifter';
 
   @override
-  String get backupRestore_channels => 'Channels';
+  String get backupRestore_channels => 'Kanaler';
 
   @override
   String get backupRestore_channelsDescription =>
-      'Channels, channel filters, communities, and message history';
+      'Kanaler, kanalfilter, communityn och meddelandehistorik';
 
   @override
-  String get backupRestore_backup => 'Create Backup';
+  String get backupRestore_backup => 'Skapa säkerhetskopia';
 
   @override
-  String get backupRestore_restore => 'Restore Selected';
+  String get backupRestore_restore => 'Återställ markerade';
 
   @override
-  String get backupRestore_backupComplete => 'Backup file created.';
+  String get backupRestore_backupComplete => 'Säkerhetskopia skapad.';
 
   @override
   String get backupRestore_restoreComplete =>
-      'Restore complete. Reconnect if you restored the radio identity.';
+      'Återställningen är klar. Återanslut om du återställde radions identitet.';
 
   @override
-  String get backupRestore_missingModelsTitle => 'Models Not Downloaded';
+  String get backupRestore_missingModelsTitle => 'Modeller inte nedladdade';
 
   @override
   String backupRestore_missingModelsMessage(String models) {
-    return 'The restored settings select models that are not available on this device:\n$models\n\nDownload them now?';
+    return 'De återställda inställningarna väljer modeller som inte finns på den här enheten:\n$models\n\nLadda ned dem nu?';
   }
 
   @override
-  String get backupRestore_downloadModels => 'Download Models';
+  String get backupRestore_downloadModels => 'Ladda ned modeller';
 
   @override
-  String get backupRestore_downloading => 'Downloading…';
+  String get backupRestore_downloading => 'Laddar ned…';
 
   @override
-  String get backupRestore_cancelDownload => 'Cancel Download';
+  String get backupRestore_cancelDownload => 'Avbryt nedladdning';
 
   @override
   String backupRestore_failed(String error) {
-    return 'Backup operation failed: $error';
+    return 'Säkerhetskopieringen misslyckades: $error';
   }
 
   @override
   String get backupRestore_fileTooLarge =>
-      'Backup file is larger than the 100 MB limit.';
+      'Säkerhetskopian är större än gränsen på 100 MB.';
 
   @override
-  String get backupRestore_selectAtLeastOne => 'Select at least one item.';
+  String get backupRestore_selectAtLeastOne => 'Välj minst ett objekt.';
 
   @override
-  String get backupRestore_replaceIdentityTitle => 'Replace radio identity?';
+  String get backupRestore_replaceIdentityTitle => 'Ersätta radions identitet?';
 
   @override
   String get backupRestore_replaceIdentityMessage =>
-      'Restoring Node Settings replaces the connected radio\'s private key and changes its identity. Continue only if this is intended.';
+      'Att återställa nodinställningarna ersätter den anslutna radions privata nyckel och ändrar dess identitet. Fortsätt bara om det är avsett.';
 
   @override
   String get settings_nodeSettings => 'Nodinställningar';
@@ -1250,7 +1255,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get appSettings_languageSl => 'Sloveniska';
 
   @override
-  String get appSettings_languagePt => 'Portugisiska';
+  String get appSettings_languagePt => 'Portugisiska (Brasilien)';
+
+  @override
+  String get appSettings_languagePtPt => 'Portugisiska (Portugal)';
 
   @override
   String get appSettings_languageIt => 'Italienska';
@@ -1799,27 +1807,27 @@ class AppLocalizationsSv extends AppLocalizations {
   String get contacts_noMembers => 'Inga medlemmar';
 
   @override
-  String get contacts_lastSeenNow => 'Senast synlig nu';
+  String get contacts_lastSeenNow => 'nyss';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
-    return 'Senast sedd $minutes min sedan';
+    return '~ $minutes min';
   }
 
   @override
-  String get contacts_lastSeenHourAgo => 'Senast sedd för 1 timme sedan';
+  String get contacts_lastSeenHourAgo => '~ 1 timme';
 
   @override
   String contacts_lastSeenHoursAgo(int hours) {
-    return 'Senast sedd $hours timmar sedan';
+    return '~ $hours timmar';
   }
 
   @override
-  String get contacts_lastSeenDayAgo => 'Senast sedd för 1 dag sedan';
+  String get contacts_lastSeenDayAgo => '~ 1 dag';
 
   @override
   String contacts_lastSeenDaysAgo(int days) {
-    return 'Senast synlig $days dagar sedan';
+    return '~ $days dagar';
   }
 
   @override
@@ -2534,10 +2542,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get routing_title => 'Ruttplanering';
 
   @override
-  String get routing_modeAuto => 'Automatisk';
+  String get routing_modeAuto => 'Auto';
 
   @override
-  String get routing_modeFlood => 'Flood-trafik';
+  String get routing_modeFlood => 'Flood';
 
   @override
   String get routing_modeManual => 'Manuell';
@@ -2884,10 +2892,6 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get map_lastSeen => 'Senast sedd';
-
-  @override
-  String get map_disconnectConfirm =>
-      'Är du säker på att du vill koppla från enheten?';
 
   @override
   String get map_from => 'Från';
@@ -4852,7 +4856,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get channelPath_unknownPath => 'Okänd';
 
   @override
-  String get channelPath_floodPath => 'Flood-trafik';
+  String get channelPath_floodPath => 'Flood';
 
   @override
   String get channelPath_directPath => 'Direkt';
@@ -6377,6 +6381,9 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
+  String get receivedImage_syntheticBadge => 'AI-rekonstruerad';
+
+  @override
   String get receivedImage_packetInfo => 'Paketinformation';
 
   @override
@@ -7384,4 +7391,41 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get messageFilter_ghostIconTooltip => 'Dolt av ditt meddelandefilter';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'Offline · $name';
+  }
+
+  @override
+  String get appBar_offline => 'Offline';
+
+  @override
+  String get appBar_reconnecting => 'Återansluter…';
+
+  @override
+  String get connectSheet_title => 'Anslut en radio';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return 'Återanslut till $name';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => 'Välj en radio';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB eller TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => 'Sluta återansluta';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return 'Kunde inte nå $name. Kontrollera att den är påslagen och i närheten.';
+  }
+
+  @override
+  String get chat_composerOffline =>
+      'Anslut till en radio för att skicka meddelanden';
 }

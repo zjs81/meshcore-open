@@ -33,8 +33,7 @@ import '../models/channel.dart';
 import '../models/channel_message.dart';
 import '../models/image_codec_support.dart' show aeicRatePointForUi;
 import '../models/message_filter.dart';
-import '../services/app_settings_service.dart'
-    show AppSettingsService, ChannelNotificationMode;
+import '../services/app_settings_service.dart' show AppSettingsService;
 import '../services/chat_text_scale_service.dart';
 import '../services/image_chunk_transport.dart';
 import '../services/image_codec_service.dart';
@@ -44,6 +43,7 @@ import '../services/received_image_store.dart';
 import '../services/translation_service.dart';
 import '../utils/image_save.dart';
 import '../utils/lora_airtime.dart';
+import '../utils/radio_guard.dart';
 import '../widgets/marker_label_dialog.dart';
 import '../widgets/received_image_message.dart';
 import '../widgets/channel_notification_mode_sheet.dart';
@@ -73,6 +73,7 @@ import '../widgets/share_contact_sheet.dart';
 import '../widgets/shared_contact_card.dart';
 import 'app_settings_screen.dart';
 import 'channel_chat_transcript_grouping.dart';
+import 'channels_screen.dart' show confirmDeleteChannel, showEditChannelSheet;
 import 'channel_message_path_screen.dart';
 import 'map_screen.dart';
 import 'region_management_screen.dart';
@@ -226,7 +227,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   /// (see [_onCoveringRouteStatus]).
   Future<void> _loadCommunities() async {
     final connector = context.read<MeshCoreConnector>();
-    _communityStore.setPublicKeyHex = connector.selfPublicKeyHex;
+    _communityStore.setPublicKeyHex = connector.storageKeyHex;
     final communities = await _communityStore.loadCommunities();
     if (mounted) {
       setState(() {
@@ -547,6 +548,129 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     });
   }
 
+  Widget _menuRow(IconData icon, String label, {Color? color}) =>
+      MeshMenuItemRow(icon: icon, label: label, color: color);
+
+  // Region lives here (and on a tap of the title) so the channel name keeps
+  // its room in the app bar; so does the notification mode.
+  Widget _buildOverflowMenu(BuildContext context) {
+    final muteKey = widget.channel.muteKey;
+    final error = Theme.of(context).colorScheme.error;
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.more_vert),
+      onSelected: (value) {
+        final connector = context.read<MeshCoreConnector>();
+        switch (value) {
+          case 'messageFilter':
+            _toggleChannelFiltering();
+          case 'notifications':
+            showChannelNotificationModeSheet(context, muteKey);
+          case 'region':
+            openRegionSelectDialog(widget.channel);
+          case 'editChannel':
+            showEditChannelSheet(
+              context,
+              connector,
+              widget.channel,
+              onSaved: _onChannelEdited,
+            );
+          case 'background':
+            showChatBackgroundSheet(
+              context,
+              ChatBackgroundService.channelKey(widget.channel),
+            );
+          case 'clearChat':
+            _confirmClearChat();
+          case 'deleteChannel':
+            confirmDeleteChannel(
+              context,
+              connector,
+              widget.channel,
+              onDeleted: () {
+                if (mounted) Navigator.of(context).pop();
+              },
+            );
+        }
+      },
+      itemBuilder: (context) {
+        final notificationMode = context
+            .read<AppSettingsService>()
+            .getChannelNotificationMode(muteKey);
+        final readOnly = isRadioReadOnly(context.read<MeshCoreConnector>());
+        return [
+          if (_messageFilter case final filter? when filter.settings.enabled)
+            PopupMenuItem(
+              value: 'messageFilter',
+              child: _menuRow(
+                filter.isChannelFiltered(_messageFilterChannelId)
+                    ? Icons.check_box
+                    : Icons.check_box_outline_blank,
+                context.l10n.messageFilter_channelToggle,
+              ),
+            ),
+          PopupMenuItem(
+            value: 'notifications',
+            child: _menuRow(
+              channelNotificationModeIcon(notificationMode),
+              context.l10n.channels_notificationModeTooltip(
+                channelNotificationModeLabel(context, notificationMode),
+              ),
+            ),
+          ),
+          PopupMenuItem(
+            value: 'region',
+            child: _menuRow(
+              Icons.landscape,
+              context.l10n.channels_regionSelect_Title,
+            ),
+          ),
+          PopupMenuItem(
+            value: 'editChannel',
+            enabled: !readOnly,
+            child: _menuRow(Icons.settings, context.l10n.channels_editChannel),
+          ),
+          PopupMenuItem(
+            value: 'background',
+            child: _menuRow(Icons.wallpaper, context.l10n.chatBackground_title),
+          ),
+          PopupMenuItem(
+            value: 'clearChat',
+            enabled: !readOnly,
+            child: _menuRow(
+              Icons.delete,
+              context.l10n.contact_clearChat,
+              color: readOnly ? null : error,
+            ),
+          ),
+          PopupMenuItem(
+            value: 'deleteChannel',
+            enabled: !readOnly,
+            child: _menuRow(
+              Icons.delete_forever,
+              context.l10n.channels_deleteChannel,
+              color: readOnly ? null : error,
+            ),
+          ),
+        ];
+      },
+    );
+  }
+
+  /// A rename or new PSK changes what this screen is keyed on (mute key,
+  /// type, stored history), so reopen it on the saved channel.
+  void _onChannelEdited(Channel saved) {
+    if (!mounted) return;
+    final old = widget.channel;
+    if (saved.name == old.name && saved.pskHex == old.pskHex) return;
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder<void>(
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+        pageBuilder: (_, _, _) => ChannelChatScreen(channel: saved),
+      ),
+    );
+  }
+
   Future<List<ChatSearchEntry>> _loadSearchEntries() async {
     final connector = context.read<MeshCoreConnector>();
     final messages = await connector.allChannelMessagesForSearch(
@@ -602,8 +726,12 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                       onTap: () => openRegionSelectDialog(widget.channel),
                       child: Row(
                         children: [
-                          _channelIcon(widget.channel),
-                          const SizedBox(width: 8),
+                          // A hashtag name already starts with '#'; a # icon
+                          // before it would read "# #name".
+                          if (!widget.channel.name.startsWith('#')) ...[
+                            _channelIcon(widget.channel),
+                            const SizedBox(width: 8),
+                          ],
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -681,106 +809,20 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                     ),
               centerTitle: false,
               bottom: const SyncProgressAppBarBottom(),
-              actions: [
-                Consumer<AppSettingsService>(
-                  builder: (context, settings, _) {
-                    final muteKey = widget.channel.muteKey;
-                    final notificationMode = settings
-                        .getChannelNotificationMode(muteKey);
-                    return IconButton(
-                      tooltip: context.l10n.channels_notificationModeTooltip(
-                        channelNotificationModeLabel(context, notificationMode),
+              actionsPadding: const EdgeInsetsDirectional.only(end: 4),
+              // While searching the field gets the whole bar; the leading
+              // arrow closes the search.
+              actions: _searching
+                  ? null
+                  : [
+                      const RadioStatsIconButton(),
+                      IconButton(
+                        tooltip: context.l10n.chatSearch_tooltip,
+                        icon: const Icon(Icons.search),
+                        onPressed: _openSearch,
                       ),
-                      icon: Icon(
-                        notificationMode == ChannelNotificationMode.muted
-                            ? Icons.notifications_off
-                            : notificationMode ==
-                                  ChannelNotificationMode.mentionsOnly
-                            ? Icons.notification_important
-                            : Icons.notifications,
-                      ),
-                      onPressed: () =>
-                          showChannelNotificationModeSheet(context, muteKey),
-                    );
-                  },
-                ),
-                const RadioStatsIconButton(),
-                if (!_searching)
-                  IconButton(
-                    tooltip: context.l10n.chatSearch_tooltip,
-                    icon: const Icon(Icons.search),
-                    onPressed: _openSearch,
-                  ),
-                PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_vert),
-                  onSelected: (value) {
-                    if (value == 'region') {
-                      openRegionSelectDialog(widget.channel);
-                    } else if (value == 'background') {
-                      showChatBackgroundSheet(
-                        context,
-                        ChatBackgroundService.channelKey(widget.channel),
-                      );
-                    } else if (value == 'clearChat') {
-                      _confirmClearChat();
-                    } else if (value == 'messageFilter') {
-                      _toggleChannelFiltering();
-                    }
-                  },
-                  // Region lives here (and on a tap of the title) so the channel
-                  // name keeps its room in the app bar.
-                  itemBuilder: (context) => [
-                    if (_messageFilter case final filter?
-                        when filter.settings.enabled)
-                      CheckedPopupMenuItem(
-                        value: 'messageFilter',
-                        checked: filter.isChannelFiltered(
-                          _messageFilterChannelId,
-                        ),
-                        child: Text(context.l10n.messageFilter_channelToggle),
-                      ),
-                    PopupMenuItem(
-                      value: 'region',
-                      child: Row(
-                        children: [
-                          const Icon(Icons.landscape, size: 20),
-                          const SizedBox(width: 12),
-                          Text(context.l10n.channels_regionSelect_Title),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: 'background',
-                      child: Row(
-                        children: [
-                          const Icon(Icons.wallpaper, size: 20),
-                          const SizedBox(width: 12),
-                          Text(context.l10n.chatBackground_title),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: 'clearChat',
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.delete,
-                            size: 20,
-                            color: Theme.of(context).colorScheme.error,
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            context.l10n.contact_clearChat,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                      _buildOverflowMenu(context),
+                    ],
             ),
       body: _showSearchResults
           ? _buildSearchResults(_loadSearchEntries)
@@ -1432,7 +1474,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     if (_selecting) {
       return _buildSelectableRow(message, messageBody);
     }
-    if (!isOutgoing && !PlatformInfo.isDesktop) {
+    if (!isOutgoing &&
+        !PlatformInfo.isDesktop &&
+        !isRadioReadOnly(context.read<MeshCoreConnector>())) {
       return _SwipeReplyBubble(
         maxSwipeOffset: maxSwipeOffset,
         replySwipeThreshold: replySwipeThreshold,
@@ -1917,6 +1961,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   }) async {
     final l10n = context.l10n;
 
+    // The image preview may still be open when the link drops.
+    if (!ensureRadioConnected(context)) return;
     if (!connector.supportsChannelData) {
       showDismissibleSnackBar(
         context,
@@ -2312,7 +2358,6 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                     streamId: entry.streamId,
                     isOutgoing: isOutgoing,
                     fallbackTextColor: textColor,
-                    strings: _receivedImageStrings(context),
                     // The placeholder's "no model installed" tap lands here.
                     // `focusImageMessages` scrolls straight to the image block
                     // — it sits below six other sections, so the plain screen
@@ -2354,6 +2399,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
   void _showImageActions(ReceivedImageEntry entry) {
     final l10n = context.l10n;
+    final readOnly = isRadioReadOnly(context.read<MeshCoreConnector>());
     final canSave = entry.state == ReceivedImageState.decoded;
     showMeshSheet(
       context,
@@ -2388,13 +2434,18 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               ),
               const Divider(height: 1),
               ListTile(
+                enabled: !readOnly,
                 leading: Icon(
                   Icons.delete_outline,
-                  color: Theme.of(context).colorScheme.error,
+                  color: readOnly ? null : Theme.of(context).colorScheme.error,
                 ),
                 title: Text(
                   l10n.common_delete,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  style: TextStyle(
+                    color: readOnly
+                        ? null
+                        : Theme.of(context).colorScheme.error,
+                  ),
                 ),
                 onTap: () async {
                   Navigator.pop(sheetContext);
@@ -2731,7 +2782,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   /// Shares the radio's own position as a map marker on this channel. It is
   /// not a reply, so any reply in progress stays open for the next message;
   /// it shares the text send guard and cooldown.
-  Future<void> _shareMyLocation(MeshCoreConnector connector) {
+  Future<void> _shareMyLocation(MeshCoreConnector connector) async {
+    if (!ensureRadioConnected(context)) return;
     return shareMyLocationMarker(
       context: context,
       connector: connector,
@@ -2754,11 +2806,15 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final replyTo = _replyingToMessage;
     final replyRegion = _useReplyRegion ? replyTo?.region : null;
 
+    // Before anything clears the text box: offline the draft must stay.
+    if (!ensureRadioConnected(context)) return;
     if (!_sendGuard.checkCooldown(context)) return;
 
     final connector = context.read<MeshCoreConnector>();
     final translation = await translateOutgoingText(context, text);
     if (translation == null || !mounted) return;
+    // The link can drop while the translation runs.
+    if (!ensureRadioConnected(context)) return;
 
     String messageText = translation.text;
     if (replyTo != null) {
@@ -2819,6 +2875,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   }
 
   void _showMessageActions(ChannelMessage message) {
+    final readOnly = isRadioReadOnly(context.read<MeshCoreConnector>());
     final translationService = context.read<TranslationService>();
     final canTranslateMessage =
         translationService.canTranslateIncoming(
@@ -2853,6 +2910,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                     : null,
               ),
               ListTile(
+                enabled: !readOnly,
                 leading: const Icon(Icons.reply),
                 title: Text(context.l10n.chat_reply),
                 onTap: () {
@@ -2896,6 +2954,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               // Can't react to your own messages
               if (!message.isOutgoing)
                 ListTile(
+                  enabled: !readOnly,
                   leading: const Icon(Icons.add_reaction_outlined),
                   title: Text(context.l10n.chat_addReaction),
                   onTap: () {
@@ -2939,6 +2998,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                 const Divider(height: 1),
                 if (message.isFiltered)
                   ListTile(
+                    enabled: !readOnly,
                     leading: const Icon(Icons.visibility_outlined),
                     title: Text(context.l10n.messageFilter_notSpam),
                     onTap: () {
@@ -2948,6 +3008,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                   )
                 else
                   ListTile(
+                    enabled: !readOnly,
                     leading: const Icon(Icons.visibility_off_outlined),
                     title: Text(context.l10n.messageFilter_markSpam),
                     onTap: () {
@@ -2975,13 +3036,18 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               ],
               const Divider(height: 1),
               ListTile(
+                enabled: !readOnly,
                 leading: Icon(
                   Icons.delete_outline,
-                  color: Theme.of(context).colorScheme.error,
+                  color: readOnly ? null : Theme.of(context).colorScheme.error,
                 ),
                 title: Text(
                   context.l10n.common_delete,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  style: TextStyle(
+                    color: readOnly
+                        ? null
+                        : Theme.of(context).colorScheme.error,
+                  ),
                 ),
                 onTap: () async {
                   Navigator.pop(sheetContext);
@@ -3077,8 +3143,12 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final l10n = context.l10n;
     final selected = _selectedMessages();
     final filter = _messageFilter;
+    // Offline the stored conversation is read-only: no delete or spam marks.
+    final readOnly = context.radioReadOnly;
     final filterCoversChannel =
-        filter != null && filter.isChannelFiltered(_messageFilterChannelId);
+        !readOnly &&
+        filter != null &&
+        filter.isChannelFiltered(_messageFilterChannelId);
     final spamCandidates = filterCoversChannel
         ? selected.where(_canMarkSpam).toList()
         : const <ChannelMessage>[];
@@ -3108,7 +3178,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
         IconButton(
           tooltip: l10n.common_delete,
           icon: const Icon(Icons.delete_outline),
-          onPressed: selected.isEmpty ? null : () => _bulkDelete(selected),
+          onPressed: selected.isEmpty || readOnly
+              ? null
+              : () => _bulkDelete(selected),
         ),
         PopupMenuButton<String>(
           icon: const Icon(Icons.more_vert),
@@ -3373,6 +3445,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   }
 
   void _sendReaction(ChannelMessage message, String emoji) {
+    if (!ensureRadioConnected(context)) return;
     final connector = context.read<MeshCoreConnector>();
     final emojiIndex = ReactionHelper.emojiToIndex(emoji);
     if (emojiIndex == null) return; // Unknown emoji, skip
@@ -3387,7 +3460,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       message: context.l10n.channels_clearChatConfirm,
     );
     if (confirmed) {
-      if (!mounted) return;
+      if (!mounted || !ensureRadioConnected(context)) return;
       context.read<MeshCoreConnector>().clearMessagesForChannel(
         widget.channel.index,
       );
@@ -3404,6 +3477,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   }
 
   Future<void> _deleteMessage(ChannelMessage message) async {
+    if (!ensureRadioConnected(context)) return;
     await context.read<MeshCoreConnector>().deleteChannelMessage(message);
     if (!mounted) return;
     showDismissibleSnackBar(
@@ -4025,29 +4099,6 @@ class _TranscriptLayout {
         ? _ChannelChatRow(message: messages[code])
         : _ChannelChatRow(image: _images[-code - 1]);
   }
-}
-
-/// [ReceivedImageStrings] built from the app's localizations.
-///
-/// The R6 badge and caption are deliberately absent from this class — they are
-/// private consts in `received_image_message.dart` and must stay mandatory.
-ReceivedImageStrings _receivedImageStrings(BuildContext context) {
-  final l10n = context.l10n;
-  return ReceivedImageStrings(
-    incoming: l10n.receivedImage_incoming,
-    queued: l10n.receivedImage_queued,
-    tapToDecode: l10n.receivedImage_tapToDecode,
-    awaiting: l10n.receivedImage_awaiting,
-    tapToProcess: l10n.receivedImage_tapToProcess,
-    decoding: l10n.receivedImage_decoding,
-    incomplete: l10n.receivedImage_incomplete,
-    corrupt: l10n.receivedImage_corrupt,
-    decoderMissing: l10n.receivedImage_decoderMissing,
-    evicted: l10n.receivedImage_evicted,
-    retry: l10n.receivedImage_retry,
-    decodeAgain: l10n.receivedImage_decodeAgain,
-    openSettings: l10n.receivedImage_openSettings,
-  );
 }
 
 /// A message's route chip and region chip: stacked by default, or side by

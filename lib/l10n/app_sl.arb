@@ -58,7 +58,7 @@
   "scanner_scanning": "Skeniram za naprave...",
   "scanner_connecting": "Povezujem se...",
   "scanner_disconnecting": "Odklapljam se...",
-  "scanner_notConnected": "Nezavezan",
+  "scanner_notConnected": "Ni povezave",
   "scanner_connectedTo": "Povezan s {deviceName}",
   "@scanner_connectedTo": {
     "placeholders": {
@@ -68,7 +68,7 @@
     }
   },
   "scanner_searchingDevices": "Iskanje naprav MeshCore...",
-  "scanner_tapToScan": "Nagneš na skeniranje za najdene naprave MeshCore.",
+  "scanner_tapToScan": "Tapnite Skeniraj za iskanje naprav MeshCore",
   "scanner_connectionFailed": "Pošlo je z povezavo: {error}",
   "@scanner_connectionFailed": {
     "placeholders": {
@@ -176,7 +176,7 @@
   "appSettings_languageDe": "Nemščina",
   "appSettings_languagePl": "Poljski",
   "appSettings_languageSl": "Slovenščina",
-  "appSettings_languagePt": "Portugalski",
+  "appSettings_languagePt": "Portugalski (Brazilija)",
   "appSettings_languageIt": "Italijanščina",
   "appSettings_languageZh": "中文",
   "appSettings_languageSv": "Švedščina",
@@ -317,8 +317,8 @@
   "contacts_filterContacts": "Filtriraj stik\\,...",
   "contacts_noContactsMatchFilter": "Noben stik ne ustreza vašemu kriteriju.",
   "contacts_noMembers": "Ni članov.",
-  "contacts_lastSeenNow": "Nazadnje viden zdaj",
-  "contacts_lastSeenMinsAgo": "Zadnjič viden pred {minutes} minutami",
+  "contacts_lastSeenNow": "pravkar",
+  "contacts_lastSeenMinsAgo": "~ {minutes} min",
   "@contacts_lastSeenMinsAgo": {
     "placeholders": {
       "minutes": {
@@ -326,8 +326,8 @@
       }
     }
   },
-  "contacts_lastSeenHourAgo": "Zadnjič viden pred 1 uro.",
-  "contacts_lastSeenHoursAgo": "Zadnjič viden pred {hours} urami",
+  "contacts_lastSeenHourAgo": "~ 1 ura",
+  "contacts_lastSeenHoursAgo": "~ {hours} ur",
   "@contacts_lastSeenHoursAgo": {
     "placeholders": {
       "hours": {
@@ -335,8 +335,8 @@
       }
     }
   },
-  "contacts_lastSeenDayAgo": "Zadnjič viden pred 1 dnem",
-  "contacts_lastSeenDaysAgo": "Zadnjič viden pred {days} dnem",
+  "contacts_lastSeenDayAgo": "~ 1 dan",
+  "contacts_lastSeenDaysAgo": "~ {days} dni",
   "@contacts_lastSeenDaysAgo": {
     "placeholders": {
       "days": {
@@ -608,7 +608,7 @@
   "chat_clearPathSubtitle": "Ob naslednji pošiljanju znova zbrati.",
   "chat_pathCleared": "Pot je očiščena. Naslednje sporočilo bo ponovno odkril pot.",
   "chat_floodModeSubtitle": "Uporabi tipko usmerjevanja v meniju aplikacije.",
-  "chat_floodModeEnabled": "Narejena je bila omrežna modaliteta. Vklopi jo znova preko ikone v meniju aplikacije.",
+  "chat_floodModeEnabled": "Flood način je vklopljen. Preklopite nazaj z ikono usmerjanja v menijski vrstici.",
   "chat_fullPath": "Polna pot",
   "chat_pathDetailsNotAvailable": "Podrobnosti poti zaenkrat niso na voljo. Poskusite poslati sporočilo za osvežitev.",
   "chat_pathSetHops": "Pot nastavljen: {hopCount} {hopCount, plural, =1{hop} other{hops}} - {status}",
@@ -631,7 +631,7 @@
   "chat_compressOutgoingMessages": "Stisnite izhodne sporočila",
   "chat_floodForced": "Flood (vsiljeno)",
   "chat_directForced": "Nezglašen (nasilje)",
-  "chat_hopsForced": "{count} skoki (nasilje)",
+  "chat_hopsForced": "{count} skokov (vsiljeno)",
   "@chat_hopsForced": {
     "placeholders": {
       "count": {
@@ -689,7 +689,6 @@
   "map_pinPrivate": "Zasebno označit",
   "map_pinPublic": "Oznaka (javna)",
   "map_lastSeen": "Zadnjič Zazet",
-  "map_disconnectConfirm": "Ste prepričani, da želite se odklopiti s tega naprave?",
   "map_from": "Od",
   "map_source": "Vir",
   "map_flags": "Zapestnice",
@@ -1536,7 +1535,7 @@
       }
     }
   },
-  "channelPath_noHopDetailsAvailable": "Niso na voljo podrobnosti o letu.",
+  "channelPath_noHopDetailsAvailable": "Za ta paket ni podrobnosti o skokih.",
   "channelPath_unknownRepeater": "Nepoznati ponovitelj",
   "listFilter_tooltip": "Filtri in vrstiči",
   "listFilter_sortBy": "Sortiraj po",
@@ -1573,7 +1572,7 @@
   "channels_joinHashtagChannel": "Pridružite se Kanalu z Hashtagom",
   "channels_joinHashtagChannelDesc": "Kdor karkoli, lahko se pridruži hashtag kanalom.",
   "channels_scanQrCode": "Skeniraj QR kodo",
-  "channels_scanQrCodeComingSoon": "Prihajajoča",
+  "channels_scanQrCodeComingSoon": "Kmalu",
   "channels_enterHashtag": "Vnesite hashtag",
   "channels_hashtagHint": "npr. #ekipa",
   "@neighbors_unknownContact": {
@@ -1760,7 +1759,7 @@
   "appSettings_enableMessageTracingSubtitle": "Pokaži tudi število ponovitev in čase potovanja. Dolgo pritisnite sporočilo in izberite Pot za vse podrobnosti.",
   "contacts_contactImported": "Kontakt je bil uvožen.",
   "contacts_contactImportFailed": "Kontakt ni bil uspešno uvožen.",
-  "contacts_zeroHopAdvert": "Oglas brez posrednikov",
+  "contacts_zeroHopAdvert": "Zero-hop oglas",
   "contacts_floodAdvert": "Flood oglas",
   "contacts_invalidAdvertFormat": "Neveljavni kontaktne podatke",
   "contacts_clipboardEmpty": "Odložišče je prazno.",
@@ -2507,7 +2506,7 @@
   "routing_modeAuto": "Samodejno",
   "routing_modeFlood": "Flood",
   "routing_modeManual": "Ročno",
-  "routing_modeAutoHint": "Samodejno izbere najbolj poznano pot, in sicer, ko ni na voljo nobena.",
+  "routing_modeAutoHint": "Samodejno izbere najboljšo znano pot, če je ni, uporabi flood.",
   "routing_modeFloodHint": "Prenosi preko vseh repetitorjev. Najzanesljivejši način, vendar zahteva več časa.",
   "routing_modeManualHint": "Vedno sledi natančni poti, ki jo ste določili.",
   "routing_currentRoute": "Trenutna pot",
@@ -3917,5 +3916,72 @@
   "pathMap_expandHopList": "Razširi seznam repetitorjev",
   "pathMap_showMap": "Pokaži zemljevid",
   "routing_modeDirect": "Neposredno",
-  "routing_modeDirectHint": "Vedno pošlje neposredno temu stiku, brez skokov prek repetitorjev. Uporabite, če je v radijskem dosegu."
+  "routing_modeDirectHint": "Vedno pošlje neposredno temu stiku, brez skokov prek repetitorjev. Uporabite, če je v radijskem dosegu.",
+  "settings_export": "Izvozi",
+  "settings_exportSubtitle": "Izvozi kontakte in repetitorje kot GPX",
+  "backupRestore_title": "Varnostna kopija in obnovitev",
+  "backupRestore_subtitle": "Shranite ali obnovite podatke aplikacije in nastavitve radia",
+  "backupRestore_import": "Uvozi",
+  "backupRestore_selectImportFile": "Uvozi datoteko",
+  "backupRestore_password": "Geslo (neobvezno)",
+  "backupRestore_passwordHelp": "Geslo datoteko šifrira. Prazno geslo shrani navadno besedilo, ki lahko vsebuje zasebne ključe in ključe kanalov, zgodovino in poverilnice.",
+  "backupRestore_importUnavailable": "Preverite geslo ali izberite podprto datoteko varnostne kopije.",
+  "backupRestore_items": "Elementi varnostne kopije in obnovitve",
+  "backupRestore_nodeSettings": "Nastavitve vozlišča",
+  "backupRestore_nodeSettingsDescription": "Ime naprave, zasebni in javni ključ, nastavitve radia in regije",
+  "backupRestore_deviceName": "Ime naprave",
+  "backupRestore_privateKey": "Zasebni ključ (občutljivo)",
+  "backupRestore_publicKey": "Javni ključ",
+  "backupRestore_radioSettings": "Nastavitve radia",
+  "backupRestore_regions": "Regije",
+  "backupRestore_location": "Lokacija",
+  "backupRestore_contactSettings": "Nastavitve kontaktov",
+  "backupRestore_privacySettings": "Nastavitve zasebnosti",
+  "backupRestore_contactsData": "Kontakti",
+  "backupRestore_perContactSettings": "Nastavitve in filtri kontaktov",
+  "backupRestore_contactGroups": "Skupine kontaktov",
+  "backupRestore_contactHistory": "Zgodovina kontaktov",
+  "backupRestore_channelsData": "Kanali",
+  "backupRestore_channelFilters": "Nastavitve filtra sporočil",
+  "backupRestore_channelSettings": "Nastavitve kanalov",
+  "backupRestore_communities": "Skupnosti",
+  "backupRestore_channelHistory": "Zgodovina kanalov",
+  "backupRestore_locationSettings": "Nastavitve lokacije",
+  "backupRestore_locationSettingsDescription": "Lokacija, nastavitve kontaktov in zasebnosti",
+  "backupRestore_appSettings": "Nastavitve aplikacije",
+  "backupRestore_appSettingsDescription": "Nastavitve aplikacije in videza",
+  "backupRestore_ipfsKey": "Ključ API IPFS (občutljivo)",
+  "backupRestore_stadiaMapKey": "Ključ API Stadia Maps (občutljivo)",
+  "backupRestore_contacts": "Kontakti",
+  "backupRestore_contactsDescription": "Kontakti, filtri in nastavitve posameznih kontaktov, skupine in zgodovina sporočil",
+  "backupRestore_discoveredContacts": "Odkriti kontakti",
+  "backupRestore_discoveredContactsDescription": "Odkriti kontakti in njihovi shranjeni podatki",
+  "backupRestore_channels": "Kanali",
+  "backupRestore_channelsDescription": "Kanali, filtri kanalov, skupnosti in zgodovina sporočil",
+  "backupRestore_backup": "Ustvari varnostno kopijo",
+  "backupRestore_restore": "Obnovi izbrano",
+  "backupRestore_backupComplete": "Datoteka varnostne kopije je ustvarjena.",
+  "backupRestore_restoreComplete": "Obnovitev je končana. Če ste obnovili identiteto radia, se znova povežite.",
+  "backupRestore_missingModelsTitle": "Modeli niso preneseni",
+  "backupRestore_missingModelsMessage": "Obnovljene nastavitve izbirajo modele, ki niso na voljo v tej napravi:\n{models}\n\nJih želite prenesti zdaj?",
+  "backupRestore_downloadModels": "Prenesi modele",
+  "backupRestore_downloading": "Prenašanje…",
+  "backupRestore_cancelDownload": "Prekliči prenos",
+  "backupRestore_failed": "Operacija varnostne kopije ni uspela: {error}",
+  "backupRestore_fileTooLarge": "Datoteka varnostne kopije presega omejitev 100 MB.",
+  "backupRestore_selectAtLeastOne": "Izberite vsaj en element.",
+  "backupRestore_replaceIdentityTitle": "Zamenjati identiteto radia?",
+  "backupRestore_replaceIdentityMessage": "Obnovitev nastavitev vozlišča zamenja zasebni ključ povezanega radia in spremeni njegovo identiteto. Nadaljujte le, če je to namerno.",
+  "appSettings_languagePtPt": "Portugalski (Portugalska)",
+  "receivedImage_syntheticBadge": "Rekonstruirala UI",
+  "appBar_offlineSubtitle": "Brez povezave · {name}",
+  "appBar_offline": "Brez povezave",
+  "appBar_reconnecting": "Ponovno povezovanje…",
+  "connectSheet_title": "Poveži radio",
+  "connectSheet_reconnect": "Ponovno poveži z {name}",
+  "connectSheet_chooseRadio": "Izberi radio",
+  "connectSheet_chooseRadioSubtitle": "Bluetooth, USB ali TCP",
+  "connectSheet_stopReconnecting": "Ustavi ponovno povezovanje",
+  "connectSheet_reconnectFailed": "Ni mogoče doseči {name}. Preverite, ali je vklopljen in v bližini.",
+  "chat_composerOffline": "Za pošiljanje sporočil se povežite z radiem"
 }

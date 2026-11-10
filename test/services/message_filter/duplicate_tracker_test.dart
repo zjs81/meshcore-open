@@ -77,12 +77,16 @@ void main() {
     );
   });
 
-  test('short replies repeated by the same sender are not duplicates', () {
+  test('short texts repeated by the same sender are duplicates', () {
     final tracker = DuplicateTracker();
-    for (final text in ['ok', 'test', 'yes sir', 'ok']) {
-      tracker.check(channelId: 'c', sender: 'Alice', text: text, at: t0);
+    for (final text in ['hello', 'test', 'yes sir']) {
+      expect(
+        tracker.check(channelId: 'c', sender: 'Alice', text: text, at: t0),
+        isNull,
+        reason: text,
+      );
     }
-    for (final text in ['@[Bob] ok', 'test', 'yes sir']) {
+    for (final text in ['Hello!', 'test', 'yes sir']) {
       expect(
         tracker.check(
           channelId: 'c',
@@ -90,8 +94,32 @@ void main() {
           text: text,
           at: t0.add(const Duration(minutes: 5)),
         ),
-        isNull,
+        FilterReason.duplicate,
         reason: text,
+      );
+    }
+  });
+
+  test('short texts use the same send count as long ones', () {
+    final tracker = DuplicateTracker(sameSenderSends: 3);
+    FilterReason? send(int minute) => tracker.check(
+      channelId: 'c',
+      sender: 'Alice',
+      text: 'hello',
+      at: t0.add(Duration(minutes: minute)),
+    );
+    expect(send(0), isNull);
+    expect(send(1), isNull);
+    expect(send(2), FilterReason.duplicate);
+  });
+
+  test('a short text from many senders is not a repeat', () {
+    final tracker = DuplicateTracker();
+    for (final sender in ['Alice', 'Bob', 'Carol', 'Dave']) {
+      expect(
+        tracker.check(channelId: 'c', sender: sender, text: 'hello', at: t0),
+        isNull,
+        reason: sender,
       );
     }
   });
