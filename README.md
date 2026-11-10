@@ -307,6 +307,17 @@ flutter build apk --release
 flutter build ios --release
 ```
 
+**GitHub Releases:**
+
+Pushing a release tag (`BETA-*`, `PRE-BETA-*`, `Alpha*`, `RELEASE-*`, or
+`v*`) runs CI and attaches both Linux AppImages to that tag's GitHub Release:
+
+- `meshcore-open-<version>-linux-x86_64.AppImage`
+- `meshcore-open-<version>-linux-aarch64.AppImage`
+
+If the tag has no release yet, CI creates one with generated notes. Re-running
+the workflow replaces the existing Linux assets.
+
 ## Project Structure
 
 ```
