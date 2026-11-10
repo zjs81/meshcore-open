@@ -893,11 +893,14 @@ class _RenderSegmentLabel extends RenderBox {
   TextStyle _style;
   set style(TextStyle value) {
     if (value == _style) return;
-    final relayout =
-        value.compareTo(_style).index > RenderComparison.paint.index;
     _style = value;
-    relayout ? markNeedsLayout() : markNeedsPaint();
+    // Layout even for a colour-only change: the painter takes the new style
+    // (the selected or disabled colour) in _fit, not in paint.
+    markNeedsLayout();
   }
+
+  @visibleForTesting
+  Color? get debugPaintedColor => _painter.text?.style?.color;
 
   TextScaler _textScaler;
   set textScaler(TextScaler value) {

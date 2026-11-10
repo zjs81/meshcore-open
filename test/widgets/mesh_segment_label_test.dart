@@ -54,4 +54,26 @@ void main() {
       expect(box.size.width, lessThanOrEqualTo(parent.size.width));
     }
   });
+
+  testWidgets('a colour-only style change reaches the painted text', (
+    tester,
+  ) async {
+    Widget label(Color color) => MaterialApp(
+      home: Center(
+        child: DefaultTextStyle(
+          style: TextStyle(fontSize: 14, color: color),
+          child: const MeshSegmentLabel('Flood'),
+        ),
+      ),
+    );
+    Color? painted() =>
+        (tester.renderObject(find.byType(MeshSegmentLabel)) as dynamic)
+                .debugPaintedColor
+            as Color?;
+
+    await tester.pumpWidget(label(const Color(0xFF112233)));
+    expect(painted(), const Color(0xFF112233));
+    await tester.pumpWidget(label(const Color(0xFFEEDDCC)));
+    expect(painted(), const Color(0xFFEEDDCC));
+  });
 }
