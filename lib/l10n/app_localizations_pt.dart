@@ -45,7 +45,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get common_close => 'Fechar';
 
   @override
-  String get common_done => 'Done';
+  String get common_done => 'Concluído';
 
   @override
   String get common_edit => 'Editar';
@@ -812,7 +812,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Quando a localização GPS mudar, enviar um anúncio zero-hop (requer localização no anúncio).';
 
   @override
-  String get settings_multiAck => 'Multi-ACKs';
+  String get settings_multiAck => 'ACKs múltiplos';
 
   @override
   String get settings_multiAckSubtitle =>
@@ -825,11 +825,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settings_actions => 'Ações';
 
   @override
-  String get settings_deleteAllPaths => 'Delete All Paths';
+  String get settings_deleteAllPaths => 'Excluir todos os caminhos';
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Clear all path data from contacts.';
+      'Limpar todos os dados de caminhos dos contatos.';
 
   @override
   String get settings_sendAdvertisement => 'Enviar Anúncio';
@@ -2640,7 +2640,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String routing_lastWorked(String when) {
-    return 'worked $when';
+    return 'funcionou $when';
   }
 
   @override
@@ -2648,7 +2648,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String routing_deliveryCounts(int successes, int failures) {
-    return '$successes delivered, $failures failed';
+    return '$successes entregues, $failures falharam';
   }
 
   @override
@@ -2929,16 +2929,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get map_type => 'Type';
 
   @override
-  String get map_path => 'Path';
+  String get map_path => 'Caminho';
 
   @override
-  String get map_location => 'Location';
+  String get map_location => 'Localização';
 
   @override
-  String get map_estLocation => 'Est. Location';
+  String get map_estLocation => 'Localização est.';
 
   @override
-  String get map_publicKey => 'Public Key';
+  String get map_publicKey => 'Chave pública';
 
   @override
   String get map_publicKeyPrefixHint => 'e.g. ab12';
@@ -3519,10 +3519,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get repeater_noiseFloor => 'Nível de Ruído';
 
   @override
-  String get repeater_txAirtime => 'TX Airtime';
+  String get repeater_txAirtime => 'Airtime TX';
 
   @override
-  String get repeater_rxAirtime => 'RX Airtime';
+  String get repeater_rxAirtime => 'Airtime RX';
 
   @override
   String get repeater_chanUtil => 'Utilização do canal';
@@ -3908,12 +3908,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String repeater_actionSucceeded(String action) {
-    return '$action succeeded';
+    return '$action concluído com sucesso';
   }
 
   @override
   String repeater_actionFailed(String action, String error) {
-    return '$action failed: $error';
+    return '$action falhou: $error';
   }
 
   @override
@@ -5075,7 +5075,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String community_scanToUpdateSecret(String name) {
-    return 'Scanar o novo código QR para atualizar o segredo para \"$name\"\n\n\n+++++';
+    return 'Escaneie o novo código QR para atualizar o segredo de \"$name\"';
   }
 
   @override
@@ -5903,7 +5903,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get imageMessages_modelSectionTitle => 'Modelo de imagem';
 
   @override
-  String get imageMessages_downloadModel => 'Download';
+  String get imageMessages_downloadModel => 'Baixar';
 
   @override
   String get imageMessages_cancelDownload => 'Cancelar';
@@ -6047,24 +6047,24 @@ class AppLocalizationsPt extends AppLocalizations {
   String get translation_systemLanguage => 'Idioma do sistema';
 
   @override
-  String get background_serviceTitle => 'MeshCore running';
+  String get background_serviceTitle => 'MeshCore em execução';
 
   @override
-  String get background_serviceText => 'Keeping BLE connected';
+  String get background_serviceText => 'Mantendo o BLE conectado';
 
   @override
   String appSettings_translationModelDeleted(String name) {
-    return 'Deleted $name';
+    return '$name excluído';
   }
 
   @override
   String appSettings_translationModelDeleteFailed(String error) {
-    return 'Failed to delete: $error';
+    return 'Falha ao excluir: $error';
   }
 
   @override
   String channels_channelUpdateFailed(String error) {
-    return 'Failed to update channel: $error';
+    return 'Falha ao atualizar o canal: $error';
   }
 
   @override
@@ -6080,7 +6080,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get contact_typeSensor => 'Sensor';
 
   @override
-  String get contact_typeUnknown => 'Unknown';
+  String get contact_typeUnknown => 'Desconhecido';
 
   @override
   String get map_zoomIn => 'Ampliar';
@@ -6148,7 +6148,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String pathMap_alternate(int index) {
-    return 'Alt $index';
+    return 'Alt. $index';
   }
 
   @override
@@ -6246,7 +6246,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'O modelo de imagem ainda não foi transferido. Transfira-o nas Configurações para enviar imagens.';
 
   @override
-  String get imageSend_originalSize => 'Texto Original';
+  String get imageSend_originalSize => 'Original';
 
   @override
   String get imageSend_onAirSize => 'Ao ar';
@@ -8280,7 +8280,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Definição da app: quando a sua posição GPS muda, anuncia automaticamente a nova localização apenas a nós próximos (requer Localização no anúncio).';
 
   @override
-  String get settings_multiAck => 'Multi-ACKs';
+  String get settings_multiAck => 'ACKs múltiplos';
 
   @override
   String get settings_multiAckSubtitle =>
@@ -9885,7 +9885,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get reaction_report => 'Reações com emojis';
 
   @override
-  String get emojiCategorySmileys => 'Smileys';
+  String get emojiCategorySmileys => 'Emojis';
 
   @override
   String get emojiCategoryGestures => 'Gestos';
@@ -9903,7 +9903,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get gifPicker_searchHint => 'Pesquisar GIFs...';
 
   @override
-  String get gifPicker_poweredBy => 'Powered by GIPHY';
+  String get gifPicker_poweredBy => 'Desenvolvido por GIPHY';
 
   @override
   String get gifPicker_noGifsFound => 'Nenhum GIF encontrado';
@@ -9946,7 +9946,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get debugLog_frames => 'Frames';
 
   @override
-  String get debugLog_rawLogRx => 'Raw Log-RX';
+  String get debugLog_rawLogRx => 'Registo bruto RX';
 
   @override
   String get debugLog_noBleActivity => 'Ainda sem atividade BLE';
@@ -9971,7 +9971,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String debugFrame_timestamp(int timestamp) {
-    return '- Timestamp: $timestamp';
+    return '- Data/hora: $timestamp';
   }
 
   @override
@@ -9996,7 +9996,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   }
 
   @override
-  String get debugFrame_hexDump => 'Hex Dump:';
+  String get debugFrame_hexDump => 'Dump hexadecimal:';
 
   @override
   String chat_hopsCount(int count) {
@@ -11209,7 +11209,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Maior sensibilidade, maior consumo de corrente (só SX1262/SX1268)';
 
   @override
-  String get repeater_multiAcks => 'Multi-ACKs';
+  String get repeater_multiAcks => 'ACKs múltiplos';
 
   @override
   String get repeater_multiAcksSubtitle =>
@@ -11772,7 +11772,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get repeater_settingsCategory => 'Definições';
 
   @override
-  String get repeater_bridge => 'Bridge';
+  String get repeater_bridge => 'Ponte';
 
   @override
   String get repeater_logging => 'Registo';
@@ -12595,7 +12595,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get listFilter_repeaters => 'Repetidores';
 
   @override
-  String get listFilter_roomServers => 'Room servers';
+  String get listFilter_roomServers => 'Servidores de sala';
 
   @override
   String get listFilter_unreadOnly => 'Só não lidas';
@@ -13720,7 +13720,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get imageSend_airtimeLabel => 'Tempo no ar';
 
   @override
-  String get imageSend_sizeLabel => 'Payload';
+  String get imageSend_sizeLabel => 'Carga útil';
 
   @override
   String imageSend_packetsCount(int count) {

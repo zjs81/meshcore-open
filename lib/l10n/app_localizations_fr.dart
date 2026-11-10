@@ -1162,7 +1162,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get themes_iconRepeater => 'Répéteurs';
 
   @override
-  String get themes_iconRoom => 'Rooms';
+  String get themes_iconRoom => 'Salles';
 
   @override
   String get themes_iconSensor => 'Capteurs';
@@ -3530,10 +3530,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get repeater_noiseFloor => 'Niveau de Bruit';
 
   @override
-  String get repeater_txAirtime => 'TX Airtime';
+  String get repeater_txAirtime => 'Temps d\'antenne TX';
 
   @override
-  String get repeater_rxAirtime => 'RX Airtime';
+  String get repeater_rxAirtime => 'Temps d\'antenne RX';
 
   @override
   String get repeater_chanUtil => 'Utilisation du canal';
@@ -6275,8 +6275,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le modèle d\'image n\'est pas encore téléchargé. Téléchargez-le dans Paramètres pour envoyer des images.';
 
   @override
-  String get imageSend_originalSize =>
-      'Texte original\n\nVeuillez traduire le texte suivant en français :';
+  String get imageSend_originalSize => 'Original';
 
   @override
   String get imageSend_onAirSize => 'En direct';

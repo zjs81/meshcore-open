@@ -45,7 +45,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get common_close => 'Zamknij';
 
   @override
-  String get common_done => 'Done';
+  String get common_done => 'Gotowe';
 
   @override
   String get common_edit => 'Edytuj';
@@ -830,11 +830,11 @@ class AppLocalizationsPl extends AppLocalizations {
   String get settings_actions => 'Działania';
 
   @override
-  String get settings_deleteAllPaths => 'Delete All Paths';
+  String get settings_deleteAllPaths => 'Usuń wszystkie ścieżki';
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Clear all path data from contacts.';
+      'Wyczyść wszystkie dane ścieżek z kontaktów.';
 
   @override
   String get settings_sendAdvertisement => 'Wyślij rozgłoszenie';
@@ -2679,7 +2679,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String routing_deliveryCounts(int successes, int failures) {
-    return '$successes delivered, $failures failed';
+    return '$successes dostarczono, $failures nie powiodło się';
   }
 
   @override
@@ -2961,16 +2961,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String get map_type => 'Type';
 
   @override
-  String get map_path => 'Path';
+  String get map_path => 'Ścieżka';
 
   @override
-  String get map_location => 'Location';
+  String get map_location => 'Lokalizacja';
 
   @override
-  String get map_estLocation => 'Est. Location';
+  String get map_estLocation => 'Szac. lokalizacja';
 
   @override
-  String get map_publicKey => 'Public Key';
+  String get map_publicKey => 'Klucz publiczny';
 
   @override
   String get map_publicKeyPrefixHint => 'e.g. ab12';
@@ -3799,7 +3799,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Wysyłaj pakiety, które wyglądają jak pętle routingu.';
 
   @override
-  String get repeater_loopDetectOff => 'Z domu';
+  String get repeater_loopDetectOff => 'Wyłączone';
 
   @override
   String get repeater_loopDetectMinimal => 'Minimalny';
@@ -3945,7 +3945,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String repeater_actionFailed(String action, String error) {
-    return '$action failed: $error';
+    return '$action nie powiodło się: $error';
   }
 
   @override
@@ -6089,24 +6089,24 @@ class AppLocalizationsPl extends AppLocalizations {
   String get translation_systemLanguage => 'Język systemu';
 
   @override
-  String get background_serviceTitle => 'MeshCore running';
+  String get background_serviceTitle => 'MeshCore działa';
 
   @override
-  String get background_serviceText => 'Keeping BLE connected';
+  String get background_serviceText => 'Utrzymywanie połączenia BLE';
 
   @override
   String appSettings_translationModelDeleted(String name) {
-    return 'Deleted $name';
+    return 'Usunięto $name';
   }
 
   @override
   String appSettings_translationModelDeleteFailed(String error) {
-    return 'Failed to delete: $error';
+    return 'Nie udało się usunąć: $error';
   }
 
   @override
   String channels_channelUpdateFailed(String error) {
-    return 'Failed to update channel: $error';
+    return 'Nie udało się zaktualizować kanału: $error';
   }
 
   @override
@@ -6122,7 +6122,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get contact_typeSensor => 'Sensor';
 
   @override
-  String get contact_typeUnknown => 'Unknown';
+  String get contact_typeUnknown => 'Nieznany';
 
   @override
   String get map_zoomIn => 'Przybliż';
@@ -6316,7 +6316,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get imageSend_airtimeLabel => 'Czas w eterze';
 
   @override
-  String get imageSend_sizeLabel => 'Payload';
+  String get imageSend_sizeLabel => 'Dane';
 
   @override
   String imageSend_packetsCount(int count) {

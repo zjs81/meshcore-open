@@ -135,7 +135,7 @@
       }
     }
   },
-  "settings_aboutLegalese": "2026 MeshCore Open Source Project",
+  "settings_aboutLegalese": "2026 MeshCore Open Source-projekt",
   "settings_aboutDescription": "En Flutter-klient med öppen källkod för MeshCore-enheter i LoRa-meshnät.",
   "settings_infoName": "Namn",
   "settings_infoId": "ID",

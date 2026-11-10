@@ -24,7 +24,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get common_cancel => 'Zrušiť';
 
   @override
-  String get common_ok => 'OK\nDobre';
+  String get common_ok => 'OK';
 
   @override
   String get common_connect => 'Pripojiť';
@@ -45,7 +45,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get common_close => 'Zavrieť';
 
   @override
-  String get common_done => 'Done';
+  String get common_done => 'Hotovo';
 
   @override
   String get common_edit => 'Upraviť';
@@ -816,11 +816,11 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_actions => 'Možné akcie';
 
   @override
-  String get settings_deleteAllPaths => 'Delete All Paths';
+  String get settings_deleteAllPaths => 'Odstrániť všetky cesty';
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Clear all path data from contacts.';
+      'Vymazať všetky údaje o cestách z kontaktov.';
 
   @override
   String get settings_sendAdvertisement => 'Odoslať inzerát';
@@ -2523,7 +2523,7 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
-  String get debugFrame_textTypeCli => 'CLI (Command Line Interface)';
+  String get debugFrame_textTypeCli => 'CLI';
 
   @override
   String get debugFrame_textTypePlain => 'Jednoduché';
@@ -2642,7 +2642,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String routing_lastWorked(String when) {
-    return 'worked $when';
+    return 'fungovala $when';
   }
 
   @override
@@ -2650,7 +2650,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String routing_deliveryCounts(int successes, int failures) {
-    return '$successes delivered, $failures failed';
+    return '$successes doručených, $failures neúspešných';
   }
 
   @override
@@ -2932,16 +2932,16 @@ class AppLocalizationsSk extends AppLocalizations {
   String get map_type => 'Type';
 
   @override
-  String get map_path => 'Path';
+  String get map_path => 'Cesta';
 
   @override
-  String get map_location => 'Location';
+  String get map_location => 'Poloha';
 
   @override
-  String get map_estLocation => 'Est. Location';
+  String get map_estLocation => 'Odhad. poloha';
 
   @override
-  String get map_publicKey => 'Public Key';
+  String get map_publicKey => 'Verejný kľúč';
 
   @override
   String get map_publicKeyPrefixHint => 'e.g. ab12';
@@ -3522,10 +3522,10 @@ class AppLocalizationsSk extends AppLocalizations {
   String get repeater_noiseFloor => 'Hladina šumu';
 
   @override
-  String get repeater_txAirtime => 'TX Airtime';
+  String get repeater_txAirtime => 'Čas vysielania TX';
 
   @override
-  String get repeater_rxAirtime => 'RX Airtime';
+  String get repeater_rxAirtime => 'Čas vysielania RX';
 
   @override
   String get repeater_chanUtil => 'Využitie kanálu';
@@ -4728,7 +4728,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get telemetry_timeLabel => 'Čas';
 
   @override
-  String get telemetry_gyrometerLabel => 'Gyrometer';
+  String get telemetry_gyrometerLabel => 'Gyroskop';
 
   @override
   String get telemetry_colourLabel => 'Farba';
@@ -6044,24 +6044,24 @@ class AppLocalizationsSk extends AppLocalizations {
   String get translation_systemLanguage => 'Jazyk systému';
 
   @override
-  String get background_serviceTitle => 'MeshCore running';
+  String get background_serviceTitle => 'MeshCore beží';
 
   @override
-  String get background_serviceText => 'Keeping BLE connected';
+  String get background_serviceText => 'Udržiavanie spojenia BLE';
 
   @override
   String appSettings_translationModelDeleted(String name) {
-    return 'Deleted $name';
+    return 'Odstránené: $name';
   }
 
   @override
   String appSettings_translationModelDeleteFailed(String error) {
-    return 'Failed to delete: $error';
+    return 'Odstránenie zlyhalo: $error';
   }
 
   @override
   String channels_channelUpdateFailed(String error) {
-    return 'Failed to update channel: $error';
+    return 'Aktualizácia kanála zlyhala: $error';
   }
 
   @override
@@ -6077,7 +6077,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get contact_typeSensor => 'Sensor';
 
   @override
-  String get contact_typeUnknown => 'Unknown';
+  String get contact_typeUnknown => 'Neznámy';
 
   @override
   String get map_zoomIn => 'Zväčšiť';
@@ -6245,8 +6245,7 @@ class AppLocalizationsSk extends AppLocalizations {
       'Model obrazu ešte nie je stiahnutý. Stiahnite ho v Nastaveniach, aby ste mohli posielať obrázky.';
 
   @override
-  String get imageSend_originalSize =>
-      'Výborný text:\n\n\"Language is the road map of a culture. It tells us where to go as a society and helps us understand the world around us. Learning a new language opens up new perspectives and opportunities, allowing us to connect with people from different backgrounds and build bridges between cultures.\"\n\nSlovenská preklada:\n\n\"Jazyk je cesta pre zručnosti a odráža kultúru. Dá nám uvedomi, dokádať, kúdy sa pohladneme a pomáha našej společnosti poradiť sa v rôznych okolnosti a porozumieť o svetu kolem nás. Nauka nového jazyka otviera nové perspektívy a možnosti, čo pohybuje našu schopnosť sa spoluprávať s ľudmi z rôznych okolnosti a budovať mosty medzi kultúry.\"';
+  String get imageSend_originalSize => 'Originál';
 
   @override
   String get imageSend_onAirSize => 'V prúce';

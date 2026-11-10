@@ -299,7 +299,7 @@
       }
     }
   },
-  "settings_aboutLegalese": "2026 MeshCore Open Source Project",
+  "settings_aboutLegalese": "Projekt MeshCore Open Source 2026",
   "settings_aboutDescription": "Open-source klient Flutter pro zařízení MeshCore s mesh sítí LoRa.",
   "settings_aboutOpenMeteoAttribution": "Výšková data LOS: Open-Meteo (CC BY 4.0)",
   "settings_infoName": "Název",
@@ -319,7 +319,7 @@
   "settings_frequencyHelper": "150.0 - 2500.0",
   "settings_frequencyInvalid": "Neplatná frekvence (150-2500 MHz)",
   "settings_bandwidth": "Šířka pásma",
-  "settings_spreadingFactor": "Spreading Factor",
+  "settings_spreadingFactor": "Rozptylový faktor",
   "settings_codingRate": "Kódovací poměr",
   "settings_txPower": "Výkon TX (dBm)",
   "settings_txPowerRangeHelper": "{min} až {max} dBm",
@@ -1274,7 +1274,7 @@
       }
     }
   },
-  "chat_floodAuto": "Flood (auto)",
+  "chat_floodAuto": "Flood (automaticky)",
   "chat_direct": "Přímo",
   "chat_poiShared": "Sdílen bod zájmu",
   "chat_unread": "Nepřečtené: {count}",
@@ -1337,7 +1337,7 @@
   },
   "map_chat": "Chat",
   "map_repeater": "Opakovač",
-  "map_room": "Room",
+  "map_room": "Místnost",
   "map_sensor": "Senzor",
   "map_pinDm": "Špendlík (DM)",
   "map_pinPrivate": "Špendlík (soukromý)",
@@ -1761,8 +1761,8 @@
   "repeater_txPower": "Výkon TX",
   "repeater_txPowerHelper": "1–30 dBm",
   "repeater_bandwidth": "Šířka pásma",
-  "repeater_spreadingFactor": "Spreading Factor",
-  "repeater_codingRate": "Coding Rate",
+  "repeater_spreadingFactor": "Rozptylový faktor",
+  "repeater_codingRate": "Kódovací poměr",
   "repeater_locationSettings": "Nastavení polohy",
   "repeater_latitude": "Zeměpisná šířka",
   "repeater_latitudeHelper": "Desetinné stupně (např. 37.7749)",
@@ -2047,7 +2047,7 @@
   "repeater_bridgeNote": "K dispozici pouze ve firmwaru sestaveném s bridge (RS232 nebo ESP-NOW).",
   "repeater_general": "Obecné",
   "repeater_settingsCategory": "Nastavení",
-  "repeater_bridge": "Bridge",
+  "repeater_bridge": "Most",
   "repeater_logging": "Logování",
   "repeater_neighborsRepeaterOnly": "Sousedé (pouze opakovač)",
   "repeater_regionManagementRepeaterOnly": "Správa regionů (pouze opakovač)",
@@ -2383,7 +2383,7 @@
   },
   "channelPath_unknownPath": "Neznámá",
   "channelPath_floodPath": "Flood",
-  "channelPath_directPath": "Direct",
+  "channelPath_directPath": "Přímo",
   "channelPath_observedZeroOf": "0 z {total} skoků",
   "@channelPath_observedZeroOf": {
     "placeholders": {

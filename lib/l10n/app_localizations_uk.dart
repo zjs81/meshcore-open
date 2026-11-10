@@ -2154,7 +2154,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String channels_regionSetTo(String region) {
-    return 'Ріон: $region';
+    return 'Регіон: $region';
   }
 
   @override
@@ -2526,7 +2526,7 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get debugFrame_textTypeCli => 'CLI (Command Line Interface)';
+  String get debugFrame_textTypeCli => 'CLI';
 
   @override
   String get debugFrame_textTypePlain => 'Звичайний';
@@ -2647,7 +2647,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String routing_lastWorked(String when) {
-    return 'worked $when';
+    return 'працював $when';
   }
 
   @override
@@ -2655,7 +2655,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String routing_deliveryCounts(int successes, int failures) {
-    return '$successes delivered, $failures failed';
+    return '$successes доставлено, $failures не доставлено';
   }
 
   @override
@@ -3454,7 +3454,7 @@ class AppLocalizationsUk extends AppLocalizations {
       'Показати телеметрію сенсорів та статистику системи';
 
   @override
-  String get repeater_cli => 'CLI (Command Line Interface)';
+  String get repeater_cli => 'CLI';
 
   @override
   String get repeater_cliSubtitle => 'Надіслати команди ретранслятору';
@@ -6251,8 +6251,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get pathMap_unfollowPacket => 'Відв\'язати вигляд від пакету';
 
   @override
-  String get imageSend_title =>
-      'Нашкоду зовні\n\n(or more naturally, depending on context)\n\nПошукуєте изображення';
+  String get imageSend_title => 'Надіслати зображення';
 
   @override
   String get imageSend_cropNote =>

@@ -823,11 +823,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settings_actions => 'Действия';
 
   @override
-  String get settings_deleteAllPaths => 'Delete All Paths';
+  String get settings_deleteAllPaths => 'Удалить все пути';
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Clear all path data from contacts.';
+      'Очистить все данные путей в контактах.';
 
   @override
   String get settings_sendAdvertisement => 'Отправить анонсирование';
@@ -930,8 +930,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settings_infoHardware => 'Оборудование';
 
   @override
-  String get settings_infoFirmware =>
-      'Производственное программное обеспечение';
+  String get settings_infoFirmware => 'Прошивка';
 
   @override
   String get settings_presets => 'Пресеты';
@@ -2161,7 +2160,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String channels_regionSetTo(String region) {
-    return 'РЕГИОН: $region';
+    return 'Регион: $region';
   }
 
   @override
@@ -2651,7 +2650,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String routing_lastWorked(String when) {
-    return 'worked $when';
+    return 'работал $when';
   }
 
   @override
@@ -2659,7 +2658,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String routing_deliveryCounts(int successes, int failures) {
-    return '$successes delivered, $failures failed';
+    return '$successes доставлено, $failures не доставлено';
   }
 
   @override
@@ -3919,12 +3918,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String repeater_actionSucceeded(String action) {
-    return '$action succeeded';
+    return '$action: успешно';
   }
 
   @override
   String repeater_actionFailed(String action, String error) {
-    return '$action failed: $error';
+    return '$action: ошибка: $error';
   }
 
   @override

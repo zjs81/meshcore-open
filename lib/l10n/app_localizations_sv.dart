@@ -881,7 +881,7 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get settings_aboutLegalese => '2026 MeshCore Open Source Project';
+  String get settings_aboutLegalese => '2026 MeshCore Open Source-projekt';
 
   @override
   String get settings_aboutDescription =>

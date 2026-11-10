@@ -108,8 +108,8 @@
   "settings_privacyModeEnabled": "Modo de privacidade ativado",
   "settings_privacyModeDisabled": "Modo de privacidade desativado",
   "settings_actions": "Ações",
-  "settings_deleteAllPaths": "Delete All Paths",
-  "settings_deleteAllPathsSubtitle": "Clear all path data from contacts.",
+  "settings_deleteAllPaths": "Excluir todos os caminhos",
+  "settings_deleteAllPathsSubtitle": "Limpar todos os dados de caminhos dos contatos.",
   "settings_sendAdvertisement": "Enviar Anúncio",
   "settings_sendAdvertisementSubtitle": "Presença de transmissão agora",
   "settings_advertisementSent": "Anúncio enviado",
@@ -1002,8 +1002,8 @@
   "repeater_lastRssi": "Último RSSI",
   "repeater_lastSnr": "Último SNR",
   "repeater_noiseFloor": "Nível de Ruído",
-  "repeater_txAirtime": "TX Airtime",
-  "repeater_rxAirtime": "RX Airtime",
+  "repeater_txAirtime": "Airtime TX",
+  "repeater_rxAirtime": "Airtime RX",
   "repeater_packetStatistics": "Estatísticas de Pacote",
   "repeater_sent": "Enviado",
   "repeater_received": "Recebido",
@@ -1194,7 +1194,7 @@
   "repeater_sendAdvertZeroHopSubtitle": "Transmita um anúncio de um único salto (sem repetição).",
   "repeater_clockSync": "Sincronize o relógio agora",
   "repeater_clockSyncSubtitle": "Envie a hora do seu telefone para o repetidor.",
-  "repeater_actionSucceeded": "{action} succeeded",
+  "repeater_actionSucceeded": "{action} concluído com sucesso",
   "@repeater_actionSucceeded": {
     "placeholders": {
       "action": {
@@ -1202,7 +1202,7 @@
       }
     }
   },
-  "repeater_actionFailed": "{action} failed: {error}",
+  "repeater_actionFailed": "{action} falhou: {error}",
   "@repeater_actionFailed": {
     "placeholders": {
       "action": {
@@ -1732,7 +1732,7 @@
   "community_secretRegenerated": "Senha secreta regenerada para \"{name}\"",
   "community_regenerate": "Regenerar",
   "community_secretUpdated": "Segredo atualizado para \"{name}\"",
-  "community_scanToUpdateSecret": "Scanar o novo código QR para atualizar o segredo para \"{name}\"\n\n\n+++++",
+  "community_scanToUpdateSecret": "Escaneie o novo código QR para atualizar o segredo de \"{name}\"",
   "community_updateSecret": "Atualizar Segredo",
   "@contacts_pathTraceTo": {
     "placeholders": {
@@ -2167,7 +2167,7 @@
   "appSettings_maxMessageRetriesSubtitle": "Número de tentativas de reenvio antes de classificar uma mensagem como falha.",
   "path_routeWeight": "{weight}/{max}",
   "settings_telemetryModeUpdated": "Modo de telemetria atualizado",
-  "settings_multiAck": "Multi-ACKs",
+  "settings_multiAck": "ACKs múltiplos",
   "map_showOverlaps": "Sobreposições da Chave Repeater",
   "map_runTraceWithReturnPath": "Retornar ao mesmo caminho.",
   "@radioStats_noiseFloor": {
@@ -2376,10 +2376,10 @@
   "repeater_cliHelpStatsPackets": "(Apenas para séries) Apresenta estatísticas em nível de pacotes.",
   "repeater_cliHelpStatsRadio": "(Apenas para transmissões em série) Exibe estatísticas de rádio.",
   "repeater_cliHelpStatsCore": "(Apenas para dispositivos em série) Exibe estatísticas básicas do firmware.",
-  "common_done": "Done",
-  "background_serviceTitle": "MeshCore running",
-  "background_serviceText": "Keeping BLE connected",
-  "appSettings_translationModelDeleted": "Deleted {name}",
+  "common_done": "Concluído",
+  "background_serviceTitle": "MeshCore em execução",
+  "background_serviceText": "Mantendo o BLE conectado",
+  "appSettings_translationModelDeleted": "{name} excluído",
   "@appSettings_translationModelDeleted": {
     "placeholders": {
       "name": {
@@ -2387,7 +2387,7 @@
       }
     }
   },
-  "appSettings_translationModelDeleteFailed": "Failed to delete: {error}",
+  "appSettings_translationModelDeleteFailed": "Falha ao excluir: {error}",
   "@appSettings_translationModelDeleteFailed": {
     "placeholders": {
       "error": {
@@ -2395,7 +2395,7 @@
       }
     }
   },
-  "channels_channelUpdateFailed": "Failed to update channel: {error}",
+  "channels_channelUpdateFailed": "Falha ao atualizar o canal: {error}",
   "@channels_channelUpdateFailed": {
     "placeholders": {
       "error": {
@@ -2404,16 +2404,16 @@
     }
   },
   "map_type": "Type",
-  "map_path": "Path",
-  "map_location": "Location",
-  "map_estLocation": "Est. Location",
-  "map_publicKey": "Public Key",
+  "map_path": "Caminho",
+  "map_location": "Localização",
+  "map_estLocation": "Localização est.",
+  "map_publicKey": "Chave pública",
   "map_publicKeyPrefixHint": "e.g. ab12",
   "contact_typeChat": "Chat",
   "contact_typeRepeater": "Repeater",
   "contact_typeRoom": "Room",
   "contact_typeSensor": "Sensor",
-  "contact_typeUnknown": "Unknown",
+  "contact_typeUnknown": "Desconhecido",
   "channels_via": "via {path}",
   "chat_score": "Score",
   "map_sharedAt": "Compartilhado",
@@ -2542,9 +2542,9 @@
   "pathEditor_hexLabel": "Prefixos hexadecimais",
   "pathEditor_hexHelper": "Dois caracteres hexadecimais por salto, separados por vírgulas.",
   "pathEditor_invalidTokens": "Inválido: {tokens}",
-  "routing_lastWorked": "worked {when}",
+  "routing_lastWorked": "funcionou {when}",
   "pathEditor_tooManyHops": "Máximo de 64 saltos",
-  "routing_deliveryCounts": "{successes} delivered, {failures} failed",
+  "routing_deliveryCounts": "{successes} entregues, {failures} falharam",
   "pathEditor_usePath": "Utilize este caminho.",
   "pathEditor_removeHop": "Remova o salto",
   "pathEditor_unknownHop": "Repetidor desconhecido",
@@ -2634,7 +2634,7 @@
   "pathMap_hopOf": "Salto {current} de {total}",
   "pathMap_observedPaths": "Caminhos observados: {count}",
   "pathMap_primary": "Primário",
-  "pathMap_alternate": "Alt {index}",
+  "pathMap_alternate": "Alt. {index}",
   "pathMap_hopCount": "{count, plural, =1{1 salto} other{{count} saltos}}",
   "pathMap_legendShared": "Segmento compartilhado",
   "pathMap_legendEstimated": "Segmento estimado",
@@ -2815,7 +2815,7 @@
   "imageMessages_enableTitle": "Mensagens de imagem",
   "imageMessages_enableSubtitle": "Envie as imagens pela malha. Requer o download de um modelo de imagem único.",
   "imageMessages_modelSectionTitle": "Modelo de imagem",
-  "imageMessages_downloadModel": "Download",
+  "imageMessages_downloadModel": "Baixar",
   "imageMessages_cancelDownload": "Cancelar",
   "imageMessages_removeModel": "Remover modelo",
   "imageMessages_modelReady": "Pronto",
@@ -2825,7 +2825,7 @@
   "imageMessages_autoProcessSubtitle": "Reconstrua cada imagem assim que ela chegar. Utiliza cerca de 2 GB de memória por segundo; dispense a reconstrução com um toque.",
   "imageSend_title": "Enviar imagem",
   "imageSend_cropNote": "Redimensionado para 512 × 512 · a proporção de aspecto não foi preservada",
-  "imageSend_originalSize": "Texto Original",
+  "imageSend_originalSize": "Original",
   "imageSend_onAirSize": "Ao ar",
   "imageSend_quality": "Qualidade",
   "imageSend_qualityStandard": "Padrão",

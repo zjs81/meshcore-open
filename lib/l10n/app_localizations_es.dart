@@ -2905,7 +2905,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get map_sensor => 'Sensor';
 
   @override
-  String get map_pinDm => 'Pin (DM)';
+  String get map_pinDm => 'Marcador (DM)';
 
   @override
   String get map_pinPrivate => 'Pin (privado)';
@@ -2929,16 +2929,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get map_type => 'Type';
 
   @override
-  String get map_path => 'Path';
+  String get map_path => 'Ruta';
 
   @override
-  String get map_location => 'Location';
+  String get map_location => 'Ubicación';
 
   @override
-  String get map_estLocation => 'Est. Location';
+  String get map_estLocation => 'Ubicación est.';
 
   @override
-  String get map_publicKey => 'Public Key';
+  String get map_publicKey => 'Clave pública';
 
   @override
   String get map_publicKeyPrefixHint => 'e.g. ab12';
@@ -6252,7 +6252,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'El modelo de imagen aún no se ha descargado. Descárgalo en Configuración para enviar imágenes.';
 
   @override
-  String get imageSend_originalSize => 'Texto original';
+  String get imageSend_originalSize => 'Original';
 
   @override
   String get imageSend_onAirSize => 'En emisión';

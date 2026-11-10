@@ -339,7 +339,7 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get scanner_stop => 'Stop';
+  String get scanner_stop => 'Leállítás';
 
   @override
   String get scanner_scan => 'Keresés';
@@ -867,7 +867,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get settings_debug => 'Hibakeresés';
 
   @override
-  String get settings_companionDebugLog => 'Companion Debug Log';
+  String get settings_companionDebugLog => 'Companion hibaelhárítási napló';
 
   @override
   String get settings_companionDebugLogSubtitle =>
@@ -952,7 +952,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get settings_bandwidth => 'Sávszélesség';
 
   @override
-  String get settings_spreadingFactor => 'Spreading Factor';
+  String get settings_spreadingFactor => 'Szórási tényező';
 
   @override
   String get settings_codingRate => 'Kódolási sebesség';
@@ -2160,7 +2160,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String channels_regionSetTo(String region) {
-    return 'Tájékoztatás: A $region -t\n\nEz a tájékoztatás a magyar nyelvben a következően kell szóva:\n\nTájékoztatás: A $region -t';
+    return 'Régió: $region';
   }
 
   @override
@@ -3622,7 +3622,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get repeater_bandwidth => 'Sávszélesség';
 
   @override
-  String get repeater_spreadingFactor => 'Spreading Factor';
+  String get repeater_spreadingFactor => 'Szórási tényező';
 
   @override
   String get repeater_codingRate => 'Kódolási arány';
@@ -5214,7 +5214,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String losAntennaA(String value, String unit) {
-    return 'Antenna A: $value $unit';
+    return 'A antenna: $value $unit';
   }
 
   @override
@@ -5903,7 +5903,7 @@ class AppLocalizationsHu extends AppLocalizations {
       'Fényokat a hálózatban küldd el. Egyértelmű fénymodell hozzáadásra kell.';
 
   @override
-  String get imageMessages_modelSectionTitle => 'Image model';
+  String get imageMessages_modelSectionTitle => 'Képmodell';
 
   @override
   String get imageMessages_downloadModel => 'Hozzáladás';
@@ -5983,7 +5983,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get translation_working => 'Dolgozó...';
 
   @override
-  String get translation_stop => 'Stop';
+  String get translation_stop => 'Leállítás';
 
   @override
   String get translation_mergingChunks =>
@@ -6249,7 +6249,7 @@ class AppLocalizationsHu extends AppLocalizations {
       'A képmodell még nincs letöltve. Töltse le a Beállításokban a képek küldéséhez.';
 
   @override
-  String get imageSend_originalSize => 'Következtetés:';
+  String get imageSend_originalSize => 'Eredeti';
 
   @override
   String get imageSend_onAirSize => 'Erőben';
@@ -6373,7 +6373,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String receivedImage_senderPrefix(String prefix) {
-    return 'Node $prefix';
+    return 'Csomópont $prefix';
   }
 
   @override
@@ -6456,12 +6456,12 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String imageSend_secondsValue(String seconds) {
-    return '$seconds sekünd\n\n(Note: The placeholder $seconds is kept unchanged as requested.)';
+    return '$seconds mp';
   }
 
   @override
   String imageSend_minutesSecondsValue(String minutes, String seconds) {
-    return '$minutes per $seconds sekünd\n\n(Note: The original text appears to be a placeholder format rather than a complete sentence. The translation reflects the literal structure while preserving the placeholders as requested.)';
+    return '$minutes p $seconds mp';
   }
 
   @override

@@ -2910,7 +2910,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get map_sensor => 'Sensore';
 
   @override
-  String get map_pinDm => 'Pin (DM)';
+  String get map_pinDm => 'Segnaposto (DM)';
 
   @override
   String get map_pinPrivate => 'Pin (Privato)';
@@ -3773,7 +3773,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Scarta i pacchetti flood che sembrano loop di routing';
 
   @override
-  String get repeater_loopDetectOff => 'Offerte';
+  String get repeater_loopDetectOff => 'Off';
 
   @override
   String get repeater_loopDetectMinimal => 'Essenziale';
@@ -3918,7 +3918,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String repeater_actionFailed(String action, String error) {
-    return '$action failed: $error';
+    return '$action non riuscito: $error';
   }
 
   @override
@@ -6056,19 +6056,19 @@ class AppLocalizationsIt extends AppLocalizations {
   String get translation_systemLanguage => 'Lingua del sistema';
 
   @override
-  String get background_serviceTitle => 'MeshCore running';
+  String get background_serviceTitle => 'MeshCore in esecuzione';
 
   @override
-  String get background_serviceText => 'Keeping BLE connected';
+  String get background_serviceText => 'Connessione BLE mantenuta';
 
   @override
   String appSettings_translationModelDeleted(String name) {
-    return 'Deleted $name';
+    return '$name eliminato';
   }
 
   @override
   String appSettings_translationModelDeleteFailed(String error) {
-    return 'Failed to delete: $error';
+    return 'Eliminazione non riuscita: $error';
   }
 
   @override
@@ -6257,8 +6257,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Il modello di immagine non è ancora stato scaricato. Scaricalo nelle Impostazioni per inviare immagini.';
 
   @override
-  String get imageSend_originalSize =>
-      'Traduzione:\n\nOriginal text:\n\nPlease translate the following English text into Italian:\n\nOriginal text:\n\n(No original English text provided)';
+  String get imageSend_originalSize => 'Originale';
 
   @override
   String get imageSend_onAirSize => 'In onda';

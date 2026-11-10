@@ -3930,7 +3930,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetRxDelay =>
-      '（実験用）遅延時間を設定するためのベース（1以上の値に設定する必要）\n受信パケットに対して、信号強度/スコアに基づいてわずかな遅延を適用します。 0に設定すると無効化されます。';
+      '（実験用）遅延時間を設定するためのベース（1以上の値に設定する必要）受信パケットに対して、信号強度/スコアに基づいてわずかな遅延を適用します。 0に設定すると無効化されます。';
 
   @override
   String get repeater_cliHelpSetTxDelay =>
@@ -4985,7 +4985,7 @@ class AppLocalizationsJa extends AppLocalizations {
     String clearance,
     String heightUnit,
   ) {
-    return '$distance $distanceUnit, clear LOS, min clearance $clearance $heightUnit';
+    return '$distance $distanceUnit、LOS クリア、最小クリアランス $clearance $heightUnit';
   }
 
   @override
@@ -4995,7 +4995,7 @@ class AppLocalizationsJa extends AppLocalizations {
     String obstruction,
     String heightUnit,
   ) {
-    return '$distance $distanceUnit, blocked by $obstruction $heightUnit';
+    return '$distance $distanceUnit、$obstruction $heightUnit で遮断';
   }
 
   @override
@@ -5006,7 +5006,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String losStatusSummary(int clear, int total, int blocked, int unknown) {
-    return 'LOS: $clear/$total clear, $blocked blocked, $unknown unknown';
+    return 'LOS: $clear/$total クリア、$blocked 遮断、$unknown 不明';
   }
 
   @override
@@ -5233,13 +5233,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String notification_messagesCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'messages',
-      one: 'message',
-    );
-    return '$count $_temp0';
+    return '$count 件のメッセージ';
   }
 
   @override
@@ -5955,8 +5949,7 @@ class AppLocalizationsJa extends AppLocalizations {
       '画像モデルがまだダウンロードされていません。設定でダウンロードすると画像を送信できます。';
 
   @override
-  String get imageSend_originalSize =>
-      '原文：\nThe early morning light filtered through the curtains, casting a soft glow on the room.\n\n翻訳：\n早朝の光がカーテンをすり抜け、部屋に柔らかな光を投げかけていた。';
+  String get imageSend_originalSize => 'オリジナル';
 
   @override
   String get imageSend_onAirSize => '放送中';

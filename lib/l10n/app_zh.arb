@@ -113,8 +113,8 @@
   "settings_privacyModeEnabled": "隐私模式已启用",
   "settings_privacyModeDisabled": "隐私模式已关闭",
   "settings_actions": "操作",
-  "settings_deleteAllPaths": "Delete All Paths",
-  "settings_deleteAllPathsSubtitle": "Clear all path data from contacts.",
+  "settings_deleteAllPaths": "删除所有路径",
+  "settings_deleteAllPathsSubtitle": "清除联系人中的所有路径数据。",
   "settings_sendAdvertisement": "发送广播",
   "settings_sendAdvertisementSubtitle": "立即发送广播",
   "settings_advertisementSent": "已发送广播",
@@ -1187,7 +1187,7 @@
   "repeater_networkHealth": "网络健康",
   "repeater_loopDetect": "循环检测",
   "repeater_loopDetectHelper": "创建看起来像路由环的“泛洪包”",
-  "repeater_loopDetectOff": "离开",
+  "repeater_loopDetectOff": "关闭",
   "repeater_loopDetectMinimal": "最少",
   "repeater_loopDetectModerate": "适度的",
   "repeater_loopDetectStrict": "严格",
@@ -2374,10 +2374,10 @@
   "repeater_cliHelpStatsPackets": "（仅显示序列信息）显示数据包级别的统计信息。",
   "repeater_cliHelpStatsRadio": "（仅显示序列信息）显示收音机相关统计数据。",
   "repeater_cliHelpStatsCore": "（仅显示序列号）显示核心固件统计信息。",
-  "common_done": "Done",
-  "background_serviceTitle": "MeshCore running",
-  "background_serviceText": "Keeping BLE connected",
-  "appSettings_translationModelDeleted": "Deleted {name}",
+  "common_done": "完成",
+  "background_serviceTitle": "MeshCore 运行中",
+  "background_serviceText": "保持蓝牙连接",
+  "appSettings_translationModelDeleted": "已删除 {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {
       "name": {
@@ -2385,7 +2385,7 @@
       }
     }
   },
-  "appSettings_translationModelDeleteFailed": "Failed to delete: {error}",
+  "appSettings_translationModelDeleteFailed": "删除失败：{error}",
   "@appSettings_translationModelDeleteFailed": {
     "placeholders": {
       "error": {
@@ -2393,7 +2393,7 @@
       }
     }
   },
-  "channels_channelUpdateFailed": "Failed to update channel: {error}",
+  "channels_channelUpdateFailed": "更新频道失败：{error}",
   "@channels_channelUpdateFailed": {
     "placeholders": {
       "error": {
@@ -2402,16 +2402,16 @@
     }
   },
   "map_type": "Type",
-  "map_path": "Path",
-  "map_location": "Location",
-  "map_estLocation": "Est. Location",
-  "map_publicKey": "Public Key",
+  "map_path": "路径",
+  "map_location": "位置",
+  "map_estLocation": "预估位置",
+  "map_publicKey": "公钥",
   "map_publicKeyPrefixHint": "e.g. ab12",
   "contact_typeChat": "Chat",
   "contact_typeRepeater": "Repeater",
   "contact_typeRoom": "Room",
   "contact_typeSensor": "Sensor",
-  "contact_typeUnknown": "Unknown",
+  "contact_typeUnknown": "未知",
   "channels_via": "via {path}",
   "chat_score": "Score",
   "map_sharedAt": "已分享",
@@ -2543,8 +2543,8 @@
   "pathEditor_tooManyHops": "最多 64 跳",
   "pathEditor_usePath": "请使用此路径",
   "pathEditor_removeHop": "去除跳点",
-  "routing_deliveryCounts": "{successes} delivered, {failures} failed",
-  "pathEditor_hopCounter": "{count} of 64 hops",
+  "routing_deliveryCounts": "已送达 {successes}，失败 {failures}",
+  "pathEditor_hopCounter": "{count} / 64 跳",
   "pathEditor_unknownHop": "未知的重复器",
   "map_zoomIn": "放大",
   "map_zoomOut": "放大",
@@ -2823,7 +2823,7 @@
   "imageMessages_autoProcessSubtitle": "每次图像到达后立即重建，每次需要约2GB的内存；若想关闭重建功能，可通过点击取消开启。",
   "imageSend_title": "发送图片",
   "imageSend_cropNote": "调整大小至512 × 512 · 宽高比未保留",
-  "imageSend_originalSize": "原文",
+  "imageSend_originalSize": "原图",
   "imageSend_onAirSize": "直播中",
   "imageSend_quality": "质量",
   "imageSend_qualityStandard": "标准",

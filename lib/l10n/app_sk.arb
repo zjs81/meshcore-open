@@ -108,8 +108,8 @@
   "settings_privacyModeEnabled": "Ochranný režim je povolený.",
   "settings_privacyModeDisabled": "Ochranný režim je vypnutý",
   "settings_actions": "Možné akcie",
-  "settings_deleteAllPaths": "Delete All Paths",
-  "settings_deleteAllPathsSubtitle": "Clear all path data from contacts.",
+  "settings_deleteAllPaths": "Odstrániť všetky cesty",
+  "settings_deleteAllPathsSubtitle": "Vymazať všetky údaje o cestách z kontaktov.",
   "settings_sendAdvertisement": "Odoslať inzerát",
   "settings_sendAdvertisementSubtitle": "Momentálne priezornejšie.",
   "settings_advertisementSent": "Inzerát odoslaný",
@@ -579,7 +579,7 @@
       }
     }
   },
-  "debugFrame_textTypeCli": "CLI (Command Line Interface)",
+  "debugFrame_textTypeCli": "CLI",
   "debugFrame_textTypePlain": "Jednoduché",
   "debugFrame_text": "- Text: \"{text}\"",
   "@debugFrame_text": {
@@ -1010,8 +1010,8 @@
   "repeater_lastRssi": "Posledný RSSI",
   "repeater_lastSnr": "Posledný SNR",
   "repeater_noiseFloor": "Hladina šumu",
-  "repeater_txAirtime": "TX Airtime",
-  "repeater_rxAirtime": "RX Airtime",
+  "repeater_txAirtime": "Čas vysielania TX",
+  "repeater_rxAirtime": "Čas vysielania RX",
   "repeater_packetStatistics": "Štatistiky paketov",
   "repeater_sent": "Odoslané",
   "repeater_received": "Prijaté",
@@ -1376,7 +1376,7 @@
   "telemetry_energyLabel": "Energia",
   "telemetry_directionLabel": "Smer",
   "telemetry_timeLabel": "Čas",
-  "telemetry_gyrometerLabel": "Gyrometer",
+  "telemetry_gyrometerLabel": "Gyroskop",
   "telemetry_colourLabel": "Farba",
   "telemetry_gpsLabel": "GPS",
   "telemetry_switchLabel": "Prepínač",
@@ -1690,7 +1690,7 @@
   "community_scanQr": "Skenovať QR komunity",
   "community_scanInstructions": "Zamerte kameru na komunitný QR kód.",
   "community_showQr": "Zobraziť QR kód",
-  "common_ok": "OK\nDobre",
+  "common_ok": "OK",
   "community_publicChannel": "Komunita verejná",
   "community_hashtagChannel": "Komunitný Hashtag",
   "community_name": "Komunita",
@@ -2461,10 +2461,10 @@
   "repeater_cliHelpStatsPackets": "(Iba sériovo) Zobrazí štatistiky na úrovni paketov.",
   "repeater_cliHelpStatsRadio": "(Iba sériovo) Zobrazí štatistiky rádia.",
   "repeater_cliHelpStatsCore": "(Iba sériovo) Zobrazí základné štatistiky firmvéru.",
-  "common_done": "Done",
-  "background_serviceTitle": "MeshCore running",
-  "background_serviceText": "Keeping BLE connected",
-  "appSettings_translationModelDeleted": "Deleted {name}",
+  "common_done": "Hotovo",
+  "background_serviceTitle": "MeshCore beží",
+  "background_serviceText": "Udržiavanie spojenia BLE",
+  "appSettings_translationModelDeleted": "Odstránené: {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {
       "name": {
@@ -2472,7 +2472,7 @@
       }
     }
   },
-  "appSettings_translationModelDeleteFailed": "Failed to delete: {error}",
+  "appSettings_translationModelDeleteFailed": "Odstránenie zlyhalo: {error}",
   "@appSettings_translationModelDeleteFailed": {
     "placeholders": {
       "error": {
@@ -2480,7 +2480,7 @@
       }
     }
   },
-  "channels_channelUpdateFailed": "Failed to update channel: {error}",
+  "channels_channelUpdateFailed": "Aktualizácia kanála zlyhala: {error}",
   "@channels_channelUpdateFailed": {
     "placeholders": {
       "error": {
@@ -2489,16 +2489,16 @@
     }
   },
   "map_type": "Type",
-  "map_path": "Path",
-  "map_location": "Location",
-  "map_estLocation": "Est. Location",
-  "map_publicKey": "Public Key",
+  "map_path": "Cesta",
+  "map_location": "Poloha",
+  "map_estLocation": "Odhad. poloha",
+  "map_publicKey": "Verejný kľúč",
   "map_publicKeyPrefixHint": "e.g. ab12",
   "contact_typeChat": "Chat",
   "contact_typeRepeater": "Repeater",
   "contact_typeRoom": "Room",
   "contact_typeSensor": "Sensor",
-  "contact_typeUnknown": "Unknown",
+  "contact_typeUnknown": "Neznámy",
   "channels_via": "via {path}",
   "chat_score": "Score",
   "map_sharedAt": "Zdieľané",
@@ -2626,9 +2626,9 @@
   "pathEditor_advancedHex": "Pokročilé: pôvodná hexová cesta",
   "pathEditor_hexLabel": "Prefiksy pre hexadecimálne čísla",
   "pathEditor_hexHelper": "Dve hexové čísla na každý krok, oddelené čiarkami",
-  "routing_lastWorked": "worked {when}",
+  "routing_lastWorked": "fungovala {when}",
   "pathEditor_invalidTokens": "Neplatné: {tokens}",
-  "routing_deliveryCounts": "{successes} delivered, {failures} failed",
+  "routing_deliveryCounts": "{successes} doručených, {failures} neúspešných",
   "pathEditor_tooManyHops": "Maximálne 64 krokov",
   "pathEditor_usePath": "Použite túto cestu",
   "pathEditor_removeHop": "Odstráňte skok",
@@ -2933,7 +2933,7 @@
   "imageMessages_autoProcessSubtitle": "Rekonstruujte každý obraz tak, ako pridá. Používajete okolo 2 GB pamäti pre drugú hodinu; odložte rekonstrukciu tým kliknutím.",
   "imageSend_title": "Vyslat obraz",
   "imageSend_cropNote": "Zmeneno na 512 × 512 · vzorýst nie byl zachovan",
-  "imageSend_originalSize": "Výborný text:\n\n\"Language is the road map of a culture. It tells us where to go as a society and helps us understand the world around us. Learning a new language opens up new perspectives and opportunities, allowing us to connect with people from different backgrounds and build bridges between cultures.\"\n\nSlovenská preklada:\n\n\"Jazyk je cesta pre zručnosti a odráža kultúru. Dá nám uvedomi, dokádať, kúdy sa pohladneme a pomáha našej společnosti poradiť sa v rôznych okolnosti a porozumieť o svetu kolem nás. Nauka nového jazyka otviera nové perspektívy a možnosti, čo pohybuje našu schopnosť sa spoluprávať s ľudmi z rôznych okolnosti a budovať mosty medzi kultúry.\"",
+  "imageSend_originalSize": "Originál",
   "imageSend_onAirSize": "V prúce",
   "imageSend_quality": "Kvalita",
   "imageSend_qualityStandard": "Stándard",

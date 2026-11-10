@@ -108,8 +108,8 @@
   "settings_privacyModeEnabled": "Privatni način je omogočen.",
   "settings_privacyModeDisabled": "Privatni način je onemogočen.",
   "settings_actions": "Akcije",
-  "settings_deleteAllPaths": "Delete All Paths",
-  "settings_deleteAllPathsSubtitle": "Clear all path data from contacts.",
+  "settings_deleteAllPaths": "Izbriši vse poti",
+  "settings_deleteAllPathsSubtitle": "Počisti vse podatke o poteh iz stikov.",
   "settings_sendAdvertisement": "Pošlji Oglas",
   "settings_sendAdvertisementSubtitle": "Trenutna prisotnost v oddajah",
   "settings_advertisementSent": "Oglas poslan",
@@ -571,7 +571,7 @@
       }
     }
   },
-  "debugFrame_textTypeCli": "CLI (Command Line Interface)",
+  "debugFrame_textTypeCli": "CLI",
   "debugFrame_textTypePlain": "Preprosto",
   "debugFrame_text": "- Tekst: \"{text}\"",
   "@debugFrame_text": {
@@ -973,7 +973,7 @@
   "repeater_statusSubtitle": "Poglej stanje, statistiko in sosede repetitorja",
   "repeater_telemetry": "Telemetrija",
   "repeater_telemetrySubtitle": "Poglej telemetrijo senzorjev in sistemsko statistiko",
-  "repeater_cli": "CLI (Command Line Interface)",
+  "repeater_cli": "CLI",
   "repeater_cliSubtitle": "Pošiljaj ukaze repetitorju",
   "repeater_settings": "Nastavitve",
   "repeater_settingsSubtitle": "Konfigurirajte parametre repetitora",
@@ -1002,8 +1002,8 @@
   "repeater_lastRssi": "Zadnji RSSI",
   "repeater_lastSnr": "Zadnji SNR",
   "repeater_noiseFloor": "Raven šuma",
-  "repeater_txAirtime": "TX Airtime",
-  "repeater_rxAirtime": "RX Airtime",
+  "repeater_txAirtime": "Čas oddajanja TX",
+  "repeater_rxAirtime": "Čas sprejemanja RX",
   "repeater_packetStatistics": "Statistika paketa",
   "repeater_sent": "Poslano",
   "repeater_received": "Prejeto",
@@ -1752,7 +1752,7 @@
   "contacts_roomPathTrace": "Sledenje poti do strežnika sobe",
   "contacts_roomPing": "Ping strežnik sobe",
   "contacts_chatTraceRoute": "Slediti poti žarkov",
-  "contacts_pathTraceTo": "Trace route to {name}",
+  "contacts_pathTraceTo": "Sledi poti do {name}",
   "appSettings_languageRu": "Ruščina",
   "appSettings_languageUk": "Ukrajinščina",
   "appSettings_enableMessageTracing": "Pokaži celotno pot prek repetitorjev v sporočilih",
@@ -2368,10 +2368,10 @@
   "repeater_cliHelpStatsPackets": "(Samo serijsko) Prikaže statistiko na ravni paketov.",
   "repeater_cliHelpStatsRadio": "(Samo serijsko) Prikaže statistiko radia.",
   "repeater_cliHelpStatsCore": "(Samo serijsko) Prikaže statistiko jedra vdelane programske opreme.",
-  "common_done": "Done",
-  "background_serviceTitle": "MeshCore running",
-  "background_serviceText": "Keeping BLE connected",
-  "appSettings_translationModelDeleted": "Deleted {name}",
+  "common_done": "Opravljeno",
+  "background_serviceTitle": "MeshCore deluje",
+  "background_serviceText": "BLE povezava ostaja aktivna",
+  "appSettings_translationModelDeleted": "Izbrisano: {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {
       "name": {
@@ -2379,7 +2379,7 @@
       }
     }
   },
-  "appSettings_translationModelDeleteFailed": "Failed to delete: {error}",
+  "appSettings_translationModelDeleteFailed": "Brisanje ni uspelo: {error}",
   "@appSettings_translationModelDeleteFailed": {
     "placeholders": {
       "error": {
@@ -2387,7 +2387,7 @@
       }
     }
   },
-  "channels_channelUpdateFailed": "Failed to update channel: {error}",
+  "channels_channelUpdateFailed": "Posodobitev kanala ni uspela: {error}",
   "@channels_channelUpdateFailed": {
     "placeholders": {
       "error": {
@@ -2396,16 +2396,16 @@
     }
   },
   "map_type": "Type",
-  "map_path": "Path",
-  "map_location": "Location",
-  "map_estLocation": "Est. Location",
-  "map_publicKey": "Public Key",
+  "map_path": "Pot",
+  "map_location": "Lokacija",
+  "map_estLocation": "Ocenjena lokacija",
+  "map_publicKey": "Javni ključ",
   "map_publicKeyPrefixHint": "e.g. ab12",
   "contact_typeChat": "Chat",
   "contact_typeRepeater": "Repeater",
   "contact_typeRoom": "Room",
   "contact_typeSensor": "Sensor",
-  "contact_typeUnknown": "Unknown",
+  "contact_typeUnknown": "Neznano",
   "channels_via": "via {path}",
   "chat_score": "Score",
   "settings_multiAck": "Več potrdil",
@@ -2541,7 +2541,7 @@
   "pathEditor_removeHop": "Odstranite skok",
   "pathEditor_unknownHop": "Neznani ponovitelj",
   "map_zoomIn": "Povečaj",
-  "routing_deliveryCounts": "{successes} delivered, {failures} failed",
+  "routing_deliveryCounts": "{successes} dostavljenih, {failures} neuspelih",
   "map_zoomOut": "Povečajte pogled",
   "map_centerMap": "Krajšarska karta",
   "chrome_bluetoothRequiresChromium": "Web Bluetooth zahteva brskalnik Chromium.",
@@ -2788,7 +2788,7 @@
   "repeater_pathHashModeOption2": "2 - 3 bite",
   "repeater_pathHashModeOption3": "3 - 4 bite",
   "appSettings_batteryLipoHv": "LiPo HV (3,0–4,35 V)",
-  "channels_regionSetTo": "Osebno: {region}",
+  "channels_regionSetTo": "Regija: {region}",
   "channels_regionNotSet": "Region: brak",
   "channels_regionSelect_Title": "Vablajte region",
   "channels_clearRegion": "Jasna regija",
@@ -2818,7 +2818,7 @@
   "imageMessages_autoProcessSubtitle": "Katero je oblikovanje svega oblikov, ko se pošteva. Za drugo okolo časa se koristi ok. 2 GB pamične prostore; odločite se za oblikovanje s tukom.",
   "imageSend_title": "Sločaji slik",
   "imageSend_cropNote": "Zadovoljno izmenjeno na 512 × 512 · vzorovni odnos ne ohranjen",
-  "imageSend_originalSize": "Original text:\n\nThe early bird catches the worm.\n\nTranslation:\n\nPojdi prvi, zlati v kroku.",
+  "imageSend_originalSize": "Izvirnik",
   "imageSend_onAirSize": "Na vodi",
   "imageSend_quality": "Kakovost",
   "imageSend_qualityStandard": "Standard",

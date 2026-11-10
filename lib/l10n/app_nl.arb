@@ -135,7 +135,7 @@
       }
     }
   },
-  "settings_aboutLegalese": "2026 MeshCore Open Source Project",
+  "settings_aboutLegalese": "2026 MeshCore open-sourceproject",
   "settings_aboutDescription": "Een open-source Flutter client voor MeshCore LoRa mesh netwerkapparaten.",
   "settings_infoName": "Naam",
   "settings_infoId": "ID",
@@ -537,7 +537,7 @@
   "gifPicker_failedSearch": "Zoeken naar GIF's mislukt",
   "gifPicker_noInternet": "Geen internetverbinding",
   "debugLog_appTitle": "Debuglog van de app",
-  "debugLog_bleTitle": "BLE Debug Log",
+  "debugLog_bleTitle": "BLE-debuglog",
   "debugLog_copyLog": "Kopieer log",
   "debugLog_clearLog": "Log wissen",
   "debugLog_copied": "Debuglog gekopieerd",

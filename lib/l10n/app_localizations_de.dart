@@ -6268,11 +6268,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Das Bildmodell wurde noch nicht heruntergeladen. Laden Sie es in den Einstellungen herunter, um Bilder zu senden.';
 
   @override
-  String get imageSend_originalSize =>
-      'Originaltext:\n\nThe quick brown fox jumps over the lazy dog.\n\nÜbersetzung:\n\nDer schnelle braune Fuchs springt über den faulen Hund.';
+  String get imageSend_originalSize => 'Original';
 
   @override
-  String get imageSend_onAirSize => 'On air';
+  String get imageSend_onAirSize => 'Über Funk';
 
   @override
   String get imageSend_quality => 'Qualität';
@@ -6394,7 +6393,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String receivedImage_senderPrefix(String prefix) {
-    return 'Kritisch: Diese Platzhalter $prefix beibehalten.';
+    return 'Knoten $prefix';
   }
 
   @override

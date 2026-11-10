@@ -108,8 +108,8 @@
   "settings_privacyModeEnabled": "Tryb prywatności włączony",
   "settings_privacyModeDisabled": "Tryb prywatności wyłączony",
   "settings_actions": "Działania",
-  "settings_deleteAllPaths": "Delete All Paths",
-  "settings_deleteAllPathsSubtitle": "Clear all path data from contacts.",
+  "settings_deleteAllPaths": "Usuń wszystkie ścieżki",
+  "settings_deleteAllPathsSubtitle": "Wyczyść wszystkie dane ścieżek z kontaktów.",
   "settings_sendAdvertisement": "Wyślij rozgłoszenie",
   "settings_sendAdvertisementSubtitle": "Nadaj obecność teraz",
   "settings_advertisementSent": "Rozgłoszenie wysłane",
@@ -1175,7 +1175,7 @@
   "repeater_networkHealth": "Stan sieci",
   "repeater_loopDetect": "Wykrywanie pętli",
   "repeater_loopDetectHelper": "Wysyłaj pakiety, które wyglądają jak pętle routingu.",
-  "repeater_loopDetectOff": "Z domu",
+  "repeater_loopDetectOff": "Wyłączone",
   "repeater_loopDetectMinimal": "Minimalny",
   "repeater_loopDetectModerate": "Umiarkowany",
   "repeater_loopDetectStrict": "Surowe",
@@ -1220,7 +1220,7 @@
       }
     }
   },
-  "repeater_actionFailed": "{action} failed: {error}",
+  "repeater_actionFailed": "{action} nie powiodło się: {error}",
   "@repeater_actionFailed": {
     "placeholders": {
       "action": {
@@ -2492,10 +2492,10 @@
   "repeater_cliHelpStatsPackets": "(Tylko dla serialu) Prezentuje statystyki na poziomie pakietów.",
   "repeater_cliHelpStatsRadio": "(Tylko serial) Prezentuje statystyki dotyczące nadawania radiowego.",
   "repeater_cliHelpStatsCore": "(Tylko wersja serialowa) Wyświetla podstawowe statystyki o oprogramowaniu.",
-  "common_done": "Done",
-  "background_serviceTitle": "MeshCore running",
-  "background_serviceText": "Keeping BLE connected",
-  "appSettings_translationModelDeleted": "Deleted {name}",
+  "common_done": "Gotowe",
+  "background_serviceTitle": "MeshCore działa",
+  "background_serviceText": "Utrzymywanie połączenia BLE",
+  "appSettings_translationModelDeleted": "Usunięto {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {
       "name": {
@@ -2503,7 +2503,7 @@
       }
     }
   },
-  "appSettings_translationModelDeleteFailed": "Failed to delete: {error}",
+  "appSettings_translationModelDeleteFailed": "Nie udało się usunąć: {error}",
   "@appSettings_translationModelDeleteFailed": {
     "placeholders": {
       "error": {
@@ -2511,7 +2511,7 @@
       }
     }
   },
-  "channels_channelUpdateFailed": "Failed to update channel: {error}",
+  "channels_channelUpdateFailed": "Nie udało się zaktualizować kanału: {error}",
   "@channels_channelUpdateFailed": {
     "placeholders": {
       "error": {
@@ -2520,16 +2520,16 @@
     }
   },
   "map_type": "Type",
-  "map_path": "Path",
-  "map_location": "Location",
-  "map_estLocation": "Est. Location",
-  "map_publicKey": "Public Key",
+  "map_path": "Ścieżka",
+  "map_location": "Lokalizacja",
+  "map_estLocation": "Szac. lokalizacja",
+  "map_publicKey": "Klucz publiczny",
   "map_publicKeyPrefixHint": "e.g. ab12",
   "contact_typeChat": "Chat",
   "contact_typeRepeater": "Repeater",
   "contact_typeRoom": "Room",
   "contact_typeSensor": "Sensor",
-  "contact_typeUnknown": "Unknown",
+  "contact_typeUnknown": "Nieznany",
   "channels_via": "via {path}",
   "chat_score": "Score",
   "settings_multiAck": "Wielokrotne potwierdzenia odbioru",
@@ -2665,7 +2665,7 @@
   "pathEditor_removeHop": "Usuń skok",
   "pathEditor_unknownHop": "Nieznany repeater",
   "map_zoomIn": "Przybliż",
-  "routing_deliveryCounts": "{successes} delivered, {failures} failed",
+  "routing_deliveryCounts": "{successes} dostarczono, {failures} nie powiodło się",
   "map_zoomOut": "Przybliż z powrotem",
   "map_centerMap": "Mapa centrum",
   "chrome_bluetoothRequiresChromium": "Web Bluetooth wymaga przeglądarki Chromium.",
@@ -2972,7 +2972,7 @@
   "imageSend_qualityHigh": "Wysoko",
   "imageSend_packetsLabel": "Pakiet",
   "imageSend_airtimeLabel": "Czas w eterze",
-  "imageSend_sizeLabel": "Payload",
+  "imageSend_sizeLabel": "Dane",
   "imageSend_packetsCount": "{count} {count, plural, =1{pakiet} other{pakietów}}",
   "imageSend_range": "{min}–{max}",
   "imageSend_unknownValue": "—",

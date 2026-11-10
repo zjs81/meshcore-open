@@ -937,8 +937,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get settings_infoHardware => 'Оборудование';
 
   @override
-  String get settings_infoFirmware =>
-      'Програмно-оборонни системни программи (фirmware)';
+  String get settings_infoFirmware => 'Фърмуер';
 
   @override
   String get settings_presets => 'Предварителни настройки';
@@ -6251,7 +6250,7 @@ class AppLocalizationsBg extends AppLocalizations {
       'Моделът за изображения още не е изтеглен. Изтеглете го в настройките, за да изпращате изображения.';
 
   @override
-  String get imageSend_originalSize => 'Късно на използване на език:';
+  String get imageSend_originalSize => 'Оригинал';
 
   @override
   String get imageSend_onAirSize => 'В ефир';

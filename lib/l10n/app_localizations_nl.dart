@@ -887,7 +887,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get settings_aboutLegalese => '2026 MeshCore Open Source Project';
+  String get settings_aboutLegalese => '2026 MeshCore open-sourceproject';
 
   @override
   String get settings_aboutDescription =>
@@ -2448,7 +2448,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get debugLog_appTitle => 'Debuglog van de app';
 
   @override
-  String get debugLog_bleTitle => 'BLE Debug Log';
+  String get debugLog_bleTitle => 'BLE-debuglog';
 
   @override
   String get debugLog_copyLog => 'Kopieer log';

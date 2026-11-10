@@ -880,7 +880,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get settings_aboutLegalese => '2026 MeshCore Open Source Project';
+  String get settings_aboutLegalese => 'Projekt MeshCore Open Source 2026';
 
   @override
   String get settings_aboutDescription =>
@@ -943,7 +943,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get settings_bandwidth => 'Šířka pásma';
 
   @override
-  String get settings_spreadingFactor => 'Spreading Factor';
+  String get settings_spreadingFactor => 'Rozptylový faktor';
 
   @override
   String get settings_codingRate => 'Kódovací poměr';
@@ -2735,7 +2735,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get chat_floodAuto => 'Flood (auto)';
+  String get chat_floodAuto => 'Flood (automaticky)';
 
   @override
   String get chat_direct => 'Přímo';
@@ -2897,7 +2897,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get map_repeater => 'Opakovač';
 
   @override
-  String get map_room => 'Room';
+  String get map_room => 'Místnost';
 
   @override
   String get map_sensor => 'Senzor';
@@ -3615,10 +3615,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get repeater_bandwidth => 'Šířka pásma';
 
   @override
-  String get repeater_spreadingFactor => 'Spreading Factor';
+  String get repeater_spreadingFactor => 'Rozptylový faktor';
 
   @override
-  String get repeater_codingRate => 'Coding Rate';
+  String get repeater_codingRate => 'Kódovací poměr';
 
   @override
   String get repeater_locationSettings => 'Nastavení polohy';
@@ -4307,7 +4307,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get repeater_settingsCategory => 'Nastavení';
 
   @override
-  String get repeater_bridge => 'Bridge';
+  String get repeater_bridge => 'Most';
 
   @override
   String get repeater_logging => 'Logování';
@@ -4876,7 +4876,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get channelPath_floodPath => 'Flood';
 
   @override
-  String get channelPath_directPath => 'Direct';
+  String get channelPath_directPath => 'Přímo';
 
   @override
   String channelPath_observedZeroOf(int total) {

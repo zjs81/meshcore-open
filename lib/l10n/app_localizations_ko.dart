@@ -5965,7 +5965,7 @@ class AppLocalizationsKo extends AppLocalizations {
       '이미지 모델이 아직 다운로드되지 않았습니다. 설정에서 다운로드하면 이미지를 보낼 수 있습니다.';
 
   @override
-  String get imageSend_originalSize => '원문 없음';
+  String get imageSend_originalSize => '원본';
 
   @override
   String get imageSend_onAirSize => '방송 중';

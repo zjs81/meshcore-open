@@ -1491,7 +1491,7 @@
   "repeater_cliHelpSetLat": "アドバート表示の地図の緯度を設定します。（度分秒表記）",
   "repeater_cliHelpSetLon": "アドバート表示の地図の経度を設定します。（度数、分）",
   "repeater_cliHelpSetRadio": "完全に新しいラジオパラメータを設定し、設定として保存します。適用するには、「再起動」コマンドが必要です。",
-  "repeater_cliHelpSetRxDelay": "（実験用）遅延時間を設定するためのベース（1以上の値に設定する必要）\n受信パケットに対して、信号強度/スコアに基づいてわずかな遅延を適用します。 0に設定すると無効化されます。",
+  "repeater_cliHelpSetRxDelay": "（実験用）遅延時間を設定するためのベース（1以上の値に設定する必要）受信パケットに対して、信号強度/スコアに基づいてわずかな遅延を適用します。 0に設定すると無効化されます。",
   "repeater_cliHelpSetTxDelay": "時間経過に応じた「フラッドモード」パケットの送信遅延を設定します。この遅延は、ランダムなスロットシステムと組み合わせて使用され、パケットの衝突を減らすことを目的としています。",
   "repeater_cliHelpSetDirectTxDelay": "txdelayと同様ですが、ダイレクトモードのパケット転送にランダムな遅延を適用する場合に使用します。",
   "repeater_cliHelpSetBridgeEnabled": "ブリッジを有効化/無効化",
@@ -2044,7 +2044,7 @@
   },
   "losRun": "LOS（レーティングシステム）を使用する",
   "losNoElevationData": "標高データは含まれていません",
-  "losProfileClear": "{distance} {distanceUnit}, clear LOS, min clearance {clearance} {heightUnit}",
+  "losProfileClear": "{distance} {distanceUnit}、LOS クリア、最小クリアランス {clearance} {heightUnit}",
   "@losProfileClear": {
     "placeholders": {
       "distance": {
@@ -2061,7 +2061,7 @@
       }
     }
   },
-  "losProfileBlocked": "{distance} {distanceUnit}, blocked by {obstruction} {heightUnit}",
+  "losProfileBlocked": "{distance} {distanceUnit}、{obstruction} {heightUnit} で遮断",
   "@losProfileBlocked": {
     "placeholders": {
       "distance": {
@@ -2080,7 +2080,7 @@
   },
   "losStatusChecking": "LOS：確認中…",
   "losStatusNoData": "LOS: データの欠如",
-  "losStatusSummary": "LOS: {clear}/{total} clear, {blocked} blocked, {unknown} unknown",
+  "losStatusSummary": "LOS: {clear}/{total} クリア、{blocked} 遮断、{unknown} 不明",
   "@losStatusSummary": {
     "placeholders": {
       "clear": {
@@ -2158,7 +2158,7 @@
   "contacts_contactAdvertCopied": "アドバートがクリップボードにコピーされました。",
   "contacts_contactAdvertCopyFailed": "アドバートのコピーがクリップボードにコピーできませんでした。",
   "notification_activityTitle": "メッシュコアの活動",
-  "notification_messagesCount": "{count} {count, plural, =1{message} other{messages}}",
+  "notification_messagesCount": "{count} 件のメッセージ",
   "@notification_messagesCount": {
     "placeholders": {
       "count": {
@@ -2959,7 +2959,7 @@
   "imageMessages_autoProcessSubtitle": "画像が届き次第、すぐに再構築してください。1回あたり約2GBのメモリを使用します。タップで再構築を解除できます。",
   "imageSend_title": "画像を送信",
   "imageSend_cropNote": "512 × 512にリサイズされました。アスペクト比は保持されませんでした。",
-  "imageSend_originalSize": "原文：\nThe early morning light filtered through the curtains, casting a soft glow on the room.\n\n翻訳：\n早朝の光がカーテンをすり抜け、部屋に柔らかな光を投げかけていた。",
+  "imageSend_originalSize": "オリジナル",
   "imageSend_onAirSize": "放送中",
   "imageSend_quality": "品質",
   "imageSend_qualityStandard": "標準",

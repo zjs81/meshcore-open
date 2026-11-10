@@ -45,7 +45,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get common_close => 'Zapri';
 
   @override
-  String get common_done => 'Done';
+  String get common_done => 'Opravljeno';
 
   @override
   String get common_edit => 'Uredi';
@@ -818,11 +818,11 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_actions => 'Akcije';
 
   @override
-  String get settings_deleteAllPaths => 'Delete All Paths';
+  String get settings_deleteAllPaths => 'Izbriši vse poti';
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Clear all path data from contacts.';
+      'Počisti vse podatke o poteh iz stikov.';
 
   @override
   String get settings_sendAdvertisement => 'Pošlji Oglas';
@@ -2151,7 +2151,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String channels_regionSetTo(String region) {
-    return 'Osebno: $region';
+    return 'Regija: $region';
   }
 
   @override
@@ -2522,7 +2522,7 @@ class AppLocalizationsSl extends AppLocalizations {
   }
 
   @override
-  String get debugFrame_textTypeCli => 'CLI (Command Line Interface)';
+  String get debugFrame_textTypeCli => 'CLI';
 
   @override
   String get debugFrame_textTypePlain => 'Preprosto';
@@ -2647,7 +2647,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String routing_deliveryCounts(int successes, int failures) {
-    return '$successes delivered, $failures failed';
+    return '$successes dostavljenih, $failures neuspelih';
   }
 
   @override
@@ -2928,16 +2928,16 @@ class AppLocalizationsSl extends AppLocalizations {
   String get map_type => 'Type';
 
   @override
-  String get map_path => 'Path';
+  String get map_path => 'Pot';
 
   @override
-  String get map_location => 'Location';
+  String get map_location => 'Lokacija';
 
   @override
-  String get map_estLocation => 'Est. Location';
+  String get map_estLocation => 'Ocenjena lokacija';
 
   @override
-  String get map_publicKey => 'Public Key';
+  String get map_publicKey => 'Javni ključ';
 
   @override
   String get map_publicKeyPrefixHint => 'e.g. ab12';
@@ -3447,7 +3447,7 @@ class AppLocalizationsSl extends AppLocalizations {
       'Poglej telemetrijo senzorjev in sistemsko statistiko';
 
   @override
-  String get repeater_cli => 'CLI (Command Line Interface)';
+  String get repeater_cli => 'CLI';
 
   @override
   String get repeater_cliSubtitle => 'Pošiljaj ukaze repetitorju';
@@ -3519,10 +3519,10 @@ class AppLocalizationsSl extends AppLocalizations {
   String get repeater_noiseFloor => 'Raven šuma';
 
   @override
-  String get repeater_txAirtime => 'TX Airtime';
+  String get repeater_txAirtime => 'Čas oddajanja TX';
 
   @override
-  String get repeater_rxAirtime => 'RX Airtime';
+  String get repeater_rxAirtime => 'Čas sprejemanja RX';
 
   @override
   String get repeater_chanUtil => 'Uporaba kanala';
@@ -5347,7 +5347,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String contacts_pathTraceTo(String name) {
-    return 'Trace route to $name';
+    return 'Sledi poti do $name';
   }
 
   @override
@@ -6034,24 +6034,24 @@ class AppLocalizationsSl extends AppLocalizations {
   String get translation_systemLanguage => 'Jezik sistema';
 
   @override
-  String get background_serviceTitle => 'MeshCore running';
+  String get background_serviceTitle => 'MeshCore deluje';
 
   @override
-  String get background_serviceText => 'Keeping BLE connected';
+  String get background_serviceText => 'BLE povezava ostaja aktivna';
 
   @override
   String appSettings_translationModelDeleted(String name) {
-    return 'Deleted $name';
+    return 'Izbrisano: $name';
   }
 
   @override
   String appSettings_translationModelDeleteFailed(String error) {
-    return 'Failed to delete: $error';
+    return 'Brisanje ni uspelo: $error';
   }
 
   @override
   String channels_channelUpdateFailed(String error) {
-    return 'Failed to update channel: $error';
+    return 'Posodobitev kanala ni uspela: $error';
   }
 
   @override
@@ -6067,7 +6067,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get contact_typeSensor => 'Sensor';
 
   @override
-  String get contact_typeUnknown => 'Unknown';
+  String get contact_typeUnknown => 'Neznano';
 
   @override
   String get map_zoomIn => 'Povečaj';
@@ -6237,8 +6237,7 @@ class AppLocalizationsSl extends AppLocalizations {
       'Obrazni model še ni prenesen. Prenesite ga v Nastavitvah, da boste lahko pošiljali slike.';
 
   @override
-  String get imageSend_originalSize =>
-      'Original text:\n\nThe early bird catches the worm.\n\nTranslation:\n\nPojdi prvi, zlati v kroku.';
+  String get imageSend_originalSize => 'Izvirnik';
 
   @override
   String get imageSend_onAirSize => 'Na vodi';

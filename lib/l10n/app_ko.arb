@@ -2959,7 +2959,7 @@
   "imageMessages_autoProcessSubtitle": "이미지가 도착하는 즉시 재구성하세요. 매번 2GB의 메모리를 사용하며, 탭으로 재구성을 원할 경우 해제하세요.",
   "imageSend_title": "이미지를 보내세요",
   "imageSend_cropNote": "512 × 512로 크기가 조정되었으며, 종횡비는 유지되지 않았습니다.",
-  "imageSend_originalSize": "원문 없음",
+  "imageSend_originalSize": "원본",
   "imageSend_onAirSize": "방송 중",
   "imageSend_quality": "품질",
   "imageSend_qualityStandard": "표준",

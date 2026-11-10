@@ -752,7 +752,7 @@
   "map_repeater": "Ripetitore",
   "map_room": "Stanza",
   "map_sensor": "Sensore",
-  "map_pinDm": "Pin (DM)",
+  "map_pinDm": "Segnaposto (DM)",
   "map_pinPrivate": "Pin (Privato)",
   "map_pinPublic": "Pin (Pubblico)",
   "map_lastSeen": "Ultimo visto",
@@ -1224,7 +1224,7 @@
   "repeater_networkHealth": "Salute della rete",
   "repeater_loopDetect": "Rilevamento di cicli",
   "repeater_loopDetectHelper": "Scarta i pacchetti flood che sembrano loop di routing",
-  "repeater_loopDetectOff": "Offerte",
+  "repeater_loopDetectOff": "Off",
   "repeater_loopDetectMinimal": "Essenziale",
   "repeater_loopDetectModerate": "Moderato",
   "repeater_loopDetectStrict": "Rigido",
@@ -1269,7 +1269,7 @@
       }
     }
   },
-  "repeater_actionFailed": "{action} failed: {error}",
+  "repeater_actionFailed": "{action} non riuscito: {error}",
   "@repeater_actionFailed": {
     "placeholders": {
       "action": {
@@ -2510,9 +2510,9 @@
   "repeater_cliHelpStatsRadio": "(Solo per serie TV) Visualizza statistiche relative alla trasmissione radiofonica.",
   "repeater_cliHelpStatsCore": "(Solo per serie) Visualizza le statistiche del firmware di base.",
   "common_done": "Fatto",
-  "background_serviceTitle": "MeshCore running",
-  "background_serviceText": "Keeping BLE connected",
-  "appSettings_translationModelDeleted": "Deleted {name}",
+  "background_serviceTitle": "MeshCore in esecuzione",
+  "background_serviceText": "Connessione BLE mantenuta",
+  "appSettings_translationModelDeleted": "{name} eliminato",
   "@appSettings_translationModelDeleted": {
     "placeholders": {
       "name": {
@@ -2520,7 +2520,7 @@
       }
     }
   },
-  "appSettings_translationModelDeleteFailed": "Failed to delete: {error}",
+  "appSettings_translationModelDeleteFailed": "Eliminazione non riuscita: {error}",
   "@appSettings_translationModelDeleteFailed": {
     "placeholders": {
       "error": {
@@ -2965,7 +2965,7 @@
   "imageMessages_autoProcessSubtitle": "Ricostruisci ogni immagine non appena arriva. Utilizza circa 2 GB di memoria per un secondo ogni volta; disattiva la ricostruzione con un semplice tocco.",
   "imageSend_title": "Invia immagine",
   "imageSend_cropNote": "Ridimensionato a 512 × 512 · rapporto d'aspetto non conservato",
-  "imageSend_originalSize": "Traduzione:\n\nOriginal text:\n\nPlease translate the following English text into Italian:\n\nOriginal text:\n\n(No original English text provided)",
+  "imageSend_originalSize": "Originale",
   "imageSend_onAirSize": "In onda",
   "imageSend_quality": "Qualità",
   "imageSend_qualityStandard": "Standard",

@@ -85,8 +85,8 @@
   "settings_privacyModeEnabled": "Режим конфиденциальности включен",
   "settings_privacyModeDisabled": "Режим конфиденциальности выключен",
   "settings_actions": "Действия",
-  "settings_deleteAllPaths": "Delete All Paths",
-  "settings_deleteAllPathsSubtitle": "Clear all path data from contacts.",
+  "settings_deleteAllPaths": "Удалить все пути",
+  "settings_deleteAllPathsSubtitle": "Очистить все данные путей в контактах.",
   "settings_sendAdvertisement": "Отправить анонсирование",
   "settings_sendAdvertisementSubtitle": "Отправить анонсирование о присутствии сейчас",
   "settings_advertisementSent": "Анонсирование отправлено",
@@ -1681,7 +1681,7 @@
   "repeater_sendAdvertZeroHopSubtitle": "Анонс только ближайшим соседям (без ретрансляторов).",
   "repeater_clockSync": "Синхронизировать время сейчас",
   "repeater_clockSyncSubtitle": "Установите время на вашем телефоне, чтобы оно совпадало со временем ретранслятора.",
-  "repeater_actionSucceeded": "{action} succeeded",
+  "repeater_actionSucceeded": "{action}: успешно",
   "@repeater_actionSucceeded": {
     "placeholders": {
       "action": {
@@ -1689,7 +1689,7 @@
       }
     }
   },
-  "repeater_actionFailed": "{action} failed: {error}",
+  "repeater_actionFailed": "{action}: ошибка: {error}",
   "@repeater_actionFailed": {
     "placeholders": {
       "action": {
@@ -1924,8 +1924,8 @@
   "pathEditor_hexLabel": "Префиксы шестнадцатеричной системы",
   "pathEditor_hexHelper": "Два шестнадцатеричных символа на каждом шаге, разделенные запятыми.",
   "pathEditor_invalidTokens": "Неверно: {tokens}",
-  "routing_lastWorked": "worked {when}",
-  "routing_deliveryCounts": "{successes} delivered, {failures} failed",
+  "routing_lastWorked": "работал {when}",
+  "routing_deliveryCounts": "{successes} доставлено, {failures} не доставлено",
   "pathEditor_tooManyHops": "Максимальное количество ингредиентов – 64",
   "pathEditor_usePath": "Используйте этот путь",
   "pathEditor_removeHop": "Удалить хоп",
@@ -2171,13 +2171,13 @@
   "settings_deleteRegion": "Удалить регион",
   "settings_deleteRegionConfirm": "Удалить \"{region}\" из списка регионов?",
   "settings_infoHardware": "Оборудование",
-  "settings_infoFirmware": "Производственное программное обеспечение",
+  "settings_infoFirmware": "Прошивка",
   "repeater_pathHashModeOption0": "0 - 1 байт",
   "repeater_pathHashModeOption1": "1 - 2 байта",
   "repeater_pathHashModeOption2": "2 - 3 байта",
   "repeater_pathHashModeOption3": "3 - 4 байта",
   "appSettings_batteryLipoHv": "LiPo HV (3,0–4,35 В)",
-  "channels_regionSetTo": "РЕГИОН: {region}",
+  "channels_regionSetTo": "Регион: {region}",
   "channels_regionNotSet": "Регион: отсутствует",
   "channels_regionSelect_Title": "Выберите регион",
   "channels_clearRegion": "Чистый регион",

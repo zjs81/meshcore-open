@@ -45,7 +45,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get common_close => '关闭';
 
   @override
-  String get common_done => 'Done';
+  String get common_done => '完成';
 
   @override
   String get common_edit => '编辑';
@@ -764,11 +764,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_actions => '操作';
 
   @override
-  String get settings_deleteAllPaths => 'Delete All Paths';
+  String get settings_deleteAllPaths => '删除所有路径';
 
   @override
-  String get settings_deleteAllPathsSubtitle =>
-      'Clear all path data from contacts.';
+  String get settings_deleteAllPathsSubtitle => '清除联系人中的所有路径数据。';
 
   @override
   String get settings_sendAdvertisement => '发送广播';
@@ -2489,7 +2488,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String routing_deliveryCounts(int successes, int failures) {
-    return '$successes delivered, $failures failed';
+    return '已送达 $successes，失败 $failures';
   }
 
   @override
@@ -2500,7 +2499,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String pathEditor_hopCounter(int count) {
-    return '$count of 64 hops';
+    return '$count / 64 跳';
   }
 
   @override
@@ -2764,16 +2763,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get map_type => 'Type';
 
   @override
-  String get map_path => 'Path';
+  String get map_path => '路径';
 
   @override
-  String get map_location => 'Location';
+  String get map_location => '位置';
 
   @override
-  String get map_estLocation => 'Est. Location';
+  String get map_estLocation => '预估位置';
 
   @override
-  String get map_publicKey => 'Public Key';
+  String get map_publicKey => '公钥';
 
   @override
   String get map_publicKeyPrefixHint => 'e.g. ab12';
@@ -3562,7 +3561,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get repeater_loopDetectHelper => '创建看起来像路由环的“泛洪包”';
 
   @override
-  String get repeater_loopDetectOff => '离开';
+  String get repeater_loopDetectOff => '关闭';
 
   @override
   String get repeater_loopDetectMinimal => '最少';
@@ -5616,24 +5615,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get translation_systemLanguage => '系统语言';
 
   @override
-  String get background_serviceTitle => 'MeshCore running';
+  String get background_serviceTitle => 'MeshCore 运行中';
 
   @override
-  String get background_serviceText => 'Keeping BLE connected';
+  String get background_serviceText => '保持蓝牙连接';
 
   @override
   String appSettings_translationModelDeleted(String name) {
-    return 'Deleted $name';
+    return '已删除 $name';
   }
 
   @override
   String appSettings_translationModelDeleteFailed(String error) {
-    return 'Failed to delete: $error';
+    return '删除失败：$error';
   }
 
   @override
   String channels_channelUpdateFailed(String error) {
-    return 'Failed to update channel: $error';
+    return '更新频道失败：$error';
   }
 
   @override
@@ -5649,7 +5648,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get contact_typeSensor => 'Sensor';
 
   @override
-  String get contact_typeUnknown => 'Unknown';
+  String get contact_typeUnknown => '未知';
 
   @override
   String get map_zoomIn => '放大';
@@ -5812,7 +5811,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get imageSend_modelNotDownloaded => '图像模型尚未下载。在设置中下载后才能发送图像。';
 
   @override
-  String get imageSend_originalSize => '原文';
+  String get imageSend_originalSize => '原图';
 
   @override
   String get imageSend_onAirSize => '直播中';
