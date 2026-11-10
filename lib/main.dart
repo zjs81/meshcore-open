@@ -41,6 +41,7 @@ import 'services/ui_view_state_service.dart';
 import 'services/chat_background_service.dart';
 import 'services/timeout_prediction_service.dart';
 import 'storage/prefs_manager.dart';
+import 'storage/history_store.dart';
 import 'theme/mesh_theme.dart';
 import 'utils/app_logger.dart';
 import 'widgets/image_send_codec_binding.dart';
@@ -68,6 +69,7 @@ void main() async {
 
   // Initialize SharedPreferences cache
   await PrefsManager.initialize();
+  await HistoryStore.initialize();
 
   // Initialize services
   final storage = StorageService();

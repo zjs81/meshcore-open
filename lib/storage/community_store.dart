@@ -29,16 +29,7 @@ class CommunityStore {
     String? jsonString = prefs.getString(keyFor);
     if ((jsonString == null || jsonString.isEmpty) &&
         canMigrateLegacyKeys(publicKeyHex)) {
-      // Attempt migration from legacy unscoped key on first load
-      final legacyJsonString = prefs.getString(_keyPrefix);
-      prefs.remove(_keyPrefix);
-      if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
-        appLogger.info(
-          'Migrating communities from legacy key $_keyPrefix to scoped key $keyFor',
-        );
-        await prefs.setString(keyFor, legacyJsonString);
-        jsonString = legacyJsonString;
-      }
+      jsonString = await migrateLegacyStringPreference(_keyPrefix, keyFor);
     }
     if (jsonString == null || jsonString.isEmpty) {
       jsonString = prefs.getString(keyFor);

@@ -75,7 +75,7 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   // Zoom level at which node labels start to appear
   static const double _labelZoomThreshold = 14.0;
   // Below this zoom, nearby nodes collapse into clusters.
@@ -135,6 +135,9 @@ class _MapScreenState extends State<MapScreen> {
   ({LatLng center, double zoom})? _initialCamera;
 
   static const String _lastCameraKey = 'map_last_camera';
+  static const Duration _cameraSaveDelay = Duration(milliseconds: 500);
+  Timer? _cameraSaveTimer;
+  List<String>? _pendingCamera;
 
   ({LatLng center, double zoom}) _fallbackCamera(MeshCoreConnector connector) {
     final lat = connector.selfLatitude;
@@ -152,23 +155,58 @@ class _MapScreenState extends State<MapScreen> {
     return (center: const LatLng(20, 0), zoom: _mapMinZoom);
   }
 
-  void _saveLastCamera() {
+  void _scheduleCameraSave() {
     try {
       final camera = _mapController.camera;
-      PrefsManager.instance.setStringList(_lastCameraKey, [
+      final value = [
         camera.center.latitude.toString(),
         camera.center.longitude.toString(),
         camera.zoom.toString(),
-      ]);
+      ];
+      _cameraSaveTimer?.cancel();
+      _cameraSaveTimer = null;
+      _pendingCamera =
+          listEquals(value, PrefsManager.instance.getStringList(_lastCameraKey))
+          ? null
+          : value;
+      if (_pendingCamera != null) {
+        _cameraSaveTimer = Timer(_cameraSaveDelay, _flushCameraSave);
+      }
     } catch (_) {}
+  }
+
+  void _flushCameraSave() {
+    _cameraSaveTimer?.cancel();
+    _cameraSaveTimer = null;
+    final value = _pendingCamera;
+    _pendingCamera = null;
+    if (value == null) return;
+    final prefs = PrefsManager.instance;
+    if (listEquals(value, prefs.getStringList(_lastCameraKey))) return;
+    unawaited(
+      prefs.setStringList(_lastCameraKey, value).catchError((Object error) {
+        debugPrint('Saving map camera failed: $error');
+        return false;
+      }),
+    );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) {
+      _scheduleCameraSave();
+      _flushCameraSave();
+    }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _ageTimer?.cancel();
     _online.removeListener(_onOnlineChanged);
     _online.dispose();
-    _saveLastCamera();
+    _scheduleCameraSave();
+    _flushCameraSave();
     _searchController.dispose();
     _searchFocus.dispose();
     _mapController.dispose();
@@ -278,6 +316,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadRemovedMarkers();
     _online.addListener(_onOnlineChanged);
     _ageTimer = Timer.periodic(const Duration(seconds: 60), (_) {
@@ -531,7 +570,7 @@ class _MapScreenState extends State<MapScreen> {
         final tileCache = context.read<MapTileCacheService>();
         final scheme = Theme.of(context).colorScheme;
         final isDesktop = _isDesktopPlatform(defaultTargetPlatform);
-        final allContacts = connector.allContacts;
+        final allContacts = connectorSnapshot.allContacts;
 
         final contacts = settings.mapShowDiscoveryContacts
             ? allContacts
@@ -912,11 +951,12 @@ class _MapScreenState extends State<MapScreen> {
                           event is MapEventFlingAnimationEnd ||
                           event is MapEventScrollWheelZoom ||
                           event is MapEventDoubleTapZoomEnd) {
-                        _saveLastCamera();
+                        _scheduleCameraSave();
                         if (showOnline) _requestOnlineData();
                       }
                     },
                     onPositionChanged: (camera, hasGesture) {
+                      _scheduleCameraSave();
                       // Track zoom in half-step buckets so cluster/marker
                       // detail levels update without rebuilding every frame.
                       final bucket = (camera.zoom * 2).roundToDouble() / 2;
@@ -1087,13 +1127,19 @@ class _MapScreenState extends State<MapScreen> {
             ),
             bottomNavigationBar: SafeArea(
               top: false,
-              child: QuickSwitchBar(
-                selectedIndex: 2,
-                onDestinationSelected: (index) =>
-                    _handleQuickSwitch(index, context),
-                contactsUnreadCount: connector.getTotalContactsUnreadCount(),
-                channelsUnreadCount: connector.getTotalChannelsUnreadCount(),
-                highContrast: _usePaletteOverlay,
+              child: Selector<MeshCoreConnector, (int, int)>(
+                selector: (_, connector) => (
+                  connector.getTotalContactsUnreadCount(),
+                  connector.getTotalChannelsUnreadCount(),
+                ),
+                builder: (context, unread, child) => QuickSwitchBar(
+                  selectedIndex: 2,
+                  onDestinationSelected: (index) =>
+                      _handleQuickSwitch(index, context),
+                  contactsUnreadCount: unread.$1,
+                  channelsUnreadCount: unread.$2,
+                  highContrast: _usePaletteOverlay,
+                ),
               ),
             ),
             floatingActionButton:
@@ -1130,8 +1176,7 @@ class _MapScreenState extends State<MapScreen> {
   }) {
     final visibleContactsSignature = Object.hashAll(
       contacts.map(
-        (contact) =>
-            Object.hash(_mapContactSignature(contact), _ageOf(contact)),
+        (contact) => Object.hash(contact.publicKeyHex, _ageOf(contact)),
       ),
     );
     final key = _NodeMarkersCacheKey(
@@ -4226,6 +4271,7 @@ int _mapContactSignature(Contact contact) {
 
 class _MapConnectorSnapshot {
   final MeshCoreConnector connector;
+  final List<Contact> allContacts;
   final int contactsSignature;
   final int markerSignature;
   final int batterySignature;
@@ -4233,6 +4279,7 @@ class _MapConnectorSnapshot {
 
   const _MapConnectorSnapshot({
     required this.connector,
+    required this.allContacts,
     required this.contactsSignature,
     required this.markerSignature,
     required this.batterySignature,
@@ -4285,6 +4332,7 @@ class _MapConnectorSnapshot {
 
     return _MapConnectorSnapshot(
       connector: connector,
+      allContacts: allContacts,
       contactsSignature: contactsSignature,
       markerSignature: Object.hashAll(markerParts),
       batterySignature: batterySignature,
@@ -4296,8 +4344,6 @@ class _MapConnectorSnapshot {
         connector.currentBwHz,
         connector.currentSf,
         connector.currentTxPower,
-        connector.getTotalContactsUnreadCount(),
-        connector.getTotalChannelsUnreadCount(),
       ),
     );
   }

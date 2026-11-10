@@ -55,7 +55,7 @@ void main() {
 
       final loaded = await store.loadMessages(_contact);
       final window = loaded.sublist(6);
-      store.setArchived(_contact, loaded.sublist(0, 6));
+      store.setArchivedCount(_contact, 6);
       await store.saveMessages(_contact, [...window, _dm(10)]);
 
       final reloaded = await store.loadMessages(_contact);
@@ -67,7 +67,7 @@ void main() {
     test('trimmed messages are archived, deletes stay deleted', () async {
       await _init();
       final store = _messageStore();
-      store.setArchived(_contact, const []);
+      store.setArchivedCount(_contact, 0);
       final window = [for (var i = 0; i < 4; i++) _dm(i)];
       await store.saveMessages(_contact, window);
 
@@ -79,9 +79,23 @@ void main() {
       final reloaded = await store.loadMessages(_contact);
       expect(reloaded.map((m) => m.text), ['m0', 'm1', 'm3', 'm4']);
       expect(store.archivedCount(_contact), 2);
+    });
 
-      store.unarchiveNewest(_contact, 1);
-      expect(store.archivedCount(_contact), 1);
+    test('an unreadable stored history does not block later saves', () async {
+      await _init();
+      final store = _messageStore();
+      final key = '${store.keyFor}$_contact';
+      await PrefsManager.instance.setString(key, '{broken');
+
+      // Unreconciled: nothing was loaded before the first save.
+      await store.saveMessages(_contact, [_dm(0)]);
+      expect((await store.loadMessages(_contact)).map((m) => m.text), ['m0']);
+
+      // Reconciled to zero by a load that found nothing readable.
+      await PrefsManager.instance.setString(key, '{broken');
+      store.setArchivedCount(_contact, 0);
+      await store.saveMessages(_contact, [_dm(1)]);
+      expect((await store.loadMessages(_contact)).map((m) => m.text), ['m1']);
     });
 
     test('an unreconciled save merges with what is stored', () async {
@@ -100,8 +114,8 @@ void main() {
     test('clearMessages wipes archived history too', () async {
       await _init();
       final store = _messageStore();
-      store.setArchived(_contact, [_dm(0), _dm(1)]);
-      await store.saveMessages(_contact, [_dm(2)]);
+      await store.saveMessages(_contact, [_dm(0), _dm(1), _dm(2)]);
+      store.setArchivedCount(_contact, 2);
 
       await store.clearMessages(_contact);
       await store.saveMessages(_contact, [_dm(3)]);
@@ -114,7 +128,10 @@ void main() {
       await _init();
       final store = _messageStore();
       const cap = MessageStore.maxStoredMessages;
-      store.setArchived(_contact, [for (var i = 0; i < cap; i++) _dm(i)]);
+      await store.saveMessages(_contact, [
+        for (var i = 0; i < cap; i++) _dm(i),
+      ]);
+      store.setArchivedCount(_contact, cap);
       await store.saveMessages(_contact, [_dm(cap), _dm(cap + 1)]);
 
       final reloaded = await store.loadMessages(_contact);
@@ -184,7 +201,7 @@ void main() {
       await store.saveChannelMessages(_channelId, all);
 
       final loaded = await store.loadChannelMessages(_channelId);
-      store.setArchived(_channelId, loaded.sublist(0, 5));
+      store.setArchivedCount(_channelId, 5);
       await store.saveChannelMessages(_channelId, [
         ...loaded.sublist(5),
         _ch(8),
@@ -197,8 +214,8 @@ void main() {
     test('clearing through another instance resets the archive', () async {
       await _init();
       final store = ChannelMessageStore()..setPublicKeyHex = _device;
-      store.setArchived(_channelId, [_ch(0), _ch(1)]);
-      await store.saveChannelMessages(_channelId, [_ch(2)]);
+      await store.saveChannelMessages(_channelId, [_ch(0), _ch(1), _ch(2)]);
+      store.setArchivedCount(_channelId, 2);
 
       await (ChannelMessageStore()..setPublicKeyHex = _device)
           .clearChannelMessages(_channelId);

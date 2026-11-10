@@ -39,7 +39,7 @@ For Linux, use `nix develop`; see [Linux with Nix](README.md#linux-with-nix) for
 | Serial marker/length framing | `lib/services/usb_serial_frame_codec.dart` |
 | ACK tracking and retry scheduling | `lib/services/message_retry_service.dart` |
 | Route scoring/history | `lib/services/path_history_service.dart` |
-| Preferences and JSON stores | `lib/storage/` |
+| Preferences, native history database, and JSON stores | `lib/storage/` |
 | Region list and channel/default assignments | `lib/storage/region_store.dart`, `lib/storage/channel_region_store.dart` |
 | Message filter (rules, duplicate/spam checks, on-device classifier) | `lib/services/message_filter/`, `lib/models/message_filter.dart`, `lib/storage/message_filter_store.dart`, `lib/screens/message_filter_settings_screen.dart`, `lib/screens/filtered_messages_screen.dart` |
 | Translation models/inference | `lib/services/translation_service.dart` |
@@ -50,6 +50,8 @@ For Linux, use `nix develop`; see [Linux with Nix](README.md#linux-with-nix) for
 | Localization | `lib/l10n/` (19 locales) |
 
 `Provider`/`ChangeNotifier` drives UI state. `main.dart` wires `MeshTheme.light()` and `MeshTheme.dark()` and uses the saved theme preference. Its `MultiProvider` exposes `MeshCoreConnector`, `MessageRetryService`, `PathHistoryService`, `AppSettingsService`, `BleDebugLogService`, `AppDebugLogService`, `ChatTextScaleService`, `TranslationService`, `UiViewStateService`, `StorageService` (plain `Provider`), `MapTileCacheService`, `TimeoutPredictionService`, `ImageCodecService`, `ReceivedImageStore`, and `MessageFilterService`; screens read them with `Consumer<T>`, `context.watch<T>()`, or `context.read<T>()`.
+
+Message/channel histories use indexed SQLite rows on native platforms, and route histories use the same database. Web builds use preferences. Startup imports old history preferences once; backup and review-mode cleanup include database histories. See [local history storage](documentation/performance-profiling.md#local-history-storage).
 
 Most JSON stores scope keys by the first 10 hex chars of the connected device's public key, so per-radio data stays isolated; some preferences, including the saved region-name list, are global. Model bundles, received images, and caches use files.
 

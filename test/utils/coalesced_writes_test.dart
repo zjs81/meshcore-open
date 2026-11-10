@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meshcore_open/utils/coalesced_writes.dart';
 
@@ -63,4 +65,44 @@ void main() {
     await writes.flush();
     expect(ran, isTrue);
   });
+
+  test('flush waits for writes already started by the timer', () async {
+    final writes = CoalescedWrites(delay: Duration.zero);
+    final started = Completer<void>();
+    final persisted = Completer<void>();
+    writes.schedule('history', () {
+      started.complete();
+      return persisted.future;
+    });
+    await started.future;
+
+    var finished = false;
+    final flush = writes.flush().then((_) => finished = true);
+    await _wait(0);
+    expect(finished, isFalse);
+    persisted.complete();
+    await flush;
+    expect(finished, isTrue);
+  });
+
+  test(
+    'a later flush waits for both existing and newly queued writes',
+    () async {
+      final writes = CoalescedWrites();
+      final first = Completer<void>();
+      final second = Completer<void>();
+      writes.schedule('first', () => first.future);
+      final firstFlush = writes.flush();
+      writes.schedule('second', () => second.future);
+      var finished = false;
+      final secondFlush = writes.flush().then((_) => finished = true);
+
+      second.complete();
+      await _wait(0);
+      expect(finished, isFalse);
+      first.complete();
+      await Future.wait([firstFlush, secondFlush]);
+      expect(finished, isTrue);
+    },
+  );
 }

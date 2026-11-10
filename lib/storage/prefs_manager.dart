@@ -1,5 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'history_store.dart';
+
 /// Singleton wrapper for SharedPreferences to avoid redundant getInstance() calls.
 ///
 /// BEFORE: Every storage operation called SharedPreferences.getInstance()
@@ -30,5 +32,6 @@ class PrefsManager {
   /// For testing: reset the instance
   static void reset() {
     _instance = null;
+    HistoryStore.reset();
   }
 }

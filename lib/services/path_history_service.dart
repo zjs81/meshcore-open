@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../models/contact.dart';
 import '../models/path_history.dart';
 import '../models/path_selection.dart';
+import '../utils/app_logger.dart';
 import '../utils/coalesced_writes.dart';
 import 'route_chooser.dart';
 import 'storage_service.dart';
@@ -13,7 +14,10 @@ class PathHistoryService extends ChangeNotifier {
   final StorageService _storage;
   final Map<String, ContactPathHistory> _cache = {};
   final Map<String, _FloodStats> _floodStats = {};
-  final Map<String, Future<void>> _pendingLoads = {};
+  final Map<String, Future<bool>> _pendingLoads = {};
+  int _generation = 0;
+  bool _disposed = false;
+  Future<void> _clearing = Future<void>.value();
   // A path record lands for most received messages, so saves are batched.
   final CoalescedWrites _writes = CoalescedWrites(
     delay: const Duration(seconds: 5),
@@ -43,9 +47,12 @@ class PathHistoryService extends ChangeNotifier {
        _now = clock ?? DateTime.now;
 
   void setDevicePublicKey(String publicKeyHex) {
+    if (_disposed) return;
     // Queued saves use the storage key on entry, so they still land under
     // the previous radio's key.
     unawaited(_writes.flush());
+    _generation++;
+    _pendingLoads.clear();
     _storage.setPublicKeyHex = publicKeyHex;
     _cache.clear();
     _cacheAccessOrder.clear();
@@ -59,6 +66,7 @@ class PathHistoryService extends ChangeNotifier {
   }
 
   void handlePathUpdated(Contact contact, {double initialWeight = 1.0}) {
+    if (_disposed) return;
     if (contact.pathLength < 0 && contact.path.isEmpty) return;
     final hopCount = contact.pathLength < 0
         ? contact.path.length
@@ -77,6 +85,7 @@ class PathHistoryService extends ChangeNotifier {
   }
 
   void recordPathAttempt(String contactPubKeyHex, PathSelection selection) {
+    if (_disposed) return;
     if (selection.useFlood) {
       _updateFloodStats(contactPubKeyHex);
       return;
@@ -104,11 +113,18 @@ class PathHistoryService extends ChangeNotifier {
     double successIncrement = 0.5,
     double maxWeight = 5.0,
   }) {
+    if (_disposed) return;
     // A flood answered directly credits the direct (zero-hop) path.
     if (hopCount < 0 || (pathBytes.isEmpty && hopCount != 0)) return;
     if (!_cache.containsKey(contactPubKeyHex)) {
-      _ensureLoaded(contactPubKeyHex).then((_) {
-        if (!_cache.containsKey(contactPubKeyHex)) return;
+      final generation = _generation;
+      _ensureLoaded(contactPubKeyHex).then((loaded) {
+        if (!loaded ||
+            _disposed ||
+            generation != _generation ||
+            !_cache.containsKey(contactPubKeyHex)) {
+          return;
+        }
         recordFloodPathAttribution(
           contactPubKeyHex: contactPubKeyHex,
           pathBytes: pathBytes,
@@ -160,6 +176,7 @@ class PathHistoryService extends ChangeNotifier {
     double failureDecrement = 0.5,
     double maxWeight = 5.0,
   }) {
+    if (_disposed) return;
     if (selection.useFlood) {
       final stats = _floodStats.putIfAbsent(
         contactPubKeyHex,
@@ -176,8 +193,14 @@ class PathHistoryService extends ChangeNotifier {
     }
 
     if (!_cache.containsKey(contactPubKeyHex)) {
-      _ensureLoaded(contactPubKeyHex).then((_) {
-        if (!_cache.containsKey(contactPubKeyHex)) return;
+      final generation = _generation;
+      _ensureLoaded(contactPubKeyHex).then((loaded) {
+        if (!loaded ||
+            _disposed ||
+            generation != _generation ||
+            !_cache.containsKey(contactPubKeyHex)) {
+          return;
+        }
         recordPathResult(
           contactPubKeyHex,
           selection,
@@ -294,6 +317,8 @@ class PathHistoryService extends ChangeNotifier {
     double? recentFailure,
     DateTime? statsAt,
   }) {
+    if (_disposed) return;
+    final generation = _generation;
     void add() => _addPathRecordInternal(
       contactPubKeyHex,
       hopCount,
@@ -313,27 +338,43 @@ class PathHistoryService extends ChangeNotifier {
     if (_cache.containsKey(contactPubKeyHex)) {
       add();
     } else {
-      _ensureLoaded(contactPubKeyHex).then((_) => add());
+      _ensureLoaded(contactPubKeyHex).then((loaded) {
+        if (loaded && !_disposed && generation == _generation) add();
+      });
     }
   }
 
-  Future<void> _ensureLoaded(String contactPubKeyHex) {
-    if (_cache.containsKey(contactPubKeyHex)) return Future.value();
-    return _pendingLoads[contactPubKeyHex] ??=
-        _loadHistoryFromStorage(contactPubKeyHex)
-            .then((loaded) {
-              _cache[contactPubKeyHex] ??=
-                  loaded ??
-                  ContactPathHistory(
-                    contactPubKeyHex: contactPubKeyHex,
-                    recentPaths: [],
-                  );
-              _trackAccess(contactPubKeyHex);
-              _evictIfNeeded();
-            })
-            .whenComplete(() {
-              _pendingLoads.remove(contactPubKeyHex);
-            });
+  Future<bool> _ensureLoaded(String contactPubKeyHex) {
+    if (_disposed) return Future.value(false);
+    if (_cache.containsKey(contactPubKeyHex)) return Future.value(true);
+    final existing = _pendingLoads[contactPubKeyHex];
+    if (existing != null) return existing;
+    final generation = _generation;
+    late final Future<bool> pending;
+    pending = _loadHistoryFromStorage(contactPubKeyHex)
+        .then((loaded) {
+          if (_disposed ||
+              generation != _generation ||
+              !identical(_pendingLoads[contactPubKeyHex], pending)) {
+            return false;
+          }
+          _cache[contactPubKeyHex] ??=
+              loaded ??
+              ContactPathHistory(
+                contactPubKeyHex: contactPubKeyHex,
+                recentPaths: [],
+              );
+          _trackAccess(contactPubKeyHex);
+          _evictIfNeeded();
+          return true;
+        })
+        .whenComplete(() {
+          if (identical(_pendingLoads[contactPubKeyHex], pending)) {
+            _pendingLoads.remove(contactPubKeyHex);
+          }
+        });
+    _pendingLoads[contactPubKeyHex] = pending;
+    return pending;
   }
 
   void _addPathRecordInternal(
@@ -351,6 +392,7 @@ class PathHistoryService extends ChangeNotifier {
     double? recentFailure,
     DateTime? statsAt,
   }) {
+    if (_disposed) return;
     var history = _cache[contactPubKeyHex];
     if (history == null) return;
     _version++;
@@ -429,6 +471,7 @@ class PathHistoryService extends ChangeNotifier {
   /// Reads saved paths straight from storage without adding them to the
   /// cache, evicting anything, or notifying listeners.
   Future<List<PathRecord>> readStoredPaths(String contactPubKeyHex) async {
+    if (_disposed) return [];
     final cached = _cache[contactPubKeyHex];
     if (cached != null) return cached.recentPaths;
     final stored = await _loadHistoryFromStorage(contactPubKeyHex);
@@ -436,13 +479,16 @@ class PathHistoryService extends ChangeNotifier {
   }
 
   List<PathRecord> getRecentPaths(String contactPubKeyHex) {
+    if (_disposed) return [];
     final history = _cache[contactPubKeyHex];
     if (history != null) {
       _trackAccess(contactPubKeyHex);
       return history.recentPaths;
     }
 
-    _ensureLoaded(contactPubKeyHex).then((_) {
+    final generation = _generation;
+    _ensureLoaded(contactPubKeyHex).then((loaded) {
+      if (!loaded || _disposed || generation != _generation) return;
       if (_cache[contactPubKeyHex]?.recentPaths.isNotEmpty ?? false) {
         _version++;
         notifyListeners();
@@ -455,10 +501,12 @@ class PathHistoryService extends ChangeNotifier {
   Future<ContactPathHistory?> _loadHistoryFromStorage(
     String contactPubKeyHex,
   ) async {
-    // An evicted contact may still have a queued save; it reaches the prefs
-    // cache synchronously, so the load below reads it.
-    unawaited(_writes.flush());
-    return await _storage.loadPathHistory(contactPubKeyHex);
+    final generation = _generation;
+    await _clearing;
+    await _writes.flush();
+    if (_disposed || generation != _generation) return null;
+    final history = await _storage.loadPathHistory(contactPubKeyHex);
+    return _disposed || generation != _generation ? null : history;
   }
 
   PathRecord? getFastestPath(String contactPubKeyHex) {
@@ -494,12 +542,38 @@ class PathHistoryService extends ChangeNotifier {
     );
   }
 
+  /// Runs [clear] after earlier clears and queued saves. [_clearing] itself
+  /// never fails, so one failed clear cannot break later loads and flushes;
+  /// the returned future still reports the failure to its caller.
+  Future<void> _queueClear(int generation, Future<void> Function() clear) {
+    final previous = _clearing;
+    final run = () async {
+      await previous;
+      await _writes.flush();
+      if (_disposed || generation != _generation) return;
+      await clear();
+    }();
+    _clearing = run.then<void>(
+      (_) {},
+      onError: (Object error, StackTrace _) {
+        appLogger.warn('Clearing path history failed: $error', tag: 'Storage');
+      },
+    );
+    return run;
+  }
+
   Future<void> clearPathHistory(String contactPubKeyHex) async {
+    if (_disposed) return;
+    final generation = _generation;
+    _pendingLoads.remove(contactPubKeyHex);
     _cache.remove(contactPubKeyHex);
     _cacheAccessOrder.remove(contactPubKeyHex);
     _floodStats.remove(contactPubKeyHex);
     _writes.cancel(contactPubKeyHex);
-    await _storage.clearPathHistory(contactPubKeyHex);
+    await _queueClear(generation, () {
+      return _storage.clearPathHistory(contactPubKeyHex);
+    });
+    if (_disposed || generation != _generation) return;
     _version++;
     notifyListeners();
   }
@@ -508,6 +582,8 @@ class PathHistoryService extends ChangeNotifier {
     String contactPubKeyHex,
     List<int> pathBytes,
   ) async {
+    if (_disposed) return;
+    final generation = _generation;
     final history = _cache[contactPubKeyHex];
     if (history == null) return;
 
@@ -519,8 +595,12 @@ class PathHistoryService extends ChangeNotifier {
       recentPaths: updatedPaths,
     );
 
+    final updated = _cache[contactPubKeyHex]!;
     _writes.cancel(contactPubKeyHex);
-    await _storage.savePathHistory(contactPubKeyHex, _cache[contactPubKeyHex]!);
+    await _writes.flush();
+    if (_disposed || generation != _generation) return;
+    await _storage.savePathHistory(contactPubKeyHex, updated);
+    if (_disposed || generation != _generation) return;
     _version++;
     notifyListeners();
   }
@@ -607,20 +687,39 @@ class PathHistoryService extends ChangeNotifier {
   }
 
   /// Runs queued saves now, e.g. before the app is backgrounded.
-  Future<void> flushPendingWrites() => _writes.flush();
+  Future<void> flushPendingWrites() async {
+    await _clearing;
+    await _writes.flush();
+  }
 
   @override
   void dispose() {
+    if (_disposed) return;
     unawaited(_writes.flush());
+    _disposed = true;
+    _generation++;
+    _pendingLoads.clear();
+    _cache.clear();
+    _cacheAccessOrder.clear();
+    _floodStats.clear();
     super.dispose();
   }
 
   void clearAllHistories() {
+    if (_disposed) return;
+    final generation = ++_generation;
+    _pendingLoads.clear();
     _cache.clear();
     _cacheAccessOrder.clear();
     _floodStats.clear();
     _writes.dispose();
-    _storage.clearAllPathHistories();
+    // Nothing awaits this one; _queueClear logs a failure.
+    unawaited(
+      _queueClear(
+        generation,
+        _storage.clearAllPathHistories,
+      ).catchError((Object _) {}),
+    );
     _version = 0;
     notifyListeners();
   }

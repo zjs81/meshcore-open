@@ -13,6 +13,7 @@ import 'app_settings_service.dart';
 import '../storage/channel_store.dart';
 import '../storage/contact_store.dart';
 import '../storage/prefs_manager.dart';
+import '../storage/history_store.dart';
 
 const int _backupVersion = 1;
 const int _pbkdf2Iterations = 310000;
@@ -134,6 +135,7 @@ class BackupService {
     required String password,
   }) async {
     if (items.isEmpty) throw StateError('Select at least one backup item');
+    await connector.flushPendingWrites();
     final includedItems = Set<BackupItem>.of(items);
     final customVars = connector.currentCustomVars ?? const <String, String>{};
     if (includedItems.isEmpty) {
@@ -175,7 +177,9 @@ class BackupService {
         };
       }
       if (includedItems.contains(BackupItem.regions)) {
-        node['preferences'] = _snapshotPreferences((key) => key == 'regions');
+        node['preferences'] = await _snapshotPreferences(
+          (key) => key == 'regions',
+        );
       }
       sections[BackupSection.nodeSettings.name] = node;
     }
@@ -239,8 +243,8 @@ class BackupService {
       }
       sections[section.name] = {
         'preferences': section == BackupSection.appSettings
-            ? _snapshotAppSettingsPreferences(sectionItems)
-            : _snapshotPreferences(
+            ? await _snapshotAppSettingsPreferences(sectionItems)
+            : await _snapshotPreferences(
                 (key) =>
                     _preferenceBelongsToItems(key, sectionItems, devicePrefix),
               ),
@@ -266,6 +270,7 @@ class BackupService {
     required AppSettingsService appSettingsService,
   }) async {
     if (items.isEmpty) throw StateError('Select at least one item to restore');
+    await connector.flushPendingWrites();
     final payload = await _decodeImport(contents, password: password);
     final sectionData = payload['sections'];
     if (sectionData is! Map) throw const FormatException('Missing backup data');
@@ -956,14 +961,19 @@ class BackupService {
   static int _intOr(Object? value, int fallback) =>
       value is int ? value : fallback;
 
-  static Map<String, Object?> _snapshotPreferences(
+  static Future<Map<String, Object?>> _snapshotPreferences(
     bool Function(String) include,
-  ) {
+  ) async {
     final prefs = PrefsManager.instance;
     final values = <String, Object?>{};
-    for (final key in prefs.getKeys()) {
+    for (final key in {
+      ...prefs.getKeys(),
+      ...await HistoryStore.instance.getKeys(),
+    }) {
       if (!include(key)) continue;
-      final value = prefs.get(key);
+      final value = HistoryStore.isHistoryKey(key)
+          ? await HistoryStore.instance.getString(key)
+          : prefs.get(key);
       if (value is String) {
         values[key] = _expandJsonPreference(value);
       } else if (value is bool || value is int || value is double) {
@@ -1003,10 +1013,10 @@ class BackupService {
     return value;
   }
 
-  static Map<String, Object?> _snapshotAppSettingsPreferences(
+  static Future<Map<String, Object?>> _snapshotAppSettingsPreferences(
     Set<BackupItem> items,
-  ) {
-    final values = _snapshotPreferences(
+  ) async {
+    final values = await _snapshotPreferences(
       (key) => _preferenceBelongsToItems(key, items, ''),
     );
     final appSettings = _asMap(values['app_settings']);
@@ -1224,30 +1234,37 @@ class BackupService {
     final existingAppSettings = _asJsonMapPreference(
       prefs.getString('app_settings'),
     );
-    final matching = prefs.getKeys().where((key) {
-      if (section == BackupSection.appSettings &&
-          key == 'app_settings' &&
-          !items.contains(BackupItem.appSettings)) {
-        return false;
-      }
-      if (!_preferenceBelongsToSection(
-            key,
-            section,
-            devicePrefix: destinationPrefix,
-          ) ||
-          !_preferenceBelongsToItems(key, items, destinationPrefix)) {
-        return false;
-      }
-      if (section == BackupSection.appSettings ||
-          section == BackupSection.nodeSettings) {
-        return true;
-      }
-      return _hasDevicePrefix(key, section, destinationPrefix) ||
-          (section == BackupSection.channels &&
-              key.startsWith('message_filter_'));
-    }).toList();
+    final matching =
+        {...prefs.getKeys(), ...await HistoryStore.instance.getKeys()}.where((
+          key,
+        ) {
+          if (section == BackupSection.appSettings &&
+              key == 'app_settings' &&
+              !items.contains(BackupItem.appSettings)) {
+            return false;
+          }
+          if (!_preferenceBelongsToSection(
+                key,
+                section,
+                devicePrefix: destinationPrefix,
+              ) ||
+              !_preferenceBelongsToItems(key, items, destinationPrefix)) {
+            return false;
+          }
+          if (section == BackupSection.appSettings ||
+              section == BackupSection.nodeSettings) {
+            return true;
+          }
+          return _hasDevicePrefix(key, section, destinationPrefix) ||
+              (section == BackupSection.channels &&
+                  key.startsWith('message_filter_'));
+        }).toList();
     for (final key in matching) {
-      await prefs.remove(key);
+      if (HistoryStore.isHistoryKey(key)) {
+        await HistoryStore.instance.remove(key);
+      } else {
+        await prefs.remove(key);
+      }
     }
     for (final entry in values.entries) {
       if (!_preferenceBelongsToItems(entry.key, items, sourcePrefix)) {
@@ -1260,7 +1277,13 @@ class BackupService {
         destinationPrefix,
       );
       final value = entry.value;
-      if (section == BackupSection.appSettings && key == 'app_settings') {
+      if (HistoryStore.isHistoryKey(key)) {
+        await HistoryStore.instance.setString(
+          key,
+          value is String ? value : jsonEncode(value),
+        );
+      } else if (section == BackupSection.appSettings &&
+          key == 'app_settings') {
         final storedIncoming = _asJsonMapPreference(value);
         if (storedIncoming == null) {
           throw const FormatException('Invalid app settings in backup');

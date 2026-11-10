@@ -255,6 +255,9 @@ class MeshCoreConnector extends ChangeNotifier {
   static const int _errCodeNotFound = 2;
   int _reactionSendQueueSequence = 0;
   final Set<String> _loadedConversationKeys = {};
+  int _messageHistoryGeneration = 0;
+  final Map<String, Future<List<Message>>> _conversationPageLoads = {};
+  final Map<String, Future<List<ChannelMessage>>> _channelPageLoads = {};
   // Self public key of the radio whose messages are held in memory.
   String? _messageStateOwnerKey;
   // Self public key whose persisted stores were loaded this link session.
@@ -985,62 +988,81 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> _loadMessagesForContact(String contactKeyHex) async {
     if (_loadedConversationKeys.contains(contactKeyHex)) return;
     _loadedConversationKeys.add(contactKeyHex);
-
-    final allMessages = await _messageStore.loadMessages(contactKeyHex);
-    if (allMessages.isNotEmpty) {
-      // Keep only the most recent N messages in memory to bound memory usage
-      final windowedMessages = allMessages.length > _messageWindowSize
-          ? allMessages.sublist(allMessages.length - _messageWindowSize)
-          : allMessages;
-      final archivedMessages = allMessages.sublist(
-        0,
-        allMessages.length - windowedMessages.length,
+    final generation = _messageHistoryGeneration;
+    final scope = _messageStore.publicKeyHex;
+    bool current() =>
+        !_disposed &&
+        generation == _messageHistoryGeneration &&
+        scope == _messageStore.publicKeyHex;
+    final page = await _readSettledPage(
+      current: current,
+      window: () => _conversations[contactKeyHex] ?? const <Message>[],
+      archived: () => _messageStore.archivedCount(contactKeyHex),
+      read: (_, _) => _messageStore.loadMessagePage(
+        contactKeyHex,
+        limit: _messageWindowSize,
+      ),
+    );
+    if (page == null) return;
+    final currentMessages = _conversations[contactKeyHex] ?? const <Message>[];
+    final mergedMessages = <Message>[...page.messages];
+    final persistedKeyCounts = <String, int>{};
+    for (final message in page.messages) {
+      final key = _messageMergeKey(message);
+      persistedKeyCounts[key] = (persistedKeyCounts[key] ?? 0) + 1;
+    }
+    final currentKeyCounts = <String, int>{};
+    for (final message in currentMessages) {
+      final key = _messageMergeKey(message);
+      final count = (currentKeyCounts[key] ?? 0) + 1;
+      currentKeyCounts[key] = count;
+      if (count > (persistedKeyCounts[key] ?? 0)) mergedMessages.add(message);
+    }
+    mergedMessages.sort((a, b) => a.receivedAt.compareTo(b.receivedAt));
+    final trimCount = (mergedMessages.length - _messageWindowSize).clamp(
+      0,
+      mergedMessages.length,
+    );
+    _messageStore.setArchivedCount(contactKeyHex, page.start);
+    if (trimCount > 0) {
+      _messageStore.archive(
+        contactKeyHex,
+        mergedMessages.sublist(0, trimCount),
       );
-
-      final currentMessages =
-          _conversations[contactKeyHex] ?? const <Message>[];
-      final mergedMessages = <Message>[...windowedMessages];
-      final persistedKeyCounts = <String, int>{};
-      for (final message in windowedMessages) {
-        final key = _messageMergeKey(message);
-        persistedKeyCounts[key] = (persistedKeyCounts[key] ?? 0) + 1;
-      }
-      final currentKeyCounts = <String, int>{};
-
-      for (final message in currentMessages) {
-        final key = _messageMergeKey(message);
-        final currentCount = (currentKeyCounts[key] ?? 0) + 1;
-        currentKeyCounts[key] = currentCount;
-        final persistedCount = persistedKeyCounts[key] ?? 0;
-
-        // Preserve distinct duplicates without IDs (for example same text
-        // received multiple times in the same second) by only skipping the
-        // overlapping occurrences that already exist in persisted storage.
-        if (currentCount > persistedCount) {
-          mergedMessages.add(message);
-        }
-      }
-
-      // Re-sort after merging persisted and in-memory messages so the
-      // conversation window remains stable after optimistic inserts.
-      mergedMessages.sort((a, b) => a.receivedAt.compareTo(b.receivedAt));
-      final trimCount = mergedMessages.length > _messageWindowSize
-          ? mergedMessages.length - _messageWindowSize
-          : 0;
-      final windowedMergedMessages = mergedMessages.sublist(trimCount);
-
-      // Everything stored ahead of the window stays in storage on the next
-      // save instead of being overwritten by the window.
-      _messageStore.setArchived(contactKeyHex, [
-        ...archivedMessages,
-        ...mergedMessages.sublist(0, trimCount),
-      ]);
-      _conversations[contactKeyHex] = windowedMergedMessages;
+    }
+    if (mergedMessages.isNotEmpty) {
+      _conversations[contactKeyHex] = mergedMessages.sublist(trimCount);
       notifyListeners();
-    } else {
-      _messageStore.setArchived(contactKeyHex, const []);
     }
   }
+
+  /// Reads a stored page once queued writes have landed, and again whenever
+  /// the in-memory [window] or the [archived] count moved during the read.
+  /// Returns null when [current] turns false, or when [older] history is
+  /// requested and none is archived.
+  Future<P?> _readSettledPage<M, P>({
+    required bool Function() current,
+    required List<M> Function() window,
+    required int? Function() archived,
+    required Future<P> Function(int? archived, List<M> window) read,
+    bool older = false,
+  }) async {
+    while (true) {
+      await _coalescedWrites.flush();
+      if (!current()) return null;
+      final archivedBefore = archived();
+      if (older && archivedBefore == 0) return null;
+      final snapshot = List<M>.of(window());
+      final page = await read(archivedBefore, snapshot);
+      if (!current()) return null;
+      if (listEquals(snapshot, window()) && archivedBefore == archived()) {
+        return page;
+      }
+    }
+  }
+
+  static int _startOfWindow(int stored, List<Object?> window) =>
+      (stored - window.length).clamp(0, stored);
 
   String _messageMergeKey(Message message) {
     final messageId = message.messageId;
@@ -1054,58 +1076,126 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<List<Message>> loadOlderMessages(
     String contactKeyHex, {
     int count = 50,
-  }) async {
-    final allMessages = await _messageStore.loadMessages(contactKeyHex);
-    final currentMessages = _conversations[contactKeyHex] ?? [];
+  }) {
+    if (count <= 0) return Future.value([]);
+    final loadKey = '${_messageStore.publicKeyHex}:$contactKeyHex';
+    final pending = _conversationPageLoads[loadKey];
+    if (pending != null) return pending;
+    final started = _loadOlderMessages(contactKeyHex, count);
+    _conversationPageLoads[loadKey] = started;
+    return started.whenComplete(() {
+      if (identical(_conversationPageLoads[loadKey], started)) {
+        _conversationPageLoads.remove(loadKey);
+      }
+    });
+  }
 
-    // Storage holds the archived entries followed by the in-memory window.
-    final currentOffset =
-        (_messageStore.archivedCount(contactKeyHex) ??
-                allMessages.length - currentMessages.length)
-            .clamp(0, allMessages.length);
-    if (currentOffset == 0) {
-      return []; // No more messages to load
-    }
-
-    final fetchCount = count.clamp(0, currentOffset);
-    final startIndex = currentOffset - fetchCount;
-
-    final olderMessages = allMessages.sublist(startIndex, currentOffset);
-    _messageStore.unarchiveNewest(contactKeyHex, olderMessages.length);
-
-    // Prepend to current conversation
-    _conversations[contactKeyHex] = [...olderMessages, ...currentMessages];
+  Future<List<Message>> _loadOlderMessages(
+    String contactKeyHex,
+    int count,
+  ) async {
+    final generation = _messageHistoryGeneration;
+    final scope = _messageStore.publicKeyHex;
+    bool current() =>
+        !_disposed &&
+        generation == _messageHistoryGeneration &&
+        scope == _messageStore.publicKeyHex;
+    final page = await _readSettledPage(
+      current: current,
+      window: () => _conversations[contactKeyHex] ?? const <Message>[],
+      archived: () => _messageStore.archivedCount(contactKeyHex),
+      older: true,
+      read: (archived, window) async => _messageStore.loadMessagePage(
+        contactKeyHex,
+        // Unreconciled storage is assumed to end with the loaded window.
+        before:
+            archived ??
+            _startOfWindow(
+              (await _messageStore.loadMessagePage(
+                contactKeyHex,
+                limit: 0,
+              )).total,
+              window,
+            ),
+        limit: count,
+      ),
+    );
+    if (page == null) return [];
+    _messageStore.setArchivedCount(contactKeyHex, page.start);
+    if (page.messages.isEmpty) return [];
+    final currentMessages = _conversations[contactKeyHex] ?? const <Message>[];
+    _conversations[contactKeyHex] = [...page.messages, ...currentMessages];
     notifyListeners();
-
-    return olderMessages;
+    return page.messages;
   }
 
   /// Full stored history (archived prefix plus the in-memory window) for
   /// search. Read-only: nothing is unarchived and listeners are not notified.
   Future<List<Message>> allMessagesForSearch(String contactKeyHex) async {
-    final stored = await _messageStore.loadMessages(contactKeyHex);
+    final generation = _messageHistoryGeneration;
+    final scope = _messageStore.publicKeyHex;
+    await _coalescedWrites.flush();
+    if (_disposed ||
+        generation != _messageHistoryGeneration ||
+        scope != _messageStore.publicKeyHex) {
+      return [];
+    }
+    final archived = _messageStore.archivedCount(contactKeyHex);
+    final stored = await _messageStore.loadMessages(
+      contactKeyHex,
+      limit: archived,
+    );
+    if (_disposed ||
+        generation != _messageHistoryGeneration ||
+        scope != _messageStore.publicKeyHex) {
+      return [];
+    }
     final window = _conversations[contactKeyHex] ?? const <Message>[];
-    final archived =
-        (_messageStore.archivedCount(contactKeyHex) ??
-                stored.length - window.length)
-            .clamp(0, stored.length);
-    return [...stored.sublist(0, archived), ...window];
+    final prefix = archived == null
+        ? stored.sublist(
+            0,
+            (stored.length - window.length).clamp(0, stored.length),
+          )
+        : stored;
+    return [...prefix, ...window];
   }
 
   /// Channel counterpart of [allMessagesForSearch]; read-only.
   Future<List<ChannelMessage>> allChannelMessagesForSearch(
     int channelIndex,
   ) async {
+    final generation = _messageHistoryGeneration;
+    final scope = _channelMessageStore.publicKeyHex;
     final slot = _canonicalSlot(channelIndex);
-    final window = _channelMessages[slot] ?? const <ChannelMessage>[];
     final channelId = _channelIdForSlot(slot);
-    if (channelId == null) return List.of(window);
-    final stored = await _channelMessageStore.loadChannelMessages(channelId);
-    final archived =
-        (_channelMessageStore.archivedCount(channelId) ??
-                stored.length - window.length)
-            .clamp(0, stored.length);
-    return [..._bindToSlot(stored.sublist(0, archived), slot), ...window];
+    if (channelId == null) return List.of(_channelMessages[slot] ?? []);
+    await _coalescedWrites.flush();
+    if (_disposed ||
+        generation != _messageHistoryGeneration ||
+        scope != _channelMessageStore.publicKeyHex ||
+        _slotChannelIds[slot] != channelId) {
+      return [];
+    }
+    final archived = _channelMessageStore.archivedCount(channelId);
+    final stored = await _channelMessageStore.loadChannelMessages(
+      channelId,
+      limit: archived,
+    );
+    if (_disposed ||
+        generation != _messageHistoryGeneration ||
+        scope != _channelMessageStore.publicKeyHex ||
+        _slotChannelIds[slot] != channelId) {
+      return [];
+    }
+    final window = _channelMessages[slot] ?? const <ChannelMessage>[];
+    final rebound = _bindToSlot(stored, slot);
+    final prefix = archived == null
+        ? rebound.sublist(
+            0,
+            (rebound.length - window.length).clamp(0, rebound.length),
+          )
+        : rebound;
+    return [...prefix, ...window];
   }
 
   List<ChannelMessage> getChannelMessages(Channel channel) {
@@ -1492,7 +1582,14 @@ class MeshCoreConnector extends ChangeNotifier {
 
   /// Runs queued persistence now. Called before the app is backgrounded and
   /// whenever the stores are about to switch to another radio.
-  Future<void> flushPendingWrites() => _coalescedWrites.flush();
+  Future<void> flushPendingWrites() async {
+    await Future.wait([
+      _coalescedWrites.flush(),
+      _unreadStore.flush(),
+      if (_pathHistoryService != null)
+        _pathHistoryService!.flushPendingWrites(),
+    ]);
+  }
 
   int getUnreadCountForContact(Contact contact) {
     if (contact.type == advTypeRepeater) return 0;
@@ -2045,77 +2142,103 @@ class MeshCoreConnector extends ChangeNotifier {
           : message.copyWith(channelIndex: slot),
   ];
 
-  /// Load persisted channel messages for a specific channel
+  /// Load only the newest persisted window of a channel.
   Future<void> _loadChannelMessages(int channelIndex) async {
-    // The load replaces the in-memory history, so queued writes of it must
-    // reach storage (whose cache updates synchronously) first.
-    unawaited(_coalescedWrites.flush());
+    final generation = _messageHistoryGeneration;
+    final scope = _channelMessageStore.publicKeyHex;
     final channelId = _slotChannelIds[channelIndex];
-    final allMessages = channelId == null
-        ? <ChannelMessage>[]
-        : _bindToSlot(
-            await _channelMessageStore.loadChannelMessages(channelId),
-            channelIndex,
-          );
-    // Keep only the most recent N messages in memory to bound memory usage
-    final windowedMessages = allMessages.length > _messageWindowSize
-        ? allMessages.sublist(allMessages.length - _messageWindowSize)
-        : allMessages;
-    if (channelId != null) {
-      _channelMessageStore.setArchived(
-        channelId,
-        allMessages.sublist(0, allMessages.length - windowedMessages.length),
+    bool current() =>
+        !_disposed &&
+        generation == _messageHistoryGeneration &&
+        scope == _channelMessageStore.publicKeyHex &&
+        _slotChannelIds[channelIndex] == channelId;
+    var windowedMessages = <ChannelMessage>[];
+    if (channelId == null) {
+      await _coalescedWrites.flush();
+      if (!current()) return;
+    } else {
+      final page = await _readSettledPage(
+        current: current,
+        window: () =>
+            _channelMessages[channelIndex] ?? const <ChannelMessage>[],
+        archived: () => _channelMessageStore.archivedCount(channelId),
+        read: (_, _) => _channelMessageStore.loadMessagePage(
+          channelId,
+          limit: _messageWindowSize,
+        ),
       );
+      if (page == null) return;
+      windowedMessages = _bindToSlot(page.messages, channelIndex);
+      _channelMessageStore.setArchivedCount(channelId, page.start);
     }
-    // Replace even when nothing is stored so another radio's messages never
-    // linger under this index.
     final hadMessages = _channelMessages[channelIndex]?.isNotEmpty ?? false;
-    // Rules may have changed since these were stored.
-    if (_applyFilterRules(channelIndex, windowedMessages)) {
-      _scheduleChannelSave(channelIndex);
-    }
+    final retagged = _applyFilterRules(channelIndex, windowedMessages);
     _channelMessages[channelIndex] = windowedMessages;
+    if (retagged) _scheduleChannelSave(channelIndex);
     if (hadMessages || windowedMessages.isNotEmpty) notifyListeners();
   }
 
-  /// Load older channel messages (pagination)
   Future<List<ChannelMessage>> loadOlderChannelMessages(
     int channelIndex, {
     int count = 50,
-  }) async {
+  }) {
+    if (count <= 0) return Future.value([]);
     final slot = _canonicalSlot(channelIndex);
     final channelId = _channelIdForSlot(slot);
-    if (channelId == null) return [];
-    final allMessages = await _channelMessageStore.loadChannelMessages(
-      channelId,
+    if (channelId == null) return Future.value([]);
+    final loadKey = '${_channelMessageStore.publicKeyHex}:$channelId';
+    final pending = _channelPageLoads[loadKey];
+    if (pending != null) return pending;
+    final started = _loadOlderChannelMessages(slot, channelId, count);
+    _channelPageLoads[loadKey] = started;
+    return started.whenComplete(() {
+      if (identical(_channelPageLoads[loadKey], started)) {
+        _channelPageLoads.remove(loadKey);
+      }
+    });
+  }
+
+  Future<List<ChannelMessage>> _loadOlderChannelMessages(
+    int slot,
+    String channelId,
+    int count,
+  ) async {
+    final generation = _messageHistoryGeneration;
+    final scope = _channelMessageStore.publicKeyHex;
+    bool current() =>
+        !_disposed &&
+        generation == _messageHistoryGeneration &&
+        scope == _channelMessageStore.publicKeyHex &&
+        _slotChannelIds[slot] == channelId;
+    final page = await _readSettledPage(
+      current: current,
+      window: () => _channelMessages[slot] ?? const <ChannelMessage>[],
+      archived: () => _channelMessageStore.archivedCount(channelId),
+      older: true,
+      read: (archived, window) async => _channelMessageStore.loadMessagePage(
+        channelId,
+        // Unreconciled storage is assumed to end with the loaded window.
+        before:
+            archived ??
+            _startOfWindow(
+              (await _channelMessageStore.loadMessagePage(
+                channelId,
+                limit: 0,
+              )).total,
+              window,
+            ),
+        limit: count,
+      ),
     );
-    final currentMessages = _channelMessages[slot] ?? [];
-
-    // Storage holds the archived entries followed by the in-memory window.
-    final currentOffset =
-        (_channelMessageStore.archivedCount(channelId) ??
-                allMessages.length - currentMessages.length)
-            .clamp(0, allMessages.length);
-    if (currentOffset == 0) {
-      return []; // No more messages to load
-    }
-
-    final fetchCount = count.clamp(0, currentOffset);
-    final startIndex = currentOffset - fetchCount;
-
-    final olderMessages = _bindToSlot(
-      allMessages.sublist(startIndex, currentOffset),
-      slot,
-    );
-    _channelMessageStore.unarchiveNewest(channelId, olderMessages.length);
-
-    // Rules may have changed since these were stored.
+    if (page == null) return [];
+    _channelMessageStore.setArchivedCount(channelId, page.start);
+    final olderMessages = _bindToSlot(page.messages, slot);
+    if (olderMessages.isEmpty) return [];
     final retagged = _applyFilterRules(slot, olderMessages);
-    // Prepend to current conversation
+    final currentMessages = _channelMessages[slot] ?? const <ChannelMessage>[];
     _channelMessages[slot] = [...olderMessages, ...currentMessages];
     if (retagged) _scheduleChannelSave(slot);
     notifyListeners();
-
     return olderMessages;
   }
 
@@ -4305,6 +4428,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _txCharacteristic = null;
     _deviceDisplayName = null;
     _deviceId = null;
+    await _coalescedWrites.flush();
     _contacts.clear();
     _discoveredContacts.clear();
     _clearSessionMessageState();
@@ -6333,7 +6457,8 @@ class MeshCoreConnector extends ChangeNotifier {
     }
     // Queued channel writes find their channel by slot; land them before
     // the map moves, or a channel whose slot changed would never be saved.
-    unawaited(_coalescedWrites.flush());
+    await _coalescedWrites.flush();
+    if (generation != _channelSessionGeneration) return;
     _slotChannelIds
       ..clear()
       ..addAll(next);
@@ -6455,18 +6580,32 @@ class MeshCoreConnector extends ChangeNotifier {
   /// Runs the one-shot storage migration, then preloads this radio's channel
   /// state from the saved slot map so it shows before the channel sync ends.
   Future<void> _prepareChannelStorage() async {
+    final generation = _channelSessionGeneration;
+    final scope = _channelStore.publicKeyHex;
+    bool current() =>
+        !_disposed &&
+        generation == _channelSessionGeneration &&
+        scope == _channelStore.publicKeyHex;
     try {
       // First: the channel sync is already running and carries unread counts
       // over from these. The migration never touches the channel cache.
       await loadCachedChannels();
-      await ChannelStorageMigration.migrate(
-        _channelStore.publicKeyHex,
-        beforeDone: (slotIds) async =>
-            _receivedImageStore?.stampLegacyChannelIds(slotIds),
-      );
+      try {
+        await ChannelStorageMigration.migrate(
+          scope,
+          beforeDone: (slotIds) async =>
+              _receivedImageStore?.stampLegacyChannelIds(slotIds),
+        );
+      } catch (e) {
+        // It repeats on the next connect; what is already stored under
+        // channel IDs still preloads.
+        appLogger.warn('Channel storage migration failed: $e');
+      }
       await _loadChannelOrder();
       final saved = await _channelStore.loadSlotChannelIds();
-      unawaited(_coalescedWrites.flush());
+      await _coalescedWrites.flush();
+      // The radio may have disconnected or changed while writes landed.
+      if (!current()) return;
       _slotChannelIds
         ..clear()
         ..addAll(saved);
@@ -6541,7 +6680,7 @@ class MeshCoreConnector extends ChangeNotifier {
     await sendFrame(buildSetChannelFrame(index, '', Uint8List(16)));
     // A twin slot with the same PSK keeps this history, so queued writes of
     // it land before the list is dropped; a full delete clears them below.
-    unawaited(_coalescedWrites.flush());
+    await _coalescedWrites.flush();
     _channelMessages.remove(index);
     _processedChannelReactions.remove(index);
     try {
@@ -9441,6 +9580,9 @@ class MeshCoreConnector extends ChangeNotifier {
   /// Drops the conversation and channel history held in memory, so a
   /// different radio never shows or persists another radio's messages.
   void _clearSessionMessageState() {
+    _messageHistoryGeneration++;
+    _conversationPageLoads.clear();
+    _channelPageLoads.clear();
     // Writes start synchronously, so they still read this radio's history and
     // store keys before both change below.
     unawaited(_coalescedWrites.flush());
@@ -9536,6 +9678,8 @@ class MeshCoreConnector extends ChangeNotifier {
         generation != _offlineLoadGeneration ||
         _state != MeshCoreConnectionState.disconnected;
 
+    await _coalescedWrites.flush();
+    if (superseded()) return;
     _clearSessionMessageState();
     _bindStorageScope(keyHex);
     // A connect to this radio keeps what is loaded here; a different radio's
