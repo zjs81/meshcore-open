@@ -42,15 +42,18 @@ class _BatteryIndicatorState extends State<BatteryIndicator> {
   @override
   Widget build(BuildContext context) {
     final percent = widget.connector.batteryPercent;
-    final millivolts = widget.connector.batteryMillivolts;
+    final reading = widget.connector.batteryCellReading;
 
-    if (millivolts == null) {
+    if (reading == null) {
       return const SizedBox.shrink();
     }
 
     final String displayText;
     if (_showBatteryVoltage) {
-      displayText = '${(millivolts / 1000.0).toStringAsFixed(2)}V';
+      final cellVolts = (reading.averageCellMillivolts / 1000.0)
+          .toStringAsFixed(2);
+      final cells = reading.cellCount > 1 ? '×${reading.cellCount}' : '';
+      displayText = '${cellVolts}V$cells';
     } else {
       displayText = percent != null ? '$percent%' : '—';
     }

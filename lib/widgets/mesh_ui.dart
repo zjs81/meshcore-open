@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import '../l10n/l10n.dart';
 import '../theme/mesh_theme.dart';
 import '../theme/theme_icons.dart';
+import '../utils/emoji_utils.dart';
 
 /// MeshCore shared design kit.
 ///
@@ -378,18 +379,11 @@ class AvatarCircle extends StatelessWidget {
   }
 
   static String _initials(String name) {
-    final words = name
-        .trim()
-        .split(RegExp(r'\s+'))
-        .where((w) => w.isNotEmpty)
-        .toList();
-    if (words.isEmpty) return '?';
-    if (words.length == 1) {
-      return words.first.characters.take(2).toString().toUpperCase();
-    }
-    return (words.first.characters.take(1).toString() +
-            words[1].characters.take(1).toString())
-        .toUpperCase();
+    final emoji = firstEmoji(name);
+    if (emoji != null) return emoji;
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return '?';
+    return trimmed.characters.take(3).toString().toUpperCase();
   }
 }
 

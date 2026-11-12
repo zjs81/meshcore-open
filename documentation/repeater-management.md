@@ -16,7 +16,7 @@ From the Contacts screen:
 
 - Password field with show/hide toggle. It accepts up to 20 characters so longer passwords from a password manager can be pasted, but MeshCore firmware only uses the first 15 characters of a login password (and stores only 15 when a password is set), so the first 15 must match
 - "Save password" checkbox (persists for future logins). If a saved password exists, it is pre-filled and the checkbox is pre-checked, making login one-tap
-- Routing mode selector and "Manage Paths" link are available directly in the dialog (configure routing before login)
+- Routing mode selector (Auto / Set path… / Force Flood) and "Manage Paths" link are available directly in the dialog (configure routing before login). "Set path…" opens the path editor straight away so an exact login path can be set above the flood option
 - Auto-retries up to 5 times on timeout, showing progress ("Attempt 2 of 5"). A wrong password (explicit failure response) stops immediately — only timeouts trigger retries
 - CLI commands to a repeater are matched to their reply by a short prefix. A reply that arrives late for an earlier attempt still completes the command, and no further attempts are sent
 - If auto-clock-sync is enabled for this repeater (configured in Repeater Settings), a `clock sync` command is sent automatically on successful login
@@ -50,20 +50,22 @@ The battery chemistry selector and CLI/Settings cards are hidden from guest user
 Three information cards:
 
 **System Information**:
-- Battery percentage and voltage (e.g. "85% / 3.95V"), using the battery chemistry set in the hub screen
+- Battery percentage and voltage (e.g. "85% / 3.950V"), using the battery chemistry set in the hub screen
 - Clock at login time
 - Uptime (days/hours/minutes/seconds)
 - Queue length
-- Debug flags (error event count)
+- Debug flags (raw value), plus a Flag Details card listing the raw hex value and a description for each flag bit: packet pool exhausted (0x01), CAD timeout (0x02), radio stuck outside RX (0x04), and radio watchdog reset (0x08)
 
 **Radio Statistics**:
 - Last RSSI and SNR
 - Noise floor
-- TX airtime and RX airtime
+- TX airtime and RX airtime, each with its utilization as a percentage of uptime
 
 **Packet Statistics**:
 - Packets sent and received, each broken down by flood vs. direct
+- Average TX and RX packets per minute (packet throughput)
 - Duplicates, broken down by flood vs. direct
+- Receive errors, packet error rate (errors over total sent + received packets), and RX error ratio (errors over received packets)
 - Channel utilization (% of uptime used by TX + RX)
 
 ### Key Interactions
@@ -129,6 +131,8 @@ A list of Cayenne LPP sensor channel cards:
 
 - **Channel 1** (special): Battery voltage (shown as percentage or raw mV) and MCU temperature
 - **Other channels**: Raw sensor values with appropriate labels
+- Current is shown to 3 decimal places (LPP current resolution is 0.001A); voltage carries only 0.01V on the wire, so telemetry voltage shows 2 decimals
+- When a channel reports both voltage and current, a "Computed power" row shows voltage × current in watts (3 decimals) alongside any reported power value
 
 Shows "No data" until a response arrives from the repeater.
 
@@ -144,15 +148,21 @@ Shows "No data" until a response arrives from the repeater.
 
 ### What the User Sees
 
-A card titled "Repeater's Neighbors - N" listing each neighbor as:
+Two tabs: **List** and **Map**.
+
+List tab — a card titled "Repeater's Neighbors - N" listing each neighbor as:
 - Repeater name (or hex key prefix if unknown)
 - Time since last heard
 - SNR quality icon with color coding and label
 
+Map tab — the logged-in repeater and every neighbor with a known position, with a line per link. Each link carries a three-line label (distance, SNR in color, time since last heard) centered on the line; neighbor names are pinned above their icons. Labels fade out when they would collide with another label or a marker. If the repeater has no location, the neighbors are still shown without the repeater marker or link lines. Neighbors without a location are counted in a note.
+
 ### Key Interactions
-- Auto-queries up to 15 neighbors on open
+- Auto-queries up to 15 neighbors on open; each page is resent up to two times if its response times out before the request is reported as timed out
 - Matches public key prefixes against known contacts to show names
-- Pull-to-refresh
+- Pull-to-refresh (List tab)
+- **Discover** action button: sends `discover.neighbors`, making the repeater itself broadcast a zero-hop neighbor discovery request (not the connected companion). Waits for the repeater's reply; if none arrives within the normal command timeout it reports a timeout instead of retrying
+- **Erase all** action button (confirm dialog): sends `neighbor.remove` with an empty prefix, which the firmware matches against every neighbor entry
 
 ---
 
@@ -160,12 +170,13 @@ A card titled "Repeater's Neighbors - N" listing each neighbor as:
 
 ### What the User Sees
 
-Most settings are declared once in `repeaterSettingSpecs` (`lib/models/repeater_setting_spec.dart`): the CLI key, section, input type (toggle, slider, number, choice or text), range, step and labels. The screen builds each control, its refresh button (`get <key>`) and its save command (`set <key> <value>`) from that list, so a new setting only needs a new entry. The radio parameters, passwords and identity keys are hand-built.
+Most settings are declared once in `repeaterSettingSpecs` (`lib/models/repeater_setting_spec.dart`): the CLI key, section, input type (toggle, slider, number, choice or text), range, step and labels. The screen builds each control, its refresh button (`get <key>`) and its save command (`set <key> <value>`) from that list, so a new setting only needs a new entry. The radio parameters, passwords, firmware version and identity keys are hand-built.
 
 **1. Basic Settings**
 - Name (`set name`)
 - Admin password field (write-only; always sent when non-empty)
 - Guest password field (write-only; always sent when non-empty)
+- Firmware version (read-only; fetched with `ver`, shows "—" until fetched)
 
 **2. Radio Settings**
 - Frequency (MHz), bandwidth, spreading factor (SF5–SF12) and coding rate (4/5–4/8), sent together as `set radio freq,bw,sf,cr`. The firmware only accepts `set freq` over serial, so when the radio hasn't been fetched all four must be filled in before saving
@@ -174,6 +185,7 @@ Most settings are declared once in `repeaterSettingSpecs` (`lib/models/repeater_
 
 **3. Location Settings**
 - Latitude and longitude (`set lat`, `set lon`)
+- **Set from map** button: opens a map picker centered on the phone's location (when available), where you tap to place a pin and confirm; the picked point fills the latitude and longitude fields (`set lat`, `set lon`)
 
 **4. Features**
 - Packet forwarding toggle (`set repeat`)
@@ -201,7 +213,11 @@ Most settings are declared once in `repeaterSettingSpecs` (`lib/models/repeater_
 - Send Zero-Hop Advertisement (`advert.zerohop`)
 - Clock Sync (`clock sync`)
 
-**9. Advanced** (collapsed by default)
+**9. Access and regions**
+- Access control: opens the Access Control List screen (companions allowed to log in; fetched with the admin binary request, add/remove via `setperm`)
+- Regions: opens the Repeater Regions screen — lists the repeater's regions with their flood permission, lets you add (`region put`), remove (`region remove`), allow/deny flooding (`region allowf` / `region denyf`), set the home region (`region home`) and the default scope for the repeater's own traffic (`region default`). Edits are persisted with `region save` so they survive a reboot. Requires repeater firmware 1.12 or later
+
+**10. Advanced** (collapsed by default)
 - Path hash mode dropdown (0–2; `set path.hash.mode`)
 - TX delay and direct TX delay (0–2; `set txdelay`, `set direct.txdelay`)
 - Interference threshold (0–255; `set int.thresh`)
@@ -210,11 +226,12 @@ Most settings are declared once in `repeaterSettingSpecs` (`lib/models/repeater_
 - Battery voltage calibration (0–10, 0 = board default; `set adc.multiplier`). Not every board supports it; the screen notes this
 - Extra spreading factors (up to 3, comma separated; `set extra.sf`). Only LR2021 builds have this setting; the screen notes this. Its `get` reply has no `> ` prefix
 
-**10. Change Identity Keys** (collapsed by default)
+**11. Change Identity Keys** (collapsed by default)
 - Private key field (`set prv.key`, reboot to apply), with a generator that can search for a chosen public-key prefix
 
 **Danger Zone** (red-styled card)
 - Reboot repeater (sends `reboot` with confirmation dialog)
+- Start OTA (sends `start ota` with confirmation dialog; supported boards only). ESP32 boards answer with the OTA server address instead of "OK" — any non-error reply counts as success and is shown as-is
 - Erase filesystem (serial-only; shown disabled with an explanation — no command is sent over the air)
 
 ### Key Interactions
@@ -227,4 +244,4 @@ Most settings are declared once in `repeaterSettingSpecs` (`lib/models/repeater_
 
 ## Region configuration and companion statistics
 
-Repeater region commands configure the relay’s forwarding policy. The app’s [region list and channel selector](regions.md) choose scopes for outgoing channel floods; adding a name locally does not configure a repeater. [Companion radio statistics](radio-statistics.md) describe your paired radio rather than the remote repeater shown here.
+Repeater region commands configure the relay’s forwarding policy. The app’s [region list and channel selector](regions.md) choose scopes for outgoing channel floods; adding a name locally does not configure a repeater — use Repeater Settings → Regions (or the CLI) for that. [Companion radio statistics](radio-statistics.md) describe your paired radio rather than the remote repeater shown here.

@@ -29,7 +29,16 @@ class BleRawLogRxEntry {
   final DateTime timestamp;
   final Uint8List payload;
 
-  BleRawLogRxEntry({required this.timestamp, required this.payload});
+  /// Radio signal measured for this packet, when the frame carried it.
+  final double? snrDb;
+  final int? rssiDbm;
+
+  BleRawLogRxEntry({
+    required this.timestamp,
+    required this.payload,
+    this.snrDb,
+    this.rssiDbm,
+  });
 
   String get hexPreview {
     const maxBytes = 64;
@@ -69,10 +78,14 @@ class BleDebugLogService extends ChangeNotifier {
     }
 
     if (!outgoing && code == pushCodeLogRxData && frame.length > 3) {
+      final snrRaw = frame[1] > 127 ? frame[1] - 256 : frame[1];
+      final rssiRaw = frame[2] > 127 ? frame[2] - 256 : frame[2];
       _rawLogRxEntries.add(
         BleRawLogRxEntry(
           timestamp: DateTime.now(),
           payload: Uint8List.fromList(frame.sublist(3)),
+          snrDb: snrRaw / 4.0,
+          rssiDbm: rssiRaw,
         ),
       );
       if (_rawLogRxEntries.length > maxEntries) {

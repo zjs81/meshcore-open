@@ -145,7 +145,7 @@ class _CompanionRadioStatsScreenState extends State<CompanionRadioStatsScreen> {
                           _tile(
                             l10n.radioStats_lastRssi(stats.lastRssiDbm),
                             Icons.wifi_tethering,
-                            scheme.onSurfaceVariant,
+                            MeshTheme.rssiColor(stats.lastRssiDbm),
                           ),
                           const Divider(height: 1),
                           _tile(

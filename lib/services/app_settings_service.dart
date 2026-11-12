@@ -123,6 +123,14 @@ class AppSettingsService extends ChangeNotifier {
     await updateSettings(_settings.copyWith(mapShowGuessedLocations: value));
   }
 
+  Future<void> setMapShowPacketPaths(bool value) async {
+    await updateSettings(_settings.copyWith(mapShowPacketPaths: value));
+  }
+
+  Future<void> setPacketPathWindowHours(double value) async {
+    await updateSettings(_settings.copyWith(packetPathWindowHours: value));
+  }
+
   Future<void> setMapClusterNodes(bool value) async {
     await updateSettings(_settings.copyWith(mapClusterNodes: value));
   }
@@ -133,6 +141,26 @@ class AppSettingsService extends ChangeNotifier {
 
   Future<void> setRegionOnHopsLine(bool value) async {
     await updateSettings(_settings.copyWith(regionOnHopsLine: value));
+  }
+
+  Future<void> setShowMessageLatency(bool value) async {
+    await updateSettings(_settings.copyWith(showMessageLatency: value));
+  }
+
+  Future<void> setShowMessageSignal(bool value) async {
+    await updateSettings(_settings.copyWith(showMessageSignal: value));
+  }
+
+  Future<void> setShowMessageLastHop(bool value) async {
+    await updateSettings(_settings.copyWith(showMessageLastHop: value));
+  }
+
+  Future<void> setShowPathByteMode(bool value) async {
+    await updateSettings(_settings.copyWith(showPathByteMode: value));
+  }
+
+  Future<void> setUsePhoneGpsForPathAnchor(bool value) async {
+    await updateSettings(_settings.copyWith(usePhoneGpsForPathAnchor: value));
   }
 
   Future<void> setMapCacheBounds(Map<String, double>? value) async {
@@ -528,6 +556,35 @@ class AppSettingsService extends ChangeNotifier {
 
   Future<void> setTcpServerPort(int value) async {
     await updateSettings(_settings.copyWith(tcpServerPort: value));
+  }
+
+  /// Max endpoints kept in [AppSettings.tcpConnectionHistory].
+  static const int maxTcpConnectionHistory = 10;
+
+  /// Records a successful TCP endpoint (`host:port`), most recent first,
+  /// without duplicates.
+  Future<void> addTcpConnectionHistory(String endpoint) async {
+    final trimmed = endpoint.trim();
+    if (trimmed.isEmpty) return;
+    final updated = <String>[
+      trimmed,
+      ..._settings.tcpConnectionHistory.where((e) => e != trimmed),
+    ];
+    if (updated.length > maxTcpConnectionHistory) {
+      updated.removeRange(maxTcpConnectionHistory, updated.length);
+    }
+    if (updated.length == _settings.tcpConnectionHistory.length &&
+        updated.join() == _settings.tcpConnectionHistory.join()) {
+      return;
+    }
+    await updateSettings(_settings.copyWith(tcpConnectionHistory: updated));
+  }
+
+  Future<void> removeTcpConnectionHistory(String endpoint) async {
+    final updated = _settings.tcpConnectionHistory
+        .where((e) => e != endpoint)
+        .toList();
+    await updateSettings(_settings.copyWith(tcpConnectionHistory: updated));
   }
 
   Future<void> setJumpToOldestUnread(bool value) async {

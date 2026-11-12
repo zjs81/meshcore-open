@@ -47,6 +47,21 @@ String formatDistance(
   return '(${(distanceMeters / 1000).toStringAsFixed(2)} ${l10n?.units_km ?? 'km'})';
 }
 
+/// Same units as [formatDistance] without the wrapping parentheses, for
+/// labels drawn on map segments.
+String formatDistanceLabel(
+  double distanceMeters, {
+  required bool isImperial,
+  AppLocalizations? l10n,
+}) {
+  final text = formatDistance(
+    distanceMeters,
+    isImperial: isImperial,
+    l10n: l10n,
+  );
+  return text.substring(1, text.length - 1);
+}
+
 String formatLastObserved(BuildContext context, DateTime timestamp) {
   final l10n = context.l10n;
   final diff = DateTime.now().difference(timestamp);
@@ -553,6 +568,7 @@ class PathSummaryList extends StatelessWidget {
   final String selectedId;
   final Set<String> hiddenIds;
   final bool isImperial;
+  final bool showByteMode;
   final ValueChanged<DisplayPath> onSelect;
   final ValueChanged<DisplayPath> onToggleVisibility;
   final VoidCallback onShowAll;
@@ -563,6 +579,7 @@ class PathSummaryList extends StatelessWidget {
     required this.selectedId,
     required this.hiddenIds,
     required this.isImperial,
+    this.showByteMode = false,
     required this.onSelect,
     required this.onToggleVisibility,
     required this.onShowAll,
@@ -613,6 +630,8 @@ class PathSummaryList extends StatelessWidget {
     final parts = <String>[
       '${l10n.pathMap_hopCount(path.totalTransmissions)} ${formatDistance(path.distanceMeters, isImperial: isImperial, l10n: l10n)}',
       l10n.pathMap_gpsCount(path.gpsConfirmedHops, path.hopBytes.length),
+      if (showByteMode && path.hashWidth > 0)
+        l10n.chat_hashWidthChip(path.hashWidth),
       if (timestamp != null) formatLastObserved(context, timestamp),
     ];
 

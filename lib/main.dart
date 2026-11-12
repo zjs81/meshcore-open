@@ -27,6 +27,7 @@ import 'services/storage_service.dart';
 import 'services/message_filter/message_filter_service.dart';
 import 'services/message_retry_service.dart';
 import 'services/path_history_service.dart';
+import 'services/packet_path_service.dart';
 import 'services/app_settings_service.dart';
 import 'services/network_map/network_map_upload_service.dart';
 import 'services/notification_navigator.dart';
@@ -75,6 +76,7 @@ void main() async {
   final storage = StorageService();
   final connector = MeshCoreConnector();
   final pathHistoryService = PathHistoryService(storage);
+  final packetPathService = PacketPathService(storage);
   final retryService = MessageRetryService();
   final appSettingsService = AppSettingsService();
   final bleDebugLogService = BleDebugLogService();
@@ -178,12 +180,14 @@ void main() async {
   await receivedImageStore.load();
   await uiViewStateService.initialize();
   await timeoutPredictionService.initialize();
+  await packetPathService.initialize();
   await messageFilterService.load();
 
   // Wire up connector with services
   connector.initialize(
     retryService: retryService,
     pathHistoryService: pathHistoryService,
+    packetPathService: packetPathService,
     appSettingsService: appSettingsService,
     translationService: translationService,
     bleDebugLogService: bleDebugLogService,
@@ -212,6 +216,7 @@ void main() async {
       connector: connector,
       retryService: retryService,
       pathHistoryService: pathHistoryService,
+      packetPathService: packetPathService,
       storage: storage,
       appSettingsService: appSettingsService,
       bleDebugLogService: bleDebugLogService,
@@ -359,6 +364,7 @@ class MeshCoreApp extends StatefulWidget {
   final MeshCoreConnector connector;
   final MessageRetryService retryService;
   final PathHistoryService pathHistoryService;
+  final PacketPathService packetPathService;
   final StorageService storage;
   final AppSettingsService appSettingsService;
   final BleDebugLogService bleDebugLogService;
@@ -380,6 +386,7 @@ class MeshCoreApp extends StatefulWidget {
     required this.connector,
     required this.retryService,
     required this.pathHistoryService,
+    required this.packetPathService,
     required this.storage,
     required this.appSettingsService,
     required this.bleDebugLogService,
@@ -470,6 +477,7 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
         state == AppLifecycleState.detached) {
       unawaited(widget.connector.flushPendingWrites());
       unawaited(widget.pathHistoryService.flushPendingWrites());
+      unawaited(widget.packetPathService.flushPendingWrites());
     }
     if (state == AppLifecycleState.resumed) {
       widget.connector.syncAppBadge();
@@ -492,6 +500,7 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
         ChangeNotifierProvider.value(value: connector),
         ChangeNotifierProvider.value(value: widget.retryService),
         ChangeNotifierProvider.value(value: widget.pathHistoryService),
+        ChangeNotifierProvider.value(value: widget.packetPathService),
         ChangeNotifierProvider.value(value: widget.appSettingsService),
         ChangeNotifierProvider.value(value: widget.bleDebugLogService),
         ChangeNotifierProvider.value(value: widget.appDebugLogService),

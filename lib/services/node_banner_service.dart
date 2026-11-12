@@ -12,6 +12,7 @@ const String nodeBannerRecordName = '_banner.meshcoreopen.org';
 const String _dohEndpoint = 'https://cloudflare-dns.com/dns-query';
 const String _cacheRecordKey = 'node_banner_txt';
 const String _cacheExpiryKey = 'node_banner_expires_ms';
+const String _dismissedKey = 'node_banner_dismissed';
 const int _dnsTypeTxt = 16;
 
 /// Banner content from the TXT record. Null text fields fall back to the
@@ -77,6 +78,7 @@ class NodeBannerService {
   Future<NodeBannerConfig?> load() async {
     try {
       final prefs = PrefsManager.instance;
+      if (prefs.getBool(_dismissedKey) ?? false) return null;
       final expires = prefs.getInt(_cacheExpiryKey) ?? 0;
       final cached = prefs.getString(_cacheRecordKey);
       if (cached != null && _now().millisecondsSinceEpoch < expires) {
@@ -106,6 +108,11 @@ class NodeBannerService {
       debugPrint('Node banner lookup failed: $e');
       return null;
     }
+  }
+
+  /// Hides the banner permanently for this device.
+  Future<void> dismiss() async {
+    await PrefsManager.instance.setBool(_dismissedKey, true);
   }
 
   /// The first TXT answer in a DoH JSON response, with its character-strings

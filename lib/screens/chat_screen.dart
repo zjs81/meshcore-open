@@ -62,6 +62,7 @@ import '../widgets/mesh_ui.dart';
 import '../widgets/share_contact_sheet.dart';
 import '../widgets/shared_contact_card.dart';
 import 'telemetry_screen.dart';
+import 'rx_log_screen.dart';
 import '../services/chat_background_service.dart';
 import '../widgets/chat_background.dart';
 import '../widgets/holiday_animations.dart';
@@ -489,6 +490,13 @@ class _ChatScreenState extends State<ChatScreen> {
                               context,
                               ChatBackgroundService.contactKey(contact),
                             );
+                          case 'rxLog':
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RxLogScreen(),
+                              ),
+                            );
                           case 'telemetry':
                             Navigator.push(
                               context,
@@ -556,6 +564,13 @@ class _ChatScreenState extends State<ChatScreen> {
                           child: MeshMenuItemRow(
                             icon: Icons.wallpaper,
                             label: context.l10n.chatBackground_title,
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'rxLog',
+                          child: MeshMenuItemRow(
+                            icon: Icons.radar,
+                            label: context.l10n.rxLog_title,
                           ),
                         ),
                         PopupMenuItem(
@@ -1358,6 +1373,8 @@ class _ChatScreenState extends State<ChatScreen> {
       senderName: senderName,
       text: message.text,
       timestamp: message.timestamp,
+      receivedAt: message.receivedAt,
+      receivedLive: message.receivedLive,
       isOutgoing: message.isOutgoing,
       status: ChannelMessageStatus.sent,
       repeatCount: 0,
@@ -1457,11 +1474,15 @@ class _ChatScreenState extends State<ChatScreen> {
                     _markAsUnread(message);
                   },
                 ),
-              if (message.isOutgoing && message.status == MessageStatus.failed)
+              if (message.isOutgoing)
                 ListTile(
                   enabled: !readOnly,
                   leading: const Icon(Icons.refresh),
-                  title: Text(context.l10n.common_retry),
+                  title: Text(
+                    message.status == MessageStatus.failed
+                        ? context.l10n.common_retry
+                        : context.l10n.chat_resend,
+                  ),
                   onTap: () {
                     Navigator.pop(sheetContext);
                     _retryMessage(message);
@@ -1612,6 +1633,26 @@ class _MessageBubble extends StatelessWidget {
     final originalDisplayText = isOutgoing
         ? message.originalText
         : (translatedDisplayText != messageText ? messageText : null);
+
+    // Stored contact paths are reversed for sending, so the first chunk is
+    // the last repeater a received message came through.
+    final lastHopHex =
+        isOutgoing ||
+            message.pathBytes.isEmpty ||
+            !settingsService.settings.showMessageLastHop
+        ? null
+        : PathHelper.formatHopHex(
+            PathHelper.splitPathBytes(
+              message.pathBytes,
+              context.read<MeshCoreConnector>().pathHashByteWidth,
+            ).first,
+          );
+    final snrLabel =
+        (isOutgoing ||
+            message.snrDb == null ||
+            !settingsService.settings.showMessageSignal)
+        ? null
+        : context.l10n.chat_snrChip(message.snrDb!.toStringAsFixed(1));
 
     Widget buildTextContent() {
       return Row(
@@ -1834,7 +1875,7 @@ class _MessageBubble extends StatelessWidget {
                               crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
                                 Text(
-                                  formatChatTime(context, message.timestamp),
+                                  formatChatTime(context, message.displayTime),
                                   style: MeshTheme.mono(
                                     fontSize: 12 * textScale,
                                     color: metaColor,
@@ -1871,7 +1912,7 @@ class _MessageBubble extends StatelessWidget {
                                         : scheme.tertiary,
                                   ),
                                   Text(
-                                    '${(message.tripTimeMs! / 1000).toStringAsFixed(1)}s',
+                                    '${message.tripTimeMs!}ms',
                                     style: MeshTheme.mono(
                                       fontSize: 12 * textScale,
                                       color: isOutgoing
@@ -1879,6 +1920,32 @@ class _MessageBubble extends StatelessWidget {
                                           : scheme.tertiary,
                                     ),
                                   ),
+                                ],
+                                if (!isOutgoing &&
+                                    (lastHopHex != null ||
+                                        snrLabel != null)) ...[
+                                  const SizedBox(width: 4),
+                                  if (lastHopHex != null)
+                                    Text(
+                                      lastHopHex,
+                                      style: MeshTheme.mono(
+                                        fontSize: 12 * textScale,
+                                        color: scheme.tertiary,
+                                      ),
+                                    ),
+                                  if (snrLabel != null) ...[
+                                    if (lastHopHex != null)
+                                      const SizedBox(width: 6),
+                                    Text(
+                                      snrLabel,
+                                      style: MeshTheme.mono(
+                                        fontSize: 12 * textScale,
+                                        color: MeshTheme.signalColor(
+                                          snrDb: message.snrDb,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ],
                             ),

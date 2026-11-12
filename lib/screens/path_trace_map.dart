@@ -8,6 +8,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/connector/meshcore_protocol.dart';
 import 'package:meshcore_open/helpers/path_helper.dart';
+import 'package:meshcore_open/helpers/path_hop_resolver.dart';
 import 'package:meshcore_open/l10n/l10n.dart';
 import 'package:meshcore_open/models/app_settings.dart';
 import 'package:meshcore_open/models/contact.dart';
@@ -19,6 +20,8 @@ import 'package:meshcore_open/services/map_tile_cache_service.dart';
 import 'package:meshcore_open/services/path_history_service.dart';
 import 'package:meshcore_open/utils/app_logger.dart';
 import 'package:meshcore_open/helpers/snack_bar_builder.dart';
+import 'package:meshcore_open/widgets/map_location_picker.dart'
+    show fetchPhonePosition;
 import 'package:meshcore_open/widgets/path_map_scaffold.dart';
 import 'package:meshcore_open/widgets/path_map_ui.dart';
 import 'package:meshcore_open/widgets/snr_indicator.dart';
@@ -39,6 +42,9 @@ class PathTraceData {
     required this.snrData,
     required this.pathContacts,
   });
+
+  /// Routing hash byte width per hop, derived from the hop byte chunks.
+  int get hashWidth => pathData.isEmpty ? 0 : pathData.first.length;
 }
 
 String _hopKey(Uint8List hopBytes) => PathHelper.formatHopHex(hopBytes);
@@ -129,6 +135,9 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
   // endpoint inference so it matches the path that was actually traced.
   Uint8List _tracedPath = Uint8List(0);
   int _tracedPathHashWidth = 1;
+
+  // Phone GPS fix used as the path anchor when the setting opts into it.
+  LatLng? _phonePosition;
 
   // Packet-flow animation + multi-path view state.
   late final PathPlaybackController _playback;
@@ -230,6 +239,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     _pathHistory = context.read<PathHistoryService>();
     _pathHistory!.addListener(_onPathHistoryChanged);
     _setupFrameListener();
+    _refreshPhoneAnchor();
     final initialFrame = widget.initialTraceFrame;
     if (initialFrame == null) {
       _doPathTrace();
@@ -260,6 +270,33 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     if (!mounted || !_hasData) return;
     setState(() {
       _rebuildDisplayPaths(context.read<MeshCoreConnector>());
+    });
+  }
+
+  /// Whether the path anchor setting opts into the phone's GPS fix.
+  bool get _usePhoneGpsAnchor =>
+      context.read<AppSettingsService>().settings.usePhoneGpsForPathAnchor;
+
+  /// The path anchor: the phone's GPS fix when the setting is on and a fix
+  /// was acquired, otherwise the radio's reported (set) position.
+  LatLng? _selfAnchor(MeshCoreConnector connector) {
+    final phone = _phonePosition;
+    if (_usePhoneGpsAnchor && phone != null) return phone;
+    return plausibleSelfPoint(connector);
+  }
+
+  /// Fetches the phone's GPS fix once so the anchor can use it when the
+  /// setting is on.
+  void _refreshPhoneAnchor() {
+    if (!_usePhoneGpsAnchor) return;
+    fetchPhonePosition().then((position) {
+      if (!mounted || position == null) return;
+      setState(() {
+        _phonePosition = position;
+        if (_hasData) {
+          _rebuildDisplayPaths(context.read<MeshCoreConnector>());
+        }
+      });
     });
   }
 
@@ -747,28 +784,41 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
         _targetContactIsGuessed = targetGuessed;
 
         _points = <LatLng>[];
-        final selfPoint = plausibleSelfPoint(connector);
+        final selfPoint = _selfAnchor(connector);
         if (selfPoint != null) _points.add(selfPoint);
         String hopLast = '';
         String hopLastLast = '';
+        final distance = Distance();
         for (final hop in _traceData!.pathData) {
           final hopKey = _hopKey(hop);
           if (hopKey == hopLastLast && widget.flipPathAround) {
             break; //skip duplicate hops in round-trip paths
           }
           final contact = _traceData!.pathContacts[hopKey];
-          if (contact != null && contact.hasLocation) {
-            _points.add(LatLng(contact.latitude!, contact.longitude!));
-          } else {
-            final inferred = inferredPositions[hopKey];
-            if (inferred != null) _points.add(inferred);
+          final inferred = inferredPositions[hopKey];
+          final point = contact != null && contact.hasLocation
+              ? LatLng(contact.latitude!, contact.longitude!)
+              : inferred;
+          if (point != null) {
+            // Never allow a hop over the cap away from the last placed point.
+            final previous = _points.isNotEmpty ? _points.last : null;
+            if (previous == null ||
+                distance(previous, point) <=
+                    PathHopResolver.maxPlausibleHopMeters) {
+              _points.add(point);
+            }
           }
           hopLastLast = hopLast;
           hopLast = hopKey;
         }
         if (targetPos != null) {
           if (_targetContact != null && _targetContact!.type == advTypeChat) {
-            _points.add(targetPos);
+            final previous = _points.isNotEmpty ? _points.last : null;
+            if (previous == null ||
+                distance(previous, targetPos) <=
+                    PathHopResolver.maxPlausibleHopMeters) {
+              _points.add(targetPos);
+            }
           }
         }
         _polylines = _points.length > 1
@@ -941,7 +991,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
   }) {
     // Without a GPS fix for the local radio the path starts at the first
     // located hop instead of a bogus "You" at 0,0.
-    final selfPoint = plausibleSelfPoint(connector);
+    final selfPoint = _selfAnchor(connector);
     final points = <LatLng>[?selfPoint];
     final labels = <String>[if (selfPoint != null) context.l10n.pathTrace_you];
     final confirmed = <bool>[if (selfPoint != null) true];
@@ -951,44 +1001,70 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     int unresolvedHops = 0;
     bool pendingGap = false;
 
+    // Work outward from our known anchor position: a hop is placed only
+    // while each segment stays within the hop cap; anything further is
+    // treated as unresolved instead of drawing an impossible hop.
+    final positions = List<LatLng?>.filled(hops.length, null);
+    final isGpsHop = List<bool>.filled(hops.length, false);
     for (var i = 0; i < hops.length; i++) {
-      final hop = hops[i];
-      final hex = PathHelper.formatHopHex(hop);
-      final contact = _contactForHop(hop, connector);
-      LatLng? pos;
-      var isGps = false;
+      final contact = _contactForHop(hops[i], connector);
       if (contact != null && contact.hasLocation) {
-        pos = LatLng(contact.latitude!, contact.longitude!);
-        isGps = true;
+        positions[i] = LatLng(contact.latitude!, contact.longitude!);
+        isGpsHop[i] = true;
         gpsConfirmedHops++;
       } else {
-        pos = _inferredPositionForHop(hop, connector);
+        positions[i] = _inferredPositionForHop(hops[i], connector);
       }
-      if (pos == null) {
+    }
+    final distance = Distance();
+    var placed = <int>[];
+    LatLng? previous = selfPoint;
+    for (var i = 0; i < hops.length; i++) {
+      final pos = positions[i];
+      if (pos == null) continue;
+      if (previous != null &&
+          distance(previous, pos) > PathHopResolver.maxPlausibleHopMeters) {
+        continue;
+      }
+      placed.add(i);
+      previous = pos;
+    }
+
+    for (var i = 0; i < hops.length; i++) {
+      if (!placed.contains(i)) {
         unresolvedHops++;
         pendingGap = true;
         continue;
       }
-      points.add(pos);
+      final hop = hops[i];
+      final hex = PathHelper.formatHopHex(hop);
+      final contact = _contactForHop(hop, connector);
+      points.add(positions[i]!);
       labels.add(contact?.name ?? '~$hex');
-      confirmed.add(isGps);
+      confirmed.add(isGpsHop[i]);
       hopOrdinals.add(i);
       gapBefore.add(pendingGap);
       pendingGap = false;
     }
 
-    // Append the chat-target endpoint the same way the traced path does.
+    // Append the chat-target endpoint the same way the traced path does,
+    // unless reaching it would mean an over-cap hop.
     final target = widget.targetContact;
     final targetPos = _targetContactPosition;
     final hasTargetEndpoint =
         target != null && target.type == advTypeChat && targetPos != null;
     if (hasTargetEndpoint) {
-      points.add(targetPos);
-      labels.add(target.name);
-      confirmed.add(!_targetContactIsGuessed);
-      hopOrdinals.add(hops.length);
-      gapBefore.add(pendingGap);
-      pendingGap = false;
+      final previous = points.isNotEmpty ? points.last : null;
+      if (previous == null ||
+          distance(previous, targetPos) <=
+              PathHopResolver.maxPlausibleHopMeters) {
+        points.add(targetPos);
+        labels.add(target.name);
+        confirmed.add(!_targetContactIsGuessed);
+        hopOrdinals.add(hops.length);
+        gapBefore.add(pendingGap);
+        pendingGap = false;
+      }
     }
 
     if (points.length < 2) return null;
@@ -1169,6 +1245,8 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     final markers = <Marker>[];
     String hopLast = '';
     String hopLastLast = '';
+    final distance = Distance();
+    LatLng? previousPlaced = _selfAnchor(context.read<MeshCoreConnector>());
     for (final hop in pathData) {
       final hopKey = _hopKey(hop);
       final contact = _traceData!.pathContacts[hopKey];
@@ -1185,6 +1263,15 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
       final point = hasGps
           ? LatLng(contact.latitude!, contact.longitude!)
           : inferred!;
+      // Keep markers in sync with the placed path: never over a cap away.
+      if (previousPlaced != null &&
+          distance(previousPlaced, point) >
+              PathHopResolver.maxPlausibleHopMeters) {
+        hopLastLast = hopLast;
+        hopLast = hopKey;
+        continue;
+      }
+      previousPlaced = point;
       final label = PathHelper.formatHopHex(hop);
       final shortLabel = label.length > 2 ? label.substring(0, 2) : label;
       final fullLabel = label.length > 2
@@ -1251,7 +1338,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     required bool showLabels,
     required Contact? target,
   }) {
-    final selfPoint = plausibleSelfPoint(context.read<MeshCoreConnector>());
+    final selfPoint = _selfAnchor(context.read<MeshCoreConnector>());
     if (selfPoint != null) {
       markers.add(
         Marker(
@@ -1640,13 +1727,19 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     final selected = _selectedPath;
     final combined = _viewMode == PathViewMode.combined;
     final connector = context.read<MeshCoreConnector>();
+    final showByteMode = context
+        .read<AppSettingsService>()
+        .settings
+        .showPathByteMode;
+    final hashWidth = selected?.hashWidth ?? pathTraceData.hashWidth;
     final hopRows = combined
         ? (selected?.totalTransmissions ?? 0)
         : pathTraceData.pathData.length + 1;
 
     return PathMapBottomPanel(
       header: Text(
-        '${l10n.channelPath_repeaterHops} ${formatDistance(selected?.distanceMeters ?? _pathDistanceMeters, isImperial: isImperial, l10n: l10n)}',
+        '${l10n.channelPath_repeaterHops} ${formatDistance(selected?.distanceMeters ?? _pathDistanceMeters, isImperial: isImperial, l10n: l10n)}'
+        '${showByteMode && hashWidth > 0 ? ' · ${l10n.chat_hashWidthChip(hashWidth)}' : ''}',
         style: MeshTheme.mono(
           fontWeight: FontWeight.w600,
           fontSize: 13,
@@ -1672,7 +1765,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
       }),
       followEnabled: _followPacket,
       onToggleFollow: _toggleFollowPacket,
-      showNoSelfGpsNote: plausibleSelfPoint(connector) == null,
+      showNoSelfGpsNote: _selfAnchor(connector) == null,
       pathCount: _displayPaths.length,
       hopRowCount: hopRows,
       summary: combined
@@ -1681,6 +1774,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
               selectedId: _selectedPathId,
               hiddenIds: _hiddenPathIds,
               isImperial: isImperial,
+              showByteMode: showByteMode,
               onSelect: _selectPath,
               onToggleVisibility: _togglePathVisibility,
               onShowAll: () => setState(_hiddenPathIds.clear),

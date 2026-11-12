@@ -93,6 +93,20 @@ void main() {
     expect(calls, 2);
   });
 
+  test('dismissed banner stays hidden', () async {
+    var calls = 0;
+    final client = MockClient((_) async {
+      calls++;
+      return http.Response(_doh('"$_record"'), 200);
+    });
+    final service = NodeBannerService(client: client);
+
+    expect(await service.load(), isNotNull);
+    await service.dismiss();
+    expect(await service.load(), isNull);
+    expect(calls, 1);
+  });
+
   test('load returns null when the lookup fails', () async {
     final failing = NodeBannerService(
       client: MockClient((_) async => throw http.ClientException('offline')),

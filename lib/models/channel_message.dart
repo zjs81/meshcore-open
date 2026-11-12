@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/reaction_helper.dart';
@@ -7,6 +8,39 @@ import 'translation_support.dart';
 import '../utils/app_logger.dart';
 
 enum ChannelMessageStatus { pending, sent, failed }
+
+/// Signal our radio reported when it heard one copy of a packet. The final
+/// repeater in the path (or the sender when there is none) transmitted the
+/// copy we received, so these measurements describe that last leg.
+class PathSignal {
+  final double? snrDb;
+  final int? rssiDbm;
+
+  const PathSignal({this.snrDb, this.rssiDbm});
+
+  bool get isEmpty => snrDb == null && rssiDbm == null;
+
+  /// Compares signal strength: higher SNR wins, then higher RSSI. Missing
+  /// measurements rank below present ones.
+  int compareTo(PathSignal other) {
+    final snr = (snrDb ?? double.negativeInfinity).compareTo(
+      other.snrDb ?? double.negativeInfinity,
+    );
+    if (snr != 0) return snr;
+    return (rssiDbm?.toDouble() ?? double.negativeInfinity).compareTo(
+      other.rssiDbm?.toDouble() ?? double.negativeInfinity,
+    );
+  }
+
+  /// The strongest signal in [signals], or null when it is empty.
+  static PathSignal? strongest(Iterable<PathSignal> signals) {
+    PathSignal? best;
+    for (final signal in signals) {
+      if (best == null || signal.compareTo(best) > 0) best = signal;
+    }
+    return best;
+  }
+}
 
 class Repeat {
   final Uint8List? repeaterKey;
@@ -42,6 +76,11 @@ class ChannelMessage {
   /// are ordered by it so a sender clock running ahead cannot pin a message
   /// to the bottom; [timestamp] stays the sender's identity time.
   final DateTime receivedAt;
+
+  /// True when the app received this message while connected to the radio, so
+  /// [receivedAt] is the real arrival time and [displayTime] uses it. Backlog
+  /// messages synced from the offline queue keep their packet timestamp.
+  final bool receivedLive;
   final bool isOutgoing;
   final ChannelMessageStatus status;
   final List<Repeat> repeats;
@@ -50,6 +89,19 @@ class ChannelMessage {
   final int? pathHashWidth;
   final Uint8List pathBytes;
   final List<Uint8List> pathVariants;
+
+  /// SNR (dB) our radio measured for the strongest copy heard. Until repeats
+  /// merge it is the copy carried by [pathBytes].
+  final double? snrDb;
+
+  /// RSSI (dBm) our radio measured for the strongest copy heard, from the
+  /// same copy as [snrDb].
+  final int? rssiDbm;
+
+  /// Signals keyed by base64 of each observed path's bytes, so every variant
+  /// can show the strongest signal heard for that variant.
+  final Map<String, PathSignal> pathSignals;
+
   final int? channelIndex;
   final String? region;
   final String messageId;
@@ -76,6 +128,7 @@ class ChannelMessage {
     this.translationModelId,
     required this.timestamp,
     DateTime? receivedAt,
+    this.receivedLive = false,
     required this.isOutgoing,
     this.status = ChannelMessageStatus.pending,
     this.repeats = const [],
@@ -84,6 +137,9 @@ class ChannelMessage {
     this.pathHashWidth,
     Uint8List? pathBytes,
     List<Uint8List>? pathVariants,
+    this.snrDb,
+    this.rssiDbm,
+    Map<String, PathSignal>? pathSignals,
     this.channelIndex,
     this.region,
     String? messageId,
@@ -103,6 +159,12 @@ class ChannelMessage {
        pathVariants = _mergePathVariants(
          pathBytes ?? Uint8List(0),
          pathVariants,
+       ),
+       pathSignals = _withPrimarySignal(
+         pathBytes ?? Uint8List(0),
+         snrDb,
+         rssiDbm,
+         pathSignals,
        );
 
   bool get isFiltered => filterReason != null;
@@ -110,9 +172,23 @@ class ChannelMessage {
   String? get senderKeyHex =>
       senderKey != null ? pubKeyToHex(senderKey!) : null;
 
+  static String pathKey(List<int> pathBytes) => base64Encode(pathBytes);
+
+  PathSignal? signalFor(List<int> pathBytes) => pathSignals[pathKey(pathBytes)];
+
+  /// True when the UI should label this message with [receivedAt]: an
+  /// incoming message that arrived while the app was connected.
+  bool get showsReceiveTime => !isOutgoing && receivedLive;
+
+  /// Time the UI labels this message with: the real arrival time for live
+  /// receives, otherwise the sender's packet timestamp.
+  DateTime get displayTime => showsReceiveTime ? receivedAt : timestamp;
+
   /// True when the sender's clock put [timestamp] clearly ahead of the time
-  /// this device received the message.
+  /// this device received the message. Live receives show [receivedAt], so
+  /// the packet clock no longer affects what the user reads.
   bool get hasFutureTimestamp =>
+      !showsReceiveTime &&
       timestamp.difference(receivedAt) > futureTimestampTolerance;
 
   ChannelMessage copyWith({
@@ -123,6 +199,9 @@ class ChannelMessage {
     int? pathHashWidth,
     Uint8List? pathBytes,
     List<Uint8List>? pathVariants,
+    double? snrDb,
+    int? rssiDbm,
+    Map<String, PathSignal>? pathSignals,
     Object? region = _unset,
     String? packetHash,
     String? replyToMessageId,
@@ -158,6 +237,7 @@ class ChannelMessage {
           : translationModelId as String?,
       timestamp: timestamp,
       receivedAt: receivedAt,
+      receivedLive: receivedLive,
       isOutgoing: isOutgoing,
       status: status ?? this.status,
       repeats: repeats ?? this.repeats,
@@ -166,6 +246,9 @@ class ChannelMessage {
       pathHashWidth: pathHashWidth ?? this.pathHashWidth,
       pathBytes: pathBytes ?? this.pathBytes,
       pathVariants: pathVariants ?? this.pathVariants,
+      snrDb: snrDb ?? this.snrDb,
+      rssiDbm: rssiDbm ?? this.rssiDbm,
+      pathSignals: pathSignals ?? this.pathSignals,
       channelIndex: channelIndex ?? this.channelIndex,
       region: region == _unset ? this.region : region as String?,
       messageId: messageId,
@@ -179,7 +262,7 @@ class ChannelMessage {
     );
   }
 
-  static ChannelMessage? fromFrame(Uint8List frame) {
+  static ChannelMessage? fromFrame(Uint8List frame, {bool live = false}) {
     // CHANNEL_MSG_RECV format varies by version:
     // V3: [0]=code [1]=SNR [2]=rsv1 [3]=rsv2 [4]=channel_idx [5]=path_len [path... optional] [txt_type] [timestamp x4] [text...]
     // Non-V3: [0]=code [1]=channel_idx [2]=path_len [3]=txt_type [4-7]=timestamp [8+]=text
@@ -194,10 +277,11 @@ class ChannelMessage {
       int? pathLen;
       int txtType;
       int? packetPathHashWidth;
+      double? packetSnrDb;
       Uint8List pathBytes = Uint8List(0);
       int channelIdx;
       if (code == respCodeChannelMsgRecvV3) {
-        reader.skipBytes(1); // Skip SNR
+        packetSnrDb = reader.readInt8() / 4.0;
         final flags = reader.readByte();
         final hasPath = (flags & 0x01) != 0;
         reader.skipBytes(1); // Skip reserved byte
@@ -256,11 +340,13 @@ class ChannelMessage {
         text: decodedText,
         timestamp: DateTime.fromMillisecondsSinceEpoch(timestampRaw * 1000),
         receivedAt: DateTime.now(),
+        receivedLive: live,
         isOutgoing: false,
         status: ChannelMessageStatus.sent,
         pathLength: pathLen,
         pathHashWidth: packetPathHashWidth,
         pathBytes: pathBytes,
+        snrDb: packetSnrDb,
         channelIndex: channelIdx,
       );
     } catch (e) {
@@ -301,6 +387,23 @@ class ChannelMessage {
     );
   }
 
+  static Map<String, PathSignal> _withPrimarySignal(
+    Uint8List pathBytes,
+    double? snrDb,
+    int? rssiDbm,
+    Map<String, PathSignal>? pathSignals,
+  ) {
+    if (pathBytes.isEmpty || (snrDb == null && rssiDbm == null)) {
+      return pathSignals ?? const {};
+    }
+    final merged = Map<String, PathSignal>.from(pathSignals ?? const {});
+    merged.putIfAbsent(
+      pathKey(pathBytes),
+      () => PathSignal(snrDb: snrDb, rssiDbm: rssiDbm),
+    );
+    return merged;
+  }
+
   static List<Uint8List> _mergePathVariants(
     Uint8List pathBytes,
     List<Uint8List>? pathVariants,
@@ -336,9 +439,13 @@ class ChannelMessage {
     final regex = RegExp(r'^@\[([^\]]+)\]\s+(.+)$', dotAll: true);
     final match = regex.firstMatch(text);
     if (match == null) return null;
+    final actualMessage = match.group(2)!;
+    // A second leading mention makes this a multi-mention post, not a reply
+    // to one node. Keep the full text so every `@[name]` renders individually.
+    if (RegExp(r'^@\[([^\]]+)\]\s').hasMatch(actualMessage)) return null;
     return ReplyInfo(
       mentionedNode: match.group(1)!,
-      actualMessage: match.group(2)!,
+      actualMessage: actualMessage,
     );
   }
 

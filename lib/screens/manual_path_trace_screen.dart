@@ -14,6 +14,7 @@ import '../services/ui_view_state_service.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/path_editor_sheet.dart';
 import 'path_trace_map.dart';
 
 class ManualPathTraceScreen extends StatefulWidget {
@@ -127,6 +128,25 @@ class _ManualPathTraceScreenState extends State<ManualPathTraceScreen> {
     );
   }
 
+  Future<void> _pickRepeaters(
+    MeshCoreConnector connector,
+    PathTraceInput? input,
+  ) async {
+    final width = input?.hopWidth ?? connector.pathHashByteWidth;
+    final result = await PathEditorSheet.show(
+      context,
+      availableContacts: connector.allContactsUnfiltered,
+      initialPath: input?.bytes ?? const <int>[],
+      pathHashByteWidth: width,
+    );
+    if (result == null || !mounted) return;
+    _controller.text = PathHelper.splitPathBytes(
+      result,
+      width,
+    ).map(PathHelper.formatHopHex).join(',');
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -179,6 +199,15 @@ class _ManualPathTraceScreenState extends State<ManualPathTraceScreen> {
                 errorStyle: const TextStyle(fontSize: 14),
               ),
               onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: () => _pickRepeaters(connector, input),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size.fromHeight(48),
+              ),
+              icon: const Icon(Icons.route_outlined),
+              label: Text(l10n.manualTrace_pickRepeaters),
             ),
             const SizedBox(height: 16),
             if (input != null) ...[

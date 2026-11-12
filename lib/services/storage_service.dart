@@ -1,5 +1,6 @@
 import 'dart:convert';
 import '../models/delivery_observation.dart';
+import '../models/packet_path.dart';
 import '../models/path_history.dart';
 import '../storage/legacy_key_migration.dart';
 import '../storage/prefs_manager.dart';
@@ -13,6 +14,7 @@ class StorageService {
   static const String _repeaterAutoClockSyncAfterLoginKey =
       'repeater_auto_clock_sync_after_login';
   static const String _deliveryObservationsKey = 'delivery_observations';
+  static const String _packetPathsKey = 'packet_paths';
 
   /// App-wide keys (not scoped to a radio) that hold per-repeater data. Review
   /// mode snapshots and restores them so simulated logins leave nothing behind.
@@ -242,5 +244,39 @@ class StorageService {
   Future<void> clearDeliveryObservations() async {
     final prefs = PrefsManager.instance;
     await prefs.remove(_deliveryObservationsKey);
+  }
+
+  String get _scopedPacketPathsKey => _publicKeyHex.isEmpty
+      ? _packetPathsKey
+      : '${_packetPathsKey}_$_publicKeyHex';
+
+  Future<void> saveObservedPaths(List<ObservedPath> paths) async {
+    final prefs = PrefsManager.instance;
+    final jsonStr = jsonEncode(paths.map((p) => p.toJson()).toList());
+    await prefs.setString(_scopedPacketPathsKey, jsonStr);
+  }
+
+  Future<List<ObservedPath>> loadObservedPaths() async {
+    final prefs = PrefsManager.instance;
+    final jsonStr = prefs.getString(_scopedPacketPathsKey);
+
+    if (jsonStr == null) return [];
+
+    final List<dynamic> list;
+    try {
+      list = jsonDecode(jsonStr) as List<dynamic>;
+    } catch (e) {
+      appLogger.warn('Stored packet paths are unreadable: $e');
+      return [];
+    }
+    final paths = <ObservedPath>[];
+    for (final e in list) {
+      try {
+        paths.add(ObservedPath.fromJson(e as Map<String, dynamic>));
+      } catch (err) {
+        appLogger.warn('Skipping malformed packet path record: $err');
+      }
+    }
+    return paths;
   }
 }

@@ -148,6 +148,7 @@ class ChannelMessageStore {
       'translationModelId': msg.translationModelId,
       'timestamp': msg.timestamp.millisecondsSinceEpoch,
       'receivedAt': msg.receivedAt.millisecondsSinceEpoch,
+      if (msg.receivedLive) 'receivedLive': true,
       'isOutgoing': msg.isOutgoing,
       'status': msg.status.index,
       'channelIndex': msg.channelIndex,
@@ -157,6 +158,12 @@ class ChannelMessageStore {
       'pathHashWidth': msg.pathHashWidth,
       'pathBytes': base64Encode(msg.pathBytes),
       'pathVariants': msg.pathVariants.map(base64Encode).toList(),
+      'snrDb': msg.snrDb,
+      'rssiDbm': msg.rssiDbm,
+      'pathSignals': {
+        for (final entry in msg.pathSignals.entries)
+          entry.key: [entry.value.snrDb, entry.value.rssiDbm],
+      },
       'repeats': msg.repeats.map(_repeatToJson).toList(),
       'messageId': msg.messageId,
       'packetHash': msg.packetHash,
@@ -225,12 +232,18 @@ class ChannelMessageStore {
       translationModelId: json['translationModelId'] as String?,
       timestamp: DateTime.fromMillisecondsSinceEpoch(json['timestamp'] as int),
       receivedAt: legacyAwareReceivedAt(json),
+      receivedLive: json['receivedLive'] == true,
       isOutgoing: json['isOutgoing'] as bool? ?? false,
       status: _statusAt(json['status']) ?? ChannelMessageStatus.failed,
       repeatCount: (json['repeatCount'] as int?) ?? 0,
       pathLength: decodedPathLength,
       pathHashWidth: decodedPathHashWidth,
       pathBytes: decodedPathBytes,
+      snrDb: (json['snrDb'] as num?)?.toDouble(),
+      rssiDbm: json['rssiDbm'] is num ? (json['rssiDbm'] as num).toInt() : null,
+      pathSignals: (json['pathSignals'] as Map<String, dynamic>?)?.map(
+        (key, value) => MapEntry(key, _pathSignalFromJson(value)),
+      ),
       pathVariants: (json['pathVariants'] as List<dynamic>?)
           ?.map((entry) => Uint8List.fromList(base64Decode(entry as String)))
           .toList(),
@@ -282,6 +295,18 @@ class ChannelMessageStore {
       path: (json['path'] as List<dynamic>?)
           ?.map((entry) => Uint8List.fromList(base64Decode(entry as String)))
           .toList(),
+    );
+  }
+
+  /// Stored as `[snrDb, rssiDbm]`; malformed entries decode to an empty
+  /// signal so a corrupt record never takes down the whole transcript.
+  static PathSignal _pathSignalFromJson(Object? value) {
+    final list = value is List ? value : const <dynamic>[];
+    final snr = list.isNotEmpty ? list[0] : null;
+    final rssi = list.length > 1 ? list[1] : null;
+    return PathSignal(
+      snrDb: snr is num ? snr.toDouble() : null,
+      rssiDbm: rssi is num ? rssi.toInt() : null,
     );
   }
 

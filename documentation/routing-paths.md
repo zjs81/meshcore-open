@@ -41,7 +41,7 @@ Contact response frames place packed path metadata at offset **35** and the 64-b
 
 Channel text payloads contain sender text, not an encrypted hop chain. Observed channel paths come from the raw packet header/path associated with `PUSH_CODE_LOG_RX_DATA`. Direct-message frame metadata and path updates likewise need their format-specific decoding.
 
-Short prefixes can match several known nodes. An unresolved or ambiguous hop is not proof of a particular repeater identity. Map positions derived from paths are estimates, not GPS fixes.
+Short prefixes can match several known nodes. An unresolved or ambiguous hop is not proof of a particular repeater identity. Map positions derived from paths are estimates, not GPS fixes. The packet path page resolves duplicates by picking the assignment with the shortest total distance while rejecting hops over 200 km when a valid one exists; active repeaters win over inactive ones, then the most recently seen. Tapping a flagged hop lists every matching repeater in a scrollable sheet grouped Active/Inactive/Network map so the right one can be pinned. Hops that no stored contact can place are looked up on the [network map](network-map.md) and filled in as estimated positions when reachable.
 
 ## Storage and route selection
 

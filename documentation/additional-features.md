@@ -105,9 +105,9 @@ A live QR scanner view with instruction text overlay.
 In a channel chat, long-press a message (or right-click on desktop) and choose Path.
 
 ### What the User Sees
-- Summary card: sender, time, repeat count, path type, observed hops, and region when known (see [Regions](regions.md))
-- "Other Observed Paths" section (if multiple paths detected)
-- "Repeater Hops" section listing each hop with hex prefix, resolved name, and GPS coordinates
+- Summary card: sender, time, unique path count (when more than one), path type, hash width, and region when known (see [Regions](regions.md))
+- "Other Observed Paths" section (if multiple paths detected); each path's last repeater is annotated with the RSSI/SNR its own copy arrived with.
+- "Repeater Hops" section listing each hop with hex prefix, resolved name, and GPS coordinates. For received messages the last hop also shows the RSSI/SNR your radio measured on that final leg. When a hop prefix matches more than one repeater, a note states that the overall shortest likely path is shown; tap an ambiguous hop to pick the intended repeater.
 
 ### Actions
 - **Radar icon**: Opens path trace map for live trace
@@ -131,6 +131,19 @@ Two views:
 Structured log entries with level (Info/Warning/Error), tag, message, and timestamp.
 
 Both logs support copy-all and clear operations.
+
+### RX Log
+**Access**: ⋮ menu → RX log (channel list, contact chat, or channel chat)
+
+Every LoRa packet the radio has seen, newest first: decoded payload type, route
+type, path hashes (resolved to contact names in the detail view), payload
+summary, SNR/RSSI with LoRa-limit colouring, timestamp, and full raw hex. Tap a
+packet for the detail view with copy and clear actions.
+
+### LoRa Signal Colouring
+SNR and RSSI values across the app are coloured by where they sit in the LoRa
+operating range (SNR −20…+10 dB, RSSI −120…−20 dBm): green in the top third,
+amber in the middle, red near the sensitivity floor.
 
 ---
 

@@ -38,6 +38,7 @@ import 'channel_chat_screen.dart';
 import 'community_qr_scanner_screen.dart';
 import 'contacts_screen.dart';
 import 'map_screen.dart';
+import 'rx_log_screen.dart';
 import 'settings_screen.dart';
 import '../review_mode/review_mode_banner.dart';
 import '../theme/theme_icons.dart';
@@ -134,6 +135,18 @@ class _ChannelsScreenState extends State<ChannelsScreen> {
                     label: menuContext.l10n.community_manageCommunities,
                   ),
                   onTap: () => _showManageCommunitiesDialog(context),
+                ),
+                PopupMenuItem(
+                  child: MeshMenuItemRow(
+                    leading: const Icon(Icons.radar, size: 20),
+                    label: menuContext.l10n.rxLog_title,
+                  ),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RxLogScreen(),
+                    ),
+                  ),
                 ),
                 PopupMenuItem(
                   child: MeshMenuItemRow(
@@ -430,7 +443,7 @@ class _ChannelsScreenState extends State<ChannelsScreen> {
             lastShare.name.isEmpty ? lastShare.shortKey : lastShare.name,
           )
         : lastMessageText;
-    final lastTime = lastMessage?.timestamp;
+    final lastTime = lastMessage?.displayTime;
 
     final channelLabel = channel.name.isEmpty
         ? context.l10n.channels_channelIndex(channel.index)
@@ -778,7 +791,7 @@ class _ChannelsScreenState extends State<ChannelsScreen> {
         final latest = <Channel, DateTime>{
           for (final channel in filtered)
             channel:
-                connector.latestVisibleChannelMessage(channel)?.timestamp ??
+                connector.latestVisibleChannelMessage(channel)?.displayTime ??
                 epoch,
         };
         filtered.sort((a, b) {

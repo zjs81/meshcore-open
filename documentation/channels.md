@@ -91,7 +91,7 @@ Tap a channel card to open the channel chat screen.
 - **Pinch-to-zoom**: Two-finger zoom (0.8x–1.8x) and double-tap to reset text size
 - **Message tracing mode** (when enabled in App Settings): Each bubble additionally shows path prefix bytes (`via XX,YY,...`), a timestamp, and a repeat count icon
 
-Messages also show a region label when known, independently of message tracing. By default the region chip sits below the hop count; turn on **Region next to hop count** in App Settings → Messaging to show both on one line. The [message-region guide](regions.md#regions-displayed-on-messages) explains why some incoming messages have no label.
+Messages also show a region label when known, independently of message tracing. By default the region chip sits below the hop count; turn on **Region next to hop count** in App Settings → Messaging to show both on one line. Received messages also carry a **latency chip** (sender timestamp versus local receipt, capped at `9999ms` and shown as `unsynced` beyond that, which means the sender clock is not time-synced), a **path byte mode chip** (`1B`/`2B`/`3B`, the routing hash width), a **last-hop chip** (the final repeater prefix of the path) and a **signal chip** (RSSI in dBm and SNR in dB measured by your radio for that copy, coloured green/amber/red by quality); latency, signal and path byte mode hide individually with **Message latency**, **Signal strength** and **Path byte mode** in App Settings → Messaging. The [message-region guide](regions.md#regions-displayed-on-messages) explains why some incoming messages have no label.
 
 ### Message Types in Chat
 
