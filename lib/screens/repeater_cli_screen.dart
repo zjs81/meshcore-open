@@ -169,10 +169,11 @@ class _RepeaterCliScreenState extends State<RepeaterCliScreen> {
           listen: false,
         );
         final repeater = _resolveRepeater(connector);
+        // Initial send plus up to 2 resends while the repeater stays silent.
         final response = await _commandService!.sendCommand(
           repeater,
           command,
-          retries: 1,
+          retries: 3,
         );
         if (mounted) {
           setState(() {
@@ -348,6 +349,48 @@ class _RepeaterCliScreenState extends State<RepeaterCliScreen> {
         sharePositionOrigin: box == null
             ? null
             : box.localToGlobal(Offset.zero) & box.size,
+      ),
+    );
+  }
+
+  void _showCommandActions(String command) {
+    final l10n = context.l10n;
+    final connected = Provider.of<MeshCoreConnector>(
+      context,
+      listen: false,
+    ).isConnected;
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.replay),
+              title: Text(l10n.repeater_cliResendCommand),
+              enabled: !_regionLoadActive && connected,
+              onTap: () {
+                Navigator.pop(sheetContext);
+                _commandController.text = command;
+                _sendCommand();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.copy),
+              title: Text(l10n.common_copy),
+              onTap: () async {
+                Navigator.pop(sheetContext);
+                await Clipboard.setData(ClipboardData(text: command));
+                if (!mounted) return;
+                showDismissibleSnackBar(
+                  context,
+                  content: Text(l10n.repeater_cliCommandCopied),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -682,13 +725,25 @@ class _RepeaterCliScreenState extends State<RepeaterCliScreen> {
               ),
               const SizedBox(width: 6),
               Expanded(
-                child: SelectableText(
-                  entry['text']!,
-                  style: MeshTheme.mono(
-                    fontSize: 14,
-                    color: isCommand ? accent : scheme.onSurface,
-                  ),
-                ),
+                child: isCommand
+                    ? GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onLongPress: () {
+                          HapticFeedback.mediumImpact();
+                          _showCommandActions(entry['text']!);
+                        },
+                        child: Text(
+                          entry['text']!,
+                          style: MeshTheme.mono(fontSize: 14, color: accent),
+                        ),
+                      )
+                    : SelectableText(
+                        entry['text']!,
+                        style: MeshTheme.mono(
+                          fontSize: 14,
+                          color: scheme.onSurface,
+                        ),
+                      ),
               ),
             ],
           ),

@@ -379,6 +379,9 @@ class AppLocalizationsSk extends AppLocalizations {
       'Partnerský odkaz: každý nákup podporuje MeshCore Open.';
 
   @override
+  String get scanner_getNodeDismiss => 'Nezobrazovať znova';
+
+  @override
   String get scanner_bluetoothWebUnsupported =>
       'Funkcia Bluetooth nie je dostupná v prehliadači. Prepojte sa pomocou USB.';
 
@@ -1315,6 +1318,17 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
+  String get companionCli_title => 'Companion CLI';
+
+  @override
+  String get companionCli_settingsSubtitle =>
+      'Run CLI commands on the connected radio';
+
+  @override
+  String get companionCli_noReply =>
+      'No reply (reboot and poweroff never answer)';
+
+  @override
   String get appSettings_channelMinHops =>
       'Odosielajte kanálové správy, kým nedôjdú dostatočne ďaleko';
 
@@ -1365,11 +1379,46 @@ class AppLocalizationsSk extends AppLocalizations {
       'Zobrazí aj počty opakovaní a časy cesty. Dlho stlačte správu a vyberte Trasa pre všetky podrobnosti.';
 
   @override
+  String get appSettings_usePhoneGpsForPathAnchor => 'Kotva GPS telefónu';
+
+  @override
+  String get appSettings_usePhoneGpsForPathAnchorSubtitle =>
+      'Ukotiť sledovanie trás na GPS fix telefónu namiesto polohy hlásenej uzlom.';
+
+  @override
   String get appSettings_regionOnHopsLine => 'Región vedľa počtu skokov';
 
   @override
   String get appSettings_regionOnHopsLineSubtitle =>
       'Zobraziť región správy kanála v rovnakom riadku ako počet skokov namiesto pod ním.';
+
+  @override
+  String get appSettings_showMessageLatency => 'Message latency';
+
+  @override
+  String get appSettings_showMessageLatencySubtitle =>
+      'Show how long a received channel message took to arrive, next to its hop count.';
+
+  @override
+  String get appSettings_showMessageSignal => 'Signal strength';
+
+  @override
+  String get appSettings_showMessageSignalSubtitle =>
+      'Show the RSSI and SNR the message was received with, coloured by quality.';
+
+  @override
+  String get appSettings_showMessageLastHop => 'Last-hop prefix';
+
+  @override
+  String get appSettings_showMessageLastHopSubtitle =>
+      'Show the prefix of the last repeater that relayed a received message to you.';
+
+  @override
+  String get appSettings_showPathByteMode => 'Path byte mode';
+
+  @override
+  String get appSettings_showPathByteModeSubtitle =>
+      'Show the routing hash byte width (1B/2B/3B) next to a channel message\'s hop count.';
 
   @override
   String get appSettings_notifications => 'Upozornenia';
@@ -1609,6 +1658,30 @@ class AppLocalizationsSk extends AppLocalizations {
   String get appSettings_lastWeek => 'Minulý týždeň';
 
   @override
+  String get appSettings_showPacketPaths => 'Show Packet Paths';
+
+  @override
+  String get appSettings_showPacketPathsSubtitle =>
+      'Draw lines between repeaters along paths packets were seen taking';
+
+  @override
+  String get appSettings_packetPathWindow => 'Packet Path Time Window';
+
+  @override
+  String appSettings_packetPathWindowShowLast(int hours) {
+    return 'Show packet paths from the last $hours hours';
+  }
+
+  @override
+  String get appSettings_last3Days => 'Last 3 days';
+
+  @override
+  String get appSettings_last2Weeks => 'Last 2 weeks';
+
+  @override
+  String get appSettings_last4Weeks => 'Last 4 weeks';
+
+  @override
   String get appSettings_rasterTileSource => 'Zdroj rastrových dlaždíc';
 
   @override
@@ -1670,6 +1743,31 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get contacts_title => 'Kontakty';
+
+  @override
+  String contacts_statNodes(int count) {
+    return '$count nodes';
+  }
+
+  @override
+  String contacts_statCompanions(int count) {
+    return '$count companions';
+  }
+
+  @override
+  String contacts_statRepeaters(int count) {
+    return '$count repeaters';
+  }
+
+  @override
+  String contacts_statActive(int count) {
+    return '$count active';
+  }
+
+  @override
+  String contacts_statInactive(int count) {
+    return '$count inactive';
+  }
 
   @override
   String get contacts_noContacts => 'Zatiaľ žiadne kontakty.';
@@ -2490,6 +2588,21 @@ class AppLocalizationsSk extends AppLocalizations {
   String get debugLog_noBleActivity => 'Zatiaľ žiadna aktivita BLE.';
 
   @override
+  String get rxLog_title => 'RX log';
+
+  @override
+  String get rxLog_empty => 'No packets seen yet';
+
+  @override
+  String get rxLog_copied => 'RX log copied';
+
+  @override
+  String get rxLog_senderLabel => 'Sender';
+
+  @override
+  String get rxLog_destLabel => 'Destination';
+
+  @override
   String debugFrame_length(int count) {
     return 'Dĺžka rámca: $count bajtov';
   }
@@ -2545,6 +2658,37 @@ class AppLocalizationsSk extends AppLocalizations {
       one: 'skok',
     );
     return '$count $_temp0';
+  }
+
+  @override
+  String chat_latencyMilliseconds(int count) {
+    return '${count}ms';
+  }
+
+  @override
+  String get chat_latencyUnsynced => 'unsynced';
+
+  @override
+  String chat_hashWidthChip(int width) {
+    return '${width}B';
+  }
+
+  @override
+  String get chat_regionUnscoped => 'unscoped';
+
+  @override
+  String chat_signalChip(int rssi, String snr) {
+    return '${rssi}dBm ${snr}dB';
+  }
+
+  @override
+  String chat_rssiChip(int rssi) {
+    return '${rssi}dBm';
+  }
+
+  @override
+  String chat_snrChip(String snr) {
+    return '${snr}dB';
   }
 
   @override
@@ -2611,6 +2755,12 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get routing_forgetPath => 'Zabudnite na trasu';
+
+  @override
+  String get routing_directPath => 'Direct';
+
+  @override
+  String get routing_directPathHint => 'No repeater hops';
 
   @override
   String get routing_knownPaths => 'Známe cesty';
@@ -2866,6 +3016,33 @@ class AppLocalizationsSk extends AppLocalizations {
   String get map_noGps => 'Bez GPS';
 
   @override
+  String get map_mapStyle => 'Map style';
+
+  @override
+  String get map_mapStyleAuto => 'Auto';
+
+  @override
+  String get map_mapStyleAutoHint => 'Follows the app light or dark theme';
+
+  @override
+  String get map_mapStyleStreet => 'Street';
+
+  @override
+  String get map_mapStyleStreetHint => 'OpenStreetMap street map';
+
+  @override
+  String get map_mapStyleTopo => 'Topographic';
+
+  @override
+  String get map_mapStyleTopoHint => 'Terrain map with hill shading';
+
+  @override
+  String get map_mapStyleSatellite => 'Satellite';
+
+  @override
+  String get map_mapStyleSatelliteHint => 'Satellite imagery';
+
+  @override
   String get map_noResults => 'Nenašli sa žiadne zodpovedajúce uzly.';
 
   @override
@@ -3017,6 +3194,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get map_publicKeyPrefix => 'Prefix verejného kľúča';
 
   @override
+  String get map_packets => 'Packets';
+
+  @override
   String get map_markers => 'Označkovače';
 
   @override
@@ -3117,6 +3297,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get manualTrace_enterHashes => 'Zadajte hashe';
+
+  @override
+  String get manualTrace_pickRepeaters => 'Vybrať opakovače';
 
   @override
   String get manualTrace_run => 'Spustiť sledovanie cesty';
@@ -3371,7 +3554,22 @@ class AppLocalizationsSk extends AppLocalizations {
   String get login_autoUseSavedPath => 'Použiť uloženú cestu';
 
   @override
+  String get login_setPath => 'Set path…';
+
+  @override
+  String get login_directMode => 'Direct';
+
+  @override
   String get login_forceFloodMode => 'Vynútiť flood režim';
+
+  @override
+  String get login_directLogin => 'Direct Login';
+
+  @override
+  String get login_autoLogin => 'Auto Login';
+
+  @override
+  String get login_forget => 'Forget';
 
   @override
   String get login_managePaths => 'Spravovať Cesty';
@@ -3510,6 +3708,21 @@ class AppLocalizationsSk extends AppLocalizations {
   String get repeater_debugFlags => 'Ladiace príznaky';
 
   @override
+  String get repeater_flagDetails => 'Flag Details';
+
+  @override
+  String get repeater_flagPoolFull => 'Packet pool exhausted';
+
+  @override
+  String get repeater_flagCadTimeout => 'CAD timeout';
+
+  @override
+  String get repeater_flagRxTimeout => 'Radio stuck outside RX';
+
+  @override
+  String get repeater_flagRadioWatchdog => 'Radio watchdog reset';
+
+  @override
   String get repeater_radioStatistics => 'Štatistiky rádia';
 
   @override
@@ -3529,6 +3742,18 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get repeater_chanUtil => 'Využitie kanálu';
+
+  @override
+  String get repeater_txPerMin => 'TX/min';
+
+  @override
+  String get repeater_rxPerMin => 'RX/min';
+
+  @override
+  String get repeater_packetErrorRate => 'Packet Error Rate';
+
+  @override
+  String get repeater_rxErrorRatio => 'RX Error Ratio';
 
   @override
   String get repeater_packetStatistics => 'Štatistiky paketov';
@@ -3699,6 +3924,23 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get repeater_rebootRepeaterConfirm =>
       'Ste si istý, že chcete tento opakovač restartovať?';
+
+  @override
+  String get repeater_startOta => 'Spustiť OTA';
+
+  @override
+  String get repeater_startOtaSubtitle => 'Toto prepne opakovač do OTA režimu';
+
+  @override
+  String get repeater_startOtaConfirm =>
+      'Toto prepne opakovač do OTA režimu. Pokračovať?';
+
+  @override
+  String get repeater_setFromMap => 'Nastaviť z mapy';
+
+  @override
+  String get repeater_locationPickerHint =>
+      'Klepnutím na mapu umiestnite kolík a potvrďte.';
 
   @override
   String get repeater_regenerateIdentityKey =>
@@ -3882,6 +4124,9 @@ class AppLocalizationsSk extends AppLocalizations {
       'Ako často sa má resetovať automatické riadenie zosilnenia rádia, aby sa zotavilo zo zaseknutého stavu zosilnenia. V sekundách, zaokrúhlené nadol na násobok 4. 0 vypne pravidelné resety.';
 
   @override
+  String get repeater_firmwareVersion => 'Verzia firmvéru';
+
+  @override
   String get repeater_actionsTitle => 'Akcie';
 
   @override
@@ -3913,6 +4158,173 @@ class AppLocalizationsSk extends AppLocalizations {
   String repeater_actionFailed(String action, String error) {
     return '$action zlyhalo: $error';
   }
+
+  @override
+  String get repeater_aclTitle => 'Access control';
+
+  @override
+  String get repeater_aclTileSubtitle =>
+      'Companions allowed to log in to this repeater';
+
+  @override
+  String get repeater_aclScreenTitle => 'Access control list';
+
+  @override
+  String get repeater_aclEmpty => 'No companions in the ACL';
+
+  @override
+  String get repeater_aclLoadHint =>
+      'Tap refresh to load the ACL from the repeater';
+
+  @override
+  String get repeater_aclRefresh => 'Refresh ACL';
+
+  @override
+  String get repeater_aclUnknownNode => 'Unknown node';
+
+  @override
+  String get repeater_aclRole => 'Role';
+
+  @override
+  String get repeater_aclRoleGuest => 'Guest';
+
+  @override
+  String get repeater_aclRoleReadOnly => 'Read-only';
+
+  @override
+  String get repeater_aclRoleReadWrite => 'Read-write';
+
+  @override
+  String get repeater_aclRoleAdmin => 'Admin';
+
+  @override
+  String get repeater_aclRemoveTooltip => 'Remove from ACL';
+
+  @override
+  String get repeater_aclRemoveConfirmTitle => 'Remove from ACL';
+
+  @override
+  String repeater_aclRemoveConfirmMessage(String name) {
+    return 'Remove $name from the ACL?';
+  }
+
+  @override
+  String repeater_aclRemoveAction(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String get repeater_aclAdd => 'Add companion';
+
+  @override
+  String get repeater_aclAddAction => 'Add companion';
+
+  @override
+  String get repeater_aclSearch => 'Search companions';
+
+  @override
+  String get repeater_aclNoCompanionsFound => 'No companions found';
+
+  @override
+  String get repeater_aclManualEntry => 'Public key';
+
+  @override
+  String get repeater_aclManualEntryHelper =>
+      'Full public key in hex (64 characters)';
+
+  @override
+  String get repeater_aclManualAdd => 'Add';
+
+  @override
+  String get repeater_aclInvalidPubkey =>
+      'Enter the full public key (64 hex characters)';
+
+  @override
+  String repeater_aclLoadFailed(String error) {
+    return 'Could not load the ACL: $error';
+  }
+
+  @override
+  String get repeater_accessRegionsTitle => 'Access and regions';
+
+  @override
+  String get repeater_regionsTitle => 'Regions';
+
+  @override
+  String get repeater_regionsTileSubtitle =>
+      'Flood regions and home region for this repeater';
+
+  @override
+  String get repeater_regionsScreenTitle => 'Repeater regions';
+
+  @override
+  String get repeater_regionsRefresh => 'Refresh regions';
+
+  @override
+  String get repeater_regionsLoadHint =>
+      'Tap refresh to load regions from the repeater';
+
+  @override
+  String repeater_regionsLoadFailed(String error) {
+    return 'Could not load regions: $error';
+  }
+
+  @override
+  String get repeater_regionsEmpty => 'No regions defined';
+
+  @override
+  String get repeater_regionsAdd => 'Add region';
+
+  @override
+  String get repeater_regionsAddAction => 'Add region';
+
+  @override
+  String get repeater_regionsRemoveTooltip => 'Remove region';
+
+  @override
+  String get repeater_regionsRemoveConfirmTitle => 'Remove region';
+
+  @override
+  String repeater_regionsRemoveConfirmMessage(String name) {
+    return 'Remove $name from the repeater?';
+  }
+
+  @override
+  String repeater_regionsRemoveAction(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String get repeater_regionsFloodAllowTooltip => 'Allow flooding';
+
+  @override
+  String get repeater_regionsFloodDenyTooltip => 'Deny flooding';
+
+  @override
+  String get repeater_regionsFloodAllowed => 'Flood allowed';
+
+  @override
+  String get repeater_regionsFloodDenied => 'Flood denied';
+
+  @override
+  String get repeater_regionsWildcard => 'Unscoped (*)';
+
+  @override
+  String get repeater_regionsHome => 'Home region';
+
+  @override
+  String get repeater_regionsHomeHelper =>
+      'Where this repeater sits in the region tree';
+
+  @override
+  String get repeater_regionsDefault => 'Default region';
+
+  @override
+  String get repeater_regionsDefaultHelper =>
+      'Scope used for this repeater\'s own traffic';
+
+  @override
+  String get repeater_regionsDefaultNone => 'None';
 
   @override
   String get repeater_settingsSavedRebootNeeded =>
@@ -4656,6 +5068,11 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
+  String telemetry_batteryCellsValue(int percent, String cellVolts, int cells) {
+    return '$percent% / ${cellVolts}V (${cells}S)';
+  }
+
+  @override
   String telemetry_voltageValue(String volts) {
     return '${volts}V';
   }
@@ -4714,6 +5131,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get telemetry_powerLabel => 'Výkon';
+
+  @override
+  String get telemetry_computedPowerLabel => 'Vypočítaný výkon';
 
   @override
   String get telemetry_distanceLabel => 'Vzdialenosť';
@@ -4832,6 +5252,56 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
+  String get neighbors_tabList => 'List';
+
+  @override
+  String get neighbors_tabMap => 'Map';
+
+  @override
+  String get neighbors_discoverTooltip => 'Send discovery request';
+
+  @override
+  String get neighbors_discoverySent =>
+      'Discovery request sent to the repeater.';
+
+  @override
+  String neighbors_discoveryFailed(String error) {
+    return 'Discovery failed: $error';
+  }
+
+  @override
+  String get neighbors_eraseTooltip => 'Erase all neighbors';
+
+  @override
+  String get neighbors_eraseConfirm =>
+      'This removes every neighbor from the repeater. They will reappear as adverts are heard.';
+
+  @override
+  String get neighbors_erased => 'All neighbors erased.';
+
+  @override
+  String neighbors_eraseFailed(String error) {
+    return 'Failed to erase neighbors: $error';
+  }
+
+  @override
+  String neighbors_fetchedOfTotal(int fetched, int total) {
+    return '$fetched of $total fetched';
+  }
+
+  @override
+  String get neighbors_retryRemaining => 'Retry remaining';
+
+  @override
+  String get neighbors_mapNoNeighborLocations =>
+      'No neighbors have a location to map.';
+
+  @override
+  String neighbors_mapHiddenWithoutLocation(int count) {
+    return '$count neighbors without location hidden.';
+  }
+
+  @override
   String get channelPath_title => 'Cesta balíka';
 
   @override
@@ -4848,6 +5318,31 @@ class AppLocalizationsSk extends AppLocalizations {
       'Podrobnosti o balíčku zatiaľ nie sú dostupné.';
 
   @override
+  String get channelPath_hashWidthLabel => 'Width';
+
+  @override
+  String channelPath_hashWidthValue(int width) {
+    return '$width-byte';
+  }
+
+  @override
+  String get channelPath_distanceLabel => 'Distance';
+
+  @override
+  String get channelPath_travelLabel => 'Travel';
+
+  @override
+  String get channelPath_ambiguousTag => 'ambiguous';
+
+  @override
+  String channelPath_hopCandidatesTitle(int index) {
+    return 'Hop $index candidates';
+  }
+
+  @override
+  String get channelPath_networkMapTag => 'network map';
+
+  @override
   String get channelPath_messageDetails => 'Podrobnosti o zprávach';
 
   @override
@@ -4857,15 +5352,12 @@ class AppLocalizationsSk extends AppLocalizations {
   String get channelPath_timeLabel => 'Čas';
 
   @override
-  String get channelPath_repeatsLabel => 'Opakovanie';
+  String get channelPath_uniquePathsLabel => 'Unique paths';
 
   @override
   String channelPath_pathLabel(int index) {
     return 'Cesta $index';
   }
-
-  @override
-  String get channelPath_observedLabel => 'Pozorované';
 
   @override
   String channelPath_observedPathTitle(int index, String hops) {
@@ -4895,14 +5387,8 @@ class AppLocalizationsSk extends AppLocalizations {
   String get channelPath_directPath => 'Priamo';
 
   @override
-  String channelPath_observedZeroOf(int total) {
-    return '0 z $total skokov';
-  }
-
-  @override
-  String channelPath_observedSomeOf(int observed, int total) {
-    return '$observed z $total skokov';
-  }
+  String get channelPath_shortestPathNote =>
+      'Overall shortest likely path shown.';
 
   @override
   String get channelPath_mapTitle => 'Mapa Trasy';
@@ -4933,6 +5419,15 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get channelPath_unknownRepeater => 'Neznáme opakovače';
+
+  @override
+  String get channelPath_lastHeardLabel => 'Last hop';
+
+  @override
+  String get channelPath_copyPath => 'Copy path';
+
+  @override
+  String get channelPath_pathCopied => 'Path copied to clipboard';
 
   @override
   String get community_title => 'Komunita';
@@ -5474,6 +5969,69 @@ class AppLocalizationsSk extends AppLocalizations {
       'Kopírovanie inzerátu do schránky zlyhalo.';
 
   @override
+  String get contacts_showDetails => 'Show details';
+
+  @override
+  String get contacts_detailNodeHash => 'Node hash';
+
+  @override
+  String get contacts_detailPathBytes => 'Path bytes';
+
+  @override
+  String get contacts_detailLastMessage => 'Last message';
+
+  @override
+  String get contacts_detailLastModified => 'Last modified';
+
+  @override
+  String get contacts_detailFavorite => 'Favorite';
+
+  @override
+  String get contacts_detailStatus => 'Status';
+
+  @override
+  String get contacts_detailActive => 'Active';
+
+  @override
+  String get contacts_detailInactive => 'Inactive';
+
+  @override
+  String get contacts_detailYes => 'Yes';
+
+  @override
+  String get contacts_detailNo => 'No';
+
+  @override
+  String get contacts_detailTelemetryNone => 'None';
+
+  @override
+  String get contacts_detailAdvertHops => 'Advert hops';
+
+  @override
+  String get contacts_detailAdvertScope => 'Advert scope';
+
+  @override
+  String get contacts_detailAdvertTime => 'Advert time';
+
+  @override
+  String get contacts_detailLocalTime => 'Local time';
+
+  @override
+  String get contacts_timeSynced => 'synced';
+
+  @override
+  String get contacts_timeUnsynced => 'unsynced';
+
+  @override
+  String get contacts_advertHopsDirect => 'direct';
+
+  @override
+  String get contacts_advertHopsFlood => 'flood';
+
+  @override
+  String get contacts_advertScopeUnknown => 'unknown';
+
+  @override
   String get notification_activityTitle => 'Aktivita MeshCore';
 
   @override
@@ -5654,6 +6212,23 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get snrIndicator_unknownRepeaterHint =>
       'Tento opakovač zatiaľ nie je vo vašich kontaktoch. Jeho názov, poloha a možnosti sa zobrazia, keď rádio prijme jeho inzerát.';
+
+  @override
+  String get snrIndicator_packets => 'Pakety';
+
+  @override
+  String get snrIndicator_snrOverTime => 'SNR v čase';
+
+  @override
+  String snrIndicator_packetCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count paketov',
+      one: '1 paket',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get contactsSettings_title => 'Nastavenia kontaktov';
@@ -6997,6 +7572,12 @@ class AppLocalizationsSk extends AppLocalizations {
   String get repeater_cliTranscriptCopied => 'Prepis bol skopírovaný';
 
   @override
+  String get repeater_cliCommandCopied => 'Command copied';
+
+  @override
+  String get repeater_cliResendCommand => 'Resend command';
+
+  @override
   String get repeater_cliClearHistoryConfirm =>
       'Vymazať históriu príkazov? Túto akciu nie je možné vrátiť späť.';
 
@@ -7058,6 +7639,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get tcpConnectedToHeader => 'Pripojené k';
 
   @override
+  String get tcpHistoryHeader => 'Recent connections';
+
+  @override
   String get usbChooseSerialPort => 'Vyberte sériový port';
 
   @override
@@ -7073,6 +7657,11 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String neighbors_durationHours(int hours, int minutes) {
     return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String neighbors_durationDays(int days, int hours) {
+    return '${days}d ${hours}h';
   }
 
   @override
@@ -7218,6 +7807,25 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get holidayGreeting_newYear =>
       'Šťastný Nový rok|Úspešný nový rok|Happy New Year';
+
+  @override
+  String get chat_resend => 'Resend';
+
+  @override
+  String get chat_resendingMessage => 'Resending message';
+
+  @override
+  String get chat_hashtagAddChannelTitle => 'Add hashtag channel';
+
+  @override
+  String chat_hashtagAddChannelConfirm(String name) {
+    return 'Add \"$name\" as a channel?';
+  }
+
+  @override
+  String chat_hashtagChannelExists(String name) {
+    return '\"$name\" is already a channel';
+  }
 
   @override
   String get chat_loadOlderMessages => 'Načítať staršie správy';

@@ -33,6 +33,11 @@ class Message {
   /// are ordered by it so a sender clock running ahead cannot pin a message
   /// to the bottom; [timestamp] stays the sender's identity time.
   final DateTime receivedAt;
+
+  /// True when the app received this message while connected to the radio, so
+  /// [receivedAt] is the real arrival time and [displayTime] uses it. Backlog
+  /// messages synced from the offline queue keep their packet timestamp.
+  final bool receivedLive;
   final bool isOutgoing;
   final bool isCli;
   final MessageStatus status;
@@ -52,6 +57,14 @@ class Message {
   final int? tripTimeMs;
   final int? pathLength;
   final Uint8List pathBytes;
+
+  /// SNR (dB) our radio measured for this received message, when the firmware
+  /// reported it.
+  final double? snrDb;
+
+  /// RSSI (dBm) our radio measured for this received message, when reported.
+  final int? rssiDbm;
+
   final Map<String, List<String?>> reactions;
   final Map<String, MessageStatus> reactionStatuses;
   final Uint8List fourByteRoomContactKey;
@@ -61,6 +74,7 @@ class Message {
     required this.text,
     required this.timestamp,
     DateTime? receivedAt,
+    this.receivedLive = false,
     required this.isOutgoing,
     this.isCli = false,
     this.status = MessageStatus.pending,
@@ -78,6 +92,8 @@ class Message {
     this.tripTimeMs,
     this.pathLength,
     Uint8List? pathBytes,
+    this.snrDb,
+    this.rssiDbm,
     Uint8List? fourByteRoomContactKey,
     Map<String, List<String?>>? reactions,
     Map<String, MessageStatus>? reactionStatuses,
@@ -92,9 +108,19 @@ class Message {
 
   String get senderKeyHex => pubKeyToHex(senderKey);
 
+  /// True when the UI should label this message with [receivedAt]: an
+  /// incoming message that arrived while the app was connected.
+  bool get showsReceiveTime => !isOutgoing && receivedLive;
+
+  /// Time the UI labels this message with: the real arrival time for live
+  /// receives, otherwise the sender's packet timestamp.
+  DateTime get displayTime => showsReceiveTime ? receivedAt : timestamp;
+
   /// True when the sender's clock put [timestamp] clearly ahead of the time
-  /// this device received the message.
+  /// this device received the message. Live receives show [receivedAt], so
+  /// the packet clock no longer affects what the user reads.
   bool get hasFutureTimestamp =>
+      !showsReceiveTime &&
       timestamp.difference(receivedAt) > futureTimestampTolerance;
 
   Message copyWith({
@@ -107,6 +133,8 @@ class Message {
     int? tripTimeMs,
     int? pathLength,
     Uint8List? pathBytes,
+    double? snrDb,
+    int? rssiDbm,
     bool? isCli,
     Object? originalText = _unset,
     Object? translatedText = _unset,
@@ -116,6 +144,7 @@ class Message {
     Map<String, List<String?>>? reactions,
     Map<String, MessageStatus>? reactionStatuses,
     Uint8List? fourByteRoomContactKey,
+    bool? receivedLive,
   }) {
     return Message(
       senderKey: senderKey,
@@ -147,10 +176,13 @@ class Message {
       tripTimeMs: tripTimeMs ?? this.tripTimeMs,
       pathLength: pathLength ?? this.pathLength,
       pathBytes: pathBytes ?? this.pathBytes,
+      snrDb: snrDb ?? this.snrDb,
+      rssiDbm: rssiDbm ?? this.rssiDbm,
       reactions: reactions ?? this.reactions,
       reactionStatuses: reactionStatuses ?? this.reactionStatuses,
       fourByteRoomContactKey:
           fourByteRoomContactKey ?? this.fourByteRoomContactKey,
+      receivedLive: receivedLive ?? this.receivedLive,
     );
   }
 

@@ -16,6 +16,7 @@ enum MapRasterSourcePreset {
   osmDark('osm_dark'),
   osmDarkHC('osm_darkHC'),
   stamenTerrain('stamen_terrain'),
+  satellite('satellite'),
   alidadeSmoothDark('alidade_smooth_dark'),
   outdoors('outdoors'),
   osmBright('osm_bright'),
@@ -120,6 +121,11 @@ class MapRasterSourceCatalog {
         isStadia: true,
         allowsBulkDownload: true,
       );
+  static const MapRasterSourceDefinition satellite = MapRasterSourceDefinition(
+    id: 'satellite',
+    label: 'Satellite',
+    description: 'Esri World Imagery satellite tiles',
+  );
   static const MapRasterSourceDefinition alidadeSmoothDark =
       MapRasterSourceDefinition(
         id: 'alidade_smooth_dark',
@@ -201,6 +207,8 @@ class MapRasterSourceCatalog {
         return osmBrightDarkHC;
       case MapRasterSourcePreset.stamenTerrain:
         return stamenTerrain;
+      case MapRasterSourcePreset.satellite:
+        return satellite;
     }
   }
 
@@ -327,6 +335,10 @@ class CachedTileInventory {
 class MapTileCacheService extends ChangeNotifier {
   static const String cacheKey = 'map_tile_cache';
   static const String userAgentPackageName = 'com.meshcore.open';
+
+  /// Esri serves World Imagery tiles from `server.arcgisonline.com`;
+  /// `server.arcgis.com` redirects to a portal page that 404s for tiles.
+  static const String satelliteHost = 'server.arcgisonline.com';
   static const int defaultMinZoom = 10;
   static const int defaultMaxZoom = 15;
 
@@ -408,6 +420,7 @@ class MapTileCacheService extends ChangeNotifier {
         return brightness == Brightness.dark;
       case MapRasterSourcePreset.osmStandard:
       case MapRasterSourcePreset.stamenTerrain:
+      case MapRasterSourcePreset.satellite:
       case MapRasterSourcePreset.alidadeSmoothDark:
       case MapRasterSourcePreset.outdoors:
       case MapRasterSourcePreset.osmBright:
@@ -425,6 +438,7 @@ class MapTileCacheService extends ChangeNotifier {
       case MapRasterSourcePreset.osmStandard:
       case MapRasterSourcePreset.osmDark:
       case MapRasterSourcePreset.stamenTerrain:
+      case MapRasterSourcePreset.satellite:
       case MapRasterSourcePreset.alidadeSmoothDark:
       case MapRasterSourcePreset.outdoors:
       case MapRasterSourcePreset.outdoorsDark:
@@ -559,6 +573,15 @@ class MapTileCacheService extends ChangeNotifier {
     Iterable<CachedTileInfo> tiles,
   ) {
     final activeSource = source;
+    if (activeSource.id == MapRasterSourceCatalog.satellite.id) {
+      return tiles
+          .where(
+            (tile) =>
+                tile.sourceId == MapRasterSourceCatalog.satellite.id &&
+                tile.host == satelliteHost,
+          )
+          .toList();
+    }
     if (!activeSource.isStadia) {
       return tiles
           .where(
@@ -773,7 +796,11 @@ class MapTileCacheService extends ChangeNotifier {
   }
 
   String _buildUrlTemplate(AppSettings settings) {
-    final source = MapRasterSourceCatalog.fromSettings(settings);
+    final preset = MapRasterSourcePreset.fromId(settings.mapRasterSourceId);
+    final source = MapRasterSourceCatalog.fromPreset(preset);
+    if (preset == MapRasterSourcePreset.satellite) {
+      return 'https://$satelliteHost/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+    }
     if (!source.isStadia) {
       return 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     }
@@ -789,6 +816,22 @@ class MapTileCacheService extends ChangeNotifier {
     final uri = Uri.tryParse(object.key);
     if (uri == null) return null;
     final segments = uri.pathSegments;
+
+    if (uri.host == satelliteHost && segments.length >= 3) {
+      final zoom = int.tryParse(segments[segments.length - 3]);
+      final y = int.tryParse(segments[segments.length - 2]);
+      final x = int.tryParse(segments.last);
+      if (zoom == null || x == null || y == null) return null;
+      return CachedTileInfo(
+        key: object.key,
+        host: uri.host,
+        sourceId: MapRasterSourceCatalog.satellite.id,
+        zoom: zoom,
+        x: x,
+        y: y,
+        length: object.length ?? 0,
+      );
+    }
 
     if (segments.length >= 3 &&
         segments[segments.length - 3].isNotEmpty &&

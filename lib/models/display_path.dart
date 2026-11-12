@@ -39,6 +39,9 @@ class DisplayPath {
   /// Total transmissions on the full route (including unlocatable hops).
   final int totalTransmissions;
 
+  /// Routing hash byte width per hop, derived from the hop byte chunks.
+  int get hashWidth => hopBytes.isEmpty ? 0 : hopBytes.first.length;
+
   /// True when the route ends with a chat-target endpoint row.
   final bool hasTargetEndpoint;
 

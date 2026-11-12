@@ -118,8 +118,22 @@ class AppSettings {
   final bool mapShowMarkers;
   final bool mapShowGuessedLocations;
   final bool mapClusterNodes;
+
+  /// Draw lines between repeaters along paths packets were seen taking.
+  final bool mapShowPacketPaths;
+
+  /// How far back the packet-path lines reach; default 2 weeks.
+  final double packetPathWindowHours;
   final bool enableMessageTracing;
+
+  /// Anchor path traces on the phone's GPS fix instead of the radio's
+  /// reported position when a fix is available.
+  final bool usePhoneGpsForPathAnchor;
   final bool regionOnHopsLine;
+  final bool showMessageLatency;
+  final bool showMessageSignal;
+  final bool showMessageLastHop;
+  final bool showPathByteMode;
   final Map<String, double>? mapCacheBounds;
   final int mapCacheMinZoom;
   final int mapCacheMaxZoom;
@@ -175,6 +189,10 @@ class AppSettings {
   final bool evictDiscoveredContactsEnabled;
   final String tcpServerAddress;
   final int tcpServerPort;
+
+  /// Endpoints (`host:port`) of past successful TCP connections, most recent
+  /// first. Tapping one on the TCP screen reconnects to it.
+  final List<String> tcpConnectionHistory;
   final bool jumpToOldestUnread;
   final bool autoFetchRepeaterSettings;
   final bool imageMessagesEnabled;
@@ -272,8 +290,15 @@ class AppSettings {
     this.mapShowMarkers = true,
     this.mapShowGuessedLocations = true,
     this.mapClusterNodes = true,
+    this.mapShowPacketPaths = true,
+    this.packetPathWindowHours = 336,
     this.enableMessageTracing = false,
+    this.usePhoneGpsForPathAnchor = false,
     this.regionOnHopsLine = false,
+    this.showMessageLatency = true,
+    this.showMessageSignal = true,
+    this.showMessageLastHop = true,
+    this.showPathByteMode = true,
     this.mapCacheBounds,
     this.mapCacheMinZoom = 10,
     this.mapCacheMaxZoom = 15,
@@ -312,6 +337,7 @@ class AppSettings {
     this.evictDiscoveredContactsEnabled = true,
     this.tcpServerAddress = '',
     this.tcpServerPort = 0,
+    this.tcpConnectionHistory = const [],
     this.jumpToOldestUnread = false,
     this.autoFetchRepeaterSettings = false,
     this.networkMapUploadEnabled = false,
@@ -369,8 +395,15 @@ class AppSettings {
       'map_show_markers': mapShowMarkers,
       'map_show_guessed_locations': mapShowGuessedLocations,
       'map_cluster_nodes': mapClusterNodes,
+      'map_show_packet_paths': mapShowPacketPaths,
+      'packet_path_window_hours': packetPathWindowHours,
       'enable_message_tracing': enableMessageTracing,
+      'use_phone_gps_for_path_anchor': usePhoneGpsForPathAnchor,
       'region_on_hops_line': regionOnHopsLine,
+      'show_message_latency': showMessageLatency,
+      'show_message_signal': showMessageSignal,
+      'show_message_last_hop': showMessageLastHop,
+      'show_path_byte_mode': showPathByteMode,
       'map_cache_bounds': mapCacheBounds,
       'map_cache_min_zoom': mapCacheMinZoom,
       'map_cache_max_zoom': mapCacheMaxZoom,
@@ -417,6 +450,7 @@ class AppSettings {
       'evict_discovered_contacts_enabled': evictDiscoveredContactsEnabled,
       'tcp_server_address': tcpServerAddress,
       'tcp_server_port': tcpServerPort,
+      'tcp_connection_history': tcpConnectionHistory,
       'jump_to_oldest_unread': jumpToOldestUnread,
       'auto_fetch_repeater_settings': autoFetchRepeaterSettings,
       'network_map_upload_enabled': networkMapUploadEnabled,
@@ -506,8 +540,17 @@ class AppSettings {
       mapShowGuessedLocations:
           json['map_show_guessed_locations'] as bool? ?? true,
       mapClusterNodes: json['map_cluster_nodes'] as bool? ?? true,
+      mapShowPacketPaths: json['map_show_packet_paths'] as bool? ?? true,
+      packetPathWindowHours:
+          (json['packet_path_window_hours'] as num?)?.toDouble() ?? 336,
       enableMessageTracing: json['enable_message_tracing'] as bool? ?? false,
+      usePhoneGpsForPathAnchor:
+          json['use_phone_gps_for_path_anchor'] as bool? ?? false,
       regionOnHopsLine: json['region_on_hops_line'] as bool? ?? false,
+      showMessageLatency: json['show_message_latency'] as bool? ?? true,
+      showMessageSignal: json['show_message_signal'] as bool? ?? true,
+      showMessageLastHop: json['show_message_last_hop'] as bool? ?? true,
+      showPathByteMode: json['show_path_byte_mode'] as bool? ?? true,
       mapCacheBounds: (json['map_cache_bounds'] as Map?)?.map(
         (key, value) => MapEntry(key.toString(), (value as num).toDouble()),
       ),
@@ -579,6 +622,15 @@ class AppSettings {
           json['evict_discovered_contacts_enabled'] as bool? ?? true,
       tcpServerAddress: json['tcp_server_address'] as String? ?? '',
       tcpServerPort: json['tcp_server_port'] as int? ?? 0,
+      tcpConnectionHistory:
+          (json['tcp_connection_history'] as List<dynamic>?)
+              ?.map((entry) => entry.toString())
+              .toList() ??
+          // First upgrade: adopt the last used endpoint as the only entry.
+          (((json['tcp_server_address'] as String?)?.isNotEmpty ?? false) &&
+                  (json['tcp_server_port'] as int? ?? 0) > 0
+              ? ['${json['tcp_server_address']}:${json['tcp_server_port']}']
+              : const []),
       jumpToOldestUnread: json['jump_to_oldest_unread'] as bool? ?? false,
       autoFetchRepeaterSettings:
           json['auto_fetch_repeater_settings'] as bool? ?? false,
@@ -679,8 +731,15 @@ class AppSettings {
     bool? mapShowMarkers,
     bool? mapShowGuessedLocations,
     bool? mapClusterNodes,
+    bool? mapShowPacketPaths,
+    double? packetPathWindowHours,
     bool? enableMessageTracing,
+    bool? usePhoneGpsForPathAnchor,
     bool? regionOnHopsLine,
+    bool? showMessageLatency,
+    bool? showMessageSignal,
+    bool? showMessageLastHop,
+    bool? showPathByteMode,
     Object? mapCacheBounds = _unset,
     int? mapCacheMinZoom,
     int? mapCacheMaxZoom,
@@ -719,6 +778,7 @@ class AppSettings {
     bool? evictDiscoveredContactsEnabled,
     String? tcpServerAddress,
     int? tcpServerPort,
+    List<String>? tcpConnectionHistory,
     bool? jumpToOldestUnread,
     bool? autoFetchRepeaterSettings,
     bool? networkMapUploadEnabled,
@@ -762,8 +822,17 @@ class AppSettings {
       mapShowGuessedLocations:
           mapShowGuessedLocations ?? this.mapShowGuessedLocations,
       mapClusterNodes: mapClusterNodes ?? this.mapClusterNodes,
+      mapShowPacketPaths: mapShowPacketPaths ?? this.mapShowPacketPaths,
+      packetPathWindowHours:
+          packetPathWindowHours ?? this.packetPathWindowHours,
       enableMessageTracing: enableMessageTracing ?? this.enableMessageTracing,
+      usePhoneGpsForPathAnchor:
+          usePhoneGpsForPathAnchor ?? this.usePhoneGpsForPathAnchor,
       regionOnHopsLine: regionOnHopsLine ?? this.regionOnHopsLine,
+      showMessageLatency: showMessageLatency ?? this.showMessageLatency,
+      showMessageSignal: showMessageSignal ?? this.showMessageSignal,
+      showMessageLastHop: showMessageLastHop ?? this.showMessageLastHop,
+      showPathByteMode: showPathByteMode ?? this.showPathByteMode,
       mapCacheBounds: mapCacheBounds == _unset
           ? this.mapCacheBounds
           : mapCacheBounds as Map<String, double>?,
@@ -827,6 +896,7 @@ class AppSettings {
           evictDiscoveredContactsEnabled ?? this.evictDiscoveredContactsEnabled,
       tcpServerAddress: tcpServerAddress ?? this.tcpServerAddress,
       tcpServerPort: tcpServerPort ?? this.tcpServerPort,
+      tcpConnectionHistory: tcpConnectionHistory ?? this.tcpConnectionHistory,
       jumpToOldestUnread: jumpToOldestUnread ?? this.jumpToOldestUnread,
       autoFetchRepeaterSettings:
           autoFetchRepeaterSettings ?? this.autoFetchRepeaterSettings,

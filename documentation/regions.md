@@ -12,6 +12,10 @@ Regions limit which configured repeaters forward a channel flood. They are routi
 
 Tapping the selected region again, or choosing Clear region, removes the channel override. **If a default exists, clearing an override falls back to that default; it does not force an unscoped send.** To send a channel truly unscoped, pick **No region (unscoped)** instead (see below).
 
+## Manage regions on a repeater
+
+The list above is local to the app. To configure a repeater itself, log in as admin and open Repeater Settings → **Regions** (next to Access control). The screen loads the repeater's regions with their flood permission, and lets you add or remove regions, allow or deny flooding per region, set the repeater's **home region**, and set its **default region** — the scope the repeater uses for its own traffic (clearing it unscopes those packets). Edits are saved to the repeater automatically. Requires repeater firmware 1.12 or later.
+
 ## Radio default region
 
 Companion firmware v1.15.0 (firmware code 11) and later can store a default flood scope on the radio itself. The radio uses it for every flood sent without a scope override, by this app or any other app connected to the radio.
@@ -36,11 +40,11 @@ The saved region-name list is global to the app. Default and channel assignments
 
 ## Regions displayed on messages
 
-Channel text messages show a region label beside routing metadata when a region is known. The label appears in the message bubble only when the message has path data; message tracing does not otherwise need to be enabled. The message-path screen always shows the known region.
+Channel text messages show a region label beside routing metadata when a region is known. The message-path screen always shows the known region.
 
-Outgoing messages retain the effective region used when they were sent. Changing a channel or default region does not relabel earlier messages. Region metadata persists with message history; older records may have no region.
+Outgoing messages retain the effective region used when they were sent. A message sent with **No region (unscoped)** shows the label `unscoped` in the bubble and on the message-path screen. Changing a channel or default region does not relabel earlier messages. Region metadata persists with message history; older records may have no region.
 
-Incoming region names are inferred from raw **transport-flood** packets by testing locally known names (saved regions, channel overrides, the app default, and the radio default region). The name is not sent as plain text in the packet. Unknown names, ambiguous matches, and messages without suitable raw transport metadata do not get a region label. `foo` and `#foo` are treated as the same candidate for matching.
+Incoming region names are inferred from raw **transport-flood** packets by testing locally known names (saved regions, channel overrides, the app default, and the radio default region). The name is not sent as plain text in the packet. Unknown names, ambiguous matches, and messages without suitable raw transport metadata do not get a region label. `foo` and `#foo` are treated as the same candidate for matching. Incoming messages that carry no scope at all — legacy flood packets without transport codes, or a zero (null-region) transport code — are labelled `unscoped`.
 
 **No label does not prove a message was unscoped.** It can mean that its region could not be identified. A region label is routing metadata, not proof of the sender’s location or identity.
 

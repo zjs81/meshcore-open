@@ -21,6 +21,7 @@ import '../helpers/cyr2lat.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/ipfs_link_attach_flow.dart';
 import '../helpers/contact_share_message.dart';
+import '../helpers/mention_search.dart';
 import '../helpers/marker_message.dart';
 import '../helpers/message_search.dart';
 import '../widgets/chat_search_results.dart';
@@ -28,6 +29,7 @@ import '../helpers/message_url_image_helper.dart';
 import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../helpers/snack_bar_builder.dart';
+import '../l10n/app_localizations.dart';
 import '../l10n/l10n.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
@@ -63,6 +65,7 @@ import '../widgets/image_send_codec_binding.dart';
 import '../widgets/image_send_preview_sheet.dart';
 import '../widgets/message_status_icon.dart';
 import '../widgets/radio_stats_entry.dart';
+import '../widgets/signal_ui.dart';
 import '../widgets/sync_progress_overlay.dart';
 import '../widgets/translated_message_content.dart';
 import '../widgets/unread_divider.dart';
@@ -77,6 +80,7 @@ import 'channels_screen.dart' show confirmDeleteChannel, showEditChannelSheet;
 import 'channel_message_path_screen.dart';
 import 'map_screen.dart';
 import 'region_management_screen.dart';
+import 'rx_log_screen.dart';
 import '../storage/region_store.dart';
 import '../utils/share_origin.dart';
 import '../services/chat_background_service.dart';
@@ -161,6 +165,13 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   /// design: leaving the chat hides them again.
   final Set<String> _revealedFilteredIds = <String>{};
   int _revealVersion = 0;
+
+  /// Self-mentions flash for attention only while the chat first opens.
+  static const _mentionAttentionWindow = Duration(seconds: 3);
+  late final DateTime _openedAt = DateTime.now();
+
+  bool get _mentionAttention =>
+      DateTime.now().difference(_openedAt) <= _mentionAttentionWindow;
 
   /// Message ids picked for a bulk action. Non-empty means selection mode:
   /// taps toggle messages and the app bar shows the bulk actions.
@@ -579,6 +590,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               context,
               ChatBackgroundService.channelKey(widget.channel),
             );
+          case 'rxLog':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const RxLogScreen()),
+            );
           case 'clearChat':
             _confirmClearChat();
           case 'deleteChannel':
@@ -632,6 +648,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
           PopupMenuItem(
             value: 'background',
             child: _menuRow(Icons.wallpaper, context.l10n.chatBackground_title),
+          ),
+          PopupMenuItem(
+            value: 'rxLog',
+            child: _menuRow(Icons.radar, context.l10n.rxLog_title),
           ),
           PopupMenuItem(
             value: 'clearChat',
@@ -1081,7 +1101,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final enableTracing = settingsService.settings.enableMessageTracing;
     final regionOnHopsLine = settingsService.settings.regionOnHopsLine;
     final isOutgoing = message.isOutgoing;
-    final scheme = Theme.of(context).colorScheme;
+    final selfMentionName = context.read<MeshCoreConnector>().selfName;
     final gifId = GifHelper.parseGif(message.text);
     final poi = parseMarkerText(message.text);
     final contactShare = parseContactShare(message.text);
@@ -1106,11 +1126,39 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       displayPathHashWidth,
       message.pathLength,
     );
+    final latencyLabel = settingsService.settings.showMessageLatency
+        ? _formatLatency(message, context.l10n)
+        : null;
+    final lastHopHex =
+        displayPath.isEmpty || !settingsService.settings.showMessageLastHop
+        ? null
+        : PathHelper.formatHopHex(
+            PathHelper.splitPathBytes(displayPath, displayPathHashWidth).last,
+          );
+    final signalText =
+        (!settingsService.settings.showMessageSignal ||
+            SignalText.isEmpty(message.snrDb, message.rssiDbm))
+        ? null
+        : SignalText(
+            snrDb: message.snrDb,
+            rssiDbm: message.rssiDbm,
+            fontSize: 12 * textScale,
+          );
 
     final colors = MessageBubbleColors.of(context, isOutgoing: isOutgoing);
     final textColor = colors.text;
     final metaColor = colors.meta;
     const bodyFontSize = 14.0;
+
+    Widget metaChip(String label, {Color? color}) {
+      return Text(
+        label,
+        style: MeshTheme.mono(
+          fontSize: 12 * textScale,
+          color: color ?? metaColor,
+        ),
+      );
+    }
 
     Widget buildTextContent() {
       return Row(
@@ -1133,6 +1181,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               onSecondaryTap: PlatformInfo.isDesktop
                   ? () => _showMessageActions(message)
                   : null,
+              selfMentionName: selfMentionName,
+              mentionAttention: _mentionAttention,
             ),
           ),
         ],
@@ -1284,6 +1334,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                         onSecondaryTap: PlatformInfo.isDesktop
                                             ? () => _showMessageActions(message)
                                             : null,
+                                        selfMentionName: selfMentionName,
+                                        mentionAttention: _mentionAttention,
                                       ),
                                     ),
                                   ],
@@ -1314,76 +1366,6 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                               buildTextContent(),
                             ],
                           ),
-                        if (displayPath.isNotEmpty) ...[
-                          const SizedBox(height: 3),
-                          Padding(
-                            padding: gifId != null
-                                ? const EdgeInsets.symmetric(horizontal: 8)
-                                : EdgeInsets.zero,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _RouteRegionChips(
-                                  sameLine: regionOnHopsLine,
-                                  children: [
-                                    RouteChip(
-                                      isDirect: (message.pathLength ?? -1) >= 0,
-                                      hops: displayHopCount,
-                                    ),
-                                    if (message.region?.isNotEmpty ?? false)
-                                      Padding(
-                                        padding: regionOnHopsLine
-                                            ? EdgeInsets.zero
-                                            : const EdgeInsets.only(top: 2),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 6,
-                                            vertical: 2,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: scheme.surfaceContainerHigh,
-                                            borderRadius: BorderRadius.circular(
-                                              MeshRadii.xs,
-                                            ),
-                                            border: Border.all(
-                                              color: scheme.outlineVariant,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            _displayRegion(message.region!),
-                                            style: MeshTheme.mono(
-                                              fontSize: 12 * textScale,
-                                              color: metaColor,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                                if (enableTracing) ...[
-                                  const SizedBox(width: 4),
-                                  Flexible(
-                                    child: Text(
-                                      context.l10n.channels_via(
-                                        _formatPathPrefixes(
-                                          displayPath,
-                                          displayPathHashWidth,
-                                        ),
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: MeshTheme.mono(
-                                        fontSize: 12 * textScale,
-                                        color: metaColor,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                        ],
                         const SizedBox(height: 3),
                         Padding(
                           padding: gifId != null
@@ -1393,40 +1375,59 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                   bottom: 4,
                                 )
                               : EdgeInsets.zero,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                          child: Wrap(
+                            spacing: 4,
+                            runSpacing: 2,
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
-                              Text(
-                                formatChatTime(context, message.timestamp),
-                                style: MeshTheme.mono(
-                                  fontSize: 12 * textScale,
-                                  color: metaColor,
-                                ),
-                              ),
-                              if (message.hasFutureTimestamp) ...[
-                                const SizedBox(width: 4),
-                                FutureTimestampIndicator(size: 16 * textScale),
-                              ],
-                              if (enableTracing &&
-                                  !isOutgoing &&
-                                  message.repeatCount > 0) ...[
-                                const SizedBox(width: 6),
-                                Icon(
-                                  Icons.repeat,
-                                  size: 14 * textScale,
-                                  color: metaColor,
-                                ),
-                                const SizedBox(width: 2),
-                                Text(
-                                  '${message.repeatCount}',
-                                  style: MeshTheme.mono(
-                                    fontSize: 12 * textScale,
-                                    color: metaColor,
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    formatChatTime(
+                                      context,
+                                      message.displayTime,
+                                    ),
+                                    style: MeshTheme.mono(
+                                      fontSize: 12 * textScale,
+                                      color: metaColor,
+                                    ),
                                   ),
+                                  if (message.hasFutureTimestamp) ...[
+                                    const SizedBox(width: 4),
+                                    FutureTimestampIndicator(
+                                      size: 16 * textScale,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                              if (!isOutgoing && message.repeatCount > 0)
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Tooltip(
+                                      message: context.l10n
+                                          .messageStatus_heardRepeatedCount(
+                                            message.repeatCount,
+                                          ),
+                                      triggerMode: TooltipTriggerMode.tap,
+                                      child: Icon(
+                                        Icons.repeat,
+                                        size: 14 * textScale,
+                                        color: metaColor,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 2),
+                                    Text(
+                                      '${message.repeatCount}',
+                                      style: MeshTheme.mono(
+                                        fontSize: 12 * textScale,
+                                        color: metaColor,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                              if (isOutgoing) ...[
-                                const SizedBox(width: 4),
+                              if (isOutgoing)
                                 MessageStatusIcon(
                                   size: 16 * textScale,
                                   isAcked: false,
@@ -1446,6 +1447,92 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                       ChannelMessageStatus.failed,
                                   onColor: metaColor,
                                 ),
+                              if (displayPath.isNotEmpty ||
+                                  (message.region?.isNotEmpty ?? false)) ...[
+                                _RouteRegionChips(
+                                  sameLine: regionOnHopsLine,
+                                  children: [
+                                    if (displayPath.isNotEmpty)
+                                      Text(
+                                        (message.pathLength ?? -1) >= 0
+                                            ? (displayHopCount == null ||
+                                                      displayHopCount == 0
+                                                  ? context.l10n.chat_direct
+                                                  : context.l10n.chat_hopsCount(
+                                                      displayHopCount,
+                                                    ))
+                                            : context.l10n.routing_modeFlood,
+                                        style: MeshTheme.mono(
+                                          fontSize: 12 * textScale,
+                                          color: metaColor,
+                                        ),
+                                      ),
+                                    if (message.region?.isNotEmpty ?? false)
+                                      Padding(
+                                        padding: regionOnHopsLine
+                                            ? EdgeInsets.zero
+                                            : const EdgeInsets.only(top: 2),
+                                        child: Text(
+                                          _displayRegion(message.region!),
+                                          style: MeshTheme.mono(
+                                            fontSize: 12 * textScale,
+                                            color: metaColor,
+                                          ),
+                                        ),
+                                      ),
+                                    if (displayPath.isNotEmpty &&
+                                        latencyLabel != null)
+                                      Padding(
+                                        padding: regionOnHopsLine
+                                            ? EdgeInsets.zero
+                                            : const EdgeInsets.only(top: 2),
+                                        child: Text(
+                                          latencyLabel,
+                                          style: MeshTheme.mono(
+                                            fontSize: 12 * textScale,
+                                            color: metaColor,
+                                          ),
+                                        ),
+                                      ),
+                                    if (displayPath.isNotEmpty &&
+                                        settingsService
+                                            .settings
+                                            .showPathByteMode)
+                                      Padding(
+                                        padding: regionOnHopsLine
+                                            ? EdgeInsets.zero
+                                            : const EdgeInsets.only(top: 2),
+                                        child: Text(
+                                          context.l10n.chat_hashWidthChip(
+                                            displayPathHashWidth,
+                                          ),
+                                          style: MeshTheme.mono(
+                                            fontSize: 12 * textScale,
+                                            color: metaColor,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                if (enableTracing && displayPath.isNotEmpty)
+                                  Text(
+                                    context.l10n.channels_via(
+                                      _formatPathPrefixes(
+                                        displayPath,
+                                        displayPathHashWidth,
+                                      ),
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: MeshTheme.mono(
+                                      fontSize: 12 * textScale,
+                                      color: metaColor,
+                                    ),
+                                  ),
+                              ],
+                              if (lastHopHex != null || signalText != null) ...[
+                                if (lastHopHex != null) metaChip(lastHopHex),
+                                ?signalText,
                               ],
                             ],
                           ),
@@ -2609,7 +2696,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                   ),
                 ),
                 child: Text(
-                  context.l10n.channels_regionSetTo(replyRegion!),
+                  context.l10n.channels_regionSetTo(
+                    _displayRegion(replyRegion!),
+                  ),
                   style:
                       MeshTheme.mono(
                         fontSize: 12 * textScale,
@@ -2672,6 +2761,18 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   static String _replyPrefix(ChannelMessage replyTo) =>
       '@[${replyTo.senderName}] ';
 
+  /// Names for the composer's `@` picker: contacts plus this channel's
+  /// senders, most recent group message first.
+  List<MentionCandidate> _mentionSearch(String query) {
+    final connector = context.read<MeshCoreConnector>();
+    return searchMentionCandidates(
+      messages: connector.getChannelMessages(widget.channel),
+      contacts: connector.contacts,
+      query: query,
+      selfName: connector.selfName,
+    );
+  }
+
   Widget _buildInputBar() {
     // Only the fields the composer depends on, so unrelated connector
     // notifications (adverts, other chats, radio stats) don't rebuild it.
@@ -2709,6 +2810,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
           : null,
       onSend: _sendMessage,
       sendTooltip: context.l10n.chat_sendMessage,
+      mentionSearch: _mentionSearch,
       header: [
         if (replyTo != null)
           Builder(
@@ -2994,6 +3096,15 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                     _markAsUnread(message);
                   },
                 ),
+              if (message.isOutgoing)
+                ListTile(
+                  leading: const Icon(Icons.refresh),
+                  title: Text(context.l10n.chat_resend),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    unawaited(_resendChannelMessage(message));
+                  },
+                ),
               if (showFilterActions) ...[
                 const Divider(height: 1),
                 if (message.isFiltered)
@@ -3274,6 +3385,28 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     copyChatMessageText(context, text);
   }
 
+  /// Re-transmits one of our own channel messages with its original
+  /// timestamp, so the packet hash is unchanged and repeaters drop
+  /// duplicates instead of relaying it twice.
+  Future<void> _resendChannelMessage(ChannelMessage message) async {
+    final connector = context.read<MeshCoreConnector>();
+    try {
+      await connector.resendChannelMessage(message);
+      if (!mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.chat_resendingMessage),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      showDismissibleSnackBar(
+        context,
+        content: Text('$e'),
+        backgroundColor: Colors.red,
+      );
+    }
+  }
+
   // ---- message filter -------------------------------------------------------
 
   /// The message filter, or null when it is not registered (screen tests).
@@ -3504,7 +3637,20 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   }
 
   String _displayRegion(String region) {
+    if (region == kUnscopedRegion) return context.l10n.chat_regionUnscoped;
     return region.startsWith('#') ? region.substring(1) : region;
+  }
+
+  /// Delivery latency: sender timestamp versus the local clock when the
+  /// message arrived. Null for outgoing messages or when the sender clock
+  /// runs ahead of the local one. Values above 99999 ms are treated as clock
+  /// drift and reported as unsynced.
+  String? _formatLatency(ChannelMessage message, AppLocalizations l10n) {
+    if (message.isOutgoing) return null;
+    final latency = message.receivedAt.difference(message.timestamp);
+    if (latency.isNegative) return null;
+    if (latency.inMilliseconds > 99999) return l10n.chat_latencyUnsynced;
+    return l10n.chat_latencyMilliseconds(latency.inMilliseconds);
   }
 
   Future<void> openRegionSelectDialog(Channel channel) async {
@@ -4112,15 +4258,11 @@ class _RouteRegionChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (sameLine) {
-      // Flexible bounds the Wrap's width inside the bubble's Row so a long
-      // region name wraps under the hop chip instead of overflowing.
-      return Flexible(
-        child: Wrap(
-          spacing: 4,
-          runSpacing: 2,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: children,
-        ),
+      return Wrap(
+        spacing: 4,
+        runSpacing: 2,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: children,
       );
     }
     return Column(

@@ -12,6 +12,7 @@ import 'package:meshcore_open/models/contact.dart';
 import 'package:meshcore_open/screens/map_screen.dart';
 import 'package:meshcore_open/services/app_settings_service.dart';
 import 'package:meshcore_open/services/map_tile_cache_service.dart';
+import 'package:meshcore_open/services/packet_path_service.dart';
 import 'package:meshcore_open/services/path_history_service.dart';
 import 'package:meshcore_open/services/storage_service.dart';
 import 'package:meshcore_open/services/ui_view_state_service.dart';
@@ -74,6 +75,7 @@ void main() {
   late AppSettingsService settings;
   late _CountingTiles tiles;
   late PathHistoryService paths;
+  late PacketPathService packetPaths;
   late UiViewStateService viewState;
 
   setUp(() async {
@@ -83,7 +85,9 @@ void main() {
     connector = _Connector();
     settings = AppSettingsService();
     tiles = _CountingTiles(settings);
-    paths = PathHistoryService(StorageService());
+    final storage = StorageService();
+    paths = PathHistoryService(storage);
+    packetPaths = PacketPathService(storage);
     viewState = UiViewStateService();
   });
 
@@ -92,6 +96,7 @@ void main() {
     settings.dispose();
     tiles.dispose();
     paths.dispose();
+    packetPaths.dispose();
     viewState.dispose();
   });
 
@@ -102,6 +107,7 @@ void main() {
           ChangeNotifierProvider<MeshCoreConnector>.value(value: connector),
           ChangeNotifierProvider.value(value: settings),
           ChangeNotifierProvider.value(value: paths),
+          ChangeNotifierProvider.value(value: packetPaths),
           ChangeNotifierProvider.value(value: viewState),
           ChangeNotifierProvider<MapTileCacheService>.value(value: tiles),
         ],

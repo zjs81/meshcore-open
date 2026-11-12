@@ -13,6 +13,7 @@ void main() {
     required double textScale,
     NodeBannerConfig? config,
     bool hidden = false,
+    Future<void> Function()? dismiss,
   }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
@@ -29,6 +30,7 @@ void main() {
           child: Scaffold(
             bottomNavigationBar: GetNodeBanner(
               loadConfig: () async => hidden ? null : config ?? _config,
+              dismiss: dismiss,
             ),
           ),
         ),
@@ -72,6 +74,25 @@ void main() {
     expect(find.text('Spring sale'), findsOneWidget);
     expect(find.text('Shop now'), findsOneWidget);
     expect(find.textContaining('Affiliate link'), findsOneWidget);
+  });
+
+  testWidgets('dismiss button hides the banner and persists', (tester) async {
+    var dismissed = false;
+    await pumpBanner(
+      tester,
+      size: const Size(390, 844),
+      textScale: 1,
+      dismiss: () async => dismissed = true,
+    );
+    await tester.pump();
+
+    expect(find.text("Don't show again"), findsOneWidget);
+    await tester.tap(find.text("Don't show again"));
+    await tester.pump();
+
+    expect(dismissed, isTrue);
+    expect(find.byType(InkWell), findsNothing);
+    expect(tester.getSize(find.byType(GetNodeBanner)).height, 0);
   });
 
   testWidgets('shows nothing when there is no config', (tester) async {

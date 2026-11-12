@@ -506,6 +506,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
     int channel,
     bool isImperialUnits,
   ) {
+    final computedPower = _computedPowerText(channelData);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -517,11 +518,24 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
             children: [
               for (final entry in channelData.entries)
                 _buildTelemetryField(entry, channel, isImperialUnits),
+              if (computedPower != null)
+                _buildInfoRow(
+                  context.l10n.telemetry_computedPowerLabel,
+                  computedPower,
+                ),
             ],
           ),
         ),
       ],
     );
+  }
+
+  String? _computedPowerText(Map<String, dynamic> channelData) {
+    final voltage = channelData['voltage'];
+    final current = channelData['current'];
+    if (voltage is! num || current is! num) return null;
+    final watts = voltage.toDouble() * current.toDouble();
+    return context.l10n.telemetry_powerValue(watts.toStringAsFixed(3));
   }
 
   Widget _buildTelemetryField(
@@ -611,7 +625,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
       case 'current':
         return _TelemetryFieldDisplay(
           l10n.telemetry_currentLabel,
-          l10n.telemetry_currentValue(text),
+          l10n.telemetry_currentValue(_currentText(value)),
         );
       case 'frequency':
         return _TelemetryFieldDisplay(
@@ -952,6 +966,11 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
     return value.toString();
   }
 
+  String _currentText(dynamic value) {
+    if (value is num) return value.toDouble().toStringAsFixed(3);
+    return _telemetryValueText(value);
+  }
+
   String _telemetryAxisText(dynamic value) {
     if (value is! Map) return _telemetryValueText(value);
     final x = _telemetryValueText(value['x']);
@@ -1037,9 +1056,16 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
         (telemetryVolts == null ? null : (telemetryVolts * 1000).round());
     if (batteryMv == null) return l10n.common_notAvailable;
     final chemistry = _batteryChemistry();
-    final percent = estimateBatteryPercentFromMillivolts(batteryMv, chemistry);
-    final volts = (batteryMv / 1000).toStringAsFixed(2);
-    return l10n.telemetry_batteryValue(percent, volts);
+    final reading = batteryReadingFromMillivolts(batteryMv, chemistry);
+    final cellVolts = (reading.averageCellMillivolts / 1000).toStringAsFixed(2);
+    if (reading.cellCount > 1) {
+      return l10n.telemetry_batteryCellsValue(
+        reading.percent,
+        cellVolts,
+        reading.cellCount,
+      );
+    }
+    return l10n.telemetry_batteryValue(reading.percent, cellVolts);
   }
 
   String _batteryChemistry() {

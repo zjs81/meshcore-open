@@ -49,6 +49,7 @@ import 'package:meshcore_open/services/image_codec_service.dart';
 import 'package:meshcore_open/services/map_tile_cache_service.dart';
 import 'package:meshcore_open/services/message_retry_service.dart';
 import 'package:meshcore_open/services/network_map/network_map_upload_service.dart';
+import 'package:meshcore_open/services/packet_path_service.dart';
 import 'package:meshcore_open/services/path_history_service.dart';
 import 'package:meshcore_open/services/received_image_store.dart';
 import 'package:meshcore_open/services/storage_service.dart';
@@ -83,6 +84,7 @@ Future<_Env> _connect(WidgetTester tester) async {
     ChangeNotifierProvider.value(value: connector),
     ChangeNotifierProvider.value(value: retry),
     ChangeNotifierProvider.value(value: PathHistoryService(storage)),
+    ChangeNotifierProvider.value(value: PacketPathService(storage)),
     ChangeNotifierProvider.value(value: settings),
     ChangeNotifierProvider.value(value: BleDebugLogService()),
     ChangeNotifierProvider.value(value: AppDebugLogService()),

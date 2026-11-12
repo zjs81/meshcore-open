@@ -183,6 +183,7 @@
   "scanner_getNodeBody": "Wallet-sized, runs MeshCore, dual-band GPS, waterproof, 5-day battery.",
   "scanner_getNodeAction": "Get one here",
   "scanner_getNodeDisclosure": "Affiliate link: each purchase supports MeshCore Open.",
+  "scanner_getNodeDismiss": "Don't show again",
   "scanner_bluetoothWebUnsupported": "Bluetooth isn't available in the browser. Connect over USB instead.",
   "device_quickSwitch": "Quick switch",
   "device_meshcore": "MeshCore",
@@ -569,6 +570,9 @@
       }
     }
   },
+  "companionCli_title": "Companion CLI",
+  "companionCli_settingsSubtitle": "Run CLI commands on the connected radio",
+  "companionCli_noReply": "No reply (reboot and poweroff never answer)",
   "appSettings_channelMinHops": "Resend channel messages until they travel far enough",
   "appSettings_channelMinHopsSubtitle": "If your message isn't heard coming back through enough repeaters, send it again. Uses more airtime.",
   "appSettings_channelMinHopsCount": "Required hops: {count}",
@@ -598,8 +602,18 @@
   },
   "appSettings_enableMessageTracing": "Show full repeater path in messages",
   "appSettings_enableMessageTracingSubtitle": "Also show repeat counts and trip times. Long-press a message and choose Path for full details.",
+  "appSettings_usePhoneGpsForPathAnchor": "Phone GPS path anchor",
+  "appSettings_usePhoneGpsForPathAnchorSubtitle": "Anchor path traces on the phone's GPS fix instead of the node's reported location.",
   "appSettings_regionOnHopsLine": "Region next to hop count",
   "appSettings_regionOnHopsLineSubtitle": "Show a channel message's region on the same line as its hop count instead of below it.",
+  "appSettings_showMessageLatency": "Message latency",
+  "appSettings_showMessageLatencySubtitle": "Show how long a received channel message took to arrive, next to its hop count.",
+  "appSettings_showMessageSignal": "Signal strength",
+  "appSettings_showMessageSignalSubtitle": "Show the RSSI and SNR the message was received with, coloured by quality.",
+  "appSettings_showMessageLastHop": "Last-hop prefix",
+  "appSettings_showMessageLastHopSubtitle": "Show the prefix of the last repeater that relayed a received message to you.",
+  "appSettings_showPathByteMode": "Path byte mode",
+  "appSettings_showPathByteModeSubtitle": "Show the routing hash byte width (1B/2B/3B) next to a channel message's hop count.",
   "appSettings_notifications": "Notifications",
   "appSettings_enableNotifications": "Enable Notifications",
   "appSettings_enableNotificationsSubtitle": "Receive notifications for messages and adverts",
@@ -682,6 +696,20 @@
   "appSettings_last6Hours": "Last 6 hours",
   "appSettings_last24Hours": "Last 24 hours",
   "appSettings_lastWeek": "Last week",
+  "appSettings_showPacketPaths": "Show Packet Paths",
+  "appSettings_showPacketPathsSubtitle": "Draw lines between repeaters along paths packets were seen taking",
+  "appSettings_packetPathWindow": "Packet Path Time Window",
+  "appSettings_packetPathWindowShowLast": "Show packet paths from the last {hours} hours",
+  "@appSettings_packetPathWindowShowLast": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_last3Days": "Last 3 days",
+  "appSettings_last2Weeks": "Last 2 weeks",
+  "appSettings_last4Weeks": "Last 4 weeks",
   "appSettings_rasterTileSource": "Raster Tile Source",
   "appSettings_stadiaEndpoint": "Stadia Endpoint",
   "appSettings_stadiaApiKey": "Stadia API Key",
@@ -717,6 +745,46 @@
   "appSettings_appDebugLoggingEnabled": "App debug logging enabled",
   "appSettings_appDebugLoggingDisabled": "App debug logging disabled",
   "contacts_title": "Contacts",
+  "contacts_statNodes": "{count} nodes",
+  "@contacts_statNodes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_statCompanions": "{count} companions",
+  "@contacts_statCompanions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_statRepeaters": "{count} repeaters",
+  "@contacts_statRepeaters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_statActive": "{count} active",
+  "@contacts_statActive": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_statInactive": "{count} inactive",
+  "@contacts_statInactive": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "contacts_noContacts": "No contacts yet",
   "contacts_contactsWillAppear": "Contacts will appear when devices advertise",
   "contacts_unread": "Unread",
@@ -1251,6 +1319,11 @@
   "debugLog_frames": "Frames",
   "debugLog_rawLogRx": "Raw Log-RX",
   "debugLog_noBleActivity": "No BLE activity yet",
+  "rxLog_title": "RX log",
+  "rxLog_empty": "No packets seen yet",
+  "rxLog_copied": "RX log copied",
+  "rxLog_senderLabel": "Sender",
+  "rxLog_destLabel": "Destination",
   "debugFrame_length": "Frame Length: {count} bytes",
   "@debugFrame_length": {
     "placeholders": {
@@ -1322,6 +1395,51 @@
       }
     }
   },
+  "chat_latencyMilliseconds": "{count}ms",
+  "@chat_latencyMilliseconds": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_latencyUnsynced": "unsynced",
+  "chat_hashWidthChip": "{width}B",
+  "@chat_hashWidthChip": {
+    "placeholders": {
+      "width": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_regionUnscoped": "unscoped",
+  "chat_signalChip": "{rssi}dBm {snr}dB",
+  "@chat_signalChip": {
+    "placeholders": {
+      "rssi": {
+        "type": "int"
+      },
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_rssiChip": "{rssi}dBm",
+  "@chat_rssiChip": {
+    "placeholders": {
+      "rssi": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_snrChip": "{snr}dB",
+  "@chat_snrChip": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
   "chat_removePath": "Remove path",
   "chat_noPathHistoryYet": "No path history yet.\nSend a message to discover paths.",
   "chat_pathCleared": "Path cleared. Next message will rediscover route.",
@@ -1341,6 +1459,8 @@
   "routing_floodBroadcast": "Broadcast through every repeater",
   "routing_editPath": "Edit path",
   "routing_forgetPath": "Forget path",
+  "routing_directPath": "Direct",
+  "routing_directPathHint": "No repeater hops",
   "routing_knownPaths": "Known paths",
   "routing_knownPathsHint": "Tap a path to switch to it.",
   "routing_inUse": "In use",
@@ -1483,6 +1603,15 @@
   "map_centerOnMe": "Center on my location",
   "map_details": "Details",
   "map_noGps": "No GPS",
+  "map_mapStyle": "Map style",
+  "map_mapStyleAuto": "Auto",
+  "map_mapStyleAutoHint": "Follows the app light or dark theme",
+  "map_mapStyleStreet": "Street",
+  "map_mapStyleStreetHint": "OpenStreetMap street map",
+  "map_mapStyleTopo": "Topographic",
+  "map_mapStyleTopoHint": "Terrain map with hill shading",
+  "map_mapStyleSatellite": "Satellite",
+  "map_mapStyleSatelliteHint": "Satellite imagery",
   "map_noResults": "No matching nodes",
   "map_lineOfSight": "Line of Sight",
   "map_losScreenTitle": "Line of Sight",
@@ -1551,6 +1680,7 @@
   "map_keyPrefix": "Key Prefix",
   "map_filterByKeyPrefix": "Filter by key prefix",
   "map_publicKeyPrefix": "Public key prefix",
+  "map_packets": "Packets",
   "map_markers": "Markers",
   "map_showSharedMarkers": "Show shared markers",
   "map_showGuessedLocations": "Show guessed node locations",
@@ -1596,6 +1726,7 @@
   },
   "manualTrace_unknownNode": "Unknown node",
   "manualTrace_enterHashes": "Enter hashes",
+  "manualTrace_pickRepeaters": "Pick repeaters",
   "manualTrace_run": "Run path trace",
   "manualTrace_notConnected": "Connect to a radio to run a trace",
   "manualTrace_errorInvalidHex": "Only hex characters (0-9, A-F) are allowed",
@@ -1797,7 +1928,12 @@
   "login_routing": "Routing",
   "login_routingMode": "Routing mode",
   "login_autoUseSavedPath": "Auto (use saved path)",
+  "login_setPath": "Set path…",
+  "login_directMode": "Direct",
   "login_forceFloodMode": "Force Flood Mode",
+  "login_directLogin": "Direct Login",
+  "login_autoLogin": "Auto Login",
+  "login_forget": "Forget",
   "login_managePaths": "Manage Paths",
   "login_login": "Login",
   "login_attempt": "Attempt {current}/{max}",
@@ -1869,6 +2005,11 @@
   "repeater_uptime": "Uptime",
   "repeater_queueLength": "Queue Length",
   "repeater_debugFlags": "Debug Flags",
+  "repeater_flagDetails": "Flag Details",
+  "repeater_flagPoolFull": "Packet pool exhausted",
+  "repeater_flagCadTimeout": "CAD timeout",
+  "repeater_flagRxTimeout": "Radio stuck outside RX",
+  "repeater_flagRadioWatchdog": "Radio watchdog reset",
   "repeater_radioStatistics": "Radio Statistics",
   "repeater_lastRssi": "Last RSSI",
   "repeater_lastSnr": "Last SNR",
@@ -1876,6 +2017,10 @@
   "repeater_txAirtime": "TX Airtime",
   "repeater_rxAirtime": "RX Airtime",
   "repeater_chanUtil": "Channel Utilization",
+  "repeater_txPerMin": "TX/min",
+  "repeater_rxPerMin": "RX/min",
+  "repeater_packetErrorRate": "Packet Error Rate",
+  "repeater_rxErrorRatio": "RX Error Ratio",
   "repeater_packetStatistics": "Packet Statistics",
   "repeater_sent": "Sent",
   "repeater_received": "Received",
@@ -2010,6 +2155,11 @@
   "repeater_rebootRepeater": "Reboot Repeater",
   "repeater_rebootRepeaterSubtitle": "Restart the repeater device",
   "repeater_rebootRepeaterConfirm": "Are you sure you want to reboot this repeater?",
+  "repeater_startOta": "Start OTA",
+  "repeater_startOtaSubtitle": "This will put the repeater into OTA mode",
+  "repeater_startOtaConfirm": "This will put the repeater into OTA mode. Continue?",
+  "repeater_setFromMap": "Set from map",
+  "repeater_locationPickerHint": "Tap the map to place the pin, then confirm.",
   "repeater_regenerateIdentityKey": "Regenerate Identity Key",
   "repeater_regenerateIdentityKeySubtitle": "Generate new public/private key pair",
   "repeater_regenerateIdentityKeyConfirm": "This will generate a new identity for the repeater. Continue?",
@@ -2089,6 +2239,7 @@
   "repeater_intThreshHelper": "Threshold passed to the radio's noise-floor calibration so it rejects interference above this level. 0 disables — only raise if you see RX errors in a noisy band.",
   "repeater_agcResetInterval": "AGC reset interval",
   "repeater_agcResetIntervalHelper": "How often to reset the radio's automatic gain control to recover from a stuck gain state. Seconds, snapped down to a multiple of 4. 0 disables periodic resets.",
+  "repeater_firmwareVersion": "Firmware version",
   "repeater_actionsTitle": "Actions",
   "repeater_sendAdvert": "Send flood advert",
   "repeater_sendAdvertSubtitle": "Broadcast a flood advert through the network",
@@ -2115,6 +2266,97 @@
       }
     }
   },
+  "repeater_aclTitle": "Access control",
+  "repeater_aclTileSubtitle": "Companions allowed to log in to this repeater",
+  "repeater_aclScreenTitle": "Access control list",
+  "repeater_aclEmpty": "No companions in the ACL",
+  "repeater_aclLoadHint": "Tap refresh to load the ACL from the repeater",
+  "repeater_aclRefresh": "Refresh ACL",
+  "repeater_aclUnknownNode": "Unknown node",
+  "repeater_aclRole": "Role",
+  "repeater_aclRoleGuest": "Guest",
+  "repeater_aclRoleReadOnly": "Read-only",
+  "repeater_aclRoleReadWrite": "Read-write",
+  "repeater_aclRoleAdmin": "Admin",
+  "repeater_aclRemoveTooltip": "Remove from ACL",
+  "repeater_aclRemoveConfirmTitle": "Remove from ACL",
+  "repeater_aclRemoveConfirmMessage": "Remove {name} from the ACL?",
+  "@repeater_aclRemoveConfirmMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_aclRemoveAction": "Remove {name}",
+  "@repeater_aclRemoveAction": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_aclAdd": "Add companion",
+  "repeater_aclAddAction": "Add companion",
+  "repeater_aclSearch": "Search companions",
+  "repeater_aclNoCompanionsFound": "No companions found",
+  "repeater_aclManualEntry": "Public key",
+  "repeater_aclManualEntryHelper": "Full public key in hex (64 characters)",
+  "repeater_aclManualAdd": "Add",
+  "repeater_aclInvalidPubkey": "Enter the full public key (64 hex characters)",
+  "repeater_aclLoadFailed": "Could not load the ACL: {error}",
+  "@repeater_aclLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_accessRegionsTitle": "Access and regions",
+  "repeater_regionsTitle": "Regions",
+  "repeater_regionsTileSubtitle": "Flood regions and home region for this repeater",
+  "repeater_regionsScreenTitle": "Repeater regions",
+  "repeater_regionsRefresh": "Refresh regions",
+  "repeater_regionsLoadHint": "Tap refresh to load regions from the repeater",
+  "repeater_regionsLoadFailed": "Could not load regions: {error}",
+  "@repeater_regionsLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_regionsEmpty": "No regions defined",
+  "repeater_regionsAdd": "Add region",
+  "repeater_regionsAddAction": "Add region",
+  "repeater_regionsRemoveTooltip": "Remove region",
+  "repeater_regionsRemoveConfirmTitle": "Remove region",
+  "repeater_regionsRemoveConfirmMessage": "Remove {name} from the repeater?",
+  "@repeater_regionsRemoveConfirmMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_regionsRemoveAction": "Remove {name}",
+  "@repeater_regionsRemoveAction": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_regionsFloodAllowTooltip": "Allow flooding",
+  "repeater_regionsFloodDenyTooltip": "Deny flooding",
+  "repeater_regionsFloodAllowed": "Flood allowed",
+  "repeater_regionsFloodDenied": "Flood denied",
+  "repeater_regionsWildcard": "Unscoped (*)",
+  "repeater_regionsHome": "Home region",
+  "repeater_regionsHomeHelper": "Where this repeater sits in the region tree",
+  "repeater_regionsDefault": "Default region",
+  "repeater_regionsDefaultHelper": "Scope used for this repeater's own traffic",
+  "repeater_regionsDefaultNone": "None",
   "repeater_settingsSavedRebootNeeded": "Settings saved — reboot the repeater to apply",
   "repeater_settingsPartialFailure": "Some settings failed: {failures}",
   "@repeater_settingsPartialFailure": {
@@ -2371,6 +2613,20 @@
       }
     }
   },
+  "telemetry_batteryCellsValue": "{percent}% / {cellVolts}V ({cells}S)",
+  "@telemetry_batteryCellsValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "cellVolts": {
+        "type": "String"
+      },
+      "cells": {
+        "type": "int"
+      }
+    }
+  },
   "telemetry_voltageValue": "{volts}V",
   "@telemetry_voltageValue": {
     "placeholders": {
@@ -2413,6 +2669,7 @@
   "telemetry_percentageLabel": "Percentage",
   "telemetry_concentrationLabel": "Concentration",
   "telemetry_powerLabel": "Power",
+  "telemetry_computedPowerLabel": "Computed power",
   "telemetry_distanceLabel": "Distance",
   "telemetry_energyLabel": "Energy",
   "telemetry_directionLabel": "Direction",
@@ -2540,17 +2797,81 @@
       }
     }
   },
+  "neighbors_tabList": "List",
+  "neighbors_tabMap": "Map",
+  "neighbors_discoverTooltip": "Send discovery request",
+  "neighbors_discoverySent": "Discovery request sent to the repeater.",
+  "neighbors_discoveryFailed": "Discovery failed: {error}",
+  "@neighbors_discoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_eraseTooltip": "Erase all neighbors",
+  "neighbors_eraseConfirm": "This removes every neighbor from the repeater. They will reappear as adverts are heard.",
+  "neighbors_erased": "All neighbors erased.",
+  "neighbors_eraseFailed": "Failed to erase neighbors: {error}",
+  "@neighbors_eraseFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_fetchedOfTotal": "{fetched} of {total} fetched",
+  "@neighbors_fetchedOfTotal": {
+    "placeholders": {
+      "fetched": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "neighbors_retryRemaining": "Retry remaining",
+  "neighbors_mapNoNeighborLocations": "No neighbors have a location to map.",
+  "neighbors_mapHiddenWithoutLocation": "{count} neighbors without location hidden.",
+  "@neighbors_mapHiddenWithoutLocation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "channelPath_title": "Packet Path",
   "channelPath_viewMap": "View map",
   "channelPath_otherObservedPaths": "Other Observed Paths",
   "channelPath_repeaterHops": "Repeater Hops",
   "channelPath_noHopDetails": "Hop details are not provided for this packet.",
+  "channelPath_hashWidthLabel": "Width",
+  "channelPath_hashWidthValue": "{width}-byte",
+  "@channelPath_hashWidthValue": {
+    "placeholders": {
+      "width": {
+        "type": "int"
+      }
+    }
+  },
+  "channelPath_distanceLabel": "Distance",
+  "channelPath_travelLabel": "Travel",
+  "channelPath_ambiguousTag": "ambiguous",
+  "channelPath_hopCandidatesTitle": "Hop {index} candidates",
+  "@channelPath_hopCandidatesTitle": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "channelPath_networkMapTag": "network map",
   "channelPath_messageDetails": "Message Details",
   "channelPath_senderLabel": "Sender",
   "channelPath_timeLabel": "Time",
-  "channelPath_repeatsLabel": "Repeats",
+  "channelPath_uniquePathsLabel": "Unique paths",
   "channelPath_pathLabel": "Path {index}",
-  "channelPath_observedLabel": "Observed",
   "channelPath_observedPathTitle": "Observed path {index} • {hops}",
   "@channelPath_observedPathTitle": {
     "placeholders": {
@@ -2588,25 +2909,7 @@
   "channelPath_unknownPath": "Unknown",
   "channelPath_floodPath": "Flood",
   "channelPath_directPath": "Direct",
-  "channelPath_observedZeroOf": "0 of {total} hops",
-  "@channelPath_observedZeroOf": {
-    "placeholders": {
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "channelPath_observedSomeOf": "{observed} of {total} hops",
-  "@channelPath_observedSomeOf": {
-    "placeholders": {
-      "observed": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
+  "channelPath_shortestPathNote": "Overall shortest likely path shown.",
   "channelPath_mapTitle": "Path Map",
   "channelPath_noRepeaterLocations": "No repeater locations available for this path.",
   "channelPath_primaryPath": "Path {index} (Primary)",
@@ -2639,6 +2942,9 @@
   },
   "channelPath_noHopDetailsAvailable": "No hop details available for this packet.",
   "channelPath_unknownRepeater": "Unknown Repeater",
+  "channelPath_lastHeardLabel": "Last hop",
+  "channelPath_copyPath": "Copy path",
+  "channelPath_pathCopied": "Path copied to clipboard",
   "community_title": "Community",
   "community_create": "Create Community",
   "community_createDesc": "Create a new community and share via QR code.",
@@ -3061,6 +3367,27 @@
   "contacts_zeroHopContactAdvertFailed": "Failed to send contact.",
   "contacts_contactAdvertCopied": "Advert copied to Clipboard.",
   "contacts_contactAdvertCopyFailed": "Copying advert to Clipboard failed.",
+  "contacts_showDetails": "Show details",
+  "contacts_detailNodeHash": "Node hash",
+  "contacts_detailPathBytes": "Path bytes",
+  "contacts_detailLastMessage": "Last message",
+  "contacts_detailLastModified": "Last modified",
+  "contacts_detailFavorite": "Favorite",
+  "contacts_detailStatus": "Status",
+  "contacts_detailActive": "Active",
+  "contacts_detailInactive": "Inactive",
+  "contacts_detailYes": "Yes",
+  "contacts_detailNo": "No",
+  "contacts_detailTelemetryNone": "None",
+  "contacts_detailAdvertHops": "Advert hops",
+  "contacts_detailAdvertScope": "Advert scope",
+  "contacts_detailAdvertTime": "Advert time",
+  "contacts_detailLocalTime": "Local time",
+  "contacts_timeSynced": "synced",
+  "contacts_timeUnsynced": "unsynced",
+  "contacts_advertHopsDirect": "direct",
+  "contacts_advertHopsFlood": "flood",
+  "contacts_advertScopeUnknown": "unknown",
   "notification_activityTitle": "MeshCore Activity",
   "notification_lowBatteryTitle": "Low battery",
   "@notification_lowBatteryTitle": {
@@ -3161,6 +3488,12 @@
   "snrIndicator_nearByRepeatersDescription": "Repeaters your radio heard directly, most recently heard first.",
   "snrIndicator_unknownRepeater": "Unknown repeater",
   "snrIndicator_unknownRepeaterHint": "This repeater isn't in your contacts yet. Its name, location and options appear once your radio receives its advert.",
+  "snrIndicator_packets": "Packets",
+  "snrIndicator_snrOverTime": "SNR over time",
+  "snrIndicator_packetCount": "{count, plural, =1{1 packet} other{{count} packets}}",
+  "@snrIndicator_packetCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
   "contactsSettings_title": "Contacts settings",
   "contactsSettings_autoAddTitle": "Automatic Discovery",
   "contactsSettings_otherTitle": "Other contact related settings",
@@ -3873,6 +4206,8 @@
   "repeater_cliCopyTranscript": "Copy transcript",
   "repeater_cliShareTranscript": "Share transcript",
   "repeater_cliTranscriptCopied": "Transcript copied",
+  "repeater_cliCommandCopied": "Command copied",
+  "repeater_cliResendCommand": "Resend command",
   "repeater_cliClearHistoryConfirm": "Clear the command history? This cannot be undone.",
   "repeater_cliSearchCommands": "Search commands",
   "repeater_cliNoMatchingCommands": "No matching commands",
@@ -3894,6 +4229,7 @@
   "@community_shortId": {"placeholders": {"id": {"type": "String"}}},
   "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Connected to",
+  "tcpHistoryHeader": "Recent connections",
   "usbChooseSerialPort": "Choose serial port",
   "neighbors_durationSeconds": "{seconds}s",
   "@neighbors_durationSeconds": {"placeholders": {"seconds": {"type": "String"}}},
@@ -3901,6 +4237,8 @@
   "@neighbors_durationMinutes": {"placeholders": {"minutes": {"type": "int"}, "seconds": {"type": "String"}}},
   "neighbors_durationHours": "{hours}h {minutes}m",
   "@neighbors_durationHours": {"placeholders": {"hours": {"type": "int"}, "minutes": {"type": "int"}}},
+  "neighbors_durationDays": "{days}d {hours}h",
+  "@neighbors_durationDays": {"placeholders": {"days": {"type": "int"}, "hours": {"type": "int"}}},
   "networkMap_settingsSection": "Network map",
   "networkMap_uploadTitle": "Share what my radio hears",
   "networkMap_uploadExplanation": "When this is on and your radio is connected, the app sends a short summary of the packets your radio hears to the MeshCore Open network map, so everyone can see which repeaters exist and how they link up. It sends each packet's type, route, hops, signal strength and size, plus repeater names and rough locations from their own adverts. It never sends message text, who is talking to whom, channel names, your contacts or your exact position: locations are rounded to about 2 km, and your app gets a new random ID every day.",
@@ -3956,6 +4294,25 @@
   "holidayGreeting_newYear": "Happy New Year|Happy New Year's",
   "@holidayGreeting_newYear": {
     "description": "Holiday greeting that plays the New Year's fireworks animation when it appears in a chat message. Matched in every app language and ignoring case and punctuation, so translate it as people actually write the greeting. Separate alternative phrasings with |."
+  },
+  "chat_resend": "Resend",
+  "chat_resendingMessage": "Resending message",
+  "chat_hashtagAddChannelTitle": "Add hashtag channel",
+  "chat_hashtagAddChannelConfirm": "Add \"{name}\" as a channel?",
+  "@chat_hashtagAddChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_hashtagChannelExists": "\"{name}\" is already a channel",
+  "@chat_hashtagChannelExists": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "chat_loadOlderMessages": "Load older messages",
   "@chat_loadOlderMessages": {

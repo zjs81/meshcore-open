@@ -488,6 +488,68 @@ class AppSettingsScreen extends StatelessWidget {
           value: settingsService.settings.regionOnHopsLine,
           onChanged: settingsService.setRegionOnHopsLine,
         ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.timer_outlined, size: 24),
+          title: Text(context.l10n.appSettings_showMessageLatency),
+          subtitle: Text(context.l10n.appSettings_showMessageLatencySubtitle),
+          value: settingsService.settings.showMessageLatency,
+          onChanged: settingsService.setShowMessageLatency,
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.signal_cellular_alt, size: 24),
+          title: Text(context.l10n.appSettings_showMessageSignal),
+          subtitle: Text(context.l10n.appSettings_showMessageSignalSubtitle),
+          value: settingsService.settings.showMessageSignal,
+          onChanged: settingsService.setShowMessageSignal,
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.alt_route_outlined, size: 24),
+          title: Text(context.l10n.appSettings_showMessageLastHop),
+          subtitle: Text(context.l10n.appSettings_showMessageLastHopSubtitle),
+          value: settingsService.settings.showMessageLastHop,
+          onChanged: settingsService.setShowMessageLastHop,
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.straighten, size: 24),
+          title: Text(context.l10n.appSettings_showPathByteMode),
+          subtitle: Text(context.l10n.appSettings_showPathByteModeSubtitle),
+          value: settingsService.settings.showPathByteMode,
+          onChanged: settingsService.setShowPathByteMode,
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.gps_fixed, size: 24),
+          title: Text(context.l10n.appSettings_usePhoneGpsForPathAnchor),
+          subtitle: Text(
+            context.l10n.appSettings_usePhoneGpsForPathAnchorSubtitle,
+          ),
+          value: settingsService.settings.usePhoneGpsForPathAnchor,
+          onChanged: settingsService.setUsePhoneGpsForPathAnchor,
+        ),
       ],
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/gif_helper.dart';
+import '../helpers/mention_search.dart';
 import '../l10n/l10n.dart';
 import '../services/app_settings_service.dart';
 import '../theme/mesh_theme.dart';
@@ -58,7 +59,11 @@ Future<void> showComposerTranslationOptions(BuildContext context) async {
 /// "+" action menu, optional translation toggle, byte-counted text field (or
 /// GIF preview) and send button. [header] widgets (reply banner, progress)
 /// are stacked above the row.
-class ChatComposer extends StatelessWidget {
+///
+/// When [mentionSearch] is provided, typing `@` opens a suggestion list above
+/// the text field; picking an entry replaces the `@query` token at the cursor
+/// with the MeshCore `@[name] ` mention format.
+class ChatComposer extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final int maxBytes;
@@ -74,6 +79,10 @@ class ChatComposer extends StatelessWidget {
   final ValueChanged<String> onAction;
   final List<Widget> header;
 
+  /// Returns mention candidates for the text typed after `@` (empty for a
+  /// bare `@`), most recent first. Null disables the mention picker.
+  final List<MentionCandidate> Function(String query)? mentionSearch;
+
   const ChatComposer({
     super.key,
     required this.controller,
@@ -87,10 +96,146 @@ class ChatComposer extends StatelessWidget {
     this.softLimitNote,
     this.encoder,
     this.header = const [],
+    this.mentionSearch,
   });
 
+  @override
+  State<ChatComposer> createState() => _ChatComposerState();
+}
+
+class _ChatComposerState extends State<ChatComposer> {
+  static const int _maxMentions = 12;
+  static final RegExp _mentionBreak = RegExp(r'[\s\])#]');
+
+  /// Index of the `@` that started the active mention, null when inactive.
+  int? _mentionStart;
+  List<MentionCandidate> _suggestions = const [];
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_syncMention);
+    widget.focusNode.addListener(_onFocusChanged);
+    _syncMention();
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_syncMention);
+    widget.focusNode.removeListener(_onFocusChanged);
+    super.dispose();
+  }
+
+  void _onFocusChanged() {
+    if (widget.focusNode.hasFocus) return;
+    // Delay so a tap on a suggestion (which unfocuses the field first) can
+    // apply the mention before the panel disappears.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || widget.focusNode.hasFocus) return;
+      _clearMention();
+    });
+  }
+
+  void _syncMention() {
+    if (widget.mentionSearch == null) return;
+    final value = widget.controller.value;
+    var start = _activeMentionStart(value);
+    var suggestions = const <MentionCandidate>[];
+    if (start != null) {
+      final query = value.text.substring(start + 1, value.selection.start);
+      suggestions = widget.mentionSearch!(query).take(_maxMentions).toList();
+      if (suggestions.isEmpty) start = null;
+    }
+    if (start == null) {
+      _clearMention();
+      return;
+    }
+    setState(() {
+      _mentionStart = start;
+      _suggestions = suggestions;
+    });
+  }
+
+  /// Start index of the `@query` token the cursor sits at, or null when the
+  /// cursor is not in one. The `@` must start the text or follow whitespace,
+  /// and nothing between it and the cursor may be whitespace or a bracket.
+  int? _activeMentionStart(TextEditingValue value) {
+    if (!value.selection.isValid || !value.selection.isCollapsed) return null;
+    final before = value.text.substring(0, value.selection.start);
+    final at = before.lastIndexOf('@');
+    if (at == -1) return null;
+    if (_mentionBreak.hasMatch(before.substring(at + 1))) return null;
+    if (at > 0 && !_mentionBreak.hasMatch(before[at - 1])) return null;
+    return at;
+  }
+
+  void _clearMention() {
+    if (_mentionStart == null) return;
+    setState(() {
+      _mentionStart = null;
+      _suggestions = const [];
+    });
+  }
+
+  void _applyMention(MentionCandidate candidate) {
+    final start = _mentionStart;
+    if (start == null) return;
+    final value = widget.controller.value;
+    final end = value.selection.isValid
+        ? value.selection.end
+        : value.text.length;
+    final inserted = '@[${candidate.name}] ';
+    final text = value.text.replaceRange(start, end, inserted);
+    widget.controller.value = TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: start + inserted.length),
+    );
+    _clearMention();
+    widget.focusNode.requestFocus();
+  }
+
+  Widget _buildMentionPanel(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxHeight: 220),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+        child: Material(
+          type: MaterialType.card,
+          color: scheme.surfaceContainerLow,
+          clipBehavior: Clip.antiAlias,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(MeshRadii.md),
+            side: BorderSide(color: scheme.outlineVariant),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (final candidate in _suggestions)
+                  GestureDetector(
+                    // Apply on pointer-down: tapping the row unfocuses the
+                    // text field, which would otherwise drop the panel and
+                    // cancel the tap before it lands.
+                    onTapDown: (_) => _applyMention(candidate),
+                    behavior: HitTestBehavior.opaque,
+                    child: ListTile(
+                      dense: true,
+                      leading: const Icon(Icons.alternate_email),
+                      title: Text(candidate.name),
+                      onTap: () => _applyMention(candidate),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _openActionMenu(BuildContext buttonContext) async {
-    final actions = actionsBuilder();
+    final actions = widget.actionsBuilder();
     if (actions.isEmpty) return;
     final button = buttonContext.findRenderObject() as RenderBox;
     final overlay =
@@ -123,7 +268,7 @@ class ChatComposer extends StatelessWidget {
       ],
     );
     if (selected == null || !buttonContext.mounted) return;
-    onAction(selected);
+    widget.onAction(selected);
   }
 
   @override
@@ -140,6 +285,7 @@ class ChatComposer extends StatelessWidget {
             s.settings.translationTargetLanguageCode,
           ),
         );
+    final showMentionPanel = _mentionStart != null && _suggestions.isNotEmpty;
     return Container(
       decoration: BoxDecoration(
         color: scheme.surface,
@@ -149,7 +295,8 @@ class ChatComposer extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ...header,
+            ...widget.header,
+            if (showMentionPanel) _buildMentionPanel(context),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
               child: Row(
@@ -170,7 +317,7 @@ class ChatComposer extends StatelessWidget {
                     ),
                   Expanded(
                     child: ValueListenableBuilder<TextEditingValue>(
-                      valueListenable: controller,
+                      valueListenable: widget.controller,
                       builder: (context, value, _) {
                         final gifId = GifHelper.parseGif(value.text);
                         if (gifId != null) {
@@ -182,12 +329,12 @@ class ChatComposer extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   ValueListenableBuilder<TextEditingValue>(
-                    valueListenable: controller,
+                    valueListenable: widget.controller,
                     builder: (context, value, _) {
                       final hasText = value.text.trim().isNotEmpty;
                       return IconButton.filled(
                         icon: const ThemedIcon(ThemeIconSlot.send, size: 20),
-                        tooltip: sendTooltip,
+                        tooltip: widget.sendTooltip,
                         style: IconButton.styleFrom(
                           backgroundColor: hasText
                               ? scheme.primary
@@ -201,7 +348,7 @@ class ChatComposer extends StatelessWidget {
                         onPressed: hasText
                             ? () {
                                 HapticFeedback.lightImpact();
-                                onSend();
+                                widget.onSend();
                               }
                             : null,
                       );
@@ -227,7 +374,7 @@ class ChatComposer extends StatelessWidget {
         if (event is KeyDownEvent &&
             (event.logicalKey == LogicalKeyboardKey.enter ||
                 event.logicalKey == LogicalKeyboardKey.numpadEnter)) {
-          onSend();
+          widget.onSend();
           return KeyEventResult.handled;
         }
         return KeyEventResult.ignored;
@@ -250,8 +397,8 @@ class ChatComposer extends StatelessWidget {
             icon: const Icon(Icons.close),
             tooltip: context.l10n.chat_removeGif,
             onPressed: () {
-              controller.clear();
-              focusNode.requestFocus();
+              widget.controller.clear();
+              widget.focusNode.requestFocus();
             },
           ),
         ],
@@ -266,14 +413,14 @@ class ChatComposer extends StatelessWidget {
           borderSide: BorderSide(color: color, width: width),
         );
     return ByteCountedTextField(
-      maxBytes: maxBytes,
-      softLimitBytes: softLimitBytes,
-      softLimitNote: softLimitNote,
-      controller: controller,
-      focusNode: focusNode,
+      maxBytes: widget.maxBytes,
+      softLimitBytes: widget.softLimitBytes,
+      softLimitNote: widget.softLimitNote,
+      controller: widget.controller,
+      focusNode: widget.focusNode,
       hintText: context.l10n.chat_typeMessage,
-      onSubmitted: (_) => onSend(),
-      encoder: encoder,
+      onSubmitted: (_) => widget.onSend(),
+      encoder: widget.encoder,
       decoration: InputDecoration(
         hintText: context.l10n.chat_typeMessage,
         border: border(scheme.outlineVariant),
