@@ -1,1 +1,6 @@
-{}
+{
+  "cs": [
+    "settings_autoSelfAdvertAsFlood",
+    "settings_autoSelfAdvertAsFloodSubtitle"
+  ]
+}

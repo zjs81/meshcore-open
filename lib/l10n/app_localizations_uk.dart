@@ -804,6 +804,14 @@ class AppLocalizationsUk extends AppLocalizations {
       'Коли GPS-локація змінюється, надсилати Zero Hop оголошення (потрібна геопозиція в оголошенні).';
 
   @override
+  String get settings_autoSelfAdvertAsFlood =>
+      'Надсилати автоматичне self-advert як flood';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      'Якщо ввімкнено, автоматичні self-advert надсилаються як flood замість zero-hop.';
+
+  @override
   String get settings_multiAck => 'Багато підтверджень';
 
   @override

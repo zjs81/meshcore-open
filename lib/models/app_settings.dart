@@ -131,6 +131,7 @@ class AppSettings {
   final bool notifyOnNewChannelMessage;
   final bool notifyOnNewAdvert;
   final bool autoSendZeroHopAdvertOnGpsUpdate;
+  final bool autoSendSelfAdvertAsFlood;
   final int gpsIntervalSeconds;
   final bool autoRouteRotationEnabled;
   final double maxRouteWeight;
@@ -285,6 +286,7 @@ class AppSettings {
     this.notifyOnNewChannelMessage = true,
     this.notifyOnNewAdvert = true,
     this.autoSendZeroHopAdvertOnGpsUpdate = false,
+    this.autoSendSelfAdvertAsFlood = false,
     this.gpsIntervalSeconds = 900,
     this.autoRouteRotationEnabled = true,
     this.maxRouteWeight = defaultMaxRouteWeight,
@@ -383,6 +385,7 @@ class AppSettings {
       'notify_on_new_advert': notifyOnNewAdvert,
       'auto_send_zero_hop_advert_on_gps_update':
           autoSendZeroHopAdvertOnGpsUpdate,
+      'auto_send_self_advert_as_flood': autoSendSelfAdvertAsFlood,
       'gps_interval_seconds': gpsIntervalSeconds,
       'auto_route_rotation_enabled': autoRouteRotationEnabled,
       'max_route_weight': maxRouteWeight,
@@ -523,6 +526,8 @@ class AppSettings {
       notifyOnNewAdvert: json['notify_on_new_advert'] as bool? ?? true,
       autoSendZeroHopAdvertOnGpsUpdate:
           json['auto_send_zero_hop_advert_on_gps_update'] as bool? ?? false,
+      autoSendSelfAdvertAsFlood:
+          json['auto_send_self_advert_as_flood'] as bool? ?? false,
       gpsIntervalSeconds:
           (json['gps_interval_seconds'] as num?)?.toInt() ?? 900,
       autoRouteRotationEnabled:
@@ -692,6 +697,7 @@ class AppSettings {
     bool? notifyOnNewChannelMessage,
     bool? notifyOnNewAdvert,
     bool? autoSendZeroHopAdvertOnGpsUpdate,
+    bool? autoSendSelfAdvertAsFlood,
     int? gpsIntervalSeconds,
     bool? autoRouteRotationEnabled,
     double? maxRouteWeight,
@@ -782,6 +788,8 @@ class AppSettings {
       autoSendZeroHopAdvertOnGpsUpdate:
           autoSendZeroHopAdvertOnGpsUpdate ??
           this.autoSendZeroHopAdvertOnGpsUpdate,
+      autoSendSelfAdvertAsFlood:
+          autoSendSelfAdvertAsFlood ?? this.autoSendSelfAdvertAsFlood,
       gpsIntervalSeconds: gpsIntervalSeconds ?? this.gpsIntervalSeconds,
       autoRouteRotationEnabled:
           autoRouteRotationEnabled ?? this.autoRouteRotationEnabled,

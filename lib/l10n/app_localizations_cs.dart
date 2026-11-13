@@ -799,6 +799,13 @@ class AppLocalizationsCs extends AppLocalizations {
       'Nastavení aplikace: při změně polohy GPS automaticky oznámí novou polohu pouze uzlům v okolí (vyžaduje Polohu v advertu).';
 
   @override
+  String get settings_autoSelfAdvertAsFlood => 'Send Auto Self Advert As Flood';
+
+  @override
+  String get settings_autoSelfAdvertAsFloodSubtitle =>
+      'When enabled, automated self adverts are sent as flood instead of zero-hop.';
+
+  @override
   String get settings_multiAck => 'Multi-ACK';
 
   @override
