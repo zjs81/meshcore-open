@@ -5619,6 +5619,19 @@ class AppLocalizationsHu extends AppLocalizations {
       'A MeshCore Open nem fut. Nyissa meg, és küldje el a választ újra.';
 
   @override
+  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+
+  @override
+  String get settings_exportBookmarksSubtitle =>
+      'Share or save bookmarked messages as a Markdown file.';
+
+  @override
+  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+
+  @override
+  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+
+  @override
   String get settings_gpxExportRepeaters =>
       'Ismétlők / szobaszerver exportálása GPX-be';
 

@@ -8,7 +8,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "cs": [
@@ -20,7 +24,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "de": [
@@ -32,7 +40,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "es": [
@@ -44,7 +56,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "fr": [
@@ -56,7 +72,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "hu": [
@@ -68,7 +88,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "it": [
@@ -80,7 +104,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "ja": [
@@ -92,7 +120,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "ko": [
@@ -104,7 +136,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "nl": [
@@ -116,7 +152,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "pl": [
@@ -128,7 +168,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "pt": [
@@ -140,7 +184,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "pt_PT": [
@@ -152,7 +200,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "ru": [
@@ -164,7 +216,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "sk": [
@@ -176,7 +232,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "sl": [
@@ -188,7 +248,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "sv": [
@@ -200,7 +264,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "uk": [
@@ -212,7 +280,11 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ],
 
   "zh": [
@@ -224,6 +296,10 @@
     "bookmarks_empty",
     "bookmarks_channel",
     "bookmarks_contact",
-    "bookmarks_remove"
+    "bookmarks_remove",
+    "settings_exportBookmarks",
+    "settings_exportBookmarksSubtitle",
+    "settings_exportBookmarksSuccess",
+    "settings_exportBookmarksNoBookmarks"
   ]
 }

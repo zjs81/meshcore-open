@@ -5616,6 +5616,19 @@ class AppLocalizationsEs extends AppLocalizations {
       'MeshCore Open no está en ejecución. Ábrelo y envía tu respuesta de nuevo.';
 
   @override
+  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+
+  @override
+  String get settings_exportBookmarksSubtitle =>
+      'Share or save bookmarked messages as a Markdown file.';
+
+  @override
+  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+
+  @override
+  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+
+  @override
   String get settings_gpxExportRepeaters =>
       'Exportar repetidores / servidores de sala a GPX';
 

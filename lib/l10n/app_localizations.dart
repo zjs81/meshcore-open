@@ -9551,6 +9551,30 @@ abstract class AppLocalizations {
   /// **'MeshCore Open isn\'t running. Open it and send your reply again.'**
   String get notification_replyAppNotRunning;
 
+  /// No description provided for @settings_exportBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Export bookmarks to Markdown'**
+  String get settings_exportBookmarks;
+
+  /// No description provided for @settings_exportBookmarksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share or save bookmarked messages as a Markdown file.'**
+  String get settings_exportBookmarksSubtitle;
+
+  /// No description provided for @settings_exportBookmarksSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks exported.'**
+  String get settings_exportBookmarksSuccess;
+
+  /// No description provided for @settings_exportBookmarksNoBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks to export.'**
+  String get settings_exportBookmarksNoBookmarks;
+
   /// No description provided for @settings_gpxExportRepeaters.
   ///
   /// In en, this message translates to:

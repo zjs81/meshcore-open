@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
@@ -48,9 +47,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
         .watch<AppSettingsService>()
         .settings
         .publicIpfsGateway;
-    final dateFormat = DateFormat.yMd(
-      Localizations.localeOf(context).toString(),
-    ).add_Hm();
     return Scaffold(
       appBar: AppBar(title: Text(l10n.bookmarks_title), centerTitle: true),
       body: FutureBuilder<List<BookmarkedMessage>>(
@@ -66,17 +62,27 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
               title: l10n.bookmarks_empty,
             );
           }
-          bookmarks.sort((a, b) => b.receivedAt.compareTo(a.receivedAt));
+          bookmarks.sort((a, b) => a.receivedAt.compareTo(b.receivedAt));
           return ListView.builder(
+            reverse: true,
             padding: const EdgeInsets.all(12),
             itemCount: bookmarks.length,
             itemBuilder: (context, index) {
-              final bookmark = bookmarks[index];
+              final bookmark = bookmarks[bookmarks.length - 1 - index];
               final sourceType =
                   bookmark.sourceType == BookmarkSourceType.channel
                   ? l10n.bookmarks_channel
                   : l10n.bookmarks_contact;
-              final time = dateFormat.format(bookmark.receivedAt.toLocal());
+              final receivedAt = bookmark.receivedAt.toLocal();
+              final localizations = MaterialLocalizations.of(context);
+              final time = localizations.formatTimeOfDay(
+                TimeOfDay.fromDateTime(receivedAt),
+                alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(
+                  context,
+                ),
+              );
+              final dateTime =
+                  '${localizations.formatShortDate(receivedAt)} $time';
               final translation = bookmark.translatedText?.trim();
               final displayText = translation?.isNotEmpty == true
                   ? translation!
@@ -119,7 +125,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  '${bookmark.senderName} · $time',
+                                  '${bookmark.senderName} · $dateTime',
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ],

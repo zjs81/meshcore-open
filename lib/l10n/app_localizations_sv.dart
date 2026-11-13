@@ -5573,6 +5573,19 @@ class AppLocalizationsSv extends AppLocalizations {
       'MeshCore Open är inte igång. Öppna appen och skicka ditt svar igen.';
 
   @override
+  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+
+  @override
+  String get settings_exportBookmarksSubtitle =>
+      'Share or save bookmarked messages as a Markdown file.';
+
+  @override
+  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+
+  @override
+  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+
+  @override
   String get settings_gpxExportRepeaters =>
       'Exportera repeatrar/rumsservrar till GPX';
 
