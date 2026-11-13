@@ -34,6 +34,7 @@ import '../helpers/contact_share_message.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../helpers/utf8_length_limiter.dart';
+import 'bookmarks_screen.dart';
 import 'channel_chat_screen.dart';
 import 'community_qr_scanner_screen.dart';
 import 'contacts_screen.dart';
@@ -128,6 +129,16 @@ class _ChannelsScreenState extends State<ChannelsScreen> {
               // context, which is deactivated by then.
               itemBuilder: (menuContext) => [
                 connectionMenuItem(context, menuContext),
+                PopupMenuItem(
+                  child: MeshMenuItemRow(
+                    icon: Icons.bookmark_border,
+                    label: menuContext.l10n.bookmarks_title,
+                  ),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const BookmarksScreen()),
+                  ),
+                ),
                 PopupMenuItem(
                   child: MeshMenuItemRow(
                     icon: Icons.groups,

@@ -29,6 +29,7 @@ From the Contacts screen, tap any Chat-type contact to open the ChatScreen.
 - **Holiday animations**: A new message with a holiday greeting ("Happy Halloween", "Merry Christmas", and so on, in any app language) plays a short animation. Turn off in App Settings → Appearance; see [Holiday message animations](themes.md#holiday-message-animations)
 - **Outgoing messages**: Right-aligned, primary color background. **Failed messages** change to a red-toned error container background
 - **Incoming messages**: Left-aligned, grey background with a colored avatar (initial letter or first emoji of sender name; color is deterministic from a hash of the sender name)
+- Long-press a message and choose **Bookmark** to show a yellow bookmark on the bubble. **Show bookmarks** in the chat menu toggles a filter for bookmarked messages; use **Bookmarks** in the Channels screen menu to browse saved messages, including those from deleted contacts or channels. From the bookmarks list, copy a message with its copy button. It is ordered oldest-to-newest and opens at the newest message. The Export screen can save or share a dated Markdown file, grouped by contact and then channel, with linked URLs and URL-image embeds. Links remain tappable, and supported URL-image previews are shown when **Load images from links** is enabled in App Settings.
 - Bubble width capped at 72% of screen width
 - Hyperlinks rendered as tappable green underlined text
 - Message text follows the system font size (Android/iOS accessibility text size); pinch-to-zoom scales on top of it

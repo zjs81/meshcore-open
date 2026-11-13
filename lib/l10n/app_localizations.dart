@@ -1051,6 +1051,12 @@ abstract class AppLocalizations {
   /// **'Discovered contacts and their saved details'**
   String get backupRestore_discoveredContactsDescription;
 
+  /// No description provided for @backupRestore_bookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get backupRestore_bookmarks;
+
   /// No description provided for @backupRestore_channels.
   ///
   /// In en, this message translates to:
@@ -4038,6 +4044,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Message deleted'**
   String get chat_messageDeleted;
+
+  /// No description provided for @chat_bookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark'**
+  String get chat_bookmark;
+
+  /// No description provided for @chat_removeBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove bookmark'**
+  String get chat_removeBookmark;
+
+  /// No description provided for @chat_showBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Show bookmarks'**
+  String get chat_showBookmarks;
+
+  /// No description provided for @bookmarks_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get bookmarks_title;
+
+  /// No description provided for @bookmarks_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarked messages'**
+  String get bookmarks_empty;
+
+  /// No description provided for @bookmarks_channel.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel'**
+  String get bookmarks_channel;
+
+  /// No description provided for @bookmarks_contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get bookmarks_contact;
+
+  /// No description provided for @bookmarks_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove bookmark'**
+  String get bookmarks_remove;
 
   /// No description provided for @chat_selectMessages.
   ///
@@ -9496,6 +9550,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'MeshCore Open isn\'t running. Open it and send your reply again.'**
   String get notification_replyAppNotRunning;
+
+  /// No description provided for @settings_exportBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Export bookmarks to Markdown'**
+  String get settings_exportBookmarks;
+
+  /// No description provided for @settings_exportBookmarksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share or save bookmarked messages as a Markdown file.'**
+  String get settings_exportBookmarksSubtitle;
+
+  /// No description provided for @settings_exportBookmarksSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks exported.'**
+  String get settings_exportBookmarksSuccess;
+
+  /// No description provided for @settings_exportBookmarksNoBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks to export.'**
+  String get settings_exportBookmarksNoBookmarks;
 
   /// No description provided for @settings_gpxExportRepeaters.
   ///

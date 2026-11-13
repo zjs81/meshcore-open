@@ -93,6 +93,7 @@ Color senderNameColor(String name) {
 class MessageBubbleFrame extends StatelessWidget {
   final bool isOutgoing;
   final bool isFailed;
+  final bool isBookmarked;
 
   /// Tighter padding for media (GIF) content.
   final bool compact;
@@ -105,6 +106,7 @@ class MessageBubbleFrame extends StatelessWidget {
     required this.maxWidth,
     required this.child,
     this.isFailed = false,
+    this.isBookmarked = false,
     this.compact = false,
   });
 
@@ -115,17 +117,35 @@ class MessageBubbleFrame extends StatelessWidget {
       isOutgoing: isOutgoing,
       isFailed: isFailed,
     );
-    return Container(
-      padding: compact
-          ? const EdgeInsets.all(4)
-          : const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      constraints: BoxConstraints(maxWidth: maxWidth * 0.72),
-      decoration: BoxDecoration(
-        color: colors.background,
-        borderRadius: messageBubbleRadius(isOutgoing: isOutgoing),
-        border: Border.all(color: colors.border, width: 1),
-      ),
-      child: child,
+    final contentPadding = compact
+        ? const EdgeInsets.all(4)
+        : const EdgeInsets.symmetric(horizontal: 12, vertical: 8);
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          constraints: BoxConstraints(maxWidth: maxWidth * 0.72),
+          decoration: BoxDecoration(
+            color: colors.background,
+            borderRadius: messageBubbleRadius(isOutgoing: isOutgoing),
+            border: Border.all(color: colors.border, width: 1),
+          ),
+          child: Padding(
+            padding: isBookmarked
+                ? contentPadding.add(
+                    EdgeInsets.only(top: compact ? 18 : 14, right: 14),
+                  )
+                : contentPadding,
+            child: child,
+          ),
+        ),
+        if (isBookmarked)
+          const Positioned(
+            top: -2,
+            right: 12,
+            child: Icon(Icons.bookmark, size: 22, color: Color(0xFFFFE54A)),
+          ),
+      ],
     );
   }
 }
