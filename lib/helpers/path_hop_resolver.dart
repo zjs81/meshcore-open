@@ -5,6 +5,8 @@ import 'path_helper.dart';
 import '../models/contact.dart';
 
 class PathHopResolver {
+  static const double maxPlausibleHopDistanceKm = 120;
+
   const PathHopResolver._();
 
   static List<Contact?> resolve({
@@ -62,10 +64,46 @@ class PathHopResolver {
       previousPosition = _positionOf(contact) ?? previousPosition;
     }
 
+    _removeIsolatedLocations(resolved, distance);
+
     return resolved;
   }
 
-  static LatLng? _positionOf(Contact contact) {
+  static void _removeIsolatedLocations(
+    List<Contact?> resolved,
+    Distance distance,
+  ) {
+    for (var index = 0; index < resolved.length; index++) {
+      final position = _positionOf(resolved[index]);
+      if (position == null) continue;
+
+      LatLng? previous;
+      for (var i = index - 1; i >= 0; i--) {
+        previous = _positionOf(resolved[i]);
+        if (previous != null) break;
+      }
+      LatLng? next;
+      for (var i = index + 1; i < resolved.length; i++) {
+        next = _positionOf(resolved[i]);
+        if (next != null) break;
+      }
+      if (previous == null || next == null) continue;
+
+      final fromPrevious = distance.as(
+        LengthUnit.Kilometer,
+        previous,
+        position,
+      );
+      final toNext = distance.as(LengthUnit.Kilometer, position, next);
+      if (fromPrevious > maxPlausibleHopDistanceKm &&
+          toNext > maxPlausibleHopDistanceKm) {
+        resolved[index] = null;
+      }
+    }
+  }
+
+  static LatLng? _positionOf(Contact? contact) {
+    if (contact == null) return null;
     if (!contact.hasLocation ||
         contact.latitude == null ||
         contact.longitude == null) {

@@ -1576,6 +1576,13 @@ class AppLocalizationsSk extends AppLocalizations {
       'Zobrazí spojovacie čiary medzi uzlami z online mapy';
 
   @override
+  String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
+
+  @override
+  String get appSettings_useOnlineMapForPathsSubtitle =>
+      'Use repeater locations from the online map when reconstructing message paths';
+
+  @override
   String get appSettings_timeFilter => 'Časový filter';
 
   @override
@@ -4846,6 +4853,10 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get channelPath_noHopDetails =>
       'Podrobnosti o balíčku zatiaľ nie sú dostupné.';
+
+  @override
+  String get channelPath_loadingOnlineMap =>
+      'Loading repeater locations from the online map...';
 
   @override
   String get channelPath_messageDetails => 'Podrobnosti o zprávach';

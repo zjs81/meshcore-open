@@ -1590,6 +1590,13 @@ class AppLocalizationsBg extends AppLocalizations {
       'Показва линии между възлите от онлайн картата';
 
   @override
+  String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
+
+  @override
+  String get appSettings_useOnlineMapForPathsSubtitle =>
+      'Use repeater locations from the online map when reconstructing message paths';
+
+  @override
   String get appSettings_timeFilter => 'Филтриране по време';
 
   @override
@@ -4856,6 +4863,10 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get channelPath_noHopDetails =>
       'Детайлите за пакета не са предоставени.';
+
+  @override
+  String get channelPath_loadingOnlineMap =>
+      'Loading repeater locations from the online map...';
 
   @override
   String get channelPath_messageDetails => 'Подробности на съобщението';
