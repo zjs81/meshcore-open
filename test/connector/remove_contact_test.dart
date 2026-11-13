@@ -78,6 +78,8 @@ void main() {
     expect(connector.contacts, isNotEmpty);
     expect(listed(), isFalse);
 
+    // Contact saves are batched; land them before reading the store.
+    await connector.flushPendingWrites();
     final store = ContactStore()..setPublicKeyHex = connector.selfPublicKeyHex;
     final saved = await store.loadContacts();
     expect(saved.any((c) => c.publicKeyHex == contact.publicKeyHex), isFalse);

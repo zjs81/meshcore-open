@@ -289,12 +289,28 @@ class MessageFilterService extends ChangeNotifier {
   }
 
   /// User tapped "Spam": store the example and retrain.
-  Future<void> markSpam({required String sender, required String text}) async {
-    final key = MessageFilterText.normalize(text);
-    if (key.isEmpty) return;
-    _recentClean.removeWhere((e) => MessageFilterText.normalize(e.text) == key);
-    _hamExamples.removeWhere((e) => MessageFilterText.normalize(e.text) == key);
-    _addExample(_spamExamples, _example(sender, text), maxSpamExamples);
+  Future<void> markSpam({required String sender, required String text}) =>
+      markSpamMany([(sender: sender, text: text)]);
+
+  /// Marks several messages as spam with one save and one retrain (bulk
+  /// selection in a chat).
+  Future<void> markSpamMany(
+    List<({String sender, String text})> messages,
+  ) async {
+    var changed = false;
+    for (final m in messages) {
+      final key = MessageFilterText.normalize(m.text);
+      if (key.isEmpty) continue;
+      _recentClean.removeWhere(
+        (e) => MessageFilterText.normalize(e.text) == key,
+      );
+      _hamExamples.removeWhere(
+        (e) => MessageFilterText.normalize(e.text) == key,
+      );
+      _addExample(_spamExamples, _example(m.sender, m.text), maxSpamExamples);
+      changed = true;
+    }
+    if (!changed) return;
     final training = _retrain();
     _notify();
     await _guardSave(() async {
@@ -311,17 +327,27 @@ class MessageFilterService extends ChangeNotifier {
     required String channelId,
     required String sender,
     required String text,
-  }) async {
-    _tracker.allow(channelId, text);
-    final key = MessageFilterText.normalize(text);
-    if (key.isEmpty) {
+  }) => markNotSpamMany([(channelId: channelId, sender: sender, text: text)]);
+
+  /// Marks several messages as not spam with one save and one retrain.
+  Future<void> markNotSpamMany(
+    List<({String channelId, String sender, String text})> messages,
+  ) async {
+    var changed = false;
+    for (final m in messages) {
+      _tracker.allow(m.channelId, m.text);
+      final key = MessageFilterText.normalize(m.text);
+      if (key.isEmpty) continue;
+      _spamExamples.removeWhere(
+        (e) => MessageFilterText.normalize(e.text) == key,
+      );
+      _addExample(_hamExamples, _example(m.sender, m.text), maxNotSpamExamples);
+      changed = true;
+    }
+    if (!changed) {
       _notify();
       return;
     }
-    _spamExamples.removeWhere(
-      (e) => MessageFilterText.normalize(e.text) == key,
-    );
-    _addExample(_hamExamples, _example(sender, text), maxNotSpamExamples);
     final training = _retrain();
     _notify();
     await _guardSave(() async {

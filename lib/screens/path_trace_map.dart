@@ -139,6 +139,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
   String _selectedPathId = 'primary';
   final Set<String> _hiddenPathIds = {};
   bool _panelCollapsed = false;
+  bool _panelExpanded = false;
   bool _animationEnabled = true;
   bool _followPacket = false;
 
@@ -1655,8 +1656,13 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
       combined: combined,
       showInferredLegend: true,
       collapsed: _panelCollapsed,
-      onToggleCollapsed: () =>
-          setState(() => _panelCollapsed = !_panelCollapsed),
+      onToggleCollapsed: () => setState(() {
+        _panelCollapsed = !_panelCollapsed;
+        // Reopening a collapsed panel returns to the normal height.
+        if (_panelCollapsed) _panelExpanded = false;
+      }),
+      expanded: _panelExpanded,
+      onToggleExpanded: () => setState(() => _panelExpanded = !_panelExpanded),
       playback: _playback,
       selected: selected,
       animationEnabled: _animationEnabled,

@@ -33,15 +33,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/app_localizations.dart';
+import '../l10n/l10n.dart';
 import '../services/received_image_store.dart';
 import 'image_send_codec_binding.dart' show ImageCodecAvailability;
 
 /// User-visible strings for the NON-decoded states.
 ///
-/// Exists so the wiring agent can hand in `AppLocalizations` values once the
-/// `receivedImage_*` ARB keys land (they do not exist yet, so English defaults
-/// ship inline). Deliberately contains no field for the R6 badge or caption:
-/// those must not be overridable, shortenable or blankable.
+/// Built from `AppLocalizations` by [ReceivedImageStrings.of]; the widget does
+/// that itself when no [ReceivedImageMessage.strings] override is passed.
+/// Deliberately contains no field for the R6 badge or caption: those must not
+/// be overridable, shortenable or blankable.
 @immutable
 class ReceivedImageStrings {
   final String Function(int received, int total) incoming;
@@ -67,11 +69,8 @@ class ReceivedImageStrings {
     required this.incoming,
     required this.queued,
     required this.tapToDecode,
-    // Optional on purpose: `channel_chat_screen.dart` builds this object and is
-    // owned by another workstream, so the two tap-to-process strings must not
-    // break that call site before the `receivedImage_*` ARB keys land.
-    this.awaiting = _defaultAwaiting,
-    this.tapToProcess = 'Tap to process',
+    required this.awaiting,
+    required this.tapToProcess,
     required this.decoding,
     required this.incomplete,
     required this.corrupt,
@@ -82,41 +81,52 @@ class ReceivedImageStrings {
     required this.openSettings,
   });
 
-  // TODO(l10n): replace with context.l10n.receivedImage_* once app_en.arb has
-  // the keys listed in section 5(k) of the receive spec.
-  static ReceivedImageStrings english = ReceivedImageStrings(
-    incoming: (received, total) => '$received of $total packets',
-    queued: 'Waiting to decode',
-    tapToDecode: 'Tap to decode',
-    awaiting: _defaultAwaiting,
-    tapToProcess: 'Tap to process',
-    decoding: 'Reconstructing… about 1 s',
-    incomplete: (received, total) =>
-        'Image incomplete — $received of $total packets arrived',
-    corrupt: 'Image could not be reconstructed',
-    decoderMissing: 'Image received — image decoding is off',
-    evicted: 'Image no longer stored',
-    retry: 'Try again',
-    decodeAgain: 'Decode again',
-    openSettings: 'Set up',
-  );
+  /// The app's `receivedImage_*` strings for [l10n]'s locale.
+  factory ReceivedImageStrings.of(AppLocalizations l10n) =>
+      ReceivedImageStrings(
+        incoming: l10n.receivedImage_incoming,
+        queued: l10n.receivedImage_queued,
+        tapToDecode: l10n.receivedImage_tapToDecode,
+        awaiting: l10n.receivedImage_awaiting,
+        tapToProcess: l10n.receivedImage_tapToProcess,
+        decoding: l10n.receivedImage_decoding,
+        incomplete: l10n.receivedImage_incomplete,
+        corrupt: l10n.receivedImage_corrupt,
+        decoderMissing: l10n.receivedImage_decoderMissing,
+        evicted: l10n.receivedImage_evicted,
+        retry: l10n.receivedImage_retry,
+        decodeAgain: l10n.receivedImage_decodeAgain,
+        openSettings: l10n.receivedImage_openSettings,
+      );
 }
 
-/// English default for [ReceivedImageStrings.awaiting]. A top-level function so
-/// it can be a `const` default value on the constructor.
-String _defaultAwaiting(int bytes, int packets) =>
-    '$bytes bytes · $packets packets';
+/// The R6 label texts, localised but never injectable and never empty.
+///
+/// Resolved inside the private R6 widgets from the widget tree, so no caller
+/// can pass a replacement. If the tree has no `AppLocalizations`, or a
+/// translation is blank, the English text is used instead: a missing
+/// translation must never be able to remove the label.
+AppLocalizations _r6Strings(BuildContext context) {
+  final l10n = Localizations.of<AppLocalizations>(context, AppLocalizations);
+  if (l10n != null &&
+      l10n.receivedImage_syntheticBadge.trim().isNotEmpty &&
+      l10n.receivedImage_shareCaption(0).trim().isNotEmpty) {
+    return l10n;
+  }
+  return lookupAppLocalizations(const Locale('en'));
+}
 
-/// Text of the R6 label. Private and const: not injectable, not localisable
-/// yet, and never empty.
-const String _kSyntheticBadge = 'AI-reconstructed';
+/// Text of the R6 badge burnt into the image.
+String _syntheticBadge(BuildContext context) =>
+    _r6Strings(context).receivedImage_syntheticBadge;
 
 /// The caption is built from the ACTUAL bitstream size, never a nominal one:
 /// quoting a fixed "~156 bytes" under an image that took 209 is its own small
-/// dishonesty, in a label whose whole job is honesty.
-String _syntheticCaptionFor(int bytes) =>
-    'Reconstructed by an AI model from $bytes bytes. '
-    'Fine detail is generated, not transmitted.';
+/// dishonesty, in a label whose whole job is honesty. Same sentence as the
+/// share text in the channel screen, so the label reads identically wherever
+/// the image goes.
+String _syntheticCaptionFor(BuildContext context, int bytes) =>
+    _r6Strings(context).receivedImage_shareCaption(bytes);
 
 class ReceivedImageMessage extends StatefulWidget {
   /// 14 hex chars, as parsed out of the message text by
@@ -225,7 +235,8 @@ class _ReceivedImageMessageState extends State<ReceivedImageMessage> {
     );
   }
 
-  ReceivedImageStrings get _s => widget.strings ?? ReceivedImageStrings.english;
+  ReceivedImageStrings get _s =>
+      widget.strings ?? ReceivedImageStrings.of(context.l10n);
 
   Widget _buildForEntry(
     BuildContext context,
@@ -558,7 +569,7 @@ class _SyntheticBanner extends StatelessWidget {
           const SizedBox(width: 4),
           Flexible(
             child: Text(
-              _kSyntheticBadge,
+              _syntheticBadge(context),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontSize: 12, color: Colors.white),
@@ -572,8 +583,8 @@ class _SyntheticBanner extends StatelessWidget {
 
 /// R6, part 2: the full sentence, immediately under the image.
 class _SyntheticCaption extends StatelessWidget {
-  /// Contrast variant only. The TEXT is the same const in both cases; there is
-  /// no parameter that can shorten, blank or restyle it away.
+  /// Contrast variant only. The TEXT is the same in both cases; there is no
+  /// parameter that can shorten, blank or restyle it away.
   final bool onDark;
 
   /// Size of the bitstream this image was reconstructed from.
@@ -586,7 +597,7 @@ class _SyntheticCaption extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 4),
       child: Text(
-        _syntheticCaptionFor(bytes),
+        _syntheticCaptionFor(context, bytes),
         // No maxLines: the bubble is narrow and the sentence must never be
         // truncated. A label that reads "Details are invented. Not a" is worse
         // than none — it clips exactly where the warning was going.

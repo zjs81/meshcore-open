@@ -108,8 +108,8 @@
   "settings_privacyModeEnabled": "Tryb prywatności włączony",
   "settings_privacyModeDisabled": "Tryb prywatności wyłączony",
   "settings_actions": "Działania",
-  "settings_deleteAllPaths": "Delete All Paths",
-  "settings_deleteAllPathsSubtitle": "Clear all path data from contacts.",
+  "settings_deleteAllPaths": "Usuń wszystkie ścieżki",
+  "settings_deleteAllPathsSubtitle": "Wyczyść wszystkie dane ścieżek z kontaktów.",
   "settings_sendAdvertisement": "Wyślij rozgłoszenie",
   "settings_sendAdvertisementSubtitle": "Nadaj obecność teraz",
   "settings_advertisementSent": "Rozgłoszenie wysłane",
@@ -167,7 +167,7 @@
   "appSettings_theme": "Motyw",
   "appSettings_themeSystem": "Domyślne ustawienia systemu",
   "appSettings_themeLight": "Jasne",
-  "appSettings_themeDark": "Ciemny",
+  "appSettings_themeDark": "Ciemne",
   "appSettings_language": "Język",
   "appSettings_languageSystem": "Domyślny systemowy",
   "appSettings_languageEn": "Angielski",
@@ -176,7 +176,7 @@
   "appSettings_languageDe": "Niemiecki",
   "appSettings_languagePl": "Polski",
   "appSettings_languageSl": "Słoweński",
-  "appSettings_languagePt": "Portugalski",
+  "appSettings_languagePt": "Portugalski (Brazylia)",
   "appSettings_languageIt": "Włoski",
   "appSettings_languageZh": "Chiński",
   "appSettings_languageSv": "Szwedzki",
@@ -707,7 +707,6 @@
   "map_pinPrivate": "Pinezka (prywatna)",
   "map_pinPublic": "Pinezka (publiczna)",
   "map_lastSeen": "Ostatni raz widziany",
-  "map_disconnectConfirm": "Czy na pewno chcesz się odłączyć od tego urządzenia?",
   "map_from": "Od",
   "map_source": "Źródło",
   "map_flags": "Flagi",
@@ -1176,7 +1175,7 @@
   "repeater_networkHealth": "Stan sieci",
   "repeater_loopDetect": "Wykrywanie pętli",
   "repeater_loopDetectHelper": "Wysyłaj pakiety, które wyglądają jak pętle routingu.",
-  "repeater_loopDetectOff": "Z domu",
+  "repeater_loopDetectOff": "Wyłączone",
   "repeater_loopDetectMinimal": "Minimalny",
   "repeater_loopDetectModerate": "Umiarkowany",
   "repeater_loopDetectStrict": "Surowe",
@@ -1221,7 +1220,7 @@
       }
     }
   },
-  "repeater_actionFailed": "{action} failed: {error}",
+  "repeater_actionFailed": "{action} nie powiodło się: {error}",
   "@repeater_actionFailed": {
     "placeholders": {
       "action": {
@@ -2271,14 +2270,6 @@
   "contact_settings": "Ustawienia kontaktowe",
   "contact_lastSeen": "Ostatnio widziany",
   "contact_teleBaseSubtitle": "Pozwól na udostępnianie poziomu naładowania baterii i podstawowych danych telemetrycznych",
-  "appSettings_initialRouteWeight": "Początkowa waga trasy",
-  "appSettings_maxRouteWeight": "Maksymalny dopuszczalny ciężar pojazdu",
-  "appSettings_initialRouteWeightSubtitle": "Początkowa waga dla nowych, odkrytych ścieżek",
-  "appSettings_maxRouteWeightSubtitle": "Maksymalna waga, jaką ścieżka może zgromadzić dzięki udanym dostawom.",
-  "appSettings_routeWeightSuccessIncrement": "Wzrost wagi sukcesu",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Waga dodana do ścieżki po pomyślnym dostarczeniu",
-  "appSettings_routeWeightFailureDecrement": "Zmniejszenie wagi kary",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Waga usunięta z trasy po nieudanej dostawie",
   "appSettings_maxMessageRetries": "Maksymalna liczba prób wysłania wiadomości",
   "appSettings_maxMessageRetriesSubtitle": "Liczba prób ponownego wysłania wiadomości przed oznaczaniem jej jako nieudanej",
   "appSettings_ipfsImageLinks": "Konfiguracja dostawcy IPFS",
@@ -2501,10 +2492,10 @@
   "repeater_cliHelpStatsPackets": "(Tylko dla serialu) Prezentuje statystyki na poziomie pakietów.",
   "repeater_cliHelpStatsRadio": "(Tylko serial) Prezentuje statystyki dotyczące nadawania radiowego.",
   "repeater_cliHelpStatsCore": "(Tylko wersja serialowa) Wyświetla podstawowe statystyki o oprogramowaniu.",
-  "common_done": "Done",
-  "background_serviceTitle": "MeshCore running",
-  "background_serviceText": "Keeping BLE connected",
-  "appSettings_translationModelDeleted": "Deleted {name}",
+  "common_done": "Gotowe",
+  "background_serviceTitle": "MeshCore działa",
+  "background_serviceText": "Utrzymywanie połączenia BLE",
+  "appSettings_translationModelDeleted": "Usunięto {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {
       "name": {
@@ -2512,7 +2503,7 @@
       }
     }
   },
-  "appSettings_translationModelDeleteFailed": "Failed to delete: {error}",
+  "appSettings_translationModelDeleteFailed": "Nie udało się usunąć: {error}",
   "@appSettings_translationModelDeleteFailed": {
     "placeholders": {
       "error": {
@@ -2520,7 +2511,7 @@
       }
     }
   },
-  "channels_channelUpdateFailed": "Failed to update channel: {error}",
+  "channels_channelUpdateFailed": "Nie udało się zaktualizować kanału: {error}",
   "@channels_channelUpdateFailed": {
     "placeholders": {
       "error": {
@@ -2529,16 +2520,16 @@
     }
   },
   "map_type": "Type",
-  "map_path": "Path",
-  "map_location": "Location",
-  "map_estLocation": "Est. Location",
-  "map_publicKey": "Public Key",
+  "map_path": "Ścieżka",
+  "map_location": "Lokalizacja",
+  "map_estLocation": "Szac. lokalizacja",
+  "map_publicKey": "Klucz publiczny",
   "map_publicKeyPrefixHint": "e.g. ab12",
   "contact_typeChat": "Chat",
   "contact_typeRepeater": "Repeater",
   "contact_typeRoom": "Room",
   "contact_typeSensor": "Sensor",
-  "contact_typeUnknown": "Unknown",
+  "contact_typeUnknown": "Nieznany",
   "channels_via": "via {path}",
   "chat_score": "Score",
   "settings_multiAck": "Wielokrotne potwierdzenia odbioru",
@@ -2636,10 +2627,10 @@
   "contacts_searchOpen": "Wyszukaj kontakty",
   "contacts_searchClose": "Zaawansowane wyszukiwanie",
   "routing_title": "Planowanie tras",
-  "routing_modeAuto": "Samochód",
+  "routing_modeAuto": "Auto",
   "routing_modeFlood": "Flood",
-  "routing_modeManual": "Instrukcja obsługi",
-  "routing_modeAutoHint": "Automatycznie wybiera najpopularniejszą ścieżkę, a w przypadku braku znanej, przechodzi do trybu \"przepływu\".",
+  "routing_modeManual": "Ręcznie",
+  "routing_modeAutoHint": "Automatycznie wybiera najlepszą znaną ścieżkę, a gdy żadnej nie zna, używa flood.",
   "routing_modeFloodHint": "Transmisje za pośrednictwem każdego repeatera. Najbardziej niezawodna metoda, ale zużywa więcej czasu transmisji.",
   "routing_modeManualHint": "Zawsze prowadzi dokładnie po trasie, którą określiłeś.",
   "routing_currentRoute": "Obecna trasa",
@@ -2655,7 +2646,7 @@
   "routing_qualityGood": "Świetny początek",
   "routing_qualityFair": "Świetny pierwszy krzak",
   "routing_qualityWorked": "Zostało dostarczone",
-  "routing_qualityFlood": "Usłyszano dzięki doniesieniom",
+  "routing_qualityFlood": "Usłyszano przez flood",
   "routing_qualityUntested": "Nieużywany",
   "routing_lastWorked": "pracował {when}",
   "routing_neverWorked": "nigdy nie zostało potwierdzone",
@@ -2674,7 +2665,7 @@
   "pathEditor_removeHop": "Usuń skok",
   "pathEditor_unknownHop": "Nieznany repeater",
   "map_zoomIn": "Przybliż",
-  "routing_deliveryCounts": "{successes} delivered, {failures} failed",
+  "routing_deliveryCounts": "{successes} dostarczono, {failures} nie powiodło się",
   "map_zoomOut": "Przybliż z powrotem",
   "map_centerMap": "Mapa centrum",
   "chrome_bluetoothRequiresChromium": "Web Bluetooth wymaga przeglądarki Chromium.",
@@ -2981,7 +2972,7 @@
   "imageSend_qualityHigh": "Wysoko",
   "imageSend_packetsLabel": "Pakiet",
   "imageSend_airtimeLabel": "Czas w eterze",
-  "imageSend_sizeLabel": "Payload",
+  "imageSend_sizeLabel": "Dane",
   "imageSend_packetsCount": "{count} {count, plural, =1{pakiet} other{pakietów}}",
   "imageSend_range": "{min}–{max}",
   "imageSend_unknownValue": "—",
@@ -2989,7 +2980,7 @@
   "imageSend_radioUnknownBody": "Połącz urządzenie, aby można było obliczyć czas trwania transmisji.",
   "imageSend_longSendTitle": "Długa transmisja",
   "imageSend_longSendBody": "Ten kanał będzie dostępny przez około {duration}.",
-  "imageSend_floodNote": "Przepływ pakietów: każdy retransmitujący w zasięgu przekazuje każdy pakiet, przez co kanał pozostaje zajęty dłużej niż ten czas.",
+  "imageSend_floodNote": "Routing flood: każdy przekaźnik w zasięgu retransmituje każdy pakiet, przez co kanał pozostaje zajęty dłużej niż ten czas.",
   "imageSend_parityTitle": "Pakiet odzysku",
   "imageSend_paritySubtitle": "Jedna dodatkowa paczka. Wiadomości grupowe nie są potwierdzane, dzięki czemu odbiorca może odbudować obraz, jeśli zostanie utracona pojedyncza paczka.",
   "imageSend_send": "Wyślij",
@@ -3907,5 +3898,122 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Nie znaleziono tej wiadomości w czacie",
+  "chat_clearSelection": "Wyczyść zaznaczenie",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Usunąć 1 wiadomość z tego urządzenia?} few{Usunąć {count} wiadomości z tego urządzenia?} many{Usunąć {count} wiadomości z tego urządzenia?} other{Usunąć {count} wiadomości z tego urządzenia?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Usunąć wiadomości?",
+  "chat_messagesDeleted": "{count, plural, one{Usunięto 1 wiadomość} few{Usunięto {count} wiadomości} many{Usunięto {count} wiadomości} other{Usunięto {count} wiadomości}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Zaznacz wszystko",
+  "chat_selectMessages": "Wybierz wiadomości",
+  "chat_selectedCount": "Wybrano: {count}",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Dodaj ponownie",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{Oznaczono 1 wiadomość jako nie spam} few{Oznaczono {count} wiadomości jako nie spam} many{Oznaczono {count} wiadomości jako nie spam} other{Oznaczono {count} wiadomości jako nie spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{Oznaczono 1 wiadomość jako spam} few{Oznaczono {count} wiadomości jako spam} many{Oznaczono {count} wiadomości jako spam} other{Oznaczono {count} wiadomości jako spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Rozwiń listę przeskoków",
+  "pathMap_showMap": "Pokaż mapę",
+  "routing_modeDirect": "Bezpośrednio",
+  "routing_modeDirectHint": "Zawsze wysyła prosto do tego kontaktu, bez przeskoków przez repeatery. Użyj, gdy kontakt jest w zasięgu radia.",
+  "settings_export": "Eksportuj",
+  "settings_exportSubtitle": "Eksportuj kontakty i przekaźniki jako GPX",
+  "backupRestore_title": "Kopia zapasowa i przywracanie",
+  "backupRestore_subtitle": "Zapisz lub przywróć dane aplikacji i ustawienia radia",
+  "backupRestore_import": "Importuj",
+  "backupRestore_selectImportFile": "Importuj plik",
+  "backupRestore_password": "Hasło (opcjonalnie)",
+  "backupRestore_passwordHelp": "Hasło szyfruje plik. Puste zapisuje zwykły tekst, który może zawierać klucze prywatne/kanałów, historię i dane uwierzytelniające.",
+  "backupRestore_importUnavailable": "Sprawdź hasło lub wybierz obsługiwany plik kopii zapasowej.",
+  "backupRestore_items": "Elementy kopii zapasowej i przywracania",
+  "backupRestore_nodeSettings": "Ustawienia węzła",
+  "backupRestore_nodeSettingsDescription": "Nazwa urządzenia, klucze prywatny i publiczny, ustawienia radia i regiony",
+  "backupRestore_deviceName": "Nazwa urządzenia",
+  "backupRestore_privateKey": "Klucz prywatny (wrażliwy)",
+  "backupRestore_publicKey": "Klucz publiczny",
+  "backupRestore_radioSettings": "Ustawienia radia",
+  "backupRestore_regions": "Regiony",
+  "backupRestore_location": "Lokalizacja",
+  "backupRestore_contactSettings": "Ustawienia kontaktów",
+  "backupRestore_privacySettings": "Ustawienia prywatności",
+  "backupRestore_contactsData": "Kontakty",
+  "backupRestore_perContactSettings": "Ustawienia i filtry kontaktów",
+  "backupRestore_contactGroups": "Grupy kontaktów",
+  "backupRestore_contactHistory": "Historia kontaktów",
+  "backupRestore_channelsData": "Kanały",
+  "backupRestore_channelFilters": "Ustawienia filtra wiadomości",
+  "backupRestore_channelSettings": "Ustawienia kanałów",
+  "backupRestore_communities": "Społeczności",
+  "backupRestore_channelHistory": "Historia kanałów",
+  "backupRestore_locationSettings": "Ustawienia lokalizacji",
+  "backupRestore_locationSettingsDescription": "Lokalizacja, ustawienia kontaktów i prywatności",
+  "backupRestore_appSettings": "Ustawienia aplikacji",
+  "backupRestore_appSettingsDescription": "Preferencje aplikacji i ustawienia wyglądu",
+  "backupRestore_ipfsKey": "Klucz API IPFS (wrażliwy)",
+  "backupRestore_stadiaMapKey": "Klucz API Stadia Maps (wrażliwy)",
+  "backupRestore_contacts": "Kontakty",
+  "backupRestore_contactsDescription": "Kontakty, filtry i ustawienia poszczególnych kontaktów, grupy i historia wiadomości",
+  "backupRestore_discoveredContacts": "Wykryte kontakty",
+  "backupRestore_discoveredContactsDescription": "Wykryte kontakty i ich zapisane dane",
+  "backupRestore_channels": "Kanały",
+  "backupRestore_channelsDescription": "Kanały, filtry kanałów, społeczności i historia wiadomości",
+  "backupRestore_backup": "Utwórz kopię zapasową",
+  "backupRestore_restore": "Przywróć wybrane",
+  "backupRestore_backupComplete": "Plik kopii zapasowej został utworzony.",
+  "backupRestore_restoreComplete": "Przywracanie zakończone. Połącz się ponownie, jeśli przywrócono tożsamość radia.",
+  "backupRestore_missingModelsTitle": "Modele nie zostały pobrane",
+  "backupRestore_missingModelsMessage": "Przywrócone ustawienia wybierają modele, które nie są dostępne na tym urządzeniu:\n{models}\n\nPobrać je teraz?",
+  "backupRestore_downloadModels": "Pobierz modele",
+  "backupRestore_downloading": "Pobieranie…",
+  "backupRestore_cancelDownload": "Anuluj pobieranie",
+  "backupRestore_failed": "Operacja kopii zapasowej nie powiodła się: {error}",
+  "backupRestore_fileTooLarge": "Plik kopii zapasowej przekracza limit 100 MB.",
+  "backupRestore_selectAtLeastOne": "Wybierz co najmniej jeden element.",
+  "backupRestore_replaceIdentityTitle": "Zastąpić tożsamość radia?",
+  "backupRestore_replaceIdentityMessage": "Przywrócenie ustawień węzła zastępuje klucz prywatny podłączonego radia i zmienia jego tożsamość. Kontynuuj tylko, jeśli to zamierzone.",
+  "appSettings_languagePtPt": "Portugalski (Portugalia)",
+  "receivedImage_syntheticBadge": "Odtworzone przez AI",
+  "appBar_offlineSubtitle": "Offline · {name}",
+  "appBar_offline": "Offline",
+  "appBar_reconnecting": "Ponowne łączenie…",
+  "connectSheet_title": "Połącz z radiem",
+  "connectSheet_reconnect": "Połącz ponownie z {name}",
+  "connectSheet_chooseRadio": "Wybierz radio",
+  "connectSheet_chooseRadioSubtitle": "Bluetooth, USB lub TCP",
+  "connectSheet_stopReconnecting": "Zatrzymaj ponowne łączenie",
+  "connectSheet_reconnectFailed": "Nie można połączyć z {name}. Upewnij się, że jest włączone i w pobliżu.",
+  "chat_composerOffline": "Połącz się z radiem, aby wysyłać wiadomości"
 }

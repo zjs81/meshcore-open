@@ -113,8 +113,8 @@
   "settings_privacyModeEnabled": "隐私模式已启用",
   "settings_privacyModeDisabled": "隐私模式已关闭",
   "settings_actions": "操作",
-  "settings_deleteAllPaths": "Delete All Paths",
-  "settings_deleteAllPathsSubtitle": "Clear all path data from contacts.",
+  "settings_deleteAllPaths": "删除所有路径",
+  "settings_deleteAllPathsSubtitle": "清除联系人中的所有路径数据。",
   "settings_sendAdvertisement": "发送广播",
   "settings_sendAdvertisementSubtitle": "立即发送广播",
   "settings_advertisementSent": "已发送广播",
@@ -186,7 +186,7 @@
   "appSettings_languageDe": "德语",
   "appSettings_languagePl": "波兰语",
   "appSettings_languageSl": "斯洛文尼亚语",
-  "appSettings_languagePt": "葡萄牙语",
+  "appSettings_languagePt": "葡萄牙语（巴西）",
   "appSettings_languageIt": "意大利语",
   "appSettings_languageZh": "中文",
   "appSettings_languageSv": "瑞典语",
@@ -333,7 +333,7 @@
   "contacts_noContactsMatchFilter": "没有符合条件的联系人",
   "contacts_noMembers": "暂无成员",
   "contacts_lastSeenNow": "刚刚",
-  "contacts_lastSeenMinsAgo": "最后在线 {minutes} 分钟前",
+  "contacts_lastSeenMinsAgo": "约 {minutes} 分钟",
   "@contacts_lastSeenMinsAgo": {
     "placeholders": {
       "minutes": {
@@ -341,8 +341,8 @@
       }
     }
   },
-  "contacts_lastSeenHourAgo": "最后在线 1小时前",
-  "contacts_lastSeenHoursAgo": "最后在线 {hours} 小时前",
+  "contacts_lastSeenHourAgo": "约 1 小时",
+  "contacts_lastSeenHoursAgo": "约 {hours} 小时",
   "@contacts_lastSeenHoursAgo": {
     "placeholders": {
       "hours": {
@@ -350,8 +350,8 @@
       }
     }
   },
-  "contacts_lastSeenDayAgo": "最后在线 1天前",
-  "contacts_lastSeenDaysAgo": "最后在线 {days} 天前",
+  "contacts_lastSeenDayAgo": "约 1 天",
+  "contacts_lastSeenDaysAgo": "约 {days} 天",
   "@contacts_lastSeenDaysAgo": {
     "placeholders": {
       "days": {
@@ -716,7 +716,6 @@
   "map_pinPrivate": "私有",
   "map_pinPublic": "公共",
   "map_lastSeen": "最后在线",
-  "map_disconnectConfirm": "确定要断开与此设备的连接吗？",
   "map_from": "来自",
   "map_source": "来源",
   "map_flags": "标志",
@@ -1188,7 +1187,7 @@
   "repeater_networkHealth": "网络健康",
   "repeater_loopDetect": "循环检测",
   "repeater_loopDetectHelper": "创建看起来像路由环的“泛洪包”",
-  "repeater_loopDetectOff": "离开",
+  "repeater_loopDetectOff": "关闭",
   "repeater_loopDetectMinimal": "最少",
   "repeater_loopDetectModerate": "适度的",
   "repeater_loopDetectStrict": "严格",
@@ -2162,14 +2161,6 @@
   "contact_settings": "联系人设置",
   "contact_teleLocSubtitle": "允许共享位置数据",
   "contact_telemetry": "遥测数据",
-  "appSettings_maxRouteWeight": "最大路径重量",
-  "appSettings_initialRouteWeightSubtitle": "新发现路径的初始重量",
-  "appSettings_initialRouteWeight": "初始路线权重",
-  "appSettings_maxRouteWeightSubtitle": "一条路径可以累积的最大重量，取决于成功交付的数量。",
-  "appSettings_routeWeightSuccessIncrement": "成功权重增加",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "在成功交付后，将重量添加到路径中",
-  "appSettings_routeWeightFailureDecrement": "失败权重降低",
-  "appSettings_routeWeightFailureDecrementSubtitle": "从一条路径上移除的货物，由于无法成功交付而移除。",
   "appSettings_maxMessageRetries": "最大消息重试次数",
   "appSettings_maxMessageRetriesSubtitle": "在将消息标记为失败之前，允许尝试的次数",
   "path_routeWeight": "{weight}/{max}",
@@ -2383,10 +2374,10 @@
   "repeater_cliHelpStatsPackets": "（仅显示序列信息）显示数据包级别的统计信息。",
   "repeater_cliHelpStatsRadio": "（仅显示序列信息）显示收音机相关统计数据。",
   "repeater_cliHelpStatsCore": "（仅显示序列号）显示核心固件统计信息。",
-  "common_done": "Done",
-  "background_serviceTitle": "MeshCore running",
-  "background_serviceText": "Keeping BLE connected",
-  "appSettings_translationModelDeleted": "Deleted {name}",
+  "common_done": "完成",
+  "background_serviceTitle": "MeshCore 运行中",
+  "background_serviceText": "保持蓝牙连接",
+  "appSettings_translationModelDeleted": "已删除 {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {
       "name": {
@@ -2394,7 +2385,7 @@
       }
     }
   },
-  "appSettings_translationModelDeleteFailed": "Failed to delete: {error}",
+  "appSettings_translationModelDeleteFailed": "删除失败：{error}",
   "@appSettings_translationModelDeleteFailed": {
     "placeholders": {
       "error": {
@@ -2402,7 +2393,7 @@
       }
     }
   },
-  "channels_channelUpdateFailed": "Failed to update channel: {error}",
+  "channels_channelUpdateFailed": "更新频道失败：{error}",
   "@channels_channelUpdateFailed": {
     "placeholders": {
       "error": {
@@ -2411,16 +2402,16 @@
     }
   },
   "map_type": "Type",
-  "map_path": "Path",
-  "map_location": "Location",
-  "map_estLocation": "Est. Location",
-  "map_publicKey": "Public Key",
+  "map_path": "路径",
+  "map_location": "位置",
+  "map_estLocation": "预估位置",
+  "map_publicKey": "公钥",
   "map_publicKeyPrefixHint": "e.g. ab12",
   "contact_typeChat": "Chat",
   "contact_typeRepeater": "Repeater",
   "contact_typeRoom": "Room",
   "contact_typeSensor": "Sensor",
-  "contact_typeUnknown": "Unknown",
+  "contact_typeUnknown": "未知",
   "channels_via": "via {path}",
   "chat_score": "Score",
   "map_sharedAt": "已分享",
@@ -2517,9 +2508,9 @@
   "contacts_searchOpen": "搜索联系人",
   "contacts_searchClose": "高级搜索",
   "routing_title": "路由",
-  "routing_modeAuto": "汽车",
+  "routing_modeAuto": "自动",
   "routing_modeFlood": "泛洪",
-  "routing_modeManual": "手册",
+  "routing_modeManual": "手动",
   "routing_modeAutoHint": "自动选择已知最佳路径，当没有已知路径时，则进行“泛洪”搜索。",
   "routing_modeFloodHint": "通过所有中继站进行广播。 这种方式最可靠，但占用更多的时间。",
   "routing_modeManualHint": "总是按照您设置的路径进行导航。",
@@ -2552,8 +2543,8 @@
   "pathEditor_tooManyHops": "最多 64 跳",
   "pathEditor_usePath": "请使用此路径",
   "pathEditor_removeHop": "去除跳点",
-  "routing_deliveryCounts": "{successes} delivered, {failures} failed",
-  "pathEditor_hopCounter": "{count} of 64 hops",
+  "routing_deliveryCounts": "已送达 {successes}，失败 {failures}",
+  "pathEditor_hopCounter": "{count} / 64 跳",
   "pathEditor_unknownHop": "未知的重复器",
   "map_zoomIn": "放大",
   "map_zoomOut": "放大",
@@ -2832,7 +2823,7 @@
   "imageMessages_autoProcessSubtitle": "每次图像到达后立即重建，每次需要约2GB的内存；若想关闭重建功能，可通过点击取消开启。",
   "imageSend_title": "发送图片",
   "imageSend_cropNote": "调整大小至512 × 512 · 宽高比未保留",
-  "imageSend_originalSize": "原文",
+  "imageSend_originalSize": "原图",
   "imageSend_onAirSize": "直播中",
   "imageSend_quality": "质量",
   "imageSend_qualityStandard": "标准",
@@ -3725,5 +3716,122 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "在聊天中找不到该消息",
+  "chat_clearSelection": "取消选择",
+  "chat_deleteSelectedConfirm": "{count, plural, other{要从此设备删除 {count} 条消息吗？}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "删除消息？",
+  "chat_messagesDeleted": "{count, plural, other{已删除 {count} 条消息}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "全选",
+  "chat_selectMessages": "选择消息",
+  "chat_selectedCount": "已选择 {count} 项",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "重新添加",
+  "messageFilter_markedNotSpamCount": "{count, plural, other{已将 {count} 条消息标记为非垃圾消息}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, other{已将 {count} 条消息标记为垃圾消息}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "展开中继列表",
+  "pathMap_showMap": "显示地图",
+  "routing_modeDirect": "直连",
+  "routing_modeDirectHint": "始终直接发送给该联系人，不经过中继跳。在对方处于无线电范围内时使用。",
+  "settings_export": "导出",
+  "settings_exportSubtitle": "将联系人和中继站导出为 GPX",
+  "backupRestore_title": "备份与恢复",
+  "backupRestore_subtitle": "保存或恢复应用数据和无线电设置",
+  "backupRestore_import": "导入",
+  "backupRestore_selectImportFile": "导入文件",
+  "backupRestore_password": "密码（可选）",
+  "backupRestore_passwordHelp": "设置密码会加密文件。留空则以明文保存，可能包含私钥/频道密钥、历史记录和凭据。",
+  "backupRestore_importUnavailable": "请检查密码，或选择受支持的备份文件。",
+  "backupRestore_items": "备份和恢复项目",
+  "backupRestore_nodeSettings": "节点设置",
+  "backupRestore_nodeSettingsDescription": "设备名称、私钥和公钥、无线电设置以及区域",
+  "backupRestore_deviceName": "设备名称",
+  "backupRestore_privateKey": "私钥（敏感）",
+  "backupRestore_publicKey": "公钥",
+  "backupRestore_radioSettings": "无线电设置",
+  "backupRestore_regions": "区域",
+  "backupRestore_location": "位置",
+  "backupRestore_contactSettings": "联系人设置",
+  "backupRestore_privacySettings": "隐私设置",
+  "backupRestore_contactsData": "联系人",
+  "backupRestore_perContactSettings": "联系人设置和过滤器",
+  "backupRestore_contactGroups": "联系人分组",
+  "backupRestore_contactHistory": "联系人历史记录",
+  "backupRestore_channelsData": "频道",
+  "backupRestore_channelFilters": "消息过滤设置",
+  "backupRestore_channelSettings": "频道设置",
+  "backupRestore_communities": "社区",
+  "backupRestore_channelHistory": "频道历史记录",
+  "backupRestore_locationSettings": "位置设置",
+  "backupRestore_locationSettingsDescription": "位置、联系人设置和隐私设置",
+  "backupRestore_appSettings": "应用设置",
+  "backupRestore_appSettingsDescription": "应用偏好和外观设置",
+  "backupRestore_ipfsKey": "IPFS API 密钥（敏感）",
+  "backupRestore_stadiaMapKey": "Stadia Maps API 密钥（敏感）",
+  "backupRestore_contacts": "联系人",
+  "backupRestore_contactsDescription": "联系人、每个联系人的过滤器和设置、分组以及消息历史记录",
+  "backupRestore_discoveredContacts": "已发现的联系人",
+  "backupRestore_discoveredContactsDescription": "已发现的联系人及其保存的详细信息",
+  "backupRestore_channels": "频道",
+  "backupRestore_channelsDescription": "频道、频道过滤器、社区和消息历史记录",
+  "backupRestore_backup": "创建备份",
+  "backupRestore_restore": "恢复所选项",
+  "backupRestore_backupComplete": "备份文件已创建。",
+  "backupRestore_restoreComplete": "恢复完成。如果恢复了无线电身份，请重新连接。",
+  "backupRestore_missingModelsTitle": "模型未下载",
+  "backupRestore_missingModelsMessage": "恢复的设置所选用的模型在此设备上不可用：\n{models}\n\n现在下载吗？",
+  "backupRestore_downloadModels": "下载模型",
+  "backupRestore_downloading": "正在下载…",
+  "backupRestore_cancelDownload": "取消下载",
+  "backupRestore_failed": "备份操作失败：{error}",
+  "backupRestore_fileTooLarge": "备份文件超过 100 MB 的限制。",
+  "backupRestore_selectAtLeastOne": "请至少选择一项。",
+  "backupRestore_replaceIdentityTitle": "替换无线电身份？",
+  "backupRestore_replaceIdentityMessage": "恢复节点设置会替换已连接无线电的私钥并更改其身份。仅在确有此意时继续。",
+  "appSettings_languagePtPt": "葡萄牙语（葡萄牙）",
+  "receivedImage_syntheticBadge": "AI 重建",
+  "appBar_offlineSubtitle": "离线 · {name}",
+  "appBar_offline": "离线",
+  "appBar_reconnecting": "正在重新连接…",
+  "connectSheet_title": "连接无线电",
+  "connectSheet_reconnect": "重新连接到 {name}",
+  "connectSheet_chooseRadio": "选择无线电",
+  "connectSheet_chooseRadioSubtitle": "蓝牙、USB 或 TCP",
+  "connectSheet_stopReconnecting": "停止重新连接",
+  "connectSheet_reconnectFailed": "无法连接到 {name}。请确保其已开机且在附近。",
+  "chat_composerOffline": "连接到无线电后才能发送消息"
 }

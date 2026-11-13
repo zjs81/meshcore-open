@@ -13,6 +13,7 @@ import '../models/community.dart';
 import '../storage/community_store.dart';
 import '../theme/mesh_theme.dart';
 import '../utils/channel_qr.dart';
+import '../utils/radio_guard.dart';
 import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/qr_scanner_widget.dart';
@@ -89,7 +90,7 @@ class _CommunityQrScannerScreenState extends State<CommunityQrScannerScreen> {
     });
 
     final connector = context.read<MeshCoreConnector>();
-    _communityStore.setPublicKeyHex = connector.selfPublicKeyHex;
+    _communityStore.setPublicKeyHex = connector.storageKeyHex;
     // Set when this screen is about to pop: keep the spinner up so the camera
     // doesn't restart on a closing route and detect the code again.
     var leaving = false;
@@ -468,9 +469,10 @@ class _CommunityQrScannerScreenState extends State<CommunityQrScannerScreen> {
     Community community,
     bool addPublicChannel,
   ) async {
+    if (!ensureRadioConnected(context)) return false;
     // Save community to local storage
     final connector = context.read<MeshCoreConnector>();
-    _communityStore.setPublicKeyHex = connector.selfPublicKeyHex;
+    _communityStore.setPublicKeyHex = connector.storageKeyHex;
     await _communityStore.addCommunity(community);
 
     // Optionally add the community public channel to the device. Only trust

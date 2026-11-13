@@ -45,7 +45,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get common_close => 'Zamknij';
 
   @override
-  String get common_done => 'Done';
+  String get common_done => 'Gotowe';
 
   @override
   String get common_edit => 'Edytuj';
@@ -406,6 +406,191 @@ class AppLocalizationsPl extends AppLocalizations {
       'Powiadomienia, wiadomości i preferencje mapy';
 
   @override
+  String get settings_export => 'Eksportuj';
+
+  @override
+  String get settings_exportSubtitle =>
+      'Eksportuj kontakty i przekaźniki jako GPX';
+
+  @override
+  String get backupRestore_title => 'Kopia zapasowa i przywracanie';
+
+  @override
+  String get backupRestore_subtitle =>
+      'Zapisz lub przywróć dane aplikacji i ustawienia radia';
+
+  @override
+  String get backupRestore_import => 'Importuj';
+
+  @override
+  String get backupRestore_selectImportFile => 'Importuj plik';
+
+  @override
+  String get backupRestore_password => 'Hasło (opcjonalnie)';
+
+  @override
+  String get backupRestore_passwordHelp =>
+      'Hasło szyfruje plik. Puste zapisuje zwykły tekst, który może zawierać klucze prywatne/kanałów, historię i dane uwierzytelniające.';
+
+  @override
+  String get backupRestore_importUnavailable =>
+      'Sprawdź hasło lub wybierz obsługiwany plik kopii zapasowej.';
+
+  @override
+  String get backupRestore_items => 'Elementy kopii zapasowej i przywracania';
+
+  @override
+  String get backupRestore_nodeSettings => 'Ustawienia węzła';
+
+  @override
+  String get backupRestore_nodeSettingsDescription =>
+      'Nazwa urządzenia, klucze prywatny i publiczny, ustawienia radia i regiony';
+
+  @override
+  String get backupRestore_deviceName => 'Nazwa urządzenia';
+
+  @override
+  String get backupRestore_privateKey => 'Klucz prywatny (wrażliwy)';
+
+  @override
+  String get backupRestore_publicKey => 'Klucz publiczny';
+
+  @override
+  String get backupRestore_radioSettings => 'Ustawienia radia';
+
+  @override
+  String get backupRestore_regions => 'Regiony';
+
+  @override
+  String get backupRestore_location => 'Lokalizacja';
+
+  @override
+  String get backupRestore_contactSettings => 'Ustawienia kontaktów';
+
+  @override
+  String get backupRestore_privacySettings => 'Ustawienia prywatności';
+
+  @override
+  String get backupRestore_contactsData => 'Kontakty';
+
+  @override
+  String get backupRestore_perContactSettings =>
+      'Ustawienia i filtry kontaktów';
+
+  @override
+  String get backupRestore_contactGroups => 'Grupy kontaktów';
+
+  @override
+  String get backupRestore_contactHistory => 'Historia kontaktów';
+
+  @override
+  String get backupRestore_channelsData => 'Kanały';
+
+  @override
+  String get backupRestore_channelFilters => 'Ustawienia filtra wiadomości';
+
+  @override
+  String get backupRestore_channelSettings => 'Ustawienia kanałów';
+
+  @override
+  String get backupRestore_communities => 'Społeczności';
+
+  @override
+  String get backupRestore_channelHistory => 'Historia kanałów';
+
+  @override
+  String get backupRestore_locationSettings => 'Ustawienia lokalizacji';
+
+  @override
+  String get backupRestore_locationSettingsDescription =>
+      'Lokalizacja, ustawienia kontaktów i prywatności';
+
+  @override
+  String get backupRestore_appSettings => 'Ustawienia aplikacji';
+
+  @override
+  String get backupRestore_appSettingsDescription =>
+      'Preferencje aplikacji i ustawienia wyglądu';
+
+  @override
+  String get backupRestore_ipfsKey => 'Klucz API IPFS (wrażliwy)';
+
+  @override
+  String get backupRestore_stadiaMapKey => 'Klucz API Stadia Maps (wrażliwy)';
+
+  @override
+  String get backupRestore_contacts => 'Kontakty';
+
+  @override
+  String get backupRestore_contactsDescription =>
+      'Kontakty, filtry i ustawienia poszczególnych kontaktów, grupy i historia wiadomości';
+
+  @override
+  String get backupRestore_discoveredContacts => 'Wykryte kontakty';
+
+  @override
+  String get backupRestore_discoveredContactsDescription =>
+      'Wykryte kontakty i ich zapisane dane';
+
+  @override
+  String get backupRestore_channels => 'Kanały';
+
+  @override
+  String get backupRestore_channelsDescription =>
+      'Kanały, filtry kanałów, społeczności i historia wiadomości';
+
+  @override
+  String get backupRestore_backup => 'Utwórz kopię zapasową';
+
+  @override
+  String get backupRestore_restore => 'Przywróć wybrane';
+
+  @override
+  String get backupRestore_backupComplete =>
+      'Plik kopii zapasowej został utworzony.';
+
+  @override
+  String get backupRestore_restoreComplete =>
+      'Przywracanie zakończone. Połącz się ponownie, jeśli przywrócono tożsamość radia.';
+
+  @override
+  String get backupRestore_missingModelsTitle => 'Modele nie zostały pobrane';
+
+  @override
+  String backupRestore_missingModelsMessage(String models) {
+    return 'Przywrócone ustawienia wybierają modele, które nie są dostępne na tym urządzeniu:\n$models\n\nPobrać je teraz?';
+  }
+
+  @override
+  String get backupRestore_downloadModels => 'Pobierz modele';
+
+  @override
+  String get backupRestore_downloading => 'Pobieranie…';
+
+  @override
+  String get backupRestore_cancelDownload => 'Anuluj pobieranie';
+
+  @override
+  String backupRestore_failed(String error) {
+    return 'Operacja kopii zapasowej nie powiodła się: $error';
+  }
+
+  @override
+  String get backupRestore_fileTooLarge =>
+      'Plik kopii zapasowej przekracza limit 100 MB.';
+
+  @override
+  String get backupRestore_selectAtLeastOne =>
+      'Wybierz co najmniej jeden element.';
+
+  @override
+  String get backupRestore_replaceIdentityTitle => 'Zastąpić tożsamość radia?';
+
+  @override
+  String get backupRestore_replaceIdentityMessage =>
+      'Przywrócenie ustawień węzła zastępuje klucz prywatny podłączonego radia i zmienia jego tożsamość. Kontynuuj tylko, jeśli to zamierzone.';
+
+  @override
   String get settings_nodeSettings => 'Ustawienia węzła';
 
   @override
@@ -645,11 +830,11 @@ class AppLocalizationsPl extends AppLocalizations {
   String get settings_actions => 'Działania';
 
   @override
-  String get settings_deleteAllPaths => 'Delete All Paths';
+  String get settings_deleteAllPaths => 'Usuń wszystkie ścieżki';
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Clear all path data from contacts.';
+      'Wyczyść wszystkie dane ścieżek z kontaktów.';
 
   @override
   String get settings_sendAdvertisement => 'Wyślij rozgłoszenie';
@@ -830,7 +1015,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get appSettings_themeLight => 'Jasne';
 
   @override
-  String get appSettings_themeDark => 'Ciemny';
+  String get appSettings_themeDark => 'Ciemne';
 
   @override
   String get appSettings_colorTheme => 'Motyw kolorystyczny';
@@ -1089,7 +1274,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get appSettings_languageSl => 'Słoweński';
 
   @override
-  String get appSettings_languagePt => 'Portugalski';
+  String get appSettings_languagePt => 'Portugalski (Brazylia)';
+
+  @override
+  String get appSettings_languagePtPt => 'Portugalski (Portugalia)';
 
   @override
   String get appSettings_languageIt => 'Włoski';
@@ -1280,36 +1468,6 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get appSettings_autoRouteRotationDisabled =>
       'Automatyczne obracanie tras wyłączone';
-
-  @override
-  String get appSettings_maxRouteWeight =>
-      'Maksymalny dopuszczalny ciężar pojazdu';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Maksymalna waga, jaką ścieżka może zgromadzić dzięki udanym dostawom.';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Początkowa waga trasy';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Początkowa waga dla nowych, odkrytych ścieżek';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement => 'Wzrost wagi sukcesu';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Waga dodana do ścieżki po pomyślnym dostarczeniu';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Zmniejszenie wagi kary';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Waga usunięta z trasy po nieudanej dostawie';
 
   @override
   String get appSettings_maxMessageRetries =>
@@ -2093,6 +2251,9 @@ class AppLocalizationsPl extends AppLocalizations {
       'Spróbuj innego słowa lub sprawdź pisownię';
 
   @override
+  String get chatSearch_jumpFailed => 'Nie znaleziono tej wiadomości w czacie';
+
+  @override
   String get chat_sendMessage => 'Wyślij wiadomość';
 
   @override
@@ -2137,6 +2298,75 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Wiadomość usunięta';
+
+  @override
+  String get chat_selectMessages => 'Wybierz wiadomości';
+
+  @override
+  String chat_selectedCount(int count) {
+    return 'Wybrano: $count';
+  }
+
+  @override
+  String get chat_selectAll => 'Zaznacz wszystko';
+
+  @override
+  String get chat_clearSelection => 'Wyczyść zaznaczenie';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Usunąć wiadomości?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Usunąć $count wiadomości z tego urządzenia?',
+      many: 'Usunąć $count wiadomości z tego urządzenia?',
+      few: 'Usunąć $count wiadomości z tego urządzenia?',
+      one: 'Usunąć 1 wiadomość z tego urządzenia?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Usunięto $count wiadomości',
+      many: 'Usunięto $count wiadomości',
+      few: 'Usunięto $count wiadomości',
+      one: 'Usunięto 1 wiadomość',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Oznaczono $count wiadomości jako spam',
+      many: 'Oznaczono $count wiadomości jako spam',
+      few: 'Oznaczono $count wiadomości jako spam',
+      one: 'Oznaczono 1 wiadomość jako spam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Oznaczono $count wiadomości jako nie spam',
+      many: 'Oznaczono $count wiadomości jako nie spam',
+      few: 'Oznaczono $count wiadomości jako nie spam',
+      one: 'Oznaczono 1 wiadomość jako nie spam',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Ponawianie wiadomości';
@@ -2370,17 +2600,20 @@ class AppLocalizationsPl extends AppLocalizations {
   String get routing_title => 'Planowanie tras';
 
   @override
-  String get routing_modeAuto => 'Samochód';
+  String get routing_modeAuto => 'Auto';
 
   @override
   String get routing_modeFlood => 'Flood';
 
   @override
-  String get routing_modeManual => 'Instrukcja obsługi';
+  String get routing_modeManual => 'Ręcznie';
+
+  @override
+  String get routing_modeDirect => 'Bezpośrednio';
 
   @override
   String get routing_modeAutoHint =>
-      'Automatycznie wybiera najpopularniejszą ścieżkę, a w przypadku braku znanej, przechodzi do trybu \"przepływu\".';
+      'Automatycznie wybiera najlepszą znaną ścieżkę, a gdy żadnej nie zna, używa flood.';
 
   @override
   String get routing_modeFloodHint =>
@@ -2389,6 +2622,10 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Zawsze prowadzi dokładnie po trasie, którą określiłeś.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Zawsze wysyła prosto do tego kontaktu, bez przeskoków przez repeatery. Użyj, gdy kontakt jest w zasięgu radia.';
 
   @override
   String get routing_currentRoute => 'Obecna trasa';
@@ -2434,7 +2671,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get routing_qualityWorked => 'Zostało dostarczone';
 
   @override
-  String get routing_qualityFlood => 'Usłyszano dzięki doniesieniom';
+  String get routing_qualityFlood => 'Usłyszano przez flood';
 
   @override
   String get routing_qualityUntested => 'Nieużywany';
@@ -2449,7 +2686,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String routing_deliveryCounts(int successes, int failures) {
-    return '$successes delivered, $failures failed';
+    return '$successes dostarczono, $failures nie powiodło się';
   }
 
   @override
@@ -2561,6 +2798,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Zapisano';
+
+  @override
+  String get contactShare_addAgain => 'Dodaj ponownie';
 
   @override
   String get contactShare_isYou => 'To Ty';
@@ -2716,10 +2956,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get map_lastSeen => 'Ostatni raz widziany';
 
   @override
-  String get map_disconnectConfirm =>
-      'Czy na pewno chcesz się odłączyć od tego urządzenia?';
-
-  @override
   String get map_from => 'Od';
 
   @override
@@ -2732,16 +2968,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String get map_type => 'Type';
 
   @override
-  String get map_path => 'Path';
+  String get map_path => 'Ścieżka';
 
   @override
-  String get map_location => 'Location';
+  String get map_location => 'Lokalizacja';
 
   @override
-  String get map_estLocation => 'Est. Location';
+  String get map_estLocation => 'Szac. lokalizacja';
 
   @override
-  String get map_publicKey => 'Public Key';
+  String get map_publicKey => 'Klucz publiczny';
 
   @override
   String get map_publicKeyPrefixHint => 'e.g. ab12';
@@ -3570,7 +3806,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Wysyłaj pakiety, które wyglądają jak pętle routingu.';
 
   @override
-  String get repeater_loopDetectOff => 'Z domu';
+  String get repeater_loopDetectOff => 'Wyłączone';
 
   @override
   String get repeater_loopDetectMinimal => 'Minimalny';
@@ -3716,7 +3952,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String repeater_actionFailed(String action, String error) {
-    return '$action failed: $error';
+    return '$action nie powiodło się: $error';
   }
 
   @override
@@ -5864,24 +6100,24 @@ class AppLocalizationsPl extends AppLocalizations {
   String get translation_systemLanguage => 'Język systemu';
 
   @override
-  String get background_serviceTitle => 'MeshCore running';
+  String get background_serviceTitle => 'MeshCore działa';
 
   @override
-  String get background_serviceText => 'Keeping BLE connected';
+  String get background_serviceText => 'Utrzymywanie połączenia BLE';
 
   @override
   String appSettings_translationModelDeleted(String name) {
-    return 'Deleted $name';
+    return 'Usunięto $name';
   }
 
   @override
   String appSettings_translationModelDeleteFailed(String error) {
-    return 'Failed to delete: $error';
+    return 'Nie udało się usunąć: $error';
   }
 
   @override
   String channels_channelUpdateFailed(String error) {
-    return 'Failed to update channel: $error';
+    return 'Nie udało się zaktualizować kanału: $error';
   }
 
   @override
@@ -5897,7 +6133,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get contact_typeSensor => 'Sensor';
 
   @override
-  String get contact_typeUnknown => 'Unknown';
+  String get contact_typeUnknown => 'Nieznany';
 
   @override
   String get map_zoomIn => 'Przybliż';
@@ -6029,6 +6265,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get pathMap_expandPanel => 'Rozwiń panel';
 
   @override
+  String get pathMap_expandHopList => 'Rozwiń listę przeskoków';
+
+  @override
+  String get pathMap_showMap => 'Pokaż mapę';
+
+  @override
   String get pathMap_noLocation => 'Brak lokalizacji';
 
   @override
@@ -6085,7 +6327,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get imageSend_airtimeLabel => 'Czas w eterze';
 
   @override
-  String get imageSend_sizeLabel => 'Payload';
+  String get imageSend_sizeLabel => 'Dane';
 
   @override
   String imageSend_packetsCount(int count) {
@@ -6123,7 +6365,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get imageSend_floodNote =>
-      'Przepływ pakietów: każdy retransmitujący w zasięgu przekazuje każdy pakiet, przez co kanał pozostaje zajęty dłużej niż ten czas.';
+      'Routing flood: każdy przekaźnik w zasięgu retransmituje każdy pakiet, przez co kanał pozostaje zajęty dłużej niż ten czas.';
 
   @override
   String get imageSend_parityTitle => 'Pakiet odzysku';
@@ -6239,6 +6481,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String receivedImage_shareCaption(int bytes) {
     return 'Odtworzony przez AI z $bytes bajtów; drobne szczegóły są generowane, a nie przesyłane.';
   }
+
+  @override
+  String get receivedImage_syntheticBadge => 'Odtworzone przez AI';
 
   @override
   String get receivedImage_packetInfo => 'Informacje o pakiecie';
@@ -7258,4 +7503,41 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get messageFilter_ghostIconTooltip =>
       'Ukryte przez Twój filtr wiadomości';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'Offline · $name';
+  }
+
+  @override
+  String get appBar_offline => 'Offline';
+
+  @override
+  String get appBar_reconnecting => 'Ponowne łączenie…';
+
+  @override
+  String get connectSheet_title => 'Połącz z radiem';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return 'Połącz ponownie z $name';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => 'Wybierz radio';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB lub TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => 'Zatrzymaj ponowne łączenie';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return 'Nie można połączyć z $name. Upewnij się, że jest włączone i w pobliżu.';
+  }
+
+  @override
+  String get chat_composerOffline =>
+      'Połącz się z radiem, aby wysyłać wiadomości';
 }

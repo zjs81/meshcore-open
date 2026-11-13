@@ -59,6 +59,7 @@ import '../storage/channel_store.dart';
 import '../storage/contact_discovery_store.dart';
 import '../storage/contact_settings_store.dart';
 import '../storage/contact_store.dart';
+import '../storage/last_radio_store.dart';
 import '../storage/message_store.dart';
 import '../storage/unread_store.dart';
 import '../review_mode/review_mode_storage.dart';
@@ -155,6 +156,14 @@ enum MeshCoreConnectionState {
 
 enum MeshCoreTransportType { bluetooth, usb, tcp, review }
 
+/// Thrown by [MeshCoreConnector.sendFrame] when no radio is connected.
+class RadioNotConnectedException implements Exception {
+  const RadioNotConnectedException();
+
+  @override
+  String toString() => 'Exception: Not connected to a MeshCore device';
+}
+
 class RepeaterBatterySnapshot {
   final int millivolts;
   final DateTime updatedAt;
@@ -246,6 +255,9 @@ class MeshCoreConnector extends ChangeNotifier {
   static const int _errCodeNotFound = 2;
   int _reactionSendQueueSequence = 0;
   final Set<String> _loadedConversationKeys = {};
+  int _messageHistoryGeneration = 0;
+  final Map<String, Future<List<Message>>> _conversationPageLoads = {};
+  final Map<String, Future<List<ChannelMessage>>> _channelPageLoads = {};
   // Self public key of the radio whose messages are held in memory.
   String? _messageStateOwnerKey;
   // Self public key whose persisted stores were loaded this link session.
@@ -324,6 +336,20 @@ class MeshCoreConnector extends ChangeNotifier {
   double? _selfLatitude;
   double? _selfLongitude;
   final List<DirectRepeater> _directRepeaters = List.empty(growable: true);
+
+  /// Nodes heard with no repeater in between — advertisers heard directly
+  /// and the last hop of relayed adverts — for auto routing's [RouteContext].
+  /// Kept longer and wider than [_directRepeaters] (which is capped at the
+  /// five strongest for display).
+  static const Duration _heardNeighbourWindow = Duration(hours: 2);
+  static const int _maxHeardNeighbours = 128;
+  final List<({List<int> prefix, DateTime at})> _heardNeighbours = [];
+
+  /// When each contact was last heard with no repeater in between.
+  final Map<String, DateTime> _heardDirectAt = {};
+
+  /// Radio the heard-neighbour observations above belong to.
+  String? _heardNeighboursRadioKey;
   bool _isLoadingContacts = false;
   DateTime? _contactSyncRequestedAt;
   bool _hasLoadedContacts = false;
@@ -496,6 +522,14 @@ class MeshCoreConnector extends ChangeNotifier {
   final ContactDiscoveryStore _discoveryContactStore = ContactDiscoveryStore();
   final ChannelStore _channelStore = ChannelStore();
   final UnreadStore _unreadStore = UnreadStore();
+  final LastRadioStore _lastRadioStore = LastRadioStore();
+  // Last radio that completed a real (non-review) handshake.
+  LastRadio? _lastRadio;
+  // Full public key of the radio whose saved data is shown while no radio is
+  // connected.
+  String? _offlineScopeKeyHex;
+  // Bumped by every offline load so an older one stops early.
+  int _offlineLoadGeneration = 0;
   List<Channel> _cachedChannels = [];
   final Map<int, bool> _channelSmazEnabled = {};
   final Map<int, bool> _channelCyr2LatEnabled = {};
@@ -582,13 +616,30 @@ class MeshCoreConnector extends ChangeNotifier {
 
   List<ScanResult> get scanResults => List.unmodifiable(_scanResults);
   List<Contact> get contacts {
-    final selfKey = _selfPublicKey;
-    if (selfKey == null) {
+    final selfKeyHex = storageKeyHex;
+    if (selfKeyHex.isEmpty) {
       return List.unmodifiable(_contacts);
     }
     return List.unmodifiable(
-      _contacts.where((contact) => !listEquals(contact.publicKey, selfKey)),
+      _contacts.where((contact) => contact.publicKeyHex != selfKeyHex),
     );
+  }
+
+  /// Public key hex that per-radio stores are scoped to: the connected radio,
+  /// else the remembered radio whose saved data is shown offline.
+  String get storageKeyHex =>
+      _selfPublicKey != null ? selfPublicKeyHex : (_offlineScopeKeyHex ?? '');
+
+  /// Whether there is a radio whose data can be shown, connected or not.
+  bool get hasRadioData => storageKeyHex.isNotEmpty;
+
+  LastRadio? get lastRadio => _lastRadio;
+
+  String? get lastRadioName {
+    final radio = _lastRadio;
+    if (radio == null) return null;
+    if (radio.name.trim().isNotEmpty) return radio.name.trim();
+    return radio.bleDisplayName;
   }
 
   Contact? getContactByPubKeyHex(String contactPubKeyHex) {
@@ -610,6 +661,12 @@ class MeshCoreConnector extends ChangeNotifier {
 
   List<Contact> get discoveredContacts {
     return List.unmodifiable(_discoveredContacts);
+  }
+
+  Future<void> reloadDiscoveredContacts() async {
+    if (!isConnected) return;
+    await _loadDiscoveredContactCache();
+    await updateKnownDiscovered();
   }
 
   String exportDiscoveredContactsJson() {
@@ -916,6 +973,8 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   Future<void> resendMessage(Contact contact, Message message) async {
+    // sendMessage does nothing offline, so deleting first would lose it.
+    if (!isConnected) return;
     await deleteMessage(message);
     await sendMessage(
       contact,
@@ -929,62 +988,81 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> _loadMessagesForContact(String contactKeyHex) async {
     if (_loadedConversationKeys.contains(contactKeyHex)) return;
     _loadedConversationKeys.add(contactKeyHex);
-
-    final allMessages = await _messageStore.loadMessages(contactKeyHex);
-    if (allMessages.isNotEmpty) {
-      // Keep only the most recent N messages in memory to bound memory usage
-      final windowedMessages = allMessages.length > _messageWindowSize
-          ? allMessages.sublist(allMessages.length - _messageWindowSize)
-          : allMessages;
-      final archivedMessages = allMessages.sublist(
-        0,
-        allMessages.length - windowedMessages.length,
+    final generation = _messageHistoryGeneration;
+    final scope = _messageStore.publicKeyHex;
+    bool current() =>
+        !_disposed &&
+        generation == _messageHistoryGeneration &&
+        scope == _messageStore.publicKeyHex;
+    final page = await _readSettledPage(
+      current: current,
+      window: () => _conversations[contactKeyHex] ?? const <Message>[],
+      archived: () => _messageStore.archivedCount(contactKeyHex),
+      read: (_, _) => _messageStore.loadMessagePage(
+        contactKeyHex,
+        limit: _messageWindowSize,
+      ),
+    );
+    if (page == null) return;
+    final currentMessages = _conversations[contactKeyHex] ?? const <Message>[];
+    final mergedMessages = <Message>[...page.messages];
+    final persistedKeyCounts = <String, int>{};
+    for (final message in page.messages) {
+      final key = _messageMergeKey(message);
+      persistedKeyCounts[key] = (persistedKeyCounts[key] ?? 0) + 1;
+    }
+    final currentKeyCounts = <String, int>{};
+    for (final message in currentMessages) {
+      final key = _messageMergeKey(message);
+      final count = (currentKeyCounts[key] ?? 0) + 1;
+      currentKeyCounts[key] = count;
+      if (count > (persistedKeyCounts[key] ?? 0)) mergedMessages.add(message);
+    }
+    mergedMessages.sort((a, b) => a.receivedAt.compareTo(b.receivedAt));
+    final trimCount = (mergedMessages.length - _messageWindowSize).clamp(
+      0,
+      mergedMessages.length,
+    );
+    _messageStore.setArchivedCount(contactKeyHex, page.start);
+    if (trimCount > 0) {
+      _messageStore.archive(
+        contactKeyHex,
+        mergedMessages.sublist(0, trimCount),
       );
-
-      final currentMessages =
-          _conversations[contactKeyHex] ?? const <Message>[];
-      final mergedMessages = <Message>[...windowedMessages];
-      final persistedKeyCounts = <String, int>{};
-      for (final message in windowedMessages) {
-        final key = _messageMergeKey(message);
-        persistedKeyCounts[key] = (persistedKeyCounts[key] ?? 0) + 1;
-      }
-      final currentKeyCounts = <String, int>{};
-
-      for (final message in currentMessages) {
-        final key = _messageMergeKey(message);
-        final currentCount = (currentKeyCounts[key] ?? 0) + 1;
-        currentKeyCounts[key] = currentCount;
-        final persistedCount = persistedKeyCounts[key] ?? 0;
-
-        // Preserve distinct duplicates without IDs (for example same text
-        // received multiple times in the same second) by only skipping the
-        // overlapping occurrences that already exist in persisted storage.
-        if (currentCount > persistedCount) {
-          mergedMessages.add(message);
-        }
-      }
-
-      // Re-sort after merging persisted and in-memory messages so the
-      // conversation window remains stable after optimistic inserts.
-      mergedMessages.sort((a, b) => a.receivedAt.compareTo(b.receivedAt));
-      final trimCount = mergedMessages.length > _messageWindowSize
-          ? mergedMessages.length - _messageWindowSize
-          : 0;
-      final windowedMergedMessages = mergedMessages.sublist(trimCount);
-
-      // Everything stored ahead of the window stays in storage on the next
-      // save instead of being overwritten by the window.
-      _messageStore.setArchived(contactKeyHex, [
-        ...archivedMessages,
-        ...mergedMessages.sublist(0, trimCount),
-      ]);
-      _conversations[contactKeyHex] = windowedMergedMessages;
+    }
+    if (mergedMessages.isNotEmpty) {
+      _conversations[contactKeyHex] = mergedMessages.sublist(trimCount);
       notifyListeners();
-    } else {
-      _messageStore.setArchived(contactKeyHex, const []);
     }
   }
+
+  /// Reads a stored page once queued writes have landed, and again whenever
+  /// the in-memory [window] or the [archived] count moved during the read.
+  /// Returns null when [current] turns false, or when [older] history is
+  /// requested and none is archived.
+  Future<P?> _readSettledPage<M, P>({
+    required bool Function() current,
+    required List<M> Function() window,
+    required int? Function() archived,
+    required Future<P> Function(int? archived, List<M> window) read,
+    bool older = false,
+  }) async {
+    while (true) {
+      await _coalescedWrites.flush();
+      if (!current()) return null;
+      final archivedBefore = archived();
+      if (older && archivedBefore == 0) return null;
+      final snapshot = List<M>.of(window());
+      final page = await read(archivedBefore, snapshot);
+      if (!current()) return null;
+      if (listEquals(snapshot, window()) && archivedBefore == archived()) {
+        return page;
+      }
+    }
+  }
+
+  static int _startOfWindow(int stored, List<Object?> window) =>
+      (stored - window.length).clamp(0, stored);
 
   String _messageMergeKey(Message message) {
     final messageId = message.messageId;
@@ -998,74 +1076,168 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<List<Message>> loadOlderMessages(
     String contactKeyHex, {
     int count = 50,
-  }) async {
-    final allMessages = await _messageStore.loadMessages(contactKeyHex);
-    final currentMessages = _conversations[contactKeyHex] ?? [];
+  }) {
+    if (count <= 0) return Future.value([]);
+    final loadKey = '${_messageStore.publicKeyHex}:$contactKeyHex';
+    final pending = _conversationPageLoads[loadKey];
+    if (pending != null) return pending;
+    final started = _loadOlderMessages(contactKeyHex, count);
+    _conversationPageLoads[loadKey] = started;
+    return started.whenComplete(() {
+      if (identical(_conversationPageLoads[loadKey], started)) {
+        _conversationPageLoads.remove(loadKey);
+      }
+    });
+  }
 
-    // Storage holds the archived entries followed by the in-memory window.
-    final currentOffset =
-        (_messageStore.archivedCount(contactKeyHex) ??
-                allMessages.length - currentMessages.length)
-            .clamp(0, allMessages.length);
-    if (currentOffset == 0) {
-      return []; // No more messages to load
-    }
-
-    final fetchCount = count.clamp(0, currentOffset);
-    final startIndex = currentOffset - fetchCount;
-
-    final olderMessages = allMessages.sublist(startIndex, currentOffset);
-    _messageStore.unarchiveNewest(contactKeyHex, olderMessages.length);
-
-    // Prepend to current conversation
-    _conversations[contactKeyHex] = [...olderMessages, ...currentMessages];
+  Future<List<Message>> _loadOlderMessages(
+    String contactKeyHex,
+    int count,
+  ) async {
+    final generation = _messageHistoryGeneration;
+    final scope = _messageStore.publicKeyHex;
+    bool current() =>
+        !_disposed &&
+        generation == _messageHistoryGeneration &&
+        scope == _messageStore.publicKeyHex;
+    final page = await _readSettledPage(
+      current: current,
+      window: () => _conversations[contactKeyHex] ?? const <Message>[],
+      archived: () => _messageStore.archivedCount(contactKeyHex),
+      older: true,
+      read: (archived, window) async => _messageStore.loadMessagePage(
+        contactKeyHex,
+        // Unreconciled storage is assumed to end with the loaded window.
+        before:
+            archived ??
+            _startOfWindow(
+              (await _messageStore.loadMessagePage(
+                contactKeyHex,
+                limit: 0,
+              )).total,
+              window,
+            ),
+        limit: count,
+      ),
+    );
+    if (page == null) return [];
+    _messageStore.setArchivedCount(contactKeyHex, page.start);
+    if (page.messages.isEmpty) return [];
+    final currentMessages = _conversations[contactKeyHex] ?? const <Message>[];
+    _conversations[contactKeyHex] = [...page.messages, ...currentMessages];
     notifyListeners();
-
-    return olderMessages;
+    return page.messages;
   }
 
   /// Full stored history (archived prefix plus the in-memory window) for
   /// search. Read-only: nothing is unarchived and listeners are not notified.
   Future<List<Message>> allMessagesForSearch(String contactKeyHex) async {
-    final stored = await _messageStore.loadMessages(contactKeyHex);
+    final generation = _messageHistoryGeneration;
+    final scope = _messageStore.publicKeyHex;
+    await _coalescedWrites.flush();
+    if (_disposed ||
+        generation != _messageHistoryGeneration ||
+        scope != _messageStore.publicKeyHex) {
+      return [];
+    }
+    final archived = _messageStore.archivedCount(contactKeyHex);
+    final stored = await _messageStore.loadMessages(
+      contactKeyHex,
+      limit: archived,
+    );
+    if (_disposed ||
+        generation != _messageHistoryGeneration ||
+        scope != _messageStore.publicKeyHex) {
+      return [];
+    }
     final window = _conversations[contactKeyHex] ?? const <Message>[];
-    final archived =
-        (_messageStore.archivedCount(contactKeyHex) ??
-                stored.length - window.length)
-            .clamp(0, stored.length);
-    return [...stored.sublist(0, archived), ...window];
+    final prefix = archived == null
+        ? stored.sublist(
+            0,
+            (stored.length - window.length).clamp(0, stored.length),
+          )
+        : stored;
+    return [...prefix, ...window];
   }
 
   /// Channel counterpart of [allMessagesForSearch]; read-only.
   Future<List<ChannelMessage>> allChannelMessagesForSearch(
     int channelIndex,
   ) async {
+    final generation = _messageHistoryGeneration;
+    final scope = _channelMessageStore.publicKeyHex;
     final slot = _canonicalSlot(channelIndex);
-    final window = _channelMessages[slot] ?? const <ChannelMessage>[];
     final channelId = _channelIdForSlot(slot);
-    if (channelId == null) return List.of(window);
-    final stored = await _channelMessageStore.loadChannelMessages(channelId);
-    final archived =
-        (_channelMessageStore.archivedCount(channelId) ??
-                stored.length - window.length)
-            .clamp(0, stored.length);
-    return [..._bindToSlot(stored.sublist(0, archived), slot), ...window];
+    if (channelId == null) return List.of(_channelMessages[slot] ?? []);
+    await _coalescedWrites.flush();
+    if (_disposed ||
+        generation != _messageHistoryGeneration ||
+        scope != _channelMessageStore.publicKeyHex ||
+        _slotChannelIds[slot] != channelId) {
+      return [];
+    }
+    final archived = _channelMessageStore.archivedCount(channelId);
+    final stored = await _channelMessageStore.loadChannelMessages(
+      channelId,
+      limit: archived,
+    );
+    if (_disposed ||
+        generation != _messageHistoryGeneration ||
+        scope != _channelMessageStore.publicKeyHex ||
+        _slotChannelIds[slot] != channelId) {
+      return [];
+    }
+    final window = _channelMessages[slot] ?? const <ChannelMessage>[];
+    final rebound = _bindToSlot(stored, slot);
+    final prefix = archived == null
+        ? rebound.sublist(
+            0,
+            (rebound.length - window.length).clamp(0, rebound.length),
+          )
+        : rebound;
+    return [...prefix, ...window];
   }
 
   List<ChannelMessage> getChannelMessages(Channel channel) {
     return _channelMessages[_canonicalSlot(channel.index)] ?? [];
   }
 
-  Future<void> deleteChannelMessage(ChannelMessage message) async {
-    final channelIndex = message.channelIndex;
-    if (channelIndex == null) return;
-    final slot = _canonicalSlot(channelIndex);
-    final messages = _channelMessages[slot];
-    if (messages == null) return;
-    final removed = messages.remove(message);
-    if (!removed) return;
-    await _saveChannelMessages(slot, messages);
+  Future<void> deleteChannelMessage(ChannelMessage message) =>
+      deleteChannelMessages([message]);
+
+  /// Deletes channel messages, saving each affected channel once. Returns how
+  /// many were removed.
+  ///
+  /// Matches by message id, not object identity: a repeat heard while a
+  /// confirmation dialog was open replaces the stored object (new path,
+  /// reactions), and identity matching would then silently delete nothing.
+  Future<int> deleteChannelMessages(Iterable<ChannelMessage> messages) async {
+    final idsBySlot = <int, Set<String>>{};
+    for (final message in messages) {
+      final channelIndex = message.channelIndex;
+      if (channelIndex == null) continue;
+      idsBySlot
+          .putIfAbsent(_canonicalSlot(channelIndex), () => <String>{})
+          .add(message.messageId);
+    }
+    var removed = 0;
+    final touched = <int>[];
+    for (final MapEntry(key: slot, value: ids) in idsBySlot.entries) {
+      final stored = _channelMessages[slot];
+      if (stored == null) continue;
+      final before = stored.length;
+      stored.removeWhere((m) => ids.contains(m.messageId));
+      if (stored.length != before) {
+        removed += before - stored.length;
+        touched.add(slot);
+      }
+    }
+    if (touched.isEmpty) return 0;
+    for (final slot in touched) {
+      await _saveChannelMessages(slot, _channelMessages[slot]!);
+    }
     notifyListeners();
+    return removed;
   }
 
   // ---- message filter -------------------------------------------------------
@@ -1252,21 +1424,29 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> markChannelMessageSpam(
     Channel channel,
     ChannelMessage message,
+  ) => markChannelMessagesSpam([(channel, message)]);
+
+  /// Bulk "Spam": hides every message and teaches the filter once.
+  Future<void> markChannelMessagesSpam(
+    List<(Channel channel, ChannelMessage message)> items,
   ) async {
-    _updateLoadedChannelMessageById(
-      channel,
-      message.messageId,
-      (existing) => existing
-          .copyWith(clearFilter: true)
-          .copyWith(filterReason: filterReasonToJson(FilterReason.manual)),
-    );
+    if (items.isEmpty) return;
+    for (final (channel, message) in items) {
+      _updateLoadedChannelMessageById(
+        channel,
+        message.messageId,
+        (existing) => existing
+            .copyWith(clearFilter: true)
+            .copyWith(filterReason: filterReasonToJson(FilterReason.manual)),
+      );
+    }
     notifyListeners();
     // Same text intake saw (reply mention stripped), so the spam example
     // replaces the clean one recorded on arrival instead of contradicting it.
-    await _messageFilterService?.markSpam(
-      sender: message.senderName,
-      text: _messageFilterText(message),
-    );
+    await _messageFilterService?.markSpamMany([
+      for (final (_, message) in items)
+        (sender: message.senderName, text: _messageFilterText(message)),
+    ]);
   }
 
   /// User marked [message] in [channel] as not spam: show it again and teach
@@ -1274,20 +1454,31 @@ class MeshCoreConnector extends ChangeNotifier {
   Future<void> markChannelMessageNotSpam(
     Channel channel,
     ChannelMessage message,
+  ) => markChannelMessagesNotSpam([(channel, message)]);
+
+  /// Bulk "Not spam": shows every message again and teaches the filter once.
+  Future<void> markChannelMessagesNotSpam(
+    List<(Channel channel, ChannelMessage message)> items,
   ) async {
-    _updateLoadedChannelMessageById(
-      channel,
-      message.messageId,
-      (existing) => existing.copyWith(clearFilter: true),
-    );
+    if (items.isEmpty) return;
+    for (final (channel, message) in items) {
+      _updateLoadedChannelMessageById(
+        channel,
+        message.messageId,
+        (existing) => existing.copyWith(clearFilter: true),
+      );
+    }
     notifyListeners();
     final service = _messageFilterService;
     if (service == null) return;
-    await service.markNotSpam(
-      channelId: messageFilterChannelId(channel),
-      sender: message.senderName,
-      text: _messageFilterText(message),
-    );
+    await service.markNotSpamMany([
+      for (final (channel, message) in items)
+        (
+          channelId: messageFilterChannelId(channel),
+          sender: message.senderName,
+          text: _messageFilterText(message),
+        ),
+    ]);
   }
 
   /// Filtered messages across all loaded channels, newest first.
@@ -1391,7 +1582,14 @@ class MeshCoreConnector extends ChangeNotifier {
 
   /// Runs queued persistence now. Called before the app is backgrounded and
   /// whenever the stores are about to switch to another radio.
-  Future<void> flushPendingWrites() => _coalescedWrites.flush();
+  Future<void> flushPendingWrites() async {
+    await Future.wait([
+      _coalescedWrites.flush(),
+      _unreadStore.flush(),
+      if (_pathHistoryService != null)
+        _pathHistoryService!.flushPendingWrites(),
+    ]);
+  }
 
   int getUnreadCountForContact(Contact contact) {
     if (contact.type == advTypeRepeater) return 0;
@@ -1591,6 +1789,12 @@ class MeshCoreConnector extends ChangeNotifier {
     _cachedChannels = await _channelStore.loadChannels();
     _recalculateCachedChannelsUnreadTotal();
   }
+
+  /// Contact whose chat is on screen, if any.
+  String? get activeContactKey => _activeContactKey;
+
+  /// Channel whose chat is on screen, if any.
+  int? get activeChannelIndex => _activeChannelIndex;
 
   void setActiveContact(String? contactKeyHex) {
     if (contactKeyHex != null &&
@@ -1938,77 +2142,103 @@ class MeshCoreConnector extends ChangeNotifier {
           : message.copyWith(channelIndex: slot),
   ];
 
-  /// Load persisted channel messages for a specific channel
+  /// Load only the newest persisted window of a channel.
   Future<void> _loadChannelMessages(int channelIndex) async {
-    // The load replaces the in-memory history, so queued writes of it must
-    // reach storage (whose cache updates synchronously) first.
-    unawaited(_coalescedWrites.flush());
+    final generation = _messageHistoryGeneration;
+    final scope = _channelMessageStore.publicKeyHex;
     final channelId = _slotChannelIds[channelIndex];
-    final allMessages = channelId == null
-        ? <ChannelMessage>[]
-        : _bindToSlot(
-            await _channelMessageStore.loadChannelMessages(channelId),
-            channelIndex,
-          );
-    // Keep only the most recent N messages in memory to bound memory usage
-    final windowedMessages = allMessages.length > _messageWindowSize
-        ? allMessages.sublist(allMessages.length - _messageWindowSize)
-        : allMessages;
-    if (channelId != null) {
-      _channelMessageStore.setArchived(
-        channelId,
-        allMessages.sublist(0, allMessages.length - windowedMessages.length),
+    bool current() =>
+        !_disposed &&
+        generation == _messageHistoryGeneration &&
+        scope == _channelMessageStore.publicKeyHex &&
+        _slotChannelIds[channelIndex] == channelId;
+    var windowedMessages = <ChannelMessage>[];
+    if (channelId == null) {
+      await _coalescedWrites.flush();
+      if (!current()) return;
+    } else {
+      final page = await _readSettledPage(
+        current: current,
+        window: () =>
+            _channelMessages[channelIndex] ?? const <ChannelMessage>[],
+        archived: () => _channelMessageStore.archivedCount(channelId),
+        read: (_, _) => _channelMessageStore.loadMessagePage(
+          channelId,
+          limit: _messageWindowSize,
+        ),
       );
+      if (page == null) return;
+      windowedMessages = _bindToSlot(page.messages, channelIndex);
+      _channelMessageStore.setArchivedCount(channelId, page.start);
     }
-    // Replace even when nothing is stored so another radio's messages never
-    // linger under this index.
     final hadMessages = _channelMessages[channelIndex]?.isNotEmpty ?? false;
-    // Rules may have changed since these were stored.
-    if (_applyFilterRules(channelIndex, windowedMessages)) {
-      _scheduleChannelSave(channelIndex);
-    }
+    final retagged = _applyFilterRules(channelIndex, windowedMessages);
     _channelMessages[channelIndex] = windowedMessages;
+    if (retagged) _scheduleChannelSave(channelIndex);
     if (hadMessages || windowedMessages.isNotEmpty) notifyListeners();
   }
 
-  /// Load older channel messages (pagination)
   Future<List<ChannelMessage>> loadOlderChannelMessages(
     int channelIndex, {
     int count = 50,
-  }) async {
+  }) {
+    if (count <= 0) return Future.value([]);
     final slot = _canonicalSlot(channelIndex);
     final channelId = _channelIdForSlot(slot);
-    if (channelId == null) return [];
-    final allMessages = await _channelMessageStore.loadChannelMessages(
-      channelId,
+    if (channelId == null) return Future.value([]);
+    final loadKey = '${_channelMessageStore.publicKeyHex}:$channelId';
+    final pending = _channelPageLoads[loadKey];
+    if (pending != null) return pending;
+    final started = _loadOlderChannelMessages(slot, channelId, count);
+    _channelPageLoads[loadKey] = started;
+    return started.whenComplete(() {
+      if (identical(_channelPageLoads[loadKey], started)) {
+        _channelPageLoads.remove(loadKey);
+      }
+    });
+  }
+
+  Future<List<ChannelMessage>> _loadOlderChannelMessages(
+    int slot,
+    String channelId,
+    int count,
+  ) async {
+    final generation = _messageHistoryGeneration;
+    final scope = _channelMessageStore.publicKeyHex;
+    bool current() =>
+        !_disposed &&
+        generation == _messageHistoryGeneration &&
+        scope == _channelMessageStore.publicKeyHex &&
+        _slotChannelIds[slot] == channelId;
+    final page = await _readSettledPage(
+      current: current,
+      window: () => _channelMessages[slot] ?? const <ChannelMessage>[],
+      archived: () => _channelMessageStore.archivedCount(channelId),
+      older: true,
+      read: (archived, window) async => _channelMessageStore.loadMessagePage(
+        channelId,
+        // Unreconciled storage is assumed to end with the loaded window.
+        before:
+            archived ??
+            _startOfWindow(
+              (await _channelMessageStore.loadMessagePage(
+                channelId,
+                limit: 0,
+              )).total,
+              window,
+            ),
+        limit: count,
+      ),
     );
-    final currentMessages = _channelMessages[slot] ?? [];
-
-    // Storage holds the archived entries followed by the in-memory window.
-    final currentOffset =
-        (_channelMessageStore.archivedCount(channelId) ??
-                allMessages.length - currentMessages.length)
-            .clamp(0, allMessages.length);
-    if (currentOffset == 0) {
-      return []; // No more messages to load
-    }
-
-    final fetchCount = count.clamp(0, currentOffset);
-    final startIndex = currentOffset - fetchCount;
-
-    final olderMessages = _bindToSlot(
-      allMessages.sublist(startIndex, currentOffset),
-      slot,
-    );
-    _channelMessageStore.unarchiveNewest(channelId, olderMessages.length);
-
-    // Rules may have changed since these were stored.
+    if (page == null) return [];
+    _channelMessageStore.setArchivedCount(channelId, page.start);
+    final olderMessages = _bindToSlot(page.messages, slot);
+    if (olderMessages.isEmpty) return [];
     final retagged = _applyFilterRules(slot, olderMessages);
-    // Prepend to current conversation
+    final currentMessages = _channelMessages[slot] ?? const <ChannelMessage>[];
     _channelMessages[slot] = [...olderMessages, ...currentMessages];
     if (retagged) _scheduleChannelSave(slot);
     notifyListeners();
-
     return olderMessages;
   }
 
@@ -2070,6 +2300,8 @@ class MeshCoreConnector extends ChangeNotifier {
 
     // Initialize notification service
     _notificationService.initialize();
+    _notificationService.isBulkSyncActive = () => isSyncingQueuedMessages;
+    _notificationService.unreadTotalProvider = getTotalUnreadCount;
     _notificationReplySubscription ??= _notificationService.replies.listen(
       (reply) => unawaited(
         handleNotificationReply(reply).catchError((Object e) {
@@ -2500,6 +2732,15 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
   }
 
+  static String _describeRoute(PathSelection selection) {
+    if (selection.useFlood) return 'flood';
+    if (selection.hopCount == 0) return 'direct';
+    final hex = selection.pathBytes
+        .map((b) => b.toRadixString(16).padLeft(2, '0'))
+        .join();
+    return '${selection.hopCount} hops [$hex]';
+  }
+
   void _recordPathResult(
     String contactPubKeyHex,
     PathSelection selection,
@@ -2507,6 +2748,12 @@ class MeshCoreConnector extends ChangeNotifier {
     int? tripTimeMs,
   ) {
     if (_pathHistoryService == null) return;
+    _appDebugLogService?.info(
+      'Route result for ${getContactByPubKeyHex(contactPubKeyHex)?.name ?? contactPubKeyHex.substring(0, 8)}: '
+      '${_describeRoute(selection)} ${success ? 'delivered' : 'failed'}'
+      '${tripTimeMs != null ? ' in ${tripTimeMs}ms' : ''}',
+      tag: 'Routing',
+    );
     final settings = _appSettingsService?.settings;
     _pathHistoryService!.recordPathResult(
       contactPubKeyHex,
@@ -2526,9 +2773,10 @@ class MeshCoreConnector extends ChangeNotifier {
         (c) => c?.publicKeyHex == contactPubKeyHex,
         orElse: () => null,
       );
+      // pathLength 0 with no bytes is the direct path: credit it too.
       if (contact != null &&
           contact.pathLength >= 0 &&
-          contact.path.isNotEmpty) {
+          (contact.path.isNotEmpty || contact.pathLength == 0)) {
         _pathHistoryService!.recordFloodPathAttribution(
           contactPubKeyHex: contactPubKeyHex,
           pathBytes: contact.path,
@@ -2560,14 +2808,26 @@ class MeshCoreConnector extends ChangeNotifier {
       return null;
     }
 
+    final contact = getContactByPubKeyHex(contactPubKeyHex);
+    final routeContext = routeContextFor(contact);
     final selection = _pathHistoryService?.selectPathForAttempt(
       contactPubKeyHex,
       attemptIndex: attemptIndex,
       maxRetries: maxRetries,
       recentSelections: recentSelections,
+      context: routeContext,
     );
     if (selection != null) {
       _pathHistoryService?.recordPathAttempt(contactPubKeyHex, selection);
+      // Logged so route choices and their outcomes can be compared from the
+      // app debug log on a live mesh.
+      _appDebugLogService?.info(
+        'Route pick for ${contact?.name ?? contactPubKeyHex.substring(0, 8)}: '
+        'attempt ${attemptIndex + 1}/$maxRetries → ${_describeRoute(selection)} '
+        '(heard nearby: ${routeContext.hasNeighbourInfo}, '
+        'contact heard direct: ${routeContext.contactHeardDirectly})',
+        tag: 'Routing',
+      );
     }
     return selection;
   }
@@ -3018,6 +3278,7 @@ class MeshCoreConnector extends ChangeNotifier {
       _tcpReconnectHost = host;
       _tcpReconnectPort = port;
       _reconnectAttempts = 0;
+      _rememberLastRadio(tcpHost: host, tcpPort: port);
 
       await syncTime();
     } catch (error) {
@@ -3987,6 +4248,8 @@ class MeshCoreConnector extends ChangeNotifier {
         _scheduleReconnect();
       }
     });
+    // The app bar shows a pending reconnect.
+    notifyListeners();
   }
 
   void _scheduleTcpReconnect() {
@@ -4018,6 +4281,7 @@ class MeshCoreConnector extends ChangeNotifier {
         _tcpAutoReconnectAttempt = false;
       }
     });
+    notifyListeners();
   }
 
   Future<void> disconnect({
@@ -4164,6 +4428,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _txCharacteristic = null;
     _deviceDisplayName = null;
     _deviceId = null;
+    await _coalescedWrites.flush();
     _contacts.clear();
     _discoveredContacts.clear();
     _clearSessionMessageState();
@@ -4200,6 +4465,7 @@ class MeshCoreConnector extends ChangeNotifier {
     if (!manual && transportAtDisconnect == MeshCoreTransportType.tcp) {
       _scheduleTcpReconnect();
     }
+    unawaited(_reloadOfflineStateIfIdle());
   }
 
   Future<void> sendFrame(
@@ -4209,7 +4475,7 @@ class MeshCoreConnector extends ChangeNotifier {
     bool waitForGenericAck = false,
   }) async {
     if (!isConnected) {
-      throw Exception("Not connected to a MeshCore device");
+      throw const RadioNotConnectedException();
     }
     _bleDebugLogService?.logFrame(data, outgoing: true);
 
@@ -4373,6 +4639,36 @@ class MeshCoreConnector extends ChangeNotifier {
     } catch (_) {}
   }
 
+  Future<Uint8List> exportPrivateKey() async {
+    if (!isConnected) throw StateError('Not connected to a MeshCore device');
+    final response = Completer<Uint8List>();
+    final subscription = receivedFrames.listen((frame) {
+      if (frame.isNotEmpty &&
+          frame[0] == respCodePrivateKey &&
+          !response.isCompleted) {
+        response.complete(Uint8List.fromList(frame));
+      }
+    });
+    try {
+      await sendFrame(buildExportPrivateKeyFrame(), waitForGenericAck: true);
+      final frame = await response.future.timeout(const Duration(seconds: 1));
+      if (frame.length != 65) {
+        throw FormatException('Firmware returned an invalid private-key frame');
+      }
+      return Uint8List.fromList(frame.sublist(1));
+    } finally {
+      await subscription.cancel();
+    }
+  }
+
+  Future<void> importPrivateKey(Uint8List keyData) async {
+    if (!isConnected) throw StateError('Not connected to a MeshCore device');
+    await sendFrame(
+      buildImportPrivateKeyFrame(keyData),
+      waitForGenericAck: true,
+    );
+  }
+
   /// Sends CMD_SET_RADIO_PARAMS (same arguments as [buildSetRadioParamsFrame])
   /// and waits for the reply. Returns false when the firmware rejects it with
   /// ERR_ILLEGAL_ARG (values out of range, or [clientRepeat] on a frequency
@@ -4414,6 +4710,7 @@ class MeshCoreConnector extends ChangeNotifier {
     if (_pathHashByteWidth != nextWidth) {
       _pathHashByteWidth = nextWidth;
       _directRepeaters.clear();
+      _heardNeighbours.clear();
       notifyListeners();
     }
   }
@@ -6160,7 +6457,8 @@ class MeshCoreConnector extends ChangeNotifier {
     }
     // Queued channel writes find their channel by slot; land them before
     // the map moves, or a channel whose slot changed would never be saved.
-    unawaited(_coalescedWrites.flush());
+    await _coalescedWrites.flush();
+    if (generation != _channelSessionGeneration) return;
     _slotChannelIds
       ..clear()
       ..addAll(next);
@@ -6256,6 +6554,13 @@ class MeshCoreConnector extends ChangeNotifier {
 
   /// Forgets everything held in memory for [slot], whose channel changed.
   void _dropChannelSlotState(int slot, String? previousId) {
+    // A notification for the old channel would open the new one.
+    unawaited(
+      _notificationService.clearChannelNotification(
+        slot,
+        getTotalUnreadCount(),
+      ),
+    );
     _channelMessages.remove(slot);
     _processedChannelReactions.remove(slot);
     _channelSmazEnabled.remove(slot);
@@ -6275,18 +6580,32 @@ class MeshCoreConnector extends ChangeNotifier {
   /// Runs the one-shot storage migration, then preloads this radio's channel
   /// state from the saved slot map so it shows before the channel sync ends.
   Future<void> _prepareChannelStorage() async {
+    final generation = _channelSessionGeneration;
+    final scope = _channelStore.publicKeyHex;
+    bool current() =>
+        !_disposed &&
+        generation == _channelSessionGeneration &&
+        scope == _channelStore.publicKeyHex;
     try {
       // First: the channel sync is already running and carries unread counts
       // over from these. The migration never touches the channel cache.
       await loadCachedChannels();
-      await ChannelStorageMigration.migrate(
-        _channelStore.publicKeyHex,
-        beforeDone: (slotIds) async =>
-            _receivedImageStore?.stampLegacyChannelIds(slotIds),
-      );
+      try {
+        await ChannelStorageMigration.migrate(
+          scope,
+          beforeDone: (slotIds) async =>
+              _receivedImageStore?.stampLegacyChannelIds(slotIds),
+        );
+      } catch (e) {
+        // It repeats on the next connect; what is already stored under
+        // channel IDs still preloads.
+        appLogger.warn('Channel storage migration failed: $e');
+      }
       await _loadChannelOrder();
       final saved = await _channelStore.loadSlotChannelIds();
-      unawaited(_coalescedWrites.flush());
+      await _coalescedWrites.flush();
+      // The radio may have disconnected or changed while writes landed.
+      if (!current()) return;
       _slotChannelIds
         ..clear()
         ..addAll(saved);
@@ -6361,7 +6680,7 @@ class MeshCoreConnector extends ChangeNotifier {
     await sendFrame(buildSetChannelFrame(index, '', Uint8List(16)));
     // A twin slot with the same PSK keeps this history, so queued writes of
     // it land before the list is dropped; a full delete clears them below.
-    unawaited(_coalescedWrites.flush());
+    await _coalescedWrites.flush();
     _channelMessages.remove(index);
     _processedChannelReactions.remove(index);
     try {
@@ -6766,8 +7085,11 @@ class MeshCoreConnector extends ChangeNotifier {
     if (_messageStateOwnerKey != null &&
         _messageStateOwnerKey != selfPublicKeyHex) {
       _clearSessionMessageState();
+      _channels.clear();
+      _cachedChannels = [];
     }
     _messageStateOwnerKey = selfPublicKeyHex;
+    if (_activeTransport != MeshCoreTransportType.tcp) _rememberLastRadio();
 
     if (_persistedStateLoadedKey == selfPublicKeyHex) {
       _awaitingSelfInfo = false;
@@ -6783,19 +7105,14 @@ class MeshCoreConnector extends ChangeNotifier {
       return;
     }
 
-    unawaited(_coalescedWrites.flush());
-    //set all the stores' public key so they can load the correct data
-    _channelMessageStore.setPublicKeyHex = selfPublicKeyHex;
-    _messageStore.setPublicKeyHex = selfPublicKeyHex;
-    _channelOrderStore.setPublicKeyHex = selfPublicKeyHex;
-    _channelSettingsStore.setPublicKeyHex = selfPublicKeyHex;
-    _channelRegionStore.setPublicKeyHex = selfPublicKeyHex;
-    _contactSettingsStore.setPublicKeyHex = selfPublicKeyHex;
-    _contactStore.setPublicKeyHex = selfPublicKeyHex;
-    _channelStore.setPublicKeyHex = selfPublicKeyHex;
-    _unreadStore.setPublicKeyHex = selfPublicKeyHex;
-    _discoveryContactStore.setPublicKeyHex = selfPublicKeyHex;
-    _pathHistoryService?.setDevicePublicKey(selfPublicKeyHex);
+    _bindStorageScope(selfPublicKeyHex);
+    // What one radio hears says nothing about another's surroundings.
+    if (_heardNeighboursRadioKey != selfPublicKeyHex) {
+      _heardNeighbours.clear();
+      _heardDirectAt.clear();
+      _heardNeighboursRadioKey = selfPublicKeyHex;
+    }
+    unawaited(_notificationService.bindRadio(selfPublicKeyHex));
 
     // Now that we have self info, we can load all the persisted data for this node
     loadContactCache();
@@ -6858,6 +7175,7 @@ class MeshCoreConnector extends ChangeNotifier {
     }
     if (_pathHashByteWidth != previousPathHashByteWidth) {
       _directRepeaters.clear();
+      _heardNeighbours.clear();
     }
 
     // Firmware reports MAX_CONTACTS / 2 for v3+ device info.
@@ -9262,6 +9580,9 @@ class MeshCoreConnector extends ChangeNotifier {
   /// Drops the conversation and channel history held in memory, so a
   /// different radio never shows or persists another radio's messages.
   void _clearSessionMessageState() {
+    _messageHistoryGeneration++;
+    _conversationPageLoads.clear();
+    _channelPageLoads.clear();
     // Writes start synchronously, so they still read this radio's history and
     // store keys before both change below.
     unawaited(_coalescedWrites.flush());
@@ -9278,6 +9599,156 @@ class MeshCoreConnector extends ChangeNotifier {
     _channelMapConfirmed = false;
     _messageStateOwnerKey = null;
     _persistedStateLoadedKey = null;
+  }
+
+  /// Points every per-radio store at [keyHex].
+  void _bindStorageScope(String keyHex) {
+    // Queued writes and the debounced unread write read their store key
+    // synchronously, so they still land under the previous radio.
+    unawaited(_coalescedWrites.flush());
+    unawaited(_unreadStore.flush());
+    _channelMessageStore.setPublicKeyHex = keyHex;
+    _messageStore.setPublicKeyHex = keyHex;
+    _channelOrderStore.setPublicKeyHex = keyHex;
+    _channelSettingsStore.setPublicKeyHex = keyHex;
+    _channelRegionStore.setPublicKeyHex = keyHex;
+    _contactSettingsStore.setPublicKeyHex = keyHex;
+    _contactStore.setPublicKeyHex = keyHex;
+    _channelStore.setPublicKeyHex = keyHex;
+    _unreadStore.setPublicKeyHex = keyHex;
+    _discoveryContactStore.setPublicKeyHex = keyHex;
+    _pathHistoryService?.setDevicePublicKey(keyHex);
+  }
+
+  /// Records the connected radio so its data can be shown offline later.
+  /// The simulated review radio is never remembered.
+  void _rememberLastRadio({String? tcpHost, int? tcpPort}) {
+    if (_activeTransport == MeshCoreTransportType.review) return;
+    final keyHex = selfPublicKeyHex;
+    if (keyHex.isEmpty) return;
+    final isBle = _activeTransport == MeshCoreTransportType.bluetooth;
+    final radio = LastRadio(
+      publicKeyHex: keyHex,
+      name: _selfName?.trim() ?? '',
+      transport: switch (_activeTransport) {
+        MeshCoreTransportType.usb => LastRadio.transportUsb,
+        MeshCoreTransportType.tcp => LastRadio.transportTcp,
+        _ => LastRadio.transportBle,
+      },
+      bleRemoteId: isBle ? _deviceId : null,
+      bleDisplayName: isBle ? _deviceDisplayName : null,
+      tcpHost: tcpHost,
+      tcpPort: tcpPort,
+      savedAt: DateTime.now(),
+    );
+    _lastRadio = radio;
+    _offlineScopeKeyHex = keyHex;
+    unawaited(_lastRadioStore.save(radio));
+  }
+
+  /// Loads the remembered radio's saved contacts, channels, messages and
+  /// unread counts so they can be shown while no radio is connected.
+  Future<void> restoreLastRadio() async {
+    _lastRadio = _lastRadioStore.load();
+    final keyHex = _lastRadio?.publicKeyHex;
+    if (keyHex == null) return;
+    _offlineScopeKeyHex = keyHex;
+    if (_state != MeshCoreConnectionState.disconnected) return;
+    await _loadOfflineState(keyHex);
+  }
+
+  Future<void> _reloadOfflineStateIfIdle() async {
+    if (_disposed || _state != MeshCoreConnectionState.disconnected) return;
+    final keyHex = _offlineScopeKeyHex;
+    if (keyHex == null) {
+      // Nothing to show offline (for example after a review-only session).
+      _channels.clear();
+      _cachedChannels = [];
+      notifyListeners();
+      return;
+    }
+    await _loadOfflineState(keyHex);
+  }
+
+  Future<void> _loadOfflineState(String keyHex) async {
+    final generation = ++_offlineLoadGeneration;
+    // A connect started meanwhile owns the state; its SELF_INFO reloads.
+    bool superseded() =>
+        _disposed ||
+        generation != _offlineLoadGeneration ||
+        _state != MeshCoreConnectionState.disconnected;
+
+    await _coalescedWrites.flush();
+    if (superseded()) return;
+    _clearSessionMessageState();
+    _bindStorageScope(keyHex);
+    // A connect to this radio keeps what is loaded here; a different radio's
+    // SELF_INFO drops it. _persistedStateLoadedKey stays null so a connect
+    // reloads from storage.
+    _messageStateOwnerKey = keyHex;
+    _channels.clear();
+    try {
+      await loadContactCache();
+      if (superseded()) return;
+      await _loadDiscoveredContactCache();
+      if (superseded()) return;
+      await loadUnreadState();
+      if (superseded()) return;
+      await _prepareChannelStorage();
+      if (superseded()) return;
+      _channels
+        ..clear()
+        ..addAll(_cachedChannels);
+      _applyChannelOrder();
+      _recalculateCachedChannelsUnreadTotal();
+      for (final contact in List<Contact>.of(_contacts)) {
+        await _loadMessagesForContact(contact.publicKeyHex);
+        if (superseded()) return;
+      }
+    } catch (e) {
+      appLogger.warn('Loading saved radio data failed: $e');
+    }
+    if (!_disposed) notifyListeners();
+  }
+
+  /// Connects to the remembered radio over BLE or TCP. Returns whether a
+  /// connection was made; USB and web need the user to pick a port.
+  Future<bool> reconnectToLastRadio() async {
+    final radio = _lastRadio;
+    if (radio == null || PlatformInfo.isWeb) return false;
+    try {
+      if (radio.canReconnectBle) {
+        await connect(
+          BluetoothDevice.fromId(radio.bleRemoteId!),
+          displayName: radio.bleDisplayName ?? radio.name,
+        );
+      } else if (radio.canReconnectTcp) {
+        await connectTcp(host: radio.tcpHost!, port: radio.tcpPort!);
+      } else {
+        return false;
+      }
+    } catch (e) {
+      _appDebugLogService?.warn(
+        'Reconnect to last radio failed: $e',
+        tag: 'Connection',
+      );
+      return false;
+    }
+    return isConnected;
+  }
+
+  /// Stops a pending automatic reconnect while disconnected.
+  void cancelAutoReconnect() {
+    if (_state == MeshCoreConnectionState.connected ||
+        _state == MeshCoreConnectionState.connecting) {
+      return;
+    }
+    _manualDisconnect = true;
+    _cancelReconnectTimer();
+    _reconnectAttempts = 0;
+    _clearTcpReconnectTarget();
+    unawaited(_backgroundService?.stop());
+    notifyListeners();
   }
 
   String _nextReactionSendQueueId() {
@@ -9656,6 +10127,66 @@ class MeshCoreConnector extends ChangeNotifier {
     }
   }
 
+  /// Records who was heard with no repeater in between for this advert.
+  void _noteHeardNeighbour(Contact contact, Uint8List path, int hashWidth) {
+    final now = DateTime.now();
+    final List<int> prefix;
+    if (path.isEmpty) {
+      _heardDirectAt[contact.publicKeyHex] = now;
+      prefix = contact.publicKey.sublist(
+        0,
+        math.min(4, contact.publicKey.length),
+      );
+    } else if (path.length >= hashWidth) {
+      // Advert paths run from the originator toward us: the last hop is the
+      // node we heard.
+      prefix = path.sublist(path.length - hashWidth);
+    } else {
+      return;
+    }
+    _heardNeighbours
+      ..removeWhere(
+        (n) =>
+            listEquals(n.prefix, prefix) ||
+            now.difference(n.at) > _heardNeighbourWindow,
+      )
+      ..add((prefix: List<int>.unmodifiable(prefix), at: now));
+    if (_heardNeighbours.length > _maxHeardNeighbours) {
+      _heardNeighbours.removeAt(0);
+    }
+  }
+
+  /// What the radio hears right now, for choosing a route to [contact].
+  RouteContext routeContextFor(Contact? contact) {
+    final now = DateTime.now();
+    _heardNeighbours.removeWhere(
+      (n) => now.difference(n.at) > _heardNeighbourWindow,
+    );
+    final neighbours = List.of(_heardNeighbours);
+    final heardDirectAt = contact == null
+        ? null
+        : _heardDirectAt[contact.publicKeyHex];
+    return RouteContext(
+      hasNeighbourInfo: neighbours.isNotEmpty,
+      contactHeardDirectly:
+          heardDirectAt != null &&
+          now.difference(heardDirectAt) <= _heardNeighbourWindow,
+      firstHopHeard: (pathBytes, hashWidth) {
+        final width = hashWidth.clamp(1, 4);
+        if (pathBytes.length < width) return false;
+        final hop = pathBytes.sublist(0, width);
+        return neighbours.any(
+          (n) =>
+              n.prefix.length >= width &&
+              listEquals(n.prefix.sublist(0, width), hop),
+        );
+      },
+      radioPath: contact != null && contact.pathLength >= 0
+          ? contact.path
+          : null,
+    );
+  }
+
   void _updateDirectRepeater(
     Contact contact,
     double snr,
@@ -9663,6 +10194,7 @@ class MeshCoreConnector extends ChangeNotifier {
     required int pathHashWidth,
   }) {
     final hashWidth = pathHashWidth.clamp(1, 4).toInt();
+    _noteHeardNeighbour(contact, path, hashWidth);
     if (path.isNotEmpty && path.length < hashWidth) {
       return;
     }

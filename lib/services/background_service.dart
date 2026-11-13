@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 import '../l10n/app_localizations.dart';
+import '../l10n/locale_tag.dart';
 import '../utils/platform_info.dart';
 
 class BackgroundService {
@@ -33,6 +34,11 @@ class BackgroundService {
         eventAction: ForegroundTaskEventAction.repeat(5000),
         autoRunOnBoot: false,
         allowWifiLock: false,
+        // The radio link lives in the app process; once the user swipes the
+        // app away it is gone, so a lingering "connected" notification (or
+        // an automatic restart) would only be misleading.
+        allowAutoRestart: false,
+        stopWithTask: true,
       ),
     );
     _initialized = true;
@@ -49,6 +55,9 @@ class BackgroundService {
     await FlutterForegroundTask.startService(
       notificationTitle: l10n.background_serviceTitle,
       notificationText: l10n.background_serviceText,
+      notificationIcon: const NotificationIcon(
+        metaDataName: 'org.meshcore.open.NOTIFICATION_ICON',
+      ),
       callback: startCallback,
     );
   }
@@ -57,7 +66,7 @@ class BackgroundService {
     final supported = AppLocalizations.supportedLocales;
     final override = _languageOverrideProvider?.call();
     if (override != null && override.isNotEmpty) {
-      final overrideLocale = Locale(override);
+      final overrideLocale = localeFromTag(override);
       final isSupported = supported.any(
         (l) => l.languageCode == overrideLocale.languageCode,
       );

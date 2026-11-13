@@ -2,13 +2,13 @@
 
 ## BLE Scanner (Home Screen)
 
-The BLE Scanner is the app's home screen, displayed immediately on launch.
+The BLE Scanner is the app's home screen until a radio has connected once. After that the app opens on Channels with the last radio's saved data ([offline mode](offline-mode.md)).
 
 ### How to Access
 
-- Opens automatically when the app starts
-- Returns here when disconnecting from any device
-- Accessible by navigating back from a connected session
+- Opens automatically when the app starts and no radio is remembered
+- From the main screens: **Connect** (app bar or overflow menu) → **Choose a radio**
+- Disconnecting no longer returns here; the main screens stay open, read-only
 
 ### What the User Sees
 

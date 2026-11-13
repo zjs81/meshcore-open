@@ -24,16 +24,7 @@ class ChannelStore {
     String? jsonString = prefs.getString(keyFor);
     if ((jsonString == null || jsonString.isEmpty) &&
         canMigrateLegacyKeys(publicKeyHex)) {
-      // Attempt migration from legacy unscoped key on first load
-      final legacyJsonString = prefs.getString(_keyPrefix);
-      prefs.remove(_keyPrefix);
-      if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
-        appLogger.info(
-          'Migrating channel messages from legacy key $_keyPrefix to scoped key $keyFor',
-        );
-        await prefs.setString(keyFor, legacyJsonString);
-        jsonString = legacyJsonString;
-      }
+      jsonString = await migrateLegacyStringPreference(_keyPrefix, keyFor);
     }
 
     if (jsonString == null || jsonString.isEmpty) {
@@ -97,10 +88,11 @@ class ChannelStore {
 
   Future<void> saveSlotChannelIds(Map<int, String> ids) async {
     if (publicKeyHex.isEmpty) return;
-    await PrefsManager.instance.setString(
+    final saved = await PrefsManager.instance.setString(
       _slotIdsKey,
       jsonEncode({for (final e in ids.entries) '${e.key}': e.value}),
     );
+    if (!saved) throw StateError('Could not persist channel slot map');
   }
 
   Map<String, dynamic> _toJson(Channel channel) {

@@ -299,7 +299,7 @@
       }
     }
   },
-  "settings_aboutLegalese": "2026 MeshCore Open Source Project",
+  "settings_aboutLegalese": "Projekt MeshCore Open Source 2026",
   "settings_aboutDescription": "Open-source klient Flutter pro zařízení MeshCore s mesh sítí LoRa.",
   "settings_aboutOpenMeteoAttribution": "Výšková data LOS: Open-Meteo (CC BY 4.0)",
   "settings_infoName": "Název",
@@ -319,7 +319,7 @@
   "settings_frequencyHelper": "150.0 - 2500.0",
   "settings_frequencyInvalid": "Neplatná frekvence (150-2500 MHz)",
   "settings_bandwidth": "Šířka pásma",
-  "settings_spreadingFactor": "Spreading Factor",
+  "settings_spreadingFactor": "Rozptylový faktor",
   "settings_codingRate": "Kódovací poměr",
   "settings_txPower": "Výkon TX (dBm)",
   "settings_txPowerRangeHelper": "{min} až {max} dBm",
@@ -479,7 +479,7 @@
   "appSettings_languageDe": "Deutsch",
   "appSettings_languagePl": "Polski",
   "appSettings_languageSl": "Slovenščina",
-  "appSettings_languagePt": "Português",
+  "appSettings_languagePt": "Português (Brasil)",
   "appSettings_languageIt": "Italiano",
   "appSettings_languageZh": "中文",
   "appSettings_languageSv": "Svenska",
@@ -556,14 +556,6 @@
   "appSettings_autoRouteRotationSubtitle": "Střídat nejlepší cesty a režim flood",
   "appSettings_autoRouteRotationEnabled": "Automatické střídání tras zapnuto",
   "appSettings_autoRouteRotationDisabled": "Automatické střídání tras vypnuto",
-  "appSettings_maxRouteWeight": "Maximální váha trasy",
-  "appSettings_maxRouteWeightSubtitle": "Maximální váha, kterou může cesta nasbírat z úspěšných doručení",
-  "appSettings_initialRouteWeight": "Počáteční váha trasy",
-  "appSettings_initialRouteWeightSubtitle": "Výchozí váha nově objevených cest",
-  "appSettings_routeWeightSuccessIncrement": "Přírůstek váhy při úspěchu",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Váha přidaná cestě po úspěšném doručení",
-  "appSettings_routeWeightFailureDecrement": "Úbytek váhy při neúspěchu",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Váha odebraná cestě po neúspěšném doručení",
   "appSettings_maxMessageRetries": "Maximum opakování zprávy",
   "appSettings_maxMessageRetriesSubtitle": "Počet opakovaných pokusů, než se zpráva označí jako neodeslaná",
   "appSettings_ipfsImageLinks": "Konfigurace poskytovatele IPFS",
@@ -1282,7 +1274,7 @@
       }
     }
   },
-  "chat_floodAuto": "Flood (auto)",
+  "chat_floodAuto": "Flood (automaticky)",
   "chat_direct": "Přímo",
   "chat_poiShared": "Sdílen bod zájmu",
   "chat_unread": "Nepřečtené: {count}",
@@ -1345,13 +1337,12 @@
   },
   "map_chat": "Chat",
   "map_repeater": "Opakovač",
-  "map_room": "Room",
+  "map_room": "Místnost",
   "map_sensor": "Senzor",
   "map_pinDm": "Špendlík (DM)",
   "map_pinPrivate": "Špendlík (soukromý)",
   "map_pinPublic": "Špendlík (veřejný)",
   "map_lastSeen": "Naposledy viděn",
-  "map_disconnectConfirm": "Opravdu se chcete od tohoto zařízení odpojit?",
   "map_from": "Od",
   "map_source": "Zdroj",
   "map_flags": "Příznaky",
@@ -1770,8 +1761,8 @@
   "repeater_txPower": "Výkon TX",
   "repeater_txPowerHelper": "1–30 dBm",
   "repeater_bandwidth": "Šířka pásma",
-  "repeater_spreadingFactor": "Spreading Factor",
-  "repeater_codingRate": "Coding Rate",
+  "repeater_spreadingFactor": "Rozptylový faktor",
+  "repeater_codingRate": "Kódovací poměr",
   "repeater_locationSettings": "Nastavení polohy",
   "repeater_latitude": "Zeměpisná šířka",
   "repeater_latitudeHelper": "Desetinné stupně (např. 37.7749)",
@@ -2056,7 +2047,7 @@
   "repeater_bridgeNote": "K dispozici pouze ve firmwaru sestaveném s bridge (RS232 nebo ESP-NOW).",
   "repeater_general": "Obecné",
   "repeater_settingsCategory": "Nastavení",
-  "repeater_bridge": "Bridge",
+  "repeater_bridge": "Most",
   "repeater_logging": "Logování",
   "repeater_neighborsRepeaterOnly": "Sousedé (pouze opakovač)",
   "repeater_regionManagementRepeaterOnly": "Správa regionů (pouze opakovač)",
@@ -2392,7 +2383,7 @@
   },
   "channelPath_unknownPath": "Neznámá",
   "channelPath_floodPath": "Flood",
-  "channelPath_directPath": "Direct",
+  "channelPath_directPath": "Přímo",
   "channelPath_observedZeroOf": "0 z {total} skoků",
   "@channelPath_observedZeroOf": {
     "placeholders": {
@@ -4281,5 +4272,122 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatSearch_jumpFailed": "Tuto zprávu se v chatu nepodařilo najít",
+  "chat_clearSelection": "Zrušit výběr",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Smazat 1 zprávu z tohoto zařízení?} few{Smazat {count} zprávy z tohoto zařízení?} many{Smazat {count} zprávy z tohoto zařízení?} other{Smazat {count} zpráv z tohoto zařízení?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Smazat zprávy?",
+  "chat_messagesDeleted": "{count, plural, one{Smazána 1 zpráva} few{Smazány {count} zprávy} many{Smazáno {count} zprávy} other{Smazáno {count} zpráv}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Vybrat vše",
+  "chat_selectMessages": "Vybrat zprávy",
+  "chat_selectedCount": "Vybráno: {count}",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Přidat znovu",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{1 zpráva označena jako ne-spam} few{{count} zprávy označeny jako ne-spam} many{{count} zprávy označeno jako ne-spam} other{{count} zpráv označeno jako ne-spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{1 zpráva označena jako spam} few{{count} zprávy označeny jako spam} many{{count} zprávy označeno jako spam} other{{count} zpráv označeno jako spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Rozbalit seznam skoků",
+  "pathMap_showMap": "Zobrazit mapu",
+  "routing_modeDirect": "Přímo",
+  "routing_modeDirectHint": "Vždy odešle zprávu přímo tomuto kontaktu, bez skoků přes opakovače. Použijte, když je v dosahu rádia.",
+  "settings_export": "Exportovat",
+  "settings_exportSubtitle": "Exportovat kontakty a opakovače jako GPX",
+  "backupRestore_title": "Záloha a obnovení",
+  "backupRestore_subtitle": "Uložte nebo obnovte data aplikace a nastavení rádia",
+  "backupRestore_import": "Importovat",
+  "backupRestore_selectImportFile": "Importovat soubor",
+  "backupRestore_password": "Heslo (volitelné)",
+  "backupRestore_passwordHelp": "Heslo soubor zašifruje. Prázdné heslo uloží prostý text, který může obsahovat soukromé klíče a klíče kanálů, historii a přihlašovací údaje.",
+  "backupRestore_importUnavailable": "Zkontrolujte heslo nebo vyberte podporovaný soubor zálohy.",
+  "backupRestore_items": "Položky zálohy a obnovení",
+  "backupRestore_nodeSettings": "Nastavení uzlu",
+  "backupRestore_nodeSettingsDescription": "Název zařízení, soukromý a veřejný klíč, nastavení rádia a regiony",
+  "backupRestore_deviceName": "Název zařízení",
+  "backupRestore_privateKey": "Soukromý klíč (citlivé)",
+  "backupRestore_publicKey": "Veřejný klíč",
+  "backupRestore_radioSettings": "Nastavení rádia",
+  "backupRestore_regions": "Regiony",
+  "backupRestore_location": "Poloha",
+  "backupRestore_contactSettings": "Nastavení kontaktů",
+  "backupRestore_privacySettings": "Nastavení soukromí",
+  "backupRestore_contactsData": "Kontakty",
+  "backupRestore_perContactSettings": "Nastavení a filtry kontaktů",
+  "backupRestore_contactGroups": "Skupiny kontaktů",
+  "backupRestore_contactHistory": "Historie kontaktů",
+  "backupRestore_channelsData": "Kanály",
+  "backupRestore_channelFilters": "Nastavení filtru zpráv",
+  "backupRestore_channelSettings": "Nastavení kanálů",
+  "backupRestore_communities": "Komunity",
+  "backupRestore_channelHistory": "Historie kanálů",
+  "backupRestore_locationSettings": "Nastavení polohy",
+  "backupRestore_locationSettingsDescription": "Poloha, nastavení kontaktů a soukromí",
+  "backupRestore_appSettings": "Nastavení aplikace",
+  "backupRestore_appSettingsDescription": "Předvolby aplikace a nastavení vzhledu",
+  "backupRestore_ipfsKey": "Klíč API IPFS (citlivé)",
+  "backupRestore_stadiaMapKey": "Klíč API Stadia Maps (citlivé)",
+  "backupRestore_contacts": "Kontakty",
+  "backupRestore_contactsDescription": "Kontakty, filtry a nastavení jednotlivých kontaktů, skupiny a historie zpráv",
+  "backupRestore_discoveredContacts": "Objevené kontakty",
+  "backupRestore_discoveredContactsDescription": "Objevené kontakty a jejich uložené údaje",
+  "backupRestore_channels": "Kanály",
+  "backupRestore_channelsDescription": "Kanály, filtry kanálů, komunity a historie zpráv",
+  "backupRestore_backup": "Vytvořit zálohu",
+  "backupRestore_restore": "Obnovit vybrané",
+  "backupRestore_backupComplete": "Soubor zálohy byl vytvořen.",
+  "backupRestore_restoreComplete": "Obnovení dokončeno. Pokud jste obnovili identitu rádia, připojte se znovu.",
+  "backupRestore_missingModelsTitle": "Modely nejsou stažené",
+  "backupRestore_missingModelsMessage": "Obnovené nastavení vybírá modely, které nejsou v tomto zařízení k dispozici:\n{models}\n\nStáhnout je nyní?",
+  "backupRestore_downloadModels": "Stáhnout modely",
+  "backupRestore_downloading": "Stahování…",
+  "backupRestore_cancelDownload": "Zrušit stahování",
+  "backupRestore_failed": "Operace zálohy selhala: {error}",
+  "backupRestore_fileTooLarge": "Soubor zálohy je větší než limit 100 MB.",
+  "backupRestore_selectAtLeastOne": "Vyberte alespoň jednu položku.",
+  "backupRestore_replaceIdentityTitle": "Nahradit identitu rádia?",
+  "backupRestore_replaceIdentityMessage": "Obnovení nastavení uzlu nahradí soukromý klíč připojeného rádia a změní jeho identitu. Pokračujte, jen pokud je to záměr.",
+  "appSettings_languagePtPt": "Português (Portugal)",
+  "receivedImage_syntheticBadge": "Rekonstruováno AI",
+  "appBar_offlineSubtitle": "Offline · {name}",
+  "appBar_offline": "Offline",
+  "appBar_reconnecting": "Připojování…",
+  "connectSheet_title": "Připojit rádio",
+  "connectSheet_reconnect": "Znovu se připojit k {name}",
+  "connectSheet_chooseRadio": "Vybrat rádio",
+  "connectSheet_chooseRadioSubtitle": "Bluetooth, USB nebo TCP",
+  "connectSheet_stopReconnecting": "Zastavit připojování",
+  "connectSheet_reconnectFailed": "Nelze se spojit s {name}. Ujistěte se, že je zapnuté a nablízku.",
+  "chat_composerOffline": "Pro odesílání zpráv se připojte k rádiu"
 }

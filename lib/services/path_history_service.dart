@@ -1,18 +1,23 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import '../models/contact.dart';
 import '../models/path_history.dart';
 import '../models/path_selection.dart';
+import '../utils/app_logger.dart';
 import '../utils/coalesced_writes.dart';
+import 'route_chooser.dart';
 import 'storage_service.dart';
 
 class PathHistoryService extends ChangeNotifier {
   final StorageService _storage;
   final Map<String, ContactPathHistory> _cache = {};
-  final Map<String, int> _autoRotationIndex = {};
   final Map<String, _FloodStats> _floodStats = {};
-  final Map<String, Future<void>> _pendingLoads = {};
+  final Map<String, Future<bool>> _pendingLoads = {};
+  int _generation = 0;
+  bool _disposed = false;
+  Future<void> _clearing = Future<void>.value();
   // A path record lands for most received messages, so saves are batched.
   final CoalescedWrites _writes = CoalescedWrites(
     delay: const Duration(seconds: 5),
@@ -24,19 +29,33 @@ class PathHistoryService extends ChangeNotifier {
 
   static const int _maxHistoryEntries = 100;
 
+  /// A failing route is only deleted once it hasn't delivered for this long.
+  static const Duration _forgetRouteAfter = Duration(days: 7);
+
   int _version = 0;
   int get version => _version;
 
-  PathHistoryService(this._storage);
+  final math.Random _random;
+  final DateTime Function() _now;
+
+  /// [random] and [clock] are for tests: route picks are random by design.
+  PathHistoryService(
+    this._storage, {
+    math.Random? random,
+    DateTime Function()? clock,
+  }) : _random = random ?? math.Random(),
+       _now = clock ?? DateTime.now;
 
   void setDevicePublicKey(String publicKeyHex) {
+    if (_disposed) return;
     // Queued saves use the storage key on entry, so they still land under
     // the previous radio's key.
     unawaited(_writes.flush());
+    _generation++;
+    _pendingLoads.clear();
     _storage.setPublicKeyHex = publicKeyHex;
     _cache.clear();
     _cacheAccessOrder.clear();
-    _autoRotationIndex.clear();
     _floodStats.clear();
     _version++;
     notifyListeners();
@@ -47,6 +66,7 @@ class PathHistoryService extends ChangeNotifier {
   }
 
   void handlePathUpdated(Contact contact, {double initialWeight = 1.0}) {
+    if (_disposed) return;
     if (contact.pathLength < 0 && contact.path.isEmpty) return;
     final hopCount = contact.pathLength < 0
         ? contact.path.length
@@ -65,6 +85,7 @@ class PathHistoryService extends ChangeNotifier {
   }
 
   void recordPathAttempt(String contactPubKeyHex, PathSelection selection) {
+    if (_disposed) return;
     if (selection.useFlood) {
       _updateFloodStats(contactPubKeyHex);
       return;
@@ -92,10 +113,18 @@ class PathHistoryService extends ChangeNotifier {
     double successIncrement = 0.5,
     double maxWeight = 5.0,
   }) {
-    if (pathBytes.isEmpty || hopCount < 0) return;
+    if (_disposed) return;
+    // A flood answered directly credits the direct (zero-hop) path.
+    if (hopCount < 0 || (pathBytes.isEmpty && hopCount != 0)) return;
     if (!_cache.containsKey(contactPubKeyHex)) {
-      _ensureLoaded(contactPubKeyHex).then((_) {
-        if (!_cache.containsKey(contactPubKeyHex)) return;
+      final generation = _generation;
+      _ensureLoaded(contactPubKeyHex).then((loaded) {
+        if (!loaded ||
+            _disposed ||
+            generation != _generation ||
+            !_cache.containsKey(contactPubKeyHex)) {
+          return;
+        }
         recordFloodPathAttribution(
           contactPubKeyHex: contactPubKeyHex,
           pathBytes: pathBytes,
@@ -111,6 +140,8 @@ class PathHistoryService extends ChangeNotifier {
     final existing = _findPathRecord(contactPubKeyHex, pathBytes);
     final successCount = (existing?.successCount ?? 0) + 1;
     final failureCount = existing?.failureCount ?? 0;
+    final now = _now();
+    final faded = addRouteResult(existing, success: true, now: now);
 
     final currentWeight = existing?.routeWeight ?? 1.0;
     final newWeight = (currentWeight + successIncrement).clamp(0.0, maxWeight);
@@ -129,7 +160,10 @@ class PathHistoryService extends ChangeNotifier {
       successCount: successCount,
       failureCount: failureCount,
       routeWeight: newWeight,
-      timestamp: DateTime.now(),
+      timestamp: now,
+      recentSuccess: faded.success,
+      recentFailure: faded.failure,
+      statsAt: now,
     );
   }
 
@@ -142,6 +176,7 @@ class PathHistoryService extends ChangeNotifier {
     double failureDecrement = 0.5,
     double maxWeight = 5.0,
   }) {
+    if (_disposed) return;
     if (selection.useFlood) {
       final stats = _floodStats.putIfAbsent(
         contactPubKeyHex,
@@ -158,8 +193,14 @@ class PathHistoryService extends ChangeNotifier {
     }
 
     if (!_cache.containsKey(contactPubKeyHex)) {
-      _ensureLoaded(contactPubKeyHex).then((_) {
-        if (!_cache.containsKey(contactPubKeyHex)) return;
+      final generation = _generation;
+      _ensureLoaded(contactPubKeyHex).then((loaded) {
+        if (!loaded ||
+            _disposed ||
+            generation != _generation ||
+            !_cache.containsKey(contactPubKeyHex)) {
+          return;
+        }
         recordPathResult(
           contactPubKeyHex,
           selection,
@@ -176,6 +217,8 @@ class PathHistoryService extends ChangeNotifier {
     final existing = _findPathRecord(contactPubKeyHex, selection.pathBytes);
     final successCount = (existing?.successCount ?? 0) + (success ? 1 : 0);
     final failureCount = (existing?.failureCount ?? 0) + (success ? 0 : 1);
+    final now = _now();
+    final faded = addRouteResult(existing, success: success, now: now);
 
     final currentWeight = existing?.routeWeight ?? 1.0;
     double newWeight;
@@ -183,7 +226,14 @@ class PathHistoryService extends ChangeNotifier {
       newWeight = (currentWeight + successIncrement).clamp(0.0, maxWeight);
     } else {
       newWeight = currentWeight - failureDecrement;
-      if (newWeight <= 0 && failureCount >= 3) {
+      // Faded stats already push a failing route out of use, and a repeater
+      // that is down for a day comes back; only forget a route that keeps
+      // failing and hasn't delivered in a week. Route weight is bookkeeping
+      // only now and plays no part in this.
+      final lastWorked = existing?.timestamp;
+      final longDead =
+          lastWorked == null || now.difference(lastWorked) > _forgetRouteAfter;
+      if (failureCount >= 3 && longDead) {
         removePathRecord(contactPubKeyHex, selection.pathBytes);
         return;
       }
@@ -200,21 +250,31 @@ class PathHistoryService extends ChangeNotifier {
       successCount: successCount,
       failureCount: failureCount,
       routeWeight: newWeight,
-      timestamp: success ? DateTime.now() : existing?.timestamp,
+      timestamp: success ? now : existing?.timestamp,
+      recentSuccess: faded.success,
+      recentFailure: faded.failure,
+      statsAt: now,
     );
   }
 
+  /// Route for one send attempt of a message to [contactPubKeyHex].
+  ///
+  /// The last attempt always floods. Otherwise a known route is drawn by
+  /// Thompson sampling over faded delivery stats, weighted by how well it
+  /// fits [context]; routes used for this message's recent attempts score
+  /// lower so retries usually try something different.
   PathSelection selectPathForAttempt(
     String contactPubKeyHex, {
     required int attemptIndex,
     required int maxRetries,
     List<PathSelection> recentSelections = const [],
+    RouteContext context = RouteContext.unknown,
   }) {
     if (maxRetries <= 0 || attemptIndex >= maxRetries - 1) {
       return const PathSelection(pathBytes: [], hopCount: -1, useFlood: true);
     }
 
-    final ranked = _getRankedPaths(contactPubKeyHex);
+    final ranked = _getRankedPaths(contactPubKeyHex, context: context);
     if (ranked.isEmpty) {
       return const PathSelection(pathBytes: [], hopCount: -1, useFlood: true);
     }
@@ -225,42 +285,21 @@ class PathHistoryService extends ChangeNotifier {
         .where((selection) => !selection.useFlood)
         .map((selection) => selection.pathBytes)
         .toList();
-    final candidates = recentPaths.isEmpty
-        ? ranked
-        : ranked
-              .where(
-                (path) => !recentPaths.any(
-                  (recentPath) => _pathsEqual(path.pathBytes, recentPath),
-                ),
-              )
-              .toList();
-    final selected = candidates.isNotEmpty
-        ? (recentPaths.isEmpty
-              ? _selectRotatedCandidate(contactPubKeyHex, candidates)
-              : candidates.first)
-        : ranked.first;
+    final selected = pickRoute(
+      ranked,
+      random: _random,
+      now: _now(),
+      context: context,
+      triedThisMessage: (path) => recentPaths.any(
+        (recentPath) => _pathsEqual(path.pathBytes, recentPath),
+      ),
+    );
 
     return PathSelection(
       pathBytes: selected.pathBytes,
       hopCount: selected.hopCount,
       useFlood: false,
     );
-  }
-
-  PathRecord _selectRotatedCandidate(
-    String contactPubKeyHex,
-    List<PathRecord> candidates,
-  ) {
-    if (candidates.length <= 1) {
-      _autoRotationIndex[contactPubKeyHex] = 0;
-      return candidates.first;
-    }
-
-    final currentIndex = _autoRotationIndex[contactPubKeyHex] ?? 0;
-    final selectedIndex = currentIndex % candidates.length;
-    _autoRotationIndex[contactPubKeyHex] =
-        (selectedIndex + 1) % candidates.length;
-    return candidates[selectedIndex];
   }
 
   void _addPathRecord({
@@ -274,7 +313,12 @@ class PathHistoryService extends ChangeNotifier {
     double? routeWeight,
     double initialWeight = 1.0,
     DateTime? timestamp,
+    double? recentSuccess,
+    double? recentFailure,
+    DateTime? statsAt,
   }) {
+    if (_disposed) return;
+    final generation = _generation;
     void add() => _addPathRecordInternal(
       contactPubKeyHex,
       hopCount,
@@ -286,32 +330,51 @@ class PathHistoryService extends ChangeNotifier {
       routeWeight,
       initialWeight,
       timestamp,
+      recentSuccess: recentSuccess,
+      recentFailure: recentFailure,
+      statsAt: statsAt,
     );
 
     if (_cache.containsKey(contactPubKeyHex)) {
       add();
     } else {
-      _ensureLoaded(contactPubKeyHex).then((_) => add());
+      _ensureLoaded(contactPubKeyHex).then((loaded) {
+        if (loaded && !_disposed && generation == _generation) add();
+      });
     }
   }
 
-  Future<void> _ensureLoaded(String contactPubKeyHex) {
-    if (_cache.containsKey(contactPubKeyHex)) return Future.value();
-    return _pendingLoads[contactPubKeyHex] ??=
-        _loadHistoryFromStorage(contactPubKeyHex)
-            .then((loaded) {
-              _cache[contactPubKeyHex] ??=
-                  loaded ??
-                  ContactPathHistory(
-                    contactPubKeyHex: contactPubKeyHex,
-                    recentPaths: [],
-                  );
-              _trackAccess(contactPubKeyHex);
-              _evictIfNeeded();
-            })
-            .whenComplete(() {
-              _pendingLoads.remove(contactPubKeyHex);
-            });
+  Future<bool> _ensureLoaded(String contactPubKeyHex) {
+    if (_disposed) return Future.value(false);
+    if (_cache.containsKey(contactPubKeyHex)) return Future.value(true);
+    final existing = _pendingLoads[contactPubKeyHex];
+    if (existing != null) return existing;
+    final generation = _generation;
+    late final Future<bool> pending;
+    pending = _loadHistoryFromStorage(contactPubKeyHex)
+        .then((loaded) {
+          if (_disposed ||
+              generation != _generation ||
+              !identical(_pendingLoads[contactPubKeyHex], pending)) {
+            return false;
+          }
+          _cache[contactPubKeyHex] ??=
+              loaded ??
+              ContactPathHistory(
+                contactPubKeyHex: contactPubKeyHex,
+                recentPaths: [],
+              );
+          _trackAccess(contactPubKeyHex);
+          _evictIfNeeded();
+          return true;
+        })
+        .whenComplete(() {
+          if (identical(_pendingLoads[contactPubKeyHex], pending)) {
+            _pendingLoads.remove(contactPubKeyHex);
+          }
+        });
+    _pendingLoads[contactPubKeyHex] = pending;
+    return pending;
   }
 
   void _addPathRecordInternal(
@@ -324,8 +387,12 @@ class PathHistoryService extends ChangeNotifier {
     int failureCount,
     double? routeWeight,
     double initialWeight,
-    DateTime? timestamp,
-  ) {
+    DateTime? timestamp, {
+    double? recentSuccess,
+    double? recentFailure,
+    DateTime? statsAt,
+  }) {
+    if (_disposed) return;
     var history = _cache[contactPubKeyHex];
     if (history == null) return;
     _version++;
@@ -339,6 +406,12 @@ class PathHistoryService extends ChangeNotifier {
       }
       wasFloodDiscovery = existing.wasFloodDiscovery || wasFloodDiscovery;
       timestamp ??= existing.timestamp;
+      if (recentSuccess == null) {
+        // Not a result: keep the faded stats as they were.
+        recentSuccess = existing.recentSuccess;
+        recentFailure = existing.recentFailure;
+        statsAt = existing.statsAt;
+      }
     }
     routeWeight ??= existing?.routeWeight ?? initialWeight;
 
@@ -351,6 +424,10 @@ class PathHistoryService extends ChangeNotifier {
       successCount: successCount,
       failureCount: failureCount,
       routeWeight: routeWeight,
+      // A brand-new record starts with no faded results.
+      recentSuccess: recentSuccess ?? 0,
+      recentFailure: recentFailure ?? 0,
+      statsAt: statsAt,
     );
 
     final updatedPaths = List<PathRecord>.from(history.recentPaths);
@@ -394,6 +471,7 @@ class PathHistoryService extends ChangeNotifier {
   /// Reads saved paths straight from storage without adding them to the
   /// cache, evicting anything, or notifying listeners.
   Future<List<PathRecord>> readStoredPaths(String contactPubKeyHex) async {
+    if (_disposed) return [];
     final cached = _cache[contactPubKeyHex];
     if (cached != null) return cached.recentPaths;
     final stored = await _loadHistoryFromStorage(contactPubKeyHex);
@@ -401,13 +479,16 @@ class PathHistoryService extends ChangeNotifier {
   }
 
   List<PathRecord> getRecentPaths(String contactPubKeyHex) {
+    if (_disposed) return [];
     final history = _cache[contactPubKeyHex];
     if (history != null) {
       _trackAccess(contactPubKeyHex);
       return history.recentPaths;
     }
 
-    _ensureLoaded(contactPubKeyHex).then((_) {
+    final generation = _generation;
+    _ensureLoaded(contactPubKeyHex).then((loaded) {
+      if (!loaded || _disposed || generation != _generation) return;
       if (_cache[contactPubKeyHex]?.recentPaths.isNotEmpty ?? false) {
         _version++;
         notifyListeners();
@@ -420,10 +501,12 @@ class PathHistoryService extends ChangeNotifier {
   Future<ContactPathHistory?> _loadHistoryFromStorage(
     String contactPubKeyHex,
   ) async {
-    // An evicted contact may still have a queued save; it reaches the prefs
-    // cache synchronously, so the load below reads it.
-    unawaited(_writes.flush());
-    return await _storage.loadPathHistory(contactPubKeyHex);
+    final generation = _generation;
+    await _clearing;
+    await _writes.flush();
+    if (_disposed || generation != _generation) return null;
+    final history = await _storage.loadPathHistory(contactPubKeyHex);
+    return _disposed || generation != _generation ? null : history;
   }
 
   PathRecord? getFastestPath(String contactPubKeyHex) {
@@ -459,13 +542,38 @@ class PathHistoryService extends ChangeNotifier {
     );
   }
 
+  /// Runs [clear] after earlier clears and queued saves. [_clearing] itself
+  /// never fails, so one failed clear cannot break later loads and flushes;
+  /// the returned future still reports the failure to its caller.
+  Future<void> _queueClear(int generation, Future<void> Function() clear) {
+    final previous = _clearing;
+    final run = () async {
+      await previous;
+      await _writes.flush();
+      if (_disposed || generation != _generation) return;
+      await clear();
+    }();
+    _clearing = run.then<void>(
+      (_) {},
+      onError: (Object error, StackTrace _) {
+        appLogger.warn('Clearing path history failed: $error', tag: 'Storage');
+      },
+    );
+    return run;
+  }
+
   Future<void> clearPathHistory(String contactPubKeyHex) async {
+    if (_disposed) return;
+    final generation = _generation;
+    _pendingLoads.remove(contactPubKeyHex);
     _cache.remove(contactPubKeyHex);
     _cacheAccessOrder.remove(contactPubKeyHex);
-    _autoRotationIndex.remove(contactPubKeyHex);
     _floodStats.remove(contactPubKeyHex);
     _writes.cancel(contactPubKeyHex);
-    await _storage.clearPathHistory(contactPubKeyHex);
+    await _queueClear(generation, () {
+      return _storage.clearPathHistory(contactPubKeyHex);
+    });
+    if (_disposed || generation != _generation) return;
     _version++;
     notifyListeners();
   }
@@ -474,6 +582,8 @@ class PathHistoryService extends ChangeNotifier {
     String contactPubKeyHex,
     List<int> pathBytes,
   ) async {
+    if (_disposed) return;
+    final generation = _generation;
     final history = _cache[contactPubKeyHex];
     if (history == null) return;
 
@@ -485,8 +595,12 @@ class PathHistoryService extends ChangeNotifier {
       recentPaths: updatedPaths,
     );
 
+    final updated = _cache[contactPubKeyHex]!;
     _writes.cancel(contactPubKeyHex);
-    await _storage.savePathHistory(contactPubKeyHex, _cache[contactPubKeyHex]!);
+    await _writes.flush();
+    if (_disposed || generation != _generation) return;
+    await _storage.savePathHistory(contactPubKeyHex, updated);
+    if (_disposed || generation != _generation) return;
     _version++;
     notifyListeners();
   }
@@ -502,34 +616,32 @@ class PathHistoryService extends ChangeNotifier {
     return null;
   }
 
-  List<PathRecord> _getRankedPaths(String contactPubKeyHex) {
+  List<PathRecord> _getRankedPaths(
+    String contactPubKeyHex, {
+    RouteContext context = RouteContext.unknown,
+  }) {
     final history = _cache[contactPubKeyHex];
     if (history == null) return [];
 
+    // Records without hop bytes are unusable, except the direct path: zero
+    // hops has no bytes by definition (issue #643: rotation never tried it).
     final ranked = List<PathRecord>.from(history.recentPaths)
-      ..removeWhere((p) => p.pathBytes.isEmpty);
-    final fastestTripMs = _getFastestKnownTripMs(ranked);
-    final highestRouteWeight = _getHighestKnownRouteWeight(ranked);
+      ..removeWhere((p) => p.pathBytes.isEmpty && p.hopCount != 0);
+    final now = _now();
+    final fastest = fastestTripMs(ranked);
+    final scores = {
+      for (final p in ranked)
+        p: routeExpectedScore(
+          p,
+          now: now,
+          fastestTripMs: fastest,
+          context: context,
+        ),
+    };
 
     ranked.sort((a, b) {
-      final scoreCompare =
-          _scorePathRecord(
-            b,
-            fastestTripMs: fastestTripMs,
-            highestRouteWeight: highestRouteWeight,
-          ).compareTo(
-            _scorePathRecord(
-              a,
-              fastestTripMs: fastestTripMs,
-              highestRouteWeight: highestRouteWeight,
-            ),
-          );
-      if (scoreCompare != 0) {
-        return scoreCompare;
-      }
-      if (a.routeWeight != b.routeWeight) {
-        return b.routeWeight.compareTo(a.routeWeight);
-      }
+      final scoreCompare = scores[b]!.compareTo(scores[a]!);
+      if (scoreCompare != 0) return scoreCompare;
       final aTrip = a.tripTimeMs == 0 ? 999999 : a.tripTimeMs;
       final bTrip = b.tripTimeMs == 0 ? 999999 : b.tripTimeMs;
       if (aTrip != bTrip) return aTrip.compareTo(bTrip);
@@ -542,56 +654,11 @@ class PathHistoryService extends ChangeNotifier {
   }
 
   PathRecord _lowestScoredPath(List<PathRecord> paths) {
-    final fastestTripMs = _getFastestKnownTripMs(paths);
-    final highestRouteWeight = _getHighestKnownRouteWeight(paths);
-    double score(PathRecord p) => _scorePathRecord(
-      p,
-      fastestTripMs: fastestTripMs,
-      highestRouteWeight: highestRouteWeight,
-    );
+    final now = _now();
+    final fastest = fastestTripMs(paths);
+    double score(PathRecord p) =>
+        routeExpectedScore(p, now: now, fastestTripMs: fastest);
     return paths.reduce((a, b) => score(b) < score(a) ? b : a);
-  }
-
-  int? _getFastestKnownTripMs(List<PathRecord> paths) {
-    final knownTrips = paths
-        .where((path) => path.tripTimeMs > 0)
-        .map((path) => path.tripTimeMs)
-        .toList();
-    if (knownTrips.isEmpty) return null;
-    return knownTrips.reduce((a, b) => a < b ? a : b);
-  }
-
-  double _getHighestKnownRouteWeight(List<PathRecord> paths) {
-    if (paths.isEmpty) return 1.0;
-    final highestWeight = paths
-        .map((path) => path.routeWeight)
-        .reduce((a, b) => a > b ? a : b);
-    return highestWeight <= 0 ? 1.0 : highestWeight;
-  }
-
-  double _scorePathRecord(
-    PathRecord path, {
-    required int? fastestTripMs,
-    required double highestRouteWeight,
-  }) {
-    final totalAttempts = path.successCount + path.failureCount;
-    final reliability = (path.successCount + 1) / (totalAttempts + 2);
-    final latency = fastestTripMs == null || path.tripTimeMs <= 0
-        ? 0.6
-        : (fastestTripMs / path.tripTimeMs).clamp(0.0, 1.0);
-    final freshness = path.timestamp == null
-        ? 0.0
-        : 1.0 /
-              (1.0 +
-                  (DateTime.now().difference(path.timestamp!).inMinutes /
-                      60.0 /
-                      24.0));
-    final routeWeight = (path.routeWeight / highestRouteWeight).clamp(0.0, 1.0);
-
-    return (reliability * 0.45) +
-        (latency * 0.25) +
-        (freshness * 0.1) +
-        (routeWeight * 0.2);
   }
 
   bool _pathsEqual(List<int> a, List<int> b) {
@@ -615,27 +682,44 @@ class PathHistoryService extends ChangeNotifier {
     while (_cache.length > _maxCachedContacts && _cacheAccessOrder.isNotEmpty) {
       final oldest = _cacheAccessOrder.removeAt(0);
       _cache.remove(oldest);
-      _autoRotationIndex.remove(oldest);
       _floodStats.remove(oldest);
     }
   }
 
   /// Runs queued saves now, e.g. before the app is backgrounded.
-  Future<void> flushPendingWrites() => _writes.flush();
+  Future<void> flushPendingWrites() async {
+    await _clearing;
+    await _writes.flush();
+  }
 
   @override
   void dispose() {
+    if (_disposed) return;
     unawaited(_writes.flush());
+    _disposed = true;
+    _generation++;
+    _pendingLoads.clear();
+    _cache.clear();
+    _cacheAccessOrder.clear();
+    _floodStats.clear();
     super.dispose();
   }
 
   void clearAllHistories() {
+    if (_disposed) return;
+    final generation = ++_generation;
+    _pendingLoads.clear();
     _cache.clear();
     _cacheAccessOrder.clear();
-    _autoRotationIndex.clear();
     _floodStats.clear();
     _writes.dispose();
-    _storage.clearAllPathHistories();
+    // Nothing awaits this one; _queueClear logs a failure.
+    unawaited(
+      _queueClear(
+        generation,
+        _storage.clearAllPathHistories,
+      ).catchError((Object _) {}),
+    );
     _version = 0;
     notifyListeners();
   }

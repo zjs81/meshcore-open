@@ -399,6 +399,188 @@ class AppLocalizationsCs extends AppLocalizations {
       'Oznámení, zprávy a předvolby mapy';
 
   @override
+  String get settings_export => 'Exportovat';
+
+  @override
+  String get settings_exportSubtitle =>
+      'Exportovat kontakty a opakovače jako GPX';
+
+  @override
+  String get backupRestore_title => 'Záloha a obnovení';
+
+  @override
+  String get backupRestore_subtitle =>
+      'Uložte nebo obnovte data aplikace a nastavení rádia';
+
+  @override
+  String get backupRestore_import => 'Importovat';
+
+  @override
+  String get backupRestore_selectImportFile => 'Importovat soubor';
+
+  @override
+  String get backupRestore_password => 'Heslo (volitelné)';
+
+  @override
+  String get backupRestore_passwordHelp =>
+      'Heslo soubor zašifruje. Prázdné heslo uloží prostý text, který může obsahovat soukromé klíče a klíče kanálů, historii a přihlašovací údaje.';
+
+  @override
+  String get backupRestore_importUnavailable =>
+      'Zkontrolujte heslo nebo vyberte podporovaný soubor zálohy.';
+
+  @override
+  String get backupRestore_items => 'Položky zálohy a obnovení';
+
+  @override
+  String get backupRestore_nodeSettings => 'Nastavení uzlu';
+
+  @override
+  String get backupRestore_nodeSettingsDescription =>
+      'Název zařízení, soukromý a veřejný klíč, nastavení rádia a regiony';
+
+  @override
+  String get backupRestore_deviceName => 'Název zařízení';
+
+  @override
+  String get backupRestore_privateKey => 'Soukromý klíč (citlivé)';
+
+  @override
+  String get backupRestore_publicKey => 'Veřejný klíč';
+
+  @override
+  String get backupRestore_radioSettings => 'Nastavení rádia';
+
+  @override
+  String get backupRestore_regions => 'Regiony';
+
+  @override
+  String get backupRestore_location => 'Poloha';
+
+  @override
+  String get backupRestore_contactSettings => 'Nastavení kontaktů';
+
+  @override
+  String get backupRestore_privacySettings => 'Nastavení soukromí';
+
+  @override
+  String get backupRestore_contactsData => 'Kontakty';
+
+  @override
+  String get backupRestore_perContactSettings => 'Nastavení a filtry kontaktů';
+
+  @override
+  String get backupRestore_contactGroups => 'Skupiny kontaktů';
+
+  @override
+  String get backupRestore_contactHistory => 'Historie kontaktů';
+
+  @override
+  String get backupRestore_channelsData => 'Kanály';
+
+  @override
+  String get backupRestore_channelFilters => 'Nastavení filtru zpráv';
+
+  @override
+  String get backupRestore_channelSettings => 'Nastavení kanálů';
+
+  @override
+  String get backupRestore_communities => 'Komunity';
+
+  @override
+  String get backupRestore_channelHistory => 'Historie kanálů';
+
+  @override
+  String get backupRestore_locationSettings => 'Nastavení polohy';
+
+  @override
+  String get backupRestore_locationSettingsDescription =>
+      'Poloha, nastavení kontaktů a soukromí';
+
+  @override
+  String get backupRestore_appSettings => 'Nastavení aplikace';
+
+  @override
+  String get backupRestore_appSettingsDescription =>
+      'Předvolby aplikace a nastavení vzhledu';
+
+  @override
+  String get backupRestore_ipfsKey => 'Klíč API IPFS (citlivé)';
+
+  @override
+  String get backupRestore_stadiaMapKey => 'Klíč API Stadia Maps (citlivé)';
+
+  @override
+  String get backupRestore_contacts => 'Kontakty';
+
+  @override
+  String get backupRestore_contactsDescription =>
+      'Kontakty, filtry a nastavení jednotlivých kontaktů, skupiny a historie zpráv';
+
+  @override
+  String get backupRestore_discoveredContacts => 'Objevené kontakty';
+
+  @override
+  String get backupRestore_discoveredContactsDescription =>
+      'Objevené kontakty a jejich uložené údaje';
+
+  @override
+  String get backupRestore_channels => 'Kanály';
+
+  @override
+  String get backupRestore_channelsDescription =>
+      'Kanály, filtry kanálů, komunity a historie zpráv';
+
+  @override
+  String get backupRestore_backup => 'Vytvořit zálohu';
+
+  @override
+  String get backupRestore_restore => 'Obnovit vybrané';
+
+  @override
+  String get backupRestore_backupComplete => 'Soubor zálohy byl vytvořen.';
+
+  @override
+  String get backupRestore_restoreComplete =>
+      'Obnovení dokončeno. Pokud jste obnovili identitu rádia, připojte se znovu.';
+
+  @override
+  String get backupRestore_missingModelsTitle => 'Modely nejsou stažené';
+
+  @override
+  String backupRestore_missingModelsMessage(String models) {
+    return 'Obnovené nastavení vybírá modely, které nejsou v tomto zařízení k dispozici:\n$models\n\nStáhnout je nyní?';
+  }
+
+  @override
+  String get backupRestore_downloadModels => 'Stáhnout modely';
+
+  @override
+  String get backupRestore_downloading => 'Stahování…';
+
+  @override
+  String get backupRestore_cancelDownload => 'Zrušit stahování';
+
+  @override
+  String backupRestore_failed(String error) {
+    return 'Operace zálohy selhala: $error';
+  }
+
+  @override
+  String get backupRestore_fileTooLarge =>
+      'Soubor zálohy je větší než limit 100 MB.';
+
+  @override
+  String get backupRestore_selectAtLeastOne => 'Vyberte alespoň jednu položku.';
+
+  @override
+  String get backupRestore_replaceIdentityTitle => 'Nahradit identitu rádia?';
+
+  @override
+  String get backupRestore_replaceIdentityMessage =>
+      'Obnovení nastavení uzlu nahradí soukromý klíč připojeného rádia a změní jeho identitu. Pokračujte, jen pokud je to záměr.';
+
+  @override
   String get settings_nodeSettings => 'Nastavení uzlu';
 
   @override
@@ -698,7 +880,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get settings_aboutLegalese => '2026 MeshCore Open Source Project';
+  String get settings_aboutLegalese => 'Projekt MeshCore Open Source 2026';
 
   @override
   String get settings_aboutDescription =>
@@ -761,7 +943,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get settings_bandwidth => 'Šířka pásma';
 
   @override
-  String get settings_spreadingFactor => 'Spreading Factor';
+  String get settings_spreadingFactor => 'Rozptylový faktor';
 
   @override
   String get settings_codingRate => 'Kódovací poměr';
@@ -1080,7 +1262,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get appSettings_languageSl => 'Slovenščina';
 
   @override
-  String get appSettings_languagePt => 'Português';
+  String get appSettings_languagePt => 'Português (Brasil)';
+
+  @override
+  String get appSettings_languagePtPt => 'Português (Portugal)';
 
   @override
   String get appSettings_languageIt => 'Italiano';
@@ -1270,36 +1455,6 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get appSettings_autoRouteRotationDisabled =>
       'Automatické střídání tras vypnuto';
-
-  @override
-  String get appSettings_maxRouteWeight => 'Maximální váha trasy';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Maximální váha, kterou může cesta nasbírat z úspěšných doručení';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Počáteční váha trasy';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Výchozí váha nově objevených cest';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Přírůstek váhy při úspěchu';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Váha přidaná cestě po úspěšném doručení';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Úbytek váhy při neúspěchu';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Váha odebraná cestě po neúspěšném doručení';
 
   @override
   String get appSettings_maxMessageRetries => 'Maximum opakování zprávy';
@@ -2069,6 +2224,9 @@ class AppLocalizationsCs extends AppLocalizations {
       'Zkuste jiné slovo nebo zkontrolujte překlepy';
 
   @override
+  String get chatSearch_jumpFailed => 'Tuto zprávu se v chatu nepodařilo najít';
+
+  @override
   String get chat_sendMessage => 'Odeslat zprávu';
 
   @override
@@ -2112,6 +2270,75 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Zpráva smazána';
+
+  @override
+  String get chat_selectMessages => 'Vybrat zprávy';
+
+  @override
+  String chat_selectedCount(int count) {
+    return 'Vybráno: $count';
+  }
+
+  @override
+  String get chat_selectAll => 'Vybrat vše';
+
+  @override
+  String get chat_clearSelection => 'Zrušit výběr';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Smazat zprávy?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Smazat $count zpráv z tohoto zařízení?',
+      many: 'Smazat $count zprávy z tohoto zařízení?',
+      few: 'Smazat $count zprávy z tohoto zařízení?',
+      one: 'Smazat 1 zprávu z tohoto zařízení?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Smazáno $count zpráv',
+      many: 'Smazáno $count zprávy',
+      few: 'Smazány $count zprávy',
+      one: 'Smazána 1 zpráva',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count zpráv označeno jako spam',
+      many: '$count zprávy označeno jako spam',
+      few: '$count zprávy označeny jako spam',
+      one: '1 zpráva označena jako spam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count zpráv označeno jako ne-spam',
+      many: '$count zprávy označeno jako ne-spam',
+      few: '$count zprávy označeny jako ne-spam',
+      one: '1 zpráva označena jako ne-spam',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Opakované odesílání zprávy';
@@ -2354,6 +2581,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get routing_modeManual => 'Ručně';
 
   @override
+  String get routing_modeDirect => 'Přímo';
+
+  @override
   String get routing_modeAutoHint =>
       'Automaticky vybere nejlepší známou cestu a pokud žádnou nezná, použije flood.';
 
@@ -2364,6 +2594,10 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Vždy odesílá přesně po cestě, kterou nastavíte.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Vždy odešle zprávu přímo tomuto kontaktu, bez skoků přes opakovače. Použijte, když je v dosahu rádia.';
 
   @override
   String get routing_currentRoute => 'Aktuální trasa';
@@ -2508,7 +2742,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get chat_floodAuto => 'Flood (auto)';
+  String get chat_floodAuto => 'Flood (automaticky)';
 
   @override
   String get chat_direct => 'Přímo';
@@ -2530,6 +2764,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get contactShare_saved => 'Uloženo';
+
+  @override
+  String get contactShare_addAgain => 'Přidat znovu';
 
   @override
   String get contactShare_isYou => 'To jste vy';
@@ -2667,7 +2904,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get map_repeater => 'Opakovač';
 
   @override
-  String get map_room => 'Room';
+  String get map_room => 'Místnost';
 
   @override
   String get map_sensor => 'Senzor';
@@ -2683,10 +2920,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get map_lastSeen => 'Naposledy viděn';
-
-  @override
-  String get map_disconnectConfirm =>
-      'Opravdu se chcete od tohoto zařízení odpojit?';
 
   @override
   String get map_from => 'Od';
@@ -3389,10 +3622,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get repeater_bandwidth => 'Šířka pásma';
 
   @override
-  String get repeater_spreadingFactor => 'Spreading Factor';
+  String get repeater_spreadingFactor => 'Rozptylový faktor';
 
   @override
-  String get repeater_codingRate => 'Coding Rate';
+  String get repeater_codingRate => 'Kódovací poměr';
 
   @override
   String get repeater_locationSettings => 'Nastavení polohy';
@@ -4081,7 +4314,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get repeater_settingsCategory => 'Nastavení';
 
   @override
-  String get repeater_bridge => 'Bridge';
+  String get repeater_bridge => 'Most';
 
   @override
   String get repeater_logging => 'Logování';
@@ -4654,7 +4887,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get channelPath_floodPath => 'Flood';
 
   @override
-  String get channelPath_directPath => 'Direct';
+  String get channelPath_directPath => 'Přímo';
 
   @override
   String channelPath_observedZeroOf(int total) {
@@ -5973,6 +6206,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pathMap_expandPanel => 'Rozbalit panel';
 
   @override
+  String get pathMap_expandHopList => 'Rozbalit seznam skoků';
+
+  @override
+  String get pathMap_showMap => 'Zobrazit mapu';
+
+  @override
   String get pathMap_noLocation => 'Bez polohy';
 
   @override
@@ -6186,6 +6425,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String receivedImage_shareCaption(int bytes) {
     return 'Rekonstruováno AI z $bytes bajtů; jemné detaily jsou vygenerovány, nikoli přeneseny.';
   }
+
+  @override
+  String get receivedImage_syntheticBadge => 'Rekonstruováno AI';
 
   @override
   String get receivedImage_packetInfo => 'Informace o paketech';
@@ -7195,4 +7437,40 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get messageFilter_ghostIconTooltip => 'Skryto vaším filtrem zpráv';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'Offline · $name';
+  }
+
+  @override
+  String get appBar_offline => 'Offline';
+
+  @override
+  String get appBar_reconnecting => 'Připojování…';
+
+  @override
+  String get connectSheet_title => 'Připojit rádio';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return 'Znovu se připojit k $name';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => 'Vybrat rádio';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB nebo TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => 'Zastavit připojování';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return 'Nelze se spojit s $name. Ujistěte se, že je zapnuté a nablízku.';
+  }
+
+  @override
+  String get chat_composerOffline => 'Pro odesílání zpráv se připojte k rádiu';
 }

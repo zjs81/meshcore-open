@@ -38,6 +38,26 @@ void main() {
     });
   });
 
+  group('private-key backup frames', () {
+    test('uses the firmware command codes and 64-byte identity payload', () {
+      final keyData = Uint8List.fromList(List.generate(64, (index) => index));
+      expect(buildExportPrivateKeyFrame(), [cmdExportPrivateKey]);
+      final frame = buildImportPrivateKeyFrame(keyData);
+      expect(frame.length, 65);
+      expect(frame.first, cmdImportPrivateKey);
+      expect(frame.sublist(1), keyData);
+      expect(respCodePrivateKey, 14);
+      expect(respCodeDisabled, 15);
+    });
+
+    test('rejects identity data with the wrong length', () {
+      expect(
+        () => buildImportPrivateKeyFrame(Uint8List(63)),
+        throwsArgumentError,
+      );
+    });
+  });
+
   group('BufferWriter.writeCString', () {
     test('NUL-terminates and truncates on a character boundary', () {
       final writer = BufferWriter()..writeCString('#${'ё' * 20}', 32);

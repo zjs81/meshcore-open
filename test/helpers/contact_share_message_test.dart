@@ -65,4 +65,14 @@ void main() {
     expect(parseContactShare('<$_hex:1:CC> hi'), isNull);
     expect(parseContactShare('hello'), isNull);
   });
+
+  test('findContactShare locates a token inside copied text', () {
+    final s = findContactShare('Alice: <$_hex:2:Hilltop Rpt>')!;
+    expect(s.publicKeyHex, _hex);
+    expect(s.type, 2);
+    expect(s.name, 'Hilltop Rpt');
+    expect(findContactShare('look <$_hex:1:CC> here')!.name, 'CC');
+    expect(findContactShare('meshcore://abcdef'), isNull);
+    expect(findContactShare('<$_hex:9:x>'), isNull);
+  });
 }

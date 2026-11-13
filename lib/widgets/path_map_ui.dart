@@ -7,6 +7,7 @@ import '../l10n/l10n.dart';
 import '../models/display_path.dart';
 import '../models/path_playback.dart';
 import '../theme/mesh_theme.dart';
+import 'mesh_ui.dart';
 
 /// Shared UI for the path map screens (live path trace and received-message
 /// path map): packet-flow animation overlays, single/combined view toggle,
@@ -319,11 +320,11 @@ class PathViewModeToggle extends StatelessWidget {
             segments: [
               ButtonSegment(
                 value: PathViewMode.single,
-                label: Text(l10n.pathMap_viewSingle),
+                label: MeshSegmentLabel(l10n.pathMap_viewSingle),
               ),
               ButtonSegment(
                 value: PathViewMode.combined,
-                label: Text(l10n.pathMap_viewCombined),
+                label: MeshSegmentLabel(l10n.pathMap_viewCombined),
               ),
             ],
             selected: {mode},

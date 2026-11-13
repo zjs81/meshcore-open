@@ -9,9 +9,11 @@ import 'package:provider/provider.dart';
 
 import '../utils/app_logger.dart';
 import '../utils/platform_info.dart';
+import '../utils/radio_guard.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
+import '../helpers/chat_jump.dart';
 import '../helpers/cyr2lat.dart';
 import '../helpers/message_url_image_helper.dart';
 import '../helpers/path_helper.dart';
@@ -40,11 +42,14 @@ import '../widgets/message_bubble_frame.dart';
 import '../widgets/reaction_chips.dart';
 import '../widgets/chat_day_separator.dart';
 import 'channel_message_path_screen.dart';
+import 'contacts_screen.dart' show confirmRemoveContact;
 import 'map_screen.dart';
+import 'repeater_hub_screen.dart';
 import '../widgets/emoji_picker.dart';
 import '../widgets/gif_message.dart';
 import '../widgets/jump_to_bottom_button.dart';
 import '../widgets/routing_sheet.dart';
+import '../widgets/room_login_dialog.dart';
 import '../widgets/radio_stats_entry.dart';
 import '../widgets/sync_progress_overlay.dart';
 import '../widgets/translated_message_content.dart';
@@ -96,16 +101,53 @@ class _ChatScreenState extends State<ChatScreen> {
   String? _unreadDividerMessageId;
   final ChatSendGuard _sendGuard = ChatSendGuard();
 
-  /// Contact keys of the chat screens currently on the navigation stack, in
-  /// push order. A room chat can push a nested ChatScreen for one of its
-  /// posters; when that one is popped, the room underneath must become the
-  /// active conversation again rather than none at all.
-  static final List<String> _activeContactStack = [];
+  /// The chat currently registered as the visible conversation. Screens
+  /// register while their route is uncovered and unregister when a page is
+  /// pushed over them (a nested room poster chat, a chat opened from a
+  /// notification, …), re-registering when it is popped. Only the owner
+  /// clears the registration, so a screen disposed after the one underneath
+  /// re-registered cannot wipe it out.
+  static _ChatScreenState? _activeOwner;
+  ModalRoute<dynamic>? _route;
+
+  void _registerActive() {
+    final connector = _connector;
+    if (connector == null) return;
+    _activeOwner = this;
+    connector.setActiveContact(widget.contact.publicKeyHex);
+  }
+
+  void _unregisterActive() {
+    if (!identical(_activeOwner, this)) return;
+    _activeOwner = null;
+    _connector?.setActiveContact(null);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (!identical(route, _route)) {
+      _route?.secondaryAnimation?.removeStatusListener(_onCoveringRouteStatus);
+      _route = route;
+      route?.secondaryAnimation?.addStatusListener(_onCoveringRouteStatus);
+    }
+  }
+
+  void _onCoveringRouteStatus(AnimationStatus status) {
+    if (!mounted) return;
+    if (status == AnimationStatus.dismissed) {
+      _registerActive();
+    } else {
+      // Not just `forward`: a page pushed without a transition jumps
+      // straight to `completed`.
+      _unregisterActive();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _activeContactStack.add(widget.contact.publicKeyHex);
     _textFieldFocusNode.addListener(_onTextFieldFocusChange);
     _scrollController.onScrollNearTop = _loadOlderMessages;
     _scrollController.showJumpToBottom.addListener(_clearDividerAtBottom);
@@ -113,7 +155,6 @@ class _ChatScreenState extends State<ChatScreen> {
       if (!mounted) return;
       final connector = context.read<MeshCoreConnector>();
       final settings = context.read<AppSettingsService>().settings;
-      final keyHex = widget.contact.publicKeyHex;
       final unread = widget.initialUnreadCount;
       final messages = connector.getMessages(widget.contact);
       Message? anchor;
@@ -126,8 +167,8 @@ class _ChatScreenState extends State<ChatScreen> {
           _pendingUnreadScrollTarget = anchor;
         }
       });
-      connector.setActiveContact(keyHex);
       _connector = connector;
+      if (_route?.isCurrent ?? true) _registerActive();
       if (anchor != null && settings.jumpToOldestUnread) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
@@ -194,21 +235,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    final index = _activeContactStack.lastIndexOf(widget.contact.publicKeyHex);
-    final wasTop = index == _activeContactStack.length - 1;
-    if (index >= 0) _activeContactStack.removeAt(index);
-    if (wasTop) {
-      // Restore whichever chat is now on top (e.g. the room this nested chat
-      // was opened from), or clear when this was the only one.
-      _connector?.setActiveContact(
-        _activeContactStack.isEmpty ? null : _activeContactStack.last,
-      );
-    }
+    _route?.secondaryAnimation?.removeStatusListener(_onCoveringRouteStatus);
+    _unregisterActive();
     _scrollController.showJumpToBottom.removeListener(_clearDividerAtBottom);
     _textFieldFocusNode.removeListener(_onTextFieldFocusChange);
     _textFieldFocusNode.dispose();
     _textController.dispose();
     _searchController.dispose();
+    _highlightTimer?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -255,7 +289,63 @@ class _ChatScreenState extends State<ChatScreen> {
       query: _searchQuery.trim(),
       loadEntries: loadEntries,
       textScale: context.watch<ChatTextScaleService>().scale,
+      onSelect: (entry) => unawaited(_jumpToSearchResult(entry.id)),
     );
+  }
+
+  /// Message briefly highlighted after jumping to it from search.
+  String? _highlightedMessageId;
+  Timer? _highlightTimer;
+
+  /// Closes search and scrolls the conversation to [messageId], loading
+  /// older pages first when the message is further back than what is loaded.
+  Future<void> _jumpToSearchResult(String messageId) async {
+    FocusScope.of(context).unfocus();
+    _closeSearch();
+    final connector = context.read<MeshCoreConnector>();
+    final keyHex = widget.contact.publicKeyHex;
+    int indexOf() => connector
+        .getMessages(widget.contact)
+        .indexWhere((m) => m.messageId == messageId);
+    for (var page = 0; page < 500 && indexOf() < 0; page++) {
+      if (!mounted) return;
+      if (_isLoadingOlder) {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        continue;
+      }
+      setState(() => _isLoadingOlder = true);
+      final older = await connector.loadOlderMessages(keyHex);
+      if (!mounted) return;
+      setState(() => _isLoadingOlder = false);
+      if (older.isEmpty) break;
+    }
+    // Let the list (rebuilt after closing search) lay out.
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+    final messages = connector.getMessages(widget.contact);
+    final index = indexOf();
+    // The list is reversed: newest message is row 0.
+    final found =
+        index >= 0 &&
+        await scrollListToIndex(
+          controller: _scrollController,
+          targetIndex: messages.length - 1 - index,
+          itemCount: messages.length,
+          isMounted: () => mounted,
+        );
+    if (!mounted) return;
+    if (!found) {
+      showDismissibleSnackBar(
+        context,
+        content: Text(context.l10n.chatSearch_jumpFailed),
+      );
+      return;
+    }
+    _highlightTimer?.cancel();
+    setState(() => _highlightedMessageId = messageId);
+    _highlightTimer = Timer(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _highlightedMessageId = null);
+    });
   }
 
   Future<List<ChatSearchEntry>> _loadSearchEntries() async {
@@ -366,120 +456,135 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
         centerTitle: false,
         bottom: const SyncProgressAppBarBottom(),
-        actions: [
-          const RadioStatsIconButton(),
-          if (!_searching)
-            IconButton(
-              tooltip: context.l10n.chatSearch_tooltip,
-              icon: const Icon(Icons.search),
-              onPressed: _openSearch,
-            ),
-          Consumer<MeshCoreConnector>(
-            builder: (context, connector, _) {
-              final contact = _resolveContact(connector);
+        actionsPadding: const EdgeInsetsDirectional.only(end: 4),
+        // While searching the field gets the whole bar; the leading arrow
+        // closes the search.
+        actions: _searching
+            ? null
+            : [
+                const RadioStatsIconButton(),
+                IconButton(
+                  tooltip: context.l10n.chatSearch_tooltip,
+                  icon: const Icon(Icons.search),
+                  onPressed: _openSearch,
+                ),
+                Consumer<MeshCoreConnector>(
+                  builder: (context, connector, _) {
+                    final contact = _resolveContact(connector);
+                    final isRoom = contact.type == advTypeRoom;
+                    final readOnly = isRadioReadOnly(connector);
 
-              return PopupMenuButton<String>(
-                icon: const Icon(Icons.more_vert),
-                onSelected: (value) {
-                  switch (value) {
-                    case 'routing':
-                      ContactRoutingSheet.show(context, contact: contact);
-                    case 'info':
-                      _showContactInfo(context);
-                    case 'settings':
-                      _showContactSettings(context);
-                    case 'background':
-                      showChatBackgroundSheet(
-                        context,
-                        ChatBackgroundService.contactKey(contact),
-                      );
-                    case 'telemetry':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              TelemetryScreen(contact: widget.contact),
+                    return PopupMenuButton<String>(
+                      icon: const Icon(Icons.more_vert),
+                      onSelected: (value) {
+                        switch (value) {
+                          case 'routing':
+                            ContactRoutingSheet.show(context, contact: contact);
+                          case 'info':
+                            _showContactInfo(context);
+                          case 'settings':
+                            _showContactSettings(context);
+                          case 'background':
+                            showChatBackgroundSheet(
+                              context,
+                              ChatBackgroundService.contactKey(contact),
+                            );
+                          case 'telemetry':
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    TelemetryScreen(contact: widget.contact),
+                              ),
+                            );
+                          case 'roomManagement':
+                            _showRoomManagementLogin(contact);
+                          case 'clearChat':
+                            _confirmClearChat(context, connector);
+                          case 'removeContact':
+                            confirmRemoveContact(
+                              context,
+                              connector,
+                              contact,
+                              onRemoved: () {
+                                if (mounted) Navigator.of(context).pop();
+                              },
+                            );
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 'routing',
+                          child: MeshMenuItemRow(
+                            icon: Icons.route,
+                            label: context.l10n.routing_title,
+                          ),
                         ),
-                      );
-                    case 'clearChat':
-                      _confirmClearChat(context, connector);
-                  }
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'routing',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.route, size: 20),
-                        const SizedBox(width: 12),
-                        Text(context.l10n.routing_title),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'info',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.info_outline, size: 20),
-                        const SizedBox(width: 12),
-                        Text(context.l10n.contact_info),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'telemetry',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.bar_chart, size: 20),
-                        const SizedBox(width: 12),
-                        Text(context.l10n.contact_telemetry),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'settings',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.settings, size: 20),
-                        const SizedBox(width: 12),
-                        Text(context.l10n.contact_settings),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'background',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.wallpaper, size: 20),
-                        const SizedBox(width: 12),
-                        Text(context.l10n.chatBackground_title),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'clearChat',
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.delete,
-                          size: 20,
-                          color: Theme.of(context).colorScheme.error,
+                        PopupMenuItem(
+                          value: 'info',
+                          child: MeshMenuItemRow(
+                            icon: Icons.info_outline,
+                            label: context.l10n.contact_info,
+                          ),
                         ),
-                        const SizedBox(width: 12),
-                        Text(
-                          context.l10n.contact_clearChat,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.error,
+                        PopupMenuItem(
+                          value: 'telemetry',
+                          enabled: !readOnly,
+                          child: MeshMenuItemRow(
+                            icon: Icons.bar_chart,
+                            label: context.l10n.contact_telemetry,
+                          ),
+                        ),
+                        if (isRoom)
+                          PopupMenuItem(
+                            value: 'roomManagement',
+                            enabled: !readOnly,
+                            child: MeshMenuItemRow(
+                              icon: Icons.room_preferences,
+                              label: context.l10n.room_management,
+                            ),
+                          ),
+                        PopupMenuItem(
+                          value: 'settings',
+                          child: MeshMenuItemRow(
+                            icon: Icons.settings,
+                            label: context.l10n.contact_settings,
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'background',
+                          child: MeshMenuItemRow(
+                            icon: Icons.wallpaper,
+                            label: context.l10n.chatBackground_title,
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'clearChat',
+                          enabled: !readOnly,
+                          child: MeshMenuItemRow(
+                            icon: Icons.delete,
+                            label: context.l10n.contact_clearChat,
+                            color: readOnly
+                                ? null
+                                : Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'removeContact',
+                          enabled: !readOnly,
+                          child: MeshMenuItemRow(
+                            icon: Icons.person_remove,
+                            label: context.l10n.contacts_removeFromContacts,
+                            color: readOnly
+                                ? null
+                                : Theme.of(context).colorScheme.error,
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
+                    );
+                  },
+                ),
+              ],
       ),
       body: _showSearchResults
           ? _buildSearchResults(_loadSearchEntries)
@@ -621,6 +726,19 @@ class _ChatScreenState extends State<ChatScreen> {
                     reversedMessages[messageIndex + 1].receivedAt,
                     message.receivedAt,
                   );
+              final highlighted = message.messageId == _highlightedMessageId;
+              final shown = highlighted
+                  ? AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(MeshRadii.md),
+                      ),
+                      child: bubble,
+                    )
+                  : bubble;
               final child = isUnreadAnchor || startsDay
                   ? Column(
                       mainAxisSize: MainAxisSize.min,
@@ -628,10 +746,10 @@ class _ChatScreenState extends State<ChatScreen> {
                         if (startsDay)
                           ChatDaySeparator(day: message.receivedAt),
                         if (isUnreadAnchor) const UnreadDivider(),
-                        bubble,
+                        shown,
                       ],
                     )
-                  : bubble;
+                  : shown;
               if (identical(message, _pendingUnreadScrollTarget)) {
                 return KeyedSubtree(key: _unreadScrollKey, child: child);
               }
@@ -741,7 +859,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   /// Shares the radio's own position as a map marker. Shares the text send
   /// guard and cooldown so it can't race or flood alongside typed messages.
-  Future<void> _shareMyLocation(MeshCoreConnector connector) {
+  Future<void> _shareMyLocation(MeshCoreConnector connector) async {
+    if (!ensureRadioConnected(context)) return;
     return shareMyLocationMarker(
       context: context,
       connector: connector,
@@ -758,10 +877,14 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _sendMessageInner(MeshCoreConnector connector) async {
     final text = _textController.text.trim();
     if (text.isEmpty) return;
+    // Before anything clears the text box: offline the draft must stay.
+    if (!ensureRadioConnected(context)) return;
     if (!_sendGuard.checkCooldown(context)) return;
 
     final translation = await translateOutgoingText(context, text);
     if (translation == null || !mounted) return;
+    // The link can drop while the translation runs.
+    if (!ensureRadioConnected(context)) return;
     var outgoingText = translation.text;
 
     final maxBytes = maxContactMessageBytes();
@@ -813,7 +936,8 @@ class _ChatScreenState extends State<ChatScreen> {
       context,
       message: context.l10n.chat_clearChatConfirm,
     );
-    if (confirmed) {
+    if (!context.mounted) return;
+    if (confirmed && ensureRadioConnected(context)) {
       connector.clearMessagesForContact(widget.contact);
     }
   }
@@ -880,6 +1004,30 @@ class _ChatScreenState extends State<ChatScreen> {
   int _displayHopCount(List<int> pathBytes, int storedHopCount, int hashWidth) {
     if (pathBytes.isEmpty) return storedHopCount;
     return PathHelper.splitPathBytes(pathBytes, hashWidth).length;
+  }
+
+  /// Room management needs its own login (it may be as admin), as from the
+  /// contact list.
+  void _showRoomManagementLogin(Contact room) {
+    showDialog(
+      context: context,
+      builder: (_) => RoomLoginDialog(
+        room: room,
+        onLogin: (password, isAdmin) {
+          if (!mounted) return;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => RepeaterHubScreen(
+                repeater: room,
+                password: password,
+                isAdmin: isAdmin,
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 
   void _showContactInfo(BuildContext context) {
@@ -1227,6 +1375,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _showMessageActions(Message message, Contact contact) {
+    final readOnly = isRadioReadOnly(context.read<MeshCoreConnector>());
     final translationService = context.read<TranslationService>();
     final canTranslateMessage =
         translationService.canTranslateIncoming(
@@ -1251,6 +1400,7 @@ class _ChatScreenState extends State<ChatScreen> {
               // Can't react to your own messages
               if (!message.isOutgoing)
                 ListTile(
+                  enabled: !readOnly,
                   leading: const Icon(Icons.add_reaction_outlined),
                   title: Text(context.l10n.chat_addReaction),
                   onTap: () {
@@ -1309,6 +1459,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               if (message.isOutgoing && message.status == MessageStatus.failed)
                 ListTile(
+                  enabled: !readOnly,
                   leading: const Icon(Icons.refresh),
                   title: Text(context.l10n.common_retry),
                   onTap: () {
@@ -1328,13 +1479,18 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               const Divider(height: 1),
               ListTile(
+                enabled: !readOnly,
                 leading: Icon(
                   Icons.delete_outline,
-                  color: Theme.of(context).colorScheme.error,
+                  color: readOnly ? null : Theme.of(context).colorScheme.error,
                 ),
                 title: Text(
                   context.l10n.common_delete,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  style: TextStyle(
+                    color: readOnly
+                        ? null
+                        : Theme.of(context).colorScheme.error,
+                  ),
                 ),
                 onTap: () async {
                   Navigator.pop(sheetContext);
@@ -1350,6 +1506,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _deleteMessage(Message message) async {
+    if (!ensureRadioConnected(context)) return;
     await context.read<MeshCoreConnector>().deleteMessage(message);
     if (!mounted) return;
     showDismissibleSnackBar(
@@ -1359,6 +1516,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _retryMessage(Message message) {
+    if (!ensureRadioConnected(context)) return;
     final connector = Provider.of<MeshCoreConnector>(context, listen: false);
     connector.resendMessage(_resolveContact(connector), message);
     showDismissibleSnackBar(
@@ -1379,6 +1537,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _sendReaction(Message message, Contact senderContact, String emoji) {
+    if (!ensureRadioConnected(context)) return;
     final connector = context.read<MeshCoreConnector>();
     final emojiIndex = ReactionHelper.emojiToIndex(emoji);
     if (emojiIndex == null) return; // Unknown emoji, skip

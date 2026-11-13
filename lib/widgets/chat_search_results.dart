@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../helpers/message_search.dart';
+import '../helpers/snack_bar_builder.dart';
 import '../l10n/l10n.dart';
 import 'chat_day_separator.dart';
 import 'empty_state.dart';
@@ -14,11 +16,16 @@ class ChatSearchResults extends StatefulWidget {
   final Future<List<ChatSearchEntry>> Function() loadEntries;
   final double textScale;
 
+  /// Tapping a result: the chat closes search and jumps to the message.
+  /// Long-pressing one copies its text.
+  final ValueChanged<ChatSearchEntry>? onSelect;
+
   const ChatSearchResults({
     super.key,
     required this.query,
     required this.loadEntries,
     this.textScale = 1.0,
+    this.onSelect,
   });
 
   @override
@@ -116,6 +123,9 @@ class _ChatSearchResultsState extends State<ChatSearchResults> {
                     entry: _results[index],
                     needle: needle,
                     textScale: scale,
+                    onTap: widget.onSelect == null
+                        ? null
+                        : () => widget.onSelect!(_results[index]),
                   ),
                 ),
         ),
@@ -128,11 +138,13 @@ class _ResultRow extends StatelessWidget {
   final ChatSearchEntry entry;
   final String needle;
   final double textScale;
+  final VoidCallback? onTap;
 
   const _ResultRow({
     required this.entry,
     required this.needle,
     required this.textScale,
+    this.onTap,
   });
 
   @override
@@ -145,44 +157,55 @@ class _ResultRow extends StatelessWidget {
         : entry.text;
     // Show whichever text actually contains the query.
     final shown = body.toLowerCase().contains(needle) ? body : entry.text;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: _highlight(
-                  entry.sender,
-                  entry.matchSender ? needle : '',
-                  TextStyle(
-                    fontSize: 14 * s,
-                    fontWeight: FontWeight.w700,
-                    color: scheme.primary,
+    return InkWell(
+      onTap: onTap,
+      onLongPress: () async {
+        await Clipboard.setData(ClipboardData(text: shown));
+        if (!context.mounted) return;
+        showDismissibleSnackBar(
+          context,
+          content: Text(context.l10n.chat_messageCopied),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: _highlight(
+                    entry.sender,
+                    entry.matchSender ? needle : '',
+                    TextStyle(
+                      fontSize: 14 * s,
+                      fontWeight: FontWeight.w700,
+                      color: scheme.primary,
+                    ),
+                    scheme,
                   ),
-                  scheme,
                 ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '${formatChatDayLabel(context, entry.time)}, '
-                '${formatChatTime(context, entry.time)}',
-                style: TextStyle(
-                  fontSize: 12 * s,
-                  color: scheme.onSurfaceVariant,
+                const SizedBox(width: 8),
+                Text(
+                  '${formatChatDayLabel(context, entry.time)}, '
+                  '${formatChatTime(context, entry.time)}',
+                  style: TextStyle(
+                    fontSize: 12 * s,
+                    color: scheme.onSurfaceVariant,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          _highlight(
-            shown,
-            needle,
-            TextStyle(fontSize: 16 * s, color: scheme.onSurface),
-            scheme,
-          ),
-        ],
+              ],
+            ),
+            const SizedBox(height: 4),
+            _highlight(
+              shown,
+              needle,
+              TextStyle(fontSize: 16 * s, color: scheme.onSurface),
+              scheme,
+            ),
+          ],
+        ),
       ),
     );
   }

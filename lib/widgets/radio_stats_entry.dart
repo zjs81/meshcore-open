@@ -73,15 +73,20 @@ class _RadioStatsIconButtonState extends State<RadioStatsIconButton> {
                 ),
               );
             }
-            return Tooltip(
-              message: context.l10n.radioStats_tooltip,
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: () => pushCompanionRadioStatsScreen(context),
-                child: SizedBox(
-                  width: 48,
-                  height: 48,
-                  child: Center(child: dot),
+            // The gap after the dot keeps it from crowding the next app bar
+            // action; it is outside the tap target, which stays 48px.
+            return Padding(
+              padding: const EdgeInsetsDirectional.only(end: 8),
+              child: Tooltip(
+                message: context.l10n.radioStats_tooltip,
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () => pushCompanionRadioStatsScreen(context),
+                  child: SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: Center(child: dot),
+                  ),
                 ),
               ),
             );

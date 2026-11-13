@@ -403,6 +403,193 @@ class AppLocalizationsDe extends AppLocalizations {
       'Benachrichtigungen, Nachrichten und Karten-Einstellungen';
 
   @override
+  String get settings_export => 'Exportieren';
+
+  @override
+  String get settings_exportSubtitle =>
+      'Kontakte und Repeater als GPX exportieren';
+
+  @override
+  String get backupRestore_title => 'Sichern & Wiederherstellen';
+
+  @override
+  String get backupRestore_subtitle =>
+      'App-Daten und Funkeinstellungen sichern oder wiederherstellen';
+
+  @override
+  String get backupRestore_import => 'Importieren';
+
+  @override
+  String get backupRestore_selectImportFile => 'Datei importieren';
+
+  @override
+  String get backupRestore_password => 'Passwort (optional)';
+
+  @override
+  String get backupRestore_passwordHelp =>
+      'Ein Passwort verschlüsselt die Datei. Ohne Passwort wird Klartext gespeichert, der private/Kanalschlüssel, Verlauf und Zugangsdaten enthalten kann.';
+
+  @override
+  String get backupRestore_importUnavailable =>
+      'Prüfen Sie das Passwort oder wählen Sie eine unterstützte Sicherungsdatei.';
+
+  @override
+  String get backupRestore_items =>
+      'Elemente für Sicherung und Wiederherstellung';
+
+  @override
+  String get backupRestore_nodeSettings => 'Knoteneinstellungen';
+
+  @override
+  String get backupRestore_nodeSettingsDescription =>
+      'Gerätename, private und öffentliche Schlüssel, Funkeinstellungen und Regionen';
+
+  @override
+  String get backupRestore_deviceName => 'Gerätename';
+
+  @override
+  String get backupRestore_privateKey => 'Privater Schlüssel (sensibel)';
+
+  @override
+  String get backupRestore_publicKey => 'Öffentlicher Schlüssel';
+
+  @override
+  String get backupRestore_radioSettings => 'Funkeinstellungen';
+
+  @override
+  String get backupRestore_regions => 'Regionen';
+
+  @override
+  String get backupRestore_location => 'Standort';
+
+  @override
+  String get backupRestore_contactSettings => 'Kontakteinstellungen';
+
+  @override
+  String get backupRestore_privacySettings => 'Datenschutzeinstellungen';
+
+  @override
+  String get backupRestore_contactsData => 'Kontakte';
+
+  @override
+  String get backupRestore_perContactSettings =>
+      'Kontakteinstellungen und Filter';
+
+  @override
+  String get backupRestore_contactGroups => 'Kontaktgruppen';
+
+  @override
+  String get backupRestore_contactHistory => 'Kontaktverlauf';
+
+  @override
+  String get backupRestore_channelsData => 'Kanäle';
+
+  @override
+  String get backupRestore_channelFilters => 'Nachrichtenfilter-Einstellungen';
+
+  @override
+  String get backupRestore_channelSettings => 'Kanaleinstellungen';
+
+  @override
+  String get backupRestore_communities => 'Communitys';
+
+  @override
+  String get backupRestore_channelHistory => 'Kanalverlauf';
+
+  @override
+  String get backupRestore_locationSettings => 'Standorteinstellungen';
+
+  @override
+  String get backupRestore_locationSettingsDescription =>
+      'Standort, Kontakteinstellungen und Datenschutzeinstellungen';
+
+  @override
+  String get backupRestore_appSettings => 'App-Einstellungen';
+
+  @override
+  String get backupRestore_appSettingsDescription =>
+      'App-Einstellungen und Darstellung';
+
+  @override
+  String get backupRestore_ipfsKey => 'IPFS-API-Schlüssel (sensibel)';
+
+  @override
+  String get backupRestore_stadiaMapKey =>
+      'Stadia-Maps-API-Schlüssel (sensibel)';
+
+  @override
+  String get backupRestore_contacts => 'Kontakte';
+
+  @override
+  String get backupRestore_contactsDescription =>
+      'Kontakte, Filter und Einstellungen pro Kontakt, Gruppen und Nachrichtenverlauf';
+
+  @override
+  String get backupRestore_discoveredContacts => 'Entdeckte Kontakte';
+
+  @override
+  String get backupRestore_discoveredContactsDescription =>
+      'Entdeckte Kontakte und ihre gespeicherten Details';
+
+  @override
+  String get backupRestore_channels => 'Kanäle';
+
+  @override
+  String get backupRestore_channelsDescription =>
+      'Kanäle, Kanalfilter, Communitys und Nachrichtenverlauf';
+
+  @override
+  String get backupRestore_backup => 'Sicherung erstellen';
+
+  @override
+  String get backupRestore_restore => 'Auswahl wiederherstellen';
+
+  @override
+  String get backupRestore_backupComplete => 'Sicherungsdatei erstellt.';
+
+  @override
+  String get backupRestore_restoreComplete =>
+      'Wiederherstellung abgeschlossen. Verbinden Sie sich erneut, wenn Sie die Funkidentität wiederhergestellt haben.';
+
+  @override
+  String get backupRestore_missingModelsTitle =>
+      'Modelle nicht heruntergeladen';
+
+  @override
+  String backupRestore_missingModelsMessage(String models) {
+    return 'Die wiederhergestellten Einstellungen wählen Modelle aus, die auf diesem Gerät nicht verfügbar sind:\n$models\n\nJetzt herunterladen?';
+  }
+
+  @override
+  String get backupRestore_downloadModels => 'Modelle herunterladen';
+
+  @override
+  String get backupRestore_downloading => 'Wird heruntergeladen…';
+
+  @override
+  String get backupRestore_cancelDownload => 'Download abbrechen';
+
+  @override
+  String backupRestore_failed(String error) {
+    return 'Sicherungsvorgang fehlgeschlagen: $error';
+  }
+
+  @override
+  String get backupRestore_fileTooLarge =>
+      'Die Sicherungsdatei überschreitet das Limit von 100 MB.';
+
+  @override
+  String get backupRestore_selectAtLeastOne =>
+      'Wählen Sie mindestens ein Element aus.';
+
+  @override
+  String get backupRestore_replaceIdentityTitle => 'Funkidentität ersetzen?';
+
+  @override
+  String get backupRestore_replaceIdentityMessage =>
+      'Beim Wiederherstellen der Knoteneinstellungen wird der private Schlüssel des verbundenen Funkgeräts ersetzt und seine Identität geändert. Fahren Sie nur fort, wenn dies beabsichtigt ist.';
+
+  @override
   String get settings_nodeSettings => 'Knoteneinstellungen';
 
   @override
@@ -1087,7 +1274,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appSettings_languageSl => 'Slowenisch';
 
   @override
-  String get appSettings_languagePt => 'Portugiesisch';
+  String get appSettings_languagePt => 'Portugiesisch (Brasilien)';
+
+  @override
+  String get appSettings_languagePtPt => 'Portugiesisch (Portugal)';
 
   @override
   String get appSettings_languageIt => 'Italienisch';
@@ -1276,36 +1466,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get appSettings_autoRouteRotationDisabled =>
       'Automatische Routenrotation deaktiviert';
-
-  @override
-  String get appSettings_maxRouteWeight => 'Maximale Gesamtstreckenlänge';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Maximales Gewicht, das ein Weg durch erfolgreiche Lieferungen erreichen kann.';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Anfangs-Streckengewicht';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Ausgangsgewicht für neu entdeckte Pfade';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Erhöhung des Erfolgsgewichts';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Gewicht, das einem Pfad nach erfolgreicher Lieferung hinzugefügt wird.';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Reduzierung des Gewichts bei Fehlern';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Gewicht, das nach einem fehlgeschlagenen Versand von einem Weg entfernt wurde';
 
   @override
   String get appSettings_maxMessageRetries =>
@@ -2082,6 +2242,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Versuchen Sie ein anderes Wort oder prüfen Sie die Schreibweise';
 
   @override
+  String get chatSearch_jumpFailed =>
+      'Diese Nachricht wurde im Chat nicht gefunden';
+
+  @override
   String get chat_sendMessage => 'Nachricht senden';
 
   @override
@@ -2126,6 +2290,67 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Nachricht gelöscht';
+
+  @override
+  String get chat_selectMessages => 'Nachrichten auswählen';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '$count ausgewählt';
+  }
+
+  @override
+  String get chat_selectAll => 'Alle auswählen';
+
+  @override
+  String get chat_clearSelection => 'Auswahl aufheben';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Nachrichten löschen?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Nachrichten von diesem Gerät löschen?',
+      one: '1 Nachricht von diesem Gerät löschen?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Nachrichten gelöscht',
+      one: '1 Nachricht gelöscht',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Nachrichten als Spam markiert',
+      one: '1 Nachricht als Spam markiert',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Nachrichten als Kein Spam markiert',
+      one: '1 Nachricht als Kein Spam markiert',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Nachricht wird erneut gesendet.';
@@ -2357,13 +2582,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get routing_title => 'Routenplanung';
 
   @override
-  String get routing_modeAuto => 'Automatisch';
+  String get routing_modeAuto => 'Auto';
 
   @override
   String get routing_modeFlood => 'Flood';
 
   @override
   String get routing_modeManual => 'Manuell';
+
+  @override
+  String get routing_modeDirect => 'Direkt';
 
   @override
   String get routing_modeAutoHint =>
@@ -2376,6 +2604,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Sendet immer genau den von Ihnen festgelegten Pfad.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Sendet immer direkt an diesen Kontakt, ohne Repeater-Sprünge. Nutzen Sie dies, wenn er in Funkreichweite ist.';
 
   @override
   String get routing_currentRoute => 'Aktuelle Route';
@@ -2547,6 +2779,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get contactShare_saved => 'Gespeichert';
 
   @override
+  String get contactShare_addAgain => 'Erneut hinzufügen';
+
+  @override
   String get contactShare_isYou => 'Das sind Sie';
 
   @override
@@ -2698,10 +2933,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get map_lastSeen => 'Zuletzt gesehen';
-
-  @override
-  String get map_disconnectConfirm =>
-      'Sind Sie sicher, dass Sie sich von diesem Gerät trennen möchten?';
 
   @override
   String get map_from => 'Von';
@@ -6007,6 +6238,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pathMap_expandPanel => 'Panel ausklappen';
 
   @override
+  String get pathMap_expandHopList => 'Sprungliste erweitern';
+
+  @override
+  String get pathMap_showMap => 'Karte anzeigen';
+
+  @override
   String get pathMap_noLocation => 'Keine Standortdaten';
 
   @override
@@ -6042,11 +6279,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Das Bildmodell wurde noch nicht heruntergeladen. Laden Sie es in den Einstellungen herunter, um Bilder zu senden.';
 
   @override
-  String get imageSend_originalSize =>
-      'Originaltext:\n\nThe quick brown fox jumps over the lazy dog.\n\nÜbersetzung:\n\nDer schnelle braune Fuchs springt über den faulen Hund.';
+  String get imageSend_originalSize => 'Original';
 
   @override
-  String get imageSend_onAirSize => 'On air';
+  String get imageSend_onAirSize => 'Über Funk';
 
   @override
   String get imageSend_quality => 'Qualität';
@@ -6168,7 +6404,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String receivedImage_senderPrefix(String prefix) {
-    return 'Kritisch: Diese Platzhalter $prefix beibehalten.';
+    return 'Knoten $prefix';
   }
 
   @override
@@ -6220,6 +6456,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String receivedImage_shareCaption(int bytes) {
     return 'KI-rekonstruiert aus $bytes Bytes; feine Details werden erzeugt und nicht übertragen.';
   }
+
+  @override
+  String get receivedImage_syntheticBadge => 'KI-rekonstruiert';
 
   @override
   String get receivedImage_packetInfo => 'Paketinfo';
@@ -7242,4 +7481,41 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get messageFilter_ghostIconTooltip =>
       'Von Ihrem Nachrichtenfilter ausgeblendet';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'Offline · $name';
+  }
+
+  @override
+  String get appBar_offline => 'Offline';
+
+  @override
+  String get appBar_reconnecting => 'Verbindung wird wiederhergestellt…';
+
+  @override
+  String get connectSheet_title => 'Funkgerät verbinden';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return 'Erneut mit $name verbinden';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => 'Funkgerät auswählen';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB oder TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => 'Wiederverbindung abbrechen';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return '$name ist nicht erreichbar. Stellen Sie sicher, dass es eingeschaltet und in der Nähe ist.';
+  }
+
+  @override
+  String get chat_composerOffline =>
+      'Mit einem Funkgerät verbinden, um Nachrichten zu senden';
 }

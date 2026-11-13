@@ -304,6 +304,11 @@ class PathMapBottomPanel extends StatelessWidget {
   final Widget? summary;
   final Widget hopList;
 
+  /// Grows the panel to the full map height so the hop list is readable when
+  /// the map is of little use (e.g. repeaters without locations).
+  final bool expanded;
+  final VoidCallback? onToggleExpanded;
+
   const PathMapBottomPanel({
     super.key,
     required this.header,
@@ -322,6 +327,8 @@ class PathMapBottomPanel extends StatelessWidget {
     required this.hopRowCount,
     required this.summary,
     required this.hopList,
+    this.expanded = false,
+    this.onToggleExpanded,
   });
 
   @override
@@ -330,9 +337,10 @@ class PathMapBottomPanel extends StatelessWidget {
     final maxHeight =
         MediaQuery.of(context).size.height * (combined ? 0.45 : 0.35);
     const hopRowHeight = 60.0;
+    final isExpanded = expanded && !collapsed && onToggleExpanded != null;
 
     double? cardHeight;
-    if (!collapsed) {
+    if (!collapsed && !isExpanded) {
       final summaryHeight = combined ? 34.0 + pathCount * 40.0 : 0.0;
       final noteHeight = showNoSelfGpsNote ? 22.0 : 0.0;
       final estimatedHeight =
@@ -347,6 +355,7 @@ class PathMapBottomPanel extends StatelessWidget {
       left: 16,
       right: 16,
       bottom: 16,
+      top: isExpanded ? 16 : null,
       child: SizedBox(
         height: cardHeight,
         child: Container(
@@ -380,66 +389,95 @@ class PathMapBottomPanel extends StatelessWidget {
                         children: [
                           ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxHeight: max(
-                                0.0,
-                                constraints.maxHeight -
-                                    (collapsed ? 0.0 : hopRowHeight + 1.0),
-                              ),
+                              maxHeight: isExpanded
+                                  ? constraints.maxHeight * 0.4
+                                  : max(
+                                      0.0,
+                                      constraints.maxHeight -
+                                          (collapsed
+                                              ? 0.0
+                                              : hopRowHeight + 1.0),
+                                    ),
                             ),
                             child: SingleChildScrollView(
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                      12,
-                                      8,
-                                      4,
-                                      0,
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              header,
-                                              const SizedBox(height: 4),
-                                              PathMiniLegend(
-                                                combined: combined,
-                                                showInferred:
-                                                    showInferredLegend,
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.translucent,
+                                    onVerticalDragEnd: (details) =>
+                                        _handleHeaderDrag(
+                                          details.primaryVelocity ?? 0,
+                                          isExpanded,
+                                        ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        12,
+                                        8,
+                                        4,
+                                        0,
+                                      ),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                header,
+                                                const SizedBox(height: 4),
+                                                PathMiniLegend(
+                                                  combined: combined,
+                                                  showInferred:
+                                                      showInferredLegend,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          if (onToggleExpanded != null &&
+                                              !collapsed)
+                                            IconButton(
+                                              icon: Icon(
+                                                isExpanded
+                                                    ? Icons.close_fullscreen
+                                                    : Icons.open_in_full,
                                               ),
-                                            ],
+                                              color: MeshPalette.ink,
+                                              tooltip: isExpanded
+                                                  ? l10n.pathMap_showMap
+                                                  : l10n.pathMap_expandHopList,
+                                              onPressed: onToggleExpanded,
+                                            ),
+                                          IconButton(
+                                            icon: Icon(
+                                              collapsed
+                                                  ? Icons.expand_less
+                                                  : Icons.expand_more,
+                                            ),
+                                            color: MeshPalette.ink,
+                                            tooltip: collapsed
+                                                ? l10n.pathMap_expandPanel
+                                                : l10n.pathMap_collapsePanel,
+                                            onPressed: onToggleCollapsed,
                                           ),
-                                        ),
-                                        IconButton(
-                                          icon: Icon(
-                                            collapsed
-                                                ? Icons.expand_less
-                                                : Icons.expand_more,
-                                          ),
-                                          color: MeshPalette.ink,
-                                          tooltip: collapsed
-                                              ? l10n.pathMap_expandPanel
-                                              : l10n.pathMap_collapsePanel,
-                                          onPressed: onToggleCollapsed,
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  PathAnimationControls(
-                                    playback: playback,
-                                    selected: selected,
-                                    animationEnabled: animationEnabled,
-                                    onToggleAnimation: onToggleAnimation,
-                                    followEnabled: followEnabled,
-                                    onToggleFollow: onToggleFollow,
-                                  ),
+                                  // The map is covered while expanded, so
+                                  // the animation controls are pointless.
+                                  if (!isExpanded)
+                                    PathAnimationControls(
+                                      playback: playback,
+                                      selected: selected,
+                                      animationEnabled: animationEnabled,
+                                      onToggleAnimation: onToggleAnimation,
+                                      followEnabled: followEnabled,
+                                      onToggleFollow: onToggleFollow,
+                                    ),
                                   if (!collapsed) ...[
                                     if (showNoSelfGpsNote)
                                       Padding(
@@ -502,5 +540,24 @@ class PathMapBottomPanel extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Swipe up on the header grows the panel (collapsed -> normal ->
+  /// expanded); swipe down shrinks it the other way.
+  void _handleHeaderDrag(double velocity, bool isExpanded) {
+    const minVelocity = 150.0;
+    if (velocity < -minVelocity) {
+      if (collapsed) {
+        onToggleCollapsed();
+      } else if (!isExpanded) {
+        onToggleExpanded?.call();
+      }
+    } else if (velocity > minVelocity) {
+      if (isExpanded) {
+        onToggleExpanded?.call();
+      } else if (!collapsed) {
+        onToggleCollapsed();
+      }
+    }
   }
 }

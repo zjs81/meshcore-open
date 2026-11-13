@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:meshcore_open/l10n/app_localizations.dart';
 import 'package:meshcore_open/models/image_codec_support.dart';
 import 'package:meshcore_open/services/image_chunk_transport.dart';
 import 'package:meshcore_open/widgets/image_send_codec_binding.dart';
@@ -81,6 +82,8 @@ Future<void> _pumpBubble(
 }) async {
   await tester.pumpWidget(
     MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: ReceivedImageMessage(
           streamId: streamId,
@@ -112,6 +115,8 @@ void main() {
     );
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: ReceivedImageMessage(
             streamId: entry.streamId,
@@ -146,6 +151,8 @@ void main() {
     await store2.load();
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: ReceivedImageMessage(
             streamId: 'incoming',
@@ -159,7 +166,7 @@ void main() {
     await tester.pump();
     await tester.pump();
     expect(find.text('AI-reconstructed'), findsOneWidget);
-    expect(find.textContaining('Fine detail is generated'), findsOneWidget);
+    expect(find.textContaining('fine detail is generated'), findsOneWidget);
   });
 
   testWidgets('receiving state shows the packet count', (tester) async {
@@ -178,6 +185,8 @@ void main() {
     expect(entry!.state, ReceivedImageState.receiving);
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: ReceivedImageMessage(
             streamId: entry.streamId,
@@ -215,6 +224,8 @@ void main() {
     final store = await _awaitingStore(bytes: 209, packets: 3);
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: ReceivedImageMessage(
             streamId: 'await1',
@@ -412,8 +423,8 @@ void main() {
     await tester.pump();
 
     expect(find.text('AI-reconstructed'), findsOneWidget);
-    expect(find.textContaining('Reconstructed by an AI model'), findsOneWidget);
-    expect(find.textContaining('Fine detail is generated'), findsOneWidget);
+    expect(find.textContaining('AI-reconstructed from'), findsOneWidget);
+    expect(find.textContaining('fine detail is generated'), findsOneWidget);
   });
 
   testWidgets('the caption quotes the real bitstream size, not a nominal one', (
@@ -498,7 +509,7 @@ void main() {
     await tester.pump();
 
     final caption = tester.widget<Text>(
-      find.textContaining('Reconstructed by an AI model'),
+      find.textContaining('AI-reconstructed from'),
     );
     expect(caption.maxLines, isNull, reason: 'the sentence must wrap in full');
     expect(caption.overflow, isNot(TextOverflow.ellipsis));

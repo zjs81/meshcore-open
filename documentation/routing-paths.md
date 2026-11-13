@@ -1,6 +1,6 @@
 # Routing Paths
 
-MeshCore Open supports flood routing, direct paths, and routing overrides. Chat → Routing lets you choose Auto, Flood, or Manual and inspect recent paths. [Regions](regions.md) control the scope of channel floods; they do not replace direct-contact routing.
+MeshCore Open supports flood routing, direct paths, and routing overrides. Chat → Routing lets you choose Auto, Flood, Direct (always zero hops), or Manual and inspect recent paths. [Regions](regions.md) control the scope of channel floods; they do not replace direct-contact routing.
 
 ## Hash widths and firmware capability
 
@@ -45,6 +45,21 @@ Short prefixes can match several known nodes. An unresolved or ambiguous hop is 
 
 ## Storage and route selection
 
-Contacts/messages persist hop count, path bytes, and width. Legacy contact records without width infer it from consistent hop and byte counts, falling back to one byte. `PathHistoryService` scores recent routes using delivery observations; automatic route rotation can select another route on retry when no manual override is active. Rotation follows the App Settings **Auto Route Rotation** toggle (`autoRouteRotationEnabled`, on by default).
+Contacts/messages persist hop count, path bytes, and width. Legacy contact records without width infer it from consistent hop and byte counts, falling back to one byte. Automatic route selection applies when no override is set and follows the App Settings **Auto Route Rotation** toggle (`autoRouteRotationEnabled`, on by default).
+
+## Auto route selection
+
+`PathHistoryService.selectPathForAttempt` picks the route for each send attempt; the logic lives in `lib/services/route_chooser.dart`.
+
+- **Known routes** come from the radio's learned path, every attempt's delivery result, and floods that got through (crediting the route the reply came back on). The direct route — zero hops, no path bytes — is a normal candidate.
+- **Faded stats:** each route keeps delivery and failure counts that lose half their weight every 24 hours (`routeStatsHalfLife`), so recent behaviour outweighs old.
+- **Thompson sampling:** for each attempt, a plausible delivery rate is drawn for every route from its faded counts and the best draw wins. Proven routes win most of the time; untested or recovering routes are still tried occasionally. Speed adjusts the score slightly.
+- **Context:** `MeshCoreConnector.routeContextFor` reports what the radio heard in the last two hours (advertisers heard directly and the last hop of relayed adverts). Routes whose first hop was heard — or the direct route, when the contact itself was heard directly — score higher; routes that don't fit score lower. Not hearing a repeater is weak evidence, so nothing is excluded. With nothing heard, context has no effect.
+- **Retries** halve the score of routes already tried for the same message, so they usually try something different without wasting an attempt on a much weaker route. The final attempt always floods.
+- **Offline contacts:** `MessageRetryService` holds a message's route failures until its fate is known. If any attempt is acknowledged, the routes that timed out are blamed; if nothing gets through, the contact was probably unreachable and no route is blamed.
+- **Forgetting:** a failing route is deleted only after it hasn't delivered for a week, so a repeater that is down for a day is still known when it returns.
+- Route picks and their results are written to the app debug log under the `Routing` tag.
+
+`resolvePathSelection` uses a route picked from history even when the radio itself holds no path for the contact, so repeater logins and commands use proven routes instead of flooding.
 
 For message-path actions, trace maps, and retry behavior, see [chat](chat-and-messaging.md), [channels](channels.md), and [map](map-and-location.md).
