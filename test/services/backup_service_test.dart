@@ -12,6 +12,7 @@ import 'package:meshcore_open/services/image_codec_settings_store.dart';
 import 'package:meshcore_open/services/translation_file_store.dart';
 import 'package:meshcore_open/services/translation_service.dart';
 import 'package:meshcore_open/services/backup_service.dart';
+import 'package:meshcore_open/services/ui_view_state_service.dart';
 import 'package:meshcore_open/storage/prefs_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -211,6 +212,65 @@ void main() {
         expect(restored['map_tile_api_key'], 'existing-stadia');
       },
     );
+
+    test('applies restored app settings to the live service', () async {
+      SharedPreferences.setMockInitialValues({
+        'app_settings': jsonEncode({'evict_discovered_contacts_enabled': true}),
+      });
+      PrefsManager.reset();
+      await PrefsManager.initialize();
+      addTearDown(PrefsManager.reset);
+      final connector = MeshCoreConnector();
+      final settingsService = AppSettingsService();
+      addTearDown(connector.dispose);
+      addTearDown(settingsService.dispose);
+      await settingsService.loadSettings();
+
+      final backup = await BackupService.encodeBackup({
+        'format': 'meshcore-open-backup',
+        'version': 1,
+        'sourcePublicKey': '',
+        'items': [BackupItem.appSettings.name],
+        'sections': {
+          'appSettings': {
+            'preferences': {
+              'app_settings': {'evict_discovered_contacts_enabled': false},
+            },
+          },
+        },
+      }, password: '');
+      await const BackupService().restoreBackup(
+        contents: backup,
+        password: '',
+        items: {BackupItem.appSettings},
+        connector: connector,
+        appSettingsService: settingsService,
+      );
+
+      expect(settingsService.settings.evictDiscoveredContactsEnabled, isFalse);
+    });
+  });
+
+  group('UiViewStateService reload', () {
+    test('notifies listeners with restored sort preferences', () async {
+      SharedPreferences.setMockInitialValues({});
+      PrefsManager.reset();
+      await PrefsManager.initialize();
+      addTearDown(PrefsManager.reset);
+      final viewState = UiViewStateService();
+      addTearDown(viewState.dispose);
+      await viewState.initialize();
+      var notifications = 0;
+      viewState.addListener(() => notifications++);
+
+      await PrefsManager.instance.setString('ui_contacts_sort_option', 'name');
+      await PrefsManager.instance.setString('ui_channels_sort_option', 'name');
+      await viewState.reload();
+
+      expect(viewState.contactsSortOption.name, 'name');
+      expect(viewState.channelsSortOption, ChannelSortOption.name);
+      expect(notifications, 1);
+    });
   });
 
   group('restored model registry reconciliation', () {

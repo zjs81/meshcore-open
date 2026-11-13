@@ -16,6 +16,7 @@ import '../services/app_settings_service.dart';
 import '../services/backup_service.dart';
 import '../services/image_codec_service.dart';
 import '../services/translation_service.dart';
+import '../services/ui_view_state_service.dart';
 import '../services/message_filter/message_filter_service.dart';
 import '../utils/platform_info.dart';
 import '../utils/share_origin.dart';
@@ -432,6 +433,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     final l10n = context.l10n;
     final connector = context.read<MeshCoreConnector>();
     final appSettingsService = context.read<AppSettingsService>();
+    final uiViewStateService = context.read<UiViewStateService>();
     final messageFilterService = context.read<MessageFilterService>();
     final translationService = context.read<TranslationService>();
     final imageCodecService = context.read<ImageCodecService>();
@@ -454,6 +456,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       )) {
         await appSettingsService.loadSettings();
         if (_selectedItems.contains(BackupItem.appSettings)) {
+          await uiViewStateService.reload();
           await _offerMissingModels(
             appSettingsService,
             translationService,

@@ -410,6 +410,11 @@ void main() {
 
   test('mesh copies of one message are stored and filtered once', () async {
     await _connect();
+    await _waitFor(
+      () => ReviewScript.seedChannelMessages.every(
+        (message) => _find(message.channelIndex, message.text) != null,
+      ),
+    );
     const text = 'Weather net starts at seven tonight on the hill';
     final ts = _nowSecs();
     final cleanBefore = _filter.recentCleanCount;
