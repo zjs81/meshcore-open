@@ -2281,6 +2281,30 @@ class AppLocalizationsBg extends AppLocalizations {
   String get chat_messageDeleted => 'Съобщението е изтрито';
 
   @override
+  String get chat_bookmark => 'Bookmark';
+
+  @override
+  String get chat_removeBookmark => 'Remove bookmark';
+
+  @override
+  String get chat_showBookmarks => 'Show bookmarks';
+
+  @override
+  String get bookmarks_title => 'Bookmarks';
+
+  @override
+  String get bookmarks_empty => 'No bookmarked messages';
+
+  @override
+  String get bookmarks_channel => 'Channel';
+
+  @override
+  String get bookmarks_contact => 'Contact';
+
+  @override
+  String get bookmarks_remove => 'Remove bookmark';
+
+  @override
   String get chat_selectMessages => 'Избор на съобщения';
 
   @override

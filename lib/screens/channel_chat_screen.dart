@@ -31,6 +31,7 @@ import '../helpers/snack_bar_builder.dart';
 import '../l10n/l10n.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
+import '../models/bookmarked_message.dart';
 import '../models/image_codec_support.dart' show aeicRatePointForUi;
 import '../models/message_filter.dart';
 import '../services/app_settings_service.dart' show AppSettingsService;
@@ -165,6 +166,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   /// Message ids picked for a bulk action. Non-empty means selection mode:
   /// taps toggle messages and the app bar shows the bulk actions.
   final Set<String> _selectedIds = <String>{};
+  bool _showBookmarkedOnly = false;
   bool get _selecting => _selectedIds.isNotEmpty;
 
   @override
@@ -574,6 +576,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               widget.channel,
               onSaved: _onChannelEdited,
             );
+          case 'showBookmarks':
+            setState(() {
+              _showBookmarkedOnly = !_showBookmarkedOnly;
+              _selectedIds.clear();
+            });
           case 'background':
             showChatBackgroundSheet(
               context,
@@ -628,6 +635,14 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
             value: 'editChannel',
             enabled: !readOnly,
             child: _menuRow(Icons.settings, context.l10n.channels_editChannel),
+          ),
+          PopupMenuItem(
+            value: 'showBookmarks',
+            child: _menuRow(
+              _showBookmarkedOnly ? Icons.bookmark : Icons.bookmark_border,
+              context.l10n.chat_showBookmarks,
+              color: _showBookmarkedOnly ? const Color(0xFFFFE54A) : null,
+            ),
           ),
           PopupMenuItem(
             value: 'background',
@@ -856,13 +871,22 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                           final layout = _transcriptLayoutFor(
                             context,
                             messages,
+                            showBookmarkedOnly: _showBookmarkedOnly,
                           );
-                          // Fewer entries than messages means the filter hid or
-                          // collapsed some; make sure older history stays reachable.
-                          final hidesMessages = layout.length < messages.length;
+                          // Fewer entries than messages means the message filter
+                          // hid or collapsed some; bookmark filtering is deliberate.
+                          final hidesMessages =
+                              !_showBookmarkedOnly &&
+                              layout.length < messages.length;
                           if (hidesMessages) _scheduleHiddenHistoryBackfill();
 
                           if (layout.length == 0) {
+                            if (_showBookmarkedOnly) {
+                              return EmptyState(
+                                icon: Icons.bookmark_border,
+                                title: context.l10n.bookmarks_empty,
+                              );
+                            }
                             final canLoadOlder =
                                 hidesMessages && !_olderHistoryExhausted;
                             return EmptyState(
@@ -1167,6 +1191,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                       : null,
                   child: MessageBubbleFrame(
                     isOutgoing: isOutgoing,
+                    isBookmarked: message.isBookmarked || _showBookmarkedOnly,
                     compact: gifId != null,
                     maxWidth: constraints.maxWidth,
                     child: Column(
@@ -2187,8 +2212,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   /// `State`'s) — `watch` asserts on that.
   _TranscriptLayout _transcriptLayoutFor(
     BuildContext context,
-    List<ChannelMessage> messages,
-  ) {
+    List<ChannelMessage> messages, {
+    bool showBookmarkedOnly = false,
+  }) {
     ReceivedImageStore? store;
     try {
       store = context.watch<ReceivedImageStore>();
@@ -2217,10 +2243,17 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       displayMode,
       filterActive,
       _revealVersion,
+      showBookmarkedOnly,
       _filteredMessagesSignature(messages),
+      Object.hashAll(
+        messages
+            .where((message) => message.isBookmarked)
+            .map((message) => message.messageId),
+      ),
     );
     final cached = _transcriptLayout;
-    if (cached != null &&
+    if (!showBookmarkedOnly &&
+        cached != null &&
         cached.matches(
           messages,
           _imageStoreVersion,
@@ -2229,11 +2262,14 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
         )) {
       return cached;
     }
-    final images = store == null
+    final displayedMessages = showBookmarkedOnly
+        ? messages.where((message) => message.isBookmarked).toList()
+        : messages;
+    final images = store == null || showBookmarkedOnly
         ? const <ReceivedImageEntry>[]
         : store.entriesForChannel(widget.channel.storageId);
     final layout = _TranscriptLayout.build(
-      messages: messages,
+      messages: displayedMessages,
       images: images,
       imageVersion: _imageStoreVersion,
       channelIndex: widget.channel.index,
@@ -2994,6 +3030,38 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                     _markAsUnread(message);
                   },
                 ),
+              ListTile(
+                leading: Icon(
+                  message.isBookmarked
+                      ? Icons.bookmark_remove_outlined
+                      : Icons.bookmark_add_outlined,
+                ),
+                title: Text(
+                  message.isBookmarked
+                      ? context.l10n.chat_removeBookmark
+                      : context.l10n.chat_bookmark,
+                ),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  final bookmark = BookmarkedMessage.fromChannel(
+                    message: message,
+                    channelId:
+                        widget.channel.storageId ??
+                        'slot:${widget.channel.index}',
+                    channelName: widget.channel.name,
+                    senderName: message.isOutgoing
+                        ? (context.read<MeshCoreConnector>().selfName ??
+                              context.l10n.chat_me)
+                        : message.senderName,
+                  );
+                  unawaited(
+                    context.read<MeshCoreConnector>().setBookmarkedMessage(
+                      bookmark,
+                      isBookmarked: !message.isBookmarked,
+                    ),
+                  );
+                },
+              ),
               if (showFilterActions) ...[
                 const Divider(height: 1),
                 if (message.isFiltered)
@@ -3094,9 +3162,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final filterActive = _transcriptLayout?.filterActive ?? true;
     return [
       for (final m in messages)
-        if (!(filterActive &&
-            m.isFiltered &&
-            !_revealedFilteredIds.contains(m.messageId)))
+        if ((!_showBookmarkedOnly || m.isBookmarked) &&
+            !(filterActive &&
+                m.isFiltered &&
+                !_revealedFilteredIds.contains(m.messageId)))
           m,
     ];
   }

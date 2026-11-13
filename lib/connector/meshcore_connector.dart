@@ -12,6 +12,7 @@ import 'package:flutter_blue_plus_platform_interface/flutter_blue_plus_platform_
 import '../utils/advert_signature.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
+import '../models/bookmarked_message.dart';
 import '../models/companion_radio_stats.dart';
 import '../models/contact.dart';
 import '../models/message_filter.dart';
@@ -50,6 +51,7 @@ import '../services/notification_reply.dart';
 import '../services/notification_service.dart';
 import 'meshcore_connector_usb.dart';
 import 'meshcore_connector_tcp.dart';
+import '../storage/bookmark_store.dart';
 import '../storage/channel_message_store.dart';
 import '../storage/channel_order_store.dart';
 import '../storage/channel_settings_store.dart';
@@ -514,6 +516,7 @@ class MeshCoreConnector extends ChangeNotifier {
   // batched here; see [CoalescedWrites].
   final CoalescedWrites _coalescedWrites = CoalescedWrites();
   final MessageStore _messageStore = MessageStore();
+  final BookmarkStore _bookmarkStore = BookmarkStore();
   final ChannelOrderStore _channelOrderStore = ChannelOrderStore();
   final ChannelSettingsStore _channelSettingsStore = ChannelSettingsStore();
   final ChannelRegionStore _channelRegionStore = ChannelRegionStore();
@@ -959,6 +962,66 @@ class MeshCoreConnector extends ChangeNotifier {
 
   List<Message> getMessages(Contact contact) {
     return _conversations[contact.publicKeyHex] ?? [];
+  }
+
+  Future<List<BookmarkedMessage>> loadBookmarkedMessages() =>
+      _bookmarkStore.loadBookmarks();
+
+  Future<void> setBookmarkedMessage(
+    BookmarkedMessage bookmark, {
+    required bool isBookmarked,
+  }) async {
+    if (_bookmarkStore.publicKeyHex.isEmpty) return;
+    if (isBookmarked) {
+      await _bookmarkStore.saveBookmark(bookmark);
+    } else {
+      await _bookmarkStore.removeBookmark(bookmark);
+    }
+
+    if (bookmark.sourceType == BookmarkSourceType.contact) {
+      final messages = _conversations[bookmark.sourceId];
+      final index = messages?.indexWhere(
+        (message) => message.messageId == bookmark.messageId,
+      );
+      if (messages != null && index != null && index >= 0) {
+        messages[index] = messages[index].copyWith(isBookmarked: isBookmarked);
+        await _coalescedWrites.flush();
+        await _messageStore.saveMessages(bookmark.sourceId, messages);
+      }
+      await _messageStore.updateBookmarkFlag(
+        bookmark.sourceId,
+        bookmark.messageId,
+        isBookmarked,
+      );
+    } else {
+      final mappedSlot = _slotForChannelId(bookmark.sourceId);
+      final slot =
+          mappedSlot ??
+          (bookmark.sourceId.startsWith('slot:')
+              ? int.tryParse(bookmark.sourceId.substring(5))
+              : null);
+      if (slot != null) {
+        final canonicalSlot = _canonicalSlot(slot);
+        final messages = _channelMessages[canonicalSlot];
+        final index = messages?.indexWhere(
+          (message) => message.messageId == bookmark.messageId,
+        );
+        if (messages != null && index != null && index >= 0) {
+          messages[index] = messages[index].copyWith(
+            isBookmarked: isBookmarked,
+          );
+          await _saveChannelMessages(canonicalSlot, messages);
+        }
+      }
+      if (!bookmark.sourceId.startsWith('slot:')) {
+        await _channelMessageStore.updateBookmarkFlag(
+          bookmark.sourceId,
+          bookmark.messageId,
+          isBookmarked,
+        );
+      }
+    }
+    notifyListeners();
   }
 
   Future<void> deleteMessage(Message message) async {
@@ -9609,6 +9672,7 @@ class MeshCoreConnector extends ChangeNotifier {
     unawaited(_unreadStore.flush());
     _channelMessageStore.setPublicKeyHex = keyHex;
     _messageStore.setPublicKeyHex = keyHex;
+    _bookmarkStore.setPublicKeyHex = keyHex;
     _channelOrderStore.setPublicKeyHex = keyHex;
     _channelSettingsStore.setPublicKeyHex = keyHex;
     _channelRegionStore.setPublicKeyHex = keyHex;

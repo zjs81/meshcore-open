@@ -121,6 +121,51 @@ class HistoryArchive {
     (_archives[HistoryStore.instance] ??= {})[key] = _ArchiveState(count);
   }
 
+  Future<void> updateBookmarkFlag(
+    String key,
+    String messageId,
+    bool isBookmarked,
+  ) {
+    final store = HistoryStore.instance;
+    final state = _stateFor(store, key);
+    return _serialize(store, key, () async {
+      String? update(String raw) {
+        try {
+          final decoded = jsonDecode(raw);
+          if (decoded is! Map<String, dynamic> ||
+              mergeKey(decoded) != 'id:$messageId') {
+            return null;
+          }
+          decoded['isBookmarked'] = isBookmarked;
+          return jsonEncode(decoded);
+        } on FormatException {
+          return null;
+        }
+      }
+
+      for (var i = 0; i < state.pending.length; i++) {
+        final entry = state.pending[i];
+        final replacement = update(entry.$2);
+        if (replacement != null) state.pending[i] = (entry.$1, replacement);
+      }
+      final entries = await store.readEntries(key);
+      var changed = false;
+      final updated = <String>[];
+      for (final entry in entries) {
+        final replacement = update(entry);
+        updated.add(replacement ?? entry);
+        changed = changed || replacement != null;
+      }
+      if (changed &&
+          !await store.setString(
+            key,
+            jsonEncode(updated.map(jsonDecode).toList()),
+          )) {
+        throw StateError('Could not update message bookmark flag');
+      }
+    });
+  }
+
   /// Only entries trimmed since the last successful save need buffering.
   void archive(String key, Iterable<String> entries) {
     final state = _stateFor(HistoryStore.instance, key);

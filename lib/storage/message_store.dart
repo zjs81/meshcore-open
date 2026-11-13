@@ -175,6 +175,19 @@ class MessageStore {
     return messages;
   }
 
+  Future<void> updateBookmarkFlag(
+    String contactKeyHex,
+    String messageId,
+    bool isBookmarked,
+  ) {
+    if (publicKeyHex.isEmpty) return Future<void>.value();
+    return _archive.updateBookmarkFlag(
+      '$keyFor$contactKeyHex',
+      messageId,
+      isBookmarked,
+    );
+  }
+
   Future<void> clearMessages(String contactKeyHex) {
     if (publicKeyHex.isEmpty) return Future<void>.value();
     return _archive.clear(HistoryStore.instance, '$keyFor$contactKeyHex');
@@ -187,6 +200,7 @@ class MessageStore {
       'timestamp': msg.timestamp.millisecondsSinceEpoch,
       'receivedAt': msg.receivedAt.millisecondsSinceEpoch,
       'isOutgoing': msg.isOutgoing,
+      'isBookmarked': msg.isBookmarked,
       'isCli': msg.isCli,
       'status': msg.status.index,
       'messageId': msg.messageId,
@@ -257,6 +271,7 @@ class MessageStore {
       timestamp: DateTime.fromMillisecondsSinceEpoch(json['timestamp'] as int),
       receivedAt: legacyAwareReceivedAt(json),
       isOutgoing: json['isOutgoing'] as bool? ?? false,
+      isBookmarked: json['isBookmarked'] as bool? ?? false,
       isCli: isCli,
       status: _statusAt(json['status']) ?? MessageStatus.failed,
       messageId: json['messageId'] as String?,

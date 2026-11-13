@@ -31,7 +31,7 @@ QuickSwitchBar tab 1 (middle) from any main screen.
   - Unread badge (if messages are unread)
   - Drag handle (when manual sort is active)
 - **"+" FAB** to add a new channel
-- **Overflow menu**: Disconnect, Manage Communities, Settings
+- **Overflow menu**: Disconnect, Bookmarks, Manage Communities, Settings
 
 If no channels exist, an empty state with an "Add Public Channel" shortcut is shown. If a search produces no results, a separate "no results" empty state with a search-off icon is shown.
 
@@ -79,6 +79,7 @@ Tap a channel card to open the channel chat screen.
 - Tap the title or landscape icon to select a region; see [Regions](regions.md)
 - Overflow menu (⋮) → **Notifications**: choose all messages, mentions only or muted for this channel. The row shows the current mode
 - Overflow menu (⋮) → **Edit channel** and **Delete channel**: the same sheet and confirmation as a long-press in the channel list
+- Overflow menu (⋮) → **Show bookmarks** toggles the channel's bookmarked-message filter; the bookmark icon is filled while active and outlined while inactive.
 - Overflow menu (⋮) → **Chat background**: a color or picture, with a fade slider, behind this channel only. See [Chat backgrounds](themes.md#chat-backgrounds). Holiday greetings in new messages play a short animation, as in [direct chat](chat-and-messaging.md#message-list)
 
 ### Message Display
@@ -87,6 +88,7 @@ Tap a channel card to open the channel chat screen.
 - **Incoming messages**: Colored avatar with sender's initial (or first emoji if name starts with one; color is deterministic from sender name hash), sender name in primary color, message bubble
 - **Outgoing messages**: Primary container color bubble with a small status icon: pending (clock), sent (checkmark), or failed (red error circle)
 - Automatic older-message loading on scroll-to-top
+- Long-press a message and choose **Bookmark** to mark it with a yellow icon. Bookmarks are stored separately from channel history and remain available after a channel is deleted.
 - Jump-to-bottom button when scrolled up
 - **Pinch-to-zoom**: Two-finger zoom (0.8x–1.8x) and double-tap to reset text size
 - **Message tracing mode** (when enabled in App Settings): Each bubble additionally shows path prefix bytes (`via XX,YY,...`), a timestamp, and a repeat count icon

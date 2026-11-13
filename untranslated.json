@@ -1,1 +1,210 @@
-{}
+{
+  "bg": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "cs": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "de": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "es": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "fr": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "hu": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "it": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "ja": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "ko": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "nl": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "pl": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "pt": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "pt_PT": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "ru": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "sk": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "sl": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "sv": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "uk": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ],
+
+  "zh": [
+    "chat_bookmark",
+    "chat_removeBookmark",
+    "chat_showBookmarks",
+    "bookmarks_title",
+    "bookmarks_empty",
+    "bookmarks_channel",
+    "bookmarks_contact",
+    "bookmarks_remove"
+  ]
+}
