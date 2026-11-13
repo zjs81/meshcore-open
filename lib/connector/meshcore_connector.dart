@@ -2133,6 +2133,8 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> reloadChannelOrder() => _loadChannelOrder();
+
   /// History is stored by channel ID, so it may carry the slot the channel
   /// sat in when it was saved; rebind it to the slot it is shown in now.
   List<ChannelMessage> _bindToSlot(List<ChannelMessage> messages, int slot) => [
