@@ -530,6 +530,9 @@ class AppLocalizationsIt extends AppLocalizations {
       'Contatti scoperti e relativi dettagli salvati';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => 'Canali';
 
   @override

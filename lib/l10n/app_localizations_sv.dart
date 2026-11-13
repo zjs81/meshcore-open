@@ -527,6 +527,9 @@ class AppLocalizationsSv extends AppLocalizations {
       'Upptäckta kontakter och deras sparade uppgifter';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => 'Kanaler';
 
   @override

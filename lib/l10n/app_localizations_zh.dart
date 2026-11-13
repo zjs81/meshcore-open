@@ -496,6 +496,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupRestore_discoveredContactsDescription => '已发现的联系人及其保存的详细信息';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => '频道';
 
   @override

@@ -526,6 +526,9 @@ class AppLocalizationsNl extends AppLocalizations {
       'Ontdekte contacten en hun opgeslagen gegevens';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => 'Kanalen';
 
   @override

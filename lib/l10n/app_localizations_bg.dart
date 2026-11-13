@@ -530,6 +530,9 @@ class AppLocalizationsBg extends AppLocalizations {
       'Открити контакти и запазените им данни';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => 'Канали';
 
   @override

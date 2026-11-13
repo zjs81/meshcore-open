@@ -1051,6 +1051,12 @@ abstract class AppLocalizations {
   /// **'Discovered contacts and their saved details'**
   String get backupRestore_discoveredContactsDescription;
 
+  /// No description provided for @backupRestore_bookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get backupRestore_bookmarks;
+
   /// No description provided for @backupRestore_channels.
   ///
   /// In en, this message translates to:

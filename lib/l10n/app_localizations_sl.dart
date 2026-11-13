@@ -527,6 +527,9 @@ class AppLocalizationsSl extends AppLocalizations {
       'Odkriti kontakti in njihovi shranjeni podatki';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => 'Kanali';
 
   @override

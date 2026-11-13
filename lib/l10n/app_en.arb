@@ -229,6 +229,7 @@
   "backupRestore_contactsDescription": "Contacts, per-contact filters and settings, groups, and message history",
   "backupRestore_discoveredContacts": "Discovered Contacts",
   "backupRestore_discoveredContactsDescription": "Discovered contacts and their saved details",
+  "backupRestore_bookmarks": "Bookmarks",
   "backupRestore_channels": "Channels",
   "backupRestore_channelsDescription": "Channels, channel filters, communities, and message history",
   "backupRestore_backup": "Create Backup",

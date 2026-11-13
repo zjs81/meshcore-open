@@ -529,6 +529,9 @@ class AppLocalizationsSk extends AppLocalizations {
       'Objavené kontakty a ich uložené údaje';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => 'Kanály';
 
   @override

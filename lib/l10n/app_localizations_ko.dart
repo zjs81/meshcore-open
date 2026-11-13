@@ -506,6 +506,9 @@ class AppLocalizationsKo extends AppLocalizations {
       '발견된 연락처와 저장된 세부 정보';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => '채널';
 
   @override

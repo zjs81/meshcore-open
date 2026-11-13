@@ -527,6 +527,9 @@ class AppLocalizationsUk extends AppLocalizations {
       'Виявлені контакти та їхні збережені дані';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => 'Канали';
 
   @override

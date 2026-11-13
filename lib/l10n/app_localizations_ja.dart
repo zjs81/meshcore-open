@@ -505,6 +505,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupRestore_discoveredContactsDescription => '検出された連絡先と保存済みの詳細';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => 'チャンネル';
 
   @override

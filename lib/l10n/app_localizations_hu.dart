@@ -525,6 +525,9 @@ class AppLocalizationsHu extends AppLocalizations {
       'Felfedezett névjegyek és mentett adataik';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => 'Csatornák';
 
   @override

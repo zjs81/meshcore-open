@@ -1,5 +1,6 @@
 {
   "bg": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -11,6 +12,7 @@
   ],
 
   "cs": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -22,6 +24,7 @@
   ],
 
   "de": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -33,6 +36,7 @@
   ],
 
   "es": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -44,6 +48,7 @@
   ],
 
   "fr": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -55,6 +60,7 @@
   ],
 
   "hu": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -66,6 +72,7 @@
   ],
 
   "it": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -77,6 +84,7 @@
   ],
 
   "ja": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -88,6 +96,7 @@
   ],
 
   "ko": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -99,6 +108,7 @@
   ],
 
   "nl": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -110,6 +120,7 @@
   ],
 
   "pl": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -121,6 +132,7 @@
   ],
 
   "pt": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -132,6 +144,7 @@
   ],
 
   "pt_PT": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -143,6 +156,7 @@
   ],
 
   "ru": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -154,6 +168,7 @@
   ],
 
   "sk": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -165,6 +180,7 @@
   ],
 
   "sl": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -176,6 +192,7 @@
   ],
 
   "sv": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -187,6 +204,7 @@
   ],
 
   "uk": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",
@@ -198,6 +216,7 @@
   ],
 
   "zh": [
+    "backupRestore_bookmarks",
     "chat_bookmark",
     "chat_removeBookmark",
     "chat_showBookmarks",

@@ -533,6 +533,9 @@ class AppLocalizationsPl extends AppLocalizations {
       'Wykryte kontakty i ich zapisane dane';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => 'Kanały';
 
   @override
