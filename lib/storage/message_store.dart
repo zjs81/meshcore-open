@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../models/message.dart';
 import '../models/translation_support.dart';
 import '../helpers/smaz.dart';
 import '../utils/app_logger.dart';
 import 'legacy_key_migration.dart';
-import 'prefs_manager.dart';
+import 'history_archive.dart';
+import 'history_store.dart';
 
 class MessageStore {
   static const String _keyPrefix = 'messages_';
@@ -23,102 +22,41 @@ class MessageStore {
   /// beyond it are dropped on save.
   static const int maxStoredMessages = 1000;
 
-  /// Encoded entries persisted ahead of the connector's in-memory window,
-  /// keyed by scoped storage key. A missing entry means the window has not
-  /// been reconciled with storage yet, so the next save keeps what is already
-  /// stored instead of replacing it. Shared across instances so a store
-  /// created by a screen to clear a key also resets the connector's view.
-  static final Map<String, List<String>> _archived = {};
+  static final HistoryArchive _archive = HistoryArchive(
+    mergeKey: _storedMergeKey,
+    maxEntries: maxStoredMessages,
+  );
 
-  /// Persists [messages] (the in-memory window, oldest first) after the
-  /// archived entries that sit ahead of it in storage.
-  Future<void> saveMessages(
-    String contactKeyHex,
-    List<Message> messages,
-  ) async {
+  Future<void> saveMessages(String contactKeyHex, List<Message> messages) {
     if (publicKeyHex.isEmpty) {
       appLogger.warn('Public key hex is not set. Cannot save messages.');
-      return;
+      return Future<void>.value();
     }
-    final prefs = PrefsManager.instance;
     final key = '$keyFor$contactKeyHex';
-    final visibleJson = messages.map(_messageToJson).toList();
-    final archived =
-        _archived[key] ??
-        _unreconciledArchive(_readStored(prefs, contactKeyHex), visibleJson);
-    final overflow = archived.length + visibleJson.length - maxStoredMessages;
-    if (overflow > 0) {
-      archived.removeRange(0, overflow.clamp(0, archived.length));
-    }
-    _archived[key] = archived;
-    final entries = [...archived, ...visibleJson.map(jsonEncode)];
-    await prefs.setString(key, '[${entries.join(',')}]');
-  }
-
-  /// Records [olderMessages] as the stored entries that precede the
-  /// in-memory window for [contactKeyHex].
-  void setArchived(String contactKeyHex, List<Message> olderMessages) {
-    _archived['$keyFor$contactKeyHex'] = olderMessages
-        .map((message) => jsonEncode(_messageToJson(message)))
-        .toList();
-  }
-
-  /// Moves [messages], just trimmed from the front of the in-memory window,
-  /// into the archive so the next save keeps them.
-  void archive(String contactKeyHex, List<Message> messages) {
-    final archived = _archived['$keyFor$contactKeyHex'];
-    // Unreconciled saves keep everything already stored anyway.
-    if (archived == null) return;
-    archived.addAll(
-      messages.map((message) => jsonEncode(_messageToJson(message))),
+    final scope = publicKeyHex;
+    return _archive.save(
+      key,
+      [for (final message in messages) jsonEncode(_messageToJson(message))],
+      readStored: (store) =>
+          _readStored(store, key, '$_keyPrefix$contactKeyHex', scope),
     );
   }
 
-  /// Number of stored entries ahead of the in-memory window, or null when
-  /// the window has not been reconciled with storage.
+  /// The stored prefix stays in the database, rather than another JSON cache.
+  void setArchivedCount(String contactKeyHex, int count) =>
+      _archive.setArchivedCount('$keyFor$contactKeyHex', count);
+
+  void archive(String contactKeyHex, List<Message> messages) =>
+      _archive.archive(
+        '$keyFor$contactKeyHex',
+        messages.map((message) => jsonEncode(_messageToJson(message))),
+      );
+
   int? archivedCount(String contactKeyHex) =>
-      _archived['$keyFor$contactKeyHex']?.length;
+      _archive.archivedCount('$keyFor$contactKeyHex');
 
-  /// Removes the newest [count] archived entries after they were paged back
-  /// into the in-memory window.
-  void unarchiveNewest(String contactKeyHex, int count) {
-    final archived = _archived['$keyFor$contactKeyHex'];
-    if (archived == null || count <= 0) return;
-    archived.removeRange(
-      (archived.length - count).clamp(0, archived.length),
-      archived.length,
-    );
-  }
-
-  /// Drops the archive bookkeeping, for one conversation or all of them,
-  /// when the matching in-memory window is discarded.
-  void forgetArchive([String? contactKeyHex]) {
-    if (contactKeyHex == null) {
-      _archived.clear();
-    } else {
-      _archived.remove('$keyFor$contactKeyHex');
-    }
-  }
-
-  List<String> _unreconciledArchive(
-    String? storedJson,
-    List<Map<String, dynamic>> visibleJson,
-  ) {
-    if (storedJson == null || storedJson.isEmpty) return [];
-    final List<dynamic> stored;
-    try {
-      stored = jsonDecode(storedJson) as List<dynamic>;
-    } catch (_) {
-      return [];
-    }
-    final visibleKeys = visibleJson.map(_storedMergeKey).toSet();
-    return [
-      for (final entry in stored)
-        if (entry is Map<String, dynamic> &&
-            !visibleKeys.contains(_storedMergeKey(entry)))
-          jsonEncode(entry),
-    ];
-  }
+  void forgetArchive([String? contactKeyHex]) =>
+      _archive.forget(contactKeyHex == null ? null : '$keyFor$contactKeyHex');
 
   static String _storedMergeKey(Map<String, dynamic> json) {
     final messageId = json['messageId'];
@@ -126,69 +64,120 @@ class MessageStore {
     return 'fallback:${json['timestamp']}:${json['isOutgoing']}:${json['text']}';
   }
 
-  /// Reads the stored JSON for [contactKeyHex], migrating the legacy unscoped
-  /// key on first access.
-  String? _readStored(SharedPreferences prefs, String contactKeyHex) {
-    final key = '$keyFor$contactKeyHex';
-    final oldKey = '$_keyPrefix$contactKeyHex';
-    final jsonString = prefs.getString(key);
-    if ((jsonString == null || jsonString.isEmpty) &&
-        canMigrateLegacyKeys(publicKeyHex)) {
-      // Attempt migration from legacy unscoped key on first load
-      final legacyJsonString = prefs.getString(oldKey);
-      prefs.remove(oldKey);
-      if (legacyJsonString != null && legacyJsonString.isNotEmpty) {
-        appLogger.info(
-          'Migrating messages from legacy key $oldKey to scoped key $key',
-        );
-        prefs.setString(key, legacyJsonString);
-        return legacyJsonString;
+  Future<String?> _readStored(
+    HistoryStore store,
+    String key,
+    String oldKey,
+    String scope,
+  ) async {
+    final raw = await store.getString(key);
+    if ((raw == null || raw.isEmpty) && canMigrateLegacyKeys(scope)) {
+      final legacy = await store.getString(oldKey);
+      if (legacy != null && legacy.isNotEmpty) {
+        if (await store.setString(key, legacy)) await store.remove(oldKey);
       }
+      return legacy;
     }
-    return jsonString;
+    return raw;
   }
 
-  Future<List<Message>> loadMessages(String contactKeyHex) async {
-    if (publicKeyHex.isEmpty) {
-      appLogger.warn('Public key hex is not set. Cannot load messages.');
-      return [];
+  Future<({String key, int count})> _storedHistory(String contactKeyHex) async {
+    final store = HistoryStore.instance;
+    final scope = publicKeyHex;
+    final key = '$keyFor$contactKeyHex';
+    var count = await store.entryCount(key);
+    if (count > 0) return (key: key, count: count);
+    final raw = await store.getString(key);
+    if ((raw == null || raw.isEmpty) && canMigrateLegacyKeys(scope)) {
+      final oldKey = '$_keyPrefix$contactKeyHex';
+      final legacy = await store.getString(oldKey);
+      if (legacy != null && legacy.isNotEmpty) {
+        if (await store.setString(key, legacy)) {
+          await store.remove(oldKey);
+          count = await store.entryCount(key);
+        } else {
+          throw StateError('Could not migrate stored message history');
+        }
+      }
     }
-    final prefs = PrefsManager.instance;
-    String? jsonString = _readStored(prefs, contactKeyHex);
-    if (jsonString == null || jsonString.isEmpty) {
-      jsonString = prefs.getString(keyFor);
+    if (raw == null && count == 0) {
+      final fallback = '$_keyPrefix$scope';
+      final fallbackCount = await store.entryCount(fallback);
+      if (fallbackCount > 0) {
+        final fallbackJson = await store.getString(fallback);
+        if (fallbackJson == null || !await store.setString(key, fallbackJson)) {
+          throw StateError('Could not migrate fallback message history');
+        }
+        return (key: key, count: fallbackCount);
+      }
     }
-    if (jsonString == null || jsonString.isEmpty) {
-      return [];
-    }
+    return (key: key, count: count);
+  }
 
-    final List<dynamic> jsonList;
+  Future<List<Message>> loadMessages(
+    String contactKeyHex, {
+    int offset = 0,
+    int? limit,
+  }) async {
+    if (publicKeyHex.isEmpty) return [];
     try {
-      jsonList = jsonDecode(jsonString) as List<dynamic>;
-    } catch (e) {
-      appLogger.warn('Stored messages for $contactKeyHex are unreadable: $e');
+      final history = await _storedHistory(contactKeyHex);
+      final entries = await HistoryStore.instance.readEntries(
+        history.key,
+        offset: offset,
+        limit: limit,
+      );
+      return _decodeMessages(entries);
+    } catch (error) {
+      appLogger.warn(
+        'Stored messages for $contactKeyHex are unreadable: $error',
+      );
       return [];
     }
+  }
+
+  /// Reads a page backwards using physical stored-row offsets. Malformed
+  /// records are skipped without making earlier valid history unreachable.
+  Future<({List<Message> messages, int start, int end, int total})>
+  loadMessagePage(String contactKeyHex, {int? before, int limit = 50}) async {
+    RangeError.checkNotNegative(limit, 'limit');
+    if (publicKeyHex.isEmpty) {
+      return (messages: <Message>[], start: 0, end: 0, total: 0);
+    }
+    try {
+      final history = await _storedHistory(contactKeyHex);
+      return await _archive.readPage(
+        history.key,
+        history.count,
+        _decodeMessages,
+        before: before,
+        limit: limit,
+      );
+    } on FormatException catch (error) {
+      appLogger.warn(
+        'Stored messages for $contactKeyHex are unreadable: $error',
+      );
+      return (messages: <Message>[], start: 0, end: 0, total: 0);
+    }
+  }
+
+  List<Message> _decodeMessages(List<String> entries) {
     final messages = <Message>[];
-    for (final json in jsonList) {
+    for (final entry in entries) {
       try {
-        messages.add(_messageFromJson(json as Map<String, dynamic>));
-      } catch (e) {
-        appLogger.warn('Skipping malformed stored message: $e');
+        messages.add(
+          _messageFromJson(jsonDecode(entry) as Map<String, dynamic>),
+        );
+      } catch (error) {
+        appLogger.warn('Skipping malformed stored message: $error');
       }
     }
     return messages;
   }
 
-  Future<void> clearMessages(String contactKeyHex) async {
-    if (publicKeyHex.isEmpty) {
-      appLogger.warn('Public key hex is not set. Cannot clear messages.');
-      return;
-    }
-    final prefs = PrefsManager.instance;
-    final key = '$keyFor$contactKeyHex';
-    _archived[key] = [];
-    await prefs.remove(key);
+  Future<void> clearMessages(String contactKeyHex) {
+    if (publicKeyHex.isEmpty) return Future<void>.value();
+    return _archive.clear(HistoryStore.instance, '$keyFor$contactKeyHex');
   }
 
   Map<String, dynamic> _messageToJson(Message msg) {

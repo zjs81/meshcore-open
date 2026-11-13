@@ -16,6 +16,10 @@ class MapPathTraceDraft {
   bool returnPath = true;
   Uint8List? lastResultFrame;
 
+  /// Last text and mode entered on the manual (typed hashes) trace screen.
+  String manualText = '';
+  bool manualReturnPath = true;
+
   bool get hasHops => pathBytes.isNotEmpty;
 
   bool belongsTo(Uint8List? selfKey) =>

@@ -20,11 +20,7 @@ class ContactDiscoveryStore {
     final prefs = PrefsManager.instance;
     var jsonStr = prefs.getString(keyFor);
     if (jsonStr == null && canMigrateLegacyKeys(publicKeyHex)) {
-      jsonStr = prefs.getString(_keyPrefix);
-      if (jsonStr != null) {
-        await prefs.setString(keyFor, jsonStr);
-        await prefs.remove(_keyPrefix);
-      }
+      jsonStr = await migrateLegacyStringPreference(_keyPrefix, keyFor);
     }
     if (jsonStr == null) return [];
 

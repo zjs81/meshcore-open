@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     librsvg2-dev libgirepository1.0-dev libgdk-pixbuf-2.0-dev libgtk-3-bin \
     libgdk-pixbuf2.0-bin binutils patchelf curl jq \
     file desktop-file-utils xdg-user-dirs git rsync unzip xz-utils make g++ dpkg-dev \
-    libssl-dev libunwind-dev libvulkan-dev libgl1-mesa-dev libglu1-mesa-dev \
+    libssl-dev libunwind-dev libvulkan-dev libgl1-mesa-dev libglu1-mesa-dev libgpg-error0 \
     libasound2-dev libsecret-1-dev \
     && rm -rf /var/lib/apt/lists/*
 
@@ -23,5 +23,5 @@ FROM ${BASE_IMAGE} AS runtime-test
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     xvfb xauth x11-utils x11-apps xdotool imagemagick dbus-x11 binutils libgl1 libegl1 libgles2 \
-    libgl1-mesa-dri fonts-dejavu-core \
+    libgl1-mesa-dri libgpg-error0 fonts-dejavu-core \
   && rm -rf /var/lib/apt/lists/*

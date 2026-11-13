@@ -401,6 +401,194 @@ class AppLocalizationsEs extends AppLocalizations {
       'Notificaciones, mensajes y preferencias de mapa';
 
   @override
+  String get settings_export => 'Exportar';
+
+  @override
+  String get settings_exportSubtitle =>
+      'Exportar contactos y repetidores como GPX';
+
+  @override
+  String get backupRestore_title => 'Copia de seguridad y restauración';
+
+  @override
+  String get backupRestore_subtitle =>
+      'Guarda o restaura los datos de la app y los ajustes de la radio';
+
+  @override
+  String get backupRestore_import => 'Importar';
+
+  @override
+  String get backupRestore_selectImportFile => 'Importar archivo';
+
+  @override
+  String get backupRestore_password => 'Contraseña (opcional)';
+
+  @override
+  String get backupRestore_passwordHelp =>
+      'Una contraseña cifra el archivo. En blanco, se guarda en texto plano, que puede incluir claves privadas o de canal, historial y credenciales.';
+
+  @override
+  String get backupRestore_importUnavailable =>
+      'Comprueba la contraseña o elige un archivo de copia de seguridad compatible.';
+
+  @override
+  String get backupRestore_items =>
+      'Elementos de la copia de seguridad y restauración';
+
+  @override
+  String get backupRestore_nodeSettings => 'Ajustes del nodo';
+
+  @override
+  String get backupRestore_nodeSettingsDescription =>
+      'Nombre del dispositivo, claves privada y pública, ajustes de radio y regiones';
+
+  @override
+  String get backupRestore_deviceName => 'Nombre del dispositivo';
+
+  @override
+  String get backupRestore_privateKey => 'Clave privada (sensible)';
+
+  @override
+  String get backupRestore_publicKey => 'Clave pública';
+
+  @override
+  String get backupRestore_radioSettings => 'Ajustes de radio';
+
+  @override
+  String get backupRestore_regions => 'Regiones';
+
+  @override
+  String get backupRestore_location => 'Ubicación';
+
+  @override
+  String get backupRestore_contactSettings => 'Ajustes de contactos';
+
+  @override
+  String get backupRestore_privacySettings => 'Ajustes de privacidad';
+
+  @override
+  String get backupRestore_contactsData => 'Contactos';
+
+  @override
+  String get backupRestore_perContactSettings =>
+      'Ajustes y filtros por contacto';
+
+  @override
+  String get backupRestore_contactGroups => 'Grupos de contactos';
+
+  @override
+  String get backupRestore_contactHistory => 'Historial de contactos';
+
+  @override
+  String get backupRestore_channelsData => 'Canales';
+
+  @override
+  String get backupRestore_channelFilters => 'Ajustes del filtro de mensajes';
+
+  @override
+  String get backupRestore_channelSettings => 'Ajustes de canales';
+
+  @override
+  String get backupRestore_communities => 'Comunidades';
+
+  @override
+  String get backupRestore_channelHistory => 'Historial de canales';
+
+  @override
+  String get backupRestore_locationSettings => 'Ajustes de ubicación';
+
+  @override
+  String get backupRestore_locationSettingsDescription =>
+      'Ubicación, ajustes de contactos y ajustes de privacidad';
+
+  @override
+  String get backupRestore_appSettings => 'Ajustes de la app';
+
+  @override
+  String get backupRestore_appSettingsDescription =>
+      'Preferencias de la app y ajustes de apariencia';
+
+  @override
+  String get backupRestore_ipfsKey => 'Clave de API de IPFS (sensible)';
+
+  @override
+  String get backupRestore_stadiaMapKey =>
+      'Clave de API de Stadia Maps (sensible)';
+
+  @override
+  String get backupRestore_contacts => 'Contactos';
+
+  @override
+  String get backupRestore_contactsDescription =>
+      'Contactos, filtros y ajustes por contacto, grupos e historial de mensajes';
+
+  @override
+  String get backupRestore_discoveredContacts => 'Contactos descubiertos';
+
+  @override
+  String get backupRestore_discoveredContactsDescription =>
+      'Contactos descubiertos y sus detalles guardados';
+
+  @override
+  String get backupRestore_channels => 'Canales';
+
+  @override
+  String get backupRestore_channelsDescription =>
+      'Canales, filtros de canal, comunidades e historial de mensajes';
+
+  @override
+  String get backupRestore_backup => 'Crear copia de seguridad';
+
+  @override
+  String get backupRestore_restore => 'Restaurar seleccionados';
+
+  @override
+  String get backupRestore_backupComplete =>
+      'Archivo de copia de seguridad creado.';
+
+  @override
+  String get backupRestore_restoreComplete =>
+      'Restauración completada. Reconecta si restauraste la identidad de la radio.';
+
+  @override
+  String get backupRestore_missingModelsTitle => 'Modelos no descargados';
+
+  @override
+  String backupRestore_missingModelsMessage(String models) {
+    return 'Los ajustes restaurados seleccionan modelos que no están disponibles en este dispositivo:\n$models\n\n¿Descargarlos ahora?';
+  }
+
+  @override
+  String get backupRestore_downloadModels => 'Descargar modelos';
+
+  @override
+  String get backupRestore_downloading => 'Descargando…';
+
+  @override
+  String get backupRestore_cancelDownload => 'Cancelar descarga';
+
+  @override
+  String backupRestore_failed(String error) {
+    return 'Falló la operación de copia de seguridad: $error';
+  }
+
+  @override
+  String get backupRestore_fileTooLarge =>
+      'El archivo de copia de seguridad supera el límite de 100 MB.';
+
+  @override
+  String get backupRestore_selectAtLeastOne =>
+      'Selecciona al menos un elemento.';
+
+  @override
+  String get backupRestore_replaceIdentityTitle =>
+      '¿Reemplazar la identidad de la radio?';
+
+  @override
+  String get backupRestore_replaceIdentityMessage =>
+      'Restaurar los ajustes del nodo reemplaza la clave privada de la radio conectada y cambia su identidad. Continúa solo si es lo que quieres.';
+
+  @override
   String get settings_nodeSettings => 'Configuración del Nodo';
 
   @override
@@ -437,12 +625,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settings_regionSettings => 'Regiones';
 
   @override
-  String get settings_regionSettingsSubtitle =>
-      'Gestionar regiones almacenadas';
+  String get settings_regionSettingsSubtitle => 'Limitar los Flood a una zona';
 
   @override
   String get settings_regionEmptyExplanation =>
-      'Las regiones limitan los mensajes de inundación a los repetidores de una zona. Obténlas de los repetidores cercanos o añade una por su nombre.';
+      'Las regiones limitan los mensajes Flood a los repetidores de una zona. Obténlas de los repetidores cercanos o añade una por su nombre.';
 
   @override
   String get settings_regionFetchFromRepeaters => 'Obtener de repetidores';
@@ -470,7 +657,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settings_regionRadioDefaultSubtitle =>
-      'Guardada en la radio. Las inundaciones enviadas sin región la usan, desde esta app y desde cualquier otra app conectada a la radio.';
+      'Guardada en la radio. Los Flood enviados sin región la usan, desde esta app y desde cualquier otra app conectada a la radio.';
 
   @override
   String get settings_regionRadioDefaultUpdated =>
@@ -1088,7 +1275,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appSettings_languageSl => 'Esloveno';
 
   @override
-  String get appSettings_languagePt => 'Portugués';
+  String get appSettings_languagePt => 'Portugués (Brasil)';
+
+  @override
+  String get appSettings_languagePtPt => 'Portugués (Portugal)';
 
   @override
   String get appSettings_languageIt => 'Italiano';
@@ -1115,6 +1305,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appSettings_languageUk => 'Ucraniano';
 
   @override
+  String get appSettings_languageCs => 'Checo';
+
+  @override
   String get repeater_pathHashModeOption0 => '0 - 1 byte';
 
   @override
@@ -1128,7 +1321,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settings_pathHashModeHelper =>
-      'Tamaño de cada ID de nodo registrado en la ruta de los paquetes de inundación que envía esta radio: 1 byte (256 IDs, hasta 64 saltos), 2 bytes (65.000 IDs, hasta 32 saltos), 3 bytes (16 millones de IDs, hasta 21 saltos). Los IDs más grandes reducen las colisiones, pero los repetidores con un firmware anterior a la v1.14 descartan los paquetes con IDs de 2 o 3 bytes.';
+      'Tamaño de cada ID de nodo registrado en la ruta de los paquetes Flood que envía esta radio: 1 byte (256 IDs, hasta 64 saltos), 2 bytes (65.000 IDs, hasta 32 saltos), 3 bytes (16 millones de IDs, hasta 21 saltos). Los IDs más grandes reducen las colisiones, pero los repetidores con un firmware anterior a la v1.14 descartan los paquetes con IDs de 2 o 3 bytes.';
 
   @override
   String settings_requiresFirmware(String version) {
@@ -1263,7 +1456,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Alternar entre las mejores rutas y el modo inundación';
+      'Alternar entre las mejores rutas y el modo Flood';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1272,36 +1465,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get appSettings_autoRouteRotationDisabled =>
       'Rotación de ruta automática desactivada';
-
-  @override
-  String get appSettings_maxRouteWeight => 'Peso máximo permitido para la ruta';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Peso máximo que una ruta puede acumular gracias a entregas exitosas.';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Peso inicial de la ruta';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Peso inicial para rutas recién descubiertas';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Incremento de peso para el éxito';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Peso añadido a una ruta después de una entrega exitosa.';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Reducción del peso asociado al fallo';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Peso retirado de una ruta después de un intento de entrega fallido.';
 
   @override
   String get appSettings_maxMessageRetries =>
@@ -1670,11 +1833,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get contacts_noMembers => 'No miembros';
 
   @override
-  String get contacts_lastSeenNow => 'Última vez que se vio ahora';
+  String get contacts_lastSeenNow => 'Reciente';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
-    return '~ $minutes minutos';
+    return '~ $minutes min';
   }
 
   @override
@@ -2028,12 +2191,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String channels_regionRadioDefaultApplies(String region) {
-    return 'Esta radio envía las inundaciones sin región en su región predeterminada: $region.';
+    return 'Esta radio envía los Flood sin región en su región predeterminada: $region.';
   }
 
   @override
   String get channels_regionSelectExplanation =>
-      'Los mensajes de inundación de este canal solo los reenviarán los repetidores de la región seleccionada.';
+      'Los mensajes Flood de este canal solo los reenviarán los repetidores de la región seleccionada.';
 
   @override
   String get channels_regionEmpty => 'Aún no hay regiones.';
@@ -2043,6 +2206,36 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get chat_noMessages => 'Aún no hay mensajes';
+
+  @override
+  String get chatSearch_tooltip => 'Buscar mensajes';
+
+  @override
+  String get chatSearch_hint => 'Buscar mensajes';
+
+  @override
+  String get chatSearch_close => 'Cerrar búsqueda';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count resultados',
+      one: '1 resultado',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'No hay mensajes coincidentes';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Prueba con otra palabra o revisa la ortografía';
+
+  @override
+  String get chatSearch_jumpFailed => 'No se encontró ese mensaje en el chat';
 
   @override
   String get chat_sendMessage => 'Enviar mensaje';
@@ -2088,6 +2281,67 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Mensaje borrado';
+
+  @override
+  String get chat_selectMessages => 'Seleccionar mensajes';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '$count seleccionados';
+  }
+
+  @override
+  String get chat_selectAll => 'Seleccionar todo';
+
+  @override
+  String get chat_clearSelection => 'Borrar selección';
+
+  @override
+  String get chat_deleteSelectedTitle => '¿Borrar mensajes?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '¿Borrar $count mensajes de este dispositivo?',
+      one: '¿Borrar 1 mensaje de este dispositivo?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mensajes borrados',
+      one: '1 mensaje borrado',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mensajes marcados como spam',
+      one: '1 mensaje marcado como spam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mensajes marcados como no spam',
+      one: '1 mensaje marcado como no spam',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Reintentando…';
@@ -2319,17 +2573,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get routing_title => 'Enrutamiento';
 
   @override
-  String get routing_modeAuto => 'Automático';
+  String get routing_modeAuto => 'Auto';
 
   @override
-  String get routing_modeFlood => 'Inundación';
+  String get routing_modeFlood => 'Flood';
 
   @override
   String get routing_modeManual => 'Manual';
 
   @override
+  String get routing_modeDirect => 'Directo';
+
+  @override
   String get routing_modeAutoHint =>
-      'Selecciona automáticamente la mejor ruta conocida y, si no hay ninguna, usa el modo de inundación.';
+      'Selecciona automáticamente la mejor ruta conocida y, si no hay ninguna, usa el modo Flood.';
 
   @override
   String get routing_modeFloodHint =>
@@ -2340,6 +2597,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Siempre sigue exactamente la ruta que has definido.';
 
   @override
+  String get routing_modeDirectHint =>
+      'Envía siempre directamente a este contacto, sin saltos de repetidor. Úselo cuando esté al alcance de la radio.';
+
+  @override
   String get routing_currentRoute => 'Ruta actual';
 
   @override
@@ -2347,7 +2608,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get routing_noPathYet =>
-      'Aún no hay una ruta. El siguiente mensaje se enviará por inundación hasta que se descubra una ruta.';
+      'Aún no hay una ruta. El siguiente mensaje usará Flood hasta que se descubra una ruta.';
 
   @override
   String get routing_floodBroadcast => 'Transmisión por todos los repetidores';
@@ -2380,7 +2641,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get routing_qualityWorked => 'Ha entregado';
 
   @override
-  String get routing_qualityFlood => 'Escuchado por inundación';
+  String get routing_qualityFlood => 'Escuchado vía Flood';
 
   @override
   String get routing_qualityUntested => 'Sin probar';
@@ -2399,7 +2660,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get routing_floodDelivery => 'Entrega por inundación';
+  String get routing_floodDelivery => 'Entrega Flood';
 
   @override
   String get pathEditor_title => 'Crear ruta';
@@ -2473,7 +2734,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chat_compressOutgoingMessages => 'Comprimir mensajes salientes';
 
   @override
-  String get chat_floodForced => 'Inundación (forzada)';
+  String get chat_floodForced => 'Flood (forzado)';
 
   @override
   String get chat_directForced => 'Directo (forzado)';
@@ -2484,13 +2745,59 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get chat_floodAuto => 'Inundación (automática)';
+  String get chat_floodAuto => 'Flood (automático)';
 
   @override
   String get chat_direct => 'Directo';
 
   @override
   String get chat_poiShared => 'Punto de interés compartido';
+
+  @override
+  String get contactShare_headerOutgoing => 'Compartiste un contacto';
+
+  @override
+  String get contactShare_headerIncoming => 'Compartió un contacto';
+
+  @override
+  String get contactShare_add => 'Añadir contacto';
+
+  @override
+  String get contactShare_adding => 'Añadiendo contacto...';
+
+  @override
+  String get contactShare_saved => 'Guardado';
+
+  @override
+  String get contactShare_addAgain => 'Añadir de nuevo';
+
+  @override
+  String get contactShare_isYou => 'Eres tú';
+
+  @override
+  String get contactShare_shareAction => 'Compartir contacto';
+
+  @override
+  String get contactShare_pickerTitle => 'Compartir un contacto';
+
+  @override
+  String get contactShare_myContact => 'Mi contacto';
+
+  @override
+  String get contactShare_searchHint => 'Buscar contactos';
+
+  @override
+  String get contactShare_noContacts => 'No se encontraron contactos';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Contacto compartido: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Compartió un contacto: $name';
+  }
 
   @override
   String chat_unread(int count) {
@@ -2606,7 +2913,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get map_sensor => 'Sensor';
 
   @override
-  String get map_pinDm => 'Pin (DM)';
+  String get map_pinDm => 'Marcador (DM)';
 
   @override
   String get map_pinPrivate => 'Pin (privado)';
@@ -2616,10 +2923,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get map_lastSeen => 'Última vez visto';
-
-  @override
-  String get map_disconnectConfirm =>
-      '¿Está seguro de que desea desconectarse de este dispositivo?';
 
   @override
   String get map_from => 'De';
@@ -2634,16 +2937,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get map_type => 'Type';
 
   @override
-  String get map_path => 'Path';
+  String get map_path => 'Ruta';
 
   @override
-  String get map_location => 'Location';
+  String get map_location => 'Ubicación';
 
   @override
-  String get map_estLocation => 'Est. Location';
+  String get map_estLocation => 'Ubicación est.';
 
   @override
-  String get map_publicKey => 'Public Key';
+  String get map_publicKey => 'Clave pública';
 
   @override
   String get map_publicKeyPrefixHint => 'e.g. ab12';
@@ -2797,6 +3100,60 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Ver último resultado';
+
+  @override
+  String get manualTrace_menuItem => 'Traza de ruta por hashes';
+
+  @override
+  String get manualTrace_inputLabel => 'Hashes de repetidores';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Ejemplo: $example. Separa con comas o espacios.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Saltos ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Nodo desconocido';
+
+  @override
+  String get manualTrace_enterHashes => 'Introduce los hashes';
+
+  @override
+  String get manualTrace_run => 'Ejecutar traza de ruta';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Conéctate a una radio para ejecutar una traza';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Solo se permiten caracteres hexadecimales (0-9, A-F)';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Cada hash necesita un número par de caracteres hexadecimales, acorde al tamaño del salto';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Todos los hashes deben tener la misma longitud';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Los hashes deben ser de 1, 2 o 3 bytes (2, 4 o 6 caracteres hexadecimales)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'La ruta es demasiado larga (máximo $max bytes)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Demasiados saltos para trazar en una sola solicitud. Quita algunos saltos o elige «Tal como se introdujo».';
 
   @override
   String get mapCache_title => 'Caché de mapa sin conexión';
@@ -3020,7 +3377,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get login_autoUseSavedPath => 'Auto (usar la ruta guardada)';
 
   @override
-  String get login_forceFloodMode => 'Forzar modo inundación';
+  String get login_forceFloodMode => 'Forzar modo Flood';
 
   @override
   String get login_managePaths => 'Gestionar rutas';
@@ -3106,7 +3463,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get repeater_neighbors => 'Vecinos';
 
   @override
-  String get repeater_neighborsSubtitle => 'Ver vecinos de salto cero.';
+  String get repeater_neighborsSubtitle => 'Ver vecinos Zero Hop.';
 
   @override
   String get repeater_settings => 'Configuración';
@@ -3202,18 +3559,23 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '${hours}h $minutes min $seconds s';
+  }
+
+  @override
   String repeater_packetTxTotal(int total, String flood, String direct) {
-    return 'Total: $total, Inundación: $flood, Directo: $direct';
+    return 'Total: $total, Flood: $flood, Directo: $direct';
   }
 
   @override
   String repeater_packetRxTotal(int total, String flood, String direct) {
-    return 'Total: $total, Inundación: $flood, Directo: $direct';
+    return 'Total: $total, Flood: $flood, Directo: $direct';
   }
 
   @override
   String repeater_duplicatesFloodDirect(String flood, String direct) {
-    return 'Inundación: $flood, Directo: $direct';
+    return 'Flood: $flood, Directo: $direct';
   }
 
   @override
@@ -3324,8 +3686,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get repeater_floodAdvertInterval =>
-      'Intervalo de anuncio por inundación';
+  String get repeater_floodAdvertInterval => 'Intervalo de anuncio Flood';
 
   @override
   String repeater_floodAdvertIntervalHours(int hours) {
@@ -3413,7 +3774,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_loopDetectHelper =>
-      'Descarta los paquetes de inundación que parezcan bucles de enrutamiento';
+      'Descarta los paquetes Flood que parezcan bucles de enrutamiento';
 
   @override
   String get repeater_loopDetectOff => 'Desactivado';
@@ -3446,11 +3807,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'Metadatos públicos para este repetidor';
 
   @override
-  String get repeater_floodMax => 'Máximo de saltos por inundación';
+  String get repeater_floodMax => 'Máximo de saltos Flood';
 
   @override
   String get repeater_floodMaxHelper =>
-      'Número máximo de paquetes de inundación que un nodo puede enviar (0-64)';
+      'Número máximo de saltos que puede recorrer un paquete Flood (0-64)';
 
   @override
   String get repeater_advancedSettings => 'Ajustes avanzados';
@@ -3503,18 +3864,18 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get repeater_txDelay => 'Retraso TX por inundación';
+  String get repeater_txDelay => 'Retraso TX Flood';
 
   @override
   String get repeater_txDelayHelper =>
-      'Ajuste de retransmisión para el tráfico de inundación, como un multiplicador del tiempo de transmisión del paquete (0-2, valor predeterminado 0.5). Un valor más alto significa menos colisiones, pero una entrega más lenta.';
+      'Ajuste de retransmisión para el tráfico Flood, como un multiplicador del tiempo de transmisión del paquete (0-2, valor predeterminado 0.5). Un valor más alto significa menos colisiones, pero una entrega más lenta.';
 
   @override
   String get repeater_directTxDelay => 'Retraso TX directo';
 
   @override
   String get repeater_directTxDelayHelper =>
-      'Reenvío de espacios para el tráfico directo (no masivo), como un multiplicador del tiempo de transmisión del paquete (0-2, valor predeterminado 0.3).';
+      'Espaciado de retransmisión para el tráfico directo (no Flood), como un multiplicador del tiempo de transmisión del paquete (0-2, valor predeterminado 0.3).';
 
   @override
   String get repeater_intThresh => 'Límite de interferencia';
@@ -3534,14 +3895,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get repeater_actionsTitle => 'Acciones';
 
   @override
-  String get repeater_sendAdvert => 'Enviar anuncio por inundación';
+  String get repeater_sendAdvert => 'Enviar anuncio Flood';
 
   @override
   String get repeater_sendAdvertSubtitle =>
-      'Transmitir un anuncio por inundación a través de la red.';
+      'Transmitir un anuncio Flood a través de la red.';
 
   @override
-  String get repeater_sendAdvertZeroHop => 'Enviar anuncio sin saltos';
+  String get repeater_sendAdvertZeroHop => 'Enviar anuncio Zero Hop';
 
   @override
   String get repeater_sendAdvertZeroHopSubtitle =>
@@ -3711,7 +4072,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetFloodMax =>
-      'Establece el número máximo de saltos de paquetes de inundación entrantes (si es >= máximo, el paquete no se enruta).';
+      'Establece el número máximo de saltos de paquetes Flood entrantes (si es >= máximo, el paquete no se enruta).';
 
   @override
   String get repeater_cliHelpSetIntThresh =>
@@ -3731,7 +4092,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetFloodAdvertInterval =>
-      'Establece el intervalo del temporizador en horas para enviar un paquete de anuncio masivo. Establecer en 0 para desactivarlo.';
+      'Establece el intervalo del temporizador en horas para enviar un paquete de anuncio Flood. Establecer en 0 para desactivarlo.';
 
   @override
   String get repeater_cliHelpSetGuestPassword =>
@@ -3758,7 +4119,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetTxDelay =>
-      'Establece un factor multiplicado con el tiempo de aire para un paquete de modo de inundación y con un sistema de ranura aleatorio, para retrasar su reenvío (para disminuir la probabilidad de colisiones).';
+      'Establece un factor multiplicado con el tiempo de aire para un paquete de modo Flood y con un sistema de ranura aleatorio, para retrasar su reenvío (para disminuir la probabilidad de colisiones).';
 
   @override
   String get repeater_cliHelpSetDirectTxDelay =>
@@ -3822,7 +4183,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_cliHelpRegion =>
-      '(solo serie) Lista todas las regiones definidas y los permisos de inundación actuales.';
+      '(solo serial) Lista todas las regiones definidas y los permisos Flood actuales.';
 
   @override
   String get repeater_cliHelpRegionLoad =>
@@ -3909,7 +4270,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_cliRegionLoadActive =>
-      'Modo de carga de regiones: envíe un nombre de región por línea, sangrado con espacios bajo su región padre (añada F después del nombre para permitir inundación). Las líneas no reciben respuesta. Envíe una línea vacía para terminar y luego \"region save\" para guardar el resultado.';
+      'Modo de carga de regiones: envíe un nombre de región por línea, sangrado con espacios bajo su región padre (añada F después del nombre para permitir Flood). Las líneas no reciben respuesta. Envíe una línea vacía para terminar y luego \"region save\" para guardar el resultado.';
 
   @override
   String get repeater_cliRegionLoadHint =>
@@ -3924,19 +4285,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetFloodMaxUnscoped =>
-      'Establece el número máximo de saltos para reenviar paquetes de inundación que no tienen ámbito regional (0-64).';
+      'Establece el número máximo de saltos para reenviar paquetes Flood que no tienen ámbito regional (0-64).';
 
   @override
   String get repeater_cliHelpSetFloodMaxAdvert =>
-      'Establece el número máximo de saltos para reenviar anuncios por inundación (0-64).';
+      'Establece el número máximo de saltos para reenviar anuncios Flood (0-64).';
 
   @override
   String get repeater_cliHelpGetFloodMaxUnscoped =>
-      'Muestra el número máximo de saltos para los paquetes de inundación sin ámbito.';
+      'Muestra el número máximo de saltos para los paquetes Flood sin ámbito.';
 
   @override
   String get repeater_cliHelpGetFloodMaxAdvert =>
-      'Muestra el número máximo de saltos para los anuncios por inundación.';
+      'Muestra el número máximo de saltos para los anuncios Flood.';
 
   @override
   String get repeater_cliHelpSetRadioFemRxGain =>
@@ -4007,7 +4368,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_cliHelpAdvertZeroHop =>
-      'Envía un anuncio que no requiere saltos (solo para los vecinos inmediatos).';
+      'Envía un anuncio Zero Hop (solo para los vecinos inmediatos).';
 
   @override
   String get repeater_cliHelpStartOta =>
@@ -4133,7 +4494,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_cliHelpGetFloodAdvertInterval =>
-      'Muestra el intervalo de anuncio por inundación, en horas.';
+      'Muestra el intervalo de anuncio Flood, en horas.';
 
   @override
   String get repeater_cliHelpGetGuestPassword =>
@@ -4150,7 +4511,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_cliHelpGetTxDelay =>
-      'Muestra el factor de retardo en modo de inundación.';
+      'Muestra el factor de retardo en modo Flood.';
 
   @override
   String get repeater_cliHelpGetDirectTxDelay =>
@@ -4158,7 +4519,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_cliHelpGetFloodMax =>
-      'Muestra el número máximo de saltos por inundación.';
+      'Muestra el número máximo de saltos Flood.';
 
   @override
   String get repeater_cliHelpGetOwnerInfo =>
@@ -4246,11 +4607,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_cliHelpRegionListAllowed =>
-      'Enumera las regiones que permiten el tráfico por inundación.';
+      'Enumera las regiones que permiten el tráfico Flood.';
 
   @override
   String get repeater_cliHelpRegionListDenied =>
-      'Enumera las regiones que prohíben el tráfico por inundación.';
+      'Enumera las regiones que prohíben el tráfico Flood.';
 
   @override
   String get repeater_cliHelpStatsPackets =>
@@ -4537,7 +4898,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get channelPath_unknownPath => 'Desconocido';
 
   @override
-  String get channelPath_floodPath => 'Inundación';
+  String get channelPath_floodPath => 'Flood';
 
   @override
   String get channelPath_directPath => 'Guardar';
@@ -5075,10 +5436,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get contacts_zeroHopAdvert => 'Anuncio de un solo salto';
+  String get contacts_zeroHopAdvert => 'Anuncio Zero Hop';
 
   @override
-  String get contacts_floodAdvert => 'Anuncio de inundación';
+  String get contacts_floodAdvert => 'Anuncio Flood';
 
   @override
   String get contacts_copyAdvertToClipboard => 'Copiar anuncio al portapapeles';
@@ -5858,6 +6219,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pathMap_expandPanel => 'Ampliar panel';
 
   @override
+  String get pathMap_expandHopList => 'Ampliar lista de saltos';
+
+  @override
+  String get pathMap_showMap => 'Mostrar mapa';
+
+  @override
   String get pathMap_noLocation => 'Sin ubicación';
 
   @override
@@ -5893,7 +6260,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'El modelo de imagen aún no se ha descargado. Descárgalo en Configuración para enviar imágenes.';
 
   @override
-  String get imageSend_originalSize => 'Texto original';
+  String get imageSend_originalSize => 'Original';
 
   @override
   String get imageSend_onAirSize => 'En emisión';
@@ -5953,7 +6320,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get imageSend_floodNote =>
-      'Enrutamiento de inundación: cada repetidor dentro del rango retransmite cada paquete, por lo que el canal permanece ocupado durante más tiempo que esto.';
+      'Enrutamiento Flood: cada repetidor dentro del rango retransmite cada paquete, por lo que el canal permanece ocupado durante más tiempo que esto.';
 
   @override
   String get imageSend_parityTitle => 'Paquete de recuperación';
@@ -6072,6 +6439,9 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get receivedImage_syntheticBadge => 'Reconstruida con IA';
+
+  @override
   String get receivedImage_packetInfo => 'Información del paquete';
 
   @override
@@ -6157,31 +6527,28 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get repeater_floodMaxAdvert =>
-      'Máximo de saltos de anuncio por inundación';
+  String get repeater_floodMaxAdvert => 'Máximo de saltos de anuncio Flood';
 
   @override
   String get repeater_floodMaxAdvertHelper =>
-      'Máximo de saltos que puede recorrer un anuncio difundido por inundación (0-64, por defecto 8)';
+      'Máximo de saltos que puede recorrer un anuncio Flood (0-64, por defecto 8)';
 
   @override
-  String get repeater_floodMaxUnscoped =>
-      'Máximo de saltos por inundación sin región';
+  String get repeater_floodMaxUnscoped => 'Máximo de saltos Flood sin región';
 
   @override
   String get repeater_floodMaxUnscopedHelper =>
-      'Máximo de saltos para inundaciones sin ámbito de región (0-64, por defecto 64). Un valor bajo como 3 mantiene local el tráfico sin región.';
+      'Máximo de saltos para Flood sin ámbito de región (0-64, por defecto 64). Un valor bajo como 3 mantiene local el tráfico sin región.';
 
   @override
-  String get repeater_floodMaxUnscopedUnset =>
-      'Igual que el máximo de inundación';
+  String get repeater_floodMaxUnscopedUnset => 'Igual que el máximo Flood';
 
   @override
   String get repeater_rxDelay => 'Retardo de recepción';
 
   @override
   String get repeater_rxDelayHelper =>
-      'Retiene los paquetes de inundación oídos con señal débil antes de reenviarlos, para que las rutas con señal fuerte vayan primero y se envíen menos duplicados (0-20, 0 lo desactiva).';
+      'Retiene los paquetes Flood oídos con señal débil antes de reenviarlos, para que las rutas con señal fuerte vayan primero y se envíen menos duplicados (0-20, 0 lo desactiva).';
 
   @override
   String get repeater_cad => 'Detección de actividad del canal';
@@ -6961,6 +7328,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'El mismo mensaje enviado de nuevo, o por varios remitentes';
 
   @override
+  String get messageFilter_repeatSends => 'Envíos para contar como repetición';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Ocultar un mensaje cuando el mismo remitente lo envía $count veces en 10 minutos';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Caracteres repetidos';
 
   @override
@@ -7079,4 +7454,41 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get messageFilter_ghostIconTooltip =>
       'Oculto por tu filtro de mensajes';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'Sin conexión · $name';
+  }
+
+  @override
+  String get appBar_offline => 'Sin conexión';
+
+  @override
+  String get appBar_reconnecting => 'Reconectando…';
+
+  @override
+  String get connectSheet_title => 'Conectar una radio';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return 'Reconectar con $name';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => 'Elegir una radio';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB o TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => 'Dejar de reconectar';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return 'No se pudo conectar con $name. Comprueba que esté encendida y cerca.';
+  }
+
+  @override
+  String get chat_composerOffline =>
+      'Conéctate a una radio para enviar mensajes';
 }

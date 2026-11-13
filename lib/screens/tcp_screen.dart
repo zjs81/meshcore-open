@@ -12,7 +12,7 @@ import '../utils/platform_info.dart';
 import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/mesh_ui.dart';
 import '../helpers/snack_bar_builder.dart';
-import 'channels_screen.dart';
+import '../utils/main_navigation.dart';
 import 'usb_screen.dart';
 
 class TcpScreen extends StatefulWidget {
@@ -63,9 +63,7 @@ class _TcpScreenState extends State<TcpScreen> {
           int.tryParse(_portController.text) ?? 0,
         );
         _navigatedToChannels = true;
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const ChannelsScreen()),
-        );
+        navigateToMainAfterConnect(context);
       }
     };
     _connector.addListener(_connectionListener);

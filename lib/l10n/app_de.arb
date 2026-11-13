@@ -178,12 +178,13 @@
   "appSettings_languageDe": "Deutsch",
   "appSettings_languagePl": "Polnisch",
   "appSettings_languageSl": "Slowenisch",
-  "appSettings_languagePt": "Portugiesisch",
+  "appSettings_languagePt": "Portugiesisch (Brasilien)",
   "appSettings_languageIt": "Italienisch",
   "appSettings_languageZh": "Chinesisch",
   "appSettings_languageSv": "Schwedisch",
   "appSettings_languageNl": "Niederländisch",
   "appSettings_languageSk": "Slowakisch",
+  "appSettings_languageCs": "Tschechisch",
   "appSettings_languageBg": "Bulgarisch",
   "appSettings_notifications": "Benachrichtigungen",
   "appSettings_enableNotifications": "Benachrichtigungen aktivieren",
@@ -720,7 +721,6 @@
   "map_pinPrivate": "Pin (Channel)",
   "map_pinPublic": "Kennzeichnung (Öffentlich)",
   "map_lastSeen": "Zuletzt gesehen",
-  "map_disconnectConfirm": "Sind Sie sicher, dass Sie sich von diesem Gerät trennen möchten?",
   "map_from": "Von",
   "map_source": "Quelle",
   "map_flags": "Flaggen",
@@ -1041,6 +1041,7 @@
   "repeater_received": "Empfangen",
   "repeater_duplicates": "Duplikate",
   "repeater_daysHoursMinsSecs": "{days} Tage {hours}h {minutes}m {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -2360,14 +2361,6 @@
   "contact_lastSeen": "Zuletzt gesehen",
   "contact_clearChat": "Chat löschen",
   "contact_teleEnvSubtitle": "Teilen von Umgebungsensordaten zulassen",
-  "appSettings_initialRouteWeightSubtitle": "Ausgangsgewicht für neu entdeckte Pfade",
-  "appSettings_maxRouteWeightSubtitle": "Maximales Gewicht, das ein Weg durch erfolgreiche Lieferungen erreichen kann.",
-  "appSettings_maxRouteWeight": "Maximale Gesamtstreckenlänge",
-  "appSettings_initialRouteWeight": "Anfangs-Streckengewicht",
-  "appSettings_routeWeightSuccessIncrement": "Erhöhung des Erfolgsgewichts",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Gewicht, das einem Pfad nach erfolgreicher Lieferung hinzugefügt wird.",
-  "appSettings_routeWeightFailureDecrement": "Reduzierung des Gewichts bei Fehlern",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Gewicht, das nach einem fehlgeschlagenen Versand von einem Weg entfernt wurde",
   "appSettings_maxMessageRetries": "Maximale Anzahl an Wiederholungsversuchen",
   "appSettings_maxMessageRetriesSubtitle": "Anzahl der Versuche, eine Nachricht erneut zu senden, bevor sie als fehlgeschlagen markiert wird.",
   "appSettings_ipfsImageLinks": "IPFS-Anbieter-Konfiguration",
@@ -2769,7 +2762,7 @@
   "contacts_searchOpen": "Suche öffnen",
   "contacts_searchClose": "Suche schließen",
   "routing_title": "Routenplanung",
-  "routing_modeAuto": "Automatisch",
+  "routing_modeAuto": "Auto",
   "routing_modeFlood": "Flood",
   "routing_modeManual": "Manuell",
   "routing_modeFloodHint": "Über alle Repeater senden. Am zuverlässigsten, aber mit höherem Funkzeitbedarf.",
@@ -3079,8 +3072,8 @@
   "imageMessages_autoProcessSubtitle": "Rekonstruiere jedes Bild sofort nach dem Eintreffen. Verbraucht etwa 2 GB Arbeitsspeicher für jede zweite Wiederherstellung; deaktiviere die automatische Rekonstruktion mit einem Tippen.",
   "imageSend_title": "Bild senden",
   "imageSend_cropNote": "Für 512 × 512 skaliert · Seitenverhältnis nicht erhalten",
-  "imageSend_originalSize": "Originaltext:\n\nThe quick brown fox jumps over the lazy dog.\n\nÜbersetzung:\n\nDer schnelle braune Fuchs springt über den faulen Hund.",
-  "imageSend_onAirSize": "On air",
+  "imageSend_originalSize": "Original",
+  "imageSend_onAirSize": "Über Funk",
   "imageSend_quality": "Qualität",
   "imageSend_qualityStandard": "Standard",
   "imageSend_qualityHigh": "Hoch",
@@ -3109,7 +3102,7 @@
   "imageSend_sentConfirmation": "Bild gesendet als {count} {count, plural, =1{Paket} other{Pakete}}.",
   "imageSend_sendFailed": "Das Bild konnte nicht gesendet werden: {error}",
   "imageSend_sendingProgress": "Bildversand — Paket {sent} von {total}",
-  "receivedImage_senderPrefix": "Kritisch: Diese Platzhalter {prefix} beibehalten.",
+  "receivedImage_senderPrefix": "Knoten {prefix}",
   "receivedImage_incoming": "{received} von {total} Paketen",
   "receivedImage_queued": "Warten auf die Entschlüsselung",
   "receivedImage_tapToDecode": "Tippen Sie, um zu entschlüsseln",
@@ -3698,6 +3691,8 @@
   "messageFilter_automaticSection": "Automatisch",
   "messageFilter_duplicates": "Wiederholte Nachrichten",
   "messageFilter_duplicatesSubtitle": "Dieselbe Nachricht erneut gesendet oder von mehreren Absendern",
+  "messageFilter_repeatSends": "Sendungen bis zur Wiederholung",
+  "messageFilter_repeatSendsSubtitle": "Nachricht ausblenden, wenn derselbe Absender sie innerhalb von 10 Minuten {count}-mal sendet",
   "messageFilter_repeatedCharacters": "Wiederholte Zeichen",
   "messageFilter_repeatedCharactersSubtitle": "Lange Folgen desselben Zeichens, z. B. „aaaaaaaaaaaaaaaaaaaa“",
   "messageFilter_learning": "Aus Spam-Markierungen lernen",
@@ -3726,5 +3721,197 @@
   "messageFilter_filterSenderConfirm": "Alle Nachrichten von „{name}“ ausblenden?",
   "messageFilter_filterLikeThis": "Ähnliche Nachrichten filtern…",
   "messageFilter_channelToggle": "Nachrichten in diesem Kanal filtern",
-  "messageFilter_ghostIconTooltip": "Von Ihrem Nachrichtenfilter ausgeblendet"
+  "messageFilter_ghostIconTooltip": "Von Ihrem Nachrichtenfilter ausgeblendet",
+  "chatSearch_tooltip": "Nachrichten durchsuchen",
+  "chatSearch_hint": "Nachrichten durchsuchen",
+  "chatSearch_close": "Suche schließen",
+  "chatSearch_resultCount": "{count, plural, =1{1 Treffer} other{{count} Treffer}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Keine passenden Nachrichten",
+  "chatSearch_noResultsHint": "Versuchen Sie ein anderes Wort oder prüfen Sie die Schreibweise",
+  "contactShare_headerOutgoing": "Sie haben einen Kontakt geteilt",
+  "contactShare_headerIncoming": "Hat einen Kontakt geteilt",
+  "contactShare_add": "Kontakt hinzufügen",
+  "contactShare_adding": "Kontakt wird hinzugefügt...",
+  "contactShare_saved": "Gespeichert",
+  "contactShare_isYou": "Das sind Sie",
+  "contactShare_shareAction": "Kontakt teilen",
+  "contactShare_pickerTitle": "Kontakt teilen",
+  "contactShare_myContact": "Mein Kontakt",
+  "contactShare_searchHint": "Kontakte durchsuchen",
+  "contactShare_noContacts": "Keine Kontakte gefunden",
+  "contactShare_preview": "Geteilter Kontakt: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Hat einen Kontakt geteilt: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Pfadverfolgung per Hash",
+  "manualTrace_inputLabel": "Repeater-Hashes",
+  "manualTrace_helper": "Beispiel: {example}. Mit Kommas oder Leerzeichen trennen.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Hops ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Unbekannter Knoten",
+  "manualTrace_enterHashes": "Hashes eingeben",
+  "manualTrace_run": "Pfadverfolgung starten",
+  "manualTrace_notConnected": "Verbinden Sie sich mit einem Funkgerät, um eine Verfolgung zu starten",
+  "manualTrace_errorInvalidHex": "Nur Hex-Zeichen (0-9, A-F) sind erlaubt",
+  "manualTrace_errorOddLength": "Jeder Hash benötigt eine gerade Anzahl von Hex-Zeichen, passend zur Hop-Größe",
+  "manualTrace_errorMixedWidths": "Alle Hashes müssen die gleiche Länge haben",
+  "manualTrace_errorUnsupportedWidth": "Hashes müssen 1, 2 oder 3 Bytes lang sein (2, 4 oder 6 Hex-Zeichen)",
+  "manualTrace_errorTooManyHops": "Pfad ist zu lang (maximal {max} Bytes)",
+  "manualTrace_errorTraceTooLong": "Zu viele Hops für eine einzelne Verfolgung. Entfernen Sie einige Hops oder wählen Sie „Wie eingegeben“.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_jumpFailed": "Diese Nachricht wurde im Chat nicht gefunden",
+  "chat_clearSelection": "Auswahl aufheben",
+  "chat_deleteSelectedConfirm": "{count, plural, one{1 Nachricht von diesem Gerät löschen?} other{{count} Nachrichten von diesem Gerät löschen?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Nachrichten löschen?",
+  "chat_messagesDeleted": "{count, plural, one{1 Nachricht gelöscht} other{{count} Nachrichten gelöscht}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Alle auswählen",
+  "chat_selectMessages": "Nachrichten auswählen",
+  "chat_selectedCount": "{count} ausgewählt",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Erneut hinzufügen",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{1 Nachricht als Kein Spam markiert} other{{count} Nachrichten als Kein Spam markiert}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{1 Nachricht als Spam markiert} other{{count} Nachrichten als Spam markiert}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Sprungliste erweitern",
+  "pathMap_showMap": "Karte anzeigen",
+  "routing_modeDirect": "Direkt",
+  "routing_modeDirectHint": "Sendet immer direkt an diesen Kontakt, ohne Repeater-Sprünge. Nutzen Sie dies, wenn er in Funkreichweite ist.",
+  "settings_export": "Exportieren",
+  "settings_exportSubtitle": "Kontakte und Repeater als GPX exportieren",
+  "backupRestore_title": "Sichern & Wiederherstellen",
+  "backupRestore_subtitle": "App-Daten und Funkeinstellungen sichern oder wiederherstellen",
+  "backupRestore_import": "Importieren",
+  "backupRestore_selectImportFile": "Datei importieren",
+  "backupRestore_password": "Passwort (optional)",
+  "backupRestore_passwordHelp": "Ein Passwort verschlüsselt die Datei. Ohne Passwort wird Klartext gespeichert, der private/Kanalschlüssel, Verlauf und Zugangsdaten enthalten kann.",
+  "backupRestore_importUnavailable": "Prüfen Sie das Passwort oder wählen Sie eine unterstützte Sicherungsdatei.",
+  "backupRestore_items": "Elemente für Sicherung und Wiederherstellung",
+  "backupRestore_nodeSettings": "Knoteneinstellungen",
+  "backupRestore_nodeSettingsDescription": "Gerätename, private und öffentliche Schlüssel, Funkeinstellungen und Regionen",
+  "backupRestore_deviceName": "Gerätename",
+  "backupRestore_privateKey": "Privater Schlüssel (sensibel)",
+  "backupRestore_publicKey": "Öffentlicher Schlüssel",
+  "backupRestore_radioSettings": "Funkeinstellungen",
+  "backupRestore_regions": "Regionen",
+  "backupRestore_location": "Standort",
+  "backupRestore_contactSettings": "Kontakteinstellungen",
+  "backupRestore_privacySettings": "Datenschutzeinstellungen",
+  "backupRestore_contactsData": "Kontakte",
+  "backupRestore_perContactSettings": "Kontakteinstellungen und Filter",
+  "backupRestore_contactGroups": "Kontaktgruppen",
+  "backupRestore_contactHistory": "Kontaktverlauf",
+  "backupRestore_channelsData": "Kanäle",
+  "backupRestore_channelFilters": "Nachrichtenfilter-Einstellungen",
+  "backupRestore_channelSettings": "Kanaleinstellungen",
+  "backupRestore_communities": "Communitys",
+  "backupRestore_channelHistory": "Kanalverlauf",
+  "backupRestore_locationSettings": "Standorteinstellungen",
+  "backupRestore_locationSettingsDescription": "Standort, Kontakteinstellungen und Datenschutzeinstellungen",
+  "backupRestore_appSettings": "App-Einstellungen",
+  "backupRestore_appSettingsDescription": "App-Einstellungen und Darstellung",
+  "backupRestore_ipfsKey": "IPFS-API-Schlüssel (sensibel)",
+  "backupRestore_stadiaMapKey": "Stadia-Maps-API-Schlüssel (sensibel)",
+  "backupRestore_contacts": "Kontakte",
+  "backupRestore_contactsDescription": "Kontakte, Filter und Einstellungen pro Kontakt, Gruppen und Nachrichtenverlauf",
+  "backupRestore_discoveredContacts": "Entdeckte Kontakte",
+  "backupRestore_discoveredContactsDescription": "Entdeckte Kontakte und ihre gespeicherten Details",
+  "backupRestore_channels": "Kanäle",
+  "backupRestore_channelsDescription": "Kanäle, Kanalfilter, Communitys und Nachrichtenverlauf",
+  "backupRestore_backup": "Sicherung erstellen",
+  "backupRestore_restore": "Auswahl wiederherstellen",
+  "backupRestore_backupComplete": "Sicherungsdatei erstellt.",
+  "backupRestore_restoreComplete": "Wiederherstellung abgeschlossen. Verbinden Sie sich erneut, wenn Sie die Funkidentität wiederhergestellt haben.",
+  "backupRestore_missingModelsTitle": "Modelle nicht heruntergeladen",
+  "backupRestore_missingModelsMessage": "Die wiederhergestellten Einstellungen wählen Modelle aus, die auf diesem Gerät nicht verfügbar sind:\n{models}\n\nJetzt herunterladen?",
+  "backupRestore_downloadModels": "Modelle herunterladen",
+  "backupRestore_downloading": "Wird heruntergeladen…",
+  "backupRestore_cancelDownload": "Download abbrechen",
+  "backupRestore_failed": "Sicherungsvorgang fehlgeschlagen: {error}",
+  "backupRestore_fileTooLarge": "Die Sicherungsdatei überschreitet das Limit von 100 MB.",
+  "backupRestore_selectAtLeastOne": "Wählen Sie mindestens ein Element aus.",
+  "backupRestore_replaceIdentityTitle": "Funkidentität ersetzen?",
+  "backupRestore_replaceIdentityMessage": "Beim Wiederherstellen der Knoteneinstellungen wird der private Schlüssel des verbundenen Funkgeräts ersetzt und seine Identität geändert. Fahren Sie nur fort, wenn dies beabsichtigt ist.",
+  "appSettings_languagePtPt": "Portugiesisch (Portugal)",
+  "receivedImage_syntheticBadge": "KI-rekonstruiert",
+  "appBar_offlineSubtitle": "Offline · {name}",
+  "appBar_offline": "Offline",
+  "appBar_reconnecting": "Verbindung wird wiederhergestellt…",
+  "connectSheet_title": "Funkgerät verbinden",
+  "connectSheet_reconnect": "Erneut mit {name} verbinden",
+  "connectSheet_chooseRadio": "Funkgerät auswählen",
+  "connectSheet_chooseRadioSubtitle": "Bluetooth, USB oder TCP",
+  "connectSheet_stopReconnecting": "Wiederverbindung abbrechen",
+  "connectSheet_reconnectFailed": "{name} ist nicht erreichbar. Stellen Sie sicher, dass es eingeschaltet und in der Nähe ist.",
+  "chat_composerOffline": "Mit einem Funkgerät verbinden, um Nachrichten zu senden"
 }

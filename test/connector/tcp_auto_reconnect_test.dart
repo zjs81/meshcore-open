@@ -208,14 +208,13 @@ void main() {
             _connector.state == MeshCoreConnectionState.disconnected &&
             _connector.isAutoReconnectScheduled,
       );
-      await _waitFor(
-        () => !_connector.isAutoReconnectScheduled,
-        pollInterval: const Duration(milliseconds: 1),
-      );
-      // The timer firing proves an attempt started; wait for its failure to
-      // finish and the next backoff to become active.
+      final firstScheduledAttempt = _connector.reconnectAttemptsForTesting;
+      // Wait for the failed attempt to schedule its next backoff. The timer's
+      // inactive window can be shorter than a test poll interval, so observe
+      // the monotonic retry count instead of trying to catch that window.
       await _waitFor(
         () =>
+            _connector.reconnectAttemptsForTesting > firstScheduledAttempt &&
             _connector.state == MeshCoreConnectionState.disconnected &&
             _connector.isAutoReconnectScheduled,
       );

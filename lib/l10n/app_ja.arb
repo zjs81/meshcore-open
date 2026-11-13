@@ -251,12 +251,13 @@
   "appSettings_languageDe": "ドイツ語",
   "appSettings_languagePl": "ポーランド語",
   "appSettings_languageSl": "スロベニア語",
-  "appSettings_languagePt": "ポルトガル語",
+  "appSettings_languagePt": "ポルトガル語（ブラジル）",
   "appSettings_languageIt": "イタリア語",
   "appSettings_languageZh": "中国語",
   "appSettings_languageSv": "スウェーデン語",
   "appSettings_languageNl": "オランダ語",
-  "appSettings_languageSk": "スロベニア語",
+  "appSettings_languageSk": "スロバキア語",
+  "appSettings_languageCs": "チェコ語",
   "appSettings_languageBg": "ブルガリア語",
   "appSettings_languageRu": "ロシア語",
   "appSettings_languageUk": "ウクライナ語",
@@ -283,14 +284,6 @@
   "appSettings_autoRouteRotationSubtitle": "最適な経路とフラッドモードを切り替えます",
   "appSettings_autoRouteRotationEnabled": "自動経路切り替えが有効です",
   "appSettings_autoRouteRotationDisabled": "自動経路切り替えは無効です",
-  "appSettings_maxRouteWeight": "最大経路重み",
-  "appSettings_maxRouteWeightSubtitle": "成功配送によって経路に蓄積できる最大重み",
-  "appSettings_initialRouteWeight": "初期経路重み",
-  "appSettings_initialRouteWeightSubtitle": "新しく発見された経路の初期重み",
-  "appSettings_routeWeightSuccessIncrement": "成功時の重み増加",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "成功配送後に経路へ加算する重み",
-  "appSettings_routeWeightFailureDecrement": "失敗時の重み減少",
-  "appSettings_routeWeightFailureDecrementSubtitle": "失敗配送後に経路から差し引く重み",
   "appSettings_maxMessageRetries": "最大メッセージ再試行回数",
   "appSettings_maxMessageRetriesSubtitle": "メッセージを失敗として扱うまでの再試行回数",
   "path_routeWeight": "{weight}/{max}",
@@ -883,7 +876,6 @@
   "map_pinPrivate": "ピン（非公開）",
   "map_pinPublic": "ピン（公開）",
   "map_lastSeen": "最後に確認",
-  "map_disconnectConfirm": "本当にこのデバイスとの接続を解除したいですか？",
   "map_from": "送信元",
   "map_source": "出典",
   "map_flags": "フラグ",
@@ -1215,6 +1207,7 @@
   "repeater_received": "受信済み",
   "repeater_duplicates": "重複",
   "repeater_daysHoursMinsSecs": "{days}日 {hours}時間 {minutes}分 {seconds}秒",
+  "repeater_hoursMinsSecs": "{hours}時間 {minutes}分 {seconds}秒",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -1259,7 +1252,7 @@
       }
     }
   },
-  "repeater_duplicatesFloodDirect": "{flood}: {flood}, 直接: {direct}",
+  "repeater_duplicatesFloodDirect": "フラッド: {flood}, 直接: {direct}",
   "@repeater_duplicatesFloodDirect": {
     "placeholders": {
       "flood": {
@@ -1500,7 +1493,7 @@
   "repeater_cliHelpSetLat": "アドバート表示の地図の緯度を設定します。（度分秒表記）",
   "repeater_cliHelpSetLon": "アドバート表示の地図の経度を設定します。（度数、分）",
   "repeater_cliHelpSetRadio": "完全に新しいラジオパラメータを設定し、設定として保存します。適用するには、「再起動」コマンドが必要です。",
-  "repeater_cliHelpSetRxDelay": "（実験用）遅延時間を設定するためのベース（1以上の値に設定する必要）\n受信パケットに対して、信号強度/スコアに基づいてわずかな遅延を適用します。 0に設定すると無効化されます。",
+  "repeater_cliHelpSetRxDelay": "（実験用）遅延時間を設定するためのベース（1以上の値に設定する必要）受信パケットに対して、信号強度/スコアに基づいてわずかな遅延を適用します。 0に設定すると無効化されます。",
   "repeater_cliHelpSetTxDelay": "時間経過に応じた「フラッドモード」パケットの送信遅延を設定します。この遅延は、ランダムなスロットシステムと組み合わせて使用され、パケットの衝突を減らすことを目的としています。",
   "repeater_cliHelpSetDirectTxDelay": "txdelayと同様ですが、ダイレクトモードのパケット転送にランダムな遅延を適用する場合に使用します。",
   "repeater_cliHelpSetBridgeEnabled": "ブリッジを有効化/無効化",
@@ -2053,7 +2046,7 @@
   },
   "losRun": "LOS（レーティングシステム）を使用する",
   "losNoElevationData": "標高データは含まれていません",
-  "losProfileClear": "{distance} {distanceUnit}, clear LOS, min clearance {clearance} {heightUnit}",
+  "losProfileClear": "{distance} {distanceUnit}、LOS クリア、最小クリアランス {clearance} {heightUnit}",
   "@losProfileClear": {
     "placeholders": {
       "distance": {
@@ -2070,7 +2063,7 @@
       }
     }
   },
-  "losProfileBlocked": "{distance} {distanceUnit}, blocked by {obstruction} {heightUnit}",
+  "losProfileBlocked": "{distance} {distanceUnit}、{obstruction} {heightUnit} で遮断",
   "@losProfileBlocked": {
     "placeholders": {
       "distance": {
@@ -2089,7 +2082,7 @@
   },
   "losStatusChecking": "LOS：確認中…",
   "losStatusNoData": "LOS: データの欠如",
-  "losStatusSummary": "LOS: {clear}/{total} clear, {blocked} blocked, {unknown} unknown",
+  "losStatusSummary": "LOS: {clear}/{total} クリア、{blocked} 遮断、{unknown} 不明",
   "@losStatusSummary": {
     "placeholders": {
       "clear": {
@@ -2167,7 +2160,7 @@
   "contacts_contactAdvertCopied": "アドバートがクリップボードにコピーされました。",
   "contacts_contactAdvertCopyFailed": "アドバートのコピーがクリップボードにコピーできませんでした。",
   "notification_activityTitle": "メッシュコアの活動",
-  "notification_messagesCount": "{count} {count, plural, =1{message} other{messages}}",
+  "notification_messagesCount": "{count} 件のメッセージ",
   "@notification_messagesCount": {
     "placeholders": {
       "count": {
@@ -2968,7 +2961,7 @@
   "imageMessages_autoProcessSubtitle": "画像が届き次第、すぐに再構築してください。1回あたり約2GBのメモリを使用します。タップで再構築を解除できます。",
   "imageSend_title": "画像を送信",
   "imageSend_cropNote": "512 × 512にリサイズされました。アスペクト比は保持されませんでした。",
-  "imageSend_originalSize": "原文：\nThe early morning light filtered through the curtains, casting a soft glow on the room.\n\n翻訳：\n早朝の光がカーテンをすり抜け、部屋に柔らかな光を投げかけていた。",
+  "imageSend_originalSize": "オリジナル",
   "imageSend_onAirSize": "放送中",
   "imageSend_quality": "品質",
   "imageSend_qualityStandard": "標準",
@@ -3778,6 +3771,8 @@
   "@messageFilter_duplicatesSubtitle": {
     "description": "Message filter: The same message sent again, or by several senders"
   },
+  "messageFilter_repeatSends": "繰り返しと見なす送信回数",
+  "messageFilter_repeatSendsSubtitle": "同じ送信者が10分以内に同じメッセージを{count}回送信したら非表示にします",
   "messageFilter_repeatedCharacters": "繰り返しの文字",
   "@messageFilter_repeatedCharacters": {
     "description": "Message filter: Repeated characters"
@@ -3931,5 +3926,197 @@
   "messageFilter_ghostIconTooltip": "メッセージフィルターで隠されました",
   "@messageFilter_ghostIconTooltip": {
     "description": "Message filter: Hidden by your message filter"
-  }
+  },
+  "chatSearch_tooltip": "メッセージを検索",
+  "chatSearch_hint": "メッセージを検索",
+  "chatSearch_close": "検索を閉じる",
+  "chatSearch_resultCount": "{count, plural, other{{count} 件の結果}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "一致するメッセージはありません",
+  "chatSearch_noResultsHint": "別の単語を試すか、スペルを確認してください",
+  "contactShare_headerOutgoing": "連絡先を共有しました",
+  "contactShare_headerIncoming": "連絡先を共有",
+  "contactShare_add": "連絡先を追加",
+  "contactShare_adding": "連絡先を追加中...",
+  "contactShare_saved": "登録済み",
+  "contactShare_isYou": "これはあなたです",
+  "contactShare_shareAction": "連絡先を共有",
+  "contactShare_pickerTitle": "連絡先を共有",
+  "contactShare_myContact": "自分の連絡先",
+  "contactShare_searchHint": "連絡先を検索",
+  "contactShare_noContacts": "連絡先が見つかりません",
+  "contactShare_preview": "共有された連絡先: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "連絡先を共有: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "ハッシュで経路追跡",
+  "manualTrace_inputLabel": "リピーターのハッシュ",
+  "manualTrace_helper": "例: {example}。カンマまたはスペースで区切ってください。",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "ホップ ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "不明なノード",
+  "manualTrace_enterHashes": "ハッシュを入力",
+  "manualTrace_run": "経路トレースを実行",
+  "manualTrace_notConnected": "トレースを実行するには無線機に接続してください",
+  "manualTrace_errorInvalidHex": "16進数の文字(0-9、A-F)のみ使用できます",
+  "manualTrace_errorOddLength": "各ハッシュはホップのサイズに合わせて、16進数の文字数が偶数である必要があります",
+  "manualTrace_errorMixedWidths": "すべてのハッシュは同じ長さにしてください",
+  "manualTrace_errorUnsupportedWidth": "ハッシュは1、2、3バイト(16進数で2、4、6文字)にしてください",
+  "manualTrace_errorTooManyHops": "経路が長すぎます(最大 {max} バイト)",
+  "manualTrace_errorTraceTooLong": "1回のリクエストでトレースできるホップ数を超えています。ホップを減らすか、「入力どおり」を選んでください。",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_jumpFailed": "チャット内でそのメッセージが見つかりませんでした",
+  "chat_clearSelection": "選択を解除",
+  "chat_deleteSelectedConfirm": "{count, plural, other{この端末からメッセージ {count} 件を削除しますか？}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "メッセージを削除しますか？",
+  "chat_messagesDeleted": "{count, plural, other{メッセージ {count} 件を削除しました}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "すべて選択",
+  "chat_selectMessages": "メッセージを選択",
+  "chat_selectedCount": "{count} 件を選択中",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "もう一度追加",
+  "messageFilter_markedNotSpamCount": "{count, plural, other{メッセージ {count} 件をスパムではないとマークしました}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, other{メッセージ {count} 件をスパムとしてマークしました}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "ホップ一覧を広げる",
+  "pathMap_showMap": "地図を表示",
+  "routing_modeDirect": "直接",
+  "routing_modeDirectHint": "中継ホップなしで、常にこの連絡先へ直接送信します。相手が電波の届く範囲にいるときに使います。",
+  "settings_export": "エクスポート",
+  "settings_exportSubtitle": "連絡先とリピータをGPXでエクスポート",
+  "backupRestore_title": "バックアップと復元",
+  "backupRestore_subtitle": "アプリのデータと無線機の設定を保存または復元します",
+  "backupRestore_import": "インポート",
+  "backupRestore_selectImportFile": "ファイルをインポート",
+  "backupRestore_password": "パスワード（任意）",
+  "backupRestore_passwordHelp": "パスワードを設定するとファイルが暗号化されます。空欄の場合は平文で保存され、秘密鍵/チャンネル鍵、履歴、認証情報が含まれる可能性があります。",
+  "backupRestore_importUnavailable": "パスワードを確認するか、対応しているバックアップファイルを選択してください。",
+  "backupRestore_items": "バックアップと復元の項目",
+  "backupRestore_nodeSettings": "ノード設定",
+  "backupRestore_nodeSettingsDescription": "デバイス名、秘密鍵と公開鍵、無線設定、リージョン",
+  "backupRestore_deviceName": "デバイス名",
+  "backupRestore_privateKey": "秘密鍵（機密）",
+  "backupRestore_publicKey": "公開鍵",
+  "backupRestore_radioSettings": "無線設定",
+  "backupRestore_regions": "リージョン",
+  "backupRestore_location": "位置情報",
+  "backupRestore_contactSettings": "連絡先設定",
+  "backupRestore_privacySettings": "プライバシー設定",
+  "backupRestore_contactsData": "連絡先",
+  "backupRestore_perContactSettings": "連絡先ごとの設定とフィルター",
+  "backupRestore_contactGroups": "連絡先グループ",
+  "backupRestore_contactHistory": "連絡先の履歴",
+  "backupRestore_channelsData": "チャンネル",
+  "backupRestore_channelFilters": "メッセージフィルター設定",
+  "backupRestore_channelSettings": "チャンネル設定",
+  "backupRestore_communities": "コミュニティ",
+  "backupRestore_channelHistory": "チャンネルの履歴",
+  "backupRestore_locationSettings": "位置情報設定",
+  "backupRestore_locationSettingsDescription": "位置情報、連絡先設定、プライバシー設定",
+  "backupRestore_appSettings": "アプリ設定",
+  "backupRestore_appSettingsDescription": "アプリの設定と外観設定",
+  "backupRestore_ipfsKey": "IPFS APIキー（機密）",
+  "backupRestore_stadiaMapKey": "Stadia Maps APIキー（機密）",
+  "backupRestore_contacts": "連絡先",
+  "backupRestore_contactsDescription": "連絡先、連絡先ごとのフィルターと設定、グループ、メッセージ履歴",
+  "backupRestore_discoveredContacts": "検出された連絡先",
+  "backupRestore_discoveredContactsDescription": "検出された連絡先と保存済みの詳細",
+  "backupRestore_channels": "チャンネル",
+  "backupRestore_channelsDescription": "チャンネル、チャンネルフィルター、コミュニティ、メッセージ履歴",
+  "backupRestore_backup": "バックアップを作成",
+  "backupRestore_restore": "選択項目を復元",
+  "backupRestore_backupComplete": "バックアップファイルを作成しました。",
+  "backupRestore_restoreComplete": "復元が完了しました。無線機のIDを復元した場合は再接続してください。",
+  "backupRestore_missingModelsTitle": "モデル未ダウンロード",
+  "backupRestore_missingModelsMessage": "復元された設定で選択されているモデルが、このデバイスにありません:\n{models}\n\n今すぐダウンロードしますか？",
+  "backupRestore_downloadModels": "モデルをダウンロード",
+  "backupRestore_downloading": "ダウンロード中…",
+  "backupRestore_cancelDownload": "ダウンロードをキャンセル",
+  "backupRestore_failed": "バックアップ操作に失敗しました: {error}",
+  "backupRestore_fileTooLarge": "バックアップファイルが100 MBの上限を超えています。",
+  "backupRestore_selectAtLeastOne": "項目を1つ以上選択してください。",
+  "backupRestore_replaceIdentityTitle": "無線機のIDを置き換えますか？",
+  "backupRestore_replaceIdentityMessage": "ノード設定を復元すると、接続中の無線機の秘密鍵が置き換えられ、IDが変わります。意図している場合のみ続行してください。",
+  "appSettings_languagePtPt": "ポルトガル語（ポルトガル）",
+  "receivedImage_syntheticBadge": "AI再構築",
+  "appBar_offlineSubtitle": "オフライン · {name}",
+  "appBar_offline": "オフライン",
+  "appBar_reconnecting": "再接続中…",
+  "connectSheet_title": "無線機に接続",
+  "connectSheet_reconnect": "{name} に再接続",
+  "connectSheet_chooseRadio": "無線機を選択",
+  "connectSheet_chooseRadioSubtitle": "Bluetooth、USB、またはTCP",
+  "connectSheet_stopReconnecting": "再接続を停止",
+  "connectSheet_reconnectFailed": "{name} に接続できませんでした。電源が入っていて近くにあることを確認してください。",
+  "chat_composerOffline": "メッセージを送信するには無線機に接続してください"
 }

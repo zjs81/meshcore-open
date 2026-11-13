@@ -232,7 +232,7 @@ void main() {
     await _connect();
     // Nobody called "Ghost" has posted, so the reply keeps its mention.
     const text = '@[Ghost] cheap radios for sale, message me today';
-    final cleanBefore = _filter.recentCleanCount;
+    const filterText = 'cheap radios for sale, message me today';
     _connector.handleFrameForTest(
       ReviewFrames.channelMessage(
         channelIndex: 2,
@@ -241,16 +241,19 @@ void main() {
         timestampSecs: _nowSecs(),
       ),
     );
-    await _waitFor(() => _find(2, text) != null);
+    await _waitFor(
+      () => _find(2, text) != null && _filter.hasRecentCleanExample(filterText),
+    );
     final message = _find(2, text)!;
     expect(message.text, startsWith('@[Ghost]'));
-    expect(_filter.recentCleanCount, cleanBefore + 1);
 
     final spamBefore = _filter.spamExampleCount;
     await _connector.markChannelMessageSpam(_channelAt(2), message);
     expect(_filter.spamExampleCount, spamBefore + 1);
-    // The clean example recorded on arrival is gone, not contradicted.
-    expect(_filter.recentCleanCount, cleanBefore);
+    // The clean example recorded on arrival is gone, not contradicted. Check
+    // this example directly: other queued messages can teach the filter while
+    // this async test is awaiting the retrain.
+    expect(_filter.hasRecentCleanExample(filterText), isFalse);
   });
 
   test('spam actions only touch the message in the chosen channel', () async {

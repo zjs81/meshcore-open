@@ -18,10 +18,10 @@ import '../models/channel.dart';
 import '../models/community.dart';
 import '../storage/community_store.dart';
 import '../theme/mesh_theme.dart';
-import '../utils/dialog_utils.dart';
-import '../utils/disconnect_navigation_mixin.dart';
+import '../utils/radio_guard.dart';
 import '../utils/route_transitions.dart';
 import '../widgets/channel_notification_mode_sheet.dart';
+import '../widgets/connect_sheet.dart';
 import '../widgets/list_filter_widget.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mesh_ui.dart';
@@ -30,6 +30,7 @@ import '../widgets/qr_code_display.dart';
 import '../widgets/quick_switch_bar.dart';
 import '../widgets/sync_progress_overlay.dart';
 import '../widgets/unread_badge.dart';
+import '../helpers/contact_share_message.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../helpers/utf8_length_limiter.dart';
@@ -50,8 +51,7 @@ class ChannelsScreen extends StatefulWidget {
   State<ChannelsScreen> createState() => _ChannelsScreenState();
 }
 
-class _ChannelsScreenState extends State<ChannelsScreen>
-    with DisconnectNavigationMixin {
+class _ChannelsScreenState extends State<ChannelsScreen> {
   final TextEditingController _searchController = TextEditingController();
   final CommunityStore _communityStore = CommunityStore();
   final CommunityPskIndex _communityIndex = CommunityPskIndex();
@@ -73,7 +73,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
 
   Future<void> _loadCommunities() async {
     final connector = context.read<MeshCoreConnector>();
-    _communityStore.setPublicKeyHex = connector.selfPublicKeyHex;
+    _communityStore.setPublicKeyHex = connector.storageKeyHex;
     final communities = await _communityStore.loadCommunities();
     if (mounted) {
       setState(() {
@@ -110,11 +110,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
       // No message filter in this tree (tests); previews ignore it.
     }
 
-    // Auto-navigate back to scanner if disconnected
-    if (!checkConnectionAndNavigate(connector)) {
-      return const SizedBox.shrink();
-    }
-
+    final readOnly = isRadioReadOnly(connector);
     final allowBack = !connector.isConnected;
 
     return PopScope(
@@ -131,36 +127,18 @@ class _ChannelsScreenState extends State<ChannelsScreen>
               // capture the screen's context — not the itemBuilder's menu
               // context, which is deactivated by then.
               itemBuilder: (menuContext) => [
+                connectionMenuItem(context, menuContext),
                 PopupMenuItem(
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.logout,
-                        color: Theme.of(menuContext).colorScheme.error,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(menuContext.l10n.common_disconnect),
-                    ],
-                  ),
-                  onTap: () => _disconnect(context),
-                ),
-                PopupMenuItem(
-                  child: Row(
-                    children: [
-                      const Icon(Icons.groups),
-                      const SizedBox(width: 8),
-                      Text(menuContext.l10n.community_manageCommunities),
-                    ],
+                  child: MeshMenuItemRow(
+                    icon: Icons.groups,
+                    label: menuContext.l10n.community_manageCommunities,
                   ),
                   onTap: () => _showManageCommunitiesDialog(context),
                 ),
                 PopupMenuItem(
-                  child: Row(
-                    children: [
-                      const ThemedIcon(ThemeIconSlot.settings),
-                      const SizedBox(width: 8),
-                      Text(menuContext.l10n.settings_title),
-                    ],
+                  child: MeshMenuItemRow(
+                    leading: const ThemedIcon(ThemeIconSlot.settings, size: 20),
+                    label: menuContext.l10n.settings_title,
                   ),
                   onTap: () => Navigator.push(
                     context,
@@ -180,6 +158,8 @@ class _ChannelsScreenState extends State<ChannelsScreen>
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
+                  // Offline there is no radio to refresh from.
+                  if (readOnly) return;
                   await context.read<MeshCoreConnector>().getChannels(
                     force: true,
                   );
@@ -205,8 +185,9 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                             icon: Icons.tag,
                             title: context.l10n.channels_noChannelsConfigured,
                             action: FilledButton.icon(
-                              onPressed: () =>
-                                  _addPublicChannel(context, connector),
+                              onPressed: readOnly
+                                  ? null
+                                  : () => _addPublicChannel(context, connector),
                               icon: const Icon(Icons.public),
                               label: Text(
                                 context.l10n.channels_addPublicChannel,
@@ -354,11 +335,13 @@ class _ChannelsScreenState extends State<ChannelsScreen>
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _showAddChannelDialog(context),
-          tooltip: context.l10n.channels_addChannel,
-          child: const Icon(Icons.add),
-        ),
+        floatingActionButton: readOnly
+            ? null
+            : FloatingActionButton(
+                onPressed: () => _showAddChannelDialog(context),
+                tooltip: context.l10n.channels_addChannel,
+                child: const Icon(Icons.add),
+              ),
         bottomNavigationBar: SafeArea(
           top: false,
           child: QuickSwitchBar(
@@ -437,10 +420,15 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     // become the preview.
     final lastMessage = connector.latestVisibleChannelMessage(channel);
     final lastMessageText = lastMessage?.text ?? '';
+    final lastShare = parseContactShare(lastMessageText);
     final lastPreview =
         lastMessageText.isNotEmpty &&
             GifHelper.parseGif(lastMessageText) != null
         ? context.l10n.chat_receivedGif
+        : lastShare != null
+        ? context.l10n.contactShare_preview(
+            lastShare.name.isEmpty ? lastShare.shortKey : lastShare.name,
+          )
         : lastMessageText;
     final lastTime = lastMessage?.timestamp;
 
@@ -635,6 +623,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     Channel channel,
   ) {
     final parentContext = context;
+    final readOnly = isRadioReadOnly(connector);
 
     showMeshSheet(
       parentContext,
@@ -644,13 +633,14 @@ class _ChannelsScreenState extends State<ChannelsScreen>
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
+                enabled: !readOnly,
                 leading: const Icon(Icons.edit_outlined),
                 title: Text(sheetContext.l10n.channels_editChannel),
                 onTap: () async {
                   Navigator.pop(sheetContext);
                   await Future.delayed(const Duration(milliseconds: 100));
                   if (parentContext.mounted) {
-                    _showEditChannelDialog(parentContext, connector, channel);
+                    showEditChannelSheet(parentContext, connector, channel);
                   }
                 },
               ),
@@ -671,21 +661,26 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                 },
               ),
               ListTile(
+                enabled: !readOnly,
                 leading: Icon(
                   Icons.delete_outline,
-                  color: Theme.of(sheetContext).colorScheme.error,
+                  color: readOnly
+                      ? null
+                      : Theme.of(sheetContext).colorScheme.error,
                 ),
                 title: Text(
                   sheetContext.l10n.channels_deleteChannel,
                   style: TextStyle(
-                    color: Theme.of(sheetContext).colorScheme.error,
+                    color: readOnly
+                        ? null
+                        : Theme.of(sheetContext).colorScheme.error,
                   ),
                 ),
                 onTap: () async {
                   Navigator.pop(sheetContext);
                   await Future.delayed(const Duration(milliseconds: 100));
                   if (parentContext.mounted) {
-                    _confirmDeleteChannel(parentContext, connector, channel);
+                    confirmDeleteChannel(parentContext, connector, channel);
                   }
                 },
               ),
@@ -697,6 +692,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
   }
 
   void _handleQuickSwitch(int index, BuildContext context) {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (index == 1) return;
     switch (index) {
       case 0:
@@ -712,11 +708,6 @@ class _ChannelsScreenState extends State<ChannelsScreen>
         );
         break;
     }
-  }
-
-  Future<void> _disconnect(BuildContext context) async {
-    final connector = context.read<MeshCoreConnector>();
-    await showDisconnectDialog(context, connector);
   }
 
   Widget _buildFilterButton(UiViewStateService viewState) {
@@ -834,7 +825,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     bool isRegularHashtag = true;
     Community? selectedCommunity;
 
-    _communityStore.setPublicKeyHex = connector.selfPublicKeyHex;
+    _communityStore.setPublicKeyHex = connector.storageKeyHex;
 
     showMeshSheet(
       context,
@@ -966,6 +957,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                               Expanded(
                                 child: FilledButton(
                                   onPressed: () async {
+                                    if (!ensureRadioConnected(context)) return;
                                     final name = nameController.text.trim();
                                     if (name.isEmpty) {
                                       showDismissibleSnackBar(
@@ -1052,6 +1044,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                               Expanded(
                                 child: FilledButton(
                                   onPressed: () {
+                                    if (!ensureRadioConnected(context)) return;
                                     final name = nameController.text.trim();
                                     final pskHex = pskController.text.trim();
                                     if (name.isEmpty) {
@@ -1118,6 +1111,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                           Expanded(
                             child: FilledButton(
                               onPressed: () {
+                                if (!ensureRadioConnected(context)) return;
                                 final nextIndex = _resolveFreeChannelSlot(
                                   context,
                                   connector,
@@ -1285,6 +1279,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                               Expanded(
                                 child: FilledButton(
                                   onPressed: () async {
+                                    if (!ensureRadioConnected(context)) return;
                                     var hashtag = hashtagController.text.trim();
                                     if (hashtag.isEmpty) {
                                       showDismissibleSnackBar(
@@ -1474,6 +1469,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                               Expanded(
                                 child: FilledButton(
                                   onPressed: () async {
+                                    if (!ensureRadioConnected(context)) return;
                                     final name = nameController.text.trim();
                                     final publicLabel =
                                         context.l10n.channels_public;
@@ -1658,323 +1654,6 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     );
   }
 
-  void _showEditChannelDialog(
-    BuildContext context,
-    MeshCoreConnector connector,
-    Channel channel,
-  ) {
-    final appSettingsService = Provider.of<AppSettingsService>(
-      context,
-      listen: false,
-    );
-    bool smazEnabled = connector.isChannelSmazEnabled(channel.index);
-    bool cyr2latEnabled = connector.isChannelCyr2LatEnabled(channel.index);
-    final initialUrlImagesEnabled = connector.isChannelUrlImagesEnabled(
-      channel.index,
-    );
-    bool urlImagesEnabled = initialUrlImagesEnabled;
-    final loadLinkImages = appSettingsService.settings.loadLinkImages;
-    String? selectedCyr2LatProfileId = connector.getChannelCyr2LatProfileId(
-      channel.index,
-    );
-
-    showMeshSheet(
-      context,
-      builder: (sheetContext) => _SheetTextControllers(
-        initialTexts: [channel.name, channel.pskHex],
-        builder: (controllers) {
-          final nameController = controllers[0];
-          final pskController = controllers[1];
-          return StatefulBuilder(
-            builder: (sheetContext, setSheetState) => DraggableScrollableSheet(
-              expand: false,
-              initialChildSize: 0.65,
-              minChildSize: 0.4,
-              maxChildSize: 0.95,
-              builder: (_, scrollController) => Column(
-                children: [
-                  BottomSheetHeader(
-                    title: sheetContext.l10n.channels_editChannelTitle(
-                      channel.index,
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView(
-                      controller: scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      children: [
-                        const SizedBox(height: 8),
-                        TextField(
-                          controller: nameController,
-                          decoration: InputDecoration(
-                            labelText: sheetContext.l10n.channels_channelName,
-                            border: const OutlineInputBorder(),
-                          ),
-                          inputFormatters: const [
-                            Utf8LengthLimitingTextInputFormatter(
-                              maxRadioNameBytes,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: pskController,
-                          decoration: InputDecoration(
-                            labelText: sheetContext.l10n.channels_pskHex,
-                            border: const OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.casino),
-                              tooltip:
-                                  sheetContext.l10n.channels_generateRandomPsk,
-                              onPressed: () {
-                                final bytes = randomBytes(16);
-                                pskController.text = Channel.formatPskHex(
-                                  bytes,
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        SwitchListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            sheetContext.l10n.channels_smazCompression,
-                          ),
-                          value: smazEnabled,
-                          onChanged: (value) => setSheetState(() {
-                            smazEnabled = value;
-                            if (smazEnabled) {
-                              cyr2latEnabled = false;
-                            }
-                          }),
-                        ),
-                        SwitchListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            sheetContext.l10n.channels_cyr2latCompression,
-                          ),
-                          subtitle: Text(
-                            sheetContext.l10n.channels_cyr2latCompressionDscr,
-                          ),
-                          value: cyr2latEnabled,
-                          onChanged: (value) => setSheetState(() {
-                            cyr2latEnabled = value;
-                            if (cyr2latEnabled) {
-                              smazEnabled = false;
-                            }
-                          }),
-                        ),
-                        if (cyr2latEnabled) ...[
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                            child: DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              initialValue: selectedCyr2LatProfileId,
-                              decoration: InputDecoration(
-                                labelText: sheetContext
-                                    .l10n
-                                    .channels_cyr2latSettingsSubheading,
-                                border: const OutlineInputBorder(),
-                              ),
-                              items: appSettingsService.settings.cyr2latProfiles
-                                  .map((profile) {
-                                    return DropdownMenuItem(
-                                      value: profile.id,
-                                      child: Text(
-                                        profile.name,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    );
-                                  })
-                                  .toList(),
-                              onChanged: (value) => setSheetState(() {
-                                selectedCyr2LatProfileId = value;
-                              }),
-                            ),
-                          ),
-                        ],
-                        SwitchListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(sheetContext.l10n.urlImage_enable),
-                          subtitle: loadLinkImages
-                              ? null
-                              : Text(
-                                  sheetContext
-                                      .l10n
-                                      .urlImage_disabledInAppSettings,
-                                ),
-                          value: urlImagesEnabled,
-                          onChanged: loadLinkImages
-                              ? (value) => setSheetState(
-                                  () => urlImagesEnabled = value,
-                                )
-                              : null,
-                        ),
-                        const SizedBox(height: 24),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () => Navigator.pop(sheetContext),
-                            child: Text(sheetContext.l10n.common_cancel),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: FilledButton(
-                            onPressed: () async {
-                              final name = nameController.text.trim();
-                              final pskHex = pskController.text.trim();
-                              if (name.isEmpty) {
-                                showDismissibleSnackBar(
-                                  sheetContext,
-                                  content: Text(
-                                    sheetContext.l10n.channels_enterChannelName,
-                                  ),
-                                );
-                                return;
-                              }
-
-                              Uint8List psk;
-                              try {
-                                psk = Channel.parsePskHex(pskHex);
-                              } on FormatException {
-                                showDismissibleSnackBar(
-                                  sheetContext,
-                                  content: Text(
-                                    sheetContext.l10n.channels_pskMustBe32Hex,
-                                  ),
-                                );
-                                return;
-                              }
-
-                              Navigator.pop(sheetContext);
-                              try {
-                                await connector.setChannel(
-                                  channel.index,
-                                  name,
-                                  psk,
-                                );
-                                await connector.setChannelSmazEnabled(
-                                  channel.index,
-                                  smazEnabled,
-                                );
-                                await connector.setChannelCyr2LatEnabled(
-                                  channel.index,
-                                  cyr2latEnabled,
-                                );
-                                if (urlImagesEnabled !=
-                                    initialUrlImagesEnabled) {
-                                  await connector.setChannelUrlImagesEnabled(
-                                    channel.index,
-                                    urlImagesEnabled,
-                                  );
-                                }
-                                await connector.setChannelCyr2LatProfileId(
-                                  channel.index,
-                                  selectedCyr2LatProfileId,
-                                );
-                                if (!context.mounted) return;
-                                showDismissibleSnackBar(
-                                  context,
-                                  content: Text(
-                                    context.l10n.channels_channelUpdated(name),
-                                  ),
-                                );
-                              } catch (e, st) {
-                                debugPrint(st.toString());
-                                if (!context.mounted) return;
-                                showDismissibleSnackBar(
-                                  context,
-                                  content: Text(
-                                    context.l10n.channels_channelUpdateFailed(
-                                      '$e',
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                            child: Text(sheetContext.l10n.common_save),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  void _confirmDeleteChannel(
-    BuildContext context,
-    MeshCoreConnector connector,
-    Channel channel,
-  ) {
-    final channelLabel = channel.name.isEmpty
-        ? context.l10n.channels_channelIndex(channel.index)
-        : channel.name;
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(dialogContext.l10n.channels_deleteChannel),
-        content: Text(
-          dialogContext.l10n.channels_deleteChannelConfirm(channelLabel),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(dialogContext.l10n.common_cancel),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              try {
-                await connector.deleteChannel(channel.index);
-
-                if (!context.mounted) return;
-
-                showDismissibleSnackBar(
-                  context,
-                  content: Text(
-                    context.l10n.channels_channelDeleted(channelLabel),
-                  ),
-                );
-              } catch (e, st) {
-                if (!context.mounted) return;
-
-                showDismissibleSnackBar(
-                  context,
-                  content: Text(
-                    context.l10n.channels_channelDeleteFailed(channelLabel),
-                  ),
-                );
-
-                // Preserve existing logging (if it was there)
-                debugPrint('Failed to delete channel: $e\n$st');
-              }
-            },
-            child: Text(
-              dialogContext.l10n.common_delete,
-              style: TextStyle(
-                color: Theme.of(dialogContext).colorScheme.error,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   /// Picks a free channel slot at the moment the user commits, or shows why
   /// none can be used. Slots are only trusted after a complete channel sync:
   /// while syncing, a slot that hasn't been fetched yet looks empty and
@@ -2005,6 +1684,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
   }
 
   void _addPublicChannel(BuildContext context, MeshCoreConnector connector) {
+    if (!ensureRadioConnected(context)) return;
     final index = _resolveFreeChannelSlot(context, connector);
     if (index == null) return;
     final psk = Channel.parsePskHex(Channel.publicChannelPsk);
@@ -2116,40 +1796,31 @@ class _ChannelsScreenState extends State<ChannelsScreen>
                                 _confirmLeaveCommunity(this.context, community);
                               }
                             },
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                value: 'share',
-                                child: Row(
-                                  children: [
-                                    const Icon(Icons.qr_code),
-                                    const SizedBox(width: 12),
-                                    Text(context.l10n.community_showQr),
-                                  ],
+                            itemBuilder: (context) {
+                              final readOnly = isRadioReadOnly(
+                                context.read<MeshCoreConnector>(),
+                              );
+                              return [
+                                PopupMenuItem(
+                                  value: 'share',
+                                  child: MeshMenuItemRow(
+                                    icon: Icons.qr_code,
+                                    label: context.l10n.community_showQr,
+                                  ),
                                 ),
-                              ),
-                              PopupMenuItem(
-                                value: 'leave',
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.exit_to_app,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.error,
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Text(
-                                      context.l10n.community_delete,
-                                      style: TextStyle(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.error,
-                                      ),
-                                    ),
-                                  ],
+                                PopupMenuItem(
+                                  value: 'leave',
+                                  enabled: !readOnly,
+                                  child: MeshMenuItemRow(
+                                    icon: Icons.exit_to_app,
+                                    label: context.l10n.community_delete,
+                                    color: readOnly
+                                        ? null
+                                        : Theme.of(context).colorScheme.error,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ];
+                            },
                           ),
                           onTap: () {
                             Navigator.pop(sheetContext);
@@ -2207,7 +1878,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
     }
 
     final channelCount = communityChannels.length;
-    _communityStore.setPublicKeyHex = connector.selfPublicKeyHex;
+    _communityStore.setPublicKeyHex = connector.storageKeyHex;
 
     showDialog(
       context: context,
@@ -2226,6 +1897,7 @@ class _ChannelsScreenState extends State<ChannelsScreen>
           TextButton(
             onPressed: () async {
               Navigator.pop(dialogContext);
+              if (!ensureRadioConnected(context)) return;
 
               // Delete all community channels from the device
               for (final channel in communityChannels) {
@@ -2254,6 +1926,330 @@ class _ChannelsScreenState extends State<ChannelsScreen>
       ),
     );
   }
+}
+
+/// Edits a channel's name, PSK and per-channel options. [onSaved] runs with
+/// the saved channel once the radio accepted the change.
+void showEditChannelSheet(
+  BuildContext context,
+  MeshCoreConnector connector,
+  Channel channel, {
+  void Function(Channel saved)? onSaved,
+}) {
+  final appSettingsService = Provider.of<AppSettingsService>(
+    context,
+    listen: false,
+  );
+  bool smazEnabled = connector.isChannelSmazEnabled(channel.index);
+  bool cyr2latEnabled = connector.isChannelCyr2LatEnabled(channel.index);
+  final initialUrlImagesEnabled = connector.isChannelUrlImagesEnabled(
+    channel.index,
+  );
+  bool urlImagesEnabled = initialUrlImagesEnabled;
+  final loadLinkImages = appSettingsService.settings.loadLinkImages;
+  String? selectedCyr2LatProfileId = connector.getChannelCyr2LatProfileId(
+    channel.index,
+  );
+
+  showMeshSheet(
+    context,
+    builder: (sheetContext) => _SheetTextControllers(
+      initialTexts: [channel.name, channel.pskHex],
+      builder: (controllers) {
+        final nameController = controllers[0];
+        final pskController = controllers[1];
+        return StatefulBuilder(
+          builder: (sheetContext, setSheetState) => DraggableScrollableSheet(
+            expand: false,
+            initialChildSize: 0.65,
+            minChildSize: 0.4,
+            maxChildSize: 0.95,
+            builder: (_, scrollController) => Column(
+              children: [
+                BottomSheetHeader(
+                  title: sheetContext.l10n.channels_editChannelTitle(
+                    channel.index,
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                    controller: scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    children: [
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          labelText: sheetContext.l10n.channels_channelName,
+                          border: const OutlineInputBorder(),
+                        ),
+                        inputFormatters: const [
+                          Utf8LengthLimitingTextInputFormatter(
+                            maxRadioNameBytes,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: pskController,
+                        decoration: InputDecoration(
+                          labelText: sheetContext.l10n.channels_pskHex,
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.casino),
+                            tooltip:
+                                sheetContext.l10n.channels_generateRandomPsk,
+                            onPressed: () {
+                              final bytes = randomBytes(16);
+                              pskController.text = Channel.formatPskHex(bytes);
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(sheetContext.l10n.channels_smazCompression),
+                        value: smazEnabled,
+                        onChanged: (value) => setSheetState(() {
+                          smazEnabled = value;
+                          if (smazEnabled) {
+                            cyr2latEnabled = false;
+                          }
+                        }),
+                      ),
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          sheetContext.l10n.channels_cyr2latCompression,
+                        ),
+                        subtitle: Text(
+                          sheetContext.l10n.channels_cyr2latCompressionDscr,
+                        ),
+                        value: cyr2latEnabled,
+                        onChanged: (value) => setSheetState(() {
+                          cyr2latEnabled = value;
+                          if (cyr2latEnabled) {
+                            smazEnabled = false;
+                          }
+                        }),
+                      ),
+                      if (cyr2latEnabled) ...[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                          child: DropdownButtonFormField<String>(
+                            isExpanded: true,
+                            initialValue: selectedCyr2LatProfileId,
+                            decoration: InputDecoration(
+                              labelText: sheetContext
+                                  .l10n
+                                  .channels_cyr2latSettingsSubheading,
+                              border: const OutlineInputBorder(),
+                            ),
+                            items: appSettingsService.settings.cyr2latProfiles
+                                .map((profile) {
+                                  return DropdownMenuItem(
+                                    value: profile.id,
+                                    child: Text(
+                                      profile.name,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  );
+                                })
+                                .toList(),
+                            onChanged: (value) => setSheetState(() {
+                              selectedCyr2LatProfileId = value;
+                            }),
+                          ),
+                        ),
+                      ],
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(sheetContext.l10n.urlImage_enable),
+                        subtitle: loadLinkImages
+                            ? null
+                            : Text(
+                                sheetContext
+                                    .l10n
+                                    .urlImage_disabledInAppSettings,
+                              ),
+                        value: urlImagesEnabled,
+                        onChanged: loadLinkImages
+                            ? (value) =>
+                                  setSheetState(() => urlImagesEnabled = value)
+                            : null,
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(sheetContext),
+                          child: Text(sheetContext.l10n.common_cancel),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: () async {
+                            if (!ensureRadioConnected(context)) return;
+                            final name = nameController.text.trim();
+                            final pskHex = pskController.text.trim();
+                            if (name.isEmpty) {
+                              showDismissibleSnackBar(
+                                sheetContext,
+                                content: Text(
+                                  sheetContext.l10n.channels_enterChannelName,
+                                ),
+                              );
+                              return;
+                            }
+
+                            Uint8List psk;
+                            try {
+                              psk = Channel.parsePskHex(pskHex);
+                            } on FormatException {
+                              showDismissibleSnackBar(
+                                sheetContext,
+                                content: Text(
+                                  sheetContext.l10n.channels_pskMustBe32Hex,
+                                ),
+                              );
+                              return;
+                            }
+
+                            Navigator.pop(sheetContext);
+                            try {
+                              await connector.setChannel(
+                                channel.index,
+                                name,
+                                psk,
+                              );
+                              await connector.setChannelSmazEnabled(
+                                channel.index,
+                                smazEnabled,
+                              );
+                              await connector.setChannelCyr2LatEnabled(
+                                channel.index,
+                                cyr2latEnabled,
+                              );
+                              if (urlImagesEnabled != initialUrlImagesEnabled) {
+                                await connector.setChannelUrlImagesEnabled(
+                                  channel.index,
+                                  urlImagesEnabled,
+                                );
+                              }
+                              await connector.setChannelCyr2LatProfileId(
+                                channel.index,
+                                selectedCyr2LatProfileId,
+                              );
+                              if (!context.mounted) return;
+                              showDismissibleSnackBar(
+                                context,
+                                content: Text(
+                                  context.l10n.channels_channelUpdated(name),
+                                ),
+                              );
+                              onSaved?.call(
+                                Channel(
+                                  index: channel.index,
+                                  name: name,
+                                  psk: psk,
+                                ),
+                              );
+                            } catch (e, st) {
+                              debugPrint(st.toString());
+                              if (!context.mounted) return;
+                              showDismissibleSnackBar(
+                                context,
+                                content: Text(
+                                  context.l10n.channels_channelUpdateFailed(
+                                    '$e',
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: Text(sheetContext.l10n.common_save),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
+/// Asks before deleting a channel. [onDeleted] runs once the radio deleted it.
+void confirmDeleteChannel(
+  BuildContext context,
+  MeshCoreConnector connector,
+  Channel channel, {
+  VoidCallback? onDeleted,
+}) {
+  final channelLabel = channel.name.isEmpty
+      ? context.l10n.channels_channelIndex(channel.index)
+      : channel.name;
+  showDialog(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text(dialogContext.l10n.channels_deleteChannel),
+      content: Text(
+        dialogContext.l10n.channels_deleteChannelConfirm(channelLabel),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext),
+          child: Text(dialogContext.l10n.common_cancel),
+        ),
+        TextButton(
+          onPressed: () async {
+            Navigator.pop(dialogContext);
+            if (!ensureRadioConnected(context)) return;
+            try {
+              await connector.deleteChannel(channel.index);
+
+              if (!context.mounted) return;
+
+              showDismissibleSnackBar(
+                context,
+                content: Text(
+                  context.l10n.channels_channelDeleted(channelLabel),
+                ),
+              );
+              onDeleted?.call();
+            } catch (e, st) {
+              if (!context.mounted) return;
+
+              showDismissibleSnackBar(
+                context,
+                content: Text(
+                  context.l10n.channels_channelDeleteFailed(channelLabel),
+                ),
+              );
+
+              // Preserve existing logging (if it was there)
+              debugPrint('Failed to delete channel: $e\n$st');
+            }
+          },
+          child: Text(
+            dialogContext.l10n.common_delete,
+            style: TextStyle(color: Theme.of(dialogContext).colorScheme.error),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 /// Owns a sheet's [TextEditingController]s so they are disposed together with

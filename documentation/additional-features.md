@@ -26,7 +26,7 @@ A bottom sheet with a search field and a grid of GIF thumbnails.
 App Settings → Appearance → Language
 
 ### Supported Languages (18)
-English, French, Spanish, German, Polish, Slovenian, Portuguese, Italian, Chinese, Swedish, Dutch, Slovak, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean
+English, French, Spanish, German, Polish, Slovenian, Portuguese, Italian, Chinese, Swedish, Dutch, Slovak, Czech, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean
 
 ### How It Works
 - All UI strings go through Flutter's ARB localization system
@@ -149,16 +149,15 @@ A full-screen informational page explaining that the web client requires Chrome.
 ### What It Does (Background Service)
 Maintains an in-memory LRU cache of up to 50 contacts, each with up to 100 route history entries, tracking:
 - Hop count and trip time
-- Success/failure counts and route weights
+- Success/failure counts (lifetime and faded)
 - Flood vs. direct discovery
 
 ### Path Scoring
-Paths are scored using a weighted formula: reliability (45%), route weight (20%), latency (25%), and freshness (10%). These weights are internal and not user-configurable. Paths whose weight drops to zero or below are automatically deleted. Flood deliveries that receive an ACK give a weight boost (+0.5) to the specific return path.
+Each route keeps delivery and failure counts that fade over time (half their weight per day, at most 16 recent results). For each send attempt a route is chosen by Thompson sampling over those counts, adjusted slightly for speed and for what the radio currently hears. There are no user-tunable weights. A route is deleted only when it keeps failing and hasn't delivered for a week. Flood deliveries that receive an ACK credit the specific return path. Details: [Auto route selection](routing-paths.md#auto-route-selection).
 
 Used internally for:
-- **Auto route rotation**: Cycles through known paths using configurable weights on retries, with a diversity window to avoid re-using recently tried paths
-- **Path selection**: Picks the best-scored path for each retry attempt
-- **Flood statistics**: Tracks flood vs. direct discovery ratios
+- **Auto route rotation**: Picks a route for each attempt; retries usually move to a different route, and the last attempt floods
+- **Flood statistics**: Tracks flood deliveries and failures
 
 ---
 

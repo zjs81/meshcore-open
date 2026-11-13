@@ -16,12 +16,32 @@ Duration holidayAnimationDuration(HolidayAnimation animation) =>
       HolidayAnimation.newYear => const Duration(milliseconds: 5600),
     };
 
+/// Quiet time after a holiday animation ends before another may start.
+const Duration holidayAnimationMinInterval = Duration(seconds: 5);
+
+/// Clock for the rate limit; tests replace it.
+@visibleForTesting
+DateTime Function() holidayAnimationClock = DateTime.now;
+
+OverlayEntry? _activeHolidayEntry;
+DateTime? _holidayQuietUntil;
+
+/// Forgets the playing animation and the quiet period (tests only).
+@visibleForTesting
+void resetHolidayAnimationGate() {
+  _activeHolidayEntry = null;
+  _holidayQuietUntil = null;
+}
+
 /// Plays [animation] over the whole screen, starting from [origin] (global
 /// coordinates of the message it came from). Touches pass through, and the
 /// overlay removes itself when done.
 ///
-/// Skipped when the user turned holiday animations off or the platform asks
-/// for reduced motion.
+/// Skipped when the user turned holiday animations off, the platform asks
+/// for reduced motion, another holiday animation is still playing, or the
+/// last one ended less than [holidayAnimationMinInterval] ago (so a burst of
+/// greetings plays once instead of piling up). Skipped animations are
+/// dropped, not queued.
 void playHolidayAnimation(
   BuildContext context,
   HolidayAnimation animation, {
@@ -30,6 +50,11 @@ void playHolidayAnimation(
   final settings = context.read<AppSettingsService>().settings;
   if (!settings.holidayAnimationsEnabled) return;
   if (MediaQuery.maybeDisableAnimationsOf(context) ?? false) return;
+  // Unmounted when it finished or its overlay went away.
+  if (_activeHolidayEntry?.mounted ?? false) return;
+  final now = holidayAnimationClock();
+  final quietUntil = _holidayQuietUntil;
+  if (quietUntil != null && now.isBefore(quietUntil)) return;
   final overlay = Overlay.maybeOf(context, rootOverlay: true);
   if (overlay == null) return;
   late final OverlayEntry entry;
@@ -37,9 +62,23 @@ void playHolidayAnimation(
     builder: (_) => HolidayAnimationView(
       animation: animation,
       origin: origin,
-      onDone: () => entry.remove(),
+      onDone: () {
+        if (identical(_activeHolidayEntry, entry)) {
+          _activeHolidayEntry = null;
+          _holidayQuietUntil = holidayAnimationClock().add(
+            holidayAnimationMinInterval,
+          );
+        }
+        entry.remove();
+      },
     ),
   );
+  _activeHolidayEntry = entry;
+  // Until it reports its end: the end it should reach, plus the quiet time,
+  // in case the overlay goes away without finishing it.
+  _holidayQuietUntil = now
+      .add(holidayAnimationDuration(animation))
+      .add(holidayAnimationMinInterval);
   overlay.insert(entry);
 }
 

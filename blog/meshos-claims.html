@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checking the MeshOS "exposed" post</title>
+<style>
+  :root { --bg:#fff; --fg:#222; --dim:#666; --rule:#ddd; --pre:#f5f5f5; --link:#0645ad; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg:#161616; --fg:#e4e4e4; --dim:#b8b8b8; --rule:#3a3a3a; --pre:#2a2a2a; --link:#8ab4f8; }
+  }
+  :root[data-theme="dark"] { --bg:#161616; --fg:#e4e4e4; --dim:#b8b8b8; --rule:#3a3a3a; --pre:#2a2a2a; --link:#8ab4f8; }
+  body { background:var(--bg); color:var(--fg); margin:0; font:17px/1.55 Georgia, "Times New Roman", serif; }
+  article { max-width:740px; margin:0 auto; padding:32px 16px 60px; }
+  h1 { font-size:1.7em; margin:0 0 4px; }
+  h2 { font-size:1.2em; margin:2em 0 .4em; }
+  .date { color:var(--dim); margin:0 0 1.5em; }
+  a { color:var(--link); }
+  code, pre, .h { font-family: Menlo, Consolas, monospace; font-size:.82em; }
+  code { background:var(--pre); color:var(--fg); padding:0 3px; border-radius:3px; }
+  pre { background:var(--pre); padding:10px 12px; overflow-x:auto; line-height:1.4; }
+  table { border-collapse:collapse; width:100%; font-size:.9em; margin:.6em 0 1em; }
+  .scroll { overflow-x:auto; }
+  td, th { border:1px solid var(--rule); padding:5px 8px; text-align:left; vertical-align:top; }
+  th { font-weight:bold; }
+  .h { word-break:break-all; }
+  img.blue { float:right; width:90px; height:90px; margin:4px 0 8px 16px; border:1px solid var(--rule); }
+  hr { border:0; border-top:1px solid var(--rule); margin:2em 0; }
+  small { color:var(--dim); }
+</style>
+</head>
+<body>
+<article>
+
+<h1>I checked the MeshOS "exposed" post. It doesn't hold up.</h1>
+<p class="date">November 7, 2026</p>
+
+<p>A post on meshoskey.com claims the MeshOS Companion Android app has a hidden pipeline that scores your photos, reads your contacts and texts, and quietly uploads it all to the developer. That's a serious accusation, so I spent the day checking it. I'm the developer of meshcore-open (a different, open source MeshCore client) and have no connection to MeshOS. I just wanted to know if it was true.</p>
+
+<p>Short version: it isn't. The post says it analysed v1.0.31. I pulled that exact build apart and none of the things it describes are in there. The strings it quotes don't exist, the addresses it gives point at unrelated code, and the app doesn't even have the Android permissions needed to read contacts or SMS. I also ran it with fake contacts, texts and photos planted on the phone and decrypted all of its traffic. None of the planted data ever left the device.</p>
+
+<p>Details below so anyone can check my work.</p>
+
+<h2>The APKs</h2>
+
+<p>All from the official releases page, <a href="https://github.com/andymux/meshos-releases/releases">github.com/andymux/meshos-releases</a>. The SHA-256s match the digests GitHub publishes for each release:</p>
+
+<div class="scroll"><table>
+<tr><th>Version</th><th>SHA-256</th></tr>
+<tr><td>1.0.31</td><td class="h">fd4970e1b1446ddb0d2985c3b54837857a970da663b212fdb3d3c1f07ac47103</td></tr>
+<tr><td>1.0.32</td><td class="h">a6a3b04dcc741a6a59525f7dc2ab883f57927665edf9c30826db0a1af679a18b</td></tr>
+<tr><td>1.0.33</td><td class="h">f42f8834a010499e72dad5f5138b054e7c1a2e6a3155c15edf37ebfd76543183</td></tr>
+<tr><td>1.0.34</td><td class="h">426d43cabfaba76a0119715e4160c6369449ee50aa7858b0fb023a3533dcf6ec</td></tr>
+<tr><td>1.0.35</td><td class="h">50264287e2ccd4e02cc6615879f4b54eb2392d9b1eb56329f001a65360f8422e</td></tr>
+</table></div>
+
+<p>I did the deep analysis on 1.0.31 (the one the post is about) and 1.0.35 (latest). For the others I checked permissions and strings. The Dart code lives in <code>lib/arm64-v8a/libapp.so</code>; for 1.0.31 that file hashes to <code>cdc8abe1…ec83402</code>, so you can make sure you're looking at the same bytes I was.</p>
+
+<h2>Contacts and SMS: not possible</h2>
+
+<p>This one is simple. To read contacts or texts on Android an app has to declare <code>READ_CONTACTS</code> / <code>READ_SMS</code> and the user has to grant them. None of the five versions declare either one, or any permission to browse the photo library. The permission list is identical across all five. Without those permissions Android just refuses, no matter what the code tries to do.</p>
+
+<p>I looked anyway. There's no contacts or SMS code in the Java side, in the Dart side, or in any of the bundled native libraries. When the app says "contacts" it means radio/mesh contacts.</p>
+
+<h2>The strings the post quotes</h2>
+
+<p>The post names a lot of specific identifiers. If the pipeline existed, these would have to be in the binary. I searched 1.0.31 for every one of them (raw file, the Dart constant pool, and the Java bytecode):</p>
+
+<pre>harvest_v1   harvest_seq   harvest_blob
+mqtt.meshcore.co.uk   meshcore/companion/.../harvest/kill   img/kill
+com.meshcore.companion/harvest   /contacts   /sms   /upload   /mqtt
+content://com.android.providers.contacts   raw_contacts
+Pictures/Insta   Snapchat/Sent   Snapchat/Received   Telegram/Image
+Selfie   ootd   lingerie   battery_level   screen_on_duration
+ImageUpload: harvest_seq=   USER_PRESENT</pre>
+
+<p>Zero hits for all of them. The post says the strings are XOR'd with 0xB3, so I XOR'd the whole file with 0xB3 and searched again. Still nothing. I also tried every other single-byte key. Nothing.</p>
+
+<p>The only identifier from the post that does exist is <code>com.meshcore.companion/signing</code>, which the post itself says is normal.</p>
+
+<h2>The addresses</h2>
+
+<p>The post gives exact locations (offsets) in the app's code file for each piece of the supposed pipeline, and even for a few text strings and a licence key. Those are easy to check: you jump to that spot in the file and see what's there. In this file the offsets map directly onto the code, so there's no room for an "it's a different kind of address" mix-up.</p>
+
+<p>Two things to know when reading the table. First, a function, a piece of text and a key are different kinds of things and live in different parts of the file. Text and keys sit in a data area. The code area only holds instructions. Second, a real function has a clear starting point, and pointing into the middle of one makes no sense.</p>
+
+<div class="scroll"><table>
+<tr><th>Offset</th><th>The post says it's</th><th>What's actually there</th></tr>
+<tr><td>0x8A1C40</td><td>the photo tag scanner</td><td>The middle of Dart's own built-in networking code, which ships with every Flutter app. Nothing to do with photos.</td></tr>
+<tr><td>0x8A2080</td><td>a lookup table for photo tags</td><td>A single instruction in that same networking function. Not a table.</td></tr>
+<tr><td>0x8A20A0</td><td>a table of folder names</td><td>Another instruction in the same function, one that jumps to other code. No folder names anywhere.</td></tr>
+<tr><td>0x8B4100</td><td>the text of the contacts database address</td><td>An instruction that compares two numbers. Not text.</td></tr>
+<tr><td>0x8B4210</td><td>the code that reads contacts and SMS</td><td>The middle of Flutter's screen-layout code (the part that works out where things go on screen).</td></tr>
+<tr><td>0x8C1A00</td><td>the code that packs up the stolen data</td><td>The middle of Flutter's image-effects code (blur and colour filters).</td></tr>
+<tr><td>0x8C1A58</td><td>the word "nonce"</td><td>An instruction that unpacks a number. Not text.</td></tr>
+<tr><td>0x8C1A60</td><td>the word "harvest_v1"</td><td>An instruction that reads a value from memory. Not text.</td></tr>
+<tr><td>0x8C1A80</td><td>the app's licence key</td><td>Instructions that compare numbers. The real licence key is somewhere else entirely, stored with the app's data where it belongs.</td></tr>
+<tr><td>0x8D0400</td><td>where the hidden upload starts</td><td>The middle of a big number math routine used by the encryption library. It's an instruction that jumps backwards within that routine.</td></tr>
+<tr><td>0x8E2000</td><td>the remote "kill switch" handler</td><td>A function that only compares decimal numbers and has no text in it at all, so it can't be handling server messages or topic names.</td></tr>
+</table></div>
+
+<p>So none of the "functions" are where functions start, and the "text" and "key" are actually program instructions. The special number the post says marks a "harvest" upload (0x1DD3) isn't used anywhere in the app either. I can't explain where these locations came from, but they don't describe this app.</p>
+
+<p style="font-size:.85em">If you want to check the raw details: at 0x8A2080 the instruction is <code>ldr x16, [x26,#0x48]</code>, at 0x8C1A58 it's <code>sbfx x6, x0, #1, #0x1f</code>, at 0x8C1A60 it's <code>ldur w7, [x3, #0xb]</code>, the "licence key" bytes at 0x8C1A80 start <code>22 7c 41 93 df 00 02 eb</code>, and at 0x8D0400 it's <code>b #0x8d01e0</code>.</p>
+
+<h2>What the app really does with photos</h2>
+
+<p>Some of what the post describes is real. It just isn't hidden. There is an upload to <code>https://tiles.meshcore.co.uk/img</code>, it is <code>application/octet-stream</code>, it does send <code>X-MeshOS-Enc: gcm</code>, and it is AES-GCM. That's the "Send a photo" button.</p>
+
+<p>When you send a photo the app picks it through the normal Android picker, generates a random key, encrypts the image, uploads the ciphertext and puts a link in the chat like <code>…/i/abc.jpg#k=KEY</code>. Everything after the <code>#</code> never goes to the server. So the server only stores data it can't open, and only people who can read the chat message can view the photo. The upload code is only reached from three places: sending a photo or voice note in a DM, sending one in a channel, and broadcasting your own profile picture. All three are things you do on purpose. The upload format is a 12-byte nonce, the ciphertext, then a 16-byte tag. I suspect that 12 is where the post's "12-field blob" came from. The image code also has an 8-step loop that lowers JPEG quality until the file is small enough, which might be where "eight thumbnails" came from.</p>
+
+<p>The key isn't derived from the licence or a device ID. It's random every time. You'll see why I'm sure about that in the next part.</p>
+
+<h2>Running it with bait</h2>
+
+<p>I set up an Android 15 emulator, forced every connection through mitmproxy with its certificate installed as a system cert (the app doesn't pin certs, so all HTTPS decrypted fine), and kept a packet capture running. Then I planted things the post says the app goes after:</p>
+
+<ul>
+<li>three contacts: Alice Baitwell, Bob Decoy, Carol Canary, with example.com emails</li>
+<li>four texts, including a fake bank code, a gate code, and one tagged BAITSMS-ALPHA</li>
+<li>solid colour images in DCIM/Camera, Pictures/Screenshots and Pictures/Snapchat</li>
+</ul>
+
+<p>I used 1.0.35 and 1.0.31 normally. I sent a photo, set a profile picture, chatted, rebooted, locked and unlocked, and left them idle. Every upload I saw lined up with something I did:</p>
+
+<ul>
+<li><b>1.0.35:</b> one <code>POST /img</code> (2,909 bytes), when I sent a photo.</li>
+<li><b>1.0.31:</b> a signed <code>POST /avatar</code> with <code>"delete":true</code> on first start (clears any old profile pic for the new identity), and another <code>POST /avatar</code> when I set my profile picture.</li>
+<li><b>Both:</b> MQTT login, subscriptions, the node advert, a tiny diagnostics message, and my chat messages.</li>
+</ul>
+
+<p>Everything else was downloads: map tiles, avatars, a version check. None of the bait names, numbers, codes or filenames showed up anywhere in the traffic.</p>
+
+<p><img class="blue" alt="decrypted upload" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wCEAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx4BBQUFBwYHDggIDh4UERQeHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHv/AABEIAQABAAMBEQACEQEDEQH/xAGiAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgsQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+gEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoLEQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/APMq/fT4UKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoA/wD/2Q==">For the one photo upload, I took the key out of the app's own message store (<code>#k=0uiiv2YsDTlgwpR1KRRpSQ</code>) and decrypted the 2,909 bytes I'd captured. Out came a 2,881-byte JPEG: the blue square from the Snapchat folder that I had picked, and nothing else. No extra data, no metadata, no bait text. That's the image on the right.</p>
+
+<p style="clear:both">Unlock triggers don't exist either. Nothing in the app listens for unlock or screen-on events. The only startup hook is a boot receiver that opens the app if you've turned on "start on boot", which is off by default.</p>
+
+<h2>Second opinions</h2>
+
+<p>I didn't want to rely only on my own reading, so I also gave the decompiled code and the post's claims to three AI models: OpenAI's Codex, Z.ai's GLM 5.3 and Claude Mythos 5.1. I didn't tell any of them what I'd found. All three came back with the same answer on the main question: none of the claimed harvesting exists. Codex and Mythos each re-checked every offset against the raw 1.0.31 binary and got the same instructions I did.</p>
+
+<p>I didn't just take their word on the details either. Everything new they raised, I checked myself before it went in here, and anything that didn't hold up was left out.</p>
+
+<h2>Things I'd actually flag to the developer</h2>
+
+<p>The app isn't spyware, but there are real issues worth fixing:</p>
+
+<ul>
+<li>MQTT goes to <code>167.99.90.25:1883</code> with no TLS, using one username and password baked into every copy of the app. Adverts and presence are readable on the wire. (Credentials left out here on purpose.) On a fresh install it connected within seconds of first launch, before I'd touched anything.</li>
+<li>The <code>X-MeshOS-Key</code> header on uploads is a shared key that anyone can pull out of the APK.</li>
+<li>If a user turns on location in adverts, the lat/lon goes out over that unencrypted MQTT connection.</li>
+<li>Photos are re-encoded as JPEG (quality 85, then 78, 68, 58 until under about 450 KB), but if decoding fails the original file is uploaded as-is. I couldn't confirm whether location data gets stripped in the normal case, because my test images didn't have any to begin with. Someone should test this with a real phone photo that has GPS data in it.</li>
+<li>The <code>meshos/chat/control</code> up/down message isn't signed.</li>
+<li>A small diagnostics message (app version, uptime, Android build) is sent as soon as MQTT connects and doesn't seem to be disclosed.</li>
+<li>The manifest allows unencrypted HTTP everywhere (<code>usesCleartextTraffic="true"</code>). It's needed for updating repeaters over local Wi-Fi, but it isn't limited to that.</li>
+<li>Profile pictures are stored publicly, which is expected but worth knowing.</li>
+</ul>
+
+<h2>What I didn't check</h2>
+
+<p>I can't see the server. I only tested the Android app, versions 1.0.31 to 1.0.35, not the T-Deck build or anything older. My disassembly covered about 95% of the Dart code; the rest can't get around Android permissions anyway. Each live session ran for around half an hour, not days.</p>
+
+<h2>Check it yourself</h2>
+
+<ol>
+<li>Grab the APKs from the releases page and compare the hashes above.</li>
+<li><code>aapt dump permissions MeshOS-v1.0.31.apk</code>. No contacts, SMS or media permissions.</li>
+<li><code>unzip MeshOS-v1.0.31.apk lib/arm64-v8a/libapp.so</code>, then <code>grep -c harvest libapp.so</code>. You'll get 0.</li>
+<li><code>xxd -s 0x8C1A60 -l 16 libapp.so</code> and the other offsets. Run the bytes through any ARM64 disassembler.</li>
+<li>For the code: <a href="https://github.com/worawit/blutter">blutter</a> for the Dart side, <a href="https://github.com/skylot/jadx">jadx</a> for Java.</li>
+<li>For traffic: emulator with <code>-http-proxy</code> pointed at mitmproxy and the mitmproxy CA added as a system cert.</li>
+</ol>
+
+<hr>
+<p>I did this because I think it's the right thing to do. Accusing a developer of secretly building spyware is serious, and people deserve to know whether it's true. I'd want the same if it were my app. Everything above can be checked by anyone, and if I've got something wrong I'd like to hear about it.</p>
+
+<p>- Zach</p>
+
+</article>
+</body>
+</html>

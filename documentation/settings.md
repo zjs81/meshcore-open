@@ -16,7 +16,7 @@ The settings screen is a scrollable list of cards:
 3. [Location](#location)
 4. [App Settings](#app-settings) (link to sub-screen)
 5. [Actions](#actions)
-6. [Export](#export)
+6. [Backup & Restore and Export](#export)
 7. [Debug](#debug)
 8. [About](#about)
 
@@ -108,7 +108,7 @@ A dedicated sub-screen for app-level preferences (nothing here is sent to the de
 - **Color theme**: Opens the Themes screen: the standard MeshCore theme, built-in presets, holiday themes, and your own themes (create, edit, share codes, `.jsonl` import/export). See [Themes](themes.md)
 - **Automatic holiday themes** (on by default, toggled on the Themes screen as **Switch automatically**): Shows the Halloween, Thanksgiving, Christmas, or New Year's theme from 17 days before each holiday through the day itself, then restores your own theme. Picking any theme or Light/Dark keeps your choice for the rest of that holiday; turn the toggle off to stop it entirely. See [Automatic holiday themes](themes.md#automatic-holiday-themes)
 - **Holiday message animations** (on by default): Plays a short animation when a holiday greeting arrives in or is sent from an open chat. See [Holiday message animations](themes.md#holiday-message-animations)
-- **Language**: System default or one of 18 languages (English, French, Spanish, German, Polish, Slovenian, Portuguese, Italian, Chinese, Swedish, Dutch, Slovak, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
+- **Language**: System default or one of 19 languages (English, French, Spanish, German, Polish, Slovenian, Portuguese, Italian, Chinese, Swedish, Dutch, Slovak, Czech, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
 
 ### Notifications
 - **Master enable/disable**: Requests OS permission when enabling
@@ -122,13 +122,9 @@ Individual channels can be muted from the channel chat bell icon, the channel li
 - **Clear Path on Max Retry**: Erases the stored routing path after all retries fail
 - **Jump to Oldest Unread**: When opening a chat, scrolls to the oldest unread message instead of the newest
 - **Auto-fetch Repeater Settings** (off by default): Requests every setting when a repeater's settings screen opens. Each setting is a separate request over LoRa, so this is slow and uses airtime; when off, use Refresh All or the per-setting refresh buttons. See [Repeater Settings](repeater-management.md#repeater-settings)
-- **Auto Route Rotation**: Enables weighted routing algorithm. When enabled, expands to show five slider sub-settings (hidden when off) and a Reset button:
-  - Max Route Weight (1–10, default 5, integer steps)
-  - Initial Route Weight (0.5–5.0, default 3.0)
-  - Success Increment (0.1–2.0, default 0.5, 0.1 steps)
-  - Failure Decrement (0.1–2.0, default 0.2, 0.1 steps)
+- **Auto Route Rotation**: Lets the app choose each message's route from the routes that have worked for that contact (see [Auto route selection](routing-paths.md#auto-route-selection)). When enabled, it expands (hidden when off) to show:
   - Max Message Retries (2–10, default 5)
-  - **Reset Routing Algorithm to Default**: Restores all five routing algorithm settings to their factory default values
+  - **Reset Routing Algorithm to Default**: Restores the routing settings to their factory defaults
 - **Enable Message Tracing**: Shows path trace overlays and extra metadata on messages
 - **Region next to hop count** (default off): Shows a channel message's region chip on the same line as its hop count instead of below it
 - **Resend channel messages until they travel far enough** (default off): If your channel message isn't heard coming back through enough repeaters, it's sent again. Uses more airtime. When on, it shows:
@@ -206,7 +202,19 @@ One-tap device operations:
 
 ---
 
-## Export
+## Backup & Restore and Export
+
+The settings card links to **Backup & Restore** and **Export** subpages.
+
+### Backup & Restore
+
+Choose individual items to include in a backup or restore. Location settings include the saved coordinates, GPS enable state and interval, contact discovery options, and privacy/adverts settings. When importing, only items found in the selected file can be selected. Backups from the official MeshCore app are supported; those files do not include app preferences, groups, filters, or message history, so those choices are unavailable. A radio connection is required to restore radio settings and contact or channel lists. Restoring contacts or channels replaces the selected list on the radio, then reloads it from the device. If you also restore the radio identity, reconnect afterward to reload its data. Message history and groups are restored in the app.
+
+The private-key option is off by default because it changes the radio's identity. Select it only when you intend to restore that identity; the app asks for confirmation before proceeding. Some radios do not allow identity backup or restore, and the app will let you know if this feature is unavailable.
+
+A password protects the backup file. Leave the password blank to create an unprotected file. Backups may contain your radio's private key, channel keys, messages and saved passwords, so store them carefully. Model settings are backed up, but model files are not; after restoring, the app offers to download selected models that are missing. Download progress appears in that prompt, and closing it cancels an active download. Received image files and cached map tiles are not included.
+
+### GPX Export
 
 Three GPX export options (not available on web):
 

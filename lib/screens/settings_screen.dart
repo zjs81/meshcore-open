@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:meshcore_open/utils/gpx_export.dart';
 import 'package:meshcore_open/widgets/elements_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -24,7 +23,9 @@ import '../widgets/radio_stats_entry.dart';
 import 'telemetry_screen.dart';
 import '../widgets/sync_progress_overlay.dart';
 import 'region_management_screen.dart';
-import '../utils/share_origin.dart';
+import 'backup_restore_screen.dart';
+import 'export_screen.dart';
+import '../utils/radio_guard.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -164,13 +165,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
 
-            // EXPORT section
-            SectionHeader(l10n.settings_gpxExportRepeaters),
+            // BACKUP AND EXPORT
+            SectionHeader(l10n.settings_export),
             MeshCard(
               padding: EdgeInsets.zero,
-              child: _buildExportCardContent(
-                context,
-                context.read<MeshCoreConnector>(),
+              child: Column(
+                children: [
+                  MeshNavTile(
+                    icon: Icons.backup_outlined,
+                    title: l10n.backupRestore_title,
+                    subtitle: l10n.backupRestore_subtitle,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const BackupRestoreScreen(),
+                      ),
+                    ),
+                  ),
+                  const Divider(height: 1, indent: 16),
+                  MeshNavTile(
+                    icon: Icons.download_outlined,
+                    title: l10n.settings_export,
+                    subtitle: l10n.settings_exportSubtitle,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ExportScreen()),
+                    ),
+                  ),
+                ],
               ),
             ),
 
@@ -217,14 +239,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// Guards a radio command: returns false (after telling the user) when the
   /// radio is not connected, because the connector silently ignores commands
   /// sent while disconnected and a success message would be a lie.
-  bool _ensureConnected(BuildContext context, MeshCoreConnector connector) {
-    if (connector.isConnected) return true;
-    showDismissibleSnackBar(
-      context,
-      content: Text(context.l10n.settings_notConnectedError),
-    );
-    return false;
-  }
+  bool _ensureConnected(BuildContext context, MeshCoreConnector connector) =>
+      ensureRadioConnected(context);
 
   Widget _buildIdentityCardContent(
     BuildContext context,
@@ -576,31 +592,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ? () => pushSelfTelemetryScreen(context)
               : null,
         ),
-        const Divider(height: 1, indent: 16),
-        MeshNavTile(
-          icon: Icons.route_outlined,
-          title: l10n.repeater_pathHashMode,
-          subtitle: !connected
-              ? offline
-              : !connector.supportsPathHashMode
-              ? l10n.settings_requiresFirmware('v1.14')
-              : _pathHashModeSubtitle(context, connector.pathHashByteWidth),
-          onTap: connector.isConnected && connector.supportsPathHashMode
-              ? () => _editPathHashMode(context, connector)
-              : null,
-        ),
       ],
     );
-  }
-
-  String _pathHashModeSubtitle(BuildContext context, int pathHashByteWidth) {
-    final l10n = context.l10n;
-    return switch (pathHashByteWidth.clamp(1, 4).toInt()) {
-      1 => l10n.repeater_pathHashModeOption0,
-      2 => l10n.repeater_pathHashModeOption1,
-      3 => l10n.repeater_pathHashModeOption2,
-      _ => l10n.repeater_pathHashModeOption3,
-    };
   }
 
   Widget _buildLocationCardContent(
@@ -682,70 +675,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildExportCardContent(
-    BuildContext context,
-    MeshCoreConnector connector,
-  ) {
-    final l10n = context.l10n;
-    return Column(
-      children: [
-        MeshNavTile(
-          icon: Icons.download_outlined,
-          title: l10n.settings_gpxExportRepeaters,
-          subtitle: l10n.settings_gpxExportRepeatersSubtitle,
-          onTap: () async {
-            final exporter = GpxExport(connector);
-            exporter.addRepeaters();
-            _gpxExport(
-              exporter,
-              l10n.map_repeater,
-              l10n.settings_gpxExportRepeatersRoom,
-              'meshcore_repeaters_',
-              l10n.settings_gpxExportShareText,
-              l10n.settings_gpxExportShareSubject,
-            );
-          },
-        ),
-        const Divider(height: 1, indent: 16),
-        MeshNavTile(
-          icon: Icons.download_outlined,
-          title: l10n.settings_gpxExportContacts,
-          subtitle: l10n.settings_gpxExportContactsSubtitle,
-          onTap: () async {
-            final exporter = GpxExport(connector);
-            exporter.addContacts();
-            _gpxExport(
-              exporter,
-              l10n.map_repeater,
-              l10n.settings_gpxExportChat,
-              'meshcore_contacts_',
-              l10n.settings_gpxExportShareText,
-              l10n.settings_gpxExportShareSubject,
-            );
-          },
-        ),
-        const Divider(height: 1, indent: 16),
-        MeshNavTile(
-          icon: Icons.download_outlined,
-          title: l10n.settings_gpxExportAll,
-          subtitle: l10n.settings_gpxExportAllSubtitle,
-          onTap: () async {
-            final exporter = GpxExport(connector);
-            exporter.addAll();
-            _gpxExport(
-              exporter,
-              l10n.map_repeater,
-              l10n.settings_gpxExportAllContacts,
-              'meshcore_all_',
-              l10n.settings_gpxExportShareText,
-              l10n.settings_gpxExportShareSubject,
-            );
-          },
-        ),
-      ],
-    );
-  }
-
   Widget _buildDebugCardContent(BuildContext context) {
     final l10n = context.l10n;
     return Column(
@@ -813,95 +742,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => RadioSettingsDialog(connector: connector),
-    );
-  }
-
-  void _editPathHashMode(BuildContext context, MeshCoreConnector connector) {
-    final l10n = context.l10n;
-    var selectedMode = (connector.pathHashByteWidth - 1).clamp(0, 2).toInt();
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (builderContext, setDialogState) => AlertDialog(
-          scrollable: true,
-          title: Text(l10n.repeater_pathHashMode),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              DropdownButtonFormField<int>(
-                isExpanded: true,
-                initialValue: selectedMode,
-                decoration: InputDecoration(
-                  labelText: l10n.repeater_pathHashMode,
-                  border: const OutlineInputBorder(),
-                ),
-                items: [
-                  DropdownMenuItem(
-                    value: 0,
-                    child: Text(
-                      l10n.repeater_pathHashModeOption0,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 1,
-                    child: Text(
-                      l10n.repeater_pathHashModeOption1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 2,
-                    child: Text(
-                      l10n.repeater_pathHashModeOption2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-                onChanged: (value) {
-                  if (value == null) return;
-                  setDialogState(() => selectedMode = value);
-                },
-              ),
-              const SizedBox(height: 12),
-              Text(
-                l10n.settings_pathHashModeHelper,
-                style: Theme.of(builderContext).textTheme.bodyMedium,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(l10n.common_cancel),
-            ),
-            FilledButton(
-              onPressed: () async {
-                Navigator.pop(dialogContext);
-                if (!_ensureConnected(context, connector)) return;
-                try {
-                  await connector.setPathHashMode(selectedMode);
-                  await connector.refreshDeviceInfo();
-                  if (!context.mounted) return;
-                  showDismissibleSnackBar(
-                    context,
-                    content: Text(l10n.repeater_settingsSaved),
-                  );
-                } catch (e) {
-                  if (!context.mounted) return;
-                  showDismissibleSnackBar(
-                    context,
-                    content: Text(l10n.settings_error(e.toString())),
-                  );
-                }
-              },
-              child: Text(l10n.common_save),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -1064,51 +904,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         Text(l10n.settings_aboutDescription),
       ],
     );
-  }
-
-  Future<void> _gpxExport(
-    GpxExport exporter,
-    String name,
-    String description,
-    String filename,
-    String shareText,
-    String subject,
-  ) async {
-    final l10n = context.l10n;
-    final result = await exporter.exportGPX(
-      name,
-      description,
-      filename,
-      shareText,
-      subject,
-      sharePositionOrigin: shareOriginOf(context),
-    );
-    if (!mounted) return;
-    switch (result) {
-      case gpxExportSuccess:
-        showDismissibleSnackBar(
-          context,
-          content: Text(l10n.settings_gpxExportSuccess),
-        );
-      case gpxExportNoContacts:
-        showDismissibleSnackBar(
-          context,
-          content: Text(l10n.settings_gpxExportNoContacts),
-        );
-        break;
-      case gpxExportNotAvailable:
-        showDismissibleSnackBar(
-          context,
-          content: Text(l10n.settings_gpxExportNotAvailable),
-        );
-        break;
-      case gpxExportFailed:
-        showDismissibleSnackBar(
-          context,
-          content: Text(l10n.settings_gpxExportError),
-        );
-        break;
-    }
   }
 
   void _editAutoAddConfig(BuildContext context, MeshCoreConnector connector) {
@@ -1365,14 +1160,13 @@ void _privacySettings(BuildContext context, MeshCoreConnector connector) {
                 ),
               ],
               const SizedBox(height: 8),
-              SwitchListTile(
-                title: Text(l10n.settings_multiAck),
-                subtitle: Text(l10n.settings_multiAckSubtitle),
+              FeatureToggleRow(
+                title: l10n.settings_multiAck,
+                subtitle: l10n.settings_multiAckSubtitle,
                 value: multiAcks == 1,
                 onChanged: (value) {
                   setDialogState(() => multiAcks = value ? 1 : 0);
                 },
-                contentPadding: EdgeInsets.zero,
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int>(

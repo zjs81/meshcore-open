@@ -6,6 +6,7 @@ The app follows this general flow:
 
 ```
 Launch → Scanner Screen → [Connect via BLE/USB/TCP] → Channels Screen
+Launch (a radio connected before) → Channels Screen (offline until connected)
 ```
 
 After connecting, the three main screens (Contacts, Channels, Map) are accessible via a persistent bottom navigation bar called the **QuickSwitchBar**.
@@ -24,9 +25,8 @@ Tapping a tab replaces the current screen with a subtle fade + slight horizontal
 
 ## Disconnection
 
-- The disconnect button (available in the overflow menu of each main screen) shows a confirmation dialog before disconnecting
-- If the device disconnects unexpectedly, the app automatically navigates back to the Scanner screen (fires after the current frame completes via a post-frame callback)
-- This auto-navigation behavior (`DisconnectNavigationMixin`) is shared across all main screens
+- The disconnect entry in the overflow menu of each main screen shows a confirmation dialog, then leaves you on the same screen, offline. While offline the entry reads **Connect** and opens the connect sheet.
+- If the radio disconnects unexpectedly, the screens stay where they are and become read-only; see [offline mode](offline-mode.md).
 
 ## Theme and Locale
 
@@ -37,12 +37,12 @@ Tapping a tab replaces the current screen with a subtle fade + slight horizontal
 ## Full Navigation Graph
 
 ```
-ScannerScreen (root, always on stack)
-  ├─ [BLE connect] → push → ChannelsScreen
+ScannerScreen (root when no radio is remembered; otherwise pushed from the connect sheet)
+  ├─ [BLE connect] → ChannelsScreen as the only route
   ├─ [TCP icon button] → push → TcpScreen
-  │     └─ [TCP connected] → pushReplacement → ChannelsScreen
+  │     └─ [TCP connected] → ChannelsScreen as the only route
   └─ [USB icon button] → push → UsbScreen
-        └─ [USB connected] → pushReplacement → ChannelsScreen
+        └─ [USB connected] → ChannelsScreen as the only route
 
 ContactsScreen (selected=0)
   ├─ [quick-switch 1] → pushReplacement → ChannelsScreen
@@ -61,6 +61,7 @@ MapScreen (selected=2)
   ├─ [quick-switch 0] → pushReplacement → ContactsScreen
   ├─ [quick-switch 1] → pushReplacement → ChannelsScreen
   ├─ [radar menu item] → enters in-map path trace mode (push → PathTraceMapScreen after path is built)
+  ├─ [Path trace by hashes] → push → ManualPathTraceScreen → push → PathTraceMapScreen
   ├─ [terrain menu item] → push → LineOfSightMapScreen
   └─ [long-press] → share marker sheet
 
@@ -69,7 +70,7 @@ Settings (push from any main screen)
         └─ [Offline Map Cache] → push → MapCacheScreen
 ```
 
-Screens using disconnect navigation trigger `popUntil(route.isFirst)`, returning to the Scanner.
+A connection made from the scanner, USB, TCP or review mode replaces the whole stack with ChannelsScreen (`navigateToMainAfterConnect`). Leaving the scanner cancels only a Bluetooth connection it started; a pending automatic reconnect is left alone.
 
 ## Additional settings destinations
 

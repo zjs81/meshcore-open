@@ -178,12 +178,13 @@
   "appSettings_languageDe": "Немски",
   "appSettings_languagePl": "Полски",
   "appSettings_languageSl": "Словенски",
-  "appSettings_languagePt": "Португалски",
+  "appSettings_languagePt": "Португалски (Бразилия)",
   "appSettings_languageIt": "Италиански",
   "appSettings_languageZh": "Китайски",
   "appSettings_languageSv": "Шведски",
   "appSettings_languageNl": "Нидерландски",
   "appSettings_languageSk": "Словашки",
+  "appSettings_languageCs": "Чешки",
   "appSettings_languageBg": "Български",
   "appSettings_notifications": "Уведомления",
   "appSettings_enableNotifications": "Включи известията",
@@ -318,8 +319,8 @@
   "contacts_filterContacts": "Филтрирай контактите...",
   "contacts_noContactsMatchFilter": "Няма съвпадения с вашия филтър.",
   "contacts_noMembers": "Няма членове",
-  "contacts_lastSeenNow": "Видян току-що",
-  "contacts_lastSeenMinsAgo": "Преди {minutes} минути",
+  "contacts_lastSeenNow": "наскоро",
+  "contacts_lastSeenMinsAgo": "~ {minutes} мин.",
   "@contacts_lastSeenMinsAgo": {
     "placeholders": {
       "minutes": {
@@ -327,8 +328,8 @@
       }
     }
   },
-  "contacts_lastSeenHourAgo": "Преди час",
-  "contacts_lastSeenHoursAgo": "Преди {hours} часа",
+  "contacts_lastSeenHourAgo": "~ 1 ч.",
+  "contacts_lastSeenHoursAgo": "~ {hours} ч.",
   "@contacts_lastSeenHoursAgo": {
     "placeholders": {
       "hours": {
@@ -336,8 +337,8 @@
       }
     }
   },
-  "contacts_lastSeenDayAgo": "Преди 1 ден",
-  "contacts_lastSeenDaysAgo": "Преди {days} дни",
+  "contacts_lastSeenDayAgo": "~ 1 дн.",
+  "contacts_lastSeenDaysAgo": "~ {days} дн.",
   "@contacts_lastSeenDaysAgo": {
     "placeholders": {
       "days": {
@@ -698,7 +699,6 @@
   "map_pinPrivate": "Пин (личен)",
   "map_pinPublic": "Публичен пин",
   "map_lastSeen": "Последно видян",
-  "map_disconnectConfirm": "Сигурни ли сте, че искате да прекъснете връзката с това устройство?",
   "map_from": "От",
   "map_source": "Източник",
   "map_flags": "Флагове",
@@ -1019,6 +1019,7 @@
   "repeater_received": "Получено",
   "repeater_duplicates": "Дубликати",
   "repeater_daysHoursMinsSecs": "{days} дни {hours}ч {minutes}м {seconds}с",
+  "repeater_hoursMinsSecs": "{hours}ч {minutes}м {seconds}с",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -1199,7 +1200,7 @@
   "repeater_actionsTitle": "Действия",
   "repeater_sendAdvert": "Изпрати Flood обява",
   "repeater_sendAdvertSubtitle": "Разпространи Flood обява в мрежата.",
-  "repeater_sendAdvertZeroHop": "Изпрати обява с нулев скок",
+  "repeater_sendAdvertZeroHop": "Изпрати Zero Hop обява",
   "repeater_sendAdvertZeroHopSubtitle": "Разпространи обява само с един скок (без повторители).",
   "repeater_clockSync": "Синхронизирай часовника сега",
   "repeater_clockSyncSubtitle": "Настройте времето на телефона си да съвпада с времето на повторителя.",
@@ -1789,7 +1790,7 @@
   "appSettings_enableMessageTracing": "Разрешаване на проследяване на съобщения",
   "appSettings_enableMessageTracingSubtitle": "Показване на подробни метаданни за маршрутизация и синхронизация за съобщения",
   "contacts_contactImported": "Контактът е импортиран.",
-  "contacts_zeroHopAdvert": "Обява без скок",
+  "contacts_zeroHopAdvert": "Zero Hop обява",
   "contacts_contactImportFailed": "Контактът не е успешно импортиран.",
   "contacts_floodAdvert": "Flood обява",
   "contacts_addContactFromClipboard": "Добави контакт от клипборда",
@@ -2233,14 +2234,6 @@
   "contact_teleLocSubtitle": "Позволи споделяне на данни за местоположение",
   "contact_teleLoc": "Местоположение на телеметрията",
   "contact_teleEnvSubtitle": "Позволи споделяне на данни от средносферните датчици",
-  "appSettings_initialRouteWeight": "Първоначална тежест на маршрута",
-  "appSettings_maxRouteWeight": "Максимално допустимо тегло на маршрута",
-  "appSettings_initialRouteWeightSubtitle": "Начално тегло за новооткрити маршрути",
-  "appSettings_maxRouteWeightSubtitle": "Максималното тегло, което един маршрут може да събере от успешни доставки.",
-  "appSettings_routeWeightSuccessIncrement": "Увеличение на теглото за успех",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Тегло, добавено към път след успешно доставяне.",
-  "appSettings_routeWeightFailureDecrement": "Намаляване на теглото, свързано с неуспех",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Тегло, което е било премахнато от пътя след неуспешен опит за доставка.",
   "appSettings_maxMessageRetries": "Максимален брой опити за изпращане на съобщение",
   "appSettings_maxMessageRetriesSubtitle": "Брой опити за повторно изпращане, преди съобщението да бъде маркирано като неуспешно.",
   "appSettings_ipfsImageLinks": "Конфигурация на IPFS доставчик",
@@ -2604,7 +2597,7 @@
   "contacts_searchOpen": "Търсене на контакти",
   "contacts_searchClose": "Затвори търсене",
   "routing_title": "Маршрутизиране",
-  "routing_modeAuto": "Автоматично",
+  "routing_modeAuto": "Авто",
   "routing_modeFlood": "Flood",
   "routing_modeManual": "Ръчно",
   "routing_modeAutoHint": "Автоматично избира най-добрия известен път, а при липса на такъв използва режим Flood.",
@@ -2883,7 +2876,7 @@
   "settings_deleteRegion": "Удаляне на регион",
   "settings_deleteRegionConfirm": "Състрясна: отпиште \"{region}\" от списка региони?",
   "settings_infoHardware": "Оборудование",
-  "settings_infoFirmware": "Програмно-оборонни системни программи (фirmware)",
+  "settings_infoFirmware": "Фърмуер",
   "repeater_pathHashModeOption0": "0 - 1 байт",
   "repeater_pathHashModeOption1": "1 - 2 байта",
   "repeater_pathHashModeOption2": "2 - 3 байта",
@@ -2942,7 +2935,7 @@
   "imageMessages_autoProcessSubtitle": "Катализиране на всята изображение сразу по пришествие. Използване на около 2 ГБ на втора пъти; откажете от реконструкцията чаке при натискане.",
   "imageSend_title": "Изпрати изображение",
   "imageSend_cropNote": "Масштабиран до 512 × 512 · соотношение сторон не съхранясе",
-  "imageSend_originalSize": "Късно на използване на език:",
+  "imageSend_originalSize": "Оригинал",
   "imageSend_onAirSize": "В ефир",
   "imageSend_quality": "Качество",
   "imageSend_qualityStandard": "Стандарт",
@@ -3563,6 +3556,8 @@
   "messageFilter_automaticSection": "Автоматично",
   "messageFilter_duplicates": "Повтарящи се съобщения",
   "messageFilter_duplicatesSubtitle": "Същото съобщение, изпратено отново или от няколко подателя",
+  "messageFilter_repeatSends": "Изпращания, броени за повторение",
+  "messageFilter_repeatSendsSubtitle": "Скриване на съобщение, когато същият подател го изпрати {count} пъти в рамките на 10 минути",
   "messageFilter_repeatedCharacters": "Повтарящи се символи",
   "messageFilter_repeatedCharactersSubtitle": "Дълги поредици от един и същ знак, като „aaaaaaaaaaaaaaaaaaaa“",
   "messageFilter_learning": "Учи се от натискането на „Спам“",
@@ -3591,5 +3586,197 @@
   "messageFilter_filterSenderConfirm": "Да се скрият ли всички съобщения от „{name}“?",
   "messageFilter_filterLikeThis": "Филтрирай съобщения като това…",
   "messageFilter_channelToggle": "Филтрирай съобщенията в този канал",
-  "messageFilter_ghostIconTooltip": "Скрито от твоя филтър за съобщения"
+  "messageFilter_ghostIconTooltip": "Скрито от твоя филтър за съобщения",
+  "chatSearch_tooltip": "Търсене на съобщения",
+  "chatSearch_hint": "Търсене на съобщения",
+  "chatSearch_close": "Затвори търсенето",
+  "chatSearch_resultCount": "{count, plural, =1{1 резултат} other{{count} резултата}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Няма съответстващи съобщения",
+  "chatSearch_noResultsHint": "Опитайте с друга дума или проверете правописа",
+  "contactShare_headerOutgoing": "Споделихте контакт",
+  "contactShare_headerIncoming": "Сподели контакт",
+  "contactShare_add": "Добави контакт",
+  "contactShare_adding": "Добавяне на контакт...",
+  "contactShare_saved": "Запазен",
+  "contactShare_isYou": "Това сте вие",
+  "contactShare_shareAction": "Сподели контакт",
+  "contactShare_pickerTitle": "Споделяне на контакт",
+  "contactShare_myContact": "Моят контакт",
+  "contactShare_searchHint": "Търсене на контакти",
+  "contactShare_noContacts": "Не са намерени контакти",
+  "contactShare_preview": "Споделен контакт: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Сподели контакт: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Трасиране на пътя по хешове",
+  "manualTrace_inputLabel": "Хешове на репитери",
+  "manualTrace_helper": "Пример: {example}. Разделяйте със запетаи или интервали.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Хопове ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Непознат възел",
+  "manualTrace_enterHashes": "Въведете хешове",
+  "manualTrace_run": "Пусни трасиране на пътя",
+  "manualTrace_notConnected": "Свържете се с радио, за да пуснете трасиране",
+  "manualTrace_errorInvalidHex": "Позволени са само шестнадесетични знаци (0-9, A-F)",
+  "manualTrace_errorOddLength": "Всеки хеш трябва да има четен брой шестнадесетични знаци, съответстващ на размера на хопа",
+  "manualTrace_errorMixedWidths": "Всички хешове трябва да са с еднаква дължина",
+  "manualTrace_errorUnsupportedWidth": "Хешовете трябва да са 1, 2 или 3 байта (2, 4 или 6 шестнадесетични знаци)",
+  "manualTrace_errorTooManyHops": "Пътят е твърде дълъг (максимум {max} байта)",
+  "manualTrace_errorTraceTooLong": "Твърде много хопове за трасиране в една заявка. Премахнете няколко хопа или изберете „Както е въведено“.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_jumpFailed": "Съобщението не беше намерено в чата",
+  "chat_clearSelection": "Изчисти избора",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Да се изтрие ли 1 съобщение от това устройство?} other{Да се изтрият ли {count} съобщения от това устройство?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Изтриване на съобщения?",
+  "chat_messagesDeleted": "{count, plural, one{1 съобщение е изтрито} other{{count} съобщения са изтрити}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Избери всички",
+  "chat_selectMessages": "Избор на съобщения",
+  "chat_selectedCount": "{count} избрани",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Добави отново",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{1 съобщение е отбелязано като не е спам} other{{count} съобщения са отбелязани като не е спам}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{1 съобщение е отбелязано като спам} other{{count} съобщения са отбелязани като спам}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Разгъни списъка със скокове",
+  "pathMap_showMap": "Покажи картата",
+  "routing_modeDirect": "Директно",
+  "routing_modeDirectHint": "Винаги изпраща направо към този контакт, без скокове през ретранслатори. Използвайте го, когато е в обхват на радиото.",
+  "settings_export": "Експорт",
+  "settings_exportSubtitle": "Експорт на контакти и повторители като GPX",
+  "backupRestore_title": "Резервно копие",
+  "backupRestore_subtitle": "Запазване или възстановяване на данните на приложението и настройките на радиото",
+  "backupRestore_import": "Импорт",
+  "backupRestore_selectImportFile": "Импорт на файл",
+  "backupRestore_password": "Парола (по избор)",
+  "backupRestore_passwordHelp": "Паролата криптира файла. Без парола се записва обикновен текст, който може да включва частни ключове и ключове на канали, история и идентификационни данни.",
+  "backupRestore_importUnavailable": "Проверете паролата или изберете поддържан файл с резервно копие.",
+  "backupRestore_items": "Елементи за резервно копие и възстановяване",
+  "backupRestore_nodeSettings": "Настройки на възела",
+  "backupRestore_nodeSettingsDescription": "Име на устройството, частен и публичен ключ, настройки на радиото и региони",
+  "backupRestore_deviceName": "Име на устройството",
+  "backupRestore_privateKey": "Частен ключ (чувствителен)",
+  "backupRestore_publicKey": "Публичен ключ",
+  "backupRestore_radioSettings": "Настройки на радиото",
+  "backupRestore_regions": "Региони",
+  "backupRestore_location": "Местоположение",
+  "backupRestore_contactSettings": "Настройки на контактите",
+  "backupRestore_privacySettings": "Настройки за поверителност",
+  "backupRestore_contactsData": "Контакти",
+  "backupRestore_perContactSettings": "Настройки и филтри на контактите",
+  "backupRestore_contactGroups": "Групи контакти",
+  "backupRestore_contactHistory": "История на контактите",
+  "backupRestore_channelsData": "Канали",
+  "backupRestore_channelFilters": "Настройки на филтъра за съобщения",
+  "backupRestore_channelSettings": "Настройки на каналите",
+  "backupRestore_communities": "Общности",
+  "backupRestore_channelHistory": "История на каналите",
+  "backupRestore_locationSettings": "Настройки за местоположение",
+  "backupRestore_locationSettingsDescription": "Местоположение, настройки на контактите и поверителност",
+  "backupRestore_appSettings": "Настройки на приложението",
+  "backupRestore_appSettingsDescription": "Предпочитания и настройки на външния вид",
+  "backupRestore_ipfsKey": "API ключ за IPFS (чувствителен)",
+  "backupRestore_stadiaMapKey": "API ключ за Stadia Maps (чувствителен)",
+  "backupRestore_contacts": "Контакти",
+  "backupRestore_contactsDescription": "Контакти, филтри и настройки по контакт, групи и история на съобщенията",
+  "backupRestore_discoveredContacts": "Открити контакти",
+  "backupRestore_discoveredContactsDescription": "Открити контакти и запазените им данни",
+  "backupRestore_channels": "Канали",
+  "backupRestore_channelsDescription": "Канали, филтри на каналите, общности и история на съобщенията",
+  "backupRestore_backup": "Създай резервно копие",
+  "backupRestore_restore": "Възстанови избраното",
+  "backupRestore_backupComplete": "Файлът с резервно копие е създаден.",
+  "backupRestore_restoreComplete": "Възстановяването приключи. Свържете се отново, ако сте възстановили идентичността на радиото.",
+  "backupRestore_missingModelsTitle": "Моделите не са изтеглени",
+  "backupRestore_missingModelsMessage": "Възстановените настройки избират модели, които не са налични на това устройство:\n{models}\n\nДа се изтеглят ли сега?",
+  "backupRestore_downloadModels": "Изтегли модели",
+  "backupRestore_downloading": "Изтегляне…",
+  "backupRestore_cancelDownload": "Отмени изтеглянето",
+  "backupRestore_failed": "Операцията с резервно копие е неуспешна: {error}",
+  "backupRestore_fileTooLarge": "Файлът с резервно копие е по-голям от лимита от 100 MB.",
+  "backupRestore_selectAtLeastOne": "Изберете поне един елемент.",
+  "backupRestore_replaceIdentityTitle": "Да се замени ли идентичността на радиото?",
+  "backupRestore_replaceIdentityMessage": "Възстановяването на настройките на възела заменя частния ключ на свързаното радио и променя идентичността му. Продължете само ако е нарочно.",
+  "appSettings_languagePtPt": "Португалски (Португалия)",
+  "receivedImage_syntheticBadge": "Реконструирано от ИИ",
+  "appBar_offlineSubtitle": "Офлайн · {name}",
+  "appBar_offline": "Офлайн",
+  "appBar_reconnecting": "Повторно свързване…",
+  "connectSheet_title": "Свържи радио",
+  "connectSheet_reconnect": "Свържи отново с {name}",
+  "connectSheet_chooseRadio": "Избери радио",
+  "connectSheet_chooseRadioSubtitle": "Bluetooth, USB или TCP",
+  "connectSheet_stopReconnecting": "Спри повторното свързване",
+  "connectSheet_reconnectFailed": "Няма връзка с {name}. Уверете се, че е включено и наблизо.",
+  "chat_composerOffline": "Свържете се с радио, за да изпращате съобщения"
 }

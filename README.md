@@ -173,7 +173,7 @@ dependencies:
 ```bash
 sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev \
    librsvg2-dev libgirepository1.0-dev libgtk-3-bin libgdk-pixbuf2.0-bin \
-   libgdk-pixbuf-2.0-dev dpkg-dev patchelf binutils curl jq file desktop-file-utils xdg-user-dirs
+   libgdk-pixbuf-2.0-dev dpkg-dev patchelf binutils curl jq file desktop-file-utils xdg-user-dirs libgpg-error0
 ```
 
 The build automatically downloads checksum-verified architecture-matched
@@ -199,12 +199,16 @@ container can write the host-owned output and cache directories. The original
 native bundle is retained. Custom targets, obfuscation and split-debug-info
 require a bundle-only build when container rebuilding is needed.
 
-The image includes Flutter assets, native plugins, ONNX Runtime and
-redistributable GTK dependencies. It does not include graphics drivers, BlueZ
-services, USB permissions, downloaded inference models or user data. The GTK
-packaging plugin uses X11, so Wayland sessions need XWayland. The host still
-needs compatible glibc and graphics libraries (`libgl1`, `libegl1`, and
-`libgles2` on Ubuntu). Launch normally, or without
+The image includes Flutter assets, native plugins, ONNX Runtime and the
+transitive redistributable runtime libraries. Packaging audits every bundled
+ELF and fails if a portable dependency resolves from the build host instead of
+the AppDir. Host display-stack libraries (X11/XCB/Wayland) and graphics drivers
+remain external so they stay ABI-compatible with the system's EGL/GL driver.
+The image also relies on host glibc/the ELF loader, BlueZ services and USB
+permissions; downloaded inference models and user data are not included. The
+GTK packaging plugin uses X11, so Wayland sessions need XWayland. The host needs
+compatible graphics libraries (`libgl1`, `libegl1`, and `libgles2` on Ubuntu).
+Launch normally, or without
 FUSE by extracting:
 
 ```bash
@@ -303,6 +307,17 @@ flutter build apk --release
 flutter build ios --release
 ```
 
+**GitHub Releases:**
+
+Pushing a release tag (`BETA-*`, `PRE-BETA-*`, `Alpha*`, `RELEASE-*`, or
+`v*`) runs CI and attaches both Linux AppImages to that tag's GitHub Release:
+
+- `meshcore-open-<version>-linux-x86_64.AppImage`
+- `meshcore-open-<version>-linux-aarch64.AppImage`
+
+If the tag has no release yet, CI creates one with generated notes. Re-running
+the workflow replaces the existing Linux assets.
+
 ## Project Structure
 
 ```
@@ -356,7 +371,7 @@ Messages are transmitted as binary frames using a custom protocol optimized for 
 ### App Settings
 
 - **Theme**: System default, light, or dark mode
-- **Language**: Use one of 18 languages (English, Chinese, French, Spanish, Portuguese, German, Dutch, Polish, Swedish, Italian, Slovak, Slovenian, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
+- **Language**: Use one of 19 languages (English, Chinese, French, Spanish, Portuguese, German, Dutch, Polish, Swedish, Italian, Slovak, Czech, Slovenian, Bulgarian, Russian, Ukrainian, Hungarian, Japanese, Korean)
 - **Notifications**: Configurable for messages, channels, and node advertisements; per-channel muting; reply, mark-as-read, and mute actions on Android notifications and watches (reply and mark-as-read in Android Auto when built with `--android-project-arg=androidAuto=true`)
 - **Battery Chemistry**: Support for NMC, LiFePO4, LiPo, and LiPo HV battery types
 - **Message Retry**: Automatic retry with configurable path clearing

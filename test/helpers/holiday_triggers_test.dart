@@ -69,8 +69,12 @@ void main() {
 
   group('HolidayTriggerWatcher', () {
     late AppSettingsService settings;
+    late DateTime now;
 
     setUp(() async {
+      now = DateTime(2026, 12, 25, 12);
+      holidayAnimationClock = () => now;
+      resetHolidayAnimationGate();
       SharedPreferences.setMockInitialValues({});
       await PrefsManager.initialize();
       settings = AppSettingsService();
@@ -147,6 +151,7 @@ void main() {
     ) async {
       final ctx = await host(tester);
       for (final animation in HolidayAnimation.values) {
+        now = now.add(holidayAnimationMinInterval);
         playHolidayAnimation(ctx, animation, origin: const Offset(80, 500));
         await tester.pump();
         expect(find.byType(HolidayAnimationView), findsOneWidget);
@@ -155,6 +160,42 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byType(HolidayAnimationView), findsNothing);
       }
+    });
+
+    testWidgets('one at a time, then 5 quiet seconds after it ends', (
+      tester,
+    ) async {
+      final ctx = await host(tester);
+      void play(HolidayAnimation a) =>
+          playHolidayAnimation(ctx, a, origin: Offset.zero);
+
+      play(HolidayAnimation.christmas);
+      await tester.pump();
+      expect(find.byType(HolidayAnimationView), findsOneWidget);
+
+      // Still playing: a second greeting is dropped, not stacked or queued.
+      now = now.add(const Duration(seconds: 30));
+      play(HolidayAnimation.newYear);
+      await tester.pump();
+      expect(find.byType(HolidayAnimationView), findsOneWidget);
+      await tester.pumpAndSettle(); // christmas ends at `now`
+      expect(find.byType(HolidayAnimationView), findsNothing);
+      // Nothing was queued behind it.
+      await tester.pump(const Duration(seconds: 10));
+      expect(find.byType(HolidayAnimationView), findsNothing);
+
+      // Under 5 seconds after it ended: dropped.
+      now = now.add(const Duration(seconds: 4));
+      play(HolidayAnimation.newYear);
+      await tester.pump();
+      expect(find.byType(HolidayAnimationView), findsNothing);
+
+      // 5 seconds after it ended: plays.
+      now = now.add(const Duration(seconds: 1));
+      play(HolidayAnimation.newYear);
+      await tester.pump();
+      expect(find.byType(HolidayAnimationView), findsOneWidget);
+      await tester.pumpAndSettle();
     });
 
     testWidgets('respects the setting and reduced motion', (tester) async {

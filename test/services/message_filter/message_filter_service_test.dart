@@ -204,8 +204,10 @@ void main() {
 
   test('duplicates setting off still records but does not filter', () async {
     await service.updateSettings(service.settings.copyWith(duplicates: false));
-    expect(eval('a', 'meet at the park'), isNull);
-    expect(eval('a', 'meet at the park'), isNull);
+    for (var i = 0; i < 3; i++) {
+      expect(eval('a', 'meet at the park'), isNull);
+      now = now.add(const Duration(minutes: 1));
+    }
     await service.updateSettings(service.settings.copyWith(duplicates: true));
     expect(eval('a', 'meet at the park')?.reason, FilterReason.duplicate);
   });
@@ -216,11 +218,53 @@ void main() {
       eval('a', 'buy cheap radios here now')?.reason,
       FilterReason.textRule,
     );
+    now = now.add(const Duration(minutes: 1));
+    expect(
+      eval('a', 'buy cheap radios here now')?.reason,
+      FilterReason.textRule,
+    );
     await service.removeRule('x');
+    now = now.add(const Duration(minutes: 1));
     expect(
       eval('a', 'buy cheap radios here now')?.reason,
       FilterReason.duplicate,
     );
+  });
+
+  test('repeatSends setting picks which send is flagged', () async {
+    await service.updateSettings(service.settings.copyWith(repeatSends: 3));
+    expect(eval('a', 'meet at the park'), isNull);
+    now = now.add(const Duration(minutes: 1));
+    expect(eval('a', 'meet at the park'), isNull);
+    now = now.add(const Duration(minutes: 1));
+    expect(eval('a', 'meet at the park')?.reason, FilterReason.duplicate);
+  });
+
+  test('repeatSends is saved and clamped', () {
+    const settings = MessageFilterSettings(repeatSends: 4);
+    expect(MessageFilterSettings.fromJson(settings.toJson()).repeatSends, 4);
+    expect(MessageFilterSettings.fromJson({}).repeatSends, 2);
+    expect(MessageFilterSettings.fromJson({'repeatSends': 99}).repeatSends, 5);
+    expect(MessageFilterSettings.fromJson({'repeatSends': 0}).repeatSends, 2);
+  });
+
+  test('messages that mention someone are exempt from duplicates', () {
+    for (var i = 0; i < 4; i++) {
+      // Asking several people the same thing.
+      expect(eval('a', '@[Person$i] are you home yet'), isNull);
+      expect(
+        service.evaluate(
+          channelId: _channel,
+          sender: 'b',
+          text: 'did you get my message',
+          isReply: true,
+        ),
+        isNull,
+      );
+      now = now.add(const Duration(minutes: 1));
+    }
+    // Mentions were not recorded, so the plain text starts fresh.
+    expect(eval('a', 'are you home yet'), isNull);
   });
 
   test('not spam exempts duplicates in that channel', () async {
@@ -277,6 +321,26 @@ void main() {
     );
     expect(service.spamExampleCount, 0);
     expect(service.notSpamExampleCount, 1);
+  });
+
+  test('bulk spam and not-spam store every example and persist', () async {
+    await service.markSpamMany([
+      (sender: 'a', text: 'Buy now'),
+      (sender: 'b', text: 'Free crypto'),
+      (sender: 'c', text: '   '),
+    ]);
+    expect(service.spamExampleCount, 2);
+
+    await service.markNotSpamMany([
+      (channelId: _channel, sender: 'a', text: 'buy now'),
+      (channelId: _channel, sender: 'd', text: 'Hello all'),
+    ]);
+    expect(service.spamExampleCount, 1);
+    expect(service.notSpamExampleCount, 2);
+
+    final reloaded = await create();
+    expect(reloaded.spamExampleCount, 1);
+    expect(reloaded.notSpamExampleCount, 2);
   });
 
   test('state persists across instances and reset keeps rules', () async {

@@ -399,6 +399,190 @@ class AppLocalizationsNl extends AppLocalizations {
       'Notificaties, berichten en kaartinstellingen';
 
   @override
+  String get settings_export => 'Exporteren';
+
+  @override
+  String get settings_exportSubtitle =>
+      'Contacten en repeaters exporteren als GPX';
+
+  @override
+  String get backupRestore_title => 'Back-up en herstel';
+
+  @override
+  String get backupRestore_subtitle =>
+      'App-gegevens en radio-instellingen opslaan of herstellen';
+
+  @override
+  String get backupRestore_import => 'Importeren';
+
+  @override
+  String get backupRestore_selectImportFile => 'Bestand importeren';
+
+  @override
+  String get backupRestore_password => 'Wachtwoord (optioneel)';
+
+  @override
+  String get backupRestore_passwordHelp =>
+      'Een wachtwoord versleutelt het bestand. Leeg laten slaat platte tekst op die privé-/kanaalsleutels, geschiedenis en inloggegevens kan bevatten.';
+
+  @override
+  String get backupRestore_importUnavailable =>
+      'Controleer het wachtwoord of kies een ondersteund back-upbestand.';
+
+  @override
+  String get backupRestore_items => 'Items voor back-up en herstel';
+
+  @override
+  String get backupRestore_nodeSettings => 'Node-instellingen';
+
+  @override
+  String get backupRestore_nodeSettingsDescription =>
+      'Apparaatnaam, privé- en openbare sleutels, radio-instellingen en regio\'s';
+
+  @override
+  String get backupRestore_deviceName => 'Apparaatnaam';
+
+  @override
+  String get backupRestore_privateKey => 'Privésleutel (gevoelig)';
+
+  @override
+  String get backupRestore_publicKey => 'Openbare sleutel';
+
+  @override
+  String get backupRestore_radioSettings => 'Radio-instellingen';
+
+  @override
+  String get backupRestore_regions => 'Regio\'s';
+
+  @override
+  String get backupRestore_location => 'Locatie';
+
+  @override
+  String get backupRestore_contactSettings => 'Contactinstellingen';
+
+  @override
+  String get backupRestore_privacySettings => 'Privacy-instellingen';
+
+  @override
+  String get backupRestore_contactsData => 'Contacten';
+
+  @override
+  String get backupRestore_perContactSettings =>
+      'Contactinstellingen en filters';
+
+  @override
+  String get backupRestore_contactGroups => 'Contactgroepen';
+
+  @override
+  String get backupRestore_contactHistory => 'Contactgeschiedenis';
+
+  @override
+  String get backupRestore_channelsData => 'Kanalen';
+
+  @override
+  String get backupRestore_channelFilters => 'Instellingen berichtfilter';
+
+  @override
+  String get backupRestore_channelSettings => 'Kanaalinstellingen';
+
+  @override
+  String get backupRestore_communities => 'Communities';
+
+  @override
+  String get backupRestore_channelHistory => 'Kanaalgeschiedenis';
+
+  @override
+  String get backupRestore_locationSettings => 'Locatie-instellingen';
+
+  @override
+  String get backupRestore_locationSettingsDescription =>
+      'Locatie, contactinstellingen en privacy-instellingen';
+
+  @override
+  String get backupRestore_appSettings => 'App-instellingen';
+
+  @override
+  String get backupRestore_appSettingsDescription =>
+      'App-voorkeuren en weergave-instellingen';
+
+  @override
+  String get backupRestore_ipfsKey => 'IPFS API-sleutel (gevoelig)';
+
+  @override
+  String get backupRestore_stadiaMapKey => 'Stadia Maps API-sleutel (gevoelig)';
+
+  @override
+  String get backupRestore_contacts => 'Contacten';
+
+  @override
+  String get backupRestore_contactsDescription =>
+      'Contacten, filters en instellingen per contact, groepen en berichtgeschiedenis';
+
+  @override
+  String get backupRestore_discoveredContacts => 'Ontdekte contacten';
+
+  @override
+  String get backupRestore_discoveredContactsDescription =>
+      'Ontdekte contacten en hun opgeslagen gegevens';
+
+  @override
+  String get backupRestore_channels => 'Kanalen';
+
+  @override
+  String get backupRestore_channelsDescription =>
+      'Kanalen, kanaalfilters, communities en berichtgeschiedenis';
+
+  @override
+  String get backupRestore_backup => 'Back-up maken';
+
+  @override
+  String get backupRestore_restore => 'Selectie herstellen';
+
+  @override
+  String get backupRestore_backupComplete => 'Back-upbestand gemaakt.';
+
+  @override
+  String get backupRestore_restoreComplete =>
+      'Herstel voltooid. Verbind opnieuw als je de radio-identiteit hebt hersteld.';
+
+  @override
+  String get backupRestore_missingModelsTitle => 'Modellen niet gedownload';
+
+  @override
+  String backupRestore_missingModelsMessage(String models) {
+    return 'De herstelde instellingen selecteren modellen die op dit apparaat niet beschikbaar zijn:\n$models\n\nNu downloaden?';
+  }
+
+  @override
+  String get backupRestore_downloadModels => 'Modellen downloaden';
+
+  @override
+  String get backupRestore_downloading => 'Downloaden…';
+
+  @override
+  String get backupRestore_cancelDownload => 'Download annuleren';
+
+  @override
+  String backupRestore_failed(String error) {
+    return 'Back-upbewerking mislukt: $error';
+  }
+
+  @override
+  String get backupRestore_fileTooLarge =>
+      'Het back-upbestand is groter dan de limiet van 100 MB.';
+
+  @override
+  String get backupRestore_selectAtLeastOne => 'Selecteer minstens één item.';
+
+  @override
+  String get backupRestore_replaceIdentityTitle =>
+      'Radio-identiteit vervangen?';
+
+  @override
+  String get backupRestore_replaceIdentityMessage =>
+      'Het herstellen van de node-instellingen vervangt de privésleutel van de verbonden radio en wijzigt de identiteit ervan. Ga alleen door als dit de bedoeling is.';
+
+  @override
   String get settings_nodeSettings => 'Node Instellingen';
 
   @override
@@ -711,7 +895,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get settings_aboutLegalese => '2026 MeshCore Open Source Project';
+  String get settings_aboutLegalese => '2026 MeshCore open-sourceproject';
 
   @override
   String get settings_aboutDescription =>
@@ -1088,7 +1272,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get appSettings_languageSl => 'Sloveens';
 
   @override
-  String get appSettings_languagePt => 'Portugees';
+  String get appSettings_languagePt => 'Portugees (Brazilië)';
+
+  @override
+  String get appSettings_languagePtPt => 'Portugees (Portugal)';
 
   @override
   String get appSettings_languageIt => 'Italiaans';
@@ -1113,6 +1300,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get appSettings_languageUk => 'Oekraïens';
+
+  @override
+  String get appSettings_languageCs => 'Tsjechisch';
 
   @override
   String get repeater_pathHashModeOption0 => '1 byte';
@@ -1272,36 +1462,6 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get appSettings_autoRouteRotationDisabled =>
       'Automatische route rotatie is uitgeschakeld';
-
-  @override
-  String get appSettings_maxRouteWeight => 'Maximaal routegewicht';
-
-  @override
-  String get appSettings_maxRouteWeightSubtitle =>
-      'Het maximale gewicht dat een route kan bereiken door succesvolle leveringen.';
-
-  @override
-  String get appSettings_initialRouteWeight => 'Initieel routegewicht';
-
-  @override
-  String get appSettings_initialRouteWeightSubtitle =>
-      'Startgewicht voor nieuwe, ontdekte routes';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrement =>
-      'Gewichtstoename bij succes';
-
-  @override
-  String get appSettings_routeWeightSuccessIncrementSubtitle =>
-      'Gewicht wordt toegevoegd aan een route na een succesvolle levering.';
-
-  @override
-  String get appSettings_routeWeightFailureDecrement =>
-      'Gewichtsafname bij mislukking';
-
-  @override
-  String get appSettings_routeWeightFailureDecrementSubtitle =>
-      'Gewicht verwijderd van een pad na een mislukte levering';
 
   @override
   String get appSettings_maxMessageRetries => 'Max. aantal nieuwe pogingen';
@@ -2037,6 +2197,36 @@ class AppLocalizationsNl extends AppLocalizations {
   String get chat_noMessages => 'Nog geen berichten.';
 
   @override
+  String get chatSearch_tooltip => 'Berichten zoeken';
+
+  @override
+  String get chatSearch_hint => 'Berichten zoeken';
+
+  @override
+  String get chatSearch_close => 'Zoeken sluiten';
+
+  @override
+  String chatSearch_resultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count resultaten',
+      one: '1 resultaat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatSearch_noResults => 'Geen overeenkomende berichten';
+
+  @override
+  String get chatSearch_noResultsHint =>
+      'Probeer een ander woord of controleer de spelling';
+
+  @override
+  String get chatSearch_jumpFailed => 'Dat bericht is niet gevonden in de chat';
+
+  @override
   String get chat_sendMessage => 'Verzend bericht';
 
   @override
@@ -2080,6 +2270,67 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Bericht verwijderd';
+
+  @override
+  String get chat_selectMessages => 'Berichten selecteren';
+
+  @override
+  String chat_selectedCount(int count) {
+    return '$count geselecteerd';
+  }
+
+  @override
+  String get chat_selectAll => 'Alles selecteren';
+
+  @override
+  String get chat_clearSelection => 'Selectie wissen';
+
+  @override
+  String get chat_deleteSelectedTitle => 'Berichten verwijderen?';
+
+  @override
+  String chat_deleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count berichten van dit apparaat verwijderen?',
+      one: '1 bericht van dit apparaat verwijderen?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chat_messagesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count berichten verwijderd',
+      one: '1 bericht verwijderd',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count berichten gemarkeerd als spam',
+      one: '1 bericht gemarkeerd als spam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_markedNotSpamCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count berichten gemarkeerd als geen spam',
+      one: '1 bericht gemarkeerd als geen spam',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get chat_retryingMessage => 'Bericht opnieuw verzenden';
@@ -2205,7 +2456,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get debugLog_appTitle => 'Debuglog van de app';
 
   @override
-  String get debugLog_bleTitle => 'BLE Debug Log';
+  String get debugLog_bleTitle => 'BLE-debuglog';
 
   @override
   String get debugLog_copyLog => 'Kopieer log';
@@ -2320,6 +2571,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get routing_modeManual => 'Handmatig';
 
   @override
+  String get routing_modeDirect => 'Direct';
+
+  @override
   String get routing_modeAutoHint =>
       'Kiest automatisch het beste bekende pad en gebruikt flood als er geen bekend is.';
 
@@ -2330,6 +2584,10 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get routing_modeManualHint =>
       'Verstuurt altijd via het exacte pad dat je hebt ingesteld.';
+
+  @override
+  String get routing_modeDirectHint =>
+      'Verstuurt altijd rechtstreeks naar dit contact, zonder repeater-hops. Gebruik dit als diegene binnen radiobereik is.';
 
   @override
   String get routing_currentRoute => 'Huidige route';
@@ -2485,6 +2743,52 @@ class AppLocalizationsNl extends AppLocalizations {
   String get chat_poiShared => 'Gedeelde POI';
 
   @override
+  String get contactShare_headerOutgoing => 'Je hebt een contact gedeeld';
+
+  @override
+  String get contactShare_headerIncoming => 'Heeft een contact gedeeld';
+
+  @override
+  String get contactShare_add => 'Contact toevoegen';
+
+  @override
+  String get contactShare_adding => 'Contact toevoegen...';
+
+  @override
+  String get contactShare_saved => 'Opgeslagen';
+
+  @override
+  String get contactShare_addAgain => 'Opnieuw toevoegen';
+
+  @override
+  String get contactShare_isYou => 'Dit ben jij';
+
+  @override
+  String get contactShare_shareAction => 'Contact delen';
+
+  @override
+  String get contactShare_pickerTitle => 'Een contact delen';
+
+  @override
+  String get contactShare_myContact => 'Mijn contact';
+
+  @override
+  String get contactShare_searchHint => 'Contacten zoeken';
+
+  @override
+  String get contactShare_noContacts => 'Geen contacten gevonden';
+
+  @override
+  String contactShare_preview(String name) {
+    return 'Gedeeld contact: $name';
+  }
+
+  @override
+  String contactShare_notification(String name) {
+    return 'Heeft een contact gedeeld: $name';
+  }
+
+  @override
   String chat_unread(int count) {
     return 'Ongelezen: $count';
   }
@@ -2608,10 +2912,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get map_lastSeen => 'Laatst gezien';
-
-  @override
-  String get map_disconnectConfirm =>
-      'Ben je er zeker van dat je verbinding met dit apparaat wilt verbreken?';
 
   @override
   String get map_from => 'Van';
@@ -2788,6 +3088,60 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get map_pathTraceViewLast => 'Laatste resultaat bekijken';
+
+  @override
+  String get manualTrace_menuItem => 'Padtrace via hashes';
+
+  @override
+  String get manualTrace_inputLabel => 'Repeater-hashes';
+
+  @override
+  String manualTrace_helper(String example) {
+    return 'Voorbeeld: $example. Scheid met komma\'s of spaties.';
+  }
+
+  @override
+  String manualTrace_previewTitle(int count) {
+    return 'Hops ($count)';
+  }
+
+  @override
+  String get manualTrace_unknownNode => 'Onbekende node';
+
+  @override
+  String get manualTrace_enterHashes => 'Voer hashes in';
+
+  @override
+  String get manualTrace_run => 'Padtrace uitvoeren';
+
+  @override
+  String get manualTrace_notConnected =>
+      'Maak verbinding met een radio om een trace uit te voeren';
+
+  @override
+  String get manualTrace_errorInvalidHex =>
+      'Alleen hex-tekens (0-9, A-F) zijn toegestaan';
+
+  @override
+  String get manualTrace_errorOddLength =>
+      'Elke hash heeft een even aantal hex-tekens nodig, passend bij de hopgrootte';
+
+  @override
+  String get manualTrace_errorMixedWidths =>
+      'Alle hashes moeten even lang zijn';
+
+  @override
+  String get manualTrace_errorUnsupportedWidth =>
+      'Hashes moeten 1, 2 of 3 bytes zijn (2, 4 of 6 hex-tekens)';
+
+  @override
+  String manualTrace_errorTooManyHops(int max) {
+    return 'Pad is te lang (maximaal $max bytes)';
+  }
+
+  @override
+  String get manualTrace_errorTraceTooLong =>
+      'Te veel hops om in één verzoek te tracen. Verwijder enkele hops of kies „Zoals ingevoerd”.';
 
   @override
   String get mapCache_title => 'Offline Kaarten Cache';
@@ -3188,6 +3542,11 @@ class AppLocalizationsNl extends AppLocalizations {
     int seconds,
   ) {
     return '$days dagen $hours uur $minutes minuten $seconds seconden';
+  }
+
+  @override
+  String repeater_hoursMinsSecs(int hours, int minutes, int seconds) {
+    return '$hours uur $minutes minuten $seconds seconden';
   }
 
   @override
@@ -5829,6 +6188,12 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pathMap_expandPanel => 'Paneel uitklappen';
 
   @override
+  String get pathMap_expandHopList => 'Hoplijst uitklappen';
+
+  @override
+  String get pathMap_showMap => 'Kaart tonen';
+
+  @override
   String get pathMap_noLocation => 'Geen locatie';
 
   @override
@@ -6041,6 +6406,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String receivedImage_shareCaption(int bytes) {
     return 'Door AI gereconstrueerd uit $bytes bytes; fijne details zijn gegenereerd, niet verzonden.';
   }
+
+  @override
+  String get receivedImage_syntheticBadge => 'Door AI gereconstrueerd';
 
   @override
   String get receivedImage_packetInfo => 'Pakketinfo';
@@ -6925,6 +7293,15 @@ class AppLocalizationsNl extends AppLocalizations {
       'Hetzelfde bericht opnieuw verstuurd, of door meerdere afzenders';
 
   @override
+  String get messageFilter_repeatSends =>
+      'Verzendingen die als herhaling tellen';
+
+  @override
+  String messageFilter_repeatSendsSubtitle(int count) {
+    return 'Verberg een bericht wanneer dezelfde afzender het $count keer verstuurt binnen 10 minuten';
+  }
+
+  @override
   String get messageFilter_repeatedCharacters => 'Herhaalde tekens';
 
   @override
@@ -7045,4 +7422,41 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get messageFilter_ghostIconTooltip =>
       'Verborgen door je berichtenfilter';
+
+  @override
+  String appBar_offlineSubtitle(String name) {
+    return 'Offline · $name';
+  }
+
+  @override
+  String get appBar_offline => 'Offline';
+
+  @override
+  String get appBar_reconnecting => 'Opnieuw verbinden…';
+
+  @override
+  String get connectSheet_title => 'Radio verbinden';
+
+  @override
+  String connectSheet_reconnect(String name) {
+    return 'Opnieuw verbinden met $name';
+  }
+
+  @override
+  String get connectSheet_chooseRadio => 'Kies een radio';
+
+  @override
+  String get connectSheet_chooseRadioSubtitle => 'Bluetooth, USB of TCP';
+
+  @override
+  String get connectSheet_stopReconnecting => 'Opnieuw verbinden stoppen';
+
+  @override
+  String connectSheet_reconnectFailed(String name) {
+    return 'Kan $name niet bereiken. Controleer of het aan staat en in de buurt is.';
+  }
+
+  @override
+  String get chat_composerOffline =>
+      'Verbind met een radio om berichten te versturen';
 }

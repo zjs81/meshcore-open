@@ -107,6 +107,14 @@ class MessageFilterService extends ChangeNotifier {
   @visibleForTesting
   int get recentCleanCount => _recentClean.length;
 
+  @visibleForTesting
+  bool hasRecentCleanExample(String text) {
+    final key = MessageFilterText.normalize(text);
+    return _recentClean.any(
+      (example) => MessageFilterText.normalize(example.text) == key,
+    );
+  }
+
   /// Loads persisted state and trains the classifier.
   Future<void> load() async {
     try {
@@ -139,6 +147,10 @@ class MessageFilterService extends ChangeNotifier {
   /// [sentAt] is the message's own timestamp. Duplicate windows are measured
   /// between send times, so history synced in a burst after reconnecting is
   /// not mistaken for a flood; without it the local clock is used.
+  ///
+  /// Messages addressed to someone ([isReply], or an `@[name]` mention in
+  /// [text]) are exempt from duplicate detection and not recorded for it:
+  /// asking several people the same thing is conversation, not a repeat.
   FilterVerdict? evaluate({
     required String channelId,
     required String sender,
@@ -146,6 +158,7 @@ class MessageFilterService extends ChangeNotifier {
     DateTime? sentAt,
     bool isOutgoing = false,
     bool isReaction = false,
+    bool isReply = false,
   }) {
     if (!isChannelFiltered(channelId)) return null;
     if (isOutgoing || isReaction) return null;
@@ -153,13 +166,17 @@ class MessageFilterService extends ChangeNotifier {
     if (MessageFilterText.isStructuredPayload(text)) return null;
 
     // Always record (even when a rule matches) so floods keep being caught.
-    final duplicateReason = _tracker.check(
-      channelId: channelId,
-      sender: sender,
-      text: text,
-      at: sentAt ?? _clock(),
-      receivedAt: _clock(),
-    );
+    final mentionsSomeone = isReply || MessageFilterText.hasMention(text);
+    final duplicateReason = mentionsSomeone
+        ? null
+        : _tracker.check(
+            channelId: channelId,
+            sender: sender,
+            text: text,
+            at: sentAt ?? _clock(),
+            receivedAt: _clock(),
+            sameSenderSends: _settings.repeatSends,
+          );
 
     final byRule = _matchRules(sender, text);
     if (byRule != null) return byRule;
@@ -272,12 +289,28 @@ class MessageFilterService extends ChangeNotifier {
   }
 
   /// User tapped "Spam": store the example and retrain.
-  Future<void> markSpam({required String sender, required String text}) async {
-    final key = MessageFilterText.normalize(text);
-    if (key.isEmpty) return;
-    _recentClean.removeWhere((e) => MessageFilterText.normalize(e.text) == key);
-    _hamExamples.removeWhere((e) => MessageFilterText.normalize(e.text) == key);
-    _addExample(_spamExamples, _example(sender, text), maxSpamExamples);
+  Future<void> markSpam({required String sender, required String text}) =>
+      markSpamMany([(sender: sender, text: text)]);
+
+  /// Marks several messages as spam with one save and one retrain (bulk
+  /// selection in a chat).
+  Future<void> markSpamMany(
+    List<({String sender, String text})> messages,
+  ) async {
+    var changed = false;
+    for (final m in messages) {
+      final key = MessageFilterText.normalize(m.text);
+      if (key.isEmpty) continue;
+      _recentClean.removeWhere(
+        (e) => MessageFilterText.normalize(e.text) == key,
+      );
+      _hamExamples.removeWhere(
+        (e) => MessageFilterText.normalize(e.text) == key,
+      );
+      _addExample(_spamExamples, _example(m.sender, m.text), maxSpamExamples);
+      changed = true;
+    }
+    if (!changed) return;
     final training = _retrain();
     _notify();
     await _guardSave(() async {
@@ -294,17 +327,27 @@ class MessageFilterService extends ChangeNotifier {
     required String channelId,
     required String sender,
     required String text,
-  }) async {
-    _tracker.allow(channelId, text);
-    final key = MessageFilterText.normalize(text);
-    if (key.isEmpty) {
+  }) => markNotSpamMany([(channelId: channelId, sender: sender, text: text)]);
+
+  /// Marks several messages as not spam with one save and one retrain.
+  Future<void> markNotSpamMany(
+    List<({String channelId, String sender, String text})> messages,
+  ) async {
+    var changed = false;
+    for (final m in messages) {
+      _tracker.allow(m.channelId, m.text);
+      final key = MessageFilterText.normalize(m.text);
+      if (key.isEmpty) continue;
+      _spamExamples.removeWhere(
+        (e) => MessageFilterText.normalize(e.text) == key,
+      );
+      _addExample(_hamExamples, _example(m.sender, m.text), maxNotSpamExamples);
+      changed = true;
+    }
+    if (!changed) {
       _notify();
       return;
     }
-    _spamExamples.removeWhere(
-      (e) => MessageFilterText.normalize(e.text) == key,
-    );
-    _addExample(_hamExamples, _example(sender, text), maxNotSpamExamples);
     final training = _retrain();
     _notify();
     await _guardSave(() async {

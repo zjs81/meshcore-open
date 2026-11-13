@@ -139,6 +139,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
   String _selectedPathId = 'primary';
   final Set<String> _hiddenPathIds = {};
   bool _panelCollapsed = false;
+  bool _panelExpanded = false;
   bool _animationEnabled = true;
   bool _followPacket = false;
 
@@ -444,6 +445,20 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
       flags, // flag
       payload: tracePayload,
     );
+    if (frame.length > maxFrameSize) {
+      // Too many hops for one request (round trips double them); the radio
+      // would reject or truncate it.
+      appLogger.warn(
+        'Path trace request too large: ${frame.length} bytes',
+        tag: 'PathTraceMapScreen',
+      );
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _failed2Loaded = true;
+      });
+      return;
+    }
     _awaitingTraceSent = true;
     _timeoutTimer?.cancel();
     // Fallback in case RESP_CODE_SENT / RESP_CODE_ERR never arrives; the
@@ -1641,8 +1656,13 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
       combined: combined,
       showInferredLegend: true,
       collapsed: _panelCollapsed,
-      onToggleCollapsed: () =>
-          setState(() => _panelCollapsed = !_panelCollapsed),
+      onToggleCollapsed: () => setState(() {
+        _panelCollapsed = !_panelCollapsed;
+        // Reopening a collapsed panel returns to the normal height.
+        if (_panelCollapsed) _panelExpanded = false;
+      }),
+      expanded: _panelExpanded,
+      onToggleExpanded: () => setState(() => _panelExpanded = !_panelExpanded),
       playback: _playback,
       selected: selected,
       animationEnabled: _animationEnabled,

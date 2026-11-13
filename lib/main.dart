@@ -5,10 +5,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'l10n/app_localizations.dart';
+import 'l10n/locale_tag.dart';
 import 'package:provider/provider.dart';
 
 import 'review_mode/review_mode_storage.dart';
 import 'screens/chrome_required_screen.dart';
+import 'screens/channels_screen.dart';
 import 'utils/platform_info.dart';
 
 import 'connector/meshcore_connector.dart';
@@ -20,12 +22,14 @@ import 'services/image_codec_service.dart';
 import 'services/image_codec_settings_store.dart';
 import 'services/received_image_blob_store_factory.dart';
 import 'services/received_image_store.dart';
+import 'services/scroll_capture_service.dart';
 import 'services/storage_service.dart';
 import 'services/message_filter/message_filter_service.dart';
 import 'services/message_retry_service.dart';
 import 'services/path_history_service.dart';
 import 'services/app_settings_service.dart';
 import 'services/network_map/network_map_upload_service.dart';
+import 'services/notification_navigator.dart';
 import 'services/notification_service.dart';
 import 'services/ble_debug_log_service.dart';
 import 'services/app_debug_log_service.dart';
@@ -37,6 +41,7 @@ import 'services/ui_view_state_service.dart';
 import 'services/chat_background_service.dart';
 import 'services/timeout_prediction_service.dart';
 import 'storage/prefs_manager.dart';
+import 'storage/history_store.dart';
 import 'theme/mesh_theme.dart';
 import 'utils/app_logger.dart';
 import 'widgets/image_send_codec_binding.dart';
@@ -58,10 +63,13 @@ void main() async {
   // this mode before Android 10, where the old layout remains.
   if (PlatformInfo.isAndroid) {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    // Android's scrolling screenshot ("Capture more") for Flutter lists.
+    ScrollCaptureService.initialize();
   }
 
   // Initialize SharedPreferences cache
   await PrefsManager.initialize();
+  await HistoryStore.initialize();
 
   // Initialize services
   final storage = StorageService();
@@ -197,9 +205,7 @@ void main() async {
     settings: appSettingsService,
   );
 
-  await connector.loadContactCache();
-  await connector.loadCachedChannels();
-  await connector.loadUnreadState();
+  await connector.restoreLastRadio();
 
   runApp(
     MeshCoreApp(
@@ -404,11 +410,27 @@ const Duration _kImageSweepInterval = Duration(seconds: 5);
 
 class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
   Timer? _imageSweepTimer;
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  late final NotificationNavigator _notificationNavigator =
+      NotificationNavigator(
+        navigatorKey: _navigatorKey,
+        connector: widget.connector,
+        notifications: NotificationService(),
+      );
+
+  // Chosen once: the settings Consumer below rebuilds MaterialApp, and a new
+  // home there would replace the route the user is on.
+  late final Widget _home = (PlatformInfo.isWeb && !PlatformInfo.isChrome)
+      ? const ChromeRequiredScreen()
+      : widget.connector.hasRadioData
+      ? const ChannelsScreen()
+      : const ScannerScreen();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _notificationNavigator.attach();
     _imageSweepTimer = Timer.periodic(
       _kImageSweepInterval,
       (_) => widget.imageReassembler.evictExpired(),
@@ -417,6 +439,7 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    _notificationNavigator.dispose();
     _imageSweepTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -488,6 +511,7 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
         builder: (context, settingsService, child) {
           final customTheme = settingsService.activeCustomTheme;
           return MaterialApp(
+            navigatorKey: _navigatorKey,
             title: 'MeshCore Open',
             debugShowCheckedModeBanner: false,
             localizationsDelegates: const [
@@ -518,9 +542,7 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
                 child: child ?? const SizedBox.shrink(),
               );
             },
-            home: (PlatformInfo.isWeb && !PlatformInfo.isChrome)
-                ? const ChromeRequiredScreen()
-                : const ScannerScreen(),
+            home: _home,
           );
         },
       ),
@@ -561,6 +583,6 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
 
   Locale? _localeFromSetting(String? languageCode) {
     if (languageCode == null) return null;
-    return Locale(languageCode);
+    return localeFromTag(languageCode);
   }
 }

@@ -18,6 +18,7 @@ import '../services/map_tile_cache_service.dart';
 import '../utils/route_transitions.dart';
 import '../connector/meshcore_connector.dart';
 import '../widgets/app_bar.dart';
+import '../widgets/mesh_ui.dart';
 import '../widgets/path_map_scaffold.dart';
 import '../widgets/quick_switch_bar.dart';
 import '../icons/los_icon.dart';
@@ -372,12 +373,9 @@ class _LineOfSightMapScreenState extends State<LineOfSightMapScreen> {
               PopupMenuItem(
                 value: 'clear',
                 enabled: !_loading,
-                child: Row(
-                  children: [
-                    const Icon(Icons.delete_outline),
-                    const SizedBox(width: 10),
-                    Text(context.l10n.losClearAllPoints),
-                  ],
+                child: MeshMenuItemRow(
+                  icon: Icons.delete_outline,
+                  label: context.l10n.losClearAllPoints,
                 ),
               ),
             ],
@@ -563,20 +561,28 @@ class _LineOfSightMapScreenState extends State<LineOfSightMapScreen> {
   }
 
   Widget _headerMetric(IconData icon, String value) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: LosPalette.textMuted, size: 16),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: MeshTheme.mono(
-            color: LosPalette.text,
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-          ),
+    // Capped so very large text scales shrink the reading instead of pushing
+    // the panel off a narrow screen.
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 80),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: LosPalette.textMuted, size: 16),
+            const SizedBox(height: 2),
+            Text(
+              value,
+              style: MeshTheme.mono(
+                color: LosPalette.text,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -1728,6 +1734,7 @@ class _LineOfSightMapScreenState extends State<LineOfSightMapScreen> {
   }
 
   void _handleQuickSwitch(int index, BuildContext context) {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (index == 2) {
       Navigator.pop(context);
       return;

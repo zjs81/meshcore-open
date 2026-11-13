@@ -29,15 +29,16 @@ class ContactSettingsStore {
     if (enabled == null && canMigrateLegacyKeys(publicKeyHex)) {
       // Attempt migration from legacy unscoped key on first load
       enabled = prefs.getBool(oldKey);
-      prefs.remove(oldKey);
       if (enabled != null) {
         appLogger.info(
           'Migrating contact settings from legacy key $oldKey to scoped key $key',
         );
-        await prefs.setBool(key, enabled);
+        if (await prefs.setBool(key, enabled)) {
+          await prefs.remove(oldKey);
+        }
       }
     }
-    return prefs.getBool(key) ?? false;
+    return enabled ?? false;
   }
 
   Future<void> saveSmazEnabled(String contactKeyHex, bool enabled) async {

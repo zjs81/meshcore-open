@@ -101,8 +101,8 @@
   "settings_locationInvalid": "Некоректна широта або довгота.",
   "settings_latitude": "Широта",
   "settings_longitude": "Довгота",
-  "settings_autoZeroHopAdvertOnGpsUpdate": "Автооголошення без хопів при оновленні GPS",
-  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Коли GPS-локація змінюється, надсилати оголошення без хопів (потрібна геопозиція в оголошенні).",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Авто Zero Hop оголошення при оновленні GPS",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Коли GPS-локація змінюється, надсилати Zero Hop оголошення (потрібна геопозиція в оголошенні).",
   "settings_autoSelfAdvertAsFlood": "Надсилати автоматичне self-advert як flood",
   "settings_autoSelfAdvertAsFloodSubtitle": "Якщо ввімкнено, автоматичні self-advert надсилаються як flood замість zero-hop.",
   "settings_privacyMode": "Режим приватності",
@@ -179,12 +179,13 @@
   "appSettings_languageDe": "Німецька",
   "appSettings_languagePl": "Польська",
   "appSettings_languageSl": "Словенська",
-  "appSettings_languagePt": "Португальська",
+  "appSettings_languagePt": "Португальська (Бразилія)",
   "appSettings_languageIt": "Італійська",
   "appSettings_languageZh": "Китайська",
   "appSettings_languageSv": "Шведська",
   "appSettings_languageNl": "Нідерландська",
   "appSettings_languageSk": "Словацька",
+  "appSettings_languageCs": "Чеська",
   "appSettings_languageBg": "Болгарська",
   "appSettings_languageUk": "Українська",
   "appSettings_notifications": "Сповіщення",
@@ -205,7 +206,7 @@
   "appSettings_pathsWillBeCleared": "Шляхи будуть очищені після 5 невдалих спроб.",
   "appSettings_pathsWillNotBeCleared": "Шляхи не будуть очищатись автоматично.",
   "appSettings_autoRouteRotation": "Авторотація маршруту",
-  "appSettings_autoRouteRotationSubtitle": "Чергувати найкращі шляхи та режим «через всю мережу» (flood)",
+  "appSettings_autoRouteRotationSubtitle": "Чергувати найкращі шляхи та режим Flood",
   "appSettings_autoRouteRotationEnabled": "Авторотація маршрутизації увімкнена",
   "appSettings_autoRouteRotationDisabled": "Авторотація маршрутизації вимкнена",
   "appSettings_battery": "Батарея",
@@ -320,8 +321,8 @@
   "contacts_filterContacts": "Фільтрувати контакти...",
   "contacts_noContactsMatchFilter": "Жоден контакт не відповідає фільтру.",
   "contacts_noMembers": "Немає учасників",
-  "contacts_lastSeenNow": "В мережі",
-  "contacts_lastSeenMinsAgo": "В мережі {minutes} хв. тому",
+  "contacts_lastSeenNow": "нещодавно",
+  "contacts_lastSeenMinsAgo": "~ {minutes} хв.",
   "@contacts_lastSeenMinsAgo": {
     "placeholders": {
       "minutes": {
@@ -329,8 +330,8 @@
       }
     }
   },
-  "contacts_lastSeenHourAgo": "В мережі 1 годину тому",
-  "contacts_lastSeenHoursAgo": "В мережі {hours} год. тому",
+  "contacts_lastSeenHourAgo": "~ 1 год.",
+  "contacts_lastSeenHoursAgo": "~ {hours} год.",
   "@contacts_lastSeenHoursAgo": {
     "placeholders": {
       "hours": {
@@ -338,8 +339,8 @@
       }
     }
   },
-  "contacts_lastSeenDayAgo": "В мережі 1 день тому",
-  "contacts_lastSeenDaysAgo": "В мережі {days} дн. тому",
+  "contacts_lastSeenDayAgo": "~ 1 дн.",
+  "contacts_lastSeenDaysAgo": "~ {days} дн.",
   "@contacts_lastSeenDaysAgo": {
     "placeholders": {
       "days": {
@@ -583,7 +584,7 @@
       }
     }
   },
-  "debugFrame_textTypeCli": "CLI (Command Line Interface)",
+  "debugFrame_textTypeCli": "CLI",
   "debugFrame_textTypePlain": "Звичайний",
   "debugFrame_text": "- Текст: \"{text}\"",
   "@debugFrame_text": {
@@ -597,7 +598,7 @@
   "chat_pathManagement": "Керування шляхами",
   "chat_routingMode": "Режим маршрутизації",
   "chat_autoUseSavedPath": "Авто (використовувати збережений шлях)",
-  "chat_forceFloodMode": "Примусово через всю мережу",
+  "chat_forceFloodMode": "Примусовий режим Flood",
   "chat_recentAckPaths": "Підтверджені шляхи (натисніть, щоб використати):",
   "chat_pathHistoryFull": "Історія шляхів заповнена. Видаліть записи, щоб додати нові.",
   "chat_hopSingular": "Перехід",
@@ -621,7 +622,7 @@
   "chat_clearPathSubtitle": "Примусово повторити пошук при наступному надсиланні",
   "chat_pathCleared": "Шлях очищено. Наступне повідомлення оновить маршрут.",
   "chat_floodModeSubtitle": "Використовувати перемикач маршрутизації в панелі застосунку",
-  "chat_floodModeEnabled": "Увімкнено режим «через всю мережу». Перемикайте через іконку маршрутизації на панелі інструментів.",
+  "chat_floodModeEnabled": "Режим Flood увімкнено. Вимикайте через іконку маршрутизації на панелі застосунку.",
   "chat_fullPath": "Повний шлях",
   "chat_pathDetailsNotAvailable": "Деталі шляху ще недоступні. Спробуйте надіслати повідомлення для оновлення.",
   "chat_pathSetHops": "Шлях встановлено: {hopCount} {hopCount, plural, =1{перехід} few{переходи} many{переходів} other{переходів}} - {status}",
@@ -642,7 +643,7 @@
   "chat_path": "Шлях",
   "chat_publicKey": "Відкритий ключ",
   "chat_compressOutgoingMessages": "Стискати вихідні повідомлення",
-  "chat_floodForced": "Через всю мережу (примусово)",
+  "chat_floodForced": "Flood (примусово)",
   "chat_directForced": "Напряму (примусово)",
   "chat_hopsForced": "{count} переходів (примусово)",
   "@chat_hopsForced": {
@@ -652,7 +653,7 @@
       }
     }
   },
-  "chat_floodAuto": "Через всю мережу (авто)",
+  "chat_floodAuto": "Flood (авто)",
   "chat_direct": "Напряму",
   "chat_poiShared": "Поділилися точкою інтересу",
   "chat_unread": "Непрочитано: {count}",
@@ -702,7 +703,6 @@
   "map_pinPrivate": "Замок (Приватний)",
   "map_pinPublic": "Ключ (Публічний)",
   "map_lastSeen": "Останній раз бачили",
-  "map_disconnectConfirm": "Ви впевнені, що хочете відключитись від цього пристрою?",
   "map_from": "Від",
   "map_source": "Джерело",
   "map_flags": "Прапорці",
@@ -927,7 +927,7 @@
   "login_routing": "Маршрутизація",
   "login_routingMode": "Режим маршрутизації",
   "login_autoUseSavedPath": "Авто (збережений шлях)",
-  "login_forceFloodMode": "Примусово через всю мережу",
+  "login_forceFloodMode": "Примусовий режим Flood",
   "login_managePaths": "Керувати шляхами",
   "login_login": "Вхід",
   "login_attempt": "Спроба {current}/{max}",
@@ -993,14 +993,14 @@
   "repeater_statusSubtitle": "Показати статус, статистику та сусідів ретранслятора",
   "repeater_telemetry": "Телеметрія",
   "repeater_telemetrySubtitle": "Показати телеметрію сенсорів та статистику системи",
-  "repeater_cli": "CLI (Command Line Interface)",
+  "repeater_cli": "CLI",
   "repeater_cliSubtitle": "Надіслати команди ретранслятору",
   "repeater_settings": "Налаштування",
   "repeater_settingsSubtitle": "Налаштувати параметри ретранслятора",
   "repeater_statusTitle": "Статус ретранслятора",
   "repeater_routingMode": "Режим маршрутизації",
   "repeater_autoUseSavedPath": "Авто (використовувати збережений шлях)",
-  "repeater_forceFloodMode": "Примусово через всю мережу",
+  "repeater_forceFloodMode": "Примусовий режим Flood",
   "repeater_pathManagement": "Керування шляхами",
   "repeater_refresh": "Оновити",
   "repeater_statusRequestTimeout": "Час очікування запиту статусу вичерпано.",
@@ -1029,6 +1029,7 @@
   "repeater_received": "Отримано",
   "repeater_duplicates": "Дублікати",
   "repeater_daysHoursMinsSecs": "{days} дн. {hours} год {minutes} хв {seconds} с",
+  "repeater_hoursMinsSecs": "{hours} год {minutes} хв {seconds} с",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -1045,7 +1046,7 @@
       }
     }
   },
-  "repeater_packetTxTotal": "Всього: {total}, Через всю мережу: {flood}, Прямі: {direct}",
+  "repeater_packetTxTotal": "Всього: {total}, Flood: {flood}, Прямі: {direct}",
   "@repeater_packetTxTotal": {
     "placeholders": {
       "total": {
@@ -1059,7 +1060,7 @@
       }
     }
   },
-  "repeater_packetRxTotal": "Всього: {total}, Через всю мережу: {flood}, Прямі: {direct}",
+  "repeater_packetRxTotal": "Всього: {total}, Flood: {flood}, Прямі: {direct}",
   "@repeater_packetRxTotal": {
     "placeholders": {
       "total": {
@@ -1073,7 +1074,7 @@
       }
     }
   },
-  "repeater_duplicatesFloodDirect": "Через всю мережу: {flood}, Прямі: {direct}",
+  "repeater_duplicatesFloodDirect": "Flood: {flood}, Прямі: {direct}",
   "@repeater_duplicatesFloodDirect": {
     "placeholders": {
       "flood": {
@@ -1130,7 +1131,7 @@
       }
     }
   },
-  "repeater_floodAdvertInterval": "Інтервал оголошень через всю мережу (flood)",
+  "repeater_floodAdvertInterval": "Інтервал Flood-оголошень",
   "repeater_floodAdvertIntervalHours": "{hours} годин",
   "@repeater_floodAdvertIntervalHours": {
     "placeholders": {
@@ -1175,7 +1176,7 @@
   "repeater_multiAcksSubtitle": "Підтверджувати повідомлення кількома шляхами для кращої доставки",
   "repeater_networkHealth": "Стан мережі",
   "repeater_loopDetect": "Виявлення циклів",
-  "repeater_loopDetectHelper": "Відкидати flood-пакети, схожі на петлі маршрутизації",
+  "repeater_loopDetectHelper": "Відкидати Flood-пакети, схожі на петлі маршрутизації",
   "repeater_loopDetectOff": "Вимкнено",
   "repeater_loopDetectMinimal": "Мінімальний",
   "repeater_loopDetectModerate": "Помірний",
@@ -1192,25 +1193,25 @@
   },
   "repeater_ownerInfo": "Інформація про оператора",
   "repeater_ownerInfoHelper": "Публічні метадані для цього ретранслятора",
-  "repeater_floodMax": "Максимальна кількість переходів під час поширення через всю мережу (flood)",
-  "repeater_floodMaxHelper": "Максимальна кількість переходів, яку може пройти flood-пакет (0-64)",
+  "repeater_floodMax": "Макс. кількість переходів Flood",
+  "repeater_floodMaxHelper": "Максимальна кількість переходів, яку може пройти Flood-пакет (0-64)",
   "repeater_advancedSettings": "Додатково",
   "repeater_advancedSettingsSubtitle": "Тонке налаштування для досвідчених операторів",
   "repeater_pathHashMode": "Розмір ID вузла в шляхах",
   "repeater_pathHashModeHelper": "Розмір ID цього ретранслятора в шляхах оголошень, які він надсилає: 1 байт (256 ID, до 64 переходів), 2 байти (65 тис. ID, до 32 переходів), 3 байти (16 млн ID, до 21 переходу). Не впливає на пересилання; ретранслятори v1.14+ пересилають усі розміри, але старіша прошивка відкидає пакети з 2- або 3-байтовими ID.",
-  "repeater_txDelay": "Затримка TX для flood",
-  "repeater_txDelayHelper": "Затримка повторного надсилання для трафіку через всю мережу (flood), як множник від часу передачі пакета (0-2, за замовчуванням 0,5). Чим вище значення, тим менше конфліктів, але повільніше передавання.",
+  "repeater_txDelay": "Затримка TX для Flood",
+  "repeater_txDelayHelper": "Затримка повторного надсилання для Flood-трафіку, як множник від часу передачі пакета (0-2, за замовчуванням 0,5). Чим вище значення, тим менше конфліктів, але повільніше передавання.",
   "repeater_directTxDelay": "Затримка прямої передачі TX",
-  "repeater_directTxDelayHelper": "Інтервал між повторними передачами для прямого (не flood) трафіку, як множник часу передачі пакета в ефірі (0-2, за замовчуванням 0,3).",
+  "repeater_directTxDelayHelper": "Інтервал між повторними передачами для прямого (не Flood) трафіку, як множник часу передачі пакета в ефірі (0-2, за замовчуванням 0,3).",
   "repeater_intThresh": "Порогове значення перешкод",
   "repeater_intThreshHelper": "Порогове значення встановлено для калібрування шумового рівня радіо, щоб відхиляти сигнали, що перевищують цей рівень. 0 – вимкнено; активуйте лише у разі виявлення помилок RX у шумному діапазоні.",
   "repeater_agcResetInterval": "Інтервал перезавантаження AGC",
   "repeater_agcResetIntervalHelper": "Як часто скидати автоматичне регулювання підсилення (AGC) радіо, щоб вийти із завислого стану підсилення. У секундах, округлюється вниз до кратного 4. 0 вимикає періодичне скидання.",
   "repeater_actionsTitle": "Дії",
-  "repeater_sendAdvert": "Надіслати оголошення через всю мережу (flood)",
-  "repeater_sendAdvertSubtitle": "Розповсюдити оголошення через всю мережу (flood).",
-  "repeater_sendAdvertZeroHop": "Надіслати оголошення без ретрансляції",
-  "repeater_sendAdvertZeroHopSubtitle": "Розповсюдити оголошення лише на один перехід (без ретрансляторів)",
+  "repeater_sendAdvert": "Надіслати Flood-оголошення",
+  "repeater_sendAdvertSubtitle": "Розповсюдити Flood-оголошення.",
+  "repeater_sendAdvertZeroHop": "Надіслати Zero Hop оголошення",
+  "repeater_sendAdvertZeroHopSubtitle": "Оголошення лише безпосереднім сусідам (без ретрансляторів)",
   "repeater_clockSync": "Синхронізувати годинник зараз",
   "repeater_clockSyncSubtitle": "Передайте час вашого телефону на ретранслятор.",
   "repeater_actionSucceeded": "{action}: успішно",
@@ -1304,19 +1305,19 @@
   "repeater_cliHelpSetTx": "Встановлює потужність передачі LoRa в дБм (для застосування потрібне перезавантаження).",
   "repeater_cliHelpSetRepeat": "Вмикає або вимикає роль ретранслятора для цього вузла.",
   "repeater_cliHelpSetAllowReadOnly": "(Сервер кімнати) Якщо «увімкнено», порожній пароль дозволить вхід, але не дозволить публікувати в кімнаті. (тільки читання)",
-  "repeater_cliHelpSetFloodMax": "Встановлює максимальну кількість переходів для вхідних пакетів flood (якщо >= max, пакет не пересилається).",
+  "repeater_cliHelpSetFloodMax": "Встановлює максимальну кількість переходів для вхідних пакетів Flood (якщо >= max, пакет не пересилається).",
   "repeater_cliHelpSetIntThresh": "Встановлює поріг інтерференції (в дБ). Значення за замовчуванням — 14. Встановлення на 0 вимикає виявлення інтерференції каналу.",
   "repeater_cliHelpSetAgcResetInterval": "Встановлює інтервал скидання автоматичного контролера посилення (AGC). Встановіть 0 для вимкнення.",
   "repeater_cliHelpSetMultiAcks": "Вмикає або вимикає функціональність подвійних ACK.",
   "repeater_cliHelpSetAdvertInterval": "Встановлює інтервал таймера для надсилання локального пакету оголошення (без ретрансляції). Встановіть 0 для вимкнення.",
-  "repeater_cliHelpSetFloodAdvertInterval": "Встановлює інтервал таймера в годинах для надсилання пакету оголошення через всю мережу. Встановіть 0 для вимкнення.",
+  "repeater_cliHelpSetFloodAdvertInterval": "Встановлює інтервал таймера в годинах для надсилання Flood-оголошень. Встановіть 0 для вимкнення.",
   "repeater_cliHelpSetGuestPassword": "Встановлює/оновлює гостьовий пароль. (для ретрансляторів гостьові підключення можуть надсилати запит «Get Stats»)",
   "repeater_cliHelpSetName": "Встановлює ім'я для оголошення.",
   "repeater_cliHelpSetLat": "Встановлює широту для карти оголошень. (десяткові градуси)",
   "repeater_cliHelpSetLon": "Встановлює довготу для карти оголошень. (десяткові градуси)",
   "repeater_cliHelpSetRadio": "Повністю встановлює нові параметри радіо та зберігає їх у налаштуваннях. Потребує команди «перезавантаження» для застосування.",
   "repeater_cliHelpSetRxDelay": "Базові (експериментальні) параметри для застосування невеликої затримки до отриманих пакетів залежно від сили сигналу/оцінки. Встановіть 0 для вимкнення.",
-  "repeater_cliHelpSetTxDelay": "Встановлює множник для часу роботи в режимі «через всю мережу» (flood) для пакету та системи випадкових слотів, щоб затримати його відправку (для зменшення ймовірності колізій).",
+  "repeater_cliHelpSetTxDelay": "Встановлює множник для часу в ефірі Flood-пакету та систему випадкових слотів, щоб затримати його відправку (для зменшення ймовірності колізій).",
   "repeater_cliHelpSetDirectTxDelay": "Те саме, що й txdelay, але для застосування випадкової затримки при пересиланні пакетів у прямому режимі.",
   "repeater_cliHelpSetBridgeEnabled": "Увімкнути/Вимкнути міст.",
   "repeater_cliHelpSetBridgeDelay": "Встановити затримку перед пересиланням пакетів.",
@@ -1332,13 +1333,13 @@
   "repeater_cliHelpLogErase": "Видаляє журнали пакетів з файлової системи.",
   "repeater_cliHelpNeighbors": "Показує список інших вузлів-ретрансляторів, почутих через оголошення без ретрансляції. Кожен рядок — id-hex-префікс:timestamp:snr-помножено-на-4",
   "repeater_cliHelpNeighborRemove": "Видаляє перший відповідний запис (за префіксом публічного ключа (hex)) зі списку сусідів.",
-  "repeater_cliHelpRegion": "(тільки серійний) Перелічує всі визначені регіони та поточні дозволи на оголошення «через всю мережу» (flood).",
+  "repeater_cliHelpRegion": "(тільки серійний) Перелічує всі визначені регіони та поточні дозволи Flood.",
   "repeater_cliHelpRegionLoad": "ПРИМІТКА: це спеціальний виклик кількох команд. Кожна наступна команда — це назва регіону (з відступом пробілами для позначення ієрархії батьків, мінімум один пробіл). Завершується надсиланням порожнього рядка/команди.",
   "repeater_cliHelpRegionGet": "Шукає регіон із заданим префіксом назви (або «*» для глобальної області). Відповідає: «-> ім'я-регіону (ім'я-батька) 'F'»",
   "repeater_cliHelpRegionPut": "Додає або оновлює визначення регіону з заданою назвою.",
   "repeater_cliHelpRegionRemove": "Видаляє визначення регіону із заданою назвою. (має збігатися точно та не мати дочірніх регіонів)",
-  "repeater_cliHelpRegionAllowf": "Встановлює дозвіл «Flood» для заданого регіону. ('*' для глобальної/успадкованої області)",
-  "repeater_cliHelpRegionDenyf": "Видаляє дозвіл «Flood» для заданого регіону. (ПРИМІТКА: на даному етапі не рекомендується використовувати для глобальної/успадкованої області!! )",
+  "repeater_cliHelpRegionAllowf": "Встановлює дозвіл «F»lood для заданого регіону. ('*' для глобальної/успадкованої області)",
+  "repeater_cliHelpRegionDenyf": "Видаляє дозвіл «F»lood для заданого регіону. (ПРИМІТКА: на даному етапі не рекомендується використовувати для глобальної/успадкованої області!! )",
   "repeater_cliHelpRegionHome": "Відповідає поточним «домашнім» регіоном. (Примітка: поки ніде не застосовується, зарезервовано для майбутнього використання)",
   "repeater_cliHelpRegionHomeSet": "Встановлює «домашній» регіон.",
   "repeater_cliHelpRegionSave": "Зберігає список/карту регіонів у сховищі.",
@@ -1504,7 +1505,7 @@
     }
   },
   "channelPath_unknownPath": "Невідомий",
-  "channelPath_floodPath": "Через всю мережу",
+  "channelPath_floodPath": "Flood",
   "channelPath_directPath": "Напряму",
   "channelPath_observedZeroOf": "0 з {total} переходів",
   "@channelPath_observedZeroOf": {
@@ -1796,8 +1797,8 @@
   "contacts_invalidAdvertFormat": "Недійсні контактні дані",
   "contacts_contactImported": "Контакт було імпортовано.",
   "contacts_contactImportFailed": "Контакт не вдалось імпортувати",
-  "contacts_zeroHopAdvert": "Оголошення без ретрансляції",
-  "contacts_floodAdvert": "Оголошення через всю мережу (flood)",
+  "contacts_zeroHopAdvert": "Zero Hop оголошення",
+  "contacts_floodAdvert": "Flood-оголошення",
   "contacts_copyAdvertToClipboard": "Копіювати оголошення",
   "contacts_clipboardEmpty": "Буфер обміну порожній",
   "appSettings_languageRu": "Російська",
@@ -2236,14 +2237,6 @@
   "contact_lastSeen": "Останній раз бачили",
   "contact_teleEnv": "Середовище телеметрії",
   "contact_teleEnvSubtitle": "Дозволити спільний доступ до даних датчиків середовища",
-  "appSettings_initialRouteWeight": "Початкова вартість маршруту",
-  "appSettings_initialRouteWeightSubtitle": "Початкова вага для нових відкритих шляхів",
-  "appSettings_maxRouteWeight": "Максимальна вага маршруту",
-  "appSettings_maxRouteWeightSubtitle": "Максимальна вага, яку може накопичити маршрут завдяки успішним доставкам.",
-  "appSettings_routeWeightSuccessIncrement": "Збільшення ваги успіху",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Вага, додана до маршруту після успішної доставки",
-  "appSettings_routeWeightFailureDecrement": "Зменшення ваги помилки",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Вага, яка була знята з маршруту після невдалої доставки",
   "appSettings_maxMessageRetries": "Максимальна кількість повторних спроб надсилання повідомлення",
   "appSettings_maxMessageRetriesSubtitle": "Кількість спроб повторного відправлення повідомлення перед тим, як позначити його як невдале",
   "appSettings_ipfsImageLinks": "Налаштування IPFS-провайдера",
@@ -2406,7 +2399,7 @@
   "repeater_sensors": "Датчики",
   "repeater_cliHelpPowerOff": "Вимикає живлення пристрою. (відповідь не очікується)",
   "repeater_cliHelpClkReboot": "Скидає годинник до відомої епохи та перезавантажує пристрій.",
-  "repeater_cliHelpAdvertZeroHop": "Надсилає оголошення без ретрансляції (лише безпосереднім сусідам).",
+  "repeater_cliHelpAdvertZeroHop": "Надсилає Zero Hop оголошення (лише безпосереднім сусідам).",
   "repeater_cliHelpStartOta": "Запускає оновлення прошивки безпосередньо через повітря на сумісних платах.",
   "repeater_cliHelpTime": "Встановлює час пристрою відповідно до заданих секунд від початку епохи Unix. Час не може бути переведений назад.",
   "repeater_cliHelpBoard": "Показує виробника/ідентифікатор обладнання.",
@@ -2438,14 +2431,14 @@
   "repeater_cliHelpGetMultiAcks": "Показує, чи увімкнено режим подвійного підтвердження (1) або вимкнено (0).",
   "repeater_cliHelpGetAllowReadOnly": "Показує, чи дозволено лише читання для гостей.",
   "repeater_cliHelpGetAdvertInterval": "Показує тривалість інтервалу локальних оголошень у хвилинах.",
-  "repeater_cliHelpGetFloodAdvertInterval": "Показує інтервал оголошень через всю мережу (flood), виражений у годинах.",
+  "repeater_cliHelpGetFloodAdvertInterval": "Показує інтервал Flood-оголошень у годинах.",
   "repeater_cliHelpGetGuestPassword": "Відображає налаштований пароль для гостей.",
   "repeater_cliHelpGetLat": "Відображає задану широту.",
   "repeater_cliHelpGetLon": "Відображає задану довготу.",
   "repeater_cliHelpGetRxDelay": "Відображає базове значення rxdelay.",
-  "repeater_cliHelpGetTxDelay": "Показує коефіцієнт затримки сигналу в режимі «через всю мережу» (flood).",
+  "repeater_cliHelpGetTxDelay": "Показує коефіцієнт затримки сигналу в режимі Flood.",
   "repeater_cliHelpGetDirectTxDelay": "Показує коефіцієнт затримки сигналу в режимі прямого зв'язку.",
-  "repeater_cliHelpGetFloodMax": "Показує максимальну кількість переходів під час пересилання через всю мережу (flood).",
+  "repeater_cliHelpGetFloodMax": "Показує максимальну кількість переходів для Flood.",
   "repeater_cliHelpGetOwnerInfo": "Відображає рядок з контактною інформацією власника.",
   "repeater_cliHelpGetPathHashMode": "Показує режим розміру ID вузла в оголошеннях (0 = 1 байт, 1 = 2 байти, 2 = 3 байти).",
   "repeater_cliHelpGetLoopDetect": "Демонструє чутливість до виявлення циклів.",
@@ -2467,8 +2460,8 @@
   "repeater_cliHelpSensorList": "Перераховує всі налаштування користувацьких датчиків, розділені на сторінки, починаючи з опціонального індексу початку.",
   "repeater_cliHelpRegionDefault": "Показує поточну область дії регіону за замовчуванням.",
   "repeater_cliHelpRegionDefaultSet": "Встановлює значення регіону за замовчуванням. Використовуйте \"<null>\", щоб очистити.",
-  "repeater_cliHelpRegionListAllowed": "Перелік регіонів, де дозволено поширення через всю мережу (flood).",
-  "repeater_cliHelpRegionListDenied": "Перелік регіонів, де заборонено поширення через всю мережу (flood).",
+  "repeater_cliHelpRegionListAllowed": "Перелік регіонів, де дозволено Flood.",
+  "repeater_cliHelpRegionListDenied": "Перелік регіонів, де заборонено Flood.",
   "repeater_cliHelpStatsPackets": "(Тільки для серійного використання) Відображає статистику на рівні пакетів.",
   "repeater_cliHelpStatsRadio": "(Тільки для серій) Відображає радіостатистику.",
   "repeater_cliHelpStatsCore": "(Тільки для серійного використання) Відображає основні статистичні дані про програмне забезпечення.",
@@ -2577,10 +2570,10 @@
   "contacts_searchOpen": "Пошук контактів",
   "contacts_searchClose": "Закрити пошук",
   "routing_title": "Маршрутизація",
-  "routing_modeAuto": "Автомобіль",
-  "routing_modeFlood": "Через всю мережу",
-  "routing_modeManual": "Інструкція",
-  "routing_modeAutoHint": "Автоматично обирає найкращий відомий шлях, а за відсутності відомого шляху використовує режим «через всю мережу» (flood).",
+  "routing_modeAuto": "Авто",
+  "routing_modeFlood": "Flood",
+  "routing_modeManual": "Вручну",
+  "routing_modeAutoHint": "Автоматично обирає найкращий відомий шлях, а за відсутності відомого шляху використовує режим Flood.",
   "routing_modeFloodHint": "Передавання через усі ретранслятори. Найбільш надійний спосіб, але потребує більше часу.",
   "routing_modeManualHint": "Завжди доставляє точно за вказаним вами маршрутом.",
   "routing_currentRoute": "Поточний маршрут",
@@ -2596,10 +2589,10 @@
   "routing_qualityGood": "Чудова перша спроба",
   "routing_qualityFair": "Перший, але вдалий, крок",
   "routing_qualityWorked": "Доставлено",
-  "routing_qualityFlood": "Отримано через всю мережу (flood)",
+  "routing_qualityFlood": "Отримано через Flood",
   "routing_qualityUntested": "Не протестовано",
   "routing_neverWorked": "ніколи не підтверджено",
-  "routing_floodDelivery": "Доставка через всю мережу (flood)",
+  "routing_floodDelivery": "Доставка через Flood",
   "pathEditor_title": "Створити маршрут",
   "pathEditor_hopCounter": "{count} з 64 штук хмелю",
   "pathEditor_noHops": "Ще не додано жодного переходу. Натисніть на відповідні кнопки нижче, щоб додати їх у потрібному порядку, або збережіть шлях без переходів, щоб надіслати напряму.",
@@ -2609,8 +2602,8 @@
   "pathEditor_hexLabel": "Префікси для шестнадцяткової системи числення",
   "pathEditor_hexHelper": "Два шестизначні символи на кожний крок, розділені комами",
   "pathEditor_invalidTokens": "Неправильно: {tokens}",
-  "routing_lastWorked": "worked {when}",
-  "routing_deliveryCounts": "{successes} delivered, {failures} failed",
+  "routing_lastWorked": "працював {when}",
+  "routing_deliveryCounts": "{successes} доставлено, {failures} не доставлено",
   "pathEditor_tooManyHops": "Максимум 64 хмелеві колоди",
   "pathEditor_usePath": "Використовуйте цей шлях",
   "pathEditor_removeHop": "Видалити перехід",
@@ -2862,7 +2855,7 @@
   "repeater_pathHashModeOption2": "3 байти",
   "repeater_pathHashModeOption3": "4 байти",
   "appSettings_batteryLipoHv": "LiPo HV (3.0-4.35В)",
-  "channels_regionSetTo": "Ріон: {region}",
+  "channels_regionSetTo": "Регіон: {region}",
   "channels_regionNotSet": "Ріон: нема",
   "channels_regionSelect_Title": "Вybірте регіон",
   "channels_clearRegion": "Чистя зона",
@@ -2913,7 +2906,7 @@
   "imageMessages_downloadFailed": "Модель для зображень не можна сказати.",
   "imageMessages_autoProcessTitle": "Автоматично оброблювати obraзи",
   "imageMessages_autoProcessSubtitle": "Кожна картинка повинні бути відтворена на мій момент прибуття. Використовує приблизно 2 ГБ пам'яті на кожен раз; відключіть від відтворення за допомогою кlikу.",
-  "imageSend_title": "Нашкоду зовні\n\n(or more naturally, depending on context)\n\nПошукуєте изображення",
+  "imageSend_title": "Надіслати зображення",
   "imageSend_cropNote": "Манітовано до 512 × 512 · соотношення варість не зберігається",
   "imageSend_originalSize": "Оригінал",
   "imageSend_onAirSize": "На ері",
@@ -2930,7 +2923,7 @@
   "imageSend_radioUnknownBody": "Залучіться до пристрою, щоб можна було розрахунювати час в етері.",
   "imageSend_longSendTitle": "Длуга передача",
   "imageSend_longSendBody": "Це забезпечить канал на approximativno {duration} хвилин.",
-  "imageSend_floodNote": "Поширення через всю мережу (flood): кожен ретранслятор у діапазоні пересилає кожен пакет, тому канал залишається зайнятим довше, ніж зазначено тут.",
+  "imageSend_floodNote": "Flood: кожен ретранслятор у діапазоні пересилає кожен пакет, тому канал залишається зайнятим довше, ніж зазначено тут.",
   "imageSend_parityTitle": "Пакет відновлення",
   "imageSend_paritySubtitle": "Один дополний пакет. Групові посилання не відповідають, тому це дозволяє відвідувачу відтворити зображення, якщо один пакет втрачений.",
   "imageSend_send": "Пошутить",
@@ -2965,16 +2958,16 @@
   "chat_longMessageRetryNote": "Понад 158 байтів: надсилається не більше {count} разів",
   "reaction_report": "Реакції",
   "repeater_bridgeNote": "Доступно лише для прошивки, зібраної з мостом (RS232 або ESP-NOW).",
-  "repeater_cliHelpGetFloodMaxAdvert": "Показує максимальну кількість переходів для оголошень через всю мережу (flood).",
-  "repeater_cliHelpGetFloodMaxUnscoped": "Показує максимальну кількість переходів для пакетів через всю мережу (flood) без визначеної області.",
+  "repeater_cliHelpGetFloodMaxAdvert": "Показує максимальну кількість переходів для Flood-оголошень.",
+  "repeater_cliHelpGetFloodMaxUnscoped": "Показує максимальну кількість переходів для Flood-пакетів без визначеної області.",
   "repeater_cliHelpGetRadioFemRxGain": "Показує, чи увімкнено підсилення RX вхідного модуля LoRa.",
   "repeater_cliHelpGetRadioFemTxGain": "Показує, чи увімкнено підсилення TX вхідного модуля LoRa.",
   "repeater_cliHelpRegionDef": "Визначає ланцюжок регіонів однією командою: кожне ім’я додається під попереднім; \"name,parent\" додає ім’я і продовжує під вказаним батьківським регіоном. У відповідь повертає список регіонів.",
-  "repeater_cliHelpSetFloodMaxAdvert": "Встановлює максимальну кількість переходів для пересилання оголошень через всю мережу (flood) (0-64).",
-  "repeater_cliHelpSetFloodMaxUnscoped": "Встановлює максимальну кількість переходів для пересилання пакетів через всю мережу (flood) без визначеної області регіону (0-64).",
+  "repeater_cliHelpSetFloodMaxAdvert": "Встановлює максимальну кількість переходів для пересилання Flood-оголошень (0-64).",
+  "repeater_cliHelpSetFloodMaxUnscoped": "Встановлює максимальну кількість переходів для пересилання Flood-пакетів без визначеної області регіону (0-64).",
   "repeater_cliHelpSetRadioFemRxGain": "Перемикає підсилення RX (LNA) вхідного модуля LoRa. Плати без нього відповідають \"Error: unsupported\".",
   "repeater_cliHelpSetRadioFemTxGain": "Перемикає підсилення TX (PA) вхідного модуля LoRa. Плати без нього відповідають \"Error: unsupported\".",
-  "repeater_cliRegionLoadActive": "Режим завантаження регіонів: надсилайте по одному імені регіону в рядку, з відступом пробілами під батьківським регіоном (додайте F після імені, щоб дозволити поширення через всю мережу). Рядки не отримують відповіді. Надішліть порожній рядок, щоб завершити, а потім \"region save\", щоб зберегти результат.",
+  "repeater_cliRegionLoadActive": "Режим завантаження регіонів: надсилайте по одному імені регіону в рядку, з відступом пробілами під батьківським регіоном (додайте F після імені, щоб дозволити поширення Flood). Рядки не отримують відповіді. Надішліть порожній рядок, щоб завершити, а потім \"region save\", щоб зберегти результат.",
   "repeater_cliRegionLoadEnd": "(кінець завантаження регіонів)",
   "repeater_cliRegionLoadHint": "Рядок регіону або порожній рядок для завершення",
   "repeater_frequencyInvalid": "Некоректна частота (150-2500 МГц)",
@@ -3064,7 +3057,7 @@
       }
     }
   },
-  "settings_pathHashModeHelper": "Розмір кожного ідентифікатора вузла, який записується в шлях flood-пакетів, які надсилає це радіо: 1 байт (256 ідентифікаторів, до 64 переходів), 2 байти (65 тис. ідентифікаторів, до 32 переходів), 3 байти (16 млн ідентифікаторів, до 21 переходу). Більші ідентифікатори зменшують кількість зіткнень, але ретранслятори з прошивкою старішою за v1.14 відкидають пакети з 2- або 3-байтовими ідентифікаторами.",
+  "settings_pathHashModeHelper": "Розмір кожного ідентифікатора вузла, який записується в шлях Flood-пакетів, які надсилає це радіо: 1 байт (256 ідентифікаторів, до 64 переходів), 2 байти (65 тис. ідентифікаторів, до 32 переходів), 3 байти (16 млн ідентифікаторів, до 21 переходу). Більші ідентифікатори зменшують кількість зіткнень, але ретранслятори з прошивкою старішою за v1.14 відкидають пакети з 2- або 3-байтовими ідентифікаторами.",
   "settings_requiresFirmware": "Потрібна прошивка {version} або новіша",
   "@settings_requiresFirmware": {
     "placeholders": {
@@ -3209,7 +3202,7 @@
   "settings_regionUseRadioDefault": "Типово для радіо ({region})",
   "settings_regionNoRegion": "Без регіону (без обмеження)",
   "settings_regionRadioDefault": "Типовий регіон радіо",
-  "settings_regionRadioDefaultSubtitle": "Зберігається на радіо. Його використовують flood-розсилки без регіону — із цього та будь-якого іншого застосунку, підключеного до радіо.",
+  "settings_regionRadioDefaultSubtitle": "Зберігається на радіо. Його використовують Flood-розсилки без регіону — із цього та будь-якого іншого застосунку, підключеного до радіо.",
   "settings_regionRadioDefaultUpdated": "Типовий регіон радіо оновлено",
   "settings_regionRadioDefaultFailed": "Не вдалося оновити типовий регіон радіо",
   "appSettings_channelMinHopsCountRepeaters": "Також враховувати інші найближчі ретранслятори",
@@ -3217,7 +3210,7 @@
   "appSettings_regionOnHopsLine": "Регіон поруч із кількістю хопів",
   "appSettings_regionOnHopsLineSubtitle": "Показувати регіон повідомлення каналу в одному рядку з кількістю хопів, а не під ним.",
   "channels_regionRadioDefaultSuffix": "(типово для радіо)",
-  "channels_regionRadioDefaultApplies": "Це радіо надсилає flood без регіону у свій типовий регіон: {region}.",
+  "channels_regionRadioDefaultApplies": "Це радіо надсилає Flood без регіону у свій типовий регіон: {region}.",
   "chat_futureTimestampWarning": "Час цього повідомлення в майбутньому, тож годинник відправника може бути неточним. Повідомлення показано в порядку отримання.",
   "discoveredContacts_scan": "Сканувати найближчі вузли",
   "discoveredContacts_scanTitle": "Найближчі вузли",
@@ -3233,13 +3226,13 @@
   "channels_waitForSync": "Канали ще завантажуються з радіо. Спробуйте після завершення синхронізації.",
   "channels_nameTooLong": "Ім’я задовге (макс. {maxBytes} байт).",
   "repeater_valueRequired": "{field}: введіть значення",
-  "repeater_floodMaxAdvert": "Макс. кількість переходів для advert (flood)",
+  "repeater_floodMaxAdvert": "Макс. кількість переходів для advert (Flood)",
   "repeater_floodMaxAdvertHelper": "Максимальна кількість переходів, які може пройти розісланий advert (0-64, за замовчуванням 8)",
-  "repeater_floodMaxUnscoped": "Макс. кількість переходів flood без регіону",
-  "repeater_floodMaxUnscopedHelper": "Максимальна кількість переходів для flood без області регіону (0-64, за замовчуванням 64). Низьке значення, наприклад 3, залишає трафік без регіону локальним.",
-  "repeater_floodMaxUnscopedUnset": "Те саме, що flood max",
+  "repeater_floodMaxUnscoped": "Макс. кількість переходів Flood без регіону",
+  "repeater_floodMaxUnscopedHelper": "Максимальна кількість переходів для Flood без області регіону (0-64, за замовчуванням 64). Низьке значення, наприклад 3, залишає трафік без регіону локальним.",
+  "repeater_floodMaxUnscopedUnset": "Те саме, що Flood max",
   "repeater_rxDelay": "Затримка приймання",
-  "repeater_rxDelayHelper": "Утримує flood-пакети, почуті зі слабким сигналом, перед пересиланням, щоб шляхи з сильним сигналом ішли першими і надсилалося менше дублікатів (0-20, 0 вимикає).",
+  "repeater_rxDelayHelper": "Утримує Flood-пакети, почуті зі слабким сигналом, перед пересиланням, щоб шляхи з сильним сигналом ішли першими і надсилалося менше дублікатів (0-20, 0 вимикає).",
   "repeater_cad": "Виявлення активності каналу",
   "repeater_cadHelper": "Прослуховує активність перед передачею і чекає, поки канал зайнятий. Працює разом з пороговим значенням перешкод.",
   "repeater_adcMultiplier": "Калібрування напруги батареї",
@@ -3543,6 +3536,8 @@
   "messageFilter_automaticSection": "Автоматично",
   "messageFilter_duplicates": "Повідомлення, що повторюються",
   "messageFilter_duplicatesSubtitle": "Те саме повідомлення, надіслане знову або кількома відправниками",
+  "messageFilter_repeatSends": "Яка відправка вважається повтором",
+  "messageFilter_repeatSendsSubtitle": "Приховувати повідомлення, якщо той самий відправник надсилає його повторно протягом 10 хвилин (кількість відправлень: {count})",
   "messageFilter_repeatedCharacters": "Повторювані символи",
   "messageFilter_repeatedCharactersSubtitle": "Довгі послідовності одного символа, наприклад «aaaaaaaaaaaaaaaaaaaa»",
   "messageFilter_learning": "Навчання на натисканнях «Спам»",
@@ -3571,5 +3566,197 @@
   "messageFilter_filterSenderConfirm": "Приховати всі повідомлення від «{name}»?",
   "messageFilter_filterLikeThis": "Фільтрувати повідомлення, схожі на це…",
   "messageFilter_channelToggle": "Фільтрувати повідомлення в цьому каналі",
-  "messageFilter_ghostIconTooltip": "Приховано вашим фільтром повідомлень"
+  "messageFilter_ghostIconTooltip": "Приховано вашим фільтром повідомлень",
+  "chatSearch_tooltip": "Пошук повідомлень",
+  "chatSearch_hint": "Пошук повідомлень",
+  "chatSearch_close": "Закрити пошук",
+  "chatSearch_resultCount": "{count, plural, one{{count} результат} few{{count} результати} many{{count} результатів} other{{count} результату}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Відповідних повідомлень немає",
+  "chatSearch_noResultsHint": "Спробуйте інше слово або перевірте написання",
+  "contactShare_headerOutgoing": "Ви надіслали контакт",
+  "contactShare_headerIncoming": "Надіслав(-ла) контакт",
+  "contactShare_add": "Додати контакт",
+  "contactShare_adding": "Додавання контакту...",
+  "contactShare_saved": "Збережено",
+  "contactShare_isYou": "Це ви",
+  "contactShare_shareAction": "Надіслати контакт",
+  "contactShare_pickerTitle": "Надіслати контакт",
+  "contactShare_myContact": "Мій контакт",
+  "contactShare_searchHint": "Пошук контактів",
+  "contactShare_noContacts": "Контактів не знайдено",
+  "contactShare_preview": "Контакт: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Надіслав(-ла) контакт: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Трасування шляху за хешами",
+  "manualTrace_inputLabel": "Хеші репітерів",
+  "manualTrace_helper": "Приклад: {example}. Розділяйте комами або пробілами.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Хопи ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Невідомий вузол",
+  "manualTrace_enterHashes": "Введіть хеші",
+  "manualTrace_run": "Запустити трасування шляху",
+  "manualTrace_notConnected": "Підключіться до радіо, щоб запустити трасування",
+  "manualTrace_errorInvalidHex": "Дозволені лише шістнадцяткові символи (0-9, A-F)",
+  "manualTrace_errorOddLength": "Кожен хеш має складатися з парної кількості шістнадцяткових символів, що відповідає розміру хопа",
+  "manualTrace_errorMixedWidths": "Усі хеші мають бути однакової довжини",
+  "manualTrace_errorUnsupportedWidth": "Хеші мають бути завдовжки 1, 2 або 3 байти (2, 4 або 6 шістнадцяткових символів)",
+  "manualTrace_errorTooManyHops": "Шлях задовгий (максимум {max} байт)",
+  "manualTrace_errorTraceTooLong": "Забагато хопів для трасування в одному запиті. Видаліть кілька хопів або виберіть «Як введено».",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_jumpFailed": "Не вдалося знайти це повідомлення в чаті",
+  "chat_clearSelection": "Скасувати вибір",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Видалити {count} повідомлення з цього пристрою?} few{Видалити {count} повідомлення з цього пристрою?} many{Видалити {count} повідомлень з цього пристрою?} other{Видалити {count} повідомлення з цього пристрою?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Видалити повідомлення?",
+  "chat_messagesDeleted": "{count, plural, one{{count} повідомлення видалено} few{{count} повідомлення видалено} many{{count} повідомлень видалено} other{{count} повідомлення видалено}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Вибрати все",
+  "chat_selectMessages": "Вибрати повідомлення",
+  "chat_selectedCount": "Вибрано: {count}",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Додати знову",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{{count} повідомлення позначено як не спам} few{{count} повідомлення позначено як не спам} many{{count} повідомлень позначено як не спам} other{{count} повідомлення позначено як не спам}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{{count} повідомлення позначено як спам} few{{count} повідомлення позначено як спам} many{{count} повідомлень позначено як спам} other{{count} повідомлення позначено як спам}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Розгорнути список ретрансляторів",
+  "pathMap_showMap": "Показати карту",
+  "routing_modeDirect": "Напряму",
+  "routing_modeDirectHint": "Завжди надсилає напряму цьому контакту, без проміжних ретрансляторів. Використовуйте, якщо він у зоні радіозв'язку.",
+  "settings_export": "Експорт",
+  "settings_exportSubtitle": "Експорт контактів і репітерів у GPX",
+  "backupRestore_title": "Резервне копіювання",
+  "backupRestore_subtitle": "Збереження та відновлення даних застосунку й налаштувань радіо",
+  "backupRestore_import": "Імпорт",
+  "backupRestore_selectImportFile": "Імпорт файлу",
+  "backupRestore_password": "Пароль (необов'язково)",
+  "backupRestore_passwordHelp": "Пароль шифрує файл. Без пароля файл зберігається відкритим текстом і може містити приватні ключі й ключі каналів, історію та облікові дані.",
+  "backupRestore_importUnavailable": "Перевірте пароль або виберіть підтримуваний файл резервної копії.",
+  "backupRestore_items": "Елементи резервної копії та відновлення",
+  "backupRestore_nodeSettings": "Налаштування вузла",
+  "backupRestore_nodeSettingsDescription": "Назва пристрою, приватний і публічний ключі, налаштування радіо та регіони",
+  "backupRestore_deviceName": "Назва пристрою",
+  "backupRestore_privateKey": "Приватний ключ (секретний)",
+  "backupRestore_publicKey": "Публічний ключ",
+  "backupRestore_radioSettings": "Налаштування радіо",
+  "backupRestore_regions": "Регіони",
+  "backupRestore_location": "Місцезнаходження",
+  "backupRestore_contactSettings": "Налаштування контактів",
+  "backupRestore_privacySettings": "Налаштування приватності",
+  "backupRestore_contactsData": "Контакти",
+  "backupRestore_perContactSettings": "Налаштування й фільтри контактів",
+  "backupRestore_contactGroups": "Групи контактів",
+  "backupRestore_contactHistory": "Історія контактів",
+  "backupRestore_channelsData": "Канали",
+  "backupRestore_channelFilters": "Налаштування фільтра повідомлень",
+  "backupRestore_channelSettings": "Налаштування каналів",
+  "backupRestore_communities": "Спільноти",
+  "backupRestore_channelHistory": "Історія каналів",
+  "backupRestore_locationSettings": "Налаштування місцезнаходження",
+  "backupRestore_locationSettingsDescription": "Місцезнаходження, налаштування контактів і приватності",
+  "backupRestore_appSettings": "Налаштування застосунку",
+  "backupRestore_appSettingsDescription": "Параметри застосунку та зовнішнього вигляду",
+  "backupRestore_ipfsKey": "Ключ API IPFS (секретний)",
+  "backupRestore_stadiaMapKey": "Ключ API Stadia Maps (секретний)",
+  "backupRestore_contacts": "Контакти",
+  "backupRestore_contactsDescription": "Контакти, фільтри й налаштування по контактах, групи та історія повідомлень",
+  "backupRestore_discoveredContacts": "Виявлені контакти",
+  "backupRestore_discoveredContactsDescription": "Виявлені контакти та їхні збережені дані",
+  "backupRestore_channels": "Канали",
+  "backupRestore_channelsDescription": "Канали, фільтри каналів, спільноти та історія повідомлень",
+  "backupRestore_backup": "Створити резервну копію",
+  "backupRestore_restore": "Відновити вибране",
+  "backupRestore_backupComplete": "Файл резервної копії створено.",
+  "backupRestore_restoreComplete": "Відновлення завершено. Перепідключіться, якщо ви відновили ідентифікатор радіо.",
+  "backupRestore_missingModelsTitle": "Моделі не завантажено",
+  "backupRestore_missingModelsMessage": "Відновлені налаштування вибирають моделі, яких немає на цьому пристрої:\n{models}\n\nЗавантажити їх зараз?",
+  "backupRestore_downloadModels": "Завантажити моделі",
+  "backupRestore_downloading": "Завантаження…",
+  "backupRestore_cancelDownload": "Скасувати завантаження",
+  "backupRestore_failed": "Помилка резервного копіювання: {error}",
+  "backupRestore_fileTooLarge": "Файл резервної копії перевищує ліміт 100 МБ.",
+  "backupRestore_selectAtLeastOne": "Виберіть принаймні один елемент.",
+  "backupRestore_replaceIdentityTitle": "Замінити ідентифікатор радіо?",
+  "backupRestore_replaceIdentityMessage": "Відновлення налаштувань вузла замінює приватний ключ підключеного радіо та змінює його ідентифікатор. Продовжуйте, лише якщо це навмисно.",
+  "appSettings_languagePtPt": "Португальська (Португалія)",
+  "receivedImage_syntheticBadge": "Відновлено ШІ",
+  "appBar_offlineSubtitle": "Офлайн · {name}",
+  "appBar_offline": "Офлайн",
+  "appBar_reconnecting": "Перепідключення…",
+  "connectSheet_title": "Підключити радіо",
+  "connectSheet_reconnect": "Перепідключитися до {name}",
+  "connectSheet_chooseRadio": "Вибрати радіо",
+  "connectSheet_chooseRadioSubtitle": "Bluetooth, USB або TCP",
+  "connectSheet_stopReconnecting": "Зупинити перепідключення",
+  "connectSheet_reconnectFailed": "Не вдалося зв'язатися з {name}. Переконайтеся, що воно увімкнене й поруч.",
+  "chat_composerOffline": "Підключіться до радіо, щоб надсилати повідомлення"
 }

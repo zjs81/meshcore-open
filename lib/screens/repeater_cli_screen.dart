@@ -10,6 +10,7 @@ import '../connector/meshcore_protocol.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/confirm_clear_dialog.dart';
 import '../widgets/debug_frame_viewer.dart';
+import '../widgets/mesh_ui.dart';
 import '../widgets/radio_disconnected_banner.dart';
 import '../services/repeater_command_service.dart';
 import '../widgets/routing_sheet.dart';
@@ -435,34 +436,25 @@ class _RepeaterCliScreenState extends State<RepeaterCliScreen> {
               PopupMenuItem(
                 value: 'copy',
                 enabled: hasHistory,
-                child: Row(
-                  children: [
-                    const Icon(Icons.copy),
-                    const SizedBox(width: 8),
-                    Text(l10n.repeater_cliCopyTranscript),
-                  ],
+                child: MeshMenuItemRow(
+                  icon: Icons.copy,
+                  label: l10n.repeater_cliCopyTranscript,
                 ),
               ),
               PopupMenuItem(
                 value: 'share',
                 enabled: hasHistory,
-                child: Row(
-                  children: [
-                    const Icon(Icons.share),
-                    const SizedBox(width: 8),
-                    Text(l10n.repeater_cliShareTranscript),
-                  ],
+                child: MeshMenuItemRow(
+                  icon: Icons.share,
+                  label: l10n.repeater_cliShareTranscript,
                 ),
               ),
               PopupMenuItem(
                 value: 'debug',
                 enabled: connected,
-                child: Row(
-                  children: [
-                    const Icon(Icons.bug_report),
-                    const SizedBox(width: 8),
-                    Text(l10n.repeater_debugNextCommand),
-                  ],
+                child: MeshMenuItemRow(
+                  icon: Icons.bug_report,
+                  label: l10n.repeater_debugNextCommand,
                 ),
               ),
             ],

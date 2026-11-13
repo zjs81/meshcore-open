@@ -119,7 +119,8 @@ void main() {
     test('the archive follows the channel ID', () async {
       await _init();
       final store = ChannelMessageStore()..setPublicKeyHex = _deviceA;
-      store.setArchived(_idOne, [_ch('old', 1), _ch('older', 2)]);
+      await store.saveChannelMessages(_idOne, [_ch('old', 1), _ch('older', 2)]);
+      store.setArchivedCount(_idOne, 2);
       expect(store.archivedCount(_idOne), 2);
       expect(store.archivedCount(_idTwo), isNull);
 

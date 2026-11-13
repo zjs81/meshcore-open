@@ -190,6 +190,71 @@
   "settings_deviceInfo": "Device Info",
   "settings_appSettings": "App Settings",
   "settings_appSettingsSubtitle": "Notifications, messaging, and map preferences",
+  "settings_export": "Export",
+  "settings_exportSubtitle": "Export contacts and repeaters as GPX",
+  "backupRestore_title": "Backup & Restore",
+  "backupRestore_subtitle": "Save or restore app data and radio settings",
+  "backupRestore_import": "Import",
+  "backupRestore_selectImportFile": "Import File",
+  "backupRestore_password": "Password (optional)",
+  "backupRestore_passwordHelp": "A password encrypts the file. Blank saves plaintext that may include private/channel keys, history, and credentials.",
+  "backupRestore_importUnavailable": "Check the password or choose a supported backup file.",
+  "backupRestore_items": "Backup and restore items",
+  "backupRestore_nodeSettings": "Node Settings",
+  "backupRestore_nodeSettingsDescription": "Device name, private and public keys, radio settings, and regions",
+  "backupRestore_deviceName": "Device Name",
+  "backupRestore_privateKey": "Private Key (sensitive)",
+  "backupRestore_publicKey": "Public Key",
+  "backupRestore_radioSettings": "Radio Settings",
+  "backupRestore_regions": "Regions",
+  "backupRestore_location": "Location",
+  "backupRestore_contactSettings": "Contact Settings",
+  "backupRestore_privacySettings": "Privacy Settings",
+  "backupRestore_contactsData": "Contacts",
+  "backupRestore_perContactSettings": "Contact Settings and Filters",
+  "backupRestore_contactGroups": "Contact Groups",
+  "backupRestore_contactHistory": "Contact History",
+  "backupRestore_channelsData": "Channels",
+  "backupRestore_channelFilters": "Message Filter Settings",
+  "backupRestore_channelSettings": "Channel Settings",
+  "backupRestore_communities": "Communities",
+  "backupRestore_channelHistory": "Channel History",
+  "backupRestore_locationSettings": "Location Settings",
+  "backupRestore_locationSettingsDescription": "Location, contact settings, and privacy settings",
+  "backupRestore_appSettings": "App Settings",
+  "backupRestore_appSettingsDescription": "App preferences and appearance settings",
+  "backupRestore_ipfsKey": "IPFS API Key (sensitive)",
+  "backupRestore_stadiaMapKey": "Stadia Maps API Key (sensitive)",
+  "backupRestore_contacts": "Contacts",
+  "backupRestore_contactsDescription": "Contacts, per-contact filters and settings, groups, and message history",
+  "backupRestore_discoveredContacts": "Discovered Contacts",
+  "backupRestore_discoveredContactsDescription": "Discovered contacts and their saved details",
+  "backupRestore_channels": "Channels",
+  "backupRestore_channelsDescription": "Channels, channel filters, communities, and message history",
+  "backupRestore_backup": "Create Backup",
+  "backupRestore_restore": "Restore Selected",
+  "backupRestore_backupComplete": "Backup file created.",
+  "backupRestore_restoreComplete": "Restore complete. Reconnect if you restored the radio identity.",
+  "backupRestore_missingModelsTitle": "Models Not Downloaded",
+  "backupRestore_missingModelsMessage": "The restored settings select models that are not available on this device:\n{models}\n\nDownload them now?",
+  "@backupRestore_missingModelsMessage": {
+    "placeholders": {
+      "models": {"type": "String"}
+    }
+  },
+  "backupRestore_downloadModels": "Download Models",
+  "backupRestore_downloading": "Downloading…",
+  "backupRestore_cancelDownload": "Cancel Download",
+  "backupRestore_failed": "Backup operation failed: {error}",
+  "@backupRestore_failed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "backupRestore_fileTooLarge": "Backup file is larger than the 100 MB limit.",
+  "backupRestore_selectAtLeastOne": "Select at least one item.",
+  "backupRestore_replaceIdentityTitle": "Replace radio identity?",
+  "backupRestore_replaceIdentityMessage": "Restoring Node Settings replaces the connected radio's private key and changes its identity. Continue only if this is intended.",
   "settings_nodeSettings": "Node Settings",
   "settings_nodeName": "Node Name",
   "settings_nodeNameNotSet": "Not set",
@@ -482,7 +547,8 @@
   "appSettings_languageDe": "Deutsch",
   "appSettings_languagePl": "Polski",
   "appSettings_languageSl": "Slovenščina",
-  "appSettings_languagePt": "Português",
+  "appSettings_languagePt": "Português (Brasil)",
+  "appSettings_languagePtPt": "Português (Portugal)",
   "appSettings_languageIt": "Italiano",
   "appSettings_languageZh": "中文",
   "appSettings_languageSv": "Svenska",
@@ -491,6 +557,7 @@
   "appSettings_languageBg": "Български",
   "appSettings_languageRu": "Русский",
   "appSettings_languageUk": "Українська",
+  "appSettings_languageCs": "Čeština",
   "repeater_pathHashModeOption0": "1 byte",
   "repeater_pathHashModeOption1": "2 bytes",
   "repeater_pathHashModeOption2": "3 bytes",
@@ -558,14 +625,6 @@
   "appSettings_autoRouteRotationSubtitle": "Cycle between best paths and flood mode",
   "appSettings_autoRouteRotationEnabled": "Auto route rotation enabled",
   "appSettings_autoRouteRotationDisabled": "Auto route rotation disabled",
-  "appSettings_maxRouteWeight": "Max Route Weight",
-  "appSettings_maxRouteWeightSubtitle": "Maximum weight a path can accumulate from successful deliveries",
-  "appSettings_initialRouteWeight": "Initial Route Weight",
-  "appSettings_initialRouteWeightSubtitle": "Starting weight for newly discovered paths",
-  "appSettings_routeWeightSuccessIncrement": "Success Weight Increment",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Weight added to a path after successful delivery",
-  "appSettings_routeWeightFailureDecrement": "Failure Weight Decrement",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Weight removed from a path after failed delivery",
   "appSettings_maxMessageRetries": "Max Message Retries",
   "appSettings_maxMessageRetriesSubtitle": "Number of retry attempts before marking a message as failed",
   "appSettings_ipfsImageLinks": "IPFS provider configuration",
@@ -1017,6 +1076,20 @@
   "channels_regionEmpty": "No regions yet.",
   "channels_manageRegions": "Manage regions",
   "chat_noMessages": "No messages yet",
+  "chatSearch_tooltip": "Search messages",
+  "chatSearch_hint": "Search messages",
+  "chatSearch_close": "Close search",
+  "chatSearch_resultCount": "{count, plural, =1{1 result} other{{count} results}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "No matching messages",
+  "chatSearch_noResultsHint": "Try a different word or check the spelling",
+  "chatSearch_jumpFailed": "Couldn't find that message in the chat",
   "chat_sendMessage": "Send message",
   "chat_sendMessageTo": "Send a message to {contactName}",
   "@chat_sendMessageTo": {
@@ -1057,6 +1130,50 @@
   },
   "chat_messageCopied": "Message copied",
   "chat_messageDeleted": "Message deleted",
+  "chat_selectMessages": "Select messages",
+  "chat_selectedCount": "{count} selected",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Select all",
+  "chat_clearSelection": "Clear selection",
+  "chat_deleteSelectedTitle": "Delete messages?",
+  "chat_deleteSelectedConfirm": "{count, plural, =1{Delete 1 message from this device?} other{Delete {count} messages from this device?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_messagesDeleted": "{count, plural, =1{1 message deleted} other{{count} messages deleted}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, =1{1 message marked as spam} other{{count} messages marked as spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedNotSpamCount": "{count, plural, =1{1 message marked as not spam} other{{count} messages marked as not spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chat_retryingMessage": "Retrying message",
   "chat_retryCount": "Retry {current}/{max}",
   "@chat_retryCount": {
@@ -1215,9 +1332,11 @@
   "routing_modeAuto": "Auto",
   "routing_modeFlood": "Flood",
   "routing_modeManual": "Manual",
+  "routing_modeDirect": "Direct",
   "routing_modeAutoHint": "Picks the best known path automatically, flooding when none is known.",
   "routing_modeFloodHint": "Broadcasts through every repeater. Most reliable, but uses more airtime.",
   "routing_modeManualHint": "Always sends along the exact path you set.",
+  "routing_modeDirectHint": "Always sends straight to this contact with no repeater hops. Use it when they are in radio range.",
   "routing_currentRoute": "Current route",
   "routing_directNoHops": "Direct — no repeater hops",
   "routing_noPathYet": "No path yet. The next message floods until a route is discovered.",
@@ -1302,6 +1421,34 @@
   "chat_floodAuto": "Flood (auto)",
   "chat_direct": "Direct",
   "chat_poiShared": "POI Shared",
+  "contactShare_headerOutgoing": "You shared a contact",
+  "contactShare_headerIncoming": "Shared a contact",
+  "contactShare_add": "Add contact",
+  "contactShare_adding": "Adding contact...",
+  "contactShare_saved": "Saved",
+  "contactShare_addAgain": "Add again",
+  "contactShare_isYou": "This is you",
+  "contactShare_shareAction": "Share contact",
+  "contactShare_pickerTitle": "Share a contact",
+  "contactShare_myContact": "My contact",
+  "contactShare_searchHint": "Search contacts",
+  "contactShare_noContacts": "No contacts found",
+  "contactShare_preview": "Shared contact: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Shared a contact: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "chat_unread": "Unread: {count}",
   "@chat_unread": {
     "placeholders": {
@@ -1368,7 +1515,6 @@
   "map_pinPrivate": "Pin (Private)",
   "map_pinPublic": "Pin (Public)",
   "map_lastSeen": "Last Seen",
-  "map_disconnectConfirm": "Are you sure you want to disconnect from this device?",
   "map_from": "From",
   "map_source": "Source",
   "map_flags": "Flags",
@@ -1432,6 +1578,41 @@
   "map_pathTraceModeAsEntered": "As entered",
   "map_pathTraceModeAsEnteredHint": "The trace follows these hops exactly. Add the hops back to you yourself.",
   "map_pathTraceViewLast": "View last result",
+  "manualTrace_menuItem": "Path trace by hashes",
+  "manualTrace_inputLabel": "Repeater hashes",
+  "manualTrace_helper": "Example: {example}. Separate with commas or spaces.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Hops ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Unknown node",
+  "manualTrace_enterHashes": "Enter hashes",
+  "manualTrace_run": "Run path trace",
+  "manualTrace_notConnected": "Connect to a radio to run a trace",
+  "manualTrace_errorInvalidHex": "Only hex characters (0-9, A-F) are allowed",
+  "manualTrace_errorOddLength": "Each hash needs an even number of hex characters, matching the hop size",
+  "manualTrace_errorMixedWidths": "All hashes must be the same length",
+  "manualTrace_errorUnsupportedWidth": "Hashes must be 1, 2 or 3 bytes (2, 4 or 6 hex characters)",
+  "manualTrace_errorTooManyHops": "Path is too long (maximum {max} bytes)",
+  "manualTrace_errorTraceTooLong": "Too many hops to trace in one request. Remove some hops or choose As entered.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "mapCache_title": "Offline Map Cache",
   "mapCache_selectAreaFirst": "Select an area to cache first",
   "mapCache_noTilesToDownload": "No tiles to download for this area",
@@ -1707,6 +1888,20 @@
       "days": {
         "type": "int"
       },
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
+  "@repeater_hoursMinsSecs": {
+    "placeholders": {
       "hours": {
         "type": "int"
       },
@@ -3285,6 +3480,8 @@
   "pathMap_showPath": "Show path",
   "pathMap_collapsePanel": "Collapse panel",
   "pathMap_expandPanel": "Expand panel",
+  "pathMap_expandHopList": "Expand hop list",
+  "pathMap_showMap": "Show map",
   "pathMap_noLocation": "No location",
   "pathMap_followPacket": "Lock view to packet",
   "pathMap_unfollowPacket": "Unlock view from packet",
@@ -3428,6 +3625,10 @@
         "type": "int"
       }
     }
+  },
+  "receivedImage_syntheticBadge": "AI-reconstructed",
+  "@receivedImage_syntheticBadge": {
+    "description": "Permanent label burnt into the bottom of every received image that an AI model reconstructed from a tiny bitstream. Must never be empty; keep it short (one line over a narrow image)."
   },
   "receivedImage_packetInfo": "Packet info",
   "receivedImage_parityRecovered": "One packet was rebuilt from the recovery packet.",
@@ -3870,6 +4071,19 @@
   "@messageFilter_duplicatesSubtitle": {
     "description": "Message filter: The same message sent again, or by several senders"
   },
+  "messageFilter_repeatSends": "Sends to count as a repeat",
+  "@messageFilter_repeatSends": {
+    "description": "Message filter: title of the setting for which send of the same message by the same sender is hidden as a repeat"
+  },
+  "messageFilter_repeatSendsSubtitle": "Hide a message when the same sender sends it {count} times within 10 minutes",
+  "@messageFilter_repeatSendsSubtitle": {
+    "description": "Message filter: subtitle of the repeat-sends setting",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "messageFilter_repeatedCharacters": "Repeated characters",
   "@messageFilter_repeatedCharacters": {
     "description": "Message filter: Repeated characters"
@@ -4023,5 +4237,60 @@
   "messageFilter_ghostIconTooltip": "Hidden by your message filter",
   "@messageFilter_ghostIconTooltip": {
     "description": "Message filter: Hidden by your message filter"
+  },
+  "appBar_offlineSubtitle": "Offline · {name}",
+  "@appBar_offlineSubtitle": {
+    "description": "App bar subtitle while no radio is connected; name is the last connected radio",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "appBar_offline": "Offline",
+  "@appBar_offline": {
+    "description": "App bar subtitle while no radio is connected and no radio name is known"
+  },
+  "appBar_reconnecting": "Reconnecting…",
+  "@appBar_reconnecting": {
+    "description": "App bar chip while the app is reconnecting to the radio"
+  },
+  "connectSheet_title": "Connect a radio",
+  "@connectSheet_title": {
+    "description": "Title of the sheet opened by the Connect button"
+  },
+  "connectSheet_reconnect": "Reconnect to {name}",
+  "@connectSheet_reconnect": {
+    "description": "Connect sheet option that reconnects to the last radio",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "connectSheet_chooseRadio": "Choose a radio",
+  "@connectSheet_chooseRadio": {
+    "description": "Connect sheet option that opens the radio scanner"
+  },
+  "connectSheet_chooseRadioSubtitle": "Bluetooth, USB or TCP",
+  "@connectSheet_chooseRadioSubtitle": {
+    "description": "Subtitle of the Choose a radio option"
+  },
+  "connectSheet_stopReconnecting": "Stop reconnecting",
+  "@connectSheet_stopReconnecting": {
+    "description": "Connect sheet option that cancels the automatic reconnect"
+  },
+  "connectSheet_reconnectFailed": "Couldn't reach {name}. Make sure it is on and nearby.",
+  "@connectSheet_reconnectFailed": {
+    "description": "Shown when reconnecting to the last radio fails",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_composerOffline": "Connect to a radio to send messages",
+  "@chat_composerOffline": {
+    "description": "Shown in place of the message box while no radio is connected"
   }
 }

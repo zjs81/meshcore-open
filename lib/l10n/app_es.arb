@@ -178,12 +178,13 @@
   "appSettings_languageDe": "Alemán",
   "appSettings_languagePl": "Polaco",
   "appSettings_languageSl": "Esloveno",
-  "appSettings_languagePt": "Portugués",
+  "appSettings_languagePt": "Portugués (Brasil)",
   "appSettings_languageIt": "Italiano",
   "appSettings_languageZh": "Chino",
   "appSettings_languageSv": "Sueco",
   "appSettings_languageNl": "Neerlandés",
   "appSettings_languageSk": "Eslovaco",
+  "appSettings_languageCs": "Checo",
   "appSettings_languageBg": "Búlgaro",
   "appSettings_notifications": "Notificaciones",
   "appSettings_enableNotifications": "Habilitar notificaciones",
@@ -203,7 +204,7 @@
   "appSettings_pathsWillBeCleared": "Las rutas se borrarán después de 5 intentos fallidos.",
   "appSettings_pathsWillNotBeCleared": "Las rutas no se eliminarán automáticamente.",
   "appSettings_autoRouteRotation": "Rotación automática de rutas",
-  "appSettings_autoRouteRotationSubtitle": "Alternar entre las mejores rutas y el modo inundación",
+  "appSettings_autoRouteRotationSubtitle": "Alternar entre las mejores rutas y el modo Flood",
   "appSettings_autoRouteRotationEnabled": "Rotación de ruta automática habilitada",
   "appSettings_autoRouteRotationDisabled": "Rotación de ruta automática desactivada",
   "appSettings_battery": "Batería",
@@ -328,8 +329,8 @@
   "contacts_filterContacts": "Filtrar contactos...",
   "contacts_noContactsMatchFilter": "No hay contactos que coincidan con tu filtro",
   "contacts_noMembers": "No miembros",
-  "contacts_lastSeenNow": "Última vez que se vio ahora",
-  "contacts_lastSeenMinsAgo": "~ {minutes} minutos",
+  "contacts_lastSeenNow": "Reciente",
+  "contacts_lastSeenMinsAgo": "~ {minutes} min",
   "@contacts_lastSeenMinsAgo": {
     "placeholders": {
       "minutes": {
@@ -608,7 +609,7 @@
   "chat_pathManagement": "Gestión de rutas",
   "chat_routingMode": "Modo de enrutamiento",
   "chat_autoUseSavedPath": "Auto (usar la ruta guardada)",
-  "chat_forceFloodMode": "Modo inundación forzado",
+  "chat_forceFloodMode": "Modo Flood forzado",
   "chat_recentAckPaths": "Rutas recientes de ACK (toca para usar):",
   "chat_pathHistoryFull": "El historial de rutas está completo. Elimina entradas para añadir nuevas.",
   "chat_hopSingular": "salto",
@@ -631,7 +632,7 @@
   "chat_clearPathSubtitle": "Forzar redescubrimiento en el próximo envío",
   "chat_pathCleared": "Ruta borrada. El siguiente mensaje redescubrirá la ruta.",
   "chat_floodModeSubtitle": "Usar el selector de enrutamiento en la barra de herramientas",
-  "chat_floodModeEnabled": "El modo de inundación está activado. Desactívalo con el icono de enrutamiento de la barra de herramientas de la app.",
+  "chat_floodModeEnabled": "El modo Flood está activado. Desactívalo con el icono de enrutamiento de la barra de herramientas de la app.",
   "chat_fullPath": "Ruta completa",
   "chat_pathDetailsNotAvailable": "Los detalles de la ruta aún no están disponibles. Intenta enviar un mensaje para refrescar.",
   "chat_pathSetHops": "Ruta establecida: {hopCount} {hopCount, plural, =1{salto} other{saltos}} - {status}",
@@ -652,7 +653,7 @@
   "chat_path": "Ruta",
   "chat_publicKey": "Clave pública",
   "chat_compressOutgoingMessages": "Comprimir mensajes salientes",
-  "chat_floodForced": "Inundación (forzada)",
+  "chat_floodForced": "Flood (forzado)",
   "chat_directForced": "Directo (forzado)",
   "chat_hopsForced": "{count} saltos (forzados)",
   "@chat_hopsForced": {
@@ -662,7 +663,7 @@
       }
     }
   },
-  "chat_floodAuto": "Inundación (automática)",
+  "chat_floodAuto": "Flood (automático)",
   "chat_direct": "Directo",
   "chat_poiShared": "Punto de interés compartido",
   "chat_unread": "Sin leer: {count}",
@@ -708,11 +709,10 @@
   "map_repeater": "Repetidor",
   "map_room": "Sala",
   "map_sensor": "Sensor",
-  "map_pinDm": "Pin (DM)",
+  "map_pinDm": "Marcador (DM)",
   "map_pinPrivate": "Pin (privado)",
   "map_pinPublic": "Pin (público)",
   "map_lastSeen": "Última vez visto",
-  "map_disconnectConfirm": "¿Está seguro de que desea desconectarse de este dispositivo?",
   "map_from": "De",
   "map_source": "Fuente",
   "map_flags": "Banderas",
@@ -931,7 +931,7 @@
   "login_routing": "Enrutamiento",
   "login_routingMode": "Modo de enrutamiento",
   "login_autoUseSavedPath": "Auto (usar la ruta guardada)",
-  "login_forceFloodMode": "Forzar modo inundación",
+  "login_forceFloodMode": "Forzar modo Flood",
   "login_managePaths": "Gestionar rutas",
   "login_login": "Iniciar sesión",
   "login_attempt": "Intento {current}/{max}",
@@ -1004,7 +1004,7 @@
   "repeater_statusTitle": "Estado del Repetidor",
   "repeater_routingMode": "Modo de enrutamiento",
   "repeater_autoUseSavedPath": "Auto (usar la ruta guardada)",
-  "repeater_forceFloodMode": "Modo inundación forzado",
+  "repeater_forceFloodMode": "Modo Flood forzado",
   "repeater_pathManagement": "Gestión de rutas",
   "repeater_refresh": "Actualizar",
   "repeater_statusRequestTimeout": "Se agotó el tiempo de espera de la solicitud de estado.",
@@ -1033,6 +1033,7 @@
   "repeater_received": "Recibidos",
   "repeater_duplicates": "Duplicados",
   "repeater_daysHoursMinsSecs": "{days} días {hours}h {minutes} min {seconds} s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes} min {seconds} s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -1049,7 +1050,7 @@
       }
     }
   },
-  "repeater_packetTxTotal": "Total: {total}, Inundación: {flood}, Directo: {direct}",
+  "repeater_packetTxTotal": "Total: {total}, Flood: {flood}, Directo: {direct}",
   "@repeater_packetTxTotal": {
     "placeholders": {
       "total": {
@@ -1063,7 +1064,7 @@
       }
     }
   },
-  "repeater_packetRxTotal": "Total: {total}, Inundación: {flood}, Directo: {direct}",
+  "repeater_packetRxTotal": "Total: {total}, Flood: {flood}, Directo: {direct}",
   "@repeater_packetRxTotal": {
     "placeholders": {
       "total": {
@@ -1077,7 +1078,7 @@
       }
     }
   },
-  "repeater_duplicatesFloodDirect": "Inundación: {flood}, Directo: {direct}",
+  "repeater_duplicatesFloodDirect": "Flood: {flood}, Directo: {direct}",
   "@repeater_duplicatesFloodDirect": {
     "placeholders": {
       "flood": {
@@ -1134,7 +1135,7 @@
       }
     }
   },
-  "repeater_floodAdvertInterval": "Intervalo de anuncio por inundación",
+  "repeater_floodAdvertInterval": "Intervalo de anuncio Flood",
   "repeater_floodAdvertIntervalHours": "{hours} horas",
   "@repeater_floodAdvertIntervalHours": {
     "placeholders": {
@@ -1179,7 +1180,7 @@
   "repeater_multiAcksSubtitle": "Reconocer mensajes a través de múltiples rutas para una mejor entrega.",
   "repeater_networkHealth": "Salud de la red",
   "repeater_loopDetect": "Detección de bucles",
-  "repeater_loopDetectHelper": "Descarta los paquetes de inundación que parezcan bucles de enrutamiento",
+  "repeater_loopDetectHelper": "Descarta los paquetes Flood que parezcan bucles de enrutamiento",
   "repeater_loopDetectOff": "Desactivado",
   "repeater_loopDetectMinimal": "Mínimo",
   "repeater_loopDetectModerate": "Moderado",
@@ -1196,24 +1197,24 @@
   },
   "repeater_ownerInfo": "Información del propietario",
   "repeater_ownerInfoHelper": "Metadatos públicos para este repetidor",
-  "repeater_floodMax": "Máximo de saltos por inundación",
-  "repeater_floodMaxHelper": "Número máximo de paquetes de inundación que un nodo puede enviar (0-64)",
+  "repeater_floodMax": "Máximo de saltos Flood",
+  "repeater_floodMaxHelper": "Número máximo de saltos que puede recorrer un paquete Flood (0-64)",
   "repeater_advancedSettings": "Ajustes avanzados",
   "repeater_advancedSettingsSubtitle": "Controles de ajuste para operadores experimentados",
   "repeater_pathHashMode": "Modo de hash de ruta",
   "repeater_pathHashModeHelper": "Bytes utilizados para codificar el ID de este repetidor en las etiquetas de ruta/detección de bucles. 0=1 byte (256 IDs, hasta 64 saltos), 1=2 bytes (65.000 IDs, hasta 32 saltos), 2=3 bytes (16 millones de IDs, hasta 21 saltos). Las versiones 1.13 y anteriores de firmware eliminan rutas de múltiples bytes; solo se detectan una vez que la red está activa en la versión 1.14 o posterior.",
-  "repeater_txDelay": "Retraso TX por inundación",
-  "repeater_txDelayHelper": "Ajuste de retransmisión para el tráfico de inundación, como un multiplicador del tiempo de transmisión del paquete (0-2, valor predeterminado 0.5). Un valor más alto significa menos colisiones, pero una entrega más lenta.",
+  "repeater_txDelay": "Retraso TX Flood",
+  "repeater_txDelayHelper": "Ajuste de retransmisión para el tráfico Flood, como un multiplicador del tiempo de transmisión del paquete (0-2, valor predeterminado 0.5). Un valor más alto significa menos colisiones, pero una entrega más lenta.",
   "repeater_directTxDelay": "Retraso TX directo",
-  "repeater_directTxDelayHelper": "Reenvío de espacios para el tráfico directo (no masivo), como un multiplicador del tiempo de transmisión del paquete (0-2, valor predeterminado 0.3).",
+  "repeater_directTxDelayHelper": "Espaciado de retransmisión para el tráfico directo (no Flood), como un multiplicador del tiempo de transmisión del paquete (0-2, valor predeterminado 0.3).",
   "repeater_intThresh": "Límite de interferencia",
   "repeater_intThreshHelper": "Se establece un umbral para la calibración del nivel de ruido de la radio, de modo que rechaza las interferencias que superen este nivel. 0 deshabilita: solo aumente este valor si observa errores en una banda de frecuencia con mucho ruido.",
   "repeater_agcResetInterval": "Intervalo de reinicio de AGC",
   "repeater_agcResetIntervalHelper": "¿Con qué frecuencia se debe restablecer el control automático de ganancia del radio para recuperarse de un estado de ganancia bloqueada? Se puede restablecer cada pocos segundos o cada 4 segundos. Desactiva la función de restablecimiento periódico.",
   "repeater_actionsTitle": "Acciones",
-  "repeater_sendAdvert": "Enviar anuncio por inundación",
-  "repeater_sendAdvertSubtitle": "Transmitir un anuncio por inundación a través de la red.",
-  "repeater_sendAdvertZeroHop": "Enviar anuncio sin saltos",
+  "repeater_sendAdvert": "Enviar anuncio Flood",
+  "repeater_sendAdvertSubtitle": "Transmitir un anuncio Flood a través de la red.",
+  "repeater_sendAdvertZeroHop": "Enviar anuncio Zero Hop",
   "repeater_sendAdvertZeroHopSubtitle": "Transmite un anuncio de un solo salto (sin retransmisiones).",
   "repeater_clockSync": "Sincronizar reloj ahora",
   "repeater_clockSyncSubtitle": "Envía la hora de tu teléfono al repetidor.",
@@ -1307,19 +1308,19 @@
   "repeater_cliHelpSetTx": "Establece la potencia de transmisión LoRa en dBm (reboot para aplicar).",
   "repeater_cliHelpSetRepeat": "Habilita o deshabilita el rol del repetidor para este nodo.",
   "repeater_cliHelpSetAllowReadOnly": "(Servidor de la sala) Si está \"activado\", entonces el inicio de sesión con una contraseña en blanco estará permitido, pero no se podrá publicar en la sala. (solo lectura).",
-  "repeater_cliHelpSetFloodMax": "Establece el número máximo de saltos de paquetes de inundación entrantes (si es >= máximo, el paquete no se enruta).",
+  "repeater_cliHelpSetFloodMax": "Establece el número máximo de saltos de paquetes Flood entrantes (si es >= máximo, el paquete no se enruta).",
   "repeater_cliHelpSetIntThresh": "Establece el Umbral de Interferencia (en dB). El valor predeterminado es 14. Establecerlo en 0 desactiva la detección de interferencias del canal.",
   "repeater_cliHelpSetAgcResetInterval": "Establece el intervalo para restablecer el Control Automático de Ganancia. Establecer en 0 para desactivarlo.",
   "repeater_cliHelpSetMultiAcks": "Habilita o deshabilita la función de 'ACKs dobles'.",
   "repeater_cliHelpSetAdvertInterval": "Establece el intervalo del temporizador en minutos para enviar un paquete de anuncio local (sin salto). Establecer en 0 para desactivarlo.",
-  "repeater_cliHelpSetFloodAdvertInterval": "Establece el intervalo del temporizador en horas para enviar un paquete de anuncio masivo. Establecer en 0 para desactivarlo.",
+  "repeater_cliHelpSetFloodAdvertInterval": "Establece el intervalo del temporizador en horas para enviar un paquete de anuncio Flood. Establecer en 0 para desactivarlo.",
   "repeater_cliHelpSetGuestPassword": "Establece/actualiza la contraseña del invitado. (para repetidores, los inicios de sesión de invitado pueden enviar la solicitud \"Obtener Estadísticas\")",
   "repeater_cliHelpSetName": "Establece el nombre del anuncio.",
   "repeater_cliHelpSetLat": "Establece la latitud del mapa del anuncio. (grados decimales)",
   "repeater_cliHelpSetLon": "Establece la longitud del mapa del anuncio. (grados decimales)",
   "repeater_cliHelpSetRadio": "Establece parámetros de radio completamente nuevos y los guarda en las preferencias. Requiere un comando \"reboot\" para aplicarlos.",
   "repeater_cliHelpSetRxDelay": "Configura (experimental) la base para aplicar un ligero retraso a los paquetes recibidos, según la fuerza de la señal/puntuación. Establece en 0 para desactivar.",
-  "repeater_cliHelpSetTxDelay": "Establece un factor multiplicado con el tiempo de aire para un paquete de modo de inundación y con un sistema de ranura aleatorio, para retrasar su reenvío (para disminuir la probabilidad de colisiones).",
+  "repeater_cliHelpSetTxDelay": "Establece un factor multiplicado con el tiempo de aire para un paquete de modo Flood y con un sistema de ranura aleatorio, para retrasar su reenvío (para disminuir la probabilidad de colisiones).",
   "repeater_cliHelpSetDirectTxDelay": "Igual que txdelay, pero para aplicar un retraso aleatorio a la transferencia de paquetes en modo directo.",
   "repeater_cliHelpSetBridgeEnabled": "Habilitar/Deshabilitar puente.",
   "repeater_cliHelpSetBridgeDelay": "Establecer retraso antes de retransmitir paquetes.",
@@ -1335,7 +1336,7 @@
   "repeater_cliHelpLogErase": "Elimina los registros del paquete del sistema de archivos.",
   "repeater_cliHelpNeighbors": "Muestra una lista de otros nodos repetidores escuchados a través de anuncios de un solo salto. Cada línea es id-prefijo-hex:marca de tiempo:times-snr-4",
   "repeater_cliHelpNeighborRemove": "Elimina la primera entrada coincidente (por prefijo de pubkey (hex)) de la lista de vecinos.",
-  "repeater_cliHelpRegion": "(solo serie) Lista todas las regiones definidas y los permisos de inundación actuales.",
+  "repeater_cliHelpRegion": "(solo serial) Lista todas las regiones definidas y los permisos Flood actuales.",
   "repeater_cliHelpRegionLoad": "NOTA: este es un invocación multi-comando especial. Cada comando subsiguiente es un nombre de región (indentado con espacios para indicar la jerarquía padre, con un espacio mínimo). Terminado enviando una línea en blanco/comando.",
   "repeater_cliHelpRegionGet": "Busca la región con el prefijo de nombre dado (o \"\" para el ámbito global). Responde con \"-> nombre-región (nombre-padre) 'F'\"",
   "repeater_cliHelpRegionPut": "Agrega o actualiza una definición de región con el nombre dado.",
@@ -1584,7 +1585,7 @@
     }
   },
   "channelPath_unknownPath": "Desconocido",
-  "channelPath_floodPath": "Inundación",
+  "channelPath_floodPath": "Flood",
   "channelPath_directPath": "Guardar",
   "channelPath_observedZeroOf": "0 de {total} saltos",
   "@channelPath_observedZeroOf": {
@@ -1657,7 +1658,7 @@
     }
   },
   "repeater_neighbors": "Vecinos",
-  "repeater_neighborsSubtitle": "Ver vecinos de salto cero.",
+  "repeater_neighborsSubtitle": "Ver vecinos Zero Hop.",
   "neighbors_receivedData": "Recibidas Datos de Vecinos",
   "neighbors_requestTimedOut": "Los vecinos solicitan que se desconecte.",
   "neighbors_errorLoading": "Error al cargar vecinos: {error}",
@@ -1859,10 +1860,10 @@
   "appSettings_enableMessageTracing": "Habilitar seguimiento de mensajes",
   "appSettings_enableMessageTracingSubtitle": "Mostrar metadatos detallados de enrutamiento y tiempo para los mensajes",
   "contacts_invalidAdvertFormat": "Formato de anuncio no válido",
-  "contacts_floodAdvert": "Anuncio de inundación",
+  "contacts_floodAdvert": "Anuncio Flood",
   "contacts_contactImported": "El contacto ha sido importado.",
   "contacts_contactImportFailed": "Contacto no se importó correctamente.",
-  "contacts_zeroHopAdvert": "Anuncio de un solo salto",
+  "contacts_zeroHopAdvert": "Anuncio Zero Hop",
   "contacts_ShareContactZeroHop": "Compartir contacto por anuncio de un solo salto",
   "contacts_ShareContact": "Copiar contacto al portapapeles",
   "contacts_copyAdvertToClipboard": "Copiar anuncio al portapapeles",
@@ -2291,14 +2292,6 @@
   "contact_teleBaseSubtitle": "Permitir el intercambio de nivel de batería y telemetría básica",
   "contact_teleEnv": "Entorno de Telemetría",
   "contact_teleEnvSubtitle": "Permitir el intercambio de datos de sensores de entorno",
-  "appSettings_initialRouteWeight": "Peso inicial de la ruta",
-  "appSettings_maxRouteWeight": "Peso máximo permitido para la ruta",
-  "appSettings_initialRouteWeightSubtitle": "Peso inicial para rutas recién descubiertas",
-  "appSettings_maxRouteWeightSubtitle": "Peso máximo que una ruta puede acumular gracias a entregas exitosas.",
-  "appSettings_routeWeightSuccessIncrement": "Incremento de peso para el éxito",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Peso añadido a una ruta después de una entrega exitosa.",
-  "appSettings_routeWeightFailureDecrement": "Reducción del peso asociado al fallo",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Peso retirado de una ruta después de un intento de entrega fallido.",
   "appSettings_maxMessageRetries": "Número máximo de reintentos de envío de mensajes",
   "appSettings_maxMessageRetriesSubtitle": "Número de intentos de reintento antes de marcar un mensaje como fallido.",
   "path_routeWeight": "{weight}/{max}",
@@ -2446,7 +2439,7 @@
   "repeater_sensors": "Sensores",
   "repeater_cliHelpPowerOff": "Apaga el dispositivo. (no se espera respuesta)",
   "repeater_cliHelpClkReboot": "Restablece el reloj a una fecha conocida y reinicia el dispositivo.",
-  "repeater_cliHelpAdvertZeroHop": "Envía un anuncio que no requiere saltos (solo para los vecinos inmediatos).",
+  "repeater_cliHelpAdvertZeroHop": "Envía un anuncio Zero Hop (solo para los vecinos inmediatos).",
   "repeater_cliHelpStartOta": "Inicia una actualización de firmware por aire en las placas compatibles.",
   "repeater_cliHelpTime": "Establece la hora del dispositivo en los segundos correspondientes a la época Unix. La hora no puede retroceder.",
   "repeater_cliHelpBoard": "Muestra el fabricante de la placa base / identificador de hardware.",
@@ -2478,14 +2471,14 @@
   "repeater_cliHelpGetMultiAcks": "Indica si el modo de confirmación doble está activado (1) o desactivado (0).",
   "repeater_cliHelpGetAllowReadOnly": "Indica si se permite el acceso de solo lectura para los usuarios invitados.",
   "repeater_cliHelpGetAdvertInterval": "Muestra el intervalo de anuncio local en minutos.",
-  "repeater_cliHelpGetFloodAdvertInterval": "Muestra el intervalo de anuncio por inundación, en horas.",
+  "repeater_cliHelpGetFloodAdvertInterval": "Muestra el intervalo de anuncio Flood, en horas.",
   "repeater_cliHelpGetGuestPassword": "Muestra la contraseña de invitado configurada.",
   "repeater_cliHelpGetLat": "Muestra la latitud configurada.",
   "repeater_cliHelpGetLon": "Muestra la longitud configurada.",
   "repeater_cliHelpGetRxDelay": "Muestra el valor base de rxdelay.",
-  "repeater_cliHelpGetTxDelay": "Muestra el factor de retardo en modo de inundación.",
+  "repeater_cliHelpGetTxDelay": "Muestra el factor de retardo en modo Flood.",
   "repeater_cliHelpGetDirectTxDelay": "Muestra el factor de retardo en modo directo.",
-  "repeater_cliHelpGetFloodMax": "Muestra el número máximo de saltos por inundación.",
+  "repeater_cliHelpGetFloodMax": "Muestra el número máximo de saltos Flood.",
   "repeater_cliHelpGetOwnerInfo": "Muestra la cadena de información de contacto del propietario.",
   "repeater_cliHelpGetPathHashMode": "Muestra el modo de hash de ruta (0/1/2).",
   "repeater_cliHelpGetLoopDetect": "Muestra la sensibilidad en la detección de bucles.",
@@ -2507,8 +2500,8 @@
   "repeater_cliHelpSensorList": "Muestra todas las configuraciones de sensores personalizadas, paginadas a partir de un índice de inicio opcional.",
   "repeater_cliHelpRegionDefault": "Muestra el ámbito predeterminado actual.",
   "repeater_cliHelpRegionDefaultSet": "Establece el ámbito regional predeterminado. Utilice \"<null>\" para restablecer a la configuración predeterminada.",
-  "repeater_cliHelpRegionListAllowed": "Enumera las regiones que permiten el tráfico por inundación.",
-  "repeater_cliHelpRegionListDenied": "Enumera las regiones que prohíben el tráfico por inundación.",
+  "repeater_cliHelpRegionListAllowed": "Enumera las regiones que permiten el tráfico Flood.",
+  "repeater_cliHelpRegionListDenied": "Enumera las regiones que prohíben el tráfico Flood.",
   "repeater_cliHelpStatsPackets": "(Solo para series) Muestra estadísticas a nivel de paquetes.",
   "repeater_cliHelpStatsRadio": "(Solo para transmisiones en serie) Muestra estadísticas de radio.",
   "repeater_cliHelpStatsCore": "(Solo para series) Muestra estadísticas clave del firmware.",
@@ -2540,10 +2533,10 @@
     }
   },
   "map_type": "Type",
-  "map_path": "Path",
-  "map_location": "Location",
-  "map_estLocation": "Est. Location",
-  "map_publicKey": "Public Key",
+  "map_path": "Ruta",
+  "map_location": "Ubicación",
+  "map_estLocation": "Ubicación est.",
+  "map_publicKey": "Clave pública",
   "map_publicKeyPrefixHint": "e.g. ab12",
   "contact_typeChat": "Chat",
   "contact_typeRepeater": "Repetidor",
@@ -2653,15 +2646,15 @@
   "contacts_searchOpen": "Buscar contactos",
   "contacts_searchClose": "Cerrar búsqueda",
   "routing_title": "Enrutamiento",
-  "routing_modeAuto": "Automático",
-  "routing_modeFlood": "Inundación",
+  "routing_modeAuto": "Auto",
+  "routing_modeFlood": "Flood",
   "routing_modeManual": "Manual",
-  "routing_modeAutoHint": "Selecciona automáticamente la mejor ruta conocida y, si no hay ninguna, usa el modo de inundación.",
+  "routing_modeAutoHint": "Selecciona automáticamente la mejor ruta conocida y, si no hay ninguna, usa el modo Flood.",
   "routing_modeFloodHint": "Transmite por todos los repetidores. Es la opción más fiable, pero usa más tiempo de aire.",
   "routing_modeManualHint": "Siempre sigue exactamente la ruta que has definido.",
   "routing_currentRoute": "Ruta actual",
   "routing_directNoHops": "Directo — sin saltos de repetidor",
-  "routing_noPathYet": "Aún no hay una ruta. El siguiente mensaje se enviará por inundación hasta que se descubra una ruta.",
+  "routing_noPathYet": "Aún no hay una ruta. El siguiente mensaje usará Flood hasta que se descubra una ruta.",
   "routing_floodBroadcast": "Transmisión por todos los repetidores",
   "routing_editPath": "Editar ruta",
   "routing_forgetPath": "Olvidar ruta",
@@ -2672,11 +2665,11 @@
   "routing_qualityGood": "Primer salto bueno",
   "routing_qualityWorked": "Ha entregado",
   "routing_qualityFair": "Primer salto aceptable",
-  "routing_qualityFlood": "Escuchado por inundación",
+  "routing_qualityFlood": "Escuchado vía Flood",
   "routing_qualityUntested": "Sin probar",
   "routing_lastWorked": "funcionó {when}",
   "routing_neverWorked": "nunca confirmado",
-  "routing_floodDelivery": "Entrega por inundación",
+  "routing_floodDelivery": "Entrega Flood",
   "pathEditor_title": "Crear ruta",
   "pathEditor_hopCounter": "{count} de 64 saltos",
   "pathEditor_noHops": "Aún no se han añadido saltos. Toca los repetidores de abajo para añadirlos en orden, o guarda la ruta sin saltos para enviarla directamente.",
@@ -2920,7 +2913,7 @@
     }
   },
   "settings_regionSettings": "Regiones",
-  "settings_regionSettingsSubtitle": "Gestionar regiones almacenadas",
+  "settings_regionSettingsSubtitle": "Limitar los Flood a una zona",
   "settings_regionManagement_screenTitle": "Gestión de Regiones",
   "settings_regionNameHint": "Nombre de la región",
   "settings_regionAddRegion": "Añadir región",
@@ -2968,7 +2961,7 @@
   "imageMessages_autoProcessSubtitle": "Reconstruya cada imagen tan pronto como llegue. Utiliza aproximadamente 2 GB de memoria durante un segundo cada vez; desactívelo para reconstruir con un toque.",
   "imageSend_title": "Enviar imagen",
   "imageSend_cropNote": "Redimensionado a 512 × 512 · la relación de aspecto no se conservó",
-  "imageSend_originalSize": "Texto original",
+  "imageSend_originalSize": "Original",
   "imageSend_onAirSize": "En emisión",
   "imageSend_quality": "Calidad",
   "imageSend_qualityStandard": "Estándar",
@@ -2983,7 +2976,7 @@
   "imageSend_radioUnknownBody": "Conéctese a un dispositivo para que se pueda calcular la hora de transmisión.",
   "imageSend_longSendTitle": "Larga transmisión",
   "imageSend_longSendBody": "Esto mantendrá el canal durante aproximadamente {duration}.",
-  "imageSend_floodNote": "Enrutamiento de inundación: cada repetidor dentro del rango retransmite cada paquete, por lo que el canal permanece ocupado durante más tiempo que esto.",
+  "imageSend_floodNote": "Enrutamiento Flood: cada repetidor dentro del rango retransmite cada paquete, por lo que el canal permanece ocupado durante más tiempo que esto.",
   "imageSend_parityTitle": "Paquete de recuperación",
   "imageSend_paritySubtitle": "Un paquete adicional. Los mensajes grupales no son reconocidos, por lo que esto permite al receptor reconstruir la imagen si se pierde un solo paquete.",
   "imageSend_send": "Enviar",
@@ -3018,16 +3011,16 @@
   "chat_longMessageRetryNote": "Más de 158 bytes: se envía como máximo {count} veces",
   "reaction_report": "Reacciones con Emoji",
   "repeater_bridgeNote": "Solo disponible en firmware compilado con un puente (RS232 o ESP-NOW).",
-  "repeater_cliHelpGetFloodMaxAdvert": "Muestra el número máximo de saltos para los anuncios por inundación.",
-  "repeater_cliHelpGetFloodMaxUnscoped": "Muestra el número máximo de saltos para los paquetes de inundación sin ámbito.",
+  "repeater_cliHelpGetFloodMaxAdvert": "Muestra el número máximo de saltos para los anuncios Flood.",
+  "repeater_cliHelpGetFloodMaxUnscoped": "Muestra el número máximo de saltos para los paquetes Flood sin ámbito.",
   "repeater_cliHelpGetRadioFemRxGain": "Muestra si la ganancia RX del módulo frontal de LoRa está activada.",
   "repeater_cliHelpGetRadioFemTxGain": "Muestra si la ganancia TX del módulo frontal de LoRa está activada.",
   "repeater_cliHelpRegionDef": "Define una cadena de regiones en un solo comando: cada nombre se añade bajo el anterior; \"name,parent\" añade el nombre y continúa bajo el padre indicado. Responde con la lista de regiones.",
-  "repeater_cliHelpSetFloodMaxAdvert": "Establece el número máximo de saltos para reenviar anuncios por inundación (0-64).",
-  "repeater_cliHelpSetFloodMaxUnscoped": "Establece el número máximo de saltos para reenviar paquetes de inundación que no tienen ámbito regional (0-64).",
+  "repeater_cliHelpSetFloodMaxAdvert": "Establece el número máximo de saltos para reenviar anuncios Flood (0-64).",
+  "repeater_cliHelpSetFloodMaxUnscoped": "Establece el número máximo de saltos para reenviar paquetes Flood que no tienen ámbito regional (0-64).",
   "repeater_cliHelpSetRadioFemRxGain": "Activa o desactiva la ganancia RX (LNA) del módulo frontal de LoRa. Las placas que no lo tengan responden \"Error: unsupported\".",
   "repeater_cliHelpSetRadioFemTxGain": "Activa o desactiva la ganancia TX (PA) del módulo frontal de LoRa. Las placas que no lo tengan responden \"Error: unsupported\".",
-  "repeater_cliRegionLoadActive": "Modo de carga de regiones: envíe un nombre de región por línea, sangrado con espacios bajo su región padre (añada F después del nombre para permitir inundación). Las líneas no reciben respuesta. Envíe una línea vacía para terminar y luego \"region save\" para guardar el resultado.",
+  "repeater_cliRegionLoadActive": "Modo de carga de regiones: envíe un nombre de región por línea, sangrado con espacios bajo su región padre (añada F después del nombre para permitir Flood). Las líneas no reciben respuesta. Envíe una línea vacía para terminar y luego \"region save\" para guardar el resultado.",
   "repeater_cliRegionLoadEnd": "(fin de la carga de regiones)",
   "repeater_cliRegionLoadHint": "Línea de región, o vacía para terminar",
   "repeater_frequencyInvalid": "Frecuencia inválida (150-2500 MHz)",
@@ -3080,7 +3073,7 @@
       }
     }
   },
-  "settings_regionEmptyExplanation": "Las regiones limitan los mensajes de inundación a los repetidores de una zona. Obténlas de los repetidores cercanos o añade una por su nombre.",
+  "settings_regionEmptyExplanation": "Las regiones limitan los mensajes Flood a los repetidores de una zona. Obténlas de los repetidores cercanos o añade una por su nombre.",
   "settings_regionFetchFromRepeaters": "Obtener de repetidores",
   "settings_regionDefault": "Región predeterminada",
   "settings_regionDefaultSubtitle": "Se usa en los canales sin región propia",
@@ -3108,7 +3101,7 @@
       }
     }
   },
-  "settings_pathHashModeHelper": "Tamaño de cada ID de nodo registrado en la ruta de los paquetes de inundación que envía esta radio: 1 byte (256 IDs, hasta 64 saltos), 2 bytes (65.000 IDs, hasta 32 saltos), 3 bytes (16 millones de IDs, hasta 21 saltos). Los IDs más grandes reducen las colisiones, pero los repetidores con un firmware anterior a la v1.14 descartan los paquetes con IDs de 2 o 3 bytes.",
+  "settings_pathHashModeHelper": "Tamaño de cada ID de nodo registrado en la ruta de los paquetes Flood que envía esta radio: 1 byte (256 IDs, hasta 64 saltos), 2 bytes (65.000 IDs, hasta 32 saltos), 3 bytes (16 millones de IDs, hasta 21 saltos). Los IDs más grandes reducen las colisiones, pero los repetidores con un firmware anterior a la v1.14 descartan los paquetes con IDs de 2 o 3 bytes.",
   "settings_requiresFirmware": "Requiere el firmware {version} o posterior",
   "@settings_requiresFirmware": {
     "placeholders": {
@@ -3163,7 +3156,7 @@
   "channels_addSectionCreate": "Crear una nueva",
   "channels_dragToReorder": "Arrastra para reordenar",
   "channels_regionDefaultSuffix": "(predeterminada)",
-  "channels_regionSelectExplanation": "Los mensajes de inundación de este canal solo los reenviarán los repetidores de la región seleccionada.",
+  "channels_regionSelectExplanation": "Los mensajes Flood de este canal solo los reenviarán los repetidores de la región seleccionada.",
   "channels_regionEmpty": "Aún no hay regiones.",
   "channels_manageRegions": "Gestionar regiones",
   "chat_removeGif": "Quitar GIF",
@@ -3249,7 +3242,7 @@
   "settings_regionUseRadioDefault": "Predeterminada de la radio ({region})",
   "settings_regionNoRegion": "Sin región (sin ámbito)",
   "settings_regionRadioDefault": "Región predeterminada de la radio",
-  "settings_regionRadioDefaultSubtitle": "Guardada en la radio. Las inundaciones enviadas sin región la usan, desde esta app y desde cualquier otra app conectada a la radio.",
+  "settings_regionRadioDefaultSubtitle": "Guardada en la radio. Los Flood enviados sin región la usan, desde esta app y desde cualquier otra app conectada a la radio.",
   "settings_regionRadioDefaultUpdated": "Región predeterminada de la radio actualizada",
   "settings_regionRadioDefaultFailed": "No se pudo actualizar la región predeterminada de la radio",
   "appSettings_channelMinHopsCountRepeaters": "Contar también repetidores cercanos distintos",
@@ -3257,7 +3250,7 @@
   "appSettings_regionOnHopsLine": "Región junto al número de saltos",
   "appSettings_regionOnHopsLineSubtitle": "Mostrar la región de un mensaje de canal en la misma línea que su número de saltos en lugar de debajo.",
   "channels_regionRadioDefaultSuffix": "(predeterminada de la radio)",
-  "channels_regionRadioDefaultApplies": "Esta radio envía las inundaciones sin región en su región predeterminada: {region}.",
+  "channels_regionRadioDefaultApplies": "Esta radio envía los Flood sin región en su región predeterminada: {region}.",
   "chat_futureTimestampWarning": "La hora de este mensaje está en el futuro, por lo que el reloj del remitente puede estar mal. Se muestra en el orden en que llegó.",
   "discoveredContacts_scan": "Buscar nodos cercanos",
   "discoveredContacts_scanTitle": "Nodos cercanos",
@@ -3273,13 +3266,13 @@
   "channels_waitForSync": "Los canales aún se están cargando desde la radio. Inténtalo de nuevo cuando termine la sincronización.",
   "channels_nameTooLong": "El nombre es demasiado largo (máx. {maxBytes} bytes).",
   "repeater_valueRequired": "{field}: introduce un valor",
-  "repeater_floodMaxAdvert": "Máximo de saltos de anuncio por inundación",
-  "repeater_floodMaxAdvertHelper": "Máximo de saltos que puede recorrer un anuncio difundido por inundación (0-64, por defecto 8)",
-  "repeater_floodMaxUnscoped": "Máximo de saltos por inundación sin región",
-  "repeater_floodMaxUnscopedHelper": "Máximo de saltos para inundaciones sin ámbito de región (0-64, por defecto 64). Un valor bajo como 3 mantiene local el tráfico sin región.",
-  "repeater_floodMaxUnscopedUnset": "Igual que el máximo de inundación",
+  "repeater_floodMaxAdvert": "Máximo de saltos de anuncio Flood",
+  "repeater_floodMaxAdvertHelper": "Máximo de saltos que puede recorrer un anuncio Flood (0-64, por defecto 8)",
+  "repeater_floodMaxUnscoped": "Máximo de saltos Flood sin región",
+  "repeater_floodMaxUnscopedHelper": "Máximo de saltos para Flood sin ámbito de región (0-64, por defecto 64). Un valor bajo como 3 mantiene local el tráfico sin región.",
+  "repeater_floodMaxUnscopedUnset": "Igual que el máximo Flood",
   "repeater_rxDelay": "Retardo de recepción",
-  "repeater_rxDelayHelper": "Retiene los paquetes de inundación oídos con señal débil antes de reenviarlos, para que las rutas con señal fuerte vayan primero y se envíen menos duplicados (0-20, 0 lo desactiva).",
+  "repeater_rxDelayHelper": "Retiene los paquetes Flood oídos con señal débil antes de reenviarlos, para que las rutas con señal fuerte vayan primero y se envíen menos duplicados (0-20, 0 lo desactiva).",
   "repeater_cad": "Detección de actividad del canal",
   "repeater_cadHelper": "Escucha si hay actividad antes de transmitir y espera mientras el canal está ocupado. Funciona junto con el límite de interferencia.",
   "repeater_adcMultiplier": "Calibración del voltaje de la batería",
@@ -3697,6 +3690,8 @@
   "messageFilter_automaticSection": "Automático",
   "messageFilter_duplicates": "Mensajes repetidos",
   "messageFilter_duplicatesSubtitle": "El mismo mensaje enviado de nuevo, o por varios remitentes",
+  "messageFilter_repeatSends": "Envíos para contar como repetición",
+  "messageFilter_repeatSendsSubtitle": "Ocultar un mensaje cuando el mismo remitente lo envía {count} veces en 10 minutos",
   "messageFilter_repeatedCharacters": "Caracteres repetidos",
   "messageFilter_repeatedCharactersSubtitle": "Secuencias largas de un mismo carácter, como \"aaaaaaaaaaaaaaaaaaaa\"",
   "messageFilter_learning": "Aprender de los toques en Spam",
@@ -3777,5 +3772,197 @@
   },
   "messageFilter_filterLikeThis": "Filtrar mensajes como este…",
   "messageFilter_channelToggle": "Filtrar mensajes en este canal",
-  "messageFilter_ghostIconTooltip": "Oculto por tu filtro de mensajes"
+  "messageFilter_ghostIconTooltip": "Oculto por tu filtro de mensajes",
+  "chatSearch_tooltip": "Buscar mensajes",
+  "chatSearch_hint": "Buscar mensajes",
+  "chatSearch_close": "Cerrar búsqueda",
+  "chatSearch_resultCount": "{count, plural, =1{1 resultado} other{{count} resultados}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "No hay mensajes coincidentes",
+  "chatSearch_noResultsHint": "Prueba con otra palabra o revisa la ortografía",
+  "contactShare_headerOutgoing": "Compartiste un contacto",
+  "contactShare_headerIncoming": "Compartió un contacto",
+  "contactShare_add": "Añadir contacto",
+  "contactShare_adding": "Añadiendo contacto...",
+  "contactShare_saved": "Guardado",
+  "contactShare_isYou": "Eres tú",
+  "contactShare_shareAction": "Compartir contacto",
+  "contactShare_pickerTitle": "Compartir un contacto",
+  "contactShare_myContact": "Mi contacto",
+  "contactShare_searchHint": "Buscar contactos",
+  "contactShare_noContacts": "No se encontraron contactos",
+  "contactShare_preview": "Contacto compartido: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Compartió un contacto: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Traza de ruta por hashes",
+  "manualTrace_inputLabel": "Hashes de repetidores",
+  "manualTrace_helper": "Ejemplo: {example}. Separa con comas o espacios.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Saltos ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Nodo desconocido",
+  "manualTrace_enterHashes": "Introduce los hashes",
+  "manualTrace_run": "Ejecutar traza de ruta",
+  "manualTrace_notConnected": "Conéctate a una radio para ejecutar una traza",
+  "manualTrace_errorInvalidHex": "Solo se permiten caracteres hexadecimales (0-9, A-F)",
+  "manualTrace_errorOddLength": "Cada hash necesita un número par de caracteres hexadecimales, acorde al tamaño del salto",
+  "manualTrace_errorMixedWidths": "Todos los hashes deben tener la misma longitud",
+  "manualTrace_errorUnsupportedWidth": "Los hashes deben ser de 1, 2 o 3 bytes (2, 4 o 6 caracteres hexadecimales)",
+  "manualTrace_errorTooManyHops": "La ruta es demasiado larga (máximo {max} bytes)",
+  "manualTrace_errorTraceTooLong": "Demasiados saltos para trazar en una sola solicitud. Quita algunos saltos o elige «Tal como se introdujo».",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_jumpFailed": "No se encontró ese mensaje en el chat",
+  "chat_clearSelection": "Borrar selección",
+  "chat_deleteSelectedConfirm": "{count, plural, one{¿Borrar 1 mensaje de este dispositivo?} other{¿Borrar {count} mensajes de este dispositivo?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "¿Borrar mensajes?",
+  "chat_messagesDeleted": "{count, plural, one{1 mensaje borrado} other{{count} mensajes borrados}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Seleccionar todo",
+  "chat_selectMessages": "Seleccionar mensajes",
+  "chat_selectedCount": "{count} seleccionados",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Añadir de nuevo",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{1 mensaje marcado como no spam} other{{count} mensajes marcados como no spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{1 mensaje marcado como spam} other{{count} mensajes marcados como spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Ampliar lista de saltos",
+  "pathMap_showMap": "Mostrar mapa",
+  "routing_modeDirect": "Directo",
+  "routing_modeDirectHint": "Envía siempre directamente a este contacto, sin saltos de repetidor. Úselo cuando esté al alcance de la radio.",
+  "settings_export": "Exportar",
+  "settings_exportSubtitle": "Exportar contactos y repetidores como GPX",
+  "backupRestore_title": "Copia de seguridad y restauración",
+  "backupRestore_subtitle": "Guarda o restaura los datos de la app y los ajustes de la radio",
+  "backupRestore_import": "Importar",
+  "backupRestore_selectImportFile": "Importar archivo",
+  "backupRestore_password": "Contraseña (opcional)",
+  "backupRestore_passwordHelp": "Una contraseña cifra el archivo. En blanco, se guarda en texto plano, que puede incluir claves privadas o de canal, historial y credenciales.",
+  "backupRestore_importUnavailable": "Comprueba la contraseña o elige un archivo de copia de seguridad compatible.",
+  "backupRestore_items": "Elementos de la copia de seguridad y restauración",
+  "backupRestore_nodeSettings": "Ajustes del nodo",
+  "backupRestore_nodeSettingsDescription": "Nombre del dispositivo, claves privada y pública, ajustes de radio y regiones",
+  "backupRestore_deviceName": "Nombre del dispositivo",
+  "backupRestore_privateKey": "Clave privada (sensible)",
+  "backupRestore_publicKey": "Clave pública",
+  "backupRestore_radioSettings": "Ajustes de radio",
+  "backupRestore_regions": "Regiones",
+  "backupRestore_location": "Ubicación",
+  "backupRestore_contactSettings": "Ajustes de contactos",
+  "backupRestore_privacySettings": "Ajustes de privacidad",
+  "backupRestore_contactsData": "Contactos",
+  "backupRestore_perContactSettings": "Ajustes y filtros por contacto",
+  "backupRestore_contactGroups": "Grupos de contactos",
+  "backupRestore_contactHistory": "Historial de contactos",
+  "backupRestore_channelsData": "Canales",
+  "backupRestore_channelFilters": "Ajustes del filtro de mensajes",
+  "backupRestore_channelSettings": "Ajustes de canales",
+  "backupRestore_communities": "Comunidades",
+  "backupRestore_channelHistory": "Historial de canales",
+  "backupRestore_locationSettings": "Ajustes de ubicación",
+  "backupRestore_locationSettingsDescription": "Ubicación, ajustes de contactos y ajustes de privacidad",
+  "backupRestore_appSettings": "Ajustes de la app",
+  "backupRestore_appSettingsDescription": "Preferencias de la app y ajustes de apariencia",
+  "backupRestore_ipfsKey": "Clave de API de IPFS (sensible)",
+  "backupRestore_stadiaMapKey": "Clave de API de Stadia Maps (sensible)",
+  "backupRestore_contacts": "Contactos",
+  "backupRestore_contactsDescription": "Contactos, filtros y ajustes por contacto, grupos e historial de mensajes",
+  "backupRestore_discoveredContacts": "Contactos descubiertos",
+  "backupRestore_discoveredContactsDescription": "Contactos descubiertos y sus detalles guardados",
+  "backupRestore_channels": "Canales",
+  "backupRestore_channelsDescription": "Canales, filtros de canal, comunidades e historial de mensajes",
+  "backupRestore_backup": "Crear copia de seguridad",
+  "backupRestore_restore": "Restaurar seleccionados",
+  "backupRestore_backupComplete": "Archivo de copia de seguridad creado.",
+  "backupRestore_restoreComplete": "Restauración completada. Reconecta si restauraste la identidad de la radio.",
+  "backupRestore_missingModelsTitle": "Modelos no descargados",
+  "backupRestore_missingModelsMessage": "Los ajustes restaurados seleccionan modelos que no están disponibles en este dispositivo:\n{models}\n\n¿Descargarlos ahora?",
+  "backupRestore_downloadModels": "Descargar modelos",
+  "backupRestore_downloading": "Descargando…",
+  "backupRestore_cancelDownload": "Cancelar descarga",
+  "backupRestore_failed": "Falló la operación de copia de seguridad: {error}",
+  "backupRestore_fileTooLarge": "El archivo de copia de seguridad supera el límite de 100 MB.",
+  "backupRestore_selectAtLeastOne": "Selecciona al menos un elemento.",
+  "backupRestore_replaceIdentityTitle": "¿Reemplazar la identidad de la radio?",
+  "backupRestore_replaceIdentityMessage": "Restaurar los ajustes del nodo reemplaza la clave privada de la radio conectada y cambia su identidad. Continúa solo si es lo que quieres.",
+  "appSettings_languagePtPt": "Portugués (Portugal)",
+  "receivedImage_syntheticBadge": "Reconstruida con IA",
+  "appBar_offlineSubtitle": "Sin conexión · {name}",
+  "appBar_offline": "Sin conexión",
+  "appBar_reconnecting": "Reconectando…",
+  "connectSheet_title": "Conectar una radio",
+  "connectSheet_reconnect": "Reconectar con {name}",
+  "connectSheet_chooseRadio": "Elegir una radio",
+  "connectSheet_chooseRadioSubtitle": "Bluetooth, USB o TCP",
+  "connectSheet_stopReconnecting": "Dejar de reconectar",
+  "connectSheet_reconnectFailed": "No se pudo conectar con {name}. Comprueba que esté encendida y cerca.",
+  "chat_composerOffline": "Conéctate a una radio para enviar mensajes"
 }

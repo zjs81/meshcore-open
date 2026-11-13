@@ -27,8 +27,9 @@ The message is then checked in this order. The first check that matches decides,
 2. **Text rule**: one of your rules matches the message text.
 3. **Repeated characters** (automatic): one character repeated 20 or more times in a row, such as "aaaaaaaaaaaaaaaaaaaa". Digits and spaces don't count, so long numbers (frequencies, coordinates) are safe. Shorter runs, like "Noooooooo!", a `--------` separator or a row of emoji, are ordinary chat and are left alone.
 4. **Repeated messages** (automatic):
-   - The **same sender** sends the same message again within 10 minutes. This only applies to messages of at least 3 words and 10 characters, because people naturally repeat short replies such as "ok", "yes" or "test".
+   - The **same sender** sends the same message again, each send within 10 minutes of the previous one. By default the second send is caught; **Sends to count as a repeat** (2–5) lets people re-send a few times first, for example when they see no repeat or reply. This applies to messages of any length, so one word sent over and over, such as "hello", is caught too.
    - The **same text from 3 or more different senders** within 30 minutes. This only applies to longer messages, at least 10 characters and at least 6 words, so short greetings such as "Happy New Year!" are never caught.
+   - Replies and messages that mention someone (`@[name]`) are never checked for repeats, so asking several people the same question is fine.
 5. **Learned from your Spam taps** (automatic): a small classifier scores how much the message looks like the messages you marked as spam (see below). It needs at least 2 messages marked as spam, and it hides a message only when it is at least 80% confident.
 
 ### Matching text
@@ -37,12 +38,12 @@ Before comparing, both your rule and the message are normalised:
 
 - Capital letters, accents and zero-width (invisible) characters are ignored.
 - Look-alike letters are treated as the letter they imitate: Cyrillic or Greek letters that look Latin, fullwidth letters, and "styled" letters such as 𝐛𝐨𝐥𝐝 or 𝘪𝘵𝘢𝘭𝘪𝘤. Swapping in look-alike letters doesn't get a message past a rule.
-- Repeated-message checks also ignore punctuation, emoji and `@[name]` mentions, so "Meet at the park!" and "meet at the park" count as the same text.
+- Repeated-message checks also ignore punctuation and emoji, so "Meet at the park!" and "meet at the park" count as the same text.
 - A reply's leading `@[name]` mention is not part of the text that is checked.
 
 ### Repeated-message memory
 
-The app keeps a short in-memory list of recent messages for each channel: up to 1,000 per channel, for 30 minutes. Each new message is compared against it. Every checked message is added, including ones a rule already hid, so a flood keeps being caught even after you add a rule for part of it.
+The app keeps a short in-memory list of recent messages for each channel: up to 1,000 per channel, for 30 minutes. Each new message is compared against it. A message with the same sender, text and send time as one already in the list is the same message seen again (for example, synced again when you connect a different companion) and never counts as a repeat. Every checked message is added, including ones a rule already hid, so a flood keeps being caught even after you add a rule for part of it.
 
 Time windows use the time the message was **sent**, not when it reached your phone. History synced in a burst after you reconnect was sent hours apart, so it is not mistaken for a flood. Old entries are forgotten by the time they *arrived*, so a sender with a wrong clock can't push everyone else out of the list.
 
@@ -109,6 +110,7 @@ Other effects of filtering:
 | **Show a small placeholder** / **Hide completely** | Placeholder | How filtered messages appear in chat. |
 | **Your rules** | None | Your own rules (see above). |
 | **Repeated messages** | On | "The same message sent again, or by several senders". |
+| **Sends to count as a repeat** | 2 | Which send of the same message by the same sender is hidden (2–5). Available while Repeated messages is on. |
 | **Repeated characters** | On | Long runs of one character, like "aaaaaaaaaaaaaaaaaaaa". |
 | **Learn from Spam taps** | On | Shows how many "spam and not-spam examples" the app is using. |
 | **Reset learning** | | Asks for confirmation, then forgets everything learned from your Spam and Not spam taps. Your rules are kept. |

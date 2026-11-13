@@ -175,12 +175,13 @@
   "appSettings_languageDe": "Tedesco",
   "appSettings_languagePl": "Polacco",
   "appSettings_languageSl": "Sloveno",
-  "appSettings_languagePt": "Portoghese",
+  "appSettings_languagePt": "Portoghese (Brasile)",
   "appSettings_languageIt": "Italiano",
   "appSettings_languageZh": "Cinese",
   "appSettings_languageSv": "Svedese",
   "appSettings_languageNl": "Olandese",
-  "appSettings_languageSk": "Sloveno",
+  "appSettings_languageSk": "Slovacco",
+  "appSettings_languageCs": "Ceco",
   "appSettings_languageBg": "Bulgaro",
   "appSettings_notifications": "Notifiche",
   "appSettings_enableNotifications": "Abilita Notifiche",
@@ -372,7 +373,7 @@
   "contacts_noContactsMatchFilter": "Nessun contatto corrisponde al tuo filtro",
   "contacts_noMembers": "Nessun membro",
   "contacts_lastSeenNow": "Poco fa",
-  "contacts_lastSeenMinsAgo": "Ultimo visto {minutes} minuti fa",
+  "contacts_lastSeenMinsAgo": "~ {minutes} min",
   "@contacts_lastSeenMinsAgo": {
     "placeholders": {
       "minutes": {
@@ -380,8 +381,8 @@
       }
     }
   },
-  "contacts_lastSeenHourAgo": "Ultimo visto 1 ora fa",
-  "contacts_lastSeenHoursAgo": "Ultimo visto {hours} ore fa",
+  "contacts_lastSeenHourAgo": "~ 1 ora",
+  "contacts_lastSeenHoursAgo": "~ {hours} ore",
   "@contacts_lastSeenHoursAgo": {
     "placeholders": {
       "hours": {
@@ -389,8 +390,8 @@
       }
     }
   },
-  "contacts_lastSeenDayAgo": "Ultimo visto 1 giorno fa",
-  "contacts_lastSeenDaysAgo": "Ultimo visto {days} giorni fa",
+  "contacts_lastSeenDayAgo": "~ 1 giorno",
+  "contacts_lastSeenDaysAgo": "~ {days} giorni",
   "@contacts_lastSeenDaysAgo": {
     "placeholders": {
       "days": {
@@ -751,11 +752,10 @@
   "map_repeater": "Ripetitore",
   "map_room": "Stanza",
   "map_sensor": "Sensore",
-  "map_pinDm": "Pin (DM)",
+  "map_pinDm": "Segnaposto (DM)",
   "map_pinPrivate": "Pin (Privato)",
   "map_pinPublic": "Pin (Pubblico)",
   "map_lastSeen": "Ultimo visto",
-  "map_disconnectConfirm": "Sei sicuro di voler disconnetterti da questo dispositivo?",
   "map_from": "Da",
   "map_source": "Fonte",
   "map_flags": "Bandiere",
@@ -1076,6 +1076,7 @@
   "repeater_received": "Ricevuto",
   "repeater_duplicates": "Duplicati",
   "repeater_daysHoursMinsSecs": "{days} giorni {hours}h {minutes}m {seconds}s",
+  "repeater_hoursMinsSecs": "{hours}h {minutes}m {seconds}s",
   "@repeater_daysHoursMinsSecs": {
     "placeholders": {
       "days": {
@@ -1222,8 +1223,8 @@
   "repeater_multiAcksSubtitle": "Riconoscere i messaggi attraverso percorsi multipli per una migliore consegna.",
   "repeater_networkHealth": "Salute della rete",
   "repeater_loopDetect": "Rilevamento di cicli",
-  "repeater_loopDetectHelper": "Crea pacchetti di dati che simulano loop di routing.",
-  "repeater_loopDetectOff": "Offerte",
+  "repeater_loopDetectHelper": "Scarta i pacchetti flood che sembrano loop di routing",
+  "repeater_loopDetectOff": "Off",
   "repeater_loopDetectMinimal": "Essenziale",
   "repeater_loopDetectModerate": "Moderato",
   "repeater_loopDetectStrict": "Rigido",
@@ -1240,15 +1241,15 @@
   "repeater_ownerInfo": "Informazioni sull'operatore",
   "repeater_ownerInfoHelper": "Metadati pubblici per questo ripetitore",
   "repeater_floodMax": "Numero massimo di salti in flood",
-  "repeater_floodMaxHelper": "Numero massimo di pacchetti che un flusso può attraversare (0-64)",
+  "repeater_floodMaxHelper": "Numero massimo di salti che un pacchetto flood può percorrere (0-64)",
   "repeater_advancedSettings": "Avanzato",
   "repeater_advancedSettingsSubtitle": "Manopole di regolazione per operatori esperti",
   "repeater_pathHashMode": "Modalità di hashing del percorso",
   "repeater_pathHashModeHelper": "Byte utilizzati per codificare l'ID di questo ripetitore nei tag di percorso flood/rilevamento loop. 0=1 byte (256 ID, fino a 64 salti), 1=2 byte (65.000 ID, fino a 32 salti), 2=3 byte (16 milioni di ID, fino a 21 salti). Il firmware precedente alla v1.14 usava sempre percorsi a 1 byte; v1.14 e versioni successive possono essere configurate per percorsi a 2 o 3 byte.",
-  "repeater_txDelay": "Ritardo a Flood, TX",
-  "repeater_txDelayHelper": "Riassegnare lo spazio tra i pacchetti per gestire il traffico intenso, come un moltiplicatore del tempo di trasmissione (da 0 a 2, valore predefinito 0,5). Un valore più alto significa meno collisioni, ma una trasmissione più lenta.",
+  "repeater_txDelay": "Ritardo TX flood",
+  "repeater_txDelayHelper": "Spaziatura delle ritrasmissioni per il traffico flood, come moltiplicatore del tempo di trasmissione (da 0 a 2, valore predefinito 0,5). Un valore più alto significa meno collisioni, ma una trasmissione più lenta.",
   "repeater_directTxDelay": "Ritardo diretto TX",
-  "repeater_directTxDelayHelper": "Riassegnare lo spazio per il traffico diretto (non di massa), come un moltiplicatore del tempo di trasmissione del pacchetto (da 0 a 2, valore predefinito 0,3).",
+  "repeater_directTxDelayHelper": "Spaziatura delle ritrasmissioni per il traffico diretto (non flood), come moltiplicatore del tempo di trasmissione del pacchetto (da 0 a 2, valore predefinito 0,3).",
   "repeater_intThresh": "Soglia di interferenza",
   "repeater_intThreshHelper": "Il limite è stato impostato per la calibrazione del livello di rumore del ricevitore, in modo che esso rifiuti i segnali di interferenza superiori a questo livello. 0 disabilita – aumentalo solo se si verificano errori nel ricevitore in una banda di frequenza rumorosa.",
   "repeater_agcResetInterval": "Intervallo di ripristino di AGC",
@@ -1256,7 +1257,7 @@
   "repeater_actionsTitle": "Azioni",
   "repeater_sendAdvert": "Invia annuncio flood",
   "repeater_sendAdvertSubtitle": "Trasmettere un annuncio flood attraverso la rete.",
-  "repeater_sendAdvertZeroHop": "Inviare un annuncio senza intermediari",
+  "repeater_sendAdvertZeroHop": "Invia annuncio Zero Hop",
   "repeater_sendAdvertZeroHopSubtitle": "Trasmettere un annuncio a un solo hop (senza ripetitori)",
   "repeater_clockSync": "Sincronizza l'orologio ora",
   "repeater_clockSyncSubtitle": "Imposta l'ora del tuo telefono sul ripetitore.",
@@ -1268,7 +1269,7 @@
       }
     }
   },
-  "repeater_actionFailed": "{action} failed: {error}",
+  "repeater_actionFailed": "{action} non riuscito: {error}",
   "@repeater_actionFailed": {
     "placeholders": {
       "action": {
@@ -1378,7 +1379,7 @@
   "repeater_cliHelpLogErase": "Elimina i log del pacchetto dal file system.",
   "repeater_cliHelpNeighbors": "Mostra un elenco di altri nodi repeater ricevuti tramite annunci zero-hop. Ogni riga è id-prefisso-esadecimale:timestamp:snr-volte-4",
   "repeater_cliHelpNeighborRemove": "Rimuove la prima corrispondenza in base al prefisso (esadecimale) della pubkey, dalla lista dei vicini.",
-  "repeater_cliHelpRegion": "(solo serie) Elenca tutte le regioni definite e le autorizzazioni flood correnti.",
+  "repeater_cliHelpRegion": "(solo seriale) Elenca tutte le regioni definite e le autorizzazioni flood correnti.",
   "repeater_cliHelpRegionLoad": "NOTA: questo è un'invocazione multi-comando speciale. Ogni comando successivo è un nome di regione (indentato con spazi per indicare la gerarchia parentale, con almeno uno spazio). Terminata inviando una riga vuota/comando.",
   "repeater_cliHelpRegionGet": "Cerca la regione con il prefisso del nome dato (o \"\" per l'ambito globale). Risponde con \"-> nome-regione (nome-genitore) 'F'\"",
   "repeater_cliHelpRegionPut": "Aggiunge o aggiorna una definizione di regione con il nome specificato.",
@@ -1700,7 +1701,7 @@
     }
   },
   "repeater_neighbors": "Vicini",
-  "repeater_neighborsSubtitle": "Visualizza vicini a salto zero.",
+  "repeater_neighborsSubtitle": "Visualizza vicini Zero Hop.",
   "neighbors_receivedData": "Dati dei vicini ricevuti",
   "neighbors_requestTimedOut": "Richiesta dei vicini scaduta.",
   "neighbors_errorLoading": "Errore nel caricamento dei vicini: {error}",
@@ -2297,14 +2298,6 @@
   "contact_teleBaseSubtitle": "Consenti la condivisione del livello della batteria e della telemetria di base",
   "contact_teleEnvSubtitle": "Consenti la condivisione dei dati del sensore ambientale",
   "contact_teleEnv": "Ambiente di telemetria",
-  "appSettings_initialRouteWeight": "Peso iniziale del percorso",
-  "appSettings_initialRouteWeightSubtitle": "Peso di partenza per nuovi percorsi",
-  "appSettings_maxRouteWeightSubtitle": "Il peso massimo che un percorso può accumulare grazie a consegne di successo.",
-  "appSettings_maxRouteWeight": "Massimo peso consentito per il percorso",
-  "appSettings_routeWeightSuccessIncrement": "Aumento del peso del successo",
-  "appSettings_routeWeightSuccessIncrementSubtitle": "Peso aggiunto a un percorso dopo una consegna riuscita.",
-  "appSettings_routeWeightFailureDecrement": "Riduzione del peso associato al fallimento",
-  "appSettings_routeWeightFailureDecrementSubtitle": "Peso rimosso da un percorso dopo un tentativo di consegna fallito.",
   "appSettings_maxMessageRetries": "Numero massimo di tentativi di invio del messaggio",
   "appSettings_maxMessageRetriesSubtitle": "Numero di tentativi di riprova prima di considerare un messaggio come fallito.",
   "path_routeWeight": "{weight}/{max}",
@@ -2519,9 +2512,9 @@
   "repeater_cliHelpStatsRadio": "(Solo per serie TV) Visualizza statistiche relative alla trasmissione radiofonica.",
   "repeater_cliHelpStatsCore": "(Solo per serie) Visualizza le statistiche del firmware di base.",
   "common_done": "Fatto",
-  "background_serviceTitle": "MeshCore running",
-  "background_serviceText": "Keeping BLE connected",
-  "appSettings_translationModelDeleted": "Deleted {name}",
+  "background_serviceTitle": "MeshCore in esecuzione",
+  "background_serviceText": "Connessione BLE mantenuta",
+  "appSettings_translationModelDeleted": "{name} eliminato",
   "@appSettings_translationModelDeleted": {
     "placeholders": {
       "name": {
@@ -2529,7 +2522,7 @@
       }
     }
   },
-  "appSettings_translationModelDeleteFailed": "Failed to delete: {error}",
+  "appSettings_translationModelDeleteFailed": "Eliminazione non riuscita: {error}",
   "@appSettings_translationModelDeleteFailed": {
     "placeholders": {
       "error": {
@@ -2659,7 +2652,7 @@
   "contacts_searchOpen": "Apri ricerca",
   "contacts_searchClose": "Chiudi ricerca",
   "routing_title": "Instradamento",
-  "routing_modeAuto": "Automatico",
+  "routing_modeAuto": "Auto",
   "routing_modeFlood": "Flood",
   "routing_modeManual": "Manuale",
   "routing_modeAutoHint": "Seleziona automaticamente il percorso migliore noto, ricorrendo al flood quando non ne è noto nessuno.",
@@ -2926,7 +2919,7 @@
     }
   },
   "settings_regionSettings": "Regioni",
-  "settings_regionSettingsSubtitle": "Gestione delle regioni salvate",
+  "settings_regionSettingsSubtitle": "Limita i flood a un'area",
   "settings_regionManagement_screenTitle": "Gestione Regionale",
   "settings_regionNameHint": "Inserisci il nome della regione",
   "settings_regionAddRegion": "Aggiungi regione",
@@ -2974,7 +2967,7 @@
   "imageMessages_autoProcessSubtitle": "Ricostruisci ogni immagine non appena arriva. Utilizza circa 2 GB di memoria per un secondo ogni volta; disattiva la ricostruzione con un semplice tocco.",
   "imageSend_title": "Invia immagine",
   "imageSend_cropNote": "Ridimensionato a 512 × 512 · rapporto d'aspetto non conservato",
-  "imageSend_originalSize": "Traduzione:\n\nOriginal text:\n\nPlease translate the following English text into Italian:\n\nOriginal text:\n\n(No original English text provided)",
+  "imageSend_originalSize": "Originale",
   "imageSend_onAirSize": "In onda",
   "imageSend_quality": "Qualità",
   "imageSend_qualityStandard": "Standard",
@@ -3697,6 +3690,8 @@
   "messageFilter_automaticSection": "Automatico",
   "messageFilter_duplicates": "Messaggi ripetuti",
   "messageFilter_duplicatesSubtitle": "Lo stesso messaggio inviato di nuovo, o da più mittenti",
+  "messageFilter_repeatSends": "Invii da considerare ripetizione",
+  "messageFilter_repeatSendsSubtitle": "Nascondi un messaggio quando lo stesso mittente lo invia {count} volte entro 10 minuti",
   "messageFilter_repeatedCharacters": "Caratteri ripetuti",
   "messageFilter_repeatedCharactersSubtitle": "Lunghe sequenze dello stesso carattere, come «aaaaaaaaaaaaaaaaaaaa»",
   "messageFilter_learning": "Impara dai tocchi su Spam",
@@ -3725,5 +3720,197 @@
   "messageFilter_filterSenderConfirm": "Nascondere tutti i messaggi di «{name}»?",
   "messageFilter_filterLikeThis": "Filtra messaggi come questo…",
   "messageFilter_channelToggle": "Filtra i messaggi in questo canale",
-  "messageFilter_ghostIconTooltip": "Nascosto dal tuo filtro messaggi"
+  "messageFilter_ghostIconTooltip": "Nascosto dal tuo filtro messaggi",
+  "chatSearch_tooltip": "Cerca messaggi",
+  "chatSearch_hint": "Cerca messaggi",
+  "chatSearch_close": "Chiudi ricerca",
+  "chatSearch_resultCount": "{count, plural, =1{1 risultato} other{{count} risultati}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Nessun messaggio corrispondente",
+  "chatSearch_noResultsHint": "Prova con un'altra parola o controlla l'ortografia",
+  "contactShare_headerOutgoing": "Hai condiviso un contatto",
+  "contactShare_headerIncoming": "Ha condiviso un contatto",
+  "contactShare_add": "Aggiungi contatto",
+  "contactShare_adding": "Aggiunta del contatto...",
+  "contactShare_saved": "Salvato",
+  "contactShare_isYou": "Sei tu",
+  "contactShare_shareAction": "Condividi contatto",
+  "contactShare_pickerTitle": "Condividi un contatto",
+  "contactShare_myContact": "Il mio contatto",
+  "contactShare_searchHint": "Cerca contatti",
+  "contactShare_noContacts": "Nessun contatto trovato",
+  "contactShare_preview": "Contatto condiviso: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Ha condiviso un contatto: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Tracciamento del percorso per hash",
+  "manualTrace_inputLabel": "Hash dei ripetitori",
+  "manualTrace_helper": "Esempio: {example}. Separa con virgole o spazi.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Salti ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Nodo sconosciuto",
+  "manualTrace_enterHashes": "Inserisci gli hash",
+  "manualTrace_run": "Avvia tracciamento del percorso",
+  "manualTrace_notConnected": "Connettiti a una radio per eseguire una traccia",
+  "manualTrace_errorInvalidHex": "Sono ammessi solo caratteri esadecimali (0-9, A-F)",
+  "manualTrace_errorOddLength": "Ogni hash richiede un numero pari di caratteri esadecimali, corrispondente alla dimensione del salto",
+  "manualTrace_errorMixedWidths": "Tutti gli hash devono avere la stessa lunghezza",
+  "manualTrace_errorUnsupportedWidth": "Gli hash devono essere di 1, 2 o 3 byte (2, 4 o 6 caratteri esadecimali)",
+  "manualTrace_errorTooManyHops": "Il percorso è troppo lungo (massimo {max} byte)",
+  "manualTrace_errorTraceTooLong": "Troppi salti da tracciare in una sola richiesta. Rimuovi alcuni salti o scegli «Come inserito».",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_jumpFailed": "Impossibile trovare quel messaggio nella chat",
+  "chat_clearSelection": "Annulla selezione",
+  "chat_deleteSelectedConfirm": "{count, plural, =1{Eliminare 1 messaggio da questo dispositivo?} other{Eliminare {count} messaggi da questo dispositivo?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Eliminare i messaggi?",
+  "chat_messagesDeleted": "{count, plural, =1{1 messaggio eliminato} other{{count} messaggi eliminati}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Seleziona tutto",
+  "chat_selectMessages": "Seleziona messaggi",
+  "chat_selectedCount": "{count} selezionati",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Aggiungi di nuovo",
+  "messageFilter_markedNotSpamCount": "{count, plural, =1{1 messaggio segnato come non spam} other{{count} messaggi segnati come non spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, =1{1 messaggio segnato come spam} other{{count} messaggi segnati come spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Espandi elenco dei salti",
+  "pathMap_showMap": "Mostra mappa",
+  "routing_modeDirect": "Diretto",
+  "routing_modeDirectHint": "Invia sempre direttamente a questo contatto, senza salti tramite ripetitori. Usalo quando è nel raggio radio.",
+  "settings_export": "Esporta",
+  "settings_exportSubtitle": "Esporta contatti e ripetitori come GPX",
+  "backupRestore_title": "Backup e ripristino",
+  "backupRestore_subtitle": "Salva o ripristina i dati dell'app e le impostazioni della radio",
+  "backupRestore_import": "Importa",
+  "backupRestore_selectImportFile": "Importa file",
+  "backupRestore_password": "Password (facoltativa)",
+  "backupRestore_passwordHelp": "Una password cifra il file. Se vuota, il file viene salvato in chiaro e può includere chiavi private/di canale, cronologia e credenziali.",
+  "backupRestore_importUnavailable": "Controlla la password o scegli un file di backup supportato.",
+  "backupRestore_items": "Elementi di backup e ripristino",
+  "backupRestore_nodeSettings": "Impostazioni del nodo",
+  "backupRestore_nodeSettingsDescription": "Nome del dispositivo, chiavi privata e pubblica, impostazioni radio e regioni",
+  "backupRestore_deviceName": "Nome del dispositivo",
+  "backupRestore_privateKey": "Chiave privata (sensibile)",
+  "backupRestore_publicKey": "Chiave pubblica",
+  "backupRestore_radioSettings": "Impostazioni radio",
+  "backupRestore_regions": "Regioni",
+  "backupRestore_location": "Posizione",
+  "backupRestore_contactSettings": "Impostazioni dei contatti",
+  "backupRestore_privacySettings": "Impostazioni sulla privacy",
+  "backupRestore_contactsData": "Contatti",
+  "backupRestore_perContactSettings": "Impostazioni e filtri per contatto",
+  "backupRestore_contactGroups": "Gruppi di contatti",
+  "backupRestore_contactHistory": "Cronologia dei contatti",
+  "backupRestore_channelsData": "Canali",
+  "backupRestore_channelFilters": "Impostazioni del filtro messaggi",
+  "backupRestore_channelSettings": "Impostazioni dei canali",
+  "backupRestore_communities": "Community",
+  "backupRestore_channelHistory": "Cronologia dei canali",
+  "backupRestore_locationSettings": "Impostazioni di posizione",
+  "backupRestore_locationSettingsDescription": "Posizione, impostazioni dei contatti e impostazioni sulla privacy",
+  "backupRestore_appSettings": "Impostazioni dell'app",
+  "backupRestore_appSettingsDescription": "Preferenze dell'app e impostazioni di aspetto",
+  "backupRestore_ipfsKey": "Chiave API IPFS (sensibile)",
+  "backupRestore_stadiaMapKey": "Chiave API Stadia Maps (sensibile)",
+  "backupRestore_contacts": "Contatti",
+  "backupRestore_contactsDescription": "Contatti, filtri e impostazioni per contatto, gruppi e cronologia messaggi",
+  "backupRestore_discoveredContacts": "Contatti scoperti",
+  "backupRestore_discoveredContactsDescription": "Contatti scoperti e relativi dettagli salvati",
+  "backupRestore_channels": "Canali",
+  "backupRestore_channelsDescription": "Canali, filtri dei canali, community e cronologia messaggi",
+  "backupRestore_backup": "Crea backup",
+  "backupRestore_restore": "Ripristina selezionati",
+  "backupRestore_backupComplete": "File di backup creato.",
+  "backupRestore_restoreComplete": "Ripristino completato. Riconnettiti se hai ripristinato l'identità della radio.",
+  "backupRestore_missingModelsTitle": "Modelli non scaricati",
+  "backupRestore_missingModelsMessage": "Le impostazioni ripristinate selezionano modelli non disponibili su questo dispositivo:\n{models}\n\nScaricarli ora?",
+  "backupRestore_downloadModels": "Scarica modelli",
+  "backupRestore_downloading": "Download in corso…",
+  "backupRestore_cancelDownload": "Annulla download",
+  "backupRestore_failed": "Operazione di backup non riuscita: {error}",
+  "backupRestore_fileTooLarge": "Il file di backup supera il limite di 100 MB.",
+  "backupRestore_selectAtLeastOne": "Seleziona almeno un elemento.",
+  "backupRestore_replaceIdentityTitle": "Sostituire l'identità della radio?",
+  "backupRestore_replaceIdentityMessage": "Il ripristino delle impostazioni del nodo sostituisce la chiave privata della radio connessa e ne cambia l'identità. Continua solo se è voluto.",
+  "appSettings_languagePtPt": "Portoghese (Portogallo)",
+  "receivedImage_syntheticBadge": "Ricostruita dall'IA",
+  "appBar_offlineSubtitle": "Offline · {name}",
+  "appBar_offline": "Offline",
+  "appBar_reconnecting": "Riconnessione…",
+  "connectSheet_title": "Connetti una radio",
+  "connectSheet_reconnect": "Riconnetti a {name}",
+  "connectSheet_chooseRadio": "Scegli una radio",
+  "connectSheet_chooseRadioSubtitle": "Bluetooth, USB o TCP",
+  "connectSheet_stopReconnecting": "Interrompi la riconnessione",
+  "connectSheet_reconnectFailed": "Impossibile raggiungere {name}. Assicurati che sia acceso e nelle vicinanze.",
+  "chat_composerOffline": "Connettiti a una radio per inviare messaggi"
 }

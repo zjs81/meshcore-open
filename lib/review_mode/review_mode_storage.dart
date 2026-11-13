@@ -6,6 +6,7 @@ import '../services/storage_service.dart';
 import '../services/timeout_prediction_service.dart';
 import '../storage/legacy_key_migration.dart';
 import '../storage/prefs_manager.dart';
+import '../storage/history_store.dart';
 import 'review_radio.dart';
 
 /// Channel notification modes (JSON map of channel name to mode name) as they
@@ -26,9 +27,16 @@ const _savedGlobalKeyPrefix = 'review_mode_saved_global_';
 Future<void> clearReviewModeData() async {
   final prefs = PrefsManager.instance;
   final prefix = ReviewRadio.storagePrefix;
-  final keys = prefs.getKeys().where((key) => key.contains(prefix)).toList();
+  final keys = {
+    ...prefs.getKeys(),
+    ...await HistoryStore.instance.getKeys(),
+  }.where((key) => key.contains(prefix)).toList();
   for (final key in keys) {
-    await prefs.remove(key);
+    if (HistoryStore.isHistoryKey(key)) {
+      await HistoryStore.instance.remove(key);
+    } else {
+      await prefs.remove(key);
+    }
   }
 }
 

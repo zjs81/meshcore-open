@@ -8,6 +8,7 @@ import '../helpers/snack_bar_builder.dart';
 import '../l10n/l10n.dart';
 import '../models/radio_settings.dart';
 import '../services/app_debug_log_service.dart';
+import '../utils/radio_guard.dart';
 
 /// Convert device coding-rate value (1-4 on some firmware, 5-8 on others)
 /// to the UI enum range (always 5-8).
@@ -382,6 +383,7 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
   }
 
   Future<void> _saveSettings() async {
+    if (!ensureRadioConnected(context)) return;
     final l10n = context.l10n;
     final freqMHz = double.tryParse(_frequencyController.text);
     final txPower = int.tryParse(_txPowerController.text);

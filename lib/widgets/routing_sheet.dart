@@ -10,9 +10,11 @@ import '../models/contact.dart';
 import '../models/path_history.dart';
 import '../screens/path_trace_map.dart';
 import '../services/path_history_service.dart';
+import '../utils/radio_guard.dart';
+import 'mesh_ui.dart';
 import 'path_editor_sheet.dart';
 
-enum _RoutingMode { auto, flood, manual }
+enum _RoutingMode { auto, flood, direct, manual }
 
 enum _PathQuality { strong, good, fair, proven, flood, untested }
 
@@ -72,7 +74,8 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
   _RoutingMode _modeOf(Contact contact) {
     final override = contact.pathOverride;
     if (override == null) return _RoutingMode.auto;
-    return override < 0 ? _RoutingMode.flood : _RoutingMode.manual;
+    if (override < 0) return _RoutingMode.flood;
+    return override == 0 ? _RoutingMode.direct : _RoutingMode.manual;
   }
 
   Future<void> _selectMode(
@@ -87,6 +90,13 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
       case _RoutingMode.flood:
         setState(() => _syncStatus = null);
         await connector.setPathOverride(contact, pathLen: -1);
+      case _RoutingMode.direct:
+        setState(() => _syncStatus = null);
+        await connector.setPathOverride(
+          contact,
+          pathLen: 0,
+          pathBytes: Uint8List(0),
+        );
       case _RoutingMode.manual:
         await _editManualPath(connector, contact);
     }
@@ -224,6 +234,7 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
     return switch (mode) {
       _RoutingMode.auto => l10n.routing_modeAutoHint,
       _RoutingMode.flood => l10n.routing_modeFloodHint,
+      _RoutingMode.direct => l10n.routing_modeDirectHint,
       _RoutingMode.manual => l10n.routing_modeManualHint,
     };
   }
@@ -238,6 +249,8 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
     switch (mode) {
       case _RoutingMode.flood:
         return l10n.routing_floodBroadcast;
+      case _RoutingMode.direct:
+        return l10n.routing_directNoHops;
       case _RoutingMode.manual:
         final bytes = contact.pathOverrideBytes ?? Uint8List(0);
         if (bytes.isEmpty) return l10n.routing_directNoHops;
@@ -262,7 +275,7 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
 
   Uint8List _displayBytes(Contact contact, _RoutingMode mode) {
     return switch (mode) {
-      _RoutingMode.flood => Uint8List(0),
+      _RoutingMode.flood || _RoutingMode.direct => Uint8List(0),
       _RoutingMode.manual => contact.pathOverrideBytes ?? Uint8List(0),
       _RoutingMode.auto => contact.path,
     };
@@ -378,9 +391,11 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
                   color: scheme.primary,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  l10n.routing_currentRoute,
-                  style: theme.textTheme.titleSmall,
+                Flexible(
+                  child: Text(
+                    l10n.routing_currentRoute,
+                    style: theme.textTheme.titleSmall,
+                  ),
                 ),
               ],
             ),
@@ -435,7 +450,11 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
                   TextButton.icon(
                     icon: const Icon(Icons.restart_alt, size: 18),
                     label: Text(l10n.routing_forgetPath),
-                    onPressed: () => _forgetPath(connector, contact),
+                    // Resets the path on the radio; offline it would do
+                    // nothing yet report success.
+                    onPressed: isRadioReadOnly(connector)
+                        ? null
+                        : () => _forgetPath(connector, contact),
                   ),
               ],
             ),
@@ -543,14 +562,24 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
     };
 
     final hasBytes = record.pathBytes.isNotEmpty;
-    final inUse =
-        hasBytes &&
-        ((mode == _RoutingMode.manual &&
-                listEquals(record.pathBytes, contact.pathOverrideBytes)) ||
-            (mode == _RoutingMode.auto &&
-                listEquals(record.pathBytes, contact.path)));
+    // A zero-hop record is the direct path: usable even without hop bytes.
+    final isDirect = !hasBytes && record.hopCount == 0;
+    final usable = hasBytes || isDirect;
+    final inUse = isDirect
+        ? mode == _RoutingMode.direct ||
+              (mode == _RoutingMode.auto && contact.pathLength == 0)
+        : hasBytes &&
+              ((mode == _RoutingMode.manual &&
+                      listEquals(
+                        record.pathBytes,
+                        contact.pathOverrideBytes,
+                      )) ||
+                  (mode == _RoutingMode.auto &&
+                      listEquals(record.pathBytes, contact.path)));
 
-    final title = hasBytes
+    final title = isDirect
+        ? l10n.routing_directNoHops
+        : hasBytes
         ? PathHelper.resolvePathNames(
             record.pathBytes,
             connector.allContacts,
@@ -583,7 +612,7 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 4),
         child: ListTile(
-          enabled: hasBytes,
+          enabled: usable,
           leading: CircleAvatar(
             radius: 18,
             backgroundColor: bg,
@@ -623,7 +652,7 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
               ),
             ],
           ),
-          onTap: hasBytes && !inUse
+          onTap: usable && !inUse
               ? () => _applyHistoryPath(connector, contact, record)
               : null,
           onLongPress: hasBytes
@@ -698,30 +727,55 @@ class _RoutingSheetBodyState extends State<_RoutingSheetBody> {
               ),
             ),
             const SizedBox(height: 16),
-            SegmentedButton<_RoutingMode>(
-              style: const ButtonStyle(
-                minimumSize: WidgetStatePropertyAll(Size.fromHeight(44)),
-              ),
-              segments: [
-                ButtonSegment(
-                  value: _RoutingMode.auto,
-                  icon: const Icon(Icons.auto_mode),
-                  label: Text(l10n.routing_modeAuto),
-                ),
-                ButtonSegment(
-                  value: _RoutingMode.flood,
-                  icon: const Icon(Icons.waves),
-                  label: Text(l10n.routing_modeFlood),
-                ),
-                ButtonSegment(
-                  value: _RoutingMode.manual,
-                  icon: const Icon(Icons.edit_road),
-                  label: Text(l10n.routing_modeManual),
-                ),
-              ],
-              selected: {mode},
-              onSelectionChanged: (selection) =>
-                  _selectMode(connector, contact, selection.first),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                // Four modes share one row: on phones drop the icons and let
+                // labels shrink rather than clip, so every word stays whole.
+                final showIcons = constraints.maxWidth >= 480;
+                ButtonSegment<_RoutingMode> segment(
+                  _RoutingMode value,
+                  IconData icon,
+                  String label,
+                ) => ButtonSegment(
+                  value: value,
+                  icon: showIcons ? Icon(icon) : null,
+                  label: MeshSegmentLabel(label),
+                );
+                return SegmentedButton<_RoutingMode>(
+                  showSelectedIcon: false,
+                  style: const ButtonStyle(
+                    minimumSize: WidgetStatePropertyAll(Size.fromHeight(48)),
+                    padding: WidgetStatePropertyAll(
+                      EdgeInsets.symmetric(horizontal: 6),
+                    ),
+                  ),
+                  segments: [
+                    segment(
+                      _RoutingMode.auto,
+                      Icons.auto_mode,
+                      l10n.routing_modeAuto,
+                    ),
+                    segment(
+                      _RoutingMode.flood,
+                      Icons.waves,
+                      l10n.routing_modeFlood,
+                    ),
+                    segment(
+                      _RoutingMode.direct,
+                      Icons.near_me,
+                      l10n.routing_modeDirect,
+                    ),
+                    segment(
+                      _RoutingMode.manual,
+                      Icons.edit_road,
+                      l10n.routing_modeManual,
+                    ),
+                  ],
+                  selected: {mode},
+                  onSelectionChanged: (selection) =>
+                      _selectMode(connector, contact, selection.first),
+                );
+              },
             ),
             const SizedBox(height: 8),
             Text(

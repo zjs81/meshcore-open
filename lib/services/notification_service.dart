@@ -9,10 +9,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import '../helpers/gif_helper.dart';
+import '../helpers/contact_share_message.dart';
 import '../helpers/marker_message.dart';
 import '../helpers/message_url_image_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../l10n/app_localizations.dart';
+import '../l10n/locale_tag.dart';
 import '../models/app_settings.dart';
 import '../storage/prefs_manager.dart';
 import '../utils/platform_info.dart';
@@ -43,7 +45,7 @@ class NotificationService {
     try {
       PrefsManager.instance.setString(
         notificationLanguagePrefsKey,
-        locale.languageCode,
+        localeTag(locale),
       );
     } catch (_) {}
   }
@@ -91,6 +93,42 @@ class NotificationService {
   static const _minNotificationInterval = Duration(seconds: 3);
   static const _batchWindow = Duration(seconds: 5);
 
+  /// Messages for the same conversation that arrive within this window are
+  /// posted as one notification update. A queue sync can deliver hundreds of
+  /// messages in seconds; posting each one floods the shade and makes the
+  /// phone sluggish (Android also drops updates past its rate limit).
+  static const _coalesceDelay = Duration(milliseconds: 800);
+
+  /// While the radio's offline queue is syncing, sound/vibrate at most this
+  /// often instead of every [_minNotificationInterval].
+  static const _bulkSyncAlertInterval = Duration(seconds: 60);
+
+  /// Reports whether the connector is draining the radio's message queue.
+  bool Function()? isBulkSyncActive;
+
+  /// Current unread total for the app badge. Coalesced conversation updates
+  /// flush on independent timers, so a count captured when a message was
+  /// queued can be older than one already posted by another conversation.
+  int Function()? unreadTotalProvider;
+
+  /// Newest badge count seen on any queued message, when no provider is set.
+  int? _latestQueuedBadgeCount;
+
+  final Map<String, List<_PendingNotification>> _pendingConversationUpdates =
+      {};
+  final Map<String, Timer> _conversationUpdateTimers = {};
+
+  /// Bumped whenever a conversation notification is cleared, so a post still
+  /// awaiting permission/image lookup does not bring a read chat back.
+  final Map<int, int> _clearGenerations = {};
+  int _cancelAllGeneration = 0;
+
+  (int, int) _clearGenerationOf(int id) =>
+      (_cancelAllGeneration, _clearGenerations[id] ?? 0);
+
+  void _bumpClearGeneration(int id) =>
+      _clearGenerations[id] = (_clearGenerations[id] ?? 0) + 1;
+
   DateTime? _lastNotificationTime;
   final List<_PendingNotification> _pendingNotifications = [];
   bool _isBatchingActive = false;
@@ -101,6 +139,7 @@ class NotificationService {
     _suppressNotifications = suppress;
     if (suppress) {
       _pendingNotifications.clear();
+      _dropAllPendingConversationUpdates();
     }
   }
 
@@ -108,7 +147,7 @@ class NotificationService {
     if (_isInitialized) return;
 
     const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      '@drawable/ic_stat_notification',
     );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
@@ -302,6 +341,12 @@ class NotificationService {
     if (GifHelper.parseGif(trimmed) != null) {
       return l10n.notification_sentGif;
     }
+    final contactShare = parseContactShare(trimmed);
+    if (contactShare != null) {
+      return l10n.contactShare_notification(
+        contactShare.name.isEmpty ? contactShare.shortKey : contactShare.name,
+      );
+    }
     final marker = parseMarkerText(trimmed);
     if (marker != null) {
       return marker.label.isEmpty
@@ -388,7 +433,7 @@ class NotificationService {
           : 'New message notifications',
       importance: Importance.high,
       priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
+      icon: '@drawable/ic_stat_notification',
       number: badgeCount,
       silent: silent,
       category: AndroidNotificationCategory.message,
@@ -420,13 +465,22 @@ class NotificationService {
     String? senderName,
     int? badgeCount,
     bool silent = false,
+    List<_PendingNotification> earlier = const [],
   }) async {
+    final generation = _clearGenerationOf(id);
     if (!await _ensureCanNotify()) return;
+
+    // Only the newest messages fit in the notification anyway.
+    final skipped = earlier.length > _maxConversationMessages
+        ? earlier.length - _maxConversationMessages
+        : 0;
+    final history = earlier.skip(skipped);
 
     final imagePath = await _resolveNotificationImagePath(
       message,
       urlImagesEnabled: urlImagesEnabled,
     );
+    if (_clearGenerationOf(id) != generation) return;
     final preview = formatNotificationText(message.trim(), _l10n);
     final body = preview.isEmpty
         ? _l10n.notification_receivedNewMessage
@@ -444,6 +498,23 @@ class NotificationService {
           ..title = title
           ..badgeCount = badgeCount
           ..imagePath = imagePath;
+    for (final prior in history) {
+      final priorPreview = formatNotificationText(prior.body.trim(), _l10n);
+      final priorSender = isChannel ? (prior.senderName ?? title) : title;
+      conversation.add(
+        Message(
+          priorPreview.isEmpty
+              ? _l10n.notification_receivedNewMessage
+              : priorPreview,
+          DateTime.now(),
+          Person(
+            key: isChannel ? 'sender:$priorSender' : payload,
+            name: priorSender,
+          ),
+        ),
+        _maxConversationMessages,
+      );
+    }
     final sender = isChannel ? (senderName ?? title) : title;
     conversation.add(
       Message(
@@ -549,7 +620,7 @@ class NotificationService {
             channelDescription: 'New message notifications',
             importance: Importance.high,
             priority: Priority.high,
-            icon: '@mipmap/ic_launcher',
+            icon: '@drawable/ic_stat_notification',
           ),
         ),
         payload: conversation?.payload,
@@ -592,7 +663,7 @@ class NotificationService {
       channelDescription: 'New node advertisement notifications',
       importance: Importance.defaultImportance,
       priority: Priority.defaultPriority,
-      icon: '@mipmap/ic_launcher',
+      icon: '@drawable/ic_stat_notification',
     );
 
     const iosDetails = DarwinNotificationDetails(
@@ -648,7 +719,7 @@ class NotificationService {
       channelDescription: 'Low battery alerts for the connected device',
       importance: Importance.high,
       priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
+      icon: '@drawable/ic_stat_notification',
     );
 
     const darwinDetails = DarwinNotificationDetails(
@@ -691,16 +762,48 @@ class NotificationService {
     }
   }
 
+  /// Payload (`message:<key>` or `channel:<index>`) of the last tapped
+  /// conversation notification, until [NotificationNavigator] consumes it.
+  final ValueNotifier<String?> pendingTap = ValueNotifier<String?>(null);
+
   void _onNotificationTapped(NotificationResponse response) {
     final payload = response.payload;
-    if (payload != null) {
-      debugPrint('Notification tapped: $payload');
-      // Handle navigation based on payload
-      // This can be extended to navigate to specific screens
+    // Action buttons (reply, mark read, mute) are handled elsewhere; only a
+    // tap on the notification body should open the conversation. Use the
+    // response type, not actionId: the Windows plugin fills actionId with the
+    // payload even for plain body clicks.
+    if (payload == null ||
+        response.notificationResponseType !=
+            NotificationResponseType.selectedNotification) {
+      return;
+    }
+    debugPrint('Notification tapped: $payload');
+    if (payload.startsWith('message:') || payload.startsWith('channel:')) {
+      pendingTap.value = payload;
     }
   }
 
+  static const String _radioKeyPrefsKey = 'notifications_radio_key';
+
+  /// Called when a radio connects. Notifications name conversations by
+  /// contact key and channel *slot*; after switching radios a leftover
+  /// channel notification would open (and mark read) whatever channel the
+  /// new radio keeps in that slot, so a different radio clears them all.
+  /// The key is persisted so this also holds across app restarts.
+  Future<void> bindRadio(String radioKeyHex) async {
+    String? previous;
+    try {
+      previous = PrefsManager.instance.getString(_radioKeyPrefsKey);
+      await PrefsManager.instance.setString(_radioKeyPrefsKey, radioKeyHex);
+    } catch (_) {}
+    if (previous == null || previous == radioKeyHex) return;
+    if (!await _ensureInitialized()) return;
+    await cancelAll();
+  }
+
   Future<void> cancelAll() async {
+    _cancelAllGeneration++;
+    _dropAllPendingConversationUpdates();
     _conversations.clear();
     await _notifications.cancelAll();
     await _updateBadge(0);
@@ -715,6 +818,8 @@ class NotificationService {
     String contactId,
     int totalUnreadCount,
   ) async {
+    _dropPendingConversationUpdate(_NotificationType.message, contactId);
+    _bumpClearGeneration(contactId.hashCode);
     if (!await _ensureInitialized()) return;
     _conversations.remove(contactId.hashCode);
     await _notifications.cancel(id: contactId.hashCode);
@@ -726,6 +831,11 @@ class NotificationService {
     int channelIndex,
     int totalUnreadCount,
   ) async {
+    _dropPendingConversationUpdate(
+      _NotificationType.channelMessage,
+      channelIndex.toString(),
+    );
+    _bumpClearGeneration(channelIndex.hashCode);
     if (!await _ensureInitialized()) return;
     _conversations.remove(channelIndex.hashCode);
     await _notifications.cancel(id: channelIndex.hashCode);
@@ -853,10 +963,16 @@ class NotificationService {
         now.difference(_lastNotificationTime!) < _minNotificationInterval;
 
     // Messages always update their conversation notification so the reply
-    // action stays available; during a burst they update silently.
+    // action stays available; bursts are coalesced and update silently.
     if (notification.type != _NotificationType.advert) {
-      _showNotificationImmediately(notification, silent: throttled);
-      if (!throttled) _lastNotificationTime = now;
+      _latestQueuedBadgeCount =
+          notification.badgeCount ?? _latestQueuedBadgeCount;
+      final key = _conversationKey(notification.type, notification.id);
+      (_pendingConversationUpdates[key] ??= []).add(notification);
+      _conversationUpdateTimers[key] ??= Timer(
+        _coalesceDelay,
+        () => unawaited(_flushConversationUpdate(key)),
+      );
       return;
     }
 
@@ -883,6 +999,43 @@ class NotificationService {
     _lastNotificationTime = now;
   }
 
+  static String _conversationKey(_NotificationType type, String? id) =>
+      '${type.name}:$id';
+
+  void _dropPendingConversationUpdate(_NotificationType type, String id) {
+    final key = _conversationKey(type, id);
+    _conversationUpdateTimers.remove(key)?.cancel();
+    _pendingConversationUpdates.remove(key);
+  }
+
+  void _dropAllPendingConversationUpdates() {
+    for (final timer in _conversationUpdateTimers.values) {
+      timer.cancel();
+    }
+    _conversationUpdateTimers.clear();
+    _pendingConversationUpdates.clear();
+  }
+
+  Future<void> _flushConversationUpdate(String key) async {
+    _conversationUpdateTimers.remove(key);
+    final batch = _pendingConversationUpdates.remove(key);
+    if (batch == null || batch.isEmpty) return;
+    final now = DateTime.now();
+    final alertGap = (isBulkSyncActive?.call() ?? false)
+        ? _bulkSyncAlertInterval
+        : _minNotificationInterval;
+    final silent =
+        _lastNotificationTime != null &&
+        now.difference(_lastNotificationTime!) < alertGap;
+    if (!silent) _lastNotificationTime = now;
+    await _showNotificationImmediately(
+      batch.last,
+      silent: silent,
+      earlier: batch.sublist(0, batch.length - 1),
+      badgeCount: unreadTotalProvider?.call() ?? _latestQueuedBadgeCount,
+    );
+  }
+
   Future<void> _processBatch() async {
     _isBatchingActive = false;
 
@@ -905,7 +1058,10 @@ class NotificationService {
   Future<void> _showNotificationImmediately(
     _PendingNotification notification, {
     bool silent = false,
+    List<_PendingNotification> earlier = const [],
+    int? badgeCount,
   }) async {
+    final badge = badgeCount ?? notification.badgeCount;
     try {
       switch (notification.type) {
         case _NotificationType.message:
@@ -916,8 +1072,9 @@ class NotificationService {
             isChannel: false,
             message: notification.body,
             urlImagesEnabled: notification.urlImagesEnabled,
-            badgeCount: notification.badgeCount,
+            badgeCount: badge,
             silent: silent,
+            earlier: earlier,
           );
           break;
         case _NotificationType.advert:
@@ -939,8 +1096,9 @@ class NotificationService {
             message: notification.body,
             senderName: notification.senderName,
             urlImagesEnabled: notification.urlImagesEnabled,
-            badgeCount: notification.badgeCount,
+            badgeCount: badge,
             silent: silent,
+            earlier: earlier,
           );
           break;
       }
@@ -965,7 +1123,7 @@ class NotificationService {
       channelDescription: 'Batched notification summaries',
       importance: Importance.defaultImportance,
       priority: Priority.defaultPriority,
-      icon: '@mipmap/ic_launcher',
+      icon: '@drawable/ic_stat_notification',
     );
 
     const notificationDetails = NotificationDetails(android: androidDetails);

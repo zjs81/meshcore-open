@@ -1,5 +1,28 @@
 import 'package:flutter/material.dart';
 
+/// Title style of settings rows: [MeshNavTile] and, through
+/// [MeshSettingsTileTheme], stock [ListTile]s and [SwitchListTile]s.
+TextStyle? meshTileTitleStyle(ThemeData theme) =>
+    theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600);
+
+/// Gives the [ListTile]s, [SwitchListTile]s and [CheckboxListTile]s below it
+/// the same semibold title as [MeshNavTile], so settings rows built from
+/// either read alike. Subtitles already match (`bodyMedium`,
+/// `onSurfaceVariant`). Wrap a settings screen's body in it.
+class MeshSettingsTileTheme extends StatelessWidget {
+  final Widget child;
+
+  const MeshSettingsTileTheme({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTileTheme.merge(
+      titleTextStyle: meshTileTitleStyle(Theme.of(context)),
+      child: child,
+    );
+  }
+}
+
 /// Settings-style navigation row: leading icon, bold title, secondary
 /// subtitle and an optional trailing chevron.
 ///
@@ -51,10 +74,7 @@ class MeshNavTile extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: titleColor,
-                ),
+                style: meshTileTitleStyle(theme)?.copyWith(color: titleColor),
               ),
               if (subtitle != null) ...[
                 const SizedBox(height: 2),

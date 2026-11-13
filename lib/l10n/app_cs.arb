@@ -1,0 +1,4393 @@
+{
+  "appTitle": "MeshCore Open",
+  "nav_contacts": "Kontakty",
+  "nav_channels": "Kanály",
+  "nav_map": "Mapa",
+  "common_cancel": "Zrušit",
+  "common_ok": "OK",
+  "common_connect": "Připojit",
+  "common_unknownDevice": "Neznámé zařízení",
+  "common_save": "Uložit",
+  "common_delete": "Smazat",
+  "common_deleteAll": "Smazat vše",
+  "common_close": "Zavřít",
+  "common_done": "Hotovo",
+  "common_edit": "Upravit",
+  "common_add": "Přidat",
+  "common_settings": "Nastavení",
+  "common_disconnect": "Odpojit",
+  "common_connected": "Připojeno",
+  "common_disconnected": "Odpojeno",
+  "common_create": "Vytvořit",
+  "common_continue": "Pokračovat",
+  "common_share": "Sdílet",
+  "common_copy": "Kopírovat",
+  "common_retry": "Zkusit znovu",
+  "common_hide": "Skrýt",
+  "common_remove": "Odebrat",
+  "common_enable": "Povolit",
+  "common_disable": "Zakázat",
+  "common_undo": "Zpět",
+  "messageStatus_sent": "Odesláno",
+  "messageStatus_delivered": "Doručeno. Kontakt potvrdil, že zprávu obdržel.",
+  "messageStatus_pending": "Odesílání",
+  "messageStatus_failed": "Odeslání se nezdařilo",
+  "messageStatus_repeated": "Slyšeno opakování",
+  "messageStatus_failedChannel": "Vaše vysílačka tuto zprávu nemohla odeslat.",
+  "messageStatus_resending": "Zatím neslyšena přes dostatek opakovačů. Odesláno znovu {resends} z {maxResends}krát.",
+  "@messageStatus_resending": {
+    "placeholders": {
+      "resends": {
+        "type": "int"
+      },
+      "maxResends": {
+        "type": "int"
+      }
+    }
+  },
+  "messageStatus_hopsNotReached": "Odesláno, ale zpět slyšeno jen přes {hops} z {required} opakovačů. Mohla dojít dál, než Vaše vysílačka slyší.",
+  "@messageStatus_hopsNotReached": {
+    "placeholders": {
+      "hops": {
+        "type": "int"
+      },
+      "required": {
+        "type": "int"
+      }
+    }
+  },
+  "messageStatus_sentChannel": "Odesláno. Kanály nepotvrzují doručení, takže to znamená jen to, že ji Vaše vysílačka odeslala.",
+  "messageStatus_sentDirect": "Odesláno. Čeká se na potvrzení od kontaktu.",
+  "messageStatus_heardRepeatedCount": "Slyšeno opakování {count, plural, =1{jednou} few{{count}krát} many{{count}krát} other{{count}krát}}. Opakovače v okolí ji předaly dál.",
+  "@messageStatus_heardRepeatedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "urlImage_enable": "Povolit obrázky z URL",
+  "urlImage_possible": "Možný obrázek z URL; povolte jej v Nastavení.",
+  "urlImage_disabledInAppSettings": "Vypnuto v nastavení aplikace",
+  "common_reboot": "Restartovat",
+  "common_loading": "Načítání...",
+  "common_notAvailable": "—",
+  "common_voltageValue": "{volts} V",
+  "@common_voltageValue": {
+    "placeholders": {
+      "volts": {
+        "type": "String"
+      }
+    }
+  },
+  "common_percentValue": "{percent} %",
+  "@common_percentValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "common_autoRefresh": "Automatické obnovení",
+  "common_interval": "Interval",
+  "scanner_title": "MeshCore Open",
+  "connectionChoiceUsbLabel": "USB",
+  "connectionChoiceBluetoothLabel": "Bluetooth",
+  "connectionChoiceTcpLabel": "TCP",
+  "tcpScreenTitle": "Připojení přes TCP",
+  "tcpHostLabel": "Koncový bod",
+  "tcpHostHint": "192.168.40.10 / example.com",
+  "tcpPortLabel": "Port",
+  "tcpPortHint": "5000",
+  "tcpStatus_notConnected": "Zadejte koncový bod a připojte se",
+  "tcpStatus_connectingTo": "Připojování k {endpoint}...",
+  "@tcpStatus_connectingTo": {
+    "placeholders": {
+      "endpoint": {
+        "type": "String"
+      }
+    }
+  },
+  "tcpErrorHostRequired": "Hostitel je povinný.",
+  "tcpErrorPortInvalid": "Port musí být mezi 1 a 65535.",
+  "tcpErrorUnsupported": "Přenos přes TCP není na této platformě podporován.",
+  "tcpErrorTimedOut": "Časový limit připojení TCP vypršel.",
+  "tcpConnectionFailed": "Připojení TCP se nezdařilo: {error}",
+  "@tcpConnectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "usbScreenTitle": "Připojení přes USB",
+  "usbScreenSubtitle": "Vyberte rozpoznané sériové zařízení a připojte se přímo ke svému uzlu MeshCore.",
+  "usbScreenStatus": "Vyberte zařízení USB",
+  "usbScreenNote": "Sériové USB funguje na podporovaných zařízeních Android a na desktopových platformách.",
+  "usbScreenEmptyState": "Nebyla nalezena žádná zařízení USB. Připojte nějaké a obnovte.",
+  "usbErrorPermissionDenied": "Oprávnění k USB bylo odepřeno.",
+  "usbErrorDeviceMissing": "Vybrané zařízení USB už není dostupné.",
+  "usbErrorInvalidPort": "Vyberte platné zařízení USB.",
+  "usbErrorBusy": "Jiný požadavek na připojení USB již probíhá.",
+  "usbErrorNotConnected": "Není připojeno žádné zařízení USB.",
+  "usbErrorOpenFailed": "Vybrané zařízení USB se nepodařilo otevřít.",
+  "usbErrorConnectFailed": "Připojení k vybranému zařízení USB se nezdařilo.",
+  "usbErrorUnsupported": "Sériové USB není na této platformě podporováno.",
+  "usbErrorAlreadyActive": "Připojení USB je již aktivní.",
+  "usbErrorNoDeviceSelected": "Nebylo vybráno žádné zařízení USB.",
+  "usbErrorPortClosed": "Připojení USB není otevřené.",
+  "usbErrorConnectTimedOut": "Časový limit připojení vypršel. Ujistěte se, že zařízení má firmware USB Companion.",
+  "usbFallbackDeviceName": "Zařízení Web Serial",
+  "usbStatus_notConnected": "Vyberte zařízení USB",
+  "usbStatus_connecting": "Připojování k zařízení USB...",
+  "usbStatus_searching": "Hledání zařízení USB...",
+  "usbConnectionFailed": "Připojení USB se nezdařilo: {error}",
+  "@usbConnectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_scanning": "Hledání zařízení...",
+  "scanner_connecting": "Připojování...",
+  "scanner_disconnecting": "Odpojování...",
+  "scanner_notConnected": "Nepřipojeno",
+  "scanner_connectedTo": "Připojeno k {deviceName}",
+  "@scanner_connectedTo": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_searchingDevices": "Hledání zařízení MeshCore...",
+  "scanner_tapToScan": "Klepnutím na Skenovat najdete zařízení MeshCore",
+  "scanner_connectionFailed": "Připojení se nezdařilo: {error}",
+  "@scanner_connectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "scanner_stop": "Zastavit",
+  "scanner_scan": "Skenovat",
+  "scanner_bluetoothOff": "Bluetooth je vypnutý",
+  "scanner_bluetoothOffMessage": "Pro hledání zařízení zapněte Bluetooth",
+  "scanner_chromeRequired": "Vyžadován prohlížeč Chrome",
+  "scanner_chromeRequiredMessage": "Tato webová aplikace vyžaduje pro podporu Bluetooth Google Chrome nebo prohlížeč založený na Chromiu.",
+  "scanner_enableBluetooth": "Zapnout Bluetooth",
+  "scanner_getNodeTitle": "Potřebujete nový uzel?",
+  "scanner_getNodeBody": "Velikost peněženky, běží na MeshCore, dvoupásmové GPS, vodotěsný, baterie na 5 dní.",
+  "scanner_getNodeAction": "Pořídit zde",
+  "scanner_getNodeDisclosure": "Affiliate odkaz: každý nákup podporuje MeshCore Open.",
+  "scanner_bluetoothWebUnsupported": "Bluetooth není v prohlížeči dostupný. Připojte se místo toho přes USB.",
+  "device_quickSwitch": "Rychlé přepnutí",
+  "device_meshcore": "MeshCore",
+  "settings_title": "Nastavení",
+  "settings_deviceInfo": "Informace o zařízení",
+  "settings_appSettings": "Nastavení aplikace",
+  "settings_appSettingsSubtitle": "Oznámení, zprávy a předvolby mapy",
+  "settings_nodeSettings": "Nastavení uzlu",
+  "settings_nodeName": "Název uzlu",
+  "settings_nodeNameNotSet": "Nenastaveno",
+  "settings_nodeNameHint": "Zadejte název uzlu",
+  "settings_nodeNameUpdated": "Název aktualizován",
+  "settings_radioSettings": "Nastavení rádia",
+  "settings_radioSettingsSubtitle": "Frekvence, výkon, spreading factor",
+  "settings_radioSettingsUpdated": "Nastavení rádia aktualizováno",
+  "settings_radioSettingsNotApplied": "Rádio tato nastavení nepoužilo",
+  "settings_pathHashModeNotApplied": "Nastavení rádia bylo použito, ale rádio nepotvrdilo novou velikost hashe cesty",
+  "settings_regionSettings": "Regiony",
+  "settings_regionSettingsSubtitle": "Omezit flood kanálů na oblast",
+  "settings_regionEmptyExplanation": "Regiony omezují flood zprávy na opakovače v dané oblasti. Načtěte je z opakovačů v okolí nebo přidejte jeden podle názvu.",
+  "settings_regionFetchFromRepeaters": "Načíst z opakovačů",
+  "settings_regionDefault": "Výchozí region",
+  "settings_regionDefaultSubtitle": "Používá se u kanálů bez vlastního regionu",
+  "settings_regionDefaultNone": "Žádný",
+  "settings_regionUseRadioDefault": "Výchozí rádia ({region})",
+  "@settings_regionUseRadioDefault": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_regionNoRegion": "Bez regionu (neomezeno)",
+  "settings_regionRadioDefault": "Výchozí region rádia",
+  "settings_regionRadioDefaultSubtitle": "Uloženo v rádiu. Používá se pro flood odeslané bez regionu, z této aplikace i z jakékoli jiné aplikace připojené k rádiu.",
+  "settings_regionRadioDefaultUpdated": "Výchozí region rádia aktualizován",
+  "settings_regionRadioDefaultFailed": "Výchozí region rádia se nepodařilo aktualizovat",
+  "settings_regionManagement_screenTitle": "Správa regionů",
+  "settings_regionNameHint": "Zadejte název regionu",
+  "settings_regionAddRegion": "Přidat region",
+  "settings_regionFetchRegions": "Načíst regiony z opakovačů",
+  "settings_regionFetchRegionsFail": "Nebyly nalezeny žádné regiony",
+  "settings_regionFetchRegionsAlreadyExists": "Tento region již byl přidán",
+  "settings_regionName": "Název regionu",
+  "settings_regionDeleted": "Region smazán",
+  "settings_deleteRegion": "Smazat region",
+  "settings_deleteRegionConfirm": "Odebrat „{region}“ ze seznamu regionů?",
+  "@settings_deleteRegionConfirm": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_location": "Poloha",
+  "settings_locationSubtitle": "Souřadnice GPS",
+  "settings_locationUpdated": "Poloha a nastavení GPS aktualizovány",
+  "settings_locationBothRequired": "Zadejte zeměpisnou šířku i délku.",
+  "settings_locationInvalid": "Neplatná zeměpisná šířka nebo délka.",
+  "settings_locationGPSEnable": "Povolit GPS",
+  "settings_locationGPSEnableSubtitle": "Povolí GPS pro automatickou aktualizaci polohy.",
+  "settings_locationIntervalSec": "Interval GPS (sekundy)",
+  "settings_locationIntervalInvalid": "Interval musí být alespoň 60 sekund a méně než 86400 sekund.",
+  "settings_latitude": "Zeměpisná šířka",
+  "settings_longitude": "Zeměpisná délka",
+  "settings_contactSettings": "Nastavení kontaktů",
+  "settings_contactSettingsSubtitle": "Nastavení způsobu přidávání kontaktů.",
+  "settings_privacyMode": "Režim soukromí",
+  "settings_privacyModeSubtitle": "Skrýt jméno/polohu v inzerátech",
+  "settings_privacyModeToggle": "Přepněte režim soukromí a skryjte své jméno a polohu v inzerátech.",
+  "settings_privacyModeEnabled": "Režim soukromí zapnut",
+  "settings_privacyModeDisabled": "Režim soukromí vypnut",
+  "settings_privacy": "Nastavení soukromí",
+  "settings_privacySubtitle": "Určete, jaké informace se sdílejí.",
+  "settings_privacySettingsDescription": "Vyberte, jaké informace vaše zařízení sdílí s ostatními.",
+  "settings_denyAll": "Zakázat všem",
+  "settings_allowByContact": "Jen kontaktům, které povolím",
+  "settings_allowAll": "Povolit všem",
+  "settings_telemetryBaseMode": "Kdo se může ptát na baterii a stav",
+  "settings_telemetryLocationMode": "Kdo se může ptát na mou polohu",
+  "settings_telemetryEnvironmentMode": "Kdo se může ptát na data senzorů",
+  "settings_telemetryPerContactHint": "Chcete-li kontakt povolit, otevřete jeho chat a v nabídce zvolte Nastavení kontaktu.",
+  "settings_advertLocation": "Poloha v advertu",
+  "settings_advertLocationSubtitle": "Zahrnout polohu do advertu.",
+  "settings_autoZeroHopAdvertOnGpsUpdate": "Automatický advert s nulovým skokem při aktualizaci GPS",
+  "settings_autoZeroHopAdvertOnGpsUpdateSubtitle": "Nastavení aplikace: při změně polohy GPS automaticky oznámí novou polohu pouze uzlům v okolí (vyžaduje Polohu v advertu).",
+  "settings_multiAck": "Multi-ACK",
+  "settings_multiAckSubtitle": "Odesílá další ACK pro lepší doručení; spotřebuje více vysílacího času",
+  "settings_telemetryModeUpdated": "Režim telemetrie aktualizován",
+  "settings_actions": "Akce",
+  "settings_deleteAllPaths": "Smazat všechny cesty",
+  "settings_deleteAllPathsSubtitle": "Vymazat všechna data cest z kontaktů.",
+  "settings_sendAdvertisement": "Odeslat advert",
+  "settings_sendAdvertisementSubtitle": "Ihned oznámit svou přítomnost",
+  "settings_advertisementSent": "Advert odeslán",
+  "settings_syncTime": "Synchronizovat čas",
+  "settings_syncTimeSubtitle": "Nastavit hodiny zařízení podle času telefonu",
+  "settings_timeSynchronized": "Čas synchronizován",
+  "settings_refreshContacts": "Obnovit kontakty",
+  "settings_refreshContactsSubtitle": "Znovu načíst seznam kontaktů ze zařízení",
+  "settings_rebootDevice": "Restartovat zařízení",
+  "settings_rebootDeviceSubtitle": "Restartovat zařízení MeshCore",
+  "settings_rebootDeviceConfirm": "Opravdu chcete zařízení restartovat? Budete odpojeni.",
+  "settings_debug": "Ladění",
+  "settings_companionDebugLog": "Ladicí log Companion",
+  "settings_companionDebugLogSubtitle": "Příkazy, odpovědi a surová data BLE/TCP/USB",
+  "settings_appDebugLog": "Ladicí log aplikace",
+  "settings_appDebugLogSubtitle": "Ladicí zprávy aplikace",
+  "settings_about": "O aplikaci",
+  "settings_aboutVersion": "MeshCore Open v{version}",
+  "@settings_aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_aboutLegalese": "Projekt MeshCore Open Source 2026",
+  "settings_aboutDescription": "Open-source klient Flutter pro zařízení MeshCore s mesh sítí LoRa.",
+  "settings_aboutOpenMeteoAttribution": "Výšková data LOS: Open-Meteo (CC BY 4.0)",
+  "settings_infoName": "Název",
+  "settings_infoId": "ID",
+  "settings_infoStatus": "Stav",
+  "settings_infoBattery": "Baterie",
+  "settings_infoPublicKey": "Veřejný klíč",
+  "settings_publicKeyCopied": "Veřejný klíč zkopírován",
+  "settings_infoContactsCount": "Počet kontaktů",
+  "settings_infoChannelCount": "Počet kanálů",
+  "settings_infoHardware": "Hardware",
+  "settings_infoFirmware": "Firmware",
+  "settings_presets": "Předvolby",
+  "settings_presetCustom": "Vlastní",
+  "settings_radioMatchWarning": "Všechny uzly, se kterými komunikujete, musí používat stejnou frekvenci, šířku pásma a SF. Kódovací poměr (CR) se může lišit.",
+  "settings_frequency": "Frekvence (MHz)",
+  "settings_frequencyHelper": "150.0 - 2500.0",
+  "settings_frequencyInvalid": "Neplatná frekvence (150-2500 MHz)",
+  "settings_bandwidth": "Šířka pásma",
+  "settings_spreadingFactor": "Rozptylový faktor",
+  "settings_codingRate": "Kódovací poměr",
+  "settings_txPower": "Výkon TX (dBm)",
+  "settings_txPowerRangeHelper": "{min} až {max} dBm",
+  "@settings_txPowerRangeHelper": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_txPowerInvalid": "Neplatný výkon TX",
+  "settings_clientRepeat": "Off-grid opakování",
+  "settings_clientRepeatFrequencyNote": "Frekvence nastavena na {freq} MHz pro off-grid opakování",
+  "@settings_clientRepeatFrequencyNote": {
+    "placeholders": {
+      "freq": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_clientRepeatSubtitle": "Povolit tomuto zařízení opakovat pakety sítě mesh pro ostatní",
+  "settings_clientRepeatFreqWarning": "Off-grid opakování vyžaduje frekvenci 433, 869.495 nebo 918 MHz",
+  "settings_error": "Chyba: {message}",
+  "@settings_error": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_title": "Nastavení aplikace",
+  "appSettings_appearance": "Vzhled",
+  "appSettings_theme": "Motiv",
+  "appSettings_themeSystem": "Podle systému",
+  "appSettings_themeLight": "Světlý",
+  "appSettings_themeDark": "Tmavý",
+  "appSettings_colorTheme": "Barevný motiv",
+  "appSettings_holidayAnimations": "Animace svátečních zpráv",
+  "appSettings_holidayAnimationsSubtitle": "Netopýři, krocan, Santa nebo ohňostroj, když někdo pošle sváteční přání",
+  "themes_title": "Motivy",
+  "themes_default": "MeshCore",
+  "themes_defaultSubtitle": "Standardní barvy, řídí se nastavením Světlý / Tmavý",
+  "themes_builtIn": "Vestavěné",
+  "themes_holidays": "Svátky",
+  "themes_holidayAutoSwitch": "Přepínat automaticky",
+  "themes_holidayAutoSwitchSubtitle": "Použije motiv každého svátku od 17 dnů předem až do samotného dne",
+  "themes_holidayAutoApplied": "Motiv {holiday} je zapnut automaticky. Váš vlastní motiv se vrátí po svátku.",
+  "@themes_holidayAutoApplied": {
+    "placeholders": {
+      "holiday": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_holidayAutoAppliedTag": "Zapnuto automaticky",
+  "themes_myThemes": "Mé motivy",
+  "themes_myThemesEmpty": "Vytvořte si vlastní motiv výběrem pozadí a zvýrazňovací barvy.",
+  "themes_create": "Vytvořit motiv",
+  "themes_import": "Importovat motiv",
+  "themes_importHint": "Vložte kód motivu",
+  "themes_importInvalid": "Toto není platný kód motivu",
+  "themes_imported": "Motiv „{name}“ přidán",
+  "@themes_imported": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_customize": "Upravit kopii",
+  "themes_copyCode": "Kopírovat kód motivu",
+  "themes_codeCopied": "Kód motivu zkopírován",
+  "themes_deleteConfirm": "Smazat motiv „{name}“?",
+  "@themes_deleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_copyName": "{name} – kopie",
+  "@themes_copyName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "themes_newTitle": "Nový motiv",
+  "themes_editTitle": "Upravit motiv",
+  "themes_name": "Název",
+  "themes_nameRequired": "Pojmenujte svůj motiv",
+  "themes_background": "Pozadí",
+  "themes_backgroundHelp": "Tmavé pozadí vytvoří tmavý motiv",
+  "themes_accent": "Zvýraznění",
+  "themes_accentHelp": "Tlačítka, zvýraznění a vaše bubliny v chatu",
+  "themes_hexColor": "Barva hex",
+  "themes_preview": "Náhled",
+  "themes_previewIncoming": "Je dnes večer někdo na mesh?",
+  "themes_previewOutgoing": "Slyším vás dobře!",
+  "themes_previewSwitch": "Oznámení",
+  "themes_lowContrast": "Zvýraznění je na tomto pozadí špatně vidět",
+  "themes_saveAndUse": "Uložit a použít",
+  "themes_icons": "Ikony",
+  "themes_iconsHelp": "Klepnutím na ikonu ji vyměníte za jinou ikonu nebo vlastní obrázek",
+  "themes_iconChanged": "Změněno",
+  "themes_iconSend": "Tlačítko odeslání",
+  "themes_iconRepeater": "Opakovače",
+  "themes_iconRoom": "Místnosti",
+  "themes_iconSensor": "Senzory",
+  "themes_mapMarkers": "Značky na mapě",
+  "themes_mapMarkersHelp": "Vyměňte značky uzlů a své značky na mapě",
+  "themes_iconUsePicture": "Použít obrázek",
+  "themes_iconReset": "Použít výchozí ikonu",
+  "themes_iconPictureFailed": "Tento obrázek nelze použít",
+  "themes_exportFile": "Exportovat do souboru",
+  "themes_exportAll": "Exportovat mé motivy",
+  "themes_importFile": "Importovat ze souboru",
+  "themes_pasteCode": "Vložit kód motivu",
+  "themes_exportFailed": "Motivy se nepodařilo exportovat",
+  "themes_importFileResult": "{count, plural, =1{Importován 1 motiv} few{Importovány {count} motivy} many{Importováno {count} motivů} other{Importováno {count} motivů}}",
+  "@themes_importFileResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "themes_importFileNone": "V tomto souboru nebyly nalezeny žádné motivy",
+  "chatBackground_title": "Pozadí chatu",
+  "chatBackground_thisChatOnly": "Jen pro tento chat",
+  "chatBackground_themeOverrides": "Váš motiv „{name}“ nastavuje pozadí ve všech chatech. Chcete-li použít toto, vypněte to v motivu.",
+  "@chatBackground_themeOverrides": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chatBackground_none": "Žádné",
+  "chatBackground_picture": "Obrázek",
+  "chatBackground_choosePicture": "Vybrat obrázek",
+  "chatBackground_pictureFailed": "Tento obrázek nelze použít",
+  "chatBackground_fade": "Průhlednost",
+  "themes_chatBackground": "Pozadí chatu",
+  "themes_chatBackgroundHelp": "Zobrazuje se v chatech, které nemají vlastní pozadí",
+  "themes_chatBackgroundEverywhere": "Použít ve všech chatech",
+  "themes_chatBackgroundEverywhereHelp": "Nahradí také pozadí nastavená u jednotlivých chatů",
+  "appSettings_language": "Jazyk",
+  "appSettings_languageSystem": "Podle systému",
+  "appSettings_languageEn": "English",
+  "appSettings_languageFr": "Français",
+  "appSettings_languageEs": "Español",
+  "appSettings_languageDe": "Deutsch",
+  "appSettings_languagePl": "Polski",
+  "appSettings_languageSl": "Slovenščina",
+  "appSettings_languagePt": "Português (Brasil)",
+  "appSettings_languageIt": "Italiano",
+  "appSettings_languageZh": "中文",
+  "appSettings_languageSv": "Svenska",
+  "appSettings_languageNl": "Nederlands",
+  "appSettings_languageSk": "Slovenčina",
+  "appSettings_languageBg": "Български",
+  "appSettings_languageRu": "Русский",
+  "appSettings_languageUk": "Українська",
+  "appSettings_languageCs": "Čeština",
+  "repeater_pathHashModeOption0": "1 bajt",
+  "repeater_pathHashModeOption1": "2 bajty",
+  "repeater_pathHashModeOption2": "3 bajty",
+  "repeater_pathHashModeOption3": "4 bajty",
+  "settings_pathHashModeHelper": "Velikost ID každého uzlu zaznamenaného v cestě flood paketů odesílaných tímto rádiem: 1 bajt (256 ID, až 64 skoků), 2 bajty (65 tis. ID, až 32 skoků), 3 bajty (16 mil. ID, až 21 skoků). Větší ID snižují kolize, ale opakovače s firmwarem starším než v1.14 zahazují pakety s 2- nebo 3bajtovými ID.",
+  "settings_requiresFirmware": "Vyžaduje firmware {version} nebo novější",
+  "@settings_requiresFirmware": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_channelMinHops": "Znovu odesílat zprávy kanálu, dokud nedojdou dostatečně daleko",
+  "appSettings_channelMinHopsSubtitle": "Pokud Vaši zprávu neslyšíte zpět přes dostatek opakovačů, odešle se znovu. Spotřebuje více vysílacího času.",
+  "appSettings_channelMinHopsCount": "Požadovaný počet skoků: {count}",
+  "@appSettings_channelMinHopsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_channelMinHopsRetries": "Znovu odeslat nejvýše {count, plural, =1{1krát} few{{count}krát} many{{count}krát} other{{count}krát}}",
+  "@appSettings_channelMinHopsRetries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_channelMinHopsCountRepeaters": "Počítat i různé opakovače v okolí",
+  "appSettings_channelMinHopsCountRepeatersSubtitle": "Považovat zprávu za odeslanou, když ji zopakuje {count, plural, =1{1 opakovač v okolí} few{{count} různé opakovače v okolí} many{{count} různého opakovače v okolí} other{{count} různých opakovačů v okolí}}, i když neslyšíte, že by šla dál.",
+  "@appSettings_channelMinHopsCountRepeatersSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_enableMessageTracing": "Zobrazovat v zprávách celou cestu přes opakovače",
+  "appSettings_enableMessageTracingSubtitle": "Zobrazí také počty opakování a doby přenosu. Dlouze stiskněte zprávu a zvolte Cesta pro úplné podrobnosti.",
+  "appSettings_regionOnHopsLine": "Region vedle počtu skoků",
+  "appSettings_regionOnHopsLineSubtitle": "Zobrazit region zprávy kanálu na stejném řádku jako počet skoků místo pod ním.",
+  "appSettings_notifications": "Oznámení",
+  "appSettings_enableNotifications": "Povolit oznámení",
+  "appSettings_enableNotificationsSubtitle": "Přijímat oznámení o zprávách a advertech",
+  "appSettings_notificationPermissionDenied": "Oprávnění k oznámením bylo odepřeno",
+  "appSettings_notificationsEnabled": "Oznámení povolena",
+  "appSettings_notificationsDisabled": "Oznámení zakázána",
+  "appSettings_messageNotifications": "Oznámení o zprávách",
+  "appSettings_messageNotificationsSubtitle": "Zobrazit oznámení při příchozí nové zprávě",
+  "appSettings_batteryOptimization": "Aktivita na pozadí",
+  "appSettings_batteryOptimizationSubtitle": "V nastavení baterie nastavte MeshCore Open na „Neoptimalizovat“, aby zprávy chodily i na pozadí",
+  "appSettings_channelMessageNotifications": "Oznámení o zprávách kanálů",
+  "appSettings_channelMessageNotificationsSubtitle": "Zobrazit oznámení při příchozích zprávách kanálu",
+  "appSettings_advertisementNotifications": "Oznámení o advertech",
+  "appSettings_advertisementNotificationsSubtitle": "Zobrazit oznámení při objevení nových uzlů",
+  "appSettings_messaging": "Zprávy",
+  "appSettings_clearPathOnMaxRetry": "Vymazat cestu po maximu pokusů",
+  "appSettings_clearPathOnMaxRetrySubtitle": "Resetovat cestu kontaktu po 5 neúspěšných pokusech o odeslání",
+  "appSettings_pathsWillBeCleared": "Cesty budou vymazány po 5 neúspěšných pokusech",
+  "appSettings_pathsWillNotBeCleared": "Cesty nebudou automaticky mazány",
+  "appSettings_autoRouteRotation": "Automatické střídání tras",
+  "appSettings_autoRouteRotationSubtitle": "Střídat nejlepší cesty a režim flood",
+  "appSettings_autoRouteRotationEnabled": "Automatické střídání tras zapnuto",
+  "appSettings_autoRouteRotationDisabled": "Automatické střídání tras vypnuto",
+  "appSettings_maxMessageRetries": "Maximum opakování zprávy",
+  "appSettings_maxMessageRetriesSubtitle": "Počet opakovaných pokusů, než se zpráva označí jako neodeslaná",
+  "appSettings_ipfsImageLinks": "Konfigurace poskytovatele IPFS",
+  "appSettings_ipfsImageLinksSubtitle": "Nahrávání obrázků (nebo souborů) z URL přes poskytovatele IPFS a výchozí brána pro příjem",
+  "appSettings_loadLinkImages": "Načítat obrázky z odkazů",
+  "appSettings_loadLinkImagesSubtitle": "Zobrazit obrázky z odkazů ve zprávách. Načtení obrázku sdílí vaši IP adresu se stránkou, která jej hostuje.",
+  "appSettings_showLinkImagesByDefault": "Ve výchozím stavu zobrazovat obrázky z odkazů ve všech chatech",
+  "appSettings_showLinkImagesByDefaultSubtitle": "Načítat obrázky z odkazů v každém chatu, pokud jste je tam nevypnuli. Sdílí to vaši IP adresu s hostiteli obrázků v každém chatu.",
+  "appSettings_publicIpfsGateway": "Veřejná brána",
+  "appSettings_ipfsGatewayDeactivated": "Deaktivováno",
+  "appSettings_ipfsGatewayCustom": "Vlastní (Kubo)",
+  "appSettings_uploadIpfsProvider": "Poskytovatel nahrávání",
+  "appSettings_uploadIpfsGateway": "Brána pro nahrávání",
+  "appSettings_uploadIpfsGatewaySubtitle": "Brána pro sdílení obrázku nebo souboru jako odkazu URL. Nechte prázdné pro formát ipfs:, který jiní klienti nemusí umět otevřít.",
+  "appSettings_uploadIpfsEndpoint": "Koncový bod nahrávání",
+  "appSettings_uploadIpfsEndpointSubtitle": "Koncový bod API používaný k nahrávání souborů",
+  "appSettings_uploadIpfsApiKey": "Klíč API pro nahrávání",
+  "appSettings_ipfsImageLinksDescription": "Veřejná brána stahuje obrázky ve formátu ipfs:. Brána pro nahrávání slouží k vytváření odkazů ke sdílení nahraných obrázků nebo souborů z URL.",
+  "appSettings_battery": "Baterie",
+  "appSettings_batteryChemistry": "Typ baterie",
+  "appSettings_batteryChemistryPerDevice": "Nastaveno pro každé zařízení ({deviceName})",
+  "@appSettings_batteryChemistryPerDevice": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_batteryChemistryConnectFirst": "Pro výběr se připojte k zařízení",
+  "appSettings_batteryNmc": "18650 NMC (3.0-4.2V)",
+  "appSettings_batteryLifepo4": "LiFePO4 (2.6-3.65V)",
+  "appSettings_batteryLipo": "LiPo (3.0-4.2V)",
+  "appSettings_batteryLipoHv": "LiPo HV (3.0-4.35V)",
+  "appSettings_mapDisplay": "Zobrazení mapy",
+  "appSettings_showRepeaters": "Zobrazit opakovače",
+  "appSettings_showRepeatersSubtitle": "Zobrazit uzly opakovačů na mapě",
+  "appSettings_showChatNodes": "Zobrazit chatovací uzly",
+  "appSettings_showChatNodesSubtitle": "Zobrazit chatovací uzly na mapě",
+  "appSettings_showOtherNodes": "Zobrazit ostatní uzly",
+  "appSettings_showOtherNodesSubtitle": "Zobrazit ostatní typy uzlů na mapě",
+  "appSettings_showOnlineLinks": "Zobrazit spojení z online mapy",
+  "appSettings_showOnlineLinksSubtitle": "Zobrazit spojnice mezi uzly z online mapy",
+  "appSettings_timeFilter": "Časový filtr",
+  "appSettings_timeFilterShowAll": "Zobrazit všechny uzly",
+  "appSettings_timeFilterShowLast": "Zobrazit uzly za posledních {hours} hodin",
+  "@appSettings_timeFilterShowLast": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_mapTimeFilter": "Časový filtr mapy",
+  "appSettings_showNodesDiscoveredWithin": "Zobrazit uzly objevené během:",
+  "appSettings_allTime": "Celé období",
+  "appSettings_lastHour": "Poslední hodina",
+  "appSettings_last6Hours": "Posledních 6 hodin",
+  "appSettings_last24Hours": "Posledních 24 hodin",
+  "appSettings_lastWeek": "Poslední týden",
+  "appSettings_rasterTileSource": "Zdroj rastrových dlaždic",
+  "appSettings_stadiaEndpoint": "Koncový bod Stadia",
+  "appSettings_stadiaApiKey": "Klíč API Stadia",
+  "appSettings_stadiaApiKeyRequired": "Vyžadováno pro použití Stadia Maps",
+  "appSettings_stadiaApiKeyConfigured": "Nakonfigurováno: {maskedKey}",
+  "@appSettings_stadiaApiKeyConfigured": {
+    "placeholders": {
+      "maskedKey": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_stadiaApiKeyDialogDescription": "Zadejte svůj klíč API Stadia Maps. Aplikace jej používá pro požadavky na rastrové dlaždice.",
+  "appSettings_offlineMapCache": "Offline mezipaměť mapy",
+  "appSettings_unitsTitle": "Jednotky",
+  "appSettings_unitsMetric": "Metrické (m / km)",
+  "appSettings_unitsImperial": "Imperiální (ft / mi)",
+  "appSettings_noAreaSelected": "Není vybrána žádná oblast",
+  "appSettings_areaSelectedZoom": "Oblast vybrána (zoom {minZoom}-{maxZoom})",
+  "@appSettings_areaSelectedZoom": {
+    "placeholders": {
+      "minZoom": {
+        "type": "int"
+      },
+      "maxZoom": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_debugCard": "Ladění",
+  "appSettings_appDebugLogging": "Ladicí logování aplikace",
+  "appSettings_appDebugLoggingSubtitle": "Zaznamenávat ladicí zprávy aplikace pro řešení potíží",
+  "appSettings_appDebugLoggingEnabled": "Ladicí logování aplikace zapnuto",
+  "appSettings_appDebugLoggingDisabled": "Ladicí logování aplikace vypnuto",
+  "contacts_title": "Kontakty",
+  "contacts_noContacts": "Zatím žádné kontakty",
+  "contacts_contactsWillAppear": "Kontakty se objeví, když zařízení vyšlou advert",
+  "contacts_unread": "Nepřečtené",
+  "contacts_searchContactsNoNumber": "Hledat kontakty...",
+  "contacts_searchContacts": "Hledat {number}{str} kontaktů...",
+  "@contacts_searchContacts": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "str": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_searchFavorites": "Hledat {number}{str} oblíbených...",
+  "@contacts_searchFavorites": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "str": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_searchUsers": "Hledat {number}{str} uživatelů...",
+  "@contacts_searchUsers": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "str": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_searchRepeaters": "Hledat {number}{str} opakovačů...",
+  "@contacts_searchRepeaters": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "str": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_searchRoomServers": "Hledat {number}{str} room serverů...",
+  "@contacts_searchRoomServers": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "str": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_noUnreadContacts": "Žádné nepřečtené kontakty",
+  "contacts_noContactsFound": "Nebyly nalezeny žádné kontakty ani skupiny",
+  "contacts_storageFull": "Úložiště kontaktů v uzlu je plné. Nové uzly nelze přidat, dokud nebudou kontakty odebrány.",
+  "contacts_deleteContact": "Smazat kontakt",
+  "contacts_removeConfirm": "Odebrat {contactName} z kontaktů?",
+  "@contacts_removeConfirm": {
+    "placeholders": {
+      "contactName": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_removeFromContacts": "Odebrat z kontaktů",
+  "contacts_removeFromContactsConfirm": "{contactName} se přesune mezi objevené kontakty. Historie chatu bude smazána.",
+  "@contacts_removeFromContactsConfirm": {
+    "placeholders": {
+      "contactName": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_keepChatHistory": "Zachovat historii chatu",
+  "contacts_remove": "Odebrat",
+  "contacts_removeAutoAddNote": "Vaše rádio tento typ kontaktu přidává automaticky, takže se vrátí při příštím advertu. Chcete-li jej ponechat odebraný, vypněte automatické přidávání v nastavení Kontaktů.",
+  "contacts_removeFailed": "Rádio odebrání nepotvrdilo. Kontakt nebyl odebrán.",
+  "contacts_discoveredNearby": "Objeveno v okolí ({count})",
+  "@contacts_discoveredNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_noContactsDiscoveredHint": "Uzly, které vaše rádio slyší, ale ještě nepřidalo, jsou uvedeny mezi objevenými kontakty",
+  "contacts_manageRepeater": "Spravovat opakovač",
+  "contacts_manageRoom": "Spravovat room server",
+  "contacts_roomLogin": "Přihlášení k room serveru",
+  "contacts_openChat": "Otevřít chat",
+  "contacts_editGroup": "Upravit skupinu",
+  "contacts_deleteGroup": "Smazat skupinu",
+  "contacts_deleteGroupConfirm": "Odebrat „{groupName}“?",
+  "@contacts_deleteGroupConfirm": {
+    "placeholders": {
+      "groupName": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_newGroup": "Nová skupina",
+  "contacts_moreOptions": "Další možnosti",
+  "contacts_searchOpen": "Hledat kontakty",
+  "contacts_searchClose": "Zavřít hledání",
+  "contacts_groupName": "Název skupiny",
+  "contacts_groupNameRequired": "Název skupiny je povinný",
+  "contacts_groupNameReserved": "Tento název skupiny je rezervován",
+  "contacts_groupAlreadyExists": "Skupina „{name}“ již existuje",
+  "@contacts_groupAlreadyExists": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_filterContacts": "Filtrovat kontakty...",
+  "contacts_noContactsMatchFilter": "Žádné kontakty neodpovídají filtru",
+  "contacts_noMembers": "Žádní členové",
+  "contacts_lastSeenNow": "nedávno",
+  "contacts_lastSeenMinsAgo": "~ {minutes} min.",
+  "@contacts_lastSeenMinsAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_lastSeenHourAgo": "~ 1 hod.",
+  "contacts_lastSeenHoursAgo": "~ {hours} hod.",
+  "@contacts_lastSeenHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_lastSeenDayAgo": "~ 1 den",
+  "contacts_lastSeenDaysAgo": "~ {days} dn.",
+  "@contacts_lastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "contact_info": "Informace o kontaktu",
+  "contact_settings": "Nastavení kontaktu",
+  "contact_telemetry": "Telemetrie",
+  "contact_lastSeen": "Naposledy viděn",
+  "contact_clearChat": "Vymazat chat",
+  "contact_teleBase": "Základní telemetrie",
+  "contact_teleBaseSubtitle": "Povolit sdílení stavu baterie a základní telemetrie",
+  "contact_teleLoc": "Telemetrie polohy",
+  "contact_teleLocSubtitle": "Povolit sdílení údajů o poloze",
+  "contact_teleEnv": "Telemetrie prostředí",
+  "contact_teleEnvSubtitle": "Povolit sdílení dat z environmentálních senzorů",
+  "channels_title": "Kanály",
+  "channels_noChannelsConfigured": "Žádné nakonfigurované kanály",
+  "channels_addPublicChannel": "Přidat veřejný kanál",
+  "channels_searchChannels": "Hledat kanály...",
+  "channels_noChannelsFound": "Žádné kanály nenalezeny",
+  "channels_channelIndex": "Kanál {index}",
+  "@channels_channelIndex": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "channels_public": "Veřejný",
+  "channels_via": "přes {path}",
+  "@channels_via": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_private": "Soukromý",
+  "channels_hashtag": "Hashtag",
+  "channels_addSectionJoin": "Připojit se k existujícímu",
+  "channels_addSectionCreate": "Vytvořit nový",
+  "channels_dragToReorder": "Přetažením změníte pořadí",
+  "channels_editChannel": "Upravit kanál",
+  "channels_notificationSettings": "Nastavení oznámení",
+  "channels_notifyAll": "Všechny zprávy",
+  "channels_notifyMentionsOnly": "Pouze zmínky",
+  "channels_notifyNone": "Ztlumeno",
+  "channels_notificationModeTooltip": "Oznámení: {mode}",
+  "@channels_notificationModeTooltip": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_muteChannel": "Ztlumit kanál",
+  "channels_unmuteChannel": "Zrušit ztlumení kanálu",
+  "channels_deleteChannel": "Smazat kanál",
+  "channels_deleteChannelConfirm": "Smazat „{name}“? Tuto akci nelze vrátit zpět.",
+  "@channels_deleteChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_channelDeleteFailed": "Kanál „{name}“ se nepodařilo smazat",
+  "@channels_channelDeleteFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_channelDeleted": "Kanál „{name}“ byl smazán",
+  "@channels_channelDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_addChannel": "Přidat kanál",
+  "channels_channelIndexLabel": "Index kanálu",
+  "channels_channelName": "Název kanálu",
+  "channels_usePublicChannel": "Použít veřejný kanál",
+  "channels_standardPublicPsk": "Standardní veřejné PSK",
+  "channels_pskHex": "PSK (hex)",
+  "channels_generateRandomPsk": "Vygenerovat náhodné PSK",
+  "channels_enterChannelName": "Zadejte název kanálu",
+  "channels_pskMustBe32Hex": "PSK musí mít 32 hex znaků",
+  "channels_channelAdded": "Kanál „{name}“ byl přidán",
+  "@channels_channelAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_editChannelTitle": "Upravit kanál {index}",
+  "@channels_editChannelTitle": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "channels_smazCompression": "Komprese SMAZ",
+  "channels_cyr2latCompression": "Komprese Cyr2Lat",
+  "channels_cyr2latCompressionDscr": "Při odesílání nahradí některé znaky cyrilice latinkou.",
+  "channels_cyr2latSettingsHeading": "Nastavení Cyr2Lat",
+  "channels_cyr2latSettingsSubheading": "Seznam náhrad",
+  "channels_cyr2latSettingsDscr": "Upravit JSON konfiguraci nahrazování znaků",
+  "channels_cyr2latSettingsDialogHint": "JSON mapa náhrad",
+  "channels_cyr2latSettingsDialogWrongJSON": "Neplatný JSON: {error}",
+  "@channels_cyr2latSettingsDialogWrongJSON": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "channels_channelUpdated": "Kanál „{name}“ byl aktualizován",
+  "@channels_channelUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_cyr2latProfileAdd": "Přidat profil Cyr2Lat",
+  "settings_cyr2latProfileName": "Název profilu",
+  "settings_cyr2latProfileNameEmpty": "Název profilu nesmí být prázdný",
+  "settings_cyr2latProfileAdded": "Profil byl úspěšně přidán",
+  "settings_cyr2latProfileUpdated": "Profil byl úspěšně aktualizován",
+  "settings_cyr2latProfileEdit": "Upravit profil Cyr2Lat",
+  "settings_cyr2latProfileDelete": "Smazat profil Cyr2Lat",
+  "settings_cyr2latProfileDeleted": "Profil byl úspěšně smazán",
+  "settings_cyr2latProfileDeleteDscr": "Opravdu chcete smazat profil „{name}“?",
+  "@settings_cyr2latProfileDeleteDscr": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_publicChannelAdded": "Veřejný kanál byl přidán",
+  "channels_noFreeSlots": "Všechny sloty kanálů jsou obsazené",
+  "channels_sortBy": "Řadit podle",
+  "channels_sortManual": "Ručně",
+  "channels_sortAZ": "A–Z",
+  "channels_sortLatestMessages": "Nejnovější zprávy",
+  "channels_sortUnread": "Nepřečtené",
+  "channels_createPrivateChannel": "Vytvořit soukromý kanál",
+  "channels_createPrivateChannelDesc": "Zabezpečený tajným klíčem.",
+  "channels_joinPrivateChannel": "Připojit se k soukromému kanálu",
+  "channels_joinPrivateChannelDesc": "Zadejte tajný klíč ručně.",
+  "channels_joinPublicChannel": "Připojit se k veřejnému kanálu",
+  "channels_joinPublicChannelDesc": "Připojit se může kdokoli.",
+  "channels_joinHashtagChannel": "Připojit se ke kanálu s hashtagem",
+  "channels_joinHashtagChannelDesc": "K hashtagovým kanálům se může připojit kdokoli.",
+  "channels_scanQrCode": "Skenovat QR kód",
+  "channels_scanQrCodeComingSoon": "Již brzy",
+  "channels_scanQrCodeDesc": "Připojte se ke kanálu nebo komunitě pomocí QR kódu.",
+  "channels_scanQrInstructions": "Namiřte fotoaparát na QR kód kanálu nebo komunity",
+  "channels_invalidQrCode": "Toto není QR kód kanálu ani komunity MeshCore",
+  "channels_joinChannelTitle": "Připojit se ke kanálu",
+  "channels_joinChannelConfirm": "Přidat „{name}“ do vašeho rádia?",
+  "@channels_joinChannelConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_alreadyOnRadio": "„{name}“ už ve vašem rádiu je",
+  "@channels_alreadyOnRadio": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_enterHashtag": "Zadejte hashtag",
+  "channels_hashtagHint": "např. #tym",
+  "channels_regionSetTo": "Region: {region}",
+  "@channels_regionSetTo": {
+    "placeholders": {
+      "region": {
+        "type": "String",
+        "example": "de-mitte"
+      }
+    }
+  },
+  "channels_regionNotSet": "Region: žádný",
+  "channels_regionSelect_Title": "Vyberte region",
+  "channels_clearRegion": "Zrušit region",
+  "channels_regionDefaultSuffix": "(výchozí)",
+  "channels_regionRadioDefaultSuffix": "(výchozí pro rádio)",
+  "channels_regionRadioDefaultApplies": "Toto rádio odesílá flood zprávy bez regionu ve svém výchozím regionu: {region}.",
+  "@channels_regionRadioDefaultApplies": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_regionSelectExplanation": "Flood zprávy na tomto kanálu budou předávat pouze opakovače ve vybraném regionu.",
+  "channels_regionEmpty": "Zatím žádné regiony.",
+  "channels_manageRegions": "Spravovat regiony",
+  "chat_noMessages": "Zatím žádné zprávy",
+  "chat_sendMessage": "Odeslat zprávu",
+  "chat_sendMessageTo": "Odeslat zprávu kontaktu {contactName}",
+  "@chat_sendMessageTo": {
+    "placeholders": {
+      "contactName": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_sendMessageToStart": "Odešlete zprávu a začněte",
+  "chat_originalMessageNotFound": "Původní zpráva nebyla nalezena",
+  "chat_replyingTo": "Odpověď uživateli {name}",
+  "@chat_replyingTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_replyTo": "Odpovědět uživateli {name}",
+  "@chat_replyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_location": "Poloha",
+  "chat_typeMessage": "Napište zprávu...",
+  "chat_futureTimestampWarning": "Čas této zprávy je v budoucnosti, takže hodiny odesílatele mohou být špatně. Zpráva je zobrazena v pořadí, v jakém dorazila.",
+  "chat_messageTooLong": "Zpráva je příliš dlouhá (max. {maxBytes} bajtů).",
+  "@chat_messageTooLong": {
+    "placeholders": {
+      "maxBytes": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_messageCopied": "Zpráva zkopírována",
+  "chat_messageDeleted": "Zpráva smazána",
+  "chat_retryingMessage": "Opakované odesílání zprávy",
+  "chat_retryCount": "Pokus {current}/{max}",
+  "@chat_retryCount": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectSendAction": "Vyberte způsob odeslání",
+  "chat_sendGif": "Odeslat GIF",
+  "chat_shareMyLocation": "Sdílet mou polohu",
+  "chat_noRadioLocation": "Vaše rádio nemá nastavenou polohu",
+  "chat_removeGif": "Odebrat GIF",
+  "chat_cancelReply": "Zrušit odpověď",
+  "chat_sendImageLora": "Odeslat obrázek v nízkém rozlišení přes rádio",
+  "chat_sendImageIpfs": "Odeslat obrázek nebo soubor přes IPFS",
+  "chat_ipfsUploadFailed": "Nahrání na IPFS selhalo: {error}",
+  "@chat_ipfsUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_ipfsUploadNotConfigured": "Nejprve nastavte poskytovatele nahrávání IPFS v nastavení aplikace.",
+  "chat_ipfsSelectedFileEmpty": "Vybraný soubor je prázdný.",
+  "chat_ipfsEndpointInvalid": "Koncový bod nahrávání IPFS musí být úplná adresa http:// nebo https://. Zkontrolujte ji v nastavení aplikace.",
+  "chat_ipfsPinataTokenMissing": "Pinata vyžaduje API klíč nebo JWT. Přidejte jej v nastavení aplikace.",
+  "chat_ipfsFilebaseTokenMissing": "Filebase vyžaduje API token. Přidejte jej v nastavení aplikace.",
+  "chat_ipfsKuboPathInvalid": "Koncový bod nahrávání Kubo musí končit na /api/v0/add. Zkontrolujte ho v nastavení aplikace.",
+  "chat_ipfsLinkNoRoom": "Pro odkaz na obrázek není dost místa. Zkraťte zprávu a zkuste to znovu.",
+  "chat_ipfsLinkOverLimit": "Odkaz na obrázek byl přidán, ale zpráva je nyní příliš dlouhá. Před odesláním ji zkraťte.",
+  "chat_imagePickFailed": "Obrázek se nepodařilo otevřít",
+  "chat_receivedGif": "Přijat GIF",
+  "chat_reply": "Odpovědět",
+  "chat_addReaction": "Přidat reakci",
+  "chat_me": "Já",
+  "reaction_report": "Emoji reakce",
+  "emojiCategorySmileys": "Smajlíci",
+  "emojiCategoryGestures": "Gesta",
+  "emojiCategoryHearts": "Srdce",
+  "emojiCategoryObjects": "Předměty",
+  "gifPicker_title": "Vyberte GIF",
+  "gifPicker_searchHint": "Hledat GIFy...",
+  "gifPicker_poweredBy": "Poskytuje GIPHY",
+  "gifPicker_noGifsFound": "Žádné GIFy nenalezeny",
+  "gifPicker_failedLoad": "GIFy se nepodařilo načíst",
+  "gifPicker_failedSearch": "Vyhledávání GIFů selhalo",
+  "gifPicker_noInternet": "Žádné připojení k internetu",
+  "debugLog_appTitle": "Ladicí log aplikace",
+  "debugLog_bleTitle": "Ladicí log BLE",
+  "debugLog_copyLog": "Kopírovat log",
+  "debugLog_clearLog": "Vymazat log",
+  "debugLog_copied": "Ladicí log zkopírován",
+  "debugLog_bleCopied": "Log BLE zkopírován",
+  "debugLog_noEntries": "Zatím žádné ladicí logy",
+  "debugLog_enableInSettings": "Zapněte ladicí logování aplikace v nastavení",
+  "debugLog_frames": "Rámce",
+  "debugLog_rawLogRx": "Surový log-RX",
+  "debugLog_noBleActivity": "Zatím žádná aktivita BLE",
+  "debugFrame_length": "Délka rámce: {count} bajtů",
+  "@debugFrame_length": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "debugFrame_command": "Příkaz: 0x{value}",
+  "@debugFrame_command": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "debugFrame_textMessageHeader": "Rámec textové zprávy:",
+  "debugFrame_destinationPubKey": "- Veřejný klíč příjemce: {pubKey}",
+  "@debugFrame_destinationPubKey": {
+    "placeholders": {
+      "pubKey": {
+        "type": "String"
+      }
+    }
+  },
+  "debugFrame_timestamp": "- Časová značka: {timestamp}",
+  "@debugFrame_timestamp": {
+    "placeholders": {
+      "timestamp": {
+        "type": "int"
+      }
+    }
+  },
+  "debugFrame_flags": "- Příznaky: 0x{value}",
+  "@debugFrame_flags": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "debugFrame_textType": "- Typ textu: {type} ({label})",
+  "@debugFrame_textType": {
+    "placeholders": {
+      "type": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "debugFrame_textTypeCli": "CLI",
+  "debugFrame_textTypePlain": "Prostý",
+  "debugFrame_text": "- Text: \"{text}\"",
+  "@debugFrame_text": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "debugFrame_hexDump": "Hex výpis:",
+  "chat_hopsCount": "{count} {count, plural, =1{skok} few{skoky} many{skoku} other{skoků}}",
+  "@chat_hopsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_removePath": "Odebrat cestu",
+  "chat_noPathHistoryYet": "Zatím žádná historie cest.\nOdešlete zprávu a cesty se objeví.",
+  "chat_pathCleared": "Cesta vymazána. Další zpráva znovu vyhledá trasu.",
+  "chat_fullPath": "Celá cesta",
+  "routing_title": "Směrování",
+  "routing_modeAuto": "Auto",
+  "routing_modeFlood": "Flood",
+  "routing_modeManual": "Ručně",
+  "routing_modeAutoHint": "Automaticky vybere nejlepší známou cestu a pokud žádnou nezná, použije flood.",
+  "routing_modeFloodHint": "Vysílá přes všechny opakovače. Nejspolehlivější, ale zabírá více vysílacího času.",
+  "routing_modeManualHint": "Vždy odesílá přesně po cestě, kterou nastavíte.",
+  "routing_currentRoute": "Aktuální trasa",
+  "routing_directNoHops": "Přímo — bez skoků přes opakovače",
+  "routing_noPathYet": "Zatím žádná cesta. Další zpráva se bude šířit flood, dokud se nenajde trasa.",
+  "routing_floodBroadcast": "Vysílání přes všechny opakovače",
+  "routing_editPath": "Upravit cestu",
+  "routing_forgetPath": "Zapomenout cestu",
+  "routing_knownPaths": "Známé cesty",
+  "routing_knownPathsHint": "Klepnutím na cestu se na ni přepnete.",
+  "routing_inUse": "Používá se",
+  "routing_qualityStrong": "Silný první skok",
+  "routing_qualityGood": "Dobrý první skok",
+  "routing_qualityFair": "Průměrný první skok",
+  "routing_qualityWorked": "Již doručovala",
+  "routing_qualityFlood": "Zachyceno přes flood",
+  "routing_qualityUntested": "Nevyzkoušeno",
+  "routing_lastWorked": "fungovala {when}",
+  "@routing_lastWorked": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "routing_neverWorked": "nikdy nepotvrzena",
+  "routing_deliveryCounts": "{successes} doručeno, {failures} selhalo",
+  "@routing_deliveryCounts": {
+    "placeholders": {
+      "successes": {
+        "type": "int"
+      },
+      "failures": {
+        "type": "int"
+      }
+    }
+  },
+  "routing_floodDelivery": "Doručení flood",
+  "pathEditor_title": "Sestavit cestu",
+  "pathEditor_hopCounter": "{count} z 64 skoků",
+  "@pathEditor_hopCounter": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathEditor_noHops": "Zatím žádné skoky. Klepnutím na opakovače níže je přidáte v pořadí, nebo uložte bez skoků pro přímé odeslání.",
+  "pathEditor_addHops": "Přidejte skoky v pořadí",
+  "pathEditor_searchRepeaters": "Hledat opakovače",
+  "pathEditor_advancedHex": "Pokročilé: surová hex cesta",
+  "pathEditor_hexLabel": "Hex prefixy",
+  "pathEditor_hexHelper": "Dva hex znaky na skok, oddělené čárkami",
+  "pathEditor_invalidTokens": "Neplatné: {tokens}",
+  "@pathEditor_invalidTokens": {
+    "placeholders": {
+      "tokens": {
+        "type": "String"
+      }
+    }
+  },
+  "pathEditor_tooManyHops": "Maximálně 64 skoků",
+  "pathEditor_usePath": "Použít tuto cestu",
+  "pathEditor_removeHop": "Odebrat skok",
+  "pathEditor_unknownHop": "Neznámý opakovač",
+  "chat_pathSavedLocally": "Uloženo lokálně. Pro synchronizaci se připojte.",
+  "chat_pathDeviceConfirmed": "Zařízení potvrdilo.",
+  "chat_pathDeviceNotConfirmed": "Zařízení zatím nepotvrdilo.",
+  "chat_type": "Typ",
+  "chat_path": "Cesta",
+  "chat_viewPathOnMap": "Zobrazit cestu na mapě",
+  "chat_publicKey": "Veřejný klíč",
+  "chat_compressOutgoingMessages": "Komprimovat odchozí zprávy",
+  "chat_floodForced": "Flood (vynuceno)",
+  "chat_directForced": "Přímo (vynuceno)",
+  "chat_hopsForced": "{count} skoků (vynuceno)",
+  "@chat_hopsForced": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_floodAuto": "Flood (automaticky)",
+  "chat_direct": "Přímo",
+  "chat_poiShared": "Sdílen bod zájmu",
+  "chat_unread": "Nepřečtené: {count}",
+  "@chat_unread": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_markAsUnread": "Označit jako nepřečtené",
+  "chat_newMessages": "Nové zprávy",
+  "chat_today": "Dnes",
+  "chat_yesterday": "Včera",
+  "chat_openLink": "Otevřít odkaz?",
+  "chat_openLinkConfirmation": "Chcete tento odkaz otevřít v prohlížeči?",
+  "chat_open": "Otevřít",
+  "chat_couldNotOpenLink": "Odkaz se nepodařilo otevřít: {url}",
+  "@chat_couldNotOpenLink": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_invalidLink": "Neplatný formát odkazu",
+  "map_title": "Mapa uzlů",
+  "map_searchHint": "Hledat název nebo ID uzlu",
+  "map_activity": "Aktivita",
+  "map_online": "Online",
+  "map_recent": "Nedávné",
+  "map_stale": "Neaktuální",
+  "map_visible": "Viditelné",
+  "map_hidden": "Skryté",
+  "map_centerOnNode": "Vycentrovat na uzel",
+  "map_centerOnMe": "Vycentrovat na mou polohu",
+  "map_details": "Podrobnosti",
+  "map_noGps": "Bez GPS",
+  "map_noResults": "Žádné odpovídající uzly",
+  "map_lineOfSight": "Přímá viditelnost",
+  "map_losScreenTitle": "Přímá viditelnost",
+  "map_noNodesWithLocation": "Žádné uzly s údaji o poloze",
+  "map_noNodesLocationHint": "Žádné uzly s nedávnou polohou. Rozšiřte časový filtr nebo nastavte vlastní polohu v Nastavení.",
+  "map_nodesNeedGps": "Uzly musí sdílet své GPS souřadnice,\naby se zobrazily na mapě",
+  "map_nodesCount": "Uzly: {count}",
+  "@map_nodesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "map_pinsCount": "Špendlíky: {count}",
+  "@map_pinsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "map_chat": "Chat",
+  "map_repeater": "Opakovač",
+  "map_room": "Místnost",
+  "map_sensor": "Senzor",
+  "map_pinDm": "Špendlík (DM)",
+  "map_pinPrivate": "Špendlík (soukromý)",
+  "map_pinPublic": "Špendlík (veřejný)",
+  "map_lastSeen": "Naposledy viděn",
+  "map_from": "Od",
+  "map_source": "Zdroj",
+  "map_flags": "Příznaky",
+  "map_type": "Typ",
+  "map_path": "Cesta",
+  "map_location": "Poloha",
+  "map_estLocation": "Odhad. poloha",
+  "map_publicKey": "Veřejný klíč",
+  "map_publicKeyPrefixHint": "např. ab12",
+  "map_shareMarkerHere": "Sdílet zde značku",
+  "map_setAsMyLocation": "Nastavit jako mou polohu",
+  "map_pinLabel": "Popisek špendlíku",
+  "map_label": "Popisek",
+  "map_labelUpdateHint": "Použití stejného popisku jako dříve aktualizuje značku u příjemců s MeshCore Open.",
+  "map_pointOfInterest": "Bod zájmu",
+  "map_sendToContact": "Odeslat kontaktu",
+  "map_sendToChannel": "Odeslat do kanálu",
+  "map_noChannelsAvailable": "Žádné dostupné kanály",
+  "map_publicLocationShare": "Veřejné sdílení polohy",
+  "map_publicLocationShareConfirm": "Chystáte se sdílet polohu v {channelLabel}. Tento kanál je veřejný a kdokoli s PSK ji uvidí.",
+  "@map_publicLocationShareConfirm": {
+    "placeholders": {
+      "channelLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "map_connectToShareMarkers": "Pro sdílení značek se připojte k zařízení",
+  "map_filterNodes": "Filtrovat uzly",
+  "map_nodeTypes": "Typy uzlů",
+  "map_chatNodes": "Chatovací uzly",
+  "map_repeaters": "Opakovače",
+  "map_otherNodes": "Ostatní uzly",
+  "map_showOnlineLinks": "Zobrazit online spojení na mapě",
+  "map_showOverlaps": "Překryvy klíčů opakovačů",
+  "map_keyPrefix": "Prefix klíče",
+  "map_filterByKeyPrefix": "Filtrovat podle prefixu klíče",
+  "map_publicKeyPrefix": "Prefix veřejného klíče",
+  "map_markers": "Značky",
+  "map_showSharedMarkers": "Zobrazit sdílené značky",
+  "map_showGuessedLocations": "Zobrazit odhadnuté polohy uzlů",
+  "map_clusterNodes": "Seskupit blízké uzly",
+  "map_groupChip": "Skupina",
+  "map_clusterNodesSubtitle": "Při oddálení zobrazit blízké uzly jako jeden očíslovaný kruh",
+  "map_showDiscoveryContacts": "Zobrazit objevené kontakty",
+  "map_guessedLocation": "Odhadnutá poloha",
+  "map_lastSeenTime": "Čas posledního spatření",
+  "map_sharedPin": "Sdílený špendlík",
+  "map_sharedAt": "Sdíleno",
+  "map_joinRoom": "Připojit se k room",
+  "map_manageRepeater": "Spravovat opakovač",
+  "map_manageServer": "Spravovat server",
+  "map_tapToAdd": "Klepnutím na uzly je přidáte do cesty.",
+  "map_runTrace": "Spustit trasování cesty",
+  "map_runTraceWithReturnPath": "Zpět po stejné cestě.",
+  "map_removeLast": "Odebrat poslední",
+  "map_pathTraceCancelled": "Trasování cesty zrušeno.",
+  "map_pathTraceAddMoreHint": "Klepnutím na další uzly přidáte skoky, vyberte, jak se trasování vrací, a klepněte na Spustit trasování cesty.",
+  "map_pathTraceModeRoundTrip": "Tam a zpět",
+  "map_pathTraceModeRoundTripHint": "Trasování jde přes tyto skoky a vrací se stejnou cestou.",
+  "map_pathTraceModeAsEntered": "Dle zadání",
+  "map_pathTraceModeAsEnteredHint": "Trasování následuje přesně tyto skoky. Skoky zpět k sobě si přidejte sami.",
+  "map_pathTraceViewLast": "Zobrazit poslední výsledek",
+  "mapCache_title": "Offline mezipaměť map",
+  "mapCache_selectAreaFirst": "Nejprve vyberte oblast k uložení",
+  "mapCache_noTilesToDownload": "Pro tuto oblast nejsou k stažení žádné dlaždice",
+  "mapCache_downloadTilesTitle": "Stáhnout dlaždice",
+  "mapCache_downloadTilesPrompt": "Stáhnout {count} dlaždic pro offline použití?",
+  "@mapCache_downloadTilesPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_downloadAction": "Stáhnout",
+  "mapCache_cachedTiles": "Uloženo {count} dlaždic",
+  "@mapCache_cachedTiles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_cachedTilesWithFailed": "Uloženo {downloaded} dlaždic ({failed} selhalo)",
+  "@mapCache_cachedTilesWithFailed": {
+    "placeholders": {
+      "downloaded": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_clearOfflineCacheTitle": "Vymazat offline mezipaměť",
+  "mapCache_clearOfflineCachePrompt": "Odstranit všechny uložené mapové dlaždice?",
+  "mapCache_offlineCacheCleared": "Offline mezipaměť vymazána",
+  "mapCache_noAreaSelected": "Není vybrána žádná oblast",
+  "mapCache_cacheArea": "Oblast k uložení",
+  "mapCache_useCurrentView": "Použít aktuální zobrazení",
+  "mapCache_zoomRange": "Rozsah přiblížení",
+  "mapCache_estimatedTiles": "Odhadovaný počet dlaždic: {count}",
+  "@mapCache_estimatedTiles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_downloadedTiles": "Staženo {completed} / {total}",
+  "@mapCache_downloadedTiles": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_downloadTilesButton": "Stáhnout dlaždice",
+  "mapCache_clearCacheButton": "Vymazat mezipaměť",
+  "mapCache_failedDownloads": "Neúspěšná stažení: {count}",
+  "@mapCache_failedDownloads": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_cachedTilesLabel": "Uložené dlaždice",
+  "mapCache_cachedTileSummaryLabel": "Přehled uložených dlaždic",
+  "mapCache_bulkDownloadDisabledForSource": "Hromadné offline stahování je pro {source} zakázáno.",
+  "@mapCache_bulkDownloadDisabledForSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_bulkDownloadDisabledInConfig": "Hromadné offline stahování je pro {source} v této konfiguraci aplikace zakázáno.",
+  "@mapCache_bulkDownloadDisabledInConfig": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summarySource": "Zdroj: {source}",
+  "@mapCache_summarySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_summaryCachedTilesForSource": "Uložené dlaždice pro zdroj: {count}",
+  "@mapCache_summaryCachedTilesForSource": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryCachedInSelection": "Uloženo ve vybrané oblasti/přiblížení: {count}",
+  "@mapCache_summaryCachedInSelection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_summaryApproxCacheSize": "Přibližná velikost mezipaměti: {size}",
+  "@mapCache_summaryApproxCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_boundsLabel": "S {north}, J {south}, V {east}, Z {west}",
+  "@mapCache_boundsLabel": {
+    "placeholders": {
+      "north": {
+        "type": "String"
+      },
+      "south": {
+        "type": "String"
+      },
+      "east": {
+        "type": "String"
+      },
+      "west": {
+        "type": "String"
+      }
+    }
+  },
+  "time_justNow": "Právě teď",
+  "time_minutesAgo": "před {minutes} min",
+  "@time_minutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "time_hoursAgo": "před {hours} h",
+  "@time_hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "time_daysAgo": "před {days} d",
+  "@time_daysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "time_hour": "hodina",
+  "time_hours": "hodin",
+  "time_day": "den",
+  "time_days": "dní",
+  "time_week": "týden",
+  "time_weeks": "týdnů",
+  "time_month": "měsíc",
+  "time_months": "měsíců",
+  "time_minutes": "minut",
+  "time_allTime": "Vše",
+  "dialog_disconnect": "Odpojit",
+  "dialog_disconnectConfirm": "Opravdu se chcete od tohoto zařízení odpojit?",
+  "login_repeaterLogin": "Přihlášení k opakovači",
+  "login_roomLogin": "Přihlášení k room serveru",
+  "login_password": "Heslo",
+  "login_enterPassword": "Zadejte heslo",
+  "login_showPassword": "Zobrazit heslo",
+  "login_hidePassword": "Skrýt heslo",
+  "login_savePassword": "Uložit heslo",
+  "login_savePasswordSubtitle": "Heslo bude bezpečně uloženo v tomto zařízení",
+  "login_repeaterDescription": "Heslo správce odemkne nastavení a CLI. Heslo hosta (nebo prázdné) zobrazí pouze stav.",
+  "login_roomDescription": "Zadejte heslo k room pro přístup hosta nebo správce.",
+  "login_advanced": "Pokročilé",
+  "login_routing": "Směrování",
+  "login_routingMode": "Režim směrování",
+  "login_autoUseSavedPath": "Auto (použít uloženou cestu)",
+  "login_forceFloodMode": "Vynutit režim flood",
+  "login_managePaths": "Spravovat cesty",
+  "login_login": "Přihlásit",
+  "login_attempt": "Pokus {current}/{max}",
+  "@login_attempt": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "login_failed": "Přihlášení selhalo: {error}",
+  "@login_failed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "login_failedMessage": "Přihlášení selhalo. Heslo je buď nesprávné, nebo je opakovač nedostupný.",
+  "common_reload": "Znovu načíst",
+  "common_clear": "Vymazat",
+  "common_clearSearch": "Vymazat hledání",
+  "path_currentPathLabel": "Aktuální cesta",
+  "path_noRepeatersFound": "Nenalezeny žádné opakovače ani room servery.",
+  "repeater_management": "Správa opakovače",
+  "room_management": "Správa room serveru",
+  "repeater_guest": "Informace o opakovači",
+  "room_guest": "Informace o room serveru",
+  "repeater_managementTools": "Nástroje správy",
+  "repeater_guestTools": "Nástroje pro hosta",
+  "repeater_roleAdmin": "SPRÁVCE",
+  "repeater_roleGuest": "HOST",
+  "repeater_status": "Stav",
+  "repeater_statusSubtitle": "Zobrazit stav opakovače, statistiky a sousedy",
+  "repeater_telemetry": "Telemetrie",
+  "repeater_telemetrySubtitle": "Zobrazit telemetrii senzorů a systémové statistiky",
+  "repeater_cli": "CLI",
+  "repeater_cliSubtitle": "Odesílat příkazy opakovači",
+  "repeater_neighbors": "Sousedé",
+  "repeater_neighborsSubtitle": "Zobrazit sousedy na nulový skok.",
+  "repeater_settings": "Nastavení",
+  "repeater_settingsSubtitle": "Konfigurace parametrů opakovače",
+  "repeater_clockSyncAfterLogin": "Synchronizace hodin po přihlášení",
+  "repeater_clockSyncAfterLoginSubtitle": "Automaticky odeslat „clock sync“ po úspěšném přihlášení",
+  "repeater_statusTitle": "Stav opakovače",
+  "repeater_routingMode": "Režim směrování",
+  "repeater_refresh": "Obnovit",
+  "repeater_statusRequestTimeout": "Požadavek na stav vypršel.",
+  "repeater_errorLoadingStatus": "Chyba při načítání stavu: {error}",
+  "@repeater_errorLoadingStatus": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_systemInformation": "Informace o systému",
+  "repeater_battery": "Baterie",
+  "repeater_clockAtLogin": "Hodiny (při přihlášení)",
+  "repeater_uptime": "Doba provozu",
+  "repeater_queueLength": "Délka fronty",
+  "repeater_debugFlags": "Ladicí příznaky",
+  "repeater_radioStatistics": "Statistiky rádia",
+  "repeater_lastRssi": "Poslední RSSI",
+  "repeater_lastSnr": "Poslední SNR",
+  "repeater_noiseFloor": "Úroveň šumu",
+  "repeater_txAirtime": "Vysílací čas TX",
+  "repeater_rxAirtime": "Vysílací čas RX",
+  "repeater_chanUtil": "Využití kanálu",
+  "repeater_packetStatistics": "Statistiky paketů",
+  "repeater_sent": "Odesláno",
+  "repeater_received": "Přijato",
+  "repeater_duplicates": "Duplicity",
+  "repeater_daysHoursMinsSecs": "{days} dní {hours} h {minutes} m {seconds} s",
+  "@repeater_daysHoursMinsSecs": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_hoursMinsSecs": "{hours} h {minutes} m {seconds} s",
+  "@repeater_hoursMinsSecs": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_packetTxTotal": "Celkem: {total}, Flood: {flood}, Přímé: {direct}",
+  "@repeater_packetTxTotal": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      },
+      "flood": {
+        "type": "String"
+      },
+      "direct": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_packetRxTotal": "Celkem: {total}, Flood: {flood}, Přímé: {direct}",
+  "@repeater_packetRxTotal": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      },
+      "flood": {
+        "type": "String"
+      },
+      "direct": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_duplicatesFloodDirect": "Flood: {flood}, Přímé: {direct}",
+  "@repeater_duplicatesFloodDirect": {
+    "placeholders": {
+      "flood": {
+        "type": "String"
+      },
+      "direct": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_duplicatesTotal": "Celkem: {total}",
+  "@repeater_duplicatesTotal": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_settingsTitle": "Nastavení opakovače",
+  "repeater_basicSettings": "Základní nastavení",
+  "repeater_repeaterName": "Název opakovače",
+  "repeater_repeaterNameHelper": "Zobrazovaný název tohoto opakovače",
+  "repeater_adminPassword": "Heslo správce",
+  "repeater_adminPasswordHelper": "Heslo s plným přístupem",
+  "repeater_guestPassword": "Heslo hosta",
+  "repeater_guestPasswordHelper": "Heslo s přístupem pouze pro čtení",
+  "repeater_radioSettings": "Nastavení rádia",
+  "repeater_frequencyMhz": "Frekvence (MHz)",
+  "repeater_frequencyHelper": "300–2500 MHz",
+  "repeater_txPower": "Výkon TX",
+  "repeater_txPowerHelper": "1–30 dBm",
+  "repeater_bandwidth": "Šířka pásma",
+  "repeater_spreadingFactor": "Rozptylový faktor",
+  "repeater_codingRate": "Kódovací poměr",
+  "repeater_locationSettings": "Nastavení polohy",
+  "repeater_latitude": "Zeměpisná šířka",
+  "repeater_latitudeHelper": "Desetinné stupně (např. 37.7749)",
+  "repeater_longitude": "Zeměpisná délka",
+  "repeater_longitudeHelper": "Desetinné stupně (např. -122.4194)",
+  "repeater_features": "Funkce",
+  "repeater_packetForwarding": "Předávání paketů",
+  "repeater_packetForwardingSubtitle": "Povolit opakovači předávat pakety",
+  "repeater_guestAccess": "Přístup hosta",
+  "repeater_guestAccessSubtitle": "Povolit přístup hosta pouze pro čtení",
+  "repeater_privacyMode": "Režim soukromí",
+  "repeater_privacyModeSubtitle": "Skrýt název/polohu v inzerátech",
+  "repeater_advertisementSettings": "Nastavení inzerátů",
+  "repeater_localAdvertInterval": "Interval lokálního inzerátu",
+  "repeater_localAdvertIntervalMinutes": "{minutes} minut",
+  "@repeater_localAdvertIntervalMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_floodAdvertInterval": "Interval flood inzerátu",
+  "repeater_floodAdvertIntervalHours": "{hours} hodin",
+  "@repeater_floodAdvertIntervalHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_encryptedAdvertInterval": "Interval šifrovaného inzerátu",
+  "repeater_dangerZone": "Nebezpečná zóna",
+  "repeater_rebootRepeater": "Restartovat opakovač",
+  "repeater_rebootRepeaterSubtitle": "Restartovat zařízení opakovače",
+  "repeater_rebootRepeaterConfirm": "Opravdu chcete tento opakovač restartovat?",
+  "repeater_regenerateIdentityKey": "Znovu vygenerovat identitní klíč",
+  "repeater_regenerateIdentityKeySubtitle": "Vygenerovat nový pár veřejného a soukromého klíče",
+  "repeater_regenerateIdentityKeyConfirm": "Tím se pro opakovač vygeneruje nová identita. Pokračovat?",
+  "repeater_eraseFileSystem": "Vymazat souborový systém",
+  "repeater_eraseFileSystemSubtitle": "Naformátovat souborový systém opakovače",
+  "repeater_eraseFileSystemConfirm": "VAROVÁNÍ: Tím se smažou všechna data v opakovači. Tuto akci nelze vrátit zpět!",
+  "repeater_eraseSerialOnly": "Vymazání je dostupné pouze přes sériovou konzoli.",
+  "repeater_commandSent": "Příkaz odeslán: {command}",
+  "@repeater_commandSent": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_errorSendingCommand": "Chyba při odesílání příkazu: {error}",
+  "@repeater_errorSendingCommand": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_confirm": "Potvrdit",
+  "repeater_settingsSaved": "Nastavení bylo úspěšně uloženo",
+  "repeater_rxGain": "Zesílený zisk RX",
+  "repeater_rxGainHelper": "Vyšší citlivost, vyšší odběr proudu (pouze SX1262/SX1268)",
+  "repeater_multiAcks": "Vícenásobné ACK",
+  "repeater_multiAcksSubtitle": "Potvrzovat zprávy po více cestách pro lepší doručení",
+  "repeater_networkHealth": "Stav sítě",
+  "repeater_loopDetect": "Detekce smyček",
+  "repeater_loopDetectHelper": "Zahazovat flood pakety, které vypadají jako směrovací smyčky",
+  "repeater_loopDetectOff": "Vypnuto",
+  "repeater_loopDetectMinimal": "Minimální",
+  "repeater_loopDetectModerate": "Střední",
+  "repeater_loopDetectStrict": "Přísná",
+  "repeater_dutyCycle": "Duty cycle",
+  "repeater_dutyCycleHelper": "Maximální procento vysílacího času",
+  "repeater_dutyCyclePercent": "{percent}%",
+  "@repeater_dutyCyclePercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_ownerInfo": "Informace o provozovateli",
+  "repeater_ownerInfoHelper": "Veřejná metadata tohoto opakovače",
+  "repeater_floodMax": "Maximum skoků flood",
+  "repeater_floodMaxHelper": "Maximální počet skoků, které flood paket může urazit (0–64)",
+  "repeater_advancedSettings": "Pokročilé",
+  "repeater_advancedSettingsSubtitle": "Jemné ladění pro zkušené provozovatele",
+  "repeater_pathHashMode": "Velikost ID uzlu v cestách",
+  "repeater_pathHashModeHelper": "Velikost ID tohoto opakovače v cestách jím odesílaných advertů: 1 bajt (256 ID, až 64 skoků), 2 bajty (65 tis. ID, až 32 skoků), 3 bajty (16 mil. ID, až 21 skoků). Nemá vliv na přeposílání; opakovače v1.14+ přeposílají všechny velikosti, ale starší firmware zahazuje pakety s 2- nebo 3bajtovými ID.",
+  "repeater_keySettings": "Změnit identitní klíče",
+  "repeater_keySettingsSubtitle": "Změnit veřejný/soukromý pár klíčů",
+  "repeater_prvKey": "Soukromý klíč",
+  "repeater_prvKeyHelper": "Nový soukromý klíč opakovače, hex řetězec o 128 znacích.",
+  "repeater_generatePrvKey": "Vygenerovat náhodný pár klíčů",
+  "repeater_stopGeneratingPrvKey": "Přerušit hledání páru klíčů",
+  "repeater_pubKey": "Veřejný klíč",
+  "repeater_pubKeyHelper": "Toto je veřejný klíč patřící k vygenerovanému soukromému klíči. Nelze jej nastavit přímo.",
+  "repeater_pubKeyPrefix": "Požadovaná předpona",
+  "repeater_pubKeyPrefixHelper": "Najít veřejný klíč začínající těmito hex číslicemi. Očekávaný počet pokusů: {tries}.",
+  "@repeater_pubKeyPrefixHelper": {
+    "placeholders": {
+      "tries": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_txDelay": "Zpoždění TX pro flood",
+  "repeater_txDelayHelper": "Rozestup opakovaného vysílání flood provozu jako násobek doby vysílání paketu (0–2, výchozí 0,5). Vyšší = méně kolizí, ale pomalejší doručení.",
+  "repeater_directTxDelay": "Zpoždění TX pro direct",
+  "repeater_directTxDelayHelper": "Rozestup opakovaného vysílání direct (ne flood) provozu jako násobek doby vysílání paketu (0–2, výchozí 0,3).",
+  "repeater_intThresh": "Práh rušení",
+  "repeater_intThreshHelper": "Práh předaný kalibraci šumového pozadí rádia, aby odmítalo rušení nad touto úrovní. 0 = vypnuto — zvyšujte jen při chybách RX v zarušeném pásmu.",
+  "repeater_agcResetInterval": "Interval resetu AGC",
+  "repeater_agcResetIntervalHelper": "Jak často resetovat automatické řízení zisku rádia, aby se zotavilo ze zaseknutého stavu zisku. V sekundách, zaokrouhleno dolů na násobek 4. 0 vypne pravidelné resety.",
+  "repeater_actionsTitle": "Akce",
+  "repeater_sendAdvert": "Odeslat flood advert",
+  "repeater_sendAdvertSubtitle": "Rozeslat flood advert po síti",
+  "repeater_sendAdvertZeroHop": "Odeslat zero-hop advert",
+  "repeater_sendAdvertZeroHopSubtitle": "Rozeslat advert na jeden skok (bez přeposílání)",
+  "repeater_clockSync": "Synchronizovat hodiny",
+  "repeater_clockSyncSubtitle": "Odeslat čas z telefonu do opakovače",
+  "repeater_actionSucceeded": "{action} proběhlo úspěšně",
+  "@repeater_actionSucceeded": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_actionFailed": "{action} selhalo: {error}",
+  "@repeater_actionFailed": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      },
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_settingsSavedRebootNeeded": "Nastavení uloženo — pro použití restartujte opakovač",
+  "repeater_settingsPartialFailure": "Některá nastavení selhala: {failures}",
+  "@repeater_settingsPartialFailure": {
+    "placeholders": {
+      "failures": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_errorSavingSettings": "Chyba při ukládání nastavení: {error}",
+  "@repeater_errorSavingSettings": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_refreshRadioSettings": "Obnovit nastavení rádia",
+  "repeater_refreshPrivacyMode": "Obnovit režim soukromí",
+  "repeater_refreshAll": "Obnovit vše",
+  "repeater_settingsNotLoaded": "Nastavení z tohoto opakovače zatím nebyla načtena.",
+  "repeater_settingsLoadIncomplete": "Některá nastavení se nepodařilo načíst. Zkuste to znovu tlačítky obnovení.",
+  "repeater_refreshed": "{label} obnoveno",
+  "@repeater_refreshed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_errorRefreshing": "Chyba při obnovování: {label}",
+  "@repeater_errorRefreshing": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_cliTitle": "CLI opakovače",
+  "repeater_debugNextCommand": "Ladit další příkaz",
+  "repeater_commandHelp": "Nápověda k příkazům",
+  "repeater_clearHistory": "Vymazat historii",
+  "repeater_noCommandsSent": "Zatím nebyly odeslány žádné příkazy",
+  "repeater_typeCommandOrUseQuick": "Zadejte příkaz níže nebo použijte rychlé příkazy",
+  "repeater_enterCommandHint": "Zadejte příkaz...",
+  "repeater_previousCommand": "Předchozí příkaz",
+  "repeater_nextCommand": "Další příkaz",
+  "repeater_enterCommandFirst": "Nejprve zadejte příkaz",
+  "repeater_cliCommandFrameTitle": "Rámec příkazu CLI",
+  "repeater_cliCommandError": "Chyba: {error}",
+  "@repeater_cliCommandError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_cliQuickGetName": "Zjistit název",
+  "repeater_cliQuickGetRadio": "Zjistit rádio",
+  "repeater_cliQuickGetTx": "Zjistit TX",
+  "repeater_cliQuickNeighbors": "Sousedé",
+  "repeater_cliQuickVersion": "Verze",
+  "repeater_cliQuickAdvertise": "Advert",
+  "repeater_cliQuickClock": "Hodiny",
+  "repeater_cliQuickClockSync": "Synchronizace hodin",
+  "repeater_cliQuickDiscovery": "Vyhledat sousedy",
+  "repeater_cliHelpAdvert": "Odešle paket advert",
+  "repeater_cliHelpReboot": "Restartuje zařízení. (pozor, pravděpodobně dostanete „Timeout“, což je normální)",
+  "repeater_cliHelpClock": "Zobrazí aktuální čas podle hodin zařízení.",
+  "repeater_cliHelpPassword": "Nastaví nové administrátorské heslo zařízení.",
+  "repeater_cliHelpVersion": "Zobrazí verzi zařízení a datum sestavení firmwaru.",
+  "repeater_cliHelpClearStats": "Vynuluje různé čítače statistik.",
+  "repeater_cliHelpSetAf": "Nastaví air-time-factor.",
+  "repeater_cliHelpSetTx": "Nastaví vysílací výkon LoRa v dBm. (pro použití restartujte)",
+  "repeater_cliHelpSetRepeat": "Zapne nebo vypne roli opakovače pro tento uzel.",
+  "repeater_cliHelpSetAllowReadOnly": "(Room server) Pokud je „on“, je povoleno přihlášení s prázdným heslem, ale nelze přispívat do místnosti. (pouze čtení)",
+  "repeater_cliHelpSetFloodMax": "Nastaví maximální počet skoků příchozího flood paketu (pokud je >= maximum, paket se nepřeposílá)",
+  "repeater_cliHelpSetIntThresh": "Nastaví práh rušení (v DB). Výchozí je 14. Hodnota 0 vypne detekci rušení kanálu.",
+  "repeater_cliHelpSetAgcResetInterval": "Nastaví interval resetu automatického řízení zisku (AGC). Hodnota 0 jej vypne.",
+  "repeater_cliHelpSetMultiAcks": "Zapne nebo vypne funkci „dvojitých ACK“.",
+  "repeater_cliHelpSetAdvertInterval": "Nastaví interval časovače v minutách pro odesílání lokálního (zero-hop) advert paketu. Hodnota 0 jej vypne.",
+  "repeater_cliHelpSetFloodAdvertInterval": "Nastaví interval časovače v hodinách pro odesílání flood advert paketu. Hodnota 0 jej vypne.",
+  "repeater_cliHelpSetGuestPassword": "Nastaví/aktualizuje heslo hosta. (u opakovačů mohou hosté odeslat požadavek „Get Stats“)",
+  "repeater_cliHelpSetName": "Nastaví název v advertu.",
+  "repeater_cliHelpSetLat": "Nastaví zeměpisnou šířku v advertu. (desetinné stupně)",
+  "repeater_cliHelpSetLon": "Nastaví zeměpisnou délku v advertu. (desetinné stupně)",
+  "repeater_cliHelpSetRadio": "Nastaví zcela nové parametry rádia a uloží je do předvoleb. K použití vyžaduje příkaz „reboot“.",
+  "repeater_cliHelpSetRxDelay": "Nastaví (experimentální) základ (pro efekt musí být > 1) pro mírné zpoždění přijatých paketů podle síly signálu/skóre. Hodnota 0 jej vypne.",
+  "repeater_cliHelpSetTxDelay": "Nastaví koeficient, který se násobí dobou vysílání flood paketu a náhodným slotovým systémem, aby se zpozdilo jeho přeposlání. (ke snížení pravděpodobnosti kolizí)",
+  "repeater_cliHelpSetDirectTxDelay": "Totéž co txdelay, ale pro náhodné zpoždění přeposílání paketů v režimu direct.",
+  "repeater_cliHelpSetBridgeEnabled": "Zapnout/vypnout bridge.",
+  "repeater_cliHelpSetBridgeDelay": "Nastaví zpoždění před opakovaným vysíláním paketů.",
+  "repeater_cliHelpSetBridgeSource": "Vyberte, zda bridge bude opakovat přijaté, nebo vysílané pakety.",
+  "repeater_cliHelpSetBridgeBaud": "Nastaví přenosovou rychlost sériové linky pro bridge rs232.",
+  "repeater_cliHelpSetBridgeSecret": "Nastaví tajný klíč bridge pro bridge espnow.",
+  "repeater_cliHelpSetAdcMultiplier": "Nastaví vlastní koeficient pro úpravu hlášeného napětí baterie (podporováno jen na vybraných deskách).",
+  "repeater_cliHelpTempRadio": "Nastaví dočasné parametry rádia na zadaný počet minut, poté se vrátí k původním. (NEukládá se do předvoleb).",
+  "repeater_cliHelpSetPerm": "Upravuje ACL. Pokud jsou „permissions“ nula, odebere odpovídající záznam (podle předpony pubkey). Pokud je pubkey-hex v plné délce a není v ACL, přidá nový záznam. Záznam aktualizuje podle shodné předpony pubkey. Bity oprávnění se liší podle role firmwaru, ale nejnižší 2 bity jsou: 0 (Host), 1 (Pouze čtení), 2 (Čtení a zápis), 3 (Admin)",
+  "repeater_cliHelpGetBridgeType": "Zjistí typ bridge: none, rs232, espnow",
+  "repeater_cliHelpLogStart": "Spustí logování paketů do souborového systému.",
+  "repeater_cliHelpLogStop": "Zastaví logování paketů do souborového systému.",
+  "repeater_cliHelpLogErase": "Smaže logy paketů ze souborového systému.",
+  "repeater_cliHelpNeighbors": "Zobrazí seznam dalších uzlů opakovačů slyšených přes zero-hop adverty. Každý řádek je id-prefix-hex:timestamp:snr-times-4",
+  "repeater_cliHelpNeighborRemove": "Odebere ze seznamu sousedů první odpovídající záznam (podle předpony pubkey (hex)).",
+  "repeater_cliHelpRegion": "(pouze sériově) Vypíše všechny definované regiony a aktuální oprávnění flood.",
+  "repeater_cliHelpRegionLoad": "POZNÁMKA: jde o speciální vícepříkazové volání. Každý další příkaz je název regionu (odsazený mezerami pro vyjádření nadřazené hierarchie, minimálně jednou mezerou). Ukončí se odesláním prázdného řádku/příkazu.",
+  "repeater_cliHelpRegionGet": "Vyhledá region podle předpony názvu (nebo „*“ pro globální rozsah). Odpoví „-> region-name (parent-name) 'F'“",
+  "repeater_cliHelpRegionPut": "Přidá nebo aktualizuje definici regionu se zadaným názvem.",
+  "repeater_cliHelpRegionRemove": "Odebere definici regionu se zadaným názvem. (musí přesně sedět a nesmí mít podřízené regiony)",
+  "repeater_cliHelpRegionAllowf": "Nastaví oprávnění 'F'lood pro zadaný region. ('*' pro globální/legacy rozsah)",
+  "repeater_cliHelpRegionDenyf": "Odebere oprávnění 'F'lood pro zadaný region. (POZOR: v této fázi se NEDOPORUČUJE používat u globálního/legacy rozsahu!!)",
+  "repeater_cliHelpRegionHome": "Odpoví aktuálním „home“ regionem. (Zatím se nikde nepoužívá, vyhrazeno pro budoucnost)",
+  "repeater_cliHelpRegionHomeSet": "Nastaví „home“ region.",
+  "repeater_cliHelpRegionSave": "Uloží seznam/mapu regionů do úložiště.",
+  "repeater_cliHelpGps": "Vrátí stav GPS. Když je GPS vypnuté, odpoví jen off, když je zapnuté, odpoví on, stav, fix, počet satelitů",
+  "repeater_cliHelpGpsOnOff": "Přepne napájení GPS.",
+  "repeater_cliHelpGpsSync": "Synchronizuje čas uzlu s hodinami GPS.",
+  "repeater_cliHelpGpsSetLoc": "Nastaví polohu uzlu na souřadnice GPS a uloží předvolby.",
+  "repeater_cliHelpGpsAdvert": "Vrátí konfiguraci polohy v advertu uzlu:\n- none: nezahrnovat polohu do advertů\n- share: sdílet polohu GPS (ze SensorManager)\n- prefs: inzerovat polohu uloženou v předvolbách",
+  "repeater_cliHelpGpsAdvertSet": "Nastaví konfiguraci polohy v advertu.",
+  "repeater_commandsListTitle": "Seznam příkazů",
+  "repeater_commandsListNote": "POZNÁMKA: k různým příkazům „set ...“ existuje také příkaz „get ...“.",
+  "repeater_frequencyRangeHelper": "150–2500 MHz",
+  "repeater_frequencyInvalid": "Neplatná frekvence (150–2500 MHz)",
+  "repeater_txPowerRangeHelper": "−9 až 30 dBm",
+  "repeater_recvErrors": "Chyby příjmu",
+  "room_postsStored": "Příspěvky",
+  "room_postsPushed": "Odeslané příspěvky",
+  "repeater_cliRegionLoadActive": "Režim načtení regionů: odesílejte jeden název regionu na řádek, odsazený mezerami pod nadřazeným regionem (pro povolení flood přidejte za název F). Řádky nedostanou odpověď. Dokončete odesláním prázdného řádku, poté výsledek uložte příkazem „region save“.",
+  "repeater_cliRegionLoadHint": "Řádek regionu, nebo prázdný pro dokončení",
+  "repeater_cliRegionLoadEnd": "(konec načítání regionů)",
+  "repeater_cliHelpRegionDef": "Definuje řetězec regionů jedním příkazem: každý název se přidá pod předchozí; „name,parent“ přidá název a pokračuje pod zadaným nadřazeným. Odpoví seznamem regionů.",
+  "repeater_cliHelpSetFloodMaxUnscoped": "Nastaví maximální počet skoků pro přeposílání flood paketů bez regionového rozsahu (0–64).",
+  "repeater_cliHelpSetFloodMaxAdvert": "Nastaví maximální počet skoků pro přeposílání flood advertů (0–64).",
+  "repeater_cliHelpGetFloodMaxUnscoped": "Zobrazí maximální počet skoků pro flood pakety bez rozsahu.",
+  "repeater_cliHelpGetFloodMaxAdvert": "Zobrazí maximální počet skoků pro flood adverty.",
+  "repeater_cliHelpSetRadioFemRxGain": "Přepne zisk RX (LNA) front-end modulu LoRa. Desky bez něj odpoví „Error: unsupported“.",
+  "repeater_cliHelpSetRadioFemTxGain": "Přepne zisk TX (PA) front-end modulu LoRa. Desky bez něj odpoví „Error: unsupported“.",
+  "repeater_cliHelpGetRadioFemRxGain": "Zobrazí, zda je zapnut zisk RX front-end modulu LoRa.",
+  "repeater_cliHelpGetRadioFemTxGain": "Zobrazí, zda je zapnut zisk TX front-end modulu LoRa.",
+  "repeater_bridgeNote": "K dispozici pouze ve firmwaru sestaveném s bridge (RS232 nebo ESP-NOW).",
+  "repeater_general": "Obecné",
+  "repeater_settingsCategory": "Nastavení",
+  "repeater_bridge": "Most",
+  "repeater_logging": "Logování",
+  "repeater_neighborsRepeaterOnly": "Sousedé (pouze opakovač)",
+  "repeater_regionManagementRepeaterOnly": "Správa regionů (pouze opakovač)",
+  "repeater_regionNote": "Příkazy region byly zavedeny pro správu definic a oprávnění regionů.",
+  "repeater_gpsManagement": "Správa GPS",
+  "repeater_gpsNote": "Příkaz gps byl zaveden pro správu témat souvisejících s polohou.",
+  "repeater_getCategory": "Zjistit hodnoty",
+  "repeater_powerMgmt": "Správa napájení",
+  "repeater_sensors": "Senzory",
+  "repeater_cliHelpPowerOff": "Vypne zařízení. (neočekává se odpověď)",
+  "repeater_cliHelpClkReboot": "Resetuje hodiny na známou epochu a restartuje zařízení.",
+  "repeater_cliHelpAdvertZeroHop": "Odešle zero-hop advert (pouze nejbližším sousedům).",
+  "repeater_cliHelpStartOta": "Spustí bezdrátovou aktualizaci firmwaru (OTA) na podporovaných deskách.",
+  "repeater_cliHelpTime": "Nastaví hodiny zařízení na zadané sekundy Unix epochy. Hodiny nelze posunout zpět.",
+  "repeater_cliHelpBoard": "Zobrazí výrobce desky / hardwarový identifikátor.",
+  "repeater_cliHelpDiscoverNeighbors": "Odešle požadavek na vyhledání uzlů okolním sousedům. (pouze opakovač)",
+  "repeater_cliHelpPowersaving": "Zobrazí, zda je režim úspory energie zapnut nebo vypnut.",
+  "repeater_cliHelpPowersavingOnOff": "Zapne nebo vypne režim úspory energie (kde je podporován).",
+  "repeater_cliHelpErase": "(pouze sériově) Zformátuje souborový systém zařízení. Vymaže všechna nastavení a kontakty.",
+  "repeater_cliHelpSetDutyCycle": "Nastaví maximální povolený vysílací duty cycle v procentech (1–100). Interně upraví airtime factor.",
+  "repeater_cliHelpSetPrvKey": "Nahradí soukromý klíč identity zařízení. K použití je nutný restart. Vygeneruje nový veřejný klíč.",
+  "repeater_cliHelpSetRadioRxGain": "(pouze SX126x) Přepne zesílený zisk RX pro lepší citlivost za cenu vyššího odběru proudu.",
+  "repeater_cliHelpSetOwnerInfo": "Nastaví řetězec s kontaktními údaji vlastníka obsažený v advertech. Pro nové řádky použijte „|“.",
+  "repeater_cliHelpSetPathHashMode": "Nastaví velikost ID uzlu používanou v advertech tohoto opakovače: 0 = 1 bajt (až 64 skoků), 1 = 2 bajty (až 32 skoků), 2 = 3 bajty (až 21 skoků). 3 je vyhrazeno. Neovlivňuje, které velikosti se přeposílají. Vyžaduje firmware v1.14+.",
+  "repeater_cliHelpSetLoopDetect": "Nastaví citlivost detekce směrovacích smyček: off, minimal, moderate nebo strict.",
+  "repeater_cliHelpSetFreq": "(pouze sériově) Rychle nastaví pouze frekvenci. Nutný restart. Pro kompletní parametry rádia raději použijte „set radio“.",
+  "repeater_cliHelpSetBridgeChannel": "(pouze bridge ESPNow) Nastaví kanál WiFi (1–14) používaný bridge.",
+  "repeater_cliHelpGetName": "Zobrazí nastavený název uzlu.",
+  "repeater_cliHelpGetRole": "Zobrazí roli firmwaru (Repeater, Room Server atd.).",
+  "repeater_cliHelpGetPublicKey": "Zobrazí veřejný klíč zařízení.",
+  "repeater_cliHelpGetPrvKey": "(pouze sériově) Zobrazí soukromý klíč zařízení. Považujte jej za tajný.",
+  "repeater_cliHelpGetRepeat": "Zobrazí, zda je přeposílání paketů (role opakovače) zapnuto nebo vypnuto.",
+  "repeater_cliHelpGetTx": "Zobrazí aktuální výkon TX v dBm.",
+  "repeater_cliHelpGetFreq": "Zobrazí nastavenou frekvenci rádia v MHz.",
+  "repeater_cliHelpGetRadio": "Zobrazí kompletní parametry rádia: frekvence, šířka pásma, spreading factor, coding rate.",
+  "repeater_cliHelpGetRadioRxGain": "(pouze SX126x) Zobrazí stav zesíleného zisku RX.",
+  "repeater_cliHelpGetAf": "Zobrazí aktuální airtime factor.",
+  "repeater_cliHelpGetDutyCycle": "Zobrazí aktuální povolený duty cycle v procentech.",
+  "repeater_cliHelpGetIntThresh": "Zobrazí práh rušení kanálu v dB.",
+  "repeater_cliHelpGetAgcResetInterval": "Zobrazí interval resetu AGC v sekundách.",
+  "repeater_cliHelpGetMultiAcks": "Zobrazí, zda je režim dvojitých ACK zapnut (1) nebo vypnut (0).",
+  "repeater_cliHelpGetAllowReadOnly": "Zobrazí, zda je povolen přístup hosta pouze pro čtení.",
+  "repeater_cliHelpGetAdvertInterval": "Zobrazí interval lokálního advertu v minutách.",
+  "repeater_cliHelpGetFloodAdvertInterval": "Zobrazí interval flood advertu v hodinách.",
+  "repeater_cliHelpGetGuestPassword": "Zobrazí nastavené heslo hosta.",
+  "repeater_cliHelpGetLat": "Zobrazí nastavenou zeměpisnou šířku.",
+  "repeater_cliHelpGetLon": "Zobrazí nastavenou zeměpisnou délku.",
+  "repeater_cliHelpGetRxDelay": "Zobrazí základní hodnotu rxdelay.",
+  "repeater_cliHelpGetTxDelay": "Zobrazí koeficient txdelay pro režim flood.",
+  "repeater_cliHelpGetDirectTxDelay": "Zobrazí koeficient txdelay pro režim direct.",
+  "repeater_cliHelpGetFloodMax": "Zobrazí maximální počet skoků flood.",
+  "repeater_cliHelpGetOwnerInfo": "Zobrazí řetězec s kontaktními údaji vlastníka.",
+  "repeater_cliHelpGetPathHashMode": "Zobrazí režim velikosti ID uzlu používaný v advertech (0 = 1 bajt, 1 = 2 bajty, 2 = 3 bajty).",
+  "repeater_cliHelpGetLoopDetect": "Zobrazí citlivost detekce smyček.",
+  "repeater_cliHelpGetAcl": "(pouze sériově) Vypíše záznamy řízení přístupu na opakovači.",
+  "repeater_cliHelpGetBridgeEnabled": "Zobrazí, zda je bridge zapnut.",
+  "repeater_cliHelpGetBridgeDelay": "Zobrazí zpoždění bridge v ms.",
+  "repeater_cliHelpGetBridgeSource": "Zobrazí, zda bridge loguje pakety RX, nebo TX.",
+  "repeater_cliHelpGetBridgeBaud": "(pouze bridge RS232) Zobrazí přenosovou rychlost bridge.",
+  "repeater_cliHelpGetBridgeChannel": "(pouze bridge ESPNow) Zobrazí kanál WiFi bridge.",
+  "repeater_cliHelpGetBridgeSecret": "(pouze bridge ESPNow) Zobrazí sdílený tajný klíč bridge.",
+  "repeater_cliHelpGetBootloaderVer": "(pouze NRF52) Zobrazí verzi bootloaderu.",
+  "repeater_cliHelpGetAdcMultiplier": "Zobrazí násobitel ADC (škálování napětí baterie).",
+  "repeater_cliHelpGetPwrMgtSupport": "Oznámí, zda deska podporuje správu napájení.",
+  "repeater_cliHelpGetPwrMgtSource": "Zobrazí aktuální zdroj napájení: externí, nebo baterie.",
+  "repeater_cliHelpGetPwrMgtBootReason": "Zobrazí nejnovější důvody resetu a vypnutí.",
+  "repeater_cliHelpGetPwrMgtBootMv": "Zobrazí napětí baterie při startu v mV.",
+  "repeater_cliHelpSensorGet": "Přečte vlastní nastavení senzoru podle klíče.",
+  "repeater_cliHelpSensorSet": "Zapíše vlastní nastavení senzoru.",
+  "repeater_cliHelpSensorList": "Vypíše všechna vlastní nastavení senzorů, stránkovaně od volitelného počátečního indexu.",
+  "repeater_cliHelpRegionDefault": "Zobrazí aktuální výchozí rozsah regionu.",
+  "repeater_cliHelpRegionDefaultSet": "Nastaví výchozí rozsah regionu. Pro vymazání použijte „<null>“.",
+  "repeater_cliHelpRegionListAllowed": "Vypíše regiony, které povolují flood provoz.",
+  "repeater_cliHelpRegionListDenied": "Vypíše regiony, které flood provoz zakazují.",
+  "repeater_cliHelpStatsPackets": "(pouze sériově) Zobrazí statistiky na úrovni paketů.",
+  "repeater_cliHelpStatsRadio": "(pouze sériově) Zobrazí statistiky rádia.",
+  "repeater_cliHelpStatsCore": "(pouze sériově) Zobrazí statistiky jádra firmwaru.",
+  "telemetry_receivedData": "Přijatá telemetrická data",
+  "telemetry_requestTimeout": "Požadavek na telemetrii vypršel.",
+  "telemetry_errorLoading": "Chyba při načítání telemetrie: {error}",
+  "@telemetry_errorLoading": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_noData": "Žádná telemetrická data nejsou k dispozici.",
+  "telemetry_channelTitle": "Kanál {channel}",
+  "@telemetry_channelTitle": {
+    "placeholders": {
+      "channel": {
+        "type": "int"
+      }
+    }
+  },
+  "telemetry_batteryLabel": "Baterie",
+  "telemetry_voltageLabel": "Napětí",
+  "telemetry_mcuTemperatureLabel": "Teplota MCU",
+  "telemetry_temperatureLabel": "Teplota",
+  "telemetry_currentLabel": "Proud",
+  "telemetry_batteryValue": "{percent}% / {volts} V",
+  "@telemetry_batteryValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "volts": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_voltageValue": "{volts} V",
+  "@telemetry_voltageValue": {
+    "placeholders": {
+      "volts": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_currentValue": "{amps} A",
+  "@telemetry_currentValue": {
+    "placeholders": {
+      "amps": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_temperatureValue": "{celsius} °C / {fahrenheit} °F",
+  "@telemetry_temperatureValue": {
+    "placeholders": {
+      "celsius": {
+        "type": "String"
+      },
+      "fahrenheit": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_digitalInputLabel": "Digitální vstup",
+  "telemetry_digitalOutputLabel": "Digitální výstup",
+  "telemetry_analogInputLabel": "Analogový vstup",
+  "telemetry_analogOutputLabel": "Analogový výstup",
+  "telemetry_genericLabel": "Obecný senzor",
+  "telemetry_luminosityLabel": "Osvětlení",
+  "telemetry_presenceLabel": "Přítomnost",
+  "telemetry_humidityLabel": "Vlhkost",
+  "telemetry_accelerometerLabel": "Akcelerometr",
+  "telemetry_pressureLabel": "Tlak",
+  "telemetry_altitudeLabel": "Nadmořská výška",
+  "telemetry_frequencyLabel": "Frekvence",
+  "telemetry_percentageLabel": "Procento",
+  "telemetry_concentrationLabel": "Koncentrace",
+  "telemetry_powerLabel": "Výkon",
+  "telemetry_distanceLabel": "Vzdálenost",
+  "telemetry_energyLabel": "Energie",
+  "telemetry_directionLabel": "Směr",
+  "telemetry_timeLabel": "Čas",
+  "telemetry_gyrometerLabel": "Gyroskop",
+  "telemetry_colourLabel": "Barva",
+  "telemetry_gpsLabel": "GPS",
+  "telemetry_switchLabel": "Spínač",
+  "telemetry_polylineLabel": "Lomená čára",
+  "telemetry_altitudeValue": "{meters} m",
+  "@telemetry_altitudeValue": {
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_frequencyValue": "{hertz} Hz",
+  "@telemetry_frequencyValue": {
+    "placeholders": {
+      "hertz": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_pressureValue": "{hpa} hPa",
+  "@telemetry_pressureValue": {
+    "placeholders": {
+      "hpa": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_luminosityValue": "{lux} lx",
+  "@telemetry_luminosityValue": {
+    "placeholders": {
+      "lux": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_powerValue": "{watts} W",
+  "@telemetry_powerValue": {
+    "placeholders": {
+      "watts": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_distanceValue": "{meters} m",
+  "@telemetry_distanceValue": {
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_energyValue": "{kilowattHours} kWh",
+  "@telemetry_energyValue": {
+    "placeholders": {
+      "kilowattHours": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_directionValue": "{degrees}°",
+  "@telemetry_directionValue": {
+    "placeholders": {
+      "degrees": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_concentrationValue": "{ppm} ppm",
+  "@telemetry_concentrationValue": {
+    "placeholders": {
+      "ppm": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_percentageValue": "{percent}%",
+  "@telemetry_percentageValue": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_analogValue": "{value}",
+  "@telemetry_analogValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_autoFetchQuantity": "Počet požadavků",
+  "telemetry_error": "Data se nepodařilo načíst",
+  "neighbors_receivedData": "Přijatá data o sousedech",
+  "neighbors_requestTimedOut": "Požadavek na sousedy vypršel.",
+  "neighbors_errorLoading": "Chyba při načítání sousedů: {error}",
+  "@neighbors_errorLoading": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_repeatersNeighbors": "Sousedé opakovače",
+  "neighbors_noData": "Data o sousedech nejsou k dispozici.",
+  "neighbors_unknownContact": "Neznámý {pubkey}",
+  "@neighbors_unknownContact": {
+    "placeholders": {
+      "pubkey": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_heardAgo": "Slyšen před: {time}",
+  "@neighbors_heardAgo": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "channelPath_title": "Cesta paketu",
+  "channelPath_viewMap": "Zobrazit mapu",
+  "channelPath_otherObservedPaths": "Další pozorované cesty",
+  "channelPath_repeaterHops": "Skoky přes opakovače",
+  "channelPath_noHopDetails": "Podrobnosti o skocích nejsou pro tento paket k dispozici.",
+  "channelPath_messageDetails": "Podrobnosti zprávy",
+  "channelPath_senderLabel": "Odesílatel",
+  "channelPath_timeLabel": "Čas",
+  "channelPath_repeatsLabel": "Opakování",
+  "channelPath_pathLabel": "Cesta {index}",
+  "@channelPath_pathLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "channelPath_observedLabel": "Pozorováno",
+  "channelPath_observedPathTitle": "Pozorovaná cesta {index} • {hops}",
+  "@channelPath_observedPathTitle": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "hops": {
+        "type": "String"
+      }
+    }
+  },
+  "channelPath_noLocationData": "Žádná data o poloze",
+  "channelPath_timeWithDate": "{day}. {month}. {time}",
+  "@channelPath_timeWithDate": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "channelPath_timeOnly": "{time}",
+  "@channelPath_timeOnly": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "channelPath_unknownPath": "Neznámá",
+  "channelPath_floodPath": "Flood",
+  "channelPath_directPath": "Přímo",
+  "channelPath_observedZeroOf": "0 z {total} skoků",
+  "@channelPath_observedZeroOf": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "channelPath_observedSomeOf": "{observed} z {total} skoků",
+  "@channelPath_observedSomeOf": {
+    "placeholders": {
+      "observed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "channelPath_mapTitle": "Mapa cesty",
+  "channelPath_noRepeaterLocations": "Pro tuto cestu nejsou k dispozici polohy opakovačů.",
+  "channelPath_primaryPath": "Cesta {index} (primární)",
+  "@channelPath_primaryPath": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "channelPath_pathLabelTitle": "Cesta",
+  "channelPath_observedPathHeader": "Pozorovaná cesta",
+  "channelPath_selectedPathLabel": "{label} • {prefixes}",
+  "@channelPath_selectedPathLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "prefixes": {
+        "type": "String"
+      }
+    }
+  },
+  "channelPath_noHopDetailsAvailable": "Pro tento paket nejsou k dispozici podrobnosti o skocích.",
+  "channelPath_unknownRepeater": "Neznámý opakovač",
+  "community_title": "Komunita",
+  "community_create": "Vytvořit komunitu",
+  "community_createDesc": "Vytvořte novou komunitu a sdílejte ji pomocí QR kódu.",
+  "community_join": "Připojit se",
+  "community_joinTitle": "Připojit se ke komunitě",
+  "community_joinConfirmation": "Chcete se připojit ke komunitě „{name}“?",
+  "@community_joinConfirmation": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_scanQr": "Skenovat QR komunity",
+  "community_scanInstructions": "Namiřte kameru na QR kód komunity",
+  "community_showQr": "Zobrazit QR kód",
+  "community_publicChannel": "Veřejný kanál komunity",
+  "community_hashtagChannel": "Hashtag komunity",
+  "community_name": "Název komunity",
+  "community_enterName": "Zadejte název komunity",
+  "community_created": "Komunita „{name}“ byla vytvořena",
+  "@community_created": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_joined": "Připojeno ke komunitě „{name}“",
+  "@community_joined": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_qrTitle": "Sdílet komunitu",
+  "community_qrInstructions": "Naskenujte tento QR kód a připojte se k „{name}“",
+  "@community_qrInstructions": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_hashtagPrivacyHint": "K hashtag kanálům komunity se mohou připojit pouze členové komunity",
+  "community_invalidQrCode": "Neplatný QR kód komunity",
+  "community_alreadyMember": "Již jste členem",
+  "community_alreadyMemberMessage": "Již jste členem komunity „{name}“.",
+  "@community_alreadyMemberMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_addPublicChannel": "Přidat veřejný kanál komunity",
+  "community_addPublicChannelHint": "Automaticky přidat veřejný kanál této komunity",
+  "community_noCommunities": "Zatím nejste v žádné komunitě",
+  "community_scanOrCreate": "Začněte naskenováním QR kódu nebo vytvořením komunity",
+  "community_manageCommunities": "Spravovat komunity",
+  "community_delete": "Opustit komunitu",
+  "community_deleteConfirm": "Opustit „{name}“?",
+  "@community_deleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_deleteChannelsWarning": "Tím se také odstraní kanály ({count}) a jejich zprávy.",
+  "@community_deleteChannelsWarning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "community_deleted": "Opustili jste komunitu „{name}“",
+  "@community_deleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_regenerateSecret": "Vygenerovat nový tajný klíč",
+  "community_regenerateSecretConfirm": "Vygenerovat nový tajný klíč pro „{name}“? Všichni členové budou muset naskenovat nový QR kód, aby mohli dál komunikovat.",
+  "@community_regenerateSecretConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_regenerate": "Vygenerovat znovu",
+  "community_secretRegenerated": "Nový tajný klíč pro „{name}“ byl vygenerován",
+  "@community_secretRegenerated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_updateSecret": "Aktualizovat tajný klíč",
+  "community_secretUpdated": "Tajný klíč pro „{name}“ byl aktualizován",
+  "@community_secretUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_scanToUpdateSecret": "Naskenujte nový QR kód pro aktualizaci tajného klíče pro „{name}“",
+  "@community_scanToUpdateSecret": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "community_addHashtagChannel": "Přidat hashtag komunity",
+  "community_addHashtagChannelDesc": "Přidat hashtag kanál pro tuto komunitu",
+  "community_selectCommunity": "Vybrat komunitu",
+  "community_regularHashtag": "Běžný hashtag",
+  "community_regularHashtagDesc": "Veřejný hashtag (připojit se může kdokoli)",
+  "community_communityHashtag": "Hashtag komunity",
+  "community_communityHashtagDesc": "Soukromý pro členy komunity",
+  "community_forCommunity": "Pro {name}",
+  "@community_forCommunity": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "listFilter_tooltip": "Filtrovat a řadit",
+  "listFilter_sortBy": "Řadit podle",
+  "listFilter_latestMessages": "Nejnovější zprávy",
+  "listFilter_heardRecently": "Nedávno slyšené",
+  "listFilter_az": "A–Z",
+  "listFilter_filters": "Filtry",
+  "listFilter_all": "Vše",
+  "listFilter_favorites": "Oblíbené",
+  "listFilter_addToFavorites": "Přidat do oblíbených",
+  "listFilter_removeFromFavorites": "Odebrat z oblíbených",
+  "listFilter_users": "Uživatelé",
+  "listFilter_repeaters": "Opakovače",
+  "listFilter_roomServers": "Room servery",
+  "listFilter_unreadOnly": "Pouze nepřečtené",
+  "listFilter_newGroup": "Nová skupina",
+  "pathTrace_you": "Vy",
+  "pathTrace_failed": "Trasování cesty selhalo.",
+  "pathTrace_notAvailable": "Trasování cesty není k dispozici.",
+  "pathTrace_refreshTooltip": "Obnovit trasování cesty.",
+  "pathTrace_someHopsNoLocation": "Jednomu nebo více skokům chybí poloha!",
+  "pathTrace_clearTooltip": "Vymazat cestu.",
+  "losSelectStartEnd": "Vyberte počáteční a koncový uzel pro LOS.",
+  "losRunFailed": "Kontrola přímé viditelnosti selhala: {error}",
+  "@losRunFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "losClearAllPoints": "Vymazat všechny body",
+  "losRunToViewElevationProfile": "Spusťte LOS pro zobrazení výškového profilu",
+  "losMenuTitle": "Nabídka LOS",
+  "losMenuSubtitle": "Klepněte na uzly nebo dlouze stiskněte mapu pro vlastní body",
+  "losShowDisplayNodes": "Zobrazit uzly na displeji",
+  "losCustomPoints": "Vlastní body",
+  "losCustomPointLabel": "Vlastní {index}",
+  "@losCustomPointLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "losPointA": "Bod A",
+  "losPointB": "Bod B",
+  "losAntennaA": "Anténa A: {value} {unit}",
+  "@losAntennaA": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "losAntennaB": "Anténa B: {value} {unit}",
+  "@losAntennaB": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "losRun": "Spustit LOS",
+  "losNoElevationData": "Žádná výšková data",
+  "losProfileClear": "{distance} {distanceUnit}, LOS volná, min. odstup {clearance} {heightUnit}",
+  "@losProfileClear": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "distanceUnit": {
+        "type": "String"
+      },
+      "clearance": {
+        "type": "String"
+      },
+      "heightUnit": {
+        "type": "String"
+      }
+    }
+  },
+  "losProfileBlocked": "{distance} {distanceUnit}, blokováno o {obstruction} {heightUnit}",
+  "@losProfileBlocked": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "distanceUnit": {
+        "type": "String"
+      },
+      "obstruction": {
+        "type": "String"
+      },
+      "heightUnit": {
+        "type": "String"
+      }
+    }
+  },
+  "losStatusChecking": "LOS: kontroluji...",
+  "losStatusNoData": "LOS: žádná data",
+  "losStatusSummary": "LOS: {clear}/{total} volných, {blocked} blokovaných, {unknown} neznámých",
+  "@losStatusSummary": {
+    "placeholders": {
+      "clear": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "blocked": {
+        "type": "int"
+      },
+      "unknown": {
+        "type": "int"
+      }
+    }
+  },
+  "losErrorElevationUnavailable": "Výšková data nejsou k dispozici pro jeden nebo více vzorků.",
+  "losErrorInvalidInput": "Neplatné body/výšková data pro výpočet LOS.",
+  "losRenameCustomPoint": "Přejmenovat vlastní bod",
+  "losPointName": "Název bodu",
+  "losShowPanelTooltip": "Zobrazit panel LOS",
+  "losHidePanelTooltip": "Skrýt panel LOS",
+  "losElevationAttribution": "Výšková data: Open-Meteo (CC BY 4.0)",
+  "losLegendRadioHorizon": "Rádiový horizont",
+  "losLegendLosBeam": "Paprsek LOS",
+  "losLegendTerrain": "Terén",
+  "losBlockedSpotsTitle": "Blokovaná místa",
+  "losBlockedSpotsHint": "Klepnutím na blokované místo jej zvýrazníte na mapě.",
+  "losBlockedSpotChip": "{distance} {distanceUnit} • {obstruction} {heightUnit}",
+  "@losBlockedSpotChip": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "distanceUnit": {
+        "type": "String"
+      },
+      "obstruction": {
+        "type": "String"
+      },
+      "heightUnit": {
+        "type": "String"
+      }
+    }
+  },
+  "losSelectedObstructionTitle": "Vybraná překážka",
+  "losSelectedObstructionDetails": "Blokováno o {obstruction} {heightUnit}, {distanceFromA} od A a {distanceFromB} od B ({distanceUnit}).",
+  "@losSelectedObstructionDetails": {
+    "placeholders": {
+      "obstruction": {
+        "type": "String"
+      },
+      "heightUnit": {
+        "type": "String"
+      },
+      "distanceFromA": {
+        "type": "String"
+      },
+      "distanceUnit": {
+        "type": "String"
+      },
+      "distanceFromB": {
+        "type": "String"
+      }
+    }
+  },
+  "losFrequencyLabel": "Frekvence",
+  "losFrequencyInfoTooltip": "Zobrazit podrobnosti výpočtu",
+  "losFrequencyDialogTitle": "Výpočet rádiového horizontu",
+  "losFrequencyDialogDescription": "Počínaje k={baselineK} na {baselineFreq} MHz výpočet upraví k-faktor pro aktuální pásmo {frequencyMHz} MHz, který určuje zakřivený strop rádiového horizontu.",
+  "@losFrequencyDialogDescription": {
+    "description": "Explain how the calculation uses the baseline frequency and derived k-factor.",
+    "placeholders": {
+      "baselineK": {
+        "type": "double"
+      },
+      "baselineFreq": {
+        "type": "double"
+      },
+      "frequencyMHz": {
+        "type": "double"
+      },
+      "kFactor": {
+        "type": "double"
+      }
+    }
+  },
+  "contacts_pathTrace": "Trasování cesty",
+  "contacts_ping": "Ping",
+  "contacts_repeaterPathTrace": "Trasování cesty k opakovači",
+  "contacts_repeaterPing": "Ping opakovače",
+  "contacts_roomPathTrace": "Trasování cesty k room serveru",
+  "contacts_roomPing": "Ping room serveru",
+  "contacts_chatTraceRoute": "Trasa trasování cesty",
+  "contacts_pathTraceTo": "Trasovat cestu k {name}",
+  "@contacts_pathTraceTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_clipboardEmpty": "Schránka je prázdná.",
+  "contacts_invalidAdvertFormat": "Neplatná data kontaktu",
+  "contacts_contactImported": "Kontakt byl importován.",
+  "contacts_contactImportFailed": "Kontakt se nepodařilo importovat.",
+  "discoveredContacts_export": "Exportovat objevené kontakty",
+  "discoveredContacts_import": "Importovat objevené kontakty",
+  "discoveredContacts_exported": "Objevené kontakty exportovány do {path}.",
+  "@discoveredContacts_exported": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_exportFailed": "Export objevených kontaktů selhal: {error}",
+  "@discoveredContacts_exportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_imported": "Importováno objevených kontaktů: {count}.",
+  "@discoveredContacts_imported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importNoContacts": "V importovaném souboru nebyly nalezeny žádné kontakty.",
+  "discoveredContacts_importSummary": "Importováno objevených kontaktů: {imported}. Přeskočeno již známých: {skipped} a nečitelných záznamů: {invalid}.",
+  "@discoveredContacts_importSummary": {
+    "placeholders": {
+      "imported": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      },
+      "invalid": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importInvalidFile": "Soubor není exportem objevených kontaktů.",
+  "discoveredContacts_importTooLarge": "Importovaný soubor je příliš velký (maximum {maxMb} MB).",
+  "@discoveredContacts_importTooLarge": {
+    "placeholders": {
+      "maxMb": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_importFailed": "Import objevených kontaktů selhal: {error}",
+  "@discoveredContacts_importFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_zeroHopAdvert": "Zero-hop advert",
+  "contacts_floodAdvert": "Flood advert",
+  "contacts_copyAdvertToClipboard": "Kopírovat advert do schránky",
+  "contacts_addContactFromClipboard": "Přidat kontakt ze schránky",
+  "contacts_scanQrCode": "Skenovat QR kód",
+  "contacts_scanQrInstructions": "Namiřte kameru na QR kód kontaktu MeshCore",
+  "contacts_qrFromGallery": "Skenovat QR z galerie",
+  "contacts_noQrCodeFound": "Ve vybraném obrázku nebyl nalezen žádný QR kód.",
+  "contacts_qrGalleryFailed": "Galerii se nepodařilo otevřít.",
+  "contacts_ShareContact": "Kopírovat kontakt do schránky",
+  "contacts_ShareContactZeroHop": "Sdílet kontakt přes advert",
+  "contacts_zeroHopContactAdvertSent": "Kontakt odeslán přes advert.",
+  "contacts_zeroHopContactAdvertFailed": "Kontakt se nepodařilo odeslat.",
+  "contacts_contactAdvertCopied": "Advert zkopírován do schránky.",
+  "contacts_contactAdvertCopyFailed": "Kopírování advertu do schránky selhalo.",
+  "notification_activityTitle": "Aktivita MeshCore",
+  "notification_lowBatteryTitle": "Slabá baterie",
+  "notification_lowBatteryBody": "Baterie zařízení {deviceName} je na {percent}%",
+  "@notification_lowBatteryBody": {
+    "description": "Body of the low battery notification; deviceName is the connected radio's node name",
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_messagesCount": "{count} {count, plural, =1{zpráva} few{zprávy} many{zprávy} other{zpráv}}",
+  "@notification_messagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_channelMessagesCount": "{count} {count, plural, =1{zpráva v kanálu} few{zprávy v kanálech} many{zprávy v kanálech} other{zpráv v kanálech}}",
+  "@notification_channelMessagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_newNodesCount": "{count} {count, plural, =1{nový uzel} few{nové uzly} many{nového uzlu} other{nových uzlů}}",
+  "@notification_newNodesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notification_newTypeDiscovered": "Objeveno: {contactType}",
+  "@notification_newTypeDiscovered": {
+    "placeholders": {
+      "contactType": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_receivedNewMessage": "Přijata nová zpráva",
+  "notification_sharedLocation": "Sdílel(a) polohu",
+  "notification_sharedLocationNamed": "Sdílel(a) polohu: {label}",
+  "@notification_sharedLocationNamed": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_reacted": "Reakce {emoji}",
+  "@notification_reacted": {
+    "placeholders": {
+      "emoji": {
+        "type": "String"
+      }
+    }
+  },
+  "notification_sentGif": "Odeslal(a) GIF",
+  "notification_sentImage": "Odeslal(a) obrázek",
+  "notification_actionReply": "Odpovědět",
+  "notification_actionMarkRead": "Označit jako přečtené",
+  "notification_actionMuteChannel": "Ztlumit kanál",
+  "notification_replyHint": "Zpráva",
+  "notification_you": "Vy",
+  "notification_replyFailedTitle": "Odpověď nebyla odeslána",
+  "notification_replyNotConnected": "Nejste připojeni k rádiu. Připojte se znovu v MeshCore Open a odešlete odpověď znovu.",
+  "notification_replyTooLong": "Vaše odpověď je příliš dlouhá na odeslání z oznámení. Odešlete ji raději z MeshCore Open.",
+  "notification_replyUnavailable": "Tato konverzace již není na připojeném rádiu.",
+  "notification_replySendFailed": "Vaše odpověď možná nebyla odeslána. Zkontrolujte to v MeshCore Open a zkuste to znovu.",
+  "notification_replyAppNotRunning": "MeshCore Open neběží. Otevřete ji a odešlete odpověď znovu.",
+  "settings_gpxExportRepeaters": "Exportovat opakovače / room servery do GPX",
+  "settings_gpxExportRepeatersSubtitle": "Exportuje opakovače / room servery s polohou do souboru GPX.",
+  "settings_gpxExportContacts": "Exportovat companiony do GPX",
+  "settings_gpxExportContactsSubtitle": "Exportuje companiony s polohou do souboru GPX.",
+  "settings_gpxExportAll": "Exportovat všechny kontakty do GPX",
+  "settings_gpxExportAllSubtitle": "Exportuje všechny kontakty s polohou do souboru GPX.",
+  "settings_gpxExportSuccess": "Soubor GPX byl úspěšně exportován.",
+  "settings_gpxExportNoContacts": "Žádné kontakty k exportu.",
+  "settings_gpxExportNotAvailable": "Na vašem zařízení/OS není podporováno",
+  "settings_gpxExportError": "Při exportu došlo k chybě.",
+  "settings_gpxExportRepeatersRoom": "Polohy opakovačů a room serverů",
+  "settings_gpxExportChat": "Polohy companionů",
+  "settings_gpxExportAllContacts": "Polohy všech kontaktů",
+  "settings_gpxExportShareText": "Mapová data exportovaná z meshcore-open",
+  "settings_gpxExportShareSubject": "Export mapových dat GPX z meshcore-open",
+  "snrIndicator_nearByRepeaters": "Opakovače v okolí",
+  "snrIndicator_lastSeen": "Naposledy zaznamenán",
+  "snrIndicator_nearByRepeatersDescription": "Opakovače, které vaše rádio slyšelo přímo, nejnověji slyšené první.",
+  "snrIndicator_unknownRepeater": "Neznámý opakovač",
+  "snrIndicator_unknownRepeaterHint": "Tento opakovač zatím není ve vašich kontaktech. Jeho název, poloha a možnosti se zobrazí, až vaše rádio přijme jeho advert.",
+  "contactsSettings_title": "Nastavení kontaktů",
+  "contactsSettings_autoAddTitle": "Automatické vyhledávání",
+  "contactsSettings_otherTitle": "Další nastavení kontaktů",
+  "contactsSettings_autoAddUsersTitle": "Automaticky přidávat uživatele",
+  "contactsSettings_autoAddUsersSubtitle": "Povolit companionu automaticky přidávat objevené uživatele.",
+  "contactsSettings_autoAddRepeatersTitle": "Automaticky přidávat opakovače",
+  "contactsSettings_autoAddRepeatersSubtitle": "Povolit companionu automaticky přidávat objevené opakovače.",
+  "contactsSettings_autoAddRoomServersTitle": "Automaticky přidávat room servery",
+  "contactsSettings_autoAddRoomServersSubtitle": "Povolit companionu automaticky přidávat objevené room servery.",
+  "contactsSettings_autoAddSensorsTitle": "Automaticky přidávat senzory",
+  "contactsSettings_autoAddSensorsSubtitle": "Povolit companionu automaticky přidávat objevené senzory.",
+  "contactsSettings_overwriteOldestTitle": "Přepsat nejstarší",
+  "contactsSettings_overwriteOldestSubtitle": "Když je seznam kontaktů plný, nejstarší kontakt, který není oblíbený, bude nahrazen.",
+  "contactsSettings_evictDiscoveredContactsTitle": "Odstraňovat objevené kontakty",
+  "contactsSettings_evictDiscoveredContactsSubtitle": "Když je zapnuto, aplikace odstraní nejstarší objevené kontakty, jakmile seznam objevených dosáhne limitu {limit} položek.",
+  "@contactsSettings_evictDiscoveredContactsSubtitle": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_Title": "Objevené kontakty",
+  "discoveredContacts_noMatching": "Žádné odpovídající kontakty",
+  "discoveredContacts_searchHint": "Hledat objevené kontakty",
+  "discoveredContacts_contactAdded": "Kontakt přidán",
+  "discoveredContacts_addContact": "Přidat kontakt",
+  "discoveredContacts_copyContact": "Zkopírovat kontakt do schránky",
+  "discoveredContacts_deleteContact": "Smazat objevený kontakt",
+  "discoveredContacts_deleteContactAll": "Smazat všechny objevené kontakty",
+  "discoveredContacts_deleteContactAllContent": "Opravdu chcete smazat všechny objevené kontakty?",
+  "discoveredContacts_scan": "Hledat uzly v okolí",
+  "discoveredContacts_scanTitle": "Uzly v okolí",
+  "discoveredContacts_scanExplanation": "Vyzve uzly v přímém dosahu rádia, aby se identifikovaly. Opakovače a senzory odpoví. Room servery a companiony obvykle ne.",
+  "discoveredContacts_scanning": "Hledání…",
+  "discoveredContacts_scanFound": "{count, plural, =1{Nalezen 1 uzel} few{Nalezeny {count} uzly} many{Nalezeno {count} uzlu} other{Nalezeno {count} uzlů}}",
+  "@discoveredContacts_scanFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "discoveredContacts_scanNoResults": "Žádný uzel neodpověděl. Opakovače omezují, jak často odpovídají, zkuste to znovu za minutu.",
+  "discoveredContacts_scanAgain": "Hledat znovu",
+  "discoveredContacts_scanFailed": "Požadavek na vyhledání se nepodařilo odeslat.",
+  "discoveredContacts_scanSignal": "Signál {snr} dB · slyšeli nás na {remoteSnr} dB",
+  "@discoveredContacts_scanSignal": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      },
+      "remoteSnr": {
+        "type": "String"
+      }
+    }
+  },
+  "discoveredContacts_scanInContacts": "Již v kontaktech",
+  "discoveredContacts_scanNameLater": "Název se zobrazí po jejich příštím advertu",
+  "chat_sendCooldown": "Před dalším odesláním chvíli počkejte.",
+  "appSettings_jumpToOldestUnread": "Přejít na nejstarší nepřečtenou",
+  "appSettings_jumpToOldestUnreadSubtitle": "Při otevření chatu s nepřečtenými zprávami se posunout na první nepřečtenou místo na nejnovější.",
+  "appSettings_autoFetchRepeaterSettings": "Automaticky načítat nastavení opakovače",
+  "appSettings_autoFetchRepeaterSettingsSubtitle": "Při otevření nastavení opakovače vyžádat každé nastavení. Každé je samostatný požadavek přes LoRa, takže je to pomalé a spotřebovává airtime. Když je vypnuto, klepněte na Obnovit vše nebo obnovte jednotlivé sekce.",
+  "appSettings_languageHu": "Maďarština",
+  "appSettings_languageJa": "Japonština",
+  "appSettings_languageKo": "Korejština",
+  "radioStats_tooltip": "Statistiky rádia a mesh",
+  "radioStats_screenTitle": "Statistiky rádia",
+  "radioStats_sectionSignal": "Signál",
+  "radioStats_sectionAirtime": "Airtime",
+  "radioStats_notConnected": "Pro zobrazení statistik rádia se připojte k zařízení.",
+  "radioStats_firmwareTooOld": "Statistiky rádia vyžadují firmware companionu verze 8 nebo novější.",
+  "radioStats_waiting": "Čekání na data…",
+  "radioStats_noiseFloor": "Úroveň šumu: {noiseDbm} dBm",
+  "@radioStats_noiseFloor": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_lastRssi": "Poslední RSSI: {rssiDbm} dBm",
+  "@radioStats_lastRssi": {
+    "placeholders": {
+      "rssiDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_lastSnr": "Poslední SNR: {snr} dB",
+  "@radioStats_lastSnr": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "radioStats_txAir": "Airtime TX (celkem): {seconds} s",
+  "@radioStats_txAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_rxAir": "Airtime RX (celkem): {seconds} s",
+  "@radioStats_rxAir": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_chartCaption": "Úroveň šumu (dBm) v posledních vzorcích.",
+  "radioStats_stripNoise": "Úroveň šumu: {noiseDbm} dBm",
+  "@radioStats_stripNoise": {
+    "placeholders": {
+      "noiseDbm": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStats_stripWaiting": "Načítání statistik rádia…",
+  "radioStats_settingsTile": "Statistiky rádia",
+  "radioStats_settingsSubtitle": "Úroveň šumu, RSSI, SNR a airtime",
+  "translation_title": "Překlad",
+  "imageMessages_enableTitle": "Povolit obrázkové zprávy",
+  "imageMessages_enableSubtitle": "Odesílejte obrázky přes mesh. Vyžaduje jednorázové stažení modelu obrázků.",
+  "imageMessages_modelSectionTitle": "Model obrázků",
+  "imageMessages_downloadModel": "Stáhnout",
+  "imageMessages_cancelDownload": "Zrušit",
+  "imageMessages_removeModel": "Odebrat model",
+  "imageMessages_modelReady": "Připraveno",
+  "imageMessages_modelNotPublished": "Zatím nezveřejněno — tato verze jej nemůže stáhnout.",
+  "imageMessages_downloadFailed": "Model obrázků se nepodařilo stáhnout.",
+  "imageMessages_autoProcessTitle": "Zpracovávat obrázky automaticky",
+  "imageMessages_autoProcessSubtitle": "Rekonstruovat každý obrázek ihned po příchodu. Pokaždé na sekundu využije asi 2 GB paměti; ponechte vypnuté a rekonstruujte klepnutím.",
+  "translation_enableTitle": "Povolit překlad",
+  "translation_enableSubtitle": "Překládat příchozí zprávy a povolit překlad před odesláním.",
+  "translation_composerTitle": "Překládat před odesláním",
+  "translation_composerSubtitle": "Určuje výchozí stav ikony překladu v poli pro psaní.",
+  "translation_autoIncomingTitle": "Automaticky překládat příchozí zprávy",
+  "translation_autoIncomingSubtitle": "Automaticky překládá zprávy pro oznámení a pro chat nebo kanál.",
+  "translation_translateMessage": "Přeložit zprávu",
+  "translation_targetLanguage": "Cílový jazyk",
+  "translation_useAppLanguage": "Použít jazyk aplikace",
+  "translation_downloadedModelLabel": "Stažený model",
+  "translation_presetModelLabel": "Přednastavený model Hugging Face",
+  "translation_manualUrlLabel": "Ruční URL modelu",
+  "translation_downloadModel": "Stáhnout model",
+  "translation_downloading": "Stahování...",
+  "translation_working": "Pracuji...",
+  "translation_stop": "Zastavit",
+  "translation_mergingChunks": "Slučování stažených částí do výsledného souboru...",
+  "translation_downloadedModels": "Stažené modely",
+  "translation_deleteModel": "Smazat model",
+  "translation_modelDownloaded": "Překladový model byl stažen.",
+  "translation_downloadStopped": "Stahování zastaveno.",
+  "translation_downloadFailed": "Stahování selhalo: {error}",
+  "@translation_downloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_enterUrlFirst": "Nejprve zadejte URL modelu.",
+  "scanner_linuxPairingShowPin": "Zobrazit PIN",
+  "scanner_linuxPairingHidePin": "Skrýt PIN",
+  "scanner_linuxPairingPinTitle": "PIN pro párování Bluetooth",
+  "scanner_linuxPairingPinPrompt": "Zadejte PIN pro {deviceName} (pokud žádný není, nechte prázdné).",
+  "@scanner_linuxPairingPinPrompt": {
+    "placeholders": {
+      "deviceName": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_messageTranslation": "Překlad zpráv",
+  "translation_translateBeforeSending": "Překládat před odesláním",
+  "translation_composerEnabledHint": "Zprávy budou před odesláním přeloženy.",
+  "translation_composerDisabledHint": "Odesílat zprávy v původním jazyce, v jakém byly napsány.",
+  "translation_translateTo": "Přeložit do jazyka: {language}",
+  "@translation_translateTo": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_translationOptions": "Možnosti překladu",
+  "translation_systemLanguage": "Jazyk systému",
+  "background_serviceTitle": "MeshCore běží",
+  "background_serviceText": "Udržuje připojení BLE",
+  "appSettings_translationModelDeleted": "Smazáno: {name}",
+  "@appSettings_translationModelDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_translationModelDeleteFailed": "Smazání se nezdařilo: {error}",
+  "@appSettings_translationModelDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_channelUpdateFailed": "Aktualizace kanálu se nezdařila: {error}",
+  "@channels_channelUpdateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "contact_typeChat": "Chat",
+  "contact_typeRepeater": "Opakovač",
+  "contact_typeRoom": "Room",
+  "contact_typeSensor": "Senzor",
+  "contact_typeUnknown": "Neznámý",
+  "map_zoomIn": "Přiblížit",
+  "map_zoomOut": "Oddálit",
+  "map_centerMap": "Vycentrovat mapu",
+  "chrome_bluetoothRequiresChromium": "Web Bluetooth vyžaduje prohlížeč Chromium",
+  "channels_communityShortId": "ID: {id}...",
+  "@channels_communityShortId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "pathTrace_legendGpsConfirmed": "Potvrzeno GPS",
+  "pathTrace_legendInferred": "Odvozená poloha",
+  "pathMap_viewSingle": "Jednotlivě",
+  "pathMap_viewCombined": "Sloučeně",
+  "pathMap_play": "Přehrát",
+  "pathMap_pause": "Pozastavit",
+  "pathMap_replay": "Přehrát znovu",
+  "pathMap_stepBack": "Předchozí skok",
+  "pathMap_stepForward": "Další skok",
+  "pathMap_animationOn": "Zobrazit animaci paketu",
+  "pathMap_animationOff": "Skrýt animaci paketu",
+  "pathMap_hopOf": "Skok {current} z {total}",
+  "@pathMap_hopOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_observedPaths": "Pozorované cesty: {count}",
+  "@pathMap_observedPaths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_primary": "Hlavní",
+  "pathMap_alternate": "Alt {index}",
+  "@pathMap_alternate": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_hopCount": "{count, plural, =1{1 skok} few{{count} skoky} many{{count} skoku} other{{count} skoků}}",
+  "@pathMap_hopCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_gpsCount": "{confirmed}/{total} GPS",
+  "@pathMap_gpsCount": {
+    "placeholders": {
+      "confirmed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_legendShared": "Sdílený úsek",
+  "pathMap_legendEstimated": "Odhadovaný úsek",
+  "pathMap_sharedNodeCount": "{count, plural, =1{Používá 1 cesta} few{Používají {count} cesty} many{Používá {count} cesty} other{Používá {count} cest}}",
+  "@pathMap_sharedNodeCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_partialAnimation": "{count, plural, =1{1 skok nemá polohu — zobrazená cesta je částečná} few{{count} skoky nemají polohu — zobrazená cesta je částečná} many{{count} skoku nemá polohu — zobrazená cesta je částečná} other{{count} skoků nemá polohu — zobrazená cesta je částečná}}",
+  "@pathMap_partialAnimation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_showAllPaths": "Zobrazit vše",
+  "pathMap_hidePath": "Skrýt cestu",
+  "pathMap_showPath": "Zobrazit cestu",
+  "pathMap_collapsePanel": "Sbalit panel",
+  "pathMap_expandPanel": "Rozbalit panel",
+  "pathMap_noLocation": "Bez polohy",
+  "pathMap_followPacket": "Zamknout pohled na paket",
+  "pathMap_unfollowPacket": "Odemknout pohled od paketu",
+  "imageSend_title": "Odeslat obrázek",
+  "imageSend_cropNote": "Změněna velikost na 512 × 512 · poměr stran nezachován",
+  "imageSend_lossyNote": "Komprimováno na asi {bytes} bajtů. Model příjemce jej rekonstruuje, takže detaily se budou lišit.",
+  "@imageSend_lossyNote": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSend_viewOriginal": "Originál",
+  "imageSend_viewReconstruction": "Co uvidí příjemci",
+  "imageSend_reconstructionUnavailable": "Toto zařízení nemůže zobrazit náhled rekonstrukce.",
+  "imageSend_modelNotDownloaded": "Model obrázků ještě není stažen. Pro odesílání obrázků jej stáhněte v Nastavení.",
+  "imageSend_originalSize": "Originál",
+  "imageSend_onAirSize": "Přes rádio",
+  "imageSend_quality": "Kvalita",
+  "imageSend_qualityStandard": "Standardní",
+  "imageSend_qualityHigh": "Vysoká",
+  "imageSend_packetsLabel": "Pakety",
+  "imageSend_airtimeLabel": "Čas ve vzduchu",
+  "imageSend_sizeLabel": "Data",
+  "imageSend_packetsCount": "{count} {count, plural, =1{paket} few{pakety} many{paketu} other{paketů}}",
+  "@imageSend_packetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSend_range": "{min}–{max}",
+  "@imageSend_range": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "imageSend_unknownValue": "—",
+  "imageSend_radioUnknownTitle": "Nastavení rádia neznámé",
+  "imageSend_radioUnknownBody": "Připojte se k zařízení, aby bylo možné vypočítat čas ve vzduchu.",
+  "imageSend_longSendTitle": "Dlouhý přenos",
+  "imageSend_longSendBody": "Kanál bude obsazen asi {duration}.",
+  "@imageSend_longSendBody": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "imageSend_floodNote": "Směrování flood: každý opakovač v dosahu každý paket znovu vysílá, takže kanál zůstane obsazen déle, než je uvedeno.",
+  "imageSend_parityTitle": "Přidat záchranný paket",
+  "imageSend_paritySubtitle": "Jeden paket navíc. Skupinové zprávy nejsou potvrzovány, takže příjemce může obrázek obnovit, pokud se ztratí jediný paket.",
+  "imageSend_send": "Odeslat",
+  "imageSend_cancel": "Zrušit",
+  "imageSend_encodeFailed": "Tento obrázek se nepodařilo zakódovat.",
+  "imageSend_codecDownloading": "Model obrázků se stále stahuje.",
+  "imageSend_codecUnavailable": "Odesílání obrázků na tomto zařízení není k dispozici.",
+  "imageSend_codecDisabled": "Obrázkové zprávy jsou vypnuty v nastavení.",
+  "imageSend_deviceUnsupported": "Toto rádio neumí odesílat obrazové pakety. Připojte zařízení s firmwarem companionu 13 nebo novějším.",
+  "imageSend_directMessagesUnsupported": "Obrázky se přenášejí jako skupinová data, takže je lze odeslat jen do kanálu — ne v přímé zprávě.",
+  "imageSend_tooLarge": "Tento obrázek se zakódoval do více paketů, než formát meshe umožňuje.",
+  "imageSend_sentConfirmation": "Obrázek odeslán v {count} {count, plural, =1{paketu} few{paketech} many{paketech} other{paketech}}.",
+  "@imageSend_sentConfirmation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSend_sendFailed": "Obrázek se nepodařilo odeslat: {error}",
+  "@imageSend_sendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "imageSend_sendingProgress": "Odesílání obrázku — paket {sent} z {total}",
+  "@imageSend_sendingProgress": {
+    "placeholders": {
+      "sent": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "receivedImage_senderPrefix": "Uzel {prefix}",
+  "@receivedImage_senderPrefix": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "receivedImage_incoming": "{received} z {total} paketů",
+  "@receivedImage_incoming": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "receivedImage_queued": "Čeká na dekódování",
+  "receivedImage_tapToDecode": "Klepnutím dekódovat",
+  "receivedImage_decoding": "Rekonstrukce… asi 1 s",
+  "receivedImage_incomplete": "Obrázek neúplný — dorazilo {received} z {total} paketů",
+  "@receivedImage_incomplete": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "receivedImage_corrupt": "Obrázek se nepodařilo zrekonstruovat",
+  "receivedImage_decoderMissing": "Obrázek přijat — dekódování obrázků je vypnuto",
+  "receivedImage_evicted": "Obrázek již není uložen",
+  "receivedImage_retry": "Zkusit znovu",
+  "receivedImage_decodeAgain": "Dekódovat znovu",
+  "receivedImage_openSettings": "Nastavit",
+  "receivedImage_tapToProcess": "Klepnutím zpracovat",
+  "receivedImage_save": "Uložit obrázek",
+  "receivedImage_shareCaption": "Rekonstruováno AI z {bytes} bajtů; jemné detaily jsou vygenerovány, nikoli přeneseny.",
+  "@receivedImage_shareCaption": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
+  "receivedImage_packetInfo": "Informace o paketech",
+  "receivedImage_parityRecovered": "Jeden paket byl obnoven ze záchranného paketu.",
+  "receivedImage_decodeTime": "Zrekonstruováno za {ms} ms",
+  "@receivedImage_decodeTime": {
+    "placeholders": {
+      "ms": {
+        "type": "int"
+      }
+    }
+  },
+  "receivedImage_saveFailed": "Obrázek se nepodařilo uložit",
+  "receivedImage_awaiting": "{bytes} bajtů · {packets} {packets, plural, =1{paket} few{pakety} many{paketu} other{paketů}}",
+  "@receivedImage_awaiting": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      },
+      "packets": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSend_secondsValue": "{seconds} s",
+  "@imageSend_secondsValue": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "imageSend_minutesSecondsValue": "{minutes} min {seconds} s",
+  "@imageSend_minutesSecondsValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "chat_longMessageRetryNote": "Nad 158 bajtů: odesláno nejvýše {count}×",
+  "@chat_longMessageRetryNote": {
+    "description": "Shown under the DM composer when the message is too long for the firmware's later retry attempts",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewMode_dialogTitle": "Vstoupit do režimu kontroly?",
+  "reviewMode_dialogBody": "Režim kontroly se připojí k simulovanému rádiu s ukázkovými kontakty, kanály a zprávami. Skutečné rádio není potřeba.",
+  "reviewMode_confirm": "Vstoupit",
+  "reviewMode_cancel": "Zrušit",
+  "reviewMode_banner": "Režim kontroly — simulovaná data",
+  "reviewMode_sendTest": "Odeslat zkušební zprávu",
+  "reviewMode_testSent": "Zkušební zpráva brzy dorazí.",
+  "reviewMode_exit": "Ukončit",
+  "reviewMode_connectFailed": "Režim kontroly se nepodařilo spustit: {error}",
+  "@reviewMode_connectFailed": {
+    "description": "Snackbar shown when review mode fails to connect",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "channels_waitForSync": "Kanály se stále načítají z rádia. Zkuste to znovu po dokončení synchronizace.",
+  "channels_nameTooLong": "Název je příliš dlouhý (max. {maxBytes} bajtů).",
+  "@channels_nameTooLong": {
+    "description": "Snackbar when a channel name would not fit on the radio",
+    "placeholders": {
+      "maxBytes": {
+        "type": "int"
+      }
+    }
+  },
+  "repeater_valueRequired": "{field}: zadejte hodnotu",
+  "@repeater_valueRequired": {
+    "description": "Save error when a changed repeater setting was left empty",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_floodMaxAdvert": "Max. skoků flood adventu",
+  "repeater_floodMaxAdvertHelper": "Maximální počet skoků, které může flood advert urazit (0–64, výchozí 8)",
+  "repeater_floodMaxUnscoped": "Max. skoků flood bez oblasti",
+  "repeater_floodMaxUnscopedHelper": "Maximální počet skoků pro flood bez omezení na oblast (0–64, výchozí 64). Nízká hodnota, například 3, udrží provoz bez oblasti lokální.",
+  "repeater_floodMaxUnscopedUnset": "Stejné jako max. flood",
+  "repeater_rxDelay": "Zpoždění příjmu",
+  "repeater_rxDelayHelper": "Zadrží flood pakety slyšené se slabým signálem před přeposláním, takže cesty se silným signálem jdou první a odešle se méně duplikátů (0–20, 0 to vypne).",
+  "repeater_cad": "Detekce aktivity kanálu",
+  "repeater_cadHelper": "Před vysíláním poslouchat aktivitu a čekat, dokud je kanál obsazen. Funguje spolu s prahem rušení.",
+  "repeater_adcMultiplier": "Kalibrace napětí baterie",
+  "repeater_adcMultiplierHelper": "Násobitel pro čtení napětí baterie (0–10). 0 použije výchozí hodnotu desky.",
+  "repeater_boardSupportNote": "Ne každá deska to podporuje. Nepodporované desky změnu odmítnou.",
+  "repeater_extraSf": "Další spreading faktory",
+  "repeater_extraSfHelper": "Až 3 další spreading faktory, na kterých se současně poslouchá, oddělené čárkami (například 9,10). Prázdné pole to vypne.",
+  "repeater_lr2021Only": "Pouze pro opakovače s rádiem LR2021. Ostatní opakovače toto nastavení nemají a odmítnou je.",
+  "losMapDetailTooltip": "Detail mapy",
+  "losUnitsTooltip": "Jednotky",
+  "losDistance": "Vzdálenost",
+  "losClearance": "Volný prostor",
+  "losBlockedBy": "Blokováno",
+  "losObstruction": "Překážka",
+  "losDistanceFromA": "{distance} od A",
+  "@losDistanceFromA": {
+    "description": "Distance of the worst obstruction from point A, e.g. \"1.2 km from A\"",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "losWorstBadge": "NEJHORŠÍ",
+  "losBlockedAmount": "Blokováno {amount}",
+  "@losBlockedAmount": {
+    "description": "How much an obstruction blocks the beam, e.g. \"Blocked 12 m\"",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "losFromA": "Od A",
+  "losFromB": "Od B",
+  "losElevation": "Nadmořská výška",
+  "losCenterOnMap": "Vycentrovat na mapě",
+  "losStatusClear": "Volno",
+  "losStatusMarginal": "Hraniční",
+  "losStatusBlocked": "Blokováno",
+  "losStatusCheckingShort": "Kontrola",
+  "losStatusNoResult": "Bez výsledku",
+  "losSelectedPill": "Vybráno",
+  "gif_tapToLoad": "Klepnutím načíst GIF",
+  "gif_loadFailedRetry": "GIF nelze načíst\nKlepnutím to zkusit znovu",
+  "qr_cameraPermissionDenied": "Přístup ke kameře byl zamítnut.\nPovolte přístup ke kameře v nastavení.",
+  "qr_cameraUnsupported": "Kamera není na tomto zařízení podporována.",
+  "qr_cameraStartFailed": "Kameru se nepodařilo spustit.\n{details}",
+  "@qr_cameraStartFailed": {
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "imageMessages_downloadFailedWithError": "Model obrázků se nepodařilo stáhnout: {error}",
+  "@imageMessages_downloadFailedWithError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "map_nodeId": "ID",
+  "map_markerHideHint": "Skrýt: skryto, dokud neopustíte mapu.",
+  "map_markerRemoveHint": "Odebrat: zůstane skryto, dokud jej neobnovíte z nabídky filtru.",
+  "map_markerRemoved": "Značka odebrána",
+  "map_restoreRemovedMarkers": "Obnovit odebrané značky",
+  "map_restoreRemovedMarkersSubtitle": "Odebráno: {count}",
+  "@map_restoreRemovedMarkersSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "map_markersRestored": "Obnoveno značek: {count}",
+  "@map_markersRestored": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "map_setLocationConfirmTitle": "Nastavit jako vaši polohu?",
+  "map_setLocationConfirmBody": "Váš uzel bude vysílat tuto pozici:\n{lat}, {lon}",
+  "@map_setLocationConfirmBody": {
+    "placeholders": {
+      "lat": {
+        "type": "String"
+      },
+      "lon": {
+        "type": "String"
+      }
+    }
+  },
+  "map_setLocationAction": "Nastavit polohu",
+  "map_locationSetSuccess": "Poloha uzlu aktualizována",
+  "map_locationSetFailed": "Zařízení nepotvrdilo novou polohu. Zkuste to znovu.",
+  "map_poiClusterTitle": "Značky zde: {count}",
+  "@map_poiClusterTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "map_poiClusterSemantics": "Sdílených značek: {count}. Klepnutím je zobrazíte.",
+  "@map_poiClusterSemantics": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "map_youWithMarkers": "Vy a značky: {count}",
+  "@map_youWithMarkers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "map_sharedMarkerSemantics": "Sdílená značka: {label}",
+  "@map_sharedMarkerSemantics": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "map_nodeMarkerSemantics": "{name}, {type}, {status}",
+  "@map_nodeMarkerSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "type": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "map_requestLocation": "Aktualizovat polohu",
+  "map_locationUpdated": "Poloha aktualizována",
+  "map_locationNotShared": "{name} odpověděl bez polohy",
+  "@map_locationNotShared": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "map_locationRequestFailed": "Žádná odpověď od {name}",
+  "@map_locationRequestFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_zoomLevel": "Zoom {zoom}",
+  "@mapCache_zoomLevel": {
+    "placeholders": {
+      "zoom": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_sizeBytes": "{size} B",
+  "@mapCache_sizeBytes": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_sizeKilobytes": "{size} KB",
+  "@mapCache_sizeKilobytes": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_sizeMegabytes": "{size} MB",
+  "@mapCache_sizeMegabytes": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_sizeGigabytes": "{size} GB",
+  "@mapCache_sizeGigabytes": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "mapCache_downloadCancelled": "Stahování zrušeno. Uloženo do mezipaměti dlaždic: {count}.",
+  "@mapCache_downloadCancelled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mapCache_tooManyTilesTitle": "Oblast je příliš velká",
+  "mapCache_tooManyTiles": "Tato oblast vyžaduje {count} dlaždic, což je více než limit {max}. Vyberte menší oblast nebo snižte maximální zoom.",
+  "@mapCache_tooManyTiles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_clearChatConfirm": "Tím se z tohoto zařízení vymažou všechny zprávy v této konverzaci. Nelze vrátit zpět.",
+  "channels_clearChatConfirm": "Tím se z tohoto zařízení vymažou všechny zprávy v tomto kanálu včetně přijatých obrázků. Nelze vrátit zpět.",
+  "channels_timeNow": "nyní",
+  "channels_timeMinutes": "{minutes} min",
+  "@channels_timeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "channels_timeHours": "{hours} h",
+  "@channels_timeHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "channels_timeDays": "{days} d",
+  "@channels_timeDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "channels_indexChip": "CH {index}",
+  "@channels_indexChip": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "reaction_unknownSender": "Neznámý",
+  "pathMap_noSelfGpsFix": "Místní uzel nemá GPS fix",
+  "pathTrace_sendFailed": "Trasování cesty se nepodařilo odeslat: {error}",
+  "@pathTrace_sendFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "losErrorNoInternet": "Data o nadmořské výšce vyžadují připojení k internetu",
+  "losResultStale": "Zastaralé: výška antény se změnila",
+  "losSnrValue": "{snr} dB",
+  "@losSnrValue": {
+    "placeholders": {
+      "snr": {
+        "type": "String"
+      }
+    }
+  },
+  "losFrequencyValue": "{frequency} MHz",
+  "@losFrequencyValue": {
+    "placeholders": {
+      "frequency": {
+        "type": "String"
+      }
+    }
+  },
+  "losKFactorValue": "k={kFactor}",
+  "@losKFactorValue": {
+    "placeholders": {
+      "kFactor": {
+        "type": "String"
+      }
+    }
+  },
+  "losEndpointA": "A",
+  "losEndpointB": "B",
+  "units_km": "km",
+  "units_mi": "mi",
+  "units_m": "m",
+  "units_ft": "ft",
+  "telemetry_loading": "Načítání telemetrie…",
+  "telemetry_axisValue": "X: {x}, Y: {y}, Z: {z}",
+  "@telemetry_axisValue": {
+    "placeholders": {
+      "x": {
+        "type": "String"
+      },
+      "y": {
+        "type": "String"
+      },
+      "z": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_colourValue": "R: {red}, G: {green}, B: {blue}",
+  "@telemetry_colourValue": {
+    "placeholders": {
+      "red": {
+        "type": "String"
+      },
+      "green": {
+        "type": "String"
+      },
+      "blue": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_altitudeValueFeet": "{feet} ft",
+  "@telemetry_altitudeValueFeet": {
+    "placeholders": {
+      "feet": {
+        "type": "String"
+      }
+    }
+  },
+  "telemetry_distanceValueFeet": "{feet} ft",
+  "@telemetry_distanceValueFeet": {
+    "placeholders": {
+      "feet": {
+        "type": "String"
+      }
+    }
+  },
+  "settings_notConnectedError": "Nepřipojeno k rádiu. Připojte se a zkuste to znovu.",
+  "settings_requiresConnection": "Pro použití se připojte k rádiu",
+  "settings_txPowerInvalidRange": "Neplatný výkon TX ({min} až {max} dBm)",
+  "@settings_txPowerInvalidRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_contactSettingsSaved": "Nastavení kontaktu uloženo",
+  "settings_batteryToggleHint": "Klepnutím přepnete mezi procenty a napětím",
+  "settings_publicKeyCopyHint": "Zkopírovat veřejný klíč",
+  "settings_locationClearHelper": "Chcete-li polohu odstranit, nechte obě pole prázdná.",
+  "settings_locationCleared": "Poloha odstraněna",
+  "settings_regionFetchDiscovering": "Hledání opakovačů v okolí…",
+  "settings_regionFetchProgress": "Dotaz na opakovač {current} z {total}…",
+  "@settings_regionFetchProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settings_regionFetchNoRepeaters": "Zatím nejsou známy žádné opakovače. Přidejte opakovač jako kontakt nebo počkejte, až nějaký vyšle advert, a zkuste to znovu.",
+  "settings_regionFetchNoneResponded": "Žádný opakovač v okolí neodpověděl. Přibližte se k opakovači a zkuste to znovu.",
+  "appSettings_sourceSummary": "{label} - {description}",
+  "@appSettings_sourceSummary": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "appSettings_routingSection": "Směrování",
+  "appSettings_resetRoutingToDefault": "Obnovit výchozí směrovací algoritmus",
+  "appSettings_resetRoutingToDefaultSubtitle": "Obnovit nastavení směrovacího algoritmu na tovární hodnoty",
+  "appSettings_routingResetToDefault": "Nastavení směrovacího algoritmu obnoveno na výchozí",
+  "appSettings_imageMessagesSection": "Obrázkové zprávy",
+  "appSettings_showApiKey": "Zobrazit klíč API",
+  "appSettings_hideApiKey": "Skrýt klíč API",
+  "translation_defaultModelName": "Model",
+  "translation_downloadProgressBytes": "{fileName}: {current} MB",
+  "@translation_downloadProgressBytes": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "current": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_downloadProgressTotal": "{fileName}: {current} / {total} MB ({percent} %)",
+  "@translation_downloadProgressTotal": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "current": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "translation_downloadedModelDetails": "{size} MB • {source}",
+  "@translation_downloadedModelDetails": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_radioDisconnected": "Rádio odpojeno",
+  "repeater_radioDisconnectedHint": "Pro odesílání příkazů, obnovení nebo uložení změn se znovu připojte k rádiu.",
+  "repeater_cliSend": "Odeslat příkaz",
+  "repeater_cliCopyTranscript": "Kopírovat přepis",
+  "repeater_cliShareTranscript": "Sdílet přepis",
+  "repeater_cliTranscriptCopied": "Přepis zkopírován",
+  "repeater_cliClearHistoryConfirm": "Vymazat historii příkazů? Nelze vrátit zpět.",
+  "repeater_cliSearchCommands": "Hledat příkazy",
+  "repeater_cliNoMatchingCommands": "Žádné odpovídající příkazy",
+  "debugLog_clearConfirm": "Vymazat všechny záznamy protokolu? Nelze vrátit zpět.",
+  "repeater_unsavedChangesTitle": "Neuložené změny",
+  "repeater_unsavedChangesMessage": "Máte změny, které nebyly uloženy do opakovače.",
+  "repeater_discardChanges": "Zahodit",
+  "repeater_actionSentNoReply": "{action}: příkaz odeslán. Opakovač na tento příkaz neodpovídá.",
+  "@repeater_actionSentNoReply": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_invalidSettingValue": "{setting}: {value} není platné",
+  "@repeater_invalidSettingValue": {
+    "placeholders": {
+      "setting": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "repeater_prvKeyLengthError": "Soukromý klíč musí mít přesně {length} hex znaků",
+  "@repeater_prvKeyLengthError": {
+    "placeholders": {
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_advertFailed": "Advert se nepodařilo odeslat",
+  "contacts_manageGroups": "Spravovat skupiny",
+  "contacts_keyPrefixSemantics": "Prefix klíče {prefix}",
+  "@contacts_keyPrefixSemantics": {
+    "placeholders": {
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
+  "community_shortId": "ID: {id}…",
+  "@community_shortId": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "tcpSectionTitle": "TCP / IP",
+  "tcpConnectedToHeader": "Připojeno k",
+  "usbChooseSerialPort": "Vyberte sériový port",
+  "neighbors_durationSeconds": "{seconds} s",
+  "@neighbors_durationSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_durationMinutes": "{minutes} min {seconds} s",
+  "@neighbors_durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_durationHours": "{hours} h {minutes} min",
+  "@neighbors_durationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "networkMap_settingsSection": "Síťová mapa",
+  "networkMap_uploadTitle": "Sdílet, co moje rádio slyší",
+  "networkMap_uploadExplanation": "Když je to zapnuto a vaše rádio je připojeno, aplikace odesílá na síťovou mapu MeshCore Open stručný souhrn paketů, které vaše rádio slyší, aby všichni viděli, jaké opakovače existují a jak jsou propojeny. Odesílá typ každého paketu, trasu, skoky, sílu signálu a velikost, plus názvy opakovačů a přibližné polohy z jejich vlastních advertů. Nikdy neodesílá text zpráv, kdo s kým komunikuje, názvy kanálů, vaše kontakty ani vaši přesnou polohu: polohy jsou zaokrouhleny na asi 2 km a vaše aplikace dostává každý den nové náhodné ID.",
+  "networkMap_whatWeCollect": "Co shromažďujeme",
+  "networkMap_promptTitle": "Pomoci vytvářet síťovou mapu?",
+  "networkMap_promptBody": "MeshCore Open může sdílet, co vaše rádio slyší, s veřejnou síťovou mapou na map.meshcoreopen.org, aby všichni viděli, jaké opakovače existují a jak jsou propojeny.\n\nNikdy neodesílá text zpráv, kdo s kým komunikuje, názvy kanálů, vaše kontakty ani vaši přesnou polohu. Polohy jsou zaokrouhleny na asi 2 km.",
+  "networkMap_promptSettingsHint": "Můžete to kdykoli změnit v Nastavení → Nastavení aplikace → Síťová mapa.",
+  "networkMap_promptAccept": "Sdílet",
+  "networkMap_promptDecline": "Ne, děkuji",
+  "networkMap_statusOff": "Vypnuto. Nic se neodesílá.",
+  "networkMap_statusWaiting": "Zapnuto. Čekání na připojení rádia.",
+  "networkMap_statusNothingSent": "Zapnuto. Zatím nic neodesláno.",
+  "networkMap_statusLastSent": "Naposledy odesláno {time}. Dnes paketů: {count}.",
+  "@networkMap_statusLastSent": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "networkMap_sourceLocal": "Místní",
+  "networkMap_sourceOnline": "Online",
+  "networkMap_sourceBoth": "Obojí",
+  "networkMap_sourceLocalHint": "Uzly, které vaše rádio slyšelo",
+  "networkMap_sourceOnlineHint": "Opakovače z online síťové mapy",
+  "networkMap_sourceBothHint": "Uzly vašeho rádia plus online síťová mapa",
+  "networkMap_zoomInHint": "Přibližte pro zobrazení online síťové mapy",
+  "networkMap_loadFailed": "Online síťovou mapu se nepodařilo načíst",
+  "networkMap_inYourContacts": "Ve vašich kontaktech",
+  "networkMap_status": "Stav",
+  "networkMap_statusActive": "Aktivní za poslední hodinu",
+  "networkMap_statusRecent": "Slyšen za poslední den",
+  "networkMap_statusStale": "Nedávno neslyšen",
+  "networkMap_confirmed": "Potvrzeno",
+  "networkMap_singleSource": "Jediný zdroj, zatím nepotvrzeno",
+  "networkMap_reports": "Hlášení",
+  "networkMap_locationEstimated": "Přibližná poloha, odhadnutá podle toho, kdo jej slyšel",
+  "networkMap_locationAdvertised": "Přibližná poloha, z jeho vlastního advertu",
+  "networkMap_heardByRadio": "Slyšen vaším rádiem",
+  "networkMap_inYourArea": "Ve vašem okolí",
+  "networkMap_farAway": "Daleko. Správa na něj nedosáhne.",
+  "networkMap_addToContacts": "Přidat do kontaktů",
+  "networkMap_manage": "Spravovat",
+  "networkMap_addedToContacts": "Přidáno do kontaktů",
+  "networkMap_addFailed": "Přidání do kontaktů se nezdařilo",
+  "networkMap_unnamed": "Nepojmenovaný opakovač",
+  "holidayGreeting_halloween": "Veselé Halloween",
+  "holidayGreeting_thanksgiving": "Šťastný Den díkůvzdání",
+  "holidayGreeting_christmas": "Veselé Vánoce|Šťastné Vánoce|Krásné Vánoce",
+  "holidayGreeting_newYear": "Šťastný nový rok|Hodně štěstí do nového roku",
+  "chat_loadOlderMessages": "Načíst starší zprávy",
+  "messageFilter_title": "Filtr zpráv",
+  "messageFilter_settingsSubtitle": "Skrýt spam a opakované zprávy",
+  "messageFilter_enabled": "Filtrovat zprávy",
+  "messageFilter_enabledSubtitle": "Platí pro zprávy v kanálech",
+  "messageFilter_displayTitle": "Filtrované zprávy",
+  "messageFilter_displayPlaceholder": "Zobrazit malého zástupce",
+  "messageFilter_displayHide": "Skrýt úplně",
+  "messageFilter_displayHideHelp": "Skryté zprávy zůstanou v seznamu Filtrované zprávy.",
+  "messageFilter_rulesSection": "Vaše pravidla",
+  "messageFilter_rulesEmpty": "Zatím žádná pravidla. Přidejte slovo, frázi nebo jméno odesílatele a odpovídající zprávy budou skryty.",
+  "messageFilter_addRule": "Přidat pravidlo",
+  "messageFilter_editRule": "Upravit pravidlo",
+  "messageFilter_rulePattern": "Slovo, fráze nebo jméno",
+  "messageFilter_rulePatternHint": "např. meshos",
+  "messageFilter_ruleWhere": "Hledat v",
+  "messageFilter_ruleFieldText": "Text zprávy",
+  "messageFilter_ruleFieldSender": "Jméno odesílatele",
+  "messageFilter_ruleFieldBoth": "Obojí",
+  "messageFilter_ruleMatch": "Shoda",
+  "messageFilter_ruleMatchContains": "Obsahuje",
+  "messageFilter_ruleMatchWholeWord": "Celé slovo",
+  "messageFilter_ruleMatchExact": "Přesná shoda",
+  "messageFilter_ruleDeleted": "Pravidlo smazáno",
+  "messageFilter_ruleSaved": "Pravidlo uloženo",
+  "messageFilter_automaticSection": "Automatické",
+  "messageFilter_duplicates": "Opakované zprávy",
+  "messageFilter_duplicatesSubtitle": "Stejná zpráva odeslaná znovu nebo více odesílateli",
+  "messageFilter_repeatSends": "Počet odeslání pro opakování",
+  "messageFilter_repeatSendsSubtitle": "Skrýt zprávu, když ji stejný odesílatel odešle {count}× během 10 minut",
+  "messageFilter_repeatedCharacters": "Opakované znaky",
+  "messageFilter_repeatedCharactersSubtitle": "Dlouhé řady jednoho znaku, například \"aaaaaaaaaaaaaaaaaaaa\"",
+  "messageFilter_learning": "Učit se z klepnutí na Spam",
+  "messageFilter_learningSubtitle": "Příkladů spamu: {spam}, příkladů ne-spamu: {notSpam}",
+  "@messageFilter_learningSubtitle": {
+    "description": "Message filter: {spam} spam and {notSpam} not-spam examples",
+    "placeholders": {
+      "spam": {
+        "type": "int"
+      },
+      "notSpam": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_resetLearning": "Obnovit učení",
+  "messageFilter_resetLearningConfirm": "Zapomenout vše, co se naučilo z vašich klepnutí na Spam a Není spam? Vaše pravidla zůstanou zachována.",
+  "messageFilter_filteredMessages": "Filtrované zprávy ({count})",
+  "@messageFilter_filteredMessages": {
+    "description": "Message filter: Filtered messages ({count})",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_filteredMessagesEmpty": "Nic nebylo odfiltrováno.",
+  "messageFilter_ghostSingle": "Skrytá zpráva · Klepnutím zobrazit",
+  "messageFilter_ghostMany": "{count, plural, one{{count} skrytá zpráva · Klepnutím zobrazit} few{{count} skryté zprávy · Klepnutím zobrazit} many{{count} skryté zprávy · Klepnutím zobrazit} other{{count} skrytých zpráv · Klepnutím zobrazit}}",
+  "@messageFilter_ghostMany": {
+    "description": "Message filter: {count, plural, one{{count} hidden message · Tap to view} other{{count} hidden messages · Tap to view}}",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_ghostSingleExpanded": "Zobrazena skrytá zpráva · Klepnutím skrýt",
+  "messageFilter_ghostManyExpanded": "{count, plural, =1{Zobrazena 1 skrytá zpráva · Klepnutím skrýt} few{Zobrazeny {count} skryté zprávy · Klepnutím skrýt} many{Zobrazeno {count} skryté zprávy · Klepnutím skrýt} other{Zobrazeno {count} skrytých zpráv · Klepnutím skrýt}}",
+  "@messageFilter_ghostManyExpanded": {
+    "description": "Header above a revealed run of filtered messages; tapping it hides them again",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_reasonTextRule": "Odfiltrováno: odpovídá \"{pattern}\"",
+  "@messageFilter_reasonTextRule": {
+    "description": "Message filter: Filtered: matches \"{pattern}\"",
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonSenderRule": "Odfiltrováno: odesílatel \"{pattern}\"",
+  "@messageFilter_reasonSenderRule": {
+    "description": "Message filter: Filtered: sender \"{pattern}\"",
+    "placeholders": {
+      "pattern": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_reasonRepeatedCharacters": "Odfiltrováno: opakované znaky",
+  "messageFilter_reasonDuplicate": "Odfiltrováno: opakovaná zpráva",
+  "messageFilter_reasonCrossSenderDuplicate": "Odfiltrováno: stejná zpráva od více odesílatelů",
+  "messageFilter_reasonLearned": "Odfiltrováno: vypadá jako zprávy, které jste označili jako spam",
+  "messageFilter_reasonManual": "Odfiltrováno: označili jste to jako spam",
+  "messageFilter_notSpam": "Není spam",
+  "messageFilter_hideAgain": "Skrýt",
+  "messageFilter_markSpam": "Označit jako spam",
+  "messageFilter_markedSpam": "Označeno jako spam",
+  "messageFilter_markedNotSpam": "Označeno jako ne-spam",
+  "messageFilter_filterSender": "Filtrovat tohoto odesílatele",
+  "messageFilter_filterSenderConfirm": "Skrýt všechny zprávy od \"{name}\"?",
+  "@messageFilter_filterSenderConfirm": {
+    "description": "Message filter: Hide all messages from \"{name}\"?",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "messageFilter_filterLikeThis": "Filtrovat podobné zprávy…",
+  "messageFilter_channelToggle": "Filtrovat zprávy v tomto kanálu",
+  "messageFilter_ghostIconTooltip": "Skryto vaším filtrem zpráv",
+  "chatSearch_tooltip": "Hledat zprávy",
+  "chatSearch_hint": "Hledat zprávy",
+  "chatSearch_close": "Zavřít hledání",
+  "chatSearch_resultCount": "{count, plural, =1{1 výsledek} few{{count} výsledky} many{{count} výsledku} other{{count} výsledků}}",
+  "@chatSearch_resultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_noResults": "Žádné odpovídající zprávy",
+  "chatSearch_noResultsHint": "Zkuste jiné slovo nebo zkontrolujte překlepy",
+  "contactShare_headerOutgoing": "Sdíleli jste kontakt",
+  "contactShare_headerIncoming": "Sdílel(a) kontakt",
+  "contactShare_add": "Přidat kontakt",
+  "contactShare_adding": "Přidávání kontaktu...",
+  "contactShare_saved": "Uloženo",
+  "contactShare_isYou": "To jste vy",
+  "contactShare_shareAction": "Sdílet kontakt",
+  "contactShare_pickerTitle": "Sdílet kontakt",
+  "contactShare_myContact": "Můj kontakt",
+  "contactShare_searchHint": "Hledat kontakty",
+  "contactShare_noContacts": "Nenalezeny žádné kontakty",
+  "contactShare_preview": "Sdílený kontakt: {name}",
+  "@contactShare_preview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contactShare_notification": "Sdílel(a) kontakt: {name}",
+  "@contactShare_notification": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_menuItem": "Trasování cesty podle hashů",
+  "manualTrace_inputLabel": "Hashe opakovačů",
+  "manualTrace_helper": "Příklad: {example}. Oddělte čárkami nebo mezerami.",
+  "@manualTrace_helper": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "manualTrace_previewTitle": "Skoky ({count})",
+  "@manualTrace_previewTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTrace_unknownNode": "Neznámý uzel",
+  "manualTrace_enterHashes": "Zadejte hashe",
+  "manualTrace_run": "Spustit trasování cesty",
+  "manualTrace_notConnected": "Pro spuštění trasování se připojte k rádiu",
+  "manualTrace_errorInvalidHex": "Povoleny jsou pouze hexadecimální znaky (0-9, A-F)",
+  "manualTrace_errorOddLength": "Každý hash potřebuje sudý počet hexadecimálních znaků odpovídající velikosti skoku",
+  "manualTrace_errorMixedWidths": "Všechny hashe musí mít stejnou délku",
+  "manualTrace_errorUnsupportedWidth": "Hashe musí mít 1, 2 nebo 3 bajty (2, 4 nebo 6 hexadecimálních znaků)",
+  "manualTrace_errorTooManyHops": "Cesta je příliš dlouhá (maximum {max} bajtů)",
+  "manualTrace_errorTraceTooLong": "Příliš mnoho skoků pro trasování v jednom požadavku. Odeberte některé skoky nebo zvolte „Dle zadání“.",
+  "@manualTrace_errorTooManyHops": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "chatSearch_jumpFailed": "Tuto zprávu se v chatu nepodařilo najít",
+  "chat_clearSelection": "Zrušit výběr",
+  "chat_deleteSelectedConfirm": "{count, plural, one{Smazat 1 zprávu z tohoto zařízení?} few{Smazat {count} zprávy z tohoto zařízení?} many{Smazat {count} zprávy z tohoto zařízení?} other{Smazat {count} zpráv z tohoto zařízení?}}",
+  "@chat_deleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_deleteSelectedTitle": "Smazat zprávy?",
+  "chat_messagesDeleted": "{count, plural, one{Smazána 1 zpráva} few{Smazány {count} zprávy} many{Smazáno {count} zprávy} other{Smazáno {count} zpráv}}",
+  "@chat_messagesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chat_selectAll": "Vybrat vše",
+  "chat_selectMessages": "Vybrat zprávy",
+  "chat_selectedCount": "Vybráno: {count}",
+  "@chat_selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactShare_addAgain": "Přidat znovu",
+  "messageFilter_markedNotSpamCount": "{count, plural, one{1 zpráva označena jako ne-spam} few{{count} zprávy označeny jako ne-spam} many{{count} zprávy označeno jako ne-spam} other{{count} zpráv označeno jako ne-spam}}",
+  "@messageFilter_markedNotSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_markedSpamCount": "{count, plural, one{1 zpráva označena jako spam} few{{count} zprávy označeny jako spam} many{{count} zprávy označeno jako spam} other{{count} zpráv označeno jako spam}}",
+  "@messageFilter_markedSpamCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathMap_expandHopList": "Rozbalit seznam skoků",
+  "pathMap_showMap": "Zobrazit mapu",
+  "routing_modeDirect": "Přímo",
+  "routing_modeDirectHint": "Vždy odešle zprávu přímo tomuto kontaktu, bez skoků přes opakovače. Použijte, když je v dosahu rádia.",
+  "settings_export": "Exportovat",
+  "settings_exportSubtitle": "Exportovat kontakty a opakovače jako GPX",
+  "backupRestore_title": "Záloha a obnovení",
+  "backupRestore_subtitle": "Uložte nebo obnovte data aplikace a nastavení rádia",
+  "backupRestore_import": "Importovat",
+  "backupRestore_selectImportFile": "Importovat soubor",
+  "backupRestore_password": "Heslo (volitelné)",
+  "backupRestore_passwordHelp": "Heslo soubor zašifruje. Prázdné heslo uloží prostý text, který může obsahovat soukromé klíče a klíče kanálů, historii a přihlašovací údaje.",
+  "backupRestore_importUnavailable": "Zkontrolujte heslo nebo vyberte podporovaný soubor zálohy.",
+  "backupRestore_items": "Položky zálohy a obnovení",
+  "backupRestore_nodeSettings": "Nastavení uzlu",
+  "backupRestore_nodeSettingsDescription": "Název zařízení, soukromý a veřejný klíč, nastavení rádia a regiony",
+  "backupRestore_deviceName": "Název zařízení",
+  "backupRestore_privateKey": "Soukromý klíč (citlivé)",
+  "backupRestore_publicKey": "Veřejný klíč",
+  "backupRestore_radioSettings": "Nastavení rádia",
+  "backupRestore_regions": "Regiony",
+  "backupRestore_location": "Poloha",
+  "backupRestore_contactSettings": "Nastavení kontaktů",
+  "backupRestore_privacySettings": "Nastavení soukromí",
+  "backupRestore_contactsData": "Kontakty",
+  "backupRestore_perContactSettings": "Nastavení a filtry kontaktů",
+  "backupRestore_contactGroups": "Skupiny kontaktů",
+  "backupRestore_contactHistory": "Historie kontaktů",
+  "backupRestore_channelsData": "Kanály",
+  "backupRestore_channelFilters": "Nastavení filtru zpráv",
+  "backupRestore_channelSettings": "Nastavení kanálů",
+  "backupRestore_communities": "Komunity",
+  "backupRestore_channelHistory": "Historie kanálů",
+  "backupRestore_locationSettings": "Nastavení polohy",
+  "backupRestore_locationSettingsDescription": "Poloha, nastavení kontaktů a soukromí",
+  "backupRestore_appSettings": "Nastavení aplikace",
+  "backupRestore_appSettingsDescription": "Předvolby aplikace a nastavení vzhledu",
+  "backupRestore_ipfsKey": "Klíč API IPFS (citlivé)",
+  "backupRestore_stadiaMapKey": "Klíč API Stadia Maps (citlivé)",
+  "backupRestore_contacts": "Kontakty",
+  "backupRestore_contactsDescription": "Kontakty, filtry a nastavení jednotlivých kontaktů, skupiny a historie zpráv",
+  "backupRestore_discoveredContacts": "Objevené kontakty",
+  "backupRestore_discoveredContactsDescription": "Objevené kontakty a jejich uložené údaje",
+  "backupRestore_channels": "Kanály",
+  "backupRestore_channelsDescription": "Kanály, filtry kanálů, komunity a historie zpráv",
+  "backupRestore_backup": "Vytvořit zálohu",
+  "backupRestore_restore": "Obnovit vybrané",
+  "backupRestore_backupComplete": "Soubor zálohy byl vytvořen.",
+  "backupRestore_restoreComplete": "Obnovení dokončeno. Pokud jste obnovili identitu rádia, připojte se znovu.",
+  "backupRestore_missingModelsTitle": "Modely nejsou stažené",
+  "backupRestore_missingModelsMessage": "Obnovené nastavení vybírá modely, které nejsou v tomto zařízení k dispozici:\n{models}\n\nStáhnout je nyní?",
+  "backupRestore_downloadModels": "Stáhnout modely",
+  "backupRestore_downloading": "Stahování…",
+  "backupRestore_cancelDownload": "Zrušit stahování",
+  "backupRestore_failed": "Operace zálohy selhala: {error}",
+  "backupRestore_fileTooLarge": "Soubor zálohy je větší než limit 100 MB.",
+  "backupRestore_selectAtLeastOne": "Vyberte alespoň jednu položku.",
+  "backupRestore_replaceIdentityTitle": "Nahradit identitu rádia?",
+  "backupRestore_replaceIdentityMessage": "Obnovení nastavení uzlu nahradí soukromý klíč připojeného rádia a změní jeho identitu. Pokračujte, jen pokud je to záměr.",
+  "appSettings_languagePtPt": "Português (Portugal)",
+  "receivedImage_syntheticBadge": "Rekonstruováno AI",
+  "appBar_offlineSubtitle": "Offline · {name}",
+  "appBar_offline": "Offline",
+  "appBar_reconnecting": "Připojování…",
+  "connectSheet_title": "Připojit rádio",
+  "connectSheet_reconnect": "Znovu se připojit k {name}",
+  "connectSheet_chooseRadio": "Vybrat rádio",
+  "connectSheet_chooseRadioSubtitle": "Bluetooth, USB nebo TCP",
+  "connectSheet_stopReconnecting": "Zastavit připojování",
+  "connectSheet_reconnectFailed": "Nelze se spojit s {name}. Ujistěte se, že je zapnuté a nablízku.",
+  "chat_composerOffline": "Pro odesílání zpráv se připojte k rádiu"
+}

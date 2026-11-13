@@ -8,6 +8,7 @@ import 'package:flutter_map/flutter_map.dart';
 import '../models/app_settings.dart';
 import '../theme/mesh_theme.dart';
 import 'app_settings_service.dart';
+import 'map_tile_cache_repository.dart';
 
 enum MapRasterSourcePreset {
   osmAuto('osm_auto'),
@@ -347,6 +348,7 @@ class MapTileCacheService extends ChangeNotifier {
                cacheKey,
                stalePeriod: const Duration(days: 365),
                maxNrOfCacheObjects: 200000,
+               repo: createMapTileCacheRepository(cacheKey),
              ),
            ) {
     tileProvider = CachedNetworkTileProvider(cacheManager: this.cacheManager);
@@ -534,19 +536,23 @@ class MapTileCacheService extends ChangeNotifier {
   Future<CachedTileInventory> getCachedTileInventory() async {
     final repo = _concreteCacheManager.config.repo;
     await repo.open();
-    final objects = await repo.getAllObjects();
-    final tiles = <CachedTileInfo>[];
-    int totalBytes = 0;
+    try {
+      final objects = await repo.getAllObjects();
+      final tiles = <CachedTileInfo>[];
+      int totalBytes = 0;
 
-    for (final object in objects) {
-      totalBytes += object.length ?? 0;
-      final tile = _parseCachedTile(object);
-      if (tile != null) {
-        tiles.add(tile);
+      for (final object in objects) {
+        totalBytes += object.length ?? 0;
+        final tile = _parseCachedTile(object);
+        if (tile != null) {
+          tiles.add(tile);
+        }
       }
-    }
 
-    return CachedTileInventory(tiles: tiles, totalBytes: totalBytes);
+      return CachedTileInventory(tiles: tiles, totalBytes: totalBytes);
+    } finally {
+      await repo.close();
+    }
   }
 
   List<CachedTileInfo> filterTilesForActiveSource(

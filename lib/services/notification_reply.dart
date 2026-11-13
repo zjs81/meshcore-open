@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/app_localizations.dart';
+import '../l10n/locale_tag.dart';
 
 /// Name under which the main isolate registers the port that receives
 /// notification actions from the plugin's background isolate.
@@ -153,7 +154,9 @@ Future<void> notificationActionBackgroundHandler(
     final plugin = FlutterLocalNotificationsPlugin();
     await plugin.initialize(
       settings: const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        android: AndroidInitializationSettings(
+          '@drawable/ic_stat_notification',
+        ),
       ),
     );
     final l10n = await _backgroundLocalizations();
@@ -168,7 +171,7 @@ Future<void> notificationActionBackgroundHandler(
           channelDescription: 'New message notifications',
           importance: Importance.high,
           priority: Priority.high,
-          icon: '@mipmap/ic_launcher',
+          icon: '@drawable/ic_stat_notification',
         ),
       ),
     );
@@ -186,7 +189,7 @@ Future<AppLocalizations> _backgroundLocalizations() async {
     );
   } catch (_) {}
   for (final locale in [
-    if (code != null) Locale(code),
+    if (code != null) localeFromTag(code),
     PlatformDispatcher.instance.locale,
   ]) {
     try {
