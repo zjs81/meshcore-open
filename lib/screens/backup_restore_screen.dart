@@ -202,6 +202,11 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                     l10n.backupRestore_discoveredContacts,
                     Icons.person_search_outlined,
                   ),
+                  _itemTile(
+                    BackupItem.bookmarks,
+                    l10n.backupRestore_bookmarks,
+                    Icons.bookmark_border,
+                  ),
                   const Divider(height: 1, indent: 16),
                   _groupTile(
                     title: l10n.backupRestore_channels,

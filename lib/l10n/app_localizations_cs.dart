@@ -525,6 +525,9 @@ class AppLocalizationsCs extends AppLocalizations {
       'Objevené kontakty a jejich uložené údaje';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => 'Kanály';
 
   @override
@@ -2263,6 +2266,30 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Zpráva smazána';
+
+  @override
+  String get chat_bookmark => 'Bookmark';
+
+  @override
+  String get chat_removeBookmark => 'Remove bookmark';
+
+  @override
+  String get chat_showBookmarks => 'Show bookmarks';
+
+  @override
+  String get bookmarks_title => 'Bookmarks';
+
+  @override
+  String get bookmarks_empty => 'No bookmarked messages';
+
+  @override
+  String get bookmarks_channel => 'Channel';
+
+  @override
+  String get bookmarks_contact => 'Contact';
+
+  @override
+  String get bookmarks_remove => 'Remove bookmark';
 
   @override
   String get chat_selectMessages => 'Vybrat zprávy';
@@ -5568,6 +5595,19 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get notification_replyAppNotRunning =>
       'MeshCore Open neběží. Otevřete ji a odešlete odpověď znovu.';
+
+  @override
+  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+
+  @override
+  String get settings_exportBookmarksSubtitle =>
+      'Share or save bookmarked messages as a Markdown file.';
+
+  @override
+  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+
+  @override
+  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
 
   @override
   String get settings_gpxExportRepeaters =>

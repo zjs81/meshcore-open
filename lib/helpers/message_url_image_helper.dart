@@ -66,8 +66,9 @@ class MessageUrlImageHelper {
   static Future<String?> parse(
     String text, {
     String publicGateway = AppSettings.defaultPublicIpfsGateway,
+    bool respectLoadSetting = true,
   }) async {
-    if (!loadLinkImages.value) return null;
+    if (respectLoadSetting && !loadLinkImages.value) return null;
     final trimmed = text.trim();
     if (trimmed.isEmpty) return null;
 

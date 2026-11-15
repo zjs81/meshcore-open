@@ -527,6 +527,9 @@ class AppLocalizationsUk extends AppLocalizations {
       'Виявлені контакти та їхні збережені дані';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => 'Канали';
 
   @override
@@ -2268,6 +2271,30 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => 'Повідомлення видалено';
+
+  @override
+  String get chat_bookmark => 'Bookmark';
+
+  @override
+  String get chat_removeBookmark => 'Remove bookmark';
+
+  @override
+  String get chat_showBookmarks => 'Show bookmarks';
+
+  @override
+  String get bookmarks_title => 'Bookmarks';
+
+  @override
+  String get bookmarks_empty => 'No bookmarked messages';
+
+  @override
+  String get bookmarks_channel => 'Channel';
+
+  @override
+  String get bookmarks_contact => 'Contact';
+
+  @override
+  String get bookmarks_remove => 'Remove bookmark';
 
   @override
   String get chat_selectMessages => 'Вибрати повідомлення';
@@ -5609,6 +5636,19 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get notification_replyAppNotRunning =>
       'MeshCore Open не запущено. Відкрийте його та надішліть відповідь ще раз.';
+
+  @override
+  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+
+  @override
+  String get settings_exportBookmarksSubtitle =>
+      'Share or save bookmarked messages as a Markdown file.';
+
+  @override
+  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+
+  @override
+  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
 
   @override
   String get settings_gpxExportRepeaters =>

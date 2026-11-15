@@ -407,6 +407,7 @@ void main() {
           BackupItem.contactGroups,
           BackupItem.contactHistory,
           BackupItem.discoveredContacts,
+          BackupItem.bookmarks,
           BackupItem.channelFilters,
           BackupItem.channelSettings,
           BackupItem.communities,
@@ -465,4 +466,57 @@ void main() {
       );
     });
   });
+
+  test(
+    'backs up and restores bookmarks separately from discovered contacts',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      PrefsManager.reset();
+      await PrefsManager.initialize();
+      addTearDown(PrefsManager.reset);
+      final connector = MeshCoreConnector();
+      addTearDown(connector.dispose);
+      await connector.connectReview();
+      final settingsService = AppSettingsService();
+      addTearDown(settingsService.dispose);
+      final prefix = connector.selfPublicKeyHex.substring(0, 10);
+      final bookmarkKey = 'message_bookmarks_$prefix';
+      final discoveredKey = 'discovered_contacts_$prefix';
+      final bookmarks = [
+        {'messageId': 'saved', 'text': 'saved message'},
+      ];
+      await PrefsManager.instance.setString(bookmarkKey, jsonEncode(bookmarks));
+      await PrefsManager.instance.setString(discoveredKey, 'keep discovered');
+
+      final backup = await const BackupService().createBackup(
+        items: {BackupItem.bookmarks},
+        connector: connector,
+        settings: settingsService.settings,
+        password: '',
+      );
+      final payload = jsonDecode(backup) as Map<String, dynamic>;
+      expect(payload['items'], [BackupItem.bookmarks.name]);
+      final discoveredSection =
+          (payload['sections'] as Map<String, dynamic>)['discoveredContacts']
+              as Map<String, dynamic>;
+      final preferences =
+          discoveredSection['preferences'] as Map<String, dynamic>;
+      expect(preferences[bookmarkKey], bookmarks);
+      expect(preferences, isNot(contains(discoveredKey)));
+
+      await PrefsManager.instance.setString(bookmarkKey, '[]');
+      await const BackupService().restoreBackup(
+        contents: backup,
+        password: '',
+        items: {BackupItem.bookmarks},
+        connector: connector,
+        appSettingsService: settingsService,
+      );
+      expect(
+        jsonDecode(PrefsManager.instance.getString(bookmarkKey)!),
+        bookmarks,
+      );
+      expect(PrefsManager.instance.getString(discoveredKey), 'keep discovered');
+    },
+  );
 }

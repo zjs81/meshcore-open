@@ -28,6 +28,7 @@ import '../helpers/marker_message.dart';
 import '../helpers/message_search.dart';
 import '../widgets/chat_search_results.dart';
 import '../models/channel_message.dart';
+import '../models/bookmarked_message.dart';
 import '../models/contact.dart';
 import '../l10n/contact_localization.dart';
 import '../models/message.dart';
@@ -96,6 +97,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final _textFieldFocusNode = FocusNode();
   final GlobalKey _unreadScrollKey = GlobalKey();
   bool _isLoadingOlder = false;
+  bool _showBookmarkedOnly = false;
   MeshCoreConnector? _connector;
   Message? _pendingUnreadScrollTarget;
   String? _unreadDividerMessageId;
@@ -484,6 +486,10 @@ class _ChatScreenState extends State<ChatScreen> {
                             _showContactInfo(context);
                           case 'settings':
                             _showContactSettings(context);
+                          case 'showBookmarks':
+                            setState(
+                              () => _showBookmarkedOnly = !_showBookmarkedOnly,
+                            );
                           case 'background':
                             showChatBackgroundSheet(
                               context,
@@ -549,6 +555,18 @@ class _ChatScreenState extends State<ChatScreen> {
                           child: MeshMenuItemRow(
                             icon: Icons.settings,
                             label: context.l10n.contact_settings,
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'showBookmarks',
+                          child: MeshMenuItemRow(
+                            icon: _showBookmarkedOnly
+                                ? Icons.bookmark
+                                : Icons.bookmark_border,
+                            label: context.l10n.chat_showBookmarks,
+                            color: _showBookmarkedOnly
+                                ? const Color(0xFFFFE54A)
+                                : null,
                           ),
                         ),
                         PopupMenuItem(
@@ -631,6 +649,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildEmptyState() {
+    if (_showBookmarkedOnly) return _buildBookmarkEmptyState();
     return EmptyState(
       icon: Icons.chat_bubble_outline,
       title: context.l10n.chat_noMessages,
@@ -640,12 +659,23 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  Widget _buildBookmarkEmptyState() => EmptyState(
+    icon: Icons.bookmark_border,
+    title: context.l10n.bookmarks_empty,
+  );
+
   Widget _buildMessageList(
     List<Message> messages,
     MeshCoreConnector connector,
   ) {
+    final visibleMessages = _showBookmarkedOnly
+        ? messages.where((message) => message.isBookmarked).toList()
+        : messages;
+    if (_showBookmarkedOnly && visibleMessages.isEmpty) {
+      return _buildBookmarkEmptyState();
+    }
     // Reverse messages so newest appear at bottom with reverse: true
-    final reversedMessages = messages.reversed.toList();
+    final reversedMessages = visibleMessages.reversed.toList();
     final itemCount = reversedMessages.length + (_isLoadingOlder ? 1 : 0);
 
     // Auto-scroll to bottom if user is already at bottom
@@ -713,6 +743,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     : contact.name,
                 sourceId: widget.contact.publicKeyHex,
                 textScale: textScale,
+                isBookmarked: message.isBookmarked || _showBookmarkedOnly,
                 onLongPress: () => _showMessageActions(message, contact),
                 onRetryReaction: (msg, emoji) =>
                     _sendReaction(msg, contact, emoji),
@@ -1457,6 +1488,36 @@ class _ChatScreenState extends State<ChatScreen> {
                     _markAsUnread(message);
                   },
                 ),
+              ListTile(
+                leading: Icon(
+                  message.isBookmarked
+                      ? Icons.bookmark_remove_outlined
+                      : Icons.bookmark_add_outlined,
+                ),
+                title: Text(
+                  message.isBookmarked
+                      ? context.l10n.chat_removeBookmark
+                      : context.l10n.chat_bookmark,
+                ),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  final bookmark = BookmarkedMessage.fromContact(
+                    message: message,
+                    contactKey: widget.contact.publicKeyHex,
+                    contactName: widget.contact.name,
+                    senderName: message.isOutgoing
+                        ? (context.read<MeshCoreConnector>().selfName ??
+                              context.l10n.chat_me)
+                        : contact.name,
+                  );
+                  unawaited(
+                    context.read<MeshCoreConnector>().setBookmarkedMessage(
+                      bookmark,
+                      isBookmarked: !message.isBookmarked,
+                    ),
+                  );
+                },
+              ),
               if (message.isOutgoing && message.status == MessageStatus.failed)
                 ListTile(
                   enabled: !readOnly,
@@ -1567,12 +1628,14 @@ class _MessageBubble extends StatelessWidget {
   final void Function(Message message, String emoji)? onRetryReaction;
   final double textScale;
   final String sourceId;
+  final bool isBookmarked;
 
   const _MessageBubble({
     required this.message,
     required this.senderName,
     required this.sourceId,
     required this.textScale,
+    required this.isBookmarked,
     this.onLongPress,
     this.onRetryReaction,
   });
@@ -1664,6 +1727,7 @@ class _MessageBubble extends StatelessWidget {
                     child: MessageBubbleFrame(
                       isOutgoing: isOutgoing,
                       isFailed: isFailed,
+                      isBookmarked: isBookmarked,
                       compact: gifId != null,
                       maxWidth: constraints.maxWidth,
                       child: Column(

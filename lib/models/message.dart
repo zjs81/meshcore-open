@@ -34,6 +34,7 @@ class Message {
   /// to the bottom; [timestamp] stays the sender's identity time.
   final DateTime receivedAt;
   final bool isOutgoing;
+  final bool isBookmarked;
   final bool isCli;
   final MessageStatus status;
   final String? originalText;
@@ -62,6 +63,7 @@ class Message {
     required this.timestamp,
     DateTime? receivedAt,
     required this.isOutgoing,
+    this.isBookmarked = false,
     this.isCli = false,
     this.status = MessageStatus.pending,
     String? messageId,
@@ -108,6 +110,7 @@ class Message {
     int? pathLength,
     Uint8List? pathBytes,
     bool? isCli,
+    bool? isBookmarked,
     Object? originalText = _unset,
     Object? translatedText = _unset,
     Object? translatedLanguageCode = _unset,
@@ -123,6 +126,7 @@ class Message {
       timestamp: timestamp,
       receivedAt: receivedAt,
       isOutgoing: isOutgoing,
+      isBookmarked: isBookmarked ?? this.isBookmarked,
       isCli: isCli ?? this.isCli,
       status: status ?? this.status,
       messageId: messageId,
