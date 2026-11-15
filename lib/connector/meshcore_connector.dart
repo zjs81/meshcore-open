@@ -29,11 +29,14 @@ import '../services/linux_ble_pairing_service_stub.dart'
     if (dart.library.io) '../services/linux_ble_pairing_service.dart';
 import '../services/image_chunk_transport.dart'
     show
+        ImageChunkHeader,
         ImageChunkOutcome,
         ImageChunkTransport,
         buildSendChannelDataFrame,
         dataTypeAeicImage,
+        kImageReassemblyTtl,
         outPathUnknown,
+        parseImageChunkHeader,
         respCodeChannelDataRecv,
         senderPrefixFromKey;
 import '../services/image_codec_service.dart';
@@ -5714,7 +5717,9 @@ class MeshCoreConnector extends ChangeNotifier {
   /// queued a packet to the radio. It says nothing about transmission or
   /// delivery — GRP_DATA is unacknowledged flood traffic, there is no
   /// PUSH_CODE_SEND_CONFIRMED for it, and a chunk may still be lost on air.
-  /// That is what the XOR parity chunk is for.
+  /// That is what the XOR parity chunk is for, and why repeater echoes are
+  /// counted afterwards ([ownImageEchoes]). With [repairUnheardChunks], chunks
+  /// no repeater echoed are resent once (see [_repairUnheardImageChunks]).
   ///
   /// Returns false when the transport is unavailable (disconnected or firmware
   /// too old); throws whatever [_sendFrameAndWaitForCommandAck] throws, i.e.
@@ -5727,9 +5732,47 @@ class MeshCoreConnector extends ChangeNotifier {
     required int channelIndex,
     required Duration interChunkDelay,
     void Function(int sent, int total)? onProgress,
+    bool repairUnheardChunks = true,
   }) async {
     if (blobs.isEmpty) return false;
     if (!supportsChannelData) return false;
+    final header = parseImageChunkHeader(blobs.first);
+    final key = header == null ? null : (channelIndex, header.imgId);
+    if (key != null && repairUnheardChunks) {
+      // Index == chunk index: data chunks first, the parity chunk (index ==
+      // total) last, so blobs.length slots cover every chunk we send.
+      _ownImageEchoes.remove(key);
+      _ownImageEchoes[key] = List<int>.filled(blobs.length, 0);
+      while (_ownImageEchoes.length > _maxTrackedOwnImages) {
+        _ownImageEchoes.remove(_ownImageEchoes.keys.first);
+      }
+    }
+    final startedAt = DateTime.now();
+    final sentAll = await _transmitImageBlobs(
+      blobs,
+      channelIndex: channelIndex,
+      interChunkDelay: interChunkDelay,
+      onProgress: onProgress,
+    );
+    if (sentAll && key != null && repairUnheardChunks) {
+      unawaited(
+        _repairUnheardImageChunks(
+          key,
+          blobs,
+          interChunkDelay: interChunkDelay,
+          startedAt: startedAt,
+        ),
+      );
+    }
+    return sentAll;
+  }
+
+  Future<bool> _transmitImageBlobs(
+    List<Uint8List> blobs, {
+    required int channelIndex,
+    required Duration interChunkDelay,
+    void Function(int sent, int total)? onProgress,
+  }) async {
     // `return` inside the scoped callback only exits the callback, so a
     // disconnect mid-send used to fall through to `return true` below and the
     // caller would record a complete outgoing image and tell the user "sent"
@@ -5758,6 +5801,142 @@ class MeshCoreConnector extends ChangeNotifier {
       }
     }, region: _channelSendScope(channelIndex));
     return sentAll;
+  }
+
+  // ---- repeater echoes of our own image chunks -------------------------------
+  //
+  // GRP_DATA is never acknowledged. What we can observe is a repeater
+  // re-flooding one of our chunks: the radio reports it in the raw RX log, the
+  // same way repeats of channel text are counted. A chunk nobody echoed while
+  // other chunks of the same image were echoed was most likely lost, so it is
+  // sent once more.
+
+  /// How long to listen for echoes after the last chunk before repairing.
+  static const Duration _imageEchoWait = Duration(seconds: 15);
+
+  /// Receivers drop a partial image [kImageReassemblyTtl] after its first
+  /// chunk. A repair that cannot land well inside that window is skipped.
+  static const Duration _imageRepairDeadline = Duration(seconds: 45);
+
+  static const int _maxTrackedOwnImages = 16;
+
+  final Map<(int, int), List<int>> _ownImageEchoes = {};
+  final Set<(int, int)> _imageRepairsInFlight = {};
+
+  /// Repeater echoes heard for each chunk of one of our own images sent this
+  /// session (data chunks, then the parity chunk), or null if not tracked.
+  List<int>? ownImageEchoes(int channelIndex, int imgId) {
+    final echoes = _ownImageEchoes[(channelIndex, imgId)];
+    return echoes == null ? null : List<int>.unmodifiable(echoes);
+  }
+
+  /// Non-null while unheard chunks of that image are being resent.
+  ({int resends, int maxResends})? imageResendProgress(
+    int channelIndex,
+    int imgId,
+  ) => _imageRepairsInFlight.contains((channelIndex, imgId))
+      ? (resends: 1, maxResends: 1)
+      : null;
+
+  /// A GRP_DATA packet from the raw RX log. Other people's images arrive
+  /// already decrypted through RESP_CODE_CHANNEL_DATA_RECV; here we only look
+  /// for repeaters re-flooding one of our own chunks.
+  void _handleImageEcho(_RawPacket packet) {
+    final self = senderPrefixFromKey(_selfPublicKey);
+    if (self == null || packet.payload.length < 2) return;
+    final channelHash = packet.payload[0];
+    final encrypted = Uint8List.fromList(packet.payload.sublist(1));
+    final channels = _channels.isNotEmpty ? _channels : _cachedChannels;
+    for (final channel in channels) {
+      if (channel.isEmpty) continue;
+      if (_computeChannelHash(channel.psk) != channelHash) continue;
+      // Null unless the MAC matches this channel's key.
+      final plain = _decryptPayload(channel.psk, encrypted);
+      if (plain == null || plain.length < 3) continue;
+      // Plaintext: data_type (uint16 LE), data_len, blob (padded to 16).
+      final dataType = plain[0] | (plain[1] << 8);
+      final length = plain[2];
+      if (dataType != dataTypeAeicImage || plain.length < 3 + length) return;
+      final header = parseImageChunkHeader(
+        Uint8List.sublistView(plain, 3, 3 + length),
+      );
+      if (header == null || header.senderPrefix != self) return;
+      final channelId = channel.storageId;
+      final slot = _channelMapConfirmed && channelId != null
+          ? _slotForChannelId(channelId)
+          : channel.index;
+      if (slot == null) return;
+      _recordOwnImageEcho(slot, header);
+      return;
+    }
+  }
+
+  void _recordOwnImageEcho(int slot, ImageChunkHeader header) {
+    final echoes = _ownImageEchoes[(slot, header.imgId)];
+    if (echoes == null || header.index >= echoes.length) return;
+    echoes[header.index]++;
+    unawaited(
+      _receivedImageStore?.setOutgoingEchoes(
+        channelIndex: slot,
+        senderPrefix: header.senderPrefix,
+        imgId: header.imgId,
+        echoes: List<int>.of(echoes),
+      ),
+    );
+    notifyListeners();
+  }
+
+  /// One repair round: resend the chunks no repeater was heard echoing, but
+  /// only when some other chunk of the image was echoed. With no echo at all
+  /// we cannot tell a lost image from a sender with no repeater in earshot,
+  /// and resending would double every such user's airtime for nothing.
+  ///
+  /// The resent chunk is byte-identical, so a repeater that did forward it
+  /// (and we just missed the echo) drops the copy as already seen. Receivers
+  /// missing it merge it into the image they are still holding.
+  Future<void> _repairUnheardImageChunks(
+    (int, int) key,
+    List<Uint8List> blobs, {
+    required Duration interChunkDelay,
+    required DateTime startedAt,
+  }) async {
+    await Future<void>.delayed(_imageEchoWait);
+    final echoes = _ownImageEchoes[key];
+    if (echoes == null || echoes.length != blobs.length || !isConnected) {
+      return;
+    }
+    final unheard = <Uint8List>[
+      for (var i = 0; i < blobs.length; i++)
+        if (echoes[i] == 0) blobs[i],
+    ];
+    if (unheard.isEmpty || unheard.length == blobs.length) return;
+    if (DateTime.now().difference(startedAt) > _imageRepairDeadline) {
+      _appDebugLogService?.info(
+        'Image ${key.$2}: ${unheard.length} chunk(s) unheard, too late to '
+        'resend before receivers give up',
+        tag: 'Image resend',
+      );
+      return;
+    }
+    _appDebugLogService?.info(
+      'Image ${key.$2}: resending ${unheard.length} of ${blobs.length} '
+      'chunk(s) no repeater echoed',
+      tag: 'Image resend',
+    );
+    _imageRepairsInFlight.add(key);
+    notifyListeners();
+    try {
+      await _transmitImageBlobs(
+        unheard,
+        channelIndex: key.$1,
+        interChunkDelay: interChunkDelay,
+      );
+    } catch (e) {
+      _appDebugLogService?.warn('Image resend failed: $e', tag: 'Image resend');
+    } finally {
+      _imageRepairsInFlight.remove(key);
+      notifyListeners();
+    }
   }
 
   Future<void> _runScopedChannelSend(
@@ -8396,7 +8575,12 @@ class MeshCoreConnector extends ChangeNotifier {
 
       final raw = reader.readRemainingBytes();
       final packet = _parseRawPacket(raw);
-      if (packet == null || packet.payloadType != _payloadTypeGroupText) return;
+      if (packet == null) return;
+      if (packet.payloadType == _payloadTypeGroupData) {
+        _handleImageEcho(packet);
+        return;
+      }
+      if (packet.payloadType != _payloadTypeGroupText) return;
 
       final payload = BufferReader(packet.payload);
       final channelHash = payload.readByte();
@@ -10477,6 +10661,7 @@ const int _routeFlood = 0x01;
 const int _routeTransportDirect = 0x03;
 
 const int _payloadTypeGroupText = 0x05;
+const int _payloadTypeGroupData = 0x06;
 const int _cipherMacSize = 2;
 
 bool _isPathLenValidForMode(

@@ -336,4 +336,145 @@ void main() {
     final l10n = await AppLocalizations.delegate.load(const Locale('en'));
     expect(_texts(tester), contains(l10n.imageSend_codecUnavailable));
   });
+
+  group('versions', () {
+    final previewCodec = FakeImageSendCodec(
+      latency: Duration.zero,
+      previewPng: _onePixelPng,
+    );
+
+    Future<void> tapText(WidgetTester tester, String text) async {
+      final finder = find.text(text);
+      await tester.tap(finder);
+      await tester.pumpAndSettle();
+    }
+
+    Future<ImageSendPreviewResult?> send(
+      WidgetTester tester,
+      ImageSendPreviewResult? Function() result,
+    ) async {
+      await tester.tap(find.byType(FilledButton));
+      await tester.pumpAndSettle();
+      return result();
+    }
+
+    testWidgets('opens on what recipients see, as Version 1', (tester) async {
+      _tallScreen(tester);
+      await _openSheet(tester, radio: _knownRadio, codec: previewCodec);
+
+      final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+      final texts = _texts(tester);
+      expect(texts, contains(l10n.imageSend_versionLabel(1)));
+      expect(texts, contains(l10n.imageSend_tryAnother));
+      expect(texts, isNot(contains(l10n.imageSend_reconstructionUnavailable)));
+      final segments = tester.widget<SegmentedButton<bool>>(
+        find.byType(SegmentedButton<bool>),
+      );
+      expect(segments.selected, {
+        false,
+      }, reason: 'the reconstruction, not the original, is the default view');
+    });
+
+    testWidgets('trying another version selects it and sends its payload and '
+        'reconstruction', (tester) async {
+      _tallScreen(tester);
+      ImageSendPreviewResult? result;
+      await tester.pumpWidget(_host(previewCodec, (r) => result = r));
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+
+      await tapText(tester, l10n.imageSend_tryAnother);
+      expect(_texts(tester), contains(l10n.imageSend_versionLabel(2)));
+
+      final sent = await send(tester, () => result);
+      expect(
+        sent!.payload.length,
+        FakeImageSendCodec.payloadBytesFor(kImageSendRatePoint, 1),
+      );
+      expect(sent.previewPng, isNotNull);
+    });
+
+    testWidgets('going back to Version 1 sends Version 1', (tester) async {
+      _tallScreen(tester);
+      ImageSendPreviewResult? result;
+      await tester.pumpWidget(_host(previewCodec, (r) => result = r));
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+
+      await tapText(tester, l10n.imageSend_tryAnother);
+      await tapText(tester, l10n.imageSend_versionLabel(1));
+
+      final sent = await send(tester, () => result);
+      expect(
+        sent!.payload.length,
+        FakeImageSendCodec.payloadBytesFor(kImageSendRatePoint, 0),
+      );
+    });
+
+    testWidgets('stops offering versions at the maximum', (tester) async {
+      _tallScreen(tester);
+      await _openSheet(tester, radio: _knownRadio, codec: previewCodec);
+      final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+
+      for (var i = 1; i < kImageSendMaxVersions; i++) {
+        await tapText(tester, l10n.imageSend_tryAnother);
+      }
+      final texts = _texts(tester);
+      expect(
+        texts,
+        contains(l10n.imageSend_versionLabel(kImageSendMaxVersions)),
+      );
+      expect(texts, isNot(contains(l10n.imageSend_tryAnother)));
+    });
+
+    testWidgets('a device that cannot decode shows the original and no '
+        'versions', (tester) async {
+      _tallScreen(tester);
+      await _openSheet(tester, radio: _knownRadio);
+
+      final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+      final texts = _texts(tester);
+      expect(texts, contains(l10n.imageSend_reconstructionUnavailable));
+      expect(texts, isNot(contains(l10n.imageSend_versionLabel(1))));
+      expect(texts, isNot(contains(l10n.imageSend_tryAnother)));
+      expect(find.byType(SegmentedButton<bool>), findsNothing);
+    });
+  });
 }
+
+/// Room for the whole sheet, so version tiles and "Try another version" are
+/// on screen without scrolling the draggable sheet.
+void _tallScreen(WidgetTester tester) {
+  tester.view.physicalSize = const Size(1000, 2400);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.reset);
+}
+
+/// A host app whose button opens the sheet and reports what it returned.
+Widget _host(
+  ImageSendCodec codec,
+  void Function(ImageSendPreviewResult?) onResult,
+) => MaterialApp(
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  home: Builder(
+    builder: (context) => Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () async => onResult(
+            await showImageSendPreviewSheet(
+              context: context,
+              imageBytes: _onePixelPng,
+              originalFileBytes: 1024,
+              codec: codec,
+              radio: _knownRadio,
+            ),
+          ),
+          child: const Text('open'),
+        ),
+      ),
+    ),
+  ),
+);

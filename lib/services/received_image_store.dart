@@ -197,13 +197,30 @@ class ReceivedImageEntry {
   /// One chunk was rebuilt from the XOR parity chunk.
   final bool recoveredWithParity;
 
-  /// This is the local user's own send. Its PNG is their real 512x512 crop, so
-  /// [synthesized] is false and the R6 label must NOT be shown.
+  /// This is the local user's own send.
   final bool isOutgoing;
 
-  /// Whether the pixels are generative-model output. Derived, never supplied:
-  /// `synthesized == !isOutgoing`.
-  bool get synthesized => !isOutgoing;
+  /// Whether the pixels are generative-model output, so the R6 label must be
+  /// shown. Always true for received images. For the user's own send it is
+  /// true when the PNG is the version they picked, decoded as recipients see
+  /// it, and false only when it is the stretched original (a device that
+  /// could not decode).
+  final bool synthesized;
+
+  /// Our own image only: repeater echoes heard for each chunk, data chunks
+  /// first and the parity chunk last. Null when not tracked.
+  final List<int>? chunkEchoes;
+
+  /// The fewest echoes any data chunk got: every data chunk was heard
+  /// repeated at least this many times. Null when not tracked.
+  int? get minDataChunkEchoes {
+    final echoes = chunkEchoes;
+    if (echoes == null || echoes.isEmpty) return null;
+    final data = echoes.length > totalChunks
+        ? echoes.sublist(0, totalChunks)
+        : echoes;
+    return data.reduce((a, b) => a < b ? a : b);
+  }
 
   final int? decodeMs;
   final String? error;
@@ -237,6 +254,8 @@ class ReceivedImageEntry {
     this.metadataAssumed = true,
     this.recoveredWithParity = false,
     this.isOutgoing = false,
+    bool? synthesized,
+    this.chunkEchoes,
     this.decodeMs,
     this.error,
     this.needsManualDecode = false,
@@ -245,7 +264,7 @@ class ReceivedImageEntry {
     this.bitstreamByteCount = 0,
     this.pngByteCount = 0,
     this.pngBytes,
-  });
+  }) : synthesized = synthesized ?? !isOutgoing;
 
   ImageStreamKey get key => ImageStreamKey(
     senderPrefix: senderPrefix,
@@ -282,6 +301,7 @@ class ReceivedImageEntry {
     int? bitstreamByteCount,
     int? pngByteCount,
     Object? pngBytes = _unset,
+    List<int>? chunkEchoes,
   }) {
     return ReceivedImageEntry(
       streamId: streamId,
@@ -299,6 +319,8 @@ class ReceivedImageEntry {
       metadataAssumed: metadataAssumed ?? this.metadataAssumed,
       recoveredWithParity: recoveredWithParity ?? this.recoveredWithParity,
       isOutgoing: isOutgoing,
+      synthesized: synthesized,
+      chunkEchoes: chunkEchoes ?? this.chunkEchoes,
       decodeMs: identical(decodeMs, _unset) ? this.decodeMs : decodeMs as int?,
       error: identical(error, _unset) ? this.error : error as String?,
       needsManualDecode: needsManualDecode ?? this.needsManualDecode,
@@ -329,6 +351,7 @@ class ReceivedImageEntry {
     'recoveredWithParity': recoveredWithParity,
     'isOutgoing': isOutgoing,
     'synthesized': synthesized,
+    if (chunkEchoes != null) 'chunkEchoes': chunkEchoes,
     'needsManualDecode': needsManualDecode,
     'bitstreamStored': bitstreamStored,
     'pngStored': pngStored,
@@ -357,6 +380,10 @@ class ReceivedImageEntry {
       metadataAssumed: json['metadataAssumed'] as bool? ?? true,
       recoveredWithParity: json['recoveredWithParity'] as bool? ?? false,
       isOutgoing: json['isOutgoing'] as bool? ?? false,
+      synthesized: json['synthesized'] as bool?,
+      chunkEchoes: (json['chunkEchoes'] as List<dynamic>?)
+          ?.whereType<int>()
+          .toList(),
       decodeMs: json['decodeMs'] as int?,
       error: json['error'] as String?,
       needsManualDecode: json['needsManualDecode'] as bool? ?? false,
@@ -1041,6 +1068,9 @@ class ReceivedImageStore extends ChangeNotifier {
     required AeicRatePoint rate,
     required int chunkCount,
     int aspectCode = 0,
+    bool synthesized = false,
+    List<int>? chunkEchoes,
+    int payloadBytes = 0,
     DateTime? at,
   }) async {
     final now = at ?? _clock();
@@ -1069,6 +1099,11 @@ class ReceivedImageStore extends ChangeNotifier {
       aspectCode: aspectCode,
       metadataAssumed: false,
       isOutgoing: true,
+      synthesized: synthesized,
+      chunkEchoes: chunkEchoes,
+      // The size of what was sent, for the caption and packet info. The
+      // bitstream itself is not kept, so bitstreamStored stays false.
+      bitstreamByteCount: payloadBytes,
       pngStored: pngWritten,
       pngByteCount: pngWritten ? previewPng.length : 0,
       pngBytes: previewPng,
@@ -1076,6 +1111,31 @@ class ReceivedImageStore extends ChangeNotifier {
     final stored = await _store(entry);
     await evictToBudget(protect: stored.streamId);
     return stored;
+  }
+
+  /// Records repeater echoes of the user's own image (see
+  /// `MeshCoreConnector.ownImageEchoes`). Echoes that land before the image is
+  /// registered are passed to [registerOutgoing] instead.
+  Future<void> setOutgoingEchoes({
+    required int channelIndex,
+    required int senderPrefix,
+    required int imgId,
+    required List<int> echoes,
+  }) async {
+    ReceivedImageEntry? match;
+    for (final entry in _entries.values) {
+      if (!entry.isOutgoing ||
+          entry.imgId != imgId ||
+          entry.channelIndex != channelIndex ||
+          entry.senderPrefix != senderPrefix) {
+        continue;
+      }
+      if (match == null || entry.firstSeen.isAfter(match.firstSeen)) {
+        match = entry;
+      }
+    }
+    if (match == null) return;
+    await _store(match.copyWith(chunkEchoes: List<int>.unmodifiable(echoes)));
   }
 
   // ---- decode scheduling ---------------------------------------------------

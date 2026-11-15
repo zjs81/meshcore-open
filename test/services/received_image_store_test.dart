@@ -826,6 +826,73 @@ void main() {
       expect(h.decoder.calls, 0);
     });
 
+    test('a decoded preview is labelled synthesized and keeps its byte count '
+        'and echoes', () async {
+      final h = _build();
+      final entry = await h.store.registerOutgoing(
+        channelIndex: 1,
+        senderPrefix: kSelf,
+        imgId: 4,
+        previewPng: Uint8List.fromList(List<int>.filled(64, 1)),
+        rate: AeicRatePoint.ft32,
+        chunkCount: 2,
+        synthesized: true,
+        payloadBytes: 171,
+        chunkEchoes: const [1, 0, 2],
+      );
+      expect(entry.synthesized, isTrue);
+      expect(entry.bitstreamByteCount, 171);
+      expect(entry.bitstreamStored, isFalse);
+      expect(entry.minDataChunkEchoes, 0);
+
+      final restored = ReceivedImageEntry.fromJson(entry.toJson());
+      expect(restored.synthesized, isTrue);
+      expect(restored.chunkEchoes, [1, 0, 2]);
+    });
+
+    test(
+      'setOutgoingEchoes updates the newest matching outgoing image',
+      () async {
+        final h = _build();
+        final older = await h.store.registerOutgoing(
+          channelIndex: 1,
+          senderPrefix: kSelf,
+          imgId: 9,
+          previewPng: Uint8List.fromList(List<int>.filled(64, 1)),
+          rate: AeicRatePoint.ft32,
+          chunkCount: 1,
+        );
+        h.advance(const Duration(seconds: 5));
+        final newer = await h.store.registerOutgoing(
+          channelIndex: 1,
+          senderPrefix: kSelf,
+          imgId: 9,
+          previewPng: Uint8List.fromList(List<int>.filled(64, 2)),
+          rate: AeicRatePoint.ft32,
+          chunkCount: 1,
+        );
+
+        await h.store.setOutgoingEchoes(
+          channelIndex: 1,
+          senderPrefix: kSelf,
+          imgId: 9,
+          echoes: const [3, 1],
+        );
+        expect(h.store.entryFor(newer.streamId)!.chunkEchoes, [3, 1]);
+        expect(h.store.entryFor(newer.streamId)!.minDataChunkEchoes, 3);
+        expect(h.store.entryFor(older.streamId)!.chunkEchoes, isNull);
+
+        // Another channel's image with the same id is left alone.
+        await h.store.setOutgoingEchoes(
+          channelIndex: 2,
+          senderPrefix: kSelf,
+          imgId: 9,
+          echoes: const [7, 7],
+        );
+        expect(h.store.entryFor(newer.streamId)!.chunkEchoes, [3, 1]);
+      },
+    );
+
     test('spent outgoing entries count toward maxEntries', () async {
       final h = _build(maxEntries: 2, maxAge: const Duration(minutes: 10));
       final ids = <String>[];
