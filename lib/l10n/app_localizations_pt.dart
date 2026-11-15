@@ -379,7 +379,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Link de afiliado: cada compra apoia o MeshCore Open.';
 
   @override
-  String get scanner_getNodeDismiss => 'Não mostrar novamente';
+  String get scanner_getNodeDismiss => 'Ocultar por uma semana';
 
   @override
   String get scanner_bluetoothWebUnsupported =>
@@ -1601,6 +1601,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appSettings_batteryLipoHv => 'LiPo HV (3,0-4,35V)';
 
   @override
+  String get appSettings_batteryLeadAcid => 'Chumbo-ácido (1.75-2.13V)';
+
+  @override
+  String get appSettings_batteryNimh => 'NiMH (1.0-1.4V)';
+
+  @override
+  String get appSettings_batteryLto => 'LTO (1.5-2.85V)';
+
+  @override
   String get appSettings_mapDisplay => 'Exibição do Mapa';
 
   @override
@@ -1892,6 +1901,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get contacts_moreOptions => 'Mais opções';
+
+  @override
+  String get contacts_discoverNearby => 'Descobrir próximos';
 
   @override
   String get contacts_searchOpen => 'Pesquisar contatos';
@@ -8457,6 +8469,9 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Ligação de afiliado: cada compra apoia o MeshCore Open.';
 
   @override
+  String get scanner_getNodeDismiss => 'Ocultar por uma semana';
+
+  @override
   String get scanner_bluetoothWebUnsupported =>
       'O Bluetooth não está disponível no browser. Ligue por USB.';
 
@@ -9627,6 +9642,15 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get appSettings_batteryLipoHv => 'LiPo HV (3.0-4.35V)';
 
   @override
+  String get appSettings_batteryLeadAcid => 'Chumbo-ácido (1.75-2.13V)';
+
+  @override
+  String get appSettings_batteryNimh => 'NiMH (1.0-1.4V)';
+
+  @override
+  String get appSettings_batteryLto => 'LTO (1.5-2.85V)';
+
+  @override
   String get appSettings_mapDisplay => 'Apresentação do mapa';
 
   @override
@@ -9867,6 +9891,9 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get contacts_moreOptions => 'Mais opções';
+
+  @override
+  String get contacts_discoverNearby => 'Descobrir próximos';
 
   @override
   String get contacts_searchOpen => 'Pesquisar contactos';

@@ -376,7 +376,7 @@ class AppLocalizationsCs extends AppLocalizations {
       'Affiliate odkaz: každý nákup podporuje MeshCore Open.';
 
   @override
-  String get scanner_getNodeDismiss => 'Don\'t show again';
+  String get scanner_getNodeDismiss => 'Skrýt na týden';
 
   @override
   String get scanner_bluetoothWebUnsupported =>
@@ -1595,6 +1595,15 @@ class AppLocalizationsCs extends AppLocalizations {
   String get appSettings_batteryLipoHv => 'LiPo HV (3.0-4.35V)';
 
   @override
+  String get appSettings_batteryLeadAcid => 'Olověné (1.75-2.13V)';
+
+  @override
+  String get appSettings_batteryNimh => 'NiMH (1.0-1.4V)';
+
+  @override
+  String get appSettings_batteryLto => 'LTO (1.5-2.85V)';
+
+  @override
   String get appSettings_mapDisplay => 'Zobrazení mapy';
 
   @override
@@ -1886,6 +1895,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get contacts_moreOptions => 'Další možnosti';
+
+  @override
+  String get contacts_discoverNearby => 'Objevit v okolí';
 
   @override
   String get contacts_searchOpen => 'Hledat kontakty';

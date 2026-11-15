@@ -14,6 +14,12 @@ BatteryVoltageRange batteryVoltageRange(String chemistry) {
       return (minMv: 3000, maxMv: 4200);
     case 'lipo_hv':
       return (minMv: 3000, maxMv: 4350);
+    case 'lead_acid':
+      return (minMv: 1750, maxMv: 2130);
+    case 'nimh':
+      return (minMv: 1000, maxMv: 1400);
+    case 'lto':
+      return (minMv: 1500, maxMv: 2850);
     case 'nmc':
     default:
       return (minMv: 3000, maxMv: 4200);
@@ -28,6 +34,12 @@ int nominalCellMillivolts(String chemistry) {
       return 3800;
     case 'lipo':
       return 3700;
+    case 'lead_acid':
+      return 2000;
+    case 'nimh':
+      return 1200;
+    case 'lto':
+      return 2400;
     case 'nmc':
     default:
       return 3600;

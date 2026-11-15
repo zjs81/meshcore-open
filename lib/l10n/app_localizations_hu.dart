@@ -376,7 +376,7 @@ class AppLocalizationsHu extends AppLocalizations {
       'Partnerlink: minden vásárlás a MeshCore Opent támogatja.';
 
   @override
-  String get scanner_getNodeDismiss => 'Ne jelenjen meg újra';
+  String get scanner_getNodeDismiss => 'Elrejtés egy hétre';
 
   @override
   String get scanner_bluetoothWebUnsupported =>
@@ -1596,6 +1596,15 @@ class AppLocalizationsHu extends AppLocalizations {
   String get appSettings_batteryLipoHv => 'LiPo HV (3,0-4,35 V)';
 
   @override
+  String get appSettings_batteryLeadAcid => 'Ólom-savas (1,75-2,13 V)';
+
+  @override
+  String get appSettings_batteryNimh => 'NiMH (1,0-1,4 V)';
+
+  @override
+  String get appSettings_batteryLto => 'LTO (1,5-2,85 V)';
+
+  @override
   String get appSettings_mapDisplay => 'Térkép megjelenítése';
 
   @override
@@ -1889,6 +1898,9 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get contacts_moreOptions => 'További lehetőségek';
+
+  @override
+  String get contacts_discoverNearby => 'Közeli egységek felfedezése';
 
   @override
   String get contacts_searchOpen => 'Névjegyek keresése';

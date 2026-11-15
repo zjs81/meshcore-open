@@ -1079,6 +1079,18 @@ class AppSettingsScreen extends StatelessWidget {
               value: 'lipo_hv',
               child: Text(context.l10n.appSettings_batteryLipoHv),
             ),
+            DropdownMenuItem(
+              value: 'lead_acid',
+              child: Text(context.l10n.appSettings_batteryLeadAcid),
+            ),
+            DropdownMenuItem(
+              value: 'nimh',
+              child: Text(context.l10n.appSettings_batteryNimh),
+            ),
+            DropdownMenuItem(
+              value: 'lto',
+              child: Text(context.l10n.appSettings_batteryLto),
+            ),
           ],
         ),
       ],

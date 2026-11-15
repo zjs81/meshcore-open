@@ -362,7 +362,7 @@ class AppLocalizationsKo extends AppLocalizations {
       '제휴 링크: 구매할 때마다 MeshCore Open을 후원하게 됩니다.';
 
   @override
-  String get scanner_getNodeDismiss => '다시 표시하지 않음';
+  String get scanner_getNodeDismiss => '1주일 동안 숨기기';
 
   @override
   String get scanner_bluetoothWebUnsupported =>
@@ -1527,6 +1527,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_batteryLipoHv => '리포 HV (3.0-4.35V)';
 
   @override
+  String get appSettings_batteryLeadAcid => '납산 (1.75-2.13V)';
+
+  @override
+  String get appSettings_batteryNimh => 'NiMH (1.0-1.4V)';
+
+  @override
+  String get appSettings_batteryLto => 'LTO (1.5-2.85V)';
+
+  @override
   String get appSettings_mapDisplay => '지도 표시';
 
   @override
@@ -1807,6 +1816,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get contacts_moreOptions => '더 많은 옵션';
+
+  @override
+  String get contacts_discoverNearby => '주변 검색';
 
   @override
   String get contacts_searchOpen => '연락처 검색';

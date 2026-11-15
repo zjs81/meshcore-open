@@ -378,7 +378,7 @@ class AppLocalizationsUk extends AppLocalizations {
       'Партнерське посилання: кожна покупка підтримує MeshCore Open.';
 
   @override
-  String get scanner_getNodeDismiss => 'Більше не показувати';
+  String get scanner_getNodeDismiss => 'Сховати на тиждень';
 
   @override
   String get scanner_bluetoothWebUnsupported =>
@@ -1596,6 +1596,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get appSettings_batteryLipoHv => 'LiPo HV (3.0-4.35В)';
 
   @override
+  String get appSettings_batteryLeadAcid => 'Свинцево-кислотна (1.75-2.13V)';
+
+  @override
+  String get appSettings_batteryNimh => 'NiMH (1.0-1.4V)';
+
+  @override
+  String get appSettings_batteryLto => 'LTO (1.5-2.85V)';
+
+  @override
   String get appSettings_mapDisplay => 'Відображення карти';
 
   @override
@@ -1887,6 +1896,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get contacts_moreOptions => 'Більше можливостей';
+
+  @override
+  String get contacts_discoverNearby => 'Знайти поблизу';
 
   @override
   String get contacts_searchOpen => 'Пошук контактів';

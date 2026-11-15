@@ -31,6 +31,7 @@ import '../widgets/node_info_sheet.dart';
 import '../widgets/list_filter_widget.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/node_scan_sheet.dart';
 import '../widgets/quick_switch_bar.dart';
 import '../widgets/repeater_login_dialog.dart';
 import '../widgets/room_login_dialog.dart';
@@ -455,6 +456,14 @@ class _ContactsScreenState extends State<ContactsScreen> {
                       builder: (context) => const DiscoveryScreen(),
                     ),
                   ),
+                ),
+                PopupMenuItem(
+                  enabled: !readOnly && connector.supportsNodeDiscover,
+                  child: MeshMenuItemRow(
+                    icon: Icons.my_location,
+                    label: context.l10n.contacts_discoverNearby,
+                  ),
+                  onTap: () => showNodeScanSheet(context, connector),
                 ),
                 PopupMenuItem(
                   enabled: !readOnly,

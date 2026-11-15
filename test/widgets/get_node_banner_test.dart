@@ -86,8 +86,8 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text("Don't show again"), findsOneWidget);
-    await tester.tap(find.text("Don't show again"));
+    expect(find.text('Hide for a week'), findsOneWidget);
+    await tester.tap(find.text('Hide for a week'));
     await tester.pump();
 
     expect(dismissed, isTrue);

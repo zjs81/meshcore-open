@@ -378,7 +378,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Enlace de afiliado: cada compra apoya a MeshCore Open.';
 
   @override
-  String get scanner_getNodeDismiss => 'No volver a mostrar';
+  String get scanner_getNodeDismiss => 'Ocultar por una semana';
 
   @override
   String get scanner_bluetoothWebUnsupported =>
@@ -1598,6 +1598,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appSettings_batteryLipoHv => 'LiPo HV (3.0-4.35V)';
 
   @override
+  String get appSettings_batteryLeadAcid => 'Plomo-ácido (1,75-2,13 V)';
+
+  @override
+  String get appSettings_batteryNimh => 'NiMH (1,0-1,4 V)';
+
+  @override
+  String get appSettings_batteryLto => 'LTO (1,5-2,85 V)';
+
+  @override
   String get appSettings_mapDisplay => 'Visualización del mapa';
 
   @override
@@ -1890,6 +1899,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get contacts_moreOptions => 'Más opciones';
+
+  @override
+  String get contacts_discoverNearby => 'Descubrir cercanos';
 
   @override
   String get contacts_searchOpen => 'Buscar contactos';

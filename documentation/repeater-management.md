@@ -28,7 +28,7 @@ From the Contacts screen:
 The central management screen showing:
 
 - **Header card**: Repeater name, short public key, path label, GPS coordinates (if known)
-- **Battery chemistry selector**: NMC / LiFePO4 / LiPo (saved per repeater)
+- **Battery chemistry selector**: NMC / LiFePO4 / LiPo / LiPo HV / Lead acid / NiMH / LTO (saved per repeater)
 - **Management tool cards** (full-width cards with chevron arrows, not a grid). Title dynamically shows "Repeater Management" or "Room Management" (admin) or "Repeater Guest" / "Room Guest" (guest) based on contact type and login result:
 
 | Card | Destination | Visibility |

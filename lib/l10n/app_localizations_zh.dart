@@ -357,7 +357,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get scanner_getNodeDisclosure => '推广链接：每次购买都会支持 MeshCore Open。';
 
   @override
-  String get scanner_getNodeDismiss => '不再显示';
+  String get scanner_getNodeDismiss => '隐藏一周';
 
   @override
   String get scanner_bluetoothWebUnsupported => '浏览器不支持蓝牙，请改用 USB 连接。';
@@ -1499,6 +1499,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_batteryLipoHv => '锂多压电源（3.0-4.35伏）';
 
   @override
+  String get appSettings_batteryLeadAcid => '铅酸电池 (1.75-2.13V)';
+
+  @override
+  String get appSettings_batteryNimh => '镍氢 (1.0-1.4V)';
+
+  @override
+  String get appSettings_batteryLto => 'LTO (1.5-2.85V)';
+
+  @override
   String get appSettings_mapDisplay => '地图显示';
 
   @override
@@ -1777,6 +1786,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get contacts_moreOptions => '更多选择';
+
+  @override
+  String get contacts_discoverNearby => '发现附近节点';
 
   @override
   String get contacts_searchOpen => '搜索联系人';

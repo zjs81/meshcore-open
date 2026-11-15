@@ -91,6 +91,7 @@ Groups are stored per radio identity (scoped by public key).
 The Contacts screen has a single **three-dot overflow menu** (`⋮`) in the app bar:
 
 - Discovered Contacts — opens the DiscoveryScreen
+- Discover Nearby — starts a scan for nodes within direct radio range (see [Scan for Nearby Nodes](#scan-for-nearby-nodes)); disabled unless the connected firmware supports node discover
 - Add Contact from Clipboard — reads a `meshcore://<hex>` URI from clipboard and imports it
 - *(divider)*
 - Zero-Hop Advert — broadcasts your advertisement to immediately adjacent nodes
@@ -115,7 +116,7 @@ Overflow menu → "Discovered Contacts". Shows nodes heard passively that haven'
 
 ### Scan for Nearby Nodes
 
-On the Discovered Contacts screen, tap the radar icon (**Scan for nearby nodes**) to ask nodes within direct radio range to identify themselves, instead of waiting for their next advert. The button appears only while connected to firmware with version code 8 or newer.
+From the Contacts screen overflow menu choose **Discover Nearby**, or on the Discovered Contacts screen tap the radar icon (**Scan for nearby nodes**), to ask nodes within direct radio range to identify themselves, instead of waiting for their next advert. Both require firmware with version code 8 or newer while connected.
 
 - Repeaters and sensors answer. Room servers and companions usually don't.
 - Results appear live for about 12 seconds, sorted by signal. Each shows the node type, signal strength, how well the node heard you ("they heard us at … dB"), and either **Already in contacts** or an add button.

@@ -12,8 +12,11 @@ const String nodeBannerRecordName = '_banner.meshcoreopen.org';
 const String _dohEndpoint = 'https://cloudflare-dns.com/dns-query';
 const String _cacheRecordKey = 'node_banner_txt';
 const String _cacheExpiryKey = 'node_banner_expires_ms';
-const String _dismissedKey = 'node_banner_dismissed';
+const String _dismissUntilKey = 'node_banner_dismiss_until_ms';
 const int _dnsTypeTxt = 16;
+
+/// How long a dismissed banner stays hidden before it can show again.
+const Duration dismissDuration = Duration(days: 7);
 
 /// Banner content from the TXT record. Null text fields fall back to the
 /// app's localized strings.
@@ -78,7 +81,8 @@ class NodeBannerService {
   Future<NodeBannerConfig?> load() async {
     try {
       final prefs = PrefsManager.instance;
-      if (prefs.getBool(_dismissedKey) ?? false) return null;
+      final dismissUntil = prefs.getInt(_dismissUntilKey) ?? 0;
+      if (_now().millisecondsSinceEpoch < dismissUntil) return null;
       final expires = prefs.getInt(_cacheExpiryKey) ?? 0;
       final cached = prefs.getString(_cacheRecordKey);
       if (cached != null && _now().millisecondsSinceEpoch < expires) {
@@ -110,9 +114,12 @@ class NodeBannerService {
     }
   }
 
-  /// Hides the banner permanently for this device.
+  /// Hides the banner on this device for [dismissDuration].
   Future<void> dismiss() async {
-    await PrefsManager.instance.setBool(_dismissedKey, true);
+    await PrefsManager.instance.setInt(
+      _dismissUntilKey,
+      _now().add(dismissDuration).millisecondsSinceEpoch,
+    );
   }
 
   /// The first TXT answer in a DoH JSON response, with its character-strings

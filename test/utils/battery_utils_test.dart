@@ -13,6 +13,25 @@ void main() {
       expect(estimateBatteryPercentFromVolts(3.65, 'lifepo4'), 100);
     });
 
+    test('lead acid range maps 1.75V to 0% and 2.13V to 100%', () {
+      expect(estimateBatteryPercentFromVolts(1.75, 'lead_acid'), 0);
+      expect(estimateBatteryPercentFromVolts(2.13, 'lead_acid'), 100);
+    });
+
+    test('nimh and lto ranges map to their cell limits', () {
+      expect(estimateBatteryPercentFromVolts(1.0, 'nimh'), 0);
+      expect(estimateBatteryPercentFromVolts(1.4, 'nimh'), 100);
+      expect(estimateBatteryPercentFromVolts(1.5, 'lto'), 0);
+      expect(estimateBatteryPercentFromVolts(2.85, 'lto'), 100);
+    });
+
+    test('12V lead acid pack resolves to six cells', () {
+      final reading = batteryReadingFromMillivolts(12600, 'lead_acid');
+      expect(reading.cellCount, 6);
+      expect(reading.averageCellMillivolts, 2100);
+      expect(reading.percent, 92);
+    });
+
     test('unknown chemistry falls back to nmc mapping', () {
       expect(
         estimateBatteryPercentFromMillivolts(3600, 'unknown'),

@@ -778,7 +778,7 @@ abstract class AppLocalizations {
   /// No description provided for @scanner_getNodeDismiss.
   ///
   /// In en, this message translates to:
-  /// **'Don\'t show again'**
+  /// **'Hide for a week'**
   String get scanner_getNodeDismiss;
 
   /// No description provided for @scanner_bluetoothWebUnsupported.
@@ -2905,6 +2905,24 @@ abstract class AppLocalizations {
   /// **'LiPo HV (3.0-4.35V)'**
   String get appSettings_batteryLipoHv;
 
+  /// No description provided for @appSettings_batteryLeadAcid.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead acid (1.75-2.13V)'**
+  String get appSettings_batteryLeadAcid;
+
+  /// No description provided for @appSettings_batteryNimh.
+  ///
+  /// In en, this message translates to:
+  /// **'NiMH (1.0-1.4V)'**
+  String get appSettings_batteryNimh;
+
+  /// No description provided for @appSettings_batteryLto.
+  ///
+  /// In en, this message translates to:
+  /// **'LTO (1.5-2.85V)'**
+  String get appSettings_batteryLto;
+
   /// No description provided for @appSettings_mapDisplay.
   ///
   /// In en, this message translates to:
@@ -3384,6 +3402,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'More options'**
   String get contacts_moreOptions;
+
+  /// No description provided for @contacts_discoverNearby.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover Nearby'**
+  String get contacts_discoverNearby;
 
   /// No description provided for @contacts_searchOpen.
   ///
