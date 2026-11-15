@@ -10643,6 +10643,48 @@ abstract class AppLocalizations {
   /// **'This device can\'t preview the reconstruction.'**
   String get imageSend_reconstructionUnavailable;
 
+  /// No description provided for @receivedImage_packetEchoes.
+  ///
+  /// In en, this message translates to:
+  /// **'Packet {number}: {count, plural, =0{no repeater heard} =1{repeated once} other{repeated {count} times}}'**
+  String receivedImage_packetEchoes(int number, int count);
+
+  /// No description provided for @receivedImage_recoveryPacketEchoes.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery packet: {count, plural, =0{no repeater heard} =1{repeated once} other{repeated {count} times}}'**
+  String receivedImage_recoveryPacketEchoes(int count);
+
+  /// No description provided for @imageSend_preparingPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing preview…'**
+  String get imageSend_preparingPreview;
+
+  /// No description provided for @imageSend_tryAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another version'**
+  String get imageSend_tryAnother;
+
+  /// No description provided for @imageSend_versionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each version is reconstructed a little differently. Pick the one that looks most like your photo.'**
+  String get imageSend_versionsHint;
+
+  /// No description provided for @imageSend_versionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {number}'**
+  String imageSend_versionLabel(int number);
+
+  /// No description provided for @imageSend_versionPackets.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 packet} other{{count} packets}}'**
+  String imageSend_versionPackets(int count);
+
   /// No description provided for @imageSend_modelNotDownloaded.
   ///
   /// In en, this message translates to:

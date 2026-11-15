@@ -301,5 +301,192 @@
     "settings_exportBookmarksSubtitle",
     "settings_exportBookmarksSuccess",
     "settings_exportBookmarksNoBookmarks"
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "cs": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "de": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "es": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "fr": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "hu": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "it": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "ja": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "ko": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "nl": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "pl": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "pt": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "pt_PT": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "ru": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "sk": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "sl": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "sv": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "uk": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
+  ],
+
+  "zh": [
+    "receivedImage_packetEchoes",
+    "receivedImage_recoveryPacketEchoes",
+    "imageSend_preparingPreview",
+    "imageSend_tryAnother",
+    "imageSend_versionsHint",
+    "imageSend_versionLabel",
+    "imageSend_versionPackets"
   ]
 }

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
 import '../l10n/l10n.dart';
+import '../theme/mesh_theme.dart';
 import '../services/image_chunk_transport.dart';
 import '../utils/lora_airtime.dart';
 import 'image_send_codec_binding.dart';
@@ -37,6 +38,11 @@ class ImageSendPreviewResult {
   /// actually shown. Null when the radio settings were unknown.
   final Duration? wallClock;
 
+  /// The chosen version decoded as recipients will see it (a
+  /// 512x512 PNG, stretched like the codec input), or null if this device
+  /// could not decode. Used for the sender's own chat bubble.
+  final Uint8List? previewPng;
+
   const ImageSendPreviewResult({
     required this.payload,
     required this.rate,
@@ -44,6 +50,7 @@ class ImageSendPreviewResult {
     required this.packetCount,
     required this.airtime,
     required this.wallClock,
+    this.previewPng,
   });
 }
 
@@ -141,29 +148,53 @@ class _RateEstimate {
   bool get isExact => payloadBytes != null;
 }
 
+/// One encoded version of the photo: the whole photo with re-roll tweak
+/// [variant] (see [rerollSourceRect]), its bitstream, and what recipients will
+/// see when they decode it.
+class _Version {
+  _Version(this.variant);
+
+  final int variant;
+  Uint8List? payload;
+  Uint8List? png;
+  bool encoding = true;
+  bool decoding = false;
+
+  /// The encode failed; there is nothing to send for this version.
+  bool get failed => !encoding && payload == null;
+}
+
 class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
-  /// The encoded ft32 bitstream, once the encode finishes.
-  Uint8List? _encoded;
+  /// Versions made so far, in the order they were made. Version 1 (variant 0)
+  /// is the photo exactly as the app has always encoded it; more are added only
+  /// when the user taps "Try another version".
+  final List<_Version> _versions = [];
+  int _selected = 0;
 
   late bool _parity;
-  bool _encoding = false;
   bool _sending = false;
-  bool _failed = false;
 
   /// Latest radio params seen in build; used by [_onSend] so the confirm path
   /// does not have to touch an InheritedWidget after an await.
   ImageSendRadio? _radio;
 
-  /// Source `width / height`. Recipients un-stretch the 512x512 square back to
-  /// this shape, so both preview views use it.
+  /// Source `width / height`, used when the original is shown.
   double _aspect = 1;
   // The shape recipients restore: the nearest supported ratio, or square.
   double _recipientAspect = 1;
 
-  bool _showReconstruction = false;
-  Uint8List? _reconstruction;
-  bool _reconstructing = false;
-  bool _reconstructionUnavailable = false;
+  /// The main preview shows the original photo instead of the reconstruction.
+  bool _showOriginal = false;
+
+  /// This device cannot decode, so there is no reconstruction to show and
+  /// making more versions would be pointless.
+  bool _previewUnavailable = false;
+
+  _Version? get _current => _versions.isEmpty ? null : _versions[_selected];
+
+  /// A version is being encoded or decoded. Codec jobs run one at a time, so
+  /// "Try another version" waits for this to clear.
+  bool get _working => _versions.any((v) => v.encoding || v.decoding);
 
   @override
   void initState() {
@@ -171,7 +202,7 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
     _parity = widget.initialParity;
     _probeAspect();
     if (widget.codec.availability == ImageCodecAvailability.ready) {
-      _encode();
+      _addVersion();
     }
   }
 
@@ -197,59 +228,56 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
     } catch (_) {}
   }
 
-  Future<void> _selectView(bool reconstruction) async {
-    setState(() => _showReconstruction = reconstruction);
-    final payload = _encoded;
-    if (!reconstruction ||
-        payload == null ||
-        _reconstruction != null ||
-        _reconstructing) {
-      return;
+  /// Encodes the next version, selects it, then decodes it so the user sees
+  /// what recipients will get.
+  Future<void> _addVersion() async {
+    final version = _Version(_versions.length);
+    setState(() {
+      _versions.add(version);
+      _selected = _versions.length - 1;
+      _showOriginal = false;
+    });
+    Uint8List? payload;
+    try {
+      payload = await widget.codec.encode(
+        widget.imageBytes,
+        kImageSendRatePoint,
+        variant: version.variant,
+      );
+    } catch (_) {
+      payload = null;
     }
-    setState(() => _reconstructing = true);
+    if (!mounted) return;
+    setState(() {
+      version.encoding = false;
+      version.payload = payload;
+      version.decoding = payload != null && !_previewUnavailable;
+    });
+    if (!version.decoding) return;
     Uint8List? png;
     try {
-      png = await widget.codec.decodePreview(payload);
+      png = await widget.codec.decodePreview(payload!);
     } catch (_) {
       png = null;
     }
     if (!mounted) return;
     setState(() {
-      _reconstructing = false;
-      _reconstruction = png;
-      if (png == null) {
-        _reconstructionUnavailable = true;
-        _showReconstruction = false;
+      version.decoding = false;
+      version.png = png;
+      if (png == null && !_versions.any((v) => v.png != null)) {
+        // Nothing has ever decoded here: treat the device as unable to
+        // preview and fall back to showing the original.
+        _previewUnavailable = true;
+        _showOriginal = true;
       }
     });
   }
 
-  Future<Uint8List?> _encode() async {
-    final cached = _encoded;
-    if (cached != null) return cached;
+  void _select(int index) {
     setState(() {
-      _encoding = true;
-      _failed = false;
+      _selected = index;
+      _showOriginal = false;
     });
-    try {
-      final bytes = await widget.codec.encode(
-        widget.imageBytes,
-        kImageSendRatePoint,
-      );
-      if (!mounted) return bytes;
-      setState(() {
-        _encoded = bytes;
-        _encoding = false;
-      });
-      return bytes;
-    } catch (_) {
-      if (!mounted) return null;
-      setState(() {
-        _encoding = false;
-        _failed = true;
-      });
-      return null;
-    }
   }
 
   ImageSendRadio _radioParams(BuildContext context) {
@@ -264,7 +292,7 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
   }
 
   _RateEstimate _estimateFor(ImageSendRadio radio) {
-    final bytes = _encoded;
+    final bytes = _current?.payload;
     if (bytes != null) {
       final exact = _estimate(bytes.length, radio);
       return _RateEstimate(
@@ -293,14 +321,11 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
     );
   }
 
-  Future<void> _onSend() async {
+  void _onSend() {
+    final version = _current;
+    final payload = version?.payload;
+    if (version == null || payload == null) return;
     setState(() => _sending = true);
-    final payload = await _encode();
-    if (!mounted) return;
-    if (payload == null) {
-      setState(() => _sending = false);
-      return;
-    }
     final radio = _radio ?? const ImageSendRadio();
     final estimate = _estimate(payload.length, radio);
     Navigator.of(context).pop(
@@ -311,6 +336,7 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
         packetCount: estimate.chunkCount,
         airtime: estimate.totalAirtime,
         wallClock: estimate.pacedWallClock,
+        previewPng: version.png,
       ),
     );
   }
@@ -375,7 +401,7 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
                     ..._warnings(theme, colors, radio, selected),
                     const SizedBox(height: 4),
                     _parityTile(theme, colors),
-                    if (_failed) ...[
+                    if (_current?.failed ?? false) ...[
                       const SizedBox(height: 12),
                       _banner(
                         colors: colors,
@@ -408,6 +434,9 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
     ),
   );
 
+  /// The main preview: by default the selected version as recipients
+  /// will see it, with the original one tap away for comparison.
+  ///
   /// The preview is deliberately capped in height: the packet count and airtime
   /// below it are the reason this screen exists and must not be pushed off the
   /// first screenful by a full-width square.
@@ -419,59 +448,96 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
   ) {
     final l10n = context.l10n;
     final maxSide = MediaQuery.sizeOf(context).height * 0.28;
-    final reconstruction = _showReconstruction ? _reconstruction : null;
+    final version = _current;
+    final canPreview = ready && !_previewUnavailable;
+    final showReconstruction = canPreview && !_showOriginal && version != null;
+    final png = showReconstruction ? version.png : null;
+    final pending =
+        showReconstruction &&
+        png == null &&
+        (version.encoding || version.decoding);
+    final broken = showReconstruction && png == null && !pending;
+
+    Widget content;
+    if (pending) {
+      content = Center(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 12),
+              Text(
+                l10n.imageSend_preparingPreview,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colors.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else if (broken) {
+      content = Center(
+        child: Icon(
+          Icons.broken_image_outlined,
+          size: 48,
+          color: colors.onSurfaceVariant,
+        ),
+      );
+    } else {
+      content = Image.memory(
+        png ?? widget.imageBytes,
+        // The reconstruction is the stretched square; fill undoes the stretch
+        // into the recipient's shape.
+        fit: png != null ? BoxFit.fill : BoxFit.contain,
+        alignment: Alignment.center,
+        gaplessPlayback: true,
+        errorBuilder: (context, error, stack) => Center(
+          child: Icon(
+            Icons.broken_image_outlined,
+            size: 48,
+            color: colors.onSurfaceVariant,
+          ),
+        ),
+      );
+    }
+
     return Column(
       children: [
-        if (ready) ...[
+        if (canPreview) ...[
           SegmentedButton<bool>(
             segments: [
               ButtonSegment(
                 value: false,
-                label: MeshSegmentLabel(l10n.imageSend_viewOriginal),
+                label: MeshSegmentLabel(l10n.imageSend_viewReconstruction),
               ),
               ButtonSegment(
                 value: true,
-                label: MeshSegmentLabel(l10n.imageSend_viewReconstruction),
-                enabled: _encoded != null && !_reconstructionUnavailable,
+                label: MeshSegmentLabel(l10n.imageSend_viewOriginal),
               ),
             ],
-            selected: {_showReconstruction},
-            onSelectionChanged: (s) => _selectView(s.first),
+            selected: {_showOriginal},
+            onSelectionChanged: (s) => setState(() => _showOriginal = s.first),
           ),
           const SizedBox(height: 12),
         ],
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: maxSide, maxWidth: maxSide),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(MeshRadii.md),
             child: AspectRatio(
-              aspectRatio: reconstruction != null ? _recipientAspect : _aspect,
-              child: Container(
+              aspectRatio: showReconstruction ? _recipientAspect : _aspect,
+              child: ColoredBox(
                 color: colors.surfaceContainerHighest,
-                child: _showReconstruction && _reconstructing
-                    ? const Center(child: CircularProgressIndicator())
-                    : Image.memory(
-                        reconstruction ?? widget.imageBytes,
-                        // The reconstruction is the stretched square; fill
-                        // undoes the stretch into the recipient's shape.
-                        fit: reconstruction != null
-                            ? BoxFit.fill
-                            : BoxFit.contain,
-                        alignment: Alignment.center,
-                        gaplessPlayback: true,
-                        errorBuilder: (context, error, stack) => Center(
-                          child: Icon(
-                            Icons.broken_image_outlined,
-                            size: 48,
-                            color: colors.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
+                child: content,
               ),
             ),
           ),
         ),
-        if (_reconstructionUnavailable) ...[
+        if (_previewUnavailable) ...[
           const SizedBox(height: 8),
           Text(
             l10n.imageSend_reconstructionUnavailable,
@@ -480,6 +546,10 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
               color: colors.onSurfaceVariant,
             ),
           ),
+        ],
+        if (canPreview && _versions.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _versionsRow(theme, colors),
         ],
         const SizedBox(height: 8),
         Text(
@@ -493,6 +563,152 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
           ),
         ),
       ],
+    );
+  }
+
+  /// The versions made so far, plus "Try another version".
+  Widget _versionsRow(ThemeData theme, ColorScheme colors) {
+    final l10n = context.l10n;
+    return Column(
+      children: [
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (var i = 0; i < _versions.length; i++)
+              _versionTile(theme, colors, i),
+          ],
+        ),
+        if (_versions.length < kImageSendMaxVersions) ...[
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed: (_working || _sending) ? null : _addVersion,
+            icon: const Icon(Icons.refresh),
+            label: Text(l10n.imageSend_tryAnother),
+          ),
+        ],
+        const SizedBox(height: 8),
+        Text(
+          l10n.imageSend_versionsHint,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: colors.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// One selectable version: its reconstruction, "Version n" and its packet
+  /// count. Selection shows as a thick primary border plus a check badge, so
+  /// it never relies on colour alone.
+  Widget _versionTile(ThemeData theme, ColorScheme colors, int index) {
+    final l10n = context.l10n;
+    final version = _versions[index];
+    final selected = index == _selected;
+    final label = l10n.imageSend_versionLabel(index + 1);
+    const maxSide = 80.0;
+    final aspect = _recipientAspect;
+    final width = aspect >= 1 ? maxSide : maxSide * aspect;
+    final height = aspect >= 1 ? maxSide / aspect : maxSide;
+    final payload = version.payload;
+    final packets = payload == null
+        ? null
+        : _estimate(
+            payload.length,
+            _radio ?? const ImageSendRadio(),
+          ).chunkCount;
+
+    final Widget thumb;
+    if (version.png != null) {
+      thumb = Image.memory(
+        version.png!,
+        fit: BoxFit.fill,
+        gaplessPlayback: true,
+      );
+    } else if (version.encoding || version.decoding) {
+      thumb = const Center(
+        child: SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      );
+    } else {
+      thumb = Icon(Icons.broken_image_outlined, color: colors.onSurfaceVariant);
+    }
+
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      excludeSemantics: true,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(MeshRadii.sm),
+        onTap: _sending ? null : () => _select(index),
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
+                children: [
+                  Container(
+                    width: width.clamp(48.0, maxSide),
+                    height: height.clamp(48.0, maxSide),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      color: colors.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(MeshRadii.sm),
+                      border: Border.all(
+                        color: selected
+                            ? colors.primary
+                            : colors.outlineVariant,
+                        width: selected ? 3 : 1,
+                      ),
+                    ),
+                    child: thumb,
+                  ),
+                  if (selected)
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: colors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.check,
+                          size: 16,
+                          color: colors.onPrimary,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: selected ? colors.onSurface : colors.onSurfaceVariant,
+                  fontWeight: selected ? FontWeight.w600 : null,
+                ),
+              ),
+              if (packets != null)
+                Text(
+                  l10n.imageSend_versionPackets(packets),
+                  style: MeshTheme.mono(
+                    fontSize: 12,
+                    color: colors.onSurfaceVariant,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -794,7 +1010,8 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
 
   Widget _actions(ThemeData theme, bool ready) {
     final localizations = context.l10n;
-    final busy = _sending || _encoding;
+    final busy = _sending || (_current?.encoding ?? false);
+    final canSend = ready && !_sending && _current?.payload != null;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: Row(
@@ -810,7 +1027,7 @@ class _ImageSendPreviewSheetState extends State<ImageSendPreviewSheet> {
           const SizedBox(width: 12),
           Expanded(
             child: FilledButton.icon(
-              onPressed: (!ready || busy) ? null : _onSend,
+              onPressed: canSend ? _onSend : null,
               icon: busy
                   ? const SizedBox(
                       width: 16,

@@ -3509,6 +3509,44 @@
   "imageSend_viewOriginal": "Original",
   "imageSend_viewReconstruction": "What recipients see",
   "imageSend_reconstructionUnavailable": "This device can't preview the reconstruction.",
+  "receivedImage_packetEchoes": "Packet {number}: {count, plural, =0{no repeater heard} =1{repeated once} other{repeated {count} times}}",
+  "@receivedImage_packetEchoes": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "receivedImage_recoveryPacketEchoes": "Recovery packet: {count, plural, =0{no repeater heard} =1{repeated once} other{repeated {count} times}}",
+  "@receivedImage_recoveryPacketEchoes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSend_preparingPreview": "Preparing preview…",
+  "imageSend_tryAnother": "Try another version",
+  "imageSend_versionsHint": "Each version is reconstructed a little differently. Pick the one that looks most like your photo.",
+  "imageSend_versionLabel": "Version {number}",
+  "@imageSend_versionLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSend_versionPackets": "{count, plural, =1{1 packet} other{{count} packets}}",
+  "@imageSend_versionPackets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "imageSend_modelNotDownloaded": "The image model isn't downloaded yet. Download it in Settings to send images.",
   "imageSend_originalSize": "Original",
   "imageSend_onAirSize": "On air",

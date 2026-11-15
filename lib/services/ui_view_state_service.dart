@@ -109,6 +109,11 @@ class UiViewStateService extends ChangeNotifier {
     }
   }
 
+  Future<void> reload() async {
+    await initialize();
+    notifyListeners();
+  }
+
   void setContactsSelectedGroupName(String value) {
     if (_contactsSelectedGroupName == value) return;
     _contactsSelectedGroupName = value;
