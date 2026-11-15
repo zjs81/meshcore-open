@@ -9,6 +9,10 @@ Dart side is checked against.
 They are committed here so `test/services/golden/` is reproducible. Nothing in
 the app runs them.
 
+To measure reconstruction quality and byte cost instead, use the
+[evaluation harness](eval/README.md), which runs on the downloaded model bundle
+and needs no research checkout.
+
 | script | produces | used by |
 |---|---|---|
 | `export_golden.py` | `golden/aeic_cdf_ft32.bin`, `golden/vectors/*.gv` | `rans_coder_test.dart`, `entropy_tables_test.dart` |
