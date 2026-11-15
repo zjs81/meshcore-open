@@ -485,6 +485,12 @@ class BackupService {
         );
       }
     }
+    if (selectedItems.contains(BackupItem.appSettings)) {
+      await appSettingsService.loadSettings();
+    }
+    if (selectedItems.contains(BackupItem.channelSettings)) {
+      await connector.reloadChannelOrder();
+    }
     if (!importingIdentity &&
         selectedItems.contains(BackupItem.discoveredContacts)) {
       await connector.reloadDiscoveredContacts();

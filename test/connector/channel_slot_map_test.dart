@@ -259,6 +259,19 @@ void main() {
     },
   );
 
+  test('reloads a restored custom channel order', () async {
+    await _connect(_TestRadio());
+    final restoredOrder = [_id(_psk(1)), _id(_psk(0)), _id(_psk(2))];
+    await PrefsManager.instance.setString(
+      'channel_order_$_scope',
+      jsonEncode(restoredOrder),
+    );
+
+    await _connector.reloadChannelOrder();
+
+    expect(_connector.channels.first.storageId, restoredOrder.first);
+  });
+
   test('deleting a channel clears its stored history', () async {
     await _connect(_TestRadio());
     await _waitFor(() => _texts(1).contains(_queuedHikingText));
