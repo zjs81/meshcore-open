@@ -125,6 +125,9 @@ class LocalApiServer {
     'regions',
     'channels_join',
     if (archive != null) 'replay',
+    // Wherever the radio can send channel data (firmware ver 11+), it takes
+    // a path; without channel data every send fails unsupported_firmware.
+    'tx_path_data',
   ];
 
   /// Actual port, useful when [port] was 0 (tests) or when reporting the URI.
@@ -659,7 +662,7 @@ class _ApiClient {
           );
         }
         final region = _regionParam(params);
-        _refuseUnoffered(params, 'path', 'tx_path_data');
+        final path = _pathParam(params);
         if (!server.host.supportsChannelData) {
           throw _ApiError(
             'unsupported_firmware',
@@ -672,6 +675,7 @@ class _ApiClient {
             dataType,
             payload,
             region: region,
+            path: path,
           );
           if (!sent) {
             throw _ApiError('not_connected', 'the radio is not connected');
@@ -1007,6 +1011,46 @@ class _ApiClient {
       throw _ApiError('bad_request', 'region must be a region name');
     }
     throw _ApiError('unknown_region', 'no region named $raw');
+  }
+
+  static final RegExp _hex = RegExp(r'^(?:[0-9a-fA-F]{2})*$');
+
+  /// `path` (hex hop hashes in send order) and `pathHashSize` (1–3, default
+  /// 1), as meshcored takes them. Absent or null: flood. `""`: zero-hop.
+  ChannelDataPath? _pathParam(Map<String, dynamic> params) {
+    final raw = params['path'];
+    if (raw == null) return null;
+    if (raw is! String) {
+      throw _ApiError('bad_request', 'path must be a hex string');
+    }
+    if (!_hex.hasMatch(raw)) {
+      throw _ApiError('bad_request', 'path must be a hex string');
+    }
+    final bytes = Uint8List(raw.length ~/ 2);
+    for (var i = 0; i < bytes.length; i++) {
+      bytes[i] = int.parse(raw.substring(i * 2, i * 2 + 2), radix: 16);
+    }
+    final sizeRaw = params['pathHashSize'];
+    final int hashSize;
+    if (sizeRaw == null) {
+      hashSize = 1;
+    } else if (sizeRaw is int && sizeRaw >= 1 && sizeRaw <= 3) {
+      hashSize = sizeRaw;
+    } else {
+      throw _ApiError('bad_request', 'pathHashSize must be 1, 2 or 3');
+    }
+    if (bytes.length % hashSize != 0) {
+      throw _ApiError('bad_request', 'path length does not match pathHashSize');
+    }
+    if (bytes.length ~/ hashSize > ChannelDataPath.maxHops ||
+        bytes.length > ChannelDataPath.maxBytes) {
+      throw _ApiError(
+        'bad_request',
+        'path is too long: at most ${ChannelDataPath.maxHops} hops and '
+            '${ChannelDataPath.maxBytes} bytes',
+      );
+    }
+    return ChannelDataPath(bytes, hashSize: hashSize);
   }
 
   List<T> _listParam<T>(Map<String, dynamic> params, String name) {

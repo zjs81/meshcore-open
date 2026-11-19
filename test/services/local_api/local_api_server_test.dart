@@ -308,6 +308,7 @@ void main() {
         'regions',
         'channels_join',
         'replay',
+        'tx_path_data',
       ]);
       expect(hello['server']['name'], 'meshcore-open');
       expect(hello['eventTypes'], contains('channel.data'));
@@ -691,37 +692,6 @@ void main() {
       expect((await to('7', 3))['error']['code'], 'unknown_channel');
     });
 
-    test('path is refused, not ignored', () async {
-      final connection = await paired(TestPeer.generate(36));
-      Map<String, Object?> data(Map<String, Object?> extra) => {
-        'channel': '#roadstr',
-        'dataType': 0xFF52,
-        'payload': 'AQ==',
-        ...extra,
-      };
-      for (final (id, method, params) in [
-        (2, 'channel.sendData', data({'path': ''})),
-        (
-          3,
-          'channel.sendText',
-          {'channel': '#roadstr', 'text': 'a', 'path': ''},
-        ),
-      ]) {
-        final reply = await call(connection, id, method, params);
-        expect(reply['error']['code'], 'unsupported', reason: '$params');
-      }
-      expect(host.sent, isEmpty);
-      expect(
-        (await call(
-          connection,
-          5,
-          'channel.sendData',
-          data({'path': null}),
-        ))['ok'],
-        true,
-      );
-    });
-
     test('a command the radio never confirmed may have been sent', () async {
       final connection = await paired(TestPeer.generate(37));
       host.sendError = TimeoutException('no ack');
@@ -813,6 +783,148 @@ void main() {
       expect(bad['error']['code'], 'coordinate_range');
       final list = await call(connection, 4, 'regions.list');
       expect(list['result']['regions'], hasLength(2));
+    });
+  });
+
+  group('paths', () {
+    Future<Map<String, dynamic>> sendAlong(
+      Connection connection,
+      int id,
+      Map<String, Object?> route,
+    ) => call(connection, id, 'channel.sendData', {
+      'channel': '#roadstr',
+      'dataType': 0xB652,
+      'payload': base64Encode([id]),
+      ...route,
+    });
+
+    test('hello lists tx_path_data', () async {
+      final connection = await connect(TestPeer.generate(60));
+      await sendPair(connection, TestPeer.generate(60));
+      final hello = await connection.next();
+      expect(hello['type'], 'hello');
+      expect(hello['capabilities'], contains('tx_path_data'));
+    });
+
+    test('the shared path vectors', () async {
+      final vectors =
+          jsonDecode(
+                File(
+                  'test/services/local_api/vectors/validators.json',
+                ).readAsStringSync(),
+              )
+              as Map<String, dynamic>;
+      final connection = await paired(TestPeer.generate(65));
+      var id = 0;
+      for (final entry in vectors['paths']['cases'] as List) {
+        final route = <String, Object?>{
+          'path': entry['path'],
+          if (entry.containsKey('pathHashSize'))
+            'pathHashSize': entry['pathHashSize'],
+        };
+        final reply = await sendAlong(connection, ++id, route);
+        final reason = jsonEncode(entry);
+        if (entry.containsKey('error')) {
+          expect(reply['error']['code'], entry['error'], reason: reason);
+        } else if (entry['result'] == 'flood') {
+          expect(reply['ok'], true, reason: reason);
+          expect(host.lastPath, isNull, reason: reason);
+        } else {
+          expect(reply['ok'], true, reason: reason);
+          expect(
+            host.lastPath!.pathLenByte,
+            entry['pathLenByte'],
+            reason: reason,
+          );
+          expect(host.lastPath!.isZeroHop, entry['result'] == 'zero_hop');
+        }
+      }
+    });
+
+    test('an empty path is zero-hop, no path floods', () async {
+      final connection = await paired(TestPeer.generate(61));
+      // What LibreTag sends for a local-only command.
+      expect(
+        (await sendAlong(connection, 1, {'path': '', 'pathHashSize': 1}))['ok'],
+        true,
+      );
+      expect(host.lastPath!.isZeroHop, true);
+      expect(host.lastPath!.pathLenByte, 0);
+      expect(host.lastRegion, isNull);
+
+      expect((await sendAlong(connection, 2, {'path': null}))['ok'], true);
+      expect(host.lastPath, isNull);
+      expect((await sendAlong(connection, 3, {}))['ok'], true);
+      expect(host.lastPath, isNull);
+    });
+
+    test('a direct path packs the hop count and hash size', () async {
+      final connection = await paired(TestPeer.generate(62));
+      expect((await sendAlong(connection, 1, {'path': 'A1b2'}))['ok'], true);
+      expect(host.lastPath!.hashes, [0xA1, 0xB2]);
+      expect(host.lastPath!.pathLenByte, 0x02);
+
+      expect(
+        (await sendAlong(connection, 2, {
+          'path': 'a1a2b1b2',
+          'pathHashSize': 2,
+          'region': 'sk-ba',
+        }))['ok'],
+        true,
+      );
+      expect(host.lastPath!.pathLenByte, 0x42);
+      expect(host.lastRegion, 'sk-ba');
+
+      expect(
+        (await sendAlong(connection, 3, {
+          'path': 'abcdef' * 21,
+          'pathHashSize': 3,
+        }))['ok'],
+        true,
+      );
+      expect(host.lastPath!.pathLenByte, 0x80 | 21);
+    });
+
+    test('refuses malformed paths before the radio', () async {
+      final connection = await paired(TestPeer.generate(63));
+      final bad = <Map<String, Object?>>[
+        {'path': 7},
+        {'path': 'abc'},
+        {'path': 'zz'},
+        {'path': 'ab', 'pathHashSize': 4},
+        {'path': 'ab', 'pathHashSize': 0},
+        {'path': 'ab', 'pathHashSize': '1'},
+        {'path': 'abcd', 'pathHashSize': 3},
+        {'path': 'ab' * 64},
+        {'path': 'ab' * 66, 'pathHashSize': 2},
+      ];
+      for (var i = 0; i < bad.length; i++) {
+        expect(
+          (await sendAlong(connection, i, bad[i]))['error']['code'],
+          'bad_request',
+          reason: '${bad[i]}',
+        );
+      }
+      expect(host.sent, isEmpty);
+    });
+
+    test('text along a path is refused, not flooded', () async {
+      final connection = await paired(TestPeer.generate(64));
+      final response = await call(connection, 1, 'channel.sendText', {
+        'channel': '#roadstr',
+        'text': 'hi',
+        'path': '',
+      });
+      expect(response['error']['code'], 'unsupported');
+      expect(host.textSends, 0);
+      expect(
+        (await call(connection, 2, 'channel.sendText', {
+          'channel': '#roadstr',
+          'text': 'hi',
+        }))['ok'],
+        true,
+      );
+      expect(host.textSends, 1);
     });
   });
 
@@ -1124,6 +1236,8 @@ class _FakeHost implements LocalApiHost {
   ];
   List<String> saved = [];
   String? lastRegion;
+  ChannelDataPath? lastPath;
+  int textSends = 0;
 
   @override
   Stream<MeshEvent> get events => _controller.stream;
@@ -1202,7 +1316,9 @@ class _FakeHost implements LocalApiHost {
     Channel channel,
     String text, {
     String? region,
-  }) async {}
+  }) async {
+    textSends++;
+  }
 
   @override
   Future<bool> sendChannelData(
@@ -1210,8 +1326,10 @@ class _FakeHost implements LocalApiHost {
     int dataType,
     Uint8List payload, {
     String? region,
+    ChannelDataPath? path,
   }) async {
     lastRegion = region;
+    lastPath = path;
     if (throwOnSend) throw Exception('Command failed with error code 3');
     final error = sendError;
     if (error != null) throw error;

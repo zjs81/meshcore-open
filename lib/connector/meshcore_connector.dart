@@ -6142,6 +6142,8 @@ class MeshCoreConnector extends ChangeNotifier {
     required int dataType,
     required Uint8List payload,
     String? region,
+    int pathLen = outPathUnknown,
+    Uint8List? path,
   }) async {
     if (!supportsChannelData) return false;
     if (payload.isEmpty || payload.length > kMaxChannelDataPayload) {
@@ -6149,6 +6151,9 @@ class MeshCoreConnector extends ChangeNotifier {
     }
     if (dataType <= 0 || dataType > 0xFFFF) return false;
 
+    // [pathLen] other than outPathUnknown sends direct along [path] (packed
+    // path_len, as in CMD_SEND_CHANNEL_DATA); 0 is zero-hop. Every firmware
+    // with channel data (ver 11+) takes it.
     await _runScopedChannelSend(() async {
       await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
       await _sendFrameAndWaitForCommandAck(
@@ -6156,7 +6161,8 @@ class MeshCoreConnector extends ChangeNotifier {
           channelIndex: channelIndex,
           dataType: dataType,
           payload: payload,
-          pathLen: outPathUnknown,
+          pathLen: pathLen,
+          path: path ?? Uint8List(0),
         ),
       );
     }, region: region ?? _channelSendScope(channelIndex));

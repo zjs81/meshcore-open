@@ -57,7 +57,7 @@ data** on the Local API screen empties it.
 `hello.capabilities` is:
 
 ```json
-["contacts", "advert_send", "regions", "channels_join", "replay"]
+["contacts", "advert_send", "regions", "channels_join", "replay", "tx_path_data"]
 ```
 
 * `contacts`: `contacts.list`, `direct.sendText`, the `direct.text` and `advert` events and the
@@ -72,9 +72,14 @@ data** on the Local API screen empties it.
 * `channels_join`: `channels.join`, always confirmed by the user in the dialog above.
 * `replay`: the archive above and `since` in `events.subscribe`. Only channel data is archived,
   not texts.
+* `tx_path_data`: `path` and `pathHashSize` on `channel.sendData`. `"path": ""` sends zero-hop and
+  a non-empty path sends direct along it, both through `CMD_SEND_CHANNEL_DATA` with a packed
+  `path_len`. Every firmware that can send channel data (ver 11 and newer) takes it, so the
+  capability is always listed; on older firmware `channel.sendData` fails with
+  `unsupported_firmware` whether or not it has a path.
 
-Other features of the specification are not offered. A `path` on a send is refused with
-`unsupported`, and so is a subscription to `packet.raw`.
+Other features of the specification are not offered. A `path` on `channel.sendText` is refused
+with `unsupported` (there is no `tx_path_text`), and so is a subscription to `packet.raw`.
 
 Sends go through the same path as the chat screen: the quiet wait before transmitting, the
 channel's flood scope and the radio's command acknowledgement. Texts and channel data sent from

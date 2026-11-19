@@ -6,6 +6,31 @@ import '../../models/channel.dart';
 import '../../models/contact.dart';
 import '../../models/mesh_event.dart';
 import '../../storage/region_store.dart';
+import '../image_chunk_transport.dart' show outPathUnknown;
+
+/// An explicit route for `channel.sendData`: hop hashes in send order, each
+/// [hashSize] bytes (1–3). No hashes means zero-hop.
+class ChannelDataPath {
+  /// The packet header keeps the hop count in 6 bits and the firmware takes at
+  /// most 64 path bytes.
+  static const int maxHops = 63;
+  static const int maxBytes = 64;
+
+  final Uint8List hashes;
+  final int hashSize;
+
+  ChannelDataPath(this.hashes, {this.hashSize = 1})
+    : assert(hashSize >= 1 && hashSize <= 3),
+      assert(hashes.length % hashSize == 0),
+      assert(hashes.length ~/ hashSize <= maxHops),
+      assert(hashes.length <= maxBytes);
+
+  bool get isZeroHop => hashes.isEmpty;
+
+  /// The firmware's packed `path_len`: hash size - 1 in the top two bits, the
+  /// hop count in the low six.
+  int get pathLenByte => ((hashSize - 1) << 6) | (hashes.length ~/ hashSize);
+}
 
 /// What the local API needs from the radio, separated from the connector so the
 /// server can be tested without BLE.
@@ -48,12 +73,15 @@ abstract class LocalApiHost {
   Future<void> sendChannelText(Channel channel, String text, {String? region});
 
   /// Returns false when the transport cannot send (disconnected, firmware too
-  /// old); throws on a firmware error or command timeout.
+  /// old); throws on a firmware error or command timeout. Without [path] the
+  /// data floods; with one it goes direct along it, and an empty path is
+  /// zero-hop (heard only by radios in range, forwarded by none).
   Future<bool> sendChannelData(
     Channel channel,
     int dataType,
     Uint8List payload, {
     String? region,
+    ChannelDataPath? path,
   });
 
   Future<void> sendDirectText(Contact contact, String text);
@@ -176,11 +204,14 @@ class ConnectorLocalApiHost implements LocalApiHost {
     int dataType,
     Uint8List payload, {
     String? region,
+    ChannelDataPath? path,
   }) => connector.sendChannelData(
     channelIndex: channel.index,
     dataType: dataType,
     payload: payload,
     region: region,
+    pathLen: path?.pathLenByte ?? outPathUnknown,
+    path: path?.hashes,
   );
 
   @override
