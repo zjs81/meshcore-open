@@ -165,6 +165,32 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('an invalid hex path does not overflow a keyboard-height sheet', (
+    tester,
+  ) async {
+    await _pumpSheet(
+      tester,
+      size: const Size(390, 640),
+      keyboard: 320,
+      initialPath: [0x60, 0x60, 0x11, 0x22],
+    );
+    await tester.enterText(
+      find.byKey(const Key('path-editor-hex-field')),
+      'ZZ',
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Invalid'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    expect(
+      find.byIcon(Icons.remove_circle_outline).hitTestable(),
+      findsWidgets,
+    );
+    final button = tester.getRect(find.text('Use this path'));
+    final sheet = tester.getRect(find.byType(PathEditorSheet));
+    expect(button.bottom, lessThanOrEqualTo(sheet.bottom + 1));
+  });
+
   testWidgets('action buttons stay below the repeater list on a short sheet', (
     tester,
   ) async {
