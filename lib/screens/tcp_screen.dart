@@ -62,6 +62,10 @@ class _TcpScreenState extends State<TcpScreen> {
         context.read<AppSettingsService>().setTcpServerPort(
           int.tryParse(_portController.text) ?? 0,
         );
+        context.read<AppSettingsService>().addTcpConnectionHistory(
+          _connector.activeTcpEndpoint ??
+              '${_hostController.text.trim()}:${_portController.text.trim()}',
+        );
         _navigatedToChannels = true;
         navigateToMainAfterConnect(context);
       }
@@ -86,6 +90,10 @@ class _TcpScreenState extends State<TcpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final history = context
+        .watch<AppSettingsService>()
+        .settings
+        .tcpConnectionHistory;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -193,6 +201,52 @@ class _TcpScreenState extends State<TcpScreen> {
                   ),
                 ),
 
+                // Connection history
+                if (history.isNotEmpty) ...[
+                  SectionHeader(context.l10n.tcpHistoryHeader),
+                  for (final endpoint in history)
+                    MeshCard(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 2,
+                      ),
+                      onTap: isButtonDisabled
+                          ? null
+                          : () => _useEndpoint(endpoint),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.history,
+                            size: 20,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              endpoint,
+                              style: MeshTheme.mono(
+                                fontSize: 15,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                            tooltip: context.l10n.common_remove,
+                            onPressed: () => _removeEndpoint(endpoint),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+
                 // Last used endpoint
                 if (connector.activeTcpEndpoint != null &&
                     connector.isTcpTransportConnected) ...[
@@ -290,6 +344,27 @@ class _TcpScreenState extends State<TcpScreen> {
         ],
       ),
     );
+  }
+
+  /// Fills the form from a saved `host:port` endpoint and connects.
+  void _useEndpoint(String endpoint) {
+    final split = endpoint.lastIndexOf(':');
+    if (split <= 0) {
+      _hostController.text = endpoint;
+      _portController.clear();
+    } else {
+      _hostController.text = endpoint.substring(0, split);
+      _portController.text = endpoint.substring(split + 1);
+    }
+    setState(() {
+      _hostError = null;
+      _portError = null;
+    });
+    _connectTcp();
+  }
+
+  void _removeEndpoint(String endpoint) {
+    context.read<AppSettingsService>().removeTcpConnectionHistory(endpoint);
   }
 
   Future<void> _connectTcp() async {

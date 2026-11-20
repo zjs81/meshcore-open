@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
 import 'package:meshcore_open/screens/scanner_screen.dart';
 import 'package:meshcore_open/screens/tcp_screen.dart';
 import 'package:meshcore_open/services/app_settings_service.dart';
+import 'package:meshcore_open/storage/prefs_manager.dart';
+import 'package:meshcore_open/widgets/mesh_ui.dart';
 
 class _FakeMeshCoreConnector extends MeshCoreConnector {
   _FakeMeshCoreConnector();
@@ -44,13 +47,17 @@ Widget _buildTestApp({
   required MeshCoreConnector connector,
   required Widget child,
   Locale? locale,
+  AppSettingsService? settings,
 }) {
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<MeshCoreConnector>.value(value: connector),
-      ChangeNotifierProvider<AppSettingsService>(
-        create: (_) => AppSettingsService(),
-      ),
+      if (settings != null)
+        ChangeNotifierProvider<AppSettingsService>.value(value: settings)
+      else
+        ChangeNotifierProvider<AppSettingsService>(
+          create: (_) => AppSettingsService(),
+        ),
     ],
     child: MaterialApp(
       locale: locale,
@@ -197,4 +204,53 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(milliseconds: 60));
   });
+
+  testWidgets(
+    'TcpScreen lists connection history and can reconnect or delete',
+    (tester) async {
+      PrefsManager.reset();
+      SharedPreferences.setMockInitialValues({});
+      await PrefsManager.initialize();
+      final settings = AppSettingsService();
+      await settings.addTcpConnectionHistory('room.local:5000');
+      await settings.addTcpConnectionHistory('192.168.1.50:6000');
+
+      final connector = _FakeMeshCoreConnector();
+      await tester.pumpWidget(
+        _buildTestApp(
+          connector: connector,
+          child: const TcpScreen(),
+          locale: const Locale('en'),
+          settings: settings,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('room.local:5000'), findsOneWidget);
+      expect(find.text('192.168.1.50:6000'), findsOneWidget);
+
+      // Tapping a saved endpoint fills the form and connects.
+      await tester.tap(find.text('192.168.1.50:6000'));
+      await tester.pumpAndSettle();
+      expect(connector.connectTcpCalls, 1);
+      expect(connector.lastHost, '192.168.1.50');
+      expect(connector.lastPort, 6000);
+
+      // The delete button removes only that entry. History is most recent
+      // first, so the newest endpoint's button is the first one.
+      final context = tester.element(find.byType(TcpScreen));
+      final l10n = AppLocalizations.of(context);
+      final deleteButtons = find.descendant(
+        of: find.byType(MeshCard),
+        matching: find.byTooltip(l10n.common_remove),
+      );
+      expect(deleteButtons, findsNWidgets(2));
+      await tester.tap(deleteButtons.first);
+      await tester.pumpAndSettle();
+
+      expect(find.text('192.168.1.50:6000'), findsNothing);
+      expect(find.text('room.local:5000'), findsOneWidget);
+      expect(settings.settings.tcpConnectionHistory, ['room.local:5000']);
+    },
+  );
 }

@@ -118,7 +118,9 @@ Color networkMapStatusColor(NetworkMapRepeaterStatus status) {
 /// Above this many in-view repeaters, hexagons and marker shadows are skipped.
 const int networkMapDenseNodeCount = 30;
 
-/// Above this many in-view links, each line is one stroke at half width
+/// Above this many in-view links, lines become solid strokes at half width.
+/// Dashed lines are rebuilt segment by segment on every frame the map draws,
+/// so dense views drop the pattern to stay smooth while zooming and panning.
 const int networkMapDenseLinkCount = 70;
 
 /// Above this many in-view repeaters, each is painted as a plain dot in one
@@ -132,8 +134,8 @@ const int networkMapMarkerWidgetLimit = 250;
 const int networkMapMaxLinkCount = 1500;
 
 /// Full style is a 3.5 px confirmed stroke or a 2.5 px unconfirmed stroke,
-/// each with a 1 px border. Simple style keeps the pattern and drops the
-/// border, so the painter records the line once, at half the stroke width.
+/// each with a 1 px border. Simple style drops the border and the dashes, so
+/// the painter records each line once with the cheap solid stroke.
 Polyline _onlineLinkPolyline(NetworkMapLink link, {required bool simple}) {
   final confirmed = link.confirmed;
   final strokeWidth = confirmed ? 3.5 : 2.5;
@@ -147,7 +149,7 @@ Polyline _onlineLinkPolyline(NetworkMapLink link, {required bool simple}) {
     color: MapPalette.router,
     borderStrokeWidth: simple ? 0 : 1,
     borderColor: MapPalette.markerOutline,
-    pattern: confirmed
+    pattern: confirmed || simple
         ? const StrokePattern.solid()
         : StrokePattern.dashed(segments: const [10, 8]),
   );
@@ -161,29 +163,33 @@ Polyline _onlineLinkPolyline(NetworkMapLink link, {required bool simple}) {
 List<Widget> buildNetworkMapOnlineLayers({
   required NetworkMapOnlineController controller,
   List<NetworkMapRepeater>? repeaters,
+  List<NetworkMapLink>? links,
   bool showLinks = true,
   required Set<String> localMarkerKeys,
   required ValueChanged<NetworkMapRepeater> onTap,
 }) {
   final visibleRepeaters = repeaters ?? controller.repeaters;
   final visibleKeys = {for (final repeater in visibleRepeaters) repeater.key};
-  final links = [
-    for (final link in controller.links)
+  // Group by style: the canvas batches consecutive polylines that share a
+  // stroke style into one draw, so alternating confirmed/unconfirmed links
+  // would force a separate pass (and a saveLayer per border) for each line.
+  final visibleLinks = [
+    for (final link in links ?? controller.links)
       if (visibleKeys.contains(link.a) &&
           visibleKeys.contains(link.b) &&
           // Both ends in one cell: a zero-length line draws nothing useful
           // and is a degenerate stroke for the renderer.
           link.aCell.center != link.bCell.center)
         link,
-  ];
+  ]..sort((a, b) => (a.confirmed ? 0 : 1).compareTo(b.confirmed ? 0 : 1));
   final dropHexagons = visibleRepeaters.length > networkMapDenseNodeCount;
-  final simpleLines = links.length > networkMapDenseLinkCount;
+  final simpleLines = visibleLinks.length > networkMapDenseLinkCount;
   final useDots = visibleRepeaters.length > networkMapMarkerWidgetLimit;
   return [
-    if (showLinks && links.length <= networkMapMaxLinkCount)
+    if (showLinks && visibleLinks.length <= networkMapMaxLinkCount)
       PolylineLayer(
         polylines: [
-          for (final link in links)
+          for (final link in visibleLinks)
             _onlineLinkPolyline(link, simple: simpleLines),
         ],
       ),

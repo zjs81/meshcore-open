@@ -1,5 +1,11 @@
 typedef BatteryVoltageRange = ({int minMv, int maxMv});
 
+typedef BatteryCellReading = ({
+  int cellCount,
+  int averageCellMillivolts,
+  int percent,
+});
+
 BatteryVoltageRange batteryVoltageRange(String chemistry) {
   switch (chemistry) {
     case 'lifepo4':
@@ -8,18 +14,80 @@ BatteryVoltageRange batteryVoltageRange(String chemistry) {
       return (minMv: 3000, maxMv: 4200);
     case 'lipo_hv':
       return (minMv: 3000, maxMv: 4350);
+    case 'lead_acid':
+      return (minMv: 1750, maxMv: 2130);
+    case 'nimh':
+      return (minMv: 1000, maxMv: 1400);
+    case 'lto':
+      return (minMv: 1500, maxMv: 2850);
     case 'nmc':
     default:
       return (minMv: 3000, maxMv: 4200);
   }
 }
 
-int estimateBatteryPercentFromMillivolts(int millivolts, String chemistry) {
+int nominalCellMillivolts(String chemistry) {
+  switch (chemistry) {
+    case 'lifepo4':
+      return 3200;
+    case 'lipo_hv':
+      return 3800;
+    case 'lipo':
+      return 3700;
+    case 'lead_acid':
+      return 2000;
+    case 'nimh':
+      return 1200;
+    case 'lto':
+      return 2400;
+    case 'nmc':
+    default:
+      return 3600;
+  }
+}
+
+/// Number of series cells a reported pack voltage implies for [chemistry].
+/// A voltage at or below the nominal cell voltage is a single cell; above it,
+/// the count is the nearest cell multiple, biased so a full pack never
+/// rounds up into the next cell count.
+int batteryCellCount(int millivolts, String chemistry) {
+  final nominal = nominalCellMillivolts(chemistry);
+  if (millivolts <= nominal) return 1;
   final range = batteryVoltageRange(chemistry);
-  if (millivolts <= range.minMv) return 0;
-  if (millivolts >= range.maxMv) return 100;
-  return (((millivolts - range.minMv) * 100) / (range.maxMv - range.minMv))
+  final byNominal = (millivolts / nominal).round();
+  final byMax = (millivolts / range.maxMv).ceil();
+  final count = byNominal < byMax ? byNominal : byMax;
+  return count < 1 ? 1 : count;
+}
+
+/// Reads a pack voltage as [cellCount] series cells: the average cell
+/// voltage and the remaining capacity percent for that cell count.
+BatteryCellReading batteryReadingFromMillivolts(
+  int millivolts,
+  String chemistry,
+) {
+  final cellCount = batteryCellCount(millivolts, chemistry);
+  final averageCellMillivolts = (millivolts / cellCount).round();
+  return (
+    cellCount: cellCount,
+    averageCellMillivolts: averageCellMillivolts,
+    percent: estimateCellPercentFromMillivolts(
+      averageCellMillivolts,
+      chemistry,
+    ),
+  );
+}
+
+int estimateCellPercentFromMillivolts(int cellMillivolts, String chemistry) {
+  final range = batteryVoltageRange(chemistry);
+  if (cellMillivolts <= range.minMv) return 0;
+  if (cellMillivolts >= range.maxMv) return 100;
+  return (((cellMillivolts - range.minMv) * 100) / (range.maxMv - range.minMv))
       .round();
+}
+
+int estimateBatteryPercentFromMillivolts(int millivolts, String chemistry) {
+  return batteryReadingFromMillivolts(millivolts, chemistry).percent;
 }
 
 int estimateBatteryPercentFromVolts(double volts, String chemistry) {

@@ -12,7 +12,7 @@ Open the map and use the **Local / Online / Both** switch at the top.
 | Online | Repeater and room server hexagons and links from the network map. |
 | Both | Online hexagons under your local markers. Repeaters already in your contacts are marked "In your contacts". |
 
-Hexagons are about 2–3 km across and never show a node's exact position. A dashed outline means the repeater has only been reported by one uploader so far ("single source"). When the visible area is larger than 20° the map asks you to zoom in.
+Hexagons are about 2–3 km across and never show a node's exact position. A dashed outline means the repeater has only been reported by one uploader so far ("single source"). When the visible area is larger than 20° the map asks you to zoom in. To stay smooth in dense areas, hexagons are dropped when more than about 30 repeaters are visible and link lines lose their dashes when more than about 70 are visible.
 
 Tap a hexagon to see the repeater's name, type, status and last-seen time, plus a reachability hint:
 

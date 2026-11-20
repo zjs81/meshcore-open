@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:meshcore_open/widgets/elements_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -14,11 +15,13 @@ import '../helpers/snack_bar_builder.dart';
 import '../helpers/utf8_length_limiter.dart';
 import '../widgets/mesh_nav_tile.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/map_location_picker.dart';
 import '../widgets/radio_settings_dialog.dart';
 import 'app_settings_screen.dart';
 import 'app_debug_log_screen.dart';
 import 'message_filter_settings_screen.dart';
 import 'ble_debug_log_screen.dart';
+import 'companion_cli_screen.dart';
 import '../widgets/radio_stats_entry.dart';
 import 'telemetry_screen.dart';
 import '../widgets/sync_progress_overlay.dart';
@@ -476,14 +479,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final l10n = context.l10n;
     final percent = connector.batteryPercent;
     final millivolts = connector.batteryMillivolts;
+    final reading = connector.batteryCellReading;
 
     final String displayValue;
-    if (millivolts == null) {
+    if (millivolts == null || reading == null) {
       displayValue = l10n.common_notAvailable;
     } else if (_showBatteryVoltage) {
-      displayValue = l10n.common_voltageValue(
-        (millivolts / 1000.0).toStringAsFixed(2),
-      );
+      final cellVolts = (reading.averageCellMillivolts / 1000.0)
+          .toStringAsFixed(2);
+      final cells = reading.cellCount > 1 ? ' ×${reading.cellCount}' : '';
+      displayValue = '${l10n.common_voltageValue(cellVolts)}$cells';
     } else {
       displayValue = percent != null
           ? l10n.common_percentValue(percent)
@@ -590,6 +595,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
           subtitle: connected ? l10n.repeater_telemetrySubtitle : offline,
           onTap: connector.isConnected
               ? () => pushSelfTelemetryScreen(context)
+              : null,
+        ),
+        const Divider(height: 1, indent: 16),
+        MeshNavTile(
+          icon: Icons.terminal_outlined,
+          title: l10n.companionCli_title,
+          subtitle: !connected
+              ? offline
+              : !connector.supportsCompanionCli
+              ? l10n.settings_requiresFirmware('v1.18')
+              : l10n.companionCli_settingsSubtitle,
+          onTap: connector.isConnected && connector.supportsCompanionCli
+              ? () => pushCompanionCliScreen(context)
               : null,
         ),
       ],
@@ -1515,6 +1533,34 @@ class _LocationDialogState extends State<_LocationDialog> {
                 errorMaxLines: 2,
               ),
               keyboardType: coordinateKeyboard,
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () async {
+                  final lat = double.tryParse(_latController.text.trim());
+                  final lon = double.tryParse(_lonController.text.trim());
+                  final initial = lat != null && lon != null
+                      ? LatLng(lat, lon)
+                      : null;
+                  final startCenter = await fetchPhonePosition();
+                  if (!context.mounted) return;
+                  final picked = await showMapLocationPicker(
+                    context,
+                    initial: initial,
+                    startCenter: startCenter,
+                  );
+                  if (picked == null || !mounted) return;
+                  setState(() {
+                    _latController.text = picked.latitude.toStringAsFixed(6);
+                    _lonController.text = picked.longitude.toStringAsFixed(6);
+                    _latError = null;
+                    _lonError = null;
+                  });
+                },
+                icon: const Icon(Icons.map),
+                label: Text(l10n.repeater_setFromMap),
+              ),
             ),
             if (widget.hasGPS) ...[
               const SizedBox(height: 16),

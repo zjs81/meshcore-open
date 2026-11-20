@@ -209,7 +209,7 @@ void main() {
         ]);
         expect(
           connector.getChannelMessages(channel).last.region,
-          anyOf(isNull, isEmpty),
+          kUnscopedRegion,
         );
 
         // Clearing the radio default.

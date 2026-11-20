@@ -199,6 +199,7 @@ class MessageStore {
       'text': msg.text,
       'timestamp': msg.timestamp.millisecondsSinceEpoch,
       'receivedAt': msg.receivedAt.millisecondsSinceEpoch,
+      if (msg.receivedLive) 'receivedLive': true,
       'isOutgoing': msg.isOutgoing,
       'isBookmarked': msg.isBookmarked,
       'isCli': msg.isCli,
@@ -216,6 +217,8 @@ class MessageStore {
       'deliveredAt': msg.deliveredAt?.millisecondsSinceEpoch,
       'tripTimeMs': msg.tripTimeMs,
       'pathLength': msg.pathLength,
+      'snrDb': msg.snrDb,
+      'rssiDbm': msg.rssiDbm,
       'pathBytes': msg.pathBytes.isNotEmpty
           ? base64Encode(msg.pathBytes)
           : null,
@@ -270,6 +273,7 @@ class MessageStore {
       text: decodedText,
       timestamp: DateTime.fromMillisecondsSinceEpoch(json['timestamp'] as int),
       receivedAt: legacyAwareReceivedAt(json),
+      receivedLive: json['receivedLive'] == true,
       isOutgoing: json['isOutgoing'] as bool? ?? false,
       isBookmarked: json['isBookmarked'] as bool? ?? false,
       isCli: isCli,
@@ -294,6 +298,8 @@ class MessageStore {
       tripTimeMs: json['tripTimeMs'] as int?,
       pathLength: decodedPathLength,
       pathBytes: decodedPathBytes,
+      snrDb: (json['snrDb'] as num?)?.toDouble(),
+      rssiDbm: json['rssiDbm'] is num ? (json['rssiDbm'] as num).toInt() : null,
       reactions:
           (json['reactions'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(

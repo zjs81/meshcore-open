@@ -11,8 +11,9 @@ import '../theme/mesh_theme.dart';
 /// record turns it off.
 class GetNodeBanner extends StatefulWidget {
   final Future<NodeBannerConfig?> Function()? loadConfig;
+  final Future<void> Function()? dismiss;
 
-  const GetNodeBanner({super.key, this.loadConfig});
+  const GetNodeBanner({super.key, this.loadConfig, this.dismiss});
 
   @override
   State<GetNodeBanner> createState() => _GetNodeBannerState();
@@ -20,6 +21,7 @@ class GetNodeBanner extends StatefulWidget {
 
 class _GetNodeBannerState extends State<GetNodeBanner> {
   NodeBannerConfig? _config;
+  bool _dismissed = false;
 
   @override
   void initState() {
@@ -29,10 +31,15 @@ class _GetNodeBannerState extends State<GetNodeBanner> {
     });
   }
 
+  void _onDismiss() {
+    (widget.dismiss ?? NodeBannerService().dismiss)();
+    setState(() => _dismissed = true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final config = _config;
-    if (config == null) return const SizedBox.shrink();
+    if (config == null || _dismissed) return const SizedBox.shrink();
 
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
@@ -92,6 +99,13 @@ class _GetNodeBannerState extends State<GetNodeBanner> {
                       onPressed: open,
                       icon: const Icon(Icons.shopping_cart_outlined, size: 22),
                       label: Text(config.action ?? l10n.scanner_getNodeAction),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Center(
+                    child: TextButton(
+                      onPressed: _onDismiss,
+                      child: Text(l10n.scanner_getNodeDismiss),
                     ),
                   ),
                   const SizedBox(height: 6),

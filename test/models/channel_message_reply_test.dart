@@ -26,4 +26,14 @@ void main() {
     final message = ChannelMessage.outgoing('hello', 'Me', 0);
     expect(message.replyToMessageId, isNull);
   });
+
+  test('multiple leading mentions are not grouped as one reply', () {
+    expect(ChannelMessage.parseReplyMention('@[Alice] @[Bob] hello'), isNull);
+  });
+
+  test('single leading mention is still a reply', () {
+    final info = ChannelMessage.parseReplyMention('@[Alice] answer');
+    expect(info?.mentionedNode, 'Alice');
+    expect(info?.actualMessage, 'answer');
+  });
 }

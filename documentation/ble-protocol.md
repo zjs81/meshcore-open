@@ -122,6 +122,7 @@ On unexpected disconnection, auto-reconnect with exponential backoff:
 | 62 | CMD_SEND_CHANNEL_DATA | Send GRP_DATA image chunks (firmware code 11+) |
 | 63 | CMD_SET_DEFAULT_FLOOD_SCOPE | Store the radio's default flood scope: `[63][name 31, NUL padded][key 16]`, or `[63]` to clear (firmware code 11+) |
 | 64 | CMD_GET_DEFAULT_FLOOD_SCOPE | Read the radio's default flood scope (firmware code 11+) |
+| 66 | CMD_RUN_CLI_COMMAND | Run a local CLI command on the companion: `[66][UTF-8 command]` (firmware code 14+) |
 
 ## Response / Push Codes (Device → App)
 
@@ -149,6 +150,7 @@ On unexpected disconnection, auto-reconnect with exponential backoff:
 | 25 | RESP_CODE_AUTO_ADD_CONFIG | Auto-add flags |
 | 27 | RESP_CODE_CHANNEL_DATA_RECV | Received GRP_DATA image chunk |
 | 28 | RESP_CODE_DEFAULT_FLOOD_SCOPE | `[28][name 31][key 16]`, or `[28]` alone when no default is set |
+| 29 | RESP_CODE_CLI_REPLY | `[29][reply text]` from `CMD_RUN_CLI_COMMAND` (firmware code 14+) |
 | 0x80 | PUSH_CODE_ADVERT | Known contact re-seen |
 | 0x81 | PUSH_CODE_PATH_UPDATED | Better path found; carries the 32-byte public key of the updated contact |
 | 0x82 | PUSH_CODE_SEND_CONFIRMED | Delivery ACK from remote; carries ACK hash (4 bytes) + trip time (4 bytes) |
@@ -273,7 +275,7 @@ Remote repeater CLI commands use the text-message command with `txtTypeCliData`,
 [CMD_SEND_TXT_MSG=2][txt_type=1][attempt][timestamp uint32 LE][public-key prefix x6][UTF-8 command][0]
 ```
 
-See `buildSendCliCommandFrame()` (takes the repeater public key) in [meshcore_protocol.dart](../lib/connector/meshcore_protocol.dart). The companion's local CLI command (`CMD_RUN_CLI_COMMAND`, 66) is not used by the app. Companion reboot uses `buildRebootFrame()`; remote repeater reboot is a CLI command.
+See `buildSendCliCommandFrame()` (takes the repeater public key) in [meshcore_protocol.dart](../lib/connector/meshcore_protocol.dart). The companion's local CLI (`CMD_RUN_CLI_COMMAND`, 66, firmware code 14+) runs commands on the connected radio itself through the Companion CLI screen (Settings → Companion CLI) and the boosted RX gain toggle in the radio settings dialog; replies arrive as `RESP_CODE_CLI_REPLY` (29). Companion reboot uses `buildRebootFrame()`; remote repeater reboot is a CLI command.
 
 Reactions use `r:<four-hex message hash>:<two-hex emoji index>`. Channel replies use `@[senderName] text`; location pins use `m:<lat>,<lon>|<label>|...`. These are application conventions and require compatible clients for special rendering.
 

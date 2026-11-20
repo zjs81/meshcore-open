@@ -9,6 +9,7 @@ import 'package:meshcore_open/l10n/app_localizations.dart';
 import 'package:meshcore_open/screens/map_screen.dart';
 import 'package:meshcore_open/services/app_settings_service.dart';
 import 'package:meshcore_open/services/map_tile_cache_service.dart';
+import 'package:meshcore_open/services/packet_path_service.dart';
 import 'package:meshcore_open/services/path_history_service.dart';
 import 'package:meshcore_open/services/storage_service.dart';
 import 'package:meshcore_open/services/ui_view_state_service.dart';
@@ -67,11 +68,14 @@ void main() {
   Future<MapController> openMap(WidgetTester tester) async {
     final settings = AppSettingsService();
     final connector = MeshCoreConnector();
-    final paths = PathHistoryService(StorageService());
+    final storage = StorageService();
+    final paths = PathHistoryService(storage);
+    final packetPaths = PacketPathService(storage);
     final tiles = _MapWithoutTiles(settings);
     addTearDown(() {
       connector.dispose();
       paths.dispose();
+      packetPaths.dispose();
       tiles.dispose();
       settings.dispose();
     });
@@ -81,6 +85,7 @@ void main() {
           ChangeNotifierProvider.value(value: connector),
           ChangeNotifierProvider.value(value: settings),
           ChangeNotifierProvider.value(value: paths),
+          ChangeNotifierProvider.value(value: packetPaths),
           ChangeNotifierProvider.value(value: UiViewStateService()),
           ChangeNotifierProvider<MapTileCacheService>.value(value: tiles),
         ],

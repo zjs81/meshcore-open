@@ -68,6 +68,9 @@ class ReviewRadio {
       autoAddChatFlag | autoAddRepeaterFlag | autoAddRoomServerFlag;
   int _timeOffsetSecs = 0;
 
+  /// SX126x boosted RX gain (CLI `set radio.rxgain`).
+  bool _rxBoostedGain = false;
+
   /// Frames radio to app. Each event is one complete companion frame.
   Stream<Uint8List> get frames => _controller.stream;
 
@@ -259,6 +262,12 @@ class ReviewRadio {
       case cmdSetDefaultFloodScope when firmwareVerCode < 11:
         _emit([ReviewFrames.err()]);
         break;
+      case cmdRunCliCommand when firmwareVerCode < 14:
+        _emit([ReviewFrames.err()]);
+        break;
+      case cmdRunCliCommand:
+        _handleCliCommand(frame);
+        break;
       case cmdGetDefaultFloodScope:
         _emit([
           Uint8List.fromList([
@@ -383,6 +392,28 @@ class ReviewRadio {
       ReviewFrames.contactsStart(_contacts.length),
       for (final c in matching) _contactFrame(c),
       ReviewFrames.endOfContacts(mostRecent),
+    ]);
+  }
+
+  void _handleCliCommand(Uint8List frame) {
+    final command = frame.length > 1
+        ? utf8.decode(frame.sublist(1), allowMalformed: true)
+        : '';
+    final String reply;
+    if (command == 'get radio.rxgain') {
+      reply = '> ${_rxBoostedGain ? 'on' : 'off'}';
+    } else if (command.startsWith('set radio.rxgain ')) {
+      _rxBoostedGain = command.substring(17).trim() == 'on';
+      reply = 'OK';
+    } else if (command == 'ver') {
+      reply = 'v1.18.0 (review)';
+    } else if (command == 'board') {
+      reply = 'ReviewRadio';
+    } else {
+      reply = 'Unknown command';
+    }
+    _emit([
+      Uint8List.fromList([respCodeCliReply, ...utf8.encode(reply)]),
     ]);
   }
 

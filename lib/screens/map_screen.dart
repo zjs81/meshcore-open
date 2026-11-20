@@ -21,6 +21,7 @@ import '../models/contact.dart';
 import '../models/path_history.dart';
 import '../l10n/contact_localization.dart';
 import '../services/app_settings_service.dart';
+import '../services/packet_path_service.dart';
 import '../services/path_history_service.dart';
 import '../services/map_marker_service.dart';
 import '../services/map_tile_cache_service.dart';
@@ -45,10 +46,12 @@ import 'chat_screen.dart';
 import 'contacts_screen.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/mesh_nav_tile.dart';
 import '../widgets/node_info_sheet.dart';
 import '../widgets/set_my_location_dialog.dart';
 import '../helpers/guessed_location_estimator.dart';
 import '../helpers/marker_message.dart';
+import '../helpers/path_hop_resolver.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../helpers/utf8_length_limiter.dart';
 import 'settings_screen.dart';
@@ -125,6 +128,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   int? _sharedMarkersCacheSignature;
   Locale? _sharedMarkersCacheLocale;
   List<_SharedMarker> _cachedSharedMarkers = const [];
+  // Packet-path lines are resolved lazily and cached until the packet store,
+  // contacts, or self position change.
+  int? _packetLayerCacheKey;
+  List<Polyline> _cachedPacketPathPolylines = const [];
   _NodeMarkersCacheKey? _nodeMarkersCacheKey;
   List<Marker> _cachedNodeMarkers = const [];
   // Online/recent status is derived from DateTime.now(); rebuild periodically
@@ -173,6 +180,105 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         _cameraSaveTimer = Timer(_cameraSaveDelay, _flushCameraSave);
       }
     } catch (_) {}
+  }
+
+  /// Resolves stored packet paths against the current contacts and caches
+  /// the resulting line polylines. While node icons are collapsed into
+  /// clusters, hop positions snap to the cluster they fall in so lines
+  /// follow the grouped icons instead of pointing at empty spots.
+  void _rebuildPacketLayers(
+    PacketPathService packetPaths,
+    AppSettings settings,
+    List<Contact> contacts,
+    double? selfLat,
+    double? selfLon,
+    Color lineColor, {
+    required List<Contact> clusterItems,
+  }) {
+    _cachedPacketPathPolylines = const [];
+    if (!settings.mapShowPacketPaths) return;
+
+    final windowMinutes = (settings.packetPathWindowHours.clamp(1, 720) * 60)
+        .round();
+    final observed = packetPaths.pathsWithin(Duration(minutes: windowMinutes));
+    if (observed.isEmpty) return;
+
+    final endpoint =
+        selfLat != null &&
+            selfLon != null &&
+            isPlausibleLocation(selfLat, selfLon)
+        ? LatLng(selfLat, selfLon)
+        : null;
+
+    Map<String, LatLng>? clusterCenters;
+    if (settings.mapClusterNodes &&
+        _zoom < _clusterOffZoom &&
+        !settings.mapShowOverlaps &&
+        !_isBuildingPathTrace) {
+      final cellDeg = 360.0 / (256.0 * pow(2.0, _zoom)) * 64.0;
+      final cells = <String, List<Contact>>{};
+      for (final contact in clusterItems) {
+        if (!contact.hasLocation) continue;
+        final key =
+            '${(contact.latitude! / cellDeg).floor()}:${(contact.longitude! / cellDeg).floor()}';
+        (cells[key] ??= []).add(contact);
+      }
+      clusterCenters = {};
+      cells.forEach((key, members) {
+        if (members.length < 2) return;
+        var lat = 0.0, lon = 0.0;
+        for (final m in members) {
+          lat += m.latitude!;
+          lon += m.longitude!;
+        }
+        clusterCenters![key] = LatLng(
+          lat / members.length,
+          lon / members.length,
+        );
+      });
+    }
+    LatLng snap(LatLng point) {
+      if (clusterCenters == null) return point;
+      final cellDeg = 360.0 / (256.0 * pow(2.0, _zoom)) * 64.0;
+      final key =
+          '${(point.latitude / cellDeg).floor()}:${(point.longitude / cellDeg).floor()}';
+      return clusterCenters[key] ?? point;
+    }
+
+    final routesByShape = <String, List<LatLng>>{};
+    for (final path in observed) {
+      final hops = PathHopResolver.resolve(
+        pathBytes: path.pathBytes,
+        contacts: contacts,
+        endpoint: endpoint,
+        resolveFromEnd: true,
+        pathHashByteWidth: path.hashWidth,
+      );
+      final positions = <LatLng>[];
+      for (final hop in hops) {
+        if (hop == null || !hop.hasLocation) continue;
+        final point = snap(LatLng(hop.latitude!, hop.longitude!));
+        if (positions.isEmpty || positions.last != point) positions.add(point);
+      }
+      if (positions.length < 2) continue;
+      final shape = positions
+          .map(
+            (p) =>
+                '${p.latitude.toStringAsFixed(5)},${p.longitude.toStringAsFixed(5)}',
+          )
+          .join('|');
+      routesByShape.putIfAbsent(shape, () => positions);
+    }
+
+    _cachedPacketPathPolylines = [
+      for (final positions in routesByShape.values)
+        Polyline(
+          points: positions,
+          color: lineColor.withValues(alpha: 0.3),
+          strokeWidth: 2,
+          strokeCap: StrokeCap.round,
+        ),
+    ];
   }
 
   void _flushCameraSave() {
@@ -560,6 +666,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         final pathHistoryVersion = context.select<PathHistoryService, int>(
           (service) => service.version,
         );
+        final packetPathVersion = context.select<PacketPathService, int>(
+          (service) => service.version,
+        );
         final mapSource = context.select<UiViewStateService, MapSourceOption>(
           (service) => service.mapSource,
         );
@@ -567,6 +676,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         final showOnline = _showsOnline(mapSource);
         final settingsService = context.read<AppSettingsService>();
         final pathHistory = context.read<PathHistoryService>();
+        final packetPaths = context.read<PacketPathService>();
         final tileCache = context.read<MapTileCacheService>();
         final scheme = Theme.of(context).colorScheme;
         final isDesktop = _isDesktopPlatform(defaultTargetPlatform);
@@ -782,6 +892,39 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
             .where((c) => c.type == advTypeRepeater)
             .length;
 
+        final clusterItems = visibleContacts
+            .where((c) => c.publicKeyHex != selectedContact?.publicKeyHex)
+            .toList();
+        final packetLayerCacheKey = Object.hash(
+          packetPathVersion,
+          settings.packetPathWindowHours,
+          connectorSnapshot.contactsSignature,
+          connector.selfLatitude,
+          connector.selfLongitude,
+          settings.mapShowPacketPaths,
+          _zoom,
+          settings.mapClusterNodes,
+          settings.mapShowOverlaps,
+          _isBuildingPathTrace,
+          Object.hashAllUnordered(
+            clusterItems.map(
+              (c) => Object.hash(c.publicKeyHex, c.latitude, c.longitude),
+            ),
+          ),
+        );
+        if (packetLayerCacheKey != _packetLayerCacheKey) {
+          _packetLayerCacheKey = packetLayerCacheKey;
+          _rebuildPacketLayers(
+            packetPaths,
+            settings,
+            allContacts,
+            connector.selfLatitude,
+            connector.selfLongitude,
+            MeshMapTheme.of(context).accent,
+            clusterItems: clusterItems,
+          );
+        }
+
         return PopScope(
           canPop: allowBack && !_isBuildingPathTrace,
           onPopInvokedWithResult: (didPop, _) {
@@ -972,6 +1115,8 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                   ),
                   children: [
                     tileCache.buildTileLayer(context),
+                    if (_cachedPacketPathPolylines.isNotEmpty)
+                      PolylineLayer(polylines: _cachedPacketPathPolylines),
                     if (_polylines.isNotEmpty && _isBuildingPathTrace)
                       PolylineLayer(polylines: _polylines),
                     if (sharedMarkerPolylines.isNotEmpty)
@@ -1074,6 +1219,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                     ),
                   ],
                 ),
+
                 if (selectedContact == null)
                   _buildControlRail(
                     context,
@@ -2129,6 +2275,30 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                     onChanged: (value) {
                       setState(() => _searchQuery = value);
                     },
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Tooltip(
+                message: context.l10n.map_mapStyle,
+                child: Material(
+                  color: _overlayPanelColor,
+                  shape: StadiumBorder(
+                    side: BorderSide(color: _overlayBorderColor),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () => _showTileStyleSheet(context, settingsService),
+                    child: Container(
+                      constraints: const BoxConstraints(minHeight: 46),
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Icon(
+                        Icons.layers,
+                        size: 20,
+                        color: _overlayPrimaryTextColor,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -3628,6 +3798,131 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     return result ?? false;
   }
 
+  void _showTileStyleSheet(
+    BuildContext context,
+    AppSettingsService settingsService,
+  ) {
+    final l10n = context.l10n;
+    final options = <(String, IconData, String, String)>[
+      (
+        'osm_auto',
+        Icons.brightness_auto,
+        l10n.map_mapStyleAuto,
+        l10n.map_mapStyleAutoHint,
+      ),
+      (
+        'osm_standard',
+        Icons.map_outlined,
+        l10n.map_mapStyleStreet,
+        l10n.map_mapStyleStreetHint,
+      ),
+      (
+        'stamen_terrain',
+        Icons.terrain_outlined,
+        l10n.map_mapStyleTopo,
+        l10n.map_mapStyleTopoHint,
+      ),
+      (
+        'satellite',
+        Icons.satellite_alt,
+        l10n.map_mapStyleSatellite,
+        l10n.map_mapStyleSatelliteHint,
+      ),
+    ];
+    showMeshSheet(
+      context,
+      builder: (sheetContext) => Consumer<AppSettingsService>(
+        builder: (consumerContext, service, child) {
+          final selectedId = service.settings.mapRasterSourceId;
+          return SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BottomSheetHeader(title: sheetContext.l10n.map_mapStyle),
+                for (final (id, icon, label, hint) in options)
+                  ListTile(
+                    leading: Icon(icon),
+                    title: Text(label),
+                    subtitle: Text(hint),
+                    trailing: selectedId == id
+                        ? Icon(
+                            Icons.check,
+                            color: MeshMapTheme.of(sheetContext).accent,
+                          )
+                        : null,
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      service.setMapRasterSourceId(id);
+                      Navigator.pop(sheetContext);
+                    },
+                  ),
+                const SizedBox(height: 8),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showPacketPathWindowSheet(
+    BuildContext context,
+    AppSettingsService settingsService,
+  ) {
+    showMeshSheet(
+      context,
+      builder: (ctx) => SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            BottomSheetHeader(title: ctx.l10n.appSettings_packetPathWindow),
+            MeshSheetOption(
+              label: ctx.l10n.appSettings_last24Hours,
+              selected: settingsService.settings.packetPathWindowHours == 24,
+              onTap: () {
+                settingsService.setPacketPathWindowHours(24);
+                Navigator.pop(ctx);
+              },
+            ),
+            MeshSheetOption(
+              label: ctx.l10n.appSettings_last3Days,
+              selected: settingsService.settings.packetPathWindowHours == 72,
+              onTap: () {
+                settingsService.setPacketPathWindowHours(72);
+                Navigator.pop(ctx);
+              },
+            ),
+            MeshSheetOption(
+              label: ctx.l10n.appSettings_lastWeek,
+              selected: settingsService.settings.packetPathWindowHours == 168,
+              onTap: () {
+                settingsService.setPacketPathWindowHours(168);
+                Navigator.pop(ctx);
+              },
+            ),
+            MeshSheetOption(
+              label: ctx.l10n.appSettings_last2Weeks,
+              selected: settingsService.settings.packetPathWindowHours == 336,
+              onTap: () {
+                settingsService.setPacketPathWindowHours(336);
+                Navigator.pop(ctx);
+              },
+            ),
+            MeshSheetOption(
+              label: ctx.l10n.appSettings_last4Weeks,
+              selected: settingsService.settings.packetPathWindowHours == 672,
+              onTap: () {
+                settingsService.setPacketPathWindowHours(672);
+                Navigator.pop(ctx);
+              },
+            ),
+            SizedBox(height: MediaQuery.paddingOf(ctx).bottom + 8),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showFilterSheet(
     BuildContext context,
     AppSettingsService settingsService,
@@ -3772,6 +4067,35 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                             onChanged: (value) =>
                                 service.setMapShowOnlineLinks(value),
                           ),
+                        SectionHeader(sheetContext.l10n.map_packets),
+                        SwitchListTile(
+                          title: Text(
+                            sheetContext.l10n.appSettings_showPacketPaths,
+                          ),
+                          subtitle: Text(
+                            sheetContext
+                                .l10n
+                                .appSettings_showPacketPathsSubtitle,
+                          ),
+                          value: settings.mapShowPacketPaths,
+                          dense: true,
+                          onChanged: (value) =>
+                              service.setMapShowPacketPaths(value),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.timer_outlined),
+                          title: Text(
+                            sheetContext.l10n.appSettings_packetPathWindow,
+                          ),
+                          subtitle: Text(
+                            sheetContext.l10n
+                                .appSettings_packetPathWindowShowLast(
+                                  settings.packetPathWindowHours.toInt(),
+                                ),
+                          ),
+                          onTap: () =>
+                              _showPacketPathWindowSheet(sheetContext, service),
+                        ),
                         SectionHeader(sheetContext.l10n.map_markers),
                         SwitchListTile(
                           title: Text(sheetContext.l10n.map_showSharedMarkers),

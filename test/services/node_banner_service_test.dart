@@ -93,6 +93,28 @@ void main() {
     expect(calls, 2);
   });
 
+  test('dismissed banner stays hidden for a week then returns', () async {
+    var calls = 0;
+    var now = DateTime(2026, 1, 1);
+    final client = MockClient((_) async {
+      calls++;
+      return http.Response(_doh('"$_record"'), 200);
+    });
+    final service = NodeBannerService(client: client, now: () => now);
+
+    expect(await service.load(), isNotNull);
+    await service.dismiss();
+    expect(await service.load(), isNull);
+    expect(calls, 1);
+
+    now = now.add(const Duration(days: 6, hours: 23));
+    expect(await service.load(), isNull);
+
+    now = now.add(const Duration(hours: 1));
+    expect(await service.load(), isNotNull);
+    expect(calls, 2);
+  });
+
   test('load returns null when the lookup fails', () async {
     final failing = NodeBannerService(
       client: MockClient((_) async => throw http.ClientException('offline')),

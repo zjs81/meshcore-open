@@ -9,6 +9,8 @@ class TranslatedMessageContent extends StatelessWidget {
   final TextStyle? originalStyle;
   final bool showOriginalFirst;
   final VoidCallback? onSecondaryTap;
+  final String? selfMentionName;
+  final bool mentionAttention;
 
   const TranslatedMessageContent({
     super.key,
@@ -18,6 +20,8 @@ class TranslatedMessageContent extends StatelessWidget {
     this.originalStyle,
     this.showOriginalFirst = true,
     this.onSecondaryTap,
+    this.selfMentionName,
+    this.mentionAttention = false,
   });
 
   @override
@@ -39,6 +43,8 @@ class TranslatedMessageContent extends StatelessWidget {
                   fontSize: style.fontSize,
                 ),
             onSecondaryTap: onSecondaryTap,
+            selfMentionName: selfMentionName,
+            mentionAttention: mentionAttention,
           )
         : null;
     final translatedWidget = LinkHandler.buildLinkifyText(
@@ -46,6 +52,8 @@ class TranslatedMessageContent extends StatelessWidget {
       text: trimmedDisplay,
       style: style,
       onSecondaryTap: onSecondaryTap,
+      selfMentionName: selfMentionName,
+      mentionAttention: mentionAttention,
     );
 
     if (!shouldShowOriginal) {

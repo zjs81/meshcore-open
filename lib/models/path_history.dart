@@ -41,7 +41,7 @@ class PathRecord {
       : 1;
 
   String get displayText =>
-      '$hopCount ${hopCount == 1 ? 'hop' : 'hops'} - ${(tripTimeMs / 1000).toStringAsFixed(2)}s';
+      '$hopCount ${hopCount == 1 ? 'hop' : 'hops'} - ${tripTimeMs}ms';
 
   Map<String, dynamic> toJson() {
     return {

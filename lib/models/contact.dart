@@ -22,6 +22,19 @@ class Contact {
   final bool isActive;
   final Uint8List? rawPacket;
 
+  /// Phone time when the advert was actually received. [lastSeen] is the
+  /// advert timestamp from the node's own clock, which may be wrong or
+  /// unsynced; this is the local, time-synced receipt time.
+  final DateTime? advertReceivedAt;
+
+  /// Flood scope (region name) the advert was sent with, resolved from the
+  /// raw packet's transport codes. Null means the advert carried no scope.
+  final String? advertScope;
+
+  /// Repeater hops the last advert was received on, from the raw packet's
+  /// path. Null when no advert with a decodable path has been received.
+  final int? advertHops;
+
   /// When [latitude]/[longitude] came from a telemetry reply rather than the
   /// advert, the phone time of that reply. [lastSeen] stays the node's advert
   /// timestamp (it is written back to the radio), so a radio refresh carrying
@@ -46,6 +59,9 @@ class Contact {
     this.isActive = true,
     this.rawPacket,
     this.telemetryFixAt,
+    this.advertReceivedAt,
+    this.advertScope,
+    this.advertHops,
   }) : lastMessageAt = lastMessageAt ?? lastSeen;
 
   /// Cached: it backs ==, hashCode and the per-frame contact lookups, and
@@ -93,9 +109,15 @@ class Contact {
   }
 
   /// The latest time we heard from the node: its advert or a telemetry fix.
+  /// A locally received advert uses the phone's time-synced clock instead of
+  /// the node's advert timestamp when the local receipt is newer.
   DateTime get lastHeard {
+    final advert =
+        advertReceivedAt != null && advertReceivedAt!.isAfter(lastSeen)
+        ? advertReceivedAt!
+        : lastSeen;
     final fixAt = telemetryFixAt;
-    return fixAt != null && fixAt.isAfter(lastSeen) ? fixAt : lastSeen;
+    return fixAt != null && fixAt.isAfter(advert) ? fixAt : advert;
   }
 
   bool get isFavorite => (flags & contactFlagFavorite) != 0;
@@ -120,6 +142,10 @@ class Contact {
     Uint8List? rawPacket,
     DateTime? telemetryFixAt,
     bool clearTelemetryFix = false,
+    DateTime? advertReceivedAt,
+    String? advertScope,
+    int? advertHops,
+    bool clearAdvertScope = false,
   }) {
     return Contact(
       publicKey: publicKey ?? this.publicKey,
@@ -145,6 +171,9 @@ class Contact {
       telemetryFixAt: clearTelemetryFix
           ? null
           : (telemetryFixAt ?? this.telemetryFixAt),
+      advertReceivedAt: advertReceivedAt ?? this.advertReceivedAt,
+      advertScope: clearAdvertScope ? null : (advertScope ?? this.advertScope),
+      advertHops: advertHops ?? this.advertHops,
     );
   }
 

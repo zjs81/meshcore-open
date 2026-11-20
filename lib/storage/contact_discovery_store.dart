@@ -163,6 +163,9 @@ class ContactDiscoveryStore {
       'rawPacket': contact.rawPacket != null
           ? base64Encode(contact.rawPacket!)
           : null,
+      'advertReceivedAt': contact.advertReceivedAt?.millisecondsSinceEpoch,
+      'advertScope': contact.advertScope,
+      'advertHops': contact.advertHops,
     };
   }
 
@@ -180,6 +183,9 @@ class ContactDiscoveryStore {
     final lastSeenMs = clampMs((json['lastSeen'] as num?)?.toInt()) ?? 0;
     final lastMessageMs = clampMs((json['lastMessageAt'] as num?)?.toInt());
     final lastModifiedMs = clampMs((json['lastModified'] as num?)?.toInt());
+    final advertReceivedMs = clampMs(
+      (json['advertReceivedAt'] as num?)?.toInt(),
+    );
 
     // An imported path is the exporting radio's route: never reuse it.
     final rawPathLength = importing ? -1 : json['pathLength'] as int? ?? -1;
@@ -241,6 +247,11 @@ class ContactDiscoveryStore {
       rawPacket: json['rawPacket'] != null
           ? Uint8List.fromList(base64Decode(json['rawPacket'] as String))
           : null,
+      advertReceivedAt: advertReceivedMs == null
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(advertReceivedMs),
+      advertScope: json['advertScope'] as String?,
+      advertHops: json['advertHops'] as int?,
     );
   }
 }

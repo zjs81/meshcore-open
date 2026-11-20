@@ -74,7 +74,7 @@ void main() {
       JxlImageProvider.asset(theme.icons['map_repeater']!.asset!),
     );
     // Chat contacts keep their initials.
-    expect(find.text('ZE'), findsOneWidget);
+    expect(find.text('ZED'), findsOneWidget);
   });
 
   test('pictures and named icons resolve to the right provider', () {

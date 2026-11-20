@@ -218,6 +218,7 @@ const int cmdGetAllowedRepeatFreq = 60;
 const int cmdSetPathHashMode = 61;
 const int cmdSetDefaultFloodScope = 63; // FIRMWARE_VER_CODE 11+
 const int cmdGetDefaultFloodScope = 64; // FIRMWARE_VER_CODE 11+
+const int cmdRunCliCommand = 66; // FIRMWARE_VER_CODE 14+
 
 // Text message types
 const int txtTypePlain = 0;
@@ -271,6 +272,7 @@ const int respCodeAutoAddConfig = 25;
 const int respCodeAllowedRepeatFreq = 26;
 const int respCodeStats = 24;
 const int respCodeDefaultFloodScope = 28;
+const int respCodeCliReply = 29;
 
 /// Region name field width in SET/GET_DEFAULT_FLOOD_SCOPE frames (NUL padded,
 /// so at most 30 name bytes).
@@ -1275,4 +1277,24 @@ Uint8List floodTransportCode({
     return Uint8List.fromList([0xFE, 0xFF]);
   }
   return Uint8List.fromList(code.sublist(0, 2));
+}
+
+/// CMD_RUN_CLI_COMMAND (v14+): `[66][UTF-8 command]` runs [command] on the
+/// companion's own CLI; the firmware answers with RESP_CODE_CLI_REPLY.
+Uint8List buildRunCliCommandFrame(String command) {
+  final bytes = utf8.encode(command);
+  if (bytes.isEmpty) {
+    throw ArgumentError.value(command, 'command', 'must not be empty');
+  }
+  if (bytes.length > maxFrameSize - 1) {
+    throw ArgumentError.value(command, 'command', 'too long for one frame');
+  }
+  return Uint8List.fromList([cmdRunCliCommand, ...bytes]);
+}
+
+/// Parses a RESP_CODE_CLI_REPLY frame into the firmware's reply text.
+/// Returns null for frames that are not CLI replies.
+String? parseCliReplyFrame(Uint8List frame) {
+  if (frame.isEmpty || frame[0] != respCodeCliReply) return null;
+  return utf8.decode(frame.sublist(1), allowMalformed: true);
 }

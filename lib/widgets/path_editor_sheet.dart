@@ -92,7 +92,12 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
         .where((c) => c.publicKey.isNotEmpty)
         .where((c) => query.isEmpty || c.name.toLowerCase().contains(query))
         .toList()
-      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      ..sort((a, b) {
+        if (a.isFavorite != b.isFavorite) {
+          return a.isFavorite ? -1 : 1;
+        }
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      });
   }
 
   void _syncHexFromHops() {

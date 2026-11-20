@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Map feature is a full-featured node-location visualization and radio-planning tool built on OpenStreetMap tiles. It is one of the three primary views accessible from the QuickSwitchBar.
+The Map feature is a full-featured node-location visualization and radio-planning tool built on OpenStreetMap tiles (switchable to topographic, satellite, or street styles). It is one of the three primary views accessible from the QuickSwitchBar.
 
 The colors and markers below describe the standard theme. A custom, preset, or holiday theme recolors the map panels and accent, tints the tiles, and can replace the node and self-location markers; see [Themes](themes.md#map).
 
@@ -80,6 +80,9 @@ In a mesh network, every message hops through one or more repeaters on its way t
 ### Zoom and Pan
 Standard pinch-to-zoom (range 2–18). Initial camera position is calculated from the statistical spread of all plotted points.
 
+### Map Style (Layers Button)
+The layers button next to the search bar opens a style sheet to switch the base map: **Auto** (default, follows the app light/dark theme), **Street** (OpenStreetMap standard), **Topographic** (Stadia Maps Stamen Terrain), and **Satellite** (Esri World Imagery). The choice is saved and applies to the other map views too; Settings → Map Display → Raster Tile Source keeps the additional dark/high-contrast variants.
+
 ### Tap on a Node Marker
 Opens a card at the bottom of the map showing the node's status, type, last-seen time, path, node ID, and coordinates, with buttons to center on the node or close the card. Action buttons vary by type:
 - **Chat nodes**: "Open Chat"
@@ -120,7 +123,7 @@ Shows node count and pin count. Tappable to expand a legend of all marker types.
 
 ### How to Access
 - From the main map's menu → **Path Trace** (build your own route, see below)
-- From the Contacts or map menu → **Path trace by hashes** (type the hops, see below)
+- From the Contacts or map menu → **Path trace by hashes** (type or pick the hops, see below)
 - From a contact's long-press menu → "Path Trace / Ping"
 - From a message's path view → radar icon
 
@@ -132,11 +135,12 @@ Shows node count and pin count. Tappable to expand a legend of all marker types.
 
 Returning from the result keeps your hops, mode and the last result (**View last result** reopens it without sending again). **Close** or the back button hides the panel without discarding the hops; reopening **Path Trace** during the same session resumes where you left off. The hops are dropped when you connect to a different radio.
 
-### Tracing by Typed Hashes
-Nodes without a location can't be tapped on the map, so **Path trace by hashes** (Contacts menu, map menu, or **Enter hashes** in the map's trace panel, which prefills the hops already picked) lets you type them instead:
+### Tracing by Hashes or Picked Repeaters
+Nodes without a location can't be tapped on the map, so **Path trace by hashes** (Contacts menu, map menu, or **Enter hashes** in the map's trace panel, which prefills the hops already picked) lets you type them or pick them from a list instead:
 1. Enter the hop prefixes in order, e.g. `A1,B2,C3`. Commas, spaces, `>`, `→`, `-` or `/` separate hops; 2, 4 or 6 hex characters give 1-, 2- or 3-byte hops (all hops must be the same width). A continuous string is split by the radio's current path hash size.
-2. Each hop is listed with the known repeaters or rooms whose key starts with it, or "Unknown node".
-3. Choose **Round trip** or **As entered**, then tap **Run path trace**. The result opens on the path trace map; hops without a location are listed but not drawn. 3-byte hops are traced as 4-byte key prefixes, so they must belong to known contacts.
+2. Or tap **Pick repeaters** to build the list by tapping repeaters and rooms in a searchable picker (favourites first, then alphabetical); the picked hops replace what you typed.
+3. Each hop is listed with the known repeaters or rooms whose key starts with it, or "Unknown node".
+4. Choose **Round trip** or **As entered**, then tap **Run path trace**. The result opens on the path trace map; hops without a location are listed but not drawn. 3-byte hops are traced as 4-byte key prefixes, so they must belong to known contacts.
 
 The typed hops and mode are kept for the app session.
 
@@ -147,7 +151,9 @@ A map with a polyline showing the route from your node through repeater hops to 
 - **Red endpoint**: Target contact with known GPS
 - **Magenta endpoint**: Target with guessed position
 
-A bottom panel shows each hop pair with SNR quality icons and total path distance. When multiple observed paths are available, a **Single / Combined** toggle appears at the top of the map. In Combined view, all paths are overlaid; shared segments are highlighted with a white halo and a path count badge appears on shared nodes.
+A bottom panel shows each hop pair with SNR quality icons and total path distance. With **Path byte mode** enabled in App Settings → Messaging, the panel header and the observed-paths summary also show the routing hash byte width (`1B`/`2B`/`3B`) of each path. When multiple observed paths are available, a **Single / Combined** toggle appears at the top of the map. In Combined view, all paths are overlaid; shared segments are highlighted with a white halo and a path count badge appears on shared nodes.
+
+Hops are placed outward from your known position (the radio's set/GPS position, or the phone's GPS fix with **Phone GPS path anchor** in App Settings → Messaging). A hop that would sit more than 250 km from the previous placed point is treated as an impossible match and is not drawn.
 
 The bottom panel also provides **packet animation controls**:
 - **Animation toggle** (on/off)

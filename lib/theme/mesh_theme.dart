@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../models/custom_theme.dart';
@@ -769,12 +771,67 @@ class MeshTheme {
     );
   }
 
-  /// Color-code an SNR value for consistency across the app.
+  /// LoRa RSSI operating limits: MeshCore receivers go down to -140 dBm
+  /// minimum sensitivity, up to around -20 dBm at maximum signal.
+  static const int loraRssiMinDbm = -140;
+  static const int loraRssiMaxDbm = -20;
+
+  /// SNR gradient anchors: full red at or below -10 dB, full green at or
+  /// above +8 dB, amber at the midpoint.
+  static const double snrGradientRedDb = -10;
+  static const double snrGradientGreenDb = 8;
+
+  /// Gradient position for an SNR value: 0 at [snrGradientRedDb], 1 at
+  /// [snrGradientGreenDb].
+  static double snrGradientPosition(num snr) {
+    return ((snr - snrGradientRedDb) / (snrGradientGreenDb - snrGradientRedDb))
+        .clamp(0.0, 1.0);
+  }
+
+  /// Smooth red→amber→green ramp at a gradient position in 0..1.
+  static Color gradientAt(double position) {
+    if (position <= 0) return MeshPalette.alert;
+    if (position >= 1) return MeshPalette.signal;
+    return position < 0.5
+        ? Color.lerp(MeshPalette.alert, MeshPalette.warn, position * 2)!
+        : Color.lerp(
+            MeshPalette.warn,
+            MeshPalette.signal,
+            (position - 0.5) * 2,
+          )!;
+  }
+
+  /// Gradient position across the LoRa RSSI range.
+  static double _rssiGradientPosition(int rssiDbm) {
+    return ((rssiDbm - loraRssiMinDbm) / (loraRssiMaxDbm - loraRssiMinDbm))
+        .clamp(0.0, 1.0);
+  }
+
+  /// Color-code an RSSI value with the shared gradient, spanning the
+  /// MeshCore receiver range from [loraRssiMinDbm] to [loraRssiMaxDbm].
+  static Color rssiColor(int? rssiDbm) {
+    if (rssiDbm == null) return MeshPalette.ink3;
+    return gradientAt(_rssiGradientPosition(rssiDbm));
+  }
+
+  /// Color-code an SNR value with the shared gradient for consistency across
+  /// the app.
   static Color snrColor(num? snr, {required bool blocked}) {
     if (blocked) return MeshPalette.alert;
     if (snr == null) return MeshPalette.ink3;
-    if (snr > -5) return MeshPalette.signal;
-    if (snr > -12) return MeshPalette.warn;
-    return MeshPalette.alert;
+    return gradientAt(snrGradientPosition(snr));
+  }
+
+  /// Colour-code a received signal from its SNR and/or RSSI, using the worse
+  /// of the two so a strong SNR cannot hide a weak RSSI. SNR spans the
+  /// gradient anchors and RSSI the LoRa limits, so colours reflect how close
+  /// a link is to the edge of the modulation range.
+  static Color signalColor({double? snrDb, int? rssiDbm}) {
+    if (snrDb == null && rssiDbm == null) return MeshPalette.ink3;
+    final positions = [
+      if (snrDb != null) snrGradientPosition(snrDb),
+      if (rssiDbm != null) _rssiGradientPosition(rssiDbm),
+    ];
+    return gradientAt(positions.reduce(math.min));
   }
 }

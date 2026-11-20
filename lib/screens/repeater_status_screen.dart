@@ -344,12 +344,15 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
         connector.getRepeaterBatteryMillivolts(widget.repeater.publicKeyHex) ??
         _batteryMv;
     if (batteryMv == null) return '—';
-    final percent = estimateBatteryPercentFromMillivolts(
+    final reading = batteryReadingFromMillivolts(
       batteryMv,
       _batteryChemistry(),
     );
-    final volts = (batteryMv / 1000.0).toStringAsFixed(2);
-    return '$percent% / ${volts}V';
+    final cellVolts = (reading.averageCellMillivolts / 1000.0).toStringAsFixed(
+      3,
+    );
+    final cells = reading.cellCount > 1 ? ' (${reading.cellCount}S)' : '';
+    return '${reading.percent}% / ${cellVolts}V$cells';
   }
 
   String _batteryChemistry() {
@@ -364,7 +367,23 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
     final dt = connector.repeaterClockAtLogin(widget.repeater.publicKey);
     if (dt == null) return '—';
     final locale = Localizations.localeOf(context).toLanguageTag();
-    return DateFormat.yMd(locale).add_Hm().format(dt.toLocal());
+    final base = DateFormat.yMd(locale).add_Hm().format(dt.toLocal());
+    final offset = connector.repeaterClockOffsetAtLogin(
+      widget.repeater.publicKey,
+    );
+    if (offset == null) return base;
+    return '$base (${_clockOffsetText(offset)})';
+  }
+
+  String _clockOffsetText(Duration offset) {
+    final abs = offset.abs();
+    final sign = offset.isNegative ? '-' : '+';
+    final hours = abs.inHours;
+    final minutes = abs.inMinutes % 60;
+    final secs = abs.inSeconds % 60;
+    if (hours > 0) return '$sign${hours}h ${minutes}m ${secs}s';
+    if (minutes > 0) return '$sign${minutes}m ${secs}s';
+    return '$sign${secs}s';
   }
 
   String _formatDuration(int? seconds) {
@@ -407,6 +426,40 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
   String _chanUtilText() {
     if (_chanUtil == null) return '—';
     return _formatPercent(_chanUtil);
+  }
+
+  String _airtimeText(int? airSecs) {
+    final duration = _formatDuration(airSecs);
+    final uptime = _uptimeSecs;
+    if (airSecs == null || uptime == null || uptime <= 0) return duration;
+    return '$duration (${_formatPercent(airSecs / uptime * 100)})';
+  }
+
+  String _packetErrorRateText() {
+    final errors = _recvErrors;
+    final recv = _packetsRecv;
+    final sent = _packetsSent;
+    if (errors == null || recv == null || sent == null) return '—';
+    final total = recv + sent;
+    if (total <= 0) return '—';
+    return _formatPercent(errors / total * 100);
+  }
+
+  String _rxErrorRatioText() {
+    final errors = _recvErrors;
+    final recv = _packetsRecv;
+    if (errors == null || recv == null || recv <= 0) return '—';
+    return _formatPercent(errors / recv * 100);
+  }
+
+  String _txPerMinText() => _perMinText(_packetsSent);
+
+  String _rxPerMinText() => _perMinText(_packetsRecv);
+
+  String _perMinText(int? packets) {
+    final uptime = _uptimeSecs;
+    if (packets == null || uptime == null || uptime <= 0) return '—';
+    return (packets * 60 / uptime).toStringAsFixed(2);
   }
 
   String _duplicateText() {
@@ -546,6 +599,7 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
             ),
           ]),
         ),
+        if (_debugFlags != null) _buildFlagDetails(l10n, _debugFlags!),
 
         // ── Radio ──────────────────────────────────────────────────────────
         SectionHeader(l10n.repeater_radioStatistics),
@@ -573,14 +627,14 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
             _StatItem(
               icon: Icons.upload,
               label: l10n.repeater_txAirtime,
-              value: _formatDuration(_txAirSecs),
+              value: _airtimeText(_txAirSecs),
               color: MeshPalette.warn,
             ),
             if (!_isRoom)
               _StatItem(
                 icon: Icons.download,
                 label: l10n.repeater_rxAirtime,
-                value: _formatDuration(_rxAirSecs),
+                value: _airtimeText(_rxAirSecs),
                 color: MeshPalette.signal,
               ),
           ]),
@@ -598,10 +652,22 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
               color: MeshPalette.blue,
             ),
             _StatItem(
+              icon: Icons.trending_up,
+              label: l10n.repeater_txPerMin,
+              value: _txPerMinText(),
+              color: scheme.onSurfaceVariant,
+            ),
+            _StatItem(
               icon: Icons.call_received,
               label: l10n.repeater_received,
               value: _packetRxText(),
               color: MeshPalette.signal,
+            ),
+            _StatItem(
+              icon: Icons.trending_down,
+              label: l10n.repeater_rxPerMin,
+              value: _rxPerMinText(),
+              color: scheme.onSurfaceVariant,
             ),
             _StatItem(
               icon: Icons.content_copy,
@@ -622,7 +688,7 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
                 value: _formatValue(_postPushes),
                 color: MeshPalette.signal,
               ),
-            ] else
+            ] else ...[
               _StatItem(
                 icon: Icons.error_outline,
                 label: l10n.repeater_recvErrors,
@@ -631,6 +697,23 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
                     ? MeshPalette.warn
                     : scheme.onSurfaceVariant,
               ),
+              _StatItem(
+                icon: Icons.percent,
+                label: l10n.repeater_packetErrorRate,
+                value: _packetErrorRateText(),
+                color: _recvErrors != null && _recvErrors! > 0
+                    ? MeshPalette.warn
+                    : scheme.onSurfaceVariant,
+              ),
+              _StatItem(
+                icon: Icons.pie_chart_outline,
+                label: l10n.repeater_rxErrorRatio,
+                value: _rxErrorRatioText(),
+                color: _recvErrors != null && _recvErrors! > 0
+                    ? MeshPalette.warn
+                    : scheme.onSurfaceVariant,
+              ),
+            ],
             if (!_isRoom)
               _StatItem(
                 icon: Icons.percent,
@@ -646,6 +729,73 @@ class _RepeaterStatusScreenState extends State<RepeaterStatusScreen> {
         ),
         const SizedBox(height: 8),
       ],
+    );
+  }
+
+  Widget _buildFlagDetails(dynamic l10n, int flags) {
+    final scheme = Theme.of(context).colorScheme;
+    final entries = <MapEntry<int, String>>[
+      MapEntry(0x01, l10n.repeater_flagPoolFull),
+      MapEntry(0x02, l10n.repeater_flagCadTimeout),
+      MapEntry(0x04, l10n.repeater_flagRxTimeout),
+      MapEntry(0x08, l10n.repeater_flagRadioWatchdog),
+    ];
+    final raw = '0x${flags.toRadixString(16).toUpperCase().padLeft(4, '0')}';
+    final active = entries.where((entry) => flags & entry.key != 0).toList();
+    return MeshCard(
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.bug_report_outlined,
+                size: 16,
+                color: flags > 0 ? MeshPalette.warn : scheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.repeater_flagDetails.toUpperCase(),
+                  style: MeshTheme.accentLabel(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              Text(
+                raw,
+                style: MeshTheme.mono(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: scheme.onSurface,
+                ),
+              ),
+            ],
+          ),
+          if (active.isNotEmpty) ...[
+            const Divider(height: 14),
+            for (final entry in active)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: Row(
+                  children: [
+                    Icon(Icons.check_circle, size: 15, color: MeshPalette.warn),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        entry.value,
+                        style: TextStyle(fontSize: 13, color: scheme.onSurface),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ],
+      ),
     );
   }
 

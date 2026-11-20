@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
@@ -255,8 +256,13 @@ class NetworkMapApiClient {
     if (response.statusCode != 200) {
       throw NetworkMapApiException(response.statusCode);
     }
-    return jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    // Dense areas return large payloads; decoding on a worker keeps the map
+    // responsive while the online layer refreshes.
+    return compute(_decodeJson, response.bodyBytes);
   }
 
   void close() => _client.close();
 }
+
+Map<String, dynamic> _decodeJson(Uint8List bytes) =>
+    jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>;

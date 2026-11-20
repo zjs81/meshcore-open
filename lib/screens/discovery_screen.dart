@@ -249,6 +249,17 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                       ],
                     ],
                   ),
+                  const SizedBox(height: 2),
+                  // Advert hops + scope
+                  Text(
+                    contact.advertMetaLabel(context.l10n),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
                 ],
               ),
             ),

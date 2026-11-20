@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,8 +34,9 @@ bool _isAllowedRepeatFreqKHz(MeshCoreConnector connector, int freqKHz) {
 const int _minTxPowerDbm = -9;
 
 /// Radio parameter editor (preset, frequency, bandwidth, SF, CR, TX power,
-/// path-hash size and off-grid client repeat). Stays open when the radio
-/// rejects or fails to apply the settings so the user's edits are not lost.
+/// path-hash size, boosted RX gain and off-grid client repeat). Stays open
+/// when the radio rejects or fails to apply the settings so the user's edits
+/// are not lost.
 class RadioSettingsDialog extends StatefulWidget {
   final MeshCoreConnector connector;
 
@@ -55,8 +58,11 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
   _RadioSettingsSnapshot? _lastNonRepeatSnapshot;
   String? _frequencyError;
   String? _txPowerError;
+  bool? _rxGain;
+  bool? _rxGainOnDevice;
 
   bool get _supportsPathHashMode => widget.connector.supportsPathHashMode;
+  bool get _supportsRxGain => widget.connector.supportsCompanionCli;
 
   AppDebugLogService get _appLog =>
       Provider.of<AppDebugLogService>(context, listen: false);
@@ -126,6 +132,31 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _logRadioSettingsState('Dialog initialized');
+    });
+    if (_supportsRxGain) {
+      unawaited(_loadRxGain());
+    }
+  }
+
+  /// Reads `get radio.rxgain` so the toggle starts in the firmware's state.
+  /// Any failure (older board without the command, timeout) hides the toggle.
+  Future<void> _loadRxGain() async {
+    bool? value;
+    try {
+      final reply = await widget.connector.runCliCommand('get radio.rxgain');
+      final text = reply.replaceFirst('> ', '').trim().toLowerCase();
+      if (text == 'on') {
+        value = true;
+      } else if (text == 'off') {
+        value = false;
+      }
+    } catch (_) {
+      value = null;
+    }
+    if (!mounted || value == null) return;
+    setState(() {
+      _rxGain = value;
+      _rxGainOnDevice = value;
     });
   }
 
@@ -445,6 +476,20 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
         return;
       }
       await widget.connector.sendFrame(buildSetRadioTxPowerFrame(txPower));
+      if (_rxGain != null && _rxGain != _rxGainOnDevice) {
+        final rxGainReply = await widget.connector.runCliCommand(
+          'set radio.rxgain ${_rxGain! ? 'on' : 'off'}',
+        );
+        if (rxGainReply.trim().toLowerCase().startsWith('error')) {
+          _logRadioSettingsState(
+            'Radio rejected rx gain setting: $rxGainReply',
+          );
+          if (!mounted) return;
+          showDismissibleSnackBar(context, content: Text(rxGainReply.trim()));
+          return;
+        }
+        _rxGainOnDevice = _rxGain;
+      }
       // setPathHashMode updates the local width optimistically; the refreshed
       // DEVICE_INFO below overwrites it with what the radio actually stored.
       final requestedPathHashWidth =
@@ -785,6 +830,16 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
               ),
               keyboardType: TextInputType.number,
             ),
+            if (_rxGain != null) ...[
+              const SizedBox(height: 8),
+              SwitchListTile(
+                title: Text(l10n.repeater_rxGain),
+                subtitle: Text(l10n.repeater_rxGainHelper),
+                value: _rxGain!,
+                onChanged: (value) => setState(() => _rxGain = value),
+                contentPadding: EdgeInsets.zero,
+              ),
+            ],
             if (widget.connector.clientRepeat != null) ...[
               const SizedBox(height: 16),
               SwitchListTile(

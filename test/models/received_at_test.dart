@@ -25,12 +25,14 @@ ChannelMessage _ch(
   String text, {
   required DateTime timestamp,
   DateTime? receivedAt,
+  bool receivedLive = false,
 }) => ChannelMessage(
   senderKey: null,
   senderName: 'Bob',
   text: text,
   timestamp: timestamp,
   receivedAt: receivedAt,
+  receivedLive: receivedLive,
   isOutgoing: false,
   status: ChannelMessageStatus.sent,
   channelIndex: 0,
@@ -124,6 +126,77 @@ void main() {
     });
   });
 
+  group('receivedLive display time', () {
+    test('backlog shows the packet timestamp', () {
+      final m = _ch(
+        'a',
+        timestamp: base,
+        receivedAt: base.add(const Duration(hours: 2)),
+      );
+      expect(m.receivedLive, isFalse);
+      expect(m.showsReceiveTime, isFalse);
+      expect(m.displayTime, base);
+    });
+
+    test('live receive shows the receive time', () {
+      final received = base.add(const Duration(minutes: 3));
+      final m = _ch(
+        'a',
+        timestamp: base,
+        receivedAt: received,
+        receivedLive: true,
+      );
+      expect(m.showsReceiveTime, isTrue);
+      expect(m.displayTime, received);
+    });
+
+    test('live receive hides the future-timestamp warning', () {
+      final m = _ch(
+        'a',
+        timestamp: base.add(const Duration(hours: 1)),
+        receivedAt: base,
+        receivedLive: true,
+      );
+      expect(m.hasFutureTimestamp, isFalse);
+      expect(m.displayTime, base);
+    });
+
+    test('outgoing messages keep their own time', () {
+      final out = ChannelMessage(
+        senderKey: null,
+        senderName: 'Me',
+        text: 'x',
+        timestamp: base,
+        receivedLive: true,
+        isOutgoing: true,
+        status: ChannelMessageStatus.sent,
+        channelIndex: 0,
+      );
+      expect(out.showsReceiveTime, isFalse);
+      expect(out.displayTime, base);
+    });
+
+    test('receivedLive survives copyWith on both models', () {
+      final ch = _ch(
+        'a',
+        timestamp: base,
+        receivedAt: base,
+        receivedLive: true,
+      );
+      expect(ch.copyWith(repeatCount: 2).receivedLive, isTrue);
+      final dm = Message(
+        senderKey: Uint8List.fromList([1]),
+        text: 'x',
+        timestamp: base,
+        receivedAt: base,
+        receivedLive: true,
+        isOutgoing: false,
+      );
+      expect(dm.copyWith(retryCount: 1).receivedLive, isTrue);
+      expect(dm.displayTime, base);
+    });
+  });
+
   group('receivedAt persistence', () {
     test('channel store round-trips receivedAt', () async {
       await _init();
@@ -191,6 +264,38 @@ void main() {
         isFalse,
       );
       expect(loaded[1].hasFutureTimestamp, isTrue);
+      expect(loaded[1].receivedLive, isFalse);
+    });
+
+    test('stores round-trip receivedLive', () async {
+      await _init();
+      final store = ChannelMessageStore()..setPublicKeyHex = _device;
+      await store.saveChannelMessages(_channelId, [
+        _ch('live', timestamp: base, receivedAt: base, receivedLive: true),
+        _ch('backlog', timestamp: base, receivedAt: base),
+      ]);
+      final loaded = await store.loadChannelMessages(_channelId);
+      expect(loaded.firstWhere((m) => m.text == 'live').receivedLive, isTrue);
+      expect(
+        loaded.firstWhere((m) => m.text == 'backlog').receivedLive,
+        isFalse,
+      );
+
+      final dmStore = MessageStore()..setPublicKeyHex = _device;
+      await dmStore.saveMessages(_contact, [
+        Message(
+          senderKey: Uint8List.fromList([1, 2, 3]),
+          text: 'live-dm',
+          timestamp: base,
+          receivedAt: base,
+          receivedLive: true,
+          isOutgoing: false,
+          status: MessageStatus.delivered,
+          messageId: 'live-dm-id',
+        ),
+      ]);
+      final loadedDm = await dmStore.loadMessages(_contact);
+      expect(loadedDm.single.receivedLive, isTrue);
     });
   });
 

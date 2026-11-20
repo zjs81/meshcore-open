@@ -112,6 +112,8 @@ int? replyCodeForCommand(Uint8List data) {
       return respCodeAllowedRepeatFreq;
     case cmdGetDefaultFloodScope:
       return respCodeDefaultFloodScope;
+    case cmdRunCliCommand:
+      return respCodeCliReply;
   }
   return null;
 }

@@ -171,6 +171,18 @@ class RepeaterHubScreen extends StatelessWidget {
                       value: 'lipo_hv',
                       child: Text(l10n.appSettings_batteryLipoHv),
                     ),
+                    DropdownMenuItem(
+                      value: 'lead_acid',
+                      child: Text(l10n.appSettings_batteryLeadAcid),
+                    ),
+                    DropdownMenuItem(
+                      value: 'nimh',
+                      child: Text(l10n.appSettings_batteryNimh),
+                    ),
+                    DropdownMenuItem(
+                      value: 'lto',
+                      child: Text(l10n.appSettings_batteryLto),
+                    ),
                   ],
                 ),
               ),
