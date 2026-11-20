@@ -25,6 +25,7 @@ import '../widgets/connect_sheet.dart';
 import '../utils/radio_guard.dart';
 import '../utils/emoji_utils.dart';
 import '../utils/route_transitions.dart';
+import '../widgets/contact_group_editor_dialog.dart';
 import '../widgets/contact_visuals.dart';
 import '../widgets/list_filter_widget.dart';
 import '../widgets/empty_state.dart';
@@ -1395,182 +1396,44 @@ class _ContactsScreenState extends State<ContactsScreen> {
       return;
     }
     final isEditing = group != null;
-    final nameController = TextEditingController(text: group?.name ?? '');
-    final selectedKeys = <String>{...group?.memberKeys ?? []};
-    String filterQuery = '';
-    final sortedContacts = List<Contact>.from(contacts)
-      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-
     showDialog<void>(
       context: context,
-      builder: (dialogContext) => _DisposeControllerOnUnmount(
-        controller: nameController,
-        child: StatefulBuilder(
-          builder: (builderContext, setDialogState) {
-            final filteredContacts = filterQuery.isEmpty
-                ? sortedContacts
-                : sortedContacts
-                      .where(
-                        (contact) => matchesContactQuery(contact, filterQuery),
-                      )
-                      .toList();
-            return AlertDialog(
-              title: Text(
-                isEditing
-                    ? context.l10n.contacts_editGroup
-                    : context.l10n.contacts_newGroup,
-              ),
-              content: SizedBox(
-                width: double.maxFinite,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.8,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextField(
-                        controller: nameController,
-                        decoration: InputDecoration(
-                          labelText: context.l10n.contacts_groupName,
-                          border: const OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        decoration: InputDecoration(
-                          hintText: context.l10n.contacts_filterContacts,
-                          prefixIcon: const Icon(Icons.search),
-                          border: const OutlineInputBorder(),
-                          isDense: true,
-                        ),
-                        onChanged: (value) {
-                          setDialogState(() {
-                            filterQuery = value.toLowerCase();
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      Expanded(
-                        child: filteredContacts.isEmpty
-                            ? Center(
-                                child: Text(
-                                  context.l10n.contacts_noContactsMatchFilter,
-                                ),
-                              )
-                            : ListView.builder(
-                                itemCount: filteredContacts.length,
-                                itemBuilder: (context, index) {
-                                  final contact = filteredContacts[index];
-                                  final isSelected = selectedKeys.contains(
-                                    contact.publicKeyHex,
-                                  );
-                                  return CheckboxListTile(
-                                    value: isSelected,
-                                    title: Text(contact.name),
-                                    subtitle: Text(
-                                      contact.typeLabel(context.l10n),
-                                    ),
-                                    onChanged: (value) {
-                                      setDialogState(() {
-                                        if (value == true) {
-                                          selectedKeys.add(
-                                            contact.publicKeyHex,
-                                          );
-                                        } else {
-                                          selectedKeys.remove(
-                                            contact.publicKeyHex,
-                                          );
-                                        }
-                                      });
-                                    },
-                                  );
-                                },
-                              ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: Text(context.l10n.common_cancel),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    final name = nameController.text.trim();
-                    if (name.isEmpty) {
-                      showDismissibleSnackBar(
-                        context,
-                        content: Text(context.l10n.contacts_groupNameRequired),
-                      );
-                      return;
-                    }
-                    if (name.toLowerCase() ==
-                        contactsAllGroupsValue.toLowerCase()) {
-                      showDismissibleSnackBar(
-                        context,
-                        content: Text(context.l10n.contacts_groupNameReserved),
-                      );
-                      return;
-                    }
-                    final exists = _groups.any((g) {
-                      if (isEditing && g.name == group.name) return false;
-                      return g.name.toLowerCase() == name.toLowerCase();
-                    });
-                    if (exists) {
-                      showDismissibleSnackBar(
-                        context,
-                        content: Text(
-                          context.l10n.contacts_groupAlreadyExists(name),
-                        ),
-                      );
-                      return;
-                    }
-                    setState(() {
-                      final viewState = context.read<UiViewStateService>();
-                      if (isEditing) {
-                        final index = _groups.indexWhere(
-                          (g) => g.name == group.name,
-                        );
-                        if (index != -1) {
-                          final wasSelected =
-                              viewState.contactsSelectedGroupName == group.name;
-                          _groups[index] = ContactGroup(
-                            name: name,
-                            memberKeys: selectedKeys.toList(),
-                          );
-                          if (wasSelected) {
-                            viewState.setContactsSelectedGroupName(name);
-                          }
-                        }
-                      } else {
-                        _groups.add(
-                          ContactGroup(
-                            name: name,
-                            memberKeys: selectedKeys.toList(),
-                          ),
-                        );
-                        viewState.setContactsSelectedGroupName(name);
-                      }
-                      _ensureValidSelectedGroup();
-                    });
-                    await _saveGroups();
-                    if (dialogContext.mounted) {
-                      Navigator.pop(dialogContext);
-                    }
-                  },
-                  child: Text(
-                    isEditing
-                        ? context.l10n.common_save
-                        : context.l10n.common_create,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+      builder: (dialogContext) => ContactGroupEditorDialog(
+        contacts: contacts,
+        group: group,
+        validateName: (name) {
+          final l10n = dialogContext.l10n;
+          if (name.isEmpty) return l10n.contacts_groupNameRequired;
+          if (name.toLowerCase() == contactsAllGroupsValue.toLowerCase()) {
+            return l10n.contacts_groupNameReserved;
+          }
+          final exists = _groups.any((g) {
+            if (isEditing && g.name == group.name) return false;
+            return g.name.toLowerCase() == name.toLowerCase();
+          });
+          return exists ? l10n.contacts_groupAlreadyExists(name) : null;
+        },
+        onSave: (updated) async {
+          setState(() {
+            final viewState = context.read<UiViewStateService>();
+            if (isEditing) {
+              final index = _groups.indexWhere((g) => g.name == group.name);
+              if (index != -1) {
+                final wasSelected =
+                    viewState.contactsSelectedGroupName == group.name;
+                _groups[index] = updated;
+                if (wasSelected) {
+                  viewState.setContactsSelectedGroupName(updated.name);
+                }
+              }
+            } else {
+              _groups.add(updated);
+              viewState.setContactsSelectedGroupName(updated.name);
+            }
+            _ensureValidSelectedGroup();
+          });
+          await _saveGroups();
+        },
       ),
     );
   }
@@ -2086,34 +1949,6 @@ class _KeyPrefixBadge extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Disposes [controller] when the dialog content unmounts, i.e. after the
-/// route's exit animation, so the TextField never sees a disposed controller.
-class _DisposeControllerOnUnmount extends StatefulWidget {
-  final TextEditingController controller;
-  final Widget child;
-
-  const _DisposeControllerOnUnmount({
-    required this.controller,
-    required this.child,
-  });
-
-  @override
-  State<_DisposeControllerOnUnmount> createState() =>
-      _DisposeControllerOnUnmountState();
-}
-
-class _DisposeControllerOnUnmountState
-    extends State<_DisposeControllerOnUnmount> {
-  @override
-  void dispose() {
-    widget.controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => widget.child;
 }
 
 // Wrap each contact tile with staggered entrance.

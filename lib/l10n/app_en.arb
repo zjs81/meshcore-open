@@ -843,6 +843,31 @@
   "contacts_filterContacts": "Filter contacts...",
   "contacts_noContactsMatchFilter": "No contacts match your filter",
   "contacts_noMembers": "No members",
+  "contacts_groupCurrentMembers": "Current members ({count})",
+  "@contacts_groupCurrentMembers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_groupAddContacts": "Add contacts",
+  "contacts_groupRemoveMember": "Remove {name} from group",
+  "@contacts_groupRemoveMember": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_groupAddMember": "Add {name} to group",
+  "@contacts_groupAddMember": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "contacts_lastSeenNow": "recently",
   "contacts_lastSeenMinsAgo": "~ {minutes} min.",
   "@contacts_lastSeenMinsAgo": {
