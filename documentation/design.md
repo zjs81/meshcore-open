@@ -165,7 +165,7 @@ Rules for new UI:
 3. **Forms with sections, live remote values, or anything that needs Save/Discard → page.** Guard unsaved changes with `PopScope` and a discard dialog, as `repeater_settings_screen.dart` does.
 4. Never stack a dialog on a sheet on a dialog. Close the sheet first, or move the flow to a page.
 
-The manual path editor (`path_editor_sheet.dart`) uses `showMeshSheet` and `BottomSheetHeader`, the same top padding, drag handle, and title row as the other sheets. The hop list and the hex path field stay pinned under that header, including while the keyboard is open.
+The manual path editor (`path_editor_sheet.dart`) uses `showMeshSheet` and `BottomSheetHeader`, the same top padding, drag handle, and title row as the other sheets. The hop list and the hex path field stay pinned under that header, including while the keyboard is open. When the band under the header is shorter than the search field, as on a landscape phone with the keyboard open, those blocks and the repeater list scroll together instead of overflowing.
 
 ## 7. App bars
 

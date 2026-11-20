@@ -355,7 +355,12 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
   /// An invalid hex path grows the error text. That growth comes out of the
   /// hop viewport first, keeping one row when it fits, and the error itself
   /// scrolls inside its own box instead of overflowing the sheet.
-  ({double hop, double hex, double search}) _middleBudget(
+  ///
+  /// [scroll] is set when that band is shorter than the search field, which
+  /// happens when a landscape keyboard leaves only the header and the action
+  /// buttons. The pinned column would overflow, so the caller lays the same
+  /// blocks out in one scroll view instead.
+  ({double hop, double hex, double search, bool scroll}) _middleBudget(
     double space,
     bool compact,
   ) {
@@ -372,12 +377,13 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
     final wantedHop = _hops.isEmpty
         ? math.min(scaler.scale(compact ? 64 : 80), 140.0)
         : math.min(_hops.length, compact ? 2 : 3) * row + 4;
+    final wantedHex = baseHex + errorExtra;
     final minHop = _hops.isEmpty
         ? 0.0
         : math.min(row, math.max(0.0, space - gaps));
 
     var hopH = wantedHop;
-    var hexH = baseHex + errorExtra;
+    var hexH = wantedHex;
     final used = hopH + hexH + searchH + gaps;
     if (used > space) {
       var overflow = used - space;
@@ -397,18 +403,294 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
         hopH = math.max(0.0, hopH - overflow);
       }
     }
+    hopH = math.max(0.0, hopH);
+    hexH = math.max(0.0, hexH);
+    // The search field stays at its full height in the pinned column. When
+    // the band cannot hold it, scrolling is the only way to reach it and the
+    // repeater list.
+    final scroll = hopH + hexH + searchH > space;
     return (
-      hop: math.max(0.0, hopH),
-      hex: math.max(0.0, hexH),
+      hop: scroll ? wantedHop : hopH,
+      hex: scroll ? wantedHex : hexH,
       search: searchH,
+      scroll: scroll,
+    );
+  }
+
+  Widget _hopViewport(bool compact, double height) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return SizedBox(
+      height: height,
+      child: height < 8
+          ? const SizedBox.shrink()
+          : Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(MeshRadii.md),
+                  border: Border.all(color: scheme.outlineVariant),
+                ),
+                child: _hops.isEmpty
+                    ? SingleChildScrollView(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          l10n.pathEditor_noHops,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                        ),
+                      )
+                    : ReorderableListView.builder(
+                        scrollController: _hopScroll,
+                        buildDefaultDragHandles: false,
+                        padding: EdgeInsets.symmetric(
+                          vertical: compact ? 0 : 4,
+                        ),
+                        itemCount: _hops.length,
+                        onReorderItem: _reorderHop,
+                        itemBuilder: (context, index) =>
+                            _hopTile(context, index, singleLine: compact),
+                      ),
+              ),
+            ),
+    );
+  }
+
+  Widget _hexViewport(bool compact, double height) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    return SizedBox(
+      height: height,
+      child: SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(16, compact ? 6 : 12, 16, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (!compact) ...[
+              Text(
+                l10n.pathEditor_advancedHex,
+                style: theme.textTheme.titleSmall,
+              ),
+              const SizedBox(height: 8),
+            ],
+            TextField(
+              key: const Key('path-editor-hex-field'),
+              controller: _hexController,
+              onChanged: _onHexChanged,
+              textCapitalization: TextCapitalization.characters,
+              style: MeshTheme.mono(fontSize: 14),
+              scrollPadding: EdgeInsets.zero,
+              decoration: InputDecoration(
+                labelText: l10n.pathEditor_hexLabel,
+                helperText: compact || _hexError != null
+                    ? null
+                    : l10n.pathEditor_hexHelper(_hashChars),
+                helperMaxLines: 3,
+                errorText: _hexError,
+                errorMaxLines: compact ? 4 : 3,
+                border: const OutlineInputBorder(),
+                isDense: compact,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _searchViewport(bool compact, double height) {
+    final l10n = context.l10n;
+    return SizedBox(
+      height: height,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16, compact ? 6 : 12, 16, 0),
+        child: TextField(
+          key: const Key('path-editor-search-field'),
+          onChanged: (value) => setState(() => _search = value),
+          scrollPadding: EdgeInsets.zero,
+          decoration: InputDecoration(
+            labelText: l10n.pathEditor_searchRepeaters,
+            prefixIcon: const Icon(Icons.search),
+            border: const OutlineInputBorder(),
+            isDense: compact,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _repeaterViewport(List<Contact> repeaters) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    if (repeaters.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: Text(
+            l10n.path_noRepeatersFound,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: scheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+      );
+    }
+    return ListView.builder(
+      key: const Key('path-editor-repeater-list'),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      itemCount: repeaters.length,
+      itemBuilder: (context, index) => _repeaterTile(context, repeaters[index]),
+    );
+  }
+
+  /// One scrollable for the hop list, hex field, search field, and repeaters.
+  ///
+  /// The blocks are intrinsic height with no nested scrolling, so a drag
+  /// anywhere in the band moves the search field and the repeater list into
+  /// view. The pinned layout keeps its own viewports.
+  Widget _scrollingMiddle({
+    required bool compact,
+    required List<Contact> repeaters,
+  }) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return CustomScrollView(
+      key: const Key('path-editor-scroll-fallback'),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      slivers: [
+        SliverToBoxAdapter(child: _scrollHopBlock(compact)),
+        SliverToBoxAdapter(child: _scrollHexBlock(compact)),
+        SliverToBoxAdapter(child: _scrollSearchBlock(compact)),
+        if (repeaters.isEmpty)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Text(
+                l10n.path_noRepeatersFound,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          )
+        else
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            sliver: SliverList.builder(
+              key: const Key('path-editor-repeater-list'),
+              itemCount: repeaters.length,
+              itemBuilder: (context, index) =>
+                  _repeaterTile(context, repeaters[index]),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _scrollHopBlock(bool compact) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(MeshRadii.md),
+          border: Border.all(color: scheme.outlineVariant),
+        ),
+        child: _hops.isEmpty
+            ? Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(
+                  l10n.pathEditor_noHops,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+              )
+            : ReorderableListView.builder(
+                scrollController: _hopScroll,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                buildDefaultDragHandles: false,
+                padding: EdgeInsets.symmetric(vertical: compact ? 0 : 4),
+                itemCount: _hops.length,
+                onReorderItem: _reorderHop,
+                itemBuilder: (context, index) =>
+                    _hopTile(context, index, singleLine: compact),
+              ),
+      ),
+    );
+  }
+
+  Widget _scrollHexBlock(bool compact) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, compact ? 6 : 12, 16, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (!compact) ...[
+            Text(
+              l10n.pathEditor_advancedHex,
+              style: theme.textTheme.titleSmall,
+            ),
+            const SizedBox(height: 8),
+          ],
+          TextField(
+            key: const Key('path-editor-hex-field'),
+            controller: _hexController,
+            onChanged: _onHexChanged,
+            textCapitalization: TextCapitalization.characters,
+            style: MeshTheme.mono(fontSize: 14),
+            scrollPadding: EdgeInsets.zero,
+            decoration: InputDecoration(
+              labelText: l10n.pathEditor_hexLabel,
+              helperText: compact || _hexError != null
+                  ? null
+                  : l10n.pathEditor_hexHelper(_hashChars),
+              helperMaxLines: 3,
+              errorText: _hexError,
+              errorMaxLines: compact ? 4 : 3,
+              border: const OutlineInputBorder(),
+              isDense: compact,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _scrollSearchBlock(bool compact) {
+    final l10n = context.l10n;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, compact ? 6 : 12, 16, 0),
+      child: TextField(
+        key: const Key('path-editor-search-field'),
+        onChanged: (value) => setState(() => _search = value),
+        scrollPadding: EdgeInsets.zero,
+        decoration: InputDecoration(
+          labelText: l10n.pathEditor_searchRepeaters,
+          prefixIcon: const Icon(Icons.search),
+          border: const OutlineInputBorder(),
+          isDense: compact,
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     final repeaters = _repeaters;
 
     return LayoutBuilder(
@@ -433,159 +715,18 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
               child: LayoutBuilder(
                 builder: (context, inner) {
                   final budget = _middleBudget(inner.maxHeight, compact);
+                  if (budget.scroll) {
+                    return _scrollingMiddle(
+                      compact: compact,
+                      repeaters: repeaters,
+                    );
+                  }
                   return Column(
                     children: [
-                      SizedBox(
-                        height: budget.hop,
-                        child: budget.hop < 8
-                            ? const SizedBox.shrink()
-                            : Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                  16,
-                                  4,
-                                  16,
-                                  0,
-                                ),
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: scheme.surfaceContainerLow,
-                                    borderRadius: BorderRadius.circular(
-                                      MeshRadii.md,
-                                    ),
-                                    border: Border.all(
-                                      color: scheme.outlineVariant,
-                                    ),
-                                  ),
-                                  child: _hops.isEmpty
-                                      ? SingleChildScrollView(
-                                          padding: const EdgeInsets.all(12),
-                                          child: Text(
-                                            l10n.pathEditor_noHops,
-                                            style: theme.textTheme.bodyMedium
-                                                ?.copyWith(
-                                                  color:
-                                                      scheme.onSurfaceVariant,
-                                                ),
-                                          ),
-                                        )
-                                      : ReorderableListView.builder(
-                                          scrollController: _hopScroll,
-                                          buildDefaultDragHandles: false,
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: compact ? 0 : 4,
-                                          ),
-                                          itemCount: _hops.length,
-                                          onReorderItem: _reorderHop,
-                                          itemBuilder: (context, index) =>
-                                              _hopTile(
-                                                context,
-                                                index,
-                                                singleLine: compact,
-                                              ),
-                                        ),
-                                ),
-                              ),
-                      ),
-                      SizedBox(
-                        height: budget.hex,
-                        child: SingleChildScrollView(
-                          padding: EdgeInsets.fromLTRB(
-                            16,
-                            compact ? 6 : 12,
-                            16,
-                            0,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (!compact) ...[
-                                Text(
-                                  l10n.pathEditor_advancedHex,
-                                  style: theme.textTheme.titleSmall,
-                                ),
-                                const SizedBox(height: 8),
-                              ],
-                              TextField(
-                                key: const Key('path-editor-hex-field'),
-                                controller: _hexController,
-                                onChanged: _onHexChanged,
-                                textCapitalization:
-                                    TextCapitalization.characters,
-                                style: MeshTheme.mono(fontSize: 14),
-                                scrollPadding: EdgeInsets.zero,
-                                decoration: InputDecoration(
-                                  labelText: l10n.pathEditor_hexLabel,
-                                  helperText: compact || _hexError != null
-                                      ? null
-                                      : l10n.pathEditor_hexHelper(_hashChars),
-                                  helperMaxLines: 3,
-                                  errorText: _hexError,
-                                  errorMaxLines: compact ? 4 : 3,
-                                  border: const OutlineInputBorder(),
-                                  isDense: compact,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: budget.search,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(
-                            16,
-                            compact ? 6 : 12,
-                            16,
-                            0,
-                          ),
-                          child: TextField(
-                            key: const Key('path-editor-search-field'),
-                            onChanged: (value) =>
-                                setState(() => _search = value),
-                            scrollPadding: EdgeInsets.zero,
-                            decoration: InputDecoration(
-                              labelText: l10n.pathEditor_searchRepeaters,
-                              prefixIcon: const Icon(Icons.search),
-                              border: const OutlineInputBorder(),
-                              isDense: compact,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: repeaters.isEmpty
-                            ? Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                  16,
-                                  12,
-                                  16,
-                                  8,
-                                ),
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    l10n.path_noRepeatersFound,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: scheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : ListView.builder(
-                                key: const Key('path-editor-repeater-list'),
-                                keyboardDismissBehavior:
-                                    ScrollViewKeyboardDismissBehavior.onDrag,
-                                padding: const EdgeInsets.fromLTRB(
-                                  16,
-                                  8,
-                                  16,
-                                  8,
-                                ),
-                                itemCount: repeaters.length,
-                                itemBuilder: (context, index) =>
-                                    _repeaterTile(context, repeaters[index]),
-                              ),
-                      ),
+                      _hopViewport(compact, budget.hop),
+                      _hexViewport(compact, budget.hex),
+                      _searchViewport(compact, budget.search),
+                      Expanded(child: _repeaterViewport(repeaters)),
                     ],
                   );
                 },

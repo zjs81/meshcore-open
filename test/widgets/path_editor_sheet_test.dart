@@ -67,6 +67,29 @@ Future<void> _pumpSheet(
   await tester.pumpAndSettle();
 }
 
+Future<void> _revealInFallback(
+  WidgetTester tester,
+  Finder scrollable,
+  Finder target,
+) async {
+  final state = tester.state<ScrollableState>(scrollable);
+  final view = tester.getRect(
+    find.byKey(const Key('path-editor-scroll-fallback')),
+  );
+  for (var i = 0; i < 40; i++) {
+    final rect = tester.getRect(target);
+    if (rect.center.dy >= view.top && rect.center.dy <= view.bottom) return;
+    final next = (state.position.pixels + 48).clamp(
+      0.0,
+      state.position.maxScrollExtent,
+    );
+    expect(next, greaterThan(state.position.pixels));
+    state.position.jumpTo(next);
+    await tester.pump();
+  }
+  fail('Could not scroll $target into the path sheet');
+}
+
 List<String> _repeaterNames(WidgetTester tester) {
   return tester
       .widgetList<Text>(
@@ -162,6 +185,7 @@ void main() {
       find.byKey(const Key('path-editor-hex-field')).hitTestable(),
       findsOneWidget,
     );
+    expect(find.byKey(const Key('path-editor-scroll-fallback')), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
@@ -186,6 +210,70 @@ void main() {
       find.byIcon(Icons.remove_circle_outline).hitTestable(),
       findsWidgets,
     );
+    final button = tester.getRect(find.text('Use this path'));
+    final sheet = tester.getRect(find.byType(PathEditorSheet));
+    expect(button.bottom, lessThanOrEqualTo(sheet.bottom + 1));
+  });
+
+  testWidgets('a landscape keyboard sheet scrolls instead of overflowing', (
+    tester,
+  ) async {
+    await _pumpSheet(
+      tester,
+      size: const Size(800, 180),
+      initialPath: [0x60, 0x60, 0x11, 0x22],
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(
+      find.byKey(const Key('path-editor-scroll-fallback')),
+      findsOneWidget,
+    );
+    // The hop list has its own scrollable. The fallback is the scrollable
+    // that also contains the hex field.
+    final scrollable = find.byElementPredicate((element) {
+      if (element.widget is! Scrollable) return false;
+      var hasHex = false;
+      void visit(Element node) {
+        node.visitChildren((child) {
+          if (child.widget.key == const Key('path-editor-hex-field')) {
+            hasHex = true;
+          }
+          visit(child);
+        });
+      }
+
+      visit(element);
+      return hasHex;
+    });
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('path-editor-hex-field')),
+      40,
+      scrollable: scrollable,
+    );
+    await tester.enterText(
+      find.byKey(const Key('path-editor-hex-field')),
+      'ZZ',
+    );
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.textContaining('Invalid'), findsOneWidget);
+
+    await _revealInFallback(
+      tester,
+      scrollable,
+      find.byKey(const Key('path-editor-search-field'), skipOffstage: false),
+    );
+    expect(
+      find.byKey(const Key('path-editor-search-field')).hitTestable(),
+      findsOneWidget,
+    );
+    await _revealInFallback(
+      tester,
+      scrollable,
+      find.text('Acreage North', skipOffstage: false),
+    );
+    expect(find.text('Acreage North').hitTestable(), findsOneWidget);
     final button = tester.getRect(find.text('Use this path'));
     final sheet = tester.getRect(find.byType(PathEditorSheet));
     expect(button.bottom, lessThanOrEqualTo(sheet.bottom + 1));
