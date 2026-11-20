@@ -88,6 +88,45 @@ void main() {
     expect(timed.map((c) => c.name), ['A', 'B']);
   });
 
+  test('a labeled key uses the same prefix, substring, then hash order', () {
+    expect(
+      rankLabeledKeyQuery(
+        name: 'Review Radio',
+        publicKeyHex: '6060abcd',
+        query: 'my',
+        aliases: ['My contact'],
+      ),
+      ContactQueryRank.namePrefix,
+    );
+    expect(
+      rankLabeledKeyQuery(
+        name: 'Review Radio',
+        publicKeyHex: '6060abcd',
+        query: 'radio',
+        aliases: ['My contact'],
+      ),
+      ContactQueryRank.nameContains,
+    );
+    expect(
+      rankLabeledKeyQuery(
+        name: 'Review Radio',
+        publicKeyHex: '6060abcd',
+        query: '6060',
+        aliases: ['My contact'],
+      ),
+      ContactQueryRank.keyPrefix,
+    );
+    expect(
+      rankLabeledKeyQuery(
+        name: 'Review Radio',
+        publicKeyHex: '6060abcd',
+        query: 'zzzz',
+        aliases: ['My contact'],
+      ),
+      isNull,
+    );
+  });
+
   test('tie-break applies inside a rank, not across ranks', () {
     final olderPrefix = _contact('Acre Older', [
       0x01,

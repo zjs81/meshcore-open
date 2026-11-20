@@ -11,6 +11,7 @@ import '../l10n/l10n.dart';
 import '../models/contact.dart';
 import '../theme/mesh_theme.dart';
 import '../utils/contact_search.dart';
+import 'mesh_ui.dart';
 
 class PathEditorSheet extends StatefulWidget {
   final List<Contact> availableContacts;
@@ -30,27 +31,26 @@ class PathEditorSheet extends StatefulWidget {
     List<int> initialPath = const [],
     int pathHashByteWidth = pathHashSize,
   }) {
-    return showModalBottomSheet<Uint8List>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
+    // Same container as the other sheets: safe area on the top and sides,
+    // keyboard inset on the bottom, and the header at the top of the sheet.
+    // A fraction inside an expanding align left an empty band above the handle.
+    return showMeshSheet<Uint8List>(
+      context,
       builder: (context) {
-        final keyboard = MediaQuery.viewInsetsOf(context).bottom;
-        return Padding(
-          padding: EdgeInsets.only(bottom: keyboard),
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: FractionallySizedBox(
-              // The keyboard already shrinks the sheet. Use the full band
-              // above it so the hop list is not clipped under the title.
-              heightFactor: keyboard > 0 ? 1 : 0.92,
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final height = constraints.maxHeight.isFinite
+                ? constraints.maxHeight
+                : MediaQuery.sizeOf(context).height;
+            return SizedBox(
+              height: height,
               child: PathEditorSheet(
                 availableContacts: availableContacts,
                 initialPath: initialPath,
                 pathHashByteWidth: pathHashByteWidth,
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
@@ -422,39 +422,11 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
 
         return Column(
           children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(16, compact ? 6 : 10, 16, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 36,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: scheme.outline,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: compact ? 4 : 12),
-                  Text(
-                    l10n.pathEditor_title,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: -0.2,
-                    ),
-                  ),
-                  Semantics(
-                    liveRegion: true,
-                    child: Text(
-                      l10n.pathEditor_hopCounter(_hops.length),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                ],
+            Semantics(
+              liveRegion: true,
+              child: BottomSheetHeader(
+                title: l10n.pathEditor_title,
+                subtitle: l10n.pathEditor_hopCounter(_hops.length),
               ),
             ),
             Expanded(

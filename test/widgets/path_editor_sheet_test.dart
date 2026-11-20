@@ -208,6 +208,46 @@ void main() {
     expect(button.top, greaterThanOrEqualTo(list.bottom - 1));
   });
 
+  testWidgets('the title sits at the top of the sheet', (tester) async {
+    tester.view.physicalSize = const Size(400, 800);
+    tester.view.devicePixelRatio = 1;
+    // A phone status bar. The sheet may pad for it, and must not add another
+    // empty band above the handle.
+    tester.view.padding = const FakeViewPadding(top: 47);
+    tester.view.viewPadding = const FakeViewPadding(top: 47);
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetPadding);
+    addTearDown(tester.view.resetViewPadding);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () => PathEditorSheet.show(
+                context,
+                availableContacts: _contacts,
+                pathHashByteWidth: 2,
+              ),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    final sheetTop = tester.getTopLeft(find.byType(BottomSheet)).dy;
+    final titleTop = tester.getTopLeft(find.text('Build Path')).dy;
+    // Header only: 8px padding, a 4px handle, and a 10px gap. The status-bar
+    // inset stays outside the sheet, and there is no extra empty band.
+    expect(titleTop - sheetTop, inInclusiveRange(16, 36));
+  });
+
   testWidgets('tapping a repeater adds a visible hop', (tester) async {
     await _pumpSheet(tester);
     await tester.enterText(

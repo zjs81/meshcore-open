@@ -9,14 +9,49 @@ enum ContactQueryRank { namePrefix, nameContains, keyPrefix }
 ///
 /// Names that start with the query come before other substring matches.
 /// A public-key / hop-hash prefix matches only when the name does not.
+/// Name-only half of [rankContactQuery], for a label that is not itself a
+/// contact (for example the "my contact" alias on the share sheet).
+ContactQueryRank? rankNameQuery(String name, String query) {
+  final normalized = query.trim().toLowerCase();
+  if (normalized.isEmpty) return ContactQueryRank.namePrefix;
+  final label = name.toLowerCase();
+  if (label.startsWith(normalized)) return ContactQueryRank.namePrefix;
+  if (label.contains(normalized)) return ContactQueryRank.nameContains;
+  return null;
+}
+
 ContactQueryRank? rankContactQuery(Contact contact, String query) {
   final normalized = query.trim().toLowerCase();
   if (normalized.isEmpty) return ContactQueryRank.namePrefix;
 
-  final name = contact.name.toLowerCase();
-  if (name.startsWith(normalized)) return ContactQueryRank.namePrefix;
-  if (name.contains(normalized)) return ContactQueryRank.nameContains;
+  final byName = rankNameQuery(contact.name, normalized);
+  if (byName != null) return byName;
   if (_publicKeyPrefixMatches(contact, normalized)) {
+    return ContactQueryRank.keyPrefix;
+  }
+  return null;
+}
+
+/// Whether [name], any [aliases], or [publicKeyHex] matches [query] with the
+/// same prefix, substring, then hash order as [rankContactQuery].
+ContactQueryRank? rankLabeledKeyQuery({
+  required String name,
+  required String publicKeyHex,
+  required String query,
+  List<String> aliases = const [],
+}) {
+  final normalized = query.trim().toLowerCase();
+  if (normalized.isEmpty) return ContactQueryRank.namePrefix;
+  ContactQueryRank? best = rankNameQuery(name, normalized);
+  for (final alias in aliases) {
+    final rank = rankNameQuery(alias, normalized);
+    if (rank != null && (best == null || rank.index < best.index)) {
+      best = rank;
+    }
+  }
+  if (best != null) return best;
+  final hexPrefix = _extractHexPrefix(normalized);
+  if (hexPrefix != null && publicKeyHex.toLowerCase().startsWith(hexPrefix)) {
     return ContactQueryRank.keyPrefix;
   }
   return null;
