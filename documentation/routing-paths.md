@@ -62,4 +62,8 @@ Contacts/messages persist hop count, path bytes, and width. Legacy contact recor
 
 `resolvePathSelection` uses a route picked from history even when the radio itself holds no path for the contact, so repeater logins and commands use proven routes instead of flooding.
 
+## Building a path by hand
+
+Chat → Routing → Manual opens the Build Path sheet. The hops you have added stay pinned at the top, including while the keyboard is open, and the one just added is highlighted. Under that list is the hex field, so a path can be typed without scrolling past every repeater. Search matches repeater and room names and hop hashes (the public-key prefix). Names that start with the query are listed before other substring matches, then hash-only matches.
+
 For message-path actions, trace maps, and retry behavior, see [chat](chat-and-messaging.md), [channels](channels.md), and [map](map-and-location.md).

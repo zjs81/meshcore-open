@@ -2590,7 +2590,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get pathEditor_hexLabel => 'HEX 접두사';
 
   @override
-  String get pathEditor_hexHelper => '각 홉마다 2개의 16진수 바이트, 쉼표로 구분';
+  String pathEditor_hexHelper(int count) {
+    return '각 홉마다 $count개의 16진수 문자, 쉼표로 구분';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

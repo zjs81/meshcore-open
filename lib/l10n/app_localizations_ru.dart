@@ -2717,8 +2717,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get pathEditor_hexLabel => 'Префиксы шестнадцатеричной системы';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Два шестнадцатеричных символа на каждом шаге, разделенные запятыми.';
+  String pathEditor_hexHelper(int count) {
+    return '$count шестнадцатеричных символа на каждом шаге, разделенные запятыми.';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

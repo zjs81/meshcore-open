@@ -2579,7 +2579,7 @@
   "pathEditor_searchRepeaters": "리피터 검색",
   "pathEditor_advancedHex": "고급: 원시 HEX 경로",
   "pathEditor_hexLabel": "HEX 접두사",
-  "pathEditor_hexHelper": "각 홉마다 2개의 16진수 바이트, 쉼표로 구분",
+  "pathEditor_hexHelper": "각 홉마다 {count}개의 16진수 문자, 쉼표로 구분",
   "pathEditor_invalidTokens": "유효하지 않음: {tokens}",
   "pathEditor_tooManyHops": "최대 64개의 홉",
   "pathEditor_usePath": "이 경로 사용",

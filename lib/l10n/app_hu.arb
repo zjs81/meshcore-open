@@ -2663,7 +2663,7 @@
   "pathEditor_searchRepeaters": "Ismétlő keresése",
   "pathEditor_advancedHex": "Haladó: nyers hexadecimális útvonal",
   "pathEditor_hexLabel": "Hexadecimális előtagok",
-  "pathEditor_hexHelper": "Két hexadecimális karakter ugrásonként, vesszővel elválasztva",
+  "pathEditor_hexHelper": "{count} hexadecimális karakter ugrásonként, vesszővel elválasztva",
   "pathEditor_invalidTokens": "Érvénytelen: {tokens}",
   "routing_lastWorked": "dolgozott {when}",
   "routing_deliveryCounts": "{successes} kézbesítve, {failures} sikertelen",

@@ -1,12 +1,16 @@
-import 'dart:typed_data';
+import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../connector/meshcore_protocol.dart';
 import '../helpers/path_helper.dart';
 import '../l10n/contact_localization.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
+import '../theme/mesh_theme.dart';
+import '../utils/contact_search.dart';
 
 class PathEditorSheet extends StatefulWidget {
   final List<Contact> availableContacts;
@@ -30,19 +34,25 @@ class PathEditorSheet extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: FractionallySizedBox(
-          heightFactor: 0.9,
-          child: PathEditorSheet(
-            availableContacts: availableContacts,
-            initialPath: initialPath,
-            pathHashByteWidth: pathHashByteWidth,
+      builder: (context) {
+        final keyboard = MediaQuery.viewInsetsOf(context).bottom;
+        return Padding(
+          padding: EdgeInsets.only(bottom: keyboard),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: FractionallySizedBox(
+              // The keyboard already shrinks the sheet. Use the full band
+              // above it so the hop list is not clipped under the title.
+              heightFactor: keyboard > 0 ? 1 : 0.92,
+              child: PathEditorSheet(
+                availableContacts: availableContacts,
+                initialPath: initialPath,
+                pathHashByteWidth: pathHashByteWidth,
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -62,10 +72,13 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
 
   final List<_Hop> _hops = [];
   final _hexController = TextEditingController();
+  final _hopScroll = ScrollController();
   String? _hexError;
   bool _syncingHex = false;
   String _search = '';
   int _nextHopId = 0;
+  int? _highlightedHopId;
+  Timer? _highlightTimer;
 
   @override
   void initState() {
@@ -81,18 +94,25 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
 
   @override
   void dispose() {
+    _highlightTimer?.cancel();
+    _hopScroll.dispose();
     _hexController.dispose();
     super.dispose();
   }
 
+  int get _hashChars {
+    final width = widget.pathHashByteWidth.clamp(1, pubKeySize).toInt();
+    return width * 2;
+  }
+
   List<Contact> get _repeaters {
-    final query = _search.trim().toLowerCase();
+    final query = _search.trim();
     return widget.availableContacts
         .where((c) => c.type == advTypeRepeater || c.type == advTypeRoom)
         .where((c) => c.publicKey.isNotEmpty)
-        .where((c) => query.isEmpty || c.name.toLowerCase().contains(query))
+        .where((c) => rankContactQuery(c, query) != null)
         .toList()
-      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      ..sort((a, b) => compareContactQueryRank(a, b, query));
   }
 
   void _syncHexFromHops() {
@@ -129,6 +149,7 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
         return;
       }
       _hexError = null;
+      final previous = _hops.length;
       _hops
         ..clear()
         ..addAll(
@@ -140,6 +161,9 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
             return _Hop(_nextHopId++, Uint8List.fromList(bytes));
           }),
         );
+      if (_hops.length > previous && _hops.isNotEmpty) {
+        _markHopAdded(_hops.last.id);
+      }
     });
   }
 
@@ -148,14 +172,38 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
     final width = widget.pathHashByteWidth
         .clamp(1, contact.publicKey.length)
         .toInt();
+    HapticFeedback.selectionClick();
     setState(() {
-      _hops.add(
-        _Hop(
-          _nextHopId++,
-          Uint8List.fromList(contact.publicKey.sublist(0, width)),
-        ),
+      final hop = _Hop(
+        _nextHopId++,
+        Uint8List.fromList(contact.publicKey.sublist(0, width)),
       );
+      _hops.add(hop);
       _syncHexFromHops();
+      _markHopAdded(hop.id);
+    });
+  }
+
+  void _markHopAdded(int id) {
+    _highlightedHopId = id;
+    _highlightTimer?.cancel();
+    _highlightTimer = Timer(const Duration(milliseconds: 1400), () {
+      if (!mounted) return;
+      setState(() {
+        if (_highlightedHopId == id) _highlightedHopId = null;
+      });
+    });
+    _revealLatestHop();
+  }
+
+  void _revealLatestHop() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_hopScroll.hasClients) return;
+      _hopScroll.animateTo(
+        _hopScroll.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+      );
     });
   }
 
@@ -182,7 +230,14 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
     Navigator.pop(context, Uint8List.fromList(bytes));
   }
 
-  Widget _hopTile(BuildContext context, int index) {
+  String _contactHopHex(Contact contact) {
+    final width = widget.pathHashByteWidth
+        .clamp(1, contact.publicKey.length)
+        .toInt();
+    return PathHelper.formatHopHex(contact.publicKey.sublist(0, width));
+  }
+
+  Widget _hopTile(BuildContext context, int index, {required bool singleLine}) {
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
     final hop = _hops[index];
@@ -200,41 +255,61 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
         : matches.length == 1
         ? matches.first.name
         : matches.map((c) => c.name).join(' | ');
+    final highlighted = hop.id == _highlightedHopId;
 
-    return ListTile(
+    final label = name ?? l10n.pathEditor_unknownHop;
+    final hash = Text(hex, style: MeshTheme.mono(fontSize: 12));
+    return Material(
       key: ValueKey(hop.id),
-      contentPadding: EdgeInsets.zero,
-      leading: CircleAvatar(
-        radius: 14,
-        backgroundColor: scheme.primaryContainer,
-        child: Text(
-          '${index + 1}',
-          style: TextStyle(fontSize: 12, color: scheme.onPrimaryContainer),
+      color: highlighted ? scheme.primaryContainer : scheme.surfaceContainerLow,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+        visualDensity: singleLine
+            ? VisualDensity.compact
+            : VisualDensity.standard,
+        minVerticalPadding: singleLine ? 0 : 4,
+        leading: CircleAvatar(
+          radius: 16,
+          backgroundColor: scheme.primary,
+          child: Text(
+            '${index + 1}',
+            style: TextStyle(fontSize: 12, color: scheme.onPrimary),
+          ),
         ),
-      ),
-      title: Text(
-        name ?? l10n.pathEditor_unknownHop,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Text(hex),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.remove_circle_outline),
-            tooltip: l10n.pathEditor_removeHop,
-            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-            onPressed: () => _removeHop(index),
-          ),
-          ReorderableDragStartListener(
-            index: index,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-              child: Icon(Icons.drag_handle),
+        title: singleLine
+            ? Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  hash,
+                ],
+              )
+            : Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+        subtitle: singleLine ? null : hash,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.remove_circle_outline),
+              tooltip: l10n.pathEditor_removeHop,
+              onPressed: () => _removeHop(index),
             ),
-          ),
-        ],
+            ReorderableDragStartListener(
+              index: index,
+              child: const SizedBox(
+                width: 48,
+                height: 48,
+                child: Icon(Icons.drag_handle),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -246,16 +321,16 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
     final full = _hops.length >= _maxHops;
 
     return ListTile(
-      contentPadding: EdgeInsets.zero,
+      contentPadding: const EdgeInsets.symmetric(vertical: 4),
       enabled: !full,
       leading: CircleAvatar(
-        radius: 16,
+        radius: 18,
         backgroundColor: isRepeater
             ? scheme.primaryContainer
             : scheme.secondaryContainer,
         child: Icon(
           isRepeater ? Icons.router : Icons.meeting_room,
-          size: 16,
+          size: 18,
           color: isRepeater
               ? scheme.onPrimaryContainer
               : scheme.onSecondaryContainer,
@@ -263,11 +338,34 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
       ),
       title: Text(contact.name, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: Text(
-        '${contact.typeLabel(l10n)} • ${PathHelper.formatHopHex(contact.publicKey.sublist(0, widget.pathHashByteWidth.clamp(1, contact.publicKey.length).toInt()))}',
+        '${contact.typeLabel(l10n)} • ${_contactHopHex(contact)}',
+        style: MeshTheme.mono(fontSize: 12),
       ),
-      trailing: const Icon(Icons.add_circle_outline),
+      trailing: Icon(
+        Icons.add_circle_outline,
+        color: full ? scheme.outline : scheme.primary,
+      ),
       onTap: full ? null : () => _addHop(contact),
     );
+  }
+
+  double _hopViewportHeight(double maxHeight, bool tight) {
+    if (_hops.isEmpty) return 0;
+    final scaler = MediaQuery.textScalerOf(context);
+    final rowExtent = tight
+        ? scaler.scale(56).clamp(56.0, 80.0)
+        : scaler.scale(76).clamp(72.0, 132.0);
+    final visibleRows = math.min(_hops.length, tight ? 2 : 3);
+    final wanted = visibleRows * rowExtent + 4;
+    // Header, hex field, search field, and the action row stay on screen.
+    // The hop viewport takes what is left, and never pushes the buttons
+    // up over the repeater list.
+    final chrome = tight ? 210.0 : 430.0;
+    final available = maxHeight - chrome;
+    if (available >= rowExtent) {
+      return math.min(wanted, available);
+    }
+    return math.max(0.0, available);
   }
 
   @override
@@ -277,139 +375,208 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
     final scheme = theme.colorScheme;
     final repeaters = _repeaters;
 
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        Container(
-          width: 32,
-          height: 4,
-          decoration: BoxDecoration(
-            color: scheme.outlineVariant,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(l10n.pathEditor_title, style: theme.textTheme.titleLarge),
-              Text(
-                l10n.pathEditor_hopCounter(_hops.length),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            children: [
-              if (_hops.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Text(
-                    l10n.pathEditor_noHops,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
-                  ),
-                )
-              else
-                ReorderableListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  buildDefaultDragHandles: false,
-                  itemCount: _hops.length,
-                  onReorderItem: _reorderHop,
-                  itemBuilder: _hopTile,
-                ),
-              const Divider(),
-              const SizedBox(height: 8),
-              Text(l10n.pathEditor_addHops, style: theme.textTheme.titleSmall),
-              const SizedBox(height: 8),
-              TextField(
-                onChanged: (value) => setState(() => _search = value),
-                decoration: InputDecoration(
-                  labelText: l10n.pathEditor_searchRepeaters,
-                  prefixIcon: const Icon(Icons.search),
-                  border: const OutlineInputBorder(),
-                  isDense: true,
-                ),
-              ),
-              const SizedBox(height: 4),
-              if (repeaters.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Text(
-                    l10n.path_noRepeatersFound,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
-                  ),
-                )
-              else
-                ...repeaters.map((c) => _repeaterTile(context, c)),
-              ExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                title: Text(
-                  l10n.pathEditor_advancedHex,
-                  style: theme.textTheme.titleSmall,
-                ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxHeight = constraints.maxHeight.isFinite
+            ? constraints.maxHeight
+            : 640.0;
+        // Phone sheets and a keyboard-shrunk window use the shorter hop rows
+        // so the action buttons stay below the repeater list.
+        final compact = maxHeight < 680;
+        final hopHeight = _hopViewportHeight(maxHeight, compact);
+
+        return Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, compact ? 6 : 10, 16, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: TextField(
-                      controller: _hexController,
-                      onChanged: _onHexChanged,
-                      textCapitalization: TextCapitalization.characters,
-                      decoration: InputDecoration(
-                        labelText: l10n.pathEditor_hexLabel,
-                        helperText: _hexError == null
-                            ? l10n.pathEditor_hexHelper
-                            : null,
-                        errorText: _hexError,
-                        border: const OutlineInputBorder(),
+                  Center(
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: scheme.outline,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: compact ? 4 : 12),
+                  Text(
+                    l10n.pathEditor_title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                  Semantics(
+                    liveRegion: true,
+                    child: Text(
+                      l10n.pathEditor_hopCounter(_hops.length),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
-        SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      minimumSize: const Size.fromHeight(48),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(l10n.common_cancel),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: FilledButton(
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size.fromHeight(48),
-                    ),
-                    onPressed: _hexError != null ? null : _save,
-                    child: Text(l10n.pathEditor_usePath),
-                  ),
-                ),
-              ],
             ),
-          ),
-        ),
-      ],
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, compact ? 4 : 10, 16, 0),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(MeshRadii.md),
+                  border: Border.all(color: scheme.outlineVariant),
+                ),
+                child: _hops.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          l10n.pathEditor_noHops,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                        ),
+                      )
+                    : SizedBox(
+                        height: hopHeight,
+                        child: ReorderableListView.builder(
+                          scrollController: _hopScroll,
+                          buildDefaultDragHandles: false,
+                          padding: EdgeInsets.symmetric(
+                            vertical: compact ? 0 : 4,
+                          ),
+                          itemCount: _hops.length,
+                          onReorderItem: _reorderHop,
+                          itemBuilder: (context, index) =>
+                              _hopTile(context, index, singleLine: compact),
+                        ),
+                      ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, compact ? 6 : 16, 16, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!compact) ...[
+                    Text(
+                      l10n.pathEditor_advancedHex,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                  TextField(
+                    key: const Key('path-editor-hex-field'),
+                    controller: _hexController,
+                    onChanged: _onHexChanged,
+                    textCapitalization: TextCapitalization.characters,
+                    style: MeshTheme.mono(fontSize: 14),
+                    scrollPadding: EdgeInsets.zero,
+                    decoration: InputDecoration(
+                      labelText: l10n.pathEditor_hexLabel,
+                      helperText: compact || _hexError != null
+                          ? null
+                          : l10n.pathEditor_hexHelper(_hashChars),
+                      helperMaxLines: 3,
+                      errorText: _hexError,
+                      errorMaxLines: 3,
+                      border: const OutlineInputBorder(),
+                      isDense: compact,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, compact ? 6 : 14, 16, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!compact) ...[
+                    Text(
+                      l10n.pathEditor_addHops,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                  TextField(
+                    key: const Key('path-editor-search-field'),
+                    onChanged: (value) => setState(() => _search = value),
+                    scrollPadding: EdgeInsets.zero,
+                    decoration: InputDecoration(
+                      labelText: l10n.pathEditor_searchRepeaters,
+                      prefixIcon: const Icon(Icons.search),
+                      border: const OutlineInputBorder(),
+                      isDense: compact,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: repeaters.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          l10n.path_noRepeatersFound,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      key: const Key('path-editor-repeater-list'),
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                      itemCount: repeaters.length,
+                      itemBuilder: (context, index) =>
+                          _repeaterTile(context, repeaters[index]),
+                    ),
+            ),
+            SafeArea(
+              top: false,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  compact ? 4 : 8,
+                  16,
+                  compact ? 4 : 16,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          minimumSize: const Size.fromHeight(48),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(l10n.common_cancel),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size.fromHeight(48),
+                        ),
+                        onPressed: _hexError != null ? null : _save,
+                        child: Text(l10n.pathEditor_usePath),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

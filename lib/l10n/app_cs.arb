@@ -1243,7 +1243,7 @@
   "pathEditor_searchRepeaters": "Hledat opakovače",
   "pathEditor_advancedHex": "Pokročilé: surová hex cesta",
   "pathEditor_hexLabel": "Hex prefixy",
-  "pathEditor_hexHelper": "Dva hex znaky na skok, oddělené čárkami",
+  "pathEditor_hexHelper": "{count} hex znaky na skok, oddělené čárkami",
   "pathEditor_invalidTokens": "Neplatné: {tokens}",
   "@pathEditor_invalidTokens": {
     "placeholders": {

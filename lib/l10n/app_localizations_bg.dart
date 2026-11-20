@@ -2714,8 +2714,9 @@ class AppLocalizationsBg extends AppLocalizations {
   String get pathEditor_hexLabel => 'Шестнадесетични префикси';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Два шестнадесетични идентификатора на скок, разделени със запетаи';
+  String pathEditor_hexHelper(int count) {
+    return '$count шестнадесетични идентификатора на скок, разделени със запетаи';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

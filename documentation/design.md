@@ -154,7 +154,7 @@ What the code does:
 | Container | Call | Used for | Examples |
 |---|---|---|---|
 | Bottom sheet | `showMeshSheet` + `BottomSheetHeader` (28 calls in 17 files) | Choosing from a list, an item's actions, quick tools tied to the current screen | Language picker, notification mode, add contact/channel options, emoji and GIF pickers, node info, share contact, image actions |
-| Draggable sheet | `showModalBottomSheet` + `DraggableScrollableSheet` | Tall, scrollable panels that need a drag size | `ContactRoutingSheet` (`routing_sheet.dart`), path editor, image send preview |
+| Draggable sheet | `showModalBottomSheet` + `DraggableScrollableSheet` | Tall, scrollable panels that need a drag size | `ContactRoutingSheet` (`routing_sheet.dart`), image send preview |
 | Dialog | `showDialog` + `AlertDialog` (72 calls in 35 files) | Confirming an action, a short input (one to three fields), a short message | Disconnect (`showDisconnectDialog`), clear (`showConfirmClearDialog`), unsaved changes, edit node name, rename point |
 | Page | `Navigator.push(MaterialPageRoute(...))` | Anything with sections, many fields, its own save, or that the user stays in | App Settings, Repeater Settings, Themes, Theme editor, Message filter, Region management |
 
@@ -164,6 +164,8 @@ Rules for new UI:
 2. **Pick one of several options, or act on one item → sheet.** Use `showMeshSheet` and start the content with `BottomSheetHeader(title:, subtitle:)`. It handles the keyboard and navigation-bar insets. Use raw `showModalBottomSheet` only when you need `DraggableScrollableSheet`.
 3. **Forms with sections, live remote values, or anything that needs Save/Discard → page.** Guard unsaved changes with `PopScope` and a discard dialog, as `repeater_settings_screen.dart` does.
 4. Never stack a dialog on a sheet on a dialog. Close the sheet first, or move the flow to a page.
+
+The manual path editor (`path_editor_sheet.dart`) is a fixed-height sheet, not a draggable one. The hop list and the hex path field stay pinned above a scrolling repeater list, including while the keyboard is open. The sheet uses the full height above the keyboard so a newly added hop is not scrolled under the title.
 
 ## 7. App bars
 
@@ -244,7 +246,7 @@ The current code does not yet follow this page everywhere:
 - **Large forms in dialogs.** `RadioSettingsDialog` (`widgets/radio_settings_dialog.dart`, nine inputs) and the contact settings dialog in `chat_screen.dart` are dialogs although they behave like forms.
 - **Dialog buttons.** `showDisconnectDialog` (`utils/dialog_utils.dart`) uses two `TextButton`s with no emphasis; `showConfirmClearDialog` uses a red `FilledButton`.
 - **Snackbars.** A few places still call `ScaffoldMessenger.showSnackBar` directly (`discovery_screen.dart`, `app_settings_screen.dart`, `message_filter_settings_screen.dart`, `region_management_screen.dart`, `helpers/image_send_flow.dart`) and so miss tap-to-dismiss and replace-instead-of-queue.
-- **Small tap targets.** `FeatureToggleRow` refresh (32px) and 40px buttons in `chat_screen.dart`, `channel_chat_screen.dart`, `reaction_chips.dart`, `snr_indicator.dart`, `path_map_ui.dart`; 44px in `routing_sheet.dart`, `path_editor_sheet.dart`.
+- **Small tap targets.** `FeatureToggleRow` refresh (32px) and 40px buttons in `chat_screen.dart`, `channel_chat_screen.dart`, `reaction_chips.dart`, `snr_indicator.dart`, `path_map_ui.dart`; 44px in `routing_sheet.dart`.
 - **Unknown placeholders.** Repeater and companion stats screens use `—`; `line_of_sight_map_screen.dart` uses `--`.
 - **Missing tooltip.** The Contacts FAB (`contacts_screen.dart`) has no tooltip; about 18 of 111 `IconButton`s have no tooltip nearby.
 - **Stale doc comments.** `SectionHeader` is described as "mono" but uses the sans `accentLabel`; the `StatusChip` comment sits above `meshContrastRatio`.

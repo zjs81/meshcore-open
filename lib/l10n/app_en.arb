@@ -1391,10 +1391,17 @@
   },
   "pathEditor_noHops": "No hops yet. Tap repeaters below to add them in order, or save with no hops to send direct.",
   "pathEditor_addHops": "Add hops in order",
-  "pathEditor_searchRepeaters": "Search repeaters",
+  "pathEditor_searchRepeaters": "Search name or hash",
   "pathEditor_advancedHex": "Advanced: raw hex path",
   "pathEditor_hexLabel": "Hex prefixes",
-  "pathEditor_hexHelper": "Two hex characters per hop, separated by commas",
+  "pathEditor_hexHelper": "{count} hex characters per hop, separated by commas",
+  "@pathEditor_hexHelper": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "pathEditor_invalidTokens": "Invalid: {tokens}",
   "@pathEditor_invalidTokens": {
     "placeholders": {

@@ -2661,7 +2661,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pathEditor_addHops => 'Add hops in order';
 
   @override
-  String get pathEditor_searchRepeaters => 'Search repeaters';
+  String get pathEditor_searchRepeaters => 'Search name or hash';
 
   @override
   String get pathEditor_advancedHex => 'Advanced: raw hex path';
@@ -2670,8 +2670,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pathEditor_hexLabel => 'Hex prefixes';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Two hex characters per hop, separated by commas';
+  String pathEditor_hexHelper(int count) {
+    return '$count hex characters per hop, separated by commas';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

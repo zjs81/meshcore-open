@@ -2625,7 +2625,7 @@
   "pathEditor_searchRepeaters": "Търсене на повторители",
   "pathEditor_advancedHex": "Разширено: суров шестнадесетичен път",
   "pathEditor_hexLabel": "Шестнадесетични префикси",
-  "pathEditor_hexHelper": "Два шестнадесетични идентификатора на скок, разделени със запетаи",
+  "pathEditor_hexHelper": "{count} шестнадесетични идентификатора на скок, разделени със запетаи",
   "pathEditor_invalidTokens": "Невалидни: {tokens}",
   "routing_lastWorked": "последно работил {when}",
   "routing_deliveryCounts": "{successes} доставени, {failures} неуспешни",

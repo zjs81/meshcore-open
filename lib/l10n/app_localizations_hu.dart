@@ -2704,8 +2704,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get pathEditor_hexLabel => 'Hexadecimális előtagok';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Két hexadecimális karakter ugrásonként, vesszővel elválasztva';
+  String pathEditor_hexHelper(int count) {
+    return '$count hexadecimális karakter ugrásonként, vesszővel elválasztva';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

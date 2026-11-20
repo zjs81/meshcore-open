@@ -2682,7 +2682,7 @@
   "pathEditor_searchRepeaters": "Repeaters zoeken",
   "pathEditor_advancedHex": "Geavanceerd: ruwe hex-pad",
   "pathEditor_hexLabel": "Hex-prefixen",
-  "pathEditor_hexHelper": "Twee hex-tekens per hop, gescheiden door komma's",
+  "pathEditor_hexHelper": "{count} hex-tekens per hop, gescheiden door komma's",
   "pathEditor_invalidTokens": "Ongeldig: {tokens}",
   "pathEditor_tooManyHops": "Maximaal 64 hops",
   "pathEditor_usePath": "Dit pad gebruiken",

@@ -2738,8 +2738,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get pathEditor_hexLabel => 'Prefiksy heksadecymalne';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Dwa znaki szesnastkowe na każdym kroku, oddzielone przecinkami';
+  String pathEditor_hexHelper(int count) {
+    return '$count znaki szesnastkowe na każdym kroku, oddzielone przecinkami';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

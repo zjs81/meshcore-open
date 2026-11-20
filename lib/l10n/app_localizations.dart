@@ -4720,7 +4720,7 @@ abstract class AppLocalizations {
   /// No description provided for @pathEditor_searchRepeaters.
   ///
   /// In en, this message translates to:
-  /// **'Search repeaters'**
+  /// **'Search name or hash'**
   String get pathEditor_searchRepeaters;
 
   /// No description provided for @pathEditor_advancedHex.
@@ -4738,8 +4738,8 @@ abstract class AppLocalizations {
   /// No description provided for @pathEditor_hexHelper.
   ///
   /// In en, this message translates to:
-  /// **'Two hex characters per hop, separated by commas'**
-  String get pathEditor_hexHelper;
+  /// **'{count} hex characters per hop, separated by commas'**
+  String pathEditor_hexHelper(int count);
 
   /// No description provided for @pathEditor_invalidTokens.
   ///

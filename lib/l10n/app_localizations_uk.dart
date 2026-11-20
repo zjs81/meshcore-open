@@ -2715,8 +2715,9 @@ class AppLocalizationsUk extends AppLocalizations {
       'Префікси для шестнадцяткової системи числення';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Два шестизначні символи на кожний крок, розділені комами';
+  String pathEditor_hexHelper(int count) {
+    return '$count шістнадцяткові символи на кожний крок, розділені комами';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

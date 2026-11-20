@@ -2625,7 +2625,7 @@
   "pathEditor_searchRepeaters": "Hľadať opakované",
   "pathEditor_advancedHex": "Pokročilé: pôvodná hexová cesta",
   "pathEditor_hexLabel": "Prefiksy pre hexadecimálne čísla",
-  "pathEditor_hexHelper": "Dve hexové čísla na každý krok, oddelené čiarkami",
+  "pathEditor_hexHelper": "{count} hexové čísla na každý krok, oddelené čiarkami",
   "routing_lastWorked": "fungovala {when}",
   "pathEditor_invalidTokens": "Neplatné: {tokens}",
   "routing_deliveryCounts": "{successes} doručených, {failures} neúspešných",

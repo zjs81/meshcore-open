@@ -7,6 +7,7 @@ import '../l10n/contact_localization.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
 import '../theme/mesh_theme.dart';
+import '../utils/contact_search.dart';
 import 'mesh_ui.dart';
 
 /// Lets the user pick a saved contact (or themself) and appends the encoded
@@ -50,14 +51,10 @@ class _ShareContactSheetState extends State<_ShareContactSheet> {
     final contacts =
         connector.contacts
             .where(
-              (c) =>
-                  c.publicKey.length == 32 &&
-                  (needle.isEmpty || c.name.toLowerCase().contains(needle)),
+              (c) => c.publicKey.length == 32 && matchesContactQuery(c, needle),
             )
             .toList()
-          ..sort(
-            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-          );
+          ..sort((a, b) => compareContactQueryRank(a, b, needle));
     final selfName = connector.selfName ?? '';
     final showSelf =
         selfKey != null &&

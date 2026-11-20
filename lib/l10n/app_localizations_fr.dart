@@ -2711,8 +2711,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pathEditor_hexLabel => 'Préfixes hexadécimaux';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Deux caractères hexadécimaux par saut, séparés par des virgules.';
+  String pathEditor_hexHelper(int count) {
+    return '$count caractères hexadécimaux par saut, séparés par des virgules.';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

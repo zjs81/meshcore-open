@@ -2,31 +2,55 @@ import '../models/contact.dart';
 
 export 'contact_filter_types.dart';
 
-bool matchesContactQuery(Contact contact, String query) {
-  final normalizedQuery = query.trim().toLowerCase();
-  if (normalizedQuery.isEmpty) return true;
+/// How closely a contact matches a search query. Lower ranks sort first.
+enum ContactQueryRank { namePrefix, nameContains, keyPrefix }
 
-  if (contact.name.toLowerCase().contains(normalizedQuery)) {
-    return true;
+/// Rank for [query], or null when the contact does not match.
+///
+/// Names that start with the query come before other substring matches.
+/// A public-key / hop-hash prefix matches only when the name does not.
+ContactQueryRank? rankContactQuery(Contact contact, String query) {
+  final normalized = query.trim().toLowerCase();
+  if (normalized.isEmpty) return ContactQueryRank.namePrefix;
+
+  final name = contact.name.toLowerCase();
+  if (name.startsWith(normalized)) return ContactQueryRank.namePrefix;
+  if (name.contains(normalized)) return ContactQueryRank.nameContains;
+  if (_publicKeyPrefixMatches(contact, normalized)) {
+    return ContactQueryRank.keyPrefix;
   }
+  return null;
+}
 
-  final hexPrefix = _extractHexPrefix(normalizedQuery);
-  if (hexPrefix == null) return false;
-
-  return contact.publicKeyHex.toLowerCase().startsWith(hexPrefix);
+bool matchesContactQuery(Contact contact, String query) {
+  return rankContactQuery(contact, query) != null;
 }
 
 bool matchesDiscoveryContactQuery(Contact contact, String query) {
-  final normalizedQuery = query.trim().toLowerCase();
-  if (normalizedQuery.isEmpty) return true;
+  return matchesContactQuery(contact, query);
+}
 
-  if (contact.name.toLowerCase().contains(normalizedQuery)) {
-    return true;
-  }
+/// Sorts prefix matches ahead of other substring matches, then key matches.
+///
+/// [tieBreak] orders contacts that share a rank. With an empty query every
+/// contact shares the top rank, so [tieBreak] is the whole order.
+int compareContactQueryRank(
+  Contact a,
+  Contact b,
+  String query, [
+  int Function(Contact a, Contact b)? tieBreak,
+]) {
+  final left = rankContactQuery(a, query);
+  final right = rankContactQuery(b, query);
+  final byRank = (left?.index ?? 3).compareTo(right?.index ?? 3);
+  if (byRank != 0) return byRank;
+  return tieBreak?.call(a, b) ??
+      a.name.toLowerCase().compareTo(b.name.toLowerCase());
+}
 
+bool _publicKeyPrefixMatches(Contact contact, String normalizedQuery) {
   final hexPrefix = _extractHexPrefix(normalizedQuery);
-  if (hexPrefix == null) return false;
-
+  if (hexPrefix == null || contact.publicKey.isEmpty) return false;
   return contact.publicKeyHex.toLowerCase().startsWith(hexPrefix);
 }
 

@@ -2684,8 +2684,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get pathEditor_hexLabel => 'Hex-prefikser';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Två hextecken per hopp, separerade med kommatecken';
+  String pathEditor_hexHelper(int count) {
+    return '$count hextecken per hopp, separerade med kommatecken';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

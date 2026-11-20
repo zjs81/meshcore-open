@@ -2708,8 +2708,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get pathEditor_hexLabel => 'Prefiksy pre hexadecimálne čísla';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Dve hexové čísla na každý krok, oddelené čiarkami';
+  String pathEditor_hexHelper(int count) {
+    return '$count hexové čísla na každý krok, oddelené čiarkami';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

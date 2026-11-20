@@ -1201,25 +1201,25 @@ class _ContactsScreenState extends State<ContactsScreen> {
       }).toList();
     }
 
-    switch (viewState.contactsSortOption) {
-      case ContactSortOption.lastSeen:
-        filtered.sort(
-          (a, b) =>
-              resolveContactLastSeen(b).compareTo(resolveContactLastSeen(a)),
-        );
-        break;
-      case ContactSortOption.recentMessages:
-        final lastMessageAt = {
-          for (final c in filtered) c: _lastMessageTime(connector, c),
-        };
-        filtered.sort((a, b) => lastMessageAt[b]!.compareTo(lastMessageAt[a]!));
-        break;
-      case ContactSortOption.name:
-        filtered.sort(
-          (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-        );
-        break;
+    final lastMessageAt =
+        viewState.contactsSortOption == ContactSortOption.recentMessages
+        ? {for (final c in filtered) c: _lastMessageTime(connector, c)}
+        : null;
+    int tieBreak(Contact a, Contact b) {
+      switch (viewState.contactsSortOption) {
+        case ContactSortOption.lastSeen:
+          return resolveContactLastSeen(b).compareTo(resolveContactLastSeen(a));
+        case ContactSortOption.recentMessages:
+          return lastMessageAt![b]!.compareTo(lastMessageAt[a]!);
+        case ContactSortOption.name:
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      }
     }
+
+    filtered.sort(
+      (a, b) =>
+          compareContactQueryRank(a, b, viewState.contactsSearchText, tieBreak),
+    );
 
     return filtered;
   }
@@ -1409,11 +1409,14 @@ class _ContactsScreenState extends State<ContactsScreen> {
           builder: (builderContext, setDialogState) {
             final filteredContacts = filterQuery.isEmpty
                 ? sortedContacts
-                : sortedContacts
+                : (sortedContacts
                       .where(
                         (contact) => matchesContactQuery(contact, filterQuery),
                       )
-                      .toList();
+                      .toList()
+                    ..sort(
+                      (a, b) => compareContactQueryRank(a, b, filterQuery),
+                    ));
             return AlertDialog(
               title: Text(
                 isEditing

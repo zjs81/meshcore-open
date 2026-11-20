@@ -2680,7 +2680,7 @@
   "pathEditor_searchRepeaters": "Cerca ripetitori",
   "pathEditor_advancedHex": "Avanzato: percorso esadecimale grezzo",
   "pathEditor_hexLabel": "Prefissi esadecimali",
-  "pathEditor_hexHelper": "Due caratteri esadecimali per ogni salto, separati da virgole.",
+  "pathEditor_hexHelper": "{count} caratteri esadecimali per ogni salto, separati da virgole.",
   "pathEditor_invalidTokens": "Non valido: {tokens}",
   "routing_lastWorked": "ha funzionato {when}",
   "pathEditor_tooManyHops": "Massimo 64 salti",
