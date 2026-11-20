@@ -19,10 +19,13 @@
 ///
 /// Both are private to this file, are not parameterised, and are reused
 /// verbatim by the full-screen viewer this widget opens on tap, so there is no
-/// route in the app that can show the pixels without them. The only case in
-/// which they are absent is [ReceivedImageEntry.isOutgoing], where the PNG is
-/// the sender's own 512x512 crop and the label would be a falsehood — that is
-/// read from the store's sidecar, never from a constructor argument.
+/// route in the app that can show the pixels without them. They are absent
+/// only when [ReceivedImageEntry.synthesized] is false: the sender's own image
+/// on a device that could not decode, where the PNG is their stretched
+/// original and the label would be a falsehood. The sender's own image is
+/// otherwise the decoded version they picked, so it is labelled like any
+/// other. That is read from the store's sidecar, never from a constructor
+/// argument.
 ///
 /// The widget deliberately exposes no share/save action: an exported raster
 /// would have to have the caption composited into it first, and that belongs

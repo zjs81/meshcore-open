@@ -98,6 +98,54 @@ class ImageCodecRateStats {
   }
 }
 
+/// Input tweaks for "Try another version", as `(zoom, dx, dy)` fractions of
+/// the source photo. Index == version variant; 0 is the untouched photo.
+///
+/// The decoder is generative and very sensitive to its input: a near-identical
+/// photo can come back with different invented detail. Measured on Kodak, the
+/// best of three versions raised CLIP agreement with the source from 0.828 to
+/// 0.853 and fixed 3 of 8 photos that came back as something else
+/// (`tools/aeic/eval`, `reroll*` variants, which mirror this table). The tweaks
+/// drop at most ~2% at an edge, so every version still shows the whole photo
+/// and keeps the same aspect code.
+const List<(double, double, double)> kImageSendRerollTweaks = [
+  (1.0, 0.0, 0.0),
+  (1.02, 0.005, 0.0),
+  (1.02, -0.005, 0.005),
+  (1.04, 0.0, -0.005),
+  (1.03, 0.01, 0.01),
+  (1.03, -0.01, -0.01),
+];
+
+/// Most versions the send sheet will make of one photo.
+final int kImageSendMaxVersions = kImageSendRerollTweaks.length;
+
+/// The part of a [width] x [height] photo that version [variant] encodes.
+///
+/// Variant 0 is the full frame, so the first version is exactly what the app
+/// sent before versions existed. Other variants zoom in by `zoom`, shift by
+/// `dx`/`dy` of the photo size, and are clamped to stay inside the photo.
+({double left, double top, double width, double height}) rerollSourceRect(
+  int width,
+  int height,
+  int variant,
+) {
+  if (variant < 0 || variant >= kImageSendRerollTweaks.length) {
+    throw RangeError.range(
+      variant,
+      0,
+      kImageSendRerollTweaks.length - 1,
+      'variant',
+    );
+  }
+  final (zoom, dx, dy) = kImageSendRerollTweaks[variant];
+  final w = width / zoom;
+  final h = height / zoom;
+  final left = ((width - w) / 2 + dx * width).clamp(0.0, width - w);
+  final top = ((height - h) / 2 + dy * height).clamp(0.0, height - h);
+  return (left: left, top: top, width: w, height: h);
+}
+
 /// The encode interface the preview sheet consumes.
 abstract class ImageSendCodec {
   /// Current availability. The sheet renders a non-interactive explanation for
@@ -118,9 +166,14 @@ abstract class ImageSendCodec {
   /// Encode [imageBytes] (any common still format) at [rate], returning the
   /// compressed bitstream that will be chunked onto the air.
   ///
-  /// Implementations are expected to centre-crop to
-  /// [kImageCodecSquareSize] square first.
-  Future<Uint8List> encode(Uint8List imageBytes, ImageCodecRatePoint rate);
+  /// Implementations stretch the part of the photo given by
+  /// [rerollSourceRect] for [variant] into a [kImageCodecSquareSize] square
+  /// first. Variant 0 is the whole photo.
+  Future<Uint8List> encode(
+    Uint8List imageBytes,
+    ImageCodecRatePoint rate, {
+    int variant = 0,
+  });
 
   /// Decodes [payload] to PNG exactly as a recipient would, or null when this
   /// device cannot decode.
@@ -142,26 +195,44 @@ class FakeImageSendCodec implements ImageSendCodec {
 
   final Duration latency;
 
+  /// Returned by [decodePreview]; null means "this device cannot decode".
+  final Uint8List? previewPng;
+
   const FakeImageSendCodec({
     this.availability = ImageCodecAvailability.ready,
     this.unavailableReason,
     this.latency = const Duration(milliseconds: 250),
+    this.previewPng,
   });
+
+  /// Payload size the fake produces for [variant]: the measured mean, plus a
+  /// little per variant so versions are told apart.
+  static int payloadBytesFor(ImageCodecRatePoint rate, int variant) =>
+      ImageCodecRateStats.forRate(rate).meanBytes + variant * 3;
 
   @override
   Future<Uint8List> encode(
     Uint8List imageBytes,
-    ImageCodecRatePoint rate,
-  ) async {
+    ImageCodecRatePoint rate, {
+    int variant = 0,
+  }) async {
     if (latency > Duration.zero) {
       await Future<void>.delayed(latency);
     }
-    final size = ImageCodecRateStats.forRate(rate).meanBytes;
+    final size = payloadBytesFor(rate, variant);
     return Uint8List.fromList(
-      List<int>.generate(size, (i) => (i * 31 + rate.index) & 0xFF),
+      List<int>.generate(
+        size,
+        (i) => (i * 31 + rate.index + variant * 7) & 0xFF,
+      ),
     );
   }
 
   @override
-  Future<Uint8List?> decodePreview(Uint8List payload) async => null;
+  Future<Uint8List?> decodePreview(Uint8List payload) async {
+    if (latency > Duration.zero) {
+      await Future<void>.delayed(latency);
+    }
+    return previewPng;
+  }
 }

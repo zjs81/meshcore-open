@@ -123,6 +123,16 @@ class ChannelMessageStore {
     return messages;
   }
 
+  Future<void> updateBookmarkFlag(
+    String channelId,
+    String messageId,
+    bool isBookmarked,
+  ) => _archive.updateBookmarkFlag(
+    _keyForChannel(channelId),
+    messageId,
+    isBookmarked,
+  );
+
   Future<void> clearChannelMessages(String channelId) =>
       _archive.clear(HistoryStore.instance, _keyForChannel(channelId));
 
@@ -150,6 +160,7 @@ class ChannelMessageStore {
       'receivedAt': msg.receivedAt.millisecondsSinceEpoch,
       if (msg.receivedLive) 'receivedLive': true,
       'isOutgoing': msg.isOutgoing,
+      'isBookmarked': msg.isBookmarked,
       'status': msg.status.index,
       'channelIndex': msg.channelIndex,
       'region': msg.region,
@@ -234,6 +245,7 @@ class ChannelMessageStore {
       receivedAt: legacyAwareReceivedAt(json),
       receivedLive: json['receivedLive'] == true,
       isOutgoing: json['isOutgoing'] as bool? ?? false,
+      isBookmarked: json['isBookmarked'] as bool? ?? false,
       status: _statusAt(json['status']) ?? ChannelMessageStatus.failed,
       repeatCount: (json['repeatCount'] as int?) ?? 0,
       pathLength: decodedPathLength,

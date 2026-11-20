@@ -191,6 +191,19 @@ void main() {
       expect(reloaded.single.text, 'hi');
       expect(reloaded.single.reactionStatuses, {'😀': MessageStatus.values[1]});
     });
+
+    test('bookmark flags update in archived contact history', () async {
+      await _init();
+      final store = _messageStore();
+      await store.saveMessages(_contact, [_dm(0)]);
+      store.setArchivedCount(_contact, 1);
+
+      await store.updateBookmarkFlag(_contact, 'id0', true);
+      expect((await store.loadMessages(_contact)).single.isBookmarked, isTrue);
+
+      await store.updateBookmarkFlag(_contact, 'id0', false);
+      expect((await store.loadMessages(_contact)).single.isBookmarked, isFalse);
+    });
   });
 
   group('ChannelMessageStore window persistence', () {
@@ -223,6 +236,25 @@ void main() {
 
       final reloaded = await store.loadChannelMessages(_channelId);
       expect(reloaded.map((m) => m.text), ['c3']);
+    });
+
+    test('bookmark flags update in archived channel history', () async {
+      await _init();
+      final store = ChannelMessageStore()..setPublicKeyHex = _device;
+      await store.saveChannelMessages(_channelId, [_ch(0)]);
+      store.setArchivedCount(_channelId, 1);
+
+      await store.updateBookmarkFlag(_channelId, 'cid0', true);
+      expect(
+        (await store.loadChannelMessages(_channelId)).single.isBookmarked,
+        isTrue,
+      );
+
+      await store.updateBookmarkFlag(_channelId, 'cid0', false);
+      expect(
+        (await store.loadChannelMessages(_channelId)).single.isBookmarked,
+        isFalse,
+      );
     });
   });
 
