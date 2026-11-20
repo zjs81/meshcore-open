@@ -72,8 +72,11 @@ appdir="$workspace/squashfs-root"
 log 'Checking extracted AppImage structure'
 [[ -x "$appdir/AppRun" && -f "$appdir/usr/bin/lib/libapp.so" && \
   -f "$appdir/usr/bin/data/icudtl.dat" && -d "$appdir/usr/bin/data/flutter_assets" ]]
-[[ -f "$appdir/usr/bin/lib/libonnxruntime.so.1" && \
-  -f "$appdir/usr/share/glib-2.0/schemas/gschemas.compiled" ]]
+[[ -f "$appdir/usr/share/glib-2.0/schemas/gschemas.compiled" ]]
+# ONNX-free builds (scripts/onnx.sh off) have neither the plugin nor ORT.
+if [[ -f "$appdir/usr/bin/lib/libflutter_onnxruntime_plugin.so" ]]; then
+  [[ -f "$appdir/usr/bin/lib/libonnxruntime.so.1" ]]
+fi
 
 log 'Starting bundled ELF architecture audit'
 elf_count=0

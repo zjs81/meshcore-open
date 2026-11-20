@@ -1,0 +1,9 @@
+name: flutter_onnxruntime
+description: >-
+  Pure-Dart stand-in for flutter_onnxruntime, used by `scripts/onnx.sh off` to
+  build MeshCore Open without ONNX Runtime. No native plugin, no downloads.
+version: 1.9.0
+publish_to: none
+
+environment:
+  sdk: ^3.7.0
