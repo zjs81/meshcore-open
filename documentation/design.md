@@ -165,9 +165,17 @@ Rules for new UI:
 3. **Forms with sections, live remote values, or anything that needs Save/Discard → page.** Guard unsaved changes with `PopScope` and a discard dialog, as `repeater_settings_screen.dart` does.
 4. Never stack a dialog on a sheet on a dialog. Close the sheet first, or move the flow to a page.
 
-The manual path editor (`path_editor_sheet.dart`) uses `showMeshSheet` and `BottomSheetHeader`, the same top padding, drag handle, and title row as the other sheets. The hop list and the hex path field stay pinned under that header, including while the keyboard is open. When the band under the header is shorter than the search field, as on a landscape phone with the keyboard open, those blocks and the repeater list scroll together instead of overflowing.
+**Sheet layout.** `showMeshSheet` is the sheet: safe area on the top and sides, and the keyboard or navigation-bar inset on the bottom. Start the content with `BottomSheetHeader`. That widget is the handle and the title row (padding 20, 8, 8, 4 and a 36×4 handle, section 4). Do not add space above it, draw a second handle, or size the sheet with a fraction inside an `Align`; that leaves an empty band over the handle. The status-bar inset stays outside the sheet.
 
-## 7. App bars
+The manual path editor (`path_editor_sheet.dart`) uses that layout. The hop list and the hex path field stay pinned under the header, including while the keyboard is open. When the band under the header is shorter than the search field, as on a landscape phone with the keyboard open, those blocks and the repeater list scroll together instead of overflowing.
+
+## 7. Node search
+
+Contact, repeater, room and user search all use `lib/utils/contact_search.dart`. Sort with `compareContactQueryRank`: names that start with the query, then other substring matches, then a public-key / hop-hash prefix. Use `rankLabeledKeyQuery` for a label that is not itself a contact, such as "my contact" on the share sheet. Do not filter with a separate name `contains`.
+
+That is the Contacts list and its group member picker, Discovery, Map node search, Map "send to contact", Share contact, and the Build Path repeater and room list. Channel names, chat messages, repeater CLI commands and the path-trace hex field are not this search. The map key-prefix setting is a filter, not a ranked search.
+
+## 8. App bars
 
 - Title: a plain localized string, ellipsized on one line. Use `AppBarTitle` on top-level and settings screens; it adds the connected node name as a subtitle and battery/SNR indicators when there is room, dropping them in that order on narrow widths. Use `AdaptiveAppBarTitle` for a plain one-line title.
 - Centre the title (`centerTitle: true`, `AGENTS.md`); 31 screens set it explicitly because the theme default is `false`. Chat screens (`chat_screen.dart`, `channel_chat_screen.dart`) deliberately use `centerTitle: false` for their two-line name + route title.
@@ -176,7 +184,7 @@ The manual path editor (`path_editor_sheet.dart`) uses `showMeshSheet` and `Bott
 - Search: tapping search swaps the title for the field and hides all actions (`actions: _searching ? null : [...]`). The leading back arrow and the system back gesture close the search (`PopScope(canPop: !_searching)`) instead of leaving the screen.
 - Long operations: show progress as the app bar `bottom` (`SyncProgressAppBarBottom`, or a 4px `LinearProgressIndicator` for Refresh all in `repeater_settings_screen.dart`).
 
-## 8. States
+## 9. States
 
 | State | How to show it |
 |---|---|
@@ -199,7 +207,7 @@ The manual path editor (`path_editor_sheet.dart`) uses `showMeshSheet` and `Bott
 
 Follow the same pattern for any new remote-value screen.
 
-## 9. Text and localization
+## 10. Text and localization
 
 - All user-facing strings go through `context.l10n` (`lib/l10n/l10n.dart`). Add keys to `lib/l10n/app_en.arb` first. No string literals in widgets, including fallbacks.
 - Keep strings short: labels are a few words, subtitles one sentence.
@@ -213,7 +221,7 @@ Follow the same pattern for any new remote-value screen.
 - Upper-casing is done in code (`SectionHeader`, `StatTile`, `RouteChip`); keep the ARB strings in normal case.
 - Test with a long locale (German, Portuguese) and a large system font (at least 1.3×, ideally 2.0×) on a narrow phone (320dp). `test/screens/small_screen_layout_test.dart` checks many screens at 320×568 at 1.0, 1.3 and 2.0× in English; add new screens to it.
 
-## 10. Checklist for a UI change
+## 11. Checklist for a UI change
 
 - [ ] Colours from `colorScheme` or theme extensions; no raw `Colors.*` or `MeshPalette.ink/bg/line` in chrome.
 - [ ] Text styles from `textTheme` or `MeshTheme.mono`; nothing below 12.
@@ -221,13 +229,14 @@ Follow the same pattern for any new remote-value screen.
 - [ ] Popup menu rows use `MeshMenuItemRow`; segmented buttons use `MeshSegmentLabel`; destructive menu items last, in `scheme.error`.
 - [ ] Every `IconButton` and FAB has a localized `tooltip`.
 - [ ] Tap targets at least 48×48.
-- [ ] Right container: dialog for confirm/short input, `showMeshSheet` + `BottomSheetHeader` for choices and item actions, page for forms.
+- [ ] Right container: dialog for confirm/short input, `showMeshSheet` + `BottomSheetHeader` for choices and item actions, page for forms. No gap above the sheet handle.
+- [ ] Contact, repeater, room and user search uses `compareContactQueryRank`: prefix, then substring, then hop hash.
 - [ ] Loading, empty, error, offline and unknown-value states handled.
 - [ ] All strings in `app_en.arb`; checked in German or Portuguese at 1.3× and 2.0× on a narrow screen.
 - [ ] Light, dark and one custom theme checked.
 - [ ] This page updated if you introduced or changed a pattern.
 
-## 11. Known inconsistencies
+## 12. Known inconsistencies
 
 The current code does not yet follow this page everywhere:
 
