@@ -783,13 +783,14 @@ class _ChannelsScreenState extends State<ChannelsScreen> {
         break;
       case ChannelSortOption.latestMessages:
         // Filtered messages don't bump a channel, matching the preview.
+        // Ordered by local arrival time: sender clocks can be far off.
         // Looked up once per channel: the lookup can scan back through
         // filtered messages, and the comparator runs O(n log n) times.
         final epoch = DateTime(1970);
         final latest = <Channel, DateTime>{
           for (final channel in filtered)
             channel:
-                connector.latestVisibleChannelMessage(channel)?.timestamp ??
+                connector.latestVisibleChannelMessage(channel)?.receivedAt ??
                 epoch,
         };
         filtered.sort((a, b) {

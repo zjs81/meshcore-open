@@ -3295,6 +3295,12 @@ abstract class AppLocalizations {
   /// **'recently'**
   String get contacts_lastSeenNow;
 
+  /// No description provided for @contacts_lastSeenNever.
+  ///
+  /// In en, this message translates to:
+  /// **'not heard yet'**
+  String get contacts_lastSeenNever;
+
   /// No description provided for @contacts_lastSeenMinsAgo.
   ///
   /// In en, this message translates to:

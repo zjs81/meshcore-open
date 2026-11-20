@@ -131,7 +131,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Radio offline on a remote-node screen | `RadioDisconnectedBanner` | Renders nothing while connected |
 | Sync progress | `SyncProgressAppBarBottom` as the app bar `bottom` | 3px bar |
 | Toast message | `showDismissibleSnackBar(context, content: Text(...))` | Tap to dismiss, replaces the current snackbar, safe after an async gap |
-| List item entrance | `ListEntrance(index:)` | Optional |
+| List item entrance | `ListEntrance(index:)` | Optional. Plays only for rows built while the list is at rest at the top; rows scrolled into view appear at once |
 
 **Buttons.** Theme shapes are all pill-shaped. In use:
 

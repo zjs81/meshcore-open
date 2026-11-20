@@ -61,6 +61,7 @@ import '../storage/channel_settings_store.dart';
 import '../storage/channel_region_store.dart';
 import '../storage/channel_storage_migration.dart';
 import '../storage/channel_store.dart';
+import '../storage/contact_added_at_store.dart';
 import '../storage/contact_discovery_store.dart';
 import '../storage/contact_settings_store.dart';
 import '../storage/contact_store.dart';
@@ -525,6 +526,8 @@ class MeshCoreConnector extends ChangeNotifier {
   final ChannelRegionStore _channelRegionStore = ChannelRegionStore();
   final ContactSettingsStore _contactSettingsStore = ContactSettingsStore();
   final ContactStore _contactStore = ContactStore();
+  final ContactAddedAtStore _contactAddedAtStore = ContactAddedAtStore();
+  final Map<String, DateTime> _contactAddedAt = {};
   final ContactDiscoveryStore _discoveryContactStore = ContactDiscoveryStore();
   final ChannelStore _channelStore = ChannelStore();
   final UnreadStore _unreadStore = UnreadStore();
@@ -647,6 +650,11 @@ class MeshCoreConnector extends ChangeNotifier {
     if (radio.name.trim().isNotEmpty) return radio.name.trim();
     return radio.bleDisplayName;
   }
+
+  /// Phone time a contact was first added from a card; the list orders by it
+  /// while the radio has no advert time for the contact.
+  DateTime? contactAddedAt(String contactPubKeyHex) =>
+      _contactAddedAt[contactPubKeyHex];
 
   Contact? getContactByPubKeyHex(String contactPubKeyHex) {
     return _contacts.cast<Contact?>().firstWhere(
@@ -2435,6 +2443,9 @@ class MeshCoreConnector extends ChangeNotifier {
     _contacts
       ..clear()
       ..addAll(cached);
+    _contactAddedAt
+      ..clear()
+      ..addAll(_contactAddedAtStore.load());
     for (final contact in cached) {
       _ensureContactSmazSettingLoaded(contact.publicKeyHex);
       _ensureContactCyr2LatSettingLoaded(contact.publicKeyHex);
@@ -5097,6 +5108,13 @@ class MeshCoreConnector extends ChangeNotifier {
       pathHashByteWidth: pathHashByteWidth,
     );
     await sendFrame(frame, waitForGenericAck: true);
+    if (publicKey != null) {
+      final keyHex = pubKeyToHex(publicKey);
+      if (!_contactAddedAt.containsKey(keyHex)) {
+        _contactAddedAt[keyHex] = DateTime.now();
+        await _contactAddedAtStore.save(_contactAddedAt);
+      }
+    }
     await refreshContacts();
   }
 
@@ -6092,6 +6110,9 @@ class MeshCoreConnector extends ChangeNotifier {
     _contactsStorageFull = false;
     _contacts.removeWhere((c) => c.publicKeyHex == contact.publicKeyHex);
     _knownContactKeys.remove(contact.publicKeyHex);
+    if (_contactAddedAt.remove(contact.publicKeyHex) != null) {
+      unawaited(_contactAddedAtStore.save(_contactAddedAt));
+    }
     unawaited(updateKnownDiscovered());
     unawaited(_persistContacts());
     _conversations.remove(contact.publicKeyHex);
@@ -7780,6 +7801,9 @@ class MeshCoreConnector extends ChangeNotifier {
     );
     _contacts.removeWhere((c) => c.publicKeyHex == keyHex);
     _knownContactKeys.remove(keyHex);
+    if (_contactAddedAt.remove(keyHex) != null) {
+      unawaited(_contactAddedAtStore.save(_contactAddedAt));
+    }
     _contactsStorageFull = false;
     unawaited(updateKnownDiscovered());
     unawaited(_persistContacts());
@@ -9864,6 +9888,7 @@ class MeshCoreConnector extends ChangeNotifier {
     _channelRegionStore.setPublicKeyHex = keyHex;
     _contactSettingsStore.setPublicKeyHex = keyHex;
     _contactStore.setPublicKeyHex = keyHex;
+    _contactAddedAtStore.setPublicKeyHex = keyHex;
     _channelStore.setPublicKeyHex = keyHex;
     _unreadStore.setPublicKeyHex = keyHex;
     _discoveryContactStore.setPublicKeyHex = keyHex;
