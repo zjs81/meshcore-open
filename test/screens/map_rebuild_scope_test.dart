@@ -95,7 +95,11 @@ void main() {
     viewState.dispose();
   });
 
-  Future<void> openMap(WidgetTester tester) async {
+  Future<void> openMap(
+    WidgetTester tester, {
+    ThemeMode themeMode = ThemeMode.light,
+    LatLng? highlight,
+  }) async {
     await tester.pumpWidget(
       MultiProvider(
         providers: [
@@ -107,9 +111,11 @@ void main() {
         ],
         child: MaterialApp(
           theme: MeshTheme.light(),
+          darkTheme: MeshTheme.dark(),
+          themeMode: themeMode,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: const MapScreen(),
+          home: MapScreen(highlightPosition: highlight),
         ),
       ),
     );
@@ -183,6 +189,57 @@ void main() {
     await settings.setMapTimeFilterHours(0);
     await tester.pump();
     expect(markerPoints(tester), contains(const LatLng(35, -112)));
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('node labels follow a system light/dark switch', (tester) async {
+    addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
+    connector.nodes = [_node()];
+    // Zoomed in past the label threshold so node names are drawn.
+    await openMap(
+      tester,
+      themeMode: ThemeMode.system,
+      highlight: const LatLng(35, -112),
+    );
+
+    Color? labelColor() => tester
+        .widget<Text>(
+          find.descendant(
+            of: find.byType(MarkerLayer),
+            matching: find.text('Repeater'),
+          ),
+        )
+        .style
+        ?.color;
+
+    expect(labelColor(), MeshTheme.light().colorScheme.onSurface);
+
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+    await tester.pumpAndSettle();
+    expect(labelColor(), MapPalette.textPrimary);
+
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
+    await tester.pumpAndSettle();
+    expect(labelColor(), MeshTheme.light().colorScheme.onSurface);
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('a fixed light theme ignores the system switch', (tester) async {
+    addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
+    connector.nodes = [_node()];
+    await openMap(tester, highlight: const LatLng(35, -112));
+
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+    await tester.pumpAndSettle();
+    final label = tester.widget<Text>(
+      find.descendant(
+        of: find.byType(MarkerLayer),
+        matching: find.text('Repeater'),
+      ),
+    );
+    expect(label.style?.color, MeshTheme.light().colorScheme.onSurface);
     await tester.pumpWidget(const SizedBox.shrink());
   });
 }

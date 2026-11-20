@@ -3958,8 +3958,10 @@ class _SwipeReplyBubbleState extends State<_SwipeReplyBubble> {
       onPointerMove: _handleSwipePointerMove,
       onPointerUp: (event) => _handleSwipePointerUp(event.position),
       onPointerCancel: (_) => _resetSwipe(),
+      // Same insets as the plain row in _buildMessageBubble, so a bubble is
+      // as wide whether or not it can be swiped (offline, desktop, outgoing).
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 3),
         child: Stack(
           alignment: Alignment.center,
           children: [

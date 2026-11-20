@@ -5,6 +5,7 @@ import '../l10n/app_localizations.dart';
 import '../models/contact.dart';
 import '../theme/mesh_theme.dart';
 import '../theme/theme_icons.dart';
+import '../utils/emoji_utils.dart';
 
 /// Shared node-type visuals and last-seen formatting for contact lists
 /// (contacts, discovery, nearby-node scan).
@@ -39,6 +40,40 @@ ThemeIconSlot? contactTypeIconSlot(int type) {
     default:
       return null;
   }
+}
+
+final RegExp _letterOrDigit = RegExp(r'^[\p{L}\p{N}]', unicode: true);
+
+/// Avatar initials for a display name, or null when the name has nothing
+/// usable so the caller can show an icon or key prefix instead.
+///
+/// Only letters and digits count: punctuation such as `-`, `(` or `[` splits
+/// words but never becomes an initial, so "(Base) Node" gives "BN" and
+/// "- Relay" gives "RE". Characters are whole grapheme clusters, so accented
+/// letters and emoji are never cut in half. A name with no letters or digits
+/// but an emoji shows that emoji.
+String? avatarInitials(String name) {
+  final words = <String>[];
+  final current = StringBuffer();
+  String? emoji;
+  for (final cluster in name.characters) {
+    if (_letterOrDigit.hasMatch(cluster)) {
+      current.write(cluster);
+      continue;
+    }
+    if (current.isNotEmpty) {
+      words.add(current.toString());
+      current.clear();
+    }
+    emoji ??= firstEmoji(cluster);
+  }
+  if (current.isNotEmpty) words.add(current.toString());
+
+  if (words.isEmpty) return emoji;
+  if (words.length == 1) {
+    return words.first.characters.take(2).toString().toUpperCase();
+  }
+  return (words[0].characters.first + words[1].characters.first).toUpperCase();
 }
 
 /// The most recent activity for [contact]: for chat nodes this includes the
