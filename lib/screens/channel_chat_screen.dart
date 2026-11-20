@@ -16,6 +16,7 @@ import '../storage/community_store.dart';
 import '../utils/platform_info.dart';
 import '../helpers/chat_jump.dart';
 import '../helpers/chat_scroll_controller.dart';
+import '../helpers/composer_focus_intent.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/cyr2lat.dart';
 import '../helpers/gif_helper.dart';
@@ -104,6 +105,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   final TextEditingController _textController = TextEditingController();
   final ChatScrollController _scrollController = ChatScrollController();
   final FocusNode _textFieldFocusNode = FocusNode();
+  final _composerFocusIntent = ComposerFocusIntent();
   ChannelMessage? _replyingToMessage;
   bool _useReplyRegion = false;
   final CommunityStore _communityStore = CommunityStore();
@@ -134,6 +136,13 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   MeshCoreConnector? _connector;
   final ChatSendGuard _sendGuard = ChatSendGuard();
   bool _channelSkipNextBottomSnap = false;
+
+  /// Newest entry and selection size seen by the last bottom-snap check, so
+  /// a rebuild that only changed the selection is not mistaken for a new
+  /// message.
+  String? _snapNewestEntryId;
+  int _snapSelectionCount = 0;
+
   String? _unreadDividerMessageId;
   _TranscriptLayout? _transcriptLayout;
   ReceivedImageStore? _watchedImageStore;
@@ -263,9 +272,12 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   }
 
   void _onTextFieldFocusChange() {
-    if (_textFieldFocusNode.hasFocus && mounted) {
-      _scrollController.handleKeyboardOpen();
-    }
+    if (!mounted) return;
+    final userFocus = _composerFocusIntent.isUserFocusGain(
+      _textFieldFocusNode.hasFocus,
+      coveredByRoute: !(ModalRoute.of(context)?.isCurrent ?? true),
+    );
+    if (userFocus) _scrollController.handleKeyboardOpen();
   }
 
   Future<void> _loadOlderMessages() async {
@@ -351,6 +363,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     _unregisterActive();
     _scrollController.showJumpToBottom.removeListener(_clearDividerAtBottom);
     _textFieldFocusNode.removeListener(_onTextFieldFocusChange);
+    _composerFocusIntent.dispose();
     _textFieldFocusNode.dispose();
     _textController.dispose();
     _searchController.dispose();
@@ -923,10 +936,23 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                               rowCount + (_isLoadingOlder ? 1 : 0);
 
                           // Auto-scroll to bottom if user is already at bottom
+                          final newestEntryId = layout.ids.first;
+                          final selectionCount = _selectedIds.length;
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             if (!mounted) return;
+                            final newEntry =
+                                newestEntryId != _snapNewestEntryId;
+                            final selectionChanged =
+                                selectionCount != _snapSelectionCount;
+                            _snapNewestEntryId = newestEntryId;
+                            _snapSelectionCount = selectionCount;
                             if (_channelSkipNextBottomSnap) {
                               _channelSkipNextBottomSnap = false;
+                              return;
+                            }
+                            // Picking or clearing messages is not a new
+                            // message: keep the reading position.
+                            if (!newEntry && (_selecting || selectionChanged)) {
                               return;
                             }
                             _scrollController.scrollToBottomIfAtBottom();

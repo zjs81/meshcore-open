@@ -20,7 +20,9 @@ import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../widgets/message_status_icon.dart';
 import '../widgets/empty_state.dart';
+import '../helpers/chat_scroll_anchor.dart';
 import '../helpers/chat_scroll_controller.dart';
+import '../helpers/composer_focus_intent.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/ipfs_link_attach_flow.dart';
 import '../helpers/contact_share_message.dart';
@@ -94,7 +96,10 @@ class _ChatScreenState extends State<ChatScreen> {
   final _messageAreaKey = GlobalKey();
   final _textController = TextEditingController();
   final _scrollController = ChatScrollController();
+  final _scrollAnchor = ChatScrollAnchor();
+  ({String id, bool bookmarksOnly})? _newestRow;
   final _textFieldFocusNode = FocusNode();
+  final _composerFocusIntent = ComposerFocusIntent();
   final GlobalKey _unreadScrollKey = GlobalKey();
   bool _isLoadingOlder = false;
   bool _showBookmarkedOnly = false;
@@ -218,9 +223,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _onTextFieldFocusChange() {
-    if (_textFieldFocusNode.hasFocus && mounted) {
-      _scrollController.handleKeyboardOpen();
-    }
+    if (!mounted) return;
+    final userFocus = _composerFocusIntent.isUserFocusGain(
+      _textFieldFocusNode.hasFocus,
+      coveredByRoute: !(ModalRoute.of(context)?.isCurrent ?? true),
+    );
+    if (userFocus) _scrollController.handleKeyboardOpen();
   }
 
   Future<void> _loadOlderMessages() async {
@@ -241,6 +249,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _unregisterActive();
     _scrollController.showJumpToBottom.removeListener(_clearDividerAtBottom);
     _textFieldFocusNode.removeListener(_onTextFieldFocusChange);
+    _composerFocusIntent.dispose();
     _textFieldFocusNode.dispose();
     _textController.dispose();
     _searchController.dispose();
@@ -678,15 +687,41 @@ class _ChatScreenState extends State<ChatScreen> {
     final reversedMessages = visibleMessages.reversed.toList();
     final itemCount = reversedMessages.length + (_isLoadingOlder ? 1 : 0);
 
+    // A reader scrolled up keeps their place when messages arrive below, as
+    // a room's backlog does in a burst right after login.
+    final previous = _newestRow;
+    final newest = (
+      id: reversedMessages.first.messageId,
+      bookmarksOnly: _showBookmarkedOnly,
+    );
+    _newestRow = newest;
+    if (previous != null &&
+        previous.bookmarksOnly == newest.bookmarksOnly &&
+        previous.id != newest.id &&
+        _pendingUnreadScrollTarget == null &&
+        _scrollController.showJumpToBottom.value) {
+      final inserted = reversedMessages.indexWhere(
+        (m) => m.messageId == previous.id,
+      );
+      if (inserted > 0) _scrollAnchor.rowsInsertedBelow(inserted);
+    }
+
     // Auto-scroll to bottom if user is already at bottom
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (_pendingUnreadScrollTarget != null) return;
+      // Never take over a drag or fling: during a sync every update would
+      // pull a reader who starts scrolling up back to the newest message.
+      if (_scrollController.hasClients &&
+          _scrollController.position.isScrollingNotifier.value) {
+        return;
+      }
       _scrollController.scrollToBottomIfAtBottom();
     });
 
     return ChatZoomWrapper(
-      child: ListView.builder(
+      child: AnchoredChatListView.builder(
+        scrollAnchor: _scrollAnchor,
         reverse: true, // List grows from bottom up
         controller: _scrollController,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),

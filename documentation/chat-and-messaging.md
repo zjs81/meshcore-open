@@ -35,7 +35,8 @@ From the Contacts screen, tap any Chat-type contact to open the ChatScreen.
 - Message text follows the system font size (Android/iOS accessibility text size); pinch-to-zoom scales on top of it
 - **Pinch-to-zoom**: Two-finger zoom (0.8x–1.8x) and double-tap to reset
 - **Jump to bottom**: Floating button appears when scrolled away from the bottom
-- **Lazy loading**: Scrolling to top loads older messages from storage. The newest 200 messages are kept in memory; up to 1000 per conversation are kept in storage
+- **Lazy loading**: Scrolling to top loads older messages from storage. The newest 200 messages are kept in memory, plus any older pages loaded while the chat is open; up to 1000 per conversation are kept in storage
+- **Reading position**: Near the bottom, the chat follows new messages. Scrolled up, it stays on the messages you are reading while new ones arrive below, such as a room's backlog right after login, and never pulls a scroll in progress back to the bottom
 - **Arrival order**: Messages are ordered by when they arrived on this device, not by the sender's clock. If a message's time is more than 5 minutes in the future, a small clock-warning icon appears next to its time (the sender's clock is probably wrong); tap it for an explanation
 
 ### Input Bar
