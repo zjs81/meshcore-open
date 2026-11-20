@@ -178,7 +178,7 @@ Save the settings before sharing. The upload action is shown in the chat compose
 Image message controls live in App Settings → Messaging. Turn on **Enable image messages** first; **Process images automatically** and the image model download/cancel/removal controls then appear. Automatic processing reconstructs every image as it arrives and uses about 2 GB of memory for a second each time; leave it off to reconstruct with a tap. See [Image Messages](image-messages.md) for firmware, native-runtime, storage, and memory requirements.
 
 ### Cyrillic-to-Latin (Cyr2Lat)
-Controls character substitution profiles used to render Cyrillic text in Latin characters. A dropdown selects the active profile; Add, Edit, and Delete buttons manage the profile list (the last remaining profile cannot be deleted). Each profile stores a JSON character map.
+Controls character substitution profiles used to render Cyrillic text in Latin characters. A dropdown selects the active profile; Add, Edit, and Delete buttons manage the profile list (the last remaining profile cannot be deleted). Each profile stores a JSON character map. The active profile is the default; each chat can pick its own in its **Compression** strip (see [Compression](additional-features.md#compression-smaz-and-cyr2lat)).
 
 ### Debug
 - **App Debug Logging**: Enable the in-app debug log

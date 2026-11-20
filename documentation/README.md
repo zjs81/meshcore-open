@@ -20,7 +20,7 @@ MeshCore Open is an open-source Flutter client for MeshCore LoRa mesh networking
 7. [Settings](settings.md) - Device settings, app settings, radio configuration, backup/restore, and exports
 8. [Notifications](notifications.md) - System notifications, replies from watches and Android Auto, unread badges, and notification preferences
 9. [Repeater Management](repeater-management.md) - Repeater hub, status, CLI, telemetry, and neighbors
-10. [Additional Features](additional-features.md) - GIF picker, localization, debug logs, SMAZ compression, and more
+10. [Additional Features](additional-features.md) - GIF picker, localization, debug logs, SMAZ and Cyr2Lat compression, and more
 11. [Routing Paths](routing-paths.md) - Path encoding, validation, device capability detection, and storage
 12. [BLE Protocol & Data Layer](ble-protocol.md) - Technical reference for the communication protocol and data architecture
 13. [Regions](regions.md) - App and radio default regions, unscoped sends, message labels, and reply regions

@@ -37,6 +37,7 @@ import '../services/chat_text_scale_service.dart';
 import '../services/path_history_service.dart';
 import '../services/translation_service.dart';
 import '../widgets/chat_composer.dart';
+import '../widgets/chat_compression_selector.dart';
 import '../widgets/chat_send_pipeline.dart';
 import '../widgets/chat_zoom_wrapper.dart';
 import '../widgets/message_bubble_frame.dart';
@@ -622,6 +623,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 );
                 return Column(
                   children: [
+                    _buildCompressionSelector(connector),
                     Expanded(
                       child: ChatBackdrop(
                         key: _messageAreaKey,
@@ -645,6 +647,27 @@ class _ChatScreenState extends State<ChatScreen> {
                 );
               },
             ),
+    );
+  }
+
+  /// Compression is stored on this phone per contact, so it can change
+  /// while the radio is offline.
+  Widget _buildCompressionSelector(MeshCoreConnector connector) {
+    final keyHex = widget.contact.publicKeyHex;
+    return Consumer<AppSettingsService>(
+      builder: (context, settingsService, _) {
+        return ChatCompressionSelector(
+          mode: connector.contactCompressionMode(keyHex),
+          enabled: true,
+          profiles: settingsService.settings.cyr2latProfiles,
+          profileId: connector.getContactCyr2LatProfileId(keyHex),
+          defaultProfileId: settingsService.settings.selectedCyr2latProfileId,
+          onModeChanged: (mode) =>
+              connector.setContactCompressionMode(keyHex, mode),
+          onProfileChanged: (id) =>
+              connector.setContactCyr2LatProfileId(keyHex, id),
+        );
+      },
     );
   }
 
@@ -1109,19 +1132,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _showContactSettings(BuildContext context) {
     final connector = Provider.of<MeshCoreConnector>(context, listen: false);
-    final appSettingsService = Provider.of<AppSettingsService>(
-      context,
-      listen: false,
-    );
-    connector.ensureContactSmazSettingLoaded(widget.contact.publicKeyHex);
-    connector.ensureContactCyr2LatSettingLoaded(widget.contact.publicKeyHex);
     // The live contact carries the current telemetry flags; widget.contact
     // is the snapshot this screen was opened with.
     final contact = _resolveContact(connector);
-    bool smazEnabled = connector.isContactSmazEnabled(contact.publicKeyHex);
-    bool cyr2latEnabled = connector.isContactCyr2LatEnabled(
-      contact.publicKeyHex,
-    );
     bool urlImagesEnabled = connector.isContactUrlImagesEnabled(
       contact.publicKeyHex,
     );
@@ -1129,14 +1142,11 @@ class _ChatScreenState extends State<ChatScreen> {
         .read<AppSettingsService>()
         .settings
         .loadLinkImages;
-    String? selectedCyr2LatProfileId = connector.getContactCyr2LatProfileId(
-      contact.publicKeyHex,
-    );
     bool teleBaseEnabled = contact.teleBaseEnabled;
     bool teleLocEnabled = contact.teleLocEnabled;
     bool teleEnvEnabled = contact.teleEnvEnabled;
-    // Each toggle is committed immediately, like the compression switches,
-    // so dismissing the dialog by tapping outside keeps the change. All three
+    // Each toggle is committed immediately, like the link-image switch, so
+    // dismissing the dialog by tapping outside keeps the change. All three
     // flags are sent every time so overlapping writes can't undo each other.
     void commitTelemetryFlags() {
       connector.setContactFlags(
@@ -1164,86 +1174,6 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   const Divider(height: 8),
                 ],
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(context.l10n.channels_smazCompression),
-                  subtitle: Text(context.l10n.chat_compressOutgoingMessages),
-                  value: smazEnabled,
-                  onChanged: (value) {
-                    connector.setContactSmazEnabled(
-                      contact.publicKeyHex,
-                      value,
-                    );
-                    connector.setContactCyr2LatEnabled(
-                      contact.publicKeyHex,
-                      false,
-                    );
-                    setDialogState(() {
-                      smazEnabled = value;
-                      if (smazEnabled) {
-                        cyr2latEnabled = false;
-                      }
-                    });
-                  },
-                ),
-                const Divider(height: 8),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(context.l10n.channels_cyr2latCompression),
-                  subtitle: Text(context.l10n.channels_cyr2latCompressionDscr),
-                  value: cyr2latEnabled,
-                  onChanged: (value) {
-                    connector.setContactCyr2LatEnabled(
-                      contact.publicKeyHex,
-                      value,
-                    );
-                    connector.setContactSmazEnabled(
-                      contact.publicKeyHex,
-                      false,
-                    );
-                    setDialogState(() {
-                      cyr2latEnabled = value;
-                      if (cyr2latEnabled) {
-                        smazEnabled = false;
-                      }
-                    });
-                  },
-                ),
-                if (cyr2latEnabled) ...[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                    child: DropdownButtonFormField<String>(
-                      isExpanded: true,
-                      initialValue: selectedCyr2LatProfileId,
-                      decoration: InputDecoration(
-                        labelText:
-                            context.l10n.channels_cyr2latSettingsSubheading,
-                        border: const OutlineInputBorder(),
-                      ),
-                      items: appSettingsService.settings.cyr2latProfiles.map((
-                        profile,
-                      ) {
-                        return DropdownMenuItem(
-                          value: profile.id,
-                          child: Text(
-                            profile.name,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        connector.setContactCyr2LatProfileId(
-                          contact.publicKeyHex,
-                          value,
-                        );
-                        setDialogState(() {
-                          selectedCyr2LatProfileId = value;
-                        });
-                      },
-                    ),
-                  ),
-                ],
-                const Divider(height: 8),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(context.l10n.urlImage_enable),

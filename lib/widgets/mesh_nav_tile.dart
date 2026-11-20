@@ -119,14 +119,18 @@ class MeshNavTile extends StatelessWidget {
 }
 
 /// One radio-style option row inside a bottom sheet picker.
+/// The selected row shows a filled radio icon and a bold title, so the
+/// choice never depends on colour alone. A null [onTap] disables the row.
 class MeshSheetOption extends StatelessWidget {
   final String label;
+  final String? subtitle;
   final bool selected;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const MeshSheetOption({
     super.key,
     required this.label,
+    this.subtitle,
     required this.selected,
     required this.onTap,
   });
@@ -134,14 +138,23 @@ class MeshSheetOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return ListTile(
-      leading: Icon(
-        selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-        size: 24,
-        color: selected ? scheme.primary : scheme.onSurfaceVariant,
+    return Semantics(
+      selected: selected,
+      inMutuallyExclusiveGroup: true,
+      child: ListTile(
+        leading: Icon(
+          selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+          size: 24,
+          color: selected ? scheme.primary : scheme.onSurfaceVariant,
+        ),
+        title: Text(
+          label,
+          style: selected ? const TextStyle(fontWeight: FontWeight.w700) : null,
+        ),
+        subtitle: subtitle == null ? null : Text(subtitle!),
+        enabled: onTap != null,
+        onTap: onTap,
       ),
-      title: Text(label),
-      onTap: onTap,
     );
   }
 }

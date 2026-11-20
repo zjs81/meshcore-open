@@ -3607,24 +3607,6 @@ abstract class AppLocalizations {
   /// **'Edit Channel {index}'**
   String channels_editChannelTitle(int index);
 
-  /// No description provided for @channels_smazCompression.
-  ///
-  /// In en, this message translates to:
-  /// **'SMAZ compression'**
-  String get channels_smazCompression;
-
-  /// No description provided for @channels_cyr2latCompression.
-  ///
-  /// In en, this message translates to:
-  /// **'Cyr2Lat compression'**
-  String get channels_cyr2latCompression;
-
-  /// No description provided for @channels_cyr2latCompressionDscr.
-  ///
-  /// In en, this message translates to:
-  /// **'Replaces some Cyrillic characters with Latin characters when sending.'**
-  String get channels_cyr2latCompressionDscr;
-
   /// No description provided for @channels_cyr2latSettingsHeading.
   ///
   /// In en, this message translates to:
@@ -4812,12 +4794,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Public Key'**
   String get chat_publicKey;
-
-  /// No description provided for @chat_compressOutgoingMessages.
-  ///
-  /// In en, this message translates to:
-  /// **'Compress outgoing messages'**
-  String get chat_compressOutgoingMessages;
 
   /// No description provided for @chat_floodForced.
   ///
@@ -12633,6 +12609,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connect to a radio to send messages'**
   String get chat_composerOffline;
+
+  /// No description provided for @chatCompression_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Compression'**
+  String get chatCompression_title;
+
+  /// Always-visible control at the top of a chat; mode is Off, SMAZ or Cyr2Lat
+  ///
+  /// In en, this message translates to:
+  /// **'Compression: {mode}'**
+  String chatCompression_label(String mode);
+
+  /// No description provided for @chatCompression_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get chatCompression_off;
+
+  /// No description provided for @chatCompression_smaz.
+  ///
+  /// In en, this message translates to:
+  /// **'SMAZ'**
+  String get chatCompression_smaz;
+
+  /// No description provided for @chatCompression_cyr2lat.
+  ///
+  /// In en, this message translates to:
+  /// **'Cyr2Lat'**
+  String get chatCompression_cyr2lat;
+
+  /// No description provided for @chatCompression_changeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Change compression for this chat'**
+  String get chatCompression_changeHint;
+
+  /// No description provided for @chatCompression_sheetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to messages you send in this chat. Saved on this phone.'**
+  String get chatCompression_sheetSubtitle;
+
+  /// No description provided for @chatCompression_offDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.'**
+  String get chatCompression_offDescription;
+
+  /// No description provided for @chatCompression_smazDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.'**
+  String get chatCompression_smazDescription;
+
+  /// No description provided for @chatCompression_cyr2latDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.'**
+  String get chatCompression_cyr2latDescription;
+
+  /// No description provided for @chatCompression_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Cyr2Lat profile'**
+  String get chatCompression_profile;
+
+  /// No description provided for @chatCompression_noStorageId.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t change compression until this channel has synced from the radio.'**
+  String get chatCompression_noStorageId;
+
+  /// No description provided for @chatCompression_saveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the compression setting. Showing the saved setting.'**
+  String get chatCompression_saveFailed;
 }
 
 class _AppLocalizationsDelegate
