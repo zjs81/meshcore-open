@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
 import 'package:meshcore_open/models/image_codec_support.dart';
 import 'package:meshcore_open/models/translation_support.dart';
 import 'package:meshcore_open/services/app_settings_service.dart';
 import 'package:meshcore_open/services/image_codec_service.dart';
 import 'package:meshcore_open/services/image_codec_settings_store.dart';
+import 'package:meshcore_open/services/translation_file_store.dart';
 import 'package:meshcore_open/services/translation_service.dart';
 import 'package:meshcore_open/storage/prefs_manager.dart';
 import 'package:meshcore_open/theme/mesh_theme.dart';
@@ -15,6 +20,40 @@ import 'package:meshcore_open/widgets/translation_settings_section.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class _MemoryTranslationFileStore extends TranslationFileStore {
+  final Map<String, int> _files = {};
+
+  @override
+  Future<String> modelDirectoryPath() async => '/memory/translation_models';
+
+  @override
+  Future<List<TranslationModelRecord>> scanDownloadedModels() async => const [];
+
+  @override
+  Future<void> deleteModel(TranslationModelRecord model) async {
+    _files.remove(model.localPath);
+  }
+
+  @override
+  Future<void> deleteFile(String path) async {
+    _files.remove(path);
+  }
+
+  @override
+  Future<DownloadedModelFile> writeModelBytes({
+    required String fileName,
+    required Stream<List<int>> chunks,
+  }) async {
+    var total = 0;
+    await for (final chunk in chunks) {
+      total += chunk.length;
+    }
+    final path = '/memory/translation_models/$fileName';
+    _files[path] = total;
+    return DownloadedModelFile(localPath: path, fileSizeBytes: total);
+  }
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -273,6 +312,156 @@ void main() {
     expect(find.textContaining('Merging downloaded chunks'), findsOneWidget);
     expect(find.byTooltip('Cancel'), findsOneWidget);
   });
+
+  testWidgets(
+    'reopening settings during a custom download supports cancel, completion, and failure',
+    (tester) async {
+      StreamController<List<int>>? getStream;
+      final settings = AppSettingsService();
+      await settings.loadSettings();
+      final translation = TranslationService(
+        settings,
+        fileStore: _MemoryTranslationFileStore(),
+        clientFactory: () => MockClient.streaming((request, _) async {
+          if (request.method == 'HEAD') {
+            return http.StreamedResponse(
+              const Stream<List<int>>.empty(),
+              200,
+              contentLength: 1024,
+            );
+          }
+          final controller = StreamController<List<int>>();
+          getStream = controller;
+          return http.StreamedResponse(
+            controller.stream,
+            200,
+            contentLength: 1024,
+          );
+        }),
+      );
+      addTearDown(translation.dispose);
+
+      final providers = <SingleChildWidget>[
+        ChangeNotifierProvider<AppSettingsService>.value(value: settings),
+        ChangeNotifierProvider<TranslationService>.value(value: translation),
+      ];
+
+      Future<void> startCustomDownload(String url) async {
+        await pump(
+          tester,
+          const TranslationSettingsSection(),
+          providers: providers,
+        );
+        await tester.ensureVisible(find.byType(TextField));
+        await tester.enterText(find.byType(TextField), url);
+        await tester.pump();
+        final urlFieldDownload = find.descendant(
+          of: find.byType(TextField),
+          matching: find.byTooltip('Download'),
+        );
+        await tester.ensureVisible(urlFieldDownload);
+        await tester.tap(urlFieldDownload);
+        await tester.pump();
+        await tester.pump();
+      }
+
+      Future<void> leaveAndReopen() async {
+        await pump(tester, const SizedBox.shrink(), providers: providers);
+        await pump(
+          tester,
+          const TranslationSettingsSection(),
+          providers: providers,
+        );
+      }
+
+      // 1. Cancel after reopen.
+      await startCustomDownload('https://example.com/Custom-Cancel.gguf');
+      await tester.pump(Duration.zero);
+      getStream!.add(List<int>.filled(512, 1));
+      await tester.pump(Duration.zero);
+      expect(translation.downloadedBytes, 512);
+      await leaveAndReopen();
+      expect(find.text('Custom-Cancel'), findsOneWidget);
+      expect(find.textContaining('Downloading'), findsOneWidget);
+      expect(find.byTooltip('Cancel'), findsOneWidget);
+      expect(
+        find.byKey(
+          ValueKey('model-download-${translationPresetModels.first.id}'),
+        ),
+        findsNothing,
+      );
+      expect(
+        tester
+            .widget<IconButton>(
+              find.descendant(
+                of: find.byType(TextField),
+                matching: find.byType(IconButton),
+              ),
+            )
+            .onPressed,
+        isNull,
+      );
+
+      await tester.ensureVisible(find.byTooltip('Cancel'));
+      await tester.tap(find.byTooltip('Cancel'));
+      await tester.pump();
+      expect(translation.lastError, 'Download stopped.');
+      getStream!.add(List<int>.filled(16, 1));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 20)),
+      );
+      await tester.pump();
+      expect(translation.isDownloading, isFalse);
+      expect(find.text('Custom-Cancel'), findsNothing);
+      expect(find.text('Download stopped.'), findsNothing);
+
+      // 2. Complete after reopen.
+      await startCustomDownload('https://example.com/Custom-Complete.gguf');
+      await tester.pump(Duration.zero);
+      getStream!.add(List<int>.filled(512, 2));
+      await tester.pump(Duration.zero);
+      await leaveAndReopen();
+      expect(find.text('Custom-Complete'), findsOneWidget);
+      expect(find.textContaining('Downloading'), findsOneWidget);
+
+      getStream!.add(List<int>.filled(512, 2));
+      unawaited(getStream!.close());
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 20)),
+      );
+      await tester.pump();
+      expect(find.text('Custom-Complete'), findsOneWidget);
+      expect(find.textContaining('Ready'), findsOneWidget);
+      expect(find.textContaining('Active'), findsOneWidget);
+
+      // 3. Failure after reopen.
+      await startCustomDownload('https://example.com/Custom-Fail.gguf');
+      await tester.pump(Duration.zero);
+      getStream!.add(List<int>.filled(256, 3));
+      await tester.pump(Duration.zero);
+      await leaveAndReopen();
+      expect(find.text('Custom-Fail'), findsOneWidget);
+      expect(find.textContaining('Downloading'), findsOneWidget);
+
+      getStream!.addError(http.ClientException('Connection reset'));
+      unawaited(getStream!.close());
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 20)),
+      );
+      await tester.pump();
+      expect(find.text('Custom-Fail'), findsOneWidget);
+      expect(find.textContaining("Couldn't download"), findsOneWidget);
+      expect(find.textContaining('Connection reset'), findsOneWidget);
+      // Error is shown in the model row detail, not duplicated below the URL field.
+      expect(find.text('ClientException: Connection reset'), findsNothing);
+      expect(
+        find.byKey(
+          const ValueKey('model-download-https://example.com/Custom-Fail.gguf'),
+        ),
+        findsOneWidget,
+      );
+    },
+  );
 
   testWidgets('an installed image bundle is one ready row', (tester) async {
     final spec = imageCodecPresetModels.single;

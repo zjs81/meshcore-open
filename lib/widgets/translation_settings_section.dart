@@ -171,6 +171,7 @@ class _TranslationModelsState extends State<_TranslationModels> {
         lastError != null &&
         lastError.isNotEmpty &&
         lastError != 'Download stopped.' &&
+        lastError != translationService.failedDownloadError &&
         lastError != _failedDetail;
 
     return Column(
@@ -219,11 +220,34 @@ class _TranslationModelsState extends State<_TranslationModels> {
     final items = <ModelDownloadItem>[];
     var pendingShown = false;
 
+    final serviceFailedError = service.failedDownloadError;
+
     bool targets(String id, String sourceUrl, String name) {
       if (pending == null) return false;
       if (pending.id == id || pending.modelId == id) return true;
       if (sourceUrl.isNotEmpty && pending.sourceUrl == sourceUrl) return true;
       if (name.isNotEmpty && pending.name == name) return true;
+      return false;
+    }
+
+    bool matchesServiceFailure(
+      String id,
+      String sourceUrl,
+      String? fileName,
+      String? installedName,
+    ) {
+      if (serviceFailedError == null) return false;
+      if (service.failedDownloadModelId == id) return true;
+      if (sourceUrl.isNotEmpty &&
+          service.failedDownloadSourceUrl == sourceUrl) {
+        return true;
+      }
+      final failedFile = service.failedDownloadFileName;
+      if (failedFile != null &&
+          failedFile.isNotEmpty &&
+          (failedFile == fileName || failedFile == installedName)) {
+        return true;
+      }
       return false;
     }
 
@@ -240,11 +264,25 @@ class _TranslationModelsState extends State<_TranslationModels> {
           service.isDownloading &&
           (targets(id, sourceUrl, name) ||
               _fileNamesThisDownload(service, fileName, installed?.name));
-      final failed = !downloading && _failedId == id;
+      final failed =
+          !downloading &&
+          (_failedId == id ||
+              (_failedId == null &&
+                  matchesServiceFailure(
+                    id,
+                    sourceUrl,
+                    fileName,
+                    installed?.name,
+                  )));
       if (downloading || failed) pendingShown = true;
       final merging = downloading && _isMerging(service);
       final busy = service.isBusy;
       final installedModel = installed;
+      final failureDetail = _failedId == id
+          ? _failedDetail
+          : (serviceFailedError != null
+                ? l10n.translation_downloadFailed(serviceFailedError)
+                : null);
 
       return ModelDownloadItem(
         id: id,
@@ -266,7 +304,7 @@ class _TranslationModelsState extends State<_TranslationModels> {
         detail: merging
             ? l10n.translation_mergingChunks
             : failed
-            ? _failedDetail
+            ? failureDetail
             : null,
         progress: downloading && !merging ? service.downloadProgress : null,
         downloadedBytes: downloading ? service.downloadedBytes : 0,
@@ -346,6 +384,33 @@ class _TranslationModelsState extends State<_TranslationModels> {
                   sourceUrl: pending.sourceUrl,
                   fileName: pending.fileName,
                   id: pending.modelId,
+                ),
+        ),
+      );
+    } else if (!pendingShown &&
+        !service.isDownloading &&
+        serviceFailedError != null &&
+        service.failedDownloadSourceUrl != null) {
+      final failedUrl = service.failedDownloadSourceUrl!;
+      final failedFile = service.failedDownloadFileName;
+      final failedModelId = service.failedDownloadModelId;
+      final id = (failedModelId != null && failedModelId.isNotEmpty)
+          ? failedModelId
+          : failedUrl.isNotEmpty
+          ? failedUrl
+          : (failedFile ?? 'download');
+      items.add(
+        ModelDownloadItem(
+          id: id,
+          name: _displayName(failedUrl, failedFile, failedModelId),
+          status: ModelDownloadStatus.error,
+          detail: l10n.translation_downloadFailed(serviceFailedError),
+          onDownload: service.isBusy
+              ? null
+              : () => _download(
+                  sourceUrl: failedUrl,
+                  fileName: failedFile,
+                  id: failedModelId,
                 ),
         ),
       );

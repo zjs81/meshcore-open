@@ -39,11 +39,14 @@ class TranslationDownloadCancelled implements Exception {
 class TranslationService extends ChangeNotifier {
   final AppSettingsService _appSettingsService;
   final TranslationFileStore _fileStore;
+  final http.Client Function() _newClient;
 
   TranslationService(
     this._appSettingsService, {
     TranslationFileStore? fileStore,
-  }) : _fileStore = fileStore ?? TranslationFileStore() {
+    http.Client Function()? clientFactory,
+  }) : _fileStore = fileStore ?? TranslationFileStore(),
+       _newClient = clientFactory ?? http.Client.new {
     // Initialize langdetect once at service construction.
     _langDetectInit = initLangDetect();
   }
@@ -64,6 +67,10 @@ class TranslationService extends ChangeNotifier {
   String? _downloadTargetFileName;
   String? _downloadSourceUrl;
   String? _downloadModelId;
+  String? _failedDownloadError;
+  String? _failedDownloadSourceUrl;
+  String? _failedDownloadFileName;
+  String? _failedDownloadModelId;
 
   bool get isBusy => _isBusy;
   bool get isDownloading => _isDownloading;
@@ -82,6 +89,18 @@ class TranslationService extends ChangeNotifier {
 
   /// Preset id when the download was started as a preset, otherwise null.
   String? get downloadModelId => _downloadModelId;
+
+  /// Error message from the most recent failed download, if any.
+  String? get failedDownloadError => _failedDownloadError;
+
+  /// URL of the most recent failed download, if any.
+  String? get failedDownloadSourceUrl => _failedDownloadSourceUrl;
+
+  /// Resolved filename of the most recent failed download, if any.
+  String? get failedDownloadFileName => _failedDownloadFileName;
+
+  /// Preset id of the most recent failed download, if it was a preset.
+  String? get failedDownloadModelId => _failedDownloadModelId;
   double? get downloadProgress {
     final total = _downloadTotalBytes;
     if (!_isDownloading || total == null || total <= 0) {
@@ -210,6 +229,7 @@ class TranslationService extends ChangeNotifier {
     return _runExclusive(() async {
       _setBusy(true);
       _lastError = null;
+      _clearFailedDownload();
       final resolvedFileName =
           fileName ??
           _sanitizeFileName(
@@ -227,7 +247,7 @@ class TranslationService extends ChangeNotifier {
       _setDownloading(true);
       try {
         // HEAD request to check size and range support.
-        final headClient = http.Client();
+        final headClient = _newClient();
         int? totalSize;
         bool supportsRange = false;
         try {
@@ -238,6 +258,10 @@ class TranslationService extends ChangeNotifier {
           await headResponse.stream.drain<void>();
         } finally {
           headClient.close();
+        }
+
+        if (_cancelDownloadRequested) {
+          throw const TranslationDownloadCancelled();
         }
 
         _downloadTotalBytes = totalSize;
@@ -277,6 +301,15 @@ class TranslationService extends ChangeNotifier {
         await _appSettingsService.setTranslationModelSourceUrl(sourceUrl);
         _failedModelPath = null;
         return record;
+      } on TranslationDownloadCancelled {
+        rethrow;
+      } catch (error) {
+        _lastError = '$error';
+        _failedDownloadError = '$error';
+        _failedDownloadSourceUrl = sourceUrl;
+        _failedDownloadFileName = resolvedFileName;
+        _failedDownloadModelId = id;
+        rethrow;
       } finally {
         _setDownloading(false);
       }
@@ -287,7 +320,7 @@ class TranslationService extends ChangeNotifier {
     required Uri uri,
     required String fileName,
   }) async {
-    final client = http.Client();
+    final client = _newClient();
     try {
       final response = await client.send(http.Request('GET', uri));
       if (response.statusCode < 200 || response.statusCode >= 300) {
@@ -331,7 +364,7 @@ class TranslationService extends ChangeNotifier {
         if (start >= totalSize) break;
         final chunkPath = await _fileStore.chunkFilePath(fileName, i);
         chunkPaths.add(chunkPath);
-        final client = http.Client();
+        final client = _newClient();
         clients.add(client);
         futures.add(
           _downloadRange(
@@ -718,6 +751,13 @@ class TranslationService extends ChangeNotifier {
     _notify();
   }
 
+  void _clearFailedDownload() {
+    _failedDownloadError = null;
+    _failedDownloadSourceUrl = null;
+    _failedDownloadFileName = null;
+    _failedDownloadModelId = null;
+  }
+
   /// Puts the service in the same state [downloadModel] publishes while a
   /// fetch is running, so settings can be rebuilt without a network call.
   @visibleForTesting
@@ -729,12 +769,15 @@ class TranslationService extends ChangeNotifier {
     int downloadedBytes = 0,
     int? totalBytes,
   }) {
+    _lastError = null;
+    _clearFailedDownload();
     _downloadSourceUrl = sourceUrl;
     _downloadModelId = modelId;
     _downloadTargetFileName = fileName;
     _downloadFileName = displayedFileName ?? fileName;
     _downloadedBytes = downloadedBytes;
     _downloadTotalBytes = totalBytes;
+    _isBusy = true;
     _isDownloading = true;
     _notify();
   }
