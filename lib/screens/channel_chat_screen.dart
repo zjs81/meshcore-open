@@ -53,6 +53,7 @@ import '../widgets/empty_state.dart';
 import '../widgets/filter_rule_dialog.dart';
 import '../widgets/filtered_message_ghost.dart';
 import '../widgets/chat_composer.dart';
+import '../widgets/chat_compression_selector.dart';
 import '../widgets/chat_send_pipeline.dart';
 import '../widgets/chat_zoom_wrapper.dart';
 import '../widgets/message_bubble_frame.dart';
@@ -848,6 +849,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               bottom: false,
               child: Column(
                 children: [
+                  _buildCompressionSelector(),
                   Expanded(
                     child: ChatBackdrop(
                       contentKey: _messageAreaKey,
@@ -2724,6 +2726,32 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   /// The `@[name] ` prefix a reply prepends to the outgoing text.
   static String _replyPrefix(ChannelMessage replyTo) =>
       '@[${replyTo.senderName}] ';
+
+  /// Compression is stored on this phone under the channel's storage ID, so
+  /// it can change while the radio is offline, but not before the slot has
+  /// one.
+  Widget _buildCompressionSelector() {
+    final slot = widget.channel.index;
+    return Consumer2<MeshCoreConnector, AppSettingsService>(
+      builder: (context, connector, settingsService, _) {
+        final hasStorageId = connector.channelIdForSlot(slot) != null;
+        return ChatCompressionSelector(
+          mode: connector.channelCompressionMode(slot),
+          enabled: hasStorageId,
+          disabledReason: hasStorageId
+              ? null
+              : context.l10n.chatCompression_noStorageId,
+          profiles: settingsService.settings.cyr2latProfiles,
+          profileId: connector.getChannelCyr2LatProfileId(slot),
+          defaultProfileId: settingsService.settings.selectedCyr2latProfileId,
+          onModeChanged: (mode) =>
+              connector.setChannelCompressionMode(slot, mode),
+          onProfileChanged: (id) =>
+              connector.setChannelCyr2LatProfileId(slot, id),
+        );
+      },
+    );
+  }
 
   Widget _buildInputBar() {
     // Only the fields the composer depends on, so unrelated connector

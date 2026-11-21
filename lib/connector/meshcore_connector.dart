@@ -12,6 +12,7 @@ import 'package:flutter_blue_plus_platform_interface/flutter_blue_plus_platform_
 import '../utils/advert_signature.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
+import '../models/chat_compression_mode.dart';
 import '../models/bookmarked_message.dart';
 import '../models/companion_radio_stats.dart';
 import '../models/contact.dart';
@@ -1816,10 +1817,6 @@ class MeshCoreConnector extends ChangeNotifier {
     await _channelRegionStore.saveDefaultRegion(region);
   }
 
-  void ensureContactSmazSettingLoaded(String contactKeyHex) {
-    _ensureContactSmazSettingLoaded(contactKeyHex);
-  }
-
   bool isChannelCyr2LatEnabled(int channelIndex) {
     _ensureChannelCyr2LatSettingLoaded(channelIndex);
     return _channelCyr2LatEnabled[channelIndex] ?? false;
@@ -1828,10 +1825,6 @@ class MeshCoreConnector extends ChangeNotifier {
   bool isContactCyr2LatEnabled(String contactKeyHex) {
     _ensureContactCyr2LatSettingLoaded(contactKeyHex);
     return _contactCyr2LatEnabled[contactKeyHex] ?? false;
-  }
-
-  void ensureContactCyr2LatSettingLoaded(String contactKeyHex) {
-    _ensureContactCyr2LatSettingLoaded(contactKeyHex);
   }
 
   Future<void> loadUnreadState() async {
@@ -2102,30 +2095,97 @@ class MeshCoreConnector extends ChangeNotifier {
     ];
   }
 
-  Future<void> setChannelSmazEnabled(int channelIndex, bool enabled) async {
-    final slots = _slotsSharingChannel(channelIndex);
-    for (final slot in slots) {
-      _channelSmazEnabled[slot] = enabled;
+  ChatCompressionMode channelCompressionMode(int channelIndex) {
+    if (isChannelSmazEnabled(channelIndex)) return ChatCompressionMode.smaz;
+    if (isChannelCyr2LatEnabled(channelIndex)) {
+      return ChatCompressionMode.cyr2lat;
     }
-    final channelId = _channelIdForSlot(channelIndex);
-    if (enabled) {
-      for (final slot in slots) {
-        _channelCyr2LatEnabled[slot] = false;
-      }
-      if (channelId != null) {
-        await _channelSettingsStore.saveCyr2LatEnabled(channelId, false);
-      }
-    }
-    if (channelId != null) {
-      await _channelSettingsStore.saveSmazEnabled(channelId, enabled);
-    }
-    notifyListeners();
+    return ChatCompressionMode.off;
   }
 
-  Future<void> setContactSmazEnabled(String contactKeyHex, bool enabled) async {
-    _contactSmazEnabled[contactKeyHex] = enabled;
-    await _contactSettingsStore.saveSmazEnabled(contactKeyHex, enabled);
-    notifyListeners();
+  ChatCompressionMode contactCompressionMode(String contactKeyHex) {
+    _ensureContactSmazSettingLoaded(contactKeyHex);
+    if (isContactSmazEnabled(contactKeyHex)) return ChatCompressionMode.smaz;
+    if (isContactCyr2LatEnabled(contactKeyHex)) {
+      return ChatCompressionMode.cyr2lat;
+    }
+    return ChatCompressionMode.off;
+  }
+
+  /// Serializes compression writes so overlapping choices can't interleave
+  /// their flag writes and leave SMAZ and Cyr2Lat both on.
+  Future<void> _compressionWrites = Future<void>.value();
+
+  Future<void> _queueCompressionWrite(Future<void> Function() write) {
+    final next = _compressionWrites.then((_) => write());
+    _compressionWrites = next.catchError((_) {});
+    return next;
+  }
+
+  /// Saves [mode] for the channel in [channelIndex] and every slot holding
+  /// the same channel. Flags are switched off before the new one is switched
+  /// on, and memory follows each completed write, so a failure never leaves
+  /// both on. Throws [StateError] when the slot has no storage ID.
+  Future<void> setChannelCompressionMode(
+    int channelIndex,
+    ChatCompressionMode mode,
+  ) {
+    return _queueCompressionWrite(() async {
+      final channelId = _channelIdForSlot(channelIndex);
+      if (channelId == null) {
+        throw StateError('Channel slot $channelIndex has no storage ID');
+      }
+      final slots = _slotsSharingChannel(channelIndex);
+      Future<void> writeSmaz(bool on) async {
+        await _channelSettingsStore.saveSmazEnabled(channelId, on);
+        for (final slot in slots) {
+          _channelSmazEnabled[slot] = on;
+        }
+      }
+
+      Future<void> writeCyr2Lat(bool on) async {
+        await _channelSettingsStore.saveCyr2LatEnabled(channelId, on);
+        for (final slot in slots) {
+          _channelCyr2LatEnabled[slot] = on;
+        }
+      }
+
+      try {
+        if (mode != ChatCompressionMode.smaz) await writeSmaz(false);
+        if (mode != ChatCompressionMode.cyr2lat) await writeCyr2Lat(false);
+        if (mode == ChatCompressionMode.smaz) await writeSmaz(true);
+        if (mode == ChatCompressionMode.cyr2lat) await writeCyr2Lat(true);
+      } finally {
+        notifyListeners();
+      }
+    });
+  }
+
+  /// Contact counterpart of [setChannelCompressionMode].
+  Future<void> setContactCompressionMode(
+    String contactKeyHex,
+    ChatCompressionMode mode,
+  ) {
+    return _queueCompressionWrite(() async {
+      Future<void> writeSmaz(bool on) async {
+        await _contactSettingsStore.saveSmazEnabled(contactKeyHex, on);
+        _contactSmazEnabled[contactKeyHex] = on;
+      }
+
+      Future<void> writeCyr2Lat(bool on) async {
+        await _contactSettingsStore.saveCyr2LatEnabled(contactKeyHex, on);
+        _contactCyr2LatEnabled[contactKeyHex] = on;
+      }
+
+      try {
+        if (mode != ChatCompressionMode.smaz) await writeSmaz(false);
+        if (mode != ChatCompressionMode.cyr2lat) await writeCyr2Lat(false);
+        if (mode == ChatCompressionMode.smaz) await writeSmaz(true);
+        if (mode == ChatCompressionMode.cyr2lat) await writeCyr2Lat(true);
+      } finally {
+        notifyListeners();
+      }
+    });
   }
 
   Future<void> setChannelUrlImagesEnabled(
@@ -2148,35 +2208,6 @@ class MeshCoreConnector extends ChangeNotifier {
   ) async {
     _contactUrlImagesEnabled[contactKeyHex] = enabled;
     await _contactSettingsStore.saveUrlImagesEnabled(contactKeyHex, enabled);
-    notifyListeners();
-  }
-
-  Future<void> setChannelCyr2LatEnabled(int channelIndex, bool enabled) async {
-    final slots = _slotsSharingChannel(channelIndex);
-    for (final slot in slots) {
-      _channelCyr2LatEnabled[slot] = enabled;
-    }
-    final channelId = _channelIdForSlot(channelIndex);
-    if (enabled) {
-      for (final slot in slots) {
-        _channelSmazEnabled[slot] = false;
-      }
-      if (channelId != null) {
-        await _channelSettingsStore.saveSmazEnabled(channelId, false);
-      }
-    }
-    if (channelId != null) {
-      await _channelSettingsStore.saveCyr2LatEnabled(channelId, enabled);
-    }
-    notifyListeners();
-  }
-
-  Future<void> setContactCyr2LatEnabled(
-    String contactKeyHex,
-    bool enabled,
-  ) async {
-    _contactCyr2LatEnabled[contactKeyHex] = enabled;
-    await _contactSettingsStore.saveCyr2LatEnabled(contactKeyHex, enabled);
     notifyListeners();
   }
 
@@ -8337,7 +8368,7 @@ class MeshCoreConnector extends ChangeNotifier {
   void _ensureContactSmazSettingLoaded(String contactKeyHex) {
     if (_contactSmazEnabled.containsKey(contactKeyHex)) return;
     _contactSettingsStore.loadSmazEnabled(contactKeyHex).then((enabled) {
-      if (_contactSmazEnabled[contactKeyHex] == enabled) return;
+      if (_contactSmazEnabled.containsKey(contactKeyHex)) return;
       _contactSmazEnabled[contactKeyHex] = enabled;
       notifyListeners();
     });
@@ -8346,7 +8377,7 @@ class MeshCoreConnector extends ChangeNotifier {
   void _ensureContactCyr2LatSettingLoaded(String contactKeyHex) {
     if (_contactCyr2LatEnabled.containsKey(contactKeyHex)) return;
     _contactSettingsStore.loadCyr2LatEnabled(contactKeyHex).then((enabled) {
-      if (_contactCyr2LatEnabled[contactKeyHex] == enabled) return;
+      if (_contactCyr2LatEnabled.containsKey(contactKeyHex)) return;
       _contactCyr2LatEnabled[contactKeyHex] = enabled;
       notifyListeners();
     });
@@ -8364,7 +8395,7 @@ class MeshCoreConnector extends ChangeNotifier {
   void _ensureContactCyr2LatProfileLoaded(String contactKeyHex) {
     if (_contactCyr2LatProfileId.containsKey(contactKeyHex)) return;
     _contactSettingsStore.loadCyr2LatProfileId(contactKeyHex).then((profileId) {
-      if (_contactCyr2LatProfileId[contactKeyHex] == profileId) return;
+      if (_contactCyr2LatProfileId.containsKey(contactKeyHex)) return;
       _contactCyr2LatProfileId[contactKeyHex] = profileId;
       notifyListeners();
     });
@@ -8375,7 +8406,7 @@ class MeshCoreConnector extends ChangeNotifier {
     final channelId = _slotChannelIds[channelIndex];
     if (channelId == null) return;
     _channelSettingsStore.loadCyr2LatEnabled(channelId).then((enabled) {
-      if (_channelCyr2LatEnabled[channelIndex] == enabled) return;
+      if (_channelCyr2LatEnabled.containsKey(channelIndex)) return;
       _channelCyr2LatEnabled[channelIndex] = enabled;
       notifyListeners();
     });
@@ -8386,7 +8417,7 @@ class MeshCoreConnector extends ChangeNotifier {
     final channelId = _slotChannelIds[channelIndex];
     if (channelId == null) return;
     _channelSettingsStore.loadCyr2LatProfileId(channelId).then((profileId) {
-      if (_channelCyr2LatProfileId[channelIndex] == profileId) return;
+      if (_channelCyr2LatProfileId.containsKey(channelIndex)) return;
       _channelCyr2LatProfileId[channelIndex] = profileId;
       notifyListeners();
     });
@@ -8402,12 +8433,12 @@ class MeshCoreConnector extends ChangeNotifier {
     String? profileId,
   ) async {
     if (_channelCyr2LatProfileId[channelIndex] == profileId) return;
-    for (final slot in _slotsSharingChannel(channelIndex)) {
-      _channelCyr2LatProfileId[slot] = profileId;
-    }
     final channelId = _channelIdForSlot(channelIndex);
     if (channelId != null) {
       await _channelSettingsStore.saveCyr2LatProfileId(channelId, profileId);
+    }
+    for (final slot in _slotsSharingChannel(channelIndex)) {
+      _channelCyr2LatProfileId[slot] = profileId;
     }
     notifyListeners();
   }
@@ -8422,8 +8453,8 @@ class MeshCoreConnector extends ChangeNotifier {
     String? profileId,
   ) async {
     if (_contactCyr2LatProfileId[contactKeyHex] == profileId) return;
-    _contactCyr2LatProfileId[contactKeyHex] = profileId;
     await _contactSettingsStore.saveCyr2LatProfileId(contactKeyHex, profileId);
+    _contactCyr2LatProfileId[contactKeyHex] = profileId;
     notifyListeners();
   }
 
