@@ -1716,6 +1716,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get contacts_lastSeenNow => '刚刚';
 
   @override
+  String get contacts_lastSeenNever => 'not heard yet';
+
+  @override
   String contacts_lastSeenMinsAgo(int minutes) {
     return '约 $minutes 分钟';
   }

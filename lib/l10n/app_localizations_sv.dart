@@ -1813,6 +1813,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get contacts_lastSeenNow => 'nyss';
 
   @override
+  String get contacts_lastSeenNever => 'not heard yet';
+
+  @override
   String contacts_lastSeenMinsAgo(int minutes) {
     return '~ $minutes min';
   }

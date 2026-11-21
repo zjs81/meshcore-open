@@ -1839,6 +1839,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get contacts_lastSeenNow => 'gerade eben';
 
   @override
+  String get contacts_lastSeenNever => 'not heard yet';
+
+  @override
   String contacts_lastSeenMinsAgo(int minutes) {
     return '~ $minutes Min.';
   }
