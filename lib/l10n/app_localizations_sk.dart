@@ -1494,6 +1494,36 @@ class AppLocalizationsSk extends AppLocalizations {
       'Koľkokrát sa skúsi prihlásenie k opakovaču alebo room serveru, kým sa to vzdá.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Opakovače a miestnosti';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Synchronizovať hodiny opakovača pri prihlásení';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Po úspešnom prihlásení k opakovaču sa odošle clock sync. Každý opakovač môže ďalej zvoliť Predvolené, Zapnuté alebo Vypnuté.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Zamerať pole hesla';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Pri otvorení prihlásenia k opakovaču alebo miestnosti je kurzor v prázdnom poli hesla. Vypnuté nechá okno viditeľné, kým na pole neťuknete.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Obnoviť nastavenia opakovačov a miestností';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Obnoví nastavenia v tejto časti. Voľby uložené pri jednotlivých opakovačoch ostanú.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Nastavenia opakovačov a miestností obnovené';
+
+  @override
   String get appSettings_ipfsImageLinks => 'Konfigurácia poskytovateľa IPFS';
 
   @override
@@ -3526,7 +3556,16 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Po úspešnom prihlásení automaticky odoslať „synchronizáciu hodín“';
+      'Predvolené sleduje Opakovače a miestnosti v nastaveniach. Zapnuté a Vypnuté platia len pre tento opakovač.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Predvolené';
+
+  @override
+  String get repeater_clockSyncOn => 'Zapnuté';
+
+  @override
+  String get repeater_clockSyncOff => 'Vypnuté';
 
   @override
   String get repeater_statusTitle => 'Stav opakovača';

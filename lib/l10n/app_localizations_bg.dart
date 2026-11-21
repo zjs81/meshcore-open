@@ -1505,6 +1505,37 @@ class AppLocalizationsBg extends AppLocalizations {
       'Колко пъти да се опитва вход към ретранслатор или room сървър, преди да се откаже.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Повторители и стаи';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Синхронизиране на часовника при вход';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'След успешен вход в повторител се изпраща clock sync. Всеки повторител пак може да е По подразбиране, Вкл. или Изкл.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus =>
+      'Фокус върху полето за парола';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'При отваряне на вход в повторител или стая курсорът отива в празното поле за парола. Изключено оставя диалога видим, докато не докоснете полето.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Нулиране на настройките за повторители и стаи';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Възстановява настройките в този раздел. Изборите за отделни повторители остават.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Настройките за повторители и стаи са нулирани';
+
+  @override
   String get appSettings_ipfsImageLinks => 'Конфигурация на IPFS доставчик';
 
   @override
@@ -3534,7 +3565,16 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Автоматично изпращайте съобщение \"синхронизиране на часовника\" след успешно влизане.';
+      'По подразбиране следва „Повторители и стаи“ в настройките. Вкл. и Изкл. важат само за този повторител.';
+
+  @override
+  String get repeater_clockSyncDefault => 'По подразбиране';
+
+  @override
+  String get repeater_clockSyncOn => 'Вкл.';
+
+  @override
+  String get repeater_clockSyncOff => 'Изкл.';
 
   @override
   String get repeater_statusTitle => 'Статус на повтарянето';

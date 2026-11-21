@@ -2386,7 +2386,7 @@
   "@repeater_clockSyncAfterLoginSubtitle": {
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
-  "repeater_clockSyncAfterLoginSubtitle": "Автоматично надсилати повідомлення \"синхронізація годин\" після успішного входу.",
+  "repeater_clockSyncAfterLoginSubtitle": "«Типово» йде за розділом «Ретранслятори та кімнати» в налаштуваннях. «Увімк.» і «Вимк.» лише для цього ретранслятора.",
   "repeater_clockSyncAfterLogin": "Синхронізація годин після входу",
   "repeater_guestTools": "Гостьові інструменти",
   "repeater_guest": "Інформація про ретранслятор",
@@ -3762,5 +3762,16 @@
   "appSettings_floodRetries": "Спроби Flood: {count}",
   "appSettings_floodRetriesSubtitle": "Скільки разів використовувати Flood. Flood займає більше ефірного часу. Якщо ротацію ввімкнено, вони йдуть після прямих спроб.",
   "appSettings_loginAttempts": "Спроби входу: {count}",
-  "appSettings_loginAttemptsSubtitle": "Скільки разів пробувати вхід до ретранслятора або room-сервера, перш ніж здатися."
+  "appSettings_loginAttemptsSubtitle": "Скільки разів пробувати вхід до ретранслятора або room-сервера, перш ніж здатися.",
+  "appSettings_repeatersAndRooms": "Ретранслятори та кімнати",
+  "appSettings_clockSyncAfterLogin": "Синхронізувати годинник ретранслятора під час входу",
+  "appSettings_clockSyncAfterLoginSubtitle": "Після успішного входу на ретранслятор надсилається clock sync. Для кожного ретранслятора можна лишити Типово, Увімк. або Вимк.",
+  "appSettings_loginPasswordAutofocus": "Фокус на полі пароля",
+  "appSettings_loginPasswordAutofocusSubtitle": "Коли відкривається вхід на ретранслятор або в кімнату, курсор стає в порожнє поле пароля. Вимкнено лишає вікно видимим, доки ви не торкнетеся поля.",
+  "appSettings_resetRepeaterRoomSettings": "Скинути налаштування ретрансляторів і кімнат",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Відновлює налаштування цього розділу. Вибір, збережений для окремих ретрансляторів, лишається.",
+  "appSettings_repeaterRoomSettingsReset": "Налаштування ретрансляторів і кімнат скинуто",
+  "repeater_clockSyncDefault": "Типово",
+  "repeater_clockSyncOn": "Увімк.",
+  "repeater_clockSyncOff": "Вимк."
 }

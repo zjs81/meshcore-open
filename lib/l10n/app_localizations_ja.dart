@@ -1425,6 +1425,33 @@ class AppLocalizationsJa extends AppLocalizations {
       'リピータまたはルームサーバーへのログインをあきらめるまでの回数です。';
 
   @override
+  String get appSettings_repeatersAndRooms => 'リピーターとルーム';
+
+  @override
+  String get appSettings_clockSyncAfterLogin => 'ログイン時にリピーターの時刻を同期';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'リピーターへのログインに成功すると clock sync を送ります。各リピーターは「既定」「オン」「オフ」を選べます。';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'パスワード欄にフォーカス';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'リピーターまたはルームのログインを開いたとき、パスワードが空ならその欄にカーソルを置きます。オフでは欄をタップするまで画面全体が見えます。';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings => 'リピーターとルームの設定をリセット';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'このセクションの設定を戻します。各リピーターに保存した選択はそのままです。';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset => 'リピーターとルームの設定をリセットしました';
+
+  @override
   String get appSettings_ipfsImageLinks => 'IPFSプロバイダー設定';
 
   @override
@@ -3383,7 +3410,17 @@ class AppLocalizationsJa extends AppLocalizations {
   String get repeater_clockSyncAfterLogin => 'ログイン後に時刻を同期';
 
   @override
-  String get repeater_clockSyncAfterLoginSubtitle => 'ログイン成功時に自動で時刻同期を送信します';
+  String get repeater_clockSyncAfterLoginSubtitle =>
+      '「既定」はアプリ設定の「リピーターとルーム」に従います。「オン」と「オフ」はこのリピーターだけです。';
+
+  @override
+  String get repeater_clockSyncDefault => '既定';
+
+  @override
+  String get repeater_clockSyncOn => 'オン';
+
+  @override
+  String get repeater_clockSyncOff => 'オフ';
 
   @override
   String get repeater_statusTitle => '再送ステータス';

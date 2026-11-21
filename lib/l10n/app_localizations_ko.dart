@@ -1428,6 +1428,33 @@ class AppLocalizationsKo extends AppLocalizations {
       '중계기나 룸 서버 로그인을 포기하기 전까지의 시도 횟수입니다.';
 
   @override
+  String get appSettings_repeatersAndRooms => '리피터와 방';
+
+  @override
+  String get appSettings_clockSyncAfterLogin => '로그인 시 리피터 시계 동기화';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      '리피터 로그인에 성공하면 clock sync를 보냅니다. 각 리피터는 기본, 켜기, 끄기를 고를 수 있습니다.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => '비밀번호 칸에 포커스';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      '리피터나 방 로그인을 열 때 비밀번호가 비어 있으면 그 칸에 커서를 둡니다. 끄면 칸을 누를 때까지 대화상자가 보입니다.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings => '리피터와 방 설정을 기본값으로';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      '이 섹션의 설정을 되돌립니다. 각 리피터에 저장한 선택은 그대로입니다.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset => '리피터와 방 설정을 되돌렸습니다';
+
+  @override
   String get appSettings_ipfsImageLinks => 'IPFS 제공자 설정';
 
   @override
@@ -3384,7 +3411,16 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      '성공적인 로그인 후, 자동으로 \"시간 동기화\"를 전송합니다.';
+      '기본은 앱 설정의 리피터와 방을 따릅니다. 켜기와 끄기는 이 리피터에만 적용됩니다.';
+
+  @override
+  String get repeater_clockSyncDefault => '기본';
+
+  @override
+  String get repeater_clockSyncOn => '켜기';
+
+  @override
+  String get repeater_clockSyncOff => '끄기';
 
   @override
   String get repeater_statusTitle => '리피터 상태';

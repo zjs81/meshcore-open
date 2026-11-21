@@ -1500,6 +1500,36 @@ class AppLocalizationsRu extends AppLocalizations {
       'Сколько раз пытаться войти на ретранслятор или room-сервер, прежде чем сдаться.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Ретрансляторы и комнаты';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Синхронизировать часы ретранслятора при входе';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'После успешного входа на ретранслятор отправляется clock sync. Для каждого ретранслятора по-прежнему можно выбрать По умолчанию, Вкл. или Выкл.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Фокус на поле пароля';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'При открытии входа на ретранслятор или в комнату курсор ставится в пустое поле пароля. Выключено оставляет окно видимым, пока вы не нажмёте на поле.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Сбросить настройки ретрансляторов и комнат';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Возвращает настройки этого раздела. Выбор, сохранённый для отдельных ретрансляторов, остаётся.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Настройки ретрансляторов и комнат сброшены';
+
+  @override
   String get appSettings_ipfsImageLinks => 'Настройка провайдера IPFS';
 
   @override
@@ -3533,7 +3563,16 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Автоматически отправлять сообщение \"синхронизация времени\" после успешной авторизации.';
+      '«По умолчанию» следует разделу «Ретрансляторы и комнаты» в настройках. «Вкл.» и «Выкл.» только для этого ретранслятора.';
+
+  @override
+  String get repeater_clockSyncDefault => 'По умолчанию';
+
+  @override
+  String get repeater_clockSyncOn => 'Вкл.';
+
+  @override
+  String get repeater_clockSyncOff => 'Выкл.';
 
   @override
   String get repeater_statusTitle => 'Статус репитера';

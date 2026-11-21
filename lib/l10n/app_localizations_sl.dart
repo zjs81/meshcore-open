@@ -1492,6 +1492,36 @@ class AppLocalizationsSl extends AppLocalizations {
       'Kolikokrat se poskusi prijava v ponavljalnik ali room strežnik, preden obupa.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Repetitorji in sobe';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Sinhroniziraj uro repetitorja ob prijavi';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Po uspešni prijavi v repetitor se pošlje clock sync. Vsak repetitor lahko še vedno izbere Privzeto, Vklop ali Izklop.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Fokus na polje gesla';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Ob odprtju prijave v repetitor ali sobo gre kazalec v prazno polje gesla. Izklop pusti okno vidno, dokler se ne dotaknete polja.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Ponastavi nastavitve repetitorjev in sob';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Obnovi nastavitve v tem razdelku. Izbire, shranjene pri posameznih repetitorjih, ostanejo.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Nastavitve repetitorjev in sob so ponastavljene';
+
+  @override
   String get appSettings_ipfsImageLinks => 'Konfiguracija ponudnika IPFS';
 
   @override
@@ -3523,7 +3553,16 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Po uspešni prijavi samodejno pošlji »sinhronizacijo ure«';
+      'Privzeto sledi Repetitorjem in sobam v nastavitvah. Vklop in Izklop veljata samo za ta repetitor.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Privzeto';
+
+  @override
+  String get repeater_clockSyncOn => 'Vklop';
+
+  @override
+  String get repeater_clockSyncOff => 'Izklop';
 
   @override
   String get repeater_statusTitle => 'Status repetitora';

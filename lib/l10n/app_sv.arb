@@ -2287,7 +2287,7 @@
   "scanner_linuxPairingHidePin": "Dölj PIN",
   "repeater_cliQuickDiscovery": "Upptäck grannar",
   "repeater_cliQuickClockSync": "Synkronisera klocka",
-  "repeater_clockSyncAfterLoginSubtitle": "Automatiskt skicka \"klocksynkronisering\" efter en lyckad inloggning.",
+  "repeater_clockSyncAfterLoginSubtitle": "Standard följer Repeatrar och rum i appinställningarna. På och Av gäller bara den här repeatern.",
   "repeater_clockSyncAfterLogin": "Synkronisera klockan efter inloggning",
   "repeater_guest": "Repeaterinformation",
   "chat_sendMessage": "Skicka meddelande",
@@ -3829,5 +3829,16 @@
   "appSettings_floodRetries": "Flood-försök: {count}",
   "appSettings_floodRetriesSubtitle": "Hur många gånger Flood används. Flood tar mer sändningstid. Med rotation på kommer de efter de direkta försöken.",
   "appSettings_loginAttempts": "Inloggningsförsök: {count}",
-  "appSettings_loginAttemptsSubtitle": "Hur många gånger inloggning till en repeater eller room-server provas innan den ger upp."
+  "appSettings_loginAttemptsSubtitle": "Hur många gånger inloggning till en repeater eller room-server provas innan den ger upp.",
+  "appSettings_repeatersAndRooms": "Repeatrar och rum",
+  "appSettings_clockSyncAfterLogin": "Synka repeaterklockan vid inloggning",
+  "appSettings_clockSyncAfterLoginSubtitle": "Efter en lyckad repeaterinloggning skickas clock sync. Varje repeater kan fortfarande välja Standard, På eller Av.",
+  "appSettings_loginPasswordAutofocus": "Fokusera lösenordsfältet",
+  "appSettings_loginPasswordAutofocusSubtitle": "När en repeater- eller ruminloggning öppnas hamnar markören i lösenordsfältet om det är tomt. Av lämnar dialogrutan synlig tills du trycker på fältet.",
+  "appSettings_resetRepeaterRoomSettings": "Återställ repeater- och ruminställningar",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Återställer inställningarna i det här avsnittet. Val som sparats på enskilda repeatrar blir kvar.",
+  "appSettings_repeaterRoomSettingsReset": "Repeater- och ruminställningar återställda",
+  "repeater_clockSyncDefault": "Standard",
+  "repeater_clockSyncOn": "På",
+  "repeater_clockSyncOff": "Av"
 }

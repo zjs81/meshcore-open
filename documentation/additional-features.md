@@ -175,7 +175,6 @@ Handles reliable delivery of outgoing direct messages:
 
 ### Configurable Settings (App Settings → Routing)
 - Direct attempts (0–15, default 4) and flood attempts (0–10, default 1), set separately from auto route rotation
-- Login attempts for a repeater or room server (1–10, default 5). Telemetry requests are not retried
 - Clear path on max retry (on/off)
 - Auto route rotation
 

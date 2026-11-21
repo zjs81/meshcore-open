@@ -2299,7 +2299,7 @@
   "@repeater_clockSyncAfterLoginSubtitle": {
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
-  "repeater_clockSyncAfterLoginSubtitle": "Enviar automaticamente a sincronização do \"relógio\" após um login bem-sucedido.",
+  "repeater_clockSyncAfterLoginSubtitle": "Padrão segue Repetidores e salas nas configurações. Ligado e Desligado valem só para este repetidor.",
   "repeater_clockSyncAfterLogin": "Sincronização do relógio após o login",
   "room_guest": "Informações do Servidor",
   "chat_sendMessage": "Enviar mensagem",
@@ -3834,5 +3834,16 @@
   "appSettings_floodRetries": "Tentativas Flood: {count}",
   "appSettings_floodRetriesSubtitle": "Quantas vezes usar Flood. Flood usa mais tempo de ar. Com a rotação ligada, vêm depois das tentativas diretas.",
   "appSettings_loginAttempts": "Tentativas de login: {count}",
-  "appSettings_loginAttemptsSubtitle": "Quantas vezes tentar entrar em um repetidor ou servidor de sala antes de desistir."
+  "appSettings_loginAttemptsSubtitle": "Quantas vezes tentar entrar em um repetidor ou servidor de sala antes de desistir.",
+  "appSettings_repeatersAndRooms": "Repetidores e salas",
+  "appSettings_clockSyncAfterLogin": "Sincronizar o relógio do repetidor ao entrar",
+  "appSettings_clockSyncAfterLoginSubtitle": "Depois de entrar em um repetidor, clock sync é enviado. Cada repetidor ainda pode escolher Padrão, Ligado ou Desligado.",
+  "appSettings_loginPasswordAutofocus": "Focar o campo de senha",
+  "appSettings_loginPasswordAutofocusSubtitle": "Ao abrir o login de um repetidor ou sala, o cursor vai para a senha se ela estiver vazia. Desligado deixa o diálogo visível até você tocar no campo.",
+  "appSettings_resetRepeaterRoomSettings": "Redefinir configurações de repetidores e salas",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Restaura as configurações desta seção. As escolhas salvas em cada repetidor permanecem.",
+  "appSettings_repeaterRoomSettingsReset": "Configurações de repetidores e salas redefinidas",
+  "repeater_clockSyncDefault": "Padrão",
+  "repeater_clockSyncOn": "Ligado",
+  "repeater_clockSyncOff": "Desligado"
 }

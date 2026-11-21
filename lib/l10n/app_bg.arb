@@ -2383,7 +2383,7 @@
   "@repeater_clockSyncAfterLoginSubtitle": {
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
-  "repeater_clockSyncAfterLoginSubtitle": "Автоматично изпращайте съобщение \"синхронизиране на часовника\" след успешно влизане.",
+  "repeater_clockSyncAfterLoginSubtitle": "По подразбиране следва „Повторители и стаи“ в настройките. Вкл. и Изкл. важат само за този повторител.",
   "repeater_clockSyncAfterLogin": "Синхронизиране на часовника след влизане",
   "chat_sendMessage": "Изпратете съобщение",
   "room_guest": "Информация за сървъра на стаята",
@@ -3782,5 +3782,16 @@
   "appSettings_floodRetries": "Опити Flood: {count}",
   "appSettings_floodRetriesSubtitle": "Колко пъти да се използва Flood. Flood заема повече ефирно време. При включена ротация идват след директните опити.",
   "appSettings_loginAttempts": "Опити за вход: {count}",
-  "appSettings_loginAttemptsSubtitle": "Колко пъти да се опитва вход към ретранслатор или room сървър, преди да се откаже."
+  "appSettings_loginAttemptsSubtitle": "Колко пъти да се опитва вход към ретранслатор или room сървър, преди да се откаже.",
+  "appSettings_repeatersAndRooms": "Повторители и стаи",
+  "appSettings_clockSyncAfterLogin": "Синхронизиране на часовника при вход",
+  "appSettings_clockSyncAfterLoginSubtitle": "След успешен вход в повторител се изпраща clock sync. Всеки повторител пак може да е По подразбиране, Вкл. или Изкл.",
+  "appSettings_loginPasswordAutofocus": "Фокус върху полето за парола",
+  "appSettings_loginPasswordAutofocusSubtitle": "При отваряне на вход в повторител или стая курсорът отива в празното поле за парола. Изключено оставя диалога видим, докато не докоснете полето.",
+  "appSettings_resetRepeaterRoomSettings": "Нулиране на настройките за повторители и стаи",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Възстановява настройките в този раздел. Изборите за отделни повторители остават.",
+  "appSettings_repeaterRoomSettingsReset": "Настройките за повторители и стаи са нулирани",
+  "repeater_clockSyncDefault": "По подразбиране",
+  "repeater_clockSyncOn": "Вкл.",
+  "repeater_clockSyncOff": "Изкл."
 }

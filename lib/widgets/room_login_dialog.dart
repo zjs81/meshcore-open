@@ -324,6 +324,10 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
                     ),
                     onSubmitted: (_) => _handleLogin(),
                     autofocus:
+                        context
+                            .watch<AppSettingsService>()
+                            .settings
+                            .loginPasswordAutofocus &&
                         !PlatformInfo.isMobile &&
                         _passwordController.text.isEmpty,
                   ),

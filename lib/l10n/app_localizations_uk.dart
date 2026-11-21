@@ -1494,6 +1494,36 @@ class AppLocalizationsUk extends AppLocalizations {
       'Скільки разів пробувати вхід до ретранслятора або room-сервера, перш ніж здатися.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Ретранслятори та кімнати';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Синхронізувати годинник ретранслятора під час входу';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Після успішного входу на ретранслятор надсилається clock sync. Для кожного ретранслятора можна лишити Типово, Увімк. або Вимк.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Фокус на полі пароля';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Коли відкривається вхід на ретранслятор або в кімнату, курсор стає в порожнє поле пароля. Вимкнено лишає вікно видимим, доки ви не торкнетеся поля.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Скинути налаштування ретрансляторів і кімнат';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Відновлює налаштування цього розділу. Вибір, збережений для окремих ретрансляторів, лишається.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Налаштування ретрансляторів і кімнат скинуто';
+
+  @override
   String get appSettings_ipfsImageLinks => 'Налаштування IPFS-провайдера';
 
   @override
@@ -3531,7 +3561,16 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Автоматично надсилати повідомлення \"синхронізація годин\" після успішного входу.';
+      '«Типово» йде за розділом «Ретранслятори та кімнати» в налаштуваннях. «Увімк.» і «Вимк.» лише для цього ретранслятора.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Типово';
+
+  @override
+  String get repeater_clockSyncOn => 'Увімк.';
+
+  @override
+  String get repeater_clockSyncOff => 'Вимк.';
 
   @override
   String get repeater_statusTitle => 'Статус ретранслятора';

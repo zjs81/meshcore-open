@@ -2432,7 +2432,7 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLogin": "ログイン後に時刻を同期",
-  "repeater_clockSyncAfterLoginSubtitle": "ログイン成功時に自動で時刻同期を送信します",
+  "repeater_clockSyncAfterLoginSubtitle": "「既定」はアプリ設定の「リピーターとルーム」に従います。「オン」と「オフ」はこのリピーターだけです。",
   "room_guest": "ルームサーバーに関する情報",
   "chat_sendMessage": "メッセージを送信する",
   "repeater_guest": "リピータに関する情報",
@@ -4122,5 +4122,16 @@
   "appSettings_floodRetries": "Flood の試行: {count}",
   "appSettings_floodRetriesSubtitle": "Flood する回数です。Flood は通信時間を多く使います。切り替えがオンのとき、直接の試行の後に行います。",
   "appSettings_loginAttempts": "ログイン試行: {count}",
-  "appSettings_loginAttemptsSubtitle": "リピータまたはルームサーバーへのログインをあきらめるまでの回数です。"
+  "appSettings_loginAttemptsSubtitle": "リピータまたはルームサーバーへのログインをあきらめるまでの回数です。",
+  "appSettings_repeatersAndRooms": "リピーターとルーム",
+  "appSettings_clockSyncAfterLogin": "ログイン時にリピーターの時刻を同期",
+  "appSettings_clockSyncAfterLoginSubtitle": "リピーターへのログインに成功すると clock sync を送ります。各リピーターは「既定」「オン」「オフ」を選べます。",
+  "appSettings_loginPasswordAutofocus": "パスワード欄にフォーカス",
+  "appSettings_loginPasswordAutofocusSubtitle": "リピーターまたはルームのログインを開いたとき、パスワードが空ならその欄にカーソルを置きます。オフでは欄をタップするまで画面全体が見えます。",
+  "appSettings_resetRepeaterRoomSettings": "リピーターとルームの設定をリセット",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "このセクションの設定を戻します。各リピーターに保存した選択はそのままです。",
+  "appSettings_repeaterRoomSettingsReset": "リピーターとルームの設定をリセットしました",
+  "repeater_clockSyncDefault": "既定",
+  "repeater_clockSyncOn": "オン",
+  "repeater_clockSyncOff": "オフ"
 }

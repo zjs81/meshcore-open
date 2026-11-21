@@ -198,10 +198,13 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
         await _storage.removeRepeaterPassword(widget.repeater.publicKeyHex);
       }
 
-      final autoClockSync = await _storage
-          .getRepeaterAutoClockSyncAfterLoginEnabled(
-            widget.repeater.publicKeyHex,
-          );
+      final globalClockSync = mounted
+          ? context.read<AppSettingsService>().settings.clockSyncAfterLogin
+          : false;
+      final autoClockSync = await _storage.repeaterClockSyncAfterLogin(
+        widget.repeater.publicKeyHex,
+        globalDefault: globalClockSync,
+      );
       if (autoClockSync) {
         try {
           final timestampSeconds =
@@ -393,7 +396,12 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
                       }
                     },
                     onSubmitted: (_) => _handleLogin(),
-                    autofocus: _passwordController.text.isEmpty,
+                    autofocus:
+                        context
+                            .watch<AppSettingsService>()
+                            .settings
+                            .loginPasswordAutofocus &&
+                        _passwordController.text.isEmpty,
                   ),
                   const SizedBox(height: 12),
                   CheckboxListTile(

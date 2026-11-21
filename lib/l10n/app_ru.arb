@@ -1550,7 +1550,7 @@
   "repeater_cliQuickDiscovery": "Обнаружить Соседей",
   "repeater_cliQuickClockSync": "Синхронизация часов",
   "repeater_clockSyncAfterLogin": "Синхронизация часов после входа в систему",
-  "repeater_clockSyncAfterLoginSubtitle": "Автоматически отправлять сообщение \"синхронизация времени\" после успешной авторизации.",
+  "repeater_clockSyncAfterLoginSubtitle": "«По умолчанию» следует разделу «Ретрансляторы и комнаты» в настройках. «Вкл.» и «Выкл.» только для этого ретранслятора.",
   "chat_sendMessage": "Отправить сообщение",
   "repeater_guest": "Информация о ретрансляторе",
   "room_guest": "Информация о сервере",
@@ -3079,5 +3079,16 @@
   "appSettings_floodRetries": "Попытки Flood: {count}",
   "appSettings_floodRetriesSubtitle": "Сколько раз использовать Flood. Flood занимает больше эфирного времени. При включённой ротации они идут после прямых попыток.",
   "appSettings_loginAttempts": "Попытки входа: {count}",
-  "appSettings_loginAttemptsSubtitle": "Сколько раз пытаться войти на ретранслятор или room-сервер, прежде чем сдаться."
+  "appSettings_loginAttemptsSubtitle": "Сколько раз пытаться войти на ретранслятор или room-сервер, прежде чем сдаться.",
+  "appSettings_repeatersAndRooms": "Ретрансляторы и комнаты",
+  "appSettings_clockSyncAfterLogin": "Синхронизировать часы ретранслятора при входе",
+  "appSettings_clockSyncAfterLoginSubtitle": "После успешного входа на ретранслятор отправляется clock sync. Для каждого ретранслятора по-прежнему можно выбрать По умолчанию, Вкл. или Выкл.",
+  "appSettings_loginPasswordAutofocus": "Фокус на поле пароля",
+  "appSettings_loginPasswordAutofocusSubtitle": "При открытии входа на ретранслятор или в комнату курсор ставится в пустое поле пароля. Выключено оставляет окно видимым, пока вы не нажмёте на поле.",
+  "appSettings_resetRepeaterRoomSettings": "Сбросить настройки ретрансляторов и комнат",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Возвращает настройки этого раздела. Выбор, сохранённый для отдельных ретрансляторов, остаётся.",
+  "appSettings_repeaterRoomSettingsReset": "Настройки ретрансляторов и комнат сброшены",
+  "repeater_clockSyncDefault": "По умолчанию",
+  "repeater_clockSyncOn": "Вкл.",
+  "repeater_clockSyncOff": "Выкл."
 }

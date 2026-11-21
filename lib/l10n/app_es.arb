@@ -2426,7 +2426,7 @@
   "@repeater_clockSyncAfterLoginSubtitle": {
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
-  "repeater_clockSyncAfterLoginSubtitle": "Enviar automáticamente la función de \"sincronización de reloj\" después de un inicio de sesión exitoso.",
+  "repeater_clockSyncAfterLoginSubtitle": "Predeterminado sigue Repetidores y salas en Ajustes. Activado y Desactivado valen solo para este repetidor.",
   "repeater_clockSyncAfterLogin": "Sincronización del reloj después de iniciar sesión",
   "repeater_guest": "Información sobre repetidores",
   "chat_sendMessage": "Enviar mensaje",
@@ -3968,5 +3968,16 @@
   "appSettings_floodRetries": "Intentos Flood: {count}",
   "appSettings_floodRetriesSubtitle": "Cuántas veces usar Flood. Flood usa más tiempo de aire. Con la rotación activada, van después de los intentos directos.",
   "appSettings_loginAttempts": "Intentos de inicio de sesión: {count}",
-  "appSettings_loginAttemptsSubtitle": "Cuántas veces intentar iniciar sesión en un repetidor o servidor de sala antes de rendirse."
+  "appSettings_loginAttemptsSubtitle": "Cuántas veces intentar iniciar sesión en un repetidor o servidor de sala antes de rendirse.",
+  "appSettings_repeatersAndRooms": "Repetidores y salas",
+  "appSettings_clockSyncAfterLogin": "Sincronizar el reloj del repetidor al iniciar sesión",
+  "appSettings_clockSyncAfterLoginSubtitle": "Tras un inicio de sesión correcto en un repetidor se envía clock sync. Cada repetidor puede seguir eligiendo Predeterminado, Activado o Desactivado.",
+  "appSettings_loginPasswordAutofocus": "Enfocar el campo de contraseña",
+  "appSettings_loginPasswordAutofocusSubtitle": "Al abrir el inicio de sesión de un repetidor o una sala, el cursor va al campo de contraseña si está vacío. Desactivado deja el diálogo visible hasta que toques el campo.",
+  "appSettings_resetRepeaterRoomSettings": "Restablecer ajustes de repetidores y salas",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Restaura los ajustes de esta sección. Las elecciones guardadas en cada repetidor se quedan.",
+  "appSettings_repeaterRoomSettingsReset": "Ajustes de repetidores y salas restablecidos",
+  "repeater_clockSyncDefault": "Predeterminado",
+  "repeater_clockSyncOn": "Activado",
+  "repeater_clockSyncOff": "Desactivado"
 }

@@ -1503,6 +1503,37 @@ class AppLocalizationsFr extends AppLocalizations {
       'Nombre d\'essais de connexion à un répéteur ou à un serveur de salon avant d\'abandonner.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Répéteurs et salons';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Synchroniser l\'horloge du répéteur à la connexion';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Après une connexion réussie à un répéteur, clock sync est envoyé. Chaque répéteur peut encore choisir Défaut, Activé ou Désactivé.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus =>
+      'Placer le curseur dans le mot de passe';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'À l\'ouverture d\'une connexion répéteur ou salon, le curseur va dans le mot de passe s\'il est vide. Désactivé laisse la fenêtre visible jusqu\'à ce que vous touchiez le champ.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Réinitialiser les paramètres répéteurs et salons';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Restaure les paramètres de cette section. Les choix enregistrés sur chaque répéteur restent.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Paramètres répéteurs et salons réinitialisés';
+
+  @override
   String get appSettings_ipfsImageLinks => 'Configuration du fournisseur IPFS';
 
   @override
@@ -3533,7 +3564,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Envoyer automatiquement une notification \"synchronisation de l\'heure\" après une connexion réussie.';
+      'Défaut suit Répéteurs et salons dans les paramètres. Activé et Désactivé ne concernent que ce répéteur.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Défaut';
+
+  @override
+  String get repeater_clockSyncOn => 'Activé';
+
+  @override
+  String get repeater_clockSyncOff => 'Désactivé';
 
   @override
   String get repeater_statusTitle => 'État du répéteur';

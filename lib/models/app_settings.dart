@@ -145,6 +145,14 @@ class AppSettings {
 
   /// How many times a repeater or room-server login is sent before giving up.
   final int loginAttempts;
+
+  /// Send `clock sync` after a repeater login when that repeater follows the
+  /// app default. Off matches the previous per-repeater default.
+  final bool clockSyncAfterLogin;
+
+  /// Put the cursor in an empty repeater or room password field on open.
+  /// Off leaves the dialog alone until the field is tapped.
+  final bool loginPasswordAutofocus;
   final bool channelMinHopsEnabled;
   final int channelMinHops;
   final int channelMinHopsRetries;
@@ -311,6 +319,8 @@ class AppSettings {
     this.directRetries = defaultDirectRetries,
     this.floodRetries = defaultFloodRetries,
     this.loginAttempts = defaultLoginAttempts,
+    this.clockSyncAfterLogin = false,
+    this.loginPasswordAutofocus = false,
     this.channelMinHopsEnabled = false,
     this.channelMinHops = 2,
     this.channelMinHopsRetries = 1,
@@ -411,6 +421,8 @@ class AppSettings {
       'max_direct_retries': directRetries,
       'max_flood_retries': floodRetries,
       'login_attempts': loginAttempts,
+      'clock_sync_after_login': clockSyncAfterLogin,
+      'login_password_autofocus': loginPasswordAutofocus,
       'channel_min_hops_enabled': channelMinHopsEnabled,
       'channel_min_hops': channelMinHops,
       'channel_min_hops_retries': channelMinHopsRetries,
@@ -565,6 +577,9 @@ class AppSettings {
       loginAttempts: SendAttemptPlan.clampLogin(
         (json['login_attempts'] as num?)?.toInt() ?? defaultLoginAttempts,
       ),
+      clockSyncAfterLogin: json['clock_sync_after_login'] as bool? ?? false,
+      loginPasswordAutofocus:
+          json['login_password_autofocus'] as bool? ?? false,
       channelMinHopsEnabled: json['channel_min_hops_enabled'] as bool? ?? false,
       channelMinHops: json['channel_min_hops'] as int? ?? 2,
       channelMinHopsRetries: json['channel_min_hops_retries'] as int? ?? 1,
@@ -725,6 +740,8 @@ class AppSettings {
     int? directRetries,
     int? floodRetries,
     int? loginAttempts,
+    bool? clockSyncAfterLogin,
+    bool? loginPasswordAutofocus,
     bool? channelMinHopsEnabled,
     int? channelMinHops,
     int? channelMinHopsRetries,
@@ -820,6 +837,9 @@ class AppSettings {
       directRetries: directRetries ?? this.directRetries,
       floodRetries: floodRetries ?? this.floodRetries,
       loginAttempts: loginAttempts ?? this.loginAttempts,
+      clockSyncAfterLogin: clockSyncAfterLogin ?? this.clockSyncAfterLogin,
+      loginPasswordAutofocus:
+          loginPasswordAutofocus ?? this.loginPasswordAutofocus,
       channelMinHopsEnabled:
           channelMinHopsEnabled ?? this.channelMinHopsEnabled,
       channelMinHops: channelMinHops ?? this.channelMinHops,

@@ -2291,7 +2291,7 @@
   "@repeater_clockSyncAfterLoginSubtitle": {
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
-  "repeater_clockSyncAfterLoginSubtitle": "Po uspešni prijavi samodejno pošlji »sinhronizacijo ure«",
+  "repeater_clockSyncAfterLoginSubtitle": "Privzeto sledi Repetitorjem in sobam v nastavitvah. Vklop in Izklop veljata samo za ta repetitor.",
   "repeater_clockSyncAfterLogin": "Sinhronizacija ure po prijavi",
   "repeater_guest": "Informacije o repetitorju",
   "chat_sendMessage": "Pošlji sporočilo",
@@ -3989,5 +3989,16 @@
   "appSettings_floodRetries": "Poskusi Flood: {count}",
   "appSettings_floodRetriesSubtitle": "Kolikokrat se uporabi Flood. Flood porabi več oddajnega časa. Ob vklopljenem kroženju sledijo neposrednim poskusom.",
   "appSettings_loginAttempts": "Poskusi prijave: {count}",
-  "appSettings_loginAttemptsSubtitle": "Kolikokrat se poskusi prijava v ponavljalnik ali room strežnik, preden obupa."
+  "appSettings_loginAttemptsSubtitle": "Kolikokrat se poskusi prijava v ponavljalnik ali room strežnik, preden obupa.",
+  "appSettings_repeatersAndRooms": "Repetitorji in sobe",
+  "appSettings_clockSyncAfterLogin": "Sinhroniziraj uro repetitorja ob prijavi",
+  "appSettings_clockSyncAfterLoginSubtitle": "Po uspešni prijavi v repetitor se pošlje clock sync. Vsak repetitor lahko še vedno izbere Privzeto, Vklop ali Izklop.",
+  "appSettings_loginPasswordAutofocus": "Fokus na polje gesla",
+  "appSettings_loginPasswordAutofocusSubtitle": "Ob odprtju prijave v repetitor ali sobo gre kazalec v prazno polje gesla. Izklop pusti okno vidno, dokler se ne dotaknete polja.",
+  "appSettings_resetRepeaterRoomSettings": "Ponastavi nastavitve repetitorjev in sob",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Obnovi nastavitve v tem razdelku. Izbire, shranjene pri posameznih repetitorjih, ostanejo.",
+  "appSettings_repeaterRoomSettingsReset": "Nastavitve repetitorjev in sob so ponastavljene",
+  "repeater_clockSyncDefault": "Privzeto",
+  "repeater_clockSyncOn": "Vklop",
+  "repeater_clockSyncOff": "Izklop"
 }

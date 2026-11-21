@@ -1481,6 +1481,36 @@ class AppLocalizationsSv extends AppLocalizations {
       'Hur många gånger inloggning till en repeater eller room-server provas innan den ger upp.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Repeatrar och rum';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Synka repeaterklockan vid inloggning';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Efter en lyckad repeaterinloggning skickas clock sync. Varje repeater kan fortfarande välja Standard, På eller Av.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Fokusera lösenordsfältet';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'När en repeater- eller ruminloggning öppnas hamnar markören i lösenordsfältet om det är tomt. Av lämnar dialogrutan synlig tills du trycker på fältet.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Återställ repeater- och ruminställningar';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Återställer inställningarna i det här avsnittet. Val som sparats på enskilda repeatrar blir kvar.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Repeater- och ruminställningar återställda';
+
+  @override
   String get appSettings_ipfsImageLinks => 'Konfiguration av IPFS-leverantör';
 
   @override
@@ -3499,7 +3529,16 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Automatiskt skicka \"klocksynkronisering\" efter en lyckad inloggning.';
+      'Standard följer Repeatrar och rum i appinställningarna. På och Av gäller bara den här repeatern.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Standard';
+
+  @override
+  String get repeater_clockSyncOn => 'På';
+
+  @override
+  String get repeater_clockSyncOff => 'Av';
 
   @override
   String get repeater_statusTitle => 'Repeaterstatus';

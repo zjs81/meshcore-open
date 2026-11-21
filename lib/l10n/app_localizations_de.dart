@@ -1506,6 +1506,36 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wie oft die Anmeldung an einem Repeater oder Room-Server versucht wird, bevor abgebrochen wird.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Repeater und Räume';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Repeater-Uhr bei Anmeldung synchronisieren';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Nach einer erfolgreichen Repeater-Anmeldung wird clock sync gesendet. Jeder Repeater kann weiter Standard, An oder Aus wählen.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Passwortfeld fokussieren';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Beim Öffnen einer Repeater- oder Raum-Anmeldung steht der Cursor im leeren Passwortfeld. Aus lässt den Dialog sichtbar, bis du das Feld antippst.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Repeater- und Raum-Einstellungen zurücksetzen';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Stellt die Einstellungen in diesem Abschnitt wieder her. Gespeicherte Wahl bei einzelnen Repeatern bleibt.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Repeater- und Raum-Einstellungen zurückgesetzt';
+
+  @override
   String get appSettings_ipfsImageLinks => 'IPFS-Anbieter-Konfiguration';
 
   @override
@@ -3537,7 +3567,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Automatisch \"Uhrzeit-Synchronisierung\" nach erfolgreicher Anmeldung senden.';
+      'Standard folgt Repeater und Räume in den App-Einstellungen. An und Aus gelten nur für diesen Repeater.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Standard';
+
+  @override
+  String get repeater_clockSyncOn => 'An';
+
+  @override
+  String get repeater_clockSyncOff => 'Aus';
 
   @override
   String get repeater_statusTitle => 'Repeater-Status';

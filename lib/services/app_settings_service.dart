@@ -247,6 +247,14 @@ class AppSettingsService extends ChangeNotifier {
     );
   }
 
+  Future<void> setClockSyncAfterLogin(bool value) async {
+    await updateSettings(_settings.copyWith(clockSyncAfterLogin: value));
+  }
+
+  Future<void> setLoginPasswordAutofocus(bool value) async {
+    await updateSettings(_settings.copyWith(loginPasswordAutofocus: value));
+  }
+
   Future<void> setChannelMinHopsEnabled(bool value) async {
     await updateSettings(_settings.copyWith(channelMinHopsEnabled: value));
   }
@@ -739,11 +747,21 @@ class AppSettingsService extends ChangeNotifier {
             AppSettings.defaultRouteWeightFailureDecrement,
         directRetries: AppSettings.defaultDirectRetries,
         floodRetries: AppSettings.defaultFloodRetries,
-        loginAttempts: AppSettings.defaultLoginAttempts,
         channelMinHopsEnabled: false,
         channelMinHops: 2,
         channelMinHopsRetries: 1,
         channelMinHopsCountRepeaters: false,
+      ),
+    );
+  }
+
+  Future<void> resetRepeaterRoomSettingsToDefault() async {
+    await updateSettings(
+      _settings.copyWith(
+        clockSyncAfterLogin: false,
+        loginPasswordAutofocus: false,
+        autoFetchRepeaterSettings: false,
+        loginAttempts: AppSettings.defaultLoginAttempts,
       ),
     );
   }

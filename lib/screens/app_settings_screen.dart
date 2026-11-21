@@ -83,6 +83,13 @@ class AppSettingsScreen extends StatelessWidget {
                 child: _settingsCard(_buildRoutingContent),
               ),
 
+              // REPEATERS AND ROOMS
+              SectionHeader(context.l10n.appSettings_repeatersAndRooms),
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: _settingsCard(_buildRepeaterRoomContent),
+              ),
+
               // IMAGE MESSAGES
               SectionHeader(context.l10n.appSettings_imageMessagesSection),
               MeshCard(
@@ -433,20 +440,6 @@ class AppSettingsScreen extends StatelessWidget {
             horizontal: 16,
             vertical: 4,
           ),
-          secondary: const Icon(Icons.settings_remote_outlined, size: 24),
-          title: Text(context.l10n.appSettings_autoFetchRepeaterSettings),
-          subtitle: Text(
-            context.l10n.appSettings_autoFetchRepeaterSettingsSubtitle,
-          ),
-          value: settingsService.settings.autoFetchRepeaterSettings,
-          onChanged: settingsService.setAutoFetchRepeaterSettings,
-        ),
-        const Divider(height: 1, indent: 16),
-        SwitchListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 4,
-          ),
           secondary: const Icon(Icons.location_searching, size: 24),
           title: Text(context.l10n.appSettings_enableMessageTracing),
           subtitle: Text(context.l10n.appSettings_enableMessageTracingSubtitle),
@@ -518,15 +511,6 @@ class AppSettingsScreen extends StatelessWidget {
           min: SendAttemptPlan.minFloodRetries,
           max: SendAttemptPlan.maxFloodRetries,
           onChanged: settingsService.setFloodRetries,
-        ),
-        const Divider(height: 1, indent: 16),
-        SettingsValueSlider(
-          title: l10n.appSettings_loginAttempts(settings.loginAttempts),
-          subtitle: l10n.appSettings_loginAttemptsSubtitle,
-          value: settings.loginAttempts,
-          min: SendAttemptPlan.minLoginAttempts,
-          max: SendAttemptPlan.maxLoginAttempts,
-          onChanged: settingsService.setLoginAttempts,
         ),
         const Divider(height: 1, indent: 16),
         SwitchListTile(
@@ -617,6 +601,83 @@ class AppSettingsScreen extends StatelessWidget {
               showDismissibleSnackBar(
                 context,
                 content: Text(l10n.appSettings_routingResetToDefault),
+                duration: const Duration(seconds: 2),
+              );
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRepeaterRoomContent(
+    BuildContext context,
+    AppSettingsService settingsService,
+  ) {
+    final settings = settingsService.settings;
+    final l10n = context.l10n;
+    return Column(
+      children: [
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.schedule, size: 24),
+          title: Text(l10n.appSettings_clockSyncAfterLogin),
+          subtitle: Text(l10n.appSettings_clockSyncAfterLoginSubtitle),
+          value: settings.clockSyncAfterLogin,
+          onChanged: settingsService.setClockSyncAfterLogin,
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.password, size: 24),
+          title: Text(l10n.appSettings_loginPasswordAutofocus),
+          subtitle: Text(l10n.appSettings_loginPasswordAutofocusSubtitle),
+          value: settings.loginPasswordAutofocus,
+          onChanged: settingsService.setLoginPasswordAutofocus,
+        ),
+        const Divider(height: 1, indent: 16),
+        SettingsValueSlider(
+          title: l10n.appSettings_loginAttempts(settings.loginAttempts),
+          subtitle: l10n.appSettings_loginAttemptsSubtitle,
+          value: settings.loginAttempts,
+          min: SendAttemptPlan.minLoginAttempts,
+          max: SendAttemptPlan.maxLoginAttempts,
+          onChanged: settingsService.setLoginAttempts,
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.settings_remote_outlined, size: 24),
+          title: Text(l10n.appSettings_autoFetchRepeaterSettings),
+          subtitle: Text(l10n.appSettings_autoFetchRepeaterSettingsSubtitle),
+          value: settings.autoFetchRepeaterSettings,
+          onChanged: settingsService.setAutoFetchRepeaterSettings,
+        ),
+        const Divider(height: 1, indent: 16),
+        ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          leading: const Icon(Icons.restart_alt, size: 24),
+          title: Text(l10n.appSettings_resetRepeaterRoomSettings),
+          subtitle: Text(l10n.appSettings_resetRepeaterRoomSettingsSubtitle),
+          trailing: const Icon(Icons.keyboard_arrow_right, size: 18),
+          onTap: () async {
+            await settingsService.resetRepeaterRoomSettingsToDefault();
+            if (context.mounted) {
+              showDismissibleSnackBar(
+                context,
+                content: Text(l10n.appSettings_repeaterRoomSettingsReset),
                 duration: const Duration(seconds: 2),
               );
             }

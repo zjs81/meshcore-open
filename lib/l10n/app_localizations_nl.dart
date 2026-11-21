@@ -1493,6 +1493,36 @@ class AppLocalizationsNl extends AppLocalizations {
       'Hoe vaak wordt geprobeerd in te loggen op een repeater of roomserver voordat het stopt.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Repeaters en rooms';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Repeaterklok synchroniseren bij aanmelden';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Na een geslaagde repeater-aanmelding wordt clock sync gestuurd. Elke repeater kan nog Standaard, Aan of Uit kiezen.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Wachtwoordveld focussen';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Bij het openen van een repeater- of room-aanmelding staat de cursor in het lege wachtwoordveld. Uit laat het venster zichtbaar tot je het veld aantikt.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Repeater- en roominstellingen resetten';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Zet de instellingen in deze sectie terug. Keuzes die per repeater zijn opgeslagen blijven staan.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Repeater- en roominstellingen gereset';
+
+  @override
   String get appSettings_ipfsImageLinks => 'IPFS-providerconfiguratie';
 
   @override
@@ -3510,7 +3540,16 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Automatisch een \"klok synchroniseren\" bericht versturen na een succesvolle inlog.';
+      'Standaard volgt Repeaters en rooms in de app-instellingen. Aan en Uit gelden alleen voor deze repeater.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Standaard';
+
+  @override
+  String get repeater_clockSyncOn => 'Aan';
+
+  @override
+  String get repeater_clockSyncOff => 'Uit';
 
   @override
   String get repeater_statusTitle => 'Status repeater';

@@ -19,7 +19,7 @@ From the Contacts screen:
 - Routing mode selector and "Manage Paths" link are available directly in the dialog (configure routing before login)
 - Auto-retries up to 5 times on timeout, showing progress ("Attempt 2 of 5"). A wrong password (explicit failure response) stops immediately — only timeouts trigger retries
 - CLI commands to a repeater are matched to their reply by a short prefix. A reply that arrives late for an earlier attempt still completes the command, and no further attempts are sent
-- If auto-clock-sync is enabled for this repeater (configured in Repeater Settings), a `clock sync` command is sent automatically on successful login
+- If clock sync on login is on for this repeater, a `clock sync` command is sent automatically on successful login. The repeater's choice is Default, On, or Off. Default follows **Sync repeater clock on login** in App Settings → Repeaters and Rooms, which is off unless you turn it on
 
 ---
 
@@ -179,7 +179,7 @@ Most settings are declared once in `repeaterSettingSpecs` (`lib/models/repeater_
 - Packet forwarding toggle (`set repeat`)
 - Guest access toggle (`set allow.read.only`)
 - Multi-ACKs toggle (`set multi.acks`)
-- Auto clock sync after login toggle (local app setting only, not sent to repeater)
+- Clock sync after login (Default / On / Off; local app setting only, not sent to repeater). Default follows App Settings → Repeaters and Rooms
 
 **5. Network Health**
 - Loop detection dropdown (off / minimal / moderate / strict; `set loop.detect`)
@@ -218,7 +218,7 @@ Most settings are declared once in `repeaterSettingSpecs` (`lib/models/repeater_
 - Erase filesystem (serial-only; shown disabled with an explanation — no command is sent over the air)
 
 ### Key Interactions
-- **Settings are not fetched on open by default.** Each `get` is a separate LoRa round trip, so fetching everything is slow and uses airtime. Turn on **Auto-fetch repeater settings** in App Settings to fetch everything when the screen opens; otherwise use **Refresh all** or the per-setting refresh buttons. Name and location are pre-filled from cached contact data
+- **Settings are not fetched on open by default.** Each `get` is a separate LoRa round trip, so fetching everything is slow and uses airtime. Turn on **Auto-fetch repeater settings** in App Settings → Repeaters and Rooms to fetch everything when the screen opens; otherwise use **Refresh all** or the per-setting refresh buttons. Name and location are pre-filled from cached contact data
 - Every control can be edited before its value has been fetched. Unfetched values show as "—" (or off) until fetched or edited, and only edited settings are sent on save
 - Save button in app bar appears when any change is detected; failed commands keep those settings dirty for retry, and a saved value counts as the repeater's current value
 - Settings are sent sequentially with 200ms delays between commands; firmware responses are checked and partial failures are reported in a snackbar

@@ -989,7 +989,7 @@
   "repeater_settings": "Definições",
   "repeater_settingsSubtitle": "Configurar parâmetros do repetidor",
   "repeater_clockSyncAfterLogin": "Sincronizar relógio após login",
-  "repeater_clockSyncAfterLoginSubtitle": "Enviar automaticamente \"clock sync\" após um login bem-sucedido",
+  "repeater_clockSyncAfterLoginSubtitle": "Predefinição segue Repetidores e salas nas definições. Ligado e Desligado valem só para este repetidor.",
   "repeater_statusTitle": "Estado do repetidor",
   "repeater_routingMode": "Modo de encaminhamento",
   "repeater_refresh": "Atualizar",
@@ -2061,5 +2061,16 @@
   "appSettings_floodRetries": "Tentativas Flood: {count}",
   "appSettings_floodRetriesSubtitle": "Quantas vezes usar Flood. Flood usa mais tempo de ar. Com a rotação ligada, vêm a seguir às tentativas diretas.",
   "appSettings_loginAttempts": "Tentativas de início de sessão: {count}",
-  "appSettings_loginAttemptsSubtitle": "Quantas vezes tentar iniciar sessão num repetidor ou servidor de sala antes de desistir."
+  "appSettings_loginAttemptsSubtitle": "Quantas vezes tentar iniciar sessão num repetidor ou servidor de sala antes de desistir.",
+  "appSettings_repeatersAndRooms": "Repetidores e salas",
+  "appSettings_clockSyncAfterLogin": "Sincronizar o relógio do repetidor ao iniciar sessão",
+  "appSettings_clockSyncAfterLoginSubtitle": "Depois de iniciar sessão num repetidor, é enviado clock sync. Cada repetidor pode continuar a escolher Predefinição, Ligado ou Desligado.",
+  "appSettings_loginPasswordAutofocus": "Focar o campo da palavra-passe",
+  "appSettings_loginPasswordAutofocusSubtitle": "Ao abrir o início de sessão de um repetidor ou sala, o cursor vai para a palavra-passe se estiver vazia. Desligado deixa o diálogo visível até tocar no campo.",
+  "appSettings_resetRepeaterRoomSettings": "Repor definições de repetidores e salas",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Repõe as definições desta secção. As escolhas guardadas em cada repetidor mantêm-se.",
+  "appSettings_repeaterRoomSettingsReset": "Definições de repetidores e salas repostas",
+  "repeater_clockSyncDefault": "Predefinição",
+  "repeater_clockSyncOn": "Ligado",
+  "repeater_clockSyncOff": "Desligado"
 }

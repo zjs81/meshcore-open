@@ -1477,6 +1477,35 @@ class AppLocalizationsEn extends AppLocalizations {
       'How many times to try logging in to a repeater or room server before giving up.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Repeaters and Rooms';
+
+  @override
+  String get appSettings_clockSyncAfterLogin => 'Sync repeater clock on login';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'After a successful repeater login, send clock sync. Each repeater can still choose Default, On, or Off.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Focus the password field';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'When opening a repeater or room login, put the cursor in the password field if it is empty. Off leaves the dialog visible until you tap the field.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Reset repeater and room settings to defaults';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Restore the settings in this section to their defaults. Choices saved on individual repeaters stay as they are.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Repeater and room settings reset to defaults';
+
+  @override
   String get appSettings_ipfsImageLinks => 'IPFS provider configuration';
 
   @override
@@ -3478,7 +3507,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Automatically send \"clock sync\" after a successful login';
+      'Default follows Repeaters and Rooms in App Settings. On and Off apply only to this repeater.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Default';
+
+  @override
+  String get repeater_clockSyncOn => 'On';
+
+  @override
+  String get repeater_clockSyncOff => 'Off';
 
   @override
   String get repeater_statusTitle => 'Repeater Status';

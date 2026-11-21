@@ -133,7 +133,7 @@ void main() {
     expect(settings.autoRouteRotationEnabled, isTrue);
     expect(settings.directRetries, SendAttemptPlan.defaultDirectRetries);
     expect(settings.floodRetries, SendAttemptPlan.defaultFloodRetries);
-    expect(settings.loginAttempts, SendAttemptPlan.defaultLoginAttempts);
+    expect(settings.loginAttempts, 9);
     expect(settings.channelMinHopsEnabled, isFalse);
     expect(settings.channelMinHops, 2);
     expect(settings.channelMinHopsRetries, 1);
@@ -147,5 +147,30 @@ void main() {
       SendAttemptPlan.defaultDirectRetries,
     );
     expect(reloaded.settings.floodRetries, SendAttemptPlan.defaultFloodRetries);
+    expect(reloaded.settings.loginAttempts, 9);
+  });
+
+  test('reset repeater and room settings restores that section', () async {
+    SharedPreferences.setMockInitialValues({});
+    await PrefsManager.initialize();
+    final service = AppSettingsService();
+    await service.loadSettings();
+    await service.updateSettings(
+      service.settings.copyWith(
+        clockSyncAfterLogin: true,
+        loginPasswordAutofocus: true,
+        autoFetchRepeaterSettings: true,
+        loginAttempts: 8,
+        directRetries: 12,
+      ),
+    );
+
+    await service.resetRepeaterRoomSettingsToDefault();
+    final settings = service.settings;
+    expect(settings.clockSyncAfterLogin, isFalse);
+    expect(settings.loginPasswordAutofocus, isFalse);
+    expect(settings.autoFetchRepeaterSettings, isFalse);
+    expect(settings.loginAttempts, SendAttemptPlan.defaultLoginAttempts);
+    expect(settings.directRetries, 12);
   });
 }

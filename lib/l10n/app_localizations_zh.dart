@@ -1401,6 +1401,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_loginAttemptsSubtitle => '登录中继或房间服务器时，放弃前的尝试次数。';
 
   @override
+  String get appSettings_repeatersAndRooms => '中继和房间';
+
+  @override
+  String get appSettings_clockSyncAfterLogin => '登录时同步中继时钟';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      '成功登录中继后会发送 clock sync。每个中继仍可选择默认、开或关。';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => '聚焦密码框';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      '打开中继或房间登录时，如果密码为空，光标会进入密码框。关闭后，在你点按该框之前对话框保持可见。';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings => '将中继和房间设置重置为默认';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      '恢复这一节的设置。保存在各个中继上的选择保持不变。';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset => '中继和房间设置已重置';
+
+  @override
   String get appSettings_ipfsImageLinks => 'IPFS 提供商配置';
 
   @override
@@ -3333,7 +3360,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get repeater_clockSyncAfterLogin => '登录后，自动同步时钟';
 
   @override
-  String get repeater_clockSyncAfterLoginSubtitle => '在成功登录后，自动发送“时钟同步”指令。';
+  String get repeater_clockSyncAfterLoginSubtitle =>
+      '默认跟随应用设置里的“中继和房间”。开和关只作用于这个中继。';
+
+  @override
+  String get repeater_clockSyncDefault => '默认';
+
+  @override
+  String get repeater_clockSyncOn => '开';
+
+  @override
+  String get repeater_clockSyncOff => '关';
 
   @override
   String get repeater_statusTitle => '转发节点状态';

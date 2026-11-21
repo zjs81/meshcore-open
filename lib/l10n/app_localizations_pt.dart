@@ -1500,6 +1500,36 @@ class AppLocalizationsPt extends AppLocalizations {
       'Quantas vezes tentar entrar em um repetidor ou servidor de sala antes de desistir.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Repetidores e salas';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Sincronizar o relógio do repetidor ao entrar';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Depois de entrar em um repetidor, clock sync é enviado. Cada repetidor ainda pode escolher Padrão, Ligado ou Desligado.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Focar o campo de senha';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Ao abrir o login de um repetidor ou sala, o cursor vai para a senha se ela estiver vazia. Desligado deixa o diálogo visível até você tocar no campo.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Redefinir configurações de repetidores e salas';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Restaura as configurações desta seção. As escolhas salvas em cada repetidor permanecem.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Configurações de repetidores e salas redefinidas';
+
+  @override
   String get appSettings_ipfsImageLinks => 'Configuração do provedor IPFS';
 
   @override
@@ -3523,7 +3553,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Enviar automaticamente a sincronização do \"relógio\" após um login bem-sucedido.';
+      'Padrão segue Repetidores e salas nas configurações. Ligado e Desligado valem só para este repetidor.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Padrão';
+
+  @override
+  String get repeater_clockSyncOn => 'Ligado';
+
+  @override
+  String get repeater_clockSyncOff => 'Desligado';
 
   @override
   String get repeater_statusTitle => 'Status do Repetidor';
@@ -9080,6 +9119,37 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Quantas vezes tentar iniciar sessão num repetidor ou servidor de sala antes de desistir.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Repetidores e salas';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Sincronizar o relógio do repetidor ao iniciar sessão';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Depois de iniciar sessão num repetidor, é enviado clock sync. Cada repetidor pode continuar a escolher Predefinição, Ligado ou Desligado.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus =>
+      'Focar o campo da palavra-passe';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Ao abrir o início de sessão de um repetidor ou sala, o cursor vai para a palavra-passe se estiver vazia. Desligado deixa o diálogo visível até tocar no campo.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Repor definições de repetidores e salas';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Repõe as definições desta secção. As escolhas guardadas em cada repetidor mantêm-se.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Definições de repetidores e salas repostas';
+
+  @override
   String get appSettings_ipfsImageLinks => 'Configuração do fornecedor IPFS';
 
   @override
@@ -11073,7 +11143,16 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Enviar automaticamente \"clock sync\" após um login bem-sucedido';
+      'Predefinição segue Repetidores e salas nas definições. Ligado e Desligado valem só para este repetidor.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Predefinição';
+
+  @override
+  String get repeater_clockSyncOn => 'Ligado';
+
+  @override
+  String get repeater_clockSyncOff => 'Desligado';
 
   @override
   String get repeater_statusTitle => 'Estado do repetidor';

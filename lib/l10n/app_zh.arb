@@ -2298,7 +2298,7 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLogin": "登录后，自动同步时钟",
-  "repeater_clockSyncAfterLoginSubtitle": "在成功登录后，自动发送“时钟同步”指令。",
+  "repeater_clockSyncAfterLoginSubtitle": "默认跟随应用设置里的“中继和房间”。开和关只作用于这个中继。",
   "repeater_guestTools": "访客工具",
   "repeater_guest": "重复器信息",
   "chat_sendMessage": "发送消息",
@@ -3839,5 +3839,16 @@
   "appSettings_floodRetries": "Flood 尝试：{count}",
   "appSettings_floodRetriesSubtitle": "使用 Flood 的次数。Flood 占用更多空中时间。开启轮换时，这些尝试排在直接尝试之后。",
   "appSettings_loginAttempts": "登录尝试：{count}",
-  "appSettings_loginAttemptsSubtitle": "登录中继或房间服务器时，放弃前的尝试次数。"
+  "appSettings_loginAttemptsSubtitle": "登录中继或房间服务器时，放弃前的尝试次数。",
+  "appSettings_repeatersAndRooms": "中继和房间",
+  "appSettings_clockSyncAfterLogin": "登录时同步中继时钟",
+  "appSettings_clockSyncAfterLoginSubtitle": "成功登录中继后会发送 clock sync。每个中继仍可选择默认、开或关。",
+  "appSettings_loginPasswordAutofocus": "聚焦密码框",
+  "appSettings_loginPasswordAutofocusSubtitle": "打开中继或房间登录时，如果密码为空，光标会进入密码框。关闭后，在你点按该框之前对话框保持可见。",
+  "appSettings_resetRepeaterRoomSettings": "将中继和房间设置重置为默认",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "恢复这一节的设置。保存在各个中继上的选择保持不变。",
+  "appSettings_repeaterRoomSettingsReset": "中继和房间设置已重置",
+  "repeater_clockSyncDefault": "默认",
+  "repeater_clockSyncOn": "开",
+  "repeater_clockSyncOff": "关"
 }

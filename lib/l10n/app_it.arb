@@ -2432,7 +2432,7 @@
   "@repeater_clockSyncAfterLoginSubtitle": {
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
-  "repeater_clockSyncAfterLoginSubtitle": "Invia automaticamente il comando \"sincronizzazione dell'orologio\" dopo un login riuscito.",
+  "repeater_clockSyncAfterLoginSubtitle": "Predefinito segue Ripetitori e stanze nelle impostazioni. Attivo e Disattivo valgono solo per questo ripetitore.",
   "repeater_clockSyncAfterLogin": "Sincronizzazione dell'orologio dopo il login",
   "repeater_guest": "Informazioni sul ripetitore",
   "repeater_guestTools": "Strumenti per gli ospiti",
@@ -3916,5 +3916,16 @@
   "appSettings_floodRetries": "Tentativi Flood: {count}",
   "appSettings_floodRetriesSubtitle": "Quante volte usare Flood. Flood usa più tempo in aria. Con la rotazione attiva, seguono i tentativi diretti.",
   "appSettings_loginAttempts": "Tentativi di accesso: {count}",
-  "appSettings_loginAttemptsSubtitle": "Quante volte provare l'accesso a un ripetitore o a un server room prima di rinunciare."
+  "appSettings_loginAttemptsSubtitle": "Quante volte provare l'accesso a un ripetitore o a un server room prima di rinunciare.",
+  "appSettings_repeatersAndRooms": "Ripetitori e stanze",
+  "appSettings_clockSyncAfterLogin": "Sincronizza l'orologio del ripetitore all'accesso",
+  "appSettings_clockSyncAfterLoginSubtitle": "Dopo un accesso riuscito a un ripetitore viene inviato clock sync. Ogni ripetitore può ancora scegliere Predefinito, Attivo o Disattivo.",
+  "appSettings_loginPasswordAutofocus": "Attiva il campo password",
+  "appSettings_loginPasswordAutofocusSubtitle": "All'apertura dell'accesso a un ripetitore o a una stanza, il cursore va nel campo password se è vuoto. Disattivo lascia visibile la finestra finché non tocchi il campo.",
+  "appSettings_resetRepeaterRoomSettings": "Reimposta le impostazioni di ripetitori e stanze",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Ripristina le impostazioni di questa sezione. Le scelte salvate sui singoli ripetitori restano.",
+  "appSettings_repeaterRoomSettingsReset": "Impostazioni di ripetitori e stanze reimpostate",
+  "repeater_clockSyncDefault": "Predefinito",
+  "repeater_clockSyncOn": "Attivo",
+  "repeater_clockSyncOff": "Disattivo"
 }

@@ -2418,7 +2418,7 @@
   "@repeater_clockSyncAfterLoginSubtitle": {
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
-  "repeater_clockSyncAfterLoginSubtitle": "Envoyer automatiquement une notification \"synchronisation de l'heure\" après une connexion réussie.",
+  "repeater_clockSyncAfterLoginSubtitle": "Défaut suit Répéteurs et salons dans les paramètres. Activé et Désactivé ne concernent que ce répéteur.",
   "repeater_clockSyncAfterLogin": "Synchronisation de l'horloge après la connexion",
   "repeater_guestTools": "Outils pour les invités",
   "chat_sendMessage": "Envoyer un message",
@@ -3916,5 +3916,16 @@
   "appSettings_floodRetries": "Tentatives Flood : {count}",
   "appSettings_floodRetriesSubtitle": "Nombre de Flood. Un Flood utilise plus de temps d'antenne. Avec la rotation activée, ils suivent les tentatives directes.",
   "appSettings_loginAttempts": "Tentatives de connexion : {count}",
-  "appSettings_loginAttemptsSubtitle": "Nombre d'essais de connexion à un répéteur ou à un serveur de salon avant d'abandonner."
+  "appSettings_loginAttemptsSubtitle": "Nombre d'essais de connexion à un répéteur ou à un serveur de salon avant d'abandonner.",
+  "appSettings_repeatersAndRooms": "Répéteurs et salons",
+  "appSettings_clockSyncAfterLogin": "Synchroniser l'horloge du répéteur à la connexion",
+  "appSettings_clockSyncAfterLoginSubtitle": "Après une connexion réussie à un répéteur, clock sync est envoyé. Chaque répéteur peut encore choisir Défaut, Activé ou Désactivé.",
+  "appSettings_loginPasswordAutofocus": "Placer le curseur dans le mot de passe",
+  "appSettings_loginPasswordAutofocusSubtitle": "À l'ouverture d'une connexion répéteur ou salon, le curseur va dans le mot de passe s'il est vide. Désactivé laisse la fenêtre visible jusqu'à ce que vous touchiez le champ.",
+  "appSettings_resetRepeaterRoomSettings": "Réinitialiser les paramètres répéteurs et salons",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Restaure les paramètres de cette section. Les choix enregistrés sur chaque répéteur restent.",
+  "appSettings_repeaterRoomSettingsReset": "Paramètres répéteurs et salons réinitialisés",
+  "repeater_clockSyncDefault": "Défaut",
+  "repeater_clockSyncOn": "Activé",
+  "repeater_clockSyncOff": "Désactivé"
 }

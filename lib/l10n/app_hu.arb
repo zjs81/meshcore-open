@@ -2421,7 +2421,7 @@
   "@repeater_clockSyncAfterLoginSubtitle": {
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
-  "repeater_clockSyncAfterLoginSubtitle": "„Óraszinkronizálás” automatikus küldése sikeres bejelentkezés után",
+  "repeater_clockSyncAfterLoginSubtitle": "Az Alapértelmezett az alkalmazás Átjátszók és szobák beállítását követi. A Be és a Ki csak erre az átjátszóra vonatkozik.",
   "repeater_clockSyncAfterLogin": "Óra szinkronizálás bejelentkezés után",
   "repeater_guestTools": "Vendégeszközök",
   "room_guest": "Szobaszerver információ",
@@ -3873,5 +3873,16 @@
   "appSettings_floodRetries": "Flood próbálkozások: {count}",
   "appSettings_floodRetriesSubtitle": "Hányszor használjon Floodot. A Flood több adásidőt használ. Bekapcsolt váltásnál a közvetlen próbálkozások után jönnek.",
   "appSettings_loginAttempts": "Bejelentkezési próbálkozások: {count}",
-  "appSettings_loginAttemptsSubtitle": "Hányszor próbáljon bejelentkezni egy átjátszóra vagy room szerverre, mielőtt feladja."
+  "appSettings_loginAttemptsSubtitle": "Hányszor próbáljon bejelentkezni egy átjátszóra vagy room szerverre, mielőtt feladja.",
+  "appSettings_repeatersAndRooms": "Átjátszók és szobák",
+  "appSettings_clockSyncAfterLogin": "Átjátszó órájának szinkronizálása belépéskor",
+  "appSettings_clockSyncAfterLoginSubtitle": "Sikeres átjátszó-belépés után clock sync megy ki. Minden átjátszó továbbra lehet Alapértelmezett, Be vagy Ki.",
+  "appSettings_loginPasswordAutofocus": "Jelszómező fókuszba",
+  "appSettings_loginPasswordAutofocusSubtitle": "Átjátszó vagy szoba belépésének megnyitásakor a kurzor az üres jelszómezőbe kerül. Kikapcsolva a párbeszéd látható marad, amíg meg nem érinti a mezőt.",
+  "appSettings_resetRepeaterRoomSettings": "Átjátszó- és szobabeállítások visszaállítása",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Visszaállítja a szakasz beállításait. Az egyes átjátszóknál mentett választás megmarad.",
+  "appSettings_repeaterRoomSettingsReset": "Átjátszó- és szobabeállítások visszaállítva",
+  "repeater_clockSyncDefault": "Alapért.",
+  "repeater_clockSyncOn": "Be",
+  "repeater_clockSyncOff": "Ki"
 }

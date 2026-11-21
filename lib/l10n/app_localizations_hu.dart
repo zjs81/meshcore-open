@@ -1495,6 +1495,36 @@ class AppLocalizationsHu extends AppLocalizations {
       'Hányszor próbáljon bejelentkezni egy átjátszóra vagy room szerverre, mielőtt feladja.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Átjátszók és szobák';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Átjátszó órájának szinkronizálása belépéskor';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Sikeres átjátszó-belépés után clock sync megy ki. Minden átjátszó továbbra lehet Alapértelmezett, Be vagy Ki.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Jelszómező fókuszba';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Átjátszó vagy szoba belépésének megnyitásakor a kurzor az üres jelszómezőbe kerül. Kikapcsolva a párbeszéd látható marad, amíg meg nem érinti a mezőt.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Átjátszó- és szobabeállítások visszaállítása';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Visszaállítja a szakasz beállításait. Az egyes átjátszóknál mentett választás megmarad.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Átjátszó- és szobabeállítások visszaállítva';
+
+  @override
   String get appSettings_ipfsImageLinks => 'IPFS-szolgáltató beállítása';
 
   @override
@@ -3526,7 +3556,16 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      '„Óraszinkronizálás” automatikus küldése sikeres bejelentkezés után';
+      'Az Alapértelmezett az alkalmazás Átjátszók és szobák beállítását követi. A Be és a Ki csak erre az átjátszóra vonatkozik.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Alapért.';
+
+  @override
+  String get repeater_clockSyncOn => 'Be';
+
+  @override
+  String get repeater_clockSyncOff => 'Ki';
 
   @override
   String get repeater_statusTitle => 'Átjátszó állapota';

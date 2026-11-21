@@ -1508,6 +1508,36 @@ class AppLocalizationsPl extends AppLocalizations {
       'Ile razy próbować logowania do przemiennika lub serwera room, zanim aplikacja zrezygnuje.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Przemienniki i pokoje';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Synchronizuj zegar przemiennika przy logowaniu';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Po udanym logowaniu do przemiennika wysyłane jest clock sync. Każdy przemiennik może nadal wybrać Domyślnie, Wł. lub Wył.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Uaktywnij pole hasła';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Przy otwieraniu logowania do przemiennika lub pokoju kursor trafia w puste pole hasła. Wyłączenie zostawia okno widoczne, aż dotkniesz pola.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Resetuj ustawienia przemienników i pokoi';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Przywraca ustawienia w tej sekcji. Wybory zapisane przy poszczególnych przemiennikach zostają.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Ustawienia przemienników i pokoi zresetowane';
+
+  @override
   String get appSettings_ipfsImageLinks => 'Konfiguracja dostawcy IPFS';
 
   @override
@@ -3557,7 +3587,16 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Automatycznie wysyłaj powiadomienie \"synchronizacja zegara\" po pomyślnym zalogowaniu.';
+      'Domyślnie podąża za Przemienniki i pokoje w ustawieniach. Wł. i Wył. dotyczą tylko tego przemiennika.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Domyślnie';
+
+  @override
+  String get repeater_clockSyncOn => 'Wł.';
+
+  @override
+  String get repeater_clockSyncOff => 'Wył.';
 
   @override
   String get repeater_statusTitle => 'Status przekaźnika';

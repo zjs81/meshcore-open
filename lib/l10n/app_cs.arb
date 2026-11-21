@@ -1639,7 +1639,7 @@
   "repeater_settings": "Nastavení",
   "repeater_settingsSubtitle": "Konfigurace parametrů opakovače",
   "repeater_clockSyncAfterLogin": "Synchronizace hodin po přihlášení",
-  "repeater_clockSyncAfterLoginSubtitle": "Automaticky odeslat „clock sync“ po úspěšném přihlášení",
+  "repeater_clockSyncAfterLoginSubtitle": "Výchozí se řídí Opakovači a místnostmi v nastavení aplikace. Zapnuto a Vypnuto platí jen pro tento opakovač.",
   "repeater_statusTitle": "Stav opakovače",
   "repeater_routingMode": "Režim směrování",
   "repeater_refresh": "Obnovit",
@@ -4395,5 +4395,16 @@
   "appSettings_floodRetries": "Pokusy Flood: {count}",
   "appSettings_floodRetriesSubtitle": "Kolikrát se použije Flood. Flood zabere víc vysílacího času. Při zapnutém střídání následují po přímých pokusech.",
   "appSettings_loginAttempts": "Pokusy o přihlášení: {count}",
-  "appSettings_loginAttemptsSubtitle": "Kolikrát se zkusí přihlášení k opakovači nebo room serveru, než se to vzdá."
+  "appSettings_loginAttemptsSubtitle": "Kolikrát se zkusí přihlášení k opakovači nebo room serveru, než se to vzdá.",
+  "appSettings_repeatersAndRooms": "Opakovače a místnosti",
+  "appSettings_clockSyncAfterLogin": "Synchronizovat hodiny opakovače při přihlášení",
+  "appSettings_clockSyncAfterLoginSubtitle": "Po úspěšném přihlášení k opakovači se odešle clock sync. Každý opakovač může dál zvolit Výchozí, Zapnuto nebo Vypnuto.",
+  "appSettings_loginPasswordAutofocus": "Zaměřit pole hesla",
+  "appSettings_loginPasswordAutofocusSubtitle": "Při otevření přihlášení k opakovači nebo místnosti je kurzor v prázdném poli hesla. Vypnuto nechá dialog viditelný, dokud na pole neklepnete.",
+  "appSettings_resetRepeaterRoomSettings": "Obnovit nastavení opakovačů a místností",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Obnoví nastavení v této části. Volby uložené u jednotlivých opakovačů zůstanou.",
+  "appSettings_repeaterRoomSettingsReset": "Nastavení opakovačů a místností obnoveno",
+  "repeater_clockSyncDefault": "Výchozí",
+  "repeater_clockSyncOn": "Zapnuto",
+  "repeater_clockSyncOff": "Vypnuto"
 }

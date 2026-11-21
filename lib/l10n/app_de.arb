@@ -2511,7 +2511,7 @@
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
   "repeater_clockSyncAfterLogin": "Uhrzeit-Synchronisation nach dem Anmelden",
-  "repeater_clockSyncAfterLoginSubtitle": "Automatisch \"Uhrzeit-Synchronisierung\" nach erfolgreicher Anmeldung senden.",
+  "repeater_clockSyncAfterLoginSubtitle": "Standard folgt Repeater und Räume in den App-Einstellungen. An und Aus gelten nur für diesen Repeater.",
   "repeater_guest": "Informationen zu Repeatern",
   "repeater_guestTools": "Gastwerkzeuge",
   "chat_sendMessage": "Nachricht senden",
@@ -3917,5 +3917,16 @@
   "appSettings_floodRetries": "Flood-Versuche: {count}",
   "appSettings_floodRetriesSubtitle": "Wie oft geflutet wird. Flood verbraucht mehr Sendezeit. Bei eingeschalteter Rotation folgen diese auf die direkten Versuche.",
   "appSettings_loginAttempts": "Anmeldeversuche: {count}",
-  "appSettings_loginAttemptsSubtitle": "Wie oft die Anmeldung an einem Repeater oder Room-Server versucht wird, bevor abgebrochen wird."
+  "appSettings_loginAttemptsSubtitle": "Wie oft die Anmeldung an einem Repeater oder Room-Server versucht wird, bevor abgebrochen wird.",
+  "appSettings_repeatersAndRooms": "Repeater und Räume",
+  "appSettings_clockSyncAfterLogin": "Repeater-Uhr bei Anmeldung synchronisieren",
+  "appSettings_clockSyncAfterLoginSubtitle": "Nach einer erfolgreichen Repeater-Anmeldung wird clock sync gesendet. Jeder Repeater kann weiter Standard, An oder Aus wählen.",
+  "appSettings_loginPasswordAutofocus": "Passwortfeld fokussieren",
+  "appSettings_loginPasswordAutofocusSubtitle": "Beim Öffnen einer Repeater- oder Raum-Anmeldung steht der Cursor im leeren Passwortfeld. Aus lässt den Dialog sichtbar, bis du das Feld antippst.",
+  "appSettings_resetRepeaterRoomSettings": "Repeater- und Raum-Einstellungen zurücksetzen",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Stellt die Einstellungen in diesem Abschnitt wieder her. Gespeicherte Wahl bei einzelnen Repeatern bleibt.",
+  "appSettings_repeaterRoomSettingsReset": "Repeater- und Raum-Einstellungen zurückgesetzt",
+  "repeater_clockSyncDefault": "Standard",
+  "repeater_clockSyncOn": "An",
+  "repeater_clockSyncOff": "Aus"
 }

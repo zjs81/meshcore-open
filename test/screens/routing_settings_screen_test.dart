@@ -83,6 +83,19 @@ void main() {
       expect(find.text(l10n.appSettings_autoRouteRotation), findsOneWidget);
       expect(find.text(l10n.appSettings_channelMinHopsCount(2)), findsNothing);
       expect(find.text(l10n.appSettings_resetRoutingToDefault), findsOneWidget);
+      expect(
+        find.text(l10n.appSettings_repeatersAndRooms.toUpperCase()),
+        findsOneWidget,
+      );
+      expect(find.text(l10n.appSettings_clockSyncAfterLogin), findsOneWidget);
+      expect(
+        find.text(l10n.appSettings_loginPasswordAutofocus),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.appSettings_autoFetchRepeaterSettings),
+        findsOneWidget,
+      );
 
       final channelSwitch = find.text(l10n.appSettings_channelMinHops);
       await tester.tap(channelSwitch);

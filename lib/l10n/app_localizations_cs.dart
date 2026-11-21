@@ -1494,6 +1494,36 @@ class AppLocalizationsCs extends AppLocalizations {
       'Kolikrát se zkusí přihlášení k opakovači nebo room serveru, než se to vzdá.';
 
   @override
+  String get appSettings_repeatersAndRooms => 'Opakovače a místnosti';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Synchronizovat hodiny opakovače při přihlášení';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Po úspěšném přihlášení k opakovači se odešle clock sync. Každý opakovač může dál zvolit Výchozí, Zapnuto nebo Vypnuto.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Zaměřit pole hesla';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Při otevření přihlášení k opakovači nebo místnosti je kurzor v prázdném poli hesla. Vypnuto nechá dialog viditelný, dokud na pole neklepnete.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Obnovit nastavení opakovačů a místností';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Obnoví nastavení v této části. Volby uložené u jednotlivých opakovačů zůstanou.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Nastavení opakovačů a místností obnoveno';
+
+  @override
   String get appSettings_ipfsImageLinks => 'Konfigurace poskytovatele IPFS';
 
   @override
@@ -3519,7 +3549,16 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Automaticky odeslat „clock sync“ po úspěšném přihlášení';
+      'Výchozí se řídí Opakovači a místnostmi v nastavení aplikace. Zapnuto a Vypnuto platí jen pro tento opakovač.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Výchozí';
+
+  @override
+  String get repeater_clockSyncOn => 'Zapnuto';
+
+  @override
+  String get repeater_clockSyncOff => 'Vypnuto';
 
   @override
   String get repeater_statusTitle => 'Stav opakovače';
