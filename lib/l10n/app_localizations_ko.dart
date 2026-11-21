@@ -1373,10 +1373,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      '전송 시도가 5번 실패하면 연락 경로를 재설정합니다.';
+      '모든 전송 시도가 실패하면 연락처의 저장된 경로를 재설정합니다';
 
   @override
-  String get appSettings_pathsWillBeCleared => '5번 실패하면 해당 경로를 지웁니다.';
+  String get appSettings_pathsWillBeCleared => '모든 전송 시도가 실패하면 경로를 지웁니다';
 
   @override
   String get appSettings_pathsWillNotBeCleared => '경로를 자동으로 지우지 않습니다.';
@@ -1386,7 +1386,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      '최적 경로와 플러딩 모드 사이를 전환합니다.';
+      '직접 시도마다 다른 알려진 경로를 사용합니다. 이후 시도는 Flood입니다. 끄면 연락처의 현재 경로를 유지합니다.';
 
   @override
   String get appSettings_autoRouteRotationEnabled => '자동 경로 순환 기능 활성화';
@@ -1399,6 +1399,33 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appSettings_maxMessageRetriesSubtitle => '메시지를 실패로 처리하기 전 시도 횟수';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return '직접 시도: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      '알려진 경로를 시도하는 횟수입니다. 자동 경로 순환을 꺼도 설정할 수 있습니다.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Flood 시도: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Flood를 사용하는 횟수입니다. Flood는 전파 시간을 더 씁니다. 순환이 켜져 있으면 직접 시도 다음에 실행됩니다.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return '로그인 시도: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      '중계기나 룸 서버 로그인을 포기하기 전까지의 시도 횟수입니다.';
 
   @override
   String get appSettings_ipfsImageLinks => 'IPFS 제공자 설정';
@@ -6724,14 +6751,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_routingSection => '라우팅';
 
   @override
-  String get appSettings_resetRoutingToDefault => '라우팅 알고리즘 기본값으로 재설정';
+  String get appSettings_resetRoutingToDefault => '라우팅 설정을 기본값으로 재설정';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      '라우팅 알고리즘 설정을 공장 기본값으로 복원';
+      '이 섹션의 라우팅 설정을 기본값으로 되돌립니다';
 
   @override
-  String get appSettings_routingResetToDefault => '라우팅 알고리즘 설정이 기본값으로 재설정되었습니다';
+  String get appSettings_routingResetToDefault => '라우팅 설정이 기본값으로 재설정되었습니다';
 
   @override
   String get appSettings_imageMessagesSection => '이미지 메시지';

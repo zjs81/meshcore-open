@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
 import '../l10n/contact_localization.dart';
+import '../services/app_settings_service.dart';
 import '../services/storage_service.dart';
 import '../services/repeater_command_service.dart';
 import '../connector/meshcore_connector.dart';
@@ -40,7 +41,9 @@ class _RepeaterLoginDialogState extends State<RepeaterLoginDialog> {
   String? _loginError;
   late MeshCoreConnector _connector;
   int _currentAttempt = 0;
-  static const int _maxAttempts = 5;
+
+  int get _maxAttempts =>
+      context.read<AppSettingsService>().settings.loginAttempts;
 
   @override
   void initState() {

@@ -156,7 +156,7 @@ Maintains an in-memory LRU cache of up to 50 contacts, each with up to 100 route
 Each route keeps delivery and failure counts that fade over time (half their weight per day, at most 16 recent results). For each send attempt a route is chosen by Thompson sampling over those counts, adjusted slightly for speed and for what the radio currently hears. There are no user-tunable weights. A route is deleted only when it keeps failing and hasn't delivered for a week. Flood deliveries that receive an ACK credit the specific return path. Details: [Auto route selection](routing-paths.md#auto-route-selection).
 
 Used internally for:
-- **Auto route rotation**: Picks a route for each attempt; retries usually move to a different route, and the last attempt floods
+- **Auto route rotation**: Picks a route for each direct attempt; retries usually move to a different route, then the flood attempts run
 - **Flood statistics**: Tracks flood deliveries and failures
 
 ---
@@ -167,16 +167,17 @@ Used internally for:
 Handles reliable delivery of outgoing direct messages:
 1. Assigns a UUID and sends immediately. Only one message per contact can be in-flight at a time (avoids overflowing the firmware's 8-entry ACK table); subsequent messages are queued
 2. Listens for ACK frames matched via SHA-256 hash of `[timestamp][attempt][text][sender_pubkey]`
-3. On timeout, retries with exponential backoff: `1000 × 2^retryCount` ms (1s, 2s, 4s, 8s...)
-4. Each retry may use a different path (via path history diversity window)
-5. After max retries: marks failed but keeps a **30-second grace window** during which a late ACK can still resolve the message to "delivered". Optionally clears the contact's path
+3. On timeout, retries with exponential backoff: `1000 × 2^retryCount` ms (1s, 2s, 4s, 8s...), capped at 32 seconds
+4. Each direct retry may use a different path (via path history diversity window) when auto route rotation is on
+5. After the configured direct and flood attempts: marks failed but keeps a **30-second grace window** during which a late ACK can still resolve the message to "delivered". Optionally clears the contact's path
 6. Reports RTT and path data for quality learning
 7. Maintains an ACK hash history (last 50 entries) to handle duplicate ACKs
 
-### Configurable Settings (App Settings → Messaging)
-- Max retries (2–10, default 5)
+### Configurable Settings (App Settings → Routing)
+- Direct attempts (0–15, default 4) and flood attempts (0–10, default 1), set separately from auto route rotation
+- Login attempts for a repeater or room server (1–10, default 5). Telemetry requests are not retried
 - Clear path on max retry (on/off)
-- Auto route rotation with weight parameters
+- Auto route rotation
 
 ---
 

@@ -18,6 +18,7 @@ import '../models/contact.dart';
 import '../models/message_filter.dart';
 import '../models/message.dart';
 import '../models/path_selection.dart';
+import '../models/send_attempt_plan.dart';
 import '../models/translation_support.dart';
 import '../helpers/reaction_helper.dart';
 import '../helpers/channel_resend_coverage.dart';
@@ -2405,11 +2406,11 @@ class MeshCoreConnector extends ChangeNotifier {
         debugLogService: _appDebugLogService,
         recordPathResult: _recordPathResult,
         selectRetryPath:
-            (contactKey, attemptIndex, maxRetries, recentSelections) =>
+            (contactKey, attemptIndex, directRetries, recentSelections) =>
                 _selectAutoPathForAttempt(
                   contactKey,
                   attemptIndex: attemptIndex,
-                  maxRetries: maxRetries,
+                  directRetries: directRetries,
                   recentSelections: recentSelections,
                 ),
         onDeliveryObserved: (contactKey, pathLength, messageBytes, tripTimeMs) {
@@ -2422,8 +2423,6 @@ class MeshCoreConnector extends ChangeNotifier {
         },
       ),
     );
-    final maxRetries = _appSettingsService?.settings.maxMessageRetries ?? 5;
-    _retryService?.setMaxRetries(maxRetries);
   }
 
   Future<void> loadContactCache() async {
@@ -2866,7 +2865,7 @@ class MeshCoreConnector extends ChangeNotifier {
   PathSelection? _selectAutoPathForAttempt(
     String contactPubKeyHex, {
     required int attemptIndex,
-    required int maxRetries,
+    required int directRetries,
     List<PathSelection> recentSelections = const [],
   }) {
     final hasKnownPaths =
@@ -2881,7 +2880,7 @@ class MeshCoreConnector extends ChangeNotifier {
     final selection = _pathHistoryService?.selectPathForAttempt(
       contactPubKeyHex,
       attemptIndex: attemptIndex,
-      maxRetries: maxRetries,
+      directRetries: directRetries,
       recentSelections: recentSelections,
       context: routeContext,
     );
@@ -2891,7 +2890,8 @@ class MeshCoreConnector extends ChangeNotifier {
       // app debug log on a live mesh.
       _appDebugLogService?.info(
         'Route pick for ${contact?.name ?? contactPubKeyHex.substring(0, 8)}: '
-        'attempt ${attemptIndex + 1}/$maxRetries → ${_describeRoute(selection)} '
+        'attempt ${attemptIndex + 1} '
+        '→ ${_describeRoute(selection)} '
         '(heard nearby: ${routeContext.hasNeighbourInfo}, '
         'contact heard direct: ${routeContext.contactHeardDirectly})',
         tag: 'Routing',
@@ -5442,11 +5442,13 @@ class MeshCoreConnector extends ChangeNotifier {
     final autoRotationEnabled =
         _appSettingsService?.settings.autoRouteRotationEnabled == true;
     if (autoRotationEnabled && contact.pathOverride == null) {
-      final maxRetries = _appSettingsService?.settings.maxMessageRetries ?? 5;
+      final directRetries =
+          _appSettingsService?.settings.directRetries ??
+          SendAttemptPlan.defaultDirectRetries;
       autoSelection = _selectAutoPathForAttempt(
         contact.publicKeyHex,
         attemptIndex: 0,
-        maxRetries: maxRetries,
+        directRetries: directRetries,
       );
     }
 

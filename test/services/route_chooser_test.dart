@@ -205,7 +205,7 @@ void main() {
           final pick = svc.selectPathForAttempt(
             contact,
             attemptIndex: attempt,
-            maxRetries: maxRetries,
+            directRetries: maxRetries - 1,
             recentSelections: used,
             context: context,
           );

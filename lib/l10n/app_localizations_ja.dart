@@ -1370,10 +1370,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      '5 回送信に失敗したら連絡先の経路をリセットします';
+      'すべての送信が失敗したら、連絡先の保存済み経路をリセットします';
 
   @override
-  String get appSettings_pathsWillBeCleared => '5 回失敗すると経路を消去します';
+  String get appSettings_pathsWillBeCleared => 'すべての送信が失敗すると経路を消去します';
 
   @override
   String get appSettings_pathsWillNotBeCleared => '経路は自動では消去されません';
@@ -1382,7 +1382,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_autoRouteRotation => '自動経路切り替え';
 
   @override
-  String get appSettings_autoRouteRotationSubtitle => '最適な経路とフラッドモードを切り替えます';
+  String get appSettings_autoRouteRotationSubtitle =>
+      '直接の試行ごとに別の既知の経路を試します。その後の試行は Flood です。オフのときは連絡先の現在の経路を使います。';
 
   @override
   String get appSettings_autoRouteRotationEnabled => '自動経路切り替えが有効です';
@@ -1395,6 +1396,33 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get appSettings_maxMessageRetriesSubtitle => 'メッセージを失敗として扱うまでの再試行回数';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return '直接の試行: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      '既知の経路を試す回数です。自動経路切り替えがオフでも設定できます。';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Flood の試行: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Flood する回数です。Flood は通信時間を多く使います。切り替えがオンのとき、直接の試行の後に行います。';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'ログイン試行: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'リピータまたはルームサーバーへのログインをあきらめるまでの回数です。';
 
   @override
   String get appSettings_ipfsImageLinks => 'IPFSプロバイダー設定';
@@ -6708,15 +6736,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_routingSection => 'ルーティング';
 
   @override
-  String get appSettings_resetRoutingToDefault => 'ルーティングアルゴリズムをデフォルトにリセット';
+  String get appSettings_resetRoutingToDefault => 'ルーティング設定をデフォルトにリセット';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'ルーティングアルゴリズムの設定を工場出荷時のデフォルトに戻す';
+      'このセクションの経路設定を初期値に戻します';
 
   @override
-  String get appSettings_routingResetToDefault =>
-      'ルーティングアルゴリズムの設定がデフォルトにリセットされました';
+  String get appSettings_routingResetToDefault => 'ルーティング設定がデフォルトにリセットされました';
 
   @override
   String get appSettings_imageMessagesSection => '画像メッセージ';

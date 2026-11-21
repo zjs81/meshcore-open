@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import '../models/app_settings.dart';
 import '../models/custom_theme.dart';
+import '../models/send_attempt_plan.dart';
 import '../models/holiday_schedule.dart';
 import '../models/image_codec_support.dart';
 import '../models/translation_support.dart';
@@ -228,8 +229,22 @@ class AppSettingsService extends ChangeNotifier {
     );
   }
 
-  Future<void> setMaxMessageRetries(int value) async {
-    await updateSettings(_settings.copyWith(maxMessageRetries: value));
+  Future<void> setDirectRetries(int value) async {
+    await updateSettings(
+      _settings.copyWith(directRetries: SendAttemptPlan.clampDirect(value)),
+    );
+  }
+
+  Future<void> setFloodRetries(int value) async {
+    await updateSettings(
+      _settings.copyWith(floodRetries: SendAttemptPlan.clampFlood(value)),
+    );
+  }
+
+  Future<void> setLoginAttempts(int value) async {
+    await updateSettings(
+      _settings.copyWith(loginAttempts: SendAttemptPlan.clampLogin(value)),
+    );
   }
 
   Future<void> setChannelMinHopsEnabled(bool value) async {
@@ -714,13 +729,21 @@ class AppSettingsService extends ChangeNotifier {
   Future<void> resetRoutingSettingsToDefault() async {
     await updateSettings(
       _settings.copyWith(
+        clearPathOnMaxRetry: false,
+        autoRouteRotationEnabled: true,
         maxRouteWeight: AppSettings.defaultMaxRouteWeight,
         initialRouteWeight: AppSettings.defaultInitialRouteWeight,
         routeWeightSuccessIncrement:
             AppSettings.defaultRouteWeightSuccessIncrement,
         routeWeightFailureDecrement:
             AppSettings.defaultRouteWeightFailureDecrement,
-        maxMessageRetries: AppSettings.defaultMaxMessageRetries,
+        directRetries: AppSettings.defaultDirectRetries,
+        floodRetries: AppSettings.defaultFloodRetries,
+        loginAttempts: AppSettings.defaultLoginAttempts,
+        channelMinHopsEnabled: false,
+        channelMinHops: 2,
+        channelMinHopsRetries: 1,
+        channelMinHopsCountRepeaters: false,
       ),
     );
   }

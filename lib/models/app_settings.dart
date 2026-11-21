@@ -1,5 +1,6 @@
 import 'custom_theme.dart';
 import 'image_codec_support.dart';
+import 'send_attempt_plan.dart';
 import 'translation_support.dart';
 
 enum UnitSystem { metric, imperial }
@@ -103,7 +104,9 @@ class AppSettings {
   static const double defaultInitialRouteWeight = 3.0;
   static const double defaultRouteWeightSuccessIncrement = 0.5;
   static const double defaultRouteWeightFailureDecrement = 0.2;
-  static const int defaultMaxMessageRetries = 5;
+  static const int defaultDirectRetries = SendAttemptPlan.defaultDirectRetries;
+  static const int defaultFloodRetries = SendAttemptPlan.defaultFloodRetries;
+  static const int defaultLoginAttempts = SendAttemptPlan.defaultLoginAttempts;
 
   final bool clearPathOnMaxRetry;
   final bool mapShowRepeaters;
@@ -137,7 +140,11 @@ class AppSettings {
   final double initialRouteWeight;
   final double routeWeightSuccessIncrement;
   final double routeWeightFailureDecrement;
-  final int maxMessageRetries;
+  final int directRetries;
+  final int floodRetries;
+
+  /// How many times a repeater or room-server login is sent before giving up.
+  final int loginAttempts;
   final bool channelMinHopsEnabled;
   final int channelMinHops;
   final int channelMinHopsRetries;
@@ -236,6 +243,16 @@ class AppSettings {
     downloadedModels: imageCodecDownloadedModels,
   );
 
+  /// Attempts for one direct message. [rotating] is auto route rotation with
+  /// no manual path. [floodPath] is the contact's fixed path.
+  int sendAttemptLimit({required bool rotating, required bool floodPath}) {
+    return SendAttemptPlan(
+      directRetries: directRetries,
+      floodRetries: floodRetries,
+      rotateRoutes: rotating,
+    ).attemptLimit(floodPath: floodPath);
+  }
+
   String get effectiveMapTileApiKey {
     final apiKey = mapTileApiKey?.trim();
     if (apiKey == null || apiKey.isEmpty) {
@@ -291,7 +308,9 @@ class AppSettings {
     this.initialRouteWeight = defaultInitialRouteWeight,
     this.routeWeightSuccessIncrement = defaultRouteWeightSuccessIncrement,
     this.routeWeightFailureDecrement = defaultRouteWeightFailureDecrement,
-    this.maxMessageRetries = defaultMaxMessageRetries,
+    this.directRetries = defaultDirectRetries,
+    this.floodRetries = defaultFloodRetries,
+    this.loginAttempts = defaultLoginAttempts,
     this.channelMinHopsEnabled = false,
     this.channelMinHops = 2,
     this.channelMinHopsRetries = 1,
@@ -389,7 +408,9 @@ class AppSettings {
       'initial_route_weight': initialRouteWeight,
       'route_weight_success_increment': routeWeightSuccessIncrement,
       'route_weight_failure_decrement': routeWeightFailureDecrement,
-      'max_message_retries': maxMessageRetries,
+      'max_direct_retries': directRetries,
+      'max_flood_retries': floodRetries,
+      'login_attempts': loginAttempts,
       'channel_min_hops_enabled': channelMinHopsEnabled,
       'channel_min_hops': channelMinHops,
       'channel_min_hops_retries': channelMinHopsRetries,
@@ -539,8 +560,11 @@ class AppSettings {
       routeWeightFailureDecrement:
           (json['route_weight_failure_decrement'] as num?)?.toDouble() ??
           defaultRouteWeightFailureDecrement,
-      maxMessageRetries:
-          json['max_message_retries'] as int? ?? defaultMaxMessageRetries,
+      directRetries: SendAttemptPlan.retriesFromJson(json).direct,
+      floodRetries: SendAttemptPlan.retriesFromJson(json).flood,
+      loginAttempts: SendAttemptPlan.clampLogin(
+        (json['login_attempts'] as num?)?.toInt() ?? defaultLoginAttempts,
+      ),
       channelMinHopsEnabled: json['channel_min_hops_enabled'] as bool? ?? false,
       channelMinHops: json['channel_min_hops'] as int? ?? 2,
       channelMinHopsRetries: json['channel_min_hops_retries'] as int? ?? 1,
@@ -698,7 +722,9 @@ class AppSettings {
     double? initialRouteWeight,
     double? routeWeightSuccessIncrement,
     double? routeWeightFailureDecrement,
-    int? maxMessageRetries,
+    int? directRetries,
+    int? floodRetries,
+    int? loginAttempts,
     bool? channelMinHopsEnabled,
     int? channelMinHops,
     int? channelMinHopsRetries,
@@ -791,7 +817,9 @@ class AppSettings {
           routeWeightSuccessIncrement ?? this.routeWeightSuccessIncrement,
       routeWeightFailureDecrement:
           routeWeightFailureDecrement ?? this.routeWeightFailureDecrement,
-      maxMessageRetries: maxMessageRetries ?? this.maxMessageRetries,
+      directRetries: directRetries ?? this.directRetries,
+      floodRetries: floodRetries ?? this.floodRetries,
+      loginAttempts: loginAttempts ?? this.loginAttempts,
       channelMinHopsEnabled:
           channelMinHopsEnabled ?? this.channelMinHopsEnabled,
       channelMinHops: channelMinHops ?? this.channelMinHops,

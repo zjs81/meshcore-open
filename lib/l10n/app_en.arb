@@ -617,15 +617,42 @@
   "appSettings_advertisementNotificationsSubtitle": "Show notification when new nodes are discovered",
   "appSettings_messaging": "Messaging",
   "appSettings_clearPathOnMaxRetry": "Clear Path on Max Retry",
-  "appSettings_clearPathOnMaxRetrySubtitle": "Reset contact path after 5 failed send attempts",
-  "appSettings_pathsWillBeCleared": "Paths will be cleared after 5 failed retries",
+  "appSettings_clearPathOnMaxRetrySubtitle": "Reset the contact's saved path after every send attempt fails",
+  "appSettings_pathsWillBeCleared": "Paths will be cleared after all send attempts fail",
   "appSettings_pathsWillNotBeCleared": "Paths will not be auto-cleared",
   "appSettings_autoRouteRotation": "Auto Route Rotation",
-  "appSettings_autoRouteRotationSubtitle": "Cycle between best paths and flood mode",
+  "appSettings_autoRouteRotationSubtitle": "On each direct attempt, try a different known route. Later attempts flood. Off keeps the contact's current path.",
   "appSettings_autoRouteRotationEnabled": "Auto route rotation enabled",
   "appSettings_autoRouteRotationDisabled": "Auto route rotation disabled",
   "appSettings_maxMessageRetries": "Max Message Retries",
   "appSettings_maxMessageRetriesSubtitle": "Number of retry attempts before marking a message as failed",
+  "appSettings_directRetries": "Direct attempts: {count}",
+  "@appSettings_directRetries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_directRetriesSubtitle": "How many times to try a known route. This stays available when auto route rotation is off.",
+  "appSettings_floodRetries": "Flood attempts: {count}",
+  "@appSettings_floodRetries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_floodRetriesSubtitle": "How many times to flood. Floods use more airtime. With rotation on, these follow the direct attempts.",
+  "appSettings_loginAttempts": "Login attempts: {count}",
+  "@appSettings_loginAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_loginAttemptsSubtitle": "How many times to try logging in to a repeater or room server before giving up.",
   "appSettings_ipfsImageLinks": "IPFS provider configuration",
   "appSettings_ipfsImageLinksSubtitle": "Upload for url Images (or Files) via IPFS provider and default gateway to receive",
   "appSettings_loadLinkImages": "Load images from links",
@@ -3905,9 +3932,9 @@
   "appSettings_sourceSummary": "{label} - {description}",
   "@appSettings_sourceSummary": {"placeholders": {"label": {"type": "String"}, "description": {"type": "String"}}},
   "appSettings_routingSection": "Routing",
-  "appSettings_resetRoutingToDefault": "Reset Routing Algorithm to Default",
-  "appSettings_resetRoutingToDefaultSubtitle": "Restore routing algorithm settings to factory defaults",
-  "appSettings_routingResetToDefault": "Routing algorithm settings reset to default",
+  "appSettings_resetRoutingToDefault": "Reset routing settings to defaults",
+  "appSettings_resetRoutingToDefaultSubtitle": "Restore the routing settings in this section to their defaults",
+  "appSettings_routingResetToDefault": "Routing settings reset to defaults",
   "appSettings_imageMessagesSection": "Image messages",
   "appSettings_showApiKey": "Show API key",
   "appSettings_hideApiKey": "Hide API key",

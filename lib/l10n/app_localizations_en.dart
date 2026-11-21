@@ -1417,11 +1417,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Reset contact path after 5 failed send attempts';
+      'Reset the contact\'s saved path after every send attempt fails';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Paths will be cleared after 5 failed retries';
+      'Paths will be cleared after all send attempts fail';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1432,7 +1432,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Cycle between best paths and flood mode';
+      'On each direct attempt, try a different known route. Later attempts flood. Off keeps the contact\'s current path.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1448,6 +1448,33 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Number of retry attempts before marking a message as failed';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Direct attempts: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'How many times to try a known route. This stays available when auto route rotation is off.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Flood attempts: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'How many times to flood. Floods use more airtime. With rotation on, these follow the direct attempts.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Login attempts: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'How many times to try logging in to a repeater or room server before giving up.';
 
   @override
   String get appSettings_ipfsImageLinks => 'IPFS provider configuration';
@@ -6938,15 +6965,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Reset Routing Algorithm to Default';
+      'Reset routing settings to defaults';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Restore routing algorithm settings to factory defaults';
+      'Restore the routing settings in this section to their defaults';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Routing algorithm settings reset to default';
+      'Routing settings reset to defaults';
 
   @override
   String get appSettings_imageMessagesSection => 'Image messages';

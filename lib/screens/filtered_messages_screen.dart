@@ -12,6 +12,7 @@ import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/chat_send_pipeline.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/settings_reveal.dart';
 
 /// Recent filtered channel messages across all channels, newest first.
 ///
@@ -286,7 +287,8 @@ class _FilteredMessageCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           AnimatedSize(
-            duration: const Duration(milliseconds: 150),
+            duration: RevealOnEnable.duration,
+            curve: RevealOnEnable.curve,
             alignment: AlignmentDirectional.topStart,
             child: Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),

@@ -1433,11 +1433,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Reset contactpad na 5 mislukte verzendpogingen';
+      'Het opgeslagen pad van het contact resetten als alle verzendpogingen mislukken';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Paden worden gewist na 5 mislukte pogingen';
+      'Paden worden gewist als alle verzendpogingen mislukken';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1448,7 +1448,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Wissel tussen beste paden en floodmodus';
+      'Bij elke directe poging een andere bekende route proberen. Latere pogingen zijn Flood. Uit houdt het huidige pad van het contact.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1464,6 +1464,33 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Aantal pogingen om een bericht opnieuw te versturen voordat het als mislukt wordt gemarkeerd';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Directe pogingen: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Hoe vaak een bekende route wordt geprobeerd. Blijft beschikbaar als automatische routerotatie uit staat.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Flood-pogingen: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Hoe vaak Flood wordt gebruikt. Flood kost meer zendtijd. Met rotatie aan volgen ze op de directe pogingen.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Inlogpogingen: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Hoe vaak wordt geprobeerd in te loggen op een repeater of roomserver voordat het stopt.';
 
   @override
   String get appSettings_ipfsImageLinks => 'IPFS-providerconfiguratie';
@@ -7001,15 +7028,15 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Routeringsalgoritme resetten naar standaard';
+      'Routeringsinstellingen resetten naar standaard';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Routeringsalgoritme-instellingen herstellen naar fabrieksstandaardwaarden';
+      'De routeringsinstellingen in dit gedeelte terugzetten naar de standaardwaarden';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Routeringsalgoritme-instellingen gereset naar standaard';
+      'Routeringsinstellingen gereset naar standaard';
 
   @override
   String get appSettings_imageMessagesSection => 'Afbeeldingsberichten';

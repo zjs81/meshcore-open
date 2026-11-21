@@ -1445,11 +1445,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Kontaktpfade nach 5 fehlgeschlagenen Sendeversuchen zurücksetzen';
+      'Gespeicherten Kontaktpfad zurücksetzen, wenn alle Sendeversuche fehlschlagen';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Pfade werden nach 5 fehlgeschlagenen Wiederholungen gelöscht.';
+      'Pfade werden gelöscht, wenn alle Sendeversuche fehlschlagen';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1460,7 +1460,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Zwischen den besten Pfaden und dem Flood-Modus wechseln';
+      'Bei jedem direkten Versuch eine andere bekannte Route nutzen. Die späteren Versuche sind Flood. Aus behält den aktuellen Pfad des Kontakts.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1477,6 +1477,33 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Anzahl der Versuche, eine Nachricht erneut zu senden, bevor sie als fehlgeschlagen markiert wird.';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Direkte Versuche: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Wie oft eine bekannte Route versucht wird. Auch verfügbar, wenn die automatische Routenrotation aus ist.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Flood-Versuche: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Wie oft geflutet wird. Flood verbraucht mehr Sendezeit. Bei eingeschalteter Rotation folgen diese auf die direkten Versuche.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Anmeldeversuche: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Wie oft die Anmeldung an einem Repeater oder Room-Server versucht wird, bevor abgebrochen wird.';
 
   @override
   String get appSettings_ipfsImageLinks => 'IPFS-Anbieter-Konfiguration';
@@ -7052,15 +7079,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Routing-Algorithmus auf Standard zurücksetzen';
+      'Routing-Einstellungen auf Standard zurücksetzen';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Routing-Algorithmus-Einstellungen auf Werkseinstellungen zurücksetzen';
+      'Die Routing-Einstellungen in diesem Abschnitt auf die Standardwerte zurücksetzen';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Routing-Algorithmus-Einstellungen auf Standard zurückgesetzt';
+      'Routing-Einstellungen auf Standard zurückgesetzt';
 
   @override
   String get appSettings_imageMessagesSection => 'Bildnachrichten';

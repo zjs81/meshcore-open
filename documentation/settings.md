@@ -119,18 +119,26 @@ A dedicated sub-screen for app-level preferences (nothing here is sent to the de
 Individual channels can be muted from the channel chat bell icon, the channel list, or the channel notification. Replying from notifications, watches, and Android Auto is described in [Notifications](notifications.md).
 
 ### Messaging
-- **Clear Path on Max Retry**: Erases the stored routing path after all retries fail
 - **Jump to Oldest Unread**: When opening a chat, scrolls to the oldest unread message instead of the newest
 - **Auto-fetch Repeater Settings** (off by default): Requests every setting when a repeater's settings screen opens. Each setting is a separate request over LoRa, so this is slow and uses airtime; when off, use Refresh All or the per-setting refresh buttons. See [Repeater Settings](repeater-management.md#repeater-settings)
-- **Auto Route Rotation**: Lets the app choose each message's route from the routes that have worked for that contact (see [Auto route selection](routing-paths.md#auto-route-selection)). When enabled, it expands (hidden when off) to show:
-  - Max Message Retries (2–10, default 5)
-  - **Reset Routing Algorithm to Default**: Restores the routing settings to their factory defaults
 - **Enable Message Tracing**: Shows path trace overlays and extra metadata on messages
 - **Region next to hop count** (default off): Shows a channel message's region chip on the same line as its hop count instead of below it
+
+### Routing
+What happens when a message is sent. Each slider shows its selected number in the title. Turning a switch on reveals its extra controls with the same animation.
+
+- **Clear Path on Max Retry**: Erases the stored routing path after every send attempt fails
+- **Direct attempts** (0–15, default 4): How many times to try a known route. Available whether or not auto route rotation is on
+- **Flood attempts** (0–10, default 1): How many times to flood. Floods use more airtime. With rotation on, these run after the direct attempts. With it off, they apply only when the contact's path is already Flood
+- **Login attempts** (1–10, default 5): How many times to try logging in to a repeater or room server. Telemetry fetches are sent once and have no retry setting
+- **Auto Route Rotation**: Lets the app choose each direct attempt's route from the routes that have worked for that contact (see [Auto route selection](routing-paths.md#auto-route-selection)). Off keeps the contact's current path for every attempt
 - **Resend channel messages until they travel far enough** (default off): If your channel message isn't heard coming back through enough repeaters, it's sent again. Uses more airtime. When on, it shows:
   - Required hops (1–8, default 2)
   - Resend up to (1–5 times, default 1)
   - **Also count different nearby repeaters** (default off): Treats the message as sent once that many *different* first-hop repeaters have repeated it, even if you can't hear it travel further. Useful where only nearby repeaters are audible. See [Channels](channels.md#channel-auto-resend)
+- **Reset routing settings to defaults**: Restores every control in this section (the toggles, the attempt limits, and the stored route-weight constants) to the factory defaults
+
+If both direct and flood attempts are 0, the message is still sent once on the current path. A saved `max_message_retries` value from an older version becomes that many attempts minus one direct, plus one flood, which keeps the old "last attempt floods" behaviour for the previous default of 5 (4 direct + 1 flood).
 
 ### Battery
 - **Battery Chemistry**: NMC / LiFePO4 / LiPo (per device, used to calibrate percentage from voltage)

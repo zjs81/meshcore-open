@@ -1433,11 +1433,11 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Resetovať cestu kontaktu po 5 neúspešných pokusoch o odoslanie';
+      'Resetovať uloženú cestu kontaktu, keď zlyhajú všetky pokusy o odoslanie';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Cesty budú vymazané po 5 neúspešných pokusoch.';
+      'Cesty sa vymažú, keď zlyhajú všetky pokusy o odoslanie';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1448,7 +1448,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Striedajte sa medzi najlepšími trasami a flood režimom.';
+      'Pri každom priamom pokuse skúsiť inú známu trasu. Neskoršie pokusy sú Flood. Vypnuté ponechá aktuálnu cestu kontaktu.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1465,6 +1465,33 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Počet opakovaných pokusov pred označením správy ako neúspešnej';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Priame pokusy: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Koľkokrát sa skúsi známa trasa. Dostupné aj keď je automatické striedanie trás vypnuté.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Pokusy Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Koľkokrát sa použije Flood. Flood zaberie viac vysielacieho času. Pri zapnutom striedaní nasledujú po priamych pokusoch.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Pokusy o prihlásenie: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Koľkokrát sa skúsi prihlásenie k opakovaču alebo room serveru, kým sa to vzdá.';
 
   @override
   String get appSettings_ipfsImageLinks => 'Konfigurácia poskytovateľa IPFS';
@@ -7025,15 +7052,15 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Obnoviť algoritmus smerovania na predvolené';
+      'Obnoviť nastavenia smerovania na predvolené';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Obnoviť nastavenia algoritmu smerovania na továrne predvolené hodnoty';
+      'Obnoviť nastavenia smerovania v tejto časti na predvolené hodnoty';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Nastavenia algoritmu smerovania obnovené na predvolené';
+      'Nastavenia smerovania obnovené na predvolené';
 
   @override
   String get appSettings_imageMessagesSection => 'Obrazové správy';

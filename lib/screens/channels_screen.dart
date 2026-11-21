@@ -25,6 +25,7 @@ import '../widgets/connect_sheet.dart';
 import '../widgets/list_filter_widget.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/settings_reveal.dart';
 import '../widgets/network_map_opt_in_dialog.dart';
 import '../widgets/qr_code_display.dart';
 import '../widgets/quick_switch_bar.dart';
@@ -2045,8 +2046,9 @@ void showEditChannelSheet(
                           }
                         }),
                       ),
-                      if (cyr2latEnabled) ...[
-                        Padding(
+                      RevealOnEnable(
+                        visible: cyr2latEnabled,
+                        child: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                           child: DropdownButtonFormField<String>(
                             isExpanded: true,
@@ -2073,7 +2075,7 @@ void showEditChannelSheet(
                             }),
                           ),
                         ),
-                      ],
+                      ),
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(sheetContext.l10n.urlImage_enable),

@@ -2632,13 +2632,13 @@ abstract class AppLocalizations {
   /// No description provided for @appSettings_clearPathOnMaxRetrySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Reset contact path after 5 failed send attempts'**
+  /// **'Reset the contact\'s saved path after every send attempt fails'**
   String get appSettings_clearPathOnMaxRetrySubtitle;
 
   /// No description provided for @appSettings_pathsWillBeCleared.
   ///
   /// In en, this message translates to:
-  /// **'Paths will be cleared after 5 failed retries'**
+  /// **'Paths will be cleared after all send attempts fail'**
   String get appSettings_pathsWillBeCleared;
 
   /// No description provided for @appSettings_pathsWillNotBeCleared.
@@ -2656,7 +2656,7 @@ abstract class AppLocalizations {
   /// No description provided for @appSettings_autoRouteRotationSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Cycle between best paths and flood mode'**
+  /// **'On each direct attempt, try a different known route. Later attempts flood. Off keeps the contact\'s current path.'**
   String get appSettings_autoRouteRotationSubtitle;
 
   /// No description provided for @appSettings_autoRouteRotationEnabled.
@@ -2682,6 +2682,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Number of retry attempts before marking a message as failed'**
   String get appSettings_maxMessageRetriesSubtitle;
+
+  /// No description provided for @appSettings_directRetries.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct attempts: {count}'**
+  String appSettings_directRetries(int count);
+
+  /// No description provided for @appSettings_directRetriesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How many times to try a known route. This stays available when auto route rotation is off.'**
+  String get appSettings_directRetriesSubtitle;
+
+  /// No description provided for @appSettings_floodRetries.
+  ///
+  /// In en, this message translates to:
+  /// **'Flood attempts: {count}'**
+  String appSettings_floodRetries(int count);
+
+  /// No description provided for @appSettings_floodRetriesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How many times to flood. Floods use more airtime. With rotation on, these follow the direct attempts.'**
+  String get appSettings_floodRetriesSubtitle;
+
+  /// No description provided for @appSettings_loginAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Login attempts: {count}'**
+  String appSettings_loginAttempts(int count);
+
+  /// No description provided for @appSettings_loginAttemptsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How many times to try logging in to a repeater or room server before giving up.'**
+  String get appSettings_loginAttemptsSubtitle;
 
   /// No description provided for @appSettings_ipfsImageLinks.
   ///
@@ -11744,19 +11780,19 @@ abstract class AppLocalizations {
   /// No description provided for @appSettings_resetRoutingToDefault.
   ///
   /// In en, this message translates to:
-  /// **'Reset Routing Algorithm to Default'**
+  /// **'Reset routing settings to defaults'**
   String get appSettings_resetRoutingToDefault;
 
   /// No description provided for @appSettings_resetRoutingToDefaultSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Restore routing algorithm settings to factory defaults'**
+  /// **'Restore the routing settings in this section to their defaults'**
   String get appSettings_resetRoutingToDefaultSubtitle;
 
   /// No description provided for @appSettings_routingResetToDefault.
   ///
   /// In en, this message translates to:
-  /// **'Routing algorithm settings reset to default'**
+  /// **'Routing settings reset to defaults'**
   String get appSettings_routingResetToDefault;
 
   /// No description provided for @appSettings_imageMessagesSection.

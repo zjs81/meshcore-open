@@ -1434,11 +1434,11 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Állítsa vissza a kapcsolati elérési utat 5 sikertelen küldési kísérlet után';
+      'A kapcsolat mentett útvonalának visszaállítása, ha minden küldési próbálkozás sikertelen';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Az elérési utak 5 sikertelen újrapróbálkozás után törlődnek';
+      'Az útvonalak törlődnek, ha minden küldési próbálkozás sikertelen';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1449,7 +1449,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Váltson a legjobb útvonalak és a flood mód között';
+      'Minden közvetlen próbálkozásnál másik ismert útvonalat próbál. A későbbiek Flood. Kikapcsolva a kapcsolat jelenlegi útvonalát használja.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1466,6 +1466,33 @@ class AppLocalizationsHu extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Az üzenet sikertelenként való megjelölése előtti újrapróbálkozások száma';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Közvetlen próbálkozások: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Hányszor próbáljon ismert útvonalat. Akkor is beállítható, ha az automatikus útvonalváltás ki van kapcsolva.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Flood próbálkozások: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Hányszor használjon Floodot. A Flood több adásidőt használ. Bekapcsolt váltásnál a közvetlen próbálkozások után jönnek.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Bejelentkezési próbálkozások: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Hányszor próbáljon bejelentkezni egy átjátszóra vagy room szerverre, mielőtt feladja.';
 
   @override
   String get appSettings_ipfsImageLinks => 'IPFS-szolgáltató beállítása';
@@ -7028,15 +7055,15 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Útvonaltervezési algoritmus visszaállítása alapértelmezettre';
+      'Útválasztási beállítások visszaállítása alapértelmezettre';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Útvonaltervezési algoritmus beállításainak visszaállítása gyári alapértelmezett értékekre';
+      'A szakasz útvonalbeállításainak visszaállítása az alapértelmezett értékekre';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Útvonaltervezési algoritmus beállításai visszaállítva alapértelmezettre';
+      'Útválasztási beállítások visszaállítva alapértelmezettre';
 
   @override
   String get appSettings_imageMessagesSection => 'Képüzenetek';

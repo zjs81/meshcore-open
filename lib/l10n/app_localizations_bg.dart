@@ -1443,11 +1443,11 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Възстанови пътя към контакта след 5 неуспешни опита за изпращане';
+      'Нулиране на записания път към контакта, когато всички опити за изпращане се провалят';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Пътищата ще бъдат почистени след 5 неуспешни опита.';
+      'Пътищата се изчистват, когато всички опити за изпращане се провалят';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1459,7 +1459,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Превключвайте между най-добрите пътища и режим Flood';
+      'При всеки директен опит се пробва друг известен маршрут. Следващите опити са Flood. Изключено запазва текущия път на контакта.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1476,6 +1476,33 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Брой опити за повторно изпращане, преди съобщението да бъде маркирано като неуспешно.';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Директни опити: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Колко пъти да се пробва известен маршрут. Достъпно и когато автоматичната ротация е изключена.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Опити Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Колко пъти да се използва Flood. Flood заема повече ефирно време. При включена ротация идват след директните опити.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Опити за вход: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Колко пъти да се опитва вход към ретранслатор или room сървър, преди да се откаже.';
 
   @override
   String get appSettings_ipfsImageLinks => 'Конфигурация на IPFS доставчик';
@@ -7037,15 +7064,15 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Нулиране на алгоритъма за маршрутизация до стойност по подразбиране';
+      'Нулиране на настройките за маршрутизация до стойностите по подразбиране';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Възстановяване на настройките на алгоритъма за маршрутизация до заводските стойности по подразбиране';
+      'Възстановяване на настройките за маршрутизация в този раздел до стойностите по подразбиране';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Настройките на алгоритъма за маршрутизация са нулирани до стойност по подразбиране';
+      'Настройките за маршрутизация са нулирани до стойностите по подразбиране';
 
   @override
   String get appSettings_imageMessagesSection => 'Съобщения с изображения';

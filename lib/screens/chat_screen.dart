@@ -19,6 +19,7 @@ import '../helpers/message_url_image_helper.dart';
 import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../widgets/message_status_icon.dart';
+import '../widgets/settings_reveal.dart';
 import '../widgets/empty_state.dart';
 import '../helpers/chat_scroll_controller.dart';
 import '../helpers/gif_helper.dart';
@@ -707,6 +708,13 @@ class _ChatScreenState extends State<ChatScreen> {
           }
           final messageIndex = index;
           Contact contact = _resolveContact(connector);
+          final sendSettings = context.read<AppSettingsService>().settings;
+          final retryLimit = sendSettings.sendAttemptLimit(
+            rotating:
+                sendSettings.autoRouteRotationEnabled &&
+                contact.pathOverride == null,
+            floodPath: (contact.pathOverride ?? contact.pathLength) < 0,
+          );
           final bool isRoom = contact.type == advTypeRoom;
           final message = reversedMessages[messageIndex];
           String fourByteHex = '';
@@ -736,6 +744,7 @@ class _ChatScreenState extends State<ChatScreen> {
               );
               final bubble = _MessageBubble(
                 message: message,
+                maxSendAttempts: retryLimit,
                 senderName: isRoom
                     ? (roomAuthor != null
                           ? "${roomAuthor.name} [$fourByteHex]"
@@ -1209,8 +1218,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     });
                   },
                 ),
-                if (cyr2latEnabled) ...[
-                  Padding(
+                RevealOnEnable(
+                  visible: cyr2latEnabled,
+                  child: Padding(
                     padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                     child: DropdownButtonFormField<String>(
                       isExpanded: true,
@@ -1242,7 +1252,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       },
                     ),
                   ),
-                ],
+                ),
                 const Divider(height: 8),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
@@ -1623,6 +1633,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
 class _MessageBubble extends StatelessWidget {
   final Message message;
+  final int maxSendAttempts;
   final String senderName;
   final VoidCallback? onLongPress;
   final void Function(Message message, String emoji)? onRetryReaction;
@@ -1632,6 +1643,7 @@ class _MessageBubble extends StatelessWidget {
 
   const _MessageBubble({
     required this.message,
+    required this.maxSendAttempts,
     required this.senderName,
     required this.sourceId,
     required this.textScale,
@@ -1871,10 +1883,7 @@ class _MessageBubble extends StatelessWidget {
                               child: Text(
                                 context.l10n.chat_retryCount(
                                   message.retryCount,
-                                  context
-                                      .read<AppSettingsService>()
-                                      .settings
-                                      .maxMessageRetries,
+                                  maxSendAttempts,
                                 ),
                                 style: MeshTheme.mono(
                                   fontSize: 12 * textScale,

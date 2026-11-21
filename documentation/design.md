@@ -2,7 +2,7 @@
 
 How MeshCore Open's interface is built today, and the rules to follow when adding or changing UI. Every value below comes from the code it cites. If you change one of those sources, or settle on a new pattern, update this page in the same change.
 
-The source of truth is `lib/theme/mesh_theme.dart` (theme), `lib/widgets/mesh_ui.dart` (shared widgets) and `lib/widgets/mesh_nav_tile.dart` (settings rows). Where the code disagrees with this page, fix one of them; do not copy the inconsistency.
+The source of truth is `lib/theme/mesh_theme.dart` (theme), `lib/widgets/mesh_ui.dart` (shared widgets), `lib/widgets/settings_reveal.dart` (reveal-on-enable and settings sliders) and `lib/widgets/mesh_nav_tile.dart` (settings rows). Where the code disagrees with this page, fix one of them; do not copy the inconsistency.
 
 ## 1. Principles
 
@@ -117,6 +117,8 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Label above a group | `SectionHeader(label, trailing:)` | Upper-cases for you; pass the normal-case l10n string |
 | Settings navigation row | `MeshNavTile` | `onTap: null` dims it to 50 % and reports it as disabled; use `subtitle` to say why |
 | Settings switch | `SwitchListTile` inside `MeshSettingsTileTheme` | Wrap the settings screen body once in `MeshSettingsTileTheme` |
+| Switch that reveals more controls | `SettingsReveal` | 200ms height ease, `surfaceContainerHighest`, 16px start indent. See [Reveal on enable](#reveal-on-enable) |
+| Settings slider | `SettingsValueSlider` | The title includes the selected number, so it stays visible. The drag bubble repeats it |
 | Radio-style choice in a sheet | `MeshSheetOption` | Used by the language picker and map time filter |
 | Choosing between images | Selectable thumbnail tiles in a centred `Wrap` | Image send versions (`_versionTile` in `image_send_preview_sheet.dart`). `InkWell` with `MeshRadii.sm`; selected tile gets a 3px `primary` border **and** a `primary` check badge (never colour alone); caption under the tile in `bodySmall`, w600 when selected; figures such as packet counts in `MeshTheme.mono` 12; wrap the tile in `Semantics(button: true, selected:, label:)` |
 | Popup menu row | **always** `PopupMenuItem(child: MeshMenuItemRow(icon:, label:))` | Label wraps to 2 lines then ellipsizes; `leading:` for `ThemedIcon`; no icon keeps the 20px slot |
@@ -146,6 +148,16 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 **FAB.** One per screen, for the main "add" action (`contacts_screen.dart`, `channels_screen.dart`) or primary action (`FloatingActionButton.extended` in `themes_screen.dart`, `scanner_screen.dart`). Always give it a `tooltip` or a label.
 
 **IconButton.** Always set `tooltip:` with a localized string. It is the accessible name.
+
+### Reveal on enable
+
+A switch that uncovers more controls uses `SettingsReveal` (`lib/widgets/settings_reveal.dart`). The block's height eases over 200ms (`RevealOnEnable.duration`, `Curves.easeInOut`, aligned to the top). While the switch is off the extra controls are not in the tree, so they are not announced. The panel uses `surfaceContainerHighest` and a 16px start indent.
+
+The same animation without the tint is `RevealOnEnable`. Use it when the revealed control is not a settings sub-panel: the Cyrillic-to-Latin profile picker, the Bluetooth-off banner on the scanner, and the device-info rows on the Settings screen.
+
+Do not add a second duration, and do not reveal the controls with a plain `if` that pops them in. A block that swaps between two bodies, such as the filtered-message preview, keeps `AnimatedSize` but uses `RevealOnEnable.duration` and `RevealOnEnable.curve`.
+
+Sliders that belong to a setting use `SettingsValueSlider`. Put the selected number in the title (a localized string with the count). The slider's drag label repeats that number; it is not the only place the value appears.
 
 ## 6. Sheets, dialogs and pages
 
@@ -216,6 +228,7 @@ Follow the same pattern for any new remote-value screen.
 - [ ] Colours from `colorScheme` or theme extensions; no raw `Colors.*` or `MeshPalette.ink/bg/line` in chrome.
 - [ ] Text styles from `textTheme` or `MeshTheme.mono`; nothing below 12.
 - [ ] Settings rows use `MeshNavTile` / `SwitchListTile` inside `MeshSettingsTileTheme`; cards are `MeshCard` with a `SectionHeader`.
+- [ ] A switch that reveals more controls uses `SettingsReveal`. A settings slider uses `SettingsValueSlider` so the selected value stays in the title.
 - [ ] Popup menu rows use `MeshMenuItemRow`; segmented buttons use `MeshSegmentLabel`; destructive menu items last, in `scheme.error`.
 - [ ] Every `IconButton` and FAB has a localized `tooltip`.
 - [ ] Tap targets at least 48×48.

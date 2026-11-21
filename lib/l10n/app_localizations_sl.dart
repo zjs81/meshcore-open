@@ -1431,11 +1431,11 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Ponastavi pot stika po 5 neuspelih poskusih pošiljanja';
+      'Ponastavi shranjeno pot stika, ko spodletijo vsi poskusi pošiljanja';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Poti bodo počiščene po 5 neuspelih poskusih.';
+      'Poti se počistijo, ko spodletijo vsi poskusi pošiljanja';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1446,7 +1446,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Izmenjuj najboljše poti in flood način';
+      'Ob vsakem neposrednem poskusu preizkusi drugo znano pot. Kasnejši poskusi so Flood. Izklopljeno ohrani trenutno pot stika.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1463,6 +1463,33 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Število poskusov ponovnega poslanja, preden se sporočilo označuje kot neuspešno';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Neposredni poskusi: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Kolikokrat se preizkusi znana pot. Na voljo tudi, ko je samodejno kroženje poti izklopljeno.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Poskusi Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Kolikokrat se uporabi Flood. Flood porabi več oddajnega časa. Ob vklopljenem kroženju sledijo neposrednim poskusom.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Poskusi prijave: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Kolikokrat se poskusi prijava v ponavljalnik ali room strežnik, preden obupa.';
 
   @override
   String get appSettings_ipfsImageLinks => 'Konfiguracija ponudnika IPFS';
@@ -7013,15 +7040,15 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Ponastavite algoritem usmerjanja na privzeto';
+      'Ponastavi nastavitve usmerjanja na privzete';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Obnovite nastavitve algoritma usmerjanja na tovarniške privzetke';
+      'Obnovi nastavitve usmerjanja v tem razdelku na privzete vrednosti';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Nastavitve algoritma usmerjanja so ponastavljene na privzeto';
+      'Nastavitve usmerjanja so ponastavljene na privzete';
 
   @override
   String get appSettings_imageMessagesSection => 'Sporočila s slikami';

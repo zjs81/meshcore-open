@@ -1439,11 +1439,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Redefinir o caminho de contato após 5 tentativas de envio falhas';
+      'Redefinir o caminho salvo do contato quando todas as tentativas de envio falharem';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Os caminhos serão limpos após 5 tentativas falhas.';
+      'Os caminhos serão limpos quando todas as tentativas de envio falharem';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1454,7 +1454,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Alternar entre os melhores caminhos e o modo Flood';
+      'Em cada tentativa direta, experimentar outra rota conhecida. As tentativas seguintes são Flood. Desligado mantém o caminho atual do contato.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1471,6 +1471,33 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Número de tentativas de reenvio antes de classificar uma mensagem como falha.';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Tentativas diretas: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Quantas vezes tentar uma rota conhecida. Continua disponível com a rotação automática de rotas desligada.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Tentativas Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Quantas vezes usar Flood. Flood usa mais tempo de ar. Com a rotação ligada, vêm depois das tentativas diretas.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Tentativas de login: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Quantas vezes tentar entrar em um repetidor ou servidor de sala antes de desistir.';
 
   @override
   String get appSettings_ipfsImageLinks => 'Configuração do provedor IPFS';
@@ -7026,15 +7053,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Redefinir algoritmo de roteamento para o padrão';
+      'Redefinir configurações de roteamento para o padrão';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Restaurar as configurações do algoritmo de roteamento para os valores padrão de fábrica';
+      'Restaurar as configurações de roteamento desta seção para os padrões';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Configurações do algoritmo de roteamento redefinidas para o padrão';
+      'Configurações de roteamento redefinidas para o padrão';
 
   @override
   String get appSettings_imageMessagesSection => 'Mensagens de imagem';
@@ -8993,11 +9020,11 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Repor o caminho do contacto após 5 tentativas de envio falhadas';
+      'Repor o caminho guardado do contacto quando todas as tentativas de envio falharem';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Os caminhos serão limpos após 5 tentativas falhadas';
+      'Os caminhos serão limpos quando todas as tentativas de envio falharem';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -9008,7 +9035,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Alterna entre os melhores caminhos e o modo flood';
+      'Em cada tentativa direta, experimentar outro caminho conhecido. As tentativas seguintes são Flood. Desligado mantém o caminho atual do contacto.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -9024,6 +9051,33 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Número de tentativas antes de marcar uma mensagem como falhada';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Tentativas diretas: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Quantas vezes tentar um caminho conhecido. Continua disponível com a rotação automática de caminhos desligada.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Tentativas Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Quantas vezes usar Flood. Flood usa mais tempo de ar. Com a rotação ligada, vêm a seguir às tentativas diretas.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Tentativas de início de sessão: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Quantas vezes tentar iniciar sessão num repetidor ou servidor de sala antes de desistir.';
 
   @override
   String get appSettings_ipfsImageLinks => 'Configuração do fornecedor IPFS';
@@ -14477,15 +14531,15 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Repor algoritmo de encaminhamento';
+      'Repor definições de encaminhamento';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Repõe as definições do algoritmo de encaminhamento para os valores de fábrica';
+      'Repor as definições de encaminhamento desta secção para os valores predefinidos';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Definições do algoritmo de encaminhamento repostas';
+      'Definições de encaminhamento repostas';
 
   @override
   String get appSettings_imageMessagesSection => 'Mensagens de imagem';

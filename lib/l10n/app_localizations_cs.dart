@@ -1434,11 +1434,11 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Resetovat cestu kontaktu po 5 neúspěšných pokusech o odeslání';
+      'Resetovat uloženou cestu kontaktu, když selžou všechny pokusy o odeslání';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Cesty budou vymazány po 5 neúspěšných pokusech';
+      'Cesty se vymažou, když selžou všechny pokusy o odeslání';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1449,7 +1449,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Střídat nejlepší cesty a režim flood';
+      'Při každém přímém pokusu zkusit jinou známou trasu. Pozdější pokusy jsou Flood. Vypnuto ponechá aktuální cestu kontaktu.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1465,6 +1465,33 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Počet opakovaných pokusů, než se zpráva označí jako neodeslaná';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Přímé pokusy: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Kolikrát se zkusí známá trasa. Dostupné i když je automatické střídání tras vypnuté.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Pokusy Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Kolikrát se použije Flood. Flood zabere víc vysílacího času. Při zapnutém střídání následují po přímých pokusech.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Pokusy o přihlášení: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Kolikrát se zkusí přihlášení k opakovači nebo room serveru, než se to vzdá.';
 
   @override
   String get appSettings_ipfsImageLinks => 'Konfigurace poskytovatele IPFS';
@@ -7017,15 +7044,15 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Obnovit výchozí směrovací algoritmus';
+      'Obnovit výchozí nastavení směrování';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Obnovit nastavení směrovacího algoritmu na tovární hodnoty';
+      'Obnovit nastavení směrování v této části na výchozí hodnoty';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Nastavení směrovacího algoritmu obnoveno na výchozí';
+      'Nastavení směrování obnoveno na výchozí';
 
   @override
   String get appSettings_imageMessagesSection => 'Obrázkové zprávy';
