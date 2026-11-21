@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -554,9 +555,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'Модели не загружены';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'Восстановленные настройки выбирают модели, которых нет на этом устройстве:\n$models\n\nЗагрузить их сейчас?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'Восстановленные настройки выбирают модели, которых нет на этом устройстве. Загрузить их сейчас?';
 
   @override
   String get backupRestore_downloadModels => 'Загрузить модели';
@@ -1378,6 +1378,13 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get appSettings_regionOnHopsLineSubtitle =>
       'Показывать регион сообщения канала в одной строке с числом хопов, а не под ней.';
+
+  @override
+  String get appSettings_showCompressionIndicator => 'Compression indicator';
+
+  @override
+  String get appSettings_showCompressionIndicatorSubtitle =>
+      'Show an icon on messages compressed with SMAZ.';
 
   @override
   String get appSettings_notifications => 'Уведомления';
@@ -2710,8 +2717,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get pathEditor_hexLabel => 'Префиксы шестнадцатеричной системы';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Два шестнадцатеричных символа на каждом шаге, разделенные запятыми.';
+  String pathEditor_hexHelper(int count) {
+    return '$count шестнадцатеричных символа на каждом шаге, разделенные запятыми.';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {
@@ -7591,6 +7599,37 @@ class AppLocalizationsRu extends AppLocalizations {
       'Подключитесь к радио, чтобы отправлять сообщения';
 
   @override
+  String get modelDownload_notDownloaded => 'Не скачано';
+
+  @override
+  String get modelDownload_downloading => 'Загрузка';
+
+  @override
+  String get modelDownload_active => 'Активна';
+
+  @override
+  String get modelDownload_failed => 'Не удалось скачать';
+
+  @override
+  String get modelDownload_incomplete => 'Неполная';
+
+  @override
+  String get modelDownload_verifying => 'Проверка загрузки';
+
+  @override
+  String get modelDownload_useModel => 'Использовать эту модель';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Не удалось удалить модель: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
+
+  @override
   String get chatCompression_title => 'Compression';
 
   @override
@@ -7636,4 +7675,7 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get chatCompression_saveFailed =>
       'Couldn\'t save the compression setting. Showing the saved setting.';
+
+  @override
+  String get messageMeta_smazCompressed => 'SMAZ compressed';
 }

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
+import '../connector/meshcore_protocol.dart';
 import '../helpers/contact_share_message.dart';
 import '../l10n/contact_localization.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
 import '../theme/mesh_theme.dart';
+import '../utils/contact_search.dart';
 import 'mesh_ui.dart';
 
 /// Lets the user pick a saved contact (or themself) and appends the encoded
@@ -50,21 +52,19 @@ class _ShareContactSheetState extends State<_ShareContactSheet> {
     final contacts =
         connector.contacts
             .where(
-              (c) =>
-                  c.publicKey.length == 32 &&
-                  (needle.isEmpty || c.name.toLowerCase().contains(needle)),
+              (c) => c.publicKey.length == 32 && matchesContactQuery(c, needle),
             )
             .toList()
-          ..sort(
-            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-          );
+          ..sort((a, b) => compareContactQueryRank(a, b, needle));
     final selfName = connector.selfName ?? '';
-    final showSelf =
-        selfKey != null &&
-        selfKey.length == 32 &&
-        (needle.isEmpty ||
-            selfName.toLowerCase().contains(needle) ||
-            l10n.contactShare_myContact.toLowerCase().contains(needle));
+    final selfRank = selfKey != null && selfKey.length == 32
+        ? rankLabeledKeyQuery(
+            name: selfName.isEmpty ? l10n.contactShare_myContact : selfName,
+            publicKeyHex: pubKeyToHex(selfKey),
+            query: needle,
+            aliases: [l10n.contactShare_myContact],
+          )
+        : null;
 
     return SafeArea(
       child: ConstrainedBox(
@@ -86,40 +86,65 @@ class _ShareContactSheetState extends State<_ShareContactSheet> {
                 onChanged: (value) => setState(() => _query = value),
               ),
             ),
-            Flexible(
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  if (showSelf)
-                    _tile(
-                      context,
-                      name: selfName.isEmpty
-                          ? l10n.contactShare_myContact
-                          : selfName,
-                      subtitle: l10n.contactShare_myContact,
-                      token: encodeContactShare(
-                        publicKey: selfKey,
-                        type: 1,
-                        name: selfName,
-                      ),
-                    ),
-                  for (final c in contacts) _contactTile(context, c),
-                  if (!showSelf && contacts.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Center(
-                        child: Text(
-                          l10n.contactShare_noContacts,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
+            Flexible(child: _shareList(context, contacts, selfRank)),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _shareList(
+    BuildContext context,
+    List<Contact> contacts,
+    ContactQueryRank? selfRank,
+  ) {
+    final l10n = context.l10n;
+    final connector = widget.connector;
+    final selfKey = connector.selfPublicKey;
+    final selfName = connector.selfName ?? '';
+    final rows =
+        <({int rank, String name, Widget tile})>[
+          for (final contact in contacts)
+            (
+              rank: rankContactQuery(contact, _query)?.index ?? 3,
+              name: contact.name.toLowerCase(),
+              tile: _contactTile(context, contact),
+            ),
+          if (selfRank != null && selfKey != null)
+            (
+              rank: selfRank.index,
+              name: (selfName.isEmpty ? l10n.contactShare_myContact : selfName)
+                  .toLowerCase(),
+              tile: _tile(
+                context,
+                name: selfName.isEmpty ? l10n.contactShare_myContact : selfName,
+                subtitle: l10n.contactShare_myContact,
+                token: encodeContactShare(
+                  publicKey: selfKey,
+                  type: 1,
+                  name: selfName,
+                ),
+              ),
+            ),
+        ]..sort((a, b) {
+          final byRank = a.rank.compareTo(b.rank);
+          if (byRank != 0) return byRank;
+          return a.name.compareTo(b.name);
+        });
+    if (rows.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(24),
+        child: Center(
+          child: Text(
+            l10n.contactShare_noContacts,
+            style: const TextStyle(fontSize: 14),
+          ),
+        ),
+      );
+    }
+    return ListView(
+      shrinkWrap: true,
+      children: [for (final row in rows) row.tile],
     );
   }
 

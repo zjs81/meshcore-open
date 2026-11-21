@@ -2529,7 +2529,7 @@
   "pathEditor_searchRepeaters": "Sök repeaters",
   "pathEditor_advancedHex": "Avancerat: rå rutt i hexformat",
   "pathEditor_hexLabel": "Hex-prefikser",
-  "pathEditor_hexHelper": "Två hextecken per hopp, separerade med kommatecken",
+  "pathEditor_hexHelper": "{count} hextecken per hopp, separerade med kommatecken",
   "pathEditor_invalidTokens": "Ogiltigt: {tokens}",
   "pathEditor_tooManyHops": "Maximalt 64 hopp",
   "pathEditor_usePath": "Använd den här rutten",
@@ -3803,7 +3803,7 @@
   "backupRestore_backupComplete": "Säkerhetskopia skapad.",
   "backupRestore_restoreComplete": "Återställningen är klar. Återanslut om du återställde radions identitet.",
   "backupRestore_missingModelsTitle": "Modeller inte nedladdade",
-  "backupRestore_missingModelsMessage": "De återställda inställningarna väljer modeller som inte finns på den här enheten:\n{models}\n\nLadda ned dem nu?",
+  "backupRestore_missingModelsMessage": "De återställda inställningarna väljer modeller som inte finns på den här enheten. Ladda ned dem nu?",
   "backupRestore_downloadModels": "Ladda ned modeller",
   "backupRestore_downloading": "Laddar ned…",
   "backupRestore_cancelDownload": "Avbryt nedladdning",
@@ -3823,5 +3823,14 @@
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB eller TCP",
   "connectSheet_stopReconnecting": "Sluta återansluta",
   "connectSheet_reconnectFailed": "Kunde inte nå {name}. Kontrollera att den är påslagen och i närheten.",
-  "chat_composerOffline": "Anslut till en radio för att skicka meddelanden"
+  "chat_composerOffline": "Anslut till en radio för att skicka meddelanden",
+  "modelDownload_notDownloaded": "Inte nedladdad",
+  "modelDownload_downloading": "Laddar ner",
+  "modelDownload_active": "Aktiv",
+  "modelDownload_failed": "Kunde inte ladda ner",
+  "modelDownload_incomplete": "Ofullständig",
+  "modelDownload_verifying": "Verifierar nedladdningen",
+  "modelDownload_useModel": "Använd den här modellen",
+  "modelDownload_removeFailed": "Det gick inte att ta bort modellen: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

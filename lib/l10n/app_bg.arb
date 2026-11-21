@@ -2625,7 +2625,7 @@
   "pathEditor_searchRepeaters": "Търсене на повторители",
   "pathEditor_advancedHex": "Разширено: суров шестнадесетичен път",
   "pathEditor_hexLabel": "Шестнадесетични префикси",
-  "pathEditor_hexHelper": "Два шестнадесетични идентификатора на скок, разделени със запетаи",
+  "pathEditor_hexHelper": "{count} шестнадесетични идентификатора на скок, разделени със запетаи",
   "pathEditor_invalidTokens": "Невалидни: {tokens}",
   "routing_lastWorked": "последно работил {when}",
   "routing_deliveryCounts": "{successes} доставени, {failures} неуспешни",
@@ -3756,7 +3756,7 @@
   "backupRestore_backupComplete": "Файлът с резервно копие е създаден.",
   "backupRestore_restoreComplete": "Възстановяването приключи. Свържете се отново, ако сте възстановили идентичността на радиото.",
   "backupRestore_missingModelsTitle": "Моделите не са изтеглени",
-  "backupRestore_missingModelsMessage": "Възстановените настройки избират модели, които не са налични на това устройство:\n{models}\n\nДа се изтеглят ли сега?",
+  "backupRestore_missingModelsMessage": "Възстановените настройки избират модели, които не са налични на това устройство. Да се изтеглят ли сега?",
   "backupRestore_downloadModels": "Изтегли модели",
   "backupRestore_downloading": "Изтегляне…",
   "backupRestore_cancelDownload": "Отмени изтеглянето",
@@ -3776,5 +3776,14 @@
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB или TCP",
   "connectSheet_stopReconnecting": "Спри повторното свързване",
   "connectSheet_reconnectFailed": "Няма връзка с {name}. Уверете се, че е включено и наблизо.",
-  "chat_composerOffline": "Свържете се с радио, за да изпращате съобщения"
+  "chat_composerOffline": "Свържете се с радио, за да изпращате съобщения",
+  "modelDownload_notDownloaded": "Не е изтеглен",
+  "modelDownload_downloading": "Изтегляне",
+  "modelDownload_active": "Активен",
+  "modelDownload_failed": "Неуспешно изтегляне",
+  "modelDownload_incomplete": "Непълен",
+  "modelDownload_verifying": "Проверка на изтеглянето",
+  "modelDownload_useModel": "Използвай този модел",
+  "modelDownload_removeFailed": "Моделът не можа да бъде премахнат: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:crypto/crypto.dart';
+
 import '../connector/meshcore_protocol.dart';
 import '../models/contact.dart';
 import '../models/message.dart';
@@ -169,6 +171,7 @@ class MessageRetryService extends ChangeNotifier {
     String? translationModelId,
     Uint8List? pathBytes,
     int? pathLength,
+    bool isSmazCompressed = false,
   }) async {
     final messageId = const Uuid().v4();
     final resolved = resolvePathSelection(contact);
@@ -184,6 +187,7 @@ class MessageRetryService extends ChangeNotifier {
       translationModelId: translationModelId,
       timestamp: DateTime.now(),
       isOutgoing: true,
+      isSmazCompressed: isSmazCompressed,
       status: MessageStatus.pending,
       messageId: messageId,
       retryCount: 0,

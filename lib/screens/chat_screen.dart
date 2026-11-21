@@ -20,6 +20,7 @@ import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../widgets/message_status_icon.dart';
 import '../widgets/empty_state.dart';
+import '../helpers/chat_scroll_anchor.dart';
 import '../helpers/chat_scroll_controller.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/ipfs_link_attach_flow.dart';
@@ -90,12 +91,16 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   final _holidayWatcher = HolidayTriggerWatcher();
   final _messageAreaKey = GlobalKey();
   final _textController = TextEditingController();
   final _scrollController = ChatScrollController();
+  final _scrollAnchor = ChatScrollAnchor();
+  ({String id, bool bookmarksOnly})? _newestRow;
   final _textFieldFocusNode = FocusNode();
+  bool _focusLostWhileAway = false;
+  bool _focusLostToRoute = false;
   final GlobalKey _unreadScrollKey = GlobalKey();
   bool _isLoadingOlder = false;
   bool _showBookmarkedOnly = false;
@@ -151,6 +156,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _textFieldFocusNode.addListener(_onTextFieldFocusChange);
     _scrollController.onScrollNearTop = _loadOlderMessages;
     _scrollController.showJumpToBottom.addListener(_clearDividerAtBottom);
@@ -218,10 +224,28 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    // The focus manager observes the lifecycle from app start, so its restore
+    // is already queued and runs first. Clearing afterwards keeps a focus
+    // that was not restored (the user clicked elsewhere) from swallowing the
+    // next real tap on the composer.
+    scheduleMicrotask(() => _focusLostWhileAway = false);
+  }
+
   void _onTextFieldFocusChange() {
-    if (_textFieldFocusNode.hasFocus && mounted) {
-      _scrollController.handleKeyboardOpen();
+    if (!mounted) return;
+    if (!_textFieldFocusNode.hasFocus) {
+      final state = WidgetsBinding.instance.lifecycleState;
+      _focusLostWhileAway = state != null && state != AppLifecycleState.resumed;
+      _focusLostToRoute = !(ModalRoute.of(context)?.isCurrent ?? true);
+      return;
     }
+    final restored = _focusLostWhileAway || _focusLostToRoute;
+    _focusLostWhileAway = false;
+    _focusLostToRoute = false;
+    if (!restored) _scrollController.handleKeyboardOpen();
   }
 
   Future<void> _loadOlderMessages() async {
@@ -238,6 +262,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _route?.secondaryAnimation?.removeStatusListener(_onCoveringRouteStatus);
     _unregisterActive();
     _scrollController.showJumpToBottom.removeListener(_clearDividerAtBottom);
@@ -701,15 +726,41 @@ class _ChatScreenState extends State<ChatScreen> {
     final reversedMessages = visibleMessages.reversed.toList();
     final itemCount = reversedMessages.length + (_isLoadingOlder ? 1 : 0);
 
+    // A reader scrolled up keeps their place when messages arrive below, as
+    // a room's backlog does in a burst right after login.
+    final previous = _newestRow;
+    final newest = (
+      id: reversedMessages.first.messageId,
+      bookmarksOnly: _showBookmarkedOnly,
+    );
+    _newestRow = newest;
+    if (previous != null &&
+        previous.bookmarksOnly == newest.bookmarksOnly &&
+        previous.id != newest.id &&
+        _pendingUnreadScrollTarget == null &&
+        _scrollController.showJumpToBottom.value) {
+      final inserted = reversedMessages.indexWhere(
+        (m) => m.messageId == previous.id,
+      );
+      if (inserted > 0) _scrollAnchor.rowsInsertedBelow(inserted);
+    }
+
     // Auto-scroll to bottom if user is already at bottom
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (_pendingUnreadScrollTarget != null) return;
+      // Never take over a drag or fling: during a sync every update would
+      // pull a reader who starts scrolling up back to the newest message.
+      if (_scrollController.hasClients &&
+          _scrollController.position.isScrollingNotifier.value) {
+        return;
+      }
       _scrollController.scrollToBottomIfAtBottom();
     });
 
     return ChatZoomWrapper(
-      child: ListView.builder(
+      child: AnchoredChatListView.builder(
+        scrollAnchor: _scrollAnchor,
         reverse: true, // List grows from bottom up
         controller: _scrollController,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -1574,6 +1625,8 @@ class _MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final settingsService = context.watch<AppSettingsService>();
     final enableTracing = settingsService.settings.enableMessageTracing;
+    final showCompressionIndicator =
+        settingsService.settings.showCompressionIndicator;
     final isOutgoing = message.isOutgoing;
     final scheme = Theme.of(context).colorScheme;
     final gifId = GifHelper.parseGif(message.text);
@@ -1837,6 +1890,12 @@ class _MessageBubble extends StatelessWidget {
                                 if (message.hasFutureTimestamp)
                                   FutureTimestampIndicator(
                                     size: 16 * textScale,
+                                  ),
+                                if (showCompressionIndicator &&
+                                    message.isSmazCompressed)
+                                  CompressionIndicator(
+                                    size: 14 * textScale,
+                                    color: metaColor,
                                   ),
                                 if (isOutgoing) ...[
                                   const SizedBox(width: 2),

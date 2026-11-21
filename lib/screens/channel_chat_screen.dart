@@ -99,12 +99,15 @@ class ChannelChatScreen extends StatefulWidget {
   State<ChannelChatScreen> createState() => _ChannelChatScreenState();
 }
 
-class _ChannelChatScreenState extends State<ChannelChatScreen> {
+class _ChannelChatScreenState extends State<ChannelChatScreen>
+    with WidgetsBindingObserver {
   final _holidayWatcher = HolidayTriggerWatcher();
   final _messageAreaKey = GlobalKey();
   final TextEditingController _textController = TextEditingController();
   final ChatScrollController _scrollController = ChatScrollController();
   final FocusNode _textFieldFocusNode = FocusNode();
+  bool _focusLostWhileAway = false;
+  bool _focusLostToRoute = false;
   ChannelMessage? _replyingToMessage;
   bool _useReplyRegion = false;
   final CommunityStore _communityStore = CommunityStore();
@@ -135,6 +138,13 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   MeshCoreConnector? _connector;
   final ChatSendGuard _sendGuard = ChatSendGuard();
   bool _channelSkipNextBottomSnap = false;
+
+  /// Newest entry and selection size seen by the last bottom-snap check, so
+  /// a rebuild that only changed the selection is not mistaken for a new
+  /// message.
+  String? _snapNewestEntryId;
+  int _snapSelectionCount = 0;
+
   String? _unreadDividerMessageId;
   _TranscriptLayout? _transcriptLayout;
   ReceivedImageStore? _watchedImageStore;
@@ -173,6 +183,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _textFieldFocusNode.addListener(_onTextFieldFocusChange);
     _scrollController.onScrollNearTop = _loadOlderMessages;
     _scrollController.showJumpToBottom.addListener(_clearDividerAtBottom);
@@ -263,10 +274,28 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     }
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    // The focus manager observes the lifecycle from app start, so its restore
+    // is already queued and runs first. Clearing afterwards keeps a focus
+    // that was not restored (the user clicked elsewhere) from swallowing the
+    // next real tap on the composer.
+    scheduleMicrotask(() => _focusLostWhileAway = false);
+  }
+
   void _onTextFieldFocusChange() {
-    if (_textFieldFocusNode.hasFocus && mounted) {
-      _scrollController.handleKeyboardOpen();
+    if (!mounted) return;
+    if (!_textFieldFocusNode.hasFocus) {
+      final state = WidgetsBinding.instance.lifecycleState;
+      _focusLostWhileAway = state != null && state != AppLifecycleState.resumed;
+      _focusLostToRoute = !(ModalRoute.of(context)?.isCurrent ?? true);
+      return;
     }
+    final restored = _focusLostWhileAway || _focusLostToRoute;
+    _focusLostWhileAway = false;
+    _focusLostToRoute = false;
+    if (!restored) _scrollController.handleKeyboardOpen();
   }
 
   Future<void> _loadOlderMessages() async {
@@ -347,6 +376,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _route?.secondaryAnimation?.removeStatusListener(_onCoveringRouteStatus);
     _watchedImageStore?.removeListener(_onImageStoreChanged);
     _unregisterActive();
@@ -929,10 +959,23 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                               rowCount + (_isLoadingOlder ? 1 : 0);
 
                           // Auto-scroll to bottom if user is already at bottom
+                          final newestEntryId = layout.ids.first;
+                          final selectionCount = _selectedIds.length;
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             if (!mounted) return;
+                            final newEntry =
+                                newestEntryId != _snapNewestEntryId;
+                            final selectionChanged =
+                                selectionCount != _snapSelectionCount;
+                            _snapNewestEntryId = newestEntryId;
+                            _snapSelectionCount = selectionCount;
                             if (_channelSkipNextBottomSnap) {
                               _channelSkipNextBottomSnap = false;
+                              return;
+                            }
+                            // Picking or clearing messages is not a new
+                            // message: keep the reading position.
+                            if (!newEntry && (_selecting || selectionChanged)) {
                               return;
                             }
                             _scrollController.scrollToBottomIfAtBottom();
@@ -1109,6 +1152,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final publicIpfsGateway = settingsService.settings.publicIpfsGateway;
     final enableTracing = settingsService.settings.enableMessageTracing;
     final regionOnHopsLine = settingsService.settings.regionOnHopsLine;
+    final showCompressionIndicator =
+        settingsService.settings.showCompressionIndicator;
     final isOutgoing = message.isOutgoing;
     final scheme = Theme.of(context).colorScheme;
     final gifId = GifHelper.parseGif(message.text);
@@ -1437,6 +1482,12 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                               ),
                               if (message.hasFutureTimestamp)
                                 FutureTimestampIndicator(size: 16 * textScale),
+                              if (showCompressionIndicator &&
+                                  message.isSmazCompressed)
+                                CompressionIndicator(
+                                  size: 14 * textScale,
+                                  color: metaColor,
+                                ),
                               if (enableTracing &&
                                   !isOutgoing &&
                                   message.repeatCount > 0)

@@ -2598,7 +2598,7 @@
   "pathEditor_searchRepeaters": "Пошук повторювачів",
   "pathEditor_advancedHex": "Просунутий рівень: пряма шлях у форматі шестнадцяткової системи.",
   "pathEditor_hexLabel": "Префікси для шестнадцяткової системи числення",
-  "pathEditor_hexHelper": "Два шестизначні символи на кожний крок, розділені комами",
+  "pathEditor_hexHelper": "{count} шістнадцяткові символи на кожний крок, розділені комами",
   "pathEditor_invalidTokens": "Неправильно: {tokens}",
   "routing_lastWorked": "працював {when}",
   "routing_deliveryCounts": "{successes} доставлено, {failures} не доставлено",
@@ -3736,7 +3736,7 @@
   "backupRestore_backupComplete": "Файл резервної копії створено.",
   "backupRestore_restoreComplete": "Відновлення завершено. Перепідключіться, якщо ви відновили ідентифікатор радіо.",
   "backupRestore_missingModelsTitle": "Моделі не завантажено",
-  "backupRestore_missingModelsMessage": "Відновлені налаштування вибирають моделі, яких немає на цьому пристрої:\n{models}\n\nЗавантажити їх зараз?",
+  "backupRestore_missingModelsMessage": "Відновлені налаштування вибирають моделі, яких немає на цьому пристрої. Завантажити їх зараз?",
   "backupRestore_downloadModels": "Завантажити моделі",
   "backupRestore_downloading": "Завантаження…",
   "backupRestore_cancelDownload": "Скасувати завантаження",
@@ -3756,5 +3756,14 @@
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB або TCP",
   "connectSheet_stopReconnecting": "Зупинити перепідключення",
   "connectSheet_reconnectFailed": "Не вдалося зв'язатися з {name}. Переконайтеся, що воно увімкнене й поруч.",
-  "chat_composerOffline": "Підключіться до радіо, щоб надсилати повідомлення"
+  "chat_composerOffline": "Підключіться до радіо, щоб надсилати повідомлення",
+  "modelDownload_notDownloaded": "Не завантажено",
+  "modelDownload_downloading": "Завантаження",
+  "modelDownload_active": "Активна",
+  "modelDownload_failed": "Не вдалося завантажити",
+  "modelDownload_incomplete": "Неповна",
+  "modelDownload_verifying": "Перевірка завантаження",
+  "modelDownload_useModel": "Використовувати цю модель",
+  "modelDownload_removeFailed": "Не вдалося видалити модель: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

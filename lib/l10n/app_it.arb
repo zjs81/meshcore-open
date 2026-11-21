@@ -2680,7 +2680,7 @@
   "pathEditor_searchRepeaters": "Cerca ripetitori",
   "pathEditor_advancedHex": "Avanzato: percorso esadecimale grezzo",
   "pathEditor_hexLabel": "Prefissi esadecimali",
-  "pathEditor_hexHelper": "Due caratteri esadecimali per ogni salto, separati da virgole.",
+  "pathEditor_hexHelper": "{count} caratteri esadecimali per ogni salto, separati da virgole.",
   "pathEditor_invalidTokens": "Non valido: {tokens}",
   "routing_lastWorked": "ha funzionato {when}",
   "pathEditor_tooManyHops": "Massimo 64 salti",
@@ -3890,7 +3890,7 @@
   "backupRestore_backupComplete": "File di backup creato.",
   "backupRestore_restoreComplete": "Ripristino completato. Riconnettiti se hai ripristinato l'identità della radio.",
   "backupRestore_missingModelsTitle": "Modelli non scaricati",
-  "backupRestore_missingModelsMessage": "Le impostazioni ripristinate selezionano modelli non disponibili su questo dispositivo:\n{models}\n\nScaricarli ora?",
+  "backupRestore_missingModelsMessage": "Le impostazioni ripristinate selezionano modelli non disponibili su questo dispositivo. Scaricarli ora?",
   "backupRestore_downloadModels": "Scarica modelli",
   "backupRestore_downloading": "Download in corso…",
   "backupRestore_cancelDownload": "Annulla download",
@@ -3910,5 +3910,14 @@
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB o TCP",
   "connectSheet_stopReconnecting": "Interrompi la riconnessione",
   "connectSheet_reconnectFailed": "Impossibile raggiungere {name}. Assicurati che sia acceso e nelle vicinanze.",
-  "chat_composerOffline": "Connettiti a una radio per inviare messaggi"
+  "chat_composerOffline": "Connettiti a una radio per inviare messaggi",
+  "modelDownload_notDownloaded": "Non scaricato",
+  "modelDownload_downloading": "Download in corso",
+  "modelDownload_active": "Attivo",
+  "modelDownload_failed": "Download non riuscito",
+  "modelDownload_incomplete": "Incompleto",
+  "modelDownload_verifying": "Verifica del download",
+  "modelDownload_useModel": "Usa questo modello",
+  "modelDownload_removeFailed": "Impossibile rimuovere il modello: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

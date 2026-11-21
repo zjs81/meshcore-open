@@ -62,7 +62,10 @@ class _ToggleConnector extends MeshCoreConnector {
 // timestamp layout regardless of host timezone.
 DateTime _at(int seconds) => DateTime(2023, 11, 14, 22, 13, seconds);
 
-Future<void> _seedRadio() async {
+Future<void> _seedRadio({
+  bool smazCompressed = false,
+  int repeatCount = 0,
+}) async {
   final alice = Contact(
     publicKey: _aliceKey,
     name: 'Alice',
@@ -88,6 +91,8 @@ Future<void> _seedRadio() async {
     translatedText: translated,
     timestamp: _at(second),
     isOutgoing: outgoing,
+    isSmazCompressed: smazCompressed,
+    repeatCount: repeatCount,
     status: ChannelMessageStatus.sent,
     channelIndex: 0,
   );
@@ -116,6 +121,7 @@ Future<void> _seedRadio() async {
     translatedText: translated,
     timestamp: _at(second),
     isOutgoing: outgoing,
+    isSmazCompressed: smazCompressed,
     status: MessageStatus.delivered,
   );
   await (MessageStore()..setPublicKeyHex = _radioHex)
@@ -145,11 +151,21 @@ Future<void> _seedRadio() async {
 Future<Widget> _app(
   WidgetTester tester,
   MeshCoreConnector connector,
-  Widget home,
-) async {
+  Widget home, {
+  bool showCompressionIndicator = false,
+  bool enableMessageTracing = false,
+}) async {
   final storage = StorageService();
   final settings = AppSettingsService();
-  await tester.runAsync(settings.loadSettings);
+  await tester.runAsync(() async {
+    await settings.loadSettings();
+    if (showCompressionIndicator) {
+      await settings.setShowCompressionIndicator(true);
+    }
+    if (enableMessageTracing) {
+      await settings.setEnableMessageTracing(true);
+    }
+  });
   final translation = TranslationService(settings);
   return MultiProvider(
     providers: [
@@ -216,10 +232,24 @@ Future<List<String>> _render(
   _ToggleConnector connector,
   Widget Function() screen, {
   required bool connected,
+  bool showCompressionIndicator = false,
+  bool enableMessageTracing = false,
+  bool expectCompressionIndicator = false,
 }) async {
   connector.connected = connected;
-  await tester.pumpWidget(await _app(tester, connector, screen()));
+  await tester.pumpWidget(
+    await _app(
+      tester,
+      connector,
+      screen(),
+      showCompressionIndicator: showCompressionIndicator,
+      enableMessageTracing: enableMessageTracing,
+    ),
+  );
   await _settle(tester);
+  if (expectCompressionIndicator) {
+    expect(find.byType(CompressionIndicator), findsNWidgets(5));
+  }
   final extents = _bubbleExtents(tester);
   await tester.pumpWidget(const SizedBox());
   await tester.pump(const Duration(seconds: 1));
@@ -319,4 +349,71 @@ void main() {
       });
     }
   }
+
+  testWidgets(
+    'channel and DM bubbles with SMAZ compression indicator fit 320dp, 2.0x text',
+    (tester) async {
+      ChannelMessageStore().forgetArchive();
+      MessageStore().forgetArchive();
+      await _seedRadio(smazCompressed: true, repeatCount: 2);
+      ChannelMessageStore().forgetArchive();
+      MessageStore().forgetArchive();
+
+      PlatformInfo.debugIsDesktopOverride = false;
+      addTearDown(() => PlatformInfo.debugIsDesktopOverride = null);
+      tester.view.physicalSize = const Size(320, 4000);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+      addTearDown(tester.view.reset);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+      final connector = _ToggleConnector();
+      addTearDown(connector.dispose);
+      await tester.runAsync(connector.restoreLastRadio);
+      final channel = connector.channels.single;
+      final alice = connector.contacts.single;
+
+      final channelOffline = await _render(
+        tester,
+        connector,
+        () => ChannelChatScreen(channel: channel),
+        connected: false,
+        showCompressionIndicator: true,
+        enableMessageTracing: true,
+        expectCompressionIndicator: true,
+      );
+      final channelConnected = await _render(
+        tester,
+        connector,
+        () => ChannelChatScreen(channel: channel),
+        connected: true,
+        showCompressionIndicator: true,
+        enableMessageTracing: true,
+        expectCompressionIndicator: true,
+      );
+      expect(channelOffline, hasLength(5));
+      expect(channelConnected, channelOffline);
+
+      final dmOffline = await _render(
+        tester,
+        connector,
+        () => ChatScreen(contact: alice),
+        connected: false,
+        showCompressionIndicator: true,
+        enableMessageTracing: true,
+        expectCompressionIndicator: true,
+      );
+      final dmConnected = await _render(
+        tester,
+        connector,
+        () => ChatScreen(contact: alice),
+        connected: true,
+        showCompressionIndicator: true,
+        enableMessageTracing: true,
+        expectCompressionIndicator: true,
+      );
+      expect(dmOffline, hasLength(5));
+      expect(dmConnected, dmOffline);
+    },
+  );
 }
