@@ -53,8 +53,9 @@ class _ImageCodecModelsSectionState extends State<ImageCodecModelsSection> {
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: scheme.surfaceContainerHighest,
+                color: scheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(MeshRadii.md),
+                border: Border.all(color: scheme.outlineVariant),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(12),

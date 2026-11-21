@@ -148,14 +148,11 @@ Individual channels can be muted from the channel chat bell icon, the channel li
 - **Offline Map Cache**: Navigate to tile download screen
 
 ### Translation
-Not shown on web. Controls on-device message translation powered by a locally-downloaded ML model:
-- **Enable translation**: Enables message translation controls
+Not shown on web. Controls on-device message translation powered by a locally-downloaded ML model. Turn on **Enable translation** first; the translation options and model rows then appear:
 - **Auto-translate incoming messages**: Automatically translates incoming messages for chat/channel display and notifications
 - **Translate before sending**: Sets the default state of the composer's translate icon (on means messages are translated before sending)
 - **Target language**: Language to translate into (searchable list; defaults to the app language)
 - **Models**: The same model rows used for the image codec. Each preset is one row with its name, size once known, and status (not downloaded, downloading with progress, ready, or couldn't download). The model in use is marked Active; tap another ready row to switch. Download, cancel, and remove are the row's action. A manual model URL under the list downloads a custom GGUF file into the same list.
-
-The auto-translate and composer toggles are disabled until **Enable translation** is on.
 
 ### IPFS Provider Configuration
 

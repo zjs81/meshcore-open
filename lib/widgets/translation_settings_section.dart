@@ -10,6 +10,7 @@ import '../services/app_settings_service.dart';
 import '../services/translation_service.dart';
 import 'mesh_nav_tile.dart';
 import 'model_download_list.dart';
+import 'settings_reveal.dart';
 
 /// [TranslationService] publishes this as `downloadFileName` while it merges
 /// downloaded chunks (see translation_service.dart). The service owns the
@@ -43,59 +44,70 @@ class TranslationSettingsSection extends StatelessWidget {
           secondary: const Icon(Icons.translate, size: 24),
           title: Text(l10n.translation_enableTitle),
           subtitle: Text(l10n.translation_enableSubtitle),
-          value: settings.translationEnabled,
+          value: translationEnabled,
           onChanged: settingsService.setTranslationEnabled,
         ),
-        const Divider(height: 1, indent: 16),
-        SwitchListTile(
-          contentPadding: tilePadding,
-          secondary: Icon(
-            Icons.auto_awesome_outlined,
-            size: 24,
-            color: disabledColor,
-          ),
-          title: Text(
-            l10n.translation_autoIncomingTitle,
-            style: TextStyle(color: disabledColor),
-          ),
-          subtitle: Text(
-            l10n.translation_autoIncomingSubtitle,
-            style: TextStyle(color: disabledColor),
-          ),
-          value: settings.autoTranslateIncomingMessages,
-          onChanged: translationEnabled
-              ? settingsService.setAutoTranslateIncomingMessages
-              : null,
+        SettingsReveal(
+          visible: translationEnabled,
+          children: [
+            SwitchListTile(
+              contentPadding: tilePadding,
+              secondary: Icon(
+                Icons.auto_awesome_outlined,
+                size: 24,
+                color: disabledColor,
+              ),
+              title: Text(
+                l10n.translation_autoIncomingTitle,
+                style: TextStyle(color: disabledColor),
+              ),
+              subtitle: Text(
+                l10n.translation_autoIncomingSubtitle,
+                style: TextStyle(color: disabledColor),
+              ),
+              value: settings.autoTranslateIncomingMessages,
+              onChanged: translationEnabled
+                  ? settingsService.setAutoTranslateIncomingMessages
+                  : null,
+            ),
+            const Divider(height: 1, indent: 16),
+            SwitchListTile(
+              contentPadding: tilePadding,
+              secondary: Icon(
+                Icons.outgoing_mail,
+                size: 24,
+                color: disabledColor,
+              ),
+              title: Text(
+                l10n.translation_composerTitle,
+                style: TextStyle(color: disabledColor),
+              ),
+              subtitle: Text(
+                l10n.translation_composerSubtitle,
+                style: TextStyle(color: disabledColor),
+              ),
+              value: settings.composerTranslationEnabled,
+              onChanged: translationEnabled
+                  ? settingsService.setComposerTranslationEnabled
+                  : null,
+            ),
+            const Divider(height: 1, indent: 16),
+            MeshNavTile(
+              icon: Icons.language,
+              title: l10n.translation_targetLanguage,
+              subtitle: _translationLanguageLabel(
+                context,
+                settings.translationTargetLanguageCode,
+              ),
+              onTap: translationEnabled
+                  ? () =>
+                        _showTranslationLanguageDialog(context, settingsService)
+                  : null,
+            ),
+            const Divider(height: 1, indent: 16),
+            const _TranslationModels(),
+          ],
         ),
-        const Divider(height: 1, indent: 16),
-        SwitchListTile(
-          contentPadding: tilePadding,
-          secondary: Icon(Icons.outgoing_mail, size: 24, color: disabledColor),
-          title: Text(
-            l10n.translation_composerTitle,
-            style: TextStyle(color: disabledColor),
-          ),
-          subtitle: Text(
-            l10n.translation_composerSubtitle,
-            style: TextStyle(color: disabledColor),
-          ),
-          value: settings.composerTranslationEnabled,
-          onChanged: translationEnabled
-              ? settingsService.setComposerTranslationEnabled
-              : null,
-        ),
-        const Divider(height: 1, indent: 16),
-        MeshNavTile(
-          icon: Icons.language,
-          title: l10n.translation_targetLanguage,
-          subtitle: _translationLanguageLabel(
-            context,
-            settings.translationTargetLanguageCode,
-          ),
-          onTap: () => _showTranslationLanguageDialog(context, settingsService),
-        ),
-        const Divider(height: 1, indent: 16),
-        const _TranslationModels(),
       ],
     );
   }

@@ -18,6 +18,7 @@ import '../widgets/language_picker_sheet.dart';
 import '../widgets/mesh_nav_tile.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/network_map_settings_section.dart';
+import '../widgets/settings_reveal.dart';
 import '../widgets/sync_progress_overlay.dart';
 import '../widgets/translation_settings_section.dart';
 import '../helpers/snack_bar_builder.dart';
@@ -725,24 +726,27 @@ class AppSettingsScreen extends StatelessWidget {
             },
           ),
         ),
-        if (settingsService.settings.imageMessagesEnabled) ...[
-          SwitchListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 4,
+        SettingsReveal(
+          visible: settingsService.settings.imageMessagesEnabled,
+          children: [
+            SwitchListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 4,
+              ),
+              secondary: const Icon(Icons.auto_awesome_outlined, size: 24),
+              title: Text(context.l10n.imageMessages_autoProcessTitle),
+              subtitle: Text(context.l10n.imageMessages_autoProcessSubtitle),
+              value: settingsService.settings.imageProcessAutomatically,
+              onChanged: (value) =>
+                  settingsService.setImageProcessAutomatically(value),
             ),
-            secondary: const Icon(Icons.auto_awesome_outlined, size: 24),
-            title: Text(context.l10n.imageMessages_autoProcessTitle),
-            subtitle: Text(context.l10n.imageMessages_autoProcessSubtitle),
-            value: settingsService.settings.imageProcessAutomatically,
-            onChanged: (value) =>
-                settingsService.setImageProcessAutomatically(value),
-          ),
-          if (_imageCodecService(context) != null) ...[
-            const Divider(height: 1, indent: 16),
-            const ImageCodecModelsSection(),
+            if (_imageCodecService(context) != null) ...[
+              const Divider(height: 1, indent: 16),
+              const ImageCodecModelsSection(),
+            ],
           ],
-        ],
+        ),
       ],
     );
   }

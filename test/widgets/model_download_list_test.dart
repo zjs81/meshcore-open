@@ -15,7 +15,9 @@ import 'package:meshcore_open/services/translation_service.dart';
 import 'package:meshcore_open/storage/prefs_manager.dart';
 import 'package:meshcore_open/theme/mesh_theme.dart';
 import 'package:meshcore_open/widgets/image_codec_models_section.dart';
+import 'package:meshcore_open/widgets/mesh_nav_tile.dart';
 import 'package:meshcore_open/widgets/model_download_list.dart';
+import 'package:meshcore_open/widgets/settings_reveal.dart';
 import 'package:meshcore_open/widgets/translation_settings_section.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -201,6 +203,7 @@ void main() {
   ) async {
     final settings = AppSettingsService();
     await settings.loadSettings();
+    await settings.setTranslationEnabled(true);
     final preset = translationPresetModels.first;
     final other = translationPresetModels[1];
     await settings.setTranslationDownloadedModels([
@@ -263,6 +266,7 @@ void main() {
   ) async {
     final settings = AppSettingsService();
     await settings.loadSettings();
+    await settings.setTranslationEnabled(true);
     final translation = TranslationService(settings);
     addTearDown(translation.dispose);
     // The page that started the download is gone. Only the service still
@@ -319,6 +323,7 @@ void main() {
       StreamController<List<int>>? getStream;
       final settings = AppSettingsService();
       await settings.loadSettings();
+      await settings.setTranslationEnabled(true);
       final translation = TranslationService(
         settings,
         fileStore: _MemoryTranslationFileStore(),
@@ -543,4 +548,284 @@ void main() {
     expect(find.byTooltip('Download'), findsOneWidget);
     expect(find.byTooltip('Remove model'), findsOneWidget);
   });
+
+  testWidgets(
+    'notDownloaded uses non-download leading icon and aligns icons cleanly',
+    (tester) async {
+      await pump(
+        tester,
+        ModelDownloadList(
+          items: [
+            ModelDownloadItem(
+              id: 'new',
+              name: 'Uninstalled model',
+              sizeBytes: 958 * 1024 * 1024,
+              status: ModelDownloadStatus.notDownloaded,
+              onDownload: () {},
+            ),
+            ModelDownloadItem(
+              id: 'incomplete',
+              name: 'Partial model',
+              sizeBytes: 500 * 1024 * 1024,
+              status: ModelDownloadStatus.notDownloaded,
+              statusLabel: 'Incomplete',
+              onDownload: () {},
+              onDelete: () {},
+            ),
+            ModelDownloadItem(
+              id: 'busy',
+              name: 'Downloading model',
+              sizeBytes: 958 * 1024 * 1024,
+              status: ModelDownloadStatus.downloading,
+              progress: 0.4,
+              downloadedBytes: 400 * 1024 * 1024,
+              totalBytes: 958 * 1024 * 1024,
+              onCancel: () {},
+            ),
+            ModelDownloadItem(
+              id: 'active',
+              name: 'Active model',
+              sizeBytes: 1100 * 1024 * 1024,
+              status: ModelDownloadStatus.ready,
+              selected: true,
+              onDelete: () {},
+            ),
+            ModelDownloadItem(
+              id: 'bad',
+              name: 'Failed model',
+              status: ModelDownloadStatus.error,
+              detail:
+                  'Download failed because the server closed the connection unexpectedly.',
+              onDownload: () {},
+            ),
+          ],
+        ),
+      );
+
+      final newRow = find.byKey(const ValueKey('model-row-new'));
+      final newLeading = find.descendant(
+        of: newRow,
+        matching: find.byIcon(Icons.memory_outlined),
+      );
+      expect(newLeading, findsOneWidget);
+      final newTrailingButton = find.byKey(
+        const ValueKey('model-download-new'),
+      );
+      final newTrailingIcon = find.descendant(
+        of: newTrailingButton,
+        matching: find.byIcon(Icons.download_outlined),
+      );
+      expect(newTrailingIcon, findsOneWidget);
+      // Leading icon must differ from trailing download icon.
+      expect(
+        tester.widget<Icon>(newLeading).icon,
+        isNot(tester.widget<Icon>(newTrailingIcon).icon),
+      );
+      expect(tester.getSize(newLeading), const Size(24, 24));
+      expect(
+        tester.getCenter(newLeading).dy,
+        closeTo(tester.getCenter(newTrailingIcon).dy, 1.0),
+      );
+
+      for (final (rowKey, buttonKey) in [
+        ('model-row-incomplete', 'model-download-incomplete'),
+        ('model-row-busy', 'model-cancel-busy'),
+        ('model-row-active', 'model-remove-active'),
+        ('model-row-bad', 'model-download-bad'),
+      ]) {
+        final row = find.byKey(ValueKey(rowKey));
+        final button = find.byKey(ValueKey(buttonKey));
+        final title = find
+            .descendant(of: row, matching: find.byType(Text))
+            .first;
+        final leading = find
+            .descendant(of: row, matching: find.byType(Icon))
+            .first;
+        final spinner = find.descendant(
+          of: row,
+          matching: find.byType(CircularProgressIndicator),
+        );
+        final leadingFinder = spinner.evaluate().isNotEmpty ? spinner : leading;
+        expect(
+          tester.getRect(leadingFinder).right,
+          lessThan(tester.getRect(title).left),
+        );
+        expect(
+          tester.getCenter(leadingFinder).dy,
+          closeTo(tester.getCenter(button).dy, 1.0),
+          reason: '$rowKey leading indicator and trailing button must center',
+        );
+      }
+    },
+  );
+
+  testWidgets(
+    'TranslationSettingsSection hides sub-options when off, reveals on enable, and aligns rows',
+    (tester) async {
+      final settings = AppSettingsService();
+      await settings.loadSettings();
+      final translation = TranslationService(settings);
+      addTearDown(translation.dispose);
+
+      await pump(
+        tester,
+        const TranslationSettingsSection(),
+        providers: [
+          ChangeNotifierProvider<AppSettingsService>.value(value: settings),
+          ChangeNotifierProvider<TranslationService>.value(value: translation),
+        ],
+      );
+
+      final context = tester.element(find.byType(TranslationSettingsSection));
+      final l10n = AppLocalizations.of(context);
+
+      expect(find.text(l10n.translation_enableTitle), findsOneWidget);
+      expect(find.text(l10n.translation_autoIncomingTitle), findsNothing);
+      expect(find.text(l10n.translation_composerTitle), findsNothing);
+      expect(find.text(l10n.translation_targetLanguage), findsNothing);
+      expect(find.text('Tencent HY-MT 1.5 1.8B Q4_K_M'), findsNothing);
+      expect(find.text(l10n.translation_manualUrlLabel), findsNothing);
+
+      await tester.tap(find.text(l10n.translation_enableTitle));
+      await tester.pump();
+      await tester.pump(RevealOnEnable.duration);
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.translation_autoIncomingTitle), findsOneWidget);
+      expect(find.text(l10n.translation_composerTitle), findsOneWidget);
+      expect(find.text(l10n.translation_targetLanguage), findsOneWidget);
+      expect(find.text('Tencent HY-MT 1.5 1.8B Q4_K_M'), findsOneWidget);
+      expect(find.text(l10n.translation_manualUrlLabel), findsOneWidget);
+
+      final revealFinder = find.byType(SettingsReveal);
+      expect(revealFinder, findsOneWidget);
+      final revealMaterial = tester.widget<Material>(
+        find
+            .descendant(of: revealFinder, matching: find.byType(Material))
+            .first,
+      );
+      expect(
+        revealMaterial.color,
+        Theme.of(context).colorScheme.surfaceContainerHighest,
+      );
+
+      // Switches and Target language row are enabled when visible.
+      final autoIncomingSwitch = tester.widget<SwitchListTile>(
+        find.ancestor(
+          of: find.text(l10n.translation_autoIncomingTitle),
+          matching: find.byType(SwitchListTile),
+        ),
+      );
+      expect(autoIncomingSwitch.onChanged, isNotNull);
+
+      // Leading icons, titles, and trailing icons align across Target language
+      // (MeshNavTile) and revealed ModelDownloadList rows.
+      final targetTile = find.ancestor(
+        of: find.text(l10n.translation_targetLanguage),
+        matching: find.byType(MeshNavTile),
+      );
+      final targetIcon = find.descendant(
+        of: targetTile,
+        matching: find.byIcon(Icons.language),
+      );
+      final targetChevron = find.descendant(
+        of: targetTile,
+        matching: find.byIcon(Icons.chevron_right),
+      );
+
+      final firstPreset = translationPresetModels.first;
+      final modelRow = find.byKey(ValueKey('model-row-${firstPreset.id}'));
+      final modelLeadingIcon = find.descendant(
+        of: modelRow,
+        matching: find.byIcon(Icons.memory_outlined),
+      );
+      final modelTitle = find.descendant(
+        of: modelRow,
+        matching: find.text('Tencent HY-MT 1.5 1.8B Q4_K_M'),
+      );
+      final modelDownloadIcon = find.descendant(
+        of: find.byKey(ValueKey('model-download-${firstPreset.id}')),
+        matching: find.byIcon(Icons.download_outlined),
+      );
+
+      expect(modelLeadingIcon, findsOneWidget);
+      expect(
+        tester.getRect(modelLeadingIcon).left,
+        closeTo(tester.getRect(targetIcon).left, 0.5),
+      );
+      expect(
+        tester.getRect(modelTitle).left,
+        closeTo(
+          tester.getRect(find.text(l10n.translation_targetLanguage)).left,
+          0.5,
+        ),
+      );
+      expect(
+        tester.getRect(modelDownloadIcon).right,
+        closeTo(tester.getRect(targetChevron).right, 0.5),
+      );
+
+      // Toggling off hides sub-options again.
+      await tester.tap(find.text(l10n.translation_enableTitle));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.translation_autoIncomingTitle), findsNothing);
+      expect(find.text(l10n.translation_targetLanguage), findsNothing);
+      expect(find.text(l10n.translation_manualUrlLabel), findsNothing);
+    },
+  );
+
+  for (final scale in [1.3, 2.0]) {
+    testWidgets(
+      'translation section and two-action model rows fit 320dp at ${scale}x',
+      (tester) async {
+        final overflows = <String>[];
+        final previous = FlutterError.onError;
+        FlutterError.onError = (details) {
+          if (details.exceptionAsString().contains('overflowed')) {
+            overflows.add(details.exceptionAsString().split('\n').first);
+            return;
+          }
+          previous?.call(details);
+        };
+        addTearDown(() => FlutterError.onError = previous);
+
+        final settings = AppSettingsService();
+        await settings.loadSettings();
+        await settings.setTranslationEnabled(true);
+        final translation = TranslationService(settings);
+        addTearDown(translation.dispose);
+
+        await pump(
+          tester,
+          Column(
+            children: [
+              const TranslationSettingsSection(),
+              ModelDownloadList(
+                items: [
+                  ModelDownloadItem(
+                    id: 'incomplete',
+                    name: 'Tencent HY-MT 1.5 1.8B Q4_K_M',
+                    sizeBytes: 958 * 1024 * 1024,
+                    status: ModelDownloadStatus.notDownloaded,
+                    statusLabel: 'Incomplete',
+                    onDownload: () {},
+                    onDelete: () {},
+                  ),
+                ],
+              ),
+            ],
+          ),
+          providers: [
+            ChangeNotifierProvider<AppSettingsService>.value(value: settings),
+            ChangeNotifierProvider<TranslationService>.value(
+              value: translation,
+            ),
+          ],
+          textScale: scale,
+          size: const Size(320, 568),
+        );
+        expect(overflows, isEmpty);
+      },
+    );
+  }
 }

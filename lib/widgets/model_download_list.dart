@@ -114,15 +114,11 @@ class _ModelDownloadRow extends StatelessWidget {
       padding:
           padding ??
           (actions.isEmpty
-              ? const EdgeInsets.fromLTRB(16, 8, 16, 8)
-              : const EdgeInsets.fromLTRB(16, 8, 0, 8)),
+              ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
+              : const EdgeInsets.fromLTRB(16, 12, 4, 12)),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: _leading(scheme),
-          ),
+          _leading(scheme),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -240,7 +236,7 @@ class _ModelDownloadRow extends StatelessWidget {
         );
       case ModelDownloadStatus.notDownloaded:
         return Icon(
-          Icons.download_outlined,
+          Icons.memory_outlined,
           size: 24,
           color: scheme.onSurfaceVariant,
         );
@@ -256,6 +252,7 @@ class _ModelDownloadRow extends StatelessWidget {
           key: ValueKey('model-cancel-${item.id}'),
           tooltip: l10n.imageMessages_cancelDownload,
           onPressed: item.onCancel,
+          iconSize: 24,
           icon: const Icon(Icons.close),
         ),
       ];
@@ -267,6 +264,7 @@ class _ModelDownloadRow extends StatelessWidget {
           key: ValueKey('model-download-${item.id}'),
           tooltip: l10n.imageMessages_downloadModel,
           onPressed: item.onDownload,
+          iconSize: 24,
           icon: const Icon(Icons.download_outlined),
         ),
       );
@@ -277,6 +275,7 @@ class _ModelDownloadRow extends StatelessWidget {
           key: ValueKey('model-remove-${item.id}'),
           tooltip: l10n.imageMessages_removeModel,
           onPressed: item.onDelete,
+          iconSize: 24,
           icon: const Icon(Icons.delete_outline),
         ),
       );
