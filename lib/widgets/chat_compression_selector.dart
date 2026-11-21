@@ -81,6 +81,9 @@ class _SelectorView {
   final bool busy;
   final bool failed;
 
+  /// Counts failed saves, so the profile picker drops an unsaved choice.
+  final int failures;
+
   const _SelectorView({
     required this.mode,
     required this.enabled,
@@ -88,6 +91,7 @@ class _SelectorView {
     required this.profileId,
     required this.busy,
     required this.failed,
+    required this.failures,
   });
 }
 
@@ -95,6 +99,7 @@ class _ChatCompressionSelectorState extends State<ChatCompressionSelector> {
   late final ValueNotifier<_SelectorView> _view = ValueNotifier(_snapshot());
   bool _busy = false;
   bool _failed = false;
+  int _failures = 0;
 
   _SelectorView _snapshot() => _SelectorView(
     mode: widget.mode,
@@ -103,6 +108,7 @@ class _ChatCompressionSelectorState extends State<ChatCompressionSelector> {
     profileId: widget.effectiveProfileId,
     busy: _busy,
     failed: _failed,
+    failures: _failures,
   );
 
   @override
@@ -125,6 +131,7 @@ class _ChatCompressionSelectorState extends State<ChatCompressionSelector> {
     setState(() {
       _busy = busy;
       _failed = failed;
+      if (failed) _failures++;
     });
     _view.value = _snapshot();
   }
@@ -252,8 +259,9 @@ class _ChatCompressionSelectorState extends State<ChatCompressionSelector> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                     child: DropdownButtonFormField<String>(
-                      // Rebuild with the saved value after a change or failure.
-                      key: ValueKey(profileValue),
+                      // The field keeps a picked value internally, so rebuild
+                      // it with the saved value after a change or a failure.
+                      key: ValueKey('$profileValue#${view.failures}'),
                       isExpanded: true,
                       initialValue: profileValue,
                       decoration: InputDecoration(

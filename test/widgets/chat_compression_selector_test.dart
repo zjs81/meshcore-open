@@ -260,6 +260,27 @@ void main() {
     expect(find.text(_l10n.chatCompression_label('SMAZ')), findsOneWidget);
   });
 
+  testWidgets('a failed profile save shows the saved profile again', (
+    tester,
+  ) async {
+    await pumpHost(tester, mode: ChatCompressionMode.cyr2lat, profileId: 'ru');
+    await openSheet(tester);
+
+    await tester.ensureVisible(find.text('Russian'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Russian'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Serbian').last);
+    await tester.pump();
+    expect(profileCalls, ['sr']);
+    pending.single.completeError(StateError('disk full'));
+    await tester.pumpAndSettle();
+
+    expect(find.text(_l10n.chatCompression_saveFailed), findsOneWidget);
+    expect(find.text('Russian'), findsOneWidget);
+    expect(find.text('Serbian'), findsNothing);
+  });
+
   testWidgets('disabled shows the saved mode, and the sheet says why and '
       'allows no change', (tester) async {
     final semantics = tester.ensureSemantics();
