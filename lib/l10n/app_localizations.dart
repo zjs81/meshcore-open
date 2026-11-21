@@ -2533,6 +2533,18 @@ abstract class AppLocalizations {
   /// **'Show a channel message\'s region on the same line as its hop count instead of below it.'**
   String get appSettings_regionOnHopsLineSubtitle;
 
+  /// No description provided for @appSettings_showCompressionIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Compression indicator'**
+  String get appSettings_showCompressionIndicator;
+
+  /// No description provided for @appSettings_showCompressionIndicatorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show an icon on messages compressed with SMAZ.'**
+  String get appSettings_showCompressionIndicatorSubtitle;
+
   /// No description provided for @appSettings_notifications.
   ///
   /// In en, this message translates to:
@@ -12693,6 +12705,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t save the compression setting. Showing the saved setting.'**
   String get chatCompression_saveFailed;
+
+  /// No description provided for @messageMeta_smazCompressed.
+  ///
+  /// In en, this message translates to:
+  /// **'SMAZ compressed'**
+  String get messageMeta_smazCompressed;
 }
 
 class _AppLocalizationsDelegate

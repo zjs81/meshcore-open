@@ -1109,6 +1109,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final publicIpfsGateway = settingsService.settings.publicIpfsGateway;
     final enableTracing = settingsService.settings.enableMessageTracing;
     final regionOnHopsLine = settingsService.settings.regionOnHopsLine;
+    final showCompressionIndicator =
+        settingsService.settings.showCompressionIndicator;
     final isOutgoing = message.isOutgoing;
     final scheme = Theme.of(context).colorScheme;
     final gifId = GifHelper.parseGif(message.text);
@@ -1423,8 +1425,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                   bottom: 4,
                                 )
                               : EdgeInsets.zero,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                          child: Wrap(
+                            spacing: 4,
+                            runSpacing: 2,
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               Text(
                                 formatChatTime(context, message.timestamp),
@@ -1433,20 +1437,23 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                   color: metaColor,
                                 ),
                               ),
-                              if (message.hasFutureTimestamp) ...[
-                                const SizedBox(width: 4),
+                              if (message.hasFutureTimestamp)
                                 FutureTimestampIndicator(size: 16 * textScale),
-                              ],
+                              if (showCompressionIndicator &&
+                                  message.isSmazCompressed)
+                                CompressionIndicator(
+                                  size: 14 * textScale,
+                                  color: metaColor,
+                                ),
                               if (enableTracing &&
                                   !isOutgoing &&
                                   message.repeatCount > 0) ...[
-                                const SizedBox(width: 6),
+                                const SizedBox(width: 2),
                                 Icon(
                                   Icons.repeat,
                                   size: 14 * textScale,
                                   color: metaColor,
                                 ),
-                                const SizedBox(width: 2),
                                 Text(
                                   '${message.repeatCount}',
                                   style: MeshTheme.mono(
@@ -1455,8 +1462,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                   ),
                                 ),
                               ],
-                              if (isOutgoing) ...[
-                                const SizedBox(width: 4),
+                              if (isOutgoing)
                                 MessageStatusIcon(
                                   size: 16 * textScale,
                                   isAcked: false,
@@ -1476,7 +1482,6 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                                       ChannelMessageStatus.failed,
                                   onColor: metaColor,
                                 ),
-                              ],
                             ],
                           ),
                         ),

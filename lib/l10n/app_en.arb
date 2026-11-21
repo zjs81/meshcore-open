@@ -601,6 +601,8 @@
   "appSettings_enableMessageTracingSubtitle": "Also show repeat counts and trip times. Long-press a message and choose Path for full details.",
   "appSettings_regionOnHopsLine": "Region next to hop count",
   "appSettings_regionOnHopsLineSubtitle": "Show a channel message's region on the same line as its hop count instead of below it.",
+  "appSettings_showCompressionIndicator": "Compression indicator",
+  "appSettings_showCompressionIndicatorSubtitle": "Show an icon on messages compressed with SMAZ.",
   "appSettings_notifications": "Notifications",
   "appSettings_enableNotifications": "Enable Notifications",
   "appSettings_enableNotificationsSubtitle": "Receive notifications for messages and adverts",
@@ -4359,5 +4361,6 @@
   "chatCompression_cyr2latDescription": "Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.",
   "chatCompression_profile": "Cyr2Lat profile",
   "chatCompression_noStorageId": "Can't change compression until this channel has synced from the radio.",
-  "chatCompression_saveFailed": "Couldn't save the compression setting. Showing the saved setting."
+  "chatCompression_saveFailed": "Couldn't save the compression setting. Showing the saved setting.",
+  "messageMeta_smazCompressed": "SMAZ compressed"
 }

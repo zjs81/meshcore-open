@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1384,6 +1385,13 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get appSettings_regionOnHopsLineSubtitle =>
       'Показвай региона на съобщението в канала на същия ред като броя хопове, а не под него.';
+
+  @override
+  String get appSettings_showCompressionIndicator => 'Compression indicator';
+
+  @override
+  String get appSettings_showCompressionIndicatorSubtitle =>
+      'Show an icon on messages compressed with SMAZ.';
 
   @override
   String get appSettings_notifications => 'Уведомления';
@@ -7618,4 +7626,7 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get chatCompression_saveFailed =>
       'Couldn\'t save the compression setting. Showing the saved setting.';
+
+  @override
+  String get messageMeta_smazCompressed => 'SMAZ compressed';
 }

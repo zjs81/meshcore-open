@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+
 import '../models/app_settings.dart';
 import '../models/custom_theme.dart';
 import '../models/holiday_schedule.dart';
@@ -133,6 +135,10 @@ class AppSettingsService extends ChangeNotifier {
 
   Future<void> setRegionOnHopsLine(bool value) async {
     await updateSettings(_settings.copyWith(regionOnHopsLine: value));
+  }
+
+  Future<void> setShowCompressionIndicator(bool value) async {
+    await updateSettings(_settings.copyWith(showCompressionIndicator: value));
   }
 
   Future<void> setMapCacheBounds(Map<String, double>? value) async {
