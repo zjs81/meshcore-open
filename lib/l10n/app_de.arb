@@ -3891,7 +3891,7 @@
   "backupRestore_backupComplete": "Sicherungsdatei erstellt.",
   "backupRestore_restoreComplete": "Wiederherstellung abgeschlossen. Verbinden Sie sich erneut, wenn Sie die Funkidentität wiederhergestellt haben.",
   "backupRestore_missingModelsTitle": "Modelle nicht heruntergeladen",
-  "backupRestore_missingModelsMessage": "Die wiederhergestellten Einstellungen wählen Modelle aus, die auf diesem Gerät nicht verfügbar sind:\n{models}\n\nJetzt herunterladen?",
+  "backupRestore_missingModelsMessage": "Die wiederhergestellten Einstellungen wählen Modelle aus, die auf diesem Gerät nicht verfügbar sind. Jetzt herunterladen?",
   "backupRestore_downloadModels": "Modelle herunterladen",
   "backupRestore_downloading": "Wird heruntergeladen…",
   "backupRestore_cancelDownload": "Download abbrechen",
@@ -3911,5 +3911,14 @@
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB oder TCP",
   "connectSheet_stopReconnecting": "Wiederverbindung abbrechen",
   "connectSheet_reconnectFailed": "{name} ist nicht erreichbar. Stellen Sie sicher, dass es eingeschaltet und in der Nähe ist.",
-  "chat_composerOffline": "Mit einem Funkgerät verbinden, um Nachrichten zu senden"
+  "chat_composerOffline": "Mit einem Funkgerät verbinden, um Nachrichten zu senden",
+  "modelDownload_notDownloaded": "Nicht heruntergeladen",
+  "modelDownload_downloading": "Wird heruntergeladen",
+  "modelDownload_active": "Aktiv",
+  "modelDownload_failed": "Download fehlgeschlagen",
+  "modelDownload_incomplete": "Unvollständig",
+  "modelDownload_verifying": "Download wird geprüft",
+  "modelDownload_useModel": "Dieses Modell verwenden",
+  "modelDownload_removeFailed": "Das Modell konnte nicht entfernt werden: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

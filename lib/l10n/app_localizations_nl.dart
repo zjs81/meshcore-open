@@ -553,9 +553,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'Modellen niet gedownload';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'De herstelde instellingen selecteren modellen die op dit apparaat niet beschikbaar zijn:\n$models\n\nNu downloaden?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'De herstelde instellingen selecteren modellen die op dit apparaat niet beschikbaar zijn. Nu downloaden?';
 
   @override
   String get backupRestore_downloadModels => 'Modellen downloaden';
@@ -7539,6 +7538,37 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Verbind met een radio om berichten te versturen';
+
+  @override
+  String get modelDownload_notDownloaded => 'Niet gedownload';
+
+  @override
+  String get modelDownload_downloading => 'Downloaden';
+
+  @override
+  String get modelDownload_active => 'Actief';
+
+  @override
+  String get modelDownload_failed => 'Downloaden mislukt';
+
+  @override
+  String get modelDownload_incomplete => 'Onvolledig';
+
+  @override
+  String get modelDownload_verifying => 'Download controleren';
+
+  @override
+  String get modelDownload_useModel => 'Dit model gebruiken';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Het model kon niet worden verwijderd: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
 
   @override
   String get chatCompression_title => 'Compression';

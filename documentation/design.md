@@ -2,7 +2,7 @@
 
 How MeshCore Open's interface is built today, and the rules to follow when adding or changing UI. Every value below comes from the code it cites. If you change one of those sources, or settle on a new pattern, update this page in the same change.
 
-The source of truth is `lib/theme/mesh_theme.dart` (theme), `lib/widgets/mesh_ui.dart` (shared widgets) and `lib/widgets/mesh_nav_tile.dart` (settings rows). Where the code disagrees with this page, fix one of them; do not copy the inconsistency.
+The source of truth is `lib/theme/mesh_theme.dart` (theme), `lib/widgets/mesh_ui.dart` (shared widgets), `lib/widgets/settings_reveal.dart` (reveal-on-enable) and `lib/widgets/mesh_nav_tile.dart` (settings rows). Where the code disagrees with this page, fix one of them; do not copy the inconsistency.
 
 ## 1. Principles
 
@@ -105,6 +105,8 @@ Minimum sizes: no hard-coded `fontSize` below 12 exists in `lib/screens` or `lib
 | Avatar | 40 | `AvatarCircle` |
 | List bottom padding under a FAB | 88 | `channels_screen.dart` |
 
+Every settings row — including child rows revealed inside `SettingsReveal` and model rows in `ModelDownloadList` — uses a vertically centred 24px leading icon with a 16px gap (`MeshNavTile`, `SwitchListTile.secondary`, or `ListTile.leading`) so titles align vertically across a card.
+
 Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small action buttons, 18 for inline refresh icons and spinners. Keep tappable icons at 20 or more.
 
 **Tap targets.** Keep Flutter's 48×48 minimum (the default `materialTapTargetSize` and `IconButton` size). Don't shrink with `VisualDensity.compact`, `MaterialTapTargetSize.shrinkWrap` or small `BoxConstraints` unless the control sits inside a larger tappable row.
@@ -117,12 +119,14 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Label above a group | `SectionHeader(label, trailing:)` | Upper-cases for you; pass the normal-case l10n string |
 | Settings navigation row | `MeshNavTile` | `onTap: null` dims it to 50 % and reports it as disabled; use `subtitle` to say why |
 | Settings switch | `SwitchListTile` inside `MeshSettingsTileTheme` | Wrap the settings screen body once in `MeshSettingsTileTheme` |
+| Switch that reveals more controls | `SettingsReveal` | 200ms height ease, `surfaceContainerHighest`, 16px start indent. See [Reveal on enable](#reveal-on-enable) |
 | Radio-style choice in a sheet | `MeshSheetOption` | Used by the language picker, map time filter and compression sheet. Optional `subtitle` explains the option; `onTap: null` disables it. Selected rows show a filled radio icon **and** a bold title, with `selected` semantics |
 | Per-chat setting at the top of a chat | Full-width strip under the app bar, above the transcript (`ChatCompressionSelector` in `widgets/chat_compression_selector.dart`) | `surfaceContainerLow` fill, `outlineVariant` bottom border, 48dp minimum height, `bodyLarge` w600 "Label: value ▾"; tap opens one `showMeshSheet` with `MeshSheetOption`s. Shows the saved value only; a spinner replaces ▾ while saving; a disabled strip shows why below the label. One shared widget for DM and channel chats; parents pass state and async callbacks |
 | Choosing between images | Selectable thumbnail tiles in a centred `Wrap` | Image send versions (`_versionTile` in `image_send_preview_sheet.dart`). `InkWell` with `MeshRadii.sm`; selected tile gets a 3px `primary` border **and** a `primary` check badge (never colour alone); caption under the tile in `bodySmall`, w600 when selected; figures such as packet counts in `MeshTheme.mono` 12; wrap the tile in `Semantics(button: true, selected:, label:)` |
 | Popup menu row | **always** `PopupMenuItem(child: MeshMenuItemRow(icon:, label:))` | Label wraps to 2 lines then ellipsizes; `leading:` for `ThemedIcon`; no icon keeps the 20px slot |
 | Segmented button label | **always** `ButtonSegment(label: MeshSegmentLabel(text))` | Shrinks to 12 (before system scale), then wraps at word boundaries onto 2 centred lines; never breaks a word |
 | Status | `StatusChip` | Mono label, coloured dot or icon |
+| On-device model | `ModelDownloadList` | Name, size, status, selection and one action. See [Model downloads](#model-downloads). |
 | Metric | `StatTile` | Label wraps to 2 lines; value wraps |
 | Signal | `SignalBars`, `MeshTheme.snrColor` | |
 | Route kind | `RouteChip` | Direct / hop count / Flood |
@@ -156,6 +160,29 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 - One round button beside the bubble, 44 drawn in a 48 touch target: `+` (the action menu) while the field is empty, Send in `primary` once there is text. The swap fades and scales for 150 ms, instantly when `MediaQuery.disableAnimations` is set.
 - Offline, `OfflineComposerBar` uses the same panel, bubble and height, with Connect in place of the round button (below the bubble on narrow or large-text layouts).
 - Full-width strips that are not part of the draft (image send progress) go in `header`, above the bubble.
+
+### Reveal on enable
+
+A switch that uncovers more controls (such as **Enable image messages** and **Enable translation**) uses `SettingsReveal` (`lib/widgets/settings_reveal.dart`). The block's height eases over 200ms (`RevealOnEnable.duration`, `Curves.easeInOut`, aligned to the top). While the switch is off the extra controls are not in the tree, so they are not announced. The panel uses `surfaceContainerHighest` and a 16px start indent. Because the panel already sits on `surfaceContainerHighest`, inset notice boxes inside `SettingsReveal` (such as `ImageCodecModelsSection`'s unavailable-platform notice) use `surfaceContainerLow` with an `outlineVariant` border.
+
+The same animation without the tint is `RevealOnEnable`. Do not add a second duration, and do not reveal the controls with a plain `if` that pops them in.
+
+### Model downloads
+
+Image models, translation models, and the restore prompt that fetches missing models all use `ModelDownloadList` (`lib/widgets/model_download_list.dart`). Do not add a second download form (a dropdown of presets, a separate filename row, or a one-off progress bar).
+
+One model is one row inside the existing `MeshCard` (or `SettingsReveal`), rows separated by `Divider(height: 1, indent: 16)`, with leading icon, text column, and trailing action(s) vertically centred (`padding: 16, 12, 4, 12` when an action is present so the icon aligns with `MeshNavTile`'s 16px trailing inset):
+
+| Part | What it shows |
+|---|---|
+| Leading icon | 24px icon, 16px gap: `Icons.memory_outlined` (`onSurfaceVariant`) when not downloaded, 24px `CircularProgressIndicator` (`primary`) while downloading, `Icons.check_circle` (`primary`) when active, `Icons.check_circle_outline` (`onSurfaceVariant`) when ready, `Icons.error_outline` (`error`) on failure. Never repeat the trailing download icon on the left. |
+| Title | Friendly name, `meshTileTitleStyle` (`bodyLarge` w600). It wraps. Never a raw filename or URL. |
+| Subtitle | Size via the `mapCache_size*` strings when known, then the status: Not downloaded, Downloading, Ready, or Couldn't download. The model in use also says Active. An install that stopped part-way says Incomplete. The words stay `onSurfaceVariant` (Active is w600). |
+| Progress | While downloading, a `LinearProgressIndicator` (indeterminate when the total is unknown, or while chunks are merged or the file is verified) and a mono 12 caption of bytes and percent. |
+| Action | One `IconButton` (48×48 touch target) with a localized tooltip: Download, Cancel, or Remove model. An install that already has files but is not ready shows both Download and Remove. Tap a Ready row to select it when more than one model can be active. A row the user cannot use is dimmed to 50 %, same as a disabled `MeshNavTile`. |
+| Manual URL | When the feature accepts one (translation), put a single text field under the list. Its download control is the same Download icon. The file joins this list. |
+
+A dialog that offers several missing models (backup restore) uses the same rows for name, size, status and progress, and keeps its own confirm button.
 
 ## 6. Sheets, dialogs and pages
 
@@ -226,6 +253,7 @@ Follow the same pattern for any new remote-value screen.
 - [ ] Colours from `colorScheme` or theme extensions; no raw `Colors.*` or `MeshPalette.ink/bg/line` in chrome.
 - [ ] Text styles from `textTheme` or `MeshTheme.mono`; nothing below 12.
 - [ ] Settings rows use `MeshNavTile` / `SwitchListTile` inside `MeshSettingsTileTheme`; cards are `MeshCard` with a `SectionHeader`.
+- [ ] A switch that reveals more controls uses `SettingsReveal`.
 - [ ] Popup menu rows use `MeshMenuItemRow`; segmented buttons use `MeshSegmentLabel`; destructive menu items last, in `scheme.error`.
 - [ ] Every `IconButton` and FAB has a localized `tooltip`.
 - [ ] Tap targets at least 48×48.

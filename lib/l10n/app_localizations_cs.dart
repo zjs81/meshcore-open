@@ -552,9 +552,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'Modely nejsou stažené';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'Obnovené nastavení vybírá modely, které nejsou v tomto zařízení k dispozici:\n$models\n\nStáhnout je nyní?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'Obnovené nastavení vybírá modely, které nejsou v tomto zařízení k dispozici. Stáhnout je nyní?';
 
   @override
   String get backupRestore_downloadModels => 'Stáhnout modely';
@@ -7550,6 +7549,37 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get chat_composerOffline => 'Pro odesílání zpráv se připojte k rádiu';
+
+  @override
+  String get modelDownload_notDownloaded => 'Nestaženo';
+
+  @override
+  String get modelDownload_downloading => 'Stahování';
+
+  @override
+  String get modelDownload_active => 'Aktivní';
+
+  @override
+  String get modelDownload_failed => 'Stažení se nezdařilo';
+
+  @override
+  String get modelDownload_incomplete => 'Neúplné';
+
+  @override
+  String get modelDownload_verifying => 'Ověřování stažení';
+
+  @override
+  String get modelDownload_useModel => 'Použít tento model';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Model se nepodařilo odebrat: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
 
   @override
   String get chatCompression_title => 'Compression';

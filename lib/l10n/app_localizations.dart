@@ -1102,8 +1102,8 @@ abstract class AppLocalizations {
   /// No description provided for @backupRestore_missingModelsMessage.
   ///
   /// In en, this message translates to:
-  /// **'The restored settings select models that are not available on this device:\n{models}\n\nDownload them now?'**
-  String backupRestore_missingModelsMessage(String models);
+  /// **'The restored settings select models that are not on this device. Download them now?'**
+  String get backupRestore_missingModelsMessage;
 
   /// No description provided for @backupRestore_downloadModels.
   ///
@@ -12627,6 +12627,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connect to a radio to send messages'**
   String get chat_composerOffline;
+
+  /// No description provided for @modelDownload_notDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not downloaded'**
+  String get modelDownload_notDownloaded;
+
+  /// No description provided for @modelDownload_downloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get modelDownload_downloading;
+
+  /// No description provided for @modelDownload_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get modelDownload_active;
+
+  /// No description provided for @modelDownload_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t download'**
+  String get modelDownload_failed;
+
+  /// No description provided for @modelDownload_incomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Incomplete'**
+  String get modelDownload_incomplete;
+
+  /// No description provided for @modelDownload_verifying.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying the download'**
+  String get modelDownload_verifying;
+
+  /// No description provided for @modelDownload_useModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this model'**
+  String get modelDownload_useModel;
+
+  /// No description provided for @modelDownload_removeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t remove the model: {error}'**
+  String modelDownload_removeFailed(String error);
+
+  /// No description provided for @modelDownload_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total} MB ({percent}%)'**
+  String modelDownload_progress(String current, String total, String percent);
 
   /// No description provided for @chatCompression_title.
   ///

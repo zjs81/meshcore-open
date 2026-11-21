@@ -558,9 +558,8 @@ class AppLocalizationsBg extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'Моделите не са изтеглени';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'Възстановените настройки избират модели, които не са налични на това устройство:\n$models\n\nДа се изтеглят ли сега?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'Възстановените настройки избират модели, които не са налични на това устройство. Да се изтеглят ли сега?';
 
   @override
   String get backupRestore_downloadModels => 'Изтегли модели';
@@ -7579,6 +7578,37 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Свържете се с радио, за да изпращате съобщения';
+
+  @override
+  String get modelDownload_notDownloaded => 'Не е изтеглен';
+
+  @override
+  String get modelDownload_downloading => 'Изтегляне';
+
+  @override
+  String get modelDownload_active => 'Активен';
+
+  @override
+  String get modelDownload_failed => 'Неуспешно изтегляне';
+
+  @override
+  String get modelDownload_incomplete => 'Непълен';
+
+  @override
+  String get modelDownload_verifying => 'Проверка на изтеглянето';
+
+  @override
+  String get modelDownload_useModel => 'Използвай този модел';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Моделът не можа да бъде премахнат: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
 
   @override
   String get chatCompression_title => 'Compression';

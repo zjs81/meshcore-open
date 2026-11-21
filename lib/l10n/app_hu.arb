@@ -3847,7 +3847,7 @@
   "backupRestore_backupComplete": "A mentési fájl elkészült.",
   "backupRestore_restoreComplete": "A visszaállítás kész. Csatlakozzon újra, ha a rádió azonosítóját is visszaállította.",
   "backupRestore_missingModelsTitle": "A modellek nincsenek letöltve",
-  "backupRestore_missingModelsMessage": "A visszaállított beállítások olyan modelleket választanak, amelyek nem érhetők el ezen az eszközön:\n{models}\n\nLetölti őket most?",
+  "backupRestore_missingModelsMessage": "A visszaállított beállítások olyan modelleket választanak, amelyek nem érhetők el ezen az eszközön. Letölti őket most?",
   "backupRestore_downloadModels": "Modellek letöltése",
   "backupRestore_downloading": "Letöltés…",
   "backupRestore_cancelDownload": "Letöltés megszakítása",
@@ -3867,5 +3867,14 @@
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB vagy TCP",
   "connectSheet_stopReconnecting": "Újracsatlakozás leállítása",
   "connectSheet_reconnectFailed": "Nem érhető el: {name}. Ellenőrizze, hogy be van-e kapcsolva és a közelben van-e.",
-  "chat_composerOffline": "Üzenetküldéshez csatlakozzon rádióhoz"
+  "chat_composerOffline": "Üzenetküldéshez csatlakozzon rádióhoz",
+  "modelDownload_notDownloaded": "Nincs letöltve",
+  "modelDownload_downloading": "Letöltés",
+  "modelDownload_active": "Aktív",
+  "modelDownload_failed": "A letöltés sikertelen",
+  "modelDownload_incomplete": "Hiányos",
+  "modelDownload_verifying": "A letöltés ellenőrzése",
+  "modelDownload_useModel": "Ezt a modellt használja",
+  "modelDownload_removeFailed": "A modellt nem sikerült eltávolítani: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }
