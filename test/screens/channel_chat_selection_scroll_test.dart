@@ -85,6 +85,14 @@ void main() {
     expect(find.byTooltip('Clear selection'), findsNothing);
     expect(_position(tester).pixels, 600);
 
+    // Losing focus with nothing on top, then tapping the composer, still jumps
+    // to the newest message.
+    FocusManager.instance.primaryFocus?.unfocus();
+    await _settle(tester);
+    await tester.tap(find.byType(TextField).last);
+    await _settle(tester);
+    expect(_position(tester).pixels, 0);
+
     await _tearDown(tester);
   });
 

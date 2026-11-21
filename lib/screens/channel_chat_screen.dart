@@ -16,7 +16,6 @@ import '../storage/community_store.dart';
 import '../utils/platform_info.dart';
 import '../helpers/chat_jump.dart';
 import '../helpers/chat_scroll_controller.dart';
-import '../helpers/composer_focus_intent.dart';
 import '../connector/meshcore_protocol.dart';
 import '../helpers/cyr2lat.dart';
 import '../helpers/gif_helper.dart';
@@ -100,13 +99,15 @@ class ChannelChatScreen extends StatefulWidget {
   State<ChannelChatScreen> createState() => _ChannelChatScreenState();
 }
 
-class _ChannelChatScreenState extends State<ChannelChatScreen> {
+class _ChannelChatScreenState extends State<ChannelChatScreen>
+    with WidgetsBindingObserver {
   final _holidayWatcher = HolidayTriggerWatcher();
   final _messageAreaKey = GlobalKey();
   final TextEditingController _textController = TextEditingController();
   final ChatScrollController _scrollController = ChatScrollController();
   final FocusNode _textFieldFocusNode = FocusNode();
-  final _composerFocusIntent = ComposerFocusIntent();
+  bool _focusLostWhileAway = false;
+  bool _focusLostToRoute = false;
   ChannelMessage? _replyingToMessage;
   bool _useReplyRegion = false;
   final CommunityStore _communityStore = CommunityStore();
@@ -182,6 +183,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _textFieldFocusNode.addListener(_onTextFieldFocusChange);
     _scrollController.onScrollNearTop = _loadOlderMessages;
     _scrollController.showJumpToBottom.addListener(_clearDividerAtBottom);
@@ -272,13 +274,28 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     }
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    // The focus manager observes the lifecycle from app start, so its restore
+    // is already queued and runs first. Clearing afterwards keeps a focus
+    // that was not restored (the user clicked elsewhere) from swallowing the
+    // next real tap on the composer.
+    scheduleMicrotask(() => _focusLostWhileAway = false);
+  }
+
   void _onTextFieldFocusChange() {
     if (!mounted) return;
-    final userFocus = _composerFocusIntent.isUserFocusGain(
-      _textFieldFocusNode.hasFocus,
-      coveredByRoute: !(ModalRoute.of(context)?.isCurrent ?? true),
-    );
-    if (userFocus) _scrollController.handleKeyboardOpen();
+    if (!_textFieldFocusNode.hasFocus) {
+      final state = WidgetsBinding.instance.lifecycleState;
+      _focusLostWhileAway = state != null && state != AppLifecycleState.resumed;
+      _focusLostToRoute = !(ModalRoute.of(context)?.isCurrent ?? true);
+      return;
+    }
+    final restored = _focusLostWhileAway || _focusLostToRoute;
+    _focusLostWhileAway = false;
+    _focusLostToRoute = false;
+    if (!restored) _scrollController.handleKeyboardOpen();
   }
 
   Future<void> _loadOlderMessages() async {
@@ -359,12 +376,12 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _route?.secondaryAnimation?.removeStatusListener(_onCoveringRouteStatus);
     _watchedImageStore?.removeListener(_onImageStoreChanged);
     _unregisterActive();
     _scrollController.showJumpToBottom.removeListener(_clearDividerAtBottom);
     _textFieldFocusNode.removeListener(_onTextFieldFocusChange);
-    _composerFocusIntent.dispose();
     _textFieldFocusNode.dispose();
     _textController.dispose();
     _searchController.dispose();

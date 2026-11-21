@@ -9,10 +9,12 @@ import 'package:provider/single_child_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:meshcore_open/connector/meshcore_connector.dart';
+import 'package:meshcore_open/connector/meshcore_protocol.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
 import 'package:meshcore_open/review_mode/review_frames.dart';
 import 'package:meshcore_open/review_mode/review_radio.dart';
 import 'package:meshcore_open/screens/channel_chat_screen.dart';
+import 'package:meshcore_open/screens/chat_screen.dart';
 import 'package:meshcore_open/services/app_debug_log_service.dart';
 import 'package:meshcore_open/services/app_settings_service.dart';
 import 'package:meshcore_open/services/ble_debug_log_service.dart';
@@ -140,6 +142,90 @@ void main() {
 
     await _tearDown(tester);
   }, variant: TargetPlatformVariant.only(TargetPlatform.linux));
+
+  testWidgets(
+    'desktop app switch when focus is not restored does not swallow the next tap',
+    (tester) async {
+      tester.view.physicalSize = _screen;
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
+      await _pumpChannelChat(tester);
+      await tester.tap(_composerField);
+      await _settle(tester);
+      _list(tester).jumpTo(300);
+      await _settle(tester);
+
+      _goBackground(tester);
+      await tester.pump();
+      expect(_composer(tester).focusNode.hasFocus, isFalse);
+      // User returns and interacts elsewhere (e.g. opens search) so focus is
+      // not restored to the composer on resume.
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pump();
+      _goForeground(tester);
+      await _settle(tester);
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await _settle(tester);
+
+      expect(_composer(tester).focusNode.hasFocus, isFalse);
+      expect(_list(tester).position.pixels, closeTo(300, 1));
+
+      await tester.tap(_composerField);
+      await _settle(tester);
+      expect(_composer(tester).focusNode.hasFocus, isTrue);
+      expect(_list(tester).position.pixels, 0);
+
+      await _tearDown(tester);
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.linux),
+  );
+
+  testWidgets(
+    'DM chat: desktop app switch and dialog close keep reading position',
+    (tester) async {
+      tester.view.physicalSize = _screen;
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
+      await _pumpDirectChat(tester);
+      await tester.tap(_composerField);
+      await _settle(tester);
+      _list(tester).jumpTo(300);
+      await _settle(tester);
+
+      // App switch away and back restores focus without jumping to bottom.
+      _goBackground(tester);
+      await tester.pump();
+      expect(_composer(tester).focusNode.hasFocus, isFalse);
+      _goForeground(tester);
+      await _settle(tester);
+
+      expect(_composer(tester).focusNode.hasFocus, isTrue);
+      expect(_list(tester).position.pixels, closeTo(300, 1));
+
+      // Opening and closing a dialog over the chat returns focus without jumping.
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await _settle(tester);
+      await tester.tap(find.byIcon(Icons.info_outline));
+      await _settle(tester);
+      expect(find.byType(AlertDialog), findsOneWidget);
+      Navigator.of(tester.element(find.byType(AlertDialog))).pop();
+      await _settle(tester);
+
+      expect(_list(tester).position.pixels, closeTo(300, 1));
+
+      // Losing focus in the foreground and tapping again still jumps to bottom.
+      _composer(tester).focusNode.unfocus();
+      await _settle(tester);
+      await tester.tap(_composerField);
+      await _settle(tester);
+      expect(_list(tester).position.pixels, 0);
+
+      await _tearDown(tester);
+    },
+    variant: TargetPlatformVariant.only(TargetPlatform.linux),
+  );
 }
 
 final _composerField = find.descendant(
@@ -170,8 +256,9 @@ void _goForeground(WidgetTester tester) {
   }
 }
 
-ScrollController _list(WidgetTester tester) =>
-    tester.widget<ListView>(find.byType(ListView).first).controller!;
+ScrollController _list(WidgetTester tester) => tester
+    .widget<ListView>(find.byWidgetPredicate((w) => w is ListView).first)
+    .controller!;
 
 double _composerBottom(WidgetTester tester) =>
     tester.getBottomLeft(find.byType(ChatComposer)).dy;
@@ -191,6 +278,38 @@ Future<void> _tearDown(WidgetTester tester) async {
 
 Future<MeshCoreConnector> _pumpChannelChat(WidgetTester tester) async {
   final (connector, providers) = _shared ??= await _connect(tester);
+  await _pumpScreen(
+    tester,
+    providers,
+    ChannelChatScreen(channel: connector.channels[0]),
+  );
+  return connector;
+}
+
+Future<MeshCoreConnector> _pumpDirectChat(WidgetTester tester) async {
+  final (connector, providers) = _shared ??= await _connect(tester);
+  final contact = connector.contacts.firstWhere((c) => c.type == advTypeChat);
+  if (connector.getMessages(contact).length < 40) {
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    for (var i = 0; i < 40; i++) {
+      connector.handleFrameForTest(
+        ReviewFrames.contactMessage(
+          senderPublicKey: contact.publicKey,
+          text: 'Direct history line $i about the weather on the hill',
+          timestampSecs: now - 4000 + i,
+        ),
+      );
+    }
+  }
+  await _pumpScreen(tester, providers, ChatScreen(contact: contact));
+  return connector;
+}
+
+Future<void> _pumpScreen(
+  WidgetTester tester,
+  List<SingleChildWidget> providers,
+  Widget screen,
+) async {
   await tester.pumpWidget(
     MultiProvider(
       providers: providers,
@@ -204,12 +323,11 @@ Future<MeshCoreConnector> _pumpChannelChat(WidgetTester tester) async {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: AppLocalizations.supportedLocales,
-        home: ChannelChatScreen(channel: connector.channels[0]),
+        home: screen,
       ),
     ),
   );
   await _settle(tester);
-  return connector;
 }
 
 Future<(MeshCoreConnector, List<SingleChildWidget>)> _connect(
