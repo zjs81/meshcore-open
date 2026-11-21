@@ -9263,8 +9263,13 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     messages.add(message);
-    if (messages.length > _messageWindowSize) {
-      final trimCount = messages.length - _messageWindowSize;
+    // The open chat keeps the older pages its reader scrolled back to;
+    // trimming them would pull the history out from under the reader.
+    final windowSize = pubKeyHex == _activeContactKey
+        ? MessageStore.maxStoredMessages
+        : _messageWindowSize;
+    if (messages.length > windowSize) {
+      final trimCount = messages.length - windowSize;
       _messageStore.archive(pubKeyHex, messages.sublist(0, trimCount));
       messages.removeRange(0, trimCount);
     }
