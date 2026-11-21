@@ -147,6 +147,15 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 
 **IconButton.** Always set `tooltip:` with a localized string. It is the accessible name.
 
+**Chat composer.** Direct and channel chats share `ChatComposer` (`widgets/chat_composer.dart`); change it there, not per screen.
+
+- Panel: no divider; `scheme.surface` without a chat background, transparent over one (the screens pass the composer as `ChatBackdrop.footer`, and `ChatBackdrop.hasBackgroundOf` tells it a background is drawn). Margins 12 on the sides, 8 above and below.
+- Bubble: radius `kComposerBubbleRadius` (20), no outline, `surfaceContainerHigh` fill, or the incoming-bubble colour (`MessageBubbleColors`, `surfaceContainerLow`) over a background. One line is 48 tall; the field grows to `kComposerMaxLines` (5), fewer when large text and the keyboard leave little room, then scrolls. Buttons stay bottom-aligned.
+- Inside the bubble: a reply quote at the top (`ChatComposerQuote`: 4px leading bar in `primary`, title, one-line content, ✕), the field or the GIF preview, the translate button on the right, and the byte counter bottom-right only past 70 % of the limit (`ByteCountedTextField(counterOnlyNearLimit: true)`).
+- One round button beside the bubble, 44 drawn in a 48 touch target: `+` (the action menu) while the field is empty, Send in `primary` once there is text. The swap fades and scales for 150 ms, instantly when `MediaQuery.disableAnimations` is set.
+- Offline, `OfflineComposerBar` uses the same panel, bubble and height, with Connect in place of the round button (below the bubble on narrow or large-text layouts).
+- Full-width strips that are not part of the draft (image send progress) go in `header`, above the bubble.
+
 ## 6. Sheets, dialogs and pages
 
 What the code does:
@@ -183,7 +192,7 @@ Rules for new UI:
 | Background sync | `SyncProgressAppBarBottom`. |
 | Empty | `EmptyState` with an icon, a short title, and an action when there is an obvious next step. Use a separate "no results" state (`Icons.search_off`) when a search or filter hides everything. |
 | Error | A snackbar for a failed action. `ErrorRetryCard` for a failed load the user can retry. Never show raw exception text alone. |
-| Companion radio disconnected | Main and chat screens stay open, read-only ([offline mode](offline-mode.md)). Decide with `isRadioReadOnly(connector)` / `context.radioReadOnly` (`lib/utils/radio_guard.dart`): disable menu items (`PopupMenuItem(enabled: false)`, drop destructive colors) and buttons, hide FABs, and call `ensureRadioConnected(context)` as the safety net in handlers. The chat composer shows `OfflineComposerBar`. Repeater screens stay open with `RadioDisconnectedBanner` at the top and disable radio-dependent actions. Settings rows that need the radio pass `onTap: null` and show `settings_requiresConnection` as the subtitle (`settings_screen.dart`). |
+| Companion radio disconnected | Main and chat screens stay open, read-only ([offline mode](offline-mode.md)). Decide with `isRadioReadOnly(connector)` / `context.radioReadOnly` (`lib/utils/radio_guard.dart`): disable menu items (`PopupMenuItem(enabled: false)`, drop destructive colors) and buttons, hide FABs, and call `ensureRadioConnected(context)` as the safety net in handlers. The chat composer shows `OfflineComposerBar` in the same bubble and margins. Repeater screens stay open with `RadioDisconnectedBanner` at the top and disable radio-dependent actions. Settings rows that need the radio pass `onTap: null` and show `settings_requiresConnection` as the subtitle (`settings_screen.dart`). |
 | Feature unsupported by firmware | Disabled row with a subtitle that says why (`settings_requiresFirmware('v1.10')`). |
 | Remote value not fetched yet | See below. |
 

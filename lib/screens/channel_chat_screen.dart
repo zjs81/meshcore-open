@@ -843,12 +843,16 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
           ? _buildSearchResults(_loadSearchEntries)
           : SafeArea(
               top: false,
+              // The composer panel pads the bottom inset itself, so the
+              // background runs behind it to the screen edge.
+              bottom: false,
               child: Column(
                 children: [
                   Expanded(
                     child: ChatBackdrop(
-                      key: _messageAreaKey,
+                      contentKey: _messageAreaKey,
                       chatKey: ChatBackgroundService.channelKey(widget.channel),
+                      footer: _buildInputBar(),
                       child: Consumer<MeshCoreConnector>(
                         builder: (context, connector, child) {
                           final messages = connector.getChannelMessages(
@@ -1064,7 +1068,6 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                       ),
                     ),
                   ),
-                  _buildInputBar(),
                 ],
               ),
             ),
@@ -2633,47 +2636,23 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     );
   }
 
-  Widget _buildReplyBanner(double textScale) {
+  Widget _buildComposerReplyQuote(double textScale) {
     final message = _replyingToMessage!;
     final scheme = Theme.of(context).colorScheme;
     final replyRegion = message.region;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: scheme.surfaceContainerHigh,
-        border: Border(
-          bottom: BorderSide(color: scheme.outlineVariant, width: 1),
-        ),
+    return ChatComposerQuote(
+      title: context.l10n.chat_replyingTo(message.senderName),
+      content: _buildReplyContent(
+        message.text,
+        textScale,
+        color: scheme.onSurfaceVariant,
+        maxLines: 1,
+        gifSize: 48,
       ),
-      child: Row(
-        children: [
-          Icon(Icons.reply, size: 18, color: scheme.primary),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  context.l10n.chat_replyingTo(message.senderName),
-                  style: MeshTheme.mono(
-                    fontSize: 12 * textScale,
-                    fontWeight: FontWeight.w700,
-                    color: scheme.primary,
-                  ),
-                ),
-                _buildReplyContent(
-                  message.text,
-                  textScale,
-                  color: scheme.onSurfaceVariant,
-                  maxLines: 1,
-                  gifSize: 48,
-                ),
-              ],
-            ),
-          ),
-          if (replyRegion?.isNotEmpty ?? false)
-            InkWell(
+      onDismiss: _cancelReply,
+      dismissTooltip: context.l10n.chat_cancelReply,
+      trailing: (replyRegion?.isNotEmpty ?? false)
+          ? InkWell(
               borderRadius: BorderRadius.circular(MeshRadii.xs),
               onTap: () => setState(() => _useReplyRegion = !_useReplyRegion),
               child: Container(
@@ -2691,6 +2670,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                 ),
                 child: Text(
                   context.l10n.channels_regionSetTo(replyRegion!),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style:
                       MeshTheme.mono(
                         fontSize: 12 * textScale,
@@ -2704,17 +2685,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                       ),
                 ),
               ),
-            ),
-          const SizedBox(width: 4),
-          IconButton(
-            icon: const Icon(Icons.close, size: 18),
-            tooltip: context.l10n.chat_cancelReply,
-            onPressed: _cancelReply,
-            color: scheme.onSurfaceVariant,
-            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-          ),
-        ],
-      ),
+            )
+          : null,
     );
   }
 
@@ -2790,18 +2762,17 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
           : null,
       onSend: _sendMessage,
       sendTooltip: context.l10n.chat_sendMessage,
-      header: [
-        if (replyTo != null)
-          Builder(
-            builder: (context) {
-              final textScale = context.select<ChatTextScaleService, double>(
-                (service) => service.scale,
-              );
-              return _buildReplyBanner(textScale);
-            },
-          ),
-        if (_imageSendTotal > 0) _buildImageSendProgress(scheme),
-      ],
+      header: [if (_imageSendTotal > 0) _buildImageSendProgress(scheme)],
+      replyPreview: replyTo == null
+          ? null
+          : Builder(
+              builder: (context) {
+                final textScale = context.select<ChatTextScaleService, double>(
+                  (service) => service.scale,
+                );
+                return _buildComposerReplyQuote(textScale);
+              },
+            ),
       actionsBuilder: () {
         final connector = context.read<MeshCoreConnector>();
         return [

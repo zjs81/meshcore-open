@@ -624,10 +624,11 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: [
                     Expanded(
                       child: ChatBackdrop(
-                        key: _messageAreaKey,
+                        contentKey: _messageAreaKey,
                         chatKey: ChatBackgroundService.contactKey(
                           widget.contact,
                         ),
+                        footer: _buildInputBar(connector),
                         child: Stack(
                           children: [
                             messages.isEmpty
@@ -640,7 +641,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                     ),
-                    _buildInputBar(connector),
                   ],
                 );
               },
