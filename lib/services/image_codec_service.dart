@@ -8,7 +8,8 @@ import '../models/image_codec_support.dart';
 import '../utils/app_logger.dart';
 import '../widgets/image_send_codec_binding.dart';
 import 'app_settings_service.dart';
-import 'image_codec_backend.dart' show kImageCodecBitstreamPathAvailable;
+import 'image_codec_backend.dart'
+    show imageCodecRuntimeAvailable, kImageCodecBitstreamPathAvailable;
 import 'image_codec_file_store.dart';
 import 'image_codec_session.dart';
 import 'image_codec_settings_store.dart';
@@ -177,9 +178,10 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
 
   /// Why [availability] is `unavailable`, or null when it is not.
   ///
-  /// EXACTLY THREE CAUSES, all of them permanent properties of the build or the
+  /// EXACTLY FOUR CAUSES, all of them permanent properties of the build or the
   /// platform, none of them fixable by the user:
   ///   * web, which has no native inference runtime;
+  ///   * a build made without ONNX Runtime ([imageCodecRuntimeAvailable]);
   ///   * a build compiled without the entropy path
   ///     ([kImageCodecBitstreamPathAvailable]);
   ///   * a backend that failed to load.
@@ -193,6 +195,10 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
     if (kIsWeb) {
       return 'The image codec needs a native inference runtime, which the web '
           'build does not have.';
+    }
+    if (!imageCodecRuntimeAvailable) {
+      return 'This build was made without ONNX Runtime, so it cannot send or '
+          'show image messages.';
     }
     if (!kImageCodecBitstreamPathAvailable) {
       return 'This build ships the image decoder only. Encoding and decoding a '
@@ -510,7 +516,7 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
   /// works. [canEncode]/[canDecode] additionally require the entropy path.
   bool get canRunInference {
     final model = selectedModel;
-    return !kIsWeb &&
+    return imageCodecRuntimeAvailable &&
         !_backendMissing &&
         model != null &&
         model.localPath.isNotEmpty;

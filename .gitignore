@@ -94,3 +94,6 @@ keystore.properties
 
 # Claude Code local working dir (worktrees, jobs, settings)
 .claude/
+
+# Written by scripts/onnx.sh off (ONNX-free build)
+/pubspec_overrides.yaml

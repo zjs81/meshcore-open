@@ -5,11 +5,15 @@ MeshCore Open can send a highly compressed image as channel GRP_DATA packets. Un
 ## Requirements and setup
 
 - Companion firmware version code **11 or later** (identified in the connector as v1.15.0) for the current channel-data layout.
-- A native runtime with a working ONNX backend. The web build has no image codec backend.
+- A native runtime with a working ONNX backend. The web build has no image codec backend, and neither does a native build made without ONNX Runtime (see below).
 - The image model bundle installed through App Settings → Image model, and Enable image messages turned on.
 - Enough storage for the roughly 1 GB bundle and enough available memory for reconstruction, which can peak above 2 GB. Actual latency and memory usage depend on hardware.
 
 Downloads use the configured Hugging Face model bundle, support resume, and verify file checksums. Download the model while internet is available. Once installed, encoding and reconstruction run locally; photos are not uploaded for inference. Compatible recipients need the same supported codec/model format.
+
+### Builds without ONNX Runtime
+
+`scripts/onnx.sh off` builds the app with a pure-Dart stub in place of `flutter_onnxruntime`, so no platform downloads or bundles ORT ([how to build](../README.md#building-without-onnx-runtime)). In that build image messages are unavailable, exactly as on web: the image button and Settings explain that the build has no ONNX Runtime, the model cannot be downloaded, and received images cannot be reconstructed. `scripts/onnx.sh on` restores the default build. The app detects the stub because its `OnnxRuntime()` constructor throws (`imageCodecRuntimeAvailable` in [image_codec_backend.dart](../lib/services/image_codec_backend.dart)).
 
 ## Send an image
 
