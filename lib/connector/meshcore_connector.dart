@@ -5466,16 +5466,21 @@ class MeshCoreConnector extends ChangeNotifier {
 
   Future<PathSelection> preparePathForContactSend(Contact contact) async {
     PathSelection? autoSelection;
-    final autoRotationEnabled =
-        _appSettingsService?.settings.autoRouteRotationEnabled == true;
-    if (autoRotationEnabled && contact.pathOverride == null) {
-      final directRetries =
-          _appSettingsService?.settings.directRetries ??
-          SendAttemptPlan.defaultDirectRetries;
+    final settings = _appSettingsService?.settings;
+    final plan = SendAttemptPlan(
+      directRetries:
+          settings?.directRetries ?? SendAttemptPlan.defaultDirectRetries,
+      floodRetries:
+          settings?.floodRetries ?? SendAttemptPlan.defaultFloodRetries,
+      rotateRoutes:
+          settings?.autoRouteRotationEnabled == true &&
+          contact.pathOverride == null,
+    );
+    if (plan.rotateRoutes) {
       autoSelection = _selectAutoPathForAttempt(
         contact.publicKeyHex,
         attemptIndex: 0,
-        directRetries: directRetries,
+        directRetries: plan.floodFromAttempt ?? (1 << 30),
       );
     }
 

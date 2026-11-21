@@ -330,15 +330,22 @@ class MessageRetryService extends ChangeNotifier {
       return null;
     }
 
+    final floodFrom = plan.floodFromAttempt;
     final recentSelections = List<PathSelection>.from(
       _attemptPathHistory[message.messageId] ?? const <PathSelection>[],
     );
-    return config.selectRetryPath!(
+    final selection = config.selectRetryPath!(
       contact.publicKeyHex,
       message.retryCount,
-      plan.floodFromAttempt ?? (1 << 30),
+      floodFrom ?? (1 << 30),
       recentSelections,
     );
+    if (floodFrom != null && message.retryCount >= floodFrom) {
+      return selection != null && selection.useFlood
+          ? selection
+          : const PathSelection(pathBytes: [], hopCount: -1, useFlood: true);
+    }
+    return selection;
   }
 
   void _recordAttemptPathHistory(String messageId, PathSelection selection) {
