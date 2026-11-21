@@ -109,6 +109,17 @@ class ChannelMessage {
 
   bool get isFiltered => filterReason != null;
 
+  /// Full wire/sent text, restoring the `@[sender] ` reply prefix when it
+  /// was split into [replyToSenderName] on storage.
+  String get fullText {
+    if (replyToMessageId != null &&
+        replyToSenderName != null &&
+        replyToSenderName!.isNotEmpty) {
+      return '@[$replyToSenderName] $text';
+    }
+    return text;
+  }
+
   String? get senderKeyHex =>
       senderKey != null ? pubKeyToHex(senderKey!) : null;
 

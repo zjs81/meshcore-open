@@ -699,7 +699,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
           ChatSearchEntry(
             id: m.messageId,
             sender: m.senderName,
-            text: m.text,
+            text: m.fullText,
             translatedText: m.translatedText,
             time: m.receivedAt,
             matchSender: true,
@@ -2492,6 +2492,14 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                 ),
                 subtitle: _imageSenderLabel(entry),
               ),
+              ListTile(
+                leading: const Icon(Icons.copy),
+                title: Text(l10n.common_copy),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  copyChatMessageText(context, _imageCopyText(entry));
+                },
+              ),
               if (canSave)
                 ListTile(
                   leading: const Icon(Icons.save_alt),
@@ -2542,6 +2550,17 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
         ),
       ),
     );
+  }
+
+  String _imageCopyText(ReceivedImageEntry entry) {
+    final l10n = context.l10n;
+    final lines = <String>[
+      '${_imageSenderLabel(entry)} (${formatChatTime(context, entry.firstSeen)})',
+      l10n.receivedImage_awaiting(entry.bitstreamByteCount, entry.totalChunks),
+      if (entry.state == ReceivedImageState.decoded && entry.synthesized)
+        l10n.receivedImage_shareCaption(entry.bitstreamByteCount),
+    ];
+    return lines.join('\n');
   }
 
   Future<void> _saveImage(ReceivedImageEntry entry) async {
@@ -3047,7 +3066,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                 title: Text(context.l10n.common_copy),
                 onTap: () {
                   Navigator.pop(sheetContext);
-                  copyChatMessageText(context, message.text);
+                  copyChatMessageText(context, message.fullText);
                 },
               ),
               if (canTranslateMessage)
@@ -3379,8 +3398,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final text = messages
         .map(
           (m) => m.senderName.isEmpty || m.isOutgoing
-              ? m.text
-              : '${m.senderName}: ${m.text}',
+              ? m.fullText
+              : '${m.senderName}: ${m.fullText}',
         )
         .join('\n');
     setState(_selectedIds.clear);
