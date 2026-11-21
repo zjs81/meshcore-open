@@ -21,6 +21,7 @@ class PathHopResolver {
     bool resolveFromEnd = false,
     int pathHashByteWidth = 1,
     double maxHopDistanceMeters = maxSingleHopDistanceMeters,
+    List<Contact>? preferredContacts,
   }) {
     final width = pathHashByteWidth.clamp(1, 3).toInt();
     final hops = PathHelper.splitPathBytes(pathBytes, width);
@@ -30,6 +31,7 @@ class PathHopResolver {
       endpoint: endpoint,
       resolveFromEnd: resolveFromEnd,
       maxHopDistanceMeters: maxHopDistanceMeters,
+      preferredContacts: preferredContacts,
     );
   }
 
@@ -40,6 +42,7 @@ class PathHopResolver {
     bool resolveFromEnd = false,
     double maxHopDistanceMeters = maxSingleHopDistanceMeters,
     bool Function(Contact)? contactFilter,
+    List<Contact>? preferredContacts,
   }) {
     if (hops.isEmpty) return const [];
 
@@ -47,21 +50,41 @@ class PathHopResolver {
       for (final hop in hops)
         if (hop.isNotEmpty) hop.length,
     };
-    final candidatesByPrefix = <String, List<Contact>>{};
-    for (final contact in contacts) {
-      final include =
-          contactFilter?.call(contact) ??
-          (contact.type == advTypeRepeater || contact.type == advTypeRoom);
-      if (!include) continue;
+    bool includeContact(Contact contact) =>
+        contactFilter?.call(contact) ??
+        (contact.type == advTypeRepeater || contact.type == advTypeRoom);
+
+    void indexContact(Map<String, List<Contact>> buckets, Contact contact) {
       for (final width in widths) {
         if (contact.publicKey.length < width) continue;
         final prefix = PathHelper.formatHopHex(
           contact.publicKey.sublist(0, width),
         );
-        candidatesByPrefix.putIfAbsent(prefix, () => <Contact>[]).add(contact);
+        buckets.putIfAbsent(prefix, () => <Contact>[]).add(contact);
       }
     }
-    for (final candidates in candidatesByPrefix.values) {
+
+    final preferredKeys = <String>{};
+    final preferredByPrefix = <String, List<Contact>>{};
+    if (preferredContacts != null) {
+      for (final contact in preferredContacts) {
+        if (!includeContact(contact)) continue;
+        preferredKeys.add(contact.publicKeyHex);
+        indexContact(preferredByPrefix, contact);
+      }
+    }
+
+    final fallbackByPrefix = <String, List<Contact>>{};
+    for (final contact in contacts) {
+      if (!includeContact(contact)) continue;
+      if (preferredKeys.contains(contact.publicKeyHex)) continue;
+      indexContact(fallbackByPrefix, contact);
+    }
+
+    for (final candidates in preferredByPrefix.values) {
+      candidates.sort((a, b) => b.lastSeen.compareTo(a.lastSeen));
+    }
+    for (final candidates in fallbackByPrefix.values) {
       candidates.sort((a, b) => b.lastSeen.compareTo(a.lastSeen));
     }
 
@@ -75,13 +98,14 @@ class PathHopResolver {
     ];
     final distance = Distance();
 
-    (Contact, double)? pickNearestLocated(
+    (Contact, double)? pickNearestLocatedFrom(
+      Map<String, List<Contact>> buckets,
       String prefix,
       Set<Contact> used,
       LatLng anchor,
       double maxDistanceMeters,
     ) {
-      final candidates = candidatesByPrefix[prefix];
+      final candidates = buckets[prefix];
       if (candidates == null || candidates.isEmpty) return null;
       Contact? best;
       double? bestDistance;
@@ -100,8 +124,12 @@ class PathHopResolver {
       return (best, bestDistance);
     }
 
-    Contact? pickFirstUnlocated(String prefix, Set<Contact> used) {
-      final candidates = candidatesByPrefix[prefix];
+    Contact? pickFirstUnlocatedFrom(
+      Map<String, List<Contact>> buckets,
+      String prefix,
+      Set<Contact> used,
+    ) {
+      final candidates = buckets[prefix];
       if (candidates == null || candidates.isEmpty) return null;
       for (final candidate in candidates) {
         if (used.contains(candidate)) continue;
@@ -110,13 +138,55 @@ class PathHopResolver {
       return null;
     }
 
-    Contact? pickFirstAny(String prefix, Set<Contact> used) {
-      final candidates = candidatesByPrefix[prefix];
+    Contact? pickFirstAnyFrom(
+      Map<String, List<Contact>> buckets,
+      String prefix,
+      Set<Contact> used,
+    ) {
+      final candidates = buckets[prefix];
       if (candidates == null || candidates.isEmpty) return null;
       for (final candidate in candidates) {
         if (!used.contains(candidate)) return candidate;
       }
       return null;
+    }
+
+    (Contact, double, bool)? pickBestLocated(
+      String prefix,
+      Set<Contact> used,
+      LatLng anchor,
+      double maxDistanceMeters,
+    ) {
+      final preferred = pickNearestLocatedFrom(
+        preferredByPrefix,
+        prefix,
+        used,
+        anchor,
+        maxDistanceMeters,
+      );
+      if (preferred != null) return (preferred.$1, preferred.$2, true);
+      if (pickFirstUnlocatedFrom(preferredByPrefix, prefix, used) != null) {
+        return null;
+      }
+      final fallback = pickNearestLocatedFrom(
+        fallbackByPrefix,
+        prefix,
+        used,
+        anchor,
+        maxDistanceMeters,
+      );
+      if (fallback != null) return (fallback.$1, fallback.$2, false);
+      return null;
+    }
+
+    Contact? pickBestUnlocated(String prefix, Set<Contact> used) {
+      return pickFirstUnlocatedFrom(preferredByPrefix, prefix, used) ??
+          pickFirstUnlocatedFrom(fallbackByPrefix, prefix, used);
+    }
+
+    Contact? pickBestAny(String prefix, Set<Contact> used) {
+      return pickFirstAnyFrom(preferredByPrefix, prefix, used) ??
+          pickFirstAnyFrom(fallbackByPrefix, prefix, used);
     }
 
     final used = Set<Contact>.identity();
@@ -128,19 +198,48 @@ class PathHopResolver {
         final prefix = stepPrefixes[step];
         final hopGap = step - lastAnchorStep;
         final maxAllowed = hopGap * maxHopDistanceMeters;
-        final match = pickNearestLocated(
+        final preferred = pickNearestLocatedFrom(
+          preferredByPrefix,
           prefix,
           used,
           previousPosition,
           maxAllowed,
         );
-        if (match != null) {
-          used.add(match.$1);
-          resolved[indexes[step]] = match.$1;
-          previousPosition = _positionOf(match.$1)!;
+        if (preferred != null) {
+          used.add(preferred.$1);
+          resolved[indexes[step]] = preferred.$1;
+          previousPosition = _positionOf(preferred.$1)!;
+          lastAnchorStep = step;
+          continue;
+        }
+        final preferredUnlocated = pickFirstUnlocatedFrom(
+          preferredByPrefix,
+          prefix,
+          used,
+        );
+        if (preferredUnlocated != null) {
+          used.add(preferredUnlocated);
+          resolved[indexes[step]] = preferredUnlocated;
+          continue;
+        }
+        final fallback = pickNearestLocatedFrom(
+          fallbackByPrefix,
+          prefix,
+          used,
+          previousPosition,
+          maxAllowed,
+        );
+        if (fallback != null) {
+          used.add(fallback.$1);
+          resolved[indexes[step]] = fallback.$1;
+          previousPosition = _positionOf(fallback.$1)!;
           lastAnchorStep = step;
         } else {
-          final unlocated = pickFirstUnlocated(prefix, used);
+          final unlocated = pickFirstUnlocatedFrom(
+            fallbackByPrefix,
+            prefix,
+            used,
+          );
           if (unlocated != null) {
             used.add(unlocated);
             resolved[indexes[step]] = unlocated;
@@ -153,18 +252,24 @@ class PathHopResolver {
     // Without a known endpoint, find the located anchor whose plausible chain
     // explains the most located hops so a single distant prefix collision does
     // not poison the rest of the path.
-    var hasAnyLocated = false;
-    for (final prefix in stepPrefixes) {
-      final candidates = candidatesByPrefix[prefix];
-      if (candidates != null && candidates.any((c) => _positionOf(c) != null)) {
-        hasAnyLocated = true;
-        break;
+    bool bucketHasLocated(Map<String, List<Contact>> buckets) {
+      for (final prefix in stepPrefixes) {
+        final candidates = buckets[prefix];
+        if (candidates != null &&
+            candidates.any((c) => _positionOf(c) != null)) {
+          return true;
+        }
       }
+      return false;
     }
+
+    final hasAnyLocated =
+        bucketHasLocated(preferredByPrefix) ||
+        bucketHasLocated(fallbackByPrefix);
 
     if (!hasAnyLocated) {
       for (var step = 0; step < hopCount; step++) {
-        final contact = pickFirstAny(stepPrefixes[step], used);
+        final contact = pickBestAny(stepPrefixes[step], used);
         if (contact != null) {
           used.add(contact);
           resolved[indexes[step]] = contact;
@@ -175,13 +280,19 @@ class PathHopResolver {
 
     List<Contact?>? bestRun;
     var bestLocatedCount = 0;
+    var bestPreferredCount = 0;
     var bestTotalDistance = double.infinity;
     var bestLastSeenSum = -1;
 
     for (var anchorStep = 0; anchorStep < hopCount; anchorStep++) {
-      final candidates = candidatesByPrefix[stepPrefixes[anchorStep]];
-      if (candidates == null) continue;
-      for (final anchorCandidate in candidates) {
+      final prefix = stepPrefixes[anchorStep];
+      final anchorCandidates = <(Contact, bool)>[
+        for (final c in preferredByPrefix[prefix] ?? const <Contact>[])
+          (c, true),
+        for (final c in fallbackByPrefix[prefix] ?? const <Contact>[])
+          (c, false),
+      ];
+      for (final (anchorCandidate, isPreferredAnchor) in anchorCandidates) {
         final anchorPos = _positionOf(anchorCandidate);
         if (anchorPos == null) continue;
 
@@ -189,6 +300,7 @@ class PathHopResolver {
         final runUsed = Set<Contact>.identity()..add(anchorCandidate);
         run[anchorStep] = anchorCandidate;
         var locatedCount = 1;
+        var preferredCount = isPreferredAnchor ? 1 : 0;
         var totalDistance = 0.0;
         var lastSeenSum = anchorCandidate.lastSeen.millisecondsSinceEpoch;
 
@@ -196,7 +308,7 @@ class PathHopResolver {
         var lastAnchor = anchorStep;
         for (var step = anchorStep + 1; step < hopCount; step++) {
           final maxAllowed = (step - lastAnchor) * maxHopDistanceMeters;
-          final match = pickNearestLocated(
+          final match = pickBestLocated(
             stepPrefixes[step],
             runUsed,
             prevPos,
@@ -208,6 +320,7 @@ class PathHopResolver {
           prevPos = _positionOf(match.$1)!;
           lastAnchor = step;
           locatedCount++;
+          if (match.$3) preferredCount++;
           totalDistance += match.$2;
           lastSeenSum += match.$1.lastSeen.millisecondsSinceEpoch;
         }
@@ -216,7 +329,7 @@ class PathHopResolver {
         lastAnchor = anchorStep;
         for (var step = anchorStep - 1; step >= 0; step--) {
           final maxAllowed = (lastAnchor - step) * maxHopDistanceMeters;
-          final match = pickNearestLocated(
+          final match = pickBestLocated(
             stepPrefixes[step],
             runUsed,
             prevPos,
@@ -228,6 +341,7 @@ class PathHopResolver {
           prevPos = _positionOf(match.$1)!;
           lastAnchor = step;
           locatedCount++;
+          if (match.$3) preferredCount++;
           totalDistance += match.$2;
           lastSeenSum += match.$1.lastSeen.millisecondsSinceEpoch;
         }
@@ -235,13 +349,18 @@ class PathHopResolver {
         final isBetter =
             locatedCount > bestLocatedCount ||
             (locatedCount == bestLocatedCount &&
+                preferredCount > bestPreferredCount) ||
+            (locatedCount == bestLocatedCount &&
+                preferredCount == bestPreferredCount &&
                 totalDistance < bestTotalDistance - 1e-6) ||
             (locatedCount == bestLocatedCount &&
+                preferredCount == bestPreferredCount &&
                 (totalDistance - bestTotalDistance).abs() <= 1e-6 &&
                 lastSeenSum > bestLastSeenSum);
         if (isBetter) {
           bestRun = run;
           bestLocatedCount = locatedCount;
+          bestPreferredCount = preferredCount;
           bestTotalDistance = totalDistance;
           bestLastSeenSum = lastSeenSum;
         }
@@ -258,7 +377,7 @@ class PathHopResolver {
       }
       for (var step = 0; step < hopCount; step++) {
         if (bestRun[step] != null) continue;
-        final unlocated = pickFirstUnlocated(stepPrefixes[step], used);
+        final unlocated = pickBestUnlocated(stepPrefixes[step], used);
         if (unlocated != null) {
           used.add(unlocated);
           resolved[indexes[step]] = unlocated;

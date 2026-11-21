@@ -25,6 +25,7 @@ import 'package:meshcore_open/widgets/path_map_ui.dart';
 import 'package:meshcore_open/widgets/snr_indicator.dart';
 import 'package:meshcore_open/widgets/set_my_location_dialog.dart';
 import 'package:provider/provider.dart';
+
 import '../theme/mesh_theme.dart';
 
 export 'package:meshcore_open/widgets/path_map_ui.dart'
@@ -584,192 +585,20 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
           .map((snr) => snr.toSigned(8).toDouble() / 4)
           .toList();
 
-      final selfPoint = plausibleSelfPoint(connector);
-      final outboundHops = _outboundHops(pathData);
-      final candidateContacts = _mergeTraceContacts(
-        widget.pathContacts,
-        connector.allContactsUnfiltered,
-      );
-      final resolvedOutbound = PathHopResolver.resolveHops(
-        hops: outboundHops,
-        contacts: candidateContacts,
-        endpoint: selfPoint,
-        contactFilter: (c) => c.type != advTypeChat,
-      );
-      final Map<String, Contact> pathContacts = {};
-      for (var i = 0; i < outboundHops.length; i++) {
-        final contact = resolvedOutbound[i];
-        if (contact != null) {
-          pathContacts[_hopKey(outboundHops[i])] = contact;
-        }
-      }
-
-      // For hops with no GPS contact, infer position from other contacts
-      // with known GPS that share the same last-hop byte, bounded by the
-      // plausible hop distance from neighboring anchors.
-      final inferredOutbound = _inferHopPositions(
-        hops: outboundHops,
-        resolvedContacts: resolvedOutbound,
-        selfPoint: selfPoint,
-        peerContacts: connector.contacts,
-      );
-      final Map<String, LatLng> inferredPositions = {};
-      for (var i = 0; i < outboundHops.length; i++) {
-        final inferred = inferredOutbound[i];
-        if (inferred != null) {
-          inferredPositions[_hopKey(outboundHops[i])] = inferred;
-        }
-      }
-
       setState(() {
         _isLoading = false;
         _hasData = true;
-        _inferredHopPositions = inferredPositions;
+        _targetContact = widget.targetContact;
+        _primaryOutboundHops = _outboundHops(pathData);
         _traceData = PathTraceData(
           pathData: pathData,
           snrData: snrData,
-          pathContacts: pathContacts,
+          pathContacts: const {},
         );
-        // Compute endpoint position for the target contact.
-        LatLng? targetPos;
-        bool targetGuessed = false;
-        _targetContact = widget.targetContact;
-
-        if (_targetContact != null) {
-          final tc = _targetContact!;
-          if (tc.hasLocation) {
-            targetPos = LatLng(tc.latitude!, tc.longitude!);
-          } else if (pathData.length > 1 || _tracedPath.isNotEmpty) {
-            // Infer from the last hop: average GPS contacts sharing that hop.
-            // For a round-trip path (flipPathAround/reversePathAround), the target-side hop
-            // sits in the middle of the symmetric sequence; .last is the local side.
-            final tracedHops = PathHelper.splitPathBytes(
-              _tracedPath,
-              _tracedPathHashWidth,
-            );
-            final hopsForEndpoint = tracedHops.isNotEmpty
-                ? tracedHops
-                : pathData;
-            final lastHop = widget.reversePathAround
-                ? hopsForEndpoint.first
-                : hopsForEndpoint.last;
-            final lastHopKey = _hopKey(lastHop);
-
-            final rawPeers = connector.allContacts
-                .where(
-                  (c) =>
-                      c.hasLocation &&
-                      c.path.isNotEmpty &&
-                      _matchesHopPrefix(
-                        _lastHopChunk(c.path, c.pathHashWidth),
-                        lastHop,
-                      ),
-                )
-                .toList();
-            final (anchorPos, anchorGap) = _lastPlausibleAnchor(
-              outboundHops: outboundHops,
-              resolvedOutbound: resolvedOutbound,
-              inferredOutbound: inferredOutbound,
-              selfPoint: selfPoint,
-            );
-            final peers = _filterPlausiblePeers(
-              rawPeers,
-              prevPos: anchorPos,
-              prevMaxMeters: anchorPos != null
-                  ? anchorGap * PathHopResolver.maxSingleHopDistanceMeters
-                  : null,
-            );
-            if (peers.isNotEmpty) {
-              final lat =
-                  peers.map((c) => c.latitude!).reduce((a, b) => a + b) /
-                  peers.length;
-              final lon =
-                  peers.map((c) => c.longitude!).reduce((a, b) => a + b) /
-                  peers.length;
-              const offsetDeg = 0.003;
-              final angle = (tc.publicKey[1] / 255.0) * 2 * pi;
-              targetPos = LatLng(
-                lat + offsetDeg * cos(angle),
-                lon + offsetDeg * sin(angle),
-              );
-              targetGuessed = true;
-            } else if (inferredPositions.containsKey(lastHopKey)) {
-              final lat = inferredPositions[lastHopKey]!.latitude;
-              final lon = inferredPositions[lastHopKey]!.longitude;
-              const offsetDeg = 0.003;
-              final angle = (tc.publicKey[1] / 255.0) * 2 * pi;
-              targetPos = LatLng(
-                lat + offsetDeg * cos(angle),
-                lon + offsetDeg * sin(angle),
-              );
-              targetGuessed = true;
-            } else {
-              // As a last resort, just place it at the same position as the last hop.
-              final contact = pathContacts[lastHopKey];
-              if (contact != null && contact.hasLocation) {
-                const offsetDeg = 0.003;
-                final angle = (tc.publicKey[1] / 255.0) * 2 * pi;
-                targetPos = LatLng(
-                  contact.latitude! + offsetDeg * cos(angle),
-                  contact.longitude! + offsetDeg * sin(angle),
-                );
-                targetGuessed = true;
-              }
-            }
-          }
-        }
-        _targetContactPosition = targetPos;
-        _targetContactIsGuessed = targetGuessed;
-
-        _points = <LatLng>[];
-        if (selfPoint != null) _points.add(selfPoint);
-        String hopLast = '';
-        String hopLastLast = '';
-        for (final hop in _traceData!.pathData) {
-          final hopKey = _hopKey(hop);
-          if (hopKey == hopLastLast && widget.flipPathAround) {
-            break; //skip duplicate hops in round-trip paths
-          }
-          final contact = _traceData!.pathContacts[hopKey];
-          if (contact != null && contact.hasLocation) {
-            _points.add(LatLng(contact.latitude!, contact.longitude!));
-          } else {
-            final inferred = inferredPositions[hopKey];
-            if (inferred != null) _points.add(inferred);
-          }
-          hopLastLast = hopLast;
-          hopLast = hopKey;
-        }
-        if (targetPos != null) {
-          if (_targetContact != null && _targetContact!.type == advTypeChat) {
-            _points.add(targetPos);
-          }
-        }
-        _polylines = _points.length > 1
-            ? [
-                Polyline(
-                  points: _points,
-                  strokeWidth: 4,
-                  color: kPrimaryPathColor,
-                ),
-              ]
-            : <Polyline>[];
-
-        _initialCenter = _points.isNotEmpty
-            ? _points.first
-            : const LatLng(0, 0);
-        _initialZoom = _points.isNotEmpty ? 13.0 : 2.0;
-        _bounds = _points.length > 1 ? LatLngBounds.fromPoints(_points) : null;
         _mapKey = ValueKey(
-          '${context.l10n.pathTrace_you},${_traceData!.pathData.map(PathHelper.formatHopHex).join(',')}',
+          '${context.l10n.pathTrace_you},${pathData.map(PathHelper.formatHopHex).join(',')}',
         );
-        _pathDistanceMeters = getPathDistanceMeters(_points);
-        _primaryOutboundHops = outboundHops;
-        _rebuildDisplayPaths(
-          connector,
-          primaryResolved: resolvedOutbound,
-          primaryInferred: inferredOutbound,
-        );
+        _rebuildDisplayPaths(connector);
       });
     } catch (e) {
       appLogger.error(
@@ -801,20 +630,173 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
     return hops;
   }
 
-  List<Contact> _mergeTraceContacts(
-    List<Contact>? explicitContacts,
-    List<Contact> allContacts,
-  ) {
-    if (explicitContacts == null) return allContacts;
-    final seenKeys = <String>{};
-    final merged = <Contact>[];
-    for (final c in explicitContacts) {
-      if (seenKeys.add(c.publicKeyHex)) merged.add(c);
+  (LatLng?, bool) _resolveTargetContactPosition({
+    required MeshCoreConnector connector,
+    required List<Uint8List> pathData,
+    required List<Uint8List> outboundHops,
+    required List<Contact?> resolvedOutbound,
+    required List<LatLng?> inferredOutbound,
+    required Map<String, Contact> pathContacts,
+    required Map<String, LatLng> inferredPositions,
+    required LatLng? selfPoint,
+  }) {
+    final tc = _targetContact;
+    if (tc == null) return (null, false);
+    if (tc.hasLocation) {
+      return (LatLng(tc.latitude!, tc.longitude!), false);
     }
-    for (final c in allContacts) {
-      if (seenKeys.add(c.publicKeyHex)) merged.add(c);
+    if (pathData.length <= 1 && _tracedPath.isEmpty) {
+      return (null, false);
     }
-    return merged;
+
+    // Infer from the last hop: average GPS contacts sharing that hop.
+    // For a round-trip path (flipPathAround/reversePathAround), the target-side hop
+    // sits in the middle of the symmetric sequence; .last is the local side.
+    final tracedHops = PathHelper.splitPathBytes(
+      _tracedPath,
+      _tracedPathHashWidth,
+    );
+    final hopsForEndpoint = tracedHops.isNotEmpty ? tracedHops : pathData;
+    final lastHop = widget.reversePathAround
+        ? hopsForEndpoint.first
+        : hopsForEndpoint.last;
+    final lastHopKey = _hopKey(lastHop);
+
+    final rawPeers = connector.allContacts
+        .where(
+          (c) =>
+              c.hasLocation &&
+              c.path.isNotEmpty &&
+              _matchesHopPrefix(
+                _lastHopChunk(c.path, c.pathHashWidth),
+                lastHop,
+              ),
+        )
+        .toList();
+    final (anchorPos, anchorGap) = _lastPlausibleAnchor(
+      outboundHops: outboundHops,
+      resolvedOutbound: resolvedOutbound,
+      inferredOutbound: inferredOutbound,
+      selfPoint: selfPoint,
+    );
+    final peers = _filterPlausiblePeers(
+      rawPeers,
+      prevPos: anchorPos,
+      prevMaxMeters: anchorPos != null
+          ? anchorGap * PathHopResolver.maxSingleHopDistanceMeters
+          : null,
+    );
+    const offsetDeg = 0.003;
+    final angle = (tc.publicKey[1] / 255.0) * 2 * pi;
+    if (peers.isNotEmpty) {
+      final lat =
+          peers.map((c) => c.latitude!).reduce((a, b) => a + b) / peers.length;
+      final lon =
+          peers.map((c) => c.longitude!).reduce((a, b) => a + b) / peers.length;
+      return (
+        LatLng(lat + offsetDeg * cos(angle), lon + offsetDeg * sin(angle)),
+        true,
+      );
+    }
+    if (inferredPositions.containsKey(lastHopKey)) {
+      final inferred = inferredPositions[lastHopKey]!;
+      return (
+        LatLng(
+          inferred.latitude + offsetDeg * cos(angle),
+          inferred.longitude + offsetDeg * sin(angle),
+        ),
+        true,
+      );
+    }
+    // As a last resort, just place it at the same position as the last hop.
+    final contact = pathContacts[lastHopKey];
+    if (contact != null && contact.hasLocation) {
+      return (
+        LatLng(
+          contact.latitude! + offsetDeg * cos(angle),
+          contact.longitude! + offsetDeg * sin(angle),
+        ),
+        true,
+      );
+    }
+    return (null, false);
+  }
+
+  void _syncPrimaryTraceState({
+    required MeshCoreConnector connector,
+    required PathTraceData traceData,
+    required List<Contact?> resolvedOutbound,
+    required List<LatLng?> inferredOutbound,
+    required LatLng? selfPoint,
+  }) {
+    final pathContacts = <String, Contact>{};
+    for (var i = 0; i < _primaryOutboundHops.length; i++) {
+      final contact = resolvedOutbound[i];
+      if (contact != null) {
+        pathContacts[_hopKey(_primaryOutboundHops[i])] = contact;
+      }
+    }
+
+    final inferredPositions = <String, LatLng>{};
+    for (var i = 0; i < _primaryOutboundHops.length; i++) {
+      final inferred = inferredOutbound[i];
+      if (inferred != null) {
+        inferredPositions[_hopKey(_primaryOutboundHops[i])] = inferred;
+      }
+    }
+
+    _inferredHopPositions = inferredPositions;
+    _traceData = PathTraceData(
+      pathData: traceData.pathData,
+      snrData: traceData.snrData,
+      pathContacts: pathContacts,
+    );
+
+    final (targetPos, targetGuessed) = _resolveTargetContactPosition(
+      connector: connector,
+      pathData: traceData.pathData,
+      outboundHops: _primaryOutboundHops,
+      resolvedOutbound: resolvedOutbound,
+      inferredOutbound: inferredOutbound,
+      pathContacts: pathContacts,
+      inferredPositions: inferredPositions,
+      selfPoint: selfPoint,
+    );
+    _targetContactPosition = targetPos;
+    _targetContactIsGuessed = targetGuessed;
+
+    final points = <LatLng>[?selfPoint];
+    String hopLast = '';
+    String hopLastLast = '';
+    for (final hop in traceData.pathData) {
+      final hopKey = _hopKey(hop);
+      if (hopKey == hopLastLast && widget.flipPathAround) {
+        break; //skip duplicate hops in round-trip paths
+      }
+      final contact = pathContacts[hopKey];
+      if (contact != null && contact.hasLocation) {
+        points.add(LatLng(contact.latitude!, contact.longitude!));
+      } else {
+        final inferred = inferredPositions[hopKey];
+        if (inferred != null) points.add(inferred);
+      }
+      hopLastLast = hopLast;
+      hopLast = hopKey;
+    }
+    if (targetPos != null &&
+        _targetContact != null &&
+        _targetContact!.type == advTypeChat) {
+      points.add(targetPos);
+    }
+
+    _points = points;
+    _polylines = points.length > 1
+        ? [Polyline(points: points, strokeWidth: 4, color: kPrimaryPathColor)]
+        : <Polyline>[];
+    _initialCenter = points.isNotEmpty ? points.first : const LatLng(0, 0);
+    _initialZoom = points.isNotEmpty ? 13.0 : 2.0;
+    _bounds = points.length > 1 ? LatLngBounds.fromPoints(points) : null;
+    _pathDistanceMeters = getPathDistanceMeters(points);
   }
 
   LatLng? _contactLatLng(Contact? contact) {
@@ -973,28 +955,35 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
 
   /// Rebuilds the renderable paths: the traced path as primary plus up to
   /// four distinct alternates from the target contact's path history.
-  void _rebuildDisplayPaths(
-    MeshCoreConnector connector, {
-    List<Contact?>? primaryResolved,
-    List<LatLng?>? primaryInferred,
-  }) {
+  void _rebuildDisplayPaths(MeshCoreConnector connector) {
     final selfPoint = plausibleSelfPoint(connector);
     final paths = <DisplayPath>[];
     final resolvedMap =
         <String, ({List<Contact?> contacts, List<LatLng?> inferred})>{};
 
-    final resolvedPrimary =
-        primaryResolved ??
-        [
-          for (final hop in _primaryOutboundHops)
-            _traceData?.pathContacts[_hopKey(hop)],
-        ];
-    final inferredPrimary =
-        primaryInferred ??
-        [
-          for (final hop in _primaryOutboundHops)
-            _inferredHopPositions[_hopKey(hop)],
-        ];
+    final resolvedPrimary = PathHopResolver.resolveHops(
+      hops: _primaryOutboundHops,
+      preferredContacts: widget.pathContacts,
+      contacts: connector.allContactsUnfiltered,
+      endpoint: selfPoint,
+      contactFilter: (c) => c.type != advTypeChat,
+    );
+    final inferredPrimary = _inferHopPositions(
+      hops: _primaryOutboundHops,
+      resolvedContacts: resolvedPrimary,
+      selfPoint: selfPoint,
+      peerContacts: connector.contacts,
+    );
+    final traceData = _traceData;
+    if (traceData != null) {
+      _syncPrimaryTraceState(
+        connector: connector,
+        traceData: traceData,
+        resolvedOutbound: resolvedPrimary,
+        inferredOutbound: inferredPrimary,
+        selfPoint: selfPoint,
+      );
+    }
     resolvedMap['primary'] = (
       contacts: resolvedPrimary,
       inferred: inferredPrimary,

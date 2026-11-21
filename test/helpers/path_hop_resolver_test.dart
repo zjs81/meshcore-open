@@ -346,4 +346,84 @@ void main() {
 
     expect(resolved.map((c) => c?.name), ['Local 2-byte', null]);
   });
+
+  test(
+    'preferredContacts overrides nearer general contact with same prefix when plausible',
+    () {
+      const self = LatLng(33.4484, -112.0740);
+      final nearerGeneral = _contact(
+        prefix: 0x48,
+        secondByte: 0x01,
+        name: 'Nearer General 48',
+        latitude: 33.4600,
+        longitude: -112.0700,
+        lastSeen: DateTime.utc(2026, 6),
+      );
+      final selectedPreferred = _contact(
+        prefix: 0x48,
+        secondByte: 0x02,
+        name: 'Selected Preferred 48',
+        latitude: 33.9000,
+        longitude: -111.7000,
+        lastSeen: DateTime.utc(2026, 1),
+      );
+      final secondHopGeneral = _contact(
+        prefix: 0x53,
+        name: 'Second Hop 53',
+        latitude: 33.9500,
+        longitude: -111.6500,
+      );
+
+      final resolvedWithEndpoint = PathHopResolver.resolve(
+        pathBytes: const [0x48, 0x53],
+        contacts: [nearerGeneral, selectedPreferred, secondHopGeneral],
+        preferredContacts: [selectedPreferred],
+        endpoint: self,
+      );
+      expect(resolvedWithEndpoint.map((c) => c?.name), [
+        'Selected Preferred 48',
+        'Second Hop 53',
+      ]);
+
+      final resolvedWithoutEndpoint = PathHopResolver.resolve(
+        pathBytes: const [0x48, 0x53],
+        contacts: [nearerGeneral, selectedPreferred, secondHopGeneral],
+        preferredContacts: [selectedPreferred],
+        endpoint: null,
+      );
+      expect(resolvedWithoutEndpoint.map((c) => c?.name), [
+        'Selected Preferred 48',
+        'Second Hop 53',
+      ]);
+    },
+  );
+
+  test(
+    'impossibly far preferredContact is rejected and falls back to plausible general contact',
+    () {
+      const self = LatLng(33.4484, -112.0740);
+      final bogusPreferred = _contact(
+        prefix: 0x9C,
+        secondByte: 0x01,
+        name: 'East Coast Preferred 9C',
+        latitude: 42.3601,
+        longitude: -71.0589,
+      );
+      final localGeneral = _contact(
+        prefix: 0x9C,
+        secondByte: 0x02,
+        name: 'Local General 9C',
+        latitude: 33.60097,
+        longitude: -112.02457,
+      );
+
+      final resolved = PathHopResolver.resolve(
+        pathBytes: const [0x9C],
+        contacts: [bogusPreferred, localGeneral],
+        preferredContacts: [bogusPreferred],
+        endpoint: self,
+      );
+      expect(resolved.map((c) => c?.name), ['Local General 9C']);
+    },
+  );
 }
