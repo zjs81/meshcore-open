@@ -5198,9 +5198,8 @@ class MeshCoreConnector extends ChangeNotifier {
   }) async {
     if (!isConnected || text.isEmpty) return;
 
-    final outboundBytes = utf8.encode(
-      prepareContactOutboundText(contact, text),
-    );
+    final prepared = prepareContactOutbound(contact, text);
+    final outboundBytes = utf8.encode(prepared.text);
     if (outboundBytes.length > maxTextPayloadBytes) {
       debugPrint(
         'sendMessage: dropping overlong message '
@@ -5249,6 +5248,7 @@ class MeshCoreConnector extends ChangeNotifier {
         originalText: originalText,
         translatedLanguageCode: translatedLanguageCode,
         translationModelId: translationModelId,
+        isSmazCompressed: prepared.isSmazCompressed,
       );
     } else {
       // Fallback to old behavior if retry service not initialized
@@ -5261,11 +5261,11 @@ class MeshCoreConnector extends ChangeNotifier {
         originalText: originalText,
         translatedLanguageCode: translatedLanguageCode,
         translationModelId: translationModelId,
+        isSmazCompressed: prepared.isSmazCompressed,
       );
       _addMessage(contact.publicKeyHex, message); // recipient as "sender"
       notifyListeners();
-      final outboundText = prepareContactOutboundText(contact, text);
-      await sendFrame(buildSendTextMsgFrame(contact.publicKey, outboundText));
+      await sendFrame(buildSendTextMsgFrame(contact.publicKey, prepared.text));
     }
   }
 
@@ -5695,6 +5695,7 @@ class MeshCoreConnector extends ChangeNotifier {
       // we continue to process it normally.
     }
 
+    final prepared = prepareChannelOutbound(channel.index, text);
     final message = ChannelMessage.outgoing(
       text,
       _selfName ?? 'Me',
@@ -5704,12 +5705,13 @@ class MeshCoreConnector extends ChangeNotifier {
       translationModelId: translationModelId,
       region: sendRegion,
       replyTo: replyTo,
+      isSmazCompressed: prepared.isSmazCompressed,
     );
     _addChannelMessage(channel.index, message);
     _pendingChannelSentQueue.add(message.messageId);
     notifyListeners();
 
-    final outboundText = prepareChannelOutboundText(channel.index, text);
+    final outboundText = prepared.text;
     // Resends reuse the timestamp, so they are the same packet: repeaters
     // that already forwarded it drop the copy and recipients see it once.
     Future<void> transmit({bool isResend = false}) =>
@@ -8367,9 +8369,8 @@ class MeshCoreConnector extends ChangeNotifier {
         appLogger.warn('Received message with empty text, ignoring');
         return null;
       }
-      final decodedText = isCli
-          ? msgText
-          : (Smaz.tryDecodePrefixed(msgText) ?? msgText);
+      final smazDecoded = isCli ? null : Smaz.tryDecodePrefixed(msgText);
+      final decodedText = smazDecoded ?? msgText;
 
       final contact = _contacts.cast<Contact?>().firstWhere(
         (c) => c != null && _matchesPrefix(c.publicKey, senderPrefix),
@@ -8389,6 +8390,7 @@ class MeshCoreConnector extends ChangeNotifier {
         receivedAt: DateTime.now(),
         isOutgoing: false,
         isCli: isCli,
+        isSmazCompressed: smazDecoded != null,
         status: MessageStatus.delivered,
         pathLength: pathLength == 0xFF ? null : (pathLength & 0x3F),
         pathBytes: Uint8List(0),
@@ -8518,7 +8520,13 @@ class MeshCoreConnector extends ChangeNotifier {
 
   /// Prepares contact outbound text by applying SMAZ encoding if enabled.
   /// This should be used to transform text before computing ACK hashes.
-  String prepareContactOutboundText(Contact contact, String text) {
+  String prepareContactOutboundText(Contact contact, String text) =>
+      prepareContactOutbound(contact, text).text;
+
+  ({String text, bool isSmazCompressed}) prepareContactOutbound(
+    Contact contact,
+    String text,
+  ) {
     final trimmed = text.trim();
     final isStructuredPayload =
         trimmed.startsWith('g:') ||
@@ -8526,7 +8534,8 @@ class MeshCoreConnector extends ChangeNotifier {
         trimmed.startsWith('V1|');
     if (!isStructuredPayload) {
       if (isContactSmazEnabled(contact.publicKeyHex)) {
-        return Smaz.encodeIfSmaller(text);
+        final encoded = Smaz.encodeIfSmaller(text);
+        return (text: encoded, isSmazCompressed: encoded != text);
       } else if (isContactCyr2LatEnabled(contact.publicKeyHex)) {
         final profileId = getContactCyr2LatProfileId(contact.publicKeyHex);
         final profile = profileId != null && _appSettingsService != null
@@ -8542,19 +8551,26 @@ class MeshCoreConnector extends ChangeNotifier {
             Cyr2Lat.setCharMap(globalProfile.charMap);
           }
         }
-        return Cyr2Lat.encode(text);
+        return (text: Cyr2Lat.encode(text), isSmazCompressed: false);
       }
     }
-    return text;
+    return (text: text, isSmazCompressed: false);
   }
 
-  String prepareChannelOutboundText(int channelIndex, String text) {
+  String prepareChannelOutboundText(int channelIndex, String text) =>
+      prepareChannelOutbound(channelIndex, text).text;
+
+  ({String text, bool isSmazCompressed}) prepareChannelOutbound(
+    int channelIndex,
+    String text,
+  ) {
     final trimmed = text.trim();
     final isStructuredPayload =
         trimmed.startsWith('g:') || trimmed.startsWith('m:');
     if (!isStructuredPayload) {
       if (isChannelSmazEnabled(channelIndex)) {
-        return Smaz.encodeIfSmaller(text);
+        final encoded = Smaz.encodeIfSmaller(text);
+        return (text: encoded, isSmazCompressed: encoded != text);
       } else if (isChannelCyr2LatEnabled(channelIndex)) {
         final profileId = getChannelCyr2LatProfileId(channelIndex);
         final profile = profileId != null && _appSettingsService != null
@@ -8570,10 +8586,10 @@ class MeshCoreConnector extends ChangeNotifier {
             Cyr2Lat.setCharMap(globalProfile.charMap);
           }
         }
-        return Cyr2Lat.encode(text);
+        return (text: Cyr2Lat.encode(text), isSmazCompressed: false);
       }
     }
-    return text;
+    return (text: text, isSmazCompressed: false);
   }
 
   // Falls back to the cached channel list, which stays populated while a
@@ -8761,8 +8777,8 @@ class MeshCoreConnector extends ChangeNotifier {
 
           final text = decrypted.readCString();
           final parsed = _splitSenderText(text);
-          final decodedText =
-              Smaz.tryDecodePrefixed(parsed.text) ?? parsed.text;
+          final smazDecoded = Smaz.tryDecodePrefixed(parsed.text);
+          final decodedText = smazDecoded ?? parsed.text;
           if (_shouldDropSelfChannelMessage(
             parsed.senderName,
             packet.pathBytes,
@@ -8792,6 +8808,7 @@ class MeshCoreConnector extends ChangeNotifier {
             timestamp: DateTime.fromMillisecondsSinceEpoch(timestampRaw * 1000),
             receivedAt: DateTime.now(),
             isOutgoing: false,
+            isSmazCompressed: smazDecoded != null,
             status: ChannelMessageStatus.sent,
             pathLength: packet.isFlood ? packet.hopCount : 0,
             pathHashWidth: packet.pathHashWidth,
@@ -9280,8 +9297,13 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     messages.add(message);
-    if (messages.length > _messageWindowSize) {
-      final trimCount = messages.length - _messageWindowSize;
+    // The open chat keeps the older pages its reader scrolled back to;
+    // trimming them would pull the history out from under the reader.
+    final windowSize = pubKeyHex == _activeContactKey
+        ? MessageStore.maxStoredMessages
+        : _messageWindowSize;
+    if (messages.length > windowSize) {
+      final trimCount = messages.length - windowSize;
       _messageStore.archive(pubKeyHex, messages.sublist(0, trimCount));
       messages.removeRange(0, trimCount);
     }
@@ -9606,6 +9628,7 @@ class MeshCoreConnector extends ChangeNotifier {
           timestamp: message.timestamp,
           receivedAt: message.receivedAt,
           isOutgoing: message.isOutgoing,
+          isSmazCompressed: message.isSmazCompressed,
           status: message.status,
           repeats: message.repeats,
           repeatCount: message.repeatCount,
@@ -9654,6 +9677,8 @@ class MeshCoreConnector extends ChangeNotifier {
           existing.status == ChannelMessageStatus.pending;
       messages[existingIndex] = existing.copyWith(
         repeatCount: newRepeatCount,
+        isSmazCompressed:
+            existing.isSmazCompressed || processedMessage.isSmazCompressed,
         pathLength: mergedPathLength,
         pathHashWidth: existing.pathHashWidth ?? processedMessage.pathHashWidth,
         pathBytes: mergedPathBytes,

@@ -2538,7 +2538,7 @@
   "pathEditor_searchRepeaters": "重复搜索",
   "pathEditor_advancedHex": "高级：原始十六进制路径",
   "pathEditor_hexLabel": "十六进制前缀",
-  "pathEditor_hexHelper": "每跳使用两个十六进制字符，用逗号分隔。",
+  "pathEditor_hexHelper": "每跳使用{count}个十六进制字符，用逗号分隔。",
   "pathEditor_invalidTokens": "无效：{tokens}",
   "pathEditor_tooManyHops": "最多 64 跳",
   "pathEditor_usePath": "请使用此路径",
@@ -3813,7 +3813,7 @@
   "backupRestore_backupComplete": "备份文件已创建。",
   "backupRestore_restoreComplete": "恢复完成。如果恢复了无线电身份，请重新连接。",
   "backupRestore_missingModelsTitle": "模型未下载",
-  "backupRestore_missingModelsMessage": "恢复的设置所选用的模型在此设备上不可用：\n{models}\n\n现在下载吗？",
+  "backupRestore_missingModelsMessage": "恢复的设置所选用的模型在此设备上不可用。现在下载吗？",
   "backupRestore_downloadModels": "下载模型",
   "backupRestore_downloading": "正在下载…",
   "backupRestore_cancelDownload": "取消下载",
@@ -3850,5 +3850,14 @@
   "appSettings_repeaterRoomSettingsReset": "中继和房间设置已重置",
   "repeater_clockSyncDefault": "默认",
   "repeater_clockSyncOn": "开",
-  "repeater_clockSyncOff": "关"
+  "repeater_clockSyncOff": "关",
+  "modelDownload_notDownloaded": "未下载",
+  "modelDownload_downloading": "正在下载",
+  "modelDownload_active": "当前使用",
+  "modelDownload_failed": "下载失败",
+  "modelDownload_incomplete": "不完整",
+  "modelDownload_verifying": "正在校验下载",
+  "modelDownload_useModel": "使用此模型",
+  "modelDownload_removeFailed": "无法移除模型：{error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

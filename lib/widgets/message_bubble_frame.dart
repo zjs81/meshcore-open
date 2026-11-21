@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
 import '../theme/mesh_theme.dart';
 
 /// Colours shared by the direct-message and channel chat bubbles.
@@ -146,6 +147,28 @@ class MessageBubbleFrame extends StatelessWidget {
             child: Icon(Icons.bookmark, size: 22, color: Color(0xFFFFE54A)),
           ),
       ],
+    );
+  }
+}
+
+/// Subtle indicator shown in a message bubble's metadata row when SMAZ
+/// compression was applied to the message.
+class CompressionIndicator extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const CompressionIndicator({super.key, this.size = 14, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final label = context.l10n.messageMeta_smazCompressed;
+    return Tooltip(
+      message: label,
+      triggerMode: TooltipTriggerMode.tap,
+      child: Semantics(
+        label: label,
+        child: Icon(Icons.compress, size: size, color: color),
+      ),
     );
   }
 }

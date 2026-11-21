@@ -1243,7 +1243,7 @@
   "pathEditor_searchRepeaters": "Hledat opakovače",
   "pathEditor_advancedHex": "Pokročilé: surová hex cesta",
   "pathEditor_hexLabel": "Hex prefixy",
-  "pathEditor_hexHelper": "Dva hex znaky na skok, oddělené čárkami",
+  "pathEditor_hexHelper": "{count} hex znaky na skok, oddělené čárkami",
   "pathEditor_invalidTokens": "Neplatné: {tokens}",
   "@pathEditor_invalidTokens": {
     "placeholders": {
@@ -4369,7 +4369,7 @@
   "backupRestore_backupComplete": "Soubor zálohy byl vytvořen.",
   "backupRestore_restoreComplete": "Obnovení dokončeno. Pokud jste obnovili identitu rádia, připojte se znovu.",
   "backupRestore_missingModelsTitle": "Modely nejsou stažené",
-  "backupRestore_missingModelsMessage": "Obnovené nastavení vybírá modely, které nejsou v tomto zařízení k dispozici:\n{models}\n\nStáhnout je nyní?",
+  "backupRestore_missingModelsMessage": "Obnovené nastavení vybírá modely, které nejsou v tomto zařízení k dispozici. Stáhnout je nyní?",
   "backupRestore_downloadModels": "Stáhnout modely",
   "backupRestore_downloading": "Stahování…",
   "backupRestore_cancelDownload": "Zrušit stahování",
@@ -4406,5 +4406,14 @@
   "appSettings_repeaterRoomSettingsReset": "Nastavení opakovačů a místností obnoveno",
   "repeater_clockSyncDefault": "Výchozí",
   "repeater_clockSyncOn": "Zapnuto",
-  "repeater_clockSyncOff": "Vypnuto"
+  "repeater_clockSyncOff": "Vypnuto",
+  "modelDownload_notDownloaded": "Nestaženo",
+  "modelDownload_downloading": "Stahování",
+  "modelDownload_active": "Aktivní",
+  "modelDownload_failed": "Stažení se nezdařilo",
+  "modelDownload_incomplete": "Neúplné",
+  "modelDownload_verifying": "Ověřování stažení",
+  "modelDownload_useModel": "Použít tento model",
+  "modelDownload_removeFailed": "Model se nepodařilo odebrat: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

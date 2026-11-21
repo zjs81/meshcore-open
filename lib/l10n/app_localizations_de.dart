@@ -559,9 +559,8 @@ class AppLocalizationsDe extends AppLocalizations {
       'Modelle nicht heruntergeladen';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'Die wiederhergestellten Einstellungen wählen Modelle aus, die auf diesem Gerät nicht verfügbar sind:\n$models\n\nJetzt herunterladen?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'Die wiederhergestellten Einstellungen wählen Modelle aus, die auf diesem Gerät nicht verfügbar sind. Jetzt herunterladen?';
 
   @override
   String get backupRestore_downloadModels => 'Modelle herunterladen';
@@ -1383,6 +1382,13 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get appSettings_regionOnHopsLineSubtitle =>
       'Die Region einer Kanalnachricht in derselben Zeile wie die Hop-Anzahl anzeigen statt darunter.';
+
+  @override
+  String get appSettings_showCompressionIndicator => 'Compression indicator';
+
+  @override
+  String get appSettings_showCompressionIndicatorSubtitle =>
+      'Show an icon on messages compressed with SMAZ.';
 
   @override
   String get appSettings_notifications => 'Benachrichtigungen';
@@ -2767,8 +2773,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pathEditor_hexLabel => 'Hex-Präfixe';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Zwei Hex-Zeichen pro Sprung, durch Kommas getrennt';
+  String pathEditor_hexHelper(int count) {
+    return '$count Hex-Zeichen pro Sprung, durch Kommas getrennt';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {
@@ -7654,6 +7661,37 @@ class AppLocalizationsDe extends AppLocalizations {
       'Mit einem Funkgerät verbinden, um Nachrichten zu senden';
 
   @override
+  String get modelDownload_notDownloaded => 'Nicht heruntergeladen';
+
+  @override
+  String get modelDownload_downloading => 'Wird heruntergeladen';
+
+  @override
+  String get modelDownload_active => 'Aktiv';
+
+  @override
+  String get modelDownload_failed => 'Download fehlgeschlagen';
+
+  @override
+  String get modelDownload_incomplete => 'Unvollständig';
+
+  @override
+  String get modelDownload_verifying => 'Download wird geprüft';
+
+  @override
+  String get modelDownload_useModel => 'Dieses Modell verwenden';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Das Modell konnte nicht entfernt werden: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
+
+  @override
   String get chatCompression_title => 'Compression';
 
   @override
@@ -7699,4 +7737,7 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get chatCompression_saveFailed =>
       'Couldn\'t save the compression setting. Showing the saved setting.';
+
+  @override
+  String get messageMeta_smazCompressed => 'SMAZ compressed';
 }

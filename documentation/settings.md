@@ -122,6 +122,7 @@ Individual channels can be muted from the channel chat bell icon, the channel li
 - **Jump to Oldest Unread**: When opening a chat, scrolls to the oldest unread message instead of the newest
 - **Enable Message Tracing**: Shows path trace overlays and extra metadata on messages
 - **Region next to hop count** (default off): Shows a channel message's region chip on the same line as its hop count instead of below it
+- **Compression indicator** (default off): Shows an icon on direct and channel messages that were compressed with SMAZ
 
 ### Routing
 What happens when a message is sent. Each slider shows its selected number in the title. Turning a switch on reveals its extra controls with the same animation.
@@ -161,16 +162,11 @@ If both direct and flood attempts are 0, the message is still sent once on the c
 - **Offline Map Cache**: Navigate to tile download screen
 
 ### Translation
-Not shown on web. Controls on-device message translation powered by a locally-downloaded ML model:
-- **Enable translation**: Enables message translation controls
+Not shown on web. Controls on-device message translation powered by a locally-downloaded ML model. Turn on **Enable translation** first; the translation options and model rows then appear:
 - **Auto-translate incoming messages**: Automatically translates incoming messages for chat/channel display and notifications
 - **Translate before sending**: Sets the default state of the composer's translate icon (on means messages are translated before sending)
 - **Target language**: Language to translate into (searchable list; defaults to the app language)
-- **Downloaded model**: Dropdown to select among already-downloaded translation models
-- **Preset Hugging Face model**: Download a curated preset model with one tap
-- **Manual model URL**: Enter a URL to download a custom GGUF-format model; shows download progress and a cancel button
-
-The auto-translate and composer toggles are disabled until **Enable translation** is on.
+- **Models**: The same model rows used for the image codec. Each preset is one row with its name, size once known, and status (not downloaded, downloading with progress, ready, or couldn't download). The model in use is marked Active; tap another ready row to switch. Download, cancel, and remove are the row's action. A manual model URL under the list downloads a custom GGUF file into the same list.
 
 ### IPFS Provider Configuration
 
@@ -188,7 +184,7 @@ Save the settings before sharing. The upload action is shown in the chat compose
 
 ### Image Messages
 
-Image message controls live in App Settings → Messaging. Turn on **Enable image messages** first; **Process images automatically** and the image model download/cancel/removal controls then appear. Automatic processing reconstructs every image as it arrives and uses about 2 GB of memory for a second each time; leave it off to reconstruct with a tap. See [Image Messages](image-messages.md) for firmware, native-runtime, storage, and memory requirements.
+Image message controls live in App Settings → Messaging. Turn on **Enable image messages** first; **Process images automatically** and the image model row then appear. That row is the same model list used for translation: name, size, status (not downloaded, downloading with progress, ready, or couldn't download), and one action (download, cancel, or remove). A finished install is marked Active. Automatic processing reconstructs every image as it arrives and uses about 2 GB of memory for a second each time; leave it off to reconstruct with a tap. See [Image Messages](image-messages.md) for firmware, native-runtime, storage, and memory requirements.
 
 ### Cyrillic-to-Latin (Cyr2Lat)
 Controls character substitution profiles used to render Cyrillic text in Latin characters. A dropdown selects the active profile; Add, Edit, and Delete buttons manage the profile list (the last remaining profile cannot be deleted). Each profile stores a JSON character map. The active profile is the default; each chat can pick its own in its **Compression** strip (see [Compression](additional-features.md#compression-smaz-and-cyr2lat)).

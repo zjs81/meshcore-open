@@ -392,6 +392,7 @@ void main() {
           await tester.scrollUntilVisible(
             find.text(label),
             200,
+            maxScrolls: 100,
             scrollable: find.byType(Scrollable).first,
           );
           await tester.pump();

@@ -2682,7 +2682,7 @@
   "pathEditor_searchRepeaters": "Repeaters zoeken",
   "pathEditor_advancedHex": "Geavanceerd: ruwe hex-pad",
   "pathEditor_hexLabel": "Hex-prefixen",
-  "pathEditor_hexHelper": "Twee hex-tekens per hop, gescheiden door komma's",
+  "pathEditor_hexHelper": "{count} hex-tekens per hop, gescheiden door komma's",
   "pathEditor_invalidTokens": "Ongeldig: {tokens}",
   "pathEditor_tooManyHops": "Maximaal 64 hops",
   "pathEditor_usePath": "Dit pad gebruiken",
@@ -3657,7 +3657,7 @@
   "backupRestore_backupComplete": "Back-upbestand gemaakt.",
   "backupRestore_restoreComplete": "Herstel voltooid. Verbind opnieuw als je de radio-identiteit hebt hersteld.",
   "backupRestore_missingModelsTitle": "Modellen niet gedownload",
-  "backupRestore_missingModelsMessage": "De herstelde instellingen selecteren modellen die op dit apparaat niet beschikbaar zijn:\n{models}\n\nNu downloaden?",
+  "backupRestore_missingModelsMessage": "De herstelde instellingen selecteren modellen die op dit apparaat niet beschikbaar zijn. Nu downloaden?",
   "backupRestore_downloadModels": "Modellen downloaden",
   "backupRestore_downloading": "Downloaden…",
   "backupRestore_cancelDownload": "Download annuleren",
@@ -3694,5 +3694,14 @@
   "appSettings_repeaterRoomSettingsReset": "Repeater- en roominstellingen gereset",
   "repeater_clockSyncDefault": "Standaard",
   "repeater_clockSyncOn": "Aan",
-  "repeater_clockSyncOff": "Uit"
+  "repeater_clockSyncOff": "Uit",
+  "modelDownload_notDownloaded": "Niet gedownload",
+  "modelDownload_downloading": "Downloaden",
+  "modelDownload_active": "Actief",
+  "modelDownload_failed": "Downloaden mislukt",
+  "modelDownload_incomplete": "Onvolledig",
+  "modelDownload_verifying": "Download controleren",
+  "modelDownload_useModel": "Dit model gebruiken",
+  "modelDownload_removeFailed": "Het model kon niet worden verwijderd: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

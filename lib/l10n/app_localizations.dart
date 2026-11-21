@@ -1102,8 +1102,8 @@ abstract class AppLocalizations {
   /// No description provided for @backupRestore_missingModelsMessage.
   ///
   /// In en, this message translates to:
-  /// **'The restored settings select models that are not available on this device:\n{models}\n\nDownload them now?'**
-  String backupRestore_missingModelsMessage(String models);
+  /// **'The restored settings select models that are not on this device. Download them now?'**
+  String get backupRestore_missingModelsMessage;
 
   /// No description provided for @backupRestore_downloadModels.
   ///
@@ -2532,6 +2532,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show a channel message\'s region on the same line as its hop count instead of below it.'**
   String get appSettings_regionOnHopsLineSubtitle;
+
+  /// No description provided for @appSettings_showCompressionIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Compression indicator'**
+  String get appSettings_showCompressionIndicator;
+
+  /// No description provided for @appSettings_showCompressionIndicatorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show an icon on messages compressed with SMAZ.'**
+  String get appSettings_showCompressionIndicatorSubtitle;
 
   /// No description provided for @appSettings_notifications.
   ///
@@ -4792,7 +4804,7 @@ abstract class AppLocalizations {
   /// No description provided for @pathEditor_searchRepeaters.
   ///
   /// In en, this message translates to:
-  /// **'Search repeaters'**
+  /// **'Search name or hash'**
   String get pathEditor_searchRepeaters;
 
   /// No description provided for @pathEditor_advancedHex.
@@ -4810,8 +4822,8 @@ abstract class AppLocalizations {
   /// No description provided for @pathEditor_hexHelper.
   ///
   /// In en, this message translates to:
-  /// **'Two hex characters per hop, separated by commas'**
-  String get pathEditor_hexHelper;
+  /// **'{count} hex characters per hop, separated by commas'**
+  String pathEditor_hexHelper(int count);
 
   /// No description provided for @pathEditor_invalidTokens.
   ///
@@ -12718,6 +12730,60 @@ abstract class AppLocalizations {
   /// **'Connect to a radio to send messages'**
   String get chat_composerOffline;
 
+  /// No description provided for @modelDownload_notDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not downloaded'**
+  String get modelDownload_notDownloaded;
+
+  /// No description provided for @modelDownload_downloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get modelDownload_downloading;
+
+  /// No description provided for @modelDownload_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get modelDownload_active;
+
+  /// No description provided for @modelDownload_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t download'**
+  String get modelDownload_failed;
+
+  /// No description provided for @modelDownload_incomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Incomplete'**
+  String get modelDownload_incomplete;
+
+  /// No description provided for @modelDownload_verifying.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying the download'**
+  String get modelDownload_verifying;
+
+  /// No description provided for @modelDownload_useModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this model'**
+  String get modelDownload_useModel;
+
+  /// No description provided for @modelDownload_removeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t remove the model: {error}'**
+  String modelDownload_removeFailed(String error);
+
+  /// No description provided for @modelDownload_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total} MB ({percent}%)'**
+  String modelDownload_progress(String current, String total, String percent);
+
   /// No description provided for @chatCompression_title.
   ///
   /// In en, this message translates to:
@@ -12795,6 +12861,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t save the compression setting. Showing the saved setting.'**
   String get chatCompression_saveFailed;
+
+  /// No description provided for @messageMeta_smazCompressed.
+  ///
+  /// In en, this message translates to:
+  /// **'SMAZ compressed'**
+  String get messageMeta_smazCompressed;
 }
 
 class _AppLocalizationsDelegate

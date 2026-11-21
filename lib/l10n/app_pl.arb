@@ -2658,7 +2658,7 @@
   "pathEditor_searchRepeaters": "Funkcje powtarzania",
   "pathEditor_advancedHex": "Zaawansowane: ścieżka w formacie szesnastkowym",
   "pathEditor_hexLabel": "Prefiksy heksadecymalne",
-  "pathEditor_hexHelper": "Dwa znaki szesnastkowe na każdym kroku, oddzielone przecinkami",
+  "pathEditor_hexHelper": "{count} znaki szesnastkowe na każdym kroku, oddzielone przecinkami",
   "pathEditor_invalidTokens": "Nieprawidłowe: {tokens}",
   "pathEditor_tooManyHops": "Maksymalnie 64 hopów",
   "pathEditor_usePath": "Użyj tej ścieżki.",
@@ -3995,7 +3995,7 @@
   "backupRestore_backupComplete": "Plik kopii zapasowej został utworzony.",
   "backupRestore_restoreComplete": "Przywracanie zakończone. Połącz się ponownie, jeśli przywrócono tożsamość radia.",
   "backupRestore_missingModelsTitle": "Modele nie zostały pobrane",
-  "backupRestore_missingModelsMessage": "Przywrócone ustawienia wybierają modele, które nie są dostępne na tym urządzeniu:\n{models}\n\nPobrać je teraz?",
+  "backupRestore_missingModelsMessage": "Przywrócone ustawienia wybierają modele, które nie są dostępne na tym urządzeniu. Pobrać je teraz?",
   "backupRestore_downloadModels": "Pobierz modele",
   "backupRestore_downloading": "Pobieranie…",
   "backupRestore_cancelDownload": "Anuluj pobieranie",
@@ -4032,5 +4032,14 @@
   "appSettings_repeaterRoomSettingsReset": "Ustawienia przemienników i pokoi zresetowane",
   "repeater_clockSyncDefault": "Domyślnie",
   "repeater_clockSyncOn": "Wł.",
-  "repeater_clockSyncOff": "Wył."
+  "repeater_clockSyncOff": "Wył.",
+  "modelDownload_notDownloaded": "Nie pobrano",
+  "modelDownload_downloading": "Pobieranie",
+  "modelDownload_active": "Aktywny",
+  "modelDownload_failed": "Nie udało się pobrać",
+  "modelDownload_incomplete": "Niekompletny",
+  "modelDownload_verifying": "Sprawdzanie pobierania",
+  "modelDownload_useModel": "Użyj tego modelu",
+  "modelDownload_removeFailed": "Nie udało się usunąć modelu: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

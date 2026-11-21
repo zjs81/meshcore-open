@@ -2791,7 +2791,7 @@
   "pathEditor_searchRepeaters": "Repeater suchen",
   "pathEditor_advancedHex": "Erweitert: roher Hex-Pfad",
   "pathEditor_hexLabel": "Hex-Präfixe",
-  "pathEditor_hexHelper": "Zwei Hex-Zeichen pro Sprung, durch Kommas getrennt",
+  "pathEditor_hexHelper": "{count} Hex-Zeichen pro Sprung, durch Kommas getrennt",
   "pathEditor_invalidTokens": "Ungültig: {tokens}",
   "pathEditor_tooManyHops": "Maximal 64 Sprünge",
   "pathEditor_usePath": "Diesen Pfad verwenden",
@@ -3891,7 +3891,7 @@
   "backupRestore_backupComplete": "Sicherungsdatei erstellt.",
   "backupRestore_restoreComplete": "Wiederherstellung abgeschlossen. Verbinden Sie sich erneut, wenn Sie die Funkidentität wiederhergestellt haben.",
   "backupRestore_missingModelsTitle": "Modelle nicht heruntergeladen",
-  "backupRestore_missingModelsMessage": "Die wiederhergestellten Einstellungen wählen Modelle aus, die auf diesem Gerät nicht verfügbar sind:\n{models}\n\nJetzt herunterladen?",
+  "backupRestore_missingModelsMessage": "Die wiederhergestellten Einstellungen wählen Modelle aus, die auf diesem Gerät nicht verfügbar sind. Jetzt herunterladen?",
   "backupRestore_downloadModels": "Modelle herunterladen",
   "backupRestore_downloading": "Wird heruntergeladen…",
   "backupRestore_cancelDownload": "Download abbrechen",
@@ -3928,5 +3928,14 @@
   "appSettings_repeaterRoomSettingsReset": "Repeater- und Raum-Einstellungen zurückgesetzt",
   "repeater_clockSyncDefault": "Standard",
   "repeater_clockSyncOn": "An",
-  "repeater_clockSyncOff": "Aus"
+  "repeater_clockSyncOff": "Aus",
+  "modelDownload_notDownloaded": "Nicht heruntergeladen",
+  "modelDownload_downloading": "Wird heruntergeladen",
+  "modelDownload_active": "Aktiv",
+  "modelDownload_failed": "Download fehlgeschlagen",
+  "modelDownload_incomplete": "Unvollständig",
+  "modelDownload_verifying": "Download wird geprüft",
+  "modelDownload_useModel": "Dieses Modell verwenden",
+  "modelDownload_removeFailed": "Das Modell konnte nicht entfernt werden: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

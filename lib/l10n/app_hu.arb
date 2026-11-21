@@ -2663,7 +2663,7 @@
   "pathEditor_searchRepeaters": "Ismétlő keresése",
   "pathEditor_advancedHex": "Haladó: nyers hexadecimális útvonal",
   "pathEditor_hexLabel": "Hexadecimális előtagok",
-  "pathEditor_hexHelper": "Két hexadecimális karakter ugrásonként, vesszővel elválasztva",
+  "pathEditor_hexHelper": "{count} hexadecimális karakter ugrásonként, vesszővel elválasztva",
   "pathEditor_invalidTokens": "Érvénytelen: {tokens}",
   "routing_lastWorked": "dolgozott {when}",
   "routing_deliveryCounts": "{successes} kézbesítve, {failures} sikertelen",
@@ -3847,7 +3847,7 @@
   "backupRestore_backupComplete": "A mentési fájl elkészült.",
   "backupRestore_restoreComplete": "A visszaállítás kész. Csatlakozzon újra, ha a rádió azonosítóját is visszaállította.",
   "backupRestore_missingModelsTitle": "A modellek nincsenek letöltve",
-  "backupRestore_missingModelsMessage": "A visszaállított beállítások olyan modelleket választanak, amelyek nem érhetők el ezen az eszközön:\n{models}\n\nLetölti őket most?",
+  "backupRestore_missingModelsMessage": "A visszaállított beállítások olyan modelleket választanak, amelyek nem érhetők el ezen az eszközön. Letölti őket most?",
   "backupRestore_downloadModels": "Modellek letöltése",
   "backupRestore_downloading": "Letöltés…",
   "backupRestore_cancelDownload": "Letöltés megszakítása",
@@ -3884,5 +3884,14 @@
   "appSettings_repeaterRoomSettingsReset": "Átjátszó- és szobabeállítások visszaállítva",
   "repeater_clockSyncDefault": "Alapért.",
   "repeater_clockSyncOn": "Be",
-  "repeater_clockSyncOff": "Ki"
+  "repeater_clockSyncOff": "Ki",
+  "modelDownload_notDownloaded": "Nincs letöltve",
+  "modelDownload_downloading": "Letöltés",
+  "modelDownload_active": "Aktív",
+  "modelDownload_failed": "A letöltés sikertelen",
+  "modelDownload_incomplete": "Hiányos",
+  "modelDownload_verifying": "A letöltés ellenőrzése",
+  "modelDownload_useModel": "Ezt a modellt használja",
+  "modelDownload_removeFailed": "A modellt nem sikerült eltávolítani: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

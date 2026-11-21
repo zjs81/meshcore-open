@@ -2675,7 +2675,7 @@
   "pathEditor_searchRepeaters": "Buscar repetidores",
   "pathEditor_advancedHex": "Avanzado: ruta hexadecimal sin procesar",
   "pathEditor_hexLabel": "Prefijos hexadecimales",
-  "pathEditor_hexHelper": "Dos caracteres hexadecimales por salto, separados por comas.",
+  "pathEditor_hexHelper": "{count} caracteres hexadecimales por salto, separados por comas.",
   "pathEditor_invalidTokens": "Inválido: {tokens}",
   "pathEditor_tooManyHops": "Máximo 64 saltos",
   "pathEditor_usePath": "Usar esta ruta",
@@ -3942,7 +3942,7 @@
   "backupRestore_backupComplete": "Archivo de copia de seguridad creado.",
   "backupRestore_restoreComplete": "Restauración completada. Reconecta si restauraste la identidad de la radio.",
   "backupRestore_missingModelsTitle": "Modelos no descargados",
-  "backupRestore_missingModelsMessage": "Los ajustes restaurados seleccionan modelos que no están disponibles en este dispositivo:\n{models}\n\n¿Descargarlos ahora?",
+  "backupRestore_missingModelsMessage": "Los ajustes restaurados seleccionan modelos que no están disponibles en este dispositivo. ¿Descargarlos ahora?",
   "backupRestore_downloadModels": "Descargar modelos",
   "backupRestore_downloading": "Descargando…",
   "backupRestore_cancelDownload": "Cancelar descarga",
@@ -3979,5 +3979,14 @@
   "appSettings_repeaterRoomSettingsReset": "Ajustes de repetidores y salas restablecidos",
   "repeater_clockSyncDefault": "Predeterminado",
   "repeater_clockSyncOn": "Activado",
-  "repeater_clockSyncOff": "Desactivado"
+  "repeater_clockSyncOff": "Desactivado",
+  "modelDownload_notDownloaded": "No descargado",
+  "modelDownload_downloading": "Descargando",
+  "modelDownload_active": "Activo",
+  "modelDownload_failed": "No se pudo descargar",
+  "modelDownload_incomplete": "Incompleto",
+  "modelDownload_verifying": "Comprobando la descarga",
+  "modelDownload_useModel": "Usar este modelo",
+  "modelDownload_removeFailed": "No se pudo quitar el modelo: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

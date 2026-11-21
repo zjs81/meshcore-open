@@ -237,12 +237,7 @@
   "backupRestore_backupComplete": "Backup file created.",
   "backupRestore_restoreComplete": "Restore complete. Reconnect if you restored the radio identity.",
   "backupRestore_missingModelsTitle": "Models Not Downloaded",
-  "backupRestore_missingModelsMessage": "The restored settings select models that are not available on this device:\n{models}\n\nDownload them now?",
-  "@backupRestore_missingModelsMessage": {
-    "placeholders": {
-      "models": {"type": "String"}
-    }
-  },
+  "backupRestore_missingModelsMessage": "The restored settings select models that are not on this device. Download them now?",
   "backupRestore_downloadModels": "Download Models",
   "backupRestore_downloading": "Downloading…",
   "backupRestore_cancelDownload": "Cancel Download",
@@ -601,6 +596,8 @@
   "appSettings_enableMessageTracingSubtitle": "Also show repeat counts and trip times. Long-press a message and choose Path for full details.",
   "appSettings_regionOnHopsLine": "Region next to hop count",
   "appSettings_regionOnHopsLineSubtitle": "Show a channel message's region on the same line as its hop count instead of below it.",
+  "appSettings_showCompressionIndicator": "Compression indicator",
+  "appSettings_showCompressionIndicatorSubtitle": "Show an icon on messages compressed with SMAZ.",
   "appSettings_notifications": "Notifications",
   "appSettings_enableNotifications": "Enable Notifications",
   "appSettings_enableNotificationsSubtitle": "Receive notifications for messages and adverts",
@@ -1424,10 +1421,17 @@
   },
   "pathEditor_noHops": "No hops yet. Tap repeaters below to add them in order, or save with no hops to send direct.",
   "pathEditor_addHops": "Add hops in order",
-  "pathEditor_searchRepeaters": "Search repeaters",
+  "pathEditor_searchRepeaters": "Search name or hash",
   "pathEditor_advancedHex": "Advanced: raw hex path",
   "pathEditor_hexLabel": "Hex prefixes",
-  "pathEditor_hexHelper": "Two hex characters per hop, separated by commas",
+  "pathEditor_hexHelper": "{count} hex characters per hop, separated by commas",
+  "@pathEditor_hexHelper": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "pathEditor_invalidTokens": "Invalid: {tokens}",
   "@pathEditor_invalidTokens": {
     "placeholders": {
@@ -4377,6 +4381,27 @@
   "@chat_composerOffline": {
     "description": "Shown in place of the message box while no radio is connected"
   },
+  "modelDownload_notDownloaded": "Not downloaded",
+  "modelDownload_downloading": "Downloading",
+  "modelDownload_active": "Active",
+  "modelDownload_failed": "Couldn't download",
+  "modelDownload_incomplete": "Incomplete",
+  "modelDownload_verifying": "Verifying the download",
+  "modelDownload_useModel": "Use this model",
+  "modelDownload_removeFailed": "Couldn't remove the model: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)",
+  "@modelDownload_removeFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "@modelDownload_progress": {
+    "placeholders": {
+      "current": {"type": "String"},
+      "total": {"type": "String"},
+      "percent": {"type": "String"}
+    }
+  },
   "chatCompression_title": "Compression",
   "chatCompression_label": "Compression: {mode}",
   "@chatCompression_label": {
@@ -4397,5 +4422,6 @@
   "chatCompression_cyr2latDescription": "Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.",
   "chatCompression_profile": "Cyr2Lat profile",
   "chatCompression_noStorageId": "Can't change compression until this channel has synced from the radio.",
-  "chatCompression_saveFailed": "Couldn't save the compression setting. Showing the saved setting."
+  "chatCompression_saveFailed": "Couldn't save the compression setting. Showing the saved setting.",
+  "messageMeta_smazCompressed": "SMAZ compressed"
 }

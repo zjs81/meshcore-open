@@ -123,6 +123,7 @@ class AppSettings {
   final bool mapClusterNodes;
   final bool enableMessageTracing;
   final bool regionOnHopsLine;
+  final bool showCompressionIndicator;
   final Map<String, double>? mapCacheBounds;
   final int mapCacheMinZoom;
   final int mapCacheMaxZoom;
@@ -299,6 +300,7 @@ class AppSettings {
     this.mapClusterNodes = true,
     this.enableMessageTracing = false,
     this.regionOnHopsLine = false,
+    this.showCompressionIndicator = false,
     this.mapCacheBounds,
     this.mapCacheMinZoom = 10,
     this.mapCacheMaxZoom = 15,
@@ -400,6 +402,7 @@ class AppSettings {
       'map_cluster_nodes': mapClusterNodes,
       'enable_message_tracing': enableMessageTracing,
       'region_on_hops_line': regionOnHopsLine,
+      'show_compression_indicator': showCompressionIndicator,
       'map_cache_bounds': mapCacheBounds,
       'map_cache_min_zoom': mapCacheMinZoom,
       'map_cache_max_zoom': mapCacheMaxZoom,
@@ -541,6 +544,8 @@ class AppSettings {
       mapClusterNodes: json['map_cluster_nodes'] as bool? ?? true,
       enableMessageTracing: json['enable_message_tracing'] as bool? ?? false,
       regionOnHopsLine: json['region_on_hops_line'] as bool? ?? false,
+      showCompressionIndicator:
+          json['show_compression_indicator'] as bool? ?? false,
       mapCacheBounds: (json['map_cache_bounds'] as Map?)?.map(
         (key, value) => MapEntry(key.toString(), (value as num).toDouble()),
       ),
@@ -720,6 +725,7 @@ class AppSettings {
     bool? mapClusterNodes,
     bool? enableMessageTracing,
     bool? regionOnHopsLine,
+    bool? showCompressionIndicator,
     Object? mapCacheBounds = _unset,
     int? mapCacheMinZoom,
     int? mapCacheMaxZoom,
@@ -807,6 +813,8 @@ class AppSettings {
       mapClusterNodes: mapClusterNodes ?? this.mapClusterNodes,
       enableMessageTracing: enableMessageTracing ?? this.enableMessageTracing,
       regionOnHopsLine: regionOnHopsLine ?? this.regionOnHopsLine,
+      showCompressionIndicator:
+          showCompressionIndicator ?? this.showCompressionIndicator,
       mapCacheBounds: mapCacheBounds == _unset
           ? this.mapCacheBounds
           : mapCacheBounds as Map<String, double>?,
