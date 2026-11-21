@@ -839,6 +839,7 @@
   "contacts_noContactsMatchFilter": "No contacts match your filter",
   "contacts_noMembers": "No members",
   "contacts_lastSeenNow": "recently",
+  "contacts_lastSeenNever": "not heard yet",
   "contacts_lastSeenMinsAgo": "~ {minutes} min.",
   "@contacts_lastSeenMinsAgo": {
     "placeholders": {
@@ -968,9 +969,6 @@
       }
     }
   },
-  "channels_smazCompression": "SMAZ compression",
-  "channels_cyr2latCompression": "Cyr2Lat compression",
-  "channels_cyr2latCompressionDscr": "Replaces some Cyrillic characters with Latin characters when sending.",
   "channels_cyr2latSettingsHeading": "Cyr2Lat Setup",
   "channels_cyr2latSettingsSubheading": "List of replacements",
   "channels_cyr2latSettingsDscr": "Edit the JSON configuration of character replacement",
@@ -1409,7 +1407,6 @@
   "chat_path": "Path",
   "chat_viewPathOnMap": "View path on map",
   "chat_publicKey": "Public Key",
-  "chat_compressOutgoingMessages": "Compress outgoing messages",
   "chat_floodForced": "Flood (forced)",
   "chat_directForced": "Direct (forced)",
   "chat_hopsForced": "{count} hops (forced)",
@@ -4357,5 +4354,26 @@
       "total": {"type": "String"},
       "percent": {"type": "String"}
     }
-  }
+  },
+  "chatCompression_title": "Compression",
+  "chatCompression_label": "Compression: {mode}",
+  "@chatCompression_label": {
+    "description": "Always-visible control at the top of a chat; mode is Off, SMAZ or Cyr2Lat",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "chatCompression_off": "Off",
+  "chatCompression_smaz": "SMAZ",
+  "chatCompression_cyr2lat": "Cyr2Lat",
+  "chatCompression_changeHint": "Change compression for this chat",
+  "chatCompression_sheetSubtitle": "Applies to messages you send in this chat. Saved on this phone.",
+  "chatCompression_offDescription": "No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.",
+  "chatCompression_smazDescription": "Lossless compression for short text. The recipient's app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.",
+  "chatCompression_cyr2latDescription": "Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.",
+  "chatCompression_profile": "Cyr2Lat profile",
+  "chatCompression_noStorageId": "Can't change compression until this channel has synced from the radio.",
+  "chatCompression_saveFailed": "Couldn't save the compression setting. Showing the saved setting."
 }

@@ -151,6 +151,26 @@ The matrix describes implemented functionality, not a guarantee that every featu
    flutter run
    ```
 
+### Building without ONNX Runtime
+
+ONNX Runtime (ORT) runs only the [image message](documentation/image-messages.md) codec, and every platform build fetches it: Linux and Windows from GitHub releases, Android from Maven Central, iOS and macOS from CocoaPods/SwiftPM. If those downloads fail, build without it:
+
+```bash
+scripts/onnx.sh off      # stub flutter_onnxruntime, then flutter pub get
+flutter build apk --release   # or linux, windows, ios, macos
+scripts/onnx.sh on       # back to the default build
+```
+
+`off` writes a git-ignored `pubspec_overrides.yaml` that points `flutter_onnxruntime` at the pure-Dart stub in `third_party/flutter_onnxruntime_stub`, so no native plugin or ORT library is built, downloaded or bundled. On Windows without bash, create that file by hand:
+
+```yaml
+dependency_overrides:
+  flutter_onnxruntime:
+    path: third_party/flutter_onnxruntime_stub
+```
+
+Image messages then behave as on web: the app cannot send them or reconstruct received ones, and Settings says the build has no ONNX Runtime. Everything else is unchanged. While the override is active, `flutter pub get` also rewrites the committed plugin registrants (`linux/`, `windows/`, `macos/Flutter/`); switch back before committing. Linux builds in CI (`.github/workflows/build.yml`) currently use this mode because the ORT Linux release downloads are unavailable.
+
 ### Linux AppImage
 
 `flutter build linux --release` produces the regular Flutter bundle and an

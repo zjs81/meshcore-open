@@ -80,6 +80,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
   final List<_PendingContactOperation> _pendingOperations = [];
   final DerivedListCache<Contact> _filteredCache = DerivedListCache<Contact>();
+  final Map<String, _ContactTileEntrance> _rowCache = {};
+  MeshCoreConnector? _rowCacheConnector;
 
   StreamSubscription<Uint8List>? _frameSubscription;
 
@@ -1098,27 +1100,66 @@ class _ContactsScreenState extends State<ContactsScreen> {
                     itemBuilder: (context, row) {
                       if (row == 0) return discoveredTile;
                       final index = row - 1;
-                      final contact = filteredAndSorted[index];
-                      final unreadCount = connector.getUnreadCountForContact(
-                        contact,
-                      );
-                      return _ContactTileEntrance(
-                        index: index,
-                        contact: contact,
-                        pathHashByteWidth: connector.pathHashByteWidth,
-                        lastSeen: resolveContactLastSeen(contact),
-                        unreadCount: unreadCount,
-                        isFavorite: contact.isFavorite,
-                        onTap: () => _openChat(context, contact),
-                        onLongPress: () =>
-                            _showContactOptions(context, connector, contact),
-                        onManage: _manageAction(context, contact),
+                      return _contactRow(
+                        context,
+                        connector,
+                        filteredAndSorted[index],
+                        index,
+                        filteredAndSorted.length,
                       );
                     },
                   ),
           ),
         ),
       ],
+    );
+  }
+
+  /// Returns the row built last time for [contact] when nothing it shows has
+  /// changed. The connector notifies up to 20 times a second on a busy mesh
+  /// and each notify rebuilds this screen; handing the list the same widget
+  /// instance lets Flutter skip rebuilding those rows.
+  _ContactTileEntrance _contactRow(
+    BuildContext context,
+    MeshCoreConnector connector,
+    Contact contact,
+    int index,
+    int rowCount,
+  ) {
+    if (!identical(_rowCacheConnector, connector)) {
+      _rowCache.clear();
+      _rowCacheConnector = connector;
+    }
+    final unreadCount = connector.getUnreadCountForContact(contact);
+    final pathHashByteWidth = connector.pathHashByteWidth;
+    // Relative ("5 mins ago"), so it can change while the contact does not.
+    final lastSeenLabel = formatContactLastSeen(
+      context.l10n,
+      resolveContactLastSeen(contact),
+    );
+    final cached = _rowCache[contact.publicKeyHex];
+    if (cached != null &&
+        identical(cached.contact, contact) &&
+        cached.index == index &&
+        cached.unreadCount == unreadCount &&
+        cached.pathHashByteWidth == pathHashByteWidth &&
+        cached.lastSeenLabel == lastSeenLabel) {
+      return cached;
+    }
+    // Drop rows of contacts that left the list now and then.
+    if (_rowCache.length > rowCount + 100) _rowCache.clear();
+    return _rowCache[contact.publicKeyHex] = _ContactTileEntrance(
+      index: index,
+      contact: contact,
+      pathHashByteWidth: pathHashByteWidth,
+      lastSeenLabel: lastSeenLabel,
+      unreadCount: unreadCount,
+      isFavorite: contact.isFavorite,
+      // The State's context: rows outlive the list's item context while the
+      // list is swapped for an empty state.
+      onTap: () => _openChat(this.context, contact),
+      onLongPress: () => _showContactOptions(this.context, connector, contact),
+      onManage: _manageAction(this.context, contact),
     );
   }
 
@@ -1155,7 +1196,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
   DateTime _lastMessageTime(MeshCoreConnector connector, Contact contact) {
     final messages = connector.getMessages(contact);
-    return messages.isEmpty ? DateTime(1970) : messages.last.timestamp;
+    // Local arrival time: sender clocks can be far off.
+    return messages.isEmpty ? DateTime(1970) : messages.last.receivedAt;
   }
 
   List<Contact> _computeFilteredContacts(
@@ -1203,16 +1245,24 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
     switch (viewState.contactsSortOption) {
       case ContactSortOption.lastSeen:
-        filtered.sort(
-          (a, b) =>
-              resolveContactLastSeen(b).compareTo(resolveContactLastSeen(a)),
-        );
+        final lastSeenAt = {
+          for (final c in filtered)
+            c: resolveContactLastSeen(
+              c,
+              addedAt: connector.contactAddedAt(c.publicKeyHex),
+            ),
+        };
+        filtered.sort((a, b) => lastSeenAt[b]!.compareTo(lastSeenAt[a]!));
         break;
       case ContactSortOption.recentMessages:
         final lastMessageAt = {
           for (final c in filtered) c: _lastMessageTime(connector, c),
         };
-        filtered.sort((a, b) => lastMessageAt[b]!.compareTo(lastMessageAt[a]!));
+        filtered.sort((a, b) {
+          final timeCompare = lastMessageAt[b]!.compareTo(lastMessageAt[a]!);
+          if (timeCompare != 0) return timeCompare;
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        });
         break;
       case ContactSortOption.name:
         filtered.sort(
@@ -1874,7 +1924,7 @@ void confirmRemoveContact(
 class _ContactTile extends StatelessWidget {
   final Contact contact;
   final int pathHashByteWidth;
-  final DateTime lastSeen;
+  final String lastSeenLabel;
   final int unreadCount;
   final bool isFavorite;
   final VoidCallback onTap;
@@ -1884,7 +1934,7 @@ class _ContactTile extends StatelessWidget {
   const _ContactTile({
     required this.contact,
     required this.pathHashByteWidth,
-    required this.lastSeen,
+    required this.lastSeenLabel,
     required this.unreadCount,
     required this.isFavorite,
     required this.onTap,
@@ -2016,7 +2066,7 @@ class _ContactTile extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        formatContactLastSeen(context.l10n, lastSeen),
+                        lastSeenLabel,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: MeshTheme.mono(
@@ -2121,7 +2171,7 @@ class _ContactTileEntrance extends StatelessWidget {
   final int index;
   final Contact contact;
   final int pathHashByteWidth;
-  final DateTime lastSeen;
+  final String lastSeenLabel;
   final int unreadCount;
   final bool isFavorite;
   final VoidCallback onTap;
@@ -2132,7 +2182,7 @@ class _ContactTileEntrance extends StatelessWidget {
     required this.index,
     required this.contact,
     required this.pathHashByteWidth,
-    required this.lastSeen,
+    required this.lastSeenLabel,
     required this.unreadCount,
     required this.isFavorite,
     required this.onTap,
@@ -2147,7 +2197,7 @@ class _ContactTileEntrance extends StatelessWidget {
       child: _ContactTile(
         contact: contact,
         pathHashByteWidth: pathHashByteWidth,
-        lastSeen: lastSeen,
+        lastSeenLabel: lastSeenLabel,
         unreadCount: unreadCount,
         isFavorite: isFavorite,
         onTap: onTap,
