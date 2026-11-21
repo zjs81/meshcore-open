@@ -479,10 +479,18 @@ void main() {
               ),
               onDismiss: () {},
               dismissTooltip: _l10n.chat_cancelReply,
+              // A long region chip, as a channel reply shows.
+              trailing: Text(
+                _l10n.channels_regionSetTo('north-west-valley'),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
         );
         await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        expect(find.byTooltip(_l10n.chat_cancelReply), findsOneWidget);
         await _type(tester, 'a' * 19);
         expect(tester.takeException(), isNull);
 

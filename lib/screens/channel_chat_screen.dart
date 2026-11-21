@@ -2670,6 +2670,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                 ),
                 child: Text(
                   context.l10n.channels_regionSetTo(replyRegion!),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style:
                       MeshTheme.mono(
                         fontSize: 12 * textScale,

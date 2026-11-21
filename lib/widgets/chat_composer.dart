@@ -468,34 +468,45 @@ class ChatComposerQuote extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(10, 6, 0, 6),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: accent,
+          child: LayoutBuilder(
+            builder: (context, constraints) => Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: accent,
+                        ),
                       ),
-                    ),
-                    content,
-                  ],
+                      content,
+                    ],
+                  ),
                 ),
-              ),
-              ?trailing,
-              IconButton(
-                icon: const Icon(Icons.close),
-                tooltip: dismissTooltip,
-                color: scheme.onSurfaceVariant,
-                onPressed: onDismiss,
-              ),
-            ],
+                // The quote shares its row with Send, so a long trailing
+                // control (a region chip) must not squeeze out the message
+                // or the dismiss button.
+                if (trailing != null)
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: constraints.maxWidth * 0.4,
+                    ),
+                    child: trailing,
+                  ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  tooltip: dismissTooltip,
+                  color: scheme.onSurfaceVariant,
+                  onPressed: onDismiss,
+                ),
+              ],
+            ),
           ),
         ),
       ),
