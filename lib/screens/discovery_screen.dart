@@ -662,17 +662,32 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
       return _matchesTypeFilter(contact);
     }).toList();
 
-    switch (sortOption) {
-      case ContactSortOption.lastSeen:
-        filtered.sort((a, b) => b.lastSeen.compareTo(a.lastSeen));
-        break;
-      case ContactSortOption.name:
-        filtered.sort(
-          (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-        );
-        break;
-      default:
-        break;
+    int tieBreak(Contact a, Contact b) {
+      switch (sortOption) {
+        case ContactSortOption.lastSeen:
+          return b.lastSeen.compareTo(a.lastSeen);
+        case ContactSortOption.name:
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        default:
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      }
+    }
+
+    if (searchQuery.trim().isEmpty) {
+      switch (sortOption) {
+        case ContactSortOption.lastSeen:
+          filtered.sort((a, b) => b.lastSeen.compareTo(a.lastSeen));
+        case ContactSortOption.name:
+          filtered.sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+          );
+        default:
+          break;
+      }
+    } else {
+      filtered.sort(
+        (a, b) => compareContactQueryRank(a, b, searchQuery, tieBreak),
+      );
     }
 
     return filtered;

@@ -56,7 +56,12 @@ void main() {
   );
 
   test('missing RESP_CODE_SENT times out and retries', () async {
-    await service.sendMessageWithRetry(contact: _contact(), text: 'hello');
+    // A direct path uses the direct budget (default 4). A flood path would
+    // stop after the default single flood attempt.
+    await service.sendMessageWithRetry(
+      contact: _contact(pathLength: 1, path: const [0x11]),
+      text: 'hello',
+    );
     await pumpEventQueue();
     expect(sends.map((s) => s.attempt), [0]);
 
@@ -80,7 +85,10 @@ void main() {
   });
 
   test('late ACK for an attempt whose SENT was lost still delivers', () async {
-    await service.sendMessageWithRetry(contact: _contact(), text: 'hello');
+    await service.sendMessageWithRetry(
+      contact: _contact(pathLength: 1, path: const [0x11]),
+      text: 'hello',
+    );
     await pumpEventQueue();
 
     // Let the watchdog fire; the retry is now waiting on its backoff.

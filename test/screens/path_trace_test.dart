@@ -1,7 +1,11 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+
 import 'dart:typed_data';
 
 import 'package:meshcore_open/connector/meshcore_connector.dart';
@@ -40,16 +44,57 @@ class _FakeMeshCoreConnector extends MeshCoreConnector {
       Uint8List.fromList(List.generate(32, (i) => i));
 
   @override
-  double? get selfLatitude => 48.8566;
+  bool get isConnected => _isConnected;
 
   @override
-  double? get selfLongitude => 2.3522;
+  double? get selfLatitude => _selfLat;
 
   @override
-  List<Contact> get allContactsUnfiltered => [];
+  double? get selfLongitude => _selfLon;
 
   @override
-  List<Contact> get contacts => [];
+  List<Contact> get allContactsUnfiltered => _allContacts;
+
+  @override
+  List<Contact> get contacts => _peerContacts;
+
+  final bool _isConnected;
+  double? _selfLat;
+  double? _selfLon;
+  double? _pendingLat;
+  double? _pendingLon;
+  final List<Contact> _allContacts;
+  final List<Contact> _peerContacts;
+
+  _FakeMeshCoreConnector({
+    bool isConnected = false,
+    double? selfLat = 48.8566,
+    double? selfLon = 2.3522,
+    List<Contact> allContacts = const [],
+    List<Contact> peerContacts = const [],
+  }) : _isConnected = isConnected,
+       _selfLat = selfLat,
+       _selfLon = selfLon,
+       _allContacts = allContacts,
+       _peerContacts = peerContacts;
+
+  @override
+  Future<void> setNodeLocation({
+    required double lat,
+    required double lon,
+  }) async {
+    _pendingLat = lat;
+    _pendingLon = lon;
+  }
+
+  @override
+  Future<void> refreshDeviceInfo() async {
+    if (_pendingLat != null && _pendingLon != null) {
+      _selfLat = _pendingLat;
+      _selfLon = _pendingLon;
+      notifyListeners();
+    }
+  }
 
   void emitFrame(Uint8List frame) {
     _receivedFramesController.add(frame);
@@ -400,4 +445,382 @@ void main() {
     // Verify it parsed correctly (should not show the unavailable message)
     expect(find.text('Path trace not available.'), findsNothing);
   });
+
+  testWidgets(
+    'PathTraceMapScreen ignores impossible distant repeater and peer inference',
+    (tester) async {
+      final localHop1 = Contact(
+        publicKey: Uint8List(32)..first = 0x48,
+        name: 'Local Hop',
+        type: advTypeRepeater,
+        path: Uint8List(0),
+        pathLength: 0,
+        latitude: 33.60097,
+        longitude: -112.02457,
+        lastSeen: DateTime.utc(2026),
+      );
+      final eastCoastBogus = Contact(
+        publicKey: Uint8List(32)..first = 0x9C,
+        name: 'East Coast 9C',
+        type: advTypeRepeater,
+        path: Uint8List(0),
+        pathLength: 0,
+        latitude: 42.3601,
+        longitude: -71.0589,
+        lastSeen: DateTime.utc(2026),
+      );
+      final distantPeerSharing9C = Contact(
+        publicKey: Uint8List(32)..first = 0xAA,
+        name: 'Distant Chat Peer',
+        type: advTypeChat,
+        path: Uint8List.fromList([0x9C]),
+        pathLength: 1,
+        latitude: 42.35,
+        longitude: -71.06,
+        lastSeen: DateTime.utc(2026),
+      );
+      final connector = _FakeMeshCoreConnector(
+        selfLat: 33.4484,
+        selfLon: -112.0740,
+        allContacts: [localHop1, eastCoastBogus],
+        peerContacts: [distantPeerSharing9C],
+      );
+
+      final screen = PathTraceMapScreen(
+        title: 'Trace Impossible Hop',
+        path: Uint8List.fromList([0x48, 0x9C]),
+        pathHashByteWidth: 1,
+      );
+
+      await tester.pumpWidget(
+        _buildTestApp(connector: connector, child: screen),
+      );
+      await tester.pump();
+
+      final sentFrame = connector.sentFrames.first;
+      final tag = sentFrame.sublist(1, 5);
+
+      final pushTraceFrame = Uint8List(17);
+      pushTraceFrame[0] = pushCodeTraceData;
+      pushTraceFrame[1] = 0;
+      pushTraceFrame[2] = 2;
+      pushTraceFrame[3] = 0;
+      pushTraceFrame.setRange(4, 8, tag);
+      pushTraceFrame.setRange(12, 14, [0x48, 0x9C]);
+      pushTraceFrame.setRange(14, 17, [12, 16, 20]);
+
+      connector.emitFrame(pushTraceFrame);
+      for (int i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+
+      await tester.tap(find.byIcon(Icons.open_in_full));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('East Coast 9C'), findsNothing);
+      expect(find.textContaining('9C: Unknown Repeater'), findsWidgets);
+
+      final polylineLayer = tester.widget<PolylineLayer>(
+        find.byType(PolylineLayer),
+      );
+      final allPoints = polylineLayer.polylines
+          .expand((p) => p.points)
+          .toList();
+      expect(allPoints, isNotEmpty);
+      for (final point in allPoints) {
+        expect(point.latitude, inInclusiveRange(33.0, 34.0));
+        expect(point.longitude, inInclusiveRange(-113.0, -111.0));
+      }
+    },
+  );
+
+  testWidgets(
+    'PathTraceMapScreen ignores impossible distant contact passed via pathContacts',
+    (tester) async {
+      final localHop1 = Contact(
+        publicKey: Uint8List(32)..first = 0x48,
+        name: 'Local Hop',
+        type: advTypeRepeater,
+        path: Uint8List(0),
+        pathLength: 0,
+        latitude: 33.60097,
+        longitude: -112.02457,
+        lastSeen: DateTime.utc(2026),
+      );
+      final eastCoastBogus = Contact(
+        publicKey: Uint8List(32)..first = 0x9C,
+        name: 'East Coast 9C',
+        type: advTypeRepeater,
+        path: Uint8List(0),
+        pathLength: 0,
+        latitude: 42.3601,
+        longitude: -71.0589,
+        lastSeen: DateTime.utc(2026),
+      );
+      final connector = _FakeMeshCoreConnector(
+        selfLat: 33.4484,
+        selfLon: -112.0740,
+        allContacts: [localHop1, eastCoastBogus],
+      );
+
+      final screen = PathTraceMapScreen(
+        title: 'Manual Trace Impossible Hop',
+        path: Uint8List.fromList([0x48, 0x9C]),
+        pathHashByteWidth: 1,
+        pathContacts: [localHop1, eastCoastBogus],
+      );
+
+      await tester.pumpWidget(
+        _buildTestApp(connector: connector, child: screen),
+      );
+      await tester.pump();
+
+      final sentFrame = connector.sentFrames.first;
+      final tag = sentFrame.sublist(1, 5);
+
+      final pushTraceFrame = Uint8List(17);
+      pushTraceFrame[0] = pushCodeTraceData;
+      pushTraceFrame[1] = 0;
+      pushTraceFrame[2] = 2;
+      pushTraceFrame[3] = 0;
+      pushTraceFrame.setRange(4, 8, tag);
+      pushTraceFrame.setRange(12, 14, [0x48, 0x9C]);
+      pushTraceFrame.setRange(14, 17, [12, 16, 20]);
+
+      connector.emitFrame(pushTraceFrame);
+      for (int i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+
+      await tester.tap(find.byIcon(Icons.open_in_full));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('East Coast 9C'), findsNothing);
+      expect(find.textContaining('9C: Unknown Repeater'), findsWidgets);
+
+      final polylineLayer = tester.widget<PolylineLayer>(
+        find.byType(PolylineLayer),
+      );
+      final allPoints = polylineLayer.polylines
+          .expand((p) => p.points)
+          .toList();
+      expect(allPoints.length, 2);
+      for (final point in allPoints) {
+        expect(point.latitude, inInclusiveRange(33.0, 34.0));
+        expect(point.longitude, inInclusiveRange(-113.0, -111.0));
+      }
+    },
+  );
+
+  testWidgets(
+    'PathTraceMapScreen preserves plausible explicit pathContacts over nearer contact with same prefix',
+    (tester) async {
+      final nearerCollision = Contact(
+        publicKey: Uint8List(32)
+          ..[0] = 0x48
+          ..[1] = 0x01,
+        name: 'Nearer 48',
+        type: advTypeRepeater,
+        path: Uint8List(0),
+        pathLength: 0,
+        latitude: 33.4600,
+        longitude: -112.0700,
+        lastSeen: DateTime.utc(2026, 6),
+      );
+      final selectedExplicit = Contact(
+        publicKey: Uint8List(32)
+          ..[0] = 0x48
+          ..[1] = 0x02,
+        name: 'Selected 48',
+        type: advTypeRepeater,
+        path: Uint8List(0),
+        pathLength: 0,
+        latitude: 33.9000,
+        longitude: -111.7000,
+        lastSeen: DateTime.utc(2026, 1),
+      );
+      final fallbackHop2 = Contact(
+        publicKey: Uint8List(32)..first = 0x53,
+        name: 'Fallback 53',
+        type: advTypeRepeater,
+        path: Uint8List(0),
+        pathLength: 0,
+        latitude: 33.9500,
+        longitude: -111.6500,
+        lastSeen: DateTime.utc(2026),
+      );
+      final connector = _FakeMeshCoreConnector(
+        selfLat: 33.4484,
+        selfLon: -112.0740,
+        allContacts: [nearerCollision, selectedExplicit, fallbackHop2],
+      );
+
+      final screen = PathTraceMapScreen(
+        title: 'Explicit Contact Priority',
+        path: Uint8List.fromList([0x48, 0x53]),
+        pathHashByteWidth: 1,
+        pathContacts: [selectedExplicit],
+      );
+
+      await tester.pumpWidget(
+        _buildTestApp(connector: connector, child: screen),
+      );
+      await tester.pump();
+
+      final sentFrame = connector.sentFrames.first;
+      final tag = sentFrame.sublist(1, 5);
+
+      final pushTraceFrame = Uint8List(17);
+      pushTraceFrame[0] = pushCodeTraceData;
+      pushTraceFrame[1] = 0;
+      pushTraceFrame[2] = 2;
+      pushTraceFrame[3] = 0;
+      pushTraceFrame.setRange(4, 8, tag);
+      pushTraceFrame.setRange(12, 14, [0x48, 0x53]);
+      pushTraceFrame.setRange(14, 17, [12, 16, 20]);
+
+      connector.emitFrame(pushTraceFrame);
+      for (int i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+
+      await tester.tap(find.byIcon(Icons.open_in_full));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Selected 48'), findsWidgets);
+      expect(find.textContaining('Fallback 53'), findsWidgets);
+      expect(find.textContaining('Nearer 48'), findsNothing);
+
+      final polylineLayer = tester.widget<PolylineLayer>(
+        find.byType(PolylineLayer),
+      );
+      final allPoints = polylineLayer.polylines
+          .expand((p) => p.points)
+          .toList();
+      expect(allPoints.length, 3);
+      expect(allPoints[1].latitude, closeTo(33.9000, 1e-4));
+      expect(allPoints[1].longitude, closeTo(-111.7000, 1e-4));
+      expect(allPoints[2].latitude, closeTo(33.9500, 1e-4));
+      expect(allPoints[2].longitude, closeTo(-111.6500, 1e-4));
+    },
+  );
+
+  testWidgets(
+    'PathTraceMapScreen re-resolves primary hops when self location changes via _setMyLocation',
+    (tester) async {
+      final localHop1 = Contact(
+        publicKey: Uint8List(32)..first = 0x48,
+        name: 'Phoenix Hop 1',
+        type: advTypeRepeater,
+        path: Uint8List(0),
+        pathLength: 0,
+        latitude: 33.60097,
+        longitude: -112.02457,
+        lastSeen: DateTime.utc(2026),
+      );
+      final localHop2 = Contact(
+        publicKey: Uint8List(32)..first = 0x53,
+        name: 'Phoenix Hop 2',
+        type: advTypeRepeater,
+        path: Uint8List(0),
+        pathLength: 0,
+        latitude: 33.46300,
+        longitude: -111.65000,
+        lastSeen: DateTime.utc(2026),
+      );
+      final connector = _FakeMeshCoreConnector(
+        isConnected: true,
+        // Incorrect initial self location on the East Coast causes local hops to be rejected.
+        selfLat: 42.3601,
+        selfLon: -71.0589,
+        allContacts: [localHop1, localHop2],
+      );
+
+      final screen = PathTraceMapScreen(
+        title: 'Relocate Self Trace',
+        path: Uint8List.fromList([0x48, 0x53]),
+        pathHashByteWidth: 1,
+      );
+
+      await tester.pumpWidget(
+        _buildTestApp(connector: connector, child: screen),
+      );
+      await tester.pump();
+
+      expect(connector.sentFrames.length, 1);
+      final tag = connector.sentFrames.first.sublist(1, 5);
+
+      final pushTraceFrame = Uint8List(17);
+      pushTraceFrame[0] = pushCodeTraceData;
+      pushTraceFrame[1] = 0;
+      pushTraceFrame[2] = 2;
+      pushTraceFrame[3] = 0;
+      pushTraceFrame.setRange(4, 8, tag);
+      pushTraceFrame.setRange(12, 14, [0x48, 0x53]);
+      pushTraceFrame.setRange(14, 17, [12, 16, 20]);
+
+      connector.emitFrame(pushTraceFrame);
+      for (int i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+
+      // Initially, both Phoenix hops are rejected as impossibly far from Boston.
+      await tester.tap(find.byIcon(Icons.open_in_full));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Phoenix Hop 1'), findsNothing);
+      expect(find.textContaining('Phoenix Hop 2'), findsNothing);
+      expect(find.textContaining('48: Unknown Repeater'), findsWidgets);
+      expect(find.textContaining('53: Unknown Repeater'), findsWidgets);
+
+      await tester.tap(find.byIcon(Icons.close_fullscreen));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PolylineLayer), findsNothing);
+
+      // Update self location to Phoenix via the map's long-press action.
+      final flutterMap = tester.widget<FlutterMap>(find.byType(FlutterMap));
+      flutterMap.options.onLongPress!(
+        const TapPosition(Offset.zero, Offset.zero),
+        const LatLng(33.4484, -112.0740),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.widgetWithText(FilledButton, 'Set location'));
+      await tester.pumpAndSettle();
+
+      // Primary hops must now be resolved without waiting for another trace packet.
+      expect(connector.sentFrames.length, 1);
+
+      final polylineLayer = tester.widget<PolylineLayer>(
+        find.byType(PolylineLayer),
+      );
+      final allPoints = polylineLayer.polylines
+          .expand((p) => p.points)
+          .toList();
+      expect(allPoints.length, 3);
+      expect(allPoints[0].latitude, closeTo(33.4484, 1e-4));
+      expect(allPoints[0].longitude, closeTo(-112.0740, 1e-4));
+      expect(allPoints[1].latitude, closeTo(33.60097, 1e-4));
+      expect(allPoints[1].longitude, closeTo(-112.02457, 1e-4));
+      expect(allPoints[2].latitude, closeTo(33.46300, 1e-4));
+      expect(allPoints[2].longitude, closeTo(-111.65000, 1e-4));
+
+      final markerLayer = tester.widget<MarkerLayer>(
+        find.byType(MarkerLayer).first,
+      );
+      expect(markerLayer.markers.length, greaterThanOrEqualTo(3));
+      for (final marker in markerLayer.markers) {
+        expect(marker.point.latitude, inInclusiveRange(33.0, 34.0));
+        expect(marker.point.longitude, inInclusiveRange(-113.0, -111.0));
+      }
+
+      await tester.tap(find.byIcon(Icons.open_in_full));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Phoenix Hop 1'), findsWidgets);
+      expect(find.textContaining('Phoenix Hop 2'), findsWidgets);
+      expect(find.textContaining('Unknown Repeater'), findsNothing);
+    },
+  );
 }

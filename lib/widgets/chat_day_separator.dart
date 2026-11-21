@@ -44,21 +44,34 @@ class ChatDaySeparator extends StatelessWidget {
     );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: [
-          line,
-          const SizedBox(width: 10),
-          Text(
-            formatChatDayLabel(context, day),
-            style: MeshTheme.mono(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: color,
+      child: LayoutBuilder(
+        // Large text on a narrow phone wraps the label instead of overflowing;
+        // each rule keeps at least 16dp.
+        builder: (context, constraints) => Row(
+          children: [
+            line,
+            const SizedBox(width: 10),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: (constraints.maxWidth - 2 * (10 + 16)).clamp(
+                  0.0,
+                  double.infinity,
+                ),
+              ),
+              child: Text(
+                formatChatDayLabel(context, day),
+                textAlign: TextAlign.center,
+                style: MeshTheme.mono(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(width: 10),
-          line,
-        ],
+            const SizedBox(width: 10),
+            line,
+          ],
+        ),
       ),
     );
   }

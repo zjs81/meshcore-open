@@ -1,6 +1,8 @@
 import 'dart:typed_data';
+
 import '../connector/meshcore_protocol.dart';
 import '../helpers/reaction_helper.dart';
+import '../helpers/smaz.dart';
 import 'translation_support.dart';
 
 enum MessageStatus { pending, sent, delivered, failed }
@@ -34,7 +36,9 @@ class Message {
   /// to the bottom; [timestamp] stays the sender's identity time.
   final DateTime receivedAt;
   final bool isOutgoing;
+  final bool isBookmarked;
   final bool isCli;
+  final bool isSmazCompressed;
   final MessageStatus status;
   final String? originalText;
   final String? translatedText;
@@ -62,7 +66,9 @@ class Message {
     required this.timestamp,
     DateTime? receivedAt,
     required this.isOutgoing,
+    this.isBookmarked = false,
     this.isCli = false,
+    this.isSmazCompressed = false,
     this.status = MessageStatus.pending,
     String? messageId,
     this.originalText,
@@ -108,6 +114,8 @@ class Message {
     int? pathLength,
     Uint8List? pathBytes,
     bool? isCli,
+    bool? isSmazCompressed,
+    bool? isBookmarked,
     Object? originalText = _unset,
     Object? translatedText = _unset,
     Object? translatedLanguageCode = _unset,
@@ -123,7 +131,9 @@ class Message {
       timestamp: timestamp,
       receivedAt: receivedAt,
       isOutgoing: isOutgoing,
+      isBookmarked: isBookmarked ?? this.isBookmarked,
       isCli: isCli ?? this.isCli,
+      isSmazCompressed: isSmazCompressed ?? this.isSmazCompressed,
       status: status ?? this.status,
       messageId: messageId,
       originalText: originalText == _unset
@@ -169,7 +179,9 @@ class Message {
       if ((flags >> 2) != txtTypePlain) {
         return null;
       }
-      final text = reader.readCString();
+      final rawText = reader.readCString();
+      final smazDecoded = Smaz.tryDecodePrefixed(rawText);
+      final text = smazDecoded ?? rawText;
 
       return Message(
         senderKey: senderKey,
@@ -178,6 +190,7 @@ class Message {
         receivedAt: DateTime.now(),
         isOutgoing: false,
         isCli: false,
+        isSmazCompressed: smazDecoded != null,
         status: MessageStatus.delivered,
         pathBytes: Uint8List(0),
       );
@@ -194,6 +207,7 @@ class Message {
     String? translationModelId,
     int? pathLength,
     Uint8List? pathBytes,
+    bool isSmazCompressed = false,
   }) {
     return Message(
       senderKey: recipientKey,
@@ -204,6 +218,7 @@ class Message {
       timestamp: DateTime.now(),
       isOutgoing: true,
       isCli: false,
+      isSmazCompressed: isSmazCompressed,
       status: MessageStatus.pending,
       pathLength: pathLength,
       pathBytes: pathBytes,

@@ -16,11 +16,13 @@ import '../services/app_settings_service.dart';
 import '../services/backup_service.dart';
 import '../services/image_codec_service.dart';
 import '../services/translation_service.dart';
+import '../services/ui_view_state_service.dart';
 import '../services/message_filter/message_filter_service.dart';
 import '../utils/platform_info.dart';
 import '../utils/share_origin.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/model_download_list.dart';
 import '../widgets/sync_progress_overlay.dart';
 
 class BackupRestoreScreen extends StatefulWidget {
@@ -200,6 +202,11 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                     BackupItem.discoveredContacts,
                     l10n.backupRestore_discoveredContacts,
                     Icons.person_search_outlined,
+                  ),
+                  _itemTile(
+                    BackupItem.bookmarks,
+                    l10n.backupRestore_bookmarks,
+                    Icons.bookmark_border,
                   ),
                   const Divider(height: 1, indent: 16),
                   _groupTile(
@@ -432,6 +439,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     final l10n = context.l10n;
     final connector = context.read<MeshCoreConnector>();
     final appSettingsService = context.read<AppSettingsService>();
+    final uiViewStateService = context.read<UiViewStateService>();
     final messageFilterService = context.read<MessageFilterService>();
     final translationService = context.read<TranslationService>();
     final imageCodecService = context.read<ImageCodecService>();
@@ -454,6 +462,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       )) {
         await appSettingsService.loadSettings();
         if (_selectedItems.contains(BackupItem.appSettings)) {
+          await uiViewStateService.reload();
           await _offerMissingModels(
             appSettingsService,
             translationService,
@@ -622,12 +631,6 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     required ImageCodecService imageCodecService,
   }) async {
     final l10n = context.l10n;
-    final modelNames = [
-      if (translationModel != null)
-        translationModelFriendlyName(translationModel),
-      if (imageCodecModel != null)
-        imageCodecSpec?.label ?? imageCodecModel.name,
-    ];
     var starting = false;
     var cancelRequested = false;
     var translationDone = translationModel == null;
@@ -650,16 +653,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                 starting ||
                 translationService.isDownloading ||
                 imageCodecService.isDownloading;
-            final currentProgress = currentModel == translationModel?.name
-                ? translationService.downloadProgress
-                : currentModel == imageCodecModel?.name
-                ? imageCodecService.downloadProgress
-                : null;
-            final currentFile = currentModel == translationModel?.name
-                ? translationService.downloadFileName
-                : currentModel == imageCodecModel?.name
-                ? imageCodecService.downloadFileName
-                : null;
+            final translationCurrent = currentModel == translationModel?.name;
+            final imageCurrent = currentModel == imageCodecModel?.name;
+            final failure = downloadError;
 
             void requestDownloadCancel() {
               cancelRequested = true;
@@ -674,31 +670,73 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
               },
               child: AlertDialog(
                 title: Text(l10n.backupRestore_missingModelsTitle),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.backupRestore_missingModelsMessage(
-                        modelNames.join('\n'),
-                      ),
-                    ),
-                    if (isDownloading) ...[
-                      const SizedBox(height: 16),
-                      Text(currentFile ?? currentModel ?? ''),
-                      const SizedBox(height: 8),
-                      LinearProgressIndicator(value: currentProgress),
-                    ],
-                    if (downloadError != null) ...[
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.backupRestore_missingModelsMessage),
                       const SizedBox(height: 12),
-                      Text(
-                        l10n.backupRestore_failed(downloadError!),
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
+                      ModelDownloadList(
+                        rowPadding: const EdgeInsets.symmetric(vertical: 4),
+                        items: [
+                          if (translationModel != null)
+                            _missingModelItem(
+                              id: 'translation-${translationModel.id}',
+                              name: translationModelFriendlyName(
+                                translationModel,
+                              ),
+                              sizeBytes: translationModel.fileSizeBytes,
+                              done: translationDone,
+                              current: translationCurrent,
+                              downloading:
+                                  translationService.isDownloading ||
+                                  (starting && translationCurrent),
+                              progress: translationService.downloadProgress,
+                              downloadedBytes:
+                                  translationService.downloadedBytes,
+                              totalBytes: translationService.downloadTotalBytes,
+                              detail:
+                                  translationService.downloadFileName ==
+                                      'Merging chunks...'
+                                  ? l10n.translation_mergingChunks
+                                  : null,
+                              error: failure == null
+                                  ? null
+                                  : l10n.backupRestore_failed(failure),
+                            ),
+                          if (imageCodecModel != null)
+                            _missingModelItem(
+                              id: 'image-${imageCodecModel.id}',
+                              name:
+                                  imageCodecSpec?.label ??
+                                  imageCodecModelFriendlyName(imageCodecModel),
+                              sizeBytes:
+                                  imageCodecSpec?.totalSizeBytes ??
+                                  imageCodecModel.fileSizeBytes,
+                              done: imageCodecDone,
+                              current: imageCurrent,
+                              downloading:
+                                  imageCodecService.isDownloading ||
+                                  (starting && imageCurrent),
+                              progress: imageCodecService.downloadProgress,
+                              downloadedBytes:
+                                  imageCodecService.downloadedBytes,
+                              totalBytes: imageCodecService.downloadTotalBytes,
+                              detail:
+                                  imageCodecService.downloadFileName
+                                          ?.startsWith('Verifying ') ==
+                                      true
+                                  ? l10n.modelDownload_verifying
+                                  : null,
+                              error: failure == null
+                                  ? null
+                                  : l10n.backupRestore_failed(failure),
+                            ),
+                        ],
                       ),
                     ],
-                  ],
+                  ),
                 ),
                 actions: [
                   TextButton(
@@ -821,4 +859,41 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     if (!mounted) return;
     showDismissibleSnackBar(context, content: Text(message));
   }
+}
+
+ModelDownloadItem _missingModelItem({
+  required String id,
+  required String name,
+  required int sizeBytes,
+  required bool done,
+  required bool current,
+  required bool downloading,
+  required double? progress,
+  required int downloadedBytes,
+  required int? totalBytes,
+  required String? detail,
+  required String? error,
+}) {
+  final inProgress = downloading && current && !done;
+  final failed = error != null && current && !inProgress && !done;
+  return ModelDownloadItem(
+    id: id,
+    name: name,
+    sizeBytes: sizeBytes > 0 ? sizeBytes : null,
+    status: done
+        ? ModelDownloadStatus.ready
+        : failed
+        ? ModelDownloadStatus.error
+        : inProgress
+        ? ModelDownloadStatus.downloading
+        : ModelDownloadStatus.notDownloaded,
+    progress: inProgress ? progress : null,
+    downloadedBytes: inProgress ? downloadedBytes : 0,
+    totalBytes: inProgress ? totalBytes : null,
+    detail: failed
+        ? error
+        : inProgress
+        ? detail
+        : null,
+  );
 }

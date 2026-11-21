@@ -8,7 +8,8 @@ import '../models/image_codec_support.dart';
 import '../utils/app_logger.dart';
 import '../widgets/image_send_codec_binding.dart';
 import 'app_settings_service.dart';
-import 'image_codec_backend.dart' show kImageCodecBitstreamPathAvailable;
+import 'image_codec_backend.dart'
+    show imageCodecRuntimeAvailable, kImageCodecBitstreamPathAvailable;
 import 'image_codec_file_store.dart';
 import 'image_codec_session.dart';
 import 'image_codec_settings_store.dart';
@@ -177,9 +178,10 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
 
   /// Why [availability] is `unavailable`, or null when it is not.
   ///
-  /// EXACTLY THREE CAUSES, all of them permanent properties of the build or the
+  /// EXACTLY FOUR CAUSES, all of them permanent properties of the build or the
   /// platform, none of them fixable by the user:
   ///   * web, which has no native inference runtime;
+  ///   * a build made without ONNX Runtime ([imageCodecRuntimeAvailable]);
   ///   * a build compiled without the entropy path
   ///     ([kImageCodecBitstreamPathAvailable]);
   ///   * a backend that failed to load.
@@ -193,6 +195,10 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
     if (kIsWeb) {
       return 'The image codec needs a native inference runtime, which the web '
           'build does not have.';
+    }
+    if (!imageCodecRuntimeAvailable) {
+      return 'This build was made without ONNX Runtime, so it cannot send or '
+          'show image messages.';
     }
     if (!kImageCodecBitstreamPathAvailable) {
       return 'This build ships the image decoder only. Encoding and decoding a '
@@ -510,7 +516,7 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
   /// works. [canEncode]/[canDecode] additionally require the entropy path.
   bool get canRunInference {
     final model = selectedModel;
-    return !kIsWeb &&
+    return imageCodecRuntimeAvailable &&
         !_backendMissing &&
         model != null &&
         model.localPath.isNotEmpty;
@@ -970,15 +976,17 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
 
   /// [ImageSendCodec] entry point used by `ImageSendPreviewSheet`.
   ///
-  /// Takes the raw picked file (JPEG/PNG/HEIC/…), centre-crops and scales it to
-  /// [kImageCodecSquareSize] square, then encodes. Throws on failure so the
+  /// Takes the raw picked file (JPEG/PNG/HEIC/…), stretches the part of it
+  /// that [variant] selects (see [rerollSourceRect]; 0 is the whole photo) to
+  /// a [kImageCodecSquareSize] square, then encodes. Throws on failure so the
   /// sheet can surface it — unlike the nullable service-level methods below,
   /// whose contract is "null means not available".
   @override
   Future<Uint8List> encode(
     Uint8List imageBytes,
-    ImageCodecRatePoint rate,
-  ) async {
+    ImageCodecRatePoint rate, {
+    int variant = 0,
+  }) async {
     if (!kImageCodecBitstreamPathAvailable) {
       // Fail here rather than after a 512x512 raster and a session load, and
       // fail with the specific exception so the sheet can say why.
@@ -990,7 +998,7 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
       throw const ImageCodecBundleIncomplete();
     }
     final result = await encodeImage(
-      rgbBytes: await _toSquareRgb(imageBytes),
+      rgbBytes: await _toSquareRgb(imageBytes, variant: variant),
       ratePoint: aeicRatePointForUi(rate),
     );
     final bitstream = result?.bitstream;
@@ -1300,14 +1308,18 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
 
   static const int _bytesPerPixel = 3;
 
-  /// Centre-crops [imageBytes] to a square and scales it to
-  /// [kImageCodecSquareSize], returning packed 8-bit RGB.
+  /// Stretches the [variant] region of [imageBytes] (see [rerollSourceRect];
+  /// 0 is the whole frame) to a [kImageCodecSquareSize] square, returning
+  /// packed 8-bit RGB.
   ///
   /// Uses `dart:ui` rather than a decode package so this adds no dependency.
   /// It runs on the root isolate, which is acceptable: it is a single 512x512
   /// raster, three orders of magnitude cheaper than the 1385 GFLOP inference
   /// that follows in the worker.
-  Future<Uint8List> _toSquareRgb(Uint8List imageBytes) async {
+  Future<Uint8List> _toSquareRgb(
+    Uint8List imageBytes, {
+    int variant = 0,
+  }) async {
     final codec = await ui.instantiateImageCodec(imageBytes);
     final frame = await codec.getNextFrame();
     final source = frame.image;
@@ -1317,16 +1329,11 @@ class ImageCodecService extends ChangeNotifier implements ImageSendCodec {
       // Aspect ratio is deliberately not preserved: the codec's graph is
       // statically 512x512, so something has to give, and losing 25% of a 4:3
       // photo (44% of 16:9, or the subject's head in a portrait) is worse than
-      // distorting it. Nothing outside the frame is discarded this way.
-      // NOTE: the aspect ratio is NOT transmitted, so the receiver cannot undo
-      // the stretch — see the note in image_chunk_transport.dart on the
-      // metadata byte.
-      final src = ui.Rect.fromLTWH(
-        0,
-        0,
-        source.width.toDouble(),
-        source.height.toDouble(),
-      );
+      // distorting it. The source shape travels in the metadata byte's aspect
+      // nibble, so the receiver un-stretches it. Re-roll variants trim at most
+      // ~2% at an edge, so they keep the same shape and aspect code.
+      final r = rerollSourceRect(source.width, source.height, variant);
+      final src = ui.Rect.fromLTWH(r.left, r.top, r.width, r.height);
       final dstSize = kImageCodecSquareSize.toDouble();
       final recorder = ui.PictureRecorder();
       ui.Canvas(recorder).drawImageRect(

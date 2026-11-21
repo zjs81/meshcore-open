@@ -23,6 +23,7 @@ const String _encryptedBackupFormat = 'meshcore-open-encrypted-backup';
 const List<String> _contactPreferencePrefixes = [
   'contacts',
   'contact_groups',
+  'contact_added_at_',
   'contact_smaz_',
   'contact_cyr2lat_',
   'contact_url_images_',
@@ -49,6 +50,7 @@ const List<String> _scopedPreferencePrefixes = [
   ..._contactPreferencePrefixes,
   ..._channelPreferencePrefixes,
   'discovered_contacts',
+  'message_bookmarks_',
 ];
 
 enum BackupSection {
@@ -75,6 +77,7 @@ enum BackupItem {
   contactGroups,
   contactHistory,
   discoveredContacts,
+  bookmarks,
   channels,
   channelFilters,
   ipfsKey,
@@ -484,6 +487,12 @@ class BackupService {
           destinationPublicKey: destinationPublicKey,
         );
       }
+    }
+    if (selectedItems.contains(BackupItem.appSettings)) {
+      await appSettingsService.loadSettings();
+    }
+    if (selectedItems.contains(BackupItem.channelSettings)) {
+      await connector.reloadChannelOrder();
     }
     if (!importingIdentity &&
         selectedItems.contains(BackupItem.discoveredContacts)) {
@@ -1055,7 +1064,8 @@ class BackupService {
     BackupItem.perContactSettings ||
     BackupItem.contactGroups ||
     BackupItem.contactHistory => BackupSection.contacts,
-    BackupItem.discoveredContacts => BackupSection.discoveredContacts,
+    BackupItem.discoveredContacts ||
+    BackupItem.bookmarks => BackupSection.discoveredContacts,
     BackupItem.channels ||
     BackupItem.channelFilters ||
     BackupItem.channelSettings ||
@@ -1085,7 +1095,8 @@ class BackupService {
       return true;
     }
     if (items.contains(BackupItem.contacts) &&
-        key.startsWith('contacts$devicePrefix')) {
+        (key.startsWith('contacts$devicePrefix') ||
+            key.startsWith('contact_added_at_$devicePrefix'))) {
       return true;
     }
     if (items.contains(BackupItem.perContactSettings) &&
@@ -1106,6 +1117,10 @@ class BackupService {
     }
     if (items.contains(BackupItem.discoveredContacts) &&
         key.startsWith('discovered_contacts$devicePrefix')) {
+      return true;
+    }
+    if (items.contains(BackupItem.bookmarks) &&
+        key.startsWith('message_bookmarks_$devicePrefix')) {
       return true;
     }
     if (items.contains(BackupItem.channels) &&
@@ -1156,6 +1171,7 @@ class BackupService {
       case BackupSection.discoveredContacts:
         return _startsWithScopedPrefix(key, const [
           'discovered_contacts',
+          'message_bookmarks_',
         ], devicePrefix);
       case BackupSection.channels:
         return key.startsWith('message_filter_') ||
@@ -1348,7 +1364,10 @@ class BackupService {
     if (sourcePrefix.isEmpty || destinationPrefix.isEmpty) return key;
     final prefixes = switch (section) {
       BackupSection.contacts => _contactPreferencePrefixes,
-      BackupSection.discoveredContacts => const ['discovered_contacts'],
+      BackupSection.discoveredContacts => const [
+        'discovered_contacts',
+        'message_bookmarks_',
+      ],
       BackupSection.channels => _channelPreferencePrefixes,
       _ => const <String>[],
     };
@@ -1373,7 +1392,10 @@ class BackupService {
     if (devicePrefix.isEmpty) return false;
     final prefixes = switch (section) {
       BackupSection.contacts => _contactPreferencePrefixes,
-      BackupSection.discoveredContacts => const ['discovered_contacts'],
+      BackupSection.discoveredContacts => const [
+        'discovered_contacts',
+        'message_bookmarks_',
+      ],
       BackupSection.channels => _channelPreferencePrefixes,
       _ => const <String>[],
     };

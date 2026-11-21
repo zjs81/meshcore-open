@@ -14,6 +14,7 @@ import '../helpers/snack_bar_builder.dart';
 import '../helpers/utf8_length_limiter.dart';
 import '../widgets/mesh_nav_tile.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/settings_reveal.dart';
 import '../widgets/radio_settings_dialog.dart';
 import 'app_settings_screen.dart';
 import 'app_debug_log_screen.dart';
@@ -301,62 +302,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
 
-        // Expandable detail rows
-        AnimatedSize(
-          duration: const Duration(milliseconds: 200),
-          alignment: Alignment.topCenter,
-          child: _deviceInfoExpanded
-              ? Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Divider(height: 1),
-                      const SizedBox(height: 10),
-                      _infoRow(
-                        context,
-                        label: l10n.settings_infoId,
-                        value: connector.deviceIdLabel,
-                      ),
-                      _buildBatteryInfoRow(context, connector),
-                      if (connector.manufacturerName != null)
-                        _infoRow(
-                          context,
-                          label: l10n.settings_infoHardware,
-                          value: connector.manufacturerName!,
-                        ),
-                      if (connector.firmwareVersionString != null)
-                        _infoRow(
-                          context,
-                          label: l10n.settings_infoFirmware,
-                          value: connector.firmwareVersionString!,
-                        ),
-                      if (connector.selfName != null)
-                        _infoRow(
-                          context,
-                          label: l10n.settings_nodeName,
-                          value: connector.selfName!,
-                        ),
-                      if (connector.selfPublicKey != null)
-                        _publicKeyRow(
-                          context,
-                          label: l10n.settings_infoPublicKey,
-                          publicKeyHex: pubKeyToHex(connector.selfPublicKey!),
-                        ),
-                      _infoRow(
-                        context,
-                        label: l10n.settings_infoContactsCount,
-                        value: '${connector.contacts.length}',
-                      ),
-                      _infoRow(
-                        context,
-                        label: l10n.settings_infoChannelCount,
-                        value: '${connector.channels.length}',
-                      ),
-                    ],
+        RevealOnEnable(
+          visible: _deviceInfoExpanded,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Divider(height: 1),
+                const SizedBox(height: 10),
+                _infoRow(
+                  context,
+                  label: l10n.settings_infoId,
+                  value: connector.deviceIdLabel,
+                ),
+                _buildBatteryInfoRow(context, connector),
+                if (connector.manufacturerName != null)
+                  _infoRow(
+                    context,
+                    label: l10n.settings_infoHardware,
+                    value: connector.manufacturerName!,
                   ),
-                )
-              : const SizedBox.shrink(),
+                if (connector.firmwareVersionString != null)
+                  _infoRow(
+                    context,
+                    label: l10n.settings_infoFirmware,
+                    value: connector.firmwareVersionString!,
+                  ),
+                if (connector.selfName != null)
+                  _infoRow(
+                    context,
+                    label: l10n.settings_nodeName,
+                    value: connector.selfName!,
+                  ),
+                if (connector.selfPublicKey != null)
+                  _publicKeyRow(
+                    context,
+                    label: l10n.settings_infoPublicKey,
+                    publicKeyHex: pubKeyToHex(connector.selfPublicKey!),
+                  ),
+                _infoRow(
+                  context,
+                  label: l10n.settings_infoContactsCount,
+                  value: '${connector.contacts.length}',
+                ),
+                _infoRow(
+                  context,
+                  label: l10n.settings_infoChannelCount,
+                  value: '${connector.channels.length}',
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );

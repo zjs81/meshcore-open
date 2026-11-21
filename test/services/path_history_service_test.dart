@@ -121,7 +121,7 @@ void main() {
       final pick = svc.selectPathForAttempt(
         pubKey,
         attemptIndex: attemptIndex,
-        maxRetries: 5,
+        directRetries: 4,
         recentSelections: recent,
       );
       final key = pick.useFlood
@@ -139,7 +139,7 @@ void main() {
       final selection = svc.selectPathForAttempt(
         pubKey,
         attemptIndex: 0,
-        maxRetries: 5,
+        directRetries: 4,
       );
       expect(selection.useFlood, isTrue);
     });
@@ -150,7 +150,7 @@ void main() {
       final selection = svc.selectPathForAttempt(
         pubKey,
         attemptIndex: 0,
-        maxRetries: 0,
+        directRetries: 0,
       );
       expect(selection.useFlood, isTrue);
     });
@@ -163,7 +163,7 @@ void main() {
         final selection = svc.selectPathForAttempt(
           pubKey,
           attemptIndex: i,
-          maxRetries: 5,
+          directRetries: 4,
         );
         expect(
           selection.useFlood,
@@ -274,7 +274,7 @@ void main() {
       final pick = svc.selectPathForAttempt(
         pubKey,
         attemptIndex: 0,
-        maxRetries: 5,
+        directRetries: 4,
       );
       expect(pick.useFlood, isFalse);
       expect(pick.hopCount, 0);
@@ -299,21 +299,28 @@ void main() {
       expect(resolved.pathBytes, isEmpty);
     });
 
-    test('final attempt is always flood regardless of known paths', () async {
+    test('attempts at and after directRetries flood', () async {
       final pubKey = _hex('ef01');
       await _seed(svc, pubKey, pathBytes: [0x01], hopCount: 1);
 
-      for (final retries in [1, 2, 5, 10]) {
-        final lastAttempt = svc.selectPathForAttempt(
+      for (final direct in [0, 1, 4, 9]) {
+        final flooded = svc.selectPathForAttempt(
           pubKey,
-          attemptIndex: retries - 1,
-          maxRetries: retries,
+          attemptIndex: direct,
+          directRetries: direct,
         );
         expect(
-          lastAttempt.useFlood,
+          flooded.useFlood,
           isTrue,
-          reason: 'maxRetries=$retries: last attempt must be flood',
+          reason: 'directRetries=$direct: that attempt floods',
         );
+        if (direct == 0) continue;
+        final routed = svc.selectPathForAttempt(
+          pubKey,
+          attemptIndex: direct - 1,
+          directRetries: direct,
+        );
+        expect(routed.useFlood, isFalse);
       }
     });
   });

@@ -1,0 +1,10 @@
+# For the CUDA build of torch, install it first from the PyTorch index, e.g.
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+torch
+torchvision
+onnxruntime-gpu  # or onnxruntime for CPU only
+numpy
+pillow
+piq
+open_clip_torch
+imagecodecs  # compare_codecs.py: JPEG XL and AVIF

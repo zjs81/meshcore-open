@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:meshcore_open/utils/app_logger.dart';
 
 import '../models/channel_message.dart';
@@ -123,6 +124,16 @@ class ChannelMessageStore {
     return messages;
   }
 
+  Future<void> updateBookmarkFlag(
+    String channelId,
+    String messageId,
+    bool isBookmarked,
+  ) => _archive.updateBookmarkFlag(
+    _keyForChannel(channelId),
+    messageId,
+    isBookmarked,
+  );
+
   Future<void> clearChannelMessages(String channelId) =>
       _archive.clear(HistoryStore.instance, _keyForChannel(channelId));
 
@@ -149,6 +160,8 @@ class ChannelMessageStore {
       'timestamp': msg.timestamp.millisecondsSinceEpoch,
       'receivedAt': msg.receivedAt.millisecondsSinceEpoch,
       'isOutgoing': msg.isOutgoing,
+      'isBookmarked': msg.isBookmarked,
+      'isSmazCompressed': msg.isSmazCompressed,
       'status': msg.status.index,
       'channelIndex': msg.channelIndex,
       'region': msg.region,
@@ -175,9 +188,12 @@ class ChannelMessageStore {
   /// Convert JSON map to ChannelMessage
   ChannelMessage _messageFromJson(Map<String, dynamic> json) {
     final rawText = json['text'] as String;
-    final decodedText = json['plainText'] == true
-        ? rawText
-        : (Smaz.tryDecodePrefixed(rawText) ?? rawText);
+    final smazDecoded = json['plainText'] == true
+        ? null
+        : Smaz.tryDecodePrefixed(rawText);
+    final decodedText = smazDecoded ?? rawText;
+    final isSmazCompressed =
+        json['isSmazCompressed'] as bool? ?? (smazDecoded != null);
 
     final rawPathLength = json['pathLength'] as int?;
     final rawPathBytes = json['pathBytes'] != null
@@ -226,6 +242,8 @@ class ChannelMessageStore {
       timestamp: DateTime.fromMillisecondsSinceEpoch(json['timestamp'] as int),
       receivedAt: legacyAwareReceivedAt(json),
       isOutgoing: json['isOutgoing'] as bool? ?? false,
+      isBookmarked: json['isBookmarked'] as bool? ?? false,
+      isSmazCompressed: isSmazCompressed,
       status: _statusAt(json['status']) ?? ChannelMessageStatus.failed,
       repeatCount: (json['repeatCount'] as int?) ?? 0,
       pathLength: decodedPathLength,

@@ -1051,6 +1051,12 @@ abstract class AppLocalizations {
   /// **'Discovered contacts and their saved details'**
   String get backupRestore_discoveredContactsDescription;
 
+  /// No description provided for @backupRestore_bookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get backupRestore_bookmarks;
+
   /// No description provided for @backupRestore_channels.
   ///
   /// In en, this message translates to:
@@ -1096,8 +1102,8 @@ abstract class AppLocalizations {
   /// No description provided for @backupRestore_missingModelsMessage.
   ///
   /// In en, this message translates to:
-  /// **'The restored settings select models that are not available on this device:\n{models}\n\nDownload them now?'**
-  String backupRestore_missingModelsMessage(String models);
+  /// **'The restored settings select models that are not on this device. Download them now?'**
+  String get backupRestore_missingModelsMessage;
 
   /// No description provided for @backupRestore_downloadModels.
   ///
@@ -2527,6 +2533,18 @@ abstract class AppLocalizations {
   /// **'Show a channel message\'s region on the same line as its hop count instead of below it.'**
   String get appSettings_regionOnHopsLineSubtitle;
 
+  /// No description provided for @appSettings_showCompressionIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Compression indicator'**
+  String get appSettings_showCompressionIndicator;
+
+  /// No description provided for @appSettings_showCompressionIndicatorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show an icon on messages compressed with SMAZ.'**
+  String get appSettings_showCompressionIndicatorSubtitle;
+
   /// No description provided for @appSettings_notifications.
   ///
   /// In en, this message translates to:
@@ -2626,13 +2644,13 @@ abstract class AppLocalizations {
   /// No description provided for @appSettings_clearPathOnMaxRetrySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Reset contact path after 5 failed send attempts'**
+  /// **'Reset the contact\'s saved path after every send attempt fails'**
   String get appSettings_clearPathOnMaxRetrySubtitle;
 
   /// No description provided for @appSettings_pathsWillBeCleared.
   ///
   /// In en, this message translates to:
-  /// **'Paths will be cleared after 5 failed retries'**
+  /// **'Paths will be cleared after all send attempts fail'**
   String get appSettings_pathsWillBeCleared;
 
   /// No description provided for @appSettings_pathsWillNotBeCleared.
@@ -2650,7 +2668,7 @@ abstract class AppLocalizations {
   /// No description provided for @appSettings_autoRouteRotationSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Cycle between best paths and flood mode'**
+  /// **'On each direct attempt, try a different known route. Later attempts flood. Off keeps the contact\'s current path.'**
   String get appSettings_autoRouteRotationSubtitle;
 
   /// No description provided for @appSettings_autoRouteRotationEnabled.
@@ -2676,6 +2694,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Number of retry attempts before marking a message as failed'**
   String get appSettings_maxMessageRetriesSubtitle;
+
+  /// No description provided for @appSettings_directRetries.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct attempts: {count}'**
+  String appSettings_directRetries(int count);
+
+  /// No description provided for @appSettings_directRetriesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How many times to try a known route. This stays available when auto route rotation is off.'**
+  String get appSettings_directRetriesSubtitle;
+
+  /// No description provided for @appSettings_floodRetries.
+  ///
+  /// In en, this message translates to:
+  /// **'Flood attempts: {count}'**
+  String appSettings_floodRetries(int count);
+
+  /// No description provided for @appSettings_floodRetriesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How many times to flood. Floods use more airtime. With rotation on, these follow the direct attempts.'**
+  String get appSettings_floodRetriesSubtitle;
+
+  /// No description provided for @appSettings_loginAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Login attempts: {count}'**
+  String appSettings_loginAttempts(int count);
+
+  /// No description provided for @appSettings_loginAttemptsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How many times to try logging in to a repeater or room server before giving up.'**
+  String get appSettings_loginAttemptsSubtitle;
+
+  /// No description provided for @appSettings_repeatersAndRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeaters and Rooms'**
+  String get appSettings_repeatersAndRooms;
+
+  /// No description provided for @appSettings_clockSyncAfterLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync repeater clock on login'**
+  String get appSettings_clockSyncAfterLogin;
+
+  /// No description provided for @appSettings_clockSyncAfterLoginSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'After a successful repeater login, send clock sync. Each repeater can still choose Default, On, or Off.'**
+  String get appSettings_clockSyncAfterLoginSubtitle;
+
+  /// No description provided for @appSettings_loginPasswordAutofocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus the password field'**
+  String get appSettings_loginPasswordAutofocus;
+
+  /// No description provided for @appSettings_loginPasswordAutofocusSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When opening a repeater or room login, put the cursor in the password field if it is empty. Off leaves the dialog visible until you tap the field.'**
+  String get appSettings_loginPasswordAutofocusSubtitle;
+
+  /// No description provided for @appSettings_resetRepeaterRoomSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset repeater and room settings to defaults'**
+  String get appSettings_resetRepeaterRoomSettings;
+
+  /// No description provided for @appSettings_resetRepeaterRoomSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore the settings in this section to their defaults. Choices saved on individual repeaters stay as they are.'**
+  String get appSettings_resetRepeaterRoomSettingsSubtitle;
+
+  /// No description provided for @appSettings_repeaterRoomSettingsReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeater and room settings reset to defaults'**
+  String get appSettings_repeaterRoomSettingsReset;
 
   /// No description provided for @appSettings_ipfsImageLinks.
   ///
@@ -3295,11 +3397,41 @@ abstract class AppLocalizations {
   /// **'No members'**
   String get contacts_noMembers;
 
+  /// No description provided for @contacts_groupCurrentMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Current members ({count})'**
+  String contacts_groupCurrentMembers(int count);
+
+  /// No description provided for @contacts_groupAddContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Add contacts'**
+  String get contacts_groupAddContacts;
+
+  /// No description provided for @contacts_groupRemoveMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name} from group'**
+  String contacts_groupRemoveMember(String name);
+
+  /// No description provided for @contacts_groupAddMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {name} to group'**
+  String contacts_groupAddMember(String name);
+
   /// No description provided for @contacts_lastSeenNow.
   ///
   /// In en, this message translates to:
   /// **'recently'**
   String get contacts_lastSeenNow;
+
+  /// No description provided for @contacts_lastSeenNever.
+  ///
+  /// In en, this message translates to:
+  /// **'not heard yet'**
+  String get contacts_lastSeenNever;
 
   /// No description provided for @contacts_lastSeenMinsAgo.
   ///
@@ -3612,24 +3744,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Channel {index}'**
   String channels_editChannelTitle(int index);
-
-  /// No description provided for @channels_smazCompression.
-  ///
-  /// In en, this message translates to:
-  /// **'SMAZ compression'**
-  String get channels_smazCompression;
-
-  /// No description provided for @channels_cyr2latCompression.
-  ///
-  /// In en, this message translates to:
-  /// **'Cyr2Lat compression'**
-  String get channels_cyr2latCompression;
-
-  /// No description provided for @channels_cyr2latCompressionDscr.
-  ///
-  /// In en, this message translates to:
-  /// **'Replaces some Cyrillic characters with Latin characters when sending.'**
-  String get channels_cyr2latCompressionDscr;
 
   /// No description provided for @channels_cyr2latSettingsHeading.
   ///
@@ -4050,6 +4164,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Message deleted'**
   String get chat_messageDeleted;
+
+  /// No description provided for @chat_bookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark'**
+  String get chat_bookmark;
+
+  /// No description provided for @chat_removeBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove bookmark'**
+  String get chat_removeBookmark;
+
+  /// No description provided for @chat_showBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Show bookmarks'**
+  String get chat_showBookmarks;
+
+  /// No description provided for @bookmarks_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get bookmarks_title;
+
+  /// No description provided for @bookmarks_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarked messages'**
+  String get bookmarks_empty;
+
+  /// No description provided for @bookmarks_channel.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel'**
+  String get bookmarks_channel;
+
+  /// No description provided for @bookmarks_contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get bookmarks_contact;
+
+  /// No description provided for @bookmarks_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove bookmark'**
+  String get bookmarks_remove;
 
   /// No description provided for @chat_selectMessages.
   ///
@@ -4678,7 +4840,7 @@ abstract class AppLocalizations {
   /// No description provided for @pathEditor_searchRepeaters.
   ///
   /// In en, this message translates to:
-  /// **'Search repeaters'**
+  /// **'Search name or hash'**
   String get pathEditor_searchRepeaters;
 
   /// No description provided for @pathEditor_advancedHex.
@@ -4696,8 +4858,8 @@ abstract class AppLocalizations {
   /// No description provided for @pathEditor_hexHelper.
   ///
   /// In en, this message translates to:
-  /// **'Two hex characters per hop, separated by commas'**
-  String get pathEditor_hexHelper;
+  /// **'{count} hex characters per hop, separated by commas'**
+  String pathEditor_hexHelper(int count);
 
   /// No description provided for @pathEditor_invalidTokens.
   ///
@@ -4770,12 +4932,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Public Key'**
   String get chat_publicKey;
-
-  /// No description provided for @chat_compressOutgoingMessages.
-  ///
-  /// In en, this message translates to:
-  /// **'Compress outgoing messages'**
-  String get chat_compressOutgoingMessages;
 
   /// No description provided for @chat_floodForced.
   ///
@@ -6087,8 +6243,26 @@ abstract class AppLocalizations {
   /// Repeater setting subtitle: describes the clock sync after login behavior
   ///
   /// In en, this message translates to:
-  /// **'Automatically send \"clock sync\" after a successful login'**
+  /// **'Default follows Repeaters and Rooms in App Settings. On and Off apply only to this repeater.'**
   String get repeater_clockSyncAfterLoginSubtitle;
+
+  /// No description provided for @repeater_clockSyncDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get repeater_clockSyncDefault;
+
+  /// No description provided for @repeater_clockSyncOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get repeater_clockSyncOn;
+
+  /// No description provided for @repeater_clockSyncOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get repeater_clockSyncOff;
 
   /// No description provided for @repeater_statusTitle.
   ///
@@ -9515,6 +9689,30 @@ abstract class AppLocalizations {
   /// **'MeshCore Open isn\'t running. Open it and send your reply again.'**
   String get notification_replyAppNotRunning;
 
+  /// No description provided for @settings_exportBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Export bookmarks to Markdown'**
+  String get settings_exportBookmarks;
+
+  /// No description provided for @settings_exportBookmarksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share or save bookmarked messages as a Markdown file.'**
+  String get settings_exportBookmarksSubtitle;
+
+  /// No description provided for @settings_exportBookmarksSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks exported.'**
+  String get settings_exportBookmarksSuccess;
+
+  /// No description provided for @settings_exportBookmarksNoBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks to export.'**
+  String get settings_exportBookmarksNoBookmarks;
+
   /// No description provided for @settings_gpxExportRepeaters.
   ///
   /// In en, this message translates to:
@@ -10583,6 +10781,48 @@ abstract class AppLocalizations {
   /// **'This device can\'t preview the reconstruction.'**
   String get imageSend_reconstructionUnavailable;
 
+  /// No description provided for @receivedImage_packetEchoes.
+  ///
+  /// In en, this message translates to:
+  /// **'Packet {number}: {count, plural, =0{no repeater heard} =1{repeated once} other{repeated {count} times}}'**
+  String receivedImage_packetEchoes(int number, int count);
+
+  /// No description provided for @receivedImage_recoveryPacketEchoes.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery packet: {count, plural, =0{no repeater heard} =1{repeated once} other{repeated {count} times}}'**
+  String receivedImage_recoveryPacketEchoes(int count);
+
+  /// No description provided for @imageSend_preparingPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing preview…'**
+  String get imageSend_preparingPreview;
+
+  /// No description provided for @imageSend_tryAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another version'**
+  String get imageSend_tryAnother;
+
+  /// No description provided for @imageSend_versionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each version is reconstructed a little differently. Pick the one that looks most like your photo.'**
+  String get imageSend_versionsHint;
+
+  /// No description provided for @imageSend_versionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {number}'**
+  String imageSend_versionLabel(int number);
+
+  /// No description provided for @imageSend_versionPackets.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 packet} other{{count} packets}}'**
+  String imageSend_versionPackets(int count);
+
   /// No description provided for @imageSend_modelNotDownloaded.
   ///
   /// In en, this message translates to:
@@ -11642,19 +11882,19 @@ abstract class AppLocalizations {
   /// No description provided for @appSettings_resetRoutingToDefault.
   ///
   /// In en, this message translates to:
-  /// **'Reset Routing Algorithm to Default'**
+  /// **'Reset routing settings to defaults'**
   String get appSettings_resetRoutingToDefault;
 
   /// No description provided for @appSettings_resetRoutingToDefaultSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Restore routing algorithm settings to factory defaults'**
+  /// **'Restore the routing settings in this section to their defaults'**
   String get appSettings_resetRoutingToDefaultSubtitle;
 
   /// No description provided for @appSettings_routingResetToDefault.
   ///
   /// In en, this message translates to:
-  /// **'Routing algorithm settings reset to default'**
+  /// **'Routing settings reset to defaults'**
   String get appSettings_routingResetToDefault;
 
   /// No description provided for @appSettings_imageMessagesSection.
@@ -12531,6 +12771,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connect to a radio to send messages'**
   String get chat_composerOffline;
+
+  /// No description provided for @modelDownload_notDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not downloaded'**
+  String get modelDownload_notDownloaded;
+
+  /// No description provided for @modelDownload_downloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get modelDownload_downloading;
+
+  /// No description provided for @modelDownload_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get modelDownload_active;
+
+  /// No description provided for @modelDownload_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t download'**
+  String get modelDownload_failed;
+
+  /// No description provided for @modelDownload_incomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Incomplete'**
+  String get modelDownload_incomplete;
+
+  /// No description provided for @modelDownload_verifying.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying the download'**
+  String get modelDownload_verifying;
+
+  /// No description provided for @modelDownload_useModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this model'**
+  String get modelDownload_useModel;
+
+  /// No description provided for @modelDownload_removeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t remove the model: {error}'**
+  String modelDownload_removeFailed(String error);
+
+  /// No description provided for @modelDownload_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total} MB ({percent}%)'**
+  String modelDownload_progress(String current, String total, String percent);
+
+  /// No description provided for @chatCompression_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Compression'**
+  String get chatCompression_title;
+
+  /// Always-visible control at the top of a chat; mode is Off, SMAZ or Cyr2Lat
+  ///
+  /// In en, this message translates to:
+  /// **'Compression: {mode}'**
+  String chatCompression_label(String mode);
+
+  /// No description provided for @chatCompression_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get chatCompression_off;
+
+  /// No description provided for @chatCompression_smaz.
+  ///
+  /// In en, this message translates to:
+  /// **'SMAZ'**
+  String get chatCompression_smaz;
+
+  /// No description provided for @chatCompression_cyr2lat.
+  ///
+  /// In en, this message translates to:
+  /// **'Cyr2Lat'**
+  String get chatCompression_cyr2lat;
+
+  /// No description provided for @chatCompression_changeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Change compression for this chat'**
+  String get chatCompression_changeHint;
+
+  /// No description provided for @chatCompression_sheetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to messages you send in this chat. Saved on this phone.'**
+  String get chatCompression_sheetSubtitle;
+
+  /// No description provided for @chatCompression_offDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.'**
+  String get chatCompression_offDescription;
+
+  /// No description provided for @chatCompression_smazDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.'**
+  String get chatCompression_smazDescription;
+
+  /// No description provided for @chatCompression_cyr2latDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.'**
+  String get chatCompression_cyr2latDescription;
+
+  /// No description provided for @chatCompression_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Cyr2Lat profile'**
+  String get chatCompression_profile;
+
+  /// No description provided for @chatCompression_noStorageId.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t change compression until this channel has synced from the radio.'**
+  String get chatCompression_noStorageId;
+
+  /// No description provided for @chatCompression_saveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the compression setting. Showing the saved setting.'**
+  String get chatCompression_saveFailed;
+
+  /// No description provided for @messageMeta_smazCompressed.
+  ///
+  /// In en, this message translates to:
+  /// **'SMAZ compressed'**
+  String get messageMeta_smazCompressed;
+
+  /// No description provided for @addContact_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Contact'**
+  String get addContact_title;
+
+  /// No description provided for @addContact_infoBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.'**
+  String get addContact_infoBanner;
+
+  /// No description provided for @addContact_contactType.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Type'**
+  String get addContact_contactType;
+
+  /// No description provided for @addContact_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get addContact_name;
+
+  /// No description provided for @addContact_nameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a name'**
+  String get addContact_nameRequired;
+
+  /// No description provided for @addContact_publicKeyHex.
+  ///
+  /// In en, this message translates to:
+  /// **'Public Key (hex)'**
+  String get addContact_publicKeyHex;
+
+  /// No description provided for @addContact_publicKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a public key'**
+  String get addContact_publicKeyRequired;
+
+  /// No description provided for @addContact_publicKeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key must be 64 hex characters (32 bytes)'**
+  String get addContact_publicKeyInvalid;
+
+  /// No description provided for @addContact_clipboardKeyLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key filled in. Choose a contact type, enter a name, and tap save.'**
+  String get addContact_clipboardKeyLoaded;
+
+  /// No description provided for @addContact_fromDiscovered.
+  ///
+  /// In en, this message translates to:
+  /// **'Add from Discovered Contacts'**
+  String get addContact_fromDiscovered;
+
+  /// No description provided for @addContact_saveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add contact.'**
+  String get addContact_saveFailed;
 }
 
 class _AppLocalizationsDelegate

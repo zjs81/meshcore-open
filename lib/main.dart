@@ -140,6 +140,8 @@ void main() async {
       <Uint8List>[blob],
       channelIndex: channelIndex,
       interChunkDelay: Duration.zero,
+      // One blob at a time: echo tracking needs the whole chunk set.
+      repairUnheardChunks: false,
     ),
     // Overwritten by onImageSenderPrefix as soon as SELF_INFO lands.
     senderPrefix: 0,

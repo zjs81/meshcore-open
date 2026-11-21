@@ -20,7 +20,11 @@ From the Contacts screen, tap any Chat-type contact to open the ChatScreen.
 - **Subtitle**: Current routing path label (e.g., "2 hops", "flood (auto)", "direct (forced)") and unread count. Tapping the subtitle shows the full path details.
 - **Action buttons**:
   - **Search** (magnifier icon): Replaces the title with a search field and lists every message in this conversation's full history whose text (or translation) contains the typed word, newest first, with matches highlighted. Channel search also matches sender names and skips messages caught by the [message filter](message-filter.md). Back, Esc or the arrow closes search. Channel chats have the same button.
-  - **Overflow menu** (⋮ icon): Contains Routing, Info, Telemetry, Settings, Chat background, Clear Chat, and Remove from contacts (rooms also have Room Server Management). Routing opens the routing sheet where you can switch between Auto, Direct, and Flood routing and manage recent paths (hop count, round-trip time, age, success count, color-coded by repeater). Info shows a dialog with contact type, path, GPS coordinates, and public key. Chat background sets a color or picture (with a fade slider) behind this chat only; see [Chat backgrounds](themes.md#chat-backgrounds).
+  - **Overflow menu** (⋮ icon): Contains Routing, Info, Telemetry, Settings (link images and telemetry permissions), Chat background, Clear Chat, and Remove from contacts (rooms also have Room Server Management). Routing opens the routing sheet where you can switch between Auto, Direct, and Flood routing and manage recent paths (hop count, round-trip time, age, success count, color-coded by repeater). Info shows a dialog with contact type, path, GPS coordinates, and public key. Chat background sets a color or picture (with a fade slider) behind this chat only; see [Chat backgrounds](themes.md#chat-backgrounds).
+
+### Compression Strip
+
+Below the app bar, above the messages, a strip shows **Compression: Off**, **SMAZ** or **Cyr2Lat** for this contact. Tap it to choose a mode in one sheet that explains each: SMAZ is lossless but needs a SMAZ-aware app on the other end and is only used when it makes a message smaller; Cyr2Lat swaps some Cyrillic letters for lookalike Latin ones, stays readable everywhere, but changes the exact characters, using the chosen Cyr2Lat profile. The setting is saved on the phone and can be changed offline. Channel chats show the same strip. See [Compression](additional-features.md#compression-smaz-and-cyr2lat).
 
 ### Message List
 
@@ -29,23 +33,29 @@ From the Contacts screen, tap any Chat-type contact to open the ChatScreen.
 - **Holiday animations**: A new message with a holiday greeting ("Happy Halloween", "Merry Christmas", and so on, in any app language) plays a short animation. Turn off in App Settings → Appearance; see [Holiday message animations](themes.md#holiday-message-animations)
 - **Outgoing messages**: Right-aligned, primary color background. **Failed messages** change to a red-toned error container background
 - **Incoming messages**: Left-aligned, grey background with a colored avatar (initial letter or first emoji of sender name; color is deterministic from a hash of the sender name)
+- Long-press a message and choose **Bookmark** to show a yellow bookmark on the bubble. **Show bookmarks** in the chat menu toggles a filter for bookmarked messages; use **Bookmarks** in the Channels screen menu to browse saved messages, including those from deleted contacts or channels. From the bookmarks list, copy a message with its copy button. It is ordered oldest-to-newest and opens at the newest message. The Export screen can save or share a dated Markdown file, grouped by contact and then channel, with linked URLs and URL-image embeds. Links remain tappable, and supported URL-image previews are shown when **Load images from links** is enabled in App Settings.
 - Bubble width capped at 72% of screen width
 - Hyperlinks rendered as tappable green underlined text
 - Message text follows the system font size (Android/iOS accessibility text size); pinch-to-zoom scales on top of it
 - **Pinch-to-zoom**: Two-finger zoom (0.8x–1.8x) and double-tap to reset
 - **Jump to bottom**: Floating button appears when scrolled away from the bottom
-- **Lazy loading**: Scrolling to top loads older messages from storage. The newest 200 messages are kept in memory; up to 1000 per conversation are kept in storage
+- **Lazy loading**: Scrolling to top loads older messages from storage. The newest 200 messages are kept in memory, plus any older pages loaded while the chat is open; up to 1000 per conversation are kept in storage
+- **Reading position**: Near the bottom, the chat follows new messages. Scrolled up, it stays on the messages you are reading while new ones arrive below, such as a room's backlog right after login, and never pulls a scroll in progress back to the bottom
 - **Arrival order**: Messages are ordered by when they arrived on this device, not by the sender's clock. If a message's time is more than 5 minutes in the future, a small clock-warning icon appears next to its time (the sender's clock is probably wrong); tap it for an explanation
 
 ### Input Bar
 
-- **Send action button** (left, ⊕ icon): Opens a menu with **Send GIF** (GIF picker bottom sheet) and **Share my location**
+The composer is a rounded bubble at the bottom of the chat with one round button beside it. With a chat background set, the bubble floats over the background.
+
+- **Round button** (right): shows **+** while the field is empty and **Send** once you type. **+** opens the send action menu: **Send GIF** (GIF picker bottom sheet), **Share my location**, **Share contact**, and, when set up, image uploads
 - **Share my location**: Sends your radio's current position (from the radio, not the phone's GPS) as a location pin. You're asked for a label (default: your node name) before sending; the keyboard's Send key confirms. If the radio reports no usable position (none set, or 0,0), the item is hidden and a snackbar says "Your radio has no location set". Location shares follow the same send cooldown as typed messages and are never sent as a reply. In channel chat the menu also holds **Send low-res image over radio** when image messages are set up
-- **Translation button** (optional, between GIF and text field): Shown only when translation is enabled in App Settings. Tap to configure outgoing-message translation language and on/off toggle.
-- **Text field** (center): Auto-capitalization, enforces UTF-8 byte limit in real-time
-- **Send button** (right): Submits the message
+- **Text field**: Auto-capitalization, enforces the UTF-8 byte limit in real time. It grows to five lines (fewer with very large text while the keyboard is open), then scrolls
+- **Byte counter**: appears in the bottom-right of the bubble once a message passes 70 % of the limit, and turns red near the limit
+- **Translation button** (inside the bubble, right): Shown only when translation is enabled in App Settings. Tap to configure outgoing-message translation language and on/off toggle.
+- **Reply preview**: In channel chat, replying shows the quoted message at the top of the bubble with a **✕** to cancel and, when the original had a region, the region chip
 - On desktop: Enter/Numpad Enter also submits
-- When a GIF is selected, the text field shows an inline GIF preview with a dismiss button
+- When a GIF is selected, the bubble shows a GIF preview with a remove button; Enter sends it
+- With no radio connected, the bubble says so and a **Connect** button takes the place of the round button
 
 ## Message Types
 
@@ -101,11 +111,11 @@ When a direct message is sent:
 1. The app computes an expected ACK hash: `SHA256([timestamp][attempt][text][selfPubKey])[0:4]` — matching the firmware's hash calculation. If SMAZ compression is enabled, the compressed text (not the original) is hashed
 2. On device acknowledgment (`RESP_CODE_SENT`), the message transitions to "sent" and a timeout timer starts. If that acknowledgment never arrives (for example a dropped BLE notification), a backup timer (the delivery timeout plus 5 seconds) runs the normal retry path instead of leaving the message pending; a late ACK still marks it delivered
 3. **Timeout duration**: Preferably from the ML timeout prediction service; otherwise from the device's own `est_timeout` in `RESP_CODE_SENT` (clamped to the physics range); otherwise calculated from LoRa airtime physics: `500 + (airtime × 6 + 250) × (pathLength + 1)` ms for direct paths, `500 + 16 × airtime` ms for flood (airtime is estimated from the radio's current spreading factor, bandwidth, and coding rate). The result is capped at 45 seconds.
-4. On timeout, the message is retried with **exponential backoff**: `1000 × 2^retryCount` ms (1s, 2s, 4s, 8s, 16s...)
-5. **Max retries**: Configurable (default 5, range 2–10)
-6. After max retries, the message is marked "failed" — but a **30-second grace window** remains during which a late ACK can still resolve the message to "delivered"
-7. If **Clear Path on Max Retry** is enabled (App Settings), the contact's stored routing path is automatically cleared when max retries are exhausted
-8. **Auto route rotation**: When enabled (and no manual path override is set), the retry service uses a diversity window to avoid re-using recently tried paths, cycling through known routes on each attempt
+4. On timeout, the message is retried with **exponential backoff**: `1000 × 2^retryCount` ms (1s, 2s, 4s, 8s, 16s...), capped at 32 seconds
+5. **Direct and flood attempts**: Set separately in App Settings → Routing (defaults 4 direct and 1 flood; up to 15 direct and 10 flood). With auto route rotation on, the direct attempts use known routes and the flood attempts follow. With it off, every attempt stays on the contact's current path and only that path's limit applies. Zero on both still sends once
+6. After those attempts, the message is marked "failed" — but a **30-second grace window** remains during which a late ACK can still resolve the message to "delivered"
+7. If **Clear Path on Max Retry** is enabled (App Settings → Routing), the contact's stored routing path is automatically cleared when the attempts are exhausted
+8. **Auto route rotation**: When enabled (and no manual path override is set), the retry service uses a diversity window to avoid re-using recently tried paths, cycling through known routes on each direct attempt. Flood attempts come after those
 
 ### Manual Retry
 

@@ -1,5 +1,6 @@
 import 'custom_theme.dart';
 import 'image_codec_support.dart';
+import 'send_attempt_plan.dart';
 import 'translation_support.dart';
 
 enum UnitSystem { metric, imperial }
@@ -103,7 +104,9 @@ class AppSettings {
   static const double defaultInitialRouteWeight = 3.0;
   static const double defaultRouteWeightSuccessIncrement = 0.5;
   static const double defaultRouteWeightFailureDecrement = 0.2;
-  static const int defaultMaxMessageRetries = 5;
+  static const int defaultDirectRetries = SendAttemptPlan.defaultDirectRetries;
+  static const int defaultFloodRetries = SendAttemptPlan.defaultFloodRetries;
+  static const int defaultLoginAttempts = SendAttemptPlan.defaultLoginAttempts;
 
   final bool clearPathOnMaxRetry;
   final bool mapShowRepeaters;
@@ -120,6 +123,7 @@ class AppSettings {
   final bool mapClusterNodes;
   final bool enableMessageTracing;
   final bool regionOnHopsLine;
+  final bool showCompressionIndicator;
   final Map<String, double>? mapCacheBounds;
   final int mapCacheMinZoom;
   final int mapCacheMaxZoom;
@@ -137,7 +141,19 @@ class AppSettings {
   final double initialRouteWeight;
   final double routeWeightSuccessIncrement;
   final double routeWeightFailureDecrement;
-  final int maxMessageRetries;
+  final int directRetries;
+  final int floodRetries;
+
+  /// How many times a repeater or room-server login is sent before giving up.
+  final int loginAttempts;
+
+  /// Send `clock sync` after a repeater login when that repeater follows the
+  /// app default. Off matches the previous per-repeater default.
+  final bool clockSyncAfterLogin;
+
+  /// Put the cursor in an empty repeater or room password field on open.
+  /// Off leaves the dialog alone until the field is tapped.
+  final bool loginPasswordAutofocus;
   final bool channelMinHopsEnabled;
   final int channelMinHops;
   final int channelMinHopsRetries;
@@ -236,6 +252,16 @@ class AppSettings {
     downloadedModels: imageCodecDownloadedModels,
   );
 
+  /// Attempts for one direct message. [rotating] is auto route rotation with
+  /// no manual path. [floodPath] is the contact's fixed path.
+  int sendAttemptLimit({required bool rotating, required bool floodPath}) {
+    return SendAttemptPlan(
+      directRetries: directRetries,
+      floodRetries: floodRetries,
+      rotateRoutes: rotating,
+    ).attemptLimit(floodPath: floodPath);
+  }
+
   String get effectiveMapTileApiKey {
     final apiKey = mapTileApiKey?.trim();
     if (apiKey == null || apiKey.isEmpty) {
@@ -274,6 +300,7 @@ class AppSettings {
     this.mapClusterNodes = true,
     this.enableMessageTracing = false,
     this.regionOnHopsLine = false,
+    this.showCompressionIndicator = false,
     this.mapCacheBounds,
     this.mapCacheMinZoom = 10,
     this.mapCacheMaxZoom = 15,
@@ -291,7 +318,11 @@ class AppSettings {
     this.initialRouteWeight = defaultInitialRouteWeight,
     this.routeWeightSuccessIncrement = defaultRouteWeightSuccessIncrement,
     this.routeWeightFailureDecrement = defaultRouteWeightFailureDecrement,
-    this.maxMessageRetries = defaultMaxMessageRetries,
+    this.directRetries = defaultDirectRetries,
+    this.floodRetries = defaultFloodRetries,
+    this.loginAttempts = defaultLoginAttempts,
+    this.clockSyncAfterLogin = false,
+    this.loginPasswordAutofocus = false,
     this.channelMinHopsEnabled = false,
     this.channelMinHops = 2,
     this.channelMinHopsRetries = 1,
@@ -371,6 +402,7 @@ class AppSettings {
       'map_cluster_nodes': mapClusterNodes,
       'enable_message_tracing': enableMessageTracing,
       'region_on_hops_line': regionOnHopsLine,
+      'show_compression_indicator': showCompressionIndicator,
       'map_cache_bounds': mapCacheBounds,
       'map_cache_min_zoom': mapCacheMinZoom,
       'map_cache_max_zoom': mapCacheMaxZoom,
@@ -389,7 +421,11 @@ class AppSettings {
       'initial_route_weight': initialRouteWeight,
       'route_weight_success_increment': routeWeightSuccessIncrement,
       'route_weight_failure_decrement': routeWeightFailureDecrement,
-      'max_message_retries': maxMessageRetries,
+      'max_direct_retries': directRetries,
+      'max_flood_retries': floodRetries,
+      'login_attempts': loginAttempts,
+      'clock_sync_after_login': clockSyncAfterLogin,
+      'login_password_autofocus': loginPasswordAutofocus,
       'channel_min_hops_enabled': channelMinHopsEnabled,
       'channel_min_hops': channelMinHops,
       'channel_min_hops_retries': channelMinHopsRetries,
@@ -508,6 +544,8 @@ class AppSettings {
       mapClusterNodes: json['map_cluster_nodes'] as bool? ?? true,
       enableMessageTracing: json['enable_message_tracing'] as bool? ?? false,
       regionOnHopsLine: json['region_on_hops_line'] as bool? ?? false,
+      showCompressionIndicator:
+          json['show_compression_indicator'] as bool? ?? false,
       mapCacheBounds: (json['map_cache_bounds'] as Map?)?.map(
         (key, value) => MapEntry(key.toString(), (value as num).toDouble()),
       ),
@@ -539,8 +577,14 @@ class AppSettings {
       routeWeightFailureDecrement:
           (json['route_weight_failure_decrement'] as num?)?.toDouble() ??
           defaultRouteWeightFailureDecrement,
-      maxMessageRetries:
-          json['max_message_retries'] as int? ?? defaultMaxMessageRetries,
+      directRetries: SendAttemptPlan.retriesFromJson(json).direct,
+      floodRetries: SendAttemptPlan.retriesFromJson(json).flood,
+      loginAttempts: SendAttemptPlan.clampLogin(
+        (json['login_attempts'] as num?)?.toInt() ?? defaultLoginAttempts,
+      ),
+      clockSyncAfterLogin: json['clock_sync_after_login'] as bool? ?? false,
+      loginPasswordAutofocus:
+          json['login_password_autofocus'] as bool? ?? false,
       channelMinHopsEnabled: json['channel_min_hops_enabled'] as bool? ?? false,
       channelMinHops: json['channel_min_hops'] as int? ?? 2,
       channelMinHopsRetries: json['channel_min_hops_retries'] as int? ?? 1,
@@ -681,6 +725,7 @@ class AppSettings {
     bool? mapClusterNodes,
     bool? enableMessageTracing,
     bool? regionOnHopsLine,
+    bool? showCompressionIndicator,
     Object? mapCacheBounds = _unset,
     int? mapCacheMinZoom,
     int? mapCacheMaxZoom,
@@ -698,7 +743,11 @@ class AppSettings {
     double? initialRouteWeight,
     double? routeWeightSuccessIncrement,
     double? routeWeightFailureDecrement,
-    int? maxMessageRetries,
+    int? directRetries,
+    int? floodRetries,
+    int? loginAttempts,
+    bool? clockSyncAfterLogin,
+    bool? loginPasswordAutofocus,
     bool? channelMinHopsEnabled,
     int? channelMinHops,
     int? channelMinHopsRetries,
@@ -764,6 +813,8 @@ class AppSettings {
       mapClusterNodes: mapClusterNodes ?? this.mapClusterNodes,
       enableMessageTracing: enableMessageTracing ?? this.enableMessageTracing,
       regionOnHopsLine: regionOnHopsLine ?? this.regionOnHopsLine,
+      showCompressionIndicator:
+          showCompressionIndicator ?? this.showCompressionIndicator,
       mapCacheBounds: mapCacheBounds == _unset
           ? this.mapCacheBounds
           : mapCacheBounds as Map<String, double>?,
@@ -791,7 +842,12 @@ class AppSettings {
           routeWeightSuccessIncrement ?? this.routeWeightSuccessIncrement,
       routeWeightFailureDecrement:
           routeWeightFailureDecrement ?? this.routeWeightFailureDecrement,
-      maxMessageRetries: maxMessageRetries ?? this.maxMessageRetries,
+      directRetries: directRetries ?? this.directRetries,
+      floodRetries: floodRetries ?? this.floodRetries,
+      loginAttempts: loginAttempts ?? this.loginAttempts,
+      clockSyncAfterLogin: clockSyncAfterLogin ?? this.clockSyncAfterLogin,
+      loginPasswordAutofocus:
+          loginPasswordAutofocus ?? this.loginPasswordAutofocus,
       channelMinHopsEnabled:
           channelMinHopsEnabled ?? this.channelMinHopsEnabled,
       channelMinHops: channelMinHops ?? this.channelMinHops,

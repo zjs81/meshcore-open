@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:crypto/crypto.dart';
+
 import '../connector/meshcore_protocol.dart';
 import '../models/contact.dart';
 import '../models/message.dart';
 import '../models/path_selection.dart';
+import '../models/send_attempt_plan.dart';
 import 'app_settings_service.dart';
 import 'app_debug_log_service.dart';
 
@@ -58,7 +61,7 @@ class RetryServiceConfig {
   final PathSelection? Function(
     String contactKey,
     int attemptIndex,
-    int maxRetries,
+    int directRetries,
     List<PathSelection> recentSelections,
   )?
   selectRetryPath;
@@ -88,8 +91,21 @@ class MessageRetryService extends ChangeNotifier {
   /// shared globally; cap at 6 to leave two slots of headroom.
   static const int _maxGlobalInFlight = 6;
 
-  int _maxRetries = 5;
-  int get maxRetries => _maxRetries;
+  int? _directOverride;
+  int? _floodOverride;
+  bool? _rotateOverride;
+
+  /// Pins both limits and turns rotation off. Tests use this to send a fixed
+  /// number of attempts on the contact's current path.
+  void setMaxRetries(int value) {
+    final attempts = value < 1 ? 1 : value;
+    _directOverride = attempts;
+    _floodOverride = attempts.clamp(
+      SendAttemptPlan.minFloodRetries,
+      SendAttemptPlan.maxFloodRetries,
+    );
+    _rotateOverride = false;
+  }
 
   final Map<String, Timer> _timeoutTimers = {};
   final Map<String, Message> _pendingMessages = {};
@@ -110,6 +126,7 @@ class MessageRetryService extends ChangeNotifier {
   final Set<String> _activeMessages = {};
   final Set<String> _resolvedMessages = {};
   final Map<String, String> _expectedHashToMessageId = {};
+  final Map<String, int> _attemptLimits = {};
 
   RetryServiceConfig? _config;
 
@@ -123,8 +140,26 @@ class MessageRetryService extends ChangeNotifier {
     _config = config;
   }
 
-  void setMaxRetries(int value) {
-    _maxRetries = value.clamp(2, 10);
+  SendAttemptPlan _planFor(Contact contact) {
+    final settings = _config?.appSettingsService?.settings;
+    final direct =
+        _directOverride ??
+        settings?.directRetries ??
+        SendAttemptPlan.defaultDirectRetries;
+    final flood =
+        _floodOverride ??
+        settings?.floodRetries ??
+        SendAttemptPlan.defaultFloodRetries;
+    final rotateFlag =
+        _rotateOverride ?? settings?.autoRouteRotationEnabled ?? true;
+    return SendAttemptPlan(
+      directRetries: direct,
+      floodRetries: flood,
+      rotateRoutes:
+          rotateFlag &&
+          contact.pathOverride == null &&
+          _config?.selectRetryPath != null,
+    );
   }
 
   /// Compute expected ACK hash using same algorithm as firmware:
@@ -169,6 +204,7 @@ class MessageRetryService extends ChangeNotifier {
     String? translationModelId,
     Uint8List? pathBytes,
     int? pathLength,
+    bool isSmazCompressed = false,
   }) async {
     final messageId = const Uuid().v4();
     final resolved = resolvePathSelection(contact);
@@ -176,6 +212,9 @@ class MessageRetryService extends ChangeNotifier {
         pathBytes ?? Uint8List.fromList(resolved.pathBytes);
     final messagePathLength =
         pathLength ?? (resolved.useFlood ? -1 : resolved.hopCount);
+    _attemptLimits[messageId] = _planFor(
+      contact,
+    ).attemptLimit(floodPath: messagePathLength < 0);
     final message = Message(
       senderKey: contact.publicKey,
       text: text,
@@ -184,6 +223,7 @@ class MessageRetryService extends ChangeNotifier {
       translationModelId: translationModelId,
       timestamp: DateTime.now(),
       isOutgoing: true,
+      isSmazCompressed: isSmazCompressed,
       status: MessageStatus.pending,
       messageId: messageId,
       retryCount: 0,
@@ -289,23 +329,27 @@ class MessageRetryService extends ChangeNotifier {
   PathSelection? _selectPathForAttempt(Message message, Contact contact) {
     final config = _config;
     if (config == null) return null;
-    final autoRotationEnabled =
-        config.appSettingsService?.settings.autoRouteRotationEnabled == true;
-    if (!autoRotationEnabled ||
-        contact.pathOverride != null ||
-        config.selectRetryPath == null) {
+    final plan = _planFor(contact);
+    if (!plan.rotateRoutes || config.selectRetryPath == null) {
       return null;
     }
 
+    final floodFrom = plan.floodFromAttempt;
     final recentSelections = List<PathSelection>.from(
       _attemptPathHistory[message.messageId] ?? const <PathSelection>[],
     );
-    return config.selectRetryPath!(
+    final selection = config.selectRetryPath!(
       contact.publicKeyHex,
       message.retryCount,
-      maxRetries,
+      floodFrom ?? (1 << 30),
       recentSelections,
     );
+    if (floodFrom != null && message.retryCount >= floodFrom) {
+      return selection != null && selection.useFlood
+          ? selection
+          : const PathSelection(pathBytes: [], hopCount: -1, useFlood: true);
+    }
+    return selection;
   }
 
   void _recordAttemptPathHistory(String messageId, PathSelection selection) {
@@ -626,6 +670,7 @@ class MessageRetryService extends ChangeNotifier {
     _pendingMessages.remove(messageId);
     _pendingContacts.remove(messageId);
     _attemptPathHistory.remove(messageId);
+    _attemptLimits.remove(messageId);
     _deferredRouteFailures.remove(messageId);
     _timeoutTimers.remove(messageId);
     _resolvedMessages.remove(messageId);
@@ -657,9 +702,16 @@ class MessageRetryService extends ChangeNotifier {
       tag: 'AckHash',
     );
 
-    if (message.retryCount < maxRetries - 1 &&
+    final limit =
+        _attemptLimits[messageId] ??
+        _planFor(
+          contact,
+        ).attemptLimit(floodPath: resolvePathSelection(contact).useFlood);
+    if (message.retryCount < limit - 1 &&
         _textFitsAttempt(message, contact, message.retryCount + 1)) {
-      final backoffMs = 1000 * (1 << message.retryCount);
+      // Cap the shift so a high retry limit does not wait for minutes.
+      final shift = message.retryCount.clamp(0, 5);
+      final backoffMs = 1000 * (1 << shift);
 
       if (selection != null) {
         _deferredRouteFailures.putIfAbsent(messageId, () => []).add((

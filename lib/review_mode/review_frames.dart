@@ -84,6 +84,7 @@ class ReviewFrames {
     required Uint8List publicKey,
     required int type,
     required Uint8List path,
+    int? pathLen,
     required String name,
     required int lastAdvertSecs,
     required int latitudeE6,
@@ -96,7 +97,9 @@ class ReviewFrames {
     writer.writeBytes(publicKey);
     writer.writeByte(type);
     writer.writeByte(flags);
-    writer.writeByte(path.length); // one-byte hashes: hop count == byte count
+    writer.writeByte(
+      pathLen ?? path.length,
+    ); // one-byte hashes: hop count == byte count
     writer.writeBytesPadded(path, maxPathSize);
     writer.writeCString(name, maxNameSize);
     writer.writeUInt32LE(lastAdvertSecs);

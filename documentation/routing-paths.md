@@ -55,11 +55,15 @@ Contacts/messages persist hop count, path bytes, and width. Legacy contact recor
 - **Faded stats:** each route keeps delivery and failure counts that lose half their weight every 24 hours (`routeStatsHalfLife`), so recent behaviour outweighs old.
 - **Thompson sampling:** for each attempt, a plausible delivery rate is drawn for every route from its faded counts and the best draw wins. Proven routes win most of the time; untested or recovering routes are still tried occasionally. Speed adjusts the score slightly.
 - **Context:** `MeshCoreConnector.routeContextFor` reports what the radio heard in the last two hours (advertisers heard directly and the last hop of relayed adverts). Routes whose first hop was heard — or the direct route, when the contact itself was heard directly — score higher; routes that don't fit score lower. Not hearing a repeater is weak evidence, so nothing is excluded. With nothing heard, context has no effect.
-- **Retries** halve the score of routes already tried for the same message, so they usually try something different without wasting an attempt on a much weaker route. The final attempt always floods.
+- **Retries** halve the score of routes already tried for the same message, so they usually try something different without wasting an attempt on a much weaker route. Direct attempts use a known route. Once those are used up, the remaining attempts flood (`SendAttemptPlan.floodFromAttempt`). With flood attempts set to 0, a send never switches to flood.
 - **Offline contacts:** `MessageRetryService` holds a message's route failures until its fate is known. If any attempt is acknowledged, the routes that timed out are blamed; if nothing gets through, the contact was probably unreachable and no route is blamed.
 - **Forgetting:** a failing route is deleted only after it hasn't delivered for a week, so a repeater that is down for a day is still known when it returns.
 - Route picks and their results are written to the app debug log under the `Routing` tag.
 
 `resolvePathSelection` uses a route picked from history even when the radio itself holds no path for the contact, so repeater logins and commands use proven routes instead of flooding.
+
+## Building a path by hand
+
+Chat → Routing → Manual opens the Build Path sheet. The hops you have added stay pinned at the top, including while the keyboard is open, and the one just added is highlighted. Under that list is the hex field, so a path can be typed without scrolling past every repeater. On a very short sheet, such as landscape with the keyboard open, the hop list, hex field, search field, and repeater list scroll together so the search field stays reachable. Search matches repeater and room names and hop hashes (the public-key prefix). Names that start with the query are listed before other substring matches, then hash-only matches.
 
 For message-path actions, trace maps, and retry behavior, see [chat](chat-and-messaging.md), [channels](channels.md), and [map](map-and-location.md).

@@ -20,6 +20,7 @@ import '../helpers/path_helper.dart';
 import '../helpers/reaction_helper.dart';
 import '../widgets/message_status_icon.dart';
 import '../widgets/empty_state.dart';
+import '../helpers/chat_scroll_anchor.dart';
 import '../helpers/chat_scroll_controller.dart';
 import '../helpers/gif_helper.dart';
 import '../helpers/ipfs_link_attach_flow.dart';
@@ -28,6 +29,7 @@ import '../helpers/marker_message.dart';
 import '../helpers/message_search.dart';
 import '../widgets/chat_search_results.dart';
 import '../models/channel_message.dart';
+import '../models/bookmarked_message.dart';
 import '../models/contact.dart';
 import '../l10n/contact_localization.dart';
 import '../models/message.dart';
@@ -36,6 +38,7 @@ import '../services/chat_text_scale_service.dart';
 import '../services/path_history_service.dart';
 import '../services/translation_service.dart';
 import '../widgets/chat_composer.dart';
+import '../widgets/chat_compression_selector.dart';
 import '../widgets/chat_send_pipeline.dart';
 import '../widgets/chat_zoom_wrapper.dart';
 import '../widgets/message_bubble_frame.dart';
@@ -88,14 +91,19 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   final _holidayWatcher = HolidayTriggerWatcher();
   final _messageAreaKey = GlobalKey();
   final _textController = TextEditingController();
   final _scrollController = ChatScrollController();
+  final _scrollAnchor = ChatScrollAnchor();
+  ({String id, bool bookmarksOnly})? _newestRow;
   final _textFieldFocusNode = FocusNode();
+  bool _focusLostWhileAway = false;
+  bool _focusLostToRoute = false;
   final GlobalKey _unreadScrollKey = GlobalKey();
   bool _isLoadingOlder = false;
+  bool _showBookmarkedOnly = false;
   MeshCoreConnector? _connector;
   Message? _pendingUnreadScrollTarget;
   String? _unreadDividerMessageId;
@@ -148,6 +156,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _textFieldFocusNode.addListener(_onTextFieldFocusChange);
     _scrollController.onScrollNearTop = _loadOlderMessages;
     _scrollController.showJumpToBottom.addListener(_clearDividerAtBottom);
@@ -215,10 +224,28 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    // The focus manager observes the lifecycle from app start, so its restore
+    // is already queued and runs first. Clearing afterwards keeps a focus
+    // that was not restored (the user clicked elsewhere) from swallowing the
+    // next real tap on the composer.
+    scheduleMicrotask(() => _focusLostWhileAway = false);
+  }
+
   void _onTextFieldFocusChange() {
-    if (_textFieldFocusNode.hasFocus && mounted) {
-      _scrollController.handleKeyboardOpen();
+    if (!mounted) return;
+    if (!_textFieldFocusNode.hasFocus) {
+      final state = WidgetsBinding.instance.lifecycleState;
+      _focusLostWhileAway = state != null && state != AppLifecycleState.resumed;
+      _focusLostToRoute = !(ModalRoute.of(context)?.isCurrent ?? true);
+      return;
     }
+    final restored = _focusLostWhileAway || _focusLostToRoute;
+    _focusLostWhileAway = false;
+    _focusLostToRoute = false;
+    if (!restored) _scrollController.handleKeyboardOpen();
   }
 
   Future<void> _loadOlderMessages() async {
@@ -235,6 +262,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _route?.secondaryAnimation?.removeStatusListener(_onCoveringRouteStatus);
     _unregisterActive();
     _scrollController.showJumpToBottom.removeListener(_clearDividerAtBottom);
@@ -484,6 +512,10 @@ class _ChatScreenState extends State<ChatScreen> {
                             _showContactInfo(context);
                           case 'settings':
                             _showContactSettings(context);
+                          case 'showBookmarks':
+                            setState(
+                              () => _showBookmarkedOnly = !_showBookmarkedOnly,
+                            );
                           case 'background':
                             showChatBackgroundSheet(
                               context,
@@ -552,6 +584,18 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                         PopupMenuItem(
+                          value: 'showBookmarks',
+                          child: MeshMenuItemRow(
+                            icon: _showBookmarkedOnly
+                                ? Icons.bookmark
+                                : Icons.bookmark_border,
+                            label: context.l10n.chat_showBookmarks,
+                            color: _showBookmarkedOnly
+                                ? const Color(0xFFFFE54A)
+                                : null,
+                          ),
+                        ),
+                        PopupMenuItem(
                           value: 'background',
                           child: MeshMenuItemRow(
                             icon: Icons.wallpaper,
@@ -604,12 +648,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 );
                 return Column(
                   children: [
+                    _buildCompressionSelector(connector),
                     Expanded(
                       child: ChatBackdrop(
-                        key: _messageAreaKey,
+                        contentKey: _messageAreaKey,
                         chatKey: ChatBackgroundService.contactKey(
                           widget.contact,
                         ),
+                        footer: _buildInputBar(connector),
                         child: Stack(
                           children: [
                             messages.isEmpty
@@ -622,7 +668,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                     ),
-                    _buildInputBar(connector),
                   ],
                 );
               },
@@ -630,7 +675,29 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  /// Compression is stored on this phone per contact, so it can change
+  /// while the radio is offline.
+  Widget _buildCompressionSelector(MeshCoreConnector connector) {
+    final keyHex = widget.contact.publicKeyHex;
+    return Consumer<AppSettingsService>(
+      builder: (context, settingsService, _) {
+        return ChatCompressionSelector(
+          mode: connector.contactCompressionMode(keyHex),
+          enabled: true,
+          profiles: settingsService.settings.cyr2latProfiles,
+          profileId: connector.getContactCyr2LatProfileId(keyHex),
+          defaultProfileId: settingsService.settings.selectedCyr2latProfileId,
+          onModeChanged: (mode) =>
+              connector.setContactCompressionMode(keyHex, mode),
+          onProfileChanged: (id) =>
+              connector.setContactCyr2LatProfileId(keyHex, id),
+        );
+      },
+    );
+  }
+
   Widget _buildEmptyState() {
+    if (_showBookmarkedOnly) return _buildBookmarkEmptyState();
     return EmptyState(
       icon: Icons.chat_bubble_outline,
       title: context.l10n.chat_noMessages,
@@ -640,23 +707,60 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  Widget _buildBookmarkEmptyState() => EmptyState(
+    icon: Icons.bookmark_border,
+    title: context.l10n.bookmarks_empty,
+  );
+
   Widget _buildMessageList(
     List<Message> messages,
     MeshCoreConnector connector,
   ) {
+    final visibleMessages = _showBookmarkedOnly
+        ? messages.where((message) => message.isBookmarked).toList()
+        : messages;
+    if (_showBookmarkedOnly && visibleMessages.isEmpty) {
+      return _buildBookmarkEmptyState();
+    }
     // Reverse messages so newest appear at bottom with reverse: true
-    final reversedMessages = messages.reversed.toList();
+    final reversedMessages = visibleMessages.reversed.toList();
     final itemCount = reversedMessages.length + (_isLoadingOlder ? 1 : 0);
+
+    // A reader scrolled up keeps their place when messages arrive below, as
+    // a room's backlog does in a burst right after login.
+    final previous = _newestRow;
+    final newest = (
+      id: reversedMessages.first.messageId,
+      bookmarksOnly: _showBookmarkedOnly,
+    );
+    _newestRow = newest;
+    if (previous != null &&
+        previous.bookmarksOnly == newest.bookmarksOnly &&
+        previous.id != newest.id &&
+        _pendingUnreadScrollTarget == null &&
+        _scrollController.showJumpToBottom.value) {
+      final inserted = reversedMessages.indexWhere(
+        (m) => m.messageId == previous.id,
+      );
+      if (inserted > 0) _scrollAnchor.rowsInsertedBelow(inserted);
+    }
 
     // Auto-scroll to bottom if user is already at bottom
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (_pendingUnreadScrollTarget != null) return;
+      // Never take over a drag or fling: during a sync every update would
+      // pull a reader who starts scrolling up back to the newest message.
+      if (_scrollController.hasClients &&
+          _scrollController.position.isScrollingNotifier.value) {
+        return;
+      }
       _scrollController.scrollToBottomIfAtBottom();
     });
 
     return ChatZoomWrapper(
-      child: ListView.builder(
+      child: AnchoredChatListView.builder(
+        scrollAnchor: _scrollAnchor,
         reverse: true, // List grows from bottom up
         controller: _scrollController,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -677,6 +781,13 @@ class _ChatScreenState extends State<ChatScreen> {
           }
           final messageIndex = index;
           Contact contact = _resolveContact(connector);
+          final sendSettings = context.read<AppSettingsService>().settings;
+          final retryLimit = sendSettings.sendAttemptLimit(
+            rotating:
+                sendSettings.autoRouteRotationEnabled &&
+                contact.pathOverride == null,
+            floodPath: (contact.pathOverride ?? contact.pathLength) < 0,
+          );
           final bool isRoom = contact.type == advTypeRoom;
           final message = reversedMessages[messageIndex];
           String fourByteHex = '';
@@ -706,6 +817,7 @@ class _ChatScreenState extends State<ChatScreen> {
               );
               final bubble = _MessageBubble(
                 message: message,
+                maxSendAttempts: retryLimit,
                 senderName: isRoom
                     ? (roomAuthor != null
                           ? "${roomAuthor.name} [$fourByteHex]"
@@ -713,6 +825,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     : contact.name,
                 sourceId: widget.contact.publicKeyHex,
                 textScale: textScale,
+                isBookmarked: message.isBookmarked || _showBookmarkedOnly,
                 onLongPress: () => _showMessageActions(message, contact),
                 onRetryReaction: (msg, emoji) =>
                     _sendReaction(msg, contact, emoji),
@@ -1078,19 +1191,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _showContactSettings(BuildContext context) {
     final connector = Provider.of<MeshCoreConnector>(context, listen: false);
-    final appSettingsService = Provider.of<AppSettingsService>(
-      context,
-      listen: false,
-    );
-    connector.ensureContactSmazSettingLoaded(widget.contact.publicKeyHex);
-    connector.ensureContactCyr2LatSettingLoaded(widget.contact.publicKeyHex);
     // The live contact carries the current telemetry flags; widget.contact
     // is the snapshot this screen was opened with.
     final contact = _resolveContact(connector);
-    bool smazEnabled = connector.isContactSmazEnabled(contact.publicKeyHex);
-    bool cyr2latEnabled = connector.isContactCyr2LatEnabled(
-      contact.publicKeyHex,
-    );
     bool urlImagesEnabled = connector.isContactUrlImagesEnabled(
       contact.publicKeyHex,
     );
@@ -1098,14 +1201,11 @@ class _ChatScreenState extends State<ChatScreen> {
         .read<AppSettingsService>()
         .settings
         .loadLinkImages;
-    String? selectedCyr2LatProfileId = connector.getContactCyr2LatProfileId(
-      contact.publicKeyHex,
-    );
     bool teleBaseEnabled = contact.teleBaseEnabled;
     bool teleLocEnabled = contact.teleLocEnabled;
     bool teleEnvEnabled = contact.teleEnvEnabled;
-    // Each toggle is committed immediately, like the compression switches,
-    // so dismissing the dialog by tapping outside keeps the change. All three
+    // Each toggle is committed immediately, like the link-image switch, so
+    // dismissing the dialog by tapping outside keeps the change. All three
     // flags are sent every time so overlapping writes can't undo each other.
     void commitTelemetryFlags() {
       connector.setContactFlags(
@@ -1133,86 +1233,6 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   const Divider(height: 8),
                 ],
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(context.l10n.channels_smazCompression),
-                  subtitle: Text(context.l10n.chat_compressOutgoingMessages),
-                  value: smazEnabled,
-                  onChanged: (value) {
-                    connector.setContactSmazEnabled(
-                      contact.publicKeyHex,
-                      value,
-                    );
-                    connector.setContactCyr2LatEnabled(
-                      contact.publicKeyHex,
-                      false,
-                    );
-                    setDialogState(() {
-                      smazEnabled = value;
-                      if (smazEnabled) {
-                        cyr2latEnabled = false;
-                      }
-                    });
-                  },
-                ),
-                const Divider(height: 8),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(context.l10n.channels_cyr2latCompression),
-                  subtitle: Text(context.l10n.channels_cyr2latCompressionDscr),
-                  value: cyr2latEnabled,
-                  onChanged: (value) {
-                    connector.setContactCyr2LatEnabled(
-                      contact.publicKeyHex,
-                      value,
-                    );
-                    connector.setContactSmazEnabled(
-                      contact.publicKeyHex,
-                      false,
-                    );
-                    setDialogState(() {
-                      cyr2latEnabled = value;
-                      if (cyr2latEnabled) {
-                        smazEnabled = false;
-                      }
-                    });
-                  },
-                ),
-                if (cyr2latEnabled) ...[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                    child: DropdownButtonFormField<String>(
-                      isExpanded: true,
-                      initialValue: selectedCyr2LatProfileId,
-                      decoration: InputDecoration(
-                        labelText:
-                            context.l10n.channels_cyr2latSettingsSubheading,
-                        border: const OutlineInputBorder(),
-                      ),
-                      items: appSettingsService.settings.cyr2latProfiles.map((
-                        profile,
-                      ) {
-                        return DropdownMenuItem(
-                          value: profile.id,
-                          child: Text(
-                            profile.name,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        connector.setContactCyr2LatProfileId(
-                          contact.publicKeyHex,
-                          value,
-                        );
-                        setDialogState(() {
-                          selectedCyr2LatProfileId = value;
-                        });
-                      },
-                    ),
-                  ),
-                ],
-                const Divider(height: 8),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(context.l10n.urlImage_enable),
@@ -1457,6 +1477,36 @@ class _ChatScreenState extends State<ChatScreen> {
                     _markAsUnread(message);
                   },
                 ),
+              ListTile(
+                leading: Icon(
+                  message.isBookmarked
+                      ? Icons.bookmark_remove_outlined
+                      : Icons.bookmark_add_outlined,
+                ),
+                title: Text(
+                  message.isBookmarked
+                      ? context.l10n.chat_removeBookmark
+                      : context.l10n.chat_bookmark,
+                ),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  final bookmark = BookmarkedMessage.fromContact(
+                    message: message,
+                    contactKey: widget.contact.publicKeyHex,
+                    contactName: widget.contact.name,
+                    senderName: message.isOutgoing
+                        ? (context.read<MeshCoreConnector>().selfName ??
+                              context.l10n.chat_me)
+                        : contact.name,
+                  );
+                  unawaited(
+                    context.read<MeshCoreConnector>().setBookmarkedMessage(
+                      bookmark,
+                      isBookmarked: !message.isBookmarked,
+                    ),
+                  );
+                },
+              ),
               if (message.isOutgoing && message.status == MessageStatus.failed)
                 ListTile(
                   enabled: !readOnly,
@@ -1562,17 +1612,21 @@ class _ChatScreenState extends State<ChatScreen> {
 
 class _MessageBubble extends StatelessWidget {
   final Message message;
+  final int maxSendAttempts;
   final String senderName;
   final VoidCallback? onLongPress;
   final void Function(Message message, String emoji)? onRetryReaction;
   final double textScale;
   final String sourceId;
+  final bool isBookmarked;
 
   const _MessageBubble({
     required this.message,
+    required this.maxSendAttempts,
     required this.senderName,
     required this.sourceId,
     required this.textScale,
+    required this.isBookmarked,
     this.onLongPress,
     this.onRetryReaction,
   });
@@ -1581,6 +1635,8 @@ class _MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final settingsService = context.watch<AppSettingsService>();
     final enableTracing = settingsService.settings.enableMessageTracing;
+    final showCompressionIndicator =
+        settingsService.settings.showCompressionIndicator;
     final isOutgoing = message.isOutgoing;
     final scheme = Theme.of(context).colorScheme;
     final gifId = GifHelper.parseGif(message.text);
@@ -1664,6 +1720,7 @@ class _MessageBubble extends StatelessWidget {
                     child: MessageBubbleFrame(
                       isOutgoing: isOutgoing,
                       isFailed: isFailed,
+                      isBookmarked: isBookmarked,
                       compact: gifId != null,
                       maxWidth: constraints.maxWidth,
                       child: Column(
@@ -1807,10 +1864,7 @@ class _MessageBubble extends StatelessWidget {
                               child: Text(
                                 context.l10n.chat_retryCount(
                                   message.retryCount,
-                                  context
-                                      .read<AppSettingsService>()
-                                      .settings
-                                      .maxMessageRetries,
+                                  maxSendAttempts,
                                 ),
                                 style: MeshTheme.mono(
                                   fontSize: 12 * textScale,
@@ -1843,6 +1897,12 @@ class _MessageBubble extends StatelessWidget {
                                 if (message.hasFutureTimestamp)
                                   FutureTimestampIndicator(
                                     size: 16 * textScale,
+                                  ),
+                                if (showCompressionIndicator &&
+                                    message.isSmazCompressed)
+                                  CompressionIndicator(
+                                    size: 14 * textScale,
+                                    color: metaColor,
                                   ),
                                 if (isOutgoing) ...[
                                   const SizedBox(width: 2),

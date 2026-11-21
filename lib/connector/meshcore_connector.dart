@@ -12,11 +12,14 @@ import 'package:flutter_blue_plus_platform_interface/flutter_blue_plus_platform_
 import '../utils/advert_signature.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
+import '../models/chat_compression_mode.dart';
+import '../models/bookmarked_message.dart';
 import '../models/companion_radio_stats.dart';
 import '../models/contact.dart';
 import '../models/message_filter.dart';
 import '../models/message.dart';
 import '../models/path_selection.dart';
+import '../models/send_attempt_plan.dart';
 import '../models/translation_support.dart';
 import '../helpers/reaction_helper.dart';
 import '../helpers/channel_resend_coverage.dart';
@@ -29,11 +32,14 @@ import '../services/linux_ble_pairing_service_stub.dart'
     if (dart.library.io) '../services/linux_ble_pairing_service.dart';
 import '../services/image_chunk_transport.dart'
     show
+        ImageChunkHeader,
         ImageChunkOutcome,
         ImageChunkTransport,
         buildSendChannelDataFrame,
         dataTypeAeicImage,
+        kImageReassemblyTtl,
         outPathUnknown,
+        parseImageChunkHeader,
         respCodeChannelDataRecv,
         senderPrefixFromKey;
 import '../services/image_codec_service.dart';
@@ -50,12 +56,14 @@ import '../services/notification_reply.dart';
 import '../services/notification_service.dart';
 import 'meshcore_connector_usb.dart';
 import 'meshcore_connector_tcp.dart';
+import '../storage/bookmark_store.dart';
 import '../storage/channel_message_store.dart';
 import '../storage/channel_order_store.dart';
 import '../storage/channel_settings_store.dart';
 import '../storage/channel_region_store.dart';
 import '../storage/channel_storage_migration.dart';
 import '../storage/channel_store.dart';
+import '../storage/contact_added_at_store.dart';
 import '../storage/contact_discovery_store.dart';
 import '../storage/contact_settings_store.dart';
 import '../storage/contact_store.dart';
@@ -514,11 +522,14 @@ class MeshCoreConnector extends ChangeNotifier {
   // batched here; see [CoalescedWrites].
   final CoalescedWrites _coalescedWrites = CoalescedWrites();
   final MessageStore _messageStore = MessageStore();
+  final BookmarkStore _bookmarkStore = BookmarkStore();
   final ChannelOrderStore _channelOrderStore = ChannelOrderStore();
   final ChannelSettingsStore _channelSettingsStore = ChannelSettingsStore();
   final ChannelRegionStore _channelRegionStore = ChannelRegionStore();
   final ContactSettingsStore _contactSettingsStore = ContactSettingsStore();
   final ContactStore _contactStore = ContactStore();
+  final ContactAddedAtStore _contactAddedAtStore = ContactAddedAtStore();
+  final Map<String, DateTime> _contactAddedAt = {};
   final ContactDiscoveryStore _discoveryContactStore = ContactDiscoveryStore();
   final ChannelStore _channelStore = ChannelStore();
   final UnreadStore _unreadStore = UnreadStore();
@@ -641,6 +652,11 @@ class MeshCoreConnector extends ChangeNotifier {
     if (radio.name.trim().isNotEmpty) return radio.name.trim();
     return radio.bleDisplayName;
   }
+
+  /// Phone time a contact was first added from a card; the list orders by it
+  /// while the radio has no advert time for the contact.
+  DateTime? contactAddedAt(String contactPubKeyHex) =>
+      _contactAddedAt[contactPubKeyHex];
 
   Contact? getContactByPubKeyHex(String contactPubKeyHex) {
     return _contacts.cast<Contact?>().firstWhere(
@@ -959,6 +975,66 @@ class MeshCoreConnector extends ChangeNotifier {
 
   List<Message> getMessages(Contact contact) {
     return _conversations[contact.publicKeyHex] ?? [];
+  }
+
+  Future<List<BookmarkedMessage>> loadBookmarkedMessages() =>
+      _bookmarkStore.loadBookmarks();
+
+  Future<void> setBookmarkedMessage(
+    BookmarkedMessage bookmark, {
+    required bool isBookmarked,
+  }) async {
+    if (_bookmarkStore.publicKeyHex.isEmpty) return;
+    if (isBookmarked) {
+      await _bookmarkStore.saveBookmark(bookmark);
+    } else {
+      await _bookmarkStore.removeBookmark(bookmark);
+    }
+
+    if (bookmark.sourceType == BookmarkSourceType.contact) {
+      final messages = _conversations[bookmark.sourceId];
+      final index = messages?.indexWhere(
+        (message) => message.messageId == bookmark.messageId,
+      );
+      if (messages != null && index != null && index >= 0) {
+        messages[index] = messages[index].copyWith(isBookmarked: isBookmarked);
+        await _coalescedWrites.flush();
+        await _messageStore.saveMessages(bookmark.sourceId, messages);
+      }
+      await _messageStore.updateBookmarkFlag(
+        bookmark.sourceId,
+        bookmark.messageId,
+        isBookmarked,
+      );
+    } else {
+      final mappedSlot = _slotForChannelId(bookmark.sourceId);
+      final slot =
+          mappedSlot ??
+          (bookmark.sourceId.startsWith('slot:')
+              ? int.tryParse(bookmark.sourceId.substring(5))
+              : null);
+      if (slot != null) {
+        final canonicalSlot = _canonicalSlot(slot);
+        final messages = _channelMessages[canonicalSlot];
+        final index = messages?.indexWhere(
+          (message) => message.messageId == bookmark.messageId,
+        );
+        if (messages != null && index != null && index >= 0) {
+          messages[index] = messages[index].copyWith(
+            isBookmarked: isBookmarked,
+          );
+          await _saveChannelMessages(canonicalSlot, messages);
+        }
+      }
+      if (!bookmark.sourceId.startsWith('slot:')) {
+        await _channelMessageStore.updateBookmarkFlag(
+          bookmark.sourceId,
+          bookmark.messageId,
+          isBookmarked,
+        );
+      }
+    }
+    notifyListeners();
   }
 
   Future<void> deleteMessage(Message message) async {
@@ -1750,10 +1826,6 @@ class MeshCoreConnector extends ChangeNotifier {
     await _channelRegionStore.saveDefaultRegion(region);
   }
 
-  void ensureContactSmazSettingLoaded(String contactKeyHex) {
-    _ensureContactSmazSettingLoaded(contactKeyHex);
-  }
-
   bool isChannelCyr2LatEnabled(int channelIndex) {
     _ensureChannelCyr2LatSettingLoaded(channelIndex);
     return _channelCyr2LatEnabled[channelIndex] ?? false;
@@ -1762,10 +1834,6 @@ class MeshCoreConnector extends ChangeNotifier {
   bool isContactCyr2LatEnabled(String contactKeyHex) {
     _ensureContactCyr2LatSettingLoaded(contactKeyHex);
     return _contactCyr2LatEnabled[contactKeyHex] ?? false;
-  }
-
-  void ensureContactCyr2LatSettingLoaded(String contactKeyHex) {
-    _ensureContactCyr2LatSettingLoaded(contactKeyHex);
   }
 
   Future<void> loadUnreadState() async {
@@ -2036,30 +2104,97 @@ class MeshCoreConnector extends ChangeNotifier {
     ];
   }
 
-  Future<void> setChannelSmazEnabled(int channelIndex, bool enabled) async {
-    final slots = _slotsSharingChannel(channelIndex);
-    for (final slot in slots) {
-      _channelSmazEnabled[slot] = enabled;
+  ChatCompressionMode channelCompressionMode(int channelIndex) {
+    if (isChannelSmazEnabled(channelIndex)) return ChatCompressionMode.smaz;
+    if (isChannelCyr2LatEnabled(channelIndex)) {
+      return ChatCompressionMode.cyr2lat;
     }
-    final channelId = _channelIdForSlot(channelIndex);
-    if (enabled) {
-      for (final slot in slots) {
-        _channelCyr2LatEnabled[slot] = false;
-      }
-      if (channelId != null) {
-        await _channelSettingsStore.saveCyr2LatEnabled(channelId, false);
-      }
-    }
-    if (channelId != null) {
-      await _channelSettingsStore.saveSmazEnabled(channelId, enabled);
-    }
-    notifyListeners();
+    return ChatCompressionMode.off;
   }
 
-  Future<void> setContactSmazEnabled(String contactKeyHex, bool enabled) async {
-    _contactSmazEnabled[contactKeyHex] = enabled;
-    await _contactSettingsStore.saveSmazEnabled(contactKeyHex, enabled);
-    notifyListeners();
+  ChatCompressionMode contactCompressionMode(String contactKeyHex) {
+    _ensureContactSmazSettingLoaded(contactKeyHex);
+    if (isContactSmazEnabled(contactKeyHex)) return ChatCompressionMode.smaz;
+    if (isContactCyr2LatEnabled(contactKeyHex)) {
+      return ChatCompressionMode.cyr2lat;
+    }
+    return ChatCompressionMode.off;
+  }
+
+  /// Serializes compression writes so overlapping choices can't interleave
+  /// their flag writes and leave SMAZ and Cyr2Lat both on.
+  Future<void> _compressionWrites = Future<void>.value();
+
+  Future<void> _queueCompressionWrite(Future<void> Function() write) {
+    final next = _compressionWrites.then((_) => write());
+    _compressionWrites = next.catchError((_) {});
+    return next;
+  }
+
+  /// Saves [mode] for the channel in [channelIndex] and every slot holding
+  /// the same channel. Flags are switched off before the new one is switched
+  /// on, and memory follows each completed write, so a failure never leaves
+  /// both on. Throws [StateError] when the slot has no storage ID.
+  Future<void> setChannelCompressionMode(
+    int channelIndex,
+    ChatCompressionMode mode,
+  ) {
+    return _queueCompressionWrite(() async {
+      final channelId = _channelIdForSlot(channelIndex);
+      if (channelId == null) {
+        throw StateError('Channel slot $channelIndex has no storage ID');
+      }
+      final slots = _slotsSharingChannel(channelIndex);
+      Future<void> writeSmaz(bool on) async {
+        await _channelSettingsStore.saveSmazEnabled(channelId, on);
+        for (final slot in slots) {
+          _channelSmazEnabled[slot] = on;
+        }
+      }
+
+      Future<void> writeCyr2Lat(bool on) async {
+        await _channelSettingsStore.saveCyr2LatEnabled(channelId, on);
+        for (final slot in slots) {
+          _channelCyr2LatEnabled[slot] = on;
+        }
+      }
+
+      try {
+        if (mode != ChatCompressionMode.smaz) await writeSmaz(false);
+        if (mode != ChatCompressionMode.cyr2lat) await writeCyr2Lat(false);
+        if (mode == ChatCompressionMode.smaz) await writeSmaz(true);
+        if (mode == ChatCompressionMode.cyr2lat) await writeCyr2Lat(true);
+      } finally {
+        notifyListeners();
+      }
+    });
+  }
+
+  /// Contact counterpart of [setChannelCompressionMode].
+  Future<void> setContactCompressionMode(
+    String contactKeyHex,
+    ChatCompressionMode mode,
+  ) {
+    return _queueCompressionWrite(() async {
+      Future<void> writeSmaz(bool on) async {
+        await _contactSettingsStore.saveSmazEnabled(contactKeyHex, on);
+        _contactSmazEnabled[contactKeyHex] = on;
+      }
+
+      Future<void> writeCyr2Lat(bool on) async {
+        await _contactSettingsStore.saveCyr2LatEnabled(contactKeyHex, on);
+        _contactCyr2LatEnabled[contactKeyHex] = on;
+      }
+
+      try {
+        if (mode != ChatCompressionMode.smaz) await writeSmaz(false);
+        if (mode != ChatCompressionMode.cyr2lat) await writeCyr2Lat(false);
+        if (mode == ChatCompressionMode.smaz) await writeSmaz(true);
+        if (mode == ChatCompressionMode.cyr2lat) await writeCyr2Lat(true);
+      } finally {
+        notifyListeners();
+      }
+    });
   }
 
   Future<void> setChannelUrlImagesEnabled(
@@ -2085,35 +2220,6 @@ class MeshCoreConnector extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setChannelCyr2LatEnabled(int channelIndex, bool enabled) async {
-    final slots = _slotsSharingChannel(channelIndex);
-    for (final slot in slots) {
-      _channelCyr2LatEnabled[slot] = enabled;
-    }
-    final channelId = _channelIdForSlot(channelIndex);
-    if (enabled) {
-      for (final slot in slots) {
-        _channelSmazEnabled[slot] = false;
-      }
-      if (channelId != null) {
-        await _channelSettingsStore.saveSmazEnabled(channelId, false);
-      }
-    }
-    if (channelId != null) {
-      await _channelSettingsStore.saveCyr2LatEnabled(channelId, enabled);
-    }
-    notifyListeners();
-  }
-
-  Future<void> setContactCyr2LatEnabled(
-    String contactKeyHex,
-    bool enabled,
-  ) async {
-    _contactCyr2LatEnabled[contactKeyHex] = enabled;
-    await _contactSettingsStore.saveCyr2LatEnabled(contactKeyHex, enabled);
-    notifyListeners();
-  }
-
   Future<void> setChannelRegion(int channelIndex, String region) async {
     // Update in-memory state and notify synchronously so the UI reflects the
     // change immediately; persistence happens in the background.
@@ -2132,6 +2238,8 @@ class MeshCoreConnector extends ChangeNotifier {
     _applyChannelOrder();
     notifyListeners();
   }
+
+  Future<void> reloadChannelOrder() => _loadChannelOrder();
 
   /// History is stored by channel ID, so it may carry the slot the channel
   /// sat in when it was saved; rebind it to the slot it is shown in now.
@@ -2337,11 +2445,11 @@ class MeshCoreConnector extends ChangeNotifier {
         debugLogService: _appDebugLogService,
         recordPathResult: _recordPathResult,
         selectRetryPath:
-            (contactKey, attemptIndex, maxRetries, recentSelections) =>
+            (contactKey, attemptIndex, directRetries, recentSelections) =>
                 _selectAutoPathForAttempt(
                   contactKey,
                   attemptIndex: attemptIndex,
-                  maxRetries: maxRetries,
+                  directRetries: directRetries,
                   recentSelections: recentSelections,
                 ),
         onDeliveryObserved: (contactKey, pathLength, messageBytes, tripTimeMs) {
@@ -2354,8 +2462,6 @@ class MeshCoreConnector extends ChangeNotifier {
         },
       ),
     );
-    final maxRetries = _appSettingsService?.settings.maxMessageRetries ?? 5;
-    _retryService?.setMaxRetries(maxRetries);
   }
 
   Future<void> loadContactCache() async {
@@ -2367,6 +2473,9 @@ class MeshCoreConnector extends ChangeNotifier {
     _contacts
       ..clear()
       ..addAll(cached);
+    _contactAddedAt
+      ..clear()
+      ..addAll(_contactAddedAtStore.load());
     for (final contact in cached) {
       _ensureContactSmazSettingLoaded(contact.publicKeyHex);
       _ensureContactCyr2LatSettingLoaded(contact.publicKeyHex);
@@ -2798,9 +2907,21 @@ class MeshCoreConnector extends ChangeNotifier {
   PathSelection? _selectAutoPathForAttempt(
     String contactPubKeyHex, {
     required int attemptIndex,
-    required int maxRetries,
+    required int directRetries,
     List<PathSelection> recentSelections = const [],
   }) {
+    // Flood attempts do not need a saved route. History loads asynchronously
+    // and is empty on the first read after startup, so checking it first
+    // would keep the contact's direct path and spend a flood-only budget
+    // without flooding.
+    if (directRetries <= 0 || attemptIndex >= directRetries) {
+      return _recordAutoPath(
+        contactPubKeyHex,
+        const PathSelection(pathBytes: [], hopCount: -1, useFlood: true),
+        attemptIndex: attemptIndex,
+      );
+    }
+
     final hasKnownPaths =
         _pathHistoryService?.getRecentPaths(contactPubKeyHex).isNotEmpty ??
         false;
@@ -2813,22 +2934,38 @@ class MeshCoreConnector extends ChangeNotifier {
     final selection = _pathHistoryService?.selectPathForAttempt(
       contactPubKeyHex,
       attemptIndex: attemptIndex,
-      maxRetries: maxRetries,
+      directRetries: directRetries,
       recentSelections: recentSelections,
       context: routeContext,
     );
-    if (selection != null) {
-      _pathHistoryService?.recordPathAttempt(contactPubKeyHex, selection);
-      // Logged so route choices and their outcomes can be compared from the
-      // app debug log on a live mesh.
-      _appDebugLogService?.info(
-        'Route pick for ${contact?.name ?? contactPubKeyHex.substring(0, 8)}: '
-        'attempt ${attemptIndex + 1}/$maxRetries → ${_describeRoute(selection)} '
-        '(heard nearby: ${routeContext.hasNeighbourInfo}, '
-        'contact heard direct: ${routeContext.contactHeardDirectly})',
-        tag: 'Routing',
-      );
-    }
+    if (selection == null) return null;
+    return _recordAutoPath(
+      contactPubKeyHex,
+      selection,
+      attemptIndex: attemptIndex,
+      routeContext: routeContext,
+    );
+  }
+
+  PathSelection _recordAutoPath(
+    String contactPubKeyHex,
+    PathSelection selection, {
+    required int attemptIndex,
+    RouteContext? routeContext,
+  }) {
+    _pathHistoryService?.recordPathAttempt(contactPubKeyHex, selection);
+    final contact = getContactByPubKeyHex(contactPubKeyHex);
+    final context = routeContext ?? routeContextFor(contact);
+    // Logged so route choices and their outcomes can be compared from the
+    // app debug log on a live mesh.
+    _appDebugLogService?.info(
+      'Route pick for ${contact?.name ?? contactPubKeyHex.substring(0, 8)}: '
+      'attempt ${attemptIndex + 1} '
+      '→ ${_describeRoute(selection)} '
+      '(heard nearby: ${context.hasNeighbourInfo}, '
+      'contact heard direct: ${context.contactHeardDirectly})',
+      tag: 'Routing',
+    );
     return selection;
   }
 
@@ -5029,6 +5166,13 @@ class MeshCoreConnector extends ChangeNotifier {
       pathHashByteWidth: pathHashByteWidth,
     );
     await sendFrame(frame, waitForGenericAck: true);
+    if (publicKey != null) {
+      final keyHex = pubKeyToHex(publicKey);
+      if (!_contactAddedAt.containsKey(keyHex)) {
+        _contactAddedAt[keyHex] = DateTime.now();
+        await _contactAddedAtStore.save(_contactAddedAt);
+      }
+    }
     await refreshContacts();
   }
 
@@ -5054,9 +5198,8 @@ class MeshCoreConnector extends ChangeNotifier {
   }) async {
     if (!isConnected || text.isEmpty) return;
 
-    final outboundBytes = utf8.encode(
-      prepareContactOutboundText(contact, text),
-    );
+    final prepared = prepareContactOutbound(contact, text);
+    final outboundBytes = utf8.encode(prepared.text);
     if (outboundBytes.length > maxTextPayloadBytes) {
       debugPrint(
         'sendMessage: dropping overlong message '
@@ -5105,6 +5248,7 @@ class MeshCoreConnector extends ChangeNotifier {
         originalText: originalText,
         translatedLanguageCode: translatedLanguageCode,
         translationModelId: translationModelId,
+        isSmazCompressed: prepared.isSmazCompressed,
       );
     } else {
       // Fallback to old behavior if retry service not initialized
@@ -5117,11 +5261,11 @@ class MeshCoreConnector extends ChangeNotifier {
         originalText: originalText,
         translatedLanguageCode: translatedLanguageCode,
         translationModelId: translationModelId,
+        isSmazCompressed: prepared.isSmazCompressed,
       );
       _addMessage(contact.publicKeyHex, message); // recipient as "sender"
       notifyListeners();
-      final outboundText = prepareContactOutboundText(contact, text);
-      await sendFrame(buildSendTextMsgFrame(contact.publicKey, outboundText));
+      await sendFrame(buildSendTextMsgFrame(contact.publicKey, prepared.text));
     }
   }
 
@@ -5371,14 +5515,21 @@ class MeshCoreConnector extends ChangeNotifier {
 
   Future<PathSelection> preparePathForContactSend(Contact contact) async {
     PathSelection? autoSelection;
-    final autoRotationEnabled =
-        _appSettingsService?.settings.autoRouteRotationEnabled == true;
-    if (autoRotationEnabled && contact.pathOverride == null) {
-      final maxRetries = _appSettingsService?.settings.maxMessageRetries ?? 5;
+    final settings = _appSettingsService?.settings;
+    final plan = SendAttemptPlan(
+      directRetries:
+          settings?.directRetries ?? SendAttemptPlan.defaultDirectRetries,
+      floodRetries:
+          settings?.floodRetries ?? SendAttemptPlan.defaultFloodRetries,
+      rotateRoutes:
+          settings?.autoRouteRotationEnabled == true &&
+          contact.pathOverride == null,
+    );
+    if (plan.rotateRoutes) {
       autoSelection = _selectAutoPathForAttempt(
         contact.publicKeyHex,
         attemptIndex: 0,
-        maxRetries: maxRetries,
+        directRetries: plan.floodFromAttempt ?? (1 << 30),
       );
     }
 
@@ -5544,6 +5695,7 @@ class MeshCoreConnector extends ChangeNotifier {
       // we continue to process it normally.
     }
 
+    final prepared = prepareChannelOutbound(channel.index, text);
     final message = ChannelMessage.outgoing(
       text,
       _selfName ?? 'Me',
@@ -5553,12 +5705,13 @@ class MeshCoreConnector extends ChangeNotifier {
       translationModelId: translationModelId,
       region: sendRegion,
       replyTo: replyTo,
+      isSmazCompressed: prepared.isSmazCompressed,
     );
     _addChannelMessage(channel.index, message);
     _pendingChannelSentQueue.add(message.messageId);
     notifyListeners();
 
-    final outboundText = prepareChannelOutboundText(channel.index, text);
+    final outboundText = prepared.text;
     // Resends reuse the timestamp, so they are the same packet: repeaters
     // that already forwarded it drop the copy and recipients see it once.
     Future<void> transmit({bool isResend = false}) =>
@@ -5714,7 +5867,9 @@ class MeshCoreConnector extends ChangeNotifier {
   /// queued a packet to the radio. It says nothing about transmission or
   /// delivery — GRP_DATA is unacknowledged flood traffic, there is no
   /// PUSH_CODE_SEND_CONFIRMED for it, and a chunk may still be lost on air.
-  /// That is what the XOR parity chunk is for.
+  /// That is what the XOR parity chunk is for, and why repeater echoes are
+  /// counted afterwards ([ownImageEchoes]). With [repairUnheardChunks], chunks
+  /// no repeater echoed are resent once (see [_repairUnheardImageChunks]).
   ///
   /// Returns false when the transport is unavailable (disconnected or firmware
   /// too old); throws whatever [_sendFrameAndWaitForCommandAck] throws, i.e.
@@ -5727,9 +5882,47 @@ class MeshCoreConnector extends ChangeNotifier {
     required int channelIndex,
     required Duration interChunkDelay,
     void Function(int sent, int total)? onProgress,
+    bool repairUnheardChunks = true,
   }) async {
     if (blobs.isEmpty) return false;
     if (!supportsChannelData) return false;
+    final header = parseImageChunkHeader(blobs.first);
+    final key = header == null ? null : (channelIndex, header.imgId);
+    if (key != null && repairUnheardChunks) {
+      // Index == chunk index: data chunks first, the parity chunk (index ==
+      // total) last, so blobs.length slots cover every chunk we send.
+      _ownImageEchoes.remove(key);
+      _ownImageEchoes[key] = List<int>.filled(blobs.length, 0);
+      while (_ownImageEchoes.length > _maxTrackedOwnImages) {
+        _ownImageEchoes.remove(_ownImageEchoes.keys.first);
+      }
+    }
+    final startedAt = DateTime.now();
+    final sentAll = await _transmitImageBlobs(
+      blobs,
+      channelIndex: channelIndex,
+      interChunkDelay: interChunkDelay,
+      onProgress: onProgress,
+    );
+    if (sentAll && key != null && repairUnheardChunks) {
+      unawaited(
+        _repairUnheardImageChunks(
+          key,
+          blobs,
+          interChunkDelay: interChunkDelay,
+          startedAt: startedAt,
+        ),
+      );
+    }
+    return sentAll;
+  }
+
+  Future<bool> _transmitImageBlobs(
+    List<Uint8List> blobs, {
+    required int channelIndex,
+    required Duration interChunkDelay,
+    void Function(int sent, int total)? onProgress,
+  }) async {
     // `return` inside the scoped callback only exits the callback, so a
     // disconnect mid-send used to fall through to `return true` below and the
     // caller would record a complete outgoing image and tell the user "sent"
@@ -5758,6 +5951,142 @@ class MeshCoreConnector extends ChangeNotifier {
       }
     }, region: _channelSendScope(channelIndex));
     return sentAll;
+  }
+
+  // ---- repeater echoes of our own image chunks -------------------------------
+  //
+  // GRP_DATA is never acknowledged. What we can observe is a repeater
+  // re-flooding one of our chunks: the radio reports it in the raw RX log, the
+  // same way repeats of channel text are counted. A chunk nobody echoed while
+  // other chunks of the same image were echoed was most likely lost, so it is
+  // sent once more.
+
+  /// How long to listen for echoes after the last chunk before repairing.
+  static const Duration _imageEchoWait = Duration(seconds: 15);
+
+  /// Receivers drop a partial image [kImageReassemblyTtl] after its first
+  /// chunk. A repair that cannot land well inside that window is skipped.
+  static const Duration _imageRepairDeadline = Duration(seconds: 45);
+
+  static const int _maxTrackedOwnImages = 16;
+
+  final Map<(int, int), List<int>> _ownImageEchoes = {};
+  final Set<(int, int)> _imageRepairsInFlight = {};
+
+  /// Repeater echoes heard for each chunk of one of our own images sent this
+  /// session (data chunks, then the parity chunk), or null if not tracked.
+  List<int>? ownImageEchoes(int channelIndex, int imgId) {
+    final echoes = _ownImageEchoes[(channelIndex, imgId)];
+    return echoes == null ? null : List<int>.unmodifiable(echoes);
+  }
+
+  /// Non-null while unheard chunks of that image are being resent.
+  ({int resends, int maxResends})? imageResendProgress(
+    int channelIndex,
+    int imgId,
+  ) => _imageRepairsInFlight.contains((channelIndex, imgId))
+      ? (resends: 1, maxResends: 1)
+      : null;
+
+  /// A GRP_DATA packet from the raw RX log. Other people's images arrive
+  /// already decrypted through RESP_CODE_CHANNEL_DATA_RECV; here we only look
+  /// for repeaters re-flooding one of our own chunks.
+  void _handleImageEcho(_RawPacket packet) {
+    final self = senderPrefixFromKey(_selfPublicKey);
+    if (self == null || packet.payload.length < 2) return;
+    final channelHash = packet.payload[0];
+    final encrypted = Uint8List.fromList(packet.payload.sublist(1));
+    final channels = _channels.isNotEmpty ? _channels : _cachedChannels;
+    for (final channel in channels) {
+      if (channel.isEmpty) continue;
+      if (_computeChannelHash(channel.psk) != channelHash) continue;
+      // Null unless the MAC matches this channel's key.
+      final plain = _decryptPayload(channel.psk, encrypted);
+      if (plain == null || plain.length < 3) continue;
+      // Plaintext: data_type (uint16 LE), data_len, blob (padded to 16).
+      final dataType = plain[0] | (plain[1] << 8);
+      final length = plain[2];
+      if (dataType != dataTypeAeicImage || plain.length < 3 + length) return;
+      final header = parseImageChunkHeader(
+        Uint8List.sublistView(plain, 3, 3 + length),
+      );
+      if (header == null || header.senderPrefix != self) return;
+      final channelId = channel.storageId;
+      final slot = _channelMapConfirmed && channelId != null
+          ? _slotForChannelId(channelId)
+          : channel.index;
+      if (slot == null) return;
+      _recordOwnImageEcho(slot, header);
+      return;
+    }
+  }
+
+  void _recordOwnImageEcho(int slot, ImageChunkHeader header) {
+    final echoes = _ownImageEchoes[(slot, header.imgId)];
+    if (echoes == null || header.index >= echoes.length) return;
+    echoes[header.index]++;
+    unawaited(
+      _receivedImageStore?.setOutgoingEchoes(
+        channelIndex: slot,
+        senderPrefix: header.senderPrefix,
+        imgId: header.imgId,
+        echoes: List<int>.of(echoes),
+      ),
+    );
+    notifyListeners();
+  }
+
+  /// One repair round: resend the chunks no repeater was heard echoing, but
+  /// only when some other chunk of the image was echoed. With no echo at all
+  /// we cannot tell a lost image from a sender with no repeater in earshot,
+  /// and resending would double every such user's airtime for nothing.
+  ///
+  /// The resent chunk is byte-identical, so a repeater that did forward it
+  /// (and we just missed the echo) drops the copy as already seen. Receivers
+  /// missing it merge it into the image they are still holding.
+  Future<void> _repairUnheardImageChunks(
+    (int, int) key,
+    List<Uint8List> blobs, {
+    required Duration interChunkDelay,
+    required DateTime startedAt,
+  }) async {
+    await Future<void>.delayed(_imageEchoWait);
+    final echoes = _ownImageEchoes[key];
+    if (echoes == null || echoes.length != blobs.length || !isConnected) {
+      return;
+    }
+    final unheard = <Uint8List>[
+      for (var i = 0; i < blobs.length; i++)
+        if (echoes[i] == 0) blobs[i],
+    ];
+    if (unheard.isEmpty || unheard.length == blobs.length) return;
+    if (DateTime.now().difference(startedAt) > _imageRepairDeadline) {
+      _appDebugLogService?.info(
+        'Image ${key.$2}: ${unheard.length} chunk(s) unheard, too late to '
+        'resend before receivers give up',
+        tag: 'Image resend',
+      );
+      return;
+    }
+    _appDebugLogService?.info(
+      'Image ${key.$2}: resending ${unheard.length} of ${blobs.length} '
+      'chunk(s) no repeater echoed',
+      tag: 'Image resend',
+    );
+    _imageRepairsInFlight.add(key);
+    notifyListeners();
+    try {
+      await _transmitImageBlobs(
+        unheard,
+        channelIndex: key.$1,
+        interChunkDelay: interChunkDelay,
+      );
+    } catch (e) {
+      _appDebugLogService?.warn('Image resend failed: $e', tag: 'Image resend');
+    } finally {
+      _imageRepairsInFlight.remove(key);
+      notifyListeners();
+    }
   }
 
   Future<void> _runScopedChannelSend(
@@ -5848,6 +6177,9 @@ class MeshCoreConnector extends ChangeNotifier {
     _contactsStorageFull = false;
     _contacts.removeWhere((c) => c.publicKeyHex == contact.publicKeyHex);
     _knownContactKeys.remove(contact.publicKeyHex);
+    if (_contactAddedAt.remove(contact.publicKeyHex) != null) {
+      unawaited(_contactAddedAtStore.save(_contactAddedAt));
+    }
     unawaited(updateKnownDiscovered());
     unawaited(_persistContacts());
     _conversations.remove(contact.publicKeyHex);
@@ -7536,6 +7868,9 @@ class MeshCoreConnector extends ChangeNotifier {
     );
     _contacts.removeWhere((c) => c.publicKeyHex == keyHex);
     _knownContactKeys.remove(keyHex);
+    if (_contactAddedAt.remove(keyHex) != null) {
+      unawaited(_contactAddedAtStore.save(_contactAddedAt));
+    }
     _contactsStorageFull = false;
     unawaited(updateKnownDiscovered());
     unawaited(_persistContacts());
@@ -8034,9 +8369,8 @@ class MeshCoreConnector extends ChangeNotifier {
         appLogger.warn('Received message with empty text, ignoring');
         return null;
       }
-      final decodedText = isCli
-          ? msgText
-          : (Smaz.tryDecodePrefixed(msgText) ?? msgText);
+      final smazDecoded = isCli ? null : Smaz.tryDecodePrefixed(msgText);
+      final decodedText = smazDecoded ?? msgText;
 
       final contact = _contacts.cast<Contact?>().firstWhere(
         (c) => c != null && _matchesPrefix(c.publicKey, senderPrefix),
@@ -8056,6 +8390,7 @@ class MeshCoreConnector extends ChangeNotifier {
         receivedAt: DateTime.now(),
         isOutgoing: false,
         isCli: isCli,
+        isSmazCompressed: smazDecoded != null,
         status: MessageStatus.delivered,
         pathLength: pathLength == 0xFF ? null : (pathLength & 0x3F),
         pathBytes: Uint8List(0),
@@ -8093,7 +8428,7 @@ class MeshCoreConnector extends ChangeNotifier {
   void _ensureContactSmazSettingLoaded(String contactKeyHex) {
     if (_contactSmazEnabled.containsKey(contactKeyHex)) return;
     _contactSettingsStore.loadSmazEnabled(contactKeyHex).then((enabled) {
-      if (_contactSmazEnabled[contactKeyHex] == enabled) return;
+      if (_contactSmazEnabled.containsKey(contactKeyHex)) return;
       _contactSmazEnabled[contactKeyHex] = enabled;
       notifyListeners();
     });
@@ -8102,7 +8437,7 @@ class MeshCoreConnector extends ChangeNotifier {
   void _ensureContactCyr2LatSettingLoaded(String contactKeyHex) {
     if (_contactCyr2LatEnabled.containsKey(contactKeyHex)) return;
     _contactSettingsStore.loadCyr2LatEnabled(contactKeyHex).then((enabled) {
-      if (_contactCyr2LatEnabled[contactKeyHex] == enabled) return;
+      if (_contactCyr2LatEnabled.containsKey(contactKeyHex)) return;
       _contactCyr2LatEnabled[contactKeyHex] = enabled;
       notifyListeners();
     });
@@ -8120,7 +8455,7 @@ class MeshCoreConnector extends ChangeNotifier {
   void _ensureContactCyr2LatProfileLoaded(String contactKeyHex) {
     if (_contactCyr2LatProfileId.containsKey(contactKeyHex)) return;
     _contactSettingsStore.loadCyr2LatProfileId(contactKeyHex).then((profileId) {
-      if (_contactCyr2LatProfileId[contactKeyHex] == profileId) return;
+      if (_contactCyr2LatProfileId.containsKey(contactKeyHex)) return;
       _contactCyr2LatProfileId[contactKeyHex] = profileId;
       notifyListeners();
     });
@@ -8131,7 +8466,7 @@ class MeshCoreConnector extends ChangeNotifier {
     final channelId = _slotChannelIds[channelIndex];
     if (channelId == null) return;
     _channelSettingsStore.loadCyr2LatEnabled(channelId).then((enabled) {
-      if (_channelCyr2LatEnabled[channelIndex] == enabled) return;
+      if (_channelCyr2LatEnabled.containsKey(channelIndex)) return;
       _channelCyr2LatEnabled[channelIndex] = enabled;
       notifyListeners();
     });
@@ -8142,7 +8477,7 @@ class MeshCoreConnector extends ChangeNotifier {
     final channelId = _slotChannelIds[channelIndex];
     if (channelId == null) return;
     _channelSettingsStore.loadCyr2LatProfileId(channelId).then((profileId) {
-      if (_channelCyr2LatProfileId[channelIndex] == profileId) return;
+      if (_channelCyr2LatProfileId.containsKey(channelIndex)) return;
       _channelCyr2LatProfileId[channelIndex] = profileId;
       notifyListeners();
     });
@@ -8158,12 +8493,12 @@ class MeshCoreConnector extends ChangeNotifier {
     String? profileId,
   ) async {
     if (_channelCyr2LatProfileId[channelIndex] == profileId) return;
-    for (final slot in _slotsSharingChannel(channelIndex)) {
-      _channelCyr2LatProfileId[slot] = profileId;
-    }
     final channelId = _channelIdForSlot(channelIndex);
     if (channelId != null) {
       await _channelSettingsStore.saveCyr2LatProfileId(channelId, profileId);
+    }
+    for (final slot in _slotsSharingChannel(channelIndex)) {
+      _channelCyr2LatProfileId[slot] = profileId;
     }
     notifyListeners();
   }
@@ -8178,14 +8513,20 @@ class MeshCoreConnector extends ChangeNotifier {
     String? profileId,
   ) async {
     if (_contactCyr2LatProfileId[contactKeyHex] == profileId) return;
-    _contactCyr2LatProfileId[contactKeyHex] = profileId;
     await _contactSettingsStore.saveCyr2LatProfileId(contactKeyHex, profileId);
+    _contactCyr2LatProfileId[contactKeyHex] = profileId;
     notifyListeners();
   }
 
   /// Prepares contact outbound text by applying SMAZ encoding if enabled.
   /// This should be used to transform text before computing ACK hashes.
-  String prepareContactOutboundText(Contact contact, String text) {
+  String prepareContactOutboundText(Contact contact, String text) =>
+      prepareContactOutbound(contact, text).text;
+
+  ({String text, bool isSmazCompressed}) prepareContactOutbound(
+    Contact contact,
+    String text,
+  ) {
     final trimmed = text.trim();
     final isStructuredPayload =
         trimmed.startsWith('g:') ||
@@ -8193,7 +8534,8 @@ class MeshCoreConnector extends ChangeNotifier {
         trimmed.startsWith('V1|');
     if (!isStructuredPayload) {
       if (isContactSmazEnabled(contact.publicKeyHex)) {
-        return Smaz.encodeIfSmaller(text);
+        final encoded = Smaz.encodeIfSmaller(text);
+        return (text: encoded, isSmazCompressed: encoded != text);
       } else if (isContactCyr2LatEnabled(contact.publicKeyHex)) {
         final profileId = getContactCyr2LatProfileId(contact.publicKeyHex);
         final profile = profileId != null && _appSettingsService != null
@@ -8209,19 +8551,26 @@ class MeshCoreConnector extends ChangeNotifier {
             Cyr2Lat.setCharMap(globalProfile.charMap);
           }
         }
-        return Cyr2Lat.encode(text);
+        return (text: Cyr2Lat.encode(text), isSmazCompressed: false);
       }
     }
-    return text;
+    return (text: text, isSmazCompressed: false);
   }
 
-  String prepareChannelOutboundText(int channelIndex, String text) {
+  String prepareChannelOutboundText(int channelIndex, String text) =>
+      prepareChannelOutbound(channelIndex, text).text;
+
+  ({String text, bool isSmazCompressed}) prepareChannelOutbound(
+    int channelIndex,
+    String text,
+  ) {
     final trimmed = text.trim();
     final isStructuredPayload =
         trimmed.startsWith('g:') || trimmed.startsWith('m:');
     if (!isStructuredPayload) {
       if (isChannelSmazEnabled(channelIndex)) {
-        return Smaz.encodeIfSmaller(text);
+        final encoded = Smaz.encodeIfSmaller(text);
+        return (text: encoded, isSmazCompressed: encoded != text);
       } else if (isChannelCyr2LatEnabled(channelIndex)) {
         final profileId = getChannelCyr2LatProfileId(channelIndex);
         final profile = profileId != null && _appSettingsService != null
@@ -8237,10 +8586,10 @@ class MeshCoreConnector extends ChangeNotifier {
             Cyr2Lat.setCharMap(globalProfile.charMap);
           }
         }
-        return Cyr2Lat.encode(text);
+        return (text: Cyr2Lat.encode(text), isSmazCompressed: false);
       }
     }
-    return text;
+    return (text: text, isSmazCompressed: false);
   }
 
   // Falls back to the cached channel list, which stays populated while a
@@ -8396,7 +8745,12 @@ class MeshCoreConnector extends ChangeNotifier {
 
       final raw = reader.readRemainingBytes();
       final packet = _parseRawPacket(raw);
-      if (packet == null || packet.payloadType != _payloadTypeGroupText) return;
+      if (packet == null) return;
+      if (packet.payloadType == _payloadTypeGroupData) {
+        _handleImageEcho(packet);
+        return;
+      }
+      if (packet.payloadType != _payloadTypeGroupText) return;
 
       final payload = BufferReader(packet.payload);
       final channelHash = payload.readByte();
@@ -8423,8 +8777,8 @@ class MeshCoreConnector extends ChangeNotifier {
 
           final text = decrypted.readCString();
           final parsed = _splitSenderText(text);
-          final decodedText =
-              Smaz.tryDecodePrefixed(parsed.text) ?? parsed.text;
+          final smazDecoded = Smaz.tryDecodePrefixed(parsed.text);
+          final decodedText = smazDecoded ?? parsed.text;
           if (_shouldDropSelfChannelMessage(
             parsed.senderName,
             packet.pathBytes,
@@ -8454,6 +8808,7 @@ class MeshCoreConnector extends ChangeNotifier {
             timestamp: DateTime.fromMillisecondsSinceEpoch(timestampRaw * 1000),
             receivedAt: DateTime.now(),
             isOutgoing: false,
+            isSmazCompressed: smazDecoded != null,
             status: ChannelMessageStatus.sent,
             pathLength: packet.isFlood ? packet.hopCount : 0,
             pathHashWidth: packet.pathHashWidth,
@@ -8942,8 +9297,13 @@ class MeshCoreConnector extends ChangeNotifier {
     }
 
     messages.add(message);
-    if (messages.length > _messageWindowSize) {
-      final trimCount = messages.length - _messageWindowSize;
+    // The open chat keeps the older pages its reader scrolled back to;
+    // trimming them would pull the history out from under the reader.
+    final windowSize = pubKeyHex == _activeContactKey
+        ? MessageStore.maxStoredMessages
+        : _messageWindowSize;
+    if (messages.length > windowSize) {
+      final trimCount = messages.length - windowSize;
       _messageStore.archive(pubKeyHex, messages.sublist(0, trimCount));
       messages.removeRange(0, trimCount);
     }
@@ -9268,6 +9628,7 @@ class MeshCoreConnector extends ChangeNotifier {
           timestamp: message.timestamp,
           receivedAt: message.receivedAt,
           isOutgoing: message.isOutgoing,
+          isSmazCompressed: message.isSmazCompressed,
           status: message.status,
           repeats: message.repeats,
           repeatCount: message.repeatCount,
@@ -9316,6 +9677,8 @@ class MeshCoreConnector extends ChangeNotifier {
           existing.status == ChannelMessageStatus.pending;
       messages[existingIndex] = existing.copyWith(
         repeatCount: newRepeatCount,
+        isSmazCompressed:
+            existing.isSmazCompressed || processedMessage.isSmazCompressed,
         pathLength: mergedPathLength,
         pathHashWidth: existing.pathHashWidth ?? processedMessage.pathHashWidth,
         pathBytes: mergedPathBytes,
@@ -9609,11 +9972,13 @@ class MeshCoreConnector extends ChangeNotifier {
     unawaited(_unreadStore.flush());
     _channelMessageStore.setPublicKeyHex = keyHex;
     _messageStore.setPublicKeyHex = keyHex;
+    _bookmarkStore.setPublicKeyHex = keyHex;
     _channelOrderStore.setPublicKeyHex = keyHex;
     _channelSettingsStore.setPublicKeyHex = keyHex;
     _channelRegionStore.setPublicKeyHex = keyHex;
     _contactSettingsStore.setPublicKeyHex = keyHex;
     _contactStore.setPublicKeyHex = keyHex;
+    _contactAddedAtStore.setPublicKeyHex = keyHex;
     _channelStore.setPublicKeyHex = keyHex;
     _unreadStore.setPublicKeyHex = keyHex;
     _discoveryContactStore.setPublicKeyHex = keyHex;
@@ -10477,6 +10842,7 @@ const int _routeFlood = 0x01;
 const int _routeTransportDirect = 0x03;
 
 const int _payloadTypeGroupText = 0x05;
+const int _payloadTypeGroupData = 0x06;
 const int _cipherMacSize = 2;
 
 bool _isPathLenValidForMode(

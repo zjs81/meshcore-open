@@ -175,6 +175,19 @@ class MessageStore {
     return messages;
   }
 
+  Future<void> updateBookmarkFlag(
+    String contactKeyHex,
+    String messageId,
+    bool isBookmarked,
+  ) {
+    if (publicKeyHex.isEmpty) return Future<void>.value();
+    return _archive.updateBookmarkFlag(
+      '$keyFor$contactKeyHex',
+      messageId,
+      isBookmarked,
+    );
+  }
+
   Future<void> clearMessages(String contactKeyHex) {
     if (publicKeyHex.isEmpty) return Future<void>.value();
     return _archive.clear(HistoryStore.instance, '$keyFor$contactKeyHex');
@@ -187,7 +200,9 @@ class MessageStore {
       'timestamp': msg.timestamp.millisecondsSinceEpoch,
       'receivedAt': msg.receivedAt.millisecondsSinceEpoch,
       'isOutgoing': msg.isOutgoing,
+      'isBookmarked': msg.isBookmarked,
       'isCli': msg.isCli,
+      'isSmazCompressed': msg.isSmazCompressed,
       'status': msg.status.index,
       'messageId': msg.messageId,
       'originalText': msg.originalText,
@@ -219,9 +234,12 @@ class MessageStore {
   Message _messageFromJson(Map<String, dynamic> json) {
     final rawText = json['text'] as String;
     final isCli = json['isCli'] as bool? ?? false;
-    final decodedText = isCli || json['plainText'] == true
-        ? rawText
-        : (Smaz.tryDecodePrefixed(rawText) ?? rawText);
+    final smazDecoded = (isCli || json['plainText'] == true)
+        ? null
+        : Smaz.tryDecodePrefixed(rawText);
+    final decodedText = smazDecoded ?? rawText;
+    final isSmazCompressed =
+        json['isSmazCompressed'] as bool? ?? (smazDecoded != null);
 
     final rawPathLength = json['pathLength'] as int?;
     final rawPathBytes = json['pathBytes'] != null
@@ -257,7 +275,9 @@ class MessageStore {
       timestamp: DateTime.fromMillisecondsSinceEpoch(json['timestamp'] as int),
       receivedAt: legacyAwareReceivedAt(json),
       isOutgoing: json['isOutgoing'] as bool? ?? false,
+      isBookmarked: json['isBookmarked'] as bool? ?? false,
       isCli: isCli,
+      isSmazCompressed: isSmazCompressed,
       status: _statusAt(json['status']) ?? MessageStatus.failed,
       messageId: json['messageId'] as String?,
       originalText: json['originalText'] as String?,

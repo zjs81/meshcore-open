@@ -496,6 +496,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupRestore_discoveredContactsDescription => '已发现的联系人及其保存的详细信息';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => '频道';
 
   @override
@@ -517,9 +520,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupRestore_missingModelsTitle => '模型未下载';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return '恢复的设置所选用的模型在此设备上不可用：\n$models\n\n现在下载吗？';
-  }
+  String get backupRestore_missingModelsMessage => '恢复的设置所选用的模型在此设备上不可用。现在下载吗？';
 
   @override
   String get backupRestore_downloadModels => '下载模型';
@@ -1295,6 +1296,13 @@ class AppLocalizationsZh extends AppLocalizations {
       '将频道消息的地区与跳数显示在同一行，而不是在其下方。';
 
   @override
+  String get appSettings_showCompressionIndicator => 'Compression indicator';
+
+  @override
+  String get appSettings_showCompressionIndicatorSubtitle =>
+      'Show an icon on messages compressed with SMAZ.';
+
+  @override
   String get appSettings_notifications => '通知';
 
   @override
@@ -1344,10 +1352,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_clearPathOnMaxRetry => '达到最大重试次数时清除路径';
 
   @override
-  String get appSettings_clearPathOnMaxRetrySubtitle => '在5次发送失败后重置联系路径。';
+  String get appSettings_clearPathOnMaxRetrySubtitle =>
+      '所有发送尝试都失败后，重置联系人已保存的路径';
 
   @override
-  String get appSettings_pathsWillBeCleared => '5次失败后将重新路由';
+  String get appSettings_pathsWillBeCleared => '所有发送尝试失败后将清除路径';
 
   @override
   String get appSettings_pathsWillNotBeCleared => '路径不会自动清除';
@@ -1356,7 +1365,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_autoRouteRotation => '自动路径轮换';
 
   @override
-  String get appSettings_autoRouteRotationSubtitle => '在最佳路径和泛洪模式之间切换';
+  String get appSettings_autoRouteRotationSubtitle =>
+      '每次直接尝试换一条已知路由。之后的尝试使用 Flood。关闭后保持联系人的当前路径。';
 
   @override
   String get appSettings_autoRouteRotationEnabled => '自动路径轮换已启用';
@@ -1369,6 +1379,58 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appSettings_maxMessageRetriesSubtitle => '在将消息标记为失败之前，允许尝试的次数';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return '直接尝试：$count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle => '尝试已知路由的次数。关闭自动路径轮换后仍然可以设置。';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Flood 尝试：$count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      '使用 Flood 的次数。Flood 占用更多空中时间。开启轮换时，这些尝试排在直接尝试之后。';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return '登录尝试：$count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle => '登录中继或房间服务器时，放弃前的尝试次数。';
+
+  @override
+  String get appSettings_repeatersAndRooms => '中继和房间';
+
+  @override
+  String get appSettings_clockSyncAfterLogin => '登录时同步中继时钟';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      '成功登录中继后会发送 clock sync。每个中继仍可选择默认、开或关。';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => '聚焦密码框';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      '打开中继或房间登录时，如果密码为空，光标会进入密码框。关闭后，在你点按该框之前对话框保持可见。';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings => '将中继和房间设置重置为默认';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      '恢复这一节的设置。保存在各个中继上的选择保持不变。';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset => '中继和房间设置已重置';
 
   @override
   String get appSettings_ipfsImageLinks => 'IPFS 提供商配置';
@@ -1717,7 +1779,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get contacts_noMembers => '暂无成员';
 
   @override
+  String contacts_groupCurrentMembers(int count) {
+    return 'Current members ($count)';
+  }
+
+  @override
+  String get contacts_groupAddContacts => 'Add contacts';
+
+  @override
+  String contacts_groupRemoveMember(String name) {
+    return 'Remove $name from group';
+  }
+
+  @override
+  String contacts_groupAddMember(String name) {
+    return 'Add $name to group';
+  }
+
+  @override
   String get contacts_lastSeenNow => '刚刚';
+
+  @override
+  String get contacts_lastSeenNever => 'not heard yet';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
@@ -1896,15 +1979,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String channels_editChannelTitle(int index) {
     return '编辑频道 $index';
   }
-
-  @override
-  String get channels_smazCompression => 'SMAZ 压缩';
-
-  @override
-  String get channels_cyr2latCompression => 'Cyr2Lat 压缩';
-
-  @override
-  String get channels_cyr2latCompressionDscr => '发送时将一些西里尔字符替换为拉丁字符。';
 
   @override
   String get channels_cyr2latSettingsHeading => 'Cyr2Lat 設定';
@@ -2144,6 +2218,30 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => '消息已删除';
+
+  @override
+  String get chat_bookmark => 'Bookmark';
+
+  @override
+  String get chat_removeBookmark => 'Remove bookmark';
+
+  @override
+  String get chat_showBookmarks => 'Show bookmarks';
+
+  @override
+  String get bookmarks_title => 'Bookmarks';
+
+  @override
+  String get bookmarks_empty => 'No bookmarked messages';
+
+  @override
+  String get bookmarks_channel => 'Channel';
+
+  @override
+  String get bookmarks_contact => 'Contact';
+
+  @override
+  String get bookmarks_remove => 'Remove bookmark';
 
   @override
   String get chat_selectMessages => '选择消息';
@@ -2526,7 +2624,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pathEditor_hexLabel => '十六进制前缀';
 
   @override
-  String get pathEditor_hexHelper => '每跳使用两个十六进制字符，用逗号分隔。';
+  String pathEditor_hexHelper(int count) {
+    return '每跳使用$count个十六进制字符，用逗号分隔。';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {
@@ -2565,9 +2665,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chat_publicKey => '公钥';
-
-  @override
-  String get chat_compressOutgoingMessages => '压缩发送的消息';
 
   @override
   String get chat_floodForced => '泛洪（强制）';
@@ -3286,7 +3383,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get repeater_clockSyncAfterLogin => '登录后，自动同步时钟';
 
   @override
-  String get repeater_clockSyncAfterLoginSubtitle => '在成功登录后，自动发送“时钟同步”指令。';
+  String get repeater_clockSyncAfterLoginSubtitle =>
+      '默认跟随应用设置里的“中继和房间”。开和关只作用于这个中继。';
+
+  @override
+  String get repeater_clockSyncDefault => '默认';
+
+  @override
+  String get repeater_clockSyncOn => '开';
+
+  @override
+  String get repeater_clockSyncOff => '关';
 
   @override
   String get repeater_statusTitle => '转发节点状态';
@@ -5211,6 +5318,19 @@ class AppLocalizationsZh extends AppLocalizations {
       'MeshCore Open 未在运行。请打开它并再次发送回复。';
 
   @override
+  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+
+  @override
+  String get settings_exportBookmarksSubtitle =>
+      'Share or save bookmarked messages as a Markdown file.';
+
+  @override
+  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+
+  @override
+  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+
+  @override
   String get settings_gpxExportRepeaters => '导出转发节点/房间服务器到 GPX';
 
   @override
@@ -5817,6 +5937,56 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get imageSend_reconstructionUnavailable => '此设备无法预览重建结果。';
+
+  @override
+  String receivedImage_packetEchoes(int number, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'repeated $count times',
+      one: 'repeated once',
+      zero: 'no repeater heard',
+    );
+    return 'Packet $number: $_temp0';
+  }
+
+  @override
+  String receivedImage_recoveryPacketEchoes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'repeated $count times',
+      one: 'repeated once',
+      zero: 'no repeater heard',
+    );
+    return 'Recovery packet: $_temp0';
+  }
+
+  @override
+  String get imageSend_preparingPreview => 'Preparing preview…';
+
+  @override
+  String get imageSend_tryAnother => 'Try another version';
+
+  @override
+  String get imageSend_versionsHint =>
+      'Each version is reconstructed a little differently. Pick the one that looks most like your photo.';
+
+  @override
+  String imageSend_versionLabel(int number) {
+    return 'Version $number';
+  }
+
+  @override
+  String imageSend_versionPackets(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count packets',
+      one: '1 packet',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get imageSend_modelNotDownloaded => '图像模型尚未下载。在设置中下载后才能发送图像。';
@@ -6482,13 +6652,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_routingSection => '路由';
 
   @override
-  String get appSettings_resetRoutingToDefault => '将路由算法重置为默认值';
+  String get appSettings_resetRoutingToDefault => '将路由设置重置为默认值';
 
   @override
-  String get appSettings_resetRoutingToDefaultSubtitle => '将路由算法设置恢复为出厂默认值';
+  String get appSettings_resetRoutingToDefaultSubtitle => '将本部分的路由设置恢复为默认值';
 
   @override
-  String get appSettings_routingResetToDefault => '路由算法设置已重置为默认值';
+  String get appSettings_routingResetToDefault => '路由设置已重置为默认值';
 
   @override
   String get appSettings_imageMessagesSection => '图片消息';
@@ -6991,4 +7161,121 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chat_composerOffline => '连接到无线电后才能发送消息';
+
+  @override
+  String get modelDownload_notDownloaded => '未下载';
+
+  @override
+  String get modelDownload_downloading => '正在下载';
+
+  @override
+  String get modelDownload_active => '当前使用';
+
+  @override
+  String get modelDownload_failed => '下载失败';
+
+  @override
+  String get modelDownload_incomplete => '不完整';
+
+  @override
+  String get modelDownload_verifying => '正在校验下载';
+
+  @override
+  String get modelDownload_useModel => '使用此模型';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return '无法移除模型：$error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
+
+  @override
+  String get chatCompression_title => 'Compression';
+
+  @override
+  String chatCompression_label(String mode) {
+    return 'Compression: $mode';
+  }
+
+  @override
+  String get chatCompression_off => 'Off';
+
+  @override
+  String get chatCompression_smaz => 'SMAZ';
+
+  @override
+  String get chatCompression_cyr2lat => 'Cyr2Lat';
+
+  @override
+  String get chatCompression_changeHint => 'Change compression for this chat';
+
+  @override
+  String get chatCompression_sheetSubtitle =>
+      'Applies to messages you send in this chat. Saved on this phone.';
+
+  @override
+  String get chatCompression_offDescription =>
+      'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.';
+
+  @override
+  String get chatCompression_smazDescription =>
+      'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.';
+
+  @override
+  String get chatCompression_cyr2latDescription =>
+      'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.';
+
+  @override
+  String get chatCompression_profile => 'Cyr2Lat profile';
+
+  @override
+  String get chatCompression_noStorageId =>
+      'Can\'t change compression until this channel has synced from the radio.';
+
+  @override
+  String get chatCompression_saveFailed =>
+      'Couldn\'t save the compression setting. Showing the saved setting.';
+
+  @override
+  String get messageMeta_smazCompressed => 'SMAZ compressed';
+
+  @override
+  String get addContact_title => 'Add Contact';
+
+  @override
+  String get addContact_infoBanner =>
+      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+
+  @override
+  String get addContact_contactType => 'Contact Type';
+
+  @override
+  String get addContact_name => 'Name';
+
+  @override
+  String get addContact_nameRequired => 'Please enter a name';
+
+  @override
+  String get addContact_publicKeyHex => 'Public Key (hex)';
+
+  @override
+  String get addContact_publicKeyRequired => 'Please enter a public key';
+
+  @override
+  String get addContact_publicKeyInvalid =>
+      'Public key must be 64 hex characters (32 bytes)';
+
+  @override
+  String get addContact_clipboardKeyLoaded =>
+      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+
+  @override
+  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+
+  @override
+  String get addContact_saveFailed => 'Failed to add contact.';
 }

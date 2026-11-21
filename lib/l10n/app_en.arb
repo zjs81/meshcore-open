@@ -229,6 +229,7 @@
   "backupRestore_contactsDescription": "Contacts, per-contact filters and settings, groups, and message history",
   "backupRestore_discoveredContacts": "Discovered Contacts",
   "backupRestore_discoveredContactsDescription": "Discovered contacts and their saved details",
+  "backupRestore_bookmarks": "Bookmarks",
   "backupRestore_channels": "Channels",
   "backupRestore_channelsDescription": "Channels, channel filters, communities, and message history",
   "backupRestore_backup": "Create Backup",
@@ -236,12 +237,7 @@
   "backupRestore_backupComplete": "Backup file created.",
   "backupRestore_restoreComplete": "Restore complete. Reconnect if you restored the radio identity.",
   "backupRestore_missingModelsTitle": "Models Not Downloaded",
-  "backupRestore_missingModelsMessage": "The restored settings select models that are not available on this device:\n{models}\n\nDownload them now?",
-  "@backupRestore_missingModelsMessage": {
-    "placeholders": {
-      "models": {"type": "String"}
-    }
-  },
+  "backupRestore_missingModelsMessage": "The restored settings select models that are not on this device. Download them now?",
   "backupRestore_downloadModels": "Download Models",
   "backupRestore_downloading": "Downloading…",
   "backupRestore_cancelDownload": "Cancel Download",
@@ -600,6 +596,8 @@
   "appSettings_enableMessageTracingSubtitle": "Also show repeat counts and trip times. Long-press a message and choose Path for full details.",
   "appSettings_regionOnHopsLine": "Region next to hop count",
   "appSettings_regionOnHopsLineSubtitle": "Show a channel message's region on the same line as its hop count instead of below it.",
+  "appSettings_showCompressionIndicator": "Compression indicator",
+  "appSettings_showCompressionIndicatorSubtitle": "Show an icon on messages compressed with SMAZ.",
   "appSettings_notifications": "Notifications",
   "appSettings_enableNotifications": "Enable Notifications",
   "appSettings_enableNotificationsSubtitle": "Receive notifications for messages and adverts",
@@ -616,15 +614,50 @@
   "appSettings_advertisementNotificationsSubtitle": "Show notification when new nodes are discovered",
   "appSettings_messaging": "Messaging",
   "appSettings_clearPathOnMaxRetry": "Clear Path on Max Retry",
-  "appSettings_clearPathOnMaxRetrySubtitle": "Reset contact path after 5 failed send attempts",
-  "appSettings_pathsWillBeCleared": "Paths will be cleared after 5 failed retries",
+  "appSettings_clearPathOnMaxRetrySubtitle": "Reset the contact's saved path after every send attempt fails",
+  "appSettings_pathsWillBeCleared": "Paths will be cleared after all send attempts fail",
   "appSettings_pathsWillNotBeCleared": "Paths will not be auto-cleared",
   "appSettings_autoRouteRotation": "Auto Route Rotation",
-  "appSettings_autoRouteRotationSubtitle": "Cycle between best paths and flood mode",
+  "appSettings_autoRouteRotationSubtitle": "On each direct attempt, try a different known route. Later attempts flood. Off keeps the contact's current path.",
   "appSettings_autoRouteRotationEnabled": "Auto route rotation enabled",
   "appSettings_autoRouteRotationDisabled": "Auto route rotation disabled",
   "appSettings_maxMessageRetries": "Max Message Retries",
   "appSettings_maxMessageRetriesSubtitle": "Number of retry attempts before marking a message as failed",
+  "appSettings_directRetries": "Direct attempts: {count}",
+  "@appSettings_directRetries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_directRetriesSubtitle": "How many times to try a known route. This stays available when auto route rotation is off.",
+  "appSettings_floodRetries": "Flood attempts: {count}",
+  "@appSettings_floodRetries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_floodRetriesSubtitle": "How many times to flood. Floods use more airtime. With rotation on, these follow the direct attempts.",
+  "appSettings_loginAttempts": "Login attempts: {count}",
+  "@appSettings_loginAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_loginAttemptsSubtitle": "How many times to try logging in to a repeater or room server before giving up.",
+  "appSettings_repeatersAndRooms": "Repeaters and Rooms",
+  "appSettings_clockSyncAfterLogin": "Sync repeater clock on login",
+  "appSettings_clockSyncAfterLoginSubtitle": "After a successful repeater login, send clock sync. Each repeater can still choose Default, On, or Off.",
+  "appSettings_loginPasswordAutofocus": "Focus the password field",
+  "appSettings_loginPasswordAutofocusSubtitle": "When opening a repeater or room login, put the cursor in the password field if it is empty. Off leaves the dialog visible until you tap the field.",
+  "appSettings_resetRepeaterRoomSettings": "Reset repeater and room settings to defaults",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Restore the settings in this section to their defaults. Choices saved on individual repeaters stay as they are.",
+  "appSettings_repeaterRoomSettingsReset": "Repeater and room settings reset to defaults",
   "appSettings_ipfsImageLinks": "IPFS provider configuration",
   "appSettings_ipfsImageLinksSubtitle": "Upload for url Images (or Files) via IPFS provider and default gateway to receive",
   "appSettings_loadLinkImages": "Load images from links",
@@ -844,7 +877,33 @@
   "contacts_filterContacts": "Filter contacts...",
   "contacts_noContactsMatchFilter": "No contacts match your filter",
   "contacts_noMembers": "No members",
+  "contacts_groupCurrentMembers": "Current members ({count})",
+  "@contacts_groupCurrentMembers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_groupAddContacts": "Add contacts",
+  "contacts_groupRemoveMember": "Remove {name} from group",
+  "@contacts_groupRemoveMember": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_groupAddMember": "Add {name} to group",
+  "@contacts_groupAddMember": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "contacts_lastSeenNow": "recently",
+  "contacts_lastSeenNever": "not heard yet",
   "contacts_lastSeenMinsAgo": "~ {minutes} min.",
   "@contacts_lastSeenMinsAgo": {
     "placeholders": {
@@ -974,9 +1033,6 @@
       }
     }
   },
-  "channels_smazCompression": "SMAZ compression",
-  "channels_cyr2latCompression": "Cyr2Lat compression",
-  "channels_cyr2latCompressionDscr": "Replaces some Cyrillic characters with Latin characters when sending.",
   "channels_cyr2latSettingsHeading": "Cyr2Lat Setup",
   "channels_cyr2latSettingsSubheading": "List of replacements",
   "channels_cyr2latSettingsDscr": "Edit the JSON configuration of character replacement",
@@ -1130,6 +1186,14 @@
   },
   "chat_messageCopied": "Message copied",
   "chat_messageDeleted": "Message deleted",
+  "chat_bookmark": "Bookmark",
+  "chat_removeBookmark": "Remove bookmark",
+  "chat_showBookmarks": "Show bookmarks",
+  "bookmarks_title": "Bookmarks",
+  "bookmarks_empty": "No bookmarked messages",
+  "bookmarks_channel": "Channel",
+  "bookmarks_contact": "Contact",
+  "bookmarks_remove": "Remove bookmark",
   "chat_selectMessages": "Select messages",
   "chat_selectedCount": "{count} selected",
   "@chat_selectedCount": {
@@ -1384,10 +1448,17 @@
   },
   "pathEditor_noHops": "No hops yet. Tap repeaters below to add them in order, or save with no hops to send direct.",
   "pathEditor_addHops": "Add hops in order",
-  "pathEditor_searchRepeaters": "Search repeaters",
+  "pathEditor_searchRepeaters": "Search name or hash",
   "pathEditor_advancedHex": "Advanced: raw hex path",
   "pathEditor_hexLabel": "Hex prefixes",
-  "pathEditor_hexHelper": "Two hex characters per hop, separated by commas",
+  "pathEditor_hexHelper": "{count} hex characters per hop, separated by commas",
+  "@pathEditor_hexHelper": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "pathEditor_invalidTokens": "Invalid: {tokens}",
   "@pathEditor_invalidTokens": {
     "placeholders": {
@@ -1407,7 +1478,6 @@
   "chat_path": "Path",
   "chat_viewPathOnMap": "View path on map",
   "chat_publicKey": "Public Key",
-  "chat_compressOutgoingMessages": "Compress outgoing messages",
   "chat_floodForced": "Flood (forced)",
   "chat_directForced": "Direct (forced)",
   "chat_hopsForced": "{count} hops (forced)",
@@ -1849,7 +1919,10 @@
   "@repeater_clockSyncAfterLogin": {
     "description": "Repeater setting: auto sync device clock after successful login"
   },
-  "repeater_clockSyncAfterLoginSubtitle": "Automatically send \"clock sync\" after a successful login",
+  "repeater_clockSyncAfterLoginSubtitle": "Default follows Repeaters and Rooms in App Settings. On and Off apply only to this repeater.",
+  "repeater_clockSyncDefault": "Default",
+  "repeater_clockSyncOn": "On",
+  "repeater_clockSyncOff": "Off",
   "@repeater_clockSyncAfterLoginSubtitle": {
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
@@ -3144,6 +3217,10 @@
   "notification_replyUnavailable": "This conversation is no longer on the connected radio.",
   "notification_replySendFailed": "Your reply may not have been sent. Check in MeshCore Open and try again.",
   "notification_replyAppNotRunning": "MeshCore Open isn't running. Open it and send your reply again.",
+  "settings_exportBookmarks": "Export bookmarks to Markdown",
+  "settings_exportBookmarksSubtitle": "Share or save bookmarked messages as a Markdown file.",
+  "settings_exportBookmarksSuccess": "Bookmarks exported.",
+  "settings_exportBookmarksNoBookmarks": "No bookmarks to export.",
   "settings_gpxExportRepeaters": "Export repeaters / room server to GPX",
   "settings_gpxExportRepeatersSubtitle": "Exports repeaters / roomserver with a location to GPX file.",
   "settings_gpxExportContacts": "Export companions to GPX",
@@ -3499,6 +3576,44 @@
   "imageSend_viewOriginal": "Original",
   "imageSend_viewReconstruction": "What recipients see",
   "imageSend_reconstructionUnavailable": "This device can't preview the reconstruction.",
+  "receivedImage_packetEchoes": "Packet {number}: {count, plural, =0{no repeater heard} =1{repeated once} other{repeated {count} times}}",
+  "@receivedImage_packetEchoes": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "receivedImage_recoveryPacketEchoes": "Recovery packet: {count, plural, =0{no repeater heard} =1{repeated once} other{repeated {count} times}}",
+  "@receivedImage_recoveryPacketEchoes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSend_preparingPreview": "Preparing preview…",
+  "imageSend_tryAnother": "Try another version",
+  "imageSend_versionsHint": "Each version is reconstructed a little differently. Pick the one that looks most like your photo.",
+  "imageSend_versionLabel": "Version {number}",
+  "@imageSend_versionLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSend_versionPackets": "{count, plural, =1{1 packet} other{{count} packets}}",
+  "@imageSend_versionPackets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "imageSend_modelNotDownloaded": "The image model isn't downloaded yet. Download it in Settings to send images.",
   "imageSend_originalSize": "Original",
   "imageSend_onAirSize": "On air",
@@ -3857,9 +3972,9 @@
   "appSettings_sourceSummary": "{label} - {description}",
   "@appSettings_sourceSummary": {"placeholders": {"label": {"type": "String"}, "description": {"type": "String"}}},
   "appSettings_routingSection": "Routing",
-  "appSettings_resetRoutingToDefault": "Reset Routing Algorithm to Default",
-  "appSettings_resetRoutingToDefaultSubtitle": "Restore routing algorithm settings to factory defaults",
-  "appSettings_routingResetToDefault": "Routing algorithm settings reset to default",
+  "appSettings_resetRoutingToDefault": "Reset routing settings to defaults",
+  "appSettings_resetRoutingToDefaultSubtitle": "Restore the routing settings in this section to their defaults",
+  "appSettings_routingResetToDefault": "Routing settings reset to defaults",
   "appSettings_imageMessagesSection": "Image messages",
   "appSettings_showApiKey": "Show API key",
   "appSettings_hideApiKey": "Hide API key",
@@ -4293,5 +4408,59 @@
   "chat_composerOffline": "Connect to a radio to send messages",
   "@chat_composerOffline": {
     "description": "Shown in place of the message box while no radio is connected"
-  }
+  },
+  "modelDownload_notDownloaded": "Not downloaded",
+  "modelDownload_downloading": "Downloading",
+  "modelDownload_active": "Active",
+  "modelDownload_failed": "Couldn't download",
+  "modelDownload_incomplete": "Incomplete",
+  "modelDownload_verifying": "Verifying the download",
+  "modelDownload_useModel": "Use this model",
+  "modelDownload_removeFailed": "Couldn't remove the model: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)",
+  "@modelDownload_removeFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "@modelDownload_progress": {
+    "placeholders": {
+      "current": {"type": "String"},
+      "total": {"type": "String"},
+      "percent": {"type": "String"}
+    }
+  },
+  "chatCompression_title": "Compression",
+  "chatCompression_label": "Compression: {mode}",
+  "@chatCompression_label": {
+    "description": "Always-visible control at the top of a chat; mode is Off, SMAZ or Cyr2Lat",
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "chatCompression_off": "Off",
+  "chatCompression_smaz": "SMAZ",
+  "chatCompression_cyr2lat": "Cyr2Lat",
+  "chatCompression_changeHint": "Change compression for this chat",
+  "chatCompression_sheetSubtitle": "Applies to messages you send in this chat. Saved on this phone.",
+  "chatCompression_offDescription": "No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.",
+  "chatCompression_smazDescription": "Lossless compression for short text. The recipient's app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.",
+  "chatCompression_cyr2latDescription": "Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.",
+  "chatCompression_profile": "Cyr2Lat profile",
+  "chatCompression_noStorageId": "Can't change compression until this channel has synced from the radio.",
+  "chatCompression_saveFailed": "Couldn't save the compression setting. Showing the saved setting.",
+  "messageMeta_smazCompressed": "SMAZ compressed",
+  "addContact_title": "Add Contact",
+  "addContact_infoBanner": "If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.",
+  "addContact_contactType": "Contact Type",
+  "addContact_name": "Name",
+  "addContact_nameRequired": "Please enter a name",
+  "addContact_publicKeyHex": "Public Key (hex)",
+  "addContact_publicKeyRequired": "Please enter a public key",
+  "addContact_publicKeyInvalid": "Public key must be 64 hex characters (32 bytes)",
+  "addContact_clipboardKeyLoaded": "Public key filled in. Choose a contact type, enter a name, and tap save.",
+  "addContact_fromDiscovered": "Add from Discovered Contacts",
+  "addContact_saveFailed": "Failed to add contact."
 }

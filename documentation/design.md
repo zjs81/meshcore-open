@@ -2,7 +2,7 @@
 
 How MeshCore Open's interface is built today, and the rules to follow when adding or changing UI. Every value below comes from the code it cites. If you change one of those sources, or settle on a new pattern, update this page in the same change.
 
-The source of truth is `lib/theme/mesh_theme.dart` (theme), `lib/widgets/mesh_ui.dart` (shared widgets) and `lib/widgets/mesh_nav_tile.dart` (settings rows). Where the code disagrees with this page, fix one of them; do not copy the inconsistency.
+The source of truth is `lib/theme/mesh_theme.dart` (theme), `lib/widgets/mesh_ui.dart` (shared widgets), `lib/widgets/settings_reveal.dart` (reveal-on-enable and settings sliders) and `lib/widgets/mesh_nav_tile.dart` (settings rows). Where the code disagrees with this page, fix one of them; do not copy the inconsistency.
 
 ## 1. Principles
 
@@ -97,13 +97,16 @@ Minimum sizes: no hard-coded `fontSize` below 12 exists in `lib/screens` or `lib
 | Section header | padding 16, 20, 16, 8 (LTRB) | `SectionHeader` |
 | Settings row | padding 16 / 12, 24px icon, 16 gap, chevron 24 | `MeshNavTile` |
 | Switch row | `SwitchListTile`, `contentPadding` 16 / 4, `secondary` icon size 24 | `app_settings_screen.dart` |
+| Slider row | `SettingsValueSlider` (`ListTile`), `contentPadding` 16 / 4, `leading` icon size 24, 16 gap | `settings_reveal.dart` |
 | Popup menu row | 20px icon, 12 gap | `MeshMenuItemRow` |
 | Banner | padding 16 / 12, 24px icon, 12 gap | `RadioDisconnectedBanner` |
 | Sheet header | padding 20, 8, 8, 4 (LTRB), 36×4 drag handle | `BottomSheetHeader` |
 | Radii | `MeshRadii.xs` 6, `sm` 10, `md` 14 (cards, inputs, menus, snackbars, list tiles), `lg` 18 (sheets, dialogs), `xl` 24, `pill` 999 (buttons, chips, FAB) | `MeshRadii` |
 | Default icon size | 22 | `iconTheme` |
-| Avatar | 40 | `AvatarCircle` |
+| Avatar | 40; initials from letters and digits only (`avatarInitials`), else a person icon. Pass a hop's hex prefix, not a "(AB) Name" label | `AvatarCircle` |
 | List bottom padding under a FAB | 88 | `channels_screen.dart` |
+
+Every settings row — including sliders, selectors, child rows revealed inside `SettingsReveal`, and model rows in `ModelDownloadList` — uses a vertically centred 24px leading icon with a 16px gap (`MeshNavTile`, `SwitchListTile.secondary`, or `ListTile.leading`) so titles align vertically across a card.
 
 Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small action buttons, 18 for inline refresh icons and spinners. Keep tappable icons at 20 or more.
 
@@ -117,10 +120,16 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Label above a group | `SectionHeader(label, trailing:)` | Upper-cases for you; pass the normal-case l10n string |
 | Settings navigation row | `MeshNavTile` | `onTap: null` dims it to 50 % and reports it as disabled; use `subtitle` to say why |
 | Settings switch | `SwitchListTile` inside `MeshSettingsTileTheme` | Wrap the settings screen body once in `MeshSettingsTileTheme` |
-| Radio-style choice in a sheet | `MeshSheetOption` | Used by the language picker and map time filter |
+| Switch that reveals more controls | `SettingsReveal` | 200ms height ease, `surfaceContainerHighest`, 16px start indent. See [Reveal on enable](#reveal-on-enable) |
+| Settings slider | `SettingsValueSlider` | Requires a 24px `icon` (`ListTile.leading`). The title includes the selected number, so it stays visible. The drag bubble repeats it |
+| Radio-style choice in a sheet | `MeshSheetOption` | Used by the language picker, map time filter and compression sheet. Optional `subtitle` explains the option; `onTap: null` disables it. Selected rows show a filled radio icon **and** a bold title, with `selected` semantics |
+| Per-chat setting at the top of a chat | Full-width strip under the app bar, above the transcript (`ChatCompressionSelector` in `widgets/chat_compression_selector.dart`) | `surfaceContainerLow` fill, `outlineVariant` bottom border, 48dp minimum height, `bodyLarge` w600 "Label: value ▾"; tap opens one `showMeshSheet` with `MeshSheetOption`s. Shows the saved value only; a spinner replaces ▾ while saving; a disabled strip shows why below the label. One shared widget for DM and channel chats; parents pass state and async callbacks |
+| Choosing between images | Selectable thumbnail tiles in a centred `Wrap` | Image send versions (`_versionTile` in `image_send_preview_sheet.dart`). `InkWell` with `MeshRadii.sm`; selected tile gets a 3px `primary` border **and** a `primary` check badge (never colour alone); caption under the tile in `bodySmall`, w600 when selected; figures such as packet counts in `MeshTheme.mono` 12; wrap the tile in `Semantics(button: true, selected:, label:)` |
+| Editing a set of members | Current items first, then a searchable add list | Group editor (`contact_group_editor_dialog.dart`). Wrapping upper-case section label with the count ("Current members (N)"); each member row has a trailing `IconButton` remove (`error` colour, tooltip names the item); the add list excludes current members, and tapping the row or its `primary` add button adds it |
 | Popup menu row | **always** `PopupMenuItem(child: MeshMenuItemRow(icon:, label:))` | Label wraps to 2 lines then ellipsizes; `leading:` for `ThemedIcon`; no icon keeps the 20px slot |
 | Segmented button label | **always** `ButtonSegment(label: MeshSegmentLabel(text))` | Shrinks to 12 (before system scale), then wraps at word boundaries onto 2 centred lines; never breaks a word |
 | Status | `StatusChip` | Mono label, coloured dot or icon |
+| On-device model | `ModelDownloadList` | Name, size, status, selection and one action. See [Model downloads](#model-downloads). |
 | Metric | `StatTile` | Label wraps to 2 lines; value wraps |
 | Signal | `SignalBars`, `MeshTheme.snrColor` | |
 | Route kind | `RouteChip` | Direct / hop count / Flood |
@@ -130,7 +139,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Radio offline on a remote-node screen | `RadioDisconnectedBanner` | Renders nothing while connected |
 | Sync progress | `SyncProgressAppBarBottom` as the app bar `bottom` | 3px bar |
 | Toast message | `showDismissibleSnackBar(context, content: Text(...))` | Tap to dismiss, replaces the current snackbar, safe after an async gap |
-| List item entrance | `ListEntrance(index:)` | Optional |
+| List item entrance | `ListEntrance(index:)` | Optional. Plays only for rows built while the list is at rest at the top; rows scrolled into view appear at once |
 
 **Buttons.** Theme shapes are all pill-shaped. In use:
 
@@ -146,6 +155,42 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 
 **IconButton.** Always set `tooltip:` with a localized string. It is the accessible name.
 
+**Chat composer.** Direct and channel chats share `ChatComposer` (`widgets/chat_composer.dart`); change it there, not per screen.
+
+- Panel: no divider; `scheme.surface` without a chat background, transparent over one (the screens pass the composer as `ChatBackdrop.footer`, and `ChatBackdrop.hasBackgroundOf` tells it a background is drawn). Margins 12 on the sides, 8 above and below.
+- Bubble: radius `kComposerBubbleRadius` (20), no outline, `surfaceContainerHigh` fill, or the incoming-bubble colour (`MessageBubbleColors`, `surfaceContainerLow`) over a background. One line is 48 tall; the field grows to `kComposerMaxLines` (5), fewer when large text and the keyboard leave little room, then scrolls. Buttons stay bottom-aligned.
+- Inside the bubble: a reply quote at the top (`ChatComposerQuote`: 4px leading bar in `primary`, title, one-line content, ✕), the field or the GIF preview, the translate button on the right, and the byte counter bottom-right only past 70 % of the limit (`ByteCountedTextField(counterOnlyNearLimit: true)`).
+- One round button beside the bubble, 44 drawn in a 48 touch target: `+` (the action menu) while the field is empty, Send in `primary` once there is text. The swap fades and scales for 150 ms, instantly when `MediaQuery.disableAnimations` is set.
+- Offline, `OfflineComposerBar` uses the same panel, bubble and height, with Connect in place of the round button (below the bubble on narrow or large-text layouts).
+- Full-width strips that are not part of the draft (image send progress) go in `header`, above the bubble.
+
+### Reveal on enable
+
+A switch that uncovers more controls (such as **Enable image messages** and **Enable translation**) uses `SettingsReveal` (`lib/widgets/settings_reveal.dart`). The block's height eases over 200ms (`RevealOnEnable.duration`, `Curves.easeInOut`, aligned to the top). While the switch is off the extra controls are not in the tree, so they are not announced. The panel uses `surfaceContainerHighest` and a 16px start indent. Because the panel already sits on `surfaceContainerHighest`, controls and inset notices inside it must contrast against `surfaceContainerHighest` as well as `surfaceContainerLow` (`MeshTheme`'s slider inactive track and value indicator step away from `surfaceContainerHighest`, and inset notice boxes inside `SettingsReveal`, such as `ImageCodecModelsSection`'s unavailable-platform notice, use `surfaceContainerLow` with an `outlineVariant` border).
+
+The same animation without the tint is `RevealOnEnable`. Use it when the revealed control is not a settings sub-panel: the Bluetooth-off banner on the scanner and the device-info rows on the Settings screen.
+
+Do not add a second duration, and do not reveal the controls with a plain `if` that pops them in. A block that swaps between two bodies, such as the filtered-message preview, keeps `AnimatedSize` but uses `RevealOnEnable.duration` and `RevealOnEnable.curve`.
+
+Sliders that belong to a setting use `SettingsValueSlider` with a 24px `icon` (`ListTile.leading`) so the title and slider line up with adjacent rows. Put the selected number in the title (a localized string with the count). The slider's drag label repeats that number; it is not the only place the value appears.
+
+### Model downloads
+
+Image models, translation models, and the restore prompt that fetches missing models all use `ModelDownloadList` (`lib/widgets/model_download_list.dart`). Do not add a second download form (a dropdown of presets, a separate filename row, or a one-off progress bar).
+
+One model is one row inside the existing `MeshCard` (or `SettingsReveal`), rows separated by `Divider(height: 1, indent: 16)`, with leading icon, text column, and trailing action(s) vertically centred (`padding: 16, 12, 4, 12` when an action is present so the icon aligns with `MeshNavTile`'s 16px trailing inset):
+
+| Part | What it shows |
+|---|---|
+| Leading icon | 24px icon, 16px gap: `Icons.memory_outlined` (`onSurfaceVariant`) when not downloaded, 24px `CircularProgressIndicator` (`primary`) while downloading, `Icons.check_circle` (`primary`) when active, `Icons.check_circle_outline` (`onSurfaceVariant`) when ready, `Icons.error_outline` (`error`) on failure. Never repeat the trailing download icon on the left. |
+| Title | Friendly name, `meshTileTitleStyle` (`bodyLarge` w600). It wraps. Never a raw filename or URL. |
+| Subtitle | Size via the `mapCache_size*` strings when known, then the status: Not downloaded, Downloading, Ready, or Couldn't download. The model in use also says Active. An install that stopped part-way says Incomplete. The words stay `onSurfaceVariant` (Active is w600). |
+| Progress | While downloading, a `LinearProgressIndicator` (indeterminate when the total is unknown, or while chunks are merged or the file is verified) and a mono 12 caption of bytes and percent. |
+| Action | One `IconButton` (48×48 touch target) with a localized tooltip: Download, Cancel, or Remove model. An install that already has files but is not ready shows both Download and Remove. Tap a Ready row to select it when more than one model can be active. A row the user cannot use is dimmed to 50 %, same as a disabled `MeshNavTile`. |
+| Manual URL | When the feature accepts one (translation), put a single text field under the list. Its download control is the same Download icon. The file joins this list. |
+
+A dialog that offers several missing models (backup restore) uses the same rows for name, size, status and progress, and keeps its own confirm button.
+
 ## 6. Sheets, dialogs and pages
 
 What the code does:
@@ -153,7 +198,7 @@ What the code does:
 | Container | Call | Used for | Examples |
 |---|---|---|---|
 | Bottom sheet | `showMeshSheet` + `BottomSheetHeader` (28 calls in 17 files) | Choosing from a list, an item's actions, quick tools tied to the current screen | Language picker, notification mode, add contact/channel options, emoji and GIF pickers, node info, share contact, image actions |
-| Draggable sheet | `showModalBottomSheet` + `DraggableScrollableSheet` | Tall, scrollable panels that need a drag size | `ContactRoutingSheet` (`routing_sheet.dart`), path editor, image send preview |
+| Draggable sheet | `showModalBottomSheet` + `DraggableScrollableSheet` | Tall, scrollable panels that need a drag size | `ContactRoutingSheet` (`routing_sheet.dart`), image send preview |
 | Dialog | `showDialog` + `AlertDialog` (72 calls in 35 files) | Confirming an action, a short input (one to three fields), a short message | Disconnect (`showDisconnectDialog`), clear (`showConfirmClearDialog`), unsaved changes, edit node name, rename point |
 | Page | `Navigator.push(MaterialPageRoute(...))` | Anything with sections, many fields, its own save, or that the user stays in | App Settings, Repeater Settings, Themes, Theme editor, Message filter, Region management |
 
@@ -164,7 +209,17 @@ Rules for new UI:
 3. **Forms with sections, live remote values, or anything that needs Save/Discard → page.** Guard unsaved changes with `PopScope` and a discard dialog, as `repeater_settings_screen.dart` does.
 4. Never stack a dialog on a sheet on a dialog. Close the sheet first, or move the flow to a page.
 
-## 7. App bars
+**Sheet layout.** `showMeshSheet` is the sheet: safe area on the top and sides, and the keyboard or navigation-bar inset on the bottom. Start the content with `BottomSheetHeader`. That widget is the handle and the title row (padding 20, 8, 8, 4 and a 36×4 handle, section 4). Do not add space above it, draw a second handle, or size the sheet with a fraction inside an `Align`; that leaves an empty band over the handle. The status-bar inset stays outside the sheet.
+
+The manual path editor (`path_editor_sheet.dart`) uses that layout. The hop list and the hex path field stay pinned under the header, including while the keyboard is open. When the band under the header is shorter than the search field, as on a landscape phone with the keyboard open, those blocks and the repeater list scroll together instead of overflowing.
+
+## 7. Node search
+
+Contact, repeater, room and user search all use `lib/utils/contact_search.dart`. Sort with `compareContactQueryRank`: names that start with the query, then other substring matches, then a public-key / hop-hash prefix. Use `rankLabeledKeyQuery` for a label that is not itself a contact, such as "my contact" on the share sheet. Do not filter with a separate name `contains`.
+
+That is the Contacts list and its group member picker, Discovery, Map node search, Map "send to contact", Share contact, and the Build Path repeater and room list. Channel names, chat messages, repeater CLI commands and the path-trace hex field are not this search. The map key-prefix setting is a filter, not a ranked search.
+
+## 8. App bars
 
 - Title: a plain localized string, ellipsized on one line. Use `AppBarTitle` on top-level and settings screens; it adds the connected node name as a subtitle and battery/SNR indicators when there is room, dropping them in that order on narrow widths. Use `AdaptiveAppBarTitle` for a plain one-line title.
 - Centre the title (`centerTitle: true`, `AGENTS.md`); 31 screens set it explicitly because the theme default is `false`. Chat screens (`chat_screen.dart`, `channel_chat_screen.dart`) deliberately use `centerTitle: false` for their two-line name + route title.
@@ -173,7 +228,7 @@ Rules for new UI:
 - Search: tapping search swaps the title for the field and hides all actions (`actions: _searching ? null : [...]`). The leading back arrow and the system back gesture close the search (`PopScope(canPop: !_searching)`) instead of leaving the screen.
 - Long operations: show progress as the app bar `bottom` (`SyncProgressAppBarBottom`, or a 4px `LinearProgressIndicator` for Refresh all in `repeater_settings_screen.dart`).
 
-## 8. States
+## 9. States
 
 | State | How to show it |
 |---|---|
@@ -182,7 +237,7 @@ Rules for new UI:
 | Background sync | `SyncProgressAppBarBottom`. |
 | Empty | `EmptyState` with an icon, a short title, and an action when there is an obvious next step. Use a separate "no results" state (`Icons.search_off`) when a search or filter hides everything. |
 | Error | A snackbar for a failed action. `ErrorRetryCard` for a failed load the user can retry. Never show raw exception text alone. |
-| Companion radio disconnected | Main and chat screens stay open, read-only ([offline mode](offline-mode.md)). Decide with `isRadioReadOnly(connector)` / `context.radioReadOnly` (`lib/utils/radio_guard.dart`): disable menu items (`PopupMenuItem(enabled: false)`, drop destructive colors) and buttons, hide FABs, and call `ensureRadioConnected(context)` as the safety net in handlers. The chat composer shows `OfflineComposerBar`. Repeater screens stay open with `RadioDisconnectedBanner` at the top and disable radio-dependent actions. Settings rows that need the radio pass `onTap: null` and show `settings_requiresConnection` as the subtitle (`settings_screen.dart`). |
+| Companion radio disconnected | Main and chat screens stay open, read-only ([offline mode](offline-mode.md)). Decide with `isRadioReadOnly(connector)` / `context.radioReadOnly` (`lib/utils/radio_guard.dart`): disable menu items (`PopupMenuItem(enabled: false)`, drop destructive colors) and buttons, hide FABs, and call `ensureRadioConnected(context)` as the safety net in handlers. The chat composer shows `OfflineComposerBar` in the same bubble and margins. Repeater screens stay open with `RadioDisconnectedBanner` at the top and disable radio-dependent actions. Settings rows that need the radio pass `onTap: null` and show `settings_requiresConnection` as the subtitle (`settings_screen.dart`). |
 | Feature unsupported by firmware | Disabled row with a subtitle that says why (`settings_requiresFirmware('v1.10')`). |
 | Remote value not fetched yet | See below. |
 
@@ -196,7 +251,7 @@ Rules for new UI:
 
 Follow the same pattern for any new remote-value screen.
 
-## 9. Text and localization
+## 10. Text and localization
 
 - All user-facing strings go through `context.l10n` (`lib/l10n/l10n.dart`). Add keys to `lib/l10n/app_en.arb` first. No string literals in widgets, including fallbacks.
 - Keep strings short: labels are a few words, subtitles one sentence.
@@ -210,21 +265,23 @@ Follow the same pattern for any new remote-value screen.
 - Upper-casing is done in code (`SectionHeader`, `StatTile`, `RouteChip`); keep the ARB strings in normal case.
 - Test with a long locale (German, Portuguese) and a large system font (at least 1.3×, ideally 2.0×) on a narrow phone (320dp). `test/screens/small_screen_layout_test.dart` checks many screens at 320×568 at 1.0, 1.3 and 2.0× in English; add new screens to it.
 
-## 10. Checklist for a UI change
+## 11. Checklist for a UI change
 
 - [ ] Colours from `colorScheme` or theme extensions; no raw `Colors.*` or `MeshPalette.ink/bg/line` in chrome.
 - [ ] Text styles from `textTheme` or `MeshTheme.mono`; nothing below 12.
 - [ ] Settings rows use `MeshNavTile` / `SwitchListTile` inside `MeshSettingsTileTheme`; cards are `MeshCard` with a `SectionHeader`.
+- [ ] A switch that reveals more controls uses `SettingsReveal`. A settings slider uses `SettingsValueSlider` so the selected value stays in the title.
 - [ ] Popup menu rows use `MeshMenuItemRow`; segmented buttons use `MeshSegmentLabel`; destructive menu items last, in `scheme.error`.
 - [ ] Every `IconButton` and FAB has a localized `tooltip`.
 - [ ] Tap targets at least 48×48.
-- [ ] Right container: dialog for confirm/short input, `showMeshSheet` + `BottomSheetHeader` for choices and item actions, page for forms.
+- [ ] Right container: dialog for confirm/short input, `showMeshSheet` + `BottomSheetHeader` for choices and item actions, page for forms. No gap above the sheet handle.
+- [ ] Contact, repeater, room and user search uses `compareContactQueryRank`: prefix, then substring, then hop hash.
 - [ ] Loading, empty, error, offline and unknown-value states handled.
 - [ ] All strings in `app_en.arb`; checked in German or Portuguese at 1.3× and 2.0× on a narrow screen.
 - [ ] Light, dark and one custom theme checked.
 - [ ] This page updated if you introduced or changed a pattern.
 
-## 11. Known inconsistencies
+## 12. Known inconsistencies
 
 The current code does not yet follow this page everywhere:
 
@@ -243,7 +300,7 @@ The current code does not yet follow this page everywhere:
 - **Large forms in dialogs.** `RadioSettingsDialog` (`widgets/radio_settings_dialog.dart`, nine inputs) and the contact settings dialog in `chat_screen.dart` are dialogs although they behave like forms.
 - **Dialog buttons.** `showDisconnectDialog` (`utils/dialog_utils.dart`) uses two `TextButton`s with no emphasis; `showConfirmClearDialog` uses a red `FilledButton`.
 - **Snackbars.** A few places still call `ScaffoldMessenger.showSnackBar` directly (`discovery_screen.dart`, `app_settings_screen.dart`, `message_filter_settings_screen.dart`, `region_management_screen.dart`, `helpers/image_send_flow.dart`) and so miss tap-to-dismiss and replace-instead-of-queue.
-- **Small tap targets.** `FeatureToggleRow` refresh (32px) and 40px buttons in `chat_screen.dart`, `channel_chat_screen.dart`, `reaction_chips.dart`, `snr_indicator.dart`, `path_map_ui.dart`; 44px in `routing_sheet.dart`, `path_editor_sheet.dart`.
+- **Small tap targets.** `FeatureToggleRow` refresh (32px) and 40px buttons in `chat_screen.dart`, `channel_chat_screen.dart`, `reaction_chips.dart`, `snr_indicator.dart`, `path_map_ui.dart`; 44px in `routing_sheet.dart`.
 - **Unknown placeholders.** Repeater and companion stats screens use `—`; `line_of_sight_map_screen.dart` uses `--`.
 - **Missing tooltip.** The Contacts FAB (`contacts_screen.dart`) has no tooltip; about 18 of 111 `IconButton`s have no tooltip nearby.
 - **Stale doc comments.** `SectionHeader` is described as "mono" but uses the sans `accentLabel`; the `StatusChip` comment sits above `meshContrastRatio`.

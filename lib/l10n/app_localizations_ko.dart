@@ -506,6 +506,9 @@ class AppLocalizationsKo extends AppLocalizations {
       '발견된 연락처와 저장된 세부 정보';
 
   @override
+  String get backupRestore_bookmarks => 'Bookmarks';
+
+  @override
   String get backupRestore_channels => '채널';
 
   @override
@@ -528,9 +531,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get backupRestore_missingModelsTitle => '모델이 다운로드되지 않음';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return '복원된 설정에서 선택한 모델이 이 기기에 없습니다:\n$models\n\n지금 다운로드할까요?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      '복원된 설정에서 선택한 모델이 이 기기에 없습니다. 지금 다운로드할까요?';
 
   @override
   String get backupRestore_downloadModels => '모델 다운로드';
@@ -1317,6 +1319,13 @@ class AppLocalizationsKo extends AppLocalizations {
       '채널 메시지의 지역을 홉 수 아래가 아닌 같은 줄에 표시합니다.';
 
   @override
+  String get appSettings_showCompressionIndicator => 'Compression indicator';
+
+  @override
+  String get appSettings_showCompressionIndicatorSubtitle =>
+      'Show an icon on messages compressed with SMAZ.';
+
+  @override
   String get appSettings_notifications => '알림';
 
   @override
@@ -1370,10 +1379,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      '전송 시도가 5번 실패하면 연락 경로를 재설정합니다.';
+      '모든 전송 시도가 실패하면 연락처의 저장된 경로를 재설정합니다';
 
   @override
-  String get appSettings_pathsWillBeCleared => '5번 실패하면 해당 경로를 지웁니다.';
+  String get appSettings_pathsWillBeCleared => '모든 전송 시도가 실패하면 경로를 지웁니다';
 
   @override
   String get appSettings_pathsWillNotBeCleared => '경로를 자동으로 지우지 않습니다.';
@@ -1383,7 +1392,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      '최적 경로와 플러딩 모드 사이를 전환합니다.';
+      '직접 시도마다 다른 알려진 경로를 사용합니다. 이후 시도는 Flood입니다. 끄면 연락처의 현재 경로를 유지합니다.';
 
   @override
   String get appSettings_autoRouteRotationEnabled => '자동 경로 순환 기능 활성화';
@@ -1396,6 +1405,60 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appSettings_maxMessageRetriesSubtitle => '메시지를 실패로 처리하기 전 시도 횟수';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return '직접 시도: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      '알려진 경로를 시도하는 횟수입니다. 자동 경로 순환을 꺼도 설정할 수 있습니다.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Flood 시도: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Flood를 사용하는 횟수입니다. Flood는 전파 시간을 더 씁니다. 순환이 켜져 있으면 직접 시도 다음에 실행됩니다.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return '로그인 시도: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      '중계기나 룸 서버 로그인을 포기하기 전까지의 시도 횟수입니다.';
+
+  @override
+  String get appSettings_repeatersAndRooms => '리피터와 방';
+
+  @override
+  String get appSettings_clockSyncAfterLogin => '로그인 시 리피터 시계 동기화';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      '리피터 로그인에 성공하면 clock sync를 보냅니다. 각 리피터는 기본, 켜기, 끄기를 고를 수 있습니다.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => '비밀번호 칸에 포커스';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      '리피터나 방 로그인을 열 때 비밀번호가 비어 있으면 그 칸에 커서를 둡니다. 끄면 칸을 누를 때까지 대화상자가 보입니다.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings => '리피터와 방 설정을 기본값으로';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      '이 섹션의 설정을 되돌립니다. 각 리피터에 저장한 선택은 그대로입니다.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset => '리피터와 방 설정을 되돌렸습니다';
 
   @override
   String get appSettings_ipfsImageLinks => 'IPFS 제공자 설정';
@@ -1747,7 +1810,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String get contacts_noMembers => '회원 없음';
 
   @override
+  String contacts_groupCurrentMembers(int count) {
+    return 'Current members ($count)';
+  }
+
+  @override
+  String get contacts_groupAddContacts => 'Add contacts';
+
+  @override
+  String contacts_groupRemoveMember(String name) {
+    return 'Remove $name from group';
+  }
+
+  @override
+  String contacts_groupAddMember(String name) {
+    return 'Add $name to group';
+  }
+
+  @override
   String get contacts_lastSeenNow => '최근';
+
+  @override
+  String get contacts_lastSeenNever => 'not heard yet';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
@@ -1926,15 +2010,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String channels_editChannelTitle(int index) {
     return '채널 $index 편집';
   }
-
-  @override
-  String get channels_smazCompression => 'SMAZ 압축';
-
-  @override
-  String get channels_cyr2latCompression => 'Cyr2Lat 압축';
-
-  @override
-  String get channels_cyr2latCompressionDscr => '보낼 때 일부 키릴 문자를 라틴 문자로 바꿉니다.';
 
   @override
   String get channels_cyr2latSettingsHeading => 'Cyr2Lat 설정';
@@ -2176,6 +2251,30 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get chat_messageDeleted => '메시지가 삭제되었습니다.';
+
+  @override
+  String get chat_bookmark => 'Bookmark';
+
+  @override
+  String get chat_removeBookmark => 'Remove bookmark';
+
+  @override
+  String get chat_showBookmarks => 'Show bookmarks';
+
+  @override
+  String get bookmarks_title => 'Bookmarks';
+
+  @override
+  String get bookmarks_empty => 'No bookmarked messages';
+
+  @override
+  String get bookmarks_channel => 'Channel';
+
+  @override
+  String get bookmarks_contact => 'Contact';
+
+  @override
+  String get bookmarks_remove => 'Remove bookmark';
 
   @override
   String get chat_selectMessages => '메시지 선택';
@@ -2570,7 +2669,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get pathEditor_hexLabel => 'HEX 접두사';
 
   @override
-  String get pathEditor_hexHelper => '각 홉마다 2개의 16진수 바이트, 쉼표로 구분';
+  String pathEditor_hexHelper(int count) {
+    return '각 홉마다 $count개의 16진수 문자, 쉼표로 구분';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {
@@ -2609,9 +2710,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get chat_publicKey => '공개 키';
-
-  @override
-  String get chat_compressOutgoingMessages => '전송되는 메시지 압축';
 
   @override
   String get chat_floodForced => '플러딩 (강제)';
@@ -3337,7 +3435,16 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      '성공적인 로그인 후, 자동으로 \"시간 동기화\"를 전송합니다.';
+      '기본은 앱 설정의 리피터와 방을 따릅니다. 켜기와 끄기는 이 리피터에만 적용됩니다.';
+
+  @override
+  String get repeater_clockSyncDefault => '기본';
+
+  @override
+  String get repeater_clockSyncOn => '켜기';
+
+  @override
+  String get repeater_clockSyncOff => '끄기';
 
   @override
   String get repeater_statusTitle => '리피터 상태';
@@ -5350,6 +5457,19 @@ class AppLocalizationsKo extends AppLocalizations {
       'MeshCore Open이 실행 중이 아닙니다. 앱을 연 뒤 답장을 다시 보내세요.';
 
   @override
+  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+
+  @override
+  String get settings_exportBookmarksSubtitle =>
+      'Share or save bookmarked messages as a Markdown file.';
+
+  @override
+  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+
+  @override
+  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+
+  @override
   String get settings_gpxExportRepeaters => 'GPX로 전송/방 관리 서버';
 
   @override
@@ -5970,6 +6090,56 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get imageSend_reconstructionUnavailable =>
       '이 장치에서는 복원 결과를 미리 볼 수 없습니다.';
+
+  @override
+  String receivedImage_packetEchoes(int number, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'repeated $count times',
+      one: 'repeated once',
+      zero: 'no repeater heard',
+    );
+    return 'Packet $number: $_temp0';
+  }
+
+  @override
+  String receivedImage_recoveryPacketEchoes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'repeated $count times',
+      one: 'repeated once',
+      zero: 'no repeater heard',
+    );
+    return 'Recovery packet: $_temp0';
+  }
+
+  @override
+  String get imageSend_preparingPreview => 'Preparing preview…';
+
+  @override
+  String get imageSend_tryAnother => 'Try another version';
+
+  @override
+  String get imageSend_versionsHint =>
+      'Each version is reconstructed a little differently. Pick the one that looks most like your photo.';
+
+  @override
+  String imageSend_versionLabel(int number) {
+    return 'Version $number';
+  }
+
+  @override
+  String imageSend_versionPackets(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count packets',
+      one: '1 packet',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get imageSend_modelNotDownloaded =>
@@ -6645,14 +6815,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appSettings_routingSection => '라우팅';
 
   @override
-  String get appSettings_resetRoutingToDefault => '라우팅 알고리즘 기본값으로 재설정';
+  String get appSettings_resetRoutingToDefault => '라우팅 설정을 기본값으로 재설정';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      '라우팅 알고리즘 설정을 공장 기본값으로 복원';
+      '이 섹션의 라우팅 설정을 기본값으로 되돌립니다';
 
   @override
-  String get appSettings_routingResetToDefault => '라우팅 알고리즘 설정이 기본값으로 재설정되었습니다';
+  String get appSettings_routingResetToDefault => '라우팅 설정이 기본값으로 재설정되었습니다';
 
   @override
   String get appSettings_imageMessagesSection => '이미지 메시지';
@@ -7161,4 +7331,121 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get chat_composerOffline => '메시지를 보내려면 무전기에 연결하세요';
+
+  @override
+  String get modelDownload_notDownloaded => '다운로드되지 않음';
+
+  @override
+  String get modelDownload_downloading => '다운로드 중';
+
+  @override
+  String get modelDownload_active => '사용 중';
+
+  @override
+  String get modelDownload_failed => '다운로드하지 못했습니다';
+
+  @override
+  String get modelDownload_incomplete => '불완전';
+
+  @override
+  String get modelDownload_verifying => '다운로드를 확인하는 중';
+
+  @override
+  String get modelDownload_useModel => '이 모델 사용';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return '모델을 제거하지 못했습니다: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
+
+  @override
+  String get chatCompression_title => 'Compression';
+
+  @override
+  String chatCompression_label(String mode) {
+    return 'Compression: $mode';
+  }
+
+  @override
+  String get chatCompression_off => 'Off';
+
+  @override
+  String get chatCompression_smaz => 'SMAZ';
+
+  @override
+  String get chatCompression_cyr2lat => 'Cyr2Lat';
+
+  @override
+  String get chatCompression_changeHint => 'Change compression for this chat';
+
+  @override
+  String get chatCompression_sheetSubtitle =>
+      'Applies to messages you send in this chat. Saved on this phone.';
+
+  @override
+  String get chatCompression_offDescription =>
+      'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.';
+
+  @override
+  String get chatCompression_smazDescription =>
+      'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.';
+
+  @override
+  String get chatCompression_cyr2latDescription =>
+      'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.';
+
+  @override
+  String get chatCompression_profile => 'Cyr2Lat profile';
+
+  @override
+  String get chatCompression_noStorageId =>
+      'Can\'t change compression until this channel has synced from the radio.';
+
+  @override
+  String get chatCompression_saveFailed =>
+      'Couldn\'t save the compression setting. Showing the saved setting.';
+
+  @override
+  String get messageMeta_smazCompressed => 'SMAZ compressed';
+
+  @override
+  String get addContact_title => 'Add Contact';
+
+  @override
+  String get addContact_infoBanner =>
+      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+
+  @override
+  String get addContact_contactType => 'Contact Type';
+
+  @override
+  String get addContact_name => 'Name';
+
+  @override
+  String get addContact_nameRequired => 'Please enter a name';
+
+  @override
+  String get addContact_publicKeyHex => 'Public Key (hex)';
+
+  @override
+  String get addContact_publicKeyRequired => 'Please enter a public key';
+
+  @override
+  String get addContact_publicKeyInvalid =>
+      'Public key must be 64 hex characters (32 bytes)';
+
+  @override
+  String get addContact_clipboardKeyLoaded =>
+      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+
+  @override
+  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+
+  @override
+  String get addContact_saveFailed => 'Failed to add contact.';
 }

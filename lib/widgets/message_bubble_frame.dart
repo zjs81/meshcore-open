@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
 import '../theme/mesh_theme.dart';
 
 /// Colours shared by the direct-message and channel chat bubbles.
@@ -93,6 +94,7 @@ Color senderNameColor(String name) {
 class MessageBubbleFrame extends StatelessWidget {
   final bool isOutgoing;
   final bool isFailed;
+  final bool isBookmarked;
 
   /// Tighter padding for media (GIF) content.
   final bool compact;
@@ -105,6 +107,7 @@ class MessageBubbleFrame extends StatelessWidget {
     required this.maxWidth,
     required this.child,
     this.isFailed = false,
+    this.isBookmarked = false,
     this.compact = false,
   });
 
@@ -115,17 +118,57 @@ class MessageBubbleFrame extends StatelessWidget {
       isOutgoing: isOutgoing,
       isFailed: isFailed,
     );
-    return Container(
-      padding: compact
-          ? const EdgeInsets.all(4)
-          : const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      constraints: BoxConstraints(maxWidth: maxWidth * 0.72),
-      decoration: BoxDecoration(
-        color: colors.background,
-        borderRadius: messageBubbleRadius(isOutgoing: isOutgoing),
-        border: Border.all(color: colors.border, width: 1),
+    final contentPadding = compact
+        ? const EdgeInsets.all(4)
+        : const EdgeInsets.symmetric(horizontal: 12, vertical: 8);
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          constraints: BoxConstraints(maxWidth: maxWidth * 0.72),
+          decoration: BoxDecoration(
+            color: colors.background,
+            borderRadius: messageBubbleRadius(isOutgoing: isOutgoing),
+            border: Border.all(color: colors.border, width: 1),
+          ),
+          child: Padding(
+            padding: isBookmarked
+                ? contentPadding.add(
+                    EdgeInsets.only(top: compact ? 18 : 14, right: 14),
+                  )
+                : contentPadding,
+            child: child,
+          ),
+        ),
+        if (isBookmarked)
+          const Positioned(
+            top: -2,
+            right: 12,
+            child: Icon(Icons.bookmark, size: 22, color: Color(0xFFFFE54A)),
+          ),
+      ],
+    );
+  }
+}
+
+/// Subtle indicator shown in a message bubble's metadata row when SMAZ
+/// compression was applied to the message.
+class CompressionIndicator extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const CompressionIndicator({super.key, this.size = 14, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final label = context.l10n.messageMeta_smazCompressed;
+    return Tooltip(
+      message: label,
+      triggerMode: TooltipTriggerMode.tap,
+      child: Semantics(
+        label: label,
+        child: Icon(Icons.compress, size: size, color: color),
       ),
-      child: child,
     );
   }
 }

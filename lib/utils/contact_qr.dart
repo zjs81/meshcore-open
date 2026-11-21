@@ -78,6 +78,28 @@ ScannedContact? _parseContactCard(Uri uri) {
   return ScannedContact(publicKey: publicKey, name: name, type: type);
 }
 
+/// Normalizes a 64-character hex public key, trimming surrounding whitespace
+/// and stripping an optional `0x` prefix. Returns lowercase hex or null when
+/// [input] is not a valid 32-byte hex key.
+String? normalizeContactPublicKeyHex(String input) {
+  var trimmed = input.trim();
+  if (trimmed.length >= 2 &&
+      (trimmed.startsWith('0x') || trimmed.startsWith('0X'))) {
+    trimmed = trimmed.substring(2);
+  }
+  if (trimmed.length != _contactCardKeyBytes * 2) return null;
+  if (_tryHexDecode(trimmed) == null) return null;
+  return trimmed.toLowerCase();
+}
+
+/// Decodes a 64-character hex public key (allowing surrounding whitespace,
+/// optional `0x` prefix, and mixed case) into 32 bytes, or returns null.
+Uint8List? decodeContactPublicKeyHex(String input) {
+  final normalized = normalizeContactPublicKeyHex(input);
+  if (normalized == null) return null;
+  return _tryHexDecode(normalized);
+}
+
 /// Local hex decoder: keeps this util pure-Dart. `hex2Uint8List` in
 /// `connector/meshcore_protocol.dart` throws on invalid input and that file
 /// pulls in `package:flutter/widgets.dart` and `package:crypto`, which this

@@ -32,7 +32,12 @@ class PlatformInfo {
   static bool get isMobile => isAndroid || isIOS;
 
   /// Whether the app is running on a desktop platform (macOS, Windows, or Linux).
-  static bool get isDesktop => isMacOS || isWindows || isLinux;
+  static bool get isDesktop =>
+      debugIsDesktopOverride ?? (isMacOS || isWindows || isLinux);
+
+  /// Lets widget tests exercise the mobile layout on a desktop test host.
+  @visibleForTesting
+  static bool? debugIsDesktopOverride;
 
   /// Whether the current platform supports a native USB serial backend.
   static bool get supportsNativeUsbSerial =>

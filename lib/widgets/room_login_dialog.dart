@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../l10n/l10n.dart';
 import '../models/contact.dart';
 import '../l10n/contact_localization.dart';
+import '../services/app_settings_service.dart';
 import '../services/storage_service.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
@@ -36,7 +37,9 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
   bool _obscurePassword = true;
   late MeshCoreConnector _connector;
   int _currentAttempt = 0;
-  static const int _maxAttempts = 5;
+
+  int get _maxAttempts =>
+      context.read<AppSettingsService>().settings.loginAttempts;
 
   @override
   void initState() {
@@ -321,6 +324,10 @@ class _RoomLoginDialogState extends State<RoomLoginDialog> {
                     ),
                     onSubmitted: (_) => _handleLogin(),
                     autofocus:
+                        context
+                            .watch<AppSettingsService>()
+                            .settings
+                            .loginPasswordAutofocus &&
                         !PlatformInfo.isMobile &&
                         _passwordController.text.isEmpty,
                   ),

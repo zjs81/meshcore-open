@@ -10,11 +10,10 @@ import 'package:meshcore_open/screens/path_trace_map.dart';
 import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
-import '../connector/meshcore_protocol.dart';
+import '../helpers/network_map_fill.dart';
 import '../helpers/path_hop_resolver.dart';
 import '../services/map_tile_cache_service.dart';
 import '../services/app_settings_service.dart';
-import '../services/network_map/network_map_api_client.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/l10n.dart';
 import '../models/channel_message.dart';
@@ -24,6 +23,7 @@ import '../models/display_path.dart';
 import '../models/path_playback.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/adaptive_app_bar_title.dart';
+import '../widgets/contact_visuals.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/path_map_scaffold.dart';
 import '../widgets/path_map_ui.dart';
@@ -44,83 +44,61 @@ class ChannelMessagePathScreen extends StatefulWidget {
 }
 
 class _ChannelMessagePathScreenState extends State<ChannelMessagePathScreen> {
-  final NetworkMapApiClient _onlineMapClient = NetworkMapApiClient();
   List<Contact> _onlinePathContacts = const [];
-  bool _onlinePathLoadStarted = false;
+  String? _onlinePathFetchKey;
 
-  @override
-  void dispose() {
-    _onlineMapClient.close();
-    super.dispose();
-  }
-
-  void _startOnlinePathLoad(MeshCoreConnector connector) {
-    if (_onlinePathLoadStarted) return;
-    _onlinePathLoadStarted = true;
-    unawaited(_loadOnlinePathContacts(connector));
-  }
-
-  Future<void> _loadOnlinePathContacts(MeshCoreConnector connector) async {
-    final selfPoint = plausibleSelfPoint(connector);
-    final points = [
+  void _startOnlinePathFill(
+    Uint8List pathBytes,
+    List<_PathHop> hops,
+    LatLng? selfPoint,
+  ) {
+    final unresolved = {
+      for (final hop in hops)
+        if (hop.position == null) PathHelper.formatHopHex(hop.hopBytes!),
+    };
+    if (unresolved.isEmpty) return;
+    final anchors = <LatLng>[
       ?selfPoint,
-      for (final contact in connector.allContacts)
-        if (contact.hasLocation) LatLng(contact.latitude!, contact.longitude!),
+      for (final hop in hops)
+        if (hop.position != null) hop.position!,
     ];
-    if (points.isEmpty) return;
-
-    final minLat = points.map((point) => point.latitude).reduce(min);
-    final maxLat = points.map((point) => point.latitude).reduce(max);
-    final minLon = points.map((point) => point.longitude).reduce(min);
-    final maxLon = points.map((point) => point.longitude).reduce(max);
-    final boxes = NetworkMapBbox.forVisibleArea(
-      west: minLon - 1,
-      south: minLat - 1,
-      east: maxLon + 1,
-      north: maxLat + 1,
-    );
-    if (boxes == null) return;
-
-    try {
-      final results = await Future.wait(
-        boxes.map(_onlineMapClient.fetchRepeaters),
-      );
-      if (!mounted) return;
-      final onlineContacts = <Contact>[];
-      final seenKeys = <String>{};
-      for (final repeater in results.expand((items) => items)) {
-        if (repeater.type != advTypeRepeater && repeater.type != advTypeRoom) {
-          continue;
+    if (anchors.isEmpty) return;
+    final key = pathBytes.join(',');
+    if (_onlinePathFetchKey == key) return;
+    _onlinePathFetchKey = key;
+    unawaited(
+      fetchNetworkMapForHops(hopHexes: unresolved, anchors: anchors).then((
+        matches,
+      ) {
+        if (!mounted) return;
+        if (!context
+            .read<AppSettingsService>()
+            .settings
+            .mapUseOnlineMapForPaths) {
+          _onlinePathFetchKey = null;
+          return;
         }
-        if (!seenKeys.add(repeater.key)) continue;
-        onlineContacts.add(
-          Contact(
-            publicKey: hexToPubKey(repeater.key),
-            name: repeater.name ?? context.l10n.map_online,
-            type: repeater.type,
-            pathLength: 0,
-            path: Uint8List(0),
-            latitude: repeater.cell.center.latitude,
-            longitude: repeater.cell.center.longitude,
-            lastSeen:
-                repeater.lastSeen ?? DateTime.fromMillisecondsSinceEpoch(0),
-            isActive: false,
+        final knownKeys = {
+          ...context.read<MeshCoreConnector>().allContacts.map(
+            (contact) => contact.publicKeyHex,
           ),
-        );
-      }
-      setState(() => _onlinePathContacts = onlineContacts);
-    } catch (_) {
-      // Local contacts remain sufficient when the optional online source fails.
-    }
+          ..._onlinePathContacts.map((contact) => contact.publicKeyHex),
+        };
+        final contacts = networkMapFillContacts(
+          matches,
+          fallbackName: context.l10n.map_online,
+        ).where((contact) => knownKeys.add(contact.publicKeyHex));
+        if (contacts.isNotEmpty) {
+          setState(
+            () => _onlinePathContacts = [..._onlinePathContacts, ...contacts],
+          );
+        }
+      }),
+    );
   }
 
   List<Contact> _pathContacts(MeshCoreConnector connector) {
-    final contacts = [...connector.allContacts];
-    final localKeys = {for (final contact in contacts) contact.publicKeyHex};
-    for (final contact in _onlinePathContacts) {
-      if (localKeys.add(contact.publicKeyHex)) contacts.add(contact);
-    }
-    return contacts;
+    return mergeNetworkMapContacts(connector.allContacts, _onlinePathContacts);
   }
 
   @override
@@ -128,9 +106,6 @@ class _ChannelMessagePathScreenState extends State<ChannelMessagePathScreen> {
     return Consumer<MeshCoreConnector>(
       builder: (context, connector, _) {
         final settings = context.watch<AppSettingsService>().settings;
-        if (settings.mapUseOnlineMapForPaths) {
-          _startOnlinePathLoad(connector);
-        }
         final l10n = context.l10n;
         final primaryPathTmp = _selectPrimaryPath(
           widget.message.pathBytes,
@@ -154,6 +129,13 @@ class _ChannelMessagePathScreenState extends State<ChannelMessagePathScreen> {
           hashByteWidth,
           resolveFromEnd: !widget.message.isOutgoing,
         );
+        if (settings.mapUseOnlineMapForPaths) {
+          _startOnlinePathFill(
+            primaryPath,
+            hops,
+            plausibleSelfPoint(connector),
+          );
+        }
         final hasHopDetails = primaryPath.isNotEmpty;
 
         // Convert observed path byte length to hop count using the packet width.
@@ -455,7 +437,7 @@ class _ChannelMessagePathScreenState extends State<ChannelMessagePathScreen> {
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    AvatarCircle(name: hop.displayLabel, size: 36),
+                    AvatarCircle(name: hop.avatarName, size: 36),
                     Positioned(
                       right: -4,
                       top: -4,
@@ -645,10 +627,9 @@ class _ChannelMessagePathMapScreenState
   static const double _labelZoomThreshold = kPathMapLabelZoomThreshold;
 
   final MapController _mapController = MapController();
-  final NetworkMapApiClient _onlineMapClient = NetworkMapApiClient();
   late List<Contact> _onlinePathContacts = List.of(widget.onlinePathContacts);
   bool _onlinePathLoading = false;
-  bool _onlinePathLoadStarted = false;
+  final Set<String> _onlinePathFetchKeys = {};
   Uint8List? _selectedPath;
   bool _showNodeLabels = true;
   bool _didReceivePositionUpdate = false;
@@ -676,13 +657,6 @@ class _ChannelMessagePathMapScreenState
     _selectedPath = widget.initialPath;
     _playback = PathPlaybackController(this);
     _playback.addListener(_followPacketCamera);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final settings = context.read<AppSettingsService>().settings;
-      if (settings.mapUseOnlineMapForPaths && _onlinePathContacts.isEmpty) {
-        _startOnlinePathLoad(context.read<MeshCoreConnector>());
-      }
-    });
   }
 
   /// Keeps the camera centered on the packet while the follow lock is on.
@@ -717,85 +691,50 @@ class _ChannelMessagePathMapScreenState
   @override
   void dispose() {
     _playback.dispose();
-    _onlineMapClient.close();
     _mapController.dispose();
     super.dispose();
   }
 
-  void _startOnlinePathLoad(MeshCoreConnector connector) {
-    if (_onlinePathLoadStarted) return;
-    _onlinePathLoadStarted = true;
-    setState(() => _onlinePathLoading = true);
-    unawaited(_loadOnlinePathContacts(connector));
-  }
-
-  Future<void> _loadOnlinePathContacts(MeshCoreConnector connector) async {
-    final selfPoint = plausibleSelfPoint(connector);
-    final points = [
-      ?selfPoint,
-      for (final contact in connector.allContacts)
-        if (contact.hasLocation) LatLng(contact.latitude!, contact.longitude!),
-    ];
-    if (points.isEmpty) {
-      if (mounted) setState(() => _onlinePathLoading = false);
-      return;
-    }
-
-    final minLat = points.map((point) => point.latitude).reduce(min);
-    final maxLat = points.map((point) => point.latitude).reduce(max);
-    final minLon = points.map((point) => point.longitude).reduce(min);
-    final maxLon = points.map((point) => point.longitude).reduce(max);
-    final boxes = NetworkMapBbox.forVisibleArea(
-      west: minLon - 1,
-      south: minLat - 1,
-      east: maxLon + 1,
-      north: maxLat + 1,
-    );
-    if (boxes == null) {
-      if (mounted) setState(() => _onlinePathLoading = false);
-      return;
-    }
-
-    try {
-      final results = await Future.wait(
-        boxes.map(_onlineMapClient.fetchRepeaters),
-      );
-      if (!mounted) return;
-      final onlineContacts = <Contact>[];
-      final localKeys = {
-        for (final contact in connector.allContacts) contact.publicKeyHex,
-      };
-      for (final repeater in results.expand((items) => items)) {
-        if ((repeater.type != advTypeRepeater &&
-                repeater.type != advTypeRoom) ||
-            localKeys.contains(repeater.key)) {
-          continue;
-        }
-        localKeys.add(repeater.key);
-        onlineContacts.add(
-          Contact(
-            publicKey: hexToPubKey(repeater.key),
-            name: repeater.name ?? context.l10n.map_online,
-            type: repeater.type,
-            pathLength: 0,
-            path: Uint8List(0),
-            latitude: repeater.cell.center.latitude,
-            longitude: repeater.cell.center.longitude,
-            lastSeen:
-                repeater.lastSeen ?? DateTime.fromMillisecondsSinceEpoch(0),
-            isActive: false,
-          ),
+  void _startOnlinePathFill(
+    Uint8List path,
+    List<_PathHop> hops,
+    List<LatLng> anchors,
+  ) {
+    final unresolved = {
+      for (final hop in hops)
+        if (hop.position == null) PathHelper.formatHopHex(hop.hopBytes!),
+    };
+    if (unresolved.isEmpty || anchors.isEmpty) return;
+    final key = path.join(',');
+    if (!_onlinePathFetchKeys.add(key)) return;
+    _onlinePathLoading = true;
+    unawaited(
+      fetchNetworkMapForHops(hopHexes: unresolved, anchors: anchors).then((
+        matches,
+      ) {
+        if (!mounted) return;
+        final enabled = context
+            .read<AppSettingsService>()
+            .settings
+            .mapUseOnlineMapForPaths;
+        if (!enabled) _onlinePathFetchKeys.remove(key);
+        final onlineContacts = networkMapFillContacts(
+          matches,
+          fallbackName: context.l10n.map_online,
         );
-      }
-      setState(() {
-        _onlinePathContacts = onlineContacts;
-        _onlinePathLoading = false;
-        _model = null;
-        _modelKey = null;
-      });
-    } catch (_) {
-      if (mounted) setState(() => _onlinePathLoading = false);
-    }
+        setState(() {
+          if (enabled) {
+            _onlinePathContacts = mergeNetworkMapContacts(
+              _onlinePathContacts,
+              onlineContacts,
+            );
+          }
+          _onlinePathLoading = false;
+          _model = null;
+          _modelKey = null;
+        });
+      }),
+    );
   }
 
   /// Builds a renderable [DisplayPath] for one observed route, oriented in
@@ -887,14 +826,10 @@ class _ChannelMessagePathMapScreenState
         .clamp(1, 4)
         .toInt();
     final selfPoint = plausibleSelfPoint(connector);
-    final contacts = [
-      ...connector.allContacts,
-      ..._onlinePathContacts.where(
-        (online) => !connector.allContacts.any(
-          (local) => local.publicKeyHex == online.publicKeyHex,
-        ),
-      ),
-    ];
+    final contacts = mergeNetworkMapContacts(
+      connector.allContacts,
+      _onlinePathContacts,
+    );
     final key = (
       widget.message,
       widget.channelMessage,
@@ -1068,6 +1003,9 @@ class _ChannelMessagePathMapScreenState
         final tileCache = context.read<MapTileCacheService>();
         final mapScheme = Theme.of(context).colorScheme;
         final model = _resolveModel(connector);
+        if (settings.mapUseOnlineMapForPaths) {
+          _startOnlinePathFill(model.selectedPath, model.hops, model.points);
+        }
         final observedPaths = model.observedPaths;
         final selectedIndex = model.selectedIndex;
         final width = model.width;
@@ -1841,14 +1779,23 @@ class _PathHop {
 
   bool get hasLocation => position != null;
 
-  String get displayLabel {
-    final prefixLabel = hopBytes != null && hopBytes!.isNotEmpty
-        ? hopBytes!
-              .map((b) => b.toRadixString(16).padLeft(2, '0'))
-              .join('')
-              .toUpperCase()
-        : _formatPrefix(prefix);
-    return '($prefixLabel) ${_resolveName(contact, l10n)}';
+  String get prefixLabel => hopBytes != null && hopBytes!.isNotEmpty
+      ? hopBytes!
+            .map((b) => b.toRadixString(16).padLeft(2, '0'))
+            .join('')
+            .toUpperCase()
+      : _formatPrefix(prefix);
+
+  String get displayLabel => '($prefixLabel) ${_resolveName(contact, l10n)}';
+
+  /// Avatar source: the repeater's own name, or the hop's hex prefix when
+  /// the hop is unresolved or its name has nothing to make initials from.
+  String get avatarName {
+    final name = contact?.name.trim() ?? '';
+    if (name.toLowerCase() == 'unknown' || avatarInitials(name) == null) {
+      return prefixLabel;
+    }
+    return name;
   }
 }
 
