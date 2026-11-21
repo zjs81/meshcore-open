@@ -496,6 +496,7 @@ class AppSettingsScreen extends StatelessWidget {
         ),
         const Divider(height: 1, indent: 16),
         SettingsValueSlider(
+          icon: Icons.route,
           title: l10n.appSettings_directRetries(settings.directRetries),
           subtitle: l10n.appSettings_directRetriesSubtitle,
           value: settings.directRetries,
@@ -505,6 +506,7 @@ class AppSettingsScreen extends StatelessWidget {
         ),
         const Divider(height: 1, indent: 16),
         SettingsValueSlider(
+          icon: Icons.waves,
           title: l10n.appSettings_floodRetries(settings.floodRetries),
           subtitle: l10n.appSettings_floodRetriesSubtitle,
           value: settings.floodRetries,
@@ -551,6 +553,7 @@ class AppSettingsScreen extends StatelessWidget {
           visible: settings.channelMinHopsEnabled,
           children: [
             SettingsValueSlider(
+              icon: Icons.linear_scale,
               title: l10n.appSettings_channelMinHopsCount(
                 settings.channelMinHops,
               ),
@@ -560,6 +563,7 @@ class AppSettingsScreen extends StatelessWidget {
               onChanged: settingsService.setChannelMinHops,
             ),
             SettingsValueSlider(
+              icon: Icons.repeat,
               title: l10n.appSettings_channelMinHopsRetries(
                 settings.channelMinHopsRetries,
               ),
@@ -643,6 +647,7 @@ class AppSettingsScreen extends StatelessWidget {
         ),
         const Divider(height: 1, indent: 16),
         SettingsValueSlider(
+          icon: Icons.login,
           title: l10n.appSettings_loginAttempts(settings.loginAttempts),
           subtitle: l10n.appSettings_loginAttemptsSubtitle,
           value: settings.loginAttempts,
@@ -721,15 +726,10 @@ class AppSettingsScreen extends StatelessWidget {
               : null,
         ),
         const Divider(height: 1, indent: 16),
-        ListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 4,
-          ),
-          leading: const Icon(Icons.link_outlined, size: 20),
-          title: Text(context.l10n.appSettings_ipfsImageLinks),
-          subtitle: Text(context.l10n.appSettings_ipfsImageLinksSubtitle),
-          trailing: const Icon(Icons.chevron_right, size: 18),
+        MeshNavTile(
+          icon: Icons.link_outlined,
+          title: context.l10n.appSettings_ipfsImageLinks,
+          subtitle: context.l10n.appSettings_ipfsImageLinksSubtitle,
           onTap: () => _showIpfsImageLinksDialog(context, settingsService),
         ),
         const Divider(height: 1, indent: 16),
@@ -983,7 +983,7 @@ class AppSettingsScreen extends StatelessWidget {
                 size: 24,
                 color: scheme.onSurfaceVariant,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

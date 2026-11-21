@@ -67,8 +67,10 @@ class SettingsReveal extends StatelessWidget {
 /// A settings slider whose selected value stays visible in the title.
 ///
 /// The drag bubble repeats the same number. Pass a [title] that already
-/// includes [value], the way the channel-hop titles do.
+/// includes [value], the way the channel-hop titles do, and an [icon] so the
+/// row aligns with neighbouring [SwitchListTile] and [MeshNavTile] rows.
 class SettingsValueSlider extends StatelessWidget {
+  final IconData icon;
   final String title;
   final String? subtitle;
   final int value;
@@ -78,6 +80,7 @@ class SettingsValueSlider extends StatelessWidget {
 
   const SettingsValueSlider({
     super.key,
+    required this.icon,
     required this.title,
     this.subtitle,
     required this.value,
@@ -91,6 +94,7 @@ class SettingsValueSlider extends StatelessWidget {
     final clamped = value.clamp(min, max);
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      leading: Icon(icon, size: 24),
       title: Text(title),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

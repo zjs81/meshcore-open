@@ -233,7 +233,7 @@ class TranslationSettingsSection extends StatelessWidget {
                               ? scheme.primary
                               : scheme.onSurfaceVariant,
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: InkWell(
                             borderRadius: BorderRadius.circular(MeshRadii.xs),

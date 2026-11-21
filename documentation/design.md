@@ -97,6 +97,7 @@ Minimum sizes: no hard-coded `fontSize` below 12 exists in `lib/screens` or `lib
 | Section header | padding 16, 20, 16, 8 (LTRB) | `SectionHeader` |
 | Settings row | padding 16 / 12, 24px icon, 16 gap, chevron 24 | `MeshNavTile` |
 | Switch row | `SwitchListTile`, `contentPadding` 16 / 4, `secondary` icon size 24 | `app_settings_screen.dart` |
+| Slider row | `SettingsValueSlider` (`ListTile`), `contentPadding` 16 / 4, `leading` icon size 24, 16 gap | `settings_reveal.dart` |
 | Popup menu row | 20px icon, 12 gap | `MeshMenuItemRow` |
 | Banner | padding 16 / 12, 24px icon, 12 gap | `RadioDisconnectedBanner` |
 | Sheet header | padding 20, 8, 8, 4 (LTRB), 36×4 drag handle | `BottomSheetHeader` |
@@ -104,6 +105,8 @@ Minimum sizes: no hard-coded `fontSize` below 12 exists in `lib/screens` or `lib
 | Default icon size | 22 | `iconTheme` |
 | Avatar | 40 | `AvatarCircle` |
 | List bottom padding under a FAB | 88 | `channels_screen.dart` |
+
+Every settings row — including sliders, selectors, and child rows revealed inside `SettingsReveal` — has a leading 24px icon with a 16px gap (`MeshNavTile`, `SwitchListTile.secondary`, or `ListTile.leading`) so titles align vertically across a card.
 
 Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small action buttons, 18 for inline refresh icons and spinners. Keep tappable icons at 20 or more.
 
@@ -118,7 +121,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Settings navigation row | `MeshNavTile` | `onTap: null` dims it to 50 % and reports it as disabled; use `subtitle` to say why |
 | Settings switch | `SwitchListTile` inside `MeshSettingsTileTheme` | Wrap the settings screen body once in `MeshSettingsTileTheme` |
 | Switch that reveals more controls | `SettingsReveal` | 200ms height ease, `surfaceContainerHighest`, 16px start indent. See [Reveal on enable](#reveal-on-enable) |
-| Settings slider | `SettingsValueSlider` | The title includes the selected number, so it stays visible. The drag bubble repeats it |
+| Settings slider | `SettingsValueSlider` | Requires a 24px `icon` (`ListTile.leading`). The title includes the selected number, so it stays visible. The drag bubble repeats it |
 | Radio-style choice in a sheet | `MeshSheetOption` | Used by the language picker and map time filter |
 | Choosing between images | Selectable thumbnail tiles in a centred `Wrap` | Image send versions (`_versionTile` in `image_send_preview_sheet.dart`). `InkWell` with `MeshRadii.sm`; selected tile gets a 3px `primary` border **and** a `primary` check badge (never colour alone); caption under the tile in `bodySmall`, w600 when selected; figures such as packet counts in `MeshTheme.mono` 12; wrap the tile in `Semantics(button: true, selected:, label:)` |
 | Popup menu row | **always** `PopupMenuItem(child: MeshMenuItemRow(icon:, label:))` | Label wraps to 2 lines then ellipsizes; `leading:` for `ThemedIcon`; no icon keeps the 20px slot |
@@ -157,7 +160,7 @@ The same animation without the tint is `RevealOnEnable`. Use it when the reveale
 
 Do not add a second duration, and do not reveal the controls with a plain `if` that pops them in. A block that swaps between two bodies, such as the filtered-message preview, keeps `AnimatedSize` but uses `RevealOnEnable.duration` and `RevealOnEnable.curve`.
 
-Sliders that belong to a setting use `SettingsValueSlider`. Put the selected number in the title (a localized string with the count). The slider's drag label repeats that number; it is not the only place the value appears.
+Sliders that belong to a setting use `SettingsValueSlider` with a 24px `icon` (`ListTile.leading`) so the title and slider line up with adjacent rows. Put the selected number in the title (a localized string with the count). The slider's drag label repeats that number; it is not the only place the value appears.
 
 ## 6. Sheets, dialogs and pages
 

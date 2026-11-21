@@ -1368,6 +1368,7 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
 
   Widget _buildClockSyncChoice() {
     final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     ButtonSegment<RepeaterClockSyncOverride> segment(
       RepeaterClockSyncOverride value,
@@ -1378,16 +1379,31 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.repeater_clockSyncAfterLogin,
-            style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            l10n.repeater_clockSyncAfterLoginSubtitle,
-            style: textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+          Row(
+            children: [
+              Icon(Icons.schedule, size: 24, color: scheme.onSurfaceVariant),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.repeater_clockSyncAfterLogin,
+                      style: textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      l10n.repeater_clockSyncAfterLoginSubtitle,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 8),
           SegmentedButton<RepeaterClockSyncOverride>(
