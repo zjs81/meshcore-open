@@ -72,6 +72,8 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
 
   final List<_Hop> _hops = [];
   final _hexController = TextEditingController();
+  final _hexFocus = FocusNode();
+  final _searchFocus = FocusNode();
   final _hopScroll = ScrollController();
   String? _hexError;
   bool _syncingHex = false;
@@ -96,6 +98,8 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
   void dispose() {
     _highlightTimer?.cancel();
     _hopScroll.dispose();
+    _hexFocus.dispose();
+    _searchFocus.dispose();
     _hexController.dispose();
     super.dispose();
   }
@@ -353,13 +357,10 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
   /// measured band between the title and the action buttons.
   ///
   /// An invalid hex path grows the error text. That growth comes out of the
-  /// hop viewport first, keeping one row when it fits, and the error itself
-  /// scrolls inside its own box instead of overflowing the sheet.
-  ///
-  /// [scroll] is set when that band is shorter than the search field, which
-  /// happens when a landscape keyboard leaves only the header and the action
-  /// buttons. The pinned column would overflow, so the caller lays the same
-  /// blocks out in one scroll view instead.
+  /// hop viewport first, keeping one row when it fits. When even one hop row,
+  /// the hex field with any active error, and the search field cannot fit,
+  /// [scroll] switches the middle band to a single scroll view so nothing is
+  /// crushed or overflows and all controls stay reachable.
   ({double hop, double hex, double search, bool scroll}) _middleBudget(
     double space,
     bool compact,
@@ -368,53 +369,31 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
     final row = compact
         ? scaler.scale(56).clamp(56.0, 96.0)
         : scaler.scale(76).clamp(72.0, 140.0);
-    final gaps = compact ? 16.0 : 40.0;
+    final minRepeater = compact ? 56.0 : 80.0;
     final searchH = scaler.scale(compact ? 48 : 56) + 20;
     final baseHex = scaler.scale(compact ? 48 : 64) + (compact ? 16 : 44);
     final errorExtra = _hexError == null
         ? 0.0
-        : scaler.scale(compact ? 36 : 48);
+        : scaler.scale(compact ? 56 : 52);
     final wantedHop = _hops.isEmpty
         ? math.min(scaler.scale(compact ? 64 : 80), 140.0)
         : math.min(_hops.length, compact ? 2 : 3) * row + 4;
     final wantedHex = baseHex + errorExtra;
-    final minHop = _hops.isEmpty
-        ? 0.0
-        : math.min(row, math.max(0.0, space - gaps));
+    final minHop = _hops.isEmpty ? 0.0 : row;
+    final scroll = minHop + wantedHex + searchH > space;
 
     var hopH = wantedHop;
-    var hexH = wantedHex;
-    final used = hopH + hexH + searchH + gaps;
-    if (used > space) {
-      var overflow = used - space;
-      final hopCut = math.min(overflow, math.max(0.0, hopH - minHop));
-      hopH -= hopCut;
-      overflow -= hopCut;
-      if (overflow > 0) {
-        final hexFloor = math.min(
-          baseHex,
-          math.max(0.0, space - searchH - gaps - hopH),
-        );
-        final hexCut = math.min(overflow, math.max(0.0, hexH - hexFloor));
-        hexH -= hexCut;
-        overflow -= hexCut;
-      }
-      if (overflow > 0) {
-        hopH = math.max(0.0, hopH - overflow);
+    if (!scroll) {
+      final targetMax = math.max(
+        minHop + wantedHex + searchH,
+        space - minRepeater,
+      );
+      final used = hopH + wantedHex + searchH;
+      if (used > targetMax) {
+        hopH -= math.min(used - targetMax, math.max(0.0, hopH - minHop));
       }
     }
-    hopH = math.max(0.0, hopH);
-    hexH = math.max(0.0, hexH);
-    // The search field stays at its full height in the pinned column. When
-    // the band cannot hold it, scrolling is the only way to reach it and the
-    // repeater list.
-    final scroll = hopH + hexH + searchH > space;
-    return (
-      hop: scroll ? wantedHop : hopH,
-      hex: scroll ? wantedHex : hexH,
-      search: searchH,
-      scroll: scroll,
-    );
+    return (hop: hopH, hex: wantedHex, search: searchH, scroll: scroll);
   }
 
   Widget _hopViewport(bool compact, double height) {
@@ -479,6 +458,7 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
             TextField(
               key: const Key('path-editor-hex-field'),
               controller: _hexController,
+              focusNode: _hexFocus,
               onChanged: _onHexChanged,
               textCapitalization: TextCapitalization.characters,
               style: MeshTheme.mono(fontSize: 14),
@@ -509,6 +489,7 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
         padding: EdgeInsets.fromLTRB(16, compact ? 6 : 12, 16, 0),
         child: TextField(
           key: const Key('path-editor-search-field'),
+          focusNode: _searchFocus,
           onChanged: (value) => setState(() => _search = value),
           scrollPadding: EdgeInsets.zero,
           decoration: InputDecoration(
@@ -549,6 +530,42 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
     );
   }
 
+  List<Widget> _middleSlivers({
+    required bool compact,
+    required List<Contact> repeaters,
+  }) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return [
+      SliverToBoxAdapter(child: _scrollHopBlock(compact)),
+      SliverToBoxAdapter(child: _scrollHexBlock(compact)),
+      SliverToBoxAdapter(child: _scrollSearchBlock(compact)),
+      if (repeaters.isEmpty)
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            child: Text(
+              l10n.path_noRepeatersFound,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        )
+      else
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          sliver: SliverList.builder(
+            key: const Key('path-editor-repeater-list'),
+            itemCount: repeaters.length,
+            itemBuilder: (context, index) =>
+                _repeaterTile(context, repeaters[index]),
+          ),
+        ),
+    ];
+  }
+
   /// One scrollable for the hop list, hex field, search field, and repeaters.
   ///
   /// The blocks are intrinsic height with no nested scrolling, so a drag
@@ -558,39 +575,10 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
     required bool compact,
     required List<Contact> repeaters,
   }) {
-    final l10n = context.l10n;
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     return CustomScrollView(
       key: const Key('path-editor-scroll-fallback'),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      slivers: [
-        SliverToBoxAdapter(child: _scrollHopBlock(compact)),
-        SliverToBoxAdapter(child: _scrollHexBlock(compact)),
-        SliverToBoxAdapter(child: _scrollSearchBlock(compact)),
-        if (repeaters.isEmpty)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-              child: Text(
-                l10n.path_noRepeatersFound,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-          )
-        else
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            sliver: SliverList.builder(
-              key: const Key('path-editor-repeater-list'),
-              itemCount: repeaters.length,
-              itemBuilder: (context, index) =>
-                  _repeaterTile(context, repeaters[index]),
-            ),
-          ),
-      ],
+      slivers: _middleSlivers(compact: compact, repeaters: repeaters),
     );
   }
 
@@ -649,6 +637,7 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
           TextField(
             key: const Key('path-editor-hex-field'),
             controller: _hexController,
+            focusNode: _hexFocus,
             onChanged: _onHexChanged,
             textCapitalization: TextCapitalization.characters,
             style: MeshTheme.mono(fontSize: 14),
@@ -676,6 +665,7 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
       padding: EdgeInsets.fromLTRB(16, compact ? 6 : 12, 16, 0),
       child: TextField(
         key: const Key('path-editor-search-field'),
+        focusNode: _searchFocus,
         onChanged: (value) => setState(() => _search = value),
         scrollPadding: EdgeInsets.zero,
         decoration: InputDecoration(
@@ -701,16 +691,67 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
         // Phone sheets and a keyboard-shrunk window use the shorter hop rows
         // so the action buttons stay below the repeater list.
         final compact = maxHeight < 680;
+        final scaler = MediaQuery.textScalerOf(context);
+        final header = Semantics(
+          liveRegion: true,
+          child: BottomSheetHeader(
+            title: l10n.pathEditor_title,
+            subtitle: l10n.pathEditor_hopCounter(_hops.length),
+          ),
+        );
+        final actions = SafeArea(
+          top: false,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              16,
+              compact ? 4 : 8,
+              16,
+              compact ? 4 : 16,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(l10n.common_cancel),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                    onPressed: _hexError != null ? null : _save,
+                    child: Text(l10n.pathEditor_usePath),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+
+        // When scaled header and action buttons leave less than one row for
+        // the middle band, scroll the whole sheet so nothing clips or crowds
+        // the viewport.
+        if (maxHeight < scaler.scale(150) + 28) {
+          return CustomScrollView(
+            key: const Key('path-editor-scroll-fallback'),
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            slivers: [
+              SliverToBoxAdapter(child: header),
+              ..._middleSlivers(compact: compact, repeaters: repeaters),
+              SliverToBoxAdapter(child: actions),
+            ],
+          );
+        }
 
         return Column(
           children: [
-            Semantics(
-              liveRegion: true,
-              child: BottomSheetHeader(
-                title: l10n.pathEditor_title,
-                subtitle: l10n.pathEditor_hopCounter(_hops.length),
-              ),
-            ),
+            header,
             Expanded(
               child: LayoutBuilder(
                 builder: (context, inner) {
@@ -732,40 +773,7 @@ class _PathEditorSheetState extends State<PathEditorSheet> {
                 },
               ),
             ),
-            SafeArea(
-              top: false,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  16,
-                  compact ? 4 : 8,
-                  16,
-                  compact ? 4 : 16,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          minimumSize: const Size.fromHeight(48),
-                        ),
-                        onPressed: () => Navigator.pop(context),
-                        child: Text(l10n.common_cancel),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: FilledButton(
-                        style: FilledButton.styleFrom(
-                          minimumSize: const Size.fromHeight(48),
-                        ),
-                        onPressed: _hexError != null ? null : _save,
-                        child: Text(l10n.pathEditor_usePath),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            actions,
           ],
         );
       },
