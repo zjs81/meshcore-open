@@ -34,13 +34,17 @@ import 'package:meshcore_open/services/timeout_prediction_service.dart';
 import 'package:meshcore_open/services/translation_service.dart';
 import 'package:meshcore_open/services/ui_view_state_service.dart';
 import 'package:meshcore_open/storage/channel_message_store.dart';
+import 'package:meshcore_open/storage/channel_settings_store.dart';
+import 'package:meshcore_open/storage/contact_settings_store.dart';
 import 'package:meshcore_open/storage/channel_store.dart';
 import 'package:meshcore_open/storage/contact_store.dart';
 import 'package:meshcore_open/storage/last_radio_store.dart';
 import 'package:meshcore_open/storage/message_store.dart';
 import 'package:meshcore_open/storage/prefs_manager.dart';
 import 'package:meshcore_open/theme/mesh_theme.dart';
+import 'package:meshcore_open/widgets/chat_background.dart';
 import 'package:meshcore_open/widgets/chat_composer.dart';
+import 'package:meshcore_open/widgets/chat_compression_selector.dart';
 import 'package:meshcore_open/widgets/connect_sheet.dart';
 
 final _radioKey = Uint8List.fromList(List<int>.generate(32, (i) => 0xA0 + i));
@@ -343,5 +347,247 @@ void main() {
     await tester.runAsync(connector.disconnect);
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(minutes: 1));
+  });
+
+  group('compression selector', () {
+    Future<void> choose(WidgetTester tester, String mode) async {
+      await tester.tap(find.byType(ChatCompressionSelector));
+      await _settle(tester);
+      await tester.tap(find.text(mode));
+      await _settle(tester);
+      // Connector notifications are debounced on a real timer.
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 200)),
+      );
+      await _settle(tester);
+    }
+
+    testWidgets('DM chat shows it at the top and saves offline', (
+      tester,
+    ) async {
+      final connector = await _offlineConnector(tester);
+      final alice = connector.contacts.single;
+      final store = ContactSettingsStore()..setPublicKeyHex = _radioHex;
+      await tester.pumpWidget(
+        await _app(tester, connector, ChatScreen(contact: alice)),
+      );
+      await _settle(tester);
+
+      expect(find.byType(ChatCompressionSelector), findsOneWidget);
+      expect(find.text(_l10n.chatCompression_label('Off')), findsOneWidget);
+      // Above the transcript, outside its scroll view.
+      expect(
+        find.ancestor(
+          of: find.byType(ChatCompressionSelector),
+          matching: find.byType(Scrollable),
+        ),
+        findsNothing,
+      );
+      expect(
+        tester.getBottomLeft(find.byType(ChatCompressionSelector)).dy,
+        lessThanOrEqualTo(tester.getTopLeft(find.byType(ChatBackdrop)).dy),
+      );
+
+      await choose(tester, _l10n.chatCompression_smaz);
+      expect(find.text(_l10n.chatCompression_label('SMAZ')), findsOneWidget);
+      expect(
+        await tester.runAsync(() => store.loadSmazEnabled(alice.publicKeyHex)),
+        isTrue,
+      );
+
+      await choose(tester, _l10n.chatCompression_cyr2lat);
+      // Cyr2Lat keeps the sheet open for its profile picker.
+      await tester.tap(find.byTooltip('Close'));
+      await _settle(tester);
+      expect(find.text(_l10n.chatCompression_label('Cyr2Lat')), findsOneWidget);
+      expect(
+        connector.contactCompressionMode(alice.publicKeyHex),
+        ChatCompressionMode.cyr2lat,
+      );
+      expect(
+        await tester.runAsync(() => store.loadSmazEnabled(alice.publicKeyHex)),
+        isFalse,
+      );
+      expect(
+        await tester.runAsync(
+          () => store.loadCyr2LatEnabled(alice.publicKeyHex),
+        ),
+        isTrue,
+      );
+
+      // The settings dialog no longer carries the compression switches.
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await _settle(tester);
+      await tester.tap(find.text(_l10n.contact_settings).last);
+      await _settle(tester);
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.textContaining(RegExp('SMAZ|Cyr2Lat')),
+        ),
+        findsNothing,
+      );
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('channel chat uses the same selector and saves offline', (
+      tester,
+    ) async {
+      final connector = await _offlineConnector(tester);
+      final channel = connector.channels.single;
+      final store = ChannelSettingsStore()..setPublicKeyHex = _radioHex;
+      await tester.pumpWidget(
+        await _app(tester, connector, ChannelChatScreen(channel: channel)),
+      );
+      await _settle(tester);
+
+      expect(find.byType(ChatCompressionSelector), findsOneWidget);
+      expect(find.text(_l10n.chatCompression_label('Off')), findsOneWidget);
+
+      await choose(tester, _l10n.chatCompression_smaz);
+      expect(find.text(_l10n.chatCompression_label('SMAZ')), findsOneWidget);
+      expect(
+        await tester.runAsync(() => store.loadSmazEnabled(channel.storageId!)),
+        isTrue,
+      );
+      expect(
+        await tester.runAsync(
+          () => store.loadCyr2LatEnabled(channel.storageId!),
+        ),
+        isFalse,
+      );
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('saving the channel edit sheet leaves compression alone', (
+      tester,
+    ) async {
+      final connector = MeshCoreConnector();
+      addTearDown(connector.dispose);
+      connector.reviewRadioFactoryForTest = () => ReviewRadio(
+        scheduledMessageInterval: const Duration(hours: 1),
+        ackDelay: const Duration(hours: 1),
+        replyDelay: const Duration(hours: 1),
+      );
+      await tester.runAsync(connector.connectReview);
+      await _waitFor(tester, () => connector.channelMapConfirmed);
+      final channel = connector.channels.firstWhere((c) => c.index == 1);
+      await tester.runAsync(
+        () => connector.setChannelCompressionMode(1, ChatCompressionMode.smaz),
+      );
+
+      await tester.pumpWidget(
+        await _app(
+          tester,
+          connector,
+          Builder(
+            builder: (context) => Scaffold(
+              body: Center(
+                child: TextButton(
+                  onPressed: () =>
+                      showEditChannelSheet(context, connector, channel),
+                  child: const Text('edit'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('edit'));
+      await _settle(tester);
+      expect(find.text('SMAZ compression'), findsNothing);
+
+      // The chat's selector changes the mode while the sheet is open.
+      await tester.runAsync(
+        () =>
+            connector.setChannelCompressionMode(1, ChatCompressionMode.cyr2lat),
+      );
+      await tester.enterText(find.byType(TextField).first, 'Hiking Crew');
+      await tester.tap(find.text(_l10n.common_save));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 500)),
+      );
+      await _settle(tester);
+
+      expect(
+        connector.channels.firstWhere((c) => c.index == 1).name,
+        'Hiking Crew',
+      );
+      expect(connector.channelCompressionMode(1), ChatCompressionMode.cyr2lat);
+
+      await tester.runAsync(connector.disconnect);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump(const Duration(minutes: 1));
+    });
+
+    testWidgets('a new PSK in the channel edit sheet keeps compression', (
+      tester,
+    ) async {
+      final connector = MeshCoreConnector();
+      addTearDown(connector.dispose);
+      connector.reviewRadioFactoryForTest = () => ReviewRadio(
+        scheduledMessageInterval: const Duration(hours: 1),
+        ackDelay: const Duration(hours: 1),
+        replyDelay: const Duration(hours: 1),
+      );
+      await tester.runAsync(connector.connectReview);
+      await _waitFor(tester, () => connector.channelMapConfirmed);
+      final channel = connector.channels.firstWhere((c) => c.index == 1);
+      final oldId = connector.channelIdForSlot(1);
+      await tester.runAsync(
+        () => connector.setChannelCompressionMode(1, ChatCompressionMode.smaz),
+      );
+
+      await tester.pumpWidget(
+        await _app(
+          tester,
+          connector,
+          Builder(
+            builder: (context) => Scaffold(
+              body: Center(
+                child: TextButton(
+                  onPressed: () =>
+                      showEditChannelSheet(context, connector, channel),
+                  child: const Text('edit'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('edit'));
+      await _settle(tester);
+      await tester.enterText(find.byType(TextField).at(1), '0f' * 16);
+      await tester.tap(find.text(_l10n.common_save));
+      // The save runs in the test zone and waits on the radio's real I/O.
+      for (var i = 0; i < 40; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 50)),
+        );
+        await tester.pump(const Duration(milliseconds: 100));
+        if (find
+            .text(_l10n.channels_channelUpdated(channel.name))
+            .evaluate()
+            .isNotEmpty) {
+          break;
+        }
+      }
+      await _settle(tester);
+
+      final newId = connector.channelIdForSlot(1);
+      expect(newId, isNot(oldId));
+      expect(connector.channelCompressionMode(1), ChatCompressionMode.smaz);
+      final store = ChannelSettingsStore()
+        ..setPublicKeyHex = connector.selfPublicKeyHex;
+      expect(
+        await tester.runAsync(() => store.loadSmazEnabled(newId!)),
+        isTrue,
+      );
+
+      await tester.runAsync(connector.disconnect);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump(const Duration(minutes: 1));
+    });
   });
 }

@@ -7,6 +7,7 @@ import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/connector/meshcore_protocol.dart';
 import 'package:meshcore_open/models/channel.dart';
 import 'package:meshcore_open/models/channel_message.dart';
+import 'package:meshcore_open/models/chat_compression_mode.dart';
 import 'package:meshcore_open/review_mode/review_frames.dart';
 import 'package:meshcore_open/review_mode/review_radio.dart';
 import 'package:meshcore_open/review_mode/review_script.dart';
@@ -201,7 +202,7 @@ void main() {
       'another slot brings its history back', () async {
     await _connect(_TestRadio());
     await _waitFor(() => _texts(1).contains(_queuedHikingText));
-    await _connector.setChannelSmazEnabled(1, true);
+    await _connector.setChannelCompressionMode(1, ChatCompressionMode.smaz);
 
     await _connector.setChannel(1, 'Hiking Group', ghostPsk);
     expect(_connector.channelIdForSlot(1), ghostId);
@@ -408,7 +409,7 @@ void main() {
     expect(_texts(5), _texts(1));
 
     // Settings are stored per channel, so both slots see a change.
-    await _connector.setChannelSmazEnabled(5, true);
+    await _connector.setChannelCompressionMode(5, ChatCompressionMode.smaz);
     expect(_connector.isChannelSmazEnabled(1), isTrue);
     await _connector.setChannelRegion(1, 'test-region');
     expect(_connector.getChannelRegion(5), 'test-region');

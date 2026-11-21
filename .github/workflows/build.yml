@@ -12,6 +12,12 @@ on:
       - 'v*'
   pull_request:
 
+env:
+  # ONNX Runtime for the Linux jobs. Its Linux downloads from
+  # github.com/microsoft/onnxruntime currently 404, so tagged Linux AppImages
+  # ship without image messages until this is set back to "on".
+  MESHCORE_LINUX_ONNX: "off"
+
 jobs:
   android:
     runs-on: ubuntu-latest
@@ -71,7 +77,7 @@ jobs:
         run: |
           shellcheck scripts/build_appimage.sh scripts/appimage/*.sh scripts/appimage/AppRun
           bash scripts/appimage/test_packaging.sh
-      - run: flutter pub get
+      - run: scripts/onnx.sh "$MESHCORE_LINUX_ONNX"
       - run: flutter build linux --release --no-pub
       - uses: docker/setup-buildx-action@v3
       - name: Read AppImage base image
@@ -141,7 +147,7 @@ jobs:
         run: |
           shellcheck scripts/build_appimage.sh scripts/appimage/*.sh scripts/appimage/AppRun
           bash scripts/appimage/test_packaging.sh
-      - run: flutter pub get
+      - run: scripts/onnx.sh "$MESHCORE_LINUX_ONNX"
       - run: flutter test --reporter expanded
       - name: Build ARM64 Linux release
         run: |
