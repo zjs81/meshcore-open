@@ -58,21 +58,28 @@ A list of nodes heard passively over the air but not yet added as contacts. Each
 
 ---
 
-## SMAZ Compression
+## Compression (SMAZ and Cyr2Lat)
 
-### What It Is
-An optional per-contact and per-channel text compression feature using the SMAZ algorithm (optimized for short English text).
+### Where to Find It
+Every open direct-message and channel chat shows **Compression: Off**, **Compression: SMAZ** or **Compression: Cyr2Lat** in a strip just below the app bar, above the messages. Tap it to open one sheet with the three choices and what each does. The choice applies to that contact or channel only and is saved on the phone, so it can be changed while the radio is offline. A channel that has not synced from the radio yet has no saved identity, so the strip is disabled and says why.
 
-### How to Enable
-- **Per contact**: Chat screen → overflow menu → Contact Settings → toggle "SMAZ compression"
-- **Per channel**: Long-press channel → Edit → toggle "SMAZ compression"
+Only one mode is active per chat. Choosing SMAZ turns Cyr2Lat off and the other way round. Off and SMAZ close the sheet once saved; Cyr2Lat keeps it open to show its profile picker. If saving fails, the sheet says so and keeps showing the saved choice.
 
-### How It Works
-- When enabled, compression is applied using a "compress only if smaller" strategy — the message is only transmitted compressed if the encoded result is actually shorter than the original. Otherwise, the original text is sent uncompressed
-- Compressed messages are transmitted with a `s:` prefix followed by base64-encoded data
-- Recipients using MeshCore Open will decompress automatically. **Recipients using other software** that is not SMAZ-aware will see garbled `s:...` text
-- The codec operates on ASCII. Non-ASCII / non-English text generally does not benefit from compression and may even expand. Best suited for short English messages
-- Disabled by default
+### Off
+Sends your text exactly as typed. Every app can read it.
+
+### SMAZ (lossless)
+- Compresses with the SMAZ short-text dictionary (optimized for short English text)
+- "Compress only if smaller": a message is sent compressed only when the encoded result is shorter. Otherwise the original text is sent, so turning SMAZ on does not compress every message
+- Compressed messages are sent as `s:` followed by base64 data. MeshCore Open decodes them back to exactly the original text. **Apps that do not understand SMAZ** show the `s:...` text instead
+- The codec works on ASCII. Non-English text rarely benefits and may grow
+
+### Cyr2Lat (character substitution)
+- Replaces some Cyrillic letters with lookalike Latin ones (for example `А→A`, `З→3`, `Ь→b`). Many Cyrillic letters take two bytes in UTF-8 and Latin ones take one, so some Cyrillic messages get shorter
+- Not lossless: the exact characters change. Recipients need nothing special to read the result, but copying, searching, names and technical text may behave differently. Your own sent messages appear in the converted form
+- The replacements come from a Cyr2Lat profile. Pick the chat's profile in the same sheet; without one, the app-wide profile from App Settings → Cyr2Lat is used. Not useful for English text
+
+Both are off by default. Settings saved before this selector existed are kept.
 
 ---
 

@@ -23,6 +23,7 @@ const String _encryptedBackupFormat = 'meshcore-open-encrypted-backup';
 const List<String> _contactPreferencePrefixes = [
   'contacts',
   'contact_groups',
+  'contact_added_at_',
   'contact_smaz_',
   'contact_cyr2lat_',
   'contact_url_images_',
@@ -1094,7 +1095,8 @@ class BackupService {
       return true;
     }
     if (items.contains(BackupItem.contacts) &&
-        key.startsWith('contacts$devicePrefix')) {
+        (key.startsWith('contacts$devicePrefix') ||
+            key.startsWith('contact_added_at_$devicePrefix'))) {
       return true;
     }
     if (items.contains(BackupItem.perContactSettings) &&

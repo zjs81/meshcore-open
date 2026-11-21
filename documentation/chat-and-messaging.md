@@ -20,7 +20,11 @@ From the Contacts screen, tap any Chat-type contact to open the ChatScreen.
 - **Subtitle**: Current routing path label (e.g., "2 hops", "flood (auto)", "direct (forced)") and unread count. Tapping the subtitle shows the full path details.
 - **Action buttons**:
   - **Search** (magnifier icon): Replaces the title with a search field and lists every message in this conversation's full history whose text (or translation) contains the typed word, newest first, with matches highlighted. Channel search also matches sender names and skips messages caught by the [message filter](message-filter.md). Back, Esc or the arrow closes search. Channel chats have the same button.
-  - **Overflow menu** (⋮ icon): Contains Routing, Info, Telemetry, Settings, Chat background, Clear Chat, and Remove from contacts (rooms also have Room Server Management). Routing opens the routing sheet where you can switch between Auto, Direct, and Flood routing and manage recent paths (hop count, round-trip time, age, success count, color-coded by repeater). Info shows a dialog with contact type, path, GPS coordinates, and public key. Chat background sets a color or picture (with a fade slider) behind this chat only; see [Chat backgrounds](themes.md#chat-backgrounds).
+  - **Overflow menu** (⋮ icon): Contains Routing, Info, Telemetry, Settings (link images and telemetry permissions), Chat background, Clear Chat, and Remove from contacts (rooms also have Room Server Management). Routing opens the routing sheet where you can switch between Auto, Direct, and Flood routing and manage recent paths (hop count, round-trip time, age, success count, color-coded by repeater). Info shows a dialog with contact type, path, GPS coordinates, and public key. Chat background sets a color or picture (with a fade slider) behind this chat only; see [Chat backgrounds](themes.md#chat-backgrounds).
+
+### Compression Strip
+
+Below the app bar, above the messages, a strip shows **Compression: Off**, **SMAZ** or **Cyr2Lat** for this contact. Tap it to choose a mode in one sheet that explains each: SMAZ is lossless but needs a SMAZ-aware app on the other end and is only used when it makes a message smaller; Cyr2Lat swaps some Cyrillic letters for lookalike Latin ones, stays readable everywhere, but changes the exact characters, using the chosen Cyr2Lat profile. The setting is saved on the phone and can be changed offline. Channel chats show the same strip. See [Compression](additional-features.md#compression-smaz-and-cyr2lat).
 
 ### Message List
 
@@ -41,13 +45,17 @@ From the Contacts screen, tap any Chat-type contact to open the ChatScreen.
 
 ### Input Bar
 
-- **Send action button** (left, ⊕ icon): Opens a menu with **Send GIF** (GIF picker bottom sheet) and **Share my location**
+The composer is a rounded bubble at the bottom of the chat with one round button beside it. With a chat background set, the bubble floats over the background.
+
+- **Round button** (right): shows **+** while the field is empty and **Send** once you type. **+** opens the send action menu: **Send GIF** (GIF picker bottom sheet), **Share my location**, **Share contact**, and, when set up, image uploads
 - **Share my location**: Sends your radio's current position (from the radio, not the phone's GPS) as a location pin. You're asked for a label (default: your node name) before sending; the keyboard's Send key confirms. If the radio reports no usable position (none set, or 0,0), the item is hidden and a snackbar says "Your radio has no location set". Location shares follow the same send cooldown as typed messages and are never sent as a reply. In channel chat the menu also holds **Send low-res image over radio** when image messages are set up
-- **Translation button** (optional, between GIF and text field): Shown only when translation is enabled in App Settings. Tap to configure outgoing-message translation language and on/off toggle.
-- **Text field** (center): Auto-capitalization, enforces UTF-8 byte limit in real-time
-- **Send button** (right): Submits the message
+- **Text field**: Auto-capitalization, enforces the UTF-8 byte limit in real time. It grows to five lines (fewer with very large text while the keyboard is open), then scrolls
+- **Byte counter**: appears in the bottom-right of the bubble once a message passes 70 % of the limit, and turns red near the limit
+- **Translation button** (inside the bubble, right): Shown only when translation is enabled in App Settings. Tap to configure outgoing-message translation language and on/off toggle.
+- **Reply preview**: In channel chat, replying shows the quoted message at the top of the bubble with a **✕** to cancel and, when the original had a region, the region chip
 - On desktop: Enter/Numpad Enter also submits
-- When a GIF is selected, the text field shows an inline GIF preview with a dismiss button
+- When a GIF is selected, the bubble shows a GIF preview with a remove button; Enter sends it
+- With no radio connected, the bubble says so and a **Connect** button takes the place of the round button
 
 ## Message Types
 
