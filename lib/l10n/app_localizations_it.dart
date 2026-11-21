@@ -1446,11 +1446,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Reimposta il percorso di contatto dopo 5 tentativi di invio falliti';
+      'Reimposta il percorso salvato del contatto quando tutti i tentativi di invio falliscono';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'I percorsi verranno cancellati dopo 5 tentativi falliti.';
+      'I percorsi verranno cancellati quando tutti i tentativi di invio falliscono';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1461,7 +1461,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Alterna tra i percorsi migliori e la modalità flood';
+      'A ogni tentativo diretto, prova un altro percorso noto. I tentativi successivi sono Flood. Disattivato mantiene il percorso attuale del contatto.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1478,6 +1478,63 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Numero di tentativi di riprova prima di considerare un messaggio come fallito.';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Tentativi diretti: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Quante volte provare un percorso noto. Resta disponibile anche con la rotazione automatica disattivata.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Tentativi Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Quante volte usare Flood. Flood usa più tempo in aria. Con la rotazione attiva, seguono i tentativi diretti.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Tentativi di accesso: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Quante volte provare l\'accesso a un ripetitore o a un server room prima di rinunciare.';
+
+  @override
+  String get appSettings_repeatersAndRooms => 'Ripetitori e stanze';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Sincronizza l\'orologio del ripetitore all\'accesso';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Dopo un accesso riuscito a un ripetitore viene inviato clock sync. Ogni ripetitore può ancora scegliere Predefinito, Attivo o Disattivo.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Attiva il campo password';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'All\'apertura dell\'accesso a un ripetitore o a una stanza, il cursore va nel campo password se è vuoto. Disattivo lascia visibile la finestra finché non tocchi il campo.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Reimposta le impostazioni di ripetitori e stanze';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Ripristina le impostazioni di questa sezione. Le scelte salvate sui singoli ripetitori restano.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Impostazioni di ripetitori e stanze reimpostate';
 
   @override
   String get appSettings_ipfsImageLinks => 'Configurazione del provider IPFS';
@@ -3516,7 +3573,16 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Invia automaticamente il comando \"sincronizzazione dell\'orologio\" dopo un login riuscito.';
+      'Predefinito segue Ripetitori e stanze nelle impostazioni. Attivo e Disattivo valgono solo per questo ripetitore.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Predefinito';
+
+  @override
+  String get repeater_clockSyncOn => 'Attivo';
+
+  @override
+  String get repeater_clockSyncOff => 'Disattivo';
 
   @override
   String get repeater_statusTitle => 'Stato del ripetitore';
@@ -7056,15 +7122,15 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Reimposta algoritmo di instradamento sui valori predefiniti';
+      'Reimposta le impostazioni di instradamento sui valori predefiniti';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Ripristina le impostazioni dell\'algoritmo di instradamento ai valori predefiniti di fabbrica';
+      'Ripristina le impostazioni di instradamento di questa sezione ai valori predefiniti';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Impostazioni algoritmo di instradamento reimpostate sui valori predefiniti';
+      'Impostazioni di instradamento reimpostate sui valori predefiniti';
 
   @override
   String get appSettings_imageMessagesSection => 'Messaggi immagine';

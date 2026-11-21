@@ -21,6 +21,7 @@ import '../models/display_path.dart';
 import '../models/path_playback.dart';
 import '../theme/mesh_theme.dart';
 import '../widgets/adaptive_app_bar_title.dart';
+import '../widgets/contact_visuals.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/path_map_scaffold.dart';
 import '../widgets/path_map_ui.dart';
@@ -356,7 +357,7 @@ class ChannelMessagePathScreen extends StatelessWidget {
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    AvatarCircle(name: hop.displayLabel, size: 36),
+                    AvatarCircle(name: hop.avatarName, size: 36),
                     Positioned(
                       right: -4,
                       top: -4,
@@ -1616,14 +1617,23 @@ class _PathHop {
 
   bool get hasLocation => position != null;
 
-  String get displayLabel {
-    final prefixLabel = hopBytes != null && hopBytes!.isNotEmpty
-        ? hopBytes!
-              .map((b) => b.toRadixString(16).padLeft(2, '0'))
-              .join('')
-              .toUpperCase()
-        : _formatPrefix(prefix);
-    return '($prefixLabel) ${_resolveName(contact, l10n)}';
+  String get prefixLabel => hopBytes != null && hopBytes!.isNotEmpty
+      ? hopBytes!
+            .map((b) => b.toRadixString(16).padLeft(2, '0'))
+            .join('')
+            .toUpperCase()
+      : _formatPrefix(prefix);
+
+  String get displayLabel => '($prefixLabel) ${_resolveName(contact, l10n)}';
+
+  /// Avatar source: the repeater's own name, or the hop's hex prefix when
+  /// the hop is unresolved or its name has nothing to make initials from.
+  String get avatarName {
+    final name = contact?.name.trim() ?? '';
+    if (name.toLowerCase() == 'unknown' || avatarInitials(name) == null) {
+      return prefixLabel;
+    }
+    return name;
   }
 }
 

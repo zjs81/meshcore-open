@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import '../l10n/l10n.dart';
 import '../theme/mesh_theme.dart';
 import '../theme/theme_icons.dart';
+import 'contact_visuals.dart';
 
 /// MeshCore shared design kit.
 ///
@@ -283,7 +284,8 @@ class StatTile extends StatelessWidget {
 
 /// Initials avatar with a deterministic per-name hue, or a fixed [color]
 /// for node-type coloring. Optional [icon] or themeable [iconSlot] replaces
-/// initials.
+/// initials. Initials come from [avatarInitials]; a name with no letters,
+/// digits or emoji shows a generic person icon instead.
 class AvatarCircle extends StatelessWidget {
   final String name;
   final double size;
@@ -320,7 +322,7 @@ class AvatarCircle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accent = color ?? _colorFor(name);
-    final initials = _initials(name);
+    final initials = avatarInitials(name);
     final background = _tintedCardBackground(context, accent, 0.14);
     // A theme picture (e.g. a holiday marker) fills the whole circle, the
     // same as on the map, rather than sitting small inside the tint.
@@ -360,9 +362,9 @@ class AvatarCircle extends StatelessWidget {
               size: size * 0.55,
               color: readableAccent(accent, background, minContrast: 3),
             )
-          : icon != null
+          : icon != null || initials == null
           ? Icon(
-              icon,
+              icon ?? Icons.person_outline,
               size: size * 0.5,
               color: readableAccent(accent, background, minContrast: 3),
             )
@@ -375,21 +377,6 @@ class AvatarCircle extends StatelessWidget {
               ),
             ),
     );
-  }
-
-  static String _initials(String name) {
-    final words = name
-        .trim()
-        .split(RegExp(r'\s+'))
-        .where((w) => w.isNotEmpty)
-        .toList();
-    if (words.isEmpty) return '?';
-    if (words.length == 1) {
-      return words.first.characters.take(2).toString().toUpperCase();
-    }
-    return (words.first.characters.take(1).toString() +
-            words[1].characters.take(1).toString())
-        .toUpperCase();
   }
 }
 

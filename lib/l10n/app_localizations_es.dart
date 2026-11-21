@@ -1442,11 +1442,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Restablecer la ruta de contacto después de 5 intentos de envío fallidos';
+      'Restablecer la ruta guardada del contacto cuando fallen todos los intentos de envío';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Las rutas se borrarán después de 5 intentos fallidos.';
+      'Las rutas se borrarán cuando fallen todos los intentos de envío';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1457,7 +1457,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Alternar entre las mejores rutas y el modo Flood';
+      'En cada intento directo, probar otra ruta conocida. Los intentos siguientes son Flood. Desactivado mantiene la ruta actual del contacto.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1474,6 +1474,64 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Número de intentos de reintento antes de marcar un mensaje como fallido.';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Intentos directos: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Cuántas veces probar una ruta conocida. Sigue disponible aunque la rotación automática esté desactivada.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Intentos Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Cuántas veces usar Flood. Flood usa más tiempo de aire. Con la rotación activada, van después de los intentos directos.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Intentos de inicio de sesión: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Cuántas veces intentar iniciar sesión en un repetidor o servidor de sala antes de rendirse.';
+
+  @override
+  String get appSettings_repeatersAndRooms => 'Repetidores y salas';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Sincronizar el reloj del repetidor al iniciar sesión';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Tras un inicio de sesión correcto en un repetidor se envía clock sync. Cada repetidor puede seguir eligiendo Predeterminado, Activado o Desactivado.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus =>
+      'Enfocar el campo de contraseña';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Al abrir el inicio de sesión de un repetidor o una sala, el cursor va al campo de contraseña si está vacío. Desactivado deja el diálogo visible hasta que toques el campo.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Restablecer ajustes de repetidores y salas';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Restaura los ajustes de esta sección. Las elecciones guardadas en cada repetidor se quedan.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Ajustes de repetidores y salas restablecidos';
 
   @override
   String get appSettings_ipfsImageLinks => 'Configuración del proveedor IPFS';
@@ -3511,7 +3569,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Enviar automáticamente la función de \"sincronización de reloj\" después de un inicio de sesión exitoso.';
+      'Predeterminado sigue Repetidores y salas en Ajustes. Activado y Desactivado valen solo para este repetidor.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Predeterminado';
+
+  @override
+  String get repeater_clockSyncOn => 'Activado';
+
+  @override
+  String get repeater_clockSyncOff => 'Desactivado';
 
   @override
   String get repeater_statusTitle => 'Estado del Repetidor';
@@ -7048,15 +7115,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Restablecer algoritmo de enrutamiento a predeterminado';
+      'Restablecer la configuración de enrutamiento';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Restaurar la configuración del algoritmo de enrutamiento a los valores predeterminados de fábrica';
+      'Restaurar los ajustes de enrutamiento de esta sección a sus valores predeterminados';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Configuración del algoritmo de enrutamiento restablecida a predeterminado';
+      'Configuración de enrutamiento restablecida';
 
   @override
   String get appSettings_imageMessagesSection => 'Mensajes con imágenes';

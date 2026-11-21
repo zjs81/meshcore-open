@@ -111,11 +111,11 @@ When a direct message is sent:
 1. The app computes an expected ACK hash: `SHA256([timestamp][attempt][text][selfPubKey])[0:4]` — matching the firmware's hash calculation. If SMAZ compression is enabled, the compressed text (not the original) is hashed
 2. On device acknowledgment (`RESP_CODE_SENT`), the message transitions to "sent" and a timeout timer starts. If that acknowledgment never arrives (for example a dropped BLE notification), a backup timer (the delivery timeout plus 5 seconds) runs the normal retry path instead of leaving the message pending; a late ACK still marks it delivered
 3. **Timeout duration**: Preferably from the ML timeout prediction service; otherwise from the device's own `est_timeout` in `RESP_CODE_SENT` (clamped to the physics range); otherwise calculated from LoRa airtime physics: `500 + (airtime × 6 + 250) × (pathLength + 1)` ms for direct paths, `500 + 16 × airtime` ms for flood (airtime is estimated from the radio's current spreading factor, bandwidth, and coding rate). The result is capped at 45 seconds.
-4. On timeout, the message is retried with **exponential backoff**: `1000 × 2^retryCount` ms (1s, 2s, 4s, 8s, 16s...)
-5. **Max retries**: Configurable (default 5, range 2–10)
-6. After max retries, the message is marked "failed" — but a **30-second grace window** remains during which a late ACK can still resolve the message to "delivered"
-7. If **Clear Path on Max Retry** is enabled (App Settings), the contact's stored routing path is automatically cleared when max retries are exhausted
-8. **Auto route rotation**: When enabled (and no manual path override is set), the retry service uses a diversity window to avoid re-using recently tried paths, cycling through known routes on each attempt
+4. On timeout, the message is retried with **exponential backoff**: `1000 × 2^retryCount` ms (1s, 2s, 4s, 8s, 16s...), capped at 32 seconds
+5. **Direct and flood attempts**: Set separately in App Settings → Routing (defaults 4 direct and 1 flood; up to 15 direct and 10 flood). With auto route rotation on, the direct attempts use known routes and the flood attempts follow. With it off, every attempt stays on the contact's current path and only that path's limit applies. Zero on both still sends once
+6. After those attempts, the message is marked "failed" — but a **30-second grace window** remains during which a late ACK can still resolve the message to "delivered"
+7. If **Clear Path on Max Retry** is enabled (App Settings → Routing), the contact's stored routing path is automatically cleared when the attempts are exhausted
+8. **Auto route rotation**: When enabled (and no manual path override is set), the retry service uses a diversity window to avoid re-using recently tried paths, cycling through known routes on each direct attempt. Flood attempts come after those
 
 ### Manual Retry
 

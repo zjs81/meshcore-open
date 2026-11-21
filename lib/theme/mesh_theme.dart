@@ -403,6 +403,25 @@ class MeshTheme {
           fontFamilyFallback: MeshFonts.sansFallback,
         );
 
+    // SettingsReveal uses surfaceContainerHighest, so inactive slider tracks and
+    // drag bubbles need a distinct step toward onSurfaceVariant / inverseSurface
+    // to stay legible inside both MeshCard and SettingsReveal.
+    final sliderInactiveTrack = Color.lerp(
+      scheme.surfaceContainerHighest,
+      scheme.onSurfaceVariant,
+      brightness == Brightness.dark ? 0.42 : 0.54,
+    )!;
+    final sliderInactiveTick = Color.lerp(
+      sliderInactiveTrack,
+      scheme.onSurface,
+      0.7,
+    )!;
+    final sliderActiveTick = Color.lerp(
+      scheme.primary,
+      scheme.onPrimary,
+      0.65,
+    )!;
+
     return ThemeData(
       useMaterial3: true,
       extensions: [bubble, icons, map],
@@ -649,14 +668,19 @@ class MeshTheme {
       ),
       sliderTheme: SliderThemeData(
         activeTrackColor: scheme.primary,
-        inactiveTrackColor: scheme.surfaceContainerHighest,
+        inactiveTrackColor: sliderInactiveTrack,
+        disabledActiveTrackColor: scheme.onSurface.withValues(alpha: 0.38),
+        disabledInactiveTrackColor: sliderInactiveTrack.withValues(alpha: 0.38),
+        activeTickMarkColor: sliderActiveTick,
+        inactiveTickMarkColor: sliderInactiveTick,
         thumbColor: scheme.primary,
+        disabledThumbColor: scheme.onSurface.withValues(alpha: 0.38),
         overlayColor: scheme.primary.withValues(alpha: 0.12),
-        valueIndicatorColor: scheme.surfaceContainerHighest,
+        valueIndicatorColor: scheme.inverseSurface,
         valueIndicatorTextStyle: TextStyle(
           fontFamily: MeshFonts.mono,
           fontFamilyFallback: MeshFonts.monoFallback,
-          color: scheme.onSurface,
+          color: scheme.onInverseSurface,
           fontSize: 12,
         ),
         trackHeight: 3,

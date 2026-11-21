@@ -60,7 +60,7 @@ class BookmarkedMessage {
     sourceName: channelName,
     messageId: message.messageId,
     senderName: senderName,
-    text: message.text,
+    text: message.fullText,
     translatedText: message.translatedText,
     timestamp: message.timestamp,
     receivedAt: message.receivedAt,

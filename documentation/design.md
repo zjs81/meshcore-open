@@ -2,7 +2,7 @@
 
 How MeshCore Open's interface is built today, and the rules to follow when adding or changing UI. Every value below comes from the code it cites. If you change one of those sources, or settle on a new pattern, update this page in the same change.
 
-The source of truth is `lib/theme/mesh_theme.dart` (theme), `lib/widgets/mesh_ui.dart` (shared widgets), `lib/widgets/settings_reveal.dart` (reveal-on-enable) and `lib/widgets/mesh_nav_tile.dart` (settings rows). Where the code disagrees with this page, fix one of them; do not copy the inconsistency.
+The source of truth is `lib/theme/mesh_theme.dart` (theme), `lib/widgets/mesh_ui.dart` (shared widgets), `lib/widgets/settings_reveal.dart` (reveal-on-enable and settings sliders) and `lib/widgets/mesh_nav_tile.dart` (settings rows). Where the code disagrees with this page, fix one of them; do not copy the inconsistency.
 
 ## 1. Principles
 
@@ -97,15 +97,16 @@ Minimum sizes: no hard-coded `fontSize` below 12 exists in `lib/screens` or `lib
 | Section header | padding 16, 20, 16, 8 (LTRB) | `SectionHeader` |
 | Settings row | padding 16 / 12, 24px icon, 16 gap, chevron 24 | `MeshNavTile` |
 | Switch row | `SwitchListTile`, `contentPadding` 16 / 4, `secondary` icon size 24 | `app_settings_screen.dart` |
+| Slider row | `SettingsValueSlider` (`ListTile`), `contentPadding` 16 / 4, `leading` icon size 24, 16 gap | `settings_reveal.dart` |
 | Popup menu row | 20px icon, 12 gap | `MeshMenuItemRow` |
 | Banner | padding 16 / 12, 24px icon, 12 gap | `RadioDisconnectedBanner` |
 | Sheet header | padding 20, 8, 8, 4 (LTRB), 36×4 drag handle | `BottomSheetHeader` |
 | Radii | `MeshRadii.xs` 6, `sm` 10, `md` 14 (cards, inputs, menus, snackbars, list tiles), `lg` 18 (sheets, dialogs), `xl` 24, `pill` 999 (buttons, chips, FAB) | `MeshRadii` |
 | Default icon size | 22 | `iconTheme` |
-| Avatar | 40 | `AvatarCircle` |
+| Avatar | 40; initials from letters and digits only (`avatarInitials`), else a person icon. Pass a hop's hex prefix, not a "(AB) Name" label | `AvatarCircle` |
 | List bottom padding under a FAB | 88 | `channels_screen.dart` |
 
-Every settings row — including child rows revealed inside `SettingsReveal` and model rows in `ModelDownloadList` — uses a vertically centred 24px leading icon with a 16px gap (`MeshNavTile`, `SwitchListTile.secondary`, or `ListTile.leading`) so titles align vertically across a card.
+Every settings row — including sliders, selectors, child rows revealed inside `SettingsReveal`, and model rows in `ModelDownloadList` — uses a vertically centred 24px leading icon with a 16px gap (`MeshNavTile`, `SwitchListTile.secondary`, or `ListTile.leading`) so titles align vertically across a card.
 
 Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small action buttons, 18 for inline refresh icons and spinners. Keep tappable icons at 20 or more.
 
@@ -120,6 +121,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Settings navigation row | `MeshNavTile` | `onTap: null` dims it to 50 % and reports it as disabled; use `subtitle` to say why |
 | Settings switch | `SwitchListTile` inside `MeshSettingsTileTheme` | Wrap the settings screen body once in `MeshSettingsTileTheme` |
 | Switch that reveals more controls | `SettingsReveal` | 200ms height ease, `surfaceContainerHighest`, 16px start indent. See [Reveal on enable](#reveal-on-enable) |
+| Settings slider | `SettingsValueSlider` | Requires a 24px `icon` (`ListTile.leading`). The title includes the selected number, so it stays visible. The drag bubble repeats it |
 | Radio-style choice in a sheet | `MeshSheetOption` | Used by the language picker, map time filter and compression sheet. Optional `subtitle` explains the option; `onTap: null` disables it. Selected rows show a filled radio icon **and** a bold title, with `selected` semantics |
 | Per-chat setting at the top of a chat | Full-width strip under the app bar, above the transcript (`ChatCompressionSelector` in `widgets/chat_compression_selector.dart`) | `surfaceContainerLow` fill, `outlineVariant` bottom border, 48dp minimum height, `bodyLarge` w600 "Label: value ▾"; tap opens one `showMeshSheet` with `MeshSheetOption`s. Shows the saved value only; a spinner replaces ▾ while saving; a disabled strip shows why below the label. One shared widget for DM and channel chats; parents pass state and async callbacks |
 | Choosing between images | Selectable thumbnail tiles in a centred `Wrap` | Image send versions (`_versionTile` in `image_send_preview_sheet.dart`). `InkWell` with `MeshRadii.sm`; selected tile gets a 3px `primary` border **and** a `primary` check badge (never colour alone); caption under the tile in `bodySmall`, w600 when selected; figures such as packet counts in `MeshTheme.mono` 12; wrap the tile in `Semantics(button: true, selected:, label:)` |
@@ -164,9 +166,13 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 
 ### Reveal on enable
 
-A switch that uncovers more controls (such as **Enable image messages** and **Enable translation**) uses `SettingsReveal` (`lib/widgets/settings_reveal.dart`). The block's height eases over 200ms (`RevealOnEnable.duration`, `Curves.easeInOut`, aligned to the top). While the switch is off the extra controls are not in the tree, so they are not announced. The panel uses `surfaceContainerHighest` and a 16px start indent. Because the panel already sits on `surfaceContainerHighest`, inset notice boxes inside `SettingsReveal` (such as `ImageCodecModelsSection`'s unavailable-platform notice) use `surfaceContainerLow` with an `outlineVariant` border.
+A switch that uncovers more controls (such as **Enable image messages** and **Enable translation**) uses `SettingsReveal` (`lib/widgets/settings_reveal.dart`). The block's height eases over 200ms (`RevealOnEnable.duration`, `Curves.easeInOut`, aligned to the top). While the switch is off the extra controls are not in the tree, so they are not announced. The panel uses `surfaceContainerHighest` and a 16px start indent. Because the panel already sits on `surfaceContainerHighest`, controls and inset notices inside it must contrast against `surfaceContainerHighest` as well as `surfaceContainerLow` (`MeshTheme`'s slider inactive track and value indicator step away from `surfaceContainerHighest`, and inset notice boxes inside `SettingsReveal`, such as `ImageCodecModelsSection`'s unavailable-platform notice, use `surfaceContainerLow` with an `outlineVariant` border).
 
-The same animation without the tint is `RevealOnEnable`. Do not add a second duration, and do not reveal the controls with a plain `if` that pops them in.
+The same animation without the tint is `RevealOnEnable`. Use it when the revealed control is not a settings sub-panel: the Bluetooth-off banner on the scanner and the device-info rows on the Settings screen.
+
+Do not add a second duration, and do not reveal the controls with a plain `if` that pops them in. A block that swaps between two bodies, such as the filtered-message preview, keeps `AnimatedSize` but uses `RevealOnEnable.duration` and `RevealOnEnable.curve`.
+
+Sliders that belong to a setting use `SettingsValueSlider` with a 24px `icon` (`ListTile.leading`) so the title and slider line up with adjacent rows. Put the selected number in the title (a localized string with the count). The slider's drag label repeats that number; it is not the only place the value appears.
 
 ### Model downloads
 
@@ -264,7 +270,7 @@ Follow the same pattern for any new remote-value screen.
 - [ ] Colours from `colorScheme` or theme extensions; no raw `Colors.*` or `MeshPalette.ink/bg/line` in chrome.
 - [ ] Text styles from `textTheme` or `MeshTheme.mono`; nothing below 12.
 - [ ] Settings rows use `MeshNavTile` / `SwitchListTile` inside `MeshSettingsTileTheme`; cards are `MeshCard` with a `SectionHeader`.
-- [ ] A switch that reveals more controls uses `SettingsReveal`.
+- [ ] A switch that reveals more controls uses `SettingsReveal`. A settings slider uses `SettingsValueSlider` so the selected value stays in the title.
 - [ ] Popup menu rows use `MeshMenuItemRow`; segmented buttons use `MeshSegmentLabel`; destructive menu items last, in `scheme.error`.
 - [ ] Every `IconButton` and FAB has a localized `tooltip`.
 - [ ] Tap targets at least 48×48.
