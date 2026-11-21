@@ -57,3 +57,39 @@ them into the selected radio's scope. Review-mode cleanup also covers the databa
 For a manual full application-data copy, keep the history database alongside the
 application's other support files; copying the preferences file alone no longer
 includes native message or route histories.
+
+## Long contact and channel lists
+
+`test/screens/list_scroll_perf_test.dart` builds the contacts list with 500
+contacts and the channels list with 40 channels, flings each one with a
+connector notify partway through, and prints build counts and how many visible
+rows were blank or still fading in during the fling:
+
+```sh
+flutter test test/screens/list_scroll_perf_test.dart
+```
+
+It fails if rows scrolled into view play the entrance fade, or if a connector
+notify that changes nothing rebuilds contact rows. The counts are a widget-test
+proxy; frame times still need a phone.
+
+To check scrolling on a phone:
+
+1. Connect a radio with several hundred contacts and a few dozen channels (or
+   use the same radio before and after a change), then run
+   `flutter run --profile` on the phone.
+2. Open DevTools from the printed link and select the Performance page. Turn
+   on "Track widget builds" only for a separate run: it adds overhead to the
+   frame times.
+3. Open Contacts, wait for sync to finish, and clear the timeline.
+4. Fling the list hard to the bottom and back to the top five times, then drag
+   it up and down quickly for a few seconds. Repeat while messages and adverts
+   are arriving.
+5. In the frame chart, note the share of frames over budget (16 ms at 60 Hz,
+   8 ms at 120 Hz) on the UI and raster threads, and the worst frames. Select a
+   slow frame to see whether build, layout, paint or raster dominates.
+6. Watch the screen: rows must be fully drawn as they enter, with no blank
+   rows trailing the finger.
+7. Repeat steps 3 to 6 on Channels.
+8. Record the device, build mode, contact and channel counts and the numbers
+   from step 5 for the before and after builds.

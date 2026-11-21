@@ -1839,6 +1839,9 @@ class AppLocalizationsBg extends AppLocalizations {
   String get contacts_lastSeenNow => 'наскоро';
 
   @override
+  String get contacts_lastSeenNever => 'not heard yet';
+
+  @override
   String contacts_lastSeenMinsAgo(int minutes) {
     return '~ $minutes мин.';
   }
@@ -2019,16 +2022,6 @@ class AppLocalizationsBg extends AppLocalizations {
   String channels_editChannelTitle(int index) {
     return 'Редактирай Канал $index';
   }
-
-  @override
-  String get channels_smazCompression => 'Компресия SMAZ';
-
-  @override
-  String get channels_cyr2latCompression => 'Компресия Cyr2Lat';
-
-  @override
-  String get channels_cyr2latCompressionDscr =>
-      'Заменя някои кирилични символи с латиница при изпращане.';
 
   @override
   String get channels_cyr2latSettingsHeading => 'Настройки на Cyr2Lat';
@@ -2756,10 +2749,6 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get chat_publicKey => 'Публичен ключ';
-
-  @override
-  String get chat_compressOutgoingMessages =>
-      'Компресиране на изходящи съобщения';
 
   @override
   String get chat_floodForced => 'Flood (принудително)';
@@ -7582,4 +7571,51 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Свържете се с радио, за да изпращате съобщения';
+
+  @override
+  String get chatCompression_title => 'Compression';
+
+  @override
+  String chatCompression_label(String mode) {
+    return 'Compression: $mode';
+  }
+
+  @override
+  String get chatCompression_off => 'Off';
+
+  @override
+  String get chatCompression_smaz => 'SMAZ';
+
+  @override
+  String get chatCompression_cyr2lat => 'Cyr2Lat';
+
+  @override
+  String get chatCompression_changeHint => 'Change compression for this chat';
+
+  @override
+  String get chatCompression_sheetSubtitle =>
+      'Applies to messages you send in this chat. Saved on this phone.';
+
+  @override
+  String get chatCompression_offDescription =>
+      'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.';
+
+  @override
+  String get chatCompression_smazDescription =>
+      'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.';
+
+  @override
+  String get chatCompression_cyr2latDescription =>
+      'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.';
+
+  @override
+  String get chatCompression_profile => 'Cyr2Lat profile';
+
+  @override
+  String get chatCompression_noStorageId =>
+      'Can\'t change compression until this channel has synced from the radio.';
+
+  @override
+  String get chatCompression_saveFailed =>
+      'Couldn\'t save the compression setting. Showing the saved setting.';
 }

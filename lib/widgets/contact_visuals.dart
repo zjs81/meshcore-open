@@ -78,14 +78,22 @@ String? avatarInitials(String name) {
 
 /// The most recent activity for [contact]: for chat nodes this includes the
 /// last message, for other node types only the last advert or telemetry fix.
-DateTime resolveContactLastSeen(Contact contact) {
-  final heard = contact.lastHeard;
+/// [addedAt] (the phone time the contact was added from a card) stands in
+/// while the radio has no advert time for it.
+DateTime resolveContactLastSeen(Contact contact, {DateTime? addedAt}) {
+  final heard =
+      addedAt != null &&
+          contact.lastSeen.millisecondsSinceEpoch == 0 &&
+          addedAt.isAfter(contact.lastHeard)
+      ? addedAt
+      : contact.lastHeard;
   if (contact.type != advTypeChat) return heard;
   return contact.lastMessageAt.isAfter(heard) ? contact.lastMessageAt : heard;
 }
 
 /// Short relative "last seen" label ("now", "5 mins ago", "2 days ago").
 String formatContactLastSeen(AppLocalizations l10n, DateTime lastSeen) {
+  if (lastSeen.millisecondsSinceEpoch == 0) return l10n.contacts_lastSeenNever;
   final diff = DateTime.now().difference(lastSeen);
 
   if (diff.isNegative || diff.inMinutes < 5) {
