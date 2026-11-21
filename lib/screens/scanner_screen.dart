@@ -15,6 +15,7 @@ import '../widgets/device_tile.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/get_node_banner.dart';
 import '../widgets/mesh_ui.dart';
+import '../widgets/settings_reveal.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../review_mode/review_mode_entry.dart';
 import '../utils/main_navigation.dart';
@@ -151,17 +152,13 @@ class _ScannerScreenState extends State<ScannerScreen> {
           builder: (context, connector, child) {
             return Column(
               children: [
-                // Bluetooth off warning — slides in/out with AnimatedSize
-                AnimatedSize(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  child: _bluetoothState == BluetoothAdapterState.off
-                      ? _BluetoothOffBanner(
-                          onEnable: PlatformInfo.isAndroid
-                              ? () => FlutterBluePlus.turnOn()
-                              : null,
-                        )
-                      : const SizedBox.shrink(),
+                RevealOnEnable(
+                  visible: _bluetoothState == BluetoothAdapterState.off,
+                  child: _BluetoothOffBanner(
+                    onEnable: PlatformInfo.isAndroid
+                        ? () => FlutterBluePlus.turnOn()
+                        : null,
+                  ),
                 ),
 
                 // Connection status header

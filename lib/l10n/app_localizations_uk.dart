@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1440,11 +1439,11 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Скидати шлях до контакту після 5 невдалих спроб надсилання';
+      'Скинути збережений шлях контакту, коли всі спроби надсилання не вдаються';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Шляхи будуть очищені після 5 невдалих спроб.';
+      'Шляхи буде очищено, коли всі спроби надсилання не вдадуться';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1455,7 +1454,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Чергувати найкращі шляхи та режим Flood';
+      'На кожній прямій спробі пробувати інший відомий маршрут. Наступні спроби — Flood. Вимкнено залишає поточний шлях контакту.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1472,6 +1471,63 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Кількість спроб повторного відправлення повідомлення перед тим, як позначити його як невдале';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Прямі спроби: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Скільки разів пробувати відомий маршрут. Доступно і коли авторотацію вимкнено.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Спроби Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Скільки разів використовувати Flood. Flood займає більше ефірного часу. Якщо ротацію ввімкнено, вони йдуть після прямих спроб.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Спроби входу: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Скільки разів пробувати вхід до ретранслятора або room-сервера, перш ніж здатися.';
+
+  @override
+  String get appSettings_repeatersAndRooms => 'Ретранслятори та кімнати';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Синхронізувати годинник ретранслятора під час входу';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Після успішного входу на ретранслятор надсилається clock sync. Для кожного ретранслятора можна лишити Типово, Увімк. або Вимк.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Фокус на полі пароля';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Коли відкривається вхід на ретранслятор або в кімнату, курсор стає в порожнє поле пароля. Вимкнено лишає вікно видимим, доки ви не торкнетеся поля.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Скинути налаштування ретрансляторів і кімнат';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Відновлює налаштування цього розділу. Вибір, збережений для окремих ретрансляторів, лишається.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Налаштування ретрансляторів і кімнат скинуто';
 
   @override
   String get appSettings_ipfsImageLinks => 'Налаштування IPFS-провайдера';
@@ -3502,7 +3558,16 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Автоматично надсилати повідомлення \"синхронізація годин\" після успішного входу.';
+      '«Типово» йде за розділом «Ретранслятори та кімнати» в налаштуваннях. «Увімк.» і «Вимк.» лише для цього ретранслятора.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Типово';
+
+  @override
+  String get repeater_clockSyncOn => 'Увімк.';
+
+  @override
+  String get repeater_clockSyncOff => 'Вимк.';
 
   @override
   String get repeater_statusTitle => 'Статус ретранслятора';
@@ -7058,15 +7123,15 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Скинути алгоритм маршрутизації до типового';
+      'Скинути налаштування маршрутизації до типових';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Відновити налаштування алгоритму маршрутизації до заводських значень за замовчуванням';
+      'Відновити налаштування маршрутизації в цьому розділі до значень за замовчуванням';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Налаштування алгоритму маршрутизації скинуто до типових';
+      'Налаштування маршрутизації скинуто до типових';
 
   @override
   String get appSettings_imageMessagesSection => 'Повідомлення із зображеннями';

@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1440,11 +1439,11 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Resetovať cestu kontaktu po 5 neúspešných pokusoch o odoslanie';
+      'Resetovať uloženú cestu kontaktu, keď zlyhajú všetky pokusy o odoslanie';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Cesty budú vymazané po 5 neúspešných pokusoch.';
+      'Cesty sa vymažú, keď zlyhajú všetky pokusy o odoslanie';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1455,7 +1454,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Striedajte sa medzi najlepšími trasami a flood režimom.';
+      'Pri každom priamom pokuse skúsiť inú známu trasu. Neskoršie pokusy sú Flood. Vypnuté ponechá aktuálnu cestu kontaktu.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1472,6 +1471,63 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Počet opakovaných pokusov pred označením správy ako neúspešnej';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Priame pokusy: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Koľkokrát sa skúsi známa trasa. Dostupné aj keď je automatické striedanie trás vypnuté.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Pokusy Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Koľkokrát sa použije Flood. Flood zaberie viac vysielacieho času. Pri zapnutom striedaní nasledujú po priamych pokusoch.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Pokusy o prihlásenie: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Koľkokrát sa skúsi prihlásenie k opakovaču alebo room serveru, kým sa to vzdá.';
+
+  @override
+  String get appSettings_repeatersAndRooms => 'Opakovače a miestnosti';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Synchronizovať hodiny opakovača pri prihlásení';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Po úspešnom prihlásení k opakovaču sa odošle clock sync. Každý opakovač môže ďalej zvoliť Predvolené, Zapnuté alebo Vypnuté.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Zamerať pole hesla';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Pri otvorení prihlásenia k opakovaču alebo miestnosti je kurzor v prázdnom poli hesla. Vypnuté nechá okno viditeľné, kým na pole neťuknete.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Obnoviť nastavenia opakovačov a miestností';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Obnoví nastavenia v tejto časti. Voľby uložené pri jednotlivých opakovačoch ostanú.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Nastavenia opakovačov a miestností obnovené';
 
   @override
   String get appSettings_ipfsImageLinks => 'Konfigurácia poskytovateľa IPFS';
@@ -3497,7 +3553,16 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Po úspešnom prihlásení automaticky odoslať „synchronizáciu hodín“';
+      'Predvolené sleduje Opakovače a miestnosti v nastaveniach. Zapnuté a Vypnuté platia len pre tento opakovač.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Predvolené';
+
+  @override
+  String get repeater_clockSyncOn => 'Zapnuté';
+
+  @override
+  String get repeater_clockSyncOff => 'Vypnuté';
 
   @override
   String get repeater_statusTitle => 'Stav opakovača';
@@ -7023,15 +7088,15 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Obnoviť algoritmus smerovania na predvolené';
+      'Obnoviť nastavenia smerovania na predvolené';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Obnoviť nastavenia algoritmu smerovania na továrne predvolené hodnoty';
+      'Obnoviť nastavenia smerovania v tejto časti na predvolené hodnoty';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Nastavenia algoritmu smerovania obnovené na predvolené';
+      'Nastavenia smerovania obnovené na predvolené';
 
   @override
   String get appSettings_imageMessagesSection => 'Obrazové správy';

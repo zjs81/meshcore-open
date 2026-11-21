@@ -6,6 +6,13 @@ import '../storage/prefs_manager.dart';
 import '../storage/history_store.dart';
 import '../utils/app_logger.dart';
 
+/// Per-repeater clock sync, on top of the app-wide default.
+///
+/// A missing entry follows the Repeaters and Rooms setting. `true` and
+/// `false` in the saved map are explicit On and Off from before that choice
+/// existed, and they keep winning over the global default.
+enum RepeaterClockSyncOverride { followDefault, on, off }
+
 class StorageService {
   static const String _pathHistoryPrefix = 'path_history_';
   static const String _pendingMessagesKey = 'pending_messages';
@@ -29,36 +36,101 @@ class StorageService {
       ? '$_pathHistoryPrefix$contactPubKeyHex'
       : '$_pathHistoryPrefix${_publicKeyHex}_$contactPubKeyHex';
 
-  Future<Map<String, bool>> _loadRepeaterAutoClockSyncAfterLogin() async {
+  Future<Map<String, RepeaterClockSyncOverride>>
+  _loadRepeaterClockSyncOverrides() async {
     final prefs = PrefsManager.instance;
     final jsonStr = prefs.getString(_repeaterAutoClockSyncAfterLoginKey);
-
     if (jsonStr == null) return {};
 
     try {
       final json = jsonDecode(jsonStr) as Map<String, dynamic>;
-      return json.map((key, value) => MapEntry(key, value == true));
+      final overrides = <String, RepeaterClockSyncOverride>{};
+      for (final entry in json.entries) {
+        final override = switch (entry.value) {
+          true || 'on' => RepeaterClockSyncOverride.on,
+          false || 'off' => RepeaterClockSyncOverride.off,
+          _ => RepeaterClockSyncOverride.followDefault,
+        };
+        if (override != RepeaterClockSyncOverride.followDefault) {
+          overrides[entry.key] = override;
+        }
+      }
+      return overrides;
     } catch (e) {
       return {};
     }
   }
 
+  Future<void> _saveRepeaterClockSyncOverrides(
+    Map<String, RepeaterClockSyncOverride> overrides,
+  ) async {
+    final prefs = PrefsManager.instance;
+    final stored = <String, bool>{
+      for (final entry in overrides.entries)
+        if (entry.value == RepeaterClockSyncOverride.on)
+          entry.key: true
+        else if (entry.value == RepeaterClockSyncOverride.off)
+          entry.key: false,
+    };
+    if (stored.isEmpty) {
+      await prefs.remove(_repeaterAutoClockSyncAfterLoginKey);
+      return;
+    }
+    await prefs.setString(
+      _repeaterAutoClockSyncAfterLoginKey,
+      jsonEncode(stored),
+    );
+  }
+
+  Future<RepeaterClockSyncOverride> getRepeaterClockSyncOverride(
+    String repeaterPubKeyHex,
+  ) async {
+    final overrides = await _loadRepeaterClockSyncOverrides();
+    return overrides[repeaterPubKeyHex] ??
+        RepeaterClockSyncOverride.followDefault;
+  }
+
+  /// Whether this repeater should receive `clock sync` after login.
+  ///
+  /// An explicit per-repeater choice wins. Otherwise [globalDefault] applies.
+  Future<bool> repeaterClockSyncAfterLogin(
+    String repeaterPubKeyHex, {
+    required bool globalDefault,
+  }) async {
+    return switch (await getRepeaterClockSyncOverride(repeaterPubKeyHex)) {
+      RepeaterClockSyncOverride.followDefault => globalDefault,
+      RepeaterClockSyncOverride.on => true,
+      RepeaterClockSyncOverride.off => false,
+    };
+  }
+
+  Future<void> setRepeaterClockSyncOverride(
+    String repeaterPubKeyHex,
+    RepeaterClockSyncOverride override,
+  ) async {
+    final overrides = await _loadRepeaterClockSyncOverrides();
+    if (override == RepeaterClockSyncOverride.followDefault) {
+      overrides.remove(repeaterPubKeyHex);
+    } else {
+      overrides[repeaterPubKeyHex] = override;
+    }
+    await _saveRepeaterClockSyncOverrides(overrides);
+  }
+
   Future<bool> getRepeaterAutoClockSyncAfterLoginEnabled(
     String repeaterPubKeyHex,
   ) async {
-    final settings = await _loadRepeaterAutoClockSyncAfterLogin();
-    return settings[repeaterPubKeyHex] ?? false;
+    return repeaterClockSyncAfterLogin(repeaterPubKeyHex, globalDefault: false);
   }
 
   Future<void> setRepeaterAutoClockSyncAfterLoginEnabled(
     String repeaterPubKeyHex,
     bool enabled,
   ) async {
-    final prefs = PrefsManager.instance;
-    final settings = await _loadRepeaterAutoClockSyncAfterLogin();
-    settings[repeaterPubKeyHex] = enabled;
-    final jsonStr = jsonEncode(settings);
-    await prefs.setString(_repeaterAutoClockSyncAfterLoginKey, jsonStr);
+    await setRepeaterClockSyncOverride(
+      repeaterPubKeyHex,
+      enabled ? RepeaterClockSyncOverride.on : RepeaterClockSyncOverride.off,
+    );
   }
 
   Future<void> savePathHistory(

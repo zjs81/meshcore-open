@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1424,11 +1423,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Reset contact path after 5 failed send attempts';
+      'Reset the contact\'s saved path after every send attempt fails';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Paths will be cleared after 5 failed retries';
+      'Paths will be cleared after all send attempts fail';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1439,7 +1438,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Cycle between best paths and flood mode';
+      'On each direct attempt, try a different known route. Later attempts flood. Off keeps the contact\'s current path.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1455,6 +1454,62 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Number of retry attempts before marking a message as failed';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Direct attempts: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'How many times to try a known route. This stays available when auto route rotation is off.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Flood attempts: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'How many times to flood. Floods use more airtime. With rotation on, these follow the direct attempts.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Login attempts: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'How many times to try logging in to a repeater or room server before giving up.';
+
+  @override
+  String get appSettings_repeatersAndRooms => 'Repeaters and Rooms';
+
+  @override
+  String get appSettings_clockSyncAfterLogin => 'Sync repeater clock on login';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'After a successful repeater login, send clock sync. Each repeater can still choose Default, On, or Off.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Focus the password field';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'When opening a repeater or room login, put the cursor in the password field if it is empty. Off leaves the dialog visible until you tap the field.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Reset repeater and room settings to defaults';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Restore the settings in this section to their defaults. Choices saved on individual repeaters stay as they are.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Repeater and room settings reset to defaults';
 
   @override
   String get appSettings_ipfsImageLinks => 'IPFS provider configuration';
@@ -3449,7 +3504,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Automatically send \"clock sync\" after a successful login';
+      'Default follows Repeaters and Rooms in App Settings. On and Off apply only to this repeater.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Default';
+
+  @override
+  String get repeater_clockSyncOn => 'On';
+
+  @override
+  String get repeater_clockSyncOff => 'Off';
 
   @override
   String get repeater_statusTitle => 'Repeater Status';
@@ -6936,15 +7000,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Reset Routing Algorithm to Default';
+      'Reset routing settings to defaults';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Restore routing algorithm settings to factory defaults';
+      'Restore the routing settings in this section to their defaults';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Routing algorithm settings reset to default';
+      'Routing settings reset to defaults';
 
   @override
   String get appSettings_imageMessagesSection => 'Image messages';

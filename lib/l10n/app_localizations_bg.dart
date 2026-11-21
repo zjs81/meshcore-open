@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1450,11 +1449,11 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Възстанови пътя към контакта след 5 неуспешни опита за изпращане';
+      'Нулиране на записания път към контакта, когато всички опити за изпращане се провалят';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Пътищата ще бъдат почистени след 5 неуспешни опита.';
+      'Пътищата се изчистват, когато всички опити за изпращане се провалят';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1466,7 +1465,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Превключвайте между най-добрите пътища и режим Flood';
+      'При всеки директен опит се пробва друг известен маршрут. Следващите опити са Flood. Изключено запазва текущия път на контакта.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1483,6 +1482,64 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Брой опити за повторно изпращане, преди съобщението да бъде маркирано като неуспешно.';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Директни опити: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Колко пъти да се пробва известен маршрут. Достъпно и когато автоматичната ротация е изключена.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Опити Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Колко пъти да се използва Flood. Flood заема повече ефирно време. При включена ротация идват след директните опити.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Опити за вход: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Колко пъти да се опитва вход към ретранслатор или room сървър, преди да се откаже.';
+
+  @override
+  String get appSettings_repeatersAndRooms => 'Повторители и стаи';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Синхронизиране на часовника при вход';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'След успешен вход в повторител се изпраща clock sync. Всеки повторител пак може да е По подразбиране, Вкл. или Изкл.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus =>
+      'Фокус върху полето за парола';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'При отваряне на вход в повторител или стая курсорът отива в празното поле за парола. Изключено оставя диалога видим, докато не докоснете полето.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Нулиране на настройките за повторители и стаи';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Възстановява настройките в този раздел. Изборите за отделни повторители остават.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Настройките за повторители и стаи са нулирани';
 
   @override
   String get appSettings_ipfsImageLinks => 'Конфигурация на IPFS доставчик';
@@ -3504,7 +3561,16 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Автоматично изпращайте съобщение \"синхронизиране на часовника\" след успешно влизане.';
+      'По подразбиране следва „Повторители и стаи“ в настройките. Вкл. и Изкл. важат само за този повторител.';
+
+  @override
+  String get repeater_clockSyncDefault => 'По подразбиране';
+
+  @override
+  String get repeater_clockSyncOn => 'Вкл.';
+
+  @override
+  String get repeater_clockSyncOff => 'Изкл.';
 
   @override
   String get repeater_statusTitle => 'Статус на повтарянето';
@@ -7034,15 +7100,15 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Нулиране на алгоритъма за маршрутизация до стойност по подразбиране';
+      'Нулиране на настройките за маршрутизация до стойностите по подразбиране';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Възстановяване на настройките на алгоритъма за маршрутизация до заводските стойности по подразбиране';
+      'Възстановяване на настройките за маршрутизация в този раздел до стойностите по подразбиране';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Настройките на алгоритъма за маршрутизация са нулирани до стойност по подразбиране';
+      'Настройките за маршрутизация са нулирани до стойностите по подразбиране';
 
   @override
   String get appSettings_imageMessagesSection => 'Съобщения с изображения';

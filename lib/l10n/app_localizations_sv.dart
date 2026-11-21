@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1428,11 +1427,11 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Återställ kontaktens rutt efter 5 misslyckade sändningsförsök';
+      'Återställ kontaktens sparade rutt när alla sändningsförsök misslyckas';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Rutter rensas efter 5 misslyckade försök';
+      'Rutter rensas när alla sändningsförsök misslyckas';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1443,7 +1442,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Växla mellan de bästa rutterna och flood-läge';
+      'Vid varje direkt försök, prova en annan känd rutt. Senare försök är Flood. Av behåller kontaktens aktuella rutt.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1459,6 +1458,63 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Antal försök att skicka om ett meddelande innan det markeras som misslyckat.';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Direkta försök: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Hur många gånger en känd rutt provas. Finns kvar även när automatisk ruttrotation är av.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Flood-försök: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Hur många gånger Flood används. Flood tar mer sändningstid. Med rotation på kommer de efter de direkta försöken.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Inloggningsförsök: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Hur många gånger inloggning till en repeater eller room-server provas innan den ger upp.';
+
+  @override
+  String get appSettings_repeatersAndRooms => 'Repeatrar och rum';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Synka repeaterklockan vid inloggning';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Efter en lyckad repeaterinloggning skickas clock sync. Varje repeater kan fortfarande välja Standard, På eller Av.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Fokusera lösenordsfältet';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'När en repeater- eller ruminloggning öppnas hamnar markören i lösenordsfältet om det är tomt. Av lämnar dialogrutan synlig tills du trycker på fältet.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Återställ repeater- och ruminställningar';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Återställer inställningarna i det här avsnittet. Val som sparats på enskilda repeatrar blir kvar.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Repeater- och ruminställningar återställda';
 
   @override
   String get appSettings_ipfsImageLinks => 'Konfiguration av IPFS-leverantör';
@@ -3470,7 +3526,16 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Automatiskt skicka \"klocksynkronisering\" efter en lyckad inloggning.';
+      'Standard följer Repeatrar och rum i appinställningarna. På och Av gäller bara den här repeatern.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Standard';
+
+  @override
+  String get repeater_clockSyncOn => 'På';
+
+  @override
+  String get repeater_clockSyncOff => 'Av';
 
   @override
   String get repeater_statusTitle => 'Repeaterstatus';
@@ -6978,15 +7043,15 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Återställ rutningsalgoritm till standard';
+      'Återställ rutningsinställningar till standard';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Återställ rutningsalgoritmins inställningar till fabriksstandard';
+      'Återställ routningsinställningarna i det här avsnittet till standardvärden';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Rutningsalgoritmins inställningar återställda till standard';
+      'Rutningsinställningar återställda till standard';
 
   @override
   String get appSettings_imageMessagesSection => 'Bildmeddelanden';

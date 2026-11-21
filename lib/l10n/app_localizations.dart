@@ -2644,13 +2644,13 @@ abstract class AppLocalizations {
   /// No description provided for @appSettings_clearPathOnMaxRetrySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Reset contact path after 5 failed send attempts'**
+  /// **'Reset the contact\'s saved path after every send attempt fails'**
   String get appSettings_clearPathOnMaxRetrySubtitle;
 
   /// No description provided for @appSettings_pathsWillBeCleared.
   ///
   /// In en, this message translates to:
-  /// **'Paths will be cleared after 5 failed retries'**
+  /// **'Paths will be cleared after all send attempts fail'**
   String get appSettings_pathsWillBeCleared;
 
   /// No description provided for @appSettings_pathsWillNotBeCleared.
@@ -2668,7 +2668,7 @@ abstract class AppLocalizations {
   /// No description provided for @appSettings_autoRouteRotationSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Cycle between best paths and flood mode'**
+  /// **'On each direct attempt, try a different known route. Later attempts flood. Off keeps the contact\'s current path.'**
   String get appSettings_autoRouteRotationSubtitle;
 
   /// No description provided for @appSettings_autoRouteRotationEnabled.
@@ -2694,6 +2694,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Number of retry attempts before marking a message as failed'**
   String get appSettings_maxMessageRetriesSubtitle;
+
+  /// No description provided for @appSettings_directRetries.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct attempts: {count}'**
+  String appSettings_directRetries(int count);
+
+  /// No description provided for @appSettings_directRetriesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How many times to try a known route. This stays available when auto route rotation is off.'**
+  String get appSettings_directRetriesSubtitle;
+
+  /// No description provided for @appSettings_floodRetries.
+  ///
+  /// In en, this message translates to:
+  /// **'Flood attempts: {count}'**
+  String appSettings_floodRetries(int count);
+
+  /// No description provided for @appSettings_floodRetriesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How many times to flood. Floods use more airtime. With rotation on, these follow the direct attempts.'**
+  String get appSettings_floodRetriesSubtitle;
+
+  /// No description provided for @appSettings_loginAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Login attempts: {count}'**
+  String appSettings_loginAttempts(int count);
+
+  /// No description provided for @appSettings_loginAttemptsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How many times to try logging in to a repeater or room server before giving up.'**
+  String get appSettings_loginAttemptsSubtitle;
+
+  /// No description provided for @appSettings_repeatersAndRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeaters and Rooms'**
+  String get appSettings_repeatersAndRooms;
+
+  /// No description provided for @appSettings_clockSyncAfterLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync repeater clock on login'**
+  String get appSettings_clockSyncAfterLogin;
+
+  /// No description provided for @appSettings_clockSyncAfterLoginSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'After a successful repeater login, send clock sync. Each repeater can still choose Default, On, or Off.'**
+  String get appSettings_clockSyncAfterLoginSubtitle;
+
+  /// No description provided for @appSettings_loginPasswordAutofocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus the password field'**
+  String get appSettings_loginPasswordAutofocus;
+
+  /// No description provided for @appSettings_loginPasswordAutofocusSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When opening a repeater or room login, put the cursor in the password field if it is empty. Off leaves the dialog visible until you tap the field.'**
+  String get appSettings_loginPasswordAutofocusSubtitle;
+
+  /// No description provided for @appSettings_resetRepeaterRoomSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset repeater and room settings to defaults'**
+  String get appSettings_resetRepeaterRoomSettings;
+
+  /// No description provided for @appSettings_resetRepeaterRoomSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore the settings in this section to their defaults. Choices saved on individual repeaters stay as they are.'**
+  String get appSettings_resetRepeaterRoomSettingsSubtitle;
+
+  /// No description provided for @appSettings_repeaterRoomSettingsReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeater and room settings reset to defaults'**
+  String get appSettings_repeaterRoomSettingsReset;
 
   /// No description provided for @appSettings_ipfsImageLinks.
   ///
@@ -6123,8 +6207,26 @@ abstract class AppLocalizations {
   /// Repeater setting subtitle: describes the clock sync after login behavior
   ///
   /// In en, this message translates to:
-  /// **'Automatically send \"clock sync\" after a successful login'**
+  /// **'Default follows Repeaters and Rooms in App Settings. On and Off apply only to this repeater.'**
   String get repeater_clockSyncAfterLoginSubtitle;
+
+  /// No description provided for @repeater_clockSyncDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get repeater_clockSyncDefault;
+
+  /// No description provided for @repeater_clockSyncOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get repeater_clockSyncOn;
+
+  /// No description provided for @repeater_clockSyncOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get repeater_clockSyncOff;
 
   /// No description provided for @repeater_statusTitle.
   ///
@@ -11738,19 +11840,19 @@ abstract class AppLocalizations {
   /// No description provided for @appSettings_resetRoutingToDefault.
   ///
   /// In en, this message translates to:
-  /// **'Reset Routing Algorithm to Default'**
+  /// **'Reset routing settings to defaults'**
   String get appSettings_resetRoutingToDefault;
 
   /// No description provided for @appSettings_resetRoutingToDefaultSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Restore routing algorithm settings to factory defaults'**
+  /// **'Restore the routing settings in this section to their defaults'**
   String get appSettings_resetRoutingToDefaultSubtitle;
 
   /// No description provided for @appSettings_routingResetToDefault.
   ///
   /// In en, this message translates to:
-  /// **'Routing algorithm settings reset to default'**
+  /// **'Routing settings reset to defaults'**
   String get appSettings_routingResetToDefault;
 
   /// No description provided for @appSettings_imageMessagesSection.

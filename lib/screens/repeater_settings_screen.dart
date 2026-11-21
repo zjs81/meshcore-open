@@ -112,7 +112,8 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
   int? _spreadingFactor;
   int? _codingRate;
 
-  bool _autoClockSyncAfterLogin = false;
+  RepeaterClockSyncOverride _clockSyncOverride =
+      RepeaterClockSyncOverride.followDefault;
 
   // Identity keys
   final TextEditingController _prvKeyController = TextEditingController();
@@ -527,13 +528,12 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
       }
     });
 
-    final autoClockSync = await _storage
-        .getRepeaterAutoClockSyncAfterLoginEnabled(
-          widget.repeater.publicKeyHex,
-        );
+    final clockSync = await _storage.getRepeaterClockSyncOverride(
+      widget.repeater.publicKeyHex,
+    );
     if (!mounted) return;
     setState(() {
-      _autoClockSyncAfterLogin = autoClockSync;
+      _clockSyncOverride = clockSync;
     });
   }
 
@@ -953,7 +953,7 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
                       _buildSectionCard(
                         l10n.repeater_features,
                         RepeaterSettingSection.features,
-                        extra: [_buildClockSyncToggle()],
+                        extra: [_buildClockSyncChoice()],
                       ),
                       _buildSectionCard(
                         l10n.repeater_networkHealth,
@@ -1366,22 +1366,75 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     ];
   }
 
-  Widget _buildClockSyncToggle() {
+  Widget _buildClockSyncChoice() {
     final l10n = context.l10n;
-    return SwitchListTile(
-      title: Text(l10n.repeater_clockSyncAfterLogin),
-      subtitle: Text(l10n.repeater_clockSyncAfterLoginSubtitle),
-      value: _autoClockSyncAfterLogin,
-      onChanged: (value) async {
-        setState(() {
-          _autoClockSyncAfterLogin = value;
-        });
-        await _storage.setRepeaterAutoClockSyncAfterLoginEnabled(
-          widget.repeater.publicKeyHex,
-          value,
-        );
-      },
-      contentPadding: EdgeInsets.zero,
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    ButtonSegment<RepeaterClockSyncOverride> segment(
+      RepeaterClockSyncOverride value,
+      String label,
+    ) => ButtonSegment(value: value, label: MeshSegmentLabel(label));
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.schedule, size: 24, color: scheme.onSurfaceVariant),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.repeater_clockSyncAfterLogin,
+                      style: textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      l10n.repeater_clockSyncAfterLoginSubtitle,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          SegmentedButton<RepeaterClockSyncOverride>(
+            showSelectedIcon: false,
+            style: const ButtonStyle(
+              minimumSize: WidgetStatePropertyAll(Size.fromHeight(40)),
+              visualDensity: VisualDensity.compact,
+            ),
+            segments: [
+              segment(
+                RepeaterClockSyncOverride.followDefault,
+                l10n.repeater_clockSyncDefault,
+              ),
+              segment(RepeaterClockSyncOverride.on, l10n.repeater_clockSyncOn),
+              segment(
+                RepeaterClockSyncOverride.off,
+                l10n.repeater_clockSyncOff,
+              ),
+            ],
+            selected: {_clockSyncOverride},
+            onSelectionChanged: (selected) async {
+              final value = selected.first;
+              setState(() => _clockSyncOverride = value);
+              await _storage.setRepeaterClockSyncOverride(
+                widget.repeater.publicKeyHex,
+                value,
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
