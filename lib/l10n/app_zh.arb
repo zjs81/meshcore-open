@@ -2538,7 +2538,7 @@
   "pathEditor_searchRepeaters": "重复搜索",
   "pathEditor_advancedHex": "高级：原始十六进制路径",
   "pathEditor_hexLabel": "十六进制前缀",
-  "pathEditor_hexHelper": "每跳使用两个十六进制字符，用逗号分隔。",
+  "pathEditor_hexHelper": "每跳使用{count}个十六进制字符，用逗号分隔。",
   "pathEditor_invalidTokens": "无效：{tokens}",
   "pathEditor_tooManyHops": "最多 64 跳",
   "pathEditor_usePath": "请使用此路径",

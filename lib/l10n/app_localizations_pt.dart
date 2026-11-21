@@ -2706,8 +2706,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get pathEditor_hexLabel => 'Prefixos hexadecimais';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Dois caracteres hexadecimais por salto, separados por vírgulas.';
+  String pathEditor_hexHelper(int count) {
+    return '$count caracteres hexadecimais por salto, separados por vírgulas.';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {
@@ -10298,8 +10299,9 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get pathEditor_hexLabel => 'Prefixos hex';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Dois caracteres hex por hop, separados por vírgulas';
+  String pathEditor_hexHelper(int count) {
+    return '$count caracteres hex por hop, separados por vírgulas';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

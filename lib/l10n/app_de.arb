@@ -2791,7 +2791,7 @@
   "pathEditor_searchRepeaters": "Repeater suchen",
   "pathEditor_advancedHex": "Erweitert: roher Hex-Pfad",
   "pathEditor_hexLabel": "Hex-Präfixe",
-  "pathEditor_hexHelper": "Zwei Hex-Zeichen pro Sprung, durch Kommas getrennt",
+  "pathEditor_hexHelper": "{count} Hex-Zeichen pro Sprung, durch Kommas getrennt",
   "pathEditor_invalidTokens": "Ungültig: {tokens}",
   "pathEditor_tooManyHops": "Maximal 64 Sprünge",
   "pathEditor_usePath": "Diesen Pfad verwenden",

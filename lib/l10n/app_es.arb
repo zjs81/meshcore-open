@@ -2675,7 +2675,7 @@
   "pathEditor_searchRepeaters": "Buscar repetidores",
   "pathEditor_advancedHex": "Avanzado: ruta hexadecimal sin procesar",
   "pathEditor_hexLabel": "Prefijos hexadecimales",
-  "pathEditor_hexHelper": "Dos caracteres hexadecimales por salto, separados por comas.",
+  "pathEditor_hexHelper": "{count} caracteres hexadecimales por salto, separados por comas.",
   "pathEditor_invalidTokens": "Inválido: {tokens}",
   "pathEditor_tooManyHops": "Máximo 64 saltos",
   "pathEditor_usePath": "Usar esta ruta",

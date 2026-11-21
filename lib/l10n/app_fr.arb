@@ -2675,7 +2675,7 @@
   "pathEditor_searchRepeaters": "Rechercher des répétiteurs",
   "pathEditor_advancedHex": "Avancé : chemin hexadécimal brut",
   "pathEditor_hexLabel": "Préfixes hexadécimaux",
-  "pathEditor_hexHelper": "Deux caractères hexadécimaux par saut, séparés par des virgules.",
+  "pathEditor_hexHelper": "{count} caractères hexadécimaux par saut, séparés par des virgules.",
   "pathEditor_invalidTokens": "Invalide : {tokens}",
   "pathEditor_tooManyHops": "Maximum 64 sauts",
   "pathEditor_usePath": "Utiliser ce chemin",

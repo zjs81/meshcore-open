@@ -1922,7 +1922,7 @@
   "pathEditor_searchRepeaters": "Поиск повторителей",
   "pathEditor_advancedHex": "Продвинутый уровень: прямой путь в шестнадцатеричном формате",
   "pathEditor_hexLabel": "Префиксы шестнадцатеричной системы",
-  "pathEditor_hexHelper": "Два шестнадцатеричных символа на каждом шаге, разделенные запятыми.",
+  "pathEditor_hexHelper": "{count} шестнадцатеричных символа на каждом шаге, разделенные запятыми.",
   "pathEditor_invalidTokens": "Неверно: {tokens}",
   "routing_lastWorked": "работал {when}",
   "routing_deliveryCounts": "{successes} доставлено, {failures} не доставлено",

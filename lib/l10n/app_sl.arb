@@ -2534,7 +2534,7 @@
   "pathEditor_searchRepeaters": "Iskanje ponovitev",
   "pathEditor_advancedHex": "Napredno: surovi šestnajstni pot",
   "pathEditor_hexLabel": "Predfiks za heksadecimalno šifro",
-  "pathEditor_hexHelper": "Dva šestbitna znaka na vsak skok, ločena z vejico",
+  "pathEditor_hexHelper": "{count} šestnajstiških znakov na vsak skok, ločenih z vejico",
   "pathEditor_invalidTokens": "Neveljaven: {tokens}",
   "pathEditor_tooManyHops": "Največ 64 hopov",
   "pathEditor_usePath": "Uporabite to poto",

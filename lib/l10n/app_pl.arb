@@ -2658,7 +2658,7 @@
   "pathEditor_searchRepeaters": "Funkcje powtarzania",
   "pathEditor_advancedHex": "Zaawansowane: ścieżka w formacie szesnastkowym",
   "pathEditor_hexLabel": "Prefiksy heksadecymalne",
-  "pathEditor_hexHelper": "Dwa znaki szesnastkowe na każdym kroku, oddzielone przecinkami",
+  "pathEditor_hexHelper": "{count} znaki szesnastkowe na każdym kroku, oddzielone przecinkami",
   "pathEditor_invalidTokens": "Nieprawidłowe: {tokens}",
   "pathEditor_tooManyHops": "Maksymalnie 64 hopów",
   "pathEditor_usePath": "Użyj tej ścieżki.",

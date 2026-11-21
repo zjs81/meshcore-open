@@ -2675,7 +2675,7 @@
   "pathEditor_searchRepeaters": "リピータを検索",
   "pathEditor_advancedHex": "詳細: 生の 16 進経路",
   "pathEditor_hexLabel": "16 進接頭辞",
-  "pathEditor_hexHelper": "ホップごとに 16 進数 2 文字をカンマ区切りで入力します",
+  "pathEditor_hexHelper": "ホップごとに 16 進数 {count} 文字をカンマ区切りで入力します",
   "pathEditor_invalidTokens": "無効: {tokens}",
   "pathEditor_tooManyHops": "最大 64 ホップ",
   "pathEditor_usePath": "この経路を使用",

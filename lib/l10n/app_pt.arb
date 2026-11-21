@@ -2540,7 +2540,7 @@
   "pathEditor_searchRepeaters": "Encontrar repetidores",
   "pathEditor_advancedHex": "Avançado: caminho hexadecimal bruto",
   "pathEditor_hexLabel": "Prefixos hexadecimais",
-  "pathEditor_hexHelper": "Dois caracteres hexadecimais por salto, separados por vírgulas.",
+  "pathEditor_hexHelper": "{count} caracteres hexadecimais por salto, separados por vírgulas.",
   "pathEditor_invalidTokens": "Inválido: {tokens}",
   "routing_lastWorked": "funcionou {when}",
   "pathEditor_tooManyHops": "Máximo de 64 saltos",

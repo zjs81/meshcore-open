@@ -2717,8 +2717,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pathEditor_hexLabel => 'Hex-Präfixe';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Zwei Hex-Zeichen pro Sprung, durch Kommas getrennt';
+  String pathEditor_hexHelper(int count) {
+    return '$count Hex-Zeichen pro Sprung, durch Kommas getrennt';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

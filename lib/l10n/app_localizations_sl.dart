@@ -2705,8 +2705,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get pathEditor_hexLabel => 'Predfiks za heksadecimalno šifro';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Dva šestbitna znaka na vsak skok, ločena z vejico';
+  String pathEditor_hexHelper(int count) {
+    return '$count šestnajstiških znakov na vsak skok, ločenih z vejico';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

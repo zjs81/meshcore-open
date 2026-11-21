@@ -2598,7 +2598,7 @@
   "pathEditor_searchRepeaters": "Пошук повторювачів",
   "pathEditor_advancedHex": "Просунутий рівень: пряма шлях у форматі шестнадцяткової системи.",
   "pathEditor_hexLabel": "Префікси для шестнадцяткової системи числення",
-  "pathEditor_hexHelper": "Два шестизначні символи на кожний крок, розділені комами",
+  "pathEditor_hexHelper": "{count} шістнадцяткові символи на кожний крок, розділені комами",
   "pathEditor_invalidTokens": "Неправильно: {tokens}",
   "routing_lastWorked": "працював {when}",
   "routing_deliveryCounts": "{successes} доставлено, {failures} не доставлено",

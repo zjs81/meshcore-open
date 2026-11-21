@@ -2707,8 +2707,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pathEditor_hexLabel => 'Prefijos hexadecimales';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Dos caracteres hexadecimales por salto, separados por comas.';
+  String pathEditor_hexHelper(int count) {
+    return '$count caracteres hexadecimales por salto, separados por comas.';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

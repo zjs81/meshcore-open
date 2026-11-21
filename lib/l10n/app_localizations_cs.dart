@@ -2706,7 +2706,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pathEditor_hexLabel => 'Hex prefixy';
 
   @override
-  String get pathEditor_hexHelper => 'Dva hex znaky na skok, oddělené čárkami';
+  String pathEditor_hexHelper(int count) {
+    return '$count hex znaky na skok, oddělené čárkami';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

@@ -2529,7 +2529,7 @@
   "pathEditor_searchRepeaters": "Sök repeaters",
   "pathEditor_advancedHex": "Avancerat: rå rutt i hexformat",
   "pathEditor_hexLabel": "Hex-prefikser",
-  "pathEditor_hexHelper": "Två hextecken per hopp, separerade med kommatecken",
+  "pathEditor_hexHelper": "{count} hextecken per hopp, separerade med kommatecken",
   "pathEditor_invalidTokens": "Ogiltigt: {tokens}",
   "pathEditor_tooManyHops": "Maximalt 64 hopp",
   "pathEditor_usePath": "Använd den här rutten",

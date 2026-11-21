@@ -758,7 +758,7 @@
   "pathEditor_searchRepeaters": "Pesquisar repetidores",
   "pathEditor_advancedHex": "Avançado: caminho hex em bruto",
   "pathEditor_hexLabel": "Prefixos hex",
-  "pathEditor_hexHelper": "Dois caracteres hex por hop, separados por vírgulas",
+  "pathEditor_hexHelper": "{count} caracteres hex por hop, separados por vírgulas",
   "pathEditor_invalidTokens": "Inválido: {tokens}",
   "pathEditor_tooManyHops": "Máximo de 64 hops",
   "pathEditor_usePath": "Usar este caminho",

@@ -2696,8 +2696,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pathEditor_hexLabel => 'Hex-prefixen';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Twee hex-tekens per hop, gescheiden door komma\'s';
+  String pathEditor_hexHelper(int count) {
+    return '$count hex-tekens per hop, gescheiden door komma\'s';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

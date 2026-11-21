@@ -2588,7 +2588,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get pathEditor_hexLabel => '16 進接頭辞';
 
   @override
-  String get pathEditor_hexHelper => 'ホップごとに 16 進数 2 文字をカンマ区切りで入力します';
+  String pathEditor_hexHelper(int count) {
+    return 'ホップごとに 16 進数 $count 文字をカンマ区切りで入力します';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

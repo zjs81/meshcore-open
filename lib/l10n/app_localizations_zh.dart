@@ -2546,7 +2546,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pathEditor_hexLabel => '十六进制前缀';
 
   @override
-  String get pathEditor_hexHelper => '每跳使用两个十六进制字符，用逗号分隔。';
+  String pathEditor_hexHelper(int count) {
+    return '每跳使用$count个十六进制字符，用逗号分隔。';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {

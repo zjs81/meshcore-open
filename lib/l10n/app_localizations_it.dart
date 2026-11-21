@@ -2711,8 +2711,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pathEditor_hexLabel => 'Prefissi esadecimali';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Due caratteri esadecimali per ogni salto, separati da virgole.';
+  String pathEditor_hexHelper(int count) {
+    return '$count caratteri esadecimali per ogni salto, separati da virgole.';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {
