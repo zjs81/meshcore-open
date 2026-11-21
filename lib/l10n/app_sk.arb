@@ -2625,7 +2625,7 @@
   "pathEditor_searchRepeaters": "Hľadať opakované",
   "pathEditor_advancedHex": "Pokročilé: pôvodná hexová cesta",
   "pathEditor_hexLabel": "Prefiksy pre hexadecimálne čísla",
-  "pathEditor_hexHelper": "Dve hexové čísla na každý krok, oddelené čiarkami",
+  "pathEditor_hexHelper": "{count} hexové čísla na každý krok, oddelené čiarkami",
   "routing_lastWorked": "fungovala {when}",
   "pathEditor_invalidTokens": "Neplatné: {tokens}",
   "routing_deliveryCounts": "{successes} doručených, {failures} neúspešných",
@@ -3809,7 +3809,7 @@
   "backupRestore_backupComplete": "Súbor zálohy bol vytvorený.",
   "backupRestore_restoreComplete": "Obnovenie dokončené. Ak ste obnovili identitu rádia, pripojte sa znova.",
   "backupRestore_missingModelsTitle": "Modely nie sú stiahnuté",
-  "backupRestore_missingModelsMessage": "Obnovené nastavenia vyberajú modely, ktoré nie sú v tomto zariadení k dispozícii:\n{models}\n\nStiahnuť ich teraz?",
+  "backupRestore_missingModelsMessage": "Obnovené nastavenia vyberajú modely, ktoré nie sú v tomto zariadení k dispozícii. Stiahnuť ich teraz?",
   "backupRestore_downloadModels": "Stiahnuť modely",
   "backupRestore_downloading": "Sťahovanie…",
   "backupRestore_cancelDownload": "Zrušiť sťahovanie",
@@ -3829,5 +3829,14 @@
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB alebo TCP",
   "connectSheet_stopReconnecting": "Zastaviť pripájanie",
   "connectSheet_reconnectFailed": "Nedá sa spojiť s {name}. Uistite sa, že je zapnuté a nablízku.",
-  "chat_composerOffline": "Na odosielanie správ sa pripojte k rádiu"
+  "chat_composerOffline": "Na odosielanie správ sa pripojte k rádiu",
+  "modelDownload_notDownloaded": "Nestiahnuté",
+  "modelDownload_downloading": "Sťahovanie",
+  "modelDownload_active": "Aktívny",
+  "modelDownload_failed": "Sťahovanie zlyhalo",
+  "modelDownload_incomplete": "Nekompletné",
+  "modelDownload_verifying": "Overuje sa sťahovanie",
+  "modelDownload_useModel": "Použiť tento model",
+  "modelDownload_removeFailed": "Model sa nepodarilo odstrániť: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

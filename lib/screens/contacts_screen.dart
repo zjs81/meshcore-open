@@ -1244,33 +1244,37 @@ class _ContactsScreenState extends State<ContactsScreen> {
       }).toList();
     }
 
-    switch (viewState.contactsSortOption) {
-      case ContactSortOption.lastSeen:
-        final lastSeenAt = {
-          for (final c in filtered)
-            c: resolveContactLastSeen(
-              c,
-              addedAt: connector.contactAddedAt(c.publicKeyHex),
-            ),
-        };
-        filtered.sort((a, b) => lastSeenAt[b]!.compareTo(lastSeenAt[a]!));
-        break;
-      case ContactSortOption.recentMessages:
-        final lastMessageAt = {
-          for (final c in filtered) c: _lastMessageTime(connector, c),
-        };
-        filtered.sort((a, b) {
-          final timeCompare = lastMessageAt[b]!.compareTo(lastMessageAt[a]!);
+    final lastSeenAt =
+        viewState.contactsSortOption == ContactSortOption.lastSeen
+        ? {
+            for (final c in filtered)
+              c: resolveContactLastSeen(
+                c,
+                addedAt: connector.contactAddedAt(c.publicKeyHex),
+              ),
+          }
+        : null;
+    final lastMessageAt =
+        viewState.contactsSortOption == ContactSortOption.recentMessages
+        ? {for (final c in filtered) c: _lastMessageTime(connector, c)}
+        : null;
+    int tieBreak(Contact a, Contact b) {
+      switch (viewState.contactsSortOption) {
+        case ContactSortOption.lastSeen:
+          return lastSeenAt![b]!.compareTo(lastSeenAt[a]!);
+        case ContactSortOption.recentMessages:
+          final timeCompare = lastMessageAt![b]!.compareTo(lastMessageAt[a]!);
           if (timeCompare != 0) return timeCompare;
           return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-        });
-        break;
-      case ContactSortOption.name:
-        filtered.sort(
-          (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-        );
-        break;
+        case ContactSortOption.name:
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      }
     }
+
+    filtered.sort(
+      (a, b) =>
+          compareContactQueryRank(a, b, viewState.contactsSearchText, tieBreak),
+    );
 
     return filtered;
   }

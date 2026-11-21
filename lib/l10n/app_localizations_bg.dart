@@ -557,9 +557,8 @@ class AppLocalizationsBg extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'Моделите не са изтеглени';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'Възстановените настройки избират модели, които не са налични на това устройство:\n$models\n\nДа се изтеглят ли сега?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'Възстановените настройки избират модели, които не са налични на това устройство. Да се изтеглят ли сега?';
 
   @override
   String get backupRestore_downloadModels => 'Изтегли модели';
@@ -1384,6 +1383,13 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get appSettings_regionOnHopsLineSubtitle =>
       'Показвай региона на съобщението в канала на същия ред като броя хопове, а не под него.';
+
+  @override
+  String get appSettings_showCompressionIndicator => 'Compression indicator';
+
+  @override
+  String get appSettings_showCompressionIndicatorSubtitle =>
+      'Show an icon on messages compressed with SMAZ.';
 
   @override
   String get appSettings_notifications => 'Уведомления';
@@ -2725,8 +2731,9 @@ class AppLocalizationsBg extends AppLocalizations {
   String get pathEditor_hexLabel => 'Шестнадесетични префикси';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Два шестнадесетични идентификатора на скок, разделени със запетаи';
+  String pathEditor_hexHelper(int count) {
+    return '$count шестнадесетични идентификатора на скок, разделени със запетаи';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {
@@ -7591,6 +7598,37 @@ class AppLocalizationsBg extends AppLocalizations {
       'Свържете се с радио, за да изпращате съобщения';
 
   @override
+  String get modelDownload_notDownloaded => 'Не е изтеглен';
+
+  @override
+  String get modelDownload_downloading => 'Изтегляне';
+
+  @override
+  String get modelDownload_active => 'Активен';
+
+  @override
+  String get modelDownload_failed => 'Неуспешно изтегляне';
+
+  @override
+  String get modelDownload_incomplete => 'Непълен';
+
+  @override
+  String get modelDownload_verifying => 'Проверка на изтеглянето';
+
+  @override
+  String get modelDownload_useModel => 'Използвай този модел';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Моделът не можа да бъде премахнат: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
+
+  @override
   String get chatCompression_title => 'Compression';
 
   @override
@@ -7636,4 +7674,7 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get chatCompression_saveFailed =>
       'Couldn\'t save the compression setting. Showing the saved setting.';
+
+  @override
+  String get messageMeta_smazCompressed => 'SMAZ compressed';
 }

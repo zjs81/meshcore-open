@@ -554,9 +554,8 @@ class AppLocalizationsSl extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'Modeli niso preneseni';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'Obnovljene nastavitve izbirajo modele, ki niso na voljo v tej napravi:\n$models\n\nJih želite prenesti zdaj?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'Obnovljene nastavitve izbirajo modele, ki niso na voljo v tej napravi. Jih želite prenesti zdaj?';
 
   @override
   String get backupRestore_downloadModels => 'Prenesi modele';
@@ -1372,6 +1371,13 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get appSettings_regionOnHopsLineSubtitle =>
       'Regijo sporočila kanala prikaži v isti vrstici kot število skokov, ne pod njim.';
+
+  @override
+  String get appSettings_showCompressionIndicator => 'Compression indicator';
+
+  @override
+  String get appSettings_showCompressionIndicatorSubtitle =>
+      'Show an icon on messages compressed with SMAZ.';
 
   @override
   String get appSettings_notifications => 'Obvestila';
@@ -2716,8 +2722,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get pathEditor_hexLabel => 'Predfiks za heksadecimalno šifro';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Dva šestbitna znaka na vsak skok, ločena z vejico';
+  String pathEditor_hexHelper(int count) {
+    return '$count šestnajstiških znakov na vsak skok, ločenih z vejico';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {
@@ -7568,6 +7575,37 @@ class AppLocalizationsSl extends AppLocalizations {
       'Za pošiljanje sporočil se povežite z radiem';
 
   @override
+  String get modelDownload_notDownloaded => 'Ni preneseno';
+
+  @override
+  String get modelDownload_downloading => 'Prenašanje';
+
+  @override
+  String get modelDownload_active => 'Aktiven';
+
+  @override
+  String get modelDownload_failed => 'Prenos ni uspel';
+
+  @override
+  String get modelDownload_incomplete => 'Nepopolno';
+
+  @override
+  String get modelDownload_verifying => 'Preverjanje prenosa';
+
+  @override
+  String get modelDownload_useModel => 'Uporabi ta model';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Modela ni bilo mogoče odstraniti: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
+
+  @override
   String get chatCompression_title => 'Compression';
 
   @override
@@ -7613,4 +7651,7 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get chatCompression_saveFailed =>
       'Couldn\'t save the compression setting. Showing the saved setting.';
+
+  @override
+  String get messageMeta_smazCompressed => 'SMAZ compressed';
 }

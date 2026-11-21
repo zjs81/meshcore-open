@@ -2540,7 +2540,7 @@
   "pathEditor_searchRepeaters": "Encontrar repetidores",
   "pathEditor_advancedHex": "Avançado: caminho hexadecimal bruto",
   "pathEditor_hexLabel": "Prefixos hexadecimais",
-  "pathEditor_hexHelper": "Dois caracteres hexadecimais por salto, separados por vírgulas.",
+  "pathEditor_hexHelper": "{count} caracteres hexadecimais por salto, separados por vírgulas.",
   "pathEditor_invalidTokens": "Inválido: {tokens}",
   "routing_lastWorked": "funcionou {when}",
   "pathEditor_tooManyHops": "Máximo de 64 saltos",
@@ -3808,7 +3808,7 @@
   "backupRestore_backupComplete": "Arquivo de backup criado.",
   "backupRestore_restoreComplete": "Restauração concluída. Reconecte se você restaurou a identidade do rádio.",
   "backupRestore_missingModelsTitle": "Modelos não baixados",
-  "backupRestore_missingModelsMessage": "As configurações restauradas selecionam modelos que não estão disponíveis neste dispositivo:\n{models}\n\nBaixar agora?",
+  "backupRestore_missingModelsMessage": "As configurações restauradas selecionam modelos que não estão disponíveis neste dispositivo. Baixar agora?",
   "backupRestore_downloadModels": "Baixar modelos",
   "backupRestore_downloading": "Baixando…",
   "backupRestore_cancelDownload": "Cancelar download",
@@ -3828,5 +3828,14 @@
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB ou TCP",
   "connectSheet_stopReconnecting": "Parar de reconectar",
   "connectSheet_reconnectFailed": "Não foi possível alcançar {name}. Verifique se está ligado e por perto.",
-  "chat_composerOffline": "Conecte-se a um rádio para enviar mensagens"
+  "chat_composerOffline": "Conecte-se a um rádio para enviar mensagens",
+  "modelDownload_notDownloaded": "Não baixado",
+  "modelDownload_downloading": "Baixando",
+  "modelDownload_active": "Ativo",
+  "modelDownload_failed": "Não foi possível baixar",
+  "modelDownload_incomplete": "Incompleto",
+  "modelDownload_verifying": "Verificando o download",
+  "modelDownload_useModel": "Usar este modelo",
+  "modelDownload_removeFailed": "Não foi possível remover o modelo: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

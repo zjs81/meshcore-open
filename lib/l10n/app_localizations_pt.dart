@@ -557,9 +557,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'Modelos não baixados';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'As configurações restauradas selecionam modelos que não estão disponíveis neste dispositivo:\n$models\n\nBaixar agora?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'As configurações restauradas selecionam modelos que não estão disponíveis neste dispositivo. Baixar agora?';
 
   @override
   String get backupRestore_downloadModels => 'Baixar modelos';
@@ -1379,6 +1378,13 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get appSettings_regionOnHopsLineSubtitle =>
       'Mostra a região de uma mensagem de canal na mesma linha da contagem de saltos, em vez de abaixo dela.';
+
+  @override
+  String get appSettings_showCompressionIndicator => 'Compression indicator';
+
+  @override
+  String get appSettings_showCompressionIndicatorSubtitle =>
+      'Show an icon on messages compressed with SMAZ.';
 
   @override
   String get appSettings_notifications => 'Notificações';
@@ -2717,8 +2723,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get pathEditor_hexLabel => 'Prefixos hexadecimais';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Dois caracteres hexadecimais por salto, separados por vírgulas.';
+  String pathEditor_hexHelper(int count) {
+    return '$count caracteres hexadecimais por salto, separados por vírgulas.';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {
@@ -7573,6 +7580,37 @@ class AppLocalizationsPt extends AppLocalizations {
       'Conecte-se a um rádio para enviar mensagens';
 
   @override
+  String get modelDownload_notDownloaded => 'Não baixado';
+
+  @override
+  String get modelDownload_downloading => 'Baixando';
+
+  @override
+  String get modelDownload_active => 'Ativo';
+
+  @override
+  String get modelDownload_failed => 'Não foi possível baixar';
+
+  @override
+  String get modelDownload_incomplete => 'Incompleto';
+
+  @override
+  String get modelDownload_verifying => 'Verificando o download';
+
+  @override
+  String get modelDownload_useModel => 'Usar este modelo';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Não foi possível remover o modelo: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
+
+  @override
   String get chatCompression_title => 'Compression';
 
   @override
@@ -7618,6 +7656,9 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get chatCompression_saveFailed =>
       'Couldn\'t save the compression setting. Showing the saved setting.';
+
+  @override
+  String get messageMeta_smazCompressed => 'SMAZ compressed';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -8167,9 +8208,8 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get backupRestore_missingModelsTitle => 'Modelos não transferidos';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'As definições restauradas selecionam modelos que não estão disponíveis neste dispositivo:\n$models\n\nTransferi-los agora?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'As definições restauradas selecionam modelos que não estão disponíveis neste dispositivo. Transferi-los agora?';
 
   @override
   String get backupRestore_downloadModels => 'Transferir modelos';
@@ -10276,8 +10316,9 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get pathEditor_hexLabel => 'Prefixos hex';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Dois caracteres hex por hop, separados por vírgulas';
+  String pathEditor_hexHelper(int count) {
+    return '$count caracteres hex por hop, separados por vírgulas';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {
@@ -15057,4 +15098,35 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   @override
   String get chat_composerOffline =>
       'Ligue-se a um rádio para enviar mensagens';
+
+  @override
+  String get modelDownload_notDownloaded => 'Não transferido';
+
+  @override
+  String get modelDownload_downloading => 'A transferir';
+
+  @override
+  String get modelDownload_active => 'Ativo';
+
+  @override
+  String get modelDownload_failed => 'Não foi possível transferir';
+
+  @override
+  String get modelDownload_incomplete => 'Incompleto';
+
+  @override
+  String get modelDownload_verifying => 'A verificar a transferência';
+
+  @override
+  String get modelDownload_useModel => 'Utilizar este modelo';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Não foi possível remover o modelo: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
 }

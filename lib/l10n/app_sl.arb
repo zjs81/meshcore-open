@@ -2534,7 +2534,7 @@
   "pathEditor_searchRepeaters": "Iskanje ponovitev",
   "pathEditor_advancedHex": "Napredno: surovi šestnajstni pot",
   "pathEditor_hexLabel": "Predfiks za heksadecimalno šifro",
-  "pathEditor_hexHelper": "Dva šestbitna znaka na vsak skok, ločena z vejico",
+  "pathEditor_hexHelper": "{count} šestnajstiških znakov na vsak skok, ločenih z vejico",
   "pathEditor_invalidTokens": "Neveljaven: {tokens}",
   "pathEditor_tooManyHops": "Največ 64 hopov",
   "pathEditor_usePath": "Uporabite to poto",
@@ -3963,7 +3963,7 @@
   "backupRestore_backupComplete": "Datoteka varnostne kopije je ustvarjena.",
   "backupRestore_restoreComplete": "Obnovitev je končana. Če ste obnovili identiteto radia, se znova povežite.",
   "backupRestore_missingModelsTitle": "Modeli niso preneseni",
-  "backupRestore_missingModelsMessage": "Obnovljene nastavitve izbirajo modele, ki niso na voljo v tej napravi:\n{models}\n\nJih želite prenesti zdaj?",
+  "backupRestore_missingModelsMessage": "Obnovljene nastavitve izbirajo modele, ki niso na voljo v tej napravi. Jih želite prenesti zdaj?",
   "backupRestore_downloadModels": "Prenesi modele",
   "backupRestore_downloading": "Prenašanje…",
   "backupRestore_cancelDownload": "Prekliči prenos",
@@ -3983,5 +3983,14 @@
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB ali TCP",
   "connectSheet_stopReconnecting": "Ustavi ponovno povezovanje",
   "connectSheet_reconnectFailed": "Ni mogoče doseči {name}. Preverite, ali je vklopljen in v bližini.",
-  "chat_composerOffline": "Za pošiljanje sporočil se povežite z radiem"
+  "chat_composerOffline": "Za pošiljanje sporočil se povežite z radiem",
+  "modelDownload_notDownloaded": "Ni preneseno",
+  "modelDownload_downloading": "Prenašanje",
+  "modelDownload_active": "Aktiven",
+  "modelDownload_failed": "Prenos ni uspel",
+  "modelDownload_incomplete": "Nepopolno",
+  "modelDownload_verifying": "Preverjanje prenosa",
+  "modelDownload_useModel": "Uporabi ta model",
+  "modelDownload_removeFailed": "Modela ni bilo mogoče odstraniti: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

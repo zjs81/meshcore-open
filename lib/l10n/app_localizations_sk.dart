@@ -555,9 +555,8 @@ class AppLocalizationsSk extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'Modely nie sú stiahnuté';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'Obnovené nastavenia vyberajú modely, ktoré nie sú v tomto zariadení k dispozícii:\n$models\n\nStiahnuť ich teraz?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'Obnovené nastavenia vyberajú modely, ktoré nie sú v tomto zariadení k dispozícii. Stiahnuť ich teraz?';
 
   @override
   String get backupRestore_downloadModels => 'Stiahnuť modely';
@@ -1373,6 +1372,13 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get appSettings_regionOnHopsLineSubtitle =>
       'Zobraziť región správy kanála v rovnakom riadku ako počet skokov namiesto pod ním.';
+
+  @override
+  String get appSettings_showCompressionIndicator => 'Compression indicator';
+
+  @override
+  String get appSettings_showCompressionIndicatorSubtitle =>
+      'Show an icon on messages compressed with SMAZ.';
 
   @override
   String get appSettings_notifications => 'Upozornenia';
@@ -2719,8 +2725,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get pathEditor_hexLabel => 'Prefiksy pre hexadecimálne čísla';
 
   @override
-  String get pathEditor_hexHelper =>
-      'Dve hexové čísla na každý krok, oddelené čiarkami';
+  String pathEditor_hexHelper(int count) {
+    return '$count hexové čísla na každý krok, oddelené čiarkami';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {
@@ -7574,6 +7581,37 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chat_composerOffline => 'Na odosielanie správ sa pripojte k rádiu';
 
   @override
+  String get modelDownload_notDownloaded => 'Nestiahnuté';
+
+  @override
+  String get modelDownload_downloading => 'Sťahovanie';
+
+  @override
+  String get modelDownload_active => 'Aktívny';
+
+  @override
+  String get modelDownload_failed => 'Sťahovanie zlyhalo';
+
+  @override
+  String get modelDownload_incomplete => 'Nekompletné';
+
+  @override
+  String get modelDownload_verifying => 'Overuje sa sťahovanie';
+
+  @override
+  String get modelDownload_useModel => 'Použiť tento model';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Model sa nepodarilo odstrániť: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
+
+  @override
   String get chatCompression_title => 'Compression';
 
   @override
@@ -7619,4 +7657,7 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get chatCompression_saveFailed =>
       'Couldn\'t save the compression setting. Showing the saved setting.';
+
+  @override
+  String get messageMeta_smazCompressed => 'SMAZ compressed';
 }

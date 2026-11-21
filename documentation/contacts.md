@@ -40,7 +40,7 @@ Pull-to-refresh re-fetches the full contact list from the device. Telemetry loca
 
 A toolbar at the top provides:
 
-**Search**: Matches contact name (case-insensitive) or public key hex prefix. Debounced at 300ms.
+**Search**: Matches contact name (case-insensitive) or public key hex prefix. Names that start with the query are listed before other name matches, then key-prefix matches. Within each group the selected sort still applies. Debounced at 300ms.
 
 **Sort options**:
 - Latest Messages (by most recent message)

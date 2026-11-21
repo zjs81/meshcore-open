@@ -84,6 +84,9 @@ class _ContactGroupEditorDialogState extends State<ContactGroupEditorDialog> {
               matchesContactQuery(c, _query),
         )
         .toList();
+    if (_query.trim().isNotEmpty) {
+      candidates.sort((a, b) => compareContactQueryRank(a, b, _query));
+    }
 
     Widget sectionLabel(String text) => Semantics(
       header: true,

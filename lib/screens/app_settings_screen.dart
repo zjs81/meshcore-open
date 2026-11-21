@@ -5,20 +5,20 @@ import 'package:provider/provider.dart';
 import '../connector/meshcore_connector.dart';
 import '../l10n/l10n.dart';
 import '../models/app_settings.dart';
-import '../models/image_codec_support.dart';
 import '../services/app_settings_service.dart';
 import '../services/background_service.dart';
 import '../services/image_codec_service.dart';
 import '../services/map_tile_cache_service.dart';
 import '../services/notification_service.dart';
-import '../theme/mesh_theme.dart';
 import '../utils/platform_info.dart';
 import '../widgets/adaptive_app_bar_title.dart';
+import '../widgets/image_codec_models_section.dart';
 import '../widgets/cyr2lat_profile_dialog.dart';
 import '../widgets/language_picker_sheet.dart';
 import '../widgets/mesh_nav_tile.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/network_map_settings_section.dart';
+import '../widgets/settings_reveal.dart';
 import '../widgets/sync_progress_overlay.dart';
 import '../widgets/translation_settings_section.dart';
 import '../helpers/snack_bar_builder.dart';
@@ -488,6 +488,20 @@ class AppSettingsScreen extends StatelessWidget {
           value: settingsService.settings.regionOnHopsLine,
           onChanged: settingsService.setRegionOnHopsLine,
         ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.compress, size: 24),
+          title: Text(context.l10n.appSettings_showCompressionIndicator),
+          subtitle: Text(
+            context.l10n.appSettings_showCompressionIndicatorSubtitle,
+          ),
+          value: settingsService.settings.showCompressionIndicator,
+          onChanged: settingsService.setShowCompressionIndicator,
+        ),
       ],
     );
   }
@@ -726,21 +740,27 @@ class AppSettingsScreen extends StatelessWidget {
             },
           ),
         ),
-        if (settingsService.settings.imageMessagesEnabled) ...[
-          SwitchListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 4,
+        SettingsReveal(
+          visible: settingsService.settings.imageMessagesEnabled,
+          children: [
+            SwitchListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 4,
+              ),
+              secondary: const Icon(Icons.auto_awesome_outlined, size: 24),
+              title: Text(context.l10n.imageMessages_autoProcessTitle),
+              subtitle: Text(context.l10n.imageMessages_autoProcessSubtitle),
+              value: settingsService.settings.imageProcessAutomatically,
+              onChanged: (value) =>
+                  settingsService.setImageProcessAutomatically(value),
             ),
-            secondary: const Icon(Icons.auto_awesome_outlined, size: 24),
-            title: Text(context.l10n.imageMessages_autoProcessTitle),
-            subtitle: Text(context.l10n.imageMessages_autoProcessSubtitle),
-            value: settingsService.settings.imageProcessAutomatically,
-            onChanged: (value) =>
-                settingsService.setImageProcessAutomatically(value),
-          ),
-          _buildImageCodecModels(context),
-        ],
+            if (_imageCodecService(context) != null) ...[
+              const Divider(height: 1, indent: 16),
+              const ImageCodecModelsSection(),
+            ],
+          ],
+        ),
       ],
     );
   }
@@ -762,166 +782,6 @@ class AppSettingsScreen extends StatelessWidget {
       context: context,
       builder: (_) => _IpfsImageLinksDialog(settingsService: settingsService),
     );
-  }
-
-  /// Model registry for image messages: the download entry point, the
-  /// downloaded weights, and — when the build simply cannot run the codec —
-  /// [ImageCodecService.unavailableReason] instead of a dead download button.
-  Widget _buildImageCodecModels(BuildContext context) {
-    final ImageCodecService codec;
-    try {
-      codec = context.watch<ImageCodecService>();
-    } on ProviderNotFoundException {
-      return const SizedBox.shrink();
-    }
-    final scheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final reason = codec.unavailableReason;
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            context.l10n.imageMessages_modelSectionTitle,
-            style: textTheme.titleSmall,
-          ),
-          const SizedBox(height: 6),
-          if (reason != null)
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: scheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(MeshRadii.md),
-              ),
-              child: Text(
-                reason,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-          for (final spec in imageCodecPresetModels)
-            _buildImageCodecPreset(context, codec, spec),
-          for (final model in codec.availableModels)
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-              leading: const Icon(Icons.check_circle_outline, size: 24),
-              title: Text(model.name.isEmpty ? model.id : model.name),
-              subtitle: Text(_formatModelBytes(context, model.fileSizeBytes)),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete_outline, size: 24),
-                tooltip: context.l10n.imageMessages_removeModel,
-                onPressed: codec.isBusy || codec.isDownloading
-                    ? null
-                    : () => codec.removeModel(model),
-              ),
-            ),
-          if (codec.lastError != null) ...[
-            const SizedBox(height: 6),
-            Text(
-              codec.lastError!,
-              style: textTheme.bodyMedium?.copyWith(color: scheme.error),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildImageCodecPreset(
-    BuildContext context,
-    ImageCodecService codec,
-    ImageCodecModelSpec spec,
-  ) {
-    final textTheme = Theme.of(context).textTheme;
-    final scheme = Theme.of(context).colorScheme;
-    final alreadyHave = spec.hasCompleteInstalledRecord(codec.availableModels);
-    // downloadPresetModel throws StateError on a placeholder URL, deliberately,
-    // so the button must not be offerable until the weights are published.
-    final blocked = spec.urlsArePlaceholders;
-    final busy = codec.isDownloading;
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            dense: true,
-            leading: const Icon(Icons.download_outlined, size: 24),
-            title: Text(spec.label),
-            subtitle: Text(
-              blocked
-                  ? context.l10n.imageMessages_modelNotPublished
-                  : _formatModelBytes(context, spec.totalSizeBytes),
-            ),
-            trailing: alreadyHave
-                ? Text(
-                    context.l10n.imageMessages_modelReady,
-                    style: textTheme.labelMedium?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
-                  )
-                : busy
-                ? TextButton(
-                    onPressed: codec.cancelDownload,
-                    child: Text(context.l10n.imageMessages_cancelDownload),
-                  )
-                : TextButton(
-                    onPressed: blocked
-                        ? null
-                        : () => _downloadImageCodecModel(context, codec, spec),
-                    child: Text(context.l10n.imageMessages_downloadModel),
-                  ),
-          ),
-          if (busy)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: LinearProgressIndicator(value: codec.downloadProgress),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _downloadImageCodecModel(
-    BuildContext context,
-    ImageCodecService codec,
-    ImageCodecModelSpec spec,
-  ) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final l10n = context.l10n;
-    try {
-      await codec.downloadPresetModel(spec);
-    } catch (error) {
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(l10n.imageMessages_downloadFailedWithError('$error')),
-        ),
-      );
-    }
-  }
-
-  String _formatModelBytes(BuildContext context, int bytes) {
-    final l10n = context.l10n;
-    if (bytes >= 1024 * 1024 * 1024) {
-      return l10n.mapCache_sizeGigabytes(
-        (bytes / (1024 * 1024 * 1024)).toStringAsFixed(2),
-      );
-    }
-    if (bytes >= 1024 * 1024) {
-      return l10n.mapCache_sizeMegabytes(
-        (bytes / (1024 * 1024)).toStringAsFixed(0),
-      );
-    }
-    if (bytes >= 1024) {
-      return l10n.mapCache_sizeKilobytes((bytes / 1024).toStringAsFixed(0));
-    }
-    return l10n.mapCache_sizeBytes('$bytes');
   }
 
   Widget _buildBatteryContent(

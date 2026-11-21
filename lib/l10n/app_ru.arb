@@ -1922,7 +1922,7 @@
   "pathEditor_searchRepeaters": "Поиск повторителей",
   "pathEditor_advancedHex": "Продвинутый уровень: прямой путь в шестнадцатеричном формате",
   "pathEditor_hexLabel": "Префиксы шестнадцатеричной системы",
-  "pathEditor_hexHelper": "Два шестнадцатеричных символа на каждом шаге, разделенные запятыми.",
+  "pathEditor_hexHelper": "{count} шестнадцатеричных символа на каждом шаге, разделенные запятыми.",
   "pathEditor_invalidTokens": "Неверно: {tokens}",
   "routing_lastWorked": "работал {when}",
   "routing_deliveryCounts": "{successes} доставлено, {failures} не доставлено",
@@ -3053,7 +3053,7 @@
   "backupRestore_backupComplete": "Файл резервной копии создан.",
   "backupRestore_restoreComplete": "Восстановление завершено. Переподключитесь, если вы восстановили идентификатор радио.",
   "backupRestore_missingModelsTitle": "Модели не загружены",
-  "backupRestore_missingModelsMessage": "Восстановленные настройки выбирают модели, которых нет на этом устройстве:\n{models}\n\nЗагрузить их сейчас?",
+  "backupRestore_missingModelsMessage": "Восстановленные настройки выбирают модели, которых нет на этом устройстве. Загрузить их сейчас?",
   "backupRestore_downloadModels": "Загрузить модели",
   "backupRestore_downloading": "Загрузка…",
   "backupRestore_cancelDownload": "Отменить загрузку",
@@ -3073,5 +3073,14 @@
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB или TCP",
   "connectSheet_stopReconnecting": "Остановить переподключение",
   "connectSheet_reconnectFailed": "Не удалось связаться с {name}. Убедитесь, что оно включено и находится рядом.",
-  "chat_composerOffline": "Подключитесь к радио, чтобы отправлять сообщения"
+  "chat_composerOffline": "Подключитесь к радио, чтобы отправлять сообщения",
+  "modelDownload_notDownloaded": "Не скачано",
+  "modelDownload_downloading": "Загрузка",
+  "modelDownload_active": "Активна",
+  "modelDownload_failed": "Не удалось скачать",
+  "modelDownload_incomplete": "Неполная",
+  "modelDownload_verifying": "Проверка загрузки",
+  "modelDownload_useModel": "Использовать эту модель",
+  "modelDownload_removeFailed": "Не удалось удалить модель: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

@@ -531,9 +531,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'モデル未ダウンロード';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return '復元された設定で選択されているモデルが、このデバイスにありません:\n$models\n\n今すぐダウンロードしますか？';
-  }
+  String get backupRestore_missingModelsMessage =>
+      '復元された設定で選択されているモデルが、このデバイスにありません。今すぐダウンロードしますか？';
 
   @override
   String get backupRestore_downloadModels => 'モデルをダウンロード';
@@ -1315,6 +1314,13 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get appSettings_regionOnHopsLineSubtitle =>
       'チャンネルメッセージの地域を、ホップ数の下ではなく同じ行に表示します。';
+
+  @override
+  String get appSettings_showCompressionIndicator => 'Compression indicator';
+
+  @override
+  String get appSettings_showCompressionIndicatorSubtitle =>
+      'Show an icon on messages compressed with SMAZ.';
 
   @override
   String get appSettings_notifications => '通知';
@@ -2599,7 +2605,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get pathEditor_hexLabel => '16 進接頭辞';
 
   @override
-  String get pathEditor_hexHelper => 'ホップごとに 16 進数 2 文字をカンマ区切りで入力します';
+  String pathEditor_hexHelper(int count) {
+    return 'ホップごとに 16 進数 $count 文字をカンマ区切りで入力します';
+  }
 
   @override
   String pathEditor_invalidTokens(String tokens) {
@@ -7238,6 +7246,37 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chat_composerOffline => 'メッセージを送信するには無線機に接続してください';
 
   @override
+  String get modelDownload_notDownloaded => '未ダウンロード';
+
+  @override
+  String get modelDownload_downloading => 'ダウンロード中';
+
+  @override
+  String get modelDownload_active => '使用中';
+
+  @override
+  String get modelDownload_failed => 'ダウンロードできませんでした';
+
+  @override
+  String get modelDownload_incomplete => '未完了';
+
+  @override
+  String get modelDownload_verifying => 'ダウンロードを確認しています';
+
+  @override
+  String get modelDownload_useModel => 'このモデルを使う';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'モデルを削除できませんでした: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
+
+  @override
   String get chatCompression_title => 'Compression';
 
   @override
@@ -7283,4 +7322,7 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get chatCompression_saveFailed =>
       'Couldn\'t save the compression setting. Showing the saved setting.';
+
+  @override
+  String get messageMeta_smazCompressed => 'SMAZ compressed';
 }
