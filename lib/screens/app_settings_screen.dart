@@ -488,6 +488,20 @@ class AppSettingsScreen extends StatelessWidget {
           value: settingsService.settings.regionOnHopsLine,
           onChanged: settingsService.setRegionOnHopsLine,
         ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.compress, size: 24),
+          title: Text(context.l10n.appSettings_showCompressionIndicator),
+          subtitle: Text(
+            context.l10n.appSettings_showCompressionIndicatorSubtitle,
+          ),
+          value: settingsService.settings.showCompressionIndicator,
+          onChanged: settingsService.setShowCompressionIndicator,
+        ),
       ],
     );
   }

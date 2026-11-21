@@ -1574,6 +1574,8 @@ class _MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final settingsService = context.watch<AppSettingsService>();
     final enableTracing = settingsService.settings.enableMessageTracing;
+    final showCompressionIndicator =
+        settingsService.settings.showCompressionIndicator;
     final isOutgoing = message.isOutgoing;
     final scheme = Theme.of(context).colorScheme;
     final gifId = GifHelper.parseGif(message.text);
@@ -1837,6 +1839,12 @@ class _MessageBubble extends StatelessWidget {
                                 if (message.hasFutureTimestamp)
                                   FutureTimestampIndicator(
                                     size: 16 * textScale,
+                                  ),
+                                if (showCompressionIndicator &&
+                                    message.isSmazCompressed)
+                                  CompressionIndicator(
+                                    size: 14 * textScale,
+                                    color: metaColor,
                                   ),
                                 if (isOutgoing) ...[
                                   const SizedBox(width: 2),

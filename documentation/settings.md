@@ -127,6 +127,7 @@ Individual channels can be muted from the channel chat bell icon, the channel li
   - **Reset Routing Algorithm to Default**: Restores the routing settings to their factory defaults
 - **Enable Message Tracing**: Shows path trace overlays and extra metadata on messages
 - **Region next to hop count** (default off): Shows a channel message's region chip on the same line as its hop count instead of below it
+- **Compression indicator** (default off): Shows an icon on direct and channel messages that were compressed with SMAZ
 - **Resend channel messages until they travel far enough** (default off): If your channel message isn't heard coming back through enough repeaters, it's sent again. Uses more airtime. When on, it shows:
   - Required hops (1–8, default 2)
   - Resend up to (1–5 times, default 1)
