@@ -54,14 +54,16 @@ A toolbar at the top provides:
 
 Groups are a client-side organizational feature for grouping contacts.
 
-- **Create a group**: Tap the group dropdown → "+" icon → enter name → select members → Save
+- **Create a group**: Tap the group dropdown → "+" icon → enter name → add members → Save
 - **Edit a group**: Group dropdown → pencil icon next to the group
 - **Delete a group**: Group dropdown → trash icon next to the group
 - **Filter by group**: Select a group from the dropdown to show only its members
 
 Groups are stored per radio identity (scoped by public key).
 
-**Validation rules**: Group names cannot be empty, cannot be "all" (reserved, case-insensitive), and must be unique (case-insensitive). The group creation dialog includes a built-in search field to filter contacts when selecting members. Creating a new group automatically selects it as the active filter.
+The group editor lists **Current members (N)** first, each with a remove button. Below it, **Add contacts** has a search field and lists only contacts that are not members yet; tap a row or its add button to add it. Changes apply when you tap Save. Removing a member only changes the group; the contact stays on the radio.
+
+**Validation rules**: Group names cannot be empty, cannot be "all" (reserved, case-insensitive), and must be unique (case-insensitive). Creating a new group automatically selects it as the active filter.
 
 ## Tap Actions
 
