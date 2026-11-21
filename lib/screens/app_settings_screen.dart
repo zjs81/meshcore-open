@@ -823,8 +823,9 @@ class AppSettingsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: scheme.surfaceContainerHighest,
+                color: scheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(MeshRadii.md),
+                border: Border.all(color: scheme.outlineVariant),
               ),
               child: Text(
                 reason,
