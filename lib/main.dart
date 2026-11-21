@@ -34,6 +34,8 @@ import 'services/notification_service.dart';
 import 'services/ble_debug_log_service.dart';
 import 'services/app_debug_log_service.dart';
 import 'services/background_service.dart';
+import 'services/local_api/local_api_pairing_dialog.dart';
+import 'services/local_api/local_api_service.dart';
 import 'services/map_tile_cache_service.dart';
 import 'services/chat_text_scale_service.dart';
 import 'services/translation_service.dart';
@@ -88,6 +90,10 @@ void main() async {
   final uiViewStateService = UiViewStateService();
   final timeoutPredictionService = TimeoutPredictionService(storage);
   final messageFilterService = MessageFilterService();
+  // Optional loopback API for other apps on the same device. Off until the
+  // user enables it in Settings; see documentation/LOCAL_API.md.
+  final localApiService = LocalApiService();
+  unawaited(localApiService.start(connector));
 
   // Load settings before anything reads them. The image stack below takes its
   // model registry and its "process automatically" default straight off
@@ -422,11 +428,13 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
 
   // Chosen once: the settings Consumer below rebuilds MaterialApp, and a new
   // home there would replace the route the user is on.
-  late final Widget _home = (PlatformInfo.isWeb && !PlatformInfo.isChrome)
-      ? const ChromeRequiredScreen()
-      : widget.connector.hasRadioData
-      ? const ChannelsScreen()
-      : const ScannerScreen();
+  late final Widget _home = LocalApiPairingHost(
+    child: (PlatformInfo.isWeb && !PlatformInfo.isChrome)
+        ? const ChromeRequiredScreen()
+        : widget.connector.hasRadioData
+        ? const ChannelsScreen()
+        : const ScannerScreen(),
+  );
 
   @override
   void initState() {

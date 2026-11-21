@@ -1,0 +1,190 @@
+{
+  "description": "Pairing vectors for MeshCore Local API protocol 1 (SPEC.md section 5).",
+  "warning": "TEST ONLY. This key pair is public. Never pair it with a server that talks to a real radio.",
+  "curve": "P-256 (secp256r1, prime256v1)",
+  "signatureAlgorithm": "ECDSA with SHA-256 over the UTF-8 bytes of the message (SHA256withECDSA)",
+  "deterministic": "RFC 6979; verifiers must not depend on it, any valid ECDSA signature is accepted",
+  "testKey": {
+    "label": "meshcore-local-api test vector key 1 (TEST ONLY, never pair it)",
+    "derivation": "d = (SHA-256(UTF-8 label) as a big-endian integer) mod (n - 1) + 1",
+    "privateScalarHex": "54b7ee5468372d67d4bac375b6831f70984ba78b4288ec4de112ce66d9236b1f",
+    "privateKeyPkcs8DerBase64": "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgVLfuVGg3LWfUusN1toMfcJhLp4tCiOxN4RLOZtkjax+hRANCAATiw0p6tIYgptmO69J6A+SOcHD+gLMSiPwwPLf5sg/mihAxtx69wDZjPiJPzDzIQk+ajPyDGNm/ArAg6ECH5m1V",
+    "publicKeySpkiDerBase64": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE4sNKerSGIKbZjuvSegPkjnBw/oCzEoj8MDy3+bIP5ooQMbcevcA2Yz4iT8w8yEJPmoz8gxjZvwKwIOhAh+ZtVQ==",
+    "publicKeySec1UncompressedHex": "04e2c34a7ab48620a6d98eebd27a03e48e7070fe80b31288fc303cb7f9b20fe68a1031b71ebdc036633e224fcc3cc8424f9a8cfc8318d9bf02b020e84087e66d55",
+    "publicKeyXHex": "e2c34a7ab48620a6d98eebd27a03e48e7070fe80b31288fc303cb7f9b20fe68a",
+    "publicKeyYHex": "1031b71ebdc036633e224fcc3cc8424f9a8cfc8318d9bf02b020e84087e66d55",
+    "publicKey": "4sNKerSGIKbZjuvSegPkjnBw/oCzEoj8MDy3+bIP5ooQMbcevcA2Yz4iT8w8yEJPmoz8gxjZvwKwIOhAh+ZtVQ==",
+    "fingerprintInputSha256Hex": "9c5fa624034b4ec703a566ae99daa92faa2d3aad451c31980fe55935da01e962",
+    "fingerprint": "9C5F A624 034B 4EC7",
+    "fingerprintNormalized": "9C5FA624034B4EC7"
+  },
+  "otherKey": {
+    "label": "meshcore-local-api test vector key 2 (TEST ONLY, never pair it)",
+    "publicKey": "Joo3+8PLBwqiNxdYxjkzkmiNIJmel5x7rHM/bSRb4Xs6UqCmG4qTx4VJnc5BSmUhAr5EA00lLcPwfqJrr+3lnw==",
+    "fingerprint": "3C9C 9540 8C54 46F9",
+    "note": "Any signature in this file must fail against this key."
+  },
+  "fingerprintOfZeroBytes": {
+    "input": "64 zero bytes (not a valid key; tests the fingerprint function alone)",
+    "fingerprint": "F5A5 FD42 D16A 2030"
+  },
+  "nonce": {
+    "bytesHex": "777cd732b87186a1ee1321d47b83245c",
+    "unpadded": "d3zXMrhxhqHuEyHUe4MkXA",
+    "padded": "d3zXMrhxhqHuEyHUe4MkXA==",
+    "note": "The client signs the challenge's nonce exactly as sent; it never re-encodes it."
+  },
+  "validSignatures": [
+    {
+      "nonce": "d3zXMrhxhqHuEyHUe4MkXA",
+      "nonceForm": "unpadded",
+      "messageForm": "canonical",
+      "message": "meshcore-local-api-pair-v1:d3zXMrhxhqHuEyHUe4MkXA",
+      "messageUtf8Hex": "6d657368636f72652d6c6f63616c2d6170692d706169722d76313a64337a584d726878687148754579485565344d6b5841",
+      "sha256Hex": "daa1ddddc8a5f065151784156d02fd7a4e9654ea7c7f28dc2cb54b9568ab02d5",
+      "rHex": "4d3a13daea4f7b9e8169b2808f82859b6dc90ecdf97fa485400c05cb59a37ca1",
+      "sHex": "6fc8880b88b364f27c52af3979a9b56253b3e580ded117f91acb26e3998e6ad5",
+      "derBase64": "MEQCIE06E9rqT3uegWmygI+ChZttyQ7N+X+khUAMBctZo3yhAiBvyIgLiLNk8nxSrzl5qbViU7PlgN7RF/kayybjmY5q1Q==",
+      "rawBase64": "TToT2upPe56BabKAj4KFm23JDs35f6SFQAwFy1mjfKFvyIgLiLNk8nxSrzl5qbViU7PlgN7RF/kayybjmY5q1Q==",
+      "sIsLow": true,
+      "highSRawBase64": "TToT2upPe56BabKAj4KFm23JDs35f6SFQAwFy1mjfKGQN3fzd0ybDoOtUMaGVkqdaTMVLMhGhovY7qPfYtS6fA==",
+      "highSDerBase64": "MEUCIE06E9rqT3uegWmygI+ChZttyQ7N+X+khUAMBctZo3yhAiEAkDd383dMmw6DrVDGhlZKnWkzFSzIRoaL2O6j32LUunw="
+    },
+    {
+      "nonce": "d3zXMrhxhqHuEyHUe4MkXA==",
+      "nonceForm": "padded",
+      "messageForm": "canonical",
+      "message": "meshcore-local-api-pair-v1:d3zXMrhxhqHuEyHUe4MkXA==",
+      "messageUtf8Hex": "6d657368636f72652d6c6f63616c2d6170692d706169722d76313a64337a584d726878687148754579485565344d6b58413d3d",
+      "sha256Hex": "2a25683d2f51f4d3876bd9d5c5db98e7e47f79a0aaa1f3637689d470a855a11f",
+      "rHex": "069304e102362a508f5a1a6066ca896835403bf9a409aeb2ac49ad1749a54807",
+      "sHex": "788db2eacc97a44405847e421c6912e881a8de8a88659a844d7f232842ccce34",
+      "derBase64": "MEQCIAaTBOECNipQj1oaYGbKiWg1QDv5pAmusqxJrRdJpUgHAiB4jbLqzJekRAWEfkIcaRLogajeiohlmoRNfyMoQszONA==",
+      "rawBase64": "BpME4QI2KlCPWhpgZsqJaDVAO/mkCa6yrEmtF0mlSAd4jbLqzJekRAWEfkIcaRLogajeiohlmoRNfyMoQszONA==",
+      "sIsLow": true,
+      "highSRawBase64": "BpME4QI2KlCPWhpgZsqJaDVAO/mkCa6yrEmtF0mlSAeHck0UM2hbvPp7gb3jlu0XOz4cIx6yBACmOqeauZZXHQ==",
+      "highSDerBase64": "MEUCIAaTBOECNipQj1oaYGbKiWg1QDv5pAmusqxJrRdJpUgHAiEAh3JNFDNoW7z6e4G945btFzs+HCMesgQApjqnmrmWVx0="
+    }
+  ],
+  "invalidSignatures": {
+    "publicKey": "4sNKerSGIKbZjuvSegPkjnBw/oCzEoj8MDy3+bIP5ooQMbcevcA2Yz4iT8w8yEJPmoz8gxjZvwKwIOhAh+ZtVQ==",
+    "message": "meshcore-local-api-pair-v1:d3zXMrhxhqHuEyHUe4MkXA",
+    "cases": [
+      {
+        "why": "signature over another string with the same nonce (meshcore-open-pair-v1:<nonce>)",
+        "signatureBase64": "MEUCIC5SeVOua5O50K59g6daX1/BpxGUYfDyb43rKrVN3Cy6AiEAjeKuAOwADSqMCfqthe+m+RL/IbLca8ur9MP3j0nmblI="
+      },
+      {
+        "why": "one bit of s flipped (raw r||s)",
+        "signatureBase64": "TToT2upPe56BabKAj4KFm23JDs35f6SFQAwFy1mjfKFvyIgLiLNk8nxSrzl5qbViU7PlgN7RF/kayybjmY5q1A=="
+      },
+      {
+        "why": "r = 0 (raw r||s)",
+        "signatureBase64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABvyIgLiLNk8nxSrzl5qbViU7PlgN7RF/kayybjmY5q1Q=="
+      },
+      {
+        "why": "s = 0 (raw r||s)",
+        "signatureBase64": "TToT2upPe56BabKAj4KFm23JDs35f6SFQAwFy1mjfKEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+      },
+      {
+        "why": "s = n (raw r||s)",
+        "signatureBase64": "TToT2upPe56BabKAj4KFm23JDs35f6SFQAwFy1mjfKH/////AAAAAP//////////vOb6racXnoTzucrC/GMlUQ=="
+      },
+      {
+        "why": "DER with a trailing byte",
+        "signatureBase64": "MEQCIE06E9rqT3uegWmygI+ChZttyQ7N+X+khUAMBctZo3yhAiBvyIgLiLNk8nxSrzl5qbViU7PlgN7RF/kayybjmY5q1QA="
+      },
+      {
+        "why": "DER with a non-minimal INTEGER (extra leading zero on r)",
+        "signatureBase64": "MEUCIQBNOhPa6k97noFpsoCPgoWbbckOzfl/pIVADAXLWaN8oQIgb8iIC4izZPJ8Uq85eam1YlOz5YDe0Rf5Gssm45mOatU="
+      },
+      {
+        "why": "DER with a long-form SEQUENCE length (BER, not DER)",
+        "signatureBase64": "MIFEAiBNOhPa6k97noFpsoCPgoWbbckOzfl/pIVADAXLWaN8oQIgb8iIC4izZPJ8Uq85eam1YlOz5YDe0Rf5Gssm45mOatU="
+      },
+      {
+        "why": "63 bytes (raw r||s truncated)",
+        "signatureBase64": "TToT2upPe56BabKAj4KFm23JDs35f6SFQAwFy1mjfKFvyIgLiLNk8nxSrzl5qbViU7PlgN7RF/kayybjmY5q"
+      },
+      {
+        "why": "65 bytes (raw r||s with an extra byte)",
+        "signatureBase64": "TToT2upPe56BabKAj4KFm23JDs35f6SFQAwFy1mjfKFvyIgLiLNk8nxSrzl5qbViU7PlgN7RF/kayybjmY5q1QA="
+      },
+      {
+        "why": "not base64",
+        "signatureBase64": "!!not base64!!"
+      },
+      {
+        "why": "empty",
+        "signatureBase64": ""
+      }
+    ]
+  },
+  "invalidPublicKeys": [
+    {
+      "why": "last bit of Y flipped: not on the curve",
+      "publicKey": "4sNKerSGIKbZjuvSegPkjnBw/oCzEoj8MDy3+bIP5ooQMbcevcA2Yz4iT8w8yEJPmoz8gxjZvwKwIOhAh+ZtVA=="
+    },
+    {
+      "why": "65-byte SEC1 form with the 0x04 prefix (the API takes X||Y only)",
+      "publicKey": "BOLDSnq0hiCm2Y7r0noD5I5wcP6AsxKI/DA8t/myD+aKEDG3Hr3ANmM+Ik/MPMhCT5qM/IMY2b8CsCDoQIfmbVU="
+    },
+    {
+      "why": "33-byte compressed form",
+      "publicKey": "A+LDSnq0hiCm2Y7r0noD5I5wcP6AsxKI/DA8t/myD+aK"
+    },
+    {
+      "why": "X equal to the field prime",
+      "publicKey": "/////wAAAAEAAAAAAAAAAAAAAAD///////////////8QMbcevcA2Yz4iT8w8yEJPmoz8gxjZvwKwIOhAh+ZtVQ=="
+    },
+    {
+      "why": "all zeros (the point at infinity has no X||Y form)",
+      "publicKey": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+    },
+    {
+      "why": "32 bytes",
+      "publicKey": "4sNKerSGIKbZjuvSegPkjnBw/oCzEoj8MDy3+bIP5oo="
+    },
+    {
+      "why": "not base64",
+      "publicKey": "not base64 !"
+    }
+  ],
+  "challengeMessageCheck": {
+    "description": "A client accepts the challenge's message only when it equals this, built from the challenge's own nonce.",
+    "nonce": "d3zXMrhxhqHuEyHUe4MkXA",
+    "accept": [
+      "meshcore-local-api-pair-v1:d3zXMrhxhqHuEyHUe4MkXA"
+    ],
+    "reject": [
+      "meshcore-open-pair-v1:d3zXMrhxhqHuEyHUe4MkXA",
+      "meshcore-local-api-pair-v1:d3zXMrhxhqHuEyHUe4MkXA==",
+      "meshcore-local-api-pair-v2:d3zXMrhxhqHuEyHUe4MkXA",
+      "meshcore-local-api-pair-v1: d3zXMrhxhqHuEyHUe4MkXA",
+      "meshcore-local-api-pair-v1:d3zXMrhxhqHuEyHUe4MkXA\n",
+      "MESHCORE-LOCAL-API-PAIR-V1:d3zXMrhxhqHuEyHUe4MkXA",
+      "please sign this: meshcore-local-api-pair-v1:d3zXMrhxhqHuEyHUe4MkXA",
+      "d3zXMrhxhqHuEyHUe4MkXA",
+      ""
+    ]
+  },
+  "nonceShape": {
+    "regex": "^[A-Za-z0-9_-]{16,128}={0,2}$",
+    "accept": [
+      "d3zXMrhxhqHuEyHUe4MkXA",
+      "d3zXMrhxhqHuEyHUe4MkXA==",
+      "AAAAAAAAAAAAAAAA",
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "abcd_efgh-ijkl_mn"
+    ],
+    "reject": [
+      "AAAAAAAAAAAAAAA",
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "abc+defghijklmnop",
+      "abc/defghijklmnop",
+      "abcdefghijklmnop===",
+      "abcdefgh ijklmnop",
+      ""
+    ]
+  }
+}

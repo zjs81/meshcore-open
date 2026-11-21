@@ -34,6 +34,7 @@ MeshCore Open is an open-source Flutter client for MeshCore LoRa mesh networking
 21. [UI Design Reference](design.md) - Contributor reference: theme, typography, spacing, shared widgets, sheets vs dialogs vs pages, states, and localization rules for UI changes
 22. [Offline Mode](offline-mode.md) - Read-only view of the last radio's contacts, channels and messages while no radio is connected, and the Connect sheet
 23. [Performance Profiling](performance-profiling.md) - Contributor reference: frame and memory baselines, HTTP capture retention, and resetting diagnostic recordings
+24. [Local API](LOCAL_API.md) - Loopback WebSocket API that lets other apps on the device share the radio connection
 
 ## App Overview
 
