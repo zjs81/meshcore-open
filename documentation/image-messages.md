@@ -9,7 +9,7 @@ MeshCore Open can send a highly compressed image as channel GRP_DATA packets. Un
 - The image model bundle installed through App Settings → Image model, and Enable image messages turned on.
 - Enough storage for the roughly 1 GB bundle and enough available memory for reconstruction, which can peak above 2 GB. Actual latency and memory usage depend on hardware.
 
-Downloads use the configured Hugging Face model bundle, support resume, and verify file checksums. Download the model while internet is available. Once installed, encoding and reconstruction run locally; photos are not uploaded for inference. Compatible recipients need the same supported codec/model format.
+Downloads use the configured Hugging Face model bundle, support resume, and verify file checksums. App Settings shows that bundle as one model row — name, size, and status — the same row used for translation models. Download the model while internet is available. Once installed, encoding and reconstruction run locally; photos are not uploaded for inference. Compatible recipients need the same supported codec/model format.
 
 ## Send an image
 

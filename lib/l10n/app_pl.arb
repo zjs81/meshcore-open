@@ -3995,7 +3995,7 @@
   "backupRestore_backupComplete": "Plik kopii zapasowej został utworzony.",
   "backupRestore_restoreComplete": "Przywracanie zakończone. Połącz się ponownie, jeśli przywrócono tożsamość radia.",
   "backupRestore_missingModelsTitle": "Modele nie zostały pobrane",
-  "backupRestore_missingModelsMessage": "Przywrócone ustawienia wybierają modele, które nie są dostępne na tym urządzeniu:\n{models}\n\nPobrać je teraz?",
+  "backupRestore_missingModelsMessage": "Przywrócone ustawienia wybierają modele, które nie są dostępne na tym urządzeniu. Pobrać je teraz?",
   "backupRestore_downloadModels": "Pobierz modele",
   "backupRestore_downloading": "Pobieranie…",
   "backupRestore_cancelDownload": "Anuluj pobieranie",
@@ -4015,5 +4015,14 @@
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB lub TCP",
   "connectSheet_stopReconnecting": "Zatrzymaj ponowne łączenie",
   "connectSheet_reconnectFailed": "Nie można połączyć z {name}. Upewnij się, że jest włączone i w pobliżu.",
-  "chat_composerOffline": "Połącz się z radiem, aby wysyłać wiadomości"
+  "chat_composerOffline": "Połącz się z radiem, aby wysyłać wiadomości",
+  "modelDownload_notDownloaded": "Nie pobrano",
+  "modelDownload_downloading": "Pobieranie",
+  "modelDownload_active": "Aktywny",
+  "modelDownload_failed": "Nie udało się pobrać",
+  "modelDownload_incomplete": "Niekompletny",
+  "modelDownload_verifying": "Sprawdzanie pobierania",
+  "modelDownload_useModel": "Użyj tego modelu",
+  "modelDownload_removeFailed": "Nie udało się usunąć modelu: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

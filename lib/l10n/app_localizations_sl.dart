@@ -554,9 +554,8 @@ class AppLocalizationsSl extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'Modeli niso preneseni';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'Obnovljene nastavitve izbirajo modele, ki niso na voljo v tej napravi:\n$models\n\nJih želite prenesti zdaj?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'Obnovljene nastavitve izbirajo modele, ki niso na voljo v tej napravi. Jih želite prenesti zdaj?';
 
   @override
   String get backupRestore_downloadModels => 'Prenesi modele';
@@ -7558,4 +7557,35 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Za pošiljanje sporočil se povežite z radiem';
+
+  @override
+  String get modelDownload_notDownloaded => 'Ni preneseno';
+
+  @override
+  String get modelDownload_downloading => 'Prenašanje';
+
+  @override
+  String get modelDownload_active => 'Aktiven';
+
+  @override
+  String get modelDownload_failed => 'Prenos ni uspel';
+
+  @override
+  String get modelDownload_incomplete => 'Nepopolno';
+
+  @override
+  String get modelDownload_verifying => 'Preverjanje prenosa';
+
+  @override
+  String get modelDownload_useModel => 'Uporabi ta model';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Modela ni bilo mogoče odstraniti: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
 }

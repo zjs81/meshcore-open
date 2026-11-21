@@ -520,9 +520,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupRestore_missingModelsTitle => '模型未下载';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return '恢复的设置所选用的模型在此设备上不可用：\n$models\n\n现在下载吗？';
-  }
+  String get backupRestore_missingModelsMessage => '恢复的设置所选用的模型在此设备上不可用。现在下载吗？';
 
   @override
   String get backupRestore_downloadModels => '下载模型';
@@ -7070,4 +7068,35 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chat_composerOffline => '连接到无线电后才能发送消息';
+
+  @override
+  String get modelDownload_notDownloaded => '未下载';
+
+  @override
+  String get modelDownload_downloading => '正在下载';
+
+  @override
+  String get modelDownload_active => '当前使用';
+
+  @override
+  String get modelDownload_failed => '下载失败';
+
+  @override
+  String get modelDownload_incomplete => '不完整';
+
+  @override
+  String get modelDownload_verifying => '正在校验下载';
+
+  @override
+  String get modelDownload_useModel => '使用此模型';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return '无法移除模型：$error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
 }

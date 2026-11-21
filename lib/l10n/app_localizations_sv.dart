@@ -553,9 +553,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'Modeller inte nedladdade';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'De återställda inställningarna väljer modeller som inte finns på den här enheten:\n$models\n\nLadda ned dem nu?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'De återställda inställningarna väljer modeller som inte finns på den här enheten. Ladda ned dem nu?';
 
   @override
   String get backupRestore_downloadModels => 'Ladda ned modeller';
@@ -7518,4 +7517,35 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Anslut till en radio för att skicka meddelanden';
+
+  @override
+  String get modelDownload_notDownloaded => 'Inte nedladdad';
+
+  @override
+  String get modelDownload_downloading => 'Laddar ner';
+
+  @override
+  String get modelDownload_active => 'Aktiv';
+
+  @override
+  String get modelDownload_failed => 'Kunde inte ladda ner';
+
+  @override
+  String get modelDownload_incomplete => 'Ofullständig';
+
+  @override
+  String get modelDownload_verifying => 'Verifierar nedladdningen';
+
+  @override
+  String get modelDownload_useModel => 'Använd den här modellen';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Det gick inte att ta bort modellen: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
 }

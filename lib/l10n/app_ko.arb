@@ -4096,7 +4096,7 @@
   "backupRestore_backupComplete": "백업 파일을 만들었습니다.",
   "backupRestore_restoreComplete": "복원이 완료되었습니다. 무전기 ID를 복원했다면 다시 연결하세요.",
   "backupRestore_missingModelsTitle": "모델이 다운로드되지 않음",
-  "backupRestore_missingModelsMessage": "복원된 설정에서 선택한 모델이 이 기기에 없습니다:\n{models}\n\n지금 다운로드할까요?",
+  "backupRestore_missingModelsMessage": "복원된 설정에서 선택한 모델이 이 기기에 없습니다. 지금 다운로드할까요?",
   "backupRestore_downloadModels": "모델 다운로드",
   "backupRestore_downloading": "다운로드 중…",
   "backupRestore_cancelDownload": "다운로드 취소",
@@ -4116,5 +4116,14 @@
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB 또는 TCP",
   "connectSheet_stopReconnecting": "재연결 중지",
   "connectSheet_reconnectFailed": "{name}에 연결할 수 없습니다. 전원이 켜져 있고 가까이 있는지 확인하세요.",
-  "chat_composerOffline": "메시지를 보내려면 무전기에 연결하세요"
+  "chat_composerOffline": "메시지를 보내려면 무전기에 연결하세요",
+  "modelDownload_notDownloaded": "다운로드되지 않음",
+  "modelDownload_downloading": "다운로드 중",
+  "modelDownload_active": "사용 중",
+  "modelDownload_failed": "다운로드하지 못했습니다",
+  "modelDownload_incomplete": "불완전",
+  "modelDownload_verifying": "다운로드를 확인하는 중",
+  "modelDownload_useModel": "이 모델 사용",
+  "modelDownload_removeFailed": "모델을 제거하지 못했습니다: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }

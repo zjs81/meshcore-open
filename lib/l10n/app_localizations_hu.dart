@@ -552,9 +552,8 @@ class AppLocalizationsHu extends AppLocalizations {
       'A modellek nincsenek letöltve';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'A visszaállított beállítások olyan modelleket választanak, amelyek nem érhetők el ezen az eszközön:\n$models\n\nLetölti őket most?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'A visszaállított beállítások olyan modelleket választanak, amelyek nem érhetők el ezen az eszközön. Letölti őket most?';
 
   @override
   String get backupRestore_downloadModels => 'Modellek letöltése';
@@ -7565,4 +7564,35 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get chat_composerOffline => 'Üzenetküldéshez csatlakozzon rádióhoz';
+
+  @override
+  String get modelDownload_notDownloaded => 'Nincs letöltve';
+
+  @override
+  String get modelDownload_downloading => 'Letöltés';
+
+  @override
+  String get modelDownload_active => 'Aktív';
+
+  @override
+  String get modelDownload_failed => 'A letöltés sikertelen';
+
+  @override
+  String get modelDownload_incomplete => 'Hiányos';
+
+  @override
+  String get modelDownload_verifying => 'A letöltés ellenőrzése';
+
+  @override
+  String get modelDownload_useModel => 'Ezt a modellt használja';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'A modellt nem sikerült eltávolítani: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
 }

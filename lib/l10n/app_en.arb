@@ -237,12 +237,7 @@
   "backupRestore_backupComplete": "Backup file created.",
   "backupRestore_restoreComplete": "Restore complete. Reconnect if you restored the radio identity.",
   "backupRestore_missingModelsTitle": "Models Not Downloaded",
-  "backupRestore_missingModelsMessage": "The restored settings select models that are not available on this device:\n{models}\n\nDownload them now?",
-  "@backupRestore_missingModelsMessage": {
-    "placeholders": {
-      "models": {"type": "String"}
-    }
-  },
+  "backupRestore_missingModelsMessage": "The restored settings select models that are not on this device. Download them now?",
   "backupRestore_downloadModels": "Download Models",
   "backupRestore_downloading": "Downloading…",
   "backupRestore_cancelDownload": "Cancel Download",
@@ -4341,5 +4336,26 @@
   "chat_composerOffline": "Connect to a radio to send messages",
   "@chat_composerOffline": {
     "description": "Shown in place of the message box while no radio is connected"
+  },
+  "modelDownload_notDownloaded": "Not downloaded",
+  "modelDownload_downloading": "Downloading",
+  "modelDownload_active": "Active",
+  "modelDownload_failed": "Couldn't download",
+  "modelDownload_incomplete": "Incomplete",
+  "modelDownload_verifying": "Verifying the download",
+  "modelDownload_useModel": "Use this model",
+  "modelDownload_removeFailed": "Couldn't remove the model: {error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)",
+  "@modelDownload_removeFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "@modelDownload_progress": {
+    "placeholders": {
+      "current": {"type": "String"},
+      "total": {"type": "String"},
+      "percent": {"type": "String"}
+    }
   }
 }

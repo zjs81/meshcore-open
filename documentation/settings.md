@@ -153,9 +153,7 @@ Not shown on web. Controls on-device message translation powered by a locally-do
 - **Auto-translate incoming messages**: Automatically translates incoming messages for chat/channel display and notifications
 - **Translate before sending**: Sets the default state of the composer's translate icon (on means messages are translated before sending)
 - **Target language**: Language to translate into (searchable list; defaults to the app language)
-- **Downloaded model**: Dropdown to select among already-downloaded translation models
-- **Preset Hugging Face model**: Download a curated preset model with one tap
-- **Manual model URL**: Enter a URL to download a custom GGUF-format model; shows download progress and a cancel button
+- **Models**: The same model rows used for the image codec. Each preset is one row with its name, size once known, and status (not downloaded, downloading with progress, ready, or couldn't download). The model in use is marked Active; tap another ready row to switch. Download, cancel, and remove are the row's action. A manual model URL under the list downloads a custom GGUF file into the same list.
 
 The auto-translate and composer toggles are disabled until **Enable translation** is on.
 
@@ -175,7 +173,7 @@ Save the settings before sharing. The upload action is shown in the chat compose
 
 ### Image Messages
 
-Image message controls live in App Settings → Messaging. Turn on **Enable image messages** first; **Process images automatically** and the image model download/cancel/removal controls then appear. Automatic processing reconstructs every image as it arrives and uses about 2 GB of memory for a second each time; leave it off to reconstruct with a tap. See [Image Messages](image-messages.md) for firmware, native-runtime, storage, and memory requirements.
+Image message controls live in App Settings → Messaging. Turn on **Enable image messages** first; **Process images automatically** and the image model row then appear. That row is the same model list used for translation: name, size, status (not downloaded, downloading with progress, ready, or couldn't download), and one action (download, cancel, or remove). A finished install is marked Active. Automatic processing reconstructs every image as it arrives and uses about 2 GB of memory for a second each time; leave it off to reconstruct with a tap. See [Image Messages](image-messages.md) for firmware, native-runtime, storage, and memory requirements.
 
 ### Cyrillic-to-Latin (Cyr2Lat)
 Controls character substitution profiles used to render Cyrillic text in Latin characters. A dropdown selects the active profile; Add, Edit, and Delete buttons manage the profile list (the last remaining profile cannot be deleted). Each profile stores a JSON character map.

@@ -547,9 +547,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'Models Not Downloaded';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'The restored settings select models that are not available on this device:\n$models\n\nDownload them now?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'The restored settings select models that are not on this device. Download them now?';
 
   @override
   String get backupRestore_downloadModels => 'Download Models';
@@ -7468,4 +7467,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chat_composerOffline => 'Connect to a radio to send messages';
+
+  @override
+  String get modelDownload_notDownloaded => 'Not downloaded';
+
+  @override
+  String get modelDownload_downloading => 'Downloading';
+
+  @override
+  String get modelDownload_active => 'Active';
+
+  @override
+  String get modelDownload_failed => 'Couldn\'t download';
+
+  @override
+  String get modelDownload_incomplete => 'Incomplete';
+
+  @override
+  String get modelDownload_verifying => 'Verifying the download';
+
+  @override
+  String get modelDownload_useModel => 'Use this model';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Couldn\'t remove the model: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
 }

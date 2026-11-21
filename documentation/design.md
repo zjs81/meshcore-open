@@ -122,6 +122,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Popup menu row | **always** `PopupMenuItem(child: MeshMenuItemRow(icon:, label:))` | Label wraps to 2 lines then ellipsizes; `leading:` for `ThemedIcon`; no icon keeps the 20px slot |
 | Segmented button label | **always** `ButtonSegment(label: MeshSegmentLabel(text))` | Shrinks to 12 (before system scale), then wraps at word boundaries onto 2 centred lines; never breaks a word |
 | Status | `StatusChip` | Mono label, coloured dot or icon |
+| On-device model | `ModelDownloadList` | Name, size, status, selection and one action. See [Model downloads](#model-downloads). |
 | Metric | `StatTile` | Label wraps to 2 lines; value wraps |
 | Signal | `SignalBars`, `MeshTheme.snrColor` | |
 | Route kind | `RouteChip` | Direct / hop count / Flood |
@@ -146,6 +147,22 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 **FAB.** One per screen, for the main "add" action (`contacts_screen.dart`, `channels_screen.dart`) or primary action (`FloatingActionButton.extended` in `themes_screen.dart`, `scanner_screen.dart`). Always give it a `tooltip` or a label.
 
 **IconButton.** Always set `tooltip:` with a localized string. It is the accessible name.
+
+### Model downloads
+
+Image models, translation models, and the restore prompt that fetches missing models all use `ModelDownloadList` (`lib/widgets/model_download_list.dart`). Do not add a second download form (a dropdown of presets, a separate filename row, or a one-off progress bar).
+
+One model is one row inside the existing `MeshCard`, rows separated by `Divider(height: 1, indent: 16)`:
+
+| Part | What it shows |
+|---|---|
+| Title | Friendly name, `meshTileTitleStyle` (`bodyLarge` w600). It wraps. Never a raw filename or URL. |
+| Subtitle | Size via the `mapCache_size*` strings when known, then the status: Not downloaded, Downloading, Ready, or Couldn't download. The model in use also says Active. An install that stopped part-way says Incomplete. The words stay `onSurfaceVariant` (Active is w600). The leading icon carries the colour: `primary` when that model is active or downloading, `error` on failure, `onSurfaceVariant` otherwise. |
+| Progress | While downloading, a `LinearProgressIndicator` (indeterminate when the total is unknown, or while chunks are merged or the file is verified) and a mono 12 caption of bytes and percent. |
+| Action | One `IconButton` with a localized tooltip: Download, Cancel, or Remove model. An install that already has files but is not ready shows both Download and Remove. Tap a Ready row to select it when more than one model can be active. A row the user cannot use is dimmed to 50 %, same as a disabled `MeshNavTile`. |
+| Manual URL | When the feature accepts one (translation), put a single text field under the list. Its download control is the same Download icon. The file joins this list. |
+
+A dialog that offers several missing models (backup restore) uses the same rows for name, size, status and progress, and keeps its own confirm button.
 
 ## 6. Sheets, dialogs and pages
 

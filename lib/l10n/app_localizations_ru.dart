@@ -554,9 +554,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get backupRestore_missingModelsTitle => 'Модели не загружены';
 
   @override
-  String backupRestore_missingModelsMessage(String models) {
-    return 'Восстановленные настройки выбирают модели, которых нет на этом устройстве:\n$models\n\nЗагрузить их сейчас?';
-  }
+  String get backupRestore_missingModelsMessage =>
+      'Восстановленные настройки выбирают модели, которых нет на этом устройстве. Загрузить их сейчас?';
 
   @override
   String get backupRestore_downloadModels => 'Загрузить модели';
@@ -7599,4 +7598,35 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Подключитесь к радио, чтобы отправлять сообщения';
+
+  @override
+  String get modelDownload_notDownloaded => 'Не скачано';
+
+  @override
+  String get modelDownload_downloading => 'Загрузка';
+
+  @override
+  String get modelDownload_active => 'Активна';
+
+  @override
+  String get modelDownload_failed => 'Не удалось скачать';
+
+  @override
+  String get modelDownload_incomplete => 'Неполная';
+
+  @override
+  String get modelDownload_verifying => 'Проверка загрузки';
+
+  @override
+  String get modelDownload_useModel => 'Использовать эту модель';
+
+  @override
+  String modelDownload_removeFailed(String error) {
+    return 'Не удалось удалить модель: $error';
+  }
+
+  @override
+  String modelDownload_progress(String current, String total, String percent) {
+    return '$current / $total MB ($percent%)';
+  }
 }

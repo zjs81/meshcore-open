@@ -3813,7 +3813,7 @@
   "backupRestore_backupComplete": "备份文件已创建。",
   "backupRestore_restoreComplete": "恢复完成。如果恢复了无线电身份，请重新连接。",
   "backupRestore_missingModelsTitle": "模型未下载",
-  "backupRestore_missingModelsMessage": "恢复的设置所选用的模型在此设备上不可用：\n{models}\n\n现在下载吗？",
+  "backupRestore_missingModelsMessage": "恢复的设置所选用的模型在此设备上不可用。现在下载吗？",
   "backupRestore_downloadModels": "下载模型",
   "backupRestore_downloading": "正在下载…",
   "backupRestore_cancelDownload": "取消下载",
@@ -3833,5 +3833,14 @@
   "connectSheet_chooseRadioSubtitle": "蓝牙、USB 或 TCP",
   "connectSheet_stopReconnecting": "停止重新连接",
   "connectSheet_reconnectFailed": "无法连接到 {name}。请确保其已开机且在附近。",
-  "chat_composerOffline": "连接到无线电后才能发送消息"
+  "chat_composerOffline": "连接到无线电后才能发送消息",
+  "modelDownload_notDownloaded": "未下载",
+  "modelDownload_downloading": "正在下载",
+  "modelDownload_active": "当前使用",
+  "modelDownload_failed": "下载失败",
+  "modelDownload_incomplete": "不完整",
+  "modelDownload_verifying": "正在校验下载",
+  "modelDownload_useModel": "使用此模型",
+  "modelDownload_removeFailed": "无法移除模型：{error}",
+  "modelDownload_progress": "{current} / {total} MB ({percent}%)"
 }
