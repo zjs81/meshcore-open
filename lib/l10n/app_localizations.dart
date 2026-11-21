@@ -3301,6 +3301,30 @@ abstract class AppLocalizations {
   /// **'No members'**
   String get contacts_noMembers;
 
+  /// No description provided for @contacts_groupCurrentMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Current members ({count})'**
+  String contacts_groupCurrentMembers(int count);
+
+  /// No description provided for @contacts_groupAddContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Add contacts'**
+  String get contacts_groupAddContacts;
+
+  /// No description provided for @contacts_groupRemoveMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name} from group'**
+  String contacts_groupRemoveMember(String name);
+
+  /// No description provided for @contacts_groupAddMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {name} to group'**
+  String contacts_groupAddMember(String name);
+
   /// No description provided for @contacts_lastSeenNow.
   ///
   /// In en, this message translates to:
