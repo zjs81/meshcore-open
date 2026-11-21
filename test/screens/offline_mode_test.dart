@@ -251,7 +251,7 @@ void main() {
     await _settle(tester);
     expect(_menuItem(_l10n.contacts_floodAdvert).enabled, isFalse);
     expect(_menuItem(_l10n.contacts_zeroHopAdvert).enabled, isFalse);
-    expect(_menuItem(_l10n.contacts_addContactFromClipboard).enabled, isFalse);
+    expect(_menuItem(_l10n.addContact_title).enabled, isFalse);
     expect(_menuItem(_l10n.common_connect).enabled, isTrue);
     await tester.pumpWidget(const SizedBox());
   });

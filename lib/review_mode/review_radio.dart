@@ -318,6 +318,9 @@ class ReviewRadio {
         }
         _emit([ReviewFrames.ok()]);
         break;
+      case cmdAddUpdateContact:
+        _handleAddUpdateContact(frame);
+        break;
       case cmdSendLogin:
         _handleLogin(frame);
         break;
@@ -365,12 +368,67 @@ class ReviewRadio {
     publicKey: c.publicKey,
     type: c.type,
     path: c.path,
+    pathLen: c.pathLen,
     name: c.name,
     lastAdvertSecs: c.lastAdvertSecs,
     latitudeE6: c.latitudeE6,
     longitudeE6: c.longitudeE6,
     lastModSecs: c.lastModSecs,
+    flags: c.flags,
   );
+
+  void _handleAddUpdateContact(Uint8List frame) {
+    // [cmd][pub_key x32][type][flags][path_len][path x64][name x32][last_advert? x4][lat? x4][lon? x4]
+    const minLen = 1 + pubKeySize + 3 + maxPathSize + maxNameSize;
+    if (frame.length < minLen) {
+      _emit([ReviewFrames.err()]);
+      return;
+    }
+    final publicKey = Uint8List.fromList(frame.sublist(1, 1 + pubKeySize));
+    final type = frame[33];
+    final flags = frame[34];
+    final pathLen = frame[35];
+    final Uint8List path;
+    if (pathLen == 0xFF) {
+      path = Uint8List(0);
+    } else {
+      final width = ((pathLen & 0xC0) >> 6) + 1;
+      final hops = pathLen & 0x3F;
+      final byteLen = (hops * width).clamp(0, maxPathSize);
+      path = Uint8List.fromList(frame.sublist(36, 36 + byteLen));
+    }
+    final name = _readCString(frame, 36 + maxPathSize, maxNameSize);
+    final lastAdvertSecs = frame.length >= minLen + 4
+        ? readUint32LE(frame, minLen)
+        : 0;
+    final latE6 = frame.length >= minLen + 12
+        ? readInt32LE(frame, minLen + 4)
+        : 0;
+    final lonE6 = frame.length >= minLen + 12
+        ? readInt32LE(frame, minLen + 8)
+        : 0;
+    final contact = _Contact(
+      publicKey: publicKey,
+      type: type,
+      flags: flags,
+      path: path,
+      pathLen: pathLen,
+      name: name,
+      lastAdvertSecs: lastAdvertSecs,
+      latitudeE6: latE6,
+      longitudeE6: lonE6,
+      lastModSecs: _nowSecs,
+    );
+    final index = _contacts.indexWhere(
+      (c) => listEquals(c.publicKey, publicKey),
+    );
+    if (index >= 0) {
+      _contacts[index] = contact;
+    } else {
+      _contacts.add(contact);
+    }
+    _emit([ReviewFrames.ok()]);
+  }
 
   void _handleGetContacts(Uint8List frame) {
     final since = frame.length >= 5 ? readUint32LE(frame, 1) : 0;
@@ -659,7 +717,9 @@ class ReviewRadio {
 class _Contact {
   final Uint8List publicKey;
   final int type;
+  final int flags;
   final Uint8List path;
+  final int? pathLen;
   final String name;
   final int lastAdvertSecs;
   final int latitudeE6;
@@ -669,7 +729,9 @@ class _Contact {
   _Contact({
     required this.publicKey,
     required this.type,
+    this.flags = 0,
     required this.path,
+    this.pathLen,
     required this.name,
     required this.lastAdvertSecs,
     required this.latitudeE6,

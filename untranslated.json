@@ -36,7 +36,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "cs": [
@@ -76,7 +87,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "de": [
@@ -116,7 +138,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "es": [
@@ -156,7 +189,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "fr": [
@@ -196,7 +240,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "hu": [
@@ -236,7 +291,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "it": [
@@ -276,7 +342,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "ja": [
@@ -316,7 +393,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "ko": [
@@ -356,7 +444,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "nl": [
@@ -396,7 +495,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "pl": [
@@ -436,7 +546,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "pt": [
@@ -476,7 +597,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "pt_PT": [
@@ -516,7 +648,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "ru": [
@@ -556,7 +699,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "sk": [
@@ -596,7 +750,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "sl": [
@@ -636,7 +801,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "sv": [
@@ -676,7 +852,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "uk": [
@@ -716,7 +903,18 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ],
 
   "zh": [
@@ -756,6 +954,17 @@
     "chatCompression_profile",
     "chatCompression_noStorageId",
     "chatCompression_saveFailed",
-    "messageMeta_smazCompressed"
+    "messageMeta_smazCompressed",
+    "addContact_title",
+    "addContact_infoBanner",
+    "addContact_contactType",
+    "addContact_name",
+    "addContact_nameRequired",
+    "addContact_publicKeyHex",
+    "addContact_publicKeyRequired",
+    "addContact_publicKeyInvalid",
+    "addContact_clipboardKeyLoaded",
+    "addContact_fromDiscovered",
+    "addContact_saveFailed"
   ]
 }

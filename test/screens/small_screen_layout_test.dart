@@ -15,6 +15,7 @@ import 'package:meshcore_open/connector/meshcore_protocol.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
 import 'package:meshcore_open/models/contact.dart';
 import 'package:meshcore_open/review_mode/review_radio.dart';
+import 'package:meshcore_open/screens/add_contact_screen.dart';
 import 'package:meshcore_open/screens/app_debug_log_screen.dart';
 import 'package:meshcore_open/screens/app_settings_screen.dart';
 import 'package:meshcore_open/screens/ble_debug_log_screen.dart';
@@ -145,7 +146,7 @@ _interactions = {
           .first,
     );
   },
-  'Contacts add sheet': (t, _) async {
+  'Contacts add page': (t, _) async {
     await t.tap(find.byType(FloatingActionButton));
   },
   // Four routing modes (Auto, Flood, Direct, Manual) share one row.
@@ -161,7 +162,8 @@ _interactions = {
 
 final Map<String, _ScreenBuilder> _screens = {
   'Contacts options sheet': (_) => const ContactsScreen(),
-  'Contacts add sheet': (_) => const ContactsScreen(),
+  'Contacts add page': (_) => const ContactsScreen(),
+  'AddContact': (_) => const AddContactScreen(),
   'Routing sheet': (c) => ChatScreen(contact: _contactOfType(c, advTypeChat)),
   'Scanner': (_) => const ScannerScreen(),
   'Tcp': (_) => const TcpScreen(),
