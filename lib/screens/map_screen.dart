@@ -1198,6 +1198,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       showOtherNodes: settings.mapShowOtherNodes,
       isBuildingPathTrace: _isBuildingPathTrace,
       clusterNodes: settings.mapClusterNodes,
+      // Node labels bake in the overlay colors, so a light/dark or theme
+      // switch must rebuild them.
+      colorScheme: Theme.of(context).colorScheme,
     );
     if (key != _nodeMarkersCacheKey) {
       _nodeMarkersCacheKey = key;
@@ -4389,6 +4392,7 @@ class _NodeMarkersCacheKey {
   final bool showOtherNodes;
   final bool isBuildingPathTrace;
   final bool clusterNodes;
+  final ColorScheme colorScheme;
 
   const _NodeMarkersCacheKey({
     required this.contactsSignature,
@@ -4409,6 +4413,7 @@ class _NodeMarkersCacheKey {
     required this.showOtherNodes,
     required this.isBuildingPathTrace,
     required this.clusterNodes,
+    required this.colorScheme,
   });
 
   @override
@@ -4431,7 +4436,8 @@ class _NodeMarkersCacheKey {
         showChatNodes == other.showChatNodes &&
         showOtherNodes == other.showOtherNodes &&
         isBuildingPathTrace == other.isBuildingPathTrace &&
-        clusterNodes == other.clusterNodes;
+        clusterNodes == other.clusterNodes &&
+        colorScheme == other.colorScheme;
   }
 
   @override
@@ -4454,6 +4460,7 @@ class _NodeMarkersCacheKey {
     showOtherNodes,
     isBuildingPathTrace,
     clusterNodes,
+    colorScheme,
   );
 }
 

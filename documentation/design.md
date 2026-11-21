@@ -103,7 +103,7 @@ Minimum sizes: no hard-coded `fontSize` below 12 exists in `lib/screens` or `lib
 | Sheet header | padding 20, 8, 8, 4 (LTRB), 36×4 drag handle | `BottomSheetHeader` |
 | Radii | `MeshRadii.xs` 6, `sm` 10, `md` 14 (cards, inputs, menus, snackbars, list tiles), `lg` 18 (sheets, dialogs), `xl` 24, `pill` 999 (buttons, chips, FAB) | `MeshRadii` |
 | Default icon size | 22 | `iconTheme` |
-| Avatar | 40 | `AvatarCircle` |
+| Avatar | 40; initials from letters and digits only (`avatarInitials`), else a person icon. Pass a hop's hex prefix, not a "(AB) Name" label | `AvatarCircle` |
 | List bottom padding under a FAB | 88 | `channels_screen.dart` |
 
 Every settings row — including sliders, selectors, child rows revealed inside `SettingsReveal`, and model rows in `ModelDownloadList` — uses a vertically centred 24px leading icon with a 16px gap (`MeshNavTile`, `SwitchListTile.secondary`, or `ListTile.leading`) so titles align vertically across a card.
