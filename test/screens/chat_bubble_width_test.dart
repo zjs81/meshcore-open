@@ -58,8 +58,9 @@ class _ToggleConnector extends MeshCoreConnector {
   bool get isConnected => connected;
 }
 
-DateTime _at(int seconds) =>
-    DateTime.fromMillisecondsSinceEpoch(1700000000000 + seconds * 1000);
+// Two-digit local hour (10:13 PM / 22:13) so narrow 2.0x text checks the wide
+// timestamp layout regardless of host timezone.
+DateTime _at(int seconds) => DateTime(2023, 11, 14, 22, 13, seconds);
 
 Future<void> _seedRadio() async {
   final alice = Contact(
