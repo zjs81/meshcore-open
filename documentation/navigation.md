@@ -48,6 +48,7 @@ ContactsScreen (selected=0)
   ├─ [quick-switch 1] → pushReplacement → ChannelsScreen
   ├─ [quick-switch 2] → pushReplacement → MapScreen
   ├─ [tap contact] → push → ChatScreen
+  ├─ [FAB / overflow > Add Contact] → push → AddContactScreen
   ├─ [overflow > Settings] → push → SettingsScreen
   └─ [overflow > Discovered] → push → DiscoveryScreen
 

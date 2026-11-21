@@ -190,7 +190,7 @@ class _ContactQrScannerScreenState extends State<ContactQrScannerScreen> {
       );
       // Keep _isProcessing set: resetting it would restart the camera on a
       // closing route and let a second detection import and pop again.
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     } catch (e) {
       if (mounted) {
         setState(() {

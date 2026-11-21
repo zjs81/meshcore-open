@@ -91,8 +91,8 @@ The group editor lists **Current members (N)** first, each with a remove button.
 
 The Contacts screen has a single **three-dot overflow menu** (`⋮`) in the app bar:
 
+- Add Contact — opens the Add Contact page
 - Discovered Contacts — opens the DiscoveryScreen
-- Add Contact from Clipboard — reads a `meshcore://<hex>` URI from clipboard and imports it
 - *(divider)*
 - Zero-Hop Advert — broadcasts your advertisement to immediately adjacent nodes
 - Flood Advert — broadcasts across the full mesh network
@@ -101,15 +101,20 @@ The Contacts screen has a single **three-dot overflow menu** (`⋮`) in the app 
 - Disconnect — disconnects from the device
 - Settings — opens the Settings screen
 
-A **floating action button** (person-add icon) provides a shortcut sheet to "Add Contact from Clipboard" or "Discovered Contacts".
+A **floating action button** (person-add icon) also opens the Add Contact page.
 
 ## Adding Contacts
 
 ### Automatic (Passive)
 When the radio hears an advertisement, the contact appears automatically if auto-add is enabled for that type (configurable in Settings → Contact Settings).
 
-### Import from Clipboard
-Overflow menu (or the FAB shortcut) → "Add Contact from Clipboard". Reads a `meshcore://<hex>` URI from clipboard and imports it to the device.
+### Add Contact Page (Manual, Clipboard, Discovered, QR)
+Open **Add Contact** from the Contacts overflow menu or the person-add floating action button.
+
+- **Manual entry**: Pick the **Contact Type** (Chat, Repeater, Room, or Sensor), enter a **Name**, paste or enter the 64-character hex **Public Key** (leading/trailing whitespace and an optional `0x` prefix are handled automatically), and tap the checkmark (`✓`) to save.
+- **Add Contact from Clipboard**: Imports `meshcore://` contact URIs and `<PUBKEY:TYPE:NAME>` chat share tokens directly, or detects a bare 64-hex-char public key and fills the Public Key field so you can pick the type, enter a name, and save.
+- **Add from Discovered Contacts**: Opens the Discovered Contacts screen.
+- **Scan QR Code**: Opens the QR scanner.
 
 ### Import from Discovered Contacts
 Overflow menu → "Discovered Contacts". Shows nodes heard passively that haven't been added yet. Tap to immediately import (no confirmation dialog), or long-press for more options (Copy URI, Delete). The Discovery screen has its own search bar, type filters (Users, Repeaters, Rooms), and sort options (Last Seen, A-Z). Its overflow menu has **Export discovered contacts**, **Import discovered contacts**, and "Delete All".
@@ -133,7 +138,7 @@ Use the Discovered Contacts overflow menu to move the list of heard-but-not-adde
 
 ### Import from a QR Code
 
-Choose **Scan QR Code** from the Contacts overflow menu or the add-contact sheet. Allow camera access and scan a compatible contact QR code, or use **Scan QR from Gallery** on the scanner screen to import a QR code from a saved image. Contact QR import is separate from community QR scanning; use Channels for community codes.
+Choose **Scan QR Code** from the Add Contact page. Allow camera access and scan a compatible contact QR code, or use **Scan QR from Gallery** on the scanner screen to import a QR code from a saved image. Contact QR import is separate from community QR scanning; use Channels for community codes.
 
 ## Contact Sharing Format
 

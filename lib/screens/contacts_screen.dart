@@ -35,11 +35,10 @@ import '../widgets/repeater_login_dialog.dart';
 import '../widgets/room_login_dialog.dart';
 import '../widgets/sync_progress_overlay.dart';
 import '../widgets/unread_badge.dart';
-import '../helpers/contact_share_message.dart';
 import '../helpers/snack_bar_builder.dart';
+import 'add_contact_screen.dart';
 import 'channels_screen.dart';
 import 'chat_screen.dart';
-import 'contact_qr_scanner_screen.dart';
 import 'discovery_screen.dart';
 import 'map_screen.dart';
 import '../review_mode/review_mode_banner.dart';
@@ -49,7 +48,7 @@ import '../theme/theme_icons.dart';
 
 enum RoomLoginDestination { chat, management }
 
-enum ContactOperationType { import, export, zeroHopShare }
+enum ContactOperationType { export, zeroHopShare }
 
 /// An export/import/share awaiting its generic OK/ERR ack. The timer drops
 /// it if no ack arrives, so a stuck op can't consume a later unrelated ack.
@@ -160,10 +159,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
     final l10n = context.l10n;
     final String message;
     switch (type) {
-      case ContactOperationType.import:
-        message = success
-            ? l10n.contacts_contactImported
-            : l10n.contacts_contactImportFailed;
       case ContactOperationType.zeroHopShare:
         message = success
             ? l10n.contacts_zeroHopContactAdvertSent
@@ -346,85 +341,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
     }
   }
 
-  Future<void> _contactImport() async {
-    final connector = Provider.of<MeshCoreConnector>(context, listen: false);
-    final clipboardData = await Clipboard.getData('text/plain');
-    if (clipboardData == null || clipboardData.text == null) {
-      if (mounted) {
-        showDismissibleSnackBar(
-          context,
-          content: Text(context.l10n.contacts_clipboardEmpty),
-        );
-      }
-      return;
-    }
-    final text = clipboardData.text!.trim();
-    // A contact shared in chat (`<PUBKEY:TYPE:NAME>`) copied from the bubble.
-    final share = findContactShare(text);
-    if (share != null && !text.startsWith('meshcore://')) {
-      await _importContactShare(connector, share);
-      return;
-    }
-    if (!text.startsWith('meshcore://')) {
-      if (mounted) {
-        showDismissibleSnackBar(
-          context,
-          content: Text(context.l10n.contacts_invalidAdvertFormat),
-        );
-      }
-      return;
-    }
-    final hexString = text.substring('meshcore://'.length);
-    final Uint8List importContactFrame;
-    try {
-      final bytes = hex2Uint8List(hexString);
-      importContactFrame = buildImportContactFrame(bytes);
-    } catch (e) {
-      if (mounted) {
-        showDismissibleSnackBar(
-          context,
-          content: Text(context.l10n.contacts_invalidAdvertFormat),
-        );
-      }
-      return;
-    }
-    _addPendingOperation(ContactOperationType.import);
-    try {
-      await connector.sendFrame(importContactFrame, expectsGenericAck: true);
-    } catch (e) {
-      _takePendingOperation(ContactOperationType.import);
-      if (mounted) {
-        showDismissibleSnackBar(
-          context,
-          content: Text(context.l10n.contacts_contactImportFailed),
-        );
-      }
-    }
-  }
-
-  Future<void> _importContactShare(
-    MeshCoreConnector connector,
-    ContactShare share,
-  ) async {
-    if (!mounted) return;
-    final l10n = context.l10n;
-    if (share.publicKeyHex == connector.selfPublicKeyHex) {
-      showDismissibleSnackBar(context, content: Text(l10n.contactShare_isYou));
-      return;
-    }
-    var ok = true;
-    try {
-      await connector.addContactFromCard(share.toScannedContact());
-    } catch (e) {
-      appLogger.warn('Contact share import failed: $e', tag: 'ContactsScreen');
-      ok = false;
-    }
-    if (!mounted) return;
-    showDismissibleSnackBar(
+  void _openAddContact() {
+    Navigator.push(
       context,
-      content: Text(
-        ok ? l10n.contacts_contactImported : l10n.contacts_contactImportFailed,
-      ),
+      MaterialPageRoute(builder: (context) => const AddContactScreen()),
     );
   }
 
@@ -446,6 +366,14 @@ class _ContactsScreenState extends State<ContactsScreen> {
               tooltip: context.l10n.contacts_moreOptions,
               itemBuilder: (context) => <PopupMenuEntry<dynamic>>[
                 PopupMenuItem(
+                  enabled: !readOnly,
+                  onTap: _openAddContact,
+                  child: MeshMenuItemRow(
+                    icon: Icons.person_add,
+                    label: context.l10n.addContact_title,
+                  ),
+                ),
+                PopupMenuItem(
                   child: MeshMenuItemRow(
                     icon: Icons.person_add_rounded,
                     label: context.l10n.discoveredContacts_Title,
@@ -454,27 +382,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const DiscoveryScreen(),
-                    ),
-                  ),
-                ),
-                PopupMenuItem(
-                  enabled: !readOnly,
-                  child: MeshMenuItemRow(
-                    icon: Icons.paste,
-                    label: context.l10n.contacts_addContactFromClipboard,
-                  ),
-                  onTap: () => _contactImport(),
-                ),
-                PopupMenuItem(
-                  enabled: !readOnly,
-                  child: MeshMenuItemRow(
-                    icon: Icons.qr_code_scanner,
-                    label: context.l10n.contacts_scanQrCode,
-                  ),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ContactQrScannerScreen(),
                     ),
                   ),
                 ),
@@ -539,7 +446,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
         floatingActionButton: readOnly
             ? null
             : FloatingActionButton(
-                onPressed: () => _showAddContactSheet(context),
+                tooltip: context.l10n.addContact_title,
+                onPressed: _openAddContact,
                 child: const Icon(Icons.person_add),
               ),
         bottomNavigationBar: SafeArea(
@@ -550,57 +458,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
                 _handleQuickSwitch(index, context),
             contactsUnreadCount: connector.getTotalContactsUnreadCount(),
             channelsUnreadCount: connector.getTotalChannelsUnreadCount(),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showAddContactSheet(BuildContext context) {
-    showMeshSheet(
-      context,
-      builder: (sheetContext) => SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              BottomSheetHeader(title: context.l10n.contacts_title),
-              ListTile(
-                leading: const Icon(Icons.paste),
-                title: Text(context.l10n.contacts_addContactFromClipboard),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  _contactImport();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.qr_code_scanner),
-                title: Text(context.l10n.contacts_scanQrCode),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ContactQrScannerScreen(),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.person_add_rounded),
-                title: Text(context.l10n.discoveredContacts_Title),
-                onTap: () {
-                  Navigator.pop(sheetContext);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const DiscoveryScreen(),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 8),
-            ],
           ),
         ),
       ),

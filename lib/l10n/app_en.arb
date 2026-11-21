@@ -4448,5 +4448,16 @@
   "chatCompression_profile": "Cyr2Lat profile",
   "chatCompression_noStorageId": "Can't change compression until this channel has synced from the radio.",
   "chatCompression_saveFailed": "Couldn't save the compression setting. Showing the saved setting.",
-  "messageMeta_smazCompressed": "SMAZ compressed"
+  "messageMeta_smazCompressed": "SMAZ compressed",
+  "addContact_title": "Add Contact",
+  "addContact_infoBanner": "If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.",
+  "addContact_contactType": "Contact Type",
+  "addContact_name": "Name",
+  "addContact_nameRequired": "Please enter a name",
+  "addContact_publicKeyHex": "Public Key (hex)",
+  "addContact_publicKeyRequired": "Please enter a public key",
+  "addContact_publicKeyInvalid": "Public key must be 64 hex characters (32 bytes)",
+  "addContact_clipboardKeyLoaded": "Public key filled in. Choose a contact type, enter a name, and tap save.",
+  "addContact_fromDiscovered": "Add from Discovered Contacts",
+  "addContact_saveFailed": "Failed to add contact."
 }

@@ -12891,6 +12891,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'SMAZ compressed'**
   String get messageMeta_smazCompressed;
+
+  /// No description provided for @addContact_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Contact'**
+  String get addContact_title;
+
+  /// No description provided for @addContact_infoBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.'**
+  String get addContact_infoBanner;
+
+  /// No description provided for @addContact_contactType.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Type'**
+  String get addContact_contactType;
+
+  /// No description provided for @addContact_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get addContact_name;
+
+  /// No description provided for @addContact_nameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a name'**
+  String get addContact_nameRequired;
+
+  /// No description provided for @addContact_publicKeyHex.
+  ///
+  /// In en, this message translates to:
+  /// **'Public Key (hex)'**
+  String get addContact_publicKeyHex;
+
+  /// No description provided for @addContact_publicKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a public key'**
+  String get addContact_publicKeyRequired;
+
+  /// No description provided for @addContact_publicKeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key must be 64 hex characters (32 bytes)'**
+  String get addContact_publicKeyInvalid;
+
+  /// No description provided for @addContact_clipboardKeyLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key filled in. Choose a contact type, enter a name, and tap save.'**
+  String get addContact_clipboardKeyLoaded;
+
+  /// No description provided for @addContact_fromDiscovered.
+  ///
+  /// In en, this message translates to:
+  /// **'Add from Discovered Contacts'**
+  String get addContact_fromDiscovered;
+
+  /// No description provided for @addContact_saveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add contact.'**
+  String get addContact_saveFailed;
 }
 
 class _AppLocalizationsDelegate
