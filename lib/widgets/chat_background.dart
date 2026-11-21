@@ -42,24 +42,77 @@ ChatBackgroundService? _maybeService(
 }
 
 /// Draws [chatKey]'s background (its own, or the theme's) behind [child].
+///
+/// A [footer] (the chat composer) sits below [child] over the same
+/// background and can ask [ChatBackdrop.hasBackgroundOf] whether one is
+/// drawn. [contentKey] marks the message area above the footer.
 class ChatBackdrop extends StatelessWidget {
   final String chatKey;
   final Widget child;
+  final Widget? footer;
+  final Key? contentKey;
 
-  const ChatBackdrop({super.key, required this.chatKey, required this.child});
+  const ChatBackdrop({
+    super.key,
+    required this.chatKey,
+    required this.child,
+    this.footer,
+    this.contentKey,
+  });
+
+  /// Whether the nearest [ChatBackdrop] draws a background behind its footer.
+  static bool hasBackgroundOf(BuildContext context) =>
+      context
+          .dependOnInheritedWidgetOfExactType<_ChatBackdropScope>()
+          ?.hasBackground ??
+      false;
 
   @override
   Widget build(BuildContext context) {
     final background = _maybeService(context)?.resolve(chatKey);
-    if (background == null) return child;
+    final footer = this.footer;
+    if (footer == null) {
+      if (background == null) return child;
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(child: ChatBackgroundLayer(background: background)),
+          child,
+        ],
+      );
+    }
     return Stack(
       fit: StackFit.expand,
       children: [
-        Positioned.fill(child: ChatBackgroundLayer(background: background)),
-        child,
+        Positioned.fill(
+          child: background == null
+              ? const SizedBox.shrink()
+              : ChatBackgroundLayer(background: background),
+        ),
+        Column(
+          children: [
+            Expanded(
+              child: KeyedSubtree(key: contentKey, child: child),
+            ),
+            _ChatBackdropScope(
+              hasBackground: background != null,
+              child: footer,
+            ),
+          ],
+        ),
       ],
     );
   }
+}
+
+class _ChatBackdropScope extends InheritedWidget {
+  final bool hasBackground;
+
+  const _ChatBackdropScope({required this.hasBackground, required super.child});
+
+  @override
+  bool updateShouldNotify(_ChatBackdropScope oldWidget) =>
+      hasBackground != oldWidget.hasBackground;
 }
 
 /// Paints one [ChatBackground], faded toward the theme's surface color.

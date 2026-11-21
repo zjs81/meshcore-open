@@ -38,3 +38,9 @@ jobs:
 
       - name: Run tests
         run: flutter test -r github
+
+      - name: Analyze and test without ONNX Runtime
+        run: |
+          scripts/onnx.sh off
+          flutter analyze --fatal-infos --fatal-warnings
+          flutter test -r github

@@ -132,6 +132,32 @@ void main() {
       },
     );
 
+    test('keeps contact added times out of app settings', () async {
+      SharedPreferences.setMockInitialValues({
+        'app_settings': jsonEncode({'theme_mode': 'dark'}),
+        'contact_added_at_0011223344': jsonEncode({'aa': 1}),
+      });
+      PrefsManager.reset();
+      await PrefsManager.initialize();
+      addTearDown(PrefsManager.reset);
+      final connector = MeshCoreConnector();
+      addTearDown(connector.dispose);
+
+      final json = await const BackupService().createBackup(
+        items: {BackupItem.appSettings},
+        connector: connector,
+        settings: AppSettings(),
+        password: '',
+      );
+      final payload = jsonDecode(json) as Map<String, dynamic>;
+      final section =
+          (payload['sections'] as Map<String, dynamic>)['appSettings']
+              as Map<String, dynamic>;
+      final preferences = section['preferences'] as Map<String, dynamic>;
+      expect(preferences, contains('app_settings'));
+      expect(preferences, isNot(contains('contact_added_at_0011223344')));
+    });
+
     test('backs up a sensitive key without unrelated app settings', () async {
       SharedPreferences.setMockInitialValues({
         'app_settings': jsonEncode({

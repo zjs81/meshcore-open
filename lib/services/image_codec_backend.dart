@@ -871,14 +871,33 @@ class ImageCodecCancelled implements Exception {
   String toString() => 'Image processing stopped.';
 }
 
+/// Whether this build can run the image codec at all.
+///
+/// False on web and in a build made with `scripts/onnx.sh off`, where
+/// `flutter_onnxruntime` is the pure-Dart stub whose [OnnxRuntime] constructor
+/// throws [UnsupportedError]. The real constructor has no side effects.
+final bool imageCodecRuntimeAvailable = _probeOnnxRuntime();
+
+bool _probeOnnxRuntime() {
+  if (kIsWeb) {
+    return false;
+  }
+  try {
+    OnnxRuntime();
+    return true;
+  } on UnsupportedError {
+    return false;
+  }
+}
+
 /// Factory used by the codec worker isolate.
 ///
-/// Returns `null` on web, where there is no local model file and no isolate.
-/// Everywhere else it returns the real [OnnxImageCodecBackend]; the session
-/// turns a `null` here into an [ImageCodecUnimplemented], which the service
-/// surfaces as `lastError` and maps to `ImageCodecAvailability.unavailable`.
+/// Returns `null` when [imageCodecRuntimeAvailable] is false. Everywhere else
+/// it returns the real [OnnxImageCodecBackend]; the session turns a `null`
+/// here into an [ImageCodecUnimplemented], which the service surfaces as
+/// `lastError` and maps to `ImageCodecAvailability.unavailable`.
 ImageCodecBackend? createImageCodecBackend() {
-  if (kIsWeb) {
+  if (!imageCodecRuntimeAvailable) {
     return null;
   }
   return OnnxImageCodecBackend();
