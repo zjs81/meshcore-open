@@ -1,6 +1,8 @@
 {
   "bg": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -33,11 +35,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "cs": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -70,11 +75,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "de": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -107,11 +115,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "es": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -144,11 +155,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "fr": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -181,11 +195,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "hu": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -218,11 +235,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "it": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -255,11 +275,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "ja": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -292,11 +315,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "ko": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -329,11 +355,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "nl": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -366,11 +395,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "pl": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -403,11 +435,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "pt": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -440,11 +475,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "pt_PT": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -477,11 +515,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "ru": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -514,48 +555,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
-  ],
-
-  "sk": [
-    "backupRestore_bookmarks",
-    "contacts_lastSeenNever",
-    "chat_bookmark",
-    "chat_removeBookmark",
-    "chat_showBookmarks",
-    "bookmarks_title",
-    "bookmarks_empty",
-    "bookmarks_channel",
-    "bookmarks_contact",
-    "bookmarks_remove",
-    "settings_exportBookmarks",
-    "settings_exportBookmarksSubtitle",
-    "settings_exportBookmarksSuccess",
-    "settings_exportBookmarksNoBookmarks",
-    "receivedImage_packetEchoes",
-    "receivedImage_recoveryPacketEchoes",
-    "imageSend_preparingPreview",
-    "imageSend_tryAnother",
-    "imageSend_versionsHint",
-    "imageSend_versionLabel",
-    "imageSend_versionPackets",
-    "chatCompression_title",
-    "chatCompression_label",
-    "chatCompression_off",
-    "chatCompression_smaz",
-    "chatCompression_cyr2lat",
-    "chatCompression_changeHint",
-    "chatCompression_sheetSubtitle",
-    "chatCompression_offDescription",
-    "chatCompression_smazDescription",
-    "chatCompression_cyr2latDescription",
-    "chatCompression_profile",
-    "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "sl": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -588,11 +595,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "sv": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -625,11 +635,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "uk": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -662,11 +675,14 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ],
 
   "zh": [
     "backupRestore_bookmarks",
+    "appSettings_showCompressionIndicator",
+    "appSettings_showCompressionIndicatorSubtitle",
     "contacts_lastSeenNever",
     "chat_bookmark",
     "chat_removeBookmark",
@@ -699,6 +715,7 @@
     "chatCompression_cyr2latDescription",
     "chatCompression_profile",
     "chatCompression_noStorageId",
-    "chatCompression_saveFailed"
+    "chatCompression_saveFailed",
+    "messageMeta_smazCompressed"
   ]
 }
