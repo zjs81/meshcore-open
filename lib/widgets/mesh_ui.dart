@@ -699,6 +699,11 @@ class ErrorRetryCard extends StatelessWidget {
 
 /// Staggered fade + slide entrance for list items. Wrap each item and pass
 /// its [index]; animation only plays once per widget lifecycle.
+///
+/// Only rows built while their list is at rest at the top play it. Rows that
+/// a scroll brings into view appear at once: a delayed fade there leaves
+/// blank rows trailing the finger and adds a ticker and an opacity layer per
+/// row during a fling.
 class ListEntrance extends StatefulWidget {
   final int index;
   final Widget child;
@@ -711,41 +716,56 @@ class ListEntrance extends StatefulWidget {
 
 class _ListEntranceState extends State<ListEntrance>
     with SingleTickerProviderStateMixin {
-  // Created eagerly: a lazy `late final` initializer would run on first
-  // access — which can be dispose(), where ticker creation throws.
-  late final AnimationController _controller;
-  late final CurvedAnimation _curve;
+  // Created in initState, not lazily: a lazy initializer would run on first
+  // access — which can be dispose(), where ticker creation throws. Null when
+  // the row skips the entrance.
+  AnimationController? _controller;
+  CurvedAnimation? _curve;
+
+  /// Whether the enclosing list has scrolled away from the top or is moving,
+  /// i.e. this row is entering because of a scroll.
+  bool _enteredByScroll() {
+    final scrollable = context.findAncestorStateOfType<ScrollableState>();
+    if (scrollable == null) return false;
+    final position = scrollable.position;
+    return position.isScrollingNotifier.value ||
+        (position.hasPixels && position.pixels != 0);
+  }
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+    // Decided once: changing the tree shape later would rebuild the row.
+    if (_enteredByScroll()) return;
+    final controller = _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 280),
     );
-    _curve = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
+    _curve = CurvedAnimation(parent: controller, curve: Curves.easeOutCubic);
     final delay = Duration(milliseconds: 24 * widget.index.clamp(0, 12));
     Future.delayed(delay, () {
-      if (mounted) _controller.forward();
+      if (mounted) controller.forward();
     });
   }
 
   @override
   void dispose() {
-    _curve.dispose();
-    _controller.dispose();
+    _curve?.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final curve = _curve;
+    if (curve == null) return widget.child;
     return FadeTransition(
-      opacity: _curve,
+      opacity: curve,
       child: SlideTransition(
         position: Tween(
           begin: const Offset(0, 0.04),
           end: Offset.zero,
-        ).animate(_curve),
+        ).animate(curve),
         child: widget.child,
       ),
     );

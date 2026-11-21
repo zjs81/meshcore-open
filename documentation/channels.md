@@ -61,7 +61,7 @@ Name limits count the `#` and any community prefix, so the name stored on the ra
 
 | Action | Description |
 |---|---|
-| Edit | Change name, PSK (with a dice icon to generate a random PSK), SMAZ compression toggle (compresses outgoing messages to allow longer text within the byte limit), Cyr2Lat encoding toggle (transliterates Cyrillic to Latin for compatibility), or "Enable URL images" toggle (previews image links; requires internet) |
+| Edit | Change name, PSK (with a dice icon to generate a random PSK), or "Enable URL images" toggle (previews image links; requires internet). Compression is chosen inside the channel chat (see below) |
 | Mute / Unmute | Toggle push notification suppression for this channel |
 | Delete | Remove the channel from the device and delete its messages, settings, region and images (confirmation required) |
 
@@ -81,6 +81,10 @@ Tap a channel card to open the channel chat screen.
 - Overflow menu (⋮) → **Edit channel** and **Delete channel**: the same sheet and confirmation as a long-press in the channel list
 - Overflow menu (⋮) → **Show bookmarks** toggles the channel's bookmarked-message filter; the bookmark icon is filled while active and outlined while inactive.
 - Overflow menu (⋮) → **Chat background**: a color or picture, with a fade slider, behind this channel only. See [Chat backgrounds](themes.md#chat-backgrounds). Holiday greetings in new messages play a short animation, as in [direct chat](chat-and-messaging.md#message-list)
+
+### Compression Strip
+
+Below the app bar, above the messages, the same strip as in [direct chats](chat-and-messaging.md#compression-strip) shows and changes this channel's compression: Off, SMAZ or Cyr2Lat. It is stored with the channel's key, so every slot holding that channel shares it, and it can be changed offline. Until the channel has synced from the radio the strip is disabled and says why. See [Compression](additional-features.md#compression-smaz-and-cyr2lat).
 
 ### Message Display
 
