@@ -236,14 +236,10 @@ class _TranslationModelsState extends State<_TranslationModels> {
       required TranslationModelRecord? installed,
     }) {
       if (installed != null) used.add(installed);
-      final currentFile = service.downloadFileName;
-      final fileMatches =
-          currentFile != null &&
-          currentFile != _mergingChunksFileName &&
-          (currentFile == fileName || currentFile == installed?.name);
       final downloading =
           service.isDownloading &&
-          (targets(id, sourceUrl, name) || fileMatches);
+          (targets(id, sourceUrl, name) ||
+              _fileNamesThisDownload(service, fileName, installed?.name));
       final failed = !downloading && _failedId == id;
       if (downloading || failed) pendingShown = true;
       final merging = downloading && _isMerging(service);
@@ -335,39 +331,72 @@ class _TranslationModelsState extends State<_TranslationModels> {
       );
     }
 
-    if (pending != null &&
-        !pendingShown &&
-        (service.isDownloading || _failedId == pending.id)) {
-      final downloading = service.isDownloading;
-      final merging = downloading && _isMerging(service);
+    if (!pendingShown && service.isDownloading) {
+      items.add(_inProgressItem(l10n, service));
+    } else if (pending != null && !pendingShown && _failedId == pending.id) {
       items.add(
         ModelDownloadItem(
           id: pending.id,
           name: pending.name,
-          status: downloading
-              ? ModelDownloadStatus.downloading
-              : ModelDownloadStatus.error,
-          detail: merging
-              ? l10n.translation_mergingChunks
-              : downloading
+          status: ModelDownloadStatus.error,
+          detail: _failedDetail,
+          onDownload: service.isBusy
               ? null
-              : _failedDetail,
-          progress: downloading && !merging ? service.downloadProgress : null,
-          downloadedBytes: downloading ? service.downloadedBytes : 0,
-          totalBytes: downloading ? service.downloadTotalBytes : null,
-          onCancel: downloading ? service.cancelDownload : null,
-          onDownload: !service.isBusy && !downloading
-              ? () => _download(
+              : () => _download(
                   sourceUrl: pending.sourceUrl,
                   fileName: pending.fileName,
                   id: pending.modelId,
-                )
-              : null,
+                ),
         ),
       );
     }
 
     return items;
+  }
+
+  /// True when this row is the file [service] is fetching, including while
+  /// its displayed filename is the merge status.
+  bool _fileNamesThisDownload(
+    TranslationService service,
+    String? fileName,
+    String? installedName,
+  ) {
+    bool matches(String? candidate) {
+      if (candidate == null || candidate.isEmpty) return false;
+      if (candidate == _mergingChunksFileName) return false;
+      return candidate == fileName || candidate == installedName;
+    }
+
+    return matches(service.downloadFileName) ||
+        matches(service.downloadTargetFileName);
+  }
+
+  /// Row for a download whose page state was discarded, or that has no
+  /// preset or installed row yet. The service keeps the URL and file name.
+  ModelDownloadItem _inProgressItem(
+    AppLocalizations l10n,
+    TranslationService service,
+  ) {
+    final sourceUrl = service.downloadSourceUrl ?? '';
+    final rawName = service.downloadTargetFileName ?? service.downloadFileName;
+    final fileName = rawName == _mergingChunksFileName ? null : rawName;
+    final modelId = service.downloadModelId;
+    final id = (modelId != null && modelId.isNotEmpty)
+        ? modelId
+        : sourceUrl.isNotEmpty
+        ? sourceUrl
+        : (fileName ?? 'download');
+    final merging = _isMerging(service);
+    return ModelDownloadItem(
+      id: id,
+      name: _displayName(sourceUrl, fileName, modelId),
+      status: ModelDownloadStatus.downloading,
+      detail: merging ? l10n.translation_mergingChunks : null,
+      progress: merging ? null : service.downloadProgress,
+      downloadedBytes: service.downloadedBytes,
+      totalBytes: service.downloadTotalBytes,
+      onCancel: service.cancelDownload,
+    );
   }
 
   bool _isMerging(TranslationService service) =>

@@ -219,6 +219,61 @@ void main() {
     expect(find.textContaining('Not downloaded'), findsOneWidget);
   });
 
+  testWidgets('a custom download stays visible after settings is reopened', (
+    tester,
+  ) async {
+    final settings = AppSettingsService();
+    await settings.loadSettings();
+    final translation = TranslationService(settings);
+    addTearDown(translation.dispose);
+    // The page that started the download is gone. Only the service still
+    // knows which file is in flight.
+    translation.debugSetActiveDownload(
+      sourceUrl: 'http://127.0.0.1/Tencent-demo.gguf',
+      fileName: 'Tencent-demo.gguf',
+      downloadedBytes: 400 * 1024,
+      totalBytes: 1024 * 1024,
+    );
+
+    final providers = <SingleChildWidget>[
+      ChangeNotifierProvider<AppSettingsService>.value(value: settings),
+      ChangeNotifierProvider<TranslationService>.value(value: translation),
+    ];
+    await pump(
+      tester,
+      const TranslationSettingsSection(),
+      providers: providers,
+    );
+    expect(find.text('Tencent-demo'), findsOneWidget);
+    expect(find.textContaining('Downloading'), findsOneWidget);
+    expect(find.textContaining('0.4 / 1.0 MB (39%)'), findsOneWidget);
+    expect(find.byTooltip('Cancel'), findsOneWidget);
+
+    await pump(tester, const SizedBox.shrink(), providers: providers);
+    await pump(
+      tester,
+      const TranslationSettingsSection(),
+      providers: providers,
+    );
+    expect(find.text('Tencent-demo'), findsOneWidget);
+    expect(find.textContaining('Downloading'), findsOneWidget);
+    expect(find.byTooltip('Cancel'), findsOneWidget);
+    expect(find.text('Tencent HY-MT 1.5 1.8B Q4_K_M'), findsOneWidget);
+
+    final preset = translationPresetModels.first;
+    translation.debugSetActiveDownload(
+      sourceUrl: preset.sourceUrl,
+      fileName: preset.name,
+      modelId: preset.id,
+      displayedFileName: 'Merging chunks...',
+    );
+    await tester.pump();
+    expect(find.text('Tencent-demo'), findsNothing);
+    expect(find.textContaining('Downloading'), findsOneWidget);
+    expect(find.textContaining('Merging downloaded chunks'), findsOneWidget);
+    expect(find.byTooltip('Cancel'), findsOneWidget);
+  });
+
   testWidgets('an installed image bundle is one ready row', (tester) async {
     final spec = imageCodecPresetModels.single;
     final settings = AppSettingsService();
