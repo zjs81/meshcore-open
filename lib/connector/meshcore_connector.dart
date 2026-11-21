@@ -2868,6 +2868,18 @@ class MeshCoreConnector extends ChangeNotifier {
     required int directRetries,
     List<PathSelection> recentSelections = const [],
   }) {
+    // Flood attempts do not need a saved route. History loads asynchronously
+    // and is empty on the first read after startup, so checking it first
+    // would keep the contact's direct path and spend a flood-only budget
+    // without flooding.
+    if (directRetries <= 0 || attemptIndex >= directRetries) {
+      return _recordAutoPath(
+        contactPubKeyHex,
+        const PathSelection(pathBytes: [], hopCount: -1, useFlood: true),
+        attemptIndex: attemptIndex,
+      );
+    }
+
     final hasKnownPaths =
         _pathHistoryService?.getRecentPaths(contactPubKeyHex).isNotEmpty ??
         false;
@@ -2884,19 +2896,34 @@ class MeshCoreConnector extends ChangeNotifier {
       recentSelections: recentSelections,
       context: routeContext,
     );
-    if (selection != null) {
-      _pathHistoryService?.recordPathAttempt(contactPubKeyHex, selection);
-      // Logged so route choices and their outcomes can be compared from the
-      // app debug log on a live mesh.
-      _appDebugLogService?.info(
-        'Route pick for ${contact?.name ?? contactPubKeyHex.substring(0, 8)}: '
-        'attempt ${attemptIndex + 1} '
-        '→ ${_describeRoute(selection)} '
-        '(heard nearby: ${routeContext.hasNeighbourInfo}, '
-        'contact heard direct: ${routeContext.contactHeardDirectly})',
-        tag: 'Routing',
-      );
-    }
+    if (selection == null) return null;
+    return _recordAutoPath(
+      contactPubKeyHex,
+      selection,
+      attemptIndex: attemptIndex,
+      routeContext: routeContext,
+    );
+  }
+
+  PathSelection _recordAutoPath(
+    String contactPubKeyHex,
+    PathSelection selection, {
+    required int attemptIndex,
+    RouteContext? routeContext,
+  }) {
+    _pathHistoryService?.recordPathAttempt(contactPubKeyHex, selection);
+    final contact = getContactByPubKeyHex(contactPubKeyHex);
+    final context = routeContext ?? routeContextFor(contact);
+    // Logged so route choices and their outcomes can be compared from the
+    // app debug log on a live mesh.
+    _appDebugLogService?.info(
+      'Route pick for ${contact?.name ?? contactPubKeyHex.substring(0, 8)}: '
+      'attempt ${attemptIndex + 1} '
+      '→ ${_describeRoute(selection)} '
+      '(heard nearby: ${context.hasNeighbourInfo}, '
+      'contact heard direct: ${context.contactHeardDirectly})',
+      tag: 'Routing',
+    );
     return selection;
   }
 
