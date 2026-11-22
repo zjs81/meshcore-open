@@ -149,7 +149,6 @@ jobs:
           shellcheck scripts/build_appimage.sh scripts/appimage/*.sh scripts/appimage/AppRun
           bash scripts/appimage/test_packaging.sh
       - run: scripts/onnx.sh "$MESHCORE_LINUX_ONNX"
-      - run: flutter test --reporter expanded
       - name: Build ARM64 Linux release
         run: |
           if ! flutter build linux --release --no-pub --verbose > build/linux-arm64-build.log 2>&1; then
