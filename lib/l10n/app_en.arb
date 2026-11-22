@@ -4459,5 +4459,9 @@
   "addContact_publicKeyInvalid": "Public key must be 64 hex characters (32 bytes)",
   "addContact_clipboardKeyLoaded": "Public key filled in. Choose a contact type, enter a name, and tap save.",
   "addContact_fromDiscovered": "Add from Discovered Contacts",
-  "addContact_saveFailed": "Failed to add contact."
+  "addContact_saveFailed": "Failed to add contact.",
+  "coordinateMap_title": "Location",
+  "coordinate_copyLocation": "Copy location",
+  "coordinate_openInMaps": "Open in maps",
+  "coordinate_copied": "Location copied"
 }

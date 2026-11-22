@@ -51,7 +51,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "cs": [
@@ -106,7 +110,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "de": [
@@ -161,7 +169,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "es": [
@@ -216,7 +228,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "fr": [
@@ -271,7 +287,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "hu": [
@@ -326,7 +346,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "it": [
@@ -381,7 +405,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "ja": [
@@ -436,7 +464,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "ko": [
@@ -491,7 +523,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "nl": [
@@ -546,7 +582,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "pl": [
@@ -601,7 +641,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "pt": [
@@ -656,7 +700,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "pt_PT": [
@@ -711,7 +759,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "ru": [
@@ -766,7 +818,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "sk": [
@@ -821,7 +877,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "sl": [
@@ -876,7 +936,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "sv": [
@@ -931,7 +995,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "uk": [
@@ -986,7 +1054,11 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ],
 
   "zh": [
@@ -1041,6 +1113,10 @@
     "addContact_publicKeyInvalid",
     "addContact_clipboardKeyLoaded",
     "addContact_fromDiscovered",
-    "addContact_saveFailed"
+    "addContact_saveFailed",
+    "coordinateMap_title",
+    "coordinate_copyLocation",
+    "coordinate_openInMaps",
+    "coordinate_copied"
   ]
 }
