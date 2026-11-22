@@ -2520,6 +2520,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get chat_reply => 'Répondre';
 
   @override
+  String get chat_resend => 'Renvoyer';
+
+  @override
   String get chat_addReaction => 'Ajouter une réaction';
 
   @override

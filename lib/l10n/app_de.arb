@@ -525,6 +525,7 @@
   "chat_selectSendAction": "Sendeaktion auswählen",
   "chat_sendGif": "GIF senden",
   "chat_reply": "Antworten",
+  "chat_resend": "Erneut senden",
   "chat_addReaction": "Reaktion hinzufügen",
   "chat_me": "Ich",
   "emojiCategorySmileys": "Emoticons",

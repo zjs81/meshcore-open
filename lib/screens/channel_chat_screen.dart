@@ -3017,6 +3017,18 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
     _sendGuard.markDispatched();
   }
 
+  /// Sends an own message again as a new message, e.g. when no repeats
+  /// were heard.
+  Future<void> _resendMessage(ChannelMessage message) {
+    return _sendGuard.runExclusive(() async {
+      if (!ensureRadioConnected(context)) return;
+      if (!_sendGuard.checkCooldown(context)) return;
+      final connector = context.read<MeshCoreConnector>();
+      unawaited(connector.resendChannelMessage(widget.channel, message));
+      _sendGuard.markDispatched();
+    });
+  }
+
   void _showMessagePathInfo(ChannelMessage message) {
     Navigator.push(
       context,
@@ -3123,6 +3135,16 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
                   copyChatMessageText(context, message.fullText);
                 },
               ),
+              if (message.isOutgoing)
+                ListTile(
+                  enabled: !readOnly,
+                  leading: const Icon(Icons.replay),
+                  title: Text(context.l10n.chat_resend),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _resendMessage(message);
+                  },
+                ),
               if (canTranslateMessage)
                 ListTile(
                   leading: const Icon(Icons.translate),

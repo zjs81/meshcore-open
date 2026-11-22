@@ -2541,6 +2541,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get chat_reply => 'Odpowiedz';
 
   @override
+  String get chat_resend => 'Wyślij ponownie';
+
+  @override
   String get chat_addReaction => 'Dodaj Reakcję';
 
   @override
