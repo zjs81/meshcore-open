@@ -65,6 +65,7 @@ Widget _app(
   Widget? replyPreview,
   bool disableAnimations = false,
   Brightness brightness = Brightness.light,
+  List<ChatComposerAction>? actions,
 }) {
   final composer = ChatComposer(
     controller: h.controller,
@@ -72,13 +73,15 @@ Widget _app(
     maxBytes: maxBytes,
     onSend: () => h.sends++,
     sendTooltip: _l10n.chat_sendMessage,
-    actionsBuilder: () => [
-      ChatComposerAction(
-        id: 'gif',
-        icon: Icons.gif_box,
-        label: _l10n.chat_sendGif,
-      ),
-    ],
+    actionsBuilder: () =>
+        actions ??
+        [
+          ChatComposerAction(
+            id: 'gif',
+            icon: Icons.gif_box,
+            label: _l10n.chat_sendGif,
+          ),
+        ],
     onAction: h.actions.add,
     replyPreview: replyPreview,
   );
@@ -119,6 +122,7 @@ Widget _app(
 
 Finder get _plus => find.byTooltip(_l10n.chat_selectSendAction);
 Finder get _send => find.byTooltip(_l10n.chat_sendMessage);
+Finder get _menu => find.byKey(ChatComposer.actionMenuKey);
 Finder get _bubble => find.byKey(ChatComposer.bubbleKey);
 
 Future<void> _type(WidgetTester tester, String text) async {
@@ -379,6 +383,133 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('+ menu opens above the button and grows upward from it', (
+    tester,
+  ) async {
+    final h = await _harness(tester);
+    await tester.pumpWidget(_app(h));
+    await tester.pumpAndSettle();
+    final plusTop = tester.getTopLeft(_plus).dy;
+    final plusRight = tester.getTopRight(_plus).dx;
+
+    await tester.tap(_plus);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+    final early = tester.getRect(_menu);
+    await tester.pump(const Duration(milliseconds: 50));
+    final later = tester.getRect(_menu);
+    expect(later.top, lessThan(early.top));
+    expect(later.bottom, closeTo(early.bottom, 0.01));
+    expect(later.height, greaterThan(early.height));
+
+    await tester.pumpAndSettle();
+    final open = tester.getRect(_menu);
+    expect(open.bottom, closeTo(early.bottom, 0.01));
+    expect(open.bottom, lessThanOrEqualTo(plusTop));
+    // Trailing edges line up (the tap target is a little wider than the
+    // visible button).
+    expect(open.right, closeTo(plusRight, 3));
+    expect(open.height, greaterThanOrEqualTo(kMinInteractiveDimension));
+    // The card hugs a short label instead of filling the width cap.
+    expect(open.width, lessThan(280));
+
+    await tester.tapAt(const Offset(5, 5));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 60));
+    final closing = tester.getRect(_menu);
+    expect(closing.bottom, closeTo(open.bottom, 0.01));
+    expect(closing.height, lessThan(open.height));
+    await tester.pumpAndSettle();
+    expect(_menu, findsNothing);
+  });
+
+  testWidgets('+ menu opens at once with animations disabled', (tester) async {
+    final h = await _harness(tester);
+    await tester.pumpWidget(_app(h, disableAnimations: true));
+    await tester.pumpAndSettle();
+    await tester.tap(_plus);
+    await tester.pump();
+    await tester.pump();
+    expect(find.text(_l10n.chat_sendGif), findsOneWidget);
+    expect(
+      tester.getRect(_menu).height,
+      greaterThanOrEqualTo(kMinInteractiveDimension),
+    );
+    expect(
+      tester.getRect(_menu).bottom,
+      lessThanOrEqualTo(tester.getTopLeft(_plus).dy),
+    );
+  });
+
+  testWidgets('+ menu keeps focus on the text field', (tester) async {
+    final h = await _harness(tester);
+    await tester.pumpWidget(_app(h));
+    await tester.pumpAndSettle();
+    h.focusNode.requestFocus();
+    await tester.pumpAndSettle();
+    expect(h.focusNode.hasFocus, isTrue);
+
+    await tester.tap(_plus);
+    await tester.pumpAndSettle();
+    expect(find.text(_l10n.chat_sendGif), findsOneWidget);
+    expect(h.focusNode.hasFocus, isTrue);
+  });
+
+  testWidgets('tapping outside the + menu closes it without an action', (
+    tester,
+  ) async {
+    final h = await _harness(tester);
+    await tester.pumpWidget(_app(h));
+    await tester.pumpAndSettle();
+    await tester.tap(_plus);
+    await tester.pumpAndSettle();
+    expect(_menu, findsOneWidget);
+
+    await tester.tapAt(const Offset(5, 5));
+    await tester.pumpAndSettle();
+    expect(_menu, findsNothing);
+    expect(h.actions, isEmpty);
+  });
+
+  for (final scale in [1.3, 2.0]) {
+    testWidgets('+ menu stays above the button at 320dp, ${scale}x text', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(320, 568);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = scale;
+      addTearDown(tester.view.reset);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final h = await _harness(tester);
+      await tester.pumpWidget(
+        _app(
+          h,
+          actions: [
+            for (var i = 0; i < 4; i++)
+              ChatComposerAction(
+                id: 'a$i',
+                icon: Icons.gif_box,
+                label: 'A rather long action label number $i for the menu',
+              ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(_plus);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      final menu = tester.getRect(_menu);
+      expect(menu.bottom, lessThanOrEqualTo(tester.getTopLeft(_plus).dy));
+      expect(menu.left, greaterThanOrEqualTo(0));
+      expect(menu.right, lessThanOrEqualTo(320));
+      expect(menu.top, greaterThanOrEqualTo(0));
+
+      await tester.tap(find.textContaining('number 3'));
+      await tester.pumpAndSettle();
+      expect(h.actions, ['a3']);
+    });
+  }
 
   testWidgets('panel is solid without a chat background and transparent '
       'over one', (tester) async {
