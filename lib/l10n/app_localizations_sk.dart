@@ -529,7 +529,7 @@ class AppLocalizationsSk extends AppLocalizations {
       'Objavené kontakty a ich uložené údaje';
 
   @override
-  String get backupRestore_bookmarks => 'Bookmarks';
+  String get backupRestore_bookmarks => 'Záložky';
 
   @override
   String get backupRestore_channels => 'Kanály';
@@ -1374,11 +1374,11 @@ class AppLocalizationsSk extends AppLocalizations {
       'Zobraziť región správy kanála v rovnakom riadku ako počet skokov namiesto pod ním.';
 
   @override
-  String get appSettings_showCompressionIndicator => 'Compression indicator';
+  String get appSettings_showCompressionIndicator => 'Indikátor kompresie';
 
   @override
   String get appSettings_showCompressionIndicatorSubtitle =>
-      'Show an icon on messages compressed with SMAZ.';
+      'Zobraziť ikonu pri správach komprimovaných metódou SMAZ.';
 
   @override
   String get appSettings_notifications => 'Upozornenia';
@@ -1906,7 +1906,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get contacts_lastSeenNow => 'nedávno';
 
   @override
-  String get contacts_lastSeenNever => 'not heard yet';
+  String get contacts_lastSeenNever => 'zatiaľ nezachytený';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
@@ -2344,28 +2344,28 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chat_messageDeleted => 'Správa odstránená';
 
   @override
-  String get chat_bookmark => 'Bookmark';
+  String get chat_bookmark => 'Záložka';
 
   @override
-  String get chat_removeBookmark => 'Remove bookmark';
+  String get chat_removeBookmark => 'Odstrániť záložku';
 
   @override
-  String get chat_showBookmarks => 'Show bookmarks';
+  String get chat_showBookmarks => 'Zobraziť záložky';
 
   @override
-  String get bookmarks_title => 'Bookmarks';
+  String get bookmarks_title => 'Záložky';
 
   @override
-  String get bookmarks_empty => 'No bookmarked messages';
+  String get bookmarks_empty => 'Žiadne správy v záložkách';
 
   @override
-  String get bookmarks_channel => 'Channel';
+  String get bookmarks_channel => 'Kanál';
 
   @override
-  String get bookmarks_contact => 'Contact';
+  String get bookmarks_contact => 'Kontakt';
 
   @override
-  String get bookmarks_remove => 'Remove bookmark';
+  String get bookmarks_remove => 'Odstrániť záložku';
 
   @override
   String get chat_selectMessages => 'Vybrať správy';
@@ -5694,17 +5694,18 @@ class AppLocalizationsSk extends AppLocalizations {
       'MeshCore Open nebeží. Otvorte ho a odošlite odpoveď ešte raz.';
 
   @override
-  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+  String get settings_exportBookmarks => 'Exportovať záložky do Markdownu';
 
   @override
   String get settings_exportBookmarksSubtitle =>
-      'Share or save bookmarked messages as a Markdown file.';
+      'Zdieľať alebo uložiť správy so záložkou ako súbor Markdown.';
 
   @override
-  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+  String get settings_exportBookmarksSuccess => 'Záložky boli exportované.';
 
   @override
-  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+  String get settings_exportBookmarksNoBookmarks =>
+      'Nie sú žiadne záložky na export.';
 
   @override
   String get settings_gpxExportRepeaters =>
@@ -6366,11 +6367,11 @@ class AppLocalizationsSk extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: 'zopakovaný $count-krát',
+      one: 'zopakovaný raz',
+      zero: 'nezachytil ho žiadny opakovač',
     );
-    return 'Packet $number: $_temp0';
+    return 'Paket $number: $_temp0';
   }
 
   @override
@@ -6378,26 +6379,26 @@ class AppLocalizationsSk extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: 'zopakovaný $count-krát',
+      one: 'zopakovaný raz',
+      zero: 'nezachytil ho žiadny opakovač',
     );
-    return 'Recovery packet: $_temp0';
+    return 'Záchranný paket: $_temp0';
   }
 
   @override
-  String get imageSend_preparingPreview => 'Preparing preview…';
+  String get imageSend_preparingPreview => 'Pripravuje sa náhľad…';
 
   @override
-  String get imageSend_tryAnother => 'Try another version';
+  String get imageSend_tryAnother => 'Skúsiť inú verziu';
 
   @override
   String get imageSend_versionsHint =>
-      'Each version is reconstructed a little differently. Pick the one that looks most like your photo.';
+      'Každá verzia je zrekonštruovaná trochu inak. Vyberte tú, ktorá sa najviac podobá na vašu fotku.';
 
   @override
   String imageSend_versionLabel(int number) {
-    return 'Version $number';
+    return 'Verzia $number';
   }
 
   @override
@@ -6405,8 +6406,9 @@ class AppLocalizationsSk extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count packets',
-      one: '1 packet',
+      other: '$count paketov',
+      few: '$count pakety',
+      one: '1 paket',
     );
     return '$_temp0';
   }
@@ -7678,15 +7680,15 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
-  String get chatCompression_title => 'Compression';
+  String get chatCompression_title => 'Kompresia';
 
   @override
   String chatCompression_label(String mode) {
-    return 'Compression: $mode';
+    return 'Kompresia: $mode';
   }
 
   @override
-  String get chatCompression_off => 'Off';
+  String get chatCompression_off => 'Vypnutá';
 
   @override
   String get chatCompression_smaz => 'SMAZ';
@@ -7695,37 +7697,37 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint => 'Change compression for this chat';
+  String get chatCompression_changeHint => 'Zmeniť kompresiu pre tento chat';
 
   @override
   String get chatCompression_sheetSubtitle =>
-      'Applies to messages you send in this chat. Saved on this phone.';
+      'Platí pre správy, ktoré v tomto chate odošlete. Uložené v tomto telefóne.';
 
   @override
   String get chatCompression_offDescription =>
-      'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.';
+      'Bez kompresie. Text sa odošle presne tak, ako ste ho napísali, a prečíta ho každá aplikácia. Neušetrí žiadne bajty.';
 
   @override
   String get chatCompression_smazDescription =>
-      'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.';
+      'Bezstratová kompresia krátkych textov. Aplikácia príjemcu musí podporovať SMAZ, ostatné aplikácie ukážu nečitateľný text „s:…“. Použije sa, len keď je správa vďaka nej menšia, takže nie každá správa sa skomprimuje.';
 
   @override
   String get chatCompression_cyr2latDescription =>
-      'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.';
+      'Nie je bezstratová. Niektoré cyrilské písmená nahradí podobnými latinskými (А→A, З→3), aby ušetrila bajty. Prečíta sa v každej aplikácii bez dekódovania, no presné znaky sa zmenia, aj vo vašich odoslaných správach tu. Môže to ovplyvniť kopírovanie, vyhľadávanie a technické texty. Výsledok závisí od zvoleného profilu.';
 
   @override
-  String get chatCompression_profile => 'Cyr2Lat profile';
+  String get chatCompression_profile => 'Profil Cyr2Lat';
 
   @override
   String get chatCompression_noStorageId =>
-      'Can\'t change compression until this channel has synced from the radio.';
+      'Kompresiu nemožno zmeniť, kým sa tento kanál nesynchronizuje z rádia.';
 
   @override
   String get chatCompression_saveFailed =>
-      'Couldn\'t save the compression setting. Showing the saved setting.';
+      'Nastavenie kompresie sa nepodarilo uložiť. Zobrazuje sa naposledy uložené nastavenie.';
 
   @override
-  String get messageMeta_smazCompressed => 'SMAZ compressed';
+  String get messageMeta_smazCompressed => 'Komprimované metódou SMAZ';
 
   @override
   String get addContact_title => 'Add Contact';
