@@ -511,6 +511,53 @@ void main() {
     });
   }
 
+  testWidgets('+ menu re-clamps into the viewport when it shrinks while open', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(600, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final h = await _harness(tester);
+    await tester.pumpWidget(
+      _app(
+        h,
+        actions: [
+          for (var i = 0; i < 6; i++)
+            ChatComposerAction(
+              id: 'a$i',
+              icon: Icons.gif_box,
+              label: 'A rather long action label number $i for the menu',
+            ),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(_plus);
+    await tester.pumpAndSettle();
+    final before = tester.getRect(_menu);
+    expect(find.textContaining('number 5'), findsOneWidget);
+
+    tester.view.physicalSize = const Size(240, 320);
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    final after = tester.getRect(_menu);
+    expect(after.width, lessThan(before.width));
+    expect(after.height, lessThan(before.height));
+    expect(after.left, greaterThanOrEqualTo(0));
+    expect(after.right, lessThanOrEqualTo(240));
+    expect(after.top, greaterThanOrEqualTo(0));
+    expect(after.bottom, lessThanOrEqualTo(tester.getTopLeft(_plus).dy));
+
+    await tester.drag(
+      find.descendant(of: _menu, matching: find.byType(Scrollable)),
+      const Offset(0, -1000),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.textContaining('number 5'));
+    await tester.pumpAndSettle();
+    expect(h.actions, ['a5']);
+  });
+
   testWidgets('panel is solid without a chat background and transparent '
       'over one', (tester) async {
     final h = await _harness(tester);

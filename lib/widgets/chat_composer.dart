@@ -168,7 +168,8 @@ class ChatComposer extends StatelessWidget {
       _ComposerActionMenuRoute(
         actions: actions,
         anchor: anchor,
-        overlaySize: overlay.size,
+        button: button,
+        overlay: overlay,
         capturedThemes: InheritedTheme.capture(
           from: buttonContext,
           to: navigator.context,
@@ -588,7 +589,8 @@ class OfflineComposerBar extends StatelessWidget {
 class _ComposerActionMenuRoute extends PopupRoute<String> {
   final List<ChatComposerAction> actions;
   final Rect anchor;
-  final Size overlaySize;
+  final RenderBox button;
+  final RenderBox overlay;
   final CapturedThemes capturedThemes;
   final bool animate;
 
@@ -598,7 +600,8 @@ class _ComposerActionMenuRoute extends PopupRoute<String> {
   _ComposerActionMenuRoute({
     required this.actions,
     required this.anchor,
-    required this.overlaySize,
+    required this.button,
+    required this.overlay,
     required this.capturedThemes,
     required this.barrierLabel,
     required this.animate,
@@ -606,6 +609,7 @@ class _ComposerActionMenuRoute extends PopupRoute<String> {
 
   static const double _gap = 4;
   static const double _margin = 8;
+  static const double _minWidth = 112;
 
   @override
   Color? get barrierColor => null;
@@ -629,33 +633,64 @@ class _ComposerActionMenuRoute extends PopupRoute<String> {
   ) {
     final direction = Directionality.of(context);
     final padding = MediaQuery.paddingOf(context);
-    final end = direction == TextDirection.ltr
-        ? overlaySize.width - anchor.right
-        : anchor.left;
-    final maxHeight = math.max(
-      kMinInteractiveDimension,
-      anchor.top - _gap - padding.top - _margin,
-    );
     return capturedThemes.wrap(
-      Stack(
-        children: [
-          Positioned.directional(
-            textDirection: direction,
-            end: math.max(_margin, end),
-            bottom: overlaySize.height - anchor.top + _gap,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 112,
-                maxWidth: math.max(112, math.min(280, overlaySize.width - 16)),
-                maxHeight: maxHeight,
+      LayoutBuilder(
+        builder: (context, constraints) {
+          final viewport = constraints.biggest;
+          final rect = button.attached && overlay.attached
+              ? button.localToGlobal(Offset.zero, ancestor: overlay) &
+                    button.size
+              : anchor;
+          final rawEnd = direction == TextDirection.ltr
+              ? viewport.width - rect.right
+              : rect.left;
+          final end = rawEnd
+              .clamp(
+                _margin,
+                math.max(_margin, viewport.width - _minWidth - _margin),
+              )
+              .toDouble();
+          final maxWidth = math.max(
+            _minWidth,
+            math.min(280.0, viewport.width - end - _margin),
+          );
+          final bottom = (viewport.height - rect.top + _gap)
+              .clamp(
+                _margin,
+                math.max(
+                  _margin,
+                  viewport.height -
+                      padding.top -
+                      _margin -
+                      kMinInteractiveDimension,
+                ),
+              )
+              .toDouble();
+          final maxHeight = math.max(
+            kMinInteractiveDimension,
+            viewport.height - bottom - padding.top - _margin,
+          );
+          return Stack(
+            children: [
+              Positioned.directional(
+                textDirection: direction,
+                end: end,
+                bottom: bottom,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: _minWidth,
+                    maxWidth: maxWidth,
+                    maxHeight: maxHeight,
+                  ),
+                  child: _ComposerActionMenu(
+                    actions: actions,
+                    animation: animation,
+                  ),
+                ),
               ),
-              child: _ComposerActionMenu(
-                actions: actions,
-                animation: animation,
-              ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
