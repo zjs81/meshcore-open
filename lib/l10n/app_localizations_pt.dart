@@ -1648,6 +1648,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Exibe linhas de conexão entre nós do mapa online';
 
   @override
+  String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
+
+  @override
+  String get appSettings_useOnlineMapForPathsSubtitle =>
+      'Use repeater locations from the online map when reconstructing message paths';
+
+  @override
   String get appSettings_timeFilter => 'Filtro de Tempo';
 
   @override
@@ -4956,6 +4963,10 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get channelPath_noHopDetails =>
       'Os detalhes do pacote não estão disponíveis.';
+
+  @override
+  String get channelPath_loadingOnlineMap =>
+      'Loading repeater locations from the online map...';
 
   @override
   String get channelPath_messageDetails => 'Detalhes da Mensagem';

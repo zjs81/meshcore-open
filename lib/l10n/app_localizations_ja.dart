@@ -1565,6 +1565,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appSettings_showOnlineLinksSubtitle => 'オンライン地図にあるノード間の接続線を表示する';
 
   @override
+  String get appSettings_useOnlineMapForPaths => 'Use Online Map for Paths';
+
+  @override
+  String get appSettings_useOnlineMapForPathsSubtitle =>
+      'Use repeater locations from the online map when reconstructing message paths';
+
+  @override
   String get appSettings_timeFilter => '時間フィルター';
 
   @override
@@ -4723,6 +4730,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get channelPath_noHopDetails => 'このパッケージに関する詳細な情報は提供されていません。';
+
+  @override
+  String get channelPath_loadingOnlineMap =>
+      'Loading repeater locations from the online map...';
 
   @override
   String get channelPath_messageDetails => 'メッセージの詳細';

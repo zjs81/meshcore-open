@@ -8,6 +8,7 @@ import 'package:meshcore_open/l10n/app_localizations.dart';
 import 'package:meshcore_open/models/channel_message.dart';
 import 'package:meshcore_open/models/contact.dart';
 import 'package:meshcore_open/screens/channel_message_path_screen.dart';
+import 'package:meshcore_open/services/app_settings_service.dart';
 import 'package:meshcore_open/widgets/mesh_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -50,8 +51,13 @@ void main() {
     );
 
     await tester.pumpWidget(
-      ChangeNotifierProvider<MeshCoreConnector>.value(
-        value: connector,
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<MeshCoreConnector>.value(value: connector),
+          ChangeNotifierProvider<AppSettingsService>(
+            create: (_) => AppSettingsService(),
+          ),
+        ],
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
