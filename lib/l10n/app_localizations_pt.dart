@@ -2513,6 +2513,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get chat_reply => 'Responder';
 
   @override
+  String get chat_resend => 'Reenviar';
+
+  @override
   String get chat_addReaction => 'Adicionar Reação';
 
   @override
@@ -10221,6 +10224,9 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get chat_reply => 'Responder';
+
+  @override
+  String get chat_resend => 'Reenviar';
 
   @override
   String get chat_addReaction => 'Adicionar reação';

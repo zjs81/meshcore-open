@@ -354,6 +354,7 @@
   "chat_selectSendAction": "Выберите действие отправки",
   "chat_sendGif": "Отправить GIF",
   "chat_reply": "Ответить",
+  "chat_resend": "Отправить снова",
   "chat_addReaction": "Добавить реакцию",
   "chat_me": "Я",
   "emojiCategorySmileys": "Смайлы",

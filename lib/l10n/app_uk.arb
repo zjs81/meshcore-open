@@ -506,6 +506,7 @@
   "chat_selectSendAction": "Виберіть дію надсилання",
   "chat_sendGif": "Надіслати GIF",
   "chat_reply": "Відповісти",
+  "chat_resend": "Надіслати знову",
   "chat_addReaction": "Додати реакцію",
   "chat_me": "Я",
   "emojiCategorySmileys": "Емодзі",
