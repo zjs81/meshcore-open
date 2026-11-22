@@ -101,7 +101,7 @@ Messages also show a region label when known, independently of message tracing. 
 
 ### Message Types in Chat
 
-- **Plain text** with linkified URLs
+- **Plain text** with linkified URLs and interactive decimal GPS coordinates (tap to open the **Location** map, long-press for **Copy location** / **Open in maps**; see [Inline GPS Coordinates](chat-and-messaging.md#inline-gps-coordinates))
 - **GIFs** (`g:{gifId}`) rendered inline via Giphy CDN
 - **Location pins** (`m:{lat},{lon}|{label}|`) shown as tappable location cards
 - **Mesh images** sent as GRP_DATA chunks and reconstructed locally ([setup and limitations](image-messages.md))
@@ -143,6 +143,8 @@ Where your radio only hears nearby repeaters, turn on **Also count different nea
 | Copy | All messages | Copies text to clipboard |
 | Mark as Unread | Incoming messages only | Marks this message and all subsequent incoming messages as unread |
 | Delete | All messages | Removes locally (not from mesh) |
+
+Long-pressing directly on a detected GPS coordinate opens the coordinate action sheet (**Copy location** and **Open in maps**) instead of this message menu; long-press non-coordinate text in the message (or right-click on desktop) for channel message actions.
 
 ## Communities
 

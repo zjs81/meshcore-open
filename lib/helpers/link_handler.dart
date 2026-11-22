@@ -288,13 +288,12 @@ class _InteractiveMessageText extends StatefulWidget {
 }
 
 class _InteractiveMessageTextState extends State<_InteractiveMessageText> {
-  late List<LinkifyElement> _elements;
-  final List<GestureRecognizer> _recognizers = [];
+  late List<({LinkifyElement element, GestureRecognizer? recognizer})> _items;
 
   @override
   void initState() {
     super.initState();
-    _rebuildSpans();
+    _rebuildItems();
   }
 
   @override
@@ -302,7 +301,7 @@ class _InteractiveMessageTextState extends State<_InteractiveMessageText> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.text != widget.text) {
       _disposeRecognizers();
-      _rebuildSpans();
+      _rebuildItems();
     }
   }
 
@@ -313,23 +312,23 @@ class _InteractiveMessageTextState extends State<_InteractiveMessageText> {
   }
 
   void _disposeRecognizers() {
-    for (final recognizer in _recognizers) {
-      recognizer.dispose();
+    for (final item in _items) {
+      item.recognizer?.dispose();
     }
-    _recognizers.clear();
+    _items = const [];
   }
 
-  void _rebuildSpans() {
-    _elements = CoordinateParser.linkifyWithCoordinates(widget.text);
+  void _rebuildItems() {
+    final elements = CoordinateParser.linkifyWithCoordinates(widget.text);
+    _items = [
+      for (final element in elements)
+        (element: element, recognizer: _createRecognizer(element)),
+    ];
   }
 
-  InlineSpan _buildElementSpan(
-    LinkifyElement element,
-    TextStyle effectiveLinkStyle,
-    TextStyle effectiveCoordinateStyle,
-  ) {
+  GestureRecognizer? _createRecognizer(LinkifyElement element) {
     if (element is CoordinateElement) {
-      final recognizer = _CoordinateGestureRecognizer(
+      return _CoordinateGestureRecognizer(
         onTap: () {
           if (!mounted) return;
           LinkHandler.openCoordinateMap(context, element);
@@ -339,25 +338,36 @@ class _InteractiveMessageTextState extends State<_InteractiveMessageText> {
           LinkHandler.showCoordinateActionSheet(context, element);
         },
       );
-      _recognizers.add(recognizer);
-      return TextSpan(
-        text: element.text,
-        style: effectiveCoordinateStyle,
-        recognizer: recognizer,
-        mouseCursor: SystemMouseCursors.click,
-      );
     }
     if (element is LinkableElement) {
-      final recognizer = TapGestureRecognizer()
+      return TapGestureRecognizer()
         ..onTap = () {
           if (!mounted) return;
           LinkHandler.handleLinkTap(context, element.url);
         };
-      _recognizers.add(recognizer);
+    }
+    return null;
+  }
+
+  InlineSpan _buildElementSpan(
+    ({LinkifyElement element, GestureRecognizer? recognizer}) item,
+    TextStyle effectiveLinkStyle,
+    TextStyle effectiveCoordinateStyle,
+  ) {
+    final element = item.element;
+    if (element is CoordinateElement) {
+      return TextSpan(
+        text: element.text,
+        style: effectiveCoordinateStyle,
+        recognizer: item.recognizer,
+        mouseCursor: SystemMouseCursors.click,
+      );
+    }
+    if (element is LinkableElement) {
       return TextSpan(
         text: element.text,
         style: effectiveLinkStyle,
-        recognizer: recognizer,
+        recognizer: item.recognizer,
         mouseCursor: SystemMouseCursors.click,
       );
     }
@@ -366,7 +376,6 @@ class _InteractiveMessageTextState extends State<_InteractiveMessageText> {
 
   @override
   Widget build(BuildContext context) {
-    _disposeRecognizers();
     final effectiveLinkStyle =
         widget.linkStyle ?? LinkHandler.defaultLinkStyle(context, widget.style);
     final effectiveCoordinateStyle =
@@ -379,12 +388,8 @@ class _InteractiveMessageTextState extends State<_InteractiveMessageText> {
     final span = TextSpan(
       style: widget.style,
       children: [
-        for (final element in _elements)
-          _buildElementSpan(
-            element,
-            effectiveLinkStyle,
-            effectiveCoordinateStyle,
-          ),
+        for (final item in _items)
+          _buildElementSpan(item, effectiveLinkStyle, effectiveCoordinateStyle),
       ],
     );
 

@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/connector/meshcore_protocol.dart';
+import 'package:meshcore_open/helpers/link_handler.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
 import 'package:meshcore_open/models/custom_theme.dart';
 import 'package:meshcore_open/review_mode/review_frames.dart';
@@ -380,6 +381,170 @@ void main() {
         FlutterError.onError = previousError;
         expect(overflows, isEmpty);
       }
+
+      await _tearDown(tester);
+    },
+  );
+
+  for (final isDesktop in [false, true]) {
+    final platformLabel = isDesktop ? 'desktop' : 'phone';
+
+    testWidgets('MeshCoreConnector rebuild mid-press preserves coordinate tap, '
+        'coordinate long-press, and URL tap ($platformLabel)', (tester) async {
+      PlatformInfo.debugIsDesktopOverride = isDesktop;
+      addTearDown(() => PlatformInfo.debugIsDesktopOverride = null);
+
+      final (connector, providers) = _shared ??= await _connect(tester);
+      final contact = connector.contacts.firstWhere(
+        (c) => c.type == advTypeChat,
+      );
+      final channel = connector.channels.first;
+      var nextSecs = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+      const coord = '40.7128, -74.0060';
+      const url = 'https://example.com/mid-press';
+      const messageText = 'Visit $url or $coord now';
+
+      await tester.runAsync(() async {
+        connector.handleFrameForTest(
+          ReviewFrames.contactMessage(
+            senderPublicKey: contact.publicKey,
+            text: messageText,
+            timestampSecs: nextSecs - 10,
+          ),
+        );
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+
+      await _pumpApp(tester, providers, ChatScreen(contact: contact));
+
+      Future<void> triggerConnectorRebuild(String label) async {
+        nextSecs += 1;
+        await tester.runAsync(() async {
+          connector.handleFrameForTest(
+            ReviewFrames.channelMessage(
+              channelIndex: channel.index,
+              sender: 'Relay',
+              message: 'Rebuild trigger $label',
+              timestampSecs: nextSecs,
+            ),
+          );
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+        });
+        await tester.pump();
+      }
+
+      // 1. Coordinate tap survives a connector rebuild between pointer down and up.
+      final tapCoordGesture = await tester.startGesture(
+        findSpanOffset(tester, coord),
+      );
+      await tester.pump(const Duration(milliseconds: 50));
+      await triggerConnectorRebuild('coord-tap');
+      await tapCoordGesture.up();
+      await _settle(tester);
+
+      expect(find.byType(CoordinateMapScreen), findsOneWidget);
+      expect(find.text(coord), findsOneWidget);
+      await tester.pageBack();
+      await _settle(tester);
+      expect(find.byType(CoordinateMapScreen), findsNothing);
+
+      // 2. Coordinate long-press survives a connector rebuild mid-hold.
+      final longPressGesture = await tester.startGesture(
+        findSpanOffset(tester, coord),
+      );
+      await tester.pump(const Duration(milliseconds: 250));
+      await triggerConnectorRebuild('coord-long-press');
+      await tester.pump(const Duration(milliseconds: 350));
+      await longPressGesture.up();
+      await _settle(tester);
+
+      expect(find.text(_l10n.coordinate_copyLocation), findsOneWidget);
+      expect(find.text(_l10n.coordinate_openInMaps), findsOneWidget);
+      Navigator.of(
+        tester.element(find.text(_l10n.coordinate_copyLocation)),
+      ).pop();
+      await _settle(tester);
+
+      // 3. Ordinary URL tap survives a connector rebuild between pointer down and up.
+      final urlTapGesture = await tester.startGesture(
+        findSpanOffset(tester, url),
+      );
+      await tester.pump(const Duration(milliseconds: 50));
+      await triggerConnectorRebuild('url-tap');
+      await urlTapGesture.up();
+      await _settle(tester);
+
+      expect(find.text(_l10n.chat_openLink), findsOneWidget);
+      await tester.tap(find.text(_l10n.common_cancel));
+      await _settle(tester);
+
+      await _tearDown(tester);
+    });
+  }
+
+  testWidgets(
+    'buildLinkifyText keeps recognizers across style rebuilds and updates on text change',
+    (tester) async {
+      PlatformInfo.debugIsDesktopOverride = false;
+      addTearDown(() => PlatformInfo.debugIsDesktopOverride = null);
+
+      final (_, providers) = _shared ??= await _connect(tester);
+      final stateNotifier = ValueNotifier<({String text, Color color})>((
+        text: 'Check https://example.com/a and 37.7749, -122.4194',
+        color: Colors.black,
+      ));
+      addTearDown(stateNotifier.dispose);
+
+      await _pumpApp(
+        tester,
+        providers,
+        Scaffold(
+          body: Center(
+            child: ValueListenableBuilder<({String text, Color color})>(
+              valueListenable: stateNotifier,
+              builder: (context, value, _) => LinkHandler.buildLinkifyText(
+                context: context,
+                text: value.text,
+                style: TextStyle(fontSize: 14, color: value.color),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // Rebuild with a new style while holding down on the coordinate.
+      final gesture = await tester.startGesture(
+        findSpanOffset(tester, '37.7749, -122.4194'),
+      );
+      await tester.pump(const Duration(milliseconds: 50));
+      stateNotifier.value = (
+        text: stateNotifier.value.text,
+        color: Colors.blue,
+      );
+      await tester.pump();
+      await gesture.up();
+      await _settle(tester);
+
+      expect(find.byType(CoordinateMapScreen), findsOneWidget);
+      expect(find.text('37.7749, -122.4194'), findsOneWidget);
+      await tester.pageBack();
+      await _settle(tester);
+
+      // Updating text replaces recognizers so tapping the new coordinate opens its pin.
+      stateNotifier.value = (
+        text: 'Moved to 48.8566, 2.3522',
+        color: Colors.blue,
+      );
+      await _settle(tester);
+
+      await tester.tapAt(findSpanOffset(tester, '48.8566, 2.3522'));
+      await _settle(tester);
+
+      expect(find.byType(CoordinateMapScreen), findsOneWidget);
+      final flutterMap = tester.widget<FlutterMap>(find.byType(FlutterMap));
+      expect(flutterMap.options.initialCenter.latitude, closeTo(48.8566, 1e-6));
+      expect(flutterMap.options.initialCenter.longitude, closeTo(2.3522, 1e-6));
 
       await _tearDown(tester);
     },

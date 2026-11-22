@@ -9,7 +9,8 @@ The colors and markers below describe the standard theme. A custom, preset, or h
 ## How to Access
 
 - **QuickSwitchBar tab 2** (rightmost) from Contacts or Channels
-- **Deep-link from a chat message**: Tapping a shared location pin in a chat opens the map centered on that pin
+- **Deep-link from a shared location pin**: Tapping a shared location pin (`m:<lat>,<lon>|...`) in a chat opens the map centered on that pin
+- **Tap an inline GPS coordinate in a message**: Tapping a detected decimal coordinate pair (for example `37.7749, -122.4194`) opens a dedicated full-screen **Location** map centered on that point; see [Inline GPS Coordinates](chat-and-messaging.md#inline-gps-coordinates)
 - **Settings → Offline Map Cache**: Opens the tile cache management screen
 
 ## What the Map Displays
@@ -113,6 +114,9 @@ Additional filters:
 
 ### Legend Card (Top-Right)
 Shows node count and pin count. Tappable to expand a legend of all marker types.
+
+### Coordinate Location Map (From Chat Text)
+Tapping a decimal GPS coordinate in a message or bookmark opens a focused **Location** screen (`CoordinateMapScreen`) centered on that coordinate at zoom 15 (range 2–18) with a pin marker, a bottom coordinate card, **Zoom in** (`+`) / **Zoom out** (`-`) / **Center map** buttons, desktop arrow/WASD pan and R/F zoom support, and app bar actions for **Copy location** and **Open in maps** (`geo:` on Android, Apple Maps on iOS/macOS, OpenStreetMap in the browser on Linux/Windows/web). Pressing Back returns to the chat at the same scroll position. Unlike structured `m:<lat>,<lon>|...` pins, plain-text coordinates are not added as persistent flag markers on the main Mesh Map.
 
 ---
 
