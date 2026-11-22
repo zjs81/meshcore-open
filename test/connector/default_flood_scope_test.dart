@@ -6,6 +6,7 @@ import 'package:meshcore_open/connector/meshcore_protocol.dart';
 import 'package:meshcore_open/connector/pending_command_replies.dart';
 import 'package:meshcore_open/review_mode/review_radio.dart';
 import 'package:meshcore_open/services/message_retry_service.dart';
+import 'package:meshcore_open/services/notification_service.dart';
 import 'package:meshcore_open/services/path_history_service.dart';
 import 'package:meshcore_open/services/storage_service.dart';
 import 'package:meshcore_open/storage/prefs_manager.dart';
@@ -63,7 +64,10 @@ Future<(MeshCoreConnector, _RecordingRadio)> _connect(int verCode) async {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  final notificationService = NotificationService();
+
   setUpAll(() async {
+    notificationService.suppressNotifications(true);
     SharedPreferences.setMockInitialValues({});
     PrefsManager.reset();
     await PrefsManager.initialize();
@@ -76,6 +80,7 @@ void main() {
     addTearDown(() {
       _connector.dispose();
       retryService.dispose();
+      notificationService.suppressNotifications(false);
     });
   });
 

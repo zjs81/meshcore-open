@@ -51,7 +51,8 @@ jobs:
         with:
           flutter-version-file: pubspec.yaml
           cache: true
-      - run: flutter pub get
+      # The optional ONNX binary archive has failed TLS validation on macOS CI.
+      - run: scripts/onnx.sh off
       - run: flutter build ios --release --no-codesign --no-pub
 
   linux:
@@ -197,7 +198,8 @@ jobs:
         with:
           flutter-version-file: pubspec.yaml
           cache: true
-      - run: flutter pub get
+      # The optional ONNX binary archive has failed TLS validation on macOS CI.
+      - run: scripts/onnx.sh off
       - run: flutter build macos --release --no-pub
 
   web:
