@@ -7,6 +7,7 @@ class TranslatedMessageContent extends StatelessWidget {
   final String? originalText;
   final TextStyle style;
   final TextStyle? originalStyle;
+  final Color? backgroundColor;
   final bool showOriginalFirst;
   final VoidCallback? onSecondaryTap;
 
@@ -16,6 +17,7 @@ class TranslatedMessageContent extends StatelessWidget {
     required this.style,
     this.originalText,
     this.originalStyle,
+    this.backgroundColor,
     this.showOriginalFirst = true,
     this.onSecondaryTap,
   });
@@ -38,6 +40,7 @@ class TranslatedMessageContent extends StatelessWidget {
                   fontStyle: FontStyle.italic,
                   fontSize: style.fontSize,
                 ),
+            backgroundColor: backgroundColor,
             onSecondaryTap: onSecondaryTap,
           )
         : null;
@@ -45,6 +48,7 @@ class TranslatedMessageContent extends StatelessWidget {
       context: context,
       text: trimmedDisplay,
       style: style,
+      backgroundColor: backgroundColor,
       onSecondaryTap: onSecondaryTap,
     );
 

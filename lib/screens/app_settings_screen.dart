@@ -18,6 +18,7 @@ import '../widgets/language_picker_sheet.dart';
 import '../widgets/mesh_nav_tile.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/network_map_settings_section.dart';
+import '../models/send_attempt_plan.dart';
 import '../widgets/settings_reveal.dart';
 import '../widgets/sync_progress_overlay.dart';
 import '../widgets/translation_settings_section.dart';
@@ -79,6 +80,13 @@ class AppSettingsScreen extends StatelessWidget {
               MeshCard(
                 padding: EdgeInsets.zero,
                 child: _settingsCard(_buildRoutingContent),
+              ),
+
+              // REPEATERS AND ROOMS
+              SectionHeader(context.l10n.appSettings_repeatersAndRooms),
+              MeshCard(
+                padding: EdgeInsets.zero,
+                child: _settingsCard(_buildRepeaterRoomContent),
               ),
 
               // IMAGE MESSAGES
@@ -419,48 +427,11 @@ class AppSettingsScreen extends StatelessWidget {
             horizontal: 16,
             vertical: 4,
           ),
-          secondary: const Icon(Icons.refresh_outlined, size: 24),
-          title: Text(context.l10n.appSettings_clearPathOnMaxRetry),
-          subtitle: Text(context.l10n.appSettings_clearPathOnMaxRetrySubtitle),
-          value: settingsService.settings.clearPathOnMaxRetry,
-          onChanged: (value) {
-            settingsService.setClearPathOnMaxRetry(value);
-            showDismissibleSnackBar(
-              context,
-              content: Text(
-                value
-                    ? context.l10n.appSettings_pathsWillBeCleared
-                    : context.l10n.appSettings_pathsWillNotBeCleared,
-              ),
-              duration: const Duration(seconds: 2),
-            );
-          },
-        ),
-        const Divider(height: 1, indent: 16),
-        SwitchListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 4,
-          ),
           secondary: const Icon(Icons.vertical_align_top, size: 24),
           title: Text(context.l10n.appSettings_jumpToOldestUnread),
           subtitle: Text(context.l10n.appSettings_jumpToOldestUnreadSubtitle),
           value: settingsService.settings.jumpToOldestUnread,
           onChanged: settingsService.setJumpToOldestUnread,
-        ),
-        const Divider(height: 1, indent: 16),
-        SwitchListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 4,
-          ),
-          secondary: const Icon(Icons.settings_remote_outlined, size: 24),
-          title: Text(context.l10n.appSettings_autoFetchRepeaterSettings),
-          subtitle: Text(
-            context.l10n.appSettings_autoFetchRepeaterSettingsSubtitle,
-          ),
-          value: settingsService.settings.autoFetchRepeaterSettings,
-          onChanged: settingsService.setAutoFetchRepeaterSettings,
         ),
         const Divider(height: 1, indent: 16),
         SwitchListTile(
@@ -510,7 +481,8 @@ class AppSettingsScreen extends StatelessWidget {
     BuildContext context,
     AppSettingsService settingsService,
   ) {
-    final autoRouteEnabled = settingsService.settings.autoRouteRotationEnabled;
+    final settings = settingsService.settings;
+    final l10n = context.l10n;
     return Column(
       children: [
         SwitchListTile(
@@ -518,95 +490,65 @@ class AppSettingsScreen extends StatelessWidget {
             horizontal: 16,
             vertical: 4,
           ),
+          secondary: const Icon(Icons.refresh_outlined, size: 24),
+          title: Text(l10n.appSettings_clearPathOnMaxRetry),
+          subtitle: Text(l10n.appSettings_clearPathOnMaxRetrySubtitle),
+          value: settings.clearPathOnMaxRetry,
+          onChanged: (value) {
+            settingsService.setClearPathOnMaxRetry(value);
+            showDismissibleSnackBar(
+              context,
+              content: Text(
+                value
+                    ? l10n.appSettings_pathsWillBeCleared
+                    : l10n.appSettings_pathsWillNotBeCleared,
+              ),
+              duration: const Duration(seconds: 2),
+            );
+          },
+        ),
+        const Divider(height: 1, indent: 16),
+        SettingsValueSlider(
+          icon: Icons.route,
+          title: l10n.appSettings_directRetries(settings.directRetries),
+          subtitle: l10n.appSettings_directRetriesSubtitle,
+          value: settings.directRetries,
+          min: SendAttemptPlan.minDirectRetries,
+          max: SendAttemptPlan.maxDirectRetries,
+          onChanged: settingsService.setDirectRetries,
+        ),
+        const Divider(height: 1, indent: 16),
+        SettingsValueSlider(
+          icon: Icons.waves,
+          title: l10n.appSettings_floodRetries(settings.floodRetries),
+          subtitle: l10n.appSettings_floodRetriesSubtitle,
+          value: settings.floodRetries,
+          min: SendAttemptPlan.minFloodRetries,
+          max: SendAttemptPlan.maxFloodRetries,
+          onChanged: settingsService.setFloodRetries,
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
           secondary: const Icon(Icons.alt_route, size: 24),
-          title: Text(context.l10n.appSettings_autoRouteRotation),
-          subtitle: Text(context.l10n.appSettings_autoRouteRotationSubtitle),
-          value: autoRouteEnabled,
+          title: Text(l10n.appSettings_autoRouteRotation),
+          subtitle: Text(l10n.appSettings_autoRouteRotationSubtitle),
+          value: settings.autoRouteRotationEnabled,
           onChanged: (value) {
             settingsService.setAutoRouteRotationEnabled(value);
             showDismissibleSnackBar(
               context,
               content: Text(
                 value
-                    ? context.l10n.appSettings_autoRouteRotationEnabled
-                    : context.l10n.appSettings_autoRouteRotationDisabled,
+                    ? l10n.appSettings_autoRouteRotationEnabled
+                    : l10n.appSettings_autoRouteRotationDisabled,
               ),
               duration: const Duration(seconds: 2),
             );
           },
-        ),
-        // AnimatedSize sub-options for auto-route rotation
-        AnimatedSize(
-          duration: const Duration(milliseconds: 200),
-          alignment: Alignment.topCenter,
-          child: autoRouteEnabled
-              ? Container(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Divider(height: 1),
-                      ListTile(
-                        title: Text(context.l10n.appSettings_maxMessageRetries),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              context
-                                  .l10n
-                                  .appSettings_maxMessageRetriesSubtitle,
-                            ),
-                            Slider(
-                              value: settingsService.settings.maxMessageRetries
-                                  .toDouble(),
-                              min: 2,
-                              max: 10,
-                              divisions: 8,
-                              label: settingsService.settings.maxMessageRetries
-                                  .toString(),
-                              onChanged: (value) => settingsService
-                                  .setMaxMessageRetries(value.toInt()),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(height: 1),
-                      ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 4,
-                        ),
-                        leading: const Icon(Icons.restart_alt, size: 24),
-                        title: Text(
-                          context.l10n.appSettings_resetRoutingToDefault,
-                        ),
-                        subtitle: Text(
-                          context
-                              .l10n
-                              .appSettings_resetRoutingToDefaultSubtitle,
-                        ),
-                        trailing: const Icon(
-                          Icons.keyboard_arrow_right,
-                          size: 18,
-                        ),
-                        onTap: () async {
-                          await settingsService.resetRoutingSettingsToDefault();
-                          if (context.mounted) {
-                            showDismissibleSnackBar(
-                              context,
-                              content: Text(
-                                context.l10n.appSettings_routingResetToDefault,
-                              ),
-                              duration: const Duration(seconds: 2),
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                )
-              : const SizedBox.shrink(),
         ),
         const Divider(height: 1, indent: 16),
         SwitchListTile(
@@ -615,60 +557,150 @@ class AppSettingsScreen extends StatelessWidget {
             vertical: 4,
           ),
           secondary: const Icon(Icons.cell_tower, size: 24),
-          title: Text(context.l10n.appSettings_channelMinHops),
-          subtitle: Text(context.l10n.appSettings_channelMinHopsSubtitle),
-          value: settingsService.settings.channelMinHopsEnabled,
+          title: Text(l10n.appSettings_channelMinHops),
+          subtitle: Text(l10n.appSettings_channelMinHopsSubtitle),
+          value: settings.channelMinHopsEnabled,
           onChanged: settingsService.setChannelMinHopsEnabled,
         ),
-        if (settingsService.settings.channelMinHopsEnabled) ...[
-          ListTile(
-            title: Text(
-              context.l10n.appSettings_channelMinHopsCount(
-                settingsService.settings.channelMinHops,
+        SettingsReveal(
+          visible: settings.channelMinHopsEnabled,
+          children: [
+            SettingsValueSlider(
+              icon: Icons.linear_scale,
+              title: l10n.appSettings_channelMinHopsCount(
+                settings.channelMinHops,
               ),
-            ),
-            subtitle: Slider(
-              value: settingsService.settings.channelMinHops.toDouble(),
+              value: settings.channelMinHops,
               min: 1,
               max: 8,
-              divisions: 7,
-              label: settingsService.settings.channelMinHops.toString(),
-              onChanged: (value) =>
-                  settingsService.setChannelMinHops(value.toInt()),
+              onChanged: settingsService.setChannelMinHops,
             ),
-          ),
-          ListTile(
-            title: Text(
-              context.l10n.appSettings_channelMinHopsRetries(
-                settingsService.settings.channelMinHopsRetries,
+            SettingsValueSlider(
+              icon: Icons.repeat,
+              title: l10n.appSettings_channelMinHopsRetries(
+                settings.channelMinHopsRetries,
               ),
-            ),
-            subtitle: Slider(
-              value: settingsService.settings.channelMinHopsRetries.toDouble(),
+              value: settings.channelMinHopsRetries,
               min: 1,
               max: 5,
-              divisions: 4,
-              label: settingsService.settings.channelMinHopsRetries.toString(),
-              onChanged: (value) =>
-                  settingsService.setChannelMinHopsRetries(value.toInt()),
+              onChanged: settingsService.setChannelMinHopsRetries,
             ),
-          ),
-          SwitchListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 4,
-            ),
-            secondary: const Icon(Icons.hub_outlined, size: 24),
-            title: Text(context.l10n.appSettings_channelMinHopsCountRepeaters),
-            subtitle: Text(
-              context.l10n.appSettings_channelMinHopsCountRepeatersSubtitle(
-                settingsService.settings.channelMinHops,
+            SwitchListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 4,
               ),
+              secondary: const Icon(Icons.hub_outlined, size: 24),
+              title: Text(l10n.appSettings_channelMinHopsCountRepeaters),
+              subtitle: Text(
+                l10n.appSettings_channelMinHopsCountRepeatersSubtitle(
+                  settings.channelMinHops,
+                ),
+              ),
+              value: settings.channelMinHopsCountRepeaters,
+              onChanged: settingsService.setChannelMinHopsCountRepeaters,
             ),
-            value: settingsService.settings.channelMinHopsCountRepeaters,
-            onChanged: settingsService.setChannelMinHopsCountRepeaters,
+          ],
+        ),
+        const Divider(height: 1, indent: 16),
+        ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
           ),
-        ],
+          leading: const Icon(Icons.restart_alt, size: 24),
+          title: Text(l10n.appSettings_resetRoutingToDefault),
+          subtitle: Text(l10n.appSettings_resetRoutingToDefaultSubtitle),
+          trailing: const Icon(Icons.keyboard_arrow_right, size: 18),
+          onTap: () async {
+            await settingsService.resetRoutingSettingsToDefault();
+            if (context.mounted) {
+              showDismissibleSnackBar(
+                context,
+                content: Text(l10n.appSettings_routingResetToDefault),
+                duration: const Duration(seconds: 2),
+              );
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRepeaterRoomContent(
+    BuildContext context,
+    AppSettingsService settingsService,
+  ) {
+    final settings = settingsService.settings;
+    final l10n = context.l10n;
+    return Column(
+      children: [
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.schedule, size: 24),
+          title: Text(l10n.appSettings_clockSyncAfterLogin),
+          subtitle: Text(l10n.appSettings_clockSyncAfterLoginSubtitle),
+          value: settings.clockSyncAfterLogin,
+          onChanged: settingsService.setClockSyncAfterLogin,
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.password, size: 24),
+          title: Text(l10n.appSettings_loginPasswordAutofocus),
+          subtitle: Text(l10n.appSettings_loginPasswordAutofocusSubtitle),
+          value: settings.loginPasswordAutofocus,
+          onChanged: settingsService.setLoginPasswordAutofocus,
+        ),
+        const Divider(height: 1, indent: 16),
+        SettingsValueSlider(
+          icon: Icons.login,
+          title: l10n.appSettings_loginAttempts(settings.loginAttempts),
+          subtitle: l10n.appSettings_loginAttemptsSubtitle,
+          value: settings.loginAttempts,
+          min: SendAttemptPlan.minLoginAttempts,
+          max: SendAttemptPlan.maxLoginAttempts,
+          onChanged: settingsService.setLoginAttempts,
+        ),
+        const Divider(height: 1, indent: 16),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          secondary: const Icon(Icons.settings_remote_outlined, size: 24),
+          title: Text(l10n.appSettings_autoFetchRepeaterSettings),
+          subtitle: Text(l10n.appSettings_autoFetchRepeaterSettingsSubtitle),
+          value: settings.autoFetchRepeaterSettings,
+          onChanged: settingsService.setAutoFetchRepeaterSettings,
+        ),
+        const Divider(height: 1, indent: 16),
+        ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 4,
+          ),
+          leading: const Icon(Icons.restart_alt, size: 24),
+          title: Text(l10n.appSettings_resetRepeaterRoomSettings),
+          subtitle: Text(l10n.appSettings_resetRepeaterRoomSettingsSubtitle),
+          trailing: const Icon(Icons.keyboard_arrow_right, size: 18),
+          onTap: () async {
+            await settingsService.resetRepeaterRoomSettingsToDefault();
+            if (context.mounted) {
+              showDismissibleSnackBar(
+                context,
+                content: Text(l10n.appSettings_repeaterRoomSettingsReset),
+                duration: const Duration(seconds: 2),
+              );
+            }
+          },
+        ),
       ],
     );
   }
@@ -707,15 +739,10 @@ class AppSettingsScreen extends StatelessWidget {
               : null,
         ),
         const Divider(height: 1, indent: 16),
-        ListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 4,
-          ),
-          leading: const Icon(Icons.link_outlined, size: 20),
-          title: Text(context.l10n.appSettings_ipfsImageLinks),
-          subtitle: Text(context.l10n.appSettings_ipfsImageLinksSubtitle),
-          trailing: const Icon(Icons.chevron_right, size: 18),
+        MeshNavTile(
+          icon: Icons.link_outlined,
+          title: context.l10n.appSettings_ipfsImageLinks,
+          subtitle: context.l10n.appSettings_ipfsImageLinksSubtitle,
           onTap: () => _showIpfsImageLinksDialog(context, settingsService),
         ),
         const Divider(height: 1, indent: 16),
@@ -812,7 +839,7 @@ class AppSettingsScreen extends StatelessWidget {
                 size: 24,
                 color: scheme.onSurfaceVariant,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

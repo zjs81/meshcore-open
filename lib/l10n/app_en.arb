@@ -614,15 +614,50 @@
   "appSettings_advertisementNotificationsSubtitle": "Show notification when new nodes are discovered",
   "appSettings_messaging": "Messaging",
   "appSettings_clearPathOnMaxRetry": "Clear Path on Max Retry",
-  "appSettings_clearPathOnMaxRetrySubtitle": "Reset contact path after 5 failed send attempts",
-  "appSettings_pathsWillBeCleared": "Paths will be cleared after 5 failed retries",
+  "appSettings_clearPathOnMaxRetrySubtitle": "Reset the contact's saved path after every send attempt fails",
+  "appSettings_pathsWillBeCleared": "Paths will be cleared after all send attempts fail",
   "appSettings_pathsWillNotBeCleared": "Paths will not be auto-cleared",
   "appSettings_autoRouteRotation": "Auto Route Rotation",
-  "appSettings_autoRouteRotationSubtitle": "Cycle between best paths and flood mode",
+  "appSettings_autoRouteRotationSubtitle": "On each direct attempt, try a different known route. Later attempts flood. Off keeps the contact's current path.",
   "appSettings_autoRouteRotationEnabled": "Auto route rotation enabled",
   "appSettings_autoRouteRotationDisabled": "Auto route rotation disabled",
   "appSettings_maxMessageRetries": "Max Message Retries",
   "appSettings_maxMessageRetriesSubtitle": "Number of retry attempts before marking a message as failed",
+  "appSettings_directRetries": "Direct attempts: {count}",
+  "@appSettings_directRetries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_directRetriesSubtitle": "How many times to try a known route. This stays available when auto route rotation is off.",
+  "appSettings_floodRetries": "Flood attempts: {count}",
+  "@appSettings_floodRetries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_floodRetriesSubtitle": "How many times to flood. Floods use more airtime. With rotation on, these follow the direct attempts.",
+  "appSettings_loginAttempts": "Login attempts: {count}",
+  "@appSettings_loginAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appSettings_loginAttemptsSubtitle": "How many times to try logging in to a repeater or room server before giving up.",
+  "appSettings_repeatersAndRooms": "Repeaters and Rooms",
+  "appSettings_clockSyncAfterLogin": "Sync repeater clock on login",
+  "appSettings_clockSyncAfterLoginSubtitle": "After a successful repeater login, send clock sync. Each repeater can still choose Default, On, or Off.",
+  "appSettings_loginPasswordAutofocus": "Focus the password field",
+  "appSettings_loginPasswordAutofocusSubtitle": "When opening a repeater or room login, put the cursor in the password field if it is empty. Off leaves the dialog visible until you tap the field.",
+  "appSettings_resetRepeaterRoomSettings": "Reset repeater and room settings to defaults",
+  "appSettings_resetRepeaterRoomSettingsSubtitle": "Restore the settings in this section to their defaults. Choices saved on individual repeaters stay as they are.",
+  "appSettings_repeaterRoomSettingsReset": "Repeater and room settings reset to defaults",
   "appSettings_ipfsImageLinks": "IPFS provider configuration",
   "appSettings_ipfsImageLinksSubtitle": "Upload for url Images (or Files) via IPFS provider and default gateway to receive",
   "appSettings_loadLinkImages": "Load images from links",
@@ -840,6 +875,31 @@
   "contacts_filterContacts": "Filter contacts...",
   "contacts_noContactsMatchFilter": "No contacts match your filter",
   "contacts_noMembers": "No members",
+  "contacts_groupCurrentMembers": "Current members ({count})",
+  "@contacts_groupCurrentMembers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contacts_groupAddContacts": "Add contacts",
+  "contacts_groupRemoveMember": "Remove {name} from group",
+  "@contacts_groupRemoveMember": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "contacts_groupAddMember": "Add {name} to group",
+  "@contacts_groupAddMember": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "contacts_lastSeenNow": "recently",
   "contacts_lastSeenNever": "not heard yet",
   "contacts_lastSeenMinsAgo": "~ {minutes} min.",
@@ -1857,7 +1917,10 @@
   "@repeater_clockSyncAfterLogin": {
     "description": "Repeater setting: auto sync device clock after successful login"
   },
-  "repeater_clockSyncAfterLoginSubtitle": "Automatically send \"clock sync\" after a successful login",
+  "repeater_clockSyncAfterLoginSubtitle": "Default follows Repeaters and Rooms in App Settings. On and Off apply only to this repeater.",
+  "repeater_clockSyncDefault": "Default",
+  "repeater_clockSyncOn": "On",
+  "repeater_clockSyncOff": "Off",
   "@repeater_clockSyncAfterLoginSubtitle": {
     "description": "Repeater setting subtitle: describes the clock sync after login behavior"
   },
@@ -3906,9 +3969,9 @@
   "appSettings_sourceSummary": "{label} - {description}",
   "@appSettings_sourceSummary": {"placeholders": {"label": {"type": "String"}, "description": {"type": "String"}}},
   "appSettings_routingSection": "Routing",
-  "appSettings_resetRoutingToDefault": "Reset Routing Algorithm to Default",
-  "appSettings_resetRoutingToDefaultSubtitle": "Restore routing algorithm settings to factory defaults",
-  "appSettings_routingResetToDefault": "Routing algorithm settings reset to default",
+  "appSettings_resetRoutingToDefault": "Reset routing settings to defaults",
+  "appSettings_resetRoutingToDefaultSubtitle": "Restore the routing settings in this section to their defaults",
+  "appSettings_routingResetToDefault": "Routing settings reset to defaults",
   "appSettings_imageMessagesSection": "Image messages",
   "appSettings_showApiKey": "Show API key",
   "appSettings_hideApiKey": "Hide API key",
@@ -4385,5 +4448,20 @@
   "chatCompression_profile": "Cyr2Lat profile",
   "chatCompression_noStorageId": "Can't change compression until this channel has synced from the radio.",
   "chatCompression_saveFailed": "Couldn't save the compression setting. Showing the saved setting.",
-  "messageMeta_smazCompressed": "SMAZ compressed"
+  "messageMeta_smazCompressed": "SMAZ compressed",
+  "addContact_title": "Add Contact",
+  "addContact_infoBanner": "If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.",
+  "addContact_contactType": "Contact Type",
+  "addContact_name": "Name",
+  "addContact_nameRequired": "Please enter a name",
+  "addContact_publicKeyHex": "Public Key (hex)",
+  "addContact_publicKeyRequired": "Please enter a public key",
+  "addContact_publicKeyInvalid": "Public key must be 64 hex characters (32 bytes)",
+  "addContact_clipboardKeyLoaded": "Public key filled in. Choose a contact type, enter a name, and tap save.",
+  "addContact_fromDiscovered": "Add from Discovered Contacts",
+  "addContact_saveFailed": "Failed to add contact.",
+  "coordinateMap_title": "Location",
+  "coordinate_copyLocation": "Copy location",
+  "coordinate_openInMaps": "Open in maps",
+  "coordinate_copied": "Location copied"
 }

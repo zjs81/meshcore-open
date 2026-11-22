@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1438,11 +1437,11 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Ponastavi pot stika po 5 neuspelih poskusih pošiljanja';
+      'Ponastavi shranjeno pot stika, ko spodletijo vsi poskusi pošiljanja';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Poti bodo počiščene po 5 neuspelih poskusih.';
+      'Poti se počistijo, ko spodletijo vsi poskusi pošiljanja';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1453,7 +1452,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Izmenjuj najboljše poti in flood način';
+      'Ob vsakem neposrednem poskusu preizkusi drugo znano pot. Kasnejši poskusi so Flood. Izklopljeno ohrani trenutno pot stika.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1470,6 +1469,63 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Število poskusov ponovnega poslanja, preden se sporočilo označuje kot neuspešno';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Neposredni poskusi: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Kolikokrat se preizkusi znana pot. Na voljo tudi, ko je samodejno kroženje poti izklopljeno.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Poskusi Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Kolikokrat se uporabi Flood. Flood porabi več oddajnega časa. Ob vklopljenem kroženju sledijo neposrednim poskusom.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Poskusi prijave: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Kolikokrat se poskusi prijava v ponavljalnik ali room strežnik, preden obupa.';
+
+  @override
+  String get appSettings_repeatersAndRooms => 'Repetitorji in sobe';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Sinhroniziraj uro repetitorja ob prijavi';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Po uspešni prijavi v repetitor se pošlje clock sync. Vsak repetitor lahko še vedno izbere Privzeto, Vklop ali Izklop.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Fokus na polje gesla';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Ob odprtju prijave v repetitor ali sobo gre kazalec v prazno polje gesla. Izklop pusti okno vidno, dokler se ne dotaknete polja.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Ponastavi nastavitve repetitorjev in sob';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Obnovi nastavitve v tem razdelku. Izbire, shranjene pri posameznih repetitorjih, ostanejo.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Nastavitve repetitorjev in sob so ponastavljene';
 
   @override
   String get appSettings_ipfsImageLinks => 'Konfiguracija ponudnika IPFS';
@@ -1825,6 +1881,24 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get contacts_noMembers => 'Ni članov.';
+
+  @override
+  String contacts_groupCurrentMembers(int count) {
+    return 'Current members ($count)';
+  }
+
+  @override
+  String get contacts_groupAddContacts => 'Add contacts';
+
+  @override
+  String contacts_groupRemoveMember(String name) {
+    return 'Remove $name from group';
+  }
+
+  @override
+  String contacts_groupAddMember(String name) {
+    return 'Add $name to group';
+  }
 
   @override
   String get contacts_lastSeenNow => 'pravkar';
@@ -3494,7 +3568,16 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Po uspešni prijavi samodejno pošlji »sinhronizacijo ure«';
+      'Privzeto sledi Repetitorjem in sobam v nastavitvah. Vklop in Izklop veljata samo za ta repetitor.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Privzeto';
+
+  @override
+  String get repeater_clockSyncOn => 'Vklop';
+
+  @override
+  String get repeater_clockSyncOff => 'Izklop';
 
   @override
   String get repeater_statusTitle => 'Status repetitora';
@@ -7011,15 +7094,15 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Ponastavite algoritem usmerjanja na privzeto';
+      'Ponastavi nastavitve usmerjanja na privzete';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Obnovite nastavitve algoritma usmerjanja na tovarniške privzetke';
+      'Obnovi nastavitve usmerjanja v tem razdelku na privzete vrednosti';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Nastavitve algoritma usmerjanja so ponastavljene na privzeto';
+      'Nastavitve usmerjanja so ponastavljene na privzete';
 
   @override
   String get appSettings_imageMessagesSection => 'Sporočila s slikami';
@@ -7637,4 +7720,52 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get messageMeta_smazCompressed => 'SMAZ compressed';
+
+  @override
+  String get addContact_title => 'Add Contact';
+
+  @override
+  String get addContact_infoBanner =>
+      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+
+  @override
+  String get addContact_contactType => 'Contact Type';
+
+  @override
+  String get addContact_name => 'Name';
+
+  @override
+  String get addContact_nameRequired => 'Please enter a name';
+
+  @override
+  String get addContact_publicKeyHex => 'Public Key (hex)';
+
+  @override
+  String get addContact_publicKeyRequired => 'Please enter a public key';
+
+  @override
+  String get addContact_publicKeyInvalid =>
+      'Public key must be 64 hex characters (32 bytes)';
+
+  @override
+  String get addContact_clipboardKeyLoaded =>
+      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+
+  @override
+  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+
+  @override
+  String get addContact_saveFailed => 'Failed to add contact.';
+
+  @override
+  String get coordinateMap_title => 'Location';
+
+  @override
+  String get coordinate_copyLocation => 'Copy location';
+
+  @override
+  String get coordinate_openInMaps => 'Open in maps';
+
+  @override
+  String get coordinate_copied => 'Location copied';
 }

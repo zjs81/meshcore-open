@@ -51,7 +51,6 @@ import '../helpers/guessed_location_estimator.dart';
 import '../helpers/marker_message.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../helpers/utf8_length_limiter.dart';
-import 'settings_screen.dart';
 import 'line_of_sight_map_screen.dart';
 import '../theme/theme_icons.dart';
 
@@ -800,14 +799,18 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
               bottom: const SyncProgressAppBarBottom(),
               actions: [
                 PopupMenuButton(
-                  itemBuilder: (context) => [
+                  tooltip: context.l10n.contacts_moreOptions,
+                  // onTap handlers run after the menu route pops, so they must
+                  // capture the screen's context — not the itemBuilder's menu
+                  // context, which is deactivated by then.
+                  itemBuilder: (menuContext) => [
                     if (!_isBuildingPathTrace &&
                         connector.selfLatitude != null &&
                         connector.selfLongitude != null)
                       PopupMenuItem(
                         child: MeshMenuItemRow(
                           icon: Icons.radar,
-                          label: context.l10n.contacts_pathTrace,
+                          label: menuContext.l10n.contacts_pathTrace,
                         ),
                         onTap: () => _openPathTrace(
                           connector,
@@ -822,7 +825,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                         enabled: !readOnly,
                         child: MeshMenuItemRow(
                           icon: Icons.radar,
-                          label: context.l10n.manualTrace_menuItem,
+                          label: menuContext.l10n.manualTrace_menuItem,
                         ),
                         onTap: () => ManualPathTraceScreen.open(context),
                       ),
@@ -830,7 +833,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                       PopupMenuItem(
                         child: MeshMenuItemRow(
                           leading: const LosIcon(size: 20),
-                          label: context.l10n.map_lineOfSight,
+                          label: menuContext.l10n.map_lineOfSight,
                         ),
                         onTap: () {
                           final candidates = <LineOfSightEndpoint>[];
@@ -861,7 +864,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => LineOfSightMapScreen(
+                              builder: (_) => LineOfSightMapScreen(
                                 title: context.l10n.map_losScreenTitle,
                                 candidates: candidates,
                               ),
@@ -869,21 +872,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                           );
                         },
                       ),
-                    connectionMenuItem(this.context, context),
-                    PopupMenuItem(
-                      child: MeshMenuItemRow(
-                        leading: const ThemedIcon(
-                          ThemeIconSlot.settings,
-                          size: 20,
-                        ),
-                        label: context.l10n.settings_title,
-                      ),
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SettingsScreen(),
-                        ),
-                      ),
+                    ...mainOverflowTrailingItems(
+                      context,
+                      menuContext,
+                      hasPrecedingItems: !_isBuildingPathTrace,
                     ),
                   ],
                   icon: const Icon(Icons.more_vert),
@@ -1198,6 +1190,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       showOtherNodes: settings.mapShowOtherNodes,
       isBuildingPathTrace: _isBuildingPathTrace,
       clusterNodes: settings.mapClusterNodes,
+      // Node labels bake in the overlay colors, so a light/dark or theme
+      // switch must rebuild them.
+      colorScheme: Theme.of(context).colorScheme,
     );
     if (key != _nodeMarkersCacheKey) {
       _nodeMarkersCacheKey = key;
@@ -4389,6 +4384,7 @@ class _NodeMarkersCacheKey {
   final bool showOtherNodes;
   final bool isBuildingPathTrace;
   final bool clusterNodes;
+  final ColorScheme colorScheme;
 
   const _NodeMarkersCacheKey({
     required this.contactsSignature,
@@ -4409,6 +4405,7 @@ class _NodeMarkersCacheKey {
     required this.showOtherNodes,
     required this.isBuildingPathTrace,
     required this.clusterNodes,
+    required this.colorScheme,
   });
 
   @override
@@ -4431,7 +4428,8 @@ class _NodeMarkersCacheKey {
         showChatNodes == other.showChatNodes &&
         showOtherNodes == other.showOtherNodes &&
         isBuildingPathTrace == other.isBuildingPathTrace &&
-        clusterNodes == other.clusterNodes;
+        clusterNodes == other.clusterNodes &&
+        colorScheme == other.colorScheme;
   }
 
   @override
@@ -4454,6 +4452,7 @@ class _NodeMarkersCacheKey {
     showOtherNodes,
     isBuildingPathTrace,
     clusterNodes,
+    colorScheme,
   );
 }
 

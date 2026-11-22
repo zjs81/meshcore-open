@@ -96,6 +96,9 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                     : bookmark.text,
                 style: textStyle,
                 originalStyle: textStyle.copyWith(fontStyle: FontStyle.italic),
+                backgroundColor:
+                    Theme.of(context).cardTheme.color ??
+                    Theme.of(context).colorScheme.surfaceContainerLow,
               );
               return Card(
                 margin: const EdgeInsets.only(bottom: 10),

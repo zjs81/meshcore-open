@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1446,11 +1445,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Redefinir o caminho de contato após 5 tentativas de envio falhas';
+      'Redefinir o caminho salvo do contato quando todas as tentativas de envio falharem';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Os caminhos serão limpos após 5 tentativas falhas.';
+      'Os caminhos serão limpos quando todas as tentativas de envio falharem';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1461,7 +1460,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Alternar entre os melhores caminhos e o modo Flood';
+      'Em cada tentativa direta, experimentar outra rota conhecida. As tentativas seguintes são Flood. Desligado mantém o caminho atual do contato.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1478,6 +1477,63 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Número de tentativas de reenvio antes de classificar uma mensagem como falha.';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Tentativas diretas: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Quantas vezes tentar uma rota conhecida. Continua disponível com a rotação automática de rotas desligada.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Tentativas Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Quantas vezes usar Flood. Flood usa mais tempo de ar. Com a rotação ligada, vêm depois das tentativas diretas.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Tentativas de login: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Quantas vezes tentar entrar em um repetidor ou servidor de sala antes de desistir.';
+
+  @override
+  String get appSettings_repeatersAndRooms => 'Repetidores e salas';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Sincronizar o relógio do repetidor ao entrar';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Depois de entrar em um repetidor, clock sync é enviado. Cada repetidor ainda pode escolher Padrão, Ligado ou Desligado.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Focar o campo de senha';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Ao abrir o login de um repetidor ou sala, o cursor vai para a senha se ela estiver vazia. Desligado deixa o diálogo visível até você tocar no campo.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Redefinir configurações de repetidores e salas';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Restaura as configurações desta seção. As escolhas salvas em cada repetidor permanecem.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Configurações de repetidores e salas redefinidas';
 
   @override
   String get appSettings_ipfsImageLinks => 'Configuração do provedor IPFS';
@@ -1834,6 +1890,24 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get contacts_noMembers => 'Nenhum membro';
+
+  @override
+  String contacts_groupCurrentMembers(int count) {
+    return 'Current members ($count)';
+  }
+
+  @override
+  String get contacts_groupAddContacts => 'Add contacts';
+
+  @override
+  String contacts_groupRemoveMember(String name) {
+    return 'Remove $name from group';
+  }
+
+  @override
+  String contacts_groupAddMember(String name) {
+    return 'Add $name to group';
+  }
 
   @override
   String get contacts_lastSeenNow => 'Recente';
@@ -3494,7 +3568,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Enviar automaticamente a sincronização do \"relógio\" após um login bem-sucedido.';
+      'Padrão segue Repetidores e salas nas configurações. Ligado e Desligado valem só para este repetidor.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Padrão';
+
+  @override
+  String get repeater_clockSyncOn => 'Ligado';
+
+  @override
+  String get repeater_clockSyncOff => 'Desligado';
 
   @override
   String get repeater_statusTitle => 'Status do Repetidor';
@@ -7024,15 +7107,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Redefinir algoritmo de roteamento para o padrão';
+      'Redefinir configurações de roteamento para o padrão';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Restaurar as configurações do algoritmo de roteamento para os valores padrão de fábrica';
+      'Restaurar as configurações de roteamento desta seção para os padrões';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Configurações do algoritmo de roteamento redefinidas para o padrão';
+      'Configurações de roteamento redefinidas para o padrão';
 
   @override
   String get appSettings_imageMessagesSection => 'Mensagens de imagem';
@@ -7642,6 +7725,54 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get messageMeta_smazCompressed => 'SMAZ compressed';
+
+  @override
+  String get addContact_title => 'Add Contact';
+
+  @override
+  String get addContact_infoBanner =>
+      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+
+  @override
+  String get addContact_contactType => 'Contact Type';
+
+  @override
+  String get addContact_name => 'Name';
+
+  @override
+  String get addContact_nameRequired => 'Please enter a name';
+
+  @override
+  String get addContact_publicKeyHex => 'Public Key (hex)';
+
+  @override
+  String get addContact_publicKeyRequired => 'Please enter a public key';
+
+  @override
+  String get addContact_publicKeyInvalid =>
+      'Public key must be 64 hex characters (32 bytes)';
+
+  @override
+  String get addContact_clipboardKeyLoaded =>
+      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+
+  @override
+  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+
+  @override
+  String get addContact_saveFailed => 'Failed to add contact.';
+
+  @override
+  String get coordinateMap_title => 'Location';
+
+  @override
+  String get coordinate_copyLocation => 'Copy location';
+
+  @override
+  String get coordinate_openInMaps => 'Open in maps';
+
+  @override
+  String get coordinate_copied => 'Location copied';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -9071,11 +9202,11 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Repor o caminho do contacto após 5 tentativas de envio falhadas';
+      'Repor o caminho guardado do contacto quando todas as tentativas de envio falharem';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Os caminhos serão limpos após 5 tentativas falhadas';
+      'Os caminhos serão limpos quando todas as tentativas de envio falharem';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -9086,7 +9217,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Alterna entre os melhores caminhos e o modo flood';
+      'Em cada tentativa direta, experimentar outro caminho conhecido. As tentativas seguintes são Flood. Desligado mantém o caminho atual do contacto.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -9102,6 +9233,64 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Número de tentativas antes de marcar uma mensagem como falhada';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Tentativas diretas: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Quantas vezes tentar um caminho conhecido. Continua disponível com a rotação automática de caminhos desligada.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Tentativas Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Quantas vezes usar Flood. Flood usa mais tempo de ar. Com a rotação ligada, vêm a seguir às tentativas diretas.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Tentativas de início de sessão: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Quantas vezes tentar iniciar sessão num repetidor ou servidor de sala antes de desistir.';
+
+  @override
+  String get appSettings_repeatersAndRooms => 'Repetidores e salas';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Sincronizar o relógio do repetidor ao iniciar sessão';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Depois de iniciar sessão num repetidor, é enviado clock sync. Cada repetidor pode continuar a escolher Predefinição, Ligado ou Desligado.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus =>
+      'Focar o campo da palavra-passe';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Ao abrir o início de sessão de um repetidor ou sala, o cursor vai para a palavra-passe se estiver vazia. Desligado deixa o diálogo visível até tocar no campo.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Repor definições de repetidores e salas';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Repõe as definições desta secção. As escolhas guardadas em cada repetidor mantêm-se.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Definições de repetidores e salas repostas';
 
   @override
   String get appSettings_ipfsImageLinks => 'Configuração do fornecedor IPFS';
@@ -11085,7 +11274,16 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Enviar automaticamente \"clock sync\" após um login bem-sucedido';
+      'Predefinição segue Repetidores e salas nas definições. Ligado e Desligado valem só para este repetidor.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Predefinição';
+
+  @override
+  String get repeater_clockSyncOn => 'Ligado';
+
+  @override
+  String get repeater_clockSyncOff => 'Desligado';
 
   @override
   String get repeater_statusTitle => 'Estado do repetidor';
@@ -14543,15 +14741,15 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Repor algoritmo de encaminhamento';
+      'Repor definições de encaminhamento';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Repõe as definições do algoritmo de encaminhamento para os valores de fábrica';
+      'Repor as definições de encaminhamento desta secção para os valores predefinidos';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Definições do algoritmo de encaminhamento repostas';
+      'Definições de encaminhamento repostas';
 
   @override
   String get appSettings_imageMessagesSection => 'Mensagens de imagem';

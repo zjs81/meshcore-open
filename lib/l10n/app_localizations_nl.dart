@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1440,11 +1439,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Reset contactpad na 5 mislukte verzendpogingen';
+      'Het opgeslagen pad van het contact resetten als alle verzendpogingen mislukken';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Paden worden gewist na 5 mislukte pogingen';
+      'Paden worden gewist als alle verzendpogingen mislukken';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1455,7 +1454,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Wissel tussen beste paden en floodmodus';
+      'Bij elke directe poging een andere bekende route proberen. Latere pogingen zijn Flood. Uit houdt het huidige pad van het contact.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1471,6 +1470,63 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Aantal pogingen om een bericht opnieuw te versturen voordat het als mislukt wordt gemarkeerd';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Directe pogingen: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Hoe vaak een bekende route wordt geprobeerd. Blijft beschikbaar als automatische routerotatie uit staat.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Flood-pogingen: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Hoe vaak Flood wordt gebruikt. Flood kost meer zendtijd. Met rotatie aan volgen ze op de directe pogingen.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Inlogpogingen: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Hoe vaak wordt geprobeerd in te loggen op een repeater of roomserver voordat het stopt.';
+
+  @override
+  String get appSettings_repeatersAndRooms => 'Repeaters en rooms';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Repeaterklok synchroniseren bij aanmelden';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Na een geslaagde repeater-aanmelding wordt clock sync gestuurd. Elke repeater kan nog Standaard, Aan of Uit kiezen.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Wachtwoordveld focussen';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Bij het openen van een repeater- of room-aanmelding staat de cursor in het lege wachtwoordveld. Uit laat het venster zichtbaar tot je het veld aantikt.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Repeater- en roominstellingen resetten';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Zet de instellingen in deze sectie terug. Keuzes die per repeater zijn opgeslagen blijven staan.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Repeater- en roominstellingen gereset';
 
   @override
   String get appSettings_ipfsImageLinks => 'IPFS-providerconfiguratie';
@@ -1827,6 +1883,24 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get contacts_noMembers => 'Geen leden';
+
+  @override
+  String contacts_groupCurrentMembers(int count) {
+    return 'Current members ($count)';
+  }
+
+  @override
+  String get contacts_groupAddContacts => 'Add contacts';
+
+  @override
+  String contacts_groupRemoveMember(String name) {
+    return 'Remove $name from group';
+  }
+
+  @override
+  String contacts_groupAddMember(String name) {
+    return 'Add $name to group';
+  }
 
   @override
   String get contacts_lastSeenNow => 'recent';
@@ -3481,7 +3555,16 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Automatisch een \"klok synchroniseren\" bericht versturen na een succesvolle inlog.';
+      'Standaard volgt Repeaters en rooms in de app-instellingen. Aan en Uit gelden alleen voor deze repeater.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Standaard';
+
+  @override
+  String get repeater_clockSyncOn => 'Aan';
+
+  @override
+  String get repeater_clockSyncOff => 'Uit';
 
   @override
   String get repeater_statusTitle => 'Status repeater';
@@ -6999,15 +7082,15 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Routeringsalgoritme resetten naar standaard';
+      'Routeringsinstellingen resetten naar standaard';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Routeringsalgoritme-instellingen herstellen naar fabrieksstandaardwaarden';
+      'De routeringsinstellingen in dit gedeelte terugzetten naar de standaardwaarden';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Routeringsalgoritme-instellingen gereset naar standaard';
+      'Routeringsinstellingen gereset naar standaard';
 
   @override
   String get appSettings_imageMessagesSection => 'Afbeeldingsberichten';
@@ -7620,4 +7703,52 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get messageMeta_smazCompressed => 'SMAZ compressed';
+
+  @override
+  String get addContact_title => 'Add Contact';
+
+  @override
+  String get addContact_infoBanner =>
+      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+
+  @override
+  String get addContact_contactType => 'Contact Type';
+
+  @override
+  String get addContact_name => 'Name';
+
+  @override
+  String get addContact_nameRequired => 'Please enter a name';
+
+  @override
+  String get addContact_publicKeyHex => 'Public Key (hex)';
+
+  @override
+  String get addContact_publicKeyRequired => 'Please enter a public key';
+
+  @override
+  String get addContact_publicKeyInvalid =>
+      'Public key must be 64 hex characters (32 bytes)';
+
+  @override
+  String get addContact_clipboardKeyLoaded =>
+      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+
+  @override
+  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+
+  @override
+  String get addContact_saveFailed => 'Failed to add contact.';
+
+  @override
+  String get coordinateMap_title => 'Location';
+
+  @override
+  String get coordinate_copyLocation => 'Copy location';
+
+  @override
+  String get coordinate_openInMaps => 'Open in maps';
+
+  @override
+  String get coordinate_copied => 'Location copied';
 }

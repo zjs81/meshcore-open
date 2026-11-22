@@ -729,7 +729,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
           ChatSearchEntry(
             id: m.messageId,
             sender: m.senderName,
-            text: m.text,
+            text: m.fullText,
             translatedText: m.translatedText,
             time: m.receivedAt,
             matchSender: true,
@@ -1204,6 +1204,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
                 fontStyle: FontStyle.italic,
                 color: textColor.withValues(alpha: 0.72),
               ),
+              backgroundColor: colors.background,
               onSecondaryTap: PlatformInfo.isDesktop
                   ? () => _showMessageActions(message)
                   : null,
@@ -1356,6 +1357,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
                                             alpha: 0.72,
                                           ),
                                         ),
+                                        backgroundColor: colors.background,
                                         onSecondaryTap: PlatformInfo.isDesktop
                                             ? () => _showMessageActions(message)
                                             : null,
@@ -1490,21 +1492,25 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
                                 ),
                               if (enableTracing &&
                                   !isOutgoing &&
-                                  message.repeatCount > 0) ...[
-                                const SizedBox(width: 2),
-                                Icon(
-                                  Icons.repeat,
-                                  size: 14 * textScale,
-                                  color: metaColor,
+                                  message.repeatCount > 0)
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.repeat,
+                                      size: 14 * textScale,
+                                      color: metaColor,
+                                    ),
+                                    const SizedBox(width: 2),
+                                    Text(
+                                      '${message.repeatCount}',
+                                      style: MeshTheme.mono(
+                                        fontSize: 12 * textScale,
+                                        color: metaColor,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  '${message.repeatCount}',
-                                  style: MeshTheme.mono(
-                                    fontSize: 12 * textScale,
-                                    color: metaColor,
-                                  ),
-                                ),
-                              ],
                               if (isOutgoing)
                                 MessageStatusIcon(
                                   size: 16 * textScale,
@@ -2540,6 +2546,14 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
                 ),
                 subtitle: _imageSenderLabel(entry),
               ),
+              ListTile(
+                leading: const Icon(Icons.copy),
+                title: Text(l10n.common_copy),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  copyChatMessageText(context, _imageCopyText(entry));
+                },
+              ),
               if (canSave)
                 ListTile(
                   leading: const Icon(Icons.save_alt),
@@ -2590,6 +2604,17 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
         ),
       ),
     );
+  }
+
+  String _imageCopyText(ReceivedImageEntry entry) {
+    final l10n = context.l10n;
+    final lines = <String>[
+      '${_imageSenderLabel(entry)} (${formatChatTime(context, entry.firstSeen)})',
+      l10n.receivedImage_awaiting(entry.bitstreamByteCount, entry.totalChunks),
+      if (entry.state == ReceivedImageState.decoded && entry.synthesized)
+        l10n.receivedImage_shareCaption(entry.bitstreamByteCount),
+    ];
+    return lines.join('\n');
   }
 
   Future<void> _saveImage(ReceivedImageEntry entry) async {
@@ -3095,7 +3120,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
                 title: Text(context.l10n.common_copy),
                 onTap: () {
                   Navigator.pop(sheetContext);
-                  copyChatMessageText(context, message.text);
+                  copyChatMessageText(context, message.fullText);
                 },
               ),
               if (canTranslateMessage)
@@ -3427,8 +3452,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
     final text = messages
         .map(
           (m) => m.senderName.isEmpty || m.isOutgoing
-              ? m.text
-              : '${m.senderName}: ${m.text}',
+              ? m.fullText
+              : '${m.senderName}: ${m.fullText}',
         )
         .join('\n');
     setState(_selectedIds.clear);
@@ -4005,8 +4030,10 @@ class _SwipeReplyBubbleState extends State<_SwipeReplyBubble> {
       onPointerMove: _handleSwipePointerMove,
       onPointerUp: (event) => _handleSwipePointerUp(event.position),
       onPointerCancel: (_) => _resetSwipe(),
+      // Same insets as the plain row in _buildMessageBubble, so a bubble is
+      // as wide whether or not it can be swiped (offline, desktop, outgoing).
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 3),
         child: Stack(
           alignment: Alignment.center,
           children: [

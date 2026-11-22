@@ -781,6 +781,13 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           }
           final messageIndex = index;
           Contact contact = _resolveContact(connector);
+          final sendSettings = context.read<AppSettingsService>().settings;
+          final retryLimit = sendSettings.sendAttemptLimit(
+            rotating:
+                sendSettings.autoRouteRotationEnabled &&
+                contact.pathOverride == null,
+            floodPath: (contact.pathOverride ?? contact.pathLength) < 0,
+          );
           final bool isRoom = contact.type == advTypeRoom;
           final message = reversedMessages[messageIndex];
           String fourByteHex = '';
@@ -810,6 +817,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
               );
               final bubble = _MessageBubble(
                 message: message,
+                maxSendAttempts: retryLimit,
                 senderName: isRoom
                     ? (roomAuthor != null
                           ? "${roomAuthor.name} [$fourByteHex]"
@@ -1604,6 +1612,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
 class _MessageBubble extends StatelessWidget {
   final Message message;
+  final int maxSendAttempts;
   final String senderName;
   final VoidCallback? onLongPress;
   final void Function(Message message, String emoji)? onRetryReaction;
@@ -1613,6 +1622,7 @@ class _MessageBubble extends StatelessWidget {
 
   const _MessageBubble({
     required this.message,
+    required this.maxSendAttempts,
     required this.senderName,
     required this.sourceId,
     required this.textScale,
@@ -1676,6 +1686,7 @@ class _MessageBubble extends StatelessWidget {
                 color: textColor.withValues(alpha: 0.72),
                 fontSize: bodyFontSize * textScale,
               ),
+              backgroundColor: colors.background,
               onSecondaryTap: PlatformInfo.isDesktop ? onLongPress : null,
             ),
           ),
@@ -1810,6 +1821,7 @@ class _MessageBubble extends StatelessWidget {
                                             ),
                                             fontSize: bodyFontSize * textScale,
                                           ),
+                                          backgroundColor: colors.background,
                                           onSecondaryTap: PlatformInfo.isDesktop
                                               ? onLongPress
                                               : null,
@@ -1854,10 +1866,7 @@ class _MessageBubble extends StatelessWidget {
                               child: Text(
                                 context.l10n.chat_retryCount(
                                   message.retryCount,
-                                  context
-                                      .read<AppSettingsService>()
-                                      .settings
-                                      .maxMessageRetries,
+                                  maxSendAttempts,
                                 ),
                                 style: MeshTheme.mono(
                                   fontSize: 12 * textScale,

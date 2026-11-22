@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1353,10 +1352,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_clearPathOnMaxRetry => '达到最大重试次数时清除路径';
 
   @override
-  String get appSettings_clearPathOnMaxRetrySubtitle => '在5次发送失败后重置联系路径。';
+  String get appSettings_clearPathOnMaxRetrySubtitle =>
+      '所有发送尝试都失败后，重置联系人已保存的路径';
 
   @override
-  String get appSettings_pathsWillBeCleared => '5次失败后将重新路由';
+  String get appSettings_pathsWillBeCleared => '所有发送尝试失败后将清除路径';
 
   @override
   String get appSettings_pathsWillNotBeCleared => '路径不会自动清除';
@@ -1365,7 +1365,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_autoRouteRotation => '自动路径轮换';
 
   @override
-  String get appSettings_autoRouteRotationSubtitle => '在最佳路径和泛洪模式之间切换';
+  String get appSettings_autoRouteRotationSubtitle =>
+      '每次直接尝试换一条已知路由。之后的尝试使用 Flood。关闭后保持联系人的当前路径。';
 
   @override
   String get appSettings_autoRouteRotationEnabled => '自动路径轮换已启用';
@@ -1378,6 +1379,58 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appSettings_maxMessageRetriesSubtitle => '在将消息标记为失败之前，允许尝试的次数';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return '直接尝试：$count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle => '尝试已知路由的次数。关闭自动路径轮换后仍然可以设置。';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Flood 尝试：$count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      '使用 Flood 的次数。Flood 占用更多空中时间。开启轮换时，这些尝试排在直接尝试之后。';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return '登录尝试：$count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle => '登录中继或房间服务器时，放弃前的尝试次数。';
+
+  @override
+  String get appSettings_repeatersAndRooms => '中继和房间';
+
+  @override
+  String get appSettings_clockSyncAfterLogin => '登录时同步中继时钟';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      '成功登录中继后会发送 clock sync。每个中继仍可选择默认、开或关。';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => '聚焦密码框';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      '打开中继或房间登录时，如果密码为空，光标会进入密码框。关闭后，在你点按该框之前对话框保持可见。';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings => '将中继和房间设置重置为默认';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      '恢复这一节的设置。保存在各个中继上的选择保持不变。';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset => '中继和房间设置已重置';
 
   @override
   String get appSettings_ipfsImageLinks => 'IPFS 提供商配置';
@@ -1717,6 +1770,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get contacts_noMembers => '暂无成员';
+
+  @override
+  String contacts_groupCurrentMembers(int count) {
+    return 'Current members ($count)';
+  }
+
+  @override
+  String get contacts_groupAddContacts => 'Add contacts';
+
+  @override
+  String contacts_groupRemoveMember(String name) {
+    return 'Remove $name from group';
+  }
+
+  @override
+  String contacts_groupAddMember(String name) {
+    return 'Add $name to group';
+  }
 
   @override
   String get contacts_lastSeenNow => '刚刚';
@@ -3305,7 +3376,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get repeater_clockSyncAfterLogin => '登录后，自动同步时钟';
 
   @override
-  String get repeater_clockSyncAfterLoginSubtitle => '在成功登录后，自动发送“时钟同步”指令。';
+  String get repeater_clockSyncAfterLoginSubtitle =>
+      '默认跟随应用设置里的“中继和房间”。开和关只作用于这个中继。';
+
+  @override
+  String get repeater_clockSyncDefault => '默认';
+
+  @override
+  String get repeater_clockSyncOn => '开';
+
+  @override
+  String get repeater_clockSyncOff => '关';
 
   @override
   String get repeater_statusTitle => '转发节点状态';
@@ -6560,13 +6641,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appSettings_routingSection => '路由';
 
   @override
-  String get appSettings_resetRoutingToDefault => '将路由算法重置为默认值';
+  String get appSettings_resetRoutingToDefault => '将路由设置重置为默认值';
 
   @override
-  String get appSettings_resetRoutingToDefaultSubtitle => '将路由算法设置恢复为出厂默认值';
+  String get appSettings_resetRoutingToDefaultSubtitle => '将本部分的路由设置恢复为默认值';
 
   @override
-  String get appSettings_routingResetToDefault => '路由算法设置已重置为默认值';
+  String get appSettings_routingResetToDefault => '路由设置已重置为默认值';
 
   @override
   String get appSettings_imageMessagesSection => '图片消息';
@@ -7150,4 +7231,52 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get messageMeta_smazCompressed => 'SMAZ compressed';
+
+  @override
+  String get addContact_title => 'Add Contact';
+
+  @override
+  String get addContact_infoBanner =>
+      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+
+  @override
+  String get addContact_contactType => 'Contact Type';
+
+  @override
+  String get addContact_name => 'Name';
+
+  @override
+  String get addContact_nameRequired => 'Please enter a name';
+
+  @override
+  String get addContact_publicKeyHex => 'Public Key (hex)';
+
+  @override
+  String get addContact_publicKeyRequired => 'Please enter a public key';
+
+  @override
+  String get addContact_publicKeyInvalid =>
+      'Public key must be 64 hex characters (32 bytes)';
+
+  @override
+  String get addContact_clipboardKeyLoaded =>
+      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+
+  @override
+  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+
+  @override
+  String get addContact_saveFailed => 'Failed to add contact.';
+
+  @override
+  String get coordinateMap_title => 'Location';
+
+  @override
+  String get coordinate_copyLocation => 'Copy location';
+
+  @override
+  String get coordinate_openInMaps => 'Open in maps';
+
+  @override
+  String get coordinate_copied => 'Location copied';
 }

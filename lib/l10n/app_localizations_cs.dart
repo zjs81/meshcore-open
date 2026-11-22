@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1441,11 +1440,11 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get appSettings_clearPathOnMaxRetrySubtitle =>
-      'Resetovat cestu kontaktu po 5 neúspěšných pokusech o odeslání';
+      'Resetovat uloženou cestu kontaktu, když selžou všechny pokusy o odeslání';
 
   @override
   String get appSettings_pathsWillBeCleared =>
-      'Cesty budou vymazány po 5 neúspěšných pokusech';
+      'Cesty se vymažou, když selžou všechny pokusy o odeslání';
 
   @override
   String get appSettings_pathsWillNotBeCleared =>
@@ -1456,7 +1455,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get appSettings_autoRouteRotationSubtitle =>
-      'Střídat nejlepší cesty a režim flood';
+      'Při každém přímém pokusu zkusit jinou známou trasu. Pozdější pokusy jsou Flood. Vypnuto ponechá aktuální cestu kontaktu.';
 
   @override
   String get appSettings_autoRouteRotationEnabled =>
@@ -1472,6 +1471,63 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get appSettings_maxMessageRetriesSubtitle =>
       'Počet opakovaných pokusů, než se zpráva označí jako neodeslaná';
+
+  @override
+  String appSettings_directRetries(int count) {
+    return 'Přímé pokusy: $count';
+  }
+
+  @override
+  String get appSettings_directRetriesSubtitle =>
+      'Kolikrát se zkusí známá trasa. Dostupné i když je automatické střídání tras vypnuté.';
+
+  @override
+  String appSettings_floodRetries(int count) {
+    return 'Pokusy Flood: $count';
+  }
+
+  @override
+  String get appSettings_floodRetriesSubtitle =>
+      'Kolikrát se použije Flood. Flood zabere víc vysílacího času. Při zapnutém střídání následují po přímých pokusech.';
+
+  @override
+  String appSettings_loginAttempts(int count) {
+    return 'Pokusy o přihlášení: $count';
+  }
+
+  @override
+  String get appSettings_loginAttemptsSubtitle =>
+      'Kolikrát se zkusí přihlášení k opakovači nebo room serveru, než se to vzdá.';
+
+  @override
+  String get appSettings_repeatersAndRooms => 'Opakovače a místnosti';
+
+  @override
+  String get appSettings_clockSyncAfterLogin =>
+      'Synchronizovat hodiny opakovače při přihlášení';
+
+  @override
+  String get appSettings_clockSyncAfterLoginSubtitle =>
+      'Po úspěšném přihlášení k opakovači se odešle clock sync. Každý opakovač může dál zvolit Výchozí, Zapnuto nebo Vypnuto.';
+
+  @override
+  String get appSettings_loginPasswordAutofocus => 'Zaměřit pole hesla';
+
+  @override
+  String get appSettings_loginPasswordAutofocusSubtitle =>
+      'Při otevření přihlášení k opakovači nebo místnosti je kurzor v prázdném poli hesla. Vypnuto nechá dialog viditelný, dokud na pole neklepnete.';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettings =>
+      'Obnovit nastavení opakovačů a místností';
+
+  @override
+  String get appSettings_resetRepeaterRoomSettingsSubtitle =>
+      'Obnoví nastavení v této části. Volby uložené u jednotlivých opakovačů zůstanou.';
+
+  @override
+  String get appSettings_repeaterRoomSettingsReset =>
+      'Nastavení opakovačů a místností obnoveno';
 
   @override
   String get appSettings_ipfsImageLinks => 'Konfigurace poskytovatele IPFS';
@@ -1828,6 +1884,24 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get contacts_noMembers => 'Žádní členové';
+
+  @override
+  String contacts_groupCurrentMembers(int count) {
+    return 'Current members ($count)';
+  }
+
+  @override
+  String get contacts_groupAddContacts => 'Add contacts';
+
+  @override
+  String contacts_groupRemoveMember(String name) {
+    return 'Remove $name from group';
+  }
+
+  @override
+  String contacts_groupAddMember(String name) {
+    return 'Add $name to group';
+  }
 
   @override
   String get contacts_lastSeenNow => 'nedávno';
@@ -3491,7 +3565,16 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Automaticky odeslat „clock sync“ po úspěšném přihlášení';
+      'Výchozí se řídí Opakovači a místnostmi v nastavení aplikace. Zapnuto a Vypnuto platí jen pro tento opakovač.';
+
+  @override
+  String get repeater_clockSyncDefault => 'Výchozí';
+
+  @override
+  String get repeater_clockSyncOn => 'Zapnuto';
+
+  @override
+  String get repeater_clockSyncOff => 'Vypnuto';
 
   @override
   String get repeater_statusTitle => 'Stav opakovače';
@@ -7016,15 +7099,15 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get appSettings_resetRoutingToDefault =>
-      'Obnovit výchozí směrovací algoritmus';
+      'Obnovit výchozí nastavení směrování';
 
   @override
   String get appSettings_resetRoutingToDefaultSubtitle =>
-      'Obnovit nastavení směrovacího algoritmu na tovární hodnoty';
+      'Obnovit nastavení směrování v této části na výchozí hodnoty';
 
   @override
   String get appSettings_routingResetToDefault =>
-      'Nastavení směrovacího algoritmu obnoveno na výchozí';
+      'Nastavení směrování obnoveno na výchozí';
 
   @override
   String get appSettings_imageMessagesSection => 'Obrázkové zprávy';
@@ -7632,4 +7715,52 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get messageMeta_smazCompressed => 'SMAZ compressed';
+
+  @override
+  String get addContact_title => 'Add Contact';
+
+  @override
+  String get addContact_infoBanner =>
+      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+
+  @override
+  String get addContact_contactType => 'Contact Type';
+
+  @override
+  String get addContact_name => 'Name';
+
+  @override
+  String get addContact_nameRequired => 'Please enter a name';
+
+  @override
+  String get addContact_publicKeyHex => 'Public Key (hex)';
+
+  @override
+  String get addContact_publicKeyRequired => 'Please enter a public key';
+
+  @override
+  String get addContact_publicKeyInvalid =>
+      'Public key must be 64 hex characters (32 bytes)';
+
+  @override
+  String get addContact_clipboardKeyLoaded =>
+      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+
+  @override
+  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+
+  @override
+  String get addContact_saveFailed => 'Failed to add contact.';
+
+  @override
+  String get coordinateMap_title => 'Location';
+
+  @override
+  String get coordinate_copyLocation => 'Copy location';
+
+  @override
+  String get coordinate_openInMaps => 'Open in maps';
+
+  @override
+  String get coordinate_copied => 'Location copied';
 }

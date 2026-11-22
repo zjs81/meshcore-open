@@ -404,7 +404,9 @@ void main() {
       expect(settings.initialRouteWeight, equals(3.0));
       expect(settings.routeWeightSuccessIncrement, equals(0.5));
       expect(settings.routeWeightFailureDecrement, equals(0.2));
-      expect(settings.maxMessageRetries, equals(5));
+      expect(settings.directRetries, equals(4));
+      expect(settings.floodRetries, equals(1));
+      expect(settings.loginAttempts, equals(5));
       expect(settings.evictDiscoveredContactsEnabled, isTrue);
     });
 
@@ -415,13 +417,17 @@ void main() {
       expect(json.containsKey('initial_route_weight'), isTrue);
       expect(json.containsKey('route_weight_success_increment'), isTrue);
       expect(json.containsKey('route_weight_failure_decrement'), isTrue);
-      expect(json.containsKey('max_message_retries'), isTrue);
+      expect(json.containsKey('max_direct_retries'), isTrue);
+      expect(json.containsKey('max_flood_retries'), isTrue);
+      expect(json.containsKey('login_attempts'), isTrue);
       expect(json.containsKey('evict_discovered_contacts_enabled'), isTrue);
       expect(json['max_route_weight'], equals(5.0));
       expect(json['initial_route_weight'], equals(3.0));
       expect(json['route_weight_success_increment'], equals(0.5));
       expect(json['route_weight_failure_decrement'], equals(0.2));
-      expect(json['max_message_retries'], equals(5));
+      expect(json['max_direct_retries'], equals(4));
+      expect(json['max_flood_retries'], equals(1));
+      expect(json['login_attempts'], equals(5));
       expect(json['evict_discovered_contacts_enabled'], isTrue);
     });
 
@@ -431,7 +437,9 @@ void main() {
         'initial_route_weight': 2.0,
         'route_weight_success_increment': 1.0,
         'route_weight_failure_decrement': 1.5,
-        'max_message_retries': 8,
+        'max_direct_retries': 8,
+        'max_flood_retries': 3,
+        'login_attempts': 7,
         'evict_discovered_contacts_enabled': false,
       };
       final settings = AppSettings.fromJson(json);
@@ -439,7 +447,9 @@ void main() {
       expect(settings.initialRouteWeight, equals(2.0));
       expect(settings.routeWeightSuccessIncrement, equals(1.0));
       expect(settings.routeWeightFailureDecrement, equals(1.5));
-      expect(settings.maxMessageRetries, equals(8));
+      expect(settings.directRetries, equals(8));
+      expect(settings.floodRetries, equals(3));
+      expect(settings.loginAttempts, equals(7));
       expect(settings.evictDiscoveredContactsEnabled, isFalse);
     });
 
@@ -503,7 +513,9 @@ void main() {
         expect(settings.initialRouteWeight, equals(3.0));
         expect(settings.routeWeightSuccessIncrement, equals(0.5));
         expect(settings.routeWeightFailureDecrement, equals(0.2));
-        expect(settings.maxMessageRetries, equals(5));
+        expect(settings.directRetries, equals(4));
+        expect(settings.floodRetries, equals(1));
+        expect(settings.loginAttempts, equals(5));
       },
     );
 
@@ -513,7 +525,7 @@ void main() {
       expect(updated.maxRouteWeight, equals(8.0));
       // Other fields should be unchanged
       expect(updated.initialRouteWeight, equals(settings.initialRouteWeight));
-      expect(updated.maxMessageRetries, equals(settings.maxMessageRetries));
+      expect(updated.directRetries, equals(settings.directRetries));
     });
 
     test('copyWith works for initialRouteWeight', () {
@@ -543,10 +555,10 @@ void main() {
       );
     });
 
-    test('copyWith works for maxMessageRetries', () {
+    test('copyWith works for directRetries', () {
       final settings = AppSettings();
-      final updated = settings.copyWith(maxMessageRetries: 10);
-      expect(updated.maxMessageRetries, equals(10));
+      final updated = settings.copyWith(directRetries: 10);
+      expect(updated.directRetries, equals(10));
       expect(updated.maxRouteWeight, equals(settings.maxRouteWeight));
     });
   });

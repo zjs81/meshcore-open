@@ -259,18 +259,19 @@ class PathHistoryService extends ChangeNotifier {
 
   /// Route for one send attempt of a message to [contactPubKeyHex].
   ///
-  /// The last attempt always floods. Otherwise a known route is drawn by
-  /// Thompson sampling over faded delivery stats, weighted by how well it
-  /// fits [context]; routes used for this message's recent attempts score
-  /// lower so retries usually try something different.
+  /// Attempts before [directRetries] draw a known route by Thompson sampling
+  /// over faded delivery stats, weighted by how well it fits [context];
+  /// routes used for this message's recent attempts score lower so retries
+  /// usually try something different. From [directRetries] on, the attempt
+  /// floods. [directRetries] of 0 floods immediately.
   PathSelection selectPathForAttempt(
     String contactPubKeyHex, {
     required int attemptIndex,
-    required int maxRetries,
+    required int directRetries,
     List<PathSelection> recentSelections = const [],
     RouteContext context = RouteContext.unknown,
   }) {
-    if (maxRetries <= 0 || attemptIndex >= maxRetries - 1) {
+    if (directRetries <= 0 || attemptIndex >= directRetries) {
       return const PathSelection(pathBytes: [], hopCount: -1, useFlood: true);
     }
 
