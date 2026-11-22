@@ -35,7 +35,7 @@ Below the app bar, above the messages, a strip shows **Compression: Off**, **SMA
 - **Incoming messages**: Left-aligned, grey background with a colored avatar (initial letter or first emoji of sender name; color is deterministic from a hash of the sender name)
 - Long-press a message and choose **Bookmark** to show a yellow bookmark on the bubble. **Show bookmarks** in the chat menu toggles a filter for bookmarked messages; use **Bookmarks** in the Channels screen menu to browse saved messages, including those from deleted contacts or channels. From the bookmarks list, copy a message with its copy button. It is ordered oldest-to-newest and opens at the newest message. The Export screen can save or share a dated Markdown file, grouped by contact and then channel, with linked URLs and URL-image embeds. Links remain tappable, and supported URL-image previews are shown when **Load images from links** is enabled in App Settings.
 - Bubble width capped at 72% of screen width
-- Hyperlinks rendered as tappable green underlined text
+- Hyperlinks rendered as tappable underlined text; inline decimal GPS coordinates are rendered as bold underlined links (see [Inline GPS Coordinates](#inline-gps-coordinates))
 - Message text follows the system font size (Android/iOS accessibility text size); pinch-to-zoom scales on top of it
 - **Pinch-to-zoom**: Two-finger zoom (0.8x–1.8x) and double-tap to reset
 - **Jump to bottom**: Floating button appears when scrolled away from the bottom
@@ -61,11 +61,39 @@ The composer is a rounded bubble at the bottom of the chat with one round button
 
 | Type | Wire Format | Display |
 |---|---|---|
-| Plain text | Raw UTF-8 string | Inline text with link detection |
+| Plain text | Raw UTF-8 string | Inline text with URL and decimal coordinate detection |
 | URL image preview | Image URL in text (per-contact opt-in; requires internet) | Downloaded inline preview |
 | GIF | `g:<giphy-id>` | Inline GIF image from Giphy CDN |
 | Location pin | `m:<lat>,<lon>\|<label>\|...` | Location icon + label; tap to open map |
 | Reaction | `r:<hash>:<emoji-index>` | Applied to target message as emoji pill |
+
+## Inline GPS Coordinates
+
+Plain-text messages in direct chats, room chats, channel chats, and saved bookmarks (including translated text and shown originals) automatically detect inline decimal GPS coordinates.
+
+### Supported Format
+
+- **Decimal `lat, lon` pairs**: Matches two decimal numbers separated by a comma with optional spaces or tabs after the comma (for example `37.7749, -122.4194` or `-33.86882,151.20929`). Each number may include a leading `+` or `-` sign.
+- **WGS84 bounds**: Latitude must be between `-90.0` and `90.0` and longitude between `-180.0` and `180.0` (inclusive).
+- **Decimal requirement**: Both latitude and longitude must contain a decimal point with digits on both sides. Plain integer pairs (`10, 20`) and mixed integer/decimal pairs (`37, -122.4194`) are ignored.
+- **Non-coordinate exclusions**: Version numbers (`1.2.3, 4.5` or `1.2, 3.4.5`), numbers attached to letters, underscores, or extra signs (`v1.2,3.4`, `id_37.7749,-122.4194`), and coordinates inside URLs, email addresses, or `geo:` URIs remain normal text or standard web links. Surrounding sentence punctuation such as `(37.7749, -122.4194)` or a trailing period (`38.722,-9.139.`) is allowed without breaking detection.
+
+### Tap and Long-Press Behavior
+
+- **Tap**: Opens a dedicated full-screen **Location** map centered on that coordinate at zoom level 15 (zoom range 2–18) with a pin marker and a bottom label card showing the matched coordinate text. Map controls provide **Zoom in** (`+`), **Zoom out** (`-`), and **Center map** buttons (plus arrow/WASD pan and R/F zoom keys on desktop), and the app bar provides **Copy location** and **Open in maps**. Pressing Back returns to the exact same message scroll position. Like the main map, cached tiles work offline while uncached tiles require internet.
+- **Long-press**: Opens a coordinate action sheet with **Copy location** (copies the matched coordinate text to the clipboard) and **Open in maps**, instead of the message bubble context menu. Long-pressing non-coordinate text in the same message (or right-clicking on desktop) still opens the normal message actions menu.
+
+### Open in Maps Platform Behavior
+
+**Open in maps** launches an external map application or browser tab depending on the platform:
+
+| Platform | Target launched |
+|---|---|
+| Android | `geo:<lat>,<lon>?q=<lat>,<lon>` (system default maps app) |
+| iOS, macOS | `https://maps.apple.com/?ll=<lat>,<lon>&q=<lat>,<lon>` (Apple Maps) |
+| Linux, Windows, Web | `https://www.openstreetmap.org/?mlat=<lat>,<lon>#map=16/<lat>/<lon>` (OpenStreetMap in default browser) |
+
+Launching fails with a snackbar if no maps app or web browser is available to handle the URI.
 
 ## Sharing Contacts
 
@@ -146,6 +174,8 @@ Add emoji reactions to incoming messages (not your own):
 | Open chat with sender | Room server chats | Opens 1:1 chat with the message sender |
 
 In channel chats the menu also offers **Mark as spam**, **Filter this sender** and **Filter messages like this…**; see [Message filter](message-filter.md). Direct messages are never filtered.
+
+Long-pressing directly on a detected GPS coordinate opens the coordinate action sheet (**Copy location** and **Open in maps**) instead of this message menu; long-press non-coordinate text in the message (or right-click on desktop) for message actions.
 
 ## Image and translation setup
 

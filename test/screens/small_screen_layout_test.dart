@@ -26,6 +26,7 @@ import 'package:meshcore_open/screens/chat_screen.dart';
 import 'package:meshcore_open/screens/chrome_required_screen.dart';
 import 'package:meshcore_open/screens/companion_radio_stats_screen.dart';
 import 'package:meshcore_open/screens/contacts_screen.dart';
+import 'package:meshcore_open/screens/coordinate_map_screen.dart';
 import 'package:meshcore_open/screens/discovery_screen.dart';
 import 'package:meshcore_open/screens/line_of_sight_map_screen.dart';
 import 'package:meshcore_open/screens/map_cache_screen.dart';
@@ -222,6 +223,11 @@ final Map<String, _ScreenBuilder> _screens = {
       LineOfSightEndpoint(label: 'A', point: LatLng(45.5, -122.6)),
       LineOfSightEndpoint(label: 'B', point: LatLng(45.6, -122.7)),
     ],
+  ),
+  'CoordinateMap': (_) => const CoordinateMapScreen(
+    latitude: 45.515232,
+    longitude: -122.678385,
+    label: '45.515232, -122.678385',
   ),
 };
 

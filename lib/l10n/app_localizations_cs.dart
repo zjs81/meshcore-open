@@ -7762,4 +7762,16 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get addContact_saveFailed => 'Failed to add contact.';
+
+  @override
+  String get coordinateMap_title => 'Location';
+
+  @override
+  String get coordinate_copyLocation => 'Copy location';
+
+  @override
+  String get coordinate_openInMaps => 'Open in maps';
+
+  @override
+  String get coordinate_copied => 'Location copied';
 }

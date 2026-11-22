@@ -23,6 +23,7 @@ import 'package:meshcore_open/services/chat_text_scale_service.dart';
 import 'package:meshcore_open/services/image_codec_service.dart';
 import 'package:meshcore_open/services/map_tile_cache_service.dart';
 import 'package:meshcore_open/services/message_retry_service.dart';
+import 'package:meshcore_open/services/notification_service.dart';
 import 'package:meshcore_open/services/network_map/network_map_upload_service.dart';
 import 'package:meshcore_open/services/path_history_service.dart';
 import 'package:meshcore_open/services/received_image_store.dart';
@@ -125,6 +126,7 @@ Widget _wrapApp({
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  final notificationService = NotificationService();
   final tempDir = Directory.systemTemp.createTempSync('add_contact_test');
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
@@ -133,12 +135,14 @@ void main() {
       );
 
   setUp(() async {
+    notificationService.suppressNotifications(true);
     SharedPreferences.setMockInitialValues({});
     PrefsManager.reset();
     await PrefsManager.initialize();
   });
 
   tearDownAll(() {
+    notificationService.suppressNotifications(false);
     _sharedConnector?.dispose();
     _sharedConnector = null;
     if (tempDir.existsSync()) {

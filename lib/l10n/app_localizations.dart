@@ -12975,6 +12975,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to add contact.'**
   String get addContact_saveFailed;
+
+  /// No description provided for @coordinateMap_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get coordinateMap_title;
+
+  /// No description provided for @coordinate_copyLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy location'**
+  String get coordinate_copyLocation;
+
+  /// No description provided for @coordinate_openInMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in maps'**
+  String get coordinate_openInMaps;
+
+  /// No description provided for @coordinate_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location copied'**
+  String get coordinate_copied;
 }
 
 class _AppLocalizationsDelegate
