@@ -39,9 +39,7 @@ import 'channel_chat_screen.dart';
 import 'community_qr_scanner_screen.dart';
 import 'contacts_screen.dart';
 import 'map_screen.dart';
-import 'settings_screen.dart';
 import '../review_mode/review_mode_banner.dart';
-import '../theme/theme_icons.dart';
 
 class ChannelsScreen extends StatefulWidget {
   final bool hideBackButton;
@@ -124,11 +122,11 @@ class _ChannelsScreenState extends State<ChannelsScreen> {
           bottom: const SyncProgressAppBarBottom(),
           actions: [
             PopupMenuButton(
+              tooltip: context.l10n.contacts_moreOptions,
               // onTap handlers run after the menu route pops, so they must
               // capture the screen's context — not the itemBuilder's menu
               // context, which is deactivated by then.
               itemBuilder: (menuContext) => [
-                connectionMenuItem(context, menuContext),
                 PopupMenuItem(
                   child: MeshMenuItemRow(
                     icon: Icons.bookmark_border,
@@ -146,18 +144,7 @@ class _ChannelsScreenState extends State<ChannelsScreen> {
                   ),
                   onTap: () => _showManageCommunitiesDialog(context),
                 ),
-                PopupMenuItem(
-                  child: MeshMenuItemRow(
-                    leading: const ThemedIcon(ThemeIconSlot.settings, size: 20),
-                    label: menuContext.l10n.settings_title,
-                  ),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsScreen(),
-                    ),
-                  ),
-                ),
+                ...mainOverflowTrailingItems(context, menuContext),
               ],
               icon: const Icon(Icons.more_vert),
             ),
