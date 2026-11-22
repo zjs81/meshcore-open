@@ -41,31 +41,33 @@ Future<void> showMessageTranslationSheet({
   required ValueChanged<bool> onEnabledChanged,
   required ValueChanged<String?> onLanguageSelected,
 }) {
-  final callerMedia = MediaQuery.of(context);
-  final navMedia =
-      MediaQuery.maybeOf(Navigator.of(context).context) ?? callerMedia;
-  final callerBottom = math.max(
-    callerMedia.viewInsets.bottom,
-    math.max(callerMedia.viewPadding.bottom, callerMedia.padding.bottom),
-  );
-  final navBottom = math.max(
-    navMedia.viewInsets.bottom,
-    math.max(navMedia.viewPadding.bottom, navMedia.padding.bottom),
-  );
-  final extraBottom = math.max(0.0, callerBottom - navBottom);
-  final safeTop = math.max(
-    math.max(callerMedia.viewPadding.top, callerMedia.padding.top),
-    math.max(navMedia.viewPadding.top, navMedia.padding.top),
-  );
-  final bottomSafeInset = math.max(
-    math.max(callerMedia.viewPadding.bottom, callerMedia.padding.bottom),
-    math.max(navMedia.viewPadding.bottom, navMedia.padding.bottom),
-  );
-
   return showMeshSheet<void>(
     context,
     builder: (sheetContext) {
       final sheetMedia = MediaQuery.of(sheetContext);
+      final callerMedia =
+          (context.mounted ? MediaQuery.maybeOf(context) : null) ?? sheetMedia;
+      final navContext = Navigator.maybeOf(sheetContext)?.context;
+      final navMedia =
+          (navContext != null ? MediaQuery.maybeOf(navContext) : null) ??
+          callerMedia;
+      final callerBottom = math.max(
+        callerMedia.viewInsets.bottom,
+        math.max(callerMedia.viewPadding.bottom, callerMedia.padding.bottom),
+      );
+      final navBottom = math.max(
+        navMedia.viewInsets.bottom,
+        math.max(navMedia.viewPadding.bottom, navMedia.padding.bottom),
+      );
+      final extraBottom = math.max(0.0, callerBottom - navBottom);
+      final safeTop = math.max(
+        math.max(callerMedia.viewPadding.top, callerMedia.padding.top),
+        math.max(navMedia.viewPadding.top, navMedia.padding.top),
+      );
+      final bottomSafeInset = math.max(
+        math.max(callerMedia.viewPadding.bottom, callerMedia.padding.bottom),
+        math.max(navMedia.viewPadding.bottom, navMedia.padding.bottom),
+      );
       final screenHeight = math.min(
         callerMedia.size.height,
         sheetMedia.size.height,
