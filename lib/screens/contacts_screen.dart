@@ -43,8 +43,6 @@ import 'discovery_screen.dart';
 import 'map_screen.dart';
 import '../review_mode/review_mode_banner.dart';
 import 'repeater_hub_screen.dart';
-import 'settings_screen.dart';
-import '../theme/theme_icons.dart';
 
 enum RoomLoginDestination { chat, management }
 
@@ -364,25 +362,26 @@ class _ContactsScreenState extends State<ContactsScreen> {
           actions: [
             PopupMenuButton(
               tooltip: context.l10n.contacts_moreOptions,
-              itemBuilder: (context) => <PopupMenuEntry<dynamic>>[
+              // onTap handlers run after the menu route pops, so they must
+              // capture the screen's context — not the itemBuilder's menu
+              // context, which is deactivated by then.
+              itemBuilder: (menuContext) => <PopupMenuEntry<dynamic>>[
                 PopupMenuItem(
                   enabled: !readOnly,
                   onTap: _openAddContact,
                   child: MeshMenuItemRow(
                     icon: Icons.person_add,
-                    label: context.l10n.addContact_title,
+                    label: menuContext.l10n.addContact_title,
                   ),
                 ),
                 PopupMenuItem(
                   child: MeshMenuItemRow(
                     icon: Icons.person_add_rounded,
-                    label: context.l10n.discoveredContacts_Title,
+                    label: menuContext.l10n.discoveredContacts_Title,
                   ),
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const DiscoveryScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const DiscoveryScreen()),
                   ),
                 ),
                 const PopupMenuDivider(),
@@ -390,7 +389,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   enabled: !readOnly,
                   child: MeshMenuItemRow(
                     icon: Icons.connect_without_contact,
-                    label: context.l10n.contacts_zeroHopAdvert,
+                    label: menuContext.l10n.contacts_zeroHopAdvert,
                   ),
                   onTap: () => _sendSelfAdvert(connector, flood: false),
                 ),
@@ -398,7 +397,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   enabled: !readOnly,
                   child: MeshMenuItemRow(
                     icon: Icons.cell_tower,
-                    label: context.l10n.contacts_floodAdvert,
+                    label: menuContext.l10n.contacts_floodAdvert,
                   ),
                   onTap: () => _sendSelfAdvert(connector, flood: true),
                 ),
@@ -406,7 +405,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   enabled: !readOnly,
                   child: MeshMenuItemRow(
                     icon: Icons.copy,
-                    label: context.l10n.contacts_copyAdvertToClipboard,
+                    label: menuContext.l10n.contacts_copyAdvertToClipboard,
                   ),
                   onTap: () => _contactExport(Uint8List.fromList([])),
                 ),
@@ -414,24 +413,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   enabled: !readOnly,
                   child: MeshMenuItemRow(
                     icon: Icons.radar,
-                    label: context.l10n.manualTrace_menuItem,
+                    label: menuContext.l10n.manualTrace_menuItem,
                   ),
                   onTap: () => ManualPathTraceScreen.open(context),
                 ),
-                const PopupMenuDivider(),
-                connectionMenuItem(this.context, context),
-                PopupMenuItem(
-                  child: MeshMenuItemRow(
-                    leading: const ThemedIcon(ThemeIconSlot.settings, size: 20),
-                    label: context.l10n.settings_title,
-                  ),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsScreen(),
-                    ),
-                  ),
-                ),
+                ...mainOverflowTrailingItems(context, menuContext),
               ],
               icon: const Icon(Icons.more_vert),
             ),
