@@ -180,7 +180,9 @@ class NotificationService {
     // connection whose async subscription can throw an unhandled
     // SocketException when the bus socket is missing (e.g. running as
     // root or inside a container without a session bus).
-    if (PlatformInfo.isLinux && !_isDbusSessionAvailable()) {
+    if (PlatformInfo.isLinux &&
+        defaultTargetPlatform == TargetPlatform.linux &&
+        !_isDbusSessionAvailable()) {
       debugPrint('Skipping notification init: D-Bus session bus unavailable');
       return;
     }
@@ -250,10 +252,96 @@ class NotificationService {
   // Cached "are we allowed to post notifications" result. Null = not yet
   // determined. Avoids calling _notifications.show() when it would only throw
   // "You must request notifications permissions first" (every web build).
-  // Android denials are never cached so a later grant in system settings is
-  // picked up without restarting the app.
+  // Denials are never cached so a later grant in system settings is picked up
+  // without restarting the app, and [hasNotificationPermission] refreshes or
+  // clears [_canNotify] whenever live OS permission is checked.
   bool? _canNotify;
   static const _permissionRequestedKey = 'notification_permission_requested';
+
+  @visibleForTesting
+  Future<bool> Function()? permissionCheckerForTest;
+
+  @visibleForTesting
+  Future<bool> Function()? permissionRequesterForTest;
+
+  @visibleForTesting
+  Future<bool> ensureCanNotifyForTest() => _ensureCanNotify();
+
+  @visibleForTesting
+  bool? get canNotifyCacheForTest => _canNotify;
+
+  @visibleForTesting
+  void resetForTest() {
+    _canNotify = null;
+    _isInitialized = false;
+    permissionCheckerForTest = null;
+    permissionRequesterForTest = null;
+  }
+
+  T? _resolvePlugin<T extends FlutterLocalNotificationsPlatform>() {
+    try {
+      return _notifications.resolvePlatformSpecificImplementation<T>();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static bool _isDarwinPermissionGranted(NotificationsEnabledOptions? options) {
+    if (options == null) return false;
+    return options.isEnabled ||
+        options.isProvisionalEnabled ||
+        options.isAlertEnabled ||
+        options.isSoundEnabled ||
+        options.isBadgeEnabled;
+  }
+
+  /// Queries the live OS notification permission state without returning a
+  /// stale cached grant. Updates [_canNotify] so [_ensureCanNotify] reflects
+  /// permissions revoked in system settings.
+  Future<bool> hasNotificationPermission() {
+    final testChecker = permissionCheckerForTest;
+    if (testChecker != null) {
+      return testChecker().then((enabled) {
+        if (!kIsWeb) {
+          _canNotify = enabled ? true : null;
+        }
+        return enabled;
+      });
+    }
+
+    if (kIsWeb) return SynchronousFuture<bool>(true);
+
+    final androidPlugin =
+        _resolvePlugin<AndroidFlutterLocalNotificationsPlugin>();
+    if (androidPlugin != null) {
+      return androidPlugin.areNotificationsEnabled().then((value) {
+        final enabled = value ?? false;
+        _canNotify = enabled ? true : null;
+        return enabled;
+      });
+    }
+
+    final iosPlugin = _resolvePlugin<IOSFlutterLocalNotificationsPlugin>();
+    if (iosPlugin != null) {
+      return iosPlugin.checkPermissions().then((options) {
+        final enabled = _isDarwinPermissionGranted(options);
+        _canNotify = enabled ? true : null;
+        return enabled;
+      });
+    }
+
+    final macPlugin = _resolvePlugin<MacOSFlutterLocalNotificationsPlugin>();
+    if (macPlugin != null) {
+      return macPlugin.checkPermissions().then((options) {
+        final enabled = _isDarwinPermissionGranted(options);
+        _canNotify = enabled ? true : null;
+        return enabled;
+      });
+    }
+
+    _canNotify = true;
+    return SynchronousFuture<bool>(true);
+  }
 
   Future<bool> _ensureCanNotify() async {
     if (!await _ensureInitialized()) return false;
@@ -264,50 +352,52 @@ class NotificationService {
     // Skip silently instead of logging an error per incoming message.
     if (kIsWeb) return _canNotify = false;
 
-    // On Android 13+ notifications require an explicit grant; reflect the real
-    // OS state so we don't spam failed show() calls when denied.
-    final androidPlugin = _notifications
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
-    if (androidPlugin != null) {
-      final enabled = await androidPlugin.areNotificationsEnabled() ?? false;
-      if (enabled) _canNotify = true;
-      return enabled;
-    }
-
-    // iOS/macOS request permission during initialize(); desktop has no gate.
-    return _canNotify = true;
+    return hasNotificationPermission();
   }
 
   Future<bool> requestPermissions() async {
+    final testRequester = permissionRequesterForTest;
+    if (testRequester != null) {
+      final granted = await testRequester();
+      if (!kIsWeb) {
+        _canNotify = granted ? true : null;
+      }
+      return granted;
+    }
+
     if (!_isInitialized) {
       await initialize();
     }
 
     // Request Android 13+ notification permission
-    final androidPlugin = _notifications
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
+    final androidPlugin =
+        _resolvePlugin<AndroidFlutterLocalNotificationsPlugin>();
     if (androidPlugin != null) {
       final granted = await androidPlugin.requestNotificationsPermission();
-      if (granted == true) _canNotify = true;
+      _canNotify = (granted == true) ? true : null;
       return granted ?? false;
     }
 
     // iOS permissions are requested during initialization
-    final iosPlugin = _notifications
-        .resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin
-        >();
+    final iosPlugin = _resolvePlugin<IOSFlutterLocalNotificationsPlugin>();
     if (iosPlugin != null) {
       final granted = await iosPlugin.requestPermissions(
         alert: true,
         badge: true,
         sound: true,
       );
-      if (granted == true) _canNotify = true;
+      _canNotify = (granted == true) ? true : null;
+      return granted ?? false;
+    }
+
+    final macPlugin = _resolvePlugin<MacOSFlutterLocalNotificationsPlugin>();
+    if (macPlugin != null) {
+      final granted = await macPlugin.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      _canNotify = (granted == true) ? true : null;
       return granted ?? false;
     }
 

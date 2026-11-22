@@ -102,10 +102,11 @@ Access via **App Settings → Notifications**:
 
 | Setting | Default | Description |
 |---|---|---|
-| Enable Notifications | On | Master toggle; requests OS permission when turned on |
-| Message Notifications | On | DM alerts (greyed out if master is off) |
-| Channel Message Notifications | On | Channel alerts (greyed out if master is off) |
-| Advertisement Notifications | On | New node alerts (greyed out if master is off) |
+| Enable Notifications | On | Master toggle (shows off if OS permission is denied); requests OS permission when turned on and reveals the options below |
+| Message Notifications | On | Direct message alerts (shown when notifications are enabled) |
+| Channel Message Notifications | On | Channel message alerts (shown when notifications are enabled) |
+| Advertisement Notifications | On | New node alerts (shown when notifications are enabled) |
+| Background Activity (Android) | — | Opens system battery optimization settings (shown when notifications are enabled) |
 
 ### Per-Channel Notification Modes
 
