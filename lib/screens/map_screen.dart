@@ -54,6 +54,17 @@ import '../helpers/utf8_length_limiter.dart';
 import 'line_of_sight_map_screen.dart';
 import '../theme/theme_icons.dart';
 
+const String _lastCameraKey = 'map_last_camera';
+
+/// The Map tab's last camera, or null if never saved.
+({LatLng center, double zoom})? savedMapCamera() {
+  final saved = PrefsManager.instance.getStringList(_lastCameraKey);
+  if (saved == null || saved.length != 3) return null;
+  final values = saved.map(double.tryParse).toList();
+  if (values.contains(null)) return null;
+  return (center: LatLng(values[0]!, values[1]!), zoom: values[2]!);
+}
+
 class MapScreen extends StatefulWidget {
   final LatLng? highlightPosition;
   final String? highlightLabel;
@@ -133,7 +144,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   // been positioned once.
   ({LatLng center, double zoom})? _initialCamera;
 
-  static const String _lastCameraKey = 'map_last_camera';
   static const Duration _cameraSaveDelay = Duration(milliseconds: 500);
   Timer? _cameraSaveTimer;
   List<String>? _pendingCamera;
@@ -144,14 +154,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     if (lat != null && lon != null && isPlausibleLocation(lat, lon)) {
       return (center: LatLng(lat, lon), zoom: 12.0);
     }
-    final saved = PrefsManager.instance.getStringList(_lastCameraKey);
-    if (saved != null && saved.length == 3) {
-      final values = saved.map(double.tryParse).toList();
-      if (!values.contains(null)) {
-        return (center: LatLng(values[0]!, values[1]!), zoom: values[2]!);
-      }
-    }
-    return (center: const LatLng(20, 0), zoom: _mapMinZoom);
+    return savedMapCamera() ?? (center: const LatLng(20, 0), zoom: _mapMinZoom);
   }
 
   void _scheduleCameraSave() {

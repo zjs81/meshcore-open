@@ -405,8 +405,10 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_export => 'Exportovať';
 
   @override
-  String get settings_exportSubtitle =>
-      'Exportovať kontakty a opakovače ako GPX';
+  String get settings_exportData => 'Exportovať dáta';
+
+  @override
+  String get settings_exportSubtitle => 'Záložky a polohy kontaktov';
 
   @override
   String get backupRestore_title => 'Zálohovanie a obnovenie';
@@ -599,6 +601,51 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_nodeNameHint => 'Zadajte názov uzla';
 
   @override
+  String get nodeName_info =>
+      'Každý bajt názvu znamená o bajt menej pre správy v kanáloch. Písmená s diakritikou, špeciálne znaky a emoji môžu zaberať viac ako jeden bajt.';
+
+  @override
+  String get nodeName_messageLength => 'Dĺžka správy';
+
+  @override
+  String get nodeName_channelMessages => 'Správy v kanáloch';
+
+  @override
+  String get nodeName_channelMessagesSubtitle => 'Názov ich skracuje';
+
+  @override
+  String get nodeName_directMessages => 'Priame správy';
+
+  @override
+  String get nodeName_directMessagesSubtitle => 'Názov na ne nemá vplyv';
+
+  @override
+  String nodeName_bytesAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bajtov k dispozícii',
+      many: '$count bajtu k dispozícii',
+      few: '$count bajty k dispozícii',
+      one: '1 bajt k dispozícii',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String nodeName_bytesOver(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bajtov nad limit',
+      many: '$count bajtu nad limit',
+      few: '$count bajty nad limit',
+      one: '1 bajt nad limit',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get settings_nodeNameUpdated => 'Meno aktualizované';
 
   @override
@@ -607,6 +654,10 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get settings_radioSettingsSubtitle =>
       'Frekvencia, výkon, rozptylovací faktor';
+
+  @override
+  String get settings_unsavedChangesMessage =>
+      'Máte zmeny, ktoré neboli uložené do rádia.';
 
   @override
   String get settings_radioSettingsUpdated => 'Nastavenia rádia aktualizované';
@@ -705,6 +756,23 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_locationSubtitle => 'GPS súradnice';
 
   @override
+  String get location_coordinates => 'Súradnice';
+
+  @override
+  String get location_coordinatesDescription =>
+      'Poloha vášho uzla. Zobrazuje sa na mape, používa sa pri zdieľaní polohy a odosiela sa v inzerátoch, keď je zapnuté „Umiestnenie inzerátu“ (Nastavenia súkromia).';
+
+  @override
+  String get location_pickOnMap => 'Vybrať na mape';
+
+  @override
+  String get locationPicker_hint =>
+      'Posuňte mapu alebo klepnutím umiestnite značku.';
+
+  @override
+  String get locationPicker_useLocation => 'Použiť túto polohu';
+
+  @override
   String get settings_locationUpdated => 'Lokalita aktualizovaná';
 
   @override
@@ -715,14 +783,17 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_locationInvalid => 'Neplatná šírka alebo dĺžka.';
 
   @override
-  String get settings_locationGPSEnable => 'Aktivovať GPS';
+  String get settings_locationGPSEnable => 'Povoliť GPS';
 
   @override
   String get settings_locationGPSEnableSubtitle =>
-      'Povolí automatické aktualizovanie polohy pomocou GPS.';
+      'Priebežne aktualizuje polohu z GPS rádia.';
 
   @override
-  String get settings_locationIntervalSec => 'Interval pre GPS (Sekundy)';
+  String get settings_locationIntervalSec => 'Interval aktualizácie (sekundy)';
+
+  @override
+  String get settings_locationIntervalHelper => '60 až 86399 sekúnd';
 
   @override
   String get settings_locationIntervalInvalid =>
@@ -739,7 +810,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get settings_contactSettingsSubtitle =>
-      'Nastavenia pre pridávanie kontaktov.';
+      'Nastavenia pre pridávanie kontaktov';
 
   @override
   String get settings_privacyMode => 'Režim ochrany súkromia';
@@ -761,7 +832,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_privacy => 'Nastavenia súkromia';
 
   @override
-  String get settings_privacySubtitle => 'Ovládni, aké informácie sa zdieľajú.';
+  String get settings_privacySubtitle => 'Ovládni, aké informácie sa zdieľajú';
 
   @override
   String get settings_privacySettingsDescription =>
@@ -787,7 +858,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get settings_telemetryPerContactHint =>
-      'Ak chcete povoliť kontaktu, otvorte jeho chat a v ponuke vyberte Nastavenia kontaktov.';
+      'Ak chcete povoliť konkrétnemu kontaktu, otvorte jeho chat a v ponuke vyberte Nastavenia kontaktov.';
 
   @override
   String get settings_advertLocation => 'Umiestnenie inzerátu';
@@ -808,7 +879,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get settings_multiAckSubtitle =>
-      'Odosielajte ďalšie ACK pre lepšie doručenie; spotrebuje viac času vysielania';
+      'Odosiela 2 potvrdenia (ACK) namiesto 1, keď sa potvrdenie vracia priamou cestou. Spoľahlivejšie, ale spotrebuje viac času vysielania.';
 
   @override
   String get settings_telemetryModeUpdated =>
@@ -822,7 +893,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Vymazať všetky údaje o cestách z kontaktov.';
+      'Vymazať všetky údaje o cestách z kontaktov';
 
   @override
   String get settings_sendAdvertisement => 'Odoslať inzerát';
@@ -854,8 +925,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_rebootDevice => 'Restartovať zariadenie';
 
   @override
-  String get settings_rebootDeviceSubtitle =>
-      'Restartujte zariadenie MeshCore.';
+  String get settings_rebootDeviceSubtitle => 'Restartujte zariadenie MeshCore';
 
   @override
   String get settings_rebootDeviceConfirm =>
@@ -879,15 +949,15 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_appDebugLogSubtitle => 'Správy z ladenia aplikácie';
 
   @override
-  String get settings_about => 'O nás';
+  String get settings_about => 'O aplikácii';
 
   @override
-  String settings_aboutVersion(String version) {
-    return 'MeshCore, verzia $version';
+  String get settings_aboutTheApp => 'O aplikácii';
+
+  @override
+  String settings_aboutLegalese(String year) {
+    return 'MeshCore Open Source Projekt $year';
   }
-
-  @override
-  String get settings_aboutLegalese => 'MeshCore Open Source Projekt 2024';
 
   @override
   String get settings_aboutDescription =>
@@ -896,6 +966,24 @@ class AppLocalizationsSk extends AppLocalizations {
   @override
   String get settings_aboutOpenMeteoAttribution =>
       'Údaje o nadmorskej výške LOS: Open-Meteo (CC BY 4.0)';
+
+  @override
+  String get about_project => 'Projekt';
+
+  @override
+  String get about_sourceCode => 'Zdrojový kód';
+
+  @override
+  String get about_license => 'Licencia';
+
+  @override
+  String get about_openSourceLicenses => 'Licencie open source';
+
+  @override
+  String get about_credits => 'Poďakovanie';
+
+  @override
+  String get about_contributors => 'Prispievatelia';
 
   @override
   String get settings_infoName => 'Meno';
@@ -931,29 +1019,28 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_presets => 'Prednastavenia';
 
   @override
-  String get settings_presetCustom => 'Vlastné';
+  String get settings_radioParameters => 'Parametre';
 
   @override
-  String get settings_radioMatchWarning =>
-      'Všetky uzly, s ktorými komunikujete, musia používať rovnakú frekvenciu, šírku pásma a SF. Rýchlosť kódovania (CR) sa môže líšiť.';
+  String get settings_presetCustom => 'Vlastné';
 
   @override
   String get settings_frequency => 'Frekvencia (MHz)';
 
   @override
-  String get settings_frequencyHelper => '300,0 – 2500,0';
+  String get settings_frequencyHelper => '150,0 - 2500,0 MHz';
 
   @override
-  String get settings_frequencyInvalid => 'Neplatná frekvencia (300-2500 MHz)';
+  String get settings_frequencyInvalid => 'Neplatná frekvencia (150-2500 MHz)';
 
   @override
   String get settings_bandwidth => 'Šírka pásma';
 
   @override
-  String get settings_spreadingFactor => 'Rozptýľovací faktor';
+  String get settings_spreadingFactor => 'Rozptyľovací faktor';
 
   @override
-  String get settings_codingRate => 'Cenový kurz pre programovanie';
+  String get settings_codingRate => 'Rýchlosť kódovania';
 
   @override
   String get settings_txPower => 'TX Výkon (dBm)';
@@ -967,16 +1054,23 @@ class AppLocalizationsSk extends AppLocalizations {
   String get settings_txPowerInvalid => 'Neplatná hodnota výkonu TX (0-22 dBm)';
 
   @override
-  String get settings_clientRepeat => 'Opätovné použitie bez elektrickej siete';
+  String get settings_clientRepeat => 'Režim off-grid opakovania';
+
+  @override
+  String get settings_clientRepeatDescription =>
+      'Umožňuje tomuto zariadeniu preposielať pakety. Je určený na miesta bez pokrytia opakovačmi.\n\nTento režim používa obmedzenú sadu frekvencií. Jeho ZAPNUTIE vás pravdepodobne odpojí od širšej siete mesh. Všetky uzly, s ktorými komunikujete, musia používať rovnakú frekvenciu, šírku pásma a rozptyľovací faktor (SF). Líšiť sa môže len rýchlosť kódovania (CR).';
+
+  @override
+  String get settings_clientRepeatSwitch => 'Režim opakovania';
+
+  @override
+  String get settings_clientRepeatNote =>
+      'Poznámka: Po VYPNUTÍ sa obnoví predchádzajúca frekvencia. Ak sa potom nemôžete pripojiť k sieti mesh, skontrolujte prednastavenia/parametre.';
 
   @override
   String settings_clientRepeatFrequencyNote(String freq) {
     return 'Frekvencia nastavená na $freq MHz pre opakovanie mimo siete';
   }
-
-  @override
-  String get settings_clientRepeatSubtitle =>
-      'Umožnite, aby toto zariadenie opakovávalo siete pre ostatných.';
 
   @override
   String get settings_clientRepeatFreqWarning =>
@@ -1309,7 +1403,7 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get settings_pathHashModeHelper =>
-      'Veľkosť ID uzla zaznamenávaného v ceste odosielaných flood paketov: 1 bajt (256 ID, až 64 skokov), 2 bajty (65 tis., až 32 skokov), 3 bajty (16 mil., až 21 skokov). Väčšie ID znižujú kolízie, ale opakovače s firmvérom starším ako v1.14 odhadzujú pakety s 2- alebo 3-bajtovými ID.';
+      'Veľkosť ID každého uzla v ceste flood paketov odosielaných týmto rádiom:\n\n- 1 bajt: 256 jedinečných ID, až 64 skokov. \"ab\".\n- 2 bajty: 65 tis. jedinečných ID, až 32 skokov. \"ab12\".\n- 3 bajty: 16 mil. jedinečných ID, až 21 skokov. \"ab12cd\".\n\nVäčšie ID znižujú kolízie, ale opakovače s firmvérom starším ako v1.14 zahadzujú pakety s 2- a 3-bajtovými ID.';
 
   @override
   String settings_requiresFirmware(String version) {
@@ -3923,7 +4017,7 @@ class AppLocalizationsSk extends AppLocalizations {
       'Doladenie pre skúsených prevádzkovateľov';
 
   @override
-  String get repeater_pathHashMode => 'Veľkosť ID uzla v cestách';
+  String get repeater_pathHashMode => 'Veľkosť hashu ID';
 
   @override
   String get repeater_pathHashModeHelper =>
@@ -5697,11 +5791,21 @@ class AppLocalizationsSk extends AppLocalizations {
       'MeshCore Open nebeží. Otvorte ho a odošlite odpoveď ešte raz.';
 
   @override
-  String get settings_exportBookmarks => 'Exportovať záložky do Markdownu';
+  String get export_messagesTitle => 'Správy';
 
   @override
-  String get settings_exportBookmarksSubtitle =>
-      'Zdieľať alebo uložiť správy so záložkou ako súbor Markdown.';
+  String get export_messagesDescription =>
+      'Správy v záložkách, uložené ako súbor Markdown.';
+
+  @override
+  String get export_locationsTitle => 'Polohy kontaktov';
+
+  @override
+  String get export_locationsDescription =>
+      'Kontakty so známou polohou, uložené ako súbor GPX pre mapové aplikácie.';
+
+  @override
+  String get settings_exportBookmarks => 'Záložky';
 
   @override
   String get settings_exportBookmarksSuccess => 'Záložky boli exportované.';
@@ -5711,26 +5815,13 @@ class AppLocalizationsSk extends AppLocalizations {
       'Nie sú žiadne záložky na export.';
 
   @override
-  String get settings_gpxExportRepeaters =>
-      'Exportovať repeater / server miestnosti do GPX';
+  String get settings_gpxExportRepeaters => 'Opakovače a miestnosti';
 
   @override
-  String get settings_gpxExportRepeatersSubtitle =>
-      'Exportuje repeater / roomserver s lokalitou do súboru GPX.';
+  String get settings_gpxExportContacts => 'Používatelia / Companiony';
 
   @override
-  String get settings_gpxExportContacts => 'Export sprievodcov do GPX';
-
-  @override
-  String get settings_gpxExportContactsSubtitle =>
-      'Exportuje sprievodcov s umiestnením do súboru GPX.';
-
-  @override
-  String get settings_gpxExportAll => 'Exportovať všetky kontakty do GPX';
-
-  @override
-  String get settings_gpxExportAllSubtitle =>
-      'Exportuje všetky kontakty s lokalitou do súboru GPX.';
+  String get settings_gpxExportAll => 'Všetky kontakty';
 
   @override
   String get settings_gpxExportSuccess => 'Úspešne exportovaný súbor GPX.';
@@ -5784,58 +5875,41 @@ class AppLocalizationsSk extends AppLocalizations {
   String get contactsSettings_title => 'Nastavenia kontaktov';
 
   @override
-  String get contactsSettings_autoAddTitle => 'Automatické zisťovanie';
+  String get contactsSettings_autoAddTitle => 'Automaticky pridávať kontakty';
 
   @override
-  String get contactsSettings_otherTitle =>
-      'Ďalšie nastavenia súvisiace s kontaktami';
+  String get contactsSettings_autoAddDescription =>
+      'Novo počuté uzly týchto typov sa pridajú do kontaktov rádia. Ostatné môžete pridať neskôr z obrazovky „Objavené kontakty“.';
 
   @override
-  String get contactsSettings_autoAddUsersTitle =>
-      'Automaticky pridávať užívateľov';
+  String get contactsSettings_otherTitle => 'Limity zoznamu kontaktov';
 
   @override
-  String get contactsSettings_autoAddUsersSubtitle =>
-      'Povoliť spoločníkovi automaticky pridávať objavených užívateľov.';
+  String get contactsSettings_autoAddUsersTitle => 'Používatelia';
 
   @override
-  String get contactsSettings_autoAddRepeatersTitle =>
-      'Automaticky pridávať opakovače';
+  String get contactsSettings_autoAddRepeatersTitle => 'Opakovače';
 
   @override
-  String get contactsSettings_autoAddRepeatersSubtitle =>
-      'Povoliť spoločníkovi automaticky pridávať objavené repeater.';
+  String get contactsSettings_autoAddRoomServersTitle => 'Servery miestností';
 
   @override
-  String get contactsSettings_autoAddRoomServersTitle =>
-      'Automaticky pridávať server miestnosti';
+  String get contactsSettings_autoAddSensorsTitle => 'Senzory';
 
   @override
-  String get contactsSettings_autoAddRoomServersSubtitle =>
-      'Povoliť spoločníkovi automaticky pridať objavené serverové miestnosti.';
-
-  @override
-  String get contactsSettings_autoAddSensorsTitle =>
-      'Automaticky pridávať senzory';
-
-  @override
-  String get contactsSettings_autoAddSensorsSubtitle =>
-      'Povoliť spoločníkovi automaticky pridávať objavené senzory.';
-
-  @override
-  String get contactsSettings_overwriteOldestTitle => 'Prepísať najstaršie';
+  String get contactsSettings_overwriteOldestTitle => 'Prepisovať najstaršie';
 
   @override
   String get contactsSettings_overwriteOldestSubtitle =>
-      'Keď je zoznam kontaktov plný, bude nahradený najstarší neoznačený kontakt.';
+      'Keď je zoznam kontaktov v rádiu plný, nahradí sa najstarší kontakt, ktorý nie je obľúbený.';
 
   @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
-      'Odstraňovať objavené kontakty';
+      'Obmedziť objavené kontakty';
 
   @override
   String contactsSettings_evictDiscoveredContactsSubtitle(int limit) {
-    return 'Keď je táto možnosť zapnutá, aplikácia odstráni najstaršie objavené kontakty, keď zoznam objavených dosiahne limit $limit záznamov.';
+    return 'Aplikácia obmedzuje zoznam „Objavené kontakty“ na $limit položiek. Po dosiahnutí limitu sa staršie kontakty odstránia. Vypnite pre zrušenie limitu.';
   }
 
   @override

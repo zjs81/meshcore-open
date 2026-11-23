@@ -8,7 +8,10 @@ import '../helpers/snack_bar_builder.dart';
 import '../l10n/l10n.dart';
 import '../models/radio_settings.dart';
 import '../services/app_debug_log_service.dart';
-import '../utils/radio_guard.dart';
+import '../theme/mesh_theme.dart';
+import '../theme/theme_icons.dart';
+import '../widgets/mesh_ui.dart';
+import '../widgets/unsaved_changes_guard.dart';
 
 /// Convert device coding-rate value (1-4 on some firmware, 5-8 on others)
 /// to the UI enum range (always 5-8).
@@ -31,19 +34,29 @@ bool _isAllowedRepeatFreqKHz(MeshCoreConnector connector, int freqKHz) {
 /// Lowest TX power companion firmware accepts (CMD_SET_RADIO_TX_POWER).
 const int _minTxPowerDbm = -9;
 
-/// Radio parameter editor (preset, frequency, bandwidth, SF, CR, TX power,
-/// path-hash size and off-grid client repeat). Stays open when the radio
-/// rejects or fails to apply the settings so the user's edits are not lost.
-class RadioSettingsDialog extends StatefulWidget {
+/// Form values compared to detect unsaved edits. Numbers are compared parsed
+/// ("869.6" equals "869.600").
+typedef _RadioForm = ({
+  Object frequency,
+  LoRaBandwidth bandwidth,
+  LoRaSpreadingFactor spreadingFactor,
+  LoRaCodingRate codingRate,
+  Object txPower,
+  bool clientRepeat,
+  int pathHashByteWidth,
+});
+
+/// Radio parameters, sent on Save. Edits stay if the radio rejects them.
+class RadioSettingsScreen extends StatefulWidget {
   final MeshCoreConnector connector;
 
-  const RadioSettingsDialog({super.key, required this.connector});
+  const RadioSettingsScreen({super.key, required this.connector});
 
   @override
-  State<RadioSettingsDialog> createState() => _RadioSettingsDialogState();
+  State<RadioSettingsScreen> createState() => _RadioSettingsScreenState();
 }
 
-class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
+class _RadioSettingsScreenState extends State<RadioSettingsScreen> {
   final _frequencyController = TextEditingController();
   LoRaBandwidth _bandwidth = LoRaBandwidth.bw125;
   LoRaSpreadingFactor _spreadingFactor = LoRaSpreadingFactor.sf7;
@@ -55,6 +68,7 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
   _RadioSettingsSnapshot? _lastNonRepeatSnapshot;
   String? _frequencyError;
   String? _txPowerError;
+  late _RadioForm _savedForm;
 
   bool get _supportsPathHashMode => widget.connector.supportsPathHashMode;
 
@@ -123,11 +137,31 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
     } else {
       _lastNonRepeatSnapshot = _nonRepeatSnapshotForCurrentSelection();
     }
+    _savedForm = _currentForm();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _logRadioSettingsState('Dialog initialized');
+      _logRadioSettingsState('Page initialized');
     });
   }
+
+  _RadioForm _currentForm() {
+    final frequencyText = _frequencyController.text.trim();
+    final frequencyMHz = double.tryParse(frequencyText);
+    final txPowerText = _txPowerController.text.trim();
+    return (
+      frequency: frequencyMHz == null
+          ? frequencyText
+          : (frequencyMHz * 1000).round(),
+      bandwidth: _bandwidth,
+      spreadingFactor: _spreadingFactor,
+      codingRate: _codingRate,
+      txPower: int.tryParse(txPowerText) ?? txPowerText,
+      clientRepeat: _clientRepeat,
+      pathHashByteWidth: _pathHashByteWidth,
+    );
+  }
+
+  bool get _hasChanges => _currentForm() != _savedForm;
 
   @override
   void dispose() {
@@ -382,8 +416,8 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
     _logRadioSettingsState('Off-grid repeat toggle applied');
   }
 
-  Future<void> _saveSettings() async {
-    if (!ensureRadioConnected(context)) return;
+  /// Returns whether the radio applied every change.
+  Future<bool> _saveSettings() async {
     final l10n = context.l10n;
     final freqMHz = double.tryParse(_frequencyController.text);
     final txPower = int.tryParse(_txPowerController.text);
@@ -393,7 +427,7 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
         context,
         content: Text(l10n.settings_frequencyInvalid),
       );
-      return;
+      return false;
     }
 
     final maxTxPower = widget.connector.maxTxPower ?? 22;
@@ -404,7 +438,7 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
           l10n.settings_txPowerInvalidRange(_minTxPowerDbm, maxTxPower),
         ),
       );
-      return;
+      return false;
     }
 
     final freqHz = (freqMHz * 1000).round();
@@ -422,7 +456,7 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
           context,
           content: Text(l10n.settings_clientRepeatFreqWarning),
         );
-        return;
+        return false;
       }
     }
 
@@ -437,12 +471,12 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
       );
       if (!accepted) {
         _logRadioSettingsState('Radio rejected requested settings');
-        if (!mounted) return;
+        if (!mounted) return false;
         showDismissibleSnackBar(
           context,
           content: Text(l10n.settings_radioSettingsNotApplied),
         );
-        return;
+        return false;
       }
       await widget.connector.sendFrame(buildSetRadioTxPowerFrame(txPower));
       // setPathHashMode updates the local width optimistically; the refreshed
@@ -485,23 +519,23 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
       );
       if (!radioApplied) {
         _logRadioSettingsState('Radio did not apply requested settings');
-        if (!mounted) return;
+        if (!mounted) return false;
         showDismissibleSnackBar(
           context,
           content: Text(l10n.settings_radioSettingsNotApplied),
         );
-        return;
+        return false;
       }
       if (!pathHashApplied) {
         // Radio params and TX power were already applied; only the path
         // hash size is outstanding, so say that rather than a generic error.
         _logRadioSettingsState('Radio did not apply requested path hash size');
-        if (!mounted) return;
+        if (!mounted) return false;
         showDismissibleSnackBar(
           context,
           content: Text(l10n.settings_pathHashModeNotApplied),
         );
-        return;
+        return false;
       }
       final rememberedSnapshot = _clientRepeat
           ? _lastNonRepeatSnapshot
@@ -512,22 +546,23 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
         );
       }
 
-      if (!mounted) return;
+      if (!mounted) return true;
       _logRadioSettingsState('Radio settings saved successfully');
+      setState(() => _savedForm = _currentForm());
       showDismissibleSnackBar(
         context,
         content: Text(l10n.settings_radioSettingsUpdated),
       );
-      Navigator.pop(context);
+      return true;
     } catch (e) {
       _appLog.warn('Radio settings save failed: $e', tag: 'RadioSettings');
-      if (!mounted) return;
-      // Keep the dialog open, like the rejected/not-applied paths, so the
-      // user's edits survive a transient failure and can be retried.
+      if (!mounted) return false;
+      // Keep the edits so the user can retry.
       showDismissibleSnackBar(
         context,
         content: Text(l10n.settings_error(e.toString())),
       );
+      return false;
     }
   }
 
@@ -590,231 +625,262 @@ class _RadioSettingsDialogState extends State<RadioSettingsDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return AlertDialog(
-      title: Text(l10n.settings_radioSettings),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            DropdownButtonFormField<int>(
-              key: ValueKey<int?>(_selectedPresetIndex),
-              initialValue: _selectedPresetIndex ?? -1,
-              isExpanded: true,
-              decoration: InputDecoration(
-                labelText: l10n.settings_presets,
-                border: const OutlineInputBorder(),
-              ),
-              items: [
-                if (_selectedPresetIndex == null)
-                  DropdownMenuItem(
-                    value: -1,
-                    child: Text(l10n.settings_presetCustom),
+    return SaveToRadioPage(
+      title: l10n.settings_radioSettings,
+      hasChanges: _hasChanges,
+      canSave: _frequencyError == null && _txPowerError == null,
+      onSave: _saveSettings,
+      children: [
+        SectionHeader(l10n.settings_radioParameters),
+        MeshCard(child: _buildPresetField(context)),
+        MeshCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _buildParameterFields(context),
+          ),
+        ),
+        if (widget.connector.clientRepeat != null) ...[
+          SectionHeader(l10n.settings_clientRepeat),
+          MeshCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _offGridText(context, l10n.settings_clientRepeatDescription),
+                const Divider(height: 1, indent: 16, endIndent: 16),
+                SwitchListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
                   ),
-                for (final i in _visiblePresetIndexes())
-                  DropdownMenuItem(
-                    value: i,
-                    child: Text(
-                      RadioSettings.presets[i].$1,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
+                  secondary: const ThemedIcon(ThemeIconSlot.repeater, size: 24),
+                  title: Text(l10n.settings_clientRepeatSwitch),
+                  value: _clientRepeat,
+                  onChanged: _handleClientRepeatChanged,
+                ),
+                const Divider(height: 1, indent: 16, endIndent: 16),
+                _offGridText(context, l10n.settings_clientRepeatNote),
               ],
-              onChanged: (index) {
-                if (index != null && index >= 0) {
-                  _applyPreset(index);
-                }
-              },
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _frequencyController,
-              onChanged: (_) => _handleManualSettingsChanged('frequency'),
-              decoration: InputDecoration(
-                labelText: l10n.settings_frequency,
-                border: const OutlineInputBorder(),
-                helperText: _clientRepeat
-                    ? l10n.settings_clientRepeatFrequencyNote(
-                        _frequencyController.text,
-                      )
-                    : l10n.settings_frequencyHelper,
-                errorText: _frequencyError,
-              ),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<LoRaBandwidth>(
-              isExpanded: true,
-              initialValue: _bandwidth,
-              decoration: InputDecoration(
-                labelText: l10n.settings_bandwidth,
-                border: const OutlineInputBorder(),
-              ),
-              items: LoRaBandwidth.values
-                  .map(
-                    (bw) => DropdownMenuItem(
-                      value: bw,
-                      child: Text(bw.label, overflow: TextOverflow.ellipsis),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _bandwidth = value;
-                    _syncPresetSelection();
-                  });
-                  _logRadioSettingsState('Manual settings edit: bandwidth');
-                }
-              },
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<LoRaSpreadingFactor>(
-              isExpanded: true,
-              initialValue: _spreadingFactor,
-              decoration: InputDecoration(
-                labelText: l10n.settings_spreadingFactor,
-                border: const OutlineInputBorder(),
-              ),
-              items: LoRaSpreadingFactor.values
-                  .map(
-                    (sf) => DropdownMenuItem(
-                      value: sf,
-                      child: Text(sf.label, overflow: TextOverflow.ellipsis),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _spreadingFactor = value;
-                    _syncPresetSelection();
-                  });
-                  _logRadioSettingsState(
-                    'Manual settings edit: spreading factor',
-                  );
-                }
-              },
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<LoRaCodingRate>(
-              isExpanded: true,
-              initialValue: _codingRate,
-              decoration: InputDecoration(
-                labelText: l10n.settings_codingRate,
-                border: const OutlineInputBorder(),
-              ),
-              items: LoRaCodingRate.values
-                  .map(
-                    (cr) => DropdownMenuItem(
-                      value: cr,
-                      child: Text(cr.label, overflow: TextOverflow.ellipsis),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _codingRate = value;
-                    _syncPresetSelection();
-                  });
-                  _logRadioSettingsState('Manual settings edit: coding rate');
-                }
-              },
-            ),
-            const SizedBox(height: 16),
-            if (_supportsPathHashMode) ...[
-              // Values are path hash modes (0-2, byte width - 1), matching
-              // the selectors in settings_screen and repeater_settings_screen.
-              DropdownButtonFormField<int>(
-                isExpanded: true,
-                initialValue: (_pathHashByteWidth - 1).clamp(0, 2).toInt(),
-                decoration: InputDecoration(
-                  labelText: l10n.repeater_pathHashMode,
-                  helperText: l10n.settings_pathHashModeHelper,
-                  helperMaxLines: 5,
-                  border: const OutlineInputBorder(),
-                ),
-                items: [
-                  DropdownMenuItem(
-                    value: 0,
-                    child: Text(
-                      l10n.repeater_pathHashModeOption0,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 1,
-                    child: Text(
-                      l10n.repeater_pathHashModeOption1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 2,
-                    child: Text(
-                      l10n.repeater_pathHashModeOption2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() => _pathHashByteWidth = value + 1);
-                  _logRadioSettingsState(
-                    'Manual settings edit: path hash size',
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-            ],
-            TextField(
-              controller: _txPowerController,
-              onChanged: (_) => _handleManualSettingsChanged('tx power'),
-              decoration: InputDecoration(
-                labelText: l10n.settings_txPower,
-                border: const OutlineInputBorder(),
-                helperText: l10n.settings_txPowerRangeHelper(
-                  _minTxPowerDbm,
-                  widget.connector.maxTxPower ?? 22,
-                ),
-                errorText: _txPowerError,
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            if (widget.connector.clientRepeat != null) ...[
-              const SizedBox(height: 16),
-              SwitchListTile(
-                title: Text(l10n.settings_clientRepeat),
-                subtitle: Text(l10n.settings_clientRepeatSubtitle),
-                value: _clientRepeat,
-                onChanged: _handleClientRepeatChanged,
-                contentPadding: EdgeInsets.zero,
-              ),
-            ],
-            const SizedBox(height: 16),
-            Text(
-              l10n.settings_radioMatchWarning,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// Explanation text in the Off-Grid card, styled like tile subtitles.
+  Widget _offGridText(BuildContext context, String text) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: Text(
+        text,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(l10n.common_cancel),
+    );
+  }
+
+  Widget _buildPresetField(BuildContext context) {
+    final l10n = context.l10n;
+    return DropdownButtonFormField<int>(
+      key: ValueKey<int?>(_selectedPresetIndex),
+      initialValue: _selectedPresetIndex ?? -1,
+      isExpanded: true,
+      decoration: InputDecoration(labelText: l10n.settings_presets),
+      items: [
+        if (_selectedPresetIndex == null)
+          DropdownMenuItem(value: -1, child: Text(l10n.settings_presetCustom)),
+        for (final i in _visiblePresetIndexes())
+          DropdownMenuItem(
+            value: i,
+            child: Text(
+              RadioSettings.presets[i].$1,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+      ],
+      onChanged: (index) {
+        if (index != null && index >= 0) {
+          _applyPreset(index);
+        }
+      },
+    );
+  }
+
+  List<Widget> _buildParameterFields(BuildContext context) {
+    final l10n = context.l10n;
+    return [
+      TextField(
+        controller: _frequencyController,
+        onTapOutside: (_) => FocusScope.of(context).unfocus(),
+        onChanged: (_) => _handleManualSettingsChanged('frequency'),
+        decoration: InputDecoration(
+          labelText: l10n.settings_frequency,
+          helperText: _clientRepeat
+              ? l10n.settings_clientRepeatFrequencyNote(
+                  _frequencyController.text,
+                )
+              : l10n.settings_frequencyHelper,
+          helperMaxLines: 3,
+          errorText: _frequencyError,
+          errorMaxLines: 3,
         ),
-        FilledButton(
-          onPressed: (_frequencyError != null || _txPowerError != null)
-              ? null
-              : _saveSettings,
-          child: Text(l10n.common_save),
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      ),
+      const SizedBox(height: 16),
+      DropdownButtonFormField<LoRaBandwidth>(
+        isExpanded: true,
+        initialValue: _bandwidth,
+        decoration: InputDecoration(labelText: l10n.settings_bandwidth),
+        items: LoRaBandwidth.values
+            .map(
+              (bw) => DropdownMenuItem(
+                value: bw,
+                child: Text(bw.label, overflow: TextOverflow.ellipsis),
+              ),
+            )
+            .toList(),
+        onChanged: (value) {
+          if (value != null) {
+            setState(() {
+              _bandwidth = value;
+              _syncPresetSelection();
+            });
+            _logRadioSettingsState('Manual settings edit: bandwidth');
+          }
+        },
+      ),
+      const SizedBox(height: 16),
+      DropdownButtonFormField<LoRaSpreadingFactor>(
+        isExpanded: true,
+        initialValue: _spreadingFactor,
+        decoration: InputDecoration(labelText: l10n.settings_spreadingFactor),
+        items: LoRaSpreadingFactor.values
+            .map(
+              (sf) => DropdownMenuItem(
+                value: sf,
+                child: Text(sf.label, overflow: TextOverflow.ellipsis),
+              ),
+            )
+            .toList(),
+        onChanged: (value) {
+          if (value != null) {
+            setState(() {
+              _spreadingFactor = value;
+              _syncPresetSelection();
+            });
+            _logRadioSettingsState('Manual settings edit: spreading factor');
+          }
+        },
+      ),
+      const SizedBox(height: 16),
+      DropdownButtonFormField<LoRaCodingRate>(
+        isExpanded: true,
+        initialValue: _codingRate,
+        decoration: InputDecoration(labelText: l10n.settings_codingRate),
+        items: LoRaCodingRate.values
+            .map(
+              (cr) => DropdownMenuItem(
+                value: cr,
+                child: Text(cr.label, overflow: TextOverflow.ellipsis),
+              ),
+            )
+            .toList(),
+        onChanged: (value) {
+          if (value != null) {
+            setState(() {
+              _codingRate = value;
+              _syncPresetSelection();
+            });
+            _logRadioSettingsState('Manual settings edit: coding rate');
+          }
+        },
+      ),
+      const SizedBox(height: 16),
+      TextField(
+        controller: _txPowerController,
+        onTapOutside: (_) => FocusScope.of(context).unfocus(),
+        onChanged: (_) => _handleManualSettingsChanged('tx power'),
+        decoration: InputDecoration(
+          labelText: l10n.settings_txPower,
+          helperText: l10n.settings_txPowerRangeHelper(
+            _minTxPowerDbm,
+            widget.connector.maxTxPower ?? 22,
+          ),
+          helperMaxLines: 3,
+          errorText: _txPowerError,
+          errorMaxLines: 3,
+        ),
+        keyboardType: TextInputType.number,
+      ),
+      if (_supportsPathHashMode) ...[
+        const SizedBox(height: 16),
+        _buildPathHashField(context),
+      ],
+    ];
+  }
+
+  /// The helper text, with the quoted example IDs ("ab12") in monospace like
+  /// other hashes. A widget helper has no line limit.
+  Widget _pathHashHelper(BuildContext context, String text) {
+    final theme = Theme.of(context);
+    final style = theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
+    final mono = MeshTheme.mono(fontSize: style?.fontSize, color: style?.color);
+    final spans = <TextSpan>[];
+    var last = 0;
+    for (final m in RegExp(r'"[^"\n]+"').allMatches(text)) {
+      spans.add(TextSpan(text: text.substring(last, m.start)));
+      spans.add(TextSpan(text: m[0], style: mono));
+      last = m.end;
+    }
+    spans.add(TextSpan(text: text.substring(last)));
+    return Text.rich(TextSpan(style: style, children: spans));
+  }
+
+  Widget _buildPathHashField(BuildContext context) {
+    final l10n = context.l10n;
+    // Values are path hash modes (0-2, byte width - 1), matching the
+    // selector in repeater_settings_screen.
+    return DropdownButtonFormField<int>(
+      isExpanded: true,
+      initialValue: (_pathHashByteWidth - 1).clamp(0, 2).toInt(),
+      decoration: InputDecoration(
+        labelText: l10n.repeater_pathHashMode,
+        helper: _pathHashHelper(context, l10n.settings_pathHashModeHelper),
+      ),
+      items: [
+        DropdownMenuItem(
+          value: 0,
+          child: Text(
+            l10n.repeater_pathHashModeOption0,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        DropdownMenuItem(
+          value: 1,
+          child: Text(
+            l10n.repeater_pathHashModeOption1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        DropdownMenuItem(
+          value: 2,
+          child: Text(
+            l10n.repeater_pathHashModeOption2,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
+      onChanged: (value) {
+        if (value == null) return;
+        setState(() => _pathHashByteWidth = value + 1);
+        _logRadioSettingsState('Manual settings edit: path hash size');
+      },
     );
   }
 }

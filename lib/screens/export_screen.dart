@@ -11,10 +11,11 @@ import '../connector/meshcore_connector.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../l10n/l10n.dart';
 import '../services/app_settings_service.dart';
+import '../theme/theme_icons.dart';
 import '../utils/bookmark_markdown_export.dart';
 import '../utils/platform_info.dart';
 import '../utils/share_origin.dart';
-import '../widgets/app_bar.dart';
+import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/mesh_nav_tile.dart';
 import '../widgets/sync_progress_overlay.dart';
@@ -34,11 +35,7 @@ class ExportScreen extends StatelessWidget {
     final connector = context.read<MeshCoreConnector>();
     return Scaffold(
       appBar: AppBar(
-        title: AppBarTitle(
-          l10n.settings_export,
-          indicators: false,
-          subtitle: false,
-        ),
+        title: AdaptiveAppBarTitle(l10n.settings_exportData),
         centerTitle: true,
         bottom: const SyncProgressAppBarBottom(),
       ),
@@ -47,25 +44,32 @@ class ExportScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
           children: [
-            SectionHeader(l10n.settings_export),
+            SectionHeader(
+              l10n.export_messagesTitle,
+              description: l10n.export_messagesDescription,
+            ),
             MeshCard(
               padding: EdgeInsets.zero,
               child: MeshNavTile(
+                // The bookmark icon used in chats.
                 icon: Icons.bookmark_border,
                 title: l10n.settings_exportBookmarks,
-                subtitle: l10n.settings_exportBookmarksSubtitle,
                 onTap: () => _exportBookmarks(context),
               ),
             ),
-            const SizedBox(height: 16),
+            SectionHeader(
+              l10n.export_locationsTitle,
+              description: l10n.export_locationsDescription,
+            ),
             MeshCard(
               padding: EdgeInsets.zero,
               child: Column(
                 children: [
+                  // Same icons as the contact list and Contact Settings.
                   MeshNavTile(
-                    icon: Icons.download_outlined,
+                    icon: Icons.cell_tower,
+                    iconSlot: ThemeIconSlot.repeater,
                     title: l10n.settings_gpxExportRepeaters,
-                    subtitle: l10n.settings_gpxExportRepeatersSubtitle,
                     onTap: () {
                       final exporter = GpxExport(connector)..addRepeaters();
                       _gpxExport(
@@ -79,9 +83,8 @@ class ExportScreen extends StatelessWidget {
                   ),
                   const Divider(height: 1, indent: 16),
                   MeshNavTile(
-                    icon: Icons.download_outlined,
+                    icon: Icons.person,
                     title: l10n.settings_gpxExportContacts,
-                    subtitle: l10n.settings_gpxExportContactsSubtitle,
                     onTap: () {
                       final exporter = GpxExport(connector)..addContacts();
                       _gpxExport(
@@ -95,9 +98,9 @@ class ExportScreen extends StatelessWidget {
                   ),
                   const Divider(height: 1, indent: 16),
                   MeshNavTile(
-                    icon: Icons.download_outlined,
+                    icon: Icons.people_outline,
+                    iconSlot: ThemeIconSlot.contacts,
                     title: l10n.settings_gpxExportAll,
-                    subtitle: l10n.settings_gpxExportAllSubtitle,
                     onTap: () {
                       final exporter = GpxExport(connector)..addAll();
                       _gpxExport(

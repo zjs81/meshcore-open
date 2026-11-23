@@ -400,8 +400,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settings_export => 'Exportera';
 
   @override
-  String get settings_exportSubtitle =>
-      'Exportera kontakter och repeatrar som GPX';
+  String get settings_exportData => 'Exportera data';
+
+  @override
+  String get settings_exportSubtitle => 'Bokmärken och kontakters platser';
 
   @override
   String get backupRestore_title => 'Säkerhetskopia och återställning';
@@ -597,6 +599,47 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settings_nodeNameHint => 'Ange nodnamn';
 
   @override
+  String get nodeName_info =>
+      'Varje byte i ditt namn är en byte mindre för kanalmeddelanden. Specialtecken som å, ä och ö samt emojis kan ta mer än en byte.';
+
+  @override
+  String get nodeName_messageLength => 'Meddelandelängd';
+
+  @override
+  String get nodeName_channelMessages => 'Kanalmeddelanden';
+
+  @override
+  String get nodeName_channelMessagesSubtitle => 'Minskas av ditt namn';
+
+  @override
+  String get nodeName_directMessages => 'Direktmeddelanden';
+
+  @override
+  String get nodeName_directMessagesSubtitle => 'Påverkas inte av ditt namn';
+
+  @override
+  String nodeName_bytesAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count byte tillgängliga',
+      one: '1 byte tillgänglig',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String nodeName_bytesOver(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count byte över gränsen',
+      one: '1 byte över gränsen',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get settings_nodeNameUpdated => 'Namn uppdaterat';
 
   @override
@@ -605,6 +648,10 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get settings_radioSettingsSubtitle =>
       'Frekvens, effekt, spridningsfaktor';
+
+  @override
+  String get settings_unsavedChangesMessage =>
+      'Du har ändringar som inte har sparats på radion.';
 
   @override
   String get settings_radioSettingsUpdated =>
@@ -704,6 +751,23 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settings_locationSubtitle => 'GPS-koordinater';
 
   @override
+  String get location_coordinates => 'Koordinater';
+
+  @override
+  String get location_coordinatesDescription =>
+      'Din nods position. Den visas på kartan, används när du delar din plats och skickas i annonser när Plats i annons är på (Inställningar för sekretess).';
+
+  @override
+  String get location_pickOnMap => 'Välj på kartan';
+
+  @override
+  String get locationPicker_hint =>
+      'Dra kartan eller tryck för att placera markören.';
+
+  @override
+  String get locationPicker_useLocation => 'Använd den här platsen';
+
+  @override
   String get settings_locationUpdated => 'Plats uppdaterad';
 
   @override
@@ -717,10 +781,13 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get settings_locationGPSEnableSubtitle =>
-      'Aktivera automatiska uppdateringar av platsen med hjälp av GPS.';
+      'Håller platsen uppdaterad från radions GPS.';
 
   @override
-  String get settings_locationIntervalSec => 'Interval för GPS (Sekunder)';
+  String get settings_locationIntervalSec => 'Uppdateringsintervall (sekunder)';
+
+  @override
+  String get settings_locationIntervalHelper => '60 till 86399 sekunder';
 
   @override
   String get settings_locationIntervalInvalid =>
@@ -737,7 +804,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get settings_contactSettingsSubtitle =>
-      'Inställningar för hur kontakter läggs till.';
+      'Inställningar för hur kontakter läggs till';
 
   @override
   String get settings_privacyMode => 'Privatläge';
@@ -760,7 +827,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get settings_privacySubtitle =>
-      'Kontrollera vilken information som delas.';
+      'Kontrollera vilken information som delas';
 
   @override
   String get settings_privacySettingsDescription =>
@@ -786,10 +853,10 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get settings_telemetryPerContactHint =>
-      'För att tillåta en kontakt öppnar du chatten och väljer Kontaktinställningar i menyn.';
+      'För att tillåta en specifik kontakt öppnar du chatten och väljer Kontaktinställningar i menyn.';
 
   @override
-  String get settings_advertLocation => 'Annonsplacering';
+  String get settings_advertLocation => 'Plats i annons';
 
   @override
   String get settings_advertLocationSubtitle => 'Inkludera plats i annonsen';
@@ -807,7 +874,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get settings_multiAckSubtitle =>
-      'Skicka extra ACK för bättre leverans; använder mer sändningstid';
+      'Skicka 2 bekräftelser (ACK) i stället för 1 när bekräftelsen går tillbaka via en direkt rutt. Mer tillförlitligt, men använder mer sändningstid.';
 
   @override
   String get settings_telemetryModeUpdated => 'Telemetri-läge uppdaterat';
@@ -820,7 +887,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Rensa all ruttdata från kontakter.';
+      'Rensa all ruttdata från kontakter';
 
   @override
   String get settings_sendAdvertisement => 'Skicka annons';
@@ -878,12 +945,12 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settings_about => 'Om';
 
   @override
-  String settings_aboutVersion(String version) {
-    return 'MeshCore Open version $version';
-  }
+  String get settings_aboutTheApp => 'Om appen';
 
   @override
-  String get settings_aboutLegalese => '2026 MeshCore Open Source-projekt';
+  String settings_aboutLegalese(String year) {
+    return '$year MeshCore Open Source-projekt';
+  }
 
   @override
   String get settings_aboutDescription =>
@@ -892,6 +959,24 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get settings_aboutOpenMeteoAttribution =>
       'LOS-höjddata: Open-Meteo (CC BY 4.0)';
+
+  @override
+  String get about_project => 'Projekt';
+
+  @override
+  String get about_sourceCode => 'Källkod';
+
+  @override
+  String get about_license => 'Licens';
+
+  @override
+  String get about_openSourceLicenses => 'Licenser för öppen källkod';
+
+  @override
+  String get about_credits => 'Erkännanden';
+
+  @override
+  String get about_contributors => 'Bidragsgivare';
 
   @override
   String get settings_infoName => 'Namn';
@@ -927,20 +1012,19 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settings_presets => 'Fördefinierade inställningar';
 
   @override
-  String get settings_presetCustom => 'Anpassad';
+  String get settings_radioParameters => 'Parametrar';
 
   @override
-  String get settings_radioMatchWarning =>
-      'Alla noder du kommunicerar med måste använda samma frekvens, bandbredd och SF. Kodningshastigheten (CR) får skilja sig.';
+  String get settings_presetCustom => 'Anpassad';
 
   @override
   String get settings_frequency => 'Frekvens (MHz)';
 
   @override
-  String get settings_frequencyHelper => '300,0 - 2500,0';
+  String get settings_frequencyHelper => '150,0 - 2500,0 MHz';
 
   @override
-  String get settings_frequencyInvalid => 'Ogiltig frekvens (300-2500 MHz)';
+  String get settings_frequencyInvalid => 'Ogiltig frekvens (150-2500 MHz)';
 
   @override
   String get settings_bandwidth => 'Bandbredd';
@@ -963,16 +1047,23 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settings_txPowerInvalid => 'Ogiltig TX-effekt (0-22 dBm)';
 
   @override
-  String get settings_clientRepeat => 'Upprepa utan elnät';
+  String get settings_clientRepeat => 'Off-grid-repeteringsläge';
+
+  @override
+  String get settings_clientRepeatDescription =>
+      'Låter den här enheten repetera paket. Avsett för platser utan repeatertäckning.\n\nDet här läget använder ett begränsat urval av frekvenser. Om du slår PÅ det kopplas du troligen bort från resten av meshnätet. Alla noder du pratar med måste använda samma frekvens, bandbredd och spridningsfaktor (SF). Endast kodningsgraden (CR) får skilja sig åt.';
+
+  @override
+  String get settings_clientRepeatSwitch => 'Repeteringsläge';
+
+  @override
+  String get settings_clientRepeatNote =>
+      'Obs: Om du slår AV det återställs den tidigare frekvensen. Kontrollera fördefinierade inställningar/parametrar om du inte kan ansluta till meshnätet efteråt.';
 
   @override
   String settings_clientRepeatFrequencyNote(String freq) {
     return 'Frekvensen är satt till $freq MHz för upprepning utan elnät';
   }
-
-  @override
-  String get settings_clientRepeatSubtitle =>
-      'Låt enheten repetera nätpaket för andra användare.';
 
   @override
   String get settings_clientRepeatFreqWarning =>
@@ -1303,7 +1394,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get settings_pathHashModeHelper =>
-      'Storleken på varje nod-ID som registreras i rutten för de flood-paket som den här radion skickar: 1 byte (256 ID:n, upp till 64 hopp), 2 byte (65K ID:n, upp till 32 hopp), 3 byte (16M ID:n, upp till 21 hopp). Större ID:n minskar kollisioner, men repeatrar med firmware äldre än v1.14 tappar paket med 2- eller 3-byte-ID:n.';
+      'Storleken på varje nods ID som sparas i rutten för flood-paket som den här radion skickar:\n\n- 1 byte: 256 unika ID:n, upp till 64 hopp. \"ab\".\n- 2 byte: 65K unika ID:n, upp till 32 hopp. \"ab12\".\n- 3 byte: 16M unika ID:n, upp till 21 hopp. \"ab12cd\".\n\nStörre ID:n minskar kollisioner, men repeatrar med firmware äldre än v1.14 tappar paket med 2- och 3-byte-ID:n.';
 
   @override
   String settings_requiresFirmware(String version) {
@@ -3898,7 +3989,7 @@ class AppLocalizationsSv extends AppLocalizations {
       'Ställjusteringsknappar för erfarna användare';
 
   @override
-  String get repeater_pathHashMode => 'Läge för rutthash';
+  String get repeater_pathHashMode => 'ID-hashstorlek';
 
   @override
   String get repeater_pathHashModeHelper =>
@@ -5657,11 +5748,21 @@ class AppLocalizationsSv extends AppLocalizations {
       'MeshCore Open är inte igång. Öppna appen och skicka ditt svar igen.';
 
   @override
-  String get settings_exportBookmarks => 'Exportera bokmärken till Markdown';
+  String get export_messagesTitle => 'Meddelanden';
 
   @override
-  String get settings_exportBookmarksSubtitle =>
-      'Dela eller spara bokmärkta meddelanden som en Markdown-fil.';
+  String get export_messagesDescription =>
+      'Bokmärkta meddelanden, sparade som en Markdown-fil.';
+
+  @override
+  String get export_locationsTitle => 'Kontakters platser';
+
+  @override
+  String get export_locationsDescription =>
+      'Kontakter med känd plats, sparade som en GPX-fil för kartappar.';
+
+  @override
+  String get settings_exportBookmarks => 'Bokmärken';
 
   @override
   String get settings_exportBookmarksSuccess => 'Bokmärken exporterade.';
@@ -5671,27 +5772,13 @@ class AppLocalizationsSv extends AppLocalizations {
       'Inga bokmärken att exportera.';
 
   @override
-  String get settings_gpxExportRepeaters =>
-      'Exportera repeatrar/rumsservrar till GPX';
+  String get settings_gpxExportRepeaters => 'Repeatrar och rum';
 
   @override
-  String get settings_gpxExportRepeatersSubtitle =>
-      'Exporterar repeatrar/rumsservrar med position till en GPX-fil.';
+  String get settings_gpxExportContacts => 'Användare / Companions';
 
   @override
-  String get settings_gpxExportContacts =>
-      'Exportera Companion-kontakter till GPX';
-
-  @override
-  String get settings_gpxExportContactsSubtitle =>
-      'Exporterar Companion-enheter med position till en GPX-fil.';
-
-  @override
-  String get settings_gpxExportAll => 'Exportera alla kontakter till GPX';
-
-  @override
-  String get settings_gpxExportAllSubtitle =>
-      'Exporterar alla kontakter med en plats till GPX-fil.';
+  String get settings_gpxExportAll => 'Alla kontakter';
 
   @override
   String get settings_gpxExportSuccess => 'Har exporterat GPX-fil med framgång';
@@ -5746,58 +5833,41 @@ class AppLocalizationsSv extends AppLocalizations {
   String get contactsSettings_title => 'Kontaktinställningar';
 
   @override
-  String get contactsSettings_autoAddTitle => 'Automatisk upptäckt';
+  String get contactsSettings_autoAddTitle => 'Lägg till kontakter automatiskt';
 
   @override
-  String get contactsSettings_otherTitle =>
-      'Andra inställningar relaterade till kontakt';
+  String get contactsSettings_autoAddDescription =>
+      'Lägg till nyligen hörda noder av dessa typer i radions kontakter. Andra kan läggas till senare från Upptäckta kontakter.';
 
   @override
-  String get contactsSettings_autoAddUsersTitle =>
-      'Lägg till användare automatiskt';
+  String get contactsSettings_otherTitle => 'Kontaktlistgränser';
 
   @override
-  String get contactsSettings_autoAddUsersSubtitle =>
-      'Tillåt Companion-enheten att automatiskt lägga till upptäckta användare.';
+  String get contactsSettings_autoAddUsersTitle => 'Användare';
 
   @override
-  String get contactsSettings_autoAddRepeatersTitle =>
-      'Lägg till repeatrar automatiskt';
+  String get contactsSettings_autoAddRepeatersTitle => 'Repeatrar';
 
   @override
-  String get contactsSettings_autoAddRepeatersSubtitle =>
-      'Tillåt Companion-enheten att automatiskt lägga till upptäckta repeatrar.';
+  String get contactsSettings_autoAddRoomServersTitle => 'Rumsservrar';
 
   @override
-  String get contactsSettings_autoAddRoomServersTitle =>
-      'Lägg automatiskt till rumsservrar';
-
-  @override
-  String get contactsSettings_autoAddRoomServersSubtitle =>
-      'Tillåt Companion-enheten att automatiskt lägga till upptäckta rumsservrar.';
-
-  @override
-  String get contactsSettings_autoAddSensorsTitle =>
-      'Lägg till sensorer automatiskt';
-
-  @override
-  String get contactsSettings_autoAddSensorsSubtitle =>
-      'Tillåt Companion-enheten att automatiskt lägga till upptäckta sensorer.';
+  String get contactsSettings_autoAddSensorsTitle => 'Sensorer';
 
   @override
   String get contactsSettings_overwriteOldestTitle => 'Skriv över äldsta';
 
   @override
   String get contactsSettings_overwriteOldestSubtitle =>
-      'När kontaktlistan är full ersätts den äldsta icke-favoriterade kontakten.';
+      'När radions kontaktlista är full ersätts den äldsta kontakten som inte är en favorit.';
 
   @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
-      'Rensa upptäckta kontakter';
+      'Begränsa upptäckta kontakter';
 
   @override
   String contactsSettings_evictDiscoveredContactsSubtitle(int limit) {
-    return 'När detta är aktiverat tar appen bort de äldsta upptäckta kontakterna när listan över upptäckta kontakter når sin gräns på $limit poster.';
+    return 'Appen begränsar listan ”Upptäckta kontakter” till $limit poster. När gränsen nås tas äldre kontakter bort. Stäng av för att ta bort gränsen.';
   }
 
   @override

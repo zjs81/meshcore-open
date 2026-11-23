@@ -16,9 +16,11 @@ The settings screen is a scrollable list of cards:
 3. [Location](#location)
 4. [App Settings](#app-settings) (link to sub-screen)
 5. [Actions](#actions)
-6. [Backup & Restore and Export](#export)
+6. [Backup & Restore and Export Data](#backup--restore-and-export-data)
 7. [Debug](#debug)
 8. [About](#about)
+
+Every entry opens its own page. Settings stored on the radio (Node Name, Radio Settings, Location, Contact Settings, Privacy) are sent only when you tap **Save**, which appears once something changes. Leaving with unsaved changes asks to discard or save. While disconnected, the page stays open with a banner and Save is disabled. A failed save keeps your edits.
 
 ---
 
@@ -46,19 +48,25 @@ Battery shows an alert icon and orange text when at 15% or below. The toggle onl
 These settings are sent directly to the connected device firmware.
 
 ### Node Name
-- Opens a dialog with a text field (max 31 characters)
-- Sends the new name to the device
-- Confirmed via snackbar
+Name field with a byte counter (`x / 31`). Special characters and emojis take more than one byte. A longer name can be typed, but the counter turns red, the field says how many bytes it is over, and Save stays disabled. **Message length** updates as you type:
+- **Channel messages**: 158 bytes minus the name, which is sent as `Name: ` with each message (127 with a 31-byte name)
+- **Direct messages**: 156 bytes, independent of the name
 
 ### Radio Settings
-Opens a dialog pre-populated with the device's current radio settings. Contains:
-- **Preset dropdown**: Regional presets — selecting a preset immediately fills all fields below. Includes presets for Australia, Australia (Narrow), Australia (Mid), Australia SA WA QLD, Czech Republic, EU 433MHz, EU/UK (Long Range), EU/UK (Medium Range), EU/UK (Narrow), New Zealand, New Zealand (Narrow), Portugal 433, Portugal 869, numerous Russia city presets, Switzerland, USA Arizona, USA/Canada, and Vietnam
-- **Frequency** (MHz): Free text, validated 300–2500 MHz
-- **Bandwidth**: Dropdown (7.8 / 10.4 / 15.6 / 20.8 / 31.25 / 41.7 / 62.5 / 125 / 250 / 500 kHz)
-- **Spreading Factor**: SF5–SF12
+Opens a page pre-populated with the radio's current settings.
+
+**Parameters**, in two cards:
+- **Presets**: Australia (four variants), Czech Republic, EU 433MHz, EU/UK (Long Range, Medium Range, Narrow), New Zealand (two variants), Portugal 433 and 869, Russian city presets, Slovakia, Switzerland, USA Arizona, USA Philly, USA Sacramento-Foothills, USA Southern California, USA/Canada and Vietnam. Selecting one fills in frequency, bandwidth, SF, CR and TX power. Shows **Custom** when the values match no preset
+- **Frequency** (MHz): 150-2500 MHz
+- **Bandwidth**: 7.8 / 10.4 / 15.6 / 20.8 / 31.25 / 41.7 / 62.5 / 125 / 250 / 500 kHz
+- **Spreading Factor**: SF5-SF12
 - **Coding Rate**: 4/5, 4/6, 4/7, 4/8
-- **TX Power** (dBm): Validated 0 to device max (typically 22 dBm)
-- **Client Repeat** toggle: Only shown on firmware v9+; requires frequency to be exactly 433.000, 869.000, or 918.000 MHz (the Off-Grid presets). Save is blocked with a warning if enabled on other frequencies
+- **TX Power** (dBm): -9 up to the radio's maximum (22 dBm if it doesn't report one)
+- **ID hash size**: 1, 2 or 3 bytes per node ID hash in the paths of flood packets this radio sends. Only shown when the firmware supports it
+
+**Off-Grid Repeat Mode** (only shown when the firmware reports it): lets this radio repeat packets, for places without repeater coverage. It only works on the off-grid frequencies the radio reports (433.000, 869.495 or 918.000 MHz by default), so turning it on moves the frequency to the nearest one and likely disconnects you from the wider mesh. Nodes that talk to each other need the same frequency, bandwidth and SF; only CR can differ. Turning it off reverts to the previous frequency; if you can't reach the mesh afterwards, check the preset and parameters. Save is blocked with a warning on any other frequency.
+
+**Save** sends the settings and checks that the radio reports them back; if not, a snackbar says so and the edits stay.
 
 ### Regions
 
@@ -72,30 +80,24 @@ Opens the radio statistics screen for the paired radio: noise floor, last RSSI, 
 ## Location
 
 ### Location
-Opens a dialog pre-populated with the device's current coordinates (if known):
-- Latitude and longitude fields (decimal, 6 decimal places). If only one field is provided, the other uses the device's current value
-- If GPS-capable hardware (detected via `gps` custom variable):
-  - GPS Update Interval (seconds, 60–86399, default 900 = 15 minutes). Validated and sent separately before lat/lon
-  - Enable GPS toggle (takes effect immediately, not deferred to Save)
-- Validation: lat ±90, lon ±180
+The location is shown on the map, used when you share your location, and sent in adverts when Advert Location is on (Privacy).
+
+- **Latitude** / **Longitude** (decimal, 6 places). One empty field keeps the radio's value for that axis; both empty clears the location. Validation: ±90 / ±180
+- **Pick on map**: full-screen map with a centre pin; **Use this location** fills both fields
+- With GPS hardware (`gps` custom variable): **Enable GPS** keeps the location updated from the radio's GPS; **Update interval** (60-86399 s, default 900)
+
+**Save** validates all fields, then sends the GPS switch (if changed), the interval and the coordinates.
 
 ### Contact Settings
-Five toggles controlling which node types are auto-added when heard:
-- Auto-add Chat Users
-- Auto-add Repeaters
-- Auto-add Room Servers
-- Auto-add Sensors
-- Overwrite Oldest (when contact list is full)
+- **Auto-add contacts**: users, repeaters, room servers and sensors. Newly heard nodes of the enabled types are added to the radio's contacts; others can be added later from Discovered Contacts
+- **Contact List Limits**:
+  - **Overwrite oldest** (radio): when the radio's contact list is full, the oldest non-favorited contact is replaced
+  - **Limit discovered contacts** (app, not the radio; saved with the rest): keeps up to 500 discovered contacts, removing the ones heard longest ago. When off, there's no limit
 
 ### Privacy
-Opens a dialog with controls for how the node shares telemetry and location data:
-- **Advert Location**: Toggle whether the node broadcasts its location in advertisements
-- **Multi-Ack**: Toggle multi-ack delivery confirmations
-- **Telemetry Base Mode**: Deny All / Allow by Contact / Allow All
-- **Telemetry Location Mode**: Deny All / Allow by Contact / Allow All
-- **Telemetry Environment Mode**: Deny All / Allow by Contact / Allow All
-
-Settings take effect when saved. A snackbar confirms the update.
+- **Advert Location**: include the node's location in adverts. When on, **Auto Zero-Hop Advert On GPS Update** (app setting) expands below it
+- **Multi-ACKs**: the radio sends 2 acknowledgments (ACKs) instead of 1 when the ACK goes back over a direct path. Messages received by flood, or with no known route back, still get one. More reliable, more airtime
+- **Telemetry**: an info box explains that per-contact permissions are in each chat's Contact Settings; then the Base, Location and Environment modes (Deny All / Allow by Contact / Allow All)
 
 ---
 
@@ -211,9 +213,9 @@ One-tap device operations:
 
 ---
 
-## Backup & Restore and Export
+## Backup & Restore and Export Data
 
-The settings card links to **Backup & Restore** and **Export** subpages.
+The settings card links to **Backup & Restore** and **Export Data** subpages.
 
 ### Backup & Restore
 
@@ -223,17 +225,14 @@ The private-key option is off by default because it changes the radio's identity
 
 A password protects the backup file. Leave the password blank to create an unprotected file. Backups may contain your radio's private key, channel keys, messages and saved passwords, so store them carefully. Model settings are backed up, but model files are not; after restoring, the app offers to download selected models that are missing. Download progress appears in that prompt, and closing it cancels an active download. Received image files and cached map tiles are not included.
 
-### GPX Export
+### Export Data
 
-Three GPX export options (not available on web):
+Two sections:
 
-| Option | Exports |
-|---|---|
-| Export Repeaters | Repeaters and Rooms with GPS coordinates |
-| Export Contacts | Chat contacts with GPS coordinates |
-| Export All | All contacts with GPS coordinates |
+- **Messages**: **Bookmarks** saves your bookmarked messages as a Markdown file
+- **Contact locations**: saves contacts with a known location as a GPX file for map apps: **Repeaters and Rooms**, **Users / Companions**, or **All contacts** (not available on web)
 
-Each creates a `.gpx` file and opens the OS share sheet. Feedback via snackbar for four outcomes: success, no contacts with coordinates, feature not available (web), or error.
+Each opens the share sheet (or a save dialog on desktop). A snackbar reports success, nothing to export, not available, or an error.
 
 ---
 
@@ -256,4 +255,4 @@ Structured log entries (Info / Warning / Error), with tag, message, and timestam
 
 ## About
 
-Shows the standard Flutter about dialog with app name, version, and legal notice.
+Opened from **About the App** in Settings. App icon, name, version and description; **Source code** (GitHub), **License** (MIT) and **Open-source licenses** (third-party libraries); **Credits**: **Contributors** (the GitHub contributors page) and the Open-Meteo credit; the legal notice. The version comes from the installed app and the notice uses the current year, so neither needs updating by hand.

@@ -236,8 +236,6 @@ class _AddContactScreenState extends State<AddContactScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -264,31 +262,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
             children: [
-              MeshCard(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.info_outline,
-                      size: 24,
-                      color: scheme.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        l10n.addContact_infoBanner,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: scheme.onSurface,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              MeshInfoCard(l10n.addContact_infoBanner),
               const SizedBox(height: 8),
               MeshCard(
                 padding: EdgeInsets.zero,

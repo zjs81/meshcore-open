@@ -403,8 +403,10 @@ class AppLocalizationsBg extends AppLocalizations {
   String get settings_export => 'Експорт';
 
   @override
-  String get settings_exportSubtitle =>
-      'Експорт на контакти и повторители като GPX';
+  String get settings_exportData => 'Експорт на данни';
+
+  @override
+  String get settings_exportSubtitle => 'Отметки и местоположения на контакти';
 
   @override
   String get backupRestore_title => 'Резервно копие';
@@ -602,6 +604,47 @@ class AppLocalizationsBg extends AppLocalizations {
   String get settings_nodeNameHint => 'Въведете име на възел';
 
   @override
+  String get nodeName_info =>
+      'Всеки байт от името ви отнема един байт от каналните съобщения. Кирилските букви, специалните символи и емоджи заемат повече от един байт.';
+
+  @override
+  String get nodeName_messageLength => 'Дължина на съобщението';
+
+  @override
+  String get nodeName_channelMessages => 'Канални съобщения';
+
+  @override
+  String get nodeName_channelMessagesSubtitle => 'Името ви ги скъсява';
+
+  @override
+  String get nodeName_directMessages => 'Лични съобщения';
+
+  @override
+  String get nodeName_directMessagesSubtitle => 'Името ви не им влияе';
+
+  @override
+  String nodeName_bytesAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count байта налични',
+      one: '1 байт наличен',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String nodeName_bytesOver(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count байта над лимита',
+      one: '1 байт над лимита',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get settings_nodeNameUpdated => 'Името е актуализирано';
 
   @override
@@ -610,6 +653,10 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get settings_radioSettingsSubtitle =>
       'Честота, мощност, разпространяващ фактор';
+
+  @override
+  String get settings_unsavedChangesMessage =>
+      'Имате промени, които не са запазени в радиопредавателя.';
 
   @override
   String get settings_radioSettingsUpdated =>
@@ -711,6 +758,23 @@ class AppLocalizationsBg extends AppLocalizations {
   String get settings_locationSubtitle => 'GPS координати';
 
   @override
+  String get location_coordinates => 'Координати';
+
+  @override
+  String get location_coordinatesDescription =>
+      'Позицията на вашия възел. Показва се на картата, използва се при споделяне на местоположението ви и се изпраща в обявите, когато „Място на обявата“ е включено (Настройки на поверителността).';
+
+  @override
+  String get location_pickOnMap => 'Избор от картата';
+
+  @override
+  String get locationPicker_hint =>
+      'Плъзнете картата или докоснете, за да поставите маркера.';
+
+  @override
+  String get locationPicker_useLocation => 'Използвай това местоположение';
+
+  @override
   String get settings_locationUpdated => 'Местоположението е актуализирано';
 
   @override
@@ -725,10 +789,14 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get settings_locationGPSEnableSubtitle =>
-      'Активирайте автоматичното актуализиране на местоположението чрез GPS.';
+      'Поддържа местоположението актуално чрез GPS на радиото.';
 
   @override
-  String get settings_locationIntervalSec => 'Интервал за GPS (Секунди)';
+  String get settings_locationIntervalSec =>
+      'Интервал на актуализиране (секунди)';
+
+  @override
+  String get settings_locationIntervalHelper => 'от 60 до 86399 секунди';
 
   @override
   String get settings_locationIntervalInvalid =>
@@ -745,7 +813,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get settings_contactSettingsSubtitle =>
-      'Настройки за добавяне на контакти.';
+      'Настройки за добавяне на контакти';
 
   @override
   String get settings_privacyMode => 'Режим на поверителност';
@@ -771,7 +839,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get settings_privacySubtitle =>
-      'Контролирайте каква информация се споделя.';
+      'Контролирайте каква информация се споделя';
 
   @override
   String get settings_privacySettingsDescription =>
@@ -799,7 +867,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get settings_telemetryPerContactHint =>
-      'За да разрешите даден контакт, отворете чата му и изберете „Настройки за контакти“ от менюто.';
+      'За да разрешите конкретен контакт, отворете чата му и изберете „Настройки за контакти“ от менюто.';
 
   @override
   String get settings_advertLocation => 'Място на обявата';
@@ -821,7 +889,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get settings_multiAckSubtitle =>
-      'Изпраща допълнителни ACK за по-надеждна доставка; използва повече време на излъчване';
+      'Изпраща 2 потвърждения (ACK) вместо 1, когато потвърждението се връща по директен път. По-надеждно, но използва повече време в ефира.';
 
   @override
   String get settings_telemetryModeUpdated => 'Режим на телеметрията е обновен';
@@ -834,7 +902,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Изчисти всички данни за пътищата от контактите.';
+      'Изчисти всички данни за пътищата от контактите';
 
   @override
   String get settings_sendAdvertisement => 'Изпрати обява';
@@ -850,7 +918,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get settings_syncTimeSubtitle =>
-      'Задайте часовника на устройството да отговаря на времето на телефона.';
+      'Задайте часовника на устройството да отговаря на времето на телефона';
 
   @override
   String get settings_timeSynchronized => 'Синхронизирано във времето';
@@ -893,15 +961,15 @@ class AppLocalizationsBg extends AppLocalizations {
       'Съобщения за отстраняване на грешки на приложението';
 
   @override
-  String get settings_about => 'За нас';
+  String get settings_about => 'Относно';
 
   @override
-  String settings_aboutVersion(String version) {
-    return 'MeshCore Open, версия $version';
+  String get settings_aboutTheApp => 'За приложението';
+
+  @override
+  String settings_aboutLegalese(String year) {
+    return 'Проект MeshCore с отворен код $year г.';
   }
-
-  @override
-  String get settings_aboutLegalese => 'Проект MeshCore с отворен код 2024 г.';
 
   @override
   String get settings_aboutDescription =>
@@ -910,6 +978,24 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get settings_aboutOpenMeteoAttribution =>
       'Данни за надморска височина на LOS: Open-Meteo (CC BY 4.0)';
+
+  @override
+  String get about_project => 'Проект';
+
+  @override
+  String get about_sourceCode => 'Изходен код';
+
+  @override
+  String get about_license => 'Лиценз';
+
+  @override
+  String get about_openSourceLicenses => 'Лицензи за отворен код';
+
+  @override
+  String get about_credits => 'Благодарности';
+
+  @override
+  String get about_contributors => 'Сътрудници';
 
   @override
   String get settings_infoName => 'Име';
@@ -945,20 +1031,19 @@ class AppLocalizationsBg extends AppLocalizations {
   String get settings_presets => 'Предварителни настройки';
 
   @override
-  String get settings_presetCustom => 'Персонализиран';
+  String get settings_radioParameters => 'Параметри';
 
   @override
-  String get settings_radioMatchWarning =>
-      'Всички възли, с които комуникирате, трябва да използват еднакви честота, честотна лента и SF. Скоростта на кодиране (CR) може да се различава.';
+  String get settings_presetCustom => 'Персонализиран';
 
   @override
   String get settings_frequency => 'Честота (MHz)';
 
   @override
-  String get settings_frequencyHelper => '300,0 – 2500,0';
+  String get settings_frequencyHelper => '150,0 - 2500,0 MHz';
 
   @override
-  String get settings_frequencyInvalid => 'Невалидна честота (300-2500 MHz)';
+  String get settings_frequencyInvalid => 'Невалидна честота (150-2500 MHz)';
 
   @override
   String get settings_bandwidth => 'Ширина на честотната лента';
@@ -981,16 +1066,23 @@ class AppLocalizationsBg extends AppLocalizations {
   String get settings_txPowerInvalid => 'Невалидна мощност на TX (0-22 dBm)';
 
   @override
-  String get settings_clientRepeat => 'Клиентско повторение';
+  String get settings_clientRepeat => 'Режим на повторение извън мрежата';
+
+  @override
+  String get settings_clientRepeatDescription =>
+      'Позволява на това устройство да препраща пакети. Предназначен е за места без покритие от повторители.\n\nТози режим използва ограничен набор от честоти. Ако го ВКЛЮЧИТЕ, вероятно ще загубите връзка с по-широката mesh мрежа. Всички възли, с които комуникирате, трябва да използват една и съща честота, ширина на честотната лента и фактор на разпространение (SF). Само скоростта на кодиране (CR) може да се различава.';
+
+  @override
+  String get settings_clientRepeatSwitch => 'Режим на повторение';
+
+  @override
+  String get settings_clientRepeatNote =>
+      'Забележка: Ако го ИЗКЛЮЧИТЕ, ще се възстанови предишната честота. Проверете предварителните настройки/параметрите, ако след това не можете да се свържете с mesh мрежата.';
 
   @override
   String settings_clientRepeatFrequencyNote(String freq) {
     return 'Честота $freq MHz за повторение извън мрежата';
   }
-
-  @override
-  String get settings_clientRepeatSubtitle =>
-      'Позволете на това устройство да предава пакети към мрежата за други устройства.';
 
   @override
   String get settings_clientRepeatFreqWarning =>
@@ -1323,7 +1415,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get settings_pathHashModeHelper =>
-      'Размер на всеки идентификатор на възел, записван в пътя на flood пакетите, изпращани от това радио: 1 байт (256 идентификатора, до 64 скока), 2 байта (65 хил. идентификатора, до 32 скока), 3 байта (16 млн идентификатора, до 21 скок). По-големите идентификатори намаляват количествата съвпадения, но повторителите с прошивка по-стара от v1.14 отхвърлят пакети с 2- или 3-байтови идентификатори.';
+      'Размер на идентификатора на всеки възел в пътя на flood пакетите, изпращани от това радио:\n\n- 1 байт: 256 уникални идентификатора, до 64 скока. \"ab\".\n- 2 байта: 65 хил. уникални идентификатора, до 32 скока. \"ab12\".\n- 3 байта: 16 млн уникални идентификатора, до 21 скок. \"ab12cd\".\n\nПо-големите идентификатори намаляват сблъсъците, но повторителите с фърмуер, по-стар от v1.14, отхвърлят пакети с 2- и 3-байтови идентификатори.';
 
   @override
   String settings_requiresFirmware(String version) {
@@ -3934,7 +4026,7 @@ class AppLocalizationsBg extends AppLocalizations {
       'Експериментални настройки за опитни оператори';
 
   @override
-  String get repeater_pathHashMode => 'Режим за хеширане на пътища';
+  String get repeater_pathHashMode => 'Размер на хеша на ID';
 
   @override
   String get repeater_pathHashModeHelper =>
@@ -5702,39 +5794,37 @@ class AppLocalizationsBg extends AppLocalizations {
       'MeshCore Open не работи. Отворете го и изпратете отговора си повторно.';
 
   @override
-  String get settings_exportBookmarks => 'Експорт на отметките в Markdown';
+  String get export_messagesTitle => 'Съобщения';
 
   @override
-  String get settings_exportBookmarksSubtitle =>
-      'Споделете отметките или ги запазете като Markdown файл.';
+  String get export_messagesDescription =>
+      'Съобщения с отметка, запазени като файл Markdown.';
+
+  @override
+  String get export_locationsTitle => 'Местоположения на контакти';
+
+  @override
+  String get export_locationsDescription =>
+      'Контакти с известно местоположение, запазени като файл GPX за приложения с карти.';
+
+  @override
+  String get settings_exportBookmarks => 'Отметки';
 
   @override
   String get settings_exportBookmarksSuccess => 'Отметките са експортирани.';
 
   @override
-  String get settings_exportBookmarksNoBookmarks => 'Няма отметки за експорт.';
+  String get settings_exportBookmarksNoBookmarks =>
+      'Няма отметки за експортиране.';
 
   @override
-  String get settings_gpxExportRepeaters =>
-      'Експортиране на повтарящи се устройства / сървър на стаята до GPX';
+  String get settings_gpxExportRepeaters => 'Повторители и стаи';
 
   @override
-  String get settings_gpxExportRepeatersSubtitle =>
-      'Изпраща повторители / roomserver с местоположение в GPX файл.';
+  String get settings_gpxExportContacts => 'Потребители / Компаньони';
 
   @override
-  String get settings_gpxExportContacts => 'Експортирай спътници към GPX';
-
-  @override
-  String get settings_gpxExportContactsSubtitle =>
-      'Експортира спътници с местоположение в GPX файл.';
-
-  @override
-  String get settings_gpxExportAll => 'Експортирай всички контакти в GPX';
-
-  @override
-  String get settings_gpxExportAllSubtitle =>
-      'Експортира всички контакти с местоположение в файл GPX.';
+  String get settings_gpxExportAll => 'Всички контакти';
 
   @override
   String get settings_gpxExportSuccess => 'Успешно изlexport на файл GPX.';
@@ -5789,58 +5879,43 @@ class AppLocalizationsBg extends AppLocalizations {
   String get contactsSettings_title => 'Настройки на контактите';
 
   @override
-  String get contactsSettings_autoAddTitle => 'Автоматично откриване';
+  String get contactsSettings_autoAddTitle =>
+      'Автоматично добавяне на контакти';
 
   @override
-  String get contactsSettings_otherTitle =>
-      'Други настройки свързани с контакти';
+  String get contactsSettings_autoAddDescription =>
+      'Чутите за първи път възли от тези типове се добавят към контактите на радиото. Останалите можете да добавите по-късно от „Открити контакти“.';
 
   @override
-  String get contactsSettings_autoAddUsersTitle =>
-      'Автоматично добавяне на потребители';
+  String get contactsSettings_otherTitle => 'Ограничения на списъка с контакти';
 
   @override
-  String get contactsSettings_autoAddUsersSubtitle =>
-      'Позволи на спътника да добавя автоматично откритите потребители.';
+  String get contactsSettings_autoAddUsersTitle => 'Потребители';
 
   @override
-  String get contactsSettings_autoAddRepeatersTitle =>
-      'Автоматично добавяне на повтарящи се елементи';
+  String get contactsSettings_autoAddRepeatersTitle => 'Повторители';
 
   @override
-  String get contactsSettings_autoAddRepeatersSubtitle =>
-      'Позволи на спътника да добавя автоматично откритите повтарящи се устройства.';
+  String get contactsSettings_autoAddRoomServersTitle => 'Сървъри на стая';
 
   @override
-  String get contactsSettings_autoAddRoomServersTitle =>
-      'Автоматично добавяне на сървъри на стаите';
+  String get contactsSettings_autoAddSensorsTitle => 'Сензори';
 
   @override
-  String get contactsSettings_autoAddRoomServersSubtitle =>
-      'Позволи на спътника да добавя автоматично откритите сървъри на стаите.';
-
-  @override
-  String get contactsSettings_autoAddSensorsTitle =>
-      'Автоматично добавяне на датчици';
-
-  @override
-  String get contactsSettings_autoAddSensorsSubtitle =>
-      'Позволи на спътника да добавя автоматично откритите датчици.';
-
-  @override
-  String get contactsSettings_overwriteOldestTitle => 'Премахни най-старото';
+  String get contactsSettings_overwriteOldestTitle =>
+      'Презаписване на най-стария';
 
   @override
   String get contactsSettings_overwriteOldestSubtitle =>
-      'Когато списъкът с контакти е пълен, най-старият неключов контакт ще бъде заменен.';
+      'Когато списъкът с контакти на радиото е пълен, най-старият контакт извън любимите се заменя.';
 
   @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
-      'Премахване на открити контакти';
+      'Ограничаване на откритите контакти';
 
   @override
   String contactsSettings_evictDiscoveredContactsSubtitle(int limit) {
-    return 'Когато е включено, приложението премахва най-старите открити контакти, щом списъкът с открити контакти достигне лимита си от $limit записа.';
+    return 'Приложението ограничава списъка „Открити контакти“ до $limit записа. При достигане на лимита по-старите контакти се премахват. Изключете, за да премахнете ограничението.';
   }
 
   @override

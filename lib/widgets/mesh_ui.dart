@@ -12,44 +12,64 @@ import 'contact_visuals.dart';
 /// MeshCore shared design kit.
 ///
 /// Building blocks used across all screens so the app reads as one product:
-/// [SectionHeader], [MeshCard], [StatusChip], [StatTile], [AvatarCircle],
+/// [SectionHeader], [MeshCard], [MeshInfoCard], [StatusChip], [StatTile],
+/// [AvatarCircle],
 /// [SignalBars], [RouteChip], [PulseDot], [BottomSheetHeader] +
 /// [showMeshSheet], [ErrorRetryCard], [ListEntrance], [MeshSegmentLabel]
 /// and [MeshMenuItemRow].
 
-/// Small-caps mono section label, optionally with a trailing widget.
+/// Small-caps mono section label, optionally with a trailing widget and a
+/// short [description] under it.
 class SectionHeader extends StatelessWidget {
   final String label;
   final Widget? trailing;
+  final String? description;
   final EdgeInsetsGeometry padding;
 
   const SectionHeader(
     this.label, {
     super.key,
     this.trailing,
+    this.description,
     this.padding = const EdgeInsets.fromLTRB(16, 20, 16, 8),
   });
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final row = Row(
+      children: [
+        Expanded(
+          child: Text(
+            label.toUpperCase(),
+            style: MeshTheme.accentLabel(
+              color: scheme.onSurfaceVariant,
+              fontSize: 13,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        ?trailing,
+      ],
+    );
     return Padding(
       padding: padding,
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              label.toUpperCase(),
-              style: MeshTheme.accentLabel(
-                color: scheme.onSurfaceVariant,
-                fontSize: 13,
-              ),
-              overflow: TextOverflow.ellipsis,
+      child: description == null
+          ? row
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                row,
+                const SizedBox(height: 4),
+                Text(
+                  description!,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ),
-          ),
-          ?trailing,
-        ],
-      ),
     );
   }
 }
@@ -104,6 +124,37 @@ class MeshCard extends StatelessWidget {
           onSecondaryTap: onSecondaryTap,
           child: Padding(padding: padding, child: child),
         ),
+      ),
+    );
+  }
+}
+
+/// [MeshCard] with an info icon and a short note, for the top of a page.
+class MeshInfoCard extends StatelessWidget {
+  final String text;
+
+  const MeshInfoCard(this.text, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return MeshCard(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.info_outline, size: 24, color: scheme.onSurfaceVariant),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: scheme.onSurface,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

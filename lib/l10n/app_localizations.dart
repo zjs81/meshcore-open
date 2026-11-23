@@ -823,10 +823,16 @@ abstract class AppLocalizations {
   /// **'Export'**
   String get settings_export;
 
+  /// No description provided for @settings_exportData.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Data'**
+  String get settings_exportData;
+
   /// No description provided for @settings_exportSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Export contacts and repeaters as GPX'**
+  /// **'Bookmarks and contact locations'**
   String get settings_exportSubtitle;
 
   /// No description provided for @backupRestore_title.
@@ -1177,6 +1183,54 @@ abstract class AppLocalizations {
   /// **'Enter node name'**
   String get settings_nodeNameHint;
 
+  /// No description provided for @nodeName_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Every byte used by your name is one byte less that can be used for channel messages. Special characters and emojis can use more than one byte.'**
+  String get nodeName_info;
+
+  /// No description provided for @nodeName_messageLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Message length'**
+  String get nodeName_messageLength;
+
+  /// No description provided for @nodeName_channelMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel messages'**
+  String get nodeName_channelMessages;
+
+  /// No description provided for @nodeName_channelMessagesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reduced by your name'**
+  String get nodeName_channelMessagesSubtitle;
+
+  /// No description provided for @nodeName_directMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct messages'**
+  String get nodeName_directMessages;
+
+  /// No description provided for @nodeName_directMessagesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not affected by your name'**
+  String get nodeName_directMessagesSubtitle;
+
+  /// No description provided for @nodeName_bytesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 byte available} other{{count} bytes available}}'**
+  String nodeName_bytesAvailable(int count);
+
+  /// No description provided for @nodeName_bytesOver.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 byte over the limit} other{{count} bytes over the limit}}'**
+  String nodeName_bytesOver(int count);
+
   /// No description provided for @settings_nodeNameUpdated.
   ///
   /// In en, this message translates to:
@@ -1194,6 +1248,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Frequency, power, spreading factor'**
   String get settings_radioSettingsSubtitle;
+
+  /// No description provided for @settings_unsavedChangesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your changes haven\'t been saved to the radio.'**
+  String get settings_unsavedChangesMessage;
 
   /// No description provided for @settings_radioSettingsUpdated.
   ///
@@ -1363,6 +1423,36 @@ abstract class AppLocalizations {
   /// **'GPS coordinates'**
   String get settings_locationSubtitle;
 
+  /// No description provided for @location_coordinates.
+  ///
+  /// In en, this message translates to:
+  /// **'Coordinates'**
+  String get location_coordinates;
+
+  /// No description provided for @location_coordinatesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your node\'s position. It\'s shown on the map, used when you share your location, and sent in adverts when Advert Location is on (Privacy).'**
+  String get location_coordinatesDescription;
+
+  /// No description provided for @location_pickOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick on map'**
+  String get location_pickOnMap;
+
+  /// No description provided for @locationPicker_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag the map or tap to place the pin.'**
+  String get locationPicker_hint;
+
+  /// No description provided for @locationPicker_useLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this location'**
+  String get locationPicker_useLocation;
+
   /// No description provided for @settings_locationUpdated.
   ///
   /// In en, this message translates to:
@@ -1384,20 +1474,26 @@ abstract class AppLocalizations {
   /// No description provided for @settings_locationGPSEnable.
   ///
   /// In en, this message translates to:
-  /// **'GPS Enable'**
+  /// **'Enable GPS'**
   String get settings_locationGPSEnable;
 
   /// No description provided for @settings_locationGPSEnableSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Enables GPS to automatically update location.'**
+  /// **'Keeps the location updated from the radio\'s GPS.'**
   String get settings_locationGPSEnableSubtitle;
 
   /// No description provided for @settings_locationIntervalSec.
   ///
   /// In en, this message translates to:
-  /// **'Interval for GPS (Seconds)'**
+  /// **'Update interval (seconds)'**
   String get settings_locationIntervalSec;
+
+  /// No description provided for @settings_locationIntervalHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'60 to 86399 seconds'**
+  String get settings_locationIntervalHelper;
 
   /// No description provided for @settings_locationIntervalInvalid.
   ///
@@ -1426,7 +1522,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings_contactSettingsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Settings for how contacts are added.'**
+  /// **'Settings for how contacts are added'**
   String get settings_contactSettingsSubtitle;
 
   /// No description provided for @settings_privacyMode.
@@ -1468,7 +1564,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings_privacySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Control what information is shared.'**
+  /// **'Control what information is shared'**
   String get settings_privacySubtitle;
 
   /// No description provided for @settings_privacySettingsDescription.
@@ -1516,7 +1612,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings_telemetryPerContactHint.
   ///
   /// In en, this message translates to:
-  /// **'To allow a contact, open their chat and choose Contact Settings from the menu.'**
+  /// **'To allow a specific contact, open their chat and choose Contact Settings from the menu.'**
   String get settings_telemetryPerContactHint;
 
   /// No description provided for @settings_advertLocation.
@@ -1552,7 +1648,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings_multiAckSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Send extra ACKs for better delivery; uses more airtime'**
+  /// **'Send 2 acknowledgments (ACKs) instead of 1 when the ACK goes back over a direct path. More reliable, but uses more airtime.'**
   String get settings_multiAckSubtitle;
 
   /// No description provided for @settings_telemetryModeUpdated.
@@ -1576,7 +1672,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings_deleteAllPathsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Clear all path data from contacts.'**
+  /// **'Clear all path data from contacts'**
   String get settings_deleteAllPathsSubtitle;
 
   /// No description provided for @settings_sendAdvertisement.
@@ -1681,17 +1777,17 @@ abstract class AppLocalizations {
   /// **'About'**
   String get settings_about;
 
-  /// No description provided for @settings_aboutVersion.
+  /// No description provided for @settings_aboutTheApp.
   ///
   /// In en, this message translates to:
-  /// **'MeshCore Open v{version}'**
-  String settings_aboutVersion(String version);
+  /// **'About the App'**
+  String get settings_aboutTheApp;
 
   /// No description provided for @settings_aboutLegalese.
   ///
   /// In en, this message translates to:
-  /// **'2026 MeshCore Open Source Project'**
-  String get settings_aboutLegalese;
+  /// **'{year} MeshCore Open Source Project'**
+  String settings_aboutLegalese(String year);
 
   /// No description provided for @settings_aboutDescription.
   ///
@@ -1704,6 +1800,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'LOS elevation data: Open-Meteo (CC BY 4.0)'**
   String get settings_aboutOpenMeteoAttribution;
+
+  /// No description provided for @about_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get about_project;
+
+  /// No description provided for @about_sourceCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Source code'**
+  String get about_sourceCode;
+
+  /// No description provided for @about_license.
+  ///
+  /// In en, this message translates to:
+  /// **'License'**
+  String get about_license;
+
+  /// No description provided for @about_openSourceLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-source licenses'**
+  String get about_openSourceLicenses;
+
+  /// No description provided for @about_credits.
+  ///
+  /// In en, this message translates to:
+  /// **'Credits'**
+  String get about_credits;
+
+  /// No description provided for @about_contributors.
+  ///
+  /// In en, this message translates to:
+  /// **'Contributors'**
+  String get about_contributors;
 
   /// No description provided for @settings_infoName.
   ///
@@ -1771,17 +1903,17 @@ abstract class AppLocalizations {
   /// **'Presets'**
   String get settings_presets;
 
+  /// No description provided for @settings_radioParameters.
+  ///
+  /// In en, this message translates to:
+  /// **'Parameters'**
+  String get settings_radioParameters;
+
   /// No description provided for @settings_presetCustom.
   ///
   /// In en, this message translates to:
   /// **'Custom'**
   String get settings_presetCustom;
-
-  /// No description provided for @settings_radioMatchWarning.
-  ///
-  /// In en, this message translates to:
-  /// **'All nodes you talk to must use the same frequency, bandwidth and SF. The coding rate (CR) can differ.'**
-  String get settings_radioMatchWarning;
 
   /// No description provided for @settings_frequency.
   ///
@@ -1792,7 +1924,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings_frequencyHelper.
   ///
   /// In en, this message translates to:
-  /// **'150.0 - 2500.0'**
+  /// **'150.0 - 2500.0 MHz'**
   String get settings_frequencyHelper;
 
   /// No description provided for @settings_frequencyInvalid.
@@ -1840,20 +1972,32 @@ abstract class AppLocalizations {
   /// No description provided for @settings_clientRepeat.
   ///
   /// In en, this message translates to:
-  /// **'Off-Grid Repeat'**
+  /// **'Off-Grid Repeat Mode'**
   String get settings_clientRepeat;
+
+  /// No description provided for @settings_clientRepeatDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Allows this device to repeat packets. Meant to be used where repeater coverage doesn\'t exist.\n\nThis mode uses a restricted set of frequencies. Switching it ON likely disconnects you from the wider mesh. All nodes you talk to must use the same frequency, bandwidth, and spreading factor (SF). Only the coding rate (CR) can differ.'**
+  String get settings_clientRepeatDescription;
+
+  /// No description provided for @settings_clientRepeatSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat Mode'**
+  String get settings_clientRepeatSwitch;
+
+  /// No description provided for @settings_clientRepeatNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note: Turning it OFF reverts to the previous frequency. Check your preset/parameters if you can\'t connect to the mesh afterwards.'**
+  String get settings_clientRepeatNote;
 
   /// No description provided for @settings_clientRepeatFrequencyNote.
   ///
   /// In en, this message translates to:
   /// **'Frequency set to {freq} MHz for off-grid repeat'**
   String settings_clientRepeatFrequencyNote(String freq);
-
-  /// No description provided for @settings_clientRepeatSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow this device to repeat mesh packets for others'**
-  String get settings_clientRepeatSubtitle;
 
   /// No description provided for @settings_clientRepeatFreqWarning.
   ///
@@ -2464,7 +2608,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings_pathHashModeHelper.
   ///
   /// In en, this message translates to:
-  /// **'Size of each node ID recorded in the path of flood packets this radio sends: 1 byte (256 IDs, up to 64 hops), 2 bytes (65K IDs, up to 32 hops), 3 bytes (16M IDs, up to 21 hops). Larger IDs reduce collisions, but repeaters on firmware older than v1.14 drop packets with 2- or 3-byte IDs.'**
+  /// **'Size of each node\'s ID recorded in the path of flood packets sent by this radio:\n\n- 1 byte: 256 unique IDs, up to 64 hops. \"ab\".\n- 2 bytes: 65K unique IDs, up to 32 hops. \"ab12\".\n- 3 bytes: 16M unique IDs, up to 21 hops. \"ab12cd\".\n\nLarger IDs reduce collisions, but repeaters running firmware older than v1.14 drop packets using 2 and 3-byte IDs.'**
   String get settings_pathHashModeHelper;
 
   /// No description provided for @settings_requiresFirmware.
@@ -6848,7 +6992,7 @@ abstract class AppLocalizations {
   /// No description provided for @repeater_pathHashMode.
   ///
   /// In en, this message translates to:
-  /// **'Node ID size in paths'**
+  /// **'ID hash size'**
   String get repeater_pathHashMode;
 
   /// No description provided for @repeater_pathHashModeHelper.
@@ -9677,17 +9821,35 @@ abstract class AppLocalizations {
   /// **'MeshCore Open isn\'t running. Open it and send your reply again.'**
   String get notification_replyAppNotRunning;
 
+  /// No description provided for @export_messagesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get export_messagesTitle;
+
+  /// No description provided for @export_messagesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarked messages, saved as a Markdown file.'**
+  String get export_messagesDescription;
+
+  /// No description provided for @export_locationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact locations'**
+  String get export_locationsTitle;
+
+  /// No description provided for @export_locationsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts with a known location, saved as a GPX file for map apps.'**
+  String get export_locationsDescription;
+
   /// No description provided for @settings_exportBookmarks.
   ///
   /// In en, this message translates to:
-  /// **'Export bookmarks to Markdown'**
+  /// **'Bookmarks'**
   String get settings_exportBookmarks;
-
-  /// No description provided for @settings_exportBookmarksSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Share or save bookmarked messages as a Markdown file.'**
-  String get settings_exportBookmarksSubtitle;
 
   /// No description provided for @settings_exportBookmarksSuccess.
   ///
@@ -9704,38 +9866,20 @@ abstract class AppLocalizations {
   /// No description provided for @settings_gpxExportRepeaters.
   ///
   /// In en, this message translates to:
-  /// **'Export repeaters / room server to GPX'**
+  /// **'Repeaters and Rooms'**
   String get settings_gpxExportRepeaters;
-
-  /// No description provided for @settings_gpxExportRepeatersSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Exports repeaters / roomserver with a location to GPX file.'**
-  String get settings_gpxExportRepeatersSubtitle;
 
   /// No description provided for @settings_gpxExportContacts.
   ///
   /// In en, this message translates to:
-  /// **'Export companions to GPX'**
+  /// **'Users / Companions'**
   String get settings_gpxExportContacts;
-
-  /// No description provided for @settings_gpxExportContactsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Exports companions with a location to GPX file.'**
-  String get settings_gpxExportContactsSubtitle;
 
   /// No description provided for @settings_gpxExportAll.
   ///
   /// In en, this message translates to:
-  /// **'Export all contacts to GPX'**
+  /// **'All contacts'**
   String get settings_gpxExportAll;
-
-  /// No description provided for @settings_gpxExportAllSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Exports all contacts with a location to GPX file.'**
-  String get settings_gpxExportAllSubtitle;
 
   /// No description provided for @settings_gpxExportSuccess.
   ///
@@ -9830,85 +9974,67 @@ abstract class AppLocalizations {
   /// No description provided for @contactsSettings_autoAddTitle.
   ///
   /// In en, this message translates to:
-  /// **'Automatic Discovery'**
+  /// **'Auto-add contacts'**
   String get contactsSettings_autoAddTitle;
+
+  /// No description provided for @contactsSettings_autoAddDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add newly heard nodes of these types to the radio\'s contacts. Others can be added later from Discovered Contacts.'**
+  String get contactsSettings_autoAddDescription;
 
   /// No description provided for @contactsSettings_otherTitle.
   ///
   /// In en, this message translates to:
-  /// **'Other contact related settings'**
+  /// **'Contact List Limits'**
   String get contactsSettings_otherTitle;
 
   /// No description provided for @contactsSettings_autoAddUsersTitle.
   ///
   /// In en, this message translates to:
-  /// **'Auto-add users'**
+  /// **'Users'**
   String get contactsSettings_autoAddUsersTitle;
-
-  /// No description provided for @contactsSettings_autoAddUsersSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow the companion to automatically add discovered users.'**
-  String get contactsSettings_autoAddUsersSubtitle;
 
   /// No description provided for @contactsSettings_autoAddRepeatersTitle.
   ///
   /// In en, this message translates to:
-  /// **'Auto-add repeaters'**
+  /// **'Repeaters'**
   String get contactsSettings_autoAddRepeatersTitle;
-
-  /// No description provided for @contactsSettings_autoAddRepeatersSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow the companion to automatically add discovered repeaters.'**
-  String get contactsSettings_autoAddRepeatersSubtitle;
 
   /// No description provided for @contactsSettings_autoAddRoomServersTitle.
   ///
   /// In en, this message translates to:
-  /// **'Auto-add room servers'**
+  /// **'Room servers'**
   String get contactsSettings_autoAddRoomServersTitle;
-
-  /// No description provided for @contactsSettings_autoAddRoomServersSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow the companion to automatically add discovered room servers.'**
-  String get contactsSettings_autoAddRoomServersSubtitle;
 
   /// No description provided for @contactsSettings_autoAddSensorsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Auto-add sensors'**
+  /// **'Sensors'**
   String get contactsSettings_autoAddSensorsTitle;
-
-  /// No description provided for @contactsSettings_autoAddSensorsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow the companion to automatically add discovered sensors.'**
-  String get contactsSettings_autoAddSensorsSubtitle;
 
   /// No description provided for @contactsSettings_overwriteOldestTitle.
   ///
   /// In en, this message translates to:
-  /// **'Overwrite Oldest'**
+  /// **'Overwrite oldest'**
   String get contactsSettings_overwriteOldestTitle;
 
   /// No description provided for @contactsSettings_overwriteOldestSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'When the contact list is full, the oldest non-favorited contact will be replaced.'**
+  /// **'Replace the oldest non-favorited contact when the radio\'s contact list is full.'**
   String get contactsSettings_overwriteOldestSubtitle;
 
   /// No description provided for @contactsSettings_evictDiscoveredContactsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Evict discovered contacts'**
+  /// **'Limit discovered contacts'**
   String get contactsSettings_evictDiscoveredContactsTitle;
 
   /// No description provided for @contactsSettings_evictDiscoveredContactsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'When enabled, the app removes the oldest discovered contacts once the discovery list reaches its limit of {limit} entries.'**
+  /// **'The app sets a {limit} entry limit to the discovered contacts list, older contacts are evicted when the limit is reached. Disable to have no limits.'**
   String contactsSettings_evictDiscoveredContactsSubtitle(int limit);
 
   /// No description provided for @discoveredContacts_Title.
@@ -10172,7 +10298,7 @@ abstract class AppLocalizations {
   /// No description provided for @radioStats_settingsTile.
   ///
   /// In en, this message translates to:
-  /// **'Radio stats'**
+  /// **'Radio Stats'**
   String get radioStats_settingsTile;
 
   /// No description provided for @radioStats_settingsSubtitle.
@@ -12355,7 +12481,7 @@ abstract class AppLocalizations {
   /// Message filter: Message filter
   ///
   /// In en, this message translates to:
-  /// **'Message filter'**
+  /// **'Message Filter'**
   String get messageFilter_title;
 
   /// Message filter: Hide spam and repeated messages

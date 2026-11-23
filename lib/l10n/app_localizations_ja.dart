@@ -387,7 +387,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_export => 'エクスポート';
 
   @override
-  String get settings_exportSubtitle => '連絡先とリピータをGPXでエクスポート';
+  String get settings_exportData => 'データのエクスポート';
+
+  @override
+  String get settings_exportSubtitle => 'ブックマークと連絡先の位置情報';
 
   @override
   String get backupRestore_title => 'バックアップと復元';
@@ -574,6 +577,45 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_nodeNameHint => 'ノード名を入力してください';
 
   @override
+  String get nodeName_info =>
+      '名前に使う1バイトごとに、チャンネルメッセージに使える容量が1バイト減ります。漢字・かな・絵文字は1文字で複数バイトを使います。';
+
+  @override
+  String get nodeName_messageLength => 'メッセージの長さ';
+
+  @override
+  String get nodeName_channelMessages => 'チャンネルメッセージ';
+
+  @override
+  String get nodeName_channelMessagesSubtitle => '名前の分だけ減ります';
+
+  @override
+  String get nodeName_directMessages => 'ダイレクトメッセージ';
+
+  @override
+  String get nodeName_directMessagesSubtitle => '名前の影響を受けません';
+
+  @override
+  String nodeName_bytesAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count バイト使用可能',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String nodeName_bytesOver(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '上限を $count バイト超えています',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get settings_nodeNameUpdated => '名前を更新しました';
 
   @override
@@ -581,6 +623,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settings_radioSettingsSubtitle => '周波数、電力、スプレッドファクター';
+
+  @override
+  String get settings_unsavedChangesMessage => 'ラジオに保存されていない変更があります。';
 
   @override
   String get settings_radioSettingsUpdated => 'ラジオの設定が更新されました';
@@ -674,6 +719,22 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_locationSubtitle => 'GPS 座標';
 
   @override
+  String get location_coordinates => '座標';
+
+  @override
+  String get location_coordinatesDescription =>
+      'ノードの位置です。地図に表示され、位置情報を共有するときに使われます。プライバシー設定で「アドバート位置」を有効にすると、アドバートにも含まれます。';
+
+  @override
+  String get location_pickOnMap => '地図で選択';
+
+  @override
+  String get locationPicker_hint => '地図をドラッグするか、タップしてピンを置いてください。';
+
+  @override
+  String get locationPicker_useLocation => 'この場所を使用';
+
+  @override
   String get settings_locationUpdated => '場所とGPS設定が更新されました';
 
   @override
@@ -686,10 +747,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_locationGPSEnable => 'GPS を有効にする';
 
   @override
-  String get settings_locationGPSEnableSubtitle => 'GPS が自動的に位置情報を更新できるようにします。';
+  String get settings_locationGPSEnableSubtitle => 'ラジオの GPS で位置情報を最新に保ちます。';
 
   @override
-  String get settings_locationIntervalSec => 'GPS 更新間隔（秒）';
+  String get settings_locationIntervalSec => '更新間隔（秒）';
+
+  @override
+  String get settings_locationIntervalHelper => '60～86399秒';
 
   @override
   String get settings_locationIntervalInvalid =>
@@ -727,7 +791,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_privacy => 'プライバシー設定';
 
   @override
-  String get settings_privacySubtitle => '共有する情報の内容を管理する。';
+  String get settings_privacySubtitle => '共有する情報の内容を管理する';
 
   @override
   String get settings_privacySettingsDescription =>
@@ -753,7 +817,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settings_telemetryPerContactHint =>
-      '連絡先に許可するには、そのチャットを開いてメニューから「連絡先設定」を選択してください。';
+      '特定の連絡先に許可するには、そのチャットを開いてメニューから「連絡先設定」を選択してください。';
 
   @override
   String get settings_advertLocation => 'アドバート位置';
@@ -772,7 +836,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_multiAck => 'マルチ ACK';
 
   @override
-  String get settings_multiAckSubtitle => '配信を確実にするため ACK を追加送信します。放送時間が長くなります';
+  String get settings_multiAckSubtitle =>
+      '確認応答（ACK）を直接経路で返送する場合は、1 つではなく 2 つ送信します。より確実ですが、通信時間を多く使います。';
 
   @override
   String get settings_telemetryModeUpdated => 'テレメトリモードが更新されました';
@@ -784,7 +849,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_deleteAllPaths => 'すべての経路を削除';
 
   @override
-  String get settings_deleteAllPathsSubtitle => '連絡先からすべての経路データを消去します。';
+  String get settings_deleteAllPathsSubtitle => '連絡先からすべての経路データを消去します';
 
   @override
   String get settings_sendAdvertisement => 'アドバートを送信';
@@ -840,12 +905,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_about => '概要';
 
   @override
-  String settings_aboutVersion(String version) {
-    return 'MeshCore Open v$version';
-  }
+  String get settings_aboutTheApp => 'アプリについて';
 
   @override
-  String get settings_aboutLegalese => '2026 MeshCore オープンソースプロジェクト';
+  String settings_aboutLegalese(String year) {
+    return '$year MeshCore オープンソースプロジェクト';
+  }
 
   @override
   String get settings_aboutDescription =>
@@ -854,6 +919,24 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get settings_aboutOpenMeteoAttribution =>
       'LOS 標高データ：Open-Meteo (CC BY 4.0)';
+
+  @override
+  String get about_project => 'プロジェクト';
+
+  @override
+  String get about_sourceCode => 'ソースコード';
+
+  @override
+  String get about_license => 'ライセンス';
+
+  @override
+  String get about_openSourceLicenses => 'オープンソースライセンス';
+
+  @override
+  String get about_credits => 'クレジット';
+
+  @override
+  String get about_contributors => 'コントリビューター';
 
   @override
   String get settings_infoName => '名前';
@@ -889,20 +972,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_presets => 'プリセット';
 
   @override
-  String get settings_presetCustom => 'カスタム';
+  String get settings_radioParameters => 'パラメータ';
 
   @override
-  String get settings_radioMatchWarning =>
-      '通信するすべてのノードで、周波数・帯域幅・伝播係数を揃える必要があります。コーディング速度（CR）は異なっていても構いません。';
+  String get settings_presetCustom => 'カスタム';
 
   @override
   String get settings_frequency => '周波数 (MHz)';
 
   @override
-  String get settings_frequencyHelper => '300.0 - 2500.0';
+  String get settings_frequencyHelper => '150.0 - 2500.0 MHz';
 
   @override
-  String get settings_frequencyInvalid => '無効な周波数 (300-2500 MHz)';
+  String get settings_frequencyInvalid => '無効な周波数 (150-2500 MHz)';
 
   @override
   String get settings_bandwidth => '帯域幅';
@@ -925,16 +1007,23 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_txPowerInvalid => '無効な送信電力 (0-22 dBm)';
 
   @override
-  String get settings_clientRepeat => 'オフグリッド中継';
+  String get settings_clientRepeat => 'オフグリッド中継モード';
+
+  @override
+  String get settings_clientRepeatDescription =>
+      'このデバイスでパケットを中継できるようにします。リピータのカバー範囲外での使用を想定しています。\n\nこのモードでは限られた周波数のみを使用します。ON にすると、より広いメッシュから切断される可能性が高くなります。通信するすべてのノードで、周波数、帯域幅、伝播係数（SF）を同じにする必要があります。コーディング速度（CR）だけは異なっていても構いません。';
+
+  @override
+  String get settings_clientRepeatSwitch => '中継モード';
+
+  @override
+  String get settings_clientRepeatNote =>
+      '注：OFF にすると、以前の周波数に戻ります。その後メッシュに接続できない場合は、プリセット/パラメータを確認してください。';
 
   @override
   String settings_clientRepeatFrequencyNote(String freq) {
     return 'オフグリッド中継用に周波数を $freq MHz に設定';
   }
-
-  @override
-  String get settings_clientRepeatSubtitle =>
-      'このデバイスが他のデバイス向けにメッシュパケットを中継できるようにします。';
 
   @override
   String get settings_clientRepeatFreqWarning =>
@@ -1257,7 +1346,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settings_pathHashModeHelper =>
-      'このラジオが送信するフラッドパケットの経路に記録される各ノード ID のサイズ：1 バイト（256 個の ID、最大 64 ホップ）、2 バイト（65,000 個の ID、最大 32 ホップ）、3 バイト（160 万個の ID、最大 21 ホップ）。ID が大きいほど衝突が減りますが、v1.14 より古いファームウェアのリピータは 2 バイトまたは 3 バイトの ID を含むパケットを破棄します。';
+      'このラジオが送信するフラッドパケットの経路に記録される、各ノード ID のサイズ：\n\n- 1 バイト：256 通りの ID、最大 64 ホップ。\"ab\"。\n- 2 バイト：6.5 万通りの ID、最大 32 ホップ。\"ab12\"。\n- 3 バイト：1,600 万通りの ID、最大 21 ホップ。\"ab12cd\"。\n\nID が大きいほど衝突は減りますが、v1.14 より古いファームウェアのリピータは 2 バイトまたは 3 バイトの ID を使うパケットを破棄します。';
 
   @override
   String settings_requiresFirmware(String version) {
@@ -3765,7 +3854,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get repeater_advancedSettingsSubtitle => '経験豊富なオペレーター向けの調整ノブ';
 
   @override
-  String get repeater_pathHashMode => 'パスハッシュモード';
+  String get repeater_pathHashMode => 'ID ハッシュサイズ';
 
   @override
   String get repeater_pathHashModeHelper =>
@@ -5435,11 +5524,21 @@ class AppLocalizationsJa extends AppLocalizations {
       'MeshCore Open が起動していません。起動してから、もう一度返信を送信してください。';
 
   @override
-  String get settings_exportBookmarks => 'ブックマークをMarkdownにエクスポート';
+  String get export_messagesTitle => 'メッセージ';
 
   @override
-  String get settings_exportBookmarksSubtitle =>
-      'ブックマークしたメッセージをMarkdownファイルとして共有または保存します。';
+  String get export_messagesDescription =>
+      'ブックマークしたメッセージをMarkdownファイルとして保存します。';
+
+  @override
+  String get export_locationsTitle => '連絡先の位置情報';
+
+  @override
+  String get export_locationsDescription =>
+      '位置情報が分かっている連絡先を、地図アプリ用のGPXファイルとして保存します。';
+
+  @override
+  String get settings_exportBookmarks => 'ブックマーク';
 
   @override
   String get settings_exportBookmarksSuccess => 'ブックマークをエクスポートしました。';
@@ -5448,25 +5547,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_exportBookmarksNoBookmarks => 'エクスポートするブックマークがありません。';
 
   @override
-  String get settings_gpxExportRepeaters => 'GPX へのエクスポート用リピータ/ルームサーバー';
+  String get settings_gpxExportRepeaters => 'リピータとルーム';
 
   @override
-  String get settings_gpxExportRepeatersSubtitle =>
-      'GPXファイルに場所情報を付加した、レピーター/ルームサーバーのエクスポート';
+  String get settings_gpxExportContacts => 'ユーザー / コンパニオン';
 
   @override
-  String get settings_gpxExportContacts => 'GPX 形式へのエクスポート';
-
-  @override
-  String get settings_gpxExportContactsSubtitle =>
-      'GPXファイルに位置情報を保存して、他の人と共有する。';
-
-  @override
-  String get settings_gpxExportAll => 'すべての連絡先をGPX形式でエクスポートする';
-
-  @override
-  String get settings_gpxExportAllSubtitle =>
-      'すべての連絡先を、場所情報付きのGPXファイルにエクスポートする。';
+  String get settings_gpxExportAll => 'すべての連絡先';
 
   @override
   String get settings_gpxExportSuccess => 'GPXファイルの正常なエクスポートが完了しました。';
@@ -5517,52 +5604,40 @@ class AppLocalizationsJa extends AppLocalizations {
   String get contactsSettings_title => '連絡先設定';
 
   @override
-  String get contactsSettings_autoAddTitle => '自動検出';
+  String get contactsSettings_autoAddTitle => '連絡先の自動追加';
 
   @override
-  String get contactsSettings_otherTitle => 'その他の連絡に関する設定';
+  String get contactsSettings_autoAddDescription =>
+      '新たに受信したこれらの種類のノードをラジオの連絡先に追加します。その他は後で「連絡先が見つかった」から追加できます。';
 
   @override
-  String get contactsSettings_autoAddUsersTitle => '自動でユーザーを追加する';
+  String get contactsSettings_otherTitle => '連絡先リストの上限';
 
   @override
-  String get contactsSettings_autoAddUsersSubtitle =>
-      '利用者が自動的に発見したユーザーを追加できるようにする。';
+  String get contactsSettings_autoAddUsersTitle => 'ユーザー';
 
   @override
-  String get contactsSettings_autoAddRepeatersTitle => 'リピータを自動追加';
+  String get contactsSettings_autoAddRepeatersTitle => 'リピータ';
 
   @override
-  String get contactsSettings_autoAddRepeatersSubtitle =>
-      '発見したリピータを、自動的に追加できるようにする。';
+  String get contactsSettings_autoAddRoomServersTitle => 'ルームサーバー';
 
   @override
-  String get contactsSettings_autoAddRoomServersTitle => '自動でルームサーバーを追加';
+  String get contactsSettings_autoAddSensorsTitle => 'センサー';
 
   @override
-  String get contactsSettings_autoAddRoomServersSubtitle =>
-      '利用者が、発見した部屋のサーバーを自動的に追加できるようにする。';
-
-  @override
-  String get contactsSettings_autoAddSensorsTitle => '自動でセンサーを追加';
-
-  @override
-  String get contactsSettings_autoAddSensorsSubtitle =>
-      '利用者が、発見したセンサーを自動的に追加できるようにする。';
-
-  @override
-  String get contactsSettings_overwriteOldestTitle => '最も古いものを上書きする';
+  String get contactsSettings_overwriteOldestTitle => '最も古い連絡先を上書き';
 
   @override
   String get contactsSettings_overwriteOldestSubtitle =>
-      '連絡先リストが満杯になった場合、最も古いかつ「お気に入り」ではない連絡先が削除されます。';
+      'ラジオの連絡先リストが満杯になったら、お気に入り以外で最も古い連絡先を置き換えます。';
 
   @override
-  String get contactsSettings_evictDiscoveredContactsTitle => '検出された連絡先を削除';
+  String get contactsSettings_evictDiscoveredContactsTitle => '発見された連絡先を制限';
 
   @override
   String contactsSettings_evictDiscoveredContactsSubtitle(int limit) {
-    return '有効にすると、検出された連絡先のリストが上限の$limit件に達した際に、最も古い検出済み連絡先が削除されます。';
+    return 'アプリは「連絡先が見つかった」リストを $limit 件に制限します。上限に達すると古い連絡先から削除されます。オフにすると上限はなくなります。';
   }
 
   @override

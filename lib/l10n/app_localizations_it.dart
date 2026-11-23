@@ -406,8 +406,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settings_export => 'Esporta';
 
   @override
-  String get settings_exportSubtitle =>
-      'Esporta contatti e ripetitori come GPX';
+  String get settings_exportData => 'Esporta dati';
+
+  @override
+  String get settings_exportSubtitle => 'Segnalibri e posizioni dei contatti';
 
   @override
   String get backupRestore_title => 'Backup e ripristino';
@@ -601,6 +603,47 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settings_nodeNameHint => 'Inserisci nome nodo';
 
   @override
+  String get nodeName_info =>
+      'Ogni byte del tuo nome è uno in meno per i messaggi del canale. I caratteri speciali e le emoji possono occupare più di un byte.';
+
+  @override
+  String get nodeName_messageLength => 'Lunghezza dei messaggi';
+
+  @override
+  String get nodeName_channelMessages => 'Messaggi del canale';
+
+  @override
+  String get nodeName_channelMessagesSubtitle => 'Ridotti dal tuo nome';
+
+  @override
+  String get nodeName_directMessages => 'Messaggi diretti';
+
+  @override
+  String get nodeName_directMessagesSubtitle => 'Non influenzati dal tuo nome';
+
+  @override
+  String nodeName_bytesAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count byte disponibili',
+      one: '$count byte disponibile',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String nodeName_bytesOver(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count byte oltre il limite',
+      one: '$count byte oltre il limite',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get settings_nodeNameUpdated => 'Nome aggiornato';
 
   @override
@@ -609,6 +652,10 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get settings_radioSettingsSubtitle =>
       'Frequenza, potenza, fattore di diffusione';
+
+  @override
+  String get settings_unsavedChangesMessage =>
+      'Hai modifiche non salvate sulla radio.';
 
   @override
   String get settings_radioSettingsUpdated => 'Impostazioni radio aggiornate';
@@ -709,6 +756,23 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settings_locationSubtitle => 'Coordinate GPS';
 
   @override
+  String get location_coordinates => 'Coordinate';
+
+  @override
+  String get location_coordinatesDescription =>
+      'La posizione del tuo nodo. Viene mostrata sulla mappa, usata quando condividi la tua posizione e inviata negli annunci quando l\'opzione Posizione dell\'annuncio è attiva (Impostazioni sulla privacy).';
+
+  @override
+  String get location_pickOnMap => 'Scegli sulla mappa';
+
+  @override
+  String get locationPicker_hint =>
+      'Trascina la mappa o tocca per posizionare il pin.';
+
+  @override
+  String get locationPicker_useLocation => 'Usa questa posizione';
+
+  @override
   String get settings_locationUpdated =>
       'Posizione e impostazioni GPS aggiornate';
 
@@ -724,10 +788,14 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settings_locationGPSEnableSubtitle =>
-      'Abilita l\'aggiornamento automatico della posizione tramite GPS.';
+      'Mantiene la posizione aggiornata tramite il GPS della radio.';
 
   @override
-  String get settings_locationIntervalSec => 'Intervallo GPS (Secondi)';
+  String get settings_locationIntervalSec =>
+      'Intervallo di aggiornamento (secondi)';
+
+  @override
+  String get settings_locationIntervalHelper => 'Da 60 a 86399 secondi';
 
   @override
   String get settings_locationIntervalInvalid =>
@@ -768,7 +836,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settings_privacySubtitle =>
-      'Controlla le informazioni che vengono condivise.';
+      'Controlla le informazioni che vengono condivise';
 
   @override
   String get settings_privacySettingsDescription =>
@@ -796,7 +864,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settings_telemetryPerContactHint =>
-      'Per consentire un contatto, apri la sua chat e scegli Impostazioni di contatto dal menu.';
+      'Per consentire un contatto specifico, apri la sua chat e scegli Impostazioni di contatto dal menu.';
 
   @override
   String get settings_advertLocation => 'Posizione dell\'annuncio';
@@ -818,7 +886,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settings_multiAckSubtitle =>
-      'Invia ACK aggiuntivi per una consegna migliore; usa più tempo di trasmissione';
+      'Invia 2 conferme (ACK) invece di 1 quando la conferma torna indietro tramite un percorso diretto. Più affidabile, ma usa più tempo di trasmissione.';
 
   @override
   String get settings_telemetryModeUpdated => 'Modalità telemetria aggiornata';
@@ -831,7 +899,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Cancella tutti i dati di percorso dai contatti.';
+      'Cancella tutti i dati di percorso dai contatti';
 
   @override
   String get settings_sendAdvertisement => 'Invia annuncio';
@@ -890,12 +958,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settings_about => 'Informazioni';
 
   @override
-  String settings_aboutVersion(String version) {
-    return 'MeshCore Open v$version';
-  }
+  String get settings_aboutTheApp => 'Informazioni sull\'app';
 
   @override
-  String get settings_aboutLegalese => '2026 Progetto open source MeshCore';
+  String settings_aboutLegalese(String year) {
+    return '$year Progetto open source MeshCore';
+  }
 
   @override
   String get settings_aboutDescription =>
@@ -904,6 +972,24 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get settings_aboutOpenMeteoAttribution =>
       'Dati di elevazione LOS: Open-Meteo (CC BY 4.0)';
+
+  @override
+  String get about_project => 'Progetto';
+
+  @override
+  String get about_sourceCode => 'Codice sorgente';
+
+  @override
+  String get about_license => 'Licenza';
+
+  @override
+  String get about_openSourceLicenses => 'Licenze open source';
+
+  @override
+  String get about_credits => 'Riconoscimenti';
+
+  @override
+  String get about_contributors => 'Collaboratori';
 
   @override
   String get settings_infoName => 'Nome';
@@ -939,20 +1025,19 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settings_presets => 'Preset';
 
   @override
-  String get settings_presetCustom => 'Personalizzato';
+  String get settings_radioParameters => 'Parametri';
 
   @override
-  String get settings_radioMatchWarning =>
-      'Tutti i nodi con cui parli devono usare la stessa frequenza, larghezza di banda e SF. Il coding rate (CR) può essere diverso.';
+  String get settings_presetCustom => 'Personalizzato';
 
   @override
   String get settings_frequency => 'Frequenza (MHz)';
 
   @override
-  String get settings_frequencyHelper => '300,0 - 2500,0';
+  String get settings_frequencyHelper => '150,0 - 2500,0 MHz';
 
   @override
-  String get settings_frequencyInvalid => 'Frequenza non valida (300-2500 MHz)';
+  String get settings_frequencyInvalid => 'Frequenza non valida (150-2500 MHz)';
 
   @override
   String get settings_bandwidth => 'Larghezza di banda';
@@ -975,16 +1060,23 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settings_txPowerInvalid => 'Potenza TX non valida (0-22 dBm)';
 
   @override
-  String get settings_clientRepeat => 'Ripetizione \"fuori dalla rete\"';
+  String get settings_clientRepeat => 'Modalità di ripetizione fuori rete';
+
+  @override
+  String get settings_clientRepeatDescription =>
+      'Permette a questo dispositivo di ripetere i pacchetti. Pensato per le zone senza copertura di ripetitori.\n\nQuesta modalità usa un insieme limitato di frequenze. ATTIVANDOLA, probabilmente perderai la connessione con il resto della mesh. Tutti i nodi con cui comunichi devono usare la stessa frequenza, larghezza di banda e fattore di diffusione (SF). Solo il tasso di codifica (CR) può essere diverso.';
+
+  @override
+  String get settings_clientRepeatSwitch => 'Modalità di ripetizione';
+
+  @override
+  String get settings_clientRepeatNote =>
+      'Nota: DISATTIVANDOLA, viene ripristinata la frequenza precedente. Se poi non riesci a connetterti alla mesh, controlla preset/parametri.';
 
   @override
   String settings_clientRepeatFrequencyNote(String freq) {
     return 'Frequenza impostata su $freq MHz per la ripetizione fuori rete';
   }
-
-  @override
-  String get settings_clientRepeatSubtitle =>
-      'Permetti a questo dispositivo di ripetere i pacchetti di rete per gli altri.';
 
   @override
   String get settings_clientRepeatFreqWarning =>
@@ -1318,7 +1410,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settings_pathHashModeHelper =>
-      'Dimensione di ogni ID di nodo registrato nel percorso dei pacchetti flood inviati da questa radio: 1 byte (256 ID, fino a 64 salti), 2 byte (65.000 ID, fino a 32 salti), 3 byte (16 milioni di ID, fino a 21 salti). ID più grandi riducono le collisioni, ma i ripetitori con firmware precedente alla v1.14 scartano i pacchetti con ID a 2 o 3 byte.';
+      'Dimensione dell\'ID di ogni nodo registrato nel percorso dei pacchetti flood inviati da questa radio:\n\n- 1 byte: 256 ID univoci, fino a 64 salti. \"ab\".\n- 2 byte: 65.000 ID univoci, fino a 32 salti. \"ab12\".\n- 3 byte: 16 milioni di ID univoci, fino a 21 salti. \"ab12cd\".\n\nID più grandi riducono le collisioni, ma i ripetitori con firmware precedente alla v1.14 scartano i pacchetti con ID a 2 e 3 byte.';
 
   @override
   String settings_requiresFirmware(String version) {
@@ -3929,7 +4021,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Manopole di regolazione per operatori esperti';
 
   @override
-  String get repeater_pathHashMode => 'Modalità di hashing del percorso';
+  String get repeater_pathHashMode => 'Dimensione dell\'hash ID';
 
   @override
   String get repeater_pathHashModeHelper =>
@@ -5706,11 +5798,21 @@ class AppLocalizationsIt extends AppLocalizations {
       'MeshCore Open non è in esecuzione. Aprila e invia di nuovo la risposta.';
 
   @override
-  String get settings_exportBookmarks => 'Esporta segnalibri in Markdown';
+  String get export_messagesTitle => 'Messaggi';
 
   @override
-  String get settings_exportBookmarksSubtitle =>
-      'Condividi o salva i messaggi con segnalibro come file Markdown.';
+  String get export_messagesDescription =>
+      'Messaggi nei segnalibri, salvati come file Markdown.';
+
+  @override
+  String get export_locationsTitle => 'Posizioni dei contatti';
+
+  @override
+  String get export_locationsDescription =>
+      'Contatti con posizione nota, salvati come file GPX per le app di mappe.';
+
+  @override
+  String get settings_exportBookmarks => 'Segnalibri';
 
   @override
   String get settings_exportBookmarksSuccess => 'Segnalibri esportati.';
@@ -5720,26 +5822,13 @@ class AppLocalizationsIt extends AppLocalizations {
       'Nessun segnalibro da esportare.';
 
   @override
-  String get settings_gpxExportRepeaters =>
-      'Esporta ripetitori / server di stanza in GPX';
+  String get settings_gpxExportRepeaters => 'Ripetitori e stanze';
 
   @override
-  String get settings_gpxExportRepeatersSubtitle =>
-      'Esporta ripetitori / roomserver con una posizione in un file GPX.';
+  String get settings_gpxExportContacts => 'Utenti / Companion';
 
   @override
-  String get settings_gpxExportContacts => 'Esporta compagni in GPX';
-
-  @override
-  String get settings_gpxExportContactsSubtitle =>
-      'Esporta i compagni con una posizione in un file GPX.';
-
-  @override
-  String get settings_gpxExportAll => 'Esporta tutti i contatti in GPX';
-
-  @override
-  String get settings_gpxExportAllSubtitle =>
-      'Esporta tutti i contatti con una posizione in un file GPX.';
+  String get settings_gpxExportAll => 'Tutti i contatti';
 
   @override
   String get settings_gpxExportSuccess =>
@@ -5795,59 +5884,43 @@ class AppLocalizationsIt extends AppLocalizations {
   String get contactsSettings_title => 'Impostazioni dei contatti';
 
   @override
-  String get contactsSettings_autoAddTitle => 'Scoperta automatica';
+  String get contactsSettings_autoAddTitle =>
+      'Aggiunta automatica dei contatti';
 
   @override
-  String get contactsSettings_otherTitle =>
-      'Altre impostazioni relative ai contatti';
+  String get contactsSettings_autoAddDescription =>
+      'Aggiunge ai contatti della radio i nuovi nodi ascoltati di questi tipi. Gli altri si possono aggiungere più tardi da Contatti scoperti.';
 
   @override
-  String get contactsSettings_autoAddUsersTitle =>
-      'Aggiungere utenti automaticamente';
+  String get contactsSettings_otherTitle => 'Limiti degli elenchi contatti';
 
   @override
-  String get contactsSettings_autoAddUsersSubtitle =>
-      'Consenti al compagno di aggiungere automaticamente gli utenti scoperti.';
+  String get contactsSettings_autoAddUsersTitle => 'Utenti';
 
   @override
-  String get contactsSettings_autoAddRepeatersTitle =>
-      'Aggiungere ripetitori automaticamente';
+  String get contactsSettings_autoAddRepeatersTitle => 'Ripetitori';
 
   @override
-  String get contactsSettings_autoAddRepeatersSubtitle =>
-      'Consenti al compagno di aggiungere automaticamente i ripetitori scoperti.';
+  String get contactsSettings_autoAddRoomServersTitle => 'Server stanza';
 
   @override
-  String get contactsSettings_autoAddRoomServersTitle =>
-      'Aggiungere automaticamente i server delle stanze';
-
-  @override
-  String get contactsSettings_autoAddRoomServersSubtitle =>
-      'Consenti al compagno di aggiungere automaticamente i server delle stanze scoperte.';
-
-  @override
-  String get contactsSettings_autoAddSensorsTitle =>
-      'Aggiungere automaticamente i sensori';
-
-  @override
-  String get contactsSettings_autoAddSensorsSubtitle =>
-      'Consenti al compagno di aggiungere automaticamente i sensori scoperti';
+  String get contactsSettings_autoAddSensorsTitle => 'Sensori';
 
   @override
   String get contactsSettings_overwriteOldestTitle =>
-      'Sostituisci il più vecchio';
+      'Sovrascrivi il più vecchio';
 
   @override
   String get contactsSettings_overwriteOldestSubtitle =>
-      'Quando l\'elenco dei contatti è pieno, il contatto più vecchio non tra i preferiti verrà sostituito.';
+      'Quando l\'elenco dei contatti della radio è pieno, sostituisce il contatto più vecchio non tra i preferiti.';
 
   @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
-      'Rimuovi i contatti scoperti';
+      'Limita i contatti scoperti';
 
   @override
   String contactsSettings_evictDiscoveredContactsSubtitle(int limit) {
-    return 'Se abilitato, l\'app rimuove i contatti scoperti più vecchi quando l\'elenco dei contatti scoperti raggiunge il limite di $limit voci.';
+    return 'L\'app limita l\'elenco \"Contatti scoperti\" a $limit voci. Al raggiungimento del limite, i contatti più vecchi vengono rimossi. Disattiva per rimuovere il limite.';
   }
 
   @override

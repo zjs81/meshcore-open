@@ -22,6 +22,7 @@ import 'package:meshcore_open/games/hash_chain.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
 import 'package:meshcore_open/models/contact.dart';
 import 'package:meshcore_open/review_mode/review_radio.dart';
+import 'package:meshcore_open/screens/about_screen.dart';
 import 'package:meshcore_open/screens/add_contact_screen.dart';
 import 'package:meshcore_open/screens/app_debug_log_screen.dart';
 import 'package:meshcore_open/screens/app_settings_screen.dart';
@@ -32,14 +33,20 @@ import 'package:meshcore_open/screens/channels_screen.dart';
 import 'package:meshcore_open/screens/chat_screen.dart';
 import 'package:meshcore_open/screens/chrome_required_screen.dart';
 import 'package:meshcore_open/screens/companion_radio_stats_screen.dart';
+import 'package:meshcore_open/screens/contact_settings_screen.dart';
 import 'package:meshcore_open/screens/contacts_screen.dart';
 import 'package:meshcore_open/screens/coordinate_map_screen.dart';
 import 'package:meshcore_open/screens/discovery_screen.dart';
 import 'package:meshcore_open/screens/line_of_sight_map_screen.dart';
+import 'package:meshcore_open/screens/location_picker_screen.dart';
+import 'package:meshcore_open/screens/location_settings_screen.dart';
 import 'package:meshcore_open/screens/map_cache_screen.dart';
 import 'package:meshcore_open/screens/map_screen.dart';
 import 'package:meshcore_open/screens/neighbors_screen.dart';
+import 'package:meshcore_open/screens/node_name_screen.dart';
 import 'package:meshcore_open/screens/path_trace_map.dart';
+import 'package:meshcore_open/screens/privacy_settings_screen.dart';
+import 'package:meshcore_open/screens/radio_settings_screen.dart';
 import 'package:meshcore_open/screens/region_management_screen.dart';
 import 'package:meshcore_open/screens/repeater_cli_screen.dart';
 import 'package:meshcore_open/screens/repeater_hub_screen.dart';
@@ -245,6 +252,14 @@ final Map<String, _ScreenBuilder> _screens = {
   'Channels': (_) => const ChannelsScreen(),
   'Settings': (_) => const SettingsScreen(),
   'AppSettings': (_) => const AppSettingsScreen(),
+  'NodeName': (_) => const NodeNameScreen(),
+  'RadioSettings': (c) => RadioSettingsScreen(connector: c),
+  'LocationSettings': (_) => const LocationSettingsScreen(),
+  'LocationPicker': (_) =>
+      const LocationPickerScreen(initial: LatLng(45.515232, -122.678385)),
+  'ContactSettings': (_) => const ContactSettingsScreen(),
+  'PrivacySettings': (_) => const PrivacySettingsScreen(),
+  'About': (_) => const AboutScreen(),
   'Discovery': (_) => const DiscoveryScreen(),
   'RegionManagement': (_) => const RegionManagementScreen(),
   'MapCache': (_) => const MapCacheScreen(),
@@ -325,9 +340,9 @@ void main() {
 
   final variants = [
     for (final entry in _screens.entries) (entry, false),
-    // Repeater screens add a banner while the companion radio is offline;
-    // the main and chat screens swap in the Connect button and the
-    // read-only composer bar.
+    // Repeater screens and the radio settings pages add a banner while the
+    // companion radio is offline; the main and chat screens swap in the
+    // Connect button and the read-only composer bar.
     for (final entry in _screens.entries)
       if (entry.key.startsWith('Repeater') ||
           const {
@@ -339,6 +354,11 @@ void main() {
             'ChannelChat',
             'ChessGame',
             'Settings',
+            'NodeName',
+            'RadioSettings',
+            'LocationSettings',
+            'ContactSettings',
+            'PrivacySettings',
           }.contains(entry.key))
         (entry, true),
   ];

@@ -402,8 +402,10 @@ class AppLocalizationsHu extends AppLocalizations {
   String get settings_export => 'Exportálás';
 
   @override
-  String get settings_exportSubtitle =>
-      'Névjegyek és átjátszók exportálása GPX-ként';
+  String get settings_exportData => 'Adatok exportálása';
+
+  @override
+  String get settings_exportSubtitle => 'Könyvjelzők és kapcsolatok helyadatai';
 
   @override
   String get backupRestore_title => 'Mentés és visszaállítás';
@@ -598,6 +600,47 @@ class AppLocalizationsHu extends AppLocalizations {
   String get settings_nodeNameHint => 'Írja be a csomópont nevét';
 
   @override
+  String get nodeName_info =>
+      'A neve minden bájtjával egy bájttal kevesebb marad a csatornaüzeneteknek. Az ékezetes betűk, a speciális karakterek és az emojik egynél több bájtot foglalhatnak.';
+
+  @override
+  String get nodeName_messageLength => 'Üzenethossz';
+
+  @override
+  String get nodeName_channelMessages => 'Csatornaüzenetek';
+
+  @override
+  String get nodeName_channelMessagesSubtitle => 'A neve csökkenti';
+
+  @override
+  String get nodeName_directMessages => 'Közvetlen üzenetek';
+
+  @override
+  String get nodeName_directMessagesSubtitle => 'A neve nem befolyásolja';
+
+  @override
+  String nodeName_bytesAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bájt elérhető',
+      one: '1 bájt elérhető',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String nodeName_bytesOver(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bájttal túllépi a korlátot',
+      one: '1 bájttal túllépi a korlátot',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get settings_nodeNameUpdated => 'Név frissítve';
 
   @override
@@ -606,6 +649,10 @@ class AppLocalizationsHu extends AppLocalizations {
   @override
   String get settings_radioSettingsSubtitle =>
       'Frekvencia, teljesítmény, szórási tényező';
+
+  @override
+  String get settings_unsavedChangesMessage =>
+      'Vannak módosítások, amelyek nincsenek elmentve a rádióra.';
 
   @override
   String get settings_radioSettingsUpdated => 'A rádió beállításai frissítve';
@@ -705,6 +752,23 @@ class AppLocalizationsHu extends AppLocalizations {
   String get settings_locationSubtitle => 'GPS koordináták';
 
   @override
+  String get location_coordinates => 'Koordináták';
+
+  @override
+  String get location_coordinatesDescription =>
+      'A csomópont pozíciója. Megjelenik a térképen, ezt használja a helymegosztás, és a hirdetésekben is szerepel, ha be van kapcsolva a „Hirdetés helye” (Adatvédelmi beállítások).';
+
+  @override
+  String get location_pickOnMap => 'Kiválasztás a térképen';
+
+  @override
+  String get locationPicker_hint =>
+      'Húzza a térképet, vagy koppintson a jelölő elhelyezéséhez.';
+
+  @override
+  String get locationPicker_useLocation => 'A kijelölt hely használata';
+
+  @override
   String get settings_locationUpdated => 'A hely- és GPS-beállítások frissítve';
 
   @override
@@ -720,10 +784,14 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get settings_locationGPSEnableSubtitle =>
-      'Lehetővé teszi a GPS számára a hely automatikus frissítését.';
+      'Folyamatosan frissíti a helyet a rádió GPS-e alapján.';
 
   @override
-  String get settings_locationIntervalSec => 'GPS intervallum (másodperc)';
+  String get settings_locationIntervalSec =>
+      'Frissítési intervallum (másodperc)';
+
+  @override
+  String get settings_locationIntervalHelper => '60-tól 86399 másodpercig';
 
   @override
   String get settings_locationIntervalInvalid =>
@@ -740,7 +808,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get settings_contactSettingsSubtitle =>
-      'A névjegyek hozzáadásának beállításai.';
+      'A névjegyek hozzáadásának beállításai';
 
   @override
   String get settings_privacyMode => 'Adatvédelmi mód';
@@ -764,7 +832,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get settings_privacySubtitle =>
-      'Szabályozza, hogy milyen információkat osztanak meg.';
+      'Szabályozza, hogy milyen információkat osztanak meg';
 
   @override
   String get settings_privacySettingsDescription =>
@@ -791,7 +859,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get settings_telemetryPerContactHint =>
-      'Ha engedélyezni szeretné a kapcsolatot, nyissa meg a csevegését, és válassza a menüben a Kapcsolati beállítások lehetőséget.';
+      'Ha engedélyezni szeretne egy adott kapcsolatot, nyissa meg a csevegését, és válassza a menüben a Kapcsolati beállítások lehetőséget.';
 
   @override
   String get settings_advertLocation => 'Hirdetés helye';
@@ -813,7 +881,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get settings_multiAckSubtitle =>
-      'További ACK-kat küld a jobb kézbesítés érdekében; több műsoridőt igényel';
+      '2 nyugtát (ACK) küld 1 helyett, ha a nyugta közvetlen úton megy vissza. Megbízhatóbb, de több adásidőt használ.';
 
   @override
   String get settings_telemetryModeUpdated => 'Telemetriai mód frissítve';
@@ -826,7 +894,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Törölje az összes elérési utat a névjegyekből.';
+      'Törölje az összes elérési utat a névjegyekből';
 
   @override
   String get settings_sendAdvertisement => 'Hirdetés küldése';
@@ -882,15 +950,15 @@ class AppLocalizationsHu extends AppLocalizations {
   String get settings_appDebugLogSubtitle => 'Alkalmazás hibakeresési üzenetei';
 
   @override
-  String get settings_about => 'Körülbelül';
+  String get settings_about => 'Névjegy';
 
   @override
-  String settings_aboutVersion(String version) {
-    return 'MeshCore Open v$version';
+  String get settings_aboutTheApp => 'Az alkalmazásról';
+
+  @override
+  String settings_aboutLegalese(String year) {
+    return '$year MeshCore nyílt forráskódú projekt';
   }
-
-  @override
-  String get settings_aboutLegalese => '2026 MeshCore nyílt forráskódú projekt';
 
   @override
   String get settings_aboutDescription =>
@@ -899,6 +967,24 @@ class AppLocalizationsHu extends AppLocalizations {
   @override
   String get settings_aboutOpenMeteoAttribution =>
       'LOS magassági adatok: Open-Meteo (CC BY 4.0)';
+
+  @override
+  String get about_project => 'Projekt';
+
+  @override
+  String get about_sourceCode => 'Forráskód';
+
+  @override
+  String get about_license => 'Licenc';
+
+  @override
+  String get about_openSourceLicenses => 'Nyílt forráskódú licencek';
+
+  @override
+  String get about_credits => 'Köszönetnyilvánítás';
+
+  @override
+  String get about_contributors => 'Közreműködők';
 
   @override
   String get settings_infoName => 'Név';
@@ -934,21 +1020,20 @@ class AppLocalizationsHu extends AppLocalizations {
   String get settings_presets => 'Előbeállítások';
 
   @override
-  String get settings_presetCustom => 'Egyéni';
+  String get settings_radioParameters => 'Paraméterek';
 
   @override
-  String get settings_radioMatchWarning =>
-      'Az összes csomóponttal, amelyhez kapcsolódik, azonos frekvenciát, sávszélességet és SF-et kell használni. A kódolási arány (CR) eltérhet.';
+  String get settings_presetCustom => 'Egyéni';
 
   @override
   String get settings_frequency => 'Frekvencia (MHz)';
 
   @override
-  String get settings_frequencyHelper => '300,0 - 2500,0';
+  String get settings_frequencyHelper => '150,0 - 2500,0 MHz';
 
   @override
   String get settings_frequencyInvalid =>
-      'Érvénytelen frekvencia (300-2500 MHz)';
+      'Érvénytelen frekvencia (150-2500 MHz)';
 
   @override
   String get settings_bandwidth => 'Sávszélesség';
@@ -972,16 +1057,23 @@ class AppLocalizationsHu extends AppLocalizations {
       'Érvénytelen TX teljesítmény (0-22 dBm)';
 
   @override
-  String get settings_clientRepeat => 'Hálózaton kívüli ismétlés';
+  String get settings_clientRepeat => 'Hálózaton kívüli ismétlési mód';
+
+  @override
+  String get settings_clientRepeatDescription =>
+      'Lehetővé teszi, hogy ez az eszköz továbbítsa a csomagokat. Olyan helyeken való használatra készült, ahol nincs átjátszó-lefedettség.\n\nEz a mód korlátozott frekvenciakészletet használ. Ha BEKAPCSOLJA, valószínűleg elveszíti a kapcsolatot a tágabb mesh hálózattal. Minden csomópontnak, amellyel kommunikál, ugyanazt a frekvenciát, sávszélességet és szórási tényezőt (SF) kell használnia. Csak a kódolási sebesség (CR) térhet el.';
+
+  @override
+  String get settings_clientRepeatSwitch => 'Ismétlési mód';
+
+  @override
+  String get settings_clientRepeatNote =>
+      'Megjegyzés: Ha KIKAPCSOLJA, visszaáll az előző frekvencia. Ha ezután nem tud csatlakozni a mesh hálózathoz, ellenőrizze az előbeállításokat/paramétereket.';
 
   @override
   String settings_clientRepeatFrequencyNote(String freq) {
     return '$freq MHz frekvencia beállítva a hálózaton kívüli ismétléshez';
   }
-
-  @override
-  String get settings_clientRepeatSubtitle =>
-      'Engedélyezze az eszköznek, hogy megismételje a mesh-csomagokat mások számára';
 
   @override
   String get settings_clientRepeatFreqWarning =>
@@ -1314,7 +1406,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get settings_pathHashModeHelper =>
-      'Az elküldött flood csomagok útvonalában rögzített csomópontazonosító mérete: 1 bájt (256 azonosító, legfeljebb 64 ugrás), 2 bájt (65 ezer, legfeljebb 32 ugrás), 3 bájt (16 millió, legfeljebb 21 ugrás). A nagyobb azonosítók csökkentik az ütközéseket, de az v1.14-nél régebbi firmware-t futtató átjátszók eldobják a 2 vagy 3 bájtos azonosítókat tartalmazó csomagokat.';
+      'Az egyes csomópontok azonosítójának mérete az ezen rádió által küldött flood csomagok útvonalában:\n\n- 1 bájt: 256 egyedi azonosító, legfeljebb 64 ugrás. \"ab\".\n- 2 bájt: 65 ezer egyedi azonosító, legfeljebb 32 ugrás. \"ab12\".\n- 3 bájt: 16 millió egyedi azonosító, legfeljebb 21 ugrás. \"ab12cd\".\n\nA nagyobb azonosítók csökkentik az ütközéseket, de a v1.14-nél régebbi firmware-t futtató átjátszók eldobják a 2 és 3 bájtos azonosítót használó csomagokat.';
 
   @override
   String settings_requiresFirmware(String version) {
@@ -3924,8 +4016,7 @@ class AppLocalizationsHu extends AppLocalizations {
       'Finomhangolási beállítások tapasztalt üzemeltetőknek';
 
   @override
-  String get repeater_pathHashMode =>
-      'Csomópont-azonosító mérete az útvonalakban';
+  String get repeater_pathHashMode => 'Azonosító-hash mérete';
 
   @override
   String get repeater_pathHashModeHelper =>
@@ -5703,41 +5794,37 @@ class AppLocalizationsHu extends AppLocalizations {
       'A MeshCore Open nem fut. Nyissa meg, és küldje el a választ újra.';
 
   @override
-  String get settings_exportBookmarks =>
-      'Könyvjelzők exportálása Markdown formátumba';
+  String get export_messagesTitle => 'Üzenetek';
 
   @override
-  String get settings_exportBookmarksSubtitle =>
-      'A könyvjelzős üzenetek megosztása vagy mentése Markdown fájlként.';
+  String get export_messagesDescription =>
+      'Könyvjelzővel ellátott üzenetek, Markdown-fájlként mentve.';
 
   @override
-  String get settings_exportBookmarksSuccess => 'A könyvjelzők exportálva.';
+  String get export_locationsTitle => 'Kapcsolatok helyadatai';
+
+  @override
+  String get export_locationsDescription =>
+      'Ismert helyű kapcsolatok, GPX-fájlként mentve térképalkalmazásokhoz.';
+
+  @override
+  String get settings_exportBookmarks => 'Könyvjelzők';
+
+  @override
+  String get settings_exportBookmarksSuccess => 'Könyvjelzők exportálva.';
 
   @override
   String get settings_exportBookmarksNoBookmarks =>
       'Nincs exportálható könyvjelző.';
 
   @override
-  String get settings_gpxExportRepeaters =>
-      'Ismétlők / szobaszerver exportálása GPX-be';
+  String get settings_gpxExportRepeaters => 'Átjátszók és szobák';
 
   @override
-  String get settings_gpxExportRepeatersSubtitle =>
-      'Exportálja az átjátszókat / szobaszervereket a hellyel GPX-fájlba.';
+  String get settings_gpxExportContacts => 'Felhasználók / Kísérők';
 
   @override
-  String get settings_gpxExportContacts => 'Exportáljon társokat a GPX-be';
-
-  @override
-  String get settings_gpxExportContactsSubtitle =>
-      'A hellyel rendelkező kísérőket GPX-fájlba exportálja.';
-
-  @override
-  String get settings_gpxExportAll => 'Az összes névjegy exportálása a GPX-be';
-
-  @override
-  String get settings_gpxExportAllSubtitle =>
-      'A hellyel rendelkező összes névjegyet GPX-fájlba exportálja.';
+  String get settings_gpxExportAll => 'Összes kapcsolat';
 
   @override
   String get settings_gpxExportSuccess => 'A GPX fájl sikeresen exportálva.';
@@ -5791,58 +5878,42 @@ class AppLocalizationsHu extends AppLocalizations {
   String get contactsSettings_title => 'Névjegyek beállításai';
 
   @override
-  String get contactsSettings_autoAddTitle => 'Automatikus felfedezés';
+  String get contactsSettings_autoAddTitle =>
+      'Kapcsolatok automatikus hozzáadása';
 
   @override
-  String get contactsSettings_otherTitle =>
-      'Egyéb kapcsolattartási beállítások';
+  String get contactsSettings_autoAddDescription =>
+      'Az ilyen típusú, újonnan hallott csomópontok bekerülnek a rádió kapcsolatai közé. A többit később a „Felfedezett kapcsolatok” képernyőn adhatja hozzá.';
 
   @override
-  String get contactsSettings_autoAddUsersTitle =>
-      'Felhasználók automatikus hozzáadása';
+  String get contactsSettings_otherTitle => 'Kapcsolatlista korlátai';
 
   @override
-  String get contactsSettings_autoAddUsersSubtitle =>
-      'Engedélyezze a társ számára, hogy automatikusan hozzáadja a felfedezett felhasználókat.';
+  String get contactsSettings_autoAddUsersTitle => 'Felhasználók';
 
   @override
-  String get contactsSettings_autoAddRepeatersTitle =>
-      'Ismétlők automatikus hozzáadása';
+  String get contactsSettings_autoAddRepeatersTitle => 'Átjátszók';
 
   @override
-  String get contactsSettings_autoAddRepeatersSubtitle =>
-      'Engedélyezze a társnak, hogy automatikusan hozzáadja a felfedezett átjátszókat.';
+  String get contactsSettings_autoAddRoomServersTitle => 'Szobaszerverek';
 
   @override
-  String get contactsSettings_autoAddRoomServersTitle =>
-      'Szobaszerverek automatikus hozzáadása';
-
-  @override
-  String get contactsSettings_autoAddRoomServersSubtitle =>
-      'Engedélyezze a társ számára, hogy automatikusan hozzáadja a felfedezett szobaszervereket.';
-
-  @override
-  String get contactsSettings_autoAddSensorsTitle =>
-      'Érzékelők automatikus hozzáadása';
-
-  @override
-  String get contactsSettings_autoAddSensorsSubtitle =>
-      'Engedélyezze a társ számára a felfedezett érzékelők automatikus hozzáadását.';
+  String get contactsSettings_autoAddSensorsTitle => 'Érzékelők';
 
   @override
   String get contactsSettings_overwriteOldestTitle => 'A legrégebbi felülírása';
 
   @override
   String get contactsSettings_overwriteOldestSubtitle =>
-      'Amikor a névjegylista megtelik, a legrégebbi, nem kedvenc névjegy lecserélődik.';
+      'Ha a rádió kapcsolatlistája megtelt, a legrégebbi, nem kedvenc kapcsolat lecserélődik.';
 
   @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
-      'Felfedezett kapcsolatok eltávolítása';
+      'Felfedezett kapcsolatok korlátozása';
 
   @override
   String contactsSettings_evictDiscoveredContactsSubtitle(int limit) {
-    return 'Ha engedélyezve van, az alkalmazás eltávolítja a legrégebbi felfedezett kapcsolatokat, amint a felfedezési lista eléri a(z) $limit bejegyzéses korlátot.';
+    return 'Az alkalmazás a „Felfedezett kapcsolatok” listát $limit bejegyzésre korlátozza. A korlát elérésekor a régebbi kapcsolatok törlődnek. Kikapcsolva nincs korlát.';
   }
 
   @override
