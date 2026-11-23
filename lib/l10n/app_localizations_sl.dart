@@ -397,14 +397,16 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get settings_appSettingsSubtitle =>
-      'Obveščanja, sporoščanje in zemljevidi.';
+      'Obveščanja, sporoščanje in zemljevidi';
 
   @override
   String get settings_export => 'Izvozi';
 
   @override
-  String get settings_exportSubtitle =>
-      'Izvozi kontakte in repetitorje kot GPX';
+  String get settings_exportData => 'Izvozi podatke';
+
+  @override
+  String get settings_exportSubtitle => 'Zaznamki in lokacije stikov';
 
   @override
   String get backupRestore_title => 'Varnostna kopija in obnovitev';
@@ -599,6 +601,51 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_nodeNameHint => 'Vnesite ime node-a';
 
   @override
+  String get nodeName_info =>
+      'Vsak bajt v vašem imenu je en bajt manj za sporočila v kanalih. Črke s strešicami, posebni znaki in emoji lahko porabijo več kot en bajt.';
+
+  @override
+  String get nodeName_messageLength => 'Dolžina sporočila';
+
+  @override
+  String get nodeName_channelMessages => 'Sporočila v kanalih';
+
+  @override
+  String get nodeName_channelMessagesSubtitle => 'Vaše ime jih skrajša';
+
+  @override
+  String get nodeName_directMessages => 'Neposredna sporočila';
+
+  @override
+  String get nodeName_directMessagesSubtitle => 'Vaše ime nanje ne vpliva';
+
+  @override
+  String nodeName_bytesAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bajtov na voljo',
+      few: '$count bajti na voljo',
+      two: '$count bajta na voljo',
+      one: '$count bajt na voljo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String nodeName_bytesOver(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bajtov čez omejitev',
+      few: '$count bajti čez omejitev',
+      two: '$count bajta čez omejitev',
+      one: '$count bajt čez omejitev',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get settings_nodeNameUpdated => 'Ime posodobljeno';
 
   @override
@@ -607,6 +654,10 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get settings_radioSettingsSubtitle =>
       'Frekvenca, moč, razširitveni faktor';
+
+  @override
+  String get settings_unsavedChangesMessage =>
+      'Imate spremembe, ki niso shranjene v radiu.';
 
   @override
   String get settings_radioSettingsUpdated => 'Radio nastavitve posodobljene';
@@ -706,6 +757,23 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_locationSubtitle => 'GPS koordinate';
 
   @override
+  String get location_coordinates => 'Koordinate';
+
+  @override
+  String get location_coordinatesDescription =>
+      'Položaj vašega vozlišča. Prikazan je na zemljevidu, uporabljen pri deljenju lokacije in poslan v oglasih, ko je vklopljena »Lokacija oglasa« (Nastavitve zasebnosti).';
+
+  @override
+  String get location_pickOnMap => 'Izberi na zemljevidu';
+
+  @override
+  String get locationPicker_hint =>
+      'Povlecite zemljevid ali tapnite, da postavite oznako.';
+
+  @override
+  String get locationPicker_useLocation => 'Uporabi to lokacijo';
+
+  @override
   String get settings_locationUpdated => 'Lokacija posodobljena';
 
   @override
@@ -720,10 +788,13 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get settings_locationGPSEnableSubtitle =>
-      'Omogoči samodejno posodabljanje lokacije z GPS-jem.';
+      'Sproti posodablja lokacijo iz GPS-a radia.';
 
   @override
-  String get settings_locationIntervalSec => 'Interval za GPS (Sekunde)';
+  String get settings_locationIntervalSec => 'Interval posodabljanja (sekunde)';
+
+  @override
+  String get settings_locationIntervalHelper => 'od 60 do 86399 sekund';
 
   @override
   String get settings_locationIntervalInvalid =>
@@ -740,7 +811,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get settings_contactSettingsSubtitle =>
-      'Nastavitve za dodajanje stikov.';
+      'Nastavitve za dodajanje stikov';
 
   @override
   String get settings_privacyMode => 'Zasebnost';
@@ -763,7 +834,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get settings_privacySubtitle =>
-      'Kontrolirajte, katere informacije so deljene.';
+      'Kontrolirajte, katere informacije so deljene';
 
   @override
   String get settings_privacySettingsDescription =>
@@ -790,7 +861,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get settings_telemetryPerContactHint =>
-      'Da stiku dovolite, odprite njegov klepet in v meniju izberite Nastavitve stika.';
+      'Da določenemu stiku dovolite, odprite njegov klepet in v meniju izberite Nastavitve stika.';
 
   @override
   String get settings_advertLocation => 'Lokacija oglasa';
@@ -811,7 +882,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get settings_multiAckSubtitle =>
-      'Pošiljajte dodatna potrdila ACK za boljšo dostavo; porabi več časa v etru';
+      'Pošlje 2 potrdili (ACK) namesto 1, ko se potrditev vrača po neposredni poti. Bolj zanesljivo, vendar porabi več časa v etru.';
 
   @override
   String get settings_telemetryModeUpdated => 'Način telemetrije posodobljen';
@@ -824,7 +895,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Počisti vse podatke o poteh iz stikov.';
+      'Počisti vse podatke o poteh iz stikov';
 
   @override
   String get settings_sendAdvertisement => 'Pošlji Oglas';
@@ -870,7 +941,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get settings_companionDebugLogSubtitle =>
-      'Navodila, odgovori in surova podatka za BLE/TCP/USB.';
+      'Navodila, odgovori in surova podatka za BLE/TCP/USB';
 
   @override
   String get settings_appDebugLog => 'Logi aplikacije';
@@ -879,15 +950,15 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_appDebugLogSubtitle => 'Debug sporočila aplikacije';
 
   @override
-  String get settings_about => 'Oglejte si';
+  String get settings_about => 'O aplikaciji';
 
   @override
-  String settings_aboutVersion(String version) {
-    return 'MeshCore, različ $version';
+  String get settings_aboutTheApp => 'O aplikaciji';
+
+  @override
+  String settings_aboutLegalese(String year) {
+    return 'Odprtokodni projekt MeshCore $year';
   }
-
-  @override
-  String get settings_aboutLegalese => 'Odprtokodni projekt MeshCore 2024';
 
   @override
   String get settings_aboutDescription =>
@@ -896,6 +967,24 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get settings_aboutOpenMeteoAttribution =>
       'Podatki o višini LOS: Open-Meteo (CC BY 4.0)';
+
+  @override
+  String get about_project => 'Projekt';
+
+  @override
+  String get about_sourceCode => 'Izvorna koda';
+
+  @override
+  String get about_license => 'Licenca';
+
+  @override
+  String get about_openSourceLicenses => 'Odprtokodne licence';
+
+  @override
+  String get about_credits => 'Zahvale';
+
+  @override
+  String get about_contributors => 'Sodelavci';
 
   @override
   String get settings_infoName => 'Ime';
@@ -931,20 +1020,19 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_presets => 'Prednastavitve';
 
   @override
-  String get settings_presetCustom => 'Po meri';
+  String get settings_radioParameters => 'Parametri';
 
   @override
-  String get settings_radioMatchWarning =>
-      'Vsa vozlišča, s katerimi komunicirate, morajo uporabljati enako frekvenco, pasovno širino in SF. Hitrost kodiranja (CR) se lahko razlikuje.';
+  String get settings_presetCustom => 'Po meri';
 
   @override
   String get settings_frequency => 'Frekvenca (MHz)';
 
   @override
-  String get settings_frequencyHelper => '300,00 - 2500,00';
+  String get settings_frequencyHelper => '150,00 - 2500,00 MHz';
 
   @override
-  String get settings_frequencyInvalid => 'Neveljavna frekvenca (300-2500 MHz)';
+  String get settings_frequencyInvalid => 'Neveljavna frekvenca (150-2500 MHz)';
 
   @override
   String get settings_bandwidth => 'Pasovna širina';
@@ -953,7 +1041,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_spreadingFactor => 'Razširitveni faktor';
 
   @override
-  String get settings_codingRate => 'Programska hitrost';
+  String get settings_codingRate => 'Kodirna hitrost';
 
   @override
   String get settings_txPower => 'TX Moč (dBm)';
@@ -967,16 +1055,23 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_txPowerInvalid => 'Neveljavna TX moč (0-22 dBm)';
 
   @override
-  String get settings_clientRepeat => 'Neovadno ponavljanje';
+  String get settings_clientRepeat => 'Način ponavljanja brez omrežja';
+
+  @override
+  String get settings_clientRepeatDescription =>
+      'Tej napravi omogoča posredovanje paketov. Namenjen je uporabi tam, kjer ni pokritosti z repetitorji.\n\nTa način uporablja omejen nabor frekvenc. Ko ga VKLOPITE, boste verjetno izgubili povezavo s širšo mrežo mesh. Vsa vozlišča, s katerimi komunicirate, morajo uporabljati enako frekvenco, pasovno širino in razširitveni faktor (SF). Razlikuje se lahko le kodirna hitrost (CR).';
+
+  @override
+  String get settings_clientRepeatSwitch => 'Način ponavljanja';
+
+  @override
+  String get settings_clientRepeatNote =>
+      'Opomba: Ko ga IZKLOPITE, se obnovi prejšnja frekvenca. Če se nato ne morete povezati z mrežo mesh, preverite prednastavitve/parametre.';
 
   @override
   String settings_clientRepeatFrequencyNote(String freq) {
     return 'Frekvenca nastavljena na $freq MHz za ponavljanje brez omrežja';
   }
-
-  @override
-  String get settings_clientRepeatSubtitle =>
-      'Omogočite temu naprave, da ponavlja paketne sporočila za druge.';
 
   @override
   String get settings_clientRepeatFreqWarning =>
@@ -1308,7 +1403,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get settings_pathHashModeHelper =>
-      'Velikost ID vozlišča, zapisanega v poti pošiljanih paketov flood: 1 bajt (256 ID, do 64 skokov), 2 bajta (65 tisoč, do 32 skokov), 3 bajti (16 milijonov, do 21 skokov). Večja ID zmanjšajo trčenja, vendar ponovitelji s programsko opremo, starejšo od v1.14, zavrnejo pakete z 2- ali 3-bajtnimi ID.';
+      'Velikost ID-ja vsakega vozlišča v poti paketov flood, ki jih pošilja ta radio:\n\n- 1 bajt: 256 edinstvenih ID-jev, do 64 skokov. \"ab\".\n- 2 bajta: 65 tisoč edinstvenih ID-jev, do 32 skokov. \"ab12\".\n- 3 bajti: 16 milijonov edinstvenih ID-jev, do 21 skokov. \"ab12cd\".\n\nVečji ID-ji zmanjšajo trke, vendar repetitorji z vdelano programsko opremo, starejšo od v1.14, zavržejo pakete z 2- in 3-bajtnimi ID-ji.';
 
   @override
   String settings_requiresFirmware(String version) {
@@ -3918,7 +4013,7 @@ class AppLocalizationsSl extends AppLocalizations {
       'Gumbi za nastavljanje za izkušene uporabnike';
 
   @override
-  String get repeater_pathHashMode => 'Velikost ID-ja vozlišča v poteh';
+  String get repeater_pathHashMode => 'Velikost zgoščene vrednosti ID-ja';
 
   @override
   String get repeater_pathHashModeHelper =>
@@ -5687,11 +5782,21 @@ class AppLocalizationsSl extends AppLocalizations {
       'MeshCore Open ne teče. Odprite ga in ponovno pošite odgovor.';
 
   @override
-  String get settings_exportBookmarks => 'Izvozi zaznamke v Markdown';
+  String get export_messagesTitle => 'Sporočila';
 
   @override
-  String get settings_exportBookmarksSubtitle =>
-      'Deli ali shrani sporočila z zaznamki kot datoteko Markdown.';
+  String get export_messagesDescription =>
+      'Sporočila z zaznamkom, shranjena kot datoteka Markdown.';
+
+  @override
+  String get export_locationsTitle => 'Lokacije stikov';
+
+  @override
+  String get export_locationsDescription =>
+      'Stiki z znano lokacijo, shranjeni kot datoteka GPX za aplikacije z zemljevidi.';
+
+  @override
+  String get settings_exportBookmarks => 'Zaznamki';
 
   @override
   String get settings_exportBookmarksSuccess => 'Zaznamki so izvoženi.';
@@ -5700,26 +5805,13 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_exportBookmarksNoBookmarks => 'Ni zaznamkov za izvoz.';
 
   @override
-  String get settings_gpxExportRepeaters =>
-      'Izvoz ponoviteljev / strežnika sobe v GPX';
+  String get settings_gpxExportRepeaters => 'Repetitorji in sobe';
 
   @override
-  String get settings_gpxExportRepeatersSubtitle =>
-      'Izvozi ponovljene oddajnike / strežnik sobe z lokacijo v datoteko GPX.';
+  String get settings_gpxExportContacts => 'Uporabniki / Spremljevalci';
 
   @override
-  String get settings_gpxExportContacts => 'Izvoz spremljevalcev v GPX';
-
-  @override
-  String get settings_gpxExportContactsSubtitle =>
-      'Izvozi spremljevalce z lokacijo v datoteko GPX.';
-
-  @override
-  String get settings_gpxExportAll => 'Izvozi vse kontakte v GPX';
-
-  @override
-  String get settings_gpxExportAllSubtitle =>
-      'Izvozi vse kontakte z lokacijo v datoteko GPX.';
+  String get settings_gpxExportAll => 'Vsi stiki';
 
   @override
   String get settings_gpxExportSuccess => 'Uspešno izvoz GPX datoteke.';
@@ -5773,57 +5865,41 @@ class AppLocalizationsSl extends AppLocalizations {
   String get contactsSettings_title => 'Nastavitve stikov';
 
   @override
-  String get contactsSettings_autoAddTitle => 'Avtomatsko odkrivanje';
+  String get contactsSettings_autoAddTitle => 'Avtomatsko dodajanje stikov';
 
   @override
-  String get contactsSettings_otherTitle => 'Druge nastavitve v zvezi s stiki';
+  String get contactsSettings_autoAddDescription =>
+      'Na novo slišana vozlišča teh vrst se dodajo med stike radia. Druge lahko dodate pozneje na zaslonu »Odkriti stiki«.';
 
   @override
-  String get contactsSettings_autoAddUsersTitle =>
-      'Avtomatsko dodaj uporabnike';
+  String get contactsSettings_otherTitle => 'Omejitve seznama stikov';
 
   @override
-  String get contactsSettings_autoAddUsersSubtitle =>
-      'Dovoli spremljevalcu, da samodejno doda odkrite uporabnike.';
+  String get contactsSettings_autoAddUsersTitle => 'Uporabniki';
 
   @override
-  String get contactsSettings_autoAddRepeatersTitle =>
-      'Avtomatsko dodaj ponovitelje';
+  String get contactsSettings_autoAddRepeatersTitle => 'Repetitorji';
 
   @override
-  String get contactsSettings_autoAddRepeatersSubtitle =>
-      'Dovoli spremljevalcu, da samodejno doda odkrite ponovitelje.';
+  String get contactsSettings_autoAddRoomServersTitle => 'Strežniki sob';
 
   @override
-  String get contactsSettings_autoAddRoomServersTitle =>
-      'Avtomatsko dodaj strežnike sob';
-
-  @override
-  String get contactsSettings_autoAddRoomServersSubtitle =>
-      'Dovoli spremljevalcu, da samodejno doda odkrite strežnike sob.';
-
-  @override
-  String get contactsSettings_autoAddSensorsTitle =>
-      'Avtomatsko dodaj senzorje';
-
-  @override
-  String get contactsSettings_autoAddSensorsSubtitle =>
-      'Dovoli spremljevalcu, da samodejno doda odkrite senzorje.';
+  String get contactsSettings_autoAddSensorsTitle => 'Senzorji';
 
   @override
   String get contactsSettings_overwriteOldestTitle => 'Prepiši najstarejše';
 
   @override
   String get contactsSettings_overwriteOldestSubtitle =>
-      'Ko je seznam stikov poln, bo najstarejši nestarševski stik zamenjan.';
+      'Ko je seznam stikov v radiu poln, se zamenja najstarejši stik, ki ni med priljubljenimi.';
 
   @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
-      'Odstrani odkrite stike';
+      'Omeji odkrite stike';
 
   @override
   String contactsSettings_evictDiscoveredContactsSubtitle(int limit) {
-    return 'Ko je ta možnost vklopljena, aplikacija odstrani najstarejše odkrite stike, ko seznam odkritih stikov doseže omejitev $limit vnosov.';
+    return 'Aplikacija omeji seznam »Odkriti stiki« na $limit vnosov. Ko je omejitev dosežena, se starejši stiki odstranijo. Izklopite za odpravo omejitve.';
   }
 
   @override

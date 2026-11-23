@@ -78,7 +78,7 @@ void main() {
     expect(reader.readInt32LE(), ReviewScript.selfLatitudeE6);
     expect(reader.readInt32LE(), ReviewScript.selfLongitudeE6);
     reader.skipBytes(4);
-    expect(reader.readUInt32LE(), 910525000);
+    expect(reader.readUInt32LE(), 910525);
     expect(reader.readUInt32LE(), 62500);
     expect(reader.readByte(), 7);
     expect(reader.readByte(), 5);

@@ -2,7 +2,7 @@
 
 How MeshCore Open's interface is built today, and the rules to follow when adding or changing UI. Every value below comes from the code it cites. If you change one of those sources, or settle on a new pattern, update this page in the same change.
 
-The source of truth is `lib/theme/mesh_theme.dart` (theme), `lib/widgets/mesh_ui.dart` (shared widgets), `lib/widgets/settings_reveal.dart` (reveal-on-enable and settings sliders) and `lib/widgets/mesh_nav_tile.dart` (settings rows). Where the code disagrees with this page, fix one of them; do not copy the inconsistency.
+The source of truth is `lib/theme/mesh_theme.dart` (theme), `lib/widgets/mesh_ui.dart` (shared widgets), `lib/widgets/settings_reveal.dart` (reveal-on-enable and settings sliders), `lib/widgets/mesh_nav_tile.dart` (settings rows) and `lib/widgets/unsaved_changes_guard.dart` (Save and the leave warning on pages that save to a radio). Where the code disagrees with this page, fix one of them; do not copy the inconsistency.
 
 ## 1. Principles
 
@@ -119,10 +119,17 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 |---|---|---|
 | Group of related content | `MeshCard` | `onTap`/`onLongPress` give ink feedback; long-press adds a selection haptic |
 | Label above a group | `SectionHeader(label, trailing:)` | Upper-cases for you; pass the normal-case l10n string |
-| Settings navigation row | `MeshNavTile` | `onTap: null` dims it to 50 % and reports it as disabled; use `subtitle` to say why |
+| Settings navigation row | `MeshNavTile` | `onTap: null` dims it to 50 % and reports it as disabled; use `subtitle` to say why. `iconSlot` shows a themeable icon (e.g. node types, as in the contact list) |
 | Settings switch | `SwitchListTile` inside `MeshSettingsTileTheme` | Wrap the settings screen body once in `MeshSettingsTileTheme` |
 | Switch that reveals more controls | `SettingsReveal` | 200ms height ease, `surfaceContainerHighest`, 16px start indent. See [Reveal on enable](#reveal-on-enable) |
 | Settings slider | `SettingsValueSlider` | Requires a 24px `icon` (`ListTile.leading`). The title includes the selected number, so it stays visible. The drag bubble repeats it |
+| Read-only value in a settings row | 24px `onSurfaceVariant` icon, title (`meshTileTitleStyle`), the value on its own line in `MeshTheme.mono` 15 w500 `onSurface`, subtitle `bodyMedium` `onSurfaceVariant` | Same value style as the Settings device info card; not `StatTile`, which is for status screens (Node Name message length) |
+| Settings saved to a radio | `SaveToRadioPage(title:, hasChanges:, onSave:, children:)` | See [Settings pages](#settings-pages). A custom scaffold uses `UnsavedChangesGuard` + `SaveChangesAction` |
+| Section explanation | `SectionHeader(label, description:)` | One or two short sentences in `bodyMedium` `onSurfaceVariant` under the label, for a note that belongs to one section (Node Name, Location) |
+| Option that needs a longer explanation | `MeshCard(padding: EdgeInsets.zero)`: explanation text, `Divider(height: 1, indent: 16, endIndent: 16)`, the switch row, divider, optional note | Text in `bodyMedium` `onSurfaceVariant`, padding 16 / 14, so it reads like tile subtitles. The dividers are inset on both sides to match the text (Off-Grid Repeat Mode) |
+| Note at the top of a page or section | `MeshInfoCard(text)` | Info icon and `bodyMedium` text in a `MeshCard`; one or two short sentences (Add Contact, Privacy) |
+| Text field with a byte limit | `TextField` with `x / max` as `suffixIcon` (Node Name) | Count always visible. Input past the limit is allowed: the count turns `error`, `errorText` says how far over, and Save is disabled. Don't block input silently |
+| Choosing a point on a map | `LocationPickerScreen(initial:)` | Page with a fixed centre pin; returns the `LatLng` to the form |
 | Radio-style choice in a sheet | `MeshSheetOption` | Used by the language picker, map time filter and compression sheet. Optional `subtitle` explains the option; `onTap: null` disables it. Selected rows show a filled radio icon **and** a bold title, with `selected` semantics |
 | Per-chat setting at the top of a chat | Full-width strip under the app bar, above the transcript (`ChatCompressionSelector` in `widgets/chat_compression_selector.dart`) | `surfaceContainerLow` fill, `outlineVariant` bottom border, 48dp minimum height, `bodyLarge` w600 "Label: value ▾"; tap opens one `showMeshSheet` with `MeshSheetOption`s. Shows the saved value only; a spinner replaces ▾ while saving; a disabled strip shows why below the label. One shared widget for DM and channel chats; parents pass state and async callbacks |
 | Choosing between images | Selectable thumbnail tiles in a centred `Wrap` | Image send versions (`_versionTile` in `image_send_preview_sheet.dart`). `InkWell` with `MeshRadii.sm`; selected tile gets a 3px `primary` border **and** a `primary` check badge (never colour alone); caption under the tile in `bodySmall`, w600 when selected; figures such as packet counts in `MeshTheme.mono` 12; wrap the tile in `Semantics(button: true, selected:, label:)` |
@@ -211,19 +218,39 @@ What the code does:
 |---|---|---|---|
 | Bottom sheet | `showMeshSheet` + `BottomSheetHeader` (28 calls in 17 files) | Choosing from a list, an item's actions, quick tools tied to the current screen | Language picker, notification mode, add contact/channel options, emoji and GIF pickers, node info, share contact, image actions |
 | Draggable sheet | `showModalBottomSheet` + `DraggableScrollableSheet` | Tall, scrollable panels that need a drag size | `ContactRoutingSheet` (`routing_sheet.dart`), image send preview |
-| Dialog | `showDialog` + `AlertDialog` (72 calls in 35 files) | Confirming an action, a short input (one to three fields), a short message | Disconnect (`showDisconnectDialog`), clear (`showConfirmClearDialog`), unsaved changes, edit node name, rename point |
-| Page | `Navigator.push(MaterialPageRoute(...))` | Anything with sections, many fields, its own save, or that the user stays in | App Settings, Repeater Settings, Themes, Theme editor, Message filter, Region management |
+| Dialog | `showDialog` + `AlertDialog` | Confirming an action, a short input (one to three fields) outside settings, a short message | Disconnect (`showDisconnectDialog`), clear (`showConfirmClearDialog`), unsaved changes, rename point |
+| Page | `Navigator.push(MaterialPageRoute(...))` | Every settings entry, and anything with sections, many fields, its own save, or that the user stays in | App Settings, Node Name, Radio Settings, Location, Contact Settings, Privacy, About, Repeater Settings, Themes, Theme editor, Message filter, Region management |
 
 Rules for new UI:
 
-1. **Confirmation or a single short input → dialog.** Title, one sentence, Cancel + one action.
-2. **Pick one of several options, or act on one item → sheet.** Use `showMeshSheet` and start the content with `BottomSheetHeader(title:, subtitle:)`. It handles the keyboard and navigation-bar insets. Use raw `showModalBottomSheet` only when you need `DraggableScrollableSheet`.
-3. **Forms with sections, live remote values, or anything that needs Save/Discard → page.** Guard unsaved changes with `PopScope` and a discard dialog, as `repeater_settings_screen.dart` does.
-4. Never stack a dialog on a sheet on a dialog. Close the sheet first, or move the flow to a page.
+1. **Settings → page.** A row in Settings, App Settings or a repeater screen that opens settings opens a page, even for a single field. See [Settings pages](#settings-pages).
+2. **Confirmation or a single short input → dialog.** Title, one sentence, Cancel + one action. Inside settings, dialogs only confirm actions (Reboot, Delete all paths, unsaved changes).
+3. **Pick one of several options, or act on one item → sheet.** Use `showMeshSheet` and start the content with `BottomSheetHeader(title:, subtitle:)`. It handles the keyboard and navigation-bar insets. Use raw `showModalBottomSheet` only when you need `DraggableScrollableSheet`.
+4. **Forms with sections, live remote values, or anything that needs Save/Discard → page.** Guard unsaved changes with `UnsavedChangesGuard` (built into `SaveToRadioPage`).
+5. Never stack a dialog on a sheet on a dialog. Close the sheet first, or move the flow to a page.
 
 **Sheet layout.** `showMeshSheet` is the sheet: safe area on the top and sides, and the keyboard or navigation-bar inset on the bottom. Start the content with `BottomSheetHeader`. That widget is the handle and the title row (padding 20, 8, 8, 4 and a 36×4 handle, section 4). Do not add space above it, draw a second handle, or size the sheet with a fraction inside an `Align`; that leaves an empty band over the handle. The status-bar inset stays outside the sheet.
 
 The manual path editor (`path_editor_sheet.dart`) uses that layout. The hop list and the hex path field stay pinned under the header, including while the keyboard is open. When the band under the header is shorter than the search field, as on a landscape phone with the keyboard open, those blocks and the repeater list scroll together instead of overflowing.
+
+### Settings pages
+
+Every settings entry opens its own page, even for one field. On a settings page, dialogs only confirm actions and sheets only pick a value. A visual chooser (**Pick on map** in Location) is its own page that returns a value to the form.
+
+Layout follows App Settings: `SectionHeader` + `MeshCard` groups, an optional `MeshInfoCard` at the top, and `SettingsReveal` for sub-options that only apply while a switch is on. Text fields and dropdowns use the theme's input style; don't set a border per field.
+
+| Stored | Saved | Examples |
+|---|---|---|
+| Only in the app | On each change; no Save button | App Settings, Message filter, Themes |
+| On a radio | Only on Save | Node Name, Radio Settings, Location, Contact Settings, Privacy, Repeater Settings |
+
+Pages that save to a radio use `SaveToRadioPage` (`lib/widgets/unsaved_changes_guard.dart`). It adds `MeshSettingsTileTheme`, `RadioDisconnectedBanner`, the app bar Save, the leave warning, the connection check and the error snackbar.
+
+- Show every setting the page saves, filled with the radio's last reported value.
+- Save appears when a field differs from the saved value and hides when it's changed back. It's disabled offline, while saving, or while a field is invalid (`canSave`).
+- Leaving with unsaved edits asks Cancel, Discard or Save; Save closes the page only on success.
+- After saving, the page stays open and a snackbar confirms. A failed save keeps the edits.
+- Validate all fields before sending anything.
 
 ## 7. Node search
 
@@ -233,7 +260,10 @@ That is the Contacts list and its group member picker, Discovery, Map node searc
 
 ## 8. App bars
 
-- Title: a plain localized string, ellipsized on one line. Use `AppBarTitle` on top-level and settings screens; it adds the connected node name as a subtitle and battery/SNR indicators when there is room, dropping them in that order on narrow widths. Use `AdaptiveAppBarTitle` for a plain one-line title.
+- Title: a plain localized string, ellipsized on one line.
+  - Settings and every page opened from it: a centred plain title, `AdaptiveAppBarTitle` with `centerTitle: true`.
+  - Main tabs (Contacts, Channels, Map) and the screens that already use it: `AppBarTitle`, which adds the connected node name as a subtitle and battery/SNR indicators when there is room (dropping them in that order on narrow widths). It fills the bar's width, so it stays left-aligned; keep it that way.
+  - Chats keep their own left-aligned title (see below).
 - Centre the title (`centerTitle: true`, `AGENTS.md`); 31 screens set it explicitly because the theme default is `false`. Chat screens (`chat_screen.dart`, `channel_chat_screen.dart`) deliberately use `centerTitle: false` for their two-line name + route title.
 - Actions: at most two icon buttons plus the overflow (`Icons.more_vert`) menu, for example `RadioStatsIconButton`, search, ⋮ in `chat_screen.dart`. Put everything else in the overflow menu.
 - Overflow menus:
@@ -251,7 +281,7 @@ That is the Contacts list and its group member picker, Discovery, Map node searc
 | Background sync | `SyncProgressAppBarBottom`. |
 | Empty | `EmptyState` with an icon, a short title, and an action when there is an obvious next step. Use a separate "no results" state (`Icons.search_off`) when a search or filter hides everything. |
 | Error | A snackbar for a failed action. `ErrorRetryCard` for a failed load the user can retry. Never show raw exception text alone. |
-| Companion radio disconnected | Main and chat screens stay open, read-only ([offline mode](offline-mode.md)). Decide with `isRadioReadOnly(connector)` / `context.radioReadOnly` (`lib/utils/radio_guard.dart`): disable menu items (`PopupMenuItem(enabled: false)`, drop destructive colors) and buttons, hide FABs, and call `ensureRadioConnected(context)` as the safety net in handlers. The chat composer shows `OfflineComposerBar` in the same bubble and margins. Repeater screens stay open with `RadioDisconnectedBanner` at the top and disable radio-dependent actions. Settings rows that need the radio pass `onTap: null` and show `settings_requiresConnection` as the subtitle (`settings_screen.dart`). |
+| Companion radio disconnected | Main and chat screens stay open, read-only ([offline mode](offline-mode.md)). Decide with `isRadioReadOnly(connector)` / `context.radioReadOnly` (`lib/utils/radio_guard.dart`): disable menu items (`PopupMenuItem(enabled: false)`, drop destructive colors) and buttons, hide FABs, and call `ensureRadioConnected(context)` as the safety net in handlers. The chat composer shows `OfflineComposerBar` in the same bubble and margins. Repeater screens and the Settings pages that save to the radio stay open with `RadioDisconnectedBanner` at the top and disable radio-dependent actions, including Save. Settings rows that need the radio pass `onTap: null` and show `settings_requiresConnection` as the subtitle (`settings_screen.dart`). |
 | Feature unsupported by firmware | Disabled row with a subtitle that says why (`settings_requiresFirmware('v1.10')`). |
 | Remote value not fetched yet | See below. |
 
@@ -269,6 +299,7 @@ Follow the same pattern for any new remote-value screen.
 
 - All user-facing strings go through `context.l10n` (`lib/l10n/l10n.dart`). Add keys to `lib/l10n/app_en.arb` first. No string literals in widgets, including fallbacks.
 - Keep strings short: labels are a few words, subtitles one sentence.
+- Settings row titles use Title Case in English ("Radio Stats", "About the App"; short words like "the", "and", "of" stay lowercase unless first). Other locales follow their own capitalization. Row descriptions (subtitles) have no trailing full stop in any locale. The main Settings page follows this; apply it to new and changed settings rows.
 - Keep established radio terms in English in every locale: Flood, Zero Hop, hop, SNR, RSSI, LoRa, advert, repeater names and CLI commands.
 - Never put text in a fixed-width box (`SizedBox(width: 80, child: Text(...))`). Use `Expanded`/`Flexible`, or let a `Row` wrap into a `Column`/`Wrap` when space runs out.
 - Labels must wrap or scale, never clip and never break mid-word:
@@ -288,10 +319,12 @@ Follow the same pattern for any new remote-value screen.
 - [ ] Overflow menus rely on `MeshTheme.popupMenuTheme`, use `MeshMenuItemRow`, have a localized `tooltip`, place screen-specific items above a `PopupMenuDivider` followed by Connect/Disconnect and Settings (omitting any leading divider when empty), and place destructive items last in `scheme.error`; segmented buttons use `MeshSegmentLabel`.
 - [ ] Every `IconButton` and FAB has a localized `tooltip`.
 - [ ] Tap targets at least 48×48.
-- [ ] Right container: dialog for confirm/short input, `showMeshSheet` + `BottomSheetHeader` for choices and item actions, page for forms. No gap above the sheet handle.
+- [ ] Right container: page for every settings entry and for forms, dialog for confirm/short input, `showMeshSheet` + `BottomSheetHeader` for choices and item actions. No gap above the sheet handle.
+- [ ] Settings stored on a radio use `SaveToRadioPage` and save only on Save; settings stored in the app apply immediately.
 - [ ] Contact, repeater, room and user search uses `compareContactQueryRank`: prefix, then substring, then hop hash.
 - [ ] Loading, empty, error, offline and unknown-value states handled.
 - [ ] All strings in `app_en.arb`; checked in German or Portuguese at 1.3× and 2.0× on a narrow screen.
+- [ ] Settings row titles in Title Case (English); descriptions without a trailing full stop.
 - [ ] Light, dark and one custom theme checked.
 - [ ] This page updated if you introduced or changed a pattern.
 
@@ -299,10 +332,10 @@ Follow the same pattern for any new remote-value screen.
 
 The current code does not yet follow this page everywhere:
 
-- **App bar centring.** `MeshTheme._build` sets `centerTitle: false`, but `AGENTS.md` asks for centred titles and 31 screens override it. `contacts_screen.dart` does not, so its title is left-aligned while Channels and Settings are centred.
+- **App bar centring.** `MeshTheme._build` sets `centerTitle: false`, so screens opt in. One Settings page, `backup_restore_screen.dart`, uses `AppBarTitle(indicators: false, subtitle: false)` for a plain title, which stays left-aligned despite `centerTitle: true`; switch it to `AdaptiveAppBarTitle`. The main tabs and chats are left-aligned on purpose (see [App bars](#8-app-bars)).
 - **Disconnect icon-only error tint.** In overflow menus, Disconnect tints only the icon (`iconColor`), while Clear chat / Delete tint icon and label (`color`).
 - **Menu rows not using `MeshMenuItemRow`.** `channel_chat_screen.dart` bulk-select menu (Select all / Copy) puts a `ListTile` inside `PopupMenuItem`. `widgets/list_filter_widget.dart` and the group menu in `contacts_screen.dart` use plain `Text` items, which is acceptable for icon-less lists but does not limit wrapping.
-- **Settings toggles in two sizes.** `FeatureToggleRow` (`widgets/elements_ui.dart`, used in `settings_screen.dart` dialogs) uses a `bodyMedium` w600 title and `bodySmall` subtitle with a 32px refresh button. `MeshNavTile` and themed `SwitchListTile`s use `bodyLarge` w600 / `bodyMedium`. Only App Settings, Message Filter and Repeater Settings wrap their body in `MeshSettingsTileTheme`.
+- **Tile titles without `MeshSettingsTileTheme`.** Backup & Restore (`CheckboxListTile`) and Themes (`SwitchListTile`) do not wrap their body in it, so those titles are not semibold like the other settings rows.
 - **`ErrorRetryCard` is unused** and its fallback label is the hard-coded English `'Retry'` (`mesh_ui.dart`); screens show load errors in their own ways.
 - **Fixed-width label boxes.** `chat_screen.dart` `_buildInfoRow` (80px), `line_of_sight_map_screen.dart` endpoint label (54px, `fontSize: 12`), `channel_message_path_screen.dart` (72px, upper-cased `accentLabel` at its 11px default).
 - **11px text.** `MeshTheme.accentLabel()` without `fontSize` gives 11px in `channel_message_path_screen.dart`. The type scale's `labelSmall` (11) is used in `list_filter_widget.dart` section titles.
@@ -311,10 +344,11 @@ The current code does not yet follow this page everywhere:
 - **Navigation bar theme.** `navigationBarTheme` colours selected labels `onPrimary`, which is white-on-white in light mode; `QuickSwitchBar` overrides it. Any other `NavigationBar` would inherit the problem.
 - **Two badge styles.** `QuickSwitchBar` uses Material `Badge` capped at 99+; `UnreadBadge` caps at 9999+.
 - **Sheets without `showMeshSheet`.** Besides the draggable sheets, `chat_background.dart`, `map_screen.dart`, `theme_editor_screen.dart`, `repeater_cli_screen.dart`, `message_translation_button.dart` and `path_map_ui.dart` call `showModalBottomSheet` directly, so they skip the shared inset handling and most skip `BottomSheetHeader`.
-- **Large forms in dialogs.** `RadioSettingsDialog` (`widgets/radio_settings_dialog.dart`, nine inputs) and the contact settings dialog in `chat_screen.dart` are dialogs although they behave like forms.
+- **Repeater Settings guard.** `repeater_settings_screen.dart` has its own unsaved-changes dialog instead of `UnsavedChangesGuard`.
+- **Settings in dialogs.** App Settings still opens IPFS image links (`_IpfsImageLinksDialog`) and the raster tile source and endpoint as dialogs in `app_settings_screen.dart`, and the per-contact settings in `chat_screen.dart` are a dialog although they behave like a form.
 - **Dialog buttons.** `showDisconnectDialog` (`utils/dialog_utils.dart`) uses two `TextButton`s with no emphasis; `showConfirmClearDialog` uses a red `FilledButton`.
 - **Snackbars.** A few places still call `ScaffoldMessenger.showSnackBar` directly (`discovery_screen.dart`, `app_settings_screen.dart`, `message_filter_settings_screen.dart`, `region_management_screen.dart`, `helpers/image_send_flow.dart`) and so miss tap-to-dismiss and replace-instead-of-queue.
-- **Small tap targets.** `FeatureToggleRow` refresh (32px) and 40px buttons in `chat_screen.dart`, `channel_chat_screen.dart`, `reaction_chips.dart`, `snr_indicator.dart`, `path_map_ui.dart`; 44px in `routing_sheet.dart`.
+- **Small tap targets.** 40px buttons in `chat_screen.dart`, `channel_chat_screen.dart`, `reaction_chips.dart`, `snr_indicator.dart`, `path_map_ui.dart`; 44px in `routing_sheet.dart`.
 - **Unknown placeholders.** Repeater and companion stats screens use `—`; `line_of_sight_map_screen.dart` uses `--`.
 - **Missing tooltip.** The Contacts FAB (`contacts_screen.dart`) has no tooltip; about 18 of 111 `IconButton`s have no tooltip nearby.
 - **Stale doc comments.** `SectionHeader` is described as "mono" but uses the sans `accentLabel`; the `StatusChip` comment sits above `meshContrastRatio`.

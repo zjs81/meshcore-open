@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/theme_icons.dart';
+
 /// Title style of settings rows: [MeshNavTile] and, through
 /// [MeshSettingsTileTheme], stock [ListTile]s and [SwitchListTile]s.
 TextStyle? meshTileTitleStyle(ThemeData theme) =>
@@ -32,6 +34,10 @@ class MeshSettingsTileTheme extends StatelessWidget {
 /// looks identical to one that can.
 class MeshNavTile extends StatelessWidget {
   final IconData icon;
+
+  /// Theme icon to show instead of [icon], so the row follows the user's
+  /// theme like the contact list does.
+  final ThemeIconSlot? iconSlot;
   final String title;
   final String? subtitle;
   final VoidCallback? onTap;
@@ -45,6 +51,7 @@ class MeshNavTile extends StatelessWidget {
   const MeshNavTile({
     super.key,
     required this.icon,
+    this.iconSlot,
     required this.title,
     this.subtitle,
     this.onTap,
@@ -66,7 +73,9 @@ class MeshNavTile extends StatelessWidget {
 
     final row = Row(
       children: [
-        Icon(icon, size: 24, color: effectiveIconColor),
+        iconSlot == null
+            ? Icon(icon, size: 24, color: effectiveIconColor)
+            : ThemedIcon(iconSlot!, size: 24, color: effectiveIconColor),
         const SizedBox(width: 16),
         Expanded(
           child: Column(

@@ -119,6 +119,40 @@ class GpxExport {
     }
   }
 
+  /// The contacts added so far, in export order.
+  @visibleForTesting
+  List<ContactExport> get contacts => List.unmodifiable(_contacts);
+
+  /// The GPX document for the added contacts.
+  @visibleForTesting
+  String buildGpx(String name, String description) {
+    final gpx = Gpx()
+      ..version = '1.1'
+      ..creator = 'meshcore-open exporter'
+      ..metadata = Metadata(
+        name: name,
+        desc: description,
+        time: DateTime.now().toUtc(),
+      );
+
+    gpx.wpts = _contacts
+        .map(
+          (c) => Wpt(
+            lat: c.lat,
+            lon: c.lon,
+            ele: c.ele,
+            name: c.name,
+            desc: c.desc,
+            extensions: {
+              "meshcore": {"url": c.url},
+            },
+          ),
+        )
+        .toList();
+
+    return GpxWriter().asString(gpx, pretty: true);
+  }
+
   Future<int> exportGPX(
     String name,
     String description,
@@ -137,32 +171,7 @@ class GpxExport {
     }
 
     try {
-      // 1. Build GPX content (your existing logic – unchanged here)
-      final gpx = Gpx()
-        ..version = '1.1'
-        ..creator = 'meshcore-open exporter'
-        ..metadata = Metadata(
-          name: name,
-          desc: description,
-          time: DateTime.now().toUtc(),
-        );
-
-      gpx.wpts = _contacts
-          .map(
-            (c) => Wpt(
-              lat: c.lat,
-              lon: c.lon,
-              ele: c.ele,
-              name: c.name,
-              desc: c.desc,
-              extensions: {
-                "meshcore": {"url": c.url},
-              },
-            ),
-          )
-          .toList();
-
-      final xml = GpxWriter().asString(gpx, pretty: true);
+      final xml = buildGpx(name, description);
 
       // 2. Save to file
       final timestamp = DateTime.now()

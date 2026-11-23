@@ -159,19 +159,19 @@ class _CoordinateMapScreenState extends State<CoordinateMapScreen> {
             right: 12,
             child: Column(
               children: [
-                _CoordinateMapControlButton(
+                CoordinateMapControlButton(
                   icon: Icons.add,
                   tooltip: l10n.map_zoomIn,
                   onPressed: () => _zoomBy(1),
                 ),
                 const SizedBox(height: 8),
-                _CoordinateMapControlButton(
+                CoordinateMapControlButton(
                   icon: Icons.remove,
                   tooltip: l10n.map_zoomOut,
                   onPressed: () => _zoomBy(-1),
                 ),
                 const SizedBox(height: 8),
-                _CoordinateMapControlButton(
+                CoordinateMapControlButton(
                   icon: Icons.my_location,
                   tooltip: l10n.map_centerMap,
                   onPressed: () => _mapController.move(_position, _initialZoom),
@@ -227,12 +227,14 @@ class _CoordinateMapScreenState extends State<CoordinateMapScreen> {
   }
 }
 
-class _CoordinateMapControlButton extends StatelessWidget {
+/// Zoom and recenter button floating over a full-screen map.
+class CoordinateMapControlButton extends StatelessWidget {
   final IconData icon;
   final String tooltip;
   final VoidCallback onPressed;
 
-  const _CoordinateMapControlButton({
+  const CoordinateMapControlButton({
+    super.key,
     required this.icon,
     required this.tooltip,
     required this.onPressed,

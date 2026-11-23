@@ -57,7 +57,7 @@ void main() {
   testWidgets('renders every section with defaults', (tester) async {
     await pumpScreen(tester);
 
-    expect(find.text('Message filter'), findsOneWidget);
+    expect(find.text('Message Filter'), findsOneWidget);
     expect(find.text('Filter messages'), findsOneWidget);
     expect(find.text('Show a small placeholder'), findsOneWidget);
     expect(find.text('Hide completely'), findsOneWidget);

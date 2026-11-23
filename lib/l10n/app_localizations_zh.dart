@@ -381,7 +381,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_export => '导出';
 
   @override
-  String get settings_exportSubtitle => '将联系人和中继站导出为 GPX';
+  String get settings_exportData => '导出数据';
+
+  @override
+  String get settings_exportSubtitle => '书签和联系人位置';
 
   @override
   String get backupRestore_title => '备份与恢复';
@@ -562,6 +565,44 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_nodeNameHint => '请输入节点名称';
 
   @override
+  String get nodeName_info => '名称每占用 1 字节，频道消息可用空间就少 1 字节。中文字符和表情符号每个占用多个字节。';
+
+  @override
+  String get nodeName_messageLength => '消息长度';
+
+  @override
+  String get nodeName_channelMessages => '频道消息';
+
+  @override
+  String get nodeName_channelMessagesSubtitle => '因名称而减少';
+
+  @override
+  String get nodeName_directMessages => '私信';
+
+  @override
+  String get nodeName_directMessagesSubtitle => '不受名称影响';
+
+  @override
+  String nodeName_bytesAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '可用 $count 字节',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String nodeName_bytesOver(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '超出上限 $count 字节',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get settings_nodeNameUpdated => '节点名称已更新';
 
   @override
@@ -569,6 +610,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings_radioSettingsSubtitle => '频率、功率、扩频因子';
+
+  @override
+  String get settings_unsavedChangesMessage => '你有尚未保存到无线电的更改。';
 
   @override
   String get settings_radioSettingsUpdated => '无线电设置已更新';
@@ -661,6 +705,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_locationSubtitle => 'GPS 坐标';
 
   @override
+  String get location_coordinates => '坐标';
+
+  @override
+  String get location_coordinatesDescription =>
+      '你的节点位置。显示在地图上，并在分享位置时使用。在隐私设置中开启“广播位置”后，也会包含在广播中。';
+
+  @override
+  String get location_pickOnMap => '在地图上选择';
+
+  @override
+  String get locationPicker_hint => '拖动地图或点击以放置标记。';
+
+  @override
+  String get locationPicker_useLocation => '使用此位置';
+
+  @override
   String get settings_locationUpdated => '位置和 GPS 设置已更新';
 
   @override
@@ -673,10 +733,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_locationGPSEnable => '启用 GPS';
 
   @override
-  String get settings_locationGPSEnableSubtitle => '启用 GPS 以自动更新位置。';
+  String get settings_locationGPSEnableSubtitle => '通过无线电的 GPS 持续更新位置。';
 
   @override
-  String get settings_locationIntervalSec => 'GPS 间隔（秒）';
+  String get settings_locationIntervalSec => '更新间隔（秒）';
+
+  @override
+  String get settings_locationIntervalHelper => '60 至 86399 秒';
 
   @override
   String get settings_locationIntervalInvalid => '间隔时间必须至少为 60 秒，但不超过 86400 秒。';
@@ -712,7 +775,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_privacy => '隐私设置';
 
   @override
-  String get settings_privacySubtitle => '控制要共享的信息。';
+  String get settings_privacySubtitle => '控制要共享的信息';
 
   @override
   String get settings_privacySettingsDescription => '选择您的设备与他人共享的信息。';
@@ -737,7 +800,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings_telemetryPerContactHint =>
-      '要允许某个联系人，请打开其聊天并从菜单中选择“联系人设置”。';
+      '要允许特定联系人，请打开其聊天并从菜单中选择“联系人设置”。';
 
   @override
   String get settings_advertLocation => '广播位置';
@@ -756,7 +819,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_multiAck => '多重ACK';
 
   @override
-  String get settings_multiAckSubtitle => '发送额外的 ACK 以提高送达率；会占用更多空中时间';
+  String get settings_multiAckSubtitle =>
+      '当确认（ACK）经直连路径返回时，发送 2 次确认，而不是 1 次。更可靠，但会占用更多空中时间。';
 
   @override
   String get settings_telemetryModeUpdated => '遥测模式已更新';
@@ -768,7 +832,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_deleteAllPaths => '删除所有路径';
 
   @override
-  String get settings_deleteAllPathsSubtitle => '清除联系人中的所有路径数据。';
+  String get settings_deleteAllPathsSubtitle => '清除联系人中的所有路径数据';
 
   @override
   String get settings_sendAdvertisement => '发送广播';
@@ -822,12 +886,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_about => '关于';
 
   @override
-  String settings_aboutVersion(String version) {
-    return 'MeshCore Open v$version';
-  }
+  String get settings_aboutTheApp => '关于应用';
 
   @override
-  String get settings_aboutLegalese => '2026 MeshCore 开源项目';
+  String settings_aboutLegalese(String year) {
+    return '$year MeshCore 开源项目';
+  }
 
   @override
   String get settings_aboutDescription =>
@@ -836,6 +900,24 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get settings_aboutOpenMeteoAttribution =>
       'LOS 高程数据:Open-Meteo (CC BY 4.0)';
+
+  @override
+  String get about_project => '项目';
+
+  @override
+  String get about_sourceCode => '源代码';
+
+  @override
+  String get about_license => '许可证';
+
+  @override
+  String get about_openSourceLicenses => '开源许可证';
+
+  @override
+  String get about_credits => '致谢';
+
+  @override
+  String get about_contributors => '贡献者';
 
   @override
   String get settings_infoName => '名称';
@@ -871,20 +953,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_presets => '预设';
 
   @override
-  String get settings_presetCustom => '自定义';
+  String get settings_radioParameters => '参数';
 
   @override
-  String get settings_radioMatchWarning =>
-      '你通信的所有节点必须使用相同的频率、带宽和扩频因子。编码速率（CR）可以不同。';
+  String get settings_presetCustom => '自定义';
 
   @override
   String get settings_frequency => '频率 (MHz)';
 
   @override
-  String get settings_frequencyHelper => '300.0 - 2500.0';
+  String get settings_frequencyHelper => '150.0 - 2500.0 MHz';
 
   @override
-  String get settings_frequencyInvalid => '无效频率范围（300-2500 MHz）';
+  String get settings_frequencyInvalid => '无效频率范围（150-2500 MHz）';
 
   @override
   String get settings_bandwidth => '带宽';
@@ -907,15 +988,23 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_txPowerInvalid => '无效的发射功率（0-22 dBm）';
 
   @override
-  String get settings_clientRepeat => '离网重复';
+  String get settings_clientRepeat => '离网中继模式';
+
+  @override
+  String get settings_clientRepeatDescription =>
+      '允许此设备转发数据包。适用于没有中继器覆盖的地区。\n\n此模式只能使用少数几个特定频率。一旦开启，很可能会与更大范围的网状网络断开连接。所有相互通信的节点必须使用相同的频率、带宽和扩频因子（SF）。只有编码速率（CR）可以不同。';
+
+  @override
+  String get settings_clientRepeatSwitch => '中继模式';
+
+  @override
+  String get settings_clientRepeatNote =>
+      '注意：关闭后将恢复为之前的频率。如果之后无法连接到网状网络，请检查预设/参数。';
 
   @override
   String settings_clientRepeatFrequencyNote(String freq) {
     return '为离网重复设置的频率：$freq MHz';
   }
-
-  @override
-  String get settings_clientRepeatSubtitle => '允许此设备重复发送网状数据包给其他设备';
 
   @override
   String get settings_clientRepeatFreqWarning =>
@@ -1238,7 +1327,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings_pathHashModeHelper =>
-      '此无线电发送的泛洪数据包在路径中记录的每个节点 ID 的大小：1 字节（256 个 ID，最多 64 跳）、2 字节（6.5 万个 ID，最多 32 跳）、3 字节（1600 万个 ID，最多 21 跳）。ID 越大冲突越少，但固件低于 v1.14 的中继器会丢弃带 2 或 3 字节 ID 的数据包。';
+      '此无线电发送的泛洪数据包路径中记录的每个节点 ID 的大小：\n\n- 1 字节：256 个唯一 ID，最多 64 跳。\"ab\"。\n- 2 字节：6.5 万个唯一 ID，最多 32 跳。\"ab12\"。\n- 3 字节：1600 万个唯一 ID，最多 21 跳。\"ab12cd\"。\n\nID 越长冲突越少，但固件早于 v1.14 的中继器会丢弃使用 2 字节和 3 字节 ID 的数据包。';
 
   @override
   String settings_requiresFirmware(String version) {
@@ -3712,7 +3801,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get repeater_advancedSettingsSubtitle => '高级操作员使用的调节旋钮';
 
   @override
-  String get repeater_pathHashMode => '路径哈希模式';
+  String get repeater_pathHashMode => 'ID 哈希大小';
 
   @override
   String get repeater_pathHashModeHelper =>
@@ -5310,10 +5399,19 @@ class AppLocalizationsZh extends AppLocalizations {
       'MeshCore Open 未在运行。请打开它并再次发送回复。';
 
   @override
-  String get settings_exportBookmarks => '将书签导出为 Markdown';
+  String get export_messagesTitle => '消息';
 
   @override
-  String get settings_exportBookmarksSubtitle => '将已加书签的消息分享或保存为 Markdown 文件。';
+  String get export_messagesDescription => '已加书签的消息，保存为 Markdown 文件。';
+
+  @override
+  String get export_locationsTitle => '联系人位置';
+
+  @override
+  String get export_locationsDescription => '位置已知的联系人，保存为 GPX 文件，供地图应用使用。';
+
+  @override
+  String get settings_exportBookmarks => '书签';
 
   @override
   String get settings_exportBookmarksSuccess => '书签已导出。';
@@ -5322,22 +5420,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_exportBookmarksNoBookmarks => '没有可导出的书签。';
 
   @override
-  String get settings_gpxExportRepeaters => '导出转发节点/房间服务器到 GPX';
+  String get settings_gpxExportRepeaters => '转发节点和房间';
 
   @override
-  String get settings_gpxExportRepeatersSubtitle => '导出带位置的转发节点/房间服务器到 GPX 文件';
+  String get settings_gpxExportContacts => '用户 / 伴侣设备';
 
   @override
-  String get settings_gpxExportContacts => '导出伙伴到 GPX';
-
-  @override
-  String get settings_gpxExportContactsSubtitle => '导出带位置的伙伴到 GPX 文件';
-
-  @override
-  String get settings_gpxExportAll => '导出所有联系人到 GPX';
-
-  @override
-  String get settings_gpxExportAllSubtitle => '导出所有带位置的联系人到 GPX 文件';
+  String get settings_gpxExportAll => '所有联系人';
 
   @override
   String get settings_gpxExportSuccess => 'GPX 文件导出成功';
@@ -5387,48 +5476,40 @@ class AppLocalizationsZh extends AppLocalizations {
   String get contactsSettings_title => '联系人设置';
 
   @override
-  String get contactsSettings_autoAddTitle => '自动发现';
+  String get contactsSettings_autoAddTitle => '自动添加联系人';
 
   @override
-  String get contactsSettings_otherTitle => '其他联系人相关设置';
+  String get contactsSettings_autoAddDescription =>
+      '将新听到的这些类型的节点添加到无线电的联系人中。其他节点可稍后在“已发现的联系人”中添加。';
 
   @override
-  String get contactsSettings_autoAddUsersTitle => '自动添加用户';
+  String get contactsSettings_otherTitle => '联系人列表上限';
 
   @override
-  String get contactsSettings_autoAddUsersSubtitle => '允许伴侣自动添加发现的用户';
+  String get contactsSettings_autoAddUsersTitle => '用户';
 
   @override
-  String get contactsSettings_autoAddRepeatersTitle => '自动添加重复器';
+  String get contactsSettings_autoAddRepeatersTitle => '转发节点';
 
   @override
-  String get contactsSettings_autoAddRepeatersSubtitle => '允许伴侣自动添加发现的重复器';
+  String get contactsSettings_autoAddRoomServersTitle => '房间服务器';
 
   @override
-  String get contactsSettings_autoAddRoomServersTitle => '自动添加房间服务器';
+  String get contactsSettings_autoAddSensorsTitle => '传感器';
 
   @override
-  String get contactsSettings_autoAddRoomServersSubtitle => '允许伴侣自动添加发现的房间服务器';
-
-  @override
-  String get contactsSettings_autoAddSensorsTitle => '自动添加传感器';
-
-  @override
-  String get contactsSettings_autoAddSensorsSubtitle => '允许伴侣自动添加发现的传感器';
-
-  @override
-  String get contactsSettings_overwriteOldestTitle => '覆盖最旧的';
+  String get contactsSettings_overwriteOldestTitle => '覆盖最旧的联系人';
 
   @override
   String get contactsSettings_overwriteOldestSubtitle =>
-      '当联系人列表已满时，将替换最老的非收藏联系人。';
+      '无线电的联系人列表已满时，替换最旧的非收藏联系人。';
 
   @override
-  String get contactsSettings_evictDiscoveredContactsTitle => '清除已发现的联系人';
+  String get contactsSettings_evictDiscoveredContactsTitle => '限制已发现的联系人';
 
   @override
   String contactsSettings_evictDiscoveredContactsSubtitle(int limit) {
-    return '启用后，当已发现联系人列表达到 $limit 条的上限时，应用会移除最旧的已发现联系人。';
+    return '应用将“已发现的联系人”列表限制为 $limit 条。达到上限时会移除较旧的联系人。关闭后不限数量。';
   }
 
   @override

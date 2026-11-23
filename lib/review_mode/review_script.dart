@@ -73,7 +73,8 @@ class ReviewScript {
   static const String selfName = 'Review Radio';
   static const int selfLatitudeE6 = 45515232;
   static const int selfLongitudeE6 = -122678385;
-  static const int frequencyHz = 910525000;
+  // In kHz, as the firmware sends it (910.525 MHz).
+  static const int frequencyHz = 910525;
   static const int bandwidthHz = 62500;
   static const int spreadingFactor = 7;
   static const int codingRate = 5;

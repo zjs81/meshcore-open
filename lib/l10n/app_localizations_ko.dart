@@ -387,7 +387,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_export => '내보내기';
 
   @override
-  String get settings_exportSubtitle => '연락처와 중계기를 GPX로 내보내기';
+  String get settings_exportData => '데이터 내보내기';
+
+  @override
+  String get settings_exportSubtitle => '북마크 및 연락처 위치';
 
   @override
   String get backupRestore_title => '백업 및 복원';
@@ -574,6 +577,45 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_nodeNameHint => '노드 이름을 입력하세요';
 
   @override
+  String get nodeName_info =>
+      '이름에 쓰는 1바이트마다 채널 메시지에 쓸 수 있는 공간이 1바이트 줄어듭니다. 한글, 한자, 이모지는 한 글자에 여러 바이트를 사용합니다.';
+
+  @override
+  String get nodeName_messageLength => '메시지 길이';
+
+  @override
+  String get nodeName_channelMessages => '채널 메시지';
+
+  @override
+  String get nodeName_channelMessagesSubtitle => '이름 길이만큼 줄어듦';
+
+  @override
+  String get nodeName_directMessages => '직접 메시지';
+
+  @override
+  String get nodeName_directMessagesSubtitle => '이름의 영향을 받지 않음';
+
+  @override
+  String nodeName_bytesAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count바이트 사용 가능',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String nodeName_bytesOver(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '제한을 $count바이트 초과합니다',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get settings_nodeNameUpdated => '이름 변경';
 
   @override
@@ -581,6 +623,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settings_radioSettingsSubtitle => '주파수, 전력, 확산 계수';
+
+  @override
+  String get settings_unsavedChangesMessage => '라디오에 저장되지 않은 변경 사항이 있습니다.';
 
   @override
   String get settings_radioSettingsUpdated => '라디오 설정이 업데이트되었습니다.';
@@ -674,6 +719,22 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_locationSubtitle => 'GPS 좌표';
 
   @override
+  String get location_coordinates => '좌표';
+
+  @override
+  String get location_coordinatesDescription =>
+      '노드의 위치입니다. 지도에 표시되고 위치를 공유할 때 사용됩니다. 개인 정보 설정의 \'어드버트 위치\'가 켜져 있으면 어드버트에도 포함됩니다.';
+
+  @override
+  String get location_pickOnMap => '지도에서 선택';
+
+  @override
+  String get locationPicker_hint => '지도를 드래그하거나 눌러서 핀을 놓으세요.';
+
+  @override
+  String get locationPicker_useLocation => '이 위치 사용';
+
+  @override
   String get settings_locationUpdated => '위치 및 GPS 설정이 업데이트되었습니다.';
 
   @override
@@ -687,10 +748,13 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settings_locationGPSEnableSubtitle =>
-      'GPS를 사용하여 위치 정보를 자동으로 업데이트할 수 있도록 합니다.';
+      '라디오의 GPS로 위치 정보를 계속 업데이트합니다.';
 
   @override
-  String get settings_locationIntervalSec => 'GPS 간격 (초)';
+  String get settings_locationIntervalSec => '업데이트 간격 (초)';
+
+  @override
+  String get settings_locationIntervalHelper => '60~86399초';
 
   @override
   String get settings_locationIntervalInvalid =>
@@ -728,7 +792,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_privacy => '개인 정보 설정';
 
   @override
-  String get settings_privacySubtitle => '어떤 정보를 공유할지 통제하세요.';
+  String get settings_privacySubtitle => '어떤 정보를 공유할지 통제하세요';
 
   @override
   String get settings_privacySettingsDescription =>
@@ -754,7 +818,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settings_telemetryPerContactHint =>
-      '연락처에 허용하려면 해당 채팅을 열고 메뉴에서 연락처 설정을 선택하세요.';
+      '특정 연락처에 허용하려면 해당 채팅을 열고 메뉴에서 연락처 설정을 선택하세요.';
 
   @override
   String get settings_advertLocation => '어드버트 위치';
@@ -775,7 +839,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settings_multiAckSubtitle =>
-      '전달을 개선하기 위해 ACK를 추가로 전송합니다. 방송 시간이 더 필요합니다';
+      '확인 응답(ACK)이 직접 경로로 돌아갈 때 1개 대신 2개 보냅니다. 더 안정적이지만 전송 시간을 더 많이 사용합니다.';
 
   @override
   String get settings_telemetryModeUpdated => '텔레메트리 모드 업데이트 완료';
@@ -787,7 +851,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_deleteAllPaths => '모든 경로 삭제';
 
   @override
-  String get settings_deleteAllPathsSubtitle => '연락처의 모든 경로 데이터를 지웁니다.';
+  String get settings_deleteAllPathsSubtitle => '연락처의 모든 경로 데이터를 지웁니다';
 
   @override
   String get settings_sendAdvertisement => '어드버트 전송';
@@ -817,7 +881,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_rebootDevice => '장치 재부팅';
 
   @override
-  String get settings_rebootDeviceSubtitle => 'MeshCore 장치를 재부팅합니다.';
+  String get settings_rebootDeviceSubtitle => 'MeshCore 장치를 재부팅합니다';
 
   @override
   String get settings_rebootDeviceConfirm => '정말 장치를 재부팅하시겠습니까? 연결이 끊어집니다.';
@@ -842,12 +906,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_about => '정보';
 
   @override
-  String settings_aboutVersion(String version) {
-    return 'MeshCore Open v$version';
-  }
+  String get settings_aboutTheApp => '앱 정보';
 
   @override
-  String get settings_aboutLegalese => '2026 MeshCore 오픈 소스 프로젝트';
+  String settings_aboutLegalese(String year) {
+    return '$year MeshCore 오픈 소스 프로젝트';
+  }
 
   @override
   String get settings_aboutDescription =>
@@ -856,6 +920,24 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get settings_aboutOpenMeteoAttribution =>
       'LOS 고도 데이터: Open-Meteo (CC BY 4.0)';
+
+  @override
+  String get about_project => '프로젝트';
+
+  @override
+  String get about_sourceCode => '소스 코드';
+
+  @override
+  String get about_license => '라이선스';
+
+  @override
+  String get about_openSourceLicenses => '오픈소스 라이선스';
+
+  @override
+  String get about_credits => '크레딧';
+
+  @override
+  String get about_contributors => '기여자';
 
   @override
   String get settings_infoName => '이름';
@@ -891,26 +973,25 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_presets => '프리셋';
 
   @override
-  String get settings_presetCustom => '사용자 지정';
+  String get settings_radioParameters => '파라미터';
 
   @override
-  String get settings_radioMatchWarning =>
-      '통신하는 모든 노드가 동일한 주파수, 대역폭, 확산 계수를 사용해야 합니다. 코딩 속도(CR)는 달라도 됩니다.';
+  String get settings_presetCustom => '사용자 지정';
 
   @override
   String get settings_frequency => '주파수 (MHz)';
 
   @override
-  String get settings_frequencyHelper => '300.0 - 2500.0';
+  String get settings_frequencyHelper => '150.0 - 2500.0 MHz';
 
   @override
-  String get settings_frequencyInvalid => '유효하지 않은 주파수 (300-2500 MHz)';
+  String get settings_frequencyInvalid => '유효하지 않은 주파수 (150-2500 MHz)';
 
   @override
   String get settings_bandwidth => '대역폭';
 
   @override
-  String get settings_spreadingFactor => '분산 계수';
+  String get settings_spreadingFactor => '확산 계수';
 
   @override
   String get settings_codingRate => '코딩 속도';
@@ -927,16 +1008,23 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_txPowerInvalid => '유효하지 않은 송신 전력 (0-22 dBm)';
 
   @override
-  String get settings_clientRepeat => '오프그리드 반복';
+  String get settings_clientRepeat => '오프그리드 반복 모드';
+
+  @override
+  String get settings_clientRepeatDescription =>
+      '이 장치가 패킷을 중계할 수 있게 합니다. 리피터 커버리지가 없는 곳에서 사용하기 위한 기능입니다.\n\n이 모드는 제한된 주파수만 사용합니다. ON으로 설정하면 더 넓은 메시와의 연결이 끊어질 가능성이 높습니다. 통신하는 모든 노드는 주파수, 대역폭, 확산 계수(SF)가 같아야 합니다. 코딩 속도(CR)만 달라도 됩니다.';
+
+  @override
+  String get settings_clientRepeatSwitch => '반복 모드';
+
+  @override
+  String get settings_clientRepeatNote =>
+      '참고: OFF로 설정하면 이전 주파수로 돌아갑니다. 이후 메시에 연결할 수 없으면 프리셋/파라미터를 확인하세요.';
 
   @override
   String settings_clientRepeatFrequencyNote(String freq) {
     return '오프그리드 반복용으로 주파수를 $freq MHz로 설정';
   }
-
-  @override
-  String get settings_clientRepeatSubtitle =>
-      '이 장치가 다른 장치의 메시 패킷을 반복하도록 허용합니다.';
 
   @override
   String get settings_clientRepeatFreqWarning =>
@@ -1260,7 +1348,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settings_pathHashModeHelper =>
-      '이 라디오가 보내는 플러딩 패킷의 경로에 기록되는 각 노드 ID의 크기: 1바이트(256개 ID, 최대 64홉), 2바이트(65,000개 ID, 최대 32홉), 3바이트(160만 개 ID, 최대 21홉). ID가 클수록 충돌이 줄어들지만, v1.14보다 오래된 펌웨어의 리피터는 2바이트 또는 3바이트 ID가 든 패킷을 버립니다.';
+      '이 라디오가 보내는 플러딩 패킷의 경로에 기록되는 각 노드 ID의 크기:\n\n- 1바이트: 고유 ID 256개, 최대 64홉. \"ab\".\n- 2바이트: 고유 ID 6.5만 개, 최대 32홉. \"ab12\".\n- 3바이트: 고유 ID 1,600만 개, 최대 21홉. \"ab12cd\".\n\nID가 클수록 충돌이 줄어들지만, v1.14보다 오래된 펌웨어를 쓰는 리피터는 2바이트 또는 3바이트 ID를 사용하는 패킷을 버립니다.';
 
   @override
   String settings_requiresFirmware(String version) {
@@ -3767,7 +3855,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get repeater_advancedSettingsSubtitle => '숙련된 운영자를 위한 세부 조정';
 
   @override
-  String get repeater_pathHashMode => '경로 내 노드 ID 크기';
+  String get repeater_pathHashMode => 'ID 해시 크기';
 
   @override
   String get repeater_pathHashModeHelper =>
@@ -5449,11 +5537,19 @@ class AppLocalizationsKo extends AppLocalizations {
       'MeshCore Open이 실행 중이 아닙니다. 앱을 연 뒤 답장을 다시 보내세요.';
 
   @override
-  String get settings_exportBookmarks => '북마크를 Markdown으로 내보내기';
+  String get export_messagesTitle => '메시지';
 
   @override
-  String get settings_exportBookmarksSubtitle =>
-      '북마크한 메시지를 Markdown 파일로 공유하거나 저장합니다.';
+  String get export_messagesDescription => '북마크한 메시지를 Markdown 파일로 저장합니다.';
+
+  @override
+  String get export_locationsTitle => '연락처 위치';
+
+  @override
+  String get export_locationsDescription => '위치가 알려진 연락처를 지도 앱용 GPX 파일로 저장합니다.';
+
+  @override
+  String get settings_exportBookmarks => '북마크';
 
   @override
   String get settings_exportBookmarksSuccess => '북마크를 내보냈습니다.';
@@ -5462,25 +5558,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_exportBookmarksNoBookmarks => '내보낼 북마크가 없습니다.';
 
   @override
-  String get settings_gpxExportRepeaters => 'GPX로 전송/방 관리 서버';
+  String get settings_gpxExportRepeaters => '리피터 및 방';
 
   @override
-  String get settings_gpxExportRepeatersSubtitle =>
-      'GPX 파일에 위치 정보를 포함하여 반복자/룸 서버를 내보냅니다.';
+  String get settings_gpxExportContacts => '사용자 / 컴패니언';
 
   @override
-  String get settings_gpxExportContacts => 'GPX 형식으로 내보내기';
-
-  @override
-  String get settings_gpxExportContactsSubtitle =>
-      'GPX 파일에 위치 정보를 포함하여 동행하는 기능을 내보냅니다.';
-
-  @override
-  String get settings_gpxExportAll => '모든 연락처를 GPX 형식으로 내보내기';
-
-  @override
-  String get settings_gpxExportAllSubtitle =>
-      '위치 정보가 있는 모든 연락처를 GPX 파일로 내보냅니다.';
+  String get settings_gpxExportAll => '모든 연락처';
 
   @override
   String get settings_gpxExportSuccess => 'GPX 파일이 성공적으로 내보내졌습니다.';
@@ -5530,52 +5614,40 @@ class AppLocalizationsKo extends AppLocalizations {
   String get contactsSettings_title => '연락처 설정';
 
   @override
-  String get contactsSettings_autoAddTitle => '자동 검색';
+  String get contactsSettings_autoAddTitle => '연락처 자동 추가';
 
   @override
-  String get contactsSettings_otherTitle => '다른 연락 관련 설정';
+  String get contactsSettings_autoAddDescription =>
+      '새로 수신된 이 유형의 노드를 라디오의 연락처에 추가합니다. 나머지는 나중에 \'연락처 찾기\'에서 추가할 수 있습니다.';
 
   @override
-  String get contactsSettings_autoAddUsersTitle => '자동으로 사용자 추가';
+  String get contactsSettings_otherTitle => '연락처 목록 한도';
 
   @override
-  String get contactsSettings_autoAddUsersSubtitle =>
-      '동반자가 자동으로 발견한 사용자를 추가할 수 있도록 합니다.';
+  String get contactsSettings_autoAddUsersTitle => '사용자';
 
   @override
-  String get contactsSettings_autoAddRepeatersTitle => '자동으로 중계기 추가';
+  String get contactsSettings_autoAddRepeatersTitle => '리피터';
 
   @override
-  String get contactsSettings_autoAddRepeatersSubtitle =>
-      '애완동물이 발견한 무선 라디오를 자동으로 추가할 수 있도록 설정합니다.';
+  String get contactsSettings_autoAddRoomServersTitle => '방 서버';
 
   @override
-  String get contactsSettings_autoAddRoomServersTitle => '자동으로 방 서버 추가';
+  String get contactsSettings_autoAddSensorsTitle => '센서';
 
   @override
-  String get contactsSettings_autoAddRoomServersSubtitle =>
-      '애완동물이 발견한 방 서버를 자동으로 추가할 수 있도록 설정합니다.';
-
-  @override
-  String get contactsSettings_autoAddSensorsTitle => '자동으로 센서 추가';
-
-  @override
-  String get contactsSettings_autoAddSensorsSubtitle =>
-      '애완동물이 발견한 센서를 자동으로 추가할 수 있도록 설정합니다.';
-
-  @override
-  String get contactsSettings_overwriteOldestTitle => '가장 오래된 것을 덮어쓰기';
+  String get contactsSettings_overwriteOldestTitle => '가장 오래된 연락처 덮어쓰기';
 
   @override
   String get contactsSettings_overwriteOldestSubtitle =>
-      '연락처 목록이 가득 차면, 가장 오래된 (선호하지 않은) 연락처가 대체됩니다.';
+      '라디오의 연락처 목록이 가득 차면 즐겨찾기가 아닌 가장 오래된 연락처를 교체합니다.';
 
   @override
-  String get contactsSettings_evictDiscoveredContactsTitle => '발견된 연락처 삭제';
+  String get contactsSettings_evictDiscoveredContactsTitle => '발견된 연락처 제한';
 
   @override
   String contactsSettings_evictDiscoveredContactsSubtitle(int limit) {
-    return '활성화하면 발견된 연락처 목록이 $limit개의 한도에 도달했을 때 가장 오래된 발견된 연락처를 삭제합니다.';
+    return '앱은 \"연락처 찾기\" 목록을 $limit개 항목으로 제한합니다. 한도에 도달하면 오래된 연락처부터 삭제됩니다. 끄면 제한이 없습니다.';
   }
 
   @override

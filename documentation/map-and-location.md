@@ -237,7 +237,7 @@ Each waypoint includes: name, lat/lon, type label, and public key hex.
 
 The phone's own GPS is **never used**. All location data comes from the mesh:
 
-1. **Device self-location**: Read from firmware device-info response. Set manually in Settings → Location, or updated automatically if the device has a GPS module.
+1. **Device self-location**: Read from firmware device-info response. Set manually in Settings → Location (type the coordinates or pick them on a map), or updated automatically if the device has a GPS module.
 2. **Remote node locations**: Extracted from advertisement packets received over the mesh. Encoded as integer lat/lon × 1,000,000.
 3. **Telemetry replies**: A GPS position in a node's telemetry (from **Update location** or the Telemetry screen) replaces its advert position until the node adverts again. Telemetry positions have about 11 m precision (Cayenne LPP).
 
