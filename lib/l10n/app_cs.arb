@@ -2975,6 +2975,9 @@
   "contactsSettings_autoAddSensorsTitle": "Senzory",
   "contactsSettings_overwriteOldestTitle": "Přepisovat nejstarší",
   "contactsSettings_overwriteOldestSubtitle": "Když je seznam kontaktů v rádiu plný, nahradí se nejstarší kontakt, který není oblíbený.",
+  "contactsSettings_hopLimit": "Limit skoků",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{Bez omezení} =1{1 (pouze přímo)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "Rádio automaticky přidá jen kontakty s menším počtem skoků, než je tato hodnota. Seznam „Objevené kontakty“ přesto uloží všechny.",
   "contactsSettings_evictDiscoveredContactsTitle": "Omezit objevené kontakty",
   "contactsSettings_evictDiscoveredContactsSubtitle": "Aplikace omezuje seznam „Objevené kontakty“ na {limit} položek. Po dosažení limitu jsou starší kontakty odstraněny. Vypněte pro zrušení limitu.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {

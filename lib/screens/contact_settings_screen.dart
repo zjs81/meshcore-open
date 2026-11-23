@@ -16,6 +16,7 @@ typedef _ContactForm = ({
   bool autoAddRoomServers,
   bool autoAddSensors,
   bool overwriteOldest,
+  int? maxHops,
   bool evictDiscovered,
 });
 
@@ -33,6 +34,8 @@ class _ContactSettingsScreenState extends State<ContactSettingsScreen> {
   late bool _autoAddRoomServers;
   late bool _autoAddSensors;
   late bool _overwriteOldest;
+  // Null when the firmware doesn't report a hop limit.
+  int? _maxHops;
   late bool _evictDiscovered;
   late _ContactForm _savedForm;
 
@@ -45,6 +48,7 @@ class _ContactSettingsScreenState extends State<ContactSettingsScreen> {
     _autoAddRoomServers = connector.autoAddRoomServers ?? false;
     _autoAddSensors = connector.autoAddSensors ?? false;
     _overwriteOldest = connector.autoAddOverwriteOldest ?? false;
+    _maxHops = connector.autoAddMaxHops;
     _evictDiscovered = context
         .read<AppSettingsService>()
         .settings
@@ -58,6 +62,7 @@ class _ContactSettingsScreenState extends State<ContactSettingsScreen> {
     autoAddRoomServers: _autoAddRoomServers,
     autoAddSensors: _autoAddSensors,
     overwriteOldest: _overwriteOldest,
+    maxHops: _maxHops,
     evictDiscovered: _evictDiscovered,
   );
 
@@ -73,6 +78,8 @@ class _ContactSettingsScreenState extends State<ContactSettingsScreen> {
         autoAddRoomServer: form.autoAddRoomServers,
         autoAddSensor: form.autoAddSensors,
         overwriteOldest: form.overwriteOldest,
+        // Sent only when changed, so the frame is otherwise unchanged.
+        maxHops: form.maxHops != _savedForm.maxHops ? form.maxHops : null,
       ),
     );
     await connector.sendFrame(buildGetAutoAddFlagsFrame());
@@ -168,6 +175,44 @@ class _ContactSettingsScreenState extends State<ContactSettingsScreen> {
                 value: _overwriteOldest,
                 onChanged: (v) => _overwriteOldest = v,
               ),
+              if (_maxHops != null) ...[
+                divider,
+                // Same row shape as SettingsValueSlider: icon, title and
+                // description, with the dropdown under the description.
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  leading: const Icon(Icons.linear_scale, size: 24),
+                  title: Text(l10n.contactsSettings_hopLimit),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.contactsSettings_hopLimitSubtitle),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<int>(
+                        initialValue: _maxHops,
+                        isExpanded: true,
+                        // Firmware: 0 = no limit, N = under N hops (max 64).
+                        items: [
+                          for (var hops = 0; hops <= 64; hops++)
+                            DropdownMenuItem(
+                              value: hops,
+                              child: Text(
+                                l10n.contactsSettings_hopLimitOption(hops),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                        ],
+                        onChanged: (v) {
+                          if (v != null) setState(() => _maxHops = v);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               divider,
               _switch(
                 // The Discovered Contacts icon.

@@ -5829,6 +5829,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'Replace the oldest non-favorited contact when the radio\'s contact list is full.';
 
   @override
+  String get contactsSettings_hopLimit => 'Hop limit';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (direct only)',
+      zero: 'No limit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'The radio only auto-adds contacts under this many hops. Discovered Contacts still saves them all.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Limit discovered contacts';
 

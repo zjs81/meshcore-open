@@ -5862,6 +5862,25 @@ class AppLocalizationsSv extends AppLocalizations {
       'När radions kontaktlista är full ersätts den äldsta kontakten som inte är en favorit.';
 
   @override
+  String get contactsSettings_hopLimit => 'Hoppgräns';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (endast direkt)',
+      zero: 'Ingen gräns',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'Radion lägger bara till kontakter automatiskt om de har färre hopp än detta värde. Alla sparas ändå i Upptäckta kontakter.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Begränsa upptäckta kontakter';
 

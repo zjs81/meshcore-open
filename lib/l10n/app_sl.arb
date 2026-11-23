@@ -2073,6 +2073,9 @@
     }
   },
   "contactsSettings_overwriteOldestSubtitle": "Ko je seznam stikov v radiu poln, se zamenja najstarejši stik, ki ni med priljubljenimi.",
+  "contactsSettings_hopLimit": "Omejitev skokov",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{Brez omejitve} =1{1 (samo neposredno)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "Radio avtomatsko doda le stike z manj skoki od te vrednosti. Seznam »Odkriti stiki« še vedno shrani vse.",
   "contactsSettings_evictDiscoveredContactsTitle": "Omeji odkrite stike",
   "contactsSettings_evictDiscoveredContactsSubtitle": "Aplikacija omeji seznam »Odkriti stiki« na {limit} vnosov. Ko je omejitev dosežena, se starejši stiki odstranijo. Izklopite za odpravo omejitve.",
   "common_deleteAll": "Izbriši vse",

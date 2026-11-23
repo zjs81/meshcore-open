@@ -2237,6 +2237,9 @@
   "contactsSettings_autoAddSensorsTitle": "センサー",
   "contactsSettings_overwriteOldestTitle": "最も古い連絡先を上書き",
   "contactsSettings_overwriteOldestSubtitle": "ラジオの連絡先リストが満杯になったら、お気に入り以外で最も古い連絡先を置き換えます。",
+  "contactsSettings_hopLimit": "ホップ数の上限",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{制限なし} =1{1（直接のみ）} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "ラジオはこの値より少ないホップ数の連絡先のみ自動追加します。「連絡先が見つかった」にはすべて保存されます。",
   "contactsSettings_evictDiscoveredContactsTitle": "発見された連絡先を制限",
   "contactsSettings_evictDiscoveredContactsSubtitle": "アプリは「連絡先が見つかった」リストを {limit} 件に制限します。上限に達すると古い連絡先から削除されます。オフにすると上限はなくなります。",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {

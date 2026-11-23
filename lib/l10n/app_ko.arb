@@ -2142,6 +2142,9 @@
   "contactsSettings_autoAddSensorsTitle": "센서",
   "contactsSettings_overwriteOldestTitle": "가장 오래된 연락처 덮어쓰기",
   "contactsSettings_overwriteOldestSubtitle": "라디오의 연락처 목록이 가득 차면 즐겨찾기가 아닌 가장 오래된 연락처를 교체합니다.",
+  "contactsSettings_hopLimit": "홉 수 제한",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{제한 없음} =1{1 (직접 연결만)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "라디오는 이 값보다 적은 홉의 연락처만 자동 추가합니다. '연락처 찾기'에는 모두 저장됩니다.",
   "contactsSettings_evictDiscoveredContactsTitle": "발견된 연락처 제한",
   "contactsSettings_evictDiscoveredContactsSubtitle": "앱은 \"연락처 찾기\" 목록을 {limit}개 항목으로 제한합니다. 한도에 도달하면 오래된 연락처부터 삭제됩니다. 끄면 제한이 없습니다.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {

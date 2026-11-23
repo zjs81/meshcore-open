@@ -2180,6 +2180,9 @@
   "discoveredContacts_importSummary": "Zaimportowano: {imported}, pominięto już znane: {skipped}, nieczytelne wpisy: {invalid}.",
   "discoveredContacts_importTooLarge": "Plik importu jest zbyt duży (maksymalnie {maxMb} MB).",
   "contactsSettings_overwriteOldestSubtitle": "Gdy lista kontaktów w radiu jest pełna, najstarszy kontakt spoza ulubionych zostanie zastąpiony.",
+  "contactsSettings_hopLimit": "Limit skoków",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{Bez limitu} =1{1 (tylko bezpośrednio)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "Radio automatycznie dodaje tylko kontakty z mniejszą liczbą skoków niż ta wartość. Lista „Odkryte Kontakty” nadal zapisuje wszystkie.",
   "contactsSettings_evictDiscoveredContactsTitle": "Ogranicz odkryte kontakty",
   "contactsSettings_evictDiscoveredContactsSubtitle": "Aplikacja ogranicza listę „Odkryte Kontakty” do {limit} pozycji. Po osiągnięciu limitu starsze kontakty są usuwane. Wyłącz, aby znieść limit.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {
