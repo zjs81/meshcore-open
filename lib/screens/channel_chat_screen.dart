@@ -595,8 +595,6 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
       onSelected: (value) {
         final connector = context.read<MeshCoreConnector>();
         switch (value) {
-          case 'games':
-            showChessGamesSheet(context, widget.channel);
           case 'messageFilter':
             _toggleChannelFiltering();
           case 'notifications':
@@ -639,13 +637,6 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
             .getChannelNotificationMode(muteKey);
         final readOnly = isRadioReadOnly(context.read<MeshCoreConnector>());
         return [
-          PopupMenuItem(
-            value: 'games',
-            child: _menuRow(
-              Icons.sports_esports_outlined,
-              chessMenuLabel(context, widget.channel),
-            ),
-          ),
           if (_messageFilter case final filter? when filter.settings.enabled)
             PopupMenuItem(
               value: 'messageFilter',
@@ -2918,6 +2909,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
             icon: Icons.person_add_alt,
             label: context.l10n.contactShare_shareAction,
           ),
+          ChatComposerAction(
+            id: 'games',
+            icon: Icons.sports_esports_outlined,
+            label: chessMenuLabel(context, widget.channel),
+          ),
         ];
       },
       onAction: (action) {
@@ -2937,6 +2933,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
               _textController,
               focusNode: _textFieldFocusNode,
             );
+          case 'games':
+            showChessGamesSheet(context, widget.channel);
         }
       },
     );

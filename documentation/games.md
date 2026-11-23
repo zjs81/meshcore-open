@@ -9,7 +9,7 @@ Play chess with someone on a channel, or watch other people's games. Moves go ov
 
 ## Start a game
 
-Open a channel, tap **⋮**, then **Chess games**. The menu shows how many games and invites are open on that channel.
+Open a channel, tap **+** next to the message box, then **Chess games**. The entry shows how many games and invites are open on that channel.
 
 - **Challenge someone**: pick a person recently heard on this channel. Only a radio with that name can accept. Their phone shows a notification.
 - **Post an open invite**: anyone on the channel can accept. If two people accept at the same time, the inviter's phone picks the first one it heard and tells everyone; the other person keeps watching.
