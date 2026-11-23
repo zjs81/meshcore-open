@@ -54,13 +54,7 @@ Future<void> _openSheet(
       builder: (context, child) {
         final media = MediaQuery.of(context);
         return MediaQuery(
-          data: media.copyWith(
-            size: size,
-            padding: padding,
-            viewPadding: viewPadding,
-            viewInsets: viewInsets,
-            textScaler: TextScaler.linear(textScale),
-          ),
+          data: media.copyWith(textScaler: TextScaler.linear(textScale)),
           child: child!,
         );
       },
@@ -125,6 +119,48 @@ void main() {
       final filteredRect = tester.getRect(sheetFinder);
       expect(filteredRect.height, lessThan(unfilteredHeight));
       expect(filteredRect.top, greaterThan(sheetRect.top));
+    },
+  );
+
+  testWidgets(
+    'sheet recomputes height cap and expands when keyboard inset closes',
+    (tester) async {
+      await _openSheet(
+        tester,
+        size: const Size(320, 568),
+        padding: const EdgeInsets.only(top: 48),
+        viewPadding: const EdgeInsets.only(top: 48, bottom: 34),
+        viewInsets: const EdgeInsets.only(bottom: 300),
+      );
+
+      final listFinder = find.byType(CustomScrollView);
+      expect(listFinder, findsOneWidget);
+      final compressedHeaderTop = tester
+          .getTopLeft(find.byType(BottomSheetHeader))
+          .dy;
+      final compressedBottom = tester.getBottomLeft(listFinder).dy;
+      final compressedContentHeight = compressedBottom - compressedHeaderTop;
+      expect(compressedContentHeight, lessThanOrEqualTo(220.0));
+
+      // Dismiss the keyboard while the sheet remains open.
+      tester.view.viewInsets = FakeViewPadding.zero;
+      tester.view.padding = const FakeViewPadding(top: 48, bottom: 34);
+      await tester.pumpAndSettle();
+
+      final expandedHeaderTop = tester
+          .getTopLeft(find.byType(BottomSheetHeader))
+          .dy;
+      final expandedListFinder = find.byType(ListView);
+      expect(expandedListFinder, findsOneWidget);
+      final expandedBottom = tester.getBottomLeft(expandedListFinder).dy;
+      final expandedContentHeight = expandedBottom - expandedHeaderTop;
+
+      expect(expandedContentHeight, greaterThan(compressedContentHeight));
+      expect(expandedContentHeight, greaterThan(400.0));
+      expect(
+        tester.getRect(find.byType(BottomSheet)).height,
+        greaterThan(450.0),
+      );
     },
   );
 
