@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
+import '../games/chess/ui/chess_games_sheet.dart';
 import '../models/community.dart';
 import '../storage/community_store.dart';
 import '../utils/platform_info.dart';
@@ -2908,6 +2909,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
             icon: Icons.person_add_alt,
             label: context.l10n.contactShare_shareAction,
           ),
+          ChatComposerAction(
+            id: 'games',
+            icon: Icons.sports_esports_outlined,
+            label: chessMenuLabel(context, widget.channel),
+          ),
         ];
       },
       onAction: (action) {
@@ -2927,6 +2933,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
               _textController,
               focusNode: _textFieldFocusNode,
             );
+          case 'games':
+            showChessGamesSheet(context, widget.channel);
         }
       },
     );

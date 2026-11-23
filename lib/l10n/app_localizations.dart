@@ -12987,6 +12987,678 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Location copied'**
   String get coordinate_copied;
+
+  /// No description provided for @chess_menuGames.
+  ///
+  /// In en, this message translates to:
+  /// **'Chess games'**
+  String get chess_menuGames;
+
+  /// No description provided for @chess_menuGamesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Chess games ({count})'**
+  String chess_menuGamesCount(int count);
+
+  /// No description provided for @chess_sheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chess'**
+  String get chess_sheetTitle;
+
+  /// No description provided for @chess_sectionNewGame.
+  ///
+  /// In en, this message translates to:
+  /// **'New game'**
+  String get chess_sectionNewGame;
+
+  /// No description provided for @chess_sectionYourGames.
+  ///
+  /// In en, this message translates to:
+  /// **'Your games'**
+  String get chess_sectionYourGames;
+
+  /// No description provided for @chess_sectionInvites.
+  ///
+  /// In en, this message translates to:
+  /// **'Open invites'**
+  String get chess_sectionInvites;
+
+  /// No description provided for @chess_sectionLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live games'**
+  String get chess_sectionLive;
+
+  /// No description provided for @chess_sectionFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished'**
+  String get chess_sectionFinished;
+
+  /// No description provided for @chess_newChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge someone'**
+  String get chess_newChallenge;
+
+  /// No description provided for @chess_newChallengeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick someone recently heard on this channel'**
+  String get chess_newChallengeSubtitle;
+
+  /// No description provided for @chess_newOpenInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Post an open invite'**
+  String get chess_newOpenInvite;
+
+  /// No description provided for @chess_newOpenInviteSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone on this channel can accept'**
+  String get chess_newOpenInviteSubtitle;
+
+  /// No description provided for @chess_emptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No games yet'**
+  String get chess_emptyTitle;
+
+  /// No description provided for @chess_emptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge someone or post an open invite. Anyone on the channel can watch.'**
+  String get chess_emptySubtitle;
+
+  /// No description provided for @chess_vs.
+  ///
+  /// In en, this message translates to:
+  /// **'{white} vs {black}'**
+  String chess_vs(String white, String black);
+
+  /// No description provided for @chess_unknownPlayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get chess_unknownPlayer;
+
+  /// No description provided for @chess_rowChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'{inviter} challenged {target}'**
+  String chess_rowChallenge(String inviter, String target);
+
+  /// No description provided for @chess_rowYourOpenInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Your open invite'**
+  String get chess_rowYourOpenInvite;
+
+  /// No description provided for @chess_rowYourChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'You challenged {name}'**
+  String chess_rowYourChallenge(String name);
+
+  /// No description provided for @chess_rowInviteFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Game with {name}'**
+  String chess_rowInviteFrom(String name);
+
+  /// No description provided for @chess_rowStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the game to start'**
+  String get chess_rowStarting;
+
+  /// No description provided for @chess_rowMoveTurn.
+  ///
+  /// In en, this message translates to:
+  /// **'Move {number} · {turn}'**
+  String chess_rowMoveTurn(int number, String turn);
+
+  /// No description provided for @chess_rowOpenInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is looking for a game'**
+  String chess_rowOpenInvite(String name);
+
+  /// No description provided for @chess_rowChallengedYou.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} challenged you'**
+  String chess_rowChallengedYou(String name);
+
+  /// No description provided for @chess_rowInviteDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Time per move: {deadline}'**
+  String chess_rowInviteDetails(String deadline);
+
+  /// No description provided for @chess_accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get chess_accept;
+
+  /// No description provided for @chess_decline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get chess_decline;
+
+  /// No description provided for @chess_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get chess_remove;
+
+  /// No description provided for @chess_cancelInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel invite'**
+  String get chess_cancelInvite;
+
+  /// No description provided for @chess_cancelInviteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this invite?'**
+  String get chess_cancelInviteTitle;
+
+  /// No description provided for @chess_sendFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t send. Check the radio connection.'**
+  String get chess_sendFailed;
+
+  /// No description provided for @chess_challengeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge sent to {name}'**
+  String chess_challengeSent(String name);
+
+  /// No description provided for @chess_inviteSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Open invite posted'**
+  String get chess_inviteSent;
+
+  /// No description provided for @chess_pickOpponent.
+  ///
+  /// In en, this message translates to:
+  /// **'Who to challenge'**
+  String get chess_pickOpponent;
+
+  /// No description provided for @chess_noRecentSenders.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody has posted on this channel recently.'**
+  String get chess_noRecentSenders;
+
+  /// No description provided for @chess_deadlineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Time per move'**
+  String get chess_deadlineLabel;
+
+  /// No description provided for @chess_deadlineNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit'**
+  String get chess_deadlineNone;
+
+  /// No description provided for @chess_deadline15m.
+  ///
+  /// In en, this message translates to:
+  /// **'15 minutes'**
+  String get chess_deadline15m;
+
+  /// No description provided for @chess_deadline1h.
+  ///
+  /// In en, this message translates to:
+  /// **'1 hour'**
+  String get chess_deadline1h;
+
+  /// No description provided for @chess_deadline6h.
+  ///
+  /// In en, this message translates to:
+  /// **'6 hours'**
+  String get chess_deadline6h;
+
+  /// No description provided for @chess_deadline1d.
+  ///
+  /// In en, this message translates to:
+  /// **'1 day'**
+  String get chess_deadline1d;
+
+  /// No description provided for @chess_deadline3d.
+  ///
+  /// In en, this message translates to:
+  /// **'3 days'**
+  String get chess_deadline3d;
+
+  /// No description provided for @chess_colourLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your colour'**
+  String get chess_colourLabel;
+
+  /// No description provided for @chess_colourRandom.
+  ///
+  /// In en, this message translates to:
+  /// **'Random'**
+  String get chess_colourRandom;
+
+  /// No description provided for @chess_colourWhite.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get chess_colourWhite;
+
+  /// No description provided for @chess_colourBlack.
+  ///
+  /// In en, this message translates to:
+  /// **'Black'**
+  String get chess_colourBlack;
+
+  /// No description provided for @chess_sendChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Send challenge'**
+  String get chess_sendChallenge;
+
+  /// No description provided for @chess_postInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Post invite'**
+  String get chess_postInvite;
+
+  /// No description provided for @chess_gameGone.
+  ///
+  /// In en, this message translates to:
+  /// **'This game is no longer available.'**
+  String get chess_gameGone;
+
+  /// No description provided for @chess_playerYou.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (you)'**
+  String chess_playerYou(String name);
+
+  /// No description provided for @chess_toMoveChip.
+  ///
+  /// In en, this message translates to:
+  /// **'To move'**
+  String get chess_toMoveChip;
+
+  /// No description provided for @chess_statusYourMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Your move'**
+  String get chess_statusYourMove;
+
+  /// No description provided for @chess_statusWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for {name}'**
+  String chess_statusWaiting(String name);
+
+  /// No description provided for @chess_statusToMove.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} to move'**
+  String chess_statusToMove(String name);
+
+  /// No description provided for @chess_statusTimeLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} left for this move'**
+  String chess_statusTimeLeft(String time);
+
+  /// No description provided for @chess_statusOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Time for this move is up'**
+  String get chess_statusOverdue;
+
+  /// No description provided for @chess_statusDrawOffered.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} offers a draw'**
+  String chess_statusDrawOffered(String name);
+
+  /// No description provided for @chess_statusUnknownPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'The board appears with the next move.'**
+  String get chess_statusUnknownPosition;
+
+  /// No description provided for @chess_statusUnverified.
+  ///
+  /// In en, this message translates to:
+  /// **'Players not confirmed yet. Ask for an update to check them.'**
+  String get chess_statusUnverified;
+
+  /// No description provided for @chess_statusPlayersUnchecked.
+  ///
+  /// In en, this message translates to:
+  /// **'Players not confirmed: this phone didn\'t hear the invite.'**
+  String get chess_statusPlayersUnchecked;
+
+  /// No description provided for @chess_statusMoveUnconfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your move may not have gone out. Tap Ask for update to send it again.'**
+  String get chess_statusMoveUnconfirmed;
+
+  /// No description provided for @chess_actionResign.
+  ///
+  /// In en, this message translates to:
+  /// **'Resign'**
+  String get chess_actionResign;
+
+  /// No description provided for @chess_actionOfferDraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer draw'**
+  String get chess_actionOfferDraw;
+
+  /// No description provided for @chess_actionAcceptDraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept draw'**
+  String get chess_actionAcceptDraw;
+
+  /// No description provided for @chess_actionClaimTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Claim win on time'**
+  String get chess_actionClaimTimeout;
+
+  /// No description provided for @chess_actionNudge.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for update'**
+  String get chess_actionNudge;
+
+  /// No description provided for @chess_actionNudgeTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the players to resend the latest move'**
+  String get chess_actionNudgeTooltip;
+
+  /// No description provided for @chess_resignConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Resign this game?'**
+  String get chess_resignConfirmTitle;
+
+  /// No description provided for @chess_resignConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your opponent wins.'**
+  String get chess_resignConfirmBody;
+
+  /// No description provided for @chess_movesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Moves'**
+  String get chess_movesTitle;
+
+  /// No description provided for @chess_noMovesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No moves yet'**
+  String get chess_noMovesYet;
+
+  /// No description provided for @chess_movesMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'(missed)'**
+  String get chess_movesMissed;
+
+  /// No description provided for @chess_promoteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Promote to'**
+  String get chess_promoteTitle;
+
+  /// No description provided for @chess_pieceQueen.
+  ///
+  /// In en, this message translates to:
+  /// **'Queen'**
+  String get chess_pieceQueen;
+
+  /// No description provided for @chess_pieceRook.
+  ///
+  /// In en, this message translates to:
+  /// **'Rook'**
+  String get chess_pieceRook;
+
+  /// No description provided for @chess_pieceBishop.
+  ///
+  /// In en, this message translates to:
+  /// **'Bishop'**
+  String get chess_pieceBishop;
+
+  /// No description provided for @chess_pieceKnight.
+  ///
+  /// In en, this message translates to:
+  /// **'Knight'**
+  String get chess_pieceKnight;
+
+  /// No description provided for @chess_pieceKing.
+  ///
+  /// In en, this message translates to:
+  /// **'King'**
+  String get chess_pieceKing;
+
+  /// No description provided for @chess_piecePawn.
+  ///
+  /// In en, this message translates to:
+  /// **'Pawn'**
+  String get chess_piecePawn;
+
+  /// No description provided for @chess_squareWhitePiece.
+  ///
+  /// In en, this message translates to:
+  /// **'{square}: {piece}, white'**
+  String chess_squareWhitePiece(String square, String piece);
+
+  /// No description provided for @chess_squareBlackPiece.
+  ///
+  /// In en, this message translates to:
+  /// **'{square}: {piece}, black'**
+  String chess_squareBlackPiece(String square, String piece);
+
+  /// No description provided for @chess_resultDraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw'**
+  String get chess_resultDraw;
+
+  /// No description provided for @chess_resultWon.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} won'**
+  String chess_resultWon(String name);
+
+  /// No description provided for @chess_resultWithReason.
+  ///
+  /// In en, this message translates to:
+  /// **'{result} · {reason}'**
+  String chess_resultWithReason(String result, String reason);
+
+  /// No description provided for @chess_endCheckmate.
+  ///
+  /// In en, this message translates to:
+  /// **'Checkmate'**
+  String get chess_endCheckmate;
+
+  /// No description provided for @chess_endResignation.
+  ///
+  /// In en, this message translates to:
+  /// **'Resignation'**
+  String get chess_endResignation;
+
+  /// No description provided for @chess_endTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'On time'**
+  String get chess_endTimeout;
+
+  /// No description provided for @chess_endDrawAgreed.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw agreed'**
+  String get chess_endDrawAgreed;
+
+  /// No description provided for @chess_endStalemate.
+  ///
+  /// In en, this message translates to:
+  /// **'Stalemate'**
+  String get chess_endStalemate;
+
+  /// No description provided for @chess_endInsufficient.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough pieces to mate'**
+  String get chess_endInsufficient;
+
+  /// No description provided for @chess_endFiftyMoves.
+  ///
+  /// In en, this message translates to:
+  /// **'50-move rule'**
+  String get chess_endFiftyMoves;
+
+  /// No description provided for @chess_endRepetition.
+  ///
+  /// In en, this message translates to:
+  /// **'Repetition'**
+  String get chess_endRepetition;
+
+  /// No description provided for @chess_endCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite cancelled'**
+  String get chess_endCancelled;
+
+  /// No description provided for @chess_endDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge declined'**
+  String get chess_endDeclined;
+
+  /// No description provided for @chess_endExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite expired'**
+  String get chess_endExpired;
+
+  /// No description provided for @chess_endTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone else accepted first'**
+  String get chess_endTaken;
+
+  /// No description provided for @chess_timeMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String chess_timeMinutes(int minutes);
+
+  /// No description provided for @chess_timeHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} h {minutes} min'**
+  String chess_timeHours(int hours, int minutes);
+
+  /// No description provided for @chess_timeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} d {hours} h'**
+  String chess_timeDays(int days, int hours);
+
+  /// No description provided for @chess_notificationSender.
+  ///
+  /// In en, this message translates to:
+  /// **'Chess'**
+  String get chess_notificationSender;
+
+  /// No description provided for @chess_notifyChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} challenged you to a game'**
+  String chess_notifyChallenge(String name);
+
+  /// No description provided for @chess_notifyAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} accepted your game'**
+  String chess_notifyAccepted(String name);
+
+  /// No description provided for @chess_notifyAcceptedYourMove.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} accepted your game. You play white, your move.'**
+  String chess_notifyAcceptedYourMove(String name);
+
+  /// No description provided for @chess_notifyDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} declined your challenge'**
+  String chess_notifyDeclined(String name);
+
+  /// No description provided for @chess_notifyTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone else accepted that game first'**
+  String get chess_notifyTaken;
+
+  /// No description provided for @chess_notifyGameStartedYourMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Your game started. You play white, your move.'**
+  String get chess_notifyGameStartedYourMove;
+
+  /// No description provided for @chess_notifyYourMove.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} played {move}. Your move.'**
+  String chess_notifyYourMove(String name, String move);
+
+  /// No description provided for @chess_notifyGameOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Your game with {name} is over'**
+  String chess_notifyGameOver(String name);
+
+  /// No description provided for @chess_notifyResigned.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} resigned. You win.'**
+  String chess_notifyResigned(String name);
+
+  /// No description provided for @chess_notifyDrawOffered.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} offers a draw'**
+  String chess_notifyDrawOffered(String name);
+
+  /// No description provided for @chess_notifyDrawAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} accepted the draw'**
+  String chess_notifyDrawAccepted(String name);
+
+  /// No description provided for @chess_notifyTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} claimed a win on time'**
+  String chess_notifyTimeout(String name);
 }
 
 class _AppLocalizationsDelegate

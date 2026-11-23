@@ -7452,4 +7452,406 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get coordinate_copied => 'Location copied';
+
+  @override
+  String get chess_menuGames => '체스 게임';
+
+  @override
+  String chess_menuGamesCount(int count) {
+    return '체스 게임 ($count)';
+  }
+
+  @override
+  String get chess_sheetTitle => '체스';
+
+  @override
+  String get chess_sectionNewGame => '새 게임';
+
+  @override
+  String get chess_sectionYourGames => '내 게임';
+
+  @override
+  String get chess_sectionInvites => '열린 초대';
+
+  @override
+  String get chess_sectionLive => '진행 중인 게임';
+
+  @override
+  String get chess_sectionFinished => '종료된 게임';
+
+  @override
+  String get chess_newChallenge => '누군가에게 도전';
+
+  @override
+  String get chess_newChallengeSubtitle => '이 채널에서 최근 메시지를 보낸 사람 중에서 선택';
+
+  @override
+  String get chess_newOpenInvite => '공개 초대 올리기';
+
+  @override
+  String get chess_newOpenInviteSubtitle => '이 채널의 누구나 수락할 수 있습니다';
+
+  @override
+  String get chess_emptyTitle => '아직 게임이 없습니다';
+
+  @override
+  String get chess_emptySubtitle =>
+      '누군가에게 도전하거나 공개 초대를 올려 보세요. 채널의 누구나 관전할 수 있습니다.';
+
+  @override
+  String chess_vs(String white, String black) {
+    return '$white 대 $black';
+  }
+
+  @override
+  String get chess_unknownPlayer => '알 수 없음';
+
+  @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter님이 $target님에게 도전했습니다';
+  }
+
+  @override
+  String get chess_rowYourOpenInvite => '내 공개 초대';
+
+  @override
+  String chess_rowYourChallenge(String name) {
+    return '$name님에게 도전했습니다';
+  }
+
+  @override
+  String chess_rowInviteFrom(String name) {
+    return '$name님과의 게임';
+  }
+
+  @override
+  String get chess_rowStarting => '게임 시작을 기다리는 중';
+
+  @override
+  String chess_rowMoveTurn(int number, String turn) {
+    return '$number수 · $turn';
+  }
+
+  @override
+  String chess_rowOpenInvite(String name) {
+    return '$name님이 게임 상대를 찾고 있습니다';
+  }
+
+  @override
+  String chess_rowChallengedYou(String name) {
+    return '$name님이 도전했습니다';
+  }
+
+  @override
+  String chess_rowInviteDetails(String deadline) {
+    return '수당 제한 시간: $deadline';
+  }
+
+  @override
+  String get chess_accept => '수락';
+
+  @override
+  String get chess_decline => '거절';
+
+  @override
+  String get chess_remove => '제거';
+
+  @override
+  String get chess_cancelInvite => '초대 취소';
+
+  @override
+  String get chess_cancelInviteTitle => '이 초대를 취소하시겠습니까?';
+
+  @override
+  String get chess_sendFailed => '전송하지 못했습니다. 라디오 연결을 확인하세요.';
+
+  @override
+  String chess_challengeSent(String name) {
+    return '$name님에게 도전을 보냈습니다';
+  }
+
+  @override
+  String get chess_inviteSent => '공개 초대를 올렸습니다';
+
+  @override
+  String get chess_pickOpponent => '도전할 상대';
+
+  @override
+  String get chess_noRecentSenders => '이 채널에 최근 메시지를 보낸 사람이 없습니다.';
+
+  @override
+  String get chess_deadlineLabel => '수당 제한 시간';
+
+  @override
+  String get chess_deadlineNone => '제한 없음';
+
+  @override
+  String get chess_deadline15m => '15분';
+
+  @override
+  String get chess_deadline1h => '1시간';
+
+  @override
+  String get chess_deadline6h => '6시간';
+
+  @override
+  String get chess_deadline1d => '1일';
+
+  @override
+  String get chess_deadline3d => '3일';
+
+  @override
+  String get chess_colourLabel => '내 색';
+
+  @override
+  String get chess_colourRandom => '무작위';
+
+  @override
+  String get chess_colourWhite => '백';
+
+  @override
+  String get chess_colourBlack => '흑';
+
+  @override
+  String get chess_sendChallenge => '도전 보내기';
+
+  @override
+  String get chess_postInvite => '초대 올리기';
+
+  @override
+  String get chess_gameGone => '이 게임은 더 이상 사용할 수 없습니다.';
+
+  @override
+  String chess_playerYou(String name) {
+    return '$name (나)';
+  }
+
+  @override
+  String get chess_toMoveChip => '차례';
+
+  @override
+  String get chess_statusYourMove => '내 차례';
+
+  @override
+  String chess_statusWaiting(String name) {
+    return '$name님을 기다리는 중';
+  }
+
+  @override
+  String chess_statusToMove(String name) {
+    return '$name님의 차례';
+  }
+
+  @override
+  String chess_statusTimeLeft(String time) {
+    return '이 수의 남은 시간 $time';
+  }
+
+  @override
+  String get chess_statusOverdue => '이 수의 제한 시간이 끝났습니다';
+
+  @override
+  String chess_statusDrawOffered(String name) {
+    return '$name님이 무승부를 제안했습니다';
+  }
+
+  @override
+  String get chess_statusUnknownPosition => '다음 수가 오면 판이 표시됩니다.';
+
+  @override
+  String get chess_statusUnverified => '플레이어가 아직 확인되지 않았습니다. 업데이트를 요청해 확인하세요.';
+
+  @override
+  String get chess_statusPlayersUnchecked => '플레이어 미확인: 이 휴대폰이 초대를 수신하지 못했습니다.';
+
+  @override
+  String get chess_statusMoveUnconfirmed =>
+      '내 수가 전송되지 않았을 수 있습니다. \"업데이트 요청\"을 눌러 다시 보내세요.';
+
+  @override
+  String get chess_actionResign => '기권';
+
+  @override
+  String get chess_actionOfferDraw => '무승부 제안';
+
+  @override
+  String get chess_actionAcceptDraw => '무승부 수락';
+
+  @override
+  String get chess_actionClaimTimeout => '시간 초과 승리 요청';
+
+  @override
+  String get chess_actionNudge => '업데이트 요청';
+
+  @override
+  String get chess_actionNudgeTooltip => '플레이어에게 최신 수를 다시 보내 달라고 요청합니다';
+
+  @override
+  String get chess_resignConfirmTitle => '이 게임을 기권하시겠습니까?';
+
+  @override
+  String get chess_resignConfirmBody => '상대가 승리합니다.';
+
+  @override
+  String get chess_movesTitle => '기보';
+
+  @override
+  String get chess_noMovesYet => '아직 수가 없습니다';
+
+  @override
+  String get chess_movesMissed => '(누락)';
+
+  @override
+  String get chess_promoteTitle => '승급할 기물';
+
+  @override
+  String get chess_pieceQueen => '퀸';
+
+  @override
+  String get chess_pieceRook => '룩';
+
+  @override
+  String get chess_pieceBishop => '비숍';
+
+  @override
+  String get chess_pieceKnight => '나이트';
+
+  @override
+  String get chess_pieceKing => '킹';
+
+  @override
+  String get chess_piecePawn => '폰';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square: 백 $piece';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square: 흑 $piece';
+  }
+
+  @override
+  String get chess_resultDraw => '무승부';
+
+  @override
+  String chess_resultWon(String name) {
+    return '$name님 승리';
+  }
+
+  @override
+  String chess_resultWithReason(String result, String reason) {
+    return '$result · $reason';
+  }
+
+  @override
+  String get chess_endCheckmate => '체크메이트';
+
+  @override
+  String get chess_endResignation => '기권';
+
+  @override
+  String get chess_endTimeout => '시간 초과';
+
+  @override
+  String get chess_endDrawAgreed => '합의 무승부';
+
+  @override
+  String get chess_endStalemate => '스테일메이트';
+
+  @override
+  String get chess_endInsufficient => '체크메이트에 필요한 기물 부족';
+
+  @override
+  String get chess_endFiftyMoves => '50수 규칙';
+
+  @override
+  String get chess_endRepetition => '동일 국면 반복';
+
+  @override
+  String get chess_endCancelled => '초대가 취소되었습니다';
+
+  @override
+  String get chess_endDeclined => '도전이 거절되었습니다';
+
+  @override
+  String get chess_endExpired => '초대가 만료되었습니다';
+
+  @override
+  String get chess_endTaken => '다른 사람이 먼저 수락했습니다';
+
+  @override
+  String chess_timeMinutes(int minutes) {
+    return '$minutes분';
+  }
+
+  @override
+  String chess_timeHours(int hours, int minutes) {
+    return '$hours시간 $minutes분';
+  }
+
+  @override
+  String chess_timeDays(int days, int hours) {
+    return '$days일 $hours시간';
+  }
+
+  @override
+  String get chess_notificationSender => '체스';
+
+  @override
+  String chess_notifyChallenge(String name) {
+    return '$name님이 게임을 도전했습니다';
+  }
+
+  @override
+  String chess_notifyAccepted(String name) {
+    return '$name님이 게임을 수락했습니다';
+  }
+
+  @override
+  String chess_notifyAcceptedYourMove(String name) {
+    return '$name님이 게임을 수락했습니다. 백이며 내 차례입니다.';
+  }
+
+  @override
+  String chess_notifyDeclined(String name) {
+    return '$name님이 도전을 거절했습니다';
+  }
+
+  @override
+  String get chess_notifyTaken => '다른 사람이 그 게임을 먼저 수락했습니다';
+
+  @override
+  String get chess_notifyGameStartedYourMove => '게임이 시작되었습니다. 백이며 내 차례입니다.';
+
+  @override
+  String chess_notifyYourMove(String name, String move) {
+    return '$name님이 $move을(를) 두었습니다. 내 차례입니다.';
+  }
+
+  @override
+  String chess_notifyGameOver(String name) {
+    return '$name님과의 게임이 종료되었습니다';
+  }
+
+  @override
+  String chess_notifyResigned(String name) {
+    return '$name님이 기권했습니다. 승리했습니다.';
+  }
+
+  @override
+  String chess_notifyDrawOffered(String name) {
+    return '$name님이 무승부를 제안했습니다';
+  }
+
+  @override
+  String chess_notifyDrawAccepted(String name) {
+    return '$name님이 무승부를 수락했습니다';
+  }
+
+  @override
+  String chess_notifyTimeout(String name) {
+    return '$name님이 시간 초과 승리를 요청했습니다';
+  }
 }

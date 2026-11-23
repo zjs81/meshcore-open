@@ -726,7 +726,8 @@ class MeshCoreConnector extends ChangeNotifier {
   /// channel sync, or null for an empty or unknown slot.
   String? channelIdForSlot(int slot) => _slotChannelIds[slot];
 
-  @visibleForTesting
+  /// True once slot numbers can be trusted for this session (the channel
+  /// slot map was read or restored).
   bool get channelMapConfirmed => _channelMapConfirmed;
   Stream<Uint8List> get receivedFrames => _receivedFramesController.stream;
   Uint8List? get selfPublicKey => _selfPublicKey;
@@ -5934,6 +5935,35 @@ class MeshCoreConnector extends ChangeNotifier {
       );
     }
     return sentAll;
+  }
+
+  /// Sends one application [payload] as a GRP_DATA packet on [channelIndex]
+  /// with the given [dataType], flooded on the channel's region scope.
+  ///
+  /// Like [sendImageChunks] the command ACK only means the radio queued the
+  /// packet; GRP_DATA is never acknowledged end to end. Returns false when the
+  /// transport is unavailable; throws like [_sendFrameAndWaitForCommandAck].
+  Future<bool> sendChannelData({
+    required int channelIndex,
+    required int dataType,
+    required Uint8List payload,
+  }) async {
+    if (!supportsChannelData) return false;
+    var sent = false;
+    await _runScopedChannelSend(() async {
+      if (!isConnected) return;
+      await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
+      await _sendFrameAndWaitForCommandAck(
+        buildSendChannelDataFrame(
+          channelIndex: channelIndex,
+          dataType: dataType,
+          payload: payload,
+          pathLen: outPathUnknown,
+        ),
+      );
+      sent = true;
+    }, region: _channelSendScope(channelIndex));
+    return sent;
   }
 
   Future<bool> _transmitImageBlobs(

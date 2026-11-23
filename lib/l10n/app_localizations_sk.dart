@@ -7779,4 +7779,414 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get coordinate_copied => 'Location copied';
+
+  @override
+  String get chess_menuGames => 'Šachové hry';
+
+  @override
+  String chess_menuGamesCount(int count) {
+    return 'Šachové hry ($count)';
+  }
+
+  @override
+  String get chess_sheetTitle => 'Šach';
+
+  @override
+  String get chess_sectionNewGame => 'Nová hra';
+
+  @override
+  String get chess_sectionYourGames => 'Vaše hry';
+
+  @override
+  String get chess_sectionInvites => 'Otvorené výzvy';
+
+  @override
+  String get chess_sectionLive => 'Prebiehajúce hry';
+
+  @override
+  String get chess_sectionFinished => 'Dohraté';
+
+  @override
+  String get chess_newChallenge => 'Vyzvať niekoho';
+
+  @override
+  String get chess_newChallengeSubtitle =>
+      'Vyberte niekoho, koho ste nedávno počuli na tomto kanáli';
+
+  @override
+  String get chess_newOpenInvite => 'Zverejniť otvorenú výzvu';
+
+  @override
+  String get chess_newOpenInviteSubtitle =>
+      'Prijať ju môže ktokoľvek na tomto kanáli';
+
+  @override
+  String get chess_emptyTitle => 'Zatiaľ žiadne hry';
+
+  @override
+  String get chess_emptySubtitle =>
+      'Vyzvite niekoho alebo zverejnite otvorenú výzvu. Ktokoľvek na kanáli sa môže pozerať.';
+
+  @override
+  String chess_vs(String white, String black) {
+    return '$white vs $black';
+  }
+
+  @override
+  String get chess_unknownPlayer => 'Neznámy';
+
+  @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter vyzýva hráča $target';
+  }
+
+  @override
+  String get chess_rowYourOpenInvite => 'Vaša otvorená výzva';
+
+  @override
+  String chess_rowYourChallenge(String name) {
+    return 'Vyzvali ste hráča $name';
+  }
+
+  @override
+  String chess_rowInviteFrom(String name) {
+    return 'Hra s hráčom $name';
+  }
+
+  @override
+  String get chess_rowStarting => 'Čaká sa na začiatok hry';
+
+  @override
+  String chess_rowMoveTurn(int number, String turn) {
+    return 'Ťah $number · $turn';
+  }
+
+  @override
+  String chess_rowOpenInvite(String name) {
+    return '$name hľadá súpera';
+  }
+
+  @override
+  String chess_rowChallengedYou(String name) {
+    return '$name vás vyzýva';
+  }
+
+  @override
+  String chess_rowInviteDetails(String deadline) {
+    return 'Čas na ťah: $deadline';
+  }
+
+  @override
+  String get chess_accept => 'Prijať';
+
+  @override
+  String get chess_decline => 'Odmietnuť';
+
+  @override
+  String get chess_remove => 'Odstrániť';
+
+  @override
+  String get chess_cancelInvite => 'Zrušiť výzvu';
+
+  @override
+  String get chess_cancelInviteTitle => 'Zrušiť túto výzvu?';
+
+  @override
+  String get chess_sendFailed =>
+      'Odoslanie zlyhalo. Skontrolujte spojenie s rádiom.';
+
+  @override
+  String chess_challengeSent(String name) {
+    return 'Výzva odoslaná hráčovi $name';
+  }
+
+  @override
+  String get chess_inviteSent => 'Otvorená výzva zverejnená';
+
+  @override
+  String get chess_pickOpponent => 'Koho vyzvať';
+
+  @override
+  String get chess_noRecentSenders => 'Na tomto kanáli nedávno nikto nepísal.';
+
+  @override
+  String get chess_deadlineLabel => 'Čas na ťah';
+
+  @override
+  String get chess_deadlineNone => 'Bez limitu';
+
+  @override
+  String get chess_deadline15m => '15 minút';
+
+  @override
+  String get chess_deadline1h => '1 hodina';
+
+  @override
+  String get chess_deadline6h => '6 hodín';
+
+  @override
+  String get chess_deadline1d => '1 deň';
+
+  @override
+  String get chess_deadline3d => '3 dni';
+
+  @override
+  String get chess_colourLabel => 'Vaša farba';
+
+  @override
+  String get chess_colourRandom => 'Náhodná';
+
+  @override
+  String get chess_colourWhite => 'Biela';
+
+  @override
+  String get chess_colourBlack => 'Čierna';
+
+  @override
+  String get chess_sendChallenge => 'Odoslať výzvu';
+
+  @override
+  String get chess_postInvite => 'Zverejniť výzvu';
+
+  @override
+  String get chess_gameGone => 'Táto hra už nie je k dispozícii.';
+
+  @override
+  String chess_playerYou(String name) {
+    return '$name (vy)';
+  }
+
+  @override
+  String get chess_toMoveChip => 'Na ťahu';
+
+  @override
+  String get chess_statusYourMove => 'Váš ťah';
+
+  @override
+  String chess_statusWaiting(String name) {
+    return 'Čaká sa na hráča $name';
+  }
+
+  @override
+  String chess_statusToMove(String name) {
+    return 'Na ťahu: $name';
+  }
+
+  @override
+  String chess_statusTimeLeft(String time) {
+    return 'Na tento ťah zostáva $time';
+  }
+
+  @override
+  String get chess_statusOverdue => 'Čas na tento ťah vypršal';
+
+  @override
+  String chess_statusDrawOffered(String name) {
+    return '$name ponúka remízu';
+  }
+
+  @override
+  String get chess_statusUnknownPosition =>
+      'Šachovnica sa zobrazí s ďalším ťahom.';
+
+  @override
+  String get chess_statusUnverified =>
+      'Hráči zatiaľ nie sú potvrdení. Vyžiadajte si aktualizáciu a overte ich.';
+
+  @override
+  String get chess_statusPlayersUnchecked =>
+      'Hráči nepotvrdení: tento telefón výzvu nepočul.';
+
+  @override
+  String get chess_statusMoveUnconfirmed =>
+      'Váš ťah možno neodišiel. Ťuknutím na „Vyžiadať aktualizáciu“ ho odošlete znova.';
+
+  @override
+  String get chess_actionResign => 'Vzdať sa';
+
+  @override
+  String get chess_actionOfferDraw => 'Ponúknuť remízu';
+
+  @override
+  String get chess_actionAcceptDraw => 'Prijať remízu';
+
+  @override
+  String get chess_actionClaimTimeout => 'Uplatniť výhru na čas';
+
+  @override
+  String get chess_actionNudge => 'Vyžiadať aktualizáciu';
+
+  @override
+  String get chess_actionNudgeTooltip =>
+      'Požiadať hráčov o opätovné odoslanie posledného ťahu';
+
+  @override
+  String get chess_resignConfirmTitle => 'Vzdať sa tejto hry?';
+
+  @override
+  String get chess_resignConfirmBody => 'Súper vyhráva.';
+
+  @override
+  String get chess_movesTitle => 'Ťahy';
+
+  @override
+  String get chess_noMovesYet => 'Zatiaľ žiadne ťahy';
+
+  @override
+  String get chess_movesMissed => '(zmeškané)';
+
+  @override
+  String get chess_promoteTitle => 'Premeniť na';
+
+  @override
+  String get chess_pieceQueen => 'Dáma';
+
+  @override
+  String get chess_pieceRook => 'Veža';
+
+  @override
+  String get chess_pieceBishop => 'Strelec';
+
+  @override
+  String get chess_pieceKnight => 'Jazdec';
+
+  @override
+  String get chess_pieceKing => 'Kráľ';
+
+  @override
+  String get chess_piecePawn => 'Pešiak';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square: $piece, biela';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square: $piece, čierna';
+  }
+
+  @override
+  String get chess_resultDraw => 'Remíza';
+
+  @override
+  String chess_resultWon(String name) {
+    return 'Víťazí $name';
+  }
+
+  @override
+  String chess_resultWithReason(String result, String reason) {
+    return '$result · $reason';
+  }
+
+  @override
+  String get chess_endCheckmate => 'Mat';
+
+  @override
+  String get chess_endResignation => 'Vzdanie sa';
+
+  @override
+  String get chess_endTimeout => 'Na čas';
+
+  @override
+  String get chess_endDrawAgreed => 'Remíza dohodou';
+
+  @override
+  String get chess_endStalemate => 'Pat';
+
+  @override
+  String get chess_endInsufficient => 'Nedostatok materiálu na mat';
+
+  @override
+  String get chess_endFiftyMoves => 'Pravidlo 50 ťahov';
+
+  @override
+  String get chess_endRepetition => 'Opakovanie pozície';
+
+  @override
+  String get chess_endCancelled => 'Výzva zrušená';
+
+  @override
+  String get chess_endDeclined => 'Výzva odmietnutá';
+
+  @override
+  String get chess_endExpired => 'Výzva vypršala';
+
+  @override
+  String get chess_endTaken => 'Prijal ju niekto iný';
+
+  @override
+  String chess_timeMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String chess_timeHours(int hours, int minutes) {
+    return '$hours h $minutes min';
+  }
+
+  @override
+  String chess_timeDays(int days, int hours) {
+    return '$days d $hours h';
+  }
+
+  @override
+  String get chess_notificationSender => 'Šach';
+
+  @override
+  String chess_notifyChallenge(String name) {
+    return '$name vás vyzýva na hru';
+  }
+
+  @override
+  String chess_notifyAccepted(String name) {
+    return 'Hráč $name prijal vašu hru';
+  }
+
+  @override
+  String chess_notifyAcceptedYourMove(String name) {
+    return 'Hráč $name prijal vašu hru. Hráte bielymi, ste na ťahu.';
+  }
+
+  @override
+  String chess_notifyDeclined(String name) {
+    return 'Hráč $name odmietol vašu výzvu';
+  }
+
+  @override
+  String get chess_notifyTaken => 'Túto hru prijal skôr niekto iný';
+
+  @override
+  String get chess_notifyGameStartedYourMove =>
+      'Vaša hra sa začala. Hráte bielymi, ste na ťahu.';
+
+  @override
+  String chess_notifyYourMove(String name, String move) {
+    return 'Hráč $name potiahol $move. Ste na ťahu.';
+  }
+
+  @override
+  String chess_notifyGameOver(String name) {
+    return 'Vaša hra s hráčom $name skončila';
+  }
+
+  @override
+  String chess_notifyResigned(String name) {
+    return 'Hráč $name sa vzdal. Vyhrávate.';
+  }
+
+  @override
+  String chess_notifyDrawOffered(String name) {
+    return '$name ponúka remízu';
+  }
+
+  @override
+  String chess_notifyDrawAccepted(String name) {
+    return 'Hráč $name prijal remízu';
+  }
+
+  @override
+  String chess_notifyTimeout(String name) {
+    return 'Hráč $name uplatnil výhru na čas';
+  }
 }

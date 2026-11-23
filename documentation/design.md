@@ -29,6 +29,7 @@ The source of truth is `lib/theme/mesh_theme.dart` (theme), `lib/widgets/mesh_ui
 | Good / bad signal | `MeshTheme.snrColor(snr, blocked:)`; `MeshPalette.signal`, `.warn`, `.alert` for status ramps (e.g. battery in `repeater_status_screen.dart`) |
 | Own chat bubbles | `MeshBubbleTheme.of(context)` |
 | Map overlays and markers | `MapPalette`, `MeshMapTheme.of(context)`; line-of-sight charts use `LosPalette` |
+| Floating map chrome (zoom buttons, panels, toggles) | `ColorScheme` roles like a card: `surfaceContainerLow`, `outlineVariant`, `onSurface`. On desktop, overlays at the top of a path map start at `pathMapTopOverlayInset()` (`path_map_scaffold.dart`) so they clear the zoom buttons |
 | Coloured text or icon on a tinted background | pass it through `readableAccent(color, background, minContrast:)` (`mesh_ui.dart`), 4.5 for text, 3 for icons |
 
 Rules:
@@ -191,6 +192,17 @@ One model is one row inside the existing `MeshCard` (or `SettingsReveal`), rows 
 
 A dialog that offers several missing models (backup restore) uses the same rows for name, size, status and progress, and keeps its own confirm button.
 
+### Chess board
+
+`ChessBoardView` (`lib/games/chess/ui/chess_board.dart`) is board content, not chrome, so its squares keep the same classic colours in every theme (`ChessBoardPalette`). Both have strong contrast with the white and black piece vectors (`chess_vectors_flutter`).
+
+- Last move: both squares get a translucent yellow wash. Check: a red radial glow behind the king. Selected piece: a 3px `primary` border.
+- Legal targets: a dark dot on an empty square and a dark ring around a capturable piece, so they differ in shape and not only colour.
+- Rank and file labels sit in the corners of the edge squares, in the opposite square colour, at 12–14px.
+- The board fills the width (up to 560) and the page scrolls, so it fits a 320dp phone at 2.0× text.
+
+The channel's games list is a `showMeshSheet` with a `DraggableScrollableSheet`, the same layout as the Add channel sheet. Starting a game closes it and opens a second sheet, so sheets are never stacked.
+
 ## 6. Sheets, dialogs and pages
 
 What the code does:
@@ -293,8 +305,8 @@ The current code does not yet follow this page everywhere:
 - **Settings toggles in two sizes.** `FeatureToggleRow` (`widgets/elements_ui.dart`, used in `settings_screen.dart` dialogs) uses a `bodyMedium` w600 title and `bodySmall` subtitle with a 32px refresh button. `MeshNavTile` and themed `SwitchListTile`s use `bodyLarge` w600 / `bodyMedium`. Only App Settings, Message Filter and Repeater Settings wrap their body in `MeshSettingsTileTheme`.
 - **`ErrorRetryCard` is unused** and its fallback label is the hard-coded English `'Retry'` (`mesh_ui.dart`); screens show load errors in their own ways.
 - **Fixed-width label boxes.** `chat_screen.dart` `_buildInfoRow` (80px), `line_of_sight_map_screen.dart` endpoint label (54px, `fontSize: 12`), `channel_message_path_screen.dart` (72px, upper-cased `accentLabel` at its 11px default).
-- **11px text.** `MeshTheme.accentLabel()` without `fontSize` gives 11px in `channel_message_path_screen.dart` and `widgets/path_map_ui.dart` (which also uses dark-only `MeshPalette.ink3`). The type scale's `labelSmall` (11) is used in `list_filter_widget.dart` section titles.
-- **Hard-coded colours.** `SyncProgressAppBarBottom` uses `Colors.red`, `Colors.blue` and `Colors.green`; `AppBarTitle` subtitle uses `Colors.grey[600]` at a literal 14 instead of `onSurfaceVariant`; `telemetry_location_map.dart` uses raw `Colors.*`. `MeshPalette.ink/bg/line` appear directly in eight screen/widget files (mostly map panels, where they are intentional; also `channels_screen.dart` and `channel_chat_screen.dart` community dots with an 8px icon).
+- **11px text.** `MeshTheme.accentLabel()` without `fontSize` gives 11px in `channel_message_path_screen.dart`. The type scale's `labelSmall` (11) is used in `list_filter_widget.dart` section titles.
+- **Hard-coded colours.** `SyncProgressAppBarBottom` uses `Colors.red`, `Colors.blue` and `Colors.green`; `AppBarTitle` subtitle uses `Colors.grey[600]` at a literal 14 instead of `onSurfaceVariant`; `telemetry_location_map.dart` uses raw `Colors.*`. `MeshPalette.ink/bg/line` still appear directly in a few screen/widget files: map marker overlays (node name labels and shared-count badges in `path_map_scaffold.dart`, the hop badge on avatars in `channel_message_path_screen.dart`) and the `channels_screen.dart` and `channel_chat_screen.dart` community dots with an 8px icon. The path map chrome (`PathMapBottomPanel`, `PathMapDesktopControls`, `PathViewModeToggle` and the panel contents in `path_map_ui.dart` and both path map screens) uses `ColorScheme` roles: `surfaceContainerLow` background, `outlineVariant` border and dividers, `onSurface`/`onSurfaceVariant` text and icons, `primary` for active toggles and `tertiary` for warnings.
 - **Literal sizes instead of the theme.** About 300 literal `fontSize:` values in `lib/screens` and `lib/widgets` (most 12–14), e.g. `EmptyState` subtitle at 13.5; and 36 `BorderRadius.circular(<number>)` calls (8 and 12 most common) instead of `MeshRadii`.
 - **Navigation bar theme.** `navigationBarTheme` colours selected labels `onPrimary`, which is white-on-white in light mode; `QuickSwitchBar` overrides it. Any other `NavigationBar` would inherit the problem.
 - **Two badge styles.** `QuickSwitchBar` uses Material `Badge` capped at 99+; `UnreadBadge` caps at 9999+.

@@ -7282,4 +7282,404 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get coordinate_copied => 'Location copied';
+
+  @override
+  String get chess_menuGames => '国际象棋对局';
+
+  @override
+  String chess_menuGamesCount(int count) {
+    return '国际象棋对局 ($count)';
+  }
+
+  @override
+  String get chess_sheetTitle => '国际象棋';
+
+  @override
+  String get chess_sectionNewGame => '新对局';
+
+  @override
+  String get chess_sectionYourGames => '我的对局';
+
+  @override
+  String get chess_sectionInvites => '公开邀请';
+
+  @override
+  String get chess_sectionLive => '进行中的对局';
+
+  @override
+  String get chess_sectionFinished => '已结束';
+
+  @override
+  String get chess_newChallenge => '挑战某人';
+
+  @override
+  String get chess_newChallengeSubtitle => '从此频道最近发言的人中选择';
+
+  @override
+  String get chess_newOpenInvite => '发布公开邀请';
+
+  @override
+  String get chess_newOpenInviteSubtitle => '此频道中的任何人都可以接受';
+
+  @override
+  String get chess_emptyTitle => '还没有对局';
+
+  @override
+  String get chess_emptySubtitle => '挑战某人或发布公开邀请。频道中的任何人都可以观战。';
+
+  @override
+  String chess_vs(String white, String black) {
+    return '$white 对 $black';
+  }
+
+  @override
+  String get chess_unknownPlayer => '未知';
+
+  @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter 向 $target 发起了挑战';
+  }
+
+  @override
+  String get chess_rowYourOpenInvite => '你的公开邀请';
+
+  @override
+  String chess_rowYourChallenge(String name) {
+    return '你向 $name 发起了挑战';
+  }
+
+  @override
+  String chess_rowInviteFrom(String name) {
+    return '与 $name 的对局';
+  }
+
+  @override
+  String get chess_rowStarting => '等待对局开始';
+
+  @override
+  String chess_rowMoveTurn(int number, String turn) {
+    return '第 $number 步 · $turn';
+  }
+
+  @override
+  String chess_rowOpenInvite(String name) {
+    return '$name 正在寻找对手';
+  }
+
+  @override
+  String chess_rowChallengedYou(String name) {
+    return '$name 向你发起了挑战';
+  }
+
+  @override
+  String chess_rowInviteDetails(String deadline) {
+    return '每步用时: $deadline';
+  }
+
+  @override
+  String get chess_accept => '接受';
+
+  @override
+  String get chess_decline => '拒绝';
+
+  @override
+  String get chess_remove => '移除';
+
+  @override
+  String get chess_cancelInvite => '取消邀请';
+
+  @override
+  String get chess_cancelInviteTitle => '取消此邀请？';
+
+  @override
+  String get chess_sendFailed => '无法发送。请检查无线电连接。';
+
+  @override
+  String chess_challengeSent(String name) {
+    return '已向 $name 发送挑战';
+  }
+
+  @override
+  String get chess_inviteSent => '公开邀请已发布';
+
+  @override
+  String get chess_pickOpponent => '选择挑战对象';
+
+  @override
+  String get chess_noRecentSenders => '此频道最近没有人发言。';
+
+  @override
+  String get chess_deadlineLabel => '每步用时';
+
+  @override
+  String get chess_deadlineNone => '不限时';
+
+  @override
+  String get chess_deadline15m => '15 分钟';
+
+  @override
+  String get chess_deadline1h => '1 小时';
+
+  @override
+  String get chess_deadline6h => '6 小时';
+
+  @override
+  String get chess_deadline1d => '1 天';
+
+  @override
+  String get chess_deadline3d => '3 天';
+
+  @override
+  String get chess_colourLabel => '你的颜色';
+
+  @override
+  String get chess_colourRandom => '随机';
+
+  @override
+  String get chess_colourWhite => '白方';
+
+  @override
+  String get chess_colourBlack => '黑方';
+
+  @override
+  String get chess_sendChallenge => '发送挑战';
+
+  @override
+  String get chess_postInvite => '发布邀请';
+
+  @override
+  String get chess_gameGone => '此对局已不可用。';
+
+  @override
+  String chess_playerYou(String name) {
+    return '$name (你)';
+  }
+
+  @override
+  String get chess_toMoveChip => '该走棋';
+
+  @override
+  String get chess_statusYourMove => '轮到你了';
+
+  @override
+  String chess_statusWaiting(String name) {
+    return '等待 $name';
+  }
+
+  @override
+  String chess_statusToMove(String name) {
+    return '轮到 $name';
+  }
+
+  @override
+  String chess_statusTimeLeft(String time) {
+    return '本步剩余 $time';
+  }
+
+  @override
+  String get chess_statusOverdue => '本步用时已到';
+
+  @override
+  String chess_statusDrawOffered(String name) {
+    return '$name 提议和棋';
+  }
+
+  @override
+  String get chess_statusUnknownPosition => '下一步走棋后将显示棋盘。';
+
+  @override
+  String get chess_statusUnverified => '尚未确认对局双方。请求更新以进行确认。';
+
+  @override
+  String get chess_statusPlayersUnchecked => '对局双方未确认：这部手机没有收到邀请。';
+
+  @override
+  String get chess_statusMoveUnconfirmed => '你的这一步可能没有发出。请点按“请求更新”重新发送。';
+
+  @override
+  String get chess_actionResign => '认输';
+
+  @override
+  String get chess_actionOfferDraw => '提议和棋';
+
+  @override
+  String get chess_actionAcceptDraw => '接受和棋';
+
+  @override
+  String get chess_actionClaimTimeout => '超时判胜';
+
+  @override
+  String get chess_actionNudge => '请求更新';
+
+  @override
+  String get chess_actionNudgeTooltip => '请对局双方重新发送最新一步';
+
+  @override
+  String get chess_resignConfirmTitle => '认输并结束此对局？';
+
+  @override
+  String get chess_resignConfirmBody => '对手将获胜。';
+
+  @override
+  String get chess_movesTitle => '棋谱';
+
+  @override
+  String get chess_noMovesYet => '还没有走棋';
+
+  @override
+  String get chess_movesMissed => '(缺失)';
+
+  @override
+  String get chess_promoteTitle => '升变为';
+
+  @override
+  String get chess_pieceQueen => '后';
+
+  @override
+  String get chess_pieceRook => '车';
+
+  @override
+  String get chess_pieceBishop => '象';
+
+  @override
+  String get chess_pieceKnight => '马';
+
+  @override
+  String get chess_pieceKing => '王';
+
+  @override
+  String get chess_piecePawn => '兵';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square：白$piece';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square：黑$piece';
+  }
+
+  @override
+  String get chess_resultDraw => '和棋';
+
+  @override
+  String chess_resultWon(String name) {
+    return '$name 获胜';
+  }
+
+  @override
+  String chess_resultWithReason(String result, String reason) {
+    return '$result · $reason';
+  }
+
+  @override
+  String get chess_endCheckmate => '将死';
+
+  @override
+  String get chess_endResignation => '认输';
+
+  @override
+  String get chess_endTimeout => '超时';
+
+  @override
+  String get chess_endDrawAgreed => '协议和棋';
+
+  @override
+  String get chess_endStalemate => '逼和';
+
+  @override
+  String get chess_endInsufficient => '子力不足无法将死';
+
+  @override
+  String get chess_endFiftyMoves => '五十步规则';
+
+  @override
+  String get chess_endRepetition => '重复局面';
+
+  @override
+  String get chess_endCancelled => '邀请已取消';
+
+  @override
+  String get chess_endDeclined => '挑战已被拒绝';
+
+  @override
+  String get chess_endExpired => '邀请已过期';
+
+  @override
+  String get chess_endTaken => '已被其他人抢先接受';
+
+  @override
+  String chess_timeMinutes(int minutes) {
+    return '$minutes 分钟';
+  }
+
+  @override
+  String chess_timeHours(int hours, int minutes) {
+    return '$hours 小时 $minutes 分钟';
+  }
+
+  @override
+  String chess_timeDays(int days, int hours) {
+    return '$days 天 $hours 小时';
+  }
+
+  @override
+  String get chess_notificationSender => '国际象棋';
+
+  @override
+  String chess_notifyChallenge(String name) {
+    return '$name 向你发起了对局挑战';
+  }
+
+  @override
+  String chess_notifyAccepted(String name) {
+    return '$name 接受了你的对局';
+  }
+
+  @override
+  String chess_notifyAcceptedYourMove(String name) {
+    return '$name 接受了你的对局。你执白，轮到你走棋。';
+  }
+
+  @override
+  String chess_notifyDeclined(String name) {
+    return '$name 拒绝了你的挑战';
+  }
+
+  @override
+  String get chess_notifyTaken => '其他人已抢先接受该对局';
+
+  @override
+  String get chess_notifyGameStartedYourMove => '对局已开始。你执白，轮到你走棋。';
+
+  @override
+  String chess_notifyYourMove(String name, String move) {
+    return '$name 走了 $move。轮到你了。';
+  }
+
+  @override
+  String chess_notifyGameOver(String name) {
+    return '你与 $name 的对局已结束';
+  }
+
+  @override
+  String chess_notifyResigned(String name) {
+    return '$name 认输了。你获胜。';
+  }
+
+  @override
+  String chess_notifyDrawOffered(String name) {
+    return '$name 提议和棋';
+  }
+
+  @override
+  String chess_notifyDrawAccepted(String name) {
+    return '$name 接受了和棋';
+  }
+
+  @override
+  String chess_notifyTimeout(String name) {
+    return '$name 申请超时判胜';
+  }
 }

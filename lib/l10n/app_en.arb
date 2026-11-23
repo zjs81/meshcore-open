@@ -4464,5 +4464,368 @@
   "coordinateMap_title": "Location",
   "coordinate_copyLocation": "Copy location",
   "coordinate_openInMaps": "Open in maps",
-  "coordinate_copied": "Location copied"
+  "coordinate_copied": "Location copied",
+  "chess_menuGames": "Chess games",
+  "chess_menuGamesCount": "Chess games ({count})",
+  "@chess_menuGamesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chess_sheetTitle": "Chess",
+  "chess_sectionNewGame": "New game",
+  "chess_sectionYourGames": "Your games",
+  "chess_sectionInvites": "Open invites",
+  "chess_sectionLive": "Live games",
+  "chess_sectionFinished": "Finished",
+  "chess_newChallenge": "Challenge someone",
+  "chess_newChallengeSubtitle": "Pick someone recently heard on this channel",
+  "chess_newOpenInvite": "Post an open invite",
+  "chess_newOpenInviteSubtitle": "Anyone on this channel can accept",
+  "chess_emptyTitle": "No games yet",
+  "chess_emptySubtitle": "Challenge someone or post an open invite. Anyone on the channel can watch.",
+  "chess_vs": "{white} vs {black}",
+  "@chess_vs": {
+    "placeholders": {
+      "white": {
+        "type": "String"
+      },
+      "black": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_unknownPlayer": "Unknown",
+  "chess_rowChallenge": "{inviter} challenged {target}",
+  "@chess_rowChallenge": {
+    "placeholders": {
+      "inviter": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_rowYourOpenInvite": "Your open invite",
+  "chess_rowYourChallenge": "You challenged {name}",
+  "@chess_rowYourChallenge": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_rowInviteFrom": "Game with {name}",
+  "@chess_rowInviteFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_rowStarting": "Waiting for the game to start",
+  "chess_rowMoveTurn": "Move {number} · {turn}",
+  "@chess_rowMoveTurn": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "turn": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_rowOpenInvite": "{name} is looking for a game",
+  "@chess_rowOpenInvite": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_rowChallengedYou": "{name} challenged you",
+  "@chess_rowChallengedYou": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_rowInviteDetails": "Time per move: {deadline}",
+  "@chess_rowInviteDetails": {
+    "placeholders": {
+      "deadline": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_accept": "Accept",
+  "chess_decline": "Decline",
+  "chess_remove": "Remove",
+  "chess_cancelInvite": "Cancel invite",
+  "chess_cancelInviteTitle": "Cancel this invite?",
+  "chess_sendFailed": "Couldn't send. Check the radio connection.",
+  "chess_challengeSent": "Challenge sent to {name}",
+  "@chess_challengeSent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_inviteSent": "Open invite posted",
+  "chess_pickOpponent": "Who to challenge",
+  "chess_noRecentSenders": "Nobody has posted on this channel recently.",
+  "chess_deadlineLabel": "Time per move",
+  "chess_deadlineNone": "No limit",
+  "chess_deadline15m": "15 minutes",
+  "chess_deadline1h": "1 hour",
+  "chess_deadline6h": "6 hours",
+  "chess_deadline1d": "1 day",
+  "chess_deadline3d": "3 days",
+  "chess_colourLabel": "Your colour",
+  "chess_colourRandom": "Random",
+  "chess_colourWhite": "White",
+  "chess_colourBlack": "Black",
+  "chess_sendChallenge": "Send challenge",
+  "chess_postInvite": "Post invite",
+  "chess_gameGone": "This game is no longer available.",
+  "chess_playerYou": "{name} (you)",
+  "@chess_playerYou": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_toMoveChip": "To move",
+  "chess_statusYourMove": "Your move",
+  "chess_statusWaiting": "Waiting for {name}",
+  "@chess_statusWaiting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_statusToMove": "{name} to move",
+  "@chess_statusToMove": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_statusTimeLeft": "{time} left for this move",
+  "@chess_statusTimeLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_statusOverdue": "Time for this move is up",
+  "chess_statusDrawOffered": "{name} offers a draw",
+  "@chess_statusDrawOffered": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_statusUnknownPosition": "The board appears with the next move.",
+  "chess_statusUnverified": "Players not confirmed yet. Ask for an update to check them.",
+  "chess_statusPlayersUnchecked": "Players not confirmed: this phone didn't hear the invite.",
+  "chess_statusMoveUnconfirmed": "Your move may not have gone out. Tap Ask for update to send it again.",
+  "chess_actionResign": "Resign",
+  "chess_actionOfferDraw": "Offer draw",
+  "chess_actionAcceptDraw": "Accept draw",
+  "chess_actionClaimTimeout": "Claim win on time",
+  "chess_actionNudge": "Ask for update",
+  "chess_actionNudgeTooltip": "Ask the players to resend the latest move",
+  "chess_resignConfirmTitle": "Resign this game?",
+  "chess_resignConfirmBody": "Your opponent wins.",
+  "chess_movesTitle": "Moves",
+  "chess_noMovesYet": "No moves yet",
+  "chess_movesMissed": "(missed)",
+  "chess_promoteTitle": "Promote to",
+  "chess_pieceQueen": "Queen",
+  "chess_pieceRook": "Rook",
+  "chess_pieceBishop": "Bishop",
+  "chess_pieceKnight": "Knight",
+  "chess_pieceKing": "King",
+  "chess_piecePawn": "Pawn",
+  "chess_squareWhitePiece": "{square}: {piece}, white",
+  "@chess_squareWhitePiece": {
+    "placeholders": {
+      "square": {
+        "type": "String"
+      },
+      "piece": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_squareBlackPiece": "{square}: {piece}, black",
+  "@chess_squareBlackPiece": {
+    "placeholders": {
+      "square": {
+        "type": "String"
+      },
+      "piece": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_resultDraw": "Draw",
+  "chess_resultWon": "{name} won",
+  "@chess_resultWon": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_resultWithReason": "{result} · {reason}",
+  "@chess_resultWithReason": {
+    "placeholders": {
+      "result": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_endCheckmate": "Checkmate",
+  "chess_endResignation": "Resignation",
+  "chess_endTimeout": "On time",
+  "chess_endDrawAgreed": "Draw agreed",
+  "chess_endStalemate": "Stalemate",
+  "chess_endInsufficient": "Not enough pieces to mate",
+  "chess_endFiftyMoves": "50-move rule",
+  "chess_endRepetition": "Repetition",
+  "chess_endCancelled": "Invite cancelled",
+  "chess_endDeclined": "Challenge declined",
+  "chess_endExpired": "Invite expired",
+  "chess_endTaken": "Someone else accepted first",
+  "chess_timeMinutes": "{minutes} min",
+  "@chess_timeMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "chess_timeHours": "{hours} h {minutes} min",
+  "@chess_timeHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "chess_timeDays": "{days} d {hours} h",
+  "@chess_timeDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "chess_notificationSender": "Chess",
+  "chess_notifyChallenge": "{name} challenged you to a game",
+  "@chess_notifyChallenge": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_notifyAccepted": "{name} accepted your game",
+  "@chess_notifyAccepted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_notifyAcceptedYourMove": "{name} accepted your game. You play white, your move.",
+  "@chess_notifyAcceptedYourMove": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_notifyDeclined": "{name} declined your challenge",
+  "@chess_notifyDeclined": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_notifyTaken": "Someone else accepted that game first",
+  "chess_notifyGameStartedYourMove": "Your game started. You play white, your move.",
+  "chess_notifyYourMove": "{name} played {move}. Your move.",
+  "@chess_notifyYourMove": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "move": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_notifyGameOver": "Your game with {name} is over",
+  "@chess_notifyGameOver": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_notifyResigned": "{name} resigned. You win.",
+  "@chess_notifyResigned": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_notifyDrawOffered": "{name} offers a draw",
+  "@chess_notifyDrawOffered": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_notifyDrawAccepted": "{name} accepted the draw",
+  "@chess_notifyDrawAccepted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_notifyTimeout": "{name} claimed a win on time",
+  "@chess_notifyTimeout": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }
