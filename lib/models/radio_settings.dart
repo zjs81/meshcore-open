@@ -502,6 +502,26 @@ class RadioSettings {
       ),
     ),
     (
+      'USA Sacramento-Foothills',
+      RadioSettings(
+        frequencyMHz: 909.875,
+        bandwidth: LoRaBandwidth.bw62_5,
+        spreadingFactor: LoRaSpreadingFactor.sf9,
+        codingRate: LoRaCodingRate.cr4_5,
+        txPowerDbm: 22,
+      ),
+    ),
+    (
+      'USA Southern California',
+      RadioSettings(
+        frequencyMHz: 927.875,
+        bandwidth: LoRaBandwidth.bw62_5,
+        spreadingFactor: LoRaSpreadingFactor.sf7,
+        codingRate: LoRaCodingRate.cr4_5,
+        txPowerDbm: 22,
+      ),
+    ),
+    (
       'USA/Canada',
       RadioSettings(
         frequencyMHz: 910.525,
