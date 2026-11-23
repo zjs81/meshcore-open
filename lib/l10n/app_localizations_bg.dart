@@ -530,7 +530,7 @@ class AppLocalizationsBg extends AppLocalizations {
       'Открити контакти и запазените им данни';
 
   @override
-  String get backupRestore_bookmarks => 'Bookmarks';
+  String get backupRestore_bookmarks => 'Отметки';
 
   @override
   String get backupRestore_channels => 'Канали';
@@ -1385,11 +1385,11 @@ class AppLocalizationsBg extends AppLocalizations {
       'Показвай региона на съобщението в канала на същия ред като броя хопове, а не под него.';
 
   @override
-  String get appSettings_showCompressionIndicator => 'Compression indicator';
+  String get appSettings_showCompressionIndicator => 'Индикатор за компресия';
 
   @override
   String get appSettings_showCompressionIndicatorSubtitle =>
-      'Show an icon on messages compressed with SMAZ.';
+      'Показва икона върху съобщенията, компресирани със SMAZ.';
 
   @override
   String get appSettings_notifications => 'Уведомления';
@@ -1901,27 +1901,27 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String contacts_groupCurrentMembers(int count) {
-    return 'Current members ($count)';
+    return 'Текущи членове ($count)';
   }
 
   @override
-  String get contacts_groupAddContacts => 'Add contacts';
+  String get contacts_groupAddContacts => 'Добавяне на контакти';
 
   @override
   String contacts_groupRemoveMember(String name) {
-    return 'Remove $name from group';
+    return 'Премахни $name от групата';
   }
 
   @override
   String contacts_groupAddMember(String name) {
-    return 'Add $name to group';
+    return 'Добави $name към групата';
   }
 
   @override
   String get contacts_lastSeenNow => 'наскоро';
 
   @override
-  String get contacts_lastSeenNever => 'not heard yet';
+  String get contacts_lastSeenNever => 'още не е чуван';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
@@ -2359,28 +2359,28 @@ class AppLocalizationsBg extends AppLocalizations {
   String get chat_messageDeleted => 'Съобщението е изтрито';
 
   @override
-  String get chat_bookmark => 'Bookmark';
+  String get chat_bookmark => 'Добави в отметки';
 
   @override
-  String get chat_removeBookmark => 'Remove bookmark';
+  String get chat_removeBookmark => 'Премахни от отметките';
 
   @override
-  String get chat_showBookmarks => 'Show bookmarks';
+  String get chat_showBookmarks => 'Покажи отметките';
 
   @override
-  String get bookmarks_title => 'Bookmarks';
+  String get bookmarks_title => 'Отметки';
 
   @override
-  String get bookmarks_empty => 'No bookmarked messages';
+  String get bookmarks_empty => 'Няма съобщения в отметките';
 
   @override
-  String get bookmarks_channel => 'Channel';
+  String get bookmarks_channel => 'Канал';
 
   @override
-  String get bookmarks_contact => 'Contact';
+  String get bookmarks_contact => 'Контакт';
 
   @override
-  String get bookmarks_remove => 'Remove bookmark';
+  String get bookmarks_remove => 'Премахни от отметките';
 
   @override
   String get chat_selectMessages => 'Избор на съобщения';
@@ -5702,17 +5702,17 @@ class AppLocalizationsBg extends AppLocalizations {
       'MeshCore Open не работи. Отворете го и изпратете отговора си повторно.';
 
   @override
-  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+  String get settings_exportBookmarks => 'Експорт на отметките в Markdown';
 
   @override
   String get settings_exportBookmarksSubtitle =>
-      'Share or save bookmarked messages as a Markdown file.';
+      'Споделете отметките или ги запазете като Markdown файл.';
 
   @override
-  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+  String get settings_exportBookmarksSuccess => 'Отметките са експортирани.';
 
   @override
-  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+  String get settings_exportBookmarksNoBookmarks => 'Няма отметки за експорт.';
 
   @override
   String get settings_gpxExportRepeaters =>
@@ -6374,11 +6374,11 @@ class AppLocalizationsBg extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: 'повторен $count пъти',
+      one: 'повторен веднъж',
+      zero: 'не е чут повторител',
     );
-    return 'Packet $number: $_temp0';
+    return 'Пакет $number: $_temp0';
   }
 
   @override
@@ -6386,26 +6386,26 @@ class AppLocalizationsBg extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: 'повторен $count пъти',
+      one: 'повторен веднъж',
+      zero: 'не е чут повторител',
     );
-    return 'Recovery packet: $_temp0';
+    return 'Пакет за възстановяване: $_temp0';
   }
 
   @override
-  String get imageSend_preparingPreview => 'Preparing preview…';
+  String get imageSend_preparingPreview => 'Подготовка на прегледа…';
 
   @override
-  String get imageSend_tryAnother => 'Try another version';
+  String get imageSend_tryAnother => 'Опитай друга версия';
 
   @override
   String get imageSend_versionsHint =>
-      'Each version is reconstructed a little differently. Pick the one that looks most like your photo.';
+      'Всяка версия се възстановява малко по-различно. Изберете тази, която най-много прилича на вашата снимка.';
 
   @override
   String imageSend_versionLabel(int number) {
-    return 'Version $number';
+    return 'Версия $number';
   }
 
   @override
@@ -6413,8 +6413,8 @@ class AppLocalizationsBg extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count packets',
-      one: '1 packet',
+      other: '$count пакета',
+      one: '1 пакет',
     );
     return '$_temp0';
   }
@@ -7699,102 +7699,102 @@ class AppLocalizationsBg extends AppLocalizations {
   }
 
   @override
-  String get chatCompression_title => 'Compression';
+  String get chatCompression_title => 'Компресия';
 
   @override
   String chatCompression_label(String mode) {
-    return 'Compression: $mode';
+    return 'Компресия: $mode';
   }
 
   @override
-  String get chatCompression_off => 'Off';
+  String get chatCompression_off => 'Изкл.';
 
   @override
   String get chatCompression_smaz => 'SMAZ';
 
   @override
-  String get chatCompression_cyr2lat => 'Cyr2Lat';
+  String get chatCompression_cyr2lat => 'Кир→Лат';
 
   @override
-  String get chatCompression_changeHint => 'Change compression for this chat';
+  String get chatCompression_changeHint => 'Промяна на компресията за този чат';
 
   @override
   String get chatCompression_sheetSubtitle =>
-      'Applies to messages you send in this chat. Saved on this phone.';
+      'Важи за съобщенията, които изпращате в този чат. Запазва се на този телефон.';
 
   @override
   String get chatCompression_offDescription =>
-      'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.';
+      'Без компресия. Текстът се изпраща точно както е въведен. Всяко приложение може да го прочете. Не спестява байтове.';
 
   @override
   String get chatCompression_smazDescription =>
-      'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.';
+      'Компресия без загуби за кратък текст. Приложението на получателя трябва да поддържа SMAZ, иначе другите приложения показват нечетим текст от вида „s:…“. Използва се само когато съобщението става по-малко, така че не всички съобщения се компресират.';
 
   @override
   String get chatCompression_cyr2latDescription =>
-      'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.';
+      'Компресия със загуби. Замества някои кирилски букви с подобни латински (А→A, З→3), за да спести байтове. Чете се във всяко приложение без декодиране, но точните знаци се променят, включително в изпратените от вас съобщения тук. Може да засегне копирането, търсенето и техническия текст. Резултатът зависи от избрания профил.';
 
   @override
-  String get chatCompression_profile => 'Cyr2Lat profile';
+  String get chatCompression_profile => 'Профил кир→лат';
 
   @override
   String get chatCompression_noStorageId =>
-      'Can\'t change compression until this channel has synced from the radio.';
+      'Компресията не може да се промени, докато този канал не се синхронизира с радиото.';
 
   @override
   String get chatCompression_saveFailed =>
-      'Couldn\'t save the compression setting. Showing the saved setting.';
+      'Настройката за компресия не можа да се запази. Показана е запазената настройка.';
 
   @override
-  String get messageMeta_smazCompressed => 'SMAZ compressed';
+  String get messageMeta_smazCompressed => 'Компресирано със SMAZ';
 
   @override
-  String get addContact_title => 'Add Contact';
+  String get addContact_title => 'Добавяне на контакт';
 
   @override
   String get addContact_infoBanner =>
-      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+      'Ако знаете публичния ключ на човека, с когото искате да се свържете, можете да го добавите ръчно, без да чакате той да се обяви (advert).';
 
   @override
-  String get addContact_contactType => 'Contact Type';
+  String get addContact_contactType => 'Тип контакт';
 
   @override
-  String get addContact_name => 'Name';
+  String get addContact_name => 'Име';
 
   @override
-  String get addContact_nameRequired => 'Please enter a name';
+  String get addContact_nameRequired => 'Моля, въведете име';
 
   @override
-  String get addContact_publicKeyHex => 'Public Key (hex)';
+  String get addContact_publicKeyHex => 'Публичен ключ (hex)';
 
   @override
-  String get addContact_publicKeyRequired => 'Please enter a public key';
+  String get addContact_publicKeyRequired => 'Моля, въведете публичен ключ';
 
   @override
   String get addContact_publicKeyInvalid =>
-      'Public key must be 64 hex characters (32 bytes)';
+      'Публичният ключ трябва да е 64 hex символа (32 байта)';
 
   @override
   String get addContact_clipboardKeyLoaded =>
-      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+      'Публичният ключ е попълнен. Изберете тип контакт, въведете име и натиснете „Запази“.';
 
   @override
-  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+  String get addContact_fromDiscovered => 'Добавяне от открити контакти';
 
   @override
-  String get addContact_saveFailed => 'Failed to add contact.';
+  String get addContact_saveFailed => 'Контактът не можа да бъде добавен.';
 
   @override
-  String get coordinateMap_title => 'Location';
+  String get coordinateMap_title => 'Местоположение';
 
   @override
-  String get coordinate_copyLocation => 'Copy location';
+  String get coordinate_copyLocation => 'Копирай местоположението';
 
   @override
-  String get coordinate_openInMaps => 'Open in maps';
+  String get coordinate_openInMaps => 'Отвори в карти';
 
   @override
-  String get coordinate_copied => 'Location copied';
+  String get coordinate_copied => 'Местоположението е копирано';
 
   @override
   String get chess_menuGames => 'Игри на шах';

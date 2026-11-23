@@ -505,7 +505,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupRestore_discoveredContactsDescription => '検出された連絡先と保存済みの詳細';
 
   @override
-  String get backupRestore_bookmarks => 'Bookmarks';
+  String get backupRestore_bookmarks => 'ブックマーク';
 
   @override
   String get backupRestore_channels => 'チャンネル';
@@ -1316,11 +1316,11 @@ class AppLocalizationsJa extends AppLocalizations {
       'チャンネルメッセージの地域を、ホップ数の下ではなく同じ行に表示します。';
 
   @override
-  String get appSettings_showCompressionIndicator => 'Compression indicator';
+  String get appSettings_showCompressionIndicator => '圧縮インジケーター';
 
   @override
   String get appSettings_showCompressionIndicatorSubtitle =>
-      'Show an icon on messages compressed with SMAZ.';
+      'SMAZで圧縮されたメッセージにアイコンを表示します。';
 
   @override
   String get appSettings_notifications => '通知';
@@ -1801,27 +1801,27 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String contacts_groupCurrentMembers(int count) {
-    return 'Current members ($count)';
+    return '現在のメンバー（$count）';
   }
 
   @override
-  String get contacts_groupAddContacts => 'Add contacts';
+  String get contacts_groupAddContacts => '連絡先を追加';
 
   @override
   String contacts_groupRemoveMember(String name) {
-    return 'Remove $name from group';
+    return '$nameをグループから削除';
   }
 
   @override
   String contacts_groupAddMember(String name) {
-    return 'Add $name to group';
+    return '$nameをグループに追加';
   }
 
   @override
   String get contacts_lastSeenNow => '最近';
 
   @override
-  String get contacts_lastSeenNever => 'not heard yet';
+  String get contacts_lastSeenNever => '未受信';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
@@ -2243,28 +2243,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chat_messageDeleted => 'メッセージは削除されました';
 
   @override
-  String get chat_bookmark => 'Bookmark';
+  String get chat_bookmark => 'ブックマーク';
 
   @override
-  String get chat_removeBookmark => 'Remove bookmark';
+  String get chat_removeBookmark => 'ブックマークを削除';
 
   @override
-  String get chat_showBookmarks => 'Show bookmarks';
+  String get chat_showBookmarks => 'ブックマークを表示';
 
   @override
-  String get bookmarks_title => 'Bookmarks';
+  String get bookmarks_title => 'ブックマーク';
 
   @override
-  String get bookmarks_empty => 'No bookmarked messages';
+  String get bookmarks_empty => 'ブックマークしたメッセージはありません';
 
   @override
-  String get bookmarks_channel => 'Channel';
+  String get bookmarks_channel => 'チャンネル';
 
   @override
-  String get bookmarks_contact => 'Contact';
+  String get bookmarks_contact => '連絡先';
 
   @override
-  String get bookmarks_remove => 'Remove bookmark';
+  String get bookmarks_remove => 'ブックマークを削除';
 
   @override
   String get chat_selectMessages => 'メッセージを選択';
@@ -5435,17 +5435,17 @@ class AppLocalizationsJa extends AppLocalizations {
       'MeshCore Open が起動していません。起動してから、もう一度返信を送信してください。';
 
   @override
-  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+  String get settings_exportBookmarks => 'ブックマークをMarkdownにエクスポート';
 
   @override
   String get settings_exportBookmarksSubtitle =>
-      'Share or save bookmarked messages as a Markdown file.';
+      'ブックマークしたメッセージをMarkdownファイルとして共有または保存します。';
 
   @override
-  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+  String get settings_exportBookmarksSuccess => 'ブックマークをエクスポートしました。';
 
   @override
-  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+  String get settings_exportBookmarksNoBookmarks => 'エクスポートするブックマークがありません。';
 
   @override
   String get settings_gpxExportRepeaters => 'GPX へのエクスポート用リピータ/ルームサーバー';
@@ -6074,11 +6074,11 @@ class AppLocalizationsJa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: '$count回中継',
+      one: '1回中継',
+      zero: 'リピータの受信なし',
     );
-    return 'Packet $number: $_temp0';
+    return 'パケット$number：$_temp0';
   }
 
   @override
@@ -6086,26 +6086,26 @@ class AppLocalizationsJa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: '$count回中継',
+      one: '1回中継',
+      zero: 'リピータの受信なし',
     );
-    return 'Recovery packet: $_temp0';
+    return '復元パケット：$_temp0';
   }
 
   @override
-  String get imageSend_preparingPreview => 'Preparing preview…';
+  String get imageSend_preparingPreview => 'プレビューを準備中…';
 
   @override
-  String get imageSend_tryAnother => 'Try another version';
+  String get imageSend_tryAnother => '別のバージョンを試す';
 
   @override
   String get imageSend_versionsHint =>
-      'Each version is reconstructed a little differently. Pick the one that looks most like your photo.';
+      '各バージョンは少しずつ異なる方法で復元されます。写真に最も近いものを選んでください。';
 
   @override
   String imageSend_versionLabel(int number) {
-    return 'Version $number';
+    return 'バージョン$number';
   }
 
   @override
@@ -6113,8 +6113,8 @@ class AppLocalizationsJa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count packets',
-      one: '1 packet',
+      other: '$countパケット',
+      one: '1パケット',
     );
     return '$_temp0';
   }
@@ -7344,15 +7344,15 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get chatCompression_title => 'Compression';
+  String get chatCompression_title => '圧縮';
 
   @override
   String chatCompression_label(String mode) {
-    return 'Compression: $mode';
+    return '圧縮：$mode';
   }
 
   @override
-  String get chatCompression_off => 'Off';
+  String get chatCompression_off => 'オフ';
 
   @override
   String get chatCompression_smaz => 'SMAZ';
@@ -7361,85 +7361,83 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint => 'Change compression for this chat';
+  String get chatCompression_changeHint => 'このチャットの圧縮設定を変更';
 
   @override
   String get chatCompression_sheetSubtitle =>
-      'Applies to messages you send in this chat. Saved on this phone.';
+      'このチャットで送信するメッセージに適用されます。このスマートフォンに保存されます。';
 
   @override
   String get chatCompression_offDescription =>
-      'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.';
+      '圧縮しません。入力したとおりに送信され、どのアプリでも読めます。バイト数は節約できません。';
 
   @override
   String get chatCompression_smazDescription =>
-      'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.';
+      '短いテキスト向けの可逆圧縮です。受信側のアプリがSMAZに対応している必要があり、非対応のアプリでは読めない「s:…」の文字列が表示されます。メッセージが小さくなる場合のみ使用されるため、すべてのメッセージが圧縮されるわけではありません。';
 
   @override
   String get chatCompression_cyr2latDescription =>
-      'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.';
+      '可逆ではありません。一部のキリル文字を似たラテン文字（А→A、З→3）に置き換えてバイト数を節約します。デコード不要でどのアプリでも読めますが、ここで送信した自分のメッセージを含め、実際の文字が変わります。コピー、検索、技術的なテキストに影響する場合があります。結果は選択したプロファイルによって異なります。';
 
   @override
-  String get chatCompression_profile => 'Cyr2Lat profile';
+  String get chatCompression_profile => 'Cyr2Latプロファイル';
 
   @override
   String get chatCompression_noStorageId =>
-      'Can\'t change compression until this channel has synced from the radio.';
+      'このチャンネルがラジオから同期されるまで、圧縮設定は変更できません。';
 
   @override
-  String get chatCompression_saveFailed =>
-      'Couldn\'t save the compression setting. Showing the saved setting.';
+  String get chatCompression_saveFailed => '圧縮設定を保存できませんでした。保存済みの設定を表示しています。';
 
   @override
-  String get messageMeta_smazCompressed => 'SMAZ compressed';
+  String get messageMeta_smazCompressed => 'SMAZ圧縮済み';
 
   @override
-  String get addContact_title => 'Add Contact';
+  String get addContact_title => '連絡先を追加';
 
   @override
   String get addContact_infoBanner =>
-      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+      '連絡したい相手の公開鍵がわかっている場合は、相手のアドバートを待たずに手動で追加できます。';
 
   @override
-  String get addContact_contactType => 'Contact Type';
+  String get addContact_contactType => '連絡先の種類';
 
   @override
-  String get addContact_name => 'Name';
+  String get addContact_name => '名前';
 
   @override
-  String get addContact_nameRequired => 'Please enter a name';
+  String get addContact_nameRequired => '名前を入力してください';
 
   @override
-  String get addContact_publicKeyHex => 'Public Key (hex)';
+  String get addContact_publicKeyHex => '公開鍵（16進数）';
 
   @override
-  String get addContact_publicKeyRequired => 'Please enter a public key';
+  String get addContact_publicKeyRequired => '公開鍵を入力してください';
 
   @override
-  String get addContact_publicKeyInvalid =>
-      'Public key must be 64 hex characters (32 bytes)';
+  String get addContact_publicKeyInvalid => '公開鍵は16進数64文字（32バイト）である必要があります';
 
   @override
   String get addContact_clipboardKeyLoaded =>
-      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+      '公開鍵を入力しました。連絡先の種類を選び、名前を入力して、保存をタップしてください。';
 
   @override
-  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+  String get addContact_fromDiscovered => '発見された連絡先から追加';
 
   @override
-  String get addContact_saveFailed => 'Failed to add contact.';
+  String get addContact_saveFailed => '連絡先を追加できませんでした。';
 
   @override
-  String get coordinateMap_title => 'Location';
+  String get coordinateMap_title => '位置情報';
 
   @override
-  String get coordinate_copyLocation => 'Copy location';
+  String get coordinate_copyLocation => '位置情報をコピー';
 
   @override
-  String get coordinate_openInMaps => 'Open in maps';
+  String get coordinate_openInMaps => 'マップで開く';
 
   @override
-  String get coordinate_copied => 'Location copied';
+  String get coordinate_copied => '位置情報をコピーしました';
 
   @override
   String get chess_menuGames => 'チェスの対局';

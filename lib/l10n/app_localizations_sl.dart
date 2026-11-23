@@ -527,7 +527,7 @@ class AppLocalizationsSl extends AppLocalizations {
       'Odkriti kontakti in njihovi shranjeni podatki';
 
   @override
-  String get backupRestore_bookmarks => 'Bookmarks';
+  String get backupRestore_bookmarks => 'Zaznamki';
 
   @override
   String get backupRestore_channels => 'Kanali';
@@ -1373,11 +1373,11 @@ class AppLocalizationsSl extends AppLocalizations {
       'Regijo sporočila kanala prikaži v isti vrstici kot število skokov, ne pod njim.';
 
   @override
-  String get appSettings_showCompressionIndicator => 'Compression indicator';
+  String get appSettings_showCompressionIndicator => 'Kazalnik stiskanja';
 
   @override
   String get appSettings_showCompressionIndicatorSubtitle =>
-      'Show an icon on messages compressed with SMAZ.';
+      'Pokaži ikono pri sporočilih, stisnjenih s SMAZ.';
 
   @override
   String get appSettings_notifications => 'Obvestila';
@@ -1884,27 +1884,27 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String contacts_groupCurrentMembers(int count) {
-    return 'Current members ($count)';
+    return 'Trenutni člani ($count)';
   }
 
   @override
-  String get contacts_groupAddContacts => 'Add contacts';
+  String get contacts_groupAddContacts => 'Dodaj stike';
 
   @override
   String contacts_groupRemoveMember(String name) {
-    return 'Remove $name from group';
+    return 'Odstrani $name iz skupine';
   }
 
   @override
   String contacts_groupAddMember(String name) {
-    return 'Add $name to group';
+    return 'Dodaj $name v skupino';
   }
 
   @override
   String get contacts_lastSeenNow => 'pravkar';
 
   @override
-  String get contacts_lastSeenNever => 'not heard yet';
+  String get contacts_lastSeenNever => 'še ni slišan';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
@@ -2344,28 +2344,28 @@ class AppLocalizationsSl extends AppLocalizations {
   String get chat_messageDeleted => 'Sporočilo izbrisano';
 
   @override
-  String get chat_bookmark => 'Bookmark';
+  String get chat_bookmark => 'Zaznamek';
 
   @override
-  String get chat_removeBookmark => 'Remove bookmark';
+  String get chat_removeBookmark => 'Odstrani zaznamek';
 
   @override
-  String get chat_showBookmarks => 'Show bookmarks';
+  String get chat_showBookmarks => 'Pokaži zaznamke';
 
   @override
-  String get bookmarks_title => 'Bookmarks';
+  String get bookmarks_title => 'Zaznamki';
 
   @override
-  String get bookmarks_empty => 'No bookmarked messages';
+  String get bookmarks_empty => 'Ni sporočil z zaznamki';
 
   @override
-  String get bookmarks_channel => 'Channel';
+  String get bookmarks_channel => 'Kanal';
 
   @override
-  String get bookmarks_contact => 'Contact';
+  String get bookmarks_contact => 'Stik';
 
   @override
-  String get bookmarks_remove => 'Remove bookmark';
+  String get bookmarks_remove => 'Odstrani zaznamek';
 
   @override
   String get chat_selectMessages => 'Izberi sporočila';
@@ -5687,17 +5687,17 @@ class AppLocalizationsSl extends AppLocalizations {
       'MeshCore Open ne teče. Odprite ga in ponovno pošite odgovor.';
 
   @override
-  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+  String get settings_exportBookmarks => 'Izvozi zaznamke v Markdown';
 
   @override
   String get settings_exportBookmarksSubtitle =>
-      'Share or save bookmarked messages as a Markdown file.';
+      'Deli ali shrani sporočila z zaznamki kot datoteko Markdown.';
 
   @override
-  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+  String get settings_exportBookmarksSuccess => 'Zaznamki so izvoženi.';
 
   @override
-  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+  String get settings_exportBookmarksNoBookmarks => 'Ni zaznamkov za izvoz.';
 
   @override
   String get settings_gpxExportRepeaters =>
@@ -6361,11 +6361,13 @@ class AppLocalizationsSl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: 'ponovljen $count-krat',
+      few: 'ponovljen $count-krat',
+      two: 'ponovljen $count-krat',
+      one: 'ponovljen enkrat',
+      zero: 'noben repetitor ni slišal',
     );
-    return 'Packet $number: $_temp0';
+    return 'Paket $number: $_temp0';
   }
 
   @override
@@ -6373,26 +6375,28 @@ class AppLocalizationsSl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: 'ponovljen $count-krat',
+      few: 'ponovljen $count-krat',
+      two: 'ponovljen $count-krat',
+      one: 'ponovljen enkrat',
+      zero: 'noben repetitor ni slišal',
     );
-    return 'Recovery packet: $_temp0';
+    return 'Obnovitveni paket: $_temp0';
   }
 
   @override
-  String get imageSend_preparingPreview => 'Preparing preview…';
+  String get imageSend_preparingPreview => 'Priprava predogleda…';
 
   @override
-  String get imageSend_tryAnother => 'Try another version';
+  String get imageSend_tryAnother => 'Poskusi drugo različico';
 
   @override
   String get imageSend_versionsHint =>
-      'Each version is reconstructed a little differently. Pick the one that looks most like your photo.';
+      'Vsaka različica je rekonstruirana nekoliko drugače. Izberite tisto, ki je najbolj podobna vaši fotografiji.';
 
   @override
   String imageSend_versionLabel(int number) {
-    return 'Version $number';
+    return 'Različica $number';
   }
 
   @override
@@ -6400,8 +6404,10 @@ class AppLocalizationsSl extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count packets',
-      one: '1 packet',
+      other: '$count paketov',
+      few: '$count paketi',
+      two: '$count paketa',
+      one: '1 paket',
     );
     return '$_temp0';
   }
@@ -7675,15 +7681,15 @@ class AppLocalizationsSl extends AppLocalizations {
   }
 
   @override
-  String get chatCompression_title => 'Compression';
+  String get chatCompression_title => 'Stiskanje';
 
   @override
   String chatCompression_label(String mode) {
-    return 'Compression: $mode';
+    return 'Stiskanje: $mode';
   }
 
   @override
-  String get chatCompression_off => 'Off';
+  String get chatCompression_off => 'Izklopljeno';
 
   @override
   String get chatCompression_smaz => 'SMAZ';
@@ -7692,85 +7698,85 @@ class AppLocalizationsSl extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint => 'Change compression for this chat';
+  String get chatCompression_changeHint => 'Spremeni stiskanje za ta klepet';
 
   @override
   String get chatCompression_sheetSubtitle =>
-      'Applies to messages you send in this chat. Saved on this phone.';
+      'Velja za sporočila, ki jih pošljete v tem klepetu. Shranjeno v tem telefonu.';
 
   @override
   String get chatCompression_offDescription =>
-      'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.';
+      'Brez stiskanja. Besedilo se pošlje natanko tako, kot ste ga vnesli. Vsaka aplikacija ga lahko prebere. Ne prihrani nobenega bajta.';
 
   @override
   String get chatCompression_smazDescription =>
-      'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.';
+      'Stiskanje brez izgub za kratka besedila. Aplikacija prejemnika mora podpirati SMAZ, druge aplikacije prikažejo neberljivo besedilo »s:…«. Uporabi se le, kadar sporočilo skrajša, zato ni stisnjeno vsako sporočilo.';
 
   @override
   String get chatCompression_cyr2latDescription =>
-      'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.';
+      'Ni brez izgub. Nekatere cirilične črke zamenja s podobnimi latiničnimi (А→A, З→3), da prihrani bajte. Berljivo v vsaki aplikaciji brez dekodiranja, vendar se natančni znaki spremenijo, tudi v vaših poslanih sporočilih tukaj. Lahko vpliva na kopiranje, iskanje in tehnična besedila. Rezultat je odvisen od izbranega profila.';
 
   @override
-  String get chatCompression_profile => 'Cyr2Lat profile';
+  String get chatCompression_profile => 'Profil Cyr2Lat';
 
   @override
   String get chatCompression_noStorageId =>
-      'Can\'t change compression until this channel has synced from the radio.';
+      'Stiskanja ni mogoče spremeniti, dokler se ta kanal ne sinhronizira z radiem.';
 
   @override
   String get chatCompression_saveFailed =>
-      'Couldn\'t save the compression setting. Showing the saved setting.';
+      'Nastavitve stiskanja ni bilo mogoče shraniti. Prikazana je shranjena nastavitev.';
 
   @override
-  String get messageMeta_smazCompressed => 'SMAZ compressed';
+  String get messageMeta_smazCompressed => 'Stisnjeno s SMAZ';
 
   @override
-  String get addContact_title => 'Add Contact';
+  String get addContact_title => 'Dodaj stik';
 
   @override
   String get addContact_infoBanner =>
-      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+      'Če poznate javni ključ osebe, s katero želite stopiti v stik, jo lahko dodate ročno, ne da bi čakali na njeno oglasitev.';
 
   @override
-  String get addContact_contactType => 'Contact Type';
+  String get addContact_contactType => 'Vrsta stika';
 
   @override
-  String get addContact_name => 'Name';
+  String get addContact_name => 'Ime';
 
   @override
-  String get addContact_nameRequired => 'Please enter a name';
+  String get addContact_nameRequired => 'Vnesite ime';
 
   @override
-  String get addContact_publicKeyHex => 'Public Key (hex)';
+  String get addContact_publicKeyHex => 'Javni ključ (hex)';
 
   @override
-  String get addContact_publicKeyRequired => 'Please enter a public key';
+  String get addContact_publicKeyRequired => 'Vnesite javni ključ';
 
   @override
   String get addContact_publicKeyInvalid =>
-      'Public key must be 64 hex characters (32 bytes)';
+      'Javni ključ mora imeti 64 šestnajstiških znakov (32 bajtov)';
 
   @override
   String get addContact_clipboardKeyLoaded =>
-      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+      'Javni ključ je izpolnjen. Izberite vrsto stika, vnesite ime in tapnite Shrani.';
 
   @override
-  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+  String get addContact_fromDiscovered => 'Dodaj iz odkritih stikov';
 
   @override
-  String get addContact_saveFailed => 'Failed to add contact.';
+  String get addContact_saveFailed => 'Stika ni bilo mogoče dodati.';
 
   @override
-  String get coordinateMap_title => 'Location';
+  String get coordinateMap_title => 'Lokacija';
 
   @override
-  String get coordinate_copyLocation => 'Copy location';
+  String get coordinate_copyLocation => 'Kopiraj lokacijo';
 
   @override
-  String get coordinate_openInMaps => 'Open in maps';
+  String get coordinate_openInMaps => 'Odpri v zemljevidih';
 
   @override
-  String get coordinate_copied => 'Location copied';
+  String get coordinate_copied => 'Lokacija kopirana';
 
   @override
   String get chess_menuGames => 'Šahovske igre';

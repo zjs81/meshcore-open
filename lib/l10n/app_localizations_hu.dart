@@ -525,7 +525,7 @@ class AppLocalizationsHu extends AppLocalizations {
       'Felfedezett névjegyek és mentett adataik';
 
   @override
-  String get backupRestore_bookmarks => 'Bookmarks';
+  String get backupRestore_bookmarks => 'Könyvjelzők';
 
   @override
   String get backupRestore_channels => 'Csatornák';
@@ -1376,11 +1376,11 @@ class AppLocalizationsHu extends AppLocalizations {
       'A csatornaüzenet régiója az ugrásszámmal azonos sorban jelenik meg, nem alatta.';
 
   @override
-  String get appSettings_showCompressionIndicator => 'Compression indicator';
+  String get appSettings_showCompressionIndicator => 'Tömörítésjelző';
 
   @override
   String get appSettings_showCompressionIndicatorSubtitle =>
-      'Show an icon on messages compressed with SMAZ.';
+      'Ikon megjelenítése a SMAZ-szal tömörített üzeneteken.';
 
   @override
   String get appSettings_notifications => 'Értesítések';
@@ -1890,27 +1890,27 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String contacts_groupCurrentMembers(int count) {
-    return 'Current members ($count)';
+    return 'Jelenlegi tagok ($count)';
   }
 
   @override
-  String get contacts_groupAddContacts => 'Add contacts';
+  String get contacts_groupAddContacts => 'Kapcsolatok hozzáadása';
 
   @override
   String contacts_groupRemoveMember(String name) {
-    return 'Remove $name from group';
+    return '$name eltávolítása a csoportból';
   }
 
   @override
   String contacts_groupAddMember(String name) {
-    return 'Add $name to group';
+    return '$name hozzáadása a csoporthoz';
   }
 
   @override
   String get contacts_lastSeenNow => 'nemrég';
 
   @override
-  String get contacts_lastSeenNever => 'not heard yet';
+  String get contacts_lastSeenNever => 'még nem hallották';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
@@ -2350,28 +2350,28 @@ class AppLocalizationsHu extends AppLocalizations {
   String get chat_messageDeleted => 'Üzenet törölve';
 
   @override
-  String get chat_bookmark => 'Bookmark';
+  String get chat_bookmark => 'Könyvjelző';
 
   @override
-  String get chat_removeBookmark => 'Remove bookmark';
+  String get chat_removeBookmark => 'Könyvjelző eltávolítása';
 
   @override
-  String get chat_showBookmarks => 'Show bookmarks';
+  String get chat_showBookmarks => 'Könyvjelzők megjelenítése';
 
   @override
-  String get bookmarks_title => 'Bookmarks';
+  String get bookmarks_title => 'Könyvjelzők';
 
   @override
-  String get bookmarks_empty => 'No bookmarked messages';
+  String get bookmarks_empty => 'Nincs könyvjelzős üzenet';
 
   @override
-  String get bookmarks_channel => 'Channel';
+  String get bookmarks_channel => 'Csatorna';
 
   @override
-  String get bookmarks_contact => 'Contact';
+  String get bookmarks_contact => 'Kapcsolat';
 
   @override
-  String get bookmarks_remove => 'Remove bookmark';
+  String get bookmarks_remove => 'Könyvjelző eltávolítása';
 
   @override
   String get chat_selectMessages => 'Üzenetek kijelölése';
@@ -5703,17 +5703,19 @@ class AppLocalizationsHu extends AppLocalizations {
       'A MeshCore Open nem fut. Nyissa meg, és küldje el a választ újra.';
 
   @override
-  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+  String get settings_exportBookmarks =>
+      'Könyvjelzők exportálása Markdown formátumba';
 
   @override
   String get settings_exportBookmarksSubtitle =>
-      'Share or save bookmarked messages as a Markdown file.';
+      'A könyvjelzős üzenetek megosztása vagy mentése Markdown fájlként.';
 
   @override
-  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+  String get settings_exportBookmarksSuccess => 'A könyvjelzők exportálva.';
 
   @override
-  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+  String get settings_exportBookmarksNoBookmarks =>
+      'Nincs exportálható könyvjelző.';
 
   @override
   String get settings_gpxExportRepeaters =>
@@ -6373,11 +6375,11 @@ class AppLocalizationsHu extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: '$count-szor ismételték',
+      one: 'egyszer ismételték',
+      zero: 'egy átjátszó sem hallotta',
     );
-    return 'Packet $number: $_temp0';
+    return '$number. csomag: $_temp0';
   }
 
   @override
@@ -6385,26 +6387,26 @@ class AppLocalizationsHu extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: '$count-szor ismételték',
+      one: 'egyszer ismételték',
+      zero: 'egy átjátszó sem hallotta',
     );
-    return 'Recovery packet: $_temp0';
+    return 'Helyreállító csomag: $_temp0';
   }
 
   @override
-  String get imageSend_preparingPreview => 'Preparing preview…';
+  String get imageSend_preparingPreview => 'Előnézet előkészítése…';
 
   @override
-  String get imageSend_tryAnother => 'Try another version';
+  String get imageSend_tryAnother => 'Másik változat kipróbálása';
 
   @override
   String get imageSend_versionsHint =>
-      'Each version is reconstructed a little differently. Pick the one that looks most like your photo.';
+      'Minden változat kissé másként van rekonstruálva. Válassza azt, amelyik leginkább hasonlít a fényképére.';
 
   @override
   String imageSend_versionLabel(int number) {
-    return 'Version $number';
+    return '$number. változat';
   }
 
   @override
@@ -6412,8 +6414,8 @@ class AppLocalizationsHu extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count packets',
-      one: '1 packet',
+      other: '$count csomag',
+      one: '1 csomag',
     );
     return '$_temp0';
   }
@@ -7682,15 +7684,15 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get chatCompression_title => 'Compression';
+  String get chatCompression_title => 'Tömörítés';
 
   @override
   String chatCompression_label(String mode) {
-    return 'Compression: $mode';
+    return 'Tömörítés: $mode';
   }
 
   @override
-  String get chatCompression_off => 'Off';
+  String get chatCompression_off => 'Ki';
 
   @override
   String get chatCompression_smaz => 'SMAZ';
@@ -7699,85 +7701,87 @@ class AppLocalizationsHu extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint => 'Change compression for this chat';
+  String get chatCompression_changeHint =>
+      'Tömörítés módosítása ebben a csevegésben';
 
   @override
   String get chatCompression_sheetSubtitle =>
-      'Applies to messages you send in this chat. Saved on this phone.';
+      'Az ebben a csevegésben küldött üzenetekre vonatkozik. Ezen a telefonon van mentve.';
 
   @override
   String get chatCompression_offDescription =>
-      'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.';
+      'Nincs tömörítés. A szöveg pontosan úgy megy el, ahogy beírta. Minden alkalmazás el tudja olvasni. Nem takarít meg bájtokat.';
 
   @override
   String get chatCompression_smazDescription =>
-      'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.';
+      'Veszteségmentes tömörítés rövid szövegekhez. A címzett alkalmazásának támogatnia kell a SMAZ-ot, más alkalmazások olvashatatlan „s:…” szöveget mutatnak. Csak akkor használja, ha kisebb lesz tőle az üzenet, így nem minden üzenet tömörített.';
 
   @override
   String get chatCompression_cyr2latDescription =>
-      'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.';
+      'Nem veszteségmentes. Néhány cirill betűt hasonlóan kinéző latinra cserél (А→A, З→3) a bájtok megtakarítására. Dekódolás nélkül olvasható bármely alkalmazásban, de a pontos karakterek megváltoznak, az itt elküldött saját üzeneteit is beleértve. Hatással lehet a másolásra, a keresésre és a műszaki szövegekre. Az eredmény a választott profiltól függ.';
 
   @override
-  String get chatCompression_profile => 'Cyr2Lat profile';
+  String get chatCompression_profile => 'Cyr2Lat profil';
 
   @override
   String get chatCompression_noStorageId =>
-      'Can\'t change compression until this channel has synced from the radio.';
+      'A tömörítés nem módosítható, amíg ez a csatorna nem szinkronizált a rádióról.';
 
   @override
   String get chatCompression_saveFailed =>
-      'Couldn\'t save the compression setting. Showing the saved setting.';
+      'A tömörítési beállítást nem sikerült menteni. A mentett beállítás látható.';
 
   @override
-  String get messageMeta_smazCompressed => 'SMAZ compressed';
+  String get messageMeta_smazCompressed => 'SMAZ-szal tömörítve';
 
   @override
-  String get addContact_title => 'Add Contact';
+  String get addContact_title => 'Kapcsolat hozzáadása';
 
   @override
   String get addContact_infoBanner =>
-      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+      'Ha ismeri annak a nyilvános kulcsát, akivel kapcsolatba szeretne lépni, kézzel is hozzáadhatja, anélkül hogy meg kellene várnia a hirdetését.';
 
   @override
-  String get addContact_contactType => 'Contact Type';
+  String get addContact_contactType => 'Kapcsolat típusa';
 
   @override
-  String get addContact_name => 'Name';
+  String get addContact_name => 'Név';
 
   @override
-  String get addContact_nameRequired => 'Please enter a name';
+  String get addContact_nameRequired => 'Adjon meg egy nevet';
 
   @override
-  String get addContact_publicKeyHex => 'Public Key (hex)';
+  String get addContact_publicKeyHex => 'Nyilvános kulcs (hex)';
 
   @override
-  String get addContact_publicKeyRequired => 'Please enter a public key';
+  String get addContact_publicKeyRequired => 'Adjon meg egy nyilvános kulcsot';
 
   @override
   String get addContact_publicKeyInvalid =>
-      'Public key must be 64 hex characters (32 bytes)';
+      'A nyilvános kulcsnak 64 hexadecimális karakterből (32 bájt) kell állnia';
 
   @override
   String get addContact_clipboardKeyLoaded =>
-      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+      'A nyilvános kulcs kitöltve. Válasszon kapcsolattípust, adjon meg egy nevet, és koppintson a Mentés gombra.';
 
   @override
-  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+  String get addContact_fromDiscovered =>
+      'Hozzáadás a felfedezett kapcsolatok közül';
 
   @override
-  String get addContact_saveFailed => 'Failed to add contact.';
+  String get addContact_saveFailed => 'A kapcsolat hozzáadása nem sikerült.';
 
   @override
-  String get coordinateMap_title => 'Location';
+  String get coordinateMap_title => 'Hely';
 
   @override
-  String get coordinate_copyLocation => 'Copy location';
+  String get coordinate_copyLocation => 'Hely másolása';
 
   @override
-  String get coordinate_openInMaps => 'Open in maps';
+  String get coordinate_openInMaps => 'Megnyitás a térképeken';
 
   @override
-  String get coordinate_copied => 'Location copied';
+  String get coordinate_copied => 'Hely másolva';
 
   @override
   String get chess_menuGames => 'Sakkjátszmák';

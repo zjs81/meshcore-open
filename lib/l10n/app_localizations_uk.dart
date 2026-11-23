@@ -527,7 +527,7 @@ class AppLocalizationsUk extends AppLocalizations {
       'Виявлені контакти та їхні збережені дані';
 
   @override
-  String get backupRestore_bookmarks => 'Bookmarks';
+  String get backupRestore_bookmarks => 'Закладки';
 
   @override
   String get backupRestore_channels => 'Канали';
@@ -1375,11 +1375,11 @@ class AppLocalizationsUk extends AppLocalizations {
       'Показувати регіон повідомлення каналу в одному рядку з кількістю хопів, а не під ним.';
 
   @override
-  String get appSettings_showCompressionIndicator => 'Compression indicator';
+  String get appSettings_showCompressionIndicator => 'Індикатор стиснення';
 
   @override
   String get appSettings_showCompressionIndicatorSubtitle =>
-      'Show an icon on messages compressed with SMAZ.';
+      'Показувати значок на повідомленнях, стиснутих за допомогою SMAZ.';
 
   @override
   String get appSettings_notifications => 'Сповіщення';
@@ -1888,27 +1888,27 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String contacts_groupCurrentMembers(int count) {
-    return 'Current members ($count)';
+    return 'Поточні учасники ($count)';
   }
 
   @override
-  String get contacts_groupAddContacts => 'Add contacts';
+  String get contacts_groupAddContacts => 'Додати контакти';
 
   @override
   String contacts_groupRemoveMember(String name) {
-    return 'Remove $name from group';
+    return 'Видалити $name з групи';
   }
 
   @override
   String contacts_groupAddMember(String name) {
-    return 'Add $name to group';
+    return 'Додати $name до групи';
   }
 
   @override
   String get contacts_lastSeenNow => 'нещодавно';
 
   @override
-  String get contacts_lastSeenNever => 'not heard yet';
+  String get contacts_lastSeenNever => 'ще не чули';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
@@ -2347,28 +2347,28 @@ class AppLocalizationsUk extends AppLocalizations {
   String get chat_messageDeleted => 'Повідомлення видалено';
 
   @override
-  String get chat_bookmark => 'Bookmark';
+  String get chat_bookmark => 'У закладки';
 
   @override
-  String get chat_removeBookmark => 'Remove bookmark';
+  String get chat_removeBookmark => 'Прибрати із закладок';
 
   @override
-  String get chat_showBookmarks => 'Show bookmarks';
+  String get chat_showBookmarks => 'Показати закладки';
 
   @override
-  String get bookmarks_title => 'Bookmarks';
+  String get bookmarks_title => 'Закладки';
 
   @override
-  String get bookmarks_empty => 'No bookmarked messages';
+  String get bookmarks_empty => 'Немає повідомлень у закладках';
 
   @override
-  String get bookmarks_channel => 'Channel';
+  String get bookmarks_channel => 'Канал';
 
   @override
-  String get bookmarks_contact => 'Contact';
+  String get bookmarks_contact => 'Контакт';
 
   @override
-  String get bookmarks_remove => 'Remove bookmark';
+  String get bookmarks_remove => 'Прибрати із закладок';
 
   @override
   String get chat_selectMessages => 'Вибрати повідомлення';
@@ -5722,17 +5722,18 @@ class AppLocalizationsUk extends AppLocalizations {
       'MeshCore Open не запущено. Відкрийте його та надішліть відповідь ще раз.';
 
   @override
-  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+  String get settings_exportBookmarks => 'Експорт закладок у Markdown';
 
   @override
   String get settings_exportBookmarksSubtitle =>
-      'Share or save bookmarked messages as a Markdown file.';
+      'Поділіться закладками або збережіть їх у файл Markdown.';
 
   @override
-  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+  String get settings_exportBookmarksSuccess => 'Закладки експортовано.';
 
   @override
-  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+  String get settings_exportBookmarksNoBookmarks =>
+      'Немає закладок для експорту.';
 
   @override
   String get settings_gpxExportRepeaters =>
@@ -6401,11 +6402,13 @@ class AppLocalizationsUk extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: 'повторено $count разу',
+      many: 'повторено $count разів',
+      few: 'повторено $count рази',
+      one: 'повторено $count раз',
+      zero: 'ретранслятор не чутно',
     );
-    return 'Packet $number: $_temp0';
+    return 'Пакет $number: $_temp0';
   }
 
   @override
@@ -6413,26 +6416,28 @@ class AppLocalizationsUk extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: 'повторено $count разу',
+      many: 'повторено $count разів',
+      few: 'повторено $count рази',
+      one: 'повторено $count раз',
+      zero: 'ретранслятор не чутно',
     );
-    return 'Recovery packet: $_temp0';
+    return 'Пакет відновлення: $_temp0';
   }
 
   @override
-  String get imageSend_preparingPreview => 'Preparing preview…';
+  String get imageSend_preparingPreview => 'Підготовка попереднього перегляду…';
 
   @override
-  String get imageSend_tryAnother => 'Try another version';
+  String get imageSend_tryAnother => 'Інший варіант';
 
   @override
   String get imageSend_versionsHint =>
-      'Each version is reconstructed a little differently. Pick the one that looks most like your photo.';
+      'Кожен варіант відновлюється трохи по-різному. Виберіть той, що найбільше схожий на ваше фото.';
 
   @override
   String imageSend_versionLabel(int number) {
-    return 'Version $number';
+    return 'Варіант $number';
   }
 
   @override
@@ -6440,8 +6445,10 @@ class AppLocalizationsUk extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count packets',
-      one: '1 packet',
+      other: '$count пакета',
+      many: '$count пакетів',
+      few: '$count пакети',
+      one: '$count пакет',
     );
     return '$_temp0';
   }
@@ -7728,102 +7735,102 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get chatCompression_title => 'Compression';
+  String get chatCompression_title => 'Стиснення';
 
   @override
   String chatCompression_label(String mode) {
-    return 'Compression: $mode';
+    return 'Стиснення: $mode';
   }
 
   @override
-  String get chatCompression_off => 'Off';
+  String get chatCompression_off => 'Вимк.';
 
   @override
   String get chatCompression_smaz => 'SMAZ';
 
   @override
-  String get chatCompression_cyr2lat => 'Cyr2Lat';
+  String get chatCompression_cyr2lat => 'Кир→Лат';
 
   @override
-  String get chatCompression_changeHint => 'Change compression for this chat';
+  String get chatCompression_changeHint => 'Змінити стиснення для цього чату';
 
   @override
   String get chatCompression_sheetSubtitle =>
-      'Applies to messages you send in this chat. Saved on this phone.';
+      'Діє для повідомлень, які ви надсилаєте в цьому чаті. Зберігається на цьому телефоні.';
 
   @override
   String get chatCompression_offDescription =>
-      'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.';
+      'Без стиснення. Текст надсилається точно так, як набрано. Його прочитає будь-який застосунок. Байти не економляться.';
 
   @override
   String get chatCompression_smazDescription =>
-      'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.';
+      'Стиснення без втрат для коротких текстів. Застосунок отримувача має підтримувати SMAZ, інакше інші застосунки покажуть нечитабельний текст на кшталт «s:…». Застосовується, лише коли повідомлення стає коротшим, тому стискаються не всі повідомлення.';
 
   @override
   String get chatCompression_cyr2latDescription =>
-      'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.';
+      'Стиснення з втратами. Частина кириличних літер замінюється схожими латинськими (А→A, З→3), щоб заощадити байти. Читається в будь-якому застосунку без декодування, але точні символи змінюються, зокрема у ваших надісланих повідомленнях тут. Це може вплинути на копіювання, пошук і технічний текст. Результат залежить від вибраного профілю.';
 
   @override
-  String get chatCompression_profile => 'Cyr2Lat profile';
+  String get chatCompression_profile => 'Профіль кир→лат';
 
   @override
   String get chatCompression_noStorageId =>
-      'Can\'t change compression until this channel has synced from the radio.';
+      'Не можна змінити стиснення, доки цей канал не синхронізовано з радіо.';
 
   @override
   String get chatCompression_saveFailed =>
-      'Couldn\'t save the compression setting. Showing the saved setting.';
+      'Не вдалося зберегти налаштування стиснення. Показано збережене налаштування.';
 
   @override
-  String get messageMeta_smazCompressed => 'SMAZ compressed';
+  String get messageMeta_smazCompressed => 'Стиснуто SMAZ';
 
   @override
-  String get addContact_title => 'Add Contact';
+  String get addContact_title => 'Додати контакт';
 
   @override
   String get addContact_infoBanner =>
-      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+      'Якщо ви знаєте відкритий ключ потрібного абонента, можна додати його вручну, не чекаючи на його оголошення (advert).';
 
   @override
-  String get addContact_contactType => 'Contact Type';
+  String get addContact_contactType => 'Тип контакту';
 
   @override
-  String get addContact_name => 'Name';
+  String get addContact_name => 'Ім\'я';
 
   @override
-  String get addContact_nameRequired => 'Please enter a name';
+  String get addContact_nameRequired => 'Введіть ім\'я';
 
   @override
-  String get addContact_publicKeyHex => 'Public Key (hex)';
+  String get addContact_publicKeyHex => 'Відкритий ключ (hex)';
 
   @override
-  String get addContact_publicKeyRequired => 'Please enter a public key';
+  String get addContact_publicKeyRequired => 'Введіть відкритий ключ';
 
   @override
   String get addContact_publicKeyInvalid =>
-      'Public key must be 64 hex characters (32 bytes)';
+      'Відкритий ключ має містити 64 hex-символи (32 байти)';
 
   @override
   String get addContact_clipboardKeyLoaded =>
-      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+      'Відкритий ключ підставлено. Виберіть тип контакту, введіть ім\'я та натисніть «Зберегти».';
 
   @override
-  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+  String get addContact_fromDiscovered => 'Додати з виявлених контактів';
 
   @override
-  String get addContact_saveFailed => 'Failed to add contact.';
+  String get addContact_saveFailed => 'Не вдалося додати контакт.';
 
   @override
-  String get coordinateMap_title => 'Location';
+  String get coordinateMap_title => 'Місцезнаходження';
 
   @override
-  String get coordinate_copyLocation => 'Copy location';
+  String get coordinate_copyLocation => 'Копіювати місцезнаходження';
 
   @override
-  String get coordinate_openInMaps => 'Open in maps';
+  String get coordinate_openInMaps => 'Відкрити на карті';
 
   @override
-  String get coordinate_copied => 'Location copied';
+  String get coordinate_copied => 'Місцезнаходження скопійовано';
 
   @override
   String get chess_menuGames => 'Шахові партії';

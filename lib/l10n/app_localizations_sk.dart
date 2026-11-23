@@ -1886,20 +1886,20 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String contacts_groupCurrentMembers(int count) {
-    return 'Current members ($count)';
+    return 'Súčasní členovia ($count)';
   }
 
   @override
-  String get contacts_groupAddContacts => 'Add contacts';
+  String get contacts_groupAddContacts => 'Pridať kontakty';
 
   @override
   String contacts_groupRemoveMember(String name) {
-    return 'Remove $name from group';
+    return 'Odstrániť $name zo skupiny';
   }
 
   @override
   String contacts_groupAddMember(String name) {
-    return 'Add $name to group';
+    return 'Pridať $name do skupiny';
   }
 
   @override
@@ -7733,52 +7733,52 @@ class AppLocalizationsSk extends AppLocalizations {
   String get messageMeta_smazCompressed => 'Komprimované metódou SMAZ';
 
   @override
-  String get addContact_title => 'Add Contact';
+  String get addContact_title => 'Pridať kontakt';
 
   @override
   String get addContact_infoBanner =>
-      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+      'Ak poznáte verejný kľúč niekoho, koho chcete kontaktovať, môžete ho pridať ručne bez čakania na jeho inzerát.';
 
   @override
-  String get addContact_contactType => 'Contact Type';
+  String get addContact_contactType => 'Typ kontaktu';
 
   @override
-  String get addContact_name => 'Name';
+  String get addContact_name => 'Názov';
 
   @override
-  String get addContact_nameRequired => 'Please enter a name';
+  String get addContact_nameRequired => 'Zadajte názov';
 
   @override
-  String get addContact_publicKeyHex => 'Public Key (hex)';
+  String get addContact_publicKeyHex => 'Verejný kľúč (hex)';
 
   @override
-  String get addContact_publicKeyRequired => 'Please enter a public key';
+  String get addContact_publicKeyRequired => 'Zadajte verejný kľúč';
 
   @override
   String get addContact_publicKeyInvalid =>
-      'Public key must be 64 hex characters (32 bytes)';
+      'Verejný kľúč musí mať 64 hexadecimálnych znakov (32 bajtov)';
 
   @override
   String get addContact_clipboardKeyLoaded =>
-      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+      'Verejný kľúč bol vyplnený. Vyberte typ kontaktu, zadajte názov a klepnite na Uložiť.';
 
   @override
-  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+  String get addContact_fromDiscovered => 'Pridať z objavených kontaktov';
 
   @override
-  String get addContact_saveFailed => 'Failed to add contact.';
+  String get addContact_saveFailed => 'Kontakt sa nepodarilo pridať.';
 
   @override
-  String get coordinateMap_title => 'Location';
+  String get coordinateMap_title => 'Poloha';
 
   @override
-  String get coordinate_copyLocation => 'Copy location';
+  String get coordinate_copyLocation => 'Kopírovať polohu';
 
   @override
-  String get coordinate_openInMaps => 'Open in maps';
+  String get coordinate_openInMaps => 'Otvoriť v mapách';
 
   @override
-  String get coordinate_copied => 'Location copied';
+  String get coordinate_copied => 'Poloha skopírovaná';
 
   @override
   String get chess_menuGames => 'Šachové hry';

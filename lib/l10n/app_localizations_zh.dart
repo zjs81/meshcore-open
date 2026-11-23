@@ -496,7 +496,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupRestore_discoveredContactsDescription => '已发现的联系人及其保存的详细信息';
 
   @override
-  String get backupRestore_bookmarks => 'Bookmarks';
+  String get backupRestore_bookmarks => '书签';
 
   @override
   String get backupRestore_channels => '频道';
@@ -1296,11 +1296,11 @@ class AppLocalizationsZh extends AppLocalizations {
       '将频道消息的地区与跳数显示在同一行，而不是在其下方。';
 
   @override
-  String get appSettings_showCompressionIndicator => 'Compression indicator';
+  String get appSettings_showCompressionIndicator => '压缩标记';
 
   @override
   String get appSettings_showCompressionIndicatorSubtitle =>
-      'Show an icon on messages compressed with SMAZ.';
+      '在使用 SMAZ 压缩的消息上显示图标。';
 
   @override
   String get appSettings_notifications => '通知';
@@ -1773,27 +1773,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String contacts_groupCurrentMembers(int count) {
-    return 'Current members ($count)';
+    return '当前成员（$count）';
   }
 
   @override
-  String get contacts_groupAddContacts => 'Add contacts';
+  String get contacts_groupAddContacts => '添加联系人';
 
   @override
   String contacts_groupRemoveMember(String name) {
-    return 'Remove $name from group';
+    return '将 $name 移出群聊';
   }
 
   @override
   String contacts_groupAddMember(String name) {
-    return 'Add $name to group';
+    return '将 $name 加入群聊';
   }
 
   @override
   String get contacts_lastSeenNow => '刚刚';
 
   @override
-  String get contacts_lastSeenNever => 'not heard yet';
+  String get contacts_lastSeenNever => '尚未收到';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
@@ -2213,28 +2213,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chat_messageDeleted => '消息已删除';
 
   @override
-  String get chat_bookmark => 'Bookmark';
+  String get chat_bookmark => '添加书签';
 
   @override
-  String get chat_removeBookmark => 'Remove bookmark';
+  String get chat_removeBookmark => '移除书签';
 
   @override
-  String get chat_showBookmarks => 'Show bookmarks';
+  String get chat_showBookmarks => '显示书签';
 
   @override
-  String get bookmarks_title => 'Bookmarks';
+  String get bookmarks_title => '书签';
 
   @override
-  String get bookmarks_empty => 'No bookmarked messages';
+  String get bookmarks_empty => '没有已加书签的消息';
 
   @override
-  String get bookmarks_channel => 'Channel';
+  String get bookmarks_channel => '频道';
 
   @override
-  String get bookmarks_contact => 'Contact';
+  String get bookmarks_contact => '联系人';
 
   @override
-  String get bookmarks_remove => 'Remove bookmark';
+  String get bookmarks_remove => '移除书签';
 
   @override
   String get chat_selectMessages => '选择消息';
@@ -5310,17 +5310,16 @@ class AppLocalizationsZh extends AppLocalizations {
       'MeshCore Open 未在运行。请打开它并再次发送回复。';
 
   @override
-  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+  String get settings_exportBookmarks => '将书签导出为 Markdown';
 
   @override
-  String get settings_exportBookmarksSubtitle =>
-      'Share or save bookmarked messages as a Markdown file.';
+  String get settings_exportBookmarksSubtitle => '将已加书签的消息分享或保存为 Markdown 文件。';
 
   @override
-  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+  String get settings_exportBookmarksSuccess => '书签已导出。';
 
   @override
-  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+  String get settings_exportBookmarksNoBookmarks => '没有可导出的书签。';
 
   @override
   String get settings_gpxExportRepeaters => '导出转发节点/房间服务器到 GPX';
@@ -5935,11 +5934,11 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: '已转发 $count 次',
+      one: '已转发 1 次',
+      zero: '未听到转发节点',
     );
-    return 'Packet $number: $_temp0';
+    return '数据包 $number：$_temp0';
   }
 
   @override
@@ -5947,26 +5946,25 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: '已转发 $count 次',
+      one: '已转发 1 次',
+      zero: '未听到转发节点',
     );
-    return 'Recovery packet: $_temp0';
+    return '恢复数据包：$_temp0';
   }
 
   @override
-  String get imageSend_preparingPreview => 'Preparing preview…';
+  String get imageSend_preparingPreview => '正在准备预览…';
 
   @override
-  String get imageSend_tryAnother => 'Try another version';
+  String get imageSend_tryAnother => '试试其他版本';
 
   @override
-  String get imageSend_versionsHint =>
-      'Each version is reconstructed a little differently. Pick the one that looks most like your photo.';
+  String get imageSend_versionsHint => '每个版本的还原方式略有不同。请选择最接近原照片的一个。';
 
   @override
   String imageSend_versionLabel(int number) {
-    return 'Version $number';
+    return '版本 $number';
   }
 
   @override
@@ -5974,8 +5972,8 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count packets',
-      one: '1 packet',
+      other: '$count 个数据包',
+      one: '1 个数据包',
     );
     return '$_temp0';
   }
@@ -7186,15 +7184,15 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get chatCompression_title => 'Compression';
+  String get chatCompression_title => '压缩';
 
   @override
   String chatCompression_label(String mode) {
-    return 'Compression: $mode';
+    return '压缩：$mode';
   }
 
   @override
-  String get chatCompression_off => 'Off';
+  String get chatCompression_off => '关闭';
 
   @override
   String get chatCompression_smaz => 'SMAZ';
@@ -7203,85 +7201,78 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint => 'Change compression for this chat';
+  String get chatCompression_changeHint => '更改此聊天的压缩设置';
 
   @override
-  String get chatCompression_sheetSubtitle =>
-      'Applies to messages you send in this chat. Saved on this phone.';
+  String get chatCompression_sheetSubtitle => '适用于你在此聊天中发送的消息。保存在本机。';
 
   @override
-  String get chatCompression_offDescription =>
-      'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.';
+  String get chatCompression_offDescription => '不压缩。按输入内容原样发送，所有应用都能读取，但不节省字节。';
 
   @override
   String get chatCompression_smazDescription =>
-      'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.';
+      '针对短文本的无损压缩。接收方的应用必须支持 SMAZ，否则其他应用会显示无法阅读的“s:…”文本。仅在能缩小消息时才会使用，因此并非每条消息都会被压缩。';
 
   @override
   String get chatCompression_cyr2latDescription =>
-      'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.';
+      '非无损。会把部分西里尔字母替换为外形相似的拉丁字母（А→A、З→3）以节省字节。无需解码，在任何应用中都能阅读，但实际字符会改变，包括你在此发送的消息。复制、搜索和技术性文本可能受到影响。效果取决于所选配置。';
 
   @override
-  String get chatCompression_profile => 'Cyr2Lat profile';
+  String get chatCompression_profile => 'Cyr2Lat 配置';
 
   @override
-  String get chatCompression_noStorageId =>
-      'Can\'t change compression until this channel has synced from the radio.';
+  String get chatCompression_noStorageId => '此频道从无线电同步完成之前，无法更改压缩设置。';
 
   @override
-  String get chatCompression_saveFailed =>
-      'Couldn\'t save the compression setting. Showing the saved setting.';
+  String get chatCompression_saveFailed => '无法保存压缩设置。当前显示的是已保存的设置。';
 
   @override
-  String get messageMeta_smazCompressed => 'SMAZ compressed';
+  String get messageMeta_smazCompressed => '已 SMAZ 压缩';
 
   @override
-  String get addContact_title => 'Add Contact';
+  String get addContact_title => '添加联系人';
 
   @override
-  String get addContact_infoBanner =>
-      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+  String get addContact_infoBanner => '如果你知道想联系对象的公钥，无需等待对方广播，即可手动添加。';
 
   @override
-  String get addContact_contactType => 'Contact Type';
+  String get addContact_contactType => '联系人类型';
 
   @override
-  String get addContact_name => 'Name';
+  String get addContact_name => '名称';
 
   @override
-  String get addContact_nameRequired => 'Please enter a name';
+  String get addContact_nameRequired => '请输入名称';
 
   @override
-  String get addContact_publicKeyHex => 'Public Key (hex)';
+  String get addContact_publicKeyHex => '公钥（十六进制）';
 
   @override
-  String get addContact_publicKeyRequired => 'Please enter a public key';
+  String get addContact_publicKeyRequired => '请输入公钥';
 
   @override
-  String get addContact_publicKeyInvalid =>
-      'Public key must be 64 hex characters (32 bytes)';
+  String get addContact_publicKeyInvalid => '公钥必须为 64 个十六进制字符（32 字节）';
 
   @override
-  String get addContact_clipboardKeyLoaded =>
-      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+  String get addContact_clipboardKeyLoaded => '已填入公钥。请选择联系人类型、输入名称，然后点按保存。';
 
   @override
-  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+  String get addContact_fromDiscovered => '从已发现的联系人添加';
 
   @override
-  String get addContact_saveFailed => 'Failed to add contact.';
+  String get addContact_saveFailed => '添加联系人失败。';
 
   @override
-  String get coordinateMap_title => 'Location';
+  String get coordinateMap_title => '位置';
 
   @override
-  String get coordinate_copyLocation => 'Copy location';
+  String get coordinate_copyLocation => '复制位置';
 
   @override
-  String get coordinate_openInMaps => 'Open in maps';
+  String get coordinate_openInMaps => '在地图中打开';
 
   @override
-  String get coordinate_copied => 'Location copied';
+  String get coordinate_copied => '位置已复制';
 
   @override
   String get chess_menuGames => '国际象棋对局';

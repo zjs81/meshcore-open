@@ -506,7 +506,7 @@ class AppLocalizationsKo extends AppLocalizations {
       '발견된 연락처와 저장된 세부 정보';
 
   @override
-  String get backupRestore_bookmarks => 'Bookmarks';
+  String get backupRestore_bookmarks => '북마크';
 
   @override
   String get backupRestore_channels => '채널';
@@ -1319,11 +1319,11 @@ class AppLocalizationsKo extends AppLocalizations {
       '채널 메시지의 지역을 홉 수 아래가 아닌 같은 줄에 표시합니다.';
 
   @override
-  String get appSettings_showCompressionIndicator => 'Compression indicator';
+  String get appSettings_showCompressionIndicator => '압축 표시';
 
   @override
   String get appSettings_showCompressionIndicatorSubtitle =>
-      'Show an icon on messages compressed with SMAZ.';
+      'SMAZ로 압축된 메시지에 아이콘을 표시합니다.';
 
   @override
   String get appSettings_notifications => '알림';
@@ -1804,27 +1804,27 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String contacts_groupCurrentMembers(int count) {
-    return 'Current members ($count)';
+    return '현재 멤버($count)';
   }
 
   @override
-  String get contacts_groupAddContacts => 'Add contacts';
+  String get contacts_groupAddContacts => '연락처 추가';
 
   @override
   String contacts_groupRemoveMember(String name) {
-    return 'Remove $name from group';
+    return '그룹에서 $name 제거';
   }
 
   @override
   String contacts_groupAddMember(String name) {
-    return 'Add $name to group';
+    return '그룹에 $name 추가';
   }
 
   @override
   String get contacts_lastSeenNow => '최근';
 
   @override
-  String get contacts_lastSeenNever => 'not heard yet';
+  String get contacts_lastSeenNever => '아직 수신 없음';
 
   @override
   String contacts_lastSeenMinsAgo(int minutes) {
@@ -2246,28 +2246,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chat_messageDeleted => '메시지가 삭제되었습니다.';
 
   @override
-  String get chat_bookmark => 'Bookmark';
+  String get chat_bookmark => '북마크';
 
   @override
-  String get chat_removeBookmark => 'Remove bookmark';
+  String get chat_removeBookmark => '북마크 삭제';
 
   @override
-  String get chat_showBookmarks => 'Show bookmarks';
+  String get chat_showBookmarks => '북마크 보기';
 
   @override
-  String get bookmarks_title => 'Bookmarks';
+  String get bookmarks_title => '북마크';
 
   @override
-  String get bookmarks_empty => 'No bookmarked messages';
+  String get bookmarks_empty => '북마크한 메시지가 없습니다';
 
   @override
-  String get bookmarks_channel => 'Channel';
+  String get bookmarks_channel => '채널';
 
   @override
-  String get bookmarks_contact => 'Contact';
+  String get bookmarks_contact => '연락처';
 
   @override
-  String get bookmarks_remove => 'Remove bookmark';
+  String get bookmarks_remove => '북마크 삭제';
 
   @override
   String get chat_selectMessages => '메시지 선택';
@@ -5449,17 +5449,17 @@ class AppLocalizationsKo extends AppLocalizations {
       'MeshCore Open이 실행 중이 아닙니다. 앱을 연 뒤 답장을 다시 보내세요.';
 
   @override
-  String get settings_exportBookmarks => 'Export bookmarks to Markdown';
+  String get settings_exportBookmarks => '북마크를 Markdown으로 내보내기';
 
   @override
   String get settings_exportBookmarksSubtitle =>
-      'Share or save bookmarked messages as a Markdown file.';
+      '북마크한 메시지를 Markdown 파일로 공유하거나 저장합니다.';
 
   @override
-  String get settings_exportBookmarksSuccess => 'Bookmarks exported.';
+  String get settings_exportBookmarksSuccess => '북마크를 내보냈습니다.';
 
   @override
-  String get settings_exportBookmarksNoBookmarks => 'No bookmarks to export.';
+  String get settings_exportBookmarksNoBookmarks => '내보낼 북마크가 없습니다.';
 
   @override
   String get settings_gpxExportRepeaters => 'GPX로 전송/방 관리 서버';
@@ -6088,11 +6088,11 @@ class AppLocalizationsKo extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: '$count회 재전송',
+      one: '1회 재전송',
+      zero: '수신한 반복기 없음',
     );
-    return 'Packet $number: $_temp0';
+    return '패킷 $number: $_temp0';
   }
 
   @override
@@ -6100,26 +6100,26 @@ class AppLocalizationsKo extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'repeated $count times',
-      one: 'repeated once',
-      zero: 'no repeater heard',
+      other: '$count회 재전송',
+      one: '1회 재전송',
+      zero: '수신한 반복기 없음',
     );
-    return 'Recovery packet: $_temp0';
+    return '복구 패킷: $_temp0';
   }
 
   @override
-  String get imageSend_preparingPreview => 'Preparing preview…';
+  String get imageSend_preparingPreview => '미리보기 준비 중…';
 
   @override
-  String get imageSend_tryAnother => 'Try another version';
+  String get imageSend_tryAnother => '다른 버전 시도';
 
   @override
   String get imageSend_versionsHint =>
-      'Each version is reconstructed a little differently. Pick the one that looks most like your photo.';
+      '각 버전은 조금씩 다르게 복원됩니다. 사진과 가장 비슷한 것을 선택하세요.';
 
   @override
   String imageSend_versionLabel(int number) {
-    return 'Version $number';
+    return '버전 $number';
   }
 
   @override
@@ -6127,8 +6127,8 @@ class AppLocalizationsKo extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count packets',
-      one: '1 packet',
+      other: '패킷 $count개',
+      one: '패킷 1개',
     );
     return '$_temp0';
   }
@@ -7356,15 +7356,15 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get chatCompression_title => 'Compression';
+  String get chatCompression_title => '압축';
 
   @override
   String chatCompression_label(String mode) {
-    return 'Compression: $mode';
+    return '압축: $mode';
   }
 
   @override
-  String get chatCompression_off => 'Off';
+  String get chatCompression_off => '끔';
 
   @override
   String get chatCompression_smaz => 'SMAZ';
@@ -7373,85 +7373,83 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint => 'Change compression for this chat';
+  String get chatCompression_changeHint => '이 채팅의 압축 설정 변경';
 
   @override
   String get chatCompression_sheetSubtitle =>
-      'Applies to messages you send in this chat. Saved on this phone.';
+      '이 채팅에서 보내는 메시지에 적용됩니다. 이 휴대폰에 저장됩니다.';
 
   @override
   String get chatCompression_offDescription =>
-      'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.';
+      '압축하지 않습니다. 입력한 그대로 전송되며 모든 앱에서 읽을 수 있습니다. 바이트는 절약되지 않습니다.';
 
   @override
   String get chatCompression_smazDescription =>
-      'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.';
+      '짧은 텍스트용 무손실 압축입니다. 수신자의 앱이 SMAZ를 지원해야 하며, 지원하지 않는 앱에는 읽을 수 없는 \"s:…\" 텍스트가 표시됩니다. 메시지가 더 작아질 때만 사용되므로 모든 메시지가 압축되는 것은 아닙니다.';
 
   @override
   String get chatCompression_cyr2latDescription =>
-      'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.';
+      '무손실이 아닙니다. 일부 키릴 문자를 비슷하게 생긴 라틴 문자(А→A, З→3)로 바꿔 바이트를 절약합니다. 디코딩 없이 모든 앱에서 읽을 수 있지만, 여기서 보낸 내 메시지를 포함해 실제 문자가 바뀝니다. 복사, 검색, 기술적인 텍스트에 영향을 줄 수 있습니다. 결과는 선택한 프로필에 따라 달라집니다.';
 
   @override
-  String get chatCompression_profile => 'Cyr2Lat profile';
+  String get chatCompression_profile => 'Cyr2Lat 프로필';
 
   @override
   String get chatCompression_noStorageId =>
-      'Can\'t change compression until this channel has synced from the radio.';
+      '이 채널이 라디오에서 동기화될 때까지 압축 설정을 변경할 수 없습니다.';
 
   @override
-  String get chatCompression_saveFailed =>
-      'Couldn\'t save the compression setting. Showing the saved setting.';
+  String get chatCompression_saveFailed => '압축 설정을 저장하지 못했습니다. 저장된 설정을 표시합니다.';
 
   @override
-  String get messageMeta_smazCompressed => 'SMAZ compressed';
+  String get messageMeta_smazCompressed => 'SMAZ 압축됨';
 
   @override
-  String get addContact_title => 'Add Contact';
+  String get addContact_title => '연락처 추가';
 
   @override
   String get addContact_infoBanner =>
-      'If you know the public key of someone you want to contact, you can add them manually without waiting for them to advert.';
+      '연락하려는 상대의 공개 키를 알고 있다면 상대가 광고(advert)를 보낼 때까지 기다리지 않고 직접 추가할 수 있습니다.';
 
   @override
-  String get addContact_contactType => 'Contact Type';
+  String get addContact_contactType => '연락처 유형';
 
   @override
-  String get addContact_name => 'Name';
+  String get addContact_name => '이름';
 
   @override
-  String get addContact_nameRequired => 'Please enter a name';
+  String get addContact_nameRequired => '이름을 입력하세요';
 
   @override
-  String get addContact_publicKeyHex => 'Public Key (hex)';
+  String get addContact_publicKeyHex => '공개 키(16진수)';
 
   @override
-  String get addContact_publicKeyRequired => 'Please enter a public key';
+  String get addContact_publicKeyRequired => '공개 키를 입력하세요';
 
   @override
-  String get addContact_publicKeyInvalid =>
-      'Public key must be 64 hex characters (32 bytes)';
+  String get addContact_publicKeyInvalid => '공개 키는 16진수 64자(32바이트)여야 합니다';
 
   @override
   String get addContact_clipboardKeyLoaded =>
-      'Public key filled in. Choose a contact type, enter a name, and tap save.';
+      '공개 키를 입력했습니다. 연락처 유형을 선택하고 이름을 입력한 뒤 저장을 누르세요.';
 
   @override
-  String get addContact_fromDiscovered => 'Add from Discovered Contacts';
+  String get addContact_fromDiscovered => '발견된 연락처에서 추가';
 
   @override
-  String get addContact_saveFailed => 'Failed to add contact.';
+  String get addContact_saveFailed => '연락처를 추가하지 못했습니다.';
 
   @override
-  String get coordinateMap_title => 'Location';
+  String get coordinateMap_title => '위치';
 
   @override
-  String get coordinate_copyLocation => 'Copy location';
+  String get coordinate_copyLocation => '위치 복사';
 
   @override
-  String get coordinate_openInMaps => 'Open in maps';
+  String get coordinate_openInMaps => '지도에서 열기';
 
   @override
-  String get coordinate_copied => 'Location copied';
+  String get coordinate_copied => '위치를 복사했습니다';
 
   @override
   String get chess_menuGames => '체스 게임';
