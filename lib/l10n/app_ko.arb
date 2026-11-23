@@ -659,6 +659,7 @@
   "chat_selectSendAction": "전송 작업 선택",
   "chat_sendGif": "GIF 보내기",
   "chat_reply": "답변",
+  "chat_resend": "다시 보내기",
   "chat_addReaction": "댓글 추가",
   "chat_me": "나",
   "emojiCategorySmileys": "이모티콘",

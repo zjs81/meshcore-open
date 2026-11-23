@@ -703,6 +703,7 @@
   "chat_selectSendAction": "Küldési művelet kiválasztása",
   "chat_sendGif": "GIF küldése",
   "chat_reply": "Válasz",
+  "chat_resend": "Újraküldés",
   "chat_addReaction": "Reakció hozzáadása",
   "chat_me": "Nekem",
   "emojiCategorySmileys": "Hangulatjelek",

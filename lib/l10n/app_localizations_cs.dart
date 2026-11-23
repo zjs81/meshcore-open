@@ -2513,6 +2513,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get chat_reply => 'Odpovědět';
 
   @override
+  String get chat_resend => 'Odeslat znovu';
+
+  @override
   String get chat_addReaction => 'Přidat reakci';
 
   @override

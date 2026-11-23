@@ -503,6 +503,7 @@
   "chat_selectSendAction": "Изберете действие за изпращане",
   "chat_sendGif": "Изпрати GIF",
   "chat_reply": "Отговори",
+  "chat_resend": "Изпрати отново",
   "chat_addReaction": "Добави Реакция",
   "chat_me": "Аз",
   "emojiCategorySmileys": "Емотикони",

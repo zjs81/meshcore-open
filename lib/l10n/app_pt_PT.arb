@@ -682,6 +682,7 @@
   "chat_imagePickFailed": "Não foi possível abrir essa imagem",
   "chat_receivedGif": "Recebeu um GIF",
   "chat_reply": "Responder",
+  "chat_resend": "Reenviar",
   "chat_addReaction": "Adicionar reação",
   "chat_me": "Eu",
   "reaction_report": "Reações com emojis",

@@ -562,6 +562,7 @@
   "chat_selectSendAction": "Seleziona azione di invio",
   "chat_sendGif": "Invia GIF",
   "chat_reply": "Rispondi",
+  "chat_resend": "Reinvia",
   "chat_addReaction": "Aggiungi Reazione",
   "chat_me": "Io",
   "emojiCategorySmileys": "Emoji",

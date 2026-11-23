@@ -2512,6 +2512,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get chat_reply => 'Válasz';
 
   @override
+  String get chat_resend => 'Újraküldés';
+
+  @override
   String get chat_addReaction => 'Reakció hozzáadása';
 
   @override

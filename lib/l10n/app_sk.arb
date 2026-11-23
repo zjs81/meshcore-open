@@ -512,6 +512,7 @@
   "chat_selectSendAction": "Vybrať akciu odoslania",
   "chat_sendGif": "Odoslať GIF",
   "chat_reply": "Odpovedať",
+  "chat_resend": "Odoslať znova",
   "chat_addReaction": "Pridať Reakciu",
   "chat_me": "Mne",
   "emojiCategorySmileys": "Emoji",

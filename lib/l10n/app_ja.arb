@@ -677,6 +677,7 @@
   "chat_selectSendAction": "送信アクションを選択",
   "chat_sendGif": "GIF を送信",
   "chat_reply": "返信",
+  "chat_resend": "再送信",
   "chat_addReaction": "リアクションを追加",
   "chat_me": "私",
   "emojiCategorySmileys": "顔文字",

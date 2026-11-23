@@ -462,6 +462,16 @@ class RadioSettings {
       ),
     ),
     (
+      'Slovakia',
+      RadioSettings(
+        frequencyMHz: 869.618,
+        bandwidth: LoRaBandwidth.bw62_5,
+        spreadingFactor: LoRaSpreadingFactor.sf7,
+        codingRate: LoRaCodingRate.cr4_5,
+        txPowerDbm: 14,
+      ),
+    ),
+    (
       'Switzerland',
       RadioSettings(
         frequencyMHz: 869.618,

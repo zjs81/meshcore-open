@@ -5624,6 +5624,25 @@ class MeshCoreConnector extends ChangeNotifier {
     }
   }
 
+  /// Sends an own channel message again as a new message (new timestamp),
+  /// so repeaters forward it even if they already saw the first copy.
+  /// Uses the channel's current flood scope, like a normal send.
+  Future<void> resendChannelMessage(
+    Channel channel,
+    ChannelMessage message,
+  ) async {
+    if (!message.isOutgoing) return;
+    final replyToId = message.replyToMessageId;
+    await sendChannelMessage(
+      channel,
+      message.fullText,
+      originalText: message.originalText,
+      translatedLanguageCode: message.translatedLanguageCode,
+      translationModelId: message.translationModelId,
+      replyTo: replyToId == null ? null : _findChannelMessageById(replyToId),
+    );
+  }
+
   Future<void> sendChannelMessage(
     Channel channel,
     String text, {

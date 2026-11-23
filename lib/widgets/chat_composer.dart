@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -132,6 +134,9 @@ class ChatComposer extends StatelessWidget {
   /// Marks the compose bubble (and the offline bar's bubble).
   static const bubbleKey = ValueKey('chat-composer-bubble');
 
+  /// Marks the surface of the open "+" menu.
+  static const actionMenuKey = ValueKey('chat-composer-action-menu');
+
   const ChatComposer({
     super.key,
     required this.controller,
@@ -152,34 +157,26 @@ class ChatComposer extends StatelessWidget {
     final actions = actionsBuilder();
     if (actions.isEmpty) return;
     final button = buttonContext.findRenderObject() as RenderBox;
-    final overlay =
-        Overlay.of(buttonContext).context.findRenderObject() as RenderBox;
-    final buttonOffset = button.localToGlobal(Offset.zero, ancestor: overlay);
-    final menuHeight = actions.length * kMinInteractiveDimension + 16;
-    final menuTop = (buttonOffset.dy - menuHeight).clamp(
-      8.0,
-      overlay.size.height,
-    );
-    final position = RelativeRect.fromLTRB(
-      buttonOffset.dx,
-      menuTop,
-      overlay.size.width - buttonOffset.dx - button.size.width,
-      overlay.size.height - buttonOffset.dy,
-    );
-    final selected = await showMenu<String>(
-      context: buttonContext,
-      position: position,
-      // Keep focus on the text field: if the menu route took focus, the
-      // keyboard would close, the composer would drop down and the menu would
-      // be left floating where the keyboard used to be.
-      requestFocus: false,
-      items: [
-        for (final action in actions)
-          PopupMenuItem(
-            value: action.id,
-            child: MeshMenuItemRow(icon: action.icon, label: action.label),
-          ),
-      ],
+    final navigator = Navigator.of(buttonContext);
+    final overlay = navigator.overlay!.context.findRenderObject() as RenderBox;
+    final anchor =
+        button.localToGlobal(Offset.zero, ancestor: overlay) & button.size;
+    // The menu route never requests focus: if it took focus from the text
+    // field the keyboard would close, the composer would drop down and the
+    // menu would be left floating where the keyboard used to be.
+    final selected = await navigator.push<String>(
+      _ComposerActionMenuRoute(
+        actions: actions,
+        anchor: anchor,
+        button: button,
+        overlay: overlay,
+        capturedThemes: InheritedTheme.capture(
+          from: buttonContext,
+          to: navigator.context,
+        ),
+        barrierLabel: MaterialLocalizations.of(buttonContext).menuDismissLabel,
+        animate: !MediaQuery.disableAnimationsOf(buttonContext),
+      ),
     );
     if (selected == null || !buttonContext.mounted) return;
     onAction(selected);
@@ -582,6 +579,209 @@ class OfflineComposerBar extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+/// The "+" menu: a popup that grows upward from the bottom-trailing corner,
+/// just above the "+" button, so it opens out of the button instead of
+/// sliding down toward it.
+class _ComposerActionMenuRoute extends PopupRoute<String> {
+  final List<ChatComposerAction> actions;
+  final Rect anchor;
+  final RenderBox button;
+  final RenderBox overlay;
+  final CapturedThemes capturedThemes;
+  final bool animate;
+
+  @override
+  final String barrierLabel;
+
+  _ComposerActionMenuRoute({
+    required this.actions,
+    required this.anchor,
+    required this.button,
+    required this.overlay,
+    required this.capturedThemes,
+    required this.barrierLabel,
+    required this.animate,
+  }) : super(requestFocus: false);
+
+  static const double _gap = 4;
+  static const double _margin = 8;
+  static const double _minWidth = 112;
+
+  @override
+  Color? get barrierColor => null;
+
+  @override
+  bool get barrierDismissible => true;
+
+  @override
+  Duration get transitionDuration =>
+      animate ? const Duration(milliseconds: 250) : Duration.zero;
+
+  @override
+  Duration get reverseTransitionDuration =>
+      animate ? const Duration(milliseconds: 150) : Duration.zero;
+
+  @override
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
+    final direction = Directionality.of(context);
+    final padding = MediaQuery.paddingOf(context);
+    return capturedThemes.wrap(
+      LayoutBuilder(
+        builder: (context, constraints) {
+          final viewport = constraints.biggest;
+          final rect = button.attached && overlay.attached
+              ? button.localToGlobal(Offset.zero, ancestor: overlay) &
+                    button.size
+              : anchor;
+          final rawEnd = direction == TextDirection.ltr
+              ? viewport.width - rect.right
+              : rect.left;
+          final end = rawEnd
+              .clamp(
+                _margin,
+                math.max(_margin, viewport.width - _minWidth - _margin),
+              )
+              .toDouble();
+          final maxWidth = math.max(
+            _minWidth,
+            math.min(280.0, viewport.width - end - _margin),
+          );
+          final bottom = (viewport.height - rect.top + _gap)
+              .clamp(
+                _margin,
+                math.max(
+                  _margin,
+                  viewport.height -
+                      padding.top -
+                      _margin -
+                      kMinInteractiveDimension,
+                ),
+              )
+              .toDouble();
+          final maxHeight = math.max(
+            kMinInteractiveDimension,
+            viewport.height - bottom - padding.top - _margin,
+          );
+          return Stack(
+            children: [
+              Positioned.directional(
+                textDirection: direction,
+                end: end,
+                bottom: bottom,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: _minWidth,
+                    maxWidth: maxWidth,
+                    maxHeight: maxHeight,
+                  ),
+                  child: _ComposerActionMenu(
+                    actions: actions,
+                    animation: animation,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ComposerActionMenu extends StatelessWidget {
+  final List<ChatComposerAction> actions;
+  final Animation<double> animation;
+
+  const _ComposerActionMenu({required this.actions, required this.animation});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final menuTheme = PopupMenuTheme.of(context);
+    final items = IntrinsicWidth(
+      stepWidth: 56,
+      child: Semantics(
+        scopesRoute: true,
+        namesRoute: true,
+        explicitChildNodes: true,
+        label: MaterialLocalizations.of(context).popupMenuLabel,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: DefaultTextStyle(
+            style: (menuTheme.textStyle ?? theme.textTheme.labelLarge!)
+                .copyWith(color: scheme.onSurface),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final action in actions)
+                  InkWell(
+                    onTap: () => Navigator.of(context).pop(action.id),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minHeight: kMinInteractiveDimension,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: MeshMenuItemRow(
+                            icon: action.icon,
+                            label: action.label,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) {
+        final t = animation.value;
+        final heightFactor =
+            (animation.status == AnimationStatus.reverse
+                    ? Curves.easeIn
+                    : Curves.easeOutCubic)
+                .transform(t);
+        return Opacity(
+          opacity: const Interval(0, 0.4).transform(t),
+          child: Material(
+            key: ChatComposer.actionMenuKey,
+            type: MaterialType.card,
+            color: menuTheme.color ?? scheme.surfaceContainerHigh,
+            elevation: menuTheme.elevation ?? 3,
+            shadowColor: menuTheme.shadowColor,
+            surfaceTintColor: Colors.transparent,
+            shape:
+                menuTheme.shape ??
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(MeshRadii.md),
+                ),
+            clipBehavior: Clip.antiAlias,
+            child: Align(
+              alignment: AlignmentDirectional.bottomEnd,
+              widthFactor: 1,
+              heightFactor: heightFactor,
+              child: child,
+            ),
+          ),
+        );
+      },
+      child: items,
     );
   }
 }

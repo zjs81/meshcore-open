@@ -2514,6 +2514,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get chat_reply => 'Odgovori';
 
   @override
+  String get chat_resend => 'Pošlji znova';
+
+  @override
   String get chat_addReaction => 'Dodaj reakcijo';
 
   @override

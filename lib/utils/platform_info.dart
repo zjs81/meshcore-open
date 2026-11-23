@@ -14,7 +14,12 @@ class PlatformInfo {
   static bool get isChrome => isWeb && BrowserDetection.isChrome;
 
   /// Whether the app is running on Android.
-  static bool get isAndroid => !kIsWeb && Platform.isAndroid;
+  static bool get isAndroid =>
+      debugIsAndroidOverride ?? (!kIsWeb && Platform.isAndroid);
+
+  /// Lets widget tests exercise Android-only UI on a non-Android test host.
+  @visibleForTesting
+  static bool? debugIsAndroidOverride;
 
   /// Whether the app is running on iOS.
   static bool get isIOS => !kIsWeb && Platform.isIOS;

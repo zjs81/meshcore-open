@@ -1290,6 +1290,7 @@
   },
   "chat_receivedGif": "Received a GIF",
   "chat_reply": "Reply",
+  "chat_resend": "Resend",
   "chat_addReaction": "Add Reaction",
   "chat_me": "Me",
   "reaction_report": "Emoji Reactions",

@@ -4387,6 +4387,12 @@ abstract class AppLocalizations {
   /// **'Reply'**
   String get chat_reply;
 
+  /// No description provided for @chat_resend.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend'**
+  String get chat_resend;
+
   /// No description provided for @chat_addReaction.
   ///
   /// In en, this message translates to:

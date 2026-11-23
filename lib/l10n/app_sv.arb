@@ -495,6 +495,7 @@
   "chat_selectSendAction": "Välj sändningsåtgärd",
   "chat_sendGif": "Skicka GIF",
   "chat_reply": "Svara",
+  "chat_resend": "Skicka igen",
   "chat_addReaction": "Lägg till reaktion",
   "chat_me": "Mig",
   "reaction_report": "Emoji-reaktioner",

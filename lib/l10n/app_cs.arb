@@ -1086,6 +1086,7 @@
   "chat_imagePickFailed": "Obrázek se nepodařilo otevřít",
   "chat_receivedGif": "Přijat GIF",
   "chat_reply": "Odpovědět",
+  "chat_resend": "Odeslat znovu",
   "chat_addReaction": "Přidat reakci",
   "chat_me": "Já",
   "reaction_report": "Emoji reakce",

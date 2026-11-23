@@ -2518,6 +2518,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get chat_reply => 'Rispondi';
 
   @override
+  String get chat_resend => 'Reinvia';
+
+  @override
   String get chat_addReaction => 'Aggiungi Reazione';
 
   @override
