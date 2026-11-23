@@ -191,6 +191,17 @@ One model is one row inside the existing `MeshCard` (or `SettingsReveal`), rows 
 
 A dialog that offers several missing models (backup restore) uses the same rows for name, size, status and progress, and keeps its own confirm button.
 
+### Chess board
+
+`ChessBoardView` (`lib/games/chess/ui/chess_board.dart`) is board content, not chrome, so its squares keep the same classic colours in every theme (`ChessBoardPalette`). Both have strong contrast with the white and black piece vectors (`chess_vectors_flutter`).
+
+- Last move: both squares get a translucent yellow wash. Check: a red radial glow behind the king. Selected piece: a 3px `primary` border.
+- Legal targets: a dark dot on an empty square and a dark ring around a capturable piece, so they differ in shape and not only colour.
+- Rank and file labels sit in the corners of the edge squares, in the opposite square colour, at 12–14px.
+- The board fills the width (up to 560) and the page scrolls, so it fits a 320dp phone at 2.0× text.
+
+The channel's games list is a `showMeshSheet` with a `DraggableScrollableSheet`, the same layout as the Add channel sheet. Starting a game closes it and opens a second sheet, so sheets are never stacked.
+
 ## 6. Sheets, dialogs and pages
 
 What the code does:

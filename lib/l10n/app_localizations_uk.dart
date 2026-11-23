@@ -7821,4 +7821,385 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get coordinate_copied => 'Location copied';
+
+  @override
+  String get chess_menuGames => 'Шахові партії';
+
+  @override
+  String chess_menuGamesCount(int count) {
+    return 'Шахові партії ($count)';
+  }
+
+  @override
+  String get chess_sheetTitle => 'Шахи';
+
+  @override
+  String get chess_sectionNewGame => 'Нова партія';
+
+  @override
+  String get chess_sectionYourGames => 'Ваші партії';
+
+  @override
+  String get chess_sectionInvites => 'Відкриті запрошення';
+
+  @override
+  String get chess_sectionLive => 'Тривають зараз';
+
+  @override
+  String get chess_sectionFinished => 'Завершені';
+
+  @override
+  String get chess_newChallenge => 'Кинути виклик';
+
+  @override
+  String get chess_newChallengeSubtitle =>
+      'Оберіть того, кого нещодавно чутно в цьому каналі';
+
+  @override
+  String get chess_newOpenInvite => 'Опублікувати відкрите запрошення';
+
+  @override
+  String get chess_newOpenInviteSubtitle =>
+      'Прийняти виклик може будь-хто в цьому каналі';
+
+  @override
+  String get chess_emptyTitle => 'Партій поки немає';
+
+  @override
+  String get chess_emptySubtitle =>
+      'Киньте комусь виклик або опублікуйте відкрите запрошення. Спостерігати може будь-хто в каналі.';
+
+  @override
+  String chess_vs(String white, String black) {
+    return '$white проти $black';
+  }
+
+  @override
+  String get chess_unknownPlayer => 'Невідомий';
+
+  @override
+  String get chess_rowYourOpenInvite => 'Ваше відкрите запрошення';
+
+  @override
+  String chess_rowYourChallenge(String name) {
+    return 'Ви кинули виклик: $name';
+  }
+
+  @override
+  String chess_rowInviteFrom(String name) {
+    return 'Партія з $name';
+  }
+
+  @override
+  String get chess_rowStarting => 'Очікування початку партії';
+
+  @override
+  String chess_rowMoveTurn(int number, String turn) {
+    return 'Хід $number · $turn';
+  }
+
+  @override
+  String chess_rowOpenInvite(String name) {
+    return '$name шукає партнера для гри';
+  }
+
+  @override
+  String chess_rowChallengedYou(String name) {
+    return '$name кидає вам виклик';
+  }
+
+  @override
+  String chess_rowInviteDetails(String deadline) {
+    return 'Час на хід: $deadline';
+  }
+
+  @override
+  String get chess_accept => 'Прийняти';
+
+  @override
+  String get chess_decline => 'Відхилити';
+
+  @override
+  String get chess_remove => 'Видалити';
+
+  @override
+  String get chess_cancelInvite => 'Скасувати запрошення';
+
+  @override
+  String get chess_cancelInviteTitle => 'Скасувати це запрошення?';
+
+  @override
+  String get chess_sendFailed =>
+      'Не вдалося надіслати. Перевірте підключення до радіо.';
+
+  @override
+  String chess_challengeSent(String name) {
+    return 'Виклик надіслано: $name';
+  }
+
+  @override
+  String get chess_inviteSent => 'Відкрите запрошення опубліковано';
+
+  @override
+  String get chess_pickOpponent => 'Недавно в цьому каналі ніхто не писав.';
+
+  @override
+  String get chess_noRecentSenders => 'Кому кинути виклик';
+
+  @override
+  String get chess_deadlineLabel => 'Час на хід';
+
+  @override
+  String get chess_deadlineNone => 'Без обмеження';
+
+  @override
+  String get chess_deadline15m => '15 хвилин';
+
+  @override
+  String get chess_deadline1h => '1 година';
+
+  @override
+  String get chess_deadline6h => '6 годин';
+
+  @override
+  String get chess_deadline1d => '1 день';
+
+  @override
+  String get chess_deadline3d => '3 дні';
+
+  @override
+  String get chess_colourLabel => 'Ваш колір';
+
+  @override
+  String get chess_colourRandom => 'Випадково';
+
+  @override
+  String get chess_colourWhite => 'Білі';
+
+  @override
+  String get chess_colourBlack => 'Чорні';
+
+  @override
+  String get chess_sendChallenge => 'Надіслати виклик';
+
+  @override
+  String get chess_postInvite => 'Опублікувати';
+
+  @override
+  String get chess_gameGone => 'Ця партія більше недоступна.';
+
+  @override
+  String chess_playerYou(String name) {
+    return '$name (ви)';
+  }
+
+  @override
+  String get chess_toMoveChip => 'Хід';
+
+  @override
+  String get chess_statusYourMove => 'Ваш хід';
+
+  @override
+  String chess_statusWaiting(String name) {
+    return 'Очікування: $name';
+  }
+
+  @override
+  String chess_statusToMove(String name) {
+    return 'Хід: $name';
+  }
+
+  @override
+  String chess_statusTimeLeft(String time) {
+    return 'Залишилось на цей хід: $time';
+  }
+
+  @override
+  String get chess_statusOverdue => 'Час на цей хід вичерпано';
+
+  @override
+  String chess_statusDrawOffered(String name) {
+    return '$name пропонує нічию';
+  }
+
+  @override
+  String get chess_statusUnknownPosition =>
+      'Дошка з’явиться після наступного ходу.';
+
+  @override
+  String get chess_statusUnverified =>
+      'Учасників ще не підтверджено. Запросіть оновлення, щоб перевірити їх.';
+
+  @override
+  String get chess_actionResign => 'Здатися';
+
+  @override
+  String get chess_actionOfferDraw => 'Запропонувати нічию';
+
+  @override
+  String get chess_actionAcceptDraw => 'Прийняти нічию';
+
+  @override
+  String get chess_actionClaimTimeout => 'Вимагати перемогу за часом';
+
+  @override
+  String get chess_actionNudge => 'Запросити оновлення';
+
+  @override
+  String get chess_actionNudgeTooltip =>
+      'Попросити гравців повторно надіслати останній хід';
+
+  @override
+  String get chess_resignConfirmTitle => 'Здатися в цій партії?';
+
+  @override
+  String get chess_resignConfirmBody => 'Переможе ваш суперник.';
+
+  @override
+  String get chess_movesTitle => 'Ходи';
+
+  @override
+  String get chess_noMovesYet => 'Ходів поки немає';
+
+  @override
+  String get chess_movesMissed => '(пропущено)';
+
+  @override
+  String get chess_promoteTitle => 'Перетворення на';
+
+  @override
+  String get chess_pieceQueen => 'Ферзь';
+
+  @override
+  String get chess_pieceRook => 'Тура';
+
+  @override
+  String get chess_pieceBishop => 'Слон';
+
+  @override
+  String get chess_pieceKnight => 'Кінь';
+
+  @override
+  String get chess_resultDraw => 'Нічия';
+
+  @override
+  String chess_resultWon(String name) {
+    return 'Перемога: $name';
+  }
+
+  @override
+  String chess_resultWithReason(String result, String reason) {
+    return '$result · $reason';
+  }
+
+  @override
+  String get chess_endCheckmate => 'Мат';
+
+  @override
+  String get chess_endResignation => 'Здача';
+
+  @override
+  String get chess_endTimeout => 'За часом';
+
+  @override
+  String get chess_endDrawAgreed => 'Нічия за згодою';
+
+  @override
+  String get chess_endStalemate => 'Пат';
+
+  @override
+  String get chess_endInsufficient => 'Недостатньо матеріалу для мату';
+
+  @override
+  String get chess_endFiftyMoves => 'Правило 50 ходів';
+
+  @override
+  String get chess_endRepetition => 'Повторення позиції';
+
+  @override
+  String get chess_endCancelled => 'Запрошення скасовано';
+
+  @override
+  String get chess_endDeclined => 'Виклик відхилено';
+
+  @override
+  String get chess_endExpired => 'Запрошення закінчилося';
+
+  @override
+  String get chess_endTaken => 'Інший гравець прийняв раніше';
+
+  @override
+  String chess_timeMinutes(int minutes) {
+    return '$minutes хв';
+  }
+
+  @override
+  String chess_timeHours(int hours, int minutes) {
+    return '$hours год $minutes хв';
+  }
+
+  @override
+  String chess_timeDays(int days, int hours) {
+    return '$days д $hours год';
+  }
+
+  @override
+  String get chess_notificationSender => 'Шахи';
+
+  @override
+  String chess_notifyChallenge(String name) {
+    return '$name кидає вам виклик';
+  }
+
+  @override
+  String chess_notifyAccepted(String name) {
+    return 'Вашу партію прийнято: $name';
+  }
+
+  @override
+  String chess_notifyAcceptedYourMove(String name) {
+    return 'Вашу партію прийнято: $name. Ви граєте білими, ваш хід.';
+  }
+
+  @override
+  String chess_notifyDeclined(String name) {
+    return '$name відхиляє ваш виклик';
+  }
+
+  @override
+  String get chess_notifyTaken => 'Інший гравець прийняв цю партію раніше';
+
+  @override
+  String get chess_notifyGameStartedYourMove =>
+      'Ваша партія почалася. Ви граєте білими, ваш хід.';
+
+  @override
+  String chess_notifyYourMove(String name, String move) {
+    return '$name: $move. Ваш хід.';
+  }
+
+  @override
+  String chess_notifyGameOver(String name) {
+    return 'Ваша партія з $name завершена';
+  }
+
+  @override
+  String chess_notifyResigned(String name) {
+    return '$name здався. Ви перемогли.';
+  }
+
+  @override
+  String chess_notifyDrawOffered(String name) {
+    return '$name пропонує нічию';
+  }
+
+  @override
+  String chess_notifyDrawAccepted(String name) {
+    return '$name приймає нічию';
+  }
+
+  @override
+  String chess_notifyTimeout(String name) {
+    return '$name вимагає перемогу за часом';
+  }
 }

@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../connector/meshcore_connector.dart';
+import '../games/chess/ui/chess_games_sheet.dart';
 import '../models/community.dart';
 import '../storage/community_store.dart';
 import '../utils/platform_info.dart';
@@ -594,6 +595,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
       onSelected: (value) {
         final connector = context.read<MeshCoreConnector>();
         switch (value) {
+          case 'games':
+            showChessGamesSheet(context, widget.channel);
           case 'messageFilter':
             _toggleChannelFiltering();
           case 'notifications':
@@ -636,6 +639,13 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
             .getChannelNotificationMode(muteKey);
         final readOnly = isRadioReadOnly(context.read<MeshCoreConnector>());
         return [
+          PopupMenuItem(
+            value: 'games',
+            child: _menuRow(
+              Icons.sports_esports_outlined,
+              chessMenuLabel(context, widget.channel),
+            ),
+          ),
           if (_messageFilter case final filter? when filter.settings.enabled)
             PopupMenuItem(
               value: 'messageFilter',

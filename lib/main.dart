@@ -14,6 +14,8 @@ import 'screens/channels_screen.dart';
 import 'utils/platform_info.dart';
 
 import 'connector/meshcore_connector.dart';
+import 'games/chess/chess_link.dart';
+import 'games/chess/chess_service.dart';
 import 'helpers/message_url_image_helper.dart';
 import 'models/image_codec_support.dart';
 import 'screens/scanner_screen.dart';
@@ -206,6 +208,9 @@ void main() async {
     connector: connector,
     settings: appSettingsService,
   );
+  final chessService = ChessService(
+    link: ConnectorChessLink(connector, settings: appSettingsService),
+  );
 
   await connector.restoreLastRadio();
 
@@ -227,6 +232,7 @@ void main() async {
       receivedImageStore: receivedImageStore,
       imageReassembler: imageReassembler,
       networkMapUploadService: networkMapUploadService,
+      chessService: chessService,
       chatBackgroundService: chatBackgroundService,
       messageFilterService: messageFilterService,
     ),
@@ -374,6 +380,7 @@ class MeshCoreApp extends StatefulWidget {
   final ReceivedImageStore receivedImageStore;
   final ImageStreamReassembler imageReassembler;
   final NetworkMapUploadService networkMapUploadService;
+  final ChessService chessService;
   final ChatBackgroundService chatBackgroundService;
   final MessageFilterService messageFilterService;
 
@@ -395,6 +402,7 @@ class MeshCoreApp extends StatefulWidget {
     required this.receivedImageStore,
     required this.imageReassembler,
     required this.networkMapUploadService,
+    required this.chessService,
     required this.chatBackgroundService,
     required this.messageFilterService,
   });
@@ -506,6 +514,7 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
         ChangeNotifierProvider.value(value: widget.imageCodecService),
         ChangeNotifierProvider.value(value: widget.receivedImageStore),
         ChangeNotifierProvider.value(value: widget.networkMapUploadService),
+        ChangeNotifierProvider.value(value: widget.chessService),
         ChangeNotifierProvider.value(value: widget.chatBackgroundService),
         ChangeNotifierProvider.value(value: widget.messageFilterService),
       ],

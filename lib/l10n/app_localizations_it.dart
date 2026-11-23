@@ -7795,4 +7795,387 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get coordinate_copied => 'Location copied';
+
+  @override
+  String get chess_menuGames => 'Partite a scacchi';
+
+  @override
+  String chess_menuGamesCount(int count) {
+    return 'Partite a scacchi ($count)';
+  }
+
+  @override
+  String get chess_sheetTitle => 'Scacchi';
+
+  @override
+  String get chess_sectionNewGame => 'Nuova partita';
+
+  @override
+  String get chess_sectionYourGames => 'Le tue partite';
+
+  @override
+  String get chess_sectionInvites => 'Inviti aperti';
+
+  @override
+  String get chess_sectionLive => 'Partite in corso';
+
+  @override
+  String get chess_sectionFinished => 'Terminate';
+
+  @override
+  String get chess_newChallenge => 'Sfida qualcuno';
+
+  @override
+  String get chess_newChallengeSubtitle =>
+      'Scegli qualcuno sentito di recente su questo canale';
+
+  @override
+  String get chess_newOpenInvite => 'Pubblica un invito aperto';
+
+  @override
+  String get chess_newOpenInviteSubtitle =>
+      'Chiunque su questo canale può accettare';
+
+  @override
+  String get chess_emptyTitle => 'Nessuna partita per ora';
+
+  @override
+  String get chess_emptySubtitle =>
+      'Sfida qualcuno o pubblica un invito aperto. Chiunque sul canale può guardare.';
+
+  @override
+  String chess_vs(String white, String black) {
+    return '$white contro $black';
+  }
+
+  @override
+  String get chess_unknownPlayer => 'Sconosciuto';
+
+  @override
+  String get chess_rowYourOpenInvite => 'Il tuo invito aperto';
+
+  @override
+  String chess_rowYourChallenge(String name) {
+    return 'Hai sfidato $name';
+  }
+
+  @override
+  String chess_rowInviteFrom(String name) {
+    return 'Partita con $name';
+  }
+
+  @override
+  String get chess_rowStarting => 'In attesa dell\'inizio della partita';
+
+  @override
+  String chess_rowMoveTurn(int number, String turn) {
+    return 'Mossa $number · $turn';
+  }
+
+  @override
+  String chess_rowOpenInvite(String name) {
+    return '$name cerca una partita';
+  }
+
+  @override
+  String chess_rowChallengedYou(String name) {
+    return '$name ti ha sfidato';
+  }
+
+  @override
+  String chess_rowInviteDetails(String deadline) {
+    return 'Tempo per mossa: $deadline';
+  }
+
+  @override
+  String get chess_accept => 'Accetta';
+
+  @override
+  String get chess_decline => 'Rifiuta';
+
+  @override
+  String get chess_remove => 'Rimuovi';
+
+  @override
+  String get chess_cancelInvite => 'Annulla invito';
+
+  @override
+  String get chess_cancelInviteTitle => 'Annullare questo invito?';
+
+  @override
+  String get chess_sendFailed =>
+      'Invio non riuscito. Controlla la connessione alla radio.';
+
+  @override
+  String chess_challengeSent(String name) {
+    return 'Sfida inviata a $name';
+  }
+
+  @override
+  String get chess_inviteSent => 'Invito aperto pubblicato';
+
+  @override
+  String get chess_pickOpponent => 'Chi sfidare';
+
+  @override
+  String get chess_noRecentSenders =>
+      'Nessuno ha scritto su questo canale di recente.';
+
+  @override
+  String get chess_deadlineLabel => 'Tempo per mossa';
+
+  @override
+  String get chess_deadlineNone => 'Nessun limite';
+
+  @override
+  String get chess_deadline15m => '15 minuti';
+
+  @override
+  String get chess_deadline1h => '1 ora';
+
+  @override
+  String get chess_deadline6h => '6 ore';
+
+  @override
+  String get chess_deadline1d => '1 giorno';
+
+  @override
+  String get chess_deadline3d => '3 giorni';
+
+  @override
+  String get chess_colourLabel => 'Il tuo colore';
+
+  @override
+  String get chess_colourRandom => 'Casuale';
+
+  @override
+  String get chess_colourWhite => 'Bianco';
+
+  @override
+  String get chess_colourBlack => 'Nero';
+
+  @override
+  String get chess_sendChallenge => 'Invia sfida';
+
+  @override
+  String get chess_postInvite => 'Pubblica invito';
+
+  @override
+  String get chess_gameGone => 'Questa partita non è più disponibile.';
+
+  @override
+  String chess_playerYou(String name) {
+    return '$name (tu)';
+  }
+
+  @override
+  String get chess_toMoveChip => 'Al tratto';
+
+  @override
+  String get chess_statusYourMove => 'Tocca a te';
+
+  @override
+  String chess_statusWaiting(String name) {
+    return 'In attesa di $name';
+  }
+
+  @override
+  String chess_statusToMove(String name) {
+    return 'Muove $name';
+  }
+
+  @override
+  String chess_statusTimeLeft(String time) {
+    return '$time rimasti per questa mossa';
+  }
+
+  @override
+  String get chess_statusOverdue => 'Il tempo per questa mossa è scaduto';
+
+  @override
+  String chess_statusDrawOffered(String name) {
+    return '$name offre la patta';
+  }
+
+  @override
+  String get chess_statusUnknownPosition =>
+      'La scacchiera apparirà con la prossima mossa.';
+
+  @override
+  String get chess_statusUnverified =>
+      'Giocatori non ancora confermati. Chiedi un aggiornamento per verificarli.';
+
+  @override
+  String get chess_actionResign => 'Abbandona';
+
+  @override
+  String get chess_actionOfferDraw => 'Offri la patta';
+
+  @override
+  String get chess_actionAcceptDraw => 'Accetta la patta';
+
+  @override
+  String get chess_actionClaimTimeout => 'Rivendica la vittoria a tempo';
+
+  @override
+  String get chess_actionNudge => 'Chiedi aggiornamento';
+
+  @override
+  String get chess_actionNudgeTooltip =>
+      'Chiedi ai giocatori di rinviare l\'ultima mossa';
+
+  @override
+  String get chess_resignConfirmTitle => 'Abbandonare questa partita?';
+
+  @override
+  String get chess_resignConfirmBody => 'Il tuo avversario vince.';
+
+  @override
+  String get chess_movesTitle => 'Mosse';
+
+  @override
+  String get chess_noMovesYet => 'Ancora nessuna mossa';
+
+  @override
+  String get chess_movesMissed => '(persa)';
+
+  @override
+  String get chess_promoteTitle => 'Promuovi a';
+
+  @override
+  String get chess_pieceQueen => 'Donna';
+
+  @override
+  String get chess_pieceRook => 'Torre';
+
+  @override
+  String get chess_pieceBishop => 'Alfiere';
+
+  @override
+  String get chess_pieceKnight => 'Cavallo';
+
+  @override
+  String get chess_resultDraw => 'Patta';
+
+  @override
+  String chess_resultWon(String name) {
+    return '$name ha vinto';
+  }
+
+  @override
+  String chess_resultWithReason(String result, String reason) {
+    return '$result · $reason';
+  }
+
+  @override
+  String get chess_endCheckmate => 'Scacco matto';
+
+  @override
+  String get chess_endResignation => 'Abbandono';
+
+  @override
+  String get chess_endTimeout => 'A tempo';
+
+  @override
+  String get chess_endDrawAgreed => 'Patta concordata';
+
+  @override
+  String get chess_endStalemate => 'Stallo';
+
+  @override
+  String get chess_endInsufficient => 'Materiale insufficiente per dare matto';
+
+  @override
+  String get chess_endFiftyMoves => 'Regola delle 50 mosse';
+
+  @override
+  String get chess_endRepetition => 'Ripetizione';
+
+  @override
+  String get chess_endCancelled => 'Invito annullato';
+
+  @override
+  String get chess_endDeclined => 'Sfida rifiutata';
+
+  @override
+  String get chess_endExpired => 'Invito scaduto';
+
+  @override
+  String get chess_endTaken => 'Un altro ha accettato per primo';
+
+  @override
+  String chess_timeMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String chess_timeHours(int hours, int minutes) {
+    return '$hours h $minutes min';
+  }
+
+  @override
+  String chess_timeDays(int days, int hours) {
+    return '$days g $hours h';
+  }
+
+  @override
+  String get chess_notificationSender => 'Scacchi';
+
+  @override
+  String chess_notifyChallenge(String name) {
+    return '$name ti ha sfidato a una partita';
+  }
+
+  @override
+  String chess_notifyAccepted(String name) {
+    return '$name ha accettato la tua partita';
+  }
+
+  @override
+  String chess_notifyAcceptedYourMove(String name) {
+    return '$name ha accettato la tua partita. Giochi con il bianco, tocca a te.';
+  }
+
+  @override
+  String chess_notifyDeclined(String name) {
+    return '$name ha rifiutato la tua sfida';
+  }
+
+  @override
+  String get chess_notifyTaken =>
+      'Un altro ha accettato quella partita per primo';
+
+  @override
+  String get chess_notifyGameStartedYourMove =>
+      'La tua partita è iniziata. Giochi con il bianco, tocca a te.';
+
+  @override
+  String chess_notifyYourMove(String name, String move) {
+    return '$name ha giocato $move. Tocca a te.';
+  }
+
+  @override
+  String chess_notifyGameOver(String name) {
+    return 'La tua partita con $name è finita';
+  }
+
+  @override
+  String chess_notifyResigned(String name) {
+    return '$name ha abbandonato. Hai vinto.';
+  }
+
+  @override
+  String chess_notifyDrawOffered(String name) {
+    return '$name offre la patta';
+  }
+
+  @override
+  String chess_notifyDrawAccepted(String name) {
+    return '$name ha accettato la patta';
+  }
+
+  @override
+  String chess_notifyTimeout(String name) {
+    return '$name ha rivendicato la vittoria a tempo';
+  }
 }

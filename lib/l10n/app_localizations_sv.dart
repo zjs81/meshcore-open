@@ -7728,4 +7728,385 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get coordinate_copied => 'Location copied';
+
+  @override
+  String get chess_menuGames => 'Schackpartier';
+
+  @override
+  String chess_menuGamesCount(int count) {
+    return 'Schackpartier ($count)';
+  }
+
+  @override
+  String get chess_sheetTitle => 'Schack';
+
+  @override
+  String get chess_sectionNewGame => 'Nytt parti';
+
+  @override
+  String get chess_sectionYourGames => 'Dina partier';
+
+  @override
+  String get chess_sectionInvites => 'Öppna inbjudningar';
+
+  @override
+  String get chess_sectionLive => 'Pågående partier';
+
+  @override
+  String get chess_sectionFinished => 'Avslutade';
+
+  @override
+  String get chess_newChallenge => 'Utmana någon';
+
+  @override
+  String get chess_newChallengeSubtitle =>
+      'Välj någon som nyligen hörts på den här kanalen';
+
+  @override
+  String get chess_newOpenInvite => 'Skicka en öppen inbjudan';
+
+  @override
+  String get chess_newOpenInviteSubtitle =>
+      'Vem som helst på den här kanalen kan acceptera';
+
+  @override
+  String get chess_emptyTitle => 'Inga partier ännu';
+
+  @override
+  String get chess_emptySubtitle =>
+      'Utmana någon eller skicka en öppen inbjudan. Alla på kanalen kan titta på.';
+
+  @override
+  String chess_vs(String white, String black) {
+    return '$white mot $black';
+  }
+
+  @override
+  String get chess_unknownPlayer => 'Okänd';
+
+  @override
+  String get chess_rowYourOpenInvite => 'Din öppna inbjudan';
+
+  @override
+  String chess_rowYourChallenge(String name) {
+    return 'Du utmanade $name';
+  }
+
+  @override
+  String chess_rowInviteFrom(String name) {
+    return 'Parti med $name';
+  }
+
+  @override
+  String get chess_rowStarting => 'Väntar på att partiet ska starta';
+
+  @override
+  String chess_rowMoveTurn(int number, String turn) {
+    return 'Drag $number · $turn';
+  }
+
+  @override
+  String chess_rowOpenInvite(String name) {
+    return '$name söker ett parti';
+  }
+
+  @override
+  String chess_rowChallengedYou(String name) {
+    return '$name utmanade dig';
+  }
+
+  @override
+  String chess_rowInviteDetails(String deadline) {
+    return 'Tid per drag: $deadline';
+  }
+
+  @override
+  String get chess_accept => 'Acceptera';
+
+  @override
+  String get chess_decline => 'Avböj';
+
+  @override
+  String get chess_remove => 'Ta bort';
+
+  @override
+  String get chess_cancelInvite => 'Dra tillbaka inbjudan';
+
+  @override
+  String get chess_cancelInviteTitle => 'Dra tillbaka den här inbjudan?';
+
+  @override
+  String get chess_sendFailed =>
+      'Det gick inte att skicka. Kontrollera radioanslutningen.';
+
+  @override
+  String chess_challengeSent(String name) {
+    return 'Utmaning skickad till $name';
+  }
+
+  @override
+  String get chess_inviteSent => 'Öppen inbjudan skickad';
+
+  @override
+  String get chess_pickOpponent => 'Vem vill du utmana?';
+
+  @override
+  String get chess_noRecentSenders =>
+      'Ingen har skrivit på den här kanalen nyligen.';
+
+  @override
+  String get chess_deadlineLabel => 'Tid per drag';
+
+  @override
+  String get chess_deadlineNone => 'Ingen gräns';
+
+  @override
+  String get chess_deadline15m => '15 minuter';
+
+  @override
+  String get chess_deadline1h => '1 timme';
+
+  @override
+  String get chess_deadline6h => '6 timmar';
+
+  @override
+  String get chess_deadline1d => '1 dag';
+
+  @override
+  String get chess_deadline3d => '3 dagar';
+
+  @override
+  String get chess_colourLabel => 'Din färg';
+
+  @override
+  String get chess_colourRandom => 'Slumpmässig';
+
+  @override
+  String get chess_colourWhite => 'Vit';
+
+  @override
+  String get chess_colourBlack => 'Svart';
+
+  @override
+  String get chess_sendChallenge => 'Skicka utmaning';
+
+  @override
+  String get chess_postInvite => 'Skicka inbjudan';
+
+  @override
+  String get chess_gameGone => 'Det här partiet finns inte längre.';
+
+  @override
+  String chess_playerYou(String name) {
+    return '$name (du)';
+  }
+
+  @override
+  String get chess_toMoveChip => 'Vid draget';
+
+  @override
+  String get chess_statusYourMove => 'Din tur';
+
+  @override
+  String chess_statusWaiting(String name) {
+    return 'Väntar på $name';
+  }
+
+  @override
+  String chess_statusToMove(String name) {
+    return '$name är vid draget';
+  }
+
+  @override
+  String chess_statusTimeLeft(String time) {
+    return '$time kvar för det här draget';
+  }
+
+  @override
+  String get chess_statusOverdue => 'Tiden för det här draget har gått ut';
+
+  @override
+  String chess_statusDrawOffered(String name) {
+    return '$name erbjuder remi';
+  }
+
+  @override
+  String get chess_statusUnknownPosition => 'Brädet visas vid nästa drag.';
+
+  @override
+  String get chess_statusUnverified =>
+      'Spelarna är inte bekräftade ännu. Be om en uppdatering för att kontrollera dem.';
+
+  @override
+  String get chess_actionResign => 'Ge upp';
+
+  @override
+  String get chess_actionOfferDraw => 'Erbjud remi';
+
+  @override
+  String get chess_actionAcceptDraw => 'Acceptera remi';
+
+  @override
+  String get chess_actionClaimTimeout => 'Kräv vinst på tid';
+
+  @override
+  String get chess_actionNudge => 'Be om uppdatering';
+
+  @override
+  String get chess_actionNudgeTooltip =>
+      'Be spelarna skicka det senaste draget igen';
+
+  @override
+  String get chess_resignConfirmTitle => 'Ge upp partiet?';
+
+  @override
+  String get chess_resignConfirmBody => 'Din motståndare vinner.';
+
+  @override
+  String get chess_movesTitle => 'Drag';
+
+  @override
+  String get chess_noMovesYet => 'Inga drag ännu';
+
+  @override
+  String get chess_movesMissed => '(missat)';
+
+  @override
+  String get chess_promoteTitle => 'Förvandla till';
+
+  @override
+  String get chess_pieceQueen => 'Dam';
+
+  @override
+  String get chess_pieceRook => 'Torn';
+
+  @override
+  String get chess_pieceBishop => 'Löpare';
+
+  @override
+  String get chess_pieceKnight => 'Springare';
+
+  @override
+  String get chess_resultDraw => 'Remi';
+
+  @override
+  String chess_resultWon(String name) {
+    return '$name vann';
+  }
+
+  @override
+  String chess_resultWithReason(String result, String reason) {
+    return '$result · $reason';
+  }
+
+  @override
+  String get chess_endCheckmate => 'Schackmatt';
+
+  @override
+  String get chess_endResignation => 'Uppgivning';
+
+  @override
+  String get chess_endTimeout => 'På tid';
+
+  @override
+  String get chess_endDrawAgreed => 'Remi överenskommen';
+
+  @override
+  String get chess_endStalemate => 'Patt';
+
+  @override
+  String get chess_endInsufficient => 'För få pjäser för matt';
+
+  @override
+  String get chess_endFiftyMoves => '50-dragsregeln';
+
+  @override
+  String get chess_endRepetition => 'Upprepning';
+
+  @override
+  String get chess_endCancelled => 'Inbjudan tillbakadragen';
+
+  @override
+  String get chess_endDeclined => 'Utmaning avböjd';
+
+  @override
+  String get chess_endExpired => 'Inbjudan har gått ut';
+
+  @override
+  String get chess_endTaken => 'Någon annan accepterade först';
+
+  @override
+  String chess_timeMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String chess_timeHours(int hours, int minutes) {
+    return '$hours h $minutes min';
+  }
+
+  @override
+  String chess_timeDays(int days, int hours) {
+    return '$days d $hours h';
+  }
+
+  @override
+  String get chess_notificationSender => 'Schack';
+
+  @override
+  String chess_notifyChallenge(String name) {
+    return '$name utmanade dig på ett parti';
+  }
+
+  @override
+  String chess_notifyAccepted(String name) {
+    return '$name accepterade ditt parti';
+  }
+
+  @override
+  String chess_notifyAcceptedYourMove(String name) {
+    return '$name accepterade ditt parti. Du spelar vit, och det är ditt drag.';
+  }
+
+  @override
+  String chess_notifyDeclined(String name) {
+    return '$name avböjde din utmaning';
+  }
+
+  @override
+  String get chess_notifyTaken => 'Någon annan accepterade partiet först';
+
+  @override
+  String get chess_notifyGameStartedYourMove =>
+      'Ditt parti har startat. Du spelar vit, och det är ditt drag.';
+
+  @override
+  String chess_notifyYourMove(String name, String move) {
+    return '$name spelade $move. Din tur.';
+  }
+
+  @override
+  String chess_notifyGameOver(String name) {
+    return 'Ditt parti med $name är slut';
+  }
+
+  @override
+  String chess_notifyResigned(String name) {
+    return '$name gav upp. Du vinner.';
+  }
+
+  @override
+  String chess_notifyDrawOffered(String name) {
+    return '$name erbjuder remi';
+  }
+
+  @override
+  String chess_notifyDrawAccepted(String name) {
+    return '$name accepterade remin';
+  }
+
+  @override
+  String chess_notifyTimeout(String name) {
+    return '$name krävde vinst på tid';
+  }
 }

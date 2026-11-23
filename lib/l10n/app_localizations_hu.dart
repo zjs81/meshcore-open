@@ -7775,4 +7775,385 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get coordinate_copied => 'Location copied';
+
+  @override
+  String get chess_menuGames => 'Sakkjátszmák';
+
+  @override
+  String chess_menuGamesCount(int count) {
+    return 'Sakkjátszmák ($count)';
+  }
+
+  @override
+  String get chess_sheetTitle => 'Sakk';
+
+  @override
+  String get chess_sectionNewGame => 'Új játszma';
+
+  @override
+  String get chess_sectionYourGames => 'Játszmáid';
+
+  @override
+  String get chess_sectionInvites => 'Nyitott felkérések';
+
+  @override
+  String get chess_sectionLive => 'Élő játszmák';
+
+  @override
+  String get chess_sectionFinished => 'Befejezett';
+
+  @override
+  String get chess_newChallenge => 'Kihívás valakinek';
+
+  @override
+  String get chess_newChallengeSubtitle =>
+      'Válassz valakit, akit nemrég hallottál ezen a csatornán';
+
+  @override
+  String get chess_newOpenInvite => 'Nyitott felkérés közzététele';
+
+  @override
+  String get chess_newOpenInviteSubtitle =>
+      'Bárki elfogadhatja ezen a csatornán';
+
+  @override
+  String get chess_emptyTitle => 'Még nincs játszma';
+
+  @override
+  String get chess_emptySubtitle =>
+      'Hívj ki valakit, vagy tegyél közzé nyitott felkérést. A csatornán bárki nézheti.';
+
+  @override
+  String chess_vs(String white, String black) {
+    return '$white – $black';
+  }
+
+  @override
+  String get chess_unknownPlayer => 'Ismeretlen';
+
+  @override
+  String get chess_rowYourOpenInvite => 'Nyitott felkérésed';
+
+  @override
+  String chess_rowYourChallenge(String name) {
+    return 'Kihívtad: $name';
+  }
+
+  @override
+  String chess_rowInviteFrom(String name) {
+    return 'Játszma vele: $name';
+  }
+
+  @override
+  String get chess_rowStarting => 'Várakozás a játszma kezdetére';
+
+  @override
+  String chess_rowMoveTurn(int number, String turn) {
+    return '$number. lépés · $turn';
+  }
+
+  @override
+  String chess_rowOpenInvite(String name) {
+    return '$name ellenfelet keres';
+  }
+
+  @override
+  String chess_rowChallengedYou(String name) {
+    return '$name kihívott téged';
+  }
+
+  @override
+  String chess_rowInviteDetails(String deadline) {
+    return 'Idő lépésenként: $deadline';
+  }
+
+  @override
+  String get chess_accept => 'Elfogadás';
+
+  @override
+  String get chess_decline => 'Elutasítás';
+
+  @override
+  String get chess_remove => 'Eltávolítás';
+
+  @override
+  String get chess_cancelInvite => 'Felkérés visszavonása';
+
+  @override
+  String get chess_cancelInviteTitle => 'Visszavonod ezt a felkérést?';
+
+  @override
+  String get chess_sendFailed =>
+      'A küldés nem sikerült. Ellenőrizd a rádiókapcsolatot.';
+
+  @override
+  String chess_challengeSent(String name) {
+    return 'Kihívás elküldve: $name';
+  }
+
+  @override
+  String get chess_inviteSent => 'Nyitott felkérés közzétéve';
+
+  @override
+  String get chess_pickOpponent => 'Kit hívsz ki?';
+
+  @override
+  String get chess_noRecentSenders => 'Ezen a csatornán nemrég senki sem írt.';
+
+  @override
+  String get chess_deadlineLabel => 'Idő lépésenként';
+
+  @override
+  String get chess_deadlineNone => 'Nincs korlát';
+
+  @override
+  String get chess_deadline15m => '15 perc';
+
+  @override
+  String get chess_deadline1h => '1 óra';
+
+  @override
+  String get chess_deadline6h => '6 óra';
+
+  @override
+  String get chess_deadline1d => '1 nap';
+
+  @override
+  String get chess_deadline3d => '3 nap';
+
+  @override
+  String get chess_colourLabel => 'Színed';
+
+  @override
+  String get chess_colourRandom => 'Véletlen';
+
+  @override
+  String get chess_colourWhite => 'Világos';
+
+  @override
+  String get chess_colourBlack => 'Sötét';
+
+  @override
+  String get chess_sendChallenge => 'Kihívás küldése';
+
+  @override
+  String get chess_postInvite => 'Felkérés közzététele';
+
+  @override
+  String get chess_gameGone => 'Ez a játszma már nem elérhető.';
+
+  @override
+  String chess_playerYou(String name) {
+    return '$name (te)';
+  }
+
+  @override
+  String get chess_toMoveChip => 'Lépésen van';
+
+  @override
+  String get chess_statusYourMove => 'Te lépsz';
+
+  @override
+  String chess_statusWaiting(String name) {
+    return 'Várakozás rá: $name';
+  }
+
+  @override
+  String chess_statusToMove(String name) {
+    return '$name lép';
+  }
+
+  @override
+  String chess_statusTimeLeft(String time) {
+    return 'Erre a lépésre még $time van hátra';
+  }
+
+  @override
+  String get chess_statusOverdue => 'Az erre a lépésre szánt idő lejárt';
+
+  @override
+  String chess_statusDrawOffered(String name) {
+    return '$name döntetlent ajánl';
+  }
+
+  @override
+  String get chess_statusUnknownPosition =>
+      'A tábla a következő lépéssel jelenik meg.';
+
+  @override
+  String get chess_statusUnverified =>
+      'A játékosok még nincsenek megerősítve. Kérj frissítést az ellenőrzésükhöz.';
+
+  @override
+  String get chess_actionResign => 'Feladás';
+
+  @override
+  String get chess_actionOfferDraw => 'Döntetlen ajánlása';
+
+  @override
+  String get chess_actionAcceptDraw => 'Döntetlen elfogadása';
+
+  @override
+  String get chess_actionClaimTimeout => 'Nyerés követelése időtúllépés miatt';
+
+  @override
+  String get chess_actionNudge => 'Frissítés kérése';
+
+  @override
+  String get chess_actionNudgeTooltip =>
+      'Kérd meg a játékosokat, hogy küldjék el újra a legutóbbi lépést';
+
+  @override
+  String get chess_resignConfirmTitle => 'Feladod ezt a játszmát?';
+
+  @override
+  String get chess_resignConfirmBody => 'Az ellenfeled nyer.';
+
+  @override
+  String get chess_movesTitle => 'Lépések';
+
+  @override
+  String get chess_noMovesYet => 'Még nincs lépés';
+
+  @override
+  String get chess_movesMissed => '(kimaradt)';
+
+  @override
+  String get chess_promoteTitle => 'Átváltozás';
+
+  @override
+  String get chess_pieceQueen => 'Vezér';
+
+  @override
+  String get chess_pieceRook => 'Bástya';
+
+  @override
+  String get chess_pieceBishop => 'Futó';
+
+  @override
+  String get chess_pieceKnight => 'Huszár';
+
+  @override
+  String get chess_resultDraw => 'Döntetlen';
+
+  @override
+  String chess_resultWon(String name) {
+    return '$name nyert';
+  }
+
+  @override
+  String chess_resultWithReason(String result, String reason) {
+    return '$result · $reason';
+  }
+
+  @override
+  String get chess_endCheckmate => 'Matt';
+
+  @override
+  String get chess_endResignation => 'Feladás';
+
+  @override
+  String get chess_endTimeout => 'Időtúllépés';
+
+  @override
+  String get chess_endDrawAgreed => 'Megegyezéses döntetlen';
+
+  @override
+  String get chess_endStalemate => 'Patt';
+
+  @override
+  String get chess_endInsufficient => 'Nincs elég figura a mattadáshoz';
+
+  @override
+  String get chess_endFiftyMoves => 'Ötvenlépéses szabály';
+
+  @override
+  String get chess_endRepetition => 'Állásismétlés';
+
+  @override
+  String get chess_endCancelled => 'Felkérés visszavonva';
+
+  @override
+  String get chess_endDeclined => 'Kihívás elutasítva';
+
+  @override
+  String get chess_endExpired => 'A felkérés lejárt';
+
+  @override
+  String get chess_endTaken => 'Valaki más előbb elfogadta';
+
+  @override
+  String chess_timeMinutes(int minutes) {
+    return '$minutes perc';
+  }
+
+  @override
+  String chess_timeHours(int hours, int minutes) {
+    return '$hours ó $minutes perc';
+  }
+
+  @override
+  String chess_timeDays(int days, int hours) {
+    return '$days n $hours ó';
+  }
+
+  @override
+  String get chess_notificationSender => 'Sakk';
+
+  @override
+  String chess_notifyChallenge(String name) {
+    return '$name kihívott egy játszmára';
+  }
+
+  @override
+  String chess_notifyAccepted(String name) {
+    return '$name elfogadta a játszmádat';
+  }
+
+  @override
+  String chess_notifyAcceptedYourMove(String name) {
+    return '$name elfogadta a játszmádat. Világossal játszol, te lépsz.';
+  }
+
+  @override
+  String chess_notifyDeclined(String name) {
+    return '$name elutasította a kihívásodat';
+  }
+
+  @override
+  String get chess_notifyTaken => 'Valaki más előbb elfogadta ezt a játszmát';
+
+  @override
+  String get chess_notifyGameStartedYourMove =>
+      'A játszmád elindult. Világossal játszol, te lépsz.';
+
+  @override
+  String chess_notifyYourMove(String name, String move) {
+    return '$name lépett: $move. Te jössz.';
+  }
+
+  @override
+  String chess_notifyGameOver(String name) {
+    return 'A $name elleni játszmád véget ért';
+  }
+
+  @override
+  String chess_notifyResigned(String name) {
+    return '$name feladta. Te nyertél.';
+  }
+
+  @override
+  String chess_notifyDrawOffered(String name) {
+    return '$name döntetlent ajánl';
+  }
+
+  @override
+  String chess_notifyDrawAccepted(String name) {
+    return '$name elfogadta a döntetlent';
+  }
+
+  @override
+  String chess_notifyTimeout(String name) {
+    return '$name időtúllépés miatt nyerést követelt';
+  }
 }

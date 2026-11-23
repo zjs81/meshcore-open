@@ -12,6 +12,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/connector/meshcore_protocol.dart';
+import 'package:meshcore_open/games/chess/chess_game.dart';
+import 'package:meshcore_open/games/chess/chess_link.dart';
+import 'package:meshcore_open/games/chess/chess_packets.dart';
+import 'package:meshcore_open/games/chess/chess_service.dart';
+import 'package:meshcore_open/games/chess/ui/chess_game_screen.dart';
+import 'package:meshcore_open/games/chess/ui/chess_games_sheet.dart';
+import 'package:meshcore_open/games/hash_chain.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
 import 'package:meshcore_open/models/contact.dart';
 import 'package:meshcore_open/review_mode/review_radio.dart';
@@ -81,8 +88,13 @@ Future<_Env> _connect(WidgetTester tester) async {
   final retry = MessageRetryService();
   final settings = AppSettingsService();
   final translation = TranslationService(settings);
+  final chess = ChessService(
+    link: ConnectorChessLink(connector, settings: settings),
+    startHousekeeping: false,
+  );
   final env = _Env(connector, [
     ChangeNotifierProvider.value(value: connector),
+    ChangeNotifierProvider.value(value: chess),
     ChangeNotifierProvider.value(value: retry),
     ChangeNotifierProvider.value(value: PathHistoryService(storage)),
     ChangeNotifierProvider.value(value: settings),
@@ -122,7 +134,55 @@ Future<_Env> _connect(WidgetTester tester) async {
       await Future<void>.delayed(const Duration(milliseconds: 25));
     }
   });
+  _seedChessGames(chess, connector.channels.first.storageId!);
   return env;
+}
+
+const _chessGameId = 77;
+
+/// A game in progress (long names, a few moves) and an open invite.
+void _seedChessGames(ChessService chess, String channelId) {
+  void feed(ChessPacket p) =>
+      chess.handleIncoming(ChessIncoming(channelId, p.encode()));
+  final white = HashChain(Uint8List(16));
+  final black = HashChain(Uint8List(16)..[0] = 1);
+  feed(
+    ChessInfoPacket(
+      gameId: _chessGameId,
+      ply: 0,
+      startedAtUnix: 1700000000,
+      deadline: ChessDeadline.hour1,
+      whiteCommitment: white.commitment,
+      blackCommitment: black.commitment,
+      whiteName: 'Alexandra the Long-Named',
+      blackName: 'Bartholomew Repeater Fan',
+    ),
+  );
+  final game = chess.game(channelId, _chessGameId)!;
+  for (final (i, uci) in ['e2e4', 'e7e5', 'g1f3'].indexed) {
+    final probe = ChessGame.fromJson(game.toJson())!;
+    final index = probe.legalUci().indexOf(uci);
+    probe.applyUci(uci);
+    feed(
+      ChessMovePacket(
+        gameId: _chessGameId,
+        ply: i + 1,
+        minutes: i,
+        moveIndex: index,
+        chainValue: (i.isEven ? white : black).valueAt(i ~/ 2 + 1),
+        position: probe.packedPosition(),
+      ),
+    );
+  }
+  feed(
+    ChessInvitePacket(
+      gameId: 78,
+      deadline: ChessDeadline.day1,
+      colour: ChessColourPreference.random,
+      commitment: HashChain(Uint8List(16)..[0] = 2).commitment,
+      inviterName: 'Cornelius Openinvite',
+    ),
+  );
 }
 
 Contact _contactOfType(MeshCoreConnector c, int type) => c.contacts.firstWhere(
@@ -151,6 +211,14 @@ _interactions = {
     await t.tap(find.byType(FloatingActionButton));
   },
   // Four routing modes (Auto, Flood, Direct, Manual) share one row.
+  'Chess games sheet': (t, c) async {
+    unawaited(
+      showChessGamesSheet(
+        t.element(find.byType(ChannelChatScreen)),
+        c.channels.first,
+      ),
+    );
+  },
   'Routing sheet': (t, c) async {
     unawaited(
       ContactRoutingSheet.show(
@@ -183,6 +251,11 @@ final Map<String, _ScreenBuilder> _screens = {
   'Map': (_) => const MapScreen(),
   'Chat': (c) => ChatScreen(contact: _contactOfType(c, advTypeChat)),
   'ChannelChat': (c) => ChannelChatScreen(channel: c.channels.first),
+  'Chess games sheet': (c) => ChannelChatScreen(channel: c.channels.first),
+  'ChessGame': (c) => ChessGameScreen(
+    channelId: c.channels.first.storageId!,
+    gameId: _chessGameId,
+  ),
   'ChannelMessagePath': (c) {
     final msgs = c.getChannelMessages(c.channels.first);
     return ChannelMessagePathScreen(message: msgs.last);
@@ -261,6 +334,7 @@ void main() {
             'Map',
             'Chat',
             'ChannelChat',
+            'ChessGame',
             'Settings',
           }.contains(entry.key))
         (entry, true),

@@ -7437,4 +7437,377 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get coordinate_copied => 'Location copied';
+
+  @override
+  String get chess_menuGames => 'チェスの対局';
+
+  @override
+  String chess_menuGamesCount(int count) {
+    return 'チェスの対局 ($count)';
+  }
+
+  @override
+  String get chess_sheetTitle => 'チェス';
+
+  @override
+  String get chess_sectionNewGame => '新しい対局';
+
+  @override
+  String get chess_sectionYourGames => 'あなたの対局';
+
+  @override
+  String get chess_sectionInvites => '募集中の対局';
+
+  @override
+  String get chess_sectionLive => '進行中の対局';
+
+  @override
+  String get chess_sectionFinished => '終了した対局';
+
+  @override
+  String get chess_newChallenge => '誰かに挑戦する';
+
+  @override
+  String get chess_newChallengeSubtitle => 'このチャンネルで最近発言した人から選ぶ';
+
+  @override
+  String get chess_newOpenInvite => '対戦相手を募集する';
+
+  @override
+  String get chess_newOpenInviteSubtitle => 'このチャンネルの誰でも参加できます';
+
+  @override
+  String get chess_emptyTitle => '対局はまだありません';
+
+  @override
+  String get chess_emptySubtitle => '誰かに挑戦するか、対戦相手を募集しましょう。チャンネルの誰でも観戦できます。';
+
+  @override
+  String chess_vs(String white, String black) {
+    return '$white 対 $black';
+  }
+
+  @override
+  String get chess_unknownPlayer => '不明';
+
+  @override
+  String get chess_rowYourOpenInvite => 'あなたの募集';
+
+  @override
+  String chess_rowYourChallenge(String name) {
+    return '$name に挑戦しました';
+  }
+
+  @override
+  String chess_rowInviteFrom(String name) {
+    return '$name との対局';
+  }
+
+  @override
+  String get chess_rowStarting => '対局の開始を待っています';
+
+  @override
+  String chess_rowMoveTurn(int number, String turn) {
+    return '$number 手目 · $turn';
+  }
+
+  @override
+  String chess_rowOpenInvite(String name) {
+    return '$name が対戦相手を探しています';
+  }
+
+  @override
+  String chess_rowChallengedYou(String name) {
+    return '$name から挑戦されました';
+  }
+
+  @override
+  String chess_rowInviteDetails(String deadline) {
+    return '1手の持ち時間: $deadline';
+  }
+
+  @override
+  String get chess_accept => '承諾';
+
+  @override
+  String get chess_decline => '辞退';
+
+  @override
+  String get chess_remove => '削除';
+
+  @override
+  String get chess_cancelInvite => '募集を取り消す';
+
+  @override
+  String get chess_cancelInviteTitle => 'この募集を取り消しますか？';
+
+  @override
+  String get chess_sendFailed => '送信できませんでした。ラジオの接続を確認してください。';
+
+  @override
+  String chess_challengeSent(String name) {
+    return '$name に挑戦を送信しました';
+  }
+
+  @override
+  String get chess_inviteSent => '対戦相手の募集を投稿しました';
+
+  @override
+  String get chess_pickOpponent => '挑戦する相手';
+
+  @override
+  String get chess_noRecentSenders => 'このチャンネルで最近発言した人はいません。';
+
+  @override
+  String get chess_deadlineLabel => '1手の持ち時間';
+
+  @override
+  String get chess_deadlineNone => '無制限';
+
+  @override
+  String get chess_deadline15m => '15分';
+
+  @override
+  String get chess_deadline1h => '1時間';
+
+  @override
+  String get chess_deadline6h => '6時間';
+
+  @override
+  String get chess_deadline1d => '1日';
+
+  @override
+  String get chess_deadline3d => '3日';
+
+  @override
+  String get chess_colourLabel => 'あなたの色';
+
+  @override
+  String get chess_colourRandom => 'ランダム';
+
+  @override
+  String get chess_colourWhite => '白';
+
+  @override
+  String get chess_colourBlack => '黒';
+
+  @override
+  String get chess_sendChallenge => '挑戦を送る';
+
+  @override
+  String get chess_postInvite => '募集を投稿';
+
+  @override
+  String get chess_gameGone => 'この対局はもう利用できません。';
+
+  @override
+  String chess_playerYou(String name) {
+    return '$name (あなた)';
+  }
+
+  @override
+  String get chess_toMoveChip => '手番';
+
+  @override
+  String get chess_statusYourMove => 'あなたの手番です';
+
+  @override
+  String chess_statusWaiting(String name) {
+    return '$name を待っています';
+  }
+
+  @override
+  String chess_statusToMove(String name) {
+    return '$name の手番';
+  }
+
+  @override
+  String chess_statusTimeLeft(String time) {
+    return 'この手の残り時間 $time';
+  }
+
+  @override
+  String get chess_statusOverdue => 'この手の持ち時間が切れました';
+
+  @override
+  String chess_statusDrawOffered(String name) {
+    return '$name が引き分けを提案しています';
+  }
+
+  @override
+  String get chess_statusUnknownPosition => '盤面は次の手で表示されます。';
+
+  @override
+  String get chess_statusUnverified => '対局者がまだ確認されていません。更新を依頼して確認してください。';
+
+  @override
+  String get chess_actionResign => '投了';
+
+  @override
+  String get chess_actionOfferDraw => '引き分けを提案';
+
+  @override
+  String get chess_actionAcceptDraw => '引き分けを承諾';
+
+  @override
+  String get chess_actionClaimTimeout => '時間切れによる勝ちを申請';
+
+  @override
+  String get chess_actionNudge => '更新を依頼';
+
+  @override
+  String get chess_actionNudgeTooltip => '対局者に最新の手の再送を依頼します';
+
+  @override
+  String get chess_resignConfirmTitle => 'この対局を投了しますか？';
+
+  @override
+  String get chess_resignConfirmBody => '相手の勝ちになります。';
+
+  @override
+  String get chess_movesTitle => '棋譜';
+
+  @override
+  String get chess_noMovesYet => 'まだ手がありません';
+
+  @override
+  String get chess_movesMissed => '(未受信)';
+
+  @override
+  String get chess_promoteTitle => 'プロモーション';
+
+  @override
+  String get chess_pieceQueen => 'クイーン';
+
+  @override
+  String get chess_pieceRook => 'ルーク';
+
+  @override
+  String get chess_pieceBishop => 'ビショップ';
+
+  @override
+  String get chess_pieceKnight => 'ナイト';
+
+  @override
+  String get chess_resultDraw => '引き分け';
+
+  @override
+  String chess_resultWon(String name) {
+    return '$name の勝ち';
+  }
+
+  @override
+  String chess_resultWithReason(String result, String reason) {
+    return '$result · $reason';
+  }
+
+  @override
+  String get chess_endCheckmate => 'チェックメイト';
+
+  @override
+  String get chess_endResignation => '投了';
+
+  @override
+  String get chess_endTimeout => '時間切れ';
+
+  @override
+  String get chess_endDrawAgreed => '合意による引き分け';
+
+  @override
+  String get chess_endStalemate => 'ステイルメイト';
+
+  @override
+  String get chess_endInsufficient => 'チェックメイトに必要な駒が不足';
+
+  @override
+  String get chess_endFiftyMoves => '50手ルール';
+
+  @override
+  String get chess_endRepetition => '同一局面の繰り返し';
+
+  @override
+  String get chess_endCancelled => '募集は取り消されました';
+
+  @override
+  String get chess_endDeclined => '挑戦は辞退されました';
+
+  @override
+  String get chess_endExpired => '募集の期限が切れました';
+
+  @override
+  String get chess_endTaken => '他の人が先に承諾しました';
+
+  @override
+  String chess_timeMinutes(int minutes) {
+    return '$minutes 分';
+  }
+
+  @override
+  String chess_timeHours(int hours, int minutes) {
+    return '$hours 時間 $minutes 分';
+  }
+
+  @override
+  String chess_timeDays(int days, int hours) {
+    return '$days 日 $hours 時間';
+  }
+
+  @override
+  String get chess_notificationSender => 'チェス';
+
+  @override
+  String chess_notifyChallenge(String name) {
+    return '$name から対局を挑まれました';
+  }
+
+  @override
+  String chess_notifyAccepted(String name) {
+    return '$name が対局を承諾しました';
+  }
+
+  @override
+  String chess_notifyAcceptedYourMove(String name) {
+    return '$name が対局を承諾しました。あなたが白で、先手です。';
+  }
+
+  @override
+  String chess_notifyDeclined(String name) {
+    return '$name が挑戦を辞退しました';
+  }
+
+  @override
+  String get chess_notifyTaken => '他の人が先にその対局を承諾しました';
+
+  @override
+  String get chess_notifyGameStartedYourMove => '対局が始まりました。あなたが白で、先手です。';
+
+  @override
+  String chess_notifyYourMove(String name, String move) {
+    return '$name が $move を指しました。あなたの手番です。';
+  }
+
+  @override
+  String chess_notifyGameOver(String name) {
+    return '$name との対局が終了しました';
+  }
+
+  @override
+  String chess_notifyResigned(String name) {
+    return '$name が投了しました。あなたの勝ちです。';
+  }
+
+  @override
+  String chess_notifyDrawOffered(String name) {
+    return '$name が引き分けを提案しています';
+  }
+
+  @override
+  String chess_notifyDrawAccepted(String name) {
+    return '$name が引き分けを承諾しました';
+  }
+
+  @override
+  String chess_notifyTimeout(String name) {
+    return '$name が時間切れによる勝ちを申請しました';
+  }
 }
