@@ -7823,6 +7823,11 @@ class AppLocalizationsCs extends AppLocalizations {
   String get chess_unknownPlayer => 'Neznámý';
 
   @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter vyzývá hráče $target';
+  }
+
+  @override
   String get chess_rowYourOpenInvite => 'Vaše otevřená výzva';
 
   @override
@@ -7976,6 +7981,14 @@ class AppLocalizationsCs extends AppLocalizations {
       'Hráči zatím nejsou potvrzeni. Vyžádejte si aktualizaci a ověřte je.';
 
   @override
+  String get chess_statusPlayersUnchecked =>
+      'Hráči nepotvrzeni: tento telefon výzvu neslyšel.';
+
+  @override
+  String get chess_statusMoveUnconfirmed =>
+      'Váš tah možná neodešel. Klepnutím na „Vyžádat aktualizaci“ ho odešlete znovu.';
+
+  @override
   String get chess_actionResign => 'Vzdát se';
 
   @override
@@ -8023,6 +8036,22 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get chess_pieceKnight => 'Jezdec';
+
+  @override
+  String get chess_pieceKing => 'Král';
+
+  @override
+  String get chess_piecePawn => 'Pěšec';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square: $piece, bílá';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square: $piece, černá';
+  }
 
   @override
   String get chess_resultDraw => 'Remíza';

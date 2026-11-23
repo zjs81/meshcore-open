@@ -267,7 +267,12 @@ class _StatusCard extends StatelessWidget {
             ),
           );
         }
-        if (!game.hasPlayers) lines.add(l10n.chess_statusUnverified);
+        if (game.moveUnconfirmed) lines.add(l10n.chess_statusMoveUnconfirmed);
+        if (!game.hasPlayers) {
+          lines.add(l10n.chess_statusUnverified);
+        } else if (!game.playersConfirmed) {
+          lines.add(l10n.chess_statusPlayersUnchecked);
+        }
     }
     return MeshCard(
       child: Column(

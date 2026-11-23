@@ -6849,7 +6849,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get repeater_radioDisconnected => '라디오 연결 끊김';
+  String get repeater_radioDisconnected => '무전기 연결 끊김';
 
   @override
   String get repeater_radioDisconnectedHint =>
@@ -7300,7 +7300,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appBar_reconnecting => '다시 연결 중…';
 
   @override
-  String get connectSheet_title => '라디오 연결';
+  String get connectSheet_title => '무전기 연결';
 
   @override
   String connectSheet_reconnect(String name) {
@@ -7507,6 +7507,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chess_unknownPlayer => '알 수 없음';
 
   @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter님이 $target님에게 도전했습니다';
+  }
+
+  @override
   String get chess_rowYourOpenInvite => '내 공개 초대';
 
   @override
@@ -7657,6 +7662,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chess_statusUnverified => '플레이어가 아직 확인되지 않았습니다. 업데이트를 요청해 확인하세요.';
 
   @override
+  String get chess_statusPlayersUnchecked => '플레이어 미확인: 이 휴대폰이 초대를 수신하지 못했습니다.';
+
+  @override
+  String get chess_statusMoveUnconfirmed =>
+      '내 수가 전송되지 않았을 수 있습니다. \"업데이트 요청\"을 눌러 다시 보내세요.';
+
+  @override
   String get chess_actionResign => '기권';
 
   @override
@@ -7703,6 +7715,22 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get chess_pieceKnight => '나이트';
+
+  @override
+  String get chess_pieceKing => '킹';
+
+  @override
+  String get chess_piecePawn => '폰';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square: 백 $piece';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square: 흑 $piece';
+  }
 
   @override
   String get chess_resultDraw => '무승부';

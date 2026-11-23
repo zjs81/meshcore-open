@@ -7788,6 +7788,11 @@ class AppLocalizationsSv extends AppLocalizations {
   String get chess_unknownPlayer => 'Okänd';
 
   @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter utmanade $target';
+  }
+
+  @override
   String get chess_rowYourOpenInvite => 'Din öppna inbjudan';
 
   @override
@@ -7941,6 +7946,14 @@ class AppLocalizationsSv extends AppLocalizations {
       'Spelarna är inte bekräftade ännu. Be om en uppdatering för att kontrollera dem.';
 
   @override
+  String get chess_statusPlayersUnchecked =>
+      'Spelare ej bekräftade: den här telefonen hörde inte inbjudan.';
+
+  @override
+  String get chess_statusMoveUnconfirmed =>
+      'Ditt drag kanske inte gick iväg. Tryck på ”Be om uppdatering” för att skicka det igen.';
+
+  @override
   String get chess_actionResign => 'Ge upp';
 
   @override
@@ -7988,6 +8001,22 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get chess_pieceKnight => 'Springare';
+
+  @override
+  String get chess_pieceKing => 'Kung';
+
+  @override
+  String get chess_piecePawn => 'Bonde';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square: $piece, vit';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square: $piece, svart';
+  }
 
   @override
   String get chess_resultDraw => 'Remi';

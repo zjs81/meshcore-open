@@ -3999,5 +3999,12 @@
   "chess_notifyResigned": "{name} feladta. Te nyertél.",
   "chess_notifyDrawOffered": "{name} döntetlent ajánl",
   "chess_notifyDrawAccepted": "{name} elfogadta a döntetlent",
-  "chess_notifyTimeout": "{name} időtúllépés miatt nyerést követelt"
+  "chess_notifyTimeout": "{name} időtúllépés miatt nyerést követelt",
+  "chess_rowChallenge": "{inviter} kihívta: {target}",
+  "chess_statusPlayersUnchecked": "A játékosok nincsenek megerősítve: ez a telefon nem hallotta a felkérést.",
+  "chess_statusMoveUnconfirmed": "Előfordulhat, hogy a lépésed nem ment el. Koppints a „Frissítés kérése” gombra az újraküldéshez.",
+  "chess_pieceKing": "Király",
+  "chess_piecePawn": "Gyalog",
+  "chess_squareWhitePiece": "{square}: {piece}, világos",
+  "chess_squareBlackPiece": "{square}: {piece}, sötét"
 }

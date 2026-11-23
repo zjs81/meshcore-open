@@ -45,38 +45,42 @@ enum ChessEndReason {
   taken,
 }
 
-/// One player's identity in a game: their name (unauthenticated) and the
-/// hash chain values verified so far.
+/// One player's identity in a game: their name (unauthenticated), their
+/// chain commitment, and the highest chain index used up so far.
+///
+/// Values count once and only in order: a value is fresh when its index is
+/// above [lastIndex]. Anyone can hash a revealed value back to the lower
+/// ones, so once index `i` is used up nothing at or below it is accepted.
 class ChessPlayer {
   final String name;
   final Uint8List commitment;
-  Uint8List lastValue;
   int lastIndex;
 
   ChessPlayer({
     required this.name,
     required this.commitment,
-    Uint8List? lastValue,
     this.lastIndex = 0,
-  }) : lastValue = lastValue ?? commitment;
+  });
 
-  /// Accepts [value] when it extends this player's chain, returning true.
-  bool verifyAndAdvance(Uint8List value) {
-    final steps = hashChainDistance(value, lastValue);
-    if (steps == null || steps == 0) return false;
-    lastValue = value;
-    lastIndex += steps;
-    return true;
+  /// The inviter's record: index 1 is reserved for the game info.
+  ChessPlayer.inviter({required this.name, required this.commitment})
+    : lastIndex = 1;
+
+  /// Chain index of [value] when it is on this chain and not used up yet,
+  /// otherwise null. Does not change anything.
+  int? freshIndex(Uint8List value) {
+    final index = hashChainDistance(value, commitment);
+    return index != null && index > lastIndex ? index : null;
   }
 
-  /// True when [value] is on this player's chain at or after the last
-  /// verified value (a valid new value or an exact duplicate).
-  bool owns(Uint8List value) => hashChainDistance(value, lastValue) != null;
+  /// Marks every value up to [index] as used.
+  void use(int index) {
+    if (index > lastIndex) lastIndex = index;
+  }
 
   Map<String, dynamic> toJson() => {
     'name': name,
     'commitment': _hex(commitment),
-    'last': _hex(lastValue),
     'index': lastIndex,
   };
 
@@ -88,7 +92,6 @@ class ChessPlayer {
     return ChessPlayer(
       name: name,
       commitment: commitment,
-      lastValue: _unhex(json['last']) ?? commitment,
       lastIndex: json['index'] is int ? json['index'] as int : 0,
     );
   }
@@ -112,8 +115,12 @@ class ChessGame {
   ChessPlayer? white;
   ChessPlayer? black;
 
-  /// Our own chain seed (hex) when we are a player or the inviter.
+  /// Our own chain seed (hex) when we posted or accepted the invite. Kept
+  /// after losing an accept race, in case a later game info lists us.
   String? mySeedHex;
+
+  /// Next index of our chain to reveal. Never goes back, even after a failed
+  /// send: the packet may have gone out.
   int myNextChainIndex;
 
   /// Which side we play, or null when watching.
@@ -121,6 +128,17 @@ class ChessGame {
 
   /// True when we posted the invite.
   bool iAmInviter;
+
+  /// False while [white] and [black] come from a game info we could not
+  /// check, because we never heard the invite.
+  bool playersConfirmed;
+
+  /// Our last move was applied but the radio did not confirm sending it.
+  bool moveUnconfirmed;
+
+  /// Value 1 of the inviter's chain, from the game info, so any player can
+  /// send the game info again.
+  Uint8List? inviterInfoValue;
 
   /// Position the move history below starts from: the start position, or a
   /// position adopted after missed moves.
@@ -166,6 +184,9 @@ class ChessGame {
     this.myNextChainIndex = 1,
     this.mySide,
     this.iAmInviter = false,
+    this.playersConfirmed = true,
+    this.moveUnconfirmed = false,
+    this.inviterInfoValue,
     String? baseFen,
     List<String>? uciSinceBase,
     List<String?>? sanMoves,
@@ -199,6 +220,9 @@ class ChessGame {
   /// Players are known (we can verify their actions).
   bool get hasPlayers => white != null && black != null;
 
+  /// We posted or accepted this game.
+  bool get isMine => iAmInviter || mySeedHex != null;
+
   ChessSide get sideToMove => ChessSide.moverOfPly(ply + 1);
 
   bool get isMyTurn =>
@@ -209,10 +233,12 @@ class ChessGame {
 
   String? nameOf(ChessSide side) => playerOf(side)?.name;
 
-  /// Which side's chain [value] belongs to, if any.
-  ChessSide? sideOwning(Uint8List value) {
-    if (white?.owns(value) ?? false) return ChessSide.white;
-    if (black?.owns(value) ?? false) return ChessSide.black;
+  /// The side whose chain holds [value] as a fresh value, with its index.
+  (ChessSide, int)? freshSide(Uint8List value) {
+    for (final side in ChessSide.values) {
+      final index = playerOf(side)?.freshIndex(value);
+      if (index != null) return (side, index);
+    }
     return null;
   }
 
@@ -221,11 +247,12 @@ class ChessGame {
     return seed == null ? null : HashChain(seed);
   }
 
-  /// The next value of our chain, advancing the counter.
-  Uint8List? takeMyChainValue() {
+  /// The next value of our chain with its index, advancing the counter.
+  ({int index, Uint8List value})? takeMyChainValue() {
     final chain = myChain;
     if (chain == null || myNextChainIndex > HashChain.length) return null;
-    return chain.valueAt(myNextChainIndex++);
+    final index = myNextChainIndex++;
+    return (index: index, value: chain.valueAt(index));
   }
 
   /// Rules engine at the current position, with as much history as we have
@@ -314,12 +341,6 @@ class ChessGame {
   /// The packed position for the current [fen].
   Uint8List packedPosition() => ChessPositionCodec.encodeFen(fen);
 
-  /// Minutes since the game started, for move packets.
-  int minutesSinceStart(int nowMs) {
-    final start = startedAtMs ?? createdAtMs;
-    return ((nowMs - start) ~/ 60000).clamp(0, 0xFFFF);
-  }
-
   Map<String, dynamic> toJson() => {
     'channel': channelId,
     'id': gameId,
@@ -334,6 +355,9 @@ class ChessGame {
     'nextChain': myNextChainIndex,
     if (mySide != null) 'side': mySide!.name,
     'inviterSelf': iAmInviter,
+    if (!playersConfirmed) 'unconfirmed': true,
+    if (moveUnconfirmed) 'moveUnconfirmed': true,
+    if (inviterInfoValue != null) 'infoValue': _hex(inviterInfoValue!),
     'baseFen': baseFen,
     'uci': uciSinceBase,
     'san': sanMoves,
@@ -379,6 +403,9 @@ class ChessGame {
         myNextChainIndex: _int(json['nextChain']) ?? 1,
         mySide: _enumByNameOrNull(ChessSide.values, json['side']),
         iAmInviter: json['inviterSelf'] == true,
+        playersConfirmed: json['unconfirmed'] != true,
+        moveUnconfirmed: json['moveUnconfirmed'] == true,
+        inviterInfoValue: _unhex(json['infoValue']),
         baseFen: json['baseFen'] as String?,
         uciSinceBase: (json['uci'] as List?)?.whereType<String>().toList(),
         sanMoves: (json['san'] as List?)?.map((e) => e as String?).toList(),

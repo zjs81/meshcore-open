@@ -118,6 +118,11 @@ void main() {
   );
 
   testWidgets('sheet lists our game and the open invite', (tester) async {
+    // A cancelled invite of ours, listed under Finished.
+    final cancelled = await tester.runAsync(
+      () => service.createInvite(channelId: channelId),
+    );
+    await tester.runAsync(() => service.cancelInvite(cancelled!));
     tester.view.physicalSize = const Size(400, 2000);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -139,6 +144,9 @@ void main() {
     expect(find.text(_l10n.chess_vs('Me', 'Bob')), findsOne);
     expect(find.text(_l10n.chess_rowOpenInvite('Carol')), findsOne);
     expect(find.text(_l10n.chess_accept), findsOne);
+    expect(find.text(_l10n.chess_rowYourOpenInvite), findsOne);
+    expect(find.text(_l10n.chess_endCancelled), findsOne);
+    expect(find.text(_l10n.chess_vs('Unknown', 'Unknown')), findsNothing);
   });
 
   testWidgets('tapping a piece and a target sends the move', (tester) async {
@@ -152,7 +160,11 @@ void main() {
     expect(find.byType(ChessBoardView), findsOne);
     expect(find.text(_l10n.chess_statusYourMove), findsWidgets);
 
-    await tester.tap(find.bySemanticsLabel('e2 P'));
+    await tester.tap(
+      find.bySemanticsLabel(
+        _l10n.chess_squareWhitePiece('e2', _l10n.chess_piecePawn),
+      ),
+    );
     await tester.pump();
     await tester.tap(find.bySemanticsLabel('e4'));
     await tester.pumpAndSettle();

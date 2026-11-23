@@ -52,6 +52,35 @@ void main() {
       expect(positions, greaterThan(1000));
     });
 
+    test('drops castling and en passant rights the pieces rule out', () {
+      // Kings on e1/e8 but the h1 rook gone; an en passant file with no pawn.
+      const fen = 'r3k2r/8/8/8/8/8/8/R3K3 w KQkq e6 0 1';
+      final packed = ChessPositionCodec.encodeFen(fen);
+      final decoded = ChessPositionCodec.decodeToFen(packed, fullMoveNumber: 1);
+      expect(decoded, 'r3k2r/8/8/8/8/8/8/R3K3 w Qkq - 0 1');
+      // The rules engine can list moves for it without throwing.
+      final game = ChessGame(
+        channelId: 'c',
+        gameId: 1,
+        status: ChessGameStatus.active,
+        deadline: ChessDeadline.none,
+        createdAtMs: 0,
+      )..adoptPosition(decoded!, 0);
+      expect(game.legalUci(), contains('e1c1'));
+      expect(game.legalUci(), isNot(contains('e1g1')));
+
+      // A real en passant chance survives.
+      const ep =
+          'rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3';
+      expect(
+        ChessPositionCodec.decodeToFen(
+          ChessPositionCodec.encodeFen(ep),
+          fullMoveNumber: 3,
+        ),
+        ep,
+      );
+    });
+
     test('rejects a length that does not match the occupancy', () {
       final packed = ChessPositionCodec.encodeFen(ChessGame.startFen);
       expect(
@@ -84,12 +113,25 @@ void main() {
       expect(hashChainDistance(other.valueAt(1), chain.commitment), isNull);
     });
 
-    test('player advances only on new values', () {
+    test('player values count once and only in order', () {
       final player = ChessPlayer(name: 'A', commitment: chain.commitment);
-      expect(player.verifyAndAdvance(chain.valueAt(1)), isTrue);
-      expect(player.verifyAndAdvance(chain.valueAt(1)), isFalse);
-      expect(player.verifyAndAdvance(chain.valueAt(4)), isTrue);
+      expect(player.freshIndex(chain.valueAt(1)), 1);
+      player.use(1);
+      expect(player.freshIndex(chain.valueAt(1)), isNull);
+      expect(player.freshIndex(chain.valueAt(4)), 4);
+      player.use(4);
+      // Index 3 was never used, but anyone can compute it from value 4.
+      expect(player.freshIndex(chain.valueAt(3)), isNull);
       expect(player.lastIndex, 4);
+    });
+
+    test('the inviter chain keeps value 1 for the game info', () {
+      final inviter = ChessPlayer.inviter(
+        name: 'A',
+        commitment: chain.commitment,
+      );
+      expect(inviter.freshIndex(chain.valueAt(1)), isNull);
+      expect(inviter.freshIndex(chain.valueAt(2)), 2);
     });
   });
 
@@ -101,19 +143,17 @@ void main() {
     test('move packet fits one 64-byte encrypted block run', () {
       final packet = ChessMovePacket(
         gameId: 0xBEEF,
-        ply: 37,
-        minutes: 1234,
+        ply: 300,
         moveIndex: 17,
         chainValue: value,
         position: ChessPositionCodec.encodeFen(ChessGame.startFen),
       );
       final bytes = packet.encode();
-      expect(bytes.length, 49);
+      expect(bytes.length, 48);
       expect(encryptedGamePayloadSize(bytes.length), 64);
       final decoded = ChessPacket.decode(bytes) as ChessMovePacket;
       expect(decoded.gameId, 0xBEEF);
-      expect(decoded.ply, 37);
-      expect(decoded.minutes, 1234);
+      expect(decoded.ply, 300);
       expect(decoded.moveIndex, 17);
       expect(decoded.chainValue, value);
       expect(decoded.position, packet.position);
@@ -127,7 +167,7 @@ void main() {
         commitment: commitment,
         inviterName: longName,
       ).encode();
-      expect(open.length, 54);
+      expect(open.length, 55);
       expect(encryptedGamePayloadSize(open.length), 64);
       final direct = ChessInvitePacket(
         gameId: 1,
@@ -138,12 +178,23 @@ void main() {
         targetName: longName,
       );
       final bytes = direct.encode();
-      expect(bytes.length, 86);
+      expect(bytes.length, 87);
       final decoded = ChessPacket.decode(bytes) as ChessInvitePacket;
       expect(decoded.inviterName, 'N' * maxGameNameBytes);
       expect(decoded.targetName, 'N' * maxGameNameBytes);
       expect(decoded.deadline, ChessDeadline.days3);
       expect(decoded.isDirect, isTrue);
+      final accept = ChessAcceptPacket(
+        gameId: 1,
+        commitment: commitment,
+        accepterName: longName,
+      ).encode();
+      expect(accept.length, 53);
+      final decline = ChessDeclinePacket(
+        gameId: 1,
+        declinerName: longName,
+      ).encode();
+      expect(decline.length, 37);
     });
 
     test('names are cut on a character boundary', () {
@@ -157,10 +208,9 @@ void main() {
         kind: ChessPacketKind.resign,
         gameId: 9,
         ply: 4,
-        minutes: 3,
         chainValue: value,
       ).encode();
-      expect(action.length, 22);
+      expect(action.length, 21);
       expect(encryptedGamePayloadSize(action.length), 32);
       expect(
         (ChessPacket.decode(action) as ChessActionPacket).kind,
@@ -174,13 +224,16 @@ void main() {
         deadline: ChessDeadline.hour1,
         whiteCommitment: commitment,
         blackCommitment: value,
+        inviterValue: value,
         whiteName: longName,
         blackName: longName,
       ).encode();
-      expect(info.length, 106);
+      expect(info.length, 122);
+      expect(info.length, lessThanOrEqualTo(maxGamePayloadBytes));
       final decodedInfo = ChessPacket.decode(info) as ChessInfoPacket;
       expect(decodedInfo.startedAtUnix, 1700000000);
       expect(decodedInfo.blackCommitment, value);
+      expect(decodedInfo.inviterValue, value);
 
       final request = ChessRequestPacket(
         gameId: 9,
@@ -188,7 +241,7 @@ void main() {
         wantsInfo: true,
         wantsLatestMove: true,
       ).encode();
-      expect(request.length, 5);
+      expect(request.length, 6);
       final decodedRequest = ChessPacket.decode(request) as ChessRequestPacket;
       expect(decodedRequest.wantsInfo, isTrue);
       expect(decodedRequest.wantsLatestMove, isTrue);

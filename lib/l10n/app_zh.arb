@@ -3965,5 +3965,12 @@
   "chess_notifyResigned": "{name} 认输了。你获胜。",
   "chess_notifyDrawOffered": "{name} 提议和棋",
   "chess_notifyDrawAccepted": "{name} 接受了和棋",
-  "chess_notifyTimeout": "{name} 申请超时判胜"
+  "chess_notifyTimeout": "{name} 申请超时判胜",
+  "chess_rowChallenge": "{inviter} 向 {target} 发起了挑战",
+  "chess_statusPlayersUnchecked": "对局双方未确认：这部手机没有收到邀请。",
+  "chess_statusMoveUnconfirmed": "你的这一步可能没有发出。请点按“请求更新”重新发送。",
+  "chess_pieceKing": "王",
+  "chess_piecePawn": "兵",
+  "chess_squareWhitePiece": "{square}：白{piece}",
+  "chess_squareBlackPiece": "{square}：黑{piece}"
 }

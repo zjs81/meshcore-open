@@ -60,7 +60,7 @@ enum ChessDeadline {
       values.firstWhere((v) => v.code == code, orElse: () => defaultValue);
 }
 
-/// A decoded chess packet. [ply] is the half-move number modulo 256.
+/// A decoded chess packet. [ply] is a half-move number (see each kind).
 sealed class ChessPacket {
   final int gameId;
   final int ply;
@@ -196,8 +196,8 @@ class ChessAcceptPacket extends ChessPacket {
   }
 }
 
-/// A declined direct challenge. Not authenticated; only the inviter acts on
-/// it, and only for a challenge addressed to [declinerName].
+/// A declined direct challenge. Not authenticated, so only the inviter acts
+/// on it, and only for a challenge addressed to [declinerName].
 class ChessDeclinePacket extends ChessPacket {
   final String declinerName;
 
@@ -220,7 +220,6 @@ class ChessDeclinePacket extends ChessPacket {
 /// One half-move. [ply] is the number of the half-move being made (the first
 /// move of the game has ply 1). [position] is the packed position after it.
 class ChessMovePacket extends ChessPacket {
-  final int minutes;
   final int moveIndex;
   final Uint8List chainValue;
   final Uint8List position;
@@ -228,7 +227,6 @@ class ChessMovePacket extends ChessPacket {
   const ChessMovePacket({
     required super.gameId,
     required super.ply,
-    required this.minutes,
     required this.moveIndex,
     required this.chainValue,
     required this.position,
@@ -239,24 +237,30 @@ class ChessMovePacket extends ChessPacket {
 
   @override
   void writeBody(BytesBuilder out) {
-    writeU16(out, minutes);
     out
       ..addByte(moveIndex)
       ..add(chainValue)
       ..add(position);
   }
 
+  /// The same move carrying [value] instead of [chainValue].
+  ChessMovePacket withChainValue(Uint8List value) => ChessMovePacket(
+    gameId: gameId,
+    ply: ply,
+    moveIndex: moveIndex,
+    chainValue: value,
+    position: position,
+  );
+
   static ChessMovePacket? _read(int id, int ply, GamePacketReader r) {
-    final minutes = r.u16();
     final index = r.u8();
     final chain = r.bytes(HashChain.valueBytes);
     final position = r.rest();
-    if (minutes == null || index == null || chain == null) return null;
+    if (index == null || chain == null) return null;
     if (position == null || position.isEmpty) return null;
     return ChessMovePacket(
       gameId: id,
       ply: ply,
-      minutes: minutes,
       moveIndex: index,
       chainValue: chain,
       position: position,
@@ -265,26 +269,22 @@ class ChessMovePacket extends ChessPacket {
 }
 
 /// Resign, draw offer, draw accept, cancel invite or timeout claim: an
-/// authenticated action with no other data.
+/// authenticated action with no other data. [ply] is the sender's current
+/// half-move number.
 class ChessActionPacket extends ChessPacket {
   @override
   final ChessPacketKind kind;
-  final int minutes;
   final Uint8List chainValue;
 
   const ChessActionPacket({
     required this.kind,
     required super.gameId,
     required super.ply,
-    required this.minutes,
     required this.chainValue,
   });
 
   @override
-  void writeBody(BytesBuilder out) {
-    writeU16(out, minutes);
-    out.add(chainValue);
-  }
+  void writeBody(BytesBuilder out) => out.add(chainValue);
 
   static ChessActionPacket? _read(
     ChessPacketKind kind,
@@ -292,25 +292,27 @@ class ChessActionPacket extends ChessPacket {
     int ply,
     GamePacketReader r,
   ) {
-    final minutes = r.u16();
     final chain = r.bytes(HashChain.valueBytes);
-    if (minutes == null || chain == null) return null;
+    if (chain == null) return null;
     return ChessActionPacket(
       kind: kind,
       gameId: id,
       ply: ply,
-      minutes: minutes,
       chainValue: chain,
     );
   }
 }
 
-/// Everything a late spectator needs to follow and verify a game.
+/// The inviter's confirmation of who plays: everything a spectator needs to
+/// follow and verify a game. [inviterValue] is value 1 of the inviter's
+/// chain, which is used for nothing else, so anyone who heard the invite can
+/// check that the inviter sent it. [ply] is the sender's current half-move.
 class ChessInfoPacket extends ChessPacket {
   final int startedAtUnix;
   final ChessDeadline deadline;
   final Uint8List whiteCommitment;
   final Uint8List blackCommitment;
+  final Uint8List inviterValue;
   final String whiteName;
   final String blackName;
 
@@ -321,6 +323,7 @@ class ChessInfoPacket extends ChessPacket {
     required this.deadline,
     required this.whiteCommitment,
     required this.blackCommitment,
+    required this.inviterValue,
     required this.whiteName,
     required this.blackName,
   });
@@ -333,9 +336,9 @@ class ChessInfoPacket extends ChessPacket {
     writeU32(out, startedAtUnix);
     out
       ..addByte(deadline.code)
-      ..addByte(0) // flags, reserved
       ..add(whiteCommitment)
-      ..add(blackCommitment);
+      ..add(blackCommitment)
+      ..add(inviterValue);
     writeShortString(out, whiteName);
     writeShortString(out, blackName);
   }
@@ -343,13 +346,14 @@ class ChessInfoPacket extends ChessPacket {
   static ChessInfoPacket? _read(int id, int ply, GamePacketReader r) {
     final started = r.u32();
     final deadline = r.u8();
-    r.u8(); // flags
     final white = r.bytes(HashChain.valueBytes);
     final black = r.bytes(HashChain.valueBytes);
+    final inviterValue = r.bytes(HashChain.valueBytes);
     final whiteName = r.shortString();
     final blackName = r.shortString();
     if (started == null || deadline == null || white == null) return null;
-    if (black == null || whiteName == null || blackName == null) return null;
+    if (black == null || inviterValue == null) return null;
+    if (whiteName == null || blackName == null) return null;
     return ChessInfoPacket(
       gameId: id,
       ply: ply,
@@ -357,6 +361,7 @@ class ChessInfoPacket extends ChessPacket {
       deadline: ChessDeadline.fromCode(deadline),
       whiteCommitment: white,
       blackCommitment: black,
+      inviterValue: inviterValue,
       whiteName: whiteName,
       blackName: blackName,
     );

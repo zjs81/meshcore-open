@@ -3998,5 +3998,12 @@
   "chess_notifyResigned": "Hráč {name} sa vzdal. Vyhrávate.",
   "chess_notifyDrawOffered": "{name} ponúka remízu",
   "chess_notifyDrawAccepted": "Hráč {name} prijal remízu",
-  "chess_notifyTimeout": "Hráč {name} uplatnil výhru na čas"
+  "chess_notifyTimeout": "Hráč {name} uplatnil výhru na čas",
+  "chess_rowChallenge": "{inviter} vyzýva hráča {target}",
+  "chess_statusPlayersUnchecked": "Hráči nepotvrdení: tento telefón výzvu nepočul.",
+  "chess_statusMoveUnconfirmed": "Váš ťah možno neodišiel. Ťuknutím na „Vyžiadať aktualizáciu“ ho odošlete znova.",
+  "chess_pieceKing": "Kráľ",
+  "chess_piecePawn": "Pešiak",
+  "chess_squareWhitePiece": "{square}: {piece}, biela",
+  "chess_squareBlackPiece": "{square}: {piece}, čierna"
 }

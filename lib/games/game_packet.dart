@@ -22,10 +22,10 @@ abstract final class GameApp {
   static const int chess = 1;
 }
 
-/// The 4-byte header every game packet starts with:
-/// `[app << 4 | kind][gameId LE16][ply mod 256]`.
+/// The 5-byte header every game packet starts with:
+/// `[app << 4 | kind][gameId LE16][ply LE16]`.
 class GamePacketHeader {
-  static const int length = 4;
+  static const int length = 5;
 
   final int app;
   final int kind;
@@ -44,7 +44,8 @@ class GamePacketHeader {
       ..addByte(((app & 0x0F) << 4) | (kind & 0x0F))
       ..addByte(gameId & 0xFF)
       ..addByte((gameId >> 8) & 0xFF)
-      ..addByte(ply & 0xFF);
+      ..addByte(ply & 0xFF)
+      ..addByte((ply >> 8) & 0xFF);
   }
 
   static GamePacketHeader? parse(Uint8List bytes) {
@@ -53,7 +54,7 @@ class GamePacketHeader {
       app: bytes[0] >> 4,
       kind: bytes[0] & 0x0F,
       gameId: bytes[1] | (bytes[2] << 8),
-      ply: bytes[3],
+      ply: bytes[3] | (bytes[4] << 8),
     );
   }
 

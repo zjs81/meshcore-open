@@ -3908,5 +3908,12 @@
   "chess_notifyResigned": "{name} се предаде. Вие печелите.",
   "chess_notifyDrawOffered": "{name} предлага реми",
   "chess_notifyDrawAccepted": "{name} прие реми",
-  "chess_notifyTimeout": "{name} поиска победа по време"
+  "chess_notifyTimeout": "{name} поиска победа по време",
+  "chess_rowChallenge": "{inviter} предизвиква {target}",
+  "chess_statusPlayersUnchecked": "Играчите не са потвърдени: този телефон не е чул поканата.",
+  "chess_statusMoveUnconfirmed": "Ходът ви може да не е изпратен. Докоснете „Поискай обновяване“, за да го изпратите отново.",
+  "chess_pieceKing": "Цар",
+  "chess_piecePawn": "Пешка",
+  "chess_squareWhitePiece": "{square}: {piece}, бели",
+  "chess_squareBlackPiece": "{square}: {piece}, черни"
 }

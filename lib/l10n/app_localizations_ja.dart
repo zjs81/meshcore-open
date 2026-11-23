@@ -7494,6 +7494,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chess_unknownPlayer => '不明';
 
   @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter が $target に挑戦しました';
+  }
+
+  @override
   String get chess_rowYourOpenInvite => 'あなたの募集';
 
   @override
@@ -7644,6 +7649,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chess_statusUnverified => '対局者がまだ確認されていません。更新を依頼して確認してください。';
 
   @override
+  String get chess_statusPlayersUnchecked =>
+      '対局者の確認ができていません: この端末は募集を受信していません。';
+
+  @override
+  String get chess_statusMoveUnconfirmed =>
+      'あなたの手が送信されていない可能性があります。「更新を依頼」をタップして再送してください。';
+
+  @override
   String get chess_actionResign => '投了';
 
   @override
@@ -7690,6 +7703,22 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get chess_pieceKnight => 'ナイト';
+
+  @override
+  String get chess_pieceKing => 'キング';
+
+  @override
+  String get chess_piecePawn => 'ポーン';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square: 白の$piece';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square: 黒の$piece';
+  }
 
   @override
   String get chess_resultDraw => '引き分け';

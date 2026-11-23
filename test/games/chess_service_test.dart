@@ -9,6 +9,7 @@ import 'package:meshcore_open/games/chess/chess_link.dart';
 import 'package:meshcore_open/games/chess/chess_packets.dart';
 import 'package:meshcore_open/games/chess/chess_service.dart';
 import 'package:meshcore_open/games/chess/chess_store.dart';
+import 'package:meshcore_open/games/hash_chain.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
 import 'package:meshcore_open/storage/prefs_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,6 +45,14 @@ class _FakeLink extends ChangeNotifier implements ChessLink {
   final List<String> notifications = [];
   bool connected = true;
 
+  /// The radio does not confirm the next send; [deliverFailed] says whether
+  /// the packet went out anyway.
+  bool failNext = false;
+  bool deliverFailed = false;
+
+  /// Lets other timers run while our send is in flight.
+  bool slow = false;
+
   _FakeLink(this.mesh, this.selfName, this.storageScope) {
     mesh.links.add(this);
   }
@@ -54,8 +63,14 @@ class _FakeLink extends ChangeNotifier implements ChessLink {
   @override
   Future<bool> send(String channelId, Uint8List payload) async {
     if (!connected) return false;
+    if (failNext) {
+      failNext = false;
+      if (deliverFailed) mesh.deliver(this, payload);
+      return false;
+    }
     sent.add(payload);
     mesh.deliver(this, payload);
+    if (slow) await Future<void>.delayed(Duration.zero);
     return true;
   }
 
@@ -99,7 +114,7 @@ void main() {
   });
 
   var nextSeed = 100;
-  _Player player(String name, {int? seed}) {
+  _Player player(String name, {int? seed, bool Function()? isForeground}) {
     final link = _FakeLink(
       mesh,
       name,
@@ -113,6 +128,7 @@ void main() {
       answerDelayMin: Duration.zero,
       answerDelayMax: Duration.zero,
       startHousekeeping: false,
+      isForeground: isForeground,
     );
     final p = _Player(link, service);
     created.add(p);
@@ -269,7 +285,6 @@ void main() {
     final forged = ChessMovePacket(
       gameId: real.gameId,
       ply: 2,
-      minutes: 0,
       moveIndex: 0,
       chainValue: real.chainValue,
       position: real.position,
@@ -280,7 +295,6 @@ void main() {
     final random = ChessMovePacket(
       gameId: real.gameId,
       ply: 2,
-      minutes: 0,
       moveIndex: 0,
       chainValue: Uint8List(16),
       position: real.position,
@@ -340,5 +354,473 @@ void main() {
     now = now.add(const Duration(hours: 25));
     bob.service.housekeeping();
     expect(bob.game!.endReason, ChessEndReason.expired);
+  });
+
+  /// The packets [p] sent of type [T].
+  List<T> sentOf<T extends ChessPacket>(_Player p) =>
+      p.link.sent.map(ChessPacket.decode).whereType<T>().toList();
+
+  void feed(_Player p, ChessPacket packet) =>
+      p.service.handleIncoming(ChessIncoming(_channel, packet.encode()));
+
+  /// A legal move on [game]'s board as the next half-move, carrying [value].
+  ChessMovePacket craftMove(ChessGame game, String uci, Uint8List value) {
+    final probe = ChessGame.fromJson(game.toJson())!;
+    final index = probe.legalUci().indexOf(uci);
+    probe.applyUci(uci);
+    return ChessMovePacket(
+      gameId: game.gameId,
+      ply: probe.ply,
+      moveIndex: index,
+      chainValue: value,
+      position: probe.packedPosition(),
+    );
+  }
+
+  group('review regressions', () {
+    test('a replayed chain value cannot carry a later move', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final carol = player('Carol');
+      final (white, black) = await startGame(alice, bob);
+      await white.service.makeMove(white.game!, 'e2e4');
+      final first = sentOf<ChessMovePacket>(white).last;
+      await black.service.makeMove(black.game!, 'e7e5');
+
+      // White's ply-1 value with a legal ply-3 move.
+      final replay = craftMove(black.game!, 'd1h5', first.chainValue);
+      feed(black, replay);
+      feed(carol, replay);
+      expect(black.game!.ply, 2);
+      expect(carol.game!.ply, 2);
+
+      // A spectator two moves behind does not adopt it either.
+      final dave = player('Dave');
+      feed(dave, sentOf<ChessMovePacket>(black).last);
+      final ahead = ChessMovePacket(
+        gameId: first.gameId,
+        ply: 5,
+        moveIndex: 0,
+        chainValue: first.chainValue,
+        position: first.position,
+      );
+      feed(carol, ahead);
+      expect(carol.game!.ply, 2);
+
+      // The real move is accepted, and a different move with the same value
+      // heard afterwards is not: the first one heard wins.
+      await white.service.makeMove(white.game!, 'g1f3');
+      final real = sentOf<ChessMovePacket>(white).last;
+      final copy = craftMove(
+        ChessGame.fromJson(carol.game!.toJson())!
+          ..adoptPosition(black.game!.fen, 2),
+        'd2d4',
+        real.chainValue,
+      );
+      feed(carol, copy);
+      expect(carol.game!.ply, 3);
+      expect(carol.game!.sanMoves.last, 'Nf3');
+    });
+
+    test('a forged game info is ignored', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final carol = player('Carol');
+      final mallory = HashChain(Uint8List(16)..[0] = 66);
+      // Nobody hears Alice's confirmation.
+      mesh.filter = (from, to, payload) =>
+          !(from == alice.link &&
+              ChessPacket.decode(payload) is ChessInfoPacket);
+      await alice.service.createInvite(
+        channelId: _channel,
+        colour: ChessColourPreference.white,
+      );
+      await bob.service.accept(bob.game!);
+      await settle();
+      final real = sentOf<ChessInfoPacket>(alice).single;
+      final inviter = alice.game!.inviter!.commitment;
+
+      // Without the inviter's value: lists Mallory and swaps colours.
+      ChessInfoPacket info({
+        required Uint8List white,
+        required Uint8List black,
+        required Uint8List value,
+      }) => ChessInfoPacket(
+        gameId: real.gameId,
+        ply: 0,
+        startedAtUnix: 0,
+        deadline: ChessDeadline.days3,
+        whiteCommitment: white,
+        blackCommitment: black,
+        inviterValue: value,
+        whiteName: 'Alice',
+        blackName: 'Mallory',
+      );
+      final noValue = info(
+        white: inviter,
+        black: mallory.commitment,
+        value: Uint8List(16),
+      );
+      feed(bob, noValue);
+      feed(carol, noValue);
+      expect(bob.game!.status, ChessGameStatus.starting);
+      expect(bob.game!.mySeedHex, isNotNull);
+      expect(carol.game!.status, ChessGameStatus.invite);
+
+      // The real value, but colours the invite does not allow.
+      final swapped = info(
+        white: real.blackCommitment,
+        black: inviter,
+        value: real.inviterValue,
+      );
+      feed(bob, swapped);
+      feed(carol, swapped);
+      expect(bob.game!.status, ChessGameStatus.starting);
+      expect(carol.game!.status, ChessGameStatus.invite);
+
+      // A copied value listing Mallory: Bob watches but keeps his chain, and
+      // asking again gets him the real game.
+      final copied = info(
+        white: inviter,
+        black: mallory.commitment,
+        value: real.inviterValue,
+      );
+      feed(bob, copied);
+      expect(bob.game!.isPlayer, isFalse);
+      expect(bob.game!.mySeedHex, isNotNull);
+      mesh.filter = null;
+      await bob.service.requestUpdate(bob.game!);
+      await settle();
+      expect(bob.game!.mySide, ChessSide.black);
+      expect(bob.game!.nameOf(ChessSide.white), 'Alice');
+
+      // A late joiner can't tie the info to an invite: not confirmed.
+      final dave = player('Dave');
+      feed(dave, real);
+      expect(dave.game!.hasPlayers, isTrue);
+      expect(dave.game!.playersConfirmed, isFalse);
+      expect(carol.game!.playersConfirmed, isTrue);
+    });
+
+    test('a forged move never starts an invite', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final carol = player('Carol');
+      await alice.service.createInvite(
+        channelId: _channel,
+        colour: ChessColourPreference.white,
+      );
+      final forged = craftMove(alice.game!, 'e2e4', Uint8List(16));
+      feed(alice, forged);
+      feed(carol, forged);
+      expect(alice.game!.status, ChessGameStatus.invite);
+      expect(carol.game!.status, ChessGameStatus.invite);
+
+      // A real accept still starts the game, and a repeat is answered.
+      await bob.service.accept(bob.game!);
+      await settle();
+      expect(alice.game!.mySide, ChessSide.white);
+      feed(alice, sentOf<ChessAcceptPacket>(bob).single);
+      await settle();
+      expect(alice.game!.status, ChessGameStatus.active);
+
+      // A spectator who missed the start follows the inviter's first move.
+      final dave = player('Dave');
+      feed(dave, sentOf<ChessInvitePacket>(alice).single);
+      await alice.service.makeMove(alice.game!, 'e2e4');
+      expect(dave.game!.status, ChessGameStatus.active);
+      expect(dave.game!.ply, 1);
+      expect(dave.game!.white, same(dave.game!.inviter));
+    });
+
+    test('a confirmation heard while our accept is sending counts', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      await alice.service.createInvite(channelId: _channel);
+      bob.link.slow = true;
+      await bob.service.accept(bob.game!);
+      expect(bob.game!.status, ChessGameStatus.active);
+      expect(bob.game!.isPlayer, isTrue);
+    });
+
+    test('a losing accepter who missed the info learns it by asking', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final carol = player('Carol');
+      await alice.service.createInvite(channelId: _channel);
+      mesh.filter = (from, to, _) => to != carol.link;
+      await bob.service.accept(bob.game!);
+      await settle();
+      mesh.filter = (from, to, payload) =>
+          !(to == carol.link && ChessPacket.decode(payload) is ChessInfoPacket);
+      await carol.service.accept(carol.game!);
+      await settle();
+      expect(carol.game!.status, ChessGameStatus.starting);
+
+      // Alice answered (unheard); she answers again after a minute.
+      mesh.filter = null;
+      now = now.add(ChessService.requestAnswerInterval);
+      await carol.service.requestUpdate(carol.game!);
+      await settle();
+      expect(carol.game!.status, ChessGameStatus.active);
+      expect(carol.game!.isPlayer, isFalse);
+      expect(carol.game!.hasPlayers, isTrue);
+    });
+
+    test('repeated accepts are answered at most once a minute', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      await startGame(alice, bob);
+      final before = sentOf<ChessInfoPacket>(alice).length;
+      final accept = sentOf<ChessAcceptPacket>(bob).single;
+      for (var i = 0; i < 5; i++) {
+        feed(alice, accept);
+        await settle();
+      }
+      expect(sentOf<ChessInfoPacket>(alice).length, before + 1);
+    });
+
+    test('a lost move followed by a draw offer still gets through', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final (white, black) = await startGame(alice, bob);
+      mesh.filter = (from, to, payload) =>
+          !(to == black.link && ChessPacket.decode(payload) is ChessMovePacket);
+      await white.service.makeMove(white.game!, 'e2e4');
+      mesh.filter = null;
+      await white.service.offerDraw(white.game!);
+      expect(black.game!.ply, 0);
+      // The offer was for a position Black has not seen.
+      expect(black.game!.drawOfferedBy, isNull);
+
+      await black.service.requestUpdate(black.game!);
+      await settle();
+      expect(black.game!.ply, 1);
+      expect(black.game!.isMyTurn, isTrue);
+      await black.service.makeMove(black.game!, 'e7e5');
+      expect(white.game!.ply, 2);
+    });
+
+    test('a move the radio did not confirm is kept and sent again', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final (white, black) = await startGame(alice, bob);
+      final next = white.game!.myNextChainIndex;
+      white.link.failNext = true;
+      expect(await white.service.makeMove(white.game!, 'e2e4'), isFalse);
+      // Applied, with its chain value used up.
+      expect(white.game!.ply, 1);
+      expect(white.game!.moveUnconfirmed, isTrue);
+      expect(white.game!.myNextChainIndex, next + 1);
+      expect(black.game!.ply, 0);
+
+      await white.service.requestUpdate(white.game!);
+      expect(black.game!.ply, 1);
+      expect(white.game!.moveUnconfirmed, isFalse);
+
+      // A failed action does not give its chain value back either.
+      black.link.failNext = true;
+      final before = black.game!.myNextChainIndex;
+      expect(await black.service.offerDraw(black.game!), isFalse);
+      expect(black.game!.myNextChainIndex, before + 1);
+      expect(await black.service.makeMove(black.game!, 'e7e5'), isTrue);
+      expect(white.game!.ply, 2);
+    });
+
+    test(
+      'a move that went out despite a failed send is not replaced',
+      () async {
+        final alice = player('Alice');
+        final bob = player('Bob');
+        final (white, black) = await startGame(alice, bob);
+        white.link
+          ..failNext = true
+          ..deliverFailed = true;
+        await white.service.makeMove(white.game!, 'e2e4');
+        expect(black.game!.ply, 1);
+        expect(white.game!.isMyTurn, isFalse);
+        expect(await white.service.makeMove(white.game!, 'd2d4'), isFalse);
+        expect(white.game!.fen, black.game!.fen);
+      },
+    );
+
+    test('draw accepts and timeout claims need their preconditions', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final carol = player('Carol');
+      final (white, black) = await startGame(alice, bob);
+      final whiteChain = white.game!.myChain!;
+      var next = white.game!.myNextChainIndex;
+      ChessActionPacket action(ChessPacketKind kind) => ChessActionPacket(
+        kind: kind,
+        gameId: white.game!.gameId,
+        ply: white.game!.ply,
+        chainValue: whiteChain.valueAt(next++),
+      );
+
+      // No draw offer pending.
+      final accept = action(ChessPacketKind.drawAccept);
+      feed(black, accept);
+      feed(carol, accept);
+      expect(black.game!.status, ChessGameStatus.active);
+      expect(carol.game!.status, ChessGameStatus.active);
+
+      // Black to move, but the hour is not up yet.
+      white.game!.myNextChainIndex = next;
+      await white.service.makeMove(white.game!, 'e2e4');
+      next = white.game!.myNextChainIndex;
+      now = now.add(const Duration(minutes: 30));
+      feed(black, action(ChessPacketKind.timeoutClaim));
+      expect(black.game!.status, ChessGameStatus.active);
+      // Past the deadline it counts.
+      now = now.add(const Duration(minutes: 31));
+      feed(black, action(ChessPacketKind.timeoutClaim));
+      expect(black.game!.endReason, ChessEndReason.timeout);
+
+      // No deadline at all: never.
+      final erin = player('Erin');
+      final finn = player('Finn');
+      final invite = await erin.service.createInvite(
+        channelId: _channel,
+        deadline: ChessDeadline.none,
+        colour: ChessColourPreference.white,
+      );
+      await finn.service.accept(finn.service.game(_channel, invite!.gameId)!);
+      await settle();
+      final e = erin.service.game(_channel, invite.gameId)!;
+      await erin.service.makeMove(e, 'e2e4');
+      now = now.add(const Duration(days: 30));
+      final claim = ChessActionPacket(
+        kind: ChessPacketKind.timeoutClaim,
+        gameId: e.gameId,
+        ply: e.ply,
+        chainValue: e.myChain!.valueAt(e.myNextChainIndex),
+      );
+      feed(finn, claim);
+      expect(
+        finn.service.game(_channel, invite.gameId)!.status,
+        ChessGameStatus.active,
+      );
+    });
+
+    test('notifications for the open game resume in the background', () async {
+      var foreground = true;
+      final alice = player('Alice');
+      final bob = player('Bob', isForeground: () => foreground);
+      final (white, black) = await startGame(alice, bob);
+      expect(black, same(bob));
+      bob.service.viewing = bob.game;
+      await white.service.makeMove(white.game!, 'e2e4');
+      expect(bob.link.notifications, isEmpty);
+      await black.service.makeMove(black.game!, 'e7e5');
+      foreground = false;
+      await white.service.makeMove(white.game!, 'd2d4');
+      expect(bob.link.notifications, hasLength(1));
+    });
+
+    test('the game cap keeps our own invites and accepts', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final mine = await alice.service.createInvite(channelId: _channel);
+      final theirs = await bob.service.createInvite(channelId: _channel);
+      await alice.service.accept(alice.service.game(_channel, theirs!.gameId)!);
+      now = now.add(const Duration(minutes: 1));
+      for (var i = 0; i < ChessService.maxStoredGames + 5; i++) {
+        feed(
+          alice,
+          ChessInvitePacket(
+            gameId: 1000 + i,
+            deadline: ChessDeadline.hour1,
+            colour: ChessColourPreference.random,
+            commitment: Uint8List(16)..[0] = i,
+            inviterName: 'Spam $i',
+          ),
+        );
+      }
+      alice.service.housekeeping();
+      expect(alice.service.game(_channel, mine!.gameId), isNotNull);
+      expect(alice.service.game(_channel, theirs.gameId), isNotNull);
+    });
+
+    test('only the inviter acts on a decline', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final carol = player('Carol');
+      await alice.service.createInvite(channelId: _channel, targetName: 'Bob');
+      feed(
+        carol,
+        ChessDeclinePacket(gameId: alice.game!.gameId, declinerName: 'Bob'),
+      );
+      expect(carol.game!.status, ChessGameStatus.invite);
+      expect(bob.game!.status, ChessGameStatus.invite);
+      // The challenge to Bob is neither listed nor counted for Carol.
+      expect(carol.service.isListed(carol.game!), isFalse);
+      expect(carol.service.openCountForChannel(_channel), 0);
+      expect(bob.service.openCountForChannel(_channel), 1);
+    });
+
+    test('a late joiner keeps the full ply and takes the deadline from the '
+        'game info', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final (white, _) = await startGame(alice, bob);
+      final g = white.game!;
+      final move = ChessMovePacket(
+        gameId: g.gameId,
+        ply: 301,
+        moveIndex: 0,
+        chainValue: Uint8List(16),
+        position: g.packedPosition(),
+      );
+      final dave = player('Dave');
+      feed(dave, move);
+      expect(dave.game!.ply, 301);
+      expect(dave.game!.deadline, ChessDeadline.none);
+      feed(dave, sentOf<ChessInfoPacket>(alice).single);
+      expect(dave.game!.hasPlayers, isTrue);
+      expect(dave.game!.deadline, ChessDeadline.hour1);
+    });
+
+    test('a spectator who hears the game info mid-game takes the board from '
+        'the latest move', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final (white, black) = await startGame(alice, bob);
+      await white.service.makeMove(white.game!, 'e2e4');
+      await black.service.makeMove(black.game!, 'e7e5');
+      final dave = player('Dave');
+      await dave.service.requestUpdate(
+        ChessGame(
+          channelId: _channel,
+          gameId: alice.game!.gameId,
+          status: ChessGameStatus.active,
+          deadline: ChessDeadline.none,
+          hasPosition: false,
+          createdAtMs: 0,
+        ),
+      );
+      await settle();
+      expect(dave.game!.hasPlayers, isTrue);
+      expect(dave.game!.ply, 2);
+      expect(dave.game!.hasPosition, isTrue);
+      expect(dave.game!.fen, alice.game!.fen);
+    });
+
+    test('a malformed position never throws out of the listener', () {
+      final carol = player('Carol');
+      final packet = Uint8List.fromList(
+        ChessMovePacket(
+          gameId: 5,
+          ply: 1,
+          moveIndex: 0,
+          chainValue: Uint8List(16),
+          position: Uint8List(10),
+        ).encode(),
+      );
+      expect(
+        () => carol.service.handleIncoming(ChessIncoming(_channel, packet)),
+        returnsNormally,
+      );
+    });
   });
 }

@@ -13084,6 +13084,12 @@ abstract class AppLocalizations {
   /// **'Unknown'**
   String get chess_unknownPlayer;
 
+  /// No description provided for @chess_rowChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'{inviter} challenged {target}'**
+  String chess_rowChallenge(String inviter, String target);
+
   /// No description provided for @chess_rowYourOpenInvite.
   ///
   /// In en, this message translates to:
@@ -13336,6 +13342,18 @@ abstract class AppLocalizations {
   /// **'Players not confirmed yet. Ask for an update to check them.'**
   String get chess_statusUnverified;
 
+  /// No description provided for @chess_statusPlayersUnchecked.
+  ///
+  /// In en, this message translates to:
+  /// **'Players not confirmed: this phone didn\'t hear the invite.'**
+  String get chess_statusPlayersUnchecked;
+
+  /// No description provided for @chess_statusMoveUnconfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your move may not have gone out. Tap Ask for update to send it again.'**
+  String get chess_statusMoveUnconfirmed;
+
   /// No description provided for @chess_actionResign.
   ///
   /// In en, this message translates to:
@@ -13431,6 +13449,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Knight'**
   String get chess_pieceKnight;
+
+  /// No description provided for @chess_pieceKing.
+  ///
+  /// In en, this message translates to:
+  /// **'King'**
+  String get chess_pieceKing;
+
+  /// No description provided for @chess_piecePawn.
+  ///
+  /// In en, this message translates to:
+  /// **'Pawn'**
+  String get chess_piecePawn;
+
+  /// No description provided for @chess_squareWhitePiece.
+  ///
+  /// In en, this message translates to:
+  /// **'{square}: {piece}, white'**
+  String chess_squareWhitePiece(String square, String piece);
+
+  /// No description provided for @chess_squareBlackPiece.
+  ///
+  /// In en, this message translates to:
+  /// **'{square}: {piece}, black'**
+  String chess_squareBlackPiece(String square, String piece);
 
   /// No description provided for @chess_resultDraw.
   ///

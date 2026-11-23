@@ -3809,5 +3809,12 @@
   "chess_notifyResigned": "{name} heeft opgegeven. Jij wint.",
   "chess_notifyDrawOffered": "{name} biedt remise aan",
   "chess_notifyDrawAccepted": "{name} heeft de remise geaccepteerd",
-  "chess_notifyTimeout": "{name} heeft winst op tijd geclaimd"
+  "chess_notifyTimeout": "{name} heeft winst op tijd geclaimd",
+  "chess_rowChallenge": "{inviter} heeft {target} uitgedaagd",
+  "chess_statusPlayersUnchecked": "Spelers niet bevestigd: deze telefoon heeft de uitnodiging niet gehoord.",
+  "chess_statusMoveUnconfirmed": "Je zet is mogelijk niet verstuurd. Tik op ‘Om update vragen’ om hem opnieuw te versturen.",
+  "chess_pieceKing": "Koning",
+  "chess_piecePawn": "Pion",
+  "chess_squareWhitePiece": "{square}: {piece}, wit",
+  "chess_squareBlackPiece": "{square}: {piece}, zwart"
 }

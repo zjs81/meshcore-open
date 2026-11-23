@@ -4248,5 +4248,12 @@
   "chess_notifyResigned": "{name} が投了しました。あなたの勝ちです。",
   "chess_notifyDrawOffered": "{name} が引き分けを提案しています",
   "chess_notifyDrawAccepted": "{name} が引き分けを承諾しました",
-  "chess_notifyTimeout": "{name} が時間切れによる勝ちを申請しました"
+  "chess_notifyTimeout": "{name} が時間切れによる勝ちを申請しました",
+  "chess_rowChallenge": "{inviter} が {target} に挑戦しました",
+  "chess_statusPlayersUnchecked": "対局者の確認ができていません: この端末は募集を受信していません。",
+  "chess_statusMoveUnconfirmed": "あなたの手が送信されていない可能性があります。「更新を依頼」をタップして再送してください。",
+  "chess_pieceKing": "キング",
+  "chess_piecePawn": "ポーン",
+  "chess_squareWhitePiece": "{square}: 白の{piece}",
+  "chess_squareBlackPiece": "{square}: 黒の{piece}"
 }

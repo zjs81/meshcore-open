@@ -154,6 +154,7 @@ void _seedChessGames(ChessService chess, String channelId) {
       deadline: ChessDeadline.hour1,
       whiteCommitment: white.commitment,
       blackCommitment: black.commitment,
+      inviterValue: white.valueAt(1),
       whiteName: 'Alexandra the Long-Named',
       blackName: 'Bartholomew Repeater Fan',
     ),
@@ -167,9 +168,11 @@ void _seedChessGames(ChessService chess, String channelId) {
       ChessMovePacket(
         gameId: _chessGameId,
         ply: i + 1,
-        minutes: i,
         moveIndex: index,
-        chainValue: (i.isEven ? white : black).valueAt(i ~/ 2 + 1),
+        // White invited, so its value 1 belongs to the game info.
+        chainValue: i.isEven
+            ? white.valueAt(i ~/ 2 + 2)
+            : black.valueAt(i ~/ 2 + 1),
         position: probe.packedPosition(),
       ),
     );

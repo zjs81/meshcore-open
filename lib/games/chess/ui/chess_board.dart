@@ -197,6 +197,22 @@ class _ChessBoardViewState extends State<ChessBoardView> {
     );
   }
 
+  /// Screen reader label of an occupied square, e.g. "e4: Pawn, white".
+  static String _pieceLabel(BuildContext context, String square, String piece) {
+    final l10n = context.l10n;
+    final name = switch (piece.toLowerCase()) {
+      'k' => l10n.chess_pieceKing,
+      'q' => l10n.chess_pieceQueen,
+      'r' => l10n.chess_pieceRook,
+      'b' => l10n.chess_pieceBishop,
+      'n' => l10n.chess_pieceKnight,
+      _ => l10n.chess_piecePawn,
+    };
+    return piece == piece.toUpperCase()
+        ? l10n.chess_squareWhitePiece(square, name)
+        : l10n.chess_squareBlackPiece(square, name);
+  }
+
   Widget _square(
     BuildContext context, {
     required ColorScheme scheme,
@@ -225,7 +241,7 @@ class _ChessBoardViewState extends State<ChessBoardView> {
       behavior: HitTestBehavior.opaque,
       onTap: () => _onTap(square),
       child: Semantics(
-        label: piece == null ? square : '$square $piece',
+        label: piece == null ? square : _pieceLabel(context, square, piece),
         button: isTarget || (_interactive && piece != null),
         selected: isSelected,
         child: SizedBox(

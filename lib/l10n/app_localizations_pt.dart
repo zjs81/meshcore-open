@@ -7833,6 +7833,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get chess_unknownPlayer => 'Desconhecido';
 
   @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter desafiou $target';
+  }
+
+  @override
   String get chess_rowYourOpenInvite => 'Seu convite aberto';
 
   @override
@@ -7987,6 +7992,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Jogadores ainda não confirmados. Peça uma atualização para verificá-los.';
 
   @override
+  String get chess_statusPlayersUnchecked =>
+      'Jogadores não confirmados: este telefone não ouviu o convite.';
+
+  @override
+  String get chess_statusMoveUnconfirmed =>
+      'Sua jogada pode não ter sido enviada. Toque em “Pedir atualização” para enviá-la novamente.';
+
+  @override
   String get chess_actionResign => 'Desistir';
 
   @override
@@ -8034,6 +8047,22 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get chess_pieceKnight => 'Cavalo';
+
+  @override
+  String get chess_pieceKing => 'Rei';
+
+  @override
+  String get chess_piecePawn => 'Peão';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square: $piece, brancas';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square: $piece, pretas';
+  }
 
   @override
   String get chess_resultDraw => 'Empate';
@@ -15755,6 +15784,11 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get chess_unknownPlayer => 'Desconhecido';
 
   @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter desafiou $target';
+  }
+
+  @override
   String get chess_rowYourOpenInvite => 'O seu convite aberto';
 
   @override
@@ -15909,6 +15943,14 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Jogadores ainda não confirmados. Peça uma atualização para os verificar.';
 
   @override
+  String get chess_statusPlayersUnchecked =>
+      'Jogadores não confirmados: este telemóvel não ouviu o convite.';
+
+  @override
+  String get chess_statusMoveUnconfirmed =>
+      'A sua jogada pode não ter sido enviada. Toque em “Pedir atualização” para a enviar de novo.';
+
+  @override
   String get chess_actionResign => 'Desistir';
 
   @override
@@ -15956,6 +15998,22 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get chess_pieceKnight => 'Cavalo';
+
+  @override
+  String get chess_pieceKing => 'Rei';
+
+  @override
+  String get chess_piecePawn => 'Peão';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square: $piece, brancas';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square: $piece, pretas';
+  }
 
   @override
   String get chess_resultDraw => 'Empate';

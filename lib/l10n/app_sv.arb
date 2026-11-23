@@ -3955,5 +3955,12 @@
   "chess_notifyResigned": "{name} gav upp. Du vinner.",
   "chess_notifyDrawOffered": "{name} erbjuder remi",
   "chess_notifyDrawAccepted": "{name} accepterade remin",
-  "chess_notifyTimeout": "{name} krävde vinst på tid"
+  "chess_notifyTimeout": "{name} krävde vinst på tid",
+  "chess_rowChallenge": "{inviter} utmanade {target}",
+  "chess_statusPlayersUnchecked": "Spelare ej bekräftade: den här telefonen hörde inte inbjudan.",
+  "chess_statusMoveUnconfirmed": "Ditt drag kanske inte gick iväg. Tryck på ”Be om uppdatering” för att skicka det igen.",
+  "chess_pieceKing": "Kung",
+  "chess_piecePawn": "Bonde",
+  "chess_squareWhitePiece": "{square}: {piece}, vit",
+  "chess_squareBlackPiece": "{square}: {piece}, svart"
 }

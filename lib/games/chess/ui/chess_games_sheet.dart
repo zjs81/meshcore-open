@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../helpers/snack_bar_builder.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../l10n/l10n.dart';
 import '../../../models/channel.dart';
 import '../../../utils/radio_guard.dart';
@@ -96,8 +97,7 @@ class _ChessGamesSheetBody extends StatelessWidget {
           (g) =>
               g.status == ChessGameStatus.invite &&
               !g.iAmInviter &&
-              (g.targetName == null ||
-                  _sameName(g.targetName!, service.selfName)),
+              service.isListed(g),
         )
         .toList();
     final live = games
@@ -169,9 +169,6 @@ class _ChessGamesSheetBody extends StatelessWidget {
     );
   }
 }
-
-bool _sameName(String a, String b) =>
-    a.trim().toLowerCase() == b.trim().toLowerCase();
 
 class _ActionCard extends StatelessWidget {
   final IconData icon;
@@ -251,7 +248,9 @@ class _GameCard extends StatelessWidget {
             : l10n.chess_statusToMove(toMove);
         subtitle = l10n.chess_rowMoveTurn((game.ply ~/ 2) + 1, turn);
       case ChessGameStatus.finished:
-        title = l10n.chessPlayers(game);
+        title = game.hasPlayers || game.inviter == null
+            ? l10n.chessPlayers(game)
+            : _inviteTitle(l10n, service);
         subtitle = l10n.chessResult(game);
     }
     return MeshCard(
@@ -300,6 +299,21 @@ class _GameCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// An invite that never became a game: who invited whom.
+  String _inviteTitle(AppLocalizations l10n, ChessService service) {
+    final target = game.targetName;
+    if (game.iAmInviter) {
+      return target == null
+          ? l10n.chess_rowYourOpenInvite
+          : l10n.chess_rowYourChallenge(target);
+    }
+    final inviter = game.inviter?.name ?? l10n.chess_unknownPlayer;
+    if (target == null) return l10n.chess_rowOpenInvite(inviter);
+    return service.isSelf(target)
+        ? l10n.chess_rowChallengedYou(inviter)
+        : l10n.chess_rowChallenge(inviter, target);
   }
 
   Future<void> _confirmCancel(

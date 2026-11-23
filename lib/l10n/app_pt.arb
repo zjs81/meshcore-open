@@ -3960,5 +3960,12 @@
   "chess_notifyResigned": "{name} desistiu. Você venceu.",
   "chess_notifyDrawOffered": "{name} oferece empate",
   "chess_notifyDrawAccepted": "{name} aceitou o empate",
-  "chess_notifyTimeout": "{name} reivindicou vitória por tempo"
+  "chess_notifyTimeout": "{name} reivindicou vitória por tempo",
+  "chess_rowChallenge": "{inviter} desafiou {target}",
+  "chess_statusPlayersUnchecked": "Jogadores não confirmados: este telefone não ouviu o convite.",
+  "chess_statusMoveUnconfirmed": "Sua jogada pode não ter sido enviada. Toque em “Pedir atualização” para enviá-la novamente.",
+  "chess_pieceKing": "Rei",
+  "chess_piecePawn": "Peão",
+  "chess_squareWhitePiece": "{square}: {piece}, brancas",
+  "chess_squareBlackPiece": "{square}: {piece}, pretas"
 }

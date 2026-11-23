@@ -7866,6 +7866,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get chess_unknownPlayer => 'Unbekannt';
 
   @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter hat $target herausgefordert';
+  }
+
+  @override
   String get chess_rowYourOpenInvite => 'Ihre offene Einladung';
 
   @override
@@ -8020,6 +8025,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Spieler noch nicht bestätigt. Aktualisierung anfordern, um sie zu prüfen.';
 
   @override
+  String get chess_statusPlayersUnchecked =>
+      'Spieler nicht bestätigt: Dieses Telefon hat die Einladung nicht gehört.';
+
+  @override
+  String get chess_statusMoveUnconfirmed =>
+      'Ihr Zug wurde möglicherweise nicht gesendet. Tippen Sie auf „Aktualisierung anfordern“, um ihn erneut zu senden.';
+
+  @override
   String get chess_actionResign => 'Aufgeben';
 
   @override
@@ -8067,6 +8080,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get chess_pieceKnight => 'Springer';
+
+  @override
+  String get chess_pieceKing => 'König';
+
+  @override
+  String get chess_piecePawn => 'Bauer';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square: $piece, weiß';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square: $piece, schwarz';
+  }
 
   @override
   String get chess_resultDraw => 'Remis';

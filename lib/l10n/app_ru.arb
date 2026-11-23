@@ -3205,5 +3205,12 @@
   "chess_notifyResigned": "{name} сдался. Вы победили.",
   "chess_notifyDrawOffered": "{name} предлагает ничью",
   "chess_notifyDrawAccepted": "{name} принимает ничью",
-  "chess_notifyTimeout": "{name} требует победу по времени"
+  "chess_notifyTimeout": "{name} требует победу по времени",
+  "chess_rowChallenge": "{inviter} бросает вызов: {target}",
+  "chess_statusPlayersUnchecked": "Игроки не подтверждены: этот телефон не слышал приглашение.",
+  "chess_statusMoveUnconfirmed": "Ваш ход мог не уйти. Нажмите «Запросить обновление», чтобы отправить его снова.",
+  "chess_pieceKing": "Король",
+  "chess_piecePawn": "Пешка",
+  "chess_squareWhitePiece": "{square}: {piece}, белые",
+  "chess_squareBlackPiece": "{square}: {piece}, чёрные"
 }

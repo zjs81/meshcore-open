@@ -3384,7 +3384,7 @@
   "translation_downloadProgressBytes": "{fileName}: {current} MB",
   "translation_downloadProgressTotal": "{fileName}: {current} / {total} MB ({percent}%)",
   "translation_downloadedModelDetails": "{size} MB • {source}",
-  "repeater_radioDisconnected": "라디오 연결 끊김",
+  "repeater_radioDisconnected": "무전기 연결 끊김",
   "repeater_radioDisconnectedHint": "명령을 보내거나 새로고침 또는 변경 사항을 저장하려면 무전기에 다시 연결하세요.",
   "repeater_cliSend": "명령 보내기",
   "repeater_cliCopyTranscript": "기록 복사",
@@ -4111,7 +4111,7 @@
   "appBar_offlineSubtitle": "오프라인 · {name}",
   "appBar_offline": "오프라인",
   "appBar_reconnecting": "다시 연결 중…",
-  "connectSheet_title": "라디오 연결",
+  "connectSheet_title": "무전기 연결",
   "connectSheet_reconnect": "{name}에 다시 연결",
   "connectSheet_chooseRadio": "무전기 선택",
   "connectSheet_chooseRadioSubtitle": "Bluetooth, USB 또는 TCP",
@@ -4248,5 +4248,12 @@
   "chess_notifyResigned": "{name}님이 기권했습니다. 승리했습니다.",
   "chess_notifyDrawOffered": "{name}님이 무승부를 제안했습니다",
   "chess_notifyDrawAccepted": "{name}님이 무승부를 수락했습니다",
-  "chess_notifyTimeout": "{name}님이 시간 초과 승리를 요청했습니다"
+  "chess_notifyTimeout": "{name}님이 시간 초과 승리를 요청했습니다",
+  "chess_rowChallenge": "{inviter}님이 {target}님에게 도전했습니다",
+  "chess_statusPlayersUnchecked": "플레이어 미확인: 이 휴대폰이 초대를 수신하지 못했습니다.",
+  "chess_statusMoveUnconfirmed": "내 수가 전송되지 않았을 수 있습니다. \"업데이트 요청\"을 눌러 다시 보내세요.",
+  "chess_pieceKing": "킹",
+  "chess_piecePawn": "폰",
+  "chess_squareWhitePiece": "{square}: 백 {piece}",
+  "chess_squareBlackPiece": "{square}: 흑 {piece}"
 }

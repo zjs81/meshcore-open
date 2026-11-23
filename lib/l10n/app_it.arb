@@ -4042,5 +4042,12 @@
   "chess_notifyResigned": "{name} ha abbandonato. Hai vinto.",
   "chess_notifyDrawOffered": "{name} offre la patta",
   "chess_notifyDrawAccepted": "{name} ha accettato la patta",
-  "chess_notifyTimeout": "{name} ha rivendicato la vittoria a tempo"
+  "chess_notifyTimeout": "{name} ha rivendicato la vittoria a tempo",
+  "chess_rowChallenge": "{inviter} ha sfidato {target}",
+  "chess_statusPlayersUnchecked": "Giocatori non confermati: questo telefono non ha sentito l'invito.",
+  "chess_statusMoveUnconfirmed": "La tua mossa potrebbe non essere partita. Tocca «Chiedi aggiornamento» per inviarla di nuovo.",
+  "chess_pieceKing": "Re",
+  "chess_piecePawn": "Pedone",
+  "chess_squareWhitePiece": "{square}: {piece}, bianco",
+  "chess_squareBlackPiece": "{square}: {piece}, nero"
 }

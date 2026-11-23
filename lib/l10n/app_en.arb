@@ -4498,6 +4498,17 @@
     }
   },
   "chess_unknownPlayer": "Unknown",
+  "chess_rowChallenge": "{inviter} challenged {target}",
+  "@chess_rowChallenge": {
+    "placeholders": {
+      "inviter": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
   "chess_rowYourOpenInvite": "Your open invite",
   "chess_rowYourChallenge": "You challenged {name}",
   "@chess_rowYourChallenge": {
@@ -4627,6 +4638,8 @@
   },
   "chess_statusUnknownPosition": "The board appears with the next move.",
   "chess_statusUnverified": "Players not confirmed yet. Ask for an update to check them.",
+  "chess_statusPlayersUnchecked": "Players not confirmed: this phone didn't hear the invite.",
+  "chess_statusMoveUnconfirmed": "Your move may not have gone out. Tap Ask for update to send it again.",
   "chess_actionResign": "Resign",
   "chess_actionOfferDraw": "Offer draw",
   "chess_actionAcceptDraw": "Accept draw",
@@ -4643,6 +4656,30 @@
   "chess_pieceRook": "Rook",
   "chess_pieceBishop": "Bishop",
   "chess_pieceKnight": "Knight",
+  "chess_pieceKing": "King",
+  "chess_piecePawn": "Pawn",
+  "chess_squareWhitePiece": "{square}: {piece}, white",
+  "@chess_squareWhitePiece": {
+    "placeholders": {
+      "square": {
+        "type": "String"
+      },
+      "piece": {
+        "type": "String"
+      }
+    }
+  },
+  "chess_squareBlackPiece": "{square}: {piece}, black",
+  "@chess_squareBlackPiece": {
+    "placeholders": {
+      "square": {
+        "type": "String"
+      },
+      "piece": {
+        "type": "String"
+      }
+    }
+  },
   "chess_resultDraw": "Draw",
   "chess_resultWon": "{name} won",
   "@chess_resultWon": {

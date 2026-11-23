@@ -4094,5 +4094,12 @@
   "chess_notifyResigned": "{name} abandonó. Ganas tú.",
   "chess_notifyDrawOffered": "{name} ofrece tablas",
   "chess_notifyDrawAccepted": "{name} ha aceptado las tablas",
-  "chess_notifyTimeout": "{name} reclamó la victoria por tiempo"
+  "chess_notifyTimeout": "{name} reclamó la victoria por tiempo",
+  "chess_rowChallenge": "{inviter} ha retado a {target}",
+  "chess_statusPlayersUnchecked": "Jugadores sin confirmar: este teléfono no oyó la invitación.",
+  "chess_statusMoveUnconfirmed": "Es posible que tu jugada no se haya enviado. Toca «Pedir actualización» para enviarla de nuevo.",
+  "chess_pieceKing": "Rey",
+  "chess_piecePawn": "Peón",
+  "chess_squareWhitePiece": "{square}: {piece}, blancas",
+  "chess_squareBlackPiece": "{square}: {piece}, negras"
 }

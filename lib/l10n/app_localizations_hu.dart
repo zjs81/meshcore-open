@@ -7835,6 +7835,11 @@ class AppLocalizationsHu extends AppLocalizations {
   String get chess_unknownPlayer => 'Ismeretlen';
 
   @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter kihívta: $target';
+  }
+
+  @override
   String get chess_rowYourOpenInvite => 'Nyitott felkérésed';
 
   @override
@@ -7988,6 +7993,14 @@ class AppLocalizationsHu extends AppLocalizations {
       'A játékosok még nincsenek megerősítve. Kérj frissítést az ellenőrzésükhöz.';
 
   @override
+  String get chess_statusPlayersUnchecked =>
+      'A játékosok nincsenek megerősítve: ez a telefon nem hallotta a felkérést.';
+
+  @override
+  String get chess_statusMoveUnconfirmed =>
+      'Előfordulhat, hogy a lépésed nem ment el. Koppints a „Frissítés kérése” gombra az újraküldéshez.';
+
+  @override
   String get chess_actionResign => 'Feladás';
 
   @override
@@ -8035,6 +8048,22 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get chess_pieceKnight => 'Huszár';
+
+  @override
+  String get chess_pieceKing => 'Király';
+
+  @override
+  String get chess_piecePawn => 'Gyalog';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square: $piece, világos';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square: $piece, sötét';
+  }
 
   @override
   String get chess_resultDraw => 'Döntetlen';

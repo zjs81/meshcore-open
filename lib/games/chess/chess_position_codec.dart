@@ -83,7 +83,8 @@ abstract final class ChessPositionCodec {
 
   /// Unpacks [bytes] into a FEN with [fullMoveNumber]. Returns null when the
   /// bytes are malformed (wrong length for the occupancy, bad piece codes).
-  /// Does not check that the position is legal.
+  /// Castling and en-passant rights that the pieces rule out are dropped;
+  /// otherwise the position is not checked for legality.
   static String? decodeToFen(Uint8List bytes, {required int fullMoveNumber}) {
     if (bytes.length < _fixedBytes) return null;
     final squares = <int>[];
@@ -123,17 +124,37 @@ abstract final class ChessPositionCodec {
 
     final state = bytes[8] | (bytes[9] << 8);
     final blackToMove = state & 1 != 0;
+    // Square indices: a1 = 0, e1 = 4, h1 = 7, a8 = 56, e8 = 60, h8 = 63.
     final castling = StringBuffer();
-    if (state & (1 << 1) != 0) castling.write('K');
-    if (state & (1 << 2) != 0) castling.write('Q');
-    if (state & (1 << 3) != 0) castling.write('k');
-    if (state & (1 << 4) != 0) castling.write('q');
+    if (state & (1 << 1) != 0 && board[4] == 'K' && board[7] == 'R') {
+      castling.write('K');
+    }
+    if (state & (1 << 2) != 0 && board[4] == 'K' && board[0] == 'R') {
+      castling.write('Q');
+    }
+    if (state & (1 << 3) != 0 && board[60] == 'k' && board[63] == 'r') {
+      castling.write('k');
+    }
+    if (state & (1 << 4) != 0 && board[60] == 'k' && board[56] == 'r') {
+      castling.write('q');
+    }
     final epFile = (state >> 5) & 0x0F;
     if (epFile > 8) return null;
-    final ep = epFile == 0
-        ? '-'
-        : '${String.fromCharCode('a'.codeUnitAt(0) + epFile - 1)}'
-              '${blackToMove ? 3 : 6}';
+    var ep = '-';
+    if (epFile != 0) {
+      final file = epFile - 1;
+      // The pawn that just moved two squares, and the two squares it passed.
+      final pawnSq = (blackToMove ? 3 : 4) * 8 + file;
+      final passed = (blackToMove ? 2 : 5) * 8 + file;
+      final start = (blackToMove ? 1 : 6) * 8 + file;
+      if (board[pawnSq] == (blackToMove ? 'P' : 'p') &&
+          board[passed] == null &&
+          board[start] == null) {
+        ep =
+            '${String.fromCharCode('a'.codeUnitAt(0) + file)}'
+            '${blackToMove ? 3 : 6}';
+      }
+    }
     final halfmove = (state >> 9) & 0x7F;
 
     return '${rows.join('/')} ${blackToMove ? 'b' : 'w'} '

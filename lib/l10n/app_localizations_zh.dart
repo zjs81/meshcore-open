@@ -7336,6 +7336,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chess_unknownPlayer => '未知';
 
   @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter 向 $target 发起了挑战';
+  }
+
+  @override
   String get chess_rowYourOpenInvite => '你的公开邀请';
 
   @override
@@ -7486,6 +7491,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chess_statusUnverified => '尚未确认对局双方。请求更新以进行确认。';
 
   @override
+  String get chess_statusPlayersUnchecked => '对局双方未确认：这部手机没有收到邀请。';
+
+  @override
+  String get chess_statusMoveUnconfirmed => '你的这一步可能没有发出。请点按“请求更新”重新发送。';
+
+  @override
   String get chess_actionResign => '认输';
 
   @override
@@ -7532,6 +7543,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chess_pieceKnight => '马';
+
+  @override
+  String get chess_pieceKing => '王';
+
+  @override
+  String get chess_piecePawn => '兵';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square：白$piece';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square：黑$piece';
+  }
 
   @override
   String get chess_resultDraw => '和棋';

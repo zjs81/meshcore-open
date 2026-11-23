@@ -4147,5 +4147,12 @@
   "chess_notifyResigned": "{name} poddał(a) się. Wygrywasz.",
   "chess_notifyDrawOffered": "{name} proponuje remis",
   "chess_notifyDrawAccepted": "{name} przyjął(-ęła) remis",
-  "chess_notifyTimeout": "{name} zgłosił(a) wygraną na czas"
+  "chess_notifyTimeout": "{name} zgłosił(a) wygraną na czas",
+  "chess_rowChallenge": "{inviter} rzuca wyzwanie: {target}",
+  "chess_statusPlayersUnchecked": "Gracze niepotwierdzeni: ten telefon nie słyszał zaproszenia.",
+  "chess_statusMoveUnconfirmed": "Twój ruch mógł nie zostać wysłany. Dotknij „Poproś o aktualizację”, aby wysłać go ponownie.",
+  "chess_pieceKing": "Król",
+  "chess_piecePawn": "Pion",
+  "chess_squareWhitePiece": "{square}: {piece}, białe",
+  "chess_squareBlackPiece": "{square}: {piece}, czarne"
 }

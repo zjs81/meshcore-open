@@ -4115,5 +4115,12 @@
   "chess_notifyResigned": "Igralec {name} se je vdal. Zmagali ste.",
   "chess_notifyDrawOffered": "{name} ponuja remi",
   "chess_notifyDrawAccepted": "Igralec {name} je sprejel remi",
-  "chess_notifyTimeout": "Igralec {name} je zahteval zmago na čas"
+  "chess_notifyTimeout": "Igralec {name} je zahteval zmago na čas",
+  "chess_rowChallenge": "{inviter} izziva igralca {target}",
+  "chess_statusPlayersUnchecked": "Igralca nista potrjena: ta telefon povabila ni slišal.",
+  "chess_statusMoveUnconfirmed": "Vaša poteza morda ni bila poslana. Tapnite »Zahtevaj posodobitev«, da jo pošljete znova.",
+  "chess_pieceKing": "Kralj",
+  "chess_piecePawn": "Kmet",
+  "chess_squareWhitePiece": "{square}: {piece}, bela",
+  "chess_squareBlackPiece": "{square}: {piece}, črna"
 }

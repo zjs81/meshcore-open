@@ -4043,5 +4043,12 @@
   "chess_notifyResigned": "{name} hat aufgegeben. Sie gewinnen.",
   "chess_notifyDrawOffered": "{name} bietet Remis an",
   "chess_notifyDrawAccepted": "{name} hat das Remis angenommen",
-  "chess_notifyTimeout": "{name} hat den Sieg wegen Zeit beansprucht"
+  "chess_notifyTimeout": "{name} hat den Sieg wegen Zeit beansprucht",
+  "chess_rowChallenge": "{inviter} hat {target} herausgefordert",
+  "chess_statusPlayersUnchecked": "Spieler nicht bestätigt: Dieses Telefon hat die Einladung nicht gehört.",
+  "chess_statusMoveUnconfirmed": "Ihr Zug wurde möglicherweise nicht gesendet. Tippen Sie auf „Aktualisierung anfordern“, um ihn erneut zu senden.",
+  "chess_pieceKing": "König",
+  "chess_piecePawn": "Bauer",
+  "chess_squareWhitePiece": "{square}: {piece}, weiß",
+  "chess_squareBlackPiece": "{square}: {piece}, schwarz"
 }

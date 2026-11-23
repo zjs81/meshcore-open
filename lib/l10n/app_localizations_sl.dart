@@ -7828,6 +7828,11 @@ class AppLocalizationsSl extends AppLocalizations {
   String get chess_unknownPlayer => 'Neznan';
 
   @override
+  String chess_rowChallenge(String inviter, String target) {
+    return '$inviter izziva igralca $target';
+  }
+
+  @override
   String get chess_rowYourOpenInvite => 'Vaše odprto povabilo';
 
   @override
@@ -7981,6 +7986,14 @@ class AppLocalizationsSl extends AppLocalizations {
       'Igralci še niso potrjeni. Zahtevajte posodobitev, da jih preverite.';
 
   @override
+  String get chess_statusPlayersUnchecked =>
+      'Igralca nista potrjena: ta telefon povabila ni slišal.';
+
+  @override
+  String get chess_statusMoveUnconfirmed =>
+      'Vaša poteza morda ni bila poslana. Tapnite »Zahtevaj posodobitev«, da jo pošljete znova.';
+
+  @override
   String get chess_actionResign => 'Vdaj se';
 
   @override
@@ -8028,6 +8041,22 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get chess_pieceKnight => 'Konj';
+
+  @override
+  String get chess_pieceKing => 'Kralj';
+
+  @override
+  String get chess_piecePawn => 'Kmet';
+
+  @override
+  String chess_squareWhitePiece(String square, String piece) {
+    return '$square: $piece, bela';
+  }
+
+  @override
+  String chess_squareBlackPiece(String square, String piece) {
+    return '$square: $piece, črna';
+  }
 
   @override
   String get chess_resultDraw => 'Remi';
