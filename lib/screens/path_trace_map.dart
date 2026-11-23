@@ -1235,7 +1235,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (_isLoading)
-                          CircularProgressIndicator(color: MeshPalette.blue),
+                          CircularProgressIndicator(color: scheme.primary),
                         const SizedBox(height: 16),
                         if (!_isLoading && _failed2Loaded)
                           Text(
@@ -1803,7 +1803,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
         style: MeshTheme.mono(
           fontWeight: FontWeight.w600,
           fontSize: 13,
-          color: MeshPalette.ink,
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
       combined: combined,
@@ -1880,6 +1880,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
         itemCount: pathTraceData.pathData.length + 1,
         separatorBuilder: (_, _) => const Divider(height: 1),
         itemBuilder: (context, index) {
+          final scheme = Theme.of(context).colorScheme;
           final snrUi = snrUiFromSNR(
             index < pathTraceData.snrData.length
                 ? pathTraceData.snrData[index]
@@ -1894,15 +1895,18 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
               index >= pathTraceData.snrData.length / 2
                   ? Icons.call_received
                   : Icons.call_made,
-              color: MeshPalette.ink2,
+              color: scheme.onSurfaceVariant,
             ),
             title: Text(
               formatDirectionText(pathTraceData, index),
-              style: MeshTheme.mono(fontSize: 13, color: MeshPalette.ink),
+              style: MeshTheme.mono(fontSize: 13, color: scheme.onSurface),
             ),
             subtitle: Text(
               formatDirectionSubText(pathTraceData, index),
-              style: MeshTheme.mono(fontSize: 12, color: MeshPalette.ink3),
+              style: MeshTheme.mono(
+                fontSize: 12,
+                color: scheme.onSurfaceVariant,
+              ),
             ),
             trailing: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1943,6 +1947,7 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
         itemCount: path.totalTransmissions,
         separatorBuilder: (_, _) => const Divider(height: 1),
         itemBuilder: (context, index) {
+          final scheme = Theme.of(context).colorScheme;
           String title;
           String subtitle;
           Widget? trailing;
@@ -2017,11 +2022,14 @@ class _PathTraceMapScreenState extends State<PathTraceMapScreen>
             ),
             title: Text(
               title,
-              style: MeshTheme.mono(fontSize: 13, color: MeshPalette.ink),
+              style: MeshTheme.mono(fontSize: 13, color: scheme.onSurface),
             ),
             subtitle: Text(
               subtitle,
-              style: MeshTheme.mono(fontSize: 12, color: MeshPalette.ink3),
+              style: MeshTheme.mono(
+                fontSize: 12,
+                color: scheme.onSurfaceVariant,
+              ),
             ),
             trailing: trailing,
           );

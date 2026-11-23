@@ -30,6 +30,16 @@ bool isDesktopMapPlatform([TargetPlatform? platform]) {
       p == TargetPlatform.macOS;
 }
 
+/// Left edge of the [PathMapDesktopControls] column plus its 48px buttons
+/// and a gap; overlays at the top of the map start here on desktop so they
+/// don't cover the zoom buttons.
+const double kPathMapDesktopControlsInset = 16 + 48 + 8;
+
+/// Horizontal inset for overlays stacked at the top of a path map: clears
+/// the desktop zoom controls, otherwise the usual 16px margin.
+double pathMapTopOverlayInset([TargetPlatform? platform]) =>
+    isDesktopMapPlatform(platform) ? kPathMapDesktopControlsInset : 16;
+
 /// The connected radio's position, or null when it is unknown (disconnected)
 /// or not a real fix (SELF_INFO reports 0,0 without GPS).
 LatLng? plausibleSelfPoint(MeshCoreConnector connector) {
@@ -168,37 +178,38 @@ class PathMapDesktopControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
     return Positioned(
       top: 16,
       left: 16,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: MeshPalette.bg1.withValues(alpha: 0.90),
+          color: scheme.surfaceContainerLow.withValues(alpha: 0.94),
           borderRadius: BorderRadius.circular(MeshRadii.md),
-          border: Border.all(color: MeshPalette.line2),
+          border: Border.all(color: scheme.outlineVariant),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(MeshRadii.md),
           child: IconTheme(
-            data: const IconThemeData(color: MeshPalette.ink),
+            data: IconThemeData(color: scheme.onSurface),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   icon: const Icon(Icons.add),
-                  color: MeshPalette.ink,
+                  color: scheme.onSurface,
                   tooltip: l10n.map_zoomIn,
                   onPressed: onZoomIn,
                 ),
                 IconButton(
                   icon: const Icon(Icons.remove),
-                  color: MeshPalette.ink,
+                  color: scheme.onSurface,
                   tooltip: l10n.map_zoomOut,
                   onPressed: onZoomOut,
                 ),
                 IconButton(
                   icon: const Icon(Icons.my_location),
-                  color: MeshPalette.ink,
+                  color: scheme.onSurface,
                   tooltip: l10n.map_centerMap,
                   onPressed: onReset,
                 ),
@@ -280,12 +291,12 @@ class PathSharedCountBadge extends StatelessWidget {
   }
 }
 
-/// Dark, collapsible bottom panel shared by the path map screens: header
+/// Collapsible bottom panel shared by the path map screens: header
 /// with distance and legend, playback controls, warnings, optional
 /// multi-path summary, and the hop list.
 ///
-/// Sets dark-panel text/icon/divider colours explicitly so content does not
-/// inherit light-theme colours.
+/// Uses the theme's card surface and sets text/icon/divider colours from the
+/// [ColorScheme] so the panel matches light, dark and custom themes.
 class PathMapBottomPanel extends StatelessWidget {
   final Widget header;
   final bool combined;
@@ -334,6 +345,7 @@ class PathMapBottomPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
     final maxHeight =
         MediaQuery.of(context).size.height * (combined ? 0.45 : 0.35);
     const hopRowHeight = 60.0;
@@ -348,7 +360,7 @@ class PathMapBottomPanel extends StatelessWidget {
       cardHeight = max(196.0, min(maxHeight, estimatedHeight));
     }
 
-    final warnStyle = const TextStyle(fontSize: 12, color: MeshPalette.warn);
+    final warnStyle = TextStyle(fontSize: 12, color: scheme.tertiary);
     final unresolved = selected?.unresolvedHops ?? 0;
 
     return Positioned(
@@ -360,26 +372,26 @@ class PathMapBottomPanel extends StatelessWidget {
         height: cardHeight,
         child: Container(
           decoration: BoxDecoration(
-            color: MeshPalette.bg1.withValues(alpha: 0.96),
+            color: scheme.surfaceContainerLow.withValues(alpha: 0.96),
             borderRadius: BorderRadius.circular(MeshRadii.md),
-            border: Border.all(color: MeshPalette.line2),
+            border: Border.all(color: scheme.outlineVariant),
           ),
           clipBehavior: Clip.antiAlias,
           child: DefaultTextStyle.merge(
-            style: const TextStyle(color: MeshPalette.ink),
+            style: TextStyle(color: scheme.onSurface),
             child: IconTheme(
-              data: const IconThemeData(color: MeshPalette.ink),
+              data: IconThemeData(color: scheme.onSurface),
               child: DividerTheme(
-                data: const DividerThemeData(color: MeshPalette.line),
+                data: DividerThemeData(color: scheme.outlineVariant),
                 child: ListTileTheme(
-                  data: const ListTileThemeData(
-                    iconColor: MeshPalette.ink2,
-                    textColor: MeshPalette.ink,
+                  data: ListTileThemeData(
+                    iconColor: scheme.onSurfaceVariant,
+                    textColor: scheme.onSurface,
                   ),
                   child: TextButtonTheme(
                     data: TextButtonThemeData(
                       style: TextButton.styleFrom(
-                        foregroundColor: MeshPalette.ink,
+                        foregroundColor: scheme.onSurface,
                       ),
                     ),
                     child: LayoutBuilder(
@@ -445,7 +457,7 @@ class PathMapBottomPanel extends StatelessWidget {
                                                     ? Icons.close_fullscreen
                                                     : Icons.open_in_full,
                                               ),
-                                              color: MeshPalette.ink,
+                                              color: scheme.onSurface,
                                               tooltip: isExpanded
                                                   ? l10n.pathMap_showMap
                                                   : l10n.pathMap_expandHopList,
@@ -457,7 +469,7 @@ class PathMapBottomPanel extends StatelessWidget {
                                                   ? Icons.expand_less
                                                   : Icons.expand_more,
                                             ),
-                                            color: MeshPalette.ink,
+                                            color: scheme.onSurface,
                                             tooltip: collapsed
                                                 ? l10n.pathMap_expandPanel
                                                 : l10n.pathMap_collapsePanel,
@@ -489,10 +501,10 @@ class PathMapBottomPanel extends StatelessWidget {
                                         ),
                                         child: Row(
                                           children: [
-                                            const Icon(
+                                            Icon(
                                               Icons.gps_off,
                                               size: 16,
-                                              color: MeshPalette.warn,
+                                              color: scheme.tertiary,
                                             ),
                                             const SizedBox(width: 6),
                                             Expanded(
