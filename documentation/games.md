@@ -23,7 +23,7 @@ The board turns so that your pieces are at the bottom. Tap one of your pieces, t
 - **Offer draw** / **Accept draw**. Making a move instead declines an offer.
 - **Resign** asks first.
 - **Claim win on time** appears when your opponent has gone more than 10 minutes past the time per move. Your phone times it from when it sent your last move; the 10 minutes allow for slow delivery. Other phones accept the claim once the time per move has passed since they heard that move.
-- **Ask for update** gets a stuck game moving. While you wait after your own move, it sends that move again, and your opponent's phone answers with its move if you missed it. Otherwise it asks the players to send the latest move again. A player answers within a few seconds, at most once a minute per game.
+- **Ask for update** gets a stuck game moving. While you wait after your own move, it sends that move again, and your opponent's phone answers with its move if you missed it. Otherwise it asks the players to send the latest move again. A player answers within a few seconds, at most once a minute per game. A finished game answers too, with the last move and the resignation, draw accept or win claim that ended it, so a game whose last packet got lost still ends on every phone.
 
 If the radio doesn't confirm a move, the move stays on your board, since it may have gone out, and the game says so. Use **Ask for update** to send it again.
 
@@ -58,6 +58,6 @@ Other packets: invite 55 bytes (87 for a challenge, with the name), accept 53, d
 
 The inviter's first value after the commitment is kept for the game info, which says whose accept won. Anyone who heard the invite can check it came from the inviter, and works out the colours from the invite rather than taking the packet's word. If you accepted and the game info names someone else, you watch the game instead, and switch to playing if a later game info names you.
 
-Players also check that the move gives the position in the packet. Spectators who missed moves take the position as it is. A draw accept only counts after a draw offer, and a timeout claim only when the game has a time per move and it has run out.
+Players also check that the move gives the position in the packet. Spectators who missed moves take the position as it is. A draw accept only counts after a draw offer, and a timeout claim only when the game has a time per move and it has run out. Both are for the position they were sent in: one that crosses a move on air counts on neither phone.
 
 Your secret values stay on your phone, stored per radio with the rest of the game.

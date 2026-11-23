@@ -806,6 +806,139 @@ void main() {
       expect(dave.game!.fen, alice.game!.fen);
     });
 
+    test(
+      'a lost checkmate reaches the opponent who sends their move again',
+      () async {
+        final alice = player('Alice');
+        final bob = player('Bob');
+        final (white, black) = await startGame(alice, bob);
+        const moves = ['e2e4', 'e7e5', 'f1c4', 'b8c6', 'd1h5', 'g8f6'];
+        for (var i = 0; i < moves.length; i++) {
+          final mover = i.isEven ? white : black;
+          await mover.service.makeMove(mover.game!, moves[i]);
+        }
+        mesh.filter = (from, to, _) =>
+            !(from == white.link && to == black.link);
+        await white.service.makeMove(white.game!, 'h5f7');
+        mesh.filter = null;
+        expect(white.game!.endReason, ChessEndReason.checkmate);
+        expect(black.game!.status, ChessGameStatus.active);
+
+        // Black's Ask for update re-sends g8f6; White answers with the mate.
+        await black.service.requestUpdate(black.game!);
+        await settle();
+        expect(black.game!.status, ChessGameStatus.finished);
+        expect(black.game!.endReason, ChessEndReason.checkmate);
+        expect(black.game!.winner, ChessSide.white);
+
+        // Rate-limited like other answers.
+        final sent = white.link.sent.length;
+        feed(white, sentOf<ChessMovePacket>(black).last);
+        await settle();
+        expect(white.link.sent.length, sent);
+      },
+    );
+
+    test('a lost resignation is sent again with recovery answers', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final carol = player('Carol');
+      final (white, black) = await startGame(alice, bob);
+      await white.service.makeMove(white.game!, 'e2e4');
+      await black.service.makeMove(black.game!, 'e7e5');
+      mesh.filter = (from, to, payload) =>
+          !(from == white.link &&
+              ChessPacket.decode(payload) is ChessActionPacket);
+      expect(await white.service.resign(white.game!), isTrue);
+      expect(white.game!.finalActionPacket, isNotNull);
+      expect(black.game!.status, ChessGameStatus.active);
+      expect(carol.game!.status, ChessGameStatus.active);
+
+      // Kept across a restart.
+      await white.service.store.flush();
+      final reloaded = ChessStore().load(white.link.storageScope).single;
+      expect(reloaded.finalActionPacket, white.game!.finalActionPacket);
+
+      // Black re-sends its move; White answers with the resignation. Carol
+      // still misses it.
+      mesh.filter = (from, to, payload) =>
+          !(to == carol.link &&
+              ChessPacket.decode(payload) is ChessActionPacket);
+      await black.service.requestUpdate(black.game!);
+      await settle();
+      expect(black.game!.endReason, ChessEndReason.resignation);
+      expect(black.game!.winner, black.game!.mySide);
+      expect(carol.game!.status, ChessGameStatus.active);
+
+      // Carol asks; a player answers with the resignation.
+      mesh.filter = null;
+      now = now.add(ChessService.requestAnswerInterval);
+      await carol.service.requestUpdate(carol.game!);
+      await settle();
+      expect(carol.game!.endReason, ChessEndReason.resignation);
+      expect(carol.game!.winner, ChessSide.black);
+
+      // Hearing it again changes nothing.
+      final resign = sentOf<ChessActionPacket>(white).first;
+      final index = carol.game!.white!.lastIndex;
+      feed(carol, resign);
+      expect(carol.game!.white!.lastIndex, index);
+      expect(carol.game!.endReason, ChessEndReason.resignation);
+    });
+
+    test('a draw accept or timeout claim that crosses a move does not '
+        'apply', () async {
+      final alice = player('Alice');
+      final bob = player('Bob');
+      final (white, black) = await startGame(alice, bob);
+      await white.service.makeMove(white.game!, 'e2e4');
+      now = now.add(const Duration(hours: 1, minutes: 11));
+      expect(white.service.canClaimTimeout(white.game!), isTrue);
+
+      // White's claim and Black's move cross on air.
+      Uint8List? claim;
+      mesh.filter = (from, to, payload) {
+        if (from == white.link &&
+            ChessPacket.decode(payload) is ChessActionPacket) {
+          claim = payload;
+          return false;
+        }
+        return true;
+      };
+      white.link.slow = true;
+      Timer.run(() => black.service.makeMove(black.game!, 'e7e5'));
+      expect(await white.service.claimTimeout(white.game!), isFalse);
+      await settle();
+      black.service.handleIncoming(ChessIncoming(_channel, claim!));
+      for (final p in [white, black]) {
+        expect(p.game!.status, ChessGameStatus.active);
+        expect(p.game!.ply, 2);
+      }
+      // The claim's value is used up on both sides.
+      final claimIndex = white.game!.myNextChainIndex - 1;
+      expect(white.game!.playerOf(white.game!.mySide!)!.lastIndex, claimIndex);
+      expect(black.game!.playerOf(ChessSide.white)!.lastIndex, claimIndex);
+
+      // Same for a draw accept crossing a move.
+      claim = null;
+      await white.service.makeMove(white.game!, 'g1f3');
+      await black.service.offerDraw(black.game!);
+      expect(white.game!.drawOfferedBy, ChessSide.black);
+      // Black then moves after all, while White accepts.
+      Timer.run(() => black.service.makeMove(black.game!, 'b8c6'));
+      expect(await white.service.acceptDraw(white.game!), isFalse);
+      await settle();
+      black.service.handleIncoming(ChessIncoming(_channel, claim!));
+      for (final p in [white, black]) {
+        expect(p.game!.status, ChessGameStatus.active);
+        expect(p.game!.ply, 4);
+      }
+      mesh.filter = null;
+      white.link.slow = false;
+      expect(await white.service.makeMove(white.game!, 'f1c4'), isTrue);
+      expect(black.game!.ply, 5);
+    });
+
     test('a malformed position never throws out of the listener', () {
       final carol = player('Carol');
       final packet = Uint8List.fromList(

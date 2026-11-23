@@ -158,6 +158,10 @@ class ChessGame {
   /// Latest move packet heard or sent, kept so any holder can re-send it.
   Uint8List? lastMovePacket;
 
+  /// The resign, draw accept or timeout claim that ended the game, sent or
+  /// heard, kept so players can send it again to anyone who missed it.
+  Uint8List? finalActionPacket;
+
   ChessSide? drawOfferedBy;
   ChessSide? winner;
   ChessEndReason? endReason;
@@ -195,6 +199,7 @@ class ChessGame {
     this.hasPosition = true,
     this.lastMoveUci,
     this.lastMovePacket,
+    this.finalActionPacket,
     this.drawOfferedBy,
     this.winner,
     this.endReason,
@@ -366,6 +371,8 @@ class ChessGame {
     'hasPosition': hasPosition,
     if (lastMoveUci != null) 'lastUci': lastMoveUci,
     if (lastMovePacket != null) 'lastPacket': base64Encode(lastMovePacket!),
+    if (finalActionPacket != null)
+      'finalPacket': base64Encode(finalActionPacket!),
     if (drawOfferedBy != null) 'draw': drawOfferedBy!.name,
     if (winner != null) 'winner': winner!.name,
     if (endReason != null) 'end': endReason!.name,
@@ -383,6 +390,7 @@ class ChessGame {
       final created = json['created'];
       if (channel is! String || id is! int || created is! int) return null;
       final packet = json['lastPacket'];
+      final finalPacket = json['finalPacket'];
       return ChessGame(
         channelId: channel,
         gameId: id,
@@ -414,6 +422,9 @@ class ChessGame {
         hasPosition: json['hasPosition'] != false,
         lastMoveUci: json['lastUci'] as String?,
         lastMovePacket: packet is String ? base64Decode(packet) : null,
+        finalActionPacket: finalPacket is String
+            ? base64Decode(finalPacket)
+            : null,
         drawOfferedBy: _enumByNameOrNull(ChessSide.values, json['draw']),
         winner: _enumByNameOrNull(ChessSide.values, json['winner']),
         endReason: _enumByNameOrNull(ChessEndReason.values, json['end']),

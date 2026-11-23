@@ -281,22 +281,19 @@ class ChessService extends ChangeNotifier {
         g.drawOfferedBy = side;
       });
 
-  Future<bool> acceptDraw(ChessGame game) {
-    final side = game.mySide;
-    if (side == null || game.drawOfferedBy != side.other) {
-      return Future.value(false);
-    }
-    return _sendAction(game, ChessPacketKind.drawAccept, (g, _) {
-      g.finish(ChessEndReason.drawAgreed);
-    });
-  }
+  Future<bool> acceptDraw(ChessGame game) => _sendAction(
+    game,
+    ChessPacketKind.drawAccept,
+    (g, _) => g.finish(ChessEndReason.drawAgreed),
+    valid: (g, side) => side != null && g.drawOfferedBy == side.other,
+  );
 
-  Future<bool> claimTimeout(ChessGame game) {
-    if (!canClaimTimeout(game)) return Future.value(false);
-    return _sendAction(game, ChessPacketKind.timeoutClaim, (g, side) {
-      g.finish(ChessEndReason.timeout, winner: side);
-    });
-  }
+  Future<bool> claimTimeout(ChessGame game) => _sendAction(
+    game,
+    ChessPacketKind.timeoutClaim,
+    (g, side) => g.finish(ChessEndReason.timeout, winner: side),
+    valid: (g, _) => canClaimTimeout(g),
+  );
 
   /// Gets a stuck game moving. While we wait for the opponent after our own
   /// move, sends that move again (the opponent answers with theirs if we
@@ -333,10 +330,12 @@ class ChessService extends ChangeNotifier {
     ChessPacketKind kind,
     void Function(ChessGame game, ChessSide? side) apply, {
     ChessGameStatus allowedStatus = ChessGameStatus.active,
+    bool Function(ChessGame game, ChessSide? side)? valid,
   }) async {
     if (game.status != allowedStatus || isSending(game)) return false;
     if (!link.canSend) return false;
     final side = game.mySide;
+    if (valid != null && !valid(game, side)) return false;
     final record = kind == ChessPacketKind.cancel
         ? (game.iAmInviter ? game.inviter : null)
         : (side == null ? null : game.playerOf(side));
@@ -345,20 +344,30 @@ class ChessService extends ChangeNotifier {
     if (chain == null) return false;
     // Used up even if the send fails: the packet may have gone out.
     record.use(chain.index);
-    final ok = await _send(
-      game,
-      ChessActionPacket(
-        kind: kind,
-        gameId: game.gameId,
-        ply: game.ply,
-        chainValue: chain.value,
-      ),
-    );
-    if (!ok || game.status != allowedStatus) {
+    final ply = game.ply;
+    final packet = ChessActionPacket(
+      kind: kind,
+      gameId: game.gameId,
+      ply: ply,
+      chainValue: chain.value,
+    ).encode();
+    final ok = await _sendRaw(game, packet);
+    // A move heard while sending makes the action stale: receivers check it
+    // against the new position and ignore it, so it doesn't apply here
+    // either. Only a resignation counts at any ply.
+    final stale =
+        game.status != allowedStatus ||
+        (kind != ChessPacketKind.resign && game.ply != ply) ||
+        (valid != null && !valid(game, side));
+    if (!ok || stale) {
       _changed();
       return false;
     }
     apply(game, side);
+    if (kind != ChessPacketKind.cancel &&
+        game.status == ChessGameStatus.finished) {
+      game.finalActionPacket = packet;
+    }
     _touch(game);
     return true;
   }
@@ -436,9 +445,7 @@ class ChessService extends ChangeNotifier {
     if (packet == null) return;
     final channelId = incoming.channelId;
     final existing = game(channelId, packet.gameId);
-    if (existing != null &&
-        (packet is ChessInfoPacket ||
-            (packet is ChessMovePacket && packet.ply >= existing.ply))) {
+    if (existing != null && _answersPending(existing, packet, incoming)) {
       // Someone answered; our own pending answer is no longer needed.
       _pendingAnswers.remove(existing.key)?.cancel();
     }
@@ -447,11 +454,25 @@ class ChessService extends ChangeNotifier {
       ChessAcceptPacket p => _onAccept(existing, p),
       ChessDeclinePacket p => _onDecline(existing, p),
       ChessMovePacket p => _onMove(channelId, existing, p, incoming.payload),
-      ChessActionPacket p => _onAction(existing, p),
+      ChessActionPacket p => _onAction(existing, p, incoming.payload),
       ChessInfoPacket p => _onInfo(channelId, existing, p),
       ChessRequestPacket p => _onRequest(existing, p),
     };
     if (changed) _changed();
+  }
+
+  /// Whether [packet] makes our pending answer for [game] unnecessary. A
+  /// finished game's answer ends with the action that finished it, so only
+  /// that action replaces it.
+  static bool _answersPending(
+    ChessGame game,
+    ChessPacket packet,
+    ChessIncoming incoming,
+  ) {
+    final ending = game.finalActionPacket;
+    if (ending != null) return bytesEqual(ending, incoming.payload);
+    return packet is ChessInfoPacket ||
+        (packet is ChessMovePacket && packet.ply >= game.ply);
   }
 
   bool _onInvite(String channelId, ChessGame? existing, ChessInvitePacket p) {
@@ -724,6 +745,16 @@ class ChessService extends ChangeNotifier {
     }
     switch (game.status) {
       case ChessGameStatus.finished:
+        if (game.isPlayer && game.mySide != mover && ply <= game.ply) {
+          // The opponent sent a move again: they missed how the game ended.
+          _scheduleAnswer(
+            game,
+            info: false,
+            latestMove: ply < game.ply,
+            finalAction: game.finalActionPacket != null,
+          );
+        }
+        return false;
       case ChessGameStatus.starting: // Wait for the inviter's confirmation.
         return false;
       case ChessGameStatus.invite:
@@ -824,7 +855,7 @@ class ChessService extends ChangeNotifier {
         fullMoveNumber: p.ply ~/ 2 + 1,
       );
 
-  bool _onAction(ChessGame? game, ChessActionPacket p) {
+  bool _onAction(ChessGame? game, ChessActionPacket p, Uint8List raw) {
     if (game == null) return false;
     if (p.kind == ChessPacketKind.cancel) {
       if (game.iAmInviter) return false;
@@ -875,6 +906,7 @@ class ChessService extends ChangeNotifier {
       default:
         break;
     }
+    if (game.status == ChessGameStatus.finished) game.finalActionPacket = raw;
     return true;
   }
 
@@ -893,6 +925,7 @@ class ChessService extends ChangeNotifier {
       game,
       info: p.wantsInfo,
       latestMove: p.wantsLatestMove && p.ply < game.ply,
+      finalAction: p.wantsLatestMove && game.finalActionPacket != null,
     );
     return false;
   }
@@ -903,9 +936,10 @@ class ChessService extends ChangeNotifier {
     ChessGame game, {
     required bool info,
     required bool latestMove,
+    bool finalAction = false,
     bool immediate = false,
   }) {
-    if (!info && !latestMove) return;
+    if (!info && !latestMove && !finalAction) return;
     if (_pendingAnswers.containsKey(game.key)) return;
     final last = game.lastAnsweredRequestAtMs;
     if (!immediate &&
@@ -927,13 +961,16 @@ class ChessService extends ChangeNotifier {
       // Confirmations are not answers to a request; they don't count.
       if (!immediate) game.lastAnsweredRequestAtMs = _now;
       if (info) await _sendInfo(game);
-      if (!latestMove) return;
-      final move = game.lastMovePacket;
-      if (_latestMoveIsMine(game)) {
-        await _resendLatestMove(game);
-      } else if (move != null) {
-        await _sendRaw(game, move);
+      if (latestMove) {
+        final move = game.lastMovePacket;
+        if (game.status == ChessGameStatus.active && _latestMoveIsMine(game)) {
+          await _resendLatestMove(game);
+        } else if (move != null) {
+          await _sendRaw(game, move);
+        }
       }
+      final ending = game.finalActionPacket;
+      if (finalAction && ending != null) await _sendRaw(game, ending);
     });
   }
 
