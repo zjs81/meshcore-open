@@ -448,17 +448,18 @@ Future<void> _tearDown(WidgetTester tester) async {
 /// its long-press handler: a real long press on bubble text starts text
 /// selection in tests) and picks "Select messages".
 Future<void> _enterSelectionFrom(WidgetTester tester, Finder message) async {
-  final target = tester.getCenter(message);
+  // The row's long-press detector wraps the bubble, so it is an ancestor of
+  // the message text whatever the text scale.
   final detector = find
-      .byWidgetPredicate((w) => w is GestureDetector && w.onLongPress != null)
+      .ancestor(
+        of: message.first,
+        matching: find.byWidgetPredicate(
+          (w) => w is GestureDetector && w.onLongPress != null,
+        ),
+      )
+      .first
       .evaluate()
-      .firstWhere((e) {
-        final box = e.renderObject! as RenderBox;
-        // Full-width detectors: match on the message's row, not its text.
-        return (box.localToGlobal(box.size.center(Offset.zero)).dy - target.dy)
-                .abs() <
-            20;
-      });
+      .single;
   (detector.widget as GestureDetector).onLongPress!();
   await _settle(tester);
   await tester.ensureVisible(find.text('Select messages'));
