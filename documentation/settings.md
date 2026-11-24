@@ -210,7 +210,7 @@ One-tap device operations:
 | Sync Time | Sends current Unix timestamp to the device |
 | Refresh Contacts | Re-requests the full contact list |
 | Reboot Device | Confirmation dialog → reboots the device (shown in warning color) |
-| Delete All Paths | Confirmation dialog → clears all stored routing paths (shown in alert color) |
+| Delete All Paths | Confirmation dialog → clears all stored routing paths (shown in error color) |
 
 ---
 
