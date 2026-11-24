@@ -13809,6 +13809,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name} claimed a win on time'**
   String chess_notifyTimeout(String name);
+
+  /// Shown in a message bubble when a linked image fails to load
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load image'**
+  String get messageUrlImageLoadFailed;
 }
 
 class _AppLocalizationsDelegate

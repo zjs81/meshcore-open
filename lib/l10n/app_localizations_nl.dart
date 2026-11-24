@@ -8268,4 +8268,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return '$name heeft winst op tijd geclaimd';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }

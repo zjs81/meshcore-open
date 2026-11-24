@@ -8292,4 +8292,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return '$name időtúllépés miatt nyerést követelt';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }

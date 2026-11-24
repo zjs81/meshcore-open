@@ -8291,6 +8291,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return '$name reivindicou vitória por tempo';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).

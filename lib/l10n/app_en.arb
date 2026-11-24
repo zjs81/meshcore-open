@@ -4880,5 +4880,9 @@
         "type": "String"
       }
     }
+  },
+  "messageUrlImageLoadFailed": "Unable to load image",
+  "@messageUrlImageLoadFailed": {
+    "description": "Shown in a message bubble when a linked image fails to load"
   }
 }

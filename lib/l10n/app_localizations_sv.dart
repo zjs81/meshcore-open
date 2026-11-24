@@ -8242,4 +8242,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return '$name krävde vinst på tid';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }

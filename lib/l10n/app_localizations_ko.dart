@@ -7954,4 +7954,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return '$name님이 시간 초과 승리를 요청했습니다';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }
