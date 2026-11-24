@@ -2322,7 +2322,7 @@
   "repeater_cliHelpSetAf": "Sets the air-time-factor.",
   "repeater_cliHelpSetTx": "Sets LoRa transmit power in dBm. (reboot to apply)",
   "repeater_cliHelpSetRepeat": "Enables or disables the repeater role for this node.",
-  "repeater_cliHelpSetAllowReadOnly": "(Room server) If 'on', then login in blank password will be allowed, but cannot Post to room. (just read only)",
+  "repeater_cliHelpSetAllowReadOnly": "(Room server) If 'on', allows login without the room password. Read-only, can't post to the room.",
   "repeater_cliHelpSetFloodMax": "Sets the maximum number of hops of inbound flood packet (if >= max, packet is not forwarded)",
   "repeater_cliHelpSetIntThresh": "Sets the Interference Threshold (in DB). Default is 14. Set to 0 to disable channel interference detection.",
   "repeater_cliHelpSetAgcResetInterval": "Sets the interval to reset the Auto Gain Controller. Set to 0 to disable.",

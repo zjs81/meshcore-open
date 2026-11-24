@@ -8523,7 +8523,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   }
 
   @override
-  String get tcpErrorHostRequired => 'O anfitrião é obrigatório.';
+  String get tcpErrorHostRequired => 'O endereço é obrigatório.';
 
   @override
   String get tcpErrorPortInvalid => 'A porta tem de estar entre 1 e 65535.';
@@ -8910,7 +8910,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get nodeName_info =>
-      'Cada byte do seu nome é menos um para as mensagens de canal. Os caracteres especiais e os emojis podem ocupar mais do que um byte.';
+      'Cada byte do seu nome é menos um para as mensagens de canal. Os carateres especiais e os emojis podem ocupar mais do que um byte.';
 
   @override
   String get nodeName_messageLength => 'Tamanho da mensagem';
@@ -8957,7 +8957,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get settings_radioSettingsSubtitle =>
-      'Frequência, potência, fator de espalhamento';
+      'Frequência, potência, spreading factor';
 
   @override
   String get settings_unsavedChangesMessage =>
@@ -9004,7 +9004,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   }
 
   @override
-  String get settings_regionNoRegion => 'Sem região (sem âmbito)';
+  String get settings_regionNoRegion => 'Sem região (unscoped)';
 
   @override
   String get settings_regionRadioDefault => 'Região predefinida do rádio';
@@ -9349,7 +9349,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get settings_bandwidth => 'Largura de banda';
 
   @override
-  String get settings_spreadingFactor => 'Fator de espalhamento';
+  String get settings_spreadingFactor => 'Spreading Factor';
 
   @override
   String get settings_codingRate => 'Coding Rate';
@@ -9370,7 +9370,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get settings_clientRepeatDescription =>
-      'Permite que este dispositivo repita pacotes. Destina-se a locais sem cobertura de repetidores.\n\nEste modo usa um conjunto restrito de frequências. Ao ATIVÁ-LO, é provável que perca a ligação ao resto da mesh. Todos os nós com que comunica têm de usar a mesma frequência, largura de banda e fator de espalhamento (SF). Só o coding rate (CR) pode ser diferente.';
+      'Permite que este dispositivo repita pacotes. Destina-se a locais sem cobertura de repetidores.\n\nEste modo usa um conjunto restrito de frequências. Ao ATIVÁ-LO, é provável que perca a ligação ao resto da mesh. Todos os nós com que comunica têm de usar a mesma frequência, largura de banda e spreading factor (SF). Só o coding rate (CR) pode ser diferente.';
 
   @override
   String get settings_clientRepeatSwitch => 'Modo de repetição';
@@ -9644,7 +9644,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Também substitui os fundos definidos em conversas individuais';
 
   @override
-  String get appSettings_language => 'Idioma';
+  String get appSettings_language => 'Língua';
 
   @override
   String get appSettings_languageSystem => 'Predefinição do sistema';
@@ -9880,7 +9880,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get appSettings_directRetriesSubtitle =>
-      'Quantas vezes tentar um caminho conhecido. Continua disponível com a rotação automática de caminhos desligada.';
+      'Quantas vezes tentar um caminho conhecido. Continua disponível com a rotação automática de rotas desligada.';
 
   @override
   String appSettings_floodRetries(int count) {
@@ -9889,16 +9889,16 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get appSettings_floodRetriesSubtitle =>
-      'Quantas vezes usar Flood. Flood usa mais tempo de ar. Com a rotação ligada, vêm a seguir às tentativas diretas.';
+      'Quantas vezes usar Flood. O Flood usa mais airtime. Com a rotação ligada, vêm a seguir às tentativas diretas.';
 
   @override
   String appSettings_loginAttempts(int count) {
-    return 'Tentativas de início de sessão: $count';
+    return 'Tentativas de login: $count';
   }
 
   @override
   String get appSettings_loginAttemptsSubtitle =>
-      'Quantas vezes tentar iniciar sessão num repetidor ou servidor de sala antes de desistir.';
+      'Quantas vezes tenta iniciar sessão num repetidor ou sala antes de desistir.';
 
   @override
   String get appSettings_repeatersAndRooms => 'Repetidores e salas';
@@ -9909,7 +9909,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get appSettings_clockSyncAfterLoginSubtitle =>
-      'Depois de iniciar sessão num repetidor, é enviado clock sync. Cada repetidor pode continuar a escolher Predefinição, Ligado ou Desligado.';
+      'Depois de entrar num repetidor, o relógio é sincronizado. Cada repetidor pode continuar a escolher Predefinição, Ligado ou Desligado.';
 
   @override
   String get appSettings_loginPasswordAutofocus =>
@@ -9917,7 +9917,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get appSettings_loginPasswordAutofocusSubtitle =>
-      'Ao abrir o início de sessão de um repetidor ou sala, o cursor vai para a palavra-passe se estiver vazia. Desligado deixa o diálogo visível até tocar no campo.';
+      'Ao entrar num repetidor ou sala, o campo da palavra-passe fica logo selecionado, se estiver vazio. Desligado deixa o diálogo visível até tocar no campo.';
 
   @override
   String get appSettings_resetRepeaterRoomSettings =>
@@ -10059,10 +10059,10 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get appSettings_showNodesDiscoveredWithin =>
-      'Mostrar nós descobertos nos últimos:';
+      'Mostrar nós descobertos nas últimas:';
 
   @override
-  String get appSettings_allTime => 'Sempre';
+  String get appSettings_allTime => 'Todos';
 
   @override
   String get appSettings_lastHour => 'Última hora';
@@ -10174,7 +10174,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String contacts_searchRoomServers(int number, String str) {
-    return 'Pesquisar $number$str room servers...';
+    return 'Pesquisar $number$str salas...';
   }
 
   @override
@@ -10230,10 +10230,10 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get contacts_manageRepeater => 'Gerir repetidor';
 
   @override
-  String get contacts_manageRoom => 'Gerir room server';
+  String get contacts_manageRoom => 'Gerir sala';
 
   @override
-  String get contacts_roomLogin => 'Início de sessão no room server';
+  String get contacts_roomLogin => 'Entrar na sala';
 
   @override
   String get contacts_openChat => 'Abrir conversa';
@@ -10466,7 +10466,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get channels_usePublicChannel => 'Usar canal público';
 
   @override
-  String get channels_standardPublicPsk => 'PSK público padrão';
+  String get channels_standardPublicPsk => 'PSK pública padrão';
 
   @override
   String get channels_pskHex => 'PSK (Hex)';
@@ -10479,7 +10479,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get channels_pskMustBe32Hex =>
-      'A PSK tem de ter 32 caracteres hexadecimais';
+      'A PSK tem de ter 32 carateres hexadecimais';
 
   @override
   String channels_channelAdded(String name) {
@@ -10499,7 +10499,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get channels_cyr2latSettingsDscr =>
-      'Editar a configuração JSON da substituição de caracteres';
+      'Editar a configuração JSON da substituição de carateres';
 
   @override
   String get channels_cyr2latSettingsDialogHint => 'Mapa de substituição JSON';
@@ -10868,14 +10868,14 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get chat_ipfsUploadNotConfigured =>
-      'Configure primeiro um fornecedor de envio IPFS nas Definições da app.';
+      'Configure primeiro um fornecedor de carregamento IPFS nas Definições da app.';
 
   @override
   String get chat_ipfsSelectedFileEmpty => 'O ficheiro selecionado está vazio.';
 
   @override
   String get chat_ipfsEndpointInvalid =>
-      'O endpoint de envio IPFS tem de ser um endereço http:// ou https:// completo. Verifique-o nas Definições da app.';
+      'O endpoint de carregamento IPFS tem de ser um endereço http:// ou https:// completo. Verifique-o nas Definições da app.';
 
   @override
   String get chat_ipfsPinataTokenMissing =>
@@ -10887,7 +10887,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get chat_ipfsKuboPathInvalid =>
-      'O endpoint de envio Kubo tem de terminar em /api/v0/add. Verifique-o nas Definições da app.';
+      'O endpoint de carregamento Kubo tem de terminar em /api/v0/add. Verifique-o nas Definições da app.';
 
   @override
   String get chat_ipfsLinkNoRoom =>
@@ -10937,7 +10937,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get gifPicker_searchHint => 'Pesquisar GIFs...';
 
   @override
-  String get gifPicker_poweredBy => 'Desenvolvido por GIPHY';
+  String get gifPicker_poweredBy => 'Com tecnologia GIPHY';
 
   @override
   String get gifPicker_noGifsFound => 'Nenhum GIF encontrado';
@@ -11086,7 +11086,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get routing_modeDirectHint =>
-      'Envia sempre diretamente para este contacto, sem hops de repetidores. Use quando estiver no alcance de rádio.';
+      'Envia sempre diretamente para este contacto, sem hops de repetidores. Use-o quando o contacto estiver ao alcance do rádio.';
 
   @override
   String get routing_currentRoute => 'Rota atual';
@@ -11166,7 +11166,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get pathEditor_addHops => 'Adicionar hops por ordem';
 
   @override
-  String get pathEditor_searchRepeaters => 'Pesquisar repetidores';
+  String get pathEditor_searchRepeaters => 'Pesquisar nome ou hash';
 
   @override
   String get pathEditor_advancedHex => 'Avançado: caminho hex em bruto';
@@ -11176,7 +11176,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String pathEditor_hexHelper(int count) {
-    return '$count caracteres hex por hop, separados por vírgulas';
+    return '$count carateres hex por hop, separados por vírgulas';
   }
 
   @override
@@ -11533,7 +11533,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get map_guessedLocation => 'Localização estimada';
 
   @override
-  String get map_lastSeenTime => 'Hora da última vez visto';
+  String get map_lastSeenTime => 'Visto pela última vez';
 
   @override
   String get map_sharedPin => 'Marcador partilhado';
@@ -11617,11 +11617,11 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get manualTrace_errorInvalidHex =>
-      'Só são permitidos caracteres hex (0-9, A-F)';
+      'Só são permitidos carateres hex (0-9, A-F)';
 
   @override
   String get manualTrace_errorOddLength =>
-      'Cada hash precisa de um número par de caracteres hex, correspondente ao tamanho do hop';
+      'Cada hash precisa de um número par de carateres hex, correspondente ao tamanho do hop';
 
   @override
   String get manualTrace_errorMixedWidths =>
@@ -11629,7 +11629,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get manualTrace_errorUnsupportedWidth =>
-      'Os hashes têm de ter 1, 2 ou 3 bytes (2, 4 ou 6 caracteres hex)';
+      'Os hashes têm de ter 1, 2 ou 3 bytes (2, 4 ou 6 carateres hex)';
 
   @override
   String manualTrace_errorTooManyHops(int max) {
@@ -11807,7 +11807,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get time_minutes => 'minutos';
 
   @override
-  String get time_allTime => 'Sempre';
+  String get time_allTime => 'Todos';
 
   @override
   String get dialog_disconnect => 'Desligar';
@@ -11817,10 +11817,10 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Tem a certeza de que quer desligar deste dispositivo?';
 
   @override
-  String get login_repeaterLogin => 'Início de sessão do repetidor';
+  String get login_repeaterLogin => 'Entrar no repetidor';
 
   @override
-  String get login_roomLogin => 'Início de sessão do room server';
+  String get login_roomLogin => 'Entrar na sala';
 
   @override
   String get login_password => 'Palavra-passe';
@@ -11877,12 +11877,12 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String login_failed(String error) {
-    return 'Falha ao iniciar sessão: $error';
+    return 'Falha no login: $error';
   }
 
   @override
   String get login_failedMessage =>
-      'Falha ao iniciar sessão. A palavra-passe está incorreta ou o repetidor está inacessível.';
+      'Falha no login. A palavra-passe está incorreta ou o repetidor está inacessível.';
 
   @override
   String get common_reload => 'Recarregar';
@@ -11897,20 +11897,19 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get path_currentPathLabel => 'Caminho atual';
 
   @override
-  String get path_noRepeatersFound =>
-      'Nenhum repetidor ou room server encontrado.';
+  String get path_noRepeatersFound => 'Nenhum repetidor ou sala encontrado.';
 
   @override
   String get repeater_management => 'Gestão do repetidor';
 
   @override
-  String get room_management => 'Gestão do room server';
+  String get room_management => 'Gestão da sala';
 
   @override
   String get repeater_guest => 'Informações do repetidor';
 
   @override
-  String get room_guest => 'Informações do room server';
+  String get room_guest => 'Informações da sala';
 
   @override
   String get repeater_managementTools => 'Ferramentas de gestão';
@@ -11961,7 +11960,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_clockSyncAfterLoginSubtitle =>
-      'Predefinição segue Repetidores e salas nas definições. Ligado e Desligado valem só para este repetidor.';
+      'Predefinição segue Repetidores e salas nas definições da app. Ligado e Desligado aplicam-se só a este repetidor.';
 
   @override
   String get repeater_clockSyncDefault => 'Predefinição';
@@ -12017,7 +12016,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get repeater_lastSnr => 'Último SNR';
 
   @override
-  String get repeater_noiseFloor => 'Noise floor';
+  String get repeater_noiseFloor => 'Ruído de fundo';
 
   @override
   String get repeater_txAirtime => 'Airtime TX';
@@ -12328,7 +12327,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_prvKeyHelper =>
-      'Uma nova chave privada para o repetidor, uma cadeia hexadecimal de 128 caracteres.';
+      'Uma nova chave privada para o repetidor, uma cadeia hexadecimal de 128 carateres.';
 
   @override
   String get repeater_generatePrvKey => 'Gerar um par de chaves aleatório';
@@ -12446,7 +12445,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String repeater_refreshed(String label) {
-    return '$label atualizado';
+    return 'Atualizado: $label';
   }
 
   @override
@@ -12556,7 +12555,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpSetAllowReadOnly =>
-      '(Room server) Se \'on\', o início de sessão com palavra-passe em branco é permitido, mas não pode publicar na sala. (só leitura)';
+      '(Sala) Se \'on\', permite login sem palavra-passe. Leitura apenas, sem permissão para publicar.';
 
   @override
   String get repeater_cliHelpSetFloodMax =>
@@ -12614,7 +12613,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Igual a txdelay, mas aplica um atraso aleatório ao reencaminhamento de pacotes em modo direto.';
 
   @override
-  String get repeater_cliHelpSetBridgeEnabled => 'Ativar/desativar bridge.';
+  String get repeater_cliHelpSetBridgeEnabled => 'Ativar/desativar ponte.';
 
   @override
   String get repeater_cliHelpSetBridgeDelay =>
@@ -12622,15 +12621,15 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpSetBridgeSource =>
-      'Escolhe se a bridge retransmite pacotes recebidos ou transmitidos.';
+      'Escolhe se a ponte retransmite pacotes recebidos ou transmitidos.';
 
   @override
   String get repeater_cliHelpSetBridgeBaud =>
-      'Define o baudrate da ligação série para bridges rs232.';
+      'Define o baudrate da ligação série para pontes rs232.';
 
   @override
   String get repeater_cliHelpSetBridgeSecret =>
-      'Define o segredo da bridge para bridges espnow.';
+      'Define o segredo da ponte para pontes espnow.';
 
   @override
   String get repeater_cliHelpSetAdcMultiplier =>
@@ -12646,7 +12645,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpGetBridgeType =>
-      'Obtém o tipo de bridge: none, rs232, espnow';
+      'Obtém o tipo de ponte: none, rs232, espnow';
 
   @override
   String get repeater_cliHelpLogStart =>
@@ -12654,7 +12653,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpLogStop =>
-      'Pára o registo de pacotes no sistema de ficheiros.';
+      'Termina o registo de pacotes no sistema de ficheiros.';
 
   @override
   String get repeater_cliHelpLogErase =>
@@ -12678,7 +12677,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpRegionGet =>
-      'Procura a região com o prefixo de nome indicado (ou \"*\" para o âmbito global). Responde com \"-> region-name (parent-name) \'F\'\"';
+      'Procura a região com o prefixo de nome indicado (ou \"*\" para o scope global). Responde com \"-> region-name (parent-name) \'F\'\"';
 
   @override
   String get repeater_cliHelpRegionPut =>
@@ -12690,11 +12689,11 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpRegionAllowf =>
-      'Define a permissão \'F\'lood para a região indicada. (\'*\' para o âmbito global/legado)';
+      'Define a permissão \'F\'lood para a região indicada. (\'*\' para o scope global/legado)';
 
   @override
   String get repeater_cliHelpRegionDenyf =>
-      'Remove a permissão \'F\'lood da região indicada. (NOTA: nesta fase NÃO é aconselhável usar isto no âmbito global/legado!!)';
+      'Remove a permissão \'F\'lood da região indicada. (NOTA: nesta fase NÃO é aconselhável usar isto no scope global/legado!!)';
 
   @override
   String get repeater_cliHelpRegionHome =>
@@ -12772,7 +12771,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpSetFloodMaxUnscoped =>
-      'Define o número máximo de hops para reencaminhar pacotes Flood sem âmbito de região (0-64).';
+      'Define o número máximo de hops para reencaminhar pacotes Flood sem scope de região (0-64).';
 
   @override
   String get repeater_cliHelpSetFloodMaxAdvert =>
@@ -12780,7 +12779,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpGetFloodMaxUnscoped =>
-      'Mostra o número máximo de hops para pacotes Flood sem âmbito.';
+      'Mostra o número máximo de hops para pacotes Flood unscoped.';
 
   @override
   String get repeater_cliHelpGetFloodMaxAdvert =>
@@ -12804,7 +12803,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_bridgeNote =>
-      'Só disponível em firmware compilado com bridge (RS232 ou ESP-NOW).';
+      'Só disponível em firmware compilado com ponte (RS232 ou ESP-NOW).';
 
   @override
   String get repeater_general => 'Geral';
@@ -12899,7 +12898,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpSetOwnerInfo =>
-      'Define a cadeia de contacto do proprietário incluída nos anúncios. Use \'|\' para novas linhas.';
+      'Define o texto de contacto do proprietário incluído nos anúncios. Use \'|\' para novas linhas.';
 
   @override
   String get repeater_cliHelpSetPathHashMode =>
@@ -12915,14 +12914,14 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpSetBridgeChannel =>
-      '(só bridge ESPNow) Define o canal WiFi (1-14) usado pela bridge.';
+      '(só ponte ESPNow) Define o canal WiFi (1-14) usado pela ponte.';
 
   @override
   String get repeater_cliHelpGetName => 'Mostra o nome do nó configurado.';
 
   @override
   String get repeater_cliHelpGetRole =>
-      'Mostra a função do firmware (Repetidor, Room Server, etc.).';
+      'Mostra a função do firmware (Repetidor, Sala, etc.).';
 
   @override
   String get repeater_cliHelpGetPublicKey =>
@@ -13009,7 +13008,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpGetOwnerInfo =>
-      'Mostra a cadeia de contacto do proprietário.';
+      'Mostra o texto de contacto do proprietário.';
 
   @override
   String get repeater_cliHelpGetPathHashMode =>
@@ -13025,27 +13024,27 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpGetBridgeEnabled =>
-      'Mostra se a bridge está ativada.';
+      'Mostra se a ponte está ativada.';
 
   @override
   String get repeater_cliHelpGetBridgeDelay =>
-      'Mostra o atraso da bridge em ms.';
+      'Mostra o atraso da ponte em ms.';
 
   @override
   String get repeater_cliHelpGetBridgeSource =>
-      'Mostra se a bridge regista pacotes RX ou TX.';
+      'Mostra se a ponte regista pacotes RX ou TX.';
 
   @override
   String get repeater_cliHelpGetBridgeBaud =>
-      '(só bridge RS232) Mostra o baud rate da bridge.';
+      '(só ponte RS232) Mostra o baud rate da ponte.';
 
   @override
   String get repeater_cliHelpGetBridgeChannel =>
-      '(só bridge ESPNow) Mostra o canal WiFi da bridge.';
+      '(só ponte ESPNow) Mostra o canal WiFi da ponte.';
 
   @override
   String get repeater_cliHelpGetBridgeSecret =>
-      '(só bridge ESPNow) Mostra o segredo partilhado da bridge.';
+      '(só ponte ESPNow) Mostra o segredo partilhado da ponte.';
 
   @override
   String get repeater_cliHelpGetBootloaderVer =>
@@ -13085,11 +13084,11 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get repeater_cliHelpRegionDefault =>
-      'Mostra o âmbito de região predefinido atual.';
+      'Mostra o scope de região predefinido atual.';
 
   @override
   String get repeater_cliHelpRegionDefaultSet =>
-      'Define o âmbito de região predefinido. Use \"<null>\" para limpar.';
+      'Define o scope de região predefinido. Use \"<null>\" para limpar.';
 
   @override
   String get repeater_cliHelpRegionListAllowed =>
@@ -13533,7 +13532,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String community_deleteChannelsWarning(int count) {
-    return 'Isto também elimina $count canal(ais) e as respetivas mensagens.';
+    return 'Isto também elimina $count canal/canais e as respetivas mensagens.';
   }
 
   @override
@@ -13585,14 +13584,14 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get community_regularHashtagDesc =>
-      'Hashtag público (qualquer pessoa pode entrar)';
+      'Hashtag pública (qualquer pessoa pode entrar)';
 
   @override
   String get community_communityHashtag => 'Hashtag da comunidade';
 
   @override
   String get community_communityHashtagDesc =>
-      'Privado para membros da comunidade';
+      'Privada para membros da comunidade';
 
   @override
   String community_forCommunity(String name) {
@@ -13636,7 +13635,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get listFilter_repeaters => 'Repetidores';
 
   @override
-  String get listFilter_roomServers => 'Servidores de sala';
+  String get listFilter_roomServers => 'Salas';
 
   @override
   String get listFilter_unreadOnly => 'Só não lidas';
@@ -13687,7 +13686,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Toque nos nós ou prima longamente o mapa para pontos personalizados';
 
   @override
-  String get losShowDisplayNodes => 'Mostrar nós de visualização';
+  String get losShowDisplayNodes => 'Mostrar nós no mapa';
 
   @override
   String get losCustomPoints => 'Pontos personalizados';
@@ -13846,10 +13845,10 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get contacts_repeaterPing => 'Ping ao repetidor';
 
   @override
-  String get contacts_roomPathTrace => 'Trace do caminho até ao room server';
+  String get contacts_roomPathTrace => 'Trace do caminho até à sala';
 
   @override
-  String get contacts_roomPing => 'Ping ao room server';
+  String get contacts_roomPing => 'Ping à sala';
 
   @override
   String get contacts_chatTraceRoute => 'Rota do trace do caminho';
@@ -14035,7 +14034,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String notification_reacted(String emoji) {
-    return 'Reagiu $emoji';
+    return 'Reagiu com $emoji';
   }
 
   @override
@@ -14130,7 +14129,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get settings_gpxExportRepeatersRoom =>
-      'Localizações de repetidores e room servers';
+      'Localizações de repetidores e salas';
 
   @override
   String get settings_gpxExportChat => 'Localizações de companions';
@@ -14185,7 +14184,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get contactsSettings_autoAddRepeatersTitle => 'Repetidores';
 
   @override
-  String get contactsSettings_autoAddRoomServersTitle => 'Servidores de sala';
+  String get contactsSettings_autoAddRoomServersTitle => 'Salas';
 
   @override
   String get contactsSettings_autoAddSensorsTitle => 'Sensores';
@@ -14264,7 +14263,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get discoveredContacts_scanExplanation =>
-      'Pede aos nós ao alcance direto do rádio que se identifiquem. Repetidores e sensores respondem. Room servers e companions normalmente não.';
+      'Pede aos nós ao alcance direto do rádio que se identifiquem. Repetidores e sensores respondem. Salas e companions normalmente não.';
 
   @override
   String get discoveredContacts_scanning => 'A procurar…';
@@ -14451,7 +14450,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get translation_composerSubtitle =>
-      'Controla o estado predefinido do ícone de tradução do compositor.';
+      'Controla o estado predefinido do ícone de tradução no campo de mensagem.';
 
   @override
   String get translation_autoIncomingTitle =>
@@ -14465,10 +14464,10 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get translation_translateMessage => 'Traduzir mensagem';
 
   @override
-  String get translation_targetLanguage => 'Idioma de destino';
+  String get translation_targetLanguage => 'Língua de destino';
 
   @override
-  String get translation_useAppLanguage => 'Usar o idioma da app';
+  String get translation_useAppLanguage => 'Usar a língua da app';
 
   @override
   String get translation_downloadedModelLabel => 'Modelo transferido';
@@ -14477,7 +14476,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get translation_presetModelLabel => 'Modelo Hugging Face predefinido';
 
   @override
-  String get translation_manualUrlLabel => 'URL do modelo manual';
+  String get translation_manualUrlLabel => 'URL manual do modelo';
 
   @override
   String get translation_downloadModel => 'Transferir modelo';
@@ -14542,7 +14541,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get translation_composerDisabledHint =>
-      'Enviar mensagens no idioma original escrito.';
+      'As mensagens são enviadas na língua em que foram escritas.';
 
   @override
   String translation_translateTo(String language) {
@@ -14553,7 +14552,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get translation_translationOptions => 'Opções de tradução';
 
   @override
-  String get translation_systemLanguage => 'Idioma do sistema';
+  String get translation_systemLanguage => 'Língua do sistema';
 
   @override
   String get background_serviceTitle => 'MeshCore em execução';
@@ -14960,7 +14959,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Imagem recebida — a descodificação de imagens está desativada';
 
   @override
-  String get receivedImage_evicted => 'Imagem já não guardada';
+  String get receivedImage_evicted => 'A imagem já não está guardada';
 
   @override
   String get receivedImage_retry => 'Tentar novamente';
@@ -15078,11 +15077,11 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Máximo de hops que um anúncio em flood pode percorrer (0-64, predefinição 8)';
 
   @override
-  String get repeater_floodMaxUnscoped => 'Máx. hops de flood sem âmbito';
+  String get repeater_floodMaxUnscoped => 'Máx. hops de flood unscoped';
 
   @override
   String get repeater_floodMaxUnscopedHelper =>
-      'Máximo de hops para floods sem âmbito de região (0-64, predefinição 64). Um valor baixo, como 3, mantém o tráfego sem âmbito local.';
+      'Máximo de hops para floods sem scope de região (0-64, predefinição 64). Um valor baixo, como 3, mantém local o tráfego unscoped.';
 
   @override
   String get repeater_floodMaxUnscopedUnset => 'Igual ao máx. de flood';
@@ -15732,7 +15731,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get networkMap_locationEstimated =>
-      'Localização aproximada, estimada por quem o ouviu';
+      'Localização aproximada, estimada a partir de quem o ouviu';
 
   @override
   String get networkMap_locationAdvertised =>
@@ -15880,7 +15879,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
-      'Sequências longas do mesmo carater, como \"aaaaaaaaaaaaaaaaaaaa\"';
+      'Sequências longas do mesmo caráter, como \"aaaaaaaaaaaaaaaaaaaa\"';
 
   @override
   String get messageFilter_learning => 'Aprender com os toques em Spam';
@@ -16134,7 +16133,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get addContact_publicKeyInvalid =>
-      'A chave pública deve ter 64 caracteres hexadecimais (32 bytes)';
+      'A chave pública deve ter 64 carateres hexadecimais (32 bytes)';
 
   @override
   String get addContact_clipboardKeyLoaded =>
@@ -16332,11 +16331,11 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String chess_playerYou(String name) {
-    return '$name (você)';
+    return '$name (eu)';
   }
 
   @override
-  String get chess_toMoveChip => 'Por jogar';
+  String get chess_toMoveChip => 'Vez de jogar';
 
   @override
   String get chess_statusYourMove => 'É a sua vez';
@@ -16551,7 +16550,7 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String chess_notifyResigned(String name) {
-    return '$name desistiu. Venceu.';
+    return '$name desistiu. A vitória é sua.';
   }
 
   @override
