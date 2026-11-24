@@ -69,13 +69,38 @@ void main() {
     for (final room in [false, true]) {
       final p = room ? 'room' : 'dm';
       _view(tester, const Size(400, 800));
-      await _pumpChat(tester, room: room);
+      final (connector, chat) = await _pumpChat(tester, room: room);
+      // Room posts name their author by key prefix; the bookmark must carry
+      // that author's name, not the room server's.
+      final authors = connector.contacts
+          .where((c) => c.type == advTypeChat)
+          .take(2)
+          .toList();
+      final posts = ['by author one', 'by author two'];
+      if (room) {
+        expect(authors, hasLength(2));
+        for (var i = 0; i < 2; i++) {
+          connector.handleFrameForTest(
+            _roomPost(chat, authors[i], posts[i], _stamp++),
+          );
+        }
+        await _settle(tester);
+      }
       await _enterChatSelection(tester, '$p 8');
       await tester.tap(
         find.textContaining('$p 9', findRichText: true),
         warnIfMissed: false,
       );
       await tester.pump(const Duration(milliseconds: 250));
+      if (room) {
+        for (final post in posts) {
+          await tester.tap(
+            find.textContaining(post, findRichText: true),
+            warnIfMissed: false,
+          );
+          await tester.pump(const Duration(milliseconds: 250));
+        }
+      }
       await tester.tap(find.byTooltip('Bookmark'));
       await _settle(tester);
       // Bookmarks are stored per radio in the preferences; the writes
@@ -85,7 +110,11 @@ void main() {
         for (final key in prefs.getKeys())
           if (key.startsWith('message_bookmarks_')) prefs.getString(key) ?? '',
       ].join();
-      for (var i = 0; i < 200 && !stored().contains('$p 9'); i++) {
+      for (
+        var i = 0;
+        i < 200 && !stored().contains(room ? posts[1] : '$p 9');
+        i++
+      ) {
         await tester.runAsync(
           () => Future<void>.delayed(const Duration(milliseconds: 50)),
         );
@@ -95,6 +124,16 @@ void main() {
       expect(saved, contains('"text":"$p 8"'));
       expect(saved, contains('"text":"$p 9"'));
       expect(saved, isNot(contains('"text":"$p 7"')));
+      if (room) {
+        for (var i = 0; i < 2; i++) {
+          final entry = RegExp(
+            '\\{[^{}]*"text":"${posts[i]}"[^{}]*\\}',
+          ).firstMatch(saved)?.group(0);
+          expect(entry, isNotNull, reason: 'missing ${posts[i]}');
+          expect(entry, contains('"senderName":"${authors[i].name}"'));
+          expect(entry, isNot(contains('"senderName":"${chat.name}"')));
+        }
+      }
       expect(find.textContaining('selected'), findsNothing);
       await tester.pumpWidget(const SizedBox());
     }
@@ -358,6 +397,24 @@ void main() {
       });
     }
   });
+}
+
+/// A room-server post: a signed contact message whose 4-byte "signature" is
+/// the author's public key prefix.
+Uint8List _roomPost(Contact room, Contact author, String text, int stamp) {
+  final writer = BufferWriter();
+  writer.writeByte(respCodeContactMsgRecvV3);
+  writer.writeByte(24);
+  writer.writeByte(0);
+  writer.writeByte(0);
+  writer.writeBytes(Uint8List.fromList(room.publicKey.sublist(0, 6)));
+  writer.writeByte(0xFF);
+  writer.writeByte(txtTypeSigned);
+  writer.writeUInt32LE(stamp);
+  writer.writeBytes(Uint8List.fromList(author.publicKey.sublist(0, 4)));
+  writer.writeString(text);
+  writer.writeByte(0);
+  return writer.toBytes();
 }
 
 String? clipboard;

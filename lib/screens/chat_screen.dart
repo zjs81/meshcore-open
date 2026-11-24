@@ -837,12 +837,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           if (isRoom) {
             // Room-server messages carry the original author's 4-byte prefix
             // separately from message.text; use it only for resolving the name.
-            roomAuthor = _resolveContactFrom4Bytes(
-              connector,
-              message.fourByteRoomContactKey.isEmpty
-                  ? Uint8List.fromList([0, 0, 0, 0])
-                  : message.fourByteRoomContactKey,
-            );
+            roomAuthor = _roomAuthorOf(connector, message);
             fourByteHex = message.fourByteRoomContactKey
                 .map((b) => b.toRadixString(16).padLeft(2, '0'))
                 .join()
@@ -886,8 +881,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                   ? AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary
-                            .withValues(alpha: 0.18),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(MeshRadii.md),
                       ),
                       child: bubble,
@@ -1116,6 +1112,15 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     }
     return connector.contacts[_resolveContactIndex];
   }
+
+  /// The known author of a room-server post, or null when unknown.
+  Contact? _roomAuthorOf(MeshCoreConnector connector, Message message) =>
+      _resolveContactFrom4Bytes(
+        connector,
+        message.fourByteRoomContactKey.isEmpty
+            ? Uint8List.fromList([0, 0, 0, 0])
+            : message.fourByteRoomContactKey,
+      );
 
   Contact? _resolveContactFrom4Bytes(
     MeshCoreConnector connector,
@@ -1715,6 +1720,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   void _bulkBookmark(List<Message> messages) {
     final connector = context.read<MeshCoreConnector>();
     final contact = _resolveContact(connector);
+    final isRoom = contact.type == advTypeRoom;
     final me = connector.selfName ?? context.l10n.chat_me;
     setState(_selectedIds.clear);
     for (final m in messages) {
@@ -1724,7 +1730,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
             message: m,
             contactKey: widget.contact.publicKeyHex,
             contactName: widget.contact.name,
-            senderName: m.isOutgoing ? me : contact.name,
+            senderName: m.isOutgoing
+                ? me
+                : (isRoom ? _roomAuthorOf(connector, m) : null)?.name ??
+                      contact.name,
           ),
           isBookmarked: true,
         ),
