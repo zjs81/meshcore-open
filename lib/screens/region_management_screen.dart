@@ -12,6 +12,7 @@ import 'package:meshcore_open/storage/region_store.dart';
 import 'package:meshcore_open/theme/mesh_theme.dart';
 import 'package:meshcore_open/utils/radio_guard.dart';
 import 'package:meshcore_open/widgets/mesh_ui.dart';
+import 'package:meshcore_open/widgets/sync_progress_overlay.dart';
 import 'package:provider/provider.dart';
 
 Future<void> pushRegionManagementScreen(BuildContext context) {
@@ -36,6 +37,7 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
   final RegionStore _regionStore = RegionStore();
   List<Region> _regions = [];
   bool _isFetchingRegions = false;
+  bool _settingRadioDefault = false;
 
   /// Completed when the user cancels an in-progress fetch; pending discovery
   /// and region requests resolve immediately with no results.
@@ -89,14 +91,17 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
             tooltip: l10n.settings_regionFetchRegions,
             icon: _isFetchingRegions
                 ? const SizedBox(
-                    width: 20,
-                    height: 20,
+                    width: 18,
+                    height: 18,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.travel_explore),
             onPressed: canFetch ? _showFetchRegionsDialog : null,
           ),
         ],
+        bottom: MeshProgressAppBarBottom(
+          active: _isFetchingRegions || _settingRadioDefault,
+        ),
       ),
       body: _regions.isEmpty
           ? _buildEmptyState(context)
@@ -258,7 +263,16 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
               child: Text(region, overflow: TextOverflow.ellipsis),
             ),
         ],
-        onChanged: (value) => _setRadioDefaultRegion(connector, value ?? ''),
+        icon: _settingRadioDefault
+            ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : null,
+        onChanged: _settingRadioDefault
+            ? null
+            : (value) => _setRadioDefaultRegion(connector, value ?? ''),
       ),
     );
   }
@@ -268,6 +282,7 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
     Region region,
   ) async {
     final l10n = context.l10n;
+    setState(() => _settingRadioDefault = true);
     try {
       await connector.setDefaultFloodScope(region);
       if (!mounted) return;
@@ -281,6 +296,8 @@ class _RegionManagementScreenState extends State<RegionManagementScreen> {
         context,
         content: Text(l10n.settings_regionRadioDefaultFailed),
       );
+    } finally {
+      if (mounted) setState(() => _settingRadioDefault = false);
     }
   }
 

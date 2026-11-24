@@ -70,6 +70,8 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   int _inspectionGeneration = 0;
   bool _hasInitializedImportSelection = false;
   bool _busy = false;
+  // Only the radio steps, not the save or share dialogs, move the bar.
+  bool _waitingForRadio = false;
 
   @override
   void dispose() {
@@ -89,7 +91,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           subtitle: false,
         ),
         centerTitle: true,
-        bottom: const SyncProgressAppBarBottom(),
+        bottom: SyncProgressAppBarBottom(busy: _waitingForRadio),
       ),
       body: SafeArea(
         top: false,
@@ -384,7 +386,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     final l10n = context.l10n;
     final connector = context.read<MeshCoreConnector>();
     final shareOrigin = shareOriginOf(context);
-    setState(() => _busy = true);
+    setState(() => _busy = _waitingForRadio = true);
     try {
       final contents = await _backupService.createBackup(
         items: Set<BackupItem>.of(_selectedItems),
@@ -393,6 +395,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         password: _passwordController.text,
       );
       if (!mounted) return;
+      setState(() => _waitingForRadio = false);
       final deviceName = (connector.selfName ?? '')
           .trim()
           .replaceAll(RegExp(r'[<>:"/\\|?*\x00-\x1f]'), '_')
@@ -431,7 +434,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         _showMessage(l10n.backupRestore_failed(error.toString()));
       }
     } finally {
-      if (mounted) setState(() => _busy = false);
+      if (mounted) setState(() => _busy = _waitingForRadio = false);
     }
   }
 
@@ -445,7 +448,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     final imageCodecService = context.read<ImageCodecService>();
     final needsKeyConfirmation = _selectedItems.contains(BackupItem.privateKey);
     if (needsKeyConfirmation && !await _confirmIdentityReplacement()) return;
-    setState(() => _busy = true);
+    setState(() => _busy = _waitingForRadio = true);
     try {
       await _backupService.restoreBackup(
         contents: _importContents!,
@@ -454,6 +457,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         connector: connector,
         appSettingsService: appSettingsService,
       );
+      if (mounted) setState(() => _waitingForRadio = false);
       if (_selectedItems.any(
         (item) =>
             item == BackupItem.appSettings ||
@@ -494,7 +498,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         _showMessage(l10n.backupRestore_failed(error.toString()));
       }
     } finally {
-      if (mounted) setState(() => _busy = false);
+      if (mounted) setState(() => _busy = _waitingForRadio = false);
     }
   }
 

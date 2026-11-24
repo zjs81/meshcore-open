@@ -6,6 +6,7 @@ import '../utils/radio_guard.dart';
 import 'adaptive_app_bar_title.dart';
 import 'mesh_nav_tile.dart';
 import 'radio_disconnected_banner.dart';
+import 'sync_progress_overlay.dart';
 
 /// Asks before leaving with unsaved edits: Cancel, Discard or Save. A
 /// successful save closes the page.
@@ -179,6 +180,8 @@ class SaveToRadioPageState extends State<SaveToRadioPage> {
               onPressed: canSave ? save : null,
             ),
           ],
+          // Moves while the save waits for the radio.
+          bottom: MeshProgressAppBarBottom(active: _saving),
         ),
         body: MeshSettingsTileTheme(
           child: SafeArea(

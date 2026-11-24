@@ -419,7 +419,10 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
           ],
         ),
         centerTitle: true,
-        bottom: const SyncProgressAppBarBottom(),
+        // Auto-refresh is background polling, so it doesn't move the bar.
+        bottom: SyncProgressAppBarBottom(
+          busy: _isLoading && !_activeTelemetryRequestIsAutoRefresh,
+        ),
         actions: [
           if (!widget.isSelf)
             IconButton(
@@ -431,8 +434,8 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
           IconButton(
             icon: _isLoading
                 ? const SizedBox(
-                    width: 20,
-                    height: 20,
+                    width: 18,
+                    height: 18,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.refresh),

@@ -257,7 +257,7 @@ Layout follows App Settings: `SectionHeader` + `MeshCard` groups, an optional `M
 | Only in the app | On each change; no Save button | App Settings, Message filter, Themes |
 | On a radio | Only on Save | Node Name, Radio Settings, Location, Contact Settings, Privacy, Repeater Settings |
 
-Pages that save to a radio use `SaveToRadioPage` (`lib/widgets/unsaved_changes_guard.dart`). It adds `MeshSettingsTileTheme`, `RadioDisconnectedBanner`, the app bar Save, the leave warning, the connection check and the error snackbar.
+Pages that save to a radio use `SaveToRadioPage` (`lib/widgets/unsaved_changes_guard.dart`). It adds `MeshSettingsTileTheme`, `RadioDisconnectedBanner`, the app bar Save (an 18px spinner and a moving `MeshProgressAppBarBottom` while saving), the leave warning, the connection check and the error snackbar.
 
 - Show every setting the page saves, filled with the radio's last reported value.
 - Save appears when a field differs from the saved value and hides when it's changed back. It's disabled offline, while saving, or while a field is invalid (`canSave`).
@@ -352,7 +352,7 @@ The current code does not yet follow this page everywhere:
 - **Menu rows not using `MeshMenuItemRow`.** `channel_chat_screen.dart` bulk-select menu (Select all / Copy) puts a `ListTile` inside `PopupMenuItem`. `widgets/list_filter_widget.dart` and the group menu in `contacts_screen.dart` use plain `Text` items, which is acceptable for icon-less lists but does not limit wrapping.
 - **Tile titles without `MeshSettingsTileTheme`.** Backup & Restore (`CheckboxListTile`) and Themes (`SwitchListTile`) do not wrap their body in it, so those titles are not semibold like the other settings rows.
 - **Bars inside content.** The map cache download bar (`map_cache_screen.dart`) uses a fixed `MeshPalette.blue`.
-- **Radio waits not shown yet.** `SaveToRadioPage` pages show the Save spinner but no top bar. Other radio actions are not reviewed yet.
+- **Radio waits not shown yet** ([Progress bars](#progress-bars) rule 7). Repeater Settings: Save shows no spinner or top bar. Outside Settings: removing or favouriting a contact, adding one from Discovered Contacts or the network map, Set as my location, the routing sheet's path check, map Request location, path trace, QR imports and the node scan sheet. Some controls use 20-28px spinners instead of 18px.
 - **`ErrorRetryCard` is unused** and its fallback label is the hard-coded English `'Retry'` (`mesh_ui.dart`); screens show load errors in their own ways.
 - **Fixed-width label boxes.** `chat_screen.dart` `_buildInfoRow` (80px), `line_of_sight_map_screen.dart` endpoint label (54px, `fontSize: 12`), `channel_message_path_screen.dart` (72px, upper-cased `accentLabel` at its 11px default).
 - **11px text.** `MeshTheme.accentLabel()` without `fontSize` gives 11px in `channel_message_path_screen.dart`. The type scale's `labelSmall` (11) is used in `list_filter_widget.dart` section titles.

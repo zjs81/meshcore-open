@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ import 'package:meshcore_open/screens/node_name_screen.dart';
 import 'package:meshcore_open/screens/privacy_settings_screen.dart';
 import 'package:meshcore_open/screens/radio_settings_screen.dart';
 import 'package:meshcore_open/screens/settings_screen.dart';
+import 'package:meshcore_open/screens/telemetry_screen.dart';
 import 'package:meshcore_open/services/app_debug_log_service.dart';
 import 'package:meshcore_open/services/app_settings_service.dart';
 import 'package:meshcore_open/services/ble_debug_log_service.dart';
@@ -235,6 +237,88 @@ void main() {
     );
     expect(find.text('field'), findsOneWidget);
     expect(tester.widget<TextButton>(_saveAction).onPressed, isNotNull);
+  });
+
+  testWidgets('SaveToRadioPage shows the top bar while saving', (tester) async {
+    final connector = await _connectedConnector(tester);
+    final reply = Completer<bool>();
+    await tester.pumpWidget(
+      _app(
+        connector,
+        _launcher(
+          SaveToRadioPage(
+            title: 'Page',
+            hasChanges: true,
+            onSave: () => reply.future,
+            children: const [Text('field')],
+          ),
+        ),
+      ),
+    );
+    await _open(tester);
+    final bar = find.descendant(
+      of: find.byType(AppBar),
+      matching: find.byType(LinearProgressIndicator),
+    );
+    expect(bar, findsNothing);
+
+    await tester.tap(_saveAction);
+    await tester.pump();
+    expect(bar, findsOneWidget);
+
+    reply.complete(true);
+    await tester.pump();
+    await tester.pump();
+    expect(bar, findsNothing);
+  });
+
+  testWidgets('Telemetry moves the top bar for a fetch, not auto-refresh', (
+    tester,
+  ) async {
+    final connector = await _connectedConnector(tester);
+    // The connect-time sync shows the same bar, so let it finish first.
+    await _waitFor(
+      tester,
+      () =>
+          !connector.isLoadingContacts &&
+          !connector.isSyncingChannels &&
+          !connector.isShowingQueuedMessageSyncProgress,
+    );
+    await tester.pumpWidget(
+      _app(
+        connector,
+        Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () => pushSelfTelemetryScreen(context),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    final bar = find.descendant(
+      of: find.byType(AppBar),
+      matching: find.byType(LinearProgressIndicator),
+    );
+    // The fetch on open is a user request. The review radio doesn't answer
+    // self requests, so it times out after 5s.
+    expect(bar, findsOneWidget);
+    await tester.pump(const Duration(seconds: 6));
+    expect(bar, findsNothing);
+
+    final enable = find.text(_l10n.common_enable);
+    await tester.ensureVisible(enable);
+    await tester.tap(enable);
+    await tester.pump();
+    expect(find.text(_l10n.common_disable), findsOneWidget);
+    expect(bar, findsNothing);
+
+    await tester.tap(find.text(_l10n.common_disable));
+    await tester.pump(const Duration(seconds: 6));
   });
 
   testWidgets('Settings rows open pages, not dialogs', (tester) async {
