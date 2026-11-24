@@ -4345,6 +4345,30 @@ abstract class AppLocalizations {
   /// **'Remove bookmark'**
   String get bookmarks_remove;
 
+  /// No description provided for @bookmarks_removeConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Bookmark'**
+  String get bookmarks_removeConfirmTitle;
+
+  /// No description provided for @bookmarks_removeConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this message from your bookmarks?'**
+  String get bookmarks_removeConfirmMessage;
+
+  /// No description provided for @bookmarks_removeSelectedConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Bookmarks'**
+  String get bookmarks_removeSelectedConfirmTitle;
+
+  /// No description provided for @bookmarks_removeSelectedConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {count} messages from your bookmarks?'**
+  String bookmarks_removeSelectedConfirmMessage(int count);
+
   /// No description provided for @chat_selectMessages.
   ///
   /// In en, this message translates to:

@@ -373,6 +373,7 @@ void main() {
         expect(_openMenuEntries(tester), [
           _l10n.addContact_title,
           _l10n.discoveredContacts_Title,
+          _l10n.bookmarks_title,
           '---',
           _l10n.contacts_zeroHopAdvert,
           _l10n.contacts_floodAdvert,
@@ -387,6 +388,7 @@ void main() {
           _menuItemByLabel(_l10n.discoveredContacts_Title).enabled,
           isTrue,
         );
+        expect(_menuItemByLabel(_l10n.bookmarks_title).enabled, isTrue);
         expect(
           _menuItemByLabel(_l10n.contacts_zeroHopAdvert).enabled,
           connected,

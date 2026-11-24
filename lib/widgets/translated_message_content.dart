@@ -10,6 +10,7 @@ class TranslatedMessageContent extends StatelessWidget {
   final Color? backgroundColor;
   final bool showOriginalFirst;
   final VoidCallback? onSecondaryTap;
+  final bool selectable;
 
   const TranslatedMessageContent({
     super.key,
@@ -20,6 +21,7 @@ class TranslatedMessageContent extends StatelessWidget {
     this.backgroundColor,
     this.showOriginalFirst = true,
     this.onSecondaryTap,
+    this.selectable = true,
   });
 
   @override
@@ -42,6 +44,7 @@ class TranslatedMessageContent extends StatelessWidget {
                 ),
             backgroundColor: backgroundColor,
             onSecondaryTap: onSecondaryTap,
+            selectable: selectable,
           )
         : null;
     final translatedWidget = LinkHandler.buildLinkifyText(
@@ -50,6 +53,7 @@ class TranslatedMessageContent extends StatelessWidget {
       style: style,
       backgroundColor: backgroundColor,
       onSecondaryTap: onSecondaryTap,
+      selectable: selectable,
     );
 
     if (!shouldShowOriginal) {

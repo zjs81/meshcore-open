@@ -44,6 +44,7 @@ import '../widgets/chat_zoom_wrapper.dart';
 import '../widgets/message_bubble_frame.dart';
 import '../widgets/reaction_chips.dart';
 import '../widgets/chat_day_separator.dart';
+import 'bookmarks_screen.dart';
 import 'channel_message_path_screen.dart';
 import 'contacts_screen.dart' show confirmRemoveContact;
 import 'map_screen.dart';
@@ -97,13 +98,12 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   final _textController = TextEditingController();
   final _scrollController = ChatScrollController();
   final _scrollAnchor = ChatScrollAnchor();
-  ({String id, bool bookmarksOnly})? _newestRow;
+  String? _newestRowId;
   final _textFieldFocusNode = FocusNode();
   bool _focusLostWhileAway = false;
   bool _focusLostToRoute = false;
   final GlobalKey _unreadScrollKey = GlobalKey();
   bool _isLoadingOlder = false;
-  bool _showBookmarkedOnly = false;
   MeshCoreConnector? _connector;
   Message? _pendingUnreadScrollTarget;
   String? _unreadDividerMessageId;
@@ -513,8 +513,15 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                           case 'settings':
                             _showContactSettings(context);
                           case 'showBookmarks':
-                            setState(
-                              () => _showBookmarkedOnly = !_showBookmarkedOnly,
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BookmarksScreen(
+                                  initialSourceType: BookmarkSourceType.contact,
+                                  initialSourceId: widget.contact.publicKeyHex,
+                                  initialSourceName: contact.name,
+                                ),
+                              ),
                             );
                           case 'background':
                             showChatBackgroundSheet(
@@ -586,13 +593,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         PopupMenuItem(
                           value: 'showBookmarks',
                           child: MeshMenuItemRow(
-                            icon: _showBookmarkedOnly
-                                ? Icons.bookmark
-                                : Icons.bookmark_border,
-                            label: context.l10n.chat_showBookmarks,
-                            color: _showBookmarkedOnly
-                                ? const Color(0xFFFFE54A)
-                                : null,
+                            icon: Icons.bookmark_border,
+                            label: context.l10n.bookmarks_title,
                           ),
                         ),
                         PopupMenuItem(
@@ -697,7 +699,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildEmptyState() {
-    if (_showBookmarkedOnly) return _buildBookmarkEmptyState();
     return EmptyState(
       icon: Icons.chat_bubble_outline,
       title: context.l10n.chat_noMessages,
@@ -707,40 +708,25 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildBookmarkEmptyState() => EmptyState(
-    icon: Icons.bookmark_border,
-    title: context.l10n.bookmarks_empty,
-  );
-
   Widget _buildMessageList(
     List<Message> messages,
     MeshCoreConnector connector,
   ) {
-    final visibleMessages = _showBookmarkedOnly
-        ? messages.where((message) => message.isBookmarked).toList()
-        : messages;
-    if (_showBookmarkedOnly && visibleMessages.isEmpty) {
-      return _buildBookmarkEmptyState();
-    }
     // Reverse messages so newest appear at bottom with reverse: true
-    final reversedMessages = visibleMessages.reversed.toList();
+    final reversedMessages = messages.reversed.toList();
     final itemCount = reversedMessages.length + (_isLoadingOlder ? 1 : 0);
 
     // A reader scrolled up keeps their place when messages arrive below, as
     // a room's backlog does in a burst right after login.
-    final previous = _newestRow;
-    final newest = (
-      id: reversedMessages.first.messageId,
-      bookmarksOnly: _showBookmarkedOnly,
-    );
-    _newestRow = newest;
-    if (previous != null &&
-        previous.bookmarksOnly == newest.bookmarksOnly &&
-        previous.id != newest.id &&
+    final previousId = _newestRowId;
+    final newestId = reversedMessages.first.messageId;
+    _newestRowId = newestId;
+    if (previousId != null &&
+        previousId != newestId &&
         _pendingUnreadScrollTarget == null &&
         _scrollController.showJumpToBottom.value) {
       final inserted = reversedMessages.indexWhere(
-        (m) => m.messageId == previous.id,
+        (m) => m.messageId == previousId,
       );
       if (inserted > 0) _scrollAnchor.rowsInsertedBelow(inserted);
     }
@@ -825,7 +811,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                     : contact.name,
                 sourceId: widget.contact.publicKeyHex,
                 textScale: textScale,
-                isBookmarked: message.isBookmarked || _showBookmarkedOnly,
+                isBookmarked: message.isBookmarked,
                 onLongPress: () => _showMessageActions(message, contact),
                 onRetryReaction: (msg, emoji) =>
                     _sendReaction(msg, contact, emoji),
@@ -1488,22 +1474,23 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       ? context.l10n.chat_removeBookmark
                       : context.l10n.chat_bookmark,
                 ),
-                onTap: () {
+                onTap: () async {
+                  final connector = context.read<MeshCoreConnector>();
+                  final selfLabel = connector.selfName ?? context.l10n.chat_me;
                   Navigator.pop(sheetContext);
+                  if (message.isBookmarked) {
+                    final confirmed = await confirmRemoveBookmarks(context);
+                    if (!confirmed || !mounted) return;
+                  }
                   final bookmark = BookmarkedMessage.fromContact(
                     message: message,
                     contactKey: widget.contact.publicKeyHex,
                     contactName: widget.contact.name,
-                    senderName: message.isOutgoing
-                        ? (context.read<MeshCoreConnector>().selfName ??
-                              context.l10n.chat_me)
-                        : contact.name,
+                    senderName: message.isOutgoing ? selfLabel : contact.name,
                   );
-                  unawaited(
-                    context.read<MeshCoreConnector>().setBookmarkedMessage(
-                      bookmark,
-                      isBookmarked: !message.isBookmarked,
-                    ),
+                  await connector.setBookmarkedMessage(
+                    bookmark,
+                    isBookmarked: !message.isBookmarked,
                   );
                 },
               ),

@@ -61,6 +61,7 @@ class LinkHandler {
     TextStyle? coordinateStyle,
     Color? backgroundColor,
     VoidCallback? onSecondaryTap,
+    bool selectable = true,
   }) {
     return _InteractiveMessageText(
       text: text,
@@ -69,6 +70,7 @@ class LinkHandler {
       coordinateStyle: coordinateStyle,
       backgroundColor: backgroundColor,
       onSecondaryTap: onSecondaryTap,
+      selectable: selectable,
     );
   }
 
@@ -272,6 +274,7 @@ class _InteractiveMessageText extends StatefulWidget {
   final TextStyle? coordinateStyle;
   final Color? backgroundColor;
   final VoidCallback? onSecondaryTap;
+  final bool selectable;
 
   const _InteractiveMessageText({
     required this.text,
@@ -280,6 +283,7 @@ class _InteractiveMessageText extends StatefulWidget {
     this.coordinateStyle,
     this.backgroundColor,
     this.onSecondaryTap,
+    this.selectable = true,
   });
 
   @override
@@ -393,7 +397,7 @@ class _InteractiveMessageTextState extends State<_InteractiveMessageText> {
       ],
     );
 
-    if (PlatformInfo.isDesktop) {
+    if (widget.selectable && PlatformInfo.isDesktop) {
       final selectable = SelectableText.rich(span);
       if (widget.onSecondaryTap == null) return selectable;
       return Listener(

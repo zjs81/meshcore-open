@@ -1230,6 +1230,17 @@
   "bookmarks_channel": "Channel",
   "bookmarks_contact": "Contact",
   "bookmarks_remove": "Remove bookmark",
+  "bookmarks_removeConfirmTitle": "Remove Bookmark",
+  "bookmarks_removeConfirmMessage": "Remove this message from your bookmarks?",
+  "bookmarks_removeSelectedConfirmTitle": "Remove Bookmarks",
+  "bookmarks_removeSelectedConfirmMessage": "Remove {count} messages from your bookmarks?",
+  "@bookmarks_removeSelectedConfirmMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chat_selectMessages": "Select messages",
   "chat_selectedCount": "{count} selected",
   "@chat_selectedCount": {

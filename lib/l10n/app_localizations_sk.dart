@@ -2462,6 +2462,21 @@ class AppLocalizationsSk extends AppLocalizations {
   String get bookmarks_remove => 'Odstrániť záložku';
 
   @override
+  String get bookmarks_removeConfirmTitle => 'Remove Bookmark';
+
+  @override
+  String get bookmarks_removeConfirmMessage =>
+      'Remove this message from your bookmarks?';
+
+  @override
+  String get bookmarks_removeSelectedConfirmTitle => 'Remove Bookmarks';
+
+  @override
+  String bookmarks_removeSelectedConfirmMessage(int count) {
+    return 'Remove $count messages from your bookmarks?';
+  }
+
+  @override
   String get chat_selectMessages => 'Vybrať správy';
 
   @override
