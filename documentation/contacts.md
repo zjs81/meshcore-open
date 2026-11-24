@@ -93,6 +93,7 @@ The Contacts screen has a single **three-dot overflow menu** (`⋮`) in the app 
 
 - Add Contact — opens the Add Contact page
 - Discovered Contacts — opens the DiscoveryScreen
+- Bookmarks — opens the Bookmarks screen showing all saved messages
 - *(divider)*
 - Zero-Hop Advert — broadcasts your advertisement to immediately adjacent nodes
 - Flood Advert — broadcasts across the full mesh network

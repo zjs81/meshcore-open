@@ -41,6 +41,7 @@ class BookmarksScreen extends StatefulWidget {
 class _BookmarksScreenState extends State<BookmarksScreen> {
   late Future<List<BookmarkedMessage>> _bookmarks;
   List<BookmarkedMessage> _loadedBookmarks = const [];
+  bool _hasLoadedBookmarks = false;
   late bool _filterToInitialSource;
 
   final ScrollController _scrollController = ScrollController();
@@ -77,6 +78,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
         .loadBookmarkedMessages();
     if (mounted) {
       _loadedBookmarks = loaded;
+      _hasLoadedBookmarks = true;
     }
     return loaded;
   }
@@ -161,6 +163,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
     final all = await connector.loadBookmarkedMessages();
     if (mounted) {
       _loadedBookmarks = all;
+      _hasLoadedBookmarks = true;
     }
     final visible = _filteredBookmarks(all, connector);
     return [
@@ -179,7 +182,12 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
   Future<void> _jumpToSearchResult(String storageId) async {
     FocusScope.of(context).unfocus();
     _closeSearch();
+    await _bookmarks;
+    if (!mounted) return;
     await WidgetsBinding.instance.endOfFrame;
+    for (var i = 0; i < 5 && mounted && !_scrollController.hasClients; i++) {
+      await WidgetsBinding.instance.endOfFrame;
+    }
     if (!mounted) return;
     final connector = context.read<MeshCoreConnector>();
     final visible = _filteredBookmarks(_loadedBookmarks, connector);
@@ -406,8 +414,12 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                     )
                   : FutureBuilder<List<BookmarkedMessage>>(
                       future: _bookmarks,
+                      initialData: _hasLoadedBookmarks
+                          ? _loadedBookmarks
+                          : null,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState != ConnectionState.done) {
+                        if (!snapshot.hasData &&
+                            snapshot.connectionState != ConnectionState.done) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
@@ -416,6 +428,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                         final allBookmarks =
                             snapshot.data ?? const <BookmarkedMessage>[];
                         _loadedBookmarks = allBookmarks;
+                        _hasLoadedBookmarks = true;
                         final bookmarks = _filteredBookmarks(
                           allBookmarks,
                           connector,

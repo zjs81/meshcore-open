@@ -341,43 +341,43 @@ void main() {
   );
 
   testWidgets(
-    'Search in BookmarksScreen finds matching bookmarks and jumping highlights target card',
+    'Search in BookmarksScreen finds matching bookmarks and jumping scrolls to and highlights offscreen target card',
     (tester) async {
       final env = await _createEnv(tester);
-      final b1 = BookmarkedMessage(
-        sourceType: BookmarkSourceType.channel,
-        sourceId: 'slot:0',
-        sourceName: 'Public',
-        messageId: 'm1',
-        senderName: 'Sam',
-        text: 'Alpha repeater check on ridge',
-        timestamp: DateTime(2026, 1, 1, 9),
-        receivedAt: DateTime(2026, 1, 1, 9),
-        isOutgoing: false,
-      );
-      final b2 = BookmarkedMessage(
-        sourceType: BookmarkSourceType.contact,
-        sourceId: 'contact-1',
-        sourceName: 'Maya',
-        messageId: 'm2',
-        senderName: 'Maya',
-        text: 'Bravo solar battery voltage update',
-        timestamp: DateTime(2026, 1, 1, 10),
-        receivedAt: DateTime(2026, 1, 1, 10),
-        isOutgoing: false,
-      );
-
-      await _pumpFuture(
-        tester,
-        env.connector.setBookmarkedMessage(b1, isBookmarked: true),
-      );
-      await _pumpFuture(
-        tester,
-        env.connector.setBookmarkedMessage(b2, isBookmarked: true),
-      );
+      for (var i = 1; i <= 25; i++) {
+        final bookmark = BookmarkedMessage(
+          sourceType: i.isEven
+              ? BookmarkSourceType.contact
+              : BookmarkSourceType.channel,
+          sourceId: i.isEven ? 'contact-1' : 'slot:0',
+          sourceName: i.isEven ? 'Maya' : 'Public',
+          messageId: 'm$i',
+          senderName: i.isEven ? 'Maya' : 'Sam',
+          text: i == 1
+              ? 'Oldest offscreen solar telemetry beacon check #1'
+              : 'Recent repeater status update #$i',
+          timestamp: DateTime(2026, 1, 1, 9).add(Duration(minutes: i)),
+          receivedAt: DateTime(2026, 1, 1, 9).add(Duration(minutes: i)),
+          isOutgoing: false,
+        );
+        await _pumpFuture(
+          tester,
+          env.connector.setBookmarkedMessage(bookmark, isBookmarked: true),
+        );
+      }
 
       await tester.pumpWidget(env.wrap(const BookmarksScreen()));
       await _pumpFrames(tester);
+
+      // Reversed ListView opens at the newest bookmarks (offset 0), so the oldest (#1) is offscreen.
+      final scrollableState = tester.state<ScrollableState>(
+        find.byType(Scrollable),
+      );
+      expect(scrollableState.position.pixels, 0);
+      expect(
+        find.text('Oldest offscreen solar telemetry beacon check #1'),
+        findsNothing,
+      );
 
       await tester.tap(find.byIcon(Icons.search));
       await _pumpFrames(tester);
@@ -387,19 +387,30 @@ void main() {
       await _pumpFrames(tester);
 
       expect(
-        find.textContaining('Bravo solar battery voltage update'),
+        find.textContaining('Oldest offscreen solar telemetry beacon check #1'),
         findsOneWidget,
       );
-      expect(find.textContaining('Alpha repeater check'), findsNothing);
-
-      // Tap the search result to close search and highlight the card.
-      await tester.tap(
-        find.textContaining('Bravo solar battery voltage update'),
+      expect(
+        find.textContaining('Recent repeater status update #25'),
+        findsNothing,
       );
-      await _pumpFrames(tester);
 
-      // Search field closed and AnimatedContainer highlight is active.
+      // Tap the search result to close search, scroll the restored list to the offscreen bookmark, and highlight it.
+      await tester.tap(
+        find.textContaining('Oldest offscreen solar telemetry beacon check #1'),
+      );
+      await _pumpFrames(tester, 12);
+
+      // Search field closed, list scrolled to the offscreen card, and AnimatedContainer highlight is active.
       expect(find.byType(TextField), findsNothing);
+      final restoredScrollable = tester.state<ScrollableState>(
+        find.byType(Scrollable),
+      );
+      expect(restoredScrollable.position.pixels, greaterThan(0));
+      expect(
+        find.text('Oldest offscreen solar telemetry beacon check #1'),
+        findsOneWidget,
+      );
       expect(find.byType(AnimatedContainer), findsOneWidget);
 
       // Highlight clears after 2 seconds.
