@@ -4537,6 +4537,18 @@ abstract class AppLocalizations {
   /// **'Resend'**
   String get chat_resend;
 
+  /// No description provided for @chat_resendSelectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend messages?'**
+  String get chat_resendSelectedTitle;
+
+  /// No description provided for @chat_resendSelectedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Resend 1 selected outgoing message to this contact?} other{Resend {count} selected outgoing messages to this contact?}}'**
+  String chat_resendSelectedConfirm(int count);
+
   /// No description provided for @chat_addReaction.
   ///
   /// In en, this message translates to:
