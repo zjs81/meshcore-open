@@ -8295,4 +8295,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return '$name поиска победа по време';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }

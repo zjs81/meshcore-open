@@ -8314,4 +8314,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return '$name a réclamé la victoire au temps';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }
