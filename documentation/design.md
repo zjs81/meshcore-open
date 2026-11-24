@@ -156,7 +156,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 - `FilledButton.tonal`: a secondary action that still needs weight (rare).
 - `OutlinedButton(.icon)`: secondary actions next to a filled one.
 - `TextButton`: Cancel and low-emphasis actions in dialogs; inline actions in cards.
-- Destructive confirm: `FilledButton` with `backgroundColor: scheme.error`, `foregroundColor: scheme.onError` (`showConfirmClearDialog` in `widgets/confirm_clear_dialog.dart`), or a `TextButton` with `foregroundColor: scheme.error` when it is not the primary action.
+- Destructive confirm: `FilledButton` with `backgroundColor: scheme.error`, `foregroundColor: scheme.onError` (`showConfirmClearDialog` in `widgets/confirm_clear_dialog.dart`), or a `TextButton` with `foregroundColor: scheme.error` when it is not the primary action. Use `showConfirmClearDialog(confirmLabel:)` for any confirm dialog; `warning: true` makes the button `scheme.tertiary` for disruptive, non-destructive actions (Reboot in Settings).
 - Dialog action order: Cancel first, primary last.
 - Avoid `ElevatedButton` in new code.
 

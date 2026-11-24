@@ -281,6 +281,55 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
+  testWidgets('Reboot and Delete All Paths use theme colours and confirm', (
+    tester,
+  ) async {
+    final connector = await _connectedConnector(tester);
+    Future<void> settle() async {
+      for (var i = 0; i < 8; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    await tester.pumpWidget(_app(connector, const SettingsScreen()));
+    await settle();
+    final scheme = Theme.of(
+      tester.element(find.byType(SettingsScreen)),
+    ).colorScheme;
+
+    final rows = {
+      _l10n.settings_rebootDevice: (_l10n.common_reboot, scheme.tertiary),
+      _l10n.settings_deleteAllPaths: (_l10n.common_deleteAll, scheme.error),
+    };
+    for (final MapEntry(key: title, value: (label, color)) in rows.entries) {
+      await tester.scrollUntilVisible(
+        find.text(title),
+        200,
+        scrollable: find
+            .descendant(
+              of: find.byType(ListView),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await settle();
+      expect(tester.widget<Text>(find.text(title)).style?.color, color);
+
+      await tester.tap(find.text(title));
+      await settle();
+      final confirm = tester.widget<FilledButton>(
+        find.widgetWithText(FilledButton, label),
+      );
+      expect(confirm.style?.backgroundColor?.resolve({}), color, reason: title);
+
+      // Cancel, so the review radio isn't rebooted.
+      await tester.tap(find.text(_l10n.common_cancel));
+      await settle();
+      expect(find.byType(AlertDialog), findsNothing, reason: title);
+    }
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('Radio Settings shows Save only while something differs', (
     tester,
   ) async {
