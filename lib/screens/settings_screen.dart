@@ -7,6 +7,7 @@ import '../connector/meshcore_protocol.dart';
 import '../l10n/l10n.dart';
 import '../theme/mesh_theme.dart';
 import '../helpers/snack_bar_builder.dart';
+import '../widgets/confirm_clear_dialog.dart';
 import '../widgets/mesh_nav_tile.dart';
 import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/mesh_ui.dart';
@@ -621,6 +622,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     MeshCoreConnector connector,
   ) {
     final l10n = context.l10n;
+    final scheme = Theme.of(context).colorScheme;
     final connected = connector.isConnected;
     final offline = l10n.settings_requiresConnection;
     return Column(
@@ -643,8 +645,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           icon: Icons.restart_alt,
           title: l10n.settings_rebootDevice,
           subtitle: connected ? l10n.settings_rebootDeviceSubtitle : offline,
-          titleColor: MeshPalette.warn,
-          iconColor: MeshPalette.warn,
+          titleColor: scheme.tertiary,
+          iconColor: scheme.tertiary,
           onTap: connected ? () => _confirmReboot(context, connector) : null,
         ),
         const Divider(height: 1, indent: 16),
@@ -652,8 +654,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           icon: Icons.delete_outline,
           title: l10n.settings_deleteAllPaths,
           subtitle: l10n.settings_deleteAllPathsSubtitle,
-          titleColor: MeshPalette.alert,
-          iconColor: MeshPalette.alert,
+          titleColor: scheme.error,
+          iconColor: scheme.error,
           onTap: () => _confirmDeleteAllPaths(context, connector),
         ),
       ],
@@ -717,62 +719,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  void _confirmDeleteAllPaths(
+  Future<void> _confirmDeleteAllPaths(
     BuildContext context,
     MeshCoreConnector connector,
-  ) {
+  ) async {
     final l10n = context.l10n;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.settings_deleteAllPaths),
-        content: Text(l10n.settings_deleteAllPathsSubtitle),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.common_cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              connector.deleteAllPaths();
-            },
-            child: Text(
-              l10n.common_deleteAll,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          ),
-        ],
-      ),
+    final confirmed = await showConfirmClearDialog(
+      context,
+      title: l10n.settings_deleteAllPaths,
+      message: l10n.settings_deleteAllPathsSubtitle,
+      confirmLabel: l10n.common_deleteAll,
     );
+    if (confirmed) connector.deleteAllPaths();
   }
 
-  void _confirmReboot(BuildContext context, MeshCoreConnector connector) {
+  Future<void> _confirmReboot(
+    BuildContext context,
+    MeshCoreConnector connector,
+  ) async {
     final l10n = context.l10n;
-    final screenContext = context;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.settings_rebootDevice),
-        content: Text(l10n.settings_rebootDeviceConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.common_cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              if (!_ensureConnected(screenContext, connector)) return;
-              connector.rebootDevice();
-            },
-            child: Text(
-              l10n.common_reboot,
-              style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
-            ),
-          ),
-        ],
-      ),
+    final confirmed = await showConfirmClearDialog(
+      context,
+      title: l10n.settings_rebootDevice,
+      message: l10n.settings_rebootDeviceConfirm,
+      confirmLabel: l10n.common_reboot,
+      warning: true,
     );
+    if (!confirmed || !context.mounted) return;
+    if (!_ensureConnected(context, connector)) return;
+    connector.rebootDevice();
   }
 }
