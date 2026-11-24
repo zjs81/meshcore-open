@@ -2622,6 +2622,20 @@ class AppLocalizationsHu extends AppLocalizations {
   String get chat_resend => 'Újraküldés';
 
   @override
+  String get chat_resendSelectedTitle => 'Resend messages?';
+
+  @override
+  String chat_resendSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Resend $count selected outgoing messages to this contact?',
+      one: 'Resend 1 selected outgoing message to this contact?',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get chat_addReaction => 'Reakció hozzáadása';
 
   @override
@@ -5923,6 +5937,25 @@ class AppLocalizationsHu extends AppLocalizations {
       'Ha a rádió kapcsolatlistája megtelt, a legrégebbi, nem kedvenc kapcsolat lecserélődik.';
 
   @override
+  String get contactsSettings_hopLimit => 'Ugráskorlát';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (csak közvetlen)',
+      zero: 'Nincs korlát',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'A rádió csak az ennél kevesebb ugrásra lévő kapcsolatokat adja hozzá automatikusan. A „Felfedezett kapcsolatok” lista továbbra is mindet elmenti.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Felfedezett kapcsolatok korlátozása';
 
@@ -7785,10 +7818,6 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get chatCompression_cyr2lat => 'Cyr2Lat';
-
-  @override
-  String get chatCompression_changeHint =>
-      'Tömörítés módosítása ebben a csevegésben';
 
   @override
   String get chatCompression_sheetSubtitle =>

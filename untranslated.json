@@ -1,1 +1,172 @@
-{}
+{
+  "bg": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "cs": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "de": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "es": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "fr": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "hu": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "it": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "ja": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "ko": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "nl": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "pl": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "pt": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "pt_PT": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "ru": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "sk": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "sl": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "sv": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "uk": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "zh": [
+    "bookmarks_removeConfirmTitle",
+    "bookmarks_removeConfirmMessage",
+    "bookmarks_removeSelectedConfirmTitle",
+    "bookmarks_removeSelectedConfirmMessage",
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ]
+}

@@ -82,9 +82,9 @@ Tap a channel card to open the channel chat screen.
 - Overflow menu (⋮) → **Bookmarks**: opens the **Bookmarks** screen scoped to this channel, with a split pill at the top to switch between **All** and `#channel` (plus in-screen search, copy, and single or bulk removal with confirmation).
 - Overflow menu (⋮) → **Chat background**: a color or picture, with a fade slider, behind this channel only. See [Chat backgrounds](themes.md#chat-backgrounds). Holiday greetings in new messages play a short animation, as in [direct chat](chat-and-messaging.md#message-list)
 
-### Compression Strip
+### Compression
 
-Below the app bar, above the messages, the same strip as in [direct chats](chat-and-messaging.md#compression-strip) shows and changes this channel's compression: Off, SMAZ or Cyr2Lat. It is stored with the channel's key, so every slot holding that channel shares it, and it can be changed offline. Until the channel has synced from the radio the strip is disabled and says why. See [Compression](additional-features.md#compression-smaz-and-cyr2lat).
+The top-right menu has the same Compression item as [direct chats](chat-and-messaging.md#compression); it shows and changes this channel's compression: Off, SMAZ or Cyr2Lat. It is stored with the channel's key, so every slot holding that channel shares it, and it can be changed offline. Until the channel has synced from the radio the choices are disabled and the page says why. See [Compression](additional-features.md#compression-smaz-and-cyr2lat).
 
 ### Message Display
 

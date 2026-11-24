@@ -1340,6 +1340,15 @@
   "chat_receivedGif": "Received a GIF",
   "chat_reply": "Reply",
   "chat_resend": "Resend",
+  "chat_resendSelectedTitle": "Resend messages?",
+  "chat_resendSelectedConfirm": "{count, plural, =1{Resend 1 selected outgoing message to this contact?} other{Resend {count} selected outgoing messages to this contact?}}",
+  "@chat_resendSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chat_addReaction": "Add Reaction",
   "chat_me": "Me",
   "reaction_report": "Emoji Reactions",
@@ -3298,6 +3307,16 @@
   "contactsSettings_autoAddSensorsTitle": "Sensors",
   "contactsSettings_overwriteOldestTitle": "Overwrite oldest",
   "contactsSettings_overwriteOldestSubtitle": "Replace the oldest non-favorited contact when the radio's contact list is full.",
+  "contactsSettings_hopLimit": "Hop limit",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{No limit} =1{1 (direct only)} other{{hops}}}",
+  "@contactsSettings_hopLimitOption": {
+    "placeholders": {
+      "hops": {
+        "type": "int"
+      }
+    }
+  },
+  "contactsSettings_hopLimitSubtitle": "The radio only auto-adds contacts under this many hops. Discovered Contacts still saves them all.",
   "contactsSettings_evictDiscoveredContactsTitle": "Limit discovered contacts",
   "contactsSettings_evictDiscoveredContactsSubtitle": "The app sets a {limit} entry limit to the discovered contacts list, older contacts are evicted when the limit is reached. Disable to have no limits.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {
@@ -4477,7 +4496,7 @@
   "chatCompression_title": "Compression",
   "chatCompression_label": "Compression: {mode}",
   "@chatCompression_label": {
-    "description": "Always-visible control at the top of a chat; mode is Off, SMAZ or Cyr2Lat",
+    "description": "Chat menu item that opens the compression page; mode is Off, SMAZ or Cyr2Lat",
     "placeholders": {
       "mode": {
         "type": "String"
@@ -4487,11 +4506,10 @@
   "chatCompression_off": "Off",
   "chatCompression_smaz": "SMAZ",
   "chatCompression_cyr2lat": "Cyr2Lat",
-  "chatCompression_changeHint": "Change compression for this chat",
   "chatCompression_sheetSubtitle": "Applies to messages you send in this chat. Saved on this phone.",
-  "chatCompression_offDescription": "No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.",
-  "chatCompression_smazDescription": "Lossless compression for short text. The recipient's app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.",
-  "chatCompression_cyr2latDescription": "Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.",
+  "chatCompression_offDescription": "Sends your text as typed. Every app can read it.",
+  "chatCompression_smazDescription": "Shrinks English text. Used only when the message gets shorter. Apps without SMAZ show \"s:…\" instead of your text.",
+  "chatCompression_cyr2latDescription": "Swaps Cyrillic letters for similar Latin ones (А→A). Every app can read it, but the characters change. Not lossless.",
   "chatCompression_profile": "Cyr2Lat profile",
   "chatCompression_noStorageId": "Can't change compression until this channel has synced from the radio.",
   "chatCompression_saveFailed": "Couldn't save the compression setting. Showing the saved setting.",

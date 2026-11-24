@@ -54,7 +54,6 @@ import '../widgets/empty_state.dart';
 import '../widgets/filter_rule_dialog.dart';
 import '../widgets/filtered_message_ghost.dart';
 import '../widgets/chat_composer.dart';
-import '../widgets/chat_compression_selector.dart';
 import '../widgets/chat_send_pipeline.dart';
 import '../widgets/chat_zoom_wrapper.dart';
 import '../widgets/message_bubble_frame.dart';
@@ -77,6 +76,7 @@ import '../widgets/shared_contact_card.dart';
 import 'app_settings_screen.dart';
 import 'bookmarks_screen.dart';
 import 'channel_chat_transcript_grouping.dart';
+import 'chat_compression_screen.dart';
 import 'channels_screen.dart' show confirmDeleteChannel, showEditChannelSheet;
 import 'channel_message_path_screen.dart';
 import 'map_screen.dart';
@@ -599,6 +599,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
             _toggleChannelFiltering();
           case 'notifications':
             showChannelNotificationModeSheet(context, muteKey);
+          case 'compression':
+            _openCompressionScreen();
           case 'region':
             openRegionSelectDialog(widget.channel);
           case 'editChannel':
@@ -670,6 +672,20 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
               channelNotificationModeIcon(notificationMode),
               context.l10n.channels_notificationModeTooltip(
                 channelNotificationModeLabel(context, notificationMode),
+              ),
+            ),
+          ),
+          PopupMenuItem(
+            value: 'compression',
+            child: _menuRow(
+              Icons.compress,
+              context.l10n.chatCompression_label(
+                chatCompressionModeLabel(
+                  context,
+                  context.read<MeshCoreConnector>().channelCompressionMode(
+                    widget.channel.index,
+                  ),
+                ),
               ),
             ),
           ),
@@ -896,7 +912,6 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
               bottom: false,
               child: Column(
                 children: [
-                  _buildCompressionSelector(),
                   Expanded(
                     child: ChatBackdrop(
                       contentKey: _messageAreaKey,
@@ -992,6 +1007,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
                           return Stack(
                             children: [
                               ChatZoomWrapper(
+                                enabled: !_selecting,
                                 child: ListView.builder(
                                   reverse: true, // List grows from bottom up
                                   controller: _scrollController,
@@ -1017,14 +1033,19 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
                                       );
                                     }
                                     final row = layout.rowAt(index, messages);
-                                    final GlobalKey messageKey;
+                                    // Duplicate-id rows use a stable value key
+                                    // (not a fresh GlobalKey) so toggling one
+                                    // row does not remount every visible row.
+                                    final Key messageKey;
                                     if (layout.keyedIndices.contains(index)) {
                                       messageKey = _messageKeys.putIfAbsent(
                                         row.id,
                                         GlobalKey.new,
                                       );
                                     } else {
-                                      messageKey = GlobalKey();
+                                      messageKey = ValueKey<String>(
+                                        '${row.id}#dup$index',
+                                      );
                                     }
                                     final dividerId = _unreadDividerMessageId;
                                     final isUnreadAnchor =
@@ -2805,26 +2826,35 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
   /// Compression is stored on this phone under the channel's storage ID, so
   /// it can change while the radio is offline, but not before the slot has
   /// one.
-  Widget _buildCompressionSelector() {
+  void _openCompressionScreen() {
     final slot = widget.channel.index;
-    return Consumer2<MeshCoreConnector, AppSettingsService>(
-      builder: (context, connector, settingsService, _) {
-        final hasStorageId = connector.channelIdForSlot(slot) != null;
-        return ChatCompressionSelector(
-          mode: connector.channelCompressionMode(slot),
-          enabled: hasStorageId,
-          disabledReason: hasStorageId
-              ? null
-              : context.l10n.chatCompression_noStorageId,
-          profiles: settingsService.settings.cyr2latProfiles,
-          profileId: connector.getChannelCyr2LatProfileId(slot),
-          defaultProfileId: settingsService.settings.selectedCyr2latProfileId,
+    final connector = context.read<MeshCoreConnector>();
+    final settingsService = context.read<AppSettingsService>();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatCompressionScreen(
+          listenable: Listenable.merge([connector, settingsService]),
+          read: () {
+            final hasStorageId = connector.channelIdForSlot(slot) != null;
+            return ChatCompressionState(
+              mode: connector.channelCompressionMode(slot),
+              enabled: hasStorageId,
+              disabledReason: hasStorageId
+                  ? null
+                  : context.l10n.chatCompression_noStorageId,
+              profiles: settingsService.settings.cyr2latProfiles,
+              profileId: connector.getChannelCyr2LatProfileId(slot),
+              defaultProfileId:
+                  settingsService.settings.selectedCyr2latProfileId,
+            );
+          },
           onModeChanged: (mode) =>
               connector.setChannelCompressionMode(slot, mode),
           onProfileChanged: (id) =>
               connector.setChannelCyr2LatProfileId(slot, id),
-        );
-      },
+        ),
+      ),
     );
   }
 

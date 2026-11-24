@@ -2587,6 +2587,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chat_resend => 'Resend';
 
   @override
+  String get chat_resendSelectedTitle => 'Resend messages?';
+
+  @override
+  String chat_resendSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Resend $count selected outgoing messages to this contact?',
+      one: 'Resend 1 selected outgoing message to this contact?',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get chat_addReaction => 'Add Reaction';
 
   @override
@@ -5844,6 +5858,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'Replace the oldest non-favorited contact when the radio\'s contact list is full.';
 
   @override
+  String get contactsSettings_hopLimit => 'Hop limit';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (direct only)',
+      zero: 'No limit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'The radio only auto-adds contacts under this many hops. Discovered Contacts still saves them all.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Limit discovered contacts';
 
@@ -7691,23 +7724,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint => 'Change compression for this chat';
-
-  @override
   String get chatCompression_sheetSubtitle =>
       'Applies to messages you send in this chat. Saved on this phone.';
 
   @override
   String get chatCompression_offDescription =>
-      'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.';
+      'Sends your text as typed. Every app can read it.';
 
   @override
   String get chatCompression_smazDescription =>
-      'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.';
+      'Shrinks English text. Used only when the message gets shorter. Apps without SMAZ show \"s:…\" instead of your text.';
 
   @override
   String get chatCompression_cyr2latDescription =>
-      'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.';
+      'Swaps Cyrillic letters for similar Latin ones (А→A). Every app can read it, but the characters change. Not lossless.';
 
   @override
   String get chatCompression_profile => 'Cyr2Lat profile';

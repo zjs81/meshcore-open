@@ -2632,6 +2632,20 @@ class AppLocalizationsBg extends AppLocalizations {
   String get chat_resend => 'Изпрати отново';
 
   @override
+  String get chat_resendSelectedTitle => 'Resend messages?';
+
+  @override
+  String chat_resendSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Resend $count selected outgoing messages to this contact?',
+      one: 'Resend 1 selected outgoing message to this contact?',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get chat_addReaction => 'Добави Реакция';
 
   @override
@@ -5925,6 +5939,25 @@ class AppLocalizationsBg extends AppLocalizations {
       'Когато списъкът с контакти на радиото е пълен, най-старият контакт извън любимите се заменя.';
 
   @override
+  String get contactsSettings_hopLimit => 'Ограничение на скоковете';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (само директно)',
+      zero: 'Без ограничение',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'Радиото добавя автоматично само контакти с по-малко скокове от тази стойност. В „Открити контакти“ пак се запазват всички.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Ограничаване на откритите контакти';
 
@@ -7804,9 +7837,6 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get chatCompression_cyr2lat => 'Кир→Лат';
-
-  @override
-  String get chatCompression_changeHint => 'Промяна на компресията за този чат';
 
   @override
   String get chatCompression_sheetSubtitle =>

@@ -2508,6 +2508,20 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chat_resend => '再送信';
 
   @override
+  String get chat_resendSelectedTitle => 'Resend messages?';
+
+  @override
+  String chat_resendSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Resend $count selected outgoing messages to this contact?',
+      one: 'Resend 1 selected outgoing message to this contact?',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get chat_addReaction => 'リアクションを追加';
 
   @override
@@ -5648,6 +5662,25 @@ class AppLocalizationsJa extends AppLocalizations {
       'ラジオの連絡先リストが満杯になったら、お気に入り以外で最も古い連絡先を置き換えます。';
 
   @override
+  String get contactsSettings_hopLimit => 'ホップ数の上限';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1（直接のみ）',
+      zero: '制限なし',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'ラジオはこの値より少ないホップ数の連絡先のみ自動追加します。「連絡先が見つかった」にはすべて保存されます。';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle => '発見された連絡先を制限';
 
   @override
@@ -7449,9 +7482,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get chatCompression_cyr2lat => 'Cyr2Lat';
-
-  @override
-  String get chatCompression_changeHint => 'このチャットの圧縮設定を変更';
 
   @override
   String get chatCompression_sheetSubtitle =>

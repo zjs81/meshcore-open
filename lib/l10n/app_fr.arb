@@ -2155,6 +2155,9 @@
   "discoveredContacts_Title": "Contacts découverts",
   "discoveredContacts_searchHint": "Rechercher des contacts découverts",
   "contactsSettings_overwriteOldestSubtitle": "Lorsque la liste de contacts de la radio est pleine, remplace le plus ancien contact non favori.",
+  "contactsSettings_hopLimit": "Limite de sauts",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{Aucune limite} =1{1 (direct uniquement)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "La radio n'ajoute automatiquement que les contacts situés à moins de sauts que cette valeur. Ils sont quand même tous enregistrés dans Contacts découverts.",
   "contactsSettings_evictDiscoveredContactsTitle": "Limiter les contacts découverts",
   "contactsSettings_evictDiscoveredContactsSubtitle": "L'application limite la liste « Contacts découverts » à {limit} entrées. Une fois la limite atteinte, les contacts les plus anciens sont supprimés. Désactivez pour supprimer la limite.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {

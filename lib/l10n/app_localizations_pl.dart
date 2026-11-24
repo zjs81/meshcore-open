@@ -2654,6 +2654,20 @@ class AppLocalizationsPl extends AppLocalizations {
   String get chat_resend => 'Wyślij ponownie';
 
   @override
+  String get chat_resendSelectedTitle => 'Resend messages?';
+
+  @override
+  String chat_resendSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Resend $count selected outgoing messages to this contact?',
+      one: 'Resend 1 selected outgoing message to this contact?',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get chat_addReaction => 'Dodaj Reakcję';
 
   @override
@@ -5966,6 +5980,25 @@ class AppLocalizationsPl extends AppLocalizations {
       'Gdy lista kontaktów w radiu jest pełna, najstarszy kontakt spoza ulubionych zostanie zastąpiony.';
 
   @override
+  String get contactsSettings_hopLimit => 'Limit skoków';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (tylko bezpośrednio)',
+      zero: 'Bez limitu',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'Radio automatycznie dodaje tylko kontakty z mniejszą liczbą skoków niż ta wartość. Lista „Odkryte Kontakty” nadal zapisuje wszystkie.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Ogranicz odkryte kontakty';
 
@@ -7849,9 +7882,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get chatCompression_cyr2lat => 'Cyr2Lat';
-
-  @override
-  String get chatCompression_changeHint => 'Zmień kompresję w tej rozmowie';
 
   @override
   String get chatCompression_sheetSubtitle =>

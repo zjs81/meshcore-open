@@ -4561,6 +4561,18 @@ abstract class AppLocalizations {
   /// **'Resend'**
   String get chat_resend;
 
+  /// No description provided for @chat_resendSelectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend messages?'**
+  String get chat_resendSelectedTitle;
+
+  /// No description provided for @chat_resendSelectedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Resend 1 selected outgoing message to this contact?} other{Resend {count} selected outgoing messages to this contact?}}'**
+  String chat_resendSelectedConfirm(int count);
+
   /// No description provided for @chat_addReaction.
   ///
   /// In en, this message translates to:
@@ -10049,6 +10061,24 @@ abstract class AppLocalizations {
   /// **'Replace the oldest non-favorited contact when the radio\'s contact list is full.'**
   String get contactsSettings_overwriteOldestSubtitle;
 
+  /// No description provided for @contactsSettings_hopLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Hop limit'**
+  String get contactsSettings_hopLimit;
+
+  /// No description provided for @contactsSettings_hopLimitOption.
+  ///
+  /// In en, this message translates to:
+  /// **'{hops, plural, =0{No limit} =1{1 (direct only)} other{{hops}}}'**
+  String contactsSettings_hopLimitOption(int hops);
+
+  /// No description provided for @contactsSettings_hopLimitSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The radio only auto-adds contacts under this many hops. Discovered Contacts still saves them all.'**
+  String get contactsSettings_hopLimitSubtitle;
+
   /// No description provided for @contactsSettings_evictDiscoveredContactsTitle.
   ///
   /// In en, this message translates to:
@@ -12970,7 +13000,7 @@ abstract class AppLocalizations {
   /// **'Compression'**
   String get chatCompression_title;
 
-  /// Always-visible control at the top of a chat; mode is Off, SMAZ or Cyr2Lat
+  /// Chat menu item that opens the compression page; mode is Off, SMAZ or Cyr2Lat
   ///
   /// In en, this message translates to:
   /// **'Compression: {mode}'**
@@ -12994,12 +13024,6 @@ abstract class AppLocalizations {
   /// **'Cyr2Lat'**
   String get chatCompression_cyr2lat;
 
-  /// No description provided for @chatCompression_changeHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Change compression for this chat'**
-  String get chatCompression_changeHint;
-
   /// No description provided for @chatCompression_sheetSubtitle.
   ///
   /// In en, this message translates to:
@@ -13009,19 +13033,19 @@ abstract class AppLocalizations {
   /// No description provided for @chatCompression_offDescription.
   ///
   /// In en, this message translates to:
-  /// **'No compression. Sends your text exactly as typed. Every app can read it. Saves no bytes.'**
+  /// **'Sends your text as typed. Every app can read it.'**
   String get chatCompression_offDescription;
 
   /// No description provided for @chatCompression_smazDescription.
   ///
   /// In en, this message translates to:
-  /// **'Lossless compression for short text. The recipient\'s app must support SMAZ; other apps show unreadable \"s:…\" text. Only used when it makes a message smaller, so not every message is compressed.'**
+  /// **'Shrinks English text. Used only when the message gets shorter. Apps without SMAZ show \"s:…\" instead of your text.'**
   String get chatCompression_smazDescription;
 
   /// No description provided for @chatCompression_cyr2latDescription.
   ///
   /// In en, this message translates to:
-  /// **'Not lossless. Swaps some Cyrillic letters for lookalike Latin ones (А→A, З→3) to save bytes. Readable in any app with no decoding, but the exact characters change, including your own sent messages here. Copying, search and technical text may be affected. Results depend on the chosen profile.'**
+  /// **'Swaps Cyrillic letters for similar Latin ones (А→A). Every app can read it, but the characters change. Not lossless.'**
   String get chatCompression_cyr2latDescription;
 
   /// No description provided for @chatCompression_profile.

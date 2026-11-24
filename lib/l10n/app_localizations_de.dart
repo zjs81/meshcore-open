@@ -2635,6 +2635,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get chat_resend => 'Erneut senden';
 
   @override
+  String get chat_resendSelectedTitle => 'Resend messages?';
+
+  @override
+  String chat_resendSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Resend $count selected outgoing messages to this contact?',
+      one: 'Resend 1 selected outgoing message to this contact?',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get chat_addReaction => 'Reaktion hinzufügen';
 
   @override
@@ -5936,6 +5950,25 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wenn die Kontaktliste des Funkgeräts voll ist, den ältesten Kontakt ersetzen, der kein Favorit ist.';
 
   @override
+  String get contactsSettings_hopLimit => 'Sprunglimit';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (nur direkt)',
+      zero: 'Kein Limit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'Das Funkgerät fügt nur Kontakte mit weniger Sprüngen als diesem Wert automatisch hinzu. Unter „Entdeckte Kontakte“ werden trotzdem alle gespeichert.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Entdeckte Kontakte begrenzen';
 
@@ -7815,9 +7848,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get chatCompression_cyr2lat => 'Cyr2Lat';
-
-  @override
-  String get chatCompression_changeHint => 'Kompression für diesen Chat ändern';
 
   @override
   String get chatCompression_sheetSubtitle =>

@@ -38,7 +38,6 @@ import '../services/chat_text_scale_service.dart';
 import '../services/path_history_service.dart';
 import '../services/translation_service.dart';
 import '../widgets/chat_composer.dart';
-import '../widgets/chat_compression_selector.dart';
 import '../widgets/chat_send_pipeline.dart';
 import '../widgets/chat_zoom_wrapper.dart';
 import '../widgets/message_bubble_frame.dart';
@@ -46,6 +45,7 @@ import '../widgets/reaction_chips.dart';
 import '../widgets/chat_day_separator.dart';
 import 'bookmarks_screen.dart';
 import 'channel_message_path_screen.dart';
+import 'chat_compression_screen.dart';
 import 'contacts_screen.dart' show confirmRemoveContact;
 import 'map_screen.dart';
 import 'repeater_hub_screen.dart';
@@ -104,6 +104,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   bool _focusLostToRoute = false;
   final GlobalKey _unreadScrollKey = GlobalKey();
   bool _isLoadingOlder = false;
+  final Set<String> _selectedIds = <String>{};
+  bool get _selecting => _selectedIds.isNotEmpty;
   MeshCoreConnector? _connector;
   Message? _pendingUnreadScrollTarget;
   String? _unreadDividerMessageId;
@@ -415,9 +417,14 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: !_searching,
+      canPop: !_searching && !_selecting,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop && _searching) _closeSearch();
+        if (didPop) return;
+        if (_selecting) {
+          _clearSelection();
+        } else if (_searching) {
+          _closeSearch();
+        }
       },
       child: _buildScaffold(context),
     );
@@ -425,213 +432,243 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   Widget _buildScaffold(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: _searching
-            ? IconButton(
-                tooltip: context.l10n.chatSearch_close,
-                icon: const Icon(Icons.arrow_back),
-                onPressed: _closeSearch,
-              )
-            : null,
-        title: _searching
-            ? _buildSearchField()
-            : Consumer2<PathHistoryService, MeshCoreConnector>(
-                builder: (context, pathService, connector, _) {
-                  final contact = _resolveContact(connector);
-                  final pathLabel = _currentPathLabel(contact);
+      appBar: _selecting
+          ? _buildSelectionAppBar(context)
+          : AppBar(
+              leading: _searching
+                  ? IconButton(
+                      tooltip: context.l10n.chatSearch_close,
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: _closeSearch,
+                    )
+                  : null,
+              title: _searching
+                  ? _buildSearchField()
+                  : Consumer2<PathHistoryService, MeshCoreConnector>(
+                      builder: (context, pathService, connector, _) {
+                        final contact = _resolveContact(connector);
+                        final pathLabel = _currentPathLabel(contact);
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        contact.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () =>
-                            ContactRoutingSheet.show(context, contact: contact),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 6),
-                          child: Builder(
-                            builder: (context) {
-                              // Follows the chat text size, capped so the two-line
-                              // title still fits the app bar.
-                              final textScale = context
-                                  .select<ChatTextScaleService, double>(
-                                    (service) => service.scale,
-                                  )
-                                  .clamp(1.0, 1.3);
-                              return Text(
-                                pathLabel,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 12 * textScale,
-                                  fontWeight: FontWeight.normal,
-                                  decoration: TextDecoration.underline,
-                                  decorationStyle: TextDecorationStyle.dotted,
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              contact.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => ContactRoutingSheet.show(
+                                context,
+                                contact: contact,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 6,
                                 ),
-                              );
+                                child: Builder(
+                                  builder: (context) {
+                                    // Follows the chat text size, capped so the two-line
+                                    // title still fits the app bar.
+                                    final textScale = context
+                                        .select<ChatTextScaleService, double>(
+                                          (service) => service.scale,
+                                        )
+                                        .clamp(1.0, 1.3);
+                                    return Text(
+                                      pathLabel,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 12 * textScale,
+                                        fontWeight: FontWeight.normal,
+                                        decoration: TextDecoration.underline,
+                                        decorationStyle:
+                                            TextDecorationStyle.dotted,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+              centerTitle: false,
+              bottom: const SyncProgressAppBarBottom(),
+              actionsPadding: const EdgeInsetsDirectional.only(end: 4),
+              // While searching the field gets the whole bar; the leading arrow
+              // closes the search.
+              actions: _searching
+                  ? null
+                  : [
+                      const RadioStatsIconButton(),
+                      IconButton(
+                        tooltip: context.l10n.chatSearch_tooltip,
+                        icon: const Icon(Icons.search),
+                        onPressed: _openSearch,
+                      ),
+                      Consumer<MeshCoreConnector>(
+                        builder: (context, connector, _) {
+                          final contact = _resolveContact(connector);
+                          final isRoom = contact.type == advTypeRoom;
+                          final readOnly = isRadioReadOnly(connector);
+
+                          return PopupMenuButton<String>(
+                            icon: const Icon(Icons.more_vert),
+                            onSelected: (value) {
+                              switch (value) {
+                                case 'routing':
+                                  ContactRoutingSheet.show(
+                                    context,
+                                    contact: contact,
+                                  );
+                                case 'info':
+                                  _showContactInfo(context);
+                                case 'compression':
+                                  _openCompressionScreen();
+                                case 'settings':
+                                  _showContactSettings(context);
+                                case 'showBookmarks':
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => BookmarksScreen(
+                                        initialSourceType:
+                                            BookmarkSourceType.contact,
+                                        initialSourceId:
+                                            widget.contact.publicKeyHex,
+                                        initialSourceName: contact.name,
+                                      ),
+                                    ),
+                                  );
+                                case 'background':
+                                  showChatBackgroundSheet(
+                                    context,
+                                    ChatBackgroundService.contactKey(contact),
+                                  );
+                                case 'telemetry':
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TelemetryScreen(
+                                        contact: widget.contact,
+                                      ),
+                                    ),
+                                  );
+                                case 'roomManagement':
+                                  _showRoomManagementLogin(contact);
+                                case 'clearChat':
+                                  _confirmClearChat(context, connector);
+                                case 'removeContact':
+                                  confirmRemoveContact(
+                                    context,
+                                    connector,
+                                    contact,
+                                    onRemoved: () {
+                                      if (mounted) Navigator.of(context).pop();
+                                    },
+                                  );
+                              }
                             },
-                          ),
-                        ),
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 'routing',
+                                child: MeshMenuItemRow(
+                                  icon: Icons.route,
+                                  label: context.l10n.routing_title,
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'info',
+                                child: MeshMenuItemRow(
+                                  icon: Icons.info_outline,
+                                  label: context.l10n.contact_info,
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'telemetry',
+                                enabled: !readOnly,
+                                child: MeshMenuItemRow(
+                                  icon: Icons.bar_chart,
+                                  label: context.l10n.contact_telemetry,
+                                ),
+                              ),
+                              if (isRoom)
+                                PopupMenuItem(
+                                  value: 'roomManagement',
+                                  enabled: !readOnly,
+                                  child: MeshMenuItemRow(
+                                    icon: Icons.room_preferences,
+                                    label: context.l10n.room_management,
+                                  ),
+                                ),
+                              PopupMenuItem(
+                                value: 'compression',
+                                child: MeshMenuItemRow(
+                                  icon: Icons.compress,
+                                  label: context.l10n.chatCompression_label(
+                                    chatCompressionModeLabel(
+                                      context,
+                                      connector.contactCompressionMode(
+                                        widget.contact.publicKeyHex,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'settings',
+                                child: MeshMenuItemRow(
+                                  icon: Icons.settings,
+                                  label: context.l10n.contact_settings,
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'showBookmarks',
+                                child: MeshMenuItemRow(
+                                  icon: Icons.bookmark_border,
+                                  label: context.l10n.bookmarks_title,
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'background',
+                                child: MeshMenuItemRow(
+                                  icon: Icons.wallpaper,
+                                  label: context.l10n.chatBackground_title,
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'clearChat',
+                                enabled: !readOnly,
+                                child: MeshMenuItemRow(
+                                  icon: Icons.delete,
+                                  label: context.l10n.contact_clearChat,
+                                  color: readOnly
+                                      ? null
+                                      : Theme.of(context).colorScheme.error,
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'removeContact',
+                                enabled: !readOnly,
+                                child: MeshMenuItemRow(
+                                  icon: Icons.person_remove,
+                                  label:
+                                      context.l10n.contacts_removeFromContacts,
+                                  color: readOnly
+                                      ? null
+                                      : Theme.of(context).colorScheme.error,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ],
-                  );
-                },
-              ),
-        centerTitle: false,
-        bottom: const SyncProgressAppBarBottom(),
-        actionsPadding: const EdgeInsetsDirectional.only(end: 4),
-        // While searching the field gets the whole bar; the leading arrow
-        // closes the search.
-        actions: _searching
-            ? null
-            : [
-                const RadioStatsIconButton(),
-                IconButton(
-                  tooltip: context.l10n.chatSearch_tooltip,
-                  icon: const Icon(Icons.search),
-                  onPressed: _openSearch,
-                ),
-                Consumer<MeshCoreConnector>(
-                  builder: (context, connector, _) {
-                    final contact = _resolveContact(connector);
-                    final isRoom = contact.type == advTypeRoom;
-                    final readOnly = isRadioReadOnly(connector);
-
-                    return PopupMenuButton<String>(
-                      icon: const Icon(Icons.more_vert),
-                      onSelected: (value) {
-                        switch (value) {
-                          case 'routing':
-                            ContactRoutingSheet.show(context, contact: contact);
-                          case 'info':
-                            _showContactInfo(context);
-                          case 'settings':
-                            _showContactSettings(context);
-                          case 'showBookmarks':
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => BookmarksScreen(
-                                  initialSourceType: BookmarkSourceType.contact,
-                                  initialSourceId: widget.contact.publicKeyHex,
-                                  initialSourceName: contact.name,
-                                ),
-                              ),
-                            );
-                          case 'background':
-                            showChatBackgroundSheet(
-                              context,
-                              ChatBackgroundService.contactKey(contact),
-                            );
-                          case 'telemetry':
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    TelemetryScreen(contact: widget.contact),
-                              ),
-                            );
-                          case 'roomManagement':
-                            _showRoomManagementLogin(contact);
-                          case 'clearChat':
-                            _confirmClearChat(context, connector);
-                          case 'removeContact':
-                            confirmRemoveContact(
-                              context,
-                              connector,
-                              contact,
-                              onRemoved: () {
-                                if (mounted) Navigator.of(context).pop();
-                              },
-                            );
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value: 'routing',
-                          child: MeshMenuItemRow(
-                            icon: Icons.route,
-                            label: context.l10n.routing_title,
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'info',
-                          child: MeshMenuItemRow(
-                            icon: Icons.info_outline,
-                            label: context.l10n.contact_info,
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'telemetry',
-                          enabled: !readOnly,
-                          child: MeshMenuItemRow(
-                            icon: Icons.bar_chart,
-                            label: context.l10n.contact_telemetry,
-                          ),
-                        ),
-                        if (isRoom)
-                          PopupMenuItem(
-                            value: 'roomManagement',
-                            enabled: !readOnly,
-                            child: MeshMenuItemRow(
-                              icon: Icons.room_preferences,
-                              label: context.l10n.room_management,
-                            ),
-                          ),
-                        PopupMenuItem(
-                          value: 'settings',
-                          child: MeshMenuItemRow(
-                            icon: Icons.settings,
-                            label: context.l10n.contact_settings,
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'showBookmarks',
-                          child: MeshMenuItemRow(
-                            icon: Icons.bookmark_border,
-                            label: context.l10n.bookmarks_title,
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'background',
-                          child: MeshMenuItemRow(
-                            icon: Icons.wallpaper,
-                            label: context.l10n.chatBackground_title,
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'clearChat',
-                          enabled: !readOnly,
-                          child: MeshMenuItemRow(
-                            icon: Icons.delete,
-                            label: context.l10n.contact_clearChat,
-                            color: readOnly
-                                ? null
-                                : Theme.of(context).colorScheme.error,
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'removeContact',
-                          enabled: !readOnly,
-                          child: MeshMenuItemRow(
-                            icon: Icons.person_remove,
-                            label: context.l10n.contacts_removeFromContacts,
-                            color: readOnly
-                                ? null
-                                : Theme.of(context).colorScheme.error,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ],
-      ),
+            ),
       body: _showSearchResults
           ? _buildSearchResults(_loadSearchEntries)
           : Consumer<MeshCoreConnector>(
@@ -650,7 +687,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                 );
                 return Column(
                   children: [
-                    _buildCompressionSelector(connector),
                     Expanded(
                       child: ChatBackdrop(
                         contentKey: _messageAreaKey,
@@ -679,22 +715,28 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   /// Compression is stored on this phone per contact, so it can change
   /// while the radio is offline.
-  Widget _buildCompressionSelector(MeshCoreConnector connector) {
+  void _openCompressionScreen() {
     final keyHex = widget.contact.publicKeyHex;
-    return Consumer<AppSettingsService>(
-      builder: (context, settingsService, _) {
-        return ChatCompressionSelector(
-          mode: connector.contactCompressionMode(keyHex),
-          enabled: true,
-          profiles: settingsService.settings.cyr2latProfiles,
-          profileId: connector.getContactCyr2LatProfileId(keyHex),
-          defaultProfileId: settingsService.settings.selectedCyr2latProfileId,
+    final connector = context.read<MeshCoreConnector>();
+    final settingsService = context.read<AppSettingsService>();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatCompressionScreen(
+          listenable: Listenable.merge([connector, settingsService]),
+          read: () => ChatCompressionState(
+            mode: connector.contactCompressionMode(keyHex),
+            enabled: true,
+            profiles: settingsService.settings.cyr2latProfiles,
+            profileId: connector.getContactCyr2LatProfileId(keyHex),
+            defaultProfileId: settingsService.settings.selectedCyr2latProfileId,
+          ),
           onModeChanged: (mode) =>
               connector.setContactCompressionMode(keyHex, mode),
           onProfileChanged: (id) =>
               connector.setContactCyr2LatProfileId(keyHex, id),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -745,6 +787,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     });
 
     return ChatZoomWrapper(
+      enabled: !_selecting,
       child: AnchoredChatListView.builder(
         scrollAnchor: _scrollAnchor,
         reverse: true, // List grows from bottom up
@@ -781,12 +824,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           if (isRoom) {
             // Room-server messages carry the original author's 4-byte prefix
             // separately from message.text; use it only for resolving the name.
-            roomAuthor = _resolveContactFrom4Bytes(
-              connector,
-              message.fourByteRoomContactKey.isEmpty
-                  ? Uint8List.fromList([0, 0, 0, 0])
-                  : message.fourByteRoomContactKey,
-            );
+            roomAuthor = _roomAuthorOf(connector, message);
             fourByteHex = message.fourByteRoomContactKey
                 .map((b) => b.toRadixString(16).padLeft(2, '0'))
                 .join()
@@ -826,7 +864,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                     message.receivedAt,
                   );
               final highlighted = message.messageId == _highlightedMessageId;
-              final shown = highlighted
+              final styled = highlighted
                   ? AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
                       decoration: BoxDecoration(
@@ -838,6 +876,9 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       child: bubble,
                     )
                   : bubble;
+              final shown = _selecting
+                  ? _buildSelectableRow(message, styled)
+                  : styled;
               final child = isUnreadAnchor || startsDay
                   ? Column(
                       mainAxisSize: MainAxisSize.min,
@@ -1058,6 +1099,15 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     }
     return connector.contacts[_resolveContactIndex];
   }
+
+  /// The known author of a room-server post, or null when unknown.
+  Contact? _roomAuthorOf(MeshCoreConnector connector, Message message) =>
+      _resolveContactFrom4Bytes(
+        connector,
+        message.fourByteRoomContactKey.isEmpty
+            ? Uint8List.fromList([0, 0, 0, 0])
+            : message.fourByteRoomContactKey,
+      );
 
   Contact? _resolveContactFrom4Bytes(
     MeshCoreConnector connector,
@@ -1415,6 +1465,14 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                   },
                 ),
               ListTile(
+                leading: const Icon(Icons.checklist),
+                title: Text(context.l10n.chat_selectMessages),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  _toggleSelected(message);
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.route),
                 title: Text(context.l10n.chat_path),
                 onTap: () {
@@ -1540,6 +1598,187 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+
+  // ---- bulk selection -------------------------------------------------------
+
+  void _toggleSelected(Message message) {
+    HapticFeedback.selectionClick();
+    setState(() {
+      if (!_selectedIds.remove(message.messageId)) {
+        _selectedIds.add(message.messageId);
+      }
+    });
+  }
+
+  void _clearSelection() => setState(_selectedIds.clear);
+
+  /// Selected messages still in the transcript, oldest first.
+  List<Message> _selectedMessages() {
+    final messages = context.read<MeshCoreConnector>().getMessages(
+      widget.contact,
+    );
+    return [
+      for (final m in messages)
+        if (_selectedIds.contains(m.messageId)) m,
+    ];
+  }
+
+  Widget _buildSelectableRow(Message message, Widget messageBody) {
+    final scheme = Theme.of(context).colorScheme;
+    final selected = _selectedIds.contains(message.messageId);
+    return Semantics(
+      selected: selected,
+      button: true,
+      child: Material(
+        color: selected
+            ? scheme.primary.withValues(alpha: 0.16)
+            : Colors.transparent,
+        child: InkWell(
+          onTap: () => _toggleSelected(message),
+          onLongPress: () => _toggleSelected(message),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+            child: Row(
+              children: [
+                Icon(
+                  selected ? Icons.check_circle : Icons.radio_button_unchecked,
+                  size: 28,
+                  color: selected ? scheme.primary : scheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 8),
+                // Links, images and reactions inside the bubble must not
+                // react while picking messages.
+                Expanded(child: AbsorbPointer(child: messageBody)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildSelectionAppBar(BuildContext context) {
+    final l10n = context.l10n;
+    final selected = _selectedMessages();
+    final readOnly = context.radioReadOnly;
+    final canResend =
+        !readOnly && selected.any((m) => m.isOutgoing && !m.isCli);
+    return AppBar(
+      leading: IconButton(
+        tooltip: l10n.chat_clearSelection,
+        icon: const Icon(Icons.close),
+        onPressed: _clearSelection,
+      ),
+      title: Text(l10n.chat_selectedCount(selected.length)),
+      actions: [
+        if (canResend)
+          IconButton(
+            tooltip: l10n.chat_resend,
+            icon: const Icon(Icons.replay),
+            onPressed: () => _bulkResend(selected),
+          ),
+        IconButton(
+          tooltip: l10n.chat_bookmark,
+          icon: const Icon(Icons.bookmark_border),
+          onPressed: selected.isEmpty ? null : () => _bulkBookmark(selected),
+        ),
+        IconButton(
+          tooltip: l10n.common_copy,
+          icon: const Icon(Icons.copy),
+          onPressed: selected.isEmpty ? null : () => _bulkCopy(selected),
+        ),
+        IconButton(
+          tooltip: l10n.common_delete,
+          icon: const Icon(Icons.delete_outline),
+          onPressed: selected.isEmpty || readOnly
+              ? null
+              : () => _bulkDelete(selected),
+        ),
+      ],
+    );
+  }
+
+  void _bulkCopy(List<Message> messages) {
+    final text = messages.map((m) => m.text).join('\n');
+    setState(_selectedIds.clear);
+    copyChatMessageText(context, text);
+  }
+
+  void _bulkBookmark(List<Message> messages) {
+    final connector = context.read<MeshCoreConnector>();
+    final contact = _resolveContact(connector);
+    final isRoom = contact.type == advTypeRoom;
+    final me = connector.selfName ?? context.l10n.chat_me;
+    setState(_selectedIds.clear);
+    for (final m in messages) {
+      unawaited(
+        connector.setBookmarkedMessage(
+          BookmarkedMessage.fromContact(
+            message: m,
+            contactKey: widget.contact.publicKeyHex,
+            contactName: widget.contact.name,
+            senderName: m.isOutgoing
+                ? me
+                : (isRoom ? _roomAuthorOf(connector, m) : null)?.name ??
+                      contact.name,
+          ),
+          isBookmarked: true,
+        ),
+      );
+    }
+  }
+
+  Future<void> _bulkDelete(List<Message> messages) async {
+    if (!ensureRadioConnected(context)) return;
+    final connector = context.read<MeshCoreConnector>();
+    final confirmed = await confirmBulkDelete(context, messages.length);
+    if (!confirmed || !mounted) return;
+    setState(_selectedIds.clear);
+    for (final m in messages) {
+      await connector.deleteMessage(m);
+    }
+    if (!mounted) return;
+    showDismissibleSnackBar(
+      context,
+      content: Text(context.l10n.chat_messagesDeleted(messages.length)),
+    );
+  }
+
+  Future<void> _bulkResend(List<Message> messages) async {
+    if (!ensureRadioConnected(context)) return;
+    final connector = context.read<MeshCoreConnector>();
+    final outgoing = [
+      for (final m in messages)
+        if (m.isOutgoing && !m.isCli) m,
+    ];
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        final l10n = dialogContext.l10n;
+        return AlertDialog(
+          title: Text(l10n.chat_resendSelectedTitle),
+          content: Text(l10n.chat_resendSelectedConfirm(outgoing.length)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text(l10n.common_cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: Text(l10n.chat_resend),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed != true || !mounted) return;
+    final contact = _resolveContact(connector);
+    setState(_selectedIds.clear);
+    // Oldest first so the resent messages keep their order.
+    for (final m in outgoing) {
+      await connector.resendMessage(contact, m);
+    }
   }
 
   Future<void> _deleteMessage(Message message) async {

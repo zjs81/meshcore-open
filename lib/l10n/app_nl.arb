@@ -2180,6 +2180,9 @@
     }
   },
   "contactsSettings_overwriteOldestSubtitle": "Als de contactenlijst van de radio vol is, het oudste contact vervangen dat geen favoriet is.",
+  "contactsSettings_hopLimit": "Hoplimiet",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{Geen limiet} =1{1 (alleen direct)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "De radio voegt alleen contacten met minder hops dan deze waarde automatisch toe. In Ontdekte contacten worden ze nog steeds allemaal opgeslagen.",
   "contactsSettings_evictDiscoveredContactsTitle": "Ontdekte contacten beperken",
   "contactsSettings_evictDiscoveredContactsSubtitle": "De app beperkt de lijst \"Ontdekte contacten\" tot {limit} items. Bij het bereiken van de limiet worden oudere contacten verwijderd. Schakel uit om de limiet op te heffen.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {

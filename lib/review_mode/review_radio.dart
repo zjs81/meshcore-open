@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 
@@ -66,6 +67,7 @@ class ReviewRadio {
   int _txPowerDbm = ReviewScript.txPowerDbm;
   int _autoAddFlags =
       autoAddChatFlag | autoAddRepeaterFlag | autoAddRoomServerFlag;
+  int _autoAddMaxHops = 0;
   int _timeOffsetSecs = 0;
 
   /// Frames radio to app. Each event is one complete companion frame.
@@ -240,10 +242,17 @@ class ReviewRadio {
         _emit([ReviewFrames.customVars('gps:0')]);
         break;
       case cmdGetAutoAddConfig:
-        _emit([ReviewFrames.autoAddConfig(flags: _autoAddFlags)]);
+        _emit([
+          ReviewFrames.autoAddConfig(
+            flags: _autoAddFlags,
+            maxHops: _autoAddMaxHops,
+          ),
+        ]);
         break;
       case cmdSetAutoAddConfig:
         if (frame.length >= 2) _autoAddFlags = frame[1];
+        // Like firmware: the optional hop limit, capped at 64.
+        if (frame.length >= 3) _autoAddMaxHops = math.min(frame[2], 64);
         _emit([ReviewFrames.ok()]);
         break;
       case cmdGetAllowedRepeatFreq:

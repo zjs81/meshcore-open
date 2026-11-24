@@ -37,6 +37,7 @@ final _l10n = AppLocalizationsEn();
 
 MeshCoreConnector? _sharedConnector;
 AppSettingsService? _sharedSettings;
+final _frameLog = BleDebugLogService();
 
 Future<MeshCoreConnector> _connectedConnector(WidgetTester tester) async {
   if (_sharedConnector != null) return _sharedConnector!;
@@ -51,6 +52,7 @@ Future<MeshCoreConnector> _connectedConnector(WidgetTester tester) async {
       pathHistoryService: PathHistoryService(storage),
       appSettingsService: settings,
       translationService: translation,
+      bleDebugLogService: _frameLog,
     );
     connector.reviewRadioFactoryForTest = () => ReviewRadio(
       scheduledMessageInterval: const Duration(hours: 1),
@@ -335,6 +337,77 @@ void main() {
     await tester.tap(find.text(_l10n.repeater_discardChanges));
     await tester.pumpAndSettle();
     expect(find.byType(LocationSettingsScreen), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('Contact Settings sends the hop limit and reads it back', (
+    tester,
+  ) async {
+    final connector = await _connectedConnector(tester);
+    final original = connector.autoAddMaxHops;
+    expect(original, isNotNull, reason: 'review radio reports the hop limit');
+    await tester.pumpWidget(
+      _app(connector, _launcher(const ContactSettingsScreen())),
+    );
+    await _open(tester);
+    String option(int hops) => _l10n.contactsSettings_hopLimitOption(hops);
+    expect(find.text(option(original!)), findsOneWidget);
+
+    Future<void> setHops(int hops) async {
+      final field = find.byType(DropdownButtonFormField<int>);
+      await tester.ensureVisible(field);
+      await tester.pumpAndSettle();
+      await tester.tap(field);
+      await tester.pumpAndSettle();
+      // The open menu builds only the rows around the current value.
+      final item = find.text(option(hops));
+      await tester.scrollUntilVisible(
+        item,
+        hops < connector.autoAddMaxHops! ? -48 : 48,
+        scrollable: find.byType(Scrollable).last,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(item.last);
+      await tester.pumpAndSettle();
+      await tester.tap(_saveAction);
+      await _waitFor(tester, () => connector.autoAddMaxHops == hops);
+    }
+
+    // The last frame of [code] the app sent to the radio.
+    List<int> lastSent(int code) => _frameLog.entries
+        .lastWhere((e) => e.outgoing && e.payload.first == code)
+        .payload;
+    int sentCount(int code) => _frameLog.entries
+        .where((e) => e.outgoing && e.payload.first == code)
+        .length;
+
+    final fetchesBefore = sentCount(cmdGetAutoAddConfig);
+    await setHops(8);
+    expect(connector.autoAddMaxHops, 8);
+    expect(find.text(option(8)), findsOneWidget);
+    expect(_saveAction, findsNothing);
+    // [CMD_SET_AUTOADD_CONFIG][flags][max hops], then a fetch to read it back.
+    expect(lastSent(cmdSetAutoAddConfig), hasLength(3));
+    expect(lastSent(cmdSetAutoAddConfig).last, 8);
+    expect(sentCount(cmdGetAutoAddConfig), fetchesBefore + 1);
+
+    // Changing only another setting sends the old two-byte frame.
+    final overwrite = find.text(_l10n.contactsSettings_overwriteOldestTitle);
+    for (var i = 0; i < 2; i++) {
+      await tester.ensureVisible(overwrite);
+      await tester.pumpAndSettle();
+      await tester.tap(overwrite);
+      await tester.pump();
+      await tester.tap(_saveAction);
+      await _waitFor(tester, () => _saveAction.evaluate().isEmpty);
+      expect(lastSent(cmdSetAutoAddConfig), hasLength(2));
+    }
+    expect(connector.autoAddMaxHops, 8);
+
+    await setHops(original);
+    expect(connector.autoAddMaxHops, original);
+    expect(lastSent(cmdSetAutoAddConfig), hasLength(3));
+    expect(lastSent(cmdSetAutoAddConfig).last, original);
     await tester.pumpWidget(const SizedBox());
   });
 
