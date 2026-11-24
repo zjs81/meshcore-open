@@ -7,6 +7,7 @@ import '../../../theme/mesh_theme.dart';
 import '../../../utils/radio_guard.dart';
 import '../../../widgets/mesh_nav_tile.dart';
 import '../../../widgets/mesh_ui.dart';
+import '../../../widgets/sync_progress_overlay.dart';
 import '../chess_game.dart';
 import '../chess_service.dart';
 import 'chess_board.dart';
@@ -106,12 +107,7 @@ class _ChessGameScreenState extends State<ChessGameScreen> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        bottom: busy
-            ? const PreferredSize(
-                preferredSize: Size.fromHeight(3),
-                child: LinearProgressIndicator(minHeight: 3),
-              )
-            : null,
+        bottom: MeshProgressAppBarBottom(active: busy),
       ),
       body: SafeArea(
         child: LayoutBuilder(

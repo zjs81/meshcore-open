@@ -21,6 +21,7 @@ import '../widgets/app_bar.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/path_map_scaffold.dart';
 import '../widgets/quick_switch_bar.dart';
+import '../widgets/sync_progress_overlay.dart';
 import '../icons/los_icon.dart';
 import '../theme/mesh_theme.dart';
 
@@ -440,10 +441,7 @@ class _LineOfSightMapScreenState extends State<LineOfSightMapScreen> {
               left: 0,
               right: 0,
               top: 0,
-              child: LinearProgressIndicator(
-                color: LosPalette.selected,
-                backgroundColor: LosPalette.chartBackground,
-              ),
+              child: const MeshProgressBar(),
             ),
         ],
       ),

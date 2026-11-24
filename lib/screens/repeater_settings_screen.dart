@@ -17,6 +17,7 @@ import '../widgets/mesh_nav_tile.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/radio_disconnected_banner.dart';
 import '../widgets/routing_sheet.dart';
+import '../widgets/sync_progress_overlay.dart';
 import '../utils/keys.dart';
 import '../helpers/snack_bar_builder.dart';
 
@@ -889,12 +890,10 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
                 label: Text(l10n.common_save),
               ),
           ],
-          bottom: _loadingAll
-              ? PreferredSize(
-                  preferredSize: const Size.fromHeight(4),
-                  child: LinearProgressIndicator(value: _loadAllProgress),
-                )
-              : null,
+          bottom: MeshProgressAppBarBottom(
+            active: _loadingAll,
+            value: _loadAllProgress,
+          ),
         ),
         body: MeshSettingsTileTheme(
           child: SafeArea(

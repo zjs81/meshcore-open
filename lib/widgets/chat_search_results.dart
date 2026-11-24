@@ -8,6 +8,7 @@ import '../helpers/snack_bar_builder.dart';
 import '../l10n/l10n.dart';
 import 'chat_day_separator.dart';
 import 'empty_state.dart';
+import 'sync_progress_overlay.dart';
 
 /// Results list for "search in this chat". Loads the full history through
 /// [loadEntries] (once, cached) and re-filters on each debounced [query].
@@ -86,10 +87,7 @@ class _ChatSearchResultsState extends State<ChatSearchResults> {
     final showEmpty = !_loading && _results.isEmpty;
     return Column(
       children: [
-        SizedBox(
-          height: 3,
-          child: _loading ? const LinearProgressIndicator() : null,
-        ),
+        MeshProgressBar(active: _loading),
         if (!_loading && _results.isNotEmpty)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),

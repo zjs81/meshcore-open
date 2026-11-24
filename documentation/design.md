@@ -146,7 +146,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Empty list | `EmptyState(icon:, title:, subtitle:, action:)` | Scrolls rather than overflowing at large text |
 | Inline error with retry | `ErrorRetryCard(message:, onRetry:, retryLabel:)` | Pass `retryLabel: context.l10n.common_retry` |
 | Radio offline on a remote-node screen | `RadioDisconnectedBanner` | Renders nothing while connected |
-| Sync progress | `SyncProgressAppBarBottom` as the app bar `bottom` | 3px bar |
+| Progress bar | `MeshProgressBar`; `MeshProgressAppBarBottom` as an app bar `bottom`; `SyncProgressAppBarBottom` for the app syncs (`widgets/sync_progress_overlay.dart`) | See [Progress bars](#progress-bars) |
 | Toast message | `showDismissibleSnackBar(context, content: Text(...))` | Tap to dismiss, replaces the current snackbar, safe after an async gap |
 | List item entrance | `ListEntrance(index:)` | Optional. Plays only for rows built while the list is at rest at the top; rows scrolled into view appear at once |
 
@@ -211,6 +211,18 @@ A dialog that offers several missing models (backup restore) uses the same rows 
 
 The channel's games list is a `showMeshSheet` with a `DraggableScrollableSheet`, the same layout as the Add channel sheet. Starting a game closes it and opens a second sheet, so sheets are never stacked.
 
+### Progress bars
+
+A thin bar at the top of a screen or list shows that something is running. Bars inside content (model downloads, image send progress) are not covered here.
+
+1. 4px.
+2. Theme colours: don't set a colour or track. The theme's `progressIndicatorTheme` (`primary` on `surfaceContainerHigh`) applies, so the bar follows light, dark and custom themes.
+3. Use the shared widgets: `MeshProgressAppBarBottom` as an app bar `bottom` for the screen's own task (Refresh all in `repeater_settings_screen.dart`, the chess game), `SyncProgressAppBarBottom` for the app syncs (contacts, channels, queued messages), and `MeshProgressBar` at the top of content (chat search results, the line-of-sight map).
+4. Fill (`value`) when the progress is known; move (`value: null`) when it isn't.
+5. Keep the height while idle (`active: false`), so the content doesn't jump. A bar laid over content (the line-of-sight map) can be removed instead.
+6. One bar at a time: when a screen's own task and an app sync overlap, the same bar shows one of them, never two stacked bars.
+7. Waiting for the radio: when the user starts an action and the app waits for the radio, the control shows the 18×18 spinner (see [States](#9-states)) and the screen's top bar moves. Background traffic (polling, message sync, ACKs) doesn't; messages keep their own delivery status.
+
 ## 6. Sheets, dialogs and pages
 
 What the code does:
@@ -271,7 +283,7 @@ That is the Contacts list and its group member picker, Discovery, Map node searc
   - Order: screen-specific items first, then a `PopupMenuDivider` separating the trailing app-level section — Connect/Disconnect (`connectionMenuItem`) immediately followed by Settings (`settingsMenuItem`) — and destructive items last if a screen has any. Omit the divider when no items precede the app-level section (for example, `MapScreen` while building a path trace). Main views use `mainOverflowTrailingItems(screenContext, menuContext, hasPrecedingItems:)` in `lib/widgets/connect_sheet.dart` so they stay in sync.
   - Visual & interaction rules: rely on `MeshTheme`'s `popupMenuTheme` (`surfaceContainerHigh`, `MeshRadii.md` border radius, and consistent `menuPadding`, margins, item padding, and elevation), separate sections with `PopupMenuDivider`, build every row with `MeshMenuItemRow` (20px icon slot, 12px gap, 2-line wrap + ellipsis), use `context.l10n.contacts_moreOptions` as the button `tooltip` on main views, and capture the screen `context` (not the `itemBuilder`'s `menuContext`) for `onTap` callbacks since menus pop before `onTap` runs. Destructive items use `MeshMenuItemRow(color: scheme.error)` so both icon and label turn red (Clear chat in `chat_screen.dart`; Clear / Delete channel in `channel_chat_screen.dart`).
 - Search: tapping search swaps the title for the field and hides all actions (`actions: _searching ? null : [...]`). The leading back arrow and the system back gesture close the search (`PopScope(canPop: !_searching)`) instead of leaving the screen.
-- Long operations: show progress as the app bar `bottom` (`SyncProgressAppBarBottom`, or a 4px `LinearProgressIndicator` for Refresh all in `repeater_settings_screen.dart`).
+- Long operations: show progress as the app bar `bottom` with the shared bar (see [Progress bars](#progress-bars)).
 
 ## 9. States
 
@@ -280,6 +292,7 @@ That is the Contacts list and its group member picker, Discovery, Map node searc
 | Loading, nothing to show yet | `Center(child: CircularProgressIndicator())`, only until the first data arrives; then show partial data (`channels_screen.dart`). |
 | Loading in place | Swap the control's icon for an 18×18 `CircularProgressIndicator(strokeWidth: 2)` and disable it (`_buildRefreshButton` in `repeater_settings_screen.dart`). |
 | Background sync | `SyncProgressAppBarBottom`. |
+| Waiting for the radio | The control's 18×18 spinner and the screen's top bar, moving. See [Progress bars](#progress-bars). |
 | Empty | `EmptyState` with an icon, a short title, and an action when there is an obvious next step. Use a separate "no results" state (`Icons.search_off`) when a search or filter hides everything. |
 | Error | A snackbar for a failed action. `ErrorRetryCard` for a failed load the user can retry. Never show raw exception text alone. |
 | Companion radio disconnected | Main and chat screens stay open, read-only ([offline mode](offline-mode.md)). Decide with `isRadioReadOnly(connector)` / `context.radioReadOnly` (`lib/utils/radio_guard.dart`): disable menu items (`PopupMenuItem(enabled: false)`, drop destructive colors) and buttons, hide FABs, and call `ensureRadioConnected(context)` as the safety net in handlers. The chat composer shows `OfflineComposerBar` in the same bubble and margins. Repeater screens and the Settings pages that save to the radio stay open with `RadioDisconnectedBanner` at the top and disable radio-dependent actions, including Save. Settings rows that need the radio pass `onTap: null` and show `settings_requiresConnection` as the subtitle (`settings_screen.dart`). |
@@ -324,6 +337,7 @@ Follow the same pattern for any new remote-value screen.
 - [ ] Settings stored on a radio use `SaveToRadioPage` and save only on Save; settings stored in the app apply immediately.
 - [ ] Contact, repeater, room and user search uses `compareContactQueryRank`: prefix, then substring, then hop hash.
 - [ ] Loading, empty, error, offline and unknown-value states handled.
+- [ ] Top progress bars use the shared widgets (4px, theme colours); see [Progress bars](#progress-bars).
 - [ ] All strings in `app_en.arb`; checked in German or Portuguese at 1.3× and 2.0× on a narrow screen.
 - [ ] Settings row titles in Title Case (English); descriptions without a trailing full stop.
 - [ ] Light, dark and one custom theme checked.
@@ -337,10 +351,12 @@ The current code does not yet follow this page everywhere:
 - **Disconnect icon-only error tint.** In overflow menus, Disconnect tints only the icon (`iconColor`), while Clear chat / Delete tint icon and label (`color`).
 - **Menu rows not using `MeshMenuItemRow`.** `channel_chat_screen.dart` bulk-select menu (Select all / Copy) puts a `ListTile` inside `PopupMenuItem`. `widgets/list_filter_widget.dart` and the group menu in `contacts_screen.dart` use plain `Text` items, which is acceptable for icon-less lists but does not limit wrapping.
 - **Tile titles without `MeshSettingsTileTheme`.** Backup & Restore (`CheckboxListTile`) and Themes (`SwitchListTile`) do not wrap their body in it, so those titles are not semibold like the other settings rows.
+- **Bars inside content.** The map cache download bar (`map_cache_screen.dart`) uses a fixed `MeshPalette.blue`.
+- **Radio waits not shown yet.** In Settings actions, Sync Time and Reboot show nothing while sending, and Refresh Contacts shows only the sync bar. `SaveToRadioPage` pages show the Save spinner but no top bar. Other radio actions are not reviewed yet.
 - **`ErrorRetryCard` is unused** and its fallback label is the hard-coded English `'Retry'` (`mesh_ui.dart`); screens show load errors in their own ways.
 - **Fixed-width label boxes.** `chat_screen.dart` `_buildInfoRow` (80px), `line_of_sight_map_screen.dart` endpoint label (54px, `fontSize: 12`), `channel_message_path_screen.dart` (72px, upper-cased `accentLabel` at its 11px default).
 - **11px text.** `MeshTheme.accentLabel()` without `fontSize` gives 11px in `channel_message_path_screen.dart`. The type scale's `labelSmall` (11) is used in `list_filter_widget.dart` section titles.
-- **Hard-coded colours.** `SyncProgressAppBarBottom` uses `Colors.red`, `Colors.blue` and `Colors.green`; `AppBarTitle` subtitle uses `Colors.grey[600]` at a literal 14 instead of `onSurfaceVariant`; `telemetry_location_map.dart` uses raw `Colors.*`. `MeshPalette.ink/bg/line` still appear directly in a few screen/widget files: map marker overlays (node name labels and shared-count badges in `path_map_scaffold.dart`, the hop badge on avatars in `channel_message_path_screen.dart`) and the `channels_screen.dart` and `channel_chat_screen.dart` community dots with an 8px icon. The path map chrome (`PathMapBottomPanel`, `PathMapDesktopControls`, `PathViewModeToggle` and the panel contents in `path_map_ui.dart` and both path map screens) uses `ColorScheme` roles: `surfaceContainerLow` background, `outlineVariant` border and dividers, `onSurface`/`onSurfaceVariant` text and icons, `primary` for active toggles and `tertiary` for warnings.
+- **Hard-coded colours.** `AppBarTitle` subtitle uses `Colors.grey[600]` at a literal 14 instead of `onSurfaceVariant`; `telemetry_location_map.dart` uses raw `Colors.*`. `MeshPalette.ink/bg/line` still appear directly in a few screen/widget files: map marker overlays (node name labels and shared-count badges in `path_map_scaffold.dart`, the hop badge on avatars in `channel_message_path_screen.dart`) and the `channels_screen.dart` and `channel_chat_screen.dart` community dots with an 8px icon. The path map chrome (`PathMapBottomPanel`, `PathMapDesktopControls`, `PathViewModeToggle` and the panel contents in `path_map_ui.dart` and both path map screens) uses `ColorScheme` roles: `surfaceContainerLow` background, `outlineVariant` border and dividers, `onSurface`/`onSurfaceVariant` text and icons, `primary` for active toggles and `tertiary` for warnings.
 - **Literal sizes instead of the theme.** About 300 literal `fontSize:` values in `lib/screens` and `lib/widgets` (most 12–14), e.g. `EmptyState` subtitle at 13.5; and 36 `BorderRadius.circular(<number>)` calls (8 and 12 most common) instead of `MeshRadii`.
 - **Navigation bar theme.** `navigationBarTheme` colours selected labels `onPrimary`, which is white-on-white in light mode; `QuickSwitchBar` overrides it. Any other `NavigationBar` would inherit the problem.
 - **Two badge styles.** `QuickSwitchBar` uses Material `Badge` capped at 99+; `UnreadBadge` caps at 9999+.
