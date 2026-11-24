@@ -156,7 +156,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 - `FilledButton.tonal`: a secondary action that still needs weight (rare).
 - `OutlinedButton(.icon)`: secondary actions next to a filled one.
 - `TextButton`: Cancel and low-emphasis actions in dialogs; inline actions in cards.
-- Destructive confirm: `FilledButton` with `backgroundColor: scheme.error`, `foregroundColor: scheme.onError` (`showConfirmClearDialog` in `widgets/confirm_clear_dialog.dart`), or a `TextButton` with `foregroundColor: scheme.error` when it is not the primary action. Use `showConfirmClearDialog(confirmLabel:)` for any confirm dialog; `warning: true` makes the button `scheme.tertiary` for disruptive, non-destructive actions (Reboot in Settings).
+- Destructive confirm: destructive or data-removing actions (such as clearing a chat, deleting a channel or contact, or removing single or bulk bookmarks) always prompt with a confirmation `AlertDialog` pairing a `Cancel` `TextButton` with an error-styled destructive action: `FilledButton` with `backgroundColor: scheme.error`, `foregroundColor: scheme.onError` (`showConfirmClearDialog` in `widgets/confirm_clear_dialog.dart`), or a `TextButton` with `foregroundColor: scheme.error` when it is not the primary action (as in `confirmClearChat` and `confirmRemoveBookmarks`). Use `showConfirmClearDialog(confirmLabel:)` for any confirm dialog; `warning: true` makes the button `scheme.tertiary` for disruptive, non-destructive actions (Reboot in Settings).
 - Dialog action order: Cancel first, primary last.
 - Avoid `ElevatedButton` in new code.
 
@@ -237,7 +237,7 @@ What the code does:
 Rules for new UI:
 
 1. **Settings → page.** A row in Settings, App Settings or a repeater screen that opens settings opens a page, even for a single field. See [Settings pages](#settings-pages).
-2. **Confirmation or a single short input → dialog.** Title, one sentence, Cancel + one action. Inside settings, dialogs only confirm actions (Reboot, Delete all paths, unsaved changes).
+2. **Confirmation or a single short input → dialog.** Title, one sentence, Cancel + one action. Destructive or data-removing actions (clearing a chat, deleting a channel/contact, or removing single/bulk bookmarks) always use this `AlertDialog` pattern (`Cancel` + `scheme.error` destructive action button). Inside settings, dialogs only confirm actions (Reboot, Delete all paths, unsaved changes).
 3. **Pick one of several options, or act on one item → sheet.** Use `showMeshSheet` and start the content with `BottomSheetHeader(title:, subtitle:)`. It handles the keyboard and navigation-bar insets. Use raw `showModalBottomSheet` only when you need `DraggableScrollableSheet`.
 4. **Forms with sections, live remote values, or anything that needs Save/Discard → page.** Guard unsaved changes with `UnsavedChangesGuard` (built into `SaveToRadioPage`).
 5. Never stack a dialog on a sheet on a dialog. Close the sheet first, or move the flow to a page.
