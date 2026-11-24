@@ -7960,4 +7960,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return '$name が時間切れによる勝ちを申請しました';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }

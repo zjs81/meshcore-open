@@ -7799,4 +7799,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return '$name 申请超时判胜';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }

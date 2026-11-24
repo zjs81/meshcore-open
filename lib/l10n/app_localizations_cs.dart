@@ -8299,4 +8299,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return 'Hráč $name uplatnil výhru na čas';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }

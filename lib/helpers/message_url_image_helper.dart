@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
 
+import '../l10n/l10n.dart';
 import '../models/app_settings.dart';
 
 /// Finds and renders image URLs embedded in ordinary text messages.
@@ -290,9 +291,18 @@ class _MessageUrlImageFutureBuilderState
 }
 
 class MessageUrlImagePreview extends StatelessWidget {
-  const MessageUrlImagePreview({super.key, required this.imageUrl});
+  const MessageUrlImagePreview({
+    super.key,
+    required this.imageUrl,
+    @visibleForTesting this.imageProvider,
+  });
+
+  static const double maxHeight = 400;
+  static const double fallbackWidth = 320;
+  static const double statusHeight = 130;
 
   final String imageUrl;
+  final ImageProvider? imageProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -347,31 +357,139 @@ class MessageUrlImagePreview extends StatelessWidget {
           ),
         );
       },
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: SizedBox(
-          width: 240,
-          height: 240,
-          child: CachedNetworkImage(
-            imageUrl: imageUrl,
-            fit: BoxFit.contain,
-            placeholder: (context, url) => ColoredBox(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      child: _AdaptiveUrlImage(
+        provider: imageProvider ?? CachedNetworkImageProvider(imageUrl),
+      ),
+    );
+  }
+}
+
+/// Fits an image of [imageWidth] x [imageHeight] into [maxWidth], keeping its
+/// aspect ratio. Images taller than [maxHeight] are scaled down whole instead.
+Size urlImagePreviewSize(
+  double imageWidth,
+  double imageHeight,
+  double maxWidth, {
+  double maxHeight = MessageUrlImagePreview.maxHeight,
+}) {
+  var width = maxWidth;
+  var height = width * imageHeight / imageWidth;
+  if (height > maxHeight) {
+    height = maxHeight;
+    width = height * imageWidth / imageHeight;
+  }
+  return Size(width, height);
+}
+
+class _AdaptiveUrlImage extends StatefulWidget {
+  const _AdaptiveUrlImage({required this.provider});
+
+  final ImageProvider provider;
+
+  @override
+  State<_AdaptiveUrlImage> createState() => _AdaptiveUrlImageState();
+}
+
+class _AdaptiveUrlImageState extends State<_AdaptiveUrlImage> {
+  ImageStream? _stream;
+  late final ImageStreamListener _listener = ImageStreamListener(
+    (info, _) {
+      if (!mounted) {
+        info.dispose();
+        return;
+      }
+      setState(() {
+        _info?.dispose();
+        _info = info;
+        _failed = false;
+      });
+    },
+    onError: (_, _) {
+      if (mounted) setState(() => _failed = true);
+    },
+  );
+  ImageInfo? _info;
+  bool _failed = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _resolve();
+  }
+
+  @override
+  void didUpdateWidget(covariant _AdaptiveUrlImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.provider != widget.provider) {
+      _info?.dispose();
+      _info = null;
+      _failed = false;
+      _resolve();
+    }
+  }
+
+  void _resolve() {
+    final stream = widget.provider.resolve(
+      createLocalImageConfiguration(context),
+    );
+    if (stream.key == _stream?.key) return;
+    _stream?.removeListener(_listener);
+    _stream = stream..addListener(_listener);
+  }
+
+  @override
+  void dispose() {
+    _stream?.removeListener(_listener);
+    _info?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.surfaceContainerHighest;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxWidth = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : MessageUrlImagePreview.fallbackWidth;
+        final info = _info;
+        final Widget child;
+        if (info != null) {
+          final size = urlImagePreviewSize(
+            info.image.width.toDouble(),
+            info.image.height.toDouble(),
+            maxWidth,
+          );
+          child = SizedBox.fromSize(
+            size: size,
+            child: RawImage(image: info.image, fit: BoxFit.fill),
+          );
+        } else if (_failed) {
+          child = Container(
+            width: maxWidth,
+            height: MessageUrlImagePreview.statusHeight,
+            padding: const EdgeInsets.all(12),
+            alignment: Alignment.centerLeft,
+            color: color,
+            child: Text(
+              context.l10n.messageUrlImageLoadFailed,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          );
+        } else {
+          child = SizedBox(
+            width: maxWidth,
+            height: MessageUrlImagePreview.statusHeight,
+            child: ColoredBox(
+              color: color,
               child: const Center(
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
             ),
-            errorWidget: (context, url, error) => Container(
-              padding: const EdgeInsets.all(12),
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              child: Text(
-                'Unable to load image',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ),
-          ),
-        ),
-      ),
+          );
+        }
+        return ClipRRect(borderRadius: BorderRadius.circular(12), child: child);
+      },
     );
   }
 }
