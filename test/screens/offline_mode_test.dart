@@ -42,9 +42,8 @@ import 'package:meshcore_open/storage/last_radio_store.dart';
 import 'package:meshcore_open/storage/message_store.dart';
 import 'package:meshcore_open/storage/prefs_manager.dart';
 import 'package:meshcore_open/theme/mesh_theme.dart';
-import 'package:meshcore_open/widgets/chat_background.dart';
 import 'package:meshcore_open/widgets/chat_composer.dart';
-import 'package:meshcore_open/widgets/chat_compression_selector.dart';
+import 'package:meshcore_open/screens/chat_compression_screen.dart';
 import 'package:meshcore_open/widgets/connect_sheet.dart';
 
 final _radioKey = Uint8List.fromList(List<int>.generate(32, (i) => 0xA0 + i));
@@ -349,10 +348,18 @@ void main() {
     await tester.pump(const Duration(minutes: 1));
   });
 
-  group('compression selector', () {
-    Future<void> choose(WidgetTester tester, String mode) async {
-      await tester.tap(find.byType(ChatCompressionSelector));
+  group('compression menu item', () {
+    Future<void> openMenu(WidgetTester tester) async {
+      await tester.tap(find.byIcon(Icons.more_vert));
       await _settle(tester);
+    }
+
+    /// Opens the page from the overflow menu, picks [mode], and returns.
+    Future<void> choose(WidgetTester tester, String mode) async {
+      await openMenu(tester);
+      await tester.tap(find.textContaining('${_l10n.chatCompression_title}:'));
+      await _settle(tester);
+      expect(find.byType(ChatCompressionScreen), findsOneWidget);
       await tester.tap(find.text(mode));
       await _settle(tester);
       // Connector notifications are debounced on a real timer.
@@ -360,9 +367,11 @@ void main() {
         () => Future<void>.delayed(const Duration(milliseconds: 200)),
       );
       await _settle(tester);
+      await tester.pageBack();
+      await _settle(tester);
     }
 
-    testWidgets('DM chat shows it at the top and saves offline', (
+    testWidgets('DM chat shows it in the menu and saves offline', (
       tester,
     ) async {
       final connector = await _offlineConnector(tester);
@@ -373,32 +382,27 @@ void main() {
       );
       await _settle(tester);
 
-      expect(find.byType(ChatCompressionSelector), findsOneWidget);
+      // No strip above the transcript any more.
+      expect(find.byType(ChatCompressionScreen), findsNothing);
+      expect(find.text(_l10n.chatCompression_label('Off')), findsNothing);
+      await openMenu(tester);
       expect(find.text(_l10n.chatCompression_label('Off')), findsOneWidget);
-      // Above the transcript, outside its scroll view.
-      expect(
-        find.ancestor(
-          of: find.byType(ChatCompressionSelector),
-          matching: find.byType(Scrollable),
-        ),
-        findsNothing,
-      );
-      expect(
-        tester.getBottomLeft(find.byType(ChatCompressionSelector)).dy,
-        lessThanOrEqualTo(tester.getTopLeft(find.byType(ChatBackdrop)).dy),
-      );
+      expect(find.byIcon(Icons.compress), findsOneWidget);
+      await tester.tapAt(const Offset(1, 1));
+      await _settle(tester);
 
       await choose(tester, _l10n.chatCompression_smaz);
+      await openMenu(tester);
       expect(find.text(_l10n.chatCompression_label('SMAZ')), findsOneWidget);
+      await tester.tapAt(const Offset(1, 1));
+      await _settle(tester);
       expect(
         await tester.runAsync(() => store.loadSmazEnabled(alice.publicKeyHex)),
         isTrue,
       );
 
       await choose(tester, _l10n.chatCompression_cyr2lat);
-      // Cyr2Lat keeps the sheet open for its profile picker.
-      await tester.tap(find.byTooltip('Close'));
-      await _settle(tester);
+      await openMenu(tester);
       expect(find.text(_l10n.chatCompression_label('Cyr2Lat')), findsOneWidget);
       expect(
         connector.contactCompressionMode(alice.publicKeyHex),
@@ -416,8 +420,6 @@ void main() {
       );
 
       // The settings dialog no longer carries the compression switches.
-      await tester.tap(find.byIcon(Icons.more_vert));
-      await _settle(tester);
       await tester.tap(find.text(_l10n.contact_settings).last);
       await _settle(tester);
       expect(find.byType(AlertDialog), findsOneWidget);
@@ -431,7 +433,7 @@ void main() {
       await tester.pumpWidget(const SizedBox());
     });
 
-    testWidgets('channel chat uses the same selector and saves offline', (
+    testWidgets('channel chat uses the same page and saves offline', (
       tester,
     ) async {
       final connector = await _offlineConnector(tester);
@@ -442,10 +444,13 @@ void main() {
       );
       await _settle(tester);
 
-      expect(find.byType(ChatCompressionSelector), findsOneWidget);
+      await openMenu(tester);
       expect(find.text(_l10n.chatCompression_label('Off')), findsOneWidget);
+      await tester.tapAt(const Offset(1, 1));
+      await _settle(tester);
 
       await choose(tester, _l10n.chatCompression_smaz);
+      await openMenu(tester);
       expect(find.text(_l10n.chatCompression_label('SMAZ')), findsOneWidget);
       expect(
         await tester.runAsync(() => store.loadSmazEnabled(channel.storageId!)),

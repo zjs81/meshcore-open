@@ -7282,9 +7282,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint => '更改此聊天的压缩设置';
-
-  @override
   String get chatCompression_sheetSubtitle => '适用于你在此聊天中发送的消息。保存在本机。';
 
   @override

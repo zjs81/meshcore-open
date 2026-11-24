@@ -7774,9 +7774,6 @@ class AppLocalizationsSk extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint => 'Zmeniť kompresiu pre tento chat';
-
-  @override
   String get chatCompression_sheetSubtitle =>
       'Platí pre správy, ktoré v tomto chate odošlete. Uložené v tomto telefóne.';
 

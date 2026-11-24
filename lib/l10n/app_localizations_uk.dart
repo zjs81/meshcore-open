@@ -7829,9 +7829,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Кир→Лат';
 
   @override
-  String get chatCompression_changeHint => 'Змінити стиснення для цього чату';
-
-  @override
   String get chatCompression_sheetSubtitle =>
       'Діє для повідомлень, які ви надсилаєте в цьому чаті. Зберігається на цьому телефоні.';
 

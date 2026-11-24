@@ -7445,9 +7445,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint => '이 채팅의 압축 설정 변경';
-
-  @override
   String get chatCompression_sheetSubtitle =>
       '이 채팅에서 보내는 메시지에 적용됩니다. 이 휴대폰에 저장됩니다.';
 

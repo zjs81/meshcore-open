@@ -7772,10 +7772,6 @@ class AppLocalizationsHu extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint =>
-      'Tömörítés módosítása ebben a csevegésben';
-
-  @override
   String get chatCompression_sheetSubtitle =>
       'Az ebben a csevegésben küldött üzenetekre vonatkozik. Ezen a telefonon van mentve.';
 

@@ -7815,9 +7815,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Кир→Лат';
 
   @override
-  String get chatCompression_changeHint => 'Изменить сжатие для этого чата';
-
-  @override
   String get chatCompression_sheetSubtitle =>
       'Действует для сообщений, которые вы отправляете в этом чате. Сохраняется на этом телефоне.';
 

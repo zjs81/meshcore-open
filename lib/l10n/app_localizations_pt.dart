@@ -7771,10 +7771,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint =>
-      'Alterar a compressão desta conversa';
-
-  @override
   String get chatCompression_sheetSubtitle =>
       'Vale para as mensagens que você envia nesta conversa. Salvo neste celular.';
 
@@ -16013,10 +16009,6 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get chatCompression_cyr2lat => 'Cyr2Lat';
-
-  @override
-  String get chatCompression_changeHint =>
-      'Alterar a compressão desta conversa';
 
   @override
   String get chatCompression_sheetSubtitle =>

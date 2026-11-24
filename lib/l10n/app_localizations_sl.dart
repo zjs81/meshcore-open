@@ -7774,9 +7774,6 @@ class AppLocalizationsSl extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint => 'Spremeni stiskanje za ta klepet';
-
-  @override
   String get chatCompression_sheetSubtitle =>
       'Velja za sporočila, ki jih pošljete v tem klepetu. Shranjeno v tem telefonu.';
 
