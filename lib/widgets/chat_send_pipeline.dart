@@ -219,3 +219,42 @@ Future<bool> confirmClearChat(
   );
   return confirmed == true;
 }
+
+/// Asks before removing [count] bookmarked messages.
+Future<bool> confirmRemoveBookmarks(
+  BuildContext context, {
+  int count = 1,
+}) async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) {
+      final l10n = dialogContext.l10n;
+      return AlertDialog(
+        title: Text(
+          count == 1
+              ? l10n.bookmarks_removeConfirmTitle
+              : l10n.bookmarks_removeSelectedConfirmTitle,
+        ),
+        content: Text(
+          count == 1
+              ? l10n.bookmarks_removeConfirmMessage
+              : l10n.bookmarks_removeSelectedConfirmMessage(count),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.common_cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(dialogContext).colorScheme.error,
+            ),
+            child: Text(l10n.common_remove),
+          ),
+        ],
+      );
+    },
+  );
+  return confirmed == true;
+}

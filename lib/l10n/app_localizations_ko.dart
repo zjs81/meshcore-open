@@ -2370,6 +2370,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get bookmarks_remove => '북마크 삭제';
 
   @override
+  String get bookmarks_removeConfirmTitle => 'Remove Bookmark';
+
+  @override
+  String get bookmarks_removeConfirmMessage =>
+      'Remove this message from your bookmarks?';
+
+  @override
+  String get bookmarks_removeSelectedConfirmTitle => 'Remove Bookmarks';
+
+  @override
+  String bookmarks_removeSelectedConfirmMessage(int count) {
+    return 'Remove $count messages from your bookmarks?';
+  }
+
+  @override
   String get chat_selectMessages => '메시지 선택';
 
   @override
@@ -7966,4 +7981,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return '$name님이 시간 초과 승리를 요청했습니다';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }

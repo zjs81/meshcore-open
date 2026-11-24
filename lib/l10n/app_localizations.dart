@@ -4369,6 +4369,30 @@ abstract class AppLocalizations {
   /// **'Remove bookmark'**
   String get bookmarks_remove;
 
+  /// No description provided for @bookmarks_removeConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Bookmark'**
+  String get bookmarks_removeConfirmTitle;
+
+  /// No description provided for @bookmarks_removeConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this message from your bookmarks?'**
+  String get bookmarks_removeConfirmMessage;
+
+  /// No description provided for @bookmarks_removeSelectedConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Bookmarks'**
+  String get bookmarks_removeSelectedConfirmTitle;
+
+  /// No description provided for @bookmarks_removeSelectedConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {count} messages from your bookmarks?'**
+  String bookmarks_removeSelectedConfirmMessage(int count);
+
   /// No description provided for @chat_selectMessages.
   ///
   /// In en, this message translates to:
@@ -7442,7 +7466,7 @@ abstract class AppLocalizations {
   /// No description provided for @repeater_cliHelpSetAllowReadOnly.
   ///
   /// In en, this message translates to:
-  /// **'(Room server) If \'on\', then login in blank password will be allowed, but cannot Post to room. (just read only)'**
+  /// **'(Room server) If \'on\', allows login without the room password. Read-only, can\'t post to the room.'**
   String get repeater_cliHelpSetAllowReadOnly;
 
   /// No description provided for @repeater_cliHelpSetFloodMax.
@@ -13833,6 +13857,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name} claimed a win on time'**
   String chess_notifyTimeout(String name);
+
+  /// Shown in a message bubble when a linked image fails to load
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load image'**
+  String get messageUrlImageLoadFailed;
 }
 
 class _AppLocalizationsDelegate

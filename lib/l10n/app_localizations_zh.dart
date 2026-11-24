@@ -2338,6 +2338,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get bookmarks_remove => '移除书签';
 
   @override
+  String get bookmarks_removeConfirmTitle => 'Remove Bookmark';
+
+  @override
+  String get bookmarks_removeConfirmMessage =>
+      'Remove this message from your bookmarks?';
+
+  @override
+  String get bookmarks_removeSelectedConfirmTitle => 'Remove Bookmarks';
+
+  @override
+  String bookmarks_removeSelectedConfirmMessage(int count) {
+    return 'Remove $count messages from your bookmarks?';
+  }
+
+  @override
   String get chat_selectMessages => '选择消息';
 
   @override
@@ -7796,4 +7811,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return '$name 申请超时判胜';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }

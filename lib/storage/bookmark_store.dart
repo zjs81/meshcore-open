@@ -13,11 +13,11 @@ class BookmarkStore {
 
   String get keyFor => '$_keyPrefix$publicKeyHex';
 
-  Future<void> _pendingWrites = Future<void>.value();
+  Future<void>? _pendingWrites;
 
   Future<List<BookmarkedMessage>> loadBookmarks() async {
     final writes = _pendingWrites;
-    await writes;
+    if (writes != null) await writes;
     return _readBookmarks(keyFor);
   }
 
@@ -47,11 +47,20 @@ class BookmarkStore {
   }
 
   Future<void> _enqueue(Future<void> Function() operation) {
-    final next = _pendingWrites.then((_) => operation());
-    _pendingWrites = next.then<void>(
+    final previous = _pendingWrites;
+    final next = previous == null
+        ? Future<void>.sync(operation)
+        : previous.then((_) => operation());
+    final completion = next.then<void>(
       (_) {},
       onError: (Object _, StackTrace _) {},
     );
+    _pendingWrites = completion;
+    completion.whenComplete(() {
+      if (identical(_pendingWrites, completion)) {
+        _pendingWrites = null;
+      }
+    });
     return next;
   }
 

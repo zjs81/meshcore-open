@@ -2482,6 +2482,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get bookmarks_remove => 'Quitar marcador';
 
   @override
+  String get bookmarks_removeConfirmTitle => 'Remove Bookmark';
+
+  @override
+  String get bookmarks_removeConfirmMessage =>
+      'Remove this message from your bookmarks?';
+
+  @override
+  String get bookmarks_removeSelectedConfirmTitle => 'Remove Bookmarks';
+
+  @override
+  String bookmarks_removeSelectedConfirmMessage(int count) {
+    return 'Remove $count messages from your bookmarks?';
+  }
+
+  @override
   String get chat_selectMessages => 'Seleccionar mensajes';
 
   @override
@@ -8316,4 +8331,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String chess_notifyTimeout(String name) {
     return '$name reclamó la victoria por tiempo';
   }
+
+  @override
+  String get messageUrlImageLoadFailed => 'Unable to load image';
 }
