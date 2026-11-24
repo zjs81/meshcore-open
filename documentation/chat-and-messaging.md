@@ -170,12 +170,19 @@ Add emoji reactions to incoming messages (not your own):
 | Translate | Incoming messages only (when translation is enabled and not yet translated) | Translates the message on-demand using the on-device model |
 | Mark as Unread | Incoming messages only | Marks this message and all subsequent incoming messages as unread |
 | Delete | All messages | Removes locally (not from mesh) |
+| Select messages | All messages | Starts multi-select with this message picked; see below |
 | Retry | Failed outgoing messages | Re-sends the message |
 | Open chat with sender | Room server chats | Opens 1:1 chat with the message sender |
 
 In channel chats the menu also offers **Mark as spam**, **Filter this sender** and **Filter messages like this…**; see [Message filter](message-filter.md). Direct messages are never filtered.
 
 Long-pressing directly on a detected GPS coordinate opens the coordinate action sheet (**Copy location** and **Open in maps**) instead of this message menu; long-press non-coordinate text in the message (or right-click on desktop) for message actions.
+
+## Selecting Several Messages
+
+Channel, direct and room chats share the same multi-select. Choose **Select messages** in the message menu; while selecting, tapping or long-pressing any message toggles it (it shows as selected immediately, with no double-tap delay) and the back button clears the selection. Chat-text double-tap-to-reset-zoom is turned off while selecting.
+
+The selection bar offers **Copy** (oldest first) and **Delete** (after a confirmation) in all chats. Direct and room chats also offer **Bookmark** and **Resend**, which asks for confirmation and re-sends the selected outgoing messages oldest first. Delete and Resend are unavailable while the radio is offline.
 
 ## Image and translation setup
 

@@ -1329,6 +1329,15 @@
   "chat_receivedGif": "Received a GIF",
   "chat_reply": "Reply",
   "chat_resend": "Resend",
+  "chat_resendSelectedTitle": "Resend messages?",
+  "chat_resendSelectedConfirm": "{count, plural, =1{Resend 1 selected outgoing message to this contact?} other{Resend {count} selected outgoing messages to this contact?}}",
+  "@chat_resendSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chat_addReaction": "Add Reaction",
   "chat_me": "Me",
   "reaction_report": "Emoji Reactions",

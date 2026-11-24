@@ -2617,6 +2617,20 @@ class AppLocalizationsBg extends AppLocalizations {
   String get chat_resend => 'Изпрати отново';
 
   @override
+  String get chat_resendSelectedTitle => 'Resend messages?';
+
+  @override
+  String chat_resendSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Resend $count selected outgoing messages to this contact?',
+      one: 'Resend 1 selected outgoing message to this contact?',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get chat_addReaction => 'Добави Реакция';
 
   @override

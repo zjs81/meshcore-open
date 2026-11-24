@@ -1000,6 +1000,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
                           return Stack(
                             children: [
                               ChatZoomWrapper(
+                                enabled: !_selecting,
                                 child: ListView.builder(
                                   reverse: true, // List grows from bottom up
                                   controller: _scrollController,
@@ -1025,14 +1026,19 @@ class _ChannelChatScreenState extends State<ChannelChatScreen>
                                       );
                                     }
                                     final row = layout.rowAt(index, messages);
-                                    final GlobalKey messageKey;
+                                    // Duplicate-id rows use a stable value key
+                                    // (not a fresh GlobalKey) so toggling one
+                                    // row does not remount every visible row.
+                                    final Key messageKey;
                                     if (layout.keyedIndices.contains(index)) {
                                       messageKey = _messageKeys.putIfAbsent(
                                         row.id,
                                         GlobalKey.new,
                                       );
                                     } else {
-                                      messageKey = GlobalKey();
+                                      messageKey = ValueKey<String>(
+                                        '${row.id}#dup$index',
+                                      );
                                     }
                                     final dividerId = _unreadDividerMessageId;
                                     final isUnreadAnchor =
