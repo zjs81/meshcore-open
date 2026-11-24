@@ -7825,10 +7825,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint =>
-      'Modifier la compression de cette discussion';
-
-  @override
   String get chatCompression_sheetSubtitle =>
       'S\'applique aux messages que vous envoyez dans cette discussion. Enregistré sur ce téléphone.';
 

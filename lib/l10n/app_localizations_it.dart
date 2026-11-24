@@ -7813,10 +7813,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get chatCompression_cyr2lat => 'Cyr2Lat';
 
   @override
-  String get chatCompression_changeHint =>
-      'Cambia la compressione per questa chat';
-
-  @override
   String get chatCompression_sheetSubtitle =>
       'Si applica ai messaggi che invii in questa chat. Salvato su questo telefono.';
 
