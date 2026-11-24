@@ -907,7 +907,16 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Wyczyść wszystkie dane ścieżek z kontaktów';
+      'Wyczyść historię ścieżek w aplikacji dla wszystkich kontaktów';
+
+  @override
+  String get settings_allPathsDeleted => 'Ścieżki usunięte';
+
+  @override
+  String get settings_contactsRefreshed => 'Kontakty odświeżone';
+
+  @override
+  String get settings_rebootSent => 'Wysłano restart. Radio się rozłączy.';
 
   @override
   String get settings_sendAdvertisement => 'Wyślij rozgłoszenie';
@@ -926,7 +935,10 @@ class AppLocalizationsPl extends AppLocalizations {
       'Ustaw zegar urządzenia na czas telefonu';
 
   @override
-  String get settings_timeSynchronized => 'Czas zsynchronizowany';
+  String get settings_timeSent => 'Czas wysłany do radia';
+
+  @override
+  String get settings_radioNoReply => 'Brak odpowiedzi z radia';
 
   @override
   String get settings_refreshContacts => 'Odśwież Kontakty';

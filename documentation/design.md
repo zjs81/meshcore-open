@@ -146,7 +146,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Empty list | `EmptyState(icon:, title:, subtitle:, action:)` | Scrolls rather than overflowing at large text |
 | Inline error with retry | `ErrorRetryCard(message:, onRetry:, retryLabel:)` | Pass `retryLabel: context.l10n.common_retry` |
 | Radio offline on a remote-node screen | `RadioDisconnectedBanner` | Renders nothing while connected |
-| Progress bar | `MeshProgressBar`; `MeshProgressAppBarBottom` as an app bar `bottom`; `SyncProgressAppBarBottom` for the app syncs (`widgets/sync_progress_overlay.dart`) | See [Progress bars](#progress-bars) |
+| Progress bar | `MeshProgressBar`; `MeshProgressAppBarBottom` as an app bar `bottom`; `SyncProgressAppBarBottom` for the app syncs, with `busy: true` while the screen waits for the radio (Settings actions) (`widgets/sync_progress_overlay.dart`) | See [Progress bars](#progress-bars) |
 | Toast message | `showDismissibleSnackBar(context, content: Text(...))` | Tap to dismiss, replaces the current snackbar, safe after an async gap |
 | List item entrance | `ListEntrance(index:)` | Optional. Plays only for rows built while the list is at rest at the top; rows scrolled into view appear at once |
 
@@ -290,7 +290,7 @@ That is the Contacts list and its group member picker, Discovery, Map node searc
 | State | How to show it |
 |---|---|
 | Loading, nothing to show yet | `Center(child: CircularProgressIndicator())`, only until the first data arrives; then show partial data (`channels_screen.dart`). |
-| Loading in place | Swap the control's icon for an 18×18 `CircularProgressIndicator(strokeWidth: 2)` and disable it (`_buildRefreshButton` in `repeater_settings_screen.dart`). |
+| Loading in place | Swap the control's icon for an 18×18 `CircularProgressIndicator(strokeWidth: 2)` and disable it (`_buildRefreshButton` in `repeater_settings_screen.dart`). A settings row that runs a radio command keeps its chevron and uses `MeshNavTile(busy: true)` while it waits: the chevron becomes the spinner and taps are ignored, with `SyncProgressAppBarBottom(busy: true)` in the app bar (Settings actions). |
 | Background sync | `SyncProgressAppBarBottom`. |
 | Waiting for the radio | The control's 18×18 spinner and the screen's top bar, moving. See [Progress bars](#progress-bars). |
 | Empty | `EmptyState` with an icon, a short title, and an action when there is an obvious next step. Use a separate "no results" state (`Icons.search_off`) when a search or filter hides everything. |
@@ -352,7 +352,7 @@ The current code does not yet follow this page everywhere:
 - **Menu rows not using `MeshMenuItemRow`.** `channel_chat_screen.dart` bulk-select menu (Select all / Copy) puts a `ListTile` inside `PopupMenuItem`. `widgets/list_filter_widget.dart` and the group menu in `contacts_screen.dart` use plain `Text` items, which is acceptable for icon-less lists but does not limit wrapping.
 - **Tile titles without `MeshSettingsTileTheme`.** Backup & Restore (`CheckboxListTile`) and Themes (`SwitchListTile`) do not wrap their body in it, so those titles are not semibold like the other settings rows.
 - **Bars inside content.** The map cache download bar (`map_cache_screen.dart`) uses a fixed `MeshPalette.blue`.
-- **Radio waits not shown yet.** In Settings actions, Sync Time and Reboot show nothing while sending, and Refresh Contacts shows only the sync bar. `SaveToRadioPage` pages show the Save spinner but no top bar. Other radio actions are not reviewed yet.
+- **Radio waits not shown yet.** `SaveToRadioPage` pages show the Save spinner but no top bar. Other radio actions are not reviewed yet.
 - **`ErrorRetryCard` is unused** and its fallback label is the hard-coded English `'Retry'` (`mesh_ui.dart`); screens show load errors in their own ways.
 - **Fixed-width label boxes.** `chat_screen.dart` `_buildInfoRow` (80px), `line_of_sight_map_screen.dart` endpoint label (54px, `fontSize: 12`), `channel_message_path_screen.dart` (72px, upper-cased `accentLabel` at its 11px default).
 - **11px text.** `MeshTheme.accentLabel()` without `fontSize` gives 11px in `channel_message_path_screen.dart`. The type scale's `labelSmall` (11) is used in `list_filter_widget.dart` section titles.

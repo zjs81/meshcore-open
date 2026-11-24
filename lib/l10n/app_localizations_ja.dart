@@ -849,7 +849,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_deleteAllPaths => 'すべての経路を削除';
 
   @override
-  String get settings_deleteAllPathsSubtitle => '連絡先からすべての経路データを消去します';
+  String get settings_deleteAllPathsSubtitle => 'すべての連絡先について、アプリの経路履歴を消去します';
+
+  @override
+  String get settings_allPathsDeleted => '経路を削除しました';
+
+  @override
+  String get settings_contactsRefreshed => '連絡先を更新しました';
+
+  @override
+  String get settings_rebootSent => '再起動を送信しました。ラジオとの接続が切れます。';
 
   @override
   String get settings_sendAdvertisement => 'アドバートを送信';
@@ -867,7 +876,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings_syncTimeSubtitle => 'デバイスの時刻をスマートフォンに合わせます';
 
   @override
-  String get settings_timeSynchronized => '時刻を同期しました';
+  String get settings_timeSent => '時刻をラジオに送信しました';
+
+  @override
+  String get settings_radioNoReply => 'ラジオから応答がありません';
 
   @override
   String get settings_refreshContacts => '連絡先を更新';

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +42,9 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _showBatteryVoltage = false;
   bool _deviceInfoExpanded = false;
+  // Radio actions waiting on the radio, for the row spinner and app bar.
+  bool _refreshingContacts = false;
+  bool _rebooting = false;
   void _push(BuildContext context, Widget page) {
     Navigator.push(context, MaterialPageRoute<void>(builder: (_) => page));
   }
@@ -52,7 +57,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         // A plain title: AppBarTitle fills the bar and stays left-aligned.
         title: AdaptiveAppBarTitle(l10n.settings_title),
         centerTitle: true,
-        bottom: const SyncProgressAppBarBottom(),
+        bottom: SyncProgressAppBarBottom(busy: _rebooting),
       ),
       body: SafeArea(
         top: false,
@@ -638,7 +643,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           icon: Icons.refresh,
           title: l10n.settings_refreshContacts,
           subtitle: connected ? l10n.settings_refreshContactsSubtitle : offline,
-          onTap: connected ? () => connector.getContacts() : null,
+          busy: _refreshingContacts && connected,
+          onTap: connected ? () => _refreshContacts(context, connector) : null,
         ),
         const Divider(height: 1, indent: 16),
         MeshNavTile(
@@ -647,6 +653,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           subtitle: connected ? l10n.settings_rebootDeviceSubtitle : offline,
           titleColor: scheme.tertiary,
           iconColor: scheme.tertiary,
+          busy: _rebooting && connected,
           onTap: connected ? () => _confirmReboot(context, connector) : null,
         ),
         const Divider(height: 1, indent: 16),
@@ -706,10 +713,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       await connector.syncTime();
       if (!context.mounted) return;
-      showDismissibleSnackBar(
-        context,
-        content: Text(l10n.settings_timeSynchronized),
-      );
+      showDismissibleSnackBar(context, content: Text(l10n.settings_timeSent));
     } catch (e) {
       if (!context.mounted) return;
       showDismissibleSnackBar(
@@ -717,6 +721,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
         content: Text(l10n.settings_error(e.toString())),
       );
     }
+  }
+
+  Future<void> _refreshContacts(
+    BuildContext context,
+    MeshCoreConnector connector,
+  ) async {
+    final l10n = context.l10n;
+    if (!_ensureConnected(context, connector)) return;
+    setState(() => _refreshingContacts = true);
+    try {
+      await connector.getContacts();
+      // END_OF_CONTACTS sets hasLoadedContacts; a stalled sync ends without.
+      await _untilConnector(connector, () => !connector.isLoadingContacts);
+    } catch (e) {
+      if (context.mounted) {
+        showDismissibleSnackBar(
+          context,
+          content: Text(l10n.settings_error(e.toString())),
+        );
+      }
+      return;
+    } finally {
+      if (mounted) setState(() => _refreshingContacts = false);
+    }
+    if (!context.mounted || !connector.isConnected) return;
+    showDismissibleSnackBar(
+      context,
+      content: Text(
+        connector.hasLoadedContacts
+            ? l10n.settings_contactsRefreshed
+            : l10n.settings_radioNoReply,
+      ),
+    );
   }
 
   Future<void> _confirmDeleteAllPaths(
@@ -730,7 +767,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       message: l10n.settings_deleteAllPathsSubtitle,
       confirmLabel: l10n.common_deleteAll,
     );
-    if (confirmed) connector.deleteAllPaths();
+    if (!confirmed || !context.mounted) return;
+    connector.deleteAllPaths();
+    showDismissibleSnackBar(
+      context,
+      content: Text(l10n.settings_allPathsDeleted),
+    );
   }
 
   Future<void> _confirmReboot(
@@ -747,6 +789,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     if (!confirmed || !context.mounted) return;
     if (!_ensureConnected(context, connector)) return;
-    connector.rebootDevice();
+    try {
+      await connector.rebootDevice();
+    } catch (e) {
+      if (context.mounted) {
+        showDismissibleSnackBar(
+          context,
+          content: Text(l10n.settings_error(e.toString())),
+        );
+      }
+      return;
+    }
+    if (!context.mounted) return;
+    showDismissibleSnackBar(context, content: Text(l10n.settings_rebootSent));
+    // No reply comes; busy until the radio drops off, at most 15 s.
+    setState(() => _rebooting = true);
+    await _untilConnector(
+      connector,
+      () => !connector.isConnected,
+      timeout: const Duration(seconds: 15),
+    );
+    if (mounted) setState(() => _rebooting = false);
+  }
+
+  /// Completes once [done] is true, checked on each connector change, or
+  /// after [timeout].
+  Future<void> _untilConnector(
+    MeshCoreConnector connector,
+    bool Function() done, {
+    Duration? timeout,
+  }) async {
+    final completer = Completer<void>();
+    void check() {
+      if (done() && !completer.isCompleted) completer.complete();
+    }
+
+    connector.addListener(check);
+    check();
+    try {
+      await (timeout == null
+          ? completer.future
+          : completer.future.timeout(timeout, onTimeout: () {}));
+    } finally {
+      connector.removeListener(check);
+    }
   }
 }

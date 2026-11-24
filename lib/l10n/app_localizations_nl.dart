@@ -893,7 +893,17 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Wis alle padgegevens van contacten';
+      'Wis de padgeschiedenis van de app voor alle contacten';
+
+  @override
+  String get settings_allPathsDeleted => 'Paden verwijderd';
+
+  @override
+  String get settings_contactsRefreshed => 'Contacten vernieuwd';
+
+  @override
+  String get settings_rebootSent =>
+      'Herstart verzonden. De radio verbreekt de verbinding.';
 
   @override
   String get settings_sendAdvertisement => 'Advert verzenden';
@@ -912,7 +922,10 @@ class AppLocalizationsNl extends AppLocalizations {
       'Stel de apparaatklok in op de tijd van de telefoon';
 
   @override
-  String get settings_timeSynchronized => 'Tijd gesynchroniseerd';
+  String get settings_timeSent => 'Tijd naar de radio verzonden';
+
+  @override
+  String get settings_radioNoReply => 'Geen antwoord van de radio';
 
   @override
   String get settings_refreshContacts => 'Contacten vernieuwen';

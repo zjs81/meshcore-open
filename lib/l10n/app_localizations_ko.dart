@@ -851,7 +851,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_deleteAllPaths => '모든 경로 삭제';
 
   @override
-  String get settings_deleteAllPathsSubtitle => '연락처의 모든 경로 데이터를 지웁니다';
+  String get settings_deleteAllPathsSubtitle => '모든 연락처에 대한 앱의 경로 기록을 지웁니다';
+
+  @override
+  String get settings_allPathsDeleted => '경로를 삭제했습니다';
+
+  @override
+  String get settings_contactsRefreshed => '연락처를 새로고침했습니다';
+
+  @override
+  String get settings_rebootSent => '재부팅을 보냈습니다. 라디오 연결이 끊어집니다.';
 
   @override
   String get settings_sendAdvertisement => '어드버트 전송';
@@ -869,7 +878,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings_syncTimeSubtitle => '장치 시계를 휴대폰 시간으로 설정';
 
   @override
-  String get settings_timeSynchronized => '시간이 동기화되었습니다.';
+  String get settings_timeSent => '시간을 라디오로 보냈습니다';
+
+  @override
+  String get settings_radioNoReply => '라디오에서 응답이 없습니다';
 
   @override
   String get settings_refreshContacts => '연락처 새로고침';

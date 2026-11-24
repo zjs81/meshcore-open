@@ -899,7 +899,17 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Cancella tutti i dati di percorso dai contatti';
+      'Cancella la cronologia dei percorsi dell\'app per tutti i contatti';
+
+  @override
+  String get settings_allPathsDeleted => 'Percorsi eliminati';
+
+  @override
+  String get settings_contactsRefreshed => 'Contatti aggiornati';
+
+  @override
+  String get settings_rebootSent =>
+      'Riavvio inviato. La radio si disconnetterà.';
 
   @override
   String get settings_sendAdvertisement => 'Invia annuncio';
@@ -918,7 +928,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Imposta l\'orologio del dispositivo sull\'ora del telefono';
 
   @override
-  String get settings_timeSynchronized => 'Ora sincronizzata';
+  String get settings_timeSent => 'Ora inviata alla radio';
+
+  @override
+  String get settings_radioNoReply => 'Nessuna risposta dalla radio';
 
   @override
   String get settings_refreshContacts => 'Aggiorna contatti';

@@ -44,6 +44,10 @@ class MeshNavTile extends StatelessWidget {
   final Color? titleColor;
   final Color? iconColor;
   final bool showChevron;
+
+  /// Shows the 18px spinner in place of the chevron and ignores taps while
+  /// the row's action runs (e.g. a radio command). The row isn't dimmed.
+  final bool busy;
   final Widget? trailing;
   final int? subtitleMaxLines;
   final EdgeInsetsGeometry padding;
@@ -58,6 +62,7 @@ class MeshNavTile extends StatelessWidget {
     this.titleColor,
     this.iconColor,
     this.showChevron = true,
+    this.busy = false,
     this.trailing,
     this.subtitleMaxLines,
     this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -104,7 +109,17 @@ class MeshNavTile extends StatelessWidget {
           ),
         ),
         ?trailing,
-        if (showChevron && trailing == null)
+        if (busy && trailing == null)
+          const SizedBox.square(
+            dimension: 24,
+            child: Center(
+              child: SizedBox.square(
+                dimension: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          )
+        else if (showChevron && trailing == null)
           Icon(Icons.chevron_right, color: scheme.onSurfaceVariant, size: 24),
       ],
     );
@@ -112,9 +127,9 @@ class MeshNavTile extends StatelessWidget {
     return MergeSemantics(
       child: Semantics(
         button: true,
-        enabled: enabled,
+        enabled: enabled && !busy,
         child: InkWell(
-          onTap: onTap,
+          onTap: busy ? null : onTap,
           child: Padding(
             padding: padding,
             // Dimmed rather than recoloured so warn/alert tints still read as

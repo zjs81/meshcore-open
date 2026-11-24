@@ -203,14 +203,14 @@ On the Settings screen, below App Settings, **Message filter** opens a page to h
 
 ## Actions
 
-One-tap device operations:
+One-tap device operations. While an action waits for the radio, its row shows a spinner and the app bar a progress bar. Each action ends with a short message.
 
 | Action | Description |
 |---|---|
-| Sync Time | Sends current Unix timestamp to the device |
+| Sync Time | Sends the phone's time to the radio |
 | Refresh Contacts | Re-requests the full contact list |
-| Reboot Device | Confirmation dialog → reboots the device (shown in warning color) |
-| Delete All Paths | Confirmation dialog → clears all stored routing paths (shown in error color) |
+| Reboot Device | Confirmation dialog → reboots the device; a message confirms the command was sent (shown in warning color) |
+| Delete All Paths | Confirmation dialog → clears the app's path history for all contacts, not the paths stored on the radio (shown in error color) |
 
 ---
 

@@ -887,7 +887,16 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Rensa all ruttdata från kontakter';
+      'Rensa appens rutthistorik för alla kontakter';
+
+  @override
+  String get settings_allPathsDeleted => 'Rutter raderade';
+
+  @override
+  String get settings_contactsRefreshed => 'Kontakter uppdaterade';
+
+  @override
+  String get settings_rebootSent => 'Omstart skickad. Radion kopplas från.';
 
   @override
   String get settings_sendAdvertisement => 'Skicka annons';
@@ -905,7 +914,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settings_syncTimeSubtitle => 'Ställ enheten till telefonens tid';
 
   @override
-  String get settings_timeSynchronized => 'Tidssynkroniserat';
+  String get settings_timeSent => 'Tid skickad till radion';
+
+  @override
+  String get settings_radioNoReply => 'Inget svar från radion';
 
   @override
   String get settings_refreshContacts => 'Uppdatera Kontakter';

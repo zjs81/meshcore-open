@@ -1672,8 +1672,26 @@ abstract class AppLocalizations {
   /// No description provided for @settings_deleteAllPathsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Clear all path data from contacts'**
+  /// **'Clear the app\'s path history for all contacts'**
   String get settings_deleteAllPathsSubtitle;
+
+  /// No description provided for @settings_allPathsDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Paths deleted'**
+  String get settings_allPathsDeleted;
+
+  /// No description provided for @settings_contactsRefreshed.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts refreshed'**
+  String get settings_contactsRefreshed;
+
+  /// No description provided for @settings_rebootSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Reboot sent. The radio will disconnect.'**
+  String get settings_rebootSent;
 
   /// No description provided for @settings_sendAdvertisement.
   ///
@@ -1705,11 +1723,17 @@ abstract class AppLocalizations {
   /// **'Set device clock to phone time'**
   String get settings_syncTimeSubtitle;
 
-  /// No description provided for @settings_timeSynchronized.
+  /// No description provided for @settings_timeSent.
   ///
   /// In en, this message translates to:
-  /// **'Time synchronized'**
-  String get settings_timeSynchronized;
+  /// **'Time sent to the radio'**
+  String get settings_timeSent;
+
+  /// No description provided for @settings_radioNoReply.
+  ///
+  /// In en, this message translates to:
+  /// **'No reply from the radio'**
+  String get settings_radioNoReply;
 
   /// No description provided for @settings_refreshContacts.
   ///

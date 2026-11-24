@@ -889,7 +889,16 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Vymazat všechna data cest z kontaktů';
+      'Vymazat historii cest v aplikaci pro všechny kontakty';
+
+  @override
+  String get settings_allPathsDeleted => 'Cesty smazány';
+
+  @override
+  String get settings_contactsRefreshed => 'Kontakty obnoveny';
+
+  @override
+  String get settings_rebootSent => 'Restart odeslán. Rádio se odpojí.';
 
   @override
   String get settings_sendAdvertisement => 'Odeslat advert';
@@ -909,7 +918,10 @@ class AppLocalizationsCs extends AppLocalizations {
       'Nastavit hodiny zařízení podle času telefonu';
 
   @override
-  String get settings_timeSynchronized => 'Čas synchronizován';
+  String get settings_timeSent => 'Čas odeslán do rádia';
+
+  @override
+  String get settings_radioNoReply => 'Rádio neodpovídá';
 
   @override
   String get settings_refreshContacts => 'Obnovit kontakty';

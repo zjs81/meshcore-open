@@ -901,7 +901,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Effacer toutes les données de chemin des contacts';
+      'Effacer l\'historique des chemins de l\'app pour tous les contacts';
+
+  @override
+  String get settings_allPathsDeleted => 'Chemins supprimés';
+
+  @override
+  String get settings_contactsRefreshed => 'Contacts actualisés';
+
+  @override
+  String get settings_rebootSent =>
+      'Redémarrage envoyé. La radio va se déconnecter.';
 
   @override
   String get settings_sendAdvertisement => 'S\'annoncer';
@@ -921,7 +931,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Régler l\'heure de l\'appareil sur celle du téléphone';
 
   @override
-  String get settings_timeSynchronized => 'Heure synchronisée';
+  String get settings_timeSent => 'Heure envoyée à la radio';
+
+  @override
+  String get settings_radioNoReply => 'Pas de réponse de la radio';
 
   @override
   String get settings_refreshContacts => 'Actualiser les contacts';

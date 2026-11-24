@@ -45,7 +45,11 @@ class MeshProgressAppBarBottom extends StatelessWidget
 /// contacts, channels and queued messages, one at a time.
 class SyncProgressAppBarBottom extends StatelessWidget
     implements PreferredSizeWidget {
-  const SyncProgressAppBarBottom({super.key});
+  /// Also shows the bar, moving, while the screen waits for the radio and no
+  /// sync is running.
+  final bool busy;
+
+  const SyncProgressAppBarBottom({super.key, this.busy = false});
 
   @override
   Size get preferredSize => const Size.fromHeight(MeshProgressBar.height);
@@ -54,7 +58,11 @@ class SyncProgressAppBarBottom extends StatelessWidget
   Widget build(BuildContext context) {
     return Consumer<MeshCoreConnector>(
       builder: (context, connector, _) {
-        final state = _SyncProgressState.fromConnector(connector);
+        final state =
+            _SyncProgressState.fromConnector(connector) ??
+            (busy && connector.isConnected
+                ? const _SyncProgressState(value: null)
+                : null);
         return MeshProgressBar(active: state != null, value: state?.value);
       },
     );
