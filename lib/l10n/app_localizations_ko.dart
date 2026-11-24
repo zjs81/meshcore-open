@@ -5643,6 +5643,25 @@ class AppLocalizationsKo extends AppLocalizations {
       '라디오의 연락처 목록이 가득 차면 즐겨찾기가 아닌 가장 오래된 연락처를 교체합니다.';
 
   @override
+  String get contactsSettings_hopLimit => '홉 수 제한';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (직접 연결만)',
+      zero: '제한 없음',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      '라디오는 이 값보다 적은 홉의 연락처만 자동 추가합니다. \'연락처 찾기\'에는 모두 저장됩니다.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle => '발견된 연락처 제한';
 
   @override

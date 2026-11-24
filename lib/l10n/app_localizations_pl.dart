@@ -5951,6 +5951,25 @@ class AppLocalizationsPl extends AppLocalizations {
       'Gdy lista kontaktów w radiu jest pełna, najstarszy kontakt spoza ulubionych zostanie zastąpiony.';
 
   @override
+  String get contactsSettings_hopLimit => 'Limit skoków';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (tylko bezpośrednio)',
+      zero: 'Bez limitu',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'Radio automatycznie dodaje tylko kontakty z mniejszą liczbą skoków niż ta wartość. Lista „Odkryte Kontakty” nadal zapisuje wszystkie.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Ogranicz odkryte kontakty';
 

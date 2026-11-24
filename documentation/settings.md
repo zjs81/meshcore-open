@@ -92,6 +92,7 @@ The location is shown on the map, used when you share your location, and sent in
 - **Auto-add contacts**: users, repeaters, room servers and sensors. Newly heard nodes of the enabled types are added to the radio's contacts; others can be added later from Discovered Contacts
 - **Contact List Limits**:
   - **Overwrite oldest** (radio): when the radio's contact list is full, the oldest non-favorited contact is replaced
+  - **Hop limit** (radio): dropdown with No limit (default), 1 (direct only) and 2-64. The radio only auto-adds contacts heard in fewer hops than this; contacts beyond it still appear in Discovered Contacts. Only shown when the firmware reports the setting
   - **Limit discovered contacts** (app, not the radio; saved with the rest): keeps up to 500 discovered contacts, removing the ones heard longest ago. When off, there's no limit
 
 ### Privacy

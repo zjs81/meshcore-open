@@ -5910,6 +5910,25 @@ class AppLocalizationsBg extends AppLocalizations {
       'Когато списъкът с контакти на радиото е пълен, най-старият контакт извън любимите се заменя.';
 
   @override
+  String get contactsSettings_hopLimit => 'Ограничение на скоковете';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (само директно)',
+      zero: 'Без ограничение',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'Радиото добавя автоматично само контакти с по-малко скокове от тази стойност. В „Открити контакти“ пак се запазват всички.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Ограничаване на откритите контакти';
 

@@ -2162,6 +2162,9 @@
   "discoveredContacts_searchHint": "Buscar contactos descubiertos",
   "discoveredContacts_addContact": "Agregar contacto",
   "contactsSettings_overwriteOldestSubtitle": "Cuando la lista de contactos de la radio esté llena, reemplaza el contacto no favorito más antiguo.",
+  "contactsSettings_hopLimit": "Límite de saltos",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{Sin límite} =1{1 (solo directo)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "La radio solo añade automáticamente contactos con menos saltos que este valor. En Contactos descubiertos se siguen guardando todos.",
   "contactsSettings_evictDiscoveredContactsTitle": "Limitar contactos descubiertos",
   "contactsSettings_evictDiscoveredContactsSubtitle": "La app limita la lista \"Contactos descubiertos\" a {limit} entradas. Al alcanzar el límite, se eliminan los contactos más antiguos. Desactivar para quitar el límite.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {

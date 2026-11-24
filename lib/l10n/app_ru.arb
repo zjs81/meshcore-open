@@ -1321,6 +1321,9 @@
   "discoveredContacts_importSummary": "Импортировано: {imported}, пропущено уже известных: {skipped}, нечитаемых записей: {invalid}.",
   "discoveredContacts_importTooLarge": "Файл импорта слишком большой (максимум {maxMb} МБ).",
   "contactsSettings_overwriteOldestSubtitle": "Когда список контактов радио заполнен, заменяется самый старый контакт не из избранного.",
+  "contactsSettings_hopLimit": "Лимит хопов",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{Без лимита} =1{1 (только напрямую)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "Радио автоматически добавляет только контакты, до которых меньше хопов, чем это значение. В списке «Обнаруженные контакты» по-прежнему сохраняются все.",
   "contactsSettings_evictDiscoveredContactsTitle": "Ограничивать обнаруженные контакты",
   "contactsSettings_evictDiscoveredContactsSubtitle": "Приложение ограничивает список «Обнаруженные контакты» до {limit} записей. При достижении лимита старые контакты удаляются. Отключите, чтобы снять ограничение.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {

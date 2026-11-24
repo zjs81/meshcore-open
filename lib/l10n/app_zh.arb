@@ -2078,6 +2078,9 @@
     }
   },
   "contactsSettings_overwriteOldestSubtitle": "无线电的联系人列表已满时，替换最旧的非收藏联系人。",
+  "contactsSettings_hopLimit": "跳数限制",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{不限} =1{1（仅直连）} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "无线电只会自动添加跳数少于此值的联系人。“已发现的联系人”中仍会保存全部。",
   "contactsSettings_evictDiscoveredContactsTitle": "限制已发现的联系人",
   "contactsSettings_evictDiscoveredContactsSubtitle": "应用将“已发现的联系人”列表限制为 {limit} 条。达到上限时会移除较旧的联系人。关闭后不限数量。",
   "common_deleteAll": "删除全部",

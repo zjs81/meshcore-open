@@ -10025,6 +10025,24 @@ abstract class AppLocalizations {
   /// **'Replace the oldest non-favorited contact when the radio\'s contact list is full.'**
   String get contactsSettings_overwriteOldestSubtitle;
 
+  /// No description provided for @contactsSettings_hopLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Hop limit'**
+  String get contactsSettings_hopLimit;
+
+  /// No description provided for @contactsSettings_hopLimitOption.
+  ///
+  /// In en, this message translates to:
+  /// **'{hops, plural, =0{No limit} =1{1 (direct only)} other{{hops}}}'**
+  String contactsSettings_hopLimitOption(int hops);
+
+  /// No description provided for @contactsSettings_hopLimitSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The radio only auto-adds contacts under this many hops. Discovered Contacts still saves them all.'**
+  String get contactsSettings_hopLimitSubtitle;
+
   /// No description provided for @contactsSettings_evictDiscoveredContactsTitle.
   ///
   /// In en, this message translates to:

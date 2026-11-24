@@ -5932,6 +5932,25 @@ class AppLocalizationsUk extends AppLocalizations {
       'Коли список контактів радіо заповнений, замінюється найстаріший контакт, якого немає в улюблених.';
 
   @override
+  String get contactsSettings_hopLimit => 'Ліміт переходів';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (лише напряму)',
+      zero: 'Без ліміту',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'Радіо автоматично додає лише контакти, до яких менше переходів, ніж це значення. У списку «Виявлені контакти» й надалі зберігаються всі.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Обмежувати виявлені контакти';
 
