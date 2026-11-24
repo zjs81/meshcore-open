@@ -902,7 +902,17 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Изчисти всички данни за пътищата от контактите';
+      'Изчисти историята на пътищата в приложението за всички контакти';
+
+  @override
+  String get settings_allPathsDeleted => 'Пътищата са изтрити';
+
+  @override
+  String get settings_contactsRefreshed => 'Контактите са презаредени';
+
+  @override
+  String get settings_rebootSent =>
+      'Рестартирането е изпратено. Радиото ще прекъсне връзката.';
 
   @override
   String get settings_sendAdvertisement => 'Изпрати обява';
@@ -921,7 +931,10 @@ class AppLocalizationsBg extends AppLocalizations {
       'Задайте часовника на устройството да отговаря на времето на телефона';
 
   @override
-  String get settings_timeSynchronized => 'Синхронизирано във времето';
+  String get settings_timeSent => 'Часът е изпратен към радиото';
+
+  @override
+  String get settings_radioNoReply => 'Няма отговор от радиото';
 
   @override
   String get settings_refreshContacts => 'Презареди контакти';

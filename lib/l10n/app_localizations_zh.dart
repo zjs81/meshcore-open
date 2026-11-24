@@ -832,7 +832,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_deleteAllPaths => '删除所有路径';
 
   @override
-  String get settings_deleteAllPathsSubtitle => '清除联系人中的所有路径数据';
+  String get settings_deleteAllPathsSubtitle => '清除应用中所有联系人的路径历史';
+
+  @override
+  String get settings_allPathsDeleted => '路径已删除';
+
+  @override
+  String get settings_contactsRefreshed => '联系人已刷新';
+
+  @override
+  String get settings_rebootSent => '已发送重启命令。无线电将断开连接。';
 
   @override
   String get settings_sendAdvertisement => '发送广播';
@@ -850,7 +859,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings_syncTimeSubtitle => '将设备时钟设置为与手机时间一致';
 
   @override
-  String get settings_timeSynchronized => '时间已同步';
+  String get settings_timeSent => '时间已发送到无线电';
+
+  @override
+  String get settings_radioNoReply => '无线电无响应';
 
   @override
   String get settings_refreshContacts => '刷新联系人';

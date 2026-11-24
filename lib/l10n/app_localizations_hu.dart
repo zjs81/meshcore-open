@@ -894,7 +894,17 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Törölje az összes elérési utat a névjegyekből';
+      'Az alkalmazás elérési út előzményeinek törlése minden kapcsolatnál';
+
+  @override
+  String get settings_allPathsDeleted => 'Elérési utak törölve';
+
+  @override
+  String get settings_contactsRefreshed => 'Névjegyek frissítve';
+
+  @override
+  String get settings_rebootSent =>
+      'Újraindítás elküldve. A rádió bontja a kapcsolatot.';
 
   @override
   String get settings_sendAdvertisement => 'Hirdetés küldése';
@@ -914,7 +924,10 @@ class AppLocalizationsHu extends AppLocalizations {
       'Az eszköz órájának beállítása a telefon idejére';
 
   @override
-  String get settings_timeSynchronized => 'Idő szinkronizálva';
+  String get settings_timeSent => 'Idő elküldve a rádiónak';
+
+  @override
+  String get settings_radioNoReply => 'Nincs válasz a rádiótól';
 
   @override
   String get settings_refreshContacts => 'Névjegyek frissítése';

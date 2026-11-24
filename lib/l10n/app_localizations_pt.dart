@@ -899,7 +899,17 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Limpar todos os dados de caminhos dos contatos';
+      'Limpar o histórico de caminhos do app para todos os contatos';
+
+  @override
+  String get settings_allPathsDeleted => 'Caminhos excluídos';
+
+  @override
+  String get settings_contactsRefreshed => 'Contatos atualizados';
+
+  @override
+  String get settings_rebootSent =>
+      'Reinício enviado. O rádio vai desconectar.';
 
   @override
   String get settings_sendAdvertisement => 'Enviar Anúncio';
@@ -919,7 +929,10 @@ class AppLocalizationsPt extends AppLocalizations {
       'Definir o relógio do dispositivo para o horário do telefone';
 
   @override
-  String get settings_timeSynchronized => 'Sincronizado com o tempo';
+  String get settings_timeSent => 'Hora enviada ao rádio';
+
+  @override
+  String get settings_radioNoReply => 'Sem resposta do rádio';
 
   @override
   String get settings_refreshContacts => 'Atualizar Contatos';
@@ -9186,7 +9199,17 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Limpar todos os dados de caminhos dos contactos';
+      'Limpar o histórico de caminhos da app para todos os contactos';
+
+  @override
+  String get settings_allPathsDeleted => 'Caminhos eliminados';
+
+  @override
+  String get settings_contactsRefreshed => 'Contactos atualizados';
+
+  @override
+  String get settings_rebootSent =>
+      'Reinício enviado. O rádio vai desligar-se.';
 
   @override
   String get settings_sendAdvertisement => 'Enviar anúncio';
@@ -9205,7 +9228,10 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Acertar o relógio do dispositivo pela hora do telemóvel';
 
   @override
-  String get settings_timeSynchronized => 'Hora sincronizada';
+  String get settings_timeSent => 'Hora enviada para o rádio';
+
+  @override
+  String get settings_radioNoReply => 'Sem resposta do rádio';
 
   @override
   String get settings_refreshContacts => 'Atualizar contactos';

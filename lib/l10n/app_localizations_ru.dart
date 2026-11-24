@@ -900,7 +900,17 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Очистить все данные путей в контактах';
+      'Очистить историю путей в приложении для всех контактов';
+
+  @override
+  String get settings_allPathsDeleted => 'Пути удалены';
+
+  @override
+  String get settings_contactsRefreshed => 'Контакты обновлены';
+
+  @override
+  String get settings_rebootSent =>
+      'Перезагрузка отправлена. Радио отключится.';
 
   @override
   String get settings_sendAdvertisement => 'Отправить анонсирование';
@@ -919,7 +929,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settings_syncTimeSubtitle => 'Синхронизировать время с телефоном';
 
   @override
-  String get settings_timeSynchronized => 'Время синхронизировано';
+  String get settings_timeSent => 'Время отправлено на радио';
+
+  @override
+  String get settings_radioNoReply => 'Нет ответа от радио';
 
   @override
   String get settings_refreshContacts => 'Обновить контакты';

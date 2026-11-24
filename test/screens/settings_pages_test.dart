@@ -330,6 +330,75 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
+  testWidgets('Sync Time and Refresh Contacts end with a message', (
+    tester,
+  ) async {
+    final connector = await _connectedConnector(tester);
+    await tester.pumpWidget(_app(connector, const SettingsScreen()));
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    // Refresh Contacts ends when the review radio sends END_OF_CONTACTS.
+    final rows = {
+      _l10n.settings_syncTime: _l10n.settings_timeSent,
+      _l10n.settings_refreshContacts: _l10n.settings_contactsRefreshed,
+    };
+    for (final MapEntry(key: title, value: message) in rows.entries) {
+      await tester.scrollUntilVisible(
+        find.text(title),
+        200,
+        scrollable: find
+            .descendant(
+              of: find.byType(ListView),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.text(title));
+      await tester.pump();
+      // Real time lets the reply arrive; pump runs the code waiting for it.
+      for (var i = 0; i < 200; i++) {
+        if (find.text(message).evaluate().isNotEmpty) break;
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 25)),
+        );
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      expect(find.text(message), findsOneWidget, reason: title);
+    }
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('Delete All Paths confirms with a snackbar', (tester) async {
+    final connector = await _connectedConnector(tester);
+    Future<void> settle() async {
+      for (var i = 0; i < 8; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    await tester.pumpWidget(_app(connector, const SettingsScreen()));
+    await settle();
+    await tester.scrollUntilVisible(
+      find.text(_l10n.settings_deleteAllPaths),
+      200,
+      scrollable: find
+          .descendant(
+            of: find.byType(ListView),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await settle();
+    await tester.tap(find.text(_l10n.settings_deleteAllPaths));
+    await settle();
+    await tester.tap(find.widgetWithText(FilledButton, _l10n.common_deleteAll));
+    await settle();
+    expect(find.text(_l10n.settings_allPathsDeleted), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('Radio Settings shows Save only while something differs', (
     tester,
   ) async {

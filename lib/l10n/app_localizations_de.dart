@@ -900,7 +900,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Alle Pfaddaten aus den Kontakten entfernen';
+      'Pfadverlauf der App für alle Kontakte löschen';
+
+  @override
+  String get settings_allPathsDeleted => 'Pfade gelöscht';
+
+  @override
+  String get settings_contactsRefreshed => 'Kontakte aktualisiert';
+
+  @override
+  String get settings_rebootSent =>
+      'Neustart gesendet. Das Funkgerät trennt die Verbindung.';
 
   @override
   String get settings_sendAdvertisement => 'Ankündigung senden';
@@ -919,7 +929,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Geräteuhr auf die Zeit des Telefons setzen';
 
   @override
-  String get settings_timeSynchronized => 'Zeit synchronisiert';
+  String get settings_timeSent => 'Zeit an das Funkgerät gesendet';
+
+  @override
+  String get settings_radioNoReply => 'Keine Antwort vom Funkgerät';
 
   @override
   String get settings_refreshContacts => 'Kontakte aktualisieren';

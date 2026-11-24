@@ -895,7 +895,17 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Počisti vse podatke o poteh iz stikov';
+      'Počisti zgodovino poti v aplikaciji za vse stike';
+
+  @override
+  String get settings_allPathsDeleted => 'Poti izbrisane';
+
+  @override
+  String get settings_contactsRefreshed => 'Stiki osveženi';
+
+  @override
+  String get settings_rebootSent =>
+      'Ponovni zagon poslan. Radio se bo odklopil.';
 
   @override
   String get settings_sendAdvertisement => 'Pošlji Oglas';
@@ -914,7 +924,10 @@ class AppLocalizationsSl extends AppLocalizations {
   String get settings_syncTimeSubtitle => 'Nastavi uro naprave na čas telefona';
 
   @override
-  String get settings_timeSynchronized => 'Ura sinhronizirana';
+  String get settings_timeSent => 'Čas poslan radiu';
+
+  @override
+  String get settings_radioNoReply => 'Ni odgovora radia';
 
   @override
   String get settings_refreshContacts => 'Ponovno obišči kontakte';

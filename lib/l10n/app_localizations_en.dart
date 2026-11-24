@@ -882,7 +882,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Clear all path data from contacts';
+      'Clear the app\'s path history for all contacts';
+
+  @override
+  String get settings_allPathsDeleted => 'Paths deleted';
+
+  @override
+  String get settings_contactsRefreshed => 'Contacts refreshed';
+
+  @override
+  String get settings_rebootSent => 'Reboot sent. The radio will disconnect.';
 
   @override
   String get settings_sendAdvertisement => 'Send Advertisement';
@@ -900,7 +909,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings_syncTimeSubtitle => 'Set device clock to phone time';
 
   @override
-  String get settings_timeSynchronized => 'Time synchronized';
+  String get settings_timeSent => 'Time sent to the radio';
+
+  @override
+  String get settings_radioNoReply => 'No reply from the radio';
 
   @override
   String get settings_refreshContacts => 'Refresh Contacts';

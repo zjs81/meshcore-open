@@ -895,7 +895,17 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get settings_deleteAllPathsSubtitle =>
-      'Очистити всі дані шляхів у контактах';
+      'Очистити історію шляхів у застосунку для всіх контактів';
+
+  @override
+  String get settings_allPathsDeleted => 'Шляхи видалено';
+
+  @override
+  String get settings_contactsRefreshed => 'Контакти оновлено';
+
+  @override
+  String get settings_rebootSent =>
+      'Перезавантаження надіслано. Радіо від\'єднається.';
 
   @override
   String get settings_sendAdvertisement => 'Оголосити себе';
@@ -915,7 +925,10 @@ class AppLocalizationsUk extends AppLocalizations {
       'Встановити час пристрою відповідно до часу телефону';
 
   @override
-  String get settings_timeSynchronized => 'Час синхронізовано';
+  String get settings_timeSent => 'Час надіслано на радіо';
+
+  @override
+  String get settings_radioNoReply => 'Немає відповіді від радіо';
 
   @override
   String get settings_refreshContacts => 'Оновити контакти';
