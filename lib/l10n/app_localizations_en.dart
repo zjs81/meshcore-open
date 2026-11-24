@@ -4208,7 +4208,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get repeater_cliHelpSetAllowReadOnly =>
-      '(Room server) If \'on\', then login in blank password will be allowed, but cannot Post to room. (just read only)';
+      '(Room server) If \'on\', allows login without the room password. Read-only, can\'t post to the room.';
 
   @override
   String get repeater_cliHelpSetFloodMax =>
