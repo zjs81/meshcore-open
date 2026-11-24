@@ -2231,6 +2231,9 @@
   "discoveredContacts_copyContact": "Kontakt in die Zwischenablage kopieren",
   "contactsSettings_overwriteOldestTitle": "Ältesten überschreiben",
   "contactsSettings_overwriteOldestSubtitle": "Wenn die Kontaktliste des Funkgeräts voll ist, den ältesten Kontakt ersetzen, der kein Favorit ist.",
+  "contactsSettings_hopLimit": "Sprunglimit",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{Kein Limit} =1{1 (nur direkt)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "Das Funkgerät fügt nur Kontakte mit weniger Sprüngen als diesem Wert automatisch hinzu. Unter „Entdeckte Kontakte“ werden trotzdem alle gespeichert.",
   "contactsSettings_evictDiscoveredContactsTitle": "Entdeckte Kontakte begrenzen",
   "contactsSettings_evictDiscoveredContactsSubtitle": "Die App begrenzt die Liste „Entdeckte Kontakte“ auf {limit} Einträge. Ist das Limit erreicht, werden ältere Kontakte entfernt. Deaktivieren, um das Limit aufzuheben.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {

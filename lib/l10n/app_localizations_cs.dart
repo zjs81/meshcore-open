@@ -5903,6 +5903,25 @@ class AppLocalizationsCs extends AppLocalizations {
       'Když je seznam kontaktů v rádiu plný, nahradí se nejstarší kontakt, který není oblíbený.';
 
   @override
+  String get contactsSettings_hopLimit => 'Limit skoků';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (pouze přímo)',
+      zero: 'Bez omezení',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'Rádio automaticky přidá jen kontakty s menším počtem skoků, než je tato hodnota. Seznam „Objevené kontakty“ přesto uloží všechny.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Omezit objevené kontakty';
 
@@ -7777,9 +7796,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get chatCompression_cyr2lat => 'Cyr2Lat';
-
-  @override
-  String get chatCompression_changeHint => 'Změnit kompresi pro tento chat';
 
   @override
   String get chatCompression_sheetSubtitle =>

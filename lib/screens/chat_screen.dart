@@ -38,13 +38,13 @@ import '../services/chat_text_scale_service.dart';
 import '../services/path_history_service.dart';
 import '../services/translation_service.dart';
 import '../widgets/chat_composer.dart';
-import '../widgets/chat_compression_selector.dart';
 import '../widgets/chat_send_pipeline.dart';
 import '../widgets/chat_zoom_wrapper.dart';
 import '../widgets/message_bubble_frame.dart';
 import '../widgets/reaction_chips.dart';
 import '../widgets/chat_day_separator.dart';
 import 'channel_message_path_screen.dart';
+import 'chat_compression_screen.dart';
 import 'contacts_screen.dart' show confirmRemoveContact;
 import 'map_screen.dart';
 import 'repeater_hub_screen.dart';
@@ -527,6 +527,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                   );
                                 case 'info':
                                   _showContactInfo(context);
+                                case 'compression':
+                                  _openCompressionScreen();
                                 case 'settings':
                                   _showContactSettings(context);
                                 case 'showBookmarks':
@@ -595,6 +597,20 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                     label: context.l10n.room_management,
                                   ),
                                 ),
+                              PopupMenuItem(
+                                value: 'compression',
+                                child: MeshMenuItemRow(
+                                  icon: Icons.compress,
+                                  label: context.l10n.chatCompression_label(
+                                    chatCompressionModeLabel(
+                                      context,
+                                      connector.contactCompressionMode(
+                                        widget.contact.publicKeyHex,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                               PopupMenuItem(
                                 value: 'settings',
                                 child: MeshMenuItemRow(
@@ -668,7 +684,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                 );
                 return Column(
                   children: [
-                    _buildCompressionSelector(connector),
                     Expanded(
                       child: ChatBackdrop(
                         contentKey: _messageAreaKey,
@@ -697,22 +712,28 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   /// Compression is stored on this phone per contact, so it can change
   /// while the radio is offline.
-  Widget _buildCompressionSelector(MeshCoreConnector connector) {
+  void _openCompressionScreen() {
     final keyHex = widget.contact.publicKeyHex;
-    return Consumer<AppSettingsService>(
-      builder: (context, settingsService, _) {
-        return ChatCompressionSelector(
-          mode: connector.contactCompressionMode(keyHex),
-          enabled: true,
-          profiles: settingsService.settings.cyr2latProfiles,
-          profileId: connector.getContactCyr2LatProfileId(keyHex),
-          defaultProfileId: settingsService.settings.selectedCyr2latProfileId,
+    final connector = context.read<MeshCoreConnector>();
+    final settingsService = context.read<AppSettingsService>();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatCompressionScreen(
+          listenable: Listenable.merge([connector, settingsService]),
+          read: () => ChatCompressionState(
+            mode: connector.contactCompressionMode(keyHex),
+            enabled: true,
+            profiles: settingsService.settings.cyr2latProfiles,
+            profileId: connector.getContactCyr2LatProfileId(keyHex),
+            defaultProfileId: settingsService.settings.selectedCyr2latProfileId,
+          ),
           onModeChanged: (mode) =>
               connector.setContactCompressionMode(keyHex, mode),
           onProfileChanged: (id) =>
               connector.setContactCyr2LatProfileId(keyHex, id),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -865,9 +886,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                   ? AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
                       decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.18),
+                        color: Theme.of(context).colorScheme.primary
+                            .withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(MeshRadii.md),
                       ),
                       child: bubble,

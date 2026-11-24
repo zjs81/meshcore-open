@@ -2204,6 +2204,9 @@
     }
   },
   "contactsSettings_overwriteOldestSubtitle": "Quando l'elenco dei contatti della radio è pieno, sostituisce il contatto più vecchio non tra i preferiti.",
+  "contactsSettings_hopLimit": "Limite di salti",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{Nessun limite} =1{1 (solo diretto)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "La radio aggiunge automaticamente solo i contatti con meno salti di questo valore. In Contatti scoperti vengono comunque salvati tutti.",
   "contactsSettings_evictDiscoveredContactsTitle": "Limita i contatti scoperti",
   "contactsSettings_evictDiscoveredContactsSubtitle": "L'app limita l'elenco \"Contatti scoperti\" a {limit} voci. Al raggiungimento del limite, i contatti più vecchi vengono rimossi. Disattiva per rimuovere il limite.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {

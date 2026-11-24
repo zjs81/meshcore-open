@@ -5941,6 +5941,25 @@ class AppLocalizationsRu extends AppLocalizations {
       'Когда список контактов радио заполнен, заменяется самый старый контакт не из избранного.';
 
   @override
+  String get contactsSettings_hopLimit => 'Лимит хопов';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (только напрямую)',
+      zero: 'Без лимита',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'Радио автоматически добавляет только контакты, до которых меньше хопов, чем это значение. В списке «Обнаруженные контакты» по-прежнему сохраняются все.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Ограничивать обнаруженные контакты';
 
@@ -7827,9 +7846,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get chatCompression_cyr2lat => 'Кир→Лат';
-
-  @override
-  String get chatCompression_changeHint => 'Изменить сжатие для этого чата';
 
   @override
   String get chatCompression_sheetSubtitle =>

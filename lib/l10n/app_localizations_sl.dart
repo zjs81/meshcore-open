@@ -5908,6 +5908,25 @@ class AppLocalizationsSl extends AppLocalizations {
       'Ko je seznam stikov v radiu poln, se zamenja najstarejši stik, ki ni med priljubljenimi.';
 
   @override
+  String get contactsSettings_hopLimit => 'Omejitev skokov';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (samo neposredno)',
+      zero: 'Brez omejitve',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'Radio avtomatsko doda le stike z manj skoki od te vrednosti. Seznam »Odkriti stiki« še vedno shrani vse.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Omeji odkrite stike';
 
@@ -7786,9 +7805,6 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get chatCompression_cyr2lat => 'Cyr2Lat';
-
-  @override
-  String get chatCompression_changeHint => 'Spremeni stiskanje za ta klepet';
 
   @override
   String get chatCompression_sheetSubtitle =>

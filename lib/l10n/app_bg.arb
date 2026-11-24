@@ -2142,6 +2142,9 @@
   "discoveredContacts_importSummary": "Импортирани: {imported}, пропуснати вече известни: {skipped}, нечетими записи: {invalid}.",
   "discoveredContacts_importTooLarge": "Файлът за импортиране е твърде голям (максимум {maxMb} MB).",
   "contactsSettings_overwriteOldestSubtitle": "Когато списъкът с контакти на радиото е пълен, най-старият контакт извън любимите се заменя.",
+  "contactsSettings_hopLimit": "Ограничение на скоковете",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{Без ограничение} =1{1 (само директно)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "Радиото добавя автоматично само контакти с по-малко скокове от тази стойност. В „Открити контакти“ пак се запазват всички.",
   "contactsSettings_evictDiscoveredContactsTitle": "Ограничаване на откритите контакти",
   "contactsSettings_evictDiscoveredContactsSubtitle": "Приложението ограничава списъка „Открити контакти“ до {limit} записа. При достигане на лимита по-старите контакти се премахват. Изключете, за да премахнете ограничението.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {

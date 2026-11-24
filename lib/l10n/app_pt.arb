@@ -2073,6 +2073,9 @@
     }
   },
   "contactsSettings_overwriteOldestSubtitle": "Quando a lista de contatos do rádio estiver cheia, substitui o contato mais antigo que não seja favorito.",
+  "contactsSettings_hopLimit": "Limite de saltos",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{Sem limite} =1{1 (somente direto)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "O rádio só adiciona automaticamente contatos com menos saltos que este valor. Todos continuam sendo salvos em Contatos Descobertos.",
   "contactsSettings_evictDiscoveredContactsTitle": "Limitar contatos descobertos",
   "contactsSettings_evictDiscoveredContactsSubtitle": "O app limita a lista \"Contatos Descobertos\" a {limit} entradas. Ao atingir o limite, os contatos mais antigos são removidos. Desative para remover o limite.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {

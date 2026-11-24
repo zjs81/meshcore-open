@@ -5895,6 +5895,25 @@ class AppLocalizationsNl extends AppLocalizations {
       'Als de contactenlijst van de radio vol is, het oudste contact vervangen dat geen favoriet is.';
 
   @override
+  String get contactsSettings_hopLimit => 'Hoplimiet';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (alleen direct)',
+      zero: 'Geen limiet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'De radio voegt alleen contacten met minder hops dan deze waarde automatisch toe. In Ontdekte contacten worden ze nog steeds allemaal opgeslagen.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Ontdekte contacten beperken';
 
@@ -7759,9 +7778,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get chatCompression_cyr2lat => 'Cyr2Lat';
-
-  @override
-  String get chatCompression_changeHint => 'Compressie voor deze chat wijzigen';
 
   @override
   String get chatCompression_sheetSubtitle =>

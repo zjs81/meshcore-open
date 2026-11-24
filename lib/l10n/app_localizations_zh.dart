@@ -5519,6 +5519,25 @@ class AppLocalizationsZh extends AppLocalizations {
       '无线电的联系人列表已满时，替换最旧的非收藏联系人。';
 
   @override
+  String get contactsSettings_hopLimit => '跳数限制';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1（仅直连）',
+      zero: '不限',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      '无线电只会自动添加跳数少于此值的联系人。“已发现的联系人”中仍会保存全部。';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle => '限制已发现的联系人';
 
   @override
@@ -7294,9 +7313,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chatCompression_cyr2lat => 'Cyr2Lat';
-
-  @override
-  String get chatCompression_changeHint => '更改此聊天的压缩设置';
 
   @override
   String get chatCompression_sheetSubtitle => '适用于你在此聊天中发送的消息。保存在本机。';

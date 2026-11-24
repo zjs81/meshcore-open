@@ -5922,6 +5922,25 @@ class AppLocalizationsHu extends AppLocalizations {
       'Ha a rádió kapcsolatlistája megtelt, a legrégebbi, nem kedvenc kapcsolat lecserélődik.';
 
   @override
+  String get contactsSettings_hopLimit => 'Ugráskorlát';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (csak közvetlen)',
+      zero: 'Nincs korlát',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'A rádió csak az ennél kevesebb ugrásra lévő kapcsolatokat adja hozzá automatikusan. A „Felfedezett kapcsolatok” lista továbbra is mindet elmenti.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Felfedezett kapcsolatok korlátozása';
 
@@ -7784,10 +7803,6 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get chatCompression_cyr2lat => 'Cyr2Lat';
-
-  @override
-  String get chatCompression_changeHint =>
-      'Tömörítés módosítása ebben a csevegésben';
 
   @override
   String get chatCompression_sheetSubtitle =>

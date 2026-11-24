@@ -1,1 +1,96 @@
-{}
+{
+  "bg": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "cs": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "de": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "es": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "fr": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "hu": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "it": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "ja": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "ko": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "nl": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "pl": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "pt": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "pt_PT": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "ru": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "sk": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "sl": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "sv": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "uk": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ],
+
+  "zh": [
+    "chat_resendSelectedTitle",
+    "chat_resendSelectedConfirm"
+  ]
+}

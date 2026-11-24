@@ -2147,6 +2147,9 @@
     }
   },
   "contactsSettings_overwriteOldestSubtitle": "Keď je zoznam kontaktov v rádiu plný, nahradí sa najstarší kontakt, ktorý nie je obľúbený.",
+  "contactsSettings_hopLimit": "Limit skokov",
+  "contactsSettings_hopLimitOption": "{hops, plural, =0{Bez obmedzenia} =1{1 (iba priamo)} other{{hops}}}",
+  "contactsSettings_hopLimitSubtitle": "Rádio automaticky pridá iba kontakty s menším počtom skokov, než je táto hodnota. Zoznam „Objavené kontakty“ aj tak uloží všetky.",
   "contactsSettings_evictDiscoveredContactsTitle": "Obmedziť objavené kontakty",
   "contactsSettings_evictDiscoveredContactsSubtitle": "Aplikácia obmedzuje zoznam „Objavené kontakty“ na {limit} položiek. Po dosiahnutí limitu sa staršie kontakty odstránia. Vypnite pre zrušenie limitu.",
   "@contactsSettings_evictDiscoveredContactsSubtitle": {

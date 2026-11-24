@@ -5920,6 +5920,25 @@ class AppLocalizationsPt extends AppLocalizations {
       'Quando a lista de contatos do rádio estiver cheia, substitui o contato mais antigo que não seja favorito.';
 
   @override
+  String get contactsSettings_hopLimit => 'Limite de saltos';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (somente direto)',
+      zero: 'Sem limite',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'O rádio só adiciona automaticamente contatos com menos saltos que este valor. Todos continuam sendo salvos em Contatos Descobertos.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Limitar contatos descobertos';
 
@@ -7783,10 +7802,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get chatCompression_cyr2lat => 'Cyr2Lat';
-
-  @override
-  String get chatCompression_changeHint =>
-      'Alterar a compressão desta conversa';
 
   @override
   String get chatCompression_sheetSubtitle =>
@@ -14166,6 +14181,25 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
       'Quando a lista de contactos do rádio estiver cheia, substitui o contacto mais antigo que não seja favorito.';
 
   @override
+  String get contactsSettings_hopLimit => 'Limite de hops';
+
+  @override
+  String contactsSettings_hopLimitOption(int hops) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hops,
+      locale: localeName,
+      other: '$hops',
+      one: '1 (apenas direto)',
+      zero: 'Sem limite',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactsSettings_hopLimitSubtitle =>
+      'O rádio só adiciona automaticamente contactos com menos hops do que este valor. Todos continuam a ser guardados em Contactos descobertos.';
+
+  @override
   String get contactsSettings_evictDiscoveredContactsTitle =>
       'Limitar contactos descobertos';
 
@@ -16027,10 +16061,6 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get chatCompression_cyr2lat => 'Cyr2Lat';
-
-  @override
-  String get chatCompression_changeHint =>
-      'Alterar a compressão desta conversa';
 
   @override
   String get chatCompression_sheetSubtitle =>
