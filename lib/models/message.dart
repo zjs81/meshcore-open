@@ -39,6 +39,7 @@ class Message {
   /// messages synced from the offline queue keep their packet timestamp.
   final bool receivedLive;
   final bool isOutgoing;
+  final bool isBookmarked;
   final bool isCli;
   final MessageStatus status;
   final String? originalText;
@@ -76,6 +77,7 @@ class Message {
     DateTime? receivedAt,
     this.receivedLive = false,
     required this.isOutgoing,
+    this.isBookmarked = false,
     this.isCli = false,
     this.status = MessageStatus.pending,
     String? messageId,
@@ -136,6 +138,7 @@ class Message {
     double? snrDb,
     int? rssiDbm,
     bool? isCli,
+    bool? isBookmarked,
     Object? originalText = _unset,
     Object? translatedText = _unset,
     Object? translatedLanguageCode = _unset,
@@ -152,6 +155,7 @@ class Message {
       timestamp: timestamp,
       receivedAt: receivedAt,
       isOutgoing: isOutgoing,
+      isBookmarked: isBookmarked ?? this.isBookmarked,
       isCli: isCli ?? this.isCli,
       status: status ?? this.status,
       messageId: messageId,

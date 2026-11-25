@@ -33,6 +33,7 @@ import '../l10n/app_localizations.dart';
 import '../l10n/l10n.dart';
 import '../models/channel.dart';
 import '../models/channel_message.dart';
+import '../models/bookmarked_message.dart';
 import '../models/image_codec_support.dart' show aeicRatePointForUi;
 import '../models/message_filter.dart';
 import '../services/app_settings_service.dart' show AppSettingsService;
@@ -176,6 +177,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   /// Message ids picked for a bulk action. Non-empty means selection mode:
   /// taps toggle messages and the app bar shows the bulk actions.
   final Set<String> _selectedIds = <String>{};
+  bool _showBookmarkedOnly = false;
   bool get _selecting => _selectedIds.isNotEmpty;
 
   @override
@@ -585,6 +587,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
               widget.channel,
               onSaved: _onChannelEdited,
             );
+          case 'showBookmarks':
+            setState(() {
+              _showBookmarkedOnly = !_showBookmarkedOnly;
+              _selectedIds.clear();
+            });
           case 'background':
             showChatBackgroundSheet(
               context,
@@ -644,6 +651,14 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
             value: 'editChannel',
             enabled: !readOnly,
             child: _menuRow(Icons.settings, context.l10n.channels_editChannel),
+          ),
+          PopupMenuItem(
+            value: 'showBookmarks',
+            child: _menuRow(
+              _showBookmarkedOnly ? Icons.bookmark : Icons.bookmark_border,
+              context.l10n.chat_showBookmarks,
+              color: _showBookmarkedOnly ? const Color(0xFFFFE54A) : null,
+            ),
           ),
           PopupMenuItem(
             value: 'background',
@@ -876,13 +891,22 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                           final layout = _transcriptLayoutFor(
                             context,
                             messages,
+                            showBookmarkedOnly: _showBookmarkedOnly,
                           );
-                          // Fewer entries than messages means the filter hid or
-                          // collapsed some; make sure older history stays reachable.
-                          final hidesMessages = layout.length < messages.length;
+                          // Fewer entries than messages means the message filter
+                          // hid or collapsed some; bookmark filtering is deliberate.
+                          final hidesMessages =
+                              !_showBookmarkedOnly &&
+                              layout.length < messages.length;
                           if (hidesMessages) _scheduleHiddenHistoryBackfill();
 
                           if (layout.length == 0) {
+                            if (_showBookmarkedOnly) {
+                              return EmptyState(
+                                icon: Icons.bookmark_border,
+                                title: context.l10n.bookmarks_empty,
+                              );
+                            }
                             final canLoadOlder =
                                 hidesMessages && !_olderHistoryExhausted;
                             return EmptyState(
@@ -1217,6 +1241,7 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                       : null,
                   child: MessageBubbleFrame(
                     isOutgoing: isOutgoing,
+                    isBookmarked: message.isBookmarked || _showBookmarkedOnly,
                     compact: gifId != null,
                     maxWidth: constraints.maxWidth,
                     child: Column(
@@ -1979,9 +2004,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final connector = context.read<MeshCoreConnector>();
 
     // The picked bytes are kept past the preview on purpose: the sender's own
-    // bubble renders from them (see [_registerOutgoingImage]). The bitstream
-    // cannot serve — turning it back into pixels is a ~2.16 GiB, ~1 s decode
-    // of an image the sender is already holding.
+    // bubble falls back to them (see [_registerOutgoingImage]) when the sheet
+    // could not decode the chosen version on this device.
     final XFile? picked;
     try {
       picked = await ImagePicker().pickImage(
@@ -2157,8 +2181,11 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   /// GRP_DATA is not echoed back to the sender and an image is not a
   /// [ChannelMessage], so without this the sender sees a "sent" snack bar and
   /// an otherwise empty conversation. The entry lands in `decoded` directly —
-  /// an outgoing image is never queued for inference, so showing your own
-  /// photo costs no model memory.
+  /// an outgoing image is never queued for inference.
+  ///
+  /// The bubble shows the version the user picked, decoded as recipients see
+  /// it ([ImageSendPreviewResult.previewPng]). Only when this device could not decode does it fall back
+  /// to the stretched original.
   ///
   /// Best effort throughout: a failure here has already been preceded by a
   /// successful transmission, so it must not turn into an error the user sees.
@@ -2174,7 +2201,8 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     } on ProviderNotFoundException {
       return; // screen test without the store
     }
-    final previewPng = await _squarePreviewPng(sourceBytes);
+    final previewPng =
+        result.previewPng ?? await _squarePreviewPng(sourceBytes);
     if (previewPng == null) return;
     try {
       await store.registerOutgoing(
@@ -2188,6 +2216,18 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
         rate: aeicRatePointForUi(result.rate),
         chunkCount: chunkSet.dataChunkCount,
         aspectCode: await _aspectCodeOf(sourceBytes),
+        // The decoded version is model output and carries the AI label; the
+        // stretched-original fallback is the sender's own pixels.
+        synthesized: result.previewPng != null,
+        payloadBytes: result.payload.length,
+        // Repeaters may already have echoed the first chunks while the rest
+        // were still going out.
+        chunkEchoes: mounted
+            ? context.read<MeshCoreConnector>().ownImageEchoes(
+                widget.channel.index,
+                chunkSet.imgId,
+              )
+            : null,
       );
     } on Exception catch (error) {
       debugPrint('outgoing image registration failed: $error');
@@ -2215,11 +2255,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
 
   /// [imageBytes] stretched to 512x512, as PNG.
   ///
-  /// This is what the preview sheet showed (`BoxFit.fill` on a 1:1 box is
-  /// exactly the stretch the codec applies) and what the codec actually
-  /// encoded, so the sender's bubble matches both. Deliberately not a decode of the
-  /// bitstream: that would cost ~2.16 GiB and ~1 s to reproduce, less well, an
-  /// image this device is already holding in memory.
+  /// Fallback for the sender's bubble when the preview sheet had no decoded
+  /// version to hand over (a device that cannot decode). It is the input the
+  /// codec stretched, not what recipients see, so it is only a stand-in.
   ///
   /// Returns null rather than throwing on an undecodable source — the send has
   /// already happened by the time this runs.
@@ -2274,8 +2312,9 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
   /// `State`'s) — `watch` asserts on that.
   _TranscriptLayout _transcriptLayoutFor(
     BuildContext context,
-    List<ChannelMessage> messages,
-  ) {
+    List<ChannelMessage> messages, {
+    bool showBookmarkedOnly = false,
+  }) {
     ReceivedImageStore? store;
     try {
       store = context.watch<ReceivedImageStore>();
@@ -2304,10 +2343,17 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
       displayMode,
       filterActive,
       _revealVersion,
+      showBookmarkedOnly,
       _filteredMessagesSignature(messages),
+      Object.hashAll(
+        messages
+            .where((message) => message.isBookmarked)
+            .map((message) => message.messageId),
+      ),
     );
     final cached = _transcriptLayout;
-    if (cached != null &&
+    if (!showBookmarkedOnly &&
+        cached != null &&
         cached.matches(
           messages,
           _imageStoreVersion,
@@ -2316,11 +2362,14 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
         )) {
       return cached;
     }
-    final images = store == null
+    final displayedMessages = showBookmarkedOnly
+        ? messages.where((message) => message.isBookmarked).toList()
+        : messages;
+    final images = store == null || showBookmarkedOnly
         ? const <ReceivedImageEntry>[]
         : store.entriesForChannel(widget.channel.storageId);
     final layout = _TranscriptLayout.build(
-      messages: messages,
+      messages: displayedMessages,
       images: images,
       imageVersion: _imageStoreVersion,
       channelIndex: widget.channel.index,
@@ -2462,12 +2511,35 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                       right: 8,
                       bottom: 4,
                     ),
-                    child: Text(
-                      formatChatTime(context, entry.firstSeen),
-                      style: MeshTheme.mono(
-                        fontSize: 12 * textScale,
-                        color: metaColor,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          formatChatTime(context, entry.firstSeen),
+                          style: MeshTheme.mono(
+                            fontSize: 12 * textScale,
+                            color: metaColor,
+                          ),
+                        ),
+                        if (isOutgoing) ...[
+                          const SizedBox(width: 4),
+                          // Same status as channel text: repeats heard, here
+                          // for the least-heard data chunk.
+                          MessageStatusIcon(
+                            size: 16 * textScale,
+                            isAcked: false,
+                            isChannel: true,
+                            repeatCount: entry.minDataChunkEchoes ?? 0,
+                            resendProgress: context
+                                .watch<MeshCoreConnector>()
+                                .imageResendProgress(
+                                  entry.channelIndex,
+                                  entry.imgId,
+                                ),
+                            onColor: metaColor,
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ],
@@ -2600,6 +2672,15 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
             if (entry.recoveredWithParity)
               Text(l10n.receivedImage_parityRecovered),
             if (decodeMs != null) Text(l10n.receivedImage_decodeTime(decodeMs)),
+            if (entry.chunkEchoes case final echoes?) ...[
+              const SizedBox(height: 8),
+              for (var i = 0; i < echoes.length; i++)
+                Text(
+                  i < entry.totalChunks
+                      ? l10n.receivedImage_packetEchoes(i + 1, echoes[i])
+                      : l10n.receivedImage_recoveryPacketEchoes(echoes[i]),
+                ),
+            ],
           ],
         ),
         actions: [
@@ -3096,6 +3177,38 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
                     _markAsUnread(message);
                   },
                 ),
+              ListTile(
+                leading: Icon(
+                  message.isBookmarked
+                      ? Icons.bookmark_remove_outlined
+                      : Icons.bookmark_add_outlined,
+                ),
+                title: Text(
+                  message.isBookmarked
+                      ? context.l10n.chat_removeBookmark
+                      : context.l10n.chat_bookmark,
+                ),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  final bookmark = BookmarkedMessage.fromChannel(
+                    message: message,
+                    channelId:
+                        widget.channel.storageId ??
+                        'slot:${widget.channel.index}',
+                    channelName: widget.channel.name,
+                    senderName: message.isOutgoing
+                        ? (context.read<MeshCoreConnector>().selfName ??
+                              context.l10n.chat_me)
+                        : message.senderName,
+                  );
+                  unawaited(
+                    context.read<MeshCoreConnector>().setBookmarkedMessage(
+                      bookmark,
+                      isBookmarked: !message.isBookmarked,
+                    ),
+                  );
+                },
+              ),
               if (message.isOutgoing)
                 ListTile(
                   leading: const Icon(Icons.refresh),
@@ -3205,9 +3318,10 @@ class _ChannelChatScreenState extends State<ChannelChatScreen> {
     final filterActive = _transcriptLayout?.filterActive ?? true;
     return [
       for (final m in messages)
-        if (!(filterActive &&
-            m.isFiltered &&
-            !_revealedFilteredIds.contains(m.messageId)))
+        if ((!_showBookmarkedOnly || m.isBookmarked) &&
+            !(filterActive &&
+                m.isFiltered &&
+                !_revealedFilteredIds.contains(m.messageId)))
           m,
     ];
   }

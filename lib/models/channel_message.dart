@@ -82,6 +82,7 @@ class ChannelMessage {
   /// messages synced from the offline queue keep their packet timestamp.
   final bool receivedLive;
   final bool isOutgoing;
+  final bool isBookmarked;
   final ChannelMessageStatus status;
   final List<Repeat> repeats;
   final int repeatCount;
@@ -130,6 +131,7 @@ class ChannelMessage {
     DateTime? receivedAt,
     this.receivedLive = false,
     required this.isOutgoing,
+    this.isBookmarked = false,
     this.status = ChannelMessageStatus.pending,
     this.repeats = const [],
     this.repeatCount = 0,
@@ -193,6 +195,7 @@ class ChannelMessage {
 
   ChannelMessage copyWith({
     ChannelMessageStatus? status,
+    bool? isBookmarked,
     List<Repeat>? repeats,
     int? repeatCount,
     int? pathLength,
@@ -239,6 +242,7 @@ class ChannelMessage {
       receivedAt: receivedAt,
       receivedLive: receivedLive,
       isOutgoing: isOutgoing,
+      isBookmarked: isBookmarked ?? this.isBookmarked,
       status: status ?? this.status,
       repeats: repeats ?? this.repeats,
       repeatCount: repeatCount ?? this.repeatCount,

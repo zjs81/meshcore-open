@@ -15,9 +15,14 @@ Downloads use the configured Hugging Face model bundle, support resume, and veri
 
 1. Open channel chat and tap the image button beside the composer.
 2. Pick a photo from your gallery.
-3. Wait for encoding. Inspect the source preview and, if available, the reconstructed preview.
-4. Review transmitted bytes, packet count, and estimated send duration. Estimates use the current radio settings and are unavailable if those settings are unknown.
-5. Choose whether to include a recovery packet, then send. The chat shows per-packet progress.
+3. Wait for the preview. The sheet shows **What recipients see**: the photo encoded and then decoded on your device, which is the picture recipients reconstruct. Switch to **Original** to compare.
+4. If the reconstruction got something wrong, tap **Try another version**. Each version encodes the whole photo with a tiny, invisible change of framing, and the model reconstructs each one a little differently. Tap the version you want to send; the packet count and time on air follow your choice. Up to six versions can be made, one at a time.
+5. Review transmitted bytes, packet count, and estimated send duration. Estimates use the current radio settings and are unavailable if those settings are unknown.
+6. Choose whether to include a recovery packet, then send. The chat shows per-packet progress, and your own copy of the image shows the version you chose.
+
+After sending, your image shows how many times repeaters were heard passing it on, like a channel message (Packet info lists each packet). If repeaters passed on some packets but not others, the missing ones are sent once more automatically.
+
+On a device that cannot decode, the sheet shows the original photo with a note instead, and versions are not offered. Each new version costs one encode and one decode, so it can take a few seconds on older phones.
 
 The current build ships one quality/model setting: **ft32**, with a 512×512 codec reconstruction and metadata used to restore a supported aspect ratio. Reserved rate/resolution codes are not additional selectable quality options.
 

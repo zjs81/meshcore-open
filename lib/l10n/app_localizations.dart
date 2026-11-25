@@ -1057,6 +1057,12 @@ abstract class AppLocalizations {
   /// **'Discovered contacts and their saved details'**
   String get backupRestore_discoveredContactsDescription;
 
+  /// No description provided for @backupRestore_bookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get backupRestore_bookmarks;
+
   /// No description provided for @backupRestore_channels.
   ///
   /// In en, this message translates to:
@@ -4218,6 +4224,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Message deleted'**
   String get chat_messageDeleted;
+
+  /// No description provided for @chat_bookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark'**
+  String get chat_bookmark;
+
+  /// No description provided for @chat_removeBookmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove bookmark'**
+  String get chat_removeBookmark;
+
+  /// No description provided for @chat_showBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Show bookmarks'**
+  String get chat_showBookmarks;
+
+  /// No description provided for @bookmarks_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get bookmarks_title;
+
+  /// No description provided for @bookmarks_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarked messages'**
+  String get bookmarks_empty;
+
+  /// No description provided for @bookmarks_channel.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel'**
+  String get bookmarks_channel;
+
+  /// No description provided for @bookmarks_contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get bookmarks_contact;
+
+  /// No description provided for @bookmarks_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove bookmark'**
+  String get bookmarks_remove;
 
   /// No description provided for @chat_selectMessages.
   ///
@@ -10523,6 +10577,30 @@ abstract class AppLocalizations {
   /// **'MeshCore Open isn\'t running. Open it and send your reply again.'**
   String get notification_replyAppNotRunning;
 
+  /// No description provided for @settings_exportBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Export bookmarks to Markdown'**
+  String get settings_exportBookmarks;
+
+  /// No description provided for @settings_exportBookmarksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share or save bookmarked messages as a Markdown file.'**
+  String get settings_exportBookmarksSubtitle;
+
+  /// No description provided for @settings_exportBookmarksSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks exported.'**
+  String get settings_exportBookmarksSuccess;
+
+  /// No description provided for @settings_exportBookmarksNoBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks to export.'**
+  String get settings_exportBookmarksNoBookmarks;
+
   /// No description provided for @settings_gpxExportRepeaters.
   ///
   /// In en, this message translates to:
@@ -11608,6 +11686,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This device can\'t preview the reconstruction.'**
   String get imageSend_reconstructionUnavailable;
+
+  /// No description provided for @receivedImage_packetEchoes.
+  ///
+  /// In en, this message translates to:
+  /// **'Packet {number}: {count, plural, =0{no repeater heard} =1{repeated once} other{repeated {count} times}}'**
+  String receivedImage_packetEchoes(int number, int count);
+
+  /// No description provided for @receivedImage_recoveryPacketEchoes.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery packet: {count, plural, =0{no repeater heard} =1{repeated once} other{repeated {count} times}}'**
+  String receivedImage_recoveryPacketEchoes(int count);
+
+  /// No description provided for @imageSend_preparingPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing preview…'**
+  String get imageSend_preparingPreview;
+
+  /// No description provided for @imageSend_tryAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another version'**
+  String get imageSend_tryAnother;
+
+  /// No description provided for @imageSend_versionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each version is reconstructed a little differently. Pick the one that looks most like your photo.'**
+  String get imageSend_versionsHint;
+
+  /// No description provided for @imageSend_versionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {number}'**
+  String imageSend_versionLabel(int number);
+
+  /// No description provided for @imageSend_versionPackets.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 packet} other{{count} packets}}'**
+  String imageSend_versionPackets(int count);
 
   /// No description provided for @imageSend_modelNotDownloaded.
   ///
