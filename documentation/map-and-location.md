@@ -188,6 +188,29 @@ A full-screen map with a draggable bottom sheet containing:
 
 ---
 
+## Estimated Coverage
+
+### How to Access
+From the main map, tap the coverage icon (below the terrain/antenna Line of Sight item).
+
+### What the User Sees
+A full-screen map with a draggable bottom sheet listing every point:
+- **Checkbox per point** — turns that point's coverage overlay on or off
+- **Antenna height slider** (0–400 ft) per point, with delete and rename controls
+- **Coverage overlay** — three nested bands per point: excellent (green), good (amber), and marginal (orange), drawn where the signal clears terrain and buildings
+- **Legend and summary** with the computed coverage radius per point
+- **Existing repeater icons** shown on the map (toggleable), separate from the points you place
+
+### Key Interactions
+- **Long-press the map** to add a point; it computes immediately. Only manually placed points are estimated — repeaters on the map are reference icons, not candidates
+- **Tap a marker** to toggle its checkbox without opening the panel
+- **Repeater icon toggle** (cell-tower button) shows or hides the known repeaters on the map
+- **96 rays** are cast around each antenna using the same terrain and refraction maths as Line of Sight; each ray reaches the farthest point still clear of terrain shadows, capped at a nominal coverage radius of 25–50 km depending on antenna height
+- Terrain elevation is fetched from the Open-Meteo API in batches of up to 100 points, cached 24 hours
+- Changing the antenna height re-runs the estimate after a short delay
+
+---
+
 ## Offline Map Cache
 
 Linux and Windows keep the tile index in SQLite, so opening a large offline map

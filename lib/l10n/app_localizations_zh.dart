@@ -4895,6 +4895,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get telemetry_autoFetchQuantity => '请求次数';
 
   @override
+  String get telemetry_configureFields => '配置标签和单位';
+
+  @override
+  String get telemetry_fieldLabelHint => '标签';
+
+  @override
+  String get telemetry_fieldUnitHint => '单位';
+
+  @override
   String get telemetry_error => '无法获取数据';
 
   @override
@@ -7598,4 +7607,65 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chat_composerOffline => '连接到无线电后才能发送消息';
+
+  @override
+  String get map_coverage => '估计覆盖范围';
+
+  @override
+  String get map_coverageScreenTitle => '估计覆盖范围';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return '中继台 $index';
+  }
+
+  @override
+  String get coverageAddHint => '长按或右键点击地图以添加中继站点。';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return '天线高度：$value $unit';
+  }
+
+  @override
+  String get coverageComputing => '正在计算覆盖范围…';
+
+  @override
+  String coverageSummary(int count) {
+    return '显示 $count 个中继台';
+  }
+
+  @override
+  String get coverageLegendExcellent => '极好';
+
+  @override
+  String get coverageLegendGood => '良好';
+
+  @override
+  String get coverageLegendMarginal => '临界';
+
+  @override
+  String get coverageLegendNone => '无覆盖';
+
+  @override
+  String coverageRunFailed(String error) {
+    return '覆盖范围计算失败：$error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => '显示覆盖面板';
+
+  @override
+  String get coverageHidePanelTooltip => '隐藏覆盖面板';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return '地平线：$value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => '显示转发节点';
+
+  @override
+  String get coverageHideRepeaters => '隐藏转发节点';
 }

@@ -5236,6 +5236,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Número de solicitações';
 
   @override
+  String get telemetry_configureFields => 'Configurar rótulos e unidades';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Rótulo';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Unidade';
+
+  @override
   String get telemetry_error => 'Não foi possível obter os dados';
 
   @override
@@ -8094,6 +8103,68 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Conecte-se a um rádio para enviar mensagens';
+
+  @override
+  String get map_coverage => 'Cobertura estimada';
+
+  @override
+  String get map_coverageScreenTitle => 'Cobertura estimada';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Repetidor $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Toque longamente ou clique com o botão direito no mapa para adicionar pontos de repetidor.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Antena: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'A calcular cobertura…';
+
+  @override
+  String coverageSummary(int count) {
+    return '$count repetidores mostrados';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Excelente';
+
+  @override
+  String get coverageLegendGood => 'Boa';
+
+  @override
+  String get coverageLegendMarginal => 'Marginal';
+
+  @override
+  String get coverageLegendNone => 'Sem cobertura';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'Falha ao calcular a cobertura: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Mostrar painel de cobertura';
+
+  @override
+  String get coverageHidePanelTooltip => 'Ocultar painel de cobertura';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Horizonte: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Mostrar repetidores';
+
+  @override
+  String get coverageHideRepeaters => 'Ocultar repetidores';
 }
 
 /// The translations for Portuguese, as used in Portugal (`pt_PT`).
@@ -12891,6 +12962,15 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get telemetry_autoFetchQuantity => 'Quantidade de pedidos';
 
   @override
+  String get telemetry_configureFields => 'Configurar rótulos e unidades';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Rótulo';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Unidade';
+
+  @override
   String get telemetry_error => 'Não foi possível obter os dados';
 
   @override
@@ -15545,4 +15625,66 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   @override
   String get chat_composerOffline =>
       'Ligue-se a um rádio para enviar mensagens';
+
+  @override
+  String get map_coverage => 'Cobertura estimada';
+
+  @override
+  String get map_coverageScreenTitle => 'Cobertura estimada';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Repetidor $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Toque longamente ou clique com o botão direito no mapa para adicionar pontos de repetidor.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Antena: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'A calcular cobertura…';
+
+  @override
+  String coverageSummary(int count) {
+    return '$count repetidores mostrados';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Excelente';
+
+  @override
+  String get coverageLegendGood => 'Boa';
+
+  @override
+  String get coverageLegendMarginal => 'Marginal';
+
+  @override
+  String get coverageLegendNone => 'Sem cobertura';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'Falha ao calcular a cobertura: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Mostrar painel de cobertura';
+
+  @override
+  String get coverageHidePanelTooltip => 'Ocultar painel de cobertura';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Horizonte: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Mostrar repetidores';
+
+  @override
+  String get coverageHideRepeaters => 'Ocultar repetidores';
 }

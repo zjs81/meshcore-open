@@ -5247,6 +5247,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Кількість запитів';
 
   @override
+  String get telemetry_configureFields => 'Налаштування міток та одиниць';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Мітка';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Одиниця';
+
+  @override
   String get telemetry_error => 'Не вдалося отримати дані';
 
   @override
@@ -8142,4 +8151,66 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Підключіться до радіо, щоб надсилати повідомлення';
+
+  @override
+  String get map_coverage => 'Оцінка покриття';
+
+  @override
+  String get map_coverageScreenTitle => 'Оцінка покриття';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Ретранслятор $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Утримайте або клацніть правою кнопкою на карті, щоб додати точки ретранслятора.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Антенна: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'Розрахунок покриття…';
+
+  @override
+  String coverageSummary(int count) {
+    return 'Показано $count ретрансляторів';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Відмінно';
+
+  @override
+  String get coverageLegendGood => 'Добре';
+
+  @override
+  String get coverageLegendMarginal => 'Помежне';
+
+  @override
+  String get coverageLegendNone => 'Немає покриття';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'Розрахунок покриття не вдався: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Показати панель покриття';
+
+  @override
+  String get coverageHidePanelTooltip => 'Приховати панель покриття';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Горизонт: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Показувати ретранслятори';
+
+  @override
+  String get coverageHideRepeaters => 'Сховати ретранслятори';
 }

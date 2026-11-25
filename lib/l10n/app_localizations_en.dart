@@ -5174,6 +5174,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Requests quantity';
 
   @override
+  String get telemetry_configureFields => 'Configure labels and units';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Label';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Unit';
+
+  @override
   String get telemetry_error => 'Unable to retrieve data';
 
   @override
@@ -7999,4 +8008,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chat_composerOffline => 'Connect to a radio to send messages';
+
+  @override
+  String get map_coverage => 'Estimated Coverage';
+
+  @override
+  String get map_coverageScreenTitle => 'Estimated Coverage';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Repeater $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Long-press or right-click the map to add repeater points.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Antenna: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'Computing coverage…';
+
+  @override
+  String coverageSummary(int count) {
+    return '$count repeaters shown';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Excellent';
+
+  @override
+  String get coverageLegendGood => 'Good';
+
+  @override
+  String get coverageLegendMarginal => 'Marginal';
+
+  @override
+  String get coverageLegendNone => 'No coverage';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'Coverage calculation failed: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Show coverage panel';
+
+  @override
+  String get coverageHidePanelTooltip => 'Hide coverage panel';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Horizon: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Show repeaters';
+
+  @override
+  String get coverageHideRepeaters => 'Hide repeaters';
 }

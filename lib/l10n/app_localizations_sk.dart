@@ -5233,6 +5233,15 @@ class AppLocalizationsSk extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Počet požiadaviek';
 
   @override
+  String get telemetry_configureFields => 'Konfigurovať popisky a jednotky';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Popisok';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Jednotka';
+
+  @override
   String get telemetry_error => 'Nepodarilo sa získať údaje';
 
   @override
@@ -8094,4 +8103,66 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get chat_composerOffline => 'Na odosielanie správ sa pripojte k rádiu';
+
+  @override
+  String get map_coverage => 'Odhad pokrytia';
+
+  @override
+  String get map_coverageScreenTitle => 'Odhad pokrytia';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Opakovač $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Podržte alebo kliknite pravým tlačidlom na mape pre pridanie bodov opakovača.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Anténa: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'Výpočet pokrytia…';
+
+  @override
+  String coverageSummary(int count) {
+    return 'Zobrazených $count opakovačov';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Výborné';
+
+  @override
+  String get coverageLegendGood => 'Dobré';
+
+  @override
+  String get coverageLegendMarginal => 'Mezné';
+
+  @override
+  String get coverageLegendNone => 'Žiadne pokrytie';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'Výpočet pokrytia zlyhal: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Zobraziť panel pokrytia';
+
+  @override
+  String get coverageHidePanelTooltip => 'Skryť panel pokrytia';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Obzor: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Zobraziť opakovače';
+
+  @override
+  String get coverageHideRepeaters => 'Skryť opakovače';
 }

@@ -5245,6 +5245,16 @@ class AppLocalizationsBg extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Брой заявки';
 
   @override
+  String get telemetry_configureFields =>
+      'Конфигуриране на етикети и мерни единици';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Етикет';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Мерна единица';
+
+  @override
   String get telemetry_error => 'Неуспешно получаване на данни';
 
   @override
@@ -8113,4 +8123,66 @@ class AppLocalizationsBg extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Свържете се с радио, за да изпращате съобщения';
+
+  @override
+  String get map_coverage => 'Предполагаемо покритие';
+
+  @override
+  String get map_coverageScreenTitle => 'Предполагаемо покритие';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Ретранслатор $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Задръжте или кликнете с десния бутон на картата, за да добавите точки на ретранслатор.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Антена: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'Изчисляване на покритието…';
+
+  @override
+  String coverageSummary(int count) {
+    return '$count показани ретранслатора';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Отлично';
+
+  @override
+  String get coverageLegendGood => 'Добро';
+
+  @override
+  String get coverageLegendMarginal => 'Гранично';
+
+  @override
+  String get coverageLegendNone => 'Няма покритие';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'Изчисляването на покритието е неуспешно: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Покажи панела на покритието';
+
+  @override
+  String get coverageHidePanelTooltip => 'Скрий панела на покритието';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Хоризонт: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Показване на повторители';
+
+  @override
+  String get coverageHideRepeaters => 'Скриване на повторители';
 }

@@ -2772,6 +2772,9 @@
     }
   },
   "telemetry_autoFetchQuantity": "Requests quantity",
+  "telemetry_configureFields": "Configure labels and units",
+  "telemetry_fieldLabelHint": "Label",
+  "telemetry_fieldUnitHint": "Unit",
   "telemetry_error": "Unable to retrieve data",
   "neighbors_receivedData": "Received Neighbors Data",
   "neighbors_requestTimedOut": "Neighbors request timed out.",
@@ -4651,5 +4654,27 @@
   "chat_composerOffline": "Connect to a radio to send messages",
   "@chat_composerOffline": {
     "description": "Shown in place of the message box while no radio is connected"
-  }
+  },
+  "map_coverage": "Estimated Coverage",
+  "map_coverageScreenTitle": "Estimated Coverage",
+  "coverageCustomPointLabel": "Repeater {index}",
+  "@coverageCustomPointLabel": {"placeholders": {"index": {"type": "int"}}},
+  "coverageAddHint": "Long-press or right-click the map to add repeater points.",
+  "coverageAntenna": "Antenna: {value} {unit}",
+  "@coverageAntenna": {"placeholders": {"value": {"type": "String"}, "unit": {"type": "String"}}},
+  "coverageComputing": "Computing coverage…",
+  "coverageSummary": "{count} repeaters shown",
+  "@coverageSummary": {"placeholders": {"count": {"type": "int"}}},
+  "coverageLegendExcellent": "Excellent",
+  "coverageLegendGood": "Good",
+  "coverageLegendMarginal": "Marginal",
+  "coverageLegendNone": "No coverage",
+  "coverageRunFailed": "Coverage calculation failed: {error}",
+  "@coverageRunFailed": {"placeholders": {"error": {"type": "String"}}},
+  "coverageShowPanelTooltip": "Show coverage panel",
+  "coverageHidePanelTooltip": "Hide coverage panel",
+  "coverageHorizon": "Horizon: {value} {distanceUnit}",
+  "@coverageHorizon": {"placeholders": {"value": {"type": "String"}, "distanceUnit": {"type": "String"}}},
+  "coverageShowRepeaters": "Show repeaters",
+  "coverageHideRepeaters": "Hide repeaters"
 }

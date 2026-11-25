@@ -5237,6 +5237,15 @@ class AppLocalizationsHu extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Mennyiséget kér';
 
   @override
+  String get telemetry_configureFields => 'Címkék és mértékegységek beállítása';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Címke';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Mértékegység';
+
+  @override
   String get telemetry_error => 'Nem sikerült lekérni az adatokat';
 
   @override
@@ -8095,4 +8104,66 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get chat_composerOffline => 'Üzenetküldéshez csatlakozzon rádióhoz';
+
+  @override
+  String get map_coverage => 'Becsült lefedettség';
+
+  @override
+  String get map_coverageScreenTitle => 'Becsült lefedettség';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Repeater $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Tartsd nyomva vagy kattints jobb klikkel a térképre repeater pontok hozzáadásához.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Antenna: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'Lefedettség számítása…';
+
+  @override
+  String coverageSummary(int count) {
+    return '$count repeater megjelenítve';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Kiváló';
+
+  @override
+  String get coverageLegendGood => 'Jó';
+
+  @override
+  String get coverageLegendMarginal => 'Határeseti';
+
+  @override
+  String get coverageLegendNone => 'Nincs lefedettség';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'A lefedettségszámítás sikertelen: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Lefedettség panel megjelenítése';
+
+  @override
+  String get coverageHidePanelTooltip => 'Lefedettség panel elrejtése';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Horizont: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Átjátszók megjelenítése';
+
+  @override
+  String get coverageHideRepeaters => 'Átjátszók elrejtése';
 }

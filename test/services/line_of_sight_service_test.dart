@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:meshcore_open/services/line_of_sight_service.dart';
 
@@ -94,5 +98,26 @@ void main() {
     expect(result.clearSegments, 1);
     expect(result.blockedSegments, 1);
     expect(result.unknownSegments, 0);
+  });
+
+  test('fetchElevations batches requests into chunks of 100 points', () async {
+    final requestCounts = <int>[];
+    final client = MockClient((request) async {
+      final latCsv = request.url.queryParameters['latitude']!;
+      final count = latCsv.split(',').length;
+      requestCounts.add(count);
+      return http.Response(
+        jsonEncode({'elevation': List.filled(count, 100)}),
+        200,
+        headers: {'content-type': 'application/json'},
+      );
+    });
+    final service = LineOfSightService(httpClient: client);
+
+    final elevations = await service.fetchElevations(makePoints(250));
+
+    expect(requestCounts, [100, 100, 50]);
+    expect(elevations, everyElement(100.0));
+    client.close();
   });
 }

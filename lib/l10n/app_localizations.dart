@@ -9011,6 +9011,24 @@ abstract class AppLocalizations {
   /// **'Requests quantity'**
   String get telemetry_autoFetchQuantity;
 
+  /// No description provided for @telemetry_configureFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure labels and units'**
+  String get telemetry_configureFields;
+
+  /// No description provided for @telemetry_fieldLabelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Label'**
+  String get telemetry_fieldLabelHint;
+
+  /// No description provided for @telemetry_fieldUnitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get telemetry_fieldUnitHint;
+
   /// No description provided for @telemetry_error.
   ///
   /// In en, this message translates to:
@@ -13593,6 +13611,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connect to a radio to send messages'**
   String get chat_composerOffline;
+
+  /// No description provided for @map_coverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Coverage'**
+  String get map_coverage;
+
+  /// No description provided for @map_coverageScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Coverage'**
+  String get map_coverageScreenTitle;
+
+  /// No description provided for @coverageCustomPointLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeater {index}'**
+  String coverageCustomPointLabel(int index);
+
+  /// No description provided for @coverageAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press or right-click the map to add repeater points.'**
+  String get coverageAddHint;
+
+  /// No description provided for @coverageAntenna.
+  ///
+  /// In en, this message translates to:
+  /// **'Antenna: {value} {unit}'**
+  String coverageAntenna(String value, String unit);
+
+  /// No description provided for @coverageComputing.
+  ///
+  /// In en, this message translates to:
+  /// **'Computing coverage…'**
+  String get coverageComputing;
+
+  /// No description provided for @coverageSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} repeaters shown'**
+  String coverageSummary(int count);
+
+  /// No description provided for @coverageLegendExcellent.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent'**
+  String get coverageLegendExcellent;
+
+  /// No description provided for @coverageLegendGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get coverageLegendGood;
+
+  /// No description provided for @coverageLegendMarginal.
+  ///
+  /// In en, this message translates to:
+  /// **'Marginal'**
+  String get coverageLegendMarginal;
+
+  /// No description provided for @coverageLegendNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No coverage'**
+  String get coverageLegendNone;
+
+  /// No description provided for @coverageRunFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Coverage calculation failed: {error}'**
+  String coverageRunFailed(String error);
+
+  /// No description provided for @coverageShowPanelTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Show coverage panel'**
+  String get coverageShowPanelTooltip;
+
+  /// No description provided for @coverageHidePanelTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide coverage panel'**
+  String get coverageHidePanelTooltip;
+
+  /// No description provided for @coverageHorizon.
+  ///
+  /// In en, this message translates to:
+  /// **'Horizon: {value} {distanceUnit}'**
+  String coverageHorizon(String value, String distanceUnit);
+
+  /// No description provided for @coverageShowRepeaters.
+  ///
+  /// In en, this message translates to:
+  /// **'Show repeaters'**
+  String get coverageShowRepeaters;
+
+  /// No description provided for @coverageHideRepeaters.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide repeaters'**
+  String get coverageHideRepeaters;
 }
 
 class _AppLocalizationsDelegate

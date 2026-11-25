@@ -5235,6 +5235,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Número de solicitudes';
 
   @override
+  String get telemetry_configureFields => 'Configurar etiquetas y unidades';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Etiqueta';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Unidad';
+
+  @override
   String get telemetry_error => 'No se pudieron obtener los datos';
 
   @override
@@ -8104,4 +8113,66 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Conéctate a una radio para enviar mensajes';
+
+  @override
+  String get map_coverage => 'Cobertura estimada';
+
+  @override
+  String get map_coverageScreenTitle => 'Cobertura estimada';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Repetidor $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Mantén pulsado o haz clic derecho en el mapa para añadir puntos de repetidor.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Antena: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'Calculando cobertura…';
+
+  @override
+  String coverageSummary(int count) {
+    return '$count repetidores mostrados';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Excelente';
+
+  @override
+  String get coverageLegendGood => 'Buena';
+
+  @override
+  String get coverageLegendMarginal => 'Marginal';
+
+  @override
+  String get coverageLegendNone => 'Sin cobertura';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'No se pudo calcular la cobertura: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Mostrar panel de cobertura';
+
+  @override
+  String get coverageHidePanelTooltip => 'Ocultar panel de cobertura';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Horizonte: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Mostrar repetidores';
+
+  @override
+  String get coverageHideRepeaters => 'Ocultar repetidores';
 }

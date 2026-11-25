@@ -5222,6 +5222,15 @@ class AppLocalizationsSl extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Število zahtev';
 
   @override
+  String get telemetry_configureFields => 'Konfiguriraj oznake in enote';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Oznaka';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Enota';
+
+  @override
   String get telemetry_error => 'Podatkov ni bilo mogoče pridobiti';
 
   @override
@@ -8089,4 +8098,66 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Za pošiljanje sporočil se povežite z radiem';
+
+  @override
+  String get map_coverage => 'Predvidena pokritost';
+
+  @override
+  String get map_coverageScreenTitle => 'Predvidena pokritost';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Relej $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Dolg pritisk ali desni klik na zemljevidu za dodajanje točk releja.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Antena: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'Izračun pokritosti…';
+
+  @override
+  String coverageSummary(int count) {
+    return 'Prikazani $count releji';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Odlično';
+
+  @override
+  String get coverageLegendGood => 'Dobro';
+
+  @override
+  String get coverageLegendMarginal => 'Mejno';
+
+  @override
+  String get coverageLegendNone => 'Ni pokritosti';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'Izračun pokritosti ni uspel: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Prikaži okno pokritosti';
+
+  @override
+  String get coverageHidePanelTooltip => 'Skrij okno pokritosti';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Obzor: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Prikaži ponovljalnike';
+
+  @override
+  String get coverageHideRepeaters => 'Skrij ponovljalnike';
 }

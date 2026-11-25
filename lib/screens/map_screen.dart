@@ -55,6 +55,7 @@ import '../helpers/path_hop_resolver.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../helpers/utf8_length_limiter.dart';
 import 'settings_screen.dart';
+import 'coverage_map_screen.dart';
 import 'line_of_sight_map_screen.dart';
 import '../theme/theme_icons.dart';
 
@@ -1007,6 +1008,23 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
                               builder: (context) => LineOfSightMapScreen(
                                 title: context.l10n.map_losScreenTitle,
                                 candidates: candidates,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    if (!_isBuildingPathTrace)
+                      PopupMenuItem(
+                        child: MeshMenuItemRow(
+                          icon: Icons.wifi_tethering,
+                          label: context.l10n.map_coverage,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CoverageMapScreen(
+                                title: context.l10n.map_coverageScreenTitle,
                               ),
                             ),
                           );

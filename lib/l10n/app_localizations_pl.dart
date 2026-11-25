@@ -5270,6 +5270,15 @@ class AppLocalizationsPl extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Liczba żądań';
 
   @override
+  String get telemetry_configureFields => 'Konfiguruj etykiety i jednostki';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Etykieta';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Jednostka';
+
+  @override
   String get telemetry_error => 'Nie udało się pobrać danych';
 
   @override
@@ -8149,4 +8158,66 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Połącz się z radiem, aby wysyłać wiadomości';
+
+  @override
+  String get map_coverage => 'Szacowane pokrycie';
+
+  @override
+  String get map_coverageScreenTitle => 'Szacowane pokrycie';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Repeater $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Przytrzymaj lub kliknij prawym przyciskiem na mapie, aby dodać punkty repeatera.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Antena: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'Obliczanie pokrycia…';
+
+  @override
+  String coverageSummary(int count) {
+    return 'Wyświetlono $count repeaterów';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Doskonały';
+
+  @override
+  String get coverageLegendGood => 'Dobry';
+
+  @override
+  String get coverageLegendMarginal => 'Marginesowy';
+
+  @override
+  String get coverageLegendNone => 'Brak pokrycia';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'Obliczanie pokrycia nie powiodło się: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Pokaż panel pokrycia';
+
+  @override
+  String get coverageHidePanelTooltip => 'Ukryj panel pokrycia';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Horyzont: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Pokaż przekaźniki';
+
+  @override
+  String get coverageHideRepeaters => 'Ukryj przekaźniki';
 }

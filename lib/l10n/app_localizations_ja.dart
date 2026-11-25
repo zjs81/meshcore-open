@@ -5001,6 +5001,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'リクエスト数';
 
   @override
+  String get telemetry_configureFields => 'ラベルと単位を設定';
+
+  @override
+  String get telemetry_fieldLabelHint => 'ラベル';
+
+  @override
+  String get telemetry_fieldUnitHint => '単位';
+
+  @override
   String get telemetry_error => 'データを取得できません';
 
   @override
@@ -7755,4 +7764,65 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get chat_composerOffline => 'メッセージを送信するには無線機に接続してください';
+
+  @override
+  String get map_coverage => '推定カバーエリア';
+
+  @override
+  String get map_coverageScreenTitle => '推定カバーエリア';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return '中継局 $index';
+  }
+
+  @override
+  String get coverageAddHint => '地図を長押しまたは右クリックして中継局ポイントを追加します。';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'アンテナ高: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'カバー範囲を計算中…';
+
+  @override
+  String coverageSummary(int count) {
+    return '中継局 $count 局を表示';
+  }
+
+  @override
+  String get coverageLegendExcellent => '非常に良い';
+
+  @override
+  String get coverageLegendGood => '良い';
+
+  @override
+  String get coverageLegendMarginal => 'ギリギリ';
+
+  @override
+  String get coverageLegendNone => 'カバーなし';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'カバー範囲の計算に失敗しました: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'カバー範囲パネルを表示';
+
+  @override
+  String get coverageHidePanelTooltip => 'カバー範囲パネルを隠す';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return '地平線: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'リピータを表示';
+
+  @override
+  String get coverageHideRepeaters => 'リピータを非表示';
 }

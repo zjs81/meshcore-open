@@ -5012,6 +5012,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get telemetry_autoFetchQuantity => '요청 수';
 
   @override
+  String get telemetry_configureFields => '라벨 및 단위 설정';
+
+  @override
+  String get telemetry_fieldLabelHint => '라벨';
+
+  @override
+  String get telemetry_fieldUnitHint => '단위';
+
+  @override
   String get telemetry_error => '데이터를 가져올 수 없습니다';
 
   @override
@@ -7768,4 +7777,65 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get chat_composerOffline => '메시지를 보내려면 무전기에 연결하세요';
+
+  @override
+  String get map_coverage => '예상 커버리지';
+
+  @override
+  String get map_coverageScreenTitle => '예상 커버리지';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return '중계기 $index';
+  }
+
+  @override
+  String get coverageAddHint => '지도를 길게 누르거나 마우스 오른쪽 버튼으로 눌러 중계기 지점을 추가하세요.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return '안테나 높이: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => '커버리지 계산 중…';
+
+  @override
+  String coverageSummary(int count) {
+    return '중계기 $count개 표시';
+  }
+
+  @override
+  String get coverageLegendExcellent => '매우 좋음';
+
+  @override
+  String get coverageLegendGood => '좋음';
+
+  @override
+  String get coverageLegendMarginal => '아슬아슬';
+
+  @override
+  String get coverageLegendNone => '커버리지 없음';
+
+  @override
+  String coverageRunFailed(String error) {
+    return '커버리지 계산 실패: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => '커버리지 패널 표시';
+
+  @override
+  String get coverageHidePanelTooltip => '커버리지 패널 숨기기';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return '수평선: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => '리피터 표시';
+
+  @override
+  String get coverageHideRepeaters => '리피터 숨기기';
 }

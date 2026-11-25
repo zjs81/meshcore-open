@@ -5218,6 +5218,15 @@ class AppLocalizationsNl extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Aantal aanvragen';
 
   @override
+  String get telemetry_configureFields => 'Labels en eenheden configureren';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Label';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Eenheid';
+
+  @override
   String get telemetry_error => 'Kan gegevens niet ophalen';
 
   @override
@@ -8073,4 +8082,66 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Verbind met een radio om berichten te versturen';
+
+  @override
+  String get map_coverage => 'Geschatte dekking';
+
+  @override
+  String get map_coverageScreenTitle => 'Geschatte dekking';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Repeater $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Houd ingedrukt of klik rechts op de kaart om repeaterpunten toe te voegen.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Antenne: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'Dekking wordt berekend…';
+
+  @override
+  String coverageSummary(int count) {
+    return '$count repeaters weergegeven';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Uitstekend';
+
+  @override
+  String get coverageLegendGood => 'Goed';
+
+  @override
+  String get coverageLegendMarginal => 'Marginaal';
+
+  @override
+  String get coverageLegendNone => 'Geen dekking';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'Dekking berekenen mislukt: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Dekkingspaneel weergeven';
+
+  @override
+  String get coverageHidePanelTooltip => 'Dekkingspaneel verbergen';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Horizon: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Toon repeaters';
+
+  @override
+  String get coverageHideRepeaters => 'Verberg repeaters';
 }

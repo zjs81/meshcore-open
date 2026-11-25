@@ -5200,6 +5200,15 @@ class AppLocalizationsSv extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Antal förfrågningar';
 
   @override
+  String get telemetry_configureFields => 'Konfigurera etiketter och enheter';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Etikett';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Enhet';
+
+  @override
   String get telemetry_error => 'Det gick inte att hämta data';
 
   @override
@@ -8048,4 +8057,66 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Anslut till en radio för att skicka meddelanden';
+
+  @override
+  String get map_coverage => 'Uppskattad täckning';
+
+  @override
+  String get map_coverageScreenTitle => 'Uppskattad täckning';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Repeater $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Långtryck eller högerklicka på kartan för att lägga till repeaterpunkter.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Antenn: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'Beräcker täckning…';
+
+  @override
+  String coverageSummary(int count) {
+    return '$count repeaters visas';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Utmärkt';
+
+  @override
+  String get coverageLegendGood => 'Bra';
+
+  @override
+  String get coverageLegendMarginal => 'Marginal';
+
+  @override
+  String get coverageLegendNone => 'Ingen täckning';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'Täckningsberäkning misslyckades: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Visa täckningspanel';
+
+  @override
+  String get coverageHidePanelTooltip => 'Dölj täckningspanel';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Horisont: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Visa repeaters';
+
+  @override
+  String get coverageHideRepeaters => 'Dölj repeaters';
 }

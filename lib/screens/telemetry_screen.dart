@@ -7,6 +7,7 @@ import '../l10n/l10n.dart';
 import '../models/contact.dart';
 import '../models/path_selection.dart';
 import '../models/app_settings.dart';
+import '../models/telemetry_field_config.dart';
 import '../storage/prefs_manager.dart';
 import '../connector/meshcore_connector.dart';
 import '../connector/meshcore_protocol.dart';
@@ -91,6 +92,8 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
 
   int _tripTime = 0;
 
+  late TelemetryFieldConfig _fieldConfig;
+
   int _resolveContactIndex = -1;
 
   Contact _resolveContact(MeshCoreConnector connector) {
@@ -114,6 +117,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
     super.initState();
     final connector = Provider.of<MeshCoreConnector>(context, listen: false);
     _commandService = RepeaterCommandService(connector);
+    _fieldConfig = TelemetryFieldConfig.load(widget.contact.publicKeyHex);
     _loadAutoRefreshSettings();
     _setupMessageListener();
     _loadTelemetry();
@@ -429,6 +433,13 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
                   ContactRoutingSheet.show(context, contact: widget.contact),
             ),
           IconButton(
+            icon: const Icon(Icons.tune),
+            tooltip: l10n.telemetry_configureFields,
+            onPressed: (_parsedTelemetry?.isNotEmpty ?? false)
+                ? _openFieldConfigDialog
+                : null,
+          ),
+          IconButton(
             icon: _isLoading
                 ? const SizedBox(
                     width: 20,
@@ -553,7 +564,53 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
       channel,
       isImperialUnits,
     );
-    return _buildInfoRow(display.label, display.value);
+    final override = _fieldConfig.overrideFor(channel, entry.key);
+    final label = (override != null && override.label.isNotEmpty)
+        ? override.label
+        : display.label;
+    var value = display.value;
+    if (override != null && override.unit.isNotEmpty) {
+      final raw = entry.value is num
+          ? _telemetryValueText(entry.value)
+          : display.value;
+      value = '$raw ${override.unit}';
+    }
+    return _buildInfoRow(label, value);
+  }
+
+  Future<void> _openFieldConfigDialog() async {
+    final fields = <_TelemetryFieldSpec>[];
+    for (final channelEntry
+        in _parsedTelemetry ?? const <Map<String, dynamic>>[]) {
+      final channel = channelEntry['channel'];
+      final values = channelEntry['values'];
+      if (channel is! int || values is! Map<String, dynamic>) continue;
+      for (final key in values.keys) {
+        if (key == 'gps' || key == 'polyline') continue;
+        fields.add(
+          _TelemetryFieldSpec(
+            channel: channel,
+            field: key,
+            defaultLabel: _formatTelemetryField(
+              key,
+              null,
+              channel,
+              false,
+            ).label,
+          ),
+        );
+      }
+    }
+    if (fields.isEmpty) return;
+    final updates = await showDialog<Map<String, TelemetryFieldOverride>>(
+      context: context,
+      builder: (context) =>
+          _TelemetryFieldConfigDialog(fields: fields, config: _fieldConfig),
+    );
+    if (updates == null || !mounted) return;
+    await _fieldConfig.save(updates);
+    if (!mounted) return;
+    setState(() {});
   }
 
   _TelemetryFieldDisplay _formatTelemetryField(
@@ -1117,4 +1174,153 @@ class _TelemetryFieldDisplay {
   final String value;
 
   const _TelemetryFieldDisplay(this.label, this.value);
+}
+
+class _TelemetryFieldSpec {
+  final int channel;
+  final String field;
+  final String defaultLabel;
+
+  const _TelemetryFieldSpec({
+    required this.channel,
+    required this.field,
+    required this.defaultLabel,
+  });
+
+  String get configKey => TelemetryFieldConfig.keyFor(channel, field);
+}
+
+class _TelemetryFieldConfigDialog extends StatefulWidget {
+  final List<_TelemetryFieldSpec> fields;
+  final TelemetryFieldConfig config;
+
+  const _TelemetryFieldConfigDialog({
+    required this.fields,
+    required this.config,
+  });
+
+  @override
+  State<_TelemetryFieldConfigDialog> createState() =>
+      _TelemetryFieldConfigDialogState();
+}
+
+class _TelemetryFieldConfigDialogState
+    extends State<_TelemetryFieldConfigDialog> {
+  late final List<TextEditingController> _labelControllers;
+  late final List<TextEditingController> _unitControllers;
+
+  @override
+  void initState() {
+    super.initState();
+    _labelControllers = [
+      for (final spec in widget.fields)
+        TextEditingController(
+          text:
+              widget.config.overrideFor(spec.channel, spec.field)?.label ?? '',
+        ),
+    ];
+    _unitControllers = [
+      for (final spec in widget.fields)
+        TextEditingController(
+          text: widget.config.overrideFor(spec.channel, spec.field)?.unit ?? '',
+        ),
+    ];
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _labelControllers) {
+      controller.dispose();
+    }
+    for (final controller in _unitControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  Map<String, TelemetryFieldOverride> _collectUpdates() {
+    final updates = <String, TelemetryFieldOverride>{};
+    for (var i = 0; i < widget.fields.length; i++) {
+      final spec = widget.fields[i];
+      updates[spec.configKey] = TelemetryFieldOverride(
+        label: _labelControllers[i].text.trim(),
+        unit: _unitControllers[i].text.trim(),
+      );
+    }
+    return updates;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AlertDialog(
+      title: Text(l10n.telemetry_configureFields),
+      content: SizedBox(
+        width: 480,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (var i = 0; i < widget.fields.length; i++)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${l10n.telemetry_channelTitle(widget.fields[i].channel)}'
+                        ' · ${widget.fields[i].defaultLabel}',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: TextField(
+                              controller: _labelControllers[i],
+                              textCapitalization: TextCapitalization.sentences,
+                              decoration: InputDecoration(
+                                labelText: l10n.telemetry_fieldLabelHint,
+                                border: const OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            flex: 2,
+                            child: TextField(
+                              controller: _unitControllers[i],
+                              decoration: InputDecoration(
+                                labelText: l10n.telemetry_fieldUnitHint,
+                                border: const OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.common_cancel),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, _collectUpdates()),
+          child: Text(l10n.common_save),
+        ),
+      ],
+    );
+  }
 }

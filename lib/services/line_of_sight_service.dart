@@ -119,6 +119,8 @@ class LineOfSightService {
   static const Distance _distance = Distance();
   static const Duration _cacheTtl = Duration(hours: 24);
   static const int _maxFetchAttempts = 4; // initial try + 3 retries
+  static const int _maxPointsPerElevationRequest = 100;
+  static const int _maxConcurrentElevationRequests = 8;
   static const Duration _initialBackoff = Duration(milliseconds: 300);
   static const double _baselineFrequencyMHz = 915.0;
   static const double _baselineKFactor = 4.0 / 3.0;
@@ -159,7 +161,7 @@ class LineOfSightService {
     var blockedSegments = 0;
     var unknownSegments = 0;
 
-    final kFactor = _kFactorForFrequency(frequencyMHz);
+    final kFactor = kFactorForFrequency(frequencyMHz);
     for (int i = 0; i < points.length - 1; i++) {
       final result = await analyzeLink(
         points[i],
@@ -221,7 +223,7 @@ class LineOfSightService {
     }
 
     final samplePoints = _buildSamplePoints(start, end, totalDistanceMeters);
-    final elevations = await _getElevations(samplePoints);
+    final elevations = await fetchElevations(samplePoints);
 
     if (elevations.any((e) => e == null)) {
       return LineOfSightResult.error(
@@ -346,7 +348,7 @@ class LineOfSightService {
     );
   }
 
-  static double _kFactorForFrequency(double? frequencyMHz) {
+  static double kFactorForFrequency(double? frequencyMHz) {
     if (frequencyMHz == null) return _baselineKFactor;
     final delta =
         (frequencyMHz - _baselineFrequencyMHz) / _baselineFrequencyMHz;
@@ -379,7 +381,10 @@ class LineOfSightService {
     return points;
   }
 
-  Future<List<double?>> _getElevations(List<LatLng> points) async {
+  /// Fetches elevations for [points], serving cache hits (24 h TTL) and
+  /// requesting the rest in chunks of at most [_maxPointsPerElevationRequest]
+  /// because the upstream API rejects larger batches.
+  Future<List<double?>> fetchElevations(List<LatLng> points) async {
     final dataSource = _elevationDataSource;
     if (dataSource != null) {
       return dataSource(points);
@@ -399,6 +404,39 @@ class LineOfSightService {
 
     if (uncached.isEmpty) return values;
 
+    final indices = uncached.keys.toList();
+    final chunks = <Map<int, LatLng>>[];
+    for (
+      int start = 0;
+      start < indices.length;
+      start += _maxPointsPerElevationRequest
+    ) {
+      final end = min(start + _maxPointsPerElevationRequest, indices.length);
+      chunks.add({
+        for (final i in indices.sublist(start, end)) i: uncached[i]!,
+      });
+    }
+    // Run chunks in parallel batches; sequential requests make a coverage
+    // run take tens of seconds on a phone.
+    for (
+      int start = 0;
+      start < chunks.length;
+      start += _maxConcurrentElevationRequests
+    ) {
+      final end = min(start + _maxConcurrentElevationRequests, chunks.length);
+      await Future.wait([
+        for (final chunk in chunks.sublist(start, end))
+          _fetchElevationChunk(chunk, points, values),
+      ]);
+    }
+    return values;
+  }
+
+  Future<void> _fetchElevationChunk(
+    Map<int, LatLng> uncached,
+    List<LatLng> points,
+    List<double?> values,
+  ) async {
     final latCsv = uncached.values
         .map((p) => p.latitude.toStringAsFixed(6))
         .join(',');
@@ -412,16 +450,16 @@ class LineOfSightService {
 
     final response = await _getWithBackoff(uri);
     if (response.statusCode != 200) {
-      return values;
+      return;
     }
 
     final decoded = jsonDecode(response.body);
     if (decoded is! Map<String, dynamic>) {
-      return values;
+      return;
     }
     final elevations = decoded['elevation'];
     if (elevations is! List) {
-      return values;
+      return;
     }
 
     final indices = uncached.keys.toList();
@@ -436,7 +474,6 @@ class LineOfSightService {
         expiresAt: DateTime.now().add(_cacheTtl),
       );
     }
-    return values;
   }
 
   Future<http.Response> _getWithBackoff(Uri uri) async {

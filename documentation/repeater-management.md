@@ -141,6 +141,7 @@ Shows "No data" until a response arrives from the repeater.
 - Pull-to-refresh
 - Temperature respects metric/imperial setting
 - Battery readings are stored for the repeater's battery snapshot
+- The config (tune) action opens a dialog listing every received sensor field, per channel, where a custom label and unit can be set and saved. Overrides are stored per node; clearing both boxes restores the defaults.
 
 ---
 

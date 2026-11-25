@@ -5251,6 +5251,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Nombre de requêtes';
 
   @override
+  String get telemetry_configureFields =>
+      'Configurer les libellés et les unités';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Libellé';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Unité';
+
+  @override
   String get telemetry_error => 'Impossible de récupérer les données';
 
   @override
@@ -8133,4 +8143,66 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get chat_composerOffline =>
       'Connectez-vous à une radio pour envoyer des messages';
+
+  @override
+  String get map_coverage => 'Couverture estimée';
+
+  @override
+  String get map_coverageScreenTitle => 'Couverture estimée';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Répéteur $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Appui long ou clic droit sur la carte pour ajouter des points répéteur.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Antenne : $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'Calcul de la couverture…';
+
+  @override
+  String coverageSummary(int count) {
+    return '$count répéteurs affichés';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Excellente';
+
+  @override
+  String get coverageLegendGood => 'Bonne';
+
+  @override
+  String get coverageLegendMarginal => 'Marginale';
+
+  @override
+  String get coverageLegendNone => 'Aucune couverture';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'Échec du calcul de couverture : $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Afficher le panneau de couverture';
+
+  @override
+  String get coverageHidePanelTooltip => 'Masquer le panneau de couverture';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Horizon : $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Afficher les répéteurs';
+
+  @override
+  String get coverageHideRepeaters => 'Masquer les répéteurs';
 }

@@ -5219,6 +5219,15 @@ class AppLocalizationsCs extends AppLocalizations {
   String get telemetry_autoFetchQuantity => 'Počet požadavků';
 
   @override
+  String get telemetry_configureFields => 'Konfigurovat popisky a jednotky';
+
+  @override
+  String get telemetry_fieldLabelHint => 'Popisek';
+
+  @override
+  String get telemetry_fieldUnitHint => 'Jednotka';
+
+  @override
   String get telemetry_error => 'Data se nepodařilo načíst';
 
   @override
@@ -8083,4 +8092,66 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get chat_composerOffline => 'Pro odesílání zpráv se připojte k rádiu';
+
+  @override
+  String get map_coverage => 'Odhad pokrytí';
+
+  @override
+  String get map_coverageScreenTitle => 'Odhad pokrytí';
+
+  @override
+  String coverageCustomPointLabel(int index) {
+    return 'Opakovač $index';
+  }
+
+  @override
+  String get coverageAddHint =>
+      'Podržte nebo klikněte pravým tlačítkem na mapě pro přidání bodů opakovače.';
+
+  @override
+  String coverageAntenna(String value, String unit) {
+    return 'Anténa: $value $unit';
+  }
+
+  @override
+  String get coverageComputing => 'Výpočet pokrytí…';
+
+  @override
+  String coverageSummary(int count) {
+    return 'Zobrazeno $count opakovačů';
+  }
+
+  @override
+  String get coverageLegendExcellent => 'Výborné';
+
+  @override
+  String get coverageLegendGood => 'Dobré';
+
+  @override
+  String get coverageLegendMarginal => 'Mezní';
+
+  @override
+  String get coverageLegendNone => 'Žádné pokrytí';
+
+  @override
+  String coverageRunFailed(String error) {
+    return 'Výpočet pokrytí selhal: $error';
+  }
+
+  @override
+  String get coverageShowPanelTooltip => 'Zobrazit panel pokrytí';
+
+  @override
+  String get coverageHidePanelTooltip => 'Skrýt panel pokrytí';
+
+  @override
+  String coverageHorizon(String value, String distanceUnit) {
+    return 'Obzor: $value $distanceUnit';
+  }
+
+  @override
+  String get coverageShowRepeaters => 'Zobrazit opakovače';
+
+  @override
+  String get coverageHideRepeaters => 'Skrýt opakovače';
 }
