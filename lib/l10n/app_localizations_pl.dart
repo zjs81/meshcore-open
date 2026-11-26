@@ -6353,7 +6353,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore działa';
 
   @override
-  String get background_serviceText => 'Utrzymywanie połączenia BLE';
+  String get background_serviceText => 'Utrzymuje połączenie z radiem';
 
   @override
   String appSettings_translationModelDeleted(String name) {

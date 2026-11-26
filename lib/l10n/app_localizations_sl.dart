@@ -6298,7 +6298,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore deluje';
 
   @override
-  String get background_serviceText => 'BLE povezava ostaja aktivna';
+  String get background_serviceText => 'Povezava z radiem ostaja aktivna';
 
   @override
   String appSettings_translationModelDeleted(String name) {

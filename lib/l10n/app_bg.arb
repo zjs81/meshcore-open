@@ -2485,7 +2485,7 @@
   "repeater_cliHelpStatsCore": "(Само за серийния номер) Показва основните статистически данни за фърмуера.",
   "common_done": "Готово",
   "background_serviceTitle": "MeshCore работи",
-  "background_serviceText": "Поддържа BLE връзката активна",
+  "background_serviceText": "Поддържа връзката с радиото",
   "appSettings_translationModelDeleted": "Изтрит {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

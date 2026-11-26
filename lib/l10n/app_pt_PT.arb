@@ -1711,7 +1711,7 @@
   "translation_translationOptions": "Opções de tradução",
   "translation_systemLanguage": "Língua do sistema",
   "background_serviceTitle": "MeshCore em execução",
-  "background_serviceText": "A manter o BLE ligado",
+  "background_serviceText": "A manter a ligação ao rádio",
   "appSettings_translationModelDeleted": "{name} eliminado",
   "appSettings_translationModelDeleteFailed": "Falha ao eliminar: {error}",
   "channels_channelUpdateFailed": "Falha ao atualizar o canal: {error}",

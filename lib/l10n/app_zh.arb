@@ -2399,7 +2399,7 @@
   "repeater_cliHelpStatsCore": "（仅显示序列号）显示核心固件统计信息。",
   "common_done": "完成",
   "background_serviceTitle": "MeshCore 运行中",
-  "background_serviceText": "保持蓝牙连接",
+  "background_serviceText": "保持无线电连接",
   "appSettings_translationModelDeleted": "已删除 {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

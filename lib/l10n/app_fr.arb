@@ -2527,7 +2527,7 @@
   "repeater_cliHelpStatsCore": "(Uniquement pour les séries) Affiche les statistiques du micrologicem intégré.",
   "common_done": "Terminé",
   "background_serviceTitle": "MeshCore en cours d'exécution",
-  "background_serviceText": "Maintien de la connexion BLE",
+  "background_serviceText": "Connexion à la radio maintenue",
   "appSettings_translationModelDeleted": "Supprimé {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

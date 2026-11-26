@@ -2393,7 +2393,7 @@
   "repeater_cliHelpStatsCore": "(Samo serijsko) Prikaže statistiko jedra vdelane programske opreme.",
   "common_done": "Opravljeno",
   "background_serviceTitle": "MeshCore deluje",
-  "background_serviceText": "BLE povezava ostaja aktivna",
+  "background_serviceText": "Povezava z radiem ostaja aktivna",
   "appSettings_translationModelDeleted": "Izbrisano: {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

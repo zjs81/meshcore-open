@@ -6317,7 +6317,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore en ejecución';
 
   @override
-  String get background_serviceText => 'Manteniendo BLE conectado';
+  String get background_serviceText => 'Manteniendo la radio conectada';
 
   @override
   String appSettings_translationModelDeleted(String name) {

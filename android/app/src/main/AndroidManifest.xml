@@ -29,7 +29,7 @@
             android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
             android:exported="false"
             android:foregroundServiceType="connectedDevice"
-            android:stopWithTask="true" />
+            android:stopWithTask="false" />
         <!-- Monochrome small icon for the background-connection notification -->
         <meta-data
             android:name="org.meshcore.open.NOTIFICATION_ICON"

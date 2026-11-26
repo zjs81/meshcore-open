@@ -6025,7 +6025,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore 실행 중';
 
   @override
-  String get background_serviceText => 'BLE 연결 유지 중';
+  String get background_serviceText => '라디오 연결 유지 중';
 
   @override
   String appSettings_translationModelDeleted(String name) {

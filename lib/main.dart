@@ -29,6 +29,7 @@ import 'services/storage_service.dart';
 import 'services/message_filter/message_filter_service.dart';
 import 'services/message_retry_service.dart';
 import 'services/path_history_service.dart';
+import 'services/activity_reattach.dart';
 import 'services/app_settings_service.dart';
 import 'services/network_map/network_map_upload_service.dart';
 import 'services/notification_navigator.dart';
@@ -64,7 +65,7 @@ void main() async {
   // 10-14 in too so they lay out the same way under the bars. Flutter ignores
   // this mode before Android 10, where the old layout remains.
   if (PlatformInfo.isAndroid) {
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    await ActivityReattach.applySystemUiMode();
     // Android's scrolling screenshot ("Capture more") for Flutter lists.
     ScrollCaptureService.initialize();
   }
@@ -420,6 +421,7 @@ const Duration _kImageSweepInterval = Duration(seconds: 5);
 
 class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
   Timer? _imageSweepTimer;
+  final ActivityReattach _activityReattach = ActivityReattach();
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   late final NotificationNavigator _notificationNavigator =
       NotificationNavigator(
@@ -484,6 +486,7 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) {
       widget.connector.syncAppBadge();
     }
+    unawaited(_activityReattach.didChangeAppLifecycleState(state));
   }
 
   @override

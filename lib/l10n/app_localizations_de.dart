@@ -6326,7 +6326,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore läuft';
 
   @override
-  String get background_serviceText => 'BLE-Verbindung bleibt aktiv';
+  String get background_serviceText => 'Funkgerät bleibt verbunden';
 
   @override
   String appSettings_translationModelDeleted(String name) {

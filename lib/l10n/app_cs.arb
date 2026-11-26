@@ -3163,7 +3163,7 @@
   "translation_translationOptions": "Možnosti překladu",
   "translation_systemLanguage": "Jazyk systému",
   "background_serviceTitle": "MeshCore běží",
-  "background_serviceText": "Udržuje připojení BLE",
+  "background_serviceText": "Udržuje připojení k rádiu",
   "appSettings_translationModelDeleted": "Smazáno: {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

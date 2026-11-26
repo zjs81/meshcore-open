@@ -2517,7 +2517,7 @@
   "repeater_cliHelpStatsCore": "(Tylko wersja serialowa) Wyświetla podstawowe statystyki o oprogramowaniu.",
   "common_done": "Gotowe",
   "background_serviceTitle": "MeshCore działa",
-  "background_serviceText": "Utrzymywanie połączenia BLE",
+  "background_serviceText": "Utrzymuje połączenie z radiem",
   "appSettings_translationModelDeleted": "Usunięto {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

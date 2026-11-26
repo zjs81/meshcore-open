@@ -6310,7 +6310,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore fut';
 
   @override
-  String get background_serviceText => 'A BLE-kapcsolat fenntartása';
+  String get background_serviceText => 'A rádiókapcsolat fenntartása';
 
   @override
   String appSettings_translationModelDeleted(String name) {

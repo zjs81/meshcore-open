@@ -6313,7 +6313,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore работи';
 
   @override
-  String get background_serviceText => 'Поддържа BLE връзката активна';
+  String get background_serviceText => 'Поддържа връзката с радиото';
 
   @override
   String appSettings_translationModelDeleted(String name) {

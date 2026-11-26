@@ -14,8 +14,7 @@ import android.hardware.usb.UsbManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.app.Activity
-import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -23,9 +22,9 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class MeshcoreUsbFunctions(
-    private val activity: Activity,
-) {
+// Added to the cached engine by MainActivity.ensureEngine(), so the USB link
+// lives as long as the engine, not the activity.
+class MeshcoreUsbFunctions : FlutterPlugin {
     private companion object {
         const val usbRecipientInterface = 0x01
     }
@@ -34,8 +33,10 @@ class MeshcoreUsbFunctions(
     private val usbEventChannelName = "meshcore_open/android_usb_serial_events"
     private val usbPermissionAction = "com.meshcore.meshcore_open.USB_PERMISSION"
 
+    private lateinit var context: Context
+
     private val usbManager by lazy {
-        activity.getSystemService(Context.USB_SERVICE) as UsbManager
+        context.getSystemService(Context.USB_SERVICE) as UsbManager
     }
     private val mainHandler = Handler(Looper.getMainLooper())
     private val usbIoExecutor: ExecutorService = Executors.newSingleThreadExecutor()
@@ -103,10 +104,11 @@ class MeshcoreUsbFunctions(
             }
         }
 
-    fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        context = binding.applicationContext
         registerUsbPermissionReceiver()
 
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, usbMethodChannelName)
+        MethodChannel(binding.binaryMessenger, usbMethodChannelName)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
                     "listPorts" -> result.success(listUsbPorts())
@@ -121,7 +123,7 @@ class MeshcoreUsbFunctions(
                 }
             }
 
-        EventChannel(flutterEngine.dartExecutor.binaryMessenger, usbEventChannelName)
+        EventChannel(binding.binaryMessenger, usbEventChannelName)
             .setStreamHandler(
                 object : EventChannel.StreamHandler {
                     override fun onListen(arguments: Any?, events: EventChannel.EventSink) {
@@ -135,11 +137,12 @@ class MeshcoreUsbFunctions(
             )
     }
 
-    fun dispose() {
+    // Only runs when the engine is destroyed, and Dart with it.
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         closeUsbConnection()
         usbIoExecutor.shutdownNow()
         try {
-            activity.unregisterReceiver(permissionReceiver)
+            context.unregisterReceiver(permissionReceiver)
         } catch (_: IllegalArgumentException) {
         }
     }
@@ -151,10 +154,10 @@ class MeshcoreUsbFunctions(
                 addAction(UsbManager.ACTION_USB_DEVICE_DETACHED)
             }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            activity.registerReceiver(permissionReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+            context.registerReceiver(permissionReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
         } else {
             @Suppress("DEPRECATION")
-            activity.registerReceiver(permissionReceiver, filter)
+            context.registerReceiver(permissionReceiver, filter)
         }
     }
 
@@ -201,9 +204,9 @@ class MeshcoreUsbFunctions(
         pendingConnectBaudRate = baudRate
 
         val permissionIntent = PendingIntent.getBroadcast(
-            activity,
+            context,
             0,
-            Intent(usbPermissionAction).setPackage(activity.packageName),
+            Intent(usbPermissionAction).setPackage(context.packageName),
             pendingIntentFlags(),
         )
         usbManager.requestPermission(device, permissionIntent)

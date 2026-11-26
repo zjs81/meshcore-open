@@ -362,7 +362,7 @@ lib/
 ├── services/
 │   ├── notification_service.dart      # Local OS notifications
 │   ├── message_retry_service.dart     # Automatic message retry
-│   ├── background_service.dart        # Background BLE connection
+│   ├── background_service.dart        # Background radio connection
 │   └── map_tile_cache_service.dart    # Offline map storage
 └── storage/
     ├── message_store.dart       # Message persistence

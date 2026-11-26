@@ -2533,7 +2533,7 @@
   "repeater_cliHelpStatsCore": "（シリアルのみ）主要なファームウェアの統計情報を表示します。",
   "common_done": "完了",
   "background_serviceTitle": "MeshCore 実行中",
-  "background_serviceText": "BLE 接続を維持しています",
+  "background_serviceText": "ラジオとの接続を維持中",
   "appSettings_translationModelDeleted": "{name} を削除しました",
   "@appSettings_translationModelDeleted": {
     "placeholders": {
