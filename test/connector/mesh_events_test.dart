@@ -211,6 +211,47 @@ void main() {
     expect(event.rssiDbm, -101);
   });
 
+  test('a direct copy heard mid-path does not lend its path to the delivered '
+      'one', () async {
+    await connect();
+    // heard first from the repeater before the last hop: one entry left
+    connector.handleFrameForTest(
+      _logRxGroupData(
+        psk: connector.channels.first.psk,
+        route: 0x02,
+        path: [0xa5],
+        dataType: 0xFF52,
+        payload: [11],
+        rssi: -110,
+      ),
+    );
+    // then from the last hop with an empty path: the copy the radio delivers
+    connector.handleFrameForTest(
+      _logRxGroupData(
+        psk: connector.channels.first.psk,
+        route: 0x02,
+        path: [],
+        dataType: 0xFF52,
+        payload: [11],
+        rssi: -95,
+      ),
+    );
+    connector.handleFrameForTest(
+      _channelDataFrame(
+        snrRaw: 40,
+        channelIndex: 0,
+        dataType: 0xFF52,
+        payload: [11],
+        pathLen: 0xFF,
+      ),
+    );
+    await _waitFor(() => events.whereType<ChannelDataEvent>().isNotEmpty);
+    final event = events.whereType<ChannelDataEvent>().single;
+    expect(event.routeType, 'direct');
+    expect(event.path, isEmpty);
+    expect(event.rssiDbm, -95);
+  });
+
   test('without the RX log the frame gives the route only', () async {
     await connect();
     connector.handleFrameForTest(

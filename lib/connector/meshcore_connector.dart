@@ -6343,6 +6343,11 @@ class MeshCoreConnector extends ChangeNotifier {
     _heardGroupData.removeWhere(
       (_, heard) => now.difference(heard.at) > _heardGroupDataTtl,
     );
+    // A direct packet that still has path entries is for the next repeater:
+    // the radio does not deliver it. It delivers the copy the last hop sends
+    // with an empty path, so remembering this one would give the delivered
+    // frame a path it did not arrive with (and a client would drop it).
+    if (!packet.isFlood && packet.pathBytes.isNotEmpty) return;
     final hash = computePacketHash(packet.payloadType, packet.payload);
     if (!_heardGroupDataHashes.add(hash)) return;
     _heardGroupDataHashOrder.add(hash);
