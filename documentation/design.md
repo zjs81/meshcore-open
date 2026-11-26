@@ -146,7 +146,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Empty list | `EmptyState(icon:, title:, subtitle:, action:)` | Scrolls rather than overflowing at large text |
 | Inline error with retry | `ErrorRetryCard(message:, onRetry:, retryLabel:)` | Pass `retryLabel: context.l10n.common_retry` |
 | Radio offline on a remote-node screen | `RadioDisconnectedBanner` | Renders nothing while connected |
-| Progress bar | `MeshProgressBar`; `MeshProgressAppBarBottom` as an app bar `bottom`; `SyncProgressAppBarBottom` for the app syncs, with `busy: true` while the screen waits for the radio (Settings actions) (`widgets/sync_progress_overlay.dart`) | See [Progress bars](#progress-bars) |
+| Progress bar | `MeshProgressBar`; `MeshProgressAppBarBottom` as an app bar `bottom`; `SyncProgressAppBarBottom` for the app syncs, with `busy: true` while a screen action goes to the radio (Settings actions) (`widgets/sync_progress_overlay.dart`) | See [Progress bars](#progress-bars) |
 | Toast message | `showDismissibleSnackBar(context, content: Text(...))` | Tap to dismiss, replaces the current snackbar, safe after an async gap |
 | List item entrance | `ListEntrance(index:)` | Optional. Plays only for rows built while the list is at rest at the top; rows scrolled into view appear at once |
 
@@ -219,9 +219,10 @@ A thin bar at the top of a screen or list shows that something is running. Bars 
 2. Theme colours: don't set a colour or track. The theme's `progressIndicatorTheme` (`primary` on `surfaceContainerHigh`) applies, so the bar follows light, dark and custom themes.
 3. Use the shared widgets: `MeshProgressAppBarBottom` as an app bar `bottom` for the screen's own task (Refresh all in `repeater_settings_screen.dart`, the chess game), `SyncProgressAppBarBottom` for the app syncs (contacts, channels, queued messages), and `MeshProgressBar` at the top of content (chat search results, the line-of-sight map).
 4. Fill (`value`) when the progress is known; move (`value: null`) when it isn't.
-5. Keep the height while idle (`active: false`), so the content doesn't jump. A bar laid over content (the line-of-sight map) can be removed instead.
+5. Keep the height while idle (`active: false`), so the content doesn't jump.
 6. One bar at a time: when a screen's own task and an app sync overlap, the same bar shows one of them, never two stacked bars.
-7. Waiting for the radio: when the user starts an action and the app waits for the radio, the control shows the 18×18 spinner (see [States](#9-states)) and the screen's top bar moves. Background traffic (polling, message sync, ACKs) doesn't; messages keep their own delivery status.
+7. Radio actions: when the user starts an action that goes to the radio, the screen's top bar moves; while the app waits for the radio's reply, a control in the page also shows the 18×18 spinner (see [States](#9-states)). App bar buttons (Save, refresh, Fetch regions) are only disabled while they wait: the bar right below them shows the wait. Sync Time doesn't wait, so it shows only the bar. Auto-refresh that the user turns on in a screen (Telemetry) moves the bar for each request. Other background traffic (message sync, ACKs, the app's own polling) doesn't; messages keep their own delivery status.
+8. Minimum time: once shown, the bar stays for at least 500 ms, then fades out over 300 ms, so a quick task is still seen. `MeshProgressBar` does this for every bar; controls and spinners follow the task itself. A screen keeps the flag that drives its bar set until a frame has drawn it (`WidgetsBinding.instance.endOfFrame`), so a reply that comes back within one frame still shows the bar (Save pages, Sync Time, Telemetry, Regions default, Backup & Restore).
 
 ## 6. Sheets, dialogs and pages
 
@@ -257,7 +258,7 @@ Layout follows App Settings: `SectionHeader` + `MeshCard` groups, an optional `M
 | Only in the app | On each change; no Save button | App Settings, Message filter, Themes |
 | On a radio | Only on Save | Node Name, Radio Settings, Location, Contact Settings, Privacy, Repeater Settings |
 
-Pages that save to a radio use `SaveToRadioPage` (`lib/widgets/unsaved_changes_guard.dart`). It adds `MeshSettingsTileTheme`, `RadioDisconnectedBanner`, the app bar Save, the leave warning, the connection check and the error snackbar.
+Pages that save to a radio use `SaveToRadioPage` (`lib/widgets/unsaved_changes_guard.dart`). It adds `MeshSettingsTileTheme`, `RadioDisconnectedBanner`, the app bar Save (disabled, with a moving `MeshProgressAppBarBottom`, while saving), the leave warning, the connection check and the error snackbar.
 
 - Show every setting the page saves, filled with the radio's last reported value.
 - Save appears when a field differs from the saved value and hides when it's changed back. It's disabled offline, while saving, or while a field is invalid (`canSave`).
@@ -290,9 +291,9 @@ That is the Contacts list and its group member picker, Discovery, Map node searc
 | State | How to show it |
 |---|---|
 | Loading, nothing to show yet | `Center(child: CircularProgressIndicator())`, only until the first data arrives; then show partial data (`channels_screen.dart`). |
-| Loading in place | Swap the control's icon for an 18×18 `CircularProgressIndicator(strokeWidth: 2)` and disable it (`_buildRefreshButton` in `repeater_settings_screen.dart`). A settings row that runs a radio command keeps its chevron and uses `MeshNavTile(busy: true)` while it waits: the chevron becomes the spinner and taps are ignored, with `SyncProgressAppBarBottom(busy: true)` in the app bar (Settings actions). |
+| Loading in place | Swap the control's icon for an 18×18 `CircularProgressIndicator(strokeWidth: 2)` and disable it (`_buildRefreshButton` in `repeater_settings_screen.dart`). An app bar button above a top bar is only disabled ([Progress bars](#progress-bars) rule 7). A settings row that runs a radio command keeps its chevron and uses `MeshNavTile(busy: true)` while it waits: the chevron becomes the spinner and taps are ignored, with `SyncProgressAppBarBottom(busy: true)` in the app bar (Settings actions). |
 | Background sync | `SyncProgressAppBarBottom`. |
-| Waiting for the radio | The control's 18×18 spinner and the screen's top bar, moving. See [Progress bars](#progress-bars). |
+| Waiting for the radio | The screen's top bar, moving, and the control's 18×18 spinner; an app bar button is only disabled. See [Progress bars](#progress-bars). |
 | Empty | `EmptyState` with an icon, a short title, and an action when there is an obvious next step. Use a separate "no results" state (`Icons.search_off`) when a search or filter hides everything. |
 | Error | A snackbar for a failed action. `ErrorRetryCard` for a failed load the user can retry. Never show raw exception text alone. |
 | Companion radio disconnected | Main and chat screens stay open, read-only ([offline mode](offline-mode.md)). Decide with `isRadioReadOnly(connector)` / `context.radioReadOnly` (`lib/utils/radio_guard.dart`): disable menu items (`PopupMenuItem(enabled: false)`, drop destructive colors) and buttons, hide FABs, and call `ensureRadioConnected(context)` as the safety net in handlers. The chat composer shows `OfflineComposerBar` in the same bubble and margins. Repeater screens and the Settings pages that save to the radio stay open with `RadioDisconnectedBanner` at the top and disable radio-dependent actions, including Save. Settings rows that need the radio pass `onTap: null` and show `settings_requiresConnection` as the subtitle (`settings_screen.dart`). |
@@ -352,7 +353,7 @@ The current code does not yet follow this page everywhere:
 - **Menu rows not using `MeshMenuItemRow`.** `channel_chat_screen.dart` bulk-select menu (Select all / Copy) puts a `ListTile` inside `PopupMenuItem`. `widgets/list_filter_widget.dart` and the group menu in `contacts_screen.dart` use plain `Text` items, which is acceptable for icon-less lists but does not limit wrapping.
 - **Tile titles without `MeshSettingsTileTheme`.** Backup & Restore (`CheckboxListTile`) and Themes (`SwitchListTile`) do not wrap their body in it, so those titles are not semibold like the other settings rows.
 - **Bars inside content.** The map cache download bar (`map_cache_screen.dart`) uses a fixed `MeshPalette.blue`.
-- **Radio waits not shown yet.** `SaveToRadioPage` pages show the Save spinner but no top bar. Other radio actions are not reviewed yet.
+- **Radio waits not shown yet** ([Progress bars](#progress-bars) rule 7). Repeater Settings: Save shows no top bar. Repeater Status and Neighbours: the app bar refresh shows a spinner and no top bar. Outside Settings: Add Contact's app bar Save shows a spinner and no top bar; removing or favouriting a contact, adding one from Discovered Contacts or the network map, Set as my location, the routing sheet's path check, map Request location, path trace, QR imports and the node scan sheet. Some controls use 20-28px spinners instead of 18px.
 - **`ErrorRetryCard` is unused** and its fallback label is the hard-coded English `'Retry'` (`mesh_ui.dart`); screens show load errors in their own ways.
 - **Fixed-width label boxes.** `chat_screen.dart` `_buildInfoRow` (80px), `line_of_sight_map_screen.dart` endpoint label (54px, `fontSize: 12`), `channel_message_path_screen.dart` (72px, upper-cased `accentLabel` at its 11px default).
 - **11px text.** `MeshTheme.accentLabel()` without `fontSize` gives 11px in `channel_message_path_screen.dart`. The type scale's `labelSmall` (11) is used in `list_filter_widget.dart` section titles.

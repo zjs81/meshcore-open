@@ -203,7 +203,7 @@ On the Settings screen, below App Settings, **Message filter** opens a page to h
 
 ## Actions
 
-One-tap device operations. While an action waits for the radio, its row shows a spinner and the app bar a progress bar. Each action ends with a short message.
+One-tap device operations. While an action waits for the radio, its row shows a spinner and the app bar a progress bar. Sync Time doesn't wait for a reply, so it shows only the bar. Each action ends with a short message.
 
 | Action | Description |
 |---|---|

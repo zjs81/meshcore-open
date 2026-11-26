@@ -6,6 +6,7 @@ import '../utils/radio_guard.dart';
 import 'adaptive_app_bar_title.dart';
 import 'mesh_nav_tile.dart';
 import 'radio_disconnected_banner.dart';
+import 'sync_progress_overlay.dart';
 
 /// Asks before leaving with unsaved edits: Cancel, Discard or Save. A
 /// successful save closes the page.
@@ -79,16 +80,15 @@ class UnsavedChangesGuard extends StatelessWidget {
   }
 }
 
-/// App bar Save button: hidden without changes, a spinner while [saving].
+/// App bar Save button: hidden without changes, disabled when [onPressed] is
+/// null (also while saving; the top bar shows the wait).
 class SaveChangesAction extends StatelessWidget {
   final bool visible;
-  final bool saving;
   final VoidCallback? onPressed;
 
   const SaveChangesAction({
     super.key,
     required this.visible,
-    this.saving = false,
     required this.onPressed,
   });
 
@@ -96,14 +96,8 @@ class SaveChangesAction extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!visible) return const SizedBox.shrink();
     return TextButton.icon(
-      onPressed: saving ? null : onPressed,
-      icon: saving
-          ? const SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : const Icon(Icons.save),
+      onPressed: onPressed,
+      icon: const Icon(Icons.save),
       label: Text(context.l10n.common_save),
     );
   }
@@ -156,6 +150,8 @@ class SaveToRadioPageState extends State<SaveToRadioPage> {
       }
       return false;
     } finally {
+      // However fast the save, let a frame draw the bar first.
+      await WidgetsBinding.instance.endOfFrame;
       if (mounted) setState(() => _saving = false);
     }
   }
@@ -175,10 +171,11 @@ class SaveToRadioPageState extends State<SaveToRadioPage> {
           actions: [
             SaveChangesAction(
               visible: widget.hasChanges,
-              saving: _saving,
               onPressed: canSave ? save : null,
             ),
           ],
+          // Moves while the save waits for the radio.
+          bottom: MeshProgressAppBarBottom(active: _saving),
         ),
         body: MeshSettingsTileTheme(
           child: SafeArea(
