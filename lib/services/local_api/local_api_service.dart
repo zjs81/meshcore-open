@@ -8,6 +8,7 @@ import 'local_api_archive.dart';
 import 'local_api_host.dart';
 import 'local_api_pairing.dart';
 import 'local_api_server.dart';
+import 'local_api_traffic_log.dart';
 import 'mesh_regions.dart';
 
 /// Lifecycle for the local API: off unless the user enables it in Settings.
@@ -28,6 +29,7 @@ class LocalApiService {
   final PairingStore pairingStore = PrefsPairingStore();
   final PairingBroker pairingBroker = PairingBroker();
   final LocalApiArchive archive = LocalApiArchive();
+  final LocalApiTrafficLog trafficLog = LocalApiTrafficLog();
   MeshRegionCatalog? _regions;
   LocalApiServer? _server;
   MeshCoreConnector? _connector;
@@ -98,6 +100,7 @@ class LocalApiService {
       archive: archive,
       serverVersion: version,
       regions: _regions,
+      trafficLog: trafficLog,
     );
     try {
       await server.start();

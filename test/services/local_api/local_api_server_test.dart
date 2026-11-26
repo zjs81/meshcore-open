@@ -309,6 +309,8 @@ void main() {
         'channels_join',
         'replay',
         'tx_path_data',
+        'rx_meta',
+        'rx_path',
       ]);
       expect(hello['server']['name'], 'meshcore-open');
       expect(hello['eventTypes'], contains('channel.data'));
@@ -1083,6 +1085,64 @@ void main() {
       );
       final event = await connection.next();
       expect(event['event']['hops'], 3);
+    });
+
+    test('channel data events carry route, path and RSSI', () async {
+      final connection = await paired(TestPeer.generate(64));
+      await call(connection, 1, 'events.subscribe', {
+        'events': ['channel.data'],
+      });
+      host.emit(
+        ChannelDataEvent(
+          channelIndex: 0,
+          channelName: '#roadstr',
+          dataType: 0xFF52,
+          payload: Uint8List.fromList([1]),
+          snrRaw: -30,
+          hops: 2,
+          outgoing: false,
+          receivedAt: DateTime.now(),
+          routeType: 'flood',
+          path: Uint8List.fromList([0xA1, 0x0B]),
+          pathHashSize: 1,
+          rssiDbm: -101,
+        ),
+      );
+      final flood = (await connection.next())['event'];
+      expect(flood['routeType'], 'flood');
+      expect(flood['path'], 'a10b');
+      expect(flood['pathHashSize'], 1);
+      expect(flood['rssiDbm'], -101);
+      host.emit(
+        ChannelDataEvent(
+          channelIndex: 0,
+          channelName: '#roadstr',
+          dataType: 0xFF52,
+          payload: Uint8List.fromList([2]),
+          snrRaw: 20,
+          outgoing: false,
+          receivedAt: DateTime.now(),
+          routeType: 'direct',
+          path: Uint8List(0),
+          pathHashSize: 1,
+        ),
+      );
+      final direct = (await connection.next())['event'];
+      expect(direct['routeType'], 'direct');
+      expect(direct['hops'], isNull);
+      expect(direct['path'], '');
+      expect(direct.containsKey('rssiDbm'), isFalse);
+    });
+
+    test('an event without receive metadata has no rx fields', () async {
+      final connection = await paired(TestPeer.generate(65));
+      await call(connection, 1, 'events.subscribe', {
+        'events': ['channel.data'],
+      });
+      host.emit(dataEvent([1]));
+      final event = (await connection.next())['event'];
+      expect(event.containsKey('routeType'), isFalse);
+      expect(event.containsKey('path'), isFalse);
     });
 
     test('joining an existing hashtag channel needs no prompt', () async {

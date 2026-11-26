@@ -50,6 +50,21 @@ class ChannelDataEvent extends MeshEvent {
   final int? hops;
   final bool outgoing;
 
+  /// `flood`, `direct`, `tflood` or `tdirect` (the `t` forms carry a
+  /// flood-scope transport code). Null when unknown and for our own sends.
+  final String? routeType;
+
+  /// Repeater hashes in the order the packet travelled, as the radio heard it
+  /// (empty for a direct packet at its last hop). Null when the raw packet
+  /// was not heard, e.g. for frames drained from the radio's offline queue.
+  final Uint8List? path;
+
+  /// Bytes per hash in [path] (1-3), null when unknown.
+  final int? pathHashSize;
+
+  /// RSSI of the received packet in dBm, null when unknown.
+  final int? rssiDbm;
+
   ChannelDataEvent({
     required this.channelIndex,
     required this.channelName,
@@ -59,6 +74,10 @@ class ChannelDataEvent extends MeshEvent {
     this.hops,
     required this.outgoing,
     required DateTime receivedAt,
+    this.routeType,
+    this.path,
+    this.pathHashSize,
+    this.rssiDbm,
   }) : super(receivedAt);
 
   double get snrDb => snrRaw / 4.0;

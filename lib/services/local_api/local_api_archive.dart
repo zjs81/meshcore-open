@@ -17,6 +17,11 @@ class ArchivedChannelData {
   final Uint8List payload;
   final int snrRaw;
   final DateTime receivedAt;
+  final int? hops;
+  final String? routeType;
+  final Uint8List? path;
+  final int? pathHashSize;
+  final int? rssiDbm;
 
   ArchivedChannelData({
     required this.channel,
@@ -25,6 +30,11 @@ class ArchivedChannelData {
     required this.payload,
     required this.snrRaw,
     required this.receivedAt,
+    this.hops,
+    this.routeType,
+    this.path,
+    this.pathHashSize,
+    this.rssiDbm,
   });
 
   ChannelDataEvent toEvent() => ChannelDataEvent(
@@ -33,8 +43,13 @@ class ArchivedChannelData {
     dataType: dataType,
     payload: payload,
     snrRaw: snrRaw,
+    hops: hops,
     outgoing: false,
     receivedAt: receivedAt,
+    routeType: routeType,
+    path: path,
+    pathHashSize: pathHashSize,
+    rssiDbm: rssiDbm,
   );
 
   Map<String, Object?> toJson() => {
@@ -44,7 +59,14 @@ class ArchivedChannelData {
     'payload': base64Encode(payload),
     'snrRaw': snrRaw,
     'receivedAt': receivedAt.toUtc().toIso8601String(),
+    if (hops != null) 'hops': hops,
+    if (routeType != null) 'routeType': routeType,
+    if (path != null) 'path': base64Encode(path!),
+    if (pathHashSize != null) 'pathHashSize': pathHashSize,
+    if (rssiDbm != null) 'rssiDbm': rssiDbm,
   };
+
+  static int? _optInt(Object? value) => value is int ? value : null;
 
   static ArchivedChannelData? fromJson(Object? value) {
     if (value is! Map) return null;
@@ -72,6 +94,15 @@ class ArchivedChannelData {
         payload: base64Decode(payload),
         snrRaw: snrRaw,
         receivedAt: at,
+        hops: _optInt(value['hops']),
+        routeType: value['routeType'] is String
+            ? value['routeType'] as String
+            : null,
+        path: value['path'] is String
+            ? base64Decode(value['path'] as String)
+            : null,
+        pathHashSize: _optInt(value['pathHashSize']),
+        rssiDbm: _optInt(value['rssiDbm']),
       );
     } on FormatException {
       return null;
@@ -194,6 +225,11 @@ class LocalApiArchive {
       payload: event.payload,
       snrRaw: event.snrRaw,
       receivedAt: receivedAt ?? event.receivedAt,
+      hops: event.hops,
+      routeType: event.routeType,
+      path: event.path,
+      pathHashSize: event.pathHashSize,
+      rssiDbm: event.rssiDbm,
     );
     if (!_interests.keys.any((key) => _wants(key, entry))) return;
     _entries.add(entry);

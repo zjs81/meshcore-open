@@ -16,6 +16,7 @@ import 'local_api_archive.dart';
 import 'local_api_crypto.dart';
 import 'local_api_host.dart';
 import 'local_api_pairing.dart';
+import 'local_api_traffic_log.dart';
 import 'mesh_regions.dart';
 
 /// What the server enforces. The defaults are the documented limits; tests
@@ -96,6 +97,9 @@ class LocalApiServer {
   /// The app version, reported in `hello.server` for diagnostics.
   final String serverVersion;
 
+  /// One line per send and per received channel-data frame, when set.
+  final LocalApiTrafficLog? trafficLog;
+
   HttpServer? _server;
   final List<_ApiClient> _clients = [];
   int _upgrading = 0;
@@ -110,6 +114,7 @@ class LocalApiServer {
     PairingBroker? pairingBroker,
     this.archive,
     this.regions,
+    this.trafficLog,
     this.limits = const LocalApiLimits(),
     this.port = defaultPort,
     this.serverVersion = '',
@@ -128,6 +133,10 @@ class LocalApiServer {
     // Wherever the radio can send channel data (firmware ver 11+), it takes
     // a path; without channel data every send fails unsupported_firmware.
     'tx_path_data',
+    // Route, path and RSSI of received channel data come from the raw RX
+    // log push (0x88), which every firmware with channel data sends.
+    'rx_meta',
+    'rx_path',
   ];
 
   /// Actual port, useful when [port] was 0 (tests) or when reporting the URI.
@@ -293,8 +302,24 @@ class LocalApiServer {
     if (event is ChannelDataEvent) {
       archive?.record(event, receivedAt: receivedAt);
     }
+    final delivered = <String>[];
     for (final client in List<_ApiClient>.of(_clients)) {
-      client.deliver(event, receivedAt);
+      if (client.deliver(event, receivedAt)) delivered.add(client.name);
+    }
+    if (event is ChannelDataEvent && !event.outgoing) {
+      trafficLog?.write('rx', {
+        'type': 'channel.data',
+        'ch': event.channelName,
+        'dataType': event.dataType,
+        'len': event.payload.length,
+        'route': event.routeType,
+        'hops': event.hops,
+        'path': event.path == null ? null : _ApiClient.hexOf(event.path!),
+        'hashSize': event.pathHashSize,
+        'snr': event.snrDb,
+        'rssi': event.rssiDbm,
+        'clients': delivered.isEmpty ? '-' : delivered.join(','),
+      }, at: receivedAt);
     }
   }
 
@@ -643,8 +668,17 @@ class _ApiClient {
         // Text along a path is not offered (no `tx_path_text`): refuse it
         // instead of flooding what the client meant to keep local.
         _refuseUnoffered(params, 'path', 'tx_path_text');
-        return _send(
-          () => server.host.sendChannelText(channel, text, region: region),
+        return _logged(
+          'channel.text',
+          {
+            'ch': channel.name,
+            'len': utf8.encode(text).length,
+            'route': 'flood',
+            'region': region,
+          },
+          () => _send(
+            () => server.host.sendChannelText(channel, text, region: region),
+          ),
         );
       case 'channel.sendData':
         _requireRadio();
@@ -669,18 +703,32 @@ class _ApiClient {
             'the radio firmware cannot send channel data',
           );
         }
-        return _send(() async {
-          final sent = await server.host.sendChannelData(
-            channel,
-            dataType,
-            payload,
-            region: region,
-            path: path,
-          );
-          if (!sent) {
-            throw _ApiError('not_connected', 'the radio is not connected');
-          }
-        });
+        return _logged(
+          'channel.data',
+          {
+            'ch': channel.name,
+            'dataType': dataType,
+            'len': payload.length,
+            'route': path == null
+                ? 'flood'
+                : (path.isZeroHop ? 'zero-hop' : 'direct'),
+            'path': path == null ? null : hexOf(path.hashes),
+            'hashSize': path?.hashSize,
+            'region': region,
+          },
+          () => _send(() async {
+            final sent = await server.host.sendChannelData(
+              channel,
+              dataType,
+              payload,
+              region: region,
+              path: path,
+            );
+            if (!sent) {
+              throw _ApiError('not_connected', 'the radio is not connected');
+            }
+          }),
+        );
       case 'direct.sendText':
         _requireRadio();
         final pubkey = params['pubkey'];
@@ -692,7 +740,10 @@ class _ApiClient {
           throw _ApiError('unknown_contact', 'no contact with that pubkey');
         }
         final text = _textParam(params, 'text');
-        return _send(() => server.host.sendDirectText(contact, text));
+        return _logged('direct.text', {
+          'to': hexOf(contact.publicKey).substring(0, 12),
+          'len': utf8.encode(text).length,
+        }, () => _send(() => server.host.sendDirectText(contact, text)));
       case 'channels.join':
         return _joinChannel(params);
       case 'advert.send':
@@ -787,6 +838,31 @@ class _ApiClient {
   }
 
   /// Spends one send from the quota and gives it back if the radio refuses.
+  /// Runs a send and writes one `tx` line with its outcome.
+  Future<Object?> _logged(
+    String type,
+    Map<String, Object?> fields,
+    Future<Object?> Function() send,
+  ) async {
+    void log(String result) => server.trafficLog?.write('tx', {
+      'type': type,
+      ...fields,
+      'client': name,
+      'result': result,
+    });
+    try {
+      final response = await send();
+      log('ok');
+      return response;
+    } on _ApiError catch (error) {
+      log(error.code);
+      rethrow;
+    } catch (_) {
+      log('internal');
+      rethrow;
+    }
+  }
+
   Future<Object?> _send(Future<void> Function() action) async {
     _requireRadio();
     final now = DateTime.now();
@@ -914,17 +990,34 @@ class _ApiClient {
     );
   }
 
-  void deliver(MeshEvent event, DateTime receivedAt) {
-    if (_closed || !authenticated) return;
+  String get name => _clientName ?? '?';
+
+  /// Whether some subscription of this client took [event].
+  bool deliver(MeshEvent event, DateTime receivedAt) {
+    if (_closed || !authenticated) return false;
+    var delivered = false;
     for (final entry in _subscriptions.entries) {
       if (!entry.value.matches(event)) continue;
+      delivered = true;
       _enqueue({
         'type': 'event',
         'subscriptionId': entry.key,
         'event': _encodeEvent(event, receivedAt),
       });
     }
+    return delivered;
   }
+
+  /// `rx_meta` and `rx_path` fields of a received event, only those known.
+  static Map<String, Object?> rxFields(ChannelDataEvent event) => {
+    if (event.routeType != null) 'routeType': event.routeType,
+    if (event.rssiDbm != null) 'rssiDbm': event.rssiDbm,
+    if (event.path != null) 'path': hexOf(event.path!),
+    if (event.pathHashSize != null) 'pathHashSize': event.pathHashSize,
+  };
+
+  static String hexOf(Uint8List bytes) =>
+      [for (final b in bytes) b.toRadixString(16).padLeft(2, '0')].join();
 
   /// RFC 3339 in UTC with exactly millisecond precision.
   static String _time(DateTime at) => DateTime.fromMillisecondsSinceEpoch(
@@ -959,6 +1052,7 @@ class _ApiClient {
           'hops': event.hops,
           'outgoing': event.outgoing,
           'receivedAt': receivedAt,
+          ...rxFields(event),
         };
       case DirectTextEvent():
         return {

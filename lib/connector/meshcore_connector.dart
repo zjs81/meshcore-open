@@ -4952,16 +4952,14 @@ class MeshCoreConnector extends ChangeNotifier {
     }
     if (supportsAllowedRepeatFreq) {
       unawaited(
-        sendFrame(
-          buildGetAllowedRepeatFreqFrame(),
-        ).catchError(_logTimerSendError),
+        sendFrame(buildGetAllowedRepeatFreqFrame())
+            .catchError(_logTimerSendError),
       );
     }
     if (supportsDefaultFloodScope) {
       unawaited(
-        sendFrame(
-          buildGetDefaultFloodScopeFrame(),
-        ).catchError(_logTimerSendError),
+        sendFrame(buildGetDefaultFloodScopeFrame())
+            .catchError(_logTimerSendError),
       );
     }
   }
@@ -6026,9 +6024,11 @@ class MeshCoreConnector extends ChangeNotifier {
   /// A GRP_DATA packet from the raw RX log. Other people's images arrive
   /// already decrypted through RESP_CODE_CHANNEL_DATA_RECV; here we only look
   /// for repeaters re-flooding one of our own chunks.
-  void _handleImageEcho(_RawPacket packet) {
-    final self = senderPrefixFromKey(_selfPublicKey);
-    if (self == null || packet.payload.length < 2) return;
+  ///
+  /// Also remembers the packet's route for the decrypted frame that follows
+  /// (see [_heardGroupData]).
+  void _handleGroupDataHeard(_RawPacket packet, {required int rssiDbm}) {
+    if (packet.payload.length < 2) return;
     final channelHash = packet.payload[0];
     final encrypted = Uint8List.fromList(packet.payload.sublist(1));
     final channels = _channels.isNotEmpty ? _channels : _cachedChannels;
@@ -6038,6 +6038,9 @@ class MeshCoreConnector extends ChangeNotifier {
       // Null unless the MAC matches this channel's key.
       final plain = _decryptPayload(channel.psk, encrypted);
       if (plain == null || plain.length < 3) continue;
+      _rememberHeardGroupData(packet, plain, rssiDbm: rssiDbm);
+      final self = senderPrefixFromKey(_selfPublicKey);
+      if (self == null) return;
       // Plaintext: data_type (uint16 LE), data_len, blob (padded to 16).
       final dataType = plain[0] | (plain[1] << 8);
       final length = plain[2];
@@ -6219,7 +6222,21 @@ class MeshCoreConnector extends ChangeNotifier {
     );
   }
 
-  void _emitChannelData(ParsedChannelData parsed, {required bool outgoing}) {
+  void _emitChannelData(
+    ParsedChannelData parsed, {
+    required bool outgoing,
+    _HeardGroupData? heard,
+  }) {
+    // The frame alone says flood (with hops) or not flood; the raw packet,
+    // when we heard it, also has the path, RSSI and transport form.
+    final String? routeType;
+    if (outgoing) {
+      routeType = null;
+    } else if (heard != null) {
+      routeType = heard.routeType;
+    } else {
+      routeType = parsed.arrivedByFlood ? 'flood' : 'direct';
+    }
     _emitMeshEvent(
       ChannelDataEvent(
         channelIndex: parsed.channelIndex,
@@ -6230,8 +6247,76 @@ class MeshCoreConnector extends ChangeNotifier {
         hops: outgoing ? null : parsed.hopCount,
         outgoing: outgoing,
         receivedAt: DateTime.now(),
+        routeType: routeType,
+        path: outgoing ? null : heard?.path,
+        pathHashSize: outgoing
+            ? null
+            : (heard?.pathHashSize ?? parsed.pathHashWidth),
+        rssiDbm: outgoing ? null : heard?.rssiDbm,
       ),
     );
+  }
+
+  /// GRP_DATA packets heard in the raw RX log (push 0x88), by plaintext,
+  /// waiting for the RESP_CODE_CHANNEL_DATA_RECV frame the firmware queues
+  /// for the same packet. Only the first copy of a packet is kept: that is
+  /// the one the firmware delivers; repeater echoes have the same hash.
+  final Map<String, _HeardGroupData> _heardGroupData = {};
+  final Set<String> _heardGroupDataHashes = <String>{};
+  final List<String> _heardGroupDataHashOrder = [];
+  static const Duration _heardGroupDataTtl = Duration(minutes: 2);
+  static const int _heardGroupDataMax = 64;
+
+  static String _groupDataKey(int dataType, Uint8List data) =>
+      '$dataType:${base64Encode(data)}';
+
+  void _rememberHeardGroupData(
+    _RawPacket packet,
+    Uint8List plain, {
+    required int rssiDbm,
+  }) {
+    final now = DateTime.now();
+    _heardGroupData.removeWhere(
+      (_, heard) => now.difference(heard.at) > _heardGroupDataTtl,
+    );
+    final hash = computePacketHash(packet.payloadType, packet.payload);
+    if (!_heardGroupDataHashes.add(hash)) return;
+    _heardGroupDataHashOrder.add(hash);
+    if (_heardGroupDataHashOrder.length > 256) {
+      _heardGroupDataHashes.remove(_heardGroupDataHashOrder.removeAt(0));
+    }
+    final dataType = plain[0] | (plain[1] << 8);
+    final length = plain[2];
+    if (plain.length < 3 + length) return;
+    final key = _groupDataKey(
+      dataType,
+      Uint8List.sublistView(plain, 3, 3 + length),
+    );
+    if (_heardGroupData.containsKey(key)) return;
+    _heardGroupData[key] = _HeardGroupData(
+      routeType: switch (packet.routeType) {
+        _routeFlood => 'flood',
+        _routeTransportFlood => 'tflood',
+        _routeTransportDirect => 'tdirect',
+        _ => 'direct',
+      },
+      path: packet.pathBytes,
+      pathHashSize: packet.pathHashWidth,
+      rssiDbm: rssiDbm,
+      at: now,
+    );
+    while (_heardGroupData.length > _heardGroupDataMax) {
+      _heardGroupData.remove(_heardGroupData.keys.first);
+    }
+  }
+
+  _HeardGroupData? _takeHeardGroupData(ParsedChannelData parsed) {
+    final heard = _heardGroupData.remove(
+      _groupDataKey(parsed.dataType, parsed.payload),
+    );
+    if (heard == null) return null;
+    if (DateTime.now().difference(heard.at) > _heardGroupDataTtl) return null;
+    return heard;
   }
 
   String _channelNameForIndex(int index) {
@@ -7632,9 +7717,8 @@ class MeshCoreConnector extends ChangeNotifier {
       if (frame.length < start + maxLen) return null;
       final bytes = frame.sublist(start, start + maxLen);
       final end = bytes.indexOf(0);
-      final s = String.fromCharCodes(
-        end >= 0 ? bytes.sublist(0, end) : bytes,
-      ).trim();
+      final s = String.fromCharCodes(end >= 0 ? bytes.sublist(0, end) : bytes)
+          .trim();
       return s.isEmpty ? null : s;
     }
 
@@ -8835,7 +8919,11 @@ class MeshCoreConnector extends ChangeNotifier {
     _lastChannelMsgRxTime = DateTime.now();
     final parsed = parseChannelDataFrame(frame);
     if (parsed != null) {
-      _emitChannelData(parsed, outgoing: false);
+      _emitChannelData(
+        parsed,
+        outgoing: false,
+        heard: _takeHeardGroupData(parsed),
+      );
     }
     // Only reassemble when the feature is actually on. Without this the
     // "disabled" feature still reassembles, persists and displays received
@@ -8915,7 +9003,8 @@ class MeshCoreConnector extends ChangeNotifier {
       final packet = _parseRawPacket(raw);
       if (packet == null) return;
       if (packet.payloadType == _payloadTypeGroupData) {
-        _handleImageEcho(packet);
+        final rssi = frame[2] >= 128 ? frame[2] - 256 : frame[2];
+        _handleGroupDataHeard(packet, rssiDbm: rssi);
         return;
       }
       if (packet.payloadType != _payloadTypeGroupText) return;
@@ -11065,6 +11154,22 @@ class _RawPacket {
 
   int get hopCount => pathLenRaw & 63;
   int get pathHashWidth => ((pathLenRaw >> 6) & 0x03) + 1;
+}
+
+class _HeardGroupData {
+  final String routeType;
+  final Uint8List path;
+  final int pathHashSize;
+  final int rssiDbm;
+  final DateTime at;
+
+  _HeardGroupData({
+    required this.routeType,
+    required this.path,
+    required this.pathHashSize,
+    required this.rssiDbm,
+    required this.at,
+  });
 }
 
 class _ParsedText {
