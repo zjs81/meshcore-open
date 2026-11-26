@@ -436,13 +436,12 @@ class _LineOfSightMapScreenState extends State<LineOfSightMapScreen> {
                 child: _buildControlPanel(isImperial, scrollController),
               ),
             ),
-          if (_loading)
-            Positioned(
-              left: 0,
-              right: 0,
-              top: 0,
-              child: const MeshProgressBar(),
-            ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: MeshProgressBar(active: _loading),
+          ),
         ],
       ),
       bottomNavigationBar: SafeArea(

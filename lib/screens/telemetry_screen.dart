@@ -84,6 +84,9 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
   Timer? _autoRefreshTimer;
   bool _isAutoRefreshEnabled = false;
   bool _activeTelemetryRequestIsAutoRefresh = false;
+  // Keeps the bar requested until a frame has drawn it, so a reply that
+  // comes back at once still shows it.
+  bool _barFramePending = false;
   bool _autoRefreshLastAttemptFailed = false;
   int _autoRefreshCurrentAttempt = 0;
   int _autoRefreshTotalAttempts = 0;
@@ -253,6 +256,10 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
       _isLoading = true;
       _isLoaded = false;
       _activeTelemetryRequestIsAutoRefresh = isAutoRefresh;
+      _barFramePending = true;
+    });
+    WidgetsBinding.instance.endOfFrame.then((_) {
+      if (mounted) setState(() => _barFramePending = false);
     });
     try {
       final connector = Provider.of<MeshCoreConnector>(context, listen: false);
@@ -419,7 +426,8 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
           ],
         ),
         centerTitle: true,
-        bottom: const SyncProgressAppBarBottom(),
+        // Moves for every request, auto-refresh included.
+        bottom: SyncProgressAppBarBottom(busy: _isLoading || _barFramePending),
         actions: [
           if (!widget.isSelf)
             IconButton(
@@ -429,13 +437,7 @@ class _TelemetryScreenState extends State<TelemetryScreen> {
                   ContactRoutingSheet.show(context, contact: widget.contact),
             ),
           IconButton(
-            icon: _isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             onPressed: (_isLoading || _isAutoRefreshEnabled)
                 ? null
                 : () => _loadTelemetry(),

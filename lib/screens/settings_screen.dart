@@ -42,9 +42,11 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _showBatteryVoltage = false;
   bool _deviceInfoExpanded = false;
-  // Radio actions waiting on the radio, for the row spinner and app bar.
+  // Radio actions in progress: the app bar, plus the row spinner while a
+  // reply is awaited.
   bool _refreshingContacts = false;
   bool _rebooting = false;
+  bool _syncingTime = false;
   void _push(BuildContext context, Widget page) {
     Navigator.push(context, MaterialPageRoute<void>(builder: (_) => page));
   }
@@ -57,7 +59,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         // A plain title: AppBarTitle fills the bar and stays left-aligned.
         title: AdaptiveAppBarTitle(l10n.settings_title),
         centerTitle: true,
-        bottom: SyncProgressAppBarBottom(busy: _rebooting),
+        bottom: SyncProgressAppBarBottom(busy: _rebooting || _syncingTime),
       ),
       body: SafeArea(
         top: false,
@@ -710,6 +712,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   ) async {
     final l10n = context.l10n;
     if (!_ensureConnected(context, connector)) return;
+    // The top bar shows the time going to the radio; no reply is awaited.
+    setState(() => _syncingTime = true);
     try {
       await connector.syncTime();
       if (!context.mounted) return;
@@ -720,6 +724,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         context,
         content: Text(l10n.settings_error(e.toString())),
       );
+    } finally {
+      // However fast the send, let a frame draw the bar first.
+      await WidgetsBinding.instance.endOfFrame;
+      if (mounted) setState(() => _syncingTime = false);
     }
   }
 

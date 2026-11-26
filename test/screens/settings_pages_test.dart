@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ import 'package:meshcore_open/screens/node_name_screen.dart';
 import 'package:meshcore_open/screens/privacy_settings_screen.dart';
 import 'package:meshcore_open/screens/radio_settings_screen.dart';
 import 'package:meshcore_open/screens/settings_screen.dart';
+import 'package:meshcore_open/screens/telemetry_screen.dart';
 import 'package:meshcore_open/services/app_debug_log_service.dart';
 import 'package:meshcore_open/services/app_settings_service.dart';
 import 'package:meshcore_open/services/ble_debug_log_service.dart';
@@ -31,6 +33,7 @@ import 'package:meshcore_open/services/translation_service.dart';
 import 'package:meshcore_open/services/ui_view_state_service.dart';
 import 'package:meshcore_open/storage/prefs_manager.dart';
 import 'package:meshcore_open/theme/mesh_theme.dart';
+import 'package:meshcore_open/widgets/sync_progress_overlay.dart';
 import 'package:meshcore_open/widgets/unsaved_changes_guard.dart';
 
 final _l10n = AppLocalizationsEn();
@@ -132,6 +135,24 @@ Future<void> _waitFor(WidgetTester tester, bool Function() done) async {
 }
 
 Finder get _saveAction => find.widgetWithText(TextButton, _l10n.common_save);
+
+/// A spinner in the app bar, where the top bar already shows the wait.
+Finder get _appBarSpinner => find.descendant(
+  of: find.byType(AppBar),
+  matching: find.byType(CircularProgressIndicator),
+);
+
+Finder get _topBar => find.descendant(
+  of: find.byType(AppBar),
+  matching: find.byType(LinearProgressIndicator),
+);
+
+/// Lets a top bar run out its minimum time and fade out (the fade ends on
+/// the first frame after MeshProgressBar.fadeOut).
+Future<void> _pumpPastBar(WidgetTester tester) async {
+  await tester.pump(MeshProgressBar.minVisible);
+  await tester.pump(MeshProgressBar.fadeOut + const Duration(milliseconds: 50));
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -235,6 +256,181 @@ void main() {
     );
     expect(find.text('field'), findsOneWidget);
     expect(tester.widget<TextButton>(_saveAction).onPressed, isNotNull);
+  });
+
+  testWidgets('SaveToRadioPage shows the top bar while saving', (tester) async {
+    final connector = await _connectedConnector(tester);
+    final reply = Completer<bool>();
+    await tester.pumpWidget(
+      _app(
+        connector,
+        _launcher(
+          SaveToRadioPage(
+            title: 'Page',
+            hasChanges: true,
+            onSave: () => reply.future,
+            children: const [Text('field')],
+          ),
+        ),
+      ),
+    );
+    await _open(tester);
+    expect(_topBar, findsNothing);
+
+    await tester.tap(_saveAction);
+    await tester.pump();
+    expect(_topBar, findsOneWidget);
+    // The bar shows the wait: Save is only disabled, with no spinner.
+    expect(tester.widget<TextButton>(_saveAction).onPressed, isNull);
+    expect(_appBarSpinner, findsNothing);
+
+    reply.complete(true);
+    await tester.pump();
+    await tester.pump();
+    // A quick save still shows the bar for the minimum time.
+    expect(_topBar, findsOneWidget);
+    await _pumpPastBar(tester);
+    expect(_topBar, findsNothing);
+  });
+
+  testWidgets(
+    'SaveToRadioPage shows the top bar for a save that ends at once',
+    (tester) async {
+      final connector = await _connectedConnector(tester);
+      await tester.pumpWidget(
+        _app(
+          connector,
+          _launcher(
+            SaveToRadioPage(
+              title: 'Page',
+              hasChanges: true,
+              // Like Node Name: only sends frames, no reply awaited.
+              onSave: () async => true,
+              children: const [Text('field')],
+            ),
+          ),
+        ),
+      );
+      await _open(tester);
+      await tester.tap(_saveAction);
+      await tester.pump();
+      expect(_topBar, findsOneWidget);
+      await _pumpPastBar(tester);
+      expect(_topBar, findsNothing);
+    },
+  );
+
+  testWidgets('Telemetry shows the top bar when the reply comes at once', (
+    tester,
+  ) async {
+    final connector = await _connectedConnector(tester);
+    await _waitFor(
+      tester,
+      () =>
+          !connector.isLoadingContacts &&
+          !connector.isSyncingChannels &&
+          !connector.isShowingQueuedMessageSyncProgress,
+    );
+    await tester.pumpWidget(
+      _app(
+        connector,
+        Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () => pushSelfTelemetryScreen(context),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.pump();
+    // The fetch on open is never answered here; let it time out first.
+    await tester.pump(const Duration(seconds: 6));
+    await _pumpPastBar(tester);
+    expect(_topBar, findsNothing);
+
+    // A real radio answers its own telemetry request at once: here the reply
+    // arrives before the next frame.
+    await tester.tap(find.widgetWithIcon(IconButton, Icons.refresh));
+    connector.handleFrameForTest([
+      pushCodeTelemetryResponse,
+      0,
+      ...connector.selfPublicKey!.sublist(0, 6),
+    ]);
+    await tester.pump();
+    expect(_topBar, findsOneWidget);
+    await _pumpPastBar(tester);
+    expect(_topBar, findsNothing);
+  });
+
+  testWidgets('Telemetry moves the top bar for a fetch and for auto-refresh', (
+    tester,
+  ) async {
+    final connector = await _connectedConnector(tester);
+    // The connect-time sync shows the same bar, so let it finish first.
+    await _waitFor(
+      tester,
+      () =>
+          !connector.isLoadingContacts &&
+          !connector.isSyncingChannels &&
+          !connector.isShowingQueuedMessageSyncProgress,
+    );
+    await tester.pumpWidget(
+      _app(
+        connector,
+        Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () => pushSelfTelemetryScreen(context),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    // The fetch on open is a user request. The review radio doesn't answer
+    // self requests, so it times out after 5s.
+    expect(_topBar, findsOneWidget);
+    // Refresh is only disabled while the bar moves, with no spinner.
+    expect(
+      tester
+          .widget<IconButton>(find.widgetWithIcon(IconButton, Icons.refresh))
+          .onPressed,
+      isNull,
+    );
+    expect(_appBarSpinner, findsNothing);
+    await tester.pump(const Duration(seconds: 6));
+    await _pumpPastBar(tester);
+    expect(_topBar, findsNothing);
+    // Refresh can be used again once the fetch has ended.
+    expect(
+      tester
+          .widget<IconButton>(find.widgetWithIcon(IconButton, Icons.refresh))
+          .onPressed,
+      isNotNull,
+    );
+
+    final enable = find.text(_l10n.common_enable);
+    await tester.ensureVisible(enable);
+    await tester.tap(enable);
+    await tester.pump();
+    expect(find.text(_l10n.common_disable), findsOneWidget);
+    // Auto-refresh was turned on by the user, so each request moves the bar,
+    // for as long as the request waits (here until the 5s timeout).
+    expect(_topBar, findsOneWidget);
+    // Well past the minimum time and fade, the request still waits.
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+    expect(_topBar, findsOneWidget);
+
+    await tester.tap(find.text(_l10n.common_disable));
+    await tester.pump(const Duration(seconds: 6));
   });
 
   testWidgets('Settings rows open pages, not dialogs', (tester) async {
@@ -367,6 +563,48 @@ void main() {
       }
       expect(find.text(message), findsOneWidget, reason: title);
     }
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('Sync Time shows the top bar though it awaits no reply', (
+    tester,
+  ) async {
+    final connector = await _connectedConnector(tester);
+    // The connect-time sync shows the same bar, so let it finish first.
+    await _waitFor(
+      tester,
+      () =>
+          !connector.isLoadingContacts &&
+          !connector.isSyncingChannels &&
+          !connector.isShowingQueuedMessageSyncProgress,
+    );
+    await tester.pumpWidget(_app(connector, const SettingsScreen()));
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    final syncTime = find.text(_l10n.settings_syncTime);
+    await tester.scrollUntilVisible(
+      syncTime,
+      200,
+      scrollable: find
+          .descendant(
+            of: find.byType(ListView),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(_topBar, findsNothing);
+
+    await tester.tap(syncTime);
+    await tester.pump();
+    expect(_topBar, findsOneWidget);
+    await tester.pump(MeshProgressBar.minVisible ~/ 2);
+    // Sent at once, but the bar stays for the minimum time.
+    expect(find.text(_l10n.settings_timeSent), findsOneWidget);
+    expect(_topBar, findsOneWidget);
+    await _pumpPastBar(tester);
+    expect(_topBar, findsNothing);
     await tester.pumpWidget(const SizedBox());
   });
 
