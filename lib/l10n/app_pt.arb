@@ -4045,5 +4045,8 @@
   "coordinateMap_title": "Localização",
   "coordinate_copyLocation": "Copiar localização",
   "coordinate_openInMaps": "Abrir nos mapas",
-  "coordinate_copied": "Localização copiada"
+  "coordinate_copied": "Localização copiada",
+  "repeater_startOta": "Iniciar OTA",
+  "repeater_startOtaConfirm": "Isto colocará o repetidor no modo OTA. Continuar?",
+  "repeater_startOtaSubtitle": "Isto colocará o repetidor no modo OTA"
 }

@@ -20,6 +20,8 @@ import '../widgets/routing_sheet.dart';
 import '../widgets/sync_progress_overlay.dart';
 import '../utils/keys.dart';
 import '../helpers/snack_bar_builder.dart';
+import 'repeater_acl_screen.dart';
+import 'repeater_regions_screen.dart';
 
 class RepeaterSettingsScreen extends StatefulWidget {
   final Contact repeater;
@@ -54,6 +56,20 @@ _SaveOutcome _classifySaveResponse(String response) {
         : _SaveOutcome.ok;
   }
   return _SaveOutcome.error;
+}
+
+/// Firmware failure replies (`Error`, `ERR`, `Unknown`, `Can't`, ...) for
+/// commands whose success replies are not the standard "OK" prefix, such as
+/// `start ota` answering with an IP address.
+bool _isErrorResponse(String response) {
+  final lower = response.trim().toLowerCase();
+  if (lower.isEmpty) return true;
+  return lower.startsWith('err') ||
+      lower.startsWith('unknown') ||
+      lower.startsWith("can't") ||
+      lower.startsWith('cannot') ||
+      lower.startsWith('fail') ||
+      lower.startsWith('invalid');
 }
 
 String _shortCommandLabel(String command) {
@@ -442,10 +458,15 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
   ///
   /// With [replyOptional] (e.g. `reboot`, which restarts without answering) a
   /// timeout means the command went out; it is reported as sent, not failed.
+  ///
+  /// With [acceptAnyReply] (e.g. `start ota`, where ESP32 boards answer with
+  /// the OTA server address instead of "OK") any non-error reply counts as
+  /// success and the reply text is shown as-is.
   Future<void> _runAction(
     String command,
     String label, {
     bool replyOptional = false,
+    bool acceptAnyReply = false,
   }) async {
     if (_commandService == null) return;
     if (!_ensureConnected()) return;
@@ -460,17 +481,19 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
         retries: 1,
       );
       if (!mounted) return;
-      final outcome = _classifySaveResponse(response);
+      final trimmed = response.trim();
+      final isError = acceptAnyReply
+          ? _isErrorResponse(trimmed)
+          : _classifySaveResponse(trimmed) == _SaveOutcome.error;
+      final successText = acceptAnyReply && trimmed.isNotEmpty ? trimmed : null;
       showDismissibleSnackBar(
         context,
         content: Text(
-          outcome == _SaveOutcome.error
-              ? l10n.repeater_actionFailed(label, response.trim())
-              : l10n.repeater_actionSucceeded(label),
+          isError
+              ? l10n.repeater_actionFailed(label, trimmed)
+              : successText ?? l10n.repeater_actionSucceeded(label),
         ),
-        backgroundColor: outcome == _SaveOutcome.error
-            ? Theme.of(context).colorScheme.error
-            : null,
+        backgroundColor: isError ? Theme.of(context).colorScheme.error : null,
       );
     } catch (e) {
       if (!mounted) return;
@@ -967,6 +990,7 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
                         RepeaterSettingSection.ownerInfo,
                       ),
                       _buildActionsCard(),
+                      _buildAccessRegionsCard(),
                       _buildAdvancedCard(),
                       _buildKeysCard(),
                       const SizedBox(height: 16),
@@ -1624,6 +1648,46 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
     );
   }
 
+  Widget _buildAccessRegionsCard() {
+    final l10n = context.l10n;
+    final connected = context.watch<MeshCoreConnector>().isConnected;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SectionHeader(l10n.repeater_accessRegionsTitle),
+        MeshCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.admin_panel_settings),
+                title: Text(l10n.repeater_aclTitle),
+                subtitle: Text(l10n.repeater_aclTileSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                enabled: connected,
+                onTap: () =>
+                    RepeaterAclScreen.push(context, repeater: widget.repeater),
+                contentPadding: EdgeInsets.zero,
+              ),
+              ListTile(
+                leading: const Icon(Icons.landscape),
+                title: Text(l10n.repeater_regionsTitle),
+                subtitle: Text(l10n.repeater_regionsTileSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                enabled: connected,
+                onTap: () => RepeaterRegionsScreen.push(
+                  context,
+                  repeater: widget.repeater,
+                ),
+                contentPadding: EdgeInsets.zero,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildKeysCard() {
     final l10n = context.l10n;
     return MeshCard(
@@ -1799,6 +1863,29 @@ class _RepeaterSettingsScreenState extends State<RepeaterSettingsScreen> {
                 'reboot',
                 l10n.repeater_rebootRepeater,
                 replyOptional: true,
+              ),
+              isDestructive: true,
+            ),
+            contentPadding: EdgeInsets.zero,
+          ),
+          ListTile(
+            leading: const Icon(Icons.system_update, color: MeshPalette.alert),
+            title: Text(
+              l10n.repeater_startOta,
+              style: const TextStyle(color: MeshPalette.alert),
+            ),
+            subtitle: Text(
+              l10n.repeater_startOtaSubtitle,
+              style: const TextStyle(color: MeshPalette.warnDim),
+            ),
+            enabled: canAct,
+            onTap: () => _confirmAction(
+              l10n.repeater_startOta,
+              l10n.repeater_startOtaConfirm,
+              () => _runAction(
+                'start ota',
+                l10n.repeater_startOta,
+                acceptAnyReply: true,
               ),
               isDestructive: true,
             ),

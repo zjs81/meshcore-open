@@ -3290,5 +3290,8 @@
   "coordinateMap_title": "Местоположение",
   "coordinate_copyLocation": "Копировать местоположение",
   "coordinate_openInMaps": "Открыть на карте",
-  "coordinate_copied": "Местоположение скопировано"
+  "coordinate_copied": "Местоположение скопировано",
+  "repeater_startOta": "Запустить OTA",
+  "repeater_startOtaConfirm": "Это переведёт репитер в режим OTA. Продолжить?",
+  "repeater_startOtaSubtitle": "Это переведёт репитер в режим OTA"
 }

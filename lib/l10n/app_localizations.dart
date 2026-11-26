@@ -13863,6 +13863,330 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to load image'**
   String get messageUrlImageLoadFailed;
+
+  /// No description provided for @repeater_accessRegionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Access and regions'**
+  String get repeater_accessRegionsTitle;
+
+  /// No description provided for @repeater_aclAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add companion'**
+  String get repeater_aclAdd;
+
+  /// No description provided for @repeater_aclAddAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add companion'**
+  String get repeater_aclAddAction;
+
+  /// No description provided for @repeater_aclEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No companions in the ACL'**
+  String get repeater_aclEmpty;
+
+  /// No description provided for @repeater_aclInvalidPubkey.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the full public key (64 hex characters)'**
+  String get repeater_aclInvalidPubkey;
+
+  /// No description provided for @repeater_aclLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the ACL: {error}'**
+  String repeater_aclLoadFailed(String error);
+
+  /// No description provided for @repeater_aclLoadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap refresh to load the ACL from the repeater'**
+  String get repeater_aclLoadHint;
+
+  /// No description provided for @repeater_aclManualAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get repeater_aclManualAdd;
+
+  /// No description provided for @repeater_aclManualEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Public key'**
+  String get repeater_aclManualEntry;
+
+  /// No description provided for @repeater_aclManualEntryHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Full public key in hex (64 characters)'**
+  String get repeater_aclManualEntryHelper;
+
+  /// No description provided for @repeater_aclNoCompanionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No companions found'**
+  String get repeater_aclNoCompanionsFound;
+
+  /// No description provided for @repeater_aclRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh ACL'**
+  String get repeater_aclRefresh;
+
+  /// No description provided for @repeater_aclRemoveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String repeater_aclRemoveAction(String name);
+
+  /// No description provided for @repeater_aclRemoveConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name} from the ACL?'**
+  String repeater_aclRemoveConfirmMessage(String name);
+
+  /// No description provided for @repeater_aclRemoveConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from ACL'**
+  String get repeater_aclRemoveConfirmTitle;
+
+  /// No description provided for @repeater_aclRemoveTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from ACL'**
+  String get repeater_aclRemoveTooltip;
+
+  /// No description provided for @repeater_aclRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get repeater_aclRole;
+
+  /// No description provided for @repeater_aclRoleAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get repeater_aclRoleAdmin;
+
+  /// No description provided for @repeater_aclRoleGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest'**
+  String get repeater_aclRoleGuest;
+
+  /// No description provided for @repeater_aclRoleReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Read-only'**
+  String get repeater_aclRoleReadOnly;
+
+  /// No description provided for @repeater_aclRoleReadWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Read-write'**
+  String get repeater_aclRoleReadWrite;
+
+  /// No description provided for @repeater_aclScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Access control list'**
+  String get repeater_aclScreenTitle;
+
+  /// No description provided for @repeater_aclSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search companions'**
+  String get repeater_aclSearch;
+
+  /// No description provided for @repeater_aclTileSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Companions allowed to log in to this repeater'**
+  String get repeater_aclTileSubtitle;
+
+  /// No description provided for @repeater_aclTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Access control'**
+  String get repeater_aclTitle;
+
+  /// No description provided for @repeater_aclUnknownNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown node'**
+  String get repeater_aclUnknownNode;
+
+  /// No description provided for @repeater_cliCommandCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Command copied'**
+  String get repeater_cliCommandCopied;
+
+  /// No description provided for @repeater_cliResendCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend command'**
+  String get repeater_cliResendCommand;
+
+  /// No description provided for @repeater_regionsAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add region'**
+  String get repeater_regionsAdd;
+
+  /// No description provided for @repeater_regionsAddAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add region'**
+  String get repeater_regionsAddAction;
+
+  /// No description provided for @repeater_regionsDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default region'**
+  String get repeater_regionsDefault;
+
+  /// No description provided for @repeater_regionsDefaultHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope used for this repeater\'s own traffic'**
+  String get repeater_regionsDefaultHelper;
+
+  /// No description provided for @repeater_regionsDefaultNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get repeater_regionsDefaultNone;
+
+  /// No description provided for @repeater_regionsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No regions defined'**
+  String get repeater_regionsEmpty;
+
+  /// No description provided for @repeater_regionsFloodAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Flood allowed'**
+  String get repeater_regionsFloodAllowed;
+
+  /// No description provided for @repeater_regionsFloodAllowTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow flooding'**
+  String get repeater_regionsFloodAllowTooltip;
+
+  /// No description provided for @repeater_regionsFloodDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Flood denied'**
+  String get repeater_regionsFloodDenied;
+
+  /// No description provided for @repeater_regionsFloodDenyTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny flooding'**
+  String get repeater_regionsFloodDenyTooltip;
+
+  /// No description provided for @repeater_regionsHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home region'**
+  String get repeater_regionsHome;
+
+  /// No description provided for @repeater_regionsHomeHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Where this repeater sits in the region tree'**
+  String get repeater_regionsHomeHelper;
+
+  /// No description provided for @repeater_regionsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load regions: {error}'**
+  String repeater_regionsLoadFailed(String error);
+
+  /// No description provided for @repeater_regionsLoadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap refresh to load regions from the repeater'**
+  String get repeater_regionsLoadHint;
+
+  /// No description provided for @repeater_regionsRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh regions'**
+  String get repeater_regionsRefresh;
+
+  /// No description provided for @repeater_regionsRemoveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String repeater_regionsRemoveAction(String name);
+
+  /// No description provided for @repeater_regionsRemoveConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name} from the repeater?'**
+  String repeater_regionsRemoveConfirmMessage(String name);
+
+  /// No description provided for @repeater_regionsRemoveConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove region'**
+  String get repeater_regionsRemoveConfirmTitle;
+
+  /// No description provided for @repeater_regionsRemoveTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove region'**
+  String get repeater_regionsRemoveTooltip;
+
+  /// No description provided for @repeater_regionsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeater regions'**
+  String get repeater_regionsScreenTitle;
+
+  /// No description provided for @repeater_regionsTileSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Flood regions and home region for this repeater'**
+  String get repeater_regionsTileSubtitle;
+
+  /// No description provided for @repeater_regionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Regions'**
+  String get repeater_regionsTitle;
+
+  /// No description provided for @repeater_regionsWildcard.
+  ///
+  /// In en, this message translates to:
+  /// **'Unscoped (*)'**
+  String get repeater_regionsWildcard;
+
+  /// No description provided for @repeater_startOta.
+  ///
+  /// In en, this message translates to:
+  /// **'Start OTA'**
+  String get repeater_startOta;
+
+  /// No description provided for @repeater_startOtaConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This will put the repeater into OTA mode. Continue?'**
+  String get repeater_startOtaConfirm;
+
+  /// No description provided for @repeater_startOtaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This will put the repeater into OTA mode'**
+  String get repeater_startOtaSubtitle;
 }
 
 class _AppLocalizationsDelegate

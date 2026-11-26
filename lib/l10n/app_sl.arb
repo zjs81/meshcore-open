@@ -4200,5 +4200,8 @@
   "coordinateMap_title": "Lokacija",
   "coordinate_copyLocation": "Kopiraj lokacijo",
   "coordinate_openInMaps": "Odpri v zemljevidih",
-  "coordinate_copied": "Lokacija kopirana"
+  "coordinate_copied": "Lokacija kopirana",
+  "repeater_startOta": "Zaženi OTA",
+  "repeater_startOtaConfirm": "To bo preklopilo repetitor v način OTA. Nadaljuj?",
+  "repeater_startOtaSubtitle": "To bo preklopilo repetitor v način OTA"
 }

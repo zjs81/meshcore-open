@@ -8365,4 +8365,187 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get messageUrlImageLoadFailed => 'Unable to load image';
+
+  @override
+  String get repeater_accessRegionsTitle => 'Access and regions';
+
+  @override
+  String get repeater_aclAdd => 'Add companion';
+
+  @override
+  String get repeater_aclAddAction => 'Add companion';
+
+  @override
+  String get repeater_aclEmpty => 'No companions in the ACL';
+
+  @override
+  String get repeater_aclInvalidPubkey =>
+      'Enter the full public key (64 hex characters)';
+
+  @override
+  String repeater_aclLoadFailed(String error) {
+    return 'Could not load the ACL: $error';
+  }
+
+  @override
+  String get repeater_aclLoadHint =>
+      'Tap refresh to load the ACL from the repeater';
+
+  @override
+  String get repeater_aclManualAdd => 'Add';
+
+  @override
+  String get repeater_aclManualEntry => 'Public key';
+
+  @override
+  String get repeater_aclManualEntryHelper =>
+      'Full public key in hex (64 characters)';
+
+  @override
+  String get repeater_aclNoCompanionsFound => 'No companions found';
+
+  @override
+  String get repeater_aclRefresh => 'Refresh ACL';
+
+  @override
+  String repeater_aclRemoveAction(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String repeater_aclRemoveConfirmMessage(String name) {
+    return 'Remove $name from the ACL?';
+  }
+
+  @override
+  String get repeater_aclRemoveConfirmTitle => 'Remove from ACL';
+
+  @override
+  String get repeater_aclRemoveTooltip => 'Remove from ACL';
+
+  @override
+  String get repeater_aclRole => 'Role';
+
+  @override
+  String get repeater_aclRoleAdmin => 'Admin';
+
+  @override
+  String get repeater_aclRoleGuest => 'Guest';
+
+  @override
+  String get repeater_aclRoleReadOnly => 'Read-only';
+
+  @override
+  String get repeater_aclRoleReadWrite => 'Read-write';
+
+  @override
+  String get repeater_aclScreenTitle => 'Access control list';
+
+  @override
+  String get repeater_aclSearch => 'Search companions';
+
+  @override
+  String get repeater_aclTileSubtitle =>
+      'Companions allowed to log in to this repeater';
+
+  @override
+  String get repeater_aclTitle => 'Access control';
+
+  @override
+  String get repeater_aclUnknownNode => 'Unknown node';
+
+  @override
+  String get repeater_cliCommandCopied => 'Command copied';
+
+  @override
+  String get repeater_cliResendCommand => 'Resend command';
+
+  @override
+  String get repeater_regionsAdd => 'Add region';
+
+  @override
+  String get repeater_regionsAddAction => 'Add region';
+
+  @override
+  String get repeater_regionsDefault => 'Default region';
+
+  @override
+  String get repeater_regionsDefaultHelper =>
+      'Scope used for this repeater\'s own traffic';
+
+  @override
+  String get repeater_regionsDefaultNone => 'None';
+
+  @override
+  String get repeater_regionsEmpty => 'No regions defined';
+
+  @override
+  String get repeater_regionsFloodAllowed => 'Flood allowed';
+
+  @override
+  String get repeater_regionsFloodAllowTooltip => 'Allow flooding';
+
+  @override
+  String get repeater_regionsFloodDenied => 'Flood denied';
+
+  @override
+  String get repeater_regionsFloodDenyTooltip => 'Deny flooding';
+
+  @override
+  String get repeater_regionsHome => 'Home region';
+
+  @override
+  String get repeater_regionsHomeHelper =>
+      'Where this repeater sits in the region tree';
+
+  @override
+  String repeater_regionsLoadFailed(String error) {
+    return 'Could not load regions: $error';
+  }
+
+  @override
+  String get repeater_regionsLoadHint =>
+      'Tap refresh to load regions from the repeater';
+
+  @override
+  String get repeater_regionsRefresh => 'Refresh regions';
+
+  @override
+  String repeater_regionsRemoveAction(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String repeater_regionsRemoveConfirmMessage(String name) {
+    return 'Remove $name from the repeater?';
+  }
+
+  @override
+  String get repeater_regionsRemoveConfirmTitle => 'Remove region';
+
+  @override
+  String get repeater_regionsRemoveTooltip => 'Remove region';
+
+  @override
+  String get repeater_regionsScreenTitle => 'Repeater regions';
+
+  @override
+  String get repeater_regionsTileSubtitle =>
+      'Flood regions and home region for this repeater';
+
+  @override
+  String get repeater_regionsTitle => 'Regions';
+
+  @override
+  String get repeater_regionsWildcard => 'Unscoped (*)';
+
+  @override
+  String get repeater_startOta => 'Запустить OTA';
+
+  @override
+  String get repeater_startOtaConfirm =>
+      'Это переведёт репитер в режим OTA. Продолжить?';
+
+  @override
+  String get repeater_startOtaSubtitle => 'Это переведёт репитер в режим OTA';
 }

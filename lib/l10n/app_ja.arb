@@ -4333,5 +4333,8 @@
   "coordinateMap_title": "位置情報",
   "coordinate_copyLocation": "位置情報をコピー",
   "coordinate_openInMaps": "マップで開く",
-  "coordinate_copied": "位置情報をコピーしました"
+  "coordinate_copied": "位置情報をコピーしました",
+  "repeater_startOta": "OTA開始",
+  "repeater_startOtaConfirm": "リピーターがOTAモードになります。続行しますか？",
+  "repeater_startOtaSubtitle": "リピーターがOTAモードになります"
 }

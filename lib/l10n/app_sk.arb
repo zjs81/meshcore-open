@@ -4045,5 +4045,8 @@
   "coordinateMap_title": "Poloha",
   "coordinate_copyLocation": "Kopírovať polohu",
   "coordinate_openInMaps": "Otvoriť v mapách",
-  "coordinate_copied": "Poloha skopírovaná"
+  "coordinate_copied": "Poloha skopírovaná",
+  "repeater_startOta": "Spustiť OTA",
+  "repeater_startOtaConfirm": "Toto prepne opakovač do OTA režimu. Pokračovať?",
+  "repeater_startOtaSubtitle": "Toto prepne opakovač do OTA režimu"
 }

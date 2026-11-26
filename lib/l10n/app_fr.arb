@@ -4127,5 +4127,8 @@
   "coordinateMap_title": "Position",
   "coordinate_copyLocation": "Copier la position",
   "coordinate_openInMaps": "Ouvrir dans les cartes",
-  "coordinate_copied": "Position copiée"
+  "coordinate_copied": "Position copiée",
+  "repeater_startOta": "Démarrer OTA",
+  "repeater_startOtaConfirm": "Cela placera le répéteur en mode OTA. Continuer ?",
+  "repeater_startOtaSubtitle": "Cela placera le répéteur en mode OTA"
 }
