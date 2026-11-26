@@ -168,6 +168,23 @@ enum MeshCoreConnectionState {
 
 enum MeshCoreTransportType { bluetooth, usb, tcp, review }
 
+/// Timings of one [MeshCoreConnector.sendChannelData] call, filled in as the
+/// send goes: for the Local API's traffic log and its `sentAt` result.
+class ChannelSendTrace {
+  final DateTime requestedAt = DateTime.now();
+
+  /// From the call until the send could start: the channel send lock and,
+  /// for a scoped flood, setting the flood scope.
+  Duration? lockWait;
+
+  /// The post-receive back-off and the wait for a quiet radio (zero for a
+  /// priority send, which skips both).
+  Duration? quietWait;
+
+  /// When the firmware acknowledged the send command, i.e. took the packet.
+  DateTime? acknowledgedAt;
+}
+
 /// Thrown by [MeshCoreConnector.sendFrame] when no radio is connected.
 class RadioNotConnectedException implements Exception {
   const RadioNotConnectedException();
@@ -450,6 +467,15 @@ class MeshCoreConnector extends ChangeNotifier {
   /// which waits for the map, so this is a guard: their slot index cannot be
   /// resolved yet, and they are replayed once it can.
   final List<Uint8List> _channelFramesAwaitingMap = [];
+
+  /// True from a connect until the first RESP_CODE_NO_MORE_MESSAGES: frames
+  /// drained meanwhile may be from the radio's offline queue, heard while no
+  /// app was connected. Such a frame that was not also heard live (raw RX
+  /// push) is emitted with `queued`.
+  bool _rxBacklogOpen = true;
+
+  /// Held channel-data frames that arrived while [_rxBacklogOpen] was true.
+  final Set<Uint8List> _heldBacklogFrames = Set<Uint8List>.identity();
   bool _pendingQueueSync = false;
   // CMD_APP_START stops the firmware's contact iterator (END_OF_CONTACTS is
   // then never sent), so APP_START requested during a contact sync is held
@@ -3572,6 +3598,11 @@ class MeshCoreConnector extends ChangeNotifier {
   @visibleForTesting
   void handleFrameForTest(List<int> data) => _handleFrame(data);
 
+  /// As right after a connect: frames drained now may be from the radio's
+  /// offline queue until the next RESP_CODE_NO_MORE_MESSAGES.
+  @visibleForTesting
+  void reopenRxBacklogForTest() => _rxBacklogOpen = true;
+
   @visibleForTesting
   static bool shouldIgnoreLateTcpConnectError({
     required bool manualDisconnect,
@@ -4296,6 +4327,8 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   void _resetSyncProgressState() {
+    _rxBacklogOpen = true;
+    _heldBacklogFrames.clear();
     _pendingInitialChannelSync = false;
     _pendingInitialContactsSync = false;
     _pendingInitialQueuedMessageSync = false;
@@ -4952,14 +4985,16 @@ class MeshCoreConnector extends ChangeNotifier {
     }
     if (supportsAllowedRepeatFreq) {
       unawaited(
-        sendFrame(buildGetAllowedRepeatFreqFrame())
-            .catchError(_logTimerSendError),
+        sendFrame(
+          buildGetAllowedRepeatFreqFrame(),
+        ).catchError(_logTimerSendError),
       );
     }
     if (supportsDefaultFloodScope) {
       unawaited(
-        sendFrame(buildGetDefaultFloodScopeFrame())
-            .catchError(_logTimerSendError),
+        sendFrame(
+          buildGetDefaultFloodScopeFrame(),
+        ).catchError(_logTimerSendError),
       );
     }
   }
@@ -6147,18 +6182,28 @@ class MeshCoreConnector extends ChangeNotifier {
     String? region,
     int pathLen = outPathUnknown,
     Uint8List? path,
+    bool priority = false,
+    ChannelSendTrace? trace,
   }) async {
     if (!supportsChannelData) return false;
     if (payload.isEmpty || payload.length > kMaxChannelDataPayload) {
       return false;
     }
     if (dataType <= 0 || dataType > 0xFFFF) return false;
+    final timing = trace ?? ChannelSendTrace();
 
     // [pathLen] other than outPathUnknown sends direct along [path] (packed
     // path_len, as in CMD_SEND_CHANNEL_DATA); 0 is zero-hop. Every firmware
     // with channel data (ver 11+) takes it.
-    await _runScopedChannelSend(() async {
-      await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
+    Future<void> send() async {
+      timing.lockWait = DateTime.now().difference(timing.requestedAt);
+      // A priority send skips the back-off and the quiet wait; the
+      // firmware still listens before it talks.
+      final quietFrom = DateTime.now();
+      if (!priority) {
+        await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
+      }
+      timing.quietWait = DateTime.now().difference(quietFrom);
       await _sendFrameAndWaitForCommandAck(
         buildSendChannelDataFrame(
           channelIndex: channelIndex,
@@ -6168,7 +6213,20 @@ class MeshCoreConnector extends ChangeNotifier {
           path: path ?? Uint8List(0),
         ),
       );
-    }, region: region ?? _channelSendScope(channelIndex));
+      timing.acknowledgedAt = DateTime.now();
+    }
+
+    if (priority && pathLen != outPathUnknown) {
+      // A direct packet carries no transport code (the firmware's
+      // sendDirect), so the flood scope another send may have set does not
+      // touch it: no need to queue behind that send's quiet wait.
+      await send();
+    } else {
+      await _runScopedChannelSend(
+        send,
+        region: region ?? _channelSendScope(channelIndex),
+      );
+    }
 
     _emitChannelData(
       ParsedChannelData(
@@ -6226,6 +6284,7 @@ class MeshCoreConnector extends ChangeNotifier {
     ParsedChannelData parsed, {
     required bool outgoing,
     _HeardGroupData? heard,
+    bool queued = false,
   }) {
     // The frame alone says flood (with hops) or not flood; the raw packet,
     // when we heard it, also has the path, RSSI and transport form.
@@ -6246,13 +6305,18 @@ class MeshCoreConnector extends ChangeNotifier {
         snrRaw: parsed.snrRaw,
         hops: outgoing ? null : parsed.hopCount,
         outgoing: outgoing,
-        receivedAt: DateTime.now(),
+        // The raw RX push comes when the radio hears the packet; the decoded
+        // frame only when the app fetches it from the radio's queue.
+        receivedAt: heard?.at ?? DateTime.now(),
         routeType: routeType,
         path: outgoing ? null : heard?.path,
         pathHashSize: outgoing
             ? null
             : (heard?.pathHashSize ?? parsed.pathHashWidth),
         rssiDbm: outgoing ? null : heard?.rssiDbm,
+        transportCode: outgoing ? null : heard?.transportCode,
+        scope: outgoing ? null : heard?.scope,
+        queued: !outgoing && queued,
       ),
     );
   }
@@ -6303,6 +6367,11 @@ class MeshCoreConnector extends ChangeNotifier {
       path: packet.pathBytes,
       pathHashSize: packet.pathHashWidth,
       rssiDbm: rssiDbm,
+      transportCode: switch (packet.transportCodes) {
+        final codes? when codes.length >= 2 => codes[0] | (codes[1] << 8),
+        _ => null,
+      },
+      scope: _resolveTransportRegion(packet),
       at: now,
     );
     while (_heardGroupData.length > _heardGroupDataMax) {
@@ -7076,11 +7145,15 @@ class MeshCoreConnector extends ChangeNotifier {
     if (_channelFramesAwaitingMap.isEmpty) return;
     final frames = List<Uint8List>.of(_channelFramesAwaitingMap);
     _channelFramesAwaitingMap.clear();
+    final backlog = Set<Uint8List>.identity()..addAll(_heldBacklogFrames);
+    _heldBacklogFrames.clear();
     for (final frame in frames) {
       if (frame[0] != respCodeChannelDataRecv) {
         _handleIncomingChannelMessage(frame);
-      } else if (_appSettingsService?.settings.imageMessagesEnabled ?? false) {
-        _handleIncomingChannelData(frame);
+      } else {
+        // Every frame goes on to meshEvents (the Local API); image
+        // reassembly inside still depends on the image-message setting.
+        _handleIncomingChannelData(frame, fromBacklog: backlog.contains(frame));
       }
     }
   }
@@ -7415,6 +7488,7 @@ class MeshCoreConnector extends ChangeNotifier {
           when !_channelMapConfirmed:
         if (_isSyncingQueuedMessages) _handleQueuedMessageReceived();
         _channelFramesAwaitingMap.add(frame);
+        if (_rxBacklogOpen) _heldBacklogFrames.add(frame);
         break;
       case respCodeChannelMsgRecv:
       case respCodeChannelMsgRecvV3:
@@ -7717,8 +7791,9 @@ class MeshCoreConnector extends ChangeNotifier {
       if (frame.length < start + maxLen) return null;
       final bytes = frame.sublist(start, start + maxLen);
       final end = bytes.indexOf(0);
-      final s = String.fromCharCodes(end >= 0 ? bytes.sublist(0, end) : bytes)
-          .trim();
+      final s = String.fromCharCodes(
+        end >= 0 ? bytes.sublist(0, end) : bytes,
+      ).trim();
       return s.isEmpty ? null : s;
     }
 
@@ -7785,6 +7860,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
   void _handleNoMoreMessages() {
     debugPrint('[QueueSync] No more messages, sync complete');
+    _rxBacklogOpen = false;
     _queueSyncTimeout?.cancel();
     _isSyncingQueuedMessages = false;
     _queuedMessageSyncInFlight = false;
@@ -8913,16 +8989,19 @@ class MeshCoreConnector extends ChangeNotifier {
   /// Handles RESP_CODE_CHANNEL_DATA_RECV (GRP_DATA). Every frame is emitted on
   /// [meshEvents]; only 0xAE1C frames go on to the [ImageChunkTransport], and
   /// they are ignored until one is installed.
-  void _handleIncomingChannelData(Uint8List frame) {
+  void _handleIncomingChannelData(Uint8List frame, {bool? fromBacklog}) {
     // Anchor the post-RX backoff for our own next channel send, exactly as
     // _handleIncomingChannelMessage does.
     _lastChannelMsgRxTime = DateTime.now();
     final parsed = parseChannelDataFrame(frame);
     if (parsed != null) {
+      final heard = _takeHeardGroupData(parsed);
       _emitChannelData(
         parsed,
         outgoing: false,
-        heard: _takeHeardGroupData(parsed),
+        heard: heard,
+        // Heard live means not from the offline queue, whenever drained.
+        queued: heard == null && (fromBacklog ?? _rxBacklogOpen),
       );
     }
     // Only reassemble when the feature is actually on. Without this the
@@ -11161,6 +11240,8 @@ class _HeardGroupData {
   final Uint8List path;
   final int pathHashSize;
   final int rssiDbm;
+  final int? transportCode;
+  final String? scope;
   final DateTime at;
 
   _HeardGroupData({
@@ -11168,6 +11249,8 @@ class _HeardGroupData {
     required this.path,
     required this.pathHashSize,
     required this.rssiDbm,
+    this.transportCode,
+    this.scope,
     required this.at,
   });
 }

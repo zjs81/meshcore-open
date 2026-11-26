@@ -4,6 +4,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:meshcore_open/connector/meshcore_connector.dart'
+    show ChannelSendTrace;
 import 'package:meshcore_open/models/channel.dart';
 import 'package:meshcore_open/models/contact.dart';
 import 'package:meshcore_open/models/mesh_event.dart';
@@ -311,7 +313,11 @@ void main() {
         'tx_path_data',
         'rx_meta',
         'rx_path',
+        'rx_scope',
+        'rx_queued',
+        'tx_now',
       ]);
+      expect(hello['limits']['minSendGapExemptBytes'], 32);
       expect(hello['server']['name'], 'meshcore-open');
       expect(hello['eventTypes'], contains('channel.data'));
     });
@@ -614,9 +620,96 @@ void main() {
         'payload_too_large',
       );
       expect(
-        (await sendData(connection, 3, [4]))['error']['code'],
+        (await sendData(connection, 3, List.filled(33, 4)))['error']['code'],
         'rate_limited',
       );
+    });
+
+    test('small payloads may follow closer than the send gap', () async {
+      await restartServer(
+        limits: const LocalApiLimits(
+          minSendGap: Duration(seconds: 30),
+          sendsPerMinute: 3,
+        ),
+      );
+      final connection = await paired(TestPeer.generate(32));
+      // A 13-byte ACK, then a 29-byte command right after it (LibreTag).
+      expect((await sendData(connection, 1, List.filled(13, 1)))['ok'], true);
+      expect((await sendData(connection, 2, List.filled(29, 2)))['ok'], true);
+      // A larger payload still keeps the gap to the previous send.
+      expect(
+        (await sendData(connection, 3, List.filled(33, 3)))['error']['code'],
+        'rate_limited',
+      );
+      // And the small ones still count in the minute.
+      expect((await sendData(connection, 4, [4]))['ok'], true);
+      expect(
+        (await sendData(connection, 5, [5]))['error']['code'],
+        'rate_limited',
+      );
+    });
+
+    test('a send result carries sentAt, the time the radio took it', () async {
+      final connection = await paired(TestPeer.generate(33));
+      host.ackAt = DateTime.utc(2026, 11, 26, 12, 0, 1, 250);
+      final reply = await sendData(connection, 1, [1]);
+      expect(reply['result'], {
+        'queued': true,
+        'sentAt': '2026-11-26T12:00:01.250Z',
+      });
+    });
+
+    test('priority now skips the waits for small packets only', () async {
+      final connection = await paired(TestPeer.generate(34));
+      Future<Map<String, dynamic>> send(
+        int id,
+        int length,
+        Map<String, Object?> extra,
+      ) => call(connection, id, 'channel.sendData', {
+        'channel': '#roadstr',
+        'dataType': 0xFF4C,
+        'payload': base64Encode(List.filled(length, id)),
+        ...extra,
+      });
+
+      // A near ACK zero-hop: 21 bytes on air.
+      var reply = await send(1, 13, {'path': '', 'priority': 'now'});
+      expect(reply['result']['priority'], 'now');
+      expect(reply['result']['sentAt'], isA<String>());
+      expect(host.lastPriority, true);
+      // A command along two hops: 39 bytes on air.
+      reply = await send(2, 29, {'path': 'a1b2', 'priority': 'now'});
+      expect(reply['result']['priority'], 'now');
+      // The same command as a flood may carry transport codes: 41 bytes.
+      reply = await send(3, 29, {'priority': 'now'});
+      expect(reply['result']['priority'], 'normal');
+      expect(host.lastPriority, false);
+      reply = await send(4, 13, {'priority': 'normal'});
+      expect(reply['result']['priority'], 'normal');
+      reply = await send(5, 13, {});
+      expect(reply['result'].containsKey('priority'), isFalse);
+      expect(host.lastPriority, false);
+      reply = await send(6, 13, {'priority': 'urgent'});
+      expect(reply['error']['code'], 'bad_request');
+    });
+
+    test('air size of channel data packets', () {
+      expect(
+        LocalApiServer.channelDataAirBytes(13, ChannelDataPath(Uint8List(0))),
+        21,
+      );
+      expect(
+        LocalApiServer.channelDataAirBytes(29, ChannelDataPath(Uint8List(0))),
+        37,
+      );
+      expect(
+        LocalApiServer.channelDataAirBytes(
+          29,
+          ChannelDataPath(Uint8List.fromList([1, 2])),
+        ),
+        39,
+      );
+      expect(LocalApiServer.channelDataAirBytes(29, null), 41);
     });
 
     test('allows the configured sends per minute', () async {
@@ -1134,6 +1227,50 @@ void main() {
       expect(direct.containsKey('rssiDbm'), isFalse);
     });
 
+    test('channel data events carry the scope and the queued mark', () async {
+      final connection = await paired(TestPeer.generate(66));
+      await call(connection, 1, 'events.subscribe', {
+        'events': ['channel.data'],
+      });
+      host.emit(
+        ChannelDataEvent(
+          channelIndex: 0,
+          channelName: '#roadstr',
+          dataType: 0xFF52,
+          payload: Uint8List.fromList([1]),
+          snrRaw: -30,
+          hops: 1,
+          outgoing: false,
+          receivedAt: DateTime.now(),
+          routeType: 'tflood',
+          transportCode: 0xBEEF,
+          scope: 'sk-ba',
+        ),
+      );
+      final scoped = (await connection.next())['event'];
+      expect(scoped['routeType'], 'tflood');
+      expect(scoped['transportCode'], 0xBEEF);
+      expect(scoped['scope'], 'sk-ba');
+      expect(scoped.containsKey('queued'), isFalse);
+      host.emit(
+        ChannelDataEvent(
+          channelIndex: 0,
+          channelName: '#roadstr',
+          dataType: 0xFF52,
+          payload: Uint8List.fromList([2]),
+          snrRaw: 20,
+          outgoing: false,
+          receivedAt: DateTime.now(),
+          routeType: 'direct',
+          queued: true,
+        ),
+      );
+      final queued = (await connection.next())['event'];
+      expect(queued['queued'], true);
+      expect(queued['hops'], isNull);
+      expect(queued.containsKey('transportCode'), isFalse);
+    });
+
     test('an event without receive metadata has no rx fields', () async {
       final connection = await paired(TestPeer.generate(65));
       await call(connection, 1, 'events.subscribe', {
@@ -1143,6 +1280,8 @@ void main() {
       final event = (await connection.next())['event'];
       expect(event.containsKey('routeType'), isFalse);
       expect(event.containsKey('path'), isFalse);
+      expect(event.containsKey('queued'), isFalse);
+      expect(event.containsKey('scope'), isFalse);
     });
 
     test('joining an existing hashtag channel needs no prompt', () async {
@@ -1297,6 +1436,8 @@ class _FakeHost implements LocalApiHost {
   List<String> saved = [];
   String? lastRegion;
   ChannelDataPath? lastPath;
+  bool? lastPriority;
+  DateTime? ackAt;
   int textSends = 0;
 
   @override
@@ -1387,15 +1528,21 @@ class _FakeHost implements LocalApiHost {
     Uint8List payload, {
     String? region,
     ChannelDataPath? path,
+    bool priority = false,
+    ChannelSendTrace? trace,
   }) async {
     lastRegion = region;
     lastPath = path;
+    lastPriority = priority;
+    trace?.lockWait = Duration.zero;
+    trace?.quietWait = Duration.zero;
     if (throwOnSend) throw Exception('Command failed with error code 3');
     final error = sendError;
     if (error != null) throw error;
     if (sendResult) {
       sent.add(payload.toList());
       sentChannels.add(channel.index);
+      trace?.acknowledgedAt = ackAt ?? DateTime.now();
     }
     return sendResult;
   }

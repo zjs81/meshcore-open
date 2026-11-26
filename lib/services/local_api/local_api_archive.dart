@@ -22,6 +22,9 @@ class ArchivedChannelData {
   final Uint8List? path;
   final int? pathHashSize;
   final int? rssiDbm;
+  final int? transportCode;
+  final String? scope;
+  final bool queued;
 
   ArchivedChannelData({
     required this.channel,
@@ -35,6 +38,9 @@ class ArchivedChannelData {
     this.path,
     this.pathHashSize,
     this.rssiDbm,
+    this.transportCode,
+    this.scope,
+    this.queued = false,
   });
 
   ChannelDataEvent toEvent() => ChannelDataEvent(
@@ -50,6 +56,9 @@ class ArchivedChannelData {
     path: path,
     pathHashSize: pathHashSize,
     rssiDbm: rssiDbm,
+    transportCode: transportCode,
+    scope: scope,
+    queued: queued,
   );
 
   Map<String, Object?> toJson() => {
@@ -64,6 +73,9 @@ class ArchivedChannelData {
     if (path != null) 'path': base64Encode(path!),
     if (pathHashSize != null) 'pathHashSize': pathHashSize,
     if (rssiDbm != null) 'rssiDbm': rssiDbm,
+    if (transportCode != null) 'transportCode': transportCode,
+    if (scope != null) 'scope': scope,
+    if (queued) 'queued': true,
   };
 
   static int? _optInt(Object? value) => value is int ? value : null;
@@ -103,6 +115,9 @@ class ArchivedChannelData {
             : null,
         pathHashSize: _optInt(value['pathHashSize']),
         rssiDbm: _optInt(value['rssiDbm']),
+        transportCode: _optInt(value['transportCode']),
+        scope: value['scope'] is String ? value['scope'] as String : null,
+        queued: value['queued'] == true,
       );
     } on FormatException {
       return null;
@@ -230,6 +245,9 @@ class LocalApiArchive {
       path: event.path,
       pathHashSize: event.pathHashSize,
       rssiDbm: event.rssiDbm,
+      transportCode: event.transportCode,
+      scope: event.scope,
+      queued: event.queued,
     );
     if (!_interests.keys.any((key) => _wants(key, entry))) return;
     _entries.add(entry);

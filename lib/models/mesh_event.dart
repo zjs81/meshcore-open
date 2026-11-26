@@ -65,6 +65,19 @@ class ChannelDataEvent extends MeshEvent {
   /// RSSI of the received packet in dBm, null when unknown.
   final int? rssiDbm;
 
+  /// The first transport code (`code[0]`, little-endian) of a `tflood` or
+  /// `tdirect` packet: the flood scope it was sent in. Null otherwise.
+  final int? transportCode;
+
+  /// The flood-scope name whose key gives [transportCode], when the app
+  /// knows exactly one (without a leading `#`).
+  final String? scope;
+
+  /// The radio held this frame in its offline queue while no app was reading
+  /// it (drained after a connect, and not heard live), so [receivedAt] is
+  /// the time the app fetched it, not the time the radio heard it.
+  final bool queued;
+
   ChannelDataEvent({
     required this.channelIndex,
     required this.channelName,
@@ -78,6 +91,9 @@ class ChannelDataEvent extends MeshEvent {
     this.path,
     this.pathHashSize,
     this.rssiDbm,
+    this.transportCode,
+    this.scope,
+    this.queued = false,
   }) : super(receivedAt);
 
   double get snrDb => snrRaw / 4.0;

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meshcore_open/connector/meshcore_connector.dart';
+import 'package:meshcore_open/connector/meshcore_protocol.dart';
 import 'package:meshcore_open/models/mesh_event.dart';
 import 'package:meshcore_open/review_mode/review_radio.dart';
 import 'package:meshcore_open/services/image_chunk_transport.dart';
@@ -73,6 +74,26 @@ Future<void> _waitFor(bool Function() condition) async {
   while (!condition()) {
     if (DateTime.now().isAfter(end)) fail('Timed out waiting for condition');
     await Future<void>.delayed(const Duration(milliseconds: 20));
+  }
+}
+
+/// Review radio that sends a channel data frame right after APP_START,
+/// before the app has its slot map, so the connector holds it.
+class _HoldingRadio extends ReviewRadio {
+  @override
+  void handle(Uint8List frame) {
+    super.handle(frame);
+    if (frame.isNotEmpty && frame[0] == cmdAppStart) {
+      emitForTest(
+        _channelDataFrame(
+          snrRaw: 0,
+          channelIndex: 0,
+          dataType: 0xFF52,
+          payload: [0x42],
+          pathLen: 0xFF,
+        ),
+      );
+    }
   }
 }
 
@@ -208,6 +229,120 @@ void main() {
     expect(event.rssiDbm, isNull);
   });
 
+  test('a scoped flood carries its transport code', () async {
+    await connect();
+    final frame = _logRxGroupData(
+      psk: connector.channels.first.psk,
+      route: 0x00, // TRANSPORT_FLOOD
+      path: [0x5C],
+      dataType: 0xFF52,
+      payload: [7],
+    );
+    // Transport codes (4 bytes) follow the header byte.
+    final withCodes = Uint8List.fromList([
+      ...frame.sublist(0, 4),
+      0xEF,
+      0xBE,
+      0x00,
+      0x00,
+      ...frame.sublist(4),
+    ]);
+    connector.handleFrameForTest(withCodes);
+    connector.handleFrameForTest(
+      _channelDataFrame(
+        snrRaw: 0,
+        channelIndex: 0,
+        dataType: 0xFF52,
+        payload: [7],
+        pathLen: 1,
+      ),
+    );
+    await _waitFor(() => events.whereType<ChannelDataEvent>().isNotEmpty);
+    final event = events.whereType<ChannelDataEvent>().single;
+    expect(event.routeType, 'tflood');
+    expect(event.transportCode, 0xBEEF);
+    expect(event.path, [0x5C]);
+    // No region the app knows gives this code.
+    expect(event.scope, isNull);
+  });
+
+  test('frames drained after a connect and not heard live are queued, '
+      'received at the time the radio heard the rest', () async {
+    await connect();
+    connector.reopenRxBacklogForTest();
+    // From the offline queue: no RX log for it.
+    connector.handleFrameForTest(
+      _channelDataFrame(
+        snrRaw: 0,
+        channelIndex: 0,
+        dataType: 0xFF52,
+        payload: [1],
+        pathLen: 0xFF,
+      ),
+    );
+    // Heard live while the queue drains.
+    connector.handleFrameForTest(
+      _logRxGroupData(
+        psk: connector.channels.first.psk,
+        route: 0x02,
+        path: [],
+        dataType: 0xFF52,
+        payload: [2],
+      ),
+    );
+    final heardBy = DateTime.now();
+    await Future<void>.delayed(const Duration(milliseconds: 120));
+    connector.handleFrameForTest(
+      _channelDataFrame(
+        snrRaw: 0,
+        channelIndex: 0,
+        dataType: 0xFF52,
+        payload: [2],
+        pathLen: 0xFF,
+      ),
+    );
+    connector.handleFrameForTest([respCodeNoMoreMessages]);
+    // After the drain everything is live, heard in the RX log or not.
+    connector.handleFrameForTest(
+      _channelDataFrame(
+        snrRaw: 0,
+        channelIndex: 0,
+        dataType: 0xFF52,
+        payload: [3],
+        pathLen: 0xFF,
+      ),
+    );
+    await _waitFor(() => events.whereType<ChannelDataEvent>().length == 3);
+    final byPayload = {
+      for (final e in events.whereType<ChannelDataEvent>()) e.payload.first: e,
+    };
+    expect(byPayload[1]!.queued, isTrue);
+    expect(byPayload[2]!.queued, isFalse);
+    expect(byPayload[2]!.receivedAt.isAfter(heardBy), isFalse);
+    expect(byPayload[3]!.queued, isFalse);
+  });
+
+  test('channel data held for the slot map reaches meshEvents with image '
+      'messages off', () async {
+    final radio = _HoldingRadio();
+    connector.reviewRadioFactoryForTest = () => radio;
+    await connector.connectReview();
+    addTearDown(connector.disconnect);
+    await _waitFor(() => connector.channelMapConfirmed);
+    await _waitFor(
+      () => events.whereType<ChannelDataEvent>().any(
+        (e) => e.payload.length == 1 && e.payload.first == 0x42,
+      ),
+    );
+    final event = events.whereType<ChannelDataEvent>().firstWhere(
+      (e) => e.payload.first == 0x42,
+    );
+    expect(event.dataType, 0xFF52);
+    expect(event.outgoing, isFalse);
+    // Drained before the first "no more messages" and not heard live.
+    expect(event.queued, isTrue);
+  });
+
   test('a truncated channel data frame emits nothing', () async {
     await connect();
     final frame = _channelDataFrame(
@@ -235,6 +370,35 @@ void main() {
     expect(event.outgoing, isTrue);
     expect(event.hops, isNull);
     expect(event.payload, [4, 5]);
+  });
+
+  test('a priority zero-hop send skips the post-receive back-off', () async {
+    await connect();
+    // Something was just heard: a normal send would back off for seconds.
+    connector.handleFrameForTest(
+      _channelDataFrame(
+        snrRaw: 0,
+        channelIndex: 0,
+        dataType: 0xFF52,
+        payload: [1],
+      ),
+    );
+    final trace = ChannelSendTrace();
+    final started = DateTime.now();
+    final sent = await connector.sendChannelData(
+      channelIndex: 0,
+      dataType: 0xFF4C,
+      payload: Uint8List(13),
+      pathLen: 0,
+      path: Uint8List(0),
+      priority: true,
+      trace: trace,
+    );
+    expect(sent, isTrue);
+    expect(DateTime.now().difference(started).inMilliseconds, lessThan(1500));
+    expect(trace.quietWait, Duration.zero);
+    expect(trace.lockWait, isNotNull);
+    expect(trace.acknowledgedAt, isNotNull);
   });
 
   test('sendChannelData refuses while disconnected or out of range', () async {

@@ -57,7 +57,8 @@ data** on the Local API screen empties it.
 `hello.capabilities` is:
 
 ```json
-["contacts", "advert_send", "regions", "channels_join", "replay", "tx_path_data", "rx_meta", "rx_path"]
+["contacts", "advert_send", "regions", "channels_join", "replay", "tx_path_data", "rx_meta", "rx_path",
+ "rx_scope", "rx_queued", "tx_now"]
 ```
 
 * `contacts`: `contacts.list`, `direct.sendText`, the `direct.text` and `advert` events and the
@@ -89,9 +90,34 @@ data** on the Local API screen empties it.
   zero-hop arrives with `routeType: "direct"`, `hops: null` and `path: ""`; a direct packet that
   came along a path also ends with an empty path, since each hop removes its own hash. Channel
   texts and direct texts do not carry these fields yet.
+  `receivedAt` of a frame paired with its raw packet is the time that push arrived, which is when
+  the radio heard it; otherwise it is the time the app fetched the frame.
+* `rx_scope`: a `tflood` or `tdirect` event carries `transportCode`, the packet's first transport
+  code (`code[0]`, little-endian) as an integer, and `scope`, the flood-scope name (without `#`)
+  whose key gives that code, when exactly one of the regions the app knows does (saved regions,
+  channel scopes and the radio's default scope). Both come from the raw packet, so frames from
+  the offline queue have neither.
+* `rx_queued`: `queued: true` on a `channel.data` event the radio held in its offline queue while
+  no app was reading it: drained after a connect, before the first `RESP_CODE_NO_MORE_MESSAGES`,
+  and not heard in the raw RX log meanwhile. Its `receivedAt` is the time it was fetched, not
+  when it was heard. Live events have no `queued` field. Channel data that arrives while the app
+  is still loading the channel list after a connect is held and then delivered, whatever the
+  image-message setting.
+* `tx_now`: `"priority": "now"` on `channel.sendData` skips the post-receive back-off and the wait
+  for a quiet radio (the firmware still listens before it talks) for packets of at most 40 bytes
+  on air, counting the transport codes for every flood; a direct or zero-hop priority send also
+  does not queue behind other channel sends. A larger packet is sent normally. `"priority":
+  "normal"` or no `priority` is the default; another value is `bad_request`. When `priority` was
+  given, the result says which one applied. Every `channel.sendData` result carries `sentAt`, the
+  time the radio acknowledged the command:
+  `{"queued": true, "sentAt": "2026-11-26T12:00:12.215Z", "priority": "now"}`.
 
 Other features of the specification are not offered. A `path` on `channel.sendText` is refused
 with `unsupported` (there is no `tx_path_text`), and so is a subscription to `packet.raw`.
+
+`hello.limits` has `minSendGapExemptBytes: 32`: a `channel.sendData` payload of at most 32 bytes
+may follow the previous send of the same connection closer than `minSendGapMs`, so an
+acknowledgement and a command can leave 300 ms apart. It still counts in `sendsPerMinute`.
 
 Sends go through the same path as the chat screen: the quiet wait before transmitting, the
 channel's flood scope and the radio's command acknowledgement. Texts and channel data sent from
@@ -101,16 +127,22 @@ the chat screen also reach subscribed apps as outgoing events.
 
 ## Traffic log
 
-Every send through the API (`channel.sendData`, `channel.sendText`, `direct.sendText`) and every
-received channel-data frame writes one line: UTC time, `tx` or `rx`, then `key=value` pairs, for
-example
+Every send through the API (`channel.sendData`, `channel.sendText`, `direct.sendText`), every
+received channel-data frame and every change of the radio link writes one line: UTC time, `tx`,
+`rx` or `link`, then `key=value` pairs, for example
 
 ```
-2026-11-26T12:00:09.000Z rx type=channel.data ch=#roadstr dataType=336 len=21 route=flood hops=2 path=a10b hashSize=1 snr=-7.25 rssi=-101 clients=Roadbeacon
-2026-11-26T12:00:12.000Z tx type=channel.data ch=#roadstr dataType=336 len=21 route=zero-hop path= hashSize=1 client=Roadbeacon result=ok
+2026-11-26T12:00:09.010Z rx type=channel.data ch=#roadstr dataType=336 len=21 route=flood hops=2 path=a10b hashSize=1 snr=-7.25 rssi=-101 receivedAt=2026-11-26T12:00:08.950Z clients=Roadbeacon
+2026-11-26T12:00:12.215Z tx type=channel.data ch=#roadstr dataType=336 len=13 air=21 route=zero-hop path= pathLen=0 hashSize=1 prio=now req=2026-11-26T12:00:12.104Z lockMs=0 quietMs=0 ackMs=111 client=Roadbeacon result=ok
+2026-11-26T12:05:00.000Z link state=down from=ready reason=transport_disconnected
 ```
 
 `clients` names the apps that got the event (`-` for none); `result` is `ok` or the error code.
+An `rx` line also has `queued=true`, `transport` and `scope` when the event carries them. A
+`tx` line for channel data has the request time `req`, `lockMs` (waiting behind other channel
+sends and setting the flood scope), `quietMs` (back-off and quiet wait), `ackMs` (request to the
+radio's acknowledgement), the on-air size `air` and the path length `pathLen` in hops. `link` states
+are `down`, `syncing` (connected, channel list loading) and `ready`.
 The lines go to the app debug log when it is on, and to `local_api/traffic.log` (two files of
 at most 512 KB) in the app's external files directory on Android, so
 `adb pull /sdcard/Android/data/com.meshcore.meshcore_open/files/local_api/traffic.log` reads it

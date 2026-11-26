@@ -76,12 +76,17 @@ abstract class LocalApiHost {
   /// old); throws on a firmware error or command timeout. Without [path] the
   /// data floods; with one it goes direct along it, and an empty path is
   /// zero-hop (heard only by radios in range, forwarded by none).
+  /// [priority] skips the post-receive back-off and the quiet wait (and, for
+  /// a direct send, the queue behind other channel sends); [trace] gets the
+  /// timings.
   Future<bool> sendChannelData(
     Channel channel,
     int dataType,
     Uint8List payload, {
     String? region,
     ChannelDataPath? path,
+    bool priority = false,
+    ChannelSendTrace? trace,
   });
 
   Future<void> sendDirectText(Contact contact, String text);
@@ -205,6 +210,8 @@ class ConnectorLocalApiHost implements LocalApiHost {
     Uint8List payload, {
     String? region,
     ChannelDataPath? path,
+    bool priority = false,
+    ChannelSendTrace? trace,
   }) => connector.sendChannelData(
     channelIndex: channel.index,
     dataType: dataType,
@@ -212,6 +219,8 @@ class ConnectorLocalApiHost implements LocalApiHost {
     region: region,
     pathLen: path?.pathLenByte ?? outPathUnknown,
     path: path?.hashes,
+    priority: priority,
+    trace: trace,
   );
 
   @override

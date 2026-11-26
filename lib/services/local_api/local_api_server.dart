@@ -7,7 +7,7 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart' as crypto;
 
 import '../../connector/meshcore_connector.dart'
-    show RadioNotConnectedException;
+    show ChannelSendTrace, RadioNotConnectedException;
 import '../../models/channel.dart';
 import '../../models/mesh_event.dart';
 import '../../utils/app_logger.dart';
@@ -44,6 +44,11 @@ class LocalApiLimits {
   final int sendsPerMinute;
   final Duration minSendGap;
 
+  /// `channel.sendData` payloads of at most this many bytes are exempt from
+  /// [minSendGap] (they still count in [sendsPerMinute]), so an ACK and a
+  /// command can leave a few hundred milliseconds apart.
+  final int minSendGapExemptBytes;
+
   /// From connect to the `pair` frame; the challenge expires with it.
   final Duration helloTimeout;
 
@@ -56,6 +61,7 @@ class LocalApiLimits {
     this.maxFilterEntries = 32,
     this.sendsPerMinute = 30,
     this.minSendGap = const Duration(seconds: 2),
+    this.minSendGapExemptBytes = 32,
     this.helloTimeout = const Duration(seconds: 10),
   });
 
@@ -65,6 +71,7 @@ class LocalApiLimits {
     'maxQueuedBytes': maxQueuedBytes,
     'sendsPerMinute': sendsPerMinute,
     'minSendGapMs': minSendGap.inMilliseconds,
+    'minSendGapExemptBytes': minSendGapExemptBytes,
     'maxSubscriptions': maxSubscriptions,
     'maxFilterEntries': maxFilterEntries,
   };
@@ -84,6 +91,10 @@ class LocalApiServer {
   static const int maxPayloadBytes = kMaxChannelDataPayload;
   static const String pairingMessagePrefix = 'meshcore-local-api-pair-v1:';
   static const String serverName = 'meshcore-open';
+
+  /// `"priority": "now"` (`tx_now`) applies to packets of at most this many
+  /// bytes on air; larger ones are sent with the normal waits.
+  static const int priorityMaxAirBytes = 40;
   static const String _webSocketGuid = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
 
   final LocalApiHost host;
@@ -137,7 +148,24 @@ class LocalApiServer {
     // log push (0x88), which every firmware with channel data sends.
     'rx_meta',
     'rx_path',
+    // Transport code and resolved scope name of tflood/tdirect packets.
+    'rx_scope',
+    // `queued: true` on frames drained from the radio's offline queue.
+    'rx_queued',
+    // `"priority": "now"` on channel.sendData, `sentAt` in its result.
+    'tx_now',
   ];
+
+  /// Bytes on air of a GRP_DATA packet with [payloadLength] bytes of data:
+  /// header and path_len, the path, the transport codes a flood may carry
+  /// (counted for every flood, since the channel may have a default scope),
+  /// then the channel hash, the 2-byte MAC and the AES blocks of
+  /// data_type, data_len and the data.
+  static int channelDataAirBytes(int payloadLength, ChannelDataPath? path) {
+    final cipher = ((3 + payloadLength + 15) ~/ 16) * 16;
+    final route = path == null ? 4 : path.hashes.length;
+    return 2 + route + 1 + 2 + cipher;
+  }
 
   /// Actual port, useful when [port] was 0 (tests) or when reporting the URI.
   int? get boundPort => _server?.port;
@@ -151,7 +179,11 @@ class LocalApiServer {
     final archived = archive?.latestReceivedAt?.millisecondsSinceEpoch ?? 0;
     _lastReceivedAtMs = max(_lastReceivedAtMs, archived);
     _eventSubscription = host.events.listen(_onEvent);
-    _changeSubscription = host.changes.listen((_) => _scheduleDeviceUpdate());
+    _changeSubscription = host.changes.listen((_) {
+      _logLink();
+      _scheduleDeviceUpdate();
+    });
+    _logLink();
     server.listen(
       _handleRequest,
       onError: (Object error) {
@@ -275,6 +307,29 @@ class LocalApiServer {
     }
   }
 
+  String? _linkState;
+
+  /// One `link` line in the traffic log when the radio's usable state
+  /// changes: `down` (no transport), `syncing` (connected, channels not
+  /// loaded yet; sends are refused) or `ready`.
+  void _logLink() {
+    final state = !host.isConnected
+        ? 'down'
+        : (host.isReady ? 'ready' : 'syncing');
+    if (state == _linkState) return;
+    final before = _linkState;
+    _linkState = state;
+    trafficLog?.write('link', {
+      'state': state,
+      'from': before,
+      'reason': switch (state) {
+        'down' => 'transport_disconnected',
+        'syncing' => before == 'ready' ? 'channel_resync' : 'connected',
+        _ => 'channels_loaded',
+      },
+    });
+  }
+
   /// The connector notifies on almost every frame; one snapshot per burst.
   void _scheduleDeviceUpdate() {
     if (_deviceDebounce?.isActive ?? false) return;
@@ -318,8 +373,12 @@ class LocalApiServer {
         'hashSize': event.pathHashSize,
         'snr': event.snrDb,
         'rssi': event.rssiDbm,
+        'transport': event.transportCode,
+        'scope': event.scope,
+        'queued': event.queued ? true : null,
+        'receivedAt': receivedAt.toUtc().toIso8601String(),
         'clients': delivered.isEmpty ? '-' : delivered.join(','),
-      }, at: receivedAt);
+      });
     }
   }
 
@@ -697,37 +756,71 @@ class _ApiClient {
         }
         final region = _regionParam(params);
         final path = _pathParam(params);
+        final wantsNow = _priorityParam(params);
         if (!server.host.supportsChannelData) {
           throw _ApiError(
             'unsupported_firmware',
             'the radio firmware cannot send channel data',
           );
         }
+        final airBytes = LocalApiServer.channelDataAirBytes(
+          payload.length,
+          path,
+        );
+        final now = wantsNow && airBytes <= LocalApiServer.priorityMaxAirBytes;
+        final trace = ChannelSendTrace();
+        Map<String, Object?> timings() => {
+          'req': _time(trace.requestedAt),
+          'lockMs': trace.lockWait?.inMilliseconds,
+          'quietMs': trace.quietWait?.inMilliseconds,
+          'ackMs': trace.acknowledgedAt
+              ?.difference(trace.requestedAt)
+              .inMilliseconds,
+        };
         return _logged(
           'channel.data',
           {
             'ch': channel.name,
             'dataType': dataType,
             'len': payload.length,
+            'air': airBytes,
             'route': path == null
                 ? 'flood'
                 : (path.isZeroHop ? 'zero-hop' : 'direct'),
             'path': path == null ? null : hexOf(path.hashes),
+            'pathLen': path == null
+                ? null
+                : path.hashes.length ~/ path.hashSize,
             'hashSize': path?.hashSize,
             'region': region,
+            'prio': params['priority'] == null
+                ? null
+                : (now ? 'now' : 'normal'),
           },
-          () => _send(() async {
-            final sent = await server.host.sendChannelData(
-              channel,
-              dataType,
-              payload,
-              region: region,
-              path: path,
-            );
-            if (!sent) {
-              throw _ApiError('not_connected', 'the radio is not connected');
-            }
-          }),
+          after: timings,
+          () async {
+            await _send(() async {
+              final sent = await server.host.sendChannelData(
+                channel,
+                dataType,
+                payload,
+                region: region,
+                path: path,
+                priority: now,
+                trace: trace,
+              );
+              if (!sent) {
+                throw _ApiError('not_connected', 'the radio is not connected');
+              }
+            }, gapExempt: payload.length <= _limits.minSendGapExemptBytes);
+            final sentAt = trace.acknowledgedAt ?? DateTime.now();
+            return {
+              'queued': true,
+              'sentAt': _time(sentAt),
+              if (params['priority'] != null)
+                'priority': now ? 'now' : 'normal',
+            };
+          },
         );
       case 'direct.sendText':
         _requireRadio();
@@ -837,16 +930,26 @@ class _ApiClient {
     }
   }
 
-  /// Spends one send from the quota and gives it back if the radio refuses.
-  /// Runs a send and writes one `tx` line with its outcome.
+  /// `priority`: absent, null or `"normal"`, or `"now"` (`tx_now`).
+  static bool _priorityParam(Map<String, dynamic> params) {
+    final raw = params['priority'];
+    if (raw == null || raw == 'normal') return false;
+    if (raw == 'now') return true;
+    throw _ApiError('bad_request', 'priority must be "now" or "normal"');
+  }
+
+  /// Runs a send and writes one `tx` line with its outcome; [after] adds
+  /// fields known only once the send is over (timings).
   Future<Object?> _logged(
     String type,
     Map<String, Object?> fields,
-    Future<Object?> Function() send,
-  ) async {
+    Future<Object?> Function() send, {
+    Map<String, Object?> Function()? after,
+  }) async {
     void log(String result) => server.trafficLog?.write('tx', {
       'type': type,
       ...fields,
+      ...?after?.call(),
       'client': name,
       'result': result,
     });
@@ -863,13 +966,20 @@ class _ApiClient {
     }
   }
 
-  Future<Object?> _send(Future<void> Function() action) async {
+  /// Spends one send from the quota and gives it back if the radio refuses.
+  /// A [gapExempt] send (a small channel-data payload) may follow the
+  /// previous one closer than `minSendGap`.
+  Future<Object?> _send(
+    Future<void> Function() action, {
+    bool gapExempt = false,
+  }) async {
     _requireRadio();
     final now = DateTime.now();
     _sendTimes.removeWhere(
       (time) => now.difference(time) >= const Duration(minutes: 1),
     );
-    if (_sendTimes.isNotEmpty &&
+    if (!gapExempt &&
+        _sendTimes.isNotEmpty &&
         now.difference(_sendTimes.last) < _limits.minSendGap) {
       throw _ApiError('rate_limited', 'sends are too close together');
     }
@@ -1014,6 +1124,9 @@ class _ApiClient {
     if (event.rssiDbm != null) 'rssiDbm': event.rssiDbm,
     if (event.path != null) 'path': hexOf(event.path!),
     if (event.pathHashSize != null) 'pathHashSize': event.pathHashSize,
+    if (event.transportCode != null) 'transportCode': event.transportCode,
+    if (event.scope != null) 'scope': event.scope,
+    if (event.queued) 'queued': true,
   };
 
   static String hexOf(Uint8List bytes) =>
