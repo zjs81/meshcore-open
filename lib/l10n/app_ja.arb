@@ -54,24 +54,13 @@
       }
     }
   },
-  "scanner_title": "MeshCore Open",
   "connectionChoiceUsbLabel": "USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "connectionChoiceTcpLabel": "TCP",
-  "tcpScreenTitle": "TCP で接続",
   "tcpHostLabel": "接続先",
   "tcpHostHint": "192.168.40.10 / example.com",
   "tcpPortLabel": "ポート",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "接続先を入力して接続してください",
-  "tcpStatus_connectingTo": "{endpoint} への接続中...",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "tcpErrorHostRequired": "接続先は必須です。",
   "tcpErrorPortInvalid": "ポート番号は1から65535の範囲で指定してください。",
   "tcpErrorUnsupported": "このプラットフォームでは、TCP 転送はサポートされていません。",
@@ -84,11 +73,11 @@
       }
     }
   },
-  "usbScreenTitle": "USB経由で接続",
   "usbScreenSubtitle": "検出されたシリアルデバイスを選択して、MeshCore ノードに直接接続します。",
   "usbScreenStatus": "USB デバイスを選択してください",
   "usbScreenNote": "USB シリアルは、対応する Android デバイスとデスクトップ プラットフォームで利用できます。",
   "usbScreenEmptyState": "USB デバイスが見つかりません。接続してから再度更新してください。",
+  "usbScreenEmptyStateAuto": "USB デバイスが見つかりません。接続するとここに表示されます。",
   "usbErrorPermissionDenied": "USBへのアクセス許可が拒否されました。",
   "usbErrorDeviceMissing": "選択されたUSBデバイスは、もう利用できません。",
   "usbErrorInvalidPort": "有効なUSBデバイスを選択してください。",
@@ -102,8 +91,6 @@
   "usbErrorPortClosed": "USB 接続は開かれていません。",
   "usbErrorConnectTimedOut": "接続がタイムアウトしました。デバイスにUSBコンパニオンファームウェアがインストールされていることを確認してください。",
   "usbFallbackDeviceName": "ウェブシリアルデバイス",
-  "usbStatus_notConnected": "USB デバイスを選択してください",
-  "usbStatus_connecting": "USBデバイスへの接続中...",
   "usbStatus_searching": "USBデバイスを検索中...",
   "usbConnectionFailed": "USB接続に失敗しました：{error}",
   "@usbConnectionFailed": {
@@ -3424,7 +3411,6 @@
   "contacts_advertFailed": "アドバートを送信できませんでした",
   "contacts_manageGroups": "グループを管理",
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "接続先",
   "usbChooseSerialPort": "シリアルポートを選択",
   "neighbors_durationSeconds": "{seconds}秒",

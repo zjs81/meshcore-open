@@ -91,24 +91,13 @@
   },
   "common_autoRefresh": "Autorefresh",
   "common_interval": "Interval",
-  "scanner_title": "MeshCore Open",
   "connectionChoiceUsbLabel": "USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "connectionChoiceTcpLabel": "TCP",
-  "tcpScreenTitle": "Connect over TCP",
   "tcpHostLabel": "Endpoint",
   "tcpHostHint": "192.168.40.10 / example.com",
   "tcpPortLabel": "Port",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Enter endpoint and connect",
-  "tcpStatus_connectingTo": "Connecting to {endpoint}...",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "tcpErrorHostRequired": "Host is required.",
   "tcpErrorPortInvalid": "Port must be between 1 and 65535.",
   "tcpErrorUnsupported": "TCP transport is not supported on this platform.",
@@ -121,11 +110,11 @@
       }
     }
   },
-  "usbScreenTitle": "Connect over USB",
   "usbScreenSubtitle": "Choose a detected serial device and connect directly to your MeshCore node.",
   "usbScreenStatus": "Select a USB device",
   "usbScreenNote": "USB serial is active on supported Android devices and desktop platforms.",
   "usbScreenEmptyState": "No USB devices found. Plug one in and refresh.",
+  "usbScreenEmptyStateAuto": "No USB devices found. Plug one in and it shows up here.",
   "usbErrorPermissionDenied": "USB permission was denied.",
   "usbErrorDeviceMissing": "The selected USB device is no longer available.",
   "usbErrorInvalidPort": "Select a valid USB device.",
@@ -139,8 +128,6 @@
   "usbErrorPortClosed": "The USB connection is not open.",
   "usbErrorConnectTimedOut": "Connection timed out. Make sure the device has USB Companion firmware.",
   "usbFallbackDeviceName": "Web Serial Device",
-  "usbStatus_notConnected": "Select a USB device",
-  "usbStatus_connecting": "Connecting to USB device...",
   "usbStatus_searching": "Searching for USB devices...",
   "usbConnectionFailed": "USB connection failed: {error}",
   "@usbConnectionFailed": {
@@ -4077,7 +4064,6 @@
   "@contacts_keyPrefixSemantics": {"placeholders": {"prefix": {"type": "String"}}},
   "community_shortId": "ID: {id}…",
   "@community_shortId": {"placeholders": {"id": {"type": "String"}}},
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Connected to",
   "usbChooseSerialPort": "Choose serial port",
   "neighbors_durationSeconds": "{seconds}s",

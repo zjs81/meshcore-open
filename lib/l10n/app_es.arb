@@ -54,7 +54,6 @@
       }
     }
   },
-  "scanner_title": "MeshCore Open",
   "scanner_scanning": "Escaneando dispositivos...",
   "scanner_connecting": "Conectando...",
   "scanner_disconnecting": "Desconectando...",
@@ -2221,13 +2220,13 @@
   },
   "map_guessedLocation": "Ubicación estimada",
   "map_showGuessedLocations": "Mostrar las ubicaciones estimadas de los nodos.",
-  "usbScreenTitle": "Conecte mediante USB",
   "connectionChoiceUsbLabel": "USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "usbScreenSubtitle": "Seleccione el dispositivo de serie detectado y conéctelo directamente a su nodo MeshCore.",
   "usbScreenStatus": "Seleccione un dispositivo USB",
   "usbScreenNote": "La comunicación serial a través de USB está activa en dispositivos Android compatibles y en plataformas de escritorio.",
   "usbScreenEmptyState": "No se encontraron dispositivos USB. Conecte uno y vuelva a intentar.",
+  "usbScreenEmptyStateAuto": "No se encontraron dispositivos USB. Conecte uno y aparecerá aquí.",
   "usbErrorPermissionDenied": "Se denegó el permiso de acceso a través de USB.",
   "usbErrorDeviceMissing": "El dispositivo USB seleccionado ya no está disponible.",
   "usbErrorInvalidPort": "Seleccione un dispositivo USB válido.",
@@ -2247,18 +2246,9 @@
       }
     }
   },
-  "usbStatus_connecting": "Conectándose al dispositivo USB...",
   "usbStatus_searching": "Buscando dispositivos USB...",
-  "usbStatus_notConnected": "Seleccione un dispositivo USB",
   "usbConnectionFailed": "Error al conectar mediante USB: {error}",
   "usbErrorConnectTimedOut": "La conexión ha caducado. Asegúrese de que el dispositivo tenga el firmware USB Companion.",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2266,14 +2256,11 @@
       }
     }
   },
-  "tcpScreenTitle": "Establecer conexión a través de TCP",
   "connectionChoiceTcpLabel": "TCP",
   "tcpHostHint": "192.168.40.10",
   "tcpHostLabel": "Dirección IP",
   "tcpPortLabel": "Puerto",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Ingrese la dirección final y conecte.",
-  "tcpStatus_connectingTo": "Conectándose a {endpoint}...",
   "tcpErrorHostRequired": "Se requiere la dirección IP.",
   "tcpErrorPortInvalid": "El puerto debe estar entre 1 y 65535.",
   "tcpErrorUnsupported": "El protocolo de transporte TCP no está soportado en esta plataforma.",
@@ -3424,7 +3411,6 @@
   "contacts_advertFailed": "No se pudo enviar el anuncio",
   "contacts_manageGroups": "Gestionar grupos",
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Conectado a",
   "usbChooseSerialPort": "Elegir puerto serie",
   "neighbors_durationSeconds": "{seconds} s",

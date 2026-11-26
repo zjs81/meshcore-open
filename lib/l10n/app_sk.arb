@@ -54,7 +54,6 @@
       }
     }
   },
-  "scanner_title": "MeshCore – Verzia pre verejnosť",
   "scanner_scanning": "Skrívania zariadení...",
   "scanner_connecting": "Pripojujem sa...",
   "scanner_disconnecting": "Odpojuje sa...",
@@ -2168,13 +2167,13 @@
   "discoveredContacts_deleteContactAllContent": "Ste si istí, že chcete zmazať všetky objavené kontakty?",
   "map_showGuessedLocations": "Zobraziť umiestnenia odhadnutých uzlov",
   "map_guessedLocation": "Odhadnutá lokalita",
-  "usbScreenTitle": "Pripojte cez USB",
   "usbScreenSubtitle": "Vyberte detekovaný sériový zariadenie a pripojte ho priamo k vašej MeshCore uzlu.",
   "connectionChoiceUsbLabel": "USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "usbScreenStatus": "Vyberte USB zariadenie",
   "usbScreenNote": "USB sériová komunikácia je aktívna na podporovaných zariadeniach s Androidom a na desktopových platformách.",
   "usbScreenEmptyState": "Nenašli sa žiadne USB zariadenia. Pripojte jedno a obnovte.",
+  "usbScreenEmptyStateAuto": "Nenašli sa žiadne USB zariadenia. Pripojte jedno a zobrazí sa tu.",
   "usbErrorPermissionDenied": "Žiadosť o prístup cez USB bola zamietnutá.",
   "usbErrorDeviceMissing": "Vybrané USB zariadenie už nie je dostupné.",
   "usbErrorInvalidPort": "Vyberte platné USB zariadenie.",
@@ -2196,16 +2195,7 @@
   },
   "usbStatus_searching": "Hľadanie USB zariadení...",
   "usbConnectionFailed": "Neúspešné pripojenie cez USB: {error}",
-  "usbStatus_notConnected": "Vyberte USB zariadenie",
-  "usbStatus_connecting": "Pripojenie k USB zariadeniu...",
   "usbErrorConnectTimedOut": "Pripojenie nebolo úspešné. Uistite sa, že zariadenie má nainštalovaný firmware USB Companion.",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2215,12 +2205,9 @@
   },
   "tcpHostHint": "192.168.40.10",
   "tcpHostLabel": "IP adresa",
-  "tcpScreenTitle": "Spojte sa pomocou protokolu TCP",
   "connectionChoiceTcpLabel": "TCP",
   "tcpPortLabel": "Prístav",
   "tcpPortHint": "5 000",
-  "tcpStatus_notConnected": "Zadajte cieľovú adresu a pripojte sa.",
-  "tcpStatus_connectingTo": "Pripojenie k {endpoint}...",
   "tcpErrorHostRequired": "Je potrebné zadať IP adresu.",
   "tcpErrorPortInvalid": "Číslo portu musí byť medzi 1 a 65535.",
   "tcpErrorUnsupported": "Prevoz prostredníctvom protokolu TCP nie je na tejto platforme podporovaný.",
@@ -3434,7 +3421,6 @@
     }
   },
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Pripojené k",
   "usbChooseSerialPort": "Vyberte sériový port",
   "neighbors_durationSeconds": "{seconds}s",

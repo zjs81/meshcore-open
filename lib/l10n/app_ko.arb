@@ -48,24 +48,13 @@
       }
     }
   },
-  "scanner_title": "MeshCore Open",
   "connectionChoiceUsbLabel": "USB",
   "connectionChoiceBluetoothLabel": "블루투스",
   "connectionChoiceTcpLabel": "TCP",
-  "tcpScreenTitle": "TCP를 통해 연결",
   "tcpHostLabel": "IP 주소",
   "tcpHostHint": "192.168.40.10 / example.com",
   "tcpPortLabel": "포트",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "엔드포인트를 입력한 뒤 연결하세요.",
-  "tcpStatus_connectingTo": "{endpoint}에 연결 중...",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "tcpErrorHostRequired": "IP 주소가 필요합니다.",
   "tcpErrorPortInvalid": "포트 번호는 1에서 65535 사이여야 합니다.",
   "tcpErrorUnsupported": "이 플랫폼에서는 TCP 트랜스포트를 지원하지 않습니다.",
@@ -78,11 +67,11 @@
       }
     }
   },
-  "usbScreenTitle": "USB를 통해 연결",
   "usbScreenSubtitle": "감지된 시리얼 장치를 선택하고 MeshCore 노드에 직접 연결하십시오.",
   "usbScreenStatus": "USB 장치를 선택하세요.",
   "usbScreenNote": "USB 직렬 통신은 지원되는 Android 기기 및 데스크톱 플랫폼에서 사용할 수 있습니다.",
   "usbScreenEmptyState": "USB 장치가 없습니다. 하나 연결한 뒤 새로고침하세요.",
+  "usbScreenEmptyStateAuto": "USB 장치가 없습니다. 하나 연결하면 여기에 표시됩니다.",
   "usbErrorPermissionDenied": "USB 접근 권한이 거부되었습니다.",
   "usbErrorDeviceMissing": "선택한 USB 장치를 더 이상 사용할 수 없습니다.",
   "usbErrorInvalidPort": "유효한 USB 장치를 선택하세요.",
@@ -96,8 +85,6 @@
   "usbErrorPortClosed": "USB 연결이 열려 있지 않습니다.",
   "usbErrorConnectTimedOut": "연결 시간이 초과되었습니다. 장치에 USB Companion 펌웨어가 있는지 확인하세요.",
   "usbFallbackDeviceName": "웹 시리얼 장치",
-  "usbStatus_notConnected": "USB 장치를 선택합니다.",
-  "usbStatus_connecting": "USB 장치에 연결 중...",
   "usbStatus_searching": "USB 장치 검색 중...",
   "usbConnectionFailed": "USB 연결 실패: {error}",
   "@usbConnectionFailed": {
@@ -3424,7 +3411,6 @@
   "contacts_advertFailed": "어드버트를 보낼 수 없습니다",
   "contacts_manageGroups": "그룹 관리",
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "연결 대상",
   "usbChooseSerialPort": "시리얼 포트 선택",
   "neighbors_durationSeconds": "{seconds}초",

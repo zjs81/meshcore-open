@@ -4,7 +4,7 @@ When no radio is connected, the app keeps showing the last radio you connected t
 
 ## What you see
 
-- **Launch.** If a radio has connected before, the app opens on Channels instead of the scanner. With no remembered radio it opens on the scanner, as before.
+- **Launch.** If a radio has connected before, the app opens on Channels instead of Connect a radio. With no remembered radio it opens on Connect a radio, as before.
 - **Contacts, channels, messages, unread counts and the map** show that radio's saved data. Chats open, scroll, search and jump as usual.
 - **App bar.** The battery and signal indicators are replaced by a **Connect** button (icon only on narrow screens). The subtitle reads "Offline · *radio name*". While the app is connecting, or a dropped link will be retried, a "Reconnecting…" chip shows instead; tapping it opens the same sheet.
 - **Message box.** Each chat replaces the message box with "Connect to a radio to send messages" and a Connect button. Text you typed before the link dropped is kept and comes back when the radio reconnects.
@@ -13,13 +13,13 @@ When no radio is connected, the app keeps showing the last radio you connected t
 
 The Connect button and the overflow menu's **Connect** entry (it replaces **Disconnect** while offline) open a sheet with:
 
-- **Reconnect to *name*.** For a Bluetooth or TCP radio. It connects directly, without the scanner. Not offered on web.
-- **Choose a radio.** Opens the scanner (Bluetooth, USB or TCP). For a USB radio, or on web, it opens the USB screen.
+- **Reconnect to *name*.** For a Bluetooth or TCP radio. It connects directly, without Connect a radio. Not offered on web.
+- **Choose a radio.** Opens Connect a radio on the tab of the last radio's connection type (Bluetooth, USB or TCP); on web, the USB tab.
 - **Stop reconnecting.** Shown while an automatic reconnect is pending.
 
-After a connection made from the scanner, USB, TCP or review mode, the app shows Channels as its only screen. Reconnecting from the sheet keeps you on the screen you were on.
+After a connection made from Connect a radio or review mode, the app shows Channels as its only screen. Reconnecting from the sheet keeps you on the screen you were on.
 
-**Disconnect** asks for confirmation and then leaves you on the same screen, offline. The app no longer returns to the scanner when a radio disconnects.
+**Disconnect** asks for confirmation and then leaves you on the same screen, offline. The app no longer returns to Connect a radio when a radio disconnects.
 
 ## What is available offline
 

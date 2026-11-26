@@ -137,6 +137,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Editing a set of members | Current items first, then a searchable add list | Group editor (`contact_group_editor_dialog.dart`). Wrapping upper-case section label with the count ("Current members (N)"); each member row has a trailing `IconButton` remove (`error` colour, tooltip names the item); the add list excludes current members, and tapping the row or its `primary` add button adds it |
 | Popup menu row | **always** `PopupMenuItem(child: MeshMenuItemRow(icon:, label:))` | Relies on `MeshTheme.popupMenuTheme` (`surfaceContainerHigh`, `MeshRadii.md`); `MeshMenuItemRow` gives a 20px icon slot, 12px gap, and 2-line wrap + ellipsis (`leading:` for `ThemedIcon`, no icon keeps the 20px slot). Main views share `mainOverflowTrailingItems` (`widgets/connect_sheet.dart`) |
 | Segmented button label | **always** `ButtonSegment(label: MeshSegmentLabel(text))` | Shrinks to 12 (before system scale), then wraps at word boundaries onto 2 centred lines; never breaks a word |
+| Alternatives on one page | `TabBar` (icon and label per tab) in `AppBar.bottom` with a `TabBarView` | Connect a radio (`connect_screen.dart`). A tab that needs its own FAB is its own `Scaffold` inside its own `ScaffoldMessenger`, so its snackbars lift its FAB. Labels shrink to fit (`FittedBox`) rather than fade. While an action runs that leaving the tab would cancel, lock the tabs: `ExcludeFocus` and `IgnorePointer` at 50 % opacity, and `NeverScrollableScrollPhysics`. When the keyboard leaves under 400 dp, drop the tab bar and the header so a form keeps room |
 | Status | `StatusChip` | Mono label, coloured dot or icon |
 | On-device model | `ModelDownloadList` | Name, size, status, selection and one action. See [Model downloads](#model-downloads). |
 | Metric | `StatTile` | Label wraps to 2 lines; value wraps |
@@ -146,6 +147,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Empty list | `EmptyState(icon:, title:, subtitle:, action:)` | Scrolls rather than overflowing at large text |
 | Inline error with retry | `ErrorRetryCard(message:, onRetry:, retryLabel:)` | Pass `retryLabel: context.l10n.common_retry` |
 | Radio offline on a remote-node screen | `RadioDisconnectedBanner` | Renders nothing while connected |
+| Card the user can close | `GetNodeBanner` (bottom of Connect a radio) | Close `IconButton` (`common_close` tooltip) at the end of the title row; closing hides it with `RevealOnEnable` until the page closes. At most 40 % of the screen height, scrolling inside at large text; hidden on screens under 480 dp tall (a landscape phone) |
 | Progress bar | `MeshProgressBar`; `MeshProgressAppBarBottom` as an app bar `bottom`; `SyncProgressAppBarBottom` for the app syncs, with `busy: true` while the screen waits for the radio (Settings actions) (`widgets/sync_progress_overlay.dart`) | See [Progress bars](#progress-bars) |
 | Toast message | `showDismissibleSnackBar(context, content: Text(...))` | Tap to dismiss, replaces the current snackbar, safe after an async gap |
 | List item entrance | `ListEntrance(index:)` | Optional. Plays only for rows built while the list is at rest at the top; rows scrolled into view appear at once |
@@ -177,7 +179,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 
 A switch that uncovers more controls (such as **Enable image messages** and **Enable translation**) uses `SettingsReveal` (`lib/widgets/settings_reveal.dart`). The block's height eases over 200ms (`RevealOnEnable.duration`, `Curves.easeInOut`, aligned to the top). While the switch is off the extra controls are not in the tree, so they are not announced. The panel uses `surfaceContainerHighest` and a 16px start indent. Because the panel already sits on `surfaceContainerHighest`, controls and inset notices inside it must contrast against `surfaceContainerHighest` as well as `surfaceContainerLow` (`MeshTheme`'s slider inactive track and value indicator step away from `surfaceContainerHighest`, and inset notice boxes inside `SettingsReveal`, such as `ImageCodecModelsSection`'s unavailable-platform notice, use `surfaceContainerLow` with an `outlineVariant` border).
 
-The same animation without the tint is `RevealOnEnable`. Use it when the revealed control is not a settings sub-panel: the Bluetooth-off banner on the scanner and the device-info rows on the Settings screen.
+The same animation without the tint is `RevealOnEnable`. Use it when the revealed control is not a settings sub-panel: the Bluetooth-off banner on the scanner, the device-info rows on the Settings screen, and the node banner on Connect a radio.
 
 Do not add a second duration, and do not reveal the controls with a plain `if` that pops them in. A block that swaps between two bodies, such as the filtered-message preview, keeps `AnimatedSize` but uses `RevealOnEnable.duration` and `RevealOnEnable.curve`.
 

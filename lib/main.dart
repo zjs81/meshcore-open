@@ -18,7 +18,7 @@ import 'games/chess/chess_link.dart';
 import 'games/chess/chess_service.dart';
 import 'helpers/message_url_image_helper.dart';
 import 'models/image_codec_support.dart';
-import 'screens/scanner_screen.dart';
+import 'screens/connect_screen.dart';
 import 'services/image_chunk_transport.dart';
 import 'services/image_codec_service.dart';
 import 'services/image_codec_settings_store.dart';
@@ -434,7 +434,7 @@ class _MeshCoreAppState extends State<MeshCoreApp> with WidgetsBindingObserver {
       ? const ChromeRequiredScreen()
       : widget.connector.hasRadioData
       ? const ChannelsScreen()
-      : const ScannerScreen();
+      : const ConnectScreen();
 
   @override
   void initState() {

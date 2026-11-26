@@ -54,7 +54,6 @@
       }
     }
   },
-  "scanner_title": "MeshCore Open",
   "scanner_scanning": "Recherche de périphériques...",
   "scanner_connecting": "Connexion en cours...",
   "scanner_disconnecting": "Déconnexion...",
@@ -2215,12 +2214,12 @@
   "map_showGuessedLocations": "Afficher les emplacements estimés des nœuds",
   "map_guessedLocation": "Localisation estimée",
   "connectionChoiceUsbLabel": "USB",
-  "usbScreenTitle": "Connectez via USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "usbScreenSubtitle": "Sélectionnez un périphérique série détecté et connectez-vous directement à votre nœud MeshCore.",
   "usbScreenStatus": "Sélectionnez un périphérique USB",
   "usbScreenNote": "La communication série USB est active sur les appareils Android et les plateformes de bureau compatibles.",
   "usbScreenEmptyState": "Aucun périphérique USB n'a été trouvé. Veuillez en brancher un et rafraîchir la page.",
+  "usbScreenEmptyStateAuto": "Aucun périphérique USB n'a été trouvé. Veuillez en brancher un et il apparaîtra ici.",
   "usbErrorPermissionDenied": "L'accès via USB a été refusé.",
   "usbErrorDeviceMissing": "Le périphérique USB sélectionné n'est plus disponible.",
   "usbErrorInvalidPort": "Sélectionnez un périphérique USB valide.",
@@ -2240,18 +2239,9 @@
       }
     }
   },
-  "usbStatus_notConnected": "Sélectionnez un périphérique USB",
   "usbConnectionFailed": "Échec de la connexion USB : {error}",
-  "usbStatus_connecting": "Connexion au périphérique USB...",
   "usbStatus_searching": "Recherche de périphériques USB...",
   "usbErrorConnectTimedOut": "La connexion a expiré. Assurez-vous que l'appareil dispose du firmware USB Companion.",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2261,12 +2251,9 @@
   },
   "tcpHostLabel": "Adresse IP",
   "connectionChoiceTcpLabel": "TCP",
-  "tcpScreenTitle": "Établir une connexion via TCP",
   "tcpHostHint": "192.168.40.10",
   "tcpPortLabel": "Port",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Entrez l'adresse de destination et connectez-vous.",
-  "tcpStatus_connectingTo": "Connexion à {endpoint}...",
   "tcpErrorHostRequired": "Une adresse IP est obligatoire.",
   "tcpErrorPortInvalid": "La taille du port doit être comprise entre 1 et 65535.",
   "tcpErrorUnsupported": "Le protocole TCP n'est pas pris en charge sur cette plateforme.",
@@ -3424,7 +3411,6 @@
   "contacts_advertFailed": "Impossible d'envoyer l'annonce",
   "contacts_manageGroups": "Gérer les groupes",
   "community_shortId": "ID : {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Connecté à",
   "usbChooseSerialPort": "Choisir le port série",
   "neighbors_durationSeconds": "{seconds} s",

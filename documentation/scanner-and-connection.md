@@ -1,39 +1,38 @@
 # Scanner & Connection
 
-## BLE Scanner (Home Screen)
+## Connect a Radio
 
-The BLE Scanner is the app's home screen until a radio has connected once. After that the app opens on Channels with the last radio's saved data ([offline mode](offline-mode.md)).
+**Connect a radio** is the app's home screen until a radio has connected once. After that the app opens on Channels with the last radio's saved data ([offline mode](offline-mode.md)).
 
 ### How to Access
 
 - Opens automatically when the app starts and no radio is remembered
-- From the main screens: **Connect** (app bar or overflow menu) → **Choose a radio**
+- From the main screens: **Connect** (app bar or overflow menu) → **Choose a radio**. It opens on the tab of the last radio's connection type (on web, the USB tab)
 - Disconnecting no longer returns here; the main screens stay open, read-only
 
 ### What the User Sees
 
-**App Bar**: Centered title "Scanner".
+**App Bar**: Centered title "Connect a radio" with **Bluetooth**, **USB** and **TCP** tabs below it. Tap a tab or swipe between them. There is no USB tab on iOS, and no TCP tab on web (Chrome). The tabs stay put while a connection is being made, because leaving a tab cancels its connection.
 
-**Bluetooth-Off Warning Banner** (conditional): Appears when the Bluetooth adapter is off, showing a `bluetooth_disabled` icon, a warning message, and on Android, an "Enable Bluetooth" button.
-
-**Status Bar**: A full-width colored strip reflecting the current connection state:
+**Status Chip**: Under the tabs, the same on every tab:
 
 | State | Text | Color |
 |---|---|---|
 | Disconnected | "Not connected" | Grey |
-| Scanning | "Scanning..." | Blue |
+| Scanning (Bluetooth) | "Scanning for devices..." | Blue |
 | Connecting | "Connecting..." | Orange |
-| Connected | "Connected to \<device name\>" | Green |
+| Connected | "Connected to \<device name, USB port or TCP endpoint\>" | Green |
 | Disconnecting | "Disconnecting..." | Orange |
 
-**Device List**: When no devices are found, shows a large Bluetooth icon with a prompt. The prompt text is dynamic: "Searching for devices..." while actively scanning, or "Tap Scan to search" when idle. When devices are found, shows a scrollable list of `DeviceTile` widgets.
+**Need a new node? card** (bottom of the page): Shown only when the remote `_banner.meshcoreopen.org` record turns it on, and not on a screen too short for it (under 480 dp, such as a landscape phone). Tapping it opens the shop link. **Close** hides it on every tab until you leave the page; it shows again the next time you open it.
 
-**App Bar Actions**: Icon buttons in the top-right corner of the app bar:
-- **USB** icon button - Opens USB connection screen (Android, Windows, Linux, macOS, Chrome web only)
-- **TCP/IP** icon button - Opens TCP connection screen (all non-web platforms)
+## Bluetooth Tab
 
-**Bottom FAB**: A single floating action button:
-- **BLE Scan** button - Toggles BLE scanning on/off; shows a spinner when scanning. **Disabled** (greyed out, not tappable) when Bluetooth is off
+**Bluetooth-Off Warning Banner** (conditional): Appears when the Bluetooth adapter is off, showing a `bluetooth_disabled` icon, a warning message, and on Android, an "Enable Bluetooth" button.
+
+**Device List**: When no devices are found, shows a large Bluetooth icon with a prompt: "Searching for MeshCore devices..." while scanning, or "Tap Scan to find MeshCore devices" when idle. When devices are found, shows a scrollable list of `DeviceTile` rows.
+
+**Scan Button** (bottom right): Toggles BLE scanning on/off; shows a spinner when scanning. **Disabled** (greyed out, not tappable) when Bluetooth is off. Leaving the tab stops a scan, so the other tabs can connect straight away. On web, Scan explains that Bluetooth isn't available in the browser.
 
 ### Device Tile
 
@@ -47,7 +46,7 @@ Each discovered device is displayed as a list tile showing:
 - **RSSI value** in dBm (e.g., "-72 dBm")
 - **Device name** (falls back to "Unknown Device")
 - **Device ID** (BLE MAC address on Android; a system-assigned UUID on iOS/macOS)
-- **Connect button** (the entire tile row is also tappable — both trigger connection)
+- The whole row is tappable to connect; a progress ring replaces the signal while connecting
 
 Note: The weak (-80 to -90 dBm) and poor (< -90 dBm) tiers share the same icon shape and are only differentiated by color (orange vs. red).
 
@@ -61,7 +60,7 @@ Note: The weak (-80 to -90 dBm) and poor (< -90 dBm) tiers share the same icon s
 
 ### Connecting to a Device
 
-Tap a device tile or its Connect button:
+Tap a device row:
 1. The connector stops scanning and transitions to "connecting"
 2. Connects to the device with a 15-second timeout (6 seconds on Linux)
 3. Requests MTU 185 bytes for optimal throughput
@@ -72,57 +71,46 @@ Tap a device tile or its Connect button:
 
 ---
 
-## USB Connection
-
-### How to Access
-
-From the Scanner screen, tap the **USB** icon button in the app bar.
+## USB Tab
 
 ### What the User Sees
 
-- A colored status bar at the top (same color scheme as BLE scanner)
-- A list of detected USB serial ports, each showing:
+- A list of detected USB serial ports, in the same rows as Bluetooth devices:
   - Friendly display name
-  - Raw port name (subtitle, only shown when it differs from the display name)
-  - Chevron trailing icon (the entire tile is tappable to connect)
-- Transport switcher buttons (outlined, not FABs) to switch to BLE or TCP (these use `pushReplacement`, so back navigation returns to Scanner, not between USB/TCP)
+  - Raw port name (only shown when it differs from the display name)
+  - A progress ring on the port being connected
+- On web: a **Choose serial port** button opens the browser's port picker; ports you already allowed are listed below it
 
 ### Key Interactions
 
-- On desktop (Windows, Linux, macOS): ports are polled every 2 seconds for hot-plug detection (polling pauses while connecting/connected)
-- On mobile: tap the "Scan" FAB to manually refresh
-- Tap a port tile to connect
+- On desktop (Windows, Linux, macOS): ports are polled every 2 seconds for hot-plug detection (polling pauses while connecting/connected); with nothing plugged in, the list says a radio shows up by itself
+- On Android: tap **Refresh** to look for ports again
+- Tap a port row to connect
 - On successful connection, navigates to Channels screen
 - On connection failure, the port list automatically refreshes
 - Platform-specific error messages for common USB failures (permission denied, device missing, device detached, device busy, driver missing, port invalid, timeout, and more)
 
 ---
 
-## TCP Connection
-
-### How to Access
-
-From the Scanner screen, tap the **TCP/IP** icon button in the app bar.
+## TCP Tab
 
 ### What the User Sees
 
-- A colored status bar at the top
-- **Host address** text field
-- **Port number** text field
+- **Endpoint** text field
+- **Port** text field
 - **Connect** button
-- Transport switcher buttons (outlined, not FABs) to switch to USB or BLE
 
 ### Key Interactions
 
-- Last-used host and port are pre-populated from saved settings
+- Last-used endpoint and port are pre-populated from saved settings
+- On short screens, the tabs and the status chip hide while the keyboard is open
 - Tap Connect to validate inputs and connect
-  - Host must not be empty
+  - Endpoint must not be empty
   - Port must be a number between 1 and 65535
-  - Validation errors are shown as red snackbars
+  - Validation errors are shown under the fields
 - The Connect button shows a spinner and "Connecting..." label while in progress
-- The status bar shows the specific host:port being connected to (e.g., "Connecting to 192.168.1.1:5000")
-- On success, navigates to Channels screen and saves the host/port to settings
-- On connection, the status bar shows the active TCP endpoint (e.g., "Connected to 192.168.1.1:5000")
+- On success, navigates to Channels screen and saves the endpoint and port to settings
+- On connection, the status chip shows the active TCP endpoint (e.g., "Connected to 192.168.1.1:5000")
 - Error messages for timeout, unsupported platform, and connection failures
 
 ### Automatic Reconnect

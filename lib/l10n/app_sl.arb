@@ -54,7 +54,6 @@
       }
     }
   },
-  "scanner_title": "MeshCore – Odprto",
   "scanner_scanning": "Skeniram za naprave...",
   "scanner_connecting": "Povezujem se...",
   "scanner_disconnecting": "Odklapljam se...",
@@ -2087,13 +2086,13 @@
   "discoveredContacts_deleteContactAll": "Izbriši vse odkrite kontakte",
   "map_guessedLocation": "Predpostavljena lokacija",
   "map_showGuessedLocations": "Pokaži lokacije domnevnih not.",
-  "usbScreenTitle": "Povežite preko USB",
   "usbScreenSubtitle": "Izberite zaznano serijsko napravo in se neposredno povežite z vašo MeshCore napravo.",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "connectionChoiceUsbLabel": "USB",
   "usbScreenStatus": "Izberite USB naprave",
   "usbScreenNote": "USB serijska povezava je aktivna na podprtih napravah Android in na desktop platformah.",
   "usbScreenEmptyState": "Niti en USB naprave niso najdeni. Povežite eno in posodobite.",
+  "usbScreenEmptyStateAuto": "Niti en USB naprave niso najdeni. Povežite eno in prikazala se bo tukaj.",
   "usbErrorPermissionDenied": "Dovoljenje za dostop preko USB-ja je bilo zavrnjeno.",
   "usbErrorDeviceMissing": "Izbrani USB napravej je več ne.",
   "usbErrorInvalidPort": "Izberite veljavno USB naprave.",
@@ -2113,18 +2112,9 @@
       }
     }
   },
-  "usbStatus_notConnected": "Izberite USB naprave.",
-  "usbStatus_connecting": "Povezava z USB napravo...",
   "usbStatus_searching": "Iskanje USB naprav...",
   "usbConnectionFailed": "Napaka pri povezavi preko USB: {error}",
   "usbErrorConnectTimedOut": "Vzpostavitve ni bilo mogo. Prosimo, da se prepričate, da ima naprave trenutno nameštan firmware USB Companion.",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2135,11 +2125,8 @@
   "connectionChoiceTcpLabel": "TCP",
   "tcpHostLabel": "IP naslov",
   "tcpHostHint": "192.168.40.10",
-  "tcpScreenTitle": "Komunicirajte preko protokola TCP",
   "tcpPortLabel": "Vrata",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Vnesite končni naslov in se povežite",
-  "tcpStatus_connectingTo": "Povezava z {endpoint}...",
   "tcpErrorHostRequired": "Potrebna je IP-naslov.",
   "tcpErrorPortInvalid": "Port mora biti med 1 in 65535.",
   "tcpErrorUnsupported": "Transport preko protokola TCP ni podprt na tej platformi.",
@@ -3291,7 +3278,6 @@
   "contacts_advertFailed": "Oglasa ni bilo mogoče poslati",
   "contacts_manageGroups": "Upravljaj skupine",
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Povezano z",
   "usbChooseSerialPort": "Izberite serijska vrata",
   "neighbors_durationSeconds": "{seconds} s",

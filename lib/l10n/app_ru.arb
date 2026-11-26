@@ -41,7 +41,6 @@
   "common_percentValue": "{percent}%",
   "common_autoRefresh": "Автообновление",
   "common_interval": "Интервал",
-  "scanner_title": "MeshCore Open",
   "scanner_scanning": "Поиск устройств...",
   "scanner_connecting": "Подключение...",
   "scanner_disconnecting": "Отключение...",
@@ -1344,11 +1343,11 @@
   "map_showGuessedLocations": "Отобразить предполагаемые места расположения узлов",
   "connectionChoiceUsbLabel": "USB",
   "usbScreenSubtitle": "Выберите обнаруженное устройство с последовательным интерфейсом и подключите его напрямую к вашему узлу MeshCore.",
-  "usbScreenTitle": "Подключение через USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "usbScreenStatus": "Выберите USB-устройство",
   "usbScreenNote": "USB-серийный порт активен на поддерживаемых устройствах Android и на настольных платформах.",
   "usbScreenEmptyState": "Не обнаружено устройств USB. Подключите одно из них и обновите список.",
+  "usbScreenEmptyStateAuto": "Не обнаружено устройств USB. Подключите одно из них, и оно появится здесь.",
   "usbErrorPermissionDenied": "Запрос на доступ через USB был отклонен.",
   "usbErrorDeviceMissing": "Выбранное USB-устройство больше недоступно.",
   "usbErrorInvalidPort": "Выберите действительное USB-устройство.",
@@ -1369,17 +1368,8 @@
     }
   },
   "usbStatus_searching": "Поиск USB-устройств...",
-  "usbStatus_connecting": "Подключение к USB-устройству...",
   "usbConnectionFailed": "Не удалось установить соединение через USB: {error}",
-  "usbStatus_notConnected": "Выберите USB-устройство",
   "usbErrorConnectTimedOut": "Соединение не установлено. Убедитесь, что устройство имеет установленное программное обеспечение USB Companion.",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -1390,11 +1380,8 @@
   "tcpHostHint": "192.168.40.10",
   "connectionChoiceTcpLabel": "TCP",
   "tcpHostLabel": "IP-адрес",
-  "tcpScreenTitle": "Установить соединение по протоколу TCP",
   "tcpPortLabel": "Порт",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Введите адрес и подключитесь.",
-  "tcpStatus_connectingTo": "Подключение к {endpoint}...",
   "tcpErrorHostRequired": "Необходимо указать IP-адрес.",
   "tcpErrorPortInvalid": "Порт должен находиться в диапазоне от 1 до 65535.",
   "tcpErrorUnsupported": "Протокол TCP не поддерживается на этой платформе.",
@@ -2709,7 +2696,6 @@
     }
   },
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Подключено к",
   "usbChooseSerialPort": "Выберите последовательный порт",
   "neighbors_durationSeconds": "{seconds}с",

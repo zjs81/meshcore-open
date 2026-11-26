@@ -54,7 +54,6 @@
       }
     }
   },
-  "scanner_title": "MeshCore Open",
   "scanner_scanning": "Scansione in corso per i dispositivi...",
   "scanner_connecting": "Connessione...",
   "scanner_disconnecting": "Disconnessione...",
@@ -2228,10 +2227,10 @@
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "usbScreenSubtitle": "Seleziona il dispositivo seriale rilevato e connettilo direttamente al tuo nodo MeshCore.",
   "connectionChoiceUsbLabel": "USB",
-  "usbScreenTitle": "Connessione tramite USB",
   "usbScreenStatus": "Seleziona un dispositivo USB",
   "usbScreenNote": "La comunicazione seriale USB è attiva sui dispositivi Android supportati e sulle piattaforme desktop.",
   "usbScreenEmptyState": "Nessun dispositivo USB rilevato. Collegare uno e aggiornare.",
+  "usbScreenEmptyStateAuto": "Nessun dispositivo USB rilevato. Collegare uno e apparirà qui.",
   "usbErrorPermissionDenied": "È stato negato l'accesso tramite USB.",
   "usbErrorDeviceMissing": "Il dispositivo USB selezionato non è più disponibile.",
   "usbErrorInvalidPort": "Seleziona un dispositivo USB valido.",
@@ -2253,16 +2252,7 @@
   },
   "usbStatus_searching": "Ricerca di dispositivi USB...",
   "usbConnectionFailed": "Errore nella connessione USB: {error}",
-  "usbStatus_notConnected": "Seleziona un dispositivo USB",
-  "usbStatus_connecting": "Connessione al dispositivo USB...",
   "usbErrorConnectTimedOut": "La connessione è scaduta. Assicurarsi che il dispositivo abbia il firmware USB Companion.",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2273,11 +2263,8 @@
   "tcpHostLabel": "Indirizzo IP",
   "tcpHostHint": "192.168.40.10",
   "connectionChoiceTcpLabel": "TCP",
-  "tcpScreenTitle": "Stabilire una connessione tramite TCP",
   "tcpPortLabel": "Porta",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Inserisci l'endpoint e connettiti.",
-  "tcpStatus_connectingTo": "Connessione a {endpoint}...",
   "tcpErrorHostRequired": "È necessario fornire un indirizzo IP.",
   "tcpErrorPortInvalid": "La dimensione della porta deve essere compresa tra 1 e 65535.",
   "tcpErrorUnsupported": "Il protocollo TCP non è supportato su questa piattaforma.",
@@ -3424,7 +3411,6 @@
   "contacts_advertFailed": "Impossibile inviare l'annuncio",
   "contacts_manageGroups": "Gestisci gruppi",
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Connesso a",
   "usbChooseSerialPort": "Scegli porta seriale",
   "neighbors_durationSeconds": "{seconds} s",

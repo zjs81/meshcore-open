@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
-import 'package:meshcore_open/screens/scanner_screen.dart';
+import 'package:meshcore_open/screens/connect_screen.dart';
 import 'package:meshcore_open/screens/tcp_screen.dart';
 import 'package:meshcore_open/services/app_settings_service.dart';
 
@@ -15,6 +15,7 @@ class _FakeMeshCoreConnector extends MeshCoreConnector {
   MeshCoreTransportType initialTransport = MeshCoreTransportType.bluetooth;
   String? initialEndpoint;
   int connectTcpCalls = 0;
+  int manualDisconnectCalls = 0;
   String? lastHost;
   int? lastPort;
 
@@ -37,6 +38,14 @@ class _FakeMeshCoreConnector extends MeshCoreConnector {
     connectTcpCalls += 1;
     lastHost = host;
     lastPort = port;
+  }
+
+  @override
+  Future<void> disconnect({
+    bool manual = true,
+    bool skipBleDeviceDisconnect = false,
+  }) async {
+    if (manual) manualDisconnectCalls += 1;
   }
 }
 
@@ -77,10 +86,8 @@ void main() {
     final context = tester.element(find.byType(TcpScreen));
     final l10n = AppLocalizations.of(context);
 
-    expect(find.text(l10n.tcpScreenTitle), findsOneWidget);
     expect(find.text(l10n.tcpHostLabel), findsOneWidget);
     expect(find.text(l10n.tcpPortLabel), findsOneWidget);
-    expect(find.text(l10n.tcpStatus_notConnected), findsOneWidget);
   });
 
   testWidgets('TcpScreen validation errors are localized', (tester) async {
@@ -113,34 +120,44 @@ void main() {
     expect(connector.connectTcpCalls, 0);
   });
 
-  testWidgets('TCP Bluetooth action returns to existing scanner route', (
+  testWidgets('leaving TcpScreen keeps an automatic reconnect going', (
+    tester,
+  ) async {
+    final connector = _FakeMeshCoreConnector()
+      ..initialState = MeshCoreConnectionState.connecting
+      ..initialTransport = MeshCoreTransportType.tcp;
+
+    await tester.pumpWidget(
+      _buildTestApp(connector: connector, child: const TcpScreen()),
+    );
+    await tester.pump();
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+
+    expect(connector.manualDisconnectCalls, 0);
+  });
+
+  testWidgets('leaving TcpScreen cancels the connection it started', (
     tester,
   ) async {
     final connector = _FakeMeshCoreConnector();
 
     await tester.pumpWidget(
-      _buildTestApp(connector: connector, child: const ScannerScreen()),
+      _buildTestApp(connector: connector, child: const TcpScreen()),
     );
-    await tester.pumpAndSettle();
-
-    final scannerContext = tester.element(find.byType(ScannerScreen));
-    final scannerL10n = AppLocalizations.of(scannerContext);
-    await tester.tap(find.byTooltip(scannerL10n.connectionChoiceTcpLabel));
-    await tester.pumpAndSettle();
-    expect(find.byType(TcpScreen), findsOneWidget);
-
-    await tester.tap(find.widgetWithText(OutlinedButton, 'Bluetooth'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(TcpScreen), findsNothing);
-    expect(find.byType(ScannerScreen), findsOneWidget);
-    final navigatorState = tester.state<NavigatorState>(find.byType(Navigator));
-    expect(navigatorState.canPop(), isFalse);
-
-    // ScannerScreen.dispose() schedules disconnect work that debounces notify.
-    // Drain that debounce timer before test teardown.
+    await tester.pump();
+    await tester.enterText(find.byType(TextField).first, '192.168.1.40');
+    await tester.enterText(find.byType(TextField).last, '5000');
+    await tester.tap(find.byKey(const Key('tcp_connect_button')));
+    await tester.pump();
+    connector
+      ..initialState = MeshCoreConnectionState.connecting
+      ..initialTransport = MeshCoreTransportType.tcp;
     await tester.pumpWidget(const SizedBox.shrink());
-    await tester.pump(const Duration(milliseconds: 60));
+    await tester.pump();
+
+    expect(connector.connectTcpCalls, 1);
+    expect(connector.manualDisconnectCalls, 1);
   });
 
   testWidgets('TcpScreen disables connect button while connector is scanning', (
@@ -165,7 +182,7 @@ void main() {
     expect(connector.connectTcpCalls, 0);
   });
 
-  testWidgets('TcpScreen narrow width long status text does not overflow', (
+  testWidgets('Connect screen fits a long TCP endpoint at narrow width', (
     tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(320, 700));
@@ -179,7 +196,7 @@ void main() {
     await tester.pumpWidget(
       _buildTestApp(
         connector: connector,
-        child: const TcpScreen(),
+        child: const ConnectScreen(initialTransport: MeshCoreTransportType.tcp),
         locale: const Locale('en'),
       ),
     );
@@ -187,7 +204,7 @@ void main() {
 
     expect(tester.takeException(), isNull);
 
-    final context = tester.element(find.byType(TcpScreen));
+    final context = tester.element(find.byType(ConnectScreen));
     final l10n = AppLocalizations.of(context);
     expect(
       find.text(l10n.scanner_connectedTo(connector.initialEndpoint!)),

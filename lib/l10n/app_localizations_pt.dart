@@ -180,9 +180,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get common_interval => 'Intervalo';
 
   @override
-  String get scanner_title => 'MeshCore: Versão aberta';
-
-  @override
   String get connectionChoiceUsbLabel => 'USB';
 
   @override
@@ -190,9 +187,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get connectionChoiceTcpLabel => 'TCP';
-
-  @override
-  String get tcpScreenTitle => 'Estabelecer conexão via TCP';
 
   @override
   String get tcpHostLabel => 'Endereço IP';
@@ -205,14 +199,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get tcpPortHint => '5000';
-
-  @override
-  String get tcpStatus_notConnected => 'Insira o endereço final e conecte-se.';
-
-  @override
-  String tcpStatus_connectingTo(String endpoint) {
-    return 'Conectando a $endpoint...';
-  }
 
   @override
   String get tcpErrorHostRequired => 'É necessário fornecer um endereço IP.';
@@ -234,9 +220,6 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get usbScreenTitle => 'Conecte via USB';
-
-  @override
   String get usbScreenSubtitle =>
       'Selecione um dispositivo serial detectado e conecte-o diretamente ao seu nó MeshCore.';
 
@@ -250,6 +233,10 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get usbScreenEmptyState =>
       'Nenhum dispositivo USB encontrado. Conecte um e atualize.';
+
+  @override
+  String get usbScreenEmptyStateAuto =>
+      'Nenhum dispositivo USB encontrado. Conecte um e ele aparecerá aqui.';
 
   @override
   String get usbErrorPermissionDenied =>
@@ -297,12 +284,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get usbFallbackDeviceName => 'Dispositivo de Serial para a Web';
-
-  @override
-  String get usbStatus_notConnected => 'Selecione um dispositivo USB';
-
-  @override
-  String get usbStatus_connecting => 'Conectando ao dispositivo USB...';
 
   @override
   String get usbStatus_searching => 'Procurando por dispositivos USB...';
@@ -7362,9 +7343,6 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get tcpSectionTitle => 'TCP / IP';
-
-  @override
   String get tcpConnectedToHeader => 'Conectado a';
 
   @override
@@ -8501,9 +8479,6 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String get common_interval => 'Intervalo';
 
   @override
-  String get scanner_title => 'MeshCore Open';
-
-  @override
   String get connectionChoiceUsbLabel => 'USB';
 
   @override
@@ -8511,9 +8486,6 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get connectionChoiceTcpLabel => 'TCP';
-
-  @override
-  String get tcpScreenTitle => 'Ligar por TCP';
 
   @override
   String get tcpHostLabel => 'Endereço';
@@ -8526,14 +8498,6 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get tcpPortHint => '5000';
-
-  @override
-  String get tcpStatus_notConnected => 'Introduza o endereço e ligue';
-
-  @override
-  String tcpStatus_connectingTo(String endpoint) {
-    return 'A ligar a $endpoint...';
-  }
 
   @override
   String get tcpErrorHostRequired => 'O endereço é obrigatório.';
@@ -8554,9 +8518,6 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   }
 
   @override
-  String get usbScreenTitle => 'Ligar por USB';
-
-  @override
   String get usbScreenSubtitle =>
       'Escolha um dispositivo série detetado e ligue-se diretamente ao seu nó MeshCore.';
 
@@ -8570,6 +8531,10 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   @override
   String get usbScreenEmptyState =>
       'Nenhum dispositivo USB encontrado. Ligue um e atualize.';
+
+  @override
+  String get usbScreenEmptyStateAuto =>
+      'Nenhum dispositivo USB encontrado. Ligue um e aparece aqui.';
 
   @override
   String get usbErrorPermissionDenied => 'A permissão USB foi recusada.';
@@ -8615,12 +8580,6 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
 
   @override
   String get usbFallbackDeviceName => 'Dispositivo Web Serial';
-
-  @override
-  String get usbStatus_notConnected => 'Selecione um dispositivo USB';
-
-  @override
-  String get usbStatus_connecting => 'A ligar ao dispositivo USB...';
 
   @override
   String get usbStatus_searching => 'A procurar dispositivos USB...';
@@ -15633,9 +15592,6 @@ class AppLocalizationsPtPt extends AppLocalizationsPt {
   String community_shortId(String id) {
     return 'ID: $id…';
   }
-
-  @override
-  String get tcpSectionTitle => 'TCP / IP';
 
   @override
   String get tcpConnectedToHeader => 'Ligado a';

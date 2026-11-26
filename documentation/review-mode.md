@@ -4,8 +4,8 @@ Review mode is a hidden mode for Google Play and App Store reviewers who have no
 
 ## Entering and Exiting
 
-1. Open the **Connect** (scanner) screen.
-2. **Long-press the "MeshCore Open" title.**
+1. Open the **Connect a radio** screen.
+2. **Long-press the "Connect a radio" title.**
 3. Tap **Enter** in the dialog. The app connects to the simulated radio and opens the channel list.
 
 While review mode is active, a banner at the top of the channel and contact lists shows **Send test message** and **Exit**. Tap **Exit**, or disconnect as usual, to leave review mode. The simulator is shut down, its data is deleted, and the app returns to the Connect screen.

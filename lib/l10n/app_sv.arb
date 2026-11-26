@@ -54,7 +54,6 @@
       }
     }
   },
-  "scanner_title": "MeshCore – Öppen version",
   "scanner_scanning": "Söker efter enheter...",
   "scanner_connecting": "Ansluter...",
   "scanner_disconnecting": "Anslutning bryts...",
@@ -2091,10 +2090,10 @@
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "connectionChoiceUsbLabel": "USB",
   "usbScreenSubtitle": "Välj en detekterad seriell enhet och anslut direkt till din MeshCore-nod.",
-  "usbScreenTitle": "Anslut via USB",
   "usbScreenStatus": "Välj en USB-enhet",
   "usbScreenNote": "USB-seriell kommunikation är aktiv på stödda Android-enheter och på skrivbordsplattformar.",
   "usbScreenEmptyState": "Inga USB-enheter hittades. Anslut en och uppdatera.",
+  "usbScreenEmptyStateAuto": "Inga USB-enheter hittades. Anslut en så visas den här.",
   "usbErrorPermissionDenied": "Tillgången via USB nekas.",
   "usbErrorDeviceMissing": "Den valda USB-enheten är inte längre tillgänglig.",
   "usbErrorInvalidPort": "Välj en giltig USB-enhet.",
@@ -2114,18 +2113,9 @@
       }
     }
   },
-  "usbStatus_connecting": "Anslutning till USB-enhet...",
-  "usbStatus_notConnected": "Välj en USB-enhet",
   "usbConnectionFailed": "Fel vid USB-anslutning: {error}",
   "usbStatus_searching": "Söker efter USB-enheter...",
   "usbErrorConnectTimedOut": "Anslutningen tog för lång tid. Kontrollera att enheten har USB Companion-firmware.",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2135,12 +2125,9 @@
   },
   "tcpHostHint": "192.168.40.10",
   "tcpHostLabel": "IP-adress",
-  "tcpScreenTitle": "Anslut via TCP",
   "connectionChoiceTcpLabel": "TCP",
   "tcpPortLabel": "Port",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Ange slutpunkt och anslut",
-  "tcpStatus_connectingTo": "Anslutning till {endpoint}...",
   "tcpErrorHostRequired": "IP-adress krävs.",
   "tcpErrorPortInvalid": "Porten måste vara mellan 1 och 65535.",
   "tcpErrorUnsupported": "TCP-transport fungerar inte på denna plattform.",
@@ -3285,7 +3272,6 @@
   "contacts_advertFailed": "Kunde inte skicka annonsen",
   "contacts_manageGroups": "Hantera grupper",
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Ansluten till",
   "usbChooseSerialPort": "Välj serieport",
   "neighbors_durationSeconds": "{seconds} s",

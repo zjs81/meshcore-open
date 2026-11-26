@@ -176,9 +176,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get common_interval => '間隔';
 
   @override
-  String get scanner_title => 'MeshCore Open';
-
-  @override
   String get connectionChoiceUsbLabel => 'USB';
 
   @override
@@ -186,9 +183,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get connectionChoiceTcpLabel => 'TCP';
-
-  @override
-  String get tcpScreenTitle => 'TCP で接続';
 
   @override
   String get tcpHostLabel => '接続先';
@@ -201,14 +195,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tcpPortHint => '5000';
-
-  @override
-  String get tcpStatus_notConnected => '接続先を入力して接続してください';
-
-  @override
-  String tcpStatus_connectingTo(String endpoint) {
-    return '$endpoint への接続中...';
-  }
 
   @override
   String get tcpErrorHostRequired => '接続先は必須です。';
@@ -228,9 +214,6 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get usbScreenTitle => 'USB経由で接続';
-
-  @override
   String get usbScreenSubtitle => '検出されたシリアルデバイスを選択して、MeshCore ノードに直接接続します。';
 
   @override
@@ -242,6 +225,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get usbScreenEmptyState => 'USB デバイスが見つかりません。接続してから再度更新してください。';
+
+  @override
+  String get usbScreenEmptyStateAuto => 'USB デバイスが見つかりません。接続するとここに表示されます。';
 
   @override
   String get usbErrorPermissionDenied => 'USBへのアクセス許可が拒否されました。';
@@ -282,12 +268,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get usbFallbackDeviceName => 'ウェブシリアルデバイス';
-
-  @override
-  String get usbStatus_notConnected => 'USB デバイスを選択してください';
-
-  @override
-  String get usbStatus_connecting => 'USBデバイスへの接続中...';
 
   @override
   String get usbStatus_searching => 'USBデバイスを検索中...';
@@ -7039,9 +7019,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String community_shortId(String id) {
     return 'ID: $id…';
   }
-
-  @override
-  String get tcpSectionTitle => 'TCP / IP';
 
   @override
   String get tcpConnectedToHeader => '接続先';

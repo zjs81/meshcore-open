@@ -182,9 +182,6 @@ class AppLocalizationsSl extends AppLocalizations {
   String get common_interval => 'Časovni interval';
 
   @override
-  String get scanner_title => 'MeshCore – Odprto';
-
-  @override
   String get connectionChoiceUsbLabel => 'USB';
 
   @override
@@ -192,9 +189,6 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get connectionChoiceTcpLabel => 'TCP';
-
-  @override
-  String get tcpScreenTitle => 'Komunicirajte preko protokola TCP';
 
   @override
   String get tcpHostLabel => 'IP naslov';
@@ -207,14 +201,6 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get tcpPortHint => '5000';
-
-  @override
-  String get tcpStatus_notConnected => 'Vnesite končni naslov in se povežite';
-
-  @override
-  String tcpStatus_connectingTo(String endpoint) {
-    return 'Povezava z $endpoint...';
-  }
 
   @override
   String get tcpErrorHostRequired => 'Potrebna je IP-naslov.';
@@ -235,9 +221,6 @@ class AppLocalizationsSl extends AppLocalizations {
   }
 
   @override
-  String get usbScreenTitle => 'Povežite preko USB';
-
-  @override
   String get usbScreenSubtitle =>
       'Izberite zaznano serijsko napravo in se neposredno povežite z vašo MeshCore napravo.';
 
@@ -251,6 +234,10 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get usbScreenEmptyState =>
       'Niti en USB naprave niso najdeni. Povežite eno in posodobite.';
+
+  @override
+  String get usbScreenEmptyStateAuto =>
+      'Niti en USB naprave niso najdeni. Povežite eno in prikazala se bo tukaj.';
 
   @override
   String get usbErrorPermissionDenied =>
@@ -296,12 +283,6 @@ class AppLocalizationsSl extends AppLocalizations {
   @override
   String get usbFallbackDeviceName =>
       'Naprave za serijsko komunikacijo preko spleta';
-
-  @override
-  String get usbStatus_notConnected => 'Izberite USB naprave.';
-
-  @override
-  String get usbStatus_connecting => 'Povezava z USB napravo...';
 
   @override
   String get usbStatus_searching => 'Iskanje USB naprav...';
@@ -7355,9 +7336,6 @@ class AppLocalizationsSl extends AppLocalizations {
   String community_shortId(String id) {
     return 'ID: $id…';
   }
-
-  @override
-  String get tcpSectionTitle => 'TCP / IP';
 
   @override
   String get tcpConnectedToHeader => 'Povezano z';

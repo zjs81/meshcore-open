@@ -16,7 +16,7 @@ Use Chrome (or a Chromium browser that identifies as Chrome) and HTTPS (or an ap
 
 ## Unexpected disconnect
 
-BLE and TCP retry an unexpected disconnect with exponential backoff; manual disconnects do not trigger reconnect. USB requires reconnection through its connection screen. If a TCP companion still drops in the background on Android, allow background activity (App Settings → Notifications → **Background Activity**) and check the phone's Wi-Fi power-saving settings. Navigation returns to the scanner when a connection is lost. If reconnect continues to fail, check power, firmware, adapter state, and competing clients.
+BLE and TCP retry an unexpected disconnect with exponential backoff; manual disconnects do not trigger reconnect. USB requires reconnecting from the USB tab of **Connect a radio**. If a TCP companion still drops in the background on Android, allow background activity (App Settings → Notifications → **Background Activity**) and check the phone's Wi-Fi power-saving settings. When a connection is lost, the app stays on the current screen, read-only. If reconnect continues to fail, check power, firmware, adapter state, and competing clients.
 
 ## Feature unavailable or no data
 

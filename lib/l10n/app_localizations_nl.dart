@@ -181,9 +181,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get common_interval => 'Tijdsinterval';
 
   @override
-  String get scanner_title => 'MeshCore Open';
-
-  @override
   String get connectionChoiceUsbLabel => 'USB';
 
   @override
@@ -191,9 +188,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get connectionChoiceTcpLabel => 'TCP';
-
-  @override
-  String get tcpScreenTitle => 'Verbind via TCP';
 
   @override
   String get tcpHostLabel => 'Eindpunt';
@@ -206,14 +200,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tcpPortHint => '5000';
-
-  @override
-  String get tcpStatus_notConnected => 'Voer het eindpunt in en verbind';
-
-  @override
-  String tcpStatus_connectingTo(String endpoint) {
-    return 'Verbinding maken met $endpoint...';
-  }
 
   @override
   String get tcpErrorHostRequired => 'Host is vereist.';
@@ -235,9 +221,6 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get usbScreenTitle => 'Verbind via USB';
-
-  @override
   String get usbScreenSubtitle =>
       'Selecteer een gedetecteerd serieel apparaat en maak direct verbinding met je MeshCore-node.';
 
@@ -251,6 +234,10 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get usbScreenEmptyState =>
       'Geen USB-apparaten gevonden. Sluit er een aan en herlaad.';
+
+  @override
+  String get usbScreenEmptyStateAuto =>
+      'Geen USB-apparaten gevonden. Sluit er een aan en het verschijnt hier.';
 
   @override
   String get usbErrorPermissionDenied => 'Toegang via USB is geweigerd.';
@@ -295,12 +282,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get usbFallbackDeviceName => 'Web Serial-apparaat';
-
-  @override
-  String get usbStatus_notConnected => 'Selecteer een USB-apparaat';
-
-  @override
-  String get usbStatus_connecting => 'Verbinding maken met USB-apparaat...';
 
   @override
   String get usbStatus_searching => 'Zoeken naar USB-apparaten...';
@@ -7334,9 +7315,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String community_shortId(String id) {
     return 'ID: $id…';
   }
-
-  @override
-  String get tcpSectionTitle => 'TCP / IP';
 
   @override
   String get tcpConnectedToHeader => 'Verbonden met';

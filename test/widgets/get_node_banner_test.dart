@@ -86,4 +86,21 @@ void main() {
     expect(find.byType(InkWell), findsNothing);
     expect(tester.getSize(find.byType(GetNodeBanner)).height, 0);
   });
+
+  testWidgets('stays hidden on a landscape phone', (tester) async {
+    await pumpBanner(tester, size: const Size(740, 360), textScale: 1);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Need a new node?'), findsNothing);
+  });
+
+  testWidgets('Close hides the banner', (tester) async {
+    await pumpBanner(tester, size: const Size(390, 844), textScale: 1);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Close'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Need a new node?'), findsNothing);
+  });
 }

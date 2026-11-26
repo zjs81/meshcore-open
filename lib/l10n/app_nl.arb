@@ -54,7 +54,6 @@
       }
     }
   },
-  "scanner_title": "MeshCore Open",
   "scanner_scanning": "Scannen naar apparaten...",
   "scanner_connecting": "Verbinden...",
   "scanner_disconnecting": "Verbinding verbreken...",
@@ -2207,10 +2206,10 @@
   "connectionChoiceUsbLabel": "USB",
   "usbScreenSubtitle": "Selecteer een gedetecteerd serieel apparaat en maak direct verbinding met je MeshCore-node.",
   "connectionChoiceBluetoothLabel": "Bluetooth",
-  "usbScreenTitle": "Verbind via USB",
   "usbScreenStatus": "Selecteer een USB-apparaat",
   "usbScreenNote": "USB-serieel is actief op ondersteunde Android-apparaten en desktop-platforms.",
   "usbScreenEmptyState": "Geen USB-apparaten gevonden. Sluit er een aan en herlaad.",
+  "usbScreenEmptyStateAuto": "Geen USB-apparaten gevonden. Sluit er een aan en het verschijnt hier.",
   "usbErrorPermissionDenied": "Toegang via USB is geweigerd.",
   "usbErrorDeviceMissing": "Het geselecteerde USB-apparaat is niet meer beschikbaar.",
   "usbErrorInvalidPort": "Selecteer een geldig USB-apparaat.",
@@ -2231,17 +2230,8 @@
     }
   },
   "usbConnectionFailed": "Fout bij de USB-verbinding: {error}",
-  "usbStatus_notConnected": "Selecteer een USB-apparaat",
-  "usbStatus_connecting": "Verbinding maken met USB-apparaat...",
   "usbStatus_searching": "Zoeken naar USB-apparaten...",
   "usbErrorConnectTimedOut": "Time-out bij verbinden. Zorg dat het apparaat USB Companion-firmware heeft.",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2249,14 +2239,11 @@
       }
     }
   },
-  "tcpScreenTitle": "Verbind via TCP",
   "tcpHostLabel": "Eindpunt",
   "tcpHostHint": "192.168.40.10 / example.com",
   "connectionChoiceTcpLabel": "TCP",
   "tcpPortLabel": "Poort",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Voer het eindpunt in en verbind",
-  "tcpStatus_connectingTo": "Verbinding maken met {endpoint}...",
   "tcpErrorHostRequired": "Host is vereist.",
   "tcpErrorPortInvalid": "De poortwaarde moet tussen 1 en 65535 liggen.",
   "tcpErrorUnsupported": "TCP-transport wordt niet ondersteund op dit platform.",
@@ -3313,7 +3300,6 @@
     }
   },
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Verbonden met",
   "usbChooseSerialPort": "Seriële poort kiezen",
   "neighbors_durationSeconds": "{seconds}s",

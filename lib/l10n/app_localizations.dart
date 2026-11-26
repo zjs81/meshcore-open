@@ -433,12 +433,6 @@ abstract class AppLocalizations {
   /// **'Interval'**
   String get common_interval;
 
-  /// No description provided for @scanner_title.
-  ///
-  /// In en, this message translates to:
-  /// **'MeshCore Open'**
-  String get scanner_title;
-
   /// No description provided for @connectionChoiceUsbLabel.
   ///
   /// In en, this message translates to:
@@ -456,12 +450,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'TCP'**
   String get connectionChoiceTcpLabel;
-
-  /// No description provided for @tcpScreenTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Connect over TCP'**
-  String get tcpScreenTitle;
 
   /// No description provided for @tcpHostLabel.
   ///
@@ -486,18 +474,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'5000'**
   String get tcpPortHint;
-
-  /// No description provided for @tcpStatus_notConnected.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter endpoint and connect'**
-  String get tcpStatus_notConnected;
-
-  /// No description provided for @tcpStatus_connectingTo.
-  ///
-  /// In en, this message translates to:
-  /// **'Connecting to {endpoint}...'**
-  String tcpStatus_connectingTo(String endpoint);
 
   /// No description provided for @tcpErrorHostRequired.
   ///
@@ -529,12 +505,6 @@ abstract class AppLocalizations {
   /// **'TCP connection failed: {error}'**
   String tcpConnectionFailed(String error);
 
-  /// No description provided for @usbScreenTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Connect over USB'**
-  String get usbScreenTitle;
-
   /// No description provided for @usbScreenSubtitle.
   ///
   /// In en, this message translates to:
@@ -558,6 +528,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No USB devices found. Plug one in and refresh.'**
   String get usbScreenEmptyState;
+
+  /// No description provided for @usbScreenEmptyStateAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'No USB devices found. Plug one in and it shows up here.'**
+  String get usbScreenEmptyStateAuto;
 
   /// No description provided for @usbErrorPermissionDenied.
   ///
@@ -636,18 +612,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Web Serial Device'**
   String get usbFallbackDeviceName;
-
-  /// No description provided for @usbStatus_notConnected.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a USB device'**
-  String get usbStatus_notConnected;
-
-  /// No description provided for @usbStatus_connecting.
-  ///
-  /// In en, this message translates to:
-  /// **'Connecting to USB device...'**
-  String get usbStatus_connecting;
 
   /// No description provided for @usbStatus_searching.
   ///
@@ -12255,12 +12219,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ID: {id}…'**
   String community_shortId(String id);
-
-  /// No description provided for @tcpSectionTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'TCP / IP'**
-  String get tcpSectionTitle;
 
   /// No description provided for @tcpConnectedToHeader.
   ///

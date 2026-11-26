@@ -4,9 +4,8 @@ import 'package:provider/provider.dart';
 import '../connector/meshcore_connector.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../l10n/l10n.dart';
-import '../screens/scanner_screen.dart';
+import '../screens/connect_screen.dart';
 import '../screens/settings_screen.dart';
-import '../screens/usb_screen.dart';
 import '../storage/last_radio_store.dart';
 import '../theme/theme_icons.dart';
 import '../utils/dialog_utils.dart';
@@ -42,13 +41,15 @@ class _ConnectSheet extends StatelessWidget {
   void _chooseRadio(BuildContext context, LastRadio? lastRadio) {
     Navigator.of(context).pop();
     if (!hostContext.mounted) return;
-    final usb =
-        PlatformInfo.isWeb ||
-        (lastRadio?.transport == LastRadio.transportUsb &&
-            PlatformInfo.supportsUsbSerial);
+    final transport = switch (lastRadio?.transport) {
+      _ when PlatformInfo.isWeb => MeshCoreTransportType.usb,
+      LastRadio.transportUsb => MeshCoreTransportType.usb,
+      LastRadio.transportTcp => MeshCoreTransportType.tcp,
+      _ => MeshCoreTransportType.bluetooth,
+    };
     Navigator.of(hostContext).push(
       MaterialPageRoute(
-        builder: (_) => usb ? const UsbScreen() : const ScannerScreen(),
+        builder: (_) => ConnectScreen(initialTransport: transport),
       ),
     );
   }

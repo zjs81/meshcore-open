@@ -182,9 +182,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get common_interval => 'Interwał';
 
   @override
-  String get scanner_title => 'MeshCore – wersja open source';
-
-  @override
   String get connectionChoiceUsbLabel => 'USB';
 
   @override
@@ -192,9 +189,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get connectionChoiceTcpLabel => 'TCP';
-
-  @override
-  String get tcpScreenTitle => 'Połącz się za pomocą protokołu TCP';
 
   @override
   String get tcpHostLabel => 'Adres IP';
@@ -207,14 +201,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tcpPortHint => '5000';
-
-  @override
-  String get tcpStatus_notConnected => 'Wprowadź adres URL i połącz';
-
-  @override
-  String tcpStatus_connectingTo(String endpoint) {
-    return 'Połączenie z $endpoint...';
-  }
 
   @override
   String get tcpErrorHostRequired => 'Wymagana jest adresa IP.';
@@ -237,9 +223,6 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get usbScreenTitle => 'Połącz przez USB';
-
-  @override
   String get usbScreenSubtitle =>
       'Wybierz wykryte urządzenie szeregowe i połącz się bezpośrednio ze swoim węzłem MeshCore.';
 
@@ -253,6 +236,10 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get usbScreenEmptyState =>
       'Nie znaleziono żadnych urządzeń USB. Podłącz jedno i zaktualizuj.';
+
+  @override
+  String get usbScreenEmptyStateAuto =>
+      'Nie znaleziono żadnych urządzeń USB. Podłącz jedno, a pojawi się tutaj.';
 
   @override
   String get usbErrorPermissionDenied =>
@@ -301,12 +288,6 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get usbFallbackDeviceName =>
       'Urządzenie do komunikacji przez sieć (seria)';
-
-  @override
-  String get usbStatus_notConnected => 'Wybierz urządzenie USB';
-
-  @override
-  String get usbStatus_connecting => 'Połączenie z urządzeniem USB...';
 
   @override
   String get usbStatus_searching => 'Wyszukiwanie urządzeń USB...';
@@ -7417,9 +7398,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String community_shortId(String id) {
     return 'ID: $id…';
   }
-
-  @override
-  String get tcpSectionTitle => 'TCP / IP';
 
   @override
   String get tcpConnectedToHeader => 'Połączono z';

@@ -54,7 +54,6 @@
       }
     }
   },
-  "scanner_title": "MeshCore Open",
   "scanner_scanning": "Suche nach Geräten...",
   "scanner_connecting": "Verbinde...",
   "scanner_disconnecting": "Trenne...",
@@ -2292,11 +2291,11 @@
   "map_guessedLocation": "Vermuteter Standort",
   "usbScreenSubtitle": "Wählen Sie ein erkanntes serielles Gerät aus und verbinden Sie es direkt mit Ihrem MeshCore-Knoten.",
   "connectionChoiceUsbLabel": "USB",
-  "usbScreenTitle": "Über USB verbinden",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "usbScreenStatus": "Wählen Sie ein USB-Gerät aus",
   "usbScreenNote": "USB-Seriell ist auf unterstützten Android-Geräten und Desktop-Plattformen verfügbar.",
   "usbScreenEmptyState": "Keine USB-Geräte gefunden. Schließen Sie eines an und aktualisieren Sie.",
+  "usbScreenEmptyStateAuto": "Keine USB-Geräte gefunden. Schließen Sie eines an, dann erscheint es hier.",
   "usbErrorPermissionDenied": "Die USB-Berechtigung wurde abgelehnt.",
   "usbErrorDeviceMissing": "Das ausgewählte USB-Gerät ist nicht mehr verfügbar.",
   "usbErrorInvalidPort": "Wählen Sie ein gültiges USB-Gerät aus.",
@@ -2317,17 +2316,8 @@
     }
   },
   "usbStatus_searching": "Suche nach USB-Geräten...",
-  "usbStatus_notConnected": "Wählen Sie ein USB-Gerät aus",
-  "usbStatus_connecting": "Verbindung zum USB-Gerät wird hergestellt...",
   "usbConnectionFailed": "USB-Verbindung fehlgeschlagen: {error}",
   "usbErrorConnectTimedOut": "Verbindung konnte nicht hergestellt werden. Stellen Sie sicher, dass das Gerät über USB-Companion-Firmware verfügt.",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2338,11 +2328,8 @@
   "tcpHostLabel": "Endpunkt",
   "connectionChoiceTcpLabel": "TCP",
   "tcpHostHint": "192.168.40.10 / example.com",
-  "tcpScreenTitle": "Verbinden über TCP",
   "tcpPortLabel": "Port",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Endpunkt eingeben und verbinden",
-  "tcpStatus_connectingTo": "Verbindung zu {endpoint}...",
   "tcpErrorHostRequired": "Ein Endpunkt ist erforderlich.",
   "tcpErrorPortInvalid": "Die Portnummer muss zwischen 1 und 65535 liegen.",
   "tcpErrorUnsupported": "TCP wird auf dieser Plattform nicht unterstützt.",
@@ -3547,7 +3534,6 @@
     }
   },
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Verbunden mit",
   "usbChooseSerialPort": "Serielle Schnittstelle wählen",
   "neighbors_durationSeconds": "{seconds} s",
