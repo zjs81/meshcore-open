@@ -2663,6 +2663,50 @@
       }
     }
   },
+  "neighbors_tabList": "List",
+  "neighbors_tabMap": "Map",
+  "neighbors_discoverTooltip": "Send discovery request",
+  "neighbors_discoverySent": "Discovery request sent to the repeater.",
+  "neighbors_discoveryFailed": "Discovery failed: {error}",
+  "@neighbors_discoveryFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_eraseTooltip": "Erase all neighbors",
+  "neighbors_eraseConfirm": "This removes every neighbor from the repeater. They will reappear as adverts are heard.",
+  "neighbors_erased": "All neighbors erased.",
+  "neighbors_eraseFailed": "Failed to erase neighbors: {error}",
+  "@neighbors_eraseFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "neighbors_fetchedOfTotal": "{fetched} of {total} fetched",
+  "@neighbors_fetchedOfTotal": {
+    "placeholders": {
+      "fetched": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "neighbors_retryRemaining": "Retry remaining",
+  "neighbors_mapNoNeighborLocations": "No neighbors have a location to map.",
+  "neighbors_mapHiddenWithoutLocation": "{count} neighbors without location hidden.",
+  "@neighbors_mapHiddenWithoutLocation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "channelPath_title": "Packet Path",
   "channelPath_viewMap": "View map",
   "channelPath_otherObservedPaths": "Other Observed Paths",
@@ -4072,6 +4116,8 @@
   "@neighbors_durationMinutes": {"placeholders": {"minutes": {"type": "int"}, "seconds": {"type": "String"}}},
   "neighbors_durationHours": "{hours}h {minutes}m",
   "@neighbors_durationHours": {"placeholders": {"hours": {"type": "int"}, "minutes": {"type": "int"}}},
+  "neighbors_durationDays": "{days}d {hours}h",
+  "@neighbors_durationDays": {"placeholders": {"days": {"type": "int"}, "hours": {"type": "int"}}},
   "networkMap_settingsSection": "Network map",
   "networkMap_uploadTitle": "Share what my radio hears",
   "networkMap_uploadExplanation": "When this is on and your radio is connected, the app sends a short summary of the packets your radio hears to the MeshCore Open network map, so everyone can see which repeaters exist and how they link up. It sends each packet's type, route, hops, signal strength and size, plus repeater names and rough locations from their own adverts. It never sends message text, who is talking to whom, channel names, your contacts or your exact position: locations are rounded to about 2 km, and your app gets a new random ID every day.",

@@ -8651,6 +8651,84 @@ abstract class AppLocalizations {
   /// **'Heard: {time} ago'**
   String neighbors_heardAgo(String time);
 
+  /// No description provided for @neighbors_tabList.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get neighbors_tabList;
+
+  /// No description provided for @neighbors_tabMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get neighbors_tabMap;
+
+  /// No description provided for @neighbors_discoverTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Send discovery request'**
+  String get neighbors_discoverTooltip;
+
+  /// No description provided for @neighbors_discoverySent.
+  ///
+  /// In en, this message translates to:
+  /// **'Discovery request sent to the repeater.'**
+  String get neighbors_discoverySent;
+
+  /// No description provided for @neighbors_discoveryFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Discovery failed: {error}'**
+  String neighbors_discoveryFailed(String error);
+
+  /// No description provided for @neighbors_eraseTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Erase all neighbors'**
+  String get neighbors_eraseTooltip;
+
+  /// No description provided for @neighbors_eraseConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes every neighbor from the repeater. They will reappear as adverts are heard.'**
+  String get neighbors_eraseConfirm;
+
+  /// No description provided for @neighbors_erased.
+  ///
+  /// In en, this message translates to:
+  /// **'All neighbors erased.'**
+  String get neighbors_erased;
+
+  /// No description provided for @neighbors_eraseFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to erase neighbors: {error}'**
+  String neighbors_eraseFailed(String error);
+
+  /// No description provided for @neighbors_fetchedOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{fetched} of {total} fetched'**
+  String neighbors_fetchedOfTotal(int fetched, int total);
+
+  /// No description provided for @neighbors_retryRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry remaining'**
+  String get neighbors_retryRemaining;
+
+  /// No description provided for @neighbors_mapNoNeighborLocations.
+  ///
+  /// In en, this message translates to:
+  /// **'No neighbors have a location to map.'**
+  String get neighbors_mapNoNeighborLocations;
+
+  /// No description provided for @neighbors_mapHiddenWithoutLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} neighbors without location hidden.'**
+  String neighbors_mapHiddenWithoutLocation(int count);
+
   /// No description provided for @channelPath_title.
   ///
   /// In en, this message translates to:
@@ -12249,6 +12327,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{hours}h {minutes}m'**
   String neighbors_durationHours(int hours, int minutes);
+
+  /// No description provided for @neighbors_durationDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d {hours}h'**
+  String neighbors_durationDays(int days, int hours);
 
   /// No description provided for @networkMap_settingsSection.
   ///
