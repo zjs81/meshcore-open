@@ -2510,7 +2510,7 @@
   "repeater_cliHelpStatsCore": "(Csak soros) Az alapvető firmware-statisztikák megjelenítése.",
   "common_done": "Kész",
   "background_serviceTitle": "MeshCore fut",
-  "background_serviceText": "A BLE-kapcsolat fenntartása",
+  "background_serviceText": "A rádiókapcsolat fenntartása",
   "appSettings_translationModelDeleted": "Törölve {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

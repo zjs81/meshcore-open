@@ -6287,7 +6287,7 @@ class AppLocalizationsSk extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore beží';
 
   @override
-  String get background_serviceText => 'Udržiavanie spojenia BLE';
+  String get background_serviceText => 'Udržiavanie spojenia s rádiom';
 
   @override
   String appSettings_translationModelDeleted(String name) {

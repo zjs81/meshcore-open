@@ -1574,7 +1574,7 @@
   "repeater_guestTools": "Инструменты для гостей",
   "common_done": "Готово",
   "background_serviceTitle": "MeshCore работает",
-  "background_serviceText": "Поддерживает BLE-соединение",
+  "background_serviceText": "Соединение с радио активно",
   "appSettings_translationModelDeleted": "Удалено {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

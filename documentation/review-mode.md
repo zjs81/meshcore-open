@@ -10,6 +10,8 @@ Review mode is a hidden mode for Google Play and App Store reviewers who have no
 
 While review mode is active, a banner at the top of the channel and contact lists shows **Send test message** and **Exit**. Tap **Exit**, or disconnect as usual, to leave review mode. The simulator is shut down, its data is deleted, and the app returns to the Connect screen.
 
+On Android, swiping the app away from recent apps does not end review mode: the background service keeps running and simulated messages keep arriving. Use **Exit** or disconnect to end it. On Android 14 and later the service needs the Bluetooth permission; without it, swiping the app away closes it as before.
+
 ## What the Simulated Radio Provides
 
 - 6 contacts (4 people, the **Hilltop Repeater** and the **Trailhead Room**), the **Public** channel and 2 more channels (**Hiking Group** and **Local Net**), with seeded message history.

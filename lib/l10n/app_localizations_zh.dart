@@ -5861,7 +5861,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore 运行中';
 
   @override
-  String get background_serviceText => '保持蓝牙连接';
+  String get background_serviceText => '保持无线电连接';
 
   @override
   String appSettings_translationModelDeleted(String name) {

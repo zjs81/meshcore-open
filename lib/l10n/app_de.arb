@@ -2599,7 +2599,7 @@
   "repeater_cliHelpStatsCore": "(Nur für serielle Schnittstellen) Zeigt grundlegende Firmware-Statistiken.",
   "common_done": "Fertig",
   "background_serviceTitle": "MeshCore läuft",
-  "background_serviceText": "BLE-Verbindung bleibt aktiv",
+  "background_serviceText": "Funkgerät bleibt verbunden",
   "appSettings_translationModelDeleted": "Übersetzungsmodell {name} gelöscht",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

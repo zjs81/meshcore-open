@@ -6270,7 +6270,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore běží';
 
   @override
-  String get background_serviceText => 'Udržuje připojení BLE';
+  String get background_serviceText => 'Udržuje připojení k rádiu';
 
   @override
   String appSettings_translationModelDeleted(String name) {

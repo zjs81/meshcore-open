@@ -6313,7 +6313,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore en cours d\'exécution';
 
   @override
-  String get background_serviceText => 'Maintien de la connexion BLE';
+  String get background_serviceText => 'Connexion à la radio maintenue';
 
   @override
   String appSettings_translationModelDeleted(String name) {

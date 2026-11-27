@@ -2520,7 +2520,7 @@
   "repeater_cliHelpStatsCore": "(Alleen serieel) Toont de belangrijkste firmware-statistieken.",
   "common_done": "Klaar",
   "background_serviceTitle": "MeshCore actief",
-  "background_serviceText": "BLE-verbinding actief houden",
+  "background_serviceText": "Radio blijft verbonden",
   "appSettings_translationModelDeleted": "{name} verwijderd",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

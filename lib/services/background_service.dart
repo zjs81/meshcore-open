@@ -6,13 +6,16 @@ import '../l10n/locale_tag.dart';
 import '../utils/platform_info.dart';
 
 class BackgroundService {
-  /// Options for the service that keeps the radio link alive in the
-  /// background.
+  /// Options for the service that keeps the link with the radio alive in
+  /// the background.
   ///
-  /// The radio link lives in the app process; once the user swipes the app
-  /// away it is gone, so a lingering "connected" notification (or an
-  /// automatic restart) would only be misleading. Swiping away stops the
-  /// service through `android:stopWithTask="true"` in AndroidManifest.xml.
+  /// The link with the radio lives in the app's Flutter engine. Swiping the
+  /// app away keeps the service (`android:stopWithTask="false"` in
+  /// AndroidManifest.xml), and MainActivity keeps the engine while the
+  /// service runs, so the link stays up until the user disconnects. An
+  /// automatic restart would have no link, so it stays off, and a service
+  /// that Android restarts on its own stops itself (see
+  /// [MeshCoreTaskHandler.onStart]).
   ///
   /// `stopWithTask` must stay unset here: in flutter_foreground_task (9.2 to
   /// 11.0 at least) the option does not watch the task but stops the service
@@ -21,7 +24,8 @@ class BackgroundService {
   /// the process, the Bluetooth link drops and the low-memory killer ends it.
   @visibleForTesting
   static final ForegroundTaskOptions taskOptions = ForegroundTaskOptions(
-    eventAction: ForegroundTaskEventAction.repeat(5000),
+    // The service only has to exist; the task handler has no periodic work.
+    eventAction: ForegroundTaskEventAction.nothing(),
     autoRunOnBoot: false,
     allowWifiLock: false,
     allowAutoRestart: false,
@@ -106,12 +110,19 @@ class BackgroundService {
 
 @pragma('vm:entry-point')
 void startCallback() {
-  FlutterForegroundTask.setTaskHandler(_MeshCoreTaskHandler());
+  FlutterForegroundTask.setTaskHandler(MeshCoreTaskHandler());
 }
 
-class _MeshCoreTaskHandler extends TaskHandler {
+@visibleForTesting
+class MeshCoreTaskHandler extends TaskHandler {
   @override
-  Future<void> onStart(DateTime timestamp, TaskStarter starter) async {}
+  Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
+    // Android restarted the service after the app process died: there is no
+    // link with the radio, so stop instead of showing a stale notification.
+    if (starter == TaskStarter.system) {
+      await FlutterForegroundTask.stopService();
+    }
+  }
 
   @override
   void onRepeatEvent(DateTime timestamp) {}

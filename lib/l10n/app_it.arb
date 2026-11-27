@@ -2521,7 +2521,7 @@
   "repeater_cliHelpStatsCore": "(Solo per serie) Visualizza le statistiche del firmware di base.",
   "common_done": "Fatto",
   "background_serviceTitle": "MeshCore in esecuzione",
-  "background_serviceText": "Connessione BLE mantenuta",
+  "background_serviceText": "La radio resta connessa",
   "appSettings_translationModelDeleted": "{name} eliminato",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

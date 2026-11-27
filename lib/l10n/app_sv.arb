@@ -2376,7 +2376,7 @@
   "repeater_cliHelpStatsCore": "(Enbart för seriell kommunikation) Visar grundläggande firmware-statistik.",
   "common_done": "Klar",
   "background_serviceTitle": "MeshCore körs",
-  "background_serviceText": "Håller BLE-anslutningen aktiv",
+  "background_serviceText": "Håller radion ansluten",
   "appSettings_translationModelDeleted": "Tog bort {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

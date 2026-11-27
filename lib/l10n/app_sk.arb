@@ -2478,7 +2478,7 @@
   "repeater_cliHelpStatsCore": "(Iba sériovo) Zobrazí základné štatistiky firmvéru.",
   "common_done": "Hotovo",
   "background_serviceTitle": "MeshCore beží",
-  "background_serviceText": "Udržiavanie spojenia BLE",
+  "background_serviceText": "Udržiavanie spojenia s rádiom",
   "appSettings_translationModelDeleted": "Odstránené: {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

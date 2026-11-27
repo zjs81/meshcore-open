@@ -2425,7 +2425,7 @@
   "repeater_cliHelpStatsCore": "(시리얼 전용) 핵심 펌웨어 통계 정보를 보여줍니다.",
   "common_done": "완료",
   "background_serviceTitle": "MeshCore 실행 중",
-  "background_serviceText": "BLE 연결 유지 중",
+  "background_serviceText": "라디오 연결 유지 중",
   "appSettings_translationModelDeleted": "{name} 삭제됨",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

@@ -3489,7 +3489,7 @@
   "translation_translationOptions": "Translation options",
   "translation_systemLanguage": "System language",
   "background_serviceTitle": "MeshCore running",
-  "background_serviceText": "Keeping BLE connected",
+  "background_serviceText": "Keeping radio connected",
   "appSettings_translationModelDeleted": "Deleted {name}",
   "@appSettings_translationModelDeleted": {
     "placeholders": {

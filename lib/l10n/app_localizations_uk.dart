@@ -6320,7 +6320,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore працює';
 
   @override
-  String get background_serviceText => 'Підтримує з\'єднання BLE';
+  String get background_serviceText => 'Підтримує з\'єднання з радіо';
 
   @override
   String appSettings_translationModelDeleted(String name) {

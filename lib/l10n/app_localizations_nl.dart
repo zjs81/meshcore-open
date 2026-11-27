@@ -6262,7 +6262,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get background_serviceTitle => 'MeshCore actief';
 
   @override
-  String get background_serviceText => 'BLE-verbinding actief houden';
+  String get background_serviceText => 'Radio blijft verbonden';
 
   @override
   String appSettings_translationModelDeleted(String name) {

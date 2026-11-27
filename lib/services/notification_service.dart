@@ -873,6 +873,23 @@ class NotificationService {
     }
   }
 
+  /// Routes the tap that started the current activity, if any. Used when
+  /// the engine outlived the previous activity (see ActivityReattach): such
+  /// a tap starts a new activity and only shows in the launch details.
+  Future<void> routeLaunchTap() async {
+    if (!_isInitialized) return;
+    try {
+      final details = await _notifications.getNotificationAppLaunchDetails();
+      final response = details?.notificationResponse;
+      if (details?.didNotificationLaunchApp != true || response == null) {
+        return;
+      }
+      _onNotificationTapped(response);
+    } catch (e) {
+      debugPrint('Error reading notification launch details: $e');
+    }
+  }
+
   static const String _radioKeyPrefsKey = 'notifications_radio_key';
 
   /// Called when a radio connects. Notifications name conversations by
