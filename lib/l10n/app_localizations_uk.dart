@@ -3627,6 +3627,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get common_clear => 'Очистити';
 
   @override
+  String get common_reset => 'Скинути';
+
+  @override
   String get common_clearSearch => 'Очистити пошук';
 
   @override
@@ -7567,29 +7570,47 @@ class AppLocalizationsUk extends AppLocalizations {
   String get messageFilter_enabled => 'Фільтрувати повідомлення';
 
   @override
+  String get messageFilter_filteringSection => 'Фільтрація';
+
+  @override
   String get messageFilter_enabledSubtitle =>
-      'Стосується повідомлень у каналах';
+      'Діє в усіх каналах, якщо не вимкнено в меню каналу';
+
+  @override
+  String get messageFilter_info =>
+      'Приховує спам і повідомлення, що повторюються, у каналах. Працює лише в застосунку й не впливає на ваш пристрій-компаньйон.';
 
   @override
   String get messageFilter_displayTitle => 'Відфільтровані повідомлення';
 
   @override
-  String get messageFilter_displayPlaceholder =>
-      'Показувати невеликий замінник';
-
-  @override
   String get messageFilter_displayHide => 'Приховати повністю';
 
   @override
-  String get messageFilter_displayHideHelp =>
-      'Приховані повідомлення залишаються у списку «Відфільтровані повідомлення».';
+  String get messageFilter_displayHideSubtitle =>
+      'Приховувати відфільтровані повідомлення замість показу замінника';
 
   @override
   String get messageFilter_rulesSection => 'Ваші правила';
 
   @override
+  String messageFilter_rulesCount(int count) {
+    return 'Правила ($count)';
+  }
+
+  @override
+  String get messageFilter_rulesTitle => 'Правила';
+
+  @override
+  String get messageFilter_rulesHint =>
+      'Приховувати повідомлення за словом, фразою або ім’ям відправника';
+
+  @override
+  String get messageFilter_rulesEmptyTitle => 'Правил ще немає';
+
+  @override
   String get messageFilter_rulesEmpty =>
-      'Правил ще немає. Додайте слово, фразу або ім’я відправника, щоб приховувати повідомлення, які їм відповідають.';
+      'Додайте слово, фразу або ім’я відправника, щоб приховувати повідомлення, які їм відповідають';
 
   @override
   String get messageFilter_addRule => 'Додати правило';
@@ -7634,6 +7655,76 @@ class AppLocalizationsUk extends AppLocalizations {
   String get messageFilter_ruleSaved => 'Правило збережено';
 
   @override
+  String messageFilter_rulesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count правила видалено',
+      many: '$count правил видалено',
+      few: '$count правила видалено',
+      one: '$count правило видалено',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_deleteRulesTitle => 'Видалити правила?';
+
+  @override
+  String messageFilter_deleteRulesConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Видалити $count правила з фільтра повідомлень?',
+      many: 'Видалити $count правил з фільтра повідомлень?',
+      few: 'Видалити $count правила з фільтра повідомлень?',
+      one: 'Видалити $count правило з фільтра повідомлень?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count правила увімкнено',
+      many: '$count правил увімкнено',
+      few: '$count правила увімкнено',
+      one: '$count правило увімкнено',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOff(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count правила вимкнено',
+      many: '$count правил вимкнено',
+      few: '$count правила вимкнено',
+      one: '$count правило вимкнено',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_searchRules => 'Пошук правил';
+
+  @override
+  String get messageFilter_rulesNoResults => 'Відповідних правил немає';
+
+  @override
+  String get messageFilter_selectRules => 'Вибрати правила';
+
+  @override
+  String get messageFilter_turnOn => 'Увімкнути';
+
+  @override
+  String get messageFilter_turnOff => 'Вимкнути';
+
+  @override
   String get messageFilter_automaticSection => 'Автоматично';
 
   @override
@@ -7641,15 +7732,16 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get messageFilter_duplicatesSubtitle =>
-      'Те саме повідомлення, надіслане знову або кількома відправниками';
+      'Надіслане повторно однією людиною або 3 і більше людьми';
 
   @override
-  String get messageFilter_repeatSends => 'Яка відправка вважається повтором';
-
-  @override
-  String messageFilter_repeatSendsSubtitle(int count) {
-    return 'Приховувати повідомлення, якщо той самий відправник надсилає його повторно протягом 10 хвилин (кількість відправлень: $count)';
+  String messageFilter_repeatSendsCount(int count) {
+    return 'Скільки відправлень вважати повтором: $count';
   }
+
+  @override
+  String get messageFilter_repeatSendsHint =>
+      'Одна людина, кожне відправлення протягом 10 хвилин після попереднього';
 
   @override
   String get messageFilter_repeatedCharacters => 'Повторювані символи';
@@ -7659,19 +7751,27 @@ class AppLocalizationsUk extends AppLocalizations {
       'Довгі послідовності одного символа, наприклад «aaaaaaaaaaaaaaaaaaaa»';
 
   @override
-  String get messageFilter_learning => 'Навчання на натисканнях «Спам»';
+  String get messageFilter_learning => 'Навчання на скаргах на спам';
 
   @override
   String messageFilter_learningSubtitle(int spam, int notSpam) {
-    return '$spam прикладів спаму та $notSpam прикладів не спаму';
+    return 'Позначено як спам: $spam, як не спам: $notSpam';
   }
 
   @override
   String get messageFilter_resetLearning => 'Скинути навчання';
 
   @override
+  String get messageFilter_resetLearningSubtitle =>
+      'Забути все, чого фільтр навчився з повідомлень, позначених як спам, і недавніх повідомлень';
+
+  @override
+  String get messageFilter_resetLearningNothing =>
+      'Фільтр ще нічого не навчився';
+
+  @override
   String get messageFilter_resetLearningConfirm =>
-      'Забути все, чого було навчено натисканнями «Спам» і «Не спам»? Ваші правила буде збережено.';
+      'Забути все, чого навчився фільтр? Ваші правила буде збережено.';
 
   @override
   String messageFilter_filteredMessages(int count) {
@@ -7679,7 +7779,12 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get messageFilter_filteredMessagesEmpty => 'Нічого не відфільтровано.';
+  String get messageFilter_filteredMessagesSubtitle =>
+      'Список до 200 нещодавно відфільтрованих повідомлень з усіх каналів';
+
+  @override
+  String get messageFilter_filteredMessagesEmpty =>
+      'Немає відфільтрованих повідомлень';
 
   @override
   String get messageFilter_ghostSingle =>

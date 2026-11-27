@@ -3616,6 +3616,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get common_clear => 'Borrar';
 
   @override
+  String get common_reset => 'Restablecer';
+
+  @override
   String get common_clearSearch => 'Borrar búsqueda';
 
   @override
@@ -7533,28 +7536,47 @@ class AppLocalizationsEs extends AppLocalizations {
   String get messageFilter_enabled => 'Filtrar mensajes';
 
   @override
+  String get messageFilter_filteringSection => 'Filtrado';
+
+  @override
   String get messageFilter_enabledSubtitle =>
-      'Se aplica a los mensajes de canal';
+      'Se aplica a todos los canales salvo que se desactive en su menú';
+
+  @override
+  String get messageFilter_info =>
+      'Oculta el spam y los mensajes repetidos en los canales. Funciona solo en la app y no afecta a tu radio Companion.';
 
   @override
   String get messageFilter_displayTitle => 'Mensajes filtrados';
 
   @override
-  String get messageFilter_displayPlaceholder => 'Mostrar un aviso pequeño';
-
-  @override
   String get messageFilter_displayHide => 'Ocultar por completo';
 
   @override
-  String get messageFilter_displayHideHelp =>
-      'Los mensajes ocultos permanecen en la lista de Mensajes filtrados.';
+  String get messageFilter_displayHideSubtitle =>
+      'Ocultar los mensajes filtrados en lugar de mostrar un aviso';
 
   @override
   String get messageFilter_rulesSection => 'Tus reglas';
 
   @override
+  String messageFilter_rulesCount(int count) {
+    return 'Reglas ($count)';
+  }
+
+  @override
+  String get messageFilter_rulesTitle => 'Reglas';
+
+  @override
+  String get messageFilter_rulesHint =>
+      'Ocultar mensajes por palabra, frase o nombre de remitente';
+
+  @override
+  String get messageFilter_rulesEmptyTitle => 'Aún no hay reglas';
+
+  @override
   String get messageFilter_rulesEmpty =>
-      'Aún no hay reglas. Añade una palabra, frase o nombre de remitente para ocultar los mensajes que coincidan.';
+      'Añade una palabra, frase o nombre de remitente para ocultar los mensajes que coincidan';
 
   @override
   String get messageFilter_addRule => 'Añadir regla';
@@ -7599,6 +7621,68 @@ class AppLocalizationsEs extends AppLocalizations {
   String get messageFilter_ruleSaved => 'Regla guardada';
 
   @override
+  String messageFilter_rulesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count reglas eliminadas',
+      one: '1 regla eliminada',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_deleteRulesTitle => '¿Eliminar reglas?';
+
+  @override
+  String messageFilter_deleteRulesConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '¿Eliminar $count reglas del filtro de mensajes?',
+      one: '¿Eliminar 1 regla del filtro de mensajes?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count reglas activadas',
+      one: '1 regla activada',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOff(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count reglas desactivadas',
+      one: '1 regla desactivada',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_searchRules => 'Buscar reglas';
+
+  @override
+  String get messageFilter_rulesNoResults => 'No hay reglas coincidentes';
+
+  @override
+  String get messageFilter_selectRules => 'Seleccionar reglas';
+
+  @override
+  String get messageFilter_turnOn => 'Activar';
+
+  @override
+  String get messageFilter_turnOff => 'Desactivar';
+
+  @override
   String get messageFilter_automaticSection => 'Automático';
 
   @override
@@ -7606,15 +7690,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get messageFilter_duplicatesSubtitle =>
-      'El mismo mensaje enviado de nuevo, o por varios remitentes';
+      'Enviado de nuevo por una persona o por 3 o más personas';
 
   @override
-  String get messageFilter_repeatSends => 'Envíos para contar como repetición';
-
-  @override
-  String messageFilter_repeatSendsSubtitle(int count) {
-    return 'Ocultar un mensaje cuando el mismo remitente lo envía $count veces en 10 minutos';
+  String messageFilter_repeatSendsCount(int count) {
+    return 'Envíos para contar como repetición: $count';
   }
+
+  @override
+  String get messageFilter_repeatSendsHint =>
+      'Una persona, cada envío a menos de 10 minutos del anterior';
 
   @override
   String get messageFilter_repeatedCharacters => 'Caracteres repetidos';
@@ -7624,19 +7709,27 @@ class AppLocalizationsEs extends AppLocalizations {
       'Secuencias largas de un mismo carácter, como \"aaaaaaaaaaaaaaaaaaaa\"';
 
   @override
-  String get messageFilter_learning => 'Aprender de los toques en Spam';
+  String get messageFilter_learning => 'Aprender de las denuncias de spam';
 
   @override
   String messageFilter_learningSubtitle(int spam, int notSpam) {
-    return '$spam ejemplos de spam y $notSpam de no spam';
+    return 'Marcados como spam: $spam, como no spam: $notSpam';
   }
 
   @override
   String get messageFilter_resetLearning => 'Restablecer aprendizaje';
 
   @override
+  String get messageFilter_resetLearningSubtitle =>
+      'Olvidar todo lo aprendido de los mensajes marcados como spam y de los mensajes recientes';
+
+  @override
+  String get messageFilter_resetLearningNothing =>
+      'Aún no se ha aprendido nada';
+
+  @override
   String get messageFilter_resetLearningConfirm =>
-      '¿Olvidar todo lo aprendido de tus toques en Spam y No es spam? Tus reglas se conservan.';
+      '¿Olvidar todo lo que ha aprendido el filtro? Tus reglas se conservan.';
 
   @override
   String messageFilter_filteredMessages(int count) {
@@ -7644,7 +7737,11 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get messageFilter_filteredMessagesEmpty => 'No se ha filtrado nada.';
+  String get messageFilter_filteredMessagesSubtitle =>
+      'Lista de hasta 200 mensajes filtrados recientes de todos los canales';
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'No hay mensajes filtrados';
 
   @override
   String get messageFilter_ghostSingle => 'Mensaje oculto · Toca para ver';

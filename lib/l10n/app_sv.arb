@@ -945,6 +945,7 @@
   "login_failedMessage": "Inloggning misslyckades. Antingen är lösenordet fel eller så går det inte att nå repeatern.",
   "common_reload": "Ladda om",
   "common_clear": "Rensa",
+  "common_reset": "Återställ",
   "path_currentPath": "Nuvarande rutt: {path}",
   "@path_currentPath": {
     "placeholders": {
@@ -3533,13 +3534,26 @@
   "messageFilter_title": "Meddelandefilter",
   "messageFilter_settingsSubtitle": "Dölj skräppost och upprepade meddelanden",
   "messageFilter_enabled": "Filtrera meddelanden",
-  "messageFilter_enabledSubtitle": "Gäller kanalmeddelanden",
+  "messageFilter_filteringSection": "Filtrering",
+  "messageFilter_enabledSubtitle": "Gäller alla kanaler om det inte stängs av i kanalens meny",
+  "messageFilter_info": "Döljer skräppost och upprepade meddelanden i kanaler. Körs bara i appen och påverkar inte din Companion-radio.",
   "messageFilter_displayTitle": "Filtrerade meddelanden",
-  "messageFilter_displayPlaceholder": "Visa en liten platshållare",
   "messageFilter_displayHide": "Dölj helt",
-  "messageFilter_displayHideHelp": "Dolda meddelanden finns kvar i listan Filtrerade meddelanden.",
+  "messageFilter_displayHideSubtitle": "Dölj filtrerade meddelanden i stället för att visa en platshållare",
   "messageFilter_rulesSection": "Dina regler",
-  "messageFilter_rulesEmpty": "Inga regler ännu. Lägg till ett ord, en fras eller ett avsändarnamn för att dölja matchande meddelanden.",
+  "messageFilter_rulesCount": "Regler ({count})",
+  "@messageFilter_rulesCount": {
+    "description": "Message filter: title of the row that opens the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTitle": "Regler",
+  "messageFilter_rulesHint": "Dölj meddelanden efter ord, fras eller avsändarnamn",
+  "messageFilter_rulesEmptyTitle": "Inga regler ännu",
+  "messageFilter_rulesEmpty": "Lägg till ett ord, en fras eller ett avsändarnamn för att dölja matchande meddelanden",
   "messageFilter_addRule": "Lägg till regel",
   "messageFilter_editRule": "Redigera regel",
   "messageFilter_rulePattern": "Ord, fras eller namn",
@@ -3554,16 +3568,48 @@
   "messageFilter_ruleMatchExact": "Exakt",
   "messageFilter_ruleDeleted": "Regeln har raderats",
   "messageFilter_ruleSaved": "Regeln har sparats",
+  "messageFilter_rulesDeleted": "{count, plural, =1{1 regel raderad} other{{count} regler raderade}}",
+  "@messageFilter_rulesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "Radera regler?",
+  "messageFilter_deleteRulesConfirm": "{count, plural, =1{Radera 1 regel från meddelandefiltret?} other{Radera {count} regler från meddelandefiltret?}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, =1{1 regel aktiverad} other{{count} regler aktiverade}}",
+  "@messageFilter_rulesTurnedOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, =1{1 regel inaktiverad} other{{count} regler inaktiverade}}",
+  "@messageFilter_rulesTurnedOff": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Sök i regler",
+  "messageFilter_rulesNoResults": "Inga matchande regler",
+  "messageFilter_selectRules": "Markera regler",
+  "messageFilter_turnOn": "Aktivera",
+  "messageFilter_turnOff": "Inaktivera",
   "messageFilter_automaticSection": "Automatiskt",
   "messageFilter_duplicates": "Upprepade meddelanden",
-  "messageFilter_duplicatesSubtitle": "Samma meddelande skickas igen, eller av flera avsändare",
-  "messageFilter_repeatSends": "Utskick som räknas som upprepning",
-  "messageFilter_repeatSendsSubtitle": "Dölj ett meddelande när samma avsändare skickar det {count} gånger inom 10 minuter",
+  "messageFilter_duplicatesSubtitle": "Skickat igen av en person, eller av 3 eller fler personer",
+  "messageFilter_repeatSendsCount": "Utskick som räknas som upprepning: {count}",
+  "messageFilter_repeatSendsHint": "En person, varje utskick inom 10 minuter från det förra",
   "messageFilter_repeatedCharacters": "Upprepade tecken",
   "messageFilter_repeatedCharactersSubtitle": "Långa följder av samma tecken, som ”aaaaaaaaaaaaaaaaaaaa”",
-  "messageFilter_learning": "Lär av tryck på Skräppost",
-  "messageFilter_learningSubtitle": "{spam} skräppost- och {notSpam} inte-skräppost-exempel",
+  "messageFilter_learning": "Lär av skräppostanmälningar",
+  "messageFilter_learningSubtitle": "Markerade som skräppost: {spam}, som inte skräppost: {notSpam}",
   "@messageFilter_learningSubtitle": {
+    "description": "Message filter: subtitle of Learn from Spam Taps; how many messages are currently marked as spam and as not spam",
     "placeholders": {
       "spam": {
         "type": "int"
@@ -3574,16 +3620,20 @@
     }
   },
   "messageFilter_resetLearning": "Återställ inlärning",
-  "messageFilter_resetLearningConfirm": "Glömma allt som lärts från dina tryck på Skräppost och Inte skräppost? Dina regler behålls.",
+  "messageFilter_resetLearningSubtitle": "Glöm allt som lärts från meddelanden markerade som skräppost och de senaste meddelandena",
+  "messageFilter_resetLearningNothing": "Inget inlärt ännu",
+  "messageFilter_resetLearningConfirm": "Glömma allt som filtret har lärt sig? Dina regler behålls.",
   "messageFilter_filteredMessages": "Filtrerade meddelanden ({count})",
   "@messageFilter_filteredMessages": {
+    "description": "Message filter: Filtered Messages ({count})",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "messageFilter_filteredMessagesEmpty": "Inget har filtrerats.",
+  "messageFilter_filteredMessagesSubtitle": "Lista över upp till 200 nyligen filtrerade meddelanden från alla kanaler",
+  "messageFilter_filteredMessagesEmpty": "Inga filtrerade meddelanden",
   "messageFilter_ghostSingle": "Dolt meddelande · Tryck för att visa",
   "messageFilter_ghostMany": "{count, plural, one{{count} dolt meddelande · Tryck för att visa} other{{count} dolda meddelanden · Tryck för att visa}}",
   "@messageFilter_ghostMany": {

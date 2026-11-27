@@ -20,7 +20,10 @@ import 'package:meshcore_open/games/chess/ui/chess_game_screen.dart';
 import 'package:meshcore_open/games/chess/ui/chess_games_sheet.dart';
 import 'package:meshcore_open/games/hash_chain.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
+import 'package:meshcore_open/models/channel.dart';
+import 'package:meshcore_open/models/channel_message.dart';
 import 'package:meshcore_open/models/contact.dart';
+import 'package:meshcore_open/models/message_filter.dart';
 import 'package:meshcore_open/review_mode/review_radio.dart';
 import 'package:meshcore_open/screens/about_screen.dart';
 import 'package:meshcore_open/screens/add_contact_screen.dart';
@@ -37,11 +40,14 @@ import 'package:meshcore_open/screens/contact_settings_screen.dart';
 import 'package:meshcore_open/screens/contacts_screen.dart';
 import 'package:meshcore_open/screens/coordinate_map_screen.dart';
 import 'package:meshcore_open/screens/discovery_screen.dart';
+import 'package:meshcore_open/screens/filtered_messages_screen.dart';
 import 'package:meshcore_open/screens/line_of_sight_map_screen.dart';
 import 'package:meshcore_open/screens/location_picker_screen.dart';
 import 'package:meshcore_open/screens/location_settings_screen.dart';
 import 'package:meshcore_open/screens/map_cache_screen.dart';
 import 'package:meshcore_open/screens/map_screen.dart';
+import 'package:meshcore_open/screens/message_filter_rules_screen.dart';
+import 'package:meshcore_open/screens/message_filter_settings_screen.dart';
 import 'package:meshcore_open/screens/neighbors_screen.dart';
 import 'package:meshcore_open/screens/node_name_screen.dart';
 import 'package:meshcore_open/screens/path_trace_map.dart';
@@ -64,6 +70,7 @@ import 'package:meshcore_open/services/ble_debug_log_service.dart';
 import 'package:meshcore_open/services/chat_text_scale_service.dart';
 import 'package:meshcore_open/services/image_codec_service.dart';
 import 'package:meshcore_open/services/map_tile_cache_service.dart';
+import 'package:meshcore_open/services/message_filter/message_filter_service.dart';
 import 'package:meshcore_open/services/message_retry_service.dart';
 import 'package:meshcore_open/services/network_map/network_map_upload_service.dart';
 import 'package:meshcore_open/services/path_history_service.dart';
@@ -96,6 +103,9 @@ Future<_Env> _connect(WidgetTester tester) async {
   final retry = MessageRetryService();
   final settings = AppSettingsService();
   final translation = TranslationService(settings);
+  final filter = MessageFilterService(
+    trainer: MessageFilterService.trainInline,
+  );
   final chess = ChessService(
     link: ConnectorChessLink(connector, settings: settings),
     startHousekeeping: false,
@@ -121,9 +131,28 @@ Future<_Env> _connect(WidgetTester tester) async {
     ChangeNotifierProvider.value(
       value: NetworkMapUploadService(connector: connector, settings: settings),
     ),
+    ChangeNotifierProvider.value(value: filter),
   ]);
   await tester.runAsync(() async {
     await settings.loadSettings();
+    await filter.load();
+    // A long rule and a sender rule for the Rules page.
+    await filter.addRule(
+      const FilterRule(
+        id: 'long',
+        pattern: 'Buy cheap radios now at the best price anywhere on the mesh',
+        field: FilterRuleField.both,
+        match: FilterRuleMatch.wholeWord,
+      ),
+    );
+    await filter.addRule(
+      const FilterRule(
+        id: 'sender',
+        pattern: 'Spam Bot',
+        field: FilterRuleField.sender,
+        match: FilterRuleMatch.exact,
+      ),
+    );
     connector.initialize(
       retryService: retry,
       pathHistoryService: PathHistoryService(storage),
@@ -196,6 +225,35 @@ void _seedChessGames(ChessService chess, String channelId) {
   );
 }
 
+/// A few filtered messages with long names for the Filtered Messages list.
+class _FilteredMessagesConnector extends MeshCoreConnector {
+  @override
+  bool get isConnected => true;
+
+  @override
+  List<(Channel, ChannelMessage)> recentFilteredChannelMessages({
+    int limit = 200,
+  }) => [
+    for (final (i, reason) in ['textRule', 'duplicate', 'learned'].indexed)
+      (
+        Channel(
+          index: i + 1,
+          name: 'Regional Emergency Coordination Net $i',
+          psk: Uint8List(16),
+        ),
+        ChannelMessage(
+          senderName: 'Bartholomew Repeater Fan',
+          text: 'Limited offer, visit the totally genuine site today',
+          timestamp: DateTime.now().subtract(Duration(hours: i)),
+          isOutgoing: false,
+          channelIndex: i + 1,
+          filterReason: reason,
+          filterDetail: 'visit the totally genuine site today',
+        ),
+      ),
+  ];
+}
+
 Contact _contactOfType(MeshCoreConnector c, int type) => c.contacts.firstWhere(
   (x) => x.type == type,
   orElse: () => c.contacts.first,
@@ -220,6 +278,9 @@ _interactions = {
   },
   'Contacts add page': (t, _) async {
     await t.tap(find.byType(FloatingActionButton));
+  },
+  'MessageFilterRules selection': (t, _) async {
+    await t.longPress(find.byKey(const ValueKey('messageFilter_rule_long')));
   },
   // Four routing modes (Auto, Flood, Direct, Manual) share one row.
   'Chess games sheet': (t, c) async {
@@ -261,8 +322,20 @@ final Map<String, _ScreenBuilder> _screens = {
       const LocationPickerScreen(initial: LatLng(45.515232, -122.678385)),
   'ContactSettings': (_) => const ContactSettingsScreen(),
   'PrivacySettings': (_) => const PrivacySettingsScreen(),
+  'MessageFilter': (_) => const MessageFilterSettingsScreen(),
+  'MessageFilterRules': (_) => const MessageFilterRulesScreen(),
+  'MessageFilterRules selection': (_) => const MessageFilterRulesScreen(),
+  'MessageFilterRulesEmpty': (_) => ChangeNotifierProvider(
+    create: (_) => MessageFilterService(),
+    child: const MessageFilterRulesScreen(),
+  ),
   'About': (_) => const AboutScreen(),
   'Discovery': (_) => const DiscoveryScreen(),
+  'FilteredMessages': (_) => ChangeNotifierProvider<MeshCoreConnector>.value(
+    value: _FilteredMessagesConnector(),
+    child: const FilteredMessagesScreen(),
+  ),
+  'FilteredMessages empty': (_) => const FilteredMessagesScreen(),
   'RegionManagement': (_) => const RegionManagementScreen(),
   'MapCache': (_) => const MapCacheScreen(),
   'CompanionRadioStats': (_) => const CompanionRadioStatsScreen(),

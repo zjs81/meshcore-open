@@ -414,6 +414,15 @@ class MessageFilterService extends ChangeNotifier {
     await _guardSave(() => _store.saveRules(_rules));
   }
 
+  /// Replaces every rule at once (bulk changes on the Rules page), with
+  /// one save and one revision bump, so stored messages are re-filtered once.
+  Future<void> setRules(List<FilterRule> rules) async {
+    _rules = List.of(rules);
+    _rulesRevision++;
+    _notify();
+    await _guardSave(() => _store.saveRules(_rules));
+  }
+
   /// Forgets all Spam / Not spam taps and implicit examples. Rules are kept.
   Future<void> resetLearning() async {
     _spamExamples = <FilterExample>[];

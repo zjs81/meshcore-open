@@ -37,6 +37,7 @@ Rules:
 - Do not use `MeshPalette.ink*`, `bg*` or `line*` directly in normal screens. They are the dark-theme values and are wrong in the light theme and in custom themes. Use the matching `ColorScheme` role.
 - Do not use raw `Colors.red`, `Colors.grey[600]` and so on for UI chrome.
 - Status colours (`error`, `tertiary`, `secondary`) are copied from the stock scheme of the same brightness in `fromCustom`, so they keep their meaning in custom themes.
+- A disabled destructive or warning control drops its `error` / `tertiary` colour and shows only the normal disabled look: pass `null` as the colour of `MeshMenuItemRow`, the icon or the `ListTile` text, and leave out `MeshNavTile`'s `titleColor` / `iconColor` while `onTap` is null. Examples: Clear chat and Delete channel while offline, Discovered Contacts Delete all, Reset Learning with nothing learned.
 - `StatusChip` shows how to colour a status: the label keeps `onSurface`, and only the dot or icon carries the colour.
 
 Custom, preset and holiday themes (colours, icons, map markers, chat backgrounds) are described in [themes.md](themes.md). Use `ThemedIcon(ThemeIconSlot.…)` for the icons a theme can replace (tabs, send, settings, node avatars).
@@ -149,7 +150,9 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 | Radio offline on a remote-node screen | `RadioDisconnectedBanner` | Renders nothing while connected |
 | Card the user can close | `GetNodeBanner` (bottom of Connect a radio) | Close `IconButton` (`common_close` tooltip) at the end of the title row; closing hides it with `RevealOnEnable` until the page closes. At most 40 % of the screen height, scrolling inside at large text; hidden on screens under 480 dp tall (a landscape phone) |
 | Progress bar | `MeshProgressBar`; `MeshProgressAppBarBottom` as an app bar `bottom`; `SyncProgressAppBarBottom` for the app syncs, with `busy: true` while the screen waits for the radio (Settings actions) (`widgets/sync_progress_overlay.dart`) | See [Progress bars](#progress-bars) |
-| Toast message | `showDismissibleSnackBar(context, content: Text(...))` | Tap to dismiss, replaces the current snackbar, safe after an async gap |
+| Toast message | `showDismissibleSnackBar(context, content: Text(...))` | Tap to dismiss, replaces the current snackbar, safe after an async gap. Returns its controller, or null when nothing was shown |
+| Undo after a change | `showDismissibleSnackBar` with `action: SnackBarAction(label: l10n.common_undo, ...)` and the default duration | Map marker removal, Discovery add, Message Filter rules (add, edit, delete, bulk delete, bulk turn on/off). Undo reverses the change; deleted rules go back to their places. A switch the user can flip back needs no snackbar. A change no existing call can reverse (deleting messages, Not spam with its learning) is applied only when the snackbar closes without Undo, or when the page closes or the app is hidden, which also close the snackbar; until then its rows leave the list (Filtered Messages). Deleting messages or selected rules still confirms first, as in chats and Bookmarks |
+| Selecting several items | App bar `Icons.checklist` button (tooltip names the items) or a long-press starts selection; it stays on at 0 selected | App bar: `Icons.close` leading (`chat_clearSelection`), `chat_selectedCount` title, `Icons.select_all` (`chat_selectAll`, selects the visible rows, so only the matches while searching), then the bulk actions. Rows: 28px `Icons.check_circle` (`primary`) or `Icons.radio_button_unchecked` (`onSurfaceVariant`), a `primary` 16 % tint and `Semantics(selected:)`; a tap toggles the row, and row controls are hidden or disabled. Back leaves selection first (`PopScope`), the FAB hides, and a bulk action ends selection (Filtered Messages, Rules) |
 | List item entrance | `ListEntrance(index:)` | Optional. Plays only for rows built while the list is at rest at the top; rows scrolled into view appear at once |
 
 **Buttons.** Theme shapes are all pill-shaped. In use:
@@ -158,7 +161,7 @@ Icon sizes in use: 24 for tile and banner icons, 20 for menu icons and small act
 - `FilledButton.tonal`: a secondary action that still needs weight (rare).
 - `OutlinedButton(.icon)`: secondary actions next to a filled one.
 - `TextButton`: Cancel and low-emphasis actions in dialogs; inline actions in cards.
-- Destructive confirm: destructive or data-removing actions (such as clearing a chat, deleting a channel or contact, or removing single or bulk bookmarks) always prompt with a confirmation `AlertDialog` pairing a `Cancel` `TextButton` with an error-styled destructive action: `FilledButton` with `backgroundColor: scheme.error`, `foregroundColor: scheme.onError` (`showConfirmClearDialog` in `widgets/confirm_clear_dialog.dart`), or a `TextButton` with `foregroundColor: scheme.error` when it is not the primary action (as in `confirmClearChat` and `confirmRemoveBookmarks`). Use `showConfirmClearDialog(confirmLabel:)` for any confirm dialog; `warning: true` makes the button `scheme.tertiary` for disruptive, non-destructive actions (Reboot in Settings).
+- Destructive confirm: destructive or data-removing actions (such as clearing a chat, deleting a channel or contact, or removing single or bulk bookmarks) always prompt with a confirmation `AlertDialog` pairing a `Cancel` `TextButton` with an error-styled destructive action: `FilledButton` with `backgroundColor: scheme.error`, `foregroundColor: scheme.onError` (`showConfirmClearDialog` in `widgets/confirm_clear_dialog.dart`), or a `TextButton` with `foregroundColor: scheme.error` when it is not the primary action (as in `confirmClearChat` and `confirmRemoveBookmarks`). Use `showConfirmClearDialog(confirmLabel:)` for any confirm dialog; `warning: true` makes the button `scheme.tertiary` for disruptive, non-destructive actions (Reboot in Settings). Removing an app-only item that an Undo snackbar puts back (one Message Filter rule from its row, a map marker) skips the dialog; deleting messages or selected rules still confirms (see Undo after a change).
 - Dialog action order: Cancel first, primary last.
 - Avoid `ElevatedButton` in new code.
 
@@ -181,7 +184,7 @@ A switch that uncovers more controls (such as **Enable image messages** and **En
 
 The same animation without the tint is `RevealOnEnable`. Use it when the revealed control is not a settings sub-panel: the Bluetooth-off banner on the scanner, the device-info rows on the Settings screen, and the node banner on Connect a radio.
 
-Do not add a second duration, and do not reveal the controls with a plain `if` that pops them in. A block that swaps between two bodies, such as the filtered-message preview, keeps `AnimatedSize` but uses `RevealOnEnable.duration` and `RevealOnEnable.curve`.
+Do not add a second duration, and do not reveal the controls with a plain `if` that pops them in. A block that swaps between two bodies keeps `AnimatedSize` but uses `RevealOnEnable.duration` and `RevealOnEnable.curve`.
 
 Sliders that belong to a setting use `SettingsValueSlider` with a 24px `icon` (`ListTile.leading`) so the title and slider line up with adjacent rows. Put the selected number in the title (a localized string with the count). The slider's drag label repeats that number; it is not the only place the value appears.
 
@@ -234,12 +237,12 @@ What the code does:
 | Bottom sheet | `showMeshSheet` + `BottomSheetHeader` (28 calls in 17 files) | Choosing from a list, an item's actions, quick tools tied to the current screen | Language picker, notification mode, add contact/channel options, emoji and GIF pickers, node info, share contact, image actions |
 | Draggable sheet | `showModalBottomSheet` + `DraggableScrollableSheet` | Tall, scrollable panels that need a drag size | `ContactRoutingSheet` (`routing_sheet.dart`), image send preview |
 | Dialog | `showDialog` + `AlertDialog` | Confirming an action, a short input (one to three fields) outside settings, a short message | Disconnect (`showDisconnectDialog`), clear (`showConfirmClearDialog`), unsaved changes, rename point |
-| Page | `Navigator.push(MaterialPageRoute(...))` | Every settings entry, and anything with sections, many fields, its own save, or that the user stays in | App Settings, Node Name, Radio Settings, Location, Contact Settings, Privacy, About, Repeater Settings, Themes, Theme editor, Message filter, Region management |
+| Page | `Navigator.push(MaterialPageRoute(...))` | Every settings entry, and anything with sections, many fields, its own save, or that the user stays in | App Settings, Node Name, Radio Settings, Location, Contact Settings, Privacy, About, Repeater Settings, Themes, Theme editor, Message Filter, Region management |
 
 Rules for new UI:
 
 1. **Settings → page.** A row in Settings, App Settings or a repeater screen that opens settings opens a page, even for a single field. See [Settings pages](#settings-pages).
-2. **Confirmation or a single short input → dialog.** Title, one sentence, Cancel + one action. Destructive or data-removing actions (clearing a chat, deleting a channel/contact, or removing single/bulk bookmarks) always use this `AlertDialog` pattern (`Cancel` + `scheme.error` destructive action button). Inside settings, dialogs only confirm actions (Reboot, Delete all paths, unsaved changes).
+2. **Confirmation or a single short input → dialog.** Title, one sentence, Cancel + one action. Destructive or data-removing actions (clearing a chat, deleting a channel/contact, or removing single/bulk bookmarks) always use this `AlertDialog` pattern (`Cancel` + `scheme.error` destructive action button), unless an Undo snackbar puts an app-only item back (one Message Filter rule from its row, a map marker); deleting messages or selected rules still confirms. Inside settings, dialogs only confirm actions (Reboot, Delete all paths, unsaved changes).
 3. **Pick one of several options, or act on one item → sheet.** Use `showMeshSheet` and start the content with `BottomSheetHeader(title:, subtitle:)`. It handles the keyboard and navigation-bar insets. Use raw `showModalBottomSheet` only when you need `DraggableScrollableSheet`.
 4. **Forms with sections, live remote values, or anything that needs Save/Discard → page.** Guard unsaved changes with `UnsavedChangesGuard` (built into `SaveToRadioPage`).
 5. Never stack a dialog on a sheet on a dialog. Close the sheet first, or move the flow to a page.
@@ -254,9 +257,11 @@ Every settings entry opens its own page, even for one field. On a settings page,
 
 Layout follows App Settings: `SectionHeader` + `MeshCard` groups, an optional `MeshInfoCard` at the top, and `SettingsReveal` for sub-options that only apply while a switch is on. Text fields and dropdowns use the theme's input style; don't set a border per field.
 
+A list that can grow long gets its own page, so it does not push the other settings down: a `MeshNavTile` titled `Label (N)` opens a page with the items in one `MeshCard`, a `FloatingActionButton.extended` to add, and `EmptyState` when there are none (Message Filter → Rules).
+
 | Stored | Saved | Examples |
 |---|---|---|
-| Only in the app | On each change; no Save button | App Settings, Message filter, Themes |
+| Only in the app | On each change; no Save button | App Settings, Message Filter, Themes |
 | On a radio | Only on Save | Node Name, Radio Settings, Location, Contact Settings, Privacy, Repeater Settings |
 
 Pages that save to a radio use `SaveToRadioPage` (`lib/widgets/unsaved_changes_guard.dart`). It adds `MeshSettingsTileTheme`, `RadioDisconnectedBanner`, the app bar Save, the leave warning, the connection check and the error snackbar.
@@ -284,7 +289,7 @@ That is the Contacts list and its group member picker, Discovery, Map node searc
 - Overflow menus:
   - Order: screen-specific items first, then a `PopupMenuDivider` separating the trailing app-level section — Connect/Disconnect (`connectionMenuItem`) immediately followed by Settings (`settingsMenuItem`) — and destructive items last if a screen has any. Omit the divider when no items precede the app-level section (for example, `MapScreen` while building a path trace). Main views use `mainOverflowTrailingItems(screenContext, menuContext, hasPrecedingItems:)` in `lib/widgets/connect_sheet.dart` so they stay in sync.
   - Visual & interaction rules: rely on `MeshTheme`'s `popupMenuTheme` (`surfaceContainerHigh`, `MeshRadii.md` border radius, and consistent `menuPadding`, margins, item padding, and elevation), separate sections with `PopupMenuDivider`, build every row with `MeshMenuItemRow` (20px icon slot, 12px gap, 2-line wrap + ellipsis), use `context.l10n.contacts_moreOptions` as the button `tooltip` on main views, and capture the screen `context` (not the `itemBuilder`'s `menuContext`) for `onTap` callbacks since menus pop before `onTap` runs. Destructive items use `MeshMenuItemRow(color: scheme.error)` so both icon and label turn red (Clear chat in `chat_screen.dart`; Clear / Delete channel in `channel_chat_screen.dart`).
-- Search: tapping search swaps the title for the field and hides all actions (`actions: _searching ? null : [...]`). The leading back arrow and the system back gesture close the search (`PopScope(canPop: !_searching)`) instead of leaving the screen.
+- Search: tapping search swaps the title for the field and hides all actions (`actions: _searching ? null : [...]`) and the FAB (Rules). The leading back arrow and the system back gesture close the search (`PopScope(canPop: !_searching)`) instead of leaving the screen.
 - Long operations: show progress as the app bar `bottom` with the shared bar (see [Progress bars](#progress-bars)).
 
 ## 9. States
@@ -351,6 +356,8 @@ The current code does not yet follow this page everywhere:
 
 - **App bar centring.** `MeshTheme._build` sets `centerTitle: false`, so screens opt in. One Settings page, `backup_restore_screen.dart`, uses `AppBarTitle(indicators: false, subtitle: false)` for a plain title, which stays left-aligned despite `centerTitle: true`; switch it to `AdaptiveAppBarTitle`. The main tabs and chats are left-aligned on purpose (see [App bars](#8-app-bars)).
 - **Disconnect icon-only error tint.** In overflow menus, Disconnect tints only the icon (`iconColor`), while Clear chat / Delete tint icon and label (`color`).
+- **Selection in chats and Bookmarks.** Chats and Bookmarks start selection from a message, end it when nothing is selected; the channel chat keeps Select all in its ⋮ menu, and direct chats and Bookmarks have none (see Selecting several items).
+- **Reboot keeps its colour when disabled.** In Settings, Reboot stays `tertiary` (dimmed to 50 %) while no radio is connected, instead of dropping the colour ([Colour and theme](#2-colour-and-theme)).
 - **Menu rows not using `MeshMenuItemRow`.** `channel_chat_screen.dart` bulk-select menu (Select all / Copy) puts a `ListTile` inside `PopupMenuItem`. `widgets/list_filter_widget.dart` and the group menu in `contacts_screen.dart` use plain `Text` items, which is acceptable for icon-less lists but does not limit wrapping.
 - **Tile titles without `MeshSettingsTileTheme`.** Backup & Restore (`CheckboxListTile`) and Themes (`SwitchListTile`) do not wrap their body in it, so those titles are not semibold like the other settings rows.
 - **Bars inside content.** The map cache download bar (`map_cache_screen.dart`) uses a fixed `MeshPalette.blue`.
@@ -364,9 +371,9 @@ The current code does not yet follow this page everywhere:
 - **Two badge styles.** `QuickSwitchBar` uses Material `Badge` capped at 99+; `UnreadBadge` caps at 9999+.
 - **Sheets without `showMeshSheet`.** Besides the draggable sheets, `chat_background.dart`, `map_screen.dart`, `theme_editor_screen.dart`, `repeater_cli_screen.dart`, `message_translation_button.dart` and `path_map_ui.dart` call `showModalBottomSheet` directly, so they skip the shared inset handling and most skip `BottomSheetHeader`.
 - **Repeater Settings guard.** `repeater_settings_screen.dart` has its own unsaved-changes dialog instead of `UnsavedChangesGuard`.
-- **Settings in dialogs.** App Settings still opens IPFS image links (`_IpfsImageLinksDialog`) and the raster tile source and endpoint as dialogs in `app_settings_screen.dart`, and the per-contact settings in `chat_screen.dart` are a dialog although they behave like a form.
+- **Settings in dialogs.** App Settings still opens IPFS image links (`_IpfsImageLinksDialog`) and the raster tile source and endpoint as dialogs in `app_settings_screen.dart`, and the per-contact settings in `chat_screen.dart` are a dialog although they behave like a form. The Message Filter rule editor (`widgets/filter_rule_dialog.dart`, shared with channel chats) is a dialog too.
 - **Dialog buttons.** `showDisconnectDialog` (`utils/dialog_utils.dart`) uses two `TextButton`s with no emphasis; `showConfirmClearDialog` uses a red `FilledButton`.
-- **Snackbars.** A few places still call `ScaffoldMessenger.showSnackBar` directly (`discovery_screen.dart`, `app_settings_screen.dart`, `message_filter_settings_screen.dart`, `region_management_screen.dart`, `helpers/image_send_flow.dart`) and so miss tap-to-dismiss and replace-instead-of-queue.
+- **Snackbars.** A few places still call `ScaffoldMessenger.showSnackBar` directly (`discovery_screen.dart`, `app_settings_screen.dart`, `region_management_screen.dart`, `helpers/image_send_flow.dart`) and so miss tap-to-dismiss and replace-instead-of-queue.
 - **Small tap targets.** 40px buttons in `chat_screen.dart`, `channel_chat_screen.dart`, `reaction_chips.dart`, `snr_indicator.dart`, `path_map_ui.dart`; 44px in `routing_sheet.dart`.
 - **Unknown placeholders.** Repeater and companion stats screens use `—`; `line_of_sight_map_screen.dart` uses `--`.
 - **Missing tooltip.** The Contacts FAB (`contacts_screen.dart`) has no tooltip; about 18 of 111 `IconButton`s have no tooltip nearby.

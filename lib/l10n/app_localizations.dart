@@ -6270,6 +6270,12 @@ abstract class AppLocalizations {
   /// **'Clear'**
   String get common_clear;
 
+  /// Short confirm button that resets something (Reset Learning dialog)
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get common_reset;
+
   /// No description provided for @common_clearSearch.
   ///
   /// In en, this message translates to:
@@ -12526,55 +12532,85 @@ abstract class AppLocalizations {
   /// **'Hide spam and repeated messages'**
   String get messageFilter_settingsSubtitle;
 
-  /// Message filter: Filter messages
+  /// Message filter: master switch at the top of the Message Filter page
   ///
   /// In en, this message translates to:
-  /// **'Filter messages'**
+  /// **'Filter Messages'**
   String get messageFilter_enabled;
 
-  /// Message filter: Applies to channel messages
+  /// Message filter: section header above the Filter Messages switch
   ///
   /// In en, this message translates to:
-  /// **'Applies to channel messages'**
+  /// **'Filtering'**
+  String get messageFilter_filteringSection;
+
+  /// Message filter: subtitle of the Filter Messages switch; each channel can turn filtering off in its chat menu
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to every channel unless turned off in its menu'**
   String get messageFilter_enabledSubtitle;
 
-  /// Message filter: Filtered messages
+  /// Message filter: note at the top of the Message Filter page
   ///
   /// In en, this message translates to:
-  /// **'Filtered messages'**
+  /// **'Hides spam and repeated messages in channels. It runs in the app only and doesn\'t affect your companion radio.'**
+  String get messageFilter_info;
+
+  /// Message filter: section header and title of the Filtered Messages list
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered Messages'**
   String get messageFilter_displayTitle;
 
-  /// Message filter: Show a small placeholder
+  /// Message filter: switch that hides filtered messages without a placeholder
   ///
   /// In en, this message translates to:
-  /// **'Show a small placeholder'**
-  String get messageFilter_displayPlaceholder;
-
-  /// Message filter: Hide completely
-  ///
-  /// In en, this message translates to:
-  /// **'Hide completely'**
+  /// **'Hide Completely'**
   String get messageFilter_displayHide;
 
-  /// Message filter: Hidden messages stay in the Filtered messages list.
+  /// Message filter: description of the Hide Completely switch
   ///
   /// In en, this message translates to:
-  /// **'Hidden messages stay in the Filtered messages list.'**
-  String get messageFilter_displayHideHelp;
+  /// **'Hide filtered messages instead of showing a placeholder'**
+  String get messageFilter_displayHideSubtitle;
 
-  /// Message filter: Your rules
+  /// Message filter: section header above the Rules (N) row on the Message Filter page
   ///
   /// In en, this message translates to:
-  /// **'Your rules'**
+  /// **'Your Rules'**
   String get messageFilter_rulesSection;
 
-  /// Message filter: No rules yet. Add a word, phrase or sender name to hide messages that match it.
+  /// Message filter: title of the row under the Your Rules header that opens the Rules page, with the number of rules
   ///
   /// In en, this message translates to:
-  /// **'No rules yet. Add a word, phrase or sender name to hide messages that match it.'**
+  /// **'Rules ({count})'**
+  String messageFilter_rulesCount(int count);
+
+  /// Message filter: title of the Rules page, opened from the Rules (N) row
+  ///
+  /// In en, this message translates to:
+  /// **'Rules'**
+  String get messageFilter_rulesTitle;
+
+  /// Message filter: subtitle of the row that opens the Rules page
+  ///
+  /// In en, this message translates to:
+  /// **'Hide messages by word, phrase or sender name'**
+  String get messageFilter_rulesHint;
+
+  /// Message filter: title of the empty Rules page
+  ///
+  /// In en, this message translates to:
+  /// **'No rules yet'**
+  String get messageFilter_rulesEmptyTitle;
+
+  /// Message filter: text on the empty Rules page
+  ///
+  /// In en, this message translates to:
+  /// **'Add a word, phrase or sender name to hide messages that match it'**
   String get messageFilter_rulesEmpty;
 
-  /// Message filter: Add rule
+  /// Message filter: Add rule button on the Rules page and title of the dialog that adds a rule
   ///
   /// In en, this message translates to:
   /// **'Add rule'**
@@ -12658,82 +12694,160 @@ abstract class AppLocalizations {
   /// **'Rule saved'**
   String get messageFilter_ruleSaved;
 
+  /// Message filter: snackbar after deleting the selected rules on the Rules page
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 rule deleted} other{{count} rules deleted}}'**
+  String messageFilter_rulesDeleted(int count);
+
+  /// Message filter: title of the dialog that confirms deleting the selected rules on the Rules page
+  ///
+  /// In en, this message translates to:
+  /// **'Delete rules?'**
+  String get messageFilter_deleteRulesTitle;
+
+  /// Message filter: text of the dialog that confirms deleting the selected rules on the Rules page
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Delete 1 rule from the message filter?} other{Delete {count} rules from the message filter?}}'**
+  String messageFilter_deleteRulesConfirm(int count);
+
+  /// Message filter: snackbar after turning on the selected rules on the Rules page
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 rule turned on} other{{count} rules turned on}}'**
+  String messageFilter_rulesTurnedOn(int count);
+
+  /// Message filter: snackbar after turning off the selected rules on the Rules page
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 rule turned off} other{{count} rules turned off}}'**
+  String messageFilter_rulesTurnedOff(int count);
+
+  /// Message filter: tooltip of the search button on the Rules page and hint of its search field
+  ///
+  /// In en, this message translates to:
+  /// **'Search rules'**
+  String get messageFilter_searchRules;
+
+  /// Message filter: shown on the Rules page when no rule matches the search
+  ///
+  /// In en, this message translates to:
+  /// **'No matching rules'**
+  String get messageFilter_rulesNoResults;
+
+  /// Message filter: tooltip of the button that starts selecting rules on the Rules page
+  ///
+  /// In en, this message translates to:
+  /// **'Select rules'**
+  String get messageFilter_selectRules;
+
+  /// Message filter: menu item that turns on the selected rules
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get messageFilter_turnOn;
+
+  /// Message filter: menu item that turns off the selected rules
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get messageFilter_turnOff;
+
   /// Message filter: Automatic
   ///
   /// In en, this message translates to:
   /// **'Automatic'**
   String get messageFilter_automaticSection;
 
-  /// Message filter: Repeated messages
+  /// Message filter: switch for the repeated message checks
   ///
   /// In en, this message translates to:
-  /// **'Repeated messages'**
+  /// **'Repeated Messages'**
   String get messageFilter_duplicates;
 
-  /// Message filter: The same message sent again, or by several senders
+  /// Message filter: subtitle of the Repeated Messages switch
   ///
   /// In en, this message translates to:
-  /// **'The same message sent again, or by several senders'**
+  /// **'Sent again by one person, or by 3 or more people'**
   String get messageFilter_duplicatesSubtitle;
 
-  /// Message filter: title of the setting for which send of the same message by the same sender is hidden as a repeat
+  /// Message filter: title of the slider for how many sends of the same message by the same sender hide it as a repeat
   ///
   /// In en, this message translates to:
-  /// **'Sends to count as a repeat'**
-  String get messageFilter_repeatSends;
+  /// **'Sends to Count as a Repeat: {count}'**
+  String messageFilter_repeatSendsCount(int count);
 
-  /// Message filter: subtitle of the repeat-sends setting
+  /// Message filter: subtitle of the Sends to Count as a Repeat slider
   ///
   /// In en, this message translates to:
-  /// **'Hide a message when the same sender sends it {count} times within 10 minutes'**
-  String messageFilter_repeatSendsSubtitle(int count);
+  /// **'One person, each send within 10 minutes of the last'**
+  String get messageFilter_repeatSendsHint;
 
-  /// Message filter: Repeated characters
+  /// Message filter: switch for the repeated characters check
   ///
   /// In en, this message translates to:
-  /// **'Repeated characters'**
+  /// **'Repeated Characters'**
   String get messageFilter_repeatedCharacters;
 
-  /// Message filter: Messages like "aaaaaaaa" or "!!!!!!!!"
+  /// Message filter: subtitle of the Repeated Characters switch
   ///
   /// In en, this message translates to:
   /// **'Long runs of one character, like \"aaaaaaaaaaaaaaaaaaaa\"'**
   String get messageFilter_repeatedCharactersSubtitle;
 
-  /// Message filter: Learn from Spam taps
+  /// Message filter: switch that lets the filter learn from the messages the user marks as spam or not spam
   ///
   /// In en, this message translates to:
-  /// **'Learn from Spam taps'**
+  /// **'Learn from Spam Reports'**
   String get messageFilter_learning;
 
-  /// Message filter: {spam} spam and {notSpam} not-spam examples
+  /// Message filter: subtitle of Learn from Spam Reports; how many messages are currently marked as spam and as not spam
   ///
   /// In en, this message translates to:
-  /// **'{spam} spam and {notSpam} not-spam examples'**
+  /// **'{spam} marked as spam, {notSpam} as not spam'**
   String messageFilter_learningSubtitle(int spam, int notSpam);
 
-  /// Message filter: Reset learning
+  /// Message filter: title of the Reset Learning row and of its confirmation dialog
   ///
   /// In en, this message translates to:
-  /// **'Reset learning'**
+  /// **'Reset Learning'**
   String get messageFilter_resetLearning;
 
-  /// Message filter: Forget everything learned from your Spam and Not spam taps? Your rules are kept.
+  /// Message filter: description of the Reset Learning row
   ///
   /// In en, this message translates to:
-  /// **'Forget everything learned from your Spam and Not spam taps? Your rules are kept.'**
+  /// **'Forget everything learned from messages marked as spam and recent messages'**
+  String get messageFilter_resetLearningSubtitle;
+
+  /// Message filter: Reset Learning row description while nothing has been learned
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing learned yet'**
+  String get messageFilter_resetLearningNothing;
+
+  /// Message filter: message of the Reset Learning confirmation
+  ///
+  /// In en, this message translates to:
+  /// **'Forget everything the filter has learned? Your rules are kept.'**
   String get messageFilter_resetLearningConfirm;
 
-  /// Message filter: Filtered messages ({count})
+  /// Message filter: title of the row that opens the Filtered Messages list, with the number of messages in it
   ///
   /// In en, this message translates to:
-  /// **'Filtered messages ({count})'**
+  /// **'Filtered Messages ({count})'**
   String messageFilter_filteredMessages(int count);
 
-  /// Message filter: Nothing has been filtered.
+  /// Message filter: description of the row that opens the Filtered Messages list
   ///
   /// In en, this message translates to:
-  /// **'Nothing has been filtered.'**
+  /// **'List of up to 200 recent filtered messages from all channels'**
+  String get messageFilter_filteredMessagesSubtitle;
+
+  /// Message filter: empty state of the Filtered Messages list
+  ///
+  /// In en, this message translates to:
+  /// **'No filtered messages'**
   String get messageFilter_filteredMessagesEmpty;
 
   /// Message filter: Hidden message · Tap to view

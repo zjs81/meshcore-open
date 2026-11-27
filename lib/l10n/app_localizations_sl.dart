@@ -3619,6 +3619,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get common_clear => 'Ponoviti';
 
   @override
+  String get common_reset => 'Ponastavi';
+
+  @override
   String get common_clearSearch => 'Počisti iskanje';
 
   @override
@@ -7518,27 +7521,47 @@ class AppLocalizationsSl extends AppLocalizations {
   String get messageFilter_enabled => 'Filtriraj sporočila';
 
   @override
-  String get messageFilter_enabledSubtitle => 'Velja za sporočila v kanalih';
+  String get messageFilter_filteringSection => 'Filtriranje';
+
+  @override
+  String get messageFilter_enabledSubtitle =>
+      'Velja za vse kanale, razen če ga izklopite v meniju kanala';
+
+  @override
+  String get messageFilter_info =>
+      'Skrije neželena in ponavljajoča se sporočila v kanalih. Deluje samo v aplikaciji in ne vpliva na vaš spremljevalni radio.';
 
   @override
   String get messageFilter_displayTitle => 'Filtrirana sporočila';
 
   @override
-  String get messageFilter_displayPlaceholder => 'Pokaži majhno oznako';
-
-  @override
   String get messageFilter_displayHide => 'Skrij popolnoma';
 
   @override
-  String get messageFilter_displayHideHelp =>
-      'Skrita sporočila ostanejo na seznamu Filtrirana sporočila.';
+  String get messageFilter_displayHideSubtitle =>
+      'Skrij filtrirana sporočila namesto prikaza oznake';
 
   @override
   String get messageFilter_rulesSection => 'Vaša pravila';
 
   @override
+  String messageFilter_rulesCount(int count) {
+    return 'Pravila ($count)';
+  }
+
+  @override
+  String get messageFilter_rulesTitle => 'Pravila';
+
+  @override
+  String get messageFilter_rulesHint =>
+      'Skrij sporočila glede na besedo, frazo ali ime pošiljatelja';
+
+  @override
+  String get messageFilter_rulesEmptyTitle => 'Še ni pravil';
+
+  @override
   String get messageFilter_rulesEmpty =>
-      'Še ni pravil. Dodajte besedo, frazo ali ime pošiljatelja, da skrijete ujemajoča se sporočila.';
+      'Dodajte besedo, frazo ali ime pošiljatelja, da skrijete ujemajoča se sporočila';
 
   @override
   String get messageFilter_addRule => 'Dodaj pravilo';
@@ -7583,6 +7606,76 @@ class AppLocalizationsSl extends AppLocalizations {
   String get messageFilter_ruleSaved => 'Pravilo shranjeno';
 
   @override
+  String messageFilter_rulesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pravil izbrisanih',
+      few: '$count pravila izbrisana',
+      two: '$count pravili izbrisani',
+      one: '$count pravilo izbrisano',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_deleteRulesTitle => 'Izbrisati pravila?';
+
+  @override
+  String messageFilter_deleteRulesConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Želite izbrisati $count pravil iz filtra sporočil?',
+      few: 'Želite izbrisati $count pravila iz filtra sporočil?',
+      two: 'Želite izbrisati $count pravili iz filtra sporočil?',
+      one: 'Želite izbrisati $count pravilo iz filtra sporočil?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pravil vklopljenih',
+      few: '$count pravila vklopljena',
+      two: '$count pravili vklopljeni',
+      one: '$count pravilo vklopljeno',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOff(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pravil izklopljenih',
+      few: '$count pravila izklopljena',
+      two: '$count pravili izklopljeni',
+      one: '$count pravilo izklopljeno',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_searchRules => 'Išči pravila';
+
+  @override
+  String get messageFilter_rulesNoResults => 'Ni ustreznih pravil';
+
+  @override
+  String get messageFilter_selectRules => 'Izberi pravila';
+
+  @override
+  String get messageFilter_turnOn => 'Vklopi';
+
+  @override
+  String get messageFilter_turnOff => 'Izklopi';
+
+  @override
   String get messageFilter_automaticSection => 'Samodejno';
 
   @override
@@ -7590,15 +7683,16 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get messageFilter_duplicatesSubtitle =>
-      'Isto sporočilo, poslano znova ali od več pošiljateljev';
+      'Ponovno poslano od ene osebe ali od 3 ali več oseb';
 
   @override
-  String get messageFilter_repeatSends => 'Pošiljanje, šteto kot ponovitev';
-
-  @override
-  String messageFilter_repeatSendsSubtitle(int count) {
-    return 'Skrij sporočilo, ko ga isti pošiljatelj v 10 minutah pošlje ponovno (število pošiljanj: $count)';
+  String messageFilter_repeatSendsCount(int count) {
+    return 'Število pošiljanj za ponovitev: $count';
   }
+
+  @override
+  String get messageFilter_repeatSendsHint =>
+      'Ena oseba, vsako pošiljanje v 10 minutah od prejšnjega';
 
   @override
   String get messageFilter_repeatedCharacters => 'Ponavljajoči se znaki';
@@ -7608,19 +7702,26 @@ class AppLocalizationsSl extends AppLocalizations {
       'Dolga zaporedja istega znaka, kot je „aaaaaaaaaaaaaaaaaaaa“';
 
   @override
-  String get messageFilter_learning => 'Uči se iz dotikov Neželeno';
+  String get messageFilter_learning => 'Uči se iz prijav neželenih sporočil';
 
   @override
   String messageFilter_learningSubtitle(int spam, int notSpam) {
-    return 'Primeri: $spam neželenih in $notSpam ne neželenih';
+    return 'Označeno kot neželeno: $spam, kot ni neželeno: $notSpam';
   }
 
   @override
   String get messageFilter_resetLearning => 'Ponastavi učenje';
 
   @override
+  String get messageFilter_resetLearningSubtitle =>
+      'Pozabi vse, kar se je filter naučil iz sporočil, označenih kot neželeno, in nedavnih sporočil';
+
+  @override
+  String get messageFilter_resetLearningNothing => 'Nič še ni naučeno';
+
+  @override
   String get messageFilter_resetLearningConfirm =>
-      'Pozabim vse, kar se je filter naučil iz vaših dotikov Neželeno in Ni neželeno? Vaša pravila ostanejo.';
+      'Želite pozabiti vse, kar se je filter naučil? Vaša pravila ostanejo.';
 
   @override
   String messageFilter_filteredMessages(int count) {
@@ -7628,7 +7729,11 @@ class AppLocalizationsSl extends AppLocalizations {
   }
 
   @override
-  String get messageFilter_filteredMessagesEmpty => 'Nič ni bilo filtrirano.';
+  String get messageFilter_filteredMessagesSubtitle =>
+      'Seznam največ 200 nedavno filtriranih sporočil iz vseh kanalov';
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'Ni filtriranih sporočil';
 
   @override
   String get messageFilter_ghostSingle =>

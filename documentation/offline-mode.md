@@ -32,7 +32,7 @@ Unavailable (shown disabled or hidden):
 - Contacts: add (clipboard, QR, discovered), remove, favourite, share, adverts, path trace, forget path, discovered-contact import/export and delete.
 - Repeaters and rooms: login, management and telemetry. Tapping a room opens its saved chat without a login, read-only.
 - Region fetching, radio settings and other radio commands in Settings.
-- Changing stored history: clear chat, delete messages, bulk delete, mark spam / not spam.
+- Changing stored history: clear chat, delete messages, bulk delete, mark spam / not spam (also in the Filtered Messages list).
 
 Routing overrides in the routing sheet can still be chosen offline; they are saved on the phone and used on the next send ("Path saved locally").
 

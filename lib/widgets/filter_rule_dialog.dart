@@ -127,7 +127,6 @@ class _FilterRuleDialogState extends State<_FilterRuleDialog> {
                 decoration: InputDecoration(
                   labelText: l10n.messageFilter_rulePattern,
                   hintText: l10n.messageFilter_rulePatternHint,
-                  border: const OutlineInputBorder(),
                 ),
                 onChanged: (_) => setState(() {}),
                 onSubmitted: (_) => _save(),

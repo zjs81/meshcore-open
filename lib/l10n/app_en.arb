@@ -1942,6 +1942,10 @@
   "login_failedMessage": "Login failed. Either the password is incorrect or the repeater is unreachable.",
   "common_reload": "Reload",
   "common_clear": "Clear",
+  "common_reset": "Reset",
+  "@common_reset": {
+    "description": "Short confirm button that resets something (Reset Learning dialog)"
+  },
   "common_clearSearch": "Clear search",
   "path_currentPathLabel": "Current path",
   "path_noRepeatersFound": "No repeaters or room servers found.",
@@ -4140,41 +4144,66 @@
   "@messageFilter_settingsSubtitle": {
     "description": "Message filter: Hide spam and repeated messages"
   },
-  "messageFilter_enabled": "Filter messages",
+  "messageFilter_enabled": "Filter Messages",
   "@messageFilter_enabled": {
-    "description": "Message filter: Filter messages"
+    "description": "Message filter: master switch at the top of the Message Filter page"
   },
-  "messageFilter_enabledSubtitle": "Applies to channel messages",
+  "messageFilter_filteringSection": "Filtering",
+  "@messageFilter_filteringSection": {
+    "description": "Message filter: section header above the Filter Messages switch"
+  },
+  "messageFilter_enabledSubtitle": "Applies to every channel unless turned off in its menu",
   "@messageFilter_enabledSubtitle": {
-    "description": "Message filter: Applies to channel messages"
+    "description": "Message filter: subtitle of the Filter Messages switch; each channel can turn filtering off in its chat menu"
   },
-  "messageFilter_displayTitle": "Filtered messages",
+  "messageFilter_info": "Hides spam and repeated messages in channels. It runs in the app only and doesn't affect your companion radio.",
+  "@messageFilter_info": {
+    "description": "Message filter: note at the top of the Message Filter page"
+  },
+  "messageFilter_displayTitle": "Filtered Messages",
   "@messageFilter_displayTitle": {
-    "description": "Message filter: Filtered messages"
+    "description": "Message filter: section header and title of the Filtered Messages list"
   },
-  "messageFilter_displayPlaceholder": "Show a small placeholder",
-  "@messageFilter_displayPlaceholder": {
-    "description": "Message filter: Show a small placeholder"
-  },
-  "messageFilter_displayHide": "Hide completely",
+  "messageFilter_displayHide": "Hide Completely",
   "@messageFilter_displayHide": {
-    "description": "Message filter: Hide completely"
+    "description": "Message filter: switch that hides filtered messages without a placeholder"
   },
-  "messageFilter_displayHideHelp": "Hidden messages stay in the Filtered messages list.",
-  "@messageFilter_displayHideHelp": {
-    "description": "Message filter: Hidden messages stay in the Filtered messages list."
+  "messageFilter_displayHideSubtitle": "Hide filtered messages instead of showing a placeholder",
+  "@messageFilter_displayHideSubtitle": {
+    "description": "Message filter: description of the Hide Completely switch"
   },
-  "messageFilter_rulesSection": "Your rules",
+  "messageFilter_rulesSection": "Your Rules",
   "@messageFilter_rulesSection": {
-    "description": "Message filter: Your rules"
+    "description": "Message filter: section header above the Rules (N) row on the Message Filter page"
   },
-  "messageFilter_rulesEmpty": "No rules yet. Add a word, phrase or sender name to hide messages that match it.",
+  "messageFilter_rulesCount": "Rules ({count})",
+  "@messageFilter_rulesCount": {
+    "description": "Message filter: title of the row under the Your Rules header that opens the Rules page, with the number of rules",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTitle": "Rules",
+  "@messageFilter_rulesTitle": {
+    "description": "Message filter: title of the Rules page, opened from the Rules (N) row"
+  },
+  "messageFilter_rulesHint": "Hide messages by word, phrase or sender name",
+  "@messageFilter_rulesHint": {
+    "description": "Message filter: subtitle of the row that opens the Rules page"
+  },
+  "messageFilter_rulesEmptyTitle": "No rules yet",
+  "@messageFilter_rulesEmptyTitle": {
+    "description": "Message filter: title of the empty Rules page"
+  },
+  "messageFilter_rulesEmpty": "Add a word, phrase or sender name to hide messages that match it",
   "@messageFilter_rulesEmpty": {
-    "description": "Message filter: No rules yet. Add a word, phrase or sender name to hide messages that match it."
+    "description": "Message filter: text on the empty Rules page"
   },
   "messageFilter_addRule": "Add rule",
   "@messageFilter_addRule": {
-    "description": "Message filter: Add rule"
+    "description": "Message filter: Add rule button on the Rules page and title of the dialog that adds a rule"
   },
   "messageFilter_editRule": "Edit rule",
   "@messageFilter_editRule": {
@@ -4228,46 +4257,106 @@
   "@messageFilter_ruleSaved": {
     "description": "Message filter: Rule saved"
   },
-  "messageFilter_automaticSection": "Automatic",
-  "@messageFilter_automaticSection": {
-    "description": "Message filter: Automatic"
-  },
-  "messageFilter_duplicates": "Repeated messages",
-  "@messageFilter_duplicates": {
-    "description": "Message filter: Repeated messages"
-  },
-  "messageFilter_duplicatesSubtitle": "The same message sent again, or by several senders",
-  "@messageFilter_duplicatesSubtitle": {
-    "description": "Message filter: The same message sent again, or by several senders"
-  },
-  "messageFilter_repeatSends": "Sends to count as a repeat",
-  "@messageFilter_repeatSends": {
-    "description": "Message filter: title of the setting for which send of the same message by the same sender is hidden as a repeat"
-  },
-  "messageFilter_repeatSendsSubtitle": "Hide a message when the same sender sends it {count} times within 10 minutes",
-  "@messageFilter_repeatSendsSubtitle": {
-    "description": "Message filter: subtitle of the repeat-sends setting",
+  "messageFilter_rulesDeleted": "{count, plural, =1{1 rule deleted} other{{count} rules deleted}}",
+  "@messageFilter_rulesDeleted": {
+    "description": "Message filter: snackbar after deleting the selected rules on the Rules page",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "messageFilter_repeatedCharacters": "Repeated characters",
+  "messageFilter_deleteRulesTitle": "Delete rules?",
+  "@messageFilter_deleteRulesTitle": {
+    "description": "Message filter: title of the dialog that confirms deleting the selected rules on the Rules page"
+  },
+  "messageFilter_deleteRulesConfirm": "{count, plural, =1{Delete 1 rule from the message filter?} other{Delete {count} rules from the message filter?}}",
+  "@messageFilter_deleteRulesConfirm": {
+    "description": "Message filter: text of the dialog that confirms deleting the selected rules on the Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOn": "{count, plural, =1{1 rule turned on} other{{count} rules turned on}}",
+  "@messageFilter_rulesTurnedOn": {
+    "description": "Message filter: snackbar after turning on the selected rules on the Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, =1{1 rule turned off} other{{count} rules turned off}}",
+  "@messageFilter_rulesTurnedOff": {
+    "description": "Message filter: snackbar after turning off the selected rules on the Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Search rules",
+  "@messageFilter_searchRules": {
+    "description": "Message filter: tooltip of the search button on the Rules page and hint of its search field"
+  },
+  "messageFilter_rulesNoResults": "No matching rules",
+  "@messageFilter_rulesNoResults": {
+    "description": "Message filter: shown on the Rules page when no rule matches the search"
+  },
+  "messageFilter_selectRules": "Select rules",
+  "@messageFilter_selectRules": {
+    "description": "Message filter: tooltip of the button that starts selecting rules on the Rules page"
+  },
+  "messageFilter_turnOn": "Turn on",
+  "@messageFilter_turnOn": {
+    "description": "Message filter: menu item that turns on the selected rules"
+  },
+  "messageFilter_turnOff": "Turn off",
+  "@messageFilter_turnOff": {
+    "description": "Message filter: menu item that turns off the selected rules"
+  },
+  "messageFilter_automaticSection": "Automatic",
+  "@messageFilter_automaticSection": {
+    "description": "Message filter: Automatic"
+  },
+  "messageFilter_duplicates": "Repeated Messages",
+  "@messageFilter_duplicates": {
+    "description": "Message filter: switch for the repeated message checks"
+  },
+  "messageFilter_duplicatesSubtitle": "Sent again by one person, or by 3 or more people",
+  "@messageFilter_duplicatesSubtitle": {
+    "description": "Message filter: subtitle of the Repeated Messages switch"
+  },
+  "messageFilter_repeatSendsCount": "Sends to Count as a Repeat: {count}",
+  "@messageFilter_repeatSendsCount": {
+    "description": "Message filter: title of the slider for how many sends of the same message by the same sender hide it as a repeat",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_repeatSendsHint": "One person, each send within 10 minutes of the last",
+  "@messageFilter_repeatSendsHint": {
+    "description": "Message filter: subtitle of the Sends to Count as a Repeat slider"
+  },
+  "messageFilter_repeatedCharacters": "Repeated Characters",
   "@messageFilter_repeatedCharacters": {
-    "description": "Message filter: Repeated characters"
+    "description": "Message filter: switch for the repeated characters check"
   },
   "messageFilter_repeatedCharactersSubtitle": "Long runs of one character, like \"aaaaaaaaaaaaaaaaaaaa\"",
   "@messageFilter_repeatedCharactersSubtitle": {
-    "description": "Message filter: Messages like \"aaaaaaaa\" or \"!!!!!!!!\""
+    "description": "Message filter: subtitle of the Repeated Characters switch"
   },
-  "messageFilter_learning": "Learn from Spam taps",
+  "messageFilter_learning": "Learn from Spam Reports",
   "@messageFilter_learning": {
-    "description": "Message filter: Learn from Spam taps"
+    "description": "Message filter: switch that lets the filter learn from the messages the user marks as spam or not spam"
   },
-  "messageFilter_learningSubtitle": "{spam} spam and {notSpam} not-spam examples",
+  "messageFilter_learningSubtitle": "{spam} marked as spam, {notSpam} as not spam",
   "@messageFilter_learningSubtitle": {
-    "description": "Message filter: {spam} spam and {notSpam} not-spam examples",
+    "description": "Message filter: subtitle of Learn from Spam Reports; how many messages are currently marked as spam and as not spam",
     "placeholders": {
       "spam": {
         "type": "int"
@@ -4277,26 +4366,38 @@
       }
     }
   },
-  "messageFilter_resetLearning": "Reset learning",
+  "messageFilter_resetLearning": "Reset Learning",
   "@messageFilter_resetLearning": {
-    "description": "Message filter: Reset learning"
+    "description": "Message filter: title of the Reset Learning row and of its confirmation dialog"
   },
-  "messageFilter_resetLearningConfirm": "Forget everything learned from your Spam and Not spam taps? Your rules are kept.",
+  "messageFilter_resetLearningSubtitle": "Forget everything learned from messages marked as spam and recent messages",
+  "@messageFilter_resetLearningSubtitle": {
+    "description": "Message filter: description of the Reset Learning row"
+  },
+  "messageFilter_resetLearningNothing": "Nothing learned yet",
+  "@messageFilter_resetLearningNothing": {
+    "description": "Message filter: Reset Learning row description while nothing has been learned"
+  },
+  "messageFilter_resetLearningConfirm": "Forget everything the filter has learned? Your rules are kept.",
   "@messageFilter_resetLearningConfirm": {
-    "description": "Message filter: Forget everything learned from your Spam and Not spam taps? Your rules are kept."
+    "description": "Message filter: message of the Reset Learning confirmation"
   },
-  "messageFilter_filteredMessages": "Filtered messages ({count})",
+  "messageFilter_filteredMessages": "Filtered Messages ({count})",
   "@messageFilter_filteredMessages": {
-    "description": "Message filter: Filtered messages ({count})",
+    "description": "Message filter: title of the row that opens the Filtered Messages list, with the number of messages in it",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "messageFilter_filteredMessagesEmpty": "Nothing has been filtered.",
+  "messageFilter_filteredMessagesSubtitle": "List of up to 200 recent filtered messages from all channels",
+  "@messageFilter_filteredMessagesSubtitle": {
+    "description": "Message filter: description of the row that opens the Filtered Messages list"
+  },
+  "messageFilter_filteredMessagesEmpty": "No filtered messages",
   "@messageFilter_filteredMessagesEmpty": {
-    "description": "Message filter: Nothing has been filtered."
+    "description": "Message filter: empty state of the Filtered Messages list"
   },
   "messageFilter_ghostSingle": "Hidden message · Tap to view",
   "@messageFilter_ghostSingle": {

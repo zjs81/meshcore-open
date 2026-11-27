@@ -962,6 +962,7 @@
   "login_failedMessage": "Logowanie nie powiodło się. Hasło jest nieprawidłowe albo przekaźnik jest nieosiągalny.",
   "common_reload": "Odśwież",
   "common_clear": "Wyczyść",
+  "common_reset": "Zresetuj",
   "path_currentPath": "Aktualna ścieżka: {path}",
   "@path_currentPath": {
     "placeholders": {
@@ -3578,35 +3579,54 @@
   },
   "messageFilter_enabled": "Filtruj wiadomości",
   "@messageFilter_enabled": {
-    "description": "Message filter: Filter messages"
+    "description": "Message filter: Filter Messages"
   },
-  "messageFilter_enabledSubtitle": "Dotyczy wiadomości na kanałach",
+  "messageFilter_filteringSection": "Filtrowanie",
+  "messageFilter_enabledSubtitle": "Dotyczy wszystkich kanałów, chyba że wyłączysz go w menu kanału",
   "@messageFilter_enabledSubtitle": {
-    "description": "Message filter: Applies to channel messages"
+    "description": "Message filter: subtitle of the Filter Messages switch; each channel can turn filtering off in its chat menu"
+  },
+  "messageFilter_info": "Ukrywa spam i powtarzające się wiadomości na kanałach. Działa tylko w aplikacji i nie wpływa na Twoje radio companion.",
+  "@messageFilter_info": {
+    "description": "Message filter: note at the top of the Message Filter page"
   },
   "messageFilter_displayTitle": "Przefiltrowane wiadomości",
   "@messageFilter_displayTitle": {
     "description": "Message filter: Filtered messages"
   },
-  "messageFilter_displayPlaceholder": "Pokaż mały znacznik",
-  "@messageFilter_displayPlaceholder": {
-    "description": "Message filter: Show a small placeholder"
-  },
   "messageFilter_displayHide": "Ukryj całkowicie",
   "@messageFilter_displayHide": {
-    "description": "Message filter: Hide completely"
+    "description": "Message filter: switch that hides filtered messages without a placeholder"
   },
-  "messageFilter_displayHideHelp": "Ukryte wiadomości pozostają na liście Przefiltrowanych wiadomości.",
-  "@messageFilter_displayHideHelp": {
-    "description": "Message filter: Hidden messages stay in the Filtered messages list."
+  "messageFilter_displayHideSubtitle": "Ukryj przefiltrowane wiadomości zamiast pokazywać znacznik",
+  "@messageFilter_displayHideSubtitle": {
+    "description": "Message filter: description of the Hide Completely switch"
   },
   "messageFilter_rulesSection": "Twoje reguły",
   "@messageFilter_rulesSection": {
-    "description": "Message filter: Your rules"
+    "description": "Message filter: Your Rules"
   },
-  "messageFilter_rulesEmpty": "Brak reguł. Dodaj słowo, wyrażenie lub nazwę nadawcy, aby ukrywać pasujące wiadomości.",
+  "messageFilter_rulesCount": "Reguły ({count})",
+  "@messageFilter_rulesCount": {
+    "description": "Message filter: title of the row that opens the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTitle": "Reguły",
+  "messageFilter_rulesHint": "Ukrywaj wiadomości według słowa, wyrażenia lub nazwy nadawcy",
+  "@messageFilter_rulesHint": {
+    "description": "Message filter: subtitle of the row that opens the Your Rules page"
+  },
+  "messageFilter_rulesEmptyTitle": "Brak reguł",
+  "@messageFilter_rulesEmptyTitle": {
+    "description": "Message filter: title of the empty Your Rules page"
+  },
+  "messageFilter_rulesEmpty": "Dodaj słowo, wyrażenie lub nazwę nadawcy, aby ukrywać pasujące wiadomości",
   "@messageFilter_rulesEmpty": {
-    "description": "Message filter: No rules yet. Add a word, phrase or sender name to hide messages that match it."
+    "description": "Message filter: Add a word, phrase or sender name to hide messages that match it."
   },
   "messageFilter_addRule": "Dodaj regułę",
   "@messageFilter_addRule": {
@@ -3664,35 +3684,84 @@
   "@messageFilter_ruleSaved": {
     "description": "Message filter: Rule saved"
   },
+  "messageFilter_rulesDeleted": "{count, plural, =1{Usunięto 1 regułę} few{Usunięto {count} reguły} many{Usunięto {count} reguł} other{Usunięto {count} reguły}}",
+  "@messageFilter_rulesDeleted": {
+    "description": "Message filter: snackbar after deleting the selected rules on the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "Usunąć reguły?",
+  "messageFilter_deleteRulesConfirm": "{count, plural, one{Usunąć 1 regułę z filtra wiadomości?} few{Usunąć {count} reguły z filtra wiadomości?} many{Usunąć {count} reguł z filtra wiadomości?} other{Usunąć {count} reguły z filtra wiadomości?}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, =1{Włączono 1 regułę} few{Włączono {count} reguły} many{Włączono {count} reguł} other{Włączono {count} reguły}}",
+  "@messageFilter_rulesTurnedOn": {
+    "description": "Message filter: snackbar after turning on the selected rules on the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, =1{Wyłączono 1 regułę} few{Wyłączono {count} reguły} many{Wyłączono {count} reguł} other{Wyłączono {count} reguły}}",
+  "@messageFilter_rulesTurnedOff": {
+    "description": "Message filter: snackbar after turning off the selected rules on the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Szukaj reguł",
+  "@messageFilter_searchRules": {
+    "description": "Message filter: tooltip of the search button on the Your Rules page and hint of its search field"
+  },
+  "messageFilter_rulesNoResults": "Brak pasujących reguł",
+  "@messageFilter_rulesNoResults": {
+    "description": "Message filter: shown on the Your Rules page when no rule matches the search"
+  },
+  "messageFilter_selectRules": "Wybierz reguły",
+  "@messageFilter_selectRules": {
+    "description": "Message filter: tooltip of the button that starts selecting rules on the Your Rules page"
+  },
+  "messageFilter_turnOn": "Włącz",
+  "@messageFilter_turnOn": {
+    "description": "Message filter: menu item that turns on the selected rules"
+  },
+  "messageFilter_turnOff": "Wyłącz",
+  "@messageFilter_turnOff": {
+    "description": "Message filter: menu item that turns off the selected rules"
+  },
   "messageFilter_automaticSection": "Automatyczne",
   "@messageFilter_automaticSection": {
     "description": "Message filter: Automatic"
   },
   "messageFilter_duplicates": "Powtarzające się wiadomości",
   "@messageFilter_duplicates": {
-    "description": "Message filter: Repeated messages"
+    "description": "Message filter: Repeated Messages"
   },
-  "messageFilter_duplicatesSubtitle": "Ta sama wiadomość wysłana ponownie lub przez kilku nadawców",
+  "messageFilter_duplicatesSubtitle": "Wysłana ponownie przez jedną osobę lub co najmniej 3 osoby",
   "@messageFilter_duplicatesSubtitle": {
     "description": "Message filter: The same message sent again, or by several senders"
   },
-  "messageFilter_repeatSends": "Liczba wysłań uznawana za powtórkę",
-  "messageFilter_repeatSendsSubtitle": "Ukryj wiadomość, gdy ten sam nadawca wyśle ją w ciągu 10 minut tyle razy: {count}",
+  "messageFilter_repeatSendsCount": "Liczba wysłań uznawana za powtórkę: {count}",
+  "messageFilter_repeatSendsHint": "Jedna osoba, każde wysłanie w ciągu 10 minut od poprzedniego",
   "messageFilter_repeatedCharacters": "Powtarzające się znaki",
   "@messageFilter_repeatedCharacters": {
-    "description": "Message filter: Repeated characters"
+    "description": "Message filter: Repeated Characters"
   },
   "messageFilter_repeatedCharactersSubtitle": "Długie ciągi jednego znaku, np. „aaaaaaaaaaaaaaaaaaaa”",
   "@messageFilter_repeatedCharactersSubtitle": {
     "description": "Message filter: Messages like \"aaaaaaaa\" or \"!!!!!!!!\""
   },
-  "messageFilter_learning": "Ucz się z oznaczeń Spam",
+  "messageFilter_learning": "Ucz się ze zgłoszeń spamu",
   "@messageFilter_learning": {
-    "description": "Message filter: Learn from Spam taps"
+    "description": "Message filter: Learn from Spam Taps"
   },
-  "messageFilter_learningSubtitle": "Przykłady: {spam} spam i {notSpam} nie-spam",
+  "messageFilter_learningSubtitle": "Oznaczone jako spam: {spam}, jako nie spam: {notSpam}",
   "@messageFilter_learningSubtitle": {
-    "description": "Message filter: {spam} spam and {notSpam} not-spam examples",
+    "description": "Message filter: subtitle of Learn from Spam Taps; how many messages are currently marked as spam and as not spam",
     "placeholders": {
       "spam": {
         "type": "int"
@@ -3704,22 +3773,25 @@
   },
   "messageFilter_resetLearning": "Zresetuj naukę",
   "@messageFilter_resetLearning": {
-    "description": "Message filter: Reset learning"
+    "description": "Message filter: Reset Learning"
   },
-  "messageFilter_resetLearningConfirm": "Zapomnieć wszystko, czego nauczył się filtr z Twoich oznaczeń Spam i Nie spam? Twoje reguły zostaną zachowane.",
+  "messageFilter_resetLearningSubtitle": "Zapomnij wszystko, czego filtr nauczył się z wiadomości oznaczonych jako spam i ostatnich wiadomości",
+  "messageFilter_resetLearningNothing": "Jeszcze nic nie nauczono",
+  "messageFilter_resetLearningConfirm": "Zapomnieć wszystko, czego nauczył się filtr? Twoje reguły zostaną zachowane.",
   "@messageFilter_resetLearningConfirm": {
-    "description": "Message filter: Forget everything learned from your Spam and Not spam taps? Your rules are kept."
+    "description": "Message filter: message of the Reset Learning confirmation"
   },
   "messageFilter_filteredMessages": "Przefiltrowane wiadomości ({count})",
   "@messageFilter_filteredMessages": {
-    "description": "Message filter: Filtered messages ({count})",
+    "description": "Message filter: Filtered Messages ({count})",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "messageFilter_filteredMessagesEmpty": "Nic nie zostało przefiltrowane.",
+  "messageFilter_filteredMessagesSubtitle": "Lista maksymalnie 200 ostatnio przefiltrowanych wiadomości ze wszystkich kanałów",
+  "messageFilter_filteredMessagesEmpty": "Brak przefiltrowanych wiadomości",
   "@messageFilter_filteredMessagesEmpty": {
     "description": "Message filter: Nothing has been filtered."
   },

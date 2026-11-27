@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
+import 'package:meshcore_open/theme/mesh_theme.dart';
 import 'package:meshcore_open/widgets/filter_rule_dialog.dart';
 
 void main() {
@@ -14,6 +15,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          theme: MeshTheme.light(),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           builder: (context, child) {
@@ -43,6 +45,11 @@ void main() {
       // start above the field with room for it.
       final fieldTop = labelRect.top;
       expect(fieldTop - scrollRect.top, greaterThanOrEqualTo(8 * scale));
+      // The field takes its outline from the app theme (design.md).
+      final decoration = tester
+          .widget<TextField>(find.byType(TextField))
+          .decoration!;
+      expect(decoration.border, isNull);
     });
   }
 }

@@ -3473,6 +3473,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get common_clear => '지우기';
 
   @override
+  String get common_reset => '초기화';
+
+  @override
   String get common_clearSearch => '검색어 지우기';
 
   @override
@@ -7203,26 +7206,44 @@ class AppLocalizationsKo extends AppLocalizations {
   String get messageFilter_enabled => '메시지 필터링';
 
   @override
-  String get messageFilter_enabledSubtitle => '채널 메시지에 적용됩니다';
+  String get messageFilter_filteringSection => '필터링';
+
+  @override
+  String get messageFilter_enabledSubtitle => '채널 메뉴에서 끄지 않는 한 모든 채널에 적용됩니다';
+
+  @override
+  String get messageFilter_info =>
+      '채널의 스팸과 반복된 메시지를 숨깁니다. 앱 안에서만 동작하며 컴패니언 라디오에는 영향을 주지 않습니다.';
 
   @override
   String get messageFilter_displayTitle => '필터링된 메시지';
 
   @override
-  String get messageFilter_displayPlaceholder => '작은 안내 표시';
-
-  @override
   String get messageFilter_displayHide => '완전히 숨기기';
 
   @override
-  String get messageFilter_displayHideHelp => '숨겨진 메시지는 필터링된 메시지 목록에 남아 있습니다.';
+  String get messageFilter_displayHideSubtitle => '필터링된 메시지를 안내 표시 없이 숨깁니다';
 
   @override
   String get messageFilter_rulesSection => '내 규칙';
 
   @override
+  String messageFilter_rulesCount(int count) {
+    return '규칙 ($count)';
+  }
+
+  @override
+  String get messageFilter_rulesTitle => '규칙';
+
+  @override
+  String get messageFilter_rulesHint => '단어, 문구 또는 발신자 이름으로 메시지를 숨깁니다';
+
+  @override
+  String get messageFilter_rulesEmptyTitle => '아직 규칙이 없습니다';
+
+  @override
   String get messageFilter_rulesEmpty =>
-      '아직 규칙이 없습니다. 단어, 문구 또는 발신자 이름을 추가하면 일치하는 메시지를 숨깁니다.';
+      '단어, 문구 또는 발신자 이름을 추가하면 일치하는 메시지를 숨깁니다';
 
   @override
   String get messageFilter_addRule => '규칙 추가';
@@ -7267,6 +7288,64 @@ class AppLocalizationsKo extends AppLocalizations {
   String get messageFilter_ruleSaved => '규칙을 저장했습니다';
 
   @override
+  String messageFilter_rulesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '규칙 $count개를 삭제했습니다',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_deleteRulesTitle => '규칙을 삭제하시겠습니까?';
+
+  @override
+  String messageFilter_deleteRulesConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '메시지 필터에서 규칙 $count개를 삭제하시겠습니까?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '규칙 $count개를 켰습니다',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOff(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '규칙 $count개를 껐습니다',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_searchRules => '규칙 검색';
+
+  @override
+  String get messageFilter_rulesNoResults => '일치하는 규칙이 없습니다';
+
+  @override
+  String get messageFilter_selectRules => '규칙 선택';
+
+  @override
+  String get messageFilter_turnOn => '켜기';
+
+  @override
+  String get messageFilter_turnOff => '끄기';
+
+  @override
   String get messageFilter_automaticSection => '자동';
 
   @override
@@ -7274,15 +7353,15 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get messageFilter_duplicatesSubtitle =>
-      '같은 메시지를 다시 보냈거나 여러 발신자가 보낸 경우';
+      '한 사람이 다시 보내거나 3명 이상이 보낸 같은 메시지';
 
   @override
-  String get messageFilter_repeatSends => '반복으로 간주할 전송 횟수';
-
-  @override
-  String messageFilter_repeatSendsSubtitle(int count) {
-    return '같은 발신자가 10분 안에 같은 메시지를 $count번 보내면 숨깁니다';
+  String messageFilter_repeatSendsCount(int count) {
+    return '반복으로 간주할 전송 횟수: $count';
   }
+
+  @override
+  String get messageFilter_repeatSendsHint => '한 사람, 각 전송이 이전 전송 후 10분 이내';
 
   @override
   String get messageFilter_repeatedCharacters => '반복된 문자';
@@ -7292,19 +7371,26 @@ class AppLocalizationsKo extends AppLocalizations {
       '같은 문자가 길게 반복되는 경우, 예: \"aaaaaaaaaaaaaaaaaaaa\"';
 
   @override
-  String get messageFilter_learning => '스팸 표시에서 학습';
+  String get messageFilter_learning => '스팸 신고에서 학습';
 
   @override
   String messageFilter_learningSubtitle(int spam, int notSpam) {
-    return '스팸 $spam개, 스팸 아님 $notSpam개 예시';
+    return '스팸 $spam개, 스팸 아님 $notSpam개 표시됨';
   }
 
   @override
   String get messageFilter_resetLearning => '학습 초기화';
 
   @override
+  String get messageFilter_resetLearningSubtitle =>
+      '스팸으로 표시한 메시지와 최근 메시지에서 학습한 내용을 모두 지웁니다';
+
+  @override
+  String get messageFilter_resetLearningNothing => '아직 학습한 내용이 없습니다';
+
+  @override
   String get messageFilter_resetLearningConfirm =>
-      '스팸 및 스팸 아님 표시로 학습한 내용을 모두 지울까요? 내 규칙은 그대로 유지됩니다.';
+      '필터가 학습한 내용을 모두 지우시겠습니까? 내 규칙은 그대로 유지됩니다.';
 
   @override
   String messageFilter_filteredMessages(int count) {
@@ -7312,7 +7398,11 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get messageFilter_filteredMessagesEmpty => '필터링된 메시지가 없습니다.';
+  String get messageFilter_filteredMessagesSubtitle =>
+      '모든 채널에서 최근 필터링된 메시지 목록 (최대 200개)';
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => '필터링된 메시지가 없습니다';
 
   @override
   String get messageFilter_ghostSingle => '숨겨진 메시지 · 눌러서 보기';

@@ -952,6 +952,7 @@
   "login_failedMessage": "Входът не беше успешен. Или паролата е грешна, или повторителят е недостъпен.",
   "common_reload": "Презареди",
   "common_clear": "Изчисти",
+  "common_reset": "Нулирай",
   "path_currentPath": "Текущ път: {path}",
   "@path_currentPath": {
     "placeholders": {
@@ -3538,13 +3539,18 @@
   "messageFilter_title": "Филтър за съобщения",
   "messageFilter_settingsSubtitle": "Скрива спам и повтарящи се съобщения",
   "messageFilter_enabled": "Филтрирай съобщенията",
-  "messageFilter_enabledSubtitle": "Важи за съобщенията в каналите",
+  "messageFilter_filteringSection": "Филтриране",
+  "messageFilter_enabledSubtitle": "Важи за всички канали, освен ако не е изключено в менюто на канала",
+  "messageFilter_info": "Скрива спама и повтарящите се съобщения в каналите. Работи само в приложението и не засяга твоето радио компаньон.",
   "messageFilter_displayTitle": "Филтрирани съобщения",
-  "messageFilter_displayPlaceholder": "Показвай малък знак на мястото им",
   "messageFilter_displayHide": "Скрий напълно",
-  "messageFilter_displayHideHelp": "Скритите съобщения остават в списъка „Филтрирани съобщения“.",
+  "messageFilter_displayHideSubtitle": "Скрива филтрираните съобщения, вместо да показва знак на мястото им",
   "messageFilter_rulesSection": "Твоите правила",
-  "messageFilter_rulesEmpty": "Още няма правила. Добави дума, фраза или име на подател, за да скриваш съобщенията, които съвпадат.",
+  "messageFilter_rulesCount": "Правила ({count})",
+  "messageFilter_rulesTitle": "Правила",
+  "messageFilter_rulesHint": "Скрива съобщения по дума, фраза или име на подател",
+  "messageFilter_rulesEmptyTitle": "Още няма правила",
+  "messageFilter_rulesEmpty": "Добави дума, фраза или име на подател, за да скриваш съобщенията, които съвпадат",
   "messageFilter_addRule": "Добави правило",
   "messageFilter_editRule": "Редактирай правило",
   "messageFilter_rulePattern": "Дума, фраза или име",
@@ -3559,19 +3565,53 @@
   "messageFilter_ruleMatchExact": "Точно",
   "messageFilter_ruleDeleted": "Правилото е изтрито",
   "messageFilter_ruleSaved": "Правилото е запазено",
+  "messageFilter_rulesDeleted": "{count, plural, =1{1 правило е изтрито} other{{count} правила са изтрити}}",
+  "@messageFilter_rulesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "Изтриване на правила?",
+  "messageFilter_deleteRulesConfirm": "{count, plural, one{Да се изтрие ли 1 правило от филтъра за съобщения?} other{Да се изтрият ли {count} правила от филтъра за съобщения?}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, =1{1 правило е включено} other{{count} правила са включени}}",
+  "@messageFilter_rulesTurnedOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, =1{1 правило е изключено} other{{count} правила са изключени}}",
+  "@messageFilter_rulesTurnedOff": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Търсене на правила",
+  "messageFilter_rulesNoResults": "Няма съответстващи правила",
+  "messageFilter_selectRules": "Избор на правила",
+  "messageFilter_turnOn": "Включи",
+  "messageFilter_turnOff": "Изключи",
   "messageFilter_automaticSection": "Автоматично",
   "messageFilter_duplicates": "Повтарящи се съобщения",
-  "messageFilter_duplicatesSubtitle": "Същото съобщение, изпратено отново или от няколко подателя",
-  "messageFilter_repeatSends": "Изпращания, броени за повторение",
-  "messageFilter_repeatSendsSubtitle": "Скриване на съобщение, когато същият подател го изпрати {count} пъти в рамките на 10 минути",
+  "messageFilter_duplicatesSubtitle": "Изпратено отново от един човек или от 3 или повече души",
+  "messageFilter_repeatSendsCount": "Изпращания, броени за повторение: {count}",
+  "messageFilter_repeatSendsHint": "Един човек, всяко изпращане до 10 минути след предишното",
   "messageFilter_repeatedCharacters": "Повтарящи се символи",
   "messageFilter_repeatedCharactersSubtitle": "Дълги поредици от един и същ знак, като „aaaaaaaaaaaaaaaaaaaa“",
-  "messageFilter_learning": "Учи се от натискането на „Спам“",
-  "messageFilter_learningSubtitle": "{spam} примера за спам и {notSpam} примера, които не са спам",
+  "messageFilter_learning": "Учи се от сигналите за спам",
+  "messageFilter_learningSubtitle": "Отбелязани като спам: {spam}, като „Не е спам“: {notSpam}",
   "messageFilter_resetLearning": "Нулирай наученото",
-  "messageFilter_resetLearningConfirm": "Да се забрави ли всичко, научено от натискането на „Спам“ и „Не е спам“? Правилата ти се запазват.",
+  "messageFilter_resetLearningSubtitle": "Забравя всичко, научено от съобщенията, отбелязани като спам, и от последните съобщения",
+  "messageFilter_resetLearningNothing": "Още нищо не е научено",
+  "messageFilter_resetLearningConfirm": "Да се забрави ли всичко, което филтърът е научил? Правилата ти се запазват.",
   "messageFilter_filteredMessages": "Филтрирани съобщения ({count})",
-  "messageFilter_filteredMessagesEmpty": "Нищо не е филтрирано.",
+  "messageFilter_filteredMessagesSubtitle": "Списък с до 200 скорошни филтрирани съобщения от всички канали",
+  "messageFilter_filteredMessagesEmpty": "Няма филтрирани съобщения",
   "messageFilter_ghostSingle": "Скрито съобщение · Докосни, за да го видиш",
   "messageFilter_ghostMany": "{count, plural, one{{count} скрито съобщение · Докосни, за да го видиш} other{{count} скрити съобщения · Докосни, за да ги видиш}}",
   "messageFilter_ghostSingleExpanded": "Показва се скрито съобщение · Докосни, за да го скриеш",

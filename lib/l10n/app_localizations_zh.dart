@@ -3423,6 +3423,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get common_clear => '清除';
 
   @override
+  String get common_reset => '重置';
+
+  @override
   String get common_clearSearch => '清除搜索';
 
   @override
@@ -7042,25 +7045,42 @@ class AppLocalizationsZh extends AppLocalizations {
   String get messageFilter_enabled => '过滤消息';
 
   @override
-  String get messageFilter_enabledSubtitle => '适用于频道消息';
+  String get messageFilter_filteringSection => '过滤';
+
+  @override
+  String get messageFilter_enabledSubtitle => '适用于所有频道，除非在频道菜单中关闭';
+
+  @override
+  String get messageFilter_info => '隐藏频道中的垃圾消息和重复消息。仅在应用内运行，不会影响你的伴侣设备。';
 
   @override
   String get messageFilter_displayTitle => '已过滤的消息';
 
   @override
-  String get messageFilter_displayPlaceholder => '显示一个小占位提示';
-
-  @override
   String get messageFilter_displayHide => '完全隐藏';
 
   @override
-  String get messageFilter_displayHideHelp => '被隐藏的消息仍会保留在“已过滤的消息”列表中。';
+  String get messageFilter_displayHideSubtitle => '隐藏已过滤的消息，不显示占位提示';
 
   @override
   String get messageFilter_rulesSection => '你的规则';
 
   @override
-  String get messageFilter_rulesEmpty => '还没有规则。添加一个词语、短语或发送者名称，即可隐藏匹配的消息。';
+  String messageFilter_rulesCount(int count) {
+    return '规则（$count）';
+  }
+
+  @override
+  String get messageFilter_rulesTitle => '规则';
+
+  @override
+  String get messageFilter_rulesHint => '按词语、短语或发送者名称隐藏消息';
+
+  @override
+  String get messageFilter_rulesEmptyTitle => '还没有规则';
+
+  @override
+  String get messageFilter_rulesEmpty => '添加一个词语、短语或发送者名称，即可隐藏匹配的消息';
 
   @override
   String get messageFilter_addRule => '添加规则';
@@ -7105,21 +7125,79 @@ class AppLocalizationsZh extends AppLocalizations {
   String get messageFilter_ruleSaved => '规则已保存';
 
   @override
+  String messageFilter_rulesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已删除 $count 条规则',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_deleteRulesTitle => '删除规则？';
+
+  @override
+  String messageFilter_deleteRulesConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '要从消息过滤中删除 $count 条规则吗？',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已开启 $count 条规则',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOff(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '已关闭 $count 条规则',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_searchRules => '搜索规则';
+
+  @override
+  String get messageFilter_rulesNoResults => '没有匹配的规则';
+
+  @override
+  String get messageFilter_selectRules => '选择规则';
+
+  @override
+  String get messageFilter_turnOn => '开启';
+
+  @override
+  String get messageFilter_turnOff => '关闭';
+
+  @override
   String get messageFilter_automaticSection => '自动';
 
   @override
   String get messageFilter_duplicates => '重复消息';
 
   @override
-  String get messageFilter_duplicatesSubtitle => '重复发送的相同消息，或多个发送者发送的相同消息';
+  String get messageFilter_duplicatesSubtitle => '同一人再次发送，或 3 人及以上发送相同内容';
 
   @override
-  String get messageFilter_repeatSends => '视为重复的发送次数';
-
-  @override
-  String messageFilter_repeatSendsSubtitle(int count) {
-    return '同一发送者在 10 分钟内发送同一消息 $count 次时隐藏该消息';
+  String messageFilter_repeatSendsCount(int count) {
+    return '视为重复的发送次数：$count';
   }
+
+  @override
+  String get messageFilter_repeatSendsHint => '同一人，每次发送都在上一次后 10 分钟内';
 
   @override
   String get messageFilter_repeatedCharacters => '重复字符';
@@ -7129,19 +7207,25 @@ class AppLocalizationsZh extends AppLocalizations {
       '同一字符的长串重复，例如“aaaaaaaaaaaaaaaaaaaa”';
 
   @override
-  String get messageFilter_learning => '从“垃圾消息”点击中学习';
+  String get messageFilter_learning => '从垃圾消息举报中学习';
 
   @override
   String messageFilter_learningSubtitle(int spam, int notSpam) {
-    return '$spam 个垃圾消息示例和 $notSpam 个非垃圾消息示例';
+    return '已标记垃圾消息 $spam 条，非垃圾消息 $notSpam 条';
   }
 
   @override
   String get messageFilter_resetLearning => '重置学习';
 
   @override
-  String get messageFilter_resetLearningConfirm =>
-      '要清除从你点击“垃圾消息”和“非垃圾消息”中学到的所有内容吗？你的规则会保留。';
+  String get messageFilter_resetLearningSubtitle =>
+      '清除从你标记为垃圾消息的内容和最近消息中学到的所有内容';
+
+  @override
+  String get messageFilter_resetLearningNothing => '尚未学习任何内容';
+
+  @override
+  String get messageFilter_resetLearningConfirm => '要忘记过滤器学到的所有内容吗？你的规则会保留。';
 
   @override
   String messageFilter_filteredMessages(int count) {
@@ -7149,7 +7233,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get messageFilter_filteredMessagesEmpty => '没有被过滤的消息。';
+  String get messageFilter_filteredMessagesSubtitle =>
+      '所有频道中最近已过滤消息的列表（最多 200 条）';
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => '没有已过滤的消息';
 
   @override
   String get messageFilter_ghostSingle => '已隐藏的消息 · 点击查看';

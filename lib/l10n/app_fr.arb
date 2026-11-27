@@ -966,6 +966,7 @@
   "login_failedMessage": "Connexion échouée. Soit le mot de passe est incorrect, soit le relais est injoignable.",
   "common_reload": "Recharger",
   "common_clear": "Effacer",
+  "common_reset": "Réinitialiser",
   "path_currentPath": "Chemin actuel : {path}",
   "@path_currentPath": {
     "placeholders": {
@@ -3672,13 +3673,18 @@
   "messageFilter_title": "Filtre de messages",
   "messageFilter_settingsSubtitle": "Masquer les spams et les messages répétés",
   "messageFilter_enabled": "Filtrer les messages",
-  "messageFilter_enabledSubtitle": "S'applique aux messages des canaux",
+  "messageFilter_filteringSection": "Filtrage",
+  "messageFilter_enabledSubtitle": "S'applique à tous les canaux, sauf désactivation dans le menu du canal",
+  "messageFilter_info": "Masque les spams et les messages répétés dans les canaux. Fonctionne uniquement dans l'application et n'affecte pas votre radio compagnon.",
   "messageFilter_displayTitle": "Messages filtrés",
-  "messageFilter_displayPlaceholder": "Afficher un petit message à la place",
   "messageFilter_displayHide": "Masquer complètement",
-  "messageFilter_displayHideHelp": "Les messages masqués restent dans la liste des messages filtrés.",
+  "messageFilter_displayHideSubtitle": "Masquer les messages filtrés au lieu d'afficher un indicateur",
   "messageFilter_rulesSection": "Vos règles",
-  "messageFilter_rulesEmpty": "Aucune règle pour l'instant. Ajoutez un mot, une phrase ou un nom d'expéditeur pour masquer les messages correspondants.",
+  "messageFilter_rulesCount": "Règles ({count})",
+  "messageFilter_rulesTitle": "Règles",
+  "messageFilter_rulesHint": "Masquer des messages par mot, phrase ou nom d'expéditeur",
+  "messageFilter_rulesEmptyTitle": "Aucune règle pour l'instant",
+  "messageFilter_rulesEmpty": "Ajoutez un mot, une phrase ou un nom d'expéditeur pour masquer les messages correspondants",
   "messageFilter_addRule": "Ajouter une règle",
   "messageFilter_editRule": "Modifier la règle",
   "messageFilter_rulePattern": "Mot, phrase ou nom",
@@ -3693,19 +3699,53 @@
   "messageFilter_ruleMatchExact": "Exacte",
   "messageFilter_ruleDeleted": "Règle supprimée",
   "messageFilter_ruleSaved": "Règle enregistrée",
+  "messageFilter_rulesDeleted": "{count, plural, =1{1 règle supprimée} other{{count} règles supprimées}}",
+  "@messageFilter_rulesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "Supprimer les règles ?",
+  "messageFilter_deleteRulesConfirm": "{count, plural, =1{Supprimer 1 règle du filtre de messages ?} other{Supprimer {count} règles du filtre de messages ?}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, =1{1 règle activée} other{{count} règles activées}}",
+  "@messageFilter_rulesTurnedOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, =1{1 règle désactivée} other{{count} règles désactivées}}",
+  "@messageFilter_rulesTurnedOff": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Rechercher des règles",
+  "messageFilter_rulesNoResults": "Aucune règle correspondante",
+  "messageFilter_selectRules": "Sélectionner des règles",
+  "messageFilter_turnOn": "Activer",
+  "messageFilter_turnOff": "Désactiver",
   "messageFilter_automaticSection": "Automatique",
   "messageFilter_duplicates": "Messages répétés",
-  "messageFilter_duplicatesSubtitle": "Le même message envoyé de nouveau, ou par plusieurs expéditeurs",
-  "messageFilter_repeatSends": "Envois comptés comme répétition",
-  "messageFilter_repeatSendsSubtitle": "Masquer un message lorsque le même expéditeur l'envoie {count} fois en 10 minutes",
+  "messageFilter_duplicatesSubtitle": "Renvoyé par une même personne, ou par 3 personnes ou plus",
+  "messageFilter_repeatSendsCount": "Envois comptés comme répétition : {count}",
+  "messageFilter_repeatSendsHint": "Une même personne, chaque envoi moins de 10 minutes après le précédent",
   "messageFilter_repeatedCharacters": "Caractères répétés",
   "messageFilter_repeatedCharactersSubtitle": "Longues séquences d'un même caractère, comme « aaaaaaaaaaaaaaaaaaaa »",
-  "messageFilter_learning": "Apprendre des appuis sur Spam",
-  "messageFilter_learningSubtitle": "{spam} exemples de spam et {notSpam} de non-spam",
+  "messageFilter_learning": "Apprendre des signalements de spam",
+  "messageFilter_learningSubtitle": "{spam} marqué(s) comme spam, {notSpam} comme pas un spam",
   "messageFilter_resetLearning": "Réinitialiser l'apprentissage",
-  "messageFilter_resetLearningConfirm": "Oublier tout ce qui a été appris de vos appuis sur Spam et Pas un spam ? Vos règles sont conservées.",
+  "messageFilter_resetLearningSubtitle": "Oublier tout ce qui a été appris des messages marqués comme spam et des messages récents",
+  "messageFilter_resetLearningNothing": "Rien n'a encore été appris",
+  "messageFilter_resetLearningConfirm": "Oublier tout ce que le filtre a appris ? Vos règles sont conservées.",
   "messageFilter_filteredMessages": "Messages filtrés ({count})",
-  "messageFilter_filteredMessagesEmpty": "Rien n'a été filtré.",
+  "messageFilter_filteredMessagesSubtitle": "Liste des messages filtrés récents de tous les canaux (200 au maximum)",
+  "messageFilter_filteredMessagesEmpty": "Aucun message filtré",
   "messageFilter_ghostSingle": "Message masqué · Appuyez pour voir",
   "messageFilter_ghostMany": "{count, plural, one{{count} message masqué · Appuyez pour voir} other{{count} messages masqués · Appuyez pour voir}}",
   "messageFilter_ghostSingleExpanded": "Message masqué affiché · Appuyez pour masquer",

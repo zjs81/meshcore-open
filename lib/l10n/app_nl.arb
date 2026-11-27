@@ -977,6 +977,7 @@
   "login_failedMessage": "Inloggen mislukt. Het wachtwoord is onjuist of de repeater is niet bereikbaar.",
   "common_reload": "Opnieuw laden",
   "common_clear": "Wissen",
+  "common_reset": "Resetten",
   "common_clearSearch": "Zoekopdracht wissen",
   "path_currentPath": "Huidige pad: {path}",
   "@path_currentPath": {
@@ -3439,13 +3440,18 @@
   "messageFilter_title": "Berichtenfilter",
   "messageFilter_settingsSubtitle": "Spam en herhaalde berichten verbergen",
   "messageFilter_enabled": "Berichten filteren",
-  "messageFilter_enabledSubtitle": "Geldt voor kanaalberichten",
+  "messageFilter_filteringSection": "Filteren",
+  "messageFilter_enabledSubtitle": "Geldt voor alle kanalen, tenzij uitgeschakeld in het kanaalmenu",
+  "messageFilter_info": "Verbergt spam en herhaalde berichten in kanalen. Werkt alleen in de app en heeft geen invloed op je companion-radio.",
   "messageFilter_displayTitle": "Gefilterde berichten",
-  "messageFilter_displayPlaceholder": "Een kleine plaatsaanduiding tonen",
   "messageFilter_displayHide": "Helemaal verbergen",
-  "messageFilter_displayHideHelp": "Verborgen berichten blijven in de lijst Gefilterde berichten staan.",
+  "messageFilter_displayHideSubtitle": "Gefilterde berichten verbergen in plaats van een plaatsaanduiding te tonen",
   "messageFilter_rulesSection": "Jouw regels",
-  "messageFilter_rulesEmpty": "Nog geen regels. Voeg een woord, zin of afzendernaam toe om passende berichten te verbergen.",
+  "messageFilter_rulesCount": "Regels ({count})",
+  "messageFilter_rulesTitle": "Regels",
+  "messageFilter_rulesHint": "Berichten verbergen op woord, zin of afzendernaam",
+  "messageFilter_rulesEmptyTitle": "Nog geen regels",
+  "messageFilter_rulesEmpty": "Voeg een woord, zin of afzendernaam toe om passende berichten te verbergen",
   "messageFilter_addRule": "Regel toevoegen",
   "messageFilter_editRule": "Regel bewerken",
   "messageFilter_rulePattern": "Woord, zin of naam",
@@ -3460,19 +3466,53 @@
   "messageFilter_ruleMatchExact": "Exact",
   "messageFilter_ruleDeleted": "Regel verwijderd",
   "messageFilter_ruleSaved": "Regel opgeslagen",
+  "messageFilter_rulesDeleted": "{count, plural, =1{1 regel verwijderd} other{{count} regels verwijderd}}",
+  "@messageFilter_rulesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "Regels verwijderen?",
+  "messageFilter_deleteRulesConfirm": "{count, plural, =1{1 regel uit het berichtenfilter verwijderen?} other{{count} regels uit het berichtenfilter verwijderen?}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, =1{1 regel ingeschakeld} other{{count} regels ingeschakeld}}",
+  "@messageFilter_rulesTurnedOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, =1{1 regel uitgeschakeld} other{{count} regels uitgeschakeld}}",
+  "@messageFilter_rulesTurnedOff": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Regels zoeken",
+  "messageFilter_rulesNoResults": "Geen overeenkomende regels",
+  "messageFilter_selectRules": "Regels selecteren",
+  "messageFilter_turnOn": "Inschakelen",
+  "messageFilter_turnOff": "Uitschakelen",
   "messageFilter_automaticSection": "Automatisch",
   "messageFilter_duplicates": "Herhaalde berichten",
-  "messageFilter_duplicatesSubtitle": "Hetzelfde bericht opnieuw verstuurd, of door meerdere afzenders",
-  "messageFilter_repeatSends": "Verzendingen die als herhaling tellen",
-  "messageFilter_repeatSendsSubtitle": "Verberg een bericht wanneer dezelfde afzender het {count} keer verstuurt binnen 10 minuten",
+  "messageFilter_duplicatesSubtitle": "Opnieuw verstuurd door één persoon, of door 3 of meer personen",
+  "messageFilter_repeatSendsCount": "Verzendingen die als herhaling tellen: {count}",
+  "messageFilter_repeatSendsHint": "Eén persoon, telkens binnen 10 minuten na de vorige keer",
   "messageFilter_repeatedCharacters": "Herhaalde tekens",
   "messageFilter_repeatedCharactersSubtitle": "Lange reeksen van hetzelfde teken, zoals „aaaaaaaaaaaaaaaaaaaa”",
-  "messageFilter_learning": "Leren van Spam-tikken",
-  "messageFilter_learningSubtitle": "{spam} spam- en {notSpam} geen-spamvoorbeelden",
+  "messageFilter_learning": "Leren van spammeldingen",
+  "messageFilter_learningSubtitle": "{spam} gemarkeerd als spam, {notSpam} als geen spam",
   "messageFilter_resetLearning": "Geleerde gegevens wissen",
-  "messageFilter_resetLearningConfirm": "Alles vergeten wat is geleerd van je tikken op Spam en Geen spam? Je regels blijven behouden.",
+  "messageFilter_resetLearningSubtitle": "Alles vergeten wat is geleerd van als spam gemarkeerde berichten en recente berichten",
+  "messageFilter_resetLearningNothing": "Nog niets geleerd",
+  "messageFilter_resetLearningConfirm": "Alles vergeten wat het filter heeft geleerd? Je regels blijven behouden.",
   "messageFilter_filteredMessages": "Gefilterde berichten ({count})",
-  "messageFilter_filteredMessagesEmpty": "Er is niets gefilterd.",
+  "messageFilter_filteredMessagesSubtitle": "Lijst van maximaal 200 recent gefilterde berichten uit alle kanalen",
+  "messageFilter_filteredMessagesEmpty": "Geen gefilterde berichten",
   "messageFilter_ghostSingle": "Verborgen bericht · Tik om te bekijken",
   "messageFilter_ghostMany": "{count, plural, one{{count} verborgen bericht · Tik om te bekijken} other{{count} verborgen berichten · Tik om te bekijken}}",
   "messageFilter_ghostSingleExpanded": "Verborgen bericht wordt getoond · Tik om te verbergen",

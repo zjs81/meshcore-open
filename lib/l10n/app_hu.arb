@@ -1166,6 +1166,7 @@
   "login_failedMessage": "Sikertelen bejelentkezés. Vagy hibás a jelszó, vagy az átjátszó nem érhető el.",
   "common_reload": "Újratöltés",
   "common_clear": "Világos",
+  "common_reset": "Visszaállítás",
   "path_currentPath": "Jelenlegi útvonal: {path}",
   "@path_currentPath": {
     "placeholders": {
@@ -3577,13 +3578,26 @@
   "messageFilter_title": "Üzenetszűrő",
   "messageFilter_settingsSubtitle": "Spam és ismétlődő üzenetek elrejtése",
   "messageFilter_enabled": "Üzenetek szűrése",
-  "messageFilter_enabledSubtitle": "A csatornaüzenetekre vonatkozik",
+  "messageFilter_filteringSection": "Szűrés",
+  "messageFilter_enabledSubtitle": "Minden csatornára vonatkozik, hacsak nincs kikapcsolva a csatorna menüjében",
+  "messageFilter_info": "Elrejti a spamet és az ismétlődő üzeneteket a csatornákon. Csak az alkalmazásban működik, és nem érinti a companion rádióját.",
   "messageFilter_displayTitle": "Szűrt üzenetek",
-  "messageFilter_displayPlaceholder": "Kis helyőrző megjelenítése",
   "messageFilter_displayHide": "Teljes elrejtés",
-  "messageFilter_displayHideHelp": "Az elrejtett üzenetek a Szűrt üzenetek listában megmaradnak.",
+  "messageFilter_displayHideSubtitle": "A szűrt üzenetek elrejtése helyőrző megjelenítése helyett",
   "messageFilter_rulesSection": "Az Ön szabályai",
-  "messageFilter_rulesEmpty": "Még nincs szabály. Adjon hozzá egy szót, kifejezést vagy feladónevet, hogy elrejtse a rá illő üzeneteket.",
+  "messageFilter_rulesCount": "Szabályok ({count})",
+  "@messageFilter_rulesCount": {
+    "description": "Message filter: title of the row that opens the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTitle": "Szabályok",
+  "messageFilter_rulesHint": "Üzenetek elrejtése szó, kifejezés vagy feladónév alapján",
+  "messageFilter_rulesEmptyTitle": "Még nincs szabály",
+  "messageFilter_rulesEmpty": "Adjon hozzá egy szót, kifejezést vagy feladónevet, hogy elrejtse a rá illő üzeneteket",
   "messageFilter_addRule": "Szabály hozzáadása",
   "messageFilter_editRule": "Szabály szerkesztése",
   "messageFilter_rulePattern": "Szó, kifejezés vagy név",
@@ -3598,16 +3612,48 @@
   "messageFilter_ruleMatchExact": "Pontos",
   "messageFilter_ruleDeleted": "Szabály törölve",
   "messageFilter_ruleSaved": "Szabály mentve",
+  "messageFilter_rulesDeleted": "{count, plural, =1{1 szabály törölve} other{{count} szabály törölve}}",
+  "@messageFilter_rulesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "Törli a szabályokat?",
+  "messageFilter_deleteRulesConfirm": "{count, plural, one{Törli az 1 szabályt az üzenetszűrőből?} other{Törli a(z) {count} szabályt az üzenetszűrőből?}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, =1{1 szabály bekapcsolva} other{{count} szabály bekapcsolva}}",
+  "@messageFilter_rulesTurnedOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, =1{1 szabály kikapcsolva} other{{count} szabály kikapcsolva}}",
+  "@messageFilter_rulesTurnedOff": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Szabályok keresése",
+  "messageFilter_rulesNoResults": "Nincs egyező szabály",
+  "messageFilter_selectRules": "Szabályok kijelölése",
+  "messageFilter_turnOn": "Bekapcsolás",
+  "messageFilter_turnOff": "Kikapcsolás",
   "messageFilter_automaticSection": "Automatikus",
   "messageFilter_duplicates": "Ismétlődő üzenetek",
-  "messageFilter_duplicatesSubtitle": "Ugyanaz az üzenet újra elküldve, vagy több feladótól",
-  "messageFilter_repeatSends": "Ismétlésnek számító küldések",
-  "messageFilter_repeatSendsSubtitle": "Üzenet elrejtése, ha ugyanaz a feladó {count}× elküldi 10 percen belül",
+  "messageFilter_duplicatesSubtitle": "Egy személy újra elküldi, vagy legalább 3 személy küldi el",
+  "messageFilter_repeatSendsCount": "Ismétlésnek számító küldések: {count}",
+  "messageFilter_repeatSendsHint": "Egy személy, minden küldés az előzőt követő 10 percen belül",
   "messageFilter_repeatedCharacters": "Ismétlődő karakterek",
   "messageFilter_repeatedCharactersSubtitle": "Ugyanazon karakter hosszú sorozata, például „aaaaaaaaaaaaaaaaaaaa”",
-  "messageFilter_learning": "Tanulás a Spam gombokból",
-  "messageFilter_learningSubtitle": "{spam} spam és {notSpam} nem spam példa",
+  "messageFilter_learning": "Tanulás a spambejelentésekből",
+  "messageFilter_learningSubtitle": "{spam} spamként, {notSpam} nem spamként megjelölve",
   "@messageFilter_learningSubtitle": {
+    "description": "Message filter: subtitle of Learn from Spam Taps; how many messages are currently marked as spam and as not spam",
     "placeholders": {
       "spam": {
         "type": "int"
@@ -3618,16 +3664,20 @@
     }
   },
   "messageFilter_resetLearning": "Tanulás visszaállítása",
-  "messageFilter_resetLearningConfirm": "Elfelejtse mindazt, amit a Spam és Nem spam gombokból tanult? A szabályai megmaradnak.",
+  "messageFilter_resetLearningSubtitle": "Mindent elfelejt, amit a spamként jelölt és a legutóbbi üzenetekből tanult",
+  "messageFilter_resetLearningNothing": "Még nincs tanult adat",
+  "messageFilter_resetLearningConfirm": "Törli mindazt, amit a szűrő megtanult? A szabályai megmaradnak.",
   "messageFilter_filteredMessages": "Szűrt üzenetek ({count})",
   "@messageFilter_filteredMessages": {
+    "description": "Message filter: Filtered Messages ({count})",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "messageFilter_filteredMessagesEmpty": "Semmi sincs kiszűrve.",
+  "messageFilter_filteredMessagesSubtitle": "Legfeljebb 200 nemrég szűrt üzenet listája az összes csatornáról",
+  "messageFilter_filteredMessagesEmpty": "Nincs szűrt üzenet",
   "messageFilter_ghostSingle": "Elrejtett üzenet · Koppintson a megtekintéshez",
   "messageFilter_ghostMany": "{count, plural, one{{count} elrejtett üzenet · Koppintson a megtekintéshez} other{{count} elrejtett üzenet · Koppintson a megtekintéshez}}",
   "@messageFilter_ghostMany": {

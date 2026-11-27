@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 // showDismissibleSnackBar shows  a [SnackBar] with tap to dismiss
 // all other properties are default and optional
-void showDismissibleSnackBar(
+// Returns its controller, or null when nothing was shown.
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason>?
+showDismissibleSnackBar(
   BuildContext context, {
   Key? key,
   required Widget content,
@@ -29,19 +31,19 @@ void showDismissibleSnackBar(
   // unmounted, or deactivated (popped but not yet disposed) — ancestor
   // lookups on a deactivated element throw. Showing nothing is the right
   // outcome in both cases.
-  if (!context.mounted) return;
+  if (!context.mounted) return null;
   var isActive = true;
   assert(() {
     isActive = (context as Element).debugIsActive;
     return true;
   }());
-  if (!isActive) return;
+  if (!isActive) return null;
   final messenger = ScaffoldMessenger.maybeOf(context);
-  if (messenger == null) return;
+  if (messenger == null) return null;
   // Replace rather than queue: rapid actions (adding ten contacts) would
   // otherwise leave a backlog the user has to dismiss one by one.
   messenger.clearSnackBars();
-  messenger.showSnackBar(
+  return messenger.showSnackBar(
     SnackBar(
       key: key,
       content: GestureDetector(

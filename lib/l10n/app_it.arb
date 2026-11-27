@@ -1011,6 +1011,7 @@
   "login_failedMessage": "Accesso fallito. La password non è corretta oppure il ripetitore non è raggiungibile.",
   "common_reload": "Ricarica",
   "common_clear": "Cancella",
+  "common_reset": "Azzera",
   "path_currentPath": "Percorso corrente: {path}",
   "@path_currentPath": {
     "placeholders": {
@@ -3672,13 +3673,18 @@
   "messageFilter_title": "Filtro messaggi",
   "messageFilter_settingsSubtitle": "Nascondi spam e messaggi ripetuti",
   "messageFilter_enabled": "Filtra i messaggi",
-  "messageFilter_enabledSubtitle": "Si applica ai messaggi dei canali",
+  "messageFilter_filteringSection": "Filtraggio",
+  "messageFilter_enabledSubtitle": "Si applica a tutti i canali, a meno che non sia disattivato nel menu del canale",
+  "messageFilter_info": "Nasconde spam e messaggi ripetuti nei canali. Funziona solo nell'app e non influisce sulla tua radio companion.",
   "messageFilter_displayTitle": "Messaggi filtrati",
-  "messageFilter_displayPlaceholder": "Mostra un piccolo segnaposto",
   "messageFilter_displayHide": "Nascondi completamente",
-  "messageFilter_displayHideHelp": "I messaggi nascosti restano nell'elenco dei messaggi filtrati.",
+  "messageFilter_displayHideSubtitle": "Nascondi i messaggi filtrati invece di mostrare un segnaposto",
   "messageFilter_rulesSection": "Le tue regole",
-  "messageFilter_rulesEmpty": "Ancora nessuna regola. Aggiungi una parola, una frase o il nome di un mittente per nascondere i messaggi corrispondenti.",
+  "messageFilter_rulesCount": "Regole ({count})",
+  "messageFilter_rulesTitle": "Regole",
+  "messageFilter_rulesHint": "Nascondi i messaggi per parola, frase o nome del mittente",
+  "messageFilter_rulesEmptyTitle": "Ancora nessuna regola",
+  "messageFilter_rulesEmpty": "Aggiungi una parola, una frase o il nome di un mittente per nascondere i messaggi corrispondenti",
   "messageFilter_addRule": "Aggiungi regola",
   "messageFilter_editRule": "Modifica regola",
   "messageFilter_rulePattern": "Parola, frase o nome",
@@ -3693,19 +3699,53 @@
   "messageFilter_ruleMatchExact": "Esatta",
   "messageFilter_ruleDeleted": "Regola eliminata",
   "messageFilter_ruleSaved": "Regola salvata",
+  "messageFilter_rulesDeleted": "{count, plural, =1{1 regola eliminata} other{{count} regole eliminate}}",
+  "@messageFilter_rulesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "Eliminare le regole?",
+  "messageFilter_deleteRulesConfirm": "{count, plural, =1{Eliminare 1 regola dal filtro messaggi?} other{Eliminare {count} regole dal filtro messaggi?}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, =1{1 regola attivata} other{{count} regole attivate}}",
+  "@messageFilter_rulesTurnedOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, =1{1 regola disattivata} other{{count} regole disattivate}}",
+  "@messageFilter_rulesTurnedOff": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Cerca regole",
+  "messageFilter_rulesNoResults": "Nessuna regola corrispondente",
+  "messageFilter_selectRules": "Seleziona regole",
+  "messageFilter_turnOn": "Attiva",
+  "messageFilter_turnOff": "Disattiva",
   "messageFilter_automaticSection": "Automatico",
   "messageFilter_duplicates": "Messaggi ripetuti",
-  "messageFilter_duplicatesSubtitle": "Lo stesso messaggio inviato di nuovo, o da più mittenti",
-  "messageFilter_repeatSends": "Invii da considerare ripetizione",
-  "messageFilter_repeatSendsSubtitle": "Nascondi un messaggio quando lo stesso mittente lo invia {count} volte entro 10 minuti",
+  "messageFilter_duplicatesSubtitle": "Inviato di nuovo da una persona o da 3 o più persone",
+  "messageFilter_repeatSendsCount": "Invii da considerare ripetizione: {count}",
+  "messageFilter_repeatSendsHint": "Una persona, ogni invio entro 10 minuti dal precedente",
   "messageFilter_repeatedCharacters": "Caratteri ripetuti",
   "messageFilter_repeatedCharactersSubtitle": "Lunghe sequenze dello stesso carattere, come «aaaaaaaaaaaaaaaaaaaa»",
-  "messageFilter_learning": "Impara dai tocchi su Spam",
-  "messageFilter_learningSubtitle": "{spam} esempi di spam e {notSpam} di non spam",
+  "messageFilter_learning": "Impara dalle segnalazioni di spam",
+  "messageFilter_learningSubtitle": "Segnati come spam: {spam}, come non spam: {notSpam}",
   "messageFilter_resetLearning": "Azzera apprendimento",
-  "messageFilter_resetLearningConfirm": "Dimenticare tutto ciò che è stato appreso dai tuoi tocchi su Spam e Non spam? Le tue regole vengono mantenute.",
+  "messageFilter_resetLearningSubtitle": "Dimentica tutto ciò che è stato appreso dai messaggi segnati come spam e dai messaggi recenti",
+  "messageFilter_resetLearningNothing": "Non è ancora stato appreso nulla",
+  "messageFilter_resetLearningConfirm": "Dimenticare tutto ciò che il filtro ha imparato? Le tue regole vengono mantenute.",
   "messageFilter_filteredMessages": "Messaggi filtrati ({count})",
-  "messageFilter_filteredMessagesEmpty": "Nessun messaggio è stato filtrato.",
+  "messageFilter_filteredMessagesSubtitle": "Elenco di massimo 200 messaggi filtrati di recente da tutti i canali",
+  "messageFilter_filteredMessagesEmpty": "Nessun messaggio filtrato",
   "messageFilter_ghostSingle": "Messaggio nascosto · Tocca per vedere",
   "messageFilter_ghostMany": "{count, plural, one{{count} messaggio nascosto · Tocca per vedere} other{{count} messaggi nascosti · Tocca per vedere}}",
   "messageFilter_ghostSingleExpanded": "Messaggio nascosto visibile · Tocca per nascondere",
