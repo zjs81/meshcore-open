@@ -175,9 +175,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get common_interval => '间隔';
 
   @override
-  String get scanner_title => '连接设备';
-
-  @override
   String get connectionChoiceUsbLabel => 'USB';
 
   @override
@@ -185,9 +182,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get connectionChoiceTcpLabel => 'TCP';
-
-  @override
-  String get tcpScreenTitle => '通过 TCP 连接';
 
   @override
   String get tcpHostLabel => 'IP地址';
@@ -200,14 +194,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get tcpPortHint => '5000';
-
-  @override
-  String get tcpStatus_notConnected => '输入目标地址，然后连接';
-
-  @override
-  String tcpStatus_connectingTo(String endpoint) {
-    return '连接到 $endpoint...';
-  }
 
   @override
   String get tcpErrorHostRequired => '需要提供IP地址。';
@@ -227,9 +213,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get usbScreenTitle => '通过USB连接';
-
-  @override
   String get usbScreenSubtitle => '选择已检测到的串行设备，并直接连接到您的 MeshCore 节点。';
 
   @override
@@ -240,6 +223,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get usbScreenEmptyState => '未找到任何 USB 设备。请插入一个，然后刷新。';
+
+  @override
+  String get usbScreenEmptyStateAuto => '未找到任何 USB 设备。请插入一个，它会显示在这里。';
 
   @override
   String get usbErrorPermissionDenied => '拒绝了USB权限。';
@@ -279,12 +265,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get usbFallbackDeviceName => 'Web 串流设备';
-
-  @override
-  String get usbStatus_notConnected => '选择一个 USB 设备';
-
-  @override
-  String get usbStatus_connecting => '连接USB设备...';
 
   @override
   String get usbStatus_searching => '正在搜索 USB 设备...';
@@ -6892,9 +6872,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String community_shortId(String id) {
     return 'ID:$id…';
   }
-
-  @override
-  String get tcpSectionTitle => 'TCP / IP';
 
   @override
   String get tcpConnectedToHeader => '已连接到';

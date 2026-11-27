@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,9 +7,10 @@ import 'package:provider/provider.dart';
 
 import 'package:meshcore_open/connector/meshcore_connector.dart';
 import 'package:meshcore_open/l10n/app_localizations.dart';
-import 'package:meshcore_open/screens/scanner_screen.dart';
+import 'package:meshcore_open/screens/connect_screen.dart';
 import 'package:meshcore_open/screens/usb_screen.dart';
 import 'package:meshcore_open/utils/platform_info.dart';
+import 'package:meshcore_open/widgets/device_tile.dart';
 
 class _FakeMeshCoreConnector extends MeshCoreConnector {
   _FakeMeshCoreConnector({
@@ -28,8 +31,15 @@ class _FakeMeshCoreConnector extends MeshCoreConnector {
   Future<List<String>> Function()? listUsbPortsImpl;
   Future<void> Function({required String portName})? connectUsbImpl;
 
+  MeshCoreConnectionState? currentState;
+
   @override
-  MeshCoreConnectionState get state => initialState;
+  MeshCoreConnectionState get state => currentState ?? initialState;
+
+  void setState(MeshCoreConnectionState state) {
+    currentState = state;
+    notifyListeners();
+  }
 
   @override
   MeshCoreTransportType get activeTransport => MeshCoreTransportType.usb;
@@ -116,7 +126,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(ListTile).first);
+      await tester.tap(find.byType(DeviceTile).first);
       await tester.pump();
 
       expect(connector.connectUsbCalls, 0);
@@ -140,38 +150,35 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(ListTile).first);
+    await tester.tap(find.byType(DeviceTile).first);
     await tester.pump();
 
     expect(connector.connectUsbCalls, 1);
     expect(connector.lastConnectPortName, 'COM6');
   });
 
-  testWidgets('ScannerScreen USB action reflects platform support', (
+  testWidgets('Connect screen has a USB tab only where USB works', (
     tester,
   ) async {
     final connector = _FakeMeshCoreConnector();
 
     await tester.pumpWidget(
-      _buildTestApp(connector: connector, child: const ScannerScreen()),
+      _buildTestApp(connector: connector, child: const ConnectScreen()),
     );
     await tester.pumpAndSettle();
 
-    final context = tester.element(find.byType(ScannerScreen));
+    final context = tester.element(find.byType(ConnectScreen));
     final l10n = AppLocalizations.of(context);
-    if (PlatformInfo.supportsUsbSerial) {
-      expect(find.byTooltip(l10n.connectionChoiceUsbLabel), findsOneWidget);
-    } else {
-      expect(find.byTooltip(l10n.connectionChoiceUsbLabel), findsNothing);
-    }
+    expect(
+      find.widgetWithText(Tab, l10n.connectionChoiceUsbLabel),
+      PlatformInfo.supportsUsbSerial ? findsOneWidget : findsNothing,
+    );
 
-    // ScannerScreen.dispose() schedules disconnect work that debounces notify.
-    // Drain that debounce timer before test teardown.
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(milliseconds: 60));
   });
 
-  testWidgets('ScannerScreen narrow width keeps actions without overflow', (
+  testWidgets('Connect screen narrow width keeps its tabs without overflow', (
     tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(320, 700));
@@ -180,28 +187,29 @@ void main() {
     final connector = _FakeMeshCoreConnector();
 
     await tester.pumpWidget(
-      _buildTestApp(connector: connector, child: const ScannerScreen()),
+      _buildTestApp(connector: connector, child: const ConnectScreen()),
     );
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
 
-    final context = tester.element(find.byType(ScannerScreen));
+    final context = tester.element(find.byType(ConnectScreen));
     final l10n = AppLocalizations.of(context);
     expect(find.text(l10n.scanner_scan), findsWidgets);
-
-    if (PlatformInfo.supportsUsbSerial) {
-      expect(find.byTooltip(l10n.connectionChoiceUsbLabel), findsOneWidget);
-    }
-    if (!PlatformInfo.isWeb) {
-      expect(find.byTooltip(l10n.connectionChoiceTcpLabel), findsOneWidget);
-    }
+    expect(
+      find.widgetWithText(Tab, l10n.connectionChoiceBluetoothLabel),
+      findsOneWidget,
+    );
+    expect(
+      find.widgetWithText(Tab, l10n.connectionChoiceTcpLabel),
+      findsOneWidget,
+    );
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(milliseconds: 60));
   });
 
-  testWidgets('UsbScreen narrow width long status text does not overflow', (
+  testWidgets('Connect screen fits a long USB port label at narrow width', (
     tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(320, 700));
@@ -214,13 +222,16 @@ void main() {
               '/dev/bus/usb/001/002 - KD3CGK mesh-utility.org very long label';
 
     await tester.pumpWidget(
-      _buildTestApp(connector: connector, child: const UsbScreen()),
+      _buildTestApp(
+        connector: connector,
+        child: const ConnectScreen(initialTransport: MeshCoreTransportType.usb),
+      ),
     );
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
 
-    final context = tester.element(find.byType(UsbScreen));
+    final context = tester.element(find.byType(ConnectScreen));
     final l10n = AppLocalizations.of(context);
     expect(
       find.text(
@@ -229,6 +240,43 @@ void main() {
       findsOneWidget,
     );
 
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(milliseconds: 60));
+  });
+
+  testWidgets('UsbScreen shows a progress ring on the port being connected', (
+    tester,
+  ) async {
+    final connector = _FakeMeshCoreConnector(
+      ports: <String>['COM6 - USB Serial Device (COM6)'],
+    );
+    final done = Completer<void>();
+    connector.connectUsbImpl = ({required String portName}) async {
+      connector.setState(MeshCoreConnectionState.connecting);
+      await done.future;
+      connector.setState(MeshCoreConnectionState.disconnected);
+    };
+    Finder ring() => find.descendant(
+      of: find.byType(DeviceTile),
+      matching: find.byType(CircularProgressIndicator),
+    );
+
+    await tester.pumpWidget(
+      _buildTestApp(connector: connector, child: const UsbScreen()),
+    );
+    await tester.pumpAndSettle();
+    expect(ring(), findsNothing);
+
+    await tester.tap(find.byType(DeviceTile).first);
+    await tester.pump();
+    expect(ring(), findsOneWidget);
+
+    done.complete();
+    await tester.pump();
+    await tester.pump();
+    expect(ring(), findsNothing);
+
+    // The connector debounces notifications; drain that timer.
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(milliseconds: 60));
   });
@@ -266,7 +314,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(ListTile).first);
+      await tester.tap(find.byType(DeviceTile).first);
       await tester.pumpAndSettle();
 
       expect(connectAttempted, isTrue);

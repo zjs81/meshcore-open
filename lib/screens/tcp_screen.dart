@@ -8,12 +8,9 @@ import '../connector/meshcore_connector.dart';
 import '../l10n/l10n.dart';
 import '../services/app_settings_service.dart';
 import '../theme/mesh_theme.dart';
-import '../utils/platform_info.dart';
-import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/mesh_ui.dart';
 import '../helpers/snack_bar_builder.dart';
 import '../utils/main_navigation.dart';
-import 'usb_screen.dart';
 
 class TcpScreen extends StatefulWidget {
   const TcpScreen({super.key});
@@ -28,6 +25,7 @@ class _TcpScreenState extends State<TcpScreen> {
   late final MeshCoreConnector _connector;
   late final VoidCallback _connectionListener;
   bool _navigatedToChannels = false;
+  bool _startedConnect = false;
   String? _hostError;
   String? _portError;
 
@@ -74,7 +72,10 @@ class _TcpScreenState extends State<TcpScreen> {
     _hostController.dispose();
     _portController.dispose();
     _connector.removeListener(_connectionListener);
-    if (!_navigatedToChannels &&
+    // Only cancel a connection this tab started; an automatic reconnect is
+    // left alone.
+    if (_startedConnect &&
+        !_navigatedToChannels &&
         _connector.activeTransport == MeshCoreTransportType.tcp &&
         _connector.state != MeshCoreConnectionState.disconnected) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -87,14 +88,6 @@ class _TcpScreenState extends State<TcpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).maybePop(),
-        ),
-        title: AdaptiveAppBarTitle(context.l10n.tcpScreenTitle),
-        centerTitle: true,
-      ),
       body: SafeArea(
         top: false,
         child: Consumer<MeshCoreConnector>(
@@ -107,26 +100,9 @@ class _TcpScreenState extends State<TcpScreen> {
             final isButtonDisabled =
                 connector.state != MeshCoreConnectionState.disconnected;
             return ListView(
-              padding: const EdgeInsets.only(bottom: 32),
+              padding: const EdgeInsets.only(top: 8, bottom: 32),
               children: [
-                // Status header
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: Align(
-                      key: ValueKey(connector.state),
-                      alignment: Alignment.centerLeft,
-                      child: _buildStatusChip(context, connector),
-                    ),
-                  ),
-                ),
-
-                // Transport switcher
-                _buildTransportLinks(context),
-
                 // Connection form
-                SectionHeader(context.l10n.tcpSectionTitle),
                 MeshCard(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -233,65 +209,6 @@ class _TcpScreenState extends State<TcpScreen> {
     );
   }
 
-  Widget _buildStatusChip(BuildContext context, MeshCoreConnector connector) {
-    final l10n = context.l10n;
-
-    if (connector.isTcpTransportConnected) {
-      return StatusChip(
-        label: l10n.scanner_connectedTo(connector.activeTcpEndpoint ?? 'TCP'),
-        color: MeshPalette.signal,
-      );
-    } else if (connector.state == MeshCoreConnectionState.connecting &&
-        connector.activeTransport == MeshCoreTransportType.tcp) {
-      return StatusChip(
-        label: l10n.tcpStatus_connectingTo(
-          '${_hostController.text}:${_portController.text}',
-        ),
-        color: MeshPalette.warn,
-        pulse: true,
-      );
-    } else if (connector.state == MeshCoreConnectionState.disconnecting &&
-        connector.activeTransport == MeshCoreTransportType.tcp) {
-      return StatusChip(
-        label: l10n.scanner_disconnecting,
-        color: MeshPalette.warn,
-        pulse: true,
-      );
-    } else {
-      return StatusChip(
-        label: l10n.tcpStatus_notConnected,
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
-      );
-    }
-  }
-
-  Widget _buildTransportLinks(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Wrap(
-        spacing: 12,
-        runSpacing: 8,
-        children: [
-          if (PlatformInfo.supportsUsbSerial)
-            OutlinedButton.icon(
-              onPressed: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => const UsbScreen()),
-                );
-              },
-              icon: const Icon(Icons.usb),
-              label: Text(context.l10n.connectionChoiceUsbLabel),
-            ),
-          OutlinedButton.icon(
-            onPressed: () => Navigator.of(context).maybePop(),
-            icon: const Icon(Icons.bluetooth),
-            label: Text(context.l10n.connectionChoiceBluetoothLabel),
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<void> _connectTcp() async {
     if (_connector.state == MeshCoreConnectionState.connecting ||
         _connector.state == MeshCoreConnectionState.connected ||
@@ -313,6 +230,7 @@ class _TcpScreenState extends State<TcpScreen> {
       return;
     }
 
+    _startedConnect = true;
     try {
       await _connector.connectTcp(host: host, port: parsedPort);
     } catch (error) {

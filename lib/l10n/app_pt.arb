@@ -54,7 +54,6 @@
       }
     }
   },
-  "scanner_title": "MeshCore: Versão aberta",
   "scanner_scanning": "Procurando por dispositivos...",
   "scanner_connecting": "Conectando...",
   "scanner_disconnecting": "Desconectando...",
@@ -2096,11 +2095,11 @@
   "map_showGuessedLocations": "Mostrar as localizações dos nós estimados",
   "connectionChoiceUsbLabel": "USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
-  "usbScreenTitle": "Conecte via USB",
   "usbScreenSubtitle": "Selecione um dispositivo serial detectado e conecte-o diretamente ao seu nó MeshCore.",
   "usbScreenStatus": "Selecione um dispositivo USB",
   "usbScreenNote": "A comunicação serial via USB está ativa em dispositivos Android e plataformas de desktop compatíveis.",
   "usbScreenEmptyState": "Nenhum dispositivo USB encontrado. Conecte um e atualize.",
+  "usbScreenEmptyStateAuto": "Nenhum dispositivo USB encontrado. Conecte um e ele aparecerá aqui.",
   "usbErrorPermissionDenied": "A permissão para acesso via USB foi negada.",
   "usbErrorDeviceMissing": "O dispositivo USB selecionado não está mais disponível.",
   "usbErrorInvalidPort": "Selecione um dispositivo USB válido.",
@@ -2121,17 +2120,8 @@
     }
   },
   "usbStatus_searching": "Procurando por dispositivos USB...",
-  "usbStatus_notConnected": "Selecione um dispositivo USB",
   "usbConnectionFailed": "Falha na conexão USB: {error}",
-  "usbStatus_connecting": "Conectando ao dispositivo USB...",
   "usbErrorConnectTimedOut": "A conexão expirou. Verifique se o dispositivo possui o firmware USB Companion.",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2141,12 +2131,9 @@
   },
   "tcpHostLabel": "Endereço IP",
   "connectionChoiceTcpLabel": "TCP",
-  "tcpScreenTitle": "Estabelecer conexão via TCP",
   "tcpHostHint": "192.168.40.10",
   "tcpPortLabel": "Porta",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Insira o endereço final e conecte-se.",
-  "tcpStatus_connectingTo": "Conectando a {endpoint}...",
   "tcpErrorHostRequired": "É necessário fornecer um endereço IP.",
   "tcpErrorPortInvalid": "O valor do porto deve estar entre 1 e 65535.",
   "tcpErrorUnsupported": "O protocolo TCP não é suportado nesta plataforma.",
@@ -3290,7 +3277,6 @@
   "contacts_advertFailed": "Não foi possível enviar o anúncio",
   "contacts_manageGroups": "Gerenciar grupos",
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Conectado a",
   "usbChooseSerialPort": "Escolher porta serial",
   "neighbors_durationSeconds": "{seconds}s",

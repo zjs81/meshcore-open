@@ -5,7 +5,7 @@
 The app follows this general flow:
 
 ```
-Launch → Scanner Screen → [Connect via BLE/USB/TCP] → Channels Screen
+Launch → Connect a radio → [Connect via BLE/USB/TCP] → Channels Screen
 Launch (a radio connected before) → Channels Screen (offline until connected)
 ```
 
@@ -32,17 +32,16 @@ Tapping a tab replaces the current screen with a subtle fade + slight horizontal
 
 - **Theme mode** is user-configurable in App Settings (System / Light / Dark) — not locked to system
 - **Language** can be overridden to one of 18 supported languages, or follow the system locale
-- On web, if a non-Chromium browser is detected, the app shows a `ChromeRequiredScreen` instead of the Scanner (the web client needs Chrome for Web Serial USB)
+- On web, if a non-Chromium browser is detected, the app shows a `ChromeRequiredScreen` instead of Connect a radio (the web client needs Chrome for Web Serial USB)
 
 ## Full Navigation Graph
 
 ```
-ScannerScreen (root when no radio is remembered; otherwise pushed from the connect sheet)
-  ├─ [BLE connect] → ChannelsScreen as the only route
-  ├─ [TCP icon button] → push → TcpScreen
-  │     └─ [TCP connected] → ChannelsScreen as the only route
-  └─ [USB icon button] → push → UsbScreen
-        └─ [USB connected] → ChannelsScreen as the only route
+ConnectScreen (root when no radio is remembered; otherwise pushed from the connect sheet,
+               on the tab of the last radio's connection type)
+  ├─ [Bluetooth tab: BLE connect] → ChannelsScreen as the only route
+  ├─ [USB tab: USB connect] → ChannelsScreen as the only route
+  └─ [TCP tab: TCP connect] → ChannelsScreen as the only route
 
 ContactsScreen (selected=0)
   ├─ [quick-switch 1] → pushReplacement → ChannelsScreen
@@ -71,7 +70,7 @@ Settings (push from any main screen)
         └─ [Offline Map Cache] → push → MapCacheScreen
 ```
 
-A connection made from the scanner, USB, TCP or review mode replaces the whole stack with ChannelsScreen (`navigateToMainAfterConnect`). Leaving the scanner cancels only a Bluetooth connection it started; a pending automatic reconnect is left alone.
+A connection made from any tab or from review mode replaces the whole stack with ChannelsScreen (`navigateToMainAfterConnect`). Leaving the Bluetooth tab cancels a Bluetooth connection in progress, leaving the USB tab a USB one, and leaving the TCP tab only a connection started from it (the tabs are locked while connecting); a pending automatic reconnect is left alone.
 
 ## Additional settings destinations
 

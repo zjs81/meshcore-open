@@ -48,24 +48,13 @@
       }
     }
   },
-  "scanner_title": "MeshCore Open",
   "connectionChoiceUsbLabel": "USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "connectionChoiceTcpLabel": "TCP",
-  "tcpScreenTitle": "Csatlakozzon TCP-n keresztül",
   "tcpHostLabel": "Végpont",
   "tcpHostHint": "192.168.40.10 / example.com",
   "tcpPortLabel": "Kikötő",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Adja meg a végpontot, és csatlakozzon",
-  "tcpStatus_connectingTo": "Csatlakozás a következőhöz: {endpoint}...",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "tcpErrorHostRequired": "Házigazda szükséges.",
   "tcpErrorPortInvalid": "A portnak 1 és 65535 között kell lennie.",
   "tcpErrorUnsupported": "A TCP-átvitel nem támogatott ezen a platformon.",
@@ -78,11 +67,11 @@
       }
     }
   },
-  "usbScreenTitle": "Csatlakoztassa USB-n keresztül",
   "usbScreenSubtitle": "Válasszon egy észlelt soros eszközt, és csatlakozzon közvetlenül a MeshCore csomóponthoz.",
   "usbScreenStatus": "Válasszon ki egy USB-eszközt",
   "usbScreenNote": "Az USB-soros aktív a támogatott Android-eszközökön és asztali platformokon.",
   "usbScreenEmptyState": "Nem található USB-eszköz. Csatlakoztasson egyet, és frissítse.",
+  "usbScreenEmptyStateAuto": "Nem található USB-eszköz. Csatlakoztasson egyet, és megjelenik itt.",
   "usbErrorPermissionDenied": "Az USB-engedély megtagadva.",
   "usbErrorDeviceMissing": "A kiválasztott USB-eszköz már nem érhető el.",
   "usbErrorInvalidPort": "Válasszon ki egy érvényes USB-eszközt.",
@@ -96,8 +85,6 @@
   "usbErrorPortClosed": "Az USB-csatlakozás nincs nyitva.",
   "usbErrorConnectTimedOut": "A kapcsolat időtúllépése lejárt. Győződjön meg arról, hogy az eszköz rendelkezik USB Companion firmware-rel.",
   "usbFallbackDeviceName": "Web soros eszköz",
-  "usbStatus_notConnected": "Válasszon ki egy USB-eszközt",
-  "usbStatus_connecting": "Csatlakozás USB-eszközhöz...",
   "usbStatus_searching": "USB-eszközök keresése...",
   "usbConnectionFailed": "USB csatlakozás sikertelen: {error}",
   "@usbConnectionFailed": {
@@ -3451,7 +3438,6 @@
     }
   },
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Csatlakozva:",
   "usbChooseSerialPort": "Soros port kiválasztása",
   "neighbors_durationSeconds": "{seconds} mp",

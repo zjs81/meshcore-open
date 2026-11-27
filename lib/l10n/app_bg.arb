@@ -54,7 +54,6 @@
       }
     }
   },
-  "scanner_title": "MeshCore – Отворена версия",
   "scanner_scanning": "Сканиране за устройства...",
   "scanner_connecting": "Свързвам се...",
   "scanner_disconnecting": "Изключване...",
@@ -2164,12 +2163,12 @@
   "map_guessedLocation": "Предполагано местоположение",
   "map_showGuessedLocations": "Покажете местоположенията на предположените възли.",
   "connectionChoiceUsbLabel": "USB",
-  "usbScreenTitle": "Свържете се чрез USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "usbScreenSubtitle": "Изберете открития сериен уред и свържете директно към вашия MeshCore възел.",
   "usbScreenStatus": "Изберете USB устройство",
   "usbScreenNote": "USB серийната връзка е активна на поддържаните Android устройства и настолни платформи.",
   "usbScreenEmptyState": "Няма открити USB устройства. Включете едно и опитайте отново.",
+  "usbScreenEmptyStateAuto": "Няма открити USB устройства. Включете едно и то ще се появи тук.",
   "usbErrorPermissionDenied": "Не беше разрешено достъпът през USB.",
   "usbErrorDeviceMissing": "Избраното USB устройство вече не е налично.",
   "usbErrorInvalidPort": "Изберете валитно USB устройство.",
@@ -2189,18 +2188,9 @@
       }
     }
   },
-  "usbStatus_connecting": "Свързване към USB устройство...",
   "usbConnectionFailed": "Неуспешно свързване през USB: {error}",
-  "usbStatus_notConnected": "Изберете USB устройство",
   "usbStatus_searching": "Търсене на USB устройства...",
   "usbErrorConnectTimedOut": "Връзката прекъсна. Уверете се, че устройството има софтуер за USB връзка.",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2209,13 +2199,10 @@
     }
   },
   "tcpHostHint": "192.168.40.10",
-  "tcpScreenTitle": "Свържете се чрез TCP",
   "connectionChoiceTcpLabel": "TCP",
   "tcpHostLabel": "IP адрес",
   "tcpPortLabel": "Пристанище",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Въведете крайната точка и свържете се.",
-  "tcpStatus_connectingTo": "Свързване към {endpoint}...",
   "tcpErrorHostRequired": "Необходим е IP адрес.",
   "tcpErrorPortInvalid": "Портът трябва да бъде между 1 и 65535.",
   "tcpErrorUnsupported": "Транспортът чрез TCP не се поддържа на тази платформа.",
@@ -3412,7 +3399,6 @@
     }
   },
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Свързан с",
   "usbChooseSerialPort": "Изберете сериен порт",
   "neighbors_durationSeconds": "{seconds}с",

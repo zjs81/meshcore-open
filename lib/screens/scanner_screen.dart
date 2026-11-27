@@ -8,21 +8,16 @@ import 'package:provider/provider.dart';
 import '../connector/meshcore_connector.dart';
 import '../l10n/l10n.dart';
 import '../services/linux_ble_error_classifier.dart';
-import '../theme/mesh_theme.dart';
 import '../utils/app_logger.dart';
-import '../widgets/adaptive_app_bar_title.dart';
 import '../widgets/device_tile.dart';
 import '../widgets/empty_state.dart';
-import '../widgets/get_node_banner.dart';
 import '../widgets/mesh_ui.dart';
 import '../widgets/settings_reveal.dart';
 import '../helpers/snack_bar_builder.dart';
-import '../review_mode/review_mode_entry.dart';
 import '../utils/main_navigation.dart';
-import 'tcp_screen.dart';
-import 'usb_screen.dart';
 
-/// Screen for scanning and connecting to MeshCore devices
+/// Bluetooth tab of the connect screen: scans for and connects to MeshCore
+/// devices.
 class ScannerScreen extends StatefulWidget {
   const ScannerScreen({super.key});
 
@@ -50,8 +45,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
       if (_connector.state == MeshCoreConnectionState.disconnected) {
         _changedNavigation = false;
       } else if (_connector.state == MeshCoreConnectionState.connected &&
-          // TCP lands here after an auto-reconnect: a dropped link popped
-          // back to this screen, and the TCP screen is no longer on the stack.
+          // A TCP auto-reconnect can finish while this tab is shown.
           (_connector.activeTransport == MeshCoreTransportType.bluetooth ||
               _connector.activeTransport == MeshCoreTransportType.tcp) &&
           isCurrentRoute &&
@@ -97,55 +91,20 @@ class _ScannerScreenState extends State<ScannerScreen> {
         unawaited(_connector.disconnect(manual: true));
       });
     }
+    // A scan would keep the other tabs from connecting until it times out.
+    if (state == MeshCoreConnectionState.scanning) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_connector.state == MeshCoreConnectionState.scanning) {
+          unawaited(_connector.stopScan());
+        }
+      });
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final canPop = Navigator.of(context).canPop();
     return Scaffold(
-      appBar: AppBar(
-        leading: canPop
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  appLogger.info('Back button pressed', tag: 'ScannerScreen');
-                  Navigator.of(context).maybePop();
-                },
-              )
-            : null,
-        title: ReviewModeLongPress(
-          child: AdaptiveAppBarTitle(context.l10n.scanner_title),
-        ),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        actions: [
-          if (PlatformInfo.supportsUsbSerial)
-            IconButton(
-              icon: const Icon(Icons.usb),
-              tooltip: context.l10n.connectionChoiceUsbLabel,
-              onPressed: () {
-                appLogger.info(
-                  'USB selected, opening UsbScreen',
-                  tag: 'ScannerScreen',
-                );
-                Navigator.of(
-                  context,
-                ).push(MaterialPageRoute(builder: (_) => const UsbScreen()));
-              },
-            ),
-          if (!PlatformInfo.isWeb)
-            IconButton(
-              icon: const Icon(Icons.lan),
-              tooltip: context.l10n.connectionChoiceTcpLabel,
-              onPressed: () {
-                Navigator.of(
-                  context,
-                ).push(MaterialPageRoute(builder: (_) => const TcpScreen()));
-              },
-            ),
-        ],
-      ),
       body: SafeArea(
         top: false,
         child: Consumer<MeshCoreConnector>(
@@ -161,9 +120,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   ),
                 ),
 
-                // Connection status header
-                _ConnectionStatusHeader(connector: connector),
-
                 // Device list
                 Expanded(child: _buildDeviceList(context, connector)),
               ],
@@ -171,7 +127,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
           },
         ),
       ),
-      bottomNavigationBar: const GetNodeBanner(),
       floatingActionButton: Consumer<MeshCoreConnector>(
         builder: (context, connector, child) {
           final isScanning =
@@ -261,10 +216,16 @@ class _ScannerScreenState extends State<ScannerScreen> {
       itemBuilder: (context, index) {
         final result = connector.scanResults[index];
         final deviceId = result.device.remoteId.toString();
+        final name = result.device.platformName.isNotEmpty
+            ? result.device.platformName
+            : result.advertisementData.advName;
         return ListEntrance(
           index: index,
           child: DeviceTile(
-            scanResult: result,
+            name: name.isNotEmpty ? name : context.l10n.common_unknownDevice,
+            id: deviceId,
+            icon: Icons.router,
+            rssi: result.rssi,
             isConnecting: isConnecting && _connectingDeviceId == deviceId,
             onTap: isConnecting
                 ? null
@@ -461,59 +422,6 @@ class _BluetoothOffBanner extends StatelessWidget {
             ),
           ],
         ],
-      ),
-    );
-  }
-}
-
-/// Connection status header with AnimatedSwitcher between states.
-class _ConnectionStatusHeader extends StatelessWidget {
-  final MeshCoreConnector connector;
-
-  const _ConnectionStatusHeader({required this.connector});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final scheme = Theme.of(context).colorScheme;
-
-    final (String label, Color color, bool pulse) = switch (connector.state) {
-      MeshCoreConnectionState.scanning => (
-        l10n.scanner_scanning,
-        MeshPalette.blue,
-        true,
-      ),
-      MeshCoreConnectionState.connecting => (
-        l10n.scanner_connecting,
-        MeshPalette.warn,
-        true,
-      ),
-      MeshCoreConnectionState.connected => (
-        l10n.scanner_connectedTo(connector.deviceDisplayName),
-        MeshPalette.signal,
-        false,
-      ),
-      MeshCoreConnectionState.disconnecting => (
-        l10n.scanner_disconnecting,
-        MeshPalette.warn,
-        true,
-      ),
-      MeshCoreConnectionState.disconnected => (
-        l10n.scanner_notConnected,
-        scheme.onSurfaceVariant,
-        false,
-      ),
-    };
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: Align(
-          key: ValueKey(connector.state),
-          alignment: Alignment.centerLeft,
-          child: StatusChip(label: label, color: color, pulse: pulse),
-        ),
       ),
     );
   }

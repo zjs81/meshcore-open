@@ -179,9 +179,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get common_interval => 'Interval';
 
   @override
-  String get scanner_title => 'MeshCore Open';
-
-  @override
   String get connectionChoiceUsbLabel => 'USB';
 
   @override
@@ -189,9 +186,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectionChoiceTcpLabel => 'TCP';
-
-  @override
-  String get tcpScreenTitle => 'Connect over TCP';
 
   @override
   String get tcpHostLabel => 'Endpoint';
@@ -204,14 +198,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tcpPortHint => '5000';
-
-  @override
-  String get tcpStatus_notConnected => 'Enter endpoint and connect';
-
-  @override
-  String tcpStatus_connectingTo(String endpoint) {
-    return 'Connecting to $endpoint...';
-  }
 
   @override
   String get tcpErrorHostRequired => 'Host is required.';
@@ -232,9 +218,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get usbScreenTitle => 'Connect over USB';
-
-  @override
   String get usbScreenSubtitle =>
       'Choose a detected serial device and connect directly to your MeshCore node.';
 
@@ -248,6 +231,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get usbScreenEmptyState =>
       'No USB devices found. Plug one in and refresh.';
+
+  @override
+  String get usbScreenEmptyStateAuto =>
+      'No USB devices found. Plug one in and it shows up here.';
 
   @override
   String get usbErrorPermissionDenied => 'USB permission was denied.';
@@ -292,12 +279,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get usbFallbackDeviceName => 'Web Serial Device';
-
-  @override
-  String get usbStatus_notConnected => 'Select a USB device';
-
-  @override
-  String get usbStatus_connecting => 'Connecting to USB device...';
 
   @override
   String get usbStatus_searching => 'Searching for USB devices...';
@@ -7271,9 +7252,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String community_shortId(String id) {
     return 'ID: $id…';
   }
-
-  @override
-  String get tcpSectionTitle => 'TCP / IP';
 
   @override
   String get tcpConnectedToHeader => 'Connected to';

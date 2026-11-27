@@ -54,7 +54,6 @@
       }
     }
   },
-  "scanner_title": "MeshCore – wersja open source",
   "scanner_scanning": "Skanowanie urządzeń...",
   "scanner_connecting": "Łączenie...",
   "scanner_disconnecting": "Odłączanie...",
@@ -2202,12 +2201,12 @@
   "map_guessedLocation": "Przypuszczalna lokalizacja",
   "map_showGuessedLocations": "Pokaż przypuszczalne lokalizacje węzłów",
   "usbScreenSubtitle": "Wybierz wykryte urządzenie szeregowe i połącz się bezpośrednio ze swoim węzłem MeshCore.",
-  "usbScreenTitle": "Połącz przez USB",
   "connectionChoiceUsbLabel": "USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "usbScreenStatus": "Wybierz urządzenie USB",
   "usbScreenNote": "Port szeregowy USB jest aktywny na urządzeniach z systemem Android i platformach stacjonarnych, które go obsługują.",
   "usbScreenEmptyState": "Nie znaleziono żadnych urządzeń USB. Podłącz jedno i zaktualizuj.",
+  "usbScreenEmptyStateAuto": "Nie znaleziono żadnych urządzeń USB. Podłącz jedno, a pojawi się tutaj.",
   "usbErrorPermissionDenied": "Zostało odrzucone żądanie dostępu przez USB.",
   "usbErrorDeviceMissing": "Wybór urządzenia USB już nie jest dostępny.",
   "usbErrorInvalidPort": "Wybierz prawidłowe urządzenie USB.",
@@ -2228,17 +2227,8 @@
     }
   },
   "usbStatus_searching": "Wyszukiwanie urządzeń USB...",
-  "usbStatus_connecting": "Połączenie z urządzeniem USB...",
-  "usbStatus_notConnected": "Wybierz urządzenie USB",
   "usbConnectionFailed": "Błąd połączenia USB: {error}",
   "usbErrorConnectTimedOut": "Połączenie nie zostało nawiązane. Upewnij się, że urządzenie posiada oprogramowanie \"USB Companion\".",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2248,12 +2238,9 @@
   },
   "connectionChoiceTcpLabel": "TCP",
   "tcpHostHint": "192.168.40.10",
-  "tcpScreenTitle": "Połącz się za pomocą protokołu TCP",
   "tcpHostLabel": "Adres IP",
   "tcpPortLabel": "Port",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Wprowadź adres URL i połącz",
-  "tcpStatus_connectingTo": "Połączenie z {endpoint}...",
   "tcpErrorHostRequired": "Wymagana jest adresa IP.",
   "tcpErrorPortInvalid": "Numer portu musi mieścić się w zakresie od 1 do 65535.",
   "tcpErrorUnsupported": "Transport TCP nie jest obsługiwany na tej platformie.",
@@ -3445,7 +3432,6 @@
     }
   },
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Połączono z",
   "usbChooseSerialPort": "Wybierz port szeregowy",
   "neighbors_durationSeconds": "{seconds} s",

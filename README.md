@@ -348,7 +348,8 @@ lib/
 │   ├── meshcore_protocol.dart   # Protocol definitions & frame parsing
 │   └── meshcore_uuids.dart      # NUS UUIDs; reference name prefixes (not filters)
 ├── screens/
-│   ├── scanner_screen.dart      # Device scanning (home screen)
+│   ├── connect_screen.dart      # Connect a radio: Bluetooth, USB and TCP tabs (home screen)
+│   ├── scanner_screen.dart      # Bluetooth tab: device scanning
 │   ├── contacts_screen.dart     # Contact list
 │   ├── chat_screen.dart         # Direct messaging
 │   ├── channels_screen.dart     # Public channels

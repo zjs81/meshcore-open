@@ -55,7 +55,6 @@
       }
     }
   },
-  "scanner_title": "连接设备",
   "scanner_scanning": "正在搜索设备...",
   "scanner_connecting": "正在连接...",
   "scanner_disconnecting": "断开连接...",
@@ -2093,12 +2092,12 @@
   "map_showGuessedLocations": "显示猜测的节点位置",
   "map_guessedLocation": "猜测的位置",
   "connectionChoiceUsbLabel": "USB",
-  "usbScreenTitle": "通过USB连接",
   "usbScreenSubtitle": "选择已检测到的串行设备，并直接连接到您的 MeshCore 节点。",
   "connectionChoiceBluetoothLabel": "蓝牙",
   "usbScreenStatus": "选择一个 USB 设备",
   "usbScreenNote": "USB 串行接口在支持的 Android 设备和桌面平台上处于活动状态。",
   "usbScreenEmptyState": "未找到任何 USB 设备。请插入一个，然后刷新。",
+  "usbScreenEmptyStateAuto": "未找到任何 USB 设备。请插入一个，它会显示在这里。",
   "usbErrorPermissionDenied": "拒绝了USB权限。",
   "usbErrorDeviceMissing": "所选的USB设备已不再可用。",
   "usbErrorInvalidPort": "选择一个有效的USB设备。",
@@ -2119,17 +2118,8 @@
     }
   },
   "usbStatus_searching": "正在搜索 USB 设备...",
-  "usbStatus_connecting": "连接USB设备...",
-  "usbStatus_notConnected": "选择一个 USB 设备",
   "usbConnectionFailed": "USB 连接失败：{error}",
   "usbErrorConnectTimedOut": "连接超时。请确保设备已安装 USB 伴侣固件。",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2139,12 +2129,9 @@
   },
   "tcpHostLabel": "IP地址",
   "tcpHostHint": "192.168.40.10",
-  "tcpScreenTitle": "通过 TCP 连接",
   "connectionChoiceTcpLabel": "TCP",
   "tcpPortLabel": "端口",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "输入目标地址，然后连接",
-  "tcpStatus_connectingTo": "连接到 {endpoint}...",
   "tcpErrorHostRequired": "需要提供IP地址。",
   "tcpErrorPortInvalid": "端口号必须在 1 到 65535 之间。",
   "tcpErrorUnsupported": "此平台不支持 TCP 传输。",
@@ -3295,7 +3282,6 @@
   "contacts_advertFailed": "无法发送广播",
   "contacts_manageGroups": "管理分组",
   "community_shortId": "ID:{id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "已连接到",
   "usbChooseSerialPort": "选择串口",
   "neighbors_durationSeconds": "{seconds}秒",

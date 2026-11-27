@@ -180,9 +180,6 @@ class AppLocalizationsHu extends AppLocalizations {
   String get common_interval => 'Intervallum';
 
   @override
-  String get scanner_title => 'MeshCore Open';
-
-  @override
   String get connectionChoiceUsbLabel => 'USB';
 
   @override
@@ -190,9 +187,6 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get connectionChoiceTcpLabel => 'TCP';
-
-  @override
-  String get tcpScreenTitle => 'Csatlakozzon TCP-n keresztül';
 
   @override
   String get tcpHostLabel => 'Végpont';
@@ -205,14 +199,6 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get tcpPortHint => '5000';
-
-  @override
-  String get tcpStatus_notConnected => 'Adja meg a végpontot, és csatlakozzon';
-
-  @override
-  String tcpStatus_connectingTo(String endpoint) {
-    return 'Csatlakozás a következőhöz: $endpoint...';
-  }
 
   @override
   String get tcpErrorHostRequired => 'Házigazda szükséges.';
@@ -233,9 +219,6 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get usbScreenTitle => 'Csatlakoztassa USB-n keresztül';
-
-  @override
   String get usbScreenSubtitle =>
       'Válasszon egy észlelt soros eszközt, és csatlakozzon közvetlenül a MeshCore csomóponthoz.';
 
@@ -249,6 +232,10 @@ class AppLocalizationsHu extends AppLocalizations {
   @override
   String get usbScreenEmptyState =>
       'Nem található USB-eszköz. Csatlakoztasson egyet, és frissítse.';
+
+  @override
+  String get usbScreenEmptyStateAuto =>
+      'Nem található USB-eszköz. Csatlakoztasson egyet, és megjelenik itt.';
 
   @override
   String get usbErrorPermissionDenied => 'Az USB-engedély megtagadva.';
@@ -294,12 +281,6 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get usbFallbackDeviceName => 'Web soros eszköz';
-
-  @override
-  String get usbStatus_notConnected => 'Válasszon ki egy USB-eszközt';
-
-  @override
-  String get usbStatus_connecting => 'Csatlakozás USB-eszközhöz...';
 
   @override
   String get usbStatus_searching => 'USB-eszközök keresése...';
@@ -7361,9 +7342,6 @@ class AppLocalizationsHu extends AppLocalizations {
   String community_shortId(String id) {
     return 'ID: $id…';
   }
-
-  @override
-  String get tcpSectionTitle => 'TCP / IP';
 
   @override
   String get tcpConnectedToHeader => 'Csatlakozva:';

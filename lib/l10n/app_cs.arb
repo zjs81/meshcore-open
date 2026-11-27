@@ -90,24 +90,13 @@
   },
   "common_autoRefresh": "Automatické obnovení",
   "common_interval": "Interval",
-  "scanner_title": "MeshCore Open",
   "connectionChoiceUsbLabel": "USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "connectionChoiceTcpLabel": "TCP",
-  "tcpScreenTitle": "Připojení přes TCP",
   "tcpHostLabel": "Koncový bod",
   "tcpHostHint": "192.168.40.10 / example.com",
   "tcpPortLabel": "Port",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Zadejte koncový bod a připojte se",
-  "tcpStatus_connectingTo": "Připojování k {endpoint}...",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "tcpErrorHostRequired": "Hostitel je povinný.",
   "tcpErrorPortInvalid": "Port musí být mezi 1 a 65535.",
   "tcpErrorUnsupported": "Přenos přes TCP není na této platformě podporován.",
@@ -120,11 +109,11 @@
       }
     }
   },
-  "usbScreenTitle": "Připojení přes USB",
   "usbScreenSubtitle": "Vyberte rozpoznané sériové zařízení a připojte se přímo ke svému uzlu MeshCore.",
   "usbScreenStatus": "Vyberte zařízení USB",
   "usbScreenNote": "Sériové USB funguje na podporovaných zařízeních Android a na desktopových platformách.",
   "usbScreenEmptyState": "Nebyla nalezena žádná zařízení USB. Připojte nějaké a obnovte.",
+  "usbScreenEmptyStateAuto": "Nebyla nalezena žádná zařízení USB. Připojte nějaké a zobrazí se zde.",
   "usbErrorPermissionDenied": "Oprávnění k USB bylo odepřeno.",
   "usbErrorDeviceMissing": "Vybrané zařízení USB už není dostupné.",
   "usbErrorInvalidPort": "Vyberte platné zařízení USB.",
@@ -138,8 +127,6 @@
   "usbErrorPortClosed": "Připojení USB není otevřené.",
   "usbErrorConnectTimedOut": "Časový limit připojení vypršel. Ujistěte se, že zařízení má firmware USB Companion.",
   "usbFallbackDeviceName": "Zařízení Web Serial",
-  "usbStatus_notConnected": "Vyberte zařízení USB",
-  "usbStatus_connecting": "Připojování k zařízení USB...",
   "usbStatus_searching": "Hledání zařízení USB...",
   "usbConnectionFailed": "Připojení USB se nezdařilo: {error}",
   "@usbConnectionFailed": {
@@ -4016,7 +4003,6 @@
       }
     }
   },
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Připojeno k",
   "usbChooseSerialPort": "Vyberte sériový port",
   "neighbors_durationSeconds": "{seconds} s",

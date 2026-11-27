@@ -179,9 +179,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String get common_interval => 'Intervall';
 
   @override
-  String get scanner_title => 'MeshCore – Öppen version';
-
-  @override
   String get connectionChoiceUsbLabel => 'USB';
 
   @override
@@ -189,9 +186,6 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get connectionChoiceTcpLabel => 'TCP';
-
-  @override
-  String get tcpScreenTitle => 'Anslut via TCP';
 
   @override
   String get tcpHostLabel => 'IP-adress';
@@ -204,14 +198,6 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get tcpPortHint => '5000';
-
-  @override
-  String get tcpStatus_notConnected => 'Ange slutpunkt och anslut';
-
-  @override
-  String tcpStatus_connectingTo(String endpoint) {
-    return 'Anslutning till $endpoint...';
-  }
 
   @override
   String get tcpErrorHostRequired => 'IP-adress krävs.';
@@ -232,9 +218,6 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get usbScreenTitle => 'Anslut via USB';
-
-  @override
   String get usbScreenSubtitle =>
       'Välj en detekterad seriell enhet och anslut direkt till din MeshCore-nod.';
 
@@ -248,6 +231,10 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get usbScreenEmptyState =>
       'Inga USB-enheter hittades. Anslut en och uppdatera.';
+
+  @override
+  String get usbScreenEmptyStateAuto =>
+      'Inga USB-enheter hittades. Anslut en så visas den här.';
 
   @override
   String get usbErrorPermissionDenied => 'Tillgången via USB nekas.';
@@ -293,12 +280,6 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get usbFallbackDeviceName => 'Web Serial-enhet';
-
-  @override
-  String get usbStatus_notConnected => 'Välj en USB-enhet';
-
-  @override
-  String get usbStatus_connecting => 'Anslutning till USB-enhet...';
 
   @override
   String get usbStatus_searching => 'Söker efter USB-enheter...';
@@ -7310,9 +7291,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String community_shortId(String id) {
     return 'ID: $id…';
   }
-
-  @override
-  String get tcpSectionTitle => 'TCP / IP';
 
   @override
   String get tcpConnectedToHeader => 'Ansluten till';

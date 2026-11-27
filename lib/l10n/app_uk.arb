@@ -55,7 +55,6 @@
       }
     }
   },
-  "scanner_title": "MeshCore: Відкритий доступ",
   "scanner_scanning": "Пошук пристроїв...",
   "scanner_connecting": "Підключення...",
   "scanner_disconnecting": "Відключення...",
@@ -2167,12 +2166,12 @@
   "map_showGuessedLocations": "Показати геопозиції передбачених вузлів",
   "map_guessedLocation": "Передбачена геопозиція",
   "usbScreenSubtitle": "Виберіть виявлений USB-пристрій і підключіть його безпосередньо до вашого вузла MeshCore.",
-  "usbScreenTitle": "Підключити через USB",
   "connectionChoiceBluetoothLabel": "Bluetooth",
   "connectionChoiceUsbLabel": "USB",
   "usbScreenStatus": "Виберіть пристрій USB",
   "usbScreenNote": "USB-серіальний інтерфейс активний на підтримуваних пристроях на базі Android та на десктопних платформах.",
   "usbScreenEmptyState": "Не знайдено жодних пристроїв USB. Підключіть один і перезавантажте.",
+  "usbScreenEmptyStateAuto": "Не знайдено жодних пристроїв USB. Підключіть один, і він з'явиться тут.",
   "usbErrorPermissionDenied": "Було відмовлено у наданні дозволу на використання USB.",
   "usbErrorDeviceMissing": "Вибране USB-пристрій більше недоступне.",
   "usbErrorInvalidPort": "Виберіть дійсний USB-пристрій.",
@@ -2193,17 +2192,8 @@
     }
   },
   "usbStatus_searching": "Пошук пристроїв USB...",
-  "usbStatus_notConnected": "Виберіть пристрій USB",
   "usbConnectionFailed": "Не вдалось встановити з'єднання через USB: {error}",
-  "usbStatus_connecting": "Підключення до USB-пристрою...",
   "usbErrorConnectTimedOut": "З'єднання не вдалось встановити. Переконайтесь, що пристрій має встановлене програмне забезпечення USB Companion.",
-  "@tcpStatus_connectingTo": {
-    "placeholders": {
-      "endpoint": {
-        "type": "String"
-      }
-    }
-  },
   "@tcpConnectionFailed": {
     "placeholders": {
       "error": {
@@ -2214,11 +2204,8 @@
   "connectionChoiceTcpLabel": "TCP",
   "tcpHostHint": "192.168.40.10",
   "tcpHostLabel": "IP-адреса",
-  "tcpScreenTitle": "Підключитись через TCP",
   "tcpPortLabel": "Порт",
   "tcpPortHint": "5000",
-  "tcpStatus_notConnected": "Введіть кінцеву точку та підключіться",
-  "tcpStatus_connectingTo": "Підключення до {endpoint}...",
   "tcpErrorHostRequired": "Необхідно вказати IP-адресу.",
   "tcpErrorPortInvalid": "Порт має бути в межах від 1 до 65535.",
   "tcpErrorUnsupported": "Транспорт TCP не підтримується на цій платформі.",
@@ -3392,7 +3379,6 @@
     }
   },
   "community_shortId": "ID: {id}…",
-  "tcpSectionTitle": "TCP / IP",
   "tcpConnectedToHeader": "Підключено до",
   "usbChooseSerialPort": "Виберіть послідовний порт",
   "neighbors_durationSeconds": "{seconds}с",

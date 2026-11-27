@@ -52,6 +52,7 @@ import 'package:meshcore_open/screens/repeater_cli_screen.dart';
 import 'package:meshcore_open/screens/repeater_hub_screen.dart';
 import 'package:meshcore_open/screens/repeater_settings_screen.dart';
 import 'package:meshcore_open/screens/repeater_status_screen.dart';
+import 'package:meshcore_open/screens/connect_screen.dart';
 import 'package:meshcore_open/screens/scanner_screen.dart';
 import 'package:meshcore_open/screens/settings_screen.dart';
 import 'package:meshcore_open/screens/tcp_screen.dart';
@@ -244,6 +245,7 @@ final Map<String, _ScreenBuilder> _screens = {
   'Contacts add page': (_) => const ContactsScreen(),
   'AddContact': (_) => const AddContactScreen(),
   'Routing sheet': (c) => ChatScreen(contact: _contactOfType(c, advTypeChat)),
+  'Connect': (_) => const ConnectScreen(),
   'Scanner': (_) => const ScannerScreen(),
   'Tcp': (_) => const TcpScreen(),
   'Usb': (_) => const UsbScreen(),
@@ -333,7 +335,11 @@ void main() {
       );
 
   setUpAll(() async {
-    SharedPreferences.setMockInitialValues({});
+    // A cached banner record, so the connect screen shows its banner.
+    SharedPreferences.setMockInitialValues({
+      'node_banner_txt': 'v=1;on=1;url=https://example.com/node',
+      'node_banner_expires_ms': DateTime(2100).millisecondsSinceEpoch,
+    });
     PrefsManager.reset();
     await PrefsManager.initialize();
   });

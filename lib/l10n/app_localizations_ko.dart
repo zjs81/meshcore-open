@@ -176,9 +176,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get common_interval => '간격';
 
   @override
-  String get scanner_title => 'MeshCore Open';
-
-  @override
   String get connectionChoiceUsbLabel => 'USB';
 
   @override
@@ -186,9 +183,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get connectionChoiceTcpLabel => 'TCP';
-
-  @override
-  String get tcpScreenTitle => 'TCP를 통해 연결';
 
   @override
   String get tcpHostLabel => 'IP 주소';
@@ -201,14 +195,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get tcpPortHint => '5000';
-
-  @override
-  String get tcpStatus_notConnected => '엔드포인트를 입력한 뒤 연결하세요.';
-
-  @override
-  String tcpStatus_connectingTo(String endpoint) {
-    return '$endpoint에 연결 중...';
-  }
 
   @override
   String get tcpErrorHostRequired => 'IP 주소가 필요합니다.';
@@ -228,9 +214,6 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get usbScreenTitle => 'USB를 통해 연결';
-
-  @override
   String get usbScreenSubtitle => '감지된 시리얼 장치를 선택하고 MeshCore 노드에 직접 연결하십시오.';
 
   @override
@@ -242,6 +225,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get usbScreenEmptyState => 'USB 장치가 없습니다. 하나 연결한 뒤 새로고침하세요.';
+
+  @override
+  String get usbScreenEmptyStateAuto => 'USB 장치가 없습니다. 하나 연결하면 여기에 표시됩니다.';
 
   @override
   String get usbErrorPermissionDenied => 'USB 접근 권한이 거부되었습니다.';
@@ -282,12 +268,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get usbFallbackDeviceName => '웹 시리얼 장치';
-
-  @override
-  String get usbStatus_notConnected => 'USB 장치를 선택합니다.';
-
-  @override
-  String get usbStatus_connecting => 'USB 장치에 연결 중...';
 
   @override
   String get usbStatus_searching => 'USB 장치 검색 중...';
@@ -7050,9 +7030,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String community_shortId(String id) {
     return 'ID: $id…';
   }
-
-  @override
-  String get tcpSectionTitle => 'TCP / IP';
 
   @override
   String get tcpConnectedToHeader => '연결 대상';
