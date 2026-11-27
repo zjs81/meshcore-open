@@ -197,9 +197,9 @@ Controls character substitution profiles used to render Cyrillic text in Latin c
 
 ---
 
-### Message filter
+### Message Filter
 
-On the Settings screen, below App Settings, **Message filter** opens a page to hide spam and repeated channel messages: a master switch, display mode, your own rules, automatic checks, and learning. See [Message Filter](message-filter.md).
+On the Settings screen, below App Settings, **Message Filter** opens a page to hide spam and repeated channel messages: a master switch, a Hide Completely switch, the Filtered Messages list, a row to your own rules (on their own page), automatic checks, and learning. See [Message Filter](message-filter.md).
 
 ## Actions
 

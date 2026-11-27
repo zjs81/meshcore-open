@@ -595,6 +595,7 @@
   "login_failedMessage": "Не удалось войти. Либо пароль неверен, либо репитер недоступен.",
   "common_reload": "Обновить",
   "common_clear": "Очистить",
+  "common_reset": "Сбросить",
   "path_currentPath": "Текущий маршрут: {path}",
   "path_usingHopsPath": "Используется маршрут из {count} {count, plural, one{хоп} few{хопа} many{хопов} other{хопов}}",
   "path_enterCustomPath": "Введите маршрут вручную",
@@ -2835,13 +2836,18 @@
   "messageFilter_title": "Фильтр сообщений",
   "messageFilter_settingsSubtitle": "Скрывать спам и повторяющиеся сообщения",
   "messageFilter_enabled": "Фильтровать сообщения",
-  "messageFilter_enabledSubtitle": "Действует для сообщений в каналах",
+  "messageFilter_filteringSection": "Фильтрация",
+  "messageFilter_enabledSubtitle": "Действует во всех каналах, если не отключено в меню канала",
+  "messageFilter_info": "Скрывает спам и повторяющиеся сообщения в каналах. Работает только в приложении и не влияет на ваше радио-компаньон.",
   "messageFilter_displayTitle": "Отфильтрованные сообщения",
-  "messageFilter_displayPlaceholder": "Показывать небольшую заглушку",
   "messageFilter_displayHide": "Скрывать полностью",
-  "messageFilter_displayHideHelp": "Скрытые сообщения остаются в списке «Отфильтрованные сообщения».",
+  "messageFilter_displayHideSubtitle": "Скрывать отфильтрованные сообщения вместо показа заглушки",
   "messageFilter_rulesSection": "Ваши правила",
-  "messageFilter_rulesEmpty": "Правил пока нет. Добавьте слово, фразу или имя отправителя, чтобы скрывать подходящие сообщения.",
+  "messageFilter_rulesCount": "Правила ({count})",
+  "messageFilter_rulesTitle": "Правила",
+  "messageFilter_rulesHint": "Скрывать сообщения по слову, фразе или имени отправителя",
+  "messageFilter_rulesEmptyTitle": "Правил пока нет",
+  "messageFilter_rulesEmpty": "Добавьте слово, фразу или имя отправителя, чтобы скрывать подходящие сообщения",
   "messageFilter_addRule": "Добавить правило",
   "messageFilter_editRule": "Изменить правило",
   "messageFilter_rulePattern": "Слово, фраза или имя",
@@ -2856,19 +2862,53 @@
   "messageFilter_ruleMatchExact": "Точное",
   "messageFilter_ruleDeleted": "Правило удалено",
   "messageFilter_ruleSaved": "Правило сохранено",
+  "messageFilter_rulesDeleted": "{count, plural, one{{count} правило удалено} few{{count} правила удалено} many{{count} правил удалено} other{{count} правила удалено}}",
+  "@messageFilter_rulesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "Удалить правила?",
+  "messageFilter_deleteRulesConfirm": "{count, plural, one{Удалить {count} правило из фильтра сообщений?} few{Удалить {count} правила из фильтра сообщений?} many{Удалить {count} правил из фильтра сообщений?} other{Удалить {count} правила из фильтра сообщений?}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, one{{count} правило включено} few{{count} правила включено} many{{count} правил включено} other{{count} правила включено}}",
+  "@messageFilter_rulesTurnedOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, one{{count} правило выключено} few{{count} правила выключено} many{{count} правил выключено} other{{count} правила выключено}}",
+  "@messageFilter_rulesTurnedOff": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Поиск правил",
+  "messageFilter_rulesNoResults": "Подходящих правил нет",
+  "messageFilter_selectRules": "Выбрать правила",
+  "messageFilter_turnOn": "Включить",
+  "messageFilter_turnOff": "Выключить",
   "messageFilter_automaticSection": "Автоматически",
   "messageFilter_duplicates": "Повторяющиеся сообщения",
-  "messageFilter_duplicatesSubtitle": "Одно и то же сообщение, отправленное снова или несколькими отправителями",
-  "messageFilter_repeatSends": "Отправка, считающаяся повтором",
-  "messageFilter_repeatSendsSubtitle": "Скрывать сообщение, если один отправитель отправляет его повторно в течение 10 минут (число отправок: {count})",
+  "messageFilter_duplicatesSubtitle": "Отправлено повторно одним человеком или 3 и более людьми",
+  "messageFilter_repeatSendsCount": "Сколько отправок считать повтором: {count}",
+  "messageFilter_repeatSendsHint": "Один человек, каждая отправка в течение 10 минут после предыдущей",
   "messageFilter_repeatedCharacters": "Повторяющиеся символы",
   "messageFilter_repeatedCharactersSubtitle": "Длинные последовательности одного символа, например «aaaaaaaaaaaaaaaaaaaa»",
-  "messageFilter_learning": "Учиться на нажатиях «Спам»",
-  "messageFilter_learningSubtitle": "Примеров спама: {spam}, не спама: {notSpam}",
+  "messageFilter_learning": "Учиться на жалобах на спам",
+  "messageFilter_learningSubtitle": "Отмечено как спам: {spam}, как не спам: {notSpam}",
   "messageFilter_resetLearning": "Сбросить обучение",
-  "messageFilter_resetLearningConfirm": "Забыть всё, чему фильтр научился на ваших нажатиях «Спам» и «Не спам»? Ваши правила сохранятся.",
+  "messageFilter_resetLearningSubtitle": "Забыть всё, чему фильтр научился на сообщениях, отмеченных как спам, и недавних сообщениях",
+  "messageFilter_resetLearningNothing": "Фильтр пока ничему не научился",
+  "messageFilter_resetLearningConfirm": "Забыть всё, чему научился фильтр? Ваши правила сохранятся.",
   "messageFilter_filteredMessages": "Отфильтрованные сообщения ({count})",
-  "messageFilter_filteredMessagesEmpty": "Ничего не отфильтровано.",
+  "messageFilter_filteredMessagesSubtitle": "Список до 200 недавно отфильтрованных сообщений из всех каналов",
+  "messageFilter_filteredMessagesEmpty": "Нет отфильтрованных сообщений",
   "messageFilter_ghostSingle": "Скрытое сообщение · Нажмите, чтобы посмотреть",
   "messageFilter_ghostMany": "{count, plural, one{{count} скрытое сообщение · Нажмите, чтобы посмотреть} few{{count} скрытых сообщения · Нажмите, чтобы посмотреть} many{{count} скрытых сообщений · Нажмите, чтобы посмотреть} other{{count} скрытых сообщений · Нажмите, чтобы посмотреть}}",
   "messageFilter_ghostSingleExpanded": "Показано скрытое сообщение · Нажмите, чтобы скрыть",

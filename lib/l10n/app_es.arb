@@ -966,6 +966,7 @@
   "login_failedMessage": "El inicio de sesión ha fallado. La contraseña es incorrecta o el repetidor no está disponible.",
   "common_reload": "Recargar",
   "common_clear": "Borrar",
+  "common_reset": "Restablecer",
   "path_currentPath": "Ruta actual: {path}",
   "@path_currentPath": {
     "placeholders": {
@@ -3672,13 +3673,26 @@
   "messageFilter_title": "Filtro de mensajes",
   "messageFilter_settingsSubtitle": "Oculta mensajes de spam y repetidos",
   "messageFilter_enabled": "Filtrar mensajes",
-  "messageFilter_enabledSubtitle": "Se aplica a los mensajes de canal",
+  "messageFilter_filteringSection": "Filtrado",
+  "messageFilter_enabledSubtitle": "Se aplica a todos los canales salvo que se desactive en su menú",
+  "messageFilter_info": "Oculta el spam y los mensajes repetidos en los canales. Funciona solo en la app y no afecta a tu radio Companion.",
   "messageFilter_displayTitle": "Mensajes filtrados",
-  "messageFilter_displayPlaceholder": "Mostrar un aviso pequeño",
   "messageFilter_displayHide": "Ocultar por completo",
-  "messageFilter_displayHideHelp": "Los mensajes ocultos permanecen en la lista de Mensajes filtrados.",
+  "messageFilter_displayHideSubtitle": "Ocultar los mensajes filtrados en lugar de mostrar un aviso",
   "messageFilter_rulesSection": "Tus reglas",
-  "messageFilter_rulesEmpty": "Aún no hay reglas. Añade una palabra, frase o nombre de remitente para ocultar los mensajes que coincidan.",
+  "messageFilter_rulesCount": "Reglas ({count})",
+  "@messageFilter_rulesCount": {
+    "description": "Message filter: title of the row that opens the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTitle": "Reglas",
+  "messageFilter_rulesHint": "Ocultar mensajes por palabra, frase o nombre de remitente",
+  "messageFilter_rulesEmptyTitle": "Aún no hay reglas",
+  "messageFilter_rulesEmpty": "Añade una palabra, frase o nombre de remitente para ocultar los mensajes que coincidan",
   "messageFilter_addRule": "Añadir regla",
   "messageFilter_editRule": "Editar regla",
   "messageFilter_rulePattern": "Palabra, frase o nombre",
@@ -3693,16 +3707,48 @@
   "messageFilter_ruleMatchExact": "Exacta",
   "messageFilter_ruleDeleted": "Regla eliminada",
   "messageFilter_ruleSaved": "Regla guardada",
+  "messageFilter_rulesDeleted": "{count, plural, =1{1 regla eliminada} other{{count} reglas eliminadas}}",
+  "@messageFilter_rulesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "¿Eliminar reglas?",
+  "messageFilter_deleteRulesConfirm": "{count, plural, one{¿Eliminar 1 regla del filtro de mensajes?} other{¿Eliminar {count} reglas del filtro de mensajes?}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, =1{1 regla activada} other{{count} reglas activadas}}",
+  "@messageFilter_rulesTurnedOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, =1{1 regla desactivada} other{{count} reglas desactivadas}}",
+  "@messageFilter_rulesTurnedOff": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Buscar reglas",
+  "messageFilter_rulesNoResults": "No hay reglas coincidentes",
+  "messageFilter_selectRules": "Seleccionar reglas",
+  "messageFilter_turnOn": "Activar",
+  "messageFilter_turnOff": "Desactivar",
   "messageFilter_automaticSection": "Automático",
   "messageFilter_duplicates": "Mensajes repetidos",
-  "messageFilter_duplicatesSubtitle": "El mismo mensaje enviado de nuevo, o por varios remitentes",
-  "messageFilter_repeatSends": "Envíos para contar como repetición",
-  "messageFilter_repeatSendsSubtitle": "Ocultar un mensaje cuando el mismo remitente lo envía {count} veces en 10 minutos",
+  "messageFilter_duplicatesSubtitle": "Enviado de nuevo por una persona o por 3 o más personas",
+  "messageFilter_repeatSendsCount": "Envíos para contar como repetición: {count}",
+  "messageFilter_repeatSendsHint": "Una persona, cada envío a menos de 10 minutos del anterior",
   "messageFilter_repeatedCharacters": "Caracteres repetidos",
   "messageFilter_repeatedCharactersSubtitle": "Secuencias largas de un mismo carácter, como \"aaaaaaaaaaaaaaaaaaaa\"",
-  "messageFilter_learning": "Aprender de los toques en Spam",
-  "messageFilter_learningSubtitle": "{spam} ejemplos de spam y {notSpam} de no spam",
+  "messageFilter_learning": "Aprender de las denuncias de spam",
+  "messageFilter_learningSubtitle": "Marcados como spam: {spam}, como no spam: {notSpam}",
   "@messageFilter_learningSubtitle": {
+    "description": "Message filter: subtitle of Learn from Spam Taps; how many messages are currently marked as spam and as not spam",
     "placeholders": {
       "spam": {
         "type": "int"
@@ -3713,16 +3759,20 @@
     }
   },
   "messageFilter_resetLearning": "Restablecer aprendizaje",
-  "messageFilter_resetLearningConfirm": "¿Olvidar todo lo aprendido de tus toques en Spam y No es spam? Tus reglas se conservan.",
+  "messageFilter_resetLearningSubtitle": "Olvidar todo lo aprendido de los mensajes marcados como spam y de los mensajes recientes",
+  "messageFilter_resetLearningNothing": "Aún no se ha aprendido nada",
+  "messageFilter_resetLearningConfirm": "¿Olvidar todo lo que ha aprendido el filtro? Tus reglas se conservan.",
   "messageFilter_filteredMessages": "Mensajes filtrados ({count})",
   "@messageFilter_filteredMessages": {
+    "description": "Message filter: Filtered Messages ({count})",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "messageFilter_filteredMessagesEmpty": "No se ha filtrado nada.",
+  "messageFilter_filteredMessagesSubtitle": "Lista de hasta 200 mensajes filtrados recientes de todos los canales",
+  "messageFilter_filteredMessagesEmpty": "No hay mensajes filtrados",
   "messageFilter_ghostSingle": "Mensaje oculto · Toca para ver",
   "messageFilter_ghostMany": "{count, plural, one{{count} mensaje oculto · Toca para ver} other{{count} mensajes ocultos · Toca para ver}}",
   "@messageFilter_ghostMany": {

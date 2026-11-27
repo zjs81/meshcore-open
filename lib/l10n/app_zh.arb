@@ -972,6 +972,7 @@
   "login_failedMessage": "登录失败。可能是密码错误或无法连接到服务器。",
   "common_reload": "重新加载",
   "common_clear": "清除",
+  "common_reset": "重置",
   "path_currentPath": "当前路径：{path}",
   "@path_currentPath": {
     "placeholders": {
@@ -3543,13 +3544,26 @@
   "messageFilter_title": "消息过滤",
   "messageFilter_settingsSubtitle": "隐藏垃圾消息和重复消息",
   "messageFilter_enabled": "过滤消息",
-  "messageFilter_enabledSubtitle": "适用于频道消息",
+  "messageFilter_filteringSection": "过滤",
+  "messageFilter_enabledSubtitle": "适用于所有频道，除非在频道菜单中关闭",
+  "messageFilter_info": "隐藏频道中的垃圾消息和重复消息。仅在应用内运行，不会影响你的伴侣设备。",
   "messageFilter_displayTitle": "已过滤的消息",
-  "messageFilter_displayPlaceholder": "显示一个小占位提示",
   "messageFilter_displayHide": "完全隐藏",
-  "messageFilter_displayHideHelp": "被隐藏的消息仍会保留在“已过滤的消息”列表中。",
+  "messageFilter_displayHideSubtitle": "隐藏已过滤的消息，不显示占位提示",
   "messageFilter_rulesSection": "你的规则",
-  "messageFilter_rulesEmpty": "还没有规则。添加一个词语、短语或发送者名称，即可隐藏匹配的消息。",
+  "messageFilter_rulesCount": "规则（{count}）",
+  "@messageFilter_rulesCount": {
+    "description": "Message filter: title of the row that opens the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTitle": "规则",
+  "messageFilter_rulesHint": "按词语、短语或发送者名称隐藏消息",
+  "messageFilter_rulesEmptyTitle": "还没有规则",
+  "messageFilter_rulesEmpty": "添加一个词语、短语或发送者名称，即可隐藏匹配的消息",
   "messageFilter_addRule": "添加规则",
   "messageFilter_editRule": "编辑规则",
   "messageFilter_rulePattern": "词语、短语或名称",
@@ -3564,16 +3578,48 @@
   "messageFilter_ruleMatchExact": "完全相同",
   "messageFilter_ruleDeleted": "规则已删除",
   "messageFilter_ruleSaved": "规则已保存",
+  "messageFilter_rulesDeleted": "{count, plural, other{已删除 {count} 条规则}}",
+  "@messageFilter_rulesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "删除规则？",
+  "messageFilter_deleteRulesConfirm": "{count, plural, other{要从消息过滤中删除 {count} 条规则吗？}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, other{已开启 {count} 条规则}}",
+  "@messageFilter_rulesTurnedOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, other{已关闭 {count} 条规则}}",
+  "@messageFilter_rulesTurnedOff": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "搜索规则",
+  "messageFilter_rulesNoResults": "没有匹配的规则",
+  "messageFilter_selectRules": "选择规则",
+  "messageFilter_turnOn": "开启",
+  "messageFilter_turnOff": "关闭",
   "messageFilter_automaticSection": "自动",
   "messageFilter_duplicates": "重复消息",
-  "messageFilter_duplicatesSubtitle": "重复发送的相同消息，或多个发送者发送的相同消息",
-  "messageFilter_repeatSends": "视为重复的发送次数",
-  "messageFilter_repeatSendsSubtitle": "同一发送者在 10 分钟内发送同一消息 {count} 次时隐藏该消息",
+  "messageFilter_duplicatesSubtitle": "同一人再次发送，或 3 人及以上发送相同内容",
+  "messageFilter_repeatSendsCount": "视为重复的发送次数：{count}",
+  "messageFilter_repeatSendsHint": "同一人，每次发送都在上一次后 10 分钟内",
   "messageFilter_repeatedCharacters": "重复字符",
   "messageFilter_repeatedCharactersSubtitle": "同一字符的长串重复，例如“aaaaaaaaaaaaaaaaaaaa”",
-  "messageFilter_learning": "从“垃圾消息”点击中学习",
-  "messageFilter_learningSubtitle": "{spam} 个垃圾消息示例和 {notSpam} 个非垃圾消息示例",
+  "messageFilter_learning": "从垃圾消息举报中学习",
+  "messageFilter_learningSubtitle": "已标记垃圾消息 {spam} 条，非垃圾消息 {notSpam} 条",
   "@messageFilter_learningSubtitle": {
+    "description": "Message filter: subtitle of Learn from Spam Taps; how many messages are currently marked as spam and as not spam",
     "placeholders": {
       "spam": {
         "type": "int"
@@ -3584,16 +3630,20 @@
     }
   },
   "messageFilter_resetLearning": "重置学习",
-  "messageFilter_resetLearningConfirm": "要清除从你点击“垃圾消息”和“非垃圾消息”中学到的所有内容吗？你的规则会保留。",
+  "messageFilter_resetLearningSubtitle": "清除从你标记为垃圾消息的内容和最近消息中学到的所有内容",
+  "messageFilter_resetLearningNothing": "尚未学习任何内容",
+  "messageFilter_resetLearningConfirm": "要忘记过滤器学到的所有内容吗？你的规则会保留。",
   "messageFilter_filteredMessages": "已过滤的消息（{count}）",
   "@messageFilter_filteredMessages": {
+    "description": "Message filter: Filtered Messages ({count})",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "messageFilter_filteredMessagesEmpty": "没有被过滤的消息。",
+  "messageFilter_filteredMessagesSubtitle": "所有频道中最近已过滤消息的列表（最多 200 条）",
+  "messageFilter_filteredMessagesEmpty": "没有已过滤的消息",
   "messageFilter_ghostSingle": "已隐藏的消息 · 点击查看",
   "messageFilter_ghostMany": "{count, plural, other{{count} 条已隐藏的消息 · 点击查看}}",
   "@messageFilter_ghostMany": {

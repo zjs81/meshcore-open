@@ -184,6 +184,10 @@ void main() {
     final label = messageFilterReasonLabel(l10n, 'textRule', longPattern);
     expect(label, isNot(contains(longPattern)));
     expect(label, 'Filtered: matches "Buy cheap radios now at…"');
+    expect(
+      messageFilterReasonLabel(l10n, 'senderRule', longPattern, shorten: false),
+      'Filtered: sender "$longPattern"',
+    );
     expect(shortFilterDetail('a\n  b'), 'a b');
     for (final reason in FilterReason.values) {
       expect(

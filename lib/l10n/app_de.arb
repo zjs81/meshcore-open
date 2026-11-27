@@ -974,6 +974,7 @@
   "login_failedMessage": "Anmeldung fehlgeschlagen. Entweder ist das Passwort falsch oder der Repeater ist nicht erreichbar.",
   "common_reload": "Neu laden",
   "common_clear": "Leeren",
+  "common_reset": "Zurücksetzen",
   "path_currentPath": "Aktueller Pfad: {path}",
   "@path_currentPath": {
     "placeholders": {
@@ -3673,13 +3674,18 @@
   "messageFilter_title": "Nachrichtenfilter",
   "messageFilter_settingsSubtitle": "Spam und wiederholte Nachrichten ausblenden",
   "messageFilter_enabled": "Nachrichten filtern",
-  "messageFilter_enabledSubtitle": "Gilt für Kanalnachrichten",
+  "messageFilter_filteringSection": "Filterung",
+  "messageFilter_enabledSubtitle": "Gilt für alle Kanäle, sofern nicht im Kanalmenü deaktiviert",
+  "messageFilter_info": "Blendet Spam und wiederholte Nachrichten in Kanälen aus. Läuft nur in der App und wirkt sich nicht auf Ihr Companion-Funkgerät aus.",
   "messageFilter_displayTitle": "Gefilterte Nachrichten",
-  "messageFilter_displayPlaceholder": "Kleinen Platzhalter anzeigen",
   "messageFilter_displayHide": "Komplett ausblenden",
-  "messageFilter_displayHideHelp": "Ausgeblendete Nachrichten bleiben in der Liste „Gefilterte Nachrichten“.",
+  "messageFilter_displayHideSubtitle": "Gefilterte Nachrichten ausblenden, statt einen Platzhalter anzuzeigen",
   "messageFilter_rulesSection": "Ihre Regeln",
-  "messageFilter_rulesEmpty": "Noch keine Regeln. Fügen Sie ein Wort, eine Wortgruppe oder einen Absendernamen hinzu, um passende Nachrichten auszublenden.",
+  "messageFilter_rulesCount": "Regeln ({count})",
+  "messageFilter_rulesTitle": "Regeln",
+  "messageFilter_rulesHint": "Nachrichten nach Wort, Wortgruppe oder Absendername ausblenden",
+  "messageFilter_rulesEmptyTitle": "Noch keine Regeln",
+  "messageFilter_rulesEmpty": "Fügen Sie ein Wort, eine Wortgruppe oder einen Absendernamen hinzu, um passende Nachrichten auszublenden",
   "messageFilter_addRule": "Regel hinzufügen",
   "messageFilter_editRule": "Regel bearbeiten",
   "messageFilter_rulePattern": "Wort, Wortgruppe oder Name",
@@ -3694,19 +3700,53 @@
   "messageFilter_ruleMatchExact": "Genau",
   "messageFilter_ruleDeleted": "Regel gelöscht",
   "messageFilter_ruleSaved": "Regel gespeichert",
+  "messageFilter_rulesDeleted": "{count, plural, =1{1 Regel gelöscht} other{{count} Regeln gelöscht}}",
+  "@messageFilter_rulesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "Regeln löschen?",
+  "messageFilter_deleteRulesConfirm": "{count, plural, one{1 Regel aus dem Nachrichtenfilter löschen?} other{{count} Regeln aus dem Nachrichtenfilter löschen?}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, =1{1 Regel aktiviert} other{{count} Regeln aktiviert}}",
+  "@messageFilter_rulesTurnedOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, =1{1 Regel deaktiviert} other{{count} Regeln deaktiviert}}",
+  "@messageFilter_rulesTurnedOff": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Regeln durchsuchen",
+  "messageFilter_rulesNoResults": "Keine passenden Regeln",
+  "messageFilter_selectRules": "Regeln auswählen",
+  "messageFilter_turnOn": "Aktivieren",
+  "messageFilter_turnOff": "Deaktivieren",
   "messageFilter_automaticSection": "Automatisch",
   "messageFilter_duplicates": "Wiederholte Nachrichten",
-  "messageFilter_duplicatesSubtitle": "Dieselbe Nachricht erneut gesendet oder von mehreren Absendern",
-  "messageFilter_repeatSends": "Sendungen bis zur Wiederholung",
-  "messageFilter_repeatSendsSubtitle": "Nachricht ausblenden, wenn derselbe Absender sie innerhalb von 10 Minuten {count}-mal sendet",
+  "messageFilter_duplicatesSubtitle": "Erneut gesendet von einer Person oder von 3 oder mehr Personen",
+  "messageFilter_repeatSendsCount": "Als Wiederholung ab Sendung: {count}",
+  "messageFilter_repeatSendsHint": "Eine Person, jede Sendung innerhalb von 10 Minuten nach der vorherigen",
   "messageFilter_repeatedCharacters": "Wiederholte Zeichen",
   "messageFilter_repeatedCharactersSubtitle": "Lange Folgen desselben Zeichens, z. B. „aaaaaaaaaaaaaaaaaaaa“",
-  "messageFilter_learning": "Aus Spam-Markierungen lernen",
-  "messageFilter_learningSubtitle": "{spam} Spam- und {notSpam} Kein-Spam-Beispiele",
+  "messageFilter_learning": "Aus Spam-Meldungen lernen",
+  "messageFilter_learningSubtitle": "{spam} als Spam markiert, {notSpam} als Kein Spam",
   "messageFilter_resetLearning": "Gelerntes zurücksetzen",
-  "messageFilter_resetLearningConfirm": "Alles vergessen, was aus Ihren Markierungen „Spam“ und „Kein Spam“ gelernt wurde? Ihre Regeln bleiben erhalten.",
+  "messageFilter_resetLearningSubtitle": "Alles vergessen, was aus als Spam markierten Nachrichten und den letzten Nachrichten gelernt wurde",
+  "messageFilter_resetLearningNothing": "Noch nichts gelernt",
+  "messageFilter_resetLearningConfirm": "Alles vergessen, was der Filter gelernt hat? Ihre Regeln bleiben erhalten.",
   "messageFilter_filteredMessages": "Gefilterte Nachrichten ({count})",
-  "messageFilter_filteredMessagesEmpty": "Es wurde nichts gefiltert.",
+  "messageFilter_filteredMessagesSubtitle": "Liste mit bis zu 200 kürzlich gefilterten Nachrichten aus allen Kanälen",
+  "messageFilter_filteredMessagesEmpty": "Keine gefilterten Nachrichten",
   "messageFilter_ghostSingle": "Ausgeblendete Nachricht · Zum Anzeigen tippen",
   "messageFilter_ghostMany": "{count, plural, one{{count} ausgeblendete Nachricht · Zum Anzeigen tippen} other{{count} ausgeblendete Nachrichten · Zum Anzeigen tippen}}",
   "messageFilter_ghostSingleExpanded": "Ausgeblendete Nachricht wird angezeigt · Zum Ausblenden tippen",

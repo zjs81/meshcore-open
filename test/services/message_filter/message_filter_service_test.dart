@@ -389,6 +389,25 @@ void main() {
     expect(service.rules.last.id, 'z');
   });
 
+  test('setRules replaces every rule with one change', () async {
+    for (final id in ['a', 'b', 'c']) {
+      await service.addRule(FilterRule(id: id, pattern: id));
+    }
+    final revision = service.rulesRevision;
+    var notified = 0;
+    service.addListener(() => notified++);
+    await service.setRules(const [
+      FilterRule(id: 'c', pattern: 'c', enabled: false),
+      FilterRule(id: 'a', pattern: 'a'),
+    ]);
+    expect(service.rules.map((r) => r.id), ['c', 'a']);
+    expect(service.rules.first.enabled, isFalse);
+    expect(service.rulesRevision, revision + 1);
+    expect(notified, 1);
+    final reloaded = await create();
+    expect(reloaded.rules, service.rules);
+  });
+
   test('newRuleId is unique', () {
     final ids = List.generate(100, (_) => MessageFilterService.newRuleId());
     expect(ids.toSet(), hasLength(100));

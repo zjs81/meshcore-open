@@ -3474,6 +3474,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get common_clear => 'クリア';
 
   @override
+  String get common_reset => 'リセット';
+
+  @override
   String get common_clearSearch => '検索をクリア';
 
   @override
@@ -7192,27 +7195,45 @@ class AppLocalizationsJa extends AppLocalizations {
   String get messageFilter_enabled => 'メッセージをフィルターする';
 
   @override
-  String get messageFilter_enabledSubtitle => 'チャンネルのメッセージに適用されます';
+  String get messageFilter_filteringSection => 'フィルタリング';
+
+  @override
+  String get messageFilter_enabledSubtitle =>
+      'チャンネルのメニューでオフにしない限り、すべてのチャンネルに適用されます';
+
+  @override
+  String get messageFilter_info =>
+      'チャンネル内のスパムや繰り返しのメッセージを隠します。アプリ内だけで動作し、コンパニオンラジオには影響しません。';
 
   @override
   String get messageFilter_displayTitle => 'フィルターされたメッセージ';
 
   @override
-  String get messageFilter_displayPlaceholder => '小さな表示を残す';
-
-  @override
   String get messageFilter_displayHide => '完全に隠す';
 
   @override
-  String get messageFilter_displayHideHelp =>
-      '隠したメッセージは「フィルターされたメッセージ」の一覧に残ります。';
+  String get messageFilter_displayHideSubtitle =>
+      '代わりの表示を出さずに、フィルターされたメッセージを隠します';
 
   @override
   String get messageFilter_rulesSection => 'あなたのルール';
 
   @override
-  String get messageFilter_rulesEmpty =>
-      'ルールはまだありません。単語、フレーズ、送信者名を追加すると、一致するメッセージを隠せます。';
+  String messageFilter_rulesCount(int count) {
+    return 'ルール ($count)';
+  }
+
+  @override
+  String get messageFilter_rulesTitle => 'ルール';
+
+  @override
+  String get messageFilter_rulesHint => '単語、フレーズ、送信者名でメッセージを隠します';
+
+  @override
+  String get messageFilter_rulesEmptyTitle => 'ルールはまだありません';
+
+  @override
+  String get messageFilter_rulesEmpty => '単語、フレーズ、送信者名を追加すると、一致するメッセージを隠せます';
 
   @override
   String get messageFilter_addRule => 'ルールを追加';
@@ -7257,22 +7278,79 @@ class AppLocalizationsJa extends AppLocalizations {
   String get messageFilter_ruleSaved => 'ルールを保存しました';
 
   @override
+  String messageFilter_rulesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ルール $count 件を削除しました',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_deleteRulesTitle => 'ルールを削除しますか？';
+
+  @override
+  String messageFilter_deleteRulesConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'メッセージフィルターからルール $count 件を削除しますか？',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ルール $count 件をオンにしました',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOff(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ルール $count 件をオフにしました',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_searchRules => 'ルールを検索';
+
+  @override
+  String get messageFilter_rulesNoResults => '一致するルールはありません';
+
+  @override
+  String get messageFilter_selectRules => 'ルールを選択';
+
+  @override
+  String get messageFilter_turnOn => 'オンにする';
+
+  @override
+  String get messageFilter_turnOff => 'オフにする';
+
+  @override
   String get messageFilter_automaticSection => '自動';
 
   @override
   String get messageFilter_duplicates => '繰り返しのメッセージ';
 
   @override
-  String get messageFilter_duplicatesSubtitle =>
-      '同じメッセージが再送されたり、複数の送信者から届いたりしたもの';
+  String get messageFilter_duplicatesSubtitle => '同じ人による再送信、または3人以上からの同じメッセージ';
 
   @override
-  String get messageFilter_repeatSends => '繰り返しと見なす送信回数';
-
-  @override
-  String messageFilter_repeatSendsSubtitle(int count) {
-    return '同じ送信者が10分以内に同じメッセージを$count回送信したら非表示にします';
+  String messageFilter_repeatSendsCount(int count) {
+    return '繰り返しと見なす送信回数：$count';
   }
+
+  @override
+  String get messageFilter_repeatSendsHint => '同じ人で、各送信が前回から10分以内';
 
   @override
   String get messageFilter_repeatedCharacters => '繰り返しの文字';
@@ -7282,19 +7360,26 @@ class AppLocalizationsJa extends AppLocalizations {
       '同じ文字の長い連続（例：「aaaaaaaaaaaaaaaaaaaa」）';
 
   @override
-  String get messageFilter_learning => 'スパムのタップから学習';
+  String get messageFilter_learning => 'スパム報告から学習';
 
   @override
   String messageFilter_learningSubtitle(int spam, int notSpam) {
-    return 'スパム $spam 件、スパムではない $notSpam 件の例';
+    return 'スパム $spam 件、スパムではない $notSpam 件をマーク済み';
   }
 
   @override
   String get messageFilter_resetLearning => '学習をリセット';
 
   @override
+  String get messageFilter_resetLearningSubtitle =>
+      'スパムにしたメッセージや最近のメッセージから学習した内容をすべて忘れます';
+
+  @override
+  String get messageFilter_resetLearningNothing => 'まだ何も学習していません';
+
+  @override
   String get messageFilter_resetLearningConfirm =>
-      '「スパム」と「スパムではない」のタップから学習した内容をすべて忘れますか？ルールはそのまま残ります。';
+      'フィルターが学習した内容をすべて忘れますか？ ルールはそのまま残ります。';
 
   @override
   String messageFilter_filteredMessages(int count) {
@@ -7302,7 +7387,11 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get messageFilter_filteredMessagesEmpty => 'フィルターされたメッセージはありません。';
+  String get messageFilter_filteredMessagesSubtitle =>
+      '全チャンネルで最近フィルターされたメッセージの一覧（最大 200 件）';
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'フィルターされたメッセージはありません';
 
   @override
   String get messageFilter_ghostSingle => '隠したメッセージ · タップで表示';

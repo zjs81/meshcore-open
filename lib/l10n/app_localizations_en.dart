@@ -3569,6 +3569,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get common_clear => 'Clear';
 
   @override
+  String get common_reset => 'Reset';
+
+  @override
   String get common_clearSearch => 'Clear search';
 
   @override
@@ -7424,30 +7427,50 @@ class AppLocalizationsEn extends AppLocalizations {
       'Hide spam and repeated messages';
 
   @override
-  String get messageFilter_enabled => 'Filter messages';
+  String get messageFilter_enabled => 'Filter Messages';
 
   @override
-  String get messageFilter_enabledSubtitle => 'Applies to channel messages';
+  String get messageFilter_filteringSection => 'Filtering';
 
   @override
-  String get messageFilter_displayTitle => 'Filtered messages';
+  String get messageFilter_enabledSubtitle =>
+      'Applies to every channel unless turned off in its menu';
 
   @override
-  String get messageFilter_displayPlaceholder => 'Show a small placeholder';
+  String get messageFilter_info =>
+      'Hides spam and repeated messages in channels. It runs in the app only and doesn\'t affect your companion radio.';
 
   @override
-  String get messageFilter_displayHide => 'Hide completely';
+  String get messageFilter_displayTitle => 'Filtered Messages';
 
   @override
-  String get messageFilter_displayHideHelp =>
-      'Hidden messages stay in the Filtered messages list.';
+  String get messageFilter_displayHide => 'Hide Completely';
 
   @override
-  String get messageFilter_rulesSection => 'Your rules';
+  String get messageFilter_displayHideSubtitle =>
+      'Hide filtered messages instead of showing a placeholder';
+
+  @override
+  String get messageFilter_rulesSection => 'Your Rules';
+
+  @override
+  String messageFilter_rulesCount(int count) {
+    return 'Rules ($count)';
+  }
+
+  @override
+  String get messageFilter_rulesTitle => 'Rules';
+
+  @override
+  String get messageFilter_rulesHint =>
+      'Hide messages by word, phrase or sender name';
+
+  @override
+  String get messageFilter_rulesEmptyTitle => 'No rules yet';
 
   @override
   String get messageFilter_rulesEmpty =>
-      'No rules yet. Add a word, phrase or sender name to hide messages that match it.';
+      'Add a word, phrase or sender name to hide messages that match it';
 
   @override
   String get messageFilter_addRule => 'Add rule';
@@ -7492,53 +7515,126 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messageFilter_ruleSaved => 'Rule saved';
 
   @override
-  String get messageFilter_automaticSection => 'Automatic';
-
-  @override
-  String get messageFilter_duplicates => 'Repeated messages';
-
-  @override
-  String get messageFilter_duplicatesSubtitle =>
-      'The same message sent again, or by several senders';
-
-  @override
-  String get messageFilter_repeatSends => 'Sends to count as a repeat';
-
-  @override
-  String messageFilter_repeatSendsSubtitle(int count) {
-    return 'Hide a message when the same sender sends it $count times within 10 minutes';
+  String messageFilter_rulesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rules deleted',
+      one: '1 rule deleted',
+    );
+    return '$_temp0';
   }
 
   @override
-  String get messageFilter_repeatedCharacters => 'Repeated characters';
+  String get messageFilter_deleteRulesTitle => 'Delete rules?';
+
+  @override
+  String messageFilter_deleteRulesConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Delete $count rules from the message filter?',
+      one: 'Delete 1 rule from the message filter?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rules turned on',
+      one: '1 rule turned on',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOff(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rules turned off',
+      one: '1 rule turned off',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_searchRules => 'Search rules';
+
+  @override
+  String get messageFilter_rulesNoResults => 'No matching rules';
+
+  @override
+  String get messageFilter_selectRules => 'Select rules';
+
+  @override
+  String get messageFilter_turnOn => 'Turn on';
+
+  @override
+  String get messageFilter_turnOff => 'Turn off';
+
+  @override
+  String get messageFilter_automaticSection => 'Automatic';
+
+  @override
+  String get messageFilter_duplicates => 'Repeated Messages';
+
+  @override
+  String get messageFilter_duplicatesSubtitle =>
+      'Sent again by one person, or by 3 or more people';
+
+  @override
+  String messageFilter_repeatSendsCount(int count) {
+    return 'Sends to Count as a Repeat: $count';
+  }
+
+  @override
+  String get messageFilter_repeatSendsHint =>
+      'One person, each send within 10 minutes of the last';
+
+  @override
+  String get messageFilter_repeatedCharacters => 'Repeated Characters';
 
   @override
   String get messageFilter_repeatedCharactersSubtitle =>
       'Long runs of one character, like \"aaaaaaaaaaaaaaaaaaaa\"';
 
   @override
-  String get messageFilter_learning => 'Learn from Spam taps';
+  String get messageFilter_learning => 'Learn from Spam Reports';
 
   @override
   String messageFilter_learningSubtitle(int spam, int notSpam) {
-    return '$spam spam and $notSpam not-spam examples';
+    return '$spam marked as spam, $notSpam as not spam';
   }
 
   @override
-  String get messageFilter_resetLearning => 'Reset learning';
+  String get messageFilter_resetLearning => 'Reset Learning';
+
+  @override
+  String get messageFilter_resetLearningSubtitle =>
+      'Forget everything learned from messages marked as spam and recent messages';
+
+  @override
+  String get messageFilter_resetLearningNothing => 'Nothing learned yet';
 
   @override
   String get messageFilter_resetLearningConfirm =>
-      'Forget everything learned from your Spam and Not spam taps? Your rules are kept.';
+      'Forget everything the filter has learned? Your rules are kept.';
 
   @override
   String messageFilter_filteredMessages(int count) {
-    return 'Filtered messages ($count)';
+    return 'Filtered Messages ($count)';
   }
 
   @override
-  String get messageFilter_filteredMessagesEmpty =>
-      'Nothing has been filtered.';
+  String get messageFilter_filteredMessagesSubtitle =>
+      'List of up to 200 recent filtered messages from all channels';
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'No filtered messages';
 
   @override
   String get messageFilter_ghostSingle => 'Hidden message · Tap to view';

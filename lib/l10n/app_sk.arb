@@ -961,6 +961,7 @@
   "login_failedMessage": "Prihlásenie zlyhalo. Heslo je nesprávne alebo je opakovač nedostupný.",
   "common_reload": "Načítať",
   "common_clear": "Zmazať",
+  "common_reset": "Resetovať",
   "path_currentPath": "Aktívna cesta: {path}",
   "@path_currentPath": {
     "placeholders": {
@@ -3560,13 +3561,26 @@
   "messageFilter_title": "Filter správ",
   "messageFilter_settingsSubtitle": "Skryje spam a opakované správy",
   "messageFilter_enabled": "Filtrovať správy",
-  "messageFilter_enabledSubtitle": "Platí pre správy v kanáloch",
+  "messageFilter_filteringSection": "Filtrovanie",
+  "messageFilter_enabledSubtitle": "Platí pre všetky kanály, pokiaľ ho nevypnete v ponuke kanála",
+  "messageFilter_info": "Skrýva spam a opakované správy v kanáloch. Funguje len v aplikácii a neovplyvňuje vaše companion rádio.",
   "messageFilter_displayTitle": "Filtrované správy",
-  "messageFilter_displayPlaceholder": "Zobraziť malý zástupný riadok",
   "messageFilter_displayHide": "Úplne skryť",
-  "messageFilter_displayHideHelp": "Skryté správy zostanú v zozname Filtrované správy.",
+  "messageFilter_displayHideSubtitle": "Skryť filtrované správy namiesto zobrazenia zástupného riadka",
   "messageFilter_rulesSection": "Vaše pravidlá",
-  "messageFilter_rulesEmpty": "Zatiaľ žiadne pravidlá. Pridajte slovo, frázu alebo meno odosielateľa, aby sa zodpovedajúce správy skryli.",
+  "messageFilter_rulesCount": "Pravidlá ({count})",
+  "@messageFilter_rulesCount": {
+    "description": "Message filter: title of the row that opens the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTitle": "Pravidlá",
+  "messageFilter_rulesHint": "Skryť správy podľa slova, frázy alebo mena odosielateľa",
+  "messageFilter_rulesEmptyTitle": "Zatiaľ žiadne pravidlá",
+  "messageFilter_rulesEmpty": "Pridajte slovo, frázu alebo meno odosielateľa, aby sa zodpovedajúce správy skryli",
   "messageFilter_addRule": "Pridať pravidlo",
   "messageFilter_editRule": "Upraviť pravidlo",
   "messageFilter_rulePattern": "Slovo, fráza alebo meno",
@@ -3581,16 +3595,48 @@
   "messageFilter_ruleMatchExact": "Presná",
   "messageFilter_ruleDeleted": "Pravidlo bolo odstránené",
   "messageFilter_ruleSaved": "Pravidlo bolo uložené",
+  "messageFilter_rulesDeleted": "{count, plural, =1{1 pravidlo bolo odstránené} few{{count} pravidlá boli odstránené} many{{count} pravidlá boli odstránené} other{{count} pravidiel bolo odstránených}}",
+  "@messageFilter_rulesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "Odstrániť pravidlá?",
+  "messageFilter_deleteRulesConfirm": "{count, plural, one{Odstrániť {count} pravidlo z filtra správ?} few{Odstrániť {count} pravidlá z filtra správ?} many{Odstrániť {count} pravidla z filtra správ?} other{Odstrániť {count} pravidiel z filtra správ?}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, =1{1 pravidlo bolo zapnuté} few{{count} pravidlá boli zapnuté} many{{count} pravidlá boli zapnuté} other{{count} pravidiel bolo zapnutých}}",
+  "@messageFilter_rulesTurnedOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, =1{1 pravidlo bolo vypnuté} few{{count} pravidlá boli vypnuté} many{{count} pravidlá boli vypnuté} other{{count} pravidiel bolo vypnutých}}",
+  "@messageFilter_rulesTurnedOff": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Hľadať pravidlá",
+  "messageFilter_rulesNoResults": "Žiadne zodpovedajúce pravidlá",
+  "messageFilter_selectRules": "Vybrať pravidlá",
+  "messageFilter_turnOn": "Zapnúť",
+  "messageFilter_turnOff": "Vypnúť",
   "messageFilter_automaticSection": "Automatické",
   "messageFilter_duplicates": "Opakované správy",
-  "messageFilter_duplicatesSubtitle": "Rovnaká správa odoslaná znova alebo viacerými odosielateľmi",
-  "messageFilter_repeatSends": "Odoslanie počítané ako opakovanie",
-  "messageFilter_repeatSendsSubtitle": "Skryť správu, ak ju ten istý odosielateľ pošle opakovane do 10 minút (počet odoslaní: {count})",
+  "messageFilter_duplicatesSubtitle": "Odoslaná znova jednou osobou alebo 3 a viac osobami",
+  "messageFilter_repeatSendsCount": "Počet odoslaní pre opakovanie: {count}",
+  "messageFilter_repeatSendsHint": "Jedna osoba, každé odoslanie do 10 minút od predchádzajúceho",
   "messageFilter_repeatedCharacters": "Opakované znaky",
   "messageFilter_repeatedCharactersSubtitle": "Dlhé rady jedného znaku, napríklad „aaaaaaaaaaaaaaaaaaaa“",
-  "messageFilter_learning": "Učiť sa z klepnutí na Spam",
-  "messageFilter_learningSubtitle": "{spam} príkladov spamu a {notSpam} príkladov nie spamu",
+  "messageFilter_learning": "Učiť sa z nahlásení spamu",
+  "messageFilter_learningSubtitle": "Označené ako spam: {spam}, ako nie spam: {notSpam}",
   "@messageFilter_learningSubtitle": {
+    "description": "Message filter: subtitle of Learn from Spam Taps; how many messages are currently marked as spam and as not spam",
     "placeholders": {
       "spam": {
         "type": "int"
@@ -3601,16 +3647,20 @@
     }
   },
   "messageFilter_resetLearning": "Obnoviť učenie",
-  "messageFilter_resetLearningConfirm": "Zabudnúť všetko, čo sa filter naučil z vašich klepnutí na Spam a Nie spam? Vaše pravidlá zostanú zachované.",
+  "messageFilter_resetLearningSubtitle": "Zabudnúť všetko naučené zo správ označených ako spam a z nedávnych správ",
+  "messageFilter_resetLearningNothing": "Zatiaľ nič nenaučené",
+  "messageFilter_resetLearningConfirm": "Zabudnúť všetko, čo sa filter naučil? Vaše pravidlá zostanú zachované.",
   "messageFilter_filteredMessages": "Filtrované správy ({count})",
   "@messageFilter_filteredMessages": {
+    "description": "Message filter: Filtered Messages ({count})",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "messageFilter_filteredMessagesEmpty": "Nič nebolo odfiltrované.",
+  "messageFilter_filteredMessagesSubtitle": "Zoznam najviac 200 nedávno filtrovaných správ zo všetkých kanálov",
+  "messageFilter_filteredMessagesEmpty": "Žiadne filtrované správy",
   "messageFilter_ghostSingle": "Skrytá správa · Klepnutím zobrazíte",
   "messageFilter_ghostMany": "{count, plural, one{{count} skrytá správa · Klepnutím zobrazíte} few{{count} skryté správy · Klepnutím zobrazíte} many{{count} skrytej správy · Klepnutím zobrazíte} other{{count} skrytých správ · Klepnutím zobrazíte}}",
   "@messageFilter_ghostMany": {

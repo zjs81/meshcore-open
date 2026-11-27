@@ -3589,6 +3589,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get common_clear => 'Rensa';
 
   @override
+  String get common_reset => 'Återställ';
+
+  @override
   String get common_clearSearch => 'Rensa sökning';
 
   @override
@@ -7471,27 +7474,47 @@ class AppLocalizationsSv extends AppLocalizations {
   String get messageFilter_enabled => 'Filtrera meddelanden';
 
   @override
-  String get messageFilter_enabledSubtitle => 'Gäller kanalmeddelanden';
+  String get messageFilter_filteringSection => 'Filtrering';
+
+  @override
+  String get messageFilter_enabledSubtitle =>
+      'Gäller alla kanaler om det inte stängs av i kanalens meny';
+
+  @override
+  String get messageFilter_info =>
+      'Döljer skräppost och upprepade meddelanden i kanaler. Körs bara i appen och påverkar inte din Companion-radio.';
 
   @override
   String get messageFilter_displayTitle => 'Filtrerade meddelanden';
 
   @override
-  String get messageFilter_displayPlaceholder => 'Visa en liten platshållare';
-
-  @override
   String get messageFilter_displayHide => 'Dölj helt';
 
   @override
-  String get messageFilter_displayHideHelp =>
-      'Dolda meddelanden finns kvar i listan Filtrerade meddelanden.';
+  String get messageFilter_displayHideSubtitle =>
+      'Dölj filtrerade meddelanden i stället för att visa en platshållare';
 
   @override
   String get messageFilter_rulesSection => 'Dina regler';
 
   @override
+  String messageFilter_rulesCount(int count) {
+    return 'Regler ($count)';
+  }
+
+  @override
+  String get messageFilter_rulesTitle => 'Regler';
+
+  @override
+  String get messageFilter_rulesHint =>
+      'Dölj meddelanden efter ord, fras eller avsändarnamn';
+
+  @override
+  String get messageFilter_rulesEmptyTitle => 'Inga regler ännu';
+
+  @override
   String get messageFilter_rulesEmpty =>
-      'Inga regler ännu. Lägg till ett ord, en fras eller ett avsändarnamn för att dölja matchande meddelanden.';
+      'Lägg till ett ord, en fras eller ett avsändarnamn för att dölja matchande meddelanden';
 
   @override
   String get messageFilter_addRule => 'Lägg till regel';
@@ -7536,6 +7559,68 @@ class AppLocalizationsSv extends AppLocalizations {
   String get messageFilter_ruleSaved => 'Regeln har sparats';
 
   @override
+  String messageFilter_rulesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count regler raderade',
+      one: '1 regel raderad',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_deleteRulesTitle => 'Radera regler?';
+
+  @override
+  String messageFilter_deleteRulesConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Radera $count regler från meddelandefiltret?',
+      one: 'Radera 1 regel från meddelandefiltret?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count regler aktiverade',
+      one: '1 regel aktiverad',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOff(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count regler inaktiverade',
+      one: '1 regel inaktiverad',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_searchRules => 'Sök i regler';
+
+  @override
+  String get messageFilter_rulesNoResults => 'Inga matchande regler';
+
+  @override
+  String get messageFilter_selectRules => 'Markera regler';
+
+  @override
+  String get messageFilter_turnOn => 'Aktivera';
+
+  @override
+  String get messageFilter_turnOff => 'Inaktivera';
+
+  @override
   String get messageFilter_automaticSection => 'Automatiskt';
 
   @override
@@ -7543,15 +7628,16 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get messageFilter_duplicatesSubtitle =>
-      'Samma meddelande skickas igen, eller av flera avsändare';
+      'Skickat igen av en person, eller av 3 eller fler personer';
 
   @override
-  String get messageFilter_repeatSends => 'Utskick som räknas som upprepning';
-
-  @override
-  String messageFilter_repeatSendsSubtitle(int count) {
-    return 'Dölj ett meddelande när samma avsändare skickar det $count gånger inom 10 minuter';
+  String messageFilter_repeatSendsCount(int count) {
+    return 'Utskick som räknas som upprepning: $count';
   }
+
+  @override
+  String get messageFilter_repeatSendsHint =>
+      'En person, varje utskick inom 10 minuter från det förra';
 
   @override
   String get messageFilter_repeatedCharacters => 'Upprepade tecken';
@@ -7561,19 +7647,26 @@ class AppLocalizationsSv extends AppLocalizations {
       'Långa följder av samma tecken, som ”aaaaaaaaaaaaaaaaaaaa”';
 
   @override
-  String get messageFilter_learning => 'Lär av tryck på Skräppost';
+  String get messageFilter_learning => 'Lär av skräppostanmälningar';
 
   @override
   String messageFilter_learningSubtitle(int spam, int notSpam) {
-    return '$spam skräppost- och $notSpam inte-skräppost-exempel';
+    return 'Markerade som skräppost: $spam, som inte skräppost: $notSpam';
   }
 
   @override
   String get messageFilter_resetLearning => 'Återställ inlärning';
 
   @override
+  String get messageFilter_resetLearningSubtitle =>
+      'Glöm allt som lärts från meddelanden markerade som skräppost och de senaste meddelandena';
+
+  @override
+  String get messageFilter_resetLearningNothing => 'Inget inlärt ännu';
+
+  @override
   String get messageFilter_resetLearningConfirm =>
-      'Glömma allt som lärts från dina tryck på Skräppost och Inte skräppost? Dina regler behålls.';
+      'Glömma allt som filtret har lärt sig? Dina regler behålls.';
 
   @override
   String messageFilter_filteredMessages(int count) {
@@ -7581,7 +7674,12 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get messageFilter_filteredMessagesEmpty => 'Inget har filtrerats.';
+  String get messageFilter_filteredMessagesSubtitle =>
+      'Lista över upp till 200 nyligen filtrerade meddelanden från alla kanaler';
+
+  @override
+  String get messageFilter_filteredMessagesEmpty =>
+      'Inga filtrerade meddelanden';
 
   @override
   String get messageFilter_ghostSingle =>

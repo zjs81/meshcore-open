@@ -3618,6 +3618,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get common_clear => 'Zmazať';
 
   @override
+  String get common_reset => 'Resetovať';
+
+  @override
   String get common_clearSearch => 'Zmazať vyhľadávanie';
 
   @override
@@ -7520,28 +7523,47 @@ class AppLocalizationsSk extends AppLocalizations {
   String get messageFilter_enabled => 'Filtrovať správy';
 
   @override
-  String get messageFilter_enabledSubtitle => 'Platí pre správy v kanáloch';
+  String get messageFilter_filteringSection => 'Filtrovanie';
+
+  @override
+  String get messageFilter_enabledSubtitle =>
+      'Platí pre všetky kanály, pokiaľ ho nevypnete v ponuke kanála';
+
+  @override
+  String get messageFilter_info =>
+      'Skrýva spam a opakované správy v kanáloch. Funguje len v aplikácii a neovplyvňuje vaše companion rádio.';
 
   @override
   String get messageFilter_displayTitle => 'Filtrované správy';
 
   @override
-  String get messageFilter_displayPlaceholder =>
-      'Zobraziť malý zástupný riadok';
-
-  @override
   String get messageFilter_displayHide => 'Úplne skryť';
 
   @override
-  String get messageFilter_displayHideHelp =>
-      'Skryté správy zostanú v zozname Filtrované správy.';
+  String get messageFilter_displayHideSubtitle =>
+      'Skryť filtrované správy namiesto zobrazenia zástupného riadka';
 
   @override
   String get messageFilter_rulesSection => 'Vaše pravidlá';
 
   @override
+  String messageFilter_rulesCount(int count) {
+    return 'Pravidlá ($count)';
+  }
+
+  @override
+  String get messageFilter_rulesTitle => 'Pravidlá';
+
+  @override
+  String get messageFilter_rulesHint =>
+      'Skryť správy podľa slova, frázy alebo mena odosielateľa';
+
+  @override
+  String get messageFilter_rulesEmptyTitle => 'Zatiaľ žiadne pravidlá';
+
+  @override
   String get messageFilter_rulesEmpty =>
-      'Zatiaľ žiadne pravidlá. Pridajte slovo, frázu alebo meno odosielateľa, aby sa zodpovedajúce správy skryli.';
+      'Pridajte slovo, frázu alebo meno odosielateľa, aby sa zodpovedajúce správy skryli';
 
   @override
   String get messageFilter_addRule => 'Pridať pravidlo';
@@ -7586,6 +7608,76 @@ class AppLocalizationsSk extends AppLocalizations {
   String get messageFilter_ruleSaved => 'Pravidlo bolo uložené';
 
   @override
+  String messageFilter_rulesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pravidiel bolo odstránených',
+      many: '$count pravidlá boli odstránené',
+      few: '$count pravidlá boli odstránené',
+      one: '1 pravidlo bolo odstránené',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_deleteRulesTitle => 'Odstrániť pravidlá?';
+
+  @override
+  String messageFilter_deleteRulesConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Odstrániť $count pravidiel z filtra správ?',
+      many: 'Odstrániť $count pravidla z filtra správ?',
+      few: 'Odstrániť $count pravidlá z filtra správ?',
+      one: 'Odstrániť $count pravidlo z filtra správ?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pravidiel bolo zapnutých',
+      many: '$count pravidlá boli zapnuté',
+      few: '$count pravidlá boli zapnuté',
+      one: '1 pravidlo bolo zapnuté',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOff(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pravidiel bolo vypnutých',
+      many: '$count pravidlá boli vypnuté',
+      few: '$count pravidlá boli vypnuté',
+      one: '1 pravidlo bolo vypnuté',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_searchRules => 'Hľadať pravidlá';
+
+  @override
+  String get messageFilter_rulesNoResults => 'Žiadne zodpovedajúce pravidlá';
+
+  @override
+  String get messageFilter_selectRules => 'Vybrať pravidlá';
+
+  @override
+  String get messageFilter_turnOn => 'Zapnúť';
+
+  @override
+  String get messageFilter_turnOff => 'Vypnúť';
+
+  @override
   String get messageFilter_automaticSection => 'Automatické';
 
   @override
@@ -7593,15 +7685,16 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get messageFilter_duplicatesSubtitle =>
-      'Rovnaká správa odoslaná znova alebo viacerými odosielateľmi';
+      'Odoslaná znova jednou osobou alebo 3 a viac osobami';
 
   @override
-  String get messageFilter_repeatSends => 'Odoslanie počítané ako opakovanie';
-
-  @override
-  String messageFilter_repeatSendsSubtitle(int count) {
-    return 'Skryť správu, ak ju ten istý odosielateľ pošle opakovane do 10 minút (počet odoslaní: $count)';
+  String messageFilter_repeatSendsCount(int count) {
+    return 'Počet odoslaní pre opakovanie: $count';
   }
+
+  @override
+  String get messageFilter_repeatSendsHint =>
+      'Jedna osoba, každé odoslanie do 10 minút od predchádzajúceho';
 
   @override
   String get messageFilter_repeatedCharacters => 'Opakované znaky';
@@ -7611,19 +7704,26 @@ class AppLocalizationsSk extends AppLocalizations {
       'Dlhé rady jedného znaku, napríklad „aaaaaaaaaaaaaaaaaaaa“';
 
   @override
-  String get messageFilter_learning => 'Učiť sa z klepnutí na Spam';
+  String get messageFilter_learning => 'Učiť sa z nahlásení spamu';
 
   @override
   String messageFilter_learningSubtitle(int spam, int notSpam) {
-    return '$spam príkladov spamu a $notSpam príkladov nie spamu';
+    return 'Označené ako spam: $spam, ako nie spam: $notSpam';
   }
 
   @override
   String get messageFilter_resetLearning => 'Obnoviť učenie';
 
   @override
+  String get messageFilter_resetLearningSubtitle =>
+      'Zabudnúť všetko naučené zo správ označených ako spam a z nedávnych správ';
+
+  @override
+  String get messageFilter_resetLearningNothing => 'Zatiaľ nič nenaučené';
+
+  @override
   String get messageFilter_resetLearningConfirm =>
-      'Zabudnúť všetko, čo sa filter naučil z vašich klepnutí na Spam a Nie spam? Vaše pravidlá zostanú zachované.';
+      'Zabudnúť všetko, čo sa filter naučil? Vaše pravidlá zostanú zachované.';
 
   @override
   String messageFilter_filteredMessages(int count) {
@@ -7631,7 +7731,11 @@ class AppLocalizationsSk extends AppLocalizations {
   }
 
   @override
-  String get messageFilter_filteredMessagesEmpty => 'Nič nebolo odfiltrované.';
+  String get messageFilter_filteredMessagesSubtitle =>
+      'Zoznam najviac 200 nedávno filtrovaných správ zo všetkých kanálov';
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'Žiadne filtrované správy';
 
   @override
   String get messageFilter_ghostSingle => 'Skrytá správa · Klepnutím zobrazíte';

@@ -8,20 +8,23 @@ import '../theme/mesh_theme.dart';
 /// Localized "Filtered: …" line for a message the filter hid.
 ///
 /// [reason] is the stored `ChannelMessage.filterReason` (a [FilterReason]
-/// JSON name); [detail] the matching rule pattern for rule hits, shortened
-/// (see [shortFilterDetail]) so a rule made from a whole spam message never
-/// spells that message out. An unknown or missing reason falls back to the
-/// generic manual wording.
+/// JSON name); [detail] the matching rule pattern for rule hits. [shorten]
+/// (the default) cuts the pattern to one short line (see [shortFilterDetail])
+/// so a rule made from a whole spam message never spells it out; pass false
+/// where the full pattern should show. An unknown or missing reason falls back
+/// to the generic manual wording.
 String messageFilterReasonLabel(
   AppLocalizations l10n,
   String? reason,
-  String? detail,
-) {
+  String? detail, {
+  bool shorten = true,
+}) {
+  final pattern = shorten ? shortFilterDetail(detail) : detail ?? '';
   switch (filterReasonFromJson(reason)) {
     case FilterReason.textRule:
-      return l10n.messageFilter_reasonTextRule(shortFilterDetail(detail));
+      return l10n.messageFilter_reasonTextRule(pattern);
     case FilterReason.senderRule:
-      return l10n.messageFilter_reasonSenderRule(shortFilterDetail(detail));
+      return l10n.messageFilter_reasonSenderRule(pattern);
     case FilterReason.repeatedCharacters:
       return l10n.messageFilter_reasonRepeatedCharacters;
     case FilterReason.duplicate:

@@ -962,6 +962,7 @@
   "login_failedMessage": "Вхід не вдався. Або пароль неправильний, або ретранслятор недосяжний.",
   "common_reload": "Перезавантажити",
   "common_clear": "Очистити",
+  "common_reset": "Скинути",
   "path_currentPath": "Поточний шлях: {path}",
   "@path_currentPath": {
     "placeholders": {
@@ -3518,13 +3519,18 @@
   "messageFilter_title": "Фільтр повідомлень",
   "messageFilter_settingsSubtitle": "Приховує спам і повідомлення, що повторюються",
   "messageFilter_enabled": "Фільтрувати повідомлення",
-  "messageFilter_enabledSubtitle": "Стосується повідомлень у каналах",
+  "messageFilter_filteringSection": "Фільтрація",
+  "messageFilter_enabledSubtitle": "Діє в усіх каналах, якщо не вимкнено в меню каналу",
+  "messageFilter_info": "Приховує спам і повідомлення, що повторюються, у каналах. Працює лише в застосунку й не впливає на ваш пристрій-компаньйон.",
   "messageFilter_displayTitle": "Відфільтровані повідомлення",
-  "messageFilter_displayPlaceholder": "Показувати невеликий замінник",
   "messageFilter_displayHide": "Приховати повністю",
-  "messageFilter_displayHideHelp": "Приховані повідомлення залишаються у списку «Відфільтровані повідомлення».",
+  "messageFilter_displayHideSubtitle": "Приховувати відфільтровані повідомлення замість показу замінника",
   "messageFilter_rulesSection": "Ваші правила",
-  "messageFilter_rulesEmpty": "Правил ще немає. Додайте слово, фразу або ім’я відправника, щоб приховувати повідомлення, які їм відповідають.",
+  "messageFilter_rulesCount": "Правила ({count})",
+  "messageFilter_rulesTitle": "Правила",
+  "messageFilter_rulesHint": "Приховувати повідомлення за словом, фразою або ім’ям відправника",
+  "messageFilter_rulesEmptyTitle": "Правил ще немає",
+  "messageFilter_rulesEmpty": "Додайте слово, фразу або ім’я відправника, щоб приховувати повідомлення, які їм відповідають",
   "messageFilter_addRule": "Додати правило",
   "messageFilter_editRule": "Змінити правило",
   "messageFilter_rulePattern": "Слово, фраза або ім’я",
@@ -3539,19 +3545,53 @@
   "messageFilter_ruleMatchExact": "Точно",
   "messageFilter_ruleDeleted": "Правило видалено",
   "messageFilter_ruleSaved": "Правило збережено",
+  "messageFilter_rulesDeleted": "{count, plural, one{{count} правило видалено} few{{count} правила видалено} many{{count} правил видалено} other{{count} правила видалено}}",
+  "@messageFilter_rulesDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "Видалити правила?",
+  "messageFilter_deleteRulesConfirm": "{count, plural, one{Видалити {count} правило з фільтра повідомлень?} few{Видалити {count} правила з фільтра повідомлень?} many{Видалити {count} правил з фільтра повідомлень?} other{Видалити {count} правила з фільтра повідомлень?}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, one{{count} правило увімкнено} few{{count} правила увімкнено} many{{count} правил увімкнено} other{{count} правила увімкнено}}",
+  "@messageFilter_rulesTurnedOn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, one{{count} правило вимкнено} few{{count} правила вимкнено} many{{count} правил вимкнено} other{{count} правила вимкнено}}",
+  "@messageFilter_rulesTurnedOff": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "Пошук правил",
+  "messageFilter_rulesNoResults": "Відповідних правил немає",
+  "messageFilter_selectRules": "Вибрати правила",
+  "messageFilter_turnOn": "Увімкнути",
+  "messageFilter_turnOff": "Вимкнути",
   "messageFilter_automaticSection": "Автоматично",
   "messageFilter_duplicates": "Повідомлення, що повторюються",
-  "messageFilter_duplicatesSubtitle": "Те саме повідомлення, надіслане знову або кількома відправниками",
-  "messageFilter_repeatSends": "Яка відправка вважається повтором",
-  "messageFilter_repeatSendsSubtitle": "Приховувати повідомлення, якщо той самий відправник надсилає його повторно протягом 10 хвилин (кількість відправлень: {count})",
+  "messageFilter_duplicatesSubtitle": "Надіслане повторно однією людиною або 3 і більше людьми",
+  "messageFilter_repeatSendsCount": "Скільки відправлень вважати повтором: {count}",
+  "messageFilter_repeatSendsHint": "Одна людина, кожне відправлення протягом 10 хвилин після попереднього",
   "messageFilter_repeatedCharacters": "Повторювані символи",
   "messageFilter_repeatedCharactersSubtitle": "Довгі послідовності одного символа, наприклад «aaaaaaaaaaaaaaaaaaaa»",
-  "messageFilter_learning": "Навчання на натисканнях «Спам»",
-  "messageFilter_learningSubtitle": "{spam} прикладів спаму та {notSpam} прикладів не спаму",
+  "messageFilter_learning": "Навчання на скаргах на спам",
+  "messageFilter_learningSubtitle": "Позначено як спам: {spam}, як не спам: {notSpam}",
   "messageFilter_resetLearning": "Скинути навчання",
-  "messageFilter_resetLearningConfirm": "Забути все, чого було навчено натисканнями «Спам» і «Не спам»? Ваші правила буде збережено.",
+  "messageFilter_resetLearningSubtitle": "Забути все, чого фільтр навчився з повідомлень, позначених як спам, і недавніх повідомлень",
+  "messageFilter_resetLearningNothing": "Фільтр ще нічого не навчився",
+  "messageFilter_resetLearningConfirm": "Забути все, чого навчився фільтр? Ваші правила буде збережено.",
   "messageFilter_filteredMessages": "Відфільтровані повідомлення ({count})",
-  "messageFilter_filteredMessagesEmpty": "Нічого не відфільтровано.",
+  "messageFilter_filteredMessagesSubtitle": "Список до 200 нещодавно відфільтрованих повідомлень з усіх каналів",
+  "messageFilter_filteredMessagesEmpty": "Немає відфільтрованих повідомлень",
   "messageFilter_ghostSingle": "Приховане повідомлення · Торкніться, щоб переглянути",
   "messageFilter_ghostMany": "{count, plural, one{{count} приховане повідомлення · Торкніться, щоб переглянути} few{{count} приховані повідомлення · Торкніться, щоб переглянути} many{{count} прихованих повідомлень · Торкніться, щоб переглянути} other{{count} прихованого повідомлення · Торкніться, щоб переглянути}}",
   "messageFilter_ghostSingleExpanded": "Показано приховане повідомлення · Торкніться, щоб приховати",

@@ -1134,6 +1134,7 @@
   "login_failedMessage": "ログインに失敗しました。パスワードが間違っているか、または接続が確立されていません。",
   "common_reload": "再読み込み",
   "common_clear": "クリア",
+  "common_reset": "リセット",
   "path_currentPath": "現在のパス: {path}",
   "@path_currentPath": {
     "placeholders": {
@@ -3679,35 +3680,54 @@
   },
   "messageFilter_enabled": "メッセージをフィルターする",
   "@messageFilter_enabled": {
-    "description": "Message filter: Filter messages"
+    "description": "Message filter: Filter Messages"
   },
-  "messageFilter_enabledSubtitle": "チャンネルのメッセージに適用されます",
+  "messageFilter_filteringSection": "フィルタリング",
+  "messageFilter_enabledSubtitle": "チャンネルのメニューでオフにしない限り、すべてのチャンネルに適用されます",
   "@messageFilter_enabledSubtitle": {
-    "description": "Message filter: Applies to channel messages"
+    "description": "Message filter: subtitle of the Filter Messages switch; each channel can turn filtering off in its chat menu"
+  },
+  "messageFilter_info": "チャンネル内のスパムや繰り返しのメッセージを隠します。アプリ内だけで動作し、コンパニオンラジオには影響しません。",
+  "@messageFilter_info": {
+    "description": "Message filter: note at the top of the Message Filter page"
   },
   "messageFilter_displayTitle": "フィルターされたメッセージ",
   "@messageFilter_displayTitle": {
     "description": "Message filter: Filtered messages"
   },
-  "messageFilter_displayPlaceholder": "小さな表示を残す",
-  "@messageFilter_displayPlaceholder": {
-    "description": "Message filter: Show a small placeholder"
-  },
   "messageFilter_displayHide": "完全に隠す",
   "@messageFilter_displayHide": {
-    "description": "Message filter: Hide completely"
+    "description": "Message filter: switch that hides filtered messages without a placeholder"
   },
-  "messageFilter_displayHideHelp": "隠したメッセージは「フィルターされたメッセージ」の一覧に残ります。",
-  "@messageFilter_displayHideHelp": {
-    "description": "Message filter: Hidden messages stay in the Filtered messages list."
+  "messageFilter_displayHideSubtitle": "代わりの表示を出さずに、フィルターされたメッセージを隠します",
+  "@messageFilter_displayHideSubtitle": {
+    "description": "Message filter: description of the Hide Completely switch"
   },
   "messageFilter_rulesSection": "あなたのルール",
   "@messageFilter_rulesSection": {
-    "description": "Message filter: Your rules"
+    "description": "Message filter: Your Rules"
   },
-  "messageFilter_rulesEmpty": "ルールはまだありません。単語、フレーズ、送信者名を追加すると、一致するメッセージを隠せます。",
+  "messageFilter_rulesCount": "ルール ({count})",
+  "@messageFilter_rulesCount": {
+    "description": "Message filter: title of the row that opens the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTitle": "ルール",
+  "messageFilter_rulesHint": "単語、フレーズ、送信者名でメッセージを隠します",
+  "@messageFilter_rulesHint": {
+    "description": "Message filter: subtitle of the row that opens the Your Rules page"
+  },
+  "messageFilter_rulesEmptyTitle": "ルールはまだありません",
+  "@messageFilter_rulesEmptyTitle": {
+    "description": "Message filter: title of the empty Your Rules page"
+  },
+  "messageFilter_rulesEmpty": "単語、フレーズ、送信者名を追加すると、一致するメッセージを隠せます",
   "@messageFilter_rulesEmpty": {
-    "description": "Message filter: No rules yet. Add a word, phrase or sender name to hide messages that match it."
+    "description": "Message filter: Add a word, phrase or sender name to hide messages that match it."
   },
   "messageFilter_addRule": "ルールを追加",
   "@messageFilter_addRule": {
@@ -3765,35 +3785,84 @@
   "@messageFilter_ruleSaved": {
     "description": "Message filter: Rule saved"
   },
+  "messageFilter_rulesDeleted": "{count, plural, other{ルール {count} 件を削除しました}}",
+  "@messageFilter_rulesDeleted": {
+    "description": "Message filter: snackbar after deleting the selected rules on the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_deleteRulesTitle": "ルールを削除しますか？",
+  "messageFilter_deleteRulesConfirm": "{count, plural, other{メッセージフィルターからルール {count} 件を削除しますか？}}",
+  "messageFilter_rulesTurnedOn": "{count, plural, other{ルール {count} 件をオンにしました}}",
+  "@messageFilter_rulesTurnedOn": {
+    "description": "Message filter: snackbar after turning on the selected rules on the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_rulesTurnedOff": "{count, plural, other{ルール {count} 件をオフにしました}}",
+  "@messageFilter_rulesTurnedOff": {
+    "description": "Message filter: snackbar after turning off the selected rules on the Your Rules page",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "messageFilter_searchRules": "ルールを検索",
+  "@messageFilter_searchRules": {
+    "description": "Message filter: tooltip of the search button on the Your Rules page and hint of its search field"
+  },
+  "messageFilter_rulesNoResults": "一致するルールはありません",
+  "@messageFilter_rulesNoResults": {
+    "description": "Message filter: shown on the Your Rules page when no rule matches the search"
+  },
+  "messageFilter_selectRules": "ルールを選択",
+  "@messageFilter_selectRules": {
+    "description": "Message filter: tooltip of the button that starts selecting rules on the Your Rules page"
+  },
+  "messageFilter_turnOn": "オンにする",
+  "@messageFilter_turnOn": {
+    "description": "Message filter: menu item that turns on the selected rules"
+  },
+  "messageFilter_turnOff": "オフにする",
+  "@messageFilter_turnOff": {
+    "description": "Message filter: menu item that turns off the selected rules"
+  },
   "messageFilter_automaticSection": "自動",
   "@messageFilter_automaticSection": {
     "description": "Message filter: Automatic"
   },
   "messageFilter_duplicates": "繰り返しのメッセージ",
   "@messageFilter_duplicates": {
-    "description": "Message filter: Repeated messages"
+    "description": "Message filter: Repeated Messages"
   },
-  "messageFilter_duplicatesSubtitle": "同じメッセージが再送されたり、複数の送信者から届いたりしたもの",
+  "messageFilter_duplicatesSubtitle": "同じ人による再送信、または3人以上からの同じメッセージ",
   "@messageFilter_duplicatesSubtitle": {
     "description": "Message filter: The same message sent again, or by several senders"
   },
-  "messageFilter_repeatSends": "繰り返しと見なす送信回数",
-  "messageFilter_repeatSendsSubtitle": "同じ送信者が10分以内に同じメッセージを{count}回送信したら非表示にします",
+  "messageFilter_repeatSendsCount": "繰り返しと見なす送信回数：{count}",
+  "messageFilter_repeatSendsHint": "同じ人で、各送信が前回から10分以内",
   "messageFilter_repeatedCharacters": "繰り返しの文字",
   "@messageFilter_repeatedCharacters": {
-    "description": "Message filter: Repeated characters"
+    "description": "Message filter: Repeated Characters"
   },
   "messageFilter_repeatedCharactersSubtitle": "同じ文字の長い連続（例：「aaaaaaaaaaaaaaaaaaaa」）",
   "@messageFilter_repeatedCharactersSubtitle": {
     "description": "Message filter: Messages like \"aaaaaaaa\" or \"!!!!!!!!\""
   },
-  "messageFilter_learning": "スパムのタップから学習",
+  "messageFilter_learning": "スパム報告から学習",
   "@messageFilter_learning": {
-    "description": "Message filter: Learn from Spam taps"
+    "description": "Message filter: Learn from Spam Taps"
   },
-  "messageFilter_learningSubtitle": "スパム {spam} 件、スパムではない {notSpam} 件の例",
+  "messageFilter_learningSubtitle": "スパム {spam} 件、スパムではない {notSpam} 件をマーク済み",
   "@messageFilter_learningSubtitle": {
-    "description": "Message filter: {spam} spam and {notSpam} not-spam examples",
+    "description": "Message filter: subtitle of Learn from Spam Taps; how many messages are currently marked as spam and as not spam",
     "placeholders": {
       "spam": {
         "type": "int"
@@ -3805,22 +3874,25 @@
   },
   "messageFilter_resetLearning": "学習をリセット",
   "@messageFilter_resetLearning": {
-    "description": "Message filter: Reset learning"
+    "description": "Message filter: Reset Learning"
   },
-  "messageFilter_resetLearningConfirm": "「スパム」と「スパムではない」のタップから学習した内容をすべて忘れますか？ルールはそのまま残ります。",
+  "messageFilter_resetLearningSubtitle": "スパムにしたメッセージや最近のメッセージから学習した内容をすべて忘れます",
+  "messageFilter_resetLearningNothing": "まだ何も学習していません",
+  "messageFilter_resetLearningConfirm": "フィルターが学習した内容をすべて忘れますか？ ルールはそのまま残ります。",
   "@messageFilter_resetLearningConfirm": {
-    "description": "Message filter: Forget everything learned from your Spam and Not spam taps? Your rules are kept."
+    "description": "Message filter: message of the Reset Learning confirmation"
   },
   "messageFilter_filteredMessages": "フィルターされたメッセージ ({count})",
   "@messageFilter_filteredMessages": {
-    "description": "Message filter: Filtered messages ({count})",
+    "description": "Message filter: Filtered Messages ({count})",
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "messageFilter_filteredMessagesEmpty": "フィルターされたメッセージはありません。",
+  "messageFilter_filteredMessagesSubtitle": "全チャンネルで最近フィルターされたメッセージの一覧（最大 200 件）",
+  "messageFilter_filteredMessagesEmpty": "フィルターされたメッセージはありません",
   "@messageFilter_filteredMessagesEmpty": {
     "description": "Message filter: Nothing has been filtered."
   },

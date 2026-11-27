@@ -3617,6 +3617,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get common_clear => 'Világos';
 
   @override
+  String get common_reset => 'Visszaállítás';
+
+  @override
   String get common_clearSearch => 'Keresés törlése';
 
   @override
@@ -7524,27 +7527,47 @@ class AppLocalizationsHu extends AppLocalizations {
   String get messageFilter_enabled => 'Üzenetek szűrése';
 
   @override
-  String get messageFilter_enabledSubtitle => 'A csatornaüzenetekre vonatkozik';
+  String get messageFilter_filteringSection => 'Szűrés';
+
+  @override
+  String get messageFilter_enabledSubtitle =>
+      'Minden csatornára vonatkozik, hacsak nincs kikapcsolva a csatorna menüjében';
+
+  @override
+  String get messageFilter_info =>
+      'Elrejti a spamet és az ismétlődő üzeneteket a csatornákon. Csak az alkalmazásban működik, és nem érinti a companion rádióját.';
 
   @override
   String get messageFilter_displayTitle => 'Szűrt üzenetek';
 
   @override
-  String get messageFilter_displayPlaceholder => 'Kis helyőrző megjelenítése';
-
-  @override
   String get messageFilter_displayHide => 'Teljes elrejtés';
 
   @override
-  String get messageFilter_displayHideHelp =>
-      'Az elrejtett üzenetek a Szűrt üzenetek listában megmaradnak.';
+  String get messageFilter_displayHideSubtitle =>
+      'A szűrt üzenetek elrejtése helyőrző megjelenítése helyett';
 
   @override
   String get messageFilter_rulesSection => 'Az Ön szabályai';
 
   @override
+  String messageFilter_rulesCount(int count) {
+    return 'Szabályok ($count)';
+  }
+
+  @override
+  String get messageFilter_rulesTitle => 'Szabályok';
+
+  @override
+  String get messageFilter_rulesHint =>
+      'Üzenetek elrejtése szó, kifejezés vagy feladónév alapján';
+
+  @override
+  String get messageFilter_rulesEmptyTitle => 'Még nincs szabály';
+
+  @override
   String get messageFilter_rulesEmpty =>
-      'Még nincs szabály. Adjon hozzá egy szót, kifejezést vagy feladónevet, hogy elrejtse a rá illő üzeneteket.';
+      'Adjon hozzá egy szót, kifejezést vagy feladónevet, hogy elrejtse a rá illő üzeneteket';
 
   @override
   String get messageFilter_addRule => 'Szabály hozzáadása';
@@ -7589,6 +7612,68 @@ class AppLocalizationsHu extends AppLocalizations {
   String get messageFilter_ruleSaved => 'Szabály mentve';
 
   @override
+  String messageFilter_rulesDeleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count szabály törölve',
+      one: '1 szabály törölve',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_deleteRulesTitle => 'Törli a szabályokat?';
+
+  @override
+  String messageFilter_deleteRulesConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Törli a(z) $count szabályt az üzenetszűrőből?',
+      one: 'Törli az 1 szabályt az üzenetszűrőből?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count szabály bekapcsolva',
+      one: '1 szabály bekapcsolva',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String messageFilter_rulesTurnedOff(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count szabály kikapcsolva',
+      one: '1 szabály kikapcsolva',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get messageFilter_searchRules => 'Szabályok keresése';
+
+  @override
+  String get messageFilter_rulesNoResults => 'Nincs egyező szabály';
+
+  @override
+  String get messageFilter_selectRules => 'Szabályok kijelölése';
+
+  @override
+  String get messageFilter_turnOn => 'Bekapcsolás';
+
+  @override
+  String get messageFilter_turnOff => 'Kikapcsolás';
+
+  @override
   String get messageFilter_automaticSection => 'Automatikus';
 
   @override
@@ -7596,15 +7681,16 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get messageFilter_duplicatesSubtitle =>
-      'Ugyanaz az üzenet újra elküldve, vagy több feladótól';
+      'Egy személy újra elküldi, vagy legalább 3 személy küldi el';
 
   @override
-  String get messageFilter_repeatSends => 'Ismétlésnek számító küldések';
-
-  @override
-  String messageFilter_repeatSendsSubtitle(int count) {
-    return 'Üzenet elrejtése, ha ugyanaz a feladó $count× elküldi 10 percen belül';
+  String messageFilter_repeatSendsCount(int count) {
+    return 'Ismétlésnek számító küldések: $count';
   }
+
+  @override
+  String get messageFilter_repeatSendsHint =>
+      'Egy személy, minden küldés az előzőt követő 10 percen belül';
 
   @override
   String get messageFilter_repeatedCharacters => 'Ismétlődő karakterek';
@@ -7614,19 +7700,26 @@ class AppLocalizationsHu extends AppLocalizations {
       'Ugyanazon karakter hosszú sorozata, például „aaaaaaaaaaaaaaaaaaaa”';
 
   @override
-  String get messageFilter_learning => 'Tanulás a Spam gombokból';
+  String get messageFilter_learning => 'Tanulás a spambejelentésekből';
 
   @override
   String messageFilter_learningSubtitle(int spam, int notSpam) {
-    return '$spam spam és $notSpam nem spam példa';
+    return '$spam spamként, $notSpam nem spamként megjelölve';
   }
 
   @override
   String get messageFilter_resetLearning => 'Tanulás visszaállítása';
 
   @override
+  String get messageFilter_resetLearningSubtitle =>
+      'Mindent elfelejt, amit a spamként jelölt és a legutóbbi üzenetekből tanult';
+
+  @override
+  String get messageFilter_resetLearningNothing => 'Még nincs tanult adat';
+
+  @override
   String get messageFilter_resetLearningConfirm =>
-      'Elfelejtse mindazt, amit a Spam és Nem spam gombokból tanult? A szabályai megmaradnak.';
+      'Törli mindazt, amit a szűrő megtanult? A szabályai megmaradnak.';
 
   @override
   String messageFilter_filteredMessages(int count) {
@@ -7634,7 +7727,11 @@ class AppLocalizationsHu extends AppLocalizations {
   }
 
   @override
-  String get messageFilter_filteredMessagesEmpty => 'Semmi sincs kiszűrve.';
+  String get messageFilter_filteredMessagesSubtitle =>
+      'Legfeljebb 200 nemrég szűrt üzenet listája az összes csatornáról';
+
+  @override
+  String get messageFilter_filteredMessagesEmpty => 'Nincs szűrt üzenet';
 
   @override
   String get messageFilter_ghostSingle =>
