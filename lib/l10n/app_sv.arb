@@ -4026,5 +4026,8 @@
   "coordinateMap_title": "Plats",
   "coordinate_copyLocation": "Kopiera plats",
   "coordinate_openInMaps": "Öppna i kartor",
-  "coordinate_copied": "Plats kopierad"
+  "coordinate_copied": "Plats kopierad",
+  "repeater_startOta": "Starta OTA",
+  "repeater_startOtaConfirm": "Detta sätter repeatern i OTA-läge. Fortsätt?",
+  "repeater_startOtaSubtitle": "Detta sätter repeatern i OTA-läge"
 }

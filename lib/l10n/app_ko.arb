@@ -4319,5 +4319,8 @@
   "coordinateMap_title": "위치",
   "coordinate_copyLocation": "위치 복사",
   "coordinate_openInMaps": "지도에서 열기",
-  "coordinate_copied": "위치를 복사했습니다"
+  "coordinate_copied": "위치를 복사했습니다",
+  "repeater_startOta": "OTA 시작",
+  "repeater_startOtaConfirm": "리피터가 OTA 모드로 전환됩니다. 계속하시겠습니까?",
+  "repeater_startOtaSubtitle": "리피터가 OTA 모드로 전환됩니다"
 }

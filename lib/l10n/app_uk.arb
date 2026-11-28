@@ -3959,5 +3959,8 @@
   "coordinateMap_title": "Місцезнаходження",
   "coordinate_copyLocation": "Копіювати місцезнаходження",
   "coordinate_openInMaps": "Відкрити на карті",
-  "coordinate_copied": "Місцезнаходження скопійовано"
+  "coordinate_copied": "Місцезнаходження скопійовано",
+  "repeater_startOta": "Запустити OTA",
+  "repeater_startOtaConfirm": "Це переведе ретранслятор у режим OTA. Продовжити?",
+  "repeater_startOtaSubtitle": "Це переведе ретранслятор у режим OTA"
 }

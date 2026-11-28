@@ -4218,5 +4218,8 @@
   "coordinateMap_title": "Lokalizacja",
   "coordinate_copyLocation": "Kopiuj lokalizację",
   "coordinate_openInMaps": "Otwórz w mapach",
-  "coordinate_copied": "Skopiowano lokalizację"
+  "coordinate_copied": "Skopiowano lokalizację",
+  "repeater_startOta": "Rozpocznij OTA",
+  "repeater_startOtaConfirm": "To przełączy przekaźnik w tryb OTA. Kontynuować?",
+  "repeater_startOtaSubtitle": "To przełączy przekaźnik w tryb OTA"
 }

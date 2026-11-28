@@ -3979,5 +3979,8 @@
   "coordinateMap_title": "Местоположение",
   "coordinate_copyLocation": "Копирай местоположението",
   "coordinate_openInMaps": "Отвори в карти",
-  "coordinate_copied": "Местоположението е копирано"
+  "coordinate_copied": "Местоположението е копирано",
+  "repeater_startOta": "Стартирай OTA",
+  "repeater_startOtaConfirm": "Това ще вкара повторителя в OTA режим. Да продължи ли?",
+  "repeater_startOtaSubtitle": "Това ще вкара повторителя в OTA режим"
 }

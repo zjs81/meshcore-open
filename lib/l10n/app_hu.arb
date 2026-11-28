@@ -4070,5 +4070,8 @@
   "coordinateMap_title": "Hely",
   "coordinate_copyLocation": "Hely másolása",
   "coordinate_openInMaps": "Megnyitás a térképeken",
-  "coordinate_copied": "Hely másolva"
+  "coordinate_copied": "Hely másolva",
+  "repeater_startOta": "OTA indítása",
+  "repeater_startOtaConfirm": "Az átjátszó OTA módba kerül. Folytatja?",
+  "repeater_startOtaSubtitle": "Az átjátszó OTA módba kerül"
 }

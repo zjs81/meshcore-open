@@ -4036,5 +4036,8 @@
   "coordinateMap_title": "位置",
   "coordinate_copyLocation": "复制位置",
   "coordinate_openInMaps": "在地图中打开",
-  "coordinate_copied": "位置已复制"
+  "coordinate_copied": "位置已复制",
+  "repeater_startOta": "开始OTA",
+  "repeater_startOtaConfirm": "这会将转发节点置于OTA模式。是否继续?",
+  "repeater_startOtaSubtitle": "这会将转发节点置于OTA模式"
 }

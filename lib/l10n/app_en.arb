@@ -4885,5 +4885,101 @@
   "messageUrlImageLoadFailed": "Unable to load image",
   "@messageUrlImageLoadFailed": {
     "description": "Shown in a message bubble when a linked image fails to load"
-  }
+  },
+  "repeater_accessRegionsTitle": "Access and regions",
+  "repeater_aclAdd": "Add companion",
+  "repeater_aclAddAction": "Add companion",
+  "repeater_aclEmpty": "No companions in the ACL",
+  "repeater_aclInvalidPubkey": "Enter the full public key (64 hex characters)",
+  "repeater_aclLoadFailed": "Could not load the ACL: {error}",
+  "@repeater_aclLoadFailed":     {
+        "placeholders":  {
+                             "error":  {
+                                           "type":  "String"
+                                       }
+                         }
+    },
+  "repeater_aclLoadHint": "Tap refresh to load the ACL from the repeater",
+  "repeater_aclManualAdd": "Add",
+  "repeater_aclManualEntry": "Public key",
+  "repeater_aclManualEntryHelper": "Full public key in hex (64 characters)",
+  "repeater_aclNoCompanionsFound": "No companions found",
+  "repeater_aclRefresh": "Refresh ACL",
+  "repeater_aclRemoveAction": "Remove {name}",
+  "@repeater_aclRemoveAction":     {
+        "placeholders":  {
+                             "name":  {
+                                          "type":  "String"
+                                      }
+                         }
+    },
+  "repeater_aclRemoveConfirmMessage": "Remove {name} from the ACL?",
+  "@repeater_aclRemoveConfirmMessage":     {
+        "placeholders":  {
+                             "name":  {
+                                          "type":  "String"
+                                      }
+                         }
+    },
+  "repeater_aclRemoveConfirmTitle": "Remove from ACL",
+  "repeater_aclRemoveTooltip": "Remove from ACL",
+  "repeater_aclRole": "Role",
+  "repeater_aclRoleAdmin": "Admin",
+  "repeater_aclRoleGuest": "Guest",
+  "repeater_aclRoleReadOnly": "Read-only",
+  "repeater_aclRoleReadWrite": "Read-write",
+  "repeater_aclScreenTitle": "Access control list",
+  "repeater_aclSearch": "Search companions",
+  "repeater_aclTileSubtitle": "Companions allowed to log in to this repeater",
+  "repeater_aclTitle": "Access control",
+  "repeater_aclUnknownNode": "Unknown node",
+  "repeater_cliCommandCopied": "Command copied",
+  "repeater_cliResendCommand": "Resend command",
+  "repeater_regionsAdd": "Add region",
+  "repeater_regionsAddAction": "Add region",
+  "repeater_regionsDefault": "Default region",
+  "repeater_regionsDefaultHelper": "Scope used for this repeater's own traffic",
+  "repeater_regionsDefaultNone": "None",
+  "repeater_regionsEmpty": "No regions defined",
+  "repeater_regionsFloodAllowed": "Flood allowed",
+  "repeater_regionsFloodAllowTooltip": "Allow flooding",
+  "repeater_regionsFloodDenied": "Flood denied",
+  "repeater_regionsFloodDenyTooltip": "Deny flooding",
+  "repeater_regionsHome": "Home region",
+  "repeater_regionsHomeHelper": "Where this repeater sits in the region tree",
+  "repeater_regionsLoadFailed": "Could not load regions: {error}",
+  "@repeater_regionsLoadFailed":     {
+        "placeholders":  {
+                             "error":  {
+                                           "type":  "String"
+                                       }
+                         }
+    },
+  "repeater_regionsLoadHint": "Tap refresh to load regions from the repeater",
+  "repeater_regionsRefresh": "Refresh regions",
+  "repeater_regionsRemoveAction": "Remove {name}",
+  "@repeater_regionsRemoveAction":     {
+        "placeholders":  {
+                             "name":  {
+                                          "type":  "String"
+                                      }
+                         }
+    },
+  "repeater_regionsRemoveConfirmMessage": "Remove {name} from the repeater?",
+  "@repeater_regionsRemoveConfirmMessage":     {
+        "placeholders":  {
+                             "name":  {
+                                          "type":  "String"
+                                      }
+                         }
+    },
+  "repeater_regionsRemoveConfirmTitle": "Remove region",
+  "repeater_regionsRemoveTooltip": "Remove region",
+  "repeater_regionsScreenTitle": "Repeater regions",
+  "repeater_regionsTileSubtitle": "Flood regions and home region for this repeater",
+  "repeater_regionsTitle": "Regions",
+  "repeater_regionsWildcard": "Unscoped (*)",
+  "repeater_startOta": "Start OTA",
+  "repeater_startOtaConfirm": "This will put the repeater into OTA mode. Continue?",
+  "repeater_startOtaSubtitle": "This will put the repeater into OTA mode"
 }

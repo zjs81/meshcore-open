@@ -3880,5 +3880,8 @@
   "coordinateMap_title": "Locatie",
   "coordinate_copyLocation": "Locatie kopiëren",
   "coordinate_openInMaps": "Openen in kaarten",
-  "coordinate_copied": "Locatie gekopieerd"
+  "coordinate_copied": "Locatie gekopieerd",
+  "repeater_startOta": "OTA starten",
+  "repeater_startOtaConfirm": "Hierdoor gaat de repeater naar de OTA-modus. Doorgaan?",
+  "repeater_startOtaSubtitle": "Hierdoor gaat de repeater naar de OTA-modus"
 }
