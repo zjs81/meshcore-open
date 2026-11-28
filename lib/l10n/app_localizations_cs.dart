@@ -8292,4 +8292,124 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get messageUrlImageLoadFailed => 'Unable to load image';
+
+  @override
+  String get localApi_title => 'Lokální API';
+
+  @override
+  String get localApi_settingsSubtitle =>
+      'Umožnit jiným aplikacím používat rádio';
+
+  @override
+  String get localApi_unavailable => 'API není dostupné.';
+
+  @override
+  String get localApi_enableSubtitle =>
+      'Jiné aplikace v tomto zařízení budou moci používat rádio přes MeshCore Open. Každá aplikace se poprvé zeptá na povolení.';
+
+  @override
+  String get localApi_address => 'Adresa';
+
+  @override
+  String get localApi_off => 'Vypnuto';
+
+  @override
+  String get localApi_allowedApps => 'Povolené aplikace';
+
+  @override
+  String get localApi_allowedAppsSubtitle =>
+      'Schváleno při prvním připojení. Po odebrání se aplikace zeptá znovu.';
+
+  @override
+  String get localApi_noApps => 'Zatím žádné aplikace';
+
+  @override
+  String get localApi_noAppsSubtitle =>
+      'Žádost se tu objeví, až se aplikace připojí.';
+
+  @override
+  String localApi_pairedOn(String date) {
+    return 'Spárováno $date';
+  }
+
+  @override
+  String get localApi_remove => 'Odebrat';
+
+  @override
+  String get localApi_clearData => 'Smazat uložená data z rádia';
+
+  @override
+  String get localApi_clearDataSubtitle =>
+      'Odstraní data kanálů uložená pro aplikace, které nebyly spuštěné.';
+
+  @override
+  String get localApi_dataCleared => 'Uložená data z rádia byla smazána';
+
+  @override
+  String get localApi_pairTitle => 'Povolit připojení?';
+
+  @override
+  String localApi_pairBody(String name) {
+    return '„$name“ chce přes tuto aplikaci odesílat a přijímat zprávy MeshCore, dokud drží rádio připojené.';
+  }
+
+  @override
+  String get localApi_keyFingerprint => 'Otisk klíče';
+
+  @override
+  String get localApi_pairWarning =>
+      'Povolte jen aplikaci, které důvěřujete. Bude moci číst Vaše zprávy a vysílat přes Vaše rádio.';
+
+  @override
+  String get localApi_deny => 'Zamítnout';
+
+  @override
+  String get localApi_allow => 'Povolit';
+
+  @override
+  String localApi_pairExpired(String name) {
+    return '„$name“ přestala čekat dřív, než byla povolena. Otevřete ji znovu a spárujte.';
+  }
+
+  @override
+  String localApi_pairNotificationTitle(String name) {
+    return '„$name“ chce používat rádio';
+  }
+
+  @override
+  String get localApi_pairNotificationBody =>
+      'Otevřete MeshCore Open a povolte nebo zamítněte.';
+
+  @override
+  String get localApi_joinTitle => 'Přidat kanál?';
+
+  @override
+  String localApi_joinBody(String name, String channel) {
+    return '„$name“ chce do Vašeho rádia přidat hashtagový kanál $channel.';
+  }
+
+  @override
+  String get localApi_joinWarning =>
+      'Hashtagový kanál může číst a psát do něj každý, kdo zná jeho název.';
+
+  @override
+  String get localApi_joinAdd => 'Přidat';
+
+  @override
+  String get localApi_regionsTitle => 'Doporučené regiony pro flood';
+
+  @override
+  String localApi_regionsSubtitle(int count) {
+    return '$count oblastí. Aplikace si mohou vyžádat nejbližší, jejíž okruh obsahuje daný bod.';
+  }
+
+  @override
+  String localApi_regionCity(int radius) {
+    return 'Město · okruh $radius km';
+  }
+
+  @override
+  String localApi_regionCountry(int radius) {
+    return 'Stát · okruh $radius km';
+  }
 }

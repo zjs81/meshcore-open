@@ -14,6 +14,7 @@ import '../models/channel.dart';
 import '../models/channel_message.dart';
 import '../models/chat_compression_mode.dart';
 import '../models/bookmarked_message.dart';
+import '../models/mesh_event.dart';
 import '../models/companion_radio_stats.dart';
 import '../models/contact.dart';
 import '../models/message_filter.dart';
@@ -35,10 +36,13 @@ import '../services/image_chunk_transport.dart'
         ImageChunkHeader,
         ImageChunkOutcome,
         ImageChunkTransport,
+        ParsedChannelData,
         buildSendChannelDataFrame,
         dataTypeAeicImage,
         kImageReassemblyTtl,
+        kMaxChannelDataPayload,
         outPathUnknown,
+        parseChannelDataFrame,
         parseImageChunkHeader,
         respCodeChannelDataRecv,
         senderPrefixFromKey;
@@ -163,6 +167,23 @@ enum MeshCoreConnectionState {
 }
 
 enum MeshCoreTransportType { bluetooth, usb, tcp, review }
+
+/// Timings of one [MeshCoreConnector.sendChannelData] call, filled in as the
+/// send goes: for the Local API's traffic log and its `sentAt` result.
+class ChannelSendTrace {
+  final DateTime requestedAt = DateTime.now();
+
+  /// From the call until the send could start: the channel send lock and,
+  /// for a scoped flood, setting the flood scope.
+  Duration? lockWait;
+
+  /// The post-receive back-off and the wait for a quiet radio (zero for a
+  /// priority send, which skips both).
+  Duration? quietWait;
+
+  /// When the firmware acknowledged the send command, i.e. took the packet.
+  DateTime? acknowledgedAt;
+}
 
 /// Thrown by [MeshCoreConnector.sendFrame] when no radio is connected.
 class RadioNotConnectedException implements Exception {
@@ -309,6 +330,10 @@ class MeshCoreConnector extends ChangeNotifier {
   final StreamController<Uint8List> _receivedFramesController =
       StreamController<Uint8List>.broadcast();
 
+  /// Live traffic for consumers outside the chat UI, such as bridges.
+  final StreamController<MeshEvent> _meshEventController =
+      StreamController<MeshEvent>.broadcast();
+
   Uint8List? _selfPublicKey;
   String? _selfName;
   int? _currentTxPower;
@@ -442,6 +467,15 @@ class MeshCoreConnector extends ChangeNotifier {
   /// which waits for the map, so this is a guard: their slot index cannot be
   /// resolved yet, and they are replayed once it can.
   final List<Uint8List> _channelFramesAwaitingMap = [];
+
+  /// True from a connect until the first RESP_CODE_NO_MORE_MESSAGES: frames
+  /// drained meanwhile may be from the radio's offline queue, heard while no
+  /// app was connected. Such a frame that was not also heard live (raw RX
+  /// push) is emitted with `queued`.
+  bool _rxBacklogOpen = true;
+
+  /// Held channel-data frames that arrived while [_rxBacklogOpen] was true.
+  final Set<Uint8List> _heldBacklogFrames = Set<Uint8List>.identity();
   bool _pendingQueueSync = false;
   // CMD_APP_START stops the firmware's contact iterator (END_OF_CONTACTS is
   // then never sent), so APP_START requested during a contact sync is held
@@ -730,6 +764,11 @@ class MeshCoreConnector extends ChangeNotifier {
   /// slot map was read or restored).
   bool get channelMapConfirmed => _channelMapConfirmed;
   Stream<Uint8List> get receivedFrames => _receivedFramesController.stream;
+
+  /// Every live mesh event (channel text, channel data of any `dataType`,
+  /// direct messages and adverts) as one stream. Own sends are included and
+  /// flagged `outgoing`.
+  Stream<MeshEvent> get meshEvents => _meshEventController.stream;
   Uint8List? get selfPublicKey => _selfPublicKey;
   String get selfPublicKeyHex => pubKeyToHex(_selfPublicKey ?? Uint8List(0));
 
@@ -3559,6 +3598,11 @@ class MeshCoreConnector extends ChangeNotifier {
   @visibleForTesting
   void handleFrameForTest(List<int> data) => _handleFrame(data);
 
+  /// As right after a connect: frames drained now may be from the radio's
+  /// offline queue until the next RESP_CODE_NO_MORE_MESSAGES.
+  @visibleForTesting
+  void reopenRxBacklogForTest() => _rxBacklogOpen = true;
+
   @visibleForTesting
   static bool shouldIgnoreLateTcpConnectError({
     required bool manualDisconnect,
@@ -4283,6 +4327,8 @@ class MeshCoreConnector extends ChangeNotifier {
   }
 
   void _resetSyncProgressState() {
+    _rxBacklogOpen = true;
+    _heldBacklogFrames.clear();
     _pendingInitialChannelSync = false;
     _pendingInitialContactsSync = false;
     _pendingInitialQueuedMessageSync = false;
@@ -5265,6 +5311,7 @@ class MeshCoreConnector extends ChangeNotifier {
         isSmazCompressed: prepared.isSmazCompressed,
       );
       _addMessage(contact.publicKeyHex, message); // recipient as "sender"
+      _emitDirectTextEvent(message);
       notifyListeners();
       await sendFrame(buildSendTextMsgFrame(contact.publicKey, prepared.text));
     }
@@ -5728,6 +5775,7 @@ class MeshCoreConnector extends ChangeNotifier {
       isSmazCompressed: prepared.isSmazCompressed,
     );
     _addChannelMessage(channel.index, message);
+    _emitChannelTextEvent(message);
     _pendingChannelSentQueue.add(message.messageId);
     notifyListeners();
 
@@ -5937,35 +5985,6 @@ class MeshCoreConnector extends ChangeNotifier {
     return sentAll;
   }
 
-  /// Sends one application [payload] as a GRP_DATA packet on [channelIndex]
-  /// with the given [dataType], flooded on the channel's region scope.
-  ///
-  /// Like [sendImageChunks] the command ACK only means the radio queued the
-  /// packet; GRP_DATA is never acknowledged end to end. Returns false when the
-  /// transport is unavailable; throws like [_sendFrameAndWaitForCommandAck].
-  Future<bool> sendChannelData({
-    required int channelIndex,
-    required int dataType,
-    required Uint8List payload,
-  }) async {
-    if (!supportsChannelData) return false;
-    var sent = false;
-    await _runScopedChannelSend(() async {
-      if (!isConnected) return;
-      await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
-      await _sendFrameAndWaitForCommandAck(
-        buildSendChannelDataFrame(
-          channelIndex: channelIndex,
-          dataType: dataType,
-          payload: payload,
-          pathLen: outPathUnknown,
-        ),
-      );
-      sent = true;
-    }, region: _channelSendScope(channelIndex));
-    return sent;
-  }
-
   Future<bool> _transmitImageBlobs(
     List<Uint8List> blobs, {
     required int channelIndex,
@@ -6040,9 +6059,11 @@ class MeshCoreConnector extends ChangeNotifier {
   /// A GRP_DATA packet from the raw RX log. Other people's images arrive
   /// already decrypted through RESP_CODE_CHANNEL_DATA_RECV; here we only look
   /// for repeaters re-flooding one of our own chunks.
-  void _handleImageEcho(_RawPacket packet) {
-    final self = senderPrefixFromKey(_selfPublicKey);
-    if (self == null || packet.payload.length < 2) return;
+  ///
+  /// Also remembers the packet's route for the decrypted frame that follows
+  /// (see [_heardGroupData]).
+  void _handleGroupDataHeard(_RawPacket packet, {required int rssiDbm}) {
+    if (packet.payload.length < 2) return;
     final channelHash = packet.payload[0];
     final encrypted = Uint8List.fromList(packet.payload.sublist(1));
     final channels = _channels.isNotEmpty ? _channels : _cachedChannels;
@@ -6052,6 +6073,9 @@ class MeshCoreConnector extends ChangeNotifier {
       // Null unless the MAC matches this channel's key.
       final plain = _decryptPayload(channel.psk, encrypted);
       if (plain == null || plain.length < 3) continue;
+      _rememberHeardGroupData(packet, plain, rssiDbm: rssiDbm);
+      final self = senderPrefixFromKey(_selfPublicKey);
+      if (self == null) return;
       // Plaintext: data_type (uint16 LE), data_len, blob (padded to 16).
       final dataType = plain[0] | (plain[1] << 8);
       final length = plain[2];
@@ -6136,6 +6160,247 @@ class MeshCoreConnector extends ChangeNotifier {
       _imageRepairsInFlight.remove(key);
       notifyListeners();
     }
+  }
+
+  /// Sends one application datagram on [channelIndex] as a flood, using the
+  /// same quiet-wait, scope and command-ack path as channel messages.
+  ///
+  /// This is the general form of [sendImageChunks]: [dataType] selects the
+  /// application namespace and [payload] is opaque to the radio. The command
+  /// ack means the firmware queued the packet, not that anyone received it.
+  /// [region] overrides the channel's flood scope for this datagram only.
+  ///
+  /// Returns false when the transport is unavailable (disconnected, firmware
+  /// too old), the payload is empty or larger than [kMaxChannelDataPayload],
+  /// or [dataType] is outside 1..0xFFFF. Throws what
+  /// [_sendFrameAndWaitForCommandAck] throws (firmware error codes or a
+  /// timeout).
+  Future<bool> sendChannelData({
+    required int channelIndex,
+    required int dataType,
+    required Uint8List payload,
+    String? region,
+    int pathLen = outPathUnknown,
+    Uint8List? path,
+    bool priority = false,
+    ChannelSendTrace? trace,
+  }) async {
+    if (!supportsChannelData) return false;
+    if (payload.isEmpty || payload.length > kMaxChannelDataPayload) {
+      return false;
+    }
+    if (dataType <= 0 || dataType > 0xFFFF) return false;
+    final timing = trace ?? ChannelSendTrace();
+
+    // [pathLen] other than outPathUnknown sends direct along [path] (packed
+    // path_len, as in CMD_SEND_CHANNEL_DATA); 0 is zero-hop. Every firmware
+    // with channel data (ver 11+) takes it.
+    Future<void> send() async {
+      timing.lockWait = DateTime.now().difference(timing.requestedAt);
+      // A priority send skips the back-off and the quiet wait; the
+      // firmware still listens before it talks.
+      final quietFrom = DateTime.now();
+      if (!priority) {
+        await _waitForRadioQuiet(lastInboundRxTime: _lastChannelMsgRxTime);
+      }
+      timing.quietWait = DateTime.now().difference(quietFrom);
+      await _sendFrameAndWaitForCommandAck(
+        buildSendChannelDataFrame(
+          channelIndex: channelIndex,
+          dataType: dataType,
+          payload: payload,
+          pathLen: pathLen,
+          path: path ?? Uint8List(0),
+        ),
+      );
+      timing.acknowledgedAt = DateTime.now();
+    }
+
+    if (priority && pathLen != outPathUnknown) {
+      // A direct packet carries no transport code (the firmware's
+      // sendDirect), so the flood scope another send may have set does not
+      // touch it: no need to queue behind that send's quiet wait.
+      await send();
+    } else {
+      await _runScopedChannelSend(
+        send,
+        region: region ?? _channelSendScope(channelIndex),
+      );
+    }
+
+    _emitChannelData(
+      ParsedChannelData(
+        snrRaw: 0,
+        channelIndex: channelIndex,
+        pathLenByte: outPathUnknown,
+        dataType: dataType,
+        payload: payload,
+      ),
+      outgoing: true,
+    );
+    return true;
+  }
+
+  void _emitMeshEvent(MeshEvent event) {
+    if (!_meshEventController.isClosed) _meshEventController.add(event);
+  }
+
+  void _emitChannelTextEvent(ChannelMessage message) {
+    final index = message.channelIndex;
+    if (index == null) return;
+    _emitMeshEvent(
+      ChannelTextEvent(
+        channelIndex: index,
+        channelName: _channelNameForIndex(index),
+        senderName: message.senderName,
+        senderKeyHex: message.senderKey == null
+            ? null
+            : pubKeyToHex(message.senderKey!),
+        text: message.text,
+        sentAt: message.timestamp,
+        messageId: message.messageId,
+        outgoing: message.isOutgoing,
+        receivedAt: DateTime.now(),
+      ),
+    );
+  }
+
+  void _emitDirectTextEvent(Message message) {
+    final keyHex = pubKeyToHex(message.senderKey);
+    _emitMeshEvent(
+      DirectTextEvent(
+        pubkeyHex: keyHex,
+        name: getContactByPubKeyHex(keyHex)?.name,
+        text: message.text,
+        sentAt: message.timestamp,
+        messageId: message.messageId,
+        outgoing: message.isOutgoing,
+        receivedAt: DateTime.now(),
+      ),
+    );
+  }
+
+  void _emitChannelData(
+    ParsedChannelData parsed, {
+    required bool outgoing,
+    _HeardGroupData? heard,
+    bool queued = false,
+  }) {
+    // The frame alone says flood (with hops) or not flood; the raw packet,
+    // when we heard it, also has the path, RSSI and transport form.
+    final String? routeType;
+    if (outgoing) {
+      routeType = null;
+    } else if (heard != null) {
+      routeType = heard.routeType;
+    } else {
+      routeType = parsed.arrivedByFlood ? 'flood' : 'direct';
+    }
+    _emitMeshEvent(
+      ChannelDataEvent(
+        channelIndex: parsed.channelIndex,
+        channelName: _channelNameForIndex(parsed.channelIndex),
+        dataType: parsed.dataType,
+        payload: parsed.payload,
+        snrRaw: parsed.snrRaw,
+        hops: outgoing ? null : parsed.hopCount,
+        outgoing: outgoing,
+        // The raw RX push comes when the radio hears the packet; the decoded
+        // frame only when the app fetches it from the radio's queue.
+        receivedAt: heard?.at ?? DateTime.now(),
+        routeType: routeType,
+        path: outgoing ? null : heard?.path,
+        pathHashSize: outgoing
+            ? null
+            : (heard?.pathHashSize ?? parsed.pathHashWidth),
+        rssiDbm: outgoing ? null : heard?.rssiDbm,
+        transportCode: outgoing ? null : heard?.transportCode,
+        scope: outgoing ? null : heard?.scope,
+        queued: !outgoing && queued,
+      ),
+    );
+  }
+
+  /// GRP_DATA packets heard in the raw RX log (push 0x88), by plaintext,
+  /// waiting for the RESP_CODE_CHANNEL_DATA_RECV frame the firmware queues
+  /// for the same packet. Only the first copy of a packet is kept: that is
+  /// the one the firmware delivers; repeater echoes have the same hash.
+  final Map<String, _HeardGroupData> _heardGroupData = {};
+  final Set<String> _heardGroupDataHashes = <String>{};
+  final List<String> _heardGroupDataHashOrder = [];
+  static const Duration _heardGroupDataTtl = Duration(minutes: 2);
+  static const int _heardGroupDataMax = 64;
+
+  static String _groupDataKey(int dataType, Uint8List data) =>
+      '$dataType:${base64Encode(data)}';
+
+  void _rememberHeardGroupData(
+    _RawPacket packet,
+    Uint8List plain, {
+    required int rssiDbm,
+  }) {
+    final now = DateTime.now();
+    _heardGroupData.removeWhere(
+      (_, heard) => now.difference(heard.at) > _heardGroupDataTtl,
+    );
+    // A direct packet that still has path entries is for the next repeater:
+    // the radio does not deliver it. It delivers the copy the last hop sends
+    // with an empty path, so remembering this one would give the delivered
+    // frame a path it did not arrive with (and a client would drop it).
+    if (!packet.isFlood && packet.pathBytes.isNotEmpty) return;
+    final hash = computePacketHash(packet.payloadType, packet.payload);
+    if (!_heardGroupDataHashes.add(hash)) return;
+    _heardGroupDataHashOrder.add(hash);
+    if (_heardGroupDataHashOrder.length > 256) {
+      _heardGroupDataHashes.remove(_heardGroupDataHashOrder.removeAt(0));
+    }
+    final dataType = plain[0] | (plain[1] << 8);
+    final length = plain[2];
+    if (plain.length < 3 + length) return;
+    final key = _groupDataKey(
+      dataType,
+      Uint8List.sublistView(plain, 3, 3 + length),
+    );
+    if (_heardGroupData.containsKey(key)) return;
+    _heardGroupData[key] = _HeardGroupData(
+      routeType: switch (packet.routeType) {
+        _routeFlood => 'flood',
+        _routeTransportFlood => 'tflood',
+        _routeTransportDirect => 'tdirect',
+        _ => 'direct',
+      },
+      path: packet.pathBytes,
+      pathHashSize: packet.pathHashWidth,
+      rssiDbm: rssiDbm,
+      transportCode: switch (packet.transportCodes) {
+        final codes? when codes.length >= 2 => codes[0] | (codes[1] << 8),
+        _ => null,
+      },
+      scope: _resolveTransportRegion(packet),
+      at: now,
+    );
+    while (_heardGroupData.length > _heardGroupDataMax) {
+      _heardGroupData.remove(_heardGroupData.keys.first);
+    }
+  }
+
+  _HeardGroupData? _takeHeardGroupData(ParsedChannelData parsed) {
+    final heard = _heardGroupData.remove(
+      _groupDataKey(parsed.dataType, parsed.payload),
+    );
+    if (heard == null) return null;
+    if (DateTime.now().difference(heard.at) > _heardGroupDataTtl) return null;
+    return heard;
+  }
+
+  String _channelNameForIndex(int index) {
+    for (final channel in _channels) {
+      if (channel.index == index) return channel.name;
+    }
+    for (final channel in _cachedChannels) {
+      if (channel.index == index) return channel.name;
+    }
+    return '';
   }
 
   Future<void> _runScopedChannelSend(
@@ -6885,11 +7150,15 @@ class MeshCoreConnector extends ChangeNotifier {
     if (_channelFramesAwaitingMap.isEmpty) return;
     final frames = List<Uint8List>.of(_channelFramesAwaitingMap);
     _channelFramesAwaitingMap.clear();
+    final backlog = Set<Uint8List>.identity()..addAll(_heldBacklogFrames);
+    _heldBacklogFrames.clear();
     for (final frame in frames) {
       if (frame[0] != respCodeChannelDataRecv) {
         _handleIncomingChannelMessage(frame);
-      } else if (_appSettingsService?.settings.imageMessagesEnabled ?? false) {
-        _handleIncomingChannelData(frame);
+      } else {
+        // Every frame goes on to meshEvents (the Local API); image
+        // reassembly inside still depends on the image-message setting.
+        _handleIncomingChannelData(frame, fromBacklog: backlog.contains(frame));
       }
     }
   }
@@ -7224,6 +7493,7 @@ class MeshCoreConnector extends ChangeNotifier {
           when !_channelMapConfirmed:
         if (_isSyncingQueuedMessages) _handleQueuedMessageReceived();
         _channelFramesAwaitingMap.add(frame);
+        if (_rxBacklogOpen) _heldBacklogFrames.add(frame);
         break;
       case respCodeChannelMsgRecv:
       case respCodeChannelMsgRecvV3:
@@ -7241,14 +7511,7 @@ class MeshCoreConnector extends ChangeNotifier {
         if (_isSyncingQueuedMessages) {
           _handleQueuedMessageReceived();
         }
-        // Advance the sync state machine ALWAYS (above), but only reassemble
-        // when the feature is actually on. Without this the "disabled" feature
-        // still reassembles, persists and displays received images: the store
-        // keeps them and channel_chat_screen renders every stored entry, so a
-        // user who never enabled image messages would see them appear.
-        if (_appSettingsService?.settings.imageMessagesEnabled ?? false) {
-          _handleIncomingChannelData(frame);
-        }
+        _handleIncomingChannelData(frame);
         break;
       case respCodeSent:
         _handleMessageSent(frame);
@@ -7602,6 +7865,7 @@ class MeshCoreConnector extends ChangeNotifier {
 
   void _handleNoMoreMessages() {
     debugPrint('[QueueSync] No more messages, sync complete');
+    _rxBacklogOpen = false;
     _queueSyncTimeout?.cancel();
     _isSyncingQueuedMessages = false;
     _queuedMessageSyncInFlight = false;
@@ -7901,6 +8165,15 @@ class MeshCoreConnector extends ChangeNotifier {
       return;
     }
     _handleDiscovery(contact, frame);
+    _emitMeshEvent(
+      AdvertEvent(
+        pubkeyHex: contact.publicKeyHex,
+        name: contact.name,
+        type: contact.type,
+        lastSeen: contact.lastSeen,
+        receivedAt: DateTime.now(),
+      ),
+    );
     notifyListeners();
   }
 
@@ -8300,6 +8573,7 @@ class MeshCoreConnector extends ChangeNotifier {
         }
       }
       _addMessage(message.senderKeyHex, message);
+      _emitDirectTextEvent(message);
       _maybeIncrementContactUnread(message);
       notifyListeners();
 
@@ -8717,13 +8991,29 @@ class MeshCoreConnector extends ChangeNotifier {
     ).hasMatch(text);
   }
 
-  /// Handles RESP_CODE_CHANNEL_DATA_RECV (GRP_DATA). Frames whose dataType is
-  /// not 0xAE1C — or that arrive before an [ImageChunkTransport] is installed —
-  /// are ignored without disturbing any other behaviour.
-  void _handleIncomingChannelData(Uint8List frame) {
+  /// Handles RESP_CODE_CHANNEL_DATA_RECV (GRP_DATA). Every frame is emitted on
+  /// [meshEvents]; only 0xAE1C frames go on to the [ImageChunkTransport], and
+  /// they are ignored until one is installed.
+  void _handleIncomingChannelData(Uint8List frame, {bool? fromBacklog}) {
     // Anchor the post-RX backoff for our own next channel send, exactly as
     // _handleIncomingChannelMessage does.
     _lastChannelMsgRxTime = DateTime.now();
+    final parsed = parseChannelDataFrame(frame);
+    if (parsed != null) {
+      final heard = _takeHeardGroupData(parsed);
+      _emitChannelData(
+        parsed,
+        outgoing: false,
+        heard: heard,
+        // Heard live means not from the offline queue, whenever drained.
+        queued: heard == null && (fromBacklog ?? _rxBacklogOpen),
+      );
+    }
+    // Only reassemble when the feature is actually on. Without this the
+    // "disabled" feature still reassembles, persists and displays received
+    // images: the store keeps them and channel_chat_screen renders every
+    // stored entry, so a user who never enabled image messages would see them.
+    if (!(_appSettingsService?.settings.imageMessagesEnabled ?? false)) return;
     final outcome = _imageTransport?.handleFrame(frame);
     if (outcome == null) return; // Not an AEIC image chunk.
     _onImageChunk?.call(outcome);
@@ -8768,8 +9058,9 @@ class MeshCoreConnector extends ChangeNotifier {
       final message = _withFilterOf(incoming, stored);
       _recordCleanChannelMessage(message, isNew: isNew);
       // Filtered messages are stored but never count as unread, notify or
-      // get auto-translated.
+      // get auto-translated or reach event listeners.
       if (!message.isFiltered) {
+        if (isNew) _emitChannelTextEvent(message);
         _maybeIncrementChannelUnread(message, isNew: isNew);
       }
       notifyListeners();
@@ -8796,7 +9087,8 @@ class MeshCoreConnector extends ChangeNotifier {
       final packet = _parseRawPacket(raw);
       if (packet == null) return;
       if (packet.payloadType == _payloadTypeGroupData) {
-        _handleImageEcho(packet);
+        final rssi = frame[2] >= 128 ? frame[2] - 256 : frame[2];
+        _handleGroupDataHeard(packet, rssiDbm: rssi);
         return;
       }
       if (packet.payloadType != _payloadTypeGroupText) return;
@@ -8884,9 +9176,10 @@ class MeshCoreConnector extends ChangeNotifier {
           final isNew = stored != null;
           final message = _withFilterOf(incoming, stored);
           _recordCleanChannelMessage(message, isNew: isNew);
-          // Filtered messages are stored but never count as unread, notify
-          // or get auto-translated.
+          // Filtered messages are stored but never count as unread, notify,
+          // get auto-translated or reach event listeners.
           if (!message.isFiltered) {
+            if (isNew) _emitChannelTextEvent(message);
             _maybeIncrementChannelUnread(message, isNew: isNew);
           }
           notifyListeners();
@@ -10284,6 +10577,7 @@ class MeshCoreConnector extends ChangeNotifier {
   void dispose() {
     _messageFilterService?.removeListener(_onMessageFilterChanged);
     _disposed = true;
+    _meshEventController.close();
     _appSettingsService?.removeListener(_onAppSettingsChanged);
     _scanSubscription?.cancel();
     _isScanningSubscription?.cancel();
@@ -10944,6 +11238,26 @@ class _RawPacket {
 
   int get hopCount => pathLenRaw & 63;
   int get pathHashWidth => ((pathLenRaw >> 6) & 0x03) + 1;
+}
+
+class _HeardGroupData {
+  final String routeType;
+  final Uint8List path;
+  final int pathHashSize;
+  final int rssiDbm;
+  final int? transportCode;
+  final String? scope;
+  final DateTime at;
+
+  _HeardGroupData({
+    required this.routeType,
+    required this.path,
+    required this.pathHashSize,
+    required this.rssiDbm,
+    this.transportCode,
+    this.scope,
+    required this.at,
+  });
 }
 
 class _ParsedText {

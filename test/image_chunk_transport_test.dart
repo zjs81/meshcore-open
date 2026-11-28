@@ -724,6 +724,17 @@ void main() {
       expect(frame, <int>[0x3E, 0x02, 0x02, 0x11, 0x22, 0x1C, 0xAE, 0x01]);
     });
 
+    test('a zero-hop frame has path_len 0 and no path bytes', () {
+      final frame = buildSendChannelDataFrame(
+        channelIndex: 3,
+        dataType: 0xB652,
+        payload: Uint8List.fromList(<int>[0x09]),
+        pathLen: 0,
+        path: Uint8List(0),
+      );
+      expect(frame, <int>[0x3E, 0x03, 0x00, 0x52, 0xB6, 0x09]);
+    });
+
     test('RESP_CODE_CHANNEL_DATA_RECV parses, snr is signed', () {
       final frame = Uint8List.fromList(<int>[
         0x1B,

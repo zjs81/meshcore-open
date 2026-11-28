@@ -14,7 +14,7 @@ The settings screen is a scrollable list of cards:
 1. [Device Info](#device-info)
 2. [Node Settings](#node-settings)
 3. [Location](#location)
-4. [App Settings](#app-settings) (link to sub-screen)
+4. [App Settings](#app-settings) and [Local API](#local-api) (links to sub-screens)
 5. [Actions](#actions)
 6. [Backup & Restore and Export Data](#backup--restore-and-export-data)
 7. [Debug](#debug)
@@ -99,6 +99,12 @@ The location is shown on the map, used when you share your location, and sent in
 - **Advert Location**: include the node's location in adverts. When on, **Auto Zero-Hop Advert On GPS Update** (app setting) expands below it
 - **Multi-ACKs**: the radio sends 2 acknowledgments (ACKs) instead of 1 when the ACK goes back over a direct path. Messages received by flood, or with no known route back, still get one. More reliable, more airtime
 - **Telemetry**: an info box explains that per-contact permissions are in each chat's Contact Settings; then the Base, Location and Environment modes (Deny All / Allow by Contact / Allow All)
+
+---
+
+## Local API
+
+Not on web. Open **Settings → Local API** to let other apps on the same device send and receive through this app's radio connection. It is off by default. Each app asks once in a dialog showing its name and key fingerprint; allowed apps are listed here and can be removed, which also disconnects them. **Clear stored radio data** deletes channel data kept for apps that were not running. See [Local API](LOCAL_API.md).
 
 ---
 

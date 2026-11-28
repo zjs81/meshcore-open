@@ -21,6 +21,8 @@ import 'location_settings_screen.dart';
 import 'node_name_screen.dart';
 import 'privacy_settings_screen.dart';
 import 'radio_settings_screen.dart';
+import '../utils/platform_info.dart';
+import 'local_api_screen.dart';
 import 'app_debug_log_screen.dart';
 import 'message_filter_settings_screen.dart';
 import 'ble_debug_log_screen.dart';
@@ -144,6 +146,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                   ),
+                  if (!PlatformInfo.isWeb) ...[
+                    const Divider(height: 1, indent: 16),
+                    MeshNavTile(
+                      icon: Icons.hub_outlined,
+                      title: l10n.localApi_title,
+                      subtitle: l10n.localApi_settingsSubtitle,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const LocalApiScreen(),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

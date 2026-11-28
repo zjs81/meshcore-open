@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "note": "Suggested MeshCore flood-scope names and their areas. The names must match what repeaters in the area are configured with; edit this file for your community.",
+  "regions": [
+    {"name": "sk", "label": "Slovakia", "kind": "country", "lat": 48.7164, "lon": 19.5000, "radiusKm": 350},
+    {"name": "sk-ba", "label": "Bratislava", "kind": "city", "lat": 48.1486, "lon": 17.1077, "radiusKm": 100},
+    {"name": "sk-tt", "label": "Trnava", "kind": "city", "lat": 48.3774, "lon": 17.5872, "radiusKm": 100},
+    {"name": "sk-tn", "label": "Trenčín", "kind": "city", "lat": 48.8945, "lon": 18.0444, "radiusKm": 100},
+    {"name": "sk-nr", "label": "Nitra", "kind": "city", "lat": 48.3069, "lon": 18.0864, "radiusKm": 100},
+    {"name": "sk-za", "label": "Žilina", "kind": "city", "lat": 49.2231, "lon": 18.7394, "radiusKm": 100},
+    {"name": "sk-bb", "label": "Banská Bystrica", "kind": "city", "lat": 48.7395, "lon": 19.1532, "radiusKm": 100},
+    {"name": "sk-ke", "label": "Košice", "kind": "city", "lat": 48.7164, "lon": 21.2611, "radiusKm": 100},
+    {"name": "sk-po", "label": "Prešov", "kind": "city", "lat": 48.9975, "lon": 21.2393, "radiusKm": 100},
+    {"name": "cz", "label": "Czechia", "kind": "country", "lat": 49.8175, "lon": 15.4730, "radiusKm": 350},
+    {"name": "cz-pr", "label": "Praha", "kind": "city", "lat": 50.0755, "lon": 14.4378, "radiusKm": 100},
+    {"name": "cz-br", "label": "Brno", "kind": "city", "lat": 49.1951, "lon": 16.6068, "radiusKm": 100},
+    {"name": "cz-os", "label": "Ostrava", "kind": "city", "lat": 49.8209, "lon": 18.2625, "radiusKm": 100},
+    {"name": "cz-pl", "label": "Plzeň", "kind": "city", "lat": 49.7384, "lon": 13.3736, "radiusKm": 100}
+  ]
+}

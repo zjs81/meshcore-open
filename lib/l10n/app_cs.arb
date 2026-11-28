@@ -4592,5 +4592,89 @@
   "coordinateMap_title": "Poloha",
   "coordinate_copyLocation": "Kopírovat polohu",
   "coordinate_openInMaps": "Otevřít v mapách",
-  "coordinate_copied": "Poloha zkopírována"
+  "coordinate_copied": "Poloha zkopírována",
+  "localApi_title": "Lokální API",
+  "localApi_settingsSubtitle": "Umožnit jiným aplikacím používat rádio",
+  "localApi_unavailable": "API není dostupné.",
+  "localApi_enableSubtitle": "Jiné aplikace v tomto zařízení budou moci používat rádio přes MeshCore Open. Každá aplikace se poprvé zeptá na povolení.",
+  "localApi_address": "Adresa",
+  "localApi_off": "Vypnuto",
+  "localApi_allowedApps": "Povolené aplikace",
+  "localApi_allowedAppsSubtitle": "Schváleno při prvním připojení. Po odebrání se aplikace zeptá znovu.",
+  "localApi_noApps": "Zatím žádné aplikace",
+  "localApi_noAppsSubtitle": "Žádost se tu objeví, až se aplikace připojí.",
+  "localApi_pairedOn": "Spárováno {date}",
+  "@localApi_pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_remove": "Odebrat",
+  "localApi_clearData": "Smazat uložená data z rádia",
+  "localApi_clearDataSubtitle": "Odstraní data kanálů uložená pro aplikace, které nebyly spuštěné.",
+  "localApi_dataCleared": "Uložená data z rádia byla smazána",
+  "localApi_pairTitle": "Povolit připojení?",
+  "localApi_pairBody": "„{name}“ chce přes tuto aplikaci odesílat a přijímat zprávy MeshCore, dokud drží rádio připojené.",
+  "@localApi_pairBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_keyFingerprint": "Otisk klíče",
+  "localApi_pairWarning": "Povolte jen aplikaci, které důvěřujete. Bude moci číst Vaše zprávy a vysílat přes Vaše rádio.",
+  "localApi_deny": "Zamítnout",
+  "localApi_allow": "Povolit",
+  "localApi_pairExpired": "„{name}“ přestala čekat dřív, než byla povolena. Otevřete ji znovu a spárujte.",
+  "@localApi_pairExpired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_pairNotificationTitle": "„{name}“ chce používat rádio",
+  "localApi_pairNotificationBody": "Otevřete MeshCore Open a povolte nebo zamítněte.",
+  "localApi_joinTitle": "Přidat kanál?",
+  "localApi_joinBody": "„{name}“ chce do Vašeho rádia přidat hashtagový kanál {channel}.",
+  "@localApi_joinBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "localApi_joinWarning": "Hashtagový kanál může číst a psát do něj každý, kdo zná jeho název.",
+  "localApi_joinAdd": "Přidat",
+  "localApi_regionsTitle": "Doporučené regiony pro flood",
+  "localApi_regionsSubtitle": "{count} oblastí. Aplikace si mohou vyžádat nejbližší, jejíž okruh obsahuje daný bod.",
+  "@localApi_regionsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCity": "Město · okruh {radius} km",
+  "@localApi_regionCity": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  },
+  "localApi_regionCountry": "Stát · okruh {radius} km",
+  "@localApi_regionCountry": {
+    "placeholders": {
+      "radius": {
+        "type": "int"
+      }
+    }
+  }
 }
